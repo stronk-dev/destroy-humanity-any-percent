@@ -181,3 +181,29 @@
   `minigame-platform-lifecycle-audit.md` with the exact defect trace and safe closeout order.
 - Made no product, balance, schema, RFC, canonical product-doc, or player-copy edits; flipped no
   plan boxes; did not archive or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Account & Session Bootstrap lifecycle reconciliation
+
+- Read the complete Account RFC/plan/log, account migrations/repository/API, current Game UI
+  runtime, transport authentication, gameserver/bootstrap/GC successors, canonical docs,
+  Leaderboards imported-founder consumers, tests, and review history.
+- Ran cold `./account ./transport ./gameserver`, real-Postgres Integration tests for `./account
+  ./leaderboard ./gameserver`, and the composed Chromium bootstrap/snapshot/Centrifuge handshake;
+  all passed. The current product coordinate's 6,655 client tests were already green in this wave.
+- Promoted AC1/AC4 to proven integration. Kept AC2 partial and downgraded AC3/AC5/AC6/AC7 to
+  partial because their fixtures do not prove repeated unlimited/free Founder swaps, actual
+  import→board exclusion, survival of the active imported stream, or limiter behavior on session
+  and refresh routes.
+- Recomputed the acceptance-summary distribution directly from all 111 TSV rows after noticing
+  the prior family totals had drifted as lifecycle passes introduced qualified status labels. The
+  normalized families are 39 draft, 23 mechanical/cold-pending, 11 proven/qualified, 29 partial or
+  unmet, five contradicted/failed, and four withdrawn; they sum to the unchanged 111-row census.
+- Confirmed RP-048: the Game UI persists refresh/recovery material but every HTTP/socket operation
+  keeps using the original 15-minute access token. There is no refresh call, credential replacement,
+  socket reauthentication, or expired-session recovery; failures become generic offline state.
+- Filed RP-049–RP-051 for literal Account witnesses, obsolete review/lifecycle provenance, and the
+  unowned anonymous-account storage-amplification/retention problem. Existing RP-004–RP-007 and
+  RP-024 continue to own user data rights/recovery/fallback and revocation-to-socket integration.
+- Wrote `account-session-lifecycle-audit.md` with the criterion trace and safe closeout order. Made
+  no product, schema, RFC/design, canonical product-doc, or player-copy edits; flipped no plan
+  boxes; did not archive or touch the user's `AGENTS.md` edit.

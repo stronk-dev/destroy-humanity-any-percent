@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 33 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 9 | Reconciled Permits/FCE rows, Prestige AC8, and Minigame Platform's zero-peer fallback proof; qualifications remain explicit. |
-| Unmet or partial | 22 | API/Combat/consumer gaps plus Account/WebSocket/Game UI and literal-witness gaps. |
-| Contradicted at current HEAD | 4 | CI AC1/AC3 plus Minigame Platform AC2/AC6 are false now. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 23 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 11 | Reconciled lifecycle rows plus Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
+| Unmet or partial | 29 | API/Combat/consumer gaps plus Account/WebSocket/Game UI and literal-witness gaps. |
+| Contradicted or failed at current HEAD | 5 | Exact current contradictions plus failed Leaderboards AC5 and Minigame Platform AC2. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 33 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The 23 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -61,6 +61,22 @@ specific witness/range route rather than treating them as a green block.
 - **AC6 false:** no combat duel tenant exists or registers. Only The Pitch is present in production
   catalog and gameserver composition. The draft duel child and combat docs confirm the absence.
   RP-016 and RP-046 block authorial reconciliation and archival.
+
+### Account & Session Bootstrap
+
+The criterion and lifecycle pass is recorded in `account-session-lifecycle-audit.md`.
+
+- AC1 and AC4 are proven: strict real-stack create→session→intent plus a correctly signed
+  extra-claim JWT rejection execute cold.
+- AC2 remains partial because database family revocation and socket authentication are not one
+  revoked-live-session witness.
+- AC3/AC5/AC6/AC7 are partial against “unlimited,” actual import→board exclusion, all save-stream
+  survival, and all unauthenticated endpoints respectively (RP-049).
+- Outside the backend criteria, the production UI never consumes its refresh token, so the
+  15-minute access expiry has no renewal/reconnect path (RP-048). Existing RP-004–RP-007 retain the
+  absent export/delete/recovery/local-fallback user workflows.
+- The active review record cites obsolete hashes and does not union current successor work
+  (RP-050); anonymous account storage retention remains unowned (RP-051).
 
 ### Game UI
 
