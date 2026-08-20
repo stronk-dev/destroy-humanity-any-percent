@@ -17,7 +17,7 @@ The status below is evidence-derived. It does not change an RFC's formal status 
 | Combat Duel Engine | draft | Acceptance review done; owner rulings and implementation absent. | Parent completion, owner rulings, acceptance. |
 | Combat Lane Engine | draft | No implementing plan. | Parent contracts and owner acceptance. |
 | Combat Bots & Integration | draft | No implementing plan. | Duel/lane engines plus account/minigame integration. |
-| Game UI Screens | accepted / implementing | Phase-A screens and live transport exist; AC1 body contradicts the accepted GU-C25–C28 rulings and the full browser first-hour is absent. | Ruling author reconciles normative body; then implement and prove AC1; full-range designated review. |
+| Game UI Screens | accepted / implementing | Phase-A/v2 screens exist; AC2/AC3 are proven. Accepted v3 Gate/Wind Down/next-run controls are absent; AC1/U2/header/docs contradict C7/C25–C28; AC4's oracle passes with all three outcomes removed; AC5 lacks throttle/frame/manual evidence. | RP-008/RP-026/RP-066/RP-067: ruling-author reconciliation, narrowed control proof, AC4/AC5 evidence repair, full-range designated review. |
 | Commons Onboarding & Governance | draft | Backend Commons foundation exists; player-facing half absent. | Owner accepts reconciled draft before implementation. |
 | World Layer Foundation | draft | No implementation. | Resolve release/content ordering and upstream Commons/production dependencies. |
 | Feed & Dispatch Foundation | draft | No player feed implementation. | Transport/API/achievement dependencies and owner acceptance. |

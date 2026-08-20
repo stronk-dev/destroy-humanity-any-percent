@@ -285,3 +285,29 @@
 - Wrote `api-foundation-lifecycle-audit.md`. Made no persistent product, schema, RFC/design,
   canonical product-doc, generated-artifact, or player-copy edit; flipped no plan boxes; did not
   archive, push, or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Game UI Screens lifecycle reconciliation
+
+- Read the complete Game UI RFC/plan/log, GU-C25–C28 owner rulings, Phase-A components and runtime,
+  snapshot contracts, composed/browser/performance fixtures, canonical Game UI doc, implementation
+  history, successor review records, and current acceptance ledgers.
+- Ran the complete browser population, typecheck, and client-boundary gate. The restored baseline is
+  123 browser files with 20,007 passed/3 skipped, the isolated performance selector 1 passed/10
+  skipped, zero type diagnostics, and a green boundary gate.
+- Executed and restored three failing probes. A direct transport import failed AC2's exact component
+  boundary; widening Run End props to admit a snapshot failed AC3's compile-time negative; removing
+  cap, drain, and resync output together left all 20,007 browser assertions green, disproving AC4's
+  claimed behavior coverage.
+- Promoted AC2 and AC3, contradicted AC4's acceptance oracle, and kept AC5 partial. The performance
+  fixture consumes update-count, format-count, and long-task fields but never applies its 4x CPU
+  throttle or dropped-frame budget, completes the nominal 60-second input population in under a
+  second, and has no recorded manual reference-device result.
+- Confirmed that current production stops at snapshot v2/bootstrap-to-Desk. The GU-C26/C27 snapshot
+  v3 eligibility, Gate/Wind Down controls, and Run End-to-next-run continuation are absent. AC1,
+  U2, the header, and canonical full-rendition prose also remain unreconciled with C7/C25–C28.
+- Recomputed the 111-row distribution: 39 draft, 11 mechanical/cold-pending, 16 proven/qualified,
+  33 partial/unmet, eight contradicted/failed, and four withdrawn. Filed RP-066/RP-067 and refined
+  RP-008/RP-026 for the performance, body/canonical, implementation, oracle, and review-union gaps.
+- Wrote `game-ui-lifecycle-audit.md`. Made no persistent product, RFC/design, canonical product-doc,
+  or player-copy edit; flipped no plan boxes; did not archive, push, or touch the user's
+  `AGENTS.md` edit.

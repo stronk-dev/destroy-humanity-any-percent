@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 14 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 14 | Reconciled lifecycle rows plus CI AC2/AC4, Transport AC1, and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 11 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 16 | Reconciled lifecycle rows plus Game UI AC2/AC3, CI AC2/AC4, Transport AC1, and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
 | Unmet or partial | 33 | API/Combat/consumer gaps plus Account/Transport/Game UI and literal-witness gaps. |
-| Contradicted or failed at current HEAD | 7 | Exact current contradictions plus API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
+| Contradicted or failed at current HEAD | 8 | Exact current contradictions plus Game UI AC4, API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 14 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The 11 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -108,12 +108,14 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
 - **AC1 unmet:** the browser proof reaches the Desk/bootstrap boundary, not the full ruled first
   hour through run end and run 2. The AC body also contradicts the later GU-C25–C28 ruling over the
   clock seam. Author reconciliation precedes R-004.
-- AC2–AC5 have code/tests to inspect, but are not yet promoted. Component tests, screenshots, axe,
-  or a performance fixture do not collectively prove the complete human workflow.
-- The first cold browser pass now leaves AC2, AC3, and AC5 mechanically green pending mutation and
-  review-range audit. AC4 is downgraded: the cap primitive has a real browser assertion, but the
-  Game UI fixture sets drain and resync simultaneously and checks only axe/mechanical-ID absence.
-  It does not assert either story beat's content or recovery transition (RP-026).
+- AC2 is proven: a restored direct transport import fails the component boundary by filename.
+- AC3 is proven: widening Run End props to accept a snapshot fails the compile-time negative, and
+  the browser renders the decoded terminal object through the isolated component.
+- **AC4's oracle fails:** suppressing cap, drain, and resync output together leaves the full 20,007
+  browser population green. The behavior exists, but the literal three tests do not (RP-026).
+- AC5 is partial: deterministic update-count/long-task mechanics run, while the declared 4× CPU
+  throttle and dropped-frame allowance are unused and the manual device check is unrecorded
+  (RP-066).
 
 ### API Foundation
 

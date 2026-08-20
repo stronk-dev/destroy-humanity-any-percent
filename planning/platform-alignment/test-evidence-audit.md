@@ -59,8 +59,8 @@ rerun above reached its objective. RP-025 owns selector safety.
 
 - Demonstrate a discriminating failure or relevant mutation for every remaining row promoted
   beyond mechanical presence.
-- Reconcile the remaining 14 mechanical/cold-witness rows, beginning with Game UI, Minigame
-  API/Surface, and Combat Shared.
+- Reconcile the remaining 11 mechanical/cold-witness rows, beginning with Minigame API/Surface
+  and Combat Shared.
 - Construct exact current-history review unions before any active RFC archive; the lifecycle
   audits name the missing Account and Transport ranges rather than treating old green prose as a
   verdict.
@@ -79,11 +79,10 @@ The composed script stops immediately after Desk and presence. It does not execu
 script, offer/Exit, run-end rendering, or run-2 state, so it cannot witness Game UI AC1.
 
 Browser AC3's run-end component receives only the decoded `run_ended` payload and passed. The
-performance arm passed. AC4 remains partial: the cap explanation primitive is asserted in the UI
-Foundation browser fixture, while the Game UI test simultaneously forces drain and resync and then
-asserts only axe and absence of mechanical IDs. It has no assertion for restart timing/copy,
-resync copy/button, refresh invocation, failure behavior, or return to a synchronized surface.
-Filed RP-026.
+performance arm passed its bounded CI lane. Initial inspection left AC4 partial because the Game
+UI fixture asserted only axe/mechanical-ID absence; Batch F's restored three-seam mutation later
+demonstrated that all required outcomes can disappear while the complete browser population stays
+green, so the final classification is contradicted. Filed RP-026.
 
 ## Batch C — Transport production-consumer and lifecycle replay
 
@@ -137,3 +136,19 @@ Generated OpenAPI has 10 private paths, zero public paths, and zero response-hea
 Production code never constructs the public policy/cursor runtime. AC1/AC2 are partial, AC3/AC5
 unmet, and AC4 contradicted under C9. Every temporary mutation was restored; RP-060–RP-065 and
 `api-foundation-lifecycle-audit.md` carry the exact authority/body/composition/review defects.
+
+## Batch F — Game UI lifecycle and acceptance discrimination
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| `make test-browser` | exit 0; 123 files, 20,007 passed, 3 skipped; performance selector 1 passed/10 skipped | Current declared browser population is green, but its Game UI outcome coverage is not discriminating. |
+| Direct `../transport` import in `GameUIApp.svelte` | `make verify-client-boundary` exit 2 naming the exact component/import | AC2's structural boundary fails on the prohibited dependency and is proven. |
+| Optional `snapshot` input on `RunEndSurfaceProps` | `make typecheck` exit 2 because the negative `@ts-expect-error` became unused | AC3's byte-only component contract rejects the forbidden shell-state input and is proven with the rendered fixture. |
+| Suppressed cap, drain, and resync output together | full `make test-browser` still exit 0 with 20,007 passed | AC4's claimed three browser tests do not observe any of the three required outcomes; the criterion is contradicted. |
+| Performance scenario/source inspection | 1,200 update inputs and formatting/long-task bounds execute; CPU throttle and dropped-frame allowance are never applied | AC5 proves only a deterministic CI count/long-task arm; the ruled reference-device throttle/frame claim remains unproved. |
+| Restored `make typecheck verify-client-boundary` and product diff | zero diagnostics; boundary green; no Game UI product diff | All temporary probes were removed before the planning checkpoint. |
+
+The current composed browser proof still ends at bootstrap-to-Desk. Snapshot v3, Gate/Wind Down
+eligibility and controls, and Run End→next-run continuation are absent. AC1 is also body-blocked:
+its full first-hour obligation contradicts GU-C25–C28's later narrowed browser ruling. RP-008,
+RP-026, RP-066, RP-067, and `game-ui-lifecycle-audit.md` carry the exact repair and review route.

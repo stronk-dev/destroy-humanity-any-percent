@@ -6,7 +6,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 |---|---|---|---|---|---|---|
 | Start and play the live game | `design/11`, Game UI RFC | Bootstrap, snapshot v2, production intents, world channel | `GameUIApp.svelte` via `game-ui/runtime.ts` | Vision Slide -> Desk on epoch-7/8 catalogs | `make test-game-ui-composed`; current-head hosted job passed | **Proven to Desk only** |
 | Recover realtime delivery after disconnect | Transport D4/T4, AC2/AC4/AC5 | Centrifuge positions/history, typed closes, full-state endpoint, per-scope cursor | Game UI opens one unpositioned socket; cursor is test-only | Initial live subscription only | Server protocol-driver recovery/overflow/drain tests; no browser recovery witness | **Proven server; consumer absent** |
-| Complete the first hour in-browser | T0–T1 RFC + Game UI AC1 | Live curriculum, gate/Exit events, run-end payload | Offer Sheet and Run End components | Nine generators, ten upgrades, three first-ending branches | Server/Postgres proof exists; no full browser script | **Mechanical fragment** |
+| Complete the accepted Game UI transition path | T0–T1 RFC + Game UI C25–C28/AC1 | Live curriculum, gate/Exit events, run-end payload; v3 transition preview absent | Offer Sheet and Run End render; Gate/Wind Down/continue controls absent | Nine generators, ten upgrades, three first-ending branches | Server/Postgres first hour proven; browser stops at Desk and accepted control proof is absent | **Mechanical fragment; body-blocked** |
 | Play with keyboard/assistive tech | Game UI accessibility clause | Semantic Svelte controls, focus styles, reduced-motion tokens | Browser DOM | Five Phase-A surfaces | Axe on all surfaces; Enter begins attempt | **Mechanical fragment** |
 | Recover an anonymous account | Account RFC | One-time recovery code, session endpoint | Credential stored in browser localStorage | Automatic account bootstrap | Backend integration tests only | **No player workflow** |
 | Export/delete own data | Account/privacy intent | Delete endpoint exists; no export endpoint | No settings controls | Settings displays one paragraph | Delete backend test only | **Mechanical deletion; export absent** |
@@ -53,6 +53,9 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 12. API A5/C1 claim one operation authority, but only 10 of 21 live v1 routes are registered; the
     generated document has zero public routes and the accepted C9 client-only rule is neither
     implemented nor enforced.
+13. Game UI's RFC and canonical doc still require the full browser first-hour even though C25/C28
+    rejected that obligation; the accepted v3 controls are absent, AC4's three outcomes can all be
+    removed without a red test, and AC5's throttle/drop-frame profile is unexecuted.
 
 ## Genuine proofs worth preserving
 

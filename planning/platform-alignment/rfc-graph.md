@@ -29,7 +29,7 @@ Transport D4/T4 client recovery + Account token rotation
 API AC4/C18 body reconciliation
     -> all-v1 registry/query/header/raw-client authority
     -> generated browser client + public formula/readers/evidence/privacy proof
-Game UI body reconciliation -> AC1 implementation -> R-004
+Game UI C7/C25-C28 body reconciliation -> snapshot-v3 controls and narrowed AC1 proof -> R-004
 accessibility release contract -----------------------> R-005
 ```
 
