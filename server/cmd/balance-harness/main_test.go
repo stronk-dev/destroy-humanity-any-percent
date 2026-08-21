@@ -112,6 +112,9 @@ func TestObservationSignalSubprocess(t *testing.T) {
 		if err != nil {
 			os.Exit(2)
 		}
+		if err := observationRecorder.DeclareObjectives([]string{"relevance:0:scenario.json"}); err != nil {
+			os.Exit(2)
+		}
 		if err := observationRecorder.StartObjective(harness.HarnessObservationObjectiveSpec{
 			ID: "relevance:0:scenario.json", Kind: "registered_relevance",
 			Identity: harness.HarnessObservationIdentity{RegistryIndex: &index, ScenarioPath: "scenario.json",

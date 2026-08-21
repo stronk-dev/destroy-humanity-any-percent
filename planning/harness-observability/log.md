@@ -47,3 +47,19 @@ Append-only session record. A fresh agent should be able to resume from this fil
   remain R-001 work after implementation review and explicit push/CI authority.
 - Re-ran affected cold Go tests, focused vet, schema validation, the role activation control, and
   the independent artifact validator successfully. Tracked artifacts/goldens remain unchanged.
+
+## 2026-08-21 — internal-review correction and regenerated evidence
+
+- Found two pre-handoff defects: objective elapsed time was reconstructed from wall timestamps
+  instead of retained monotonic starts, and the artifact did not predeclare the full objective
+  list. The second defect meant a severed final registry row was not mechanically distinguishable
+  from a shorter declared population.
+- Added the ordered declaration before work, exact declaration/completion validation, monotonic
+  objective timing, directory sync after atomic rename, and a negative case that appends an
+  uncompleted declared row. The fixture selector and signal/error cases remain green.
+- Regenerated the complete artifact from the corrected executable. It validates at 974.510s total:
+  guards 21.735s; standard pacing 739.441s (300/300); active relevance 212.927s (107/107 and
+  1,968,171/1,968,171); fixture relevance 0.316s (23/23 and 3,324/3,324). All four declared rows
+  completed with clear guard/population-exclusion/truncation state.
+- The earlier 1,004.859s artifact was replaced rather than edited and is superseded as admissible
+  final-instrument evidence. No governed input or execution policy changed between the two runs.

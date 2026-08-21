@@ -142,6 +142,13 @@ func main() {
 	}
 	if *mode == "check" {
 		if observationRecorder != nil {
+			objectiveIDs := []string{"repository-guards", "standard-pacing"}
+			for index, entry := range registry {
+				objectiveIDs = append(objectiveIDs, fmt.Sprintf("relevance:%d:%s", index, entry.Scenario))
+			}
+			if err := observationRecorder.DeclareObjectives(objectiveIDs); err != nil {
+				fail(err)
+			}
 			if err := observationRecorder.StartObjective(harness.HarnessObservationObjectiveSpec{ID: "repository-guards", Kind: "repository_guards"}); err != nil {
 				fail(err)
 			}

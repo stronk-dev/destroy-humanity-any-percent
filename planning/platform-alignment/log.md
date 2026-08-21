@@ -1131,3 +1131,17 @@
 - This reverses the local cost hypothesis: standard pacing is about 76.4% of the command, active
   relevance about 21.2%. Hosted Linux may differ; its complete observation plus CPU/resource data
   remains required before D-014, optimization, sharding, parallelism or timeout decisions.
+
+## 2026-08-21 — R-001 objective-declaration correction
+
+- Internal review found that the first observation did not persist its complete ordered objective
+  declaration. Its recorded rows were real, but removing the last registry row could have left the
+  remaining rows looking complete. Added a pre-work declaration, exact declaration/completion
+  equality, monotonic per-objective timing, directory sync after atomic rename, and a fired
+  declaration-severing negative case.
+- Regenerated rather than edited the retained artifact. The final-instrument run completed in
+  974.510s: guards 21.735s; standard pacing 739.441s (300/300); active relevance 212.927s
+  (107/107, 1,968,171/1,968,171); fixture relevance 0.316s (23/23, 3,324/3,324). The strict
+  validator accepts all four predeclared objectives with clear guard/exclusion/truncation state.
+- The earlier 1,004.859s run is superseded as final-instrument evidence. Its qualitative cost
+  finding is independently reproduced, now about 75.9% pacing versus 21.9% active relevance.

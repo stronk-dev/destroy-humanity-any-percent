@@ -61,21 +61,22 @@ type HarnessObservationObjective struct {
 }
 
 type HarnessObservation struct {
-	SchemaVersion       int                           `json:"schema_version"`
-	Kind                string                        `json:"kind"`
-	Authoritative       bool                          `json:"authoritative"`
-	Mode                string                        `json:"mode"`
-	State               string                        `json:"state"`
-	Termination         *string                       `json:"termination"`
-	StartedAt           string                        `json:"started_at"`
-	UpdatedAt           string                        `json:"updated_at"`
-	FinishedAt          *string                       `json:"finished_at"`
-	ElapsedMS           int64                         `json:"elapsed_ms"`
-	CurrentObjective    *string                       `json:"current_objective"`
-	ActiveEpochID       *int64                        `json:"active_epoch_id"`
-	ActiveConstantsHash string                        `json:"active_constants_hash"`
-	Objectives          []HarnessObservationObjective `json:"objectives"`
-	Errors              []string                      `json:"errors"`
+	SchemaVersion        int                           `json:"schema_version"`
+	Kind                 string                        `json:"kind"`
+	Authoritative        bool                          `json:"authoritative"`
+	Mode                 string                        `json:"mode"`
+	State                string                        `json:"state"`
+	Termination          *string                       `json:"termination"`
+	StartedAt            string                        `json:"started_at"`
+	UpdatedAt            string                        `json:"updated_at"`
+	FinishedAt           *string                       `json:"finished_at"`
+	ElapsedMS            int64                         `json:"elapsed_ms"`
+	CurrentObjective     *string                       `json:"current_objective"`
+	ActiveEpochID        *int64                        `json:"active_epoch_id"`
+	ActiveConstantsHash  string                        `json:"active_constants_hash"`
+	DeclaredObjectiveIDs []string                      `json:"declared_objective_ids"`
+	Objectives           []HarnessObservationObjective `json:"objectives"`
+	Errors               []string                      `json:"errors"`
 }
 
 type HarnessObservationObjectiveSpec struct {
@@ -94,11 +95,12 @@ type HarnessObservationProgress struct {
 }
 
 type HarnessObservationRecorder struct {
-	mu       sync.Mutex
-	path     string
-	started  time.Time
-	now      func() time.Time
-	artifact HarnessObservation
+	mu               sync.Mutex
+	path             string
+	started          time.Time
+	now              func() time.Time
+	artifact         HarnessObservation
+	objectiveStarted map[string]time.Time
 }
 
 func NewHarnessObservationRecorder(path, mode string, activeEpochID *int64, activeConstantsHash string) (*HarnessObservationRecorder, error) {
@@ -111,16 +113,35 @@ func newHarnessObservationRecorder(path, mode string, activeEpochID *int64, acti
 	}
 	started := now()
 	stamp := observationTimestamp(started)
-	recorder := &HarnessObservationRecorder{path: path, started: started, now: now,
+	recorder := &HarnessObservationRecorder{path: path, started: started, now: now, objectiveStarted: map[string]time.Time{},
 		artifact: HarnessObservation{SchemaVersion: HarnessObservationSchemaVersion,
 			Kind: "harness_observation.v1", Authoritative: false, Mode: mode,
 			State: ObservationStateRunning, StartedAt: stamp, UpdatedAt: stamp,
 			ActiveEpochID: activeEpochID, ActiveConstantsHash: activeConstantsHash,
-			Objectives: []HarnessObservationObjective{}, Errors: []string{}}}
+			DeclaredObjectiveIDs: []string{}, Objectives: []HarnessObservationObjective{}, Errors: []string{}}}
 	if err := recorder.writeLocked(); err != nil {
 		return nil, err
 	}
 	return recorder, nil
+}
+
+func (recorder *HarnessObservationRecorder) DeclareObjectives(ids []string) error {
+	recorder.mu.Lock()
+	defer recorder.mu.Unlock()
+	if recorder.artifact.State != ObservationStateRunning || len(recorder.artifact.Objectives) != 0 ||
+		len(recorder.artifact.DeclaredObjectiveIDs) != 0 || len(ids) == 0 {
+		return errors.New("invalid harness observation objective declaration")
+	}
+	seen := map[string]bool{}
+	for _, id := range ids {
+		if id == "" || seen[id] {
+			return errors.New("invalid harness observation objective declaration")
+		}
+		seen[id] = true
+	}
+	recorder.artifact.DeclaredObjectiveIDs = append([]string(nil), ids...)
+	recorder.touchLocked(recorder.now())
+	return recorder.writeLocked()
 }
 
 func (recorder *HarnessObservationRecorder) StartObjective(spec HarnessObservationObjectiveSpec) error {
@@ -128,6 +149,10 @@ func (recorder *HarnessObservationRecorder) StartObjective(spec HarnessObservati
 	defer recorder.mu.Unlock()
 	if recorder.artifact.State != ObservationStateRunning || recorder.artifact.CurrentObjective != nil || spec.ID == "" || spec.Kind == "" {
 		return errors.New("invalid harness observation objective start")
+	}
+	next := len(recorder.artifact.Objectives)
+	if next >= len(recorder.artifact.DeclaredObjectiveIDs) || recorder.artifact.DeclaredObjectiveIDs[next] != spec.ID {
+		return errors.New("undeclared or out-of-order harness observation objective")
 	}
 	for _, objective := range recorder.artifact.Objectives {
 		if objective.ID == spec.ID {
@@ -142,6 +167,7 @@ func (recorder *HarnessObservationRecorder) StartObjective(spec HarnessObservati
 		PopulationExclusions: ObservationConditionUnknown, TruncationState: ObservationConditionUnknown,
 		InstrumentExcluded: []string{}, Errors: []string{},
 	})
+	recorder.objectiveStarted[spec.ID] = now
 	recorder.artifact.CurrentObjective = stringPointer(spec.ID)
 	recorder.touchLocked(now)
 	return recorder.writeLocked()
@@ -170,7 +196,7 @@ func (recorder *HarnessObservationRecorder) Progress(progress HarnessObservation
 	}
 	now := recorder.now()
 	objective.UpdatedAt = observationTimestamp(now)
-	objective.ElapsedMS = observationObjectiveElapsedMS(objective.StartedAt, now)
+	objective.ElapsedMS = observationElapsedMS(recorder.objectiveStarted[objective.ID], now)
 	recorder.touchLocked(now)
 	return recorder.writeLocked()
 }
@@ -201,7 +227,8 @@ func (recorder *HarnessObservationRecorder) CompleteObjective(progress HarnessOb
 	objective.State = ObservationStateComplete
 	objective.UpdatedAt = stamp
 	objective.FinishedAt = stringPointer(stamp)
-	objective.ElapsedMS = observationObjectiveElapsedMS(objective.StartedAt, now)
+	objective.ElapsedMS = observationElapsedMS(recorder.objectiveStarted[objective.ID], now)
+	delete(recorder.objectiveStarted, objective.ID)
 	recorder.artifact.CurrentObjective = nil
 	recorder.touchLocked(now)
 	return recorder.writeLocked()
@@ -225,7 +252,8 @@ func (recorder *HarnessObservationRecorder) Fail(termination string, cause error
 				objective.State = ObservationStateIncomplete
 				objective.UpdatedAt = stamp
 				objective.FinishedAt = stringPointer(stamp)
-				objective.ElapsedMS = observationObjectiveElapsedMS(objective.StartedAt, now)
+				objective.ElapsedMS = observationElapsedMS(recorder.objectiveStarted[objective.ID], now)
+				delete(recorder.objectiveStarted, objective.ID)
 				if cause != nil {
 					objective.Errors = append(objective.Errors, cause.Error())
 				}
@@ -291,11 +319,16 @@ func ValidateCompleteHarnessObservation(observation HarnessObservation) error {
 		observation.Termination == nil || *observation.Termination != "objective" || observation.StartedAt == "" ||
 		observation.UpdatedAt == "" || observation.FinishedAt == nil || observation.CurrentObjective != nil ||
 		observation.ActiveEpochID == nil || *observation.ActiveEpochID < 1 || !relevanceHashPattern.MatchString(observation.ActiveConstantsHash) ||
-		observation.Objectives == nil || len(observation.Objectives) == 0 || observation.Errors == nil || len(observation.Errors) != 0 {
+		observation.DeclaredObjectiveIDs == nil || len(observation.DeclaredObjectiveIDs) == 0 ||
+		observation.Objectives == nil || len(observation.Objectives) != len(observation.DeclaredObjectiveIDs) ||
+		observation.Errors == nil || len(observation.Errors) != 0 {
 		return errors.New("incomplete harness observation")
 	}
 	seen := map[string]bool{}
 	for index, objective := range observation.Objectives {
+		if objective.ID != observation.DeclaredObjectiveIDs[index] {
+			return errors.New("harness observation objective declaration mismatch")
+		}
 		if objective.ID == "" || objective.Kind == "" || seen[objective.ID] || objective.State != ObservationStateComplete ||
 			objective.FinishedAt == nil || objective.Errors == nil || len(objective.Errors) != 0 ||
 			objective.GuardState != ObservationConditionClear || objective.PopulationExclusions != ObservationConditionClear ||
@@ -418,7 +451,12 @@ func (recorder *HarnessObservationRecorder) writeLocked() error {
 		return err
 	}
 	remove = false
-	return nil
+	directoryHandle, err := os.Open(directory)
+	if err != nil {
+		return err
+	}
+	defer directoryHandle.Close()
+	return directoryHandle.Sync()
 }
 
 func mergeObservationWork(current *HarnessObservationWork, update HarnessObservationWork) {
@@ -446,14 +484,6 @@ func observationElapsedMS(started, now time.Time) int64 {
 		return 0
 	}
 	return elapsed
-}
-
-func observationObjectiveElapsedMS(started string, now time.Time) int64 {
-	value, err := time.Parse(time.RFC3339Nano, started)
-	if err != nil {
-		return 0
-	}
-	return observationElapsedMS(value, now)
 }
 
 func stringPointer(value string) *string { return &value }

@@ -136,18 +136,23 @@ complete, non-authoritative evidence with epoch 8 constants
 
 | Objective | Elapsed | Governed work | State |
 |---|---:|---:|---|
-| Repository/history guards | 23.425 s | no invented cardinality | complete; clear |
-| Standard pacing | 767.618 s | 300/300 runs | complete; clear |
-| Active registered relevance | 213.514 s | 107/107 runs; 1,968,171/1,968,171 transitions | complete; clear |
-| Registered fixture relevance | 0.203 s | 23/23 runs; 3,324/3,324 transitions | complete; clear |
-| Complete command | **1,004.859 s (16m44.859s)** | every declared objective | objective termination |
+| Repository/history guards | 21.735 s | no invented cardinality | complete; clear |
+| Standard pacing | 739.441 s | 300/300 runs | complete; clear |
+| Active registered relevance | 212.927 s | 107/107 runs; 1,968,171/1,968,171 transitions | complete; clear |
+| Registered fixture relevance | 0.316 s | 23/23 runs; 3,324/3,324 transitions | complete; clear |
+| Complete command | **974.510 s (16m14.510s)** | all four predeclared objectives | objective termination |
 
 There were no population exclusions, truncations, or fired guards. Instrument-excluded
 purchasables remain separately disclosed and are not population exclusions.
 
 This corrects the first-wave hypothesis for native macOS: standard pacing, not serial relevance,
-dominates the local command (about 76.4% versus 21.2%). It does not prove the same cost split on the
+dominates the local command (about 75.9% versus 21.9%). It does not prove the same cost split on the
 hosted Linux runner, and it does not explain the hosted cancellation by itself. Hosted execution,
 runner CPU/resource evidence, and the governed margin decision remain outstanding. No timeout,
 population, dispatch, parallelism, sharding, budget, or CI topology change is authorized by this
 local result.
+
+The first instrumented run reported 16m44.859s but predated the final validator's declared-objective
+list. Internal review correctly found that severing the last registry row could therefore leave all
+recorded objectives apparently complete. The retained artifact was regenerated, not hand-edited;
+the 16m14.510s row above is the only admissible final-instrument measurement.

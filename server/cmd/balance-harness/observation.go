@@ -37,12 +37,16 @@ func runRegisteredRelevance(root, output, selector string) error {
 		return err
 	}
 	active := entry.Active
+	objectiveID := fmt.Sprintf("relevance:%d:%s", matchedIndex, entry.Scenario)
+	if err := observationRecorder.DeclareObjectives([]string{objectiveID}); err != nil {
+		return err
+	}
 	identity := harness.HarnessObservationIdentity{RegistryIndex: &matchedIndex, ScenarioPath: entry.Scenario,
 		EconomyCatalogPath: entry.EconomyCatalog, RelevancePolicyPath: entry.RelevancePolicy,
 		GoldenReportPath: entry.GoldenReport, ScenarioHash: suite.ScenarioHash,
 		RelevancePolicyHash: suite.Policy.Hash, ConstantsHash: suite.ConstantsHash, Active: &active}
 	if err := observationRecorder.StartObjective(harness.HarnessObservationObjectiveSpec{
-		ID: fmt.Sprintf("relevance:%d:%s", matchedIndex, entry.Scenario), Kind: "registered_relevance", Identity: identity}); err != nil {
+		ID: objectiveID, Kind: "registered_relevance", Identity: identity}); err != nil {
 		return err
 	}
 	report, err := suite.RunRelevanceObserved(recordRelevanceProgress)

@@ -51,7 +51,8 @@ The top-level shape is fixed-struct JSON with this information:
 - terminal state: `running`, `complete`, or `incomplete`;
 - termination kind: null while running, otherwise `objective`, `error`, `signal`, or
   `interrupted`; external loss inferred from a surviving running checkpoint is `interrupted`;
-- current objective ID and an ordered list of objective records;
+- current objective ID, the complete ordered objective-ID declaration persisted before work, and
+  an ordered list of realized objective records that must match that declaration exactly;
 - standard pacing scenario/constants identity and active epoch ID/constants identity when loaded;
 - registry identity for each relevance row: registry index, scenario/catalog/policy/golden paths,
   scenario hash, relevance-policy hash, accepted constants hash, and active flag;
@@ -159,3 +160,5 @@ R-001 obtains complete local and hosted measurements.
 - 2026-08-21: created and accepted from Marco's bounded R-001 instrumentation ruling; no CI or
   harness-budget decision adopted.
 - 2026-08-21: implementation started after authority checkpoint `9c71562`.
+- 2026-08-21: internal review added pre-work objective declaration/equality and retained monotonic
+  objective starts before the implementation handoff.

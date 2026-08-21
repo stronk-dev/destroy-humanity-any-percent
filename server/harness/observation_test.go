@@ -33,6 +33,9 @@ func TestHarnessObservationRecorderCompletesAtomicArtifact(t *testing.T) {
 		t.Fatal("running checkpoint was accepted as complete")
 	}
 	index, active := 0, true
+	if err := recorder.DeclareObjectives([]string{"relevance:0:scenario.json"}); err != nil {
+		t.Fatal(err)
+	}
 	if err := recorder.StartObjective(HarnessObservationObjectiveSpec{ID: "relevance:0:scenario.json", Kind: "registered_relevance",
 		Identity: HarnessObservationIdentity{RegistryIndex: &index, ScenarioPath: "scenario.json", EconomyCatalogPath: "economy.json",
 			RelevancePolicyPath: "policy.json", GoldenReportPath: "golden.json", ScenarioHash: observationTestHash,
@@ -90,6 +93,9 @@ func TestValidateCompleteHarnessObservationRejectsIncompleteEvidence(t *testing.
 			value.Objectives[0].Identity.ConstantsHash = "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 		}, "identity"},
 		{"completion severed", func(value *HarnessObservation) { value.Objectives[0].State = ObservationStateRunning }, "objective"},
+		{"declared objective severed", func(value *HarnessObservation) {
+			value.DeclaredObjectiveIDs = append(value.DeclaredObjectiveIDs, "relevance:1:missing.json")
+		}, "incomplete"},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -120,6 +126,9 @@ func TestHarnessObservationFailureAndMissingArtifactAreNotComplete(t *testing.T)
 		t.Fatal(err)
 	}
 	index, active := 0, true
+	if err := recorder.DeclareObjectives([]string{"relevance:0:scenario.json"}); err != nil {
+		t.Fatal(err)
+	}
 	if err := recorder.StartObjective(HarnessObservationObjectiveSpec{ID: "relevance:0:scenario.json", Kind: "registered_relevance",
 		Identity: HarnessObservationIdentity{RegistryIndex: &index, ScenarioPath: "scenario.json", EconomyCatalogPath: "economy.json",
 			RelevancePolicyPath: "policy.json", GoldenReportPath: "golden.json", ScenarioHash: observationTestHash,
@@ -146,7 +155,8 @@ func validHarnessObservationFixture() HarnessObservation {
 	return HarnessObservation{SchemaVersion: 1, Kind: "harness_observation.v1", Authoritative: false,
 		Mode: "relevance-registered", State: ObservationStateComplete, Termination: &termination,
 		StartedAt: "2026-08-21T10:00:00Z", UpdatedAt: finished, FinishedAt: &finished,
-		ActiveEpochID: &epochID, ActiveConstantsHash: observationTestHash, Errors: []string{},
+		ActiveEpochID: &epochID, ActiveConstantsHash: observationTestHash,
+		DeclaredObjectiveIDs: []string{"relevance:0:scenario.json"}, Errors: []string{},
 		Objectives: []HarnessObservationObjective{{ID: "relevance:0:scenario.json", Kind: "registered_relevance",
 			State: ObservationStateComplete, StartedAt: "2026-08-21T10:00:00Z", UpdatedAt: finished, FinishedAt: &finished,
 			Identity: HarnessObservationIdentity{RegistryIndex: &index, ScenarioPath: "scenario.json", EconomyCatalogPath: "economy.json",

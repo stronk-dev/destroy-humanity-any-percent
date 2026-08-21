@@ -172,8 +172,9 @@ R-001 measurements can attach an explicit `harness_observation.v1` checkpoint to
 check. The checkpoint is operational evidence only: it is always marked `authoritative: false` and
 cannot replace a golden report, baseline, epoch artifact, or harness verdict.
 
-The observation records repository-guard, standard-pacing, and registered-relevance objectives in
-execution order. It includes loaded scenario/policy/constants identity, monotonic elapsed time,
+Before work starts, the observation records the complete ordered repository-guard, standard-pacing,
+and registered-relevance objective declaration. Completion requires the realized list to match it
+exactly. It includes loaded scenario/policy/constants identity, monotonic elapsed time,
 declared and executed work where the governed report exposes it, the current objective, and
 explicit guard/population-exclusion/truncation state. Registered relevance progress advances only
 after a completed run arm; it never reads or mutates simulation state or enters canonical report
