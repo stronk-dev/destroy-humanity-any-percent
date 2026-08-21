@@ -16,6 +16,6 @@
 7. [x] Update canonical docs and run focused verification.
 8. [x] Replace the provisional terminal revision with Leaderboards L1's atomic run-log sequence.
 9. [ ] Record independent review before archival.
-10. [ ] Add the missing literal AC2–AC6 witnesses: offer-age/progress property, full-domain reseed
+10. [x] Add the missing literal AC2–AC6 witnesses: offer-age/progress property, full-domain reseed
     and repeated non-empty ledger preservation, New-Founder lifecycle, eligible-state/event-chain
     matrix, and checked-in run-2 golden. Each witness needs a demonstrated failing mutation.

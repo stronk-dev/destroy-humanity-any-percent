@@ -246,3 +246,35 @@ gate_crossed intact; decline drift scoped per run with validator-enforced run_se
   ledger facts, real New-Founder lifecycle, Wind Down state axes, and the run-2 golden.
 - The scope is test/fixture/record-only. No production, balance, schema, copy, or CI change is
   authorized; a fired witness becomes a finding rather than permission to weaken the criterion.
+
+## 2026-08-21 — AC2–AC6 witness implementation and severing proof
+
+- AC2: four non-expired offer ages (`0`, `1`, half-life, last-live ms) progress before acceptance
+  and dominate stored terms; exact expiry rejects without advancing Founder rewards. Zeroing the
+  promised payout failed all four live rows. A current-only mutation was rejected as a probe design
+  because today's monotonic recomputation would make it non-discriminating.
+- AC3: the only non-clamped Notoriety interval (`0..100`) is exhaustive, 10,006 deterministic
+  samples/endpoints span the clamped domain, invalid bounds reject, and the oracle uses independent
+  big-integer arithmetic. An off-by-one production mutation failed at Notoriety 0. Two different
+  Postgres Exit kinds preserved three cumulative non-empty ledger facts; removing the production
+  Company→Founder union failed on the first run fact.
+- AC4: the composed GameServer proof completes an Exit, creates a distinct Founder through the real
+  account endpoint, confirms old-stream archival and empty new history, then replaces the fresh
+  Founder's eligible Company command with its own `scripted_first`. Disabling zero-history trigger
+  detection left the history empty and failed.
+- AC5: the real-Postgres matrix covers plain, pending-opportunity, active-buff, incorporated, and
+  live-offer eligible states plus a typed, nonmutating Tier-0 control. A production active-event
+  trap failed exactly the pending and active-buff rows. Existing pre-timer and cross-epoch rows
+  remain part of the population.
+- AC6: two complete run-2 encodings match the checked-in golden. Built-in corruptions reject a
+  missing carry and wrong run order; dropping the production Guild boundary carry failed the
+  golden with `guild_boundary_seq` 0 versus 37.
+- Cold `make test-go GO_PACKAGES='./prestige ./production ./gameserver' GO_TEST_FLAGS='-count=1'`,
+  full real-Postgres `make test-save-integration SAVE_TEST_PACKAGES='./production ./gameserver'
+  SAVE_TEST_COUNT=1`, and focused `make vet GO_PACKAGES='./prestige ./production ./gameserver'`
+  passed. The first combined selector using parentheses fired the already-tracked RP-025 shell
+  parsing defect; the safe prefix selector and then the full integration population ran every
+  intended test.
+- Implementation commits in the pending designated-review span are `1c557c1`, `331bd06`, and
+  `b76b00b`, preceded by authority/predeclaration commits `fbc2452` and `5d137d8`. No production,
+  balance, schema, copy, CI, push, publication, RFC status, or archival change landed.

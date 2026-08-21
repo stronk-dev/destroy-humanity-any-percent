@@ -2171,3 +2171,17 @@
   facing copy, status, checkbox, push, publication, archival, or review claim.
 - Closed RP-034–RP-036 and promoted execution row 2b: only AC2–AC6's literal discriminating
   witnesses and remaining plan-evidence reconciliation are READY. RP-037/RP-038 remain open.
+
+## 2026-08-21 — Prestige AC2–AC6 witness completion
+
+- Added the predeclared offer-age/expiry, independent reseed, repeated non-empty ledger,
+  real-New-Founder, six-row Wind Down, and complete run-2 golden populations without changing a
+  production byte.
+- Recorded six discriminators: zero promised payout, removed fact union, disabled fresh-Founder
+  trigger, active-event trap, dropped Guild carry, and off-by-one reseed. Each failed the named
+  witness; the current-only payout probe was refused because monotonic recomputation made it
+  vacuous.
+- Marked RP-037 remediated pending the cross-party gate and moved queue row 2b to READY FOR
+  DESIGNATED REVIEW. Cold unit, full Production/GameServer real-Postgres integration, and focused
+  vet populations passed. RP-038 remains open; no archival, push, publication, or review claim
+  occurred.

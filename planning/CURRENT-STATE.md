@@ -45,8 +45,9 @@ The evidence trace is in
   Soul docs match the current epoch (`7d21484`), the root boundary gates honor the repository-local
   Go cache (`ab05f2d`), and four completed maintenance threads moved out of the live namespace
   (`b990b91`).
-- Prestige D2–D5/P3–P5 and canonical docs now match shipped behavior; D-012 defers Advisor's player
-  control. Its AC2–AC6 witness-only remediation is the current READY product batch.
+- Prestige D2–D5/P3–P5 and canonical docs match shipped behavior; D-012 defers Advisor's player
+  control. AC2–AC6's literal witnesses are implemented, cold-green, and severing-proven; their
+  exact range now awaits the mandatory cross-party review.
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.
@@ -69,8 +70,8 @@ The complete defect and decision populations are
 
 ## Current execution posture
 
-Prestige AC2–AC6 witness-only remediation is the current unblocked product batch. It may add tests
-and checked-in fixtures only; mechanics, balance, and player copy remain outside that scope.
+Prestige AC2–AC6 witness-only remediation is complete and ready for its mandatory cross-party
+review. No implementer-side archival is authorized.
 
 The amended blocking CI population passed hosted in run `32518522514` at `aa27705`, with the
 slowest job completing in 2m57s. Its maintenance observation and exact review union remain CI

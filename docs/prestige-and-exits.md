@@ -107,15 +107,23 @@ valid run.
 
 ## Verification status
 
-Unit and shared-vector tests cover arithmetic, offer monotonicity, deterministic run assembly,
-offline accounting, and exact parsing. Real-Postgres tests inject failure at every Exit write
-boundary, assert byte-identical replay, execute elective and scripted Exits end to end, preserve
-executed-route facts, and prove a progressed offer never pays below its preview. The suite also
+Unit and shared-vector tests cover arithmetic, an independent Notoriety-domain reseed property,
+offer monotonicity, and a checked-in complete run-2 state golden with carry/reset corruption
+controls, plus offline accounting and exact parsing. Real-Postgres tests inject failure at every
+Exit write boundary, assert byte-identical replay, execute elective and scripted Exits end to end,
+preserve executed-route facts, and prove progressed offers at four non-expired age boundaries never
+pay below preview while the exact-expiry boundary rejects. A six-row Wind Down matrix covers plain,
+pending-opportunity, active-buff, incorporated, live-offer, and ineligible Tier-0 states. Repeated
+offer/collapse Exits preserve cumulative non-empty ledger facts. The composed account path archives
+one Founder, creates a distinct Founder through the real endpoint, and proves that Founder's first
+eligible Company command receives its own `scripted_first`. The suite also
 mints an epoch with changed artifact bytes while a run is active and exits it across the boundary,
 and migrates a literal v6 Company through a successful pre-timer scripted Exit. The live T0–T1
 first-hour scenario now measures the first elective Exit at 45–90 minutes of Founder attended
 time. Its 97-run evidence and the pinned-seed real-Postgres composed proof cover both the scripted
 first-company ending and a later elective Exit; no fixture timing is presented as shipped balance.
+All new AC2–AC6 witnesses have recorded severing failures; the mandatory cross-party range review
+remains pending, so this RFC is not archival-ready.
 
 ## Offer resolution events
 

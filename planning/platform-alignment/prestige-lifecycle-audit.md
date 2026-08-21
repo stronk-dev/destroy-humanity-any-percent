@@ -4,8 +4,9 @@ Coordinate: product tree `190a4fa`; audit checkpoint after `79939b0`; 2026-08-20
 
 Post-coordinate reconciliation (2026-08-21): owner-delegated edits reconciled D2–D5/P3–P5,
 `design/11`, the Prestige plan, and canonical docs to shipped behavior and D-012. RP-034–RP-036 are
-closed. The acceptance classifications below remain the frozen audit basis for READY witness batch
-2b; RP-037/RP-038 remain open.
+closed. The original acceptance classifications below are the frozen audit basis. Post-coordinate
+batch 2b has now added cold-green, mutation-proven AC2–AC6 witnesses; RP-037 is remediated pending
+designated review and RP-038 remains open.
 
 This pass re-derived the active Prestige RFC from its specification, plan, append-only log,
 current implementation, successor T0–T1 curriculum, canonical docs, tests, and historical review
@@ -17,7 +18,8 @@ The Exit transaction is substantial working software. Atomic Founder/Company per
 idempotent replay, exact Go/TypeScript arithmetic, current run-end rendering, and the current
 first-hour path all execute successfully. The RFC is nevertheless not archival-ready:
 
-- five acceptance criteria retain narrower witnesses than their literal requirements;
+- at the audit coordinate, five acceptance criteria retained narrower witnesses than their literal
+  requirements (remediated after the coordinate; designated review pending);
 - Advisor Mode's stored/mechanical seams remain, while D-012 now explicitly defers its player
   command/settings surface from the preview;
 - the normative body and canonical Prestige doc have been reconciled after this audit coordinate;
@@ -56,11 +58,11 @@ the values were recorded here.
 | AC | Verdict | Evidence and limitation | Required closeout |
 |---|---|---|---|
 | AC1 | **Cold witness green; archival review missing** | The real-Postgres store test injects failures at eight core write boundaries plus five log/genesis/pin boundaries and verifies neither stream or related record commits. Success and idempotent recorded-order replay also execute. | Preserve the current negative cases; include this path in the full designated range review. |
-| AC2 | **Partial** | A live offer is spawned, Company lifetime value is advanced, and acceptance pays at least the stored preview. `PromiseTerms` separately tests field-wise max/set union. The RFC asks for a property across offer ages; no age population/property is present. | Add the accepted age/progress population and a mutation that can violate the promise. |
-| AC3 | **Partial** | Go/TS vectors and four boundary samples cover the reseed formula, and production unions Company ledger facts into Founder facts. The test is not a property across the Notoriety domain, and the live Exit fixture starts with empty ledger-fact sets rather than proving non-empty facts remain unmutated across repeated Exit kinds. | Add formula property/boundary coverage plus non-empty repeated-Exit ledger preservation. |
-| AC4 | **Partial** | Threshold, early Wind Down, once-only history, full payout, automatic current curriculum, and composed replay are covered. Account tests separately create a New Founder, but no fixture performs an Exit, creates a New Founder through the real account workflow, and proves that founder receives its own scripted first lifecycle. | Add the literal cross-account-lifecycle witness; reconcile D4/P5 to the current curriculum trigger. |
-| AC5 | **Partial** | Wind Down succeeds for ordinary, incorporated, pre-timer, cross-epoch, and current first-hour states. No enumerated eligible-state oracle or fixture names and exercises the promised mid-event-chain boundary, so “any eligible state” is broader than the witness. | Predeclare the eligible state/event-chain matrix and prove every row plus an ineligible control. |
-| AC6 | **Partial** | Two `NewRunState` calls encode byte-identically and current first-hour starter branches are composed-tested. The criterion explicitly requires a golden fixture from the same Founder state; the original test is repeated in-memory construction, not a checked-in golden. | Add the declared golden and a discriminator for a reordered/missing carry step. |
+| AC2 | **Post-coordinate witness green; designated review pending** | Four non-expired offer ages (`0`, `1`, half-life, last-live ms) progress then accept at the same boundary and dominate stored terms; exact expiry rejects without Founder advancement. Zeroing `PromiseTerms` fails all live rows. | Include the exact test/fixture/record span in the designated review. |
+| AC3 | **Post-coordinate witness green; designated review pending** | The non-clamped Notoriety interval is exhaustive, 10,006 deterministic values span the clamped domain/endpoints, and invalid bounds reject against an independent big-integer reference. Two different real Exit kinds preserve three cumulative non-empty fact keys. Off-by-one reseed and removed fact-union mutations fail. | Include both pure and Postgres witnesses in the designated review. |
+| AC4 | **Post-coordinate witness green; designated review pending** | The composed GameServer test completes an old-Founder Exit, uses the real New-Founder endpoint, confirms archival/distinct identity/empty history, reaches the current command boundary, and receives exactly one fresh `scripted_first`. Disabling zero-history trigger detection leaves history empty and fails. | Include Account endpoint, production trigger, and test span in the designated review. |
+| AC5 | **Post-coordinate witness green; designated review pending** | A declared six-row real-Postgres matrix proves Wind Down for plain, pending opportunity, active buff, incorporated, and live-offer states; Tier 0 with prior history is the typed nonmutating control. An active-event trap fails the pending/buff rows. Existing pre-timer/cross-epoch witnesses remain green. | Include the matrix and existing boundary witnesses in the designated review. |
+| AC6 | **Post-coordinate witness green; designated review pending** | Two complete encodings match a checked-in run-2 golden from one declared Founder/prior-Company input. In-test corruptions and a production Guild-boundary carry severing both differ from the golden. | Include the golden and producer in the designated review. |
 | AC7 | **Cold witness green; archival review missing** | Strict run-ended validators, exact client decoding, a type-level no-snapshot boundary, and the Run End component test collectively cover the event-only consumer; current copy/schema checks are green from the preceding lifecycle batch. | Include producer, schema, copy slots, decoder, and surface in the full designated range review. |
 | AC8 | **Proven under the owner-approved policy, with scope qualification** | Current 97-run measurement is green; the real-Postgres composed script reaches scripted run 1 and elective run 2 and has a recorded failing mutation. The lower edge is intentionally by construction, so the evidence proves content availability under the governed persona, not human behavioral timing. T0–T1's exact implementation ranges have designated approval. | Reconcile Prestige's plan/record to the successor evidence without changing the bound or overstating human behavior. |
 
@@ -104,7 +106,7 @@ claims to approve. A retrospective label may not be inferred from prose or Git a
 ## Smallest honest closeout order
 
 1. **Complete after this coordinate:** body/docs reconciliation and D-012 successor routing.
-2. Add only the missing literal AC2–AC6 witnesses, with demonstrated failing cases.
-3. Reconcile the remaining plan evidence to the already-reviewed T0–T1 successor behavior.
+2. **Complete after this coordinate:** missing literal AC2–AC6 witnesses with demonstrated failures.
+3. Reconcile the remaining AC8 plan evidence to the already-reviewed T0–T1 successor behavior.
 4. Obtain the mandatory tracked cross-party full-range verdict.
 5. Only then perform status/docs/plan/log/archive closeout transactionally in the reviewed range.
