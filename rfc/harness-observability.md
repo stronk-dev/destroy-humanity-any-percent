@@ -1,6 +1,6 @@
 # RFC: Harness Observability
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (scope ruled by Marco; drafted by Codex)
 - **Created:** 2026-08-21
 - **Design refs:** `design/00-vision.md` §Design pillars 7; `design/06-tech.md` §Balance & event data;
@@ -9,7 +9,7 @@
   CI Baseline (implementing)
 - **Parent / amends:** `archive/balance-harness-foundation.md` D7, observability only
 - **Supersedes / superseded by:** —
-- **Planning:** `planning/harness-observability/` (once implementing)
+- **Planning:** `planning/harness-observability/`
 
 ## Summary
 
@@ -158,3 +158,4 @@ R-001 obtains complete local and hosted measurements.
 
 - 2026-08-21: created and accepted from Marco's bounded R-001 instrumentation ruling; no CI or
   harness-budget decision adopted.
+- 2026-08-21: implementation started after authority checkpoint `9c71562`.
