@@ -220,3 +220,47 @@ for the implemented schema/cursor foundation, not those unbuilt surfaces.
   typecheck, and sequential Account and Gameserver Postgres populations. The range receives a
   Codex first-filter and mandatory Claude exact-range designated review; it authorizes no archival,
   publication, push, or Q-003 start.
+
+## 2026-08-21 — exact schema-response byte implementation and Codex first-filter
+
+- Implementation commit: `0331444`, after predeclaration `a9fdb23`. `Response.ExactJSON` is a
+  validation-only, schema-valid, sorted literal-byte narrowing. Registry construction rejects bad
+  literal sets; internal rows and returned operation snapshots own deep-cloned bytes; raw responses
+  cannot carry the schema-only arm.
+- The four Minigame operations now attach their existing error bytes to the owning status and
+  action. No handler mapping or emitted byte changed. Recovery and Game UI continue using ordinary
+  schema validation; generated OpenAPI, TypeScript, and compatibility-pin bytes remain unchanged.
+- API Foundation tests cover empty, duplicate, unsorted, schema-invalid, and raw-response literal
+  declarations plus caller/snapshot mutation. The Q-002 exact handler table additionally proves all
+  13 shipped deterministic outputs are accepted by their operation/status row while a schema-valid
+  illegal cross-product and an appended byte reject.
+
+Demonstrated failing mutations, all restored before `0331444`:
+
+- bypassed `ExactJSON` matching after schema validation: Public API and Account tests accepted the
+  wrong pair, and both populations failed at their literal oracle;
+- replaced response deep-cloning with a shallow slice copy: mutating caller-owned bytes corrupted
+  the registry and the immutability test failed;
+- bypassed literal-set construction validation: empty, duplicate, schema-invalid, and unsorted
+  registrations all became accepted and failed their four named subtests.
+
+Cold restored-tree evidence:
+
+- `make test-go GO_PACKAGES='./publicapi ./account ./gameserver' GO_TEST_FLAGS=-count=1` — green.
+- `make test-go-core CORE_TEST_COUNT=1` — every non-harness Go package green cold.
+- `make vet`, `make api-check`, and `make typecheck` — green; generated API files remained
+  byte-identical and Svelte reported zero diagnostics.
+- Sequential real-Postgres populations passed cold: Account in 1.353 s and Gameserver in 25.941 s
+  through the root `make test-save-integration` target with `SAVE_TEST_COUNT=1`.
+- `git diff --check` is clean and only the user-owned `AGENTS.md` remains dirty outside the lane.
+
+Codex first-filter verdict: **APPROVED** for the predeclared API Foundation corrective scope.
+
+- **Review by:** Codex.
+- **Recorded by:** Codex.
+- **Reviewed range:** `a9fdb23..0331444` (predeclaration plus implementation/tests/docs).
+
+The production tightening is now outside Q-002's test-only boundary and has its own authority,
+negative controls, gates, and provenance. Claude must designated-review the API Foundation range
+including this record commit. This first filter authorizes no public endpoints, surface claim,
+archival, publication, push, or Q-003 start.
