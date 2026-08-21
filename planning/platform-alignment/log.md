@@ -1399,3 +1399,16 @@
 - Class-C progress is 31 of 67: five eligible, seven revision-blocked, 19 synthesis/private-store-
   blocked, and 36 unreviewed. No ignored source, design/copy authority, legal/child-safety posture,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 11
+
+- Read the cozy-recovery and ARG-mechanics dossiers completely. Both require public synthesis and
+  named raw-source disposition; ARG publication additionally requires safety/legal/editorial review.
+- Kept the useful no-fail versus zero-reward distinction without adopting proposed Soul mechanics,
+  feature names, copy, competitor expression or categorical IP conclusions.
+- Preserved the ARG dossier's bounded-magic-circle and no-real-world-action safety principles while
+  refusing raw publication of conspiracy, suicide/death-hoax, vigilantism, misinformation,
+  quotation/current-claim and fourteen-proposal material as one authority bundle.
+- Class-C progress is 33 of 67: five eligible, seven revision-blocked, 21 synthesis/private-store-
+  blocked, and 34 unreviewed. No ignored source, design/copy authority, safety/legal posture,
+  publication, push, deployment or destructive cleanup changed.

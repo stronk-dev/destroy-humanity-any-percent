@@ -145,7 +145,10 @@ synthesis/private-store-blocked, and 38 unreviewed.** See `publication-rights-ba
 10 reviewed the paired Neopets economy and social/corporate dossiers; both require public synthesis
 plus current claim/legal/editorial review. **Thirty-one of 67 are reviewed: five eligible, seven
 revision-blocked, 19 synthesis/private-store-blocked, and 36 unreviewed.** See
-`publication-rights-batch-10.md`.
+`publication-rights-batch-10.md`. Batch 11 reviewed cozy-recovery and ARG-mechanics research; both
+require public synthesis, with the ARG synthesis additionally requiring safety/legal/editorial
+review. **Thirty-three of 67 are reviewed: five eligible, seven revision-blocked, 21 synthesis/
+private-store-blocked, and 34 unreviewed.** See `publication-rights-batch-11.md`.
 
 ### Class D — generated diagnostics (7)
 
