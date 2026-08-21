@@ -224,6 +224,7 @@ func main() {
 		if observationRecorder != nil {
 			progress := clearObservationProgress()
 			progress.Work = observationWorkFromRelevance(relevance)
+			progress.GuardState = observationGuardState(relevanceGuardFired(relevance))
 			progress.InstrumentExcluded = relevance.InstrumentExcludedIDs
 			if err := observationRecorder.CompleteObjective(progress); err != nil {
 				fail(err)

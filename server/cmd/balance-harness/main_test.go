@@ -172,6 +172,16 @@ func mustEpochHash(t *testing.T, root string) string {
 	return bundle.Hash
 }
 
+func TestRelevanceGuardClassificationDoesNotRelabelContentFindings(t *testing.T) {
+	if !relevanceGuardFired(harness.RelevanceReport{Failures: []string{"reference_decision_starved"}}) ||
+		!relevanceGuardFired(harness.RelevanceReport{Failures: []string{"greedy_oracle:deviation_incomplete"}}) {
+		t.Fatal("relevance execution guard was not reported fired")
+	}
+	if relevanceGuardFired(harness.RelevanceReport{Failures: []string{"relevance_floor:upgrade.dead", "greedy_oracle:deviation_gap"}}) {
+		t.Fatal("ordinary relevance findings were relabeled as execution guards")
+	}
+}
+
 func TestWriteRelevanceReportRemovesStaleDiagnosticOnSuccess(t *testing.T) {
 	output := filepath.Join(t.TempDir(), "report.json")
 	diagnostic := relevanceDiagnosticPath(output)

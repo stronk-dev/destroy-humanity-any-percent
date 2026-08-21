@@ -80,8 +80,18 @@ func runRegisteredRelevance(root, output, selector string) error {
 	}
 	progress := clearObservationProgress()
 	progress.Work = observationWorkFromRelevance(report)
+	progress.GuardState = observationGuardState(relevanceGuardFired(report))
 	progress.InstrumentExcluded = report.InstrumentExcludedIDs
 	return observationRecorder.CompleteObjective(progress)
+}
+
+func relevanceGuardFired(report harness.RelevanceReport) bool {
+	for _, failure := range report.Failures {
+		if failure == "reference_decision_starved" || failure == "greedy_oracle:deviation_incomplete" {
+			return true
+		}
+	}
+	return false
 }
 
 func recordRelevanceProgress(progress harness.RelevanceProgress) error {

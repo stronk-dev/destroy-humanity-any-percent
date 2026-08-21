@@ -63,3 +63,13 @@ Append-only session record. A fresh agent should be able to resume from this fil
   completed with clear guard/population-exclusion/truncation state.
 - The earlier 1,004.859s artifact was replaced rather than edited and is superseded as admissible
   final-instrument evidence. No governed input or execution policy changed between the two runs.
+
+## 2026-08-21 — guard-state review correction
+
+- Internal range review found that a returned `reference_decision_starved` or incomplete deviation
+  report would fail the overall command but could close its row with `guard_state: clear` before
+  final validation. Narrowly classify those two execution-guard outcomes as fired; ordinary
+  relevance/content findings and a real deviation counterexample remain non-guard findings.
+- Added a negative classification test and re-ran cold affected tests, vet, and strict validation
+  of the retained complete artifact. Normal governed output and the retained observation are
+  unchanged.
