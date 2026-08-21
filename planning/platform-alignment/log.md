@@ -1918,3 +1918,16 @@
 - Class-C progress is 63 of 67: five eligible, six revision-blocked, 52 synthesis/private-store-
   blocked, and four unreviewed. No ignored source, economics/governance/security/product/design/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 43
+
+- Read the creature-battler, AI and async-PvP dossier completely and routed it to an independently
+  worded public synthesis plus current product/security/gambling/IP/patent/legal/editorial review.
+- Preserved the counterplay-over-chart-size, compounding-stat-edge, care-options-not-ceiling,
+  matchup-as-tempo, bounded-resolution-RNG, equal-information-bots and deterministic-replay
+  findings without promoting external mechanics, datasets, simulations, AI claims or litigation.
+- Refused to adopt its battle formulas/constants, care mapping, engine, AI, ratings, anti-farm
+  rules, schemas, build order and player copy as research authority.
+- Class-C progress is 64 of 67: five eligible, six revision-blocked, 53 synthesis/private-store-
+  blocked, and three unreviewed. No ignored source, battle/product/security/gambling/IP/patent/legal
+  authority, publication, push, deployment or destructive cleanup changed.

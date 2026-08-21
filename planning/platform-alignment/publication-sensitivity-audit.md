@@ -259,7 +259,10 @@ synthesis/private-store-blocked, and five unreviewed.** See `publication-rights-
 Batch 42 reviewed the commons and cooperative-game-theory dossier; it requires public synthesis
 plus current economics/governance/security/product/IP/editorial review. **Sixty-three of 67 are
 reviewed: five eligible, six revision-blocked, 52 synthesis/private-store-blocked, and four
-unreviewed.** See `publication-rights-batch-42.md`.
+unreviewed.** See `publication-rights-batch-42.md`. Batch 43 reviewed the creature-battler, AI and
+async-PvP dossier; it requires public synthesis plus current product/security/gambling/IP/patent/
+legal/editorial review. **Sixty-four of 67 are reviewed: five eligible, six revision-blocked, 53
+synthesis/private-store-blocked, and three unreviewed.** See `publication-rights-batch-43.md`.
 
 ### Class D — generated diagnostics (7)
 
