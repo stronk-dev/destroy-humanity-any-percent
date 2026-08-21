@@ -249,7 +249,10 @@ blocked, 48 synthesis/private-store-blocked, and eight unreviewed.** See
 `publication-rights-batch-38.md`. Batch 39 reviewed the Cookie Clicker design-teardown dossier;
 it requires public synthesis plus current product/IP/editorial review. **Sixty of 67 are reviewed:
 five eligible, six revision-blocked, 49 synthesis/private-store-blocked, and seven unreviewed.**
-See `publication-rights-batch-39.md`.
+See `publication-rights-batch-39.md`. Batch 40 reviewed the spectator and race-formats dossier;
+it requires public synthesis plus current product/platform/legal/IP/editorial review. **Sixty-one
+of 67 are reviewed: five eligible, six revision-blocked, 50 synthesis/private-store-blocked, and
+six unreviewed.** See `publication-rights-batch-40.md`.
 
 ### Class D — generated diagnostics (7)
 

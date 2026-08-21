@@ -1879,3 +1879,16 @@
 - Class-C progress is 60 of 67: five eligible, six revision-blocked, 49 synthesis/private-store-
   blocked, and seven unreviewed. No ignored source, product/design/content/balance/IP authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 40
+
+- Read the spectator and race-formats dossier completely and routed it to a dated public synthesis
+  plus current product/platform/legal/IP/editorial review.
+- Preserved the human-calibrated-delta, split-as-event, verified-ghost/async-race, ordinary-player-
+  participation and demand-before-infrastructure findings without promoting dynamic audience
+  figures, platform policies, branded systems, living-person quotations or legal conclusions.
+- Refused to adopt its race lifecycle, API/transport changes, seed/board policy, watch-party
+  binding, UI defaults, internal rulings and build order as research authority.
+- Class-C progress is 61 of 67: five eligible, six revision-blocked, 50 synthesis/private-store-
+  blocked, and six unreviewed. No ignored source, spectator/product/platform/legal/design/IP
+  authority, publication, push, deployment or destructive cleanup changed.
