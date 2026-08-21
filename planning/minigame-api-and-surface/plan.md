@@ -17,3 +17,20 @@
 - [x] Enumerate and verify the privacy contract for all four public minigame endpoints.
 - [ ] Implement surface components after UI Foundation, per MA-C9.
 - [ ] Hand the complete range off for designated cross-party review; do not self-archive.
+
+## Q-002 — platform-alignment backend witness closeout
+
+- [ ] Replace the AC2 substring oracle with exact status/body-byte witnesses for every
+  deterministic minigame error mapping, and prove that an invalid category/detail pairing and an
+  otherwise-valid body with one appended byte both fail validation.
+- [ ] Extend AC3 with a stateful Soul Recovery heartbeat-flood witness: the rejected seventh
+  heartbeat must leave authoritative progress/session/token state unchanged, and ordinary clock
+  refill must admit exactly the next state transition.
+- [ ] Extend AC4 privacy enumeration across all eight Minigame and Soul Recovery operations,
+  rejecting client-authored Founder, Company, and server-clock authority in every request and
+  hidden authority in every response; demonstrate a `founder_id` leak mutation in each Recovery
+  request family.
+- [ ] Run cold root Go tests, sequential Account and Gameserver Postgres integration targets,
+  `api-check`, and client typecheck; restore every mutation before the clean run.
+- [ ] Record a Codex exact-range first-filter and hand the bounded backend-test range to Claude for
+  the mandatory designated cross-party review. Do not claim surface completion or archive MA.

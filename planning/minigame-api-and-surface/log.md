@@ -401,3 +401,21 @@ b6a3d2c is now verdict-covered with no gaps**, including the previously carved-o
   local cache files remain present for pnpm; future test runs can no longer dirty the worktree.
 - F4: the three-engine browser job now has the same ten-minute budget as the composed browser
   job, covering dependency/browser installation without weakening or skipping its test gate.
+
+## 2026-08-21 — Q-002 platform-alignment backend witness closeout started
+
+- Q-001 received the mandatory designated cross-party approval at `34d04a5`; the serialized
+  execution queue therefore unblocks Q-002.
+- Scope is test/proof and planning records for MA AC2–AC4 only: exact deterministic error-pair and
+  response-byte oracles, a stateful Soul Recovery flood nonmutation/refill witness, and privacy
+  enumeration over all eight Minigame plus Recovery operations.
+- Predeclared negative controls are: an invalid category/detail cross-product; one appended byte on
+  an otherwise exact error response; the seventh Recovery heartbeat with byte-equal authoritative
+  state before/after followed by a refill-admitted next transition; and a `founder_id` leak in each
+  Recovery request-schema family. A negative control that remains green invalidates the witness.
+- Required clean gates are cold root Go tests, sequential Account and Gameserver Postgres
+  integration targets, API generated-contract check, and strict client typecheck. Mutations must be
+  restored before those gates run.
+- Forbidden in this range: new mechanics, changed response semantics, surface contracts or
+  components, generated-client changes, player copy, RFC-body reconciliation, status promotion,
+  archival, push, or deployment. This entry authorizes no work beyond the accepted Q-002 manifest.
