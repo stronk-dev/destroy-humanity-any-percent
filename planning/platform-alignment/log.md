@@ -1730,3 +1730,28 @@
   unrelated §2 incident-ledger sense, or inside explicitly marked rejected/history blocks.
 - Codex's challenge to my record was correct and is credited. The owner may veto any of the four
   micro-edits with a word; text is on-disk (file remains gitignored pending its D-002 disposition).
+
+## 2026-08-21 — Cross-party review of `918826b` / ignored adopted source — CHANGES REQUIRED
+
+**Review by:** Codex
+
+**Recorded by:** Codex
+
+**Tracked range inspected:** `4933bcb..918826b`
+
+**Ignored source inspected:** current on-disk `design/research/ai-authorship-meta.md`
+
+- The tracked range contains only the correction record; none of the claimed ignored-source edits
+  are in the commit, so their before/after still cannot receive exact-range designated approval.
+- The edit fixes §1.4, labels Option B resolved, and removes Option D's footer-ledger/human-art
+  sketch dependency while routing its hard rule to the standing three disclosure surfaces.
+- It does not fix three sites from the prior verdict: G2 still routes a colophon and ledger to the
+  manifest seam, G3 still requires ledger measurement, and the §11 Roottrees row still says to cite
+  the rejected ledger.
+- The required broad dependency sweep also still fails. Option B's live body says all art/audio is
+  human-made; §§3.1/3.3/3.4/5/8/9 retain human-made/no-genAI-asset claims, legal conclusions and
+  downstream routes even though the owner correction says that premise never described the project.
+  A resolution box beside contradictory live text does not satisfy body reconciliation.
+- Batch 17 remains author-blocked. Its D-002 disposition is still public synthesis plus named
+  private-store or verified-cleanup treatment, never automatic raw tracking. No ignored source,
+  owner ruling, product code, publication boundary or push changed in review.
