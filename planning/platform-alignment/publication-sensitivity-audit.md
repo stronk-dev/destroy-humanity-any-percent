@@ -157,7 +157,10 @@ launch/distribution dossier; it requires public synthesis plus current channel/o
 store-blocked, and 32 unreviewed.** See `publication-rights-batch-13.md`. Batch 14 reviewed the
 Flash-era arcade dossier; it requires public synthesis plus IP/editorial review. **Thirty-six of 67
 are reviewed: five eligible, seven revision-blocked, 24 synthesis/private-store-blocked, and 31
-unreviewed.** See `publication-rights-batch-14.md`.
+unreviewed.** See `publication-rights-batch-14.md`. Batch 15 reviewed the media-formats, nostalgia
+and preservation dossier; it requires public synthesis plus current legal/IP/editorial review.
+**Thirty-seven of 67 are reviewed: five eligible, seven revision-blocked, 25 synthesis/private-
+store-blocked, and 30 unreviewed.** See `publication-rights-batch-15.md`.
 
 ### Class D — generated diagnostics (7)
 

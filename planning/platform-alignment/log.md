@@ -1444,3 +1444,16 @@
 - Class-C progress is 36 of 67: five eligible, seven revision-blocked, 24 synthesis/private-store-
   blocked, and 31 unreviewed. No ignored source, design/content/IP authority, publication, push,
   deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 15
+
+- Read the media-formats, nostalgia and preservation dossier completely and routed it to a dated
+  public synthesis plus current legal/IP/editorial review.
+- Preserved the durable format-cycle, moral-panic, interface-nostalgia and preservation findings
+  without promoting a primarily Wikipedia/model-derived notebook, long quotation bank, current or
+  future-dated legal/regulatory claims, active marks, disputed assertions or unverified items.
+- Refused to adopt the dossier's exact tickers, achievements, events, currencies, tier styling and
+  other content/mechanics proposals as research authority.
+- Class-C progress is 37 of 67: five eligible, seven revision-blocked, 25 synthesis/private-store-
+  blocked, and 30 unreviewed. No ignored source, design/content/legal/IP authority, publication,
+  push, deployment or destructive cleanup changed.
