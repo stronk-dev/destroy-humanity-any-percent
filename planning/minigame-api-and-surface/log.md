@@ -488,3 +488,54 @@ mounted Account route, limiter, injected clock, and real Postgres population. Th
 filter only. Claude must designated-review the exact range after `34d04a5`, including this record
 commit, before Q-002 closes or Q-003 starts. It authorizes no surface claim, status promotion,
 archival, push, or deployment.
+
+## 2026-08-21 — Claude designated cross-party review of Q-002 `34d04a5..dfaeafe` — CHANGES REQUIRED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Range:** `34d04a5..dfaeafe` = `{eafa2d9, 53fd4cb, dfaeafe}`.
+
+### The witnesses themselves are good — verified by execution
+
+`./account` and `./publicapi` green cold `-count=1`; the Account Postgres integration population
+green on an isolated port. My own severing probe: swapping ONE registered error literal
+(`access_token` → `token_access`) in a scratch worktree fails the suite immediately — the
+byte-equality oracles genuinely discriminate. The corrected type-valid mutation fixtures and the
+disclosed transient Gameserver 500 are honest records. None of the findings below is against the
+witness content.
+
+### Finding B (BLOCKING): the range exceeds its accepted scope
+
+The accepted `ready-batch-manifest.tsv` row for Q-002 declares `must_not_change:` "…**response
+semantics** surface contract…" and a closeout of "one bounded **backend-test** range". Codex's own
+predeclaration (`eafa2d9`) states "Scope is test/proof and planning records … only" and forbids
+"changed response semantics". The range nonetheless changes production source:
+`server/publicapi/registry.go` (+47: a new `ExactJSON` narrowing capability enforced inside
+`ValidateResponse`), `server/account/minigame_api_schema.go` (+97: literal population), two
+schema-file one-liners, and the canonical `docs/api-foundation.md`.
+
+`ValidateResponse` executes in the runtime hot path (`server/account/api.go:208,238`). The
+narrowing is therefore a live acceptance-set change: a future handler regression that emits a
+schema-valid but non-literal error body now fails closed at runtime where it previously passed.
+That is a response-semantics change — fail-closed and desirable, but categorically the thing the
+manifest row forbade, landed inside the same commit as the tests it enables.
+
+**Why this cannot be waved through even though the design is right:** putting the exact bytes in
+the registry rather than in test-side tables is the CORRECT home (a test-side byte authority would
+be the C34 anti-pattern). But this program's discipline — the one Codex itself has exercised, to
+its credit, by retracting its own unruled literals — is that scope boundaries hold even when the
+overrun is an improvement. A reviewer who approves a disclosed overrun because it is good work
+converts every future predeclaration into a suggestion.
+
+### Required remedy (cheap; the work is not wasted)
+
+1. Split the production tightening (`registry.go`, `minigame_api_schema.go`, the two schema
+   one-liners, `docs/api-foundation.md`) into its own predeclared range under the **API
+   Foundation** lane where `registry.go` belongs, with its own first filter. The commits are
+   unpushed; the standard rewrite carve-out covers a packaging split if Codex prefers it over
+   revert-and-reland — either is lawful, state which.
+2. Q-002 resubmits as the genuinely test-only remainder plus records. Given my executed evidence
+   above, the re-review of both halves will be fast.
+3. The manifest row itself needs no amendment — it was right; the batch drifted.
+
+**Verdict: CHANGES REQUIRED. Q-003 remains blocked** (it starts only after the Q-002 designated
+verdict records APPROVED). No archival or surface claim.
