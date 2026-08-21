@@ -1317,3 +1317,14 @@
   store-blocked, and 45 unreviewed.
 - No ignored source, design/voice/copy authority, publication, push, deployment or destructive
   cleanup changed.
+
+## 2026-08-21 — Harness Observability designated closeout
+
+- Consumed Claude's designated cross-party approval at `96a574d` for exact range
+  `9c71562..afd4fb2`. Harness Observability is implemented and archived; canonical behavior remains
+  in `docs/balance-harness.md`.
+- Closed RP-023's instrumentation defect and removed the stale review blocker from R-001. The
+  hosted arm remains open because the reviewed commits are local-only and the existing workflow
+  does not invoke the opt-in observation target.
+- No push, workflow/CI contract, timeout, optimization, sharding, budget, governed input, product
+  behavior, publication, deployment or owner-authored body changed.

@@ -1,6 +1,6 @@
 # Harness Observability implementation plan
 
-Status: implementing. Authority checkpoint: `9c71562`.
+Status: implemented. Authority checkpoint: `9c71562`; designated approval: `96a574d`.
 
 ## Scope firewall
 
@@ -43,4 +43,4 @@ Status: implementing. Authority checkpoint: `9c71562`.
   the RFC/index without changing D-014.
 - [x] Commit a small exact review range, run an internal diff/protocol check, and hand only that
   range to Claude for the mandatory cross-party designated verdict.
-- [ ] Archive only after that exact range is approved and all acceptance criteria actually pass.
+- [x] Archive only after that exact range is approved and all acceptance criteria actually pass.

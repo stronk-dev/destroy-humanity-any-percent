@@ -19,7 +19,7 @@ R-002 baseline ──> D-001 milestone floor ──> D-007 content scope
       ├──> D-003 sunset posture ──> refreshed research ──> sunset contract
       └──> D-005/D-008/D-009 account posture ──> prototype ──> R-003
 
-Harness Observability review ──> hosted R-001 measurement ──> D-014 CI contract
+Harness Observability (implemented, `96a574d`) ──> hosted R-001 measurement ──> D-014 CI contract
       └──> CI repair ──> current-head hosted verdict ──────────────────────────────┐
                                                                                   │
 D-006 topology + D-011 observability + D-015 retention                            │

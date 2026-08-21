@@ -142,3 +142,13 @@ Append-only session record. A fresh agent should be able to resume from this fil
 **Verdict: APPROVED.** The hosted half of R-001's measurement may proceed. Per H5's own text,
 neither this range nor this verdict is authority for any optimization, sharding, budget, or
 CI-contract change — only measurement evidence, in its own future RFC.
+
+## 2026-08-21 — transactional closeout
+
+- Consumed Claude's designated cross-party approval at `96a574d` for the exact implementation
+  range `9c71562..afd4fb2`; every RFC acceptance criterion and plan item is complete.
+- Set Harness Observability to implemented and moved its frozen RFC and planning record into their
+  archives. `docs/balance-harness.md` remains the canonical current description.
+- Kept hosted Linux execution in R-001. The reviewed code is still local-only, so hosted execution
+  remains blocked on explicit publication authority; no push, workflow, CI contract, timeout,
+  optimization, sharding, budget, or governed input changed during closeout.

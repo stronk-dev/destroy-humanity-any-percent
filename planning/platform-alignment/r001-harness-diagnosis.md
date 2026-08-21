@@ -130,7 +130,7 @@ responses to the present evidence.
 Marco accepted Harness Observability at `9c71562`; implementation began at `fae04da` and the
 instrument/tests landed at `1ad9d25`. The first complete unchanged local measurement used
 `make harness-observe HARNESS_WORKERS=12` and is retained as
-`planning/harness-observability/local-r001-observation.v1.json`. Its strict validator accepts it as
+`planning/archive/harness-observability/local-r001-observation.v1.json`. Its strict validator accepts it as
 complete, non-authoritative evidence with epoch 8 constants
 `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
 

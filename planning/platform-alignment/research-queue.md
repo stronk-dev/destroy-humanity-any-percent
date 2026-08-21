@@ -13,12 +13,13 @@ research question; they authorize only the stated downstream action.
   current local green completion at 12 workers, workload expansion since the last hosted green,
   and that worker control excludes relevance. It also rejects scenario-only relevance runs as a
   substitute for active registry authority.
-- **Authority/instrument status:** RP-059 closed at `9c71562`; Harness Observability is implementing
-  and its instrument/tests landed at `1ad9d25`. The complete native macOS 12-worker arm is retained
-  in `planning/harness-observability/local-r001-observation.v1.json`: 16m14.510s total, including
+- **Authority/instrument status:** RP-059 closed at `9c71562`; Harness Observability is implemented,
+  designated-approved at `96a574d`, and archived. The complete native macOS 12-worker arm is retained
+  in `planning/archive/harness-observability/local-r001-observation.v1.json`: 16m14.510s total, including
   12m19.441s standard pacing and 3m32.927s active relevance (107/107 runs,
   1,968,171/1,968,171 transitions), with no population exclusion, truncation, or fired guard.
-- **Remaining arms:** hosted Linux at 12 workers, split by standard
+- **Remaining arms:** hosted Linux at 12 workers, blocked on an explicitly authorized path for the
+  reviewed local-only commits, split by standard
   pacing phase and authority-preserving registry row. Run 1/4-worker comparisons only for phases
   whose dispatcher actually accepts that control; the original whole-command 1/4/12 arm would be
   structurally misleading because relevance ignores the flag.

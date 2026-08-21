@@ -5,8 +5,8 @@ not a request to improvise.
 
 | Order | State | Work | Exit |
 |---|---|---|---|
-| 1 | **IMPLEMENTED — pending exact-range designated review** | Harness Observability landed at `1ad9d25` with atomic phase/row timing, registered selection, identity/work counts, fail-loud termination and negative controls. The complete local artifact validates; no governed input, timeout, dispatch or topology moved. | Docs/records and final cold gates reconcile; exact post-`9c71562` range receives the mandatory cross-party verdict. |
-| 1a | **BLOCKED on row 1 review plus hosted execution authority** | Native R-001 is complete: 16m14.510s total, dominated by 12m19.441s standard pacing rather than 3m32.927s active relevance. Run the same complete population on hosted Linux, then choose only the measured optimization/parallelism/sharding response. | Hosted rows expose identity, work, cost, exclusions/guards, CPU/resources and final objective; complete lane has a ruled governed margin. |
+| 1 | **COMPLETE — archived after designated approval `96a574d`** | Harness Observability provides atomic phase/row timing, registered selection, identity/work counts, fail-loud termination and negative controls. Claude approved exact range `9c71562..afd4fb2`; the RFC and planning record are archived. | Retain the exact verdict and canonical docs; no optimization or CI change is inferred from instrumentation completion. |
+| 1a | **BLOCKED on hosted execution/publication authority** | Native R-001 is complete: 16m14.510s total, dominated by 12m19.441s standard pacing rather than 3m32.927s active relevance. The reviewed commits are local-only and the existing workflow does not invoke the opt-in observation target. Run the same complete population on hosted Linux only after an explicitly authorized publication/execution path, then choose only the measured optimization/parallelism/sharding response. | Hosted rows expose identity, work, cost, exclusions/guards, CPU/resources and final objective; complete lane has a ruled governed margin. |
 | 1b | **IN PROGRESS — D-002 publication review** | All 13 control-plane candidates and all nine targeted artifacts are reviewed. The targeted set resolves to two author reconciliations, two public-safe rewrites, two historical archives and three redundant canonical duplicates. Twenty-two of 67 research files are reviewed: five eligible, six revision-blocked, 11 synthesis/private-store-blocked, and 45 unreviewed. Seven diagnostics stay ignored. | Ruling author reconciles stale public/private bodies; approved artifacts are sanitized and tracked in small ranges; a fresh-clone gate rejects absent named authorities. |
 | 2 | **COMPLETE — active lifecycle reconciliation** | Every active RFC pass is recorded through Combat Shared with RP-027–RP-074 filed. Five acceptance rows remain intentionally pending exact review/provenance; they are not unaudited. | Each checkbox is proven, remains open with a named blocker, or is split to a successor; no archival without range-union and designated verdict. |
 | 2a | **BLOCKED — author/owner action** | Reconcile Prestige D2/D3/P3/P4/P4b/D4/P5 and decide the missing Advisor Mode control owner. | Normative body matches shipped/deferred behavior and D5 has an accepted owner. |
@@ -55,6 +55,7 @@ not a request to improvise.
 
 The 433-child capability, 208-key Copy, 579-unit gameplay-content, and 802-unit row-oracle evidence
 populations are complete. Q-001/Q-002/Q-003 are closed by designated approvals `34d04a5`,
-`bfd9b65`, and `249719c`. The 2026-08-21 owner bundle authorizes only row 1's narrow R-001
-instrumentation contract. All other work still requires the named owner/ruling-author input; no
-feature implementation, release, archive, or publication is inferred.
+`bfd9b65`, and `249719c`; Harness Observability is closed by `96a574d`. D-002 review remains the
+only locally executable lane. Hosted R-001 requires an explicitly authorized publication/execution
+path; all other work still requires the named owner/ruling-author input. No feature implementation,
+release, push, or publication is inferred.

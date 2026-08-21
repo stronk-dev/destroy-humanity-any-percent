@@ -9,7 +9,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [Balance Harness Dispatch Integrity](balance-harness-dispatch-integrity.md) | withdrawn — premise refuted | Balance Harness Foundation |
-| [Harness Observability](harness-observability.md) | implementing | Balance Harness Foundation / Relevance Harness |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
@@ -65,6 +64,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Resource-Log Domain Parity](archive/resource-log-domain-parity.md) | implemented | [Economy kernel](../docs/economy-kernel.md), [Production engine](../docs/production-engine.md) |
 | [Production Contract Assertions & Integrity](archive/production-contract-integrity.md) | implemented | [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Balance Harness Foundation](archive/balance-harness-foundation.md) | implemented | [Balance harness](../docs/balance-harness.md), [Production engine](../docs/production-engine.md) |
+| [Harness Observability](archive/harness-observability.md) | implemented | [Balance harness](../docs/balance-harness.md) |
 | [Gate Predicates & the Route Registry](archive/gate-predicates-and-routes.md) | implemented | [Routes](../docs/routes.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [The Commons Compact](archive/commons-compact.md) | implemented | [Commons](../docs/commons.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Client Shell & Sim Loop](archive/client-shell-and-sim-loop.md) | implemented | [Client shell](../docs/client-shell.md) |
