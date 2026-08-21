@@ -226,6 +226,10 @@ five eligible, six revision-blocked, 41 synthesis/private-store-blocked, and 15 
 satire dossier; it requires public synthesis plus current financial/legal/political/environmental/
 IP/editorial review. **Fifty-three of 67 are reviewed: five eligible, six revision-blocked, 42
 synthesis/private-store-blocked, and 14 unreviewed.** See `publication-rights-batch-32.md`.
+Batch 33 reviewed the player-trading and market-architecture dossier; it requires public synthesis
+plus current economy/security/legal/IP/editorial review. **Fifty-four of 67 are reviewed: five
+eligible, six revision-blocked, 43 synthesis/private-store-blocked, and 13 unreviewed.** See
+`publication-rights-batch-33.md`.
 
 ### Class D — generated diagnostics (7)
 

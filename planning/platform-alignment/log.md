@@ -1788,3 +1788,16 @@
 - Class-C progress is 53 of 67: five eligible, six revision-blocked, 42 synthesis/private-store-
   blocked, and 14 unreviewed. No ignored source, design/content/financial/legal/political/
   environmental/IP authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 33
+
+- Read the player-trading and market-architecture dossier completely and routed it to a dated
+  public synthesis plus current economy/security/legal/IP/editorial review.
+- Preserved the tradeable-scope, tax/inflation, velocity/account-gate, full-escrow, transparency and
+  shared aggregate/P2P primitive findings without promoting live-game fees/policies, sanctioned
+  scams, RMT/gold-farming/account-theft material, active marks, named people or model claims.
+- Refused to adopt its Order/Escrow/Fill schema, counterparty enum, batch clearing, bands, breakers,
+  taxes, security controls and player copy as research authority.
+- Class-C progress is 54 of 67: five eligible, six revision-blocked, 43 synthesis/private-store-
+  blocked, and 13 unreviewed. No ignored source, market/design/content/economy/security/legal/IP
+  authority, publication, push, deployment or destructive cleanup changed.
