@@ -1827,3 +1827,16 @@
 - Class-C progress is 56 of 67: five eligible, six revision-blocked, 45 synthesis/private-store-
   blocked, and 11 unreviewed. No ignored source, health/legal/product/design/content/IP authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 36
+
+- Read the onboarding and first-session-retention dossier completely and routed it to a dated
+  public synthesis plus current product/privacy/IP/editorial review.
+- Preserved the one-legible-verb, progressive-disclosure, full-loop-first-session,
+  automation-before-wall, projected-reset-value and anonymous-first findings without promoting
+  partial/model-derived benchmarks, competitor timelines, completion figures or platform claims.
+- Refused to adopt its minute targets, UI requirements, account default, privacy posture, presence
+  schedule, vision slide, satire beat, record-line correction and player copy as research authority.
+- Class-C progress is 57 of 67: five eligible, six revision-blocked, 46 synthesis/private-store-
+  blocked, and 10 unreviewed. No ignored source, retention/product/privacy/design/content/IP
+  authority, publication, push, deployment or destructive cleanup changed.

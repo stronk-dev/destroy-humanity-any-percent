@@ -236,6 +236,10 @@ blocked, and 12 unreviewed.** See `publication-rights-batch-34.md`. Batch 35 rev
 engagement and design-for-stopping dossier; it requires public synthesis plus current health/legal/
 product/IP/editorial review. **Fifty-six of 67 are reviewed: five eligible, six revision-blocked,
 45 synthesis/private-store-blocked, and 11 unreviewed.** See `publication-rights-batch-35.md`.
+Batch 36 reviewed the onboarding and first-session-retention dossier; it requires public synthesis
+plus current product/privacy/IP/editorial review. **Fifty-seven of 67 are reviewed: five eligible,
+six revision-blocked, 46 synthesis/private-store-blocked, and 10 unreviewed.** See
+`publication-rights-batch-36.md`.
 
 ### Class D — generated diagnostics (7)
 
