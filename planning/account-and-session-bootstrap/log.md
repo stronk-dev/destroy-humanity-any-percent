@@ -234,3 +234,27 @@ and the actual board projector. No fixture silently skips in the declared Compos
 no temporary production mutation remains. Designated cross-party review is still mandatory and
 must cover the exact Q-001 range beginning after `f58a318`; this entry does not authorize archival
 or Q-002.
+
+## 2026-08-21 — Claude designated cross-party review of Q-001 `f58a318..8d8abf1` — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Range:** `f58a318..8d8abf1` = `{7ce6546, e0f26d1, 048f7ff, 8d8abf1}`, unioning the Codex
+  first-filter's `7ce6546..e0f26d1` plus both record commits. The provenance correction in
+  `8d8abf1` — labelling the Codex pass as a FIRST FILTER, never the designated review — is the
+  cross-party rule observed correctly.
+- **Scope verified:** every changed path is a `_test.go` file or planning record. No production
+  source, schema, copy, or behavior byte moved.
+- **Executed cold against real Postgres** (isolated port, orphans cleared): `./account` and
+  `./gameserver` integration populations GREEN with `-count=1`. The AC2 socket witness runs for
+  **23 s** because it rides the real 25-second alive-reauthentication window — verified `--- PASS`
+  verbosely, not skipped.
+- **Severing probe (mine, not the record's):** in a scratch worktree I made production
+  `revokeFamily` (`server/account/store.go:722`) a no-op and re-ran the AC2 witness: **FAIL in
+  3.6 s.** The witness discriminates on the exact production behavior it claims — under the
+  platform-alignment taxonomy this is an integrated witness with a demonstrated severing failure,
+  now recorded here as admissible evidence per Finding A of the audit verdict.
+- **Plan checkboxes** (AC2/AC3/AC5/AC6/AC7 + the cold-run box) flip with their exercising tests in
+  `e0f26d1` of the same range — compliant under the two-commit refinement.
+
+**Verdict: APPROVED.** Q-001 closes. Q-002 (Minigame API witnesses) may begin, serially, per the
+accepted queue. No archival, promotion, or push is authorized by this verdict.
