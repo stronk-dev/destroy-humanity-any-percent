@@ -256,6 +256,10 @@ six unreviewed.** See `publication-rights-batch-40.md`. Batch 41 reviewed the be
 artificial-pet-personality dossier; it requires public synthesis plus primary-source product/IP/
 patent/editorial review. **Sixty-two of 67 are reviewed: five eligible, six revision-blocked, 51
 synthesis/private-store-blocked, and five unreviewed.** See `publication-rights-batch-41.md`.
+Batch 42 reviewed the commons and cooperative-game-theory dossier; it requires public synthesis
+plus current economics/governance/security/product/IP/editorial review. **Sixty-three of 67 are
+reviewed: five eligible, six revision-blocked, 52 synthesis/private-store-blocked, and four
+unreviewed.** See `publication-rights-batch-42.md`.
 
 ### Class D — generated diagnostics (7)
 

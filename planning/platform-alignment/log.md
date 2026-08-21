@@ -1905,3 +1905,16 @@
 - Class-C progress is 62 of 67: five eligible, six revision-blocked, 51 synthesis/private-store-
   blocked, and five unreviewed. No ignored source, pet/product/design/content/IP/patent authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 42
+
+- Read the commons and cooperative-game-theory dossier completely and routed it to a dated public
+  synthesis plus current economics/governance/security/product/IP/editorial review.
+- Preserved the persistent-bounds, objective-monitoring, graduated/reversible-sanctions,
+  forgiveness, nested-scope, bonus-not-baseline-loss and no-daily-homework findings without
+  promoting disputed history, dynamic figures, model-derived claims or failed-fetch inferences.
+- Refused to adopt its Commons fiction, cohort model, formulas/constants, sanctions, anti-Sybil
+  weights, circuit breakers, moderation policy, acceptance thresholds, ethics rulings and copy.
+- Class-C progress is 63 of 67: five eligible, six revision-blocked, 52 synthesis/private-store-
+  blocked, and four unreviewed. No ignored source, economics/governance/security/product/design/IP
+  authority, publication, push, deployment or destructive cleanup changed.
