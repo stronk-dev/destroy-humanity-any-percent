@@ -71,6 +71,11 @@ the coverage map is a 2026-08-05 reconstruction and contains old lifecycle/statu
 is tracked, its README and master outputs must say whether they are historical evidence or a
 current authority; merely exposing stale rows would worsen repository truth.
 
+**Progress:** all 13 received a complete control-plane review. `design/BACKLOG.md` and
+`deferred-and-dropped.md` are maintained-ledger candidates; the other 11 form one frozen
+2026-08-05–10 historical coverage-map archive. No sensitivity refusal fired. See
+`publication-control-plane-review.md`.
+
 ### Class B — targeted sanitization or adoption (9)
 
 | Artifact | Required treatment |

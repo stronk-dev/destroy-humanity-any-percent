@@ -1211,3 +1211,18 @@
 - Class-C progress is eight of 67: four eligible, three revision-blocked, one synthesis/private-
   store-blocked, and 59 unreviewed. No product, RFC/design body, owner copy, ignored file,
   `.gitignore`, publication, push or deployment changed.
+
+## 2026-08-21 — D-002 control-plane publication review
+
+- Read all 13 Class-A control-plane candidates completely. Found no credential, private host/path,
+  personal contact or sibling deployment recipe and no sensitivity reason to discard them.
+- Classified `design/BACKLOG.md` and `coverage-map/deferred-and-dropped.md` as maintained-ledger
+  candidates. Classified the other 11 files as one frozen 2026-08-05–10 historical coverage-map
+  archive: their reconstruction evidence is valuable, while their draft/status counts, “NOW
+  RUNNING” queues and old agent assignments are superseded as current authority.
+- Required a transactional dated archive rather than piecemeal refreshing. The historical map's
+  provenance should stay intact, with a banner and current-status pointer; making an old queue
+  visible must not mark it READY.
+- The actual track/move/ignore transaction remains blocked on ruling-author reconciliation and the
+  fresh-clone authority gate. No ignored file, owner content, `.gitignore`, product/RFC/design body,
+  publication, push or deployment changed.
