@@ -1457,3 +1457,17 @@
 - Class-C progress is 37 of 67: five eligible, seven revision-blocked, 25 synthesis/private-store-
   blocked, and 30 unreviewed. No ignored source, design/content/legal/IP authority, publication,
   push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 16
+
+- Read the internet-platform, creator-economy and digital-culture dossier completely and routed it
+  to a dated public synthesis plus current legal/safety/editorial review.
+- Preserved the platform-growth, community migration, creator-power-law, link-rot and preservation
+  findings without promoting a primarily Wikipedia/model-derived chronology, quotation bank,
+  active marks, post-2025 claims or its own unqualified legal risk framework.
+- Refused raw publication of living/involuntary-fame subjects, harassment, suicide, abuse and
+  pending-litigation material or adoption of the dossier's archetypes, tickers, mechanics, styling
+  and exact content proposals.
+- Class-C progress is 38 of 67: five eligible, seven revision-blocked, 26 synthesis/private-store-
+  blocked, and 29 unreviewed. No ignored source, design/content/legal/safety authority,
+  publication, push, deployment or destructive cleanup changed.

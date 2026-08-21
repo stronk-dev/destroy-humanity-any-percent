@@ -160,7 +160,11 @@ are reviewed: five eligible, seven revision-blocked, 24 synthesis/private-store-
 unreviewed.** See `publication-rights-batch-14.md`. Batch 15 reviewed the media-formats, nostalgia
 and preservation dossier; it requires public synthesis plus current legal/IP/editorial review.
 **Thirty-seven of 67 are reviewed: five eligible, seven revision-blocked, 25 synthesis/private-
-store-blocked, and 30 unreviewed.** See `publication-rights-batch-15.md`.
+store-blocked, and 30 unreviewed.** See `publication-rights-batch-15.md`. Batch 16 reviewed the
+internet-platform, creator-economy and digital-culture dossier; it requires public synthesis plus
+current legal/safety/editorial review. **Thirty-eight of 67 are reviewed: five eligible, seven
+revision-blocked, 26 synthesis/private-store-blocked, and 29 unreviewed.** See
+`publication-rights-batch-16.md`.
 
 ### Class D — generated diagnostics (7)
 
