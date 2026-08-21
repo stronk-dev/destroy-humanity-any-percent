@@ -1801,3 +1801,16 @@
 - Class-C progress is 54 of 67: five eligible, six revision-blocked, 43 synthesis/private-store-
   blocked, and 13 unreviewed. No ignored source, market/design/content/economy/security/legal/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 34
+
+- Read the idle/incremental landscape and design-synthesis dossier completely and routed it to a
+  dated public synthesis plus current product/platform/IP/editorial review.
+- Preserved the layered-automation, new-decision-per-prestige, contribution/anti-leech, non-punitive
+  offline, unfolding-content, designed-ending and satire/monetization findings without promoting
+  live product/platform claims, scale/reception figures, secondary criticism, marks or quotations.
+- Refused to adopt its exact balance formulas, thresholds, event schedules, proposed roles,
+  mechanics, stage mapping and player copy as research authority.
+- Class-C progress is 55 of 67: five eligible, six revision-blocked, 44 synthesis/private-store-
+  blocked, and 12 unreviewed. No ignored source, product/design/content/balance/platform/IP
+  authority, publication, push, deployment or destructive cleanup changed.
