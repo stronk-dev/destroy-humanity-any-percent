@@ -1599,3 +1599,16 @@
 - Class-C progress is 45 of 67: five eligible, seven revision-blocked, 33 synthesis/private-store-
   blocked, and 22 unreviewed. No ignored source, design/content/political/legal/environmental
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 24
+
+- Read the game-monetization and enshittification dossier completely and routed it to a dated public
+  synthesis plus current consumer-protection/legal/IP/editorial review.
+- Preserved the monetization timeline, lock-in, scarcity/FOMO, preservation and player-reaction
+  findings without promoting ongoing litigation/regulatory claims, child-spending/gambling
+  material, active marks, quotations, folklore valuations or copied expression.
+- Refused to adopt the exact loot/currency/season systems, cosmetics, achievements, copy and release-
+  tier mapping as research authority.
+- Class-C progress is 46 of 67: five eligible, seven revision-blocked, 34 synthesis/private-store-
+  blocked, and 21 unreviewed. No ignored source, design/content/consumer-protection/legal/IP
+  authority, publication, push, deployment or destructive cleanup changed.

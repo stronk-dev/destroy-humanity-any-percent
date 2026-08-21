@@ -187,7 +187,11 @@ five eligible, seven revision-blocked, 32 synthesis/private-store-blocked, and 2
 `publication-rights-batch-22.md`. Batch 23 reviewed the societal-challenges and externalities
 dossier; it requires public synthesis plus current political/legal/environmental/editorial review.
 **Forty-five of 67 are reviewed: five eligible, seven revision-blocked, 33 synthesis/private-
-store-blocked, and 22 unreviewed.** See `publication-rights-batch-23.md`.
+store-blocked, and 22 unreviewed.** See `publication-rights-batch-23.md`. Batch 24 reviewed the
+game-monetization and enshittification dossier; it requires public synthesis plus current consumer-
+protection/legal/IP/editorial review. **Forty-six of 67 are reviewed: five eligible, seven revision-
+blocked, 34 synthesis/private-store-blocked, and 21 unreviewed.** See
+`publication-rights-batch-24.md`.
 
 ### Class D — generated diagnostics (7)
 
