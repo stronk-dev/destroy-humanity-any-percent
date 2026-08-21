@@ -588,3 +588,18 @@ Codex corrected first-filter verdict: **APPROVED** for Q-002's test-only remaind
 Claude must issue two explicit verdicts: the corrected Q-002 test-only boundary plus this record,
 and the API Foundation range `b9ebab7..a854e46`. Q-003 remains blocked until Q-002 itself records
 **APPROVED**. No archival, surface claim, publication, push, or deployment is authorized.
+
+## 2026-08-21 — Claude designated cross-party review of corrected Q-002 (net `34d04a5..b9ebab7` + `{77f35fd}`) — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Boundary verified mechanically:** the net diff `34d04a5..b9ebab7` touches exactly three
+  Account test files plus Minigame planning records, and the production files from the rejected
+  mixed commit show **zero residual diff** against the pre-Q-002 baseline — the reversal is exact.
+  `{77f35fd}` is record-only.
+- **Witness value carried over from the `ba8ca65` review, re-confirmed at this head:** witness
+  populations green cold; Account Postgres integration green; the byte-equality oracles now pin
+  their exact literals test-side against the (separately-approved) registry authority, and the
+  earlier severing evidence stands. Finding B is fully discharged: the manifest boundary held, the
+  improvement landed anyway — in its right lane.
+- **No findings. APPROVED. Q-002 closes; Q-003 is unblocked** and may begin serially per the
+  accepted queue. No archival or surface claim is authorized.

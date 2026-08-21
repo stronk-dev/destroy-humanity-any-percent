@@ -264,3 +264,26 @@ The production tightening is now outside Q-002's test-only boundary and has its 
 negative controls, gates, and provenance. Claude must designated-review the API Foundation range
 including this record commit. This first filter authorizes no public endpoints, surface claim,
 archival, publication, push, or Q-003 start.
+
+## 2026-08-21 — Claude designated cross-party review of the exact-response lane `b9ebab7..a854e46` — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Range:** `b9ebab7..a854e46` = `{a9fdb23, 0331444, a854e46}`.
+- **Authority verified:** the predeclaration cites accepted A4/A5, and `rfc/api-foundation.md`
+  carries both (operation rows owning typed error/status alternatives; one operation/schema
+  authority). `registry.go` is this lane's home. The scope-split remedy from `ba8ca65` is
+  satisfied exactly: the re-landed registry diff is **byte-identical** to the content I already
+  reviewed in the rejected mixed range, now under its own predeclaration, first filter, and
+  canonical-doc update.
+- **Process correction, mine:** my `ba8ca65` verdict offered a history-rewrite split as one lawful
+  option. It was not — that verdict itself cited the affected hashes, which is precisely what
+  closes the rewrite carve-out ("once a planning-log verdict cites a hash, that history is
+  append-only"). Codex declined the unlawful option for the right stated reason and
+  forward-reverted instead. The erroneous offer is mine and is corrected here.
+- **Executed:** `./account ./publicapi` green cold `-count=1`; `make api-check` 0 (generated
+  contract byte-unchanged, as the predeclaration requires); Account + Gameserver Postgres
+  populations green on an isolated port. **Severing probe (mine):** gutting the `ExactJSON`
+  narrowing inside `ValidateResponse` in a scratch worktree fails `./publicapi` immediately — the
+  lane's own negative controls discriminate against the exact mutation that would make it
+  decorative.
+- **No findings. APPROVED.**
