@@ -170,3 +170,60 @@ be cycled to reset a bucket — equivalent to IP rotation, inherent to per-IP li
 - The batch will use root Make targets, cold `-count=1`, sequential Compose/Postgres packages, and
   restored temporary mutations. Its implementation range receives a Codex first-filter and then
   the mandatory exact-range Claude review; it will not archive the RFC.
+
+## 2026-08-21 — Q-001 implementation and Codex first-filter
+
+- Implementation commit: `e0f26d1`. The change is test-only: no Account/Transport/Leaderboard
+  production source, API schema, authored copy, retention policy, or canonical behavior changed.
+- AC2 now composes two real session families with the production Gameserver and Centrifuge socket.
+  Refresh replay revokes only the target family; a rotated token is rejected before connect with
+  close 4001, the already-connected socket is rejected by the real 25-second alive
+  reauthentication path, its later subscribe write cannot survive, and the untouched family still
+  connects and subscribes to the same Founder channel.
+- AC3 performs first, second, and third New Founder replacements through HTTP. Every replacement
+  is a distinct non-imported identity, every prior Company stream remains readable and archived,
+  and all three new Company payloads are byte-identical catalog initials at revision 1. No cost,
+  cooldown, or one-use transition occurs.
+- AC5 constructs the supported local v14 save shape, calls the actual import endpoint, submits a
+  real manual intent and Wind Down, obtains `ReplayVerified`, and waits for the production queue
+  projector. The imported event has one projection claim and zero board rows; the existing
+  server-created control in the same test has one `any_percent` row.
+- AC6 enumerates all ten Founder/Company stream IDs across the original, three replacements, and
+  active imported Founder before deletion. All ten remain readable and archived afterward; five
+  Founder identities remain anonymized, including the imported marker, while account, email,
+  session, access-token, family, and live bootstrap-secret counts are zero.
+- AC7 independently exhausts create-account, recovery-login, refresh, and bootstrap buckets from
+  distinct trusted-proxy IPs. Every rejected request returns the exact
+  `{"category":"rate_limited","detail":"ip"}` body, leaves the seven relevant durable row
+  counts unchanged, and succeeds after one measured refill interval. The rejected refresh uses a
+  second valid family, so its later success proves the limiter did not consume it.
+
+Cold green evidence:
+
+- `make test-go GO_TEST_FLAGS='-count=1'` — complete Go tree green.
+- `docker compose -f compose.save-test.yml run --rm test go test -p 1 ./account -run Integration -count=1`.
+- `docker compose -f compose.save-test.yml run --rm test go test -p 1 ./gameserver -run Integration -count=1`.
+- `docker compose -f compose.save-test.yml run --rm test go test -p 1 ./leaderboard -run Integration -count=1`.
+- After restoring every mutation, the focused Account and Gameserver Q-001 populations passed
+  again with `-count=1`; `git diff --check` and the focused Account/Gameserver/Leaderboard/Transport
+  unit population were also green.
+
+Demonstrated failing mutations, all restored before `e0f26d1`:
+
+- skipped the final Founder in `DeleteAccount`'s stream archive loop: AC6 failed on the active
+  imported Company stream with `ArchivedAt:<nil>`;
+- rejected New Founder when any archived identity existed: AC3 failed on replacement 2 with HTTP
+  500, proving the repeated-reset path is required;
+- removed `limitUnauthenticated` from refresh: AC7 received HTTP 200 and a new token pair where the
+  exact typed 429 was required;
+- removed the imported branch from `QueueProjector`: AC5 observed `status=verified rows=4 claims=1`;
+- bypassed `Node.OnAlive` database authentication: AC2 timed out with close status -1 instead of
+  4001, proving the live-socket oracle depends on reauthentication rather than token expiry or the
+  revoked-before-connect case.
+
+Codex first-filter verdict: **APPROVED** for the test-only Q-001 scope. The diff was read in full;
+the assertions bind real Postgres rows, real HTTP operations, a real WebSocket, replay verification,
+and the actual board projector. No fixture silently skips in the declared Compose populations, and
+no temporary production mutation remains. Designated cross-party review is still mandatory and
+must cover the exact Q-001 range beginning after `f58a318`; this entry does not authorize archival
+or Q-002.

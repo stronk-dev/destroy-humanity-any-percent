@@ -19,17 +19,17 @@ platform-alignment review. This batch changes tests and evidence records only; i
 Account semantics, API schemas, production behavior, owner copy, retention policy, or archival
 state.
 
-8. [ ] AC2: compose real Account family revocation with a connected socket, a post-revocation
+8. [x] AC2: compose real Account family revocation with a connected socket, a post-revocation
    subscribe/alive rejection, a revoked-before-connect rejection, and an unrevoked control.
-9. [ ] AC3: repeat New Founder through second and third replacements; prove every old stream stays
+9. [x] AC3: repeat New Founder through second and third replacements; prove every old stream stays
    readable/archived and every replacement starts at exact catalog initials with no cost/cooldown.
-10. [ ] AC5: begin with the actual import operation, carry the imported Founder through Exit and
+10. [x] AC5: begin with the actual import operation, carry the imported Founder through Exit and
     verification, and prove board projection refuses it while a server-created control projects.
-11. [ ] AC6: delete an account containing archived, active, and imported Founder/Company streams;
+11. [x] AC6: delete an account containing archived, active, and imported Founder/Company streams;
     prove every stream survives anonymized while every account-linked credential/bootstrap row is
     absent.
-12. [ ] AC7: exhaust account creation, recovery-session creation, and refresh independently; assert
+12. [x] AC7: exhaust account creation, recovery-session creation, and refresh independently; assert
     exact typed `rate_limited` responses, no rejected-request mutation, and an allowed refill
     control.
-13. [ ] Run focused unit tests plus sequential Account, Gameserver, and Leaderboards cold Postgres
+13. [x] Run focused unit tests plus sequential Account, Gameserver, and Leaderboards cold Postgres
     populations; record one-seam failing mutations, diff review, and exact range for Claude.
