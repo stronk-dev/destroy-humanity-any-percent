@@ -938,3 +938,19 @@
   only files; platform alignment contains 75 tracked plus one ignored file. No product, test,
   design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
   implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Row-level test-oracle predeclaration
+
+- Froze the final semantic evidence population before declaration extraction: all 592 top-level Go
+  Test/Fuzz functions in 151 reconciled files plus every static `it`/`test` declaration in the 43
+  tracked client test/helper sources. Zero-declaration helpers receive explicit non-oracle units.
+- Predeclared exact body identity, subject/lane/fixture/dependency/assertion/negative-control lanes,
+  nine verdicts, mandatory skip/mock/positive-only limits, seeded failures, and the manual promoted/
+  browser/composed/Postgres/current-data/acceptance population.
+- Known fired failures are controls, not optional anecdotes: Game UI outcome-removal, API registry
+  and client-lint blindness, invalid hosted harness/cache state, focus/320 px failures, and ordinary
+  host Postgres skips must remain non-green in the row result.
+- After this predeclaration lands, planning contains 230 tracked plus 25 ignored/local-only files;
+  platform alignment contains 76 tracked plus one ignored file. No product/test, design/RFC body,
+  balance/copy/content, canonical product doc, migration, deployment, implementation-plan checkbox,
+  push, or `AGENTS.md` edit occurred.

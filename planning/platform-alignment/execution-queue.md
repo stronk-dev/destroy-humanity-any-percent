@@ -52,8 +52,8 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 ## Handoff
 
 The 433-child capability, 208-key Copy, and 579-unit gameplay-content evidence populations are
-complete. The semantic row-level fixture/oracle/negative-control population is now the active
-program action.
+complete. The semantic row-level fixture/oracle/negative-control population is predeclared and is
+now the active program action.
 Then finalize `review-handoff.md` and obtain the designated Claude review over the complete
 Codex-authored audit range. Only after that green verdict should the
 three accepted-scope batches in `ready-batch-manifest.tsv` execute serially: Q-001 Account witnesses,

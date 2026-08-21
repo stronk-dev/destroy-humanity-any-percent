@@ -154,6 +154,8 @@ larger product capability to proven integration.
   authority trace for all 579 current units with seeded promotion/empty/route failures.
 - `gameplay-content-row-audit.md` — mounted/backend/dormant/measurement/empty/contradiction result
   and its repository-evidence limit.
+- `test-oracle-row-plan.md` — frozen 592-Go-function/43-client-source oracle grammar, semantic
+  verdicts, mandatory failed controls, manual review population, and authority limit.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,
