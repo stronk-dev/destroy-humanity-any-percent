@@ -57,8 +57,8 @@ vet	go_static_check	none	server jobs	bounded_valid	parameterized package populat
 fuzz	manual_fuzz	none	none	not_a_bounded_gate	no fuzztime; runs until interrupted
 fuzz-ci	bounded_fuzz	none	numeric-maintenance	bounded_valid	30-second numeric fuzz window
 verify-schema	schema_check	none	schema job	bounded_valid	current schema/catalog structure only
-verify-routes-boundary	architecture_check	/tmp Go cache	server jobs	process_defect	overrides mandated repository-local cache (RP-099)
-verify-commons-boundary	architecture_check	/tmp Go cache	server jobs	process_defect	overrides mandated repository-local cache (RP-099)
+verify-routes-boundary	architecture_check	none	server jobs	bounded_valid	inherits root repository-local Go cache; import enumeration fails closed (RP-099 closed)
+verify-commons-boundary	architecture_check	none	server jobs	bounded_valid	inherits root repository-local Go cache; both forbidden dependency directions fail closed (RP-099 closed)
 verify-client-boundary	architecture_check	none	client job	partial	component boundary green but ignores runtime direct-fetch authority
 verify-kernel-version	history_check	none	client job	bounded_valid	full-history kernel guard plus failing fixtures
 verify-combat-boundary	architecture_check	none	client job	partial	recursive client check; Go Combat native division outside scope

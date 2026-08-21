@@ -1,6 +1,6 @@
 # Current repository state
 
-Last reconciled: 2026-08-21 at `7ad5b54`.
+Last reconciled: 2026-08-21 through `b990b91`.
 
 This is a navigation brief, not a second execution queue. Current authorization lives in
 [`platform-alignment/execution-queue.md`](platform-alignment/execution-queue.md), active RFC state
@@ -40,6 +40,10 @@ The evidence trace is in
 - D-002 repository publication/shared-memory disposition is complete at `7ad5b54`. The
   `e44e1a6` verifier rejects forged publication states and passes from a fresh clone with 11 public
   and 56 private Class-C dossiers, three ignored duplicates and seven ignored diagnostics.
+- Copy Amendment A1's owner record now reaches its exact cross-party closure (`3773510`), canonical
+  Soul docs match the current epoch (`7d21484`), the root boundary gates honor the repository-local
+  Go cache (`ab05f2d`), and four completed maintenance threads moved out of the live namespace
+  (`b990b91`).
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.

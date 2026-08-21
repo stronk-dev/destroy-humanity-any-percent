@@ -2116,3 +2116,12 @@
   pointers, unchecked boxes and Darwin/designated-review provenance without retroactive inference.
 - Closed RP-102. No product behavior, RFC status, review verdict, push, publication or deployment
   changed.
+
+## 2026-08-21 — post-closeout status reconciliation
+
+- Updated the living risk/reality and docs/Make inventories so RP-099, RP-106 and RP-107 no longer
+  appear open after their fixes; retained their original audit-coordinate findings as explicit
+  closed history.
+- Advanced `planning/CURRENT-STATE.md` through `b990b91` and recorded the four bounded local hygiene
+  commits without promoting any product capability or release claim.
+- No product behavior, RFC contract, push, publication or deployment changed.

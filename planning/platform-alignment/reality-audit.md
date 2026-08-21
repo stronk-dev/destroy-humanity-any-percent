@@ -80,13 +80,13 @@ workflow summary and grants no inherited proof to mixed child outcomes.
     every browser engine and the Desk overflows 647 px at a 320 px container.
 21. Reduced-motion design says production motion follows the OS preference and live changes;
     GameUIShell keeps its counter controller at the non-reduced default and no change listener exists.
-22. `docs/soul.md` says no production Soul artifact or recovery activity exists; the current epoch
-    and `docs/soul-recovery.md` prove all three activities are live.
+22. **Closed by RP-107:** `docs/soul.md` and `docs/soul-recovery.md` now agree that the current
+    epoch pins all three activities while debit sources and the toy/disclosure UI remain absent.
 23. Fiscal's archive says implemented while its plan leaves all seven implementation/review boxes
     open and earlier normative F1/F11 clauses still require the opposite of the accepted rollback
     correction and current implementation.
-24. Copy Amendment A1's owner log ends `not approved`; its fix and cross-party closure exist only
-    in the Meters log, so the Copy resume path cannot establish its own final state.
+24. **Closed by RP-106:** Copy Amendment A1's owner log now coordinates the exact Meters closure
+    without relabeling the original rejection or mixed-scope verdict.
 25. T0–T1 archive prose calls its explicitly Chromium-free composed-server proof player-playable
     and end-to-end; the production browser still lacks Gate/Wind Down/next-run controls.
 26. The Copy orphan report calls 105 mounted Game UI keys orphan and cannot distinguish 39 more
