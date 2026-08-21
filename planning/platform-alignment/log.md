@@ -1959,3 +1959,19 @@
 - Class-C progress is 66 of 67: five eligible, six revision-blocked, 55 synthesis/private-store-
   blocked, and one unreviewed. No ignored source, world/product/economy/governance/security/
   environmental/legal/IP authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 46
+
+- Read the speedrun-governance, verification and leaderboard-integrity dossier completely and
+  routed it to an independently worded public synthesis plus current product/security/privacy/
+  moderation/community-safety/legal/IP/editorial review.
+- Preserved the artifact-versus-person, deterministic-checkability, frozen-history,
+  epoch-comparability, predeclared-timing/assistance, separate-person-policy, low-discretion and
+  artifact-not-accusation findings without promoting API samples, community statistics, named
+  disputes, court outcomes or legal conclusions.
+- Refused to adopt its schemas, predicates, timing policy, replay/security design, category/epoch/
+  MMO rules, moderation policy, roadmap, UI and player copy as research authority.
+- Class-C review is complete at 67 of 67: five eligible, six revision-blocked and 56 synthesis/
+  private-store-blocked. No ignored source, leaderboard/product/security/privacy/moderation/
+  community-safety/legal/IP authority, publication, push, deployment or destructive cleanup
+  changed.

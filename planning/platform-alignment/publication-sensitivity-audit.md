@@ -271,6 +271,10 @@ Batch 45 reviewed the tile-placement, spatial-puzzle and shared-world-map dossie
 public synthesis plus current product/economy/governance/security/environmental/legal/IP/editorial
 review. **Sixty-six of 67 are reviewed: five eligible, six revision-blocked, 55 synthesis/private-
 store-blocked, and one unreviewed.** See `publication-rights-batch-45.md`.
+Batch 46 reviewed the speedrun-governance, verification and leaderboard-integrity dossier; it
+requires public synthesis plus current product/security/privacy/moderation/community-safety/legal/
+IP/editorial review. **All 67 are reviewed: five eligible, six revision-blocked, and 56 synthesis/
+private-store-blocked.** See `publication-rights-batch-46.md`.
 
 ### Class D — generated diagnostics (7)
 
