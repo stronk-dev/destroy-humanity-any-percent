@@ -232,7 +232,10 @@ eligible, six revision-blocked, 43 synthesis/private-store-blocked, and 13 unrev
 `publication-rights-batch-33.md`. Batch 34 reviewed the idle/incremental landscape and design-
 synthesis dossier; it requires public synthesis plus current product/platform/IP/editorial review.
 **Fifty-five of 67 are reviewed: five eligible, six revision-blocked, 44 synthesis/private-store-
-blocked, and 12 unreviewed.** See `publication-rights-batch-34.md`.
+blocked, and 12 unreviewed.** See `publication-rights-batch-34.md`. Batch 35 reviewed the healthy-
+engagement and design-for-stopping dossier; it requires public synthesis plus current health/legal/
+product/IP/editorial review. **Fifty-six of 67 are reviewed: five eligible, six revision-blocked,
+45 synthesis/private-store-blocked, and 11 unreviewed.** See `publication-rights-batch-35.md`.
 
 ### Class D — generated diagnostics (7)
 

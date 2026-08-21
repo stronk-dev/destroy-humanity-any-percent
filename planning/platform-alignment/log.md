@@ -1814,3 +1814,16 @@
 - Class-C progress is 55 of 67: five eligible, six revision-blocked, 44 synthesis/private-store-
   blocked, and 12 unreviewed. No ignored source, product/design/content/balance/platform/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 35
+
+- Read the healthy-engagement and design-for-stopping dossier completely and routed it to a dated
+  public synthesis plus current health/legal/product/IP/editorial review.
+- Preserved the away-time-as-accrual, visible-off-ramp, no-loss-by-absence, bounded-cadence,
+  mechanically-defanged-satire, builder-not-player and designed-ending findings without promoting
+  health prevalence, diagnoses, regulations, public statements, marks or trade-dress judgments.
+- Refused to adopt its doctrine amendments, Soul/event/crate/achievement mechanics, legal
+  conclusions, copy and routing as research authority.
+- Class-C progress is 56 of 67: five eligible, six revision-blocked, 45 synthesis/private-store-
+  blocked, and 11 unreviewed. No ignored source, health/legal/product/design/content/IP authority,
+  publication, push, deployment or destructive cleanup changed.
