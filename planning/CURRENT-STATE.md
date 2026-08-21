@@ -1,7 +1,7 @@
 # Current repository state
 
-Last reconciled: 2026-08-21 through the hosted CI verdict and pending Prestige authority-repair
-batch.
+Last reconciled: 2026-08-21 through hosted CI and the designated Prestige, Leaderboards and Fiscal
+repair verdict at `440dbba`.
 
 This is a navigation brief, not a second execution queue. Current authorization lives in
 [`platform-alignment/execution-queue.md`](platform-alignment/execution-queue.md), active RFC state
@@ -45,17 +45,16 @@ The evidence trace is in
   Soul docs match the current epoch (`7d21484`), the root boundary gates honor the repository-local
   Go cache (`ab05f2d`), and four completed maintenance threads moved out of the live namespace
   (`b990b91`).
-- Prestige D2–D5/P3–P5 and canonical docs match shipped behavior; D-012 defers Advisor's player
-  control. AC2–AC6's literal witnesses are implemented, cold-green, and severing-proven; their
-  exact range now awaits the mandatory cross-party review.
+- Prestige D2–D5/P3–P5, D-012 and AC2–AC6's literal witnesses are designated-approved at
+  `440dbba`; historical full-span archival provenance remains separate.
 - Leaderboards D2/D4/D5/D6/L1/L4 and canonical docs now distinguish its strong backend from the
   absent player capability. The missing readers/browser/validator/Route surface has a draft
   successor, not implementation authority. Commons any-membership is now implemented and
   severing-proven; AC1 exact ranking, AC3 composed crossing replay/projection and AC6
-  frozen-history witnesses also discriminate. The plan/thread record is reconciled; designated
-  cross-party review remains.
-- Fiscal's frozen RFC and archived plan now agree with its implemented rejection-rollback contract;
-  the record-only repair awaits mandatory cross-party review.
+  frozen-history witnesses also discriminate. The complete repair range is designated-approved at
+  `440dbba`; the absent player surface and historical archival union remain separate.
+- Fiscal's frozen RFC and archived plan agree with rejection rollback; its record-only repair is
+  designated-approved at `440dbba`.
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.
@@ -78,8 +77,9 @@ The complete defect and decision populations are
 
 ## Current execution posture
 
-Prestige AC2–AC6 witness-only remediation is complete and ready for its mandatory cross-party
-review. No implementer-side archival is authorized.
+Prestige, Leaderboards and Fiscal audit-remediation ranges are designated-approved at `440dbba`.
+That verdict does not manufacture broader historical archival coverage or accept deferred player
+surfaces.
 
 The amended blocking CI population passed hosted in run `32518522514` at `aa27705`, with the
 slowest job completing in 2m57s. Its maintenance observation and exact review union remain CI
