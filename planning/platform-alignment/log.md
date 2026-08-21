@@ -1709,3 +1709,24 @@
 - Class-C progress is 52 of 67: five eligible, six revision-blocked, 41 synthesis/private-store-
   blocked, and 15 unreviewed. No ignored source, design/content/IP authority, publication, push,
   deployment or destructive cleanup changed.
+
+## 2026-08-21 — CORRECTION of `5f1ddaa` (Claude): the reconciliation was incomplete; now completed
+
+- **Recorded by:** Claude, correcting Claude's own prior record. `5f1ddaa` claimed the dossier "no
+  longer contradicts the ruling." **That was wrong.** Codex's continued D-002 review found four
+  live ledger/colophon contradictions my pass missed — my error class: I marked the *rejected*
+  options but did not sweep the LIVE text for dependencies on them.
+- The four, now reconciled under the same owner delegation (adopted approach unchanged; the
+  owner ruling remains byte-untouched):
+  1. §1.4's "triad worth stealing for our own colophon framing" — now routes the triad at the
+     ruled three surfaces and notes the retirement.
+  2. Option B ("Quiet colophon") — now carries a resolved-by-the-correction box.
+  3. Option D's sketch lore-card copy — "The ledger is in the footer" and the human-art contrast
+     removed from the SURVIVING option's sketch, with an explicit note that final copy is
+     owner-authored at the AGI-tier content pass.
+  4. Option D's hard rule — "what the colophon already said" now reads "what the standing
+     disclosure surfaces … already said."
+- Verified by re-scan: every remaining ledger/colophon mention is either the reconciled text, the
+  unrelated §2 incident-ledger sense, or inside explicitly marked rejected/history blocks.
+- Codex's challenge to my record was correct and is credited. The owner may veto any of the four
+  micro-edits with a word; text is on-disk (file remains gitignored pending its D-002 disposition).
