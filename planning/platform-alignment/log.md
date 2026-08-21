@@ -2012,3 +2012,13 @@
   reviving any deferred item or promoting a candidate.
 - Class-A execution is complete. Five eligible and six bounded-revision Class-C dossiers plus the
   fresh-clone authority gate remain. No product/design/RFC behavior, push or deployment changed.
+
+## 2026-08-21 — D-002 disposition execution: eligible Class-C dossiers
+
+- Normally exposed and staged the five dossiers approved unchanged by publication-rights Batches
+  01 and 04: Numeric Core, Economy Kernel, Browser Rendering, Balance Enforcement and the dated
+  Release Platform audit.
+- Added only exact ignore exceptions and preserved the reviewed source bytes. Dated facts and
+  recommendations remain research, not current platform/design/RFC authority.
+- Six bounded-revision dossiers and the fresh-clone authority gate remain. No raw synthesis dossier,
+  product behavior, design intent, push or deployment changed.

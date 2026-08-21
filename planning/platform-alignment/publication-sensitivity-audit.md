@@ -298,9 +298,10 @@ is correct.
 3. **Control-plane tracking — complete:** the two maintained ledgers are reconciled and tracked by
    `publication-disposition-execution-03.md`; the 11 historical coverage-map records are tracked in
    their frozen archive.
-4. **Research dispositions:** track the five eligible dossiers unchanged and apply the six bounded
-   revisions. The 56 synthesis/private-store raw inputs remain ignored/noncanonical behind their
-   tracked per-file public records unless a later bounded derivative is justified.
+4. **Research dispositions:** the five eligible dossiers are tracked unchanged by
+   `publication-disposition-execution-04.md`; apply the six bounded revisions. The 56 synthesis/
+   private-store raw inputs remain ignored/noncanonical behind their tracked per-file public
+   records unless a later bounded derivative is justified.
 5. **Fresh-clone gate:** fail if a tracked authority links to an absent ignored artifact without a
    named durable private-store contract, or if generated diagnostics are treated as canonical
    evidence.

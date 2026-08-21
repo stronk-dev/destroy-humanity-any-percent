@@ -31,6 +31,11 @@ design/research/*
 !design/research/README.md
 !design/research/cattery-reusables-public.md
 !design/research/cicd-deploy-public.md
+!design/research/numeric-core.md
+!design/research/economy-kernel.md
+!design/research/browser-rendering.md
+!design/research/balance-enforcement.md
+!design/research/release-platform-audit.md
 !design/research/provenance-extracts.md
 planning/coverage-map/*
 !planning/coverage-map/decisions-log.md
