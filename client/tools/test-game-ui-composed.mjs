@@ -93,8 +93,28 @@ try {
   await vite.listen();
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  await page.addInitScript(() => {
+    const BrowserWebSocket = globalThis.WebSocket;
+    globalThis.__cloudClickerTestSockets = [];
+    globalThis.WebSocket = class extends BrowserWebSocket {
+      constructor(url, protocols) {
+        super(url, protocols);
+        globalThis.__cloudClickerTestSockets.push(this);
+      }
+    };
+  });
   const pageErrors = [];
+  const websocketFrames = [];
+  let captureRecoverySnapshot = false;
+  let resolveRecoverySnapshot;
+  const recoverySnapshot = new Promise((resolve) => { resolveRecoverySnapshot = resolve; });
   page.on("pageerror", (error) => pageErrors.push(error));
+  page.on("websocket", (socket) => socket.on("framesent", (event) => websocketFrames.push(String(event.payload))));
+  page.on("response", async (response) => {
+    if (!captureRecoverySnapshot || new URL(response.url()).pathname !== "/api/v1/founder/state") return;
+    captureRecoverySnapshot = false;
+    resolveRecoverySnapshot({ body: await response.json(), status: response.status() });
+  });
   await page.goto(uiURL, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "BEGIN ATTEMPT" }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -114,8 +134,60 @@ try {
   if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 2 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1) {
     throw new Error("composed live Game UI v2 snapshot round trip failed");
   }
+  const recoveryBefore = await page.evaluate(() => {
+    const key = Object.keys(localStorage).find((candidate) => candidate.startsWith("cloud-clicker.transport.v1."));
+    if (!key) throw new Error("production runtime did not persist transport positions");
+    return { key, value: JSON.parse(localStorage.getItem(key)) };
+  });
+  const playerChannel = `player:${liveSnapshot.body.run.founder_id}`;
+  if (!recoveryBefore.value[playerChannel]?.epoch || !Number.isSafeInteger(recoveryBefore.value[playerChannel]?.offset)) {
+    throw new Error("production runtime player position is incomplete");
+  }
+  websocketFrames.length = 0;
+  await page.evaluate(async () => {
+    const socket = globalThis.__cloudClickerTestSockets.at(-1);
+    if (!socket) throw new Error("missing production WebSocket");
+    socket.close();
+    if (socket.readyState !== WebSocket.CLOSED) await new Promise((resolve) => socket.addEventListener("close", resolve, { once: true }));
+  });
+  captureRecoverySnapshot = true;
+  const parsedCredentials = JSON.parse(stored.credentials);
+  const missedIntent = await fetch(`${gameserverURL}/api/v1/intents`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${parsedCredentials.accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      intent_id: "01985555-5555-7555-8555-555555555555",
+      kind: "perform_manual_batch",
+      expected_revision: liveSnapshot.body.revision,
+      action_id: liveSnapshot.body.manual_action.action_id,
+      count: 1,
+      window_ms: 1,
+    }),
+  });
+  const missedReceipt = await missedIntent.json();
+  if (missedIntent.status !== 200 || missedReceipt.new_revision !== liveSnapshot.body.revision + 1) {
+    throw new Error(`missed intent did not commit exactly once (${missedIntent.status})`);
+  }
+  await page.waitForFunction(({ key, channel, offset }) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+    return JSON.parse(raw)[channel]?.offset > offset;
+  }, { key: recoveryBefore.key, channel: playerChannel, offset: recoveryBefore.value[playerChannel].offset }, { timeout: 30_000 });
+  const recoveredCommand = websocketFrames.map((frame) => {
+    try { return JSON.parse(frame); } catch { return undefined; }
+  }).find((frame) => frame?.subscribe?.channel === playerChannel && frame.subscribe.recover === true);
+  if (recoveredCommand?.subscribe.epoch !== recoveryBefore.value[playerChannel].epoch || recoveredCommand.subscribe.offset !== recoveryBefore.value[playerChannel].offset) {
+    throw new Error("production runtime did not reconnect from the persisted player position");
+  }
+  const refreshed = await Promise.race([
+    recoverySnapshot,
+    new Promise((_, reject) => setTimeout(() => reject(new Error("missed receipt did not trigger authoritative browser refresh")), 30_000)),
+  ]);
+  if (refreshed.status !== 200 || refreshed.body?.revision !== missedReceipt.new_revision) {
+    throw new Error("recovered receipt did not land the browser on the committed revision");
+  }
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
-  console.log("composed Game UI bootstrap + snapshot + WebSocket presence handshake: PASS");
+  console.log("composed Game UI bootstrap + snapshot + WebSocket missed-receipt recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));
 } finally {

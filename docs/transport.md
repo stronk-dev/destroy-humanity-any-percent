@@ -38,6 +38,21 @@ invalid-frame diagnosis. Centrifuge's own history is the sole history implementa
 monotonic per-channel offsets. Player recovery fails explicitly outside its count/TTL window,
 causing the one full-state resync path; world recovery returns only the latest snapshot.
 
+The production browser now owns one recovery controller. It persists each subscribed channel's
+Centrifuge epoch/offset under the active Founder, reconnects after ordinary drops, and sends those
+positions with `recover: true`. Recovered publications pass through the same strict decoder and
+per-scope `PlayerRevisionCursor` as live publications. Duplicate event IDs at the current revision
+are suppressed; historical compensation is emitted to the runtime consumer as structured audit
+output without moving a cursor (the current Game UI has no owner-authored presentation for it); a
+forward gap, an unrecoverable stream, `resync_required`, queue overflow (4000), or invalid frame
+(4004) clears both positions and performs the existing authenticated `GET /api/v1/founder/state`
+sync before a live resubscribe. The same snapshot resets Company and Founder cursors. A drain courtesy publication
+has no stream offset, suppresses reconnect through `resume_after_ms`, and then uses that ordinary
+recovery path. Auth expiry (4001) and replacement (4002) stop visibly: token rotation and
+replacement arbitration belong to their owning successors and are not improvised by Transport.
+Unknown future envelope kinds are not interpreted but their valid stream position is retained, so
+forward compatibility cannot create an infinite replay loop.
+
 Channel authorization is closed: world/feed are public to authenticated sessions, a player channel
 must match the Founder identity, and guild/cohort/match channels delegate to server-side membership
 lookups. Identity never grants membership through token claims.
@@ -113,6 +128,15 @@ authenticated in-memory WebSocket connections on one node at 10 Hz. Every subscr
 a strictly increasing subsequence ending at the final world revision; skipped intermediate gauges
 are valid under drop-stale, while any wrong channel/kind, duplicate/regressing revision, missing
 final state, or click-shaped publication fails the soak.
+
+The active RFC's literal ten-second connected-stall criterion is not yet met. A cold 11.29-second
+actual-socket probe on 2026-08-21 filled Centrifuge's byte queue and closed the world-only subscriber
+before resume. The current transport-write hook can discard all queued stale frames except the
+already in-flight frame, but it runs after queue admission and therefore cannot enforce an exact
+one-frame bound for a genuinely blocked writer. The browser's typed 4000 path now recovers the user
+through full sync, but that does not redefine AC3; the RFC author must either provide a pre-queue
+coalescing authority or reconcile the criterion to the implementable in-flight-plus-newest
+contract.
 `world_rev` is a process-lifetime ordering key, not persisted world history. It may restart when the
 gameserver restarts, so reconnecting clients treat the recovered latest snapshot as a new baseline
 and never compare its revision with the prior connection.

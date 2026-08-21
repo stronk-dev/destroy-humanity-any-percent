@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createBrowserGameUIRuntime, type RuntimeStorage } from "../src/game-ui/runtime";
 
@@ -21,6 +21,47 @@ class MemoryStorage implements RuntimeStorage {
   setItem(key: string, value: string): void { this.values.set(key, value); this.writes.push(key); }
   removeItem(key: string): void { this.values.delete(key); }
 }
+
+type FakeSocketListener = (event: { data?: string; code?: number }) => void;
+
+class FakeSocket {
+  readonly listeners = new Map<string, FakeSocketListener[]>();
+  readonly sent: string[] = [];
+  closeCount = 0;
+  addEventListener(kind: string, listener: FakeSocketListener): void { this.listeners.set(kind, [...(this.listeners.get(kind) ?? []), listener]); }
+  send(value: string): void { this.sent.push(value); }
+  close(): void { this.closeCount += 1; }
+  emit(kind: string, event: { data?: string; code?: number } = {}): void { for (const listener of this.listeners.get(kind) ?? []) listener(event); }
+  reply(value: unknown): void { this.emit("message", { data: JSON.stringify(value) }); }
+}
+
+function openAndConnect(socket: FakeSocket): void {
+  socket.emit("open");
+  socket.reply({ id: 1, connect: {} });
+}
+
+function subscribeReplies(socket: FakeSocket, options: { playerOffset?: number; worldOffset?: number; recovered?: boolean; publications?: unknown[] } = {}): void {
+  const recovered = options.recovered ?? false;
+  socket.reply({ id: 2, subscribe: { recoverable: true, positioned: true, recovered, epoch: "player-epoch", offset: options.playerOffset ?? 0, publications: options.publications ?? [] } });
+  socket.reply({ id: 3, subscribe: { recoverable: true, positioned: true, recovered, epoch: "world-epoch", offset: options.worldOffset ?? 0, publications: [] } });
+}
+
+function eventEnvelope(revision: number, eventID = `event-${revision}`, cursorEffect: "advance" | "historical" = "advance"): unknown {
+  const historical = cursorEffect === "historical";
+  return {
+    v: 2, ch: `player:${snapshot.run.founder_id}`, kind: "event", rev: revision, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z",
+    payload: {
+      event_id: eventID, kind: historical ? "compensation" : "gate_crossed", scope: "company", rev: revision, cursor_effect: cursorEffect,
+      payload: historical ? {} : { founder_id: snapshot.run.founder_id, gate_id: "gate.t0_to_t1", route_id: null, run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 } },
+    },
+  };
+}
+
+function publication(socket: FakeSocket, channel: string, offset: number, data: unknown): void {
+  socket.reply({ push: { channel, pub: { offset, data } } });
+}
+
+afterEach(() => { vi.useRealTimers(); });
 
 describe("browser Game UI runtime", () => {
   it("persists the retry key before bootstrap and credentials before returning the snapshot", async () => {
@@ -64,37 +105,156 @@ describe("browser Game UI runtime", () => {
     await expect(runtime.snapshot()).rejects.toThrow(/schema v2/);
   });
 
-  it("decodes raw socket publications inside the runtime boundary", () => {
+  it("records initial stream positions and decodes raw publications inside the runtime boundary", () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
-    const listeners = new Map<string, ((event: { data?: string }) => void)[]>();
-    const sent: string[] = [];
-    const socket = {
-      addEventListener(kind: string, listener: (event: { data?: string }) => void) { listeners.set(kind, [...(listeners.get(kind) ?? []), listener]); },
-      send(value: string) { sent.push(value); },
-      close() {},
-    } as unknown as WebSocket;
-    const runtime = createBrowserGameUIRuntime(storage, fetch, crypto, () => socket, { protocol: "http:", host: "localhost" });
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetch, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
     const received: unknown[] = [];
     runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
-    for (const listener of listeners.get("open") ?? []) listener({});
-    for (const listener of listeners.get("message") ?? []) listener({ data: JSON.stringify({ id: 1, connect: {} }) });
-    expect(sent).toEqual([
+    openAndConnect(socket);
+    expect(socket.sent).toEqual([
       JSON.stringify({ id: 1, connect: { token: "access" } }),
       JSON.stringify({ id: 2, subscribe: { channel: `player:${snapshot.run.founder_id}` } }),
       JSON.stringify({ id: 3, subscribe: { channel: "world" } }),
     ]);
+    subscribeReplies(socket);
     const envelope = { v: 2, ch: "world", kind: "presence", rev: 1, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z", payload: { joined: [], left: [], count: 7 } };
-    for (const listener of listeners.get("message") ?? []) listener({ data: JSON.stringify({ push: { pub: { data: envelope } } }) });
+    publication(socket, "world", 1, envelope);
     const world = { v: 2, ch: "world", kind: "snapshot", rev: 2, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:01Z", payload: { scope: "world", rev: 2, state: { v: 1, world_rev: 2, planet: { depletion_ppm: 0, health_ppm: 0 }, commons: { server_health_ppm: 0, active_founders: 0, compact_members: 0 }, population: { online: 3, founders_total: 1 }, milestones: { active_id: null, progress_ppm: 0 }, epoch: { epoch_id: 6, name: "First Content" } } } };
-    for (const listener of listeners.get("message") ?? []) listener({ data: JSON.stringify({ push: { pub: { data: world } } }) });
-    for (const listener of listeners.get("message") ?? []) listener({ data: JSON.stringify({ push: { pub: { data: {} } } }) });
-    for (const listener of listeners.get("message") ?? []) listener({ data: "{" });
+    publication(socket, "world", 2, world);
+    publication(socket, "world", 3, { kind: "future_kind" });
     expect(received).toEqual([
+      { kind: "transport_recovered" },
       { kind: "presence", count: 7 },
       { kind: "presence", count: 3 },
-      { kind: "system", value: { kind: "resync_required" } },
-      { kind: "system", value: { kind: "resync_required" } },
     ]);
+    expect(JSON.parse(storage.getItem(`cloud-clicker.transport.v1.${snapshot.run.founder_id}`)!)).toEqual({
+      [`player:${snapshot.run.founder_id}`]: { epoch: "player-epoch", offset: 0 },
+      world: { epoch: "world-epoch", offset: 3 },
+    });
+  });
+
+  it("recovers saved positions, suppresses duplicates, and does not let historical events move the scope cursor", async () => {
+    vi.useFakeTimers();
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const sockets: FakeSocket[] = [];
+    const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }), crypto, () => {
+      const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
+    }, { protocol: "http:", host: "localhost" });
+    await runtime.snapshot();
+    const received: unknown[] = [];
+    runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(sockets[0]); subscribeReplies(sockets[0]);
+    publication(sockets[0], `player:${snapshot.run.founder_id}`, 1, eventEnvelope(2));
+    publication(sockets[0], `player:${snapshot.run.founder_id}`, 2, eventEnvelope(2));
+    publication(sockets[0], `player:${snapshot.run.founder_id}`, 3, eventEnvelope(99, "historical-99", "historical"));
+    sockets[0].emit("close", { code: 1006 });
+    await vi.runAllTimersAsync();
+    openAndConnect(sockets[1]);
+    expect(JSON.parse(sockets[1].sent[1])).toEqual({ id: 2, subscribe: { channel: `player:${snapshot.run.founder_id}`, recover: true, epoch: "player-epoch", offset: 3 } });
+    expect(JSON.parse(sockets[1].sent[2])).toEqual({ id: 3, subscribe: { channel: "world", recover: true, epoch: "world-epoch", offset: 0 } });
+    subscribeReplies(sockets[1], { recovered: true, playerOffset: 4, publications: [{ offset: 4, data: eventEnvelope(3, "event-3") }] });
+    expect(received.filter((value) => (value as { kind?: string }).kind === "event")).toHaveLength(2);
+    expect(received).toContainEqual({ kind: "historical_event", revision: 99, scope: "company", eventID: "historical-99", eventKind: "compensation", value: {} });
+    expect(received).toContainEqual({ kind: "transport_recovered" });
+    expect(JSON.parse(storage.getItem(`cloud-clicker.transport.v1.${snapshot.run.founder_id}`)!)[`player:${snapshot.run.founder_id}`]).toEqual({ epoch: "player-epoch", offset: 4 });
+  });
+
+  it("full-syncs and resubscribes live for a revision gap or unrecoverable history", async () => {
+    vi.useFakeTimers();
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const requests: string[] = [];
+    const sockets: FakeSocket[] = [];
+    const runtime = createBrowserGameUIRuntime(storage, async (input) => {
+      requests.push(String(input));
+      return new Response(JSON.stringify(requests.length === 1 ? currentSnapshot : { ...currentSnapshot, revision: 3 }), { status: 200 });
+    }, crypto, () => {
+      const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
+    }, { protocol: "http:", host: "localhost" });
+    await runtime.snapshot();
+    const received: unknown[] = [];
+    runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(sockets[0]); subscribeReplies(sockets[0]);
+    publication(sockets[0], `player:${snapshot.run.founder_id}`, 1, eventEnvelope(3));
+    await vi.runAllTimersAsync();
+    await vi.waitFor(() => expect(received).toContainEqual({ kind: "snapshot", value: { ...currentSnapshot, revision: 3 } }));
+    await vi.runAllTimersAsync();
+    expect(requests).toEqual(["/api/v1/founder/state", "/api/v1/founder/state"]);
+    await vi.waitFor(() => expect(sockets).toHaveLength(2));
+    openAndConnect(sockets[1]);
+    expect(JSON.parse(sockets[1].sent[1])).toEqual({ id: 2, subscribe: { channel: `player:${snapshot.run.founder_id}` } });
+    subscribeReplies(sockets[1]);
+    sockets[1].emit("close", { code: 1006 });
+    await vi.runAllTimersAsync();
+    openAndConnect(sockets[2]);
+    sockets[2].reply({ id: 2, subscribe: { recoverable: true, positioned: true, recovered: false, epoch: "new-player", offset: 0, publications: [] } });
+    await vi.runAllTimersAsync();
+    await vi.waitFor(() => expect(requests).toHaveLength(3));
+    await vi.runAllTimersAsync();
+    expect(requests).toHaveLength(3);
+    expect(sockets[2].closeCount).toBe(1);
+    await vi.waitFor(() => expect(sockets).toHaveLength(4));
+    openAndConnect(sockets[3]);
+    expect(JSON.parse(sockets[3].sent[1]).subscribe).toEqual({ channel: `player:${snapshot.run.founder_id}` });
+  });
+
+  it("full-syncs overflow and invalid frames, delays drain recovery, and fails credential expiry visibly", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-08-21T12:00:00Z"));
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const sockets: FakeSocket[] = [];
+    let snapshots = 0;
+    const runtime = createBrowserGameUIRuntime(storage, async () => { snapshots += 1; return new Response(JSON.stringify(currentSnapshot), { status: 200 }); }, crypto, () => {
+      const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
+    }, { protocol: "http:", host: "localhost" });
+    const received: unknown[] = [];
+    runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(sockets[0]); subscribeReplies(sockets[0]);
+    sockets[0].emit("close", { code: 4000 });
+    await vi.runAllTimersAsync();
+    await vi.waitFor(() => expect(snapshots).toBe(1));
+    await vi.runAllTimersAsync();
+    await vi.waitFor(() => expect(sockets).toHaveLength(2));
+    openAndConnect(sockets[1]); subscribeReplies(sockets[1]);
+    sockets[1].emit("close", { code: 4004 });
+    await vi.runAllTimersAsync();
+    await vi.waitFor(() => expect(snapshots).toBe(2));
+    await vi.runAllTimersAsync();
+    await vi.waitFor(() => expect(sockets).toHaveLength(3));
+    openAndConnect(sockets[2]); subscribeReplies(sockets[2]);
+    publication(sockets[2], "world", 0, { v: 2, ch: "world", kind: "system", rev: 0, constants_hash: snapshot.constants_hash, ts: "2026-08-21T12:00:00Z", payload: { code: "server_restarting", resume_after_ms: 5000 } });
+    sockets[2].emit("close", { code: 4003 });
+    await vi.advanceTimersByTimeAsync(4999);
+    expect(sockets).toHaveLength(3);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(sockets).toHaveLength(4);
+    openAndConnect(sockets[3]); subscribeReplies(sockets[3], { recovered: true });
+    sockets[3].emit("close", { code: 4001 });
+    await vi.runAllTimersAsync();
+    expect(sockets).toHaveLength(4);
+    expect(received.at(-1)).toEqual({ kind: "transport_closed" });
+  });
+
+  it("stops a replaced connection without retrying or refreshing credentials", async () => {
+    vi.useFakeTimers();
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const sockets: FakeSocket[] = [];
+    let requests = 0;
+    const runtime = createBrowserGameUIRuntime(storage, async () => { requests += 1; return new Response("{}"); }, crypto, () => {
+      const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
+    }, { protocol: "http:", host: "localhost" });
+    const received: unknown[] = [];
+    runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(sockets[0]); subscribeReplies(sockets[0]);
+    sockets[0].emit("close", { code: 4002 });
+    await vi.runAllTimersAsync();
+    expect(sockets).toHaveLength(1);
+    expect(requests).toBe(0);
+    expect(received.at(-1)).toEqual({ kind: "transport_closed" });
   });
 });

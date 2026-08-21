@@ -367,6 +367,10 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		GuildID string `json:"guild_id"`
 	}
 	decodeCompositionResponse(t, secondGuildResponse, &secondGuildReceipt)
+	writeWS(t, player, map[string]any{"id": 6, "subscribe": map[string]any{"channel": "guild:" + secondGuildReceipt.GuildID}})
+	if reply := readWSID(t, player, 6); reply.Error == nil || reply.Error.Code != 103 {
+		t.Fatalf("non-member guild subscription did not fail closed: %+v", reply)
+	}
 	legacyCompany, err := composition.Accounts.ActiveCompanyState(ctx, secondCreated.AccountID)
 	if err != nil {
 		t.Fatal(err)

@@ -129,6 +129,9 @@
 
   function consumePublication(message: GameUIRuntimeMessage): void {
     if (message.kind === "transport_closed") { offline = true; subscribedFounderID = undefined; unsubscribe(); return; }
+    if (message.kind === "transport_recovered") { offline = false; draining = false; resyncing = false; return; }
+    if (message.kind === "snapshot") { bindSnapshot(message.value); draining = false; resyncing = false; return; }
+    if (message.kind === "historical_event") return;
     if (message.kind === "receipt") { void refresh(); return; }
     if (message.kind === "presence") { visitorCount = message.count; return; }
     if (message.kind === "system") {

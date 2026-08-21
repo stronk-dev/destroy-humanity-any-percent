@@ -28,6 +28,12 @@ unknown future slot IDs are withheld rather than rendered mechanically.
 Live sync requires snapshot v2 and its positive `founder_revision`. Encrypted bootstrap receipts
 remain replayable under the schema version they were minted with: a stored v1 snapshot legally
 lacks that coordinate, and offer acceptance stays disabled until the next live v2 sync supplies it.
+The runtime persists positioned player/world subscriptions, recovers missed publications after a
+drop, and falls back to the same authenticated live snapshot operation on a revision gap, expired
+history, queue overflow, or invalid frame. Recovery snapshots are delivered into the existing
+`bindSnapshot` path; there is no parallel API client or snapshot schema. Drain delays reconnect by
+the server-advertised bound. Auth-expired and replaced sockets surface offline instead of inventing
+Account token-rotation or multi-tab arbitration behavior.
 
 ## Boundaries and verification
 
@@ -39,7 +45,9 @@ focused `make test-game-ui-performance` command runs that scenario alone.
 `make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed
 gameserver, Postgres bootstrap transaction, authenticated live snapshot-v2 route, and Centrifuge
 world subscription; its schema/revision and visible visitor-counter assertions prove the production
-HTTP synchronization and WebSocket handshake completed.
+HTTP synchronization and WebSocket handshake completed. The composed witness then closes the
+production browser socket, commits an intent while disconnected, and requires the reconnect to send
+the exact persisted player epoch/offset and advance it by replaying the missed receipt.
 
 The deterministic performance lane runs in an isolated Chromium process after the functional
 Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates representing 60
