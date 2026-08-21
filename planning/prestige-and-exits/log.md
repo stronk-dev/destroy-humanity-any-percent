@@ -238,3 +238,11 @@ gate_crossed intact; decline drift scoped per run with validator-enforced run_se
 - No product code, balance data, player-facing copy, plan checkbox, RFC status, push, publication,
   or archival changed. AC2–AC6 literal witness remediation and the cross-party archival review
   remain open.
+
+## 2026-08-21 — AC2–AC6 witness predeclaration
+
+- Added `witness-manifest.md` before implementing the test population. It closes the population,
+  oracle, negative-control, and limitation definitions for offer ages, moral reseed, repeated
+  ledger facts, real New-Founder lifecycle, Wind Down state axes, and the run-2 golden.
+- The scope is test/fixture/record-only. No production, balance, schema, copy, or CI change is
+  authorized; a fired witness becomes a finding rather than permission to weaken the criterion.
