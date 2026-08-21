@@ -519,3 +519,41 @@ schema validation, and the complete Docker/Postgres integration target are green
   overflow, drain, credential-expiry, literal stalled-world, and non-member Guild negatives in the
   plan before touching runtime behavior. Account token rotation, a second API client, snapshot-v3,
   player copy, and Transport archival remain forbidden.
+
+## 2026-08-21 — Q-003 consumer implementation, evidence, and AC3 fired control
+
+**Recorded by:** Codex. **Review by:** Codex first-filter only over `bfd9b65..c63e7e6`; designated
+cross-party review is not yet requested because AC3 is owner-blocked.
+
+- `c63e7e6` binds the existing `PlayerRevisionCursor` to the production Game UI runtime and persists
+  per-Founder player/world Centrifuge epoch/offset positions. One controller owns initial subscribe,
+  ordinary reconnect, recovered-publication delivery, full sync, resubscribe, typed closes, and D4's
+  advertised drain delay. It uses the existing authenticated snapshot operation and changes neither
+  Account rotation nor snapshot schema.
+- Unit/browser populations cover no saved position, valid position persistence, unknown-kind
+  position advance, same-revision duplicate suppression, historical delivery without cursor
+  movement, forward gap, unrecoverable history, queue overflow 4000, invalid frame 4004, drain 4003,
+  auth expiry 4001, and replacement 4002. Chromium/Firefox/WebKit ran 20,019 tests green; client unit
+  ran 6,659 tests green with 15 skips; typecheck, production build, and shell boundary passed.
+- The composed browser witness now closes the production socket, commits a real Postgres intent in
+  the disconnect window, requires the exact saved player epoch/offset in `recover: true`, consumes
+  the missed receipt, advances the persisted offset, and lands `/api/v1/founder/state` on the exact
+  committed revision. Removing the recover command fails; skipping recovered publications fails.
+- Cold Docker `./transport ./account ./gameserver -count=1` passed (4.131 s, 1.232 s, 28.524 s).
+  An earlier same-population run reached the Account/Gameserver revocation witness but its two-second
+  drain cleanup timed out; the isolated witness then passed in 17.634 s and the restored full cold
+  population passed. This timing failure is disclosed, not counted as a green run.
+- AC6 is closed by a real second-account Guild negative beside the member control. Temporarily
+  forcing the production Guild adapter to authorize every Guild makes that witness fail immediately.
+- AC3 fired instead of passing: extending the actual connected slow-reader probe to 100 world
+  publications over 11.29 seconds ended in socket EOF. Centrifuge admits frames to its byte queue
+  before `OnTransportWrite` can discard stale frames; the short in-flight-plus-newest test therefore
+  cannot prove exact-one delivery for a genuinely blocked writer. The experiment was restored, RP-054
+  remains open, and canonical docs disclose the result. Browser 4000 full-sync recovery is a valid
+  user recovery path but is not relabeled as AC3.
+- No plan checkbox, RFC status, archive, player copy, API schema, Account token behavior, snapshot-v3
+  mechanic, deployment, or push changed. The next action requires the RFC/ruling author to choose a
+  pre-queue authority or reconcile AC3; only then can Q-003 complete and enter designated review.
+- The old platform-audit `final-contradiction-validator.mjs` now exits 1 at its intentional
+  planning-only range guard because Q-001–Q-003 have since added product/authority paths. It is not
+  a Q-003 gate and was not misreported green; its original audited-coordinate evidence is unchanged.

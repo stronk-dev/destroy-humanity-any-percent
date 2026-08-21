@@ -46,3 +46,9 @@ Out of scope: Account access-token rotation semantics; a second/raw API client; 
 mechanics; player-facing copy; RFC archival; and unrelated Transport/server behavior. A 4001 close
 may use the current persisted access token and fail honestly, but this batch does not invent token
 refresh authority.
+
+**Current Q-003 state:** D4/T4 consumer recovery and the AC6 non-member Guild negative landed at
+`c63e7e6` with cold and mutation evidence. AC3's literal ten-second connected stall failed because
+the underlying byte queue closes before the post-admission stale hook can resume exactly one frame.
+No remaining checkbox or status may move until the ruling author reconciles that contract and the
+complete Q-003 range receives designated cross-party review.

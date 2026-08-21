@@ -1023,3 +1023,22 @@
   owning indexes.
 - No product code/test, design/RFC body, canonical product doc, balance/copy/content, migration,
   deployment behavior, implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Q-003 Transport consumer execution and owner blocker
+
+- After Q-001 approval `34d04a5` and corrected Q-002/API approval `bfd9b65`, predeclared Q-003 at
+  `a94110e` and implemented the accepted D4/T4 browser recovery controller plus AC6 Guild negative
+  at `c63e7e6`.
+- Cold unit, cross-browser, boundary, build, composed-browser/Postgres, and sequential
+  Transport/Account/Gameserver populations pass. Recovery-command, recovered-publication, and
+  forced-open Guild mutations all fail their intended witnesses.
+- Narrowed RP-052/RP-053 to implemented-pending-review. Narrowed RP-054 to the remaining measured
+  contradiction: the literal 11.29-second connected stall closes on Centrifuge byte-queue pressure
+  before the post-admission stale hook can resume exactly one frame. AC6 is no longer bundled into
+  that open finding.
+- Execution row 3d is now blocked on ruling-author action. No later serial batch, designated Q-003
+  approval request, plan checkbox, RFC promotion/archive, or push is authorized until AC3 receives
+  either a pre-queue implementation authority or body reconciliation.
+- The old final-contradiction validator now fails its deliberate planning-only-range assertion on
+  the subsequently authorized Q-001–Q-003 product paths. That expected coordinate guard is not a
+  Q-003 verification failure and is recorded rather than bypassed or relabeled green.
