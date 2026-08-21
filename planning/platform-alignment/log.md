@@ -1524,3 +1524,16 @@
 - Class-C progress is 42 of 67: five eligible, seven revision-blocked, 30 synthesis/private-store-
   blocked, and 25 unreviewed. No ignored source, design/content/IP authority, publication, push,
   deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 21
+
+- Read the social-spaces, constrained-communication and third-place dossier completely and routed
+  it to a dated public synthesis plus current child-safety/legal/IP/editorial review.
+- Preserved the place-identity, ambient-presence, scheduled-density and constrained-communication
+  findings without promoting active-brand expression, child sexual-safety detail, arrests/
+  allegations, named people, quotations, fan-source claims or unqualified compliance conclusions.
+- Refused to adopt its v1.0 verdict, Guild Break Room specification, chat posture, interactions,
+  copy and content proposals as research authority.
+- Class-C progress is 43 of 67: five eligible, seven revision-blocked, 31 synthesis/private-store-
+  blocked, and 24 unreviewed. No ignored source, release/design/content/child-safety/legal/IP
+  authority, publication, push, deployment or destructive cleanup changed.

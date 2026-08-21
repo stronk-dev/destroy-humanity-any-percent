@@ -177,7 +177,10 @@ blocked, 29 synthesis/private-store-blocked, and 26 unreviewed.** See
 `publication-rights-batch-19.md`. Batch 20 reviewed the roguelike, survivor-like and deckbuilder
 minigame dossier; it requires public synthesis plus IP/editorial review. **Forty-two of 67 are
 reviewed: five eligible, seven revision-blocked, 30 synthesis/private-store-blocked, and 25
-unreviewed.** See `publication-rights-batch-20.md`.
+unreviewed.** See `publication-rights-batch-20.md`. Batch 21 reviewed the social-spaces and
+constrained-communication dossier; it requires public synthesis plus current child-safety/legal/
+IP/editorial review. **Forty-three of 67 are reviewed: five eligible, seven revision-blocked, 31
+synthesis/private-store-blocked, and 24 unreviewed.** See `publication-rights-batch-21.md`.
 
 ### Class D — generated diagnostics (7)
 
