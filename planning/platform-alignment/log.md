@@ -1696,3 +1696,16 @@
 - Class-C progress is 51 of 67: five eligible, six revision-blocked, 40 synthesis/private-store-
   blocked, and 16 unreviewed. No ignored source, design/content/financial/consumer/labor/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 31
+
+- Read the 1995–2005 period-satire and first-session-copy dossier completely and routed it to a
+  dated public synthesis plus IP/editorial review.
+- Preserved the warm infrastructure-humor, shareware-membership, unwitting-dramatic-irony and
+  personal-to-corporate voice-transition findings without promoting active marks, living/deceased
+  people, quotations, protected-media references, exact figures or verification-pending claims.
+- Refused to adopt its owner-choice beat menu, T0/T1 names, tickers, tooltips, achievements, lore
+  cards and exact voice constraints as research authority.
+- Class-C progress is 52 of 67: five eligible, six revision-blocked, 41 synthesis/private-store-
+  blocked, and 15 unreviewed. No ignored source, design/content/IP authority, publication, push,
+  deployment or destructive cleanup changed.
