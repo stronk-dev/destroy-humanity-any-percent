@@ -174,7 +174,10 @@ synthesis/private-store-blocked, and 27 unreviewed.** See `publication-rights-ba
 19 reviewed the map-attraction, visible-progress and persistent-world dossier; it requires public
 synthesis plus IP/editorial review. **Forty-one of 67 are reviewed: five eligible, seven revision-
 blocked, 29 synthesis/private-store-blocked, and 26 unreviewed.** See
-`publication-rights-batch-19.md`.
+`publication-rights-batch-19.md`. Batch 20 reviewed the roguelike, survivor-like and deckbuilder
+minigame dossier; it requires public synthesis plus IP/editorial review. **Forty-two of 67 are
+reviewed: five eligible, seven revision-blocked, 30 synthesis/private-store-blocked, and 25
+unreviewed.** See `publication-rights-batch-20.md`.
 
 ### Class D — generated diagnostics (7)
 

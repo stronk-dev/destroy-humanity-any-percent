@@ -1511,3 +1511,16 @@
 - Class-C progress is 41 of 67: five eligible, seven revision-blocked, 29 synthesis/private-store-
   blocked, and 26 unreviewed. No ignored source, design/content/IP authority, publication, push,
   deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 20
+
+- Read the roguelike, survivor-like and deckbuilder-minigame dossier completely and routed it to a
+  dated public synthesis plus IP/editorial review.
+- Preserved the discrete-choice versus continuous-simulation tractability finding and the value of
+  wave certification checkpoints without promoting exact branded rules/content, model-derived
+  specifics or categorical copyright/patent conclusions.
+- Refused to adopt candidate ranking, house names, scoring, clocks, economy hooks, roster placement
+  and prototype order as research authority.
+- Class-C progress is 42 of 67: five eligible, seven revision-blocked, 30 synthesis/private-store-
+  blocked, and 25 unreviewed. No ignored source, design/content/IP authority, publication, push,
+  deployment or destructive cleanup changed.
