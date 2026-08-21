@@ -114,3 +114,70 @@ authorize product implementation merely by approving the audit control plane.
   obtain a new exact-range verdict over the repair edge.
 - If the owner rules O-001 or O-002 while review is running, land that ruling separately; do not
   fold owner intent into the audit verdict.
+
+---
+
+# 2026-08-21 — DESIGNATED CROSS-PARTY REVIEW (Claude) — APPROVED with one substantive finding
+
+- **Review by:** Claude (the other party, as `AGENTS.md` requires). **Recorded by:** Claude.
+- **Range reviewed, both literal hashes as demanded:**
+  `190a4fa04958cc2a3b4e689804cd55682f6c6420..1f6b81d767931a7ecb97c9877f414d0818f0e8d0`.
+  Re-derived independently: **42 commits, 88 paths.**
+
+## Verified by execution, not by reading
+
+- **Scope claim holds.** Every changed path is under `planning/` except `README.md` and
+  `rfc/README.md` (the index, not an RFC body). No code, test, schema, migration, balance, copy,
+  or canonical product doc changed. The `README.md` edit *reduces* an overstated status claim to
+  the measured one, which is the correct direction. Note: the handoff states this precisely; the
+  chat-level summary that said "no … canonical product docs changed" was looser than the artifact.
+- **Extractor reproduces byte-for-byte.** `test-oracle-row-extractor.mjs` regenerated 803 rows
+  identical to the committed structure TSV.
+- **Validator passes with the exact stated distribution** — 802 rows; 0 integrated, 171 bounded,
+  533 positive-only, 43 fixture/mock, 51 dependency-conditional, 1 non-discriminating,
+  1 invalid/guarded, 2 helpers.
+- **The validator genuinely discriminates.** I did not rely on its own seeded-failure list: I
+  promoted one `dependency_conditional` row to `integrated_discriminating` in a scratch copy and
+  re-ran it. It exits **1** with `vacuous integration promotion`. Ledger restored; tree clean.
+- **Defect ledger is contiguous** — RP-001…RP-110, no gaps, no duplicates.
+- **Capability ledger verified** — 433 rows, 3 `proven_integration`, matching the claim.
+
+## Finding A (SUBSTANTIVE, non-blocking): the method excludes recorded severing evidence
+
+`test-oracle-row-plan.md` classifies each declaration **in isolation** and admits no externally
+recorded evidence. But this repository already contains recorded severing proofs that satisfy the
+definition's own fourth clause ("an oracle demonstrated to fail when the claimed integrated
+behavior is severed") — produced during designated reviews and preserved with their failure text in
+`planning/archive/t0-t1-content/log.md`:
+
+- the composed first-hour proof — severing the automatic scripted ending made it fail, naming the
+  divergent command;
+- AC0's session-boundary catchup fixture — disabling catchup reproduced
+  `invalid production engine state: invalid provision bucket horizon`;
+- the starter-package application — disabling it failed with `pivot starter upgrade missing`;
+- the traced-reference starvation guard — re-enabling silent coasting failed it.
+
+**The classification of each individual row is still correct.** The composed test *is*
+`dependency_conditional`: I verified myself that it skips silently without `TEST_DATABASE_URL`, and
+that is a real defect in the test, correctly caught. My finding is narrower and about the headline:
+**"zero integrated witnesses" is true of declarations read in isolation, and is more alarming than
+the verified state warrants**, because severing proofs exist for several rows and are simply not
+ingested. That headline now propagates into `README.md` and `CURRENT-STATE.md`.
+
+**Required follow-up (not a blocker):** either ingest recorded severing evidence as an admissible
+class with its own provenance column, or state the exclusion in the headline itself wherever the
+number is quoted. Recommend the latter as the cheaper honest fix: *"zero rows are self-evidently
+integrated from their own declaration; N rows have externally recorded severing proofs in cited
+review verdicts."*
+
+## Assessment
+
+This is rigorous, reproducible, self-invalidating work, and its central conclusion — that the
+repository is a bounded, well-tested vertical slice rather than a coherent 1.0 platform — is
+**correct and worth having been said**. The audit refused to infer completion from record, which is
+precisely the discipline the T0–T1 close had to learn the expensive way. The honest disclosure of
+the interrupted `make verify` and of Codex's inability to substitute its own review are both to its
+credit.
+
+**Verdict: APPROVED.** Finding A is a follow-up, not a gate. Q-001/Q-002/Q-003 may proceed serially
+as scoped. This verdict authorizes no archival, no status promotion, and no push.
