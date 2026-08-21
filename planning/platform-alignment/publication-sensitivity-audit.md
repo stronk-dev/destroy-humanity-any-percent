@@ -291,12 +291,13 @@ is correct.
 1. **Policy reconciliation — complete:** the stale bodies in `design/research/README.md` and
    `planning/coverage-map/decisions-log.md` now implement the 2026-08-21 ruling while preserving the
    earlier historical sequence.
-2. **Targeted treatment — partly complete:** the two public-safe derivatives are tracked by
-   `publication-disposition-execution-01.md`; two frozen historical records remain to move, and the
-   three redundant canonical duplicates correctly remain ignored.
-3. **Control-plane tracking batch:** after steps 1–2, remove only the applicable durable paths from
-   `.gitignore`, add the approved Class-A/B artifacts normally, and prove a fresh clone contains
-   every artifact named by `AGENTS.md` as shared memory.
+2. **Targeted treatment — complete:** the two public-safe derivatives are tracked by
+   `publication-disposition-execution-01.md`; the two frozen historical records are preserved by
+   `publication-disposition-execution-02.md`; the three redundant canonical duplicates correctly
+   remain ignored.
+3. **Control-plane tracking batch:** reconcile and normally add the two maintained ledgers; the 11
+   historical coverage-map records are already tracked in their frozen archive. Then prove a fresh
+   clone contains every artifact named by `AGENTS.md` as shared memory.
 4. **Research rights batches:** review Class C in small thematic groups with a per-file disposition
    manifest. Do not make one 67-file blanket approval.
 5. **Fresh-clone gate:** fail if a tracked authority links to an absent ignored artifact without a

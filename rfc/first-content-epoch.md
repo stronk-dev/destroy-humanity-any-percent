@@ -185,8 +185,10 @@ species/temperament slot. The launch species roster (design/04) therefore CANNOT
 and belongs to the pet-acquisition successor RFC (which owns the grammar extension). Epoch 6's pet
 artifact is the care-numbers artifact, nothing more.
 
-The full row proposal (loader-validated drafts for meters/achievements/pets, 17 DESIGN-GAPs, copy-key
-list) is at `planning/coverage-map/mint-content-rows-proposal.md` (internal) pending owner rulings.
+The historical row proposal (loader-validated drafts for meters/achievements/pets, 17 DESIGN-GAPs,
+copy-key list) is preserved at
+[`planning/archive/coverage-map/mint-content-rows-proposal.md`](../planning/archive/coverage-map/mint-content-rows-proposal.md).
+It is noncanonical; adopted bytes live under `balance/`.
 
 ## Codex acceptance review blockers (2026-08-07 — FCE-C1–FCE-C6)
 
@@ -298,7 +300,8 @@ implementer-chosen path—is the owner-approved mint manifest.
   `meters = 320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485` ·
   `achievements = 1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903` ·
   `pets = 5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1`
-  (drafts at `planning/coverage-map/draft-artifacts/`, provenance per value in the proposal doc).
+  (the reviewed draft copies remain ignored because they are byte-identical to the canonical
+  `balance/` artifacts; provenance is preserved in the archived proposal).
   Grievance 0/0 confirmed (aligned with Codex's recommendation). **Achievement scoring: TIERED
   2/4/8 STANDS** — Codex's flat-+4 counter-recommendation was put to the owner explicitly and
   overruled; design/02 §6 owes the tiered amendment note. Any later edit to a ratified document

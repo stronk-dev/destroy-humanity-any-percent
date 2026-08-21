@@ -33,9 +33,9 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at `190a4fa`. The older July batch manifest is history,
 not current authorization.
-**Coverage map:** `planning/coverage-map/` is the 2026-08-05 historical sweep. Its own staleness
-stamp applies; use the platform-alignment capability and active-RFC audits until all six slices are
-revalidated.
+**Coverage map:** [`planning/archive/coverage-map/`](../planning/archive/coverage-map/) preserves the
+2026-08-05 historical sweep as a frozen, noncanonical snapshot. Use the platform-alignment
+capability and active-RFC audits for current status.
 
 ## Archive
 
@@ -101,9 +101,9 @@ before either a nonzero stock-consumption modifier or multi-worker clearing topo
 
 The **still-uncontracted (design-only) systems** were counted as ~28 in the 2026-08-05 coverage
 sweep (individual minigames, monetization-satire content, narrative, tiers 2–8). Its internal
-`planning/coverage-map/gap-backlog.md` retains the historical dependency analysis, but it is
-gitignored and stale. Do not treat either the count or queue as current authority until the six
-slices are revalidated and D-002 establishes their durable shared home.
+[`planning/archive/coverage-map/gap-backlog.md`](../planning/archive/coverage-map/gap-backlog.md)
+retains the historical dependency analysis as a tracked, frozen snapshot. Do not treat either its
+count or queue as current authority.
 
 ### Deferred decisions register
 

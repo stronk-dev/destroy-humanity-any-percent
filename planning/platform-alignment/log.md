@@ -1987,3 +1987,17 @@
   other unexecuted disposition remain ignored; nothing was force-added.
 - Sensitive-identifier and ignore-boundary checks passed. No product/design/RFC/player-copy
   authority, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 disposition execution: frozen historical records
+
+- Moved the reviewed 11-file 2026-08-05–10 coverage reconstruction into
+  `planning/archive/coverage-map/` and labelled every entry frozen/noncanonical with current-
+  authority pointers.
+- Preserved the historical mint proposal in that archive and the 2026-07-30 Codex fix queue under
+  `planning/archive/`; neither assigns present work or cures missing review provenance.
+- Repaired live RFC/index and Prestige-audit references. Rechecked all three ignored draft JSON
+  copies byte-equal to canonical production artifacts; retained them ignored and did not delete or
+  force-add anything.
+- Direct existence checks passed for every changed local target. `pnpm check:links` is unavailable
+  at the repository root (no root package manifest or link-check target) and is not claimed green.
+- No product behavior, design intent, RFC contract, publication, push or deployment changed.

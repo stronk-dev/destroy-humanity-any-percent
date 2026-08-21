@@ -125,6 +125,6 @@ destructive cleanup.
 ## Execution status — 2026-08-21
 
 The two ruling-author reconciliations and two public-safe derivatives are complete in
-`publication-disposition-execution-01.md`. The raw sibling/machine-specific dossiers remain ignored
-and noncanonical; no file was force-added. The two frozen historical moves and the three ignored
-canonical duplicates remain governed by their dispositions above.
+`publication-disposition-execution-01.md`. The two frozen historical moves are complete in
+`publication-disposition-execution-02.md`. The raw sibling/machine-specific dossiers and three
+canonical duplicates remain ignored and noncanonical; no file was force-added or deleted.

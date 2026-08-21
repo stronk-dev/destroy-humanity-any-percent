@@ -87,3 +87,10 @@ After the ruling author reconciles the stale private/never-publish disposition:
 
 No push, publication, archive move, ignore-policy change, product change, or owner-content adoption
 is authorized by this review alone.
+
+## Execution status — 2026-08-21
+
+The 11-file historical coverage-map move is complete in
+`publication-disposition-execution-02.md`. Each file is tracked under
+`planning/archive/coverage-map/` with a frozen/noncanonical banner and current-authority pointers.
+The two maintained ledgers remain pending their separate currentness reconciliation.

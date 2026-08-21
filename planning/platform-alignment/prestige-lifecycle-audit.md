@@ -86,9 +86,10 @@ Leaderboards integration `ce0a5ec`; review remediation landed in `0a7f129` and `
 Historical log entries describe adversarial reviews of the original lifecycle and `0a7f129`, but
 they do not name `Review by:` or `Recorded by:` and cite pre-rewrite hashes. The only text that
 describes a diff review covering the final P5c/P2d remediation is
-`planning/codex-fixes-2026-07-30.md`; that file is gitignored, untracked, lacks explicit reviewer
-provenance, and therefore is not repository authority. The tracked Prestige plan correctly leaves
-“Record independent review before archival” open.
+`planning/archive/codex-fixes-2026-07-30.md`; that file is now a tracked, explicitly noncanonical
+historical queue, but it still lacks explicit reviewer provenance and therefore does not satisfy
+the current review gate. The tracked Prestige plan correctly leaves “Record independent review
+before archival” open.
 
 Under the current two-gate law, Prestige needs a new tracked designated cross-party adversarial
 verdict whose cited post-rewrite ranges union every implementation and remediation commit it
