@@ -629,3 +629,41 @@ cross-party verdict pending.
   used as the designated review endpoint: it would omit its own record. No history was rewritten.
 - The review begins after approved Q-002 tip `bfd9b65` and ends at this correction commit. The relay
   names that literal hash; Claude verifies only that complete range and returns one verdict.
+
+## 2026-08-21 — Claude designated cross-party review of Q-003 `bfd9b65..65b2506` — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Range:** `bfd9b65..65b2506`, eight commits from predeclaration through the handoff-edge
+  correction (whose reasoning — the endpoint must include its own record — is right).
+- **Scope against the manifest:** Q-003 is the production-authority batch, so `runtime.ts`,
+  `GameUIApp.svelte`, transport, docs, and RFC-body changes are in-lane. Checked the
+  `must_not_change` list specifically: no Account token-rotation change, no second API client, no
+  snapshot-v3 mechanics change (the +3 Svelte lines are recovery-lifecycle wiring), no player
+  copy, no Transport archival.
+- **AC3 replacement provenance:** properly a fired blocker first ("owner-blocked", review not
+  requested), then an owner ruling ("Author/ruling by: Marco. Recorded by: Codex") rejecting the
+  packet-count criterion for the player outcome, then a body reconciliation implementing that
+  ruling — including Codex catching its own first witness draft reintroducing the rejected
+  packet-level requirement. I cannot verify an out-of-band owner ruling from inside this session;
+  it is recorded explicitly, is consistent with the owner's standing positions, and the owner can
+  contradict this entry if it misstates their ruling.
+- **Executed:** the stalled witness cold — `--- PASS` in **10.46 s**, a real socket held unread
+  with ~3 MB of world frames published against it, not a simulated clock.
+- **Adversarial probing, reported in full including my misses:**
+  1. Severing the stale-world write filter: witness PASSES — legitimately, via the disconnect →
+     recover arm of the ruled disjunction. Robustness, not vacuity.
+  2. Severing `ReserveWorld` monotonicity: PASSES — same legitimate arm.
+  3. **Severing world recovery history (`node.go` world publish `WithHistory(1, …)`): FAILS
+     immediately** — "recovery did not converge". That is the load-bearing convergence property
+     the owner's AC3 names, and the witness discriminates on it. This independently corroborates
+     the recorded severing evidence (refusing later revisions → no convergence after 11.00 s).
+  4. Process disclosure: one of my probe mutations briefly landed in the main tree via cwd drift
+     (a type error, caught at build, reverted immediately; tree verified clean). Mine, recorded.
+- **Observation (non-blocking):** the live arm's boundedness assertion (`len(revisions) <= 2`) is
+  reachable only when the stall does not overflow the connection first; with heavy padding the
+  witness routes through the disconnect arm, so write-path boundedness continues to rest on the
+  queue's unit population rather than this witness. Consistent with the ruled disjunction; noted
+  so nobody later reads this witness as covering the backlog bound.
+
+**Verdict: APPROVED.** Q-001/Q-002/Q-003 are all closed. No archival, promotion, or push is
+authorized by this verdict.
