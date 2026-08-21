@@ -1,6 +1,7 @@
 # Current repository state
 
-Last reconciled: 2026-08-21 through `b990b91`.
+Last reconciled: 2026-08-21 through `bb615ed`; the local CI split described below is the pending
+transactional batch.
 
 This is a navigation brief, not a second execution queue. Current authorization lives in
 [`platform-alignment/execution-queue.md`](platform-alignment/execution-queue.md), active RFC state
@@ -57,7 +58,7 @@ The repository still lacks a coherent release floor:
 - no player-facing account recovery, export or deletion workflow;
 - incomplete accessibility evidence for keyboard, screen-reader, zoom/reflow and touch workflows;
 - no accepted production observability, operator, incident or complete retention contract;
-- no hosted R-001 observation from the reviewed code; and
+- no hosted verdict yet for the newly implemented fast/maintenance CI split; and
 - several active RFC bodies and canonical docs still contradict accepted rulings or current HEAD.
 
 The complete defect and decision populations are
@@ -68,10 +69,10 @@ The complete defect and decision populations are
 
 There is no unblocked product-implementation batch in the platform-alignment queue.
 
-The next evidence action is a one-off hosted-Linux R-001 measurement. It requires explicit owner
-authorization to transfer the reviewed commits to a runner; the Harness Observability RFC did not
-authorize a permanent CI workflow. Remaining product lanes require their named owner/ruling-author
-reconciliation or decisions before implementation.
+The next CI evidence action is a current-head push/PR run followed by one manual or scheduled
+maintenance observation. The workflow split is implemented locally but cannot receive hosted
+credit until an explicitly authorized push transfers it to GitHub. Remaining product lanes require
+their named owner/ruling-author reconciliation or decisions before implementation.
 
 Do not infer release readiness from green unit tests, backend primitives or this summary. A shipped
 capability still requires its producer, consumer, current data/workflow and discriminating

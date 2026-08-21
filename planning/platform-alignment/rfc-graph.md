@@ -19,7 +19,7 @@ R-002 baseline ──> D-001 milestone floor ──> D-007 content scope
       ├──> D-003 sunset posture ──> refreshed research ──> sunset contract
       └──> D-005/D-008/D-009 account posture ──> prototype ──> R-003
 
-Harness Observability (implemented, `96a574d`) ──> hosted R-001 measurement ──> D-014 CI contract
+Harness Observability (implemented, `96a574d`) ──> D-014 fast/slow CI ruling ──> hosted validation
       └──> CI repair ──> current-head hosted verdict ──────────────────────────────┐
                                                                                   │
 D-006 topology + D-011 observability + D-015 retention                            │
@@ -89,7 +89,7 @@ and D-017's UGC/moderation posture; a transport channel is not a feed feature.
 
 | Active RFC | Actual graph position | Current gate |
 |---|---|---|
-| CI Baseline | release evidence root | RP-059 accepted instrumentation owner, R-001, then D-014/body reconciliation |
+| CI Baseline | release evidence root | D-014 body/topology implemented; current-head push/PR and maintenance observation, then exact review union |
 | Account & Session | backend producer with Q-001 witnesses designated-approved | broader player capability needs D-005/D-008/D-009 successor; body/range closeout separate |
 | WebSocket Transport | server, production recovery consumer and ruled AC3 witness designated-approved | body/range closeout separate |
 | Leaderboards & Epochs | backend producer for public evidence | ruling-author body repair, exact witnesses, reader/UI successor, current review union |

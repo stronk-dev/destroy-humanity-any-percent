@@ -36,7 +36,9 @@ listed below remain blockers and must not be inferred by an implementer.
   for measurement only. It may add phase/row progress, registry-aware selection, declared/executed
   work counts, identity, and fail-loud incomplete-run artifacts. It may not change scenarios,
   balance, seeds, horizons, work budgets, timeouts, acceptance bounds, parallelism, sharding, or CI
-  topology. D-014 remains blocked until the complete authority-preserving measurement exists.
+  topology. D-014 was subsequently ruled on 2026-08-21 after nine consecutive hosted cancellations
+  and the accepted local phase observation: strict fast blocking lane, exhaustive scheduled/manual
+  evidence.
 - **Canonical update owner:** Marco; Codex may record this ruling and implement the expressly
   authorized mechanical R-001 contract. Owner/ruling-author body reconciliations remain with their
   named authors.
@@ -141,7 +143,7 @@ must depend on a rehearsed deliverable, not architecture potential.
 |---|---|---|
 | **D-012 Advisor Mode** | Required in chosen milestone with exact toggle/behavior, or explicitly deferred and removed from current acceptance claims. | Defer from a Phase-0 preview unless its accessibility value is part of D-001's floor; do not ship orphaned state/math/labels. |
 | **D-013 Minigame async scope** | Implement a composed async lifecycle now, or reconcile it out of the current platform criterion into a successor. | Defer until a real minigame needs it; enums are not evidence. |
-| **D-014 CI topology/latency** | Preserve an exact blocking budget and move slow evidence elsewhere, or adopt a measured longer blocking budget/topology. | Wait for authority-preserving R-001 measurement; never ratify the current 30-minute kill by inertia. |
+| **D-014 CI topology/latency** | **RULED:** preserve the sub-five-minute push/PR target and move exhaustive harness/numeric evidence to bounded scheduled/manual jobs with an uploaded observation. | Current-head hosted success and one complete maintenance observation validate the implementation; they do not reopen the topology choice. |
 | **D-016 gameplay telemetry** | None, privacy-preserving aggregate only, or a larger disclosed gameplay set. | Current preview can use none; community milestones cannot ship until a ruled aggregate instrument is measured and disclosed. Operational metrics are separate. |
 | **D-017 UGC/social scope** | No UGC, curated/guild-scoped phrases/names, or broader public feed. | Keep absent for a Phase-0 preview; any public UGC requires the notice/reason/moderation/account-rights contract before the surface. |
 
@@ -157,5 +159,5 @@ must depend on a rehearsed deliverable, not architecture potential.
 | D-006/D-011 topology/operations | **TOPOLOGY RULED; OPERATIONS OPEN** | One Compose node; exact objectives, operator, proxy, backup, rotation, metrics and alert ownership remain open. |
 | D-010 lifecycle locations | **READY FOR OWNER/PROCESS AUTHOR** | Choose one archive home for withdrawn RFCs and completed non-RFC threads. |
 | D-012/D-013 product scope | **DEFERRED; BODY RECONCILIATION PENDING** | Advisor and async are out of the preview; ruling authors must reconcile the active bodies. |
-| D-014 CI contract | **BLOCKED ON ACCEPTED R-001 INSTRUMENT + MEASUREMENT** | Do not choose from cancelled runs. |
+| D-014 CI contract | **RULED 2026-08-21 — FAST BLOCKING / SLOW EVIDENCE SPLIT** | Nine consecutive cancellations plus the accepted local observation supplied the decision evidence. |
 | D-016/D-017 telemetry/UGC | **DEFERRED FROM PREVIEW** | No gameplay telemetry or public UGC/social content in the Phase-0 preview; revisit only through a later owner ruling. |

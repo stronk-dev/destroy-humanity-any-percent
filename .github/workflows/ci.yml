@@ -3,9 +3,6 @@ name: CI
 on:
   push:
   pull_request:
-  schedule:
-    - cron: "23 3 * * *"
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -50,13 +47,11 @@ jobs:
 
   harness:
     runs-on: ubuntu-latest
-    # Relevance and content-dynamics evidence are isolated from the core lane
-    # so their cold, uncached simulation work does not serialize every server
-    # package or run twice in one job.
-    # The ratified T0-T1 evidence runs millions of deterministic transitions.
-    # Keep a real failure ceiling while leaving headroom above the measured
-    # cold run; this lane is isolated so it does not serialize core checks.
-    timeout-minutes: 30
+    # Push/PR CI proves harness code, governed-history guards, role activation,
+    # and Commons invariance without rerunning the multi-million-transition
+    # pacing/relevance population. That exhaustive evidence has its own
+    # scheduled/manual workflow and fail-loud observation artifact.
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
         with:
@@ -64,8 +59,12 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: server/go.mod
-          cache-dependency-path: server/go.sum
-      - run: make verify-harness HARNESS_WORKERS=12
+          cache: false
+      - uses: actions/cache@v5
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('server/go.mod', 'server/go.sum') }}
+      - run: make verify-harness-fast
 
   client:
     runs-on: ubuntu-latest
@@ -142,25 +141,3 @@ jobs:
           cache-dependency-path: client/pnpm-lock.yaml
       - run: pnpm --dir client install --frozen-lockfile
       - run: make verify-schema
-
-  numeric-maintenance:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
-        with:
-          go-version-file: server/go.mod
-          cache-dependency-path: server/go.sum
-      - uses: pnpm/action-setup@v6
-        with:
-          package_json_file: client/package.json
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: client/pnpm-lock.yaml
-      - run: pnpm --dir client install --frozen-lockfile
-      - run: make fuzz-ci
-      - run: make vectors-check

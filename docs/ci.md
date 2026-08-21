@@ -1,8 +1,9 @@
 # Continuous Integration
 
-The repository has one GitHub Actions workflow, `.github/workflows/ci.yml`, triggered by every
-push and pull request, a nightly schedule, and manual dispatch. It has read-only repository
-permissions and cancels an older run when a new commit arrives on the same ref.
+The repository has two GitHub Actions workflows. `.github/workflows/ci.yml` is the blocking
+push/pull-request workflow. `.github/workflows/maintenance.yml` runs exhaustive harness and numeric
+evidence on a nightly schedule or manual dispatch. Both have read-only repository permissions and
+cancel an older run when a new commit arrives on the same ref.
 
 The repository is public. CI uses GitHub-hosted `ubuntu-latest` runners; there are no self-hosted
 runners, deployment credentials, or deployment steps.
@@ -12,23 +13,29 @@ runners, deployment credentials, or deployment steps.
 | Job | Repository command | Coverage |
 |---|---|---|
 | `server` | `make verify-server-core` | Cold Go vet/tests outside the parallel harness lane, plus generated production-formula/API drift |
-| `harness` | `make verify-harness HARNESS_WORKERS=12` | Cold harness tests, role proofs, pacing/relevance regeneration, and complete balance/epoch history guards |
+| `harness` | `make verify-harness-fast` | Cold harness tests, role proofs, Commons invariance, and complete balance/epoch history guards; no pacing/relevance simulation |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
+| `game-ui-composed` | `make test-game-ui-composed` | Real Chromium, Vite, gameserver, Postgres, and WebSocket bootstrap-to-Desk flow |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 
-The isolated harness job has a thirty-minute timeout because the ratified first-hour evidence runs
-millions of deterministic transitions from cold caches. Server, browser, and composed-browser jobs
-have ten-minute timeouts; the remaining blocking jobs keep five-minute timeouts. Jobs run in
-parallel, so the harness lane is the current blocking-workflow critical path rather than serializing
-the server suite.
+The fast harness, client, and schema jobs have five-minute ceilings. Server, browser, and
+composed-browser jobs have ten-minute ceilings. Jobs run in parallel and the complete blocking
+workflow retains the RFC's sub-five-minute measured target; ceilings are failure containment, not
+the latency objective.
 
-## Nightly numeric maintenance
+## Scheduled maintenance evidence
 
-Scheduled and manual runs add a non-blocking `numeric-maintenance` job outside the pull-request
-latency budget. `make fuzz-ci` fuzzes canonical round trips for 30 seconds; `make vectors-check`
-regenerates the deterministic shared corpus and fails if tracked bytes change. The job installs
-the same pinned Go, Node, and pnpm toolchains as the blocking jobs and has a ten-minute timeout.
+Scheduled and manual runs execute a separate workflow outside the pull-request latency budget.
+Its `harness-evidence` job first runs the fast gate, then runs the exhaustive pacing/relevance
+population through `make harness-observe`. GNU `timeout` sends SIGINT at 50 minutes inside a
+55-minute job ceiling, allowing the observation recorder to persist explicit incomplete state.
+A completed artifact is validated; the observation uploads after success or failure for 30 days,
+and a missing artifact fails loud.
+
+The parallel `numeric-maintenance` job runs `make fuzz-ci` for bounded canonical-round-trip fuzzing
+and `make vectors-check` for deterministic shared-corpus drift. Maintenance Go jobs cache only the
+module download directory, never compiled or test outputs.
 
 `make fuzz` remains the unbounded interactive command for deliberate local fuzzing. The bounded
 target exists so automation always terminates.
@@ -99,6 +106,8 @@ make test-browser-ci
 make test-game-ui-performance
 make verify-server-ci
 make verify-harness-ci HARNESS_WORKERS=12
+make verify-harness-fast
+make verify-ci-topology
 make fuzz-ci
 make vectors-check
 make vectors-check-ci
@@ -134,9 +143,12 @@ explicitly on its ordinary Ubuntu runner. `make verify-server-ci` runs the compl
 linux/amd64 against the repository's Postgres test service. `test-go-core` and therefore
 `verify-server-core` always pass an explicit `-count=$(CORE_TEST_COUNT)` (default `1`), so restored
 compiler/module caches cannot restore test results; increase `CORE_TEST_COUNT` for focused stress
-runs. The parallel harness job has the same contract through `HARNESS_TEST_COUNT` (default `1`).
-Use these targets when host-platform success could mask scheduling, architecture, or cold-run
-behavior.
+runs. Both harness lanes have the same cold package-test contract through `HARNESS_TEST_COUNT`
+(default `1`). `make verify-ci-topology` rejects exhaustive work in push CI, push triggers in
+maintenance, unbounded/missing observations, success-only uploads, build-cache restoration, and
+missing observation validation. It also binds the exact job populations and observation path; the
+cache check covers both workflows. Use these targets when host-platform success could mask
+scheduling, architecture, or cold-run behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
 and Vite, then drives Chromium through anonymous bootstrap, an authenticated live

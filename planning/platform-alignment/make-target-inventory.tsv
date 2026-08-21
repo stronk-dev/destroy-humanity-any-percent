@@ -31,8 +31,11 @@ api-schema	generator_alias	tracked API docs/types	none	mutator	name is not a che
 api-pin	generator	tracked compatibility pin	none	mutator	intentional compatibility update
 api-check	generation_check	generator then diff	server job	partial	green for ten registry operations; eleven hand routes absent
 harness	measurement	caller output	none	parameterized	requires output; measurement validity depends on mode/objective fields
-harness-check	measurement_gate	none	verify-server/verify-harness	release_invalid	current hosted lane exceeds 30-minute ceiling and lacks fail-loud progress
-harness-guard-check	measurement_guard	none	none	bounded_pending	guard mode exists; not a substitute for complete objective
+harness-check	measurement_gate	none	verify-server/verify-harness	bounded_slow	valid exhaustive local objective; no longer assigned to push/PR CI
+harness-observe	measurement_gate	caller observation	maintenance harness-evidence	bounded_pending	full objective emits fail-loud progress; first hosted artifact pending
+harness-observation-check	artifact_validator	none	maintenance harness-evidence	bounded_valid	rejects incomplete/wrong-objective observations
+relevance-registered-observe	measurement_gate	caller report+observation	none	parameterized	single registered row cannot masquerade as the complete objective
+harness-guard-check	measurement_guard	none	fast harness job	bounded_valid	history/identity guards without expensive simulation
 content-harness	measurement	stdout/artifacts by mode	none	bounded_historical	content measurement, not epoch mint authority
 epoch7-content-harness	measurement	planning report	none	historical	writes archived-era candidate report
 first-content-harness	measurement	planning report	none	historical	writes active-plan report from candidate manifest
@@ -53,6 +56,8 @@ game-ui-copy-candidate	generator	tracked copy/presentation inputs+outputs	none	m
 game-ui-copy-candidate-check	generation_check	none	copy-check	bounded_valid	drift check; does not decide candidate adoption
 copy-generate	generator	tracked client/server copy+manifest	none	mutator	merges every source catalog including candidates
 copy-check	generation_check	none	client job	partial	drift/hash valid; 161-key orphan report is non-discriminating
+publication-authority-check	authority_check	none	none	bounded_valid	manifest/public-private boundary plus three negative controls
+publication-authority-fresh-clone-check	authority_check	temporary clone	none	bounded_valid	committed public authority reproduces without ignored local files
 vet	go_static_check	none	server jobs	bounded_valid	parameterized package population
 fuzz	manual_fuzz	none	none	not_a_bounded_gate	no fuzztime; runs until interrupted
 fuzz-ci	bounded_fuzz	none	numeric-maintenance	bounded_valid	30-second numeric fuzz window
@@ -61,13 +66,15 @@ verify-routes-boundary	architecture_check	none	server jobs	bounded_valid	inherit
 verify-commons-boundary	architecture_check	none	server jobs	bounded_valid	inherits root repository-local Go cache; both forbidden dependency directions fail closed (RP-099 closed)
 verify-client-boundary	architecture_check	none	client job	partial	component boundary green but ignores runtime direct-fetch authority
 verify-kernel-version	history_check	none	client job	bounded_valid	full-history kernel guard plus failing fixtures
+verify-ci-topology	workflow_structure_check	none	client job	bounded_valid	ten job/trigger/scope/bound/upload/cache mutations rejected
 verify-combat-boundary	architecture_check	none	client job	partial	recursive client check; Go Combat native division outside scope
 verify-meters-boundary	architecture_check	none	client job	bounded_valid	structural meter boundary only
 verify-achievements-boundary	architecture_check	none	client job	bounded_valid	structural achievement boundary only
-verify-server	aggregate	none	none	release_invalid	includes harness-check whose current hosted objective times out
+verify-server	aggregate	none	none	bounded_slow	local exhaustive server aggregate; intentionally not a push/PR job
 verify-server-core	aggregate	none	server job	bounded_valid	server CI slice excluding harness
-verify-harness	aggregate	none	harness job	release_invalid	package/role tests green but complete harness objective times out hosted
+verify-harness-fast	aggregate	none	harness job	bounded_valid	cold package/role/Commons/history gate; excludes pacing/relevance simulation
+verify-harness	aggregate	none	none	bounded_slow	local exhaustive aggregate; maintenance uses observed equivalent
 verify-server-ci	docker_aggregate	containers/db	none	bounded_valid	local reproduction of core server job
-verify-harness-ci	docker_aggregate	containers/db	none	release_invalid	local reproduction retains invalid complete harness objective
+verify-harness-ci	docker_aggregate	containers/db	none	bounded_slow	Linux reproduction of exhaustive aggregate; no longer push/PR CI
 verify-client	aggregate	ignored dist	none	partial	build/tests/structure green; copy/client workflow oracles retain gaps
 verify	aggregate	ignored dist+screenshots	none	release_invalid	includes invalid server harness plus partial browser/client proofs

@@ -9,23 +9,24 @@
 
 ## Summary
 
-The repo has no `.github/` workflow, while its Makefile and cross-runtime test suites only run
-when a developer remembers to invoke them. This RFC establishes the smallest blocking CI baseline:
-the gates that exist today, on hosted GitHub Actions, under a strict latency budget.
+This RFC establishes the smallest blocking CI baseline: fast deterministic gates on hosted GitHub
+Actions under a strict latency budget, with exhaustive balance evidence isolated in a bounded
+scheduled/manual workflow.
 
 ## Motivation
 
-The RFC-0001 Go, Node, and browser vector suites already exist but never run remotely. This is the
-cheapest closure of a foundational obligation. Measurement also corrected an unmeasured premise:
-the future balance harness fits public-repository hosted Actions, so there is no capacity argument
-for self-hosted runners.
+At adoption, the RFC-0001 Go, Node, and browser vector suites already existed but did not run
+remotely. This was the cheapest closure of a foundational obligation. Later exhaustive balance evidence grew beyond the
+blocking latency budget; D-014 retains hosted runners and separates that evidence from push/PR
+gating instead of ratifying repeated 30-minute cancellations.
 
-This scope is intentionally executable now. Deployment, policy gates without source artifacts,
-and the balance harness are not smuggled into the starter.
+This scope is intentionally executable now. Deployment and policy gates without source artifacts
+are not smuggled into the baseline. CI schedules the harness-owned exhaustive command but does not
+change its scenarios, balance, bounds, or acceptance semantics.
 
 **Out of scope, with owners:** deployment, Compose, Caddy, draining, migrations, and reconnect
-testing (a future deployment-and-draining RFC once those components exist); the balance harness
-(its own RFC); policy gates for assets and player-facing content (added when those inputs first
+testing (a future deployment-and-draining RFC once those components exist); balance-harness
+semantics (its own RFCs); policy gates for assets and player-facing content (added when those inputs first
 land); production hot-reload semantics (`design/12`, currently carrying a `DESIGN-GAP:`); the save
 layer (its own RFC); leaderboard integrity and Balance Epoch enforcement (leaderboard RFC).
 
@@ -43,45 +44,55 @@ Marco selected a public repository on 2026-07-28. The cost and timing model ther
 uses public-repository hosted runners: four vCPUs and no billed Actions-minute quota. Repository
 visibility does not substitute for an explicit license.
 
-### D2 — Starter workflow
+### D2 — Fast blocking workflow
 
-One workflow, `.github/workflows/ci.yml`, on push and pull request:
+`.github/workflows/ci.yml` runs only on push and pull request:
 
 | Job | Runs | Blocking | Notes |
 |---|---|---|---|
-| `server` | `make verify-server` → Go tests and `go vet` | yes | Uses the checked-in Go toolchain declaration |
+| `server` | `make verify-server-core` → cold Go tests outside the harness package, generation checks and `go vet` | yes | Uses the checked-in Go toolchain declaration and real Postgres |
+| `harness` | `make verify-harness-fast` → cold package tests, role activation, Commons invariance and repository-history guards | yes | Excludes multi-million-transition pacing/relevance execution |
 | `client` | `make verify-client` → strict TypeScript and Node Vitest | yes | Installs from the frozen pnpm lockfile |
-| `browser` | `make test-browser` in the Playwright image matching `client/package.json`, across Chromium, Firefox, WebKit | yes | Image supplies deterministic browser binaries |
+| `browser` | `make test-browser` across Chromium, Firefox and WebKit, then isolated Chromium performance | yes | Installs the pinned Playwright browser versions explicitly |
+| `game-ui-composed` | `make test-game-ui-composed` | yes | Real Chromium → Vite → gameserver → Postgres/WebSocket bootstrap-to-Desk witness |
 | `schema` | `make verify-schema` → validate schema documents and every checked-in balance catalog | yes | An explicit empty catalog set succeeds; malformed checked-in catalogs fail |
 
 Workflow actions use the current supported majors at acceptance: `actions/checkout@v6`,
 `actions/setup-go@v6`, `actions/setup-node@v6`, `actions/cache@v5`, and
-`pnpm/action-setup@v6`. Go reads
-`server/go.mod`; Node uses version 24; pnpm reads the exact `packageManager` field. The browser job
-is pinned to `mcr.microsoft.com/playwright:v1.62.0-noble`, matching the exact client dependency.
+`pnpm/action-setup@v6`. Go reads `server/go.mod`; Node uses version 24; pnpm reads the exact
+`packageManager` field. Browser jobs install the versions pinned by the Playwright package and
+lockfile on the ordinary hosted runner.
 
 Schema verification uses the pinned Ajv 2020-12 implementation in the client toolchain. Compiling
 the schema validates it against its meta-schema. The command validates every production catalog,
 requires all positive fixtures to pass, and requires all negative fixtures to fail.
 
-The existing aggregate `make verify` remains the local all-gates command. It composes the narrower
-targets above; CI calls narrow targets so browser tests are not executed twice.
+The existing aggregate `make verify` remains the local exhaustive all-gates command. CI calls the
+narrow fast targets so multi-million-transition evidence and browser tests are not duplicated in
+the blocking path.
 
 The workflow has least-privilege read-only repository permissions, cancels superseded runs on the
 same branch, and caches Go and pnpm dependencies. Generated build outputs and browser binaries are
 not cached.
 
-### D3 — Gate tiers and latency budget
+### D3 — Gate tiers, maintenance workflow, and latency budget
 
 | Tier | Trigger | Blocking | Contents |
 |---|---|---|---|
-| **1 — Baseline** | every push/PR | yes | D2's four jobs |
-| **2 — Policy** | future RFC | yes | Copy, tracker, asset-provenance, and formula-drift gates once inputs exist |
-| **3 — Balance** | future harness RFC | warn/block | Harness tiers 1–3 on balance changes |
-| **4 — Nightly** | schedule/manual | no | 30-second numeric fuzzing, deterministic vector-regeneration diff; future harness tier 4 and pacing artifact |
+| **1 — Baseline** | every push/PR | yes | D2's six jobs, including the fast harness guard |
+| **2 — Policy** | every push/PR as inputs exist | yes | Current copy/formula/schema/boundary guards; later asset-provenance gates land with their inputs |
+| **3 — Balance evidence** | schedule/manual | no PR block | Exhaustive pacing/relevance check with a validated, always-uploaded observation artifact |
+| **4 — Numeric maintenance** | schedule/manual | no PR block | 30-second numeric fuzzing and deterministic vector-regeneration diff |
 
 **NORMATIVE: the complete blocking workflow must finish in under five minutes.** If it exceeds the
 budget, slower work moves to a non-blocking tier; the blocking budget does not grow.
+
+`.github/workflows/maintenance.yml` owns tiers 3–4. The exhaustive harness command receives SIGINT
+at 50 minutes inside a 55-minute job so the observation recorder can persist an explicit incomplete
+artifact before Actions kills the runner. A successful run must validate the completed artifact;
+success or failure must upload it, and a missing artifact is itself a failure. Maintenance Go jobs
+disable setup-go's build/test cache and cache only downloaded modules.
+The observation upload uses the current supported `actions/upload-artifact@v7` major.
 
 ### D4 — Deliberately separate performance repair
 
@@ -107,14 +118,15 @@ human-origin claim is true.
 
 ## Acceptance criteria
 
-1. `make verify` passes locally and in CI from a clean checkout.
+1. `make verify` passes locally; the six D2 jobs pass in CI from a clean checkout.
 2. The RFC-0001 suite runs on Node and Chromium, Firefox, and WebKit in CI; a deliberately broken
    vector fails the relevant job.
 3. The complete blocking workflow finishes in under five minutes on GitHub's public-repository
    hosted runners.
 4. `make verify-schema` validates every schema and checked-in balance catalog; a deliberately
    malformed catalog makes that command fail.
-5. Workflow permissions, cancellation, cache scope, and trigger behavior match D2.
+5. Workflow permissions, cancellation, cache scope, trigger separation and observation failure
+   behavior match D2/D3; seeded topology mutations are rejected.
 
 ## Open questions
 
@@ -137,3 +149,6 @@ human-origin claim is true.
 - 2026-07-28: added the scheduled/manual non-blocking numeric-maintenance job with a 30-second fuzz
   budget and deterministic vector-regeneration diff. Hosted execution still awaits the first push.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+- 2026-08-21: owner ruled D-014 for a strict sub-five-minute push/PR lane plus separate
+  scheduled/manual exhaustive evidence. Reconciled the six-job current baseline, moved the full
+  harness and numeric work into maintenance, and required a bounded fail-loud observation artifact.

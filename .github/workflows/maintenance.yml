@@ -1,0 +1,68 @@
+name: Maintenance evidence
+
+on:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maintenance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  harness-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache: false
+      - uses: actions/cache@v5
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('server/go.mod', 'server/go.sum') }}
+      - run: make verify-harness-fast
+      - name: Run exhaustive harness with fail-loud observation
+        run: timeout --signal=INT --kill-after=30s 50m make harness-observe HARNESS_WORKERS=12 HARNESS_OBSERVATION=harness-observation.json
+      - name: Validate completed observation
+        run: make harness-observation-check HARNESS_OBSERVATION=harness-observation.json
+      - name: Upload harness observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: harness-observation-${{ github.run_id }}
+          path: harness-observation.json
+          if-no-files-found: error
+          retention-days: 30
+
+  numeric-maintenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache: false
+      - uses: actions/cache@v5
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('server/go.mod', 'server/go.sum') }}
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: client/package.json
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
+      - run: pnpm --dir client install --frozen-lockfile
+      - run: make fuzz-ci
+      - run: make vectors-check

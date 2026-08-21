@@ -2135,3 +2135,20 @@
 - Recorded that the final-contradiction validator is a frozen `190a4fa` proof and must fail on
   later HEADs; its historical counts were not laundered into a new baseline. No product behavior,
   test source, RFC contract, push, publication or deployment changed.
+
+## 2026-08-21 — D-014 CI topology ruling and implementation
+
+- Reconfirmed the latest public run `32506594577`: five jobs green, numeric intentionally skipped,
+  and harness cancelled at 30 minutes after spending its final 28m49s inside the exhaustive
+  balance-harness check. Nine consecutive recent workflows share the cancelled conclusion.
+- Owner direction to make CI work resolves D-014 as the standard fast-blocking/slow-evidence split.
+  Reconciled the CI RFC, plan, canonical docs, decision packet, acceptance ledger and job inventory.
+- Push/PR now runs `make verify-harness-fast`; scheduled/manual maintenance owns the bounded observed
+  exhaustive harness and numeric jobs. Both maintenance Go jobs cache modules only. A topology
+  verifier rejects ten job/trigger/scope/bound/upload/cache mutations, including build-cache
+  restoration in either workflow and deletion of a governed blocking job.
+- Cold local analogues for all six blocking jobs passed: `make verify-server-core`,
+  `make verify-harness-fast`, `make verify-client`, `make test-browser`,
+  `make test-game-ui-composed`, and `make verify-schema`. The final client rerun included the
+  ten-mutation topology proof. RP-057 is closed; RP-001 and RP-056 remain open only for a
+  current-head hosted verdict/timing. Nothing was pushed or deployed.

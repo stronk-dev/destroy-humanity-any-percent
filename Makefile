@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -315,6 +315,10 @@ verify-kernel-version:
 	node client/tools/verify-kernel-version.mjs
 	node client/tools/verify-kernel-version-fixtures.mjs
 
+verify-ci-topology:
+	node client/tools/verify-ci-topology.mjs
+	node client/tools/verify-ci-topology-fixtures.mjs
+
 verify-combat-boundary:
 	node client/tools/verify-combat-boundaries.mjs
 
@@ -328,6 +332,8 @@ verify-server: vet test-go pitch-corpus-check formulas-check api-check harness-c
 
 verify-server-core: vet test-go-core pitch-corpus-check formulas-check api-check verify-routes-boundary verify-commons-boundary
 
+verify-harness-fast: test-harness t0-t1-role-check commons-harness-check harness-guard-check
+
 verify-harness: test-harness t0-t1-role-check harness-check
 
 verify-server-ci:
@@ -336,6 +342,6 @@ verify-server-ci:
 verify-harness-ci:
 	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-harness HARNESS_WORKERS=$(HARNESS_WORKERS)'
 
-verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary copy-check
+verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary copy-check
 
 verify: verify-server verify-client verify-schema test-browser
