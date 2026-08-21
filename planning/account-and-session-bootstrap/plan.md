@@ -33,3 +33,6 @@ state.
     control.
 13. [x] Run focused unit tests plus sequential Account, Gameserver, and Leaderboards cold Postgres
     populations; record one-seam failing mutations, diff review, and exact range for Claude.
+
+Q-001 received the designated cross-party approval at `34d04a5`. This closes the bounded witness
+batch only; item 7 and the broader Account player/rights/retention/archive work remain open.

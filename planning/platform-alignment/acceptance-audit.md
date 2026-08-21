@@ -1,9 +1,9 @@
 # Active-RFC acceptance audit
 
-Coordinate: product tree `190a4fa`; 2026-08-20 through 2026-08-21. State: **all 111 active-RFC
-criteria have bounded evidence verdicts; five remain deliberately open on exact review/provenance
-closeout. The separate 46-row archived-RFC inventory and 20-row/ten-domain deep replay are
-complete.**
+Coordinate: product tree `190a4fa`; updated through serial approvals `34d04a5`, `bfd9b65`, and
+`249719c` on 2026-08-21. State: **all 111 active-RFC criteria have bounded evidence verdicts; the
+five-row exact-review population is closed. Separate RFC-wide archival range unions remain open.
+The 46-row archived-RFC inventory and 20-row/ten-domain deep replay are complete.**
 
 `active-acceptance-ledger.tsv` contains all 111 true acceptance criteria across the 21 product or
 process RFCs in the active directory. The extraction stops at any nested heading. That boundary is
@@ -27,15 +27,15 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 5 | Remaining rows are held for exact archival review/provenance, not unexecuted lifecycle audits. |
-| Proven or historically proven with a named qualification | 20 | Reconciled lifecycle rows plus Combat AC2–AC4, Minigame API AC1, Game UI AC2/AC3, CI AC2/AC4, Transport AC1, and Account AC1/AC4; qualifications remain explicit. |
-| Unmet or partial | 33 | API/Combat/consumer gaps plus Account/Transport/Game UI/Minigame API and literal-witness gaps. |
-| Contradicted or failed at current HEAD | 10 | Exact current contradictions plus Combat AC6, Minigame API AC4, Game UI AC4, API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 0 | Q-001/Q-002/Q-003 closed the five held rows through exact designated review. |
+| Proven or historically proven with a named qualification | 33 | Adds Account AC2/AC3/AC5–AC7, Minigame API AC2–AC4, and Transport AC2–AC6 from the three designated-approved batches; qualifications remain explicit. |
+| Unmet or partial | 26 | Remaining API/Combat/content/player-surface and literal-witness gaps. |
+| Contradicted or failed at current HEAD | 9 | Exact current contradictions exclude repaired Minigame API AC4 but retain Game UI/API/Leaderboards/Minigame Platform/CI failures. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The five mechanically backed/cold-witness rows are the remaining exact-review population. Every
-active RFC lifecycle has now been re-walked; these rows retain their named range route rather than
-being promoted by arithmetic.
+The previously held five-row review population is closed by the exact Q-001/Q-002/Q-003 verdicts.
+Every promotion above cites its literal witness and designated range; none was promoted by
+arithmetic alone.
 
 ## Confirmed criterion-level downgrades
 
@@ -77,10 +77,9 @@ The criterion and lifecycle pass is recorded in `account-session-lifecycle-audit
 
 - AC1 and AC4 are proven: strict real-stack create→session→intent plus a correctly signed
   extra-claim JWT rejection execute cold.
-- AC2 remains partial because database family revocation and socket authentication are not one
-  revoked-live-session witness.
-- AC3/AC5/AC6/AC7 are partial against “unlimited,” actual import→board exclusion, all save-stream
-  survival, and all unauthenticated endpoints respectively (RP-049).
+- AC2/AC3/AC5/AC6/AC7 are proven by Q-001's designated-approved literal witnesses: live and
+  pre-connect family revocation, repeated free Founder replacement, actual import→board exclusion,
+  all-stream anonymizing deletion, and all three unauthenticated route limits (RP-049).
 - Outside the backend criteria, the production UI never consumes its refresh token, so the
   15-minute access expiry has no renewal/reconnect path (RP-048). Existing RP-004–RP-007 retain the
   absent export/delete/recovery/local-fallback user workflows.
@@ -93,7 +92,7 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
 
 - AC1 is proven: 5,000 actual in-memory WebSockets each expose a terminal trace across ten world
   ticks, with monotonic subsequences and wrong-kind/public-receipt negative cases in the oracle.
-- AC2/AC4/AC5 are implemented pending designated review: the production controller persists
+- AC2/AC4/AC5 are designated-approved: the production controller persists
   positions, recovers missed receipts, full-syncs gaps/overflow, interprets typed closes, and honors
   drain delay; the composed browser witness crosses a real disconnect and committed intent.
 - AC3's exact-one-frame premise fired under a literal stall and was owner-reconciled on 2026-08-21
@@ -102,9 +101,9 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
   revision; refusing every post-baseline world revision fails after the full stall (RP-054).
 - AC6's real second-account/non-member Guild denial now fails under an authorize-every-Guild
   mutation. Match's participant positive remains owned by its eventual implementation.
-- The per-scope cursor is bound to production live/recovered publications and authoritative snapshot
-  resets, pending the same exact Q-003 designated review (RP-053). Plan/body/review-history
-  reconciliation remains separate (RP-055).
+- The per-scope cursor is designated-approved in production live/recovered publications and
+  authoritative snapshot resets (RP-053). Plan/body/review-history reconciliation remains
+  separate (RP-055).
 
 ### Game UI
 
@@ -136,12 +135,10 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
 
 - AC1 is proven as a composed backend integration. The cold Postgres/HTTP lifecycle covers Pitch
   and Recovery, and severing the production tenant-content resolver fails at the exact create seam.
-- AC2 is partial: generation/registration and drift checks are real, while the error schema allows
-  invalid category/detail pairs and an extra-byte rejection mutation survives its substring oracle.
-- AC3 is partial: command-flood nonmutation is byte-compared; Recovery flooding proves only a 429
-  against a stateless adapter, not unchanged authoritative progress/session state.
-- AC4's enumeration oracle fails: it covers four minigame operations, while a Recovery finish
-  identity-field mutation leaves all Account unit tests green.
+- AC2/AC3/AC4 are designated-approved through corrected Q-002 and its separate API Foundation lane:
+  deterministic error pairs/bytes are exact, Recovery flooding proves authoritative state/token/
+  session nonmutation and refill, and privacy enumeration covers all eight operations with leak
+  mutations.
 - AC5 remains unmet and body-blocked. No generated HTTP client, exact C9 contract, surface
   components, Pitch child mount, Recovery scheduler wiring, or browser/a11y workflow exists.
 

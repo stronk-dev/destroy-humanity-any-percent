@@ -70,7 +70,8 @@ larger product capability to proven integration.
 - `inventory.md` / `inventory.tsv` — counted repository populations and reconciliation state.
 - `design-capability-ledger.tsv` — stable design-outcome IDs and preliminary trace state.
 - `active-acceptance-ledger.tsv` — all 111 true active-RFC acceptance rows with current bounded
-  verdicts; five remain open on exact review/provenance closeout.
+  verdicts; the five-row serial exact-review population is closed, while RFC-wide archival unions
+  remain separate.
 - `acceptance-audit.md` — criterion-level classification, downgrades, and execution batches.
 - `test-evidence-audit.md` — cold command outcomes, populations, oracle gaps, and invalid runs.
 - `capability-map.md` — product outcomes and their actual stage.

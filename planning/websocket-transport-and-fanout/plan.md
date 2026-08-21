@@ -55,3 +55,7 @@ with disconnect/recovery permitted. `afb5bf0` adds the literal 10.50-second actu
 refusing every post-baseline world revision makes it fail after the full stall. All Q-003 cold gates
 are restored. The implementation/witness span ends at `afb5bf0`; designated review begins after
 `bfd9b65` and must include the final record-only handoff/correction tip named in the relay.
+
+Q-003 received designated cross-party approval at `249719c` for exact range
+`bfd9b65..65b2506`. The bounded batch is closed; item 7 and RP-055's separate body/history/archive
+union remain open.

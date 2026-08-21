@@ -9,7 +9,7 @@ This records verified populations and reconciliation defects at the pinned produ
 |---|---:|---|---|
 | Top-level design documents | 14 | `design/00` through `design/13` | Read in full; 121 preliminary stable outcome rows recorded, with Wave-2 splitting still required. |
 | Tracked design research files | 1 | Only `provenance-extracts.md` survives the ignore policy | 33 distinct research dossiers are referenced from tracked design but absent from a fresh clone. |
-| Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
+| Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are evidence-reconciled; the five-row serial exact-review population closed at `249719c`, while separate RFC archival unions remain open. |
 | Archived RFCs | 46 | Files in `rfc/archive/` | All 46 pair structurally; the predeclared 20-row/ten-domain deep replay is complete with 26 rows honestly structural-only. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
 | Tracked planning files after this checkpoint | 236 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after semantic oracle evidence attachment. |

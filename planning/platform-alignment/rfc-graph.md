@@ -90,15 +90,15 @@ and D-017's UGC/moderation posture; a transport channel is not a feed feature.
 | Active RFC | Actual graph position | Current gate |
 |---|---|---|
 | CI Baseline | release evidence root | RP-059 accepted instrumentation owner, R-001, then D-014/body reconciliation |
-| Account & Session | backend producer plus witness closeout | accepted-scope witness batch is READY; broader player capability needs D-005/D-008/D-009 successor |
-| WebSocket Transport | server, production recovery consumer and ruled AC3 witness implemented | minimal Q-003 designated review READY; body/range closeout separate |
+| Account & Session | backend producer with Q-001 witnesses designated-approved | broader player capability needs D-005/D-008/D-009 successor; body/range closeout separate |
+| WebSocket Transport | server, production recovery consumer and ruled AC3 witness designated-approved | body/range closeout separate |
 | Leaderboards & Epochs | backend producer for public evidence | ruling-author body repair, exact witnesses, reader/UI successor, current review union |
 | Prestige & Exits | backend transition producer | ruling-author body repair and D-012 Advisor choice before witness closeout |
 | API Foundation | shared wire/client authority | ruling-author repair, then registry/generator/public/runtime work |
 | Minigame Platform | tenant/session producer | body must stop claiming absent Combat; repair offline-quality output and acceptance scope |
 | Combat Shared | shared child contract | RP-072 tables/effects and slash-scope ruling, then exact fixtures/current review |
 | Game UI Screens | main player consumer | ruling-author repair, snapshot-v3 controls, recovery/client dependencies, R-004/R-005 |
-| Minigame API + Surface | backend API plus absent player consumer | backend witness batch READY; body/exact surface/client dependencies block visible work |
+| Minigame API + Surface | designated-approved backend API witnesses plus absent player consumer | body/exact surface/client dependencies block visible work |
 | Permits | live content contract awaiting closeout | exact replay/body/docs/provenance repair only |
 | First Content Epoch | historical mint authority awaiting closeout | fixed epoch-6 witness/body/changelog/range reconciliation only |
 | Deployment | release package owner, currently draft | D-001/D-002/D-003/D-006/D-011/D-015 and complete body rewrite before acceptance |

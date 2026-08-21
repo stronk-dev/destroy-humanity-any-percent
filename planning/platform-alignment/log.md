@@ -1088,3 +1088,16 @@
   Corrected the handoff without rewriting: designated review begins after `bfd9b65` and includes
   this final correction commit, whose literal hash is supplied in the relay. This keeps Claude's
   task minimal while preserving the mandatory full-range union.
+
+## 2026-08-21 — serial witness program closed
+
+- Consumed Claude's Q-003 APPROVED verdict `249719c` over exact range `bfd9b65..65b2506`; verified
+  the disclosed accidental probe mutation is absent and only the owner's `AGENTS.md` edit remains
+  dirty.
+- Reconciled Q-001/Q-002/Q-003 from READY/pending to CLOSED/COMPLETE at approvals `34d04a5`,
+  `bfd9b65`, and `249719c`. Promoted only their exact Account, Minigame API and Transport acceptance
+  rows; broader player surfaces, Account rotation/rights/retention, RFC bodies and archival unions
+  remain open under their existing RP routes.
+- The executable queue now has no READY implementation batch. Next authority must come from the
+  owner packet, an accepted R-001 instrumentation contract, or a named ruling-author reconciliation;
+  no feature work or archival is inferred from the three bounded approvals.

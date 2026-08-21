@@ -109,8 +109,8 @@ authorize product implementation merely by approving the audit control plane.
 ## Post-review routing
 
 - Only after the complete audit range is approved may this verdict be called the repository-audit
-  review. The owner can then rule the READY decisions in
-  `owner-ruling-packet.md`, and Q-001/Q-002/Q-003 remain the only implementation-ready batches.
+  review. At that checkpoint the owner could rule `owner-ruling-packet.md`, and Q-001/Q-002/Q-003
+  were the only implementation-ready batches; their subsequent closure is recorded below.
 - If findings change factual classifications, repair the ledgers/dossiers transactionally and
   obtain a new exact-range verdict over the repair edge.
 - If the owner rules O-001 or O-002 while review is running, land that ruling separately; do not
@@ -182,3 +182,10 @@ credit.
 
 **Verdict: APPROVED.** Finding A is a follow-up, not a gate. Q-001/Q-002/Q-003 may proceed serially
 as scoped. This verdict authorizes no archival, no status promotion, and no push.
+
+## Subsequent serial-batch status — 2026-08-21
+
+Q-001, corrected Q-002 plus its separate API Foundation lane, and Q-003 received their mandatory
+designated approvals at `34d04a5`, `bfd9b65`, and `249719c`. The manifest and execution queue now
+mark all three CLOSED/COMPLETE. No READY implementation batch remains; route next to the owner
+ruling packet, accepted R-001 authority, or named ruling-author reconciliation.

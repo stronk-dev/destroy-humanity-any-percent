@@ -1,6 +1,7 @@
 # Executable queue at `190a4fa`
 
-Only `READY` rows are presently authorized. “Blocked” is a routing fact, not a request to improvise.
+Only `READY` rows are presently authorized; there are currently none. “Blocked” is a routing fact,
+not a request to improvise.
 
 | Order | State | Work | Exit |
 |---|---|---|---|
@@ -18,13 +19,13 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 | 3 | **BLOCKED — Game UI ruling-author action** | Reconcile the RFC header, U1/U2, and AC1 plus canonical full-rendition prose with GU-C7/GU-C25–GU-C28. | Normative body no longer contradicts accepted rulings; docs do not claim v3 before it ships. |
 | 3a | **BLOCKED — author action** | Reconcile Minigame Platform header, MP1, MP5, C3/C8/C9/C12/C14, and AC6 around the absent combat-duel tenant. | Normative body no longer claims combat code/catalog/adapter that does not exist. |
 | 3b | **BLOCKED on 3a / accepted scope** | Repair Minigame AC2's observable offline-quality decay/application; either prove async under AC1 or route it to its accepted successor; keep bot/duel work blocked on Combat. | No-play decay reaches its real output consumer with a stale-grade mutation; every retained criterion has a composed workflow; exact cross-RFC range union is review-ready. |
-| 3c | **READY — Account accepted-scope witnesses** | Add AC2/AC3/AC5/AC6/AC7's missing revocation/socket, repeated Founder, import→board, all-stream deletion, and all-route limiter discriminators without changing mechanics. | Literal witnesses fail under their seeded defects and pass cold; range is ready for cross-party review. |
-| 3d | **READY — minimal Transport designated review** | `c63e7e6` implements the D4/T4 browser controller and AC6 negative; `afb5bf0` proves the owner-reconciled ten-second stalled-client outcome. All required mutations and cold populations pass restored. | Claude reviews only the range beginning after `bfd9b65` through the final handoff/correction tip named in the relay and records APPROVED/CHANGES REQUIRED; no implementation, research, archival, or broader audit is delegated. |
+| 3c | **COMPLETE — Account witnesses approved `34d04a5`** | AC2/AC3/AC5/AC6/AC7's revocation/socket, repeated Founder, import→board, all-stream deletion, and all-route limiter witnesses landed without mechanic changes. | Retain the designated verdict; broader Account UI/rights/retention and archival work remain separately blocked. |
+| 3d | **COMPLETE — Transport Q-003 approved `249719c`** | Production recovery/cursors/typed-close handling/drain delay, AC6 Guild denial, and owner-reconciled ten-second AC3 convergence are implemented and mutation-proven. | Retain exact designated range `bfd9b65..65b2506`; broader Account token rotation and Transport archival union remain separate. |
 | 3e | **BLOCKED — Transport author/record action** | Reconcile T6 and plan item 4 with shipped Guild/gameserver composition; translate historical verdicts through the rewrite map and declare the complete current range union. | RFC/plan/log/docs agree with HEAD and the complete span is ready for a new cross-party verdict. |
 | 3f | **BLOCKED — API ruling-author action** | Reconcile API AC4's pre-C9 deletion language and stale C18 sequencing/body text against the accepted generated-only client rule and already-minted epochs 6–8. | No normative section contradicts C9/C18 or implies the formula/public mint already happened. |
 | 3g | **BLOCKED on 3f; then accepted API scope** | Migrate all live v1 routes into the registry; extend query/header/raw-client authority; implement the generated client and public formula/catalog/epoch/board/route/evidence runtime with privacy/conformance proofs. | RP-060–RP-064's restored mutations discriminate; every public producer has a real consumer/data workflow; exact current span is ready for cross-party review. |
 | 3h | **BLOCKED — Minigame API ruling-author action** | Reconcile Summary, MA1–MA3, dependency/status header, AC2–AC5, and plan wording with C1/C3/C5/C8/C9; enumerate exact surface props/callbacks/states/errors/keyboard/copy and bind the API-client dependency. | No normative text contradicts rulings or asks an implementer to invent the surface contract. |
-| 3i | **READY — Minigame API backend witnesses** | Repair AC2's literal error-pair/exact-byte oracle, AC3's authoritative Recovery nonmutation proof, and AC4's all-eight-operation privacy enumeration without changing mechanics. | RP-068–RP-070 mutations fail at one seam and restored cold populations pass; range is ready for cross-party review. |
+| 3i | **COMPLETE — Minigame API witnesses approved `bfd9b65`** | AC2 exact error bytes, AC3 stateful Recovery nonmutation, and AC4 all-eight-operation privacy enumeration landed in the corrected test-only boundary; live registry tightening was separately approved in API Foundation. | Retain both designated verdicts; surface/API-client/body reconciliation remains separately blocked. |
 | 3j | **BLOCKED — Combat ruling-author action** | Enumerate C2's exact effect/spell/catalog wire, C5's Trust/Obedience/Soul points and interpolation policy, and rule whether C3/AC6's native-division ban is TypeScript-only or all runtimes. | AC1/AC5 are buildable without invented mechanics; RFC/docs agree on the slash boundary. |
 | 3k | **BLOCKED on 3j** | Implement Combat AC1/AC5, reconcile the stale plan/ledger, map or supersede non-resolving review hashes, and obtain one current-span designated verdict before accepting child implementation. | Strict fixtures/tables discriminate in both runtimes; exact current range union is cross-party approved. |
 | 3l | **BLOCKED — Deployment owner/author action** | Rule D-001/D-002/D-003/D-006/D-007, then reconcile Deployment's obsolete push premise, embedded-artifact claim, CI topology, and host-injected origin/proxy/rotation contract before acceptance. | AC5 is recorded as already true; AC1–AC4 become exact buildable package/release/recovery contracts without claiming current behavior. |
@@ -52,9 +53,7 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 ## Handoff
 
 The 433-child capability, 208-key Copy, 579-unit gameplay-content, and 802-unit row-oracle evidence
-populations are complete. Q-001 and corrected Q-002 received their designated approvals at
-`34d04a5` and `bfd9b65`. Q-003's D4/T4 consumer, AC6 negative, owner-reconciled AC3 witness, failing
-mutations, and restored cold gates are complete through `afb5bf0`. The only remaining Q-003 action
-is the mandatory minimal Claude verdict beginning after `bfd9b65` through the final handoff tip;
-Claude receives no implementation, research, archival, or broader audit responsibility. R-001
-remains blocked on accepted authority.
+populations are complete. Q-001/Q-002/Q-003 are closed by designated approvals `34d04a5`,
+`bfd9b65`, and `249719c`. No READY implementation batch remains. Next work is owner/ruling-author
+input from `owner-ruling-packet.md`, accepted R-001 instrumentation authority, or the already named
+body/record reconciliations; none authorizes feature implementation by inference.

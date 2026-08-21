@@ -35,3 +35,7 @@
   `api-check`, and client typecheck; restore every mutation before the clean run.
 - [x] Record a Codex exact-range first-filter and hand the bounded backend-test range to Claude for
   the mandatory designated cross-party review. Do not claim surface completion or archive MA.
+
+Corrected Q-002 and its separate API Foundation registry lane received designated approval at
+`bfd9b65`. This closes AC2/AC3/AC4's bounded backend witnesses only; the surface and archival boxes
+above remain open.
