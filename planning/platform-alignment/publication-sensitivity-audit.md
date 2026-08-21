@@ -246,7 +246,10 @@ blocked, and nine unreviewed.** See `publication-rights-batch-37.md`. Batch 38 r
 organizing and worker-side-satire dossier; it requires public synthesis plus current labor/legal/
 political/IP/editorial review. **Fifty-nine of 67 are reviewed: five eligible, six revision-
 blocked, 48 synthesis/private-store-blocked, and eight unreviewed.** See
-`publication-rights-batch-38.md`.
+`publication-rights-batch-38.md`. Batch 39 reviewed the Cookie Clicker design-teardown dossier;
+it requires public synthesis plus current product/IP/editorial review. **Sixty of 67 are reviewed:
+five eligible, six revision-blocked, 49 synthesis/private-store-blocked, and seven unreviewed.**
+See `publication-rights-batch-39.md`.
 
 ### Class D — generated diagnostics (7)
 

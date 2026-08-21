@@ -1866,3 +1866,16 @@
 - Class-C progress is 59 of 67: five eligible, six revision-blocked, 48 synthesis/private-store-
   blocked, and eight unreviewed. No ignored source, labor/legal/political/product/design/content/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 39
+
+- Read the Cookie Clicker design-teardown dossier completely and routed it to an independently
+  worded, dated public synthesis plus current product/IP/editorial review.
+- Preserved the geometric-price/milestone, coupled-system, distinct-active/idle, different-clock-
+  minigame, achievement-economy, prestige-compression and authored-ending findings without
+  promoting current game structure, exact constants, quotations or community commentary.
+- Refused to adopt its names, tables, formulas, probabilities, schedules, upgrade trees and
+  explicit “copy verbatim” recommendations as research authority.
+- Class-C progress is 60 of 67: five eligible, six revision-blocked, 49 synthesis/private-store-
+  blocked, and seven unreviewed. No ignored source, product/design/content/balance/IP authority,
+  publication, push, deployment or destructive cleanup changed.
