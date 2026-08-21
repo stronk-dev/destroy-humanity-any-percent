@@ -199,3 +199,24 @@ for the implemented schema/cursor foundation, not those unbuilt surfaces.
   lifecycle remain open and are not credited here.
 - This entry records implementation/self-review evidence only. It does not satisfy the designated
   cross-party gate and authorizes neither archival nor publication.
+
+## 2026-08-21 — exact schema-response byte lane predeclared
+
+- Claude's designated Q-002 review at `ba8ca65` found that the implementation correctly placed
+  exact error bytes in the API registry but violated Q-002's backend-test-only boundary. Q-002 has
+  been returned to a net test-only tree by `b9ebab7`; history was not rewritten because the verdict
+  cites the rejected hashes.
+- This separate API Foundation lane is authorized by accepted A4/A5: operation rows own typed
+  error/status alternatives and runtime fixture validation. It may add a validation-only literal
+  byte narrowing to schema response descriptors and populate it for the four existing Minigame
+  operations.
+- It must not change emitted handler bytes, status/category/detail mappings, JSON schema shapes,
+  OpenAPI, TypeScript output, compatibility pins, Recovery/Game UI response authority, public
+  endpoints, mechanics, surface components, or player copy.
+- Predeclared negatives: a schema-valid illegal category/detail cross-product; one appended byte;
+  empty/unsorted/duplicate/schema-invalid registered literals; and mutation of both caller-owned and
+  enumerated snapshot bytes after registry construction. Every mutation must be restored.
+- Required gates: cold focused and root Go tests, vet, generated API drift check, strict client
+  typecheck, and sequential Account and Gameserver Postgres populations. The range receives a
+  Codex first-filter and mandatory Claude exact-range designated review; it authorizes no archival,
+  publication, push, or Q-003 start.
