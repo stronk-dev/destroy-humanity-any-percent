@@ -3,6 +3,7 @@ package gameserver
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -691,6 +692,129 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 	}
 }
 
+func TestComposedAccountFamilyRevocationRevalidatesSocketsIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	const cleanDatabase = `TRUNCATE bootstrap_receipts,accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
+	if _, err := db.ExecContext(ctx, cleanDatabase); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if _, err := db.ExecContext(context.Background(), cleanDatabase); err != nil {
+			t.Errorf("clean socket-revocation database: %v", err)
+		}
+	})
+
+	composition, err := Compose(ctx, CompositionConfig{
+		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000304",
+		ActivityBracket: "activity.standard", Clock: time.Now,
+		SigningKeys:   account.SigningKeys{CurrentID: "composition-revocation", Current: bytes.Repeat([]byte{0x66}, 32)},
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-revocation", Current: bytes.Repeat([]byte{0x67}, 32)},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	serverContext, cancelServer := context.WithCancel(ctx)
+	defer cancelServer()
+	if err := composition.Server.Start(serverContext); err != nil {
+		t.Fatal(err)
+	}
+	httpServer := httptest.NewServer(composition.Server.Handler())
+	defer httpServer.Close()
+	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusNoContent)
+
+	createdResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
+	if createdResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("account status=%d body=%s", createdResponse.StatusCode, responseBody(createdResponse))
+	}
+	var created account.CreatedAccount
+	decodeCompositionResponse(t, createdResponse, &created)
+	createSession := func() account.TokenPair {
+		response := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+			fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+		if response.StatusCode != http.StatusOK {
+			t.Fatalf("session status=%d body=%s", response.StatusCode, responseBody(response))
+		}
+		var pair account.TokenPair
+		decodeCompositionResponse(t, response, &pair)
+		return pair
+	}
+	target := createSession()
+	control := createSession()
+	founder, err := composition.Accounts.ActiveFounder(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	websocketURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/connection/websocket"
+	live := dialCompositionSocket(t, websocketURL, httpServer.Client(), target.AccessToken)
+	defer live.connection.CloseNow()
+	writeWS(t, live, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "player:" + founder.ID}})
+	if reply := readWSID(t, live, 2); reply.Error != nil || reply.Subscribe == nil {
+		t.Fatalf("pre-revocation subscribe=%+v", reply)
+	}
+
+	rotateResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session/refresh", "",
+		fmt.Sprintf(`{"refresh_token":%q}`, target.RefreshToken))
+	if rotateResponse.StatusCode != http.StatusOK {
+		t.Fatalf("rotate status=%d body=%s", rotateResponse.StatusCode, responseBody(rotateResponse))
+	}
+	var rotated account.TokenPair
+	decodeCompositionResponse(t, rotateResponse, &rotated)
+	reuseResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session/refresh", "",
+		fmt.Sprintf(`{"refresh_token":%q}`, target.RefreshToken))
+	if reuseResponse.StatusCode != http.StatusUnauthorized || !strings.Contains(responseBody(reuseResponse), `"category":"refresh_reused"`) {
+		t.Fatalf("refresh-family reuse status=%d", reuseResponse.StatusCode)
+	}
+
+	revokedBeforeConnect, _, err := websocket.Dial(context.Background(), websocketURL, &websocket.DialOptions{
+		HTTPClient: httpServer.Client(), HTTPHeader: http.Header{"Origin": []string{"http://localhost:5173"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeSocketCommand(t, revokedBeforeConnect, map[string]any{"id": 1, "connect": map[string]any{"token": rotated.AccessToken}})
+	if status := waitSocketCloseStatus(t, revokedBeforeConnect, 3*time.Second); status != websocket.StatusCode(transport.CloseAuthExpired) {
+		t.Fatalf("revoked-before-connect close=%d want=%d", status, transport.CloseAuthExpired)
+	}
+
+	// Centrifuge invokes Node.OnAlive on its 25-second presence cadence. That
+	// callback re-authenticates the stored token against Postgres, so the
+	// already-connected socket must be closed after family revocation.
+	if status := waitSocketCloseStatus(t, live.connection, 30*time.Second); status != websocket.StatusCode(transport.CloseAuthExpired) {
+		t.Fatalf("live revoked socket close=%d want=%d", status, transport.CloseAuthExpired)
+	}
+	data, _ := json.Marshal(map[string]any{"id": 3, "subscribe": map[string]any{"channel": "world"}})
+	writeContext, cancelWrite := context.WithTimeout(context.Background(), time.Second)
+	defer cancelWrite()
+	if err := live.connection.Write(writeContext, websocket.MessageText, data); err == nil {
+		t.Fatal("post-revocation subscription write survived the alive denial")
+	}
+
+	unrevoked := dialCompositionSocket(t, websocketURL, httpServer.Client(), control.AccessToken)
+	defer unrevoked.connection.CloseNow()
+	writeWS(t, unrevoked, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "player:" + founder.ID}})
+	if reply := readWSID(t, unrevoked, 2); reply.Error != nil || reply.Subscribe == nil {
+		t.Fatalf("unrevoked family control subscribe=%+v", reply)
+	}
+
+	drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancelDrain()
+	if err := composition.Server.Drain(drainContext, time.Now()); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -879,6 +1003,7 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 				)`, companyRevision.StreamID).Scan(&retainedExitWitness); err != nil || retainedExitWitness != 1 {
 				t.Fatalf("retained Founder Exit witness=%d err=%v", retainedExitWitness, err)
 			}
+			proveImportedFounderExitExcludedFromBoard(t, ctx, db, composition, httpServer, store, now)
 			drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancelDrain()
 			if err := composition.Server.Drain(drainContext, now.Add(2*time.Second)); err != nil {
@@ -906,6 +1031,129 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	default:
 	}
 	t.Fatalf("terminal run did not reach board: status=%s verdict=%s rows=%d background=%v", status, verdict, boardRows, backgroundErr)
+}
+
+func proveImportedFounderExitExcludedFromBoard(t *testing.T, ctx context.Context, db *sql.DB, composition *Composition,
+	httpServer *httptest.Server, store *save.Store, now time.Time) {
+	t.Helper()
+	createdResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
+	if createdResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("import-control account status=%d body=%s", createdResponse.StatusCode, responseBody(createdResponse))
+	}
+	var created account.CreatedAccount
+	decodeCompositionResponse(t, createdResponse, &created)
+	sessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+	if sessionResponse.StatusCode != http.StatusOK {
+		t.Fatalf("import-control session status=%d body=%s", sessionResponse.StatusCode, responseBody(sessionResponse))
+	}
+	var tokens account.TokenPair
+	decodeCompositionResponse(t, sessionResponse, &tokens)
+
+	currentCatalog, ok := composition.Catalogs.Resolve(composition.CurrentHash)
+	if !ok {
+		t.Fatal("current import economy catalog unavailable")
+	}
+	localLedger, err := economy.NewLedger(currentCatalog, economy.ScopeCompany)
+	if err != nil {
+		t.Fatal(err)
+	}
+	localCompany := &save.State{Ledger: localLedger, GeneratorCounts: map[string]int64{}, GeneratorProvisioned: map[string]int64{},
+		ProvisionRemaindersPPM: map[string]int64{}, UpgradesOwned: map[string]bool{}, EvaluatedThrough: now, ManualTokenRefilledAt: now,
+		GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{},
+		RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.New(8, 12),
+		OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}, RunSeq: 1, RunStartedAt: now, Tier: 2,
+		ManualTokenMilli: currentCatalog.ManualPolicy().BucketCapMilli}
+	for _, generator := range currentCatalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		localCompany.GeneratorCounts[generator.ID] = 0
+		localCompany.GeneratorProvisioned[generator.ID] = 0
+		if generator.Provision != nil {
+			localCompany.ProvisionRemaindersPPM[generator.Provision.GeneratorID] = 0
+		}
+	}
+	localVersion := save.CurrentVersion
+	localBytes, err := save.EncodeStateVersion(localCompany, localVersion)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restoredLocal, err := save.RestoreState(localBytes, localVersion, currentCatalog, economy.ScopeCompany, now)
+	if err != nil {
+		t.Fatalf("restore local import fixture: %v", err)
+	}
+	normalizedBytes, err := save.EncodeState(restoredLocal)
+	if err != nil {
+		t.Fatalf("encode normalized import fixture: %v", err)
+	}
+	if _, err := save.RestoreState(normalizedBytes, save.CurrentVersion, currentCatalog, economy.ScopeCompany, time.Time{}); err != nil {
+		t.Fatalf("restore normalized import fixture: %v", err)
+	}
+	importBody, err := json.Marshal(struct {
+		Version       int             `json:"version"`
+		ConstantsHash string          `json:"constants_hash"`
+		State         json.RawMessage `json:"state"`
+	}{Version: localVersion, ConstantsHash: composition.CurrentHash, State: localBytes})
+	if err != nil {
+		t.Fatal(err)
+	}
+	importResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/founder/import", tokens.AccessToken, string(importBody))
+	if importResponse.StatusCode != http.StatusOK {
+		t.Fatalf("actual import status=%d body=%s", importResponse.StatusCode, responseBody(importResponse))
+	}
+	var imported account.Founder
+	decodeCompositionResponse(t, importResponse, &imported)
+	if !imported.Imported {
+		t.Fatalf("actual import response=%+v", imported)
+	}
+	company, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil || company.Revision != 1 {
+		t.Fatalf("imported active company=%+v err=%v", company, err)
+	}
+
+	manual := `{"intent_id":"01985555-5003-7000-8000-000000000503","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`
+	manualResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, manual)
+	if manualResponse.StatusCode != http.StatusOK {
+		t.Fatalf("imported manual status=%d body=%s", manualResponse.StatusCode, responseBody(manualResponse))
+	}
+	_ = responseBody(manualResponse)
+	exit := `{"intent_id":"01985555-5004-7000-8000-000000000504","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`
+	exitResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, exit)
+	if exitResponse.StatusCode != http.StatusOK {
+		t.Fatalf("imported Exit status=%d body=%s", exitResponse.StatusCode, responseBody(exitResponse))
+	}
+	_ = responseBody(exitResponse)
+	if verdict, err := composition.Verification.VerifyStoredRun(ctx, company.StreamID, 1); err != nil || verdict != production.ReplayVerified {
+		t.Fatalf("imported stored run verdict=%s err=%v", verdict, err)
+	}
+
+	deadline := time.Now().Add(3 * time.Second)
+	for time.Now().Before(deadline) {
+		var status string
+		var boardRows, projectionClaims int
+		statusErr := db.QueryRowContext(ctx, `SELECT status FROM verification_queue WHERE company_stream_id=$1 AND run_seq=1`, company.StreamID).Scan(&status)
+		boardErr := db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1`, company.StreamID+":1").Scan(&boardRows)
+		claimErr := db.QueryRowContext(ctx, `SELECT count(*) FROM verification_projection_events projection
+			JOIN events terminal ON terminal.event_id=projection.event_id
+			WHERE terminal.stream_id=$1 AND terminal.kind='run_ended'`, company.StreamID).Scan(&projectionClaims)
+		if statusErr == nil && boardErr == nil && claimErr == nil && status == "verified" && boardRows == 0 && projectionClaims == 1 {
+			loaded, loadErr := store.LoadLatest(ctx, company.StreamID)
+			if loadErr != nil || loaded.Revision.Number < 3 || loaded.State.RunSeq != 2 {
+				t.Fatalf("imported post-Exit company=%+v err=%v", loaded, loadErr)
+			}
+			active, activeErr := composition.Accounts.ActiveFounder(ctx, created.AccountID)
+			if activeErr != nil || active.ID != imported.ID || !active.Imported {
+				t.Fatalf("imported identity after projection=%+v err=%v", active, activeErr)
+			}
+			return
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+	var status string
+	var boardRows, projectionClaims int
+	_ = db.QueryRowContext(ctx, `SELECT status FROM verification_queue WHERE company_stream_id=$1 AND run_seq=1`, company.StreamID).Scan(&status)
+	_ = db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1`, company.StreamID+":1").Scan(&boardRows)
+	_ = db.QueryRowContext(ctx, `SELECT count(*) FROM verification_projection_events projection
+		JOIN events terminal ON terminal.event_id=projection.event_id WHERE terminal.stream_id=$1`, company.StreamID).Scan(&projectionClaims)
+	t.Fatalf("imported run projection status=%s rows=%d claims=%d", status, boardRows, projectionClaims)
 }
 
 func progressedCompositionStates(t *testing.T, catalogs *runtimeCatalogs, constantsHash string, now time.Time) (*save.State, *save.State, []save.FrozenContribution) {
@@ -1032,14 +1280,30 @@ func dialCompositionSocket(t *testing.T, endpoint string, client *http.Client, t
 
 func writeWS(t *testing.T, socket *compositionSocket, value any) {
 	t.Helper()
+	writeSocketCommand(t, socket.connection, value)
+}
+
+func writeSocketCommand(t *testing.T, connection *websocket.Conn, value any) {
+	t.Helper()
 	data, err := json.Marshal(value)
 	if err != nil {
 		t.Fatal(err)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	if err := socket.connection.Write(ctx, websocket.MessageText, data); err != nil {
+	if err := connection.Write(ctx, websocket.MessageText, data); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func waitSocketCloseStatus(t *testing.T, connection *websocket.Conn, timeout time.Duration) websocket.StatusCode {
+	t.Helper()
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	for {
+		if _, _, err := connection.Read(ctx); err != nil {
+			return websocket.CloseStatus(err)
+		}
 	}
 }
 

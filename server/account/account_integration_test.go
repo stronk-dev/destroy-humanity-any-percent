@@ -304,9 +304,34 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil || newState.Revision != 1 {
 		t.Fatalf("new state=%+v err=%v", newState, err)
 	}
+	firstNewState := newState
 	initialGenesis, err := saveStore.LoadRunGenesis(ctx, newState.StreamID, 1)
 	if err != nil || initialGenesis.Version != newState.Version || initialGenesis.ConstantsHash != newState.ConstantsHash || !bytes.Equal(initialGenesis.State, newState.State) {
 		t.Fatalf("initial genesis=%+v state_equal=%t err=%v", initialGenesis, bytes.Equal(initialGenesis.State, newState.State), err)
+	}
+	for replacement := 2; replacement <= 3; replacement++ {
+		response := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/founder", freshPair.AccessToken, `{}`)
+		if response.StatusCode != http.StatusCreated {
+			t.Fatalf("New Founder replacement %d status=%d body=%s", replacement, response.StatusCode, readBody(response))
+		}
+		var nextFounder Founder
+		decodeResponse(t, response, &nextFounder)
+		if nextFounder.ID == newFounder.ID || nextFounder.Imported {
+			t.Fatalf("New Founder replacement %d=%+v prior=%+v", replacement, nextFounder, newFounder)
+		}
+		priorState := newState
+		newState, err = repository.ActiveCompanyState(ctx, created.AccountID)
+		if err != nil || newState.Revision != 1 || newState.StreamID == priorState.StreamID ||
+			newState.Version != firstNewState.Version || newState.ConstantsHash != firstNewState.ConstantsHash ||
+			!bytes.Equal(newState.State, firstNewState.State) {
+			t.Fatalf("New Founder replacement %d state=%+v exact_initial=%t err=%v", replacement, newState,
+				bytes.Equal(newState.State, firstNewState.State), err)
+		}
+		archivedPrior, loadErr := saveStore.LoadLatest(ctx, priorState.StreamID)
+		if loadErr != nil || archivedPrior.ArchivedAt == nil {
+			t.Fatalf("New Founder replacement %d prior stream=%+v err=%v", replacement, archivedPrior, loadErr)
+		}
+		newFounder = nextFounder
 	}
 	importedState, err := save.RestoreState(newState.State, newState.Version, catalog, economy.ScopeCompany, time.Time{})
 	if err != nil {
@@ -354,22 +379,56 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if string(importReceipt["outcome"]) != `"applied"` || string(importReceipt["new_revision"]) != "2" {
 		t.Fatalf("import receipt=%v", importReceipt)
 	}
+	streamRows, err := db.QueryContext(ctx, `SELECT s.id FROM save_streams s JOIN account_founders af ON af.founder_id=s.owner_id
+		WHERE af.account_id=$1 AND s.owner_kind='founder' ORDER BY s.id`, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var retainedStreamIDs []string
+	for streamRows.Next() {
+		var streamID string
+		if err := streamRows.Scan(&streamID); err != nil {
+			streamRows.Close()
+			t.Fatal(err)
+		}
+		retainedStreamIDs = append(retainedStreamIDs, streamID)
+	}
+	if err := streamRows.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if len(retainedStreamIDs) != 10 {
+		t.Fatalf("pre-delete Founder/Company stream count=%d want=10", len(retainedStreamIDs))
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO bootstrap_receipts
+		(request_digest,account_id,key_id,nonce,ciphertext,created_at,refresh_expires_at)
+		VALUES($1,$2,'account-deletion-witness',$3,$4,$5,$6)`, bytes.Repeat([]byte{0xa1}, 32), created.AccountID,
+		bytes.Repeat([]byte{0xb2}, 12), bytes.Repeat([]byte{0xc3}, 17), now, now.Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
 
 	deleteResponse := requestJSON(t, server.Client, http.MethodDelete, server.URL+"/api/v1/account", freshPair.AccessToken, "")
 	if deleteResponse.StatusCode != http.StatusNoContent {
 		t.Fatalf("delete status=%d body=%s", deleteResponse.StatusCode, readBody(deleteResponse))
 	}
-	var accounts, emails, sessions int
-	if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM accounts),(SELECT count(*) FROM account_emails),(SELECT count(*) FROM sessions)`).Scan(&accounts, &emails, &sessions); err != nil || accounts != 0 || emails != 0 || sessions != 0 {
-		t.Fatalf("PII/session rows accounts=%d emails=%d sessions=%d err=%v", accounts, emails, sessions, err)
+	var accounts, emails, sessions, accessTokens, families, liveBootstrapSecrets int
+	if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM accounts),(SELECT count(*) FROM account_emails),
+		(SELECT count(*) FROM sessions),(SELECT count(*) FROM access_tokens),(SELECT count(*) FROM session_families),
+		(SELECT count(*) FROM bootstrap_receipts WHERE account_id=$1 AND
+			(tombstoned_at IS NULL OR key_id IS NOT NULL OR nonce IS NOT NULL OR ciphertext IS NOT NULL))`, created.AccountID).
+		Scan(&accounts, &emails, &sessions, &accessTokens, &families, &liveBootstrapSecrets); err != nil ||
+		accounts != 0 || emails != 0 || sessions != 0 || accessTokens != 0 || families != 0 || liveBootstrapSecrets != 0 {
+		t.Fatalf("account-linked rows accounts=%d emails=%d sessions=%d access=%d families=%d bootstrap_secrets=%d err=%v",
+			accounts, emails, sessions, accessTokens, families, liveBootstrapSecrets, err)
 	}
-	loadedImported, err := saveStore.LoadLatest(ctx, newState.StreamID)
-	if err != nil || loadedImported.ArchivedAt == nil {
-		t.Fatalf("anonymized save missing after account deletion: %+v err=%v", loadedImported, err)
+	for _, streamID := range retainedStreamIDs {
+		retained, loadErr := saveStore.LoadLatest(ctx, streamID)
+		if loadErr != nil || retained.ArchivedAt == nil {
+			t.Fatalf("anonymized stream %s missing after account deletion: %+v err=%v", streamID, retained, loadErr)
+		}
 	}
 	var founderRows, linkedRows, unarchivedRows, importedRows int
 	if err := db.QueryRowContext(ctx, `SELECT count(*),count(account_id),count(*) FILTER (WHERE archived_at IS NULL),count(*) FILTER (WHERE imported) FROM account_founders`).Scan(
-		&founderRows, &linkedRows, &unarchivedRows, &importedRows); err != nil || founderRows != 3 || linkedRows != 0 || unarchivedRows != 0 || importedRows != 1 {
+		&founderRows, &linkedRows, &unarchivedRows, &importedRows); err != nil || founderRows != 5 || linkedRows != 0 || unarchivedRows != 0 || importedRows != 1 {
 		t.Fatalf("anonymized founders rows=%d linked=%d active=%d imported=%d err=%v", founderRows, linkedRows, unarchivedRows, importedRows, err)
 	}
 }
@@ -507,7 +566,8 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	hash := bundle.Hash
 	seedAccountEpoch(t, db, hash, bundle.Artifacts)
 	resolver := integrationCatalogs{hash: catalog}
-	repository, err := NewRepository(db, resolver, hash, SigningKeys{CurrentID: "test", Current: bytes.Repeat([]byte{1}, 32)}, time.Now, nil)
+	now := time.Date(2026, 8, 21, 12, 0, 0, 0, time.UTC)
+	repository, err := NewRepository(db, resolver, hash, SigningKeys{CurrentID: "test", Current: bytes.Repeat([]byte{1}, 32)}, func() time.Time { return now }, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -522,20 +582,122 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	api, err := NewAPI(repository, service, APIConfig{UnauthenticatedBurst: 1, UnauthenticatedPerMin: 1, AccountBurst: 1, AccountPerMin: 1, MaxBodyBytes: 64 << 10, BootstrapReceiptKeys: testBootstrapReceiptKeys()})
+	api, err := NewAPI(repository, service, APIConfig{UnauthenticatedBurst: 1, UnauthenticatedPerMin: 1, AccountBurst: 1, AccountPerMin: 1,
+		MaxBodyBytes: 64 << 10, TrustedProxyHops: 1, BootstrapReceiptKeys: testBootstrapReceiptKeys()})
 	if err != nil {
+		t.Fatal(err)
+	}
+	if err := api.AttachGameUI(rateLimitGameUI{}); err != nil {
 		t.Fatal(err)
 	}
 	server := testhttp.New(api.Router())
 	defer server.Close()
-	first := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
-	if first.StatusCode != http.StatusCreated {
-		t.Fatalf("first status=%d body=%s", first.StatusCode, readBody(first))
+
+	assertLimited := func(response *http.Response, operation string) {
+		t.Helper()
+		body := readBody(response)
+		if response.StatusCode != http.StatusTooManyRequests || body != "{\"category\":\"rate_limited\",\"detail\":\"ip\"}\n" {
+			t.Fatalf("%s limiter status=%d body=%s", operation, response.StatusCode, body)
+		}
 	}
-	second := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
-	if second.StatusCode != http.StatusTooManyRequests || !strings.Contains(readBody(second), `"category":"rate_limited"`) {
-		t.Fatalf("second status=%d", second.StatusCode)
+	assertCounts := func(want [7]int, operation string) {
+		t.Helper()
+		if got := bootstrapCounts(t, db); got != want {
+			t.Fatalf("%s mutated state while limited: got=%v want=%v", operation, got, want)
+		}
 	}
+	refill := func() { now = now.Add(time.Minute) }
+
+	accountIP := "192.0.2.10"
+	firstAccount := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`, accountIP)
+	if firstAccount.StatusCode != http.StatusCreated {
+		t.Fatalf("first account status=%d body=%s", firstAccount.StatusCode, readBody(firstAccount))
+	}
+	_ = readBody(firstAccount)
+	accountCounts := bootstrapCounts(t, db)
+	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`, accountIP), "create account")
+	assertCounts(accountCounts, "create account")
+	refill()
+	refilledAccount := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`, accountIP)
+	if refilledAccount.StatusCode != http.StatusCreated {
+		t.Fatalf("refilled account status=%d body=%s", refilledAccount.StatusCode, readBody(refilledAccount))
+	}
+	_ = readBody(refilledAccount)
+
+	loginAccount, err := repository.CreateAccount(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loginBody := fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, loginAccount.AccountID, loginAccount.RecoveryCode)
+	loginIP := "192.0.2.20"
+	firstLogin := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session", "", loginBody, loginIP)
+	if firstLogin.StatusCode != http.StatusOK {
+		t.Fatalf("first recovery login status=%d body=%s", firstLogin.StatusCode, readBody(firstLogin))
+	}
+	_ = readBody(firstLogin)
+	loginCounts := bootstrapCounts(t, db)
+	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session", "", loginBody, loginIP), "recovery login")
+	assertCounts(loginCounts, "recovery login")
+	refill()
+	refilledLogin := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session", "", loginBody, loginIP)
+	if refilledLogin.StatusCode != http.StatusOK {
+		t.Fatalf("refilled recovery login status=%d body=%s", refilledLogin.StatusCode, readBody(refilledLogin))
+	}
+	_ = readBody(refilledLogin)
+
+	refreshAccount, err := repository.CreateAccount(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	firstFamily, err := repository.CreateSession(ctx, refreshAccount.AccountID, refreshAccount.RecoveryCode)
+	if err != nil {
+		t.Fatal(err)
+	}
+	secondFamily, err := repository.CreateSession(ctx, refreshAccount.AccountID, refreshAccount.RecoveryCode)
+	if err != nil {
+		t.Fatal(err)
+	}
+	refreshIP := "192.0.2.30"
+	firstRefresh := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session/refresh", "",
+		fmt.Sprintf(`{"refresh_token":%q}`, firstFamily.RefreshToken), refreshIP)
+	if firstRefresh.StatusCode != http.StatusOK {
+		t.Fatalf("first refresh status=%d body=%s", firstRefresh.StatusCode, readBody(firstRefresh))
+	}
+	_ = readBody(firstRefresh)
+	refreshCounts := bootstrapCounts(t, db)
+	secondRefreshBody := fmt.Sprintf(`{"refresh_token":%q}`, secondFamily.RefreshToken)
+	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session/refresh", "", secondRefreshBody, refreshIP), "session refresh")
+	assertCounts(refreshCounts, "session refresh")
+	refill()
+	refilledRefresh := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/session/refresh", "", secondRefreshBody, refreshIP)
+	if refilledRefresh.StatusCode != http.StatusOK {
+		t.Fatalf("refilled refresh status=%d body=%s", refilledRefresh.StatusCode, readBody(refilledRefresh))
+	}
+	_ = readBody(refilledRefresh)
+
+	bootstrapIP := "192.0.2.40"
+	firstBootstrap := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/bootstrap", "",
+		fmt.Sprintf(`{"idempotency_key":%q}`, strings.Repeat("ab", 32)), bootstrapIP)
+	if firstBootstrap.StatusCode != http.StatusCreated {
+		t.Fatalf("first bootstrap status=%d body=%s", firstBootstrap.StatusCode, readBody(firstBootstrap))
+	}
+	_ = readBody(firstBootstrap)
+	bootstrapState := bootstrapCounts(t, db)
+	secondBootstrapBody := fmt.Sprintf(`{"idempotency_key":%q}`, strings.Repeat("cd", 32))
+	assertLimited(requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/bootstrap", "", secondBootstrapBody, bootstrapIP), "bootstrap")
+	assertCounts(bootstrapState, "bootstrap")
+	refill()
+	refilledBootstrap := requestJSONFromIP(t, server.Client, http.MethodPost, server.URL+"/api/v1/bootstrap", "", secondBootstrapBody, bootstrapIP)
+	if refilledBootstrap.StatusCode != http.StatusCreated {
+		t.Fatalf("refilled bootstrap status=%d body=%s", refilledBootstrap.StatusCode, readBody(refilledBootstrap))
+	}
+	_ = readBody(refilledBootstrap)
+}
+
+type rateLimitGameUI struct{ bootstrapSnapshotFixture }
+
+func (rateLimitGameUI) GameUISnapshot(context.Context, string, time.Time) (json.RawMessage, error) {
+	return nil, errors.New("unused rate-limit fixture")
 }
 
 func seedAccountEpoch(t *testing.T, db *sql.DB, hash string, artifacts map[string][]byte) {
@@ -596,6 +758,24 @@ func requestJSON(t *testing.T, client *http.Client, method, url, accessToken, bo
 		t.Fatal(err)
 	}
 	request.Header.Set("Content-Type", "application/json")
+	if accessToken != "" {
+		request.Header.Set("Authorization", "Bearer "+accessToken)
+	}
+	response, err := client.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return response
+}
+
+func requestJSONFromIP(t *testing.T, client *http.Client, method, url, accessToken, body, clientIP string) *http.Response {
+	t.Helper()
+	request, err := http.NewRequest(method, url, strings.NewReader(body))
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("X-Forwarded-For", clientIP)
 	if accessToken != "" {
 		request.Header.Set("Authorization", "Bearer "+accessToken)
 	}
