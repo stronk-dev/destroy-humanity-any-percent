@@ -51,7 +51,8 @@ The evidence trace is in
 - Leaderboards D2/D4/D5/D6/L1/L4 and canonical docs now distinguish its strong backend from the
   absent player capability. The missing readers/browser/validator/Route surface has a draft
   successor, not implementation authority. Commons any-membership is now implemented and
-  severing-proven; AC1/AC3/AC6 literal witnesses and designated review remain open.
+  severing-proven; AC1 exact ranking and AC6 frozen-history witnesses also discriminate. AC3's
+  composed crossing witness and designated review remain open.
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.

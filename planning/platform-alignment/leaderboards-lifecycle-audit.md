@@ -26,7 +26,8 @@ six acceptance criteria is false in the current implementation:
   transparency validator, or see the Route Registry alongside records;
 - Compact assistance was derived from membership **at Exit** at this audit coordinate; the
   post-coordinate repair now derives immutable any-point membership and awaits designated review;
-- AC1, AC3, and AC6 retain narrower or missing witnesses than their literal requirements;
+- AC1 and AC6 now have post-coordinate literal, mutation-proven witnesses; AC3 remains narrower
+  than its literal cross-epoch replay→projection chain;
 - player-authored/Exhibition categories, world-first dispatch emission, machine boards, abandoned
   run retention, and the rejected-log/supersession follow-ups are absent and now explicitly routed;
 - the plan predates the implemented Run Genesis successor and is materially stale; and
@@ -58,12 +59,12 @@ workflow because none is composed.
 
 | AC | Verdict | Evidence and limitation | Required closeout |
 |---|---|---|---|
-| AC1 | **Partial** | Board APIs accept typed integer time/count or `(exponent,mantissa)` keys; SQL uses no Decimal sort. Magnitude parsing pins 12 canonical digits. The board fixture's tie rows use the **same already-quantized tuple twice**. It does not start from two distinct values separated below the quantum and prove they converge to one shared rank, as the literal criterion says. | Add one named source-value→key→board witness and a mutation that incorrectly distinguishes the pair. |
+| AC1 | **Post-coordinate witness complete; review pending** | Two distinct sub-quantum Decimal sources converge independently through canonical wire strings and keys, then share rank 1 in real Postgres. Incrementing one derived mantissa produces ranks 1/2 and fails. | Include the exact witness range in the mandatory cross-party verdict. |
 | AC2 | **Cold witness green; archival review missing** | The Go-authored corpus is replayed by Go and the shipped TypeScript module; gap, constants, engine, clock, state/event/receipt mutations produce the same closed verdict classes. The module is bundled but has no player-facing archive/catalog retrieval or invocation surface. | Preserve the parity corpus; decide whether L4 requires only bundled code or an actual player transparency workflow, then include the accepted scope in the full designated review. |
 | AC3 | **Partial** | Prestige's real-Postgres fixture starts run 1 in epoch 1, mints genuinely changed bytes, finishes in epoch 2, and proves the ended event/pin retain epoch-1 hash while run 2 uses epoch 2. Separate replay and projection fixtures are green. No single fixture replays that crossing run against epoch N's archived catalog **and** proves its board row/query remains in N. | Add the literal start-N→mint→finish-N+1→replay-N→rank-N chain plus a current-catalog misclassification control. |
 | AC4 | **Cold witness green; archival review missing** | Real temporary-Git fixtures reject an unregistered artifact change, a `BALANCE-CHANGE:` without exactly one mint, a mint missing its numbered changelog, and a hotfix hardcap reduction; valid hotfix/mint controls pass. The live history guard also completed green. | Retain the discriminating fixtures and include their post-rewrite ranges in the designated review union. |
 | AC5 | **Post-coordinate repair complete; review pending** | `QueueProjector` now derives Commons from run-scoped `compact_signed` history. Real-Postgres join→Exit and join→leave→Exit positives plus a never-joined Solo control pass; severing the history signal fails both positives. | Include the exact implementation range in the mandatory cross-party verdict. |
-| AC6 | **Unmet witness** | Board queries accept closed epoch ids, and a fixture queries epoch 1 after minting epoch 2. No test mints **two subsequent epochs** and queries the original frozen board. Seed reconciliation's two-epoch history test is storage-only and creates no board row. | Add an epoch N board row, mint N+1 and N+2 with distinct identities, then query N through the accepted reader boundary; prove inserts into the frozen identity fail or are impossible by the chosen contract. |
+| AC6 | **Post-coordinate witness complete; review pending** | A real board row is snapshotted in epoch N, two later distinct catalog identities are minted, and the complete N row/rank/key/world-first result remains equal. Querying the newest epoch at the post-mint seam fails the witness empty. | Include the exact witness range in the mandatory cross-party verdict. |
 
 No plan box was changed. The successor Run Genesis implementation makes plan item 3 stale, but the
 checkbox law requires its proof and record reconciliation inside one future designated-review
@@ -130,7 +131,7 @@ remediations. The tracked Leaderboards plan correctly leaves independent review 
 
 1. **Body reconciliation complete after this coordinate; successor acceptance remains open.**
 2. **AC5 implementation/proof complete after this coordinate; designated review remains.**
-3. Add only the missing literal AC1/AC3/AC6 witnesses and their failing mutations.
+3. **AC1/AC6 complete after this coordinate; add AC3's composed crossing witness.**
 4. Review and explicitly accept (or narrow) the draft successor for board/epoch readers, player
    browsing, validator delivery, Route Registry integration, world-first dispatch, and machine
    surfaces. D-017 separately gates player-authored/Exhibition categories.

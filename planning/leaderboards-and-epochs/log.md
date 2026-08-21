@@ -382,3 +382,15 @@ hash correctness can no longer disguise invalid category semantics.
   structural tuple assertion) while retaining the Solo control.
 - Canonical docs changed with behavior. No API/UI/draft-successor scope, copy, schema, balance,
   status promotion, checkbox, verdict, archival, push or publication changed.
+
+## 2026-08-21 — AC1 and AC6 literal witnesses
+
+- AC1 now begins with two genuinely distinct Decimal source values below the 12-digit canonical
+  quantum, independently converts both through wire string and `MagnitudeKey`, and proves the
+  resulting board rows share competition rank 1. Incrementing one post-conversion mantissa failed
+  the cold real-Postgres witness with ranks 1 and 2.
+- AC6 now projects and snapshots an epoch-2 board row, mints two later distinct catalog hashes,
+  queries epoch 2 again, and requires the full row/rank/key/world-first result to remain equal. A
+  probe that queried epoch 4 at the post-mint seam failed with an empty board.
+- No product behavior, API/UI/draft-successor scope, schema, balance, copy, checkbox, status,
+  verdict, archival, push or publication changed.

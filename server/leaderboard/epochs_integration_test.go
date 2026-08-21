@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/save"
@@ -47,7 +48,7 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(root, "changelog"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	for _, name := range []string{"epoch-1.md", "epoch-2.md"} {
+	for _, name := range []string{"epoch-1.md", "epoch-2.md", "epoch-3.md", "epoch-4.md"} {
 		if err := os.WriteFile(filepath.Join(root, "changelog", name), []byte("# tested epoch\n"), 0o644); err != nil {
 			t.Fatal(err)
 		}
@@ -179,7 +180,19 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if err != nil || len(page) != 2 || page[0].RunID != board[1].RunID || page[1].Rank != 3 {
 		t.Fatalf("page=%+v err=%v", page, err)
 	}
-	magnitudeKeys := []MagnitudeKey{{Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 14, Mantissa: 999_000_000_000}, {Exponent: -1, Mantissa: 900_000_000_000}, {}}
+	sourceValues := []decimal.Decimal{decimal.New(1.2345678901201, 15), decimal.New(1.2345678901202, 15)}
+	if sourceValues[0].Mantissa() == sourceValues[1].Mantissa() || sourceValues[0].String() != sourceValues[1].String() {
+		t.Fatalf("sub-quantum sources did not converge: (%v,%s) (%v,%s)", sourceValues[0].Mantissa(), sourceValues[0].String(), sourceValues[1].Mantissa(), sourceValues[1].String())
+	}
+	firstMagnitude, err := magnitudeKeyFromCanonical(sourceValues[0].String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	secondMagnitude, err := magnitudeKeyFromCanonical(sourceValues[1].String())
+	if err != nil || firstMagnitude != secondMagnitude {
+		t.Fatalf("sub-quantum keys first=%+v second=%+v err=%v", firstMagnitude, secondMagnitude, err)
+	}
+	magnitudeKeys := []MagnitudeKey{firstMagnitude, secondMagnitude, {Exponent: 14, Mantissa: 999_000_000_000}, {Exponent: -1, Mantissa: 900_000_000_000}, {}}
 	for index, key := range magnitudeKeys {
 		eventIDs := []string{"01985555-4211-7000-8000-000000000011", "01985555-4212-7000-8000-000000000012", "01985555-4213-7000-8000-000000000013", "01985555-4214-7000-8000-000000000014", "01985555-4215-7000-8000-000000000015"}
 		founderIndex := index
@@ -205,7 +218,36 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if err != nil || len(magnitudePage) != 2 || magnitudePage[0].RunID != magnitudeBoard[1].RunID || magnitudePage[1].Rank != 3 {
 		t.Fatalf("magnitude page=%+v err=%v", magnitudePage, err)
 	}
-	assertEpochRows(t, db, 2, 2)
+
+	frozenKey := int64(1_234)
+	frozenRun := VerifiedRun{EventID: "01985555-4221-7000-8000-000000000021", RunID: founders[0] + ":4", FounderID: founders[0],
+		CategoryID: "frozen.example", Variables: variables, EpochID: 2, KeyMS: &frozenKey, VerifiedAt: now.Add(20 * time.Second)}
+	if worldFirst, err := repository.ProjectVerifiedRun(ctx, frozenRun); err != nil || !worldFirst {
+		t.Fatalf("project frozen epoch row worldFirst=%v err=%v", worldFirst, err)
+	}
+	frozenBefore, err := repository.TimeBoard(ctx, frozenRun.CategoryID, variables, 2, 0, 10, nil)
+	if err != nil || len(frozenBefore) != 1 {
+		t.Fatalf("frozen board before later mints=%+v err=%v", frozenBefore, err)
+	}
+	thirdArtifacts := []Artifact{{Name: "economy", Bytes: append(append([]byte(nil), economyBytes...), '\n')}, {Name: "routes", Bytes: routeBytes}}
+	fourthArtifacts := []Artifact{{Name: "economy", Bytes: append(append([]byte(nil), economyBytes...), '\n', '\n')}, {Name: "routes", Bytes: routeBytes}}
+	third, err := repository.MintEpoch(ctx, "Phase 0.2", now.Add(2*time.Hour), "changelog/epoch-3.md", thirdArtifacts)
+	if err != nil || third.ID != 3 || third.Hashes[0] == second.Hashes[0] {
+		t.Fatalf("third epoch=%+v err=%v", third, err)
+	}
+	fourth, err := repository.MintEpoch(ctx, "Phase 0.3", now.Add(3*time.Hour), "changelog/epoch-4.md", fourthArtifacts)
+	if err != nil || fourth.ID != 4 || fourth.Hashes[0] == third.Hashes[0] {
+		t.Fatalf("fourth epoch=%+v err=%v", fourth, err)
+	}
+	frozenAfter, err := repository.TimeBoard(ctx, frozenRun.CategoryID, variables, 2, 0, 10, nil)
+	if err != nil || !reflect.DeepEqual(frozenAfter, frozenBefore) {
+		t.Fatalf("frozen board after two later mints=%+v want=%+v err=%v", frozenAfter, frozenBefore, err)
+	}
+	currentBoard, err := repository.TimeBoard(ctx, frozenRun.CategoryID, variables, 4, 0, 10, nil)
+	if err != nil || len(currentBoard) != 0 {
+		t.Fatalf("frozen row leaked into current epoch board=%+v err=%v", currentBoard, err)
+	}
+	assertEpochRows(t, db, 4, 2)
 }
 
 func TestEpochSeedReconciliationIntegration(t *testing.T) {
