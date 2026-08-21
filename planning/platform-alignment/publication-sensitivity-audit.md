@@ -181,6 +181,10 @@ unreviewed.** See `publication-rights-batch-20.md`. Batch 21 reviewed the social
 constrained-communication dossier; it requires public synthesis plus current child-safety/legal/
 IP/editorial review. **Forty-three of 67 are reviewed: five eligible, seven revision-blocked, 31
 synthesis/private-store-blocked, and 24 unreviewed.** See `publication-rights-batch-21.md`.
+Batch 22 reviewed the conspiracy-culture and media-canonization dossier; it requires public
+synthesis plus current safety/political/legal/editorial review. **Forty-four of 67 are reviewed:
+five eligible, seven revision-blocked, 32 synthesis/private-store-blocked, and 23 unreviewed.** See
+`publication-rights-batch-22.md`.
 
 ### Class D — generated diagnostics (7)
 

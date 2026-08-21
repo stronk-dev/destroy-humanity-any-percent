@@ -1537,3 +1537,16 @@
 - Class-C progress is 43 of 67: five eligible, seven revision-blocked, 31 synthesis/private-store-
   blocked, and 24 unreviewed. No ignored source, release/design/content/child-safety/legal/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 22
+
+- Read the conspiracy-culture and media-canonization dossier completely and routed it to a dated
+  public synthesis plus current safety/political/legal/editorial review.
+- Preserved the guided-apophenia, self-sealing-belief, response-escalation and canonization findings
+  without promoting real-world shootings/arson/harassment, child violence, extremist movements,
+  living-party claims, quotations or copyrighted satire expression as a raw authority bundle.
+- Refused to adopt exact events, tickers, upgrades, response branches and political/conspiracy
+  framing as research authority; retained the file's explicit refusal to dramatize real-minor harm.
+- Class-C progress is 44 of 67: five eligible, seven revision-blocked, 32 synthesis/private-store-
+  blocked, and 23 unreviewed. No ignored source, design/content/safety/political/legal authority,
+  publication, push, deployment or destructive cleanup changed.
