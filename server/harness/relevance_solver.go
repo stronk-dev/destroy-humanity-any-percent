@@ -79,6 +79,17 @@ func (counter *relevanceCounter) add() error {
 }
 
 func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
+	return suite.runRelevance(nil)
+}
+
+func (suite *RelevanceSuite) RunRelevanceObserved(observer RelevanceProgressObserver) (RelevanceReport, error) {
+	if observer == nil {
+		return RelevanceReport{}, errors.New("relevance progress observer is required")
+	}
+	return suite.runRelevance(observer)
+}
+
+func (suite *RelevanceSuite) runRelevance(observer RelevanceProgressObserver) (RelevanceReport, error) {
 	if suite.Scenario.HorizonMS > suite.Catalog.OfflinePolicy().AccrualCapMS {
 		return RelevanceReport{}, fmt.Errorf("relevance runaway preflight horizon %d exceeds online ceiling %d",
 			suite.Scenario.HorizonMS, suite.Catalog.OfflinePolicy().AccrualCapMS)
@@ -133,6 +144,9 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		Items: []RelevanceItemReport{}, Groups: []RelevanceGroupReport{}, TierContributions: []RelevanceTierContribution{},
 		RoleActivations: []RoleActivationCount{}, InstrumentExcludedIDs: []string{}, Failures: []string{}}
 	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: baseRuns + maxProbeRuns}); err != nil {
+		return RelevanceReport{}, err
+	}
 	opportunityMask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
 	if err != nil {
 		if errors.Is(err, errReferenceDecisionStarved) {
@@ -176,6 +190,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d baseline: %w", spec.PolicyID, seed, runErr)
 			}
 			executedRuns++
+			if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: baseRuns + maxProbeRuns,
+				ExecutedRuns: executedRuns, ExecutedTransitions: counter.value}); err != nil {
+				return RelevanceReport{}, err
+			}
 			if spec.Reference && baseline.DecisionStarved {
 				return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 					suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
@@ -194,6 +212,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d effect mask %s: %w", spec.PolicyID, seed, item.PurchasableID, runErr)
 				}
 				executedRuns++
+				if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: baseRuns + maxProbeRuns,
+					ExecutedRuns: executedRuns, ExecutedTransitions: counter.value}); err != nil {
+					return RelevanceReport{}, err
+				}
 				if spec.Reference && masked.DecisionStarved {
 					return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 						suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
@@ -205,6 +227,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 						return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d removal mask %s: %w", spec.PolicyID, seed, item.PurchasableID, removeErr)
 					}
 					executedRuns++
+					if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: baseRuns + maxProbeRuns,
+						ExecutedRuns: executedRuns, ExecutedTransitions: counter.value}); err != nil {
+						return RelevanceReport{}, err
+					}
 					if removed.DecisionStarved {
 						return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 							suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
@@ -218,6 +244,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d group mask %s: %w", spec.PolicyID, seed, group.GroupID, runErr)
 				}
 				executedRuns++
+				if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: baseRuns + maxProbeRuns,
+					ExecutedRuns: executedRuns, ExecutedTransitions: counter.value}); err != nil {
+					return RelevanceReport{}, err
+				}
 				if spec.Reference && masked.DecisionStarved {
 					return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 						suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
@@ -241,6 +271,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		return RelevanceReport{}, errors.New("relevance deviation run cardinality mismatch")
 	}
 	executedRuns += deviationRuns
+	if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: baseRuns + declaredDeviationRuns,
+		ExecutedRuns: executedRuns, ExecutedTransitions: counter.value}); err != nil {
+		return RelevanceReport{}, err
+	}
 	if baselineUnreached {
 		report.Failures = append(report.Failures, "baseline_unreached:"+suite.Scenario.Milestone.ID)
 	}
@@ -333,7 +367,22 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	if err := ValidateRelevanceReport(report); err != nil {
 		return RelevanceReport{}, err
 	}
+	if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: report.RunBudget.DeclaredRuns,
+		ExecutedRuns: report.RunBudget.ExecutedRuns, ExecutedTransitions: report.RunBudget.ExecutedTransitions,
+		Complete: true, GuardFired: len(report.Failures) != 0}); err != nil {
+		return RelevanceReport{}, err
+	}
 	return report, nil
+}
+
+func emitRelevanceProgress(observer RelevanceProgressObserver, progress RelevanceProgress) error {
+	if observer == nil {
+		return nil
+	}
+	if err := observer(progress); err != nil {
+		return fmt.Errorf("record relevance progress: %w", err)
+	}
+	return nil
 }
 
 func (suite *RelevanceSuite) runDeviationOracle(traces []relevanceDecisionTrace, mask production.AblationMask,

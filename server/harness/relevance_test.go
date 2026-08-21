@@ -45,14 +45,23 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	second, err := suite.RunRelevance()
+	progress := []RelevanceProgress{}
+	second, err := suite.RunRelevanceObserved(func(value RelevanceProgress) error {
+		progress = append(progress, value)
+		return nil
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
 	firstBytes, _ := CanonicalJSON(first)
 	secondBytes, _ := CanonicalJSON(second)
 	if !reflect.DeepEqual(firstBytes, secondBytes) {
-		t.Fatal("relevance report is not byte deterministic")
+		t.Fatal("observed relevance report changed canonical bytes")
+	}
+	if len(progress) < 3 || progress[0].ExecutedRuns != 0 || !progress[len(progress)-1].Complete ||
+		progress[len(progress)-1].ExecutedRuns != second.RunBudget.ExecutedRuns ||
+		progress[len(progress)-1].ExecutedTransitions != second.RunBudget.ExecutedTransitions {
+		t.Fatalf("relevance progress=%+v final_budget=%+v", progress, second.RunBudget)
 	}
 	if first.RunBudget.DeclaredRuns != 23 || first.RunBudget.ExecutedRuns != 23 ||
 		first.RunBudget.DeclaredTransitions != first.RunBudget.ExecutedTransitions || len(first.Items) != 4 || len(first.Groups) != 4 {
@@ -1242,6 +1251,11 @@ func TestActiveRelevanceEvidenceRequiresExactBranchCoverage(t *testing.T) {
 	wrongIdentity.ConstantsHash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	if err := ValidateActiveRelevanceEvidence(*active, main, wrongIdentity); err == nil || !strings.Contains(err.Error(), "identity mismatch") {
 		t.Fatalf("mismatched branch identity accepted: %v", err)
+	}
+	wrongEntry := *active
+	wrongEntry.ConstantsHash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	if err := ValidateActiveRelevanceEvidence(wrongEntry, main, branch); err == nil || !strings.Contains(err.Error(), "identity mismatch") {
+		t.Fatalf("severed active registry constants binding accepted: %v", err)
 	}
 
 	uncovered := main

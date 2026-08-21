@@ -8,12 +8,17 @@ import (
 	"path/filepath"
 	"strings"
 
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/harness"
 )
 
+var observationRecorder *harness.HarnessObservationRecorder
+
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, guard, candidate, content-candidate, content, relevance, relevance-branches, relevance-beam, first-hour, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, guard, candidate, content-candidate, content, relevance, relevance-registered, relevance-branches, relevance-beam, first-hour, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
+	observationOutput := flag.String("observation-output", "", "explicit non-authoritative harness observation path")
+	relevanceEntry := flag.String("relevance-entry", "", "exact registered relevance scenario path for relevance-registered mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
 	scenario := flag.String("scenario", "", "repository-relative scenario for relevance mode")
@@ -26,6 +31,33 @@ func main() {
 	seedCapital := flag.String("seed-capital", "", "measurement-only canonical seed-capital amount")
 	generatedTowers := flag.Int64("generated-towers", 0, "measurement-only generated Beige Tower count")
 	flag.Parse()
+	if *observationOutput != "" {
+		if *mode != "check" && *mode != "relevance-registered" {
+			fail(fmt.Errorf("-observation-output is supported only in check and relevance-registered modes"))
+		}
+		bundle, err := epochseed.Load(*root)
+		if err != nil {
+			fail(err)
+		}
+		current := epochseed.Current(bundle.Seed)
+		observationRecorder, err = harness.NewHarnessObservationRecorder(*observationOutput, *mode, &current.ID, bundle.Hash)
+		if err != nil {
+			fail(err)
+		}
+		installObservationSignalHandler()
+	}
+	if *mode == "relevance-registered" {
+		if observationRecorder == nil {
+			fail(fmt.Errorf("-observation-output is required in relevance-registered mode"))
+		}
+		if err := runRegisteredRelevance(*root, *output, *relevanceEntry); err != nil {
+			fail(err)
+		}
+		if err := observationRecorder.Complete(); err != nil {
+			fail(err)
+		}
+		return
+	}
 	if *mode == "epoch-hash" {
 		hash, err := harness.ComputeEpochSeedHash(*root)
 		if err != nil {
@@ -95,17 +127,44 @@ func main() {
 		fail(err)
 	}
 	if *mode == "check" {
+		if observationRecorder != nil {
+			if err := observationRecorder.StartObjective(harness.HarnessObservationObjectiveSpec{ID: "repository-guards", Kind: "repository_guards"}); err != nil {
+				fail(err)
+			}
+		}
 		if err := validateHarnessRepositoryGuards(*root); err != nil {
 			fail(err)
+		}
+		if observationRecorder != nil {
+			if err := observationRecorder.CompleteObjective(clearObservationProgress()); err != nil {
+				fail(err)
+			}
 		}
 	}
 	suite, err := harness.LoadSuite(*root, "testdata/harness/scenarios/phase0-production.json")
 	if err != nil {
 		fail(err)
 	}
+	if observationRecorder != nil {
+		declaredRuns := declaredPacingRuns(suite)
+		if err := observationRecorder.StartObjective(harness.HarnessObservationObjectiveSpec{ID: "standard-pacing", Kind: "standard_pacing",
+			Identity: harness.HarnessObservationIdentity{ScenarioPath: "testdata/harness/scenarios/phase0-production.json",
+				ScenarioHash: suite.ScenarioHash, ConstantsHash: suite.ConstantsHash},
+			Work: harness.HarnessObservationWork{DeclaredRuns: &declaredRuns, ExecutedRuns: int64Address(0)}}); err != nil {
+			fail(err)
+		}
+	}
 	runs, aggregate, err := suite.RunAllWithWorkers(*workers)
 	if err != nil {
 		fail(err)
+	}
+	if observationRecorder != nil {
+		declaredRuns, executedRuns := declaredPacingRuns(suite), int64(len(runs))
+		if err := observationRecorder.CompleteObjective(harness.HarnessObservationProgress{Work: harness.HarnessObservationWork{
+			DeclaredRuns: &declaredRuns, ExecutedRuns: &executedRuns}, GuardState: observationGuardState(len(aggregate.Failures) != 0),
+			PopulationExclusions: harness.ObservationConditionClear, TruncationState: harness.ObservationConditionClear}); err != nil {
+			fail(err)
+		}
 	}
 	type relevanceResult struct {
 		entry       harness.RelevanceRegistryEntry
@@ -115,14 +174,39 @@ func main() {
 		branchBytes []byte
 	}
 	relevanceResults := make([]relevanceResult, 0, len(registry))
-	for _, entry := range registry {
+	for entryIndex, entry := range registry {
 		relevanceSuite, loadErr := harness.LoadRegisteredRelevanceSuite(*root, entry)
 		if loadErr != nil {
 			fail(loadErr)
 		}
-		relevance, runErr := relevanceSuite.RunRelevance()
+		if observationRecorder != nil {
+			index, active := entryIndex, entry.Active
+			identity := harness.HarnessObservationIdentity{RegistryIndex: &index, ScenarioPath: entry.Scenario,
+				EconomyCatalogPath: entry.EconomyCatalog, RelevancePolicyPath: entry.RelevancePolicy,
+				GoldenReportPath: entry.GoldenReport, ScenarioHash: relevanceSuite.ScenarioHash,
+				RelevancePolicyHash: relevanceSuite.Policy.Hash, ConstantsHash: relevanceSuite.ConstantsHash, Active: &active}
+			if err := observationRecorder.StartObjective(harness.HarnessObservationObjectiveSpec{
+				ID: fmt.Sprintf("relevance:%d:%s", entryIndex, entry.Scenario), Kind: "registered_relevance", Identity: identity}); err != nil {
+				fail(err)
+			}
+		}
+		var relevance harness.RelevanceReport
+		var runErr error
+		if observationRecorder == nil {
+			relevance, runErr = relevanceSuite.RunRelevance()
+		} else {
+			relevance, runErr = relevanceSuite.RunRelevanceObserved(recordRelevanceProgress)
+		}
 		if runErr != nil {
 			fail(runErr)
+		}
+		if observationRecorder != nil {
+			progress := clearObservationProgress()
+			progress.Work = observationWorkFromRelevance(relevance)
+			progress.InstrumentExcluded = relevance.InstrumentExcludedIDs
+			if err := observationRecorder.CompleteObjective(progress); err != nil {
+				fail(err)
+			}
 		}
 		relevanceBytes, encodeErr := harness.CanonicalJSON(relevance)
 		if encodeErr != nil {
@@ -232,6 +316,11 @@ func main() {
 		}
 		if len(aggregate.Failures) > 0 || len(driftFailures) > 0 {
 			fail(fmt.Errorf("harness failures: %v %v", aggregate.Failures, driftFailures))
+		}
+		if observationRecorder != nil {
+			if err := observationRecorder.Complete(); err != nil {
+				fail(err)
+			}
 		}
 		_ = wantBaseline
 	default:
@@ -461,4 +550,10 @@ func relevanceDiagnosticPath(output string) string {
 	return strings.TrimSuffix(output, ".json") + ".diagnostic.json"
 }
 
-func fail(err error) { fmt.Fprintln(os.Stderr, err); os.Exit(1) }
+func fail(err error) {
+	if observationRecorder != nil {
+		_ = observationRecorder.Fail("error", err)
+	}
+	fmt.Fprintln(os.Stderr, err)
+	os.Exit(1)
+}

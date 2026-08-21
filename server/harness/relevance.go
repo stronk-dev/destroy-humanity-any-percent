@@ -83,6 +83,19 @@ type RelevanceRunBudget struct {
 	ExecutedTransitions int64 `json:"executed_transitions"`
 }
 
+// RelevanceProgress is non-authoritative execution telemetry. It is emitted
+// only at completed governed run-arm boundaries and never enters report bytes
+// or deterministic run identity.
+type RelevanceProgress struct {
+	DeclaredRuns        int64
+	ExecutedRuns        int64
+	ExecutedTransitions int64
+	Complete            bool
+	GuardFired          bool
+}
+
+type RelevanceProgressObserver func(RelevanceProgress) error
+
 type RelevanceGreedyOracle struct {
 	MilestoneID string `json:"milestone_id"`
 	GreedyMS    int64  `json:"greedy_ms"`

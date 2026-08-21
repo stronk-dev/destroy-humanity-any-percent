@@ -166,6 +166,33 @@ entry and fails on any relevance finding. Epoch 7's schema-v4 content is measure
 T0/T1 whole-path and branch-proof gates; the original relevance registry remains a structural
 fixture baseline rather than being relabelled as production evidence.
 
+## Non-authoritative run observations
+
+R-001 measurements can attach an explicit `harness_observation.v1` checkpoint to the complete
+check. The checkpoint is operational evidence only: it is always marked `authoritative: false` and
+cannot replace a golden report, baseline, epoch artifact, or harness verdict.
+
+The observation records repository-guard, standard-pacing, and registered-relevance objectives in
+execution order. It includes loaded scenario/policy/constants identity, monotonic elapsed time,
+declared and executed work where the governed report exposes it, the current objective, and
+explicit guard/population-exclusion/truncation state. Registered relevance progress advances only
+after a completed run arm; it never reads or mutates simulation state or enters canonical report
+bytes. Instrument-excluded purchasables are disclosed separately from population exclusions.
+
+Checkpoints replace the prior JSON atomically. Controlled errors and `SIGINT`/`SIGTERM` close the
+artifact as incomplete. An uncatchable kill leaves the last atomic checkpoint in `running` state;
+the strict validator rejects that as interrupted evidence. Missing, running, fired, truncated,
+excluded, identity-mismatched, or cardinality-mismatched artifacts are never complete
+measurements.
+
+`make harness-observe HARNESS_WORKERS=12 HARNESS_OBSERVATION=/path/observation.json` observes the
+unchanged complete check. A single governed row can be isolated with
+`make relevance-registered-observe HARNESS_OBSERVATION=/path/observation.json
+REGISTERED_RELEVANCE_ENTRY=<exact registry scenario path>
+REGISTERED_RELEVANCE_OUTPUT=/path/report.json`. The selector accepts only an exact row loaded via
+the relevance registry, retains active epoch binding, and byte-compares the registered golden. A
+selected-row success is not a complete-lane success. Neither target is a CI or release dependency.
+
 ## Commands and drift
 
 - `make harness HARNESS_OUTPUT=/absolute/path/report.json` writes the complete canonical run and

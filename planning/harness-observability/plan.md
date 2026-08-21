@@ -4,34 +4,34 @@ Status: implementing. Authority checkpoint: `9c71562`.
 
 ## Scope firewall
 
-- [ ] No catalog, scenario, policy, seed, horizon, milestone, golden, baseline, epoch, work budget,
+- [x] No catalog, scenario, policy, seed, horizon, milestone, golden, baseline, epoch, work budget,
   timeout, worker, dispatch, parallelism, sharding, algorithm, gameplay, deployment, or CI topology
   change appears in the implementation range.
-- [ ] Observation remains explicitly non-authoritative and cannot satisfy a harness acceptance gate.
+- [x] Observation remains explicitly non-authoritative and cannot satisfy a harness acceptance gate.
 
 ## Implementation
 
-- [ ] Add the canonical `harness_observation.v1` model, atomic checkpoint writer, strict validator,
+- [x] Add the canonical `harness_observation.v1` model, atomic checkpoint writer, strict validator,
   elapsed-time source, and incomplete/interrupted interpretation.
-- [ ] Add CLI observation output and controlled signal/error finalization without changing ordinary
+- [x] Add CLI observation output and controlled signal/error finalization without changing ordinary
   no-observation exits or domain report bytes.
-- [ ] Instrument repository guards, standard pacing, and each registered relevance row with exact
+- [x] Instrument repository guards, standard pacing, and each registered relevance row with exact
   loaded identity, start/completion, known work counts, and explicit unknown/fired states.
-- [ ] Add a registry-aware single-row mode that selects only a unique registered scenario through
+- [x] Add a registry-aware single-row mode that selects only a unique registered scenario through
   `LoadRelevanceRegistry` + `LoadRegisteredRelevanceSuite` and validates the same row evidence as
   complete check.
-- [ ] Expose a root Make measurement target with explicit observation path/selector inputs; do not
+- [x] Expose a root Make measurement target with explicit observation path/selector inputs; do not
   add it to CI or a release gate in this RFC.
 
 ## Discriminating acceptance
 
-- [ ] Cold affected Go tests prove complete artifact acceptance and reject missing/running/error/
+- [x] Cold affected Go tests prove complete artifact acceptance and reject missing/running/error/
   signal, fired guard, truncation, exclusion, identity mismatch, and cardinality mismatch cases.
-- [ ] A CLI subprocess `SIGTERM` leaves parseable incomplete evidence and exits nonzero.
-- [ ] A completion-severing negative fixture retains successful domain work but the observation
+- [x] A CLI subprocess `SIGTERM` leaves parseable incomplete evidence and exits nonzero.
+- [x] A completion-severing negative fixture retains successful domain work but the observation
   validator fails.
-- [ ] An active constants-binding mutation makes the registry-aware selector fail.
-- [ ] Observation-on and observation-off domain outputs are byte-identical for a bounded governed
+- [x] An active constants-binding mutation makes the registry-aware selector fail.
+- [x] Observation-on and observation-off domain outputs are byte-identical for a bounded governed
   fixture; existing tracked harness artifacts remain byte-identical.
 - [ ] Cold `make test-go GO_PACKAGES='./harness ./cmd/balance-harness' GO_TEST_FLAGS='-count=1'`,
   `go vet` through the root Make target, schema validation, and the relevant existing harness gates

@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -9,6 +9,9 @@ GO_TEST_FLAGS ?=
 CORE_TEST_COUNT ?= 1
 HARNESS_TEST_COUNT ?= 1
 HARNESS_WORKERS ?= 4
+HARNESS_OBSERVATION ?=
+REGISTERED_RELEVANCE_ENTRY ?=
+REGISTERED_RELEVANCE_OUTPUT ?=
 SAVE_TEST_PACKAGES ?= ./...
 SAVE_TEST_FLAGS ?= -run Integration
 SAVE_TEST_COUNT ?= 1
@@ -146,6 +149,22 @@ harness:
 
 harness-check: commons-harness-check
 	cd server && go run ./cmd/balance-harness -mode=check -root=.. -workers=$(HARNESS_WORKERS)
+
+# R-001 measurement-only lane. These targets do not change the governed
+# population and are intentionally absent from CI/release dependencies.
+harness-observe: commons-harness-check
+	@test -n "$(HARNESS_OBSERVATION)" || (echo "HARNESS_OBSERVATION is required" >&2; exit 1)
+	cd server && go run ./cmd/balance-harness -mode=check -root=.. -workers=$(HARNESS_WORKERS) \
+		-observation-output=$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))
+
+relevance-registered-observe:
+	@test -n "$(HARNESS_OBSERVATION)" -a -n "$(REGISTERED_RELEVANCE_ENTRY)" \
+		-a -n "$(REGISTERED_RELEVANCE_OUTPUT)" || \
+		(echo "HARNESS_OBSERVATION, REGISTERED_RELEVANCE_ENTRY, and REGISTERED_RELEVANCE_OUTPUT are required" >&2; exit 1)
+	cd server && go run ./cmd/balance-harness -mode=relevance-registered -root=.. \
+		-relevance-entry=$(REGISTERED_RELEVANCE_ENTRY) \
+		-output=$(if $(filter /%,$(REGISTERED_RELEVANCE_OUTPUT)),$(REGISTERED_RELEVANCE_OUTPUT),../$(REGISTERED_RELEVANCE_OUTPUT)) \
+		-observation-output=$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))
 
 harness-guard-check:
 	cd server && go run ./cmd/balance-harness -mode=guard -root=..
