@@ -504,3 +504,18 @@ commits and oversized receipts remain rejected. Applied migration 00040 was not 
 
 Verification: focused Go transport/save tests, TypeScript typecheck, 6,494 client tests, shared
 schema validation, and the complete Docker/Postgres integration target are green.
+
+## 2026-08-21 — Q-003 production recovery predeclaration
+
+- Q-001 received the designated cross-party approval at `34d04a5`; corrected Q-002 and its
+  separately authorized API Foundation tightening received designated approval at `bfd9b65`.
+  Q-003 is therefore the only serial witness batch authorized to begin.
+- Re-derived the lifecycle audit against the current runtime. The server already owns positioned
+  Centrifuge history, typed closes, live queue discipline, and bounded drain. The production Game
+  UI consumer still discards subscription positions and publication offsets, never requests
+  recovery, never reconnects, ignores close codes, leaves `resume_after_ms` unscheduled, and does
+  not bind the existing per-scope revision cursor.
+- Predeclared one recovery authority and the missing-position, duplicate, gap, expired-history,
+  overflow, drain, credential-expiry, literal stalled-world, and non-member Guild negatives in the
+  plan before touching runtime behavior. Account token rotation, a second API client, snapshot-v3,
+  player copy, and Transport archival remain forbidden.

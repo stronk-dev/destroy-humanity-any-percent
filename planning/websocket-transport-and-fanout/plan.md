@@ -15,3 +15,34 @@
 5. [x] Add recovery, overflow, authz, drain, and 5k-connection soak coverage.
 6. [x] Update canonical docs and run full verification.
 7. [ ] Record independent review before archival.
+
+## Q-003 — production recovery completion (predeclared 2026-08-21)
+
+Authority is the accepted D4/T4 recovery contract and the READY Q-003 manifest row. This batch
+binds the existing `PlayerRevisionCursor` and Centrifuge stream positions into the production Game
+UI transport consumer. One controller owns initial subscribe, reconnect, resubscribe, recovered
+publication delivery, authoritative `/api/v1/founder/state` full sync, typed closes, and the D4
+drain delay.
+
+Required discriminating cases:
+
+- initial subscription with no saved position, followed by persisted per-channel epoch/offset;
+- same-revision event-ID duplicate suppression, forward revision-gap full sync, and historical
+  compensation delivery without cursor movement;
+- successful history recovery and expired/unavailable history falling back to full sync before a
+  clean live resubscribe;
+- queue-overflow (4000), server-drain (4003 plus `resume_after_ms`), and credential-expiry (4001)
+  closes entering the same recovery path, with drain suppressing reconnect for its advertised
+  delay;
+- a literal ten-second connected world stall proving no stale snapshot leaks and exactly the
+  contractually permitted latest state resumes; and
+- a real non-member Guild subscription denied beside a member control.
+
+Cold gates are the root client unit, typecheck, boundary, browser, and composed disconnect/recovery
+paths plus cold server Transport, Account, and Gameserver populations. Every claimed oracle must
+also be mutation-probed or carry an explicit in-range negative fixture.
+
+Out of scope: Account access-token rotation semantics; a second/raw API client; Game UI snapshot-v3
+mechanics; player-facing copy; RFC archival; and unrelated Transport/server behavior. A 4001 close
+may use the current persisted access token and fail honestly, but this batch does not invent token
+refresh authority.
