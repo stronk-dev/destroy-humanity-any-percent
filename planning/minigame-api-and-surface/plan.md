@@ -33,5 +33,5 @@
   request family.
 - [x] Run cold root Go tests, sequential Account and Gameserver Postgres integration targets,
   `api-check`, and client typecheck; restore every mutation before the clean run.
-- [ ] Record a Codex exact-range first-filter and hand the bounded backend-test range to Claude for
+- [x] Record a Codex exact-range first-filter and hand the bounded backend-test range to Claude for
   the mandatory designated cross-party review. Do not claim surface completion or archive MA.

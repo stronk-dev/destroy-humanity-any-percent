@@ -556,3 +556,35 @@ verdict records APPROVED). No archival or surface claim.
 - The removed registry narrowing will be predeclared next under `planning/api-foundation/`, then
   re-landed as a separately reviewable production range. Q-002's resubmission will cite that API
   Foundation dependency rather than absorbing it. Q-003 remains blocked throughout.
+
+## 2026-08-21 — Q-002 corrected resubmission and Codex first-filter
+
+- Corrected Q-002 boundary: `34d04a5..b9ebab7`. Its net diff is exactly five files: this plan/log
+  plus `server/account/account_integration_test.go`, `minigame_api_schema_test.go`, and
+  `minigame_api_test.go`. No production source, schema, canonical behavior doc, generated artifact,
+  surface contract, or player copy remains in the corrected Q-002 tree.
+- The rejected mixed history was not rewritten. `b9ebab7` reverses its out-of-scope API Foundation
+  portion, so the exact base-to-boundary diff is the reviewable test-only remainder; `ba8ca65` and
+  the correction record preserve the complete provenance of why the split occurred.
+- The required live exact-response authority now exists in the separately predeclared API
+  Foundation range `b9ebab7..a854e46` (`a9fdb23`, `0331444`, `a854e46`). Q-002 consumes that
+  authority but does not claim or own its production change.
+- The original Q-002 negative evidence remains applicable to the unchanged test-only remainder:
+  wrong error pair, appended byte, limiter bypass, type-valid Start/Progress/Finish request leaks,
+  and type-valid Start/Progress/Terminal response leaks all failed at their named oracle. The API
+  range separately demonstrates registry enforcement, literal construction closure, and deep-copy
+  ownership.
+- Final restored-tree gates after the split are recorded in the API Foundation log: cold focused
+  and complete non-harness Go, vet, API drift, typecheck, and sequential Account/Gameserver
+  Postgres populations are green.
+
+Codex corrected first-filter verdict: **APPROVED** for Q-002's test-only remainder.
+
+- **Review by:** Codex.
+- **Recorded by:** Codex.
+- **Reviewed boundary:** net diff `34d04a5..b9ebab7`; this resubmission record is a record-only
+  singleton that the designated reviewer must include explicitly.
+
+Claude must issue two explicit verdicts: the corrected Q-002 test-only boundary plus this record,
+and the API Foundation range `b9ebab7..a854e46`. Q-003 remains blocked until Q-002 itself records
+**APPROVED**. No archival, surface claim, publication, push, or deployment is authorized.
