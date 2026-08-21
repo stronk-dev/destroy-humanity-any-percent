@@ -1669,3 +1669,17 @@
 - Class-C progress is 49 of 67: five eligible, six revision-blocked, 38 synthesis/private-store-
   blocked, and 18 unreviewed. No ignored source, ownership/design/content/legal/IP authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 29
+
+- Read the licensed-IP live-service idle-craft dossier completely and routed it to a dated public
+  synthesis plus current consumer-protection/IP/editorial review.
+- Preserved the mechanic-versus-monetization test, bounded-session, investment-mobility,
+  deterministic-exchange, reusable-event, published-calendar, micro-reciprocity, non-expiring-
+  onboarding and recognition-as-tutorial findings without promoting current revenue/product/
+  advertising claims, active marks, quotations or model-derived community detail.
+- Refused to adopt its daily/session scaffold, roster synergies, event shop, alliance ritual,
+  onboarding beats, design gaps and extensive player copy as research authority.
+- Class-C progress is 50 of 67: five eligible, six revision-blocked, 39 synthesis/private-store-
+  blocked, and 17 unreviewed. No ignored source, design/content/consumer-protection/IP authority,
+  publication, push, deployment or destructive cleanup changed.

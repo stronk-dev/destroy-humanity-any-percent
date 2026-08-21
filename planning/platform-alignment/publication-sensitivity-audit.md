@@ -212,7 +212,10 @@ private-store-blocked, and 19 unreviewed.** See `publication-rights-batch-27.md`
 the Warcraft III custom-game ecosystem and creator-rights dossier; it requires public synthesis
 plus current legal/IP/editorial review. **Forty-nine of 67 are reviewed: five eligible, six
 revision-blocked, 38 synthesis/private-store-blocked, and 18 unreviewed.** See
-`publication-rights-batch-28.md`.
+`publication-rights-batch-28.md`. Batch 29 reviewed the licensed-IP live-service idle-craft
+dossier; it requires public synthesis plus current consumer-protection/IP/editorial review.
+**Fifty of 67 are reviewed: five eligible, six revision-blocked, 39 synthesis/private-store-
+blocked, and 17 unreviewed.** See `publication-rights-batch-29.md`.
 
 ### Class D — generated diagnostics (7)
 
