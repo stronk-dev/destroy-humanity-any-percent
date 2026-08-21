@@ -184,7 +184,10 @@ synthesis/private-store-blocked, and 24 unreviewed.** See `publication-rights-ba
 Batch 22 reviewed the conspiracy-culture and media-canonization dossier; it requires public
 synthesis plus current safety/political/legal/editorial review. **Forty-four of 67 are reviewed:
 five eligible, seven revision-blocked, 32 synthesis/private-store-blocked, and 23 unreviewed.** See
-`publication-rights-batch-22.md`.
+`publication-rights-batch-22.md`. Batch 23 reviewed the societal-challenges and externalities
+dossier; it requires public synthesis plus current political/legal/environmental/editorial review.
+**Forty-five of 67 are reviewed: five eligible, seven revision-blocked, 33 synthesis/private-
+store-blocked, and 22 unreviewed.** See `publication-rights-batch-23.md`.
 
 ### Class D — generated diagnostics (7)
 

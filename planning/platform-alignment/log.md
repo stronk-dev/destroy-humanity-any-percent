@@ -1586,3 +1586,16 @@
 - Batch 17 therefore remains author-blocked at those four exact sites. Its disposition is still
   public synthesis plus a named private store or verified cleanup, not automatic raw-file tracking.
   No ignored source, owner ruling, product code, publication boundary or push changed in review.
+
+## 2026-08-21 — D-002 research publication review Batch 23
+
+- Read the societal-challenges satire and externalities dossier completely and routed it to a dated
+  public synthesis plus current political/legal/environmental/editorial review.
+- Preserved the incentive, externality, Jevons, platform-decay and measurement-conflict findings
+  without promoting current company/person conduct, fraud/criminal cases, labor/child-mining and
+  environmental-health allegations, disputed estimates, quotations or future-dated figures.
+- Refused to adopt exact tickers, formulas, events, speedrun categories, endgame structure and
+  proposed core loops as research authority.
+- Class-C progress is 45 of 67: five eligible, seven revision-blocked, 33 synthesis/private-store-
+  blocked, and 22 unreviewed. No ignored source, design/content/political/legal/environmental
+  authority, publication, push, deployment or destructive cleanup changed.
