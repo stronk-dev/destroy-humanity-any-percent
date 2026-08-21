@@ -1281,3 +1281,21 @@
 - Class-C progress is 16 of 67: five eligible, six revision-blocked, five synthesis/private-store-
   blocked, and 51 unreviewed. No ignored source, legal/product/RFC authority, owner copy,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 05
+
+- Read the Millennial, pre-Boomer, Generation-X and Generation-Alpha culture notebooks completely.
+  Routed all four to public synthesis rather than exposing raw creative/source compilations.
+- Honored the Millennial file's own warning: it is a context-compacted partial with no complete
+  claim-level sources or legal matrix and explicitly requires a rerun before copy drafting.
+- Refused raw publication of the pre-Boomer and Gen-X notebooks because dense secondary-source
+  history, quotations, brands/people/protected expression and near-final mechanics/copy are mixed
+  under non-claim-level source lists.
+- Marked the Gen Alpha raw notebook not public-eligible. It contains identifiable child-creator
+  material, abuse/grooming allegations and networks, active lawsuits/enforcement, living people,
+  current-company accusations, medical/climate/legal claims and extensive exact copy. Its safe
+  artifact is a short editorial synthesis; its raw source needs a specifically named restricted
+  store or verified cleanup, not a generic local ignore.
+- Class-C progress is 20 of 67: five eligible, six revision-blocked, nine synthesis/private-store-
+  blocked, and 47 unreviewed. No ignored source, design/voice/copy authority, publication, push,
+  deployment or destructive cleanup changed.

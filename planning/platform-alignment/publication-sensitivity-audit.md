@@ -123,8 +123,12 @@ mechanics dossiers: `absorption-arena.md` and `board-game-mechanics.md` require 
 disposition. Batch 04 reviewed release/provenance/compliance/assets: `release-platform-audit.md` is
 eligible as a dated snapshot; `provenance-extracts.md` needs bounded revision; `compliance.md` and
 `audio-art.md` need public syntheses plus current authority review. **Sixteen of 67 are reviewed:
-five eligible, six revision-blocked, five synthesis/private-store-blocked, and 51 unreviewed.** See
-`publication-rights-batch-01.md` through `publication-rights-batch-04.md`.
+five eligible, six revision-blocked, five synthesis/private-store-blocked, and 51 unreviewed.**
+Batch 05 reviewed four generational-culture notebooks; all require public synthesis, with the
+Millennial pass first requiring the rerun its own header demands and the Gen Alpha raw dossier
+requiring a specifically restricted disposition. **Twenty of 67 are reviewed: five eligible, six
+revision-blocked, nine synthesis/private-store-blocked, and 47 unreviewed.** See
+`publication-rights-batch-01.md` through `publication-rights-batch-05.md`.
 
 ### Class D — generated diagnostics (7)
 
