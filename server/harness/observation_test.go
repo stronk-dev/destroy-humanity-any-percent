@@ -84,6 +84,9 @@ func TestValidateCompleteHarnessObservationRejectsIncompleteEvidence(t *testing.
 		want   string
 	}{
 		{"running", func(value *HarnessObservation) { value.State = ObservationStateRunning }, "incomplete"},
+		{"unknown mode", func(value *HarnessObservation) { value.Mode = "other" }, "incomplete"},
+		{"negative elapsed", func(value *HarnessObservation) { value.Objectives[0].ElapsedMS = -1 }, "objective"},
+		{"missing exclusions", func(value *HarnessObservation) { value.Objectives[0].InstrumentExcluded = nil }, "objective"},
 		{"guard fired", func(value *HarnessObservation) { value.Objectives[0].GuardState = ObservationConditionFired }, "objective"},
 		{"population excluded", func(value *HarnessObservation) { value.Objectives[0].PopulationExclusions = ObservationConditionFired }, "objective"},
 		{"truncated", func(value *HarnessObservation) { value.Objectives[0].TruncationState = ObservationConditionFired }, "objective"},

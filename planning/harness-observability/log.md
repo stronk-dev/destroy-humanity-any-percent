@@ -73,3 +73,13 @@ Append-only session record. A fresh agent should be able to resume from this fil
 - Added a negative classification test and re-ran cold affected tests, vet, and strict validation
   of the retained complete artifact. Normal governed output and the retained observation are
   unchanged.
+
+## 2026-08-21 — final validator hardening
+
+- The same internal range review tightened the final validator around the evidence envelope: only
+  complete-check and registered-row modes are accepted; timestamps must parse; elapsed values
+  cannot be negative; instrument-exclusion arrays must be present and sorted/unique; complete-check
+  registry indices must be contiguous and exactly one row must bind the active epoch.
+- Added failing unknown-mode, negative-elapsed and missing-exclusion fixtures, quoted every Make
+  path argument, and re-ran affected cold tests, vet, and validation of the retained full artifact.
+  No domain report or measurement value changed.

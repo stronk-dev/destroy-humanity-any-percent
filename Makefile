@@ -155,21 +155,21 @@ harness-check: commons-harness-check
 harness-observe: commons-harness-check
 	@test -n "$(HARNESS_OBSERVATION)" || (echo "HARNESS_OBSERVATION is required" >&2; exit 1)
 	cd server && go run ./cmd/balance-harness -mode=check -root=.. -workers=$(HARNESS_WORKERS) \
-		-observation-output=$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))
+		-observation-output="$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))"
 
 harness-observation-check:
 	@test -n "$(HARNESS_OBSERVATION)" || (echo "HARNESS_OBSERVATION is required" >&2; exit 1)
 	cd server && go run ./cmd/balance-harness -mode=observation-validate \
-		-observation-input=$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))
+		-observation-input="$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))"
 
 relevance-registered-observe:
 	@test -n "$(HARNESS_OBSERVATION)" -a -n "$(REGISTERED_RELEVANCE_ENTRY)" \
 		-a -n "$(REGISTERED_RELEVANCE_OUTPUT)" || \
 		(echo "HARNESS_OBSERVATION, REGISTERED_RELEVANCE_ENTRY, and REGISTERED_RELEVANCE_OUTPUT are required" >&2; exit 1)
 	cd server && go run ./cmd/balance-harness -mode=relevance-registered -root=.. \
-		-relevance-entry=$(REGISTERED_RELEVANCE_ENTRY) \
-		-output=$(if $(filter /%,$(REGISTERED_RELEVANCE_OUTPUT)),$(REGISTERED_RELEVANCE_OUTPUT),../$(REGISTERED_RELEVANCE_OUTPUT)) \
-		-observation-output=$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))
+		-relevance-entry="$(REGISTERED_RELEVANCE_ENTRY)" \
+		-output="$(if $(filter /%,$(REGISTERED_RELEVANCE_OUTPUT)),$(REGISTERED_RELEVANCE_OUTPUT),../$(REGISTERED_RELEVANCE_OUTPUT))" \
+		-observation-output="$(if $(filter /%,$(HARNESS_OBSERVATION)),$(HARNESS_OBSERVATION),../$(HARNESS_OBSERVATION))"
 
 harness-guard-check:
 	cd server && go run ./cmd/balance-harness -mode=guard -root=..

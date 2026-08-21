@@ -315,9 +315,12 @@ func LoadHarnessObservation(path string) (HarnessObservation, error) {
 
 func ValidateCompleteHarnessObservation(observation HarnessObservation) error {
 	if observation.SchemaVersion != HarnessObservationSchemaVersion || observation.Kind != "harness_observation.v1" ||
-		observation.Authoritative || observation.Mode == "" || observation.State != ObservationStateComplete ||
+		observation.Authoritative || observation.Mode != "check" && observation.Mode != "relevance-registered" ||
+		observation.State != ObservationStateComplete ||
 		observation.Termination == nil || *observation.Termination != "objective" || observation.StartedAt == "" ||
 		observation.UpdatedAt == "" || observation.FinishedAt == nil || observation.CurrentObjective != nil ||
+		observation.ElapsedMS < 0 || !validObservationTimestamp(observation.StartedAt) ||
+		!validObservationTimestamp(observation.UpdatedAt) || !validObservationTimestamp(*observation.FinishedAt) ||
 		observation.ActiveEpochID == nil || *observation.ActiveEpochID < 1 || !relevanceHashPattern.MatchString(observation.ActiveConstantsHash) ||
 		observation.DeclaredObjectiveIDs == nil || len(observation.DeclaredObjectiveIDs) == 0 ||
 		observation.Objectives == nil || len(observation.Objectives) != len(observation.DeclaredObjectiveIDs) ||
@@ -325,12 +328,17 @@ func ValidateCompleteHarnessObservation(observation HarnessObservation) error {
 		return errors.New("incomplete harness observation")
 	}
 	seen := map[string]bool{}
+	activeRelevanceObjectives := 0
 	for index, objective := range observation.Objectives {
 		if objective.ID != observation.DeclaredObjectiveIDs[index] {
 			return errors.New("harness observation objective declaration mismatch")
 		}
 		if objective.ID == "" || objective.Kind == "" || seen[objective.ID] || objective.State != ObservationStateComplete ||
+			objective.StartedAt == "" || objective.UpdatedAt == "" || objective.ElapsedMS < 0 ||
+			!validObservationTimestamp(objective.StartedAt) || !validObservationTimestamp(objective.UpdatedAt) ||
 			objective.FinishedAt == nil || objective.Errors == nil || len(objective.Errors) != 0 ||
+			!validObservationTimestamp(*objective.FinishedAt) || objective.InstrumentExcluded == nil ||
+			!sortedUniqueObservationStrings(objective.InstrumentExcluded) ||
 			objective.GuardState != ObservationConditionClear || objective.PopulationExclusions != ObservationConditionClear ||
 			objective.TruncationState != ObservationConditionClear {
 			return fmt.Errorf("incomplete harness observation objective %q", objective.ID)
@@ -347,15 +355,35 @@ func ValidateCompleteHarnessObservation(observation HarnessObservation) error {
 				index > 1 && objective.Kind != "registered_relevance" {
 				return errors.New("invalid complete-check objective order")
 			}
+			if index > 1 && (objective.Identity.RegistryIndex == nil || *objective.Identity.RegistryIndex != index-2) {
+				return errors.New("invalid complete-check registry order")
+			}
+		}
+		if objective.Kind == "registered_relevance" && objective.Identity.Active != nil && *objective.Identity.Active {
+			activeRelevanceObjectives++
 		}
 	}
-	if observation.Mode == "check" && len(observation.Objectives) < 3 {
-		return errors.New("complete check has missing objectives")
+	if observation.Mode == "check" && (len(observation.Objectives) < 3 || activeRelevanceObjectives != 1) {
+		return errors.New("complete check has missing or invalid objectives")
 	}
 	if observation.Mode == "relevance-registered" && (len(observation.Objectives) != 1 || observation.Objectives[0].Kind != "registered_relevance") {
 		return errors.New("registered relevance observation has invalid objectives")
 	}
 	return nil
+}
+
+func validObservationTimestamp(value string) bool {
+	_, err := time.Parse(time.RFC3339Nano, value)
+	return err == nil
+}
+
+func sortedUniqueObservationStrings(values []string) bool {
+	for index, value := range values {
+		if value == "" || index > 0 && values[index-1] >= value {
+			return false
+		}
+	}
+	return true
 }
 
 func validateObservationIdentity(objective HarnessObservationObjective, activeConstantsHash string) error {
