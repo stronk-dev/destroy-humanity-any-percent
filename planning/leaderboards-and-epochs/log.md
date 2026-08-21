@@ -361,3 +361,10 @@ hash correctness can no longer disguise invalid category semantics.
 - Canonical docs now state the capability boundary and the live terminal-only Commons defect. No
   product code, schema, balance, copy, plan checkbox, RFC acceptance/status promotion, push,
   publication, review verdict or archival changed.
+
+## 2026-08-21 — AC1/AC3/AC5/AC6 witness predeclaration
+
+- Predeclared source→key→board, epoch-crossing replay/projection, Compact any-membership and
+  two-later-epoch populations in `witness-manifest.md`, including explicit negative mutations.
+- Scope is the accepted backend only. The draft reader/player successor, API operations, UI, copy,
+  retention, mandates, dispatch and machine boards remain out of range.
