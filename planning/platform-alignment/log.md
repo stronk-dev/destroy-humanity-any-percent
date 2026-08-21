@@ -1755,3 +1755,23 @@
 - Batch 17 remains author-blocked. Its D-002 disposition is still public synthesis plus named
   private-store or verified-cleanup treatment, never automatic raw tracking. No ignored source,
   owner ruling, product code, publication boundary or push changed in review.
+
+## 2026-08-21 — Owner-directed Codex reconciliation of `ai-authorship-meta.md`
+
+- The owner explicitly instructed Codex to fix the remaining contradictions instead of delegating
+  the mechanical reconciliation to Claude. This is direct authority for the ignored dossier edit;
+  the owner-ruling block itself remains untouched.
+- Removed every live dependency on the rejected provenance ledger: G2 now routes only the about and
+  credits surfaces, G3 is resolved with no measurement/CI seam, and the §11 Roottrees row routes to
+  the standing three-surface disclosure.
+- Reconciled the ruled-false provenance premise across Option B and §§3/5/8/9: the dossier now states
+  AI production under owner direction, public-source art/audio, source-licence-dependent rights and
+  the public-repository posture. It makes no human-authorship, no-genAI-policy or seal claim.
+- Retired V12 and the seal route. Preserved the explicitly marked rejected recommendation/history,
+  the unrelated incident-ledger usage and the owner correction verbatim.
+- Hostile case-insensitive rescan leaves ledger/colophon/no-genAI/human-art terms only in rejected
+  history, explicit retirement/explanation, the unrelated incident ledger, or statements forbidding
+  the old premise. Batch 17's body-reconciliation blocker is closed on disk.
+- The source remains ignored and its D-002 disposition remains public synthesis plus a named private
+  store or verified cleanup; this edit does not authorize raw tracking, publication, product work or
+  push.
