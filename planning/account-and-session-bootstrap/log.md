@@ -221,7 +221,14 @@ Demonstrated failing mutations, all restored before `e0f26d1`:
   4001, proving the live-socket oracle depends on reauthentication rather than token expiry or the
   revoked-before-connect case.
 
-Codex first-filter verdict: **APPROVED** for the test-only Q-001 scope. The diff was read in full;
+Codex first-filter verdict: **APPROVED** for the test-only Q-001 scope.
+
+- **Review by:** Codex.
+- **Recorded by:** Codex.
+- **Reviewed range:** `7ce6546..e0f26d1` (the test implementation commit after the predeclared
+  plan boundary).
+
+The diff was read in full;
 the assertions bind real Postgres rows, real HTTP operations, a real WebSocket, replay verification,
 and the actual board projector. No fixture silently skips in the declared Compose populations, and
 no temporary production mutation remains. Designated cross-party review is still mandatory and
