@@ -213,8 +213,11 @@ is correct.
    named durable private-store contract, or if generated diagnostics are treated as canonical
    evidence.
 
-Batch 17 adds one Class-C author-owned blocker: `ai-authorship-meta.md` appends an owner correction
-that rejects its premise and recommendation while leaving the contradictory normative body intact.
-The ruling author must reconcile that body before the dossier or a derivative becomes canonical.
+Batch 17 adds one Class-C author-owned blocker. Record `5f1ddaa` adopts a partial on-disk
+reconciliation of `ai-authorship-meta.md`, but the ignored source is absent from its commit and four
+live sites still require the rejected ledger/colophon: Option D, G2, G3 and one §11 routing row. The
+ruling author must reconcile those sites before a derivative becomes canonical. The raw dossier's
+disposition remains public synthesis plus named private-store or verified-cleanup treatment; it is
+not approved for automatic tracking.
 
 No step above authorizes a push, publication, deployment, content adoption, or product change.

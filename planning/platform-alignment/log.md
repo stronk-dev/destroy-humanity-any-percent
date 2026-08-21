@@ -1565,3 +1565,24 @@
 - The file is currently gitignored, so the adopted state is on-disk; it enters version control
   whenever the D-002 review classifies it trackable. Its D-002 disposition can now proceed without
   shipping a self-contradiction.
+
+## 2026-08-21 — Cross-party review of `5f1ddaa` / ignored adopted source — CHANGES REQUIRED
+
+**Review by:** Codex
+
+**Recorded by:** Codex
+
+**Tracked range inspected:** `b8039e4..5f1ddaa`
+
+**Ignored source inspected:** current on-disk `design/research/ai-authorship-meta.md`
+
+- The tracked range contains only this log's adoption record; none of the ignored dossier bytes are
+  in the commit, so the claimed before/after cannot receive an exact-range designated approval.
+- The adopted edit correctly marks Option E rejected, boxes the ruled outcome above the retained
+  historical recommendation and fixes the first two §11 routing rows.
+- Four live contradictions remain outside the marked history: Option D still requires a footer
+  ledger/colophon; G2 routes that ledger to a surface/manifest seam; G3 requires its measurement;
+  and the §11 Roottrees row still says to cite the rejected ledger.
+- Batch 17 therefore remains author-blocked at those four exact sites. Its disposition is still
+  public synthesis plus a named private store or verified cleanup, not automatic raw-file tracking.
+  No ignored source, owner ruling, product code, publication boundary or push changed in review.

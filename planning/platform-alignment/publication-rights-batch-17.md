@@ -20,6 +20,21 @@ the repository's body-reconciliation law. Exact disclosures, credits/about surfa
 policy, AGI content, legal conclusions and publication posture remain owner/design/RFC/legal work.
 The raw dossier needs a named private store or verified cleanup.
 
+## Reconciliation review — changes still required
+
+Owner record `5f1ddaa` documents an adopted on-disk reconciliation, but the ignored source bytes are
+not in that commit and the current dossier still contains live contradictory instructions:
+
+- Option D says the AGI beat points to a footer ledger and dramatizes the colophon;
+- G2 still routes a colophon/ledger to a surface and manifest seam;
+- G3 still requires a provenance-ledger measurement; and
+- the §11 Roottrees routing row still says to cite the rejected ledger.
+
+The explicitly marked historical recommendation is exempt and may remain. The four live sites
+above are not inside that historical block. The Batch-17 author-owned blocker is therefore narrowed,
+not closed. Because the file's publication disposition remains synthesis/private-store rather than
+raw tracking, `5f1ddaa` also cannot imply that the raw file automatically enters version control.
+
 ## Batch result
 
 Class-C progress is now **39 of 67 reviewed**: five eligible, seven bounded-revision, 27 public-
