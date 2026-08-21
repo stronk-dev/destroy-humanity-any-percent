@@ -32,6 +32,6 @@ design/research/*
 !design/research/cattery-reusables-public.md
 !design/research/cicd-deploy-public.md
 !design/research/provenance-extracts.md
-design/BACKLOG.md
 planning/coverage-map/*
 !planning/coverage-map/decisions-log.md
+!planning/coverage-map/deferred-and-dropped.md

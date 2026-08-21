@@ -2001,3 +2001,14 @@
 - Direct existence checks passed for every changed local target. `pnpm check:links` is unavailable
   at the repository root (no root package manifest or link-check target) and is not claimed green.
 - No product behavior, design intent, RFC contract, publication, push or deployment changed.
+
+## 2026-08-21 — D-002 disposition execution: maintained ledgers
+
+- Reconciled and normally exposed `design/BACKLOG.md` and
+  `planning/coverage-map/deferred-and-dropped.md` as maintained ledgers.
+- Updated the backlog's D-002/R-001/Harness Observability and lane-combat status, replaced absent
+  raw-evidence routing, and marked research coverage as non-executable.
+- Updated the deferred ledger's currentness, historical pointer and archived Soul state without
+  reviving any deferred item or promoting a candidate.
+- Class-A execution is complete. Five eligible and six bounded-revision Class-C dossiers plus the
+  fresh-clone authority gate remain. No product/design/RFC behavior, push or deployment changed.

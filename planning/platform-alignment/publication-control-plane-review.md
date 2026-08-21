@@ -93,4 +93,5 @@ is authorized by this review alone.
 The 11-file historical coverage-map move is complete in
 `publication-disposition-execution-02.md`. Each file is tracked under
 `planning/archive/coverage-map/` with a frozen/noncanonical banner and current-authority pointers.
-The two maintained ledgers remain pending their separate currentness reconciliation.
+The two maintained ledgers are reconciled and normally tracked by
+`publication-disposition-execution-03.md`. Class-A disposition execution is complete.

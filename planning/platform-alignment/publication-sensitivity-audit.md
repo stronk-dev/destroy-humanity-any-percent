@@ -295,11 +295,12 @@ is correct.
    `publication-disposition-execution-01.md`; the two frozen historical records are preserved by
    `publication-disposition-execution-02.md`; the three redundant canonical duplicates correctly
    remain ignored.
-3. **Control-plane tracking batch:** reconcile and normally add the two maintained ledgers; the 11
-   historical coverage-map records are already tracked in their frozen archive. Then prove a fresh
-   clone contains every artifact named by `AGENTS.md` as shared memory.
-4. **Research rights batches:** review Class C in small thematic groups with a per-file disposition
-   manifest. Do not make one 67-file blanket approval.
+3. **Control-plane tracking — complete:** the two maintained ledgers are reconciled and tracked by
+   `publication-disposition-execution-03.md`; the 11 historical coverage-map records are tracked in
+   their frozen archive.
+4. **Research dispositions:** track the five eligible dossiers unchanged and apply the six bounded
+   revisions. The 56 synthesis/private-store raw inputs remain ignored/noncanonical behind their
+   tracked per-file public records unless a later bounded derivative is justified.
 5. **Fresh-clone gate:** fail if a tracked authority links to an absent ignored artifact without a
    named durable private-store contract, or if generated diagnostics are treated as canonical
    evidence.
