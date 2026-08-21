@@ -167,7 +167,10 @@ revision-blocked, 26 synthesis/private-store-blocked, and 29 unreviewed.** See
 `publication-rights-batch-16.md`. Batch 17 reviewed the AI-authorship/provenance dossier; it
 requires public synthesis, ruling-author body reconciliation and current legal/editorial review.
 **Thirty-nine of 67 are reviewed: five eligible, seven revision-blocked, 27 synthesis/private-
-store-blocked, and 28 unreviewed.** See `publication-rights-batch-17.md`.
+store-blocked, and 28 unreviewed.** See `publication-rights-batch-17.md`. Batch 18 reviewed the
+extreme-wealth and postwar-decay dossier; it requires public synthesis plus current legal/
+political/editorial review. **Forty of 67 are reviewed: five eligible, seven revision-blocked, 28
+synthesis/private-store-blocked, and 27 unreviewed.** See `publication-rights-batch-18.md`.
 
 ### Class D — generated diagnostics (7)
 

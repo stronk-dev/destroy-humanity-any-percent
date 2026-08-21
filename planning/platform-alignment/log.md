@@ -1485,3 +1485,16 @@
 - Class-C progress is 39 of 67: five eligible, seven revision-blocked, 27 synthesis/private-store-
   blocked, and 28 unreviewed. No ignored source, ruling body, design/content/legal authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 18
+
+- Read the extreme-wealth and postwar-social-decay dossier completely and routed it to a dated
+  public synthesis plus current legal/political/editorial review.
+- Preserved the scale-of-wealth, institutional-decline, physical-enshittification and honestly
+  matched improvement/decline findings without promoting current wealth/policy figures, political
+  claims, blocked-source gaps, named living-party conduct, quotations or allegations.
+- Refused to adopt exact tickers, endings, buildings, achievements, political framing and other
+  product/content proposals as research authority.
+- Class-C progress is 40 of 67: five eligible, seven revision-blocked, 28 synthesis/private-store-
+  blocked, and 27 unreviewed. No ignored source, design/content/political/legal authority,
+  publication, push, deployment or destructive cleanup changed.
