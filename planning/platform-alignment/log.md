@@ -1358,3 +1358,18 @@
 - Class-C progress is 27 of 67: five eligible, seven revision-blocked, 15 synthesis/private-store-
   blocked, and 40 unreviewed. No ignored source, design/copy authority, legal/safety posture,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 09
+
+- Read the Gaia hyperinflation and regulatory-capture dossiers completely. Both require public
+  synthesis and named raw-source disposition; Gaia needs current allegation/source review and the
+  capture synthesis needs legal/political/editorial review.
+- Preserved Gaia's useful self-corrections but refused to publish community estimates, current
+  gray-market pricing, living-person conduct, quotations and exact satire mechanics as one raw
+  authority bundle.
+- Refused to promote the capture dossier's Wikipedia/model-derived legal and political material
+  into formulas, routes, events or copy. Primary jurisdiction-specific evidence and current review
+  must precede any public claim; product behavior remains owner/design/RFC work.
+- Class-C progress is 29 of 67: five eligible, seven revision-blocked, 17 synthesis/private-store-
+  blocked, and 38 unreviewed. No ignored source, design/copy authority, legal/political posture,
+  publication, push, deployment or destructive cleanup changed.

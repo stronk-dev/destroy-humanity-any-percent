@@ -138,7 +138,10 @@ five eligible, seven revision-blocked, 13 synthesis/private-store-blocked, and 4
 `publication-rights-batch-07.md`. Batch 08 reviewed the endgame and Soul mechanic foundations; both
 require public synthesis, and the Soul synthesis also requires owner/safety review. **Twenty-seven
 of 67 are reviewed: five eligible, seven revision-blocked, 15 synthesis/private-store-blocked, and
-40 unreviewed.** See `publication-rights-batch-08.md`.
+40 unreviewed.** See `publication-rights-batch-08.md`. Batch 09 reviewed the Gaia hyperinflation
+and regulatory-capture case studies; both require public synthesis plus current claim/legal/
+editorial review. **Twenty-nine of 67 are reviewed: five eligible, seven revision-blocked, 17
+synthesis/private-store-blocked, and 38 unreviewed.** See `publication-rights-batch-09.md`.
 
 ### Class D — generated diagnostics (7)
 
