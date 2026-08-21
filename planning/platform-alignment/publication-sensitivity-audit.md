@@ -135,7 +135,10 @@ and 45 unreviewed.** See `publication-rights-batch-06.md`. Batch 07 reviewed the
 completeness sweep plus the pacing and run-narrative foundations: the sweep needs bounded staleness
 revision, while both raw foundations require public synthesis. **Twenty-five of 67 are reviewed:
 five eligible, seven revision-blocked, 13 synthesis/private-store-blocked, and 42 unreviewed.** See
-`publication-rights-batch-07.md`.
+`publication-rights-batch-07.md`. Batch 08 reviewed the endgame and Soul mechanic foundations; both
+require public synthesis, and the Soul synthesis also requires owner/safety review. **Twenty-seven
+of 67 are reviewed: five eligible, seven revision-blocked, 15 synthesis/private-store-blocked, and
+40 unreviewed.** See `publication-rights-batch-08.md`.
 
 ### Class D — generated diagnostics (7)
 

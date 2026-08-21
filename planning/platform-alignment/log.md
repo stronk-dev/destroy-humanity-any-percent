@@ -1343,3 +1343,18 @@
 - Class-C progress is 25 of 67: five eligible, seven revision-blocked, 13 synthesis/private-store-
   blocked, and 42 unreviewed. No ignored source, design/copy authority, balance/telemetry policy,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 08
+
+- Read the endgame-grammar and Soul-mechanic dossiers completely. Both require source-linked
+  public synthesis and a named raw-source disposition; the Soul synthesis additionally needs
+  current owner/safety review.
+- Refused to promote the endgame dossier's predominantly `[M]` comparisons into an implementer-
+  ready T7/T8 contract. Closed-form allocation is compatible with existing architecture, but
+  extractor/value-drift ownership, formulas, copy and sequencing remain design/RFC decisions.
+- Refused the Soul dossier's categorical legal/safety matrix and hybrid recommendation as owner
+  authority. Its bounded meter-versus-currency tension is useful; exact recovery, pet feedback,
+  thresholds, self-harm framing, copy and ending behavior are not research-owned conclusions.
+- Class-C progress is 27 of 67: five eligible, seven revision-blocked, 15 synthesis/private-store-
+  blocked, and 40 unreviewed. No ignored source, design/copy authority, legal/safety posture,
+  publication, push, deployment or destructive cleanup changed.
