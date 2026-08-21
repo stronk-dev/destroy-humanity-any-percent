@@ -1101,3 +1101,19 @@
 - The executable queue now has no READY implementation batch. Next authority must come from the
   owner packet, an accepted R-001 instrumentation contract, or a named ruling-author reconciliation;
   no feature work or archival is inferred from the three bounded approvals.
+
+## 2026-08-21 — owner program ruling and R-001 authority
+
+- Marco adopted the bounded program in `owner-ruling-packet.md`: current repository development
+  snapshot; next target Cloud Clicker Phase-0 Playable Preview; no public hosting before the full
+  recovery/accessibility/rights/package/backup/operations floor; public tracked shared memory only
+  after sensitivity review; one-time copy/download recovery without email; one-node Docker Compose;
+  Advisor, async minigames, gameplay telemetry and public UGC/social content deferred.
+- Kept every unchosen detail explicit. Export, deletion, retention, origin/proxy, backup cadence,
+  RPO/RTO, operator/rotation, observability/incident ownership, sunset posture, CI topology and the
+  exact final preview manifest remain open; no implementation agent may infer them.
+- Authorized only a measurement-preserving Harness Observability follow-up for R-001. It may expose
+  phase/registered-row timing, identity and declared/executed work plus fail-loud partial artifacts;
+  it may not change content, scenarios, seeds, horizons, budgets, timeouts, topology, parallelism,
+  sharding, balance or acceptance bounds. Claude remains reserved for the final mandatory
+  cross-party review of the eventual exact implementation range.

@@ -1,10 +1,45 @@
 # Owner ruling packet — release and program choices
 
-Coordinate: product tree `190a4fa`; evidence through `71d2594`; 2026-08-20.
+Coordinate: product tree `190a4fa`; evidence through `7e98c40`; owner rulings through 2026-08-21.
 
-This packet turns the audit into choices an implementation agent may not make. It does not adopt
-any option. “Recommended” means the smallest internally coherent route supported by current
-evidence, not a ruling.
+This packet turns the audit into choices an implementation agent may not make. The option tables
+preserve the evidence and alternatives that produced the ruling. Any item not resolved by the
+adopted text below remains an owner question.
+
+## Adopted owner ruling — 2026-08-21
+
+Marco adopted the following bounded program. These choices are authority; the unresolved details
+listed below remain blockers and must not be inferred by an implementer.
+
+- **Current public claim:** repository development snapshot. The repository does not claim to be a
+  supported playable service, alpha, 1.0 release, or release-ready self-host package.
+- **Next release target:** **Cloud Clicker Phase-0 Playable Preview**, explicitly bounded to the
+  audited T0–T1 vertical slice and explicitly not roadmap v0.1 or 1.0. No T2+ roadmap content,
+  broad social surface, or unbuilt minigame is implied by the name.
+- **Hosted public service:** no. Public hosting remains blocked until the recovery, accessibility,
+  rights, supported-package/configuration, backup/restore/rollback, privacy, and operations floors
+  are implemented and rehearsed. Those obligations are not waived by the preview label.
+- **Repository memory:** public repository plus tracked public planning/research. Sensitive
+  material must be inspected and sanitized before it becomes tracked; this ruling does not itself
+  authorize blindly publishing ignored files or secrets.
+- **Recovery credential:** one-time display with copy and download at bootstrap, plus an honest
+  recover-existing-account path. Email recovery is deferred. Export scope, deletion semantics,
+  and retention remain unresolved under O-003/O-004.
+- **Deployment topology:** one supported Docker Compose node. Public origin/proxy boundaries,
+  backup cadence, RPO/RTO, rotation ownership, observability destinations, alerts, incident
+  ownership, and retention remain unresolved; therefore this is an architecture choice, not a
+  release authorization.
+- **Deferred from the Phase-0 preview:** Advisor Mode, composed asynchronous minigames, gameplay
+  telemetry, and public UGC/social content. Their ruling authors must reconcile any active RFC body
+  that still claims them; the deferral does not erase historical intent.
+- **R-001 authority:** a narrow harness-observability follow-up RFC may be accepted and implemented
+  for measurement only. It may add phase/row progress, registry-aware selection, declared/executed
+  work counts, identity, and fail-loud incomplete-run artifacts. It may not change scenarios,
+  balance, seeds, horizons, work budgets, timeouts, acceptance bounds, parallelism, sharding, or CI
+  topology. D-014 remains blocked until the complete authority-preserving measurement exists.
+- **Canonical update owner:** Marco; Codex may record this ruling and implement the expressly
+  authorized mechanical R-001 contract. Owner/ruling-author body reconciliations remain with their
+  named authors.
 
 ## O-001 — next public milestone and exact floor (D-001/D-007)
 
@@ -114,13 +149,13 @@ must depend on a rehearsed deliverable, not architecture potential.
 
 | Decision | State | What is still needed |
 |---|---|---|
-| D-001/D-007 milestone/content | **READY FOR OWNER** | Choose O-001; evidence baseline is complete. |
-| D-002 repository disposition | **READY FOR OWNER** | Choose O-002; inspect any sensitive files before public tracking. |
-| D-005/D-008 account recovery/export | **READY FOR OWNER POSTURE** | Choose semantics, then prototype and run R-003. |
+| D-001/D-007 milestone/content | **PARTIALLY RULED** | Development snapshot now; Phase-0 Playable Preview next. Exact final content/surface manifest still belongs to its release RFC. |
+| D-002 repository disposition | **RULED — implementation audit pending** | Public shared memory; inspect and sanitize ignored material before tracking it. |
+| D-005/D-008 account recovery/export | **RECOVERY RULED; EXPORT OPEN** | Build the ruled one-time copy/download posture; choose export semantics before R-003. |
 | D-009/D-015 deletion/retention | **NEEDS LEGAL/OWNER RULING** | Complete data-family review and adopt exact retention/disclosure. |
 | D-003 sunset | **BLOCKED ON RESEARCH REPAIR** | Reverify official sources and remove false current-state claims. |
-| D-006/D-011 topology/operations | **NEEDS OWNER INPUT** | Host/operator constraints and exact objectives. |
+| D-006/D-011 topology/operations | **TOPOLOGY RULED; OPERATIONS OPEN** | One Compose node; exact objectives, operator, proxy, backup, rotation, metrics and alert ownership remain open. |
 | D-010 lifecycle locations | **READY FOR OWNER/PROCESS AUTHOR** | Choose one archive home for withdrawn RFCs and completed non-RFC threads. |
-| D-012/D-013 product scope | **READY FOR OWNER/RULING AUTHOR** | Include or explicitly defer; reconcile the bodies. |
+| D-012/D-013 product scope | **DEFERRED; BODY RECONCILIATION PENDING** | Advisor and async are out of the preview; ruling authors must reconcile the active bodies. |
 | D-014 CI contract | **BLOCKED ON ACCEPTED R-001 INSTRUMENT + MEASUREMENT** | Do not choose from cancelled runs. |
-| D-016/D-017 telemetry/UGC | **BLOCKED UNTIL CHOSEN MILESTONE NEEDS THEM** | Rule before milestone/social RFCs, not during implementation. |
+| D-016/D-017 telemetry/UGC | **DEFERRED FROM PREVIEW** | No gameplay telemetry or public UGC/social content in the Phase-0 preview; revisit only through a later owner ruling. |
