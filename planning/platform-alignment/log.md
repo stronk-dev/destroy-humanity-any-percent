@@ -1612,3 +1612,16 @@
 - Class-C progress is 46 of 67: five eligible, seven revision-blocked, 34 synthesis/private-store-
   blocked, and 21 unreviewed. No ignored source, design/content/consumer-protection/legal/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 25
+
+- Read the Kingdom of Loathing and Puzzle Pirates systems dossier completely and routed it to a
+  dated public synthesis plus IP/editorial review.
+- Preserved the in-fiction economic repair, rolling paid-power eligibility, deterministic-remix and
+  performance-graded asynchronous-output findings without promoting exact branded systems/copy,
+  real-money conversion mechanics, abuse allegations, named people or categorical IP conclusions.
+- Refused to adopt the explicit steal/satirize list, currencies, markets, paths, chat gates,
+  minigame labor and Cloud Clicker adaptations as research authority.
+- Class-C progress is 47 of 67: five eligible, seven revision-blocked, 35 synthesis/private-store-
+  blocked, and 20 unreviewed. No ignored source, design/content/IP authority, publication, push,
+  deployment or destructive cleanup changed.
