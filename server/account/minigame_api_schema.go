@@ -1,8 +1,10 @@
 package account
 
 import (
+	"bytes"
 	"net/http"
 	"sort"
+	"strconv"
 
 	"cloud-clicker/server/publicapi"
 )
@@ -158,16 +160,87 @@ func minigameAPISchemas() []publicapi.NamedSchema {
 	}
 }
 
-func minigameAPIResponses(success string) []publicapi.Response {
+type apiErrorPair struct {
+	category string
+	detail   string
+}
+
+func exactAPIErrorJSON(pairs ...apiErrorPair) [][]byte {
+	result := make([][]byte, len(pairs))
+	for index, pair := range pairs {
+		result[index] = []byte(`{"category":` + strconv.Quote(pair.category) + `,"detail":` + strconv.Quote(pair.detail) + "}\n")
+	}
+	sort.Slice(result, func(left, right int) bool { return bytes.Compare(result[left], result[right]) < 0 })
+	return result
+}
+
+func minigameErrorJSON(action string, status int) [][]byte {
+	if action == "" {
+		return nil
+	}
+	switch status {
+	case http.StatusBadRequest:
+		detail := "body"
+		if action == "create" || action == "command" {
+			detail = "minigame_" + action
+		}
+		return exactAPIErrorJSON(apiErrorPair{"invalid", detail})
+	case http.StatusUnauthorized:
+		return exactAPIErrorJSON(apiErrorPair{"unauthorized", "access_token"})
+	case http.StatusNotFound:
+		return exactAPIErrorJSON(
+			apiErrorPair{"unknown_id", "founder"},
+			apiErrorPair{"unknown_id", "minigame_session"},
+			apiErrorPair{"unknown_id", "minigame_tenant"},
+		)
+	case http.StatusConflict:
+		idempotencyDetail := "minigame_command"
+		if action == "create" {
+			idempotencyDetail = "minigame_session"
+		}
+		return exactAPIErrorJSON(
+			apiErrorPair{"conflict", "minigame_revision"},
+			apiErrorPair{"conflict", "minigame_session"},
+			apiErrorPair{"idempotency_conflict", idempotencyDetail},
+			apiErrorPair{"not_eligible", "duplicate_card"},
+			apiErrorPair{"not_eligible", "exclusive_activity"},
+			apiErrorPair{"not_eligible", "fiscal_unlock_required"},
+			apiErrorPair{"not_eligible", "hack_slots_full"},
+			apiErrorPair{"not_eligible", "hand_too_large"},
+			apiErrorPair{"not_eligible", "human_content_locked"},
+			apiErrorPair{"not_eligible", "illegal_phase"},
+			apiErrorPair{"not_eligible", "insufficient_currency"},
+			apiErrorPair{"not_eligible", "unknown_card"},
+			apiErrorPair{"not_eligible", "unknown_offer"},
+		)
+	case http.StatusTooManyRequests:
+		return exactAPIErrorJSON(
+			apiErrorPair{"rate_limited", "account"},
+			apiErrorPair{"rate_limited", "ip"},
+		)
+	case http.StatusInternalServerError:
+		pairs := []apiErrorPair{{"internal_invariant", "minigame_api"}}
+		if action == "create" {
+			pairs = append(pairs, apiErrorPair{"internal_invariant", "session_id"})
+		}
+		return exactAPIErrorJSON(pairs...)
+	case http.StatusServiceUnavailable:
+		return exactAPIErrorJSON(apiErrorPair{"not_configured", "minigame_api"})
+	default:
+		return nil
+	}
+}
+
+func minigameAPIResponses(success, action string) []publicapi.Response {
 	return []publicapi.Response{
 		{Kind: publicapi.ResponseSchema, Status: http.StatusOK, ContentType: publicapi.ContentJSON, SchemaRef: success},
-		{Kind: publicapi.ResponseSchema, Status: http.StatusBadRequest, ContentType: publicapi.ContentJSON, SchemaRef: "APIError"},
-		{Kind: publicapi.ResponseSchema, Status: http.StatusUnauthorized, ContentType: publicapi.ContentJSON, SchemaRef: "APIError"},
-		{Kind: publicapi.ResponseSchema, Status: http.StatusNotFound, ContentType: publicapi.ContentJSON, SchemaRef: "APIError"},
-		{Kind: publicapi.ResponseSchema, Status: http.StatusConflict, ContentType: publicapi.ContentJSON, SchemaRef: "APIError"},
-		{Kind: publicapi.ResponseSchema, Status: http.StatusTooManyRequests, ContentType: publicapi.ContentJSON, SchemaRef: "APIError"},
-		{Kind: publicapi.ResponseSchema, Status: http.StatusInternalServerError, ContentType: publicapi.ContentJSON, SchemaRef: "APIError"},
-		{Kind: publicapi.ResponseSchema, Status: http.StatusServiceUnavailable, ContentType: publicapi.ContentJSON, SchemaRef: "APIError"},
+		{Kind: publicapi.ResponseSchema, Status: http.StatusBadRequest, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: minigameErrorJSON(action, http.StatusBadRequest)},
+		{Kind: publicapi.ResponseSchema, Status: http.StatusUnauthorized, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: minigameErrorJSON(action, http.StatusUnauthorized)},
+		{Kind: publicapi.ResponseSchema, Status: http.StatusNotFound, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: minigameErrorJSON(action, http.StatusNotFound)},
+		{Kind: publicapi.ResponseSchema, Status: http.StatusConflict, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: minigameErrorJSON(action, http.StatusConflict)},
+		{Kind: publicapi.ResponseSchema, Status: http.StatusTooManyRequests, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: minigameErrorJSON(action, http.StatusTooManyRequests)},
+		{Kind: publicapi.ResponseSchema, Status: http.StatusInternalServerError, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: minigameErrorJSON(action, http.StatusInternalServerError)},
+		{Kind: publicapi.ResponseSchema, Status: http.StatusServiceUnavailable, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: minigameErrorJSON(action, http.StatusServiceUnavailable)},
 	}
 }
 
@@ -175,15 +248,15 @@ func minigameAPIOperations() []publicapi.Operation {
 	return []publicapi.Operation{
 		{ID: "create_minigame_session", Method: http.MethodPost, Path: "/api/v1/minigames/{minigame_id}/sessions", Surface: publicapi.SurfacePrivateV1,
 			Auth: publicapi.AuthAccessToken, Parameters: []publicapi.Parameter{{Name: "minigame_id", Schema: apiString("mechanical-id")}},
-			Request: "MinigameCreateRequest", Responses: minigameAPIResponses("MinigameSessionResponseActive")},
+			Request: "MinigameCreateRequest", Responses: minigameAPIResponses("MinigameSessionResponseActive", "create")},
 		{ID: "get_current_minigame_session", Method: http.MethodGet, Path: "/api/v1/minigames/sessions/current", Surface: publicapi.SurfacePrivateV1,
-			Auth: publicapi.AuthAccessToken, Responses: minigameAPIResponses("MinigameCurrentResponse")},
+			Auth: publicapi.AuthAccessToken, Responses: minigameAPIResponses("MinigameCurrentResponse", "current")},
 		{ID: "play_minigame_command", Method: http.MethodPost, Path: "/api/v1/minigames/sessions/{session_id}/commands", Surface: publicapi.SurfacePrivateV1,
 			Auth: publicapi.AuthAccessToken, Parameters: []publicapi.Parameter{{Name: "session_id", Schema: apiString("uuid-v7")}},
-			Request: "MinigameCommandRequest", Responses: minigameAPIResponses("MinigameSessionResponse")},
+			Request: "MinigameCommandRequest", Responses: minigameAPIResponses("MinigameSessionResponse", "command")},
 		{ID: "resolve_minigame_session", Method: http.MethodPost, Path: "/api/v1/minigames/sessions/{session_id}/resolve", Surface: publicapi.SurfacePrivateV1,
 			Auth: publicapi.AuthAccessToken, Parameters: []publicapi.Parameter{{Name: "session_id", Schema: apiString("uuid-v7")}},
-			Request: "MinigameEmptyRequest", Responses: minigameAPIResponses("MinigameSessionResponseTerminal")},
+			Request: "MinigameEmptyRequest", Responses: minigameAPIResponses("MinigameSessionResponseTerminal", "resolve")},
 	}
 }
 

@@ -11,6 +11,12 @@ values consumed by runtime mounting, OpenAPI generation, TypeScript generation, 
 v1 compatibility pin. Authenticated Soul Recovery and minigame routes mount exclusively from this
 registry; missing, extra, unsorted, or nil runtime bindings fail during router construction.
 
+A schema response may also declare a sorted immutable set of exact JSON wire bytes. This is a
+runtime-validation narrowing layered over the generated DTO, not a generated-client or OpenAPI
+shape change. Minigame error responses use it to bind each operation/status to the shipped
+category/detail pairs and encoder newline, so a schema-valid cross-product or appended byte is not
+accepted as contract evidence.
+
 `make api-schema` regenerates canonical OpenAPI 3.1 at `docs/generated/api.json` and exact client
 DTO/operation metadata at `client/src/api/generated/types.ts`. `make api-check` regenerates and
 byte-compares both outputs as part of `make verify-server`. The committed

@@ -45,7 +45,7 @@ func TestMinigameAPIRegistryValidatesExactWire(t *testing.T) {
 	if err := registry.ValidateResponse("get_current_minigame_session", http.StatusOK, []byte(`{"kind":"none"}`)); err != nil {
 		t.Fatal(err)
 	}
-	apiError := []byte(`{"category":"unauthorized","detail":"access_token"}`)
+	apiError := []byte("{\"category\":\"unauthorized\",\"detail\":\"access_token\"}\n")
 	if err := registry.ValidateResponse("create_minigame_session", http.StatusUnauthorized, apiError); err != nil {
 		t.Fatal(err)
 	}
@@ -134,22 +134,42 @@ func TestBootstrapAPIRegistryPinsCredentialSafeWire(t *testing.T) {
 	}
 }
 
-func TestMinigameEndpointPrivacyContractIsClosed(t *testing.T) {
+func TestMinigameAndRecoveryEndpointPrivacyContractIsClosed(t *testing.T) {
 	registry, err := newPrivateAPIRegistry()
 	if err != nil {
 		t.Fatal(err)
 	}
 	wantParameters := map[string][]string{
+		"cancel_soul_recovery":         nil,
 		"create_minigame_session":      {"minigame_id"},
 		"get_current_minigame_session": nil,
 		"play_minigame_command":        {"session_id"},
+		"progress_soul_recovery":       nil,
 		"resolve_minigame_session":     {"session_id"},
+		"resolve_soul_recovery":        nil,
+		"start_soul_recovery":          nil,
 	}
-	valid := map[string][]byte{
+	validRequests := map[string][]byte{
+		"cancel_soul_recovery":         []byte(`{"session_id":"` + testMinigameSessionID + `"}`),
 		"create_minigame_session":      []byte(`{"idempotency_key":"create-1"}`),
 		"get_current_minigame_session": nil,
 		"play_minigame_command":        []byte(`{"command":{"kind":"end_shop"},"command_id":"command-1","expected_revision":1}`),
+		"progress_soul_recovery":       []byte(`{"progress_token":"018f0000-0000-4000-8000-000000000202","session_id":"` + testMinigameSessionID + `"}`),
 		"resolve_minigame_session":     []byte(`{}`),
+		"resolve_soul_recovery":        []byte(`{"session_id":"` + testMinigameSessionID + `"}`),
+		"start_soul_recovery":          []byte(`{"activity_id":"touch_grass.fixture"}`),
+	}
+	active := []byte(`{"constants_hash":"` + testConstantsHash + `","engine_ref":"pitch","engine_version":"1.0.0","minigame_id":"minigame.pitch","mode":"solo","revision":1,"session_id":"` + testMinigameSessionID + `","snapshot":{"deck_count":17,"funding_target":"1e3","hand":[],"hands_remaining":3,"phase":"playing","pitch_content_hash":"` + testPitchContentHash + `","pitch_schema_version":1,"revision":1,"round":1,"round_best_valuation":"0","run_currency":4,"shop_offers":[],"slotted_hacks":[]},"status":"active"}`)
+	terminal := []byte(`{"constants_hash":"` + testConstantsHash + `","engine_ref":"pitch","engine_version":"1.0.0","minigame_id":"minigame.pitch","mode":"solo","resolution_receipt":{"cap_reason_key":"resource.company_cash.cap.phase0","certified_result_hash":"` + testConstantsHash + `","company_revision":2,"configured_cap_forfeit_units":0,"credited_delta":"1e0","credited_resource_id":"company.cash","founder_revision":2,"intent_id":"` + testMinigameSessionID + `","minigame_id":"minigame.pitch","outcome":"applied","quality_change":{"new":{"decay_remainder_ppm":0,"grade_ppm":1000000,"last_founder_attended_ms":1},"old":{"decay_remainder_ppm":0,"grade_ppm":1000000,"last_founder_attended_ms":1}},"rating_change":{"games_after":1,"games_before":0,"new_elo":1000,"old_elo":1000,"rated":false,"season_member":""},"session_id":"` + testMinigameSessionID + `"},"revision":2,"session_id":"` + testMinigameSessionID + `","snapshot":{"deck_count":17,"funding_target":"1e3","hand":[],"hands_remaining":0,"phase":"terminal","pitch_content_hash":"` + testPitchContentHash + `","pitch_schema_version":1,"revision":2,"round":1,"round_best_valuation":"1e3","run_currency":4,"shop_offers":[],"slotted_hacks":[]},"status":"resolved"}`)
+	validResponses := map[string][]byte{
+		"cancel_soul_recovery":         []byte(`{"action":"cancel","activity_id":"touch_grass.fixture","band_after":"dimming","band_before":"dimming","cancelled_by":"watchdog","company_revision":2,"founder_revision":2,"intent_id":"` + testMinigameSessionID + `","outcome":"applied","session_id":"` + testMinigameSessionID + `","soul_after":70,"soul_before":70}`),
+		"create_minigame_session":      active,
+		"get_current_minigame_session": []byte(`{"kind":"none"}`),
+		"play_minigame_command":        active,
+		"progress_soul_recovery":       []byte(`{"attended_progress_ms":300000,"eligible":true,"last_progress_server_ms":300001,"required_duration_attended_ms":300000,"session_id":"` + testMinigameSessionID + `"}`),
+		"resolve_minigame_session":     terminal,
+		"resolve_soul_recovery":        []byte(`{"action":"resolve","activity_id":"touch_grass.fixture","band_after":"whole","band_before":"dimming","company_revision":2,"founder_revision":2,"intent_id":"` + testMinigameSessionID + `","outcome":"applied","session_id":"` + testMinigameSessionID + `","soul_after":80,"soul_before":70}`),
+		"start_soul_recovery":          []byte(`{"activity_id":"touch_grass.fixture","attended_progress_ms":0,"last_progress_server_ms":1,"progress_token":"018f0000-0000-4000-8000-000000000202","required_duration_attended_ms":300000,"session_id":"` + testMinigameSessionID + `","started_wall_ms":1}`),
 	}
 	for operationID, parameters := range wantParameters {
 		operation, ok := registry.Operation(operationID)
@@ -164,19 +184,31 @@ func TestMinigameEndpointPrivacyContractIsClosed(t *testing.T) {
 				t.Fatalf("%s parameter[%d]=%q", operationID, index, operation.Parameters[index].Name)
 			}
 		}
-		if err := registry.ValidateRequest(operationID, valid[operationID]); err != nil {
+		if err := registry.ValidateRequest(operationID, validRequests[operationID]); err != nil {
 			t.Fatalf("%s valid request: %v", operationID, err)
 		}
-		for _, privateField := range []string{"founder_id", "company_stream_id", "server_now_ms"} {
-			body := append([]byte(nil), valid[operationID]...)
+		for privateField, privateValue := range map[string]string{
+			"company_stream_id": `"01986666-ca01-7000-8000-000000000011"`,
+			"founder_id":        `"01985555-1111-7111-8111-111111111111"`,
+			"server_now_ms":     `1800000000000`,
+		} {
+			body := append([]byte(nil), validRequests[operationID]...)
 			if len(body) == 0 || string(body) == `{}` {
-				body = []byte(`{"` + privateField + `":"attacker"}`)
+				body = []byte(`{"` + privateField + `":` + privateValue + `}`)
 			} else {
-				body = append(body[:len(body)-1], []byte(`,"`+privateField+`":"attacker"}`)...)
+				body = append(body[:len(body)-1], []byte(`,"`+privateField+`":`+privateValue+`}`)...)
 			}
 			if err := registry.ValidateRequest(operationID, body); err == nil {
 				t.Fatalf("%s accepted private field %s", operationID, privateField)
 			}
+		}
+		if err := registry.ValidateResponse(operationID, http.StatusOK, validResponses[operationID]); err != nil {
+			t.Fatalf("%s valid response: %v", operationID, err)
+		}
+		body := append([]byte(nil), validResponses[operationID]...)
+		body = append(body[:len(body)-1], []byte(`,"founder_id":"01985555-1111-7111-8111-111111111111"}`)...)
+		if err := registry.ValidateResponse(operationID, http.StatusOK, body); err == nil {
+			t.Fatalf("%s response exposed hidden Founder authority", operationID)
 		}
 	}
 }

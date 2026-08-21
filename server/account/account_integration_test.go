@@ -36,15 +36,28 @@ func (emptyGuildSettlements) PendingSettlements(context.Context, string, string,
 type integrationGuildNames struct{}
 
 type integrationSoulRecoveries struct {
-	start production.StartSoulRecoveryRequest
+	start         production.StartSoulRecoveryRequest
+	sessionID     string
+	progressToken string
+	progressMS    int64
+	progressCalls int
 }
 
 func (handler *integrationSoulRecoveries) StartSoulRecovery(_ context.Context, request production.StartSoulRecoveryRequest, _ time.Time) (production.HandleResult, error) {
 	handler.start = request
-	return production.HandleResult{Receipt: json.RawMessage(fmt.Sprintf(`{"session_id":%q,"progress_token":"018f0000-0000-4000-8000-000000000202","activity_id":%q,"required_duration_attended_ms":300000,"attended_progress_ms":0,"last_progress_server_ms":1,"started_wall_ms":1}`, request.SessionID, request.ActivityID))}, nil
+	handler.sessionID = request.SessionID
+	handler.progressToken = "018f0000-0000-4000-8000-000000000202"
+	handler.progressMS = 0
+	handler.progressCalls = 0
+	return production.HandleResult{Receipt: json.RawMessage(fmt.Sprintf(`{"session_id":%q,"progress_token":%q,"activity_id":%q,"required_duration_attended_ms":300000,"attended_progress_ms":0,"last_progress_server_ms":1,"started_wall_ms":1}`, request.SessionID, handler.progressToken, request.ActivityID))}, nil
 }
-func (*integrationSoulRecoveries) ProgressSoulRecovery(_ context.Context, request production.ProgressSoulRecoveryRequest, _ time.Time, _ save.ExitFaultInjector) (production.HandleResult, error) {
-	return production.HandleResult{Receipt: json.RawMessage(fmt.Sprintf(`{"session_id":%q,"attended_progress_ms":0,"required_duration_attended_ms":300000,"last_progress_server_ms":1,"eligible":false}`, request.SessionID))}, nil
+func (handler *integrationSoulRecoveries) ProgressSoulRecovery(_ context.Context, request production.ProgressSoulRecoveryRequest, now time.Time, _ save.ExitFaultInjector) (production.HandleResult, error) {
+	if request.SessionID != handler.sessionID || request.ProgressToken != handler.progressToken {
+		return production.HandleResult{}, production.ErrSoulRecoveryToken
+	}
+	handler.progressCalls++
+	handler.progressMS += 1000
+	return production.HandleResult{Receipt: json.RawMessage(fmt.Sprintf(`{"session_id":%q,"attended_progress_ms":%d,"required_duration_attended_ms":300000,"last_progress_server_ms":%d,"eligible":false}`, request.SessionID, handler.progressMS, now.UnixMilli()))}, nil
 }
 func (*integrationSoulRecoveries) CancelSoulRecovery(_ context.Context, request production.FinishSoulRecoveryRequest, _ time.Time, _ save.ExitFaultInjector) (production.HandleResult, error) {
 	return production.HandleResult{Receipt: json.RawMessage(fmt.Sprintf(`{"session_id":%q,"outcome":"applied","action":"cancel_soul_recovery"}`, request.SessionID))}, nil
@@ -54,6 +67,20 @@ func (*integrationSoulRecoveries) ResolveSoulRecovery(_ context.Context, request
 }
 func (*integrationSoulRecoveries) SoulRecoveryBeatCeilingMS(context.Context, string, string) (int64, error) {
 	return 6000, nil
+}
+
+func (handler *integrationSoulRecoveries) authoritativeState(t *testing.T) []byte {
+	t.Helper()
+	encoded, err := json.Marshal(struct {
+		SessionID     string `json:"session_id"`
+		ProgressToken string `json:"progress_token"`
+		ProgressMS    int64  `json:"progress_ms"`
+		ProgressCalls int    `json:"progress_calls"`
+	}{handler.sessionID, handler.progressToken, handler.progressMS, handler.progressCalls})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return encoded
 }
 
 func (integrationGuildNames) HandleGuild(_ context.Context, _ string, body []byte) (json.RawMessage, bool, error) {
@@ -248,9 +275,21 @@ func TestAccountSessionIntegration(t *testing.T) {
 			t.Fatalf("Soul progress burst %d status=%d body=%s", index, progress.StatusCode, readBody(progress))
 		}
 	}
+	stateBeforeLimit := recoveries.authoritativeState(t)
 	limited := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/soul-recovery/progress", firstPair.AccessToken, progressBody)
-	if limited.StatusCode != http.StatusTooManyRequests || !strings.Contains(readBody(limited), `"detail":"recovery_progress"`) {
+	if limited.StatusCode != http.StatusTooManyRequests || readBody(limited) != "{\"category\":\"rate_limited\",\"detail\":\"recovery_progress\"}\n" {
 		t.Fatalf("Soul progress limiter status=%d", limited.StatusCode)
+	}
+	if stateAfterLimit := recoveries.authoritativeState(t); !bytes.Equal(stateAfterLimit, stateBeforeLimit) {
+		t.Fatalf("rejected Soul progress mutated authority: before=%s after=%s", stateBeforeLimit, stateAfterLimit)
+	}
+	now = now.Add(time.Second)
+	resumed := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/soul-recovery/progress", firstPair.AccessToken, progressBody)
+	if resumed.StatusCode != http.StatusOK {
+		t.Fatalf("Soul progress after refill status=%d body=%s", resumed.StatusCode, readBody(resumed))
+	}
+	if recoveries.progressCalls != 7 || recoveries.progressMS != 7000 {
+		t.Fatalf("Soul progress after refill calls=%d progress_ms=%d", recoveries.progressCalls, recoveries.progressMS)
 	}
 	cancelled := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/soul-recovery/cancel", firstPair.AccessToken,
 		fmt.Sprintf(`{"session_id":%q}`, recoverySessionID))

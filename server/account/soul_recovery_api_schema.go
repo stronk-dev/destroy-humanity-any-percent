@@ -56,7 +56,7 @@ func soulRecoveryAPISchemas() []publicapi.NamedSchema {
 
 func soulRecoveryAPIResponses(success string, rateLimited bool) []publicapi.Response {
 	_ = rateLimited // every authenticated route can hit the shared account limiter
-	return minigameAPIResponses(success)
+	return minigameAPIResponses(success, "")
 }
 
 func soulRecoveryAPIOperations() []publicapi.Operation {
