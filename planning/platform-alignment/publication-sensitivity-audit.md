@@ -263,6 +263,10 @@ unreviewed.** See `publication-rights-batch-42.md`. Batch 43 reviewed the creatu
 async-PvP dossier; it requires public synthesis plus current product/security/gambling/IP/patent/
 legal/editorial review. **Sixty-four of 67 are reviewed: five eligible, six revision-blocked, 53
 synthesis/private-store-blocked, and three unreviewed.** See `publication-rights-batch-43.md`.
+Batch 44 reviewed the morality-systems and Ethical%-architecture dossier; it requires public
+synthesis plus current product/philosophy/psychology/legal/political/IP/editorial review.
+**Sixty-five of 67 are reviewed: five eligible, six revision-blocked, 54 synthesis/private-store-
+blocked, and two unreviewed.** See `publication-rights-batch-44.md`.
 
 ### Class D — generated diagnostics (7)
 

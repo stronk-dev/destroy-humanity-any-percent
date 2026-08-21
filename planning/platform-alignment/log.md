@@ -1931,3 +1931,17 @@
 - Class-C progress is 64 of 67: five eligible, six revision-blocked, 53 synthesis/private-store-
   blocked, and three unreviewed. No ignored source, battle/product/security/gambling/IP/patent/legal
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 44
+
+- Read the morality-systems and Ethical%-architecture dossier completely and routed it to an
+  independently worded public synthesis plus current product/philosophy/psychology/legal/
+  political/IP/editorial review.
+- Preserved the meters-modulate/facts-gate, systemic-consequence, viable-alternative,
+  facts-versus-scores, distinct-self-depletion and explicit-terminal-opt-in findings without
+  promoting game mechanics, quotations, sensitive examples, model claims or computed comparisons.
+- Refused to adopt its moral doctrine, meter/ledger model, persistence rules, formulas/constants,
+  pacing, lint gates, UI, endings and player copy as research authority.
+- Class-C progress is 65 of 67: five eligible, six revision-blocked, 54 synthesis/private-store-
+  blocked, and two unreviewed. No ignored source, morality/product/philosophy/psychology/legal/
+  political/IP authority, publication, push, deployment or destructive cleanup changed.
