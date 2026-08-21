@@ -2,6 +2,7 @@ package production
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -600,6 +601,13 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 
 	ownerAcrossEpoch := "01985555-4000-7000-8000-000000000004"
 	founderAcrossEpoch, companyAcrossEpoch := createPrestigeStreams(t, ctx, store, catalog, hash, ownerAcrossEpoch, now, now.Add(-10*time.Minute), now, "0", decimal.New(8, 12), 1)
+	accountAcrossEpoch := "01985555-4000-7000-8000-000000000099"
+	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'leaderboard-ac3') ON CONFLICT DO NOTHING`, accountAcrossEpoch); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id) VALUES($1,$2) ON CONFLICT DO NOTHING`, accountAcrossEpoch, ownerAcrossEpoch); err != nil {
+		t.Fatal(err)
+	}
 	if _, err := store.PinRunToCurrentEpoch(ctx, companyAcrossEpoch.StreamID, ownerAcrossEpoch, 1, hash); err != nil {
 		t.Fatal(err)
 	}
@@ -685,6 +693,33 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		}
 		if len(pairs) != 2 || pairs[0] != [2]string{"run_ended", hash} || pairs[1] != [2]string{"run_started", currentHash} {
 			t.Fatalf("transition events=%v", pairs)
+		}
+
+		genesis, version, entries := persistedPrestigeReplay(t, db, companyAcrossEpoch.StreamID, founderAcrossEpoch.StreamID, 1, &currentReplayBundle)
+		if verdict := VerifyReplayRun(genesis, version, replayBundle, entries, hash, false); verdict != ReplayVerified {
+			t.Fatalf("epoch-crossing replay verdict=%s", verdict)
+		}
+		if verdict := VerifyReplayRun(genesis, version, replayBundle, entries, currentHash, false); verdict != ReplayConstantsMismatch {
+			t.Fatalf("current-hash substitution verdict=%s", verdict)
+		}
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer tx.Rollback()
+		if err := leaderboard.NewQueueProjector().ProjectVerifiedRun(ctx, tx, companyAcrossEpoch.StreamID, 1); err != nil {
+			t.Fatal(err)
+		}
+		if err := tx.Commit(); err != nil {
+			t.Fatal(err)
+		}
+		oldBoard, err := epochRepository.TimeBoard(ctx, "any_percent", leaderboard.Variables{}, 1, 0, 10, nil)
+		if err != nil || len(oldBoard) != 1 || oldBoard[0].RunID != companyAcrossEpoch.StreamID+":1" {
+			t.Fatalf("epoch-1 board=%+v err=%v", oldBoard, err)
+		}
+		newBoard, err := epochRepository.TimeBoard(ctx, "any_percent", leaderboard.Variables{}, 2, 0, 10, nil)
+		if err != nil || len(newBoard) != 0 {
+			t.Fatalf("epoch-crossing run leaked into epoch 2 board=%+v err=%v", newBoard, err)
 		}
 	})
 
@@ -983,6 +1018,68 @@ func createPrestigeStreams(t *testing.T, ctx context.Context, store *save.Store,
 		t.Fatal(err)
 	}
 	return founderRevision, companyRevision
+}
+
+func persistedPrestigeReplay(t *testing.T, db *sql.DB, companyStreamID, founderStreamID string, runSeq int64, nextCatalog *CatalogBundle) ([]byte, int, []ReplayLogEntry) {
+	t.Helper()
+	ctx := context.Background()
+	var genesis []byte
+	var version int
+	if err := db.QueryRowContext(ctx, `SELECT state,version FROM run_genesis WHERE company_stream_id=$1 AND run_seq=$2`, companyStreamID, runSeq).Scan(&genesis, &version); err != nil {
+		t.Fatal(err)
+	}
+	rows, err := db.QueryContext(ctx, `SELECT seq,canonical_payload,replay_inputs,receipt FROM run_log WHERE company_stream_id=$1 AND run_seq=$2 ORDER BY seq`, companyStreamID, runSeq)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+	entries := []ReplayLogEntry{}
+	for rows.Next() {
+		var entry ReplayLogEntry
+		if err := rows.Scan(&entry.Sequence, &entry.CanonicalPayload, &entry.ReplayInputs, &entry.ReceiptJSON); err != nil {
+			t.Fatal(err)
+		}
+		wire, err := parseReplayInputs(entry.ReplayInputs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var discriminator struct {
+			Kind string `json:"kind"`
+		}
+		if err := json.Unmarshal(wire.Resolved, &discriminator); err != nil {
+			t.Fatal(err)
+		}
+		entry.Terminal = discriminator.Kind == "exit"
+		if entry.Terminal {
+			entry.NextCatalog = nextCatalog
+		}
+		eventRows, err := db.QueryContext(ctx, `SELECT kind,schema_version,intent_id,payload FROM events
+			WHERE intent_id=$3 AND stream_id IN ($1,$2)
+			ORDER BY CASE WHEN stream_id=$1 THEN 1 ELSE 0 END,event_seq,event_id`, companyStreamID, founderStreamID, wire.Command.IntentID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		events := []save.EventWrite{}
+		for eventRows.Next() {
+			var event save.EventWrite
+			if err := eventRows.Scan(&event.Kind, &event.SchemaVersion, &event.IntentID, &event.Payload); err != nil {
+				eventRows.Close()
+				t.Fatal(err)
+			}
+			events = append(events, event)
+		}
+		if err := eventRows.Err(); err != nil {
+			eventRows.Close()
+			t.Fatal(err)
+		}
+		eventRows.Close()
+		entry.EventsJSON = marshalReplayEvents(events)
+		entries = append(entries, entry)
+	}
+	if err := rows.Err(); err != nil {
+		t.Fatal(err)
+	}
+	return genesis, version, entries
 }
 
 func termsDominate(actual, preview prestigecore.Terms) bool {

@@ -394,3 +394,30 @@ hash correctness can no longer disguise invalid category semantics.
   probe that queried epoch 4 at the post-mint seam failed with an empty board.
 - No product behavior, API/UI/draft-successor scope, schema, balance, copy, checkbox, status,
   verdict, archival, push or publication changed.
+
+## 2026-08-21 — AC3 composed crossing witness
+
+- Extended the existing real-Postgres Prestige crossing population rather than creating a second
+  synthetic authority. One run is pinned in epoch 1; changed catalog bytes mint epoch 2; the live
+  Exit then persists epoch-1 `run_ended` plus epoch-2 `run_started` and pins only run 2 to epoch 2.
+- The same fixture reconstructs run 1's persisted genesis/log/receipts/ordered Company+Founder
+  events, verifies it against epoch 1 while supplying epoch 2 only as the Exit successor catalog,
+  projects it, and proves the row exists only on epoch 1's `any_percent` board.
+- Passing the current hash against the old bundle returns `constants_mismatch`; changing the
+  post-projection query from epoch 1 to epoch 2 fails with an empty board. The full parent
+  real-Postgres population is cold-green after restoring the probe.
+- Plan item 8 closes in this same designated-review range because AC1/AC3/AC5/AC6's exercising
+  tests are all present in-range. No player-surface scope, status, verdict, archival or push changed.
+
+## 2026-08-21 — closeout population and record reconciliation
+
+- Reconciled plan item 3 as historical successor ownership, not an unchecked request to duplicate
+  the archived Run Genesis & Replay RFC. Its remediation thread is already under
+  `planning/archive/run-genesis-archival-remediation/`; no move was needed or fabricated.
+- Cold real-Postgres integration passed for `./leaderboard ./production ./replaycatalog
+  ./epochseed` (`leaderboard` 0.502s, `production` 2.604s; the latter two have no matching
+  Integration tests). Cold full package tests passed for all four packages, and focused `go vet`
+  passed.
+- AC1/AC3/AC5/AC6 are ready for the mandatory designated cross-party review. Early historical
+  Leaderboards review provenance is not relabeled; any archival claim still needs an exact range
+  union under current law.

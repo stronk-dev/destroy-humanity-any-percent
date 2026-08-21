@@ -2198,3 +2198,14 @@
   and explicitly accepted or narrowed. The accepted foundation independently authorizes AC5 and
   AC1/AC3/AC6 remediation, so queue row 2d is READY without importing draft player scope. No
   product behavior, schema, balance, copy, push, publication, verdict or archival changed.
+
+## 2026-08-21 — Leaderboards AC1/AC3/AC5/AC6 closeout implementation
+
+- Repaired Commons any-membership from immutable `compact_signed` history and proved
+  join→Exit, join→leave→Exit and never-joined structural tuples against real Postgres.
+- Added literal sub-quantum source→exact-key→shared-rank, live epoch-crossing
+  persistence→replay→old-board projection, and frozen-board-after-two-distinct-mints witnesses.
+  Each predeclared seam was mutated and failed before restoration.
+- Reconciled the Leaderboards plan to the archived Run Genesis successor and confirmed its
+  remediation thread was already archived. Cold package, real-Postgres integration and vet lanes
+  pass. Queue 2d is READY FOR DESIGNATED REVIEW; no implementer verdict, archive or push occurred.
