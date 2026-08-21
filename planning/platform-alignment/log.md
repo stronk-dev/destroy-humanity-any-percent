@@ -1158,3 +1158,21 @@
 - Per Marco's cost ruling, Claude's next responsibility is only the mandatory cross-party
   adversarial verdict over the exact range after `9c71562` through this handoff record. Hosted R-001,
   D-014, archive and publication remain blocked until their own gates.
+
+## 2026-08-21 — D-002 ignored-memory sensitivity audit
+
+- Enumerated the exact ignored durable-memory population without force-adding or publishing it:
+  96 artifacts total, comprising 89 durable prose/data artifacts and seven generated diagnostic
+  JSON files. The diagnostics remain correctly ignored.
+- Classified 13 control-plane candidates, nine targeted sanitization/adoption items, and 67
+  research files requiring a file-level source/quotation/allegation/privacy/verification pass.
+  Refused a blanket “no secrets found, therefore safe” promotion.
+- The high-confidence path/credential scan found no private-key, GitHub-token, OpenAI-style-key or
+  email-address match. It did find one absolute workstation path and, more importantly, a sibling-
+  repository dossier containing a live hostname, ports, topology, endpoints, auth gaps and file-
+  level recipes. That dossier and the sibling-derived deployment sections require source-neutral
+  sanitization or an explicit publication ruling.
+- Filed the stale normative disposition in `design/research/README.md` and
+  `planning/coverage-map/decisions-log.md` for ruling-author reconciliation. The former private/
+  never-publish posture cannot simply be edited by the implementation agent. No product, RFC body,
+  owner-authored content, ignored artifact, `.gitignore`, publication, push or deployment changed.
