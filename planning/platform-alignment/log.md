@@ -1328,3 +1328,18 @@
   does not invoke the opt-in observation target.
 - No push, workflow/CI contract, timeout, optimization, sharding, budget, governed input, product
   behavior, publication, deployment or owner-authored body changed.
+
+## 2026-08-21 — D-002 research publication review Batch 07
+
+- Read the completeness sweep, pacing-science and run-narrative UX dossiers completely. The
+  completeness sweep can become a dated historical artifact after bounded staleness correction;
+  the two raw research/creative foundations require source-linked public syntheses and a named
+  raw-source disposition.
+- Refused to treat bundled source lists and `[V]` labels as claim-level evidence. The pacing file
+  mixes `[P]` hypotheses, quotations, third-party code observations and exact balance/telemetry
+  policy under an obsolete “adopted” heading.
+- Refused the run-narrative dossier's authority over exact copy and mechanics. Its proposed fake-WR
+  opener is already contradicted by RP-018/current owner authority; publication cannot resurrect it.
+- Class-C progress is 25 of 67: five eligible, seven revision-blocked, 13 synthesis/private-store-
+  blocked, and 42 unreviewed. No ignored source, design/copy authority, balance/telemetry policy,
+  publication, push, deployment or destructive cleanup changed.
