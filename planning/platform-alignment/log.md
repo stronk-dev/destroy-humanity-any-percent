@@ -1193,3 +1193,21 @@
 - Files remain ignored pending ruling-author reconciliation and the fresh-clone gate. No product,
   RFC/design body, owner content, ignored file, `.gitignore`, publication, push or deployment
   changed.
+
+## 2026-08-21 — D-002 research publication review Batch 02
+
+- Read `tech-stack.md`, `mobile-pwa.md`, `tier-relevance.md`, and `adaptive-balancing.md`
+  completely. None is eligible unchanged: the first three need bounded supersession/current-state/
+  proposed-copy or quotation-attribution treatment.
+- Refused blanket publication of the raw Adaptive Balancing dossier. It combines long source
+  extracts, named-company allegations and dismissed litigation, living-person references, an
+  internal-only legal matrix, exact proposed player copy, unadopted mechanics, deferred telemetry
+  and corrections appended after a still-contradictory body. Its public artifact should be a
+  shorter source-linked synthesis; the raw source requires a named private-store ruling or an
+  explicit verified cleanup, not a permanent local ignore.
+- Found no credential, private host/path, email address or sibling deployment recipe in the four
+  files. The blockers are authority, copyright/attribution, allegation and currency discipline,
+  which a secret regex cannot detect.
+- Class-C progress is eight of 67: four eligible, three revision-blocked, one synthesis/private-
+  store-blocked, and 59 unreviewed. No product, RFC/design body, owner copy, ignored file,
+  `.gitignore`, publication, push or deployment changed.

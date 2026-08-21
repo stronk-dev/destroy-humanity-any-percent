@@ -105,7 +105,11 @@ not an approval criterion.
 
 **Progress:** Batch 01 reviewed `numeric-core.md`, `economy-kernel.md`, `browser-rendering.md`, and
 `balance-enforcement.md` completely and found them eligible as dated technical research without
-file edits. **Four of 67 are reviewed; 63 remain.** See `publication-rights-batch-01.md`.
+file edits. Batch 02 reviewed `tech-stack.md`, `mobile-pwa.md`, `tier-relevance.md`, and
+`adaptive-balancing.md`: three require bounded revision and the raw Adaptive Balancing dossier
+requires a public synthesis or named private-source ruling. **Eight of 67 are reviewed: four
+eligible, four blocked on treatment, and 59 unreviewed.** See `publication-rights-batch-01.md` and
+`publication-rights-batch-02.md`.
 
 ### Class D — generated diagnostics (7)
 
