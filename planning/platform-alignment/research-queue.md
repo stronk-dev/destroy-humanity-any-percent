@@ -18,8 +18,10 @@ research question; they authorize only the stated downstream action.
   in `planning/archive/harness-observability/local-r001-observation.v1.json`: 16m14.510s total, including
   12m19.441s standard pacing and 3m32.927s active relevance (107/107 runs,
   1,968,171/1,968,171 transitions), with no population exclusion, truncation, or fired guard.
-- **Remaining arms:** hosted Linux at 12 workers, blocked on an explicitly authorized path for the
-  reviewed local-only commits, split by standard
+- **Remaining arms:** hosted Linux at 12 workers. Prefer one manual run without a workflow change,
+  but the reviewed commit is unpublished and no self-hosted/one-off runner path exists; code
+  transfer to a hosted runner requires explicit authority. A permanent Actions lane is a separate
+  CI decision. Split the measurement by standard
   pacing phase and authority-preserving registry row. Run 1/4-worker comparisons only for phases
   whose dispatcher actually accepts that control; the original whole-command 1/4/12 arm would be
   structurally misleading because relevance ignores the flag.

@@ -141,7 +141,11 @@ of 67 are reviewed: five eligible, seven revision-blocked, 15 synthesis/private-
 40 unreviewed.** See `publication-rights-batch-08.md`. Batch 09 reviewed the Gaia hyperinflation
 and regulatory-capture case studies; both require public synthesis plus current claim/legal/
 editorial review. **Twenty-nine of 67 are reviewed: five eligible, seven revision-blocked, 17
-synthesis/private-store-blocked, and 38 unreviewed.** See `publication-rights-batch-09.md`.
+synthesis/private-store-blocked, and 38 unreviewed.** See `publication-rights-batch-09.md`. Batch
+10 reviewed the paired Neopets economy and social/corporate dossiers; both require public synthesis
+plus current claim/legal/editorial review. **Thirty-one of 67 are reviewed: five eligible, seven
+revision-blocked, 19 synthesis/private-store-blocked, and 36 unreviewed.** See
+`publication-rights-batch-10.md`.
 
 ### Class D — generated diagnostics (7)
 

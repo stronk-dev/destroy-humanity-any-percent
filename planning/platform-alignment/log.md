@@ -1373,3 +1373,29 @@
 - Class-C progress is 29 of 67: five eligible, seven revision-blocked, 17 synthesis/private-store-
   blocked, and 38 unreviewed. No ignored source, design/copy authority, legal/political posture,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — Harness archive review and hosted-path clarification
+
+- Claude approved the lawful Harness Observability archival move `e65184f` at `edafd82`. The
+  implementation range, archival transaction and canonical documentation are now all reviewed.
+- Split R-001's remaining boundary: the preferred evidence action is one manual hosted-Linux run,
+  but the reviewed commit is unpublished and the repository has no self-hosted or one-off runner
+  path. Moving the code to such a runner still needs explicit push/transfer authority.
+- A permanent GitHub Actions observation lane would be a separate CI-contract change and remains
+  unauthorized by the archived instrumentation RFC. No runner, workflow, push or transfer was
+  created.
+
+## 2026-08-21 — D-002 research publication review Batch 10
+
+- Read the paired Neopets economy and social/corporate dossiers completely. Both require
+  source-linked public synthesis and named raw-source disposition, with current legal/editorial/
+  child-safety review for the sensitive claims.
+- Preserved the durable system lessons—caps creating currencies, lending around possession gates,
+  bounded markets, communal-solving events and curated amplification—without promoting hundreds
+  of exact commercial mechanics or current figures.
+- Refused raw publication of moderation-loss allegations, child-consent history, Scientology,
+  breach/NFT/corporate claims, protected vocabulary and exact satire/product proposals as one
+  authority bundle.
+- Class-C progress is 31 of 67: five eligible, seven revision-blocked, 19 synthesis/private-store-
+  blocked, and 36 unreviewed. No ignored source, design/copy authority, legal/child-safety posture,
+  publication, push, deployment or destructive cleanup changed.
