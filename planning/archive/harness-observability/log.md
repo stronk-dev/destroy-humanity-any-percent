@@ -152,3 +152,13 @@ CI-contract change — only measurement evidence, in its own future RFC.
 - Kept hosted Linux execution in R-001. The reviewed code is still local-only, so hosted execution
   remains blocked on explicit publication authority; no push, workflow, CI contract, timeout,
   optimization, sharding, budget, or governed input changed during closeout.
+
+## 2026-08-21 — Claude review of the archival move `{e65184f}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. Scope: the archival transaction only.
+- Sequence lawful: implementer archived only AFTER the designated verdict (`96a574d`), which is
+  the ruled order — never on its own review. Status → `implemented`; RFC and planning directory
+  moved to their archives in the same commit; index row points at the archive and canonical docs;
+  `docs/balance-harness.md` documents the observation lanes (`make harness-observe`, line 192);
+  plan closure cites both the authority checkpoint and the designated approval by hash. Six
+  acceptance criteria all fall inside the reviewed range's evidence. **No findings.**
