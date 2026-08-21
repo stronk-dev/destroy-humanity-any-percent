@@ -124,28 +124,13 @@ func TestMinigameDeterministicErrorTableIsClosed(t *testing.T) {
 		{"tenant-version", "create", "create_minigame_session", minigame.ErrTenantVersion, 404, "{\"category\":\"unknown_id\",\"detail\":\"minigame_tenant\"}\n"},
 		{"store", "command", "play_minigame_command", errors.New("database unavailable"), 500, "{\"category\":\"internal_invariant\",\"detail\":\"minigame_api\"}\n"},
 	}
-	registry, err := newPrivateAPIRegistry()
-	if err != nil {
-		t.Fatal(err)
-	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		t.Run(test.operation+"/"+test.name, func(t *testing.T) {
 			response := httptest.NewRecorder()
 			api.writeMinigameResult(response, nil, test.err, test.action)
 			if response.Code != test.status || response.Body.String() != test.body {
 				t.Fatalf("status=%d body=%q want_status=%d want_body=%q", response.Code, response.Body.String(), test.status, test.body)
 			}
-			if err := registry.ValidateResponse(test.operation, test.status, response.Body.Bytes()); err != nil {
-				t.Fatalf("declared response rejected: %v", err)
-			}
 		})
-	}
-	for _, invalid := range [][]byte{
-		[]byte("{\"category\":\"idempotency_conflict\",\"detail\":\"minigame_revision\"}\n"),
-		[]byte("{\"category\":\"conflict\",\"detail\":\"minigame_revision\"}\n!"),
-	} {
-		if err := registry.ValidateResponse("play_minigame_command", http.StatusConflict, invalid); err == nil {
-			t.Fatalf("non-literal deterministic response accepted: %q", invalid)
-		}
 	}
 }

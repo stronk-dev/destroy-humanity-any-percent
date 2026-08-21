@@ -1,7 +1,6 @@
 package publicapi
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
@@ -113,56 +112,19 @@ func TestSchemaRegistryRejectsAcyclicGraphBeyondRuntimeDepth(t *testing.T) {
 func TestRegistryOwnsImmutableSchemaAndOperationSnapshots(t *testing.T) {
 	schemas := testSchemas()
 	operations := testOperations()
-	exact := []byte(`{"category":"invalid","detail":"body"}` + "\n")
-	operations[1].Responses[1].ExactJSON = [][]byte{bytes.Clone(exact)}
 	registry, err := NewRegistry(schemas, operations)
 	if err != nil {
 		t.Fatal(err)
 	}
 	schemas[2].Schema.Fields[0].Name = "corrupted"
 	operations[1].Responses[0].SchemaRef = "APIError"
-	operations[1].Responses[1].ExactJSON[0][0] = '!'
 	schemaSnapshot := registry.Schemas()
 	schemaSnapshot[2].Schema.Fields[0].Name = "also_corrupted"
 	operationSnapshot := registry.Operations()
 	operationSnapshot[1].Responses[0].SchemaRef = "APIError"
-	operationSnapshot[1].Responses[1].ExactJSON[0][0] = '?'
 	valid := []byte(`{"items":[{"epoch_id":1,"name":"Phase 0","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`)
 	if err := registry.ValidateResponse("get_epochs", 200, valid); err != nil {
 		t.Fatalf("registry changed after external mutation: %v", err)
-	}
-	if err := registry.ValidateResponse("get_epochs", http.StatusBadRequest, exact); err != nil {
-		t.Fatalf("exact response authority changed after external mutation: %v", err)
-	}
-}
-
-func TestRegistryExactJSONDiscriminatesSchemaValidCrossProductsAndExtraBytes(t *testing.T) {
-	operations := testOperations()
-	exact := []byte(`{"category":"invalid","detail":"body"}` + "\n")
-	operations[1].Responses[1].ExactJSON = [][]byte{bytes.Clone(exact)}
-	registry, err := NewRegistry(testSchemas(), operations)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := registry.ValidateResponse("get_epochs", http.StatusBadRequest, exact); err != nil {
-		t.Fatalf("exact response rejected: %v", err)
-	}
-	for _, invalid := range [][]byte{
-		[]byte(`{"category":"unknown_id","detail":"body"}` + "\n"),
-		append(bytes.Clone(exact), '!'),
-	} {
-		if err := registry.ValidateResponse("get_epochs", http.StatusBadRequest, invalid); err == nil {
-			t.Fatalf("non-literal response accepted: %q", invalid)
-		}
-	}
-
-	unsorted := testOperations()
-	unsorted[1].Responses[1].ExactJSON = [][]byte{
-		[]byte(`{"category":"unknown_id","detail":"body"}` + "\n"),
-		bytes.Clone(exact),
-	}
-	if _, err := NewRegistry(testSchemas(), unsorted); err == nil {
-		t.Fatal("unsorted exact JSON authority accepted")
 	}
 }
 

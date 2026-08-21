@@ -93,5 +93,5 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 
 func gameUIAPIOperations() []publicapi.Operation {
 	return []publicapi.Operation{{ID: "get_game_ui_snapshot", Method: http.MethodGet, Path: "/api/v1/founder/state",
-		Surface: publicapi.SurfacePrivateV1, Auth: publicapi.AuthAccessToken, Responses: minigameAPIResponses("GameUISnapshot", "")}}
+		Surface: publicapi.SurfacePrivateV1, Auth: publicapi.AuthAccessToken, Responses: minigameAPIResponses("GameUISnapshot")}}
 }

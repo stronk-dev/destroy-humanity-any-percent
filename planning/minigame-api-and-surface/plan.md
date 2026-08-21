@@ -22,7 +22,8 @@
 
 - [x] Replace the AC2 substring oracle with exact status/body-byte witnesses for every
   deterministic minigame error mapping, and prove that an invalid category/detail pairing and an
-  otherwise-valid body with one appended byte both fail validation.
+  otherwise-valid body with one appended byte both fail the exact oracle. The live registry
+  narrowing is owned and reviewed separately by the API Foundation corrective lane.
 - [x] Extend AC3 with a stateful Soul Recovery heartbeat-flood witness: the rejected seventh
   heartbeat must leave authoritative progress/session/token state unchanged, and ordinary clock
   refill must admit exactly the next state transition.
@@ -32,5 +33,5 @@
   request family.
 - [x] Run cold root Go tests, sequential Account and Gameserver Postgres integration targets,
   `api-check`, and client typecheck; restore every mutation before the clean run.
-- [x] Record a Codex exact-range first-filter and hand the bounded backend-test range to Claude for
+- [ ] Record a Codex exact-range first-filter and hand the bounded backend-test range to Claude for
   the mandatory designated cross-party review. Do not claim surface completion or archive MA.

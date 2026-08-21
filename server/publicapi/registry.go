@@ -1,7 +1,6 @@
 package publicapi
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"errors"
 	"fmt"
@@ -42,18 +41,15 @@ const (
 )
 
 // Response is the closed C19 operation-response union. Schema responses are
-// exact JSON DTOs. ExactJSON optionally narrows a schema response to a sorted,
-// immutable set of literal wire bytes. Raw responses are repository-owned
-// immutable evidence bytes; their declared hash header is mandatory and their
-// media type is deliberately limited to the two evidence formats the API
-// contract ships.
+// exact JSON DTOs. Raw responses are repository-owned immutable evidence bytes;
+// their declared hash header is mandatory and their media type is deliberately
+// limited to the two evidence formats the API contract ships.
 type Response struct {
 	Kind              ResponseKind
 	Status            int
 	ContentType       string
 	SchemaRef         string
 	ContentHashHeader string
-	ExactJSON         [][]byte
 }
 
 type Operation struct {
@@ -212,18 +208,7 @@ func (registry *Registry) ValidateResponse(operationID string, status int, data 
 	}
 	for _, response := range operation.Responses {
 		if response.Status == status && response.Kind == ResponseSchema {
-			if err := ValidateJSON(response.SchemaRef, data, registry.schemas); err != nil {
-				return err
-			}
-			if len(response.ExactJSON) == 0 {
-				return nil
-			}
-			for _, literal := range response.ExactJSON {
-				if bytes.Equal(data, literal) {
-					return nil
-				}
-			}
-			return ErrInvalidOperation
+			return ValidateJSON(response.SchemaRef, data, registry.schemas)
 		}
 	}
 	return ErrInvalidOperation
@@ -266,19 +251,9 @@ func validResponse(response Response, definitions map[string]*Schema) bool {
 	}
 	switch response.Kind {
 	case ResponseSchema:
-		if response.ContentType != ContentJSON || definitions[response.SchemaRef] == nil || response.ContentHashHeader != "" {
-			return false
-		}
-		var previous []byte
-		for _, literal := range response.ExactJSON {
-			if len(literal) == 0 || previous != nil && bytes.Compare(previous, literal) >= 0 || ValidateJSON(response.SchemaRef, literal, definitions) != nil {
-				return false
-			}
-			previous = literal
-		}
-		return true
+		return response.ContentType == ContentJSON && definitions[response.SchemaRef] != nil && response.ContentHashHeader == ""
 	case ResponseRaw:
-		return len(response.ExactJSON) == 0 && (response.ContentType == ContentJSON || response.ContentType == ContentGzip) && response.SchemaRef == "" &&
+		return (response.ContentType == ContentJSON || response.ContentType == ContentGzip) && response.SchemaRef == "" &&
 			responseHeaderPattern.MatchString(response.ContentHashHeader)
 	default:
 		return false
@@ -320,15 +295,7 @@ func validOperationPath(path string, surface Surface) bool {
 }
 
 func cloneResponses(source []Response) []Response {
-	result := make([]Response, len(source))
-	for index, response := range source {
-		response.ExactJSON = make([][]byte, len(response.ExactJSON))
-		for literalIndex, literal := range source[index].ExactJSON {
-			response.ExactJSON[literalIndex] = bytes.Clone(literal)
-		}
-		result[index] = response
-	}
-	return result
+	return append([]Response(nil), source...)
 }
 
 func cloneParameters(source []Parameter) []Parameter {

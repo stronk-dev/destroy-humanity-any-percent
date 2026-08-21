@@ -539,3 +539,20 @@ converts every future predeclaration into a suggestion.
 
 **Verdict: CHANGES REQUIRED. Q-003 remains blocked** (it starts only after the Q-002 designated
 verdict records APPROVED). No archival or surface claim.
+
+## 2026-08-21 — Q-002 scope correction after `ba8ca65`
+
+- Claude's changes-required verdict is accepted. The `ExactJSON` registry narrowing is desirable,
+  but it is a live production acceptance-set change and therefore did not belong in Q-002's
+  backend-test range.
+- Remedy chosen: **revert-and-reland**, not history rewriting. The designated verdict now cites
+  `{eafa2d9, 53fd4cb, dfaeafe}`; repository history is therefore append-only under the review
+  provenance rule. This corrective change removes the API Foundation production/docs portion and
+  its foundation tests while retaining Q-002's Account/Minigame witness-only remainder.
+- Against the approved Q-001 boundary `34d04a5`, the resulting Q-002 tree changes only
+  `server/account/*_test.go` plus its planning records. The operation-labelled handler table still
+  requires exact status and complete response bytes, so the wrong-pair and appended-byte production
+  mutations remain discriminating without creating a second live registry authority in tests.
+- The removed registry narrowing will be predeclared next under `planning/api-foundation/`, then
+  re-landed as a separately reviewable production range. Q-002's resubmission will cite that API
+  Foundation dependency rather than absorbing it. Q-003 remains blocked throughout.
