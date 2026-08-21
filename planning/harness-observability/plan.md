@@ -41,6 +41,6 @@ Status: implementing. Authority checkpoint: `9c71562`.
 
 - [x] Update `docs/balance-harness.md`, R-001 diagnosis/research/queue/backlog records, this log, and
   the RFC/index without changing D-014.
-- [ ] Commit a small exact review range, run an internal diff/protocol check, and hand only that
+- [x] Commit a small exact review range, run an internal diff/protocol check, and hand only that
   range to Claude for the mandatory cross-party designated verdict.
 - [ ] Archive only after that exact range is approved and all acceptance criteria actually pass.

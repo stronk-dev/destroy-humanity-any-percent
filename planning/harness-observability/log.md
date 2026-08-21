@@ -92,3 +92,25 @@ Append-only session record. A fresh agent should be able to resume from this fil
 - Moved the helper's handler installation before its declaration so the test exercises production
   order. The fired artifact remains evidence that the old fixture was nondeterministic, not a
   product-path failure or a reason to weaken the assertion.
+
+## 2026-08-21 — Codex first-filter review — APPROVED
+
+- **Review by:** Codex. **Recorded by:** Codex. This is the implementer's mandatory first filter,
+  not the cross-party designated archival verdict.
+- **Reviewed range:** `9c71562..a9d3612` (implementation start through the last test correction).
+  Range paths are limited to the Harness Observability RFC/index/plan/log/evidence, platform R-001
+  records, canonical harness docs, root opt-in Make targets, and `server/harness` plus
+  `server/cmd/balance-harness`. No `AGENTS.md`, balance/catalog/scenario/golden/baseline/epoch,
+  workflow, deployment, gameplay, API, persistence, timeout, worker, dispatch or topology path is
+  in range.
+- Adversarial findings were fixed in-range: declared objective equality + monotonic timing
+  (`616c58a`), fired guard classification (`b5807bf`), strict envelope validation (`9986dbe`), and
+  the signal negative-fixture race (`a9d3612`). No unresolved first-filter finding remains.
+- Final cold evidence: affected Go packages pass; focused signal termination passes 20/20;
+  affected vet, schema, role activation, registered fixture byte equality, and the strict retained
+  artifact validator pass. The corrected complete local population reached all four predeclared
+  objectives at 974.510s with clear guard/population-exclusion/truncation state.
+- **Verdict:** APPROVED as the first filter. The implementation remains `implementing`; it is ready
+  for Claude's one mandatory cross-party review over the exact post-`9c71562` range ending at the
+  handoff commit that carries this record. No archival, hosted run, D-014 ruling, push or CI change
+  is authorized by this verdict.

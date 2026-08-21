@@ -1145,3 +1145,16 @@
   validator accepts all four predeclared objectives with clear guard/exclusion/truncation state.
 - The earlier 1,004.859s run is superseded as final-instrument evidence. Its qualitative cost
   finding is independently reproduced, now about 75.9% pacing versus 21.9% active relevance.
+
+## 2026-08-21 — Harness Observability first-filter handoff
+
+- Codex reviewed implementation range `9c71562..a9d3612` and recorded APPROVED as the implementer
+  first filter, explicitly not the designated verdict. Scope contains only the active
+  observability contract/records/docs/opt-in commands and harness orchestration/instrumentation;
+  no governed data, gameplay, workflow, timeout, dispatch or topology path moved.
+- All internal findings were corrected inside the range, including the fired signal-control race;
+  its focused subprocess population then passed 20/20. Cold affected tests/vet/schema/role,
+  registered byte equality and strict full-artifact validation pass.
+- Per Marco's cost ruling, Claude's next responsibility is only the mandatory cross-party
+  adversarial verdict over the exact range after `9c71562` through this handoff record. Hosted R-001,
+  D-014, archive and publication remain blocked until their own gates.
