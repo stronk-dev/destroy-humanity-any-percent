@@ -1,8 +1,8 @@
 # CURRENT STATE — read this after `AGENTS.md`
 
-**Last updated: 2026-08-20 through the platform-alignment Wave-4 audit, product coordinate
-`190a4fa`.** This file is a mutable resume brief. Planning-only checkpoints after `cb162a3` do not
-change product capability. The evidence-backed repository program lives in
+**Last updated: 2026-08-21 through the final Codex-side platform-alignment audit, product coordinate
+`190a4fa`; designated Claude review pending.** This file is a mutable resume brief. Planning-only
+checkpoints after `cb162a3` do not change product capability. The evidence-backed repository program lives in
 `planning/platform-alignment/`; RFC lifecycle truth still lives in `rfc/README.md` after
 reconciliation.
 
@@ -67,6 +67,10 @@ See `planning/platform-alignment/release-platform-audit.md` and `capability-map.
   the product coordinate. Twenty are proven/qualified, five remain mechanical/review-pending,
   33 are partial/unmet, ten contradicted/failed, 39 draft, and four withdrawn. Five rows remain
   deliberately open for exact review/provenance rather than unaudited.
+- The fine-grained evidence populations are closed: 433 atomic design outcomes, 208 generated Copy
+  keys, 579 deploy-current gameplay units, and 802 declared test-oracle units. Only three design
+  rows—all views of the same bootstrap—are integrated; no exact content row or test declaration is
+  an unconditional integrated gameplay witness.
 - Permits/First Content, Prestige, Leaderboards, Minigame Platform/API, Account, Transport, CI,
   API Foundation, Game UI, and Combat each have a lifecycle dossier and exact repair/author route.
   None is archival-eligible from this audit alone.
@@ -93,9 +97,10 @@ Game UI and other ruling-author body reconciliation
         -> integrated release proof
 ```
 
-The active lifecycle audit itself is complete. Witness-only Account/Transport/Minigame-API batches
-are the only accepted-scope implementation rows marked `READY`; every broader release lane is
-blocked on a named authority or owner decision. The exact queue is in
+The complete Codex-side repository audit and contradiction pass are complete; the required
+cross-party Claude verdict is not. Witness-only Account/Transport/Minigame-API batches are the only
+accepted-scope implementation rows marked `READY`; every broader release lane is blocked on a
+named authority or owner decision. The exact queue is in
 `planning/platform-alignment/execution-queue.md`.
 
 ## 5. Owner decisions now required

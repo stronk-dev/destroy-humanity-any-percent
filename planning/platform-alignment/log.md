@@ -991,3 +991,20 @@
   only files; platform alignment contains 82 tracked plus one ignored file. No product/test,
   design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
   implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Final Codex-side contradiction pass and review handoff
+
+- Reproduced the 433-child, 208-key, 579-unit, and 802-oracle structural outputs byte-for-byte and
+  reran all three semantic validators. Every seeded corruption fired.
+- Independently recomputed 111 active acceptance rows, 30 dependency/resource rows, three READY
+  batches, and the contiguous RP-001–RP-110 ledger. Recounted 23 planning threads, 38 docs, 70 RFC
+  Markdown files including 46 archives, 340 Go files, and 82 client sources.
+- Audited the 41-commit/86-path range through `871c86a`: only root/current-status/index and platform-
+  alignment planning paths changed. The final closeout adds two audit artifacts; the designated
+  reviewer must resolve and cite the literal post-commit tip.
+- Reconciled two stale audit-status claims: row semantics are no longer pending in `inventory.md`,
+  and archived-RFC risk sampling is no longer pending in `acceptance-audit.md`. No append-only
+  historical checkpoint was rewritten and no owner-authored normative contradiction was touched.
+- Final shared-memory count is 238 tracked planning files, 84 in platform alignment, plus 25
+  ignored/local-only planning files (one in platform alignment). The next action is the mandatory
+  designated Claude review; Codex has not approved its own work.

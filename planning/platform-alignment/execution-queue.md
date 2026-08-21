@@ -52,9 +52,9 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 ## Handoff
 
 The 433-child capability, 208-key Copy, 579-unit gameplay-content, and 802-unit row-oracle evidence
-populations are complete. The final cross-artifact contradiction pass is the active audit action;
-then finalize `review-handoff.md` and obtain the designated Claude review over the complete
-Codex-authored audit range. Only after that green verdict should the
+populations are complete. The final cross-artifact contradiction pass found and reconciled two
+stale audit-status lines. The active action is now the designated Claude review in
+`review-handoff.md` over the complete Codex-authored audit range. Only after that green verdict should the
 three accepted-scope batches in `ready-batch-manifest.tsv` execute serially: Q-001 Account witnesses,
 Q-002 Minigame API backend witnesses, then higher-risk Q-003 Transport production recovery. R-001
 remains blocked on accepted instrumentation authority; active lifecycle and archived-risk replay are

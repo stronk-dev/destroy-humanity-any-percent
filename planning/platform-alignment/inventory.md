@@ -1,6 +1,6 @@
 # Repository inventory at product coordinate `190a4fa`
 
-State: **inventory and row-level semantic populations complete; final contradiction/review pending.**
+State: **inventory, semantic populations, and contradiction pass complete; designated review pending.**
 This records verified populations and reconciliation defects at the pinned product coordinate.
 
 ## Counted populations
@@ -116,8 +116,9 @@ This records verified populations and reconciliation defects at the pinned produ
   are required for any integration claim.
 - `test-oracle-row-structure.tsv` reconciles the 592 Go functions with 210 client declaration/helper
   units: 174 plain tests, 19 parameterized declarations, 15 conditional browser declarations, and
-  two non-oracle helpers. All 802 units have exact body identity and structural signals; semantic
-  discrimination remains pending and cannot be inferred from assertion/keyword counts.
+  two non-oracle helpers. All 802 units have exact body identity and semantic evidence rows: zero
+  unconditional integrated, 171 bounded, 533 positive-only, 43 fixture/mock, 51 dependency-
+  conditional, one non-discriminating, one invalid/guarded, and two helpers.
 
 ### Runtime concurrency, jobs, and events
 
@@ -200,7 +201,7 @@ This records verified populations and reconciliation defects at the pinned produ
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- At the current row-oracle evidence checkpoint, planning contains 236 tracked files, 82 of them in
+- At the final Codex-side audit checkpoint, planning contains 238 tracked files, 84 of them in
   platform alignment. Another 25 files are ignored and local-only: 17 coverage-map records,
   six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local

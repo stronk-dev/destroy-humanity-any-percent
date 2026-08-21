@@ -1,18 +1,15 @@
-# Bounded cross-party adversarial review draft
+# Final Codex-authored cross-party adversarial review handoff
 
-Prepared 2026-08-20. Product coordinate: `190a4fa`. Implementer/audit author: Codex. Required
+Prepared 2026-08-20; finalized 2026-08-21. Product coordinate: `190a4fa`. Implementer/audit author: Codex. Required
 designated reviewer under `AGENTS.md`: Claude (the other party), not a Codex-spawned or self-named
 reviewer.
 
-State: **semantic populations complete; final contradiction pass pending.** The 2026-08-21 mechanical first filter found
-that Wave 1 lacked complete package/route/migration/client/catalog/executable/archive-risk
-inventories; those structural populations now reconcile, including the 46-row archive inventory
-and 20-row/ten-domain deep replay. Wave 2 now has 433 structurally atomized, fully evidence-traced
-design outcomes. This document remains useful as the
-review contract for the completed active-RFC/release/decision/dependency/queue milestone, but a
-designated verdict over it must not be represented as approval of the unfinished exhaustive audit.
-The server package/operation/migration boundary, client source/workflow boundary, and balance/copy
-file/family boundary have since been reconciled. The Make/CI/client-test-artifact boundary, the
+State: **ready for designated Claude review; not yet approved.** The 2026-08-21 mechanical first
+filter found that Wave 1 lacked complete package/route/migration/client/catalog/executable/archive-
+risk inventories; those structural populations now reconcile, including the 46-row archive
+inventory and 20-row/ten-domain deep replay. Wave 2 has 433 structurally atomized, fully evidence-
+traced design outcomes. The server package/operation/migration boundary, client source/workflow
+boundary, and balance/copy file/family boundary are reconciled. The Make/CI/client-test-artifact boundary, the
 151-file/40-skip server-test structural boundary, and all 23 planning threads/38 canonical docs are
 also classified. Routed author repairs and authorized planning closeouts remain work, not facts the
 audit may infer. The deployed actor/worker/event boundary is now exact; its absent player/match
@@ -26,6 +23,10 @@ complete but requires the eventual designated cross-party pass with the rest of 
 archive replay itself is complete and adds RP-105–RP-107; none of these Codex-authored passes
 substitutes for the designated Claude review.
 
+The final cross-artifact pass independently recomputes the major ledgers, RP sequence/routes,
+shared/ignored file counts, and path allowlist. It found and reconciled two stale audit-status
+sentences; see `final-contradiction-audit.md`.
+
 ## Range to review
 
 The substantive audit program starts after product commit `190a4fa`. The original bounded core
@@ -37,8 +38,12 @@ through Wave 6 was:
 
 That range contains 19 planning/documentation commits beginning with `cb162a3`; `c7eb024` is the
 subsequent queue/handoff commit. Do not start the final designated pass from that historical range.
-After the final contradiction pass closes, the reviewer must resolve the then-current local tip and cite literal hashes;
-`HEAD`, “latest,” or a branch name is not acceptable provenance.
+The complete range starts exclusively after product commit
+`190a4fa04958cc2a3b4e689804cd55682f6c6420`. The reviewer must resolve the local tip after the final
+contradiction closeout commit and cite both literal hashes in the verdict; `HEAD`, “latest,” or a
+branch name is not acceptable recorded provenance. At the start of the final contradiction pass,
+the evidence tip was `871c86adc4f65b70588db705f2370a900f0468c9`; that is deliberately not
+represented as the final tip.
 
 The range changes README/current-state/RFC-index claims and adds the platform-alignment control
 plane. It must contain no product code, schema, balance, copy, migration, active RFC normative-body,
@@ -102,8 +107,8 @@ authorize product implementation merely by approving the audit control plane.
 
 ## Post-review routing
 
-- Only after the final contradiction pass closes and the complete audit range is approved may this
-  verdict be called the repository-audit review. The owner can then rule the READY decisions in
+- Only after the complete audit range is approved may this verdict be called the repository-audit
+  review. The owner can then rule the READY decisions in
   `owner-ruling-packet.md`, and Q-001/Q-002/Q-003 remain the only implementation-ready batches.
 - If findings change factual classifications, repair the ledgers/dossiers transactionally and
   obtain a new exact-range verdict over the repair edge.

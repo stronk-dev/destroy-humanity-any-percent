@@ -2,7 +2,8 @@
 
 Coordinate: product tree `190a4fa`; 2026-08-20 through 2026-08-21. State: **all 111 active-RFC
 criteria have bounded evidence verdicts; five remain deliberately open on exact review/provenance
-closeout. Archived-RFC risk sampling remains Wave-1/3 work.**
+closeout. The separate 46-row archived-RFC inventory and 20-row/ten-domain deep replay are
+complete.**
 
 `active-acceptance-ledger.tsv` contains all 111 true acceptance criteria across the 21 product or
 process RFCs in the active directory. The extraction stops at any nested heading. That boundary is
