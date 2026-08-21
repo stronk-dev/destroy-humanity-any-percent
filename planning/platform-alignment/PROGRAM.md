@@ -156,6 +156,10 @@ larger product capability to proven integration.
   and its repository-evidence limit.
 - `test-oracle-row-plan.md` — frozen 592-Go-function/43-client-source oracle grammar, semantic
   verdicts, mandatory failed controls, manual review population, and authority limit.
+- `test-oracle-row-extractor.mjs` / `test-oracle-row-structure.tsv` — reproducible 802-unit static
+  declaration/body population with helper, expansion, dependency, assertion, and negative signals.
+- `test-oracle-row-structure-audit.md` — reconciled distribution and explicit syntax-is-not-proof
+  limit before semantic verdict attachment.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,

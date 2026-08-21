@@ -114,6 +114,10 @@ verified populations and reconciliation defects; it is not yet the completed per
   guard. Ordinary host `make test-go` can therefore exit green without the Postgres population,
   and Go's non-verbose output does not make that denominator visible. Docker/hosted Postgres lanes
   are required for any integration claim.
+- `test-oracle-row-structure.tsv` reconciles the 592 Go functions with 210 client declaration/helper
+  units: 174 plain tests, 19 parameterized declarations, 15 conditional browser declarations, and
+  two non-oracle helpers. All 802 units have exact body identity and structural signals; semantic
+  discrimination remains pending and cannot be inferred from assertion/keyword counts.
 
 ### Runtime concurrency, jobs, and events
 
@@ -242,7 +246,8 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 ## Remaining semantic-depth work
 
 - Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,
-  target, job, and skip population is structurally bounded.
+  target, job, and skip population is structurally bounded. The 802-unit declaration population is
+  now exact; verdict attachment remains.
 - Reconcile the four routed historical/complete live planning threads transactionally after their
   exact review/provenance dependencies are satisfied. The 46-row archive structure and 20-row
   deep replay are complete; the remaining 26 archives retain structural-only status rather than

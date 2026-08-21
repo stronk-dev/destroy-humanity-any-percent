@@ -954,3 +954,20 @@
   platform alignment contains 76 tracked plus one ignored file. No product/test, design/RFC body,
   balance/copy/content, canonical product doc, migration, deployment, implementation-plan checkbox,
   push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Row-level test-oracle structural population
+
+- Added the deterministic declaration/body extractor, 802-row structural ledger, and bounded
+  structural audit. The frozen population reconciles 591 Go tests, one Go fuzz owner, 174 plain
+  client tests, 19 parameterized client declarations, 15 conditional browser declarations, and two
+  zero-declaration helper/type-contract units.
+- The Go owners contain 88 static subtest calls and one fuzz seed. Twenty-five integration files own
+  47 functions. Eighty-four bodies have direct dependency/guard signals and 421 units have broad
+  negative keywords; both are inspection leads, not semantic verdicts.
+- A rerun reproduced all declaration identities and body hashes byte-for-byte. Seeded dropped,
+  duplicate, helper-omission, and body-hash-drift cases failed. The extractor also refuses drift
+  from the prior 151/592 server and 43-source client populations.
+- After these three new tracked artifacts land, planning contains 233 tracked plus 25 ignored/local-
+  only files; platform alignment contains 79 tracked plus one ignored file. No product/test,
+  design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
+  implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
