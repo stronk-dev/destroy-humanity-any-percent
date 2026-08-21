@@ -1,6 +1,7 @@
 package prestige
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"testing"
@@ -86,6 +87,92 @@ func TestLifetimeOfflineAndNewRunDeterminism(t *testing.T) {
 	}
 	if first.GuildBoundaryGuildID != company.GuildBoundaryGuildID || first.GuildBoundarySeq != 37 || first.GuildConsumedWindow != 0 {
 		t.Fatalf("guild watermark did not carry forward: %+v", first)
+	}
+}
+
+func TestNewRunStateMatchesCompleteGoldenAndRejectsCarryCorruption(t *testing.T) {
+	catalogBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(catalogBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 8, 21, 12, 34, 56, 789_000_000, time.UTC)
+	companyLedger, err := economy.RestoreLedger(catalog, economy.ScopeCompany, map[string]string{"company.cash": "9e12", "company.permits": "0"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderLedger, err := economy.NewLedger(catalog, economy.ScopeFounder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	prior := &save.State{
+		Ledger: companyLedger, GeneratorCounts: map[string]int64{"generator.beige_tower": 321},
+		EvaluatedThrough: now.Add(-time.Second), ManualTokenRefilledAt: now.Add(-time.Second),
+		GatesCrossed: map[string]bool{"gate.t0_to_t1": true}, RunSeq: 7,
+		DoctrinesByTransition: map[string]string{"gate.t0_to_t1": "doctrine.blitzscale"},
+		LedgerFactKinds:       map[string]bool{"fact.old_company": true}, MeterBands: map[string]int{"trust.regulators.standing": 12},
+		RegionTraits: map[string]bool{"region.alpha": true}, HintsUnlocked: map[string]bool{"hint.alpha": true},
+		CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.New(9, 12), RunStartedAt: now.Add(-time.Hour),
+		OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{},
+		FactionID: "enterprise", IncorporatedAt: now.Add(-30 * time.Minute), StockUnits: 50,
+		StockProgressMS: 12_000, ConsumedStockUnits: 4, GuildBoundaryGuildID: "018f0000-0000-7000-8000-000000000099",
+		GuildBoundarySeq: 37, GuildConsumedWindow: 9,
+	}
+	founder := &save.State{
+		Ledger: founderLedger, GeneratorCounts: map[string]int64{}, EvaluatedThrough: now,
+		ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
+		LedgerFactKinds: map[string]bool{"fact.career": true}, MeterBands: map[string]int{},
+		RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{},
+		LifetimeValue: decimal.Zero, OfflineSpans: []save.OfflineSpan{},
+		NetworkSlots: []save.NetworkSlot{{Slot: "network.alpha", CarriedRef: "upgrade.alpha"}},
+		ExitHistory:  []save.ExitRecord{{RunID: 7, ExitType: "collapse", OccurredAt: now.Add(-time.Minute), ReputationDelta: 2}},
+		Notoriety:    37, ReputationLevel: 4,
+	}
+
+	first, err := NewRunState(catalog, prior, founder, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := NewRunState(catalog, prior, founder, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	firstBytes, err := save.EncodeState(first)
+	if err != nil {
+		t.Fatal(err)
+	}
+	secondBytes, err := save.EncodeState(second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	golden, err := os.ReadFile("../../testdata/prestige-run2-golden.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	golden = bytes.TrimSpace(golden)
+	if !bytes.Equal(firstBytes, secondBytes) || !bytes.Equal(firstBytes, golden) {
+		t.Fatalf("run-2 golden mismatch\nactual=%s\ngolden=%s\nsecond=%s", firstBytes, golden, secondBytes)
+	}
+
+	first.GuildBoundarySeq--
+	missingCarry, err := save.EncodeState(first)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Equal(missingCarry, golden) {
+		t.Fatal("missing Guild boundary carry passed the complete-state golden")
+	}
+	first.GuildBoundarySeq++
+	first.RunSeq--
+	reordered, err := save.EncodeState(first)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Equal(reordered, golden) {
+		t.Fatal("wrong run sequence passed the complete-state golden")
 	}
 }
 
