@@ -2185,3 +2185,16 @@
   DESIGNATED REVIEW. Cold unit, full Production/GameServer real-Postgres integration, and focused
   vet populations passed. RP-038 remains open; no archival, push, publication, or review claim
   occurred.
+
+## 2026-08-21 — Leaderboards authority and capability-boundary repair
+
+- Reconciled D2/D4/D5/D6/L1/L4, the plan and canonical docs to the live six-verdict,
+  five-category backend. Removed claims of current player validator delivery, Route Registry/board
+  composition, mandate mechanics, world-first dispatch, machine boards and abandoned-run cleanup.
+- Routed reader/API/browser/archive-verifier/Route/dispatch/machine work to a new draft successor;
+  kept it explicitly non-authoritative. D-017 still gates authored/Exhibition categories, D-015
+  owns retention, and mandate mechanics require their own accepted gameplay/content contract.
+- Closed RP-042's body contradiction but left queue row 2c partial until the successor is reviewed
+  and explicitly accepted or narrowed. The accepted foundation independently authorizes AC5 and
+  AC1/AC3/AC6 remediation, so queue row 2d is READY without importing draft player scope. No
+  product behavior, schema, balance, copy, push, publication, verdict or archival changed.

@@ -48,6 +48,9 @@ The evidence trace is in
 - Prestige D2–D5/P3–P5 and canonical docs match shipped behavior; D-012 defers Advisor's player
   control. AC2–AC6's literal witnesses are implemented, cold-green, and severing-proven; their
   exact range now awaits the mandatory cross-party review.
+- Leaderboards D2/D4/D5/D6/L1/L4 and canonical docs now distinguish its strong backend from the
+  absent player capability. The missing readers/browser/validator/Route surface has a draft
+  successor, not implementation authority; Commons any-membership remains a known backend defect.
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.

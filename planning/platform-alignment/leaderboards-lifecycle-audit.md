@@ -2,6 +2,12 @@
 
 Coordinate: product tree `190a4fa`; audit checkpoint after `ff2d51c`; 2026-08-20.
 
+Post-coordinate reconciliation (2026-08-21): owner-delegated edits reconciled D2/D4/D5/D6/L1/L4,
+the plan, and canonical docs to the six-verdict/five-category backend. A draft Leaderboard Readers
+& Player Surface successor now owns the absent integration scope but is deliberately not accepted
+implementation authority. RP-042's body contradiction is closed; RP-039–RP-041/RP-043 and
+successor acceptance remain open.
+
 This pass re-derived the active Leaderboards RFC from its specification, design references, plan,
 append-only log, current implementation, the archived Run Genesis successor and remediation
 records, canonical docs, tests, and historical review entries. It did not edit product code,
@@ -21,7 +27,7 @@ six acceptance criteria is false in the current implementation:
   run, so join→leave→Exit incorrectly returns the run to Solo;
 - AC1, AC3, and AC6 retain narrower or missing witnesses than their literal requirements;
 - player-authored/Exhibition categories, world-first dispatch emission, machine boards, abandoned
-  run retention, and the rejected-log/supersession follow-ups are absent;
+  run retention, and the rejected-log/supersession follow-ups are absent and now explicitly routed;
 - the plan predates the implemented Run Genesis successor and is materially stale; and
 - no tracked verdict supplies current-law explicit cross-party provenance and an exact range union
   for the complete Leaderboards foundation and later successor work.
@@ -121,13 +127,13 @@ remediations. The tracked Leaderboards plan correctly leaves independent review 
 
 ## Smallest honest closeout order
 
-1. Ruling author reconciles D2/D4/D5/D6/L1 with the six-verdict successor, fifth category, absent
-   deferred surfaces, and accepted ownership boundaries.
+1. **Body reconciliation complete after this coordinate; successor acceptance remains open.**
 2. Fix AC5 under this accepted RFC with a discriminating any-membership lifecycle/replay/projector
    proof; do not invent UI or mandate mechanics inside that fix.
 3. Add only the missing literal AC1/AC3/AC6 witnesses and their failing mutations.
-4. Decide and accept a successor for board/epoch readers, player browsing, validator delivery,
-   Route Registry integration, world-first dispatch, and machine/deferred category surfaces.
+4. Review and explicitly accept (or narrow) the draft successor for board/epoch readers, player
+   browsing, validator delivery, Route Registry integration, world-first dispatch, and machine
+   surfaces. D-017 separately gates player-authored/Exhibition categories.
 5. Reconcile the stale plan and archive the completed Run Genesis remediation thread in a reviewed
    record-only range.
 6. Obtain the mandatory tracked cross-party verdict whose exact post-rewrite ranges union every

@@ -13,6 +13,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
+| [Leaderboard Readers & Player Surface](leaderboard-readers-and-player-surface.md) | draft — not implementation authority | Leaderboards / API Foundation / Game UI / Route Registry |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [API Foundation](api-foundation.md) | accepted — C1–C20 ruled; implementing | Account API / Transport / Gameserver Composition |
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |

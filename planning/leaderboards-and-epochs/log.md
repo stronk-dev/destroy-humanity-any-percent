@@ -342,3 +342,22 @@ bytes in the constants hash. The TS replay catalog loader now parses the closed 
 canonical Phase-0 shapes, fact-set namespaces/prefixes, and requires `full_gate_set` to equal the
 pinned routes artifact. A malformed category artifact with a recomputed valid hash is rejected, so
 hash correctness can no longer disguise invalid category semantics.
+
+## 2026-08-21 — authority and capability-boundary reconciliation
+
+- Owner direction delegated the blocked ruling-body reconciliation. D2/L4 now describe the actual
+  six-verdict Go/TypeScript parity foundation and machine-only operational queue without claiming a
+  player archive/validator workflow.
+- D4 now names the five epoch-owned Phase-0 categories and separates the absent player-authored,
+  Exhibition, Route Registry and records surfaces. D5 now claims only bounded mandate-key plumbing;
+  no catalog, intent, modifiers or consumer are inferred. D6 now distinguishes stored world-first
+  arbitration from absent dispatch and machine-board consumers.
+- L1 no longer invents a live `run_ttl_days` cleanup contract. Verified compaction remains current;
+  abandoned-run deletion is routed to D-015 and the future accepted retention/operations contract.
+- Added the draft `leaderboard-readers-and-player-surface.md` as a concrete home for generated
+  readers, browser browsing/history, archive verification, Route Registry composition, dispatch
+  and machine boards. Draft status is explicit and authorizes no implementation; D-017 still gates
+  player-authored/Exhibition scope and mandate mechanics remain a separate gameplay successor.
+- Canonical docs now state the capability boundary and the live terminal-only Commons defect. No
+  product code, schema, balance, copy, plan checkbox, RFC acceptance/status promotion, push,
+  publication, review verdict or archival changed.

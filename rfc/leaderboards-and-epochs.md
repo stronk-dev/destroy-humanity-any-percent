@@ -20,7 +20,7 @@ Boards, epochs, and run verification — closing the **last entry in the deferre
 
 ### D2 — The run record
 
-A run is `(founder_id, run_id, category, variables, epoch_id, constants_hash, seed, intent log)`. **Verification is replay**: the server re-simulates the intent log against the epoch's catalog; a mismatch yields one of four machine causes (`log_gap`, `state_divergence`, `constants_mismatch`, `clock_violation`). No video, no queue, no human judgment in the loop; **the validator ships to players** (same shared kernel). Timer semantics per `design/08 §6`: RTA from `[BEGIN ATTEMPT]`; **Attended Time** = RTA minus offline spans (offline is published policy, not a rule dispute); IGT recorded, never ranked.
+A run is `(founder_id, run_id, category, variables, epoch_id, constants_hash, seed, intent log)`. **Verification is replay**: the server re-simulates the intent log against the epoch's catalog and returns the closed six-verdict union: `verified`, or one of five machine failure causes (`log_gap`, `state_divergence`, `constants_mismatch`, `clock_violation`, `engine_mismatch`). The operational verification queue is machine-only; there is no video or human judgment queue. The TypeScript parity kernel is bundled, but no current API/archive-delivery/browser workflow lets a player invoke it; that delivery belongs to the draft Leaderboard Readers & Player Surface successor. Timer semantics per `design/08 §6`: RTA from `[BEGIN ATTEMPT]`; **Attended Time** = RTA minus offline spans (offline is published policy, not a rule dispute); IGT recorded, never ranked.
 
 ### D3 — Epochs
 
@@ -31,20 +31,20 @@ A run is `(founder_id, run_id, category, variables, epoch_id, constants_hash, se
 
 ### D4 — Categories and variables
 
-Per `05 §6`, consumed here as data: 4 canonical categories (terminal conditions in code) + the player-authored predicate surface (threshold-promoted at ≥ 25 verified runs by ≥ 10 founders — provisional) + Exhibition. Variables: `Glitched` (any `route_executed` this run), **`Assisted`** (commons membership at any point — **structural disconnection**: Solo and Assisted are different boards, never a computed subtraction), mandate level. The Route Registry's public ledger (Gate Predicates D3) renders alongside boards — routes and records are one surface.
+Phase 0 consumes five canonical epoch-owned category rows: Any%, 100%, Ethical%, Low%, and Valuation (L7a/L7b). Variables remain structural: `Glitched` (any `route_executed` this run), Commons membership at any point, Advisor, nullable Faction, and mandate level; Solo and Assisted are different board tuples, never a computed subtraction. Player-authored predicates, promotion, and Exhibition are deferred behind D-017 plus a later accepted contract. The combined Route Registry/records surface is designed intent but not part of this backend foundation; the draft Leaderboard Readers & Player Surface successor owns its API and player composition.
 
 ### D5 — Board Mandates
 
-An opt-in prestige-difficulty ladder, consumed as balance data: Mandates 1–20 as additive rule modifiers, each a declared catalog object; `mandate_level` is a board key component. Mandate *content* is design/balance work, out of scope here — this RFC ships the key plumbing and validation.
+This foundation ships the exact bounded `mandate_level` board-key/storage plumbing only. No mandate catalog objects, opt-in intent, gameplay modifiers, or player consumer exist. Mandates 1–20 remain design/balance intent and require a later accepted gameplay/content RFC; their absence does not authorize constants or behavior in this foundation.
 
 ### D6 — World-first and broadcast hooks
 
-First verified completion per `(category, epoch)` emits a feed/dispatch event (the Ethical% world-first moment, `05 §5`); permanent, dated, tied to the verified run record. TAS/AGI boards (`08 §6`) are a distinct board class flagged `machine`, never merged with human boards.
+The database atomically arbitrates and permanently dates the first verified completion per `(category, variables, epoch)`. No feed/dispatch event is currently emitted, and no distinct `machine` board class exists. Those consumers belong to the draft Leaderboard Readers & Player Surface successor; this foundation must not claim their delivery from the arbitration bit alone.
 
 ## Acceptance criteria
 
 1. No board query path accepts a quantized `Decimal` as a sort key (type-enforced); a fixture with sub-quantum differences ranks as a shared-rank tie.
-2. Replay verification: a tampered intent log fails with the correct machine cause; the shipped validator reproduces the server verdict on the same log.
+2. Replay verification: a tampered intent log fails with the correct machine cause; the bundled TypeScript parity kernel reproduces the Go authority's verdict on the same committed corpus. Player archive retrieval/invocation is successor acceptance.
 3. Epoch pinning: a run started in epoch N and finished in N+1 ranks in N, replayed against N's catalog.
 4. A balance change without an epoch mint fails the harness hook; an epoch without a changelog entry fails validation.
 5. Solo/Assisted: joining the compact mid-run moves the run to Assisted **at verification, structurally** — no arithmetic adjustment path exists in code.
@@ -64,7 +64,7 @@ First verified completion per `(category, epoch)` emits a feed/dispatch event (t
 
 ### L1 — The run log (the missing table, owned here)
 
-`run_log(run_id, seq bigint, intent_id, canonical_payload bytea, receipt jsonb, applied_revision, server_ts_ms)` — **written in the same transaction as intent commit** (the production engine gains one insert), `PRIMARY KEY (run_id, seq)`, seq strictly monotonic per run. `canonical_payload` is the exact canonical-JSON bytes the idempotency hash was computed over (so the log is self-verifying against `intent_records` hashes while those still exist). Retention: rows live until the run is **verified+archived** (log compressed into an immutable `run_log_archive` object, one blob per run) or **abandoned** (no terminal event within `run_ttl_days` catalog value, provisional 90 — then deleted, run unrankable). Exempt from the 30-day `intent_records` prune; the prune and this table never share a policy.
+`run_log(run_id, seq bigint, intent_id, canonical_payload bytea, receipt jsonb, applied_revision, server_ts_ms)` — **written in the same transaction as intent commit** (the production engine gains one insert), `PRIMARY KEY (run_id, seq)`, seq strictly monotonic per run. `canonical_payload` is the exact canonical-JSON bytes the idempotency hash was computed over (so the log is self-verifying against `intent_records` hashes while those still exist). Verified runs compact into immutable `run_log_archive` objects transactionally. Abandoned-run cleanup and `run_ttl_days` are not implemented or owned by a current catalog; D-015's future accepted retention/operations contract must define them before deletion exists. Live run logs remain exempt from the 30-day `intent_records` prune; the policies are not silently conflated.
 
 ### L2 — Replay identity
 
@@ -82,9 +82,9 @@ the seed's artifact list in a fixture and every composer follows without code ed
 
 `[BEGIN ATTEMPT]` **is** the `run_started` event; run_id and seed come from Prestige P3 (founder seed ⊕ run_seq); RTA = `run_ended.server_ts − run_started.server_ts` (integer ms); Attended Time = RTA − Σ `offline_spans` (Prestige P6's server-derived spans; the client clock contributes nothing). Pause does not exist (an idle game has no pause; disconnection simply accrues an offline span). Terminalization = the Prestige Exit transaction; `run_ended` carries the terminal `run_log` seq (P7), and verification's completeness check is exactly `max(seq) == run_ended.terminal_seq`.
 
-### L4 — Player validator delivery
+### L4 — Validator parity foundation; player delivery deferred
 
-**The validator is the existing TS shared kernel** — no WASM, no second implementation: the golden-vector regime already holds Go and TS byte-identical, and that regime *is* the parity proof. Delivery: the client bundle ships a `verify(runLogArchive, catalogBytes)` entry that replays and emits the same five-cause verdict. Fixtures: every verification cause gets one committed `(log, catalog, verdict)` fixture asserted by **both** suites. The server verdict is authoritative; the shipped validator is the transparency instrument (the published-formulas rule applied to verification), and any Go/TS verdict divergence is by definition a kernel parity bug — InvariantSink severity, not a rules dispute.
+**The validator kernel is the existing TypeScript shared kernel** — no WASM and no second transition implementation. The committed corpus proves the Go authority and TypeScript module emit the same six-verdict union, including all five machine failures, and a divergence is an InvariantSink-severity parity bug. The module is included in the client build, but `verify(runLogArchive, catalogBytes)` is not currently bound to public archive/catalog readers or a player workflow. The draft Leaderboard Readers & Player Surface successor must own retrieval, invocation, refusal/error states, and browser acceptance before the designed transparency instrument is called shipped.
 
 ### L5 — Epoch storage and minting
 
@@ -187,3 +187,6 @@ cannot be relabeled identity-only even when the harness does not execute that ar
   to canonical Company-stream/run-sequence identity.
 - 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+- 2026-08-21: reconciled D2/D4/D5/D6/L1/L4 to the six-verdict/five-category backend and routed
+  absent readers, validator workflow, Route Registry composition, dispatch and machine boards to
+  a draft successor; abandoned retention remains with D-015. No product behavior changed.

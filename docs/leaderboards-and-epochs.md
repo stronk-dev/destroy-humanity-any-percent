@@ -4,6 +4,21 @@ The leaderboard foundation stores exact run commands, pins every run to immutabl
 and derives board rows from verified-run facts. No API accepts a Decimal ranking key: time boards
 use integer milliseconds and count boards use exact integers.
 
+## Capability boundary
+
+This is a backend foundation, not yet a player-facing leaderboard product. Production mounts no
+board/epoch/archive reader, and the client has no board browser, historical navigation, Route
+Registry/records composition, or archive-verification workflow. The bundled TypeScript verifier is
+parity code, not proof of player delivery. World-first arbitration is stored but emits no feed/
+dispatch event; no machine board class exists. These surfaces are routed to the draft
+[`Leaderboard Readers & Player Surface`](../rfc/leaderboard-readers-and-player-surface.md) RFC and
+remain unauthorized until that RFC is accepted.
+
+Player-authored/Exhibition categories remain deferred under D-017. Mandate storage accepts a
+bounded key but there are no mandate catalog objects, opt-in intent, gameplay modifiers, or player
+consumer. Abandoned-run cleanup also does not exist; its retention/deletion policy belongs to
+D-015 rather than an invented `run_ttl_days` constant.
+
 ## Kernel and replay identity
 
 [`kernel/VERSION`](../kernel/VERSION) is the transition-semantics identity shared by Go and the
@@ -90,7 +105,7 @@ and terminal Exit—must verify identically in both runtimes. The same corpus mu
 at a time to assert every failure verdict. Its successful path also returns the independently
 replayed terminal Company state to the parity suites; both compare it with the shared
 `final_state_json`, so terminal facts cannot agree while hidden state silently diverges.
-The player validator consumes the archived genesis save version; its explicit v12→v13 migration
+The parity validator consumes the archived genesis save version; its explicit v12→v13 migration
 backfills the purchase accumulator exactly as Go does, while a mislabeled envelope fails closed.
 Both runtimes reject pre-v12 genesis (none was ever produced), require the accumulator field on a
 v13 envelope, and test non-zero plus exact-domain-saturated v12 backfills.
@@ -122,10 +137,11 @@ route-gate drift, and any Phase-0 category shape other than Any%, 100%, Ethical%
 Valuation. The Phase-0 completion set is empty, so 100% is explicitly all gates. Ethical% rejects
 exact or prefix-matched facts in the registered `darkpattern.*` and `externality.*` namespaces;
 neither namespace has a Phase-0 producer yet, so every otherwise eligible Phase-0 run qualifies.
-The
-queue-owned projector reads the sole schema-v2 `run_ended`, checks its terminal sequence against
-the immutable log, derives Faction and Glitched from run-scoped events, takes Commons and Advisor
-from the terminal assisted record, and projects every matching category in the queue's mark
+The queue-owned projector reads the sole schema-v2 `run_ended`, checks its terminal sequence against
+the immutable log, derives Faction and Glitched from run-scoped events, and currently takes Commons
+and Advisor from the terminal assisted record. That terminal-only Commons rule is a known defect:
+join→leave→Exit incorrectly returns to Solo despite the accepted any-membership contract. The
+projector otherwise projects every matching category in the queue's mark
 transaction. It loads category and route bytes by the run's pinned constants hash, never from the
 current worktree, so later epochs cannot reclassify historical runs. Imported and version-drift
 runs claim projection with no board rows. Pre-timer runs enter only Valuation and remain
