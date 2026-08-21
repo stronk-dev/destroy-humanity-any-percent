@@ -4,7 +4,7 @@ Prepared 2026-08-20. Product coordinate: `190a4fa`. Implementer/audit author: Co
 designated reviewer under `AGENTS.md`: Claude (the other party), not a Codex-spawned or self-named
 reviewer.
 
-State: **not the final repository-audit handoff.** The 2026-08-21 mechanical first filter found
+State: **semantic populations complete; final contradiction pass pending.** The 2026-08-21 mechanical first filter found
 that Wave 1 lacked complete package/route/migration/client/catalog/executable/archive-risk
 inventories; those structural populations now reconcile, including the 46-row archive inventory
 and 20-row/ten-domain deep replay. Wave 2 now has 433 structurally atomized, fully evidence-traced
@@ -18,12 +18,13 @@ also classified. Routed author repairs and authorized planning closeouts remain 
 audit may infer. The deployed actor/worker/event boundary is now exact; its absent player/match
 actors and orphaned retention/Route-name schedulers remain routed defects. The 208-key copy
 producer/consumer population is complete and routes RP-108/RP-109; the 579-unit gameplay-content
-population is evidence-complete and adds RP-110, while semantic oracle consumption remains before
-finalization. Its source denominator is now exact at 802 declarations/helpers, but no row verdict
-is inherited from those structural signals. The 433-child outcome population is
+population is evidence-complete and adds RP-110. Its exact 802 declarations/helpers now have
+fixture, dependency, assertion, negative-control, verdict, limit, and route fields: zero integrated,
+171 bounded, 533 positive-only, 43 fixture/mock, 51 dependency-conditional, one
+non-discriminating, one invalid/guarded, and two helper units. The 433-child outcome population is
 complete but requires the eventual designated cross-party pass with the rest of the range. The
-archive replay itself is complete and adds RP-105–RP-107; neither bounded pass substitutes for
-those remaining row-level populations.
+archive replay itself is complete and adds RP-105–RP-107; none of these Codex-authored passes
+substitutes for the designated Claude review.
 
 ## Range to review
 
@@ -36,8 +37,7 @@ through Wave 6 was:
 
 That range contains 19 planning/documentation commits beginning with `cb162a3`; `c7eb024` is the
 subsequent queue/handoff commit. Do not start the final designated pass from that historical range.
-After the remaining Wave-1/3 semantic populations close, the reviewer must resolve the then-current
-local tip and cite literal hashes;
+After the final contradiction pass closes, the reviewer must resolve the then-current local tip and cite literal hashes;
 `HEAD`, “latest,” or a branch name is not acceptable provenance.
 
 The range changes README/current-state/RFC-index claims and adds the platform-alignment control
@@ -78,6 +78,9 @@ Review adversarially, not as a prose polish pass:
 11. Recompute all 433 atomic outcome verdicts from their named evidence lanes. In particular,
     attempt to promote a backend-only row, collapse the cosmetic odds/disclosure split, and treat
     the three bootstrap-authority rows as three independent integrations; each must be rejected.
+12. Recompute the 802 oracle verdicts, especially all 171 bounded promotions, 51 Postgres-
+    conditional rows, the Game UI fired failure, the API registered-only boundary, and the two
+    helpers. A green package or declared test name must not promote a larger capability.
 
 ## Required verdict format
 
@@ -99,8 +102,8 @@ authorize product implementation merely by approving the audit control plane.
 
 ## Post-review routing
 
-- Only after the remaining Wave-2/3 semantic ledgers close and the complete audit range is approved may
-  this verdict be called the repository-audit review. The owner can then rule the READY decisions in
+- Only after the final contradiction pass closes and the complete audit range is approved may this
+  verdict be called the repository-audit review. The owner can then rule the READY decisions in
   `owner-ruling-packet.md`, and Q-001/Q-002/Q-003 remain the only implementation-ready batches.
 - If findings change factual classifications, repair the ledgers/dossiers transactionally and
   obtain a new exact-range verdict over the repair edge.

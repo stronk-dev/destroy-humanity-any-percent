@@ -1,6 +1,7 @@
 # Test and acceptance evidence audit
 
-Coordinate: product tree `190a4fa`; 2026-08-20. State: **in progress**.
+Coordinate: product tree `190a4fa`; 2026-08-20 through 2026-08-21. State: **evidence population
+complete; final contradiction/designated review pending**.
 
 This log records tests actually executed in the audit and whether they witness an entire RFC
 criterion. A green package is not automatically a green criterion; separated halves remain
@@ -55,12 +56,12 @@ rerun above reached its objective. RP-025 owns selector safety.
 - **AC5 partial:** drain ordering/flush/close and reconnect recovery are separately tested. No
   integrated drain → reconnect fixture proves zero receipt loss across that exact boundary.
 
-## Pending evidence work
+## Evidence limits retained after row reconciliation
 
-- Demonstrate a discriminating failure or relevant mutation for every remaining row promoted
-  beyond mechanical presence.
-- Preserve the remaining five mechanically/cold-backed rows at their named exact-review routes;
-  every active RFC lifecycle pass is now complete.
+- The 802-row semantic ledger grants no unconditional integrated verdict. Its 171 bounded
+  promotions are exact primitive/rejection or fired-mutation evidence, not larger capability proof.
+- Preserve the remaining five mechanically/cold-backed active-acceptance rows at their named exact-
+  review routes; every active RFC lifecycle pass is complete.
 - Construct exact current-history review unions before any active RFC archive; the lifecycle
   audits name the missing Account and Transport ranges rather than treating old green prose as a
   verdict.
@@ -291,4 +292,18 @@ leaving semantic per-oracle discrimination open.
 RP-101 records the denominator defect: a non-verbose host `make test-go` can be green while the
 Postgres tests are skipped. `server-test-file-inventory.tsv` and
 `server-test-skip-inventory.tsv` make that population visible. Semantic per-oracle review remains
-open and is not inferred from this structural pass.
+open at this structural checkpoint and is closed by Batch P rather than inferred from syntax.
+
+## Batch P — exact row-level oracle semantics
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Frozen Go/client declaration reconciliation | 802 units and body hashes reproduce | 591 Go tests, one fuzz owner, 208 client declarations, and two helpers have stable identities. |
+| Exact fixture/dependency/assertion/negative-control pass | zero integrated; 171 bounded; 533 positive-only; 43 fixture/mock; 51 conditional; one non-discriminating; one invalid/guarded; two helpers | Test existence and package green no longer imply one evidence class. |
+| Game UI outcome-removal control | exact axe row remains `non_discriminating` | Mechanical axe evidence cannot support cap/drain/resync outcomes. |
+| API registered/unregistered mutations | generator row bounded to registry; live hand-mounted route remained invisible | Registered generation proof is not full API authority or client proof. |
+| Postgres/architecture guards | 51 conditional plus one invalid/guarded | Dedicated cold lanes retain bounded value; host green cannot hide skipped denominators. |
+| Validator corruption set | dropped, duplicate, body drift, conditional promotion, helper promotion, blind-oracle promotion, and missing route all fail | Denominator and the mandatory fired controls are executable. |
+
+`test-oracle-row-ledger.tsv` and `test-oracle-row-audit.md` contain the row results. No test,
+fixture, product behavior, acceptance bound, or implementation plan was changed by this batch.

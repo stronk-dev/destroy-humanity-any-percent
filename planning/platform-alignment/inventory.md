@@ -1,7 +1,7 @@
 # Repository inventory at product coordinate `190a4fa`
 
-State: **Wave 1 structurally complete; row-level semantic depth remains in Waves 2–3.** This records
-verified populations and reconciliation defects; it is not yet the completed per-capability trace.
+State: **inventory and row-level semantic populations complete; final contradiction/review pending.**
+This records verified populations and reconciliation defects at the pinned product coordinate.
 
 ## Counted populations
 
@@ -12,7 +12,7 @@ verified populations and reconciliation defects; it is not yet the completed per
 | Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
 | Archived RFCs | 46 | Files in `rfc/archive/` | All 46 pair structurally; the predeclared 20-row/ten-domain deep replay is complete with 26 rows honestly structural-only. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
-| Tracked planning files after this checkpoint | 219 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the structural capability atomization lands. |
+| Tracked planning files after this checkpoint | 236 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after semantic oracle evidence attachment. |
 | Ignored local planning files | 25 | Seventeen coverage-map files, seven diagnostics, and one historical Codex fix record | Local-only records are not shared memory and receive no fresh-clone evidence credit. |
 | Canonical docs | 38 | Includes three generated artifacts | Every file is classified against lifecycle/release evidence; only the numeric foundation is currently unqualified. |
 | Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
@@ -200,8 +200,8 @@ verified populations and reconciliation defects; it is not yet the completed per
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- At the current gameplay-content evidence checkpoint, planning contains 229 tracked files, 75 of
-  them in platform alignment. Another 25 files are ignored and local-only: 17 coverage-map records,
+- At the current row-oracle evidence checkpoint, planning contains 236 tracked files, 82 of them in
+  platform alignment. Another 25 files are ignored and local-only: 17 coverage-map records,
   six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
   presence cannot support a fresh-clone/shared-memory claim.

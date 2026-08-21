@@ -971,3 +971,23 @@
   only files; platform alignment contains 79 tracked plus one ignored file. No product/test,
   design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
   implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Row-level test-oracle evidence attachment
+
+- Added the 802-row semantic ledger, validator, and audit. Final distribution: zero unconditional
+  integrated, 171 bounded-discriminating, 533 positive-only, 43 fixture/mock-only, 51 dependency-
+  conditional, one non-discriminating, one invalid/guarded, and two helper units.
+- Rejected an initial blanket Decimal/Combat promotion before publication. Nineteen rows without an
+  explicit rejection or an exact previously fired mutation remain positive-only; only eight exact
+  arithmetic/vector mutation rows receive bounded credit.
+- Preserved every mandatory failed control: the Game UI axe row stays non-discriminating, API
+  generation is bounded to registered operations, focus/320 px probes remain absent from the green
+  browser population, command-level client/harness failures are not rehabilitated by unit rows, and
+  all 51 real-Postgres functions remain conditional outside their dedicated lane.
+- The validator reproduced all identities/body hashes and rejected seeded dropped, duplicate, body-
+  drift, conditional-as-integrated, helper-as-positive, blind-oracle-promotion, and missing-route
+  cases.
+- After these three new tracked artifacts land, planning contains 236 tracked plus 25 ignored/local-
+  only files; platform alignment contains 82 tracked plus one ignored file. No product/test,
+  design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
+  implementation-plan checkbox, push, or `AGENTS.md` edit occurred.

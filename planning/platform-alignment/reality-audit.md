@@ -109,6 +109,11 @@ workflow summary and grants no inherited proof to mixed child outcomes.
     and nine are contradicted. The contradictions are the reply-all automation mismatch, four
     missing current hardcap reason keys, and three default-unreachable/self-contradicted Soul
     recovery rows.
+31. The repository's 802 declared Go/client oracle units contain no unconditional integrated
+    player-workflow witness. There are 171 bounded discriminating primitives, 533 positive-only
+    rows, 43 fixture/mock rows, 51 dependency-conditional Postgres rows, one fired
+    non-discriminating Game UI row, one architecture-guarded row, and two helpers. Green aggregate
+    test prose previously obscured these materially different evidence states.
 
 ## Genuine proofs worth preserving
 

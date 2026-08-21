@@ -160,6 +160,11 @@ larger product capability to proven integration.
   declaration/body population with helper, expansion, dependency, assertion, and negative signals.
 - `test-oracle-row-structure-audit.md` — reconciled distribution and explicit syntax-is-not-proof
   limit before semantic verdict attachment.
+- `test-oracle-row-ledger.tsv` / `test-oracle-row-validator.mjs` — exact execution/fixture/skip/
+  assertion/negative-control verdicts for all 802 units, with denominator, identity, promotion,
+  fired-control, and route failures.
+- `test-oracle-row-audit.md` — row-verdict distribution, mandatory failed controls, and the exact
+  boundary between useful package evidence and integrated workflow proof.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,
@@ -167,6 +172,6 @@ larger product capability to proven integration.
 - `execution-queue.md` — the only presently authorized queue.
 - `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
   forbidden scope, conflicts, and review protocol.
-- `review-handoff.md` — bounded cross-party review draft; it is not the final audit handoff until
-  the remaining Wave-2/3 semantic ledgers and contradiction pass close.
+- `review-handoff.md` — bounded cross-party review draft; the semantic populations are closed, but
+  it is not the final audit handoff until the contradiction pass resolves the literal final tip.
 - `log.md` — append-only program history.
