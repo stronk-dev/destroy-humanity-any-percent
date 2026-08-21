@@ -1656,3 +1656,16 @@
 - Corrected Class-C progress is 48 of 67: five eligible, six revision-blocked, 37 synthesis/private-
   store-blocked, and 19 unreviewed. No ignored source, design/content/legal authority, publication,
   push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 28
+
+- Read the Warcraft III custom-game ecosystem and creator-rights dossier completely and routed it
+  to a dated public synthesis plus current legal/IP/editorial review.
+- Preserved the cheap-experiment, community-infrastructure, attribution, version identity, fork-
+  lineage, flat-discovery and balanced-licensing findings without promoting active marks, living
+  people, platform-policy quotations, ownership/trademark conclusions, review claims or model lore.
+- Refused to adopt exact ownership terms, predicate/route schema fields, design gaps, satire and
+  product adaptations as research authority.
+- Class-C progress is 49 of 67: five eligible, six revision-blocked, 38 synthesis/private-store-
+  blocked, and 18 unreviewed. No ignored source, ownership/design/content/legal/IP authority,
+  publication, push, deployment or destructive cleanup changed.

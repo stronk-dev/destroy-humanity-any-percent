@@ -208,7 +208,11 @@ correction, that provisional snapshot was actually 47 reviewed: five eligible, s
 blocked, 36 synthesis/private-store-blocked, and 20 unreviewed. Batch 27 reviewed the omitted 2026
 compliance-refresh dossier; it requires public synthesis plus current legal/policy/editorial
 review. **Forty-eight of 67 are now reviewed: five eligible, six revision-blocked, 37 synthesis/
-private-store-blocked, and 19 unreviewed.** See `publication-rights-batch-27.md`.
+private-store-blocked, and 19 unreviewed.** See `publication-rights-batch-27.md`. Batch 28 reviewed
+the Warcraft III custom-game ecosystem and creator-rights dossier; it requires public synthesis
+plus current legal/IP/editorial review. **Forty-nine of 67 are reviewed: five eligible, six
+revision-blocked, 38 synthesis/private-store-blocked, and 18 unreviewed.** See
+`publication-rights-batch-28.md`.
 
 ### Class D — generated diagnostics (7)
 
