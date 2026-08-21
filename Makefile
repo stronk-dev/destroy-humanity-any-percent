@@ -300,11 +300,11 @@ verify-schema:
 	node client/tools/verify-schema.mjs
 
 verify-routes-boundary:
-	@imports=$$(cd server && GOCACHE=/tmp/cloud-clicker-routes-go-cache go list -f '{{range .Imports}}{{println .}}{{end}}' ./routes) || { echo 'routes import enumeration failed' >&2; exit 1; }; unexpected=$$(printf '%s\n' "$$imports" | grep '^cloud-clicker/server/' | grep -vx 'cloud-clicker/server/decimal' || true); if [ -n "$$unexpected" ]; then echo "routes package has disallowed internal imports:" >&2; echo "$$unexpected" >&2; exit 1; fi
+	@imports=$$(cd server && go list -f '{{range .Imports}}{{println .}}{{end}}' ./routes) || { echo 'routes import enumeration failed' >&2; exit 1; }; unexpected=$$(printf '%s\n' "$$imports" | grep '^cloud-clicker/server/' | grep -vx 'cloud-clicker/server/decimal' || true); if [ -n "$$unexpected" ]; then echo "routes package has disallowed internal imports:" >&2; echo "$$unexpected" >&2; exit 1; fi
 
 verify-commons-boundary:
-	@if cd server && GOCACHE=/tmp/cloud-clicker-commons-go-cache go list -deps ./commons | grep -qx 'cloud-clicker/server/production'; then echo 'commons package must not import production' >&2; exit 1; fi
-	@if cd server && GOCACHE=/tmp/cloud-clicker-commons-go-cache go list -deps ./production | grep -qx 'cloud-clicker/server/commons'; then echo 'production package must not import commons' >&2; exit 1; fi
+	@if cd server && go list -deps ./commons | grep -qx 'cloud-clicker/server/production'; then echo 'commons package must not import production' >&2; exit 1; fi
+	@if cd server && go list -deps ./production | grep -qx 'cloud-clicker/server/commons'; then echo 'production package must not import commons' >&2; exit 1; fi
 
 verify-client-boundary:
 	node client/tools/verify-shell-boundaries.mjs

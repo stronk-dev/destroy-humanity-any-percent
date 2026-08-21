@@ -2096,3 +2096,13 @@
   explicit as carried successor work.
 - Closed RP-107 and execution row 2g. No implementation, artifact, copy, RFC contract, push,
   publication or deployment changed.
+
+## 2026-08-21 — repository-local boundary-cache correction
+
+- Removed the task-named `/tmp` `GOCACHE` overrides from `verify-routes-boundary` and
+  `verify-commons-boundary`; both now consume the root Makefile's exported repository-local cache as
+  required by the working convention.
+- Kept each gate's package enumeration, allowed-import set and rejection predicate unchanged, then
+  ran both boundary targets from the repository root.
+- Closed RP-099. No product behavior, balance data, RFC contract, CI workflow, push, publication or
+  deployment changed.
