@@ -1423,3 +1423,13 @@
 - Class-C progress is 34 of 67: five eligible, seven revision-blocked, 22 synthesis/private-store-
   blocked, and 33 unreviewed. No ignored source, owner/legal/deployment authority, publication,
   push or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 13
+
+- Read the launch/distribution dossier completely and routed it to a dated public channel
+  synthesis plus current owner/operations/privacy review.
+- Refused to turn blocked-source community lore, estimates and simulations into a launch sequence,
+  Discord/press action, telemetry/load contract, population target, no-wipe policy or beta framing.
+- Class-C progress is 35 of 67: five eligible, seven revision-blocked, 23 synthesis/private-store-
+  blocked, and 32 unreviewed. No ignored source, external outreach, telemetry, deployment,
+  publication, push or destructive cleanup changed.
