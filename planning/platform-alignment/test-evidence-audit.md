@@ -273,9 +273,9 @@ workflow or source-lifecycle claims.
 | Exact `.PHONY` reconciliation | 72 rows; 26 bounded-valid, ten mutators, nine partial, five release-invalid, remainder setup/manual/historical/parameterized/pending | RP-100: a target name is not necessarily a check or current evidence. |
 | Exact workflow-job reconciliation | seven rows | Current hosted facts and trigger/cache/topology defects have one row per job. |
 | Hosted run `32404232364` | server/client/browser/composed/schema successful; harness cancelled at 30m02s; numeric skipped | Individual green jobs do not produce a green aggregate. |
-| Exact `client/test` filesystem reconciliation | 56 local files = 43 tracked TS + 13 ignored PNG | RP-098: ignored captures are not asserted/fresh-clone acceptance artifacts. |
+| Exact `client/test` filesystem reconciliation | 56 audited artifacts = 43 tracked TS + 13 ignored PNG | RP-098 closed: the inventory and oracle extractor separate ignored captures from authoritative test sources; PNGs receive no acceptance credit. |
 | Screenshot assertion source scan | no `screenshot`, `toMatchScreenshot`, or `toHaveScreenshot` call in tracked client tests | Current PNGs are runner captures, not visual baselines. |
-| Root Make recipe trace | route/Commons boundary recipes assign task-named `/tmp` `GOCACHE` values | RP-099: recipes contradict the current repository-local cache protocol. |
+| Root Make recipe trace | route/Commons boundary recipes now inherit the exported repository-local `GOCACHE`; import predicates are unchanged | RP-099 closed by the mechanical 2026-08-21 Makefile correction. |
 
 This batch classifies rather than re-runs every target. Individual cold/mutation evidence remains in
 Batches A–M and the lifecycle dossiers. Batch O closes the 151-file structural population while

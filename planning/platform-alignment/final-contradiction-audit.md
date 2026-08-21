@@ -3,6 +3,13 @@
 Coordinate: product tree `190a4fa`; prepared 2026-08-21. This is the final Codex-side first filter,
 not the designated cross-party verdict required by `AGENTS.md`.
 
+**Post-coordinate note (2026-08-21):** this audit and its validator are a frozen proof for the
+literal `190a4fa` audit range, designated-approved at `6d09379`. Later reviewed witness batches and
+authorized maintenance legitimately change its denominators and path allowlist, so running
+`final-contradiction-validator.mjs` at current HEAD must fail and must not be “fixed” by rebasing
+these historical counts. Current state lives in `CURRENT-STATE.md`, the execution queue and the
+append-only platform-alignment log.
+
 ## Range and mutation boundary
 
 Before this closeout commit, `190a4fa..871c86a` contains 41 planning/current-status commits and 86

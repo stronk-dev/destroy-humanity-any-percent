@@ -2125,3 +2125,13 @@
 - Advanced `planning/CURRENT-STATE.md` through `b990b91` and recorded the four bounded local hygiene
   commits without promoting any product capability or release claim.
 - No product behavior, RFC contract, push, publication or deployment changed.
+
+## 2026-08-21 — client-test authority reconciliation
+
+- Re-ran the client-test artifact denominator: 43 tracked TypeScript sources and 13 ignored PNG
+  captures. Every tracked row resolves through Git; every capture row is untracked and ignored.
+- Confirmed `test-oracle-row-extractor.mjs` admits only inventory rows whose tracked column is
+  `yes`, so ignored screenshots cannot enter the executable-oracle population. Closed RP-098.
+- Recorded that the final-contradiction validator is a frozen `190a4fa` proof and must fail on
+  later HEADs; its historical counts were not laundered into a new baseline. No product behavior,
+  test source, RFC contract, push, publication or deployment changed.

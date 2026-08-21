@@ -166,8 +166,9 @@ larger product capability to proven integration.
   fired-control, and route failures.
 - `test-oracle-row-audit.md` — row-verdict distribution, mandatory failed controls, and the exact
   boundary between useful package evidence and integrated workflow proof.
-- `final-contradiction-validator.mjs` / `final-contradiction-audit.md` — executable cross-ledger
-  totals/path allowlist plus the final Codex-side contradiction and authority closeout.
+- `final-contradiction-validator.mjs` / `final-contradiction-audit.md` — frozen executable
+  cross-ledger totals/path allowlist for the designated-approved `190a4fa` audit range; later HEADs
+  must use the living ledgers rather than rebaseline this historical proof.
 - `planning-thread-inventory.tsv` — the frozen `190a4fa` population of all 23 then-top-level
   planning directories with tracked/local file counts, authority, current state, and exact
   closeout gap; RP-102 later archived four completed threads without rewriting the snapshot.
