@@ -112,6 +112,7 @@ func TestObservationSignalSubprocess(t *testing.T) {
 		if err != nil {
 			os.Exit(2)
 		}
+		installObservationSignalHandler()
 		if err := observationRecorder.DeclareObjectives([]string{"relevance:0:scenario.json"}); err != nil {
 			os.Exit(2)
 		}
@@ -124,7 +125,6 @@ func TestObservationSignalSubprocess(t *testing.T) {
 				ConstantsHash:       "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Active: &active}}); err != nil {
 			os.Exit(2)
 		}
-		installObservationSignalHandler()
 		select {}
 	}
 	path := filepath.Join(t.TempDir(), "observation.json")

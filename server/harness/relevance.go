@@ -91,7 +91,6 @@ type RelevanceProgress struct {
 	ExecutedRuns        int64
 	ExecutedTransitions int64
 	Complete            bool
-	GuardFired          bool
 }
 
 type RelevanceProgressObserver func(RelevanceProgress) error

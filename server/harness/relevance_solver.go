@@ -369,7 +369,7 @@ func (suite *RelevanceSuite) runRelevance(observer RelevanceProgressObserver) (R
 	}
 	if err := emitRelevanceProgress(observer, RelevanceProgress{DeclaredRuns: report.RunBudget.DeclaredRuns,
 		ExecutedRuns: report.RunBudget.ExecutedRuns, ExecutedTransitions: report.RunBudget.ExecutedTransitions,
-		Complete: true, GuardFired: len(report.Failures) != 0}); err != nil {
+		Complete: true}); err != nil {
 		return RelevanceReport{}, err
 	}
 	return report, nil

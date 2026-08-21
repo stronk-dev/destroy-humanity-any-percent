@@ -83,3 +83,12 @@ Append-only session record. A fresh agent should be able to resume from this fil
 - Added failing unknown-mode, negative-elapsed and missing-exclusion fixtures, quoted every Make
   path argument, and re-ran affected cold tests, vet, and validation of the retained full artifact.
   No domain report or measurement value changed.
+
+## 2026-08-21 — signal negative-fixture race
+
+- A later cold run fired the signal subprocess control: the helper exposed a running objective
+  before installing its handler, so the parent could deliver `SIGTERM` in that gap and leave the
+  last artifact `running`. The real CLI already installs the handler before declaration/work.
+- Moved the helper's handler installation before its declaration so the test exercises production
+  order. The fired artifact remains evidence that the old fixture was nondeterministic, not a
+  product-path failure or a reason to weaken the assertion.
