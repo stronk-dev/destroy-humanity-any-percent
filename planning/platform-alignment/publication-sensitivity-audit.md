@@ -242,7 +242,11 @@ six revision-blocked, 46 synthesis/private-store-blocked, and 10 unreviewed.** S
 `publication-rights-batch-36.md`. Batch 37 reviewed the dynamic-events and differentiated-
 playstyles dossier; it requires public synthesis plus current product/IP/editorial review.
 **Fifty-eight of 67 are reviewed: five eligible, six revision-blocked, 47 synthesis/private-store-
-blocked, and nine unreviewed.** See `publication-rights-batch-37.md`.
+blocked, and nine unreviewed.** See `publication-rights-batch-37.md`. Batch 38 reviewed the labor-
+organizing and worker-side-satire dossier; it requires public synthesis plus current labor/legal/
+political/IP/editorial review. **Fifty-nine of 67 are reviewed: five eligible, six revision-
+blocked, 48 synthesis/private-store-blocked, and eight unreviewed.** See
+`publication-rights-batch-38.md`.
 
 ### Class D — generated diagnostics (7)
 

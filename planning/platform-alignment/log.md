@@ -1853,3 +1853,16 @@
 - Class-C progress is 58 of 67: five eligible, six revision-blocked, 47 synthesis/private-store-
   blocked, and nine unreviewed. No ignored source, event/product/design/content/economy/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 38
+
+- Read the labor-organizing and worker-side-satire dossier completely and routed it to a dated
+  public synthesis plus current labor/legal/political/IP/editorial review.
+- Preserved the neutrality/card-check, causal-organizing-pressure, strike-fund, negotiated-verb,
+  two-tier/surveillance and employer-as-subject findings without promoting current disputes,
+  rulings, statistics, allegations, named organizers/companies or quotations.
+- Refused to adopt its legal judgments, tragedy boundaries, event arcs, meters, formulas,
+  buildings, upgrades, achievements and player copy as research authority.
+- Class-C progress is 59 of 67: five eligible, six revision-blocked, 48 synthesis/private-store-
+  blocked, and eight unreviewed. No ignored source, labor/legal/political/product/design/content/IP
+  authority, publication, push, deployment or destructive cleanup changed.
