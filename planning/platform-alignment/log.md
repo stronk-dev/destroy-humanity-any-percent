@@ -1433,3 +1433,14 @@
 - Class-C progress is 35 of 67: five eligible, seven revision-blocked, 23 synthesis/private-store-
   blocked, and 32 unreviewed. No ignored source, external outreach, telemetry, deployment,
   publication, push or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 14
+
+- Read the Flash-era arcade dossier completely and routed it to a dated historical/preservation
+  synthesis plus IP/editorial review.
+- Preserved the multiplayer-preservation hole, appointment-community and portal/upgrade-loop
+  findings without adopting active marks, archive-absence inference, named content, mechanics,
+  portal names, implementation priorities, copy or categorical IP/patent conclusions.
+- Class-C progress is 36 of 67: five eligible, seven revision-blocked, 24 synthesis/private-store-
+  blocked, and 31 unreviewed. No ignored source, design/content/IP authority, publication, push,
+  deployment or destructive cleanup changed.

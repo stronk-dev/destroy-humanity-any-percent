@@ -154,7 +154,10 @@ the designed-sunset dossier; it requires public synthesis plus current legal/pol
 store-blocked, and 33 unreviewed.** See `publication-rights-batch-12.md`. Batch 13 reviewed the
 launch/distribution dossier; it requires public synthesis plus current channel/owner review.
 **Thirty-five of 67 are reviewed: five eligible, seven revision-blocked, 23 synthesis/private-
-store-blocked, and 32 unreviewed.** See `publication-rights-batch-13.md`.
+store-blocked, and 32 unreviewed.** See `publication-rights-batch-13.md`. Batch 14 reviewed the
+Flash-era arcade dossier; it requires public synthesis plus IP/editorial review. **Thirty-six of 67
+are reviewed: five eligible, seven revision-blocked, 24 synthesis/private-store-blocked, and 31
+unreviewed.** See `publication-rights-batch-14.md`.
 
 ### Class D — generated diagnostics (7)
 
