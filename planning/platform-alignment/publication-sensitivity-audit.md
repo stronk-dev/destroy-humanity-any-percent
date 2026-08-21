@@ -215,7 +215,11 @@ revision-blocked, 38 synthesis/private-store-blocked, and 18 unreviewed.** See
 `publication-rights-batch-28.md`. Batch 29 reviewed the licensed-IP live-service idle-craft
 dossier; it requires public synthesis plus current consumer-protection/IP/editorial review.
 **Fifty of 67 are reviewed: five eligible, six revision-blocked, 39 synthesis/private-store-
-blocked, and 17 unreviewed.** See `publication-rights-batch-29.md`.
+blocked, and 17 unreviewed.** See `publication-rights-batch-29.md`. Batch 30 reviewed gamification
+across finance, health, labor and civic life; it requires public synthesis plus current financial/
+consumer-protection/labor/IP/editorial review. **Fifty-one of 67 are reviewed: five eligible, six
+revision-blocked, 40 synthesis/private-store-blocked, and 16 unreviewed.** See
+`publication-rights-batch-30.md`.
 
 ### Class D — generated diagnostics (7)
 

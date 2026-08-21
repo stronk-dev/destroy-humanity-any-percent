@@ -1683,3 +1683,16 @@
 - Class-C progress is 50 of 67: five eligible, six revision-blocked, 39 synthesis/private-store-
   blocked, and 17 unreviewed. No ignored source, design/content/consumer-protection/IP authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 30
+
+- Read the finance, health, labor and civic gamification dossier completely and routed it to a
+  dated public synthesis plus current financial/consumer-protection/labor/IP/editorial review.
+- Preserved the value-capture, tuned-forgiveness, financial/labor-power, algorithmic-management and
+  distributed-reputation findings without promoting loss cases, regulator conclusions, health/
+  surveillance allegations, active firms/mascots, living people, quotations or model lore.
+- Retained its refusal to use individual suicide material and refused to adopt its upgrades,
+  events, achievements, archetype names and player copy as research authority.
+- Class-C progress is 51 of 67: five eligible, six revision-blocked, 40 synthesis/private-store-
+  blocked, and 16 unreviewed. No ignored source, design/content/financial/consumer/labor/IP
+  authority, publication, push, deployment or destructive cleanup changed.
