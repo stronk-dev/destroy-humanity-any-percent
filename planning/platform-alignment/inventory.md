@@ -117,8 +117,9 @@ This records verified populations and reconciliation defects at the pinned produ
 - `test-oracle-row-structure.tsv` reconciles the 592 Go functions with 210 client declaration/helper
   units: 174 plain tests, 19 parameterized declarations, 15 conditional browser declarations, and
   two non-oracle helpers. All 802 units have exact body identity and semantic evidence rows: zero
-  unconditional integrated, 171 bounded, 533 positive-only, 43 fixture/mock, 51 dependency-
-  conditional, one non-discriminating, one invalid/guarded, and two helpers.
+  unconditional integrated under the declaration-isolated method, 171 bounded, 533 positive-only,
+  43 fixture/mock, 51 dependency-conditional, one non-discriminating, one invalid/guarded, and two
+  helpers. Four external T0–T1 severing probes remain separately admissible backend evidence.
 
 ### Runtime concurrency, jobs, and events
 

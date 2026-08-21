@@ -25,7 +25,7 @@ doc, implementation-plan checkbox, deployment behavior, or owner-authored copy. 
 | Atomic design outcomes | 433: 3 integration, 41 bounded, 55 partial, 134 backend/data-only, 7 client/fixture-only, 3 claimed, 188 absent, 2 blocked |
 | Generated Copy keys | 208: 128 mounted, 63 backend/data-only, 1 shipped/unmounted, 8 fixture/tool-only, 8 unreferenced |
 | Deploy-current gameplay units | 579: 173 partial-mounted, 180 backend-active, 141 dormant, 55 measurement-only, 21 zero/empty, 9 contradicted; zero integrated mounted |
-| Declared test-oracle units | 802: 171 bounded, 533 positive-only, 43 fixture/mock, 51 dependency-conditional, 1 non-discriminating, 1 invalid/guarded, 2 helpers; zero unconditional integrated |
+| Declared test-oracle units | 802: 171 bounded, 533 positive-only, 43 fixture/mock, 51 dependency-conditional, 1 non-discriminating, 1 invalid/guarded, 2 helpers; zero unconditional integrated under declaration-isolated classification |
 | Dependency/resource ownership rows | 30 |
 | Accepted-scope READY batches | 3, all explicitly serialized by conflict |
 | Tracked RP findings | 110, contiguous RP-001–RP-110 with nonempty repair/authority routes |
@@ -35,6 +35,10 @@ gameplay-content, and oracle verdict validators pass and all seeded corruptions 
 cross-validator independently recomputes the summary families, repository populations, RP
 sequence/routes, READY/dependency denominators, shared/ignored planning counts, and audit path
 allowlist.
+
+The oracle headline excludes four externally recorded T0–T1 severing probes preserved in the
+archived review log. Those probes remain valid integrated backend evidence; they do not turn a
+dependency-skipped declaration into an unconditional row or prove the incomplete browser workflow.
 
 ## Contradictions repaired in this pass
 

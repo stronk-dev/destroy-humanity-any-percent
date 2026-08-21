@@ -18,7 +18,8 @@ producer/consumer population is complete and routes RP-108/RP-109; the 579-unit 
 population is evidence-complete and adds RP-110. Its exact 802 declarations/helpers now have
 fixture, dependency, assertion, negative-control, verdict, limit, and route fields: zero integrated,
 171 bounded, 533 positive-only, 43 fixture/mock, 51 dependency-conditional, one
-non-discriminating, one invalid/guarded, and two helper units. The 433-child outcome population is
+non-discriminating, one invalid/guarded, and two helper units. This is the declaration-isolated
+distribution; Finding A below records four excluded external severing probes. The 433-child outcome population is
 complete but requires the eventual designated cross-party pass with the rest of the range. The
 archive replay itself is complete and adds RP-105–RP-107; none of these Codex-authored passes
 substitutes for the designated Claude review.

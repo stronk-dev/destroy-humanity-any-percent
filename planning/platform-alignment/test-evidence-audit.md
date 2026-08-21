@@ -58,8 +58,10 @@ rerun above reached its objective. RP-025 owns selector safety.
 
 ## Evidence limits retained after row reconciliation
 
-- The 802-row semantic ledger grants no unconditional integrated verdict. Its 171 bounded
-  promotions are exact primitive/rejection or fired-mutation evidence, not larger capability proof.
+- The 802-row semantic ledger grants no unconditional integrated verdict under its declaration-
+  isolated method. Its 171 bounded promotions are exact primitive/rejection or fired-mutation
+  evidence, not larger capability proof. Four external T0–T1 severing probes remain separately
+  valid integrated backend evidence.
 - Preserve the remaining five mechanically/cold-backed active-acceptance rows at their named exact-
   review routes; every active RFC lifecycle pass is complete.
 - Construct exact current-history review unions before any active RFC archive; the lifecycle

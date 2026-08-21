@@ -69,8 +69,11 @@ See `planning/platform-alignment/release-platform-audit.md` and `capability-map.
   deliberately open for exact review/provenance rather than unaudited.
 - The fine-grained evidence populations are closed: 433 atomic design outcomes, 208 generated Copy
   keys, 579 deploy-current gameplay units, and 802 declared test-oracle units. Only three design
-  rows—all views of the same bootstrap—are integrated; no exact content row or test declaration is
-  an unconditional integrated gameplay witness.
+  rows—all views of the same bootstrap—are integrated. No exact content row is an integrated
+  mounted witness, and no test declaration is an unconditional integrated witness when evaluated
+  in isolation. That row-local method does not ingest four externally recorded T0–T1 severing
+  probes; those preserve integrated backend evidence but do not remove dependency skips or the
+  incomplete default browser workflow.
 - Permits/First Content, Prestige, Leaderboards, Minigame Platform/API, Account, Transport, CI,
   API Foundation, Game UI, and Combat each have a lifecycle dossier and exact repair/author route.
   None is archival-eligible from this audit alone.

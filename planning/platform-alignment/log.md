@@ -1008,3 +1008,18 @@
 - Final shared-memory count is 238 tracked planning files, 84 in platform alignment, plus 25
   ignored/local-only planning files (one in platform alignment). The next action is the mandatory
   designated Claude review; Codex has not approved its own work.
+
+## 2026-08-21 — Designated-review follow-up and README normalization
+
+- Applied designated review Finding A without changing any row verdict: every current summary now
+  says the zero-integrated oracle result is declaration-isolated and excludes four externally
+  recorded T0–T1 severing probes. Those probes remain valid integrated backend evidence while the
+  dependency skips and incomplete default browser workflow remain explicit.
+- Replaced the root README's audit-summary shape with a conventional project entry point: concise
+  pitch/status, stack, requirements, setup/build/verification, honest Postgres-lane warning,
+  gameserver runtime boundary, repository layout, development process, and license.
+- Removed the long design-document catalog and internal research-policy essay from the README;
+  canonical design, current-state, RFC, planning, and docs links remain discoverable through their
+  owning indexes.
+- No product code/test, design/RFC body, canonical product doc, balance/copy/content, migration,
+  deployment behavior, implementation-plan checkbox, push, or `AGENTS.md` edit occurred.

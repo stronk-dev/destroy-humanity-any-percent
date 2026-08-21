@@ -113,10 +113,10 @@ const allowed = /^(README\.md|planning\/(?:CURRENT-STATE\.md|README\.md|platform
 assert(changedPaths.every((path) => allowed.test(path)), `product/authority path entered audit range: ${changedPaths.filter((path) => !allowed.test(path)).join(",")}`);
 
 const requiredSummaryFragments = [
-  ["planning/platform-alignment/plan.md", "zero integrated, 171 bounded, 533 positive-only"],
-  ["planning/platform-alignment/capability-map.md", "171 are bounded discriminators, and 533 are positive-only"],
-  ["planning/platform-alignment/reality-audit.md", "There are 171 bounded discriminating primitives, 533 positive-only"],
-  ["planning/platform-alignment/review-handoff.md", "171 bounded, 533 positive-only"],
+  ["planning/platform-alignment/plan.md", "zero is declaration-isolated and excludes four recorded external severing probes"],
+  ["planning/platform-alignment/capability-map.md", "The row method excludes four externally recorded severing probes"],
+  ["planning/platform-alignment/reality-audit.md", "Four externally recorded T0–T1 severing probes remain valid"],
+  ["planning/platform-alignment/review-handoff.md", "Finding A below records four excluded external severing probes"],
 ];
 for (const [file, fragment] of requiredSummaryFragments) assert(read(file).includes(fragment), `summary drift: ${file}`);
 

@@ -6,7 +6,10 @@ these family summaries must not be used to grant umbrella credit to their mixed 
 The deploy-current data denominator is the 579-row `gameplay-content-row-ledger.tsv`: zero exact
 content rows have an integrated mounted witness, although 173 have partial mounted paths.
 The executable row denominator is the 802-row `test-oracle-row-ledger.tsv`: zero declarations are
-unconditional integrated witnesses, 171 are bounded discriminators, and 533 are positive-only.
+unconditional integrated witnesses when evaluated in isolation, 171 are bounded discriminators,
+and 533 are positive-only. The row method excludes four externally recorded severing probes in the
+archived T0–T1 review log; those probes remain valid integrated backend evidence, without promoting
+the dependency-conditional declarations or the incomplete default browser workflow.
 
 | Capability family | Classification | What is real now | What prevents the larger claim |
 |---|---|---|---|

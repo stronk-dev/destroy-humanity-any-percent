@@ -18,10 +18,13 @@ all 802 units frozen in `test-oracle-row-structure.tsv`.
 | `helper_not_oracle` | 2 | The browser error guard and run-end type contract support other checks but do not execute independently. |
 | `review_unresolved` | 0 | Conservative states were sufficient; no row was silently omitted while awaiting interpretation. |
 
-The absence of an integrated row does not erase useful integration evidence. Fifty-one functions
-exercise real Postgres when the declared Compose/hosted lane runs cold, and the external composed
-browser script proves bootstrap through presence. The row audit refuses to combine those separate
-or conditional witnesses into an unconditional end-to-end gameplay result. The composed browser
+The absence of an integrated row is a declaration-isolated result and does not erase useful
+integration evidence. Four severing probes recorded in `planning/archive/t0-t1-content/log.md`
+prove the composed first-hour backend, catchup, starter-package, and starvation boundaries can fail
+when broken; this ledger does not ingest that external provenance. Fifty-one functions exercise
+real Postgres when the declared Compose/hosted lane runs cold, and the external composed browser
+script proves bootstrap through presence. The row audit refuses to combine those separate or
+conditional witnesses into an unconditional end-to-end gameplay result. The composed browser
 script is also outside the frozen `it`/`test` declaration population and stops before gameplay.
 
 ## Mandatory fired controls
