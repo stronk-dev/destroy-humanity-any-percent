@@ -1262,3 +1262,22 @@
 - Class-C progress is 12 of 67: four eligible, five revision-blocked, three synthesis/private-
   store-blocked, and 55 unreviewed. No ignored source, design/product/RFC authority, publication,
   push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 04
+
+- Read the provenance-extract, release-platform, EU-compliance and audio/art dossiers completely.
+  Approved the release-platform audit as a dated commit-fixed repository snapshot; it does not
+  become current release truth by being tracked later.
+- Routed the provenance extract to a bounded truth/source correction: it is currently ignored
+  despite calling itself tracked, and a generic USPTO search landing page does not prove the four
+  exact current mark claims.
+- Refused publication of the raw compliance dossier as operational legal guidance. It contains
+  categorical conclusions across GDPR/ePrivacy/DSA/EAA/COPPA/licensing plus acknowledged gaps and
+  time-sensitive law. Required a scoped public issue register and current qualified legal review.
+- Routed the audio/art dossier to public synthesis because claim-level sourcing is incomplete and
+  time-sensitive platform/license/market claims, named controversies, exact copy and a proposed
+  owner policy are mixed together as “adopted unless overridden.” Research cannot adopt that
+  policy itself.
+- Class-C progress is 16 of 67: five eligible, six revision-blocked, five synthesis/private-store-
+  blocked, and 51 unreviewed. No ignored source, legal/product/RFC authority, owner copy,
+  publication, push, deployment or destructive cleanup changed.

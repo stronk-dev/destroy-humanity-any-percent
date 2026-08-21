@@ -120,9 +120,11 @@ file edits. Batch 02 reviewed `tech-stack.md`, `mobile-pwa.md`, `tier-relevance.
 requires a public synthesis or named private-source ruling. Batch 03 reviewed four minigame
 mechanics dossiers: `absorption-arena.md` and `board-game-mechanics.md` require bounded revision;
 `lane-pusher-design.md` and `rhythm-timing-games.md` require public syntheses plus a raw-source
-disposition. **Twelve of 67 are reviewed: four eligible, five revision-blocked, three
-synthesis/private-store-blocked, and 55 unreviewed.** See `publication-rights-batch-01.md` through
-`publication-rights-batch-03.md`.
+disposition. Batch 04 reviewed release/provenance/compliance/assets: `release-platform-audit.md` is
+eligible as a dated snapshot; `provenance-extracts.md` needs bounded revision; `compliance.md` and
+`audio-art.md` need public syntheses plus current authority review. **Sixteen of 67 are reviewed:
+five eligible, six revision-blocked, five synthesis/private-store-blocked, and 51 unreviewed.** See
+`publication-rights-batch-01.md` through `publication-rights-batch-04.md`.
 
 ### Class D — generated diagnostics (7)
 
