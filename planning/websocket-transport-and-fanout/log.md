@@ -622,3 +622,10 @@ cross-party verdict pending.
   history and production browser behavior. Account rotation, snapshot v3, player copy, archive,
   deploy and push remain untouched. Q-003 now needs only Claude's exact-range verdict; no broader
   work is delegated to Claude.
+
+## 2026-08-21 — Q-003 handoff-range edge correction
+
+- `08acc3e` recorded the evidence after `afb5bf0`, so the earlier implementation endpoint cannot be
+  used as the designated review endpoint: it would omit its own record. No history was rewritten.
+- The review begins after approved Q-002 tip `bfd9b65` and ends at this correction commit. The relay
+  names that literal hash; Claude verifies only that complete range and returns one verdict.

@@ -53,4 +53,5 @@ refresh authority.
 player outcome: a ten-second stall has bounded backlog and converges to newest authoritative state,
 with disconnect/recovery permitted. `afb5bf0` adds the literal 10.50-second actual-socket witness;
 refusing every post-baseline world revision makes it fail after the full stall. All Q-003 cold gates
-are restored. The exact `bfd9b65..afb5bf0` range is ready for designated cross-party review.
+are restored. The implementation/witness span ends at `afb5bf0`; designated review begins after
+`bfd9b65` and must include the final record-only handoff/correction tip named in the relay.

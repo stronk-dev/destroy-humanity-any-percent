@@ -1081,3 +1081,10 @@
 - Per owner cost direction, Claude's role is restricted to the mandatory cross-party verdict over
   that exact range. Codex retains all implementation, test execution, evidence recording and later
   closeout work; no archive or next serial batch proceeds before the verdict.
+
+## 2026-08-21 — Q-003 review endpoint correction
+
+- The record-only `08acc3e` necessarily extends beyond the implementation endpoint `afb5bf0`.
+  Corrected the handoff without rewriting: designated review begins after `bfd9b65` and includes
+  this final correction commit, whose literal hash is supplied in the relay. This keeps Claude's
+  task minimal while preserving the mandatory full-range union.
