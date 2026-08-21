@@ -1226,3 +1226,20 @@
 - The actual track/move/ignore transaction remains blocked on ruling-author reconciliation and the
   fresh-clone authority gate. No ignored file, owner content, `.gitignore`, product/RFC/design body,
   publication, push or deployment changed.
+
+## 2026-08-21 — D-002 targeted artifact review
+
+- Read and classified all nine Class-B artifacts. Two need ruling-author reconciliation, two need
+  public-safe synthesis or bounded rewrite, two belong in a frozen historical archive, and three
+  are redundant copies that must remain outside the tracked authority set.
+- Verified with byte comparisons that the ignored achievements, meters and pets draft JSON files
+  exactly equal their canonical tracked `balance/**/first-content.json` artifacts. Tracking the
+  drafts would create a second authority without preserving any unique byte.
+- Refused publication of the raw sibling-reuse dossier because it exposes a workstation path,
+  live host, ports, topology, endpoints, authentication gaps and file-level recipes. Routed it to
+  a source-neutral synthesis. Routed the mixed CI/deploy dossier to a bounded rewrite that removes
+  sibling/machine identity and replaces stale cost reasoning with the complete R-001 measurement.
+- Routed the old Codex fix queue and mint-content proposal to a frozen historical archive with
+  current-authority pointers; neither may remain shaped as a live queue/content source.
+- No ignored source, owner/ruling body, product/RFC/design intent, `.gitignore`, publication, push,
+  deployment or destructive cleanup changed.

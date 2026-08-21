@@ -78,6 +78,11 @@ current authority; merely exposing stale rows would worsen repository truth.
 
 ### Class B — targeted sanitization or adoption (9)
 
+**Progress:** all nine received a complete targeted review. Two require ruling-author
+reconciliation, two require public-safe synthesis or bounded rewrite, two belong in a frozen
+historical archive, and three are byte-identical duplicates of canonical production data that
+must not become a second authority. See `publication-targeted-artifacts-review.md`.
+
 | Artifact | Required treatment |
 |---|---|
 | `design/research/README.md` | Its “one private repo, never publish research” body contradicts the 2026-08-21 owner ruling. The ruling author must reconcile the normative body before the ignore policy changes. |
@@ -131,8 +136,9 @@ is correct.
 1. **Ruling-author reconciliation:** update the stale disposition bodies in
    `design/research/README.md` and `planning/coverage-map/decisions-log.md`. This audit does not
    perform that author-owned edit.
-2. **Targeted sanitization:** produce public-safe replacements or explicit exclusions for the two
-   sibling-derived research files; resolve the historical fix queue and four draft-content files.
+2. **Targeted treatment:** execute the nine dispositions in
+   `publication-targeted-artifacts-review.md`: two author reconciliations, two public-safe research
+   rewrites, two frozen historical records, and three ignored redundant duplicates.
 3. **Control-plane tracking batch:** after steps 1–2, remove only the applicable durable paths from
    `.gitignore`, add the approved Class-A/B artifacts normally, and prove a fresh clone contains
    every artifact named by `AGENTS.md` as shared memory.
