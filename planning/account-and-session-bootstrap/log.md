@@ -154,3 +154,19 @@ be cycled to reset a bucket — equivalent to IP rotation, inherent to per-IP li
   docs now require a positive trusted-proxy depth to be paired with an origin firewall.
 - Session/access-token GC remains open: wiring a recurring job belongs with the not-yet-composed
   gameserver process. No orphan method is presented as a live cleanup path.
+
+## 2026-08-21 — Q-001 accepted-scope witness closeout start
+
+- The designated Claude review approved the platform-alignment range in `6d09379` and explicitly
+  authorized Q-001/Q-002/Q-003 serially. Q-001 is first because Q-002 overlaps Account tests and
+  Q-003 consumes Account/Transport composition.
+- Froze Q-001 to AC2/AC3/AC5/AC6/AC7 witnesses only. No Account semantics, API schema, production
+  behavior, copy, retention policy, client-session successor, archival state, or existing plan
+  completion box may change without its separate authority.
+- Predeclared the exact negative seams: live/revoked socket authorization, repeated Founder
+  replacement, actual import-to-board refusal with server-created control, deletion survival of
+  every stream family, and independent rate-limit enforcement/refill on all three unauthenticated
+  operations.
+- The batch will use root Make targets, cold `-count=1`, sequential Compose/Postgres packages, and
+  restored temporary mutations. Its implementation range receives a Codex first-filter and then
+  the mandatory exact-range Claude review; it will not archive the RFC.
