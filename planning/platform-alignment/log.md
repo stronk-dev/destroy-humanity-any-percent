@@ -1042,3 +1042,14 @@
 - The old final-contradiction validator now fails its deliberate planning-only-range assertion on
   the subsequently authorized Q-001–Q-003 product paths. That expected coordinate guard is not a
   Q-003 verification failure and is recorded rather than bypassed or relabeled green.
+
+## 2026-08-21 — Q-003 AC3 supported-seam check
+
+- Exhausted the pinned Centrifuge v0.38.0 public/experimental seams after the literal stall failed.
+  Its latest-publication batching coalesces only within a fixed channel-wide delay before queue
+  admission; ten seconds breaks healthy `world` cadence, while a short delay still fills a stalled
+  client's queue. The writer exposes no per-client queued-item replacement or consumption ACK, and
+  `OnTransportWrite` remains post-admission/pre-socket-write.
+- Kept 3d blocked rather than introducing a custom writer, changing the dependency, weakening the
+  4 Hz contract, or pretending typed-overflow recovery satisfies exact-one connected delivery.
+  RP-054 now has exhausted implementation evidence for its two lawful owner choices.

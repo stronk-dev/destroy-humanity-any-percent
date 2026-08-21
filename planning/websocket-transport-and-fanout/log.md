@@ -557,3 +557,23 @@ cross-party review is not yet requested because AC3 is owner-blocked.
 - The old platform-audit `final-contradiction-validator.mjs` now exits 1 at its intentional
   planning-only range guard because Q-001–Q-003 have since added product/authority paths. It is not
   a Q-003 gate and was not misreported green; its original audited-coordinate evidence is unchanged.
+
+## 2026-08-21 — AC3 dependency-seam exhaustion
+
+**Recorded by:** Codex. **Review by:** pending cross-party review with the eventual Q-003 closeout.
+
+- Read the pinned Centrifuge v0.38.0 writer and experimental channel-batching implementations rather
+  than inferring their behavior from API names. `FlushLatestPublication` replaces publications only
+  inside one fixed `MaxDelay`/`MaxSize` batch, before that batch enters the per-client byte queue.
+- That configuration is channel-wide, not selected for a slow subscriber. A ten-second delay would
+  make every healthy `world` subscriber violate D2/T5's 4 Hz live contract; a short delay continues
+  flushing batches into the stalled client's bounded queue and therefore reproduces the measured
+  overflow instead of enforcing AC3.
+- The connection writer removes as many as 16 admitted items before invoking `OnTransportWrite` and
+  then calls the socket transport. The dependency exposes neither pending-item replacement nor a
+  post-write/client-consumption acknowledgement. The current hook can suppress stale queued frames
+  after an in-flight write returns, but cannot retract that write or know when the consumer resumes.
+- No supported pinned-dependency seam implements literal per-client ten-second connected-stall
+  exact-one delivery without weakening healthy-client cadence. A custom writer/queue, dependency
+  change, or protocol acknowledgement would be new architecture and is not authorized by Q-003.
+  The owner decision recorded under RP-054 therefore remains genuine, not an unsearched code path.
