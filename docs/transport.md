@@ -132,8 +132,10 @@ final state, or click-shaped publication fails the soak.
 World updates use ordinary browser WebSocket delivery, so the transport does not pretend to know
 the exact instant a frozen tab consumes a frame. Intermediate world gauges may be discarded. A
 slow browser either catches up to the newest state with bounded backlog or is closed with code 4000;
-the production client then reconnects and full-syncs from authoritative committed state. Private
-receipts remain history-backed, so this recovery path does not silently lose player progress.
+if the socket is completely blocked, even that close frame may surface to the browser as an abnormal
+close. Both conditions enter the same production reconnect/recovery path and fall back to full sync
+from authoritative committed state. Private receipts remain history-backed, so recovery does not
+silently lose player progress.
 `world_rev` is a process-lifetime ordering key, not persisted world history. It may restart when the
 gameserver restarts, so reconnecting clients treat the recovered latest snapshot as a new baseline
 and never compare its revision with the prior connection.

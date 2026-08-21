@@ -589,3 +589,15 @@ cross-party review is not yet requested because AC3 is owner-blocked.
 - Reconciled D2 and AC3 in the same edit. This does not authorize a dependency fork, custom writer,
   weaker queue bound, Account token rotation, or a second recovery path. Q-003 is unblocked only for
   the literal ruled-outcome witness and its failing mutation before the designated review.
+
+## 2026-08-21 — AC3 close-frame correction from the first ruled witness
+
+**Author/ruling by:** Marco's adopted player-outcome rule. **Recorded by:** Codex.
+
+- The first literal ten-second run ended in plain socket EOF rather than an observable 4000. A
+  fully blocked socket cannot be required to deliver the close frame that reports its own overflow;
+  ordinary browser WebSockets provide no such guarantee. The initial wording had accidentally
+  reintroduced a packet-level requirement the owner had just rejected.
+- Reconciled AC3 again to accept typed or abnormal disconnect while requiring the same bounded
+  reconnect/recovery and newest-authoritative-state outcome. The failed run remains evidence and
+  the witness must now prove recovery after that EOF instead of treating it as an error.

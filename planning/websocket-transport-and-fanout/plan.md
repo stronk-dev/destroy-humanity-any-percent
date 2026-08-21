@@ -35,7 +35,8 @@ Required discriminating cases:
   closes entering the same recovery path, with drain suppressing reconnect for its advertised
   delay;
 - a literal ten-second connected world stall proving bounded backlog and convergence to the newest
-  state, either on the live connection or through typed-overflow reconnect/recovery; and
+  state, either on the live connection or through reconnect/recovery; a fully blocked socket may
+  close abnormally because its close frame is itself undeliverable; and
 - a real non-member Guild subscription denied beside a member control.
 
 Cold gates are the root client unit, typecheck, boundary, browser, and composed disconnect/recovery
@@ -50,5 +51,5 @@ refresh authority.
 **Current Q-003 state:** D4/T4 consumer recovery and the AC6 non-member Guild negative landed at
 `c63e7e6` with cold and mutation evidence. The owner reconciled AC3 on 2026-08-21 to the standard
 player outcome: a ten-second stall has bounded backlog and converges to newest authoritative state,
-with typed 4000 disconnect/recovery permitted. The literal witness and its mutation remain before
+with disconnect/recovery permitted. The literal witness and its mutation remain before
 the complete Q-003 range can receive designated cross-party review.

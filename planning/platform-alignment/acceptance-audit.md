@@ -97,8 +97,8 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
   positions, recovers missed receipts, full-syncs gaps/overflow, interprets typed closes, and honors
   drain delay; the composed browser witness crosses a real disconnect and committed intent.
 - AC3's exact-one-frame premise fired under a literal stall and was owner-reconciled on 2026-08-21
-  to bounded backlog plus newest-authoritative-state convergence. Its ten-second ruled witness is
-  the remaining implementation proof (RP-054).
+  to bounded backlog plus recovery after any disconnect and newest-authoritative-state convergence.
+  Its ten-second ruled witness is the remaining implementation proof (RP-054).
 - AC6's real second-account/non-member Guild denial now fails under an authorize-every-Guild
   mutation. Match's participant positive remains owned by its eventual implementation.
 - The per-scope cursor is bound to production live/recovered publications and authoritative snapshot

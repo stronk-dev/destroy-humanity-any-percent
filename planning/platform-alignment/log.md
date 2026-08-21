@@ -1062,3 +1062,11 @@
 - Promoted queue row 3d from owner-blocked to READY for only that literal witness and mutation. Q-003
   still needs restored cold gates and the mandatory minimal exact-range cross-party verdict; no
   later serial product batch, archival, deployment, or push is authorized yet.
+
+## 2026-08-21 — Transport AC3 first ruled-witness correction
+
+- The first ten-second run failed at its over-strict close-code assertion: the fully blocked socket
+  surfaced EOF because it could not deliver its own 4000 close frame. Corrected the owner ruling's
+  transcription from “typed 4000 required” to “recover after typed or abnormal disconnect”; bounded
+  convergence and no-loss obligations are unchanged. The failure is retained as evidence rather
+  than hidden or made green by weakening the player outcome.

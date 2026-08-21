@@ -314,7 +314,7 @@ func TestActualSlowPrivateConsumerClosesWithQueueOverflowCode(t *testing.T) {
 	}
 }
 
-func TestActualStalledWorldConsumerSkipsQueuedStaleSnapshots(t *testing.T) {
+func TestActualTenSecondStalledWorldConsumerConvergesToLatest(t *testing.T) {
 	policy := phase0Policy(t)
 	policy.WorldHz = 10
 	policy.PlayerQueueBytes = 1_048_576
@@ -340,10 +340,20 @@ func TestActualStalledWorldConsumerSkipsQueuedStaleSnapshots(t *testing.T) {
 	defer connection.CloseNow()
 	connection.SetReadLimit(int64(policy.PlayerQueueBytes * 2))
 	writeCommand(t, connection, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "world"}})
-	_ = readReply(t, connection)
+	initial := decodeSubscribe(t, readReply(t, connection).Subscribe)
+	if !initial.Recoverable || !initial.Positioned || initial.Epoch == "" {
+		t.Fatalf("initial world position=%+v", initial)
+	}
+	publishWorld(t, node, 1)
+	first := readPush(t, connection)
+	if first.Publication == nil || first.Publication.Offset == 0 || envelopeRevision(t, first.Publication.Data) != 1 {
+		t.Fatalf("initial world publication=%+v", first)
+	}
 
 	padding := strings.Repeat("x", 32_000)
-	for revision := int64(1); revision <= 8; revision++ {
+	const finalRevision int64 = 93
+	stallStarted := time.Now()
+	for revision := int64(2); revision <= finalRevision; revision++ {
 		payload, _ := json.Marshal(map[string]any{
 			"scope": "world",
 			"rev":   revision,
@@ -355,13 +365,21 @@ func TestActualStalledWorldConsumerSkipsQueuedStaleSnapshots(t *testing.T) {
 		}
 		time.Sleep(110 * time.Millisecond)
 	}
+	if stalledFor := time.Since(stallStarted); stalledFor < 10*time.Second {
+		t.Fatalf("stalled for only %s", stalledFor)
+	}
 
 	revisions := []int64{}
-	for {
-		ctx, cancel := context.WithTimeout(context.Background(), 150*time.Millisecond)
+	disconnected := false
+	for reads := 0; reads < 4; reads++ {
+		ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 		_, data, readErr := connection.Read(ctx)
 		cancel()
 		if readErr != nil {
+			if websocket.CloseStatus(readErr) == CloseQueueOverflow || node.ConnectionCount() == 0 {
+				disconnected = true
+				break
+			}
 			if errors.Is(readErr, context.DeadlineExceeded) {
 				break
 			}
@@ -376,14 +394,25 @@ func TestActualStalledWorldConsumerSkipsQueuedStaleSnapshots(t *testing.T) {
 			revisions = append(revisions, envelopeRevision(t, reply.Push.Publication.Data))
 		}
 	}
-	if len(revisions) == 0 || revisions[len(revisions)-1] != 8 {
-		t.Fatalf("latest world revision missing: %v", revisions)
+	if !disconnected {
+		if len(revisions) == 0 || revisions[len(revisions)-1] != finalRevision {
+			t.Fatalf("live connection did not converge to latest world revision: %v", revisions)
+		}
+		if len(revisions) > 2 {
+			t.Fatalf("live connection accumulated an unbounded stale backlog: %v", revisions)
+		}
 	}
-	if len(revisions) > 2 {
-		t.Fatalf("stale queued world revisions leaked: %v", revisions)
-	}
-	if len(revisions) == 2 && revisions[0] >= 8 {
-		t.Fatalf("only the in-flight and newest queued snapshots may arrive: %v", revisions)
+
+	_ = connection.CloseNow()
+	reconnected := dialAuthenticated(t, endpoint, server.Client)
+	defer reconnected.CloseNow()
+	writeCommand(t, reconnected, map[string]any{"id": 2, "subscribe": map[string]any{
+		"channel": "world", "recover": true, "epoch": initial.Epoch, "offset": first.Publication.Offset,
+	}})
+	recovered := decodeSubscribe(t, readReply(t, reconnected).Subscribe)
+	if !recovered.Recovered || !recovered.WasRecovering || len(recovered.Publications) != 1 ||
+		envelopeRevision(t, recovered.Publications[0].Data) != finalRevision {
+		t.Fatalf("stalled world recovery did not converge to revision %d: %+v", finalRevision, recovered)
 	}
 }
 

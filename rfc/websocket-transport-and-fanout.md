@@ -29,9 +29,10 @@ JWT-authorized subscriptions; membership checks server-side at subscribe (never 
 - **Aggregate-then-broadcast:** global counters coalesce into **one `world` snapshot at 4–10 Hz** (rate is config). Nothing publishes per-click, per-purchase, or per-player to a public channel — *ever*. The feed is the only exception and it publishes **curated events**, already rate-shaped at source.
 - **Per-connection bounded queue with latest-state convergence:** intermediate gauge updates
   (`world`) may be dropped. A slow consumer either catches up to the newest state without an
-  unbounded backlog or is closed with `4000 queue_overflow` and reconnects through authoritative
-  full sync. For receipt-type messages (`player:*`), the queue is lossless up to its bound and the
-  same reconnect path recovers committed progress — **receipts are never silently dropped.**
+  unbounded backlog or is disconnected and uses the normal recovery/full-sync path. A close code
+  is typed when the transport can deliver it; a fully blocked socket may surface only an abnormal
+  close. For receipt-type messages (`player:*`), the queue is lossless up to its bound and the same
+  reconnect path recovers committed progress — **receipts are never silently dropped.**
 - Presence: join/leave events + a periodic aggregate count; full roster only on subscribe (and only where the surface needs it — guild/cohort).
 
 ### D3 — Message envelope
@@ -57,8 +58,9 @@ Per-connection subscribe caps (config), per-channel publish authz (only server a
    may remove intermediate gauges and the test must not demand a lossless world stream.
 2. Kill a subscriber mid-burst: on reconnect, `player:*` recovery replays every missed receipt in order; `world` shows only the latest snapshot.
 3. Stall a connected consumer for at least 10 s: it either resumes on the newest `world` state
-   without an unbounded update backlog, or closes with `4000 queue_overflow` and reconnects to the
-   newest authoritative state. The recovery path loses no committed player progress.
+   without an unbounded update backlog, or disconnects and reconnects to the newest authoritative
+   state. The recovery path loses no committed player progress; the test must not require a close
+   frame from a socket too blocked to deliver one.
 4. A receipt-queue overflow closes the connection with a typed close code; the client's re-sync lands on the committed revision.
 5. Drain: broadcast → in-flight commits flush → connections close within the bounded timeout → a reconnecting client resumes with zero lost receipts (the CI RFC's deferred deploy AC, executable here).
 6. Non-participants cannot subscribe to `guild:*`/`match:*` (authz test).
@@ -138,6 +140,6 @@ presentation but cannot veto game history.
   F2/F3 findings (closed `cursor_effect`, kind/effect biconditional, per-scope client cursors,
   oversized-event dead-letter path).
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
-- 2026-08-21: owner ruling replaces AC3's unobservable exact-one-frame requirement with the
-  player outcome: bounded backlog, typed slow-client disconnect when necessary, authoritative
+- 2026-08-21: owner ruling replaces AC3's unobservable exact-one-frame/close-frame requirements
+  with the player outcome: bounded backlog, recovery after any disconnect, authoritative
   latest-state convergence, and no lost committed progress.
