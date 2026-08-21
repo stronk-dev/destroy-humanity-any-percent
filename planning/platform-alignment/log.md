@@ -1840,3 +1840,16 @@
 - Class-C progress is 57 of 67: five eligible, six revision-blocked, 46 synthesis/private-store-
   blocked, and 10 unreviewed. No ignored source, retention/product/privacy/design/content/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 37
+
+- Read the dynamic-events and differentiated-playstyles dossier completely and routed it to a
+  dated public synthesis plus current product/IP/editorial review.
+- Preserved the explicit-trigger, visible-causality, cooldown/bounded-lifetime, transparent-
+  contribution and verbs/bottlenecks/rule-change findings without promoting live-game numbers,
+  schedules, community criticism, quotations or thin-evidence claims.
+- Refused to adopt its event DSL/schema, formulas, GM controls, cadence, factions, cross-faction
+  economy, leaderboards and player copy as research authority.
+- Class-C progress is 58 of 67: five eligible, six revision-blocked, 47 synthesis/private-store-
+  blocked, and nine unreviewed. No ignored source, event/product/design/content/economy/IP
+  authority, publication, push, deployment or destructive cleanup changed.

@@ -239,7 +239,10 @@ product/IP/editorial review. **Fifty-six of 67 are reviewed: five eligible, six 
 Batch 36 reviewed the onboarding and first-session-retention dossier; it requires public synthesis
 plus current product/privacy/IP/editorial review. **Fifty-seven of 67 are reviewed: five eligible,
 six revision-blocked, 46 synthesis/private-store-blocked, and 10 unreviewed.** See
-`publication-rights-batch-36.md`.
+`publication-rights-batch-36.md`. Batch 37 reviewed the dynamic-events and differentiated-
+playstyles dossier; it requires public synthesis plus current product/IP/editorial review.
+**Fifty-eight of 67 are reviewed: five eligible, six revision-blocked, 47 synthesis/private-store-
+blocked, and nine unreviewed.** See `publication-rights-batch-37.md`.
 
 ### Class D — generated diagnostics (7)
 
