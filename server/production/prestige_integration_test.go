@@ -12,10 +12,12 @@ import (
 	"time"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/leaderboard"
+	"cloud-clicker/server/minigame"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -388,6 +390,194 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		}
 	})
 
+	t.Run("offer promise holds across the declared age population", func(t *testing.T) {
+		ages := []struct {
+			name    string
+			ageMS   int64
+			expired bool
+		}{
+			{name: "fresh", ageMS: 0},
+			{name: "one_millisecond", ageMS: 1},
+			{name: "half_life", ageMS: policy.OfferDurationMS / 2},
+			{name: "last_live_millisecond", ageMS: policy.OfferDurationMS - 1},
+			{name: "exact_expiry", ageMS: policy.OfferDurationMS, expired: true},
+		}
+		for index, row := range ages {
+			t.Run(row.name, func(t *testing.T) {
+				owner := fmt.Sprintf("01985555-31%02d-7000-8000-%012d", index, index+1)
+				spawnAt := now.Add(-time.Duration(row.ageMS) * time.Millisecond)
+				founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash,
+					owner, spawnAt, spawnAt, spawnAt, "1e25", decimal.New(8, 12), 7)
+				founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				founder.State.ExitHistory = append(founder.State.ExitHistory, save.ExitRecord{
+					RunID: 1, ExitType: "collapse", OccurredAt: spawnAt.Add(-time.Hour), ReputationDelta: 1,
+				})
+				founderRevision, err = store.Write(ctx, founderRevision.StreamID, founderRevision.Number, hash,
+					founder.State, save.WriteContext{Cause: "prestige.ac2.prior_exit"})
+				if err != nil {
+					t.Fatal(err)
+				}
+				company, err := store.LoadLatest(ctx, companyRevision.StreamID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				company.State.RunSeq = 2
+				companyRevision, err = store.Write(ctx, companyRevision.StreamID, companyRevision.Number, hash,
+					company.State, save.WriteContext{Cause: "prestige.ac2.second_run"})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 2, hash); err != nil {
+					t.Fatal(err)
+				}
+				crossID := fmt.Sprintf("01985555-32%02d-7000-8000-%012d", index, index+1)
+				cross := []byte(fmt.Sprintf(`{"intent_id":%q,"kind":"cross_gate","expected_revision":2,"gate_id":"gate.t7_to_t8","route_id":null}`, crossID))
+				if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, spawnAt, cross); err != nil || result.Replay {
+					t.Fatalf("cross=%+v err=%v", result, err)
+				}
+				offered, err := store.LoadLatest(ctx, companyRevision.StreamID)
+				if err != nil || offered.State.OfferState == nil {
+					t.Fatalf("offered=%+v err=%v", offered.State, err)
+				}
+				stored, err := prestigecore.DecodeStoredOfferTerms(offered.State.OfferState.TermsJSON)
+				if err != nil {
+					t.Fatal(err)
+				}
+				offerID := offered.State.OfferState.OfferID
+				offered.State.LifetimeValue = decimal.New(27, 12)
+				progressed, err := store.Write(ctx, companyRevision.StreamID, offered.Revision.Number, hash,
+					offered.State, save.WriteContext{Cause: "prestige.ac2.progress"})
+				if err != nil || progressed.Number != 4 {
+					t.Fatalf("progressed=%+v err=%v", progressed, err)
+				}
+				acceptID := fmt.Sprintf("01985555-33%02d-7000-8000-%012d", index, index+1)
+				accept, _ := json.Marshal(map[string]any{"intent_id": acceptID, "kind": "accept_exit_offer",
+					"expected_revision": 4, "expected_founder_revision": founderRevision.Number, "offer_id": offerID})
+				result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, accept)
+				if err != nil || result.Replay {
+					t.Fatalf("accept=%+v err=%v", result, err)
+				}
+				loadedFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if row.expired {
+					var receipt struct {
+						Outcome   string `json:"outcome"`
+						Rejection struct {
+							Category string `json:"category"`
+						} `json:"rejection"`
+					}
+					if err := json.Unmarshal(result.Receipt, &receipt); err != nil || receipt.Outcome != "rejected" ||
+						receipt.Rejection.Category != "offer_expired" || loadedFounder.Revision.Number != founderRevision.Number {
+						t.Fatalf("expired receipt=%s founder_revision=%d want=%d err=%v",
+							result.Receipt, loadedFounder.Revision.Number, founderRevision.Number, err)
+					}
+					return
+				}
+				var payoutBytes []byte
+				if err := db.QueryRowContext(ctx, `SELECT payload->'payout' FROM events
+					WHERE stream_id=$1 AND intent_id=$2 AND kind='run_ended'`, companyRevision.StreamID, acceptID).Scan(&payoutBytes); err != nil {
+					t.Fatal(err)
+				}
+				var payout prestigecore.Terms
+				if err := json.Unmarshal(payoutBytes, &payout); err != nil {
+					t.Fatal(err)
+				}
+				if !termsDominate(payout, stored.PayoutPreview) {
+					t.Fatalf("age_ms=%d payout=%+v preview=%+v", row.ageMS, payout, stored.PayoutPreview)
+				}
+			})
+		}
+		preview := prestigecore.Terms{ReputationDelta: 5, RouteKnowledge: 3,
+			NetworkSlotUnlocks: []save.NetworkSlot{{Slot: "network.alpha", CarriedRef: "upgrade.alpha"}}}
+		forged := preview
+		forged.ReputationDelta--
+		if termsDominate(forged, preview) {
+			t.Fatal("one-below-preview payout passed the AC2 oracle")
+		}
+	})
+
+	t.Run("non-empty ledger facts survive different repeated exit kinds", func(t *testing.T) {
+		owner := "01985555-3600-7000-8000-000000000003"
+		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner,
+			now, now, now, "1e25", decimal.New(8, 12), 7)
+		founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		founder.State.ExitHistory = append(founder.State.ExitHistory, save.ExitRecord{
+			RunID: 1, ExitType: "collapse", OccurredAt: now.Add(-time.Hour), ReputationDelta: 1,
+		})
+		founder.State.LedgerFactKinds["fact.career"] = true
+		founderRevision, err = store.Write(ctx, founderRevision.StreamID, founderRevision.Number, hash,
+			founder.State, save.WriteContext{Cause: "prestige.ac3.prior_facts"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		company, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		company.State.RunSeq = 2
+		company.State.LedgerFactKinds["fact.run_two"] = true
+		companyRevision, err = store.Write(ctx, companyRevision.StreamID, companyRevision.Number, hash,
+			company.State, save.WriteContext{Cause: "prestige.ac3.first_company_facts"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 2, hash); err != nil {
+			t.Fatal(err)
+		}
+		cross := []byte(`{"intent_id":"01985555-3601-7000-8000-000000000003","kind":"cross_gate","expected_revision":2,"gate_id":"gate.t7_to_t8","route_id":null}`)
+		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, cross); err != nil || result.Replay {
+			t.Fatalf("cross=%+v err=%v", result, err)
+		}
+		offered, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil || offered.State.OfferState == nil {
+			t.Fatalf("offered=%+v err=%v", offered.State, err)
+		}
+		accept, _ := json.Marshal(map[string]any{"intent_id": "01985555-3602-7000-8000-000000000003",
+			"kind": "accept_exit_offer", "expected_revision": offered.Revision.Number,
+			"expected_founder_revision": founderRevision.Number, "offer_id": offered.State.OfferState.OfferID})
+		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, accept); err != nil || result.Replay {
+			t.Fatalf("accept=%+v err=%v", result, err)
+		}
+		founder, err = store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil || !exactFactSet(founder.State.LedgerFactKinds, "fact.career", "fact.run_two") {
+			t.Fatalf("facts after offer Exit=%v err=%v", founder.State.LedgerFactKinds, err)
+		}
+		company, err = store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil || company.State.RunSeq != 3 {
+			t.Fatalf("company after offer Exit=%+v err=%v", company.State, err)
+		}
+		company.State.LedgerFactKinds["fact.run_three"] = true
+		company.State.Tier = 1
+		companyRevision, err = store.Write(ctx, companyRevision.StreamID, company.Revision.Number, hash,
+			company.State, save.WriteContext{Cause: "prestige.ac3.second_company_facts"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		windDown := []byte(fmt.Sprintf(`{"intent_id":"01985555-3603-7000-8000-000000000003","kind":"wind_down","expected_revision":%d,"expected_founder_revision":%d}`,
+			companyRevision.Number, founder.Revision.Number))
+		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, windDown); err != nil || result.Replay {
+			t.Fatalf("pending-event wind down=%+v err=%v", result, err)
+		}
+		founder, err = store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil || !exactFactSet(founder.State.LedgerFactKinds, "fact.career", "fact.run_two", "fact.run_three") ||
+			len(founder.State.ExitHistory) != 3 || founder.State.ExitHistory[1].ExitType == founder.State.ExitHistory[2].ExitType {
+			t.Fatalf("facts/history after repeated Exits facts=%v history=%+v err=%v",
+				founder.State.LedgerFactKinds, founder.State.ExitHistory, err)
+		}
+		forged := map[string]bool{"fact.career": true, "fact.run_two": true}
+		if exactFactSet(forged, "fact.career", "fact.run_two", "fact.run_three") {
+			t.Fatal("missing second-run fact passed the cumulative ledger oracle")
+		}
+	})
+
 	t.Run("offers wait for scripted first exit", func(t *testing.T) {
 		owner := "01985555-3500-7000-8000-000000000003"
 		_, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now, now, "1e25", decimal.New(8, 12), 7)
@@ -591,6 +781,182 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	})
 }
 
+func TestPrestigeWindDownEligibleStateMatrixIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams RESTART IDENTITY CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	bundle := activeContentBundle(t)
+	seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
+	resolver := integrationCatalogs{
+		economy:  map[string]*economy.Catalog{bundle.ConstantsHash: bundle.Economy},
+		routes:   map[string]*routes.Catalog{bundle.ConstantsHash: bundle.Routes},
+		prestige: map[string]*prestigecore.Policy{bundle.ConstantsHash: bundle.Prestige},
+		factions: map[string]*faction.Catalog{bundle.ConstantsHash: bundle.Faction},
+	}
+	store, err := save.NewStore(db, resolver, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	minigames, err := minigame.NewRepository(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	commonsCatalogs := commons.CatalogSet{bundle.ConstantsHash: bundle.Commons.(commonsbinding.ReplayPolicy).Catalog}
+	service, err := NewService(store, resolver, FrozenContributionProvider{DB: db}, nil, nil,
+		WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundle.ConstantsHash),
+		WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}),
+		WithGuildSettlements(emptyGuildSettlements{}), WithMinigameActivity(minigames),
+		WithCompactPolicies(commonsCatalogs), WithCommonsWeightResolver(integrationWeight(1_000_000)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 8, 21, 17, 0, 0, 0, time.UTC)
+	type matrixRow struct {
+		name     string
+		tier     int64
+		eligible bool
+		prepare  func(string, *save.State, *save.State)
+	}
+	rows := []matrixRow{
+		{name: "plain", tier: 1, eligible: true},
+		{name: "pending_opportunity", tier: 1, eligible: true, prepare: func(owner string, _ *save.State, company *save.State) {
+			preparePendingOpportunityForExit(t, bundle, owner, company, now)
+		}},
+		{name: "active_buff", tier: 1, eligible: true, prepare: func(owner string, _ *save.State, company *save.State) {
+			preparePendingOpportunityForExit(t, bundle, owner, company, now)
+			attended := int64((20 * time.Minute) / time.Millisecond)
+			company.ActiveBuffs = append(company.ActiveBuffs, save.ActiveBuff{
+				BuffInstanceID: bundle.Opportunities.BuffID(owner, company.RunSeq, 0, attended),
+				EffectRowID:    "active.production", ActivatedAttendedMS: attended - 1_000,
+				ExpiresAttendedMS: attended + 5_000,
+			})
+		}},
+		{name: "incorporated", tier: 1, eligible: true, prepare: func(_ string, _ *save.State, company *save.State) {
+			company.FactionID = "enterprise"
+			company.IncorporatedAt = now.Add(-time.Minute)
+			company.StockUnits = 10
+		}},
+		{name: "live_offer", tier: 1, eligible: true, prepare: func(owner string, founder, company *save.State) {
+			terms, termsErr := prestigecore.ComputeTerms(company, founder, bundle.Prestige, "acquisition")
+			if termsErr != nil {
+				t.Fatal(termsErr)
+			}
+			termsJSON, marshalErr := json.Marshal(prestigecore.StoredOfferTerms{
+				PayoutPreview: terms, MarketModifierPPM: 1_000_000,
+			})
+			if marshalErr != nil {
+				t.Fatal(marshalErr)
+			}
+			company.OfferState = &save.ExitOfferState{OfferID: prestigecore.OfferID(owner, company.RunSeq, company.Tier, 0, now),
+				ExitType: "acquisition", TermsJSON: termsJSON, SpawnedAt: now, ExpiresAt: now.Add(time.Minute)}
+		}},
+		{name: "tier_zero_control", tier: 0, eligible: false},
+	}
+	for index, row := range rows {
+		t.Run(row.name, func(t *testing.T) {
+			owner := fmt.Sprintf("01985555-8%03d-7000-8000-%012d", index, index+1)
+			founder := initialPrestigeWitnessState(t, bundle.Economy, economy.ScopeFounder, now)
+			company := initialPrestigeWitnessState(t, bundle.Economy, economy.ScopeCompany, now)
+			initializer := FounderInitializer{Catalogs: ReplayCatalogSet{bundle.ConstantsHash: bundle}}
+			frozen, err := initializer.InitializeNewFounder(bundle.ConstantsHash, owner, now, founder, company)
+			if err != nil {
+				t.Fatal(err)
+			}
+			founder.ExitHistory = append(founder.ExitHistory, save.ExitRecord{
+				RunID: 1, ExitType: "collapse", OccurredAt: now.Add(-time.Hour), ReputationDelta: 1,
+			})
+			company.RunSeq = 2
+			company.Tier = row.tier
+			company.RunStartedAt = now
+			company.EvaluatedThrough = now
+			company.ManualTokenRefilledAt = now
+			if row.prepare != nil {
+				row.prepare(owner, founder, company)
+			}
+			founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder,
+				OwnerID: owner, Scope: economy.ScopeFounder}, bundle.ConstantsHash, founder,
+				save.WriteContext{Cause: "prestige.ac5.matrix"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			companyRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder,
+				OwnerID: owner, Scope: economy.ScopeCompany}, bundle.ConstantsHash, company,
+				save.WriteContext{Cause: "prestige.ac5.matrix"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			pinTx, err := db.BeginTx(ctx, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			genesis, err := save.EncodeState(company)
+			if err == nil {
+				_, err = save.PinRunWithGenesisTx(ctx, pinTx, companyRevision.StreamID, owner, 2,
+					bundle.ConstantsHash, companyRevision.Version, genesis)
+			}
+			if err == nil {
+				err = save.InsertRunFrozenContributionsTx(ctx, pinTx, companyRevision.StreamID, 2, frozen)
+			}
+			if err == nil {
+				err = pinTx.Commit()
+			} else {
+				_ = pinTx.Rollback()
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			intentID := fmt.Sprintf("01985555-9%03d-7000-8000-%012d", index, index+1)
+			request := []byte(fmt.Sprintf(`{"intent_id":%q,"kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`, intentID))
+			result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
+			if err != nil || result.Replay {
+				t.Fatalf("result=%+v err=%v", result, err)
+			}
+			loadedFounder, founderErr := store.LoadLatest(ctx, founderRevision.StreamID)
+			loadedCompany, companyErr := store.LoadLatest(ctx, companyRevision.StreamID)
+			if founderErr != nil || companyErr != nil {
+				t.Fatalf("founder_err=%v company_err=%v", founderErr, companyErr)
+			}
+			var receipt struct {
+				Outcome   string `json:"outcome"`
+				Rejection struct {
+					Category string `json:"category"`
+					Detail   string `json:"detail"`
+				} `json:"rejection"`
+			}
+			if err := json.Unmarshal(result.Receipt, &receipt); err != nil {
+				t.Fatal(err)
+			}
+			if row.eligible {
+				if receipt.Outcome != "applied" || loadedFounder.Revision.Number != 2 ||
+					loadedCompany.Revision.Number != 3 || loadedCompany.State.RunSeq != 3 {
+					t.Fatalf("eligible row receipt=%s founder=%+v company=%+v",
+						result.Receipt, loadedFounder, loadedCompany)
+				}
+				return
+			}
+			if receipt.Outcome != "rejected" || receipt.Rejection.Category != "not_eligible" ||
+				receipt.Rejection.Detail != "tier" || loadedFounder.Revision.Number != 1 ||
+				loadedCompany.Revision.Number != 1 || len(loadedFounder.State.ExitHistory) != 1 {
+				t.Fatalf("ineligible control receipt=%s founder=%+v company=%+v",
+					result.Receipt, loadedFounder, loadedCompany)
+			}
+		})
+	}
+}
+
 func createPrestigeStreams(t *testing.T, ctx context.Context, store *save.Store, catalog *economy.Catalog, hash, owner string, now, started, evaluated time.Time, cash string, lifetime decimal.Decimal, tier int64) (save.Revision, save.Revision) {
 	t.Helper()
 	founderLedger, err := economy.NewLedger(catalog, economy.ScopeFounder)
@@ -617,4 +983,87 @@ func createPrestigeStreams(t *testing.T, ctx context.Context, store *save.Store,
 		t.Fatal(err)
 	}
 	return founderRevision, companyRevision
+}
+
+func termsDominate(actual, preview prestigecore.Terms) bool {
+	if actual.ReputationDelta < preview.ReputationDelta || actual.RouteKnowledge < preview.RouteKnowledge {
+		return false
+	}
+	actualSlots := make(map[string]string, len(actual.NetworkSlotUnlocks))
+	for _, slot := range actual.NetworkSlotUnlocks {
+		actualSlots[slot.Slot] = slot.CarriedRef
+	}
+	for _, slot := range preview.NetworkSlotUnlocks {
+		if actualSlots[slot.Slot] != slot.CarriedRef {
+			return false
+		}
+	}
+	return true
+}
+
+func exactFactSet(actual map[string]bool, expected ...string) bool {
+	if len(actual) != len(expected) {
+		return false
+	}
+	for _, fact := range expected {
+		if !actual[fact] {
+			return false
+		}
+	}
+	return true
+}
+
+func preparePendingOpportunityForExit(t *testing.T, bundle CatalogBundle, founderID string, state *save.State, now time.Time) {
+	t.Helper()
+	if bundle.Opportunities == nil {
+		t.Fatal("active-play catalog unavailable")
+	}
+	state.RunStartedAt = now.Add(-20 * time.Minute)
+	state.EvaluatedThrough = now
+	state.ManualTokenRefilledAt = now
+	attended := int64((20 * time.Minute) / time.Millisecond)
+	probe, err := bundle.Opportunities.Spawn(founderID, state.RunSeq, 0, 0)
+	if err != nil || probe.SampledIntervalMS > attended {
+		t.Fatalf("pending-event probe=%+v err=%v", probe, err)
+	}
+	pending, err := bundle.Opportunities.Spawn(founderID, state.RunSeq, 0, attended-probe.SampledIntervalMS)
+	if err != nil || pending.SpawnedAttendedMS != attended {
+		t.Fatalf("pending-event spawn=%+v err=%v", pending, err)
+	}
+	state.OpportunitySpawnSeq = 1
+	state.NextOpportunityAttendedMS = 0
+	state.PendingOpportunity = &save.PendingOpportunity{OpportunityID: pending.OpportunityID,
+		SpawnedAttendedMS: pending.SpawnedAttendedMS, ExpiresAttendedMS: pending.ExpiresAttendedMS,
+		EffectRowID: pending.EffectRowID, SelectedGeneratorID: activeNullableString(pending.SelectedGenerator)}
+	if state.ActiveBuffs == nil {
+		state.ActiveBuffs = []save.ActiveBuff{}
+	}
+}
+
+func initialPrestigeWitnessState(t *testing.T, catalog *economy.Catalog, scope economy.Scope, now time.Time) *save.State {
+	t.Helper()
+	ledger, err := economy.NewLedger(catalog, scope)
+	if err != nil {
+		t.Fatal(err)
+	}
+	counts, provisioned, remainders := map[string]int64{}, map[string]int64{}, map[string]int64{}
+	for _, generator := range catalog.GeneratorClassesForScope(scope) {
+		counts[generator.ID] = 0
+		provisioned[generator.ID] = 0
+		if generator.Provision != nil {
+			remainders[generator.Provision.GeneratorID] = 0
+		}
+	}
+	state := &save.State{Ledger: ledger, GeneratorCounts: counts, GeneratorProvisioned: provisioned,
+		ProvisionRemaindersPPM: remainders, UpgradesOwned: map[string]bool{}, EvaluatedThrough: now,
+		ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
+		LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{},
+		HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.Zero,
+		OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
+	if scope == economy.ScopeCompany {
+		state.RunSeq = 1
+		state.RunStartedAt = now
+		state.ManualTokenMilli = catalog.ManualPolicy().BucketCapMilli
+	}
+	return state
 }
