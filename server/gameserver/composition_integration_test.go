@@ -1007,6 +1007,9 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 				)`, companyRevision.StreamID).Scan(&retainedExitWitness); err != nil || retainedExitWitness != 1 {
 				t.Fatalf("retained Founder Exit witness=%d err=%v", retainedExitWitness, err)
 			}
+			proveFreshFounderReceivesOwnScriptedExit(t, ctx, composition, httpServer, store, created.AccountID,
+				tokens.AccessToken, founderRevision.StreamID, founderID,
+				companyRevision.StreamID, now)
 			proveImportedFounderExitExcludedFromBoard(t, ctx, db, composition, httpServer, store, now)
 			drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancelDrain()
@@ -1035,6 +1038,73 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	default:
 	}
 	t.Fatalf("terminal run did not reach board: status=%s verdict=%s rows=%d background=%v", status, verdict, boardRows, backgroundErr)
+}
+
+func proveFreshFounderReceivesOwnScriptedExit(t *testing.T, ctx context.Context, composition *Composition,
+	httpServer *httptest.Server, store *save.Store, accountID, accessToken, oldFounderStreamID,
+	oldFounderID, oldCompanyStreamID string, now time.Time) {
+	t.Helper()
+	newFounderResponse := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/founder", accessToken, `{}`)
+	if newFounderResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("fresh Founder status=%d body=%s", newFounderResponse.StatusCode, responseBody(newFounderResponse))
+	}
+	var fresh account.Founder
+	decodeCompositionResponse(t, newFounderResponse, &fresh)
+	if fresh.ID == oldFounderID || fresh.Imported {
+		t.Fatalf("fresh Founder identity=%+v old=%s", fresh, oldFounderID)
+	}
+	oldFounder, err := store.LoadLatest(ctx, oldFounderStreamID)
+	if err != nil || oldFounder.ArchivedAt == nil || len(oldFounder.State.ExitHistory) != 1 {
+		t.Fatalf("old Founder after replacement=%+v err=%v", oldFounder, err)
+	}
+	oldCompany, err := store.LoadLatest(ctx, oldCompanyStreamID)
+	if err != nil || oldCompany.ArchivedAt == nil || oldCompany.State.RunSeq != 2 {
+		t.Fatalf("old Company after replacement=%+v err=%v", oldCompany, err)
+	}
+	activeFounder, err := composition.Accounts.ActiveFounder(ctx, accountID)
+	if err != nil || activeFounder.ID != fresh.ID {
+		t.Fatalf("active fresh Founder=%+v response=%+v err=%v", activeFounder, fresh, err)
+	}
+	activeCompany, err := composition.Accounts.ActiveCompanyState(ctx, accountID)
+	if err != nil || activeCompany.Revision != 1 {
+		t.Fatalf("fresh Company=%+v err=%v", activeCompany, err)
+	}
+	company, err := store.LoadLatest(ctx, activeCompany.StreamID)
+	if err != nil || company.State.RunSeq != 1 {
+		t.Fatalf("fresh Company state=%+v err=%v", company, err)
+	}
+	freshFounder, err := store.LoadSiblingLatest(ctx, activeCompany.StreamID, economy.ScopeFounder)
+	if err != nil || len(freshFounder.State.ExitHistory) != 0 {
+		t.Fatalf("fresh Founder inherited Exit history=%+v err=%v", freshFounder.State, err)
+	}
+	company.State.RunStartedAt = now.Add(-16 * time.Minute)
+	company.State.EvaluatedThrough = now
+	company.State.ManualTokenRefilledAt = now
+	company.State.GatesCrossed["gate.t0_to_t1"] = true
+	company.State.OpportunitySpawnSeq = 0
+	company.State.NextOpportunityAttendedMS = int64((20 * time.Minute) / time.Millisecond)
+	company.State.PendingOpportunity = nil
+	company.State.ActiveBuffs = []save.ActiveBuff{}
+	written, err := store.Write(ctx, company.Revision.StreamID, company.Revision.Number,
+		company.Revision.ConstantsHash, company.State, save.WriteContext{Cause: "prestige.ac4.fresh_founder_due"})
+	if err != nil || written.Number != 2 {
+		t.Fatalf("fresh Founder due-state write=%+v err=%v", written, err)
+	}
+	command := []byte(`{"intent_id":"01985555-5005-7000-8000-000000000505","kind":"perform_manual_batch","expected_revision":2,"action_id":"manual.click","count":1,"window_ms":1}`)
+	result, err := composition.Production.Handle(ctx, activeCompany.StreamID, production.ModeOnline, now, command)
+	if err != nil || result.Replay {
+		t.Fatalf("fresh Founder scripted command=%+v err=%v", result, err)
+	}
+	freshFounder, err = store.LoadSiblingLatest(ctx, activeCompany.StreamID, economy.ScopeFounder)
+	if err != nil || len(freshFounder.State.ExitHistory) != 1 ||
+		freshFounder.State.ExitHistory[0].ExitType != "scripted_first" {
+		t.Fatalf("fresh Founder scripted history=%+v err=%v", freshFounder.State.ExitHistory, err)
+	}
+	company, err = store.LoadLatest(ctx, activeCompany.StreamID)
+	if err != nil || company.State.RunSeq != 2 || company.Revision.Number != 4 {
+		t.Fatalf("fresh Founder post-scripted Company=%+v err=%v", company, err)
+	}
 }
 
 func proveImportedFounderExitExcludedFromBoard(t *testing.T, ctx context.Context, db *sql.DB, composition *Composition,
