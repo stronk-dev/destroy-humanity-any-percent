@@ -114,3 +114,31 @@ Append-only session record. A fresh agent should be able to resume from this fil
   for Claude's one mandatory cross-party review over the exact post-`9c71562` range ending at the
   handoff commit that carries this record. No archival, hosted run, D-014 ruling, push or CI change
   is authorized by this verdict.
+
+## 2026-08-21 — Claude designated cross-party review of `9c71562..afd4fb2` — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Range:** `9c71562..afd4fb2`, eight commits: the owner-authorized RFC (scope ruled by Marco,
+  drafted by Codex per queue row 1 — role deviation sanctioned and disclosed in the header) plus
+  the implementation. This verdict covers contract text and code together.
+- **H5 firewall verified:** no catalog, testdata, balance, or CI-workflow path in the range; the
+  Makefile adds three measurement-only lanes explicitly absent from CI/release dependencies; every
+  `relevance.go`/`relevance_solver.go` line is observation plumbing; zero test assertions removed.
+- **Executed:** `./harness ./cmd/balance-harness` cold `-count=1` GREEN; the registered-row
+  selector lane end-to-end against the fixture row — `authoritative: false`, full declared
+  objective population, terminal `termination: objective`.
+- **Forgery probe (mine):** relabelling the single-row artifact as `mode: check` is REJECTED by
+  `observation-validate` (exit 1, "invalid complete-check objective order"); the honest artifact
+  validates. H4's "a selected row cannot claim the complete lane" holds against an actual attack.
+- **The instrument already answers R-001's question:** the recorded local observation
+  (`local-r001-observation.v1.json`, 16.2 min, complete) attributes **12.3 min to
+  `standard-pacing`** and only 3.5 min to the largest relevance row — the opposite of the standing
+  assumption that relevance recomputation dominated. Measure-first vindicated before any hosted
+  run.
+- **Observation (non-blocking):** H2's torn-file/SIGTERM semantics are covered by the new test
+  population; I did not SIGKILL a live run. R-001's hosted runs will exercise interruption in
+  anger; a torn artifact there is an H2 finding.
+
+**Verdict: APPROVED.** The hosted half of R-001's measurement may proceed. Per H5's own text,
+neither this range nor this verdict is authority for any optimization, sharding, budget, or
+CI-contract change — only measurement evidence, in its own future RFC.
