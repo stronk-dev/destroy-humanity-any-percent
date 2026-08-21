@@ -1,17 +1,20 @@
 # Fiscal Quarters Foundation implementation plan
 
-RFC: `rfc/fiscal-quarters-foundation.md`
+RFC: `rfc/archive/fiscal-quarters-foundation.md`
 
-- [ ] Resolve F1-F8 and reconcile every ruling into the normative specification (rulings exist;
-  implementation proof remains pending with F9-F15).
-- [ ] Resolve implementation blockers F9-F15 and reconcile their exact persistence/wire contracts.
-- [ ] Implement the exact fiscal artifact and Founder v19 activation/save chain.
-- [ ] Implement lazy phase-preserving auto-report and deterministic manual harvest in Go and TS.
-- [ ] Implement server-priced spend targets and the ruled Company-effect boundary.
-- [ ] Add exact wire/event/replay vectors, migration corpus, cap and clock-regression boundaries.
-- [ ] Run normal root gates and obtain both full-range review gates before docs/archive.
+This is a historical completion record, not a live checkbox queue. The seven original unchecked
+rows were stale after implementation/archive and are reconciled without pretending this record
+edit performed that work:
 
-Current blocker: F9-F15. The gameplay shape is ruled, but the shipped Founder/store boundaries cannot
-yet represent a sweep that commits beside a rejected action, and frozen Founder contributions have
-no immutable run-owned storage. Exact artifact, seed, v19, wire, and Quarter-offer ownership also
-remain owner work. No Fiscal mechanic code has started.
+| Original plan row | Historical disposition |
+|---|---|
+| Resolve F1–F8 | Completed by the recorded owner rulings; F1 is reconciled in place to the later F11 rollback correction. |
+| Resolve F9–F15 | Completed by the recorded owner rulings, including frozen contributions and the Prestige scope split. |
+| Artifact + Founder v19 | Implemented in the reviewed Fiscal range; the optional production artifact remains deliberately unminted. |
+| Lazy sweep + manual harvest | Implemented in Go/TypeScript with rejection rollback and deterministic retry. |
+| Spend + Company boundary | Implemented with server-priced targets and immutable per-run contributions. |
+| Wire/replay/migration/bounds | Implemented with shared vectors and real-Postgres coverage recorded in the log. |
+| Gates + review + archive | Completed by the designated verdict and post-filter closure recorded in the log; the RFC and plan are archived. |
+
+Canonical current behavior is `docs/fiscal-quarters.md`. Historical hashes, checks, findings and
+review provenance remain in `log.md` and are not relabeled by this reconciliation.

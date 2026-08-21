@@ -2209,3 +2209,13 @@
 - Reconciled the Leaderboards plan to the archived Run Genesis successor and confirmed its
   remediation thread was already archived. Cold package, real-Postgres integration and vet lanes
   pass. Queue 2d is READY FOR DESIGNATED REVIEW; no implementer verdict, archive or push occurred.
+
+## 2026-08-21 — Fiscal frozen-authority reconciliation
+
+- Reconciled every live FQ3/F1/F11/F14 commit-under-rejection dependency and both F1/F11 ruling
+  blocks to the later accepted rollback correction already implemented and canonical in docs.
+- Converted seven stale unchecked archive-plan rows into a historical disposition table, explicitly
+  avoiding retroactive checkbox inference or a claim that this record edit performed implementation.
+- Cold `./fiscal ./production ./save` tests and focused vet pass. RP-105 and queue 2e now await only
+  the mandatory exact-range cross-party review. No product code, schema, balance, copy, verdict,
+  archive move, push or publication changed.

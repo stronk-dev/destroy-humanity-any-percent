@@ -95,10 +95,12 @@ authoritative wall timestamp (`now_wall_ms`, exactly as the attended cursor is s
   real). Every close (success/failure/auto) increments `fiscal_period_seq`, so a retry/re-open can
   never reuse a draw.
 - Elapsed `≥ guaranteed_ms`: guaranteed success, credits and re-opens.
-- Auto-report (F1): any Founder command computes `n = floor((now − opened)/auto_ms)` BEFORE its own
-  action, mints `n·credit_per_period`, and advances `opened += n·auto_ms` (never to `now` — phase
-  preserved, so an absent founder never loses matured periods); one aggregated auto-report event
-  precedes the command event.
+- Auto-report (F1/F11 correction): a Founder command computes
+  `n = floor((now − opened)/auto_ms)` before its own action. If the command applies, it mints
+  `n·credit_per_period`, advances `opened += n·auto_ms` (never to `now` — phase preserved), and
+  records one aggregated auto-report event before the command event. If the command rejects, the
+  entire transition—including the provisional sweep—rolls back and the next applied command
+  deterministically retries it.
 
 The draw is seeded from `(founder_id, fiscal_period_seq)` via SplitMix64 (F2 — there is NO reusable
 Founder RNG stream; the behavior FSM is deterministic), NEVER from `now_wall_ms` — wall time decides
@@ -206,14 +208,14 @@ Crediting all periods requires exact phase-preserving arithmetic. It is also uns
 auto-report runs before or after the triggering command, which events/receipt contain it, and what
 happens when that command rejects (the Founder boundary normally rolls all state back on rejection).
 
-**Proposed contract:** no background job. On every valid Founder command, compute
+**Resolved contract (F11 correction):** no background job. On every well-formed Founder command,
+provisionally compute
 `n=floor((now-opened)/auto_ms)` before the command-specific action, mint `n*credit_per_period`, and
 advance `opened += n*auto_ms` (never set it to `now`, so phase is preserved). Emit one aggregated
-auto-report event with count and total credit before the command event. Define whether a later
-semantic rejection commits this sweep; recommended: the compound transition is applied when
-`n>0`, with the attempted sub-action outcome represented in its receipt, because mutating under an
-ordinary rejected outcome violates the existing log contract. The special harvest intent at/after
-auto must consume the already-auto-reported result rather than double-harvest.
+auto-report event with count and total credit before an applied command's event. A semantic
+rejection restores the pre-command snapshot, persists no sweep/event/revision, and retries the same
+deterministic sweep on the next applied command. The special harvest intent at/after auto consumes
+the already-auto-reported result rather than double-harvesting.
 
 ### F2 — The claimed Founder-seeded RNG does not exist
 
@@ -322,15 +324,14 @@ TS, save codec, and artifact-boundary fixtures.
 
 All accepted (Codex's proposed contracts are sound). Full contracts + the two owner-calls (F4/F6).
 
-- **F1 — accepted (multi-period catch-up + ordering).** No background job. On every well-formed
+- **F1 — accepted and reconciled to the F11 rollback correction (multi-period catch-up + ordering).** No background job. On every well-formed
   Founder command, BEFORE the command's own action, compute `n = floor((now_wall − opened) / auto_ms)`,
   mint `n * credit_per_period`, and advance `opened += n * auto_ms` (NEVER set to `now` — phase is
-  preserved so no matured period is lost). Emit one aggregated auto-report event `{count, total_credit}`
-  ordered before the command's event. The fiscal intents are **compound transitions**: the time-based
-  auto-sweep is a valid sub-transition that commits when `n > 0`, and the triggering sub-action's
-  outcome (including a semantic rejection) is recorded in the receipt — the sweep is NOT "mutation
-  under rejection" (it is the deterministic passage-of-time mint, independent of the sub-action). A
-  manual `harvest` at/after `auto_ms` CONSUMES the auto-reported result (no double-harvest).
+  preserved so no matured period is lost). This is provisional until the ordinary command applies:
+  an applied command records one aggregated auto-report event `{count, total_credit}` before its
+  own event, while a rejected command restores the pre-command snapshot and persists nothing. The
+  next applied command retries the same sweep. A manual `harvest` at/after `auto_ms` consumes the
+  auto-reported result (no double-harvest).
 - **F2 — accepted; fixes the nonexistent-RNG error in my draft.** There is NO reusable Founder RNG
   stream (the behavior FSM is deterministic, `behavior_prng_cursor==0`). The early-harvest risk is a
   PURE FUNCTION of immutable inputs via the shared **SplitMix64**, named substream
@@ -418,24 +419,15 @@ founder ID, SHA-256, first eight bytes big-endian, xor uint64 sequence); draw =
 the byte-identical SHA-256/FNV-1a/SplitMix64/rejection-sampling sequence. Shared vectors include seq
 0, seq 1, a high safe-integer seq, and both sides of an `early_success_ppm` comparison.
 
-### F11 — A rejected sub-action cannot currently commit the ruled auto-sweep
+### F11 — Rejected commands roll back the provisional auto-sweep
 
-`save.ApplyFounderLogged` intentionally persists no state/events/revision for `IntentRejected`, and
-`ApplyFounderLogged` restores its snapshot for every non-applied outcome. F1 instead requires a
-time-based sweep to commit even when the triggering semantic action rejects. It also applies to
-every Founder command (care, route hint, minigame resolution, Exit), whose exact receipts do not
-have a place for sweep evidence. The current boundary cannot represent that result.
-
-**Owner ruling required:** define the compound envelope. Recommended: under active Fiscal v19 every
-Founder command returns one exact wrapper `{intent_id, outcome, founder_revision, fiscal_sweep,
-action}`. `fiscal_sweep` is null or `{periods, credit_before, credited, credit_after,
-opened_before_ms, opened_after_ms, seq_before, seq_after, saturated, hardcap_reason_key}`; `action`
-contains the command's existing canonical receipt. If the sweep is non-null, the outer outcome is
-`applied` and the revision commits even when `action.outcome` is `rejected`; only the automatic event
-is emitted before an applied action's events. With no sweep, existing applied/rejected semantics
-remain. A harvest after its pre-action sweep uses a closed action outcome `consumed_by_auto` and
-cannot close another period. Alternatively add rejected-with-mutation semantics to the save store,
-but that weakens a project-wide invariant and is not recommended.
+`save.ApplyFounderLogged` persists no state/events/revision for `IntentRejected`, and
+`ApplyFounderLogged` restores its snapshot for every non-applied outcome. Fiscal follows that
+project-wide invariant: the lazy sweep is evaluated before the action but commits only with an
+applied command. A rejection restores the sweep and action together, writes no compound wrapper,
+and leaves the same sweep ready for the next applied command. Applied receipts carry nullable
+`fiscal_sweep` evidence; a harvest after its own pre-action sweep uses `consumed_by_auto` and cannot
+close another period.
 
 ### F12 — There is no immutable run-owned home for frozen Founder contributions
 
@@ -482,8 +474,9 @@ not a fixture until each byte shape is unique.
 exact `{kind,now_wall_ms,period_opened_wall_ms_before,periods_swept,seq_before,draw_ppm,outcome}` with
 nullable draw only outside the risky manual window and outcome in
 `auto_reported|early_succeeded|early_failed|guaranteed|consumed_by_auto|rejected`; resolved spend is
-exact `{kind,target,resolved_cost}`. Ratify F11's wrapper first, then enumerate its action receipt and
-the two event payloads from these same fields; shared vectors compare raw state/receipt/event order.
+exact `{kind,target,resolved_cost}`. Applied command receipts carry the nullable F11-corrected
+`fiscal_sweep` arm; rejected commands retain their ordinary no-mutation receipt. The two event
+payloads derive from these same fields; shared vectors compare raw state/receipt/event order.
 
 ### F15 — Prestige requires Quarter harvest as an offer-spawn site, but no owner can mutate it
 
@@ -520,16 +513,13 @@ All accepted (Codex's proposed contracts are executable and sound). Owner-calls:
   `determinism.Substream(base, "fiscal.early_harvest.v1").Bound(1_000_000)`; the TS port is the
   byte-identical SHA-256/FNV-1a/SplitMix64/rejection-sampling sequence. Shared vectors: seq 0, seq 1, a
   high safe-int seq, and both sides of the `early_success_ppm` comparison. (This pins F2's "how".)
-- **F11 — RULED (the compound envelope).** Under active Fiscal v19 EVERY Founder command returns one
-  exact wrapper `{intent_id, outcome, founder_revision, fiscal_sweep, action}`. `fiscal_sweep` is null
-  or `{periods, credit_before, credited, credit_after, opened_before_ms, opened_after_ms, seq_before,
-  seq_after, saturated, hardcap_reason_key}`. **If the sweep is non-null the OUTER outcome is `applied`
-  and the revision commits even when `action.outcome == rejected`** — this preserves "rejected action =
-  no action state change" at the ACTION level while the time-based sweep (a valid independent
-  sub-transition) commits; it does NOT add rejected-with-mutation semantics to the save store (that
-  weakens a project-wide invariant — rejected). The automatic event emits before an applied action's
-  events. A harvest after its own pre-action sweep uses action outcome `consumed_by_auto` and closes no
-  further period. With no sweep, existing applied/rejected semantics are unchanged.
+- **F11 — RULED, superseded in place by the accepted rollback correction.** The universal compound
+  envelope and commit-under-rejection design are rejected. The sweep is provisional inside the
+  ordinary Founder transition and commits only when that command applies. A rejection restores the
+  complete pre-command snapshot and persists no state/event/revision; the same phase-preserving
+  sweep retries on the next applied command. Applied commands expose nullable `fiscal_sweep`
+  evidence and emit the automatic event before their action events. A harvest after its own
+  pre-action sweep uses `consumed_by_auto` and closes no further period.
 - **F12 — accepted (frozen contributions; NO Company save bump).** Add immutable
   `run_frozen_contributions` rows keyed `(company_stream_id, run_seq, source_id)` with
   `{slot, target, factor}` + a deferrable link to the run pin/genesis. New-Founder creation and Exit
@@ -552,9 +542,9 @@ All accepted (Codex's proposed contracts are executable and sound). Owner-calls:
   generator_id,levels}` | `{kind:"unlock",unlock_id}`. Resolved harvest exact `{kind,now_wall_ms,
   period_opened_wall_ms_before,periods_swept,seq_before,draw_ppm,outcome}` (draw nullable only outside
   the risky manual window; outcome ∈ `auto_reported|early_succeeded|early_failed|guaranteed|
-  consumed_by_auto|rejected`); resolved spend `{kind,target,resolved_cost}`. The action receipt + two
-  event payloads enumerate from these fields inside F11's wrapper; shared vectors compare raw
-  state/receipt/event-order.
+  consumed_by_auto|rejected`); resolved spend `{kind,target,resolved_cost}`. Applied receipts and the
+  two event payloads enumerate from these fields with a nullable `fiscal_sweep` arm; rejected
+  commands have no sweep. Shared vectors compare raw state/receipt/event-order.
 - **F15 — RULED (scope split; Prestige amended).** This foundation emits the immutable
   `fiscal_period_harvested.v1` FACT only; **Quarter-triggered offer-spawning is routed to a successor
   multi-stream/event-consumer RFC** (Fiscal does NOT become Exit-style multi-stream now — that's a

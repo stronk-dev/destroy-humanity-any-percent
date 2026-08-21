@@ -120,3 +120,15 @@ tracked Prestige RFC. Recommended F-1 landed in `4711f15`: both loaders reject a
 earliest-close horizon could exhaust `fiscal_period_seq` within the safe timestamp domain, with a
 shared negative fixture. Fiscal is implemented and archived; the optional artifact remains
 unminted.
+
+## 2026-08-21 — frozen body and plan reconciliation
+
+- Owner-delegated record repair reconciled FQ3/F1/F11/F14 and the F11 ruling in place to the
+  accepted rollback correction already implemented and documented: a rejected Founder command
+  persists no provisional sweep and the next applied command retries it.
+- Replaced the seven stale unchecked implementation rows with a historical disposition table. This
+  does not claim the record edit implemented Fiscal; it points to this log's existing designated
+  verdict/post-filter closure and to canonical docs. A fresh cold `./fiscal ./production ./save`
+  population and focused vet pass confirm the reconciled record still describes HEAD.
+- No product code, schema, balance, player copy, review verdict, archive move, push or publication
+  changed. The exact record-only delta still requires cross-party review.

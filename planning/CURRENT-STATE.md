@@ -54,6 +54,8 @@ The evidence trace is in
   severing-proven; AC1 exact ranking, AC3 composed crossing replay/projection and AC6
   frozen-history witnesses also discriminate. The plan/thread record is reconciled; designated
   cross-party review remains.
+- Fiscal's frozen RFC and archived plan now agree with its implemented rejection-rollback contract;
+  the record-only repair awaits mandatory cross-party review.
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.
