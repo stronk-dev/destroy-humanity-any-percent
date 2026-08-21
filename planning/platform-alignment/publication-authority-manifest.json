@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "expectedCounts": {
+    "classC": 67,
+    "publicClassC": 11,
+    "privateClassC": 56,
+    "duplicateDrafts": 3,
+    "diagnostics": 7
+  },
+  "authorityFiles": [
+    "AGENTS.md",
+    "README.md",
+    "rfc/README.md",
+    "design/BACKLOG.md",
+    "design/research/README.md",
+    "planning/platform-alignment/research-queue.md",
+    "planning/platform-alignment/decision-queue.md",
+    "planning/platform-alignment/execution-queue.md",
+    "planning/platform-alignment/publication-sensitivity-audit.md"
+  ],
+  "publicSupportingResearch": [
+    "design/research/cattery-reusables-public.md",
+    "design/research/cicd-deploy-public.md",
+    "design/research/provenance-extracts.md"
+  ],
+  "privateClassB": [
+    {
+      "path": "design/research/cattery-reusables.md",
+      "publicDerivative": "design/research/cattery-reusables-public.md",
+      "contract": "planning/platform-alignment/publication-targeted-artifacts-review.md"
+    },
+    {
+      "path": "design/research/cicd-deploy.md",
+      "publicDerivative": "design/research/cicd-deploy-public.md",
+      "contract": "planning/platform-alignment/publication-targeted-artifacts-review.md"
+    }
+  ],
+  "publicClassC": [
+    "design/research/_completeness-sweep.md",
+    "design/research/absorption-arena.md",
+    "design/research/balance-enforcement.md",
+    "design/research/board-game-mechanics.md",
+    "design/research/browser-rendering.md",
+    "design/research/economy-kernel.md",
+    "design/research/mobile-pwa.md",
+    "design/research/numeric-core.md",
+    "design/research/release-platform-audit.md",
+    "design/research/tech-stack.md",
+    "design/research/tier-relevance.md"
+  ],
+  "privateClassC": [
+    "design/research/adaptive-balancing.md",
+    "design/research/ai-authorship-meta.md",
+    "design/research/arg-mechanics.md",
+    "design/research/audio-art.md",
+    "design/research/believable-pet-personality.md",
+    "design/research/billionaires-decay.md",
+    "design/research/commons-game-theory.md",
+    "design/research/compliance-2026-refresh.md",
+    "design/research/compliance.md",
+    "design/research/conspiracy-media.md",
+    "design/research/cookie-clicker.md",
+    "design/research/cozy-relaxing-games.md",
+    "design/research/creature-battler.md",
+    "design/research/crypto-web3-satire.md",
+    "design/research/culture-boomer.md",
+    "design/research/culture-genalpha.md",
+    "design/research/culture-genx.md",
+    "design/research/culture-genz.md",
+    "design/research/culture-millennial.md",
+    "design/research/culture-pre-boomer.md",
+    "design/research/designed-sunset.md",
+    "design/research/enclave-atlas.md",
+    "design/research/endgame-grammar.md",
+    "design/research/era-1995-satire.md",
+    "design/research/events-playstyles.md",
+    "design/research/flash-era-arcade.md",
+    "design/research/formats-nostalgia.md",
+    "design/research/gaia-hyperinflation.md",
+    "design/research/gamification-satire.md",
+    "design/research/gaming-enshittification.md",
+    "design/research/healthy-engagement.md",
+    "design/research/idle-landscape.md",
+    "design/research/internet-culture.md",
+    "design/research/kol-puzzle-pirates.md",
+    "design/research/labor-organizing.md",
+    "design/research/lane-pusher-design.md",
+    "design/research/launch-distribution.md",
+    "design/research/liveservice-idle-tier.md",
+    "design/research/map-attraction.md",
+    "design/research/morality-systems.md",
+    "design/research/neopets-social-history.md",
+    "design/research/neopets-systems.md",
+    "design/research/onboarding-retention.md",
+    "design/research/pacing-science.md",
+    "design/research/player-markets.md",
+    "design/research/regulatory-capture.md",
+    "design/research/rhythm-timing-games.md",
+    "design/research/roguelike-survivor-minigames.md",
+    "design/research/run-narrative-ux.md",
+    "design/research/social-spaces.md",
+    "design/research/societal-satire.md",
+    "design/research/soul-mechanic.md",
+    "design/research/spectator-racing.md",
+    "design/research/speedrun-governance.md",
+    "design/research/tile-placement.md",
+    "design/research/wc3-custom-ecosystem.md"
+  ],
+  "duplicateDrafts": [
+    {
+      "path": "planning/coverage-map/draft-artifacts/achievements-first-content.json",
+      "canonical": "balance/achievements/first-content.json"
+    },
+    {
+      "path": "planning/coverage-map/draft-artifacts/meters-first-content.json",
+      "canonical": "balance/meters/first-content.json"
+    },
+    {
+      "path": "planning/coverage-map/draft-artifacts/pets-first-content.json",
+      "canonical": "balance/pets/first-content.json"
+    }
+  ],
+  "historicalMoves": [
+    {
+      "path": "planning/coverage-map/README.md",
+      "canonical": "planning/archive/coverage-map/README.md"
+    },
+    {
+      "path": "planning/coverage-map/fce-mint-punchlist.md",
+      "canonical": "planning/archive/coverage-map/fce-mint-punchlist.md"
+    },
+    {
+      "path": "planning/coverage-map/gap-backlog.md",
+      "canonical": "planning/archive/coverage-map/gap-backlog.md"
+    },
+    {
+      "path": "planning/coverage-map/map.md",
+      "canonical": "planning/archive/coverage-map/map.md"
+    },
+    {
+      "path": "planning/coverage-map/research-integration.md",
+      "canonical": "planning/archive/coverage-map/research-integration.md"
+    },
+    {
+      "path": "planning/coverage-map/mint-content-rows-proposal.md",
+      "canonical": "planning/archive/coverage-map/mint-content-rows-proposal.md"
+    }
+  ],
+  "diagnostics": [
+    {
+      "path": "planning/archive/t0-t1-content/relevance-report-t1.v3.diagnostic.json",
+      "canonicalRecord": "planning/archive/t0-t1-content/log.md"
+    },
+    {
+      "path": "planning/archive/t0-t1-content/relevance-report-t1.v4.diagnostic.json",
+      "canonicalRecord": "planning/archive/t0-t1-content/log.md"
+    },
+    {
+      "path": "planning/archive/t0-t1-content/relevance-report-t1.v5.diagnostic.json",
+      "canonicalRecord": "planning/archive/t0-t1-content/log.md"
+    },
+    {
+      "path": "planning/archive/t0-t1-content/relevance-report.v3.diagnostic.json",
+      "canonicalRecord": "planning/archive/t0-t1-content/log.md"
+    },
+    {
+      "path": "planning/archive/t0-t1-content/relevance-report.v4.diagnostic.json",
+      "canonicalRecord": "planning/archive/t0-t1-content/log.md"
+    },
+    {
+      "path": "planning/archive/t0-t1-content/relevance-report.v5.diagnostic.json",
+      "canonicalRecord": "planning/archive/t0-t1-content/log.md"
+    },
+    {
+      "path": "planning/platform-alignment/r001-registered.diagnostic.json",
+      "canonicalRecord": "planning/platform-alignment/r001-harness-diagnosis.md"
+    }
+  ]
+}
