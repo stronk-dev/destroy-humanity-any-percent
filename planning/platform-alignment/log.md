@@ -2152,3 +2152,11 @@
   `make test-game-ui-composed`, and `make verify-schema`. The final client rerun included the
   ten-mutation topology proof. RP-057 is closed; RP-001 and RP-056 remain open only for a
   current-head hosted verdict/timing. Nothing was pushed or deployed.
+
+## 2026-08-21 — D-014 hosted blocking verdict
+
+- Owner reported the pushed workflow successful; exact run `32518522514` at `aa27705` confirms all
+  six governed jobs green. The slowest job, server, completed in 2m57s.
+- Closed RP-001/RP-056 and promoted CI AC1/AC3 for the amended blocking population. Maintenance
+  observation and exact review-union work remain CI archival bookkeeping and do not block other
+  product lanes.

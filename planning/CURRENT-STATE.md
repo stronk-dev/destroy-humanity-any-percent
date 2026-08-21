@@ -58,7 +58,7 @@ The repository still lacks a coherent release floor:
 - no player-facing account recovery, export or deletion workflow;
 - incomplete accessibility evidence for keyboard, screen-reader, zoom/reflow and touch workflows;
 - no accepted production observability, operator, incident or complete retention contract;
-- no hosted verdict yet for the newly implemented fast/maintenance CI split; and
+- the CI blocking lane is hosted-green, while its non-blocking maintenance/archival record remains open; and
 - several active RFC bodies and canonical docs still contradict accepted rulings or current HEAD.
 
 The complete defect and decision populations are
@@ -69,10 +69,10 @@ The complete defect and decision populations are
 
 There is no unblocked product-implementation batch in the platform-alignment queue.
 
-The next CI evidence action is a current-head push/PR run followed by one manual or scheduled
-maintenance observation. The workflow split is implemented locally but cannot receive hosted
-credit until an explicitly authorized push transfers it to GitHub. Remaining product lanes require
-their named owner/ruling-author reconciliation or decisions before implementation.
+The amended blocking CI population passed hosted in run `32518522514` at `aa27705`, with the
+slowest job completing in 2m57s. Its maintenance observation and exact review union remain CI
+archival work, not a product-work blocker. Remaining product lanes require their named
+owner/ruling-author reconciliation or decisions before implementation.
 
 Do not infer release readiness from green unit tests, backend primitives or this summary. A shipped
 capability still requires its producer, consumer, current data/workflow and discriminating

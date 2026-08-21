@@ -1,9 +1,9 @@
 job	trigger_scope	timeout	command	current_hosted_verdict	capability_limit_or_defect
-ci/server	push;pull_request	10m	make verify-server-core	prior topology success_3m	current-head amended workflow pending
-ci/harness	push;pull_request	5m	make verify-harness-fast	local cold success_about_1m	current-head hosted verdict pending; exhaustive simulation intentionally excluded
-ci/client	push;pull_request	5m	make verify-client	prior topology success_under_2m	current-head amended workflow pending
-ci/browser	push;pull_request	10m	make test-browser	prior topology success_under_2m	current-head amended workflow pending
-ci/game-ui-composed	push;pull_request	10m	make test-game-ui-composed	prior topology success_under_3m	current-head amended workflow pending
-ci/schema	push;pull_request	5m	make verify-schema	prior topology success_under_1m	current-head amended workflow pending
+ci/server	push;pull_request	10m	make verify-server-core	success_2m57s_at_aa27705	blocking lane green
+ci/harness	push;pull_request	5m	make verify-harness-fast	success_1m43s_at_aa27705	exhaustive simulation intentionally excluded
+ci/client	push;pull_request	5m	make verify-client	success_1m35s_at_aa27705	blocking lane green
+ci/browser	push;pull_request	10m	make test-browser	success_1m37s_at_aa27705	blocking lane green
+ci/game-ui-composed	push;pull_request	10m	make test-game-ui-composed	success_2m08s_at_aa27705	blocking lane green
+ci/schema	push;pull_request	5m	make verify-schema	success_23s_at_aa27705	blocking lane green
 maintenance/harness-evidence	schedule;workflow_dispatch	55m	fast gate; 50m bounded harness-observe; validate; always upload	unrun	must emit complete or explicit incomplete observation; no PR block
 maintenance/numeric-maintenance	schedule;workflow_dispatch	10m	make fuzz-ci; make vectors-check	unrun in split topology	no PR block; failures remain visible maintenance evidence

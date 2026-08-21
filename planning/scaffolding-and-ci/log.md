@@ -218,3 +218,11 @@ range before any completion claim.
   the shipped cheap-probe design; the manual beam is not relabelled as a CI gate.
 - No production path, balance artifact, or kernel byte changed. This record does not substitute
   for the designated cross-party review.
+
+## 2026-08-21 — amended blocking workflow hosted-green
+
+- Push run `32518522514` executed exact HEAD `aa27705` and passed all six governed jobs.
+- Hosted durations were server 2m57s, harness 1m43s, client 1m35s, browser 1m37s,
+  game-ui-composed 2m08s, and schema 23s. The normative sub-five-minute blocking target is met.
+- This closes the hosted push/PR acceptance gap. The separate maintenance observation and exact
+  designated review union remain archival requirements, not blockers on unrelated product work.

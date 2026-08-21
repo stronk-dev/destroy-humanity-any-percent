@@ -7,7 +7,7 @@ every alignment finding is recorded in both places so a fresh clone does not los
 
 | ID | Observation | Class | Route |
 |---|---|---|---|
-| RP-001 | Current-head hosted CI never reaches a verdict; nine consecutive recent workflows were cancelled, with the latest harness killed at 30 minutes. | defect | R-001 / CI Baseline |
+| RP-001 | **CLOSED:** after nine consecutive cancellations, D-014's split produced a six-job hosted success at `aa27705`; the slowest job completed in 2m57s. | completed CI defect | run `32518522514`; maintenance observation remains separate archival evidence |
 | RP-002 | Production Docker/Caddy/Compose packaging is absent. | release defect | D-001/D-006 / Deployment |
 | RP-003 | Backup, restore, rollback, and disaster rehearsal are absent. | release defect | R-006 |
 | RP-004 | Player data export has no endpoint, schema, UI, or proof. | release defect | D-008 |
@@ -62,7 +62,7 @@ every alignment finding is recorded in both places so a fresh clone does not los
 | RP-053 | `PlayerRevisionCursor` is bound to live/recovered publications, snapshot resets, duplicate/gap handling and structured historical output. | completed safety binding | Claude designated approval `249719c`; authored historical presentation remains deferred |
 | RP-054 | Transport AC6 has a mutation-proven non-member Guild denial; owner-reconciled AC3 has a 10.50-second real-socket convergence/recovery witness with two independent severing failures. | completed acceptance repair | Claude designated approval `249719c`; write-path boundedness remains covered by its queue unit population as the verdict records |
 | RP-055 | Transport plan item 4 is obsolete, T6 still claims pre-Guild composition, the local log ends with review pending, and pre-rewrite review hashes are not reconciled into a current full-span union including later soak/composition/browser work. | normative/lifecycle and archival-review defect | author/plan reconciliation, rewrite-map translation, then tracked cross-party full-range verdict |
-| RP-056 | **CLOSED LOCALLY; HOSTED ACCEPTANCE PENDING:** D-014 and the CI RFC/plan/docs now define six fast push/PR jobs under the sub-five-minute target, with exhaustive work outside that workflow. | owner-ruling/body and lifecycle contradiction | current-head hosted latency/verdict still required before CI archival |
+| RP-056 | **CLOSED:** D-014's six fast push/PR jobs passed hosted under the sub-five-minute target at `aa27705`, with exhaustive work outside that workflow. | completed owner-ruling/body and lifecycle contradiction | maintenance artifact and review union remain CI archival bookkeeping |
 | RP-057 | **CLOSED:** scheduled/manual evidence now has its own workflow; setup-go build/test caching is disabled, and ten topology mutations prove job/trigger/cache/bound/observation enforcement. | workflow implementation/canonical contradiction | CI topology verifier and maintenance workflow dated 2026-08-21 |
 | RP-058 | CI review evidence is fragmented across active and successor logs; no tracked exact current-history range union covers the initial baseline and every workflow/Make/schema repair for archival. | archival review/provenance defect | enumerate mapped ranges and obtain one tracked cross-party closeout verdict |
 | RP-059 | **CLOSED:** Marco accepted Harness Observability at `9c71562`; implementation began at `fae04da` without amending CI budgets/topology. | implementation-authority gap | Harness Observability exact-range review |
