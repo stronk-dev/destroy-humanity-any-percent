@@ -1299,3 +1299,21 @@
 - Class-C progress is 20 of 67: five eligible, six revision-blocked, nine synthesis/private-store-
   blocked, and 47 unreviewed. No ignored source, design/voice/copy authority, publication, push,
   deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 06
+
+- Read the Boomer and Gen-Z culture notebooks completely, closing the six-file cohort theme. Both
+  require public synthesis rather than raw publication.
+- The Boomer notebook mixes living people/companies, litigation and misconduct, commercial media,
+  extensive quotations, legal judgments and exact mechanics/copy under largely topic-level
+  secondary sourcing. Its useful public content is the smaller system-level history, including the
+  within-cohort/Generation-Jones counterargument.
+- The Gen-Z notebook mixes current platform/economic/labor/mental-health claims, named living
+  people and likely minors, protected media, slang provenance and near-final copy with explicitly
+  unverified facts. Its systems-not-youth editorial rule is worth preserving; its raw evidence/copy
+  bundle is not.
+- All six cohort notebooks now route to source-linked syntheses, not the public authority set in
+  raw form. Class-C progress is 22 of 67: five eligible, six revision-blocked, 11 synthesis/private-
+  store-blocked, and 45 unreviewed.
+- No ignored source, design/voice/copy authority, publication, push, deployment or destructive
+  cleanup changed.

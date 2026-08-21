@@ -128,7 +128,10 @@ Batch 05 reviewed four generational-culture notebooks; all require public synthe
 Millennial pass first requiring the rerun its own header demands and the Gen Alpha raw dossier
 requiring a specifically restricted disposition. **Twenty of 67 are reviewed: five eligible, six
 revision-blocked, nine synthesis/private-store-blocked, and 47 unreviewed.** See
-`publication-rights-batch-01.md` through `publication-rights-batch-05.md`.
+`publication-rights-batch-01.md` through `publication-rights-batch-05.md`. Batch 06 completed the
+cohort family with `culture-boomer.md` and `culture-genz.md`; both require public synthesis. **Twenty-
+two of 67 are reviewed: five eligible, six revision-blocked, 11 synthesis/private-store-blocked,
+and 45 unreviewed.** See `publication-rights-batch-06.md`.
 
 ### Class D — generated diagnostics (7)
 
