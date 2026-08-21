@@ -2,7 +2,7 @@
 
 - **Status:** implementing
 - **Author:** Marco (drafted by Claude)
-- **Design refs:** `design/02 §3` (formula, sub-currencies, **Exit offers — designed 2026-07-28**), `design/11 §3–4` (run-end sequence, **scripted first failure, Advisor Mode**), `design/02 §6` (the Clout carry rule), `design/10 §5` (ledger persists, scores reseed)
+- **Design refs:** `design/02 §3` (formula, sub-currencies, **Exit offers — designed 2026-07-28**), `design/11 §3–4` (run-end sequence, scripted first failure, **deferred Advisor target**), `design/02 §6` (the Clout carry rule), `design/10 §5` (ledger persists, scores reseed)
 - **Depends on:** Production Engine (implemented), Save Layer (implemented — Company/Founder stream
   split is the whole trick), Gate Predicates (implemented — collapse-Exit Route Knowledge bonus),
   T0–T1 playable content, account/session bootstrap
@@ -23,7 +23,7 @@ The loop's hinge: ending a run. This RFC specifies Exit offers and Wind Down as 
 
 ### D2 — Offers are events with terms
 
-Offer events (Layer-1, `09 §2`) carry a **server-computed terms object**: `{offer_id, exit_type, expires_at, payout_preview: {reputation_levels, network_slot_unlocks, route_knowledge, clout_reach_note}}` — computed at spawn from the run's live state by the same formulas acceptance will use, so **the preview is a promise, not an estimate**; acceptance recomputes against commit-time state and pays `max(preview, recomputed)` (the player is never punished for progressing between offer and click). Spawn probability scales on tier progress and harvested Quarters (balance data). Expiry and drift per `02 §3.3`.
+Offer events (Layer-1, `09 §2`) carry a **server-computed terms object**: `{offer_id, exit_type, expires_at_ms, payout_preview: {reputation_delta, network_slot_unlocks, route_knowledge, clout_reach_note}}` — computed at spawn from the run's live state by the same formulas acceptance will use, so **the preview is a promise, not an estimate**; acceptance recomputes against commit-time state and pays `max(preview, recomputed)` (the player is never punished for progressing between offer and click). The current spawn check runs only at Company threshold crossings and scales on tier progress (balance data). Expiry and drift follow `02 §3.3`. Quarter-harvest evaluation remains deferred to a successor that owns the required Founder-to-Company event consumer.
 
 ### D3 — The Exit transaction (atomic, one commit)
 
@@ -31,18 +31,18 @@ Offer events (Layer-1, `09 §2`) carry a **server-computed terms object**: `{off
 2. Compute `ReputationLevel = ⌊(lifetimeValue/T)^(1/3)⌋` delta; apply exit-type payout modifiers (data).
 3. Write **Founder stream** revision: Reputation, Network grants, Route Knowledge grants (incl. collapse bonus), Clout lifetime total, Soul delta, founder age advance, **the run's ledger facts** (morality entries, executed routes, exit record).
 4. **Reseed** company-facing moral scores for the next run: `clamp(90 − 0.35·Notoriety, 55, 90)` (`10 §5`).
-5. Write **Company stream**: archived-final revision (the obituary's source data), then the new run's initial revision (catalog initials + Network-carried items + Reputation starter effects).
-6. Emit `run_ended` and `run_started` events (new kinds, registered here) with the full terms object — **the run-end screen renders from the `run_ended` event alone**, so replays/verification see exactly what the player saw.
+5. Write the **Company stream's** terminal old-run revision, then the new run's initial revision (catalog initials + Network-carried items + Reputation starter effects). Save-revision retention remains bounded implementation history, not the obituary archive.
+6. Emit `run_ended` and `run_started` events (new kinds, registered here) with the full terms object. **The run-end screen renders from `run_ended`; `run_ended` plus the durable run log are the old run's source of record**, so replays/verification see exactly what the player saw.
 
 All six steps are one transaction across both streams (the Save Layer's multi-stream write; revisions advance together or not at all). A crash mid-Exit leaves the old run intact.
 
 ### D4 — The scripted first failure (`11 §3`, executable)
 
-A founder with zero career Exits reaches a **scripted collapse trigger** at run-minute ~15 (exact trigger: first threshold crossing after 15:00 of attended time — deterministic, not wall-clock-fragile). It fires `wind_down` server-side with a distinct `exit_type: scripted_first` paying full first-Exit Reputation. It is **in every category's route** (verification treats it as a fixed segment; it cannot be skipped and advantages nobody). One per founder, ever — `New Founder` archives include it.
+In the current T0–T1 curriculum, a founder with zero career Exits reaches a **scripted collapse trigger** on run 1 after the Garage gate is already crossed and attended time reaches 900,000 ms. The server evaluates that condition at the next otherwise-valid player Company command; the requested command is replaced atomically by an Exit with `exit_type: scripted_first` and full first-Exit Reputation. This is a command-boundary trigger, not a wall-clock timer or a threshold-crossing event. An earlier elective `wind_down` is also typed `scripted_first`, and offers cannot spawn before the first Exit. It is **in every category's route** (verification treats it as a fixed segment; it cannot be skipped and advantages nobody). One per founder, ever; a genuinely new Founder receives a fresh lifecycle.
 
-### D5 — Advisor Mode
+### D5 — Advisor Mode (deferred from Phase-0 preview)
 
-Founder-scoped toggle; while enabled, a `prestige`-slot contribution of `+2% × completed_runs`, capped `+50%` (balance data), and **every run it touches carries the `Assisted` variable** (Leaderboards D4 — structural, set at timer start or on first enable mid-run). The label text is normative UI copy (`11 §3`); no other mechanical effect, no nag.
+The persisted Founder field, declarative `+2% × completed_runs` multiplier capped at `+50%`, and structural `Assisted` run-event label are mechanical seams only. Owner ruling D-012 defers the player-facing mode from the Phase-0 preview: there is no accepted toggle intent or settings control, and no current player path enables it. A later accepted successor must own activation timing, the intent/control contract, and use of the already-authored label in `11 §3`; this RFC does not infer them from the stored field.
 
 ### D6 — What run 2 opens with
 
@@ -77,17 +77,15 @@ Deterministic assembly, in order: catalog initials → Network-carried items (de
 
 ### P3 — Offer state machine
 
-Spawn check runs **inside accrual evaluation** (Production D1) at threshold crossings and Quarter harvests only (deterministic sites, no timers): if no live offer and `spawn_gate(tier_progress, harvested_quarters)`
-<!-- Fiscal F15 (2026-08-06): the **Quarter-harvest spawn site** is a cross-stream trigger — Fiscal is Founder-scoped and emits the immutable `fiscal_period_harvested.v1` fact, but offer state is Company-owned. The Founder→Company bridge that converts a Quarter harvest into a Company-side offer-spawn is DEFERRED to a successor multi-stream/event-consumer RFC; until it lands, only the threshold-crossing spawn site is live. `harvested_quarters` in the gate reads the frozen/committed Founder count via that consumer, never an ambient Founder read. -->
- (balance data, integer ppm table) exceeds a draw from **the save-seeded SplitMix64 stream** (seed = founder seed ⊕ run_seq — replayable), emit `exit_offer_spawned` with the full terms object (P1 shape). Expiry is checked at evaluation sites (an expired offer nulls state and emits `exit_offer_expired` — no background jobs). **Decline = `decline_exit_offer` intent** (evented; next spawn's terms drift by the declared ppm walk). `max(preview, recomputed)` is **field-wise on integer fields** (reputation_delta, route_knowledge); Network slot unlocks are **set-union** (preview slots ∪ recomputed slots); nothing non-monotonic exists in terms.
+The current spawn check runs **inside Company accrual evaluation** (Production D1) at threshold crossings only (a deterministic site, no timer). If there is no live offer and `spawn_gate(tier_progress)` (balance data, integer ppm table) exceeds a draw from **the save-seeded SplitMix64 stream** (seed = founder seed ⊕ run_seq — replayable), emit `exit_offer_spawned` with the full terms object (P1 shape). The Quarter-harvest site is not live: Fiscal emits the Founder-scoped immutable `fiscal_period_harvested.v1` fact, while offer state is Company-owned, so a successor multi-stream/event-consumer RFC must own that bridge and its committed-count input. Expiry is checked at evaluation sites (an expired offer nulls state and emits `exit_offer_expired` — no background jobs). **Decline = `decline_exit_offer` intent** (evented; next spawn's terms drift by the declared ppm walk). `max(preview, recomputed)` is **field-wise on integer fields** (`reputation_delta`, `route_knowledge`); Network slot unlocks are **set-union** (preview slots ∪ recomputed slots); nothing non-monotonic exists in terms.
 
 ### P4 — Multi-stream atomicity (the store extension this RFC owns)
 
-New store op `ApplyExitTransaction(founderStream, companyStream, newRunInit)`: **lock order is founder-then-company (lexicographic stream-id tiebreak), both `FOR UPDATE`, one Postgres transaction**; expected-revisions for both streams in the intent envelope; idempotency record written under the **company** stream (the intent's origin); events: `run_ended` on the old company revision, `run_started` on the new, founder events on the founder revision — all in the same commit. The "new run" is **the same company stream, `run_seq+1`** (established by Gate Predicates C4) — no new stream identity, archives are revision-history. Retry = standard idempotent replay; compensation is never needed because nothing partial can commit.
+New store op `ApplyExitTransaction(founderStream, companyStream, newRunInit)`: **lock order is founder-then-company (lexicographic stream-id tiebreak), both `FOR UPDATE`, one Postgres transaction**; expected-revisions for both streams in the intent envelope; idempotency record written under the **company** stream (the intent's origin); events: `run_ended` on the old company revision, `run_started` on the new, founder events on the founder revision — all in the same commit. The "new run" is **the same company stream, `run_seq+1`** (established by Gate Predicates C4) — no new stream identity. Bounded save revisions remain recovery/concurrency history; `run_ended` plus the durable run log are the ended run's record. Retry = standard idempotent replay; compensation is never needed because nothing partial can commit.
 
 ### P5 — Scripted-first (contradiction resolved by ruling, 2026-07-29)
 
-The pacing envelope measures the **first elective Exit** (AC8 as amended). The scripted trigger is: first `threshold_crossed` event with `attended_ms ≥ 900_000` on a founder with `exit_history == []` — evaluated server-side at event emission, firing `wind_down(exit_type=scripted_first)` in the same evaluation. Attended-ms derivation is P6's.
+The pacing envelope measures the **first elective Exit** (AC8 as amended). Under the current epoch-pinned curriculum, the scripted trigger requires company `run_seq == 1`, founder `exit_history == []`, the Garage gate already crossed, and attended time `≥ 900_000` ms. It is evaluated server-side at the next otherwise-valid player Company command; that command is replaced by the atomic `scripted_first` transition. It is not emitted by the threshold-crossing event itself. Attended-ms derivation is P6's.
 
 **P5b (review ruling, 2026-07-30):** an elective `wind_down` from a founder with empty
 `exit_history` IS the scripted first failure — typed `scripted_first`, full first-exit payout,
@@ -135,7 +133,7 @@ This RFC emits every event replay needs; **the run log itself is the Leaderboard
 
 ### P8 — Unblocked-by
 
-Account & Session Bootstrap (new draft) supplies founder/session identity; T0–T1 playable content remains the only *content* dependency and gates only the *feel*, not this RFC's transaction — implementable against the Phase-0 catalog with fixture content.
+Account & Session Bootstrap (implementing) supplies founder/session identity; T0–T1 playable content supplies the current epoch-pinned scripted-failure curriculum and first-elective-Exit evidence. The transaction remains independently testable against fixture catalogs.
 ## Changelog
 
 - 2026-07-28: created (draft), immediately after the run-end design sitting it depends on.
@@ -148,3 +146,6 @@ Account & Session Bootstrap (new draft) supplies founder/session identity; T0–
   event order, decline drift is run-scoped, tier advancement is monotonic, and the first Wind Down
   remains the scripted curriculum Exit.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+- 2026-08-21: reconciled D2/D3/P3/P4/P5 to shipped contracts and current curriculum; D-012
+  explicitly defers Advisor Mode's player control from the Phase-0 preview. No mechanics or
+  player-facing copy changed.

@@ -2160,3 +2160,14 @@
 - Closed RP-001/RP-056 and promoted CI AC1/AC3 for the amended blocking population. Maintenance
   observation and exact review-union work remain CI archival bookkeeping and do not block other
   product lanes.
+
+## 2026-08-21 — Prestige authority repair and witness authorization
+
+- Owner direction delegated Prestige's blocked ruling-body reconciliation. D2–D5/P3–P5,
+  `design/11`, the implementation plan, and canonical docs now match the strict payload, durable
+  run authority, threshold-only offer hook, current command-boundary curriculum, and D-012's
+  Advisor deferral.
+- Preserved the authored Advisor label byte-for-byte and made no mechanics, balance-data, player-
+  facing copy, status, checkbox, push, publication, archival, or review claim.
+- Closed RP-034–RP-036 and promoted execution row 2b: only AC2–AC6's literal discriminating
+  witnesses and remaining plan-evidence reconciliation are READY. RP-037/RP-038 remain open.

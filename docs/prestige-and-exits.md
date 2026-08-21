@@ -11,7 +11,9 @@ Save version 9 carries the run lifecycle explicitly. Company state records tier,
 the optional live offer, run start time, server-derived offline spans, and the exact duration of
 older spans collapsed out of the bounded list. Founder state records
 Reputation, Reputation unlock strength, Network slots, lifetime Clout, Soul, age, Notoriety,
-Advisor Mode, and append-only Exit history. A pre-v7 Company backfills its missing run start from
+the mechanically reserved `advisor_mode` field, and append-only Exit history. Advisor Mode's
+player intent and settings control are deferred from the Phase-0 preview by D-012; no current
+player path enables the field. A pre-v7 Company backfills its missing run start from
 `evaluated_through` and persists `run_pre_timer=true`, so it can Exit but cannot claim a time-ranked
 record for a run that predates timer semantics. V9 encoding refuses non-canonical cursor times or
 invalid cross-scope state.
@@ -21,7 +23,7 @@ The Phase-0 Prestige policy is declarative in
 authoritative Company resource whose positive accrual advances lifetime value. Its
 `catchup_ceiling_ms` is the sole server-side attended/offline boundary used by both Prestige span
 accounting and faction stock accrual. Offer duration, spawn gates, decline drift, payout modifiers,
-collapse Route Knowledge, and Advisor constants are data, never code constants.
+collapse Route Knowledge, and the deferred Advisor seam's constants are data, never code constants.
 
 ## Exact arithmetic
 
@@ -48,14 +50,15 @@ The production intent surface adds:
 - `wind_down`, the always-open elective collapse from Tier 1 onward;
 - `file_ipo`, currently returning typed `not_eligible` until the S-1 content chain exists.
 
-Offer checks happen only at deterministic evaluation sites. Their SplitMix64 stream is seeded from
+Offer checks happen at deterministic Company threshold-crossing evaluation sites. Their SplitMix64 stream is seeded from
 the immutable Founder id and run sequence. Offers cannot spawn until Founder Exit history is
 non-empty, so the market path cannot bypass the scripted first-collapse curriculum. A spawned offer persists its server-computed terms and
 market modifier. Acceptance recomputes against commit-time state, reapplies that same modifier,
 then takes the field-wise maximum for integer rewards and the set union for Network slots. The
 preview therefore remains a promise as the run advances. Expiry and decline are events; there are
 no background timers. Decline drift counts only declines from the current `run_seq`, so a new run
-begins with a clean offer walk.
+begins with a clean offer walk. Quarter-harvest offer evaluation is not implemented; it requires a
+future Founder-to-Company event consumer rather than an ambient cross-scope read.
 
 ## Exit transaction and run facts
 
@@ -76,11 +79,13 @@ Prestige policy's catch-up ceiling is recorded using canonical integer milliseco
 fills, the oldest exact duration moves into `collapsed_offline_ms` before the span is removed;
 online gaps are never absorbed and total offline duration is invariant.
 
-The first Founder run has one scripted curriculum Exit: the first threshold crossing at or after
-900,000 attended milliseconds ends as `scripted_first`. Choosing Wind Down before that trigger is
-also typed `scripted_first`; the curriculum cannot be skipped through the always-open Exit. The
-Founder Exit history makes it once-per-Founder, while creating a New Founder provides a genuinely
-fresh lifecycle. The pacing gate measures the first later, genuinely elective Exit.
+The first Founder run has one scripted curriculum Exit. Once the Garage gate is already crossed and
+attended time reaches 900,000 milliseconds, the next otherwise-valid player Company command is
+replaced atomically by `scripted_first`; the trigger is not the threshold-crossing event itself.
+Choosing Wind Down before that boundary is also typed `scripted_first`, and offers remain blocked
+until Exit history is non-empty, so the curriculum cannot be skipped. Founder Exit history makes it
+once-per-Founder, while creating a New Founder provides a genuinely fresh lifecycle. The pacing
+gate measures the first later, genuinely elective Exit.
 
 ## New-run assembly
 

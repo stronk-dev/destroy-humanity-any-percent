@@ -9,8 +9,8 @@ not a request to improvise.
 | 1a | **HOSTED PUSH/PR PROVEN — non-blocking maintenance closeout remains** | Run `32518522514` at `aa27705` passed all six jobs; the slowest job completed in 2m57s. D-014's fast blocking topology and ten mutation controls are proven on the hosted runner. | Retain the green push evidence. One maintenance observation and the exact review union remain CI-RFC archival bookkeeping; they do not block unrelated product work. |
 | 1b | **COMPLETE — D-002 disposition and fresh-clone proof** | All 96 artifacts are classified; public derivatives/history/ledgers and 11 Class-C dossiers are tracked; 56 raw Class-C sources, three duplicates and seven diagnostics remain ignored/noncanonical. The `e44e1a6` gate rejected three forged states and passed from a fresh clone. | Retain `publication-disposition-execution-01.md` through `-08.md` and the manifest-backed local gate; future publication changes require a new bounded disposition. |
 | 2 | **COMPLETE — active lifecycle reconciliation** | Every active RFC pass is recorded through Combat Shared with RP-027–RP-074 filed. Five acceptance rows remain intentionally pending exact review/provenance; they are not unaudited. | Each checkbox is proven, remains open with a named blocker, or is split to a successor; no archival without range-union and designated verdict. |
-| 2a | **BLOCKED — author/owner action** | Reconcile Prestige D2/D3/P3/P4/P4b/D4/P5 and decide the missing Advisor Mode control owner. | Normative body matches shipped/deferred behavior and D5 has an accepted owner. |
-| 2b | **BLOCKED on 2a** | Add only Prestige AC2–AC6's missing literal witnesses, reconcile docs/plan, and hand the full span to cross-party review. | Discriminating witnesses green; exact post-rewrite range union receives a tracked designated verdict. |
+| 2a | **COMPLETE — owner-delegated reconciliation** | Prestige D2/D3/P3/P4/P4b/D4/P5 now match shipped behavior; D-012 routes Advisor's player control to a future accepted successor without changing its authored label. | Retain the reconciled RFC/design/docs/plan record; do not infer the deferred surface. |
+| 2b | **READY — accepted Prestige scope** | Add only Prestige AC2–AC6's missing literal witnesses, reconcile the remaining plan evidence, and hand the full span to cross-party review. | Discriminating witnesses green; exact post-rewrite range union receives a tracked designated verdict. |
 | 2c | **BLOCKED — Leaderboards author/owner action** | Reconcile D2/D4/D5/D6/L1 and accept ownership for the absent reader/player surfaces. | Normative body matches the six-verdict/five-category backend and deferred capability work has an accepted home. |
 | 2d | **BLOCKED on 2c** | Repair Leaderboards AC5, add AC1/AC3/AC6 literal witnesses, reconcile the stale plan/thread, and hand the complete claimed span to cross-party review. | Any-membership ranking and exact witnesses discriminate; exact post-rewrite range union receives a tracked designated verdict. |
 | 2e | **BLOCKED — Fiscal ruling/record author action** | Reconcile archived F1/F11 commit-under-rejection text to the accepted rollback correction, then reconcile the seven stale plan boxes without pretending the audit performed implementation. | Frozen normative body, plan, code/tests, and canonical docs state one rollback contract; the exact author-owned record delta receives cross-party review. |
@@ -48,7 +48,8 @@ not a request to improvise.
 - No new feature implementation from the design backlog.
 - No release/deployment, push, PR, or publication action.
 - No timeout increase, gate removal, fixture exemption, or acceptance-bound relaxation.
-- No owner-authored copy or ruling-body rewrite by an implementation agent.
+- No owner-authored copy. Ruling-body rewrites require explicit owner/ruling-author delegation;
+  Prestige 2a received that delegation on 2026-08-21 and is complete.
 - No archival based on this audit alone.
 
 ## Handoff
@@ -56,6 +57,6 @@ not a request to improvise.
 The 433-child capability, 208-key Copy, 579-unit gameplay-content, and 802-unit row-oracle evidence
 populations are complete. Q-001/Q-002/Q-003 are closed by designated approvals `34d04a5`,
 `bfd9b65`, and `249719c`; Harness Observability is closed by `96a574d`; D-002 is closed by the
-fresh-clone proof recorded in `publication-disposition-execution-08.md`. Hosted R-001 requires an
-explicitly authorized publication/execution path; all remaining queue rows require their named
-owner/ruling-author inputs. No feature implementation, release, push, or publication is inferred.
+fresh-clone proof recorded in `publication-disposition-execution-08.md`. The Prestige authority
+repair is complete and its AC2–AC6 witness-only batch is READY. No feature implementation, release,
+push, or publication is inferred.

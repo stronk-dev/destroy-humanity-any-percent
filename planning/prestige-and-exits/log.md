@@ -220,3 +220,21 @@ gate_crossed intact; decline drift scoped per run with validator-enforced run_se
 - TypeScript modifier application is exact BigInt multiplication and integer division. The shared
   mismatch vector agrees with Go at 6,755,399,441,055,741.
 - Added the expression index used by run-scoped decline counts.
+
+## 2026-08-21 — authority and canonical-body reconciliation
+
+- Owner direction delegated the blocked ruling-body reconciliation after D-012 had already
+  deferred Advisor Mode from the Phase-0 preview. No implementation authority was inferred for
+  the missing toggle, settings control, activation timing, or authored player copy.
+- Reconciled D2 to the strict `expires_at_ms` / `reputation_delta` event contract; D3/P4 to
+  `run_ended` plus the durable run log as ended-run authority; and P3 to the only live
+  threshold-crossing offer site. The deferred Quarter bridge remains successor work.
+- Reconciled D4/P5 and canonical docs to the epoch-pinned T0–T1 trigger: run 1, zero Founder Exits,
+  Garage gate already crossed, 900,000 attended ms, then replacement of the next otherwise-valid
+  player Company command. Early Wind Down remains `scripted_first` and offers remain history-gated.
+- Reconciled D5 and `design/11` around D-012 while preserving the already-authored quoted label
+  byte-for-byte. The persisted field/math/event label are explicitly mechanical seams, not a
+  shipped player capability.
+- No product code, balance data, player-facing copy, plan checkbox, RFC status, push, publication,
+  or archival changed. AC2–AC6 literal witness remediation and the cross-party archival review
+  remain open.

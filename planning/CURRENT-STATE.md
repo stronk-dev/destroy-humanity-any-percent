@@ -1,7 +1,7 @@
 # Current repository state
 
-Last reconciled: 2026-08-21 through `bb615ed`; the local CI split described below is the pending
-transactional batch.
+Last reconciled: 2026-08-21 through the hosted CI verdict and pending Prestige authority-repair
+batch.
 
 This is a navigation brief, not a second execution queue. Current authorization lives in
 [`platform-alignment/execution-queue.md`](platform-alignment/execution-queue.md), active RFC state
@@ -45,6 +45,8 @@ The evidence trace is in
   Soul docs match the current epoch (`7d21484`), the root boundary gates honor the repository-local
   Go cache (`ab05f2d`), and four completed maintenance threads moved out of the live namespace
   (`b990b91`).
+- Prestige D2–D5/P3–P5 and canonical docs now match shipped behavior; D-012 defers Advisor's player
+  control. Its AC2–AC6 witness-only remediation is the current READY product batch.
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.
@@ -67,11 +69,12 @@ The complete defect and decision populations are
 
 ## Current execution posture
 
-There is no unblocked product-implementation batch in the platform-alignment queue.
+Prestige AC2–AC6 witness-only remediation is the current unblocked product batch. It may add tests
+and checked-in fixtures only; mechanics, balance, and player copy remain outside that scope.
 
 The amended blocking CI population passed hosted in run `32518522514` at `aa27705`, with the
 slowest job completing in 2m57s. Its maintenance observation and exact review union remain CI
-archival work, not a product-work blocker. Remaining product lanes require their named
+archival work, not a product-work blocker. Other product lanes require their named
 owner/ruling-author reconciliation or decisions before implementation.
 
 Do not infer release readiness from green unit tests, backend primitives or this summary. A shipped

@@ -2,6 +2,11 @@
 
 Coordinate: product tree `190a4fa`; audit checkpoint after `79939b0`; 2026-08-20.
 
+Post-coordinate reconciliation (2026-08-21): owner-delegated edits reconciled D2–D5/P3–P5,
+`design/11`, the Prestige plan, and canonical docs to shipped behavior and D-012. RP-034–RP-036 are
+closed. The acceptance classifications below remain the frozen audit basis for READY witness batch
+2b; RP-037/RP-038 remain open.
+
 This pass re-derived the active Prestige RFC from its specification, plan, append-only log,
 current implementation, successor T0–T1 curriculum, canonical docs, tests, and historical review
 records. It did not edit product code, owner-authored RFC text, balance data, or plan checkboxes.
@@ -13,9 +18,10 @@ idempotent replay, exact Go/TypeScript arithmetic, current run-end rendering, an
 first-hour path all execute successfully. The RFC is nevertheless not archival-ready:
 
 - five acceptance criteria retain narrower witnesses than their literal requirements;
-- Advisor Mode is persisted and calculated but has no player command or settings control;
-- the normative body and canonical Prestige doc retain several superseded contracts;
-- the Quarter-to-offer bridge is explicitly deferred while P3 still names it as live; and
+- Advisor Mode's stored/mechanical seams remain, while D-012 now explicitly defers its player
+  command/settings surface from the preview;
+- the normative body and canonical Prestige doc have been reconciled after this audit coordinate;
+- the Quarter-to-offer bridge remains explicitly deferred and P3 now names only the live site; and
 - no tracked verdict supplies the explicit cross-party provenance and exact full-range union now
   required for archival.
 
@@ -97,10 +103,8 @@ claims to approve. A retrospective label may not be inferred from prose or Git a
 
 ## Smallest honest closeout order
 
-1. Ruling author reconciles D2, D3/P4/P4b, D4/P5, and P3's deferred Quarter bridge.
-2. Owner either adds an accepted Advisor toggle contract or explicitly routes D5 to a successor;
-   implementation must not invent the intent or copy.
-3. Add only the missing literal AC2–AC6 witnesses, with demonstrated failing cases.
-4. Reconcile the plan and canonical Prestige doc to the already-reviewed T0–T1 successor behavior.
-5. Obtain the mandatory tracked cross-party full-range verdict.
-6. Only then perform status/docs/plan/log/archive closeout transactionally in the reviewed range.
+1. **Complete after this coordinate:** body/docs reconciliation and D-012 successor routing.
+2. Add only the missing literal AC2–AC6 witnesses, with demonstrated failing cases.
+3. Reconcile the remaining plan evidence to the already-reviewed T0–T1 successor behavior.
+4. Obtain the mandatory tracked cross-party full-range verdict.
+5. Only then perform status/docs/plan/log/archive closeout transactionally in the reviewed range.
