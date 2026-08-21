@@ -1070,3 +1070,14 @@
   transcription from “typed 4000 required” to “recover after typed or abnormal disconnect”; bounded
   convergence and no-loss obligations are unchanged. The failure is retained as evidence rather
   than hidden or made green by weakening the player outcome.
+
+## 2026-08-21 — Q-003 ready for minimal designated review
+
+- `afb5bf0` completes owner-reconciled AC3 with a 10.50-second actual-socket stall, bounded live-or-
+  disconnect outcome, known-position reconnect, and exact final-world recovery. Refusing all newer
+  world states fails only after the full stall; restored production passes.
+- Full Q-003 client/browser/build/boundary/composed and sequential cold Postgres populations are
+  green. The exact designated range is `bfd9b65..afb5bf0`.
+- Per owner cost direction, Claude's role is restricted to the mandatory cross-party verdict over
+  that exact range. Codex retains all implementation, test execution, evidence recording and later
+  closeout work; no archive or next serial batch proceeds before the verdict.

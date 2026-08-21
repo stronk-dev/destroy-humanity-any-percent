@@ -601,3 +601,24 @@ cross-party review is not yet requested because AC3 is owner-blocked.
 - Reconciled AC3 again to accept typed or abnormal disconnect while requiring the same bounded
   reconnect/recovery and newest-authoritative-state outcome. The failed run remains evidence and
   the witness must now prove recovery after that EOF instead of treating it as an error.
+
+## 2026-08-21 — Q-003 AC3 witness complete; minimal review handoff
+
+**Recorded by:** Codex. **Review by:** Codex first-filter over `bfd9b65..afb5bf0`; mandatory
+cross-party verdict pending.
+
+- `afb5bf0` replaces the sub-second probe with an actual socket held unread for 10.50 seconds. It
+  accepts either a bounded live path ending at revision 93 or disconnect, then always reconnects
+  from a known epoch/offset and requires latest-only recovery to revision 93.
+- First run failed on EOF, exposing and removing the accidental close-frame requirement. With the
+  owner outcome restored, the exact witness passes in 10.50 seconds. Changing production latest
+  selection to accept the baseline but refuse every later world revision fails after 11.00 seconds
+  with no convergence; production bytes were restored and the witness passed again.
+- Restored cold gates: Transport 13.544 s; client 6,659 pass/15 skip; browser 20,019 pass/3 skip;
+  performance 1 pass/10 skip; typecheck, boundary and production build green; composed browser /
+  Postgres missed-receipt recovery PASS; sequential Postgres Transport 13.752 s, Account 1.488 s,
+  Gameserver 24.916 s.
+- No production byte changed in `afb5bf0`; the test exercises existing bounded queue, recovery
+  history and production browser behavior. Account rotation, snapshot v3, player copy, archive,
+  deploy and push remain untouched. Q-003 now needs only Claude's exact-range verdict; no broader
+  work is delegated to Claude.

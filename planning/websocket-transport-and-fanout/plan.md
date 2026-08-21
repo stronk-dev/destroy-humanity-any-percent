@@ -51,5 +51,6 @@ refresh authority.
 **Current Q-003 state:** D4/T4 consumer recovery and the AC6 non-member Guild negative landed at
 `c63e7e6` with cold and mutation evidence. The owner reconciled AC3 on 2026-08-21 to the standard
 player outcome: a ten-second stall has bounded backlog and converges to newest authoritative state,
-with disconnect/recovery permitted. The literal witness and its mutation remain before
-the complete Q-003 range can receive designated cross-party review.
+with disconnect/recovery permitted. `afb5bf0` adds the literal 10.50-second actual-socket witness;
+refusing every post-baseline world revision makes it fail after the full stall. All Q-003 cold gates
+are restored. The exact `bfd9b65..afb5bf0` range is ready for designated cross-party review.
