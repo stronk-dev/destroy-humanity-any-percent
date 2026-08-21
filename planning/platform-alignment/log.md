@@ -2076,3 +2076,12 @@
   publication-authority check.
 - Removed obsolete claims that D-002, the witness batches and Harness Observability remained open.
   No product behavior, RFC contract, push, publication or deployment changed.
+
+## 2026-08-21 — Copy Amendment A1 record reconciliation
+
+- Added an append-only Copy-owner coordinate to the existing designated re-review of
+  `ebb081f^..ebb081f`, whose Meters verdict explicitly closed A1-F1 while retaining a separate
+  kernel-remap blocker.
+- Closed RP-106 and execution row 2f without relabeling the original `3d8eb3a` rejection, the
+  historical Darwin verdict, or the overall mixed-scope remediation verdict.
+- No implementation, copy, RFC contract, review verdict, push, publication or deployment changed.

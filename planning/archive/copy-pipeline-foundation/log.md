@@ -297,3 +297,21 @@ as narrow as the RFC claims.
 absence before permitting a denylist retarget, and add a discriminating fixture proving an absent
 non-research source cannot use the escape. Re-run `make copy-check` and the normal root verification
 gate before re-review.
+
+## 2026-08-21 — Copy-owner coordinate for Amendment A1 remediation
+
+- **Review by:** Codex (cross-party designated review at the original verdict).
+- **Recorded by:** Codex (append-only Copy-owner coordinate; not a new review).
+- **Reviewed range:** `ebb081f^..ebb081f`.
+- **Decision for Copy Amendment A1:** **A1-F1 closed.** This does not relabel the original
+  `3d8eb3a` verdict or approve the unrelated kernel-remap finding reviewed in the same remediation
+  commit.
+
+The designated re-review is recorded in
+`planning/archive/meters-foundation/log.md` under “2026-08-06 — cross-party re-review of guard
+remediation.” It verified that both denylist-history call sites restrict the unpublication escape
+to the machine-validated `design/research/*.md` source grammar, that the non-research omission
+fixture discriminates, and that `make copy-check` passes. Its overall verdict remained not approved
+only because the separate KRM-F1b kernel-remap defect survived. This coordinate makes that existing
+Copy-specific closure reachable from the Copy RFC's own resume path without changing its provenance
+or extending its reviewed range.
