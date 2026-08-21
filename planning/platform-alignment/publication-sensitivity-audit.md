@@ -170,7 +170,11 @@ requires public synthesis, ruling-author body reconciliation and current legal/e
 store-blocked, and 28 unreviewed.** See `publication-rights-batch-17.md`. Batch 18 reviewed the
 extreme-wealth and postwar-decay dossier; it requires public synthesis plus current legal/
 political/editorial review. **Forty of 67 are reviewed: five eligible, seven revision-blocked, 28
-synthesis/private-store-blocked, and 27 unreviewed.** See `publication-rights-batch-18.md`.
+synthesis/private-store-blocked, and 27 unreviewed.** See `publication-rights-batch-18.md`. Batch
+19 reviewed the map-attraction, visible-progress and persistent-world dossier; it requires public
+synthesis plus IP/editorial review. **Forty-one of 67 are reviewed: five eligible, seven revision-
+blocked, 29 synthesis/private-store-blocked, and 26 unreviewed.** See
+`publication-rights-batch-19.md`.
 
 ### Class D — generated diagnostics (7)
 

@@ -1498,3 +1498,16 @@
 - Class-C progress is 40 of 67: five eligible, seven revision-blocked, 28 synthesis/private-store-
   blocked, and 27 unreviewed. No ignored source, design/content/political/legal authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 19
+
+- Read the map-attraction, visible-progress and persistent-world dossier completely and routed it
+  to a dated public synthesis plus IP/editorial review.
+- Preserved the state-derived spectacle, spatial feedback, local/global rendering split and public-
+  artifact findings without promoting exact competitor mechanics, costs, naming, quotations,
+  current performance claims or community-content proposals.
+- Refused to adopt the dossier's near-complete Cloud Clicker trees, currencies, regions, bars,
+  world-degradation, season, copy and architecture proposal as research authority.
+- Class-C progress is 41 of 67: five eligible, seven revision-blocked, 29 synthesis/private-store-
+  blocked, and 26 unreviewed. No ignored source, design/content/IP authority, publication, push,
+  deployment or destructive cleanup changed.
