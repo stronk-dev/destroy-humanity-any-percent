@@ -7,7 +7,7 @@ not a request to improvise.
 |---|---|---|---|
 | 1 | **COMPLETE — archived and closeout-approved `edafd82`** | Harness Observability provides atomic phase/row timing, registered selection, identity/work counts, fail-loud termination and negative controls. Claude approved exact range `9c71562..afd4fb2` at `96a574d`, then approved the lawful archival move `e65184f` at `edafd82`. | Retain both exact verdicts and canonical docs; no optimization or CI change is inferred from instrumentation completion. |
 | 1a | **BLOCKED on one-off hosted code-transfer authority; permanent CI lane separately unauthorized** | Native R-001 is complete: 16m14.510s total, dominated by 12m19.441s standard pacing rather than 3m32.927s active relevance. Prefer one manual hosted-Linux run with no workflow change, but the reviewed commit is unpublished and the repository has no self-hosted/one-off runner path. It must reach a runner through an explicitly authorized push or other code transfer. A permanent Actions observation job would be a separate owner-sanctioned CI change, not Harness Observability follow-through. | The one-off artifact exposes identity, work, cost, exclusions/guards, CPU/resources and final objective; only then may D-014 choose an optimization/topology response. |
-| 1b | **IN PROGRESS — D-002 fresh-clone proof** | Policy, Class-A control-plane, two public derivatives, both historical Class-B moves, five unchanged eligible Class-C dossiers and all six bounded revisions are complete. Three duplicate drafts, seven diagnostics and 56 synthesis/private-store raw dossiers correctly remain ignored/noncanonical. | Make a fresh-clone gate reject absent named authorities and diagnostics-as-authority, then verify the clone. |
+| 1b | **COMPLETE — D-002 disposition and fresh-clone proof** | All 96 artifacts are classified; public derivatives/history/ledgers and 11 Class-C dossiers are tracked; 56 raw Class-C sources, three duplicates and seven diagnostics remain ignored/noncanonical. The `e44e1a6` gate rejected three forged states and passed from a fresh clone. | Retain `publication-disposition-execution-01.md` through `-08.md` and the manifest-backed local gate; future publication changes require a new bounded disposition. |
 | 2 | **COMPLETE — active lifecycle reconciliation** | Every active RFC pass is recorded through Combat Shared with RP-027–RP-074 filed. Five acceptance rows remain intentionally pending exact review/provenance; they are not unaudited. | Each checkbox is proven, remains open with a named blocker, or is split to a successor; no archival without range-union and designated verdict. |
 | 2a | **BLOCKED — author/owner action** | Reconcile Prestige D2/D3/P3/P4/P4b/D4/P5 and decide the missing Advisor Mode control owner. | Normative body matches shipped/deferred behavior and D5 has an accepted owner. |
 | 2b | **BLOCKED on 2a** | Add only Prestige AC2–AC6's missing literal witnesses, reconcile docs/plan, and hand the full span to cross-party review. | Discriminating witnesses green; exact post-rewrite range union receives a tracked designated verdict. |
@@ -55,7 +55,7 @@ not a request to improvise.
 
 The 433-child capability, 208-key Copy, 579-unit gameplay-content, and 802-unit row-oracle evidence
 populations are complete. Q-001/Q-002/Q-003 are closed by designated approvals `34d04a5`,
-`bfd9b65`, and `249719c`; Harness Observability is closed by `96a574d`. D-002 review remains the
-only locally executable lane. Hosted R-001 requires an explicitly authorized publication/execution
-path; all other work still requires the named owner/ruling-author input. No feature implementation,
-release, push, or publication is inferred.
+`bfd9b65`, and `249719c`; Harness Observability is closed by `96a574d`; D-002 is closed by the
+fresh-clone proof recorded in `publication-disposition-execution-08.md`. Hosted R-001 requires an
+explicitly authorized publication/execution path; all remaining queue rows require their named
+owner/ruling-author inputs. No feature implementation, release, push, or publication is inferred.

@@ -2055,3 +2055,15 @@
 - Preserved the historical body rather than laundering it into a fresh roadmap.
 - All six bounded revisions are complete. Only the fresh-clone authority gate remains for D-002;
   no product behavior, design intent, RFC contract, push, publication or deployment changed.
+
+## 2026-08-21 — D-002 disposition execution: fresh-clone authority proof
+
+- Implemented `e44e1a6`, a manifest-backed local verifier covering 11 public and 56 private
+  Class-C dossiers, two private Class-B sources/derivatives, three duplicate drafts, six historical
+  moves and seven generated diagnostics.
+- Demonstrated rejection of a forged public promotion, a diagnostic promoted without a canonical
+  record, and a truncated private-source denominator before the honest manifest passed.
+- Ran `make publication-authority-fresh-clone-check` after the implementation commit. A new clone
+  with no ignored local artifacts reran all negative controls and passed the exact committed set.
+- D-002 is complete. No ignored raw source or diagnostic became authority; no product behavior,
+  design intent, RFC contract, CI workflow, push, publication or deployment changed.

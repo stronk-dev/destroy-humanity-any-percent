@@ -26,7 +26,7 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-012 | Sunset/self-host/export promises are research intent only. | ⚠ owner decision -> D-003/R-006 |
 | RP-013 | Repository disposition was contradictory: research matrix said private while GitHub and CI governance said public. | ✓ D-002 ruled; policy bodies reconciled and first reviewed public artifacts tracked at `a7320fa` |
 | RP-014 | Current-state, README, Deployment RFC, RFC handoff, coverage map, and multiple plans disagree with HEAD. | 🔬 record defect -> platform-alignment reconciliation |
-| RP-015 | Mandated shared research/backlog artifacts were gitignored and absent from a fresh clone. | ◐ D-002 dispositions complete; reviewed policy/derivatives/history tracked, maintained ledgers landing here; Class-C revisions and fresh-clone gate remain |
+| RP-015 | Mandated shared research/backlog artifacts were gitignored and absent from a fresh clone. | ✓ D-002 complete; exact public/private authority manifest, negative controls and fresh-clone proof recorded at `publication-disposition-execution-08.md` |
 | RP-016 | Minigame Platform claims a combat-duel tenant that runtime/catalog evidence disproves. | ⚠ normative contradiction -> ruling author |
 | RP-017 | Soul recovery intent contradicts itself over restorative hobbies/Go/Arcade. | ⚠ owner-authored design contradiction |
 | RP-018 | The cold-open specimen fabricates a WR despite the later no-unvalidated-WR ruling. | ⚠ owner-authored design contradiction |

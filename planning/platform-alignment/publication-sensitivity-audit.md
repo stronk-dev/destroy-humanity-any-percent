@@ -305,9 +305,10 @@ is correct.
    the final frozen completeness sweep. All six bounded revisions are complete. The 56 synthesis/
    private-store raw inputs remain ignored/noncanonical behind their tracked per-file public
    records unless a later bounded derivative is justified.
-5. **Fresh-clone gate:** fail if a tracked authority links to an absent ignored artifact without a
-   named durable private-store contract, or if generated diagnostics are treated as canonical
-   evidence.
+5. **Fresh-clone gate — complete:** `publication-disposition-execution-08.md` records the
+   manifest-backed verifier, three demonstrated negative controls, and a passing clone of committed
+   `e44e1a6`. It fails when a tracked authority lacks a named source contract or a diagnostic lacks
+   a tracked canonical record.
 
 Batch 17's four live ledger/colophon contradictions were reconciled on disk under the owner's direct
 delegation. The raw dossier remains ignored, noncanonical and synthesis/private-store-blocked; the
