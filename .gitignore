@@ -25,10 +25,14 @@ server/coverage/
 *.log
 planning/**/*.diagnostic.json
 
-# Internal working material — local-only, never published (decided 2026-08-06;
-# see design/research/README.md). History-filtered before first push.
+# Reviewed public research and local noncanonical source (owner ruling 2026-08-21).
+# Raw dossiers remain ignored unless a file-specific disposition is executed.
 design/research/*
+!design/research/README.md
+!design/research/cattery-reusables-public.md
+!design/research/cicd-deploy-public.md
 !design/research/provenance-extracts.md
 design/BACKLOG.md
-planning/coverage-map/
+planning/coverage-map/*
+!planning/coverage-map/decisions-log.md
 planning/codex-fixes-2026-07-30.md

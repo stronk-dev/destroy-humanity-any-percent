@@ -121,3 +121,10 @@ After the two author-owned disposition texts are reconciled:
 
 No step authorizes publication, push, deployment, player-copy adoption, product implementation, or
 destructive cleanup.
+
+## Execution status — 2026-08-21
+
+The two ruling-author reconciliations and two public-safe derivatives are complete in
+`publication-disposition-execution-01.md`. The raw sibling/machine-specific dossiers remain ignored
+and noncanonical; no file was force-added. The two frozen historical moves and the three ignored
+canonical duplicates remain governed by their dispositions above.

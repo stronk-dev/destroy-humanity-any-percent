@@ -1975,3 +1975,15 @@
   private-store-blocked. No ignored source, leaderboard/product/security/privacy/moderation/
   community-safety/legal/IP authority, publication, push, deployment or destructive cleanup
   changed.
+
+## 2026-08-21 — D-002 disposition execution: policy and public derivatives
+
+- Reconciled the research README and append-only coverage-map ruling record to the owner's public-
+  repository/shared-memory posture without erasing the 2026-08-06/07 history.
+- Produced source-neutral public derivatives for the sensitive sibling-pattern and CI/deployment
+  dossiers. The latter replaces the stale cost premise with R-001's measured 974.510 s total,
+  739.441 s standard-pacing and 212.927 s active-relevance result.
+- Narrowed `.gitignore` only for those four reviewed public artifacts. Both raw dossiers and every
+  other unexecuted disposition remain ignored; nothing was force-added.
+- Sensitive-identifier and ignore-boundary checks passed. No product/design/RFC/player-copy
+  authority, push, deployment or destructive cleanup changed.

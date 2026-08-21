@@ -288,12 +288,12 @@ is correct.
 
 ## Exact blockers and next queue
 
-1. **Ruling-author reconciliation:** update the stale disposition bodies in
-   `design/research/README.md` and `planning/coverage-map/decisions-log.md`. This audit does not
-   perform that author-owned edit.
-2. **Targeted treatment:** execute the nine dispositions in
-   `publication-targeted-artifacts-review.md`: two author reconciliations, two public-safe research
-   rewrites, two frozen historical records, and three ignored redundant duplicates.
+1. **Policy reconciliation — complete:** the stale bodies in `design/research/README.md` and
+   `planning/coverage-map/decisions-log.md` now implement the 2026-08-21 ruling while preserving the
+   earlier historical sequence.
+2. **Targeted treatment — partly complete:** the two public-safe derivatives are tracked by
+   `publication-disposition-execution-01.md`; two frozen historical records remain to move, and the
+   three redundant canonical duplicates correctly remain ignored.
 3. **Control-plane tracking batch:** after steps 1–2, remove only the applicable durable paths from
    `.gitignore`, add the approved Class-A/B artifacts normally, and prove a fresh clone contains
    every artifact named by `AGENTS.md` as shared memory.
@@ -303,11 +303,8 @@ is correct.
    named durable private-store contract, or if generated diagnostics are treated as canonical
    evidence.
 
-Batch 17 adds one Class-C author-owned blocker. Record `5f1ddaa` adopts a partial on-disk
-reconciliation of `ai-authorship-meta.md`, but the ignored source is absent from its commit and four
-live sites still require the rejected ledger/colophon: Option D, G2, G3 and one §11 routing row. The
-ruling author must reconcile those sites before a derivative becomes canonical. The raw dossier's
-disposition remains public synthesis plus named private-store or verified-cleanup treatment; it is
-not approved for automatic tracking.
+Batch 17's four live ledger/colophon contradictions were reconciled on disk under the owner's direct
+delegation. The raw dossier remains ignored, noncanonical and synthesis/private-store-blocked; the
+correction does not approve automatic tracking.
 
 No step above authorizes a push, publication, deployment, content adoption, or product change.
