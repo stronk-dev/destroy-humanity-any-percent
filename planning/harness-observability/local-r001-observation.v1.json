@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "kind": "harness_observation.v1",
+  "authoritative": false,
+  "mode": "check",
+  "state": "complete",
+  "termination": "objective",
+  "started_at": "2026-08-21T11:32:57.055441Z",
+  "updated_at": "2026-08-21T11:49:41.903139Z",
+  "finished_at": "2026-08-21T11:49:41.903139Z",
+  "elapsed_ms": 1004859,
+  "current_objective": null,
+  "active_epoch_id": 8,
+  "active_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+  "objectives": [
+    {
+      "id": "repository-guards",
+      "kind": "repository_guards",
+      "state": "complete",
+      "started_at": "2026-08-21T11:32:57.077Z",
+      "updated_at": "2026-08-21T11:33:20.502963Z",
+      "finished_at": "2026-08-21T11:33:20.502963Z",
+      "elapsed_ms": 23425,
+      "identity": {
+        "registry_index": null,
+        "scenario_path": "",
+        "economy_catalog_path": "",
+        "relevance_policy_path": "",
+        "golden_report_path": "",
+        "scenario_hash": "",
+        "relevance_policy_hash": "",
+        "constants_hash": "",
+        "active": null
+      },
+      "work": {
+        "declared_runs": null,
+        "executed_runs": null,
+        "declared_transitions": null,
+        "executed_transitions": null
+      },
+      "guard_state": "clear",
+      "population_exclusions": "clear",
+      "truncation_state": "clear",
+      "instrument_excluded_ids": [],
+      "errors": []
+    },
+    {
+      "id": "standard-pacing",
+      "kind": "standard_pacing",
+      "state": "complete",
+      "started_at": "2026-08-21T11:33:20.513519Z",
+      "updated_at": "2026-08-21T11:46:08.132237Z",
+      "finished_at": "2026-08-21T11:46:08.132237Z",
+      "elapsed_ms": 767618,
+      "identity": {
+        "registry_index": null,
+        "scenario_path": "testdata/harness/scenarios/phase0-production.json",
+        "economy_catalog_path": "",
+        "relevance_policy_path": "",
+        "golden_report_path": "",
+        "scenario_hash": "sha256:10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a",
+        "relevance_policy_hash": "",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+        "active": null
+      },
+      "work": {
+        "declared_runs": 300,
+        "executed_runs": 300,
+        "declared_transitions": null,
+        "executed_transitions": null
+      },
+      "guard_state": "clear",
+      "population_exclusions": "clear",
+      "truncation_state": "clear",
+      "instrument_excluded_ids": [],
+      "errors": []
+    },
+    {
+      "id": "relevance:0:testdata/harness/relevance/scenario-epoch-7-t1-v2.json",
+      "kind": "registered_relevance",
+      "state": "complete",
+      "started_at": "2026-08-21T11:46:08.155329Z",
+      "updated_at": "2026-08-21T11:49:41.669935Z",
+      "finished_at": "2026-08-21T11:49:41.669935Z",
+      "elapsed_ms": 213514,
+      "identity": {
+        "registry_index": 0,
+        "scenario_path": "testdata/harness/relevance/scenario-epoch-7-t1-v2.json",
+        "economy_catalog_path": "balance/catalogs/phase0.json",
+        "relevance_policy_path": "balance/relevance/t0-t1.json",
+        "golden_report_path": "testdata/harness/relevance/golden-report-epoch-8-v1.json",
+        "scenario_hash": "sha256:e4d54cd0e75119f9f623d82a73db4fa33282a387f77d16fa61559489af83e7d8",
+        "relevance_policy_hash": "sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+        "active": true
+      },
+      "work": {
+        "declared_runs": 107,
+        "executed_runs": 107,
+        "declared_transitions": 1968171,
+        "executed_transitions": 1968171
+      },
+      "guard_state": "clear",
+      "population_exclusions": "clear",
+      "truncation_state": "clear",
+      "instrument_excluded_ids": [
+        "generator.answering_machine",
+        "generator.garage_rack",
+        "upgrade.continuous_feed_paper"
+      ],
+      "errors": []
+    },
+    {
+      "id": "relevance:1:testdata/harness/relevance/scenario-v1.json",
+      "kind": "registered_relevance",
+      "state": "complete",
+      "started_at": "2026-08-21T11:49:41.687356Z",
+      "updated_at": "2026-08-21T11:49:41.890896Z",
+      "finished_at": "2026-08-21T11:49:41.890896Z",
+      "elapsed_ms": 203,
+      "identity": {
+        "registry_index": 1,
+        "scenario_path": "testdata/harness/relevance/scenario-v1.json",
+        "economy_catalog_path": "testdata/harness/relevance/economy-v4.json",
+        "relevance_policy_path": "testdata/harness/relevance/fixture-policy-v1.json",
+        "golden_report_path": "testdata/harness/relevance/golden-report-v1.json",
+        "scenario_hash": "sha256:c8d977428cb86385ad91b3d291c8a7be7f690638977ba6c5659f93222a0b8cb0",
+        "relevance_policy_hash": "sha256:04b7149ad2e6d8fa9ab3da549e6cddb20c42b28fd62693ce507ab8424b0f0e56",
+        "constants_hash": "sha256:b91243997defd085624689a614d2db5d827b9d79c4f1b3f8cd8b302008eb8d6e",
+        "active": false
+      },
+      "work": {
+        "declared_runs": 23,
+        "executed_runs": 23,
+        "declared_transitions": 3324,
+        "executed_transitions": 3324
+      },
+      "guard_state": "clear",
+      "population_exclusions": "clear",
+      "truncation_state": "clear",
+      "instrument_excluded_ids": [
+        "generator.alpha"
+      ],
+      "errors": []
+    }
+  ],
+  "errors": []
+}

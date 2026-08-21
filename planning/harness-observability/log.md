@@ -32,3 +32,18 @@ Append-only session record. A fresh agent should be able to resume from this fil
 - Negative tests reject missing/running artifacts, controlled signal termination, fired guard,
   population exclusion, truncation, run/transition mismatch, severed completion and severed active
   constants identity. The full unchanged local observation remains to be run before closeout.
+
+## 2026-08-21 — complete local R-001 observation
+
+- Ran `make harness-observe HARNESS_WORKERS=12` without changing the population. The command exited
+  0 after 1,004.859s and the separately invoked strict validator accepted the retained
+  `local-r001-observation.v1.json`.
+- Exact phases: repository/history guards 23.425s; standard pacing 767.618s (300/300 runs); active
+  relevance 213.514s (107/107 runs, 1,968,171/1,968,171 transitions); fixture relevance 0.203s
+  (23/23, 3,324/3,324). All objectives completed with clear guard/population-exclusion/truncation
+  state and epoch 8's accepted constants identity.
+- The local data refutes the working cost hypothesis: standard pacing is the dominant phase. This
+  does not authorize a fix or predict hosted Linux. Hosted observation and CPU/resource comparison
+  remain R-001 work after implementation review and explicit push/CI authority.
+- Re-ran affected cold Go tests, focused vet, schema validation, the role activation control, and
+  the independent artifact validator successfully. Tracked artifacts/goldens remain unchanged.

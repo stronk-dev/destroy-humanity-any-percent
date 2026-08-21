@@ -13,15 +13,18 @@ research question; they authorize only the stated downstream action.
   current local green completion at 12 workers, workload expansion since the last hosted green,
   and that worker control excludes relevance. It also rejects scenario-only relevance runs as a
   substitute for active registry authority.
-- **Authority gate:** RP-059. The active CI RFC explicitly excludes the balance harness and the
-  relevant harness/content RFCs are archived; accept a CI amendment or harness-observability RFC
-  before adding the measurement instrument.
-- **Remaining arms:** instrumented native macOS and hosted Linux at 12 workers, split by standard
+- **Authority/instrument status:** RP-059 closed at `9c71562`; Harness Observability is implementing
+  and its instrument/tests landed at `1ad9d25`. The complete native macOS 12-worker arm is retained
+  in `planning/harness-observability/local-r001-observation.v1.json`: 16m44.859s total, including
+  12m47.618s standard pacing and 3m33.514s active relevance (107/107 runs,
+  1,968,171/1,968,171 transitions), with no population exclusion, truncation, or fired guard.
+- **Remaining arms:** hosted Linux at 12 workers, split by standard
   pacing phase and authority-preserving registry row. Run 1/4-worker comparisons only for phases
   whose dispatcher actually accepts that control; the original whole-command 1/4/12 arm would be
   structurally misleading because relevance ignores the flag.
 - **Measurements:** task cardinality, transitions, exclusions, guard exhaustion, wall time per row,
-  CPU utilization, and final objective reached.
+  CPU utilization, and final objective reached. Native wall/cardinality/objective evidence is
+  complete; hosted evidence and CPU/resource comparison remain open.
 - **Controls:** a tiny known-completing fixture; an intentionally non-completing/guard-fired fixture
   that must be reported invalid; output byte equality across worker counts.
 - **Exit:** every row identifies its cost and the full check completes with a measured margin under

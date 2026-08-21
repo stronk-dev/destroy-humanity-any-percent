@@ -1117,3 +1117,17 @@
   it may not change content, scenarios, seeds, horizons, budgets, timeouts, topology, parallelism,
   sharding, balance or acceptance bounds. Claude remains reserved for the final mandatory
   cross-party review of the eventual exact implementation range.
+
+## 2026-08-21 — R-001 instrumented local population
+
+- Accepted/started Harness Observability at `9c71562`/`fae04da`; the atomic recorder, strict
+  validator, registry-only selector, signal/error closeout, completed-run-arm progress and negative
+  controls landed at `1ad9d25`. No governed data, budget, timeout, worker, dispatch, topology,
+  gameplay or release behavior changed.
+- The unchanged complete local 12-worker command reached objective exit in 1,004.859 seconds.
+  Repository guards took 23.425s; standard pacing took 767.618s for 300/300 runs; active relevance
+  took 213.514s for 107/107 runs and 1,968,171/1,968,171 transitions; fixture relevance took 0.203s
+  for 23/23 and 3,324/3,324. Every guard/exclusion/truncation state is clear.
+- This reverses the local cost hypothesis: standard pacing is about 76.4% of the command, active
+  relevance about 21.2%. Hosted Linux may differ; its complete observation plus CPU/resource data
+  remains required before D-014, optimization, sharding, parallelism or timeout decisions.

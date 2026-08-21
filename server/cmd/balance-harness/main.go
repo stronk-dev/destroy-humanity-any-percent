@@ -15,9 +15,10 @@ import (
 var observationRecorder *harness.HarnessObservationRecorder
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, guard, candidate, content-candidate, content, relevance, relevance-registered, relevance-branches, relevance-beam, first-hour, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, guard, candidate, content-candidate, content, relevance, relevance-registered, relevance-branches, relevance-beam, observation-validate, first-hour, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	observationOutput := flag.String("observation-output", "", "explicit non-authoritative harness observation path")
+	observationInput := flag.String("observation-input", "", "completed harness observation to validate")
 	relevanceEntry := flag.String("relevance-entry", "", "exact registered relevance scenario path for relevance-registered mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
@@ -31,6 +32,19 @@ func main() {
 	seedCapital := flag.String("seed-capital", "", "measurement-only canonical seed-capital amount")
 	generatedTowers := flag.Int64("generated-towers", 0, "measurement-only generated Beige Tower count")
 	flag.Parse()
+	if *mode == "observation-validate" {
+		if *observationInput == "" {
+			fail(fmt.Errorf("-observation-input is required in observation-validate mode"))
+		}
+		observation, err := harness.LoadHarnessObservation(*observationInput)
+		if err != nil {
+			fail(err)
+		}
+		if err := harness.ValidateCompleteHarnessObservation(observation); err != nil {
+			fail(err)
+		}
+		return
+	}
 	if *observationOutput != "" {
 		if *mode != "check" && *mode != "relevance-registered" {
 			fail(fmt.Errorf("-observation-output is supported only in check and relevance-registered modes"))

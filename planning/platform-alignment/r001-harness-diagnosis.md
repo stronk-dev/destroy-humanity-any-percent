@@ -124,3 +124,30 @@ Then run the same complete population locally and on hosted Linux. Only those me
 authorize algorithmic optimization, authority-preserving parallel dispatch, CI sharding, or a
 budget change. Scenario removal, reduced seeds/horizons, and a timeout increase remain forbidden
 responses to the present evidence.
+
+## Instrumented local arm — 2026-08-21
+
+Marco accepted Harness Observability at `9c71562`; implementation began at `fae04da` and the
+instrument/tests landed at `1ad9d25`. The first complete unchanged local measurement used
+`make harness-observe HARNESS_WORKERS=12` and is retained as
+`planning/harness-observability/local-r001-observation.v1.json`. Its strict validator accepts it as
+complete, non-authoritative evidence with epoch 8 constants
+`sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
+
+| Objective | Elapsed | Governed work | State |
+|---|---:|---:|---|
+| Repository/history guards | 23.425 s | no invented cardinality | complete; clear |
+| Standard pacing | 767.618 s | 300/300 runs | complete; clear |
+| Active registered relevance | 213.514 s | 107/107 runs; 1,968,171/1,968,171 transitions | complete; clear |
+| Registered fixture relevance | 0.203 s | 23/23 runs; 3,324/3,324 transitions | complete; clear |
+| Complete command | **1,004.859 s (16m44.859s)** | every declared objective | objective termination |
+
+There were no population exclusions, truncations, or fired guards. Instrument-excluded
+purchasables remain separately disclosed and are not population exclusions.
+
+This corrects the first-wave hypothesis for native macOS: standard pacing, not serial relevance,
+dominates the local command (about 76.4% versus 21.2%). It does not prove the same cost split on the
+hosted Linux runner, and it does not explain the hosted cancellation by itself. Hosted execution,
+runner CPU/resource evidence, and the governed margin decision remain outstanding. No timeout,
+population, dispatch, parallelism, sharding, budget, or CI topology change is authorized by this
+local result.

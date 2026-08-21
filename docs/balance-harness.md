@@ -185,6 +185,9 @@ the strict validator rejects that as interrupted evidence. Missing, running, fir
 excluded, identity-mismatched, or cardinality-mismatched artifacts are never complete
 measurements.
 
+`make harness-observation-check HARNESS_OBSERVATION=/path/observation.json` runs that strict
+validator independently of the measurement process.
+
 `make harness-observe HARNESS_WORKERS=12 HARNESS_OBSERVATION=/path/observation.json` observes the
 unchanged complete check. A single governed row can be isolated with
 `make relevance-registered-observe HARNESS_OBSERVATION=/path/observation.json
