@@ -1176,3 +1176,20 @@
   `planning/coverage-map/decisions-log.md` for ruling-author reconciliation. The former private/
   never-publish posture cannot simply be edited by the implementation agent. No product, RFC body,
   owner-authored content, ignored artifact, `.gitignore`, publication, push or deployment changed.
+
+## 2026-08-21 — D-002 research publication review Batch 01
+
+- Read `numeric-core.md`, `economy-kernel.md`, `browser-rendering.md`, and
+  `balance-enforcement.md` completely. Checked private paths/hosts/credentials, quotation and
+  attribution shape, sensitive named-person material, provenance labels, authority boundaries and
+  time-sensitive claim labeling per file.
+- Approved all four as publication-eligible dated technical research without source edits. The
+  Browser Rendering support/version/benchmark claims remain explicitly July-2026 research and
+  require fresh verification before becoming current release claims; approval does not relabel
+  them current fact.
+- No private operational detail, personal identifier, long/unattributed source passage,
+  player-facing copy, or second implementation authority was found. Class-C review progress is
+  four of 67, with 63 remaining.
+- Files remain ignored pending ruling-author reconciliation and the fresh-clone gate. No product,
+  RFC/design body, owner content, ignored file, `.gitignore`, publication, push or deployment
+  changed.

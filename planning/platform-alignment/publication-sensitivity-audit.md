@@ -103,6 +103,10 @@ and the chosen correction. It may approve a file unchanged, shorten/attribute it
 synthesis, or keep only a public index plus a named private source store. “No secret regex hit” is
 not an approval criterion.
 
+**Progress:** Batch 01 reviewed `numeric-core.md`, `economy-kernel.md`, `browser-rendering.md`, and
+`balance-enforcement.md` completely and found them eligible as dated technical research without
+file edits. **Four of 67 are reviewed; 63 remain.** See `publication-rights-batch-01.md`.
+
 ### Class D — generated diagnostics (7)
 
 - six `planning/archive/t0-t1-content/*.diagnostic.json` files;
