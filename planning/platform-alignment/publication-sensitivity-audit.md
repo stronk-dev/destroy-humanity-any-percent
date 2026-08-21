@@ -300,8 +300,8 @@ is correct.
    their frozen archive.
 4. **Research dispositions:** the five eligible dossiers are tracked unchanged by
    `publication-disposition-execution-04.md`; three of six bounded revisions are tracked by
-   `publication-disposition-execution-05.md`, leaving `absorption-arena.md`,
-   `board-game-mechanics.md`, and `_completeness-sweep.md`. The 56 synthesis/
+   `publication-disposition-execution-05.md`; `publication-disposition-execution-06.md` tracks the
+   revised absorption and board-game dossiers, leaving only `_completeness-sweep.md`. The 56 synthesis/
    private-store raw inputs remain ignored/noncanonical behind their tracked per-file public
    records unless a later bounded derivative is justified.
 5. **Fresh-clone gate:** fail if a tracked authority links to an absent ignored artifact without a

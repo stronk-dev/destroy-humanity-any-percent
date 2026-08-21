@@ -2033,3 +2033,15 @@
   direct durable source identifiers, and refused identifier-less archive anecdotes as evidence.
 - Three bounded revisions plus the fresh-clone authority gate remain. No product behavior, design
   intent, RFC contract, push, publication or deployment changed.
+
+## 2026-08-21 — D-002 disposition execution: bounded revisions B
+
+- Reconciled and normally exposed the Absorption-Arena and Board-Game research dossiers under the
+  exact Batch-03 publication requirements.
+- Reframed categorical server/bot/cost conclusions as prototype hypotheses, removed stale release
+  placement, and labelled every proposed mechanic, constant, economy hook, roster entry, name and
+  copy surface non-adopted.
+- Removed unfetched board-game specifics from the factual body and narrowed both dossiers' legal
+  language from clearance claims to issue-spotting.
+- `_completeness-sweep.md` plus the fresh-clone authority gate remain. No product behavior, design
+  intent, RFC contract, push, publication or deployment changed.
