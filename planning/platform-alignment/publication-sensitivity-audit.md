@@ -164,7 +164,10 @@ store-blocked, and 30 unreviewed.** See `publication-rights-batch-15.md`. Batch 
 internet-platform, creator-economy and digital-culture dossier; it requires public synthesis plus
 current legal/safety/editorial review. **Thirty-eight of 67 are reviewed: five eligible, seven
 revision-blocked, 26 synthesis/private-store-blocked, and 29 unreviewed.** See
-`publication-rights-batch-16.md`.
+`publication-rights-batch-16.md`. Batch 17 reviewed the AI-authorship/provenance dossier; it
+requires public synthesis, ruling-author body reconciliation and current legal/editorial review.
+**Thirty-nine of 67 are reviewed: five eligible, seven revision-blocked, 27 synthesis/private-
+store-blocked, and 28 unreviewed.** See `publication-rights-batch-17.md`.
 
 ### Class D — generated diagnostics (7)
 
@@ -192,5 +195,9 @@ is correct.
 5. **Fresh-clone gate:** fail if a tracked authority links to an absent ignored artifact without a
    named durable private-store contract, or if generated diagnostics are treated as canonical
    evidence.
+
+Batch 17 adds one Class-C author-owned blocker: `ai-authorship-meta.md` appends an owner correction
+that rejects its premise and recommendation while leaving the contradictory normative body intact.
+The ruling author must reconcile that body before the dossier or a derivative becomes canonical.
 
 No step above authorizes a push, publication, deployment, content adoption, or product change.

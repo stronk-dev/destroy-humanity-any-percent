@@ -1471,3 +1471,17 @@
 - Class-C progress is 38 of 67: five eligible, seven revision-blocked, 26 synthesis/private-store-
   blocked, and 29 unreviewed. No ignored source, design/content/legal/safety authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 17
+
+- Read the AI-authorship, disclosure and provenance dossier completely and routed it to a dated
+  public synthesis plus current legal/editorial review.
+- Found an appended 2026-08-08 owner correction that rejects the dossier's premise and four-surface
+  recommendation while leaving the contradictory normative body intact. Recorded the required
+  ruling-author reconciliation without editing the ignored owner-authored file.
+- Preserved the durable disclosure/concealment, consent/compensation and provenance-method lessons
+  without promoting current platform policies, pending copyright claims, unqualified legal
+  conclusions, living-party material, quotations, exact disclosure copy or AGI mechanics.
+- Class-C progress is 39 of 67: five eligible, seven revision-blocked, 27 synthesis/private-store-
+  blocked, and 28 unreviewed. No ignored source, ruling body, design/content/legal authority,
+  publication, push, deployment or destructive cleanup changed.
