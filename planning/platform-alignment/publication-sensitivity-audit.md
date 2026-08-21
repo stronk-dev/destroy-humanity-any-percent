@@ -113,6 +113,12 @@ and the chosen correction. It may approve a file unchanged, shorten/attribute it
 synthesis, or keep only a public index plus a named private source store. “No secret regex hit” is
 not an approval criterion.
 
+**Inventory correction (Batch 27):** the 67-file denominator is reproducible, but Batch 04 counted
+already-tracked `provenance-extracts.md` while ignored `compliance-2026-refresh.md` appeared in no
+manifest. Batch 04–26 progress snapshots therefore overstate reviewed and revision-blocked counts
+by one and understate unreviewed by one. Their per-file verdicts remain valid; Batch 27 reviews the
+omitted member and restores the current count. See `publication-rights-batch-27.md`.
+
 **Progress:** Batch 01 reviewed `numeric-core.md`, `economy-kernel.md`, `browser-rendering.md`, and
 `balance-enforcement.md` completely and found them eligible as dated technical research without
 file edits. Batch 02 reviewed `tech-stack.md`, `mobile-pwa.md`, `tier-relevance.md`, and
@@ -197,7 +203,12 @@ reviewed: five eligible, seven revision-blocked, 35 synthesis/private-store-bloc
 unreviewed.** See `publication-rights-batch-25.md`. Batch 26 reviewed the persistent digital-
 community atlas; it requires public synthesis plus current child-safety/legal/IP/editorial review.
 **Forty-eight of 67 are reviewed: five eligible, seven revision-blocked, 36 synthesis/private-
-store-blocked, and 19 unreviewed.** See `publication-rights-batch-26.md`.
+store-blocked, and 19 unreviewed.** See `publication-rights-batch-26.md`. Per the Batch-27 inventory
+correction, that provisional snapshot was actually 47 reviewed: five eligible, six revision-
+blocked, 36 synthesis/private-store-blocked, and 20 unreviewed. Batch 27 reviewed the omitted 2026
+compliance-refresh dossier; it requires public synthesis plus current legal/policy/editorial
+review. **Forty-eight of 67 are now reviewed: five eligible, six revision-blocked, 37 synthesis/
+private-store-blocked, and 19 unreviewed.** See `publication-rights-batch-27.md`.
 
 ### Class D — generated diagnostics (7)
 

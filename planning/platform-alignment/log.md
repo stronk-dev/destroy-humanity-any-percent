@@ -1639,3 +1639,20 @@
 - Class-C progress is 48 of 67: five eligible, seven revision-blocked, 36 synthesis/private-store-
   blocked, and 19 unreviewed. No ignored source, design/content/child-safety/legal/IP authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 27
+
+- Found and corrected a Class-C membership substitution without changing the reproducible 67-file
+  denominator: Batch 04 counted tracked `provenance-extracts.md`, while ignored
+  `compliance-2026-refresh.md` appeared in no prior manifest. Batch 04–26 totals were therefore one
+  high for reviewed/revision-blocked and one low for unreviewed; their file verdicts remain valid.
+- Read the omitted 2026 compliance-refresh dossier completely and routed it to a dated public
+  synthesis plus current legal/policy/editorial review.
+- Preserved the depictions-versus-regulated-systems, stake/prize/transferability, mechanics-versus-
+  disclosure ratings, curated-UGC and push third-party-cost findings without promoting current EU/
+  UK law, regulator deadlines, exemptions, vendor roles, quotations or incomplete primary research.
+- Refused to adopt the ticker, item-transfer, distribution, push, compliance-document and
+  implementation recommendations as research authority.
+- Corrected Class-C progress is 48 of 67: five eligible, six revision-blocked, 37 synthesis/private-
+  store-blocked, and 19 unreviewed. No ignored source, design/content/legal authority, publication,
+  push, deployment or destructive cleanup changed.
