@@ -1243,3 +1243,22 @@
   current-authority pointers; neither may remain shaped as a live queue/content source.
 - No ignored source, owner/ruling body, product/RFC/design intent, `.gitignore`, publication, push,
   deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 03
+
+- Read four minigame-mechanics dossiers completely. `absorption-arena.md` and
+  `board-game-mechanics.md` can become public through bounded authority/provenance revisions;
+  `lane-pusher-design.md` and `rhythm-timing-games.md` need shorter public syntheses plus an
+  explicit private-store or cleanup disposition for the raw dossiers.
+- Found the shared failure mode: useful comparison research crosses into exact “ship this”
+  mechanics, constants, copy, legal conclusions and roadmap placement without an owner/RFC gate.
+  Public research must show that boundary rather than silently becoming implementation authority.
+- Refused to promote non-retained simulations as reproducible proof. The lane dossier itself says
+  its simulator sampled only part of the deck space, omitted player skill and must be reimplemented
+  before trusting constants.
+- Refused the rhythm dossier's unsupported implication that a client-stamped simulation tick is
+  inherently hard to forge, and routed its accessibility/reward tradeoff to an explicit product
+  ruling rather than adopting it from research.
+- Class-C progress is 12 of 67: four eligible, five revision-blocked, three synthesis/private-
+  store-blocked, and 55 unreviewed. No ignored source, design/product/RFC authority, publication,
+  push, deployment or destructive cleanup changed.

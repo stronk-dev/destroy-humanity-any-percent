@@ -117,9 +117,12 @@ not an approval criterion.
 `balance-enforcement.md` completely and found them eligible as dated technical research without
 file edits. Batch 02 reviewed `tech-stack.md`, `mobile-pwa.md`, `tier-relevance.md`, and
 `adaptive-balancing.md`: three require bounded revision and the raw Adaptive Balancing dossier
-requires a public synthesis or named private-source ruling. **Eight of 67 are reviewed: four
-eligible, four blocked on treatment, and 59 unreviewed.** See `publication-rights-batch-01.md` and
-`publication-rights-batch-02.md`.
+requires a public synthesis or named private-source ruling. Batch 03 reviewed four minigame
+mechanics dossiers: `absorption-arena.md` and `board-game-mechanics.md` require bounded revision;
+`lane-pusher-design.md` and `rhythm-timing-games.md` require public syntheses plus a raw-source
+disposition. **Twelve of 67 are reviewed: four eligible, five revision-blocked, three
+synthesis/private-store-blocked, and 55 unreviewed.** See `publication-rights-batch-01.md` through
+`publication-rights-batch-03.md`.
 
 ### Class D — generated diagnostics (7)
 
