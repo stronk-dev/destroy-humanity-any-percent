@@ -36,6 +36,9 @@ design/research/*
 !design/research/browser-rendering.md
 !design/research/balance-enforcement.md
 !design/research/release-platform-audit.md
+!design/research/tech-stack.md
+!design/research/mobile-pwa.md
+!design/research/tier-relevance.md
 !design/research/provenance-extracts.md
 planning/coverage-map/*
 !planning/coverage-map/decisions-log.md

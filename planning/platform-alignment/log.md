@@ -2022,3 +2022,14 @@
   recommendations remain research, not current platform/design/RFC authority.
 - Six bounded-revision dossiers and the fresh-clone authority gate remain. No raw synthesis dossier,
   product behavior, design intent, push or deployment changed.
+
+## 2026-08-21 — D-002 disposition execution: bounded revisions A
+
+- Reconciled and normally exposed the Tech Stack, Mobile/PWA and Tier-Relevance research dossiers
+  under the exact Batch-02 publication requirements.
+- Marked superseded stack/bot recommendations historical, froze mobile repository observations at
+  `ad06e03b`, and labelled all proposed mobile copy/mechanics/routing non-authoritative.
+- Replaced Tier-Relevance's substantive wiki/guide/community quotations with paraphrase, added
+  direct durable source identifiers, and refused identifier-less archive anecdotes as evidence.
+- Three bounded revisions plus the fresh-clone authority gate remain. No product behavior, design
+  intent, RFC contract, push, publication or deployment changed.
