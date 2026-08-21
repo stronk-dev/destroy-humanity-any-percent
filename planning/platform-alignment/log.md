@@ -1625,3 +1625,17 @@
 - Class-C progress is 47 of 67: five eligible, seven revision-blocked, 35 synthesis/private-store-
   blocked, and 20 unreviewed. No ignored source, design/content/IP authority, publication, push,
   deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 26
+
+- Read the persistent digital-community atlas completely and routed it to a dated public synthesis
+  plus current child-safety/legal/IP/editorial review.
+- Preserved the low-burn/open-protocol/succession, vanity-scale, diaspora/revival, currency-leakage,
+  ritual, status, governance and constrained-communication findings without promoting model-derived
+  current statuses, active brands, child-service safety incidents, breaches, scams, gambling, abuse
+  allegations, regulatory/patent claims or copied expression.
+- Refused to adopt the exact mechanics, ranked deep-dive queue, satire prompts and Cloud Clicker
+  adaptations as research authority.
+- Class-C progress is 48 of 67: five eligible, seven revision-blocked, 36 synthesis/private-store-
+  blocked, and 19 unreviewed. No ignored source, design/content/child-safety/legal/IP authority,
+  publication, push, deployment or destructive cleanup changed.
