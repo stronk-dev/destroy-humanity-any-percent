@@ -113,6 +113,29 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 - **Naming in code is mechanical, not flavored** (`generator`, `pressure_meter`, `contribution`) — flavor lives in data files/localization keys, so the satire can be retuned without refactors.
 - **Balance numbers in `design/02` are starting values**, expected to be retuned via data files — implement the formula shapes exactly, treat the constants as config.
 
+### Evidence discipline (ruled in-session after real failures — binding on both agents)
+
+1. **A check that cannot fail is not a check.** Every gate, oracle, floor, and assertion ships with
+   a demonstrated failing case. Defects have repeatedly survived because an assertion passed on
+   broken code (a `toContain` prefix satisfied by the defect; a golden vector that discriminated
+   nothing; a browser test exiting 0 while throwing uncaught errors; an oracle structurally unable
+   to falsify its own subject).
+2. **Run it, don't read it.** Reviews that bypassed a check and executed the thing caught an
+   architecture-dependent numeric divergence, a cache-masked red baseline, and a vacuous
+   acceptance oracle. Use `-count=1` for any gate claim; warm caches have hidden a red tree.
+3. **Fail loud; never degrade quietly.** A measurement that silently truncates, coasts, or
+   excludes is worse than no measurement because it looks like data. Instrument artifacts
+   (exclusions, guard exhaustion, truncation) are first-class visible fields, and a run that
+   terminates on a guard rather than its objective is an invalid measurement that must fail.
+4. **Budgets and bounds come from measurement, never from convenience.** Never raise a ceiling
+   from an incomplete run; never loosen an acceptance bound to make a gate pass.
+5. **The ruling author reconciles their own stale text.** When a review finds an owner ruling's
+   normative text stale or self-contradicting, the implementer files the finding and waits — the
+   author edits. Appending "this is superseded" beside unchanged body text does not satisfy the
+   body-reconciliation rule.
+6. **Owner-authored content is owner-authored.** Implementers may not edit ruled copy text;
+   detector-forced rewrites come back for explicit adoption.
+
 ### Routine command authority
 
 Routine local development commands are pre-authorized. Agents should run them directly and in
