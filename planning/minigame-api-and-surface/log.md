@@ -419,3 +419,72 @@ b6a3d2c is now verdict-covered with no gaps**, including the previously carved-o
 - Forbidden in this range: new mechanics, changed response semantics, surface contracts or
   components, generated-client changes, player copy, RFC-body reconciliation, status promotion,
   archival, push, or deployment. This entry authorizes no work beyond the accepted Q-002 manifest.
+
+## 2026-08-21 — Q-002 implementation and Codex first-filter
+
+- Implementation commit: `53fd4cb`. No emitted HTTP mapping, mechanic, generated OpenAPI/client
+  artifact, surface contract, or player copy changed. API Foundation gained a validation-only
+  `ExactJSON` response narrowing; Minigame operations bind their existing status/category/detail
+  outputs to exact encoder bytes while the additive generated `APIError` DTO remains unchanged.
+- AC2 now compares all 13 deterministic handler cases by exact status and full body bytes, then
+  validates those bytes against the owning operation/status literal set. The registry independently
+  rejects a schema-valid `idempotency_conflict/minigame_revision` cross-product and one appended
+  byte. Exact literals are sorted, schema-valid, deep-cloned, and covered by mutation-safe registry
+  tests.
+- AC3's real-Postgres Account route fixture now owns explicit Recovery session ID, progress token,
+  progress amount, and handler-call count. Six heartbeats transition state; the seventh exact 429
+  leaves the serialized authoritative state byte-identical; advancing the injected clock by the
+  ruled one-second refill admits exactly one seventh transition.
+- AC4 now enumerates all eight Minigame and Soul Recovery operations, their complete path-parameter
+  authority, valid requests, and valid success responses. Every request rejects type-valid Founder,
+  Company-stream, and server-clock fields; every response rejects a type-valid hidden Founder ID.
+
+Demonstrated failing mutations, all restored before `53fd4cb`:
+
+- changed `conflict/minigame_revision` to the schema-valid but illegal
+  `idempotency_conflict/minigame_revision`: the exact handler table failed on the revision row;
+- appended `!` after the otherwise correct revision response: the same row failed on full bytes;
+- bypassed `recoveryProgress.allow`: the real-Postgres Account witness received HTTP 200 on the
+  seventh heartbeat instead of the exact 429;
+- admitted a type-valid optional `founder_id` separately in Recovery Start, Progress, and shared
+  Finish request schemas: each family failed at its owning operation;
+- admitted a type-valid optional `founder_id` separately in Recovery Start, Progress, and Terminal
+  response schemas: each family failed at its owning operation.
+
+The first Start-request mutation initially stayed green because the injected value was the string
+`attacker`, which the temporary UUID-v7 field rejected on format. That false-green fixture was not
+accepted as evidence: production was restored, every private-field value was made type-valid
+(including numeric server time), and all six Recovery request/response family mutations above were
+rerun to the recorded failures.
+
+Cold restored-tree evidence:
+
+- `make test-go-core CORE_TEST_COUNT=1` — every non-harness Go package green cold.
+- `make test-go GO_PACKAGES='./publicapi ./account ./gameserver' GO_TEST_FLAGS=-count=1` and
+  `make vet` — focused packages and vet green.
+- `make test-save-integration SAVE_TEST_PACKAGES=./account SAVE_TEST_FLAGS='-run Integration'
+  SAVE_TEST_COUNT=1` — full Account Postgres population green.
+- `make test-save-integration SAVE_TEST_PACKAGES=./gameserver SAVE_TEST_FLAGS='-run Integration'
+  SAVE_TEST_COUNT=1` — final full Gameserver Postgres population green; the complete population
+  then passed three consecutive cold repetitions (`SAVE_TEST_COUNT=3`, 67.051 s).
+- `make api-check` produced no generated diff; `make typecheck` reported zero TypeScript or Svelte
+  diagnostics; `git diff --check` was clean.
+
+One earlier restored-tree Gameserver population returned a transient command-2
+`500 internal_invariant/minigame_api`. With no code change, the isolated composed lifecycle passed,
+the complete population passed, and three further complete repetitions passed. This is disclosed
+as non-reproduced flake evidence, not rewritten as an uninterrupted green history and not treated
+as proof of a product correction in this range.
+
+Codex first-filter verdict: **APPROVED** for Q-002's bounded backend witness scope.
+
+- **Review by:** Codex.
+- **Recorded by:** Codex.
+- **Reviewed range:** `eafa2d9..53fd4cb` (predeclared plan boundary plus implementation/tests/docs).
+
+The diff was read in full after the mutations were restored. No temporary edit remains, the
+generated API artifacts are byte-unchanged, and the Q-002 assertions bind the actual registry,
+mounted Account route, limiter, injected clock, and real Postgres population. This is a first
+filter only. Claude must designated-review the exact range after `34d04a5`, including this record
+commit, before Q-002 closes or Q-003 starts. It authorizes no surface claim, status promotion,
+archival, push, or deployment.
