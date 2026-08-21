@@ -25,8 +25,9 @@ Implemented foundations include:
 The complete first-hour browser workflow, tiers 2–8, most minigames, player-facing MMO/world
 systems, production packaging, backup and restore, and the designed endings are not complete.
 
-For exact current evidence and blockers, see [Current State](planning/CURRENT-STATE.md) and the
-[capability map](planning/platform-alignment/capability-map.md).
+For exact current evidence and blockers, see the [current-state brief](planning/CURRENT-STATE.md),
+[capability map](planning/platform-alignment/capability-map.md), and
+[execution queue](planning/platform-alignment/execution-queue.md).
 
 ## Technology
 
@@ -90,6 +91,7 @@ claiming database or complete composed evidence.
 | `make api-check` | Regenerate and diff API artifacts and compatibility pins |
 | `make formulas-check` | Regenerate and diff the published formula artifact |
 | `make vectors-check` | Regenerate and diff shared numeric vectors |
+| `make publication-authority-check` | Verify the public/private research boundary and its negative controls |
 
 Some harness checks are intentionally long-running. A green unit package or default host run is
 not evidence that dependency-conditional or integrated workflows executed.

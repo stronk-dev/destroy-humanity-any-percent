@@ -2067,3 +2067,12 @@
   with no ignored local artifacts reran all negative controls and passed the exact committed set.
 - D-002 is complete. No ignored raw source or diagnostic became authority; no product behavior,
   design intent, RFC contract, CI workflow, push, publication or deployment changed.
+
+## 2026-08-21 — repository status documentation refresh
+
+- Replaced the stale pre-review `planning/CURRENT-STATE.md` narrative with a compact navigation
+  brief reconciled through D-002 closeout, Q-001–Q-003 and Harness Observability.
+- Kept README structure conventional while adding the live execution-queue route and the local
+  publication-authority check.
+- Removed obsolete claims that D-002, the witness batches and Harness Observability remained open.
+  No product behavior, RFC contract, push, publication or deployment changed.
