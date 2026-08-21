@@ -148,7 +148,10 @@ revision-blocked, 19 synthesis/private-store-blocked, and 36 unreviewed.** See
 `publication-rights-batch-10.md`. Batch 11 reviewed cozy-recovery and ARG-mechanics research; both
 require public synthesis, with the ARG synthesis additionally requiring safety/legal/editorial
 review. **Thirty-three of 67 are reviewed: five eligible, seven revision-blocked, 21 synthesis/
-private-store-blocked, and 34 unreviewed.** See `publication-rights-batch-11.md`.
+private-store-blocked, and 34 unreviewed.** See `publication-rights-batch-11.md`. Batch 12 reviewed
+the designed-sunset dossier; it requires public synthesis plus current legal/policy review.
+**Thirty-four of 67 are reviewed: five eligible, seven revision-blocked, 22 synthesis/private-
+store-blocked, and 33 unreviewed.** See `publication-rights-batch-12.md`.
 
 ### Class D — generated diagnostics (7)
 

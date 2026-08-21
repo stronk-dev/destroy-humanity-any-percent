@@ -1412,3 +1412,14 @@
 - Class-C progress is 33 of 67: five eligible, seven revision-blocked, 21 synthesis/private-store-
   blocked, and 34 unreviewed. No ignored source, design/copy authority, safety/legal posture,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 12
+
+- Read the designed-sunset dossier completely and routed it to a dated public preservation
+  synthesis plus current legal/policy review.
+- Preserved export/self-host/bot/final-artifact lessons without adopting post-2025 regulatory
+  claims, source licensing, notice periods, covenant wording, packaging claims, archive deposits,
+  endpoints or sunset choreography from research.
+- Class-C progress is 34 of 67: five eligible, seven revision-blocked, 22 synthesis/private-store-
+  blocked, and 33 unreviewed. No ignored source, owner/legal/deployment authority, publication,
+  push or destructive cleanup changed.
