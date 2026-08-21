@@ -2085,3 +2085,14 @@
 - Closed RP-106 and execution row 2f without relabeling the original `3d8eb3a` rejection, the
   historical Darwin verdict, or the overall mixed-scope remediation verdict.
 - No implementation, copy, RFC contract, review verdict, push, publication or deployment changed.
+
+## 2026-08-21 — Soul/First-Content documentation reconciliation
+
+- Reconciled `docs/soul.md` and `docs/soul-recovery.md` with the current epoch manifest and
+  `balance/soul/first-content.json`: the artifact first minted in epoch 6 remains pinned by current
+  epoch 8, carries three recovery activities, and declares zero debit sources.
+- Preserved the archived Soul RFCs' fixture-first boundary as historical review scope rather than
+  rewriting it as current delivery state. Kept the absent interactive toys and final disclosure UI
+  explicit as carried successor work.
+- Closed RP-107 and execution row 2g. No implementation, artifact, copy, RFC contract, push,
+  publication or deployment changed.

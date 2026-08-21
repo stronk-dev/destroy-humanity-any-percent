@@ -1,9 +1,11 @@
 # Soul foundation
 
 Soul is a Founder-scoped exact-integer axis that remains mechanically independent from Trust. The
-runtime foundation is implemented, but no production epoch contains a `soul` artifact and no
-production debit source or recovery activity is enabled. The complete recovery lifecycle passed
-its closing independent review and is ready for owner-authored content activation.
+runtime foundation is implemented. The current epoch pins `balance/soul/first-content.json`, first
+minted in epoch 6, with the three live recovery activities documented in
+[`soul-recovery.md`](soul-recovery.md). The artifact still declares no production debit sources.
+The authenticated recovery lifecycle is available at the server boundary, while its interactive
+toys and final disclosure rendering remain UI-successor work rather than a mounted player surface.
 
 ## Artifact, state, and activation
 
@@ -66,3 +68,10 @@ terminal replay parity. Real-Postgres fault injection covers every write boundar
 Heartbeat cadence is intentionally absent from replay. Terminal Founder inputs freeze the accumulated
 attended total, and Company replay freezes the suppressed wall interval; live and replay validate the
 same totals without turning coordinator presence traffic into immutable gameplay commands.
+
+## Delivery history
+
+Soul Foundation archived against a fixture-only boundary: no production Soul artifact or recovery
+activity was pinned at that coordinate. First Content later minted the artifact and its three
+activities without adding a debit source. That historical boundary remains valid for the archived
+RFC and review record; the canonical current state is the pinned artifact described above.

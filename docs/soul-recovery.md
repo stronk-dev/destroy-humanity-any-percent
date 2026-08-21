@@ -54,5 +54,8 @@ totals at terminal resolution; heartbeat cadence itself never becomes replay inp
 ## Review and carried work
 
 The designated review consumed implementation set `{4973c8e, ab9d15e, 3cfc0e6}` plus docs-tier
-`{f04c2f3, d1cd39c}` and approved archival in verdict `5754901`. The production mint and UI toy/
-disclosure acceptance criteria remain explicit successor work; neither is claimed by this archive.
+`{f04c2f3, d1cd39c}` and approved archival in verdict `5754901`. At that archive coordinate, the
+production mint and UI toy/disclosure acceptance criteria were explicit successor work. First
+Content subsequently minted the three activity rows in epoch 6; the toy and disclosure UI remains
+carried work. The later mint updates current delivery state without changing the archive's
+fixture-first implementation and review boundary.
