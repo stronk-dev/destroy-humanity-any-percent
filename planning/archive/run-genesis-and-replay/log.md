@@ -777,3 +777,9 @@ history. The disputed three entries were **Review by: Darwin (`/root/l7b_indepen
 by the project's designated Claude reviewer. Their technical findings remain evidence, but the
 designated reviewer's full-span verdict above is the archival authority. Remediation is tracked in
 `planning/run-genesis-archival-remediation/`.
+
+## 2026-08-21 — remediation-record location coordinate
+
+RP-102 later moved that completed fix-forward record to
+`planning/archive/run-genesis-archival-remediation/`. The historical path above is preserved as
+written; this append-only coordinate changes no verdict or implementation claim.

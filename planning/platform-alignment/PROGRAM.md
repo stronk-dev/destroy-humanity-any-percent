@@ -168,8 +168,9 @@ larger product capability to proven integration.
   boundary between useful package evidence and integrated workflow proof.
 - `final-contradiction-validator.mjs` / `final-contradiction-audit.md` — executable cross-ledger
   totals/path allowlist plus the final Codex-side contradiction and authority closeout.
-- `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
-  counts, authority, current state, and exact closeout gap.
+- `planning-thread-inventory.tsv` — the frozen `190a4fa` population of all 23 then-top-level
+  planning directories with tracked/local file counts, authority, current state, and exact
+  closeout gap; RP-102 later archived four completed threads without rewriting the snapshot.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,
   current truth class, and evidence/repair route.
 - `execution-queue.md` — the only presently authorized queue.

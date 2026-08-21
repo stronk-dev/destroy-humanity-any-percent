@@ -117,3 +117,11 @@ before the harness's first baseline.
   changes force reviewed regeneration while comments and formatting do not.
 - Kept transport mapping and deployed-process migration coordination out of scope with named
   owners. No code, planning directory, or harness baseline is authorized until owner acceptance.
+
+## 2026-08-21 — planning lifecycle closeout
+
+The four dedicated successors named by this review—Production Hardcap Saturation, Millisecond
+Cursor Canonicalization, Resource-Log Domain Parity, and Production Contract Assertions &
+Integrity—are implemented and archived. This source thread therefore moved to
+`planning/archive/production-review-round2/` under RP-102. Their own plans, logs and designated
+verdicts remain authoritative for implementation completion; this move does not replace them.

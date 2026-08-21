@@ -1,5 +1,9 @@
 # Production implementation — round-2 review remediation
 
+**Status:** complete through successor RFCs. R1–R3 and R4–R8 were specified, implemented, reviewed
+and archived in their dedicated RFC/planning records. This source review is retained as historical
+evidence and authorizes no new implementation.
+
 Findings from the two-lens review of `4479cd7`..`b1fe65a` (spec-compliance + adversarial).
 This job exists to fix them; the log below is the authoritative findings record, in priority
 order. R1/R2 are demonstrated permanent-brick bugs and go first; R3 is a catalog/progress

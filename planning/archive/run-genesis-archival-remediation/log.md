@@ -107,3 +107,10 @@ Nothing in this thread is open. It is retained only as history and should move t
 `planning/archive/` alongside its already-archived RFC (`rfc/archive/run-genesis-and-replay.md`)
 in the next archival batch — flagged rather than moved here, because relocating a tracked planning
 thread belongs in the normal archival lane with its own verdict, not in a record-tidying commit.
+
+## 2026-08-21 — planning lifecycle closeout
+
+RP-102 supplied the bounded planning-lifecycle route requested above. This record moved to
+`planning/archive/run-genesis-archival-remediation/`. Historical plan items 4 and 7 remain visibly
+unchecked rather than being inferred by this move; the 2026-08-02 designated verdict and
+2026-08-16 tree-backed composition record above are the exact closure coordinates.

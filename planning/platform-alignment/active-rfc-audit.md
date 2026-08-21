@@ -32,10 +32,8 @@ The status below is evidence-derived. It does not change an RFC's formal status 
 - Multiple plans end in July/August blockers already resolved by later RFCs and commits. A stale
   checkbox is not evidence that work remains, and later code is not permission to flip it without
   an acceptance/range audit.
-- `planning/run-genesis-archival-remediation/` remains outside `planning/archive/` despite its last
-  blocker being recorded resolved.
-- Completed maintenance threads (`ci-remediation-2026-08-10`, `harness-dispatch-cardinality`,
-  `archived-four-review`, `production-review-round2`) occupy the live planning namespace without a
-  declared lifecycle.
+- RP-102 moved the completed `run-genesis-archival-remediation`, `harness-dispatch-cardinality`,
+  `archived-four-review`, and `production-review-round2` threads under `planning/archive/` on
+  2026-08-21. `ci-remediation-2026-08-10` remains live because it was outside that bounded route.
 - The coverage map's generated-from-slices claim is not backed by a checked-in generator, and its
   six source slices have not been revalidated since 2026-08-05.

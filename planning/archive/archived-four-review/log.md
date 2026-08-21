@@ -166,3 +166,9 @@ Full diff of the nine-commit round. Every finding remediated at root:
 
 Both RFCs in this round clear to archive. Remaining from the archived-four review: nothing —
 the board is clean except the two rulings' implementation.
+
+## 2026-08-21 — planning lifecycle closeout
+
+This completed review/remediation record moved to `planning/archive/archived-four-review/` under
+RP-102. The 2026-07-29 cross-party approval above remains the technical verdict; this move creates
+no new review, ruling, implementation authority or archival claim for its downstream successors.

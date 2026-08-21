@@ -107,7 +107,7 @@ shipped user capability.
 Plan item 3—immutable initial state, archive compaction, replay verification, shared Go/TS
 fixtures—was implemented and archived under Run Genesis & Replay. Item 6's canonical backend docs
 and composed server verification are also largely present, but the literal AC gaps and absent user
-integration prevent a safe checkbox flip. `planning/run-genesis-archival-remediation/` records its
+integration prevent a safe checkbox flip. `planning/archive/run-genesis-archival-remediation/` records its
 last blocker resolved on 2026-08-16 yet remains in the live planning namespace.
 
 The early Leaderboards log contains technically detailed “independent review” entries for the

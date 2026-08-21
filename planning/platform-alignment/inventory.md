@@ -202,6 +202,9 @@ This records verified populations and reconciliation defects at the pinned produ
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
+- **Post-coordinate closeout:** RP-102 moved those exact four threads under `planning/archive/` on
+  2026-08-21 with append-only coordinates. The counts and rows above remain the frozen `190a4fa`
+  inventory rather than being silently regenerated after the audit.
 - At the final Codex-side audit checkpoint, planning contains 238 tracked files, 84 of them in
   platform alignment. Another 25 files are ignored and local-only: 17 coverage-map records,
   six archived T0-T1

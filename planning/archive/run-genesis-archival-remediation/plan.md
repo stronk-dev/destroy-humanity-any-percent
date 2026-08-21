@@ -1,5 +1,10 @@
 # Run Genesis archival remediation — fix-forward plan
 
+**Closeout note (2026-08-21):** the unchecked boxes below are preserved as historical checklist
+state; they are not retroactively flipped without tests in this move's review range. The log records
+the exact later designated verdict for item 7 and the later shipped Guild composition that resolved
+item 4. Nothing remains executable in this maintenance thread.
+
 - **Owner:** Codex
 - **Source verdict:** designated full-span review recorded 2026-08-01 in the archived job log
 - **Policy:** preserve the archived implementation; append corrections and proofs rather than

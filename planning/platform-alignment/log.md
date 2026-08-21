@@ -2106,3 +2106,13 @@
   ran both boundary targets from the repository root.
 - Closed RP-099. No product behavior, balance data, RFC contract, CI workflow, push, publication or
   deployment changed.
+
+## 2026-08-21 — completed planning-thread closeout
+
+- Verified terminal records for `archived-four-review`, `harness-dispatch-cardinality`,
+  `production-review-round2`, and `run-genesis-archival-remediation`, then moved all four from the
+  live planning namespace to `planning/archive/` under RP-102.
+- Added append-only closeout/current-location coordinates and preserved frozen historical RFC
+  pointers, unchecked boxes and Darwin/designated-review provenance without retroactive inference.
+- Closed RP-102. No product behavior, RFC status, review verdict, push, publication or deployment
+  changed.
