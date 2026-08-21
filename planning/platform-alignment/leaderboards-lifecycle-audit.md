@@ -5,8 +5,9 @@ Coordinate: product tree `190a4fa`; audit checkpoint after `ff2d51c`; 2026-08-20
 Post-coordinate reconciliation (2026-08-21): owner-delegated edits reconciled D2/D4/D5/D6/L1/L4,
 the plan, and canonical docs to the six-verdict/five-category backend. A draft Leaderboard Readers
 & Player Surface successor now owns the absent integration scope but is deliberately not accepted
-implementation authority. RP-042's body contradiction is closed; RP-039–RP-041/RP-043 and
-successor acceptance remain open.
+implementation authority. The accepted foundation then repaired AC5 with an immutable-history,
+three-arm real-Postgres witness. RP-042 is closed; RP-039 awaits designated review; RP-040/RP-041/
+RP-043 and successor acceptance remain open.
 
 This pass re-derived the active Leaderboards RFC from its specification, design references, plan,
 append-only log, current implementation, the archived Run Genesis successor and remediation
@@ -23,8 +24,8 @@ six acceptance criteria is false in the current implementation:
 
 - no runtime HTTP binding or client surface lets a player browse boards or epochs, invoke the
   transparency validator, or see the Route Registry alongside records;
-- Compact assistance is derived from membership **at Exit**, not membership at any point in the
-  run, so join→leave→Exit incorrectly returns the run to Solo;
+- Compact assistance was derived from membership **at Exit** at this audit coordinate; the
+  post-coordinate repair now derives immutable any-point membership and awaits designated review;
 - AC1, AC3, and AC6 retain narrower or missing witnesses than their literal requirements;
 - player-authored/Exhibition categories, world-first dispatch emission, machine boards, abandoned
   run retention, and the rejected-log/supersession follow-ups are absent and now explicitly routed;
@@ -61,7 +62,7 @@ workflow because none is composed.
 | AC2 | **Cold witness green; archival review missing** | The Go-authored corpus is replayed by Go and the shipped TypeScript module; gap, constants, engine, clock, state/event/receipt mutations produce the same closed verdict classes. The module is bundled but has no player-facing archive/catalog retrieval or invocation surface. | Preserve the parity corpus; decide whether L4 requires only bundled code or an actual player transparency workflow, then include the accepted scope in the full designated review. |
 | AC3 | **Partial** | Prestige's real-Postgres fixture starts run 1 in epoch 1, mints genuinely changed bytes, finishes in epoch 2, and proves the ended event/pin retain epoch-1 hash while run 2 uses epoch 2. Separate replay and projection fixtures are green. No single fixture replays that crossing run against epoch N's archived catalog **and** proves its board row/query remains in N. | Add the literal start-N→mint→finish-N+1→replay-N→rank-N chain plus a current-catalog misclassification control. |
 | AC4 | **Cold witness green; archival review missing** | Real temporary-Git fixtures reject an unregistered artifact change, a `BALANCE-CHANGE:` without exactly one mint, a mint missing its numbered changelog, and a hotfix hardcap reduction; valid hotfix/mint controls pass. The live history guard also completed green. | Retain the discriminating fixtures and include their post-rewrite ranges in the designated review union. |
-| AC5 | **Failed at HEAD** | `prestige.go` writes `assisted.commons = company.CompactMember` at Exit. `QueueProjector` trusts that terminal boolean and scans history only for route/faction variables; it never reads `compact_signed`/`compact_left`. `leave_compact` clears the state. Therefore join→leave→Exit projects `commons=false`. The only projector fixture hard-codes `commons=true`, so it cannot detect the defect. | Accepted RFC remediation must derive an immutable run-level any-membership fact or scan validated run events, with join→Exit and join→leave→Exit positive cases plus a never-joined Solo control in Go/replay/projection. |
+| AC5 | **Post-coordinate repair complete; review pending** | `QueueProjector` now derives Commons from run-scoped `compact_signed` history. Real-Postgres join→Exit and join→leave→Exit positives plus a never-joined Solo control pass; severing the history signal fails both positives. | Include the exact implementation range in the mandatory cross-party verdict. |
 | AC6 | **Unmet witness** | Board queries accept closed epoch ids, and a fixture queries epoch 1 after minting epoch 2. No test mints **two subsequent epochs** and queries the original frozen board. Seed reconciliation's two-epoch history test is storage-only and creates no board row. | Add an epoch N board row, mint N+1 and N+2 with distinct identities, then query N through the accepted reader boundary; prove inserts into the frozen identity fail or are impossible by the chosen contract. |
 
 No plan box was changed. The successor Run Genesis implementation makes plan item 3 stale, but the
@@ -128,8 +129,7 @@ remediations. The tracked Leaderboards plan correctly leaves independent review 
 ## Smallest honest closeout order
 
 1. **Body reconciliation complete after this coordinate; successor acceptance remains open.**
-2. Fix AC5 under this accepted RFC with a discriminating any-membership lifecycle/replay/projector
-   proof; do not invent UI or mandate mechanics inside that fix.
+2. **AC5 implementation/proof complete after this coordinate; designated review remains.**
 3. Add only the missing literal AC1/AC3/AC6 witnesses and their failing mutations.
 4. Review and explicitly accept (or narrow) the draft successor for board/epoch readers, player
    browsing, validator delivery, Route Registry integration, world-first dispatch, and machine

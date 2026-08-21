@@ -84,11 +84,11 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 	if err != nil {
 		return err
 	}
-	faction, glitched, err := scanRunVariables(ctx, tx, streamID, runSeq)
+	faction, glitched, commons, err := scanRunVariables(ctx, tx, streamID, runSeq)
 	if err != nil {
 		return err
 	}
-	if !sameOptionalString(faction, terminal.Faction) || glitched != (len(terminal.ExecutedRoutes) != 0) {
+	if !sameOptionalString(faction, terminal.Faction) || glitched != (len(terminal.ExecutedRoutes) != 0) || terminal.Assisted.Commons && !commons {
 		return fmt.Errorf("%w: terminal variables disagree with event history", ErrInvalidEpoch)
 	}
 	matching, err := catalog.Matching(TerminalFacts{GatesCrossed: *terminal.GatesCrossed,
@@ -96,7 +96,7 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 	if err != nil {
 		return err
 	}
-	variables := Variables{Commons: terminal.Assisted.Commons, Advisor: terminal.Assisted.Advisor, Glitched: glitched, Faction: faction}
+	variables := Variables{Commons: commons, Advisor: terminal.Assisted.Advisor, Glitched: glitched, Faction: faction}
 	encodedVariables, _ := json.Marshal(variables)
 	runID := streamID + ":" + strconv.FormatInt(runSeq, 10)
 	expected := make([]string, 0, len(matching))
@@ -254,37 +254,42 @@ func jsonObjectBytes(data json.RawMessage) bool {
 	return json.Unmarshal(data, &value) == nil && value != nil
 }
 
-func scanRunVariables(ctx context.Context, tx *sql.Tx, streamID string, runSeq int64) (*string, bool, error) {
+func scanRunVariables(ctx context.Context, tx *sql.Tx, streamID string, runSeq int64) (*string, bool, bool, error) {
 	rows, err := tx.QueryContext(ctx, `SELECT kind,payload::text FROM events
-		WHERE stream_id=$1 AND kind IN ('route_executed','incorporated')
+		WHERE stream_id=$1 AND kind IN ('route_executed','incorporated','compact_signed')
 		  AND payload->'run_id'->>'company_stream_id'=$1::text
 		  AND payload->'run_id'->>'run_seq'=$2::bigint::text
 		ORDER BY event_seq`, streamID, runSeq)
 	if err != nil {
-		return nil, false, err
+		return nil, false, false, err
 	}
 	defer rows.Close()
 	var faction *string
 	glitched := false
+	commons := false
 	for rows.Next() {
 		var kind, payload string
 		if err := rows.Scan(&kind, &payload); err != nil {
-			return nil, false, err
+			return nil, false, false, err
 		}
 		if kind == "route_executed" {
 			glitched = true
+			continue
+		}
+		if kind == "compact_signed" {
+			commons = true
 			continue
 		}
 		var incorporated struct {
 			FactionID string `json:"faction_id"`
 		}
 		if json.Unmarshal([]byte(payload), &incorporated) != nil || !mechanicalPattern.MatchString(incorporated.FactionID) || faction != nil && *faction != incorporated.FactionID {
-			return nil, false, fmt.Errorf("%w: faction event", ErrInvalidEpoch)
+			return nil, false, false, fmt.Errorf("%w: faction event", ErrInvalidEpoch)
 		}
 		value := incorporated.FactionID
 		faction = &value
 	}
-	return faction, glitched, rows.Err()
+	return faction, glitched, commons, rows.Err()
 }
 
 func claimProjection(ctx context.Context, tx *sql.Tx, eventID string) (bool, error) {

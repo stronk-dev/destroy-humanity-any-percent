@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"os"
 	"testing"
 
@@ -52,12 +53,13 @@ func TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration(t *testing
 	runID := map[string]any{"company_stream_id": streamID, "run_seq": 1}
 	incorporated, _ := json.Marshal(map[string]any{"run_id": runID, "faction_id": "open_source"})
 	route, _ := json.Marshal(map[string]any{"run_id": runID, "route_id": "route.example"})
-	ended := projectorRunEndedPayload(streamID, founderID, 1, false, []string{"route.example"}, "open_source")
+	signed, _ := json.Marshal(map[string]any{"founder_id": founderID, "run_id": runID, "tithe_ppm": 100000, "prior_member": false, "new_member": true})
+	ended := projectorRunEndedPayload(streamID, founderID, 1, false, []string{"route.example"}, "open_source", true)
 	for _, event := range []struct {
 		kind   string
 		schema int
 		body   []byte
-	}{{"incorporated", 1, incorporated}, {"route_executed", 1, route}, {"run_ended", 2, ended}} {
+	}{{"incorporated", 1, incorporated}, {"route_executed", 1, route}, {"compact_signed", 1, signed}, {"run_ended", 2, ended}} {
 		if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload)
 			VALUES($1,1,$2,$3,$4,$5,'2026-08-01T12:00:00Z',$6)`, streamID, event.schema, event.kind, intentID, projectorHash, event.body); err != nil {
 			t.Fatal(err)
@@ -103,7 +105,7 @@ func TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration(t *testing
 		VALUES($1,2,1,$2,'{}','{}','{}',1,200)`, streamID, preTimerIntent); err != nil {
 		t.Fatal(err)
 	}
-	preTimerEnded := projectorRunEndedPayload(streamID, founderID, 2, true, nil, "")
+	preTimerEnded := projectorRunEndedPayload(streamID, founderID, 2, true, nil, "", false)
 	if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload)
 		VALUES($1,2,2,'run_ended',$2,$3,'2026-08-01T12:01:00Z',$4)`, streamID, preTimerIntent, projectorHash, preTimerEnded); err != nil {
 		t.Fatal(err)
@@ -135,7 +137,7 @@ func TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration(t *testing
 	if _, err := db.ExecContext(ctx, `INSERT INTO run_version_drift(company_stream_id,run_seq,observed_version) VALUES($1,3,'0.0.1')`, streamID); err != nil {
 		t.Fatal(err)
 	}
-	driftEnded := projectorRunEndedPayload(streamID, founderID, 3, false, nil, "")
+	driftEnded := projectorRunEndedPayload(streamID, founderID, 3, false, nil, "", false)
 	if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload)
 		VALUES($1,3,2,'run_ended',$2,$3,'2026-08-01T12:02:00Z',$4)`, streamID, driftIntent, projectorHash, driftEnded); err != nil {
 		t.Fatal(err)
@@ -154,7 +156,7 @@ func TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration(t *testing
 		VALUES($1,4,1,$2,'{}','{}','{}',1,400)`, streamID, importedIntent); err != nil {
 		t.Fatal(err)
 	}
-	importedEnded := projectorRunEndedPayload(streamID, founderID, 4, false, nil, "")
+	importedEnded := projectorRunEndedPayload(streamID, founderID, 4, false, nil, "", false)
 	if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload)
 		VALUES($1,4,2,'run_ended',$2,$3,'2026-08-01T12:03:00Z',$4)`, streamID, importedIntent, projectorHash, importedEnded); err != nil {
 		t.Fatal(err)
@@ -162,6 +164,87 @@ func TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration(t *testing
 	projectInTransaction(t, db, projector, streamID, 4)
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1`, streamID+":4").Scan(&boardRows); err != nil || boardRows != 0 {
 		t.Fatalf("imported run rows=%d err=%v", boardRows, err)
+	}
+}
+
+func TestQueueProjectorCommonsAnyMembershipIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `TRUNCATE verification_projection_events,accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	accountID := "51111111-1111-4111-8111-111111111111"
+	founderID := "52222222-2222-4222-8222-222222222222"
+	streamID := "53333333-3333-4333-8333-333333333333"
+	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'integration')`, accountID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id) VALUES($1,$2)`, accountID, founderID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO save_streams(id,owner_kind,owner_id,scope) VALUES($1,'founder',$2,'company')`, streamID, founderID); err != nil {
+		t.Fatal(err)
+	}
+	cases := []struct {
+		name            string
+		runSeq          int64
+		intentID        string
+		signed          bool
+		left            bool
+		terminalCommons bool
+		wantCommons     bool
+	}{
+		{"join then exit", 1, "51999999-0001-4000-8000-000000000001", true, false, true, true},
+		{"join leave then exit", 2, "51999999-0002-4000-8000-000000000002", true, true, false, true},
+		{"never joined", 3, "51999999-0003-4000-8000-000000000003", false, false, false, false},
+	}
+	projector := NewQueueProjector()
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			seedProjectorEpoch(t, db, streamID, test.runSeq)
+			if _, err := db.ExecContext(ctx, `INSERT INTO run_log(company_stream_id,run_seq,seq,intent_id,canonical_payload,replay_inputs,receipt,applied_revision,server_ts_ms)
+				VALUES($1,$2::bigint,1,$3,'{}','{}','{}',$2::bigint,$2::bigint * 100)`, streamID, test.runSeq, test.intentID); err != nil {
+				t.Fatal(err)
+			}
+			runID := map[string]any{"company_stream_id": streamID, "run_seq": test.runSeq}
+			if test.signed {
+				payload, _ := json.Marshal(map[string]any{"founder_id": founderID, "run_id": runID, "tithe_ppm": 100000, "prior_member": false, "new_member": true})
+				if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload)
+					VALUES($1,$2,1,'compact_signed',$3,$4,'2026-08-02T12:00:00Z',$5)`, streamID, test.runSeq, test.intentID, projectorHash, payload); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if test.left {
+				payload, _ := json.Marshal(map[string]any{"founder_id": founderID, "run_id": runID, "tithe_ppm": 100000, "prior_member": true, "new_member": false})
+				if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload)
+					VALUES($1,$2,1,'compact_left',$3,$4,'2026-08-02T12:01:00Z',$5)`, streamID, test.runSeq, test.intentID, projectorHash, payload); err != nil {
+					t.Fatal(err)
+				}
+			}
+			ended := projectorRunEndedPayload(streamID, founderID, test.runSeq, false, nil, "", test.terminalCommons)
+			if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload)
+				VALUES($1,$2,2,'run_ended',$3,$4,'2026-08-02T12:02:00Z',$5)`, streamID, test.runSeq, test.intentID, projectorHash, ended); err != nil {
+				t.Fatal(err)
+			}
+			projectInTransaction(t, db, projector, streamID, test.runSeq)
+			var allCommons, anyCommons bool
+			var rows int
+			if err := db.QueryRowContext(ctx, `SELECT bool_and((variables->>'commons')::boolean),bool_or((variables->>'commons')::boolean),count(*) FROM verified_runs WHERE run_id=$1`,
+				streamID+":"+fmt.Sprint(test.runSeq)).Scan(&allCommons, &anyCommons, &rows); err != nil || rows == 0 || allCommons != test.wantCommons || anyCommons != test.wantCommons {
+				t.Fatalf("commons all=%v any=%v rows=%d want=%v err=%v", allCommons, anyCommons, rows, test.wantCommons, err)
+			}
+		})
 	}
 }
 
@@ -208,7 +291,7 @@ func seedProjectorEpoch(t *testing.T, db *sql.DB, streamID string, runSeq int64)
 	}
 }
 
-func projectorRunEndedPayload(streamID, founderID string, runSeq int64, preTimer bool, routes []string, faction string) []byte {
+func projectorRunEndedPayload(streamID, founderID string, runSeq int64, preTimer bool, routes []string, faction string, commons bool) []byte {
 	var factionValue any
 	if faction != "" {
 		factionValue = faction
@@ -218,7 +301,7 @@ func projectorRunEndedPayload(streamID, founderID string, runSeq int64, preTimer
 		"started_at_ms": 100, "ended_at_ms": 200, "rta_ms": 100, "attended_ms": 90, "pre_timer": preTimer, "terminal_seq": 1,
 		"payout": map[string]any{}, "tier": 3, "lifetime_value": "1e3", "ledger_fact_kinds": []string{},
 		"executed_routes": routes, "gates_crossed": []string{"gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"},
-		"generators_purchased_total": 10, "assisted": map[string]bool{"commons": true, "advisor": false}, "faction": factionValue,
+		"generators_purchased_total": 10, "assisted": map[string]bool{"commons": commons, "advisor": false}, "faction": factionValue,
 	})
 	return payload
 }

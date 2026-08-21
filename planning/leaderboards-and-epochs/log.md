@@ -368,3 +368,17 @@ hash correctness can no longer disguise invalid category semantics.
   two-later-epoch populations in `witness-manifest.md`, including explicit negative mutations.
 - Scope is the accepted backend only. The draft reader/player successor, API operations, UI, copy,
   retention, mandates, dispatch and machine boards remain out of range.
+
+## 2026-08-21 — AC5 Commons any-membership repair
+
+- `QueueProjector` now derives Commons from immutable run-scoped `compact_signed` history rather
+  than the terminal current-state boolean. A terminal `commons=true` without a matching history
+  event fails closed; join→leave is intentionally still Assisted.
+- Added a real-Postgres three-arm witness: join→Exit and join→leave→Exit project
+  `commons=true`; never-joined→Exit projects `commons=false`. The existing category/projector
+  fixture now carries the signing event it previously only asserted by terminal literal.
+- Cold focused projector integration passed. Severing the production scanner's membership signal
+  failed both positive arms (one at the terminal/history consistency guard and one at the
+  structural tuple assertion) while retaining the Solo control.
+- Canonical docs changed with behavior. No API/UI/draft-successor scope, copy, schema, balance,
+  status promotion, checkbox, verdict, archival, push or publication changed.

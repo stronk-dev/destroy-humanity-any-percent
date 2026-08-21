@@ -138,10 +138,10 @@ Valuation. The Phase-0 completion set is empty, so 100% is explicitly all gates.
 exact or prefix-matched facts in the registered `darkpattern.*` and `externality.*` namespaces;
 neither namespace has a Phase-0 producer yet, so every otherwise eligible Phase-0 run qualifies.
 The queue-owned projector reads the sole schema-v2 `run_ended`, checks its terminal sequence against
-the immutable log, derives Faction and Glitched from run-scoped events, and currently takes Commons
-and Advisor from the terminal assisted record. That terminal-only Commons rule is a known defect:
-join→leave→Exit incorrectly returns to Solo despite the accepted any-membership contract. The
-projector otherwise projects every matching category in the queue's mark
+the immutable log, derives Faction, Glitched, and any-point Commons membership from run-scoped
+events, and takes Advisor from the terminal assisted record. Both join→Exit and
+join→leave→Exit are therefore structurally Assisted, while a never-joined run remains Solo. The
+projector projects every matching category in the queue's mark
 transaction. It loads category and route bytes by the run's pinned constants hash, never from the
 current worktree, so later epochs cannot reclassify historical runs. Imported and version-drift
 runs claim projection with no board rows. Pre-timer runs enter only Valuation and remain
