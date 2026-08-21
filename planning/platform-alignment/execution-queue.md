@@ -19,7 +19,7 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 | 3a | **BLOCKED — author action** | Reconcile Minigame Platform header, MP1, MP5, C3/C8/C9/C12/C14, and AC6 around the absent combat-duel tenant. | Normative body no longer claims combat code/catalog/adapter that does not exist. |
 | 3b | **BLOCKED on 3a / accepted scope** | Repair Minigame AC2's observable offline-quality decay/application; either prove async under AC1 or route it to its accepted successor; keep bot/duel work blocked on Combat. | No-play decay reaches its real output consumer with a stale-grade mutation; every retained criterion has a composed workflow; exact cross-RFC range union is review-ready. |
 | 3c | **READY — Account accepted-scope witnesses** | Add AC2/AC3/AC5/AC6/AC7's missing revocation/socket, repeated Founder, import→board, all-stream deletion, and all-route limiter discriminators without changing mechanics. | Literal witnesses fail under their seeded defects and pass cold; range is ready for cross-party review. |
-| 3d | **BLOCKED — Transport AC3 ruling-author action** | `c63e7e6` implements the accepted D4/T4 browser controller and AC6 non-member negative. The literal ten-second AC3 probe closes on Centrifuge byte-queue pressure because stale rejection occurs after admission. | Ruling author either accepts a new pre-queue coalescing authority or reconciles exact-one connected delivery to the implementable contract; then restore the literal witness and obtain the exact Q-003 cross-party verdict. |
+| 3d | **READY — Transport AC3 ruled witness** | `c63e7e6` implements the D4/T4 browser controller and AC6 negative. The 2026-08-21 owner ruling replaces exact-one-frame delivery with bounded backlog plus newest-authoritative-state convergence through live delivery or typed 4000 recovery. | A literal ten-second stall and recovery mutation discriminate; restored cold populations pass; exact Q-003 range receives the minimal cross-party verdict. |
 | 3e | **BLOCKED — Transport author/record action** | Reconcile T6 and plan item 4 with shipped Guild/gameserver composition; translate historical verdicts through the rewrite map and declare the complete current range union. | RFC/plan/log/docs agree with HEAD and the complete span is ready for a new cross-party verdict. |
 | 3f | **BLOCKED — API ruling-author action** | Reconcile API AC4's pre-C9 deletion language and stale C18 sequencing/body text against the accepted generated-only client rule and already-minted epochs 6–8. | No normative section contradicts C9/C18 or implies the formula/public mint already happened. |
 | 3g | **BLOCKED on 3f; then accepted API scope** | Migrate all live v1 routes into the registry; extend query/header/raw-client authority; implement the generated client and public formula/catalog/epoch/board/route/evidence runtime with privacy/conformance proofs. | RP-060–RP-064's restored mutations discriminate; every public producer has a real consumer/data workflow; exact current span is ready for cross-party review. |
@@ -53,7 +53,7 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 
 The 433-child capability, 208-key Copy, 579-unit gameplay-content, and 802-unit row-oracle evidence
 populations are complete. Q-001 and corrected Q-002 received their designated approvals at
-`34d04a5` and `bfd9b65`. Q-003's accepted D4/T4 consumer and AC6 work is implemented at `c63e7e6`,
-but its executed literal AC3 control exposed a ruling-author blocker; no later serial batch is
-authorized through this lane until that contract is reconciled and Q-003 receives its exact
-cross-party verdict. R-001 remains blocked on accepted instrumentation authority.
+`34d04a5` and `bfd9b65`. Q-003's D4/T4 consumer and AC6 work is implemented at `c63e7e6`; its fired
+AC3 control received the 2026-08-21 owner reconciliation and the literal ruled witness is the only
+remaining implementation step before the minimal exact-range cross-party verdict. R-001 remains
+blocked on accepted instrumentation authority.

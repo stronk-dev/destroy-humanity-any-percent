@@ -577,3 +577,15 @@ cross-party review is not yet requested because AC3 is owner-blocked.
   exact-one delivery without weakening healthy-client cadence. A custom writer/queue, dependency
   change, or protocol acknowledgement would be new architecture and is not authorized by Q-003.
   The owner decision recorded under RP-054 therefore remains genuine, not an unsearched code path.
+
+## 2026-08-21 — AC3 owner reconciliation adopted
+
+**Author/ruling by:** Marco. **Recorded by:** Codex.
+
+- The owner rejected the packet-count criterion as over-engineering for an idle game and adopted the
+  player outcome instead: after at least a ten-second stall, the client must converge to newest
+  authoritative world state without unbounded backlog or lost committed progress. A bounded typed
+  4000 disconnect followed by the normal reconnect/full-sync path is explicitly valid.
+- Reconciled D2 and AC3 in the same edit. This does not authorize a dependency fork, custom writer,
+  weaker queue bound, Account token rotation, or a second recovery path. Q-003 is unblocked only for
+  the literal ruled-outcome witness and its failing mutation before the designated review.

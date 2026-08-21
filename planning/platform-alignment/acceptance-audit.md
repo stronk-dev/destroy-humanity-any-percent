@@ -93,18 +93,17 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
 
 - AC1 is proven: 5,000 actual in-memory WebSockets each expose a terminal trace across ten world
   ticks, with monotonic subsequences and wrong-kind/public-receipt negative cases in the oracle.
-- AC2 is partial. The server's real Centrifuge recovery returns missed private receipts and the
-  newest world snapshot, but the production Game UI never stores epoch/offset, requests recovery,
-  or reconnects (RP-052).
-- AC3 is partial because the live stall is under one second and permits one in-flight frame plus
-  the newest rather than the literal 10 seconds/exactly one (RP-054).
-- AC4/AC5 are partial: typed overflow and bounded server drain are real, while the browser discards
-  close codes, ignores `resume_after_ms`, and has no reconnect/full-sync path (RP-052).
-- AC6 is partial. Denied Match and positive member cases exist, but no non-member Guild fixture can
-  falsify an authorize-every-Guild resolver (RP-054).
-- The per-scope revision cursor is unit-tested but unused by production, so duplicate/gap/
-  historical-compensation behavior is an orphaned primitive rather than a shipped safety property
-  (RP-053). Plan/body/review history also require current-range reconciliation (RP-055).
+- AC2/AC4/AC5 are implemented pending designated review: the production controller persists
+  positions, recovers missed receipts, full-syncs gaps/overflow, interprets typed closes, and honors
+  drain delay; the composed browser witness crosses a real disconnect and committed intent.
+- AC3's exact-one-frame premise fired under a literal stall and was owner-reconciled on 2026-08-21
+  to bounded backlog plus newest-authoritative-state convergence. Its ten-second ruled witness is
+  the remaining implementation proof (RP-054).
+- AC6's real second-account/non-member Guild denial now fails under an authorize-every-Guild
+  mutation. Match's participant positive remains owned by its eventual implementation.
+- The per-scope cursor is bound to production live/recovered publications and authoritative snapshot
+  resets, pending the same exact Q-003 designated review (RP-053). Plan/body/review-history
+  reconciliation remains separate (RP-055).
 
 ### Game UI
 

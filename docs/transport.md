@@ -129,14 +129,11 @@ a strictly increasing subsequence ending at the final world revision; skipped in
 are valid under drop-stale, while any wrong channel/kind, duplicate/regressing revision, missing
 final state, or click-shaped publication fails the soak.
 
-The active RFC's literal ten-second connected-stall criterion is not yet met. A cold 11.29-second
-actual-socket probe on 2026-08-21 filled Centrifuge's byte queue and closed the world-only subscriber
-before resume. The current transport-write hook can discard all queued stale frames except the
-already in-flight frame, but it runs after queue admission and therefore cannot enforce an exact
-one-frame bound for a genuinely blocked writer. The browser's typed 4000 path now recovers the user
-through full sync, but that does not redefine AC3; the RFC author must either provide a pre-queue
-coalescing authority or reconcile the criterion to the implementable in-flight-plus-newest
-contract.
+World updates use ordinary browser WebSocket delivery, so the transport does not pretend to know
+the exact instant a frozen tab consumes a frame. Intermediate world gauges may be discarded. A
+slow browser either catches up to the newest state with bounded backlog or is closed with code 4000;
+the production client then reconnects and full-syncs from authoritative committed state. Private
+receipts remain history-backed, so this recovery path does not silently lose player progress.
 `world_rev` is a process-lifetime ordering key, not persisted world history. It may restart when the
 gameserver restarts, so reconnecting clients treat the recovered latest snapshot as a new baseline
 and never compare its revision with the prior connection.

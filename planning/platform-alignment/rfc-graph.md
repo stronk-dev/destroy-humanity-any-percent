@@ -91,7 +91,7 @@ and D-017's UGC/moderation posture; a transport channel is not a feed feature.
 |---|---|---|
 | CI Baseline | release evidence root | RP-059 accepted instrumentation owner, R-001, then D-014/body reconciliation |
 | Account & Session | backend producer plus witness closeout | accepted-scope witness batch is READY; broader player capability needs D-005/D-008/D-009 successor |
-| WebSocket Transport | server producer, missing live consumer | accepted D4/T4 consumer work READY; body/range closeout separate |
+| WebSocket Transport | server and production recovery consumer implemented pending review | owner-reconciled AC3 witness READY; body/range closeout separate |
 | Leaderboards & Epochs | backend producer for public evidence | ruling-author body repair, exact witnesses, reader/UI successor, current review union |
 | Prestige & Exits | backend transition producer | ruling-author body repair and D-012 Advisor choice before witness closeout |
 | API Foundation | shared wire/client authority | ruling-author repair, then registry/generator/public/runtime work |

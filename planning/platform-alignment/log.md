@@ -1053,3 +1053,12 @@
 - Kept 3d blocked rather than introducing a custom writer, changing the dependency, weakening the
   4 Hz contract, or pretending typed-overflow recovery satisfies exact-one connected delivery.
   RP-054 now has exhausted implementation evidence for its two lawful owner choices.
+
+## 2026-08-21 — Transport AC3 owner ruling
+
+- Marco ruled the exact packet count to be inappropriate for this idle-game outcome. Reconciled the
+  RFC body to require a bounded ten-second stalled-client path that converges to newest authoritative
+  state, either live or after typed 4000 reconnect/full sync, without losing committed progress.
+- Promoted queue row 3d from owner-blocked to READY for only that literal witness and mutation. Q-003
+  still needs restored cold gates and the mandatory minimal exact-range cross-party verdict; no
+  later serial product batch, archival, deployment, or push is authorized yet.

@@ -34,8 +34,8 @@ Required discriminating cases:
 - queue-overflow (4000), server-drain (4003 plus `resume_after_ms`), and credential-expiry (4001)
   closes entering the same recovery path, with drain suppressing reconnect for its advertised
   delay;
-- a literal ten-second connected world stall proving no stale snapshot leaks and exactly the
-  contractually permitted latest state resumes; and
+- a literal ten-second connected world stall proving bounded backlog and convergence to the newest
+  state, either on the live connection or through typed-overflow reconnect/recovery; and
 - a real non-member Guild subscription denied beside a member control.
 
 Cold gates are the root client unit, typecheck, boundary, browser, and composed disconnect/recovery
@@ -48,7 +48,7 @@ may use the current persisted access token and fail honestly, but this batch doe
 refresh authority.
 
 **Current Q-003 state:** D4/T4 consumer recovery and the AC6 non-member Guild negative landed at
-`c63e7e6` with cold and mutation evidence. AC3's literal ten-second connected stall failed because
-the underlying byte queue closes before the post-admission stale hook can resume exactly one frame.
-No remaining checkbox or status may move until the ruling author reconciles that contract and the
-complete Q-003 range receives designated cross-party review.
+`c63e7e6` with cold and mutation evidence. The owner reconciled AC3 on 2026-08-21 to the standard
+player outcome: a ten-second stall has bounded backlog and converges to newest authoritative state,
+with typed 4000 disconnect/recovery permitted. The literal witness and its mutation remain before
+the complete Q-003 range can receive designated cross-party review.
