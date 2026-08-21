@@ -2219,3 +2219,15 @@
 - Cold `./fiscal ./production ./save` tests and focused vet pass. RP-105 and queue 2e now await only
   the mandatory exact-range cross-party review. No product code, schema, balance, copy, verdict,
   archive move, push or publication changed.
+
+## 2026-08-21 — Claude designated cross-party review of the Fiscal record repair `{72c21b1}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. Record-only range.
+- The RP-105 route is executed as routed: the archived FQ3/F1/F11/F14 normative text and both
+  ruling blocks now state the accepted rejection-rollback contract they previously contradicted
+  (the frozen-archive edit is sanctioned by the RP-105 routing consumed in the audit verdict);
+  the seven stale plan boxes become a **historical disposition table** that explicitly declines
+  retroactive checkbox inference and does not claim the record edit performed implementation.
+  The standing discriminating evidence (`transition_test.go` failing commit-under-rejection) is
+  cited, and `./fiscal ./production ./save` ran GREEN cold in this review. **No findings.
+  APPROVED.**

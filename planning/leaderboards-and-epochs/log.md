@@ -421,3 +421,15 @@ hash correctness can no longer disguise invalid category semantics.
 - AC1/AC3/AC5/AC6 are ready for the mandatory designated cross-party review. Early historical
   Leaderboards review provenance is not relabeled; any archival claim still needs an exact range
   union under current law.
+
+## 2026-08-21 — Claude designated cross-party review of `8b8d13b^..cc5ea8e` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. Five commits.
+- **The one production change is a real correctness fix:** the projector now derives Commons
+  assistance from run history (`compact_signed`) instead of trusting the terminal claim, and
+  rejects a terminal `Assisted.Commons` claim the history does not support — authority-preserving
+  in exactly the direction the repo's laws demand.
+- **Executed:** cold packages GREEN; leaderboard + production Postgres populations GREEN.
+  **Severing probe (mine):** removing the `compact_signed` derivation fails the leaderboard
+  integration population immediately. The join→leave→Exit membership witness discriminates.
+  **No findings. APPROVED.**

@@ -278,3 +278,18 @@ gate_crossed intact; decline drift scoped per run with validator-enforced run_se
 - Implementation commits in the pending designated-review span are `1c557c1`, `331bd06`, and
   `b76b00b`, preceded by authority/predeclaration commits `fbc2452` and `5d137d8`. No production,
   balance, schema, copy, CI, push, publication, RFC status, or archival change landed.
+
+## 2026-08-21 — Claude designated cross-party review of `fbc2452^..c50744d` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. Six commits, AC2–AC6 witnesses plus the D-012
+  body reconciliation.
+- **Scope:** every changed path is test/planning/docs except `design/11-ux-writing.md`, whose
+  edit implements the recorded D-012 owner ruling (Advisor Mode deferred from the Phase-0
+  preview) with the owner-authored label preserved byte-for-byte — the same body-follows-recorded-
+  ruling shape accepted in the Transport AC3 precedent.
+- **Executed:** `./prestige ./production` cold GREEN; the Postgres integration population GREEN.
+  **Severing probe (mine):** decoupling `MoralReseed` from Founder Notoriety fails the prestige
+  unit population immediately. Note for honesty: the new integration witnesses stayed green under
+  that particular severing — the unit lane is what discriminates reseed's input coupling; the
+  integration witnesses discriminate lifecycle/ledger/eligibility, per their predeclaration.
+  Defense in depth, not overlap. **No findings. APPROVED.**
