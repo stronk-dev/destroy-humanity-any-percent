@@ -222,7 +222,10 @@ revision-blocked, 40 synthesis/private-store-blocked, and 16 unreviewed.** See
 `publication-rights-batch-30.md`. Batch 31 reviewed the 1995–2005 period-satire and first-session-
 copy dossier; it requires public synthesis plus IP/editorial review. **Fifty-two of 67 are reviewed:
 five eligible, six revision-blocked, 41 synthesis/private-store-blocked, and 15 unreviewed.** See
-`publication-rights-batch-31.md`.
+`publication-rights-batch-31.md`. Batch 32 reviewed the cryptocurrency, Web3 and proof-of-work
+satire dossier; it requires public synthesis plus current financial/legal/political/environmental/
+IP/editorial review. **Fifty-three of 67 are reviewed: five eligible, six revision-blocked, 42
+synthesis/private-store-blocked, and 14 unreviewed.** See `publication-rights-batch-32.md`.
 
 ### Class D — generated diagnostics (7)
 

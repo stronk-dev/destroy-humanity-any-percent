@@ -1775,3 +1775,16 @@
 - The source remains ignored and its D-002 disposition remains public synthesis plus a named private
   store or verified cleanup; this edit does not authorize raw tracking, publication, product work or
   push.
+
+## 2026-08-21 — D-002 research publication review Batch 32
+
+- Read the cryptocurrency, Web3 and proof-of-work satire dossier completely and routed it to a
+  dated public synthesis plus current financial/legal/political/environmental/IP/editorial review.
+- Preserved the recreated-intermediary, self-issued-collateral, belief-preservation, proof-of-work-
+  externality and rebound findings without promoting investor-loss/fraud cases, current sentences,
+  living founders/celebrities/political figures, active tokens/marks or disputed energy estimates.
+- Refused to adopt its Crypto faction, volatility/depeg mechanics, route, buildings, achievements,
+  events, tickers and player copy as research authority.
+- Class-C progress is 53 of 67: five eligible, six revision-blocked, 42 synthesis/private-store-
+  blocked, and 14 unreviewed. No ignored source, design/content/financial/legal/political/
+  environmental/IP authority, publication, push, deployment or destructive cleanup changed.
