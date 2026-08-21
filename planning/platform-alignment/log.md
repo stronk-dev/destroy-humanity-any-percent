@@ -1892,3 +1892,16 @@
 - Class-C progress is 61 of 67: five eligible, six revision-blocked, 50 synthesis/private-store-
   blocked, and six unreviewed. No ignored source, spectator/product/platform/legal/design/IP
   authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 41
+
+- Read the believable-artificial-pet-personality dossier completely and routed it to an
+  independently sourced public synthesis plus product/IP/patent/editorial review.
+- Preserved the legible-causality, deterministic-trait-bias, remembered-recognition,
+  anticipation/follow-through and circumstance-not-RNG findings without promoting its almost
+  entirely model-derived external case record or patented-system characterizations.
+- Refused to adopt its FSM changes, memory-ledger/save fields, temperament tables, bonds,
+  greeting/greying behavior, emotional copy and RFC routing as research authority.
+- Class-C progress is 62 of 67: five eligible, six revision-blocked, 51 synthesis/private-store-
+  blocked, and five unreviewed. No ignored source, pet/product/design/content/IP/patent authority,
+  publication, push, deployment or destructive cleanup changed.

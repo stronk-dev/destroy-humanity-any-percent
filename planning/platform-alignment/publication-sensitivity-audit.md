@@ -252,7 +252,10 @@ five eligible, six revision-blocked, 49 synthesis/private-store-blocked, and sev
 See `publication-rights-batch-39.md`. Batch 40 reviewed the spectator and race-formats dossier;
 it requires public synthesis plus current product/platform/legal/IP/editorial review. **Sixty-one
 of 67 are reviewed: five eligible, six revision-blocked, 50 synthesis/private-store-blocked, and
-six unreviewed.** See `publication-rights-batch-40.md`.
+six unreviewed.** See `publication-rights-batch-40.md`. Batch 41 reviewed the believable-
+artificial-pet-personality dossier; it requires public synthesis plus primary-source product/IP/
+patent/editorial review. **Sixty-two of 67 are reviewed: five eligible, six revision-blocked, 51
+synthesis/private-store-blocked, and five unreviewed.** See `publication-rights-batch-41.md`.
 
 ### Class D — generated diagnostics (7)
 
