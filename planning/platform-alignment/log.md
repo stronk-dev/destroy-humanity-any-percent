@@ -1945,3 +1945,17 @@
 - Class-C progress is 65 of 67: five eligible, six revision-blocked, 54 synthesis/private-store-
   blocked, and two unreviewed. No ignored source, morality/product/philosophy/psychology/legal/
   political/IP authority, publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002 research publication review Batch 45
+
+- Read the tile-placement, spatial-puzzle and shared-world-map dossier completely and routed it to
+  an independently worded public synthesis plus current product/economy/governance/security/
+  environmental/legal/IP/editorial review.
+- Preserved the scarce-commitment, signed-local-preview, non-commensurable-axis, located-objective,
+  limited-lookahead, mismatch-valve, persistent-consequence and victimless-MMO findings without
+  promoting external mechanics, quotations, statistics, model claims or legal conclusions.
+- Refused to adopt its world graph, formulas/matrices/constants, placement economy, persistence,
+  bots, mandates, roadmap, UI and player copy as research authority.
+- Class-C progress is 66 of 67: five eligible, six revision-blocked, 55 synthesis/private-store-
+  blocked, and one unreviewed. No ignored source, world/product/economy/governance/security/
+  environmental/legal/IP authority, publication, push, deployment or destructive cleanup changed.

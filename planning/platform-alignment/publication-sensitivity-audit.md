@@ -267,6 +267,10 @@ Batch 44 reviewed the morality-systems and Ethical%-architecture dossier; it req
 synthesis plus current product/philosophy/psychology/legal/political/IP/editorial review.
 **Sixty-five of 67 are reviewed: five eligible, six revision-blocked, 54 synthesis/private-store-
 blocked, and two unreviewed.** See `publication-rights-batch-44.md`.
+Batch 45 reviewed the tile-placement, spatial-puzzle and shared-world-map dossier; it requires
+public synthesis plus current product/economy/governance/security/environmental/legal/IP/editorial
+review. **Sixty-six of 67 are reviewed: five eligible, six revision-blocked, 55 synthesis/private-
+store-blocked, and one unreviewed.** See `publication-rights-batch-45.md`.
 
 ### Class D — generated diagnostics (7)
 
