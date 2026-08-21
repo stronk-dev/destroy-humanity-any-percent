@@ -1550,3 +1550,18 @@
 - Class-C progress is 44 of 67: five eligible, seven revision-blocked, 32 synthesis/private-store-
   blocked, and 23 unreviewed. No ignored source, design/content/safety/political/legal authority,
   publication, push, deployment or destructive cleanup changed.
+
+## 2026-08-21 — D-002: `ai-authorship-meta.md` body reconciliation — owner-delegated, owner-ADOPTED
+
+- The Batch 15–22 blocker (an owner correction appended 2026-08-08 without reconciling the
+  rejected body text) is resolved. The owner delegated the mechanical edit to Claude and adopted
+  the result after reviewing the complete before/after of all three edits.
+- Edits, exactly: (1) §6 Recommendation marked SUPERSEDED with the ruled outcome boxed above the
+  retained rejected-history text; (2) Option E carries a REJECTED-on-the-record box including the
+  factual correction that the "no-genAI art policy with a manifest" premise never described this
+  project; (3) both stale §11 routing rows now route to the ruling. The OWNER CORRECTION + RULING
+  section is byte-untouched. The retired colophon line survives only inside the marked history
+  block and quoted within the ruling itself — the exempt places.
+- The file is currently gitignored, so the adopted state is on-disk; it enters version control
+  whenever the D-002 review classifies it trackable. Its D-002 disposition can now proceed without
+  shipping a self-contradiction.
