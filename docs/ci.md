@@ -133,8 +133,8 @@ windows (10 Hz) in a 1280×720 Chromium viewport, with the commit count and 200 
 enforced. `make test-browser` first runs the functional three-engine matrix with this one
 wall-clock-sensitive test disabled, then invokes the focused target in a fresh Chromium process.
 This keeps Firefox/WebKit contention and unrelated test files out of the measurement without
-changing any budget. The real-time 4× CPU / dropped-frame profile remains the manual release check
-described in the Game UI docs.
+changing any budget. The real-time 4× CPU / dropped-frame profile remains a manual release check;
+the 2026-08-22 Game UI archival record preserves its latest passing environment and measurements.
 
 `make test-browser-ci` runs the same functional-matrix-then-isolated-performance sequence with
 `CI=true` in the pinned Linux Playwright image, using fresh anonymous `node_modules` and

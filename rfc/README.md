@@ -21,7 +21,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [Game-UI Screens](game-ui-screens.md) | accepted — GU-C1–C28 ruled; closeout first-filter approved; designated review and AC5 reference profile pending | UI Foundation / Client Shell |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — UNBLOCKED, blockers answered | Commons Compact |
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
@@ -90,6 +89,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Achievements Foundation](archive/clout-and-achievements-foundation.md) | implemented | [Achievements](../docs/achievements.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Pet Care Foundation](archive/pet-care-foundation.md) | implemented; combat AC3 carried | [Pet care](../docs/pet-care.md), [Founder transitions](../docs/founder-transitions.md), [Save layer](../docs/save-layer.md) |
 | [UI Foundation](archive/ui-foundation.md) | implemented | [UI foundation](../docs/ui-foundation.md) |
+| [Game-UI Screens](archive/game-ui-screens.md) | implemented | [Game UI](../docs/game-ui.md) |
 | [T0–T1 Playable Content](archive/t0-t1-playable-content.md) | implemented | [T0–T1 playable content](../docs/t0-t1-playable-content.md), [Balance harness](../docs/balance-harness.md), [Prestige and Exits](../docs/prestige-and-exits.md) |
 
 **Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts

@@ -1,14 +1,15 @@
 # Capability reality audit
 
-Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness, not a prose claim. The
+Current through the 2026-08-22 Game UI archival closeout. “Proof” means a named executable witness,
+not a prose claim. The
 433-row `capability-outcome-ledger.tsv` is the authoritative atomic denominator; this table is a
 workflow summary and grants no inherited proof to mixed child outcomes.
 
 | Outcome | Intent | Producer / primitive | Consumer | Real content / workflow | Executable witness | Verdict |
 |---|---|---|---|---|---|---|
-| Start and play the live game | `design/11`, Game UI RFC | Bootstrap, snapshot v2, production intents, world channel | `GameUIApp.svelte` via `game-ui/runtime.ts` | Vision Slide -> Desk on epoch-7/8 catalogs | `make test-game-ui-composed`; current-head hosted job passed | **Proven to Desk only** |
-| Recover realtime delivery after disconnect | Transport D4/T4, AC2/AC4/AC5 | Centrifuge positions/history, typed closes, full-state endpoint, per-scope cursor | Game UI opens one unpositioned socket; cursor is test-only | Initial live subscription only | Server protocol-driver recovery/overflow/drain tests; no browser recovery witness | **Proven server; consumer absent** |
-| Complete the accepted Game UI transition path | T0–T1 RFC + Game UI C25–C28/AC1 | Live curriculum, gate/Exit events, run-end payload; v3 transition preview absent | Offer Sheet and Run End render; Gate/Wind Down/continue controls absent | Nine generators, ten upgrades, three first-ending branches | Server/Postgres first hour proven; browser stops at Desk and accepted control proof is absent | **Mechanical fragment; body-blocked** |
+| Start and play the live game | `design/11`, archived Game UI RFC | Bootstrap, snapshot v3 transition projection, production intents, world/player channels | `GameUIApp.svelte` via `game-ui/runtime.ts` | Vision Slide → Desk → Gate/Wind Down → both terminals → exact next run on epoch-7/8 catalogs | `make test-game-ui-composed`; Gate-handler severing fails; designated approval `c105da0` | **Proven bounded Phase-A slice** |
+| Recover realtime delivery after disconnect | Transport D4/T4, AC2/AC4/AC5 | Centrifuge positions/history, typed closes, full-state endpoint, per-scope cursor | Game UI persists positions, reconnects from cursors and exact-refreshes missed receipts | Real intent committed while browser socket is closed, then recovered | Q-003 server witnesses plus real browser/Postgres/WebSocket missed-receipt recovery | **Proven bounded integration** |
+| Complete the accepted Game UI transition path | T0–T1 RFC + archived Game UI C25–C28/AC1 | Live curriculum, v3 transition preview, gate/Exit/run-end events | Server-gated Gate/Wind Down/continue controls, Offer Sheet and byte-only Run End | Nine generators, ten upgrades, three first-ending branches | Server/Postgres first hour plus designated-approved narrowed browser transition/terminal/continuation proof | **Proven bounded Phase-A transition integration** |
 | Play with keyboard/assistive tech | Game UI accessibility clause | Semantic Svelte controls, focus styles, reduced-motion tokens | Browser DOM; numeric shell preference unbound | Five Phase-A surfaces only | Axe/one Enter pass; restored three-engine probes fail lifecycle focus and 320 px reflow | **Mechanical fragment with confirmed defects** |
 | Recover an anonymous account | Account RFC | One-time recovery code, session/refresh endpoints | Credential hidden with tokens in one localStorage document; refresh never consumed | Automatic account bootstrap only; missing/malformed storage creates replacement or generic offline state | Backend integration tests only | **No player recovery workflow** |
 | Export/delete own data | Account/privacy intent | Delete endpoint exists; no export endpoint | No settings controls; destructive-confirmation helper is test-only | Settings displays status and one paragraph | Delete backend test only | **Mechanical deletion; export absent** |
@@ -58,9 +59,9 @@ workflow summary and grants no inherited proof to mixed child outcomes.
 12. API A5/C1 claim one operation authority, but only 10 of 21 live v1 routes are registered; the
     generated document has zero public routes and the accepted C9 client-only rule is neither
     implemented nor enforced.
-13. Game UI's RFC and canonical doc still require the full browser first-hour even though C25/C28
-    rejected that obligation; the accepted v3 controls are absent, AC4's three outcomes can all be
-    removed without a red test, and AC5's throttle/drop-frame profile is unexecuted.
+13. **Resolved 2026-08-22:** Game UI's body/docs now match C25/C28; snapshot-v3 controls, independent
+    AC4 oracles, the designated-approved real browser transition path, and AC5's predeclared 4×
+    throttle/frame observation are archived.
 14. Minigame API's body still claims no persistence, a catalog command budget, `session_expired`,
     and stale dependencies despite opposite rulings; AC4 omits Recovery enumeration and AC5 has no
     exact surface contract, HTTP client, components, or player workflow.

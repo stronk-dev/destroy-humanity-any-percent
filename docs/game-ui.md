@@ -79,9 +79,12 @@ Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates 
 seconds at 20 Hz through 600 shared formatter windows in a 1280×720 viewport. Isolation keeps
 concurrent browser engines from becoming part of the measurement. The shared renderer may commit
 a hot Amount at most 600 times and may not produce a long task over 200 ms.
-Four-times CPU throttling and the five-percent dropped-frame allowance remain the manual
-mid-range-Android release profile; deterministic CI gates the observable commits and long tasks
-as ruled.
+Four-times CPU throttling and the five-percent dropped-frame allowance remain a manual release
+profile; deterministic CI gates observable commits and long tasks as ruled. The 2026-08-22
+reference run passed for 60,001.9 ms at 4× in pinned Chromium: 598 production prediction
+publications, 355 visible Amount mutations, no Long Tasks, and zero estimated missed frames across
+7,200 observed frame intervals. The complete environment and predeclared calculation are preserved
+with the archived Game UI planning record.
 
 ## Live-content boundary
 

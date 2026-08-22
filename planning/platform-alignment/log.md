@@ -2252,7 +2252,7 @@
 
 ## 2026-08-22 — Game UI queue row 4 implemented
 
-- Predeclared `planning/game-ui-screens/transition-witness-manifest.md`, then landed snapshot v3,
+- Predeclared `planning/archive/game-ui-screens/transition-witness-manifest.md`, then landed snapshot v3,
   pure kernel eligibility, governed Gate/Wind Down/continuation controls, V1/V2 receipt compatibility,
   independent AC4 oracles, and the narrowed composed witness in `fa5fc42`.
 - Real execution exposed and repaired two previously hidden blockers: the UI minted UUIDv4 while the
@@ -2261,3 +2261,17 @@
 - Eleven production/client/rendering severings failed their named witness and were restored. Queue
   row 4 and RP-008/RP-026/RP-067 now await only Claude's designated exact-range verdict. Row 4a's
   manual throttle/frame observation remains open; no archival, push, publication, or self-approval.
+
+## 2026-08-22 — Game UI designated approval, AC5 observation and archive
+
+- Claude designated-approved exact implementation range `05acc65^..7d78cbd` at `c105da0` after
+  independently passing the real composed lane and severing the Gate handler.
+- The owner-delegated AC5 profile was predeclared at `0d53fd1`, then passed for 60,001.9 real ms at
+  1280×720 and CDP 4× CPU throttling: 598 prediction publications, 355 visible formatter mutations,
+  0 ms longest Long Task, and 0 PPM estimated dropped frames across 7,200 frame intervals. The
+  archived observation discloses one invalid pre-measurement attempt and preserves the exact
+  environment/calculation without changing a threshold.
+- Game UI AC1–AC5, RP-008/RP-026/RP-066/RP-067, the active acceptance ledger, capability map and
+  reality audit are reconciled. The implemented RFC and complete planning record moved to their
+  archives; `docs/game-ui.md` and `docs/ci.md` are canonical. No product behavior, CI workflow,
+  push, publication or deployment changed in the archival transaction.

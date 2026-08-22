@@ -1090,3 +1090,24 @@ only on the AC5 manual reference-profile check, per the queue.
   invalid-run conditions, and thresholds before measurement.
 - The deterministic CI lane retains its exact 1,200-input/600-window authority. This observation
   may supplement that lane; it cannot replace or loosen it.
+
+## 2026-08-22 — AC5 reference profile PASS and archival gate
+
+- **Valid run:** committed `0d53fd1`, MacBook Pro `Mac15,10` / M3 Max / macOS 26.5 arm64,
+  Playwright 1.62.0 Chromium 151.0.7922.34, real Vite/gameserver/Postgres/WebSocket composition,
+  1280×720, CDP 4× CPU throttle, 60,001.9 measured ms.
+- **Observed:** 598 production prediction-worker publications, 355 visible Amount mutations,
+  Long Task instrumentation present with 0 ms longest task, 7,200 frame intervals, zero estimated
+  missed frames, and 0 PPM dropped frames. All predeclared fields were present and every bound
+  passed. The deterministic exact 1,200-input/600-window CI proof remains separately green.
+- **Invalid precursor disclosed:** a first attempt timed out before measurement waiting for visitor
+  Copy to re-emit after reload even though the socket was open. The valid rerun used the direct
+  open-WebSocket condition. No population, algorithm, threshold, or product byte changed, and no
+  field from the invalid attempt was used.
+- The temporary observation plumbing and seeded test state were confined to the isolated composed
+  database run; the tracked composed tool was restored exactly and the worktree was clean before
+  this record.
+- **Archival authority:** all five acceptance criteria are now met. The implementation range
+  `05acc65^..7d78cbd` has Claude's mandatory designated cross-party APPROVED verdict at `c105da0`;
+  AC5's separate owner-delegated manual gate now passes. Status promotion and the RFC/planning
+  archive move are authorized in the same record-only transaction; no push is authorized.

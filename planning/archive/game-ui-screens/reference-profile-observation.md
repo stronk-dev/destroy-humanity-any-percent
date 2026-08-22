@@ -51,4 +51,37 @@ completed evidence and blocks archival; thresholds are not adjusted after execut
 
 ## Result
 
-Not run yet.
+**PASS — 2026-08-22.** Measured from committed `0d53fd1`; the observation probe was temporary,
+fully removed afterward, and made no product or test-harness change.
+
+Environment:
+
+- host: MacBook Pro `Mac15,10`, Apple M3 Max (14 cores), 36 GB, macOS 26.5 arm64;
+- Node 26.7.0, Playwright 1.62.0, Chromium 151.0.7922.34;
+- wall-clock valid-run window: 2026-08-22 11:12:33Z–11:13:55Z;
+- real Vite/gameserver/Postgres/WebSocket composition; 100 producing Beige Towers;
+- viewport 1280×720; requested CDP CPU throttle 4×.
+
+Observed artifact:
+
+| Field | Result | Gate |
+|---|---:|---:|
+| Baseline frame intervals | 601 | ≥120 |
+| Baseline median frame interval | 8.3 ms | 8–25 ms |
+| Measured duration | 60,001.9 ms | ≥60,000 ms |
+| Published prediction-worker snapshots | 598 | nonzero |
+| Visible Amount mutations | 355 | 1–600 |
+| Long Task instrumentation | available | required |
+| Longest Long Task | 0 ms | ≤200 ms |
+| Observed frame intervals | 7,200 | nonzero |
+| Estimated missed frames | 0 | reported |
+| Dropped-frame rate | 0 PPM (0%) | ≤50,000 PPM (5%) |
+
+The worker publishes predicted snapshots on the 100 ms snapshot cadence; its internal 50 ms
+simulation steps remain covered by the deterministic lane's exact 1,200-input proof. This manual
+result neither changes nor substitutes that bound.
+
+One earlier attempt was invalid before the measurement window: after the profile reload it waited
+for visitor Copy to re-emit and timed out. The socket itself was open. The rerun replaced that
+presentation proxy with the direct open-WebSocket condition; population, instruments, algorithm,
+thresholds, and product bytes were unchanged. No measurement from the invalid attempt is used.

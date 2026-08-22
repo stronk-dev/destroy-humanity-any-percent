@@ -1,6 +1,6 @@
 # Game UI Screens implementation plan
 
-RFC: `rfc/game-ui-screens.md`
+RFC: `rfc/archive/game-ui-screens.md`
 
 - [x] Acceptance-review the hardened draft against the shipped UI/shell/transport boundaries.
 - [x] Owner-rule GU-C1–GU-C8 and reconcile the normative body.

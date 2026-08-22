@@ -13,7 +13,7 @@
 > is structural, not incidental) · `docs/client-shell.md` (lifecycle + prediction Worker) ·
 > `docs/transport.md` + `balance/transport/phase0.json` (reconnect/recovery tuning) ·
 > `rfc/ui-foundation.md` (token matrix — no breakpoints or touch tokens exist yet) ·
-> `rfc/game-ui-screens.md` · the notification policy (currently one line in `docs/client-shell.md`:
+> `rfc/archive/game-ui-screens.md` · the notification policy (currently one line in `docs/client-shell.md`:
 > "Other notifications remain badges owned by later feature surfaces").
 >
 > **Builds on, does not redo:** `research/browser-rendering.md §5` (mobile GPU + PWA one-pager —
@@ -500,8 +500,8 @@ and do not supersede the active RFC/decision/execution queues.
 | `pageshow(persisted)` + `online` triggers (§7.1) | client shell (`docs/client-shell.md` + its successor RFC batch) | Two added lifecycle handlers + WebKit browser-suite case |
 | Ping/backoff/recovery numbers (§7.2) | `balance/transport/phase0.json` + Centrifugo config | Keep defaults; record them as reviewed values; do NOT widen history TTL for mobile |
 | Counter-cell spec: `contain` + `tabular-nums` + fixed `ch` width (§4.1) | `rfc/ui-foundation.md` C9 token/component contract | A named `counter-cell` primitive; components consume it, never raw text nodes |
-| Breakpoints, target-size tokens (≥48 dp buys, thumb-scale main button), safe-area + `svh` tokens (§5) | `rfc/ui-foundation.md` token matrix + `rfc/game-ui-screens.md` | New token domains: `size.touch`, `inset.safe`, breakpoint set; axe-core already gates a11y `[repo]` — add WCAG 2.5.8 check |
-| `pointerdown` + `touch-action` + hazard suite (§5.2, §5.4) | `rfc/game-ui-screens.md` (click surface spec) | Interaction spec lines + WebKit/Chromium touch tests |
+| Breakpoints, target-size tokens (≥48 dp buys, thumb-scale main button), safe-area + `svh` tokens (§5) | `rfc/ui-foundation.md` token matrix + `rfc/archive/game-ui-screens.md` | New token domains: `size.touch`, `inset.safe`, breakpoint set; axe-core already gates a11y `[repo]` — add WCAG 2.5.8 check |
+| `pointerdown` + `touch-action` + hazard suite (§5.2, §5.4) | `rfc/archive/game-ui-screens.md` (click surface spec) | Interaction spec lines + WebKit/Chromium touch tests |
 | Touch vs click-clamp fairness (§5.3) | `design/02` / active-play clamp definition site | `DESIGN-GAP:` flag when next touched — multi-touch counting vs lower clamp needs an owner ruling; constants are balance data |
 | Mobile sprite/animation caps (§4.2–4.3) | `browser-rendering.md` consumers / future pet-renderer RFC | Mobile cap ≤10–15 visible, transform/opacity-only, no animated blur — acceptance criterion for the CSS pet renderer |
 | Perf budget + INP gate (§4.5) | `rfc/scaffolding-and-ci.md` successors / CI obligations inventory | Lighthouse mobile-emulation job: JS ≤365 KiB, INP budget; joins the CI obligation table in `research/README.md` |
