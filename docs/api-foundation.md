@@ -29,6 +29,10 @@ shape, while a retained historical shape uses an explicit `V<n>` suffix. A compa
 refresh must cite its authorizing ruling and be recorded in the owning planning log in the same
 change; an otherwise valid widening is not permission for a silent re-baseline.
 
+GU-C26 authorizes the current Game UI schema v3 compatibility-pin baseline. The unversioned
+`GameUISnapshot` is the current v3 shape, `GameUISnapshotV1` and `GameUISnapshotV2` retain exact
+stored-bootstrap receipt validation, and the live Founder-state operation returns only v3.
+
 Public pagination cursors contain canonical `{filter_sha256,key,op,v}` JSON followed by an
 HMAC-SHA256 signature, encoded as unpadded base64url. The codec verifies the signature with the
 current or previous deployment key before parsing JSON, binds the cursor to operation and complete

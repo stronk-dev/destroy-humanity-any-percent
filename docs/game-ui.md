@@ -1,7 +1,7 @@
 # Game UI
 
 The Game UI is the Svelte Phase-A play surface mounted by the production client entrypoint. It
-consumes the generated `game_ui_snapshot.v2` projection, decoded lifecycle events, bootstrap and
+consumes the generated `game_ui_snapshot.v3` projection, decoded lifecycle events, bootstrap and
 intent operations, and the ratified Copy/Presentation catalogs. Components do not import transport
 or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and envelope decoding.
 
@@ -10,10 +10,12 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 - Vision Slide: silently creates the anonymous account through the idempotent bootstrap
   coordinator and persists credentials before entering play.
 - Desk: manual action, resources and visible cap explanations, generator purchases, upgrades,
-  local splits, the free Horse Armor shelf, shareware registration/order form, and README.TXT.
+  server-projected Gate/Wind Down controls, local splits, the free Horse Armor shelf, shareware
+  registration/order form, and README.TXT.
 - Offer Sheet: authoritative exit type, complete payout terms, server-clock-relative expiry,
   Company-only decline, and Founder-CAS-guarded acceptance.
-- Run End: a payload-isolated component that accepts only the decoded `run_ended` event.
+- Run End: a payload-isolated component that accepts only the decoded `run_ended` event; its parent
+  owns the exact-next-Company continuation control.
 - Settings/System: save status, drain notice, and explicit resync action.
 
 The persistent chrome derives its era only from the authoritative tier (`0` is `era_1995`, `1` is
@@ -25,9 +27,13 @@ placeholders never substitute a formatted zero or an unrelated company label. Mi
 throw. Payout labels and any shipped network-slot titles also resolve only through that catalog;
 unknown future slot IDs are withheld rather than rendered mechanically.
 
-Live sync requires snapshot v2 and its positive `founder_revision`. Encrypted bootstrap receipts
-remain replayable under the schema version they were minted with: a stored v1 snapshot legally
-lacks that coordinate, and offer acceptance stays disabled until the next live v2 sync supplies it.
+Live sync requires snapshot v3, its positive `founder_revision`, and the exact `transitions` object.
+The server derives the first Gate and Wind Down eligibility by previewing the real production
+transition kernel on a discarded state clone. The first Gate is the only Phase-A gate exposed;
+later gates/routes fail closed. Eligibility is advisory and the intent receipt remains authority.
+Encrypted bootstrap receipts remain replayable under the schema version they were minted with:
+stored v1/v2 snapshots legally omit transition controls, and v1 also lacks the Founder coordinate.
+Offer acceptance stays disabled until a current live sync supplies that coordinate.
 The runtime persists positioned player/world subscriptions, recovers missed publications after a
 drop, and falls back to the same authenticated live snapshot operation on a revision gap, expired
 history, queue overflow, or invalid frame. Recovery snapshots are delivered into the existing
@@ -47,9 +53,11 @@ gameserver, Postgres bootstrap transaction, authenticated live snapshot-v2 route
 world subscription; its schema/revision and visible visitor-counter assertions prove the production
 HTTP synchronization and WebSocket handshake completed. The composed witness then closes the
 production browser socket, commits an intent while disconnected, and requires the reconnect to send
-the exact persisted player epoch/offset and advance it by replaying the missed receipt. This current
-composed test does not yet prove the three server-authorized transition/continuation controls; that
-narrowed GU-C25–GU-C28 browser proof remains the Game UI closeout item.
+the exact persisted player epoch/offset and advance it by replaying the missed receipt. Ordinary
+server-side setup then satisfies the first-gate requirement; visible enabled controls alone submit
+Gate and Wind Down through `runtime.ts`, render scripted and standard Run End, and continue only
+after fetching the exact successor run. No browser intent bypass, fixture clock, or two-hour replay
+is used. `make verify-game-ui` composes the existing client, browser, and composed lanes.
 
 The deterministic performance lane runs in an isolated Chromium process after the functional
 Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates representing 60

@@ -117,7 +117,6 @@
     pending = true;
     try {
       await runtime.intent({ intent_id: newIntentID(), expected_revision: snapshot.revision, ...body });
-      bindSnapshot(await runtime.snapshot());
     } catch { offline = true; }
     finally { pending = false; }
   }
@@ -125,6 +124,21 @@
   function acceptOffer(): void {
     if (!offer || founderRevision === undefined) return;
     void act({ kind: "accept_exit_offer", expected_founder_revision: founderRevision, offer_id: offer.payload.offer_id });
+  }
+
+  async function continueRun(): Promise<void> {
+    if (!ended || pending) return;
+    const expectedRunSeq = ended.payload.run_id.run_seq + 1;
+    pending = true;
+    try {
+      const value = await runtime.snapshot();
+      if (value.run.run_seq !== expectedRunSeq) throw new RangeError("next Company snapshot did not advance exactly one run");
+      bindSnapshot(value);
+      ended = undefined;
+      offer = undefined;
+      show("desk");
+    } catch { offline = true; }
+    finally { pending = false; }
   }
 
   function consumePublication(message: GameUIRuntimeMessage): void {
@@ -297,6 +311,15 @@
       {/if}
 
       <section class="card"><h2>{t("cosmetic.horse_armor_free.title", {}, era)}</h2><p>{t("cosmetic.horse_armor_free.description", { price: requirePresentationConstant("constant.price_zero") }, era)}</p><small>{t("cosmetic.horse_armor_free.disclosure", {}, era)}</small></section>
+      {#if snapshot.schema_version === 3 && "transitions" in snapshot}
+        {@const transitions = snapshot.transitions}
+        <section class="card">
+          {#if transitions.cross_gate}
+            <button type="button" disabled={pending || !transitions.cross_gate.eligible} onclick={() => act({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null })}>{t("desk.cross_gate", {}, era)}</button>
+          {/if}
+          <button type="button" disabled={pending || !transitions.wind_down.eligible || founderRevision === undefined} onclick={() => act({ kind: "wind_down", expected_founder_revision: founderRevision })}>{t("desk.wind_down", {}, era)}</button>
+        </section>
+      {/if}
       {#if era === "era_1995"}
         <section class="card" title={t("satire.unregistered.tooltip", {}, era)}><h2>{t("satire.unregistered.titlebar_frame", { day: evaluationDay() }, era)}</h2></section>
         <section class="card" aria-labelledby="order-heading">
@@ -324,6 +347,8 @@
     </section>
   {:else if surface === "run_end" && ended}
     <RunEndSurface {ended} />
+    <button type="button" disabled={pending} onclick={continueRun}>{t("screen.run_end.continue", {}, era)}</button>
+    {#if offline}<p role="alert">{t("settings.save_status.offline", {}, era)}</p>{/if}
   {:else if snapshot && surface === "settings"}
     <section class="surface" aria-labelledby="settings-heading"><h1 id="settings-heading">{t("surface.settings.title", {}, era)}</h1><p>{offline ? t("settings.save_status.offline", {}, era) : pending ? t("settings.save_status.saving", {}, era) : t("settings.save_status.saved_frame", { ago: duration(Math.max(0, monotonicMS - snapshotMonotonicMS)) }, era)}</p><p>{t("settings.account_note", {}, era)}</p></section>
   {/if}

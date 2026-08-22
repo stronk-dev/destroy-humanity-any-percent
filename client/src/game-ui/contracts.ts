@@ -1,4 +1,4 @@
-import type { GameUISnapshot, GameUISnapshotV1 } from "../api/generated/types";
+import type { GameUISnapshot, GameUISnapshotV1, GameUISnapshotV2 } from "../api/generated/types";
 import { parseCanonical } from "../numeric";
 import type { AuthoritativeSnapshot, DiscreteFact } from "../shell/contracts";
 
@@ -44,17 +44,18 @@ function sortedRows(values: unknown, id: string, label: string): Record<string, 
   return rows;
 }
 
-export type ParsedGameUISnapshot = GameUISnapshot | GameUISnapshotV1;
+export type ParsedGameUISnapshot = GameUISnapshot | GameUISnapshotV1 | GameUISnapshotV2;
 
 export function parseGameUISnapshot(source: unknown): ParsedGameUISnapshot {
   const root = object(source, "game UI snapshot");
-  if (root.schema_version !== 1 && root.schema_version !== 2) throw new SyntaxError("invalid game UI envelope");
+  if (root.schema_version !== 1 && root.schema_version !== 2 && root.schema_version !== 3) throw new SyntaxError("invalid game UI envelope");
   const fields = ["constants_hash", "evaluated_through_ms", "facts", "generators", "manual_action", "progress", "resources", "revision", "run", "schema_version", "server_now_ms", "upgrades"];
-  if (root.schema_version === 2) fields.push("founder_revision");
+  if (root.schema_version >= 2) fields.push("founder_revision");
+  if (root.schema_version === 3) fields.push("transitions");
   exact(root, fields, "game UI snapshot");
   if (typeof root.constants_hash !== "string" || !hash.test(root.constants_hash)) throw new SyntaxError("invalid game UI envelope");
   const revision = integer(root.revision, 1);
-  if (root.schema_version === 2) integer(root.founder_revision, 1);
+  if (root.schema_version >= 2) integer(root.founder_revision, 1);
   const evaluatedThrough = integer(root.evaluated_through_ms, 1);
   const serverNow = integer(root.server_now_ms, evaluatedThrough);
 
@@ -94,6 +95,20 @@ export function parseGameUISnapshot(source: unknown): ParsedGameUISnapshot {
   exact(run, ["category", "exit_count", "founder_id", "run_seq", "run_started_at_ms", "tier"], "game UI run");
   identifier(run.category); integer(run.exit_count, 0); integer(run.run_seq, 1); integer(run.run_started_at_ms, 1, serverNow); integer(run.tier, 0, 9);
   if (typeof run.founder_id !== "string" || !uuid.test(run.founder_id)) throw new SyntaxError("invalid Founder ID");
+
+  if (root.schema_version === 3) {
+    const transitions = object(root.transitions, "game UI transitions");
+    exact(transitions, ["cross_gate", "wind_down"], "game UI transitions");
+    if (transitions.cross_gate !== null) {
+      const crossGate = object(transitions.cross_gate, "game UI cross-gate transition");
+      exact(crossGate, ["eligible", "gate_id", "route_id"], "game UI cross-gate transition");
+      if (typeof crossGate.eligible !== "boolean" || crossGate.route_id !== null) throw new SyntaxError("invalid game UI cross-gate transition");
+      identifier(crossGate.gate_id);
+    }
+    const windDown = object(transitions.wind_down, "game UI wind-down transition");
+    exact(windDown, ["eligible"], "game UI wind-down transition");
+    if (typeof windDown.eligible !== "boolean") throw new SyntaxError("invalid game UI wind-down transition");
+  }
 
   const upgrades = sortedRows(root.upgrades, "upgrade_id", "game UI upgrades");
   for (const row of upgrades) {

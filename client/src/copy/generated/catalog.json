@@ -421,6 +421,14 @@
       "tone": "corporate"
     },
     {
+      "key": "desk.cross_gate",
+      "text": "Move Into the Garage",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "desk.generators_label",
       "text": "Equipment",
       "params": [],
@@ -492,6 +500,14 @@
     {
       "key": "desk.upgrades_label",
       "text": "Upgrades",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.wind_down",
+      "text": "Wind Down Company",
       "params": [],
       "era_variants": null,
       "provenance": [],
@@ -1261,6 +1277,14 @@
       "era_variants": null,
       "provenance": [],
       "tone": "diegetic"
+    },
+    {
+      "key": "screen.run_end.continue",
+      "text": "Start the Next Company",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
     },
     {
       "key": "screen.run_end.delta_heading",

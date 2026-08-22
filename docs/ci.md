@@ -16,7 +16,7 @@ runners, deployment credentials, or deployment steps.
 | `harness` | `make verify-harness-fast` | Cold harness tests, role proofs, Commons invariance, and complete balance/epoch history guards; no pacing/relevance simulation |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
-| `game-ui-composed` | `make test-game-ui-composed` | Real Chromium, Vite, gameserver, Postgres, and WebSocket bootstrap-to-Desk flow |
+| `game-ui-composed` | `make test-game-ui-composed` | Real Chromium/Vite/gameserver/Postgres/WebSocket bootstrap, recovery, transitions, both terminals, and next-run flow |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 
 The fast harness, client, and schema jobs have five-minute ceilings. Server, browser, and
@@ -152,9 +152,12 @@ scheduling, architecture, or cold-run behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
 and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
-`/api/v1/founder/state` v2 round trip, and the actual Centrifuge WebSocket subscription. The
+`/api/v1/founder/state` v3 round trip, and the actual Centrifuge WebSocket subscription. The
 snapshot assertion and visitor-counter assertion prove both HTTP synchronization and the socket
-handshake; no browser runtime or server transport is stubbed. The dedicated
+handshake. The same witness uses server-side precondition setup, then requires visible enabled
+Gate/Wind Down controls to traverse `runtime.ts`, renders both terminal variants, and continues to
+the exact next Company. No browser runtime, server transport, fixture clock, or direct browser
+intent call is substituted. The dedicated
 `game-ui-composed` Actions job runs this same Make target on every push and pull request.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.

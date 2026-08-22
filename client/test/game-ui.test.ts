@@ -21,8 +21,9 @@ const snapshot = {
   resources: [{ amount: "1e2", cap: { amount: "1e1000", reason_key: "resource.company_cash.cap.phase0" }, rate_per_second: "1e0", resource_id: "company.cash" }],
   revision: 1,
   run: { category: "any_percent", exit_count: 0, founder_id: "01985555-1111-7111-8111-111111111111", run_seq: 1, run_started_at_ms: 1_799_999_000_000, tier: 0 },
-  schema_version: 2,
+  schema_version: 3,
   server_now_ms: 1_800_000_000_000,
+  transitions: { cross_gate: { eligible: true, gate_id: "gate.t0_to_t1", route_id: null }, wind_down: { eligible: false } },
   upgrades: [],
 };
 
@@ -53,12 +54,15 @@ describe("Game UI snapshot contract", () => {
     expect(() => parseGameUISnapshot({ ...snapshot, resources: [{ ...snapshot.resources[0], amount: "1e1001" }] })).toThrow(/cap/);
   });
 
-  it("accepts stored bootstrap schema v1 but requires the Founder coordinate in live schema v2", () => {
-    const { founder_revision: _founderRevision, ...legacy } = snapshot;
+  it("accepts stored bootstrap schemas v1/v2 but requires transitions in current schema v3", () => {
+    const { founder_revision: _founderRevision, transitions: _transitions, ...legacy } = snapshot;
     expect(parseGameUISnapshot({ ...legacy, schema_version: 1 })).not.toHaveProperty("founder_revision");
+    expect(parseGameUISnapshot({ ...legacy, founder_revision: 1, schema_version: 2 })).not.toHaveProperty("transitions");
     expect(() => parseGameUISnapshot({ ...legacy, schema_version: 2 })).toThrow(/exact/);
     expect(() => parseGameUISnapshot({ ...snapshot, schema_version: 1 })).toThrow(/exact/);
     expect(() => parseGameUISnapshot({ ...snapshot, founder_revision: 0 })).toThrow(/safe integer/);
+    expect(() => parseGameUISnapshot({ ...snapshot, transitions: { ...snapshot.transitions, cross_gate: { eligible: true, gate_id: "gate.t0_to_t1", route_id: "route.nope" } } })).toThrow(/cross-gate/);
+    expect(() => parseGameUISnapshot({ ...legacy, founder_revision: 1, schema_version: 3 })).toThrow(/exact/);
   });
 });
 

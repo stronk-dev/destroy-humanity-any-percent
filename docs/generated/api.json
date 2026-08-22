@@ -112,6 +112,9 @@
               },
               {
                 "$ref": "#/components/schemas/GameUISnapshotV1"
+              },
+              {
+                "$ref": "#/components/schemas/GameUISnapshotV2"
               }
             ]
           },
@@ -424,14 +427,17 @@
             "$ref": "#/components/schemas/GameUIRun"
           },
           "schema_version": {
-            "maximum": 2,
-            "minimum": 2,
+            "maximum": 3,
+            "minimum": 3,
             "type": "integer"
           },
           "server_now_ms": {
             "maximum": 9007199254740991,
             "minimum": 1,
             "type": "integer"
+          },
+          "transitions": {
+            "$ref": "#/components/schemas/GameUITransitions"
           },
           "upgrades": {
             "items": {
@@ -453,6 +459,7 @@
           "run",
           "schema_version",
           "server_now_ms",
+          "transitions",
           "upgrades"
         ],
         "type": "object"
@@ -534,6 +541,148 @@
           "schema_version",
           "server_now_ms",
           "upgrades"
+        ],
+        "type": "object"
+      },
+      "GameUISnapshotV2": {
+        "additionalProperties": false,
+        "properties": {
+          "constants_hash": {
+            "format": "sha256-prefixed",
+            "type": "string"
+          },
+          "evaluated_through_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "facts": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIFact"
+            },
+            "type": "array"
+          },
+          "founder_revision": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "generators": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIGenerator"
+            },
+            "type": "array"
+          },
+          "manual_action": {
+            "$ref": "#/components/schemas/GameUIManualAction"
+          },
+          "progress": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIProgress"
+            },
+            "type": "array"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIResource"
+            },
+            "type": "array"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "run": {
+            "$ref": "#/components/schemas/GameUIRun"
+          },
+          "schema_version": {
+            "maximum": 2,
+            "minimum": 2,
+            "type": "integer"
+          },
+          "server_now_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "upgrades": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIUpgrade"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "constants_hash",
+          "evaluated_through_ms",
+          "facts",
+          "founder_revision",
+          "generators",
+          "manual_action",
+          "progress",
+          "resources",
+          "revision",
+          "run",
+          "schema_version",
+          "server_now_ms",
+          "upgrades"
+        ],
+        "type": "object"
+      },
+      "GameUITransitionCrossGate": {
+        "additionalProperties": false,
+        "properties": {
+          "eligible": {
+            "type": "boolean"
+          },
+          "gate_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "route_id": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "eligible",
+          "gate_id",
+          "route_id"
+        ],
+        "type": "object"
+      },
+      "GameUITransitionEligibility": {
+        "additionalProperties": false,
+        "properties": {
+          "eligible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "eligible"
+        ],
+        "type": "object"
+      },
+      "GameUITransitions": {
+        "additionalProperties": false,
+        "properties": {
+          "cross_gate": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUITransitionCrossGate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "wind_down": {
+            "$ref": "#/components/schemas/GameUITransitionEligibility"
+          }
+        },
+        "required": [
+          "cross_gate",
+          "wind_down"
         ],
         "type": "object"
       },

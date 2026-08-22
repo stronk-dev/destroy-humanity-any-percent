@@ -132,14 +132,25 @@ func TestGameUISnapshotProjectsStoredSchemaV4CompanyV18RatesIntegration(t *testi
 			ResourceID    string `json:"resource_id"`
 			RatePerSecond string `json:"rate_per_second"`
 		} `json:"resources"`
+		Transitions struct {
+			CrossGate *struct {
+				Eligible bool   `json:"eligible"`
+				GateID   string `json:"gate_id"`
+			} `json:"cross_gate"`
+			WindDown struct {
+				Eligible bool `json:"eligible"`
+			} `json:"wind_down"`
+		} `json:"transitions"`
 	}
 	if json.Unmarshal(encoded, &projected) != nil {
 		t.Fatal("snapshot JSON")
 	}
-	if projected.SchemaVersion != 2 || projected.FounderRevision != founderRevision.Number ||
+	if projected.SchemaVersion != 3 || projected.FounderRevision != founderRevision.Number ||
 		len(projected.Generators) != 9 || projected.Generators[1].GeneratorID != "generator.beige_tower" ||
 		projected.Generators[1].RateContribution != "4.018e2" || len(projected.Resources) != 2 ||
-		projected.Resources[0].ResourceID != "company.cash" || projected.Resources[0].RatePerSecond != "4.018e2" {
+		projected.Resources[0].ResourceID != "company.cash" || projected.Resources[0].RatePerSecond != "4.018e2" ||
+		projected.Transitions.CrossGate == nil || !projected.Transitions.CrossGate.Eligible ||
+		projected.Transitions.CrossGate.GateID != "gate.t0_to_t1" || projected.Transitions.WindDown.Eligible {
 		t.Fatalf("v4/v18 projection=%+v", projected)
 	}
 }

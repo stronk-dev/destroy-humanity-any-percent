@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createBrowserGameUIRuntime, type RuntimeStorage } from "../src/game-ui/runtime";
+import { createBrowserGameUIRuntime, newIntentID, type RuntimeStorage } from "../src/game-ui/runtime";
 
 const snapshot = {
   constants_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -12,7 +12,8 @@ const snapshot = {
   run: { category: "any_percent", exit_count: 0, founder_id: "01985555-1111-7111-8111-111111111111", run_seq: 1, run_started_at_ms: 1_799_999_000_000, tier: 0 },
   schema_version: 1, server_now_ms: 1_800_000_000_000, upgrades: [],
 };
-const currentSnapshot = { ...snapshot, founder_revision: 1, schema_version: 2 };
+const currentSnapshot = { ...snapshot, founder_revision: 1, schema_version: 3,
+  transitions: { cross_gate: { eligible: false, gate_id: "gate.t0_to_t1", route_id: null }, wind_down: { eligible: false } } };
 
 class MemoryStorage implements RuntimeStorage {
   readonly values = new Map<string, string>();
@@ -64,6 +65,13 @@ function publication(socket: FakeSocket, channel: string, offset: number, data: 
 afterEach(() => { vi.useRealTimers(); });
 
 describe("browser Game UI runtime", () => {
+  it("mints the server-required UUIDv7 intent identity", () => {
+    const cryptoSource = { getRandomValues(value: Uint8Array) { value.fill(0xff); return value; } } as Crypto;
+    expect(newIntentID(cryptoSource, 1_800_000_000_000)).toBe("01a3185c-5000-7fff-bfff-ffffffffffff");
+    expect(newIntentID(cryptoSource, 1_800_000_000_000)).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
+    expect(() => newIntentID(cryptoSource, -1)).toThrow(/timestamp/);
+  });
+
   it("persists the retry key before bootstrap and credentials before returning the snapshot", async () => {
     const storage = new MemoryStorage();
     const requests: Array<{ input: string; init?: RequestInit }> = [];
@@ -102,7 +110,7 @@ describe("browser Game UI runtime", () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
     const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(snapshot), { status: 200 }));
-    await expect(runtime.snapshot()).rejects.toThrow(/schema v2/);
+    await expect(runtime.snapshot()).rejects.toThrow(/schema v3/);
   });
 
   it("records initial stream positions and decodes raw publications inside the runtime boundary", () => {

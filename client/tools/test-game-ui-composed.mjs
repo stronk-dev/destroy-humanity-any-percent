@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -75,6 +75,31 @@ function signalGameserver(signal) {
   }
 }
 
+function seedGateRequirement(founderID) {
+  if (!/^[0-9a-f-]{36}$/u.test(founderID)) throw new Error("invalid Founder ID in server-side setup");
+  const sql = `WITH current AS (
+    SELECT revision.stream_id, revision.revision, revision.version, revision.state, revision.constants_hash
+    FROM save_revisions revision
+    JOIN save_streams stream ON stream.id = revision.stream_id
+    WHERE stream.owner_kind = 'founder' AND stream.owner_id = '${founderID}' AND stream.scope = 'company' AND stream.archived_at IS NULL
+    ORDER BY revision.revision DESC LIMIT 1
+  ) INSERT INTO save_revisions(stream_id, revision, version, state, constants_hash)
+    SELECT stream_id, revision + 1, version,
+      jsonb_set(state, '{balances,company.cash}', to_jsonb('1e5'::text), false), constants_hash FROM current;`;
+  const result = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+    "psql", "-v", "ON_ERROR_STOP=1", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", "-c", sql],
+  { cwd: repositoryRoot, encoding: "utf8" });
+  if (result.status !== 0 || !result.stdout.includes("INSERT 0 1")) {
+    throw new Error(`server-side gate setup failed (${result.status}): ${result.stderr || result.stdout}`);
+  }
+}
+
+async function waitForEnabledButton(page, name) {
+  await page.waitForFunction((label) => [...document.querySelectorAll("button")]
+    .some((button) => button.textContent?.trim() === label && !button.disabled), name, { timeout: 30_000 });
+  return page.getByRole("button", { name, exact: true });
+}
+
 try {
   await waitForReady();
   vite = await createServer({
@@ -105,12 +130,16 @@ try {
   });
   const pageErrors = [];
   const websocketFrames = [];
+  const intentResponses = [];
   let captureRecoverySnapshot = false;
   let resolveRecoverySnapshot;
   const recoverySnapshot = new Promise((resolve) => { resolveRecoverySnapshot = resolve; });
   page.on("pageerror", (error) => pageErrors.push(error));
   page.on("websocket", (socket) => socket.on("framesent", (event) => websocketFrames.push(String(event.payload))));
   page.on("response", async (response) => {
+    if (new URL(response.url()).pathname === "/api/v1/intents") {
+      intentResponses.push({ body: await response.json(), status: response.status() });
+    }
     if (!captureRecoverySnapshot || new URL(response.url()).pathname !== "/api/v1/founder/state") return;
     captureRecoverySnapshot = false;
     resolveRecoverySnapshot({ body: await response.json(), status: response.status() });
@@ -131,8 +160,9 @@ try {
     const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
     return { body: await response.json(), status: response.status };
   });
-  if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 2 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1) {
-    throw new Error("composed live Game UI v2 snapshot round trip failed");
+  if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 3 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1 ||
+      liveSnapshot.body?.transitions?.cross_gate?.gate_id !== "gate.t0_to_t1" || liveSnapshot.body.transitions.cross_gate.eligible !== false || liveSnapshot.body?.transitions?.wind_down?.eligible !== false) {
+    throw new Error("composed live Game UI v3 transition snapshot round trip failed");
   }
   const recoveryBefore = await page.evaluate(() => {
     const key = Object.keys(localStorage).find((candidate) => candidate.startsWith("cloud-clicker.transport.v1."));
@@ -186,8 +216,41 @@ try {
   if (refreshed.status !== 200 || refreshed.body?.revision !== missedReceipt.new_revision) {
     throw new Error("recovered receipt did not land the browser on the committed revision");
   }
+
+  // GU-C28 permits ordinary server-side setup so Chromium proves the UI-owned
+  // controls without replaying the already-proven two-hour policy or gaining a
+  // clock/control endpoint. Every transition below originates from a visible
+  // enabled button and reaches the server through runtime.ts.
+  seedGateRequirement(liveSnapshot.body.run.founder_id);
+  await page.reload({ waitUntil: "networkidle" });
+  const crossGate = await waitForEnabledButton(page, "Move Into the Garage");
+  await crossGate.click();
+  await page.waitForFunction(() => globalThis.performance.getEntriesByType("resource")
+    .some((entry) => new URL(entry.name).pathname === "/api/v1/intents"), undefined, { timeout: 30_000 });
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  const crossReceipt = intentResponses.at(-1);
+  if (crossReceipt?.status !== 200 || crossReceipt.body?.outcome !== "applied") {
+    throw new Error(`visible cross-gate intent was not applied: ${JSON.stringify(crossReceipt)}`);
+  }
+  const firstWindDown = await waitForEnabledButton(page, "Wind Down Company");
+  await firstWindDown.click();
+  await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByText("Your First Company Failed", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+
+  seedGateRequirement(liveSnapshot.body.run.founder_id);
+  await page.reload({ waitUntil: "networkidle" });
+  const secondCrossGate = await waitForEnabledButton(page, "Move Into the Garage");
+  await secondCrossGate.click();
+  const secondWindDown = await waitForEnabledButton(page, "Wind Down Company");
+  await secondWindDown.click();
+  await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByText("The Company Has Exited", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
-  console.log("composed Game UI bootstrap + snapshot + WebSocket missed-receipt recovery: PASS");
+  console.log("composed Game UI v3 transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));
 } finally {

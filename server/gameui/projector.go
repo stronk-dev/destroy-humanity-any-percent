@@ -98,6 +98,21 @@ type runRow struct {
 	Tier           int64  `json:"tier"`
 }
 
+type crossGateTransition struct {
+	Eligible bool   `json:"eligible"`
+	GateID   string `json:"gate_id"`
+	RouteID  any    `json:"route_id"`
+}
+
+type eligibilityTransition struct {
+	Eligible bool `json:"eligible"`
+}
+
+type transitionRows struct {
+	CrossGate *crossGateTransition  `json:"cross_gate"`
+	WindDown  eligibilityTransition `json:"wind_down"`
+}
+
 type snapshot struct {
 	ConstantsHash      string          `json:"constants_hash"`
 	EvaluatedThroughMS int64           `json:"evaluated_through_ms"`
@@ -111,6 +126,7 @@ type snapshot struct {
 	Run                runRow          `json:"run"`
 	SchemaVersion      int             `json:"schema_version"`
 	ServerNowMS        int64           `json:"server_now_ms"`
+	Transitions        transitionRows  `json:"transitions"`
 	Upgrades           []upgradeRow    `json:"upgrades"`
 }
 
@@ -209,6 +225,17 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 		facts = append(facts, factRow{FactID: gate.ID, Value: state.GatesCrossed[gate.ID]})
 	}
 	sort.Slice(facts, func(left, right int) bool { return facts[left].FactID < facts[right].FactID })
+	transitionPreview, err := previewPhaseATransitions(bundle, state, founder, save.Revision{
+		OwnerID: founderID, Number: revision, ConstantsHash: bundle.ConstantsHash,
+	}, now, contributions)
+	if err != nil {
+		return nil, err
+	}
+	transitions := transitionRows{WindDown: eligibilityTransition{Eligible: transitionPreview.WindDown}}
+	if transitionPreview.CrossGate != nil {
+		transitions.CrossGate = &crossGateTransition{Eligible: transitionPreview.CrossGate.Eligible,
+			GateID: transitionPreview.CrossGate.GateID, RouteID: nil}
+	}
 	result := snapshot{
 		ConstantsHash:   bundle.ConstantsHash,
 		Facts:           facts,
@@ -220,8 +247,8 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 		Progress: progress, Resources: resources, Revision: revision,
 		Run: runRow{Category: "any_percent", ExitCount: int64(len(founder.ExitHistory)), FounderID: founderID,
 			RunSeq: state.RunSeq, RunStartedAtMS: state.RunStartedAt.UnixMilli(), Tier: state.Tier},
-		EvaluatedThroughMS: state.EvaluatedThrough.UnixMilli(), SchemaVersion: 2,
-		ServerNowMS: save.CanonicalServerTime(now).UnixMilli(), Upgrades: upgrades,
+		EvaluatedThroughMS: state.EvaluatedThrough.UnixMilli(), SchemaVersion: 3,
+		ServerNowMS: save.CanonicalServerTime(now).UnixMilli(), Transitions: transitions, Upgrades: upgrades,
 	}
 	encoded, err := json.Marshal(result)
 	if err != nil {

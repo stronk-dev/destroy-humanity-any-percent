@@ -73,7 +73,7 @@ func TestGameUISnapshotAPIRegistryPinsTheProjectionEnvelope(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	body := []byte(`{"constants_hash":"` + testConstantsHash + `","evaluated_through_ms":1800000000000,"facts":[{"fact_id":"bootstrap.needed","value":false}],"founder_revision":7,"generators":[{"generator_id":"generator.beige_tower","max_affordable":2,"next_cost":"1e1","next_cost_resource_id":"company.cash","owned":1,"provisioned":0,"rate_contribution":"1e0"}],"manual_action":{"action_id":"manual.click","bucket_cap_milli":50000,"refill_milli_per_ms":25,"refilled_at_ms":1800000000000,"tokens_milli":50000},"progress":[{"current":"5e-1","stage_id":"progress.tier","target":"1e0"}],"resources":[{"amount":"1e2","cap":{"amount":"1e1000","reason_key":"resource.company_cash.cap.phase0"},"rate_per_second":"1e0","resource_id":"company.cash"}],"revision":1,"run":{"category":"any_percent","exit_count":0,"founder_id":"01985555-1111-7111-8111-111111111111","run_seq":1,"run_started_at_ms":1799999000000,"tier":0},"schema_version":2,"server_now_ms":1800000000000,"upgrades":[]}`)
+	body := []byte(`{"constants_hash":"` + testConstantsHash + `","evaluated_through_ms":1800000000000,"facts":[{"fact_id":"bootstrap.needed","value":false}],"founder_revision":7,"generators":[{"generator_id":"generator.beige_tower","max_affordable":2,"next_cost":"1e1","next_cost_resource_id":"company.cash","owned":1,"provisioned":0,"rate_contribution":"1e0"}],"manual_action":{"action_id":"manual.click","bucket_cap_milli":50000,"refill_milli_per_ms":25,"refilled_at_ms":1800000000000,"tokens_milli":50000},"progress":[{"current":"5e-1","stage_id":"progress.tier","target":"1e0"}],"resources":[{"amount":"1e2","cap":{"amount":"1e1000","reason_key":"resource.company_cash.cap.phase0"},"rate_per_second":"1e0","resource_id":"company.cash"}],"revision":1,"run":{"category":"any_percent","exit_count":0,"founder_id":"01985555-1111-7111-8111-111111111111","run_seq":1,"run_started_at_ms":1799999000000,"tier":0},"schema_version":3,"server_now_ms":1800000000000,"transitions":{"cross_gate":{"eligible":true,"gate_id":"gate.t0_to_t1","route_id":null},"wind_down":{"eligible":false}},"upgrades":[]}`)
 	if err := registry.ValidateRequest("get_game_ui_snapshot", nil); err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +81,8 @@ func TestGameUISnapshotAPIRegistryPinsTheProjectionEnvelope(t *testing.T) {
 		t.Fatalf("valid snapshot: %v", err)
 	}
 	legacy := bytes.ReplaceAll(body, []byte(`,"founder_revision":7`), nil)
-	legacy = bytes.ReplaceAll(legacy, []byte(`"schema_version":2`), []byte(`"schema_version":1`))
+	legacy = bytes.ReplaceAll(legacy, []byte(`"schema_version":3`), []byte(`"schema_version":1`))
+	legacy = bytes.ReplaceAll(legacy, []byte(`,"transitions":{"cross_gate":{"eligible":true,"gate_id":"gate.t0_to_t1","route_id":null},"wind_down":{"eligible":false}}`), nil)
 	if err := registry.ValidateResponse("get_game_ui_snapshot", http.StatusOK, legacy); err == nil {
 		t.Fatal("live snapshot endpoint accepted legacy schema v1")
 	}
@@ -114,8 +115,14 @@ func TestBootstrapAPIRegistryPinsCredentialSafeWire(t *testing.T) {
 	if err := registry.ValidateResponse("create_bootstrap", http.StatusCreated, response); err != nil {
 		t.Fatalf("valid bootstrap response: %v", err)
 	}
-	currentSnapshot := strings.Replace(snapshot, `"facts":[]`, `"facts":[],"founder_revision":1`, 1)
-	currentSnapshot = strings.Replace(currentSnapshot, `"schema_version":1`, `"schema_version":2`, 1)
+	v2Snapshot := strings.Replace(snapshot, `"facts":[]`, `"facts":[],"founder_revision":1`, 1)
+	v2Snapshot = strings.Replace(v2Snapshot, `"schema_version":1`, `"schema_version":2`, 1)
+	v2Response := []byte(`{"account":{"account_id":"01985555-1111-7111-8111-111111111110","created_at":"2026-08-10T12:00:00.000Z","recovery_code":"recovery"},"session":{"access_token":"access","refresh_token":"refresh"},"game_ui_snapshot":` + v2Snapshot + `}`)
+	if err := registry.ValidateResponse("create_bootstrap", http.StatusCreated, v2Response); err != nil {
+		t.Fatalf("v2 bootstrap response: %v", err)
+	}
+	currentSnapshot := strings.Replace(v2Snapshot, `"schema_version":2`, `"schema_version":3`, 1)
+	currentSnapshot = strings.Replace(currentSnapshot, `,"upgrades":[]`, `,"transitions":{"cross_gate":null,"wind_down":{"eligible":false}},"upgrades":[]`, 1)
 	currentResponse := []byte(`{"account":{"account_id":"01985555-1111-7111-8111-111111111110","created_at":"2026-08-10T12:00:00.000Z","recovery_code":"recovery"},"session":{"access_token":"access","refresh_token":"refresh"},"game_ui_snapshot":` + currentSnapshot + `}`)
 	if err := registry.ValidateResponse("create_bootstrap", http.StatusCreated, currentResponse); err != nil {
 		t.Fatalf("current bootstrap response: %v", err)

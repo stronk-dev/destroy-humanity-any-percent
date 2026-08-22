@@ -34,6 +34,8 @@ const existingPermits = Object.freeze({
 });
 
 const additions = Object.freeze([
+  ["desk.cross_gate", "Move Into the Garage", "corporate"],
+  ["desk.wind_down", "Wind Down Company", "corporate"],
   ["event.exit_offer_resolved", "Offer accepted. The rest is paperwork.", "corporate"],
   ["exit_type.acquihire.title", "Acqui-hired", "corporate"],
   ["exit_type.acquisition.title", "Acquired", "corporate"],
@@ -41,6 +43,7 @@ const additions = Object.freeze([
   ["exit_type.ipo.title", "Went Public", "corporate"],
   ["exit_type.scripted_first.title", "First Failure", "corporate"],
   ["gate.t0_to_t1.title", "Garage", "diegetic"],
+  ["screen.run_end.continue", "Start the Next Company", "corporate"],
 ]);
 
 const termAdditions = Object.freeze([
@@ -193,7 +196,7 @@ const entries = ruled
   .concat(termAdditions)
   .concat(curriculumAdditions)
   .sort((left, right) => Buffer.from(left.key).compare(Buffer.from(right.key)));
-if (entries.length !== 143 || new Set(entries.map((row) => row.key)).size !== 143) fail(`expected 143 new unique rows; found ${entries.length}`);
+if (entries.length !== 146 || new Set(entries.map((row) => row.key)).size !== 146) fail(`expected 146 new unique rows; found ${entries.length}`);
 
 for (const entry of entries) {
   if (entry.text_kind === "longform") validateLongformCopyText(entry.text, entry.key);

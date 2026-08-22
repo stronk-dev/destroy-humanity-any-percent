@@ -14,7 +14,7 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 	factValue := &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{
 		{Kind: publicapi.SchemaBoolean}, integer(-apiMaxExactInteger, apiMaxExactInteger), apiString(""),
 	}}
-	snapshotFields := func(version int, founderRevision bool) []publicapi.Field {
+	snapshotFields := func(version int, founderRevision, transitions bool) []publicapi.Field {
 		fields := []publicapi.Field{
 			apiField("constants_hash", apiString("sha256-prefixed")),
 			apiField("evaluated_through_ms", integer(1, apiMaxExactInteger)),
@@ -23,7 +23,7 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 		if founderRevision {
 			fields = append(fields, apiField("founder_revision", integer(1, apiMaxExactInteger)))
 		}
-		return append(fields,
+		fields = append(fields,
 			apiField("generators", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIGenerator")}),
 			apiField("manual_action", apiRef("GameUIManualAction")),
 			apiField("progress", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIProgress")}),
@@ -32,8 +32,11 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("run", apiRef("GameUIRun")),
 			apiField("schema_version", integer(int64(version), int64(version))),
 			apiField("server_now_ms", integer(1, apiMaxExactInteger)),
-			apiField("upgrades", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIUpgrade")}),
 		)
+		if transitions {
+			fields = append(fields, apiField("transitions", apiRef("GameUITransitions")))
+		}
+		return append(fields, apiField("upgrades", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIUpgrade")}))
 	}
 	return []publicapi.NamedSchema{
 		{Name: "GameUIFact", Schema: apiObject(
@@ -79,8 +82,21 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("run_started_at_ms", integer(1, apiMaxExactInteger)),
 			apiField("tier", integer(0, 9)),
 		)},
-		{Name: "GameUISnapshot", Schema: apiObject(snapshotFields(2, true)...)},
-		{Name: "GameUISnapshotV1", Schema: apiObject(snapshotFields(1, false)...)},
+		{Name: "GameUISnapshot", Schema: apiObject(snapshotFields(3, true, true)...)},
+		{Name: "GameUISnapshotV1", Schema: apiObject(snapshotFields(1, false, false)...)},
+		{Name: "GameUISnapshotV2", Schema: apiObject(snapshotFields(2, true, false)...)},
+		{Name: "GameUITransitionCrossGate", Schema: apiObject(
+			apiField("eligible", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+			apiField("gate_id", apiString("mechanical-id")),
+			apiField("route_id", &publicapi.Schema{Kind: publicapi.SchemaNull}),
+		)},
+		{Name: "GameUITransitionEligibility", Schema: apiObject(
+			apiField("eligible", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+		)},
+		{Name: "GameUITransitions", Schema: apiObject(
+			apiField("cross_gate", &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{apiRef("GameUITransitionCrossGate"), {Kind: publicapi.SchemaNull}}}),
+			apiField("wind_down", apiRef("GameUITransitionEligibility")),
+		)},
 		{Name: "GameUIUpgrade", Schema: apiObject(
 			apiField("cost_amount", apiString("canonical-decimal")),
 			apiField("cost_resource_id", apiString("mechanical-id")),

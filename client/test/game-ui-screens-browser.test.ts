@@ -23,7 +23,8 @@ const snapshot: GameUISnapshot = {
   resources: [{ amount: "1e2", cap: { amount: "1e1000", reason_key: "resource.company_cash.cap.phase0" }, rate_per_second: "1e0", resource_id: "company.cash" }],
   revision: 1,
   run: { category: "any_percent", exit_count: 0, founder_id: "01985555-1111-7111-8111-111111111111", run_seq: 1, run_started_at_ms: 1_799_999_000_000, tier: 0 },
-  schema_version: 2, server_now_ms: 1_800_000_000_000,
+  schema_version: 3, server_now_ms: 1_800_000_000_000,
+  transitions: { cross_gate: { eligible: true, gate_id: "gate.t0_to_t1", route_id: null }, wind_down: { eligible: false } },
   upgrades: [{ cost_amount: "2e1", cost_resource_id: "company.cash", eligible: true, owned: false, upgrade_id: "upgrade.beige_tower_cache" }],
 };
 
@@ -45,10 +46,13 @@ const crossed: GateCrossedEvent = { cursor: 2, kind: "gate_crossed", occurred_at
 class FixtureRuntime implements GameUIRuntime {
   readonly requests: Readonly<Record<string, unknown>>[] = [];
   listener: ((message: GameUIRuntimeMessage) => void) | undefined;
+  current: ParsedGameUISnapshot = snapshot;
+  snapshotCalls = 0;
+  failSnapshot = false;
   constructor(private authenticated = false) {}
   hasCredentials(): boolean { return this.authenticated; }
   async bootstrap(): Promise<GameUISnapshot> { this.authenticated = true; return snapshot; }
-  async snapshot(): Promise<GameUISnapshot> { return snapshot; }
+  async snapshot(): Promise<ParsedGameUISnapshot> { this.snapshotCalls += 1; if (this.failSnapshot) throw new Error("offline"); return this.current; }
   async intent(body: Readonly<Record<string, unknown>>): Promise<void> { this.requests.push(body); }
   subscribe(_founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void { this.listener = listener; return () => { this.listener = undefined; }; }
 }
@@ -95,6 +99,60 @@ it.skipIf(typeof document === "undefined")("runs bootstrap and player actions th
   await unmount(app); target.remove();
 });
 
+it.skipIf(typeof document === "undefined")("renders only server-projected transition controls and submits their existing intents", async () => {
+  const runtime = new FixtureRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  const crossGate = [...target.querySelectorAll("button")].find((button) => button.textContent === "Move Into the Garage")!;
+  const windDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
+  expect(crossGate.disabled).toBe(false);
+  expect(windDown.disabled).toBe(true);
+  crossGate.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.requests[0]).toMatchObject({ kind: "cross_gate", expected_revision: 1, gate_id: "gate.t0_to_t1", route_id: null });
+
+  const tierOne = { ...snapshot, run: { ...snapshot.run, tier: 1 }, transitions: { cross_gate: null, wind_down: { eligible: true } } };
+  app.fixtureSnapshot(tierOne); flushSync();
+  expect([...target.querySelectorAll("button")].some((button) => button.textContent === "Move Into the Garage")).toBe(false);
+  const eligibleWindDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
+  expect(eligibleWindDown.disabled).toBe(false);
+  eligibleWindDown.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.requests[1]).toMatchObject({ kind: "wind_down", expected_revision: 1, expected_founder_revision: 1 });
+
+  const { transitions: _transitions, ...v2 } = snapshot;
+  app.fixtureSnapshot({ ...v2, schema_version: 2 }); flushSync();
+  expect(target.textContent).not.toContain("Move Into the Garage");
+  expect(target.textContent).not.toContain("Wind Down Company");
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("continues from either terminal state only to the exact next Company snapshot", async () => {
+  const runtime = new FixtureRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  app.fixtureSnapshot(snapshot); app.fixtureRunEnd(ended); flushSync();
+  expect(target.textContent).toContain("Your First Company Failed");
+  const next = { ...snapshot, revision: 2, run: { ...snapshot.run, run_seq: 2, tier: 1 }, transitions: { cross_gate: null, wind_down: { eligible: true } } };
+  runtime.current = next;
+  runtime.snapshotCalls = 0;
+  const continuation = [...target.querySelectorAll("button")].find((button) => button.textContent === "Start the Next Company")!;
+  continuation.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.snapshotCalls).toBe(1);
+  expect(runtime.requests).toEqual([]);
+  expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+
+  const standard = { ...ended, payload: { ...ended.payload, exit_type: "collapse" as const, tier: 1 } };
+  app.fixtureRunEnd(standard); runtime.current = snapshot; runtime.snapshotCalls = 0; flushSync();
+  expect(target.textContent).toContain("The Company Has Exited");
+  const mismatched = [...target.querySelectorAll("button")].find((button) => button.textContent === "Start the Next Company")!;
+  mismatched.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.snapshotCalls).toBe(1);
+  expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
+  expect(target.textContent).toContain("OFFLINE — progress is parked on this machine until the server picks up again.");
+  await unmount(app); target.remove();
+});
+
 it.skipIf(typeof document === "undefined")("passes the C11 axe gate on all five Phase-A surfaces and the two system beats", async () => {
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(false) } }) as unknown as AppExports;
@@ -103,6 +161,32 @@ it.skipIf(typeof document === "undefined")("passes the C11 axe gate on all five 
   app.fixtureOffer(offer); flushSync(); assertNoMechanicalPresentation(target); await assertAxe(target, "offer_sheet");
   app.fixtureRunEnd(ended); flushSync(); assertNoMechanicalPresentation(target); await assertAxe(target, "run_end");
   app.fixtureSurface("settings"); app.fixtureSystem("drain"); app.fixtureSystem("resync"); flushSync(); assertNoMechanicalPresentation(target); await assertAxe(target, "settings/system");
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("renders the authoritative cap explanation on the Desk", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  app.fixtureSnapshot({ ...snapshot, resources: [{ ...snapshot.resources[0], cap: { ...snapshot.resources[0].cap!, amount: "1e2" } }] });
+  app.fixtureSurface("desk"); flushSync();
+  expect(target.textContent).toContain("Cash is capped. The cap is a number, the number is visible, and nothing will ever sell you the difference.");
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("renders the drain story beat", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
+  app.fixtureSystem("drain"); flushSync();
+  expect(target.textContent).toContain("The server needs a minute. Your equipment keeps working while it's away, and nothing is lost. Back soon!!");
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("renders the resync story beat", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
+  app.fixtureSystem("resync"); flushSync();
+  expect(target.textContent).toContain("The two copies of the books disagreed, so everything was recounted. The server's copy wins. It always does. Nothing was lost.");
   await unmount(app); target.remove();
 });
 
@@ -134,7 +218,7 @@ it.skipIf(typeof document === "undefined")("replays a v1 bootstrap receipt fail-
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
   await new Promise((resolve) => setTimeout(resolve, 0));
-  const { founder_revision: _founderRevision, ...legacy } = snapshot;
+  const { founder_revision: _founderRevision, transitions: _transitions, ...legacy } = snapshot;
   app.fixtureSnapshot({ ...legacy, schema_version: 1 }); app.fixtureOffer(offer); flushSync();
   const buttons = [...target.querySelectorAll("button")];
   const sign = buttons.find((button) => button.textContent === "Sign")!;

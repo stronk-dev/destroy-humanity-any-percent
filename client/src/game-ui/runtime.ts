@@ -103,7 +103,7 @@ export function createBrowserGameUIRuntime(
   };
   const loadSnapshot = async (): Promise<ParsedGameUISnapshot> => {
     const parsed = parseGameUISnapshot(await responseJSON(await fetcher("/api/v1/founder/state", { headers: authHeaders() })));
-    if (parsed.schema_version !== 2 || !("founder_revision" in parsed)) throw new SyntaxError("live Game UI snapshot must use schema v2");
+    if (parsed.schema_version !== 3 || !("founder_revision" in parsed) || !("transitions" in parsed)) throw new SyntaxError("live Game UI snapshot must use schema v3");
     return rememberSnapshot(parsed);
   };
   return {
@@ -296,4 +296,17 @@ export function createBrowserGameUIRuntime(
   };
 }
 
-export function newIntentID(cryptoSource: Crypto = crypto): string { return cryptoSource.randomUUID(); }
+export function newIntentID(cryptoSource: Crypto = crypto, nowMS = Date.now()): string {
+  if (!Number.isSafeInteger(nowMS) || nowMS < 0 || nowMS > 0xffffffffffff) throw new RangeError("invalid UUIDv7 timestamp");
+  const bytes = new Uint8Array(16);
+  cryptoSource.getRandomValues(bytes);
+  let timestamp = nowMS;
+  for (let index = 5; index >= 0; index -= 1) {
+    bytes[index] = timestamp % 256;
+    timestamp = Math.floor(timestamp / 256);
+  }
+  bytes[6] = (bytes[6] & 0x0f) | 0x70;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = [...bytes].map((value) => value.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
