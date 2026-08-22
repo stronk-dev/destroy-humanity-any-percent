@@ -73,3 +73,47 @@ production field/negative family has an executable row, and the runtime adapters
 tests. Verdict: **APPROVED as first filter; not the designated pass.** Cursor keys are deliberately
 validated but not consumed because no public reader is composed; no rotation-ledger or release
 claim is made. DP-A is ready for Claude's exact-range designated cross-party review.
+
+## 2026-08-22 — DP-B predeclaration and runtime-closure audit
+
+DP-A awaits its mandatory designated review over `bbff0b6..d7d443f`. DP-B begins as a separate
+range; this does not promote DP-A's first-filter verdict.
+
+**Authority:** RFC DP1–DP3, DP8 and AC1/AC2/AC8. DP-B does not implement backup, release/rollback,
+rotation-ledger timing, alerting or the final R-006 claim.
+
+**Runtime closure derived from code, not a hand-maintained catalog list:**
+
+- `epochseed.Path` (`balance/epochs/phase0.json`), every artifact path and every epoch changelog
+  reference declared by those bytes;
+- `balance/transport/phase0.json` and `moderation/guild-names.txt`, the two additional files opened
+  by `gameserver.Compose`;
+- the existing `deployment/content-manifest.v1.json` identity record;
+- the statically linked Linux/amd64 gameserver and built `client/dist` tree; and
+- root MIT and generated linked-server/client-runtime third-party notices.
+
+The closure builder must consume the epoch declaration rather than repeat its 19 current artifact
+rows. Test-only balance trees, source, planning and a writable checkout are not release inputs.
+
+**Expected tracked paths:** `deployment/` production Dockerfile, Caddyfile, base/rotation Compose,
+environment example and generated config/release schemas/notices; one focused release-package
+builder/validator plus fixtures/tests under `tools/` or `server/cmd/`; `Makefile`; the smallest
+D-014-compatible static CI hook only after its local elapsed time is measured; and canonical
+deployment documentation. Any expansion is recorded before its implementing commit.
+
+**Positive population:** build client and static Linux/amd64 server; stage the derived runtime
+closure into a fresh output directory; validate every staged byte/hash, exact image digest,
+schema/save/epoch/copy identities, private-service topology, Caddy routes, license set and SPDX
+SBOM; then build/start from only that output. The base Compose mounts current secrets only; a
+reviewed rotation override supplies optional previous pairs, avoiding fake placeholder secrets.
+
+**Negative/severing population:** remove each required closure class in turn; add an undeclared
+source dependency; change one staged byte or image digest; use a mutable image tag; publish a
+non-Caddy port; expose metrics through Caddy; seed a secret-like value into tracked/built image
+inputs; remove root or third-party attribution; forge schema/epoch/copy/version identity; and run
+the bundle command without a client build or Linux/amd64 server. Each must fail nonzero.
+
+**Authorized claim:** exact tracked inputs can produce a byte-bound, repository-independent
+release candidate with a private one-node topology. **Not authorized:** supported self-hosting,
+backup/restore, rollback, operational alerts, RPO/RTO or release readiness until their later
+batches and exact-manifest R-006 pass.
