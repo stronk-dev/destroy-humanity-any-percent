@@ -2305,3 +2305,20 @@
   half is closed and D-003 is READY FOR OWNER RULING.
 - No covenant, release promise, product behavior, RFC contract, authored copy, deployment, push or
   external publication was created.
+
+## 2026-08-22 — owner adoption of minimal Deployment/operations defaults
+
+- **Owner:** Marco. **Recorded by:** Codex. Marco replied “approved and delegated” to the exact
+  proposed block.
+- Adopted public MIT source plus a supported-bundle target only after R-006; no current covenant,
+  self-host-support, notice, final-artifact, mirror or ratchet promise.
+- Adopted one Linux Compose node; Caddy-only ingress; one exact HTTPS origin/one trusted proxy hop;
+  six-hour encrypted off-host backups plus pre-upgrade backup; 7-day six-hourly/30-day daily
+  retention; 6-hour RPO/4-hour RTO; previous-release rollback for seven days without down-migrate.
+- Named Marco as official-instance operations/incident/breach owner; self-host operators own their
+  instances. Adopted 30-minute JWT, 31-day bootstrap and 366-day cursor previous-key overlaps;
+  private metrics; 14-day rotated logs; seven-day raw-IP maximum; and the exact seven alert
+  families in the ruling.
+- Product/legal account/history/moderation retention remains open under D-009/D-015. Deployment
+  body reconciliation is delegated to Codex and queue row 3l is READY; implementation is not yet
+  authorized because the reconciled RFC remains draft pending owner acceptance.

@@ -43,6 +43,42 @@ listed below remain blockers and must not be inferred by an implementer.
   authorized mechanical R-001 contract. Owner/ruling-author body reconciliations remain with their
   named authors.
 
+## Adopted owner ruling — 2026-08-22
+
+Marco approved the following minimal Phase-0 deployment/operations defaults and delegated the
+Deployment RFC/body reconciliation to Codex. This ruling authorizes specification and planning;
+implementation still requires the reconciled RFC to reach `accepted` status.
+
+- **Preservation posture (D-003):** the public MIT source remains the current source deliverable.
+  Target a supported self-host bundle as well, but make no covenant or self-host-support claim
+  until the package passes R-006. Notice period, final-world artifact, preservation mirror and
+  player-ward ratchet commitments are deferred to a later accepted covenant RFC.
+- **Supported topology:** one Linux Docker Compose node. Caddy is the only public ingress; the
+  gameserver and Postgres are private to the Compose network. Production accepts one required
+  exact HTTPS public origin and trusts exactly one Caddy proxy hop. Local development may use its
+  separately declared localhost origin.
+- **Backup and recovery:** create an encrypted off-host backup every six hours and immediately
+  before an upgrade. Retain six-hourly backups for seven days and one daily backup for 30 days.
+  The supported objectives are RPO 6 hours and RTO 4 hours.
+- **Rollback:** support the current and immediately previous release for seven days. Rollback uses
+  the pre-upgrade backup and never runs a down-migration against a live database.
+- **Operations owner:** Marco owns the official instance, incident response and breach response.
+  A self-host operator owns their instance under the same documented checks; this does not create
+  an official hosted public service.
+- **Secret rotation:** the official operator owns rotation. JWT previous-key overlap is 30 minutes;
+  bootstrap-receipt previous-key overlap is 31 days; public cursor previous-key overlap is 366
+  days. Current and previous identities/values are deployment configuration, never repository
+  data.
+- **Observability:** expose metrics only on the private network; write structured logs to a
+  size-rotated operator destination retained 14 days. Raw IP material, if collected for bounded
+  security handling, is retained no longer than seven days.
+- **Blocking alerts:** endpoint/readiness failure, missed or failed backup, Postgres failure, disk
+  use above 80%, restart loop, cleanup failure and dead-letter growth must reach the named operator.
+  Provider-off operation remains valid: the supported stack may use a local alert manager with an
+  operator-configured receiver and must not require a cloud monitoring vendor.
+- **Still open:** account inactivity, immutable-history/deletion, moderation-history and other
+  product/legal retention semantics under D-009/D-015. This ruling does not invent them.
+
 ## O-001 — next public milestone and exact floor (D-001/D-007)
 
 Current evidence directly rules out calling the product 1.0: only T0–T1, one real minigame, one
@@ -126,17 +162,20 @@ Inactive-account trigger:
 Intent receipt, event/log, dead-letter, archive and moderation-history retention:
 ```
 
+The 2026-08-22 ruling above fills the Deployment/operations fields needed for the package. Product
+data-family retention remains open only where that ruling explicitly says so; Deployment must not
+choose it by convenience.
+
 R-006 then rehearses the package/backup/restore result. R-007 rehearses fired alerts, cleanup,
 privacy, disclosure, and failure handling. Neither study is allowed to invent the values above.
 
 ## O-005 — sunset/source posture (D-003)
 
-The tracked `design/research/designed-sunset-public.md` brief completes the required
-verification/current-state repair without promoting the ignored raw dossier. The public repository
-is already MIT-licensed; a supported bundle remains absent. Choose source continuity alone, a
-supported binary/self-host bundle after proof, both, or no covenant yet; separately
-choose export, notice, final-world artifact, mirror, and ratchet obligations. Any adopted promise
-must depend on a rehearsed deliverable, not architecture potential.
+The tracked `design/research/designed-sunset-public.md` brief completed the required
+verification/current-state repair without promoting the ignored raw dossier. The 2026-08-22 owner
+ruling retains public MIT source, targets a supported bundle only after R-006, and defers covenant,
+notice, final-world artifact, mirror and ratchet commitments. No current self-host or preservation
+promise may be inferred from that target.
 
 ## O-006 — unresolved product/acceptance choices
 
@@ -155,9 +194,9 @@ must depend on a rehearsed deliverable, not architecture potential.
 | D-001/D-007 milestone/content | **PARTIALLY RULED** | Development snapshot now; Phase-0 Playable Preview next. Exact final content/surface manifest still belongs to its release RFC. |
 | D-002 repository disposition | **RULED AND EXECUTED** | All 96 artifacts were dispositioned; the fresh-clone authority gate passed and rejected three forged states. |
 | D-005/D-008 account recovery/export | **RECOVERY RULED; EXPORT OPEN** | Build the ruled one-time copy/download posture; choose export semantics before R-003. |
-| D-009/D-015 deletion/retention | **NEEDS LEGAL/OWNER RULING** | Complete data-family review and adopt exact retention/disclosure. |
-| D-003 sunset | **READY FOR OWNER RULING** | Choose source-only, supported bundle after proof, both, or no covenant yet, plus exact export/notice/artifact/mirror/ratchet obligations. |
-| D-006/D-011 topology/operations | **TOPOLOGY RULED; OPERATIONS OPEN** | One Compose node; exact objectives, operator, proxy, backup, rotation, metrics and alert ownership remain open. |
+| D-009/D-015 deletion/retention | **PARTIALLY RULED; PRODUCT/LEGAL FAMILIES OPEN** | Log/IP/backup windows are ruled; complete account/history/moderation data-family review and adopt exact deletion disclosure. |
+| D-003 sunset | **RULED** | Public MIT source now; target a supported bundle after R-006; defer covenant/notice/artifact/mirror/ratchet promises. |
+| D-006/D-011 topology/operations | **RULED FOR DEPLOYMENT** | One Compose node, proxy/origin, backup objectives, rollback, key overlap, metrics/logs, alerts and operator are exact. |
 | D-010 lifecycle locations | **READY FOR OWNER/PROCESS AUTHOR** | Choose one archive home for withdrawn RFCs and completed non-RFC threads. |
 | D-012/D-013 product scope | **DEFERRED; BODY RECONCILIATION PENDING** | Advisor and async are out of the preview; ruling authors must reconcile the active bodies. |
 | D-014 CI contract | **RULED 2026-08-21 — FAST BLOCKING / SLOW EVIDENCE SPLIT** | Nine consecutive cancellations plus the accepted local observation supplied the decision evidence. |
