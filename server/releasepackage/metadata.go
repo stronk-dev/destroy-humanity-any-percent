@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"regexp"
 	"sort"
 	"strings"
@@ -60,6 +61,15 @@ type SPDXRelationship struct {
 	SPDXElementID      string `json:"spdxElementId"`
 	RelationshipType   string `json:"relationshipType"`
 	RelatedSPDXElement string `json:"relatedSpdxElement"`
+}
+
+type spdxHeader struct {
+	SPDXVersion       string       `json:"spdxVersion"`
+	DataLicense       string       `json:"dataLicense"`
+	SPDXID            string       `json:"SPDXID"`
+	Name              string       `json:"name"`
+	DocumentNamespace string       `json:"documentNamespace"`
+	CreationInfo      CreationInfo `json:"creationInfo"`
 }
 
 var spdxLicense = regexp.MustCompile(`^(Apache-2\.0|BSD-2-Clause|BSD-3-Clause|MIT)( AND (Apache-2\.0|BSD-2-Clause|BSD-3-Clause|MIT))*$`)
@@ -153,6 +163,18 @@ func BuildSPDX(name, version, commit string, created time.Time, dependencies []D
 		return nil, err
 	}
 	return append(encoded, '\n'), nil
+}
+
+func ValidateSPDX(data []byte) error {
+	var header spdxHeader
+	decoder := json.NewDecoder(strings.NewReader(string(data)))
+	if decoder.Decode(&header) != nil || decoder.Decode(&struct{}{}) != io.EOF ||
+		(header.SPDXVersion != "SPDX-2.2" && header.SPDXVersion != "SPDX-2.3") ||
+		header.DataLicense != "CC0-1.0" || header.SPDXID != "SPDXRef-DOCUMENT" ||
+		header.Name == "" || header.DocumentNamespace == "" || header.CreationInfo.Created == "" || len(header.CreationInfo.Creators) == 0 {
+		return ErrInvalidContent
+	}
+	return nil
 }
 
 func SortDependencies(dependencies []Dependency) ([]Dependency, error) {

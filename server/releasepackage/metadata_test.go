@@ -53,3 +53,9 @@ func TestReleaseMetadataRejectsUnknownLicenseDuplicateAndBadCommit(t *testing.T)
 		t.Fatalf("bad commit accepted: %v", err)
 	}
 }
+
+func TestValidateSPDXRejectsPlausibleButUnidentifiedJSON(t *testing.T) {
+	if err := ValidateSPDX([]byte(`{"packages":[]}`)); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("unidentified JSON accepted as SPDX: %v", err)
+	}
+}

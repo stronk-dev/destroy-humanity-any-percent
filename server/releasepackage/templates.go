@@ -14,7 +14,7 @@ import (
 	yaml "go.yaml.in/yaml/v2"
 )
 
-var imageReferencePattern = regexp.MustCompile(`^[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9._-]+)?@sha256:[0-9a-f]{64}$`)
+var imageReferencePattern = regexp.MustCompile(`^(?:[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9._-]+)?@)?sha256:[0-9a-f]{64}$`)
 
 type composeModel struct {
 	Services map[string]composeService `yaml:"services"`
@@ -79,6 +79,9 @@ func ValidateCompose(data []byte) error {
 		if name != "caddy" && len(service.Ports) != 0 {
 			return fmt.Errorf("%w: non-Caddy port publication", ErrInvalidContent)
 		}
+	}
+	if strings.HasPrefix(model.Services["caddy"].Image, "sha256:") || strings.HasPrefix(model.Services["postgres"].Image, "sha256:") {
+		return fmt.Errorf("%w: upstream image requires repository digest", ErrInvalidContent)
 	}
 	caddy := model.Services["caddy"]
 	gameserver := model.Services["gameserver"]

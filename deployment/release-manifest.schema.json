@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/stronk-dev/destroy-humanity-any-percent/deployment/release-manifest.schema.json",
+  "title": "Cloud Clicker release manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "release_version", "source_commit", "platform", "docker_engine_version", "docker_compose_version", "database_migration", "company_save_version", "founder_save_version", "epoch_id", "constants_hash", "copy_hash", "images", "artifacts"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "release_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+    "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "platform": { "const": "linux/amd64" },
+    "docker_engine_version": { "type": "string", "minLength": 1 },
+    "docker_compose_version": { "type": "string", "minLength": 1 },
+    "database_migration": { "type": "integer", "minimum": 1 },
+    "company_save_version": { "type": "integer", "minimum": 1 },
+    "founder_save_version": { "type": "integer", "minimum": 1 },
+    "epoch_id": { "type": "integer", "minimum": 1 },
+    "constants_hash": { "$ref": "#/$defs/hash" },
+    "copy_hash": { "$ref": "#/$defs/hash" },
+    "images": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/image" } },
+    "artifacts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/artifact" } }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "reference", "sbom_path", "sbom_sha256"],
+      "properties": {
+        "name": { "enum": ["caddy", "gameserver", "postgres"] },
+        "reference": { "type": "string", "pattern": "@sha256:[0-9a-f]{64}$" },
+        "sbom_path": { "type": "string", "minLength": 1 },
+        "sbom_sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    }
+  }
+}

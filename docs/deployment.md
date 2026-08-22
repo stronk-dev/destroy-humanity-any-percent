@@ -49,12 +49,15 @@ metrics are deliberately absent from the public proxy.
 digest-pinned, validates the private topology, and refuses to overwrite an existing output. The
 checked-in `.env.example` contains only operator configuration and host paths to secret files;
 `deployment/secrets/` is ignored so the documented layout cannot be committed accidentally. Docker
-Compose's own `config` command has parsed the rendered boundary successfully; the final bundle
-builder will run that check again against its exact output.
+Compose's own `config` command has parsed the rendered boundary successfully. The release assembler
+also runs the repository validator against the exact rendered bytes; the later clean-host rehearsal
+runs Compose's parser and the stack itself.
 
-These are checked-in package inputs, not a released Compose file. Backup and private operations
-services, generated image resolution, licenses/SBOM and the release-manifest validator still have
-to join the bundle before this layer can claim DP-B or AC1/AC8.
+`deployment/config.schema.json` describes the non-secret operator `.env` inputs and rejects unknown
+members. `deployment/release-manifest.schema.json` describes the byte-binding release record. The
+runtime `validate-config` command remains the authoritative validator after Compose has mapped
+operator paths to `/run/secrets`; JSON Schema is not substituted for opening and validating the
+actual secret files.
 
 ## Application licenses and SBOM
 
@@ -72,5 +75,23 @@ matching the prior license audit while retaining the previously hidden dual Apac
 notice. Version, full commit and RFC3339 creation time are explicit inputs; an existing output
 directory is never silently overlaid.
 
-This is the application SBOM only. The final bundle must also bind the upstream Caddy/Postgres image
-SBOMs and the exact gameserver OCI digest before AC8 can pass.
+This is the application SBOM only. The assembler requires separate SPDX inputs for Caddy, the
+gameserver image and Postgres and binds each SBOM hash beside that image's immutable digest.
+
+## Release bundle assembly
+
+`make assemble-release-bundle` accepts only an empty output directory and requires all of the
+following explicit inputs: the Linux/amd64 gameserver binary and its `docker save` archive, built
+client, generated application metadata, release version/full source commit, tested Docker
+Engine/Compose versions, three digest-pinned image references and their three image SBOMs. It
+rejects a non-ELF or non-amd64
+binary, client symlinks, an absent SPA entry point, empty/missing inputs, mutable image references
+and a pre-existing output tree.
+
+The resulting directory contains the runtime content closure, site, binary, offline gameserver
+image archive, Docker/Caddy/Compose inputs, schemas, root and third-party licenses, four SBOM documents and
+`release-manifest.json`. The manifest records the current migration, both save-schema versions,
+epoch/copy/constants identities and the SHA-256 of every other bundle file. Validation re-walks the
+directory and rejects any missing, extra or changed byte, including attribution or an image SBOM.
+It intentionally describes a release *candidate*: backup, rollback, operations and the exact
+clean-host R-006 rehearsal remain required before the project can claim supported self-hosting.
