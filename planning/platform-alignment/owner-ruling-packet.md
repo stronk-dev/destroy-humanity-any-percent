@@ -152,7 +152,7 @@ must depend on a rehearsed deliverable, not architecture potential.
 | Decision | State | What is still needed |
 |---|---|---|
 | D-001/D-007 milestone/content | **PARTIALLY RULED** | Development snapshot now; Phase-0 Playable Preview next. Exact final content/surface manifest still belongs to its release RFC. |
-| D-002 repository disposition | **RULED — implementation audit pending** | Public shared memory; inspect and sanitize ignored material before tracking it. |
+| D-002 repository disposition | **RULED AND EXECUTED** | All 96 artifacts were dispositioned; the fresh-clone authority gate passed and rejected three forged states. |
 | D-005/D-008 account recovery/export | **RECOVERY RULED; EXPORT OPEN** | Build the ruled one-time copy/download posture; choose export semantics before R-003. |
 | D-009/D-015 deletion/retention | **NEEDS LEGAL/OWNER RULING** | Complete data-family review and adopt exact retention/disclosure. |
 | D-003 sunset | **BLOCKED ON RESEARCH REPAIR** | Reverify official sources and remove false current-state claims. |

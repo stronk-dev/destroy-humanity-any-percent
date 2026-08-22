@@ -2275,3 +2275,14 @@
   reality audit are reconciled. The implemented RFC and complete planning record moved to their
   archives; `docs/game-ui.md` and `docs/ci.md` are canonical. No product behavior, CI workflow,
   push, publication or deployment changed in the archival transaction.
+
+## 2026-08-22 — Game UI archival verdict and live-queue reconciliation
+
+- Recorded Claude's designated archival approval `f199f9a` over exact range
+  `57f56fb^..1774a11`; Game UI is the 50th fully closed RFC.
+- Corrected the executable queue's stale D-014 blocker after the adopted fast-blocking/slow-evidence
+  ruling, removed its obsolete claim that Prestige still awaited designated review, and recorded
+  D-002's already-proven fresh-clone completion in the owner packet's readiness table.
+- No product behavior, test, RFC/design body, owner decision, deployment, publication or push
+  changed. The queue has no READY implementation row; Deployment is now blocked only on the exact
+  remaining owner/ruling-author work it names.
