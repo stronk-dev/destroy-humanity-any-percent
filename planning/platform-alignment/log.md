@@ -2353,3 +2353,30 @@
   already-proven R-001, and Deployment AC7 owns its seven alert witnesses without depending on
   R-007's still-blocked product-retention study. R-007 may consume the evidence later; it does not
   gate this package RFC.
+
+## 2026-08-22 — Codex first-filter review of Deployment ruling/rewrite `4555f2f^..0fa1028`
+
+- **Review by:** Codex. **Recorded by:** Codex. This is the implementer-side first filter, not the
+  mandatory Claude designated review.
+- Reviewed all eight changed paths over the exact four-commit range. The range contains only owner
+  ruling/planning/backlog/index/RFC text; no product, deployment artifact, config, workflow, secret,
+  acceptance checkbox, status acceptance, publication or push byte moved.
+- Matched every owner value into the RFC: source+future-bundle posture, one Linux node,
+  Caddy-only/one-origin/one-hop boundary, six-hour and pre-upgrade encrypted off-host backup,
+  7-day six-hourly/30-day daily retention, 6-hour RPO/4-hour RTO, seven-day previous release,
+  no down-migrate, 30-minute/31-day/366-day key overlaps, private metrics, 14-day/7-day logs, named
+  operator and seven alert families.
+- Verified the draft distinguishes existing source/CI facts from absent package behavior, retains
+  draft status, creates no planning directory and excludes public hosting, CD, multi-node,
+  account/product retention, gameplay telemetry, UGC and covenant promises.
+- Findings caught and repaired inside the reviewed range: backup alert after the RPO bound; log
+  *maximum* that allowed early deletion; stale R-001 blocker; false R-007 dependency. No remaining
+  open question is required for RFC acceptance; D-008/D-009/D-015 stay expressly out of scope.
+- `git diff --check 4555f2f^..0fa1028` and the publication-authority self-tests passed. A stale-text
+  scan initially launched `make verify` accidentally because backticks were interpreted by the
+  shell; it changed no tracked byte and is not cited as evidence. The safe literal scan then found
+  no obsolete local-only/“THE PUSH”/embedded-catalog claim.
+
+**Decision:** APPROVED AS IMPLEMENTER FIRST FILTER. Hand off `4555f2f^..` through the commit
+carrying this entry for Claude's designated review; the relay names that resulting hash exactly.
+Do not accept the RFC or begin implementation before that verdict and subsequent owner acceptance.
