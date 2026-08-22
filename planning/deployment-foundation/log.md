@@ -230,3 +230,71 @@ result. DP-C therefore expands to `compose.ci-test.yml`, `compose.deployment-bac
 GitHub Actions remains native amd64 and exercises its ordinary detected crypto path. The dedicated
 Postgres backup population is also pinned explicitly to `linux/amd64`. No workflow, timeout,
 acceptance bound or hosted job changes.
+
+## 2026-08-22 — DP-C implementation and Codex first-filter
+
+**Implementation commits:** `23a590d` and `120343c` after predeclaration `86cf4d6` (review
+baseline `9b916c2`; this record commit is the range tip).
+
+**Actual boundary:** `server/deploymentbackup` owns the age/X25519 envelope, authenticated package,
+Postgres 16 command composition, clean-target and exact-migration checks, schedule/objective state
+and governed retention. `cmd/deployment-backup` supplies create/schedule/restore/retention operator
+entry points. The release assembler now requires and hashes the static Linux/amd64 helper; the
+fourth base-Compose service reuses the pinned Postgres image for exact client tools and remains
+nonroot, read-only, private and separately mounted. `compose.deployment-backup-test.yml` owns the
+real empty/populated restore population. No gameplay schema, migration, release replacement,
+rollback, alert or workflow changed.
+
+The encrypted payload contains the Postgres custom-format archive, strict release manifest, exact
+epoch declaration and authenticated metadata. Creation checks the live Goose migration before
+dumping, never stages plaintext on the off-host target, syncs encrypted bytes and commits by atomic
+rename. Restore authenticates and checks every identity before mutation, verifies the archive,
+refuses any non-clean target and checks the restored migration. Retention is derived internally
+from the complete target population so a caller cannot forge a deletion plan; invalid entries
+block deletion, while newest and unresolved pre-upgrade backups remain protected. Missing/late and
+incomplete RPO/RTO observations fail instead of coasting.
+
+**Executed evidence (cold):**
+
+- `make verify-server-core` — PASS across vet, every non-harness Go package, formula drift and API
+  generation;
+- `make test-go-ci CI_TEST_PACKAGES='./deploymentbackup ./cmd/deployment-backup ./releasepackage
+  ./cmd/assemble-release-bundle'` — PASS on emulated Linux/amd64 with cold package tests;
+- `make test-deployment-backup` — PASS using a cross-compiled Linux/amd64 test binary inside the
+  Postgres 16 Alpine image: empty and populated custom dumps restored into newly created databases,
+  and exact Account, Founder, Company/save, event, verified-board and epoch identities matched;
+- the same lane passed its live-migration/release-manifest mismatch and occupied-target negatives;
+- the rendered four-service release Compose passed Docker Compose's own `config --quiet` parser;
+- `make build-deployment-backup-linux-amd64` — PASS; and
+- `make release-secret-scan` — PASS over 1,307 tracked paths.
+
+The first emulated amd64 run failed its own age round trip. Disabling either advertised AVX2 or
+BMI2 made the same image pass, identifying Docker Desktop/QEMU CPU emulation rather than accepted
+backup evidence. Local amd64 Compose now disables AVX2 explicitly; native GitHub Actions retains
+ordinary CPU detection, and exact native-host R-006 remains mandatory. Two subsequent Dockerfile
+module-download attempts also failed on QEMU TLS before test execution; the final lane avoids that
+unrelated network path by cross-compiling through the repository toolchain and mounting the exact
+test binary into Postgres.
+
+**Discrimination probes (temporary mutations, all restored; clean diff against the committed
+implementation confirmed):**
+
+1. bypassing encrypted/plaintext header comparison made a rewritten `server_id` restore
+   successfully; `TestPlaintextEnvelopeIdentityCannotBeRewritten` failed with `rewritten plaintext
+   identity accepted`;
+2. severing newest-record protection made the sole 31-day-old recovery point deletable;
+   `TestRetentionNeverDeletesTheOnlyNewestBackupEvenAfterThirtyDays` failed on the exact path;
+3. bypassing clean-target inspection allowed a restore beside an unrelated `occupied` table;
+   `TestPostgresRestoreRefusesNonCleanTargetIntegration` failed with `non-clean target accepted`;
+4. bypassing Goose/release-manifest equality made the wrong-migration fixture produce a backup;
+   `TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration` failed with
+   `live database/release migration mismatch accepted`; and
+5. the permanent Compose negatives independently sever root-user and separate-target rules and are
+   rejected by `ValidateCompose`.
+
+**Review by:** Codex. **Recorded by:** Codex. First-filter range `9b916c2..120343c` plus this record
+commit reviewed in full. Scope matches DP6/AC4; no later-batch claim is made. The earlier real DP-B
+candidate is intentionally not reused because adding the manifest-bound helper changes its bytes;
+an exact rebuilt candidate and measured Caddy-complete RPO/RTO remain DP-F evidence. Verdict:
+**APPROVED as first filter; not the designated pass.** DP-C is ready for Claude's mandatory exact-
+range cross-party review and remains unarchived.
