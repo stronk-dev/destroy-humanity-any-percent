@@ -370,3 +370,68 @@ The release controller invokes those commands as one-off `backup` service contai
 network and strictly decodes their output. The host helper no longer opens the database secret.
 Tests must reject a severed/wrong migration, epoch, artifact or database-size result and must show
 that candidate preflight runs the candidate image/config rather than `exec`-ing the old container.
+
+## 2026-08-22 — DP-D implementation and Codex first filter
+
+Implementation commit `23adca6` completes the predeclared DP-D mechanism. The packaged static
+`deployment-release` command owns strictly forward stop-drain-start release, exact seven-day
+backup rollback, retryable failed rollback attempts, serialized append-only release/rotation
+ledgers and governed JWT/bootstrap/cursor removal timing. Release inputs are full validated bundles;
+candidate config runs in the candidate image, image runtime-config digests are inspected, and
+normal release cannot act as an unrecorded version downgrade.
+
+The production topology remains private: database sizing and post-start migration/epoch/artifact
+identity run through strict output from one-off `deployment-backup inspect` containers on the
+database network. The backup service now mounts the complete manifest-bound content closure. This
+also carries the predeclared canonical-epoch correction: real `phase0.json` is accepted and the old
+reduced projection is a permanent negative. The application SPDX/notices generator inventories
+all three shipped Go binaries plus the client; its previously red ISC license boundary is now
+explicitly supported. Both operator binaries build as stripped static Linux/amd64 ELFs and are
+required, hashed and validated in the release manifest.
+
+Executed positive evidence on committed implementation content:
+
+- `make verify-server-core` passed cold across vet, all non-harness Go packages and generated
+  formula/API drift checks;
+- `make verify-ci-topology` passed with all ten negative fixtures;
+- focused `make test-go-ci` passed under the repository Linux/amd64 Compose lane for
+  deploymentrelease, both operator commands, deploymentbackup, releasepackage, metadata,
+  account rotation, deployment config and gameserver composition;
+- `make test-deployment-backup` passed empty/populated encrypted Postgres 16 restore identity and
+  non-clean-target refusal under an isolated project that cleaned its containers/network/volumes;
+- `make test-deployment-release` passed real Postgres, real internal-TLS Caddy, authenticated
+  HTTP/WebSocket, held admitted intent, readiness-down, exact drain refusal, courtesy frame, clean
+  bounded closure, restart, encrypted pre-upgrade restore to a new database and previous-service
+  smoke; its deliberate catalog-byte corruption was rejected by the private inspection boundary;
+- `make generate-release-metadata` produced 44 exact dependencies; both helper build targets
+  produced static x86-64 ELF binaries; and the staged `make release-secret-scan` inspected 1,333
+  tracked files with no finding.
+
+Demonstrated severing failures, all restored before the implementation commit:
+
+1. allowing normal version downgrade failed
+   `TestReleaseRejectsVersionDowngradeEvenWhenMigrationIsForwardCompatible` with “normal release
+   accepted a semantic version downgrade”;
+2. removing exact backup-ID authorization failed the independently open `wrong backup` population
+   with “wrong backup accepted”;
+3. removing the overlap comparison failed JWT, bootstrap and cursor cases independently with
+   “premature removal accepted”;
+4. changing the exact courtesy code failed `TestRestartCourtesyRequiresExactSystemEnvelope` with
+   “exact restart courtesy frame rejected”;
+5. returning to `docker compose exec` failed
+   `TestDockerRuntimePreflightRunsCandidateConfigAndPrivateDatabaseInspection` with the exact old-
+   container command; and
+6. removing both helper commands from metadata discovery failed
+   `TestGoDependencyInventoryCoversEveryShippedBinary` because `filippo.io/age` disappeared.
+
+The rollback deadline, wrong backup and wrong previous-manifest negatives each receive a fresh
+open release authority; they no longer coast behind a prior successful rollback. Locks reject a
+concurrent operator mutation, ledger readers reject discontinuous/reused key IDs and unknown
+failure stages, symlinked backup inputs fail, and no Down-migration method or command exists.
+
+**Review by:** Codex. **Recorded by:** Codex. First-filter range `ab70327..23adca6` plus this record
+commit reviewed in full; the range includes predeclaration commit `6c626c2`. Scope matches RFC
+DP4–DP5 and AC3/AC5/AC6 plus the two recorded production-boundary corrections. No DP-E operations,
+RPO/RTO, clean-host R-006, supported-self-hosting or 1.0 claim is made. Verdict: **APPROVED as first
+filter; not the designated pass.** DP-D is ready for Claude's mandatory exact-range cross-party
+review and remains unarchived.
