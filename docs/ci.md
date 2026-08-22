@@ -159,6 +159,9 @@ Gate/Wind Down controls to traverse `runtime.ts`, renders both terminal variants
 the exact next Company. No browser runtime, server transport, fixture clock, or direct browser
 intent call is substituted. The dedicated
 `game-ui-composed` Actions job runs this same Make target on every push and pull request.
+The witness first requires exclusive ownership of `127.0.0.1:18081`, builds an ignored
+repository-local gameserver binary, and owns that exact child through teardown. A stale listener is
+a loud setup failure and cannot satisfy `/readyz` for a newly failed child.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:

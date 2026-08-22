@@ -28,8 +28,9 @@ throw. Payout labels and any shipped network-slot titles also resolve only throu
 unknown future slot IDs are withheld rather than rendered mechanically.
 
 Live sync requires snapshot v3, its positive `founder_revision`, and the exact `transitions` object.
-The server derives the first Gate and Wind Down eligibility by previewing the real production
-transition kernel on a discarded state clone. The first Gate is the only Phase-A gate exposed;
+The Game UI projector derives the first Gate by invoking the existing production transition on a
+discarded decoded-state clone and applies the existing Tier-1 Wind Down rule. The production
+kernel itself is unchanged. The first Gate is the only Phase-A gate exposed;
 later gates/routes fail closed. Eligibility is advisory and the intent receipt remains authority.
 Encrypted bootstrap receipts remain replayable under the schema version they were minted with:
 stored v1/v2 snapshots legally omit transition controls, and v1 also lacks the Founder coordinate.
@@ -40,6 +41,10 @@ history, queue overflow, or invalid frame. Recovery snapshots are delivered into
 `bindSnapshot` path; there is no parallel API client or snapshot schema. Drain delays reconnect by
 the server-advertised bound. Auth-expired and replaced sockets surface offline instead of inventing
 Account token-rotation or multi-tab arbitration behavior.
+Company Gate events trigger one deduplicated authoritative refresh before the next transition;
+action and refresh state are tracked independently, and a click that races that refresh waits for
+its revision instead of disappearing. Terminal actions still rely on ordered event delivery so an
+eager snapshot cannot suppress `run_ended`.
 
 ## Boundaries and verification
 
@@ -49,7 +54,7 @@ style literals. `make test-browser` applies the WCAG 2.2 AA axe gate to all five
 Chromium, Firefox, and WebKit and includes the sixty-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.
 `make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed
-gameserver, Postgres bootstrap transaction, authenticated live snapshot-v2 route, and Centrifuge
+gameserver, Postgres bootstrap transaction, authenticated live snapshot-v3 route, and Centrifuge
 world subscription; its schema/revision and visible visitor-counter assertions prove the production
 HTTP synchronization and WebSocket handshake completed. The composed witness then closes the
 production browser socket, commits an intent while disconnected, and requires the reconnect to send
@@ -57,7 +62,10 @@ the exact persisted player epoch/offset and advance it by replaying the missed r
 server-side setup then satisfies the first-gate requirement; visible enabled controls alone submit
 Gate and Wind Down through `runtime.ts`, render scripted and standard Run End, and continue only
 after fetching the exact successor run. No browser intent bypass, fixture clock, or two-hour replay
-is used. `make verify-game-ui` composes the existing client, browser, and composed lanes.
+is used. The harness preflights exclusive ownership of its gameserver port, builds and starts one
+ignored repository-local binary, and waits for that exact process on teardown; another listener
+fails the witness before bootstrap. `make verify-game-ui` composes the existing client, browser,
+and composed lanes.
 
 The deterministic performance lane runs in an isolated Chromium process after the functional
 Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates representing 60

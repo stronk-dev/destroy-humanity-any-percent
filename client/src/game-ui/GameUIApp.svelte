@@ -27,7 +27,9 @@
   let snapshot = $state<ParsedGameUISnapshot | undefined>();
   let surface = $state<GameUISurfaceID>(initialSurface);
   let navigation = new GameUINavigation(initialSurface);
-  let pending = $state(false);
+  let actionPending = $state(false);
+  let refreshPending = $state(false);
+  const pending = $derived(actionPending || refreshPending);
   let offline = $state(false);
   let draining = $state(false);
   let resyncing = $state(false);
@@ -48,6 +50,7 @@
   let unsubscribeShell = () => {};
   let unsubscribe = () => {};
   let tick: ReturnType<typeof setInterval> | undefined;
+  let refreshTask: Promise<void> | undefined;
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
 
@@ -98,27 +101,35 @@
     offline = false;
   }
 
-  async function refresh(): Promise<void> {
-    pending = true;
-    try { bindSnapshot(await runtime.snapshot()); }
-    catch { offline = true; }
-    finally { pending = false; }
+  function refresh(): Promise<void> {
+    if (refreshTask) return refreshTask;
+    refreshPending = true;
+    refreshTask = (async () => {
+      try { bindSnapshot(await runtime.snapshot()); }
+      catch { offline = true; }
+      finally { refreshPending = false; refreshTask = undefined; }
+    })();
+    return refreshTask;
   }
 
   async function beginAttempt(): Promise<void> {
-    pending = true; offline = false;
+    actionPending = true; offline = false;
     try { const value = await runtime.bootstrap(); startShell(); bindSnapshot(value); show("desk"); }
     catch { offline = true; }
-    finally { pending = false; }
+    finally { actionPending = false; }
   }
 
   async function act(body: Record<string, unknown>): Promise<void> {
-    if (!snapshot || pending) return;
-    pending = true;
+    if (!snapshot || actionPending) return;
+    // A click that raced an ordered event/receipt refresh must not disappear.
+    // Finish that authoritative refresh, then bind the intent to its revision.
+    if (refreshTask) await refreshTask;
+    if (!snapshot || actionPending) return;
+    actionPending = true;
     try {
       await runtime.intent({ intent_id: newIntentID(), expected_revision: snapshot.revision, ...body });
     } catch { offline = true; }
-    finally { pending = false; }
+    finally { actionPending = false; }
   }
 
   function acceptOffer(): void {
@@ -129,7 +140,7 @@
   async function continueRun(): Promise<void> {
     if (!ended || pending) return;
     const expectedRunSeq = ended.payload.run_id.run_seq + 1;
-    pending = true;
+    actionPending = true;
     try {
       const value = await runtime.snapshot();
       if (value.run.run_seq !== expectedRunSeq) throw new RangeError("next Company snapshot did not advance exactly one run");
@@ -138,7 +149,7 @@
       offer = undefined;
       show("desk");
     } catch { offline = true; }
-    finally { pending = false; }
+    finally { actionPending = false; }
   }
 
   function consumePublication(message: GameUIRuntimeMessage): void {
@@ -156,9 +167,12 @@
     if (message.kind !== "event") return;
     if (message.scope === "founder") founderRevision = Math.max(founderRevision ?? 0, message.revision);
     const value = message.value;
-    if (value.kind === "gate_crossed" && snapshot && value.payload.founder_id === snapshot.run.founder_id && value.payload.run_id.run_seq === snapshot.run.run_seq) {
+    if (message.scope === "company" && value.kind === "gate_crossed" && snapshot && value.payload.founder_id === snapshot.run.founder_id && value.payload.run_id.run_seq === snapshot.run.run_seq) {
       const split = { gate_id: value.payload.gate_id, rta_ms: Math.max(0, value.occurred_at_ms - snapshot.run.run_started_at_ms) };
       splits = [...splits.filter((row) => row.gate_id !== split.gate_id), split].sort((left, right) => left.gate_id < right.gate_id ? -1 : left.gate_id > right.gate_id ? 1 : 0);
+      // Gate eligibility changes immediately. Refresh from the ordered event so
+      // the next control does not depend on a separate receipt publication.
+      void refresh();
     } else if (value.kind === "exit_offer_spawned") {
       offer = value; navigation.lifecycle({ cursor: value.cursor, surface: "offer_sheet" }); surface = navigation.active;
     } else if (value.kind === "run_ended") {

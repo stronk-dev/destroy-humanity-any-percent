@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { createServer as createTCPServer } from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,21 +13,37 @@ const uiURL = "http://localhost:5173";
 
 const key = Buffer.alloc(32, 7).toString("base64");
 const processErrors = [];
-const gameserver = spawn("go", ["run", "./cmd/gameserver"], {
+
+await new Promise((resolve, reject) => {
+  const probe = createTCPServer();
+  probe.once("error", (error) => reject(new Error(`composed gameserver port 18081 is not exclusively available: ${error.message}`)));
+  probe.listen(18081, "127.0.0.1", () => probe.close(resolve));
+});
+
+const gameserverBinary = path.join(repositoryRoot, ".cache", "game-ui-gameserver");
+const gameserverEnvironment = {
+  ...process.env,
+  CLOUD_CLICKER_ACTIVITY_BRACKET: "activity.standard",
+  CLOUD_CLICKER_BOOTSTRAP_KEY: key,
+  CLOUD_CLICKER_BOOTSTRAP_KEY_ID: "browser-fixture",
+  CLOUD_CLICKER_JWT_KEY: key,
+  CLOUD_CLICKER_REPOSITORY_ROOT: repositoryRoot,
+  CLOUD_CLICKER_SERVER_ID: "01986666-b001-4000-8000-000000000001",
+  DATABASE_URL: "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable",
+  GOCACHE: path.join(repositoryRoot, ".cache", "go-build"),
+  LISTEN_ADDR: "127.0.0.1:18081",
+};
+const buildGameserver = spawnSync("go", ["build", "-o", gameserverBinary, "./cmd/gameserver"], {
   cwd: path.join(repositoryRoot, "server"),
-  detached: true,
-  env: {
-    ...process.env,
-    CLOUD_CLICKER_ACTIVITY_BRACKET: "activity.standard",
-    CLOUD_CLICKER_BOOTSTRAP_KEY: key,
-    CLOUD_CLICKER_BOOTSTRAP_KEY_ID: "browser-fixture",
-    CLOUD_CLICKER_JWT_KEY: key,
-    CLOUD_CLICKER_REPOSITORY_ROOT: repositoryRoot,
-    CLOUD_CLICKER_SERVER_ID: "01986666-b001-4000-8000-000000000001",
-    DATABASE_URL: "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable",
-    GOCACHE: path.join(repositoryRoot, ".cache", "go-build"),
-    LISTEN_ADDR: "127.0.0.1:18081",
-  },
+  env: gameserverEnvironment,
+  encoding: "utf8",
+});
+if (buildGameserver.status !== 0) {
+  throw new Error(`composed gameserver build failed (${buildGameserver.status}): ${buildGameserver.stderr || buildGameserver.stdout}`);
+}
+const gameserver = spawn(gameserverBinary, [], {
+  cwd: repositoryRoot,
+  env: gameserverEnvironment,
   stdio: ["ignore", "pipe", "pipe"],
 });
 gameserver.stdout.on("data", (value) => process.stdout.write(value));
@@ -42,7 +59,12 @@ async function waitForReady() {
     if (processErrors.length > 0 || gameserver.exitCode !== null) throw processErrors[0] ?? new Error(`gameserver exited ${gameserver.exitCode}`);
     try {
       const response = await fetch(`${gameserverURL}/readyz`);
-      if (response.ok) return;
+      if (response.ok) {
+        // A stale listener must not let a newly failed child masquerade as ready.
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (processErrors.length > 0 || gameserver.exitCode !== null) throw processErrors[0] ?? new Error(`gameserver exited ${gameserver.exitCode}`);
+        return;
+      }
     } catch {
       // The listener is still starting.
     }
@@ -53,26 +75,19 @@ async function waitForReady() {
 
 async function stopGameserver() {
   if (gameserverStopped()) return;
-  signalGameserver("SIGTERM");
-  await Promise.race([
-    gameserverStopped() ? Promise.resolve() : new Promise((resolve) => gameserver.once("exit", resolve)),
-    new Promise((resolve) => setTimeout(resolve, 10_000)),
-  ]);
-  if (!gameserverStopped()) signalGameserver("SIGKILL");
+  gameserver.kill("SIGTERM");
+  const deadline = Date.now() + 10_000;
+  while (!gameserverStopped() && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  if (!gameserverStopped()) {
+    gameserver.kill("SIGKILL");
+    await new Promise((resolve) => gameserver.once("exit", resolve));
+  }
 }
 
 function gameserverStopped() {
   return gameserver.exitCode !== null || gameserver.signalCode !== null;
-}
-
-function signalGameserver(signal) {
-  try {
-    process.kill(-gameserver.pid, signal);
-  } catch (error) {
-    if (error?.code === "ESRCH") return;
-    if (error?.code !== "EPERM") throw error;
-    if (!gameserver.kill(signal) && !gameserverStopped()) throw error;
-  }
 }
 
 function seedGateRequirement(founderID) {
@@ -98,6 +113,20 @@ async function waitForEnabledButton(page, name) {
   await page.waitForFunction((label) => [...document.querySelectorAll("button")]
     .some((button) => button.textContent?.trim() === label && !button.disabled), name, { timeout: 30_000 });
   return page.getByRole("button", { name, exact: true });
+}
+
+async function clickAppliedIntent(page, button, label) {
+  const requestPromise = page.waitForRequest((request) =>
+    new URL(request.url()).pathname === "/api/v1/intents", { timeout: 30_000 });
+  await button.click();
+  const request = await requestPromise;
+  const response = await request.response();
+  if (!response) throw new Error(`${label} visible intent request completed without a response`);
+  const body = await response.json();
+  if (response.status() !== 200 || body?.outcome !== "applied") {
+    throw new Error(`${label} visible intent was not applied (${response.status()}): ${JSON.stringify(body)}`);
+  }
+  return body;
 }
 
 try {
@@ -130,16 +159,12 @@ try {
   });
   const pageErrors = [];
   const websocketFrames = [];
-  const intentResponses = [];
   let captureRecoverySnapshot = false;
   let resolveRecoverySnapshot;
   const recoverySnapshot = new Promise((resolve) => { resolveRecoverySnapshot = resolve; });
   page.on("pageerror", (error) => pageErrors.push(error));
   page.on("websocket", (socket) => socket.on("framesent", (event) => websocketFrames.push(String(event.payload))));
   page.on("response", async (response) => {
-    if (new URL(response.url()).pathname === "/api/v1/intents") {
-      intentResponses.push({ body: await response.json(), status: response.status() });
-    }
     if (!captureRecoverySnapshot || new URL(response.url()).pathname !== "/api/v1/founder/state") return;
     captureRecoverySnapshot = false;
     resolveRecoverySnapshot({ body: await response.json(), status: response.status() });
@@ -224,16 +249,9 @@ try {
   seedGateRequirement(liveSnapshot.body.run.founder_id);
   await page.reload({ waitUntil: "networkidle" });
   const crossGate = await waitForEnabledButton(page, "Move Into the Garage");
-  await crossGate.click();
-  await page.waitForFunction(() => globalThis.performance.getEntriesByType("resource")
-    .some((entry) => new URL(entry.name).pathname === "/api/v1/intents"), undefined, { timeout: 30_000 });
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  const crossReceipt = intentResponses.at(-1);
-  if (crossReceipt?.status !== 200 || crossReceipt.body?.outcome !== "applied") {
-    throw new Error(`visible cross-gate intent was not applied: ${JSON.stringify(crossReceipt)}`);
-  }
+  await clickAppliedIntent(page, crossGate, "first cross-gate");
   const firstWindDown = await waitForEnabledButton(page, "Wind Down Company");
-  await firstWindDown.click();
+  await clickAppliedIntent(page, firstWindDown, "first wind-down");
   await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
   await page.getByText("Your First Company Failed", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
@@ -242,9 +260,9 @@ try {
   seedGateRequirement(liveSnapshot.body.run.founder_id);
   await page.reload({ waitUntil: "networkidle" });
   const secondCrossGate = await waitForEnabledButton(page, "Move Into the Garage");
-  await secondCrossGate.click();
+  await clickAppliedIntent(page, secondCrossGate, "second cross-gate");
   const secondWindDown = await waitForEnabledButton(page, "Wind Down Company");
-  await secondWindDown.click();
+  await clickAppliedIntent(page, secondWindDown, "second wind-down");
   await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
   await page.getByText("The Company Has Exited", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();

@@ -205,8 +205,13 @@ it.skipIf(typeof document === "undefined")("records immutable gate timing locall
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime, timingStorage } });
   await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  runtime.current = { ...snapshot, revision: 2, run: { ...snapshot.run, tier: 1 }, transitions: { cross_gate: null, wind_down: { eligible: true } } };
+  runtime.snapshotCalls = 0;
   runtime.listener?.({ kind: "event", revision: 2, scope: "company", value: crossed }); flushSync();
+  await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.snapshotCalls).toBe(1);
   expect(target.textContent).toContain("Garage");
+  expect([...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")?.disabled).toBe(false);
   runtime.listener?.({ kind: "event", revision: 3, scope: "company", value: ended }); flushSync();
   expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
   expect([...values.values()][0]).toContain('"rta_ms":750');
