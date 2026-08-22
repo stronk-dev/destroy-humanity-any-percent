@@ -435,3 +435,66 @@ DP4–DP5 and AC3/AC5/AC6 plus the two recorded production-boundary corrections.
 RPO/RTO, clean-host R-006, supported-self-hosting or 1.0 claim is made. Verdict: **APPROVED as first
 filter; not the designated pass.** DP-D is ready for Claude's mandatory exact-range cross-party
 review and remains unarchived.
+
+## 2026-08-22 — DP-E predeclaration
+
+DP-A through DP-D remain ready for their independent designated reviews. DP-E begins after
+`3f58fea`; construction may continue while those reviews are pending, but no pending batch is
+promoted and no archival or supported-release claim is made.
+
+**Authority:** RFC DP1–DP3 and DP7, AC2/AC7/AC8, and the accepted operations decisions only. This
+batch owns the complete provider-off operations profile: private bounded gameserver/Centrifuge
+metrics, Prometheus/Alertmanager/node-exporter composition, privacy-safe structured logs, measured
+14-day journald capacity/retention enforcement, optional separately bounded seven-day raw-IP sink,
+durable backup/release/restore result metrics, successful Alertmanager delivery proof, all seven
+blocking alert families and release-bundle image/SBOM/config closure. It may reconcile DP-D's
+receiver-health preflight with the accepted private Alertmanager boundary. It does not change
+gameplay, product/legal retention, GitHub workflows, CI topology, balance/content, save schemas,
+RPO/RTO claims or the final clean-host R-006 rehearsal.
+
+**Expected paths:** a focused `server/operations/` metrics, privacy, textfile, alert-delivery and
+host-policy package with cold tests; `server/cmd/deployment-operations/` as the packaged host-side
+observation/preflight helper; bounded hooks in `server/gameserver/`, `server/transport/`,
+`server/production/`, `server/save/`, `server/cmd/gameserver/`, `server/deploymentbackup/`,
+`server/cmd/deployment-backup/`, `server/deploymentrelease/` and
+`server/cmd/deployment-release/`; `deployment/operations/` Prometheus rules/config, Alertmanager
+template, journald drop-in and host timer/service configuration; production Compose/config/Caddy
+templates; release-package manifest, assembler, schema, metadata and fixtures needed to ship six
+immutable image/SBOM identities and the operations helper/config bytes; `Makefile`; a dedicated
+`compose.deployment-operations-test.yml`; and canonical `docs/deployment.md`. Existing migrations,
+gameplay data and `.github/workflows/` are excluded.
+
+**Positive population:** an isolated Prometheus registry exposes process/readiness, bounded
+HTTP/WebSocket status and latency classes, Postgres reachability, every named composed job's
+success/failure (including credential cleanup), outbox and all dead-letter populations. Backup,
+restore and release outcomes atomically update node-exporter textfile metrics, including the last
+successful scheduled backup timestamp. Labels are closed enums only. Prometheus scrapes only
+private targets and routes the seven exact alert families to a configured Alertmanager receiver;
+a nonce-bearing synthetic alert proves a successful receiver delivery before release preflight can
+pass. Every alert is tested both firing for its exact duration/population and resolved after the
+fault clears. All six runtime images are digest/config/SBOM bound in the release manifest.
+
+The packaged host helper validates and observes journald rather than declaring a convenient byte
+ceiling: the evidence names the measured workload population and interval, peak bytes/day,
+configured journal capacity, filesystem capacity and collection completeness. It accepts only
+exact 14-day time retention with capacity for fourteen measured peak days and a storage-pressure
+threshold that fires before journald could evict early. The default configuration emits no raw IP;
+an explicitly enabled security sink is separate and capped at exactly seven days.
+
+**Negative/severing population:** public or host-published metrics; a Caddy metrics proxy; any
+secret, recovery material, raw IP, account/founder/stream/request identifier or unbounded value in
+metric labels; the current founder/stream/detail invariant-log leak; missing/failed credential
+cleanup observation; severed Postgres/outbox/dead-letter collectors; stale or failed backup,
+restore or release textfile updates; corrupt/non-atomic textfile bytes; mutable/unbound operations
+images or SBOMs; absent/malformed receiver config; a health-only receiver check with no delivered
+synthetic alert; each severed alert expression, duration or resolved state; journal retention under
+or over fourteen days, incomplete measurement, insufficient capacity, an alert threshold after
+early eviction, default raw-IP logging or a security sink exceeding seven days. Operations
+Compose must fail validation if any non-Caddy service publishes a host port or any operations
+service escapes its intended private network.
+
+**Authorized claim:** the exact release package contains a provider-off, privacy-bounded operations
+profile whose private signals, measured log-retention contract, receiver delivery and all seven
+firing/resolution paths have executable evidence. **Not authorized:** designated approval,
+supported self-hosting, release readiness, RPO/RTO, public-service availability or a 1.0 claim
+until DP-F, exact-manifest R-006 and both review gates pass.
