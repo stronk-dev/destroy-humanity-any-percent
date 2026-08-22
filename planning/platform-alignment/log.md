@@ -2337,3 +2337,14 @@
 - Updated the active index and RP-012/RP-078 records. The RFC remains draft; no planning directory,
   product/deployment/config/workflow byte, acceptance checkbox, push or external publication was
   created. Exact rewrite range is READY FOR CLAUDE DESIGNATED REVIEW, then owner acceptance.
+
+## 2026-08-22 — Deployment draft first-filter corrections
+
+- The Codex adversarial read caught two self-created contradictions before handoff: a seven-hour
+  late-backup threshold could notice failure after the ruled six-hour RPO was already lost, and a
+  14-day *maximum* journal setting allowed evidence to disappear before the ruled 14-day window.
+- Backup alerting now fires when the declared six-hour completion deadline is missed. Ordinary/raw-
+  IP logs now have exact retain-then-purge windows, with early-eviction, stale-retention and storage-
+  pressure negatives named in AC7.
+- No owner value, product behavior, deployment artifact, workflow, acceptance status or push
+  changed. These corrections remain inside the owner-delegated RFC rewrite range.

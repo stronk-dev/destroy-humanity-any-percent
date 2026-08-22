@@ -225,9 +225,11 @@ counts, last successful backup timestamp, restore/release result, filesystem use
 This is operational instrumentation, not gameplay telemetry.
 
 All containers write structured logs through the host journald driver. The supported-host preflight
-requires a 14-day maximum journal retention. Raw IP material is disabled by default; if the
-operator explicitly enables bounded security logging, its separate sink has a seven-day maximum.
-No log field may contain a secret or recovery code.
+requires time-based retention through day 14 and purge after day 14, with enough reserved journal
+budget for the measured release workload. Storage pressure that threatens earlier eviction fires
+before deletion; it cannot silently shorten the evidence window. Raw IP material is disabled by
+default; if the operator explicitly enables bounded security logging, its separate sink retains
+through day 7 and purges after day 7. No log field may contain a secret or recovery code.
 
 Alertmanager must have a configured receiver and a successful test delivery before an instance is
 called operational. For the official instance that receiver reaches Marco; a self-host operator
@@ -235,7 +237,7 @@ names their receiver. The receiver may be local or remote, so provider-off opera
 The following alerts are blocking release-floor alerts and need fired fixtures:
 
 1. public endpoint or readiness unavailable for five consecutive minutes;
-2. scheduled backup late by more than seven hours or any backup failure;
+2. a scheduled backup missing its declared six-hour completion deadline or any backup failure;
 3. Postgres unreachable for two consecutive minutes;
 4. persistent-volume or backup-target use above 80%;
 5. gameserver restart loop (three restarts inside ten minutes);
@@ -300,9 +302,11 @@ Warm-cache success is not accepted where a cold or clean-host population is name
 6. **AC6 — rotation:** current+previous JWT/bootstrap/cursor fixtures work for their governed
    overlap; removal rejects old material. Missing runtime wiring, shortened overlap, logged secret
    and restart-ephemeral cursor mutations fail.
-7. **AC7 — operations:** private metrics are reachable only inside Compose; logs obey 14-day and
-   optional raw-IP seven-day maxima; all seven alerts fire through the configured receiver and
-   their severed counter/rule/receiver paths fail R-007's artifact.
+7. **AC7 — operations:** private metrics are reachable only inside Compose; ordinary logs remain
+   available through day 14 then purge, and optional raw-IP security logs remain through day 7 then
+   purge. Early-eviction, stale-retention and storage-pressure fixtures discriminate. All seven
+   alerts fire through the configured receiver and their severed counter/rule/receiver paths fail
+   R-007's artifact.
 8. **AC8 — provider-off and supply chain:** install, play, backup, restore, alert and rollback work
    with no identity/mail/analytics/AI/payment/cloud-monitoring credential. Image digests, SBOM,
    MIT/third-party license delivery and source/image provenance validate; removing attribution or
