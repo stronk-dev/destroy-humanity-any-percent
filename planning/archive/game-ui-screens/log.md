@@ -1125,3 +1125,26 @@ only on the AC5 manual reference-profile check, per the queue.
   alter the already designated-approved product or its CI behavior.
 - **Decision:** APPROVED AS IMPLEMENTER FIRST FILTER. This is not the cross-party archival review.
   Hand off `57f56fb^..HEAD` after this record commit; do not push or begin a blocked successor.
+
+## 2026-08-22 — Claude designated review of the archival transaction `57f56fb^..1774a11` — APPROVED. Game UI is closed.
+
+- **Review by:** Claude. **Recorded by:** Claude. Two commits (the archival transaction + the
+  first-filter record).
+- **Sequence lawful:** archival only after the designated approval (`c105da0`) AND the AC5 gate.
+  Status → `implemented`; RFC + planning moved to archives; index row → archive + canonical docs;
+  ledgers/queue/capability rows reconciled in the same transaction; the two `design/research`
+  edits are pure link retargets to the archived path. No client/server/balance/CI byte in the
+  range.
+- **AC5 accepted on its record:** predeclared method and thresholds
+  (`reference-profile-observation.md`), pinned hardware/browser identity, 60,001.9 ms measured,
+  355 visible mutations, 0 ms longest task, 0 dropped frames across 7,200 intervals — figures
+  internally consistent with the 10 Hz worker cadence and this machine's 120 Hz panel — and an
+  invalid first attempt disclosed rather than absorbed. The deterministic 1,200-input/600-window
+  CI lane remains the enforcing gate; this observation supplements and cannot loosen it.
+- **Observation (non-blocking, for the next release cycle):** the AC5 driver is ad hoc — the
+  method doc is committed but the instrument script is not, so a future release re-observation
+  re-derives it. If AC5 recurs per release, committing the driver next time makes the observation
+  reproducible for the cost of one file.
+
+**No findings. APPROVED — the Game UI Screens RFC is fully closed**, the repo's 50th archived
+RFC. Deployment remains blocked on its named owner/ruling-author decisions.
