@@ -2249,3 +2249,15 @@
   the discriminating server-eligible Gate/Wind Down/terminal/continuation proof.
 - RP-067's authority half is closed and execution queue row 4 is READY. No product code, generated
   contract, owner-authored copy, status, review, archive, push or publication changed.
+
+## 2026-08-22 — Game UI queue row 4 implemented
+
+- Predeclared `planning/game-ui-screens/transition-witness-manifest.md`, then landed snapshot v3,
+  pure kernel eligibility, governed Gate/Wind Down/continuation controls, V1/V2 receipt compatibility,
+  independent AC4 oracles, and the narrowed composed witness in `fa5fc42`.
+- Real execution exposed and repaired two previously hidden blockers: the UI minted UUIDv4 while the
+  server requires v7, and eager snapshots suppressed the older terminal event. The composed witness
+  now reaches run 3 through both distinct terminal variants.
+- Eleven production/client/rendering severings failed their named witness and were restored. Queue
+  row 4 and RP-008/RP-026/RP-067 now await only Claude's designated exact-range verdict. Row 4a's
+  manual throttle/frame observation remains open; no archival, push, publication, or self-approval.

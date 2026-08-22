@@ -924,3 +924,53 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
   populations and names the required severing controls.
 - Scope permits the accepted projection/schema/Copy/client/test/doc/Make work and forbids balance,
   formula, CI-workflow, and archived-script changes. The cross-party review and archive gates remain.
+
+## 2026-08-22 — GU-C25–GU-C28 implementation and witness completion
+
+- **Implementation:** `fa5fc42` adds `game_ui_snapshot.v3.transitions`, retaining exact v1/v2
+  bootstrap receipt schemas. The Game UI projection invokes the existing production transition on
+  a decoded state copy; `server/production` remains byte-identical to the pre-batch tree. Phase A
+  exposes only `gate.t0_to_t1` with null route, uses the existing Tier-1 Wind Down rule, and fails
+  later transitions closed.
+- **Pin record:** GU-C26 explicitly authorizes the v3 widening. Per the current-plus-legacy rule,
+  `make api-pin` re-baselined the unversioned current schema and preserved named V1/V2 shapes in the
+  same implementation commit. This was deliberate, generated, documented, and not a silent pin edit.
+- **Client:** governed adopted Copy bytes drive Gate, Wind Down, and parent-owned continuation.
+  Stored v1/v2 receipts render no transition controls. Continuation calls only `runtime.snapshot()`
+  and advances only to `ended.run_seq+1`. The implementation also corrected two blockers exposed by
+  the real witness: UI intents had minted server-rejected UUIDv4 IDs, and eager post-intent snapshot
+  fetching advanced the cursor before `run_ended`, suppressing the terminal surface. UUIDv7 is now
+  pinned byte-exactly and ordered event→receipt refresh owns terminal navigation.
+- **Cold positive evidence:** focused `./production ./gameui ./account ./gameserver -count=1`, API
+  regeneration, Copy/manifest checks, TypeScript/Svelte, 6,660 client tests, 20,037 functional
+  browser assertions plus the isolated performance lane, the complete `Integration ./... -count=1`
+  real-Postgres population, and the real Chromium/Vite/gameserver/Postgres/WebSocket composed
+  witness all passed. The composed witness performs Gate, first Wind
+  Down, scripted Run End, run-2 continuation, second Gate/Wind Down, standard Run End, and run-3
+  continuation using visible enabled controls through `runtime.ts`.
+- **Restored severing evidence:** bypassing the projected gate comparison failed the below-threshold
+  preview; raising the projected Wind Down floor failed Tier 1; changing UUID version 7 to 4 failed the
+  exact runtime test; disconnecting Gate, Wind Down, or continuation failed their browser request/
+  snapshot oracle; suppressing scripted or standard Run End failed its distinct title oracle; and
+  removing cap, drain, or resync rendering independently failed its exact-copy browser case. Every
+  mutation was restored and the worktree returned byte-clean before this record.
+- The first remaining plan box flips in this same designated-review range because its exercising
+  tests landed in `fa5fc42`. AC5's 4×/dropped-frame manual release observation remains honestly open
+  as separate platform queue row 4a and is not claimed by this implementation.
+- **Review handoff:** implementation batch `05acc65^..fa5fc42` plus this record commit is ready for
+  Claude's mandatory cross-party exact-range review. The implementer does not approve or archive.
+
+## 2026-08-22 — kernel-version guard correction before review
+
+- The new aggregate `make verify-game-ui` lane was run before designated handoff. Its first run
+  stopped at `verify-kernel-version`: the initial implementation had placed the read-only preview
+  and a behavior-identical Wind Down predicate extraction under kernel-watched `server/production`
+  without a version bump. No browser/composed result from that interrupted aggregate is claimed.
+- A `kernel/VERSION` bump was rejected as a false transition-semantics signal, and the guard was not
+  weakened. The observer moved to `server/gameui`, where it decodes a Company clone and invokes the
+  existing exported production transition. The original production package is byte-identical to
+  `05acc65`.
+- The affected commits were unpushed and referenced by no review verdict. Under AGENTS.md's narrow
+  false-version-signal rewrite carve-out, the fixup was autosquashed before review: original
+  `f2a197b` became `fa5fc42`, and record commit `ff04863` became this rewritten record. All live
+  planning references were reconciled to the new implementation hash.

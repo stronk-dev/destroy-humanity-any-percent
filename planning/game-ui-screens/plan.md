@@ -17,6 +17,6 @@ RFC: `rfc/game-ui-screens.md`
   generated wire contracts.
 - [x] Rule and close GU-C23 (Founder revision for offer acceptance) and GU-C24 (complete payout
   term/delta presentation), including legacy bootstrap-receipt replay.
-- [ ] Pass GU-C25–GU-C28's narrowed composed transition/terminal/continuation proof plus the
+- [x] Pass GU-C25–GU-C28's narrowed composed transition/terminal/continuation proof plus the
   existing renderer-substitution, accessibility, lifecycle, and CI-observable performance gates.
 - [ ] Hand the full range to designated review; archive only after approval.

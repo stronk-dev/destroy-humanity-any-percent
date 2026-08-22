@@ -2,6 +2,18 @@
 
 Coordinate: product tree `190a4fa`; audit checkpoint after `14282e1`; 2026-08-20.
 
+## 2026-08-22 remediation update
+
+The historical findings below remain the evidence at their audited coordinate. Queue row 4 has
+since implemented their routed repair in `05acc65^..fa5fc42`: current snapshot v3 carries a
+server-projected transition object backed by the existing production transition; v1/v2 receipts remain legal and inert; the three governed
+controls traverse `runtime.ts`; both terminal variants and exact-next-run continuation pass in the
+real composed browser/Postgres topology; and cap/drain/resync now have independent browser oracles.
+Eleven targeted severings failed and were restored, including the two product defects the composed
+test exposed (UUIDv4 intent IDs and eager-snapshot suppression of `run_ended`). The batch awaits the
+mandatory Claude exact-range review and is not archival-eligible. AC5's manual 4×/frame observation
+remains separately open exactly as this audit classified it.
+
 This pass re-derived the active Game UI RFC from its full specification, blockers and owner
 rulings, live plan/log, canonical doc, Svelte/runtime/event/timing/performance implementations,
 generated snapshot contracts, component and composed-browser tests, successor content work, and
