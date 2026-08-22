@@ -10,6 +10,8 @@ Implemented systems:
   cost curves, scoped authoritative ledger transactions, and receipt boundary.
 - [Continuous integration](ci.md) — public hosted workflow, blocking verification jobs, dependency
   cache boundaries, and balance-schema gate.
+- [Deployment](deployment.md) — fail-closed production configuration and the manifest-derived,
+  hash-bound runtime content staging boundary (Deployment Foundation remains in progress).
 - [Save layer](save-layer.md) — owner-aware Postgres revision streams, canonical state format,
   migrations, optimistic concurrency, retention, and restoration.
 - [Production engine](production-engine.md) — lazy authoritative accrual, multiplier slots,
