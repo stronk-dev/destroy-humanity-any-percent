@@ -117,3 +117,74 @@ the bundle command without a client build or Linux/amd64 server. Each must fail 
 release candidate with a private one-node topology. **Not authorized:** supported self-hosting,
 backup/restore, rollback, operational alerts, RPO/RTO or release readiness until their later
 batches and exact-manifest R-006 pass.
+
+## 2026-08-22 — DP-B implementation and Codex first-filter
+
+**Implementation commits:** `5f1751e`, `f5ba299`, `7277b83`, `018a977`, `cda5a10`, `dde5c15`
+and `ba643db` (review baseline `f62e0b7`; this record commit is the range tip).
+
+**Actual boundary:** `server/releasepackage` and its four small commands derive/stage the runtime
+content closure, validate/render the three-service private Compose topology, inventory the linked
+application license set, emit SPDX 2.3, construct/validate the release manifest, inspect an offline
+gameserver Docker archive and scan tracked/bundled/image bytes for recognized secret material.
+`deployment/` supplies the scratch/nonroot gameserver Dockerfile, Caddy/Compose/rotation inputs,
+non-secret example and closed JSON Schemas. `Makefile` exposes explicit build inputs; canonical
+behavior and limitations live in `docs/deployment.md`.
+
+The exact candidate source is `ba643db317513e2ed8e0ff666b49cd3526983b30`. Its package contains
+53 manifest-bound artifacts. The final clean manifest SHA-256 is
+`67ae884e5dc0011fbef1d31e0fef585bcfdd1bb25a7395563db907b482e814e6` and records:
+
+- gameserver config/image ID
+  `sha256:afe2f78978f50c226b6dfcd08c891c5024c10dcf2f55ab03a6d0e79cbf0ce7f9`;
+- Caddy index `sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648`
+  with linux/amd64 config
+  `sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe`; and
+- Postgres index `sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685`
+  with linux/amd64 config
+  `sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b`.
+
+**Executed evidence:**
+
+- two no-cache exports from the digest-pinned BuildKit v0.24.0 builder, with fixed source epoch and
+  timestamp rewriting, were byte-identical: archive SHA-256
+  `5b2b7f6e597ff9d4900b13591cec394c75034f2ecb3832c2788b2637243a37b3`;
+- the clean assembler accepted the exact linux/amd64 binary/image/config-addressed SBOM population
+  and emitted all 53 artifacts; `docker compose config --quiet` accepted the rendered Compose;
+- from only the extracted bundle plus operator fixture secrets, real Postgres, the amd64 gameserver
+  under emulation and Caddy returned `health=204`, `ready=204`, `spa=200`, `bootstrap=201`;
+- Docker Desktop lacks journald, so the startup witness used an external test-only logging override
+  to `json-file`. The unmodified release Compose first failed on that unsupported-host condition;
+  the override did not alter tracked or manifest-bound bytes. This is DP-B component evidence, not
+  the required clean Linux host R-006 rehearsal;
+- `make test-go-ci CI_TEST_PACKAGES='./releasepackage ./cmd/assemble-release-bundle
+  ./cmd/release-secret-scan'` — PASS cold inside the repository's CI service after the final amd64
+  provenance correction;
+- `make release-secret-scan GAMESERVER_IMAGE_ARCHIVE=<exact archive>` — PASS over 1,305 tracked
+  paths and every saved-image member; and
+- `make verify-ci-topology` — PASS, including all 10 negative topology fixtures. No workflow was
+  changed: these Go tests already execute in the existing server job, while image/clean-host work
+  remains manual as DP8 requires.
+
+**Discrimination and audit findings:**
+
+1. temporarily bypassing the bundle artifact comparison made the changed-site-byte fixture pass
+   incorrectly; `TestReleaseManifestBindsEveryBundleByteAndImageSBOM` failed with `tampered bundle
+   accepted`, and the mutation was restored;
+2. seeded tracked material and malformed/seeded archive bytes are rejected by the scanner; mutable
+   image references, wrong amd64 binary, client symlink, missing attribution, changed image/SBOM
+   hash, forged schema field set and source-commit/image-label mismatch each have cold negatives;
+3. an initial image was correctly exposed as arm64 metadata around an amd64 binary. The final build
+   fixes the platform explicitly and archive validation binds both architecture and entry point;
+4. ordinary Docker-driver builds remained timestamp-dependent even with `SOURCE_DATE_EPOCH`.
+   DP-B therefore moved to the pinned container BuildKit exporter with `rewrite-timestamp=true` and
+   proved two no-cache archives byte-equal; and
+5. the first upstream SBOM attempt described native arm64 variants. The final manifest records each
+   linux/amd64 runtime config digest and requires each SPDX name to identify that config, so a
+   native-host or swapped SBOM fails before packaging.
+
+**Review by:** Codex. **Recorded by:** Codex. First-filter range `f62e0b7..ba643db` plus this record
+commit reviewed in full. Scope remains DP1–DP3/DP8 and AC1/AC2/AC8 only; no backup, release,
+rollback, rotation ledger, operations or R-006 claim is present. Verdict: **APPROVED as first
+filter; not the designated pass.** DP-B is ready for Claude's exact-range designated cross-party
+review and remains unarchived.
