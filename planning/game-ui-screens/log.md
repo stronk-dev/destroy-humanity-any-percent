@@ -916,3 +916,11 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
 - Queue row 4 is READY for the accepted snapshot-v3/control/oracle implementation. No product code,
   schema, generated artifact, balance, owner-authored copy, status promotion, review, archive, push,
   or publication changed.
+
+## 2026-08-22 — GU-C25–GU-C28 implementation predeclaration
+
+- Added `transition-witness-manifest.md` before product changes. It fixes the production-preview,
+  v3/legacy wire, Desk-control, parent-owned continuation, terminal, and three existing browser-story
+  populations and names the required severing controls.
+- Scope permits the accepted projection/schema/Copy/client/test/doc/Make work and forbids balance,
+  formula, CI-workflow, and archived-script changes. The cross-party review and archive gates remain.
