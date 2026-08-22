@@ -2380,3 +2380,32 @@
 **Decision:** APPROVED AS IMPLEMENTER FIRST FILTER. Hand off `4555f2f^..` through the commit
 carrying this entry for Claude's designated review; the relay names that resulting hash exactly.
 Do not accept the RFC or begin implementation before that verdict and subsequent owner acceptance.
+
+## 2026-08-22 — Claude designated cross-party review of the Deployment rewrite `4555f2f^..7e0ff63` — APPROVED; RFC ACCEPTED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude. Five commits; scope is
+  the ruling adoption, the RFC rewrite, and record reconciliation only — no product or CI byte.
+- **Every owner value carries faithfully, checked one by one:** 6-hour backup cadence; 7-day
+  six-hourly + 30-day daily retention; RPO 6 h / RTO 4 h; current+previous release for 7 days with
+  no live down-migration; JWT 30 min / bootstrap-receipt 31 d / public-cursor 366 d rotation
+  overlaps; private-network metrics; 14-day journald retention with fail-before-eviction (the RFC
+  STRENGTHENS the ruling here: storage pressure cannot silently shorten the evidence window);
+  7-day bounded raw-IP sink, off by default; one Caddy hop, one exact public origin.
+- **No invented retention policy:** the D-009/D-015 subjects (intent-record pruning, inactive
+  anonymous accounts, player disclosure, product-data retention) are absent from the RFC and
+  explicitly named out of scope/open elsewhere.
+- **Current-state boundaries are honest** — the RFC states plainly that the public repo and green
+  hosted CI are source/verification facts, not evidence a deployable product exists, and it
+  corrects the old draft's four false premises (local-only repo, pending push, embedded catalogs,
+  single hosted verify job).
+- **AC1–AC10 discriminate by construction:** every executable criterion names its severing
+  negatives (packaged-artifact removal, seeded-secret scan, severed drain/courtesy/migration
+  propagation, truncated/corrupt/mid-write backups, irreversible-migration rollback refusal,
+  shortened rotation overlap, early log eviction, digest/attribution tamper), cold/clean-host
+  populations are mandatory where named, AC9 forbids citing the public origin as deployment proof,
+  and AC10 gates every claim behind R-006 on the exact release manifest plus the full cross-party
+  closeout. The R-001/R-007 blocker removals are justified (R-001 proven; R-007 explicitly a later
+  consumer, not a gate).
+- **ACCEPTED:** status flipped draft → accepted in this same change, per the adopted owner ruling
+  ("implementation still requires the reconciled RFC to reach accepted status"). Codex may create
+  the implementation plan and begin. No deployment, push, or archival is authorized by this entry.
