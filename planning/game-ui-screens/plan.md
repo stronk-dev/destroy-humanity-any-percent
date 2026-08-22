@@ -19,4 +19,4 @@ RFC: `rfc/game-ui-screens.md`
   term/delta presentation), including legacy bootstrap-receipt replay.
 - [x] Pass GU-C25–GU-C28's narrowed composed transition/terminal/continuation proof plus the
   existing renderer-substitution, accessibility, lifecycle, and CI-observable performance gates.
-- [ ] Hand the full range to designated review; archive only after approval.
+- [x] Hand the full range to designated review; archive only after approval.

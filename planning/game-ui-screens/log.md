@@ -1009,3 +1009,33 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
   canonical Game UI documentation, and planning records. They do not change balance, formulas,
   CI workflow bytes, archived scripts, or production-kernel semantics. The complete handoff starts
   at predeclaration `05acc65`; this record remains implementer evidence, not the designated verdict.
+
+## 2026-08-22 — Codex complete-range first-filter review
+
+- **Review by:** Codex. **Recorded by:** Codex.
+- **Range reviewed:** `05acc65^..787be17` (predeclaration, all implementation/correction commits,
+  evidence records, and the fresh-runner correction). This review covers the complete current
+  implementation span but is only the implementer's first filter; it is not the mandatory
+  cross-party verdict and cannot authorize archival.
+- **Scope verification:** 36 changed paths are confined to the accepted Game UI projection/schema,
+  generated contracts/Copy, client/runtime, tests, docs, Make composition, and planning records.
+  `server/production`, `balance`, `.github/workflows`, and archived RFC/script ranges have zero diff.
+  The production kernel is byte-identical to the predeclaration boundary and remains version
+  `0.3.100`; range `git diff --check` passes.
+- **Finding fixed before approval — fresh-runner output parent:** the composed lane built its owned
+  binary at `.cache/game-ui-gameserver` without explicitly creating `.cache`. The local checkout
+  already had that directory, so the ordinary pass could not prove GitHub-runner behavior.
+  `787be17` adds recursive parent creation. For the negative environment, the existing 1.5 GB
+  repository cache was moved aside, leaving `.cache` absent; the exact composed command created its
+  directory/binary and passed against real Postgres. The original cache was restored byte-for-byte
+  by rename and the 371 MB proof cache was removed afterward.
+- **Executed evidence:** committed `238a9eb` passed the complete `make verify-game-ui` aggregate;
+  the only later executable change is the directory creation above, which passed the exact
+  cache-absent `node client/tools/test-game-ui-composed.mjs` CI body. Three independent browser
+  mutations rejected missing terminal transport gating, unconditional terminal receipt refresh,
+  and late-offer terminal preemption in Chromium, Firefox, and WebKit. Five consecutive composed
+  runs passed after the terminal corrections.
+- **Decision:** APPROVED AS IMPLEMENTER FIRST FILTER. No remaining correctness, scope, documentation,
+  test-discrimination, or CI-portability finding was identified. Hand off the complete range
+  beginning at `05acc65` through this record commit for Claude's exact-range designated review.
+  Do not archive, promote status, push, or claim AC5's separate 4× reference-profile observation.
