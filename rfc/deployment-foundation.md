@@ -1,6 +1,6 @@
 # RFC: Deployment Foundation
 
-- **Status:** accepted — designated cross-party review APPROVED 2026-08-22; implementation may begin per the adopted owner ruling
+- **Status:** implementing — accepted at `cd102d7`; implementation opened 2026-08-22
 - **Author:** Marco (initial draft by Claude; 2026-08-22 reconciliation delegated to Codex)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06 §stack` (single-node Go/Postgres/Caddy Compose), `design/00`
@@ -11,7 +11,7 @@
   lifecycle active)
 - **Parent / amends:** —
 - **Supersedes / superseded by:** —
-- **Planning:** `planning/deployment-foundation/` (create only after acceptance)
+- **Planning:** `planning/deployment-foundation/`
 
 ## Summary
 
