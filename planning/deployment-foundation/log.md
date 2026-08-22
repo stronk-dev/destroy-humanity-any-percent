@@ -188,3 +188,34 @@ commit reviewed in full. Scope remains DP1–DP3/DP8 and AC1/AC2/AC8 only; no ba
 rollback, rotation ledger, operations or R-006 claim is present. Verdict: **APPROVED as first
 filter; not the designated pass.** DP-B is ready for Claude's exact-range designated cross-party
 review and remains unarchived.
+
+## 2026-08-22 — DP-C predeclaration
+
+DP-A and DP-B await their independent designated reviews. DP-C begins in a new range after
+`9b916c2`; neither pending verdict is promoted by this parallel construction.
+
+**Authority:** RFC DP6 and AC4 only. This batch creates backup/restore/retention primitives and
+their real Postgres witnesses. It does not perform release replacement, rollback, alert delivery,
+rotation timing, operations composition or the final R-006 rehearsal.
+
+**Expected paths:** one focused backup package and command under `server/`; package-owned test
+fixtures; release-bundle backup/restore helper entry points; the smallest necessary Compose
+backup-worker inputs; `Makefile`; and canonical deployment/operations documentation. Database
+migrations and gameplay schemas are not expected to change.
+
+**Positive population:** empty and populated Postgres custom-format dumps; age X25519 encryption
+to an operator recipient; plaintext envelope plus encrypted authenticated payload; atomic target
+rename; exact release-manifest/epoch/artifact/server/timestamp metadata; restore into a clean
+database; identity equality for account, Founder, Company, events, leaderboard and epoch; governed
+six-hourly/daily retention preserving newest and unresolved pre-upgrade records; measured RPO/RTO
+fields that fail rather than claim success when incomplete.
+
+**Negative population:** truncated/corrupt payload, wrong age identity, wrong release manifest,
+partial temporary output, simulated interruption between dump/encrypt/rename, missing/late backup,
+non-clean restore target and retention attempts against newest/unresolved pre-upgrade backups. No
+fixture may coast past an excluded row or guard.
+
+**Authorized claim:** the exact release package can create, validate, retain and restore encrypted
+database backups with identity evidence. **Not authorized:** RPO/RTO acceptance, supported
+self-hosting, release/rollback, operational readiness or release readiness until DP-D–DP-F and
+exact-manifest R-006 pass.
