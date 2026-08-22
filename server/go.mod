@@ -3,6 +3,7 @@ module cloud-clicker/server
 go 1.26.0
 
 require (
+	filippo.io/age v1.3.1
 	github.com/centrifugal/centrifuge v0.38.0
 	github.com/centrifugal/protocol v0.17.0
 	github.com/coder/websocket v1.8.15
@@ -14,7 +15,6 @@ require (
 )
 
 require (
-	filippo.io/age v1.3.1 // indirect
 	filippo.io/hpke v0.4.0 // indirect
 	github.com/FZambia/eagle v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect

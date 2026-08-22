@@ -1,3 +1,8 @@
 services:
   test:
     platform: linux/amd64
+    # Docker Desktop's QEMU advertises an AVX2/BMI2 combination that corrupts
+    # Go's age payload path under emulation. Hosted Actions is native amd64 and
+    # deliberately retains normal CPU detection.
+    environment:
+      GODEBUG: cpu.avx2=off

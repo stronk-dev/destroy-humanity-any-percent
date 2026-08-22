@@ -105,7 +105,7 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 		}
 		prior = artifact.Path
 	}
-	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "content/balance/epochs/phase0.json"} {
+	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "deployment-backup", "content/balance/epochs/phase0.json"} {
 		if !hasArtifact(manifest.Artifacts, required) {
 			return fmt.Errorf("%w: missing release artifact %q", ErrInvalidContent, required)
 		}
@@ -157,7 +157,7 @@ func ValidateBundle(root string) error {
 			return ErrInvalidContent
 		}
 		required := map[string][]string{
-			"config.schema.json":           {"CLOUD_CLICKER_PUBLIC_ORIGIN", "CLOUD_CLICKER_SERVER_ID", "CLOUD_CLICKER_JWT_CURRENT_ID", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID", "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE", "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE", "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE"},
+			"config.schema.json":           {"CLOUD_CLICKER_PUBLIC_ORIGIN", "CLOUD_CLICKER_SERVER_ID", "CLOUD_CLICKER_JWT_CURRENT_ID", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID", "CLOUD_CLICKER_BACKUP_TARGET", "CLOUD_CLICKER_AGE_RECIPIENT", "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE", "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE", "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE"},
 			"release-manifest.schema.json": {"schema_version", "release_version", "source_commit", "platform", "docker_engine_version", "docker_compose_version", "database_migration", "company_save_version", "founder_save_version", "epoch_id", "constants_hash", "copy_hash", "images", "artifacts"},
 		}[name]
 		if validateSchema(data, name, required) != nil {

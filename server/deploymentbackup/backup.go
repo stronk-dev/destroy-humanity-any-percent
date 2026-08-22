@@ -78,21 +78,6 @@ func Create(input CreateInput) (Header, string, error) {
 	if err != nil || !info.IsDir() || info.Mode()&0o022 != 0 {
 		return Header{}, "", ErrInvalid
 	}
-	raw, err := os.CreateTemp(input.Directory, ".backup-dump-*.tmp")
-	if err != nil {
-		return Header{}, "", err
-	}
-	rawPath := raw.Name()
-	defer os.Remove(rawPath)
-	if _, err = io.Copy(raw, input.Dump); err == nil {
-		err = raw.Sync()
-	}
-	if closeErr := raw.Close(); err == nil {
-		err = closeErr
-	}
-	if err != nil {
-		return Header{}, "", err
-	}
 	header := Header{SchemaVersion: 1, BackupID: input.BackupID, ServerID: input.ServerID,
 		ReleaseManifestSHA256: input.ReleaseManifestSHA256, EpochID: input.EpochID,
 		StartedAt: input.StartedAt.UTC(), CompletedAt: input.Now().UTC(), PreUpgrade: input.PreUpgrade}
@@ -111,11 +96,7 @@ func Create(input CreateInput) (Header, string, error) {
 		_, err = encrypted.Write(append(authenticated, '\n'))
 	}
 	if err == nil {
-		raw, err = os.Open(rawPath)
-	}
-	if err == nil {
-		_, err = io.Copy(encrypted, raw)
-		_ = raw.Close()
+		_, err = io.Copy(encrypted, input.Dump)
 	}
 	if encrypted != nil {
 		if closeErr := encrypted.Close(); err == nil {
@@ -211,7 +192,7 @@ func ReadHeader(path string) (Header, error) {
 
 func Restore(path, expectedManifest string, identity age.Identity, output io.Writer) (Header, error) {
 	if identity == nil || output == nil || !hash.MatchString(expectedManifest) {
-		return Header{}, ErrInvalid
+		return Header{}, fmt.Errorf("%w: restore inputs", ErrInvalid)
 	}
 	file, err := os.Open(path)
 	if err != nil {
@@ -225,7 +206,7 @@ func Restore(path, expectedManifest string, identity age.Identity, output io.Wri
 	decoder := json.NewDecoder(strings.NewReader(string(line)))
 	decoder.DisallowUnknownFields()
 	if first != magic || lineErr != nil || decoder.Decode(&header) != nil || validateHeader(header) != nil || header.ReleaseManifestSHA256 != expectedManifest {
-		return Header{}, ErrInvalid
+		return Header{}, fmt.Errorf("%w: envelope header", ErrInvalid)
 	}
 	payload, err := os.CreateTemp("", ".cloud-clicker-restore-*.age")
 	if err != nil {
@@ -239,7 +220,7 @@ func Restore(path, expectedManifest string, identity age.Identity, output io.Wri
 		copyErr = closeErr
 	}
 	if copyErr != nil || written != header.PayloadBytes || "sha256:"+hex.EncodeToString(hasher.Sum(nil)) != header.PayloadSHA256 {
-		return Header{}, ErrInvalid
+		return Header{}, fmt.Errorf("%w: encrypted payload checksum", ErrInvalid)
 	}
 	payload, err = os.Open(payloadPath)
 	if err != nil {
@@ -248,15 +229,21 @@ func Restore(path, expectedManifest string, identity age.Identity, output io.Wri
 	defer payload.Close()
 	decrypted, err := age.Decrypt(payload, identity)
 	if err != nil {
-		return Header{}, ErrInvalid
+		return Header{}, fmt.Errorf("%w: age decryption", ErrInvalid)
 	}
 	plain := bufio.NewReaderSize(decrypted, 64<<10)
 	authenticatedLine, err := plain.ReadBytes('\n')
 	var authenticated authenticatedHeader
 	decoder = json.NewDecoder(strings.NewReader(string(authenticatedLine)))
 	decoder.DisallowUnknownFields()
-	if err != nil || decoder.Decode(&authenticated) != nil || authenticated != authenticatedFrom(header) {
-		return Header{}, ErrInvalid
+	if err != nil {
+		return Header{}, fmt.Errorf("%w: authenticated metadata framing: %v", ErrInvalid, err)
+	}
+	if decodeErr := decoder.Decode(&authenticated); decodeErr != nil {
+		return Header{}, fmt.Errorf("%w: authenticated metadata encoding: %v", ErrInvalid, decodeErr)
+	}
+	if differences := authenticatedDifferences(authenticated, authenticatedFrom(header)); len(differences) != 0 {
+		return Header{}, fmt.Errorf("%w: authenticated metadata fields %s", ErrInvalid, strings.Join(differences, ","))
 	}
 	if _, err := io.Copy(output, plain); err != nil {
 		return Header{}, err
@@ -268,6 +255,13 @@ type Retention struct {
 	Keep    []string
 	Delete  []string
 	Invalid []string
+}
+
+type ScheduleStatus struct {
+	LatestCompletedAt time.Time `json:"latest_completed_at"`
+	Missing           bool      `json:"missing"`
+	Late              bool      `json:"late"`
+	Invalid           []string  `json:"invalid"`
 }
 
 func PlanRetention(paths []string, now time.Time) Retention {
@@ -306,6 +300,55 @@ func PlanRetention(paths []string, now time.Time) Retention {
 	return result
 }
 
+func EvaluateSchedule(paths []string, now time.Time) ScheduleStatus {
+	status := ScheduleStatus{}
+	for _, path := range paths {
+		header, err := ReadHeader(path)
+		if err != nil || header.CompletedAt.After(now) {
+			status.Invalid = append(status.Invalid, path)
+			continue
+		}
+		if status.LatestCompletedAt.IsZero() || header.CompletedAt.After(status.LatestCompletedAt) {
+			status.LatestCompletedAt = header.CompletedAt
+		}
+	}
+	sort.Strings(status.Invalid)
+	status.Missing = status.LatestCompletedAt.IsZero()
+	status.Late = !status.Missing && now.Sub(status.LatestCompletedAt) > 6*time.Hour
+	return status
+}
+
+// ApplyRetention derives and executes the governed policy from the complete
+// population. Callers cannot submit a hand-written deletion plan that omits a
+// newest or unresolved pre-upgrade backup.
+func ApplyRetention(paths []string, now time.Time) (Retention, error) {
+	plan := PlanRetention(paths, now)
+	if len(plan.Invalid) != 0 {
+		return plan, ErrInvalid
+	}
+	protected := make(map[string]bool, len(plan.Keep))
+	for _, path := range plan.Keep {
+		protected[path] = true
+		if _, err := ReadHeader(path); err != nil {
+			return plan, ErrInvalid
+		}
+	}
+	for _, path := range plan.Delete {
+		if protected[path] {
+			return plan, ErrInvalid
+		}
+		if _, err := ReadHeader(path); err != nil {
+			return plan, ErrInvalid
+		}
+	}
+	for _, path := range plan.Delete {
+		if err := os.Remove(path); err != nil {
+			return plan, err
+		}
+	}
+	return plan, nil
+}
+
 func validateHeader(header Header) error {
 	if header.SchemaVersion != 1 || !backupID.MatchString(header.BackupID) || header.ServerID == "" || !hash.MatchString(header.ReleaseManifestSHA256) ||
 		header.EpochID < 1 || header.StartedAt.IsZero() || header.CompletedAt.IsZero() || !hash.MatchString(header.PayloadSHA256) || header.PayloadBytes < 1 || header.UpgradeResolved && !header.PreUpgrade {
@@ -319,6 +362,42 @@ func authenticatedFrom(header Header) authenticatedHeader {
 		ReleaseManifestSHA256: header.ReleaseManifestSHA256, EpochID: header.EpochID,
 		StartedAt: header.StartedAt, CompletedAt: header.CompletedAt, PreUpgrade: header.PreUpgrade,
 		UpgradeResolved: header.UpgradeResolved}
+}
+
+func authenticatedEqual(left, right authenticatedHeader) bool {
+	return left.BackupID == right.BackupID && left.ServerID == right.ServerID &&
+		left.ReleaseManifestSHA256 == right.ReleaseManifestSHA256 && left.EpochID == right.EpochID &&
+		left.StartedAt.Equal(right.StartedAt) && left.CompletedAt.Equal(right.CompletedAt) &&
+		left.PreUpgrade == right.PreUpgrade && left.UpgradeResolved == right.UpgradeResolved
+}
+
+func authenticatedDifferences(left, right authenticatedHeader) []string {
+	differences := []string{}
+	if left.BackupID != right.BackupID {
+		differences = append(differences, "backup_id")
+	}
+	if left.ServerID != right.ServerID {
+		differences = append(differences, "server_id")
+	}
+	if left.ReleaseManifestSHA256 != right.ReleaseManifestSHA256 {
+		differences = append(differences, "release_manifest_sha256")
+	}
+	if left.EpochID != right.EpochID {
+		differences = append(differences, "epoch_id")
+	}
+	if !left.StartedAt.Equal(right.StartedAt) {
+		differences = append(differences, "started_at")
+	}
+	if !left.CompletedAt.Equal(right.CompletedAt) {
+		differences = append(differences, "completed_at")
+	}
+	if left.PreUpgrade != right.PreUpgrade {
+		differences = append(differences, "pre_upgrade")
+	}
+	if left.UpgradeResolved != right.UpgradeResolved {
+		differences = append(differences, "upgrade_resolved")
+	}
+	return differences
 }
 
 func digest(data []byte) string {

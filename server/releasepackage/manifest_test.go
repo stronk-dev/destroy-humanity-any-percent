@@ -62,7 +62,7 @@ func releaseBundleFixture(t *testing.T) string {
 		"compose.yml": "fixture\n", "compose.rotation.yml": "fixture\n", "config.schema.json": "{}\n", "release-manifest.schema.json": "{}\n",
 		"sbom/application.spdx.json": fixtureSPDX("application"),
 		"third-party-licenses.txt":   "fixture\n", "site/index.html": "<html></html>\n", "site/third-party-licenses.txt": "fixture\n",
-		"gameserver": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
+		"gameserver": "binary\n", "deployment-backup": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
 	}
 	for path, value := range files {
 		target := filepath.Join(root, filepath.FromSlash(path))

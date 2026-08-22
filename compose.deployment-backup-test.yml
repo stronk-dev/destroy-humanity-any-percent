@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: cloud_clicker_source
+      POSTGRES_USER: cloud_clicker
+      POSTGRES_PASSWORD: cloud_clicker_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloud_clicker -d cloud_clicker_source"]
+      interval: 1s
+      timeout: 5s
+      retries: 30
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  backup-test:
+    platform: linux/amd64
+    image: postgres:16-alpine
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      GODEBUG: cpu.avx2=off
+      TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@postgres:5432/cloud_clicker_source?sslmode=disable
+      TEST_RESTORE_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@postgres:5432/cloud_clicker_restore?sslmode=disable
+      TEST_ADMIN_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@postgres:5432/postgres?sslmode=disable
+    volumes:
+      - ./.cache/bin/deploymentbackup.test:/usr/local/bin/deploymentbackup.test:ro
+    entrypoint: ["/usr/local/bin/deploymentbackup.test"]
+    command: ["-test.run", "Integration", "-test.count=1", "-test.v"]

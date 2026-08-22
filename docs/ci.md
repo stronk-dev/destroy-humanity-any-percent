@@ -116,6 +116,11 @@ make vectors-check-ci
 `make test-go-ci` reproduces the complete Go suite cold on Linux/amd64 with
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
+On Apple Silicon, that Docker lane disables AVX2 inside the emulated amd64 test container because
+Docker Desktop's QEMU CPU-feature combination corrupts the age authenticated-payload path. The
+hosted Actions runner is native amd64 and retains ordinary CPU detection, so the optimized path is
+still part of blocking CI; the local container proves the portable fallback rather than reporting
+a false cryptographic failure from emulation.
 The save-test compose stack publishes Postgres on `SAVE_TEST_HOST_PORT` (default
 `55432`); pass a different Make value, for example
 `make test-go-ci SAVE_TEST_HOST_PORT=55434`, when another isolated test stack is
@@ -174,5 +179,6 @@ HTTP and WebSocket tests use a real `net/http` client/server exchange over in-me
 connections. They exercise upgrades, framing, and protocol recovery without binding a localhost
 port, so ordinary test runs do not require network permission.
 
-No CI job deploys anything. Compose, Caddy, migrations, websocket draining, and reconnect testing
-belong to later RFCs.
+No CI job deploys anything. Destructive restore, release/rollback, alert delivery and clean-host
+rehearsals remain explicit manual release lanes; blocking CI proves their static and component
+contracts without receiving deployment secrets.

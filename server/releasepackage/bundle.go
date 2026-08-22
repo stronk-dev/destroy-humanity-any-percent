@@ -14,6 +14,7 @@ type BundleInput struct {
 	RepositoryRoot         string
 	Output                 string
 	ServerBinary           string
+	BackupBinary           string
 	ClientDist             string
 	MetadataDirectory      string
 	GameserverImageArchive string
@@ -30,7 +31,7 @@ type BundleInput struct {
 // destination must not already contain bytes: a failed build can therefore
 // never be mistaken for a previously successful release.
 func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
-	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != 3 || len(input.ImageConfigIDs) != 3 || len(input.ImageSBOMs) != 3 {
+	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != 3 || len(input.ImageConfigIDs) != 3 || len(input.ImageSBOMs) != 3 {
 		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := requireEmptyDestination(input.Output); err != nil {
@@ -60,6 +61,9 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		}
 	}
 	if err := copyLinuxAMD64Binary(input.ServerBinary, filepath.Join(input.Output, "gameserver")); err != nil {
+		return ReleaseManifest{}, err
+	}
+	if err := copyLinuxAMD64Binary(input.BackupBinary, filepath.Join(input.Output, "deployment-backup")); err != nil {
 		return ReleaseManifest{}, err
 	}
 	if err := copyRegularFile(input.GameserverImageArchive, filepath.Join(input.Output, "images", "gameserver.docker.tar"), 0o644); err != nil {

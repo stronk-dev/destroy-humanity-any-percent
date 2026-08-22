@@ -1,5 +1,7 @@
 name: cloud-clicker
 
+x-postgres-image: &postgres-image "@@POSTGRES_IMAGE@@"
+
 services:
   caddy:
     image: "@@CADDY_IMAGE@@"
@@ -15,7 +17,9 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks: [edge, application]
-    depends_on: [gameserver]
+    depends_on:
+      gameserver:
+        condition: service_started
     logging:
       driver: journald
       options:
@@ -54,7 +58,7 @@ services:
         tag: cloud-clicker-gameserver
 
   postgres:
-    image: "@@POSTGRES_IMAGE@@"
+    image: *postgres-image
     restart: unless-stopped
     environment:
       POSTGRES_DB: "${POSTGRES_DB:-cloud_clicker}"
@@ -73,6 +77,40 @@ services:
       driver: journald
       options:
         tag: cloud-clicker-postgres
+
+  backup:
+    image: *postgres-image
+    user: "70:70"
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=0700,uid=70,gid=70
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    entrypoint: ["/opt/cloud-clicker/deployment-backup"]
+    command:
+      - schedule
+      - --target=/backups
+      - --database-url-file=/run/secrets/database-url
+      - --release-manifest=/opt/cloud-clicker/release-manifest.json
+      - --epoch=/opt/cloud-clicker/epoch.json
+      - --age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}
+      - --server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}
+    secrets: [database-url]
+    volumes:
+      - ./deployment-backup:/opt/cloud-clicker/deployment-backup:ro
+      - ./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro
+      - ./content/balance/epochs/phase0.json:/opt/cloud-clicker/epoch.json:ro
+      - "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"
+    networks: [database]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    logging:
+      driver: journald
+      options:
+        tag: cloud-clicker-backup
 
 networks:
   edge: {}

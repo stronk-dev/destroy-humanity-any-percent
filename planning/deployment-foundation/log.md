@@ -219,3 +219,14 @@ fixture may coast past an excluded row or guard.
 database backups with identity evidence. **Not authorized:** RPO/RTO acceptance, supported
 self-hosting, release/rollback, operational readiness or release readiness until DP-D–DP-F and
 exact-manifest R-006 pass.
+
+## 2026-08-22 — DP-C test-boundary expansion before CI-environment edit
+
+The first Linux/amd64 emulation run exposed a QEMU CPU-feature defect in the age payload path:
+native arm64 passed, emulated amd64 corrupted its own authenticated chunk, and the same amd64 image
+passed when either AVX2 or BMI2 advertisement was disabled. This is not accepted as a product
+result. DP-C therefore expands to `compose.ci-test.yml`, `compose.deployment-backup-test.yml` and
+`docs/ci.md` before editing them: local Apple-host amd64 emulation disables AVX2, while hosted
+GitHub Actions remains native amd64 and exercises its ordinary detected crypto path. The dedicated
+Postgres backup population is also pinned explicitly to `linux/amd64`. No workflow, timeout,
+acceptance bound or hosted job changes.

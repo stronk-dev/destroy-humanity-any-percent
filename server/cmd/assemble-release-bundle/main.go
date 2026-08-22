@@ -13,6 +13,7 @@ func main() {
 	root := flag.String("root", "..", "repository root")
 	output := flag.String("output", "", "empty release bundle directory")
 	serverBinary := flag.String("server-binary", "", "Linux/amd64 gameserver binary")
+	backupBinary := flag.String("backup-binary", "", "Linux/amd64 deployment backup binary")
 	gameserverArchive := flag.String("gameserver-archive", "", "docker save archive for the gameserver image")
 	clientDist := flag.String("client-dist", "", "built client directory")
 	metadata := flag.String("metadata", "", "generated release metadata directory")
@@ -35,7 +36,7 @@ func main() {
 		configIDs[name] = strings.TrimSpace(*configValues[name])
 	}
 	manifest, err := releasepackage.AssembleBundle(releasepackage.BundleInput{RepositoryRoot: *root, Output: *output,
-		ServerBinary: *serverBinary, GameserverImageArchive: *gameserverArchive, ClientDist: *clientDist, MetadataDirectory: *metadata,
+		ServerBinary: *serverBinary, BackupBinary: *backupBinary, GameserverImageArchive: *gameserverArchive, ClientDist: *clientDist, MetadataDirectory: *metadata,
 		ReleaseVersion: *version, SourceCommit: *commit, DockerEngineVersion: *dockerVersion,
 		DockerComposeVersion: *composeVersion, Images: images, ImageConfigIDs: configIDs, ImageSBOMs: sboms})
 	if err != nil {

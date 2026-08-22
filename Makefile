@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration test-deployment-backup validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 build-deployment-backup-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -70,6 +70,13 @@ test-go-ci:
 test-save-integration:
 	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=$(SAVE_TEST_COUNT)
 
+# Real Postgres 16 custom-format dump/restore witnesses run in a package-owned
+# image that contains the exact pg_dump/pg_restore major used by production.
+test-deployment-backup:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/deploymentbackup.test ./deploymentbackup
+	docker compose -f compose.deployment-backup-test.yml run --rm backup-test
+
 # Validate the complete embedded migration chain on real Postgres while keeping
 # the scope focused on the package that owns it. Migration-named unit probes and
 # every save integration test both run cold.
@@ -115,6 +122,13 @@ build-gameserver-linux-amd64:
 		-o "$(if $(filter /%,$(RELEASE_SERVER_OUTPUT)),$(RELEASE_SERVER_OUTPUT),../$(RELEASE_SERVER_OUTPUT))" \
 		./cmd/gameserver
 
+build-deployment-backup-linux-amd64:
+	@test -n "$(RELEASE_BACKUP_OUTPUT)" || (echo "RELEASE_BACKUP_OUTPUT is required" >&2; exit 1)
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false \
+		-ldflags='-s -w -buildid=' \
+		-o "$(if $(filter /%,$(RELEASE_BACKUP_OUTPUT)),$(RELEASE_BACKUP_OUTPUT),../$(RELEASE_BACKUP_OUTPUT))" \
+		./cmd/deployment-backup
+
 create-release-builder:
 	docker buildx create --name "$(RELEASE_BUILDX_BUILDER)" --driver docker-container \
 		--driver-opt image="$(RELEASE_BUILDKIT_IMAGE)"
@@ -158,7 +172,7 @@ generate-release-metadata:
 		-version="$(RELEASE_VERSION)" -commit="$(RELEASE_COMMIT)" -created="$(RELEASE_CREATED_AT)"
 
 assemble-release-bundle:
-	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
+	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(RELEASE_BACKUP_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
 		-a -n "$(RELEASE_VERSION)" -a -n "$(RELEASE_COMMIT)" -a -n "$(RELEASE_DOCKER_VERSION)" \
 		-a -n "$(RELEASE_COMPOSE_VERSION)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" \
 		-a -n "$(POSTGRES_IMAGE)" -a -n "$(CADDY_SBOM)" -a -n "$(GAMESERVER_SBOM)" \
@@ -167,6 +181,7 @@ assemble-release-bundle:
 	cd server && go run ./cmd/assemble-release-bundle -root=.. \
 		-output="$(if $(filter /%,$(RELEASE_BUNDLE_OUTPUT)),$(RELEASE_BUNDLE_OUTPUT),../$(RELEASE_BUNDLE_OUTPUT))" \
 		-server-binary="$(if $(filter /%,$(RELEASE_SERVER_OUTPUT)),$(RELEASE_SERVER_OUTPUT),../$(RELEASE_SERVER_OUTPUT))" \
+		-backup-binary="$(if $(filter /%,$(RELEASE_BACKUP_OUTPUT)),$(RELEASE_BACKUP_OUTPUT),../$(RELEASE_BACKUP_OUTPUT))" \
 		-gameserver-archive="$(if $(filter /%,$(GAMESERVER_IMAGE_ARCHIVE)),$(GAMESERVER_IMAGE_ARCHIVE),../$(GAMESERVER_IMAGE_ARCHIVE))" \
 		-client-dist=../client/dist \
 		-metadata="$(if $(filter /%,$(RELEASE_METADATA_OUTPUT)),$(RELEASE_METADATA_OUTPUT),../$(RELEASE_METADATA_OUTPUT))" \

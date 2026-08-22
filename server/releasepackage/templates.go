@@ -24,12 +24,22 @@ type composeModel struct {
 
 type composeService struct {
 	Image       string            `yaml:"image"`
+	User        string            `yaml:"user"`
+	ReadOnly    bool              `yaml:"read_only"`
+	Entrypoint  []string          `yaml:"entrypoint"`
+	Command     []string          `yaml:"command"`
+	CapDrop     []string          `yaml:"cap_drop"`
+	SecurityOpt []string          `yaml:"security_opt"`
+	Tmpfs       []string          `yaml:"tmpfs"`
 	Ports       []string          `yaml:"ports"`
 	Expose      []string          `yaml:"expose"`
 	Environment map[string]string `yaml:"environment"`
 	Networks    []string          `yaml:"networks"`
 	Secrets     []string          `yaml:"secrets"`
 	Volumes     []string          `yaml:"volumes"`
+	DependsOn   map[string]struct {
+		Condition string `yaml:"condition"`
+	} `yaml:"depends_on"`
 }
 
 type composeNetwork struct {
@@ -67,10 +77,10 @@ func RenderCompose(template []byte, images map[string]string) ([]byte, error) {
 
 func ValidateCompose(data []byte) error {
 	var model composeModel
-	if len(data) == 0 || yaml.Unmarshal(data, &model) != nil || len(model.Services) != 3 {
+	if len(data) == 0 || yaml.Unmarshal(data, &model) != nil || len(model.Services) != 4 {
 		return ErrInvalidContent
 	}
-	wantServices := []string{"caddy", "gameserver", "postgres"}
+	wantServices := []string{"backup", "caddy", "gameserver", "postgres"}
 	for _, name := range wantServices {
 		service, ok := model.Services[name]
 		if !ok || !imageReferencePattern.MatchString(service.Image) {
@@ -86,9 +96,10 @@ func ValidateCompose(data []byte) error {
 	caddy := model.Services["caddy"]
 	gameserver := model.Services["gameserver"]
 	postgres := model.Services["postgres"]
+	backup := model.Services["backup"]
 	if len(caddy.Ports) != 2 || !sameStrings(caddy.Networks, []string{"application", "edge"}) ||
-		!sameStrings(gameserver.Networks, []string{"application", "database"}) || !sameStrings(postgres.Networks, []string{"database"}) ||
-		len(gameserver.Expose) != 1 || gameserver.Expose[0] != "8080" || len(postgres.Expose) != 0 {
+		!sameStrings(gameserver.Networks, []string{"application", "database"}) || !sameStrings(postgres.Networks, []string{"database"}) || !sameStrings(backup.Networks, []string{"database"}) ||
+		len(gameserver.Expose) != 1 || gameserver.Expose[0] != "8080" || len(postgres.Expose) != 0 || len(backup.Expose) != 0 {
 		return fmt.Errorf("%w: invalid service topology caddy_ports=%v caddy_networks=%v gameserver_expose=%v gameserver_networks=%v postgres_expose=%v postgres_networks=%v",
 			ErrInvalidContent, caddy.Ports, caddy.Networks, gameserver.Expose, gameserver.Networks, postgres.Expose, postgres.Networks)
 	}
@@ -109,8 +120,14 @@ func ValidateCompose(data []byte) error {
 		}
 	}
 	if !sameStrings(gameserver.Secrets, []string{"bootstrap-current", "database-url", "jwt-current"}) ||
-		!sameStrings(postgres.Secrets, []string{"postgres-password"}) {
+		!sameStrings(postgres.Secrets, []string{"postgres-password"}) || !sameStrings(backup.Secrets, []string{"database-url"}) {
 		return fmt.Errorf("%w: invalid secret mounts gameserver=%v postgres=%v", ErrInvalidContent, gameserver.Secrets, postgres.Secrets)
+	}
+	wantBackupCommand := []string{"--age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}", "--database-url-file=/run/secrets/database-url", "--epoch=/opt/cloud-clicker/epoch.json", "--release-manifest=/opt/cloud-clicker/release-manifest.json", "--server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}", "--target=/backups", "schedule"}
+	if backup.Image != postgres.Image || backup.User != "70:70" || !backup.ReadOnly || !sameStrings(backup.CapDrop, []string{"ALL"}) || !sameStrings(backup.SecurityOpt, []string{"no-new-privileges:true"}) || len(backup.Tmpfs) != 1 ||
+		!sameStrings(backup.Entrypoint, []string{"/opt/cloud-clicker/deployment-backup"}) || !sameStrings(backup.Command, wantBackupCommand) || backup.DependsOn["postgres"].Condition != "service_healthy" || len(backup.DependsOn) != 1 ||
+		!sameStrings(backup.Volumes, []string{"./content/balance/epochs/phase0.json:/opt/cloud-clicker/epoch.json:ro", "./deployment-backup:/opt/cloud-clicker/deployment-backup:ro", "./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro", "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"}) {
+		return fmt.Errorf("%w: invalid backup worker boundary", ErrInvalidContent)
 	}
 	return nil
 }

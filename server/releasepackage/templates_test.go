@@ -44,6 +44,27 @@ func TestComposeRejectsMutableImagesAndPublishedPrivatePorts(t *testing.T) {
 	}
 }
 
+func TestComposeRejectsRootOrNonSeparateBackupWorker(t *testing.T) {
+	template, err := os.ReadFile(filepath.Join("..", "..", "deployment", "compose.template.yml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rendered, err := RenderCompose(template, fixtureImages())
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := bytes.Replace(rendered, []byte("    user: \"70:70\""), []byte("    user: \"0:0\""), 1)
+	if err := ValidateCompose(root); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("root backup worker accepted: %v", err)
+	}
+	sharedVolume := bytes.Replace(rendered,
+		[]byte("${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"),
+		[]byte("postgres_data:/backups"), 1)
+	if err := ValidateCompose(sharedVolume); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("database volume accepted as backup target: %v", err)
+	}
+}
+
 func TestCaddyRejectsMissingWebSocketRouteAndPublicMetrics(t *testing.T) {
 	data, err := os.ReadFile(filepath.Join("..", "..", "deployment", "Caddyfile"))
 	if err != nil {
