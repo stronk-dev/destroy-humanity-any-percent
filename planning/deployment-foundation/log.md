@@ -38,3 +38,38 @@ file-secret decoder for implemented key consumers. **Not authorized:** a deploya
 complete rotation ledger, public cursor reader, backup, rollback, observability, R-006 or release
 readiness.
 
+## 2026-08-22 — DP-A implementation and Codex first-filter
+
+**Implementation commit:** `a906398` (review baseline `bbff0b6`).
+
+**Actual paths:** `server/deploymentconfig/{config.go,config_test.go}` owns the shared decoder;
+`server/cmd/gameserver/{main.go,main_test.go}` consumes it and preserves both rotation pairs;
+`server/gameserver/{composition.go,deployment_test.go}` binds the one external origin and trusted
+hop to the real transport/account configuration; `Makefile`, `docs/gameserver.md` and
+`docs/accounts-and-sessions.md` expose only the behavior implemented in this batch. No account,
+bootstrap or public-cursor consumer needed modification.
+
+**Executed evidence (cold):**
+
+- `make test-go GO_PACKAGES='./deploymentconfig ./gameserver ./cmd/gameserver ./account ./transport ./publicapi' GO_TEST_FLAGS='-count=1'` — PASS;
+- `make vet GO_PACKAGES='./deploymentconfig ./gameserver ./cmd/gameserver'` — PASS;
+- `make test-save-integration SAVE_TEST_PACKAGES='./gameserver ./account' SAVE_TEST_FLAGS='-run Integration' SAVE_TEST_COUNT=1` — PASS against the declared Docker Postgres service (`gameserver` 20.424 s, `account` 1.305 s); the first sandboxed Docker attempt was denied access to the daemon, then the same command was rerun with the approved Docker authority; and
+- `make build-gameserver` — PASS.
+
+**Discrimination probes (temporary mutations, all restored; clean diff confirmed):**
+
+1. bypassing unknown `CLOUD_CLICKER_*` rejection made
+   `TestProductionConfigRejectsEveryFailClosedFamily/unknown_deployment_key` fail because the
+   invalid fixture was accepted;
+2. weakening the exact one-hop check made
+   `TestDeploymentBoundaryBindsOneOriginToOneTrustedProxyHop` fail on a zero-hop production
+   origin; and
+3. severing the previous-bootstrap-key adapter made
+   `TestCompositionKeysPreserveCurrentAndPreviousRuntimeMaterial` fail with an empty previous map.
+
+**Review by:** Codex. **Recorded by:** Codex. First-filter range `bbff0b6..a906398` reviewed in full:
+scope matches DP2–DP4/AC2/AC6, behavior and docs agree, secret-bearing errors were checked, every
+production field/negative family has an executable row, and the runtime adapters have direct
+tests. Verdict: **APPROVED as first filter; not the designated pass.** Cursor keys are deliberately
+validated but not consumed because no public reader is composed; no rotation-ledger or release
+claim is made. DP-A is ready for Claude's exact-range designated cross-party review.

@@ -14,7 +14,7 @@ its own executable failure cases and a bounded review range. No batch may claim 
 
 | Batch | Scope | Acceptance witness | State |
 |---|---|---|---|
-| DP-A | Canonical production config, file-backed secrets, origin/proxy boundary, current/previous signing-key composition and shared startup/preflight decoder | Cold Go tests cover every required field plus missing file, malformed secret, insecure origin, wrong proxy depth, half-pair and duplicate ID/value negatives | in progress |
+| DP-A | Canonical production config, file-backed secrets, origin/proxy boundary, current/previous signing-key composition and shared startup/preflight decoder | Cold Go tests cover every required field plus missing file, malformed secret, insecure origin, wrong proxy depth, half-pair and duplicate ID/value negatives | ready for designated review |
 | DP-B | Repository-independent gameserver/client/Caddy image inputs, production Compose topology, machine-readable schema, license/SBOM/release manifest generation and validation | Bundle builds from tracked inputs; clean extracted bundle reaches startup without a checkout; removed artifact and changed digest fixtures fail | pending |
 | DP-C | Encrypted off-host backup, restore, retention and manifest binding | Empty/populated Postgres restore witnesses plus corrupt/truncated/wrong-identity/wrong-manifest/partial-file negatives | pending |
 | DP-D | Stop-drain-start release helper, release record, seven-day previous-version rollback without Down migrations | Real Caddy HTTP/WebSocket release and rollback population; severed courtesy frame, drain, migration, epoch and smoke paths fail | pending |
@@ -62,4 +62,3 @@ For every batch:
 - [ ] AC8 provider-off and supply-chain checks pass, including digest and attribution failures.
 - [ ] AC9 remains accurately described as an existing external-state fact only.
 - [ ] AC10 exact-manifest R-006 and transactional closeout receive Codex first-filter and Claude designated approval.
-
