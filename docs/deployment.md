@@ -55,3 +55,22 @@ builder will run that check again against its exact output.
 These are checked-in package inputs, not a released Compose file. Backup and private operations
 services, generated image resolution, licenses/SBOM and the release-manifest validator still have
 to join the bundle before this layer can claim DP-B or AC1/AC8.
+
+## Application licenses and SBOM
+
+`make generate-release-metadata` inventories the module graph actually linked into
+`cmd/gameserver` (not the much larger `go.sum` graph), adds the Go standard library, and reads the
+three exact browser runtime dependencies from `client/package.json` plus their installed package
+manifests. It reads shipped LICENSE/COPYING bytes directly, recognizes only the audited MIT,
+Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
+expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
+
+The outputs are `third-party-licenses.txt` and an SPDX-2.3 JSON document with package-manager purls,
+download locations and root `DEPENDS_ON` relationships. On the current graph the generator finds 37
+linked Go modules, the Go standard library and three browser dependencies (41 dependencies total),
+matching the prior license audit while retaining the previously hidden dual Apache-2.0/MIT libyaml
+notice. Version, full commit and RFC3339 creation time are explicit inputs; an existing output
+directory is never silently overlaid.
+
+This is the application SBOM only. The final bundle must also bind the upstream Caddy/Postgres image
+SBOMs and the exact gameserver OCI digest before AC8 can pass.
