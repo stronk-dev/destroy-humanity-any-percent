@@ -43,8 +43,10 @@ the server-advertised bound. Auth-expired and replaced sockets surface offline i
 Account token-rotation or multi-tab arbitration behavior.
 Company Gate events trigger one deduplicated authoritative refresh before the next transition;
 action and refresh state are tracked independently, and a click that races that refresh waits for
-its revision instead of disappearing. Terminal actions still rely on ordered event delivery so an
-eager snapshot cannot suppress `run_ended`.
+its revision instead of disappearing. When Gate is committed before the WebSocket subscription is
+ready, the HTTP command path also fetches the authoritative snapshot; the same-revision
+`gate_crossed` event can still record its split when it arrives. Terminal actions still
+rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`.
 
 ## Boundaries and verification
 

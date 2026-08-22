@@ -51,6 +51,9 @@
   let unsubscribe = () => {};
   let tick: ReturnType<typeof setInterval> | undefined;
   let refreshTask: Promise<void> | undefined;
+  let actionTask: Promise<void> | undefined;
+  let activeActionToken: object | undefined;
+  let activeActionKind: string | undefined;
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
 
@@ -120,16 +123,34 @@
   }
 
   async function act(body: Record<string, unknown>): Promise<void> {
-    if (!snapshot || actionPending) return;
+    if (!snapshot) return;
+    const kind = typeof body.kind === "string" ? body.kind : "";
+    if (actionTask) {
+      if (activeActionKind === kind) return;
+      await actionTask;
+    }
     // A click that raced an ordered event/receipt refresh must not disappear.
     // Finish that authoritative refresh, then bind the intent to its revision.
     if (refreshTask) await refreshTask;
-    if (!snapshot || actionPending) return;
+    if (!snapshot || actionTask) return;
     actionPending = true;
-    try {
-      await runtime.intent({ intent_id: newIntentID(), expected_revision: snapshot.revision, ...body });
-    } catch { offline = true; }
-    finally { actionPending = false; }
+    activeActionKind = kind;
+    const token = {};
+    activeActionToken = token;
+    const task = (async () => {
+      try {
+        await runtime.intent({ intent_id: newIntentID(), expected_revision: snapshot!.revision, ...body });
+        if (kind === "cross_gate") bindSnapshot(await runtime.snapshot());
+      } catch { offline = true; }
+      finally {
+        if (activeActionToken === token) actionTask = undefined;
+        activeActionToken = undefined;
+        activeActionKind = undefined;
+        actionPending = false;
+      }
+    })();
+    actionTask = task;
+    return task;
   }
 
   function acceptOffer(): void {

@@ -49,11 +49,12 @@ class FixtureRuntime implements GameUIRuntime {
   current: ParsedGameUISnapshot = snapshot;
   snapshotCalls = 0;
   failSnapshot = false;
+  intentBlock: Promise<void> | undefined;
   constructor(private authenticated = false) {}
   hasCredentials(): boolean { return this.authenticated; }
   async bootstrap(): Promise<GameUISnapshot> { this.authenticated = true; return snapshot; }
   async snapshot(): Promise<ParsedGameUISnapshot> { this.snapshotCalls += 1; if (this.failSnapshot) throw new Error("offline"); return this.current; }
-  async intent(body: Readonly<Record<string, unknown>>): Promise<void> { this.requests.push(body); }
+  async intent(body: Readonly<Record<string, unknown>>): Promise<void> { this.requests.push(body); await this.intentBlock; }
   subscribe(_founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void { this.listener = listener; return () => { this.listener = undefined; }; }
 }
 
@@ -108,21 +109,50 @@ it.skipIf(typeof document === "undefined")("renders only server-projected transi
   const windDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
   expect(crossGate.disabled).toBe(false);
   expect(windDown.disabled).toBe(true);
-  crossGate.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  const tierOne = { ...snapshot, revision: 2, run: { ...snapshot.run, tier: 1 }, transitions: { cross_gate: null, wind_down: { eligible: true } } };
+  runtime.current = tierOne;
+  runtime.snapshotCalls = 0;
+  crossGate.click();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  flushSync();
   expect(runtime.requests[0]).toMatchObject({ kind: "cross_gate", expected_revision: 1, gate_id: "gate.t0_to_t1", route_id: null });
-
-  const tierOne = { ...snapshot, run: { ...snapshot.run, tier: 1 }, transitions: { cross_gate: null, wind_down: { eligible: true } } };
-  app.fixtureSnapshot(tierOne); flushSync();
+  expect(runtime.snapshotCalls).toBe(1);
   expect([...target.querySelectorAll("button")].some((button) => button.textContent === "Move Into the Garage")).toBe(false);
   const eligibleWindDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
   expect(eligibleWindDown.disabled).toBe(false);
   eligibleWindDown.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
-  expect(runtime.requests[1]).toMatchObject({ kind: "wind_down", expected_revision: 1, expected_founder_revision: 1 });
+  expect(runtime.requests[1]).toMatchObject({ kind: "wind_down", expected_revision: 2, expected_founder_revision: 1 });
 
   const { transitions: _transitions, ...v2 } = snapshot;
   app.fixtureSnapshot({ ...v2, schema_version: 2 }); flushSync();
   expect(target.textContent).not.toContain("Move Into the Garage");
   expect(target.textContent).not.toContain("Wind Down Company");
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("serializes a distinct transition click that races the preceding action", async () => {
+  const runtime = new FixtureRuntime(true);
+  let releaseIntent = () => {};
+  runtime.intentBlock = new Promise<void>((resolve) => { releaseIntent = resolve; });
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  const crossGate = [...target.querySelectorAll("button")].find((button) => button.textContent === "Move Into the Garage")!;
+  crossGate.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.requests).toHaveLength(1);
+
+  runtime.current = { ...snapshot, revision: 2, run: { ...snapshot.run, tier: 1 }, transitions: { cross_gate: null, wind_down: { eligible: true } } };
+  app.fixtureSnapshot(runtime.current);
+  flushSync();
+  const windDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
+  windDown.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  releaseIntent();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  flushSync();
+  expect(runtime.requests).toHaveLength(2);
+  expect(runtime.requests[1]).toMatchObject({ kind: "wind_down", expected_revision: 2 });
   await unmount(app); target.remove();
 });
 

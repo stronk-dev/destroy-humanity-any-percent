@@ -159,16 +159,8 @@ try {
   });
   const pageErrors = [];
   const websocketFrames = [];
-  let captureRecoverySnapshot = false;
-  let resolveRecoverySnapshot;
-  const recoverySnapshot = new Promise((resolve) => { resolveRecoverySnapshot = resolve; });
   page.on("pageerror", (error) => pageErrors.push(error));
   page.on("websocket", (socket) => socket.on("framesent", (event) => websocketFrames.push(String(event.payload))));
-  page.on("response", async (response) => {
-    if (!captureRecoverySnapshot || new URL(response.url()).pathname !== "/api/v1/founder/state") return;
-    captureRecoverySnapshot = false;
-    resolveRecoverySnapshot({ body: await response.json(), status: response.status() });
-  });
   await page.goto(uiURL, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "BEGIN ATTEMPT" }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -205,8 +197,13 @@ try {
     socket.close();
     if (socket.readyState !== WebSocket.CLOSED) await new Promise((resolve) => socket.addEventListener("close", resolve, { once: true }));
   });
-  captureRecoverySnapshot = true;
   const parsedCredentials = JSON.parse(stored.credentials);
+  const expectedRecoveryRevision = liveSnapshot.body.revision + 1;
+  const recoverySnapshot = page.waitForResponse(async (response) => {
+    if (new URL(response.url()).pathname !== "/api/v1/founder/state" || response.status() !== 200) return false;
+    const body = await response.json();
+    return body?.revision === expectedRecoveryRevision;
+  }, { timeout: 30_000 });
   const missedIntent = await fetch(`${gameserverURL}/api/v1/intents`, {
     method: "POST",
     headers: { Authorization: `Bearer ${parsedCredentials.accessToken}`, "Content-Type": "application/json" },
@@ -234,12 +231,10 @@ try {
   if (recoveredCommand?.subscribe.epoch !== recoveryBefore.value[playerChannel].epoch || recoveredCommand.subscribe.offset !== recoveryBefore.value[playerChannel].offset) {
     throw new Error("production runtime did not reconnect from the persisted player position");
   }
-  const refreshed = await Promise.race([
-    recoverySnapshot,
-    new Promise((_, reject) => setTimeout(() => reject(new Error("missed receipt did not trigger authoritative browser refresh")), 30_000)),
-  ]);
-  if (refreshed.status !== 200 || refreshed.body?.revision !== missedReceipt.new_revision) {
-    throw new Error("recovered receipt did not land the browser on the committed revision");
+  const refreshedResponse = await recoverySnapshot;
+  const refreshed = await refreshedResponse.json();
+  if (refreshed.revision !== missedReceipt.new_revision) {
+    throw new Error(`recovered receipt landed revision ${refreshed.revision}, expected ${missedReceipt.new_revision}`);
   }
 
   // GU-C28 permits ordinary server-side setup so Chromium proves the UI-owned
