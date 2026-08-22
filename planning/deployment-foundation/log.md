@@ -574,3 +574,67 @@ entered the range.
 **APPROVED as first filter; not the designated pass.** DP-E is ready for Claude's mandatory
 exact-range cross-party review and remains unarchived. DP-F may be planned, but no Deployment
 Foundation archival or supported-self-host/release-ready/1.0 claim is authorized.
+
+## 2026-08-23 — DP-F predeclaration
+
+DP-F planning begins after clean DP-E record `65099e7`. DP-A through DP-E remain unapproved until
+their mandatory exact-range Claude reviews land. Construction of missing rehearsal/install
+machinery may proceed without treating those batches as approved; the external clean-host run,
+R-006 conclusion, lifecycle closeout and every supported-self-host/release-ready/1.0 claim remain
+gated on the prior designated verdicts and the exact candidate manifest.
+
+**Authority:** RFC DP1–DP8 and AC1–AC10, research item R-006, owner decisions
+D-002/D-003/D-006/D-011/D-014, and no broader release promise. DP-F owns the minimum missing
+initial-install path plus the complete rehearsal and evidence machinery needed to evaluate the
+already accepted contract. It does not add gameplay, host provisioning/CD, arm64 support,
+multi-node delivery, account/export retention, a sunset covenant, CI workflow changes, public
+hosting or an availability SLA.
+
+**Four waves:** DP-F1 implements a fail-closed initial-install operation and a strict exact
+rehearsal schema/validator/driver with sanitized artifacts and corrupt/forged-evidence negatives.
+DP-F2 builds two retained semantic release bundles from explicit commits/timestamps, resolves all
+six Linux/amd64 image digests/config identities, generates real per-image SPDX SBOMs with a pinned
+tool, scans tracked and image bytes, and proves byte-identical rebuilds. DP-F3 runs only those
+bundles on an explicitly authorized clean supported Linux/amd64 host with no checkout. DP-F4 writes
+the evidence-backed R-006 dossier/runbook/limitations and reconciles lifecycle records only after
+the run and all prior designated verdicts exist.
+
+**Positive population:** the clean host records kernel/distribution/`x86_64`, exact Docker Engine
+and Compose versions, zero repository source, the exact manifest/hash and every loaded runtime
+config identity. Initial install from bundle-only bytes reaches HTTPS Caddy readiness and a real
+browser drives the default Phase-0 surface. Empty and populated databases back up and restore;
+account, Founder, Company save, event, leaderboard, epoch/constants/copy and migration identities
+match. A declared incident and restore interval measures RPO at most six hours and authenticated
+Caddy-complete RTO at most four hours. Candidate release proves courtesy/drain/start; rollback
+restores the exact previous manifest/backup without Down migration. Current+previous key overlap,
+provider-off operation, private metrics, real receiver delivery, seven alerts, measured journald
+budget, license delivery and all six SBOM/provenance bindings remain visible in one evidence set.
+
+**Negative/severing population:** bundle with one catalog/client/license/config/helper removed;
+changed image digest/config/SBOM; source checkout made available to a purported clean-host runner;
+missing/malformed/current/previous secret families; wrong origin/proxy depth; seeded source/image
+secret; truncated/corrupt/wrong-identity/wrong-manifest backup; non-clean restore target; killed
+backup writer and gameserver restart during admitted work; wrong epoch/artifact set; missing
+previous image/backup, irreversible migration and Down-migration attempt; public metrics;
+health-only alert receiver, severed rule/counter path; incomplete/guard-ended journal or objective
+observation; RPO/RTO above bound; and a forged successful evidence row. Each must make the
+rehearsal or evidence validator nonzero, not merely add a warning.
+
+**Evidence contract:** the driver writes append-only, schema-versioned JSON with UTC step start/end,
+command/result class, exact input/output digests, host/tool identities, explicit exclusions and
+objective-completion/guard fields. It never records secret values, recovery codes, raw IPs,
+account/founder identifiers or database URLs. Stored identity comparisons use release/run fixture
+IDs or hashes only. A run terminated by timeout/guard, missing any declared population, reusing a
+prior artifact, observing a mutable image, or lacking a named severing result is invalid.
+
+**External-action boundary:** no push, publication, DNS mutation, certificate issuance, remote-host
+write, deployment or destructive restore is implied by local construction. DP-F3 will use only a
+clean host the owner explicitly places in scope; until then, local build/validator work continues
+and the exact host run is honestly blocked. No timeout or acceptance bound is loosened to fit the
+available machine.
+
+**Authorized claim before DP-F3:** only that the exact rehearsal machinery is implemented and its
+forgery/severing controls discriminate. **Authorized after a valid DP-F3 but before cross-party
+review:** R-006 evidence is ready for designated review, not that self-hosting is supported.
+Archival and release wording require DP-F4, full implementation-range Codex first-filter, Claude
+designated approval covering every batch edge, and the owner's final release call.

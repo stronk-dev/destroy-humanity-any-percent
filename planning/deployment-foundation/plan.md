@@ -19,7 +19,7 @@ its own executable failure cases and a bounded review range. No batch may claim 
 | DP-C | Encrypted off-host backup, restore, retention and manifest binding | Empty/populated Postgres restore witnesses plus corrupt/truncated/wrong-identity/wrong-manifest/partial-file negatives | ready for designated review |
 | DP-D | Stop-drain-start release helper, release record, seven-day previous-version rollback without Down migrations | Real Caddy HTTP/WebSocket release and rollback population; severed courtesy frame, drain, migration, epoch and smoke paths fail | ready for designated review |
 | DP-E | Private operations profile, metrics, journald policy and seven blocking alerts | Private reachability and retention fixtures; all seven alerts fire and severed metric/rule/receiver paths fail | ready for designated review |
-| DP-F | Exact-manifest R-006 clean-host, provider-off, supply-chain and recovery rehearsal; canonical docs and lifecycle closeout | Clean Linux/amd64 release bundle proves AC1–AC8, RPO/RTO and rollback, then receives both required review gates | pending |
+| DP-F | Exact-manifest R-006 clean-host, provider-off, supply-chain and recovery rehearsal; canonical docs and lifecycle closeout | Clean Linux/amd64 release bundle proves AC1–AC8, RPO/RTO and rollback, then receives both required review gates | planning; construction may start, external run/closeout gated |
 
 ## Batch protocol
 
@@ -62,3 +62,12 @@ For every batch:
 - [ ] AC8 provider-off and supply-chain checks pass, including digest and attribution failures.
 - [ ] AC9 remains accurately described as an existing external-state fact only.
 - [ ] AC10 exact-manifest R-006 and transactional closeout receive Codex first-filter and Claude designated approval.
+
+## DP-F delivery waves
+
+| Wave | Scope | State |
+|---|---|---|
+| DP-F1 | Initial-install command, exact rehearsal schema/validator/driver, sanitized evidence capture and negative fixtures | ready after predeclaration |
+| DP-F2 | Reproducible exact candidate/previous bundle build, six image SBOMs/config identities, source/image secret scan and retained build ledger | blocked on DP-F1 |
+| DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | blocked on exact bundle and explicit clean-host target authority |
+| DP-F4 | R-006 dossier, canonical runbook/limitations, backlog/queue/RFC closeout and full-range first-filter | blocked on DP-F3 and designated approvals for DP-A–DP-E |
