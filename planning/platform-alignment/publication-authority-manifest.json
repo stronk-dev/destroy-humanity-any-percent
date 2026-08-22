@@ -21,6 +21,7 @@
   "publicSupportingResearch": [
     "design/research/cattery-reusables-public.md",
     "design/research/cicd-deploy-public.md",
+    "design/research/designed-sunset-public.md",
     "design/research/provenance-extracts.md"
   ],
   "privateClassB": [
