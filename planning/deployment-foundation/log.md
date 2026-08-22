@@ -298,3 +298,45 @@ candidate is intentionally not reused because adding the manifest-bound helper c
 an exact rebuilt candidate and measured Caddy-complete RPO/RTO remain DP-F evidence. Verdict:
 **APPROVED as first filter; not the designated pass.** DP-C is ready for Claude's mandatory exact-
 range cross-party review and remains unarchived.
+
+## 2026-08-22 — DP-D predeclaration
+
+DP-C awaits its independent designated review. DP-D begins after `ab70327`; construction may
+continue, but no pending batch is promoted and no archival claim is made.
+
+**Authority:** RFC DP4–DP5 and AC3/AC5/AC6 only. This batch owns the operator release/rollback
+state machine, the append-only release and rotation ledgers, manifest-bound helper packaging and a
+real Caddy HTTP/WebSocket release population. It composes the already-shipped gameserver drain and
+DP-C backup/restore paths; it does not add operations metrics/alerts, alter gameplay, claim measured
+RPO/RTO or perform the final clean-host R-006 rehearsal.
+
+**Expected paths:** a focused `server/deploymentrelease` package and `server/cmd/deployment-release`
+operator command; package-owned unit and Postgres/Caddy integration witnesses; release-package
+manifest/bundle/Compose validation needed to ship the static Linux/amd64 helper and durable
+operator-state mount; `Makefile`; `compose.deployment-release-test.yml`; and canonical deployment
+documentation. Existing gameserver drain code may change only if the external witness exposes a
+contract defect. No gameplay schema, balance data, save migration or GitHub workflow is expected.
+
+**Positive population:** governed-clock JWT/bootstrap/cursor rotations append activation/removal
+records without secret values, accept old/new verification during the full governed overlap and
+remove only after 30 minutes/31 days/366 days. A release controller validates current and candidate
+bundles, config, alert receiver and free space; creates an encrypted pre-upgrade backup; verifies
+and loads the exact images; signals the old gameserver; observes readiness-down, a real
+`server_restarting` WebSocket publication, intent refusal, bounded exit and successful admitted-work
+completion; starts the candidate, verifies forward migration plus epoch/artifact identity, then
+runs authenticated HTTP and WebSocket smoke through real Caddy before appending success. Rollback
+restores that exact backup into a clean Postgres volume, starts the exact immediately previous
+manifest within seven days and passes the identical smoke path without running a Down migration.
+
+**Negative/severing population:** premature removal for each key family; duplicate or rewritten
+ledger rows; any secret value in either ledger; missing previous bundle/backup; expired rollback
+window; wrong image or manifest; irreversible migration/content declaration; failed preflight or
+backup; severed courtesy frame, readiness-down/drain wait, migration failure propagation,
+epoch/artifact reconciliation or authenticated smoke; non-clean restore target; and a controller
+that attempts rollback through a Down migration. Every failed release/rollback appends an explicit
+non-success result and can never emit a success record.
+
+**Authorized claim:** the exact release package supplies a fail-closed stop-drain-start release,
+seven-day exact-backup rollback and governed key-rotation mechanism with real Caddy-path evidence.
+**Not authorized:** operations readiness, supported self-hosting, RPO/RTO, release readiness or a
+1.0 claim until DP-E, DP-F, exact-manifest R-006 and both review gates pass.
