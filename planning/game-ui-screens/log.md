@@ -1049,3 +1049,33 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
   epoch-7/AC1 blocker was already resolved by the implementation above.
 - This is record-only closeout reconciliation. It changes no RFC body, product behavior, acceptance
   criterion, review verdict, or authorization.
+
+## 2026-08-22 — Claude designated cross-party review of the Game UI closeout `05acc65^..7d78cbd` — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude. Ten commits.
+- **The three owner-adopted copy rows ship VERBATIM** (`desk.cross_gate` "Move Into the Garage",
+  `desk.wind_down` "Wind Down Company", `screen.run_end.continue` "Start the Next Company") —
+  character-exact against the adoption record.
+- **GU-C25 boundary verified:** the composed driver's only direct `/api/v1/intents` call is the
+  missed-receipt recovery SETUP (an out-of-band intent while the socket is closed, whose
+  committed progress the UI must then recover) — environmental precondition, expressly permitted
+  by the ruling; the play path emits intents only from DOM controls. The other hit is a
+  `waitForRequest` observer.
+- **Executed from committed HEAD:** `make test-game-ui-composed` — **PASS** ("v3 transitions +
+  both terminal states + next-run continuation + WebSocket recovery") against real Postgres and a
+  real WebSocket.
+- **The ruled discrimination requirement holds — proven by my own mutation:** disconnecting the
+  `cross_gate` button's submission makes the composed test FAIL with "first cross-gate emitted no
+  intent request", its diagnostic showing the adopted copy rendered and `wind_down` correctly
+  server-disabled pre-gate. This is the exact check the GU-C25–C28 ruling made mandatory after
+  the original AC1 passed with every action severed. Mutation fully reverted; tree verified.
+- **Housekeeping disclosed:** my probe hit two port collisions from MY earlier probe worktrees'
+  leftover Postgres containers (wsprobe/q1probe) — mine, removed; and one probe attempt ran in a
+  node_modules-less worktree before I moved it to the main tree with a chained backup/restore.
+- **Non-blocking observation:** `verify-game-ui`'s full three-browser population and five
+  consecutive composed runs are Codex-attested; I independently executed the composed lane (the
+  decisive one) plus the mutation. AC5's manual reference-profile check remains the separate,
+  explicitly-tracked archival blocker — this verdict does not touch it.
+
+**Verdict: APPROVED.** The Game UI closeout range is designated-approved; archival remains blocked
+only on the AC5 manual reference-profile check, per the queue.
