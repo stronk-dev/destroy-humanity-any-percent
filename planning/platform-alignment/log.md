@@ -2286,3 +2286,22 @@
 - No product behavior, test, RFC/design body, owner decision, deployment, publication or push
   changed. The queue has no READY implementation row; Deployment is now blocked only on the exact
   remaining owner/ruling-author work it names.
+
+## 2026-08-22 — D-003 sunset research repair and publication proof
+
+- Predeclared the bounded D-002 derivative at `f4a7bca`, then published
+  `design/research/designed-sunset-public.md` at `7d1b1d7` without tracking or depending on the
+  ignored raw dossier. An initial local edit to that raw file was reversed before predeclaration,
+  staging or commit and is disclosed in the disposition record.
+- Reverified the 2026 European initiative/Commission timeline against the official ECI record,
+  the industry position against Video Games Europe's paper, The Crew 2's offline release against
+  Ubisoft, and Knockout City's still-live Private Server Edition against its official page.
+- Replaced the false “deliverable already exists / near-zero / not an engineering project /
+  unpublished repository” premise with the repository-audited boundary: public MIT source and
+  useful primitives exist; production packaging, export/import, bot-default proof,
+  backup/restore/rollback, operations and preservation artifacts do not.
+- The honest authority check and fresh-clone check passed. A forged manifest that promoted the raw
+  dossier to public supporting research failed because the source is not tracked. RP-088's research
+  half is closed and D-003 is READY FOR OWNER RULING.
+- No covenant, release promise, product behavior, RFC contract, authored copy, deployment, push or
+  external publication was created.

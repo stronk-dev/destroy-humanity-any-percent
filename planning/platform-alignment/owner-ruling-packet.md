@@ -131,9 +131,10 @@ privacy, disclosure, and failure handling. Neither study is allowed to invent th
 
 ## O-005 — sunset/source posture (D-003)
 
-Do not rule this from the current sunset dossier without its verification/current-state repair.
-The dossier's premise that a supported compose bundle already exists is false at this coordinate.
-After refresh, choose source at launch, binary/self-host bundle, both, or no covenant yet; separately
+The tracked `design/research/designed-sunset-public.md` brief completes the required
+verification/current-state repair without promoting the ignored raw dossier. The public repository
+is already MIT-licensed; a supported bundle remains absent. Choose source continuity alone, a
+supported binary/self-host bundle after proof, both, or no covenant yet; separately
 choose export, notice, final-world artifact, mirror, and ratchet obligations. Any adopted promise
 must depend on a rehearsed deliverable, not architecture potential.
 
@@ -155,7 +156,7 @@ must depend on a rehearsed deliverable, not architecture potential.
 | D-002 repository disposition | **RULED AND EXECUTED** | All 96 artifacts were dispositioned; the fresh-clone authority gate passed and rejected three forged states. |
 | D-005/D-008 account recovery/export | **RECOVERY RULED; EXPORT OPEN** | Build the ruled one-time copy/download posture; choose export semantics before R-003. |
 | D-009/D-015 deletion/retention | **NEEDS LEGAL/OWNER RULING** | Complete data-family review and adopt exact retention/disclosure. |
-| D-003 sunset | **BLOCKED ON RESEARCH REPAIR** | Reverify official sources and remove false current-state claims. |
+| D-003 sunset | **READY FOR OWNER RULING** | Choose source-only, supported bundle after proof, both, or no covenant yet, plus exact export/notice/artifact/mirror/ratchet obligations. |
 | D-006/D-011 topology/operations | **TOPOLOGY RULED; OPERATIONS OPEN** | One Compose node; exact objectives, operator, proxy, backup, rotation, metrics and alert ownership remain open. |
 | D-010 lifecycle locations | **READY FOR OWNER/PROCESS AUTHOR** | Choose one archive home for withdrawn RFCs and completed non-RFC threads. |
 | D-012/D-013 product scope | **DEFERRED; BODY RECONCILIATION PENDING** | Advisor and async are out of the preview; ruling authors must reconcile the active bodies. |

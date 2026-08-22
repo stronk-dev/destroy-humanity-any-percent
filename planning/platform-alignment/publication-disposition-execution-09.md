@@ -2,7 +2,7 @@
 
 **Predeclaration date:** 2026-08-22
 **Authority:** D-002 public-shared-memory ruling; `publication-rights-batch-12.md`
-**State:** PREDECLARED — implementation not yet claimed
+**State:** COMPLETE — derivative `7d1b1d7`; fresh-clone proof 2026-08-22
 
 ## Question and boundary
 
@@ -37,3 +37,25 @@ The derivative must:
 - `git diff --check` and repository link checks must pass.
 - D-003 becomes READY FOR OWNER RULING only in the commit that carries the derivative and passing
   authority proof.
+
+## Result
+
+- `7d1b1d7` added the one public derivative, its exact ignore exception, research-index routing and
+  manifest registration. The ignored raw dossier remained absent from the tracked diff.
+- Before this predeclaration, an initial local edit mistakenly targeted the ignored raw dossier.
+  It was reversed before any staging or commit; the bounded range depends only on the public
+  derivative. This is recorded rather than hidden because ignored local files are not authority.
+- `make publication-authority-check` passed the honest manifest and its three standing negative
+  controls.
+- A one-off forged manifest appended `design/research/designed-sunset.md` to
+  `publicSupportingResearch`; the validator exited nonzero with
+  `public supporting research is not tracked`, proving the raw source cannot masquerade as the
+  derivative.
+- After the implementation commit, `make publication-authority-fresh-clone-check` passed the three
+  negative controls and honest manifest from a new clone.
+- `git diff --check` passed. The repository has no root link-check target or package manifest; the
+  derivative's named repository evidence paths exist, and all four external sources were fetched
+  during the dated review.
+
+D-003's research precondition is closed. This result supplies evidence and options only; it does
+not choose or promise a covenant posture.
