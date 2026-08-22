@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -12,12 +11,26 @@ import (
 	"time"
 
 	"cloud-clicker/server/account"
+	"cloud-clicker/server/deploymentconfig"
 	"cloud-clicker/server/gameserver"
 	"cloud-clicker/server/save"
 )
 
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	if len(os.Args) == 2 && os.Args[1] == "validate-config" {
+		config, err := deploymentconfig.LoadEnvironment()
+		if err != nil {
+			logger.Error("deployment configuration invalid", "error", err)
+			os.Exit(1)
+		}
+		logger.Info("deployment configuration valid", "mode", config.Mode)
+		return
+	}
+	if len(os.Args) != 1 {
+		logger.Error("gameserver stopped", "error", "usage: gameserver [validate-config]")
+		os.Exit(1)
+	}
 	if err := run(logger); err != nil {
 		logger.Error("gameserver stopped", "error", err)
 		os.Exit(1)
@@ -25,43 +38,30 @@ func main() {
 }
 
 func run(logger *slog.Logger) error {
-	databaseURL := os.Getenv("DATABASE_URL")
-	serverID := os.Getenv("CLOUD_CLICKER_SERVER_ID")
-	key, err := base64.StdEncoding.DecodeString(os.Getenv("CLOUD_CLICKER_JWT_KEY"))
-	bootstrapKey, bootstrapErr := base64.StdEncoding.DecodeString(os.Getenv("CLOUD_CLICKER_BOOTSTRAP_KEY"))
-	bootstrapKeyID := os.Getenv("CLOUD_CLICKER_BOOTSTRAP_KEY_ID")
-	if err != nil || bootstrapErr != nil || databaseURL == "" || serverID == "" || len(key) < 32 || len(bootstrapKey) != 32 || bootstrapKeyID == "" {
-		return gameserver.ErrComposition
-	}
-	repositoryRoot := os.Getenv("CLOUD_CLICKER_REPOSITORY_ROOT")
-	if repositoryRoot == "" {
-		repositoryRoot = "."
-	}
-	activity := os.Getenv("CLOUD_CLICKER_ACTIVITY_BRACKET")
-	if activity == "" {
-		activity = "activity.standard"
-	}
-	address := os.Getenv("LISTEN_ADDR")
-	if address == "" {
-		address = ":8080"
+	runtime, err := deploymentconfig.LoadEnvironment()
+	if err != nil {
+		return err
 	}
 	ctx, stop := shutdownContext(context.Background())
 	defer stop()
-	db, err := save.OpenPostgres(ctx, databaseURL)
+	db, err := save.OpenPostgres(ctx, runtime.DatabaseURL)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-	composition, err := gameserver.Compose(ctx, gameserver.CompositionConfig{DB: db, RepositoryRoot: repositoryRoot, ServerID: serverID,
-		ActivityBracket: activity, SigningKeys: account.SigningKeys{CurrentID: "runtime", Current: key},
-		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: bootstrapKeyID, Current: bootstrapKey}, Logger: logger})
+	signingKeys, bootstrapKeys := compositionKeys(runtime)
+	composition, err := gameserver.Compose(ctx, gameserver.CompositionConfig{
+		DB: db, RepositoryRoot: runtime.ContentRoot, ServerID: runtime.ServerID, ActivityBracket: runtime.ActivityBracket,
+		PublicOrigin: runtime.PublicOrigin, TrustedProxyHops: runtime.TrustedProxyHops,
+		SigningKeys: signingKeys, BootstrapKeys: bootstrapKeys, Logger: logger,
+	})
 	if err != nil {
 		return err
 	}
 	if err := composition.Server.Start(ctx); err != nil {
 		return err
 	}
-	httpServer := &http.Server{Addr: address, Handler: composition.Server.Handler(), ReadHeaderTimeout: 5 * time.Second}
+	httpServer := &http.Server{Addr: runtime.ListenAddress, Handler: composition.Server.Handler(), ReadHeaderTimeout: 5 * time.Second}
 	serveErr := make(chan error, 1)
 	go func() { serveErr <- httpServer.ListenAndServe() }()
 	listenerErr, runtimeErr := waitForStop(ctx, serveErr, composition.Server.Failures())
@@ -70,6 +70,17 @@ func run(logger *slog.Logger) error {
 	drainErr := composition.Server.Drain(drainCtx, time.Now().UTC())
 	shutdownErr := httpServer.Shutdown(drainCtx)
 	return errors.Join(listenerErr, runtimeErr, drainErr, shutdownErr)
+}
+
+func compositionKeys(runtime deploymentconfig.Config) (account.SigningKeys, account.BootstrapReceiptKeys) {
+	bootstrapPrevious := map[string][]byte{}
+	if runtime.Bootstrap.PreviousID != "" {
+		bootstrapPrevious[runtime.Bootstrap.PreviousID] = runtime.Bootstrap.Previous
+	}
+	return account.SigningKeys{CurrentID: runtime.JWT.CurrentID, Current: runtime.JWT.Current,
+			PreviousID: runtime.JWT.PreviousID, Previous: runtime.JWT.Previous},
+		account.BootstrapReceiptKeys{CurrentID: runtime.Bootstrap.CurrentID,
+			Current: runtime.Bootstrap.Current, Previous: bootstrapPrevious}
 }
 
 func shutdownContext(parent context.Context) (context.Context, context.CancelFunc) {

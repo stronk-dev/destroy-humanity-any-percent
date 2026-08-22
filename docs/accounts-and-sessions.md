@@ -53,6 +53,9 @@ Successful recovery authentication issues:
 - a random 256-bit opaque refresh token, stored only as a SHA-256 hash and expiring after 30 days.
 
 The verifier accepts one current signing key and one previous key for operations-managed rotation.
+In production both are file-backed Compose secrets with distinct IDs and values; a missing half of
+the optional previous pair fails before startup. Bootstrap-receipt encryption follows the same
+current/previous deployment shape, while retaining its exact 32-byte AES-256-GCM key requirement.
 Every issued access token is also represented in the database, so revocation is effective before
 JWT expiry. Refresh tokens rotate once. Reusing a consumed token revokes every refresh and access
 token in its family in the same transaction. A `session_families` row is the serialization point:

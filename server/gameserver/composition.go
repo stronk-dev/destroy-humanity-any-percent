@@ -15,6 +15,7 @@ import (
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/commonsprojection"
+	"cloud-clicker/server/deploymentconfig"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
@@ -45,6 +46,8 @@ type CompositionConfig struct {
 	RepositoryRoot     string
 	ServerID           string
 	ActivityBracket    string
+	PublicOrigin       string
+	TrustedProxyHops   int
 	SigningKeys        account.SigningKeys
 	BootstrapKeys      account.BootstrapReceiptKeys
 	Clock              func() time.Time
@@ -189,6 +192,10 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if config.Logger == nil {
 		config.Logger = slog.New(slog.DiscardHandler)
 	}
+	allowedOrigins, trustedProxyHops, err := deploymentBoundary(config)
+	if err != nil {
+		return nil, err
+	}
 	if err := save.Migrate(ctx, config.DB); err != nil {
 		return nil, err
 	}
@@ -297,7 +304,9 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err := accounts.AttachAccountDeletionParticipant(guildService); err != nil {
 		return nil, err
 	}
-	api, err := account.NewAPI(accounts, productionService, account.Phase0APIConfig(config.BootstrapKeys))
+	apiConfig := account.Phase0APIConfig(config.BootstrapKeys)
+	apiConfig.TrustedProxyHops = trustedProxyHops
+	api, err := account.NewAPI(accounts, productionService, apiConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -324,6 +333,9 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	policy, err := transport.LoadPolicy(policyBytes)
 	if err != nil {
 		return nil, err
+	}
+	if allowedOrigins != nil {
+		policy.AllowedOrigins = allowedOrigins
 	}
 	node, err := transport.NewNode(*policy, accounts, channelMemberships{guildService, commonsProjector})
 	if err != nil {
@@ -395,4 +407,17 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	}
 	return &Composition{CurrentHash: seed.Hash, Server: server, Node: node, Accounts: accounts, Production: productionService, Guilds: guildService, Minigames: minigameService,
 		GameUI: gameUIProjector, Commons: commonsProjector, Verification: verification, LeaderboardProjector: boardProjector, Clearing: clearing, Catalogs: catalogs}, nil
+}
+
+func deploymentBoundary(config CompositionConfig) ([]string, int, error) {
+	if config.PublicOrigin == "" {
+		if config.TrustedProxyHops != 0 {
+			return nil, 0, ErrComposition
+		}
+		return nil, 0, nil
+	}
+	if config.TrustedProxyHops != 1 || !deploymentconfig.ValidProductionOrigin(config.PublicOrigin) {
+		return nil, 0, ErrComposition
+	}
+	return []string{config.PublicOrigin}, 1, nil
 }

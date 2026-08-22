@@ -7,17 +7,38 @@ realtime relays, guild maintenance, world snapshots, and bounded shutdown.
 
 ## Startup and configuration
 
-The binary requires:
+The binary has separate production and development profiles. Both startup and
+`gameserver validate-config` (the `make deployment-config-check` wrapper) use the same decoder.
+Configuration failure happens before opening Postgres, running a migration, or binding a listener.
+Errors name the invalid field and never include a secret value.
 
-- `DATABASE_URL`, a Postgres connection string;
-- `CLOUD_CLICKER_SERVER_ID`, a canonical UUID identifying the Commons server shard;
-- `CLOUD_CLICKER_JWT_KEY`, at least 32 key bytes encoded with standard base64;
-- `CLOUD_CLICKER_BOOTSTRAP_KEY_ID`, the active bootstrap-receipt encryption key ID;
-- `CLOUD_CLICKER_BOOTSTRAP_KEY`, exactly 32 AES-256-GCM key bytes encoded with standard base64.
+Production sets `CLOUD_CLICKER_DEPLOYMENT_MODE=production` and requires:
 
-`CLOUD_CLICKER_REPOSITORY_ROOT` defaults to the working directory,
-`CLOUD_CLICKER_ACTIVITY_BRACKET` defaults to `activity.standard`, and `LISTEN_ADDR` defaults to
-`:8080`. Build it with `make build-gameserver`.
+- one canonical `CLOUD_CLICKER_PUBLIC_ORIGIN` using HTTPS with no credentials, path, query,
+  fragment, uppercase hostname, trailing dot, or redundant `:443` port;
+- `CLOUD_CLICKER_TRUSTED_PROXY_HOPS=1`, wired to account/IP handling, and that same sole origin
+  wired to the WebSocket origin allowlist;
+- `CLOUD_CLICKER_CONTENT_ROOT=/opt/cloud-clicker/content` and a canonical UUID
+  `CLOUD_CLICKER_SERVER_ID`;
+- `DATABASE_URL_FILE`, an absolute clean path below `/run/secrets` containing the Postgres URL;
+- current JWT and bootstrap IDs plus `_KEY_FILE` paths. JWT material is at least 32 bytes and
+  bootstrap AES-256-GCM material is exactly 32 bytes, encoded as canonical standard base64; and
+- optional previous JWT/bootstrap ID-and-file pairs. A pair must be complete and its ID and value
+  must differ from current. The composed verifier accepts previous JWTs, and stored bootstrap
+  receipts remain decryptable through the previous-key map.
+
+The production decoder also validates an optional current/previous cursor pair so the deployment
+contract does not fall back to a restart-generated secret. No public cursor reader is composed yet,
+so the pair is not required or consumed at runtime. Secret paths must be absolute, normalized and
+under `/run/secrets`; files may have one final newline but no surrounding or embedded whitespace.
+Unknown `CLOUD_CLICKER_*` names and the legacy inline secret variables fail closed in production.
+`LISTEN_ADDR` defaults to `:8080`.
+
+The development profile retains the existing local/test inputs: `DATABASE_URL`,
+`CLOUD_CLICKER_JWT_KEY`, `CLOUD_CLICKER_BOOTSTRAP_KEY_ID`,
+`CLOUD_CLICKER_BOOTSTRAP_KEY`, `CLOUD_CLICKER_REPOSITORY_ROOT`,
+`CLOUD_CLICKER_ACTIVITY_BRACKET`, and `LISTEN_ADDR`. These inline secrets are not accepted by the
+production profile. Build the process with `make build-gameserver`.
 
 Startup migrates Postgres, loads the repository epoch declaration, reconciles it before realtime
 or readiness starts, and reconstructs every executable catalog bundle from immutable database
