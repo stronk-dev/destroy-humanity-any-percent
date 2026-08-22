@@ -107,7 +107,7 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 		}
 		prior = artifact.Path
 	}
-	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "deployment-backup", "deployment-release", "deployment-operations", "operations/prometheus.yml", "operations/cloud-clicker-alerts.yml", "operations/cloud-clicker-alerts.test.yml", "operations/alertmanager.example.yml", "operations/journald.template.conf", "operations/cloud-clicker-observe.service", "operations/cloud-clicker-observe.timer", "operations/operations.env.example", "content/balance/epochs/phase0.json"} {
+	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "rehearsal-evidence.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "deployment-backup", "deployment-release", "deployment-operations", "deployment-rehearsal", "operations/prometheus.yml", "operations/cloud-clicker-alerts.yml", "operations/cloud-clicker-alerts.test.yml", "operations/alertmanager.example.yml", "operations/journald.template.conf", "operations/cloud-clicker-observe.service", "operations/cloud-clicker-observe.timer", "operations/operations.env.example", "content/balance/epochs/phase0.json"} {
 		if !hasArtifact(manifest.Artifacts, required) {
 			return fmt.Errorf("%w: missing release artifact %q", ErrInvalidContent, required)
 		}
@@ -156,14 +156,15 @@ func ValidateBundle(root string) error {
 	if err := ValidateDockerArchive(filepath.Join(root, "images", "gameserver.docker.tar"), manifest.Images[2].Reference, manifest.ReleaseVersion, manifest.SourceCommit); err != nil {
 		return err
 	}
-	for _, name := range []string{"config.schema.json", "release-manifest.schema.json"} {
+	for _, name := range []string{"config.schema.json", "release-manifest.schema.json", "rehearsal-evidence.schema.json"} {
 		data, err := os.ReadFile(filepath.Join(root, name))
 		if err != nil {
 			return ErrInvalidContent
 		}
 		required := map[string][]string{
-			"config.schema.json":           {"CLOUD_CLICKER_PUBLIC_ORIGIN", "CLOUD_CLICKER_SERVER_ID", "CLOUD_CLICKER_JWT_CURRENT_ID", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID", "CLOUD_CLICKER_BACKUP_TARGET", "CLOUD_CLICKER_AGE_RECIPIENT", "CLOUD_CLICKER_OPERATIONS_METRICS", "CLOUD_CLICKER_RECEIVER_HEALTH_URL", "CLOUD_CLICKER_ALERTMANAGER_CONFIG", "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE", "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE", "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE"},
-			"release-manifest.schema.json": {"schema_version", "release_version", "source_commit", "platform", "docker_engine_version", "docker_compose_version", "database_migration", "company_save_version", "founder_save_version", "epoch_id", "constants_hash", "copy_hash", "images", "artifacts"},
+			"config.schema.json":             {"CLOUD_CLICKER_PUBLIC_ORIGIN", "CLOUD_CLICKER_SERVER_ID", "CLOUD_CLICKER_JWT_CURRENT_ID", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID", "CLOUD_CLICKER_BACKUP_TARGET", "CLOUD_CLICKER_AGE_RECIPIENT", "CLOUD_CLICKER_OPERATIONS_METRICS", "CLOUD_CLICKER_RECEIVER_HEALTH_URL", "CLOUD_CLICKER_ALERTMANAGER_CONFIG", "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE", "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE", "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE"},
+			"release-manifest.schema.json":   {"schema_version", "release_version", "source_commit", "platform", "docker_engine_version", "docker_compose_version", "database_migration", "company_save_version", "founder_save_version", "epoch_id", "constants_hash", "copy_hash", "images", "artifacts"},
+			"rehearsal-evidence.schema.json": {"schema_version", "run_id", "manifest_sha256", "previous_manifest_sha256", "release_version", "previous_release_version", "started_at", "completed_at", "host", "tools", "steps", "populations", "objectives", "artifacts", "exclusions", "objective_completed", "guard_exhausted"},
 		}[name]
 		if validateSchema(data, name, required) != nil {
 			return ErrInvalidContent

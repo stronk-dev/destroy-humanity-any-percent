@@ -64,10 +64,10 @@ func releaseBundleFixture(t *testing.T) string {
 	root := t.TempDir()
 	files := map[string]string{
 		".env.example": "PUBLIC=example\n", "Caddyfile": "fixture\n", "Dockerfile.gameserver": "fixture\n", "LICENSE": "fixture\n",
-		"compose.yml": "fixture\n", "compose.rotation.yml": "fixture\n", "config.schema.json": "{}\n", "release-manifest.schema.json": "{}\n",
+		"compose.yml": "fixture\n", "compose.rotation.yml": "fixture\n", "config.schema.json": "{}\n", "release-manifest.schema.json": "{}\n", "rehearsal-evidence.schema.json": "{}\n",
 		"sbom/application.spdx.json": fixtureSPDX("application"),
 		"third-party-licenses.txt":   "fixture\n", "site/index.html": "<html></html>\n", "site/third-party-licenses.txt": "fixture\n",
-		"gameserver": "binary\n", "deployment-backup": "binary\n", "deployment-release": "binary\n", "deployment-operations": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
+		"gameserver": "binary\n", "deployment-backup": "binary\n", "deployment-release": "binary\n", "deployment-operations": "binary\n", "deployment-rehearsal": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
 		"operations/prometheus.yml": "fixture\n", "operations/cloud-clicker-alerts.yml": "fixture\n", "operations/cloud-clicker-alerts.test.yml": "fixture\n",
 		"operations/alertmanager.example.yml": "fixture\n", "operations/journald.template.conf": "fixture\n",
 		"operations/cloud-clicker-observe.service": "fixture\n", "operations/cloud-clicker-observe.timer": "fixture\n",
@@ -82,7 +82,7 @@ func releaseBundleFixture(t *testing.T) string {
 			t.Fatal(err)
 		}
 	}
-	for _, name := range []string{"config.schema.json", "release-manifest.schema.json"} {
+	for _, name := range []string{"config.schema.json", "release-manifest.schema.json", "rehearsal-evidence.schema.json"} {
 		data, err := os.ReadFile(filepath.Join("..", "..", "deployment", name))
 		if err != nil {
 			t.Fatal(err)

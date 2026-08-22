@@ -668,3 +668,29 @@ executed: removing post-smoke install cleanup made the severed-smoke test fail w
 `abort_install` call, and removing the negative-population severing requirement made the vacuous
 negative evidence fixture pass and its test fail. Both mutations were restored before the green
 runs.
+
+## 2026-08-23 — DP-F dependency-order correction
+
+The initial predeclaration placed the fixed-command rehearsal driver in DP-F1 and exact bundle
+construction in DP-F2. Implementation established that this order would force the driver to invent
+commands and artifact identities before the candidate and previous bundles exist. The living plan
+now keeps DP-F1's completed install/schema/validator/evidence contract, moves the driver binding
+into the exact-bundle DP-F2 range, and retains every population, falsifier and claim gate. No
+acceptance criterion or external clean-host requirement moved later or became optional.
+
+DP-F2 supply-chain construction now includes `deployment-rehearsal` and its strict evidence schema
+as manifest-hashed release artifacts; an omitted or non-Linux/amd64 helper fails assembly. The
+application dependency inventory covers the rehearsal command too. Image SBOM generation is pinned
+to Syft v1.51.0 at multi-platform digest
+`sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0` and the release normalizer
+replaces Syft's wall-clock/random document header with the exact OCI runtime-config identity and
+declared release timestamp while retaining the discovered package graph. It refuses empty graphs,
+mutable identities and output overwrite.
+
+The real lane was exercised twice against the pinned Linux/amd64 Caddy 2.11.4 image. Independent
+registry scans normalized to byte-identical SPDX JSON, both SHA-256
+`633dfe37c5221607d4fb5aaaa346d8fcfb9858a7f7338755c61ed2f3c1b3ee0b`, bound to runtime config
+`sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe` and the declared UTC
+timestamp. Focused cold package tests and vet passed. This verifies the generator mechanism only;
+the exact six-image candidate/previous SBOM set and byte-identical release bundles remain DP-F2
+work, and no R-006 or release claim follows.

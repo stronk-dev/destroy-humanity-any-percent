@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/deployment/rehearsal-evidence.schema.json",
+  "title": "Cloud Clicker R-006 deployment rehearsal evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "manifest_sha256",
+    "previous_manifest_sha256",
+    "release_version",
+    "previous_release_version",
+    "started_at",
+    "completed_at",
+    "host",
+    "tools",
+    "steps",
+    "populations",
+    "objectives",
+    "artifacts",
+    "exclusions",
+    "objective_completed",
+    "guard_exhausted"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "run_id": { "$ref": "#/$defs/identifier" },
+    "manifest_sha256": { "$ref": "#/$defs/hash" },
+    "previous_manifest_sha256": { "$ref": "#/$defs/hash" },
+    "release_version": { "$ref": "#/$defs/version" },
+    "previous_release_version": { "$ref": "#/$defs/version" },
+    "started_at": { "$ref": "#/$defs/time" },
+    "completed_at": { "$ref": "#/$defs/time" },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "architecture", "distribution", "kernel", "docker_engine", "docker_compose", "clean_start", "source_checkout_absent", "provider_credentials_absent"],
+      "properties": {
+        "os": { "const": "linux" },
+        "architecture": { "const": "amd64" },
+        "distribution": { "$ref": "#/$defs/identifier" },
+        "kernel": { "$ref": "#/$defs/boundedText" },
+        "docker_engine": { "$ref": "#/$defs/boundedText" },
+        "docker_compose": { "$ref": "#/$defs/boundedText" },
+        "clean_start": { "const": true },
+        "source_checkout_absent": { "const": true },
+        "provider_credentials_absent": { "const": true }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/namedHash" }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "command_class", "started_at", "completed_at", "input_sha256", "output_sha256", "result"],
+        "properties": {
+          "name": { "$ref": "#/$defs/identifier" },
+          "command_class": { "$ref": "#/$defs/identifier" },
+          "started_at": { "$ref": "#/$defs/time" },
+          "completed_at": { "$ref": "#/$defs/time" },
+          "input_sha256": { "$ref": "#/$defs/hash" },
+          "output_sha256": { "$ref": "#/$defs/hash" },
+          "result": { "const": "passed" }
+        }
+      }
+    },
+    "populations": {
+      "type": "array",
+      "minItems": 43,
+      "maxItems": 43,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "kind", "result", "severing_caught", "evidence_sha256"],
+        "properties": {
+          "name": { "$ref": "#/$defs/identifier" },
+          "kind": { "enum": ["positive", "negative"] },
+          "result": { "const": "passed" },
+          "severing_caught": { "type": "boolean" },
+          "evidence_sha256": { "$ref": "#/$defs/hash" }
+        }
+      }
+    },
+    "objectives": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["incident_at", "newest_valid_backup_at", "restore_started_at", "authenticated_smoke_at", "rpo_seconds", "rto_seconds", "restored_identity_match"],
+      "properties": {
+        "incident_at": { "$ref": "#/$defs/time" },
+        "newest_valid_backup_at": { "$ref": "#/$defs/time" },
+        "restore_started_at": { "$ref": "#/$defs/time" },
+        "authenticated_smoke_at": { "$ref": "#/$defs/time" },
+        "rpo_seconds": { "type": "integer", "minimum": 0, "maximum": 21600 },
+        "rto_seconds": { "type": "integer", "minimum": 0, "maximum": 14400 },
+        "restored_identity_match": { "const": true }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": { "$ref": "#/$defs/namedHash" }
+    },
+    "exclusions": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "objective_completed": { "const": true },
+    "guard_exhausted": { "const": false }
+  },
+  "$defs": {
+    "identifier": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+    "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "time": { "type": "string", "format": "date-time" },
+    "boundedText": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "namedHash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "sha256"],
+      "properties": {
+        "name": { "$ref": "#/$defs/identifier" },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    }
+  }
+}

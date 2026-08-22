@@ -17,6 +17,7 @@ type BundleInput struct {
 	BackupBinary           string
 	ReleaseBinary          string
 	OperationsBinary       string
+	RehearsalBinary        string
 	ClientDist             string
 	MetadataDirectory      string
 	GameserverImageArchive string
@@ -33,7 +34,7 @@ type BundleInput struct {
 // destination must not already contain bytes: a failed build can therefore
 // never be mistaken for a previously successful release.
 func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
-	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ReleaseBinary == "" || input.OperationsBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != len(releaseImageNames) || len(input.ImageConfigIDs) != len(releaseImageNames) || len(input.ImageSBOMs) != len(releaseImageNames) {
+	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ReleaseBinary == "" || input.OperationsBinary == "" || input.RehearsalBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != len(releaseImageNames) || len(input.ImageConfigIDs) != len(releaseImageNames) || len(input.ImageSBOMs) != len(releaseImageNames) {
 		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := requireEmptyDestination(input.Output); err != nil {
@@ -51,15 +52,16 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		return ReleaseManifest{}, err
 	}
 	for source, destination := range map[string]string{
-		filepath.Join(input.RepositoryRoot, "deployment", ".env.example"):                  ".env.example",
-		filepath.Join(input.RepositoryRoot, "deployment", "Caddyfile"):                     "Caddyfile",
-		filepath.Join(input.RepositoryRoot, "deployment", "Dockerfile.gameserver"):         "Dockerfile.gameserver",
-		filepath.Join(input.RepositoryRoot, "deployment", "compose.rotation.template.yml"): "compose.rotation.yml",
-		filepath.Join(input.RepositoryRoot, "deployment", "config.schema.json"):            "config.schema.json",
-		filepath.Join(input.RepositoryRoot, "deployment", "release-manifest.schema.json"):  "release-manifest.schema.json",
-		filepath.Join(input.RepositoryRoot, "LICENSE"):                                     "LICENSE",
-		filepath.Join(input.MetadataDirectory, "third-party-licenses.txt"):                 "third-party-licenses.txt",
-		filepath.Join(input.MetadataDirectory, "sbom.spdx.json"):                           "sbom/application.spdx.json",
+		filepath.Join(input.RepositoryRoot, "deployment", ".env.example"):                   ".env.example",
+		filepath.Join(input.RepositoryRoot, "deployment", "Caddyfile"):                      "Caddyfile",
+		filepath.Join(input.RepositoryRoot, "deployment", "Dockerfile.gameserver"):          "Dockerfile.gameserver",
+		filepath.Join(input.RepositoryRoot, "deployment", "compose.rotation.template.yml"):  "compose.rotation.yml",
+		filepath.Join(input.RepositoryRoot, "deployment", "config.schema.json"):             "config.schema.json",
+		filepath.Join(input.RepositoryRoot, "deployment", "release-manifest.schema.json"):   "release-manifest.schema.json",
+		filepath.Join(input.RepositoryRoot, "deployment", "rehearsal-evidence.schema.json"): "rehearsal-evidence.schema.json",
+		filepath.Join(input.RepositoryRoot, "LICENSE"):                                      "LICENSE",
+		filepath.Join(input.MetadataDirectory, "third-party-licenses.txt"):                  "third-party-licenses.txt",
+		filepath.Join(input.MetadataDirectory, "sbom.spdx.json"):                            "sbom/application.spdx.json",
 	} {
 		if err := copyRegularFile(source, filepath.Join(input.Output, filepath.FromSlash(destination)), 0o644); err != nil {
 			return ReleaseManifest{}, err
@@ -75,6 +77,9 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		return ReleaseManifest{}, err
 	}
 	if err := copyLinuxAMD64Binary(input.OperationsBinary, filepath.Join(input.Output, "deployment-operations")); err != nil {
+		return ReleaseManifest{}, err
+	}
+	if err := copyLinuxAMD64Binary(input.RehearsalBinary, filepath.Join(input.Output, "deployment-rehearsal")); err != nil {
 		return ReleaseManifest{}, err
 	}
 	if err := copyTree(filepath.Join(input.RepositoryRoot, "deployment", "operations"), filepath.Join(input.Output, "operations")); err != nil {

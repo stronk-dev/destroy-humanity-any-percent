@@ -32,6 +32,7 @@ var shippedGoCommands = []string{
 	"./cmd/deployment-backup",
 	"./cmd/deployment-release",
 	"./cmd/deployment-operations",
+	"./cmd/deployment-rehearsal",
 }
 
 func main() {

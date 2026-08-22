@@ -71,7 +71,8 @@ actual secret files.
 ## Application licenses and SBOM
 
 `make generate-release-metadata` inventories the union of module graphs actually linked into the
-gameserver, deployment-backup, deployment-release and deployment-operations commands (not the much larger `go.sum`
+gameserver, deployment-backup, deployment-release, deployment-operations and deployment-rehearsal
+commands (not the much larger `go.sum`
 graph), adds the Go standard library, and reads the
 three exact browser runtime dependencies from `client/package.json` plus their installed package
 manifests. It reads shipped LICENSE/COPYING bytes directly, recognizes only the audited MIT,
@@ -86,7 +87,7 @@ matching the prior license audit while retaining the previously hidden dual Apac
 notice. Version, full commit and RFC3339 creation time are explicit inputs; an existing output
 directory is never silently overlaid.
 
-The application SBOM inventories the union of dependencies linked into all four shipped Go
+The application SBOM inventories the union of dependencies linked into all five shipped Go
 binaries plus the bundled browser client. The assembler requires separate SPDX inputs for
 Alertmanager, Caddy, the gameserver image, node-exporter, Postgres and Prometheus and binds each
 SBOM hash beside that image's immutable digest.
@@ -94,11 +95,18 @@ For upstream multi-platform references it also records the selected linux/amd64 
 the SPDX document name must identify that exact runtime config, preventing a native-host SBOM from
 being attached to the supported amd64 release.
 
+`make generate-image-sbom` runs Syft v1.51.0 from an immutable image digest against either an exact
+registry reference or the gameserver Docker archive. The repository normalizer retains Syft's
+package/file graph while binding the document name and namespace to the selected OCI config digest
+and its creation time to the declared release timestamp. It refuses empty graphs, mutable config
+identities, or an existing destination. Independent real Caddy scans have produced byte-identical
+normalized output; the exact six-image set is still built and retained per release candidate.
+
 ## Release bundle assembly
 
 `make assemble-release-bundle` accepts only an empty output directory and requires all of the
-following explicit inputs: the Linux/amd64 gameserver, deployment-backup, deployment-release and
-deployment-operations binaries, the
+following explicit inputs: the Linux/amd64 gameserver, deployment-backup, deployment-release,
+deployment-operations and deployment-rehearsal binaries, the
 gameserver's `docker save` archive, built
 client, generated application metadata, release version/full source commit, tested Docker
 Engine/Compose versions, six digest-pinned image references, their linux/amd64 config digests and
@@ -107,9 +115,9 @@ rejects a non-ELF or non-amd64
 binary, client symlinks, an absent SPA entry point, empty/missing inputs, mutable image references
 and a pre-existing output tree.
 
-The resulting directory contains the runtime content closure, site, gameserver, backup and release
-helper binaries, offline gameserver
-image archive, Docker/Caddy/Compose inputs, schemas, operations rules/templates, root and
+The resulting directory contains the runtime content closure, site, gameserver, backup, release,
+operations and R-006 rehearsal helper binaries, the offline gameserver image archive,
+Docker/Caddy/Compose inputs, the strict deployment and rehearsal schemas, operations rules/templates, root and
 third-party licenses, seven SBOM documents and
 `release-manifest.json`. The manifest records the current migration, both save-schema versions,
 epoch/copy/constants identities and the SHA-256 of every other bundle file. Validation re-walks the

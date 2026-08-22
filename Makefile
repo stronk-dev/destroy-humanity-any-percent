@@ -1,5 +1,5 @@
 .PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration test-deployment-backup validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 build-deployment-backup-linux-amd64 build-deployment-release-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
-.PHONY: test-deployment-release test-deployment-operations test-deployment-rehearsal build-deployment-operations-linux-amd64 build-deployment-rehearsal-linux-amd64
+.PHONY: test-deployment-release test-deployment-operations test-deployment-rehearsal build-deployment-operations-linux-amd64 build-deployment-rehearsal-linux-amd64 generate-image-sbom
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -9,6 +9,7 @@ GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
 RELEASE_BUILDX_BUILDER ?= cloud-clicker-release-v1
 RELEASE_BUILDKIT_IMAGE := moby/buildkit:v0.24.0@sha256:6eceb8971ce4fceb3daca562832642706238b7eea72941fcf9896c93c3c4a53e
+SYFT_IMAGE := anchore/syft:v1.51.0@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0
 PROMETHEUS_RULE_IMAGE := prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac
 CORE_TEST_COUNT ?= 1
 HARNESS_TEST_COUNT ?= 1
@@ -183,6 +184,24 @@ build-deployment-rehearsal-linux-amd64:
 		-o "$(if $(filter /%,$(RELEASE_REHEARSAL_OUTPUT)),$(RELEASE_REHEARSAL_OUTPUT),../$(RELEASE_REHEARSAL_OUTPUT))" \
 		./cmd/deployment-rehearsal
 
+# Syft discovers the image package graph; the repository normalizer binds its
+# nondeterministic header to the exact runtime config and release timestamp.
+# Set IMAGE_ARCHIVE only for the locally built gameserver docker-save archive.
+generate-image-sbom:
+	@test -n "$(IMAGE_SBOM_OUTPUT)" -a -n "$(IMAGE_CONFIG_ID)" -a -n "$(RELEASE_CREATED_AT)" || (echo "IMAGE_SBOM_OUTPUT, IMAGE_CONFIG_ID, and RELEASE_CREATED_AT are required" >&2; exit 1)
+	@test -n "$(IMAGE_REFERENCE)" -o -n "$(IMAGE_ARCHIVE)" || (echo "IMAGE_REFERENCE or IMAGE_ARCHIVE is required" >&2; exit 1)
+	@test ! -e "$(IMAGE_SBOM_OUTPUT)" -a ! -e "$(IMAGE_SBOM_OUTPUT).raw" || (echo "image SBOM output already exists" >&2; exit 1)
+	docker run --rm --platform linux/amd64 \
+		-v "$(abspath $(dir $(IMAGE_SBOM_OUTPUT))):/output" \
+		$(if $(IMAGE_ARCHIVE),-v "$(abspath $(dir $(IMAGE_ARCHIVE))):/input:ro",) \
+		"$(SYFT_IMAGE)" \
+		"$(if $(IMAGE_ARCHIVE),docker-archive:/input/$(notdir $(IMAGE_ARCHIVE)),registry:$(IMAGE_REFERENCE))" \
+		--platform linux/amd64 --source-name "$(IMAGE_CONFIG_ID)" --output "spdx-json=/output/$(notdir $(IMAGE_SBOM_OUTPUT)).raw"
+	cd server && go run ./cmd/normalize-image-sbom \
+		-input="$(if $(filter /%,$(IMAGE_SBOM_OUTPUT)),$(IMAGE_SBOM_OUTPUT),../$(IMAGE_SBOM_OUTPUT)).raw" \
+		-output="$(if $(filter /%,$(IMAGE_SBOM_OUTPUT)),$(IMAGE_SBOM_OUTPUT),../$(IMAGE_SBOM_OUTPUT))" \
+		-runtime-config-sha256="$(IMAGE_CONFIG_ID)" -created="$(RELEASE_CREATED_AT)"
+
 create-release-builder:
 	docker buildx create --name "$(RELEASE_BUILDX_BUILDER)" --driver docker-container \
 		--driver-opt image="$(RELEASE_BUILDKIT_IMAGE)"
@@ -227,7 +246,7 @@ generate-release-metadata:
 		-version="$(RELEASE_VERSION)" -commit="$(RELEASE_COMMIT)" -created="$(RELEASE_CREATED_AT)"
 
 assemble-release-bundle:
-	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(RELEASE_BACKUP_OUTPUT)" -a -n "$(RELEASE_HELPER_OUTPUT)" -a -n "$(RELEASE_OPERATIONS_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
+	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(RELEASE_BACKUP_OUTPUT)" -a -n "$(RELEASE_HELPER_OUTPUT)" -a -n "$(RELEASE_OPERATIONS_OUTPUT)" -a -n "$(RELEASE_REHEARSAL_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
 		-a -n "$(RELEASE_VERSION)" -a -n "$(RELEASE_COMMIT)" -a -n "$(RELEASE_DOCKER_VERSION)" \
 		-a -n "$(RELEASE_COMPOSE_VERSION)" -a -n "$(ALERTMANAGER_IMAGE)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" -a -n "$(NODE_EXPORTER_IMAGE)" -a -n "$(POSTGRES_IMAGE)" -a -n "$(PROMETHEUS_IMAGE)" \
 		-a -n "$(ALERTMANAGER_SBOM)" -a -n "$(CADDY_SBOM)" -a -n "$(GAMESERVER_SBOM)" -a -n "$(NODE_EXPORTER_SBOM)" -a -n "$(POSTGRES_SBOM)" -a -n "$(PROMETHEUS_SBOM)" \
@@ -238,6 +257,7 @@ assemble-release-bundle:
 		-backup-binary="$(if $(filter /%,$(RELEASE_BACKUP_OUTPUT)),$(RELEASE_BACKUP_OUTPUT),../$(RELEASE_BACKUP_OUTPUT))" \
 		-release-binary="$(if $(filter /%,$(RELEASE_HELPER_OUTPUT)),$(RELEASE_HELPER_OUTPUT),../$(RELEASE_HELPER_OUTPUT))" \
 		-operations-binary="$(if $(filter /%,$(RELEASE_OPERATIONS_OUTPUT)),$(RELEASE_OPERATIONS_OUTPUT),../$(RELEASE_OPERATIONS_OUTPUT))" \
+		-rehearsal-binary="$(if $(filter /%,$(RELEASE_REHEARSAL_OUTPUT)),$(RELEASE_REHEARSAL_OUTPUT),../$(RELEASE_REHEARSAL_OUTPUT))" \
 		-gameserver-archive="$(if $(filter /%,$(GAMESERVER_IMAGE_ARCHIVE)),$(GAMESERVER_IMAGE_ARCHIVE),../$(GAMESERVER_IMAGE_ARCHIVE))" \
 		-client-dist=../client/dist \
 		-metadata="$(if $(filter /%,$(RELEASE_METADATA_OUTPUT)),$(RELEASE_METADATA_OUTPUT),../$(RELEASE_METADATA_OUTPUT))" \
