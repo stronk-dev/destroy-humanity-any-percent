@@ -1079,3 +1079,14 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
 
 **Verdict: APPROVED.** The Game UI closeout range is designated-approved; archival remains blocked
 only on the AC5 manual reference-profile check, per the queue.
+
+## 2026-08-22 — AC5 reference-profile predeclaration
+
+- The designated approval at `c105da0` closes row 4. The owner's direction to continue delegates
+  the remaining local AC5 release observation without delegating product changes or threshold
+  changes.
+- `reference-profile-observation.md` fixes the real 60-second population, baseline calibration,
+  CDP 4× throttle, worker/formatter/Long Task/frame instruments, dropped-frame calculation,
+  invalid-run conditions, and thresholds before measurement.
+- The deterministic CI lane retains its exact 1,200-input/600-window authority. This observation
+  may supplement that lane; it cannot replace or loosen it.
