@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -11,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/releasepackage"
 	"cloud-clicker/server/save"
 	"filippo.io/age"
@@ -21,7 +23,7 @@ func TestPackageRoundTripBindsDumpManifestEpochAndHeader(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	epoch := []byte("{\"schema_version\":1,\"current_epoch_id\":8}\n")
+	epoch := fixtureEpoch(t, 8)
 	manifest := fixtureReleaseManifest(t, epoch)
 	dump := []byte("PGDMP\x01custom database fixture")
 	now := time.Date(2026, 8, 22, 15, 0, 0, 0, time.UTC)
@@ -46,14 +48,18 @@ func TestPackageRoundTripBindsDumpManifestEpochAndHeader(t *testing.T) {
 
 func TestPackageRejectsWrongEpochArtifactAndNonEmptyExtractionTarget(t *testing.T) {
 	identity, _ := age.GenerateX25519Identity()
-	epoch := []byte("{\"schema_version\":1,\"current_epoch_id\":8}\n")
+	epoch := fixtureEpoch(t, 8)
 	manifest := fixtureReleaseManifest(t, epoch)
-	wrongEpoch := []byte("{\"schema_version\":1,\"current_epoch_id\":7}\n")
+	wrongEpoch := fixtureEpoch(t, 7)
 	input := PackageInput{Directory: t.TempDir(), BackupID: "20260822T145900Z-abcdef123456", ServerID: "server",
 		StartedAt: time.Now().Add(-time.Minute), Now: time.Now, Recipient: identity.Recipient().String(),
 		Dump: bytes.NewReader([]byte("PGDMP")), ReleaseManifest: manifest, EpochDeclaration: wrongEpoch}
 	if _, _, err := CreatePackage(input); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("wrong epoch accepted: %v", err)
+	}
+	input.EpochDeclaration = []byte("{\"schema_version\":1,\"current_epoch_id\":8}\n")
+	if _, _, err := CreatePackage(input); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("reduced noncanonical epoch accepted: %v", err)
 	}
 	input.EpochDeclaration = epoch
 	_, path, err := CreatePackage(input)
@@ -71,7 +77,7 @@ func TestPackageRejectsWrongEpochArtifactAndNonEmptyExtractionTarget(t *testing.
 
 func TestPackageRejectsTruncatedEnvelope(t *testing.T) {
 	identity, _ := age.GenerateX25519Identity()
-	epoch := []byte("{\"schema_version\":1,\"current_epoch_id\":8}\n")
+	epoch := fixtureEpoch(t, 8)
 	manifest := fixtureReleaseManifest(t, epoch)
 	_, path, err := CreatePackage(PackageInput{Directory: t.TempDir(), BackupID: "20260822T145900Z-abcdef123456", ServerID: "server",
 		StartedAt: time.Now().Add(-time.Minute), Now: time.Now, Recipient: identity.Recipient().String(),
@@ -118,6 +124,27 @@ func fixtureReleaseManifest(t *testing.T, epoch []byte) []byte {
 	return fixtureReleaseManifestForMigration(t, epoch, 1)
 }
 
+func fixtureEpoch(t *testing.T, current int64) []byte {
+	t.Helper()
+	hash := "sha256:" + strings.Repeat("c", 64)
+	epochs := make([]epochseed.Epoch, current)
+	for index := range epochs {
+		id := int64(index + 1)
+		epochs[index] = epochseed.Epoch{ID: id, Name: fmt.Sprintf("Epoch %d", id),
+			ChangelogRef: fmt.Sprintf("changelog/epoch-%d.md", id), AcceptedHashes: []string{hash}}
+	}
+	seed := epochseed.Seed{SchemaVersion: 1, CurrentEpochID: current,
+		Artifacts: []epochseed.Artifact{{Name: "fixture", Path: "balance/fixture.json"}}, Epochs: epochs}
+	if err := epochseed.Validate(seed); err != nil {
+		t.Fatal(err)
+	}
+	data, err := json.Marshal(seed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return append(data, '\n')
+}
+
 func fixtureReleaseManifestForMigration(t *testing.T, epoch []byte, migration int) []byte {
 	t.Helper()
 	defaultHash := "sha256:" + strings.Repeat("d", 64)
@@ -129,6 +156,7 @@ func fixtureReleaseManifestForMigration(t *testing.T, epoch []byte, migration in
 		"third-party-licenses.txt": defaultHash, "site/index.html": defaultHash,
 		"site/third-party-licenses.txt": defaultHash, "gameserver": defaultHash,
 		"deployment-backup":                  defaultHash,
+		"deployment-release":                 defaultHash,
 		"content/balance/epochs/phase0.json": digest(epoch),
 		"sbom/caddy.spdx.json":               "sha256:" + strings.Repeat("1", 64),
 		"sbom/gameserver.spdx.json":          "sha256:" + strings.Repeat("2", 64),

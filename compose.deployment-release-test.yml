@@ -1,0 +1,45 @@
+services:
+  release-postgres:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: cloud_clicker_release_test
+      POSTGRES_USER: cloud_clicker
+      POSTGRES_PASSWORD: cloud_clicker_release_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloud_clicker -d cloud_clicker_release_test"]
+      interval: 1s
+      timeout: 5s
+      retries: 30
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  release-caddy:
+    image: caddy:2-alpine
+    platform: linux/amd64
+    volumes:
+      - ./deployment/Caddyfile.release-integration:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        aliases: [game.example]
+
+  release-test:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    environment:
+      GODEBUG: cpu.avx2=off
+      TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_release_test@release-postgres:5432/cloud_clicker_release_test?sslmode=disable
+      TEST_RESTORE_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_release_test@release-postgres:5432/cloud_clicker_release_restore?sslmode=disable
+      TEST_ADMIN_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_release_test@release-postgres:5432/postgres?sslmode=disable
+      TEST_CADDY_ORIGIN: https://game.example:8443
+    depends_on:
+      release-postgres:
+        condition: service_healthy
+      release-caddy:
+        condition: service_started
+    volumes:
+      - ./.cache/bin/deploymentrelease.test:/usr/local/bin/deploymentrelease.test:ro
+      - ./:/workspace:ro
+    working_dir: /workspace
+    entrypoint: ["/usr/local/bin/deploymentrelease.test"]
+    command: ["-test.run", "CaddyIntegration", "-test.count=1", "-test.v"]

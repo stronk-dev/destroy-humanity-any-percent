@@ -1,8 +1,9 @@
 # Deployment
 
 Deployment Foundation is implementing. The repository does **not** yet claim a supported self-host
-bundle or release-ready deployment; rollback, operations and the exact-manifest clean-host
-rehearsal remain unfinished, and the backup implementation remains subject to its required review.
+bundle or release-ready deployment. Backup and release/rollback implementations exist but remain
+subject to their required independent reviews; operations and the exact-manifest clean-host
+rehearsal remain unfinished.
 
 ## Runtime content closure
 
@@ -69,21 +70,25 @@ actual secret files.
 
 ## Application licenses and SBOM
 
-`make generate-release-metadata` inventories the module graph actually linked into
-`cmd/gameserver` (not the much larger `go.sum` graph), adds the Go standard library, and reads the
+`make generate-release-metadata` inventories the union of module graphs actually linked into the
+gameserver, deployment-backup and deployment-release commands (not the much larger `go.sum`
+graph), adds the Go standard library, and reads the
 three exact browser runtime dependencies from `client/package.json` plus their installed package
 manifests. It reads shipped LICENSE/COPYING bytes directly, recognizes only the audited MIT,
-Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
+ISC, Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
 
 The outputs are `third-party-licenses.txt` and an SPDX-2.3 JSON document with package-manager purls,
-download locations and root `DEPENDS_ON` relationships. On the current graph the generator finds 37
-linked Go modules, the Go standard library and three browser dependencies (41 dependencies total),
+download locations and root `DEPENDS_ON` relationships. On the current graph the generator finds 40
+linked third-party Go modules, the Go standard library and three browser dependencies (44
+dependencies total),
 matching the prior license audit while retaining the previously hidden dual Apache-2.0/MIT libyaml
 notice. Version, full commit and RFC3339 creation time are explicit inputs; an existing output
 directory is never silently overlaid.
 
-This is the application SBOM only. The assembler requires separate SPDX inputs for Caddy, the
+The application SBOM inventories the union of dependencies linked into all three shipped Go
+binaries (gameserver, deployment-backup and deployment-release) plus the bundled browser client.
+The assembler requires separate SPDX inputs for Caddy, the
 gameserver image and Postgres and binds each SBOM hash beside that image's immutable digest.
 For upstream multi-platform references it also records the selected linux/amd64 OCI config digest;
 the SPDX document name must identify that exact runtime config, preventing a native-host SBOM from
@@ -92,7 +97,7 @@ being attached to the supported amd64 release.
 ## Release bundle assembly
 
 `make assemble-release-bundle` accepts only an empty output directory and requires all of the
-following explicit inputs: the Linux/amd64 gameserver and deployment-backup binaries, the
+following explicit inputs: the Linux/amd64 gameserver, deployment-backup and deployment-release binaries, the
 gameserver's `docker save` archive, built
 client, generated application metadata, release version/full source commit, tested Docker
 Engine/Compose versions, three digest-pinned image references, their linux/amd64 config digests and
@@ -101,14 +106,14 @@ rejects a non-ELF or non-amd64
 binary, client symlinks, an absent SPA entry point, empty/missing inputs, mutable image references
 and a pre-existing output tree.
 
-The resulting directory contains the runtime content closure, site, gameserver and backup-helper
-binaries, offline gameserver
+The resulting directory contains the runtime content closure, site, gameserver, backup and release
+helper binaries, offline gameserver
 image archive, Docker/Caddy/Compose inputs, schemas, root and third-party licenses, four SBOM documents and
 `release-manifest.json`. The manifest records the current migration, both save-schema versions,
 epoch/copy/constants identities and the SHA-256 of every other bundle file. Validation re-walks the
 directory and rejects any missing, extra or changed byte, including attribution or an image SBOM.
-It intentionally describes a release *candidate*: designated approval of the backup batch,
-rollback, operations and the exact clean-host R-006 rehearsal remain required before the project
+It intentionally describes a release *candidate*: designated approval of the backup and rollback
+batches, operations and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
 ## Encrypted Postgres backup and restore
@@ -170,3 +175,62 @@ DP-C does not claim the 6-hour RPO or 4-hour RTO from component execution. The h
 measurement validator, but an observation is invalid until incident time, restore start and the
 authenticated post-restore Caddy smoke completion are all present. Those bounds become release
 evidence only during the exact-manifest R-006 rehearsal.
+
+## Governed release, rollback and key rotation
+
+`deployment-release` is the manifest-bound operator entry point. It is deliberately not an
+automatic deployment service: an operator invokes it with the exact current and candidate bundle,
+the separately mounted backup and operator-state directories, the canonical Caddy origin and the
+private alert-receiver health URL. Database sizing and identity checks run through one-off backup
+helper containers on the private database network; Postgres remains unpublished to the host. The operator-state directory is
+mode-0700 storage outside either bundle and holds two mode-0600 append-only JSONL records:
+`release-ledger.jsonl` and `rotation-ledger.jsonl`. Records contain identifiers, timestamps,
+digests and outcomes, never key, password, recovery-code or token values.
+Mode-0600 nonblocking lock files serialize release/rollback and rotation mutations so two operator
+invocations cannot race the ledgers or the live stack.
+
+A release runs these gates in order and records the first failed stage without ever emitting a
+success row: exact-bundle/config/receiver/free-space preflight; encrypted pre-upgrade backup;
+image load/pull plus runtime-config digest verification; Compose-governed SIGTERM stop; observed
+readiness-down, authenticated `server_restarting` WebSocket publication, intent refusal and clean
+bounded process exit; candidate startup and forward migrations; exact database migration,
+epoch/hash/artifact reconciliation; then authenticated HTTP and WebSocket smoke through Caddy.
+The clean exit is meaningful because the gameserver exits zero only after admitted requests,
+background jobs, relay/outbox flush and transport shutdown complete. `restart: unless-stopped`
+does not race this sequence: the helper uses `docker compose stop`, not a raw container kill.
+Normal release is strictly forward by semantic release version and database migration; an older
+version can enter service only through the governed rollback command.
+
+Every successful release row binds the candidate version, manifest SHA-256, all three image
+digests, exact pre-upgrade backup, exact previous version/manifest and a seven-day rollback
+deadline. Rollback accepts only those recorded values. It stops the failed stack, removes only the
+named Postgres data volume, starts a clean Postgres service, restores the exact encrypted backup,
+starts the exact previous bundle, repeats epoch/artifact reconciliation and runs the same Caddy
+smoke. There is no Down-migration operation in the rollback interface or command.
+An exact failed rollback attempt is recorded and may be retried inside the same deadline; a
+successful rollback or any unrelated intervening transition closes that authority.
+
+Key rotation is also operator-driven. `rotation-activate` records new-current/former-current IDs;
+`rotation-remove` refuses removal until the governed interval has elapsed: 30 minutes for JWT,
+31 days for bootstrap receipts and 366 days for public cursors. Cursor rotation stays inactive
+until a public reader exists, but its durable timing/config contract is already enforced. The
+runtime current/previous key decoder remains the authority for actual values and rejects half
+pairs, duplicate IDs and duplicate values; the ledger stores IDs only.
+
+Build the release helper with:
+
+```sh
+make build-deployment-release-linux-amd64 RELEASE_HELPER_OUTPUT=/absolute/path/deployment-release
+```
+
+The host-side command reads `CLOUD_CLICKER_SERVER_ID` from the same non-secret operator environment.
+Release requires `--current-bundle`, `--candidate-bundle`, `--operator-state`, `--operator`,
+`--public-origin`, `--receiver-health-url`, `--backup-target` and `--age-recipient`. Rollback replaces
+the two release inputs with `--failed-bundle`, `--previous-bundle`, `--backup-id`, `--backup` and the
+explicit off-host `--age-identity-file`; the age identity is rejected if it is not a private regular
+file. Rotation uses `rotation-activate` or `rotation-remove` with the operator-state path, family,
+current/previous IDs and operator identity. Secret values never appear in these arguments or ledgers.
+
+DP-D component evidence does not claim supported deployment or rollback by itself. The exact
+release-manifest clean-host R-006 rehearsal, measured RPO/RTO, operations profile, and both review
+gates remain mandatory before that claim.

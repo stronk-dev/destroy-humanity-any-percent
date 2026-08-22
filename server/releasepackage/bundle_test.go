@@ -63,6 +63,19 @@ func TestAssembleBundleRejectsWrongArchitectureAndClientSymlink(t *testing.T) {
 	}
 
 	inputs = bundleInputs(t, repositoryRoot)
+	releaseBytes, err := os.ReadFile(inputs.ReleaseBinary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	binary.LittleEndian.PutUint16(releaseBytes[18:20], 183)
+	if err := os.WriteFile(inputs.ReleaseBinary, releaseBytes, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := AssembleBundle(inputs); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("arm64 release helper accepted: %v", err)
+	}
+
+	inputs = bundleInputs(t, repositoryRoot)
 	inputs.SourceCommit = strings.Repeat("e", 40)
 	if _, err := AssembleBundle(inputs); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("image from another source commit accepted: %v", err)
@@ -122,7 +135,11 @@ func bundleInputs(t *testing.T, repositoryRoot string) BundleInput {
 	if err := os.WriteFile(backupBinary, binaryBytes, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	return BundleInput{RepositoryRoot: repositoryRoot, Output: filepath.Join(base, "bundle"), ServerBinary: serverBinary, BackupBinary: backupBinary,
+	releaseBinary := filepath.Join(base, "deployment-release")
+	if err := os.WriteFile(releaseBinary, binaryBytes, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	return BundleInput{RepositoryRoot: repositoryRoot, Output: filepath.Join(base, "bundle"), ServerBinary: serverBinary, BackupBinary: backupBinary, ReleaseBinary: releaseBinary,
 		ClientDist: client, MetadataDirectory: metadata, GameserverImageArchive: archive, ReleaseVersion: "0.1.0-preview.1", SourceCommit: strings.Repeat("d", 40),
 		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", Images: images, ImageConfigIDs: configIDs, ImageSBOMs: sboms}
 }

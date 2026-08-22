@@ -103,6 +103,19 @@ func TestProductionConfigAllowsCursorKeysToRemainUncomposed(t *testing.T) {
 	}
 }
 
+func TestProductionConfigAcceptsGovernedPreviousKeyRemoval(t *testing.T) {
+	environment, secrets := validProductionFixture()
+	for _, name := range []string{"CLOUD_CLICKER_JWT_PREVIOUS_ID", "CLOUD_CLICKER_JWT_PREVIOUS_KEY_FILE",
+		"CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_ID", "CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_KEY_FILE",
+		"CLOUD_CLICKER_CURSOR_PREVIOUS_ID", "CLOUD_CLICKER_CURSOR_PREVIOUS_KEY_FILE"} {
+		environment, secrets = removeEnv(name)(environment, secrets)
+	}
+	config, err := Load(environment, fixtureReader(secrets))
+	if err != nil || config.JWT.PreviousID != "" || config.Bootstrap.PreviousID != "" || config.Cursor == nil || config.Cursor.PreviousID != "" {
+		t.Fatalf("governed removal config=%+v err=%v", config, err)
+	}
+}
+
 func TestDevelopmentConfigRetainsTheDeclaredLegacyProfileOnly(t *testing.T) {
 	key := base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{7}, 32))
 	config, err := Load([]string{

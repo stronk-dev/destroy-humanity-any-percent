@@ -94,14 +94,14 @@ services:
       - --target=/backups
       - --database-url-file=/run/secrets/database-url
       - --release-manifest=/opt/cloud-clicker/release-manifest.json
-      - --epoch=/opt/cloud-clicker/epoch.json
+      - --epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json
       - --age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}
       - --server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}
     secrets: [database-url]
     volumes:
       - ./deployment-backup:/opt/cloud-clicker/deployment-backup:ro
       - ./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro
-      - ./content/balance/epochs/phase0.json:/opt/cloud-clicker/epoch.json:ro
+      - ./content:/opt/cloud-clicker/content:ro
       - "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"
     networks: [database]
     depends_on:

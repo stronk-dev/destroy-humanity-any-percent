@@ -1,0 +1,4 @@
+https://game.example:8443 {
+	tls internal
+	reverse_proxy release-test:8080
+}

@@ -179,6 +179,16 @@ HTTP and WebSocket tests use a real `net/http` client/server exchange over in-me
 connections. They exercise upgrades, framing, and protocol recovery without binding a localhost
 port, so ordinary test runs do not require network permission.
 
+Deployment has two explicit cold Linux/amd64 component lanes outside hosted push CI.
+`make test-deployment-backup` runs the Postgres 16 encrypted dump/clean-restore identity population.
+`make test-deployment-release` uses an isolated Compose project with real Postgres, a production-
+boundary gameserver and real Caddy internal TLS. It holds one admitted intent at a database row
+lock, proves readiness-down plus exact drain refusal/courtesy/closure, releases and completes the
+admitted request, restarts through Caddy, then restores the exact encrypted pre-upgrade backup into
+a newly created database and authenticates through the same Caddy HTTP/WebSocket path. Successful
+runs remove their isolated test containers, network and temporary volume; failures retain them for
+diagnosis. Neither lane claims the final exact-bundle clean-host rehearsal.
+
 No CI job deploys anything. Destructive restore, release/rollback, alert delivery and clean-host
 rehearsals remain explicit manual release lanes; blocking CI proves their static and component
 contracts without receiving deployment secrets.

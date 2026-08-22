@@ -15,6 +15,7 @@ type BundleInput struct {
 	Output                 string
 	ServerBinary           string
 	BackupBinary           string
+	ReleaseBinary          string
 	ClientDist             string
 	MetadataDirectory      string
 	GameserverImageArchive string
@@ -31,7 +32,7 @@ type BundleInput struct {
 // destination must not already contain bytes: a failed build can therefore
 // never be mistaken for a previously successful release.
 func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
-	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != 3 || len(input.ImageConfigIDs) != 3 || len(input.ImageSBOMs) != 3 {
+	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ReleaseBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != 3 || len(input.ImageConfigIDs) != 3 || len(input.ImageSBOMs) != 3 {
 		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := requireEmptyDestination(input.Output); err != nil {
@@ -64,6 +65,9 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		return ReleaseManifest{}, err
 	}
 	if err := copyLinuxAMD64Binary(input.BackupBinary, filepath.Join(input.Output, "deployment-backup")); err != nil {
+		return ReleaseManifest{}, err
+	}
+	if err := copyLinuxAMD64Binary(input.ReleaseBinary, filepath.Join(input.Output, "deployment-release")); err != nil {
 		return ReleaseManifest{}, err
 	}
 	if err := copyRegularFile(input.GameserverImageArchive, filepath.Join(input.Output, "images", "gameserver.docker.tar"), 0o644); err != nil {
@@ -143,7 +147,7 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 func copyLinuxAMD64Binary(source, destination string) error {
 	data, err := os.ReadFile(source)
 	if err != nil || !isLinuxAMD64ELF(data) {
-		return fmt.Errorf("%w: gameserver is not linux/amd64 ELF", ErrInvalidContent)
+		return fmt.Errorf("%w: release binary is not linux/amd64 ELF", ErrInvalidContent)
 	}
 	return writeNewRegularFile(destination, data, 0o755)
 }

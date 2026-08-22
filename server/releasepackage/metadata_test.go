@@ -16,6 +16,14 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.`
 
+const iscFixture = `Copyright (c) Example
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES.`
+
 func TestReleaseMetadataIsSortedLicensedAndSPDX23(t *testing.T) {
 	dependencies, err := SortDependencies([]Dependency{
 		{Name: "browser-lib", Version: "2.0.0", Kind: "npm", License: "MIT", LicenseText: mitFixture, Download: "https://registry.npmjs.org/browser-lib/-/browser-lib-2.0.0.tgz", PackageURL: "pkg:npm/browser-lib@2.0.0"},
@@ -51,6 +59,18 @@ func TestReleaseMetadataRejectsUnknownLicenseDuplicateAndBadCommit(t *testing.T)
 	}
 	if _, err := BuildSPDX("Cloud Clicker", "0.1.0", "short", time.Now(), []Dependency{valid}); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("bad commit accepted: %v", err)
+	}
+}
+
+func TestDetectPermissiveLicenseRecognizesISC(t *testing.T) {
+	license, err := DetectPermissiveLicense(iscFixture)
+	if err != nil || license != "ISC" {
+		t.Fatalf("ISC detection: license=%q err=%v", license, err)
+	}
+	dependency := Dependency{Name: "github.com/coder/websocket", Version: "v1.8.15", Kind: "go", License: license,
+		LicenseText: iscFixture, Download: "https://proxy.golang.org/github.com/coder/websocket/@v/v1.8.15.zip", PackageURL: "pkg:golang/github.com/coder/websocket@v1.8.15"}
+	if err := ValidateDependencies([]Dependency{dependency}); err != nil {
+		t.Fatalf("valid ISC dependency rejected: %v", err)
 	}
 }
 

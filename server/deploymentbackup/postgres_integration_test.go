@@ -44,7 +44,7 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 		t.Fatal(err)
 	}
 	identityPath := writeSecret(t, workspace, "age-identity", identity.String())
-	epoch := []byte("{\"schema_version\":1,\"current_epoch_id\":8}\n")
+	epoch := fixtureEpoch(t, 8)
 	manifest := fixtureReleaseManifestForMigration(t, epoch, migration)
 	manifestPath := writeRegular(t, workspace, "release-manifest.json", manifest)
 	epochPath := writeRegular(t, workspace, "epoch.json", epoch)
@@ -133,7 +133,7 @@ func TestPostgresRestoreRefusesNonCleanTargetIntegration(t *testing.T) {
 
 	workspace := t.TempDir()
 	identity, _ := age.GenerateX25519Identity()
-	epoch := []byte("{\"schema_version\":1,\"current_epoch_id\":8}\n")
+	epoch := fixtureEpoch(t, 8)
 	manifest := fixtureReleaseManifestForMigration(t, epoch, migration)
 	header, path, err := CreatePostgresBackup(ctx, PostgresBackupInput{
 		Directory: t.TempDir(), BackupID: "20260822T175900Z-000000000003", ServerID: "server",

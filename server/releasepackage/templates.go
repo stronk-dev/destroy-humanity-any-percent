@@ -123,10 +123,10 @@ func ValidateCompose(data []byte) error {
 		!sameStrings(postgres.Secrets, []string{"postgres-password"}) || !sameStrings(backup.Secrets, []string{"database-url"}) {
 		return fmt.Errorf("%w: invalid secret mounts gameserver=%v postgres=%v", ErrInvalidContent, gameserver.Secrets, postgres.Secrets)
 	}
-	wantBackupCommand := []string{"--age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}", "--database-url-file=/run/secrets/database-url", "--epoch=/opt/cloud-clicker/epoch.json", "--release-manifest=/opt/cloud-clicker/release-manifest.json", "--server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}", "--target=/backups", "schedule"}
+	wantBackupCommand := []string{"--age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}", "--database-url-file=/run/secrets/database-url", "--epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json", "--release-manifest=/opt/cloud-clicker/release-manifest.json", "--server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}", "--target=/backups", "schedule"}
 	if backup.Image != postgres.Image || backup.User != "70:70" || !backup.ReadOnly || !sameStrings(backup.CapDrop, []string{"ALL"}) || !sameStrings(backup.SecurityOpt, []string{"no-new-privileges:true"}) || len(backup.Tmpfs) != 1 ||
 		!sameStrings(backup.Entrypoint, []string{"/opt/cloud-clicker/deployment-backup"}) || !sameStrings(backup.Command, wantBackupCommand) || backup.DependsOn["postgres"].Condition != "service_healthy" || len(backup.DependsOn) != 1 ||
-		!sameStrings(backup.Volumes, []string{"./content/balance/epochs/phase0.json:/opt/cloud-clicker/epoch.json:ro", "./deployment-backup:/opt/cloud-clicker/deployment-backup:ro", "./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro", "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"}) {
+		!sameStrings(backup.Volumes, []string{"./content:/opt/cloud-clicker/content:ro", "./deployment-backup:/opt/cloud-clicker/deployment-backup:ro", "./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro", "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"}) {
 		return fmt.Errorf("%w: invalid backup worker boundary", ErrInvalidContent)
 	}
 	return nil

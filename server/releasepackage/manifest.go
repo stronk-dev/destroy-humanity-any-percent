@@ -19,9 +19,8 @@ import (
 const ReleaseManifestPath = "release-manifest.json"
 
 var (
-	releaseVersionPattern = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$`)
-	commitPattern         = regexp.MustCompile(`^[0-9a-f]{40}$`)
-	migrationPattern      = regexp.MustCompile(`^([0-9]{5})_[a-z0-9_]+\.sql$`)
+	commitPattern    = regexp.MustCompile(`^[0-9a-f]{40}$`)
+	migrationPattern = regexp.MustCompile(`^([0-9]{5})_[a-z0-9_]+\.sql$`)
 )
 
 type Image struct {
@@ -80,7 +79,7 @@ func BuildReleaseManifest(bundleRoot string, input ManifestInput) (ReleaseManife
 }
 
 func ValidateReleaseManifest(manifest ReleaseManifest) error {
-	if manifest.SchemaVersion != 1 || !releaseVersionPattern.MatchString(manifest.ReleaseVersion) || !commitPattern.MatchString(manifest.SourceCommit) ||
+	if manifest.SchemaVersion != 1 || !validReleaseVersion(manifest.ReleaseVersion) || !commitPattern.MatchString(manifest.SourceCommit) ||
 		manifest.Platform != "linux/amd64" || manifest.DockerEngineVersion == "" || manifest.DockerComposeVersion == "" || manifest.DatabaseMigration < 1 ||
 		manifest.CompanySaveVersion != save.LatestCompanyVersion || manifest.FounderSaveVersion != save.LatestFounderVersion || manifest.EpochID < 1 ||
 		!hashPattern.MatchString(manifest.ConstantsHash) || !hashPattern.MatchString(manifest.CopyHash) || len(manifest.Images) != 3 || len(manifest.Artifacts) == 0 {
@@ -105,7 +104,7 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 		}
 		prior = artifact.Path
 	}
-	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "deployment-backup", "content/balance/epochs/phase0.json"} {
+	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "deployment-backup", "deployment-release", "content/balance/epochs/phase0.json"} {
 		if !hasArtifact(manifest.Artifacts, required) {
 			return fmt.Errorf("%w: missing release artifact %q", ErrInvalidContent, required)
 		}

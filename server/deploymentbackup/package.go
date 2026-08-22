@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/releasepackage"
 	"filippo.io/age"
 )
@@ -61,11 +62,6 @@ type ExtractedPackage struct {
 	Manifest         releasepackage.ReleaseManifest
 	ReleaseManifest  []byte
 	EpochDeclaration []byte
-}
-
-type epochDeclaration struct {
-	SchemaVersion  int   `json:"schema_version"`
-	CurrentEpochID int64 `json:"current_epoch_id"`
 }
 
 // CreatePackage binds a custom-format database dump to the exact release and
@@ -257,8 +253,8 @@ func validateReleaseInputs(manifestBytes, epochBytes []byte) (releasepackage.Rel
 	if decodeStrict(manifestBytes, &manifest) != nil || releasepackage.ValidateReleaseManifest(manifest) != nil {
 		return manifest, "", "", 0, ErrInvalid
 	}
-	var epoch epochDeclaration
-	if decodeStrict(epochBytes, &epoch) != nil || epoch.SchemaVersion != 1 || epoch.CurrentEpochID != manifest.EpochID {
+	epoch, err := epochseed.Decode(epochBytes)
+	if err != nil || epoch.CurrentEpochID != manifest.EpochID {
 		return manifest, "", "", 0, ErrInvalid
 	}
 	epochDigest := digest(epochBytes)

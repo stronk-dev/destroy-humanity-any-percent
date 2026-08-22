@@ -88,6 +88,10 @@ func TestJWTExactClaimsExpirySignatureAndPreviousKey(t *testing.T) {
 	if _, err := verifyAccessToken(keys, previousToken, now); err != nil {
 		t.Fatalf("previous key token failed: %v", err)
 	}
+	currentOnly := SigningKeys{CurrentID: keys.CurrentID, Current: keys.Current}
+	if _, err := verifyAccessToken(currentOnly, previousToken, now); err == nil {
+		t.Fatal("previous key token survived governed key removal")
+	}
 }
 
 func TestUUIDv7AndTokenBucketClockRegression(t *testing.T) {

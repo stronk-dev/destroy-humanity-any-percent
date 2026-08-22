@@ -7,7 +7,7 @@
   "required": ["schema_version", "release_version", "source_commit", "platform", "docker_engine_version", "docker_compose_version", "database_migration", "company_save_version", "founder_save_version", "epoch_id", "constants_hash", "copy_hash", "images", "artifacts"],
   "properties": {
     "schema_version": { "const": 1 },
-    "release_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$" },
+    "release_version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$" },
     "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
     "platform": { "const": "linux/amd64" },
     "docker_engine_version": { "type": "string", "minLength": 1 },

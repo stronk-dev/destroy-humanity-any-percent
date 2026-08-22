@@ -340,3 +340,33 @@ non-success result and can never emit a success record.
 seven-day exact-backup rollback and governed key-rotation mechanism with real Caddy-path evidence.
 **Not authorized:** operations readiness, supported self-hosting, RPO/RTO, release readiness or a
 1.0 claim until DP-E, DP-F, exact-manifest R-006 and both review gates pass.
+
+## 2026-08-22 — DP-D scope expansion: production epoch backup blocker
+
+The first real Caddy + pre-upgrade-backup composition exposed a DP-C fixture defect before DP-D
+could proceed: production Compose mounts the canonical `balance/epochs/phase0.json`, but
+`deploymentbackup.validateReleaseInputs` decoded an exact two-field projection and rejected the
+canonical declaration's required `artifacts` and `epochs` members. DP-C's Postgres witness used the
+same reduced synthetic object, so it could not falsify the shipped path.
+
+DP-D expands to the smallest owning correction in `server/deploymentbackup/package.go` and its
+fixtures: decode through the canonical `epochseed` authority and replace reduced epoch fixtures
+with structurally valid declarations. A permanent negative must show that a reduced or malformed
+declaration still fails. This does not alter backup contents, encryption, retention or objectives;
+it makes the already-specified exact production epoch input executable. The correction remains in
+DP-D's designated-review range and does not retroactively change DP-C's pending verdict.
+
+## 2026-08-22 — DP-D scope expansion: private-database operator boundary
+
+The adversarial production-boundary pass found that the draft host-side release helper opened the
+database URL directly for free-space and epoch/artifact checks. That cannot work in DP-B's accepted
+topology: Postgres has no published host port and is reachable only from the private `database`
+network. The in-process Caddy population exercised the database semantics but could not falsify
+this operator-network mistake.
+
+DP-D therefore expands within its existing DP5 authority to add exact database-size and
+manifest/epoch/artifact inspection commands to the already shipped `deployment-backup` helper.
+The release controller invokes those commands as one-off `backup` service containers on the private
+network and strictly decodes their output. The host helper no longer opens the database secret.
+Tests must reject a severed/wrong migration, epoch, artifact or database-size result and must show
+that candidate preflight runs the candidate image/config rather than `exec`-ing the old container.

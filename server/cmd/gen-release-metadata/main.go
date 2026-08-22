@@ -27,6 +27,12 @@ type packageManifest struct {
 	License string `json:"license"`
 }
 
+var shippedGoCommands = []string{
+	"./cmd/gameserver",
+	"./cmd/deployment-backup",
+	"./cmd/deployment-release",
+}
+
 func main() {
 	root := flag.String("root", "..", "repository root")
 	output := flag.String("output", "", "empty metadata output directory")
@@ -85,7 +91,9 @@ func discoverDependencies(root string) ([]releasepackage.Dependency, error) {
 
 func discoverGoDependencies(root string) ([]releasepackage.Dependency, error) {
 	format := `{{with .Module}}{{if not .Main}}{{.Path}}{{"\t"}}{{.Version}}{{"\t"}}{{.Dir}}{{"\n"}}{{end}}{{end}}`
-	command := exec.Command("go", "list", "-deps", "-f", format, "./cmd/gameserver")
+	arguments := []string{"list", "-deps", "-f", format}
+	arguments = append(arguments, shippedGoCommands...)
+	command := exec.Command("go", arguments...)
 	command.Dir = filepath.Join(root, "server")
 	output, err := command.Output()
 	if err != nil {

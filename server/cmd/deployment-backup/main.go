@@ -28,7 +28,7 @@ type createFlags struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail("usage: deployment-backup <create|schedule|restore|retention>")
+		fail("usage: deployment-backup <create|schedule|restore|retention|inspect>")
 	}
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
@@ -42,12 +42,32 @@ func main() {
 		err = runRestore(ctx, os.Args[2:])
 	case "retention":
 		err = runRetention(os.Args[2:])
+	case "inspect":
+		err = runInspect(ctx, os.Args[2:])
 	default:
 		err = errors.New("unknown deployment backup command")
 	}
 	if err != nil {
 		fail(err.Error())
 	}
+}
+
+func runInspect(ctx context.Context, args []string) error {
+	set := flag.NewFlagSet("inspect", flag.ContinueOnError)
+	databaseURL := set.String("database-url-file", "", "Postgres URL secret file")
+	manifest := set.String("release-manifest", "", "release-manifest.json")
+	content := set.String("content-root", "", "release content root")
+	requireIdentity := set.Bool("require-identity", false, "require exact migration, epoch and artifact identity")
+	if err := set.Parse(args); err != nil || set.NArg() != 0 || *databaseURL == "" || *manifest == "" || *content == "" {
+		return errors.New("inspect requires database-url-file, release-manifest and content-root")
+	}
+	inspection, err := deploymentbackup.InspectPostgres(ctx, deploymentbackup.PostgresInspectionInput{
+		DatabaseURLFile: *databaseURL, ReleaseManifest: *manifest, ContentRoot: *content, RequireIdentity: *requireIdentity,
+	})
+	if err != nil {
+		return err
+	}
+	return emit(map[string]any{"status": "inspected", "inspection": inspection})
 }
 
 func runCreate(ctx context.Context, args []string) error {

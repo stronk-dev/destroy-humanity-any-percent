@@ -40,4 +40,7 @@ func TestBootstrapReceiptAuthenticatedEncryptionBindsDigestAndKeyID(t *testing.T
 	if _, err := decryptBootstrapReceipt(rotated, otherDigest, "receipt-v1", nonce, ciphertext); err == nil {
 		t.Fatal("receipt authenticated under another request digest")
 	}
+	if _, err := decryptBootstrapReceipt(BootstrapReceiptKeys{CurrentID: rotated.CurrentID, Current: rotated.Current}, digest, "receipt-v1", nonce, ciphertext); err == nil {
+		t.Fatal("previous bootstrap receipt survived governed key removal")
+	}
 }

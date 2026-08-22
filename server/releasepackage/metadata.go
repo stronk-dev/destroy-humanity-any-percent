@@ -72,7 +72,7 @@ type spdxHeader struct {
 	CreationInfo      CreationInfo `json:"creationInfo"`
 }
 
-var spdxLicense = regexp.MustCompile(`^(Apache-2\.0|BSD-2-Clause|BSD-3-Clause|MIT)( AND (Apache-2\.0|BSD-2-Clause|BSD-3-Clause|MIT))*$`)
+var spdxLicense = regexp.MustCompile(`^(Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|MIT)( AND (Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|MIT))*$`)
 
 func DetectPermissiveLicense(text string) (string, error) {
 	normalized := strings.ToLower(strings.ReplaceAll(text, "\r\n", "\n"))
@@ -82,6 +82,11 @@ func DetectPermissiveLicense(text string) (string, error) {
 	}
 	if strings.Contains(normalized, "permission is hereby granted, free of charge") && strings.Contains(normalized, "the software is provided \"as is\"") {
 		licenses = append(licenses, "MIT")
+	}
+	if strings.Contains(normalized, "permission to use, copy, modify, and distribute this software") &&
+		strings.Contains(normalized, "with or without fee is hereby granted") &&
+		strings.Contains(normalized, "the software is provided \"as is\"") {
+		licenses = append(licenses, "ISC")
 	}
 	if strings.Contains(normalized, "redistribution and use in source and binary forms") {
 		if strings.Contains(normalized, "neither the name") {
@@ -124,7 +129,7 @@ func ThirdPartyNotices(dependencies []Dependency) ([]byte, error) {
 	}
 	var output strings.Builder
 	output.WriteString("Cloud Clicker third-party licenses\n")
-	output.WriteString("Generated from the dependencies linked into the gameserver and bundled into the browser client.\n\n")
+	output.WriteString("Generated from the dependencies linked into every shipped Go binary and bundled into the browser client.\n\n")
 	for _, dependency := range dependencies {
 		fmt.Fprintf(&output, "================================================================================\n%s %s (%s)\n%s\n%s\n\n",
 			dependency.Name, dependency.Version, dependency.Kind, dependency.License, strings.TrimSpace(strings.ReplaceAll(dependency.LicenseText, "\r\n", "\n")))
