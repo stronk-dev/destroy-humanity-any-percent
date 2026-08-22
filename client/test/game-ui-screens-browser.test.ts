@@ -50,12 +50,16 @@ class FixtureRuntime implements GameUIRuntime {
   snapshotCalls = 0;
   failSnapshot = false;
   intentBlock: Promise<void> | undefined;
-  constructor(private authenticated = false) {}
+  constructor(private authenticated = false, private recoverTransport = true) {}
   hasCredentials(): boolean { return this.authenticated; }
   async bootstrap(): Promise<GameUISnapshot> { this.authenticated = true; return snapshot; }
   async snapshot(): Promise<ParsedGameUISnapshot> { this.snapshotCalls += 1; if (this.failSnapshot) throw new Error("offline"); return this.current; }
   async intent(body: Readonly<Record<string, unknown>>): Promise<void> { this.requests.push(body); await this.intentBlock; }
-  subscribe(_founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void { this.listener = listener; return () => { this.listener = undefined; }; }
+  subscribe(_founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void {
+    this.listener = listener;
+    if (this.recoverTransport) queueMicrotask(() => { if (this.listener === listener) listener({ kind: "transport_recovered" }); });
+    return () => { this.listener = undefined; };
+  }
 }
 
 interface AppExports {
@@ -156,6 +160,22 @@ it.skipIf(typeof document === "undefined")("serializes a distinct transition cli
   await unmount(app); target.remove();
 });
 
+it.skipIf(typeof document === "undefined")("keeps terminal commands disabled until the ordered event channel is recovered", async () => {
+  const runtime = new FixtureRuntime(true, false);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  app.fixtureSnapshot({ ...snapshot, run: { ...snapshot.run, tier: 1 }, transitions: { cross_gate: null, wind_down: { eligible: true } } });
+  flushSync();
+  const windDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
+  expect(windDown.disabled).toBe(true);
+  runtime.listener?.({ kind: "transport_recovered" }); flushSync();
+  expect(windDown.disabled).toBe(false);
+  runtime.listener?.({ kind: "transport_closed" }); flushSync();
+  expect(windDown.disabled).toBe(true);
+  await unmount(app); target.remove();
+});
+
 it.skipIf(typeof document === "undefined")("continues from either terminal state only to the exact next Company snapshot", async () => {
   const runtime = new FixtureRuntime(true);
   const target = document.createElement("div"); document.body.append(target);
@@ -242,7 +262,13 @@ it.skipIf(typeof document === "undefined")("records immutable gate timing locall
   expect(runtime.snapshotCalls).toBe(1);
   expect(target.textContent).toContain("Garage");
   expect([...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")?.disabled).toBe(false);
+  runtime.snapshotCalls = 0;
   runtime.listener?.({ kind: "event", revision: 3, scope: "company", value: ended }); flushSync();
+  runtime.current = { ...snapshot, revision: 4, run: { ...snapshot.run, run_seq: 2 } };
+  runtime.listener?.({ kind: "receipt" });
+  runtime.listener?.({ kind: "event", revision: 4, scope: "company", value: { ...offer, cursor: 4 } });
+  await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.snapshotCalls).toBe(0);
   expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
   expect([...values.values()][0]).toContain('"rta_ms":750');
   await unmount(app); target.remove();

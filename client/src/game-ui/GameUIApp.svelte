@@ -33,6 +33,7 @@
   let offline = $state(false);
   let draining = $state(false);
   let resyncing = $state(false);
+  let transportReady = $state(false);
   let visitorCount = $state<number | undefined>();
   let founderRevision = $state<number | undefined>();
   let personalBestMS = $state<number | undefined>();
@@ -52,7 +53,6 @@
   let tick: ReturnType<typeof setInterval> | undefined;
   let refreshTask: Promise<void> | undefined;
   let actionTask: Promise<void> | undefined;
-  let activeActionToken: object | undefined;
   let activeActionKind: string | undefined;
 
   const era = $derived<CopyEra>(snapshot ? eraForSnapshot(snapshot) : "era_1995");
@@ -99,6 +99,7 @@
     if (subscribedFounderID !== value.run.founder_id) {
       unsubscribe();
       subscribedFounderID = value.run.founder_id;
+      transportReady = false;
       unsubscribe = runtime.subscribe(value.run.founder_id, consumePublication);
     }
     offline = false;
@@ -135,16 +136,13 @@
     if (!snapshot || actionTask) return;
     actionPending = true;
     activeActionKind = kind;
-    const token = {};
-    activeActionToken = token;
     const task = (async () => {
       try {
         await runtime.intent({ intent_id: newIntentID(), expected_revision: snapshot!.revision, ...body });
         if (kind === "cross_gate") bindSnapshot(await runtime.snapshot());
       } catch { offline = true; }
       finally {
-        if (activeActionToken === token) actionTask = undefined;
-        activeActionToken = undefined;
+        actionTask = undefined;
         activeActionKind = undefined;
         actionPending = false;
       }
@@ -174,13 +172,18 @@
   }
 
   function consumePublication(message: GameUIRuntimeMessage): void {
-    if (message.kind === "transport_closed") { offline = true; subscribedFounderID = undefined; unsubscribe(); return; }
-    if (message.kind === "transport_recovered") { offline = false; draining = false; resyncing = false; return; }
+    if (message.kind === "transport_closed") { offline = true; transportReady = false; subscribedFounderID = undefined; unsubscribe(); return; }
+    if (message.kind === "transport_recovered") { offline = false; transportReady = true; draining = false; resyncing = false; return; }
     if (message.kind === "snapshot") { bindSnapshot(message.value); draining = false; resyncing = false; return; }
     if (message.kind === "historical_event") return;
-    if (message.kind === "receipt") { void refresh(); return; }
+    // A terminal command persists run_ended and run_started in one ordered
+    // transaction. Refreshing its trailing receipt would bind the already
+    // created next run and let its lifecycle preempt the run-end screen before
+    // the player explicitly continues.
+    if (message.kind === "receipt") { if (!ended) void refresh(); return; }
     if (message.kind === "presence") { visitorCount = message.count; return; }
     if (message.kind === "system") {
+      transportReady = false;
       if (message.value.kind === "server_restarting") draining = true;
       else resyncing = true;
       return;
@@ -194,7 +197,7 @@
       // Gate eligibility changes immediately. Refresh from the ordered event so
       // the next control does not depend on a separate receipt publication.
       void refresh();
-    } else if (value.kind === "exit_offer_spawned") {
+    } else if (value.kind === "exit_offer_spawned" && !ended) {
       offer = value; navigation.lifecycle({ cursor: value.cursor, surface: "offer_sheet" }); surface = navigation.active;
     } else if (value.kind === "run_ended") {
       ended = value;
@@ -256,7 +259,7 @@
   export function fixtureMonotonicElapsed(value: number): void { monotonicMS = snapshotMonotonicMS + value; }
 </script>
 
-<main bind:this={root} class="game-ui" data-surface={surface}>
+<main bind:this={root} class="game-ui" data-surface={surface} aria-busy={pending}>
   {#if snapshot}
     <header class="chrome cc-window">
       <div class="cc-titlebar">
@@ -352,7 +355,7 @@
           {#if transitions.cross_gate}
             <button type="button" disabled={pending || !transitions.cross_gate.eligible} onclick={() => act({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null })}>{t("desk.cross_gate", {}, era)}</button>
           {/if}
-          <button type="button" disabled={pending || !transitions.wind_down.eligible || founderRevision === undefined} onclick={() => act({ kind: "wind_down", expected_founder_revision: founderRevision })}>{t("desk.wind_down", {}, era)}</button>
+          <button type="button" disabled={pending || !transportReady || !transitions.wind_down.eligible || founderRevision === undefined} onclick={() => act({ kind: "wind_down", expected_founder_revision: founderRevision })}>{t("desk.wind_down", {}, era)}</button>
         </section>
       {/if}
       {#if era === "era_1995"}
@@ -377,7 +380,7 @@
       <p>{exitTitle(offer.payload.exit_type)}</p>
       {#each renderPrestigeTermRows(offer.payload.payout_preview, era) as row}<p>{row}</p>{/each}
       <p title={t("screen.offer_sheet.countdown_tooltip", {}, era)}>{t("screen.offer_sheet.countdown_frame", { remaining: duration(offer.payload.expires_at_ms - estimatedServerNowMS()) }, era)}</p>
-      <button type="button" disabled={pending || founderRevision === undefined} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
+      <button type="button" disabled={pending || !transportReady || founderRevision === undefined} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
       <button type="button" disabled={pending} onclick={() => act({ kind: "decline_exit_offer", offer_id: offer!.payload.offer_id })}>{t("screen.offer_sheet.decline", {}, era)}</button>
     </section>
   {:else if surface === "run_end" && ended}

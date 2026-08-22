@@ -110,23 +110,84 @@ function seedGateRequirement(founderID) {
 }
 
 async function waitForEnabledButton(page, name) {
-  await page.waitForFunction((label) => [...document.querySelectorAll("button")]
-    .some((button) => button.textContent?.trim() === label && !button.disabled), name, { timeout: 30_000 });
-  return page.getByRole("button", { name, exact: true });
+  await page.waitForFunction(async (label) => {
+    const button = [...document.querySelectorAll("button")]
+      .find((candidate) => candidate.textContent?.trim() === label && !candidate.disabled);
+    if (!button) return false;
+    await new Promise(requestAnimationFrame);
+    await new Promise(requestAnimationFrame);
+    const style = getComputedStyle(button);
+    const bounds = button.getBoundingClientRect();
+    return button.isConnected && !button.disabled && button.textContent?.trim() === label &&
+      style.display !== "none" && style.visibility !== "hidden" && bounds.width > 0 && bounds.height > 0;
+  }, name, { timeout: 30_000 });
+  return name;
 }
 
-async function clickAppliedIntent(page, button, label) {
+async function clickAppliedIntent(page, buttonLabel, label) {
+  return clickAppliedIntentChoice(page, [buttonLabel], label);
+}
+
+async function clickAppliedIntentChoice(page, buttonLabels, label) {
   const requestPromise = page.waitForRequest((request) =>
     new URL(request.url()).pathname === "/api/v1/intents", { timeout: 30_000 });
-  await button.click();
-  const request = await requestPromise;
+  let request;
+  let clickedLabel;
+  try {
+    [request, clickedLabel] = await Promise.all([requestPromise, page.evaluate(async (expectedLabels) => {
+      const deadline = performance.now() + 30_000;
+      while (performance.now() < deadline) {
+        const main = document.querySelector("main");
+        if (main?.getAttribute("aria-busy") === "false") {
+          for (const expectedLabel of expectedLabels) {
+            const element = [...document.querySelectorAll("button")]
+              .find((candidate) => candidate.textContent?.trim() === expectedLabel);
+            if (!element || element.disabled) continue;
+            const style = getComputedStyle(element);
+            const bounds = element.getBoundingClientRect();
+            if (style.display !== "none" && style.visibility !== "hidden" && bounds.width > 0 && bounds.height > 0) {
+              element.click();
+              return expectedLabel;
+            }
+          }
+        }
+        await new Promise(requestAnimationFrame);
+      }
+      throw new Error(`${expectedLabels.join(" or ")} did not become atomically actionable`);
+    }, buttonLabels)]);
+  } catch (error) {
+    const state = await page.evaluate(() => ({
+      surface: document.querySelector("main")?.getAttribute("data-surface"),
+      ariaBusy: document.querySelector("main")?.getAttribute("aria-busy"),
+      buttons: [...document.querySelectorAll("button")].map((candidate) => ({ disabled: candidate.disabled, text: candidate.textContent?.trim() })),
+      alerts: [...document.querySelectorAll('[role="alert"]')].map((candidate) => candidate.textContent?.trim()),
+    }));
+    throw new Error(`${label} emitted no intent request; rendered state=${JSON.stringify(state)}`, { cause: error });
+  }
   const response = await request.response();
   if (!response) throw new Error(`${label} visible intent request completed without a response`);
   const body = await response.json();
   if (response.status() !== 200 || body?.outcome !== "applied") {
     throw new Error(`${label} visible intent was not applied (${response.status()}): ${JSON.stringify(body)}`);
   }
-  return body;
+  await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+  return { body, clickedLabel, intent: request.postDataJSON() };
+}
+
+function receiptCoordinate(result) {
+  return {
+    clicked_label: result.clickedLabel,
+    intent_kind: result.intent?.kind,
+    intent_id: result.body?.intent_id,
+    outcome: result.body?.outcome,
+    new_revision: result.body?.new_revision,
+    founder_revision: result.body?.founder_revision,
+  };
+}
+
+function receivedLifecycleKinds(frames) {
+  const kinds = ["exit_offer_spawned", "exit_offer_resolved", "run_ended", "run_started", "receipt"];
+  return frames.flatMap((frame) => kinds.filter((kind) => frame.includes(`\\"kind\\":\\"${kind}\\"`) || frame.includes(`"kind":"${kind}"`)));
 }
 
 try {
@@ -159,8 +220,12 @@ try {
   });
   const pageErrors = [];
   const websocketFrames = [];
+  const websocketReceivedFrames = [];
   page.on("pageerror", (error) => pageErrors.push(error));
-  page.on("websocket", (socket) => socket.on("framesent", (event) => websocketFrames.push(String(event.payload))));
+  page.on("websocket", (socket) => {
+    socket.on("framesent", (event) => websocketFrames.push(String(event.payload)));
+    socket.on("framereceived", (event) => websocketReceivedFrames.push(String(event.payload)));
+  });
   await page.goto(uiURL, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "BEGIN ATTEMPT" }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -246,8 +311,14 @@ try {
   const crossGate = await waitForEnabledButton(page, "Move Into the Garage");
   await clickAppliedIntent(page, crossGate, "first cross-gate");
   const firstWindDown = await waitForEnabledButton(page, "Wind Down Company");
-  await clickAppliedIntent(page, firstWindDown, "first wind-down");
-  await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  const firstExit = await clickAppliedIntent(page, firstWindDown, "first wind-down");
+  try {
+    await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  } catch (error) {
+    const finalSurface = await page.locator("main").getAttribute("data-surface");
+    const playerFrames = websocketReceivedFrames.filter((frame) => frame.includes(`player:${liveSnapshot.body.run.founder_id}`));
+    throw new Error(`first terminal did not render; command=${JSON.stringify(receiptCoordinate(firstExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))}`, { cause: error });
+  }
   await page.getByText("Your First Company Failed", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -256,9 +327,24 @@ try {
   await page.reload({ waitUntil: "networkidle" });
   const secondCrossGate = await waitForEnabledButton(page, "Move Into the Garage");
   await clickAppliedIntent(page, secondCrossGate, "second cross-gate");
-  const secondWindDown = await waitForEnabledButton(page, "Wind Down Company");
-  await clickAppliedIntent(page, secondWindDown, "second wind-down");
-  await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  const secondExit = await clickAppliedIntentChoice(page, ["Wind Down Company", "Decline"], "second wind-down or offer preemption");
+  if (secondExit.clickedLabel === "Decline") {
+    await page.evaluate(() => {
+      const desk = [...document.querySelectorAll("button")].find((button) => button.textContent?.trim() === "The Desk");
+      if (!desk || desk.disabled) throw new Error("Desk navigation unavailable after declining preempting offer");
+      desk.click();
+    });
+    await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+    const secondWindDown = await waitForEnabledButton(page, "Wind Down Company");
+    await clickAppliedIntent(page, secondWindDown, "second wind-down after declining offer");
+  }
+  try {
+    await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  } catch (error) {
+    const finalSurface = await page.locator("main").getAttribute("data-surface");
+    const playerFrames = websocketReceivedFrames.filter((frame) => frame.includes(`player:${liveSnapshot.body.run.founder_id}`));
+    throw new Error(`second terminal did not render; command=${JSON.stringify(receiptCoordinate(secondExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))}`, { cause: error });
+  }
   await page.getByText("The Company Has Exited", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });

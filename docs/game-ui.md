@@ -46,7 +46,12 @@ action and refresh state are tracked independently, and a click that races that 
 its revision instead of disappearing. When Gate is committed before the WebSocket subscription is
 ready, the HTTP command path also fetches the authoritative snapshot; the same-revision
 `gate_crossed` event can still record its split when it arrives. Terminal actions still
-rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`.
+rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`: Wind Down and
+offer acceptance remain disabled until the player subscription reports `transport_recovered`, and
+disable again on close, drain, or resync. Once `run_ended` arrives, the trailing command receipt
+does not refresh into the server-created next run; that snapshot is bound only when the player
+chooses **Start the Next Company**. A concurrently generated offer delivered after `run_ended`
+also cannot replace the terminal screen.
 
 ## Boundaries and verification
 
