@@ -2322,3 +2322,18 @@
 - Product/legal account/history/moderation retention remains open under D-009/D-015. Deployment
   body reconciliation is delegated to Codex and queue row 3l is READY; implementation is not yet
   authorized because the reconciled RFC remains draft pending owner acceptance.
+
+## 2026-08-22 — Deployment Foundation owner-delegated body rewrite
+
+- Replaced the obsolete local-only/“THE PUSH” draft with the ruled Phase-0 contract: a
+  repository-independent Linux/amd64 release bundle, Caddy-only ingress, one HTTPS origin/one proxy
+  hop, fail-closed config/secrets, current+previous rotation, stop-drain-start release, restore-only
+  rollback, encrypted off-host backups, private metrics/logs and seven fired alert families.
+- Preserved D-014's fast push/PR versus slow scheduled/manual evidence split and expressly excluded
+  CD, public hosting, multi-node, player rights/retention, telemetry, UGC and any current sunset or
+  supported-self-host claim.
+- Added ten acceptance gates with named negative populations, R-006/R-007 boundaries and the
+  existing public-origin/hosted-CI fact isolated as AC9 rather than product proof.
+- Updated the active index and RP-012/RP-078 records. The RFC remains draft; no planning directory,
+  product/deployment/config/workflow byte, acceptance checkbox, push or external publication was
+  created. Exact rewrite range is READY FOR CLAUDE DESIGNATED REVIEW, then owner acceptance.

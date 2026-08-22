@@ -23,7 +23,7 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-009 | Accessibility proof covers axe/reduced-motion/focus primitives, not complete keyboard/screen-reader/zoom/touch workflows. | 💡 release proof gap -> R-005 |
 | RP-010 | Only T0–T1 of nine tiers and one real minigame exist; the designed ending and most MMO/narrative surfaces are absent. | ⚠ milestone scope question -> D-001/D-007 |
 | RP-011 | Client third-party license delivery remains absent. | 💡 packaging defect -> Deployment |
-| RP-012 | Sunset/self-host/export promises are research intent only. | ⚠ owner decision -> D-003/R-006 |
+| RP-012 | Sunset/self-host/export promises are research intent only. | ✓ D-003 ruled: MIT source now, supported bundle only after Deployment/R-006, covenant deferred |
 | RP-013 | Repository disposition was contradictory: research matrix said private while GitHub and CI governance said public. | ✓ D-002 ruled; policy bodies reconciled and first reviewed public artifacts tracked at `a7320fa` |
 | RP-014 | Current-state, README, Deployment RFC, RFC handoff, coverage map, and multiple plans disagree with HEAD. | 🔬 record defect -> platform-alignment reconciliation |
 | RP-015 | Mandated shared research/backlog artifacts were gitignored and absent from a fresh clone. | ✓ D-002 complete; exact public/private authority manifest, negative controls and fresh-clone proof recorded at `publication-disposition-execution-08.md` |
@@ -89,7 +89,7 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-075 | Production cannot consume the declared deployment origin/proxy policy: WebSocket origin is pinned to localhost and Account trusted-proxy depth is hardcoded to zero. | ⚠ deployment configuration defect -> D-006 / Deployment |
 | RP-076 | Gameserver cannot configure previous JWT/bootstrap or cursor keys despite underlying rotation primitives and DP5. | ⚠ deployment/security integration defect -> D-006 / Deployment |
 | RP-077 | The built gameserver depends on repository files, embeds no catalogs/client, and serves no static client despite DP1's single-artifact claim. | ⚠ packaging/normative contradiction -> Deployment |
-| RP-078 | The public push already happened, but the Deployment draft/index still present it as the pending center of the RFC. | ⚠ lifecycle/normative contradiction -> Deployment author |
+| RP-078 | The public push already happened, but the Deployment draft/index still presented it as the pending center of the RFC. | ✓ owner-delegated Deployment rewrite removes the obsolete premise; designated review pending |
 | RP-079 | Missing/malformed browser credentials silently create a replacement account or strand the Desk offline; there is no recover-existing-account branch. | ⚠ account recovery/failure-state defect -> D-005/R-003 |
 | RP-080 | Settings claims offline progress is parked locally despite no local save/intent queue/import owner/reconnect flush. | ⚠ player-copy/implementation contradiction |
 | RP-081 | The destructive-settings navigation guard is test-only; Settings has no destructive account control or confirmation consumer. | ⚠ orphaned safety primitive/integration defect |

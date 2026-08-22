@@ -28,7 +28,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | accepted — MA-C1–C15 ruled; implementing | API Foundation / Minigame Platform (accepted, implementing) / Soul / UI Foundation |
 | [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | promoted in reviewed epoch 6; archival pending | Economy Kernel / Route Registry / First Content Epoch |
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
-| [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
+| [Deployment Foundation](deployment-foundation.md) | draft — owner-ruling body reconciled; acceptance pending | Gameserver / Client / Account / API / CI / operations |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,
