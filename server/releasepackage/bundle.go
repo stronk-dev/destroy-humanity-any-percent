@@ -22,6 +22,7 @@ type BundleInput struct {
 	DockerEngineVersion    string
 	DockerComposeVersion   string
 	Images                 map[string]string
+	ImageConfigIDs         map[string]string
 	ImageSBOMs             map[string]string
 }
 
@@ -29,7 +30,7 @@ type BundleInput struct {
 // destination must not already contain bytes: a failed build can therefore
 // never be mistaken for a previously successful release.
 func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
-	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != 3 || len(input.ImageSBOMs) != 3 {
+	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != 3 || len(input.ImageConfigIDs) != 3 || len(input.ImageSBOMs) != 3 {
 		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := requireEmptyDestination(input.Output); err != nil {
@@ -95,8 +96,8 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 
 	images := make([]Image, 0, 3)
 	for _, name := range []string{"caddy", "gameserver", "postgres"} {
-		reference, source := input.Images[name], input.ImageSBOMs[name]
-		if !imageReferencePattern.MatchString(reference) || source == "" {
+		reference, configID, source := input.Images[name], input.ImageConfigIDs[name], input.ImageSBOMs[name]
+		if !imageReferencePattern.MatchString(reference) || !hashPattern.MatchString(configID) || source == "" {
 			return ReleaseManifest{}, fmt.Errorf("%w: image %s", ErrInvalidContent, name)
 		}
 		destination := filepath.Join("sbom", name+".spdx.json")
@@ -107,7 +108,10 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		if err != nil || len(data) == 0 {
 			return ReleaseManifest{}, ErrInvalidContent
 		}
-		images = append(images, Image{Name: name, Reference: reference, SBOMPath: filepath.ToSlash(destination), SBOMSHA256: digest(data)})
+		if ValidateImageSPDX(data, configID) != nil {
+			return ReleaseManifest{}, ErrInvalidContent
+		}
+		images = append(images, Image{Name: name, Reference: reference, RuntimeConfigSHA256: configID, SBOMPath: filepath.ToSlash(destination), SBOMSHA256: digest(data)})
 	}
 	migration, err := CurrentMigration(input.RepositoryRoot)
 	if err != nil {

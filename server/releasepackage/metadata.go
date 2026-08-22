@@ -166,15 +166,31 @@ func BuildSPDX(name, version, commit string, created time.Time, dependencies []D
 }
 
 func ValidateSPDX(data []byte) error {
+	header, err := decodeSPDXHeader(data)
+	if err != nil || header.Name == "" {
+		return ErrInvalidContent
+	}
+	return nil
+}
+
+func ValidateImageSPDX(data []byte, runtimeConfigSHA256 string) error {
+	header, err := decodeSPDXHeader(data)
+	if err != nil || !hashPattern.MatchString(runtimeConfigSHA256) || header.Name != strings.ReplaceAll(runtimeConfigSHA256, ":", "-") {
+		return ErrInvalidContent
+	}
+	return nil
+}
+
+func decodeSPDXHeader(data []byte) (spdxHeader, error) {
 	var header spdxHeader
 	decoder := json.NewDecoder(strings.NewReader(string(data)))
 	if decoder.Decode(&header) != nil || decoder.Decode(&struct{}{}) != io.EOF ||
 		(header.SPDXVersion != "SPDX-2.2" && header.SPDXVersion != "SPDX-2.3") ||
 		header.DataLicense != "CC0-1.0" || header.SPDXID != "SPDXRef-DOCUMENT" ||
 		header.Name == "" || header.DocumentNamespace == "" || header.CreationInfo.Created == "" || len(header.CreationInfo.Creators) == 0 {
-		return ErrInvalidContent
+		return spdxHeader{}, ErrInvalidContent
 	}
-	return nil
+	return header, nil
 }
 
 func SortDependencies(dependencies []Dependency) ([]Dependency, error) {

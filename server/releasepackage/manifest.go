@@ -25,10 +25,11 @@ var (
 )
 
 type Image struct {
-	Name       string `json:"name"`
-	Reference  string `json:"reference"`
-	SBOMPath   string `json:"sbom_path"`
-	SBOMSHA256 string `json:"sbom_sha256"`
+	Name                string `json:"name"`
+	Reference           string `json:"reference"`
+	RuntimeConfigSHA256 string `json:"runtime_config_sha256"`
+	SBOMPath            string `json:"sbom_path"`
+	SBOMSHA256          string `json:"sbom_sha256"`
 }
 
 type ReleaseManifest struct {
@@ -87,12 +88,15 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 	}
 	wantImages := []string{"caddy", "gameserver", "postgres"}
 	for index, image := range manifest.Images {
-		if image.Name != wantImages[index] || !imageReferencePattern.MatchString(image.Reference) || !validRelativePath(image.SBOMPath) || !hashPattern.MatchString(image.SBOMSHA256) {
+		if image.Name != wantImages[index] || !imageReferencePattern.MatchString(image.Reference) || !hashPattern.MatchString(image.RuntimeConfigSHA256) || !validRelativePath(image.SBOMPath) || !hashPattern.MatchString(image.SBOMSHA256) {
 			return fmt.Errorf("%w: image %d", ErrInvalidContent, index)
 		}
 	}
 	if strings.HasPrefix(manifest.Images[0].Reference, "sha256:") || !strings.HasPrefix(manifest.Images[1].Reference, "sha256:") || strings.HasPrefix(manifest.Images[2].Reference, "sha256:") {
 		return fmt.Errorf("%w: image reference forms", ErrInvalidContent)
+	}
+	if manifest.Images[1].Reference != manifest.Images[1].RuntimeConfigSHA256 {
+		return fmt.Errorf("%w: gameserver config identity", ErrInvalidContent)
 	}
 	prior := ""
 	for _, artifact := range manifest.Artifacts {
@@ -134,9 +138,13 @@ func ValidateBundle(root string) error {
 			return fmt.Errorf("%w: artifact mismatch %q", ErrInvalidContent, actual[index].Path)
 		}
 	}
-	for _, path := range []string{"sbom/application.spdx.json", "sbom/caddy.spdx.json", "sbom/gameserver.spdx.json", "sbom/postgres.spdx.json"} {
+	if data, err := os.ReadFile(filepath.Join(root, "sbom", "application.spdx.json")); err != nil || ValidateSPDX(data) != nil {
+		return fmt.Errorf("%w: invalid application SPDX document", ErrInvalidContent)
+	}
+	for _, image := range manifest.Images {
+		path := image.SBOMPath
 		data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(path)))
-		if err != nil || ValidateSPDX(data) != nil {
+		if err != nil || ValidateImageSPDX(data, image.RuntimeConfigSHA256) != nil {
 			return fmt.Errorf("%w: invalid SPDX document %q", ErrInvalidContent, path)
 		}
 	}

@@ -92,19 +92,22 @@ func bundleInputs(t *testing.T, repositoryRoot string) BundleInput {
 			t.Fatal(err)
 		}
 	}
-	images, sboms := map[string]string{}, map[string]string{}
+	images, configIDs, sboms := map[string]string{}, map[string]string{}, map[string]string{}
 	for index, name := range []string{"caddy", "gameserver", "postgres"} {
 		images[name] = name + ":fixture@sha256:" + strings.Repeat(string(rune('a'+index)), 64)
+		configIDs[name] = "sha256:" + strings.Repeat(string(rune('1'+index)), 64)
+	}
+	archive, imageID := fixtureDockerArchive(t, base, "amd64")
+	images["gameserver"], configIDs["gameserver"] = imageID, imageID
+	for _, name := range []string{"caddy", "gameserver", "postgres"} {
 		sboms[name] = filepath.Join(base, name+".spdx.json")
-		if err := os.WriteFile(sboms[name], []byte(fixtureSPDX(name)), 0o644); err != nil {
+		if err := os.WriteFile(sboms[name], []byte(fixtureSPDX(strings.ReplaceAll(configIDs[name], ":", "-"))), 0o644); err != nil {
 			t.Fatal(err)
 		}
 	}
-	archive, imageID := fixtureDockerArchive(t, base, "amd64")
-	images["gameserver"] = imageID
 	return BundleInput{RepositoryRoot: repositoryRoot, Output: filepath.Join(base, "bundle"), ServerBinary: serverBinary,
 		ClientDist: client, MetadataDirectory: metadata, GameserverImageArchive: archive, ReleaseVersion: "0.1.0-preview.1", SourceCommit: strings.Repeat("d", 40),
-		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", Images: images, ImageSBOMs: sboms}
+		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", Images: images, ImageConfigIDs: configIDs, ImageSBOMs: sboms}
 }
 
 func fixtureSPDX(name string) string {

@@ -162,7 +162,8 @@ assemble-release-bundle:
 		-a -n "$(RELEASE_VERSION)" -a -n "$(RELEASE_COMMIT)" -a -n "$(RELEASE_DOCKER_VERSION)" \
 		-a -n "$(RELEASE_COMPOSE_VERSION)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" \
 		-a -n "$(POSTGRES_IMAGE)" -a -n "$(CADDY_SBOM)" -a -n "$(GAMESERVER_SBOM)" \
-		-a -n "$(POSTGRES_SBOM)" || (echo "release bundle inputs are required" >&2; exit 1)
+		-a -n "$(POSTGRES_SBOM)" -a -n "$(CADDY_CONFIG_ID)" -a -n "$(GAMESERVER_CONFIG_ID)" \
+		-a -n "$(POSTGRES_CONFIG_ID)" || (echo "release bundle inputs are required" >&2; exit 1)
 	cd server && go run ./cmd/assemble-release-bundle -root=.. \
 		-output="$(if $(filter /%,$(RELEASE_BUNDLE_OUTPUT)),$(RELEASE_BUNDLE_OUTPUT),../$(RELEASE_BUNDLE_OUTPUT))" \
 		-server-binary="$(if $(filter /%,$(RELEASE_SERVER_OUTPUT)),$(RELEASE_SERVER_OUTPUT),../$(RELEASE_SERVER_OUTPUT))" \
@@ -172,6 +173,7 @@ assemble-release-bundle:
 		-version="$(RELEASE_VERSION)" -commit="$(RELEASE_COMMIT)" \
 		-docker-version="$(RELEASE_DOCKER_VERSION)" -compose-version="$(RELEASE_COMPOSE_VERSION)" \
 		-caddy-image="$(CADDY_IMAGE)" -gameserver-image="$(GAMESERVER_IMAGE)" -postgres-image="$(POSTGRES_IMAGE)" \
+		-caddy-config-id="$(CADDY_CONFIG_ID)" -gameserver-config-id="$(GAMESERVER_CONFIG_ID)" -postgres-config-id="$(POSTGRES_CONFIG_ID)" \
 		-caddy-sbom="$(CADDY_SBOM)" -gameserver-sbom="$(GAMESERVER_SBOM)" -postgres-sbom="$(POSTGRES_SBOM)"
 
 release-secret-scan:

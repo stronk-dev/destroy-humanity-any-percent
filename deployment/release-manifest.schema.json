@@ -26,10 +26,11 @@
     "image": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "reference", "sbom_path", "sbom_sha256"],
+      "required": ["name", "reference", "runtime_config_sha256", "sbom_path", "sbom_sha256"],
       "properties": {
         "name": { "enum": ["caddy", "gameserver", "postgres"] },
-        "reference": { "type": "string", "pattern": "@sha256:[0-9a-f]{64}$" },
+        "reference": { "type": "string", "pattern": "^(?:[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9._-]+)?@)?sha256:[0-9a-f]{64}$" },
+        "runtime_config_sha256": { "$ref": "#/$defs/hash" },
         "sbom_path": { "type": "string", "minLength": 1 },
         "sbom_sha256": { "$ref": "#/$defs/hash" }
       }

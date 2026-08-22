@@ -84,13 +84,17 @@ directory is never silently overlaid.
 
 This is the application SBOM only. The assembler requires separate SPDX inputs for Caddy, the
 gameserver image and Postgres and binds each SBOM hash beside that image's immutable digest.
+For upstream multi-platform references it also records the selected linux/amd64 OCI config digest;
+the SPDX document name must identify that exact runtime config, preventing a native-host SBOM from
+being attached to the supported amd64 release.
 
 ## Release bundle assembly
 
 `make assemble-release-bundle` accepts only an empty output directory and requires all of the
 following explicit inputs: the Linux/amd64 gameserver binary and its `docker save` archive, built
 client, generated application metadata, release version/full source commit, tested Docker
-Engine/Compose versions, three digest-pinned image references and their three image SBOMs. It
+Engine/Compose versions, three digest-pinned image references, their linux/amd64 config digests and
+their three image SBOMs. It
 rejects a non-ELF or non-amd64
 binary, client symlinks, an absent SPA entry point, empty/missing inputs, mutable image references
 and a pre-existing output tree.

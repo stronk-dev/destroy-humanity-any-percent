@@ -60,8 +60,8 @@ func releaseBundleFixture(t *testing.T) string {
 	files := map[string]string{
 		".env.example": "PUBLIC=example\n", "Caddyfile": "fixture\n", "Dockerfile.gameserver": "fixture\n", "LICENSE": "fixture\n",
 		"compose.yml": "fixture\n", "compose.rotation.yml": "fixture\n", "config.schema.json": "{}\n", "release-manifest.schema.json": "{}\n",
-		"sbom/application.spdx.json": fixtureSPDX("application"), "sbom/caddy.spdx.json": fixtureSPDX("caddy"), "sbom/gameserver.spdx.json": fixtureSPDX("gameserver"), "sbom/postgres.spdx.json": fixtureSPDX("postgres"),
-		"third-party-licenses.txt": "fixture\n", "site/index.html": "<html></html>\n", "site/third-party-licenses.txt": "fixture\n",
+		"sbom/application.spdx.json": fixtureSPDX("application"),
+		"third-party-licenses.txt":   "fixture\n", "site/index.html": "<html></html>\n", "site/third-party-licenses.txt": "fixture\n",
 		"gameserver": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
 	}
 	for path, value := range files {
@@ -82,7 +82,7 @@ func releaseBundleFixture(t *testing.T) string {
 			t.Fatal(err)
 		}
 	}
-	archive, _ := fixtureDockerArchive(t, t.TempDir(), "amd64")
+	archive, gameserverID := fixtureDockerArchive(t, t.TempDir(), "amd64")
 	if err := os.MkdirAll(filepath.Join(root, "images"), 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -92,6 +92,16 @@ func releaseBundleFixture(t *testing.T) string {
 	}
 	if err := os.WriteFile(filepath.Join(root, "images", "gameserver.docker.tar"), data, 0o644); err != nil {
 		t.Fatal(err)
+	}
+	configIDs := map[string]string{"caddy": "sha256:" + strings.Repeat("1", 64), "gameserver": gameserverID, "postgres": "sha256:" + strings.Repeat("3", 64)}
+	for _, name := range []string{"caddy", "gameserver", "postgres"} {
+		path := filepath.Join(root, "sbom", name+".spdx.json")
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, []byte(fixtureSPDX(strings.ReplaceAll(configIDs[name], ":", "-"))), 0o644); err != nil {
+			t.Fatal(err)
+		}
 	}
 	return root
 }
@@ -105,7 +115,7 @@ func fixtureManifestImages(t *testing.T, root string) []Image {
 		if err != nil {
 			t.Fatal(err)
 		}
-		result = append(result, Image{Name: name, Reference: name + ":fixture@sha256:" + strings.Repeat(string(rune('a'+index)), 64), SBOMPath: path, SBOMSHA256: digest(data)})
+		result = append(result, Image{Name: name, Reference: name + ":fixture@sha256:" + strings.Repeat(string(rune('a'+index)), 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat(string(rune('1'+index)), 64), SBOMPath: path, SBOMSHA256: digest(data)})
 	}
 	archive, err := os.Open(filepath.Join(root, "images", "gameserver.docker.tar"))
 	if err != nil {
@@ -119,6 +129,7 @@ func fixtureManifestImages(t *testing.T, root string) []Image {
 		}
 		if strings.HasSuffix(header.Name, ".json") && header.Name != "manifest.json" {
 			result[1].Reference = "sha256:" + strings.TrimSuffix(header.Name, ".json")
+			result[1].RuntimeConfigSHA256 = result[1].Reference
 			break
 		}
 	}

@@ -21,20 +21,23 @@ func main() {
 	dockerVersion := flag.String("docker-version", "", "tested Docker Engine version")
 	composeVersion := flag.String("compose-version", "", "tested Docker Compose version")
 	imageValues := map[string]*string{}
+	configValues := map[string]*string{}
 	sbomValues := map[string]*string{}
 	for _, name := range []string{"caddy", "gameserver", "postgres"} {
 		imageValues[name] = flag.String(name+"-image", "", "immutable "+name+" image reference")
+		configValues[name] = flag.String(name+"-config-id", "", "linux/amd64 "+name+" runtime config digest")
 		sbomValues[name] = flag.String(name+"-sbom", "", name+" image SPDX SBOM")
 	}
 	flag.Parse()
-	images, sboms := map[string]string{}, map[string]string{}
+	images, configIDs, sboms := map[string]string{}, map[string]string{}, map[string]string{}
 	for _, name := range []string{"caddy", "gameserver", "postgres"} {
 		images[name], sboms[name] = strings.TrimSpace(*imageValues[name]), *sbomValues[name]
+		configIDs[name] = strings.TrimSpace(*configValues[name])
 	}
 	manifest, err := releasepackage.AssembleBundle(releasepackage.BundleInput{RepositoryRoot: *root, Output: *output,
 		ServerBinary: *serverBinary, GameserverImageArchive: *gameserverArchive, ClientDist: *clientDist, MetadataDirectory: *metadata,
 		ReleaseVersion: *version, SourceCommit: *commit, DockerEngineVersion: *dockerVersion,
-		DockerComposeVersion: *composeVersion, Images: images, ImageSBOMs: sboms})
+		DockerComposeVersion: *composeVersion, Images: images, ImageConfigIDs: configIDs, ImageSBOMs: sboms})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
