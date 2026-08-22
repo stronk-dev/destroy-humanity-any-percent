@@ -974,3 +974,38 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
   false-version-signal rewrite carve-out, the fixup was autosquashed before review: original
   `f2a197b` became `fa5fc42`, and record commit `ff04863` became this rewritten record. All live
   planning references were reconciled to the new implementation hash.
+
+## 2026-08-22 — aggregate-driven transition and terminal hardening
+
+- Running the complete aggregate instead of treating the first composed pass as completion exposed
+  six independent defects. `5eefc86` separated action and refresh ownership, serialized distinct
+  transition actions, refreshed Gate eligibility from its ordered event, and made the composed lane
+  build and own the exact gameserver process. A stale listener on port 18081 can no longer turn a
+  failed server spawn into a false PASS: the lane now fails its exclusive-port preflight and tears
+  down the exact binary PID.
+- `7756089` correlated recovery to the exact committed revision and added the authoritative HTTP
+  snapshot fallback for a Gate command that wins the race against WebSocket subscription. The
+  fallback is Gate-only because eager terminal snapshots can advance past the byte-only
+  `run_ended` event.
+- `238a9eb` closes the remaining terminal races. Wind Down and offer acceptance remain disabled
+  until the ordered player channel reports recovery; pending UI transactions are exposed through
+  `aria-busy`; and the composed driver clicks only the current visible, enabled DOM control in one
+  browser task so continuous idle reflow cannot act on a detached locator. A terminal
+  `run_ended` now outranks both its trailing receipt and a concurrently delivered late offer until
+  the player explicitly continues. Failure diagnostics report outbound intent and received event
+  coordinates without dumping full snapshots.
+- **Discrimination evidence:** removing the transport-readiness guard failed its disabled-state
+  assertion in Chromium, Firefox, and WebKit; restoring unconditional terminal receipt refresh
+  failed the zero-refresh assertion in all three; allowing a late offer to supersede `run_ended`
+  changed the observed surface from `run_end` to `offer_sheet` in all three. The earlier Gate
+  fallback, refresh ownership, exact recovery revision, and stale-port severing probes remain in
+  this review range. Every mutation was restored before the positive runs.
+- **Cold/stress evidence:** five consecutive real Chromium→Vite→gameserver→Postgres→WebSocket
+  composed paths passed after the two terminal fixes. From committed `238a9eb`,
+  `make verify-game-ui` exited 0: TypeScript/Svelte reported zero diagnostics; 6,660 client tests,
+  20,043 functional browser assertions across three engines, the isolated performance check, all
+  boundary/version/topology/Copy/content checks, and the composed database-backed witness passed.
+- **Scope:** the corrective commits touch the Game UI client, its browser/composed witnesses,
+  canonical Game UI documentation, and planning records. They do not change balance, formulas,
+  CI workflow bytes, archived scripts, or production-kernel semantics. The complete handoff starts
+  at predeclaration `05acc65`; this record remains implementer evidence, not the designated verdict.
