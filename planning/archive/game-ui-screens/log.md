@@ -1111,3 +1111,17 @@ only on the AC5 manual reference-profile check, per the queue.
   `05acc65^..7d78cbd` has Claude's mandatory designated cross-party APPROVED verdict at `c105da0`;
   AC5's separate owner-delegated manual gate now passes. Status promotion and the RFC/planning
   archive move are authorized in the same record-only transaction; no push is authorized.
+
+## 2026-08-22 — Codex archival-transaction first filter
+
+- **Review by:** Codex. **Recorded by:** Codex. **Range:** `57f56fb^..57f56fb`.
+- Git recognizes the RFC plus all four planning files as renames into their canonical archives.
+  The RFC status is `implemented`, every plan box is closed, `rfc/README.md` lists Game UI only in
+  Archive, and no live file outside the historical archives references the removed active paths.
+- The transaction reconciles canonical Game UI/CI docs, the active acceptance ledger, four RP
+  rows, capability/reality summaries, the execution queue, and the exact next-run outcome row.
+  TSV field counts and `git diff --check` pass.
+- The range has zero diff under `client/`, `server/`, `balance/`, or `.github/workflows/`; it cannot
+  alter the already designated-approved product or its CI behavior.
+- **Decision:** APPROVED AS IMPLEMENTER FIRST FILTER. This is not the cross-party archival review.
+  Hand off `57f56fb^..HEAD` after this record commit; do not push or begin a blocked successor.
