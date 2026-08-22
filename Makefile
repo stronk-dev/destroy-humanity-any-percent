@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -6,6 +6,8 @@ REPO_CACHE_DIR ?= $(CURDIR)/.cache
 export GOCACHE ?= $(REPO_CACHE_DIR)/go-build
 GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
+RELEASE_BUILDX_BUILDER ?= cloud-clicker-release-v1
+RELEASE_BUILDKIT_IMAGE := moby/buildkit:v0.24.0@sha256:6eceb8971ce4fceb3daca562832642706238b7eea72941fcf9896c93c3c4a53e
 CORE_TEST_COUNT ?= 1
 HARNESS_TEST_COUNT ?= 1
 HARNESS_WORKERS ?= 4
@@ -113,15 +115,21 @@ build-gameserver-linux-amd64:
 		-o "$(if $(filter /%,$(RELEASE_SERVER_OUTPUT)),$(RELEASE_SERVER_OUTPUT),../$(RELEASE_SERVER_OUTPUT))" \
 		./cmd/gameserver
 
+create-release-builder:
+	docker buildx create --name "$(RELEASE_BUILDX_BUILDER)" --driver docker-container \
+		--driver-opt image="$(RELEASE_BUILDKIT_IMAGE)"
+	docker buildx inspect "$(RELEASE_BUILDX_BUILDER)" --bootstrap
+
 build-gameserver-image:
 	@test -n "$(RELEASE_IMAGE_CONTEXT)" -a -n "$(RELEASE_VERSION)" -a -n "$(RELEASE_COMMIT)" \
 		-a -n "$(RELEASE_SOURCE_DATE_EPOCH)" -a -n "$(GAMESERVER_IMAGE_TAG)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" || \
 		(echo "gameserver image inputs are required" >&2; exit 1)
-	docker build --platform linux/amd64 --file "$(RELEASE_IMAGE_CONTEXT)/Dockerfile" \
+	docker buildx build --builder "$(RELEASE_BUILDX_BUILDER)" --no-cache --platform linux/amd64 \
+		--file "$(RELEASE_IMAGE_CONTEXT)/Dockerfile" --provenance=false \
 		--build-arg RELEASE_VERSION="$(RELEASE_VERSION)" --build-arg SOURCE_COMMIT="$(RELEASE_COMMIT)" \
-		--build-arg SOURCE_DATE_EPOCH="$(RELEASE_SOURCE_DATE_EPOCH)" --tag "$(GAMESERVER_IMAGE_TAG)" \
+		--build-arg SOURCE_DATE_EPOCH="$(RELEASE_SOURCE_DATE_EPOCH)" \
+		--output "type=docker,name=$(GAMESERVER_IMAGE_TAG),dest=$(GAMESERVER_IMAGE_ARCHIVE),rewrite-timestamp=true" \
 		"$(RELEASE_IMAGE_CONTEXT)"
-	docker save --output "$(GAMESERVER_IMAGE_ARCHIVE)" "$(GAMESERVER_IMAGE_TAG)"
 
 # Production startup and this preflight use the same environment and
 # file-secret decoder. The release-bundle profile extends this in DP-B.
