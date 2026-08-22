@@ -132,7 +132,7 @@ func ValidateCaddyfile(data []byte) error {
 
 func ValidateGameserverDockerfile(data []byte) error {
 	text := string(data)
-	if !strings.HasPrefix(text, "# syntax=docker/dockerfile:1.7@sha256:") || strings.Count(text, "\nFROM scratch\n") != 1 ||
+	if !strings.HasPrefix(text, "# syntax=docker/dockerfile:1.7@sha256:") || strings.Count(text, "ARG SOURCE_DATE_EPOCH") != 1 || strings.Count(text, "\nFROM scratch\n") != 1 ||
 		strings.Count(text, "USER 65532:65532") != 1 || strings.Count(text, "STOPSIGNAL SIGTERM") != 1 ||
 		strings.Count(text, "ENTRYPOINT [\"/usr/local/bin/gameserver\"]") != 1 || strings.Contains(text, "COPY . ") {
 		return ErrInvalidContent

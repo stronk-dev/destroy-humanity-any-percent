@@ -20,11 +20,16 @@ type dockerArchiveManifest struct {
 type dockerImageConfig struct {
 	Architecture string `json:"architecture"`
 	OS           string `json:"os"`
+	Config       struct {
+		User       string            `json:"User"`
+		Entrypoint []string          `json:"Entrypoint"`
+		Labels     map[string]string `json:"Labels"`
+	} `json:"config"`
 }
 
 // ValidateDockerArchive binds an offline docker-save archive to the bare
 // content-addressed image ID used by the release Compose file.
-func ValidateDockerArchive(path, expectedReference string) error {
+func ValidateDockerArchive(path, expectedReference, releaseVersion, sourceCommit string) error {
 	if !strings.HasPrefix(expectedReference, "sha256:") || !hashPattern.MatchString(expectedReference) {
 		return fmt.Errorf("%w: gameserver image must use its bare image ID", ErrInvalidContent)
 	}
@@ -81,7 +86,11 @@ func ValidateDockerArchive(path, expectedReference string) error {
 	}
 	var config dockerImageConfig
 	decoder = json.NewDecoder(bytes.NewReader(configBytes))
-	if decoder.Decode(&config) != nil || decoder.Decode(&struct{}{}) != io.EOF || config.Architecture != "amd64" || config.OS != "linux" {
+	if decoder.Decode(&config) != nil || decoder.Decode(&struct{}{}) != io.EOF || config.Architecture != "amd64" || config.OS != "linux" ||
+		config.Config.User != "65532:65532" || len(config.Config.Entrypoint) != 1 || config.Config.Entrypoint[0] != "/usr/local/bin/gameserver" ||
+		config.Config.Labels["org.opencontainers.image.version"] != releaseVersion || config.Config.Labels["org.opencontainers.image.revision"] != sourceCommit ||
+		config.Config.Labels["org.opencontainers.image.source"] != "https://github.com/stronk-dev/destroy-humanity-any-percent" ||
+		config.Config.Labels["org.opencontainers.image.licenses"] != "MIT" {
 		return ErrInvalidContent
 	}
 	return nil

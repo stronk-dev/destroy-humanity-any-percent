@@ -35,6 +35,11 @@ only the statically linked binary and that staged content. `make build-gameserve
 builds the reproducible, trimpath, VCS-metadata-free binary at the explicitly supplied
 `RELEASE_SERVER_OUTPUT`. The image still receives release version/source commit as OCI labels, so
 provenance lives in the release boundary rather than a host-dependent Go build record.
+`make build-gameserver-image` requires `--platform linux/amd64` through its fixed recipe and a
+caller-supplied `SOURCE_DATE_EPOCH` (normally the source commit time), then writes a `docker save`
+archive. The assembler verifies the saved config's Linux/amd64 identity, nonroot entry point and
+OCI version/revision/source/license labels against the release manifest; a digest from another
+commit is rejected.
 
 `deployment/compose.template.yml` defines the current core topology: only Caddy publishes two host
 ports; Caddy and gameserver share an internal application network; gameserver and Postgres share a

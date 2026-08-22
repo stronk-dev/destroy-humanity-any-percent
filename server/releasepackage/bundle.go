@@ -64,8 +64,12 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 	if err := copyRegularFile(input.GameserverImageArchive, filepath.Join(input.Output, "images", "gameserver.docker.tar"), 0o644); err != nil {
 		return ReleaseManifest{}, err
 	}
-	if err := ValidateDockerArchive(filepath.Join(input.Output, "images", "gameserver.docker.tar"), input.Images["gameserver"]); err != nil {
+	if err := ValidateDockerArchive(filepath.Join(input.Output, "images", "gameserver.docker.tar"), input.Images["gameserver"], input.ReleaseVersion, input.SourceCommit); err != nil {
 		return ReleaseManifest{}, err
+	}
+	findings, err := ScanDockerArchive(filepath.Join(input.Output, "images", "gameserver.docker.tar"))
+	if err != nil || RequireNoSecrets(findings) != nil {
+		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := copyTree(input.ClientDist, filepath.Join(input.Output, "site")); err != nil {
 		return ReleaseManifest{}, err
@@ -117,6 +121,10 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 	}
 	if err := os.WriteFile(filepath.Join(input.Output, ReleaseManifestPath), encoded, 0o644); err != nil {
 		return ReleaseManifest{}, err
+	}
+	findings, err = ScanTree(input.Output)
+	if err != nil || RequireNoSecrets(findings) != nil {
+		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := ValidateBundle(input.Output); err != nil {
 		return ReleaseManifest{}, err

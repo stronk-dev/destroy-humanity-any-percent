@@ -50,6 +50,12 @@ func TestAssembleBundleRejectsWrongArchitectureAndClientSymlink(t *testing.T) {
 	}
 
 	inputs = bundleInputs(t, repositoryRoot)
+	inputs.SourceCommit = strings.Repeat("e", 40)
+	if _, err := AssembleBundle(inputs); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("image from another source commit accepted: %v", err)
+	}
+
+	inputs = bundleInputs(t, repositoryRoot)
 	if err := os.Symlink("index.html", filepath.Join(inputs.ClientDist, "alias.html")); err != nil {
 		t.Fatal(err)
 	}
@@ -107,7 +113,7 @@ func fixtureSPDX(name string) string {
 
 func fixtureDockerArchive(t *testing.T, directory, architecture string) (string, string) {
 	t.Helper()
-	config := []byte("{\"architecture\":\"" + architecture + "\",\"os\":\"linux\"}\n")
+	config := []byte("{\"architecture\":\"" + architecture + "\",\"os\":\"linux\",\"config\":{\"User\":\"65532:65532\",\"Entrypoint\":[\"/usr/local/bin/gameserver\"],\"Labels\":{\"org.opencontainers.image.version\":\"0.1.0-preview.1\",\"org.opencontainers.image.revision\":\"dddddddddddddddddddddddddddddddddddddddd\",\"org.opencontainers.image.source\":\"https://github.com/stronk-dev/destroy-humanity-any-percent\",\"org.opencontainers.image.licenses\":\"MIT\"}}}\n")
 	imageID := digest(config)
 	configName := strings.TrimPrefix(imageID, "sha256:") + ".json"
 	manifest := []byte("[{\"Config\":\"" + configName + "\",\"RepoTags\":[\"cloud-clicker/gameserver:fixture\"],\"Layers\":[\"layer/layer.tar\"]}]\n")

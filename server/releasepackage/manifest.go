@@ -140,7 +140,7 @@ func ValidateBundle(root string) error {
 			return fmt.Errorf("%w: invalid SPDX document %q", ErrInvalidContent, path)
 		}
 	}
-	if err := ValidateDockerArchive(filepath.Join(root, "images", "gameserver.docker.tar"), manifest.Images[1].Reference); err != nil {
+	if err := ValidateDockerArchive(filepath.Join(root, "images", "gameserver.docker.tar"), manifest.Images[1].Reference, manifest.ReleaseVersion, manifest.SourceCommit); err != nil {
 		return err
 	}
 	for _, name := range []string{"config.schema.json", "release-manifest.schema.json"} {
