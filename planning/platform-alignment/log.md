@@ -2348,3 +2348,8 @@
   pressure negatives named in AC7.
 - No owner value, product behavior, deployment artifact, workflow, acceptance status or push
   changed. These corrections remain inside the owner-delegated RFC rewrite range.
+
+- Follow-up dependency check removed two stale/false blockers: queue row 3m no longer depends on
+  already-proven R-001, and Deployment AC7 owns its seven alert witnesses without depending on
+  R-007's still-blocked product-retention study. R-007 may consume the evidence later; it does not
+  gate this package RFC.

@@ -306,7 +306,7 @@ Warm-cache success is not accepted where a cold or clean-host population is name
    available through day 14 then purge, and optional raw-IP security logs remain through day 7 then
    purge. Early-eviction, stale-retention and storage-pressure fixtures discriminate. All seven
    alerts fire through the configured receiver and their severed counter/rule/receiver paths fail
-   R-007's artifact.
+   the Deployment rehearsal. R-007 may consume that evidence later but is not this RFC's gate.
 8. **AC8 — provider-off and supply chain:** install, play, backup, restore, alert and rollback work
    with no identity/mail/analytics/AI/payment/cloud-monitoring credential. Image digests, SBOM,
    MIT/third-party license delivery and source/image provenance validate; removing attribution or
