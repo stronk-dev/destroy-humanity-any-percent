@@ -6,6 +6,8 @@ import (
 	"flag"
 	"path/filepath"
 	"testing"
+
+	"cloud-clicker/server/deploymentrelease"
 )
 
 func TestReleaseFailureOutputIsBounded(t *testing.T) {
@@ -39,6 +41,19 @@ func TestRollbackRequiresOffHostIdentityBeforeControllerConstruction(t *testing.
 		"--receiver-health-url=http://alertmanager:9093/-/healthy", "--backup-target=/backups", "--age-recipient=age1fixture"})
 	if err == nil {
 		t.Fatal("rollback without restore identity accepted")
+	}
+}
+
+func TestInstallRequiresExactBundleAndAllOperatorBoundaries(t *testing.T) {
+	if err := runInstall(context.Background(), []string{"--bundle=/candidate"}); err == nil {
+		t.Fatal("install without operator boundaries accepted")
+	}
+	if err := runInstall(context.Background(), []string{"--operator-state=" + t.TempDir(), "--operator=operator-1"}); err == nil {
+		t.Fatal("install without exact bundle accepted")
+	}
+	command, class := boundedFailure("install", deploymentrelease.ErrInvalid)
+	if command != "install" || class != "invalid_input" {
+		t.Fatalf("install failure not bounded: command=%q class=%q", command, class)
 	}
 }
 

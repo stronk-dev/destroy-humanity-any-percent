@@ -75,6 +75,89 @@ func TestDockerRuntimePreflightRunsCandidateConfigAndPrivateDatabaseInspection(t
 	}
 }
 
+func TestDockerRuntimeInitialInstallRequiresCleanStateAndCleansFailedStart(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	if err := os.WriteFile(filepath.Join(bundle.Root, "candidate-byte"), []byte("candidate"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	dockerRoot := t.TempDir()
+	runner := &commandFixture{output: func(call []string) ([]byte, error) {
+		if len(call) > 1 && call[1] == "info" {
+			return []byte(dockerRoot + "\n"), nil
+		}
+		return nil, nil
+	}}
+	runtime := dockerFixtureRuntime(runner, t.TempDir(), "")
+	runtime.Client = &http.Client{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: http.StatusNoContent, Body: io.NopCloser(strings.NewReader(""))}, nil
+	})}
+	if err := runtime.PreflightInstall(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	psChecks, volumeChecks := 0, 0
+	for _, call := range runner.calls {
+		joined := strings.Join(call, " ")
+		if strings.Contains(joined, " ps --all --quiet") {
+			psChecks++
+		}
+		if strings.Contains(joined, "volume ls --quiet --filter=name=^cloud-clicker_postgres_data$") {
+			volumeChecks++
+		}
+		if strings.Contains(joined, " backup inspect ") {
+			t.Fatalf("initial install inspected nonexistent database: %s", joined)
+		}
+	}
+	if psChecks != 2 || volumeChecks != 2 {
+		t.Fatalf("clean state not checked around preflight: ps=%d volume=%d calls=%v", psChecks, volumeChecks, runner.calls)
+	}
+
+	for name, occupied := range map[string]func([]string) []byte{
+		"container": func(call []string) []byte {
+			if strings.Contains(strings.Join(call, " "), " ps --all --quiet") {
+				return []byte("existing-container\n")
+			}
+			return nil
+		},
+		"volume": func(call []string) []byte {
+			if strings.Contains(strings.Join(call, " "), "volume ls --quiet") {
+				return []byte("cloud-clicker_postgres_data\n")
+			}
+			return nil
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			severed := &commandFixture{output: func(call []string) ([]byte, error) { return occupied(call), nil }}
+			if err := dockerFixtureRuntime(severed, t.TempDir(), "").PreflightInstall(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("occupied host accepted: %v", err)
+			}
+			for _, call := range severed.calls {
+				if slices.Contains(call, "run") {
+					t.Fatalf("occupied host reached candidate helper: %v", call)
+				}
+			}
+		})
+	}
+
+	runner.calls = nil
+	if err := runtime.StartInstall(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	if len(runner.calls) != 2 || !strings.Contains(strings.Join(runner.calls[0], " "), "up --detach --wait postgres") ||
+		!strings.Contains(strings.Join(runner.calls[1], " "), "--force-recreate gameserver caddy backup prometheus alertmanager node-exporter") {
+		t.Fatalf("initial start sequence=%v", runner.calls)
+	}
+	runner.calls = nil
+	if err := runtime.AbortInstall(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	joined := strings.Join(runner.calls[0], " ")
+	for _, required := range []string{"down", "--volumes", "--remove-orphans"} {
+		if !strings.Contains(joined, required) {
+			t.Fatalf("install cleanup missing %q: %s", required, joined)
+		}
+	}
+}
+
 type roundTripFunc func(*http.Request) (*http.Response, error)
 
 func (function roundTripFunc) RoundTrip(request *http.Request) (*http.Response, error) {

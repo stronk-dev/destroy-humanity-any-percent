@@ -27,6 +27,8 @@ func main() {
 	defer cancel()
 	var err error
 	switch os.Args[1] {
+	case "install":
+		err = runInstall(ctx, os.Args[2:])
 	case "release":
 		err = runRelease(ctx, os.Args[2:])
 	case "rollback":
@@ -41,6 +43,25 @@ func main() {
 	if err != nil {
 		fail(os.Args[1], err)
 	}
+}
+
+func runInstall(ctx context.Context, args []string) error {
+	set := flag.NewFlagSet("install", flag.ContinueOnError)
+	bundle := set.String("bundle", "", "exact release bundle to install on an empty host")
+	values := addRuntimeFlags(set, false)
+	if err := set.Parse(args); err != nil || set.NArg() != 0 || *bundle == "" {
+		return errors.New("install requires bundle and operator runtime flags")
+	}
+	controller, err := controllerFromFlags(*values)
+	if err != nil {
+		return err
+	}
+	err = controller.Install(ctx, deploymentrelease.InstallRequest{Bundle: *bundle})
+	result := "success"
+	if err != nil {
+		result = "failure"
+	}
+	return errors.Join(err, operations.RecordOperation(values.metricsDirectory, "release", result, time.Now().UTC()))
 }
 
 func runRelease(ctx context.Context, args []string) error {
@@ -145,7 +166,7 @@ func fail(command string, err error) {
 }
 
 func boundedFailure(command string, err error) (string, string) {
-	if command != "release" && command != "rollback" && command != "rotation-activate" && command != "rotation-remove" {
+	if command != "install" && command != "release" && command != "rollback" && command != "rotation-activate" && command != "rotation-remove" {
 		command = "unknown"
 	}
 	class := "operation_failed"

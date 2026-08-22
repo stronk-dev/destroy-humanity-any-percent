@@ -102,6 +102,44 @@ func TestReleaseLedgerRequiresExplicitFailureStageAndImmutableOrdering(t *testin
 	}
 }
 
+func TestReleaseLedgerEnforcesInitialInstallShape(t *testing.T) {
+	base := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	valid := fixtureReleaseRecord(base)
+	valid.Action = "install"
+	valid.PreviousVersion, valid.PreviousManifestSHA256 = "", ""
+	valid.BackupID = "none"
+	valid.RollbackUntil = time.Time{}
+	if err := AppendReleaseRecord(filepath.Join(t.TempDir(), "release-ledger.jsonl"), valid); err != nil {
+		t.Fatalf("valid install rejected: %v", err)
+	}
+	for name, mutate := range map[string]func(*ReleaseRecord){
+		"backup": func(record *ReleaseRecord) { record.BackupID = "20260822T180000Z-acde00000001" },
+		"previous": func(record *ReleaseRecord) {
+			record.PreviousVersion = "0.9.0"
+			record.PreviousManifestSHA256 = "sha256:" + strings.Repeat("e", 64)
+		},
+		"rollback window": func(record *ReleaseRecord) { record.RollbackUntil = record.CompletedAt.Add(RollbackWindow) },
+	} {
+		t.Run(name, func(t *testing.T) {
+			candidate := valid
+			mutate(&candidate)
+			if err := AppendReleaseRecord(filepath.Join(t.TempDir(), "release-ledger.jsonl"), candidate); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("invalid install accepted: %v", err)
+			}
+		})
+	}
+	failed := valid
+	failed.Result, failed.FailureStage = "failed", "startup_migration"
+	failed.ImageDigests = nil
+	if err := AppendReleaseRecord(filepath.Join(t.TempDir(), "release-ledger.jsonl"), failed); err != nil {
+		t.Fatalf("bounded install failure rejected: %v", err)
+	}
+	failed.FailureStage = "stop_failed_release"
+	if err := AppendReleaseRecord(filepath.Join(t.TempDir(), "release-ledger.jsonl"), failed); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("release-only failure stage accepted for install: %v", err)
+	}
+}
+
 func TestOperatorLockRejectsConcurrentMutation(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "release-ledger.jsonl.lock")
 	first, err := acquireOperatorLock(path)

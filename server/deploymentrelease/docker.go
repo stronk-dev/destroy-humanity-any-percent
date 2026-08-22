@@ -62,41 +62,76 @@ func (runtime DockerRuntime) Preflight(ctx context.Context, bundle Bundle) error
 	if err != nil {
 		return err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "config", "--quiet")...); err != nil {
-		return err
-	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "gameserver", "validate-config")...); err != nil {
-		return err
-	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=amtool", "alertmanager", "check-config", "/run/secrets/alertmanager-config")...); err != nil {
-		return err
-	}
-	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, runtime.ReceiverHealthURL, nil)
-	response, err := runtime.Client.Do(request)
+	_, _, err = runtime.preflightCommon(ctx, bundle)
 	if err != nil {
 		return err
-	}
-	_ = response.Body.Close()
-	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		return ErrInvalid
-	}
-	bundleBytes, err := directoryBytes(bundle.Root)
-	if err != nil || bundleBytes < 1 {
-		return errors.Join(ErrInvalid, err)
-	}
-	dockerRootOutput, err := runtime.Runner.Run(ctx, bundle.Root, "docker", "info", "--format={{.DockerRootDir}}")
-	dockerRoot := strings.TrimSpace(string(dockerRootOutput))
-	if err != nil || !filepath.IsAbs(dockerRoot) {
-		return errors.Join(ErrInvalid, err)
 	}
 	inspection, err := runtime.inspectDatabase(ctx, bundle, false)
 	if err != nil || inspection.DatabaseBytes < 1 {
 		return errors.Join(ErrInvalid, err)
 	}
-	if !hasFreeBytes(dockerRoot, bundleBytes) || !hasFreeBytes(runtime.BackupTarget, uint64(inspection.DatabaseBytes)) {
+	if !hasFreeBytes(runtime.BackupTarget, uint64(inspection.DatabaseBytes)) {
 		return ErrInvalid
 	}
 	return nil
+}
+
+func (runtime DockerRuntime) PreflightInstall(ctx context.Context, bundle Bundle) error {
+	runtime, err := runtime.normalized()
+	if err != nil {
+		return err
+	}
+	if err := runtime.requireCleanInstallState(ctx, bundle); err != nil {
+		return err
+	}
+	bundleBytes, _, err := runtime.preflightCommon(ctx, bundle)
+	if err != nil || !hasFreeBytes(runtime.BackupTarget, bundleBytes) {
+		return errors.Join(ErrInvalid, err)
+	}
+	return runtime.requireCleanInstallState(ctx, bundle)
+}
+
+func (runtime DockerRuntime) requireCleanInstallState(ctx context.Context, bundle Bundle) error {
+	containers, containerErr := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "ps", "--all", "--quiet")...)
+	volumes, volumeErr := runtime.Runner.Run(ctx, bundle.Root, "docker", "volume", "ls", "--quiet", "--filter=name=^cloud-clicker_postgres_data$")
+	if containerErr != nil || volumeErr != nil || strings.TrimSpace(string(containers)) != "" || strings.TrimSpace(string(volumes)) != "" {
+		return errors.Join(ErrInvalid, containerErr, volumeErr)
+	}
+	return nil
+}
+
+func (runtime DockerRuntime) preflightCommon(ctx context.Context, bundle Bundle) (uint64, string, error) {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "config", "--quiet")...); err != nil {
+		return 0, "", err
+	}
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "gameserver", "validate-config")...); err != nil {
+		return 0, "", err
+	}
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=amtool", "alertmanager", "check-config", "/run/secrets/alertmanager-config")...); err != nil {
+		return 0, "", err
+	}
+	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, runtime.ReceiverHealthURL, nil)
+	response, err := runtime.Client.Do(request)
+	if err != nil {
+		return 0, "", err
+	}
+	_ = response.Body.Close()
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
+		return 0, "", ErrInvalid
+	}
+	bundleBytes, err := directoryBytes(bundle.Root)
+	if err != nil || bundleBytes < 1 {
+		return 0, "", errors.Join(ErrInvalid, err)
+	}
+	dockerRootOutput, err := runtime.Runner.Run(ctx, bundle.Root, "docker", "info", "--format={{.DockerRootDir}}")
+	dockerRoot := strings.TrimSpace(string(dockerRootOutput))
+	if err != nil || !filepath.IsAbs(dockerRoot) {
+		return 0, "", errors.Join(ErrInvalid, err)
+	}
+	if !hasFreeBytes(dockerRoot, bundleBytes) {
+		return 0, "", ErrInvalid
+	}
+	return bundleBytes, dockerRoot, nil
 }
 
 func (runtime DockerRuntime) CreatePreUpgradeBackup(ctx context.Context, bundle Bundle) (BackupReference, error) {
@@ -218,6 +253,25 @@ func (runtime DockerRuntime) Start(ctx context.Context, bundle Bundle) error {
 		return ErrInvalid
 	}
 	return nil
+}
+
+func (runtime DockerRuntime) StartInstall(ctx context.Context, bundle Bundle) error {
+	runtime, err := runtime.normalized()
+	if err != nil {
+		return err
+	}
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--wait", "postgres")...); err != nil {
+		return err
+	}
+	return runtime.Start(ctx, bundle)
+}
+
+func (runtime DockerRuntime) AbortInstall(ctx context.Context, bundle Bundle) error {
+	if _, err := runtime.normalized(); err != nil {
+		return err
+	}
+	_, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "down", "--volumes", "--remove-orphans")...)
+	return err
 }
 
 func (runtime DockerRuntime) VerifyIdentity(ctx context.Context, bundle Bundle) error {

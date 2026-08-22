@@ -638,3 +638,33 @@ forgery/severing controls discriminate. **Authorized after a valid DP-F3 but bef
 review:** R-006 evidence is ready for designated review, not that self-hosting is supported.
 Archival and release wording require DP-F4, full implementation-range Codex first-filter, Claude
 designated approval covering every batch edge, and the owner's final release call.
+
+## 2026-08-23 — DP-F1 initial-install and evidence-boundary slice
+
+Implemented the previously absent initial-install authority rather than pretending the normal
+release command could operate against a fictional current version. `deployment-release install`
+loads and verifies the exact six-image bundle, proves the Compose project and named Postgres volume
+clean on both sides of candidate config preflight, starts Postgres before the remaining services,
+verifies migration/epoch/artifact identity, runs the authenticated Caddy and alert-delivery smoke,
+and syncs an append-only install record. Pre-start failures do not delete state. Every post-start
+failure removes only the exact newly created Compose project and volumes. A final ledger failure
+also tears the stack down instead of leaving an unaudited installation. Corrected bundles may retry
+after failed install rows; a success or any non-install transition permanently closes install
+authority.
+
+Added the first strict `deploymentrehearsal` evidence boundary and Linux/amd64 validator command.
+It requires the exact supported host/tool identities, eleven ordered command classes, every
+predeclared positive and severing population, derived (not asserted-only) RPO/RTO durations,
+restored identity equality, ten named artifact hashes, explicit non-claims and completed/non-guarded
+termination. Unknown/trailing fields and private identifier/credential-shaped fields reject. This
+is validator and capture-contract construction only: it does not claim that the external R-006 run
+has happened, and DP-F1 remains open for the actual fixed-command driver and bundle integration.
+
+Cold evidence: `make test-deployment-rehearsal` passed all four focused packages; focused `make vet`
+passed; the exact Linux/amd64 rehearsal validator binary built; and the unrestricted rerun of
+`make test-deployment-release` passed the real Postgres+Caddy drain/backup/restore population. The
+first Docker attempt was sandbox-denied and is not cited as a product failure. Discrimination was
+executed: removing post-smoke install cleanup made the severed-smoke test fail with no
+`abort_install` call, and removing the negative-population severing requirement made the vacuous
+negative evidence fixture pass and its test fail. Both mutations were restored before the green
+runs.

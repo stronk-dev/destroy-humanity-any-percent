@@ -181,7 +181,7 @@ evidence only during the exact-manifest R-006 rehearsal.
 ## Governed release, rollback and key rotation
 
 `deployment-release` is the manifest-bound operator entry point. It is deliberately not an
-automatic deployment service: an operator invokes it with the exact current and candidate bundle,
+automatic deployment service: an operator invokes it with the exact install, current or candidate bundle,
 the separately mounted backup and operator-state directories, the canonical Caddy origin and the
 private alert-receiver health URL. Database sizing and identity checks run through one-off backup
 helper containers on the private database network; Postgres remains unpublished to the host. The operator-state directory is
@@ -190,6 +190,17 @@ mode-0700 storage outside either bundle and holds two mode-0600 append-only JSON
 digests and outcomes, never key, password, recovery-code or token values.
 Mode-0600 nonblocking lock files serialize release/rollback and rotation mutations so two operator
 invocations cannot race the ledgers or the live stack.
+
+Initial installation is a separate fail-closed operation, not a release with a fictional current
+version. It loads and verifies all six manifest-bound image/config identities without starting a
+service, then checks twice—around candidate configuration preflight—that the exact Compose project
+has no container and that the named Postgres volume does not exist. It then starts Postgres and the
+remaining stack, reconciles migration/epoch/artifact identity and runs the authenticated Caddy
+smoke. A post-start failure removes only that exact Compose project's containers and new volumes;
+a pre-start failure is non-destructive. A success is durable only after an append-only `install`
+row is synced. If that final write fails, the new stack is removed rather than left running without
+operator authority. Failed install rows may be retried after correction, while any successful
+install or later release/rollback row permanently closes initial-install authority.
 
 A release runs these gates in order and records the first failed stage without ever emitting a
 success row: exact-bundle/config/receiver/free-space preflight; encrypted pre-upgrade backup;
@@ -226,8 +237,10 @@ make build-deployment-release-linux-amd64 RELEASE_HELPER_OUTPUT=/absolute/path/d
 ```
 
 The host-side command reads `CLOUD_CLICKER_SERVER_ID` from the same non-secret operator environment.
-Release requires `--current-bundle`, `--candidate-bundle`, `--operator-state`, `--operator`,
-`--public-origin`, `--receiver-health-url`, `--backup-target` and `--age-recipient`. Rollback replaces
+Initial install requires `install --bundle` plus `--operator-state`, `--operator`,
+`--public-origin`, `--receiver-health-url`, `--backup-target`, `--metrics-dir` and
+`--age-recipient`. Release requires `--current-bundle`, `--candidate-bundle`, `--operator-state`, `--operator`,
+`--public-origin`, `--receiver-health-url`, `--backup-target`, `--metrics-dir` and `--age-recipient`. Rollback replaces
 the two release inputs with `--failed-bundle`, `--previous-bundle`, `--backup-id`, `--backup` and the
 explicit off-host `--age-identity-file`; the age identity is rejected if it is not a private regular
 file. Rotation uses `rotation-activate` or `rotation-remove` with the operator-state path, family,

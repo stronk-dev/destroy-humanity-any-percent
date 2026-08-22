@@ -242,7 +242,7 @@ func validRotationFields(family KeyFamily, currentID, previousID, operator strin
 }
 
 func validReleaseRecord(record ReleaseRecord) bool {
-	if record.SchemaVersion != 1 || record.Action != "release" && record.Action != "rollback" ||
+	if record.SchemaVersion != 1 || record.Action != "install" && record.Action != "release" && record.Action != "rollback" ||
 		!identifier.MatchString(record.ReleaseVersion) || !hashPattern.MatchString(record.ManifestSHA256) ||
 		!identifier.MatchString(record.Operator) || record.StartedAt.IsZero() ||
 		record.CompletedAt.Before(record.StartedAt) || record.Result != "succeeded" && record.Result != "failed" ||
@@ -252,7 +252,7 @@ func validReleaseRecord(record ReleaseRecord) bool {
 	if record.Result == "failed" && (!validFailureStage(record.Action, record.FailureStage) || record.BackupID != "none" && !backupIDPattern.MatchString(record.BackupID)) {
 		return false
 	}
-	if record.Result == "succeeded" && (len(record.ImageDigests) != 6 || !backupIDPattern.MatchString(record.BackupID)) {
+	if record.Result == "succeeded" && (len(record.ImageDigests) != 6 || record.Action == "install" && record.BackupID != "none" || record.Action != "install" && !backupIDPattern.MatchString(record.BackupID)) {
 		return false
 	}
 	if (record.PreviousVersion == "") != (record.PreviousManifestSHA256 == "") {
@@ -263,7 +263,11 @@ func validReleaseRecord(record ReleaseRecord) bool {
 			return false
 		}
 	}
-	if record.Result == "succeeded" && record.Action == "release" {
+	if record.Action == "install" {
+		if record.PreviousVersion != "" || record.PreviousManifestSHA256 != "" || !record.RollbackUntil.IsZero() || record.BackupID != "none" {
+			return false
+		}
+	} else if record.Result == "succeeded" && record.Action == "release" {
 		if record.PreviousVersion == "" || record.RollbackUntil.Before(record.CompletedAt) || record.RollbackUntil.After(record.CompletedAt.Add(RollbackWindow)) {
 			return false
 		}
@@ -283,12 +287,17 @@ func validReleaseRecord(record ReleaseRecord) bool {
 }
 
 func validFailureStage(action, stage string) bool {
+	install := map[string]bool{"bundle": true, "install_authority": true, "preflight": true, "supply_chain": true,
+		"startup_migration": true, "epoch_artifact_identity": true, "authenticated_smoke": true}
 	release := map[string]bool{"candidate_bundle": true, "current_bundle": true, "compatibility": true, "preflight": true,
 		"preupgrade_backup": true, "supply_chain": true, "bounded_drain": true, "startup_migration": true,
 		"epoch_artifact_identity": true, "authenticated_smoke": true}
 	rollback := map[string]bool{"failed_bundle": true, "previous_bundle": true, "rollback_authority": true, "preflight": true,
 		"stop_failed_release": true, "clean_database": true, "exact_restore": true, "previous_startup": true,
 		"epoch_artifact_identity": true, "authenticated_smoke": true}
+	if action == "install" {
+		return install[stage]
+	}
 	if action == "release" {
 		return release[stage]
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -52,6 +53,105 @@ func (runtime *runtimeFixture) ResetDatabase(context.Context, Bundle) error {
 }
 func (runtime *runtimeFixture) Restore(context.Context, Bundle, BackupReference) error {
 	return runtime.call("restore")
+}
+func (runtime *runtimeFixture) PreflightInstall(context.Context, Bundle) error {
+	return runtime.call("install_preflight")
+}
+func (runtime *runtimeFixture) StartInstall(context.Context, Bundle) error {
+	return runtime.call("install_start")
+}
+func (runtime *runtimeFixture) AbortInstall(context.Context, Bundle) error {
+	return runtime.call("abort_install")
+}
+
+func TestInstallSequenceAuthorityCleanupAndRetry(t *testing.T) {
+	current, candidate, loader := fixtureBundles()
+	newController := func(runtime Runtime, ledger string, clock *sequenceClock) Controller {
+		return Controller{Runtime: runtime, LedgerPath: ledger, Operator: "operator-1", Now: clock.Time, Load: loader}
+	}
+	t.Run("exact success", func(t *testing.T) {
+		clock := &sequenceClock{now: time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)}
+		runtime := validRuntime()
+		ledger := filepath.Join(t.TempDir(), "release-ledger.jsonl")
+		if err := newController(runtime, ledger, clock).Install(context.Background(), InstallRequest{Bundle: candidate}); err != nil {
+			t.Fatal(err)
+		}
+		want := []string{"prepare", "install_preflight", "install_start", "identity", "smoke"}
+		if strings.Join(runtime.calls, ",") != strings.Join(want, ",") {
+			t.Fatalf("install sequence=%v", runtime.calls)
+		}
+		records, err := ReadReleaseLedger(ledger)
+		if err != nil || len(records) != 1 || records[0].Action != "install" || records[0].Result != "succeeded" ||
+			records[0].BackupID != "none" || records[0].PreviousVersion != "" || !records[0].RollbackUntil.IsZero() {
+			t.Fatalf("install record=%+v err=%v", records, err)
+		}
+		runtime.calls = nil
+		if err := newController(runtime, ledger, clock).Install(context.Background(), InstallRequest{Bundle: candidate}); err == nil {
+			t.Fatal("second install accepted over successful install")
+		}
+		if len(runtime.calls) != 0 {
+			t.Fatalf("closed install authority reached runtime: %v", runtime.calls)
+		}
+	})
+
+	for _, stage := range []string{"install_preflight", "prepare", "install_start", "identity", "smoke"} {
+		t.Run("severed_"+stage, func(t *testing.T) {
+			clock := &sequenceClock{now: time.Date(2026, 8, 23, 13, 0, 0, 0, time.UTC)}
+			runtime := validRuntime()
+			runtime.failAt = stage
+			ledger := filepath.Join(t.TempDir(), "release-ledger.jsonl")
+			if err := newController(runtime, ledger, clock).Install(context.Background(), InstallRequest{Bundle: candidate}); err == nil {
+				t.Fatalf("severed %s accepted", stage)
+			}
+			started := stage == "install_start" || stage == "identity" || stage == "smoke"
+			if slices.Contains(runtime.calls, "abort_install") != started {
+				t.Fatalf("stage=%s calls=%v", stage, runtime.calls)
+			}
+			records, err := ReadReleaseLedger(ledger)
+			if err != nil || len(records) != 1 || records[0].Action != "install" || records[0].Result != "failed" {
+				t.Fatalf("install records=%+v err=%v", records, err)
+			}
+		})
+	}
+
+	t.Run("failed attempt permits corrected bundle", func(t *testing.T) {
+		clock := &sequenceClock{now: time.Date(2026, 8, 23, 14, 0, 0, 0, time.UTC)}
+		ledger := filepath.Join(t.TempDir(), "release-ledger.jsonl")
+		failed := validRuntime()
+		failed.failAt = "install_preflight"
+		if err := newController(failed, ledger, clock).Install(context.Background(), InstallRequest{Bundle: candidate}); err == nil {
+			t.Fatal("severed initial attempt accepted")
+		}
+		corrected := validRuntime()
+		if err := newController(corrected, ledger, clock).Install(context.Background(), InstallRequest{Bundle: current}); err != nil {
+			t.Fatalf("corrected exact bundle retry rejected: %v", err)
+		}
+	})
+
+	t.Run("ledger failure aborts running install", func(t *testing.T) {
+		times := []time.Time{
+			time.Date(2026, 8, 23, 15, 0, 1, 0, time.UTC),
+			time.Date(2026, 8, 23, 15, 0, 0, 0, time.UTC),
+		}
+		now := func() time.Time { value := times[0]; times = times[1:]; return value }
+		runtime := validRuntime()
+		controller := Controller{Runtime: runtime, LedgerPath: filepath.Join(t.TempDir(), "release-ledger.jsonl"), Operator: "operator-1", Now: now, Load: loader}
+		if err := controller.Install(context.Background(), InstallRequest{Bundle: candidate}); err == nil {
+			t.Fatal("invalid success record accepted")
+		}
+		if !slices.Contains(runtime.calls, "abort_install") {
+			t.Fatalf("ledger failure left install running: %v", runtime.calls)
+		}
+	})
+}
+
+func TestInstallRejectsRuntimeWithoutInstallAuthority(t *testing.T) {
+	_, candidate, loader := fixtureBundles()
+	runtime := struct{ Runtime }{Runtime: validRuntime()}
+	controller := Controller{Runtime: runtime, LedgerPath: filepath.Join(t.TempDir(), "release-ledger.jsonl"), Operator: "operator-1", Now: time.Now, Load: loader}
+	if err := controller.Install(context.Background(), InstallRequest{Bundle: candidate}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("runtime without install boundary accepted: %v", err)
+	}
 }
 
 func TestReleaseSequenceAndEveryRuledSeveringStage(t *testing.T) {

@@ -57,6 +57,13 @@ type Runtime interface {
 	Restore(context.Context, Bundle, BackupReference) error
 }
 
+type InstallRuntime interface {
+	Runtime
+	PreflightInstall(context.Context, Bundle) error
+	StartInstall(context.Context, Bundle) error
+	AbortInstall(context.Context, Bundle) error
+}
+
 type Controller struct {
 	Runtime    Runtime
 	LedgerPath string
@@ -70,10 +77,66 @@ type ReleaseRequest struct {
 	CandidateBundle string
 }
 
+type InstallRequest struct {
+	Bundle string
+}
+
 type RollbackRequest struct {
 	FailedBundle   string
 	PreviousBundle string
 	Backup         BackupReference
+}
+
+func (controller Controller) Install(ctx context.Context, request InstallRequest) error {
+	started, err := controller.validate()
+	if err != nil {
+		return err
+	}
+	runtime, ok := controller.Runtime.(InstallRuntime)
+	if !ok {
+		return ErrInvalid
+	}
+	lock, err := acquireOperatorLock(controller.LedgerPath + ".lock")
+	if err != nil {
+		return err
+	}
+	defer lock.Close()
+	bundle, err := controller.loadBundle(request.Bundle)
+	if err != nil {
+		return controller.fail(rejectedInputRecord("install", request.Bundle, controller.Operator, started), "bundle", err)
+	}
+	base := controller.baseRecord("install", bundle, Bundle{}, started)
+	records, ledgerErr := ReadReleaseLedger(controller.LedgerPath)
+	if ledgerErr == nil {
+		for _, record := range records {
+			if record.Action != "install" || record.Result != "failed" {
+				return controller.fail(base, "install_authority", ErrInvalid)
+			}
+		}
+	} else if !errors.Is(ledgerErr, os.ErrNotExist) {
+		return errors.Join(ErrInvalid, ledgerErr)
+	}
+	if err := runtime.Prepare(ctx, bundle); err != nil {
+		return controller.fail(base, "supply_chain", err)
+	}
+	if err := runtime.PreflightInstall(ctx, bundle); err != nil {
+		return controller.fail(base, "preflight", err)
+	}
+	if err := runtime.StartInstall(ctx, bundle); err != nil {
+		return controller.fail(base, "startup_migration", errors.Join(err, runtime.AbortInstall(ctx, bundle)))
+	}
+	if err := runtime.VerifyIdentity(ctx, bundle); err != nil {
+		return controller.fail(base, "epoch_artifact_identity", errors.Join(err, runtime.AbortInstall(ctx, bundle)))
+	}
+	if err := runtime.AuthenticatedSmoke(ctx, bundle); err != nil {
+		return controller.fail(base, "authenticated_smoke", errors.Join(err, runtime.AbortInstall(ctx, bundle)))
+	}
+	base.CompletedAt = controller.Now().UTC()
+	base.Result = "succeeded"
+	if err := AppendReleaseRecord(controller.LedgerPath, base); err != nil {
+		return errors.Join(err, runtime.AbortInstall(ctx, bundle))
+	}
+	return nil
 }
 
 func LoadBundle(root string) (Bundle, error) {
