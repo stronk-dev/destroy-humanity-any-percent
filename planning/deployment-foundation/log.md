@@ -498,3 +498,79 @@ profile whose private signals, measured log-retention contract, receiver deliver
 firing/resolution paths have executable evidence. **Not authorized:** designated approval,
 supported self-hosting, release readiness, RPO/RTO, public-service availability or a 1.0 claim
 until DP-F, exact-manifest R-006 and both review gates pass.
+
+## 2026-08-23 — DP-E implementation and Codex first filter
+
+Implementation commit `09d5027` completes the predeclared provider-off operations batch. The exact
+first-filter range is `3f58fea..09d5027`: 65 paths including predeclaration `e2fc1c4`, 63 paths in
+the implementation commit and no `.github/`, migration, gameplay-content or design path.
+
+The gameserver now owns an isolated Prometheus registry with process/readiness, bounded HTTP and
+WebSocket route/status/latency, Centrifuge, current-schema Postgres/outbox/dead-letter, five named
+periodic-job and invariant signals. Real composition primes and records verification, presence,
+clearing, guild sweep and credential cleanup. Logs and command failures expose bounded classes,
+not founder/stream/run/intent IDs, payload/detail text, recovery material or arbitrary error text.
+Backup, restore, release and host observations use fsync/rename textfiles; later failures preserve
+the last success, while over-budget journal use remains observable so its alert cannot coast on a
+stale healthy sample.
+
+The bundle now closes six immutable image/config/SBOM identities and all operations helper/config
+bytes. Only Caddy publishes ports. Prometheus and node-exporter remain internal-only;
+Alertmanager also joins the non-publishing edge network because an internal-only receiver path
+would make the RFC's permitted remote receiver unreachable. Release preflight validates the exact
+Alertmanager config, and post-start smoke runs the packaged nonce-bearing delivery verifier from
+that egress-capable boundary. The real isolated test receives the same nonce through Alertmanager.
+
+The host policy accepts only a complete measured release-workload observation, exact 14-day
+retention, fourteen projected peak days of capacity and a storage alert at 80% before eviction.
+Rendering produces both the new journald drop-in and the exact budget file consumed by the
+one-minute host observer and refuses existing/symlink targets. The shipped stack has no raw-IP
+producer or enable switch. The initial boolean-only “separate seven-day sink” branch was vacuous,
+so it was removed: raw-IP-enabled observations now fail until a future governed producer, separate
+purge mechanism and executable witness actually exist. This enforces the RFC's default-off state
+without claiming an unbuilt optional sink.
+
+Executed restored-tree evidence:
+
+- `make verify-server-core`: `go vet ./...`, every non-harness server package cold, pitch gate,
+  formulas and API generation all green. The first sandboxed pass was denied an ephemeral
+  localhost listener; the exact unrestricted rerun passed and is the claimed result.
+- `make test-deployment-operations`: pinned Prometheus `v3.12.0` rule evaluator green; all focused
+  changed packages cold; real pinned Linux/amd64 Caddy, Prometheus, Alertmanager and node-exporter
+  reached five private scrape targets and delivered the generated proof nonce. An initial
+  `host.docker.internal` receiver-health mistake failed and was corrected to the receiver's actual
+  private endpoint. A later redundant Compose `platform` hint hit Docker Desktop's cached-manifest
+  collision; removing only that hint retained the exact amd64 digests and the lane passed.
+- `make test-save-integration SAVE_TEST_PACKAGES='./gameserver ./operations' ...`: current Postgres
+  schema collection and composed job-prime observations green on real Postgres 16.
+- `make test-deployment-backup` and `make test-deployment-release`: empty/populated restore,
+  dirty-target refusal, real Caddy drain/release and exact rollback all green. Their first runs
+  exposed stale three-image fixture manifests; the fixtures now bind the same six-image and full
+  operations-file closure as production.
+- Production Compose passed both the repository validator and Docker Compose's parser; the changed
+  Caddyfile passed real Caddy validation; the receiver example passed pinned `amtool check-config`.
+  Metadata regeneration found the expected 44 linked dependencies.
+- `make verify-ci-topology` retained all ten negative controls, and `make release-secret-scan`
+  reported 1,333 tracked files with no findings. No workflow byte changed. A bare
+  `make deployment-config-check` was also attempted without the mandatory production environment
+  and correctly failed configuration loading; it is not cited as positive evidence.
+
+Discrimination was executed, not inferred: changing the five-minute outage duration to six made
+`promtool` fail at exactly 5m; reintroducing `intent_id` made the privacy test reject the emitted
+value; weakening the capacity multiplier from fourteen days to thirteen made the insufficient-
+capacity fixture pass and the test fail; removing manifest image cardinality made the missing-
+Prometheus image/SBOM fixture fail; and accepting an unchanged Alertmanager counter made the
+health-only negative fail in about 100ms. Every mutation was restored before the green runs.
+
+First-filter findings fixed before commit included the missing rendered journal-budget artifact,
+non-atomic privileged policy output, Alertmanager's initially impossible remote egress, stale
+healthy storage metrics above budget, silent database-collector absence, a fake raw-IP-sink
+assertion, incomplete fired/resolved semantic validation, and unbounded top-level command errors.
+No gameplay behavior, balance, content, save schema, CI topology, RPO/RTO result or R-006 claim
+entered the range.
+
+**Review by:** Codex. **Recorded by:** Codex. The exact implementation range
+`3f58fea..09d5027` plus this record commit was inspected and executed in full. Verdict:
+**APPROVED as first filter; not the designated pass.** DP-E is ready for Claude's mandatory
+exact-range cross-party review and remains unarchived. DP-F may be planned, but no Deployment
+Foundation archival or supported-self-host/release-ready/1.0 claim is authorized.

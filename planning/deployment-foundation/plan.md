@@ -18,7 +18,7 @@ its own executable failure cases and a bounded review range. No batch may claim 
 | DP-B | Repository-independent gameserver/client/Caddy image inputs, production Compose topology, machine-readable schema, license/SBOM/release manifest generation and validation | Bundle builds from tracked inputs; clean extracted bundle reaches startup without a checkout; removed artifact and changed digest fixtures fail | ready for designated review (DP-A review remains independent) |
 | DP-C | Encrypted off-host backup, restore, retention and manifest binding | Empty/populated Postgres restore witnesses plus corrupt/truncated/wrong-identity/wrong-manifest/partial-file negatives | ready for designated review |
 | DP-D | Stop-drain-start release helper, release record, seven-day previous-version rollback without Down migrations | Real Caddy HTTP/WebSocket release and rollback population; severed courtesy frame, drain, migration, epoch and smoke paths fail | ready for designated review |
-| DP-E | Private operations profile, metrics, journald policy and seven blocking alerts | Private reachability and retention fixtures; all seven alerts fire and severed metric/rule/receiver paths fail | implementing |
+| DP-E | Private operations profile, metrics, journald policy and seven blocking alerts | Private reachability and retention fixtures; all seven alerts fire and severed metric/rule/receiver paths fail | ready for designated review |
 | DP-F | Exact-manifest R-006 clean-host, provider-off, supply-chain and recovery rehearsal; canonical docs and lifecycle closeout | Clean Linux/amd64 release bundle proves AC1–AC8, RPO/RTO and rollback, then receives both required review gates | pending |
 
 ## Batch protocol
