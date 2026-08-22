@@ -52,6 +52,11 @@ func TestReleaseManifestRejectsMutableImageAndWrongSBOMHash(t *testing.T) {
 	if _, _, err := BuildReleaseManifest(root, ManifestInput{ReleaseVersion: "0.1.0", SourceCommit: strings.Repeat("d", 40), DockerEngineVersion: "28", DockerComposeVersion: "2", DatabaseMigration: 74, Closure: closure, Images: images}); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("wrong SBOM hash accepted: %v", err)
 	}
+	images = fixtureManifestImages(t, root)
+	images = append(images[:5], images[6:]...)
+	if _, _, err := BuildReleaseManifest(root, ManifestInput{ReleaseVersion: "0.1.0", SourceCommit: strings.Repeat("d", 40), DockerEngineVersion: "28", DockerComposeVersion: "2", DatabaseMigration: 74, Closure: closure, Images: images}); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("missing Prometheus image and SBOM accepted: %v", err)
+	}
 }
 
 func releaseBundleFixture(t *testing.T) string {
@@ -62,7 +67,11 @@ func releaseBundleFixture(t *testing.T) string {
 		"compose.yml": "fixture\n", "compose.rotation.yml": "fixture\n", "config.schema.json": "{}\n", "release-manifest.schema.json": "{}\n",
 		"sbom/application.spdx.json": fixtureSPDX("application"),
 		"third-party-licenses.txt":   "fixture\n", "site/index.html": "<html></html>\n", "site/third-party-licenses.txt": "fixture\n",
-		"gameserver": "binary\n", "deployment-backup": "binary\n", "deployment-release": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
+		"gameserver": "binary\n", "deployment-backup": "binary\n", "deployment-release": "binary\n", "deployment-operations": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
+		"operations/prometheus.yml": "fixture\n", "operations/cloud-clicker-alerts.yml": "fixture\n", "operations/cloud-clicker-alerts.test.yml": "fixture\n",
+		"operations/alertmanager.example.yml": "fixture\n", "operations/journald.template.conf": "fixture\n",
+		"operations/cloud-clicker-observe.service": "fixture\n", "operations/cloud-clicker-observe.timer": "fixture\n",
+		"operations/operations.env.example": "fixture\n",
 	}
 	for path, value := range files {
 		target := filepath.Join(root, filepath.FromSlash(path))
@@ -82,6 +91,12 @@ func releaseBundleFixture(t *testing.T) string {
 			t.Fatal(err)
 		}
 	}
+	if err := os.RemoveAll(filepath.Join(root, "operations")); err != nil {
+		t.Fatal(err)
+	}
+	if err := copyTree(filepath.Join("..", "..", "deployment", "operations"), filepath.Join(root, "operations")); err != nil {
+		t.Fatal(err)
+	}
 	archive, gameserverID := fixtureDockerArchive(t, t.TempDir(), "amd64")
 	if err := os.MkdirAll(filepath.Join(root, "images"), 0o755); err != nil {
 		t.Fatal(err)
@@ -93,8 +108,12 @@ func releaseBundleFixture(t *testing.T) string {
 	if err := os.WriteFile(filepath.Join(root, "images", "gameserver.docker.tar"), data, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	configIDs := map[string]string{"caddy": "sha256:" + strings.Repeat("1", 64), "gameserver": gameserverID, "postgres": "sha256:" + strings.Repeat("3", 64)}
-	for _, name := range []string{"caddy", "gameserver", "postgres"} {
+	configIDs := map[string]string{}
+	for index, name := range releaseImageNames {
+		configIDs[name] = "sha256:" + strings.Repeat(string(rune('1'+index)), 64)
+	}
+	configIDs["gameserver"] = gameserverID
+	for _, name := range releaseImageNames {
 		path := filepath.Join(root, "sbom", name+".spdx.json")
 		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 			t.Fatal(err)
@@ -109,7 +128,7 @@ func releaseBundleFixture(t *testing.T) string {
 func fixtureManifestImages(t *testing.T, root string) []Image {
 	t.Helper()
 	result := []Image{}
-	for index, name := range []string{"caddy", "gameserver", "postgres"} {
+	for index, name := range releaseImageNames {
 		path := "sbom/" + name + ".spdx.json"
 		data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(path)))
 		if err != nil {
@@ -128,8 +147,8 @@ func fixtureManifestImages(t *testing.T, root string) []Image {
 			break
 		}
 		if strings.HasSuffix(header.Name, ".json") && header.Name != "manifest.json" {
-			result[1].Reference = "sha256:" + strings.TrimSuffix(header.Name, ".json")
-			result[1].RuntimeConfigSHA256 = result[1].Reference
+			result[2].Reference = "sha256:" + strings.TrimSuffix(header.Name, ".json")
+			result[2].RuntimeConfigSHA256 = result[2].Reference
 			break
 		}
 	}

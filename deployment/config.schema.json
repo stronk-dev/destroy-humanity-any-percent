@@ -11,10 +11,13 @@
     "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID",
     "CLOUD_CLICKER_BACKUP_TARGET",
     "CLOUD_CLICKER_AGE_RECIPIENT",
+    "CLOUD_CLICKER_OPERATIONS_METRICS",
+    "CLOUD_CLICKER_RECEIVER_HEALTH_URL",
     "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE",
     "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE",
     "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE",
-    "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE"
+    "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE",
+    "CLOUD_CLICKER_ALERTMANAGER_CONFIG"
   ],
   "properties": {
     "CLOUD_CLICKER_PUBLIC_ORIGIN": { "type": "string", "pattern": "^https://[^/?#]+$" },
@@ -23,12 +26,15 @@
     "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID": { "$ref": "#/$defs/keyID" },
     "CLOUD_CLICKER_BACKUP_TARGET": { "type": "string", "pattern": "^/[^\\u0000\\r\\n]+$" },
     "CLOUD_CLICKER_AGE_RECIPIENT": { "type": "string", "pattern": "^age1[023456789acdefghjklmnpqrstuvwxyz]{58}$" },
+    "CLOUD_CLICKER_OPERATIONS_METRICS": { "type": "string", "pattern": "^/[^\\u0000\\r\\n]+$" },
+    "CLOUD_CLICKER_RECEIVER_HEALTH_URL": { "type": "string", "pattern": "^(?:https://[^/?#]+|http://[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?(?::[1-9][0-9]{0,4})?)(?:/[^?#]*)?$" },
     "POSTGRES_DB": { "$ref": "#/$defs/databaseName" },
     "POSTGRES_USER": { "$ref": "#/$defs/databaseName" },
     "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
+    "CLOUD_CLICKER_ALERTMANAGER_CONFIG": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_HTTP_PORT": { "$ref": "#/$defs/port" },
     "CLOUD_CLICKER_HTTPS_PORT": { "$ref": "#/$defs/port" }
   },

@@ -23,6 +23,7 @@ import (
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/operations"
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
@@ -53,6 +54,7 @@ type CompositionConfig struct {
 	Clock              func() time.Time
 	Random             io.Reader
 	Logger             *slog.Logger
+	Operations         *operations.Registry
 	GuildNameAdditions []byte
 }
 
@@ -173,13 +175,22 @@ func (memberships channelMemberships) CohortMember(founderID, cohortID string) b
 }
 func (channelMemberships) MatchParticipant(string, string) bool { return false }
 
-type logInvariantSink struct{ logger *slog.Logger }
+type logInvariantSink struct {
+	logger     *slog.Logger
+	operations *operations.Registry
+}
 
 func (sink logInvariantSink) ReportRelayInvariant(value transport.RelayInvariant) {
-	sink.logger.Error("relay invariant", "kind", value.Kind, "founder_id", value.FounderID, "detail", value.Detail)
+	sink.logger.Error("relay invariant", "kind", value.Kind)
+	if sink.operations != nil {
+		sink.operations.Increment(value.Kind)
+	}
 }
 func (sink logInvariantSink) ReportVerificationInvariant(value replayverify.VerificationInvariant) {
-	sink.logger.Error("verification invariant", "kind", value.Kind, "stream_id", value.StreamID, "run_seq", value.RunSeq, "detail", value.Detail)
+	sink.logger.Error("verification invariant", "kind", value.Kind)
+	if sink.operations != nil {
+		sink.operations.Increment(value.Kind)
+	}
 }
 
 func Compose(ctx context.Context, config CompositionConfig) (*Composition, error) {
@@ -282,7 +293,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		commonsbinding.Provider{Catalogs: catalogs.commons, Snapshots: commonsProjector},
 		faction.StockConsumptionProvider{Catalogs: catalogs, Members: guildService},
 	}
-	productionService, err := production.NewService(store, catalogs, providers, nil, config.Logger,
+	productionService, err := production.NewService(store, catalogs, providers, config.Operations, config.Logger,
 		production.WithRouteCatalogs(catalogs), production.WithRouteProjector(routeProjector),
 		production.WithEventProjector(commonsProjector), production.WithEventProjector(guildProjector),
 		production.WithCompactPolicies(catalogs), production.WithCommonsWeightResolver(commonsProjector),
@@ -337,11 +348,16 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if allowedOrigins != nil {
 		policy.AllowedOrigins = allowedOrigins
 	}
-	node, err := transport.NewNode(*policy, accounts, channelMemberships{guildService, commonsProjector})
+	var node *transport.Node
+	if config.Operations == nil {
+		node, err = transport.NewNode(*policy, accounts, channelMemberships{guildService, commonsProjector})
+	} else {
+		node, err = transport.NewNodeWithMetrics(*policy, accounts, channelMemberships{guildService, commonsProjector}, config.Operations.Prometheus())
+	}
 	if err != nil {
 		return nil, err
 	}
-	sink := logInvariantSink{logger: config.Logger}
+	sink := logInvariantSink{logger: config.Logger, operations: config.Operations}
 	playerRelay, err := transport.NewPlayerRelay(store, node, sink)
 	if err != nil {
 		return nil, err
@@ -368,8 +384,13 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
+	if config.Operations != nil {
+		if err := server.AttachOperations(config.Operations); err != nil {
+			return nil, err
+		}
+	}
 
-	verificationJob, err := NewPeriodicJob(100*time.Millisecond, func(ctx context.Context) error {
+	verificationJob, err := NewPeriodicJob(100*time.Millisecond, observeOperation(config.Operations, "verification", config.Clock, func(ctx context.Context) error {
 		for count := 0; count < 64; count++ {
 			worked, err := verification.ProcessNext(ctx, boardProjector)
 			if err != nil || !worked {
@@ -377,28 +398,28 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 			}
 		}
 		return nil
-	})
+	}))
 	if err != nil {
 		return nil, err
 	}
-	presenceJob, err := NewPeriodicJob(25*time.Millisecond, func(ctx context.Context) error { _, err := guildRelay.Flush(ctx); return err })
+	presenceJob, err := NewPeriodicJob(25*time.Millisecond, observeOperation(config.Operations, "presence", config.Clock, func(ctx context.Context) error { _, err := guildRelay.Flush(ctx); return err }))
 	if err != nil {
 		return nil, err
 	}
-	clearingJob, err := NewPeriodicJob(time.Duration(current.Guild.ClearingIntervalMS)*time.Millisecond, func(ctx context.Context) error { _, err := clearing.Tick(ctx); return err })
+	clearingJob, err := NewPeriodicJob(time.Duration(current.Guild.ClearingIntervalMS)*time.Millisecond, observeOperation(config.Operations, "clearing", config.Clock, func(ctx context.Context) error { _, err := clearing.Tick(ctx); return err }))
 	if err != nil {
 		return nil, err
 	}
-	sweepJob, err := NewPeriodicJob(time.Hour, func(ctx context.Context) error {
+	sweepJob, err := NewPeriodicJob(time.Hour, observeOperation(config.Operations, "guild_sweep", config.Clock, func(ctx context.Context) error {
 		_, err := guildService.SweepDisbanded(ctx, config.Clock(), 64)
 		return err
-	})
+	}))
 	if err != nil {
 		return nil, err
 	}
-	sessionGCJob, err := NewPeriodicJob(time.Minute, func(ctx context.Context) error {
+	sessionGCJob, err := NewPeriodicJob(time.Minute, observeOperation(config.Operations, "credential_cleanup", config.Clock, func(ctx context.Context) error {
 		return pruneExpiredCredentials(ctx, accounts, config.Clock(), 1_000)
-	})
+	}))
 	if err != nil {
 		return nil, err
 	}
@@ -407,6 +428,15 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	}
 	return &Composition{CurrentHash: seed.Hash, Server: server, Node: node, Accounts: accounts, Production: productionService, Guilds: guildService, Minigames: minigameService,
 		GameUI: gameUIProjector, Commons: commonsProjector, Verification: verification, LeaderboardProjector: boardProjector, Clearing: clearing, Catalogs: catalogs}, nil
+}
+
+func observeOperation(registry *operations.Registry, name string, clock func() time.Time, run func(context.Context) error) func(context.Context) error {
+	if registry == nil {
+		return run
+	}
+	return func(ctx context.Context) error {
+		return registry.ObserveJob(name, clock(), func() error { return run(ctx) })
+	}
 }
 
 func deploymentBoundary(config CompositionConfig) ([]string, int, error) {

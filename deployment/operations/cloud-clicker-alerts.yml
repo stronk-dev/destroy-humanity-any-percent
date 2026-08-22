@@ -1,0 +1,54 @@
+groups:
+  - name: cloud-clicker-release-floor
+    interval: 15s
+    rules:
+      - alert: CloudClickerPublicEndpointOrReadinessUnavailable
+        expr: up{job="caddy"} == 0 or up{job="gameserver"} == 0 or cloud_clicker_ready == 0
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: Public ingress or authoritative readiness has been unavailable for five minutes.
+
+      - alert: CloudClickerBackupMissingOrFailed
+        expr: absent(cloud_clicker_backup_last_success_timestamp_seconds) == 1 or time() - cloud_clicker_backup_last_success_timestamp_seconds > 21600 or cloud_clicker_backup_last_failure_timestamp_seconds > cloud_clicker_backup_last_success_timestamp_seconds
+        labels:
+          severity: page
+        annotations:
+          summary: The six-hour encrypted backup contract is missing, late, or failed.
+
+      - alert: CloudClickerPostgresUnreachable
+        expr: cloud_clicker_postgres_reachable == 0 or cloud_clicker_database_collection_success == 0 or absent(cloud_clicker_database_collection_success) == 1
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: The authoritative Postgres database or its bounded operations collector has failed for two minutes.
+
+      - alert: CloudClickerStoragePressure
+        expr: cloud_clicker_filesystem_usage_ratio > 0.8 or cloud_clicker_journal_usage_bytes / cloud_clicker_journal_budget_bytes > 0.8 or absent(cloud_clicker_filesystem_usage_ratio{storage="backup"}) == 1 or absent(cloud_clicker_filesystem_usage_ratio{storage="persistent"}) == 1 or absent(cloud_clicker_journal_usage_bytes) == 1 or absent(cloud_clicker_journal_budget_bytes) == 1
+        labels:
+          severity: page
+        annotations:
+          summary: Persistent, backup, or journal storage crossed the release-floor threshold.
+
+      - alert: CloudClickerGameserverRestartLoop
+        expr: increase(cloud_clicker_gameserver_restart_count[10m]) >= 3
+        labels:
+          severity: page
+        annotations:
+          summary: The gameserver restarted at least three times inside ten minutes.
+
+      - alert: CloudClickerCleanupJobFailed
+        expr: increase(cloud_clicker_job_runs_total{job="credential_cleanup",result="failure"}[5m]) > 0
+        labels:
+          severity: page
+        annotations:
+          summary: The composed expired-credential cleanup job failed.
+
+      - alert: CloudClickerDeadLetterGrowth
+        expr: (cloud_clicker_dead_letters - cloud_clicker_dead_letters offset 15s > 0) and (cloud_clicker_dead_letters offset 15s - cloud_clicker_dead_letters offset 30s > 0)
+        labels:
+          severity: page
+        annotations:
+          summary: A dead-letter population grew across two consecutive collection intervals.

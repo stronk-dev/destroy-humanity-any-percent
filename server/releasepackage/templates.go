@@ -40,6 +40,10 @@ type composeService struct {
 	DependsOn   map[string]struct {
 		Condition string `yaml:"condition"`
 	} `yaml:"depends_on"`
+	Logging struct {
+		Driver  string            `yaml:"driver"`
+		Options map[string]string `yaml:"options"`
+	} `yaml:"logging"`
 }
 
 type composeNetwork struct {
@@ -50,13 +54,16 @@ type composeSecret struct {
 	File string `yaml:"file"`
 }
 
+var releaseImageNames = []string{"alertmanager", "caddy", "gameserver", "node-exporter", "postgres", "prometheus"}
+
 func RenderCompose(template []byte, images map[string]string) ([]byte, error) {
-	if len(template) == 0 || len(images) != 3 {
+	if len(template) == 0 || len(images) != len(releaseImageNames) {
 		return nil, ErrInvalidContent
 	}
 	result := append([]byte(nil), template...)
-	for _, name := range []string{"CADDY", "GAMESERVER", "POSTGRES"} {
-		reference := images[strings.ToLower(name)]
+	for _, imageName := range releaseImageNames {
+		name := strings.ToUpper(strings.ReplaceAll(imageName, "-", "_"))
+		reference := images[imageName]
 		if !imageReferencePattern.MatchString(reference) {
 			return nil, fmt.Errorf("%w: %s image is not immutable", ErrInvalidContent, strings.ToLower(name))
 		}
@@ -77,10 +84,10 @@ func RenderCompose(template []byte, images map[string]string) ([]byte, error) {
 
 func ValidateCompose(data []byte) error {
 	var model composeModel
-	if len(data) == 0 || yaml.Unmarshal(data, &model) != nil || len(model.Services) != 4 {
+	if len(data) == 0 || yaml.Unmarshal(data, &model) != nil || len(model.Services) != 7 {
 		return ErrInvalidContent
 	}
-	wantServices := []string{"backup", "caddy", "gameserver", "postgres"}
+	wantServices := []string{"alertmanager", "backup", "caddy", "gameserver", "node-exporter", "postgres", "prometheus"}
 	for _, name := range wantServices {
 		service, ok := model.Services[name]
 		if !ok || !imageReferencePattern.MatchString(service.Image) {
@@ -89,21 +96,31 @@ func ValidateCompose(data []byte) error {
 		if name != "caddy" && len(service.Ports) != 0 {
 			return fmt.Errorf("%w: non-Caddy port publication", ErrInvalidContent)
 		}
+		if service.Logging.Driver != "journald" || service.Logging.Options["tag"] != "cloud-clicker-"+name {
+			return fmt.Errorf("%w: service %s does not use its bounded journald tag", ErrInvalidContent, name)
+		}
 	}
-	if strings.HasPrefix(model.Services["caddy"].Image, "sha256:") || strings.HasPrefix(model.Services["postgres"].Image, "sha256:") {
-		return fmt.Errorf("%w: upstream image requires repository digest", ErrInvalidContent)
+	for _, name := range []string{"alertmanager", "caddy", "node-exporter", "postgres", "prometheus"} {
+		if strings.HasPrefix(model.Services[name].Image, "sha256:") {
+			return fmt.Errorf("%w: upstream image requires repository digest", ErrInvalidContent)
+		}
 	}
 	caddy := model.Services["caddy"]
 	gameserver := model.Services["gameserver"]
 	postgres := model.Services["postgres"]
 	backup := model.Services["backup"]
-	if len(caddy.Ports) != 2 || !sameStrings(caddy.Networks, []string{"application", "edge"}) ||
-		!sameStrings(gameserver.Networks, []string{"application", "database"}) || !sameStrings(postgres.Networks, []string{"database"}) || !sameStrings(backup.Networks, []string{"database"}) ||
-		len(gameserver.Expose) != 1 || gameserver.Expose[0] != "8080" || len(postgres.Expose) != 0 || len(backup.Expose) != 0 {
+	prometheus := model.Services["prometheus"]
+	alertmanager := model.Services["alertmanager"]
+	nodeExporter := model.Services["node-exporter"]
+	if len(caddy.Ports) != 2 || !sameStrings(caddy.Networks, []string{"application", "edge", "operations"}) || !sameStrings(gameserver.Networks, []string{"application", "database"}) ||
+		!sameStrings(postgres.Networks, []string{"database"}) || !sameStrings(backup.Networks, []string{"database"}) ||
+		!sameStrings(prometheus.Networks, []string{"application", "operations"}) || !sameStrings(alertmanager.Networks, []string{"edge", "operations"}) || !sameStrings(nodeExporter.Networks, []string{"operations"}) ||
+		!sameStrings(caddy.Expose, []string{"2019"}) || !sameStrings(gameserver.Expose, []string{"8080"}) || !sameStrings(prometheus.Expose, []string{"9090"}) ||
+		!sameStrings(alertmanager.Expose, []string{"9093"}) || !sameStrings(nodeExporter.Expose, []string{"9100"}) || len(postgres.Expose) != 0 || len(backup.Expose) != 0 {
 		return fmt.Errorf("%w: invalid service topology caddy_ports=%v caddy_networks=%v gameserver_expose=%v gameserver_networks=%v postgres_expose=%v postgres_networks=%v",
 			ErrInvalidContent, caddy.Ports, caddy.Networks, gameserver.Expose, gameserver.Networks, postgres.Expose, postgres.Networks)
 	}
-	if !model.Networks["application"].Internal || !model.Networks["database"].Internal || model.Networks["edge"].Internal {
+	if !model.Networks["application"].Internal || !model.Networks["database"].Internal || !model.Networks["operations"].Internal || model.Networks["edge"].Internal {
 		return fmt.Errorf("%w: invalid network privacy %+v", ErrInvalidContent, model.Networks)
 	}
 	wantEnvironment := map[string]string{
@@ -123,18 +140,25 @@ func ValidateCompose(data []byte) error {
 		!sameStrings(postgres.Secrets, []string{"postgres-password"}) || !sameStrings(backup.Secrets, []string{"database-url"}) {
 		return fmt.Errorf("%w: invalid secret mounts gameserver=%v postgres=%v", ErrInvalidContent, gameserver.Secrets, postgres.Secrets)
 	}
-	wantBackupCommand := []string{"--age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}", "--database-url-file=/run/secrets/database-url", "--epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json", "--release-manifest=/opt/cloud-clicker/release-manifest.json", "--server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}", "--target=/backups", "schedule"}
+	wantBackupCommand := []string{"--age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}", "--database-url-file=/run/secrets/database-url", "--epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json", "--metrics-dir=/operations", "--release-manifest=/opt/cloud-clicker/release-manifest.json", "--server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}", "--target=/backups", "schedule"}
 	if backup.Image != postgres.Image || backup.User != "70:70" || !backup.ReadOnly || !sameStrings(backup.CapDrop, []string{"ALL"}) || !sameStrings(backup.SecurityOpt, []string{"no-new-privileges:true"}) || len(backup.Tmpfs) != 1 ||
 		!sameStrings(backup.Entrypoint, []string{"/opt/cloud-clicker/deployment-backup"}) || !sameStrings(backup.Command, wantBackupCommand) || backup.DependsOn["postgres"].Condition != "service_healthy" || len(backup.DependsOn) != 1 ||
-		!sameStrings(backup.Volumes, []string{"./content:/opt/cloud-clicker/content:ro", "./deployment-backup:/opt/cloud-clicker/deployment-backup:ro", "./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro", "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"}) {
+		!sameStrings(backup.Volumes, []string{"./content:/opt/cloud-clicker/content:ro", "./deployment-backup:/opt/cloud-clicker/deployment-backup:ro", "./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro", "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups", "${CLOUD_CLICKER_OPERATIONS_METRICS:?set the node-exporter textfile directory}:/operations"}) {
 		return fmt.Errorf("%w: invalid backup worker boundary", ErrInvalidContent)
+	}
+	if !sameStrings(alertmanager.Secrets, []string{"alertmanager-config"}) || len(prometheus.Secrets) != 0 || len(nodeExporter.Secrets) != 0 ||
+		!prometheus.ReadOnly || !alertmanager.ReadOnly || !nodeExporter.ReadOnly ||
+		!sameStrings(prometheus.Volumes, []string{"./deployment-operations:/opt/cloud-clicker/deployment-operations:ro", "./operations/cloud-clicker-alerts.yml:/etc/prometheus/cloud-clicker-alerts.yml:ro", "./operations/prometheus.yml:/etc/prometheus/prometheus.yml:ro", "prometheus_data:/prometheus"}) ||
+		!sameStrings(alertmanager.Volumes, []string{"./deployment-operations:/opt/cloud-clicker/deployment-operations:ro", "alertmanager_data:/alertmanager"}) ||
+		!sameStrings(nodeExporter.Volumes, []string{"/:/host/root:ro,rslave", "/proc:/host/proc:ro", "/sys:/host/sys:ro", "${CLOUD_CLICKER_OPERATIONS_METRICS:?set the node-exporter textfile directory}:/textfile:ro"}) {
+		return fmt.Errorf("%w: invalid private operations boundary", ErrInvalidContent)
 	}
 	return nil
 }
 
 func ValidateCaddyfile(data []byte) error {
 	text := string(data)
-	for _, required := range []string{"{$CLOUD_CLICKER_PUBLIC_ORIGIN}", "/api/*", "/connection/websocket", "/healthz", "/readyz", "reverse_proxy gameserver:8080", "root * /srv", "try_files {path} /index.html"} {
+	for _, required := range []string{"admin :2019", "metrics", "{$CLOUD_CLICKER_PUBLIC_ORIGIN}", "/api/*", "/connection/websocket", "/healthz", "/readyz", "reverse_proxy gameserver:8080", "root * /srv", "try_files {path} /index.html"} {
 		if strings.Count(text, required) != 1 {
 			return fmt.Errorf("%w: Caddy route %q", ErrInvalidContent, required)
 		}
@@ -162,10 +186,9 @@ func ValidateDeploymentTemplates(root string) error {
 	if err != nil {
 		return err
 	}
-	images := map[string]string{
-		"caddy":      "caddy:fixture@sha256:" + strings.Repeat("a", 64),
-		"gameserver": "cloud-clicker/gameserver:fixture@sha256:" + strings.Repeat("b", 64),
-		"postgres":   "postgres:fixture@sha256:" + strings.Repeat("c", 64),
+	images := map[string]string{}
+	for index, name := range releaseImageNames {
+		images[name] = name + ":fixture@sha256:" + strings.Repeat(string(rune('a'+index)), 64)
 	}
 	if _, err := RenderCompose(template, images); err != nil {
 		return err

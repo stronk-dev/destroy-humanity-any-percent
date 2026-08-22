@@ -16,6 +16,7 @@ type BundleInput struct {
 	ServerBinary           string
 	BackupBinary           string
 	ReleaseBinary          string
+	OperationsBinary       string
 	ClientDist             string
 	MetadataDirectory      string
 	GameserverImageArchive string
@@ -32,13 +33,16 @@ type BundleInput struct {
 // destination must not already contain bytes: a failed build can therefore
 // never be mistaken for a previously successful release.
 func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
-	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ReleaseBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != 3 || len(input.ImageConfigIDs) != 3 || len(input.ImageSBOMs) != 3 {
+	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ReleaseBinary == "" || input.OperationsBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != len(releaseImageNames) || len(input.ImageConfigIDs) != len(releaseImageNames) || len(input.ImageSBOMs) != len(releaseImageNames) {
 		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := requireEmptyDestination(input.Output); err != nil {
 		return ReleaseManifest{}, err
 	}
 	if err := ValidateDeploymentSchemas(input.RepositoryRoot); err != nil {
+		return ReleaseManifest{}, err
+	}
+	if err := ValidateOperationsProfile(filepath.Join(input.RepositoryRoot, "deployment")); err != nil {
 		return ReleaseManifest{}, err
 	}
 
@@ -68,6 +72,12 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		return ReleaseManifest{}, err
 	}
 	if err := copyLinuxAMD64Binary(input.ReleaseBinary, filepath.Join(input.Output, "deployment-release")); err != nil {
+		return ReleaseManifest{}, err
+	}
+	if err := copyLinuxAMD64Binary(input.OperationsBinary, filepath.Join(input.Output, "deployment-operations")); err != nil {
+		return ReleaseManifest{}, err
+	}
+	if err := copyTree(filepath.Join(input.RepositoryRoot, "deployment", "operations"), filepath.Join(input.Output, "operations")); err != nil {
 		return ReleaseManifest{}, err
 	}
 	if err := copyRegularFile(input.GameserverImageArchive, filepath.Join(input.Output, "images", "gameserver.docker.tar"), 0o644); err != nil {
@@ -102,8 +112,8 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		return ReleaseManifest{}, err
 	}
 
-	images := make([]Image, 0, 3)
-	for _, name := range []string{"caddy", "gameserver", "postgres"} {
+	images := make([]Image, 0, len(releaseImageNames))
+	for _, name := range releaseImageNames {
 		reference, configID, source := input.Images[name], input.ImageConfigIDs[name], input.ImageSBOMs[name]
 		if !imageReferencePattern.MatchString(reference) || !hashPattern.MatchString(configID) || source == "" {
 			return ReleaseManifest{}, fmt.Errorf("%w: image %s", ErrInvalidContent, name)

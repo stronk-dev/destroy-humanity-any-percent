@@ -1,0 +1,55 @@
+name: cloud-clicker-operations-test
+
+services:
+  caddy:
+    image: caddy:2.11.4-alpine@sha256:98eb57d882ccd5213d1688764db10c1ca2c58a1ca3a6717a3411ad798f7a423a
+    environment:
+      CLOUD_CLICKER_PUBLIC_ORIGIN: ":8081"
+    volumes:
+      - ./deployment/Caddyfile:/etc/caddy/Caddyfile:ro
+    expose: ["2019"]
+    networks: [operations]
+
+  prometheus:
+    image: prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    volumes:
+      - ./deployment/operations/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./deployment/operations/cloud-clicker-alerts.yml:/etc/prometheus/cloud-clicker-alerts.yml:ro
+    expose: ["9090"]
+    networks: [operations]
+    depends_on: [caddy]
+
+  alertmanager:
+    image: prom/alertmanager:v0.32.1@sha256:51a825c2a40acc3e338fdd00d622e01ec090f72be2b3ea46be0839cd47a4d286
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./deployment/operations/alertmanager.test.yml:/etc/alertmanager/alertmanager.yml:ro
+    expose: ["9093"]
+    networks: [operations]
+
+  node-exporter:
+    image: prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0
+    expose: ["9100"]
+    networks: [operations]
+
+  operations-test:
+    image: postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685
+    entrypoint: ["/test/operations.test"]
+    command: ["-test.run", "^TestPrivateOperationsProfileIntegration$$", "-test.v", "-test.count=1"]
+    environment:
+      CLOUD_CLICKER_OPERATIONS_INTEGRATION: "1"
+    volumes:
+      - ./.cache/bin/operations.test:/test/operations.test:ro
+    networks:
+      operations:
+        aliases: [gameserver]
+    depends_on: [caddy, prometheus, alertmanager, node-exporter]
+
+networks:
+  operations:
+    internal: true

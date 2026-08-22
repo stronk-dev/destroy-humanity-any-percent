@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/account"
 	"cloud-clicker/server/deploymentconfig"
 	"cloud-clicker/server/gameserver"
+	"cloud-clicker/server/operations"
 	"cloud-clicker/server/save"
 )
 
@@ -21,18 +22,18 @@ func main() {
 	if len(os.Args) == 2 && os.Args[1] == "validate-config" {
 		config, err := deploymentconfig.LoadEnvironment()
 		if err != nil {
-			logger.Error("deployment configuration invalid", "error", err)
+			logger.Error("deployment configuration invalid", "error_class", "invalid_configuration")
 			os.Exit(1)
 		}
 		logger.Info("deployment configuration valid", "mode", config.Mode)
 		return
 	}
 	if len(os.Args) != 1 {
-		logger.Error("gameserver stopped", "error", "usage: gameserver [validate-config]")
+		logger.Error("gameserver stopped", "error_class", "invalid_arguments")
 		os.Exit(1)
 	}
 	if err := run(logger); err != nil {
-		logger.Error("gameserver stopped", "error", err)
+		logger.Error("gameserver stopped", "error_class", "runtime_failure")
 		os.Exit(1)
 	}
 }
@@ -50,10 +51,14 @@ func run(logger *slog.Logger) error {
 	}
 	defer db.Close()
 	signingKeys, bootstrapKeys := compositionKeys(runtime)
+	operationRegistry, err := operations.NewRegistry(db)
+	if err != nil {
+		return err
+	}
 	composition, err := gameserver.Compose(ctx, gameserver.CompositionConfig{
 		DB: db, RepositoryRoot: runtime.ContentRoot, ServerID: runtime.ServerID, ActivityBracket: runtime.ActivityBracket,
 		PublicOrigin: runtime.PublicOrigin, TrustedProxyHops: runtime.TrustedProxyHops,
-		SigningKeys: signingKeys, BootstrapKeys: bootstrapKeys, Logger: logger,
+		SigningKeys: signingKeys, BootstrapKeys: bootstrapKeys, Logger: logger, Operations: operationRegistry,
 	})
 	if err != nil {
 		return err

@@ -1,6 +1,7 @@
 name: cloud-clicker
 
 x-postgres-image: &postgres-image "@@POSTGRES_IMAGE@@"
+x-prometheus-image: &prometheus-image "@@PROMETHEUS_IMAGE@@"
 
 services:
   caddy:
@@ -16,7 +17,8 @@ services:
       - ./site:/srv:ro
       - caddy_data:/data
       - caddy_config:/config
-    networks: [edge, application]
+    expose: ["2019"]
+    networks: [edge, application, operations]
     depends_on:
       gameserver:
         condition: service_started
@@ -97,12 +99,14 @@ services:
       - --epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json
       - --age-recipient=${CLOUD_CLICKER_AGE_RECIPIENT:?set the public age X25519 recipient}
       - --server-id=${CLOUD_CLICKER_SERVER_ID:?set a canonical UUID}
+      - --metrics-dir=/operations
     secrets: [database-url]
     volumes:
       - ./deployment-backup:/opt/cloud-clicker/deployment-backup:ro
       - ./release-manifest.json:/opt/cloud-clicker/release-manifest.json:ro
       - ./content:/opt/cloud-clicker/content:ro
       - "${CLOUD_CLICKER_BACKUP_TARGET:?set the separately mounted backup target}:/backups"
+      - "${CLOUD_CLICKER_OPERATIONS_METRICS:?set the node-exporter textfile directory}:/operations"
     networks: [database]
     depends_on:
       postgres:
@@ -112,17 +116,88 @@ services:
       options:
         tag: cloud-clicker-backup
 
+  prometheus:
+    image: *prometheus-image
+    restart: unless-stopped
+    read_only: true
+    user: "65534:65534"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+    volumes:
+      - ./operations/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./operations/cloud-clicker-alerts.yml:/etc/prometheus/cloud-clicker-alerts.yml:ro
+      - ./deployment-operations:/opt/cloud-clicker/deployment-operations:ro
+      - prometheus_data:/prometheus
+    expose: ["9090"]
+    networks: [application, operations]
+    depends_on:
+      gameserver:
+        condition: service_started
+      alertmanager:
+        condition: service_started
+    logging:
+      driver: journald
+      options:
+        tag: cloud-clicker-prometheus
+
+  alertmanager:
+    image: "@@ALERTMANAGER_IMAGE@@"
+    restart: unless-stopped
+    read_only: true
+    user: "65534:65534"
+    command:
+      - --config.file=/run/secrets/alertmanager-config
+      - --storage.path=/alertmanager
+    secrets: [alertmanager-config]
+    volumes:
+      - ./deployment-operations:/opt/cloud-clicker/deployment-operations:ro
+      - alertmanager_data:/alertmanager
+    expose: ["9093"]
+    networks: [edge, operations]
+    logging:
+      driver: journald
+      options:
+        tag: cloud-clicker-alertmanager
+
+  node-exporter:
+    image: "@@NODE_EXPORTER_IMAGE@@"
+    restart: unless-stopped
+    read_only: true
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/host/root
+      - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+)($$|/)
+      - --collector.textfile.directory=/textfile
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host/root:ro,rslave
+      - "${CLOUD_CLICKER_OPERATIONS_METRICS:?set the node-exporter textfile directory}:/textfile:ro"
+    expose: ["9100"]
+    networks: [operations]
+    logging:
+      driver: journald
+      options:
+        tag: cloud-clicker-node-exporter
+
 networks:
   edge: {}
   application:
     internal: true
   database:
     internal: true
+  operations:
+    internal: true
 
 volumes:
   caddy_data: {}
   caddy_config: {}
   postgres_data: {}
+  prometheus_data: {}
+  alertmanager_data: {}
 
 secrets:
   database-url:
@@ -133,3 +208,5 @@ secrets:
     file: "${CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE:?set the current JWT secret file}"
   bootstrap-current:
     file: "${CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE:?set the current bootstrap secret file}"
+  alertmanager-config:
+    file: "${CLOUD_CLICKER_ALERTMANAGER_CONFIG:?set the Alertmanager receiver configuration file}"

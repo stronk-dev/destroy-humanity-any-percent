@@ -121,6 +121,7 @@ func fixtureReleaseRecord(start time.Time) ReleaseRecord {
 	return ReleaseRecord{SchemaVersion: 1, Action: "release", ReleaseVersion: "1.0.0",
 		ManifestSHA256: "sha256:" + strings.Repeat("a", 64), PreviousVersion: "0.9.0",
 		PreviousManifestSHA256: "sha256:" + strings.Repeat("e", 64), ImageDigests: []string{
-			"caddy:v1@sha256:" + strings.Repeat("b", 64), "sha256:" + strings.Repeat("c", 64), "postgres:v1@sha256:" + strings.Repeat("d", 64),
+			"alertmanager:v1@sha256:" + strings.Repeat("a", 64), "caddy:v1@sha256:" + strings.Repeat("b", 64), "sha256:" + strings.Repeat("c", 64),
+			"node-exporter:v1@sha256:" + strings.Repeat("d", 64), "postgres:v1@sha256:" + strings.Repeat("e", 64), "prometheus:v1@sha256:" + strings.Repeat("f", 64),
 		}, BackupID: "20260822T180000Z-acde00000001", StartedAt: start, CompletedAt: start.Add(time.Minute), RollbackUntil: start.Add(time.Minute).Add(RollbackWindow), Result: "succeeded", Operator: "operator-1"}
 }

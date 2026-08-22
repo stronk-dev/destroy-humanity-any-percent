@@ -2,17 +2,25 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"path/filepath"
 	"testing"
 )
+
+func TestReleaseFailureOutputIsBounded(t *testing.T) {
+	command, class := boundedFailure("recovery_code=private", errors.New("database_url=private"))
+	if command != "unknown" || class != "operation_failed" {
+		t.Fatalf("unbounded failure escaped: command=%q class=%q", command, class)
+	}
+}
 
 func TestRuntimeFlagsRequireEveryOperatorBoundary(t *testing.T) {
 	set := newFlagSetForTest(t)
 	values := addRuntimeFlags(set, true)
 	args := []string{"--operator-state=" + t.TempDir(), "--operator=operator-1", "--public-origin=https://game.example",
 		"--receiver-health-url=http://alertmanager:9093/-/healthy",
-		"--backup-target=/backups", "--age-recipient=age1fixture", "--age-identity-file=/run/secrets/age-identity"}
+		"--backup-target=/backups", "--metrics-dir=/operations", "--age-recipient=age1fixture", "--age-identity-file=/run/secrets/age-identity"}
 	if err := set.Parse(args); err != nil {
 		t.Fatal(err)
 	}

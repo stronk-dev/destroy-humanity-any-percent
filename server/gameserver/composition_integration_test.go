@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/operations"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
@@ -631,11 +632,16 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 
 	now := time.Date(2026, 8, 2, 13, 0, 0, 0, time.UTC)
 	clock := &mutableClock{now: now}
+	operationRegistry, err := operations.NewRegistry(db)
+	if err != nil {
+		t.Fatal(err)
+	}
 	composition, err := Compose(ctx, CompositionConfig{
 		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000303",
 		ActivityBracket: "activity.standard", Clock: clock.Time,
 		SigningKeys:   account.SigningKeys{CurrentID: "composition-prime", Current: bytes.Repeat([]byte{0x63}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-prime", Current: bytes.Repeat([]byte{0x64}, 32)},
+		Operations:    operationRegistry,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -675,6 +681,14 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 	defer cancelServer()
 	if err := composition.Server.Start(serverContext); err != nil {
 		t.Fatal(err)
+	}
+	metricsResponse := httptest.NewRecorder()
+	composition.Server.Handler().ServeHTTP(metricsResponse, httptest.NewRequest(http.MethodGet, "/metrics", nil))
+	metricsText := metricsResponse.Body.String()
+	for _, job := range []string{"verification", "presence", "clearing", "guild_sweep", "credential_cleanup"} {
+		if !strings.Contains(metricsText, `cloud_clicker_job_runs_total{job="`+job+`",result="success"} 1`) {
+			t.Fatalf("composed job %s was not observed after prime:\n%s", job, metricsText)
+		}
 	}
 	var clearings, sessions, accessTokens, families, tombstonedBootstrapReceipts int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_clearing_results`).Scan(&clearings); err != nil || clearings != 1 {

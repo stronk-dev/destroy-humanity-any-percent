@@ -21,6 +21,7 @@ type DockerRuntime struct {
 	PublicOrigin      string
 	ReceiverHealthURL string
 	BackupTarget      string
+	MetricsDirectory  string
 	AgeRecipient      string
 	AgeIdentityFile   string
 	ServerID          string
@@ -41,12 +42,16 @@ func (runtime DockerRuntime) normalized() (DockerRuntime, error) {
 	if runtime.DrainTimeout == 0 {
 		runtime.DrainTimeout = 20 * time.Second
 	}
-	if runtime.PublicOrigin == "" || runtime.ReceiverHealthURL == "" || runtime.BackupTarget == "" ||
+	if runtime.PublicOrigin == "" || runtime.ReceiverHealthURL == "" || runtime.BackupTarget == "" || runtime.MetricsDirectory == "" ||
 		runtime.AgeRecipient == "" || runtime.ServerID == "" || !filepath.IsAbs(runtime.BackupTarget) ||
+		!filepath.IsAbs(runtime.MetricsDirectory) ||
 		runtime.DrainTimeout < time.Second || runtime.DrainTimeout > time.Minute {
 		return DockerRuntime{}, ErrInvalid
 	}
 	if info, err := os.Lstat(runtime.BackupTarget); err != nil || !info.IsDir() {
+		return DockerRuntime{}, ErrInvalid
+	}
+	if info, err := os.Lstat(runtime.MetricsDirectory); err != nil || !info.IsDir() {
 		return DockerRuntime{}, ErrInvalid
 	}
 	return runtime, nil
@@ -61,6 +66,9 @@ func (runtime DockerRuntime) Preflight(ctx context.Context, bundle Bundle) error
 		return err
 	}
 	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "gameserver", "validate-config")...); err != nil {
+		return err
+	}
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=amtool", "alertmanager", "check-config", "/run/secrets/alertmanager-config")...); err != nil {
 		return err
 	}
 	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, runtime.ReceiverHealthURL, nil)
@@ -99,7 +107,7 @@ func (runtime DockerRuntime) CreatePreUpgradeBackup(ctx context.Context, bundle 
 	args := composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "create",
 		"--target=/backups", "--database-url-file=/run/secrets/database-url",
 		"--release-manifest=/opt/cloud-clicker/release-manifest.json", "--epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json",
-		"--age-recipient="+runtime.AgeRecipient, "--server-id="+runtime.ServerID, "--pre-upgrade")
+		"--age-recipient="+runtime.AgeRecipient, "--server-id="+runtime.ServerID, "--metrics-dir=/operations", "--pre-upgrade")
 	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", args...)
 	if err != nil {
 		return BackupReference{}, err
@@ -201,7 +209,7 @@ func (runtime DockerRuntime) Start(ctx context.Context, bundle Bundle) error {
 	if err != nil {
 		return err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy", "backup")...); err != nil {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy", "backup", "prometheus", "alertmanager", "node-exporter")...); err != nil {
 		return err
 	}
 	readyCtx, cancel := context.WithTimeout(ctx, time.Minute)
@@ -237,7 +245,20 @@ func (runtime DockerRuntime) AuthenticatedSmoke(ctx context.Context, bundle Bund
 	if err != nil {
 		return err
 	}
-	return session.Close()
+	if err := session.Close(); err != nil {
+		return err
+	}
+	return runtime.verifyAlertDelivery(ctx, bundle)
+}
+
+func (runtime DockerRuntime) verifyAlertDelivery(ctx context.Context, bundle Bundle) error {
+	runtime, err := runtime.normalized()
+	if err != nil {
+		return err
+	}
+	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=/opt/cloud-clicker/deployment-operations", "alertmanager", "alert-test",
+		"--alertmanager-url=http://alertmanager:9093", "--receiver-health-url="+runtime.ReceiverHealthURL)...)
+	return err
 }
 
 func (runtime DockerRuntime) StopFailed(ctx context.Context, bundle Bundle) error {
@@ -278,7 +299,7 @@ func (runtime DockerRuntime) Restore(ctx context.Context, bundle Bundle, backup 
 	}
 	args := composeArgs(bundle, "run", "--rm", "--no-deps", "--volume", identity+":/run/secrets/age-identity:ro", "backup", "restore",
 		"--backup=/backups/"+filepath.Base(backup.Path), "--release-manifest=/opt/cloud-clicker/release-manifest.json",
-		"--identity-file=/run/secrets/age-identity", "--target-database-url-file=/run/secrets/database-url")
+		"--identity-file=/run/secrets/age-identity", "--target-database-url-file=/run/secrets/database-url", "--metrics-dir=/operations")
 	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", args...)
 	if err != nil {
 		return err

@@ -1,0 +1,12 @@
+route:
+  receiver: integration
+  group_by: [alertname]
+  group_wait: 0s
+  group_interval: 1m
+  repeat_interval: 4h
+
+receivers:
+  - name: integration
+    webhook_configs:
+      - url: http://operations-test:8090/alerts
+        send_resolved: true

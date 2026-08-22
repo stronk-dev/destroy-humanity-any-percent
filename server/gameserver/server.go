@@ -44,6 +44,12 @@ type BackgroundJob interface {
 	Run(context.Context) error
 }
 
+type Operations interface {
+	Handler() http.Handler
+	HTTP(http.Handler) http.Handler
+	SetReady(bool)
+}
+
 type Server struct {
 	database      Database
 	api           http.Handler
@@ -64,6 +70,7 @@ type Server struct {
 	jobsDone      chan struct{}
 	failures      chan error
 	failureOnce   sync.Once
+	operations    Operations
 	startOnce     sync.Once
 	startErr      error
 }
@@ -90,6 +97,16 @@ func (server *Server) AttachJobs(jobs ...BackgroundJob) error {
 	return nil
 }
 
+func (server *Server) AttachOperations(operations Operations) error {
+	server.stateMu.Lock()
+	defer server.stateMu.Unlock()
+	if operations == nil || server.running || server.ready.Load() || server.draining.Load() || server.operations != nil {
+		return ErrInvalidServer
+	}
+	server.operations = operations
+	return nil
+}
+
 func validConstantsHash(value string) bool {
 	if len(value) != 71 || value[:7] != "sha256:" {
 		return false
@@ -109,20 +126,20 @@ func (server *Server) Start(ctx context.Context) error {
 		}
 		server.startErr = server.realtime.Run()
 		if server.startErr != nil {
-			server.ready.Store(false)
+			server.setReady(false)
 			close(server.relayDone)
 			close(server.jobsDone)
 			return
 		}
 		if err := server.startJobs(ctx); err != nil {
 			server.startErr = errors.Join(err, server.realtime.Shutdown(ctx))
-			server.ready.Store(false)
+			server.setReady(false)
 			close(server.relayDone)
 			return
 		}
 		if _, err := server.relay.Flush(ctx); err != nil {
 			server.startErr = errors.Join(err, server.stopJobs(ctx), server.realtime.Shutdown(ctx))
-			server.ready.Store(false)
+			server.setReady(false)
 			close(server.relayDone)
 			return
 		}
@@ -132,7 +149,7 @@ func (server *Server) Start(ctx context.Context) error {
 			<-ctx.Done()
 			server.stateMu.Lock()
 			server.running = false
-			server.ready.Store(false)
+			server.setReady(false)
 			server.stateMu.Unlock()
 		}()
 		server.stateMu.Lock()
@@ -150,8 +167,14 @@ func (server *Server) Handler() http.Handler {
 	router := chi.NewRouter()
 	router.Get("/healthz", func(response http.ResponseWriter, _ *http.Request) { response.WriteHeader(http.StatusNoContent) })
 	router.Get("/readyz", server.handleReady)
+	if server.operations != nil {
+		router.Handle("/metrics", server.operations.Handler())
+	}
 	router.Handle("/connection/websocket", server.realtime.Handler())
 	router.Mount("/", server.intentAdmission(server.api))
+	if server.operations != nil {
+		return server.operations.HTTP(router)
+	}
 	return router
 }
 
@@ -162,7 +185,7 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	server.stateMu.Lock()
 	server.running = false
 	server.draining.Store(true)
-	server.ready.Store(false)
+	server.setReady(false)
 	server.stateMu.Unlock()
 	drainContext, cancel := context.WithTimeout(ctx, server.realtime.DrainTimeout())
 	defer cancel()
@@ -231,7 +254,7 @@ func (server *Server) startJobs(parent context.Context) error {
 				}
 				server.stateMu.Lock()
 				server.jobsHealthy.Store(false)
-				server.ready.Store(false)
+				server.setReady(false)
 				server.stateMu.Unlock()
 				cancel()
 				server.reportFailure(err)
@@ -278,12 +301,12 @@ func (server *Server) runRelay(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
-			server.ready.Store(false)
+			server.setReady(false)
 			return
 		default:
 		}
 		if _, err := server.relay.Flush(ctx); err != nil && ctx.Err() == nil {
-			server.ready.Store(false)
+			server.setReady(false)
 		} else if err == nil && ctx.Err() == nil {
 			server.markReadyIfRunning()
 		}
@@ -299,7 +322,14 @@ func (server *Server) markReadyIfRunning() {
 	server.stateMu.Lock()
 	defer server.stateMu.Unlock()
 	if server.running && server.jobsHealthy.Load() && !server.draining.Load() && !server.gate.isDraining() {
-		server.ready.Store(true)
+		server.setReady(true)
+	}
+}
+
+func (server *Server) setReady(ready bool) {
+	server.ready.Store(ready)
+	if server.operations != nil {
+		server.operations.SetReady(ready)
 	}
 }
 

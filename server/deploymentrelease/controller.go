@@ -284,8 +284,8 @@ func rejectedInputRecord(action, path, operator string, started time.Time) Relea
 		version = partial.ReleaseVersion
 	}
 	digests := []string(nil)
-	if len(partial.Images) == 3 {
-		candidate := make([]string, 3)
+	if len(partial.Images) == 6 {
+		candidate := make([]string, 6)
 		valid := true
 		for index := range partial.Images {
 			candidate[index] = partial.Images[index].Reference

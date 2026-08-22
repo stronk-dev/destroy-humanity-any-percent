@@ -246,13 +246,13 @@ func validReleaseRecord(record ReleaseRecord) bool {
 		!identifier.MatchString(record.ReleaseVersion) || !hashPattern.MatchString(record.ManifestSHA256) ||
 		!identifier.MatchString(record.Operator) || record.StartedAt.IsZero() ||
 		record.CompletedAt.Before(record.StartedAt) || record.Result != "succeeded" && record.Result != "failed" ||
-		(record.Result == "succeeded") != (record.FailureStage == "") || len(record.ImageDigests) != 0 && len(record.ImageDigests) != 3 {
+		(record.Result == "succeeded") != (record.FailureStage == "") || len(record.ImageDigests) != 0 && len(record.ImageDigests) != 6 {
 		return false
 	}
 	if record.Result == "failed" && (!validFailureStage(record.Action, record.FailureStage) || record.BackupID != "none" && !backupIDPattern.MatchString(record.BackupID)) {
 		return false
 	}
-	if record.Result == "succeeded" && (len(record.ImageDigests) != 3 || !backupIDPattern.MatchString(record.BackupID)) {
+	if record.Result == "succeeded" && (len(record.ImageDigests) != 6 || !backupIDPattern.MatchString(record.BackupID)) {
 		return false
 	}
 	if (record.PreviousVersion == "") != (record.PreviousManifestSHA256 == "") {

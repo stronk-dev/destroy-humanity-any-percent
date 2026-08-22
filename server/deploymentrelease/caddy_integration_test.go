@@ -252,10 +252,15 @@ func releaseBackupManifest(t *testing.T, epoch []byte, bundle epochseed.Bundle, 
 		"images/gameserver.docker.tar": defaultHash, "sbom/application.spdx.json": defaultHash,
 		"third-party-licenses.txt": defaultHash, "site/index.html": defaultHash,
 		"site/third-party-licenses.txt": defaultHash, "gameserver": defaultHash,
-		"deployment-backup": defaultHash, "deployment-release": defaultHash,
+		"deployment-backup": defaultHash, "deployment-release": defaultHash, "deployment-operations": defaultHash,
+		"operations/prometheus.yml": defaultHash, "operations/cloud-clicker-alerts.yml": defaultHash,
+		"operations/cloud-clicker-alerts.test.yml": defaultHash, "operations/alertmanager.example.yml": defaultHash,
+		"operations/journald.template.conf": defaultHash, "operations/cloud-clicker-observe.service": defaultHash,
+		"operations/cloud-clicker-observe.timer": defaultHash, "operations/operations.env.example": defaultHash,
 		"content/balance/epochs/phase0.json": digestBytes(epoch),
-		"sbom/caddy.spdx.json":               "sha256:" + strings.Repeat("1", 64), "sbom/gameserver.spdx.json": "sha256:" + strings.Repeat("2", 64),
-		"sbom/postgres.spdx.json": "sha256:" + strings.Repeat("3", 64),
+		"sbom/alertmanager.spdx.json":        "sha256:" + strings.Repeat("1", 64), "sbom/caddy.spdx.json": "sha256:" + strings.Repeat("2", 64),
+		"sbom/gameserver.spdx.json": "sha256:" + strings.Repeat("3", 64), "sbom/node-exporter.spdx.json": "sha256:" + strings.Repeat("4", 64),
+		"sbom/postgres.spdx.json": "sha256:" + strings.Repeat("5", 64), "sbom/prometheus.spdx.json": "sha256:" + strings.Repeat("6", 64),
 	}
 	paths := make([]string, 0, len(hashes))
 	for path := range hashes {
@@ -272,9 +277,12 @@ func releaseBackupManifest(t *testing.T, epoch []byte, bundle epochseed.Bundle, 
 		CompanySaveVersion: save.LatestCompanyVersion, FounderSaveVersion: save.LatestFounderVersion,
 		EpochID: bundle.Seed.CurrentEpochID, ConstantsHash: bundle.Hash, CopyHash: defaultHash,
 		Images: []releasepackage.Image{
-			{Name: "caddy", Reference: "caddy:2@sha256:" + strings.Repeat("a", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("1", 64), SBOMPath: "sbom/caddy.spdx.json", SBOMSHA256: hashes["sbom/caddy.spdx.json"]},
+			{Name: "alertmanager", Reference: "alertmanager:v1@sha256:" + strings.Repeat("a", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("1", 64), SBOMPath: "sbom/alertmanager.spdx.json", SBOMSHA256: hashes["sbom/alertmanager.spdx.json"]},
+			{Name: "caddy", Reference: "caddy:2@sha256:" + strings.Repeat("b", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("2", 64), SBOMPath: "sbom/caddy.spdx.json", SBOMSHA256: hashes["sbom/caddy.spdx.json"]},
 			{Name: "gameserver", Reference: gameConfig, RuntimeConfigSHA256: gameConfig, SBOMPath: "sbom/gameserver.spdx.json", SBOMSHA256: hashes["sbom/gameserver.spdx.json"]},
-			{Name: "postgres", Reference: "postgres:16@sha256:" + strings.Repeat("c", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("3", 64), SBOMPath: "sbom/postgres.spdx.json", SBOMSHA256: hashes["sbom/postgres.spdx.json"]},
+			{Name: "node-exporter", Reference: "node-exporter:v1@sha256:" + strings.Repeat("d", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("4", 64), SBOMPath: "sbom/node-exporter.spdx.json", SBOMSHA256: hashes["sbom/node-exporter.spdx.json"]},
+			{Name: "postgres", Reference: "postgres:16@sha256:" + strings.Repeat("e", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("5", 64), SBOMPath: "sbom/postgres.spdx.json", SBOMSHA256: hashes["sbom/postgres.spdx.json"]},
+			{Name: "prometheus", Reference: "prometheus:v1@sha256:" + strings.Repeat("f", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("6", 64), SBOMPath: "sbom/prometheus.spdx.json", SBOMSHA256: hashes["sbom/prometheus.spdx.json"]},
 		}, Artifacts: artifacts}
 	if err := releasepackage.ValidateReleaseManifest(manifest); err != nil {
 		t.Fatal(err)

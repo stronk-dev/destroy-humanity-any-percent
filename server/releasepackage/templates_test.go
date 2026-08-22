@@ -42,6 +42,22 @@ func TestComposeRejectsMutableImagesAndPublishedPrivatePorts(t *testing.T) {
 	if err := ValidateCompose(severed); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("published gameserver port accepted: %v", err)
 	}
+	publicPrometheus := bytes.Replace(rendered, []byte("    expose: [\"9090\"]"), []byte("    ports: [\"9090:9090\"]"), 1)
+	if err := ValidateCompose(publicPrometheus); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("published Prometheus port accepted: %v", err)
+	}
+	wrongJournal := bytes.Replace(rendered, []byte("tag: cloud-clicker-prometheus"), []byte("tag: cloud-clicker-gameserver"), 1)
+	if err := ValidateCompose(wrongJournal); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("non-distinct Prometheus journal tag accepted: %v", err)
+	}
+	jsonLogging := bytes.Replace(rendered, []byte("driver: journald"), []byte("driver: json-file"), 1)
+	if err := ValidateCompose(jsonLogging); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("non-journald production logging accepted: %v", err)
+	}
+	noReceiverEgress := bytes.Replace(rendered, []byte("    networks: [edge, operations]"), []byte("    networks: [operations]"), 1)
+	if err := ValidateCompose(noReceiverEgress); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("Alertmanager without receiver egress accepted: %v", err)
+	}
 }
 
 func TestComposeRejectsRootOrNonSeparateBackupWorker(t *testing.T) {
@@ -97,9 +113,9 @@ func TestGameserverDockerfileRejectsMutableFrontendAndRootUser(t *testing.T) {
 }
 
 func fixtureImages() map[string]string {
-	return map[string]string{
-		"caddy":      "caddy:2-alpine@sha256:" + strings.Repeat("a", 64),
-		"gameserver": "cloud-clicker/gameserver:v0.1.0@sha256:" + strings.Repeat("b", 64),
-		"postgres":   "postgres:16-alpine@sha256:" + strings.Repeat("c", 64),
+	result := map[string]string{}
+	for index, name := range releaseImageNames {
+		result[name] = name + ":fixture@sha256:" + strings.Repeat(string(rune('a'+index)), 64)
 	}
+	return result
 }

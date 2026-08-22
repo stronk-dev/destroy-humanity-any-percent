@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
-	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -17,18 +17,19 @@ import (
 	"time"
 
 	"cloud-clicker/server/deploymentbackup"
+	"cloud-clicker/server/operations"
 )
 
 const scheduleInterval = 6 * time.Hour
 
 type createFlags struct {
-	target, databaseURLFile, manifest, epoch, recipient, serverID string
-	preUpgrade                                                    bool
+	target, databaseURLFile, manifest, epoch, recipient, serverID, metricsDirectory string
+	preUpgrade                                                                      bool
 }
 
 func main() {
 	if len(os.Args) < 2 {
-		fail("usage: deployment-backup <create|schedule|restore|retention|inspect>")
+		fail("unknown", deploymentbackup.ErrInvalid)
 	}
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
@@ -48,7 +49,7 @@ func main() {
 		err = errors.New("unknown deployment backup command")
 	}
 	if err != nil {
-		fail(err.Error())
+		fail(os.Args[1], err)
 	}
 }
 
@@ -77,6 +78,9 @@ func runCreate(ctx context.Context, args []string) error {
 	}
 	header, path, err := createOnce(ctx, flags, time.Now().UTC())
 	if err != nil {
+		return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
+	}
+	if err := operations.RecordOperation(flags.metricsDirectory, "backup", "success", header.CompletedAt); err != nil {
 		return err
 	}
 	return emit(map[string]any{"status": "completed", "backup": path, "header": header})
@@ -94,23 +98,26 @@ func runSchedule(ctx context.Context, args []string) error {
 		started := time.Now().UTC()
 		header, path, err := createOnce(ctx, flags, started)
 		if err != nil {
-			return err
+			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
 		}
 		paths, err := backupPaths(flags.target)
 		if err != nil {
+			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
+		}
+		if err := operations.RecordOperation(flags.metricsDirectory, "backup", "success", header.CompletedAt); err != nil {
 			return err
 		}
 		plan, err := deploymentbackup.ApplyRetention(paths, time.Now().UTC())
 		if err != nil {
-			return err
+			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
 		}
 		if err := emit(map[string]any{"status": "completed", "backup": path, "header": header, "retention": plan}); err != nil {
-			return err
+			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
 		}
 		next := started.Add(scheduleInterval)
 		delay := time.Until(next)
 		if delay <= 0 {
-			return errors.New("backup exceeded its six-hour schedule interval")
+			return errors.Join(errors.New("backup exceeded its six-hour schedule interval"), operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
 		}
 		timer := time.NewTimer(delay)
 		select {
@@ -128,8 +135,9 @@ func runRestore(ctx context.Context, args []string) error {
 	manifest := set.String("release-manifest", "", "expected release-manifest.json")
 	identity := set.String("identity-file", "", "restore-only age X25519 identity file")
 	targetURL := set.String("target-database-url-file", "", "clean target Postgres URL secret file")
-	if err := set.Parse(args); err != nil || set.NArg() != 0 || *backup == "" || *manifest == "" || *identity == "" || *targetURL == "" {
-		return errors.New("restore requires backup, release-manifest, identity-file and target-database-url-file")
+	metricsDirectory := set.String("metrics-dir", "", "node-exporter textfile directory")
+	if err := set.Parse(args); err != nil || set.NArg() != 0 || *backup == "" || *manifest == "" || *identity == "" || *targetURL == "" || *metricsDirectory == "" {
+		return errors.New("restore requires backup, release-manifest, identity-file, target-database-url-file and metrics-dir")
 	}
 	manifestBytes, err := os.ReadFile(*manifest)
 	if err != nil {
@@ -141,6 +149,9 @@ func runRestore(ctx context.Context, args []string) error {
 		IdentityFile: *identity, TargetDatabaseURLFile: *targetURL,
 	})
 	if err != nil {
+		return errors.Join(err, operations.RecordOperation(*metricsDirectory, "restore", "failure", time.Now().UTC()))
+	}
+	if err := operations.RecordOperation(*metricsDirectory, "restore", "success", time.Now().UTC()); err != nil {
 		return err
 	}
 	return emit(map[string]any{"status": "restored", "header": header})
@@ -178,9 +189,10 @@ func parseCreateFlags(name string, args []string) (createFlags, error) {
 	set.StringVar(&values.epoch, "epoch", "", "epoch declaration")
 	set.StringVar(&values.recipient, "age-recipient", "", "public age X25519 recipient")
 	set.StringVar(&values.serverID, "server-id", "", "source server UUID")
+	set.StringVar(&values.metricsDirectory, "metrics-dir", "", "node-exporter textfile directory")
 	set.BoolVar(&values.preUpgrade, "pre-upgrade", false, "protect as an unresolved pre-upgrade backup")
-	if err := set.Parse(args); err != nil || set.NArg() != 0 || values.target == "" || values.databaseURLFile == "" || values.manifest == "" || values.epoch == "" || values.recipient == "" || values.serverID == "" {
-		return createFlags{}, errors.New("backup requires target, database-url-file, release-manifest, epoch, age-recipient and server-id")
+	if err := set.Parse(args); err != nil || set.NArg() != 0 || values.target == "" || values.databaseURLFile == "" || values.manifest == "" || values.epoch == "" || values.recipient == "" || values.serverID == "" || values.metricsDirectory == "" {
+		return createFlags{}, errors.New("backup requires target, database-url-file, release-manifest, epoch, age-recipient, server-id and metrics-dir")
 	}
 	return values, nil
 }
@@ -217,7 +229,19 @@ func emit(value any) error {
 	return encoder.Encode(value)
 }
 
-func fail(message string) {
-	fmt.Fprintln(os.Stderr, message)
+func fail(command string, err error) {
+	command, class := boundedFailure(command, err)
+	slog.New(slog.NewJSONHandler(os.Stderr, nil)).Error("deployment backup command failed", "command", command, "error_class", class)
 	os.Exit(1)
+}
+
+func boundedFailure(command string, err error) (string, string) {
+	if command != "create" && command != "schedule" && command != "restore" && command != "retention" && command != "inspect" {
+		command = "unknown"
+	}
+	class := "operation_failed"
+	if errors.Is(err, deploymentbackup.ErrInvalid) || errors.Is(err, operations.ErrInvalid) {
+		class = "invalid_input"
+	}
+	return command, class
 }

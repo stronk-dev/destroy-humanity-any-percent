@@ -59,6 +59,15 @@ func TestDockerRuntimePreflightRunsCandidateConfigAndPrivateDatabaseInspection(t
 	if !foundCandidateConfig {
 		t.Fatalf("candidate config preflight absent: %v", runner.calls)
 	}
+	foundAlertmanagerConfig := false
+	for _, call := range runner.calls {
+		if strings.Contains(strings.Join(call, " "), "entrypoint=amtool") && slices.Contains(call, "check-config") {
+			foundAlertmanagerConfig = true
+		}
+	}
+	if !foundAlertmanagerConfig {
+		t.Fatalf("candidate Alertmanager config preflight absent: %v", runner.calls)
+	}
 
 	inspection.DatabaseMigration--
 	if _, err := runtime.inspectDatabase(context.Background(), bundle, true); !errors.Is(err, ErrInvalid) {
@@ -168,7 +177,7 @@ func TestDockerRuntimePrepareInspectsEveryRuntimeConfigDigest(t *testing.T) {
 			pullCount++
 		}
 	}
-	if inspectCount != 3 || pullCount != 2 {
+	if inspectCount != 6 || pullCount != 5 {
 		t.Fatalf("prepare calls=%v", runner.calls)
 	}
 
@@ -180,6 +189,27 @@ func TestDockerRuntimePrepareInspectsEveryRuntimeConfigDigest(t *testing.T) {
 	}}
 	if err := dockerFixtureRuntime(wrong, t.TempDir(), "").Prepare(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("wrong runtime config digest accepted: %v", err)
+	}
+}
+
+func TestDockerRuntimeRequiresDeliveredAlertNotHealthOnly(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	runner := &commandFixture{}
+	runtime := dockerFixtureRuntime(runner, t.TempDir(), "")
+	if err := runtime.verifyAlertDelivery(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	if len(runner.calls) != 1 {
+		t.Fatalf("delivery calls=%v", runner.calls)
+	}
+	joined := strings.Join(runner.calls[0], " ")
+	for _, required := range []string{"deployment-operations", "alert-test", "http://alertmanager:9093", runtime.ReceiverHealthURL} {
+		if !strings.Contains(joined, required) {
+			t.Fatalf("delivery proof missing %q: %s", required, joined)
+		}
+	}
+	if !strings.Contains(joined, " alertmanager alert-test ") {
+		t.Fatalf("delivery verifier does not inherit Alertmanager receiver egress: %s", joined)
 	}
 }
 
@@ -206,7 +236,7 @@ func TestDockerRuntimeStartRecreatesCandidateServerProxyAndBackupWorker(t *testi
 
 func dockerFixtureRuntime(runner CommandRunner, target, identity string) DockerRuntime {
 	return DockerRuntime{Runner: runner, PublicOrigin: "https://game.example", ReceiverHealthURL: "http://alertmanager:9093/-/healthy",
-		BackupTarget: target, AgeRecipient: "age1fixture",
+		BackupTarget: target, MetricsDirectory: target, AgeRecipient: "age1fixture",
 		AgeIdentityFile: identity, ServerID: "server-1", DrainTimeout: 20 * time.Second}
 }
 
@@ -215,8 +245,11 @@ func dockerFixtureBundle(t *testing.T) Bundle {
 	root := t.TempDir()
 	return Bundle{Root: root, ManifestSHA256: "sha256:" + strings.Repeat("a", 64), Manifest: releasepackage.ReleaseManifest{
 		ReleaseVersion: "1.0.0", EpochID: 8, ConstantsHash: "sha256:" + strings.Repeat("b", 64), Images: []releasepackage.Image{
+			{Name: "alertmanager", Reference: "alertmanager:v1@sha256:" + strings.Repeat("1", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("7", 64)},
 			{Name: "caddy", Reference: "caddy:v1@sha256:" + strings.Repeat("1", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("4", 64)},
 			{Name: "gameserver", Reference: "sha256:" + strings.Repeat("2", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("2", 64)},
+			{Name: "node-exporter", Reference: "node-exporter:v1@sha256:" + strings.Repeat("6", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("8", 64)},
 			{Name: "postgres", Reference: "postgres:v1@sha256:" + strings.Repeat("3", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("5", 64)},
+			{Name: "prometheus", Reference: "prometheus:v1@sha256:" + strings.Repeat("9", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("a", 64)},
 		}}}
 }

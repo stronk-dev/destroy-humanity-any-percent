@@ -82,19 +82,22 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 	if manifest.SchemaVersion != 1 || !validReleaseVersion(manifest.ReleaseVersion) || !commitPattern.MatchString(manifest.SourceCommit) ||
 		manifest.Platform != "linux/amd64" || manifest.DockerEngineVersion == "" || manifest.DockerComposeVersion == "" || manifest.DatabaseMigration < 1 ||
 		manifest.CompanySaveVersion != save.LatestCompanyVersion || manifest.FounderSaveVersion != save.LatestFounderVersion || manifest.EpochID < 1 ||
-		!hashPattern.MatchString(manifest.ConstantsHash) || !hashPattern.MatchString(manifest.CopyHash) || len(manifest.Images) != 3 || len(manifest.Artifacts) == 0 {
+		!hashPattern.MatchString(manifest.ConstantsHash) || !hashPattern.MatchString(manifest.CopyHash) || len(manifest.Images) != len(releaseImageNames) || len(manifest.Artifacts) == 0 {
 		return ErrInvalidContent
 	}
-	wantImages := []string{"caddy", "gameserver", "postgres"}
+	wantImages := releaseImageNames
 	for index, image := range manifest.Images {
 		if image.Name != wantImages[index] || !imageReferencePattern.MatchString(image.Reference) || !hashPattern.MatchString(image.RuntimeConfigSHA256) || !validRelativePath(image.SBOMPath) || !hashPattern.MatchString(image.SBOMSHA256) {
 			return fmt.Errorf("%w: image %d", ErrInvalidContent, index)
 		}
 	}
-	if strings.HasPrefix(manifest.Images[0].Reference, "sha256:") || !strings.HasPrefix(manifest.Images[1].Reference, "sha256:") || strings.HasPrefix(manifest.Images[2].Reference, "sha256:") {
-		return fmt.Errorf("%w: image reference forms", ErrInvalidContent)
+	for _, image := range manifest.Images {
+		if (image.Name == "gameserver") != strings.HasPrefix(image.Reference, "sha256:") {
+			return fmt.Errorf("%w: image reference forms", ErrInvalidContent)
+		}
 	}
-	if manifest.Images[1].Reference != manifest.Images[1].RuntimeConfigSHA256 {
+	gameserverImage := manifest.Images[2]
+	if gameserverImage.Reference != gameserverImage.RuntimeConfigSHA256 {
 		return fmt.Errorf("%w: gameserver config identity", ErrInvalidContent)
 	}
 	prior := ""
@@ -104,7 +107,7 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 		}
 		prior = artifact.Path
 	}
-	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "deployment-backup", "deployment-release", "content/balance/epochs/phase0.json"} {
+	for _, required := range []string{".env.example", "Caddyfile", "Dockerfile.gameserver", "LICENSE", "compose.yml", "compose.rotation.yml", "config.schema.json", "release-manifest.schema.json", "images/gameserver.docker.tar", "sbom/application.spdx.json", "third-party-licenses.txt", "site/index.html", "site/third-party-licenses.txt", "gameserver", "deployment-backup", "deployment-release", "deployment-operations", "operations/prometheus.yml", "operations/cloud-clicker-alerts.yml", "operations/cloud-clicker-alerts.test.yml", "operations/alertmanager.example.yml", "operations/journald.template.conf", "operations/cloud-clicker-observe.service", "operations/cloud-clicker-observe.timer", "operations/operations.env.example", "content/balance/epochs/phase0.json"} {
 		if !hasArtifact(manifest.Artifacts, required) {
 			return fmt.Errorf("%w: missing release artifact %q", ErrInvalidContent, required)
 		}
@@ -140,6 +143,9 @@ func ValidateBundle(root string) error {
 	if data, err := os.ReadFile(filepath.Join(root, "sbom", "application.spdx.json")); err != nil || ValidateSPDX(data) != nil {
 		return fmt.Errorf("%w: invalid application SPDX document", ErrInvalidContent)
 	}
+	if err := ValidateOperationsProfile(root); err != nil {
+		return err
+	}
 	for _, image := range manifest.Images {
 		path := image.SBOMPath
 		data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(path)))
@@ -147,7 +153,7 @@ func ValidateBundle(root string) error {
 			return fmt.Errorf("%w: invalid SPDX document %q", ErrInvalidContent, path)
 		}
 	}
-	if err := ValidateDockerArchive(filepath.Join(root, "images", "gameserver.docker.tar"), manifest.Images[1].Reference, manifest.ReleaseVersion, manifest.SourceCommit); err != nil {
+	if err := ValidateDockerArchive(filepath.Join(root, "images", "gameserver.docker.tar"), manifest.Images[2].Reference, manifest.ReleaseVersion, manifest.SourceCommit); err != nil {
 		return err
 	}
 	for _, name := range []string{"config.schema.json", "release-manifest.schema.json"} {
@@ -156,7 +162,7 @@ func ValidateBundle(root string) error {
 			return ErrInvalidContent
 		}
 		required := map[string][]string{
-			"config.schema.json":           {"CLOUD_CLICKER_PUBLIC_ORIGIN", "CLOUD_CLICKER_SERVER_ID", "CLOUD_CLICKER_JWT_CURRENT_ID", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID", "CLOUD_CLICKER_BACKUP_TARGET", "CLOUD_CLICKER_AGE_RECIPIENT", "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE", "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE", "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE"},
+			"config.schema.json":           {"CLOUD_CLICKER_PUBLIC_ORIGIN", "CLOUD_CLICKER_SERVER_ID", "CLOUD_CLICKER_JWT_CURRENT_ID", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID", "CLOUD_CLICKER_BACKUP_TARGET", "CLOUD_CLICKER_AGE_RECIPIENT", "CLOUD_CLICKER_OPERATIONS_METRICS", "CLOUD_CLICKER_RECEIVER_HEALTH_URL", "CLOUD_CLICKER_ALERTMANAGER_CONFIG", "CLOUD_CLICKER_DATABASE_URL_SECRET_FILE", "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE", "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE", "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE"},
 			"release-manifest.schema.json": {"schema_version", "release_version", "source_commit", "platform", "docker_engine_version", "docker_compose_version", "database_migration", "company_save_version", "founder_save_version", "epoch_id", "constants_hash", "copy_hash", "images", "artifacts"},
 		}[name]
 		if validateSchema(data, name, required) != nil {

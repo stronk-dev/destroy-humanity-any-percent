@@ -1,0 +1,8 @@
+[Unit]
+Description=Observe Cloud Clicker host release-floor signals
+After=docker.service systemd-journald.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/cloud-clicker/operations.env
+ExecStart=/opt/cloud-clicker/current/deployment-operations host-observe --bundle=/opt/cloud-clicker/current --metrics-dir=${CLOUD_CLICKER_OPERATIONS_METRICS} --persistent-path=${CLOUD_CLICKER_POSTGRES_DATA} --backup-path=${CLOUD_CLICKER_BACKUP_TARGET} --journal-path=${CLOUD_CLICKER_JOURNAL_PATH} --journal-budget-bytes-file=${CLOUD_CLICKER_JOURNAL_BUDGET_FILE}

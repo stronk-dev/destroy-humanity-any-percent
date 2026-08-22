@@ -53,6 +53,17 @@ type Node struct {
 }
 
 func NewNode(policy Policy, auth Authenticator, memberships Memberships) (*Node, error) {
+	return newNode(policy, auth, memberships, nil)
+}
+
+func NewNodeWithMetrics(policy Policy, auth Authenticator, memberships Memberships, registerer centrifuge.RegistererGatherer) (*Node, error) {
+	if registerer == nil {
+		return nil, ErrInvalidNode
+	}
+	return newNode(policy, auth, memberships, registerer)
+}
+
+func newNode(policy Policy, auth Authenticator, memberships Memberships, registerer centrifuge.RegistererGatherer) (*Node, error) {
 	if !policy.valid() || auth == nil {
 		return nil, ErrInvalidNode
 	}
@@ -72,7 +83,7 @@ func NewNode(policy Policy, auth Authenticator, memberships Memberships) (*Node,
 		// metrics are enabled. The live queue discipline needs that metadata at
 		// OnTransportWrite, so this bounded classifier is part of correctness as
 		// well as observability. It never returns founder/guild/match IDs.
-		Metrics: centrifuge.MetricsConfig{GetChannelNamespaceLabel: channelNamespaceLabel},
+		Metrics: centrifuge.MetricsConfig{MetricsNamespace: "cloud_clicker_centrifuge", RegistererGatherer: registerer, GetChannelNamespaceLabel: channelNamespaceLabel},
 	})
 	if err != nil {
 		return nil, err

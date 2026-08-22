@@ -1,5 +1,5 @@
 .PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration test-deployment-backup validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 build-deployment-backup-linux-amd64 build-deployment-release-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
-.PHONY: test-deployment-release
+.PHONY: test-deployment-release test-deployment-operations build-deployment-operations-linux-amd64
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -9,6 +9,7 @@ GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
 RELEASE_BUILDX_BUILDER ?= cloud-clicker-release-v1
 RELEASE_BUILDKIT_IMAGE := moby/buildkit:v0.24.0@sha256:6eceb8971ce4fceb3daca562832642706238b7eea72941fcf9896c93c3c4a53e
+PROMETHEUS_RULE_IMAGE := prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac
 CORE_TEST_COUNT ?= 1
 HARNESS_TEST_COUNT ?= 1
 HARNESS_WORKERS ?= 4
@@ -91,6 +92,19 @@ test-deployment-release:
 	docker compose --project-name cloud-clicker-release-test -f compose.deployment-release-test.yml down --volumes; \
 	exit $$status
 
+# Manual operations lane: exact Prometheus rule evaluator plus cold Go
+# privacy, textfile, host-policy and configuration tests. It is intentionally
+# outside push CI under DP8.
+test-deployment-operations:
+	docker run --rm --platform linux/amd64 --entrypoint promtool -v "$(CURDIR)/deployment/operations:/work:ro" "$(PROMETHEUS_RULE_IMAGE)" test rules /work/cloud-clicker-alerts.test.yml
+	$(MAKE) test-go GO_PACKAGES='./operations ./cmd/deployment-operations ./cmd/deployment-backup ./cmd/deployment-release ./gameserver ./transport ./production ./save ./releasepackage ./deploymentbackup ./deploymentrelease' GO_TEST_FLAGS='-count=1'
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
+	@status=0; \
+	docker compose --project-name cloud-clicker-operations-test -f compose.deployment-operations-test.yml run --rm --use-aliases operations-test || status=$$?; \
+	docker compose --project-name cloud-clicker-operations-test -f compose.deployment-operations-test.yml down --volumes; \
+	exit $$status
+
 # Validate the complete embedded migration chain on real Postgres while keeping
 # the scope focused on the package that owns it. Migration-named unit probes and
 # every save integration test both run cold.
@@ -150,6 +164,13 @@ build-deployment-release-linux-amd64:
 		-o "$(if $(filter /%,$(RELEASE_HELPER_OUTPUT)),$(RELEASE_HELPER_OUTPUT),../$(RELEASE_HELPER_OUTPUT))" \
 		./cmd/deployment-release
 
+build-deployment-operations-linux-amd64:
+	@test -n "$(RELEASE_OPERATIONS_OUTPUT)" || (echo "RELEASE_OPERATIONS_OUTPUT is required" >&2; exit 1)
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false \
+		-ldflags='-s -w -buildid=' \
+		-o "$(if $(filter /%,$(RELEASE_OPERATIONS_OUTPUT)),$(RELEASE_OPERATIONS_OUTPUT),../$(RELEASE_OPERATIONS_OUTPUT))" \
+		./cmd/deployment-operations
+
 create-release-builder:
 	docker buildx create --name "$(RELEASE_BUILDX_BUILDER)" --driver docker-container \
 		--driver-opt image="$(RELEASE_BUILDKIT_IMAGE)"
@@ -177,12 +198,13 @@ stage-release-content:
 		-output="$(if $(filter /%,$(RELEASE_CONTENT_OUTPUT)),$(RELEASE_CONTENT_OUTPUT),../$(RELEASE_CONTENT_OUTPUT))"
 
 render-release-compose:
-	@test -n "$(RELEASE_COMPOSE_OUTPUT)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" \
-		-a -n "$(POSTGRES_IMAGE)" || \
-		(echo "RELEASE_COMPOSE_OUTPUT, CADDY_IMAGE, GAMESERVER_IMAGE, and POSTGRES_IMAGE are required" >&2; exit 1)
+	@test -n "$(RELEASE_COMPOSE_OUTPUT)" -a -n "$(ALERTMANAGER_IMAGE)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" \
+		-a -n "$(NODE_EXPORTER_IMAGE)" -a -n "$(POSTGRES_IMAGE)" -a -n "$(PROMETHEUS_IMAGE)" || \
+		(echo "release Compose output and all six immutable images are required" >&2; exit 1)
 	cd server && go run ./cmd/render-release-compose \
 		-output="$(if $(filter /%,$(RELEASE_COMPOSE_OUTPUT)),$(RELEASE_COMPOSE_OUTPUT),../$(RELEASE_COMPOSE_OUTPUT))" \
-		-caddy-image="$(CADDY_IMAGE)" -gameserver-image="$(GAMESERVER_IMAGE)" -postgres-image="$(POSTGRES_IMAGE)"
+		-alertmanager-image="$(ALERTMANAGER_IMAGE)" -caddy-image="$(CADDY_IMAGE)" -gameserver-image="$(GAMESERVER_IMAGE)" \
+		-node-exporter-image="$(NODE_EXPORTER_IMAGE)" -postgres-image="$(POSTGRES_IMAGE)" -prometheus-image="$(PROMETHEUS_IMAGE)"
 
 generate-release-metadata:
 	@test -n "$(RELEASE_METADATA_OUTPUT)" -a -n "$(RELEASE_VERSION)" -a -n "$(RELEASE_COMMIT)" \
@@ -193,25 +215,25 @@ generate-release-metadata:
 		-version="$(RELEASE_VERSION)" -commit="$(RELEASE_COMMIT)" -created="$(RELEASE_CREATED_AT)"
 
 assemble-release-bundle:
-	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(RELEASE_BACKUP_OUTPUT)" -a -n "$(RELEASE_HELPER_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
+	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(RELEASE_BACKUP_OUTPUT)" -a -n "$(RELEASE_HELPER_OUTPUT)" -a -n "$(RELEASE_OPERATIONS_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
 		-a -n "$(RELEASE_VERSION)" -a -n "$(RELEASE_COMMIT)" -a -n "$(RELEASE_DOCKER_VERSION)" \
-		-a -n "$(RELEASE_COMPOSE_VERSION)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" \
-		-a -n "$(POSTGRES_IMAGE)" -a -n "$(CADDY_SBOM)" -a -n "$(GAMESERVER_SBOM)" \
-		-a -n "$(POSTGRES_SBOM)" -a -n "$(CADDY_CONFIG_ID)" -a -n "$(GAMESERVER_CONFIG_ID)" \
-		-a -n "$(POSTGRES_CONFIG_ID)" || (echo "release bundle inputs are required" >&2; exit 1)
+		-a -n "$(RELEASE_COMPOSE_VERSION)" -a -n "$(ALERTMANAGER_IMAGE)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" -a -n "$(NODE_EXPORTER_IMAGE)" -a -n "$(POSTGRES_IMAGE)" -a -n "$(PROMETHEUS_IMAGE)" \
+		-a -n "$(ALERTMANAGER_SBOM)" -a -n "$(CADDY_SBOM)" -a -n "$(GAMESERVER_SBOM)" -a -n "$(NODE_EXPORTER_SBOM)" -a -n "$(POSTGRES_SBOM)" -a -n "$(PROMETHEUS_SBOM)" \
+		-a -n "$(ALERTMANAGER_CONFIG_ID)" -a -n "$(CADDY_CONFIG_ID)" -a -n "$(GAMESERVER_CONFIG_ID)" -a -n "$(NODE_EXPORTER_CONFIG_ID)" -a -n "$(POSTGRES_CONFIG_ID)" -a -n "$(PROMETHEUS_CONFIG_ID)" || (echo "release bundle inputs are required" >&2; exit 1)
 	cd server && go run ./cmd/assemble-release-bundle -root=.. \
 		-output="$(if $(filter /%,$(RELEASE_BUNDLE_OUTPUT)),$(RELEASE_BUNDLE_OUTPUT),../$(RELEASE_BUNDLE_OUTPUT))" \
 		-server-binary="$(if $(filter /%,$(RELEASE_SERVER_OUTPUT)),$(RELEASE_SERVER_OUTPUT),../$(RELEASE_SERVER_OUTPUT))" \
 		-backup-binary="$(if $(filter /%,$(RELEASE_BACKUP_OUTPUT)),$(RELEASE_BACKUP_OUTPUT),../$(RELEASE_BACKUP_OUTPUT))" \
 		-release-binary="$(if $(filter /%,$(RELEASE_HELPER_OUTPUT)),$(RELEASE_HELPER_OUTPUT),../$(RELEASE_HELPER_OUTPUT))" \
+		-operations-binary="$(if $(filter /%,$(RELEASE_OPERATIONS_OUTPUT)),$(RELEASE_OPERATIONS_OUTPUT),../$(RELEASE_OPERATIONS_OUTPUT))" \
 		-gameserver-archive="$(if $(filter /%,$(GAMESERVER_IMAGE_ARCHIVE)),$(GAMESERVER_IMAGE_ARCHIVE),../$(GAMESERVER_IMAGE_ARCHIVE))" \
 		-client-dist=../client/dist \
 		-metadata="$(if $(filter /%,$(RELEASE_METADATA_OUTPUT)),$(RELEASE_METADATA_OUTPUT),../$(RELEASE_METADATA_OUTPUT))" \
 		-version="$(RELEASE_VERSION)" -commit="$(RELEASE_COMMIT)" \
 		-docker-version="$(RELEASE_DOCKER_VERSION)" -compose-version="$(RELEASE_COMPOSE_VERSION)" \
-		-caddy-image="$(CADDY_IMAGE)" -gameserver-image="$(GAMESERVER_IMAGE)" -postgres-image="$(POSTGRES_IMAGE)" \
-		-caddy-config-id="$(CADDY_CONFIG_ID)" -gameserver-config-id="$(GAMESERVER_CONFIG_ID)" -postgres-config-id="$(POSTGRES_CONFIG_ID)" \
-		-caddy-sbom="$(CADDY_SBOM)" -gameserver-sbom="$(GAMESERVER_SBOM)" -postgres-sbom="$(POSTGRES_SBOM)"
+		-alertmanager-image="$(ALERTMANAGER_IMAGE)" -caddy-image="$(CADDY_IMAGE)" -gameserver-image="$(GAMESERVER_IMAGE)" -node-exporter-image="$(NODE_EXPORTER_IMAGE)" -postgres-image="$(POSTGRES_IMAGE)" -prometheus-image="$(PROMETHEUS_IMAGE)" \
+		-alertmanager-config-id="$(ALERTMANAGER_CONFIG_ID)" -caddy-config-id="$(CADDY_CONFIG_ID)" -gameserver-config-id="$(GAMESERVER_CONFIG_ID)" -node-exporter-config-id="$(NODE_EXPORTER_CONFIG_ID)" -postgres-config-id="$(POSTGRES_CONFIG_ID)" -prometheus-config-id="$(PROMETHEUS_CONFIG_ID)" \
+		-alertmanager-sbom="$(ALERTMANAGER_SBOM)" -caddy-sbom="$(CADDY_SBOM)" -gameserver-sbom="$(GAMESERVER_SBOM)" -node-exporter-sbom="$(NODE_EXPORTER_SBOM)" -postgres-sbom="$(POSTGRES_SBOM)" -prometheus-sbom="$(PROMETHEUS_SBOM)"
 
 release-secret-scan:
 	cd server && go run ./cmd/release-secret-scan -root=.. \

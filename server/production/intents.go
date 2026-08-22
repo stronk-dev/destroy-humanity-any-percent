@@ -1950,7 +1950,7 @@ func reportInvariant(sink InvariantSink, report InvariantReport) {
 }
 
 func (s *Service) recordInvariant(report InvariantReport) {
-	s.logger.Error("production invariant", "intent_id", report.IntentID, "kind", report.Kind, "detail", report.Detail)
+	s.logger.Error("production invariant", "kind", report.Kind)
 	if s.metrics != nil {
 		s.metrics.Increment(string(report.Kind))
 	}

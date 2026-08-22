@@ -302,9 +302,12 @@ func fixtureBundles() (string, string, func(string) (Bundle, error)) {
 	current, candidate := "/bundles/1.0.0", "/bundles/1.1.0"
 	makeBundle := func(root, version, fill string, migration int) Bundle {
 		images := []releasepackage.Image{
+			{Name: "alertmanager", Reference: "alertmanager:v1@sha256:" + strings.Repeat(fill, 64)},
 			{Name: "caddy", Reference: "caddy:v1@sha256:" + strings.Repeat(fill, 64)},
 			{Name: "gameserver", Reference: "sha256:" + strings.Repeat(fill, 64)},
+			{Name: "node-exporter", Reference: "node-exporter:v1@sha256:" + strings.Repeat(fill, 64)},
 			{Name: "postgres", Reference: "postgres:v1@sha256:" + strings.Repeat(fill, 64)},
+			{Name: "prometheus", Reference: "prometheus:v1@sha256:" + strings.Repeat(fill, 64)},
 		}
 		return Bundle{Root: root, ManifestSHA256: "sha256:" + strings.Repeat(fill, 64), Manifest: releasepackage.ReleaseManifest{ReleaseVersion: version, DatabaseMigration: migration, Images: images}}
 	}

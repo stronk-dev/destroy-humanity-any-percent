@@ -417,5 +417,18 @@ func validateInitialCursors(scope economy.Scope, state *State) error {
 }
 
 func (s *Store) logRejection(err error, ctx WriteContext) {
-	s.logger.Error("save rejected", "cause", ctx.Cause, "intent_id", ctx.IntentID, "error", err)
+	s.logger.Error("save rejected", "cause", ctx.Cause, "error_class", saveErrorClass(err))
+}
+
+func saveErrorClass(err error) string {
+	switch {
+	case errors.Is(err, ErrConflict):
+		return "conflict"
+	case errors.Is(err, ErrInvalidState):
+		return "invalid_state"
+	case errors.Is(err, ErrInvalidStream):
+		return "invalid_stream"
+	default:
+		return "internal"
+	}
 }

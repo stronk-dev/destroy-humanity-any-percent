@@ -1,0 +1,158 @@
+rule_files:
+  - cloud-clicker-alerts.yml
+
+evaluation_interval: 15s
+
+tests:
+  - interval: 15s
+    input_series:
+      - series: 'up{job="caddy"}'
+        values: '0x22'
+      - series: 'up{job="gameserver"}'
+        values: '1x22'
+      - series: 'cloud_clicker_ready'
+        values: '1x22'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: CloudClickerPublicEndpointOrReadinessUnavailable
+        exp_alerts:
+          - exp_labels: {job: caddy, severity: page}
+            exp_annotations: {summary: Public ingress or authoritative readiness has been unavailable for five minutes.}
+
+  - interval: 15s
+    input_series: []
+    alert_rule_test:
+      - eval_time: 15s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The six-hour encrypted backup contract is missing, late, or failed."}
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_postgres_reachable'
+        values: '0x12'
+      - series: 'cloud_clicker_database_collection_success'
+        values: '1x12'
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: CloudClickerPostgresUnreachable
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: The authoritative Postgres database or its bounded operations collector has failed for two minutes.}
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_postgres_reachable'
+        values: '1x12'
+      - series: 'cloud_clicker_database_collection_success'
+        values: '0x12'
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: CloudClickerPostgresUnreachable
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: The authoritative Postgres database or its bounded operations collector has failed for two minutes.}
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="backup"}'
+        values: '0.81x2'
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="persistent"}'
+        values: '0.2x2'
+      - series: 'cloud_clicker_journal_usage_bytes'
+        values: '1x2'
+      - series: 'cloud_clicker_journal_budget_bytes'
+        values: '100x2'
+    alert_rule_test:
+      - eval_time: 15s
+        alertname: CloudClickerStoragePressure
+        exp_alerts:
+          - exp_labels: {storage: backup, severity: page}
+            exp_annotations: {summary: "Persistent, backup, or journal storage crossed the release-floor threshold."}
+
+  - interval: 1m
+    input_series:
+      - series: 'cloud_clicker_gameserver_restart_count'
+        values: '0 1 2 3 3 3'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: The gameserver restarted at least three times inside ten minutes.}
+
+  - interval: 1m
+    input_series:
+      - series: 'cloud_clicker_job_runs_total{job="credential_cleanup",result="failure"}'
+        values: '0 0 1 1'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts:
+          - exp_labels: {job: credential_cleanup, result: failure, severity: page}
+            exp_annotations: {summary: The composed expired-credential cleanup job failed.}
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_dead_letters{queue="transport"}'
+        values: '0 1 2 2'
+    alert_rule_test:
+      - eval_time: 30s
+        alertname: CloudClickerDeadLetterGrowth
+        exp_alerts:
+          - exp_labels: {queue: transport, severity: page}
+            exp_annotations: {summary: A dead-letter population grew across two consecutive collection intervals.}
+
+  - interval: 15s
+    input_series:
+      - series: 'up{job="caddy"}'
+        values: '1x22'
+      - series: 'up{job="gameserver"}'
+        values: '1x22'
+      - series: 'cloud_clicker_ready'
+        values: '1x22'
+      - series: 'cloud_clicker_backup_last_success_timestamp_seconds'
+        values: '1x22'
+      - series: 'cloud_clicker_backup_last_failure_timestamp_seconds'
+        values: '0x22'
+      - series: 'cloud_clicker_postgres_reachable'
+        values: '1x22'
+      - series: 'cloud_clicker_database_collection_success'
+        values: '1x22'
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="backup"}'
+        values: '0.2x22'
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="persistent"}'
+        values: '0.2x22'
+      - series: 'cloud_clicker_journal_usage_bytes'
+        values: '20x22'
+      - series: 'cloud_clicker_journal_budget_bytes'
+        values: '100x22'
+      - series: 'cloud_clicker_gameserver_restart_count'
+        values: '0x22'
+      - series: 'cloud_clicker_job_runs_total{job="credential_cleanup",result="failure"}'
+        values: '0x22'
+      - series: 'cloud_clicker_dead_letters{queue="transport"}'
+        values: '0x22'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: CloudClickerPublicEndpointOrReadinessUnavailable
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: CloudClickerPostgresUnreachable
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: CloudClickerStoragePressure
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: CloudClickerDeadLetterGrowth
+        exp_alerts: []

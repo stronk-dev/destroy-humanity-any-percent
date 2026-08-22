@@ -1,9 +1,9 @@
 # Deployment
 
 Deployment Foundation is implementing. The repository does **not** yet claim a supported self-host
-bundle or release-ready deployment. Backup and release/rollback implementations exist but remain
-subject to their required independent reviews; operations and the exact-manifest clean-host
-rehearsal remain unfinished.
+bundle or release-ready deployment. The config, package, backup, release/rollback and private
+operations batches are implemented but remain subject to their required independent reviews; the
+exact-manifest clean-host rehearsal remains unfinished.
 
 ## Runtime content closure
 
@@ -54,7 +54,7 @@ secrets. Every rendered Caddy/gameserver/Postgres image reference must include a
 `@sha256:` digest. The Caddy route list includes only the SPA, API, WebSocket, health and readiness;
 metrics are deliberately absent from the public proxy.
 
-`make render-release-compose` replaces the three image tokens only when each supplied reference is
+`make render-release-compose` replaces the six image tokens only when each supplied reference is
 digest-pinned, validates the private topology, and refuses to overwrite an existing output. The
 checked-in `.env.example` contains only operator configuration and host paths to secret files;
 `deployment/secrets/` is ignored so the documented layout cannot be committed accidentally. Docker
@@ -71,7 +71,7 @@ actual secret files.
 ## Application licenses and SBOM
 
 `make generate-release-metadata` inventories the union of module graphs actually linked into the
-gameserver, deployment-backup and deployment-release commands (not the much larger `go.sum`
+gameserver, deployment-backup, deployment-release and deployment-operations commands (not the much larger `go.sum`
 graph), adds the Go standard library, and reads the
 three exact browser runtime dependencies from `client/package.json` plus their installed package
 manifests. It reads shipped LICENSE/COPYING bytes directly, recognizes only the audited MIT,
@@ -86,10 +86,10 @@ matching the prior license audit while retaining the previously hidden dual Apac
 notice. Version, full commit and RFC3339 creation time are explicit inputs; an existing output
 directory is never silently overlaid.
 
-The application SBOM inventories the union of dependencies linked into all three shipped Go
-binaries (gameserver, deployment-backup and deployment-release) plus the bundled browser client.
-The assembler requires separate SPDX inputs for Caddy, the
-gameserver image and Postgres and binds each SBOM hash beside that image's immutable digest.
+The application SBOM inventories the union of dependencies linked into all four shipped Go
+binaries plus the bundled browser client. The assembler requires separate SPDX inputs for
+Alertmanager, Caddy, the gameserver image, node-exporter, Postgres and Prometheus and binds each
+SBOM hash beside that image's immutable digest.
 For upstream multi-platform references it also records the selected linux/amd64 OCI config digest;
 the SPDX document name must identify that exact runtime config, preventing a native-host SBOM from
 being attached to the supported amd64 release.
@@ -97,23 +97,25 @@ being attached to the supported amd64 release.
 ## Release bundle assembly
 
 `make assemble-release-bundle` accepts only an empty output directory and requires all of the
-following explicit inputs: the Linux/amd64 gameserver, deployment-backup and deployment-release binaries, the
+following explicit inputs: the Linux/amd64 gameserver, deployment-backup, deployment-release and
+deployment-operations binaries, the
 gameserver's `docker save` archive, built
 client, generated application metadata, release version/full source commit, tested Docker
-Engine/Compose versions, three digest-pinned image references, their linux/amd64 config digests and
-their three image SBOMs. It
+Engine/Compose versions, six digest-pinned image references, their linux/amd64 config digests and
+their six image SBOMs. It
 rejects a non-ELF or non-amd64
 binary, client symlinks, an absent SPA entry point, empty/missing inputs, mutable image references
 and a pre-existing output tree.
 
 The resulting directory contains the runtime content closure, site, gameserver, backup and release
 helper binaries, offline gameserver
-image archive, Docker/Caddy/Compose inputs, schemas, root and third-party licenses, four SBOM documents and
+image archive, Docker/Caddy/Compose inputs, schemas, operations rules/templates, root and
+third-party licenses, seven SBOM documents and
 `release-manifest.json`. The manifest records the current migration, both save-schema versions,
 epoch/copy/constants identities and the SHA-256 of every other bundle file. Validation re-walks the
 directory and rejects any missing, extra or changed byte, including attribution or an image SBOM.
-It intentionally describes a release *candidate*: designated approval of the backup and rollback
-batches, operations and the exact clean-host R-006 rehearsal remain required before the project
+It intentionally describes a release *candidate*: designated approval of the implementation
+batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
 ## Encrypted Postgres backup and restore
@@ -201,7 +203,7 @@ does not race this sequence: the helper uses `docker compose stop`, not a raw co
 Normal release is strictly forward by semantic release version and database migration; an older
 version can enter service only through the governed rollback command.
 
-Every successful release row binds the candidate version, manifest SHA-256, all three image
+Every successful release row binds the candidate version, manifest SHA-256, all six image
 digests, exact pre-upgrade backup, exact previous version/manifest and a seven-day rollback
 deadline. Rollback accepts only those recorded values. It stops the failed stack, removes only the
 named Postgres data volume, starts a clean Postgres service, restores the exact encrypted backup,
@@ -232,5 +234,62 @@ file. Rotation uses `rotation-activate` or `rotation-remove` with the operator-s
 current/previous IDs and operator identity. Secret values never appear in these arguments or ledgers.
 
 DP-D component evidence does not claim supported deployment or rollback by itself. The exact
-release-manifest clean-host R-006 rehearsal, measured RPO/RTO, operations profile, and both review
+release-manifest clean-host R-006 rehearsal, measured RPO/RTO, operations evidence, and both review
 gates remain mandatory before that claim.
+
+## Private operations profile
+
+The release bundle contains a provider-off operations profile: Prometheus, Alertmanager and
+node-exporter share an internal Compose network and publish no host ports. Alertmanager alone also
+joins the non-publishing edge network so an operator may choose either a local or remote receiver;
+Prometheus and node-exporter have no external route. Prometheus scrapes the
+gameserver's private `/metrics` route, Caddy's private `:2019` administration metrics,
+node-exporter, Alertmanager and itself. The public Caddy site has no metrics route. Production
+template validation rejects a published private port, an operations service on the wrong network,
+a mutable image, a non-distinct journald tag or a missing operations mount/config/secret.
+
+The gameserver uses an isolated Prometheus registry. Its bounded signals cover readiness, process
+health, HTTP/WebSocket route classes and latency, Postgres reachability and collector success,
+pending outbox and dead-letter populations, background-job results and last success, composed
+credential cleanup, and named invariant families. User-controlled paths collapse to fixed route
+classes. Metric labels and ordinary structured logs exclude credentials, recovery codes, raw IPs,
+payloads and account/founder/stream/intent identifiers. Backup, restore and release helpers write
+atomic node-exporter textfiles; a later failure does not erase the last successful timestamp.
+
+The seven blocking alert families cover five-minute ingress/readiness loss, missing/late/failed
+six-hour backups, two-minute Postgres or collector failure, storage pressure above 80%, three
+gameserver restarts in ten minutes, credential-cleanup failure and dead-letter growth across two
+15-second intervals. The checked-in `promtool` population proves each firing path and the resolved
+population. Release preflight also sends a fresh nonce-bearing synthetic alert and requires both a
+healthy configured receiver and an increase in Alertmanager's successful-notification counter.
+The private-network integration proves that exact nonce reaches the receiver; health alone fails.
+
+All seven services write to persistent journald with a unique bounded tag. Journal capacity is not
+a guessed constant: `deployment-operations journal-observe` records the predeclared workload,
+interval, sample count, observed bytes, peak bytes/day, filesystem size and proposed budget.
+`journal-render` accepts only a complete, non-guarded observation with exact 14-day retention,
+capacity for fourteen measured peak days and an alert at 80% before eviction; it writes both the
+new journald drop-in and the exact budget file used by host monitoring, refusing to overwrite
+either. The shipped stack has no raw-IP producer or enable switch, and the observation validator
+rejects a claimed raw-IP security sink rather than trusting a boolean assertion. Adding one later
+requires a separately governed producer, exact seven-day purge mechanism and executable witness;
+the default journal cannot silently become that sink.
+
+Install `cloud-clicker-observe.service` and `.timer`, copy `operations.env.example` to
+`/etc/cloud-clicker/operations.env`, and set its absolute persistent-data, off-host-backup,
+journal, metrics and measured-budget paths. Provision the metrics directory so the host release
+operator and the backup container's numeric `70:70` user can both write it while node-exporter can
+only read it; release and backup preflight fail instead of dropping an observation when that
+boundary is wrong. The one-minute observer records filesystem use,
+gameserver restart count and journal consumption through atomic textfiles. Build and exercise the
+operations helper with:
+
+```sh
+make build-deployment-operations-linux-amd64 RELEASE_OPERATIONS_OUTPUT=/absolute/path/deployment-operations
+make test-deployment-operations
+```
+
+The second command runs the exact pinned Prometheus rule evaluator, cold Go privacy/config/helper
+tests and a real isolated Caddy/Prometheus/Alertmanager/node-exporter delivery population. A real Linux
+host observation and exact-manifest alert/recovery rehearsal still belong to DP-F/R-006; the
+component evidence here does not claim supported self-hosting or release readiness.

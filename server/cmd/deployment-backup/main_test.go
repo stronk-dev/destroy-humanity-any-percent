@@ -1,10 +1,18 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
 )
+
+func TestBackupFailureOutputIsBounded(t *testing.T) {
+	command, class := boundedFailure("recovery_code=private", errors.New("database_url=private"))
+	if command != "unknown" || class != "operation_failed" {
+		t.Fatalf("unbounded failure escaped: command=%q class=%q", command, class)
+	}
+}
 
 func TestBackupPathsAdmitsEveryTargetEntryForValidation(t *testing.T) {
 	target := t.TempDir()
@@ -30,7 +38,7 @@ func TestCreateFlagsRequireEveryReleaseIdentityInput(t *testing.T) {
 	flags, err := parseCreateFlags("create", []string{
 		"--target=/backups", "--database-url-file=/run/secrets/database-url",
 		"--release-manifest=/release-manifest.json", "--epoch=/epoch.json",
-		"--age-recipient=age1fixture", "--server-id=server",
+		"--age-recipient=age1fixture", "--server-id=server", "--metrics-dir=/operations",
 	})
 	if err != nil || flags.target != "/backups" {
 		t.Fatalf("flags=%+v err=%v", flags, err)
