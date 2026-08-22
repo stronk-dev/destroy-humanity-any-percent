@@ -47,7 +47,9 @@ gameserver, Postgres bootstrap transaction, authenticated live snapshot-v2 route
 world subscription; its schema/revision and visible visitor-counter assertions prove the production
 HTTP synchronization and WebSocket handshake completed. The composed witness then closes the
 production browser socket, commits an intent while disconnected, and requires the reconnect to send
-the exact persisted player epoch/offset and advance it by replaying the missed receipt.
+the exact persisted player epoch/offset and advance it by replaying the missed receipt. This current
+composed test does not yet prove the three server-authorized transition/continuation controls; that
+narrowed GU-C25–GU-C28 browser proof remains the Game UI closeout item.
 
 The deterministic performance lane runs in an isolated Chromium process after the functional
 Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates representing 60
@@ -60,7 +62,9 @@ as ruled.
 
 ## Live-content boundary
 
-Epochs 7 and 8 now provide the live T0–T1 economy and first-hour curriculum. The content contract's
+Epochs 7 and 8 provide the live T0–T1 economy and first-hour curriculum. The content contract's
 pinned-seed proof drives that sequence through the real composed gameserver and Postgres. The Game
-UI archival gate separately owns the full browser rendition of the live sequence; its existing
-composed path already proves real bootstrap, snapshot, WebSocket, and rendered-screen behavior.
+UI does not duplicate that two-hour/full-script proof in Chromium. Its remaining browser gate is
+deliberately narrower: server-authorized Gate and Wind Down controls, both terminal surfaces, and
+Run-End continuation into the already-created next run, with discriminating disconnect and
+suppression failures.

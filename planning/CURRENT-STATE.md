@@ -55,6 +55,9 @@ The evidence trace is in
   `440dbba`; the absent player surface and historical archival union remain separate.
 - Fiscal's frozen RFC and archived plan agree with rejection rollback; its record-only repair is
   designated-approved at `440dbba`.
+- Game UI's stale full-script browser requirement and fixed-era text are reconciled to the accepted
+  narrowed control proof and authoritative T0/T1 era mapping; snapshot-v3/control implementation is
+  now READY.
 
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.

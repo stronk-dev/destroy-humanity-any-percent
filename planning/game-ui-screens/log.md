@@ -904,3 +904,15 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
   sentence. The implementer may not choose one arm silently or edit the owner's normative text.
   Implementation resumes immediately after the owner-authored body fix; GU-C26/C27 mechanics and
   adopted Copy need no further ruling.
+
+## 2026-08-22 — GU-C7/GU-C25–GU-C28 body reconciliation
+
+- Owner direction resumed the highest-leverage preview blocker. Reconciled the live status and
+  T0–T1 dependency, U1's milestone name, U2's authoritative two-era mapping, AC1's browser
+  obligation, the plan, and canonical docs to the recorded rulings.
+- AC1 now requires the UI's actual job: server-eligible Gate/Wind Down controls, both terminal
+  states, and parent-owned next-run continuation through `runtime.ts`, with server-side setup
+  allowed and direct-intent/fixture-clock/two-hour browser replay explicitly forbidden.
+- Queue row 4 is READY for the accepted snapshot-v3/control/oracle implementation. No product code,
+  schema, generated artifact, balance, owner-authored copy, status promotion, review, archive, push,
+  or publication changed.

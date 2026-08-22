@@ -2241,3 +2241,11 @@
   distinction and the unaccepted Leaderboard reader/player successor; the repair verdict does not
   manufacture coverage or authority outside its cited ranges.
 - No product code, schema, balance, copy, RFC status, archival, push or publication changed.
+
+## 2026-08-22 — Game UI authority gate cleared
+
+- Reconciled the active RFC header/dependency, U1/U2, AC1, plan and canonical docs to
+  GU-C7/GU-C25–GU-C28. Removed the rejected full-script/two-hour Chromium requirement and retained
+  the discriminating server-eligible Gate/Wind Down/terminal/continuation proof.
+- RP-067's authority half is closed and execution queue row 4 is READY. No product code, generated
+  contract, owner-authored copy, status, review, archive, push or publication changed.

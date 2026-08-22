@@ -1,12 +1,12 @@
 # RFC: Game UI Screens (the play surfaces)
 
-- **Status:** accepted — GU-C1–GU-C24 ruled; implementing (GU-C9–GU-C12 implementation blockers recorded)
+- **Status:** accepted — GU-C1–GU-C28 ruled; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/11-ux-writing.md` (first-session narrative, voice), `design/08 §speedrun` (run-title bar, splits panel, PB/gold deltas), `design/06` (DOM-first, Svelte 5 runes, `$derived` bound to visible tab only), client-shell docs (reconciliation, `reason_key` caps, activity_ppm never-frozen)
 - **Depends on:** Client Shell (implemented), Transport (implemented), **UI Foundation (implemented;
   archived 2026-08-10)** — screens are built FROM its token matrix and components and
-  inherit its gates, T0–T1 Content (draft — ships together; screens without content are furniture)
+  inherit its gates, T0–T1 Content (implemented and archived)
 - **Planning:** `planning/game-ui-screens/` (once implementing)
 
 ## Summary
@@ -43,7 +43,7 @@ discipline as every other boundary.
    diegetic "scheduled maintenance"), the `resync_required` full-sync flow surfaced as a story
    beat not an error (already ruled in shell D2 — this screen is where it lands).
 7. **First-session elements (design/11 §1b adoptions, all binding):** the **Vision Slide**
-   (REQUIRED v1.0 — the pre-run framing screen at `[BEGIN ATTEMPT]`; account creation is silent
+   (required for the Phase-0 preview — the pre-run framing screen at `[BEGIN ATTEMPT]`; account creation is silent
    server-anonymous, so this screen has NO signup form); the run-1 presence element is the
    **visitor counter ONLY** (no feed rendering — the feed unlocks at the scripted first failure,
    which is T0–T1 content, not a Phase-A screen); the T0 era skin carries the §1b satire beats
@@ -59,8 +59,10 @@ discipline as every other boundary.
   tech-stack rule); number formatting throttled ~10 Hz, rendered through the UI Foundation's
   pinned notations binding (`@antimatter-dimensions/notations`, Standard, 3 significant digits) —
   no second formatter.
-- All visual values from the UI Foundation token matrix (era_1995 for Phase A — including its
-  deliberate all-zero motion tokens); no raw colors/spacing in components.
+- All visual values come from the UI Foundation token matrix. Era derives exclusively from the
+  authoritative tier through `{0:era_1995, 1:era_2000}`; later tiers fail closed. The switch changes
+  only root tokens/attribute and preserves the active surface/focus when that element persists. No
+  raw colors/spacing appear in components.
 - All copy through the copy system (T0–T1 RFC's pipeline); zero literals in components.
 - Accessibility: the UI Foundation's C11 gate applies to every Phase-A screen (axe-core WCAG 2.2
   AA, zero serious/critical) IN ADDITION to keyboard-completable first hour and OS reduced-motion
@@ -76,8 +78,14 @@ is a later screen-set RFC on the same U2 contract.
 
 ## Acceptance criteria
 
-1. First-session browser test: the full T2 script (T0–T1 RFC) completed through the real UI
-   against the composed gameserver — the first end-to-end human-path test in the repo.
+1. Composed browser interaction proof: against the real gameserver and Postgres, each ruled
+   transition control (`cross_gate`, `wind_down`, and Run-End continuation) renders only from its
+   authoritative server state, originates from an enabled visible DOM control, submits intents only
+   through `runtime.ts`, handles the authoritative receipt, renders both terminal states, and reaches
+   the already-created next run. Server-side test setup may establish preconditions. Direct browser
+   test calls to `/api/v1/intents`, a fixture clock/control channel, and a two-hour Chromium replay
+   are forbidden. Disconnecting either transition control, suppressing either terminal state, or
+   disabling driver actions must fail before its corresponding visible milestone.
 2. Wire-only proof: components compile against the decoded-envelope types with no imports from
    transport internals; a lint boundary (the combat-gate pattern) enforces it.
 3. Run-end screen renders byte-only from a `run_ended` fixture (no shell state read) — AC7
@@ -585,3 +593,5 @@ must conflict. Do not keep a nominal error category no legal request pair can re
   string through `formatAmount`, not canonical wire notation.
 - 2026-08-11: the earlier normative GU-C1/GU-C10 rulings reconciled to GU-C23's current-v2 and
   minted-schema receipt contract; historical blocker proposals remain as the quoted record.
+- 2026-08-22: header, dependency, U1/U2 and AC1 reconciled to GU-C7/GU-C25–GU-C28 and the Phase-0
+  preview ruling. The rejected full-script/two-hour browser criterion is no longer normative.
