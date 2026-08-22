@@ -21,7 +21,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [Game-UI Screens](game-ui-screens.md) | accepted — GU-C1–C24 ruled; implementing; archival gated on epoch-7 mint (AC1) | UI Foundation / Client Shell |
+| [Game-UI Screens](game-ui-screens.md) | accepted — GU-C1–C28 ruled; closeout first-filter approved; designated review and AC5 reference profile pending | UI Foundation / Client Shell |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — UNBLOCKED, blockers answered | Commons Compact |
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
@@ -32,7 +32,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
-— the evidence-derived READY/BLOCKED queue at `190a4fa`. The older July batch manifest is history,
+— the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,
 not current authorization.
 **Coverage map:** [`planning/archive/coverage-map/`](../planning/archive/coverage-map/) preserves the
 2026-08-05 historical sweep as a frozen, noncanonical snapshot. Use the platform-alignment

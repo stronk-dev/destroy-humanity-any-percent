@@ -1039,3 +1039,13 @@ remaining plan boxes stay open until the narrowed proof lands and passes its des
   test-discrimination, or CI-portability finding was identified. Hand off the complete range
   beginning at `05acc65` through this record commit for Claude's exact-range designated review.
   Do not archive, promote status, push, or claim AC5's separate 4× reference-profile observation.
+
+## 2026-08-22 — active-index handoff reconciliation
+
+- Removed the execution queue's stale self-reference to `190a4fa`; a mutable canonical queue cannot
+  truthfully name an old commit as its current coordinate.
+- Updated `rfc/README.md` to the live GU-C1–GU-C28, first-filter-approved state and its two honest
+  remaining gates: designated review and AC5's reference-profile observation. The obsolete
+  epoch-7/AC1 blocker was already resolved by the implementation above.
+- This is record-only closeout reconciliation. It changes no RFC body, product behavior, acceptance
+  criterion, review verdict, or authorization.

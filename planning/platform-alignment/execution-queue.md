@@ -1,4 +1,4 @@
-# Executable queue at `190a4fa`
+# Executable queue
 
 Only `READY` rows are presently authorized. “Blocked” is a routing fact,
 not a request to improvise.
