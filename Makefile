@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver deployment-config-check stage-release-content vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 deployment-config-check stage-release-content render-release-compose vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -106,6 +106,13 @@ build-gameserver:
 	mkdir -p $(REPO_CACHE_DIR)/bin
 	cd server && go build -o $(REPO_CACHE_DIR)/bin/gameserver ./cmd/gameserver
 
+build-gameserver-linux-amd64:
+	@test -n "$(RELEASE_SERVER_OUTPUT)" || (echo "RELEASE_SERVER_OUTPUT is required" >&2; exit 1)
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false \
+		-ldflags='-s -w -buildid=' \
+		-o "$(if $(filter /%,$(RELEASE_SERVER_OUTPUT)),$(RELEASE_SERVER_OUTPUT),../$(RELEASE_SERVER_OUTPUT))" \
+		./cmd/gameserver
+
 # Production startup and this preflight use the same environment and
 # file-secret decoder. The release-bundle profile extends this in DP-B.
 deployment-config-check:
@@ -115,6 +122,14 @@ stage-release-content:
 	@test -n "$(RELEASE_CONTENT_OUTPUT)" || (echo "RELEASE_CONTENT_OUTPUT is required" >&2; exit 1)
 	cd server && go run ./cmd/stage-release-content -root=.. \
 		-output="$(if $(filter /%,$(RELEASE_CONTENT_OUTPUT)),$(RELEASE_CONTENT_OUTPUT),../$(RELEASE_CONTENT_OUTPUT))"
+
+render-release-compose:
+	@test -n "$(RELEASE_COMPOSE_OUTPUT)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" \
+		-a -n "$(POSTGRES_IMAGE)" || \
+		(echo "RELEASE_COMPOSE_OUTPUT, CADDY_IMAGE, GAMESERVER_IMAGE, and POSTGRES_IMAGE are required" >&2; exit 1)
+	cd server && go run ./cmd/render-release-compose \
+		-output="$(if $(filter /%,$(RELEASE_COMPOSE_OUTPUT)),$(RELEASE_COMPOSE_OUTPUT),../$(RELEASE_COMPOSE_OUTPUT))" \
+		-caddy-image="$(CADDY_IMAGE)" -gameserver-image="$(GAMESERVER_IMAGE)" -postgres-image="$(POSTGRES_IMAGE)"
 
 vectors:
 	node tools/gen-vectors.mjs

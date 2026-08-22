@@ -30,3 +30,28 @@ The command prints the epoch, constants/copy identities and every staged file ha
 JSON. This is an input to the release manifest still being implemented; it is not itself release
 evidence.
 
+`deployment/Dockerfile.gameserver` is a `scratch`-based, numeric-nonroot image boundary that copies
+only the statically linked binary and that staged content. `make build-gameserver-linux-amd64`
+builds the reproducible, trimpath, VCS-metadata-free binary at the explicitly supplied
+`RELEASE_SERVER_OUTPUT`. The image still receives release version/source commit as OCI labels, so
+provenance lives in the release boundary rather than a host-dependent Go build record.
+
+`deployment/compose.template.yml` defines the current core topology: only Caddy publishes two host
+ports; Caddy and gameserver share an internal application network; gameserver and Postgres share a
+separate internal database network. The gameserver is read-only, drops all capabilities and mounts
+only current file-backed secrets. `compose.rotation.template.yml` adds previous JWT/bootstrap pairs
+only during an actual overlap—ordinary installations do not manufacture placeholder previous
+secrets. Every rendered Caddy/gameserver/Postgres image reference must include an immutable
+`@sha256:` digest. The Caddy route list includes only the SPA, API, WebSocket, health and readiness;
+metrics are deliberately absent from the public proxy.
+
+`make render-release-compose` replaces the three image tokens only when each supplied reference is
+digest-pinned, validates the private topology, and refuses to overwrite an existing output. The
+checked-in `.env.example` contains only operator configuration and host paths to secret files;
+`deployment/secrets/` is ignored so the documented layout cannot be committed accidentally. Docker
+Compose's own `config` command has parsed the rendered boundary successfully; the final bundle
+builder will run that check again against its exact output.
+
+These are checked-in package inputs, not a released Compose file. Backup and private operations
+services, generated image resolution, licenses/SBOM and the release-manifest validator still have
+to join the bundle before this layer can claim DP-B or AC1/AC8.

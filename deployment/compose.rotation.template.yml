@@ -1,0 +1,14 @@
+services:
+  gameserver:
+    environment:
+      CLOUD_CLICKER_JWT_PREVIOUS_ID: "${CLOUD_CLICKER_JWT_PREVIOUS_ID:?set the previous JWT key ID}"
+      CLOUD_CLICKER_JWT_PREVIOUS_KEY_FILE: /run/secrets/jwt-previous
+      CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_ID: "${CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_ID:?set the previous bootstrap key ID}"
+      CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_KEY_FILE: /run/secrets/bootstrap-previous
+    secrets: [jwt-previous, bootstrap-previous]
+
+secrets:
+  jwt-previous:
+    file: "${CLOUD_CLICKER_JWT_PREVIOUS_SECRET_FILE:?set the previous JWT secret file}"
+  bootstrap-previous:
+    file: "${CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_SECRET_FILE:?set the previous bootstrap secret file}"

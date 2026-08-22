@@ -1,0 +1,20 @@
+{$CLOUD_CLICKER_PUBLIC_ORIGIN} {
+	encode zstd gzip
+
+	@api path /api/* /connection/websocket /healthz /readyz
+	handle @api {
+		reverse_proxy gameserver:8080
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+	}
+}
