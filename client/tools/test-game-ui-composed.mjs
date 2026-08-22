@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { mkdirSync } from "node:fs";
 import { createServer as createTCPServer } from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,6 +22,7 @@ await new Promise((resolve, reject) => {
 });
 
 const gameserverBinary = path.join(repositoryRoot, ".cache", "game-ui-gameserver");
+mkdirSync(path.dirname(gameserverBinary), { recursive: true });
 const gameserverEnvironment = {
   ...process.env,
   CLOUD_CLICKER_ACTIVITY_BRACKET: "activity.standard",
