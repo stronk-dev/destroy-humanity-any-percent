@@ -271,11 +271,12 @@ generate-release-metadata:
 		-version="$(RELEASE_VERSION)" -commit="$(RELEASE_COMMIT)" -created="$(RELEASE_CREATED_AT)"
 
 assemble-release-bundle:
-	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(RELEASE_BACKUP_OUTPUT)" -a -n "$(RELEASE_HELPER_OUTPUT)" -a -n "$(RELEASE_OPERATIONS_OUTPUT)" -a -n "$(RELEASE_REHEARSAL_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
+	@test -n "$(RELEASE_BUNDLE_OUTPUT)" -a -n "$(RELEASE_SERVER_OUTPUT)" -a -n "$(RELEASE_BACKUP_OUTPUT)" -a -n "$(RELEASE_HELPER_OUTPUT)" -a -n "$(RELEASE_OPERATIONS_OUTPUT)" -a -n "$(RELEASE_REHEARSAL_OUTPUT)" -a -n "$(RELEASE_BROWSER_OUTPUT)" -a -n "$(GAMESERVER_IMAGE_ARCHIVE)" -a -n "$(RELEASE_METADATA_OUTPUT)" \
 		-a -n "$(RELEASE_VERSION)" -a -n "$(RELEASE_COMMIT)" -a -n "$(RELEASE_DOCKER_VERSION)" \
 		-a -n "$(RELEASE_COMPOSE_VERSION)" -a -n "$(ALERTMANAGER_IMAGE)" -a -n "$(CADDY_IMAGE)" -a -n "$(GAMESERVER_IMAGE)" -a -n "$(NODE_EXPORTER_IMAGE)" -a -n "$(POSTGRES_IMAGE)" -a -n "$(PROMETHEUS_IMAGE)" \
 		-a -n "$(ALERTMANAGER_SBOM)" -a -n "$(CADDY_SBOM)" -a -n "$(GAMESERVER_SBOM)" -a -n "$(NODE_EXPORTER_SBOM)" -a -n "$(POSTGRES_SBOM)" -a -n "$(PROMETHEUS_SBOM)" \
-		-a -n "$(ALERTMANAGER_CONFIG_ID)" -a -n "$(CADDY_CONFIG_ID)" -a -n "$(GAMESERVER_CONFIG_ID)" -a -n "$(NODE_EXPORTER_CONFIG_ID)" -a -n "$(POSTGRES_CONFIG_ID)" -a -n "$(PROMETHEUS_CONFIG_ID)" || (echo "release bundle inputs are required" >&2; exit 1)
+		-a -n "$(ALERTMANAGER_CONFIG_ID)" -a -n "$(CADDY_CONFIG_ID)" -a -n "$(GAMESERVER_CONFIG_ID)" -a -n "$(NODE_EXPORTER_CONFIG_ID)" -a -n "$(POSTGRES_CONFIG_ID)" -a -n "$(PROMETHEUS_CONFIG_ID)" \
+		-a -n "$(PLAYWRIGHT_IMAGE)" -a -n "$(PLAYWRIGHT_CONFIG_ID)" -a -n "$(PLAYWRIGHT_SBOM)" || (echo "release bundle inputs are required" >&2; exit 1)
 	cd server && go run ./cmd/assemble-release-bundle -root=.. \
 		-output="$(if $(filter /%,$(RELEASE_BUNDLE_OUTPUT)),$(RELEASE_BUNDLE_OUTPUT),../$(RELEASE_BUNDLE_OUTPUT))" \
 		-server-binary="$(if $(filter /%,$(RELEASE_SERVER_OUTPUT)),$(RELEASE_SERVER_OUTPUT),../$(RELEASE_SERVER_OUTPUT))" \
@@ -283,6 +284,9 @@ assemble-release-bundle:
 		-release-binary="$(if $(filter /%,$(RELEASE_HELPER_OUTPUT)),$(RELEASE_HELPER_OUTPUT),../$(RELEASE_HELPER_OUTPUT))" \
 		-operations-binary="$(if $(filter /%,$(RELEASE_OPERATIONS_OUTPUT)),$(RELEASE_OPERATIONS_OUTPUT),../$(RELEASE_OPERATIONS_OUTPUT))" \
 		-rehearsal-binary="$(if $(filter /%,$(RELEASE_REHEARSAL_OUTPUT)),$(RELEASE_REHEARSAL_OUTPUT),../$(RELEASE_REHEARSAL_OUTPUT))" \
+		-browser-binary="$(if $(filter /%,$(RELEASE_BROWSER_OUTPUT)),$(RELEASE_BROWSER_OUTPUT),../$(RELEASE_BROWSER_OUTPUT))" \
+		-browser-image="$(PLAYWRIGHT_IMAGE)" -browser-config-id="$(PLAYWRIGHT_CONFIG_ID)" \
+		-browser-sbom="$(if $(filter /%,$(PLAYWRIGHT_SBOM)),$(PLAYWRIGHT_SBOM),../$(PLAYWRIGHT_SBOM))" \
 		-gameserver-archive="$(if $(filter /%,$(GAMESERVER_IMAGE_ARCHIVE)),$(GAMESERVER_IMAGE_ARCHIVE),../$(GAMESERVER_IMAGE_ARCHIVE))" \
 		-client-dist=../client/dist \
 		-metadata="$(if $(filter /%,$(RELEASE_METADATA_OUTPUT)),$(RELEASE_METADATA_OUTPUT),../$(RELEASE_METADATA_OUTPUT))" \

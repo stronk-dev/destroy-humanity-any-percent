@@ -17,6 +17,10 @@ func main() {
 	releaseBinary := flag.String("release-binary", "", "Linux/amd64 deployment release binary")
 	operationsBinary := flag.String("operations-binary", "", "Linux/amd64 deployment operations binary")
 	rehearsalBinary := flag.String("rehearsal-binary", "", "Linux/amd64 deployment rehearsal binary")
+	browserBinary := flag.String("browser-binary", "", "Linux/amd64 deployment browser binary")
+	browserImage := flag.String("browser-image", "", "immutable Linux/amd64 rehearsal browser image")
+	browserConfig := flag.String("browser-config-id", "", "Linux/amd64 rehearsal browser runtime config digest")
+	browserSBOM := flag.String("browser-sbom", "", "rehearsal browser image SPDX SBOM")
 	gameserverArchive := flag.String("gameserver-archive", "", "docker save archive for the gameserver image")
 	clientDist := flag.String("client-dist", "", "built client directory")
 	metadata := flag.String("metadata", "", "generated release metadata directory")
@@ -39,7 +43,9 @@ func main() {
 		configIDs[name] = strings.TrimSpace(*configValues[name])
 	}
 	manifest, err := releasepackage.AssembleBundle(releasepackage.BundleInput{RepositoryRoot: *root, Output: *output,
-		ServerBinary: *serverBinary, BackupBinary: *backupBinary, ReleaseBinary: *releaseBinary, OperationsBinary: *operationsBinary, RehearsalBinary: *rehearsalBinary, GameserverImageArchive: *gameserverArchive, ClientDist: *clientDist, MetadataDirectory: *metadata,
+		ServerBinary: *serverBinary, BackupBinary: *backupBinary, ReleaseBinary: *releaseBinary, OperationsBinary: *operationsBinary, RehearsalBinary: *rehearsalBinary,
+		BrowserBinary: *browserBinary, BrowserImage: strings.TrimSpace(*browserImage), BrowserConfigID: strings.TrimSpace(*browserConfig), BrowserSBOM: *browserSBOM,
+		GameserverImageArchive: *gameserverArchive, ClientDist: *clientDist, MetadataDirectory: *metadata,
 		ReleaseVersion: *version, SourceCommit: *commit, DockerEngineVersion: *dockerVersion,
 		DockerComposeVersion: *composeVersion, Images: images, ImageConfigIDs: configIDs, ImageSBOMs: sboms})
 	if err != nil {

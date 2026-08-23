@@ -30,6 +30,7 @@ type packageManifest struct {
 var shippedGoCommands = []string{
 	"./cmd/gameserver",
 	"./cmd/deployment-backup",
+	"./cmd/deployment-browser",
 	"./cmd/deployment-release",
 	"./cmd/deployment-operations",
 	"./cmd/deployment-rehearsal",

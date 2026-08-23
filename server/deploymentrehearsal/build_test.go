@@ -22,6 +22,13 @@ func TestBuildRecordRequiresIndependentExactRebuild(t *testing.T) {
 		"wrong order": func(value *BuildRecord) {
 			value.Images[0], value.Images[1] = value.Images[1], value.Images[0]
 		},
+		"v2 candidate missing rehearsal image": func(value *BuildRecord) {
+			value.SchemaVersion = 2
+			value.Role = "candidate"
+		},
+		"v1 rehearsal image": func(value *BuildRecord) {
+			value.RehearsalImages = []BuildImage{validRehearsalImage()}
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			value := validBuildRecord()
@@ -31,6 +38,25 @@ func TestBuildRecordRequiresIndependentExactRebuild(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestCandidateBuildRecordBindsRehearsalBrowserImage(t *testing.T) {
+	value := validBuildRecord()
+	value.SchemaVersion = 2
+	value.Role = "candidate"
+	value.RehearsalImages = []BuildImage{validRehearsalImage()}
+	if err := ValidateBuildRecord(value); err != nil {
+		t.Fatal(err)
+	}
+	value.RehearsalImages[0].Reference = "playwright:latest"
+	if err := ValidateBuildRecord(value); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("mutable rehearsal image accepted: %v", err)
+	}
+}
+
+func validRehearsalImage() BuildImage {
+	return BuildImage{Name: "playwright", Reference: "mcr.microsoft.com/playwright:v1@" + hashForBuild("9"),
+		RuntimeConfigSHA256: hashForBuild("8"), SBOMSHA256: hashForBuild("7")}
 }
 
 func validBuildRecord() BuildRecord {

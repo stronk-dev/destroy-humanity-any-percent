@@ -54,5 +54,8 @@ func validateSchema(data []byte, name string, required []string) error {
 			return ErrInvalidContent
 		}
 	}
+	if name == "release-manifest.schema.json" && len(schema.Properties["rehearsal_images"]) == 0 {
+		return ErrInvalidContent
+	}
 	return nil
 }

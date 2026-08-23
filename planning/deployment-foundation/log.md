@@ -865,3 +865,30 @@ This is driver discrimination only, not the real product browser population. Bun
 Playwright SBOM/provenance, tool-hash binding and exact Caddy execution remain open, so the probe
 count stays 15/43. Two independent trimpath/build-ID-free Linux/amd64 driver builds were
 byte-identical.
+
+## 2026-08-23 — DP-F2 browser supply-chain closure
+
+The clean-host browser tool is now part of the exact candidate release closure rather than a
+developer-side executable. Assembly requires and copies the static Linux/amd64
+`deployment-browser`, binds the exact Playwright Linux/amd64 manifest and runtime-config digest,
+validates its independently generated SPDX graph, and records the rehearsal-only image separately
+from the six production Compose services. Manifest validation requires the browser binary,
+Playwright SBOM and rehearsal-image row to appear together; full bundle validation re-opens the
+SBOM and checks it against the selected runtime config. The external image is not promoted into the
+production topology.
+
+The application metadata inventory now includes the browser command. A real generator run found
+47 linked third-party Go modules, the standard library and three browser-client dependencies (51
+dependencies total), and the canonical deployment documentation now states the measured graph and
+all six shipped Go commands. Build-record schema v2 makes the rehearsal image mandatory for a
+candidate while preserving the already-recorded schema-v1 previous/interim records as immutable
+historical inputs; a schema-v1 record cannot smuggle in the new field.
+
+Cold focused tests passed for `deploymentrehearsal`, `releasepackage`, both assembly/metadata
+commands, and focused vet passed. Discrimination was executed by removing only the browser copy
+from assembly: `TestAssembleBundleBindsBuiltInputsWithoutCheckout` failed with `incomplete
+rehearsal browser closure`. Restoring the copy returned the full focused population green.
+Removing the retained browser after assembly and supplying missing/mutable browser inputs are also
+permanent negative fixtures. This is construction evidence only: the retained candidate and its
+independent rebuild still need regeneration from the committed source point, and the real product
+browser population remains unobserved. The implemented probe count therefore remains 15/43.

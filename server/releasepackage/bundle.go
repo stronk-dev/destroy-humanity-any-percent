@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 type BundleInput struct {
@@ -18,6 +19,7 @@ type BundleInput struct {
 	ReleaseBinary          string
 	OperationsBinary       string
 	RehearsalBinary        string
+	BrowserBinary          string
 	ClientDist             string
 	MetadataDirectory      string
 	GameserverImageArchive string
@@ -28,13 +30,16 @@ type BundleInput struct {
 	Images                 map[string]string
 	ImageConfigIDs         map[string]string
 	ImageSBOMs             map[string]string
+	BrowserImage           string
+	BrowserConfigID        string
+	BrowserSBOM            string
 }
 
 // AssembleBundle creates the release unit from declared build outputs. The
 // destination must not already contain bytes: a failed build can therefore
 // never be mistaken for a previously successful release.
 func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
-	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ReleaseBinary == "" || input.OperationsBinary == "" || input.RehearsalBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != len(releaseImageNames) || len(input.ImageConfigIDs) != len(releaseImageNames) || len(input.ImageSBOMs) != len(releaseImageNames) {
+	if input.RepositoryRoot == "" || input.ServerBinary == "" || input.BackupBinary == "" || input.ReleaseBinary == "" || input.OperationsBinary == "" || input.RehearsalBinary == "" || input.BrowserBinary == "" || input.ClientDist == "" || input.MetadataDirectory == "" || input.GameserverImageArchive == "" || len(input.Images) != len(releaseImageNames) || len(input.ImageConfigIDs) != len(releaseImageNames) || len(input.ImageSBOMs) != len(releaseImageNames) || !imageReferencePattern.MatchString(input.BrowserImage) || strings.HasPrefix(input.BrowserImage, "sha256:") || !hashPattern.MatchString(input.BrowserConfigID) || input.BrowserSBOM == "" {
 		return ReleaseManifest{}, ErrInvalidContent
 	}
 	if err := requireEmptyDestination(input.Output); err != nil {
@@ -80,6 +85,9 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		return ReleaseManifest{}, err
 	}
 	if err := copyLinuxAMD64Binary(input.RehearsalBinary, filepath.Join(input.Output, "deployment-rehearsal")); err != nil {
+		return ReleaseManifest{}, err
+	}
+	if err := copyLinuxAMD64Binary(input.BrowserBinary, filepath.Join(input.Output, "deployment-browser")); err != nil {
 		return ReleaseManifest{}, err
 	}
 	if err := copyTree(filepath.Join(input.RepositoryRoot, "deployment", "operations"), filepath.Join(input.Output, "operations")); err != nil {
@@ -136,13 +144,23 @@ func AssembleBundle(input BundleInput) (ReleaseManifest, error) {
 		}
 		images = append(images, Image{Name: name, Reference: reference, RuntimeConfigSHA256: configID, SBOMPath: filepath.ToSlash(destination), SBOMSHA256: digest(data)})
 	}
+	browserSBOMPath := filepath.Join("sbom", "playwright.spdx.json")
+	if err := copyRegularFile(input.BrowserSBOM, filepath.Join(input.Output, browserSBOMPath), 0o644); err != nil {
+		return ReleaseManifest{}, err
+	}
+	browserSBOM, err := os.ReadFile(filepath.Join(input.Output, browserSBOMPath))
+	if err != nil || ValidateImageSPDX(browserSBOM, input.BrowserConfigID) != nil {
+		return ReleaseManifest{}, ErrInvalidContent
+	}
+	rehearsalImages := []Image{{Name: "playwright", Reference: input.BrowserImage, RuntimeConfigSHA256: input.BrowserConfigID,
+		SBOMPath: filepath.ToSlash(browserSBOMPath), SBOMSHA256: digest(browserSBOM)}}
 	migration, err := CurrentMigration(input.RepositoryRoot)
 	if err != nil {
 		return ReleaseManifest{}, err
 	}
 	manifest, encoded, err := BuildReleaseManifest(input.Output, ManifestInput{ReleaseVersion: input.ReleaseVersion, SourceCommit: input.SourceCommit,
 		DockerEngineVersion: input.DockerEngineVersion, DockerComposeVersion: input.DockerComposeVersion,
-		DatabaseMigration: migration, Closure: closure, Images: images})
+		DatabaseMigration: migration, Closure: closure, Images: images, RehearsalImages: rehearsalImages})
 	if err != nil {
 		return ReleaseManifest{}, err
 	}

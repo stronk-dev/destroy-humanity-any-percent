@@ -45,6 +45,7 @@ type ReleaseManifest struct {
 	ConstantsHash        string  `json:"constants_hash"`
 	CopyHash             string  `json:"copy_hash"`
 	Images               []Image `json:"images"`
+	RehearsalImages      []Image `json:"rehearsal_images,omitempty"`
 	Artifacts            []File  `json:"artifacts"`
 }
 
@@ -56,6 +57,7 @@ type ManifestInput struct {
 	DatabaseMigration    int
 	Closure              Closure
 	Images               []Image
+	RehearsalImages      []Image
 }
 
 func BuildReleaseManifest(bundleRoot string, input ManifestInput) (ReleaseManifest, []byte, error) {
@@ -67,7 +69,7 @@ func BuildReleaseManifest(bundleRoot string, input ManifestInput) (ReleaseManife
 		Platform: "linux/amd64", DockerEngineVersion: input.DockerEngineVersion, DockerComposeVersion: input.DockerComposeVersion,
 		DatabaseMigration: input.DatabaseMigration, CompanySaveVersion: save.LatestCompanyVersion, FounderSaveVersion: save.LatestFounderVersion,
 		EpochID: input.Closure.EpochID, ConstantsHash: input.Closure.ConstantsHash, CopyHash: input.Closure.CopyHash,
-		Images: append([]Image(nil), input.Images...), Artifacts: artifacts}
+		Images: append([]Image(nil), input.Images...), RehearsalImages: append([]Image(nil), input.RehearsalImages...), Artifacts: artifacts}
 	if err := ValidateReleaseManifest(manifest); err != nil {
 		return ReleaseManifest{}, nil, err
 	}
@@ -82,7 +84,8 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 	if manifest.SchemaVersion != 1 || !validReleaseVersion(manifest.ReleaseVersion) || !commitPattern.MatchString(manifest.SourceCommit) ||
 		manifest.Platform != "linux/amd64" || manifest.DockerEngineVersion == "" || manifest.DockerComposeVersion == "" || manifest.DatabaseMigration < 1 ||
 		manifest.CompanySaveVersion != save.LatestCompanyVersion || manifest.FounderSaveVersion != save.LatestFounderVersion || manifest.EpochID < 1 ||
-		!hashPattern.MatchString(manifest.ConstantsHash) || !hashPattern.MatchString(manifest.CopyHash) || len(manifest.Images) != len(releaseImageNames) || len(manifest.Artifacts) == 0 {
+		!hashPattern.MatchString(manifest.ConstantsHash) || !hashPattern.MatchString(manifest.CopyHash) || len(manifest.Images) != len(releaseImageNames) ||
+		len(manifest.RehearsalImages) > 1 || len(manifest.Artifacts) == 0 {
 		return ErrInvalidContent
 	}
 	wantImages := releaseImageNames
@@ -94,6 +97,13 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 	for _, image := range manifest.Images {
 		if (image.Name == "gameserver") != strings.HasPrefix(image.Reference, "sha256:") {
 			return fmt.Errorf("%w: image reference forms", ErrInvalidContent)
+		}
+	}
+	if len(manifest.RehearsalImages) == 1 {
+		image := manifest.RehearsalImages[0]
+		if image.Name != "playwright" || !imageReferencePattern.MatchString(image.Reference) || strings.HasPrefix(image.Reference, "sha256:") ||
+			!hashPattern.MatchString(image.RuntimeConfigSHA256) || image.SBOMPath != "sbom/playwright.spdx.json" || !hashPattern.MatchString(image.SBOMSHA256) {
+			return fmt.Errorf("%w: rehearsal image", ErrInvalidContent)
 		}
 	}
 	gameserverImage := manifest.Images[2]
@@ -112,9 +122,19 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 			return fmt.Errorf("%w: missing release artifact %q", ErrInvalidContent, required)
 		}
 	}
+	hasBrowser := hasArtifact(manifest.Artifacts, "deployment-browser")
+	hasBrowserSBOM := hasArtifact(manifest.Artifacts, "sbom/playwright.spdx.json")
+	if hasBrowser != hasBrowserSBOM || (len(manifest.RehearsalImages) == 1) != hasBrowser {
+		return fmt.Errorf("%w: incomplete rehearsal browser closure", ErrInvalidContent)
+	}
 	for _, image := range manifest.Images {
 		if artifactHash(manifest.Artifacts, image.SBOMPath) != image.SBOMSHA256 {
 			return fmt.Errorf("%w: image SBOM mismatch %s", ErrInvalidContent, image.Name)
+		}
+	}
+	for _, image := range manifest.RehearsalImages {
+		if artifactHash(manifest.Artifacts, image.SBOMPath) != image.SBOMSHA256 {
+			return fmt.Errorf("%w: rehearsal image SBOM mismatch %s", ErrInvalidContent, image.Name)
 		}
 	}
 	return nil
@@ -158,7 +178,7 @@ func ValidateBundle(root string) error {
 	if err := ValidateOperationsProfile(root); err != nil {
 		return err
 	}
-	for _, image := range manifest.Images {
+	for _, image := range append(append([]Image(nil), manifest.Images...), manifest.RehearsalImages...) {
 		path := image.SBOMPath
 		data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(path)))
 		if err != nil || ValidateImageSPDX(data, image.RuntimeConfigSHA256) != nil {

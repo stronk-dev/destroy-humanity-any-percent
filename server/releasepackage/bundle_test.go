@@ -17,7 +17,7 @@ func TestAssembleBundleBindsBuiltInputsWithoutCheckout(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if manifest.Platform != "linux/amd64" || len(manifest.Images) != 6 || len(manifest.Artifacts) < 38 {
+	if manifest.Platform != "linux/amd64" || len(manifest.Images) != 6 || len(manifest.RehearsalImages) != 1 || len(manifest.Artifacts) < 40 {
 		t.Fatalf("manifest did not bind release inputs: %+v", manifest)
 	}
 	if err := ValidateBundle(inputs.Output); err != nil {
@@ -31,6 +31,35 @@ func TestAssembleBundleBindsBuiltInputsWithoutCheckout(t *testing.T) {
 	}
 	if _, err := AssembleBundle(inputs); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("nonempty output accepted: %v", err)
+	}
+}
+
+func TestAssembleBundleRequiresCompleteRehearsalBrowserClosure(t *testing.T) {
+	repositoryRoot := filepath.Join("..", "..")
+	for name, mutate := range map[string]func(*BundleInput){
+		"browser binary": func(input *BundleInput) { input.BrowserBinary = "" },
+		"browser image":  func(input *BundleInput) { input.BrowserImage = "playwright:latest" },
+		"browser config": func(input *BundleInput) { input.BrowserConfigID = "" },
+		"browser SBOM":   func(input *BundleInput) { input.BrowserSBOM = "" },
+	} {
+		t.Run(name, func(t *testing.T) {
+			inputs := bundleInputs(t, repositoryRoot)
+			mutate(&inputs)
+			if _, err := AssembleBundle(inputs); !errors.Is(err, ErrInvalidContent) {
+				t.Fatalf("incomplete browser closure accepted: %v", err)
+			}
+		})
+	}
+
+	inputs := bundleInputs(t, repositoryRoot)
+	if _, err := AssembleBundle(inputs); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(filepath.Join(inputs.Output, "deployment-browser")); err != nil {
+		t.Fatal(err)
+	}
+	if err := ValidateBundle(inputs.Output); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("bundle without browser driver accepted: %v", err)
 	}
 }
 
@@ -99,6 +128,19 @@ func TestAssembleBundleRejectsWrongArchitectureAndClientSymlink(t *testing.T) {
 	}
 	if _, err := AssembleBundle(inputs); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("arm64 rehearsal helper accepted: %v", err)
+	}
+
+	inputs = bundleInputs(t, repositoryRoot)
+	browserBytes, err := os.ReadFile(inputs.BrowserBinary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	binary.LittleEndian.PutUint16(browserBytes[18:20], 183)
+	if err := os.WriteFile(inputs.BrowserBinary, browserBytes, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := AssembleBundle(inputs); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("arm64 browser helper accepted: %v", err)
 	}
 
 	inputs = bundleInputs(t, repositoryRoot)
@@ -189,9 +231,19 @@ func bundleInputs(t *testing.T, repositoryRoot string) BundleInput {
 	if err := os.WriteFile(rehearsalBinary, binaryBytes, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	return BundleInput{RepositoryRoot: repositoryRoot, Output: filepath.Join(base, "bundle"), ServerBinary: serverBinary, BackupBinary: backupBinary, ReleaseBinary: releaseBinary, OperationsBinary: operationsBinary, RehearsalBinary: rehearsalBinary,
+	browserBinary := filepath.Join(base, "deployment-browser")
+	if err := os.WriteFile(browserBinary, binaryBytes, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	browserConfigID := "sha256:" + strings.Repeat("8", 64)
+	browserSBOM := filepath.Join(base, "playwright.spdx.json")
+	if err := os.WriteFile(browserSBOM, []byte(fixtureSPDX(strings.ReplaceAll(browserConfigID, ":", "-"))), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return BundleInput{RepositoryRoot: repositoryRoot, Output: filepath.Join(base, "bundle"), ServerBinary: serverBinary, BackupBinary: backupBinary, ReleaseBinary: releaseBinary, OperationsBinary: operationsBinary, RehearsalBinary: rehearsalBinary, BrowserBinary: browserBinary,
 		ClientDist: client, MetadataDirectory: metadata, GameserverImageArchive: archive, ReleaseVersion: "0.1.0-preview.1", SourceCommit: strings.Repeat("d", 40),
-		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", Images: images, ImageConfigIDs: configIDs, ImageSBOMs: sboms}
+		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", Images: images, ImageConfigIDs: configIDs, ImageSBOMs: sboms,
+		BrowserImage: "mcr.microsoft.com/playwright:v1@sha256:" + strings.Repeat("9", 64), BrowserConfigID: browserConfigID, BrowserSBOM: browserSBOM}
 }
 
 func fixtureSPDX(name string) string {

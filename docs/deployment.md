@@ -71,7 +71,8 @@ actual secret files.
 ## Application licenses and SBOM
 
 `make generate-release-metadata` inventories the union of module graphs actually linked into the
-gameserver, deployment-backup, deployment-release, deployment-operations and deployment-rehearsal
+gameserver, deployment-backup, deployment-release, deployment-operations, deployment-rehearsal and
+deployment-browser
 commands (not the much larger `go.sum`
 graph), adds the Go standard library, and reads the
 three exact browser runtime dependencies from `client/package.json` plus their installed package
@@ -80,17 +81,19 @@ ISC, Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license m
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
 
 The outputs are `third-party-licenses.txt` and an SPDX-2.3 JSON document with package-manager purls,
-download locations and root `DEPENDS_ON` relationships. On the current graph the generator finds 40
-linked third-party Go modules, the Go standard library and three browser dependencies (44
+download locations and root `DEPENDS_ON` relationships. On the current graph the generator finds 47
+linked third-party Go modules, the Go standard library and three browser dependencies (51
 dependencies total),
 matching the prior license audit while retaining the previously hidden dual Apache-2.0/MIT libyaml
 notice. Version, full commit and RFC3339 creation time are explicit inputs; an existing output
 directory is never silently overlaid.
 
-The application SBOM inventories the union of dependencies linked into all five shipped Go
+The application SBOM inventories the union of dependencies linked into all six shipped Go
 binaries plus the bundled browser client. The assembler requires separate SPDX inputs for
 Alertmanager, Caddy, the gameserver image, node-exporter, Postgres and Prometheus and binds each
-SBOM hash beside that image's immutable digest.
+SBOM hash beside that image's immutable digest. The clean-host rehearsal additionally binds the
+Linux/amd64 Playwright image, its selected runtime-config digest and its SPDX inventory as a
+rehearsal-only image; it is not a production Compose service.
 For upstream multi-platform references it also records the selected linux/amd64 OCI config digest;
 the SPDX document name must identify that exact runtime config, preventing a native-host SBOM from
 being attached to the supported amd64 release.
@@ -106,11 +109,12 @@ normalized output; the exact six-image set is still built and retained per relea
 
 `make assemble-release-bundle` accepts only an empty output directory and requires all of the
 following explicit inputs: the Linux/amd64 gameserver, deployment-backup, deployment-release,
-deployment-operations and deployment-rehearsal binaries, the
+deployment-operations, deployment-rehearsal and deployment-browser binaries, the
 gameserver's `docker save` archive, built
 client, generated application metadata, release version/full source commit, tested Docker
 Engine/Compose versions, six digest-pinned image references, their linux/amd64 config digests and
-their six image SBOMs. It
+their six image SBOMs, plus the immutable Playwright Linux/amd64 reference, runtime-config identity
+and image SBOM used to run the browser driver. It
 rejects a non-ELF or non-amd64
 binary, client symlinks, an absent SPA entry point, empty/missing inputs, mutable image references
 and a pre-existing output tree.

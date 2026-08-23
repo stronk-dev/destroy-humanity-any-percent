@@ -23,6 +23,7 @@ type BuildRecord struct {
 	ManifestSHA256          string       `json:"manifest_sha256"`
 	GameserverArchiveSHA256 string       `json:"gameserver_archive_sha256"`
 	Images                  []BuildImage `json:"images"`
+	RehearsalImages         []BuildImage `json:"rehearsal_images,omitempty"`
 	IndependentRebuild      bool         `json:"independent_rebuild"`
 	RebuildManifestSHA256   string       `json:"rebuild_manifest_sha256"`
 	RebuildArchiveSHA256    string       `json:"rebuild_archive_sha256"`
@@ -65,14 +66,17 @@ func DecodeBuildRecord(data []byte) (BuildRecord, error) {
 }
 
 func ValidateBuildRecord(record BuildRecord) error {
-	if record.SchemaVersion != 1 || record.Role != "previous" && record.Role != "candidate" ||
+	if record.SchemaVersion != 1 && record.SchemaVersion != 2 || record.Role != "previous" && record.Role != "candidate" ||
 		!versionPattern.MatchString(record.ReleaseVersion) || !commitPattern.MatchString(record.SourceCommit) ||
 		record.SourceDateEpoch < 1 || record.CreatedAt.IsZero() || record.CreatedAt.Unix() != record.SourceDateEpoch ||
 		record.DockerEngine == "" || record.DockerCompose == "" || !imagePattern.MatchString(record.BuildkitImage) ||
 		!imagePattern.MatchString(record.SyftImage) || !hashPattern.MatchString(record.ManifestSHA256) ||
 		!hashPattern.MatchString(record.GameserverArchiveSHA256) || !record.IndependentRebuild ||
 		record.RebuildManifestSHA256 != record.ManifestSHA256 || record.RebuildArchiveSHA256 != record.GameserverArchiveSHA256 ||
-		!record.NormalizedSBOMsEqual || !record.ObjectiveCompleted || record.GuardExhausted || len(record.Images) != 6 {
+		!record.NormalizedSBOMsEqual || !record.ObjectiveCompleted || record.GuardExhausted || len(record.Images) != 6 ||
+		record.SchemaVersion == 1 && len(record.RehearsalImages) != 0 ||
+		record.SchemaVersion == 2 && record.Role == "candidate" && len(record.RehearsalImages) != 1 ||
+		record.SchemaVersion == 2 && record.Role == "previous" && len(record.RehearsalImages) > 1 {
 		return ErrInvalid
 	}
 	names := []string{"alertmanager", "caddy", "gameserver", "node-exporter", "postgres", "prometheus"}
@@ -80,6 +84,13 @@ func ValidateBuildRecord(record BuildRecord) error {
 		if image.Name != names[index] || !imagePattern.MatchString(image.Reference) || !hashPattern.MatchString(image.RuntimeConfigSHA256) ||
 			!hashPattern.MatchString(image.SBOMSHA256) || image.Name == "gameserver" && image.Reference != image.RuntimeConfigSHA256 ||
 			image.Name != "gameserver" && image.Reference == image.RuntimeConfigSHA256 {
+			return ErrInvalid
+		}
+	}
+	if len(record.RehearsalImages) == 1 {
+		image := record.RehearsalImages[0]
+		if image.Name != "playwright" || !imagePattern.MatchString(image.Reference) || !hashPattern.MatchString(image.RuntimeConfigSHA256) ||
+			!hashPattern.MatchString(image.SBOMSHA256) || image.Reference == image.RuntimeConfigSHA256 {
 			return ErrInvalid
 		}
 	}
