@@ -1406,3 +1406,21 @@ made that integration test fail with `same-count content mutation escaped identi
 full-row query returned all three Postgres populations green. Focused cold Go tests, root vet and
 `git diff --check` pass. (`make lint-go` is not a repository target; the canonical `make vet` lane
 was used.) This is still construction, not a Linux R-006 observation, so the count remains 25/43.
+
+## 2026-08-23 — DP-F2 predeclaration: exact recovery runtime adapter
+
+The clean-host orchestrator must not recreate Compose argv or trust a host-routable database. The
+production `deploymentrelease.DockerRuntime` will therefore gain three explicit recovery methods:
+create a non-pre-upgrade encrypted backup, observe the strict semantic identity through the
+candidate's private backup service, and restore that non-pre-upgrade backup into an already-clean
+target. Existing release backup and rollback restore methods will share the implementation but
+retain their mandatory `pre_upgrade=true` contract; a scheduled recovery backup cannot become
+rollback authority and a rollback backup cannot masquerade as the scheduled recovery population.
+
+The adapter must invoke only the exact bundle Compose file, pinned backup binary and existing
+file-backed secrets. It strictly decodes status, path, header and identity output, binds manifest,
+epoch, server and pre-upgrade state, requires the host-side encrypted file, and rejects unknown or
+trailing output. Exact paths are `server/deploymentrelease/docker.go`, focused Docker-runtime tests,
+`docs/deployment.md` and this log. Cold release/backup tests and root vet must pass. The discriminator
+will remove the scheduled/pre-upgrade separation and require the wrong-header fixture to fail. No
+runtime population is claimed; the count remains 25/43.
