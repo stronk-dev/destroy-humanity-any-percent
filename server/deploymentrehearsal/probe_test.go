@@ -138,21 +138,30 @@ func TestPublicMetricsProbeRebindsArtifactBeforeSemanticRejection(t *testing.T) 
 	}
 }
 
+func TestSeededSecretProbesRequireAnActualScannerFinding(t *testing.T) {
+	for _, population := range []string{"seeded_source_secret", "seeded_image_secret"} {
+		t.Run(population, func(t *testing.T) {
+			request := validProbeDirectories(t, population)
+			outcome, err := runSecretNegativeProbe(request, releasepackage.RequireNoSecrets)
+			if err != nil || outcome != ProbeRejected {
+				t.Fatalf("secret fixture outcome=%d err=%v", outcome, err)
+			}
+			outcome, err = runSecretNegativeProbe(request, func([]releasepackage.SecretFinding) error { return nil })
+			if err != nil || outcome != ProbeAccepted {
+				t.Fatalf("sleeping secret gate satisfied row: outcome=%d err=%v", outcome, err)
+			}
+		})
+	}
+}
+
 func deploymentConfigLoader(environment []string, readFile deploymentconfig.ReadFile) (deploymentconfig.Config, error) {
 	return deploymentconfig.Load(environment, readFile)
 }
 
 func probeFixture(t *testing.T, name string, mutation bundleMutation) (ProbeRequest, []byte) {
 	t.Helper()
-	root := t.TempDir()
-	candidate := filepath.Join(root, "candidate")
-	previous := filepath.Join(root, "previous")
-	work := filepath.Join(root, "work")
-	for _, path := range []string{candidate, previous, work} {
-		if err := os.Mkdir(path, 0o700); err != nil {
-			t.Fatal(err)
-		}
-	}
+	request := validProbeDirectories(t, name)
+	candidate := request.CandidateBundle
 	original := []byte("fixture")
 	if mutation.mutate != nil {
 		if name == "changed_sbom" {
@@ -168,5 +177,19 @@ func probeFixture(t *testing.T, name string, mutation bundleMutation) (ProbeRequ
 	if err := os.WriteFile(path, original, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	return ProbeRequest{Population: name, CandidateBundle: candidate, PreviousBundle: previous, WorkDirectory: work}, original
+	return request, original
+}
+
+func validProbeDirectories(t *testing.T, population string) ProbeRequest {
+	t.Helper()
+	root := t.TempDir()
+	candidate := filepath.Join(root, "candidate")
+	previous := filepath.Join(root, "previous")
+	work := filepath.Join(root, "work")
+	for _, path := range []string{candidate, previous, work} {
+		if err := os.Mkdir(path, 0o700); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return ProbeRequest{Population: population, CandidateBundle: candidate, PreviousBundle: previous, WorkDirectory: work}
 }

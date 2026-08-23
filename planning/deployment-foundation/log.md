@@ -794,3 +794,28 @@ The probe registry now has 13 of 43 real populations. The current candidate reco
 the earlier reproducible input bundle and will be rebuilt after the rehearsal helper/probe surface
 stabilizes; no stale manifest is presented as the final R-006 candidate. Runtime and clean-host
 populations remain open.
+
+## 2026-08-23 — DP-F2 secret probes and result-binding gate
+
+The seeded source and seeded image rows now run through the real release scanner. The source
+fixture is a valid one-file tracked population; the image fixture is a valid tar containing one
+seeded member, avoiding the old negative's weaker “malformed bytes after tar EOF” failure. A probe
+may return the expected rejection only after the scanner reports exactly the named seeded-fixture
+rule. Scanner/parser/setup failure returns exit two, and an injected sleeping no-secrets gate makes
+both probes return zero. The native helper returned exit one for both real fixtures. This brings
+the implemented probe population to 15/43; it does not replace the already completed full
+candidate source/image scan or the final rebuilt-candidate scan.
+
+Auditing `forged_successful_evidence` exposed a separate integrity gap before that row could be
+implemented honestly. The standalone evidence validator required plausible hashes but did not
+open the reviewed plan or the 43 result files, so a structurally plausible JSON document was not a
+cryptographic witness. Final CLI `validate` now requires `--evidence`, `--plan` and `--results`.
+It binds run/manifest identities and the exact plan-file digest, rejects missing/extra/symlinked or
+non-0600 result files, strictly decodes every result, and matches its name, kind, step, command
+hash, expected exit, pass/guard state, interval and raw file hash to the plan and population row.
+Tests demonstrate an otherwise valid free-standing evidence document, a forged population hash,
+a rewritten result, a missing result, an extra summary and an unsafe result mode all fail. This
+closes the first forgery route. Removing only the raw-result/population hash comparison makes the
+focused forgery test fail with `forged population evidence hash accepted`; restoring it returns
+the test green. Remaining final artifacts and step aggregation still need their own byte bindings
+before the forged-evidence population can be marked implemented.

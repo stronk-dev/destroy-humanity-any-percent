@@ -1,6 +1,7 @@
 package deploymentrehearsal
 
 import (
+	"archive/tar"
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"cloud-clicker/server/deploymentconfig"
 	"cloud-clicker/server/releasepackage"
@@ -68,11 +70,73 @@ func RunProbe(request ProbeRequest) (ProbeOutcome, error) {
 	if request.Population == "public_metrics_route" {
 		return runPreparedBundleProbe(request, preparePublicMetricsRoute, releasepackage.ValidateBundle)
 	}
+	if request.Population == "seeded_source_secret" || request.Population == "seeded_image_secret" {
+		return runSecretNegativeProbe(request, releasepackage.RequireNoSecrets)
+	}
 	mutation, ok := bundleMutations[request.Population]
 	if !ok {
 		return ProbeAccepted, ErrInvalid
 	}
 	return runBundleMutationProbe(request, mutation, releasepackage.ValidateBundle)
+}
+
+type secretGate func([]releasepackage.SecretFinding) error
+
+func runSecretNegativeProbe(request ProbeRequest, requireNone secretGate) (outcome ProbeOutcome, resultErr error) {
+	root, err := os.MkdirTemp(request.WorkDirectory, "secret-probe-")
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	defer func() {
+		if cleanupErr := os.RemoveAll(root); cleanupErr != nil {
+			outcome = ProbeAccepted
+			resultErr = errors.Join(resultErr, cleanupErr)
+		}
+	}()
+	seed := strings.Join([]string{"CLOUD_CLICKER_", "SECRET_SCAN_SENTINEL_", "r006probe1234567"}, "")
+	var findings []releasepackage.SecretFinding
+	if request.Population == "seeded_source_secret" {
+		path := filepath.Join(root, "source.go")
+		if err := os.WriteFile(path, []byte("package fixture\n// "+seed+"\n"), 0o600); err != nil {
+			return ProbeAccepted, err
+		}
+		findings, err = releasepackage.ScanTrackedFiles(root, []string{"source.go"})
+	} else if request.Population == "seeded_image_secret" {
+		path := filepath.Join(root, "fixture.tar")
+		if err := writeSecretTar(path, seed); err != nil {
+			return ProbeAccepted, err
+		}
+		findings, err = releasepackage.ScanDockerArchive(path)
+	} else {
+		return ProbeAccepted, ErrInvalid
+	}
+	if err != nil || len(findings) != 1 || findings[0].Rule != "seeded-fixture" {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
+	if err := requireNone(findings); err != nil {
+		return ProbeRejected, nil
+	}
+	return ProbeAccepted, nil
+}
+
+func writeSecretTar(path, seed string) error {
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		return err
+	}
+	writer := tar.NewWriter(file)
+	data := []byte(seed + "\n")
+	writeErr := writer.WriteHeader(&tar.Header{Name: "layer/seed.txt", Mode: 0o600, Size: int64(len(data)), ModTime: time.Unix(0, 0).UTC()})
+	if writeErr == nil {
+		_, writeErr = writer.Write(data)
+	}
+	if closeErr := writer.Close(); writeErr == nil {
+		writeErr = closeErr
+	}
+	if syncErr := file.Sync(); writeErr == nil {
+		writeErr = syncErr
+	}
+	return errors.Join(writeErr, file.Close())
 }
 
 func runPreparedBundleProbe(request ProbeRequest, prepare func(string) error, validate func(string) error) (outcome ProbeOutcome, resultErr error) {

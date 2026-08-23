@@ -76,14 +76,12 @@ func runPlan(ctx context.Context, args []string) error {
 func runValidate(args []string) (deploymentrehearsal.Evidence, error) {
 	set := flag.NewFlagSet("validate", flag.ContinueOnError)
 	evidence := set.String("evidence", "", "exact R-006 evidence JSON")
-	if set.Parse(args) != nil || set.NArg() != 0 || *evidence == "" {
+	plan := set.String("plan", "", "reviewed exact-command rehearsal plan")
+	results := set.String("results", "", "exclusive per-population result directory")
+	if set.Parse(args) != nil || set.NArg() != 0 || *evidence == "" || *plan == "" || *results == "" {
 		return deploymentrehearsal.Evidence{}, deploymentrehearsal.ErrInvalid
 	}
-	validated, err := deploymentrehearsal.Load(*evidence)
-	if err != nil {
-		return deploymentrehearsal.Evidence{}, err
-	}
-	return validated, nil
+	return deploymentrehearsal.LoadAndValidateRun(*evidence, *plan, *results)
 }
 
 func runValidateBuild(args []string) (deploymentrehearsal.BuildRecord, error) {

@@ -141,7 +141,8 @@ a successfully prepared named negative fixture that reached its gate and was rej
 input, setup failure and an unimplemented population exit `2`. This prevents a missing file,
 unsupported check or broken probe from satisfying a negative row just because it failed. The
 current fixed probes cover the intact six-image/SBOM/license/provenance population, eight exact
-bundle mutations, three production config/secret matrices and a public-metrics-route severing.
+bundle mutations, three production config/secret matrices, a public-metrics-route severing and
+seeded source/image secret detection.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and
@@ -151,10 +152,23 @@ hash mismatch. Bundle mutation uses a private temporary hardlink tree, never edi
 bundle, and a cleanup failure invalidates the outcome. Runtime, browser, recovery, rotation and
 operations populations remain DP-F2 work and are not inferred from these package checks.
 
+The seeded-source probe scans a valid tracked-file fixture; the seeded-image probe scans a valid
+tar member rather than relying on a malformed archive to fail. Each requires exactly the scanner's
+named sentinel finding before the no-secrets gate may produce exit `1`. A parser/setup error is
+therefore not accepted as secret-detection evidence.
+
 Full bundle validation re-runs the semantic validators for the rendered Compose topology, public
 Caddy routes and gameserver Dockerfile after checking manifest byte equality. Assembly-time
 validation alone is insufficient because a later re-signed bundle must not be able to retain valid
 hashes while changing a public route or container boundary.
+
+Final `validate` is not structural JSON validation. It requires the evidence file, the exact
+reviewed plan and the exclusive per-population result directory. The plan hash must match the
+`rehearsal_plan` artifact; run and both manifest identities must agree; the directory must contain
+exactly one mode-0600 result for every canonical plan row and no extra entry. Each result's name,
+kind, step, command hash, expected exit, completed/non-guarded state, observation interval and raw
+file hash must agree with the plan and its evidence population. A plausible evidence JSON with
+invented hashes is invalid even when its standalone shape is correct.
 
 ## Encrypted Postgres backup and restore
 
