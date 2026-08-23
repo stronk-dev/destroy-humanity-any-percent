@@ -26,7 +26,7 @@ func TestExecutionPlanRunsEveryExactPositiveAndNegativeCheck(t *testing.T) {
 		t.Fatal(err)
 	}
 	entries, err := os.ReadDir(output)
-	if err != nil || len(entries) != len(RequiredPopulations) {
+	if err != nil || len(entries) != len(planPopulations()) {
 		t.Fatalf("result population=%d err=%v", len(entries), err)
 	}
 	if err := ExecutePlan(context.Background(), plan, output, now); !errors.Is(err, ErrInvalid) {
@@ -93,14 +93,15 @@ func TestPlanHelperProcess(t *testing.T) {
 }
 
 func validExecutionPlan() ExecutionPlan {
-	names := make([]string, 0, len(RequiredPopulations))
-	for name := range RequiredPopulations {
+	populations := planPopulations()
+	names := make([]string, 0, len(populations))
+	for name := range populations {
 		names = append(names, name)
 	}
 	sort.Strings(names)
 	checks := make([]PlannedCheck, len(names))
 	for index, name := range names {
-		kind := RequiredPopulations[name]
+		kind := populations[name]
 		mode, expected := "pass", 0
 		if kind == "negative" {
 			mode, expected = "fail", 1

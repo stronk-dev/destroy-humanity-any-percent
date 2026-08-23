@@ -67,18 +67,19 @@ func LoadExecutionPlan(path string) (ExecutionPlan, error) {
 }
 
 func ValidateExecutionPlan(plan ExecutionPlan) error {
+	populations := planPopulations()
 	if plan.SchemaVersion != 1 || !identifierPattern.MatchString(plan.RunID) || !hashPattern.MatchString(plan.ManifestSHA256) ||
 		!hashPattern.MatchString(plan.PreviousManifestSHA256) || plan.ManifestSHA256 == plan.PreviousManifestSHA256 ||
-		len(plan.Checks) != len(RequiredPopulations) {
+		len(plan.Checks) != len(populations) {
 		return ErrInvalid
 	}
-	required := make([]string, 0, len(RequiredPopulations))
-	for name := range RequiredPopulations {
+	required := make([]string, 0, len(populations))
+	for name := range populations {
 		required = append(required, name)
 	}
 	sort.Strings(required)
 	for index, check := range plan.Checks {
-		kind := RequiredPopulations[check.Name]
+		kind := populations[check.Name]
 		if check.Name != required[index] || check.Kind != kind || !slicesContains(RequiredSteps, check.Step) ||
 			len(check.Command) == 0 || len(check.Command) > 32 || check.TimeoutSeconds < 1 || check.TimeoutSeconds > 4*60*60 ||
 			kind == "positive" && check.ExpectedExit != 0 || kind == "negative" && check.ExpectedExit != 1 ||

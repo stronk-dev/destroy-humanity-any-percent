@@ -168,7 +168,7 @@ var RequiredPopulations = map[string]string{
 	"forged_successful_evidence":              "negative",
 }
 
-var RequiredArtifacts = []string{
+var BaseRequiredArtifacts = []string{
 	"candidate_manifest",
 	"previous_manifest",
 	"candidate_build",
@@ -183,6 +183,8 @@ var RequiredArtifacts = []string{
 	"secret_scan",
 	"supply_chain",
 }
+
+var RequiredArtifacts = append([]string(nil), BaseRequiredArtifacts...)
 
 var RequiredExclusions = []string{
 	"public_hosting",
@@ -221,6 +223,14 @@ func Decode(data []byte) (Evidence, error) {
 }
 
 func Validate(evidence Evidence) error {
+	return validateEvidence(evidence, RequiredPopulations, RequiredArtifacts)
+}
+
+func ValidateBaseEvidence(evidence Evidence) error {
+	return validateEvidence(evidence, planPopulations(), BaseRequiredArtifacts)
+}
+
+func validateEvidence(evidence Evidence, requiredPopulations map[string]string, requiredArtifacts []string) error {
 	if evidence.SchemaVersion != SchemaVersion || !identifierPattern.MatchString(evidence.RunID) ||
 		!hashPattern.MatchString(evidence.ManifestSHA256) || !hashPattern.MatchString(evidence.PreviousManifestSHA256) ||
 		evidence.ManifestSHA256 == evidence.PreviousManifestSHA256 || !versionPattern.MatchString(evidence.ReleaseVersion) ||
@@ -237,13 +247,13 @@ func Validate(evidence Evidence) error {
 	if err := validateSteps(evidence.Steps, evidence.StartedAt, evidence.CompletedAt); err != nil {
 		return err
 	}
-	if err := validatePopulations(evidence.Populations); err != nil {
+	if err := validatePopulations(evidence.Populations, requiredPopulations); err != nil {
 		return err
 	}
 	if err := validateObjectives(evidence.Objectives, evidence.StartedAt, evidence.CompletedAt); err != nil {
 		return err
 	}
-	if err := requireNamedHashes(evidence.Artifacts, RequiredArtifacts); err != nil {
+	if err := requireNamedHashes(evidence.Artifacts, requiredArtifacts); err != nil {
 		return err
 	}
 	if !sameStringSet(evidence.Exclusions, RequiredExclusions) {
@@ -287,13 +297,13 @@ func validateSteps(steps []Step, runStart, runEnd time.Time) error {
 	return nil
 }
 
-func validatePopulations(populations []Population) error {
-	if len(populations) != len(RequiredPopulations) {
+func validatePopulations(populations []Population, required map[string]string) error {
+	if len(populations) != len(required) {
 		return ErrInvalid
 	}
 	seen := map[string]bool{}
 	for _, population := range populations {
-		kind, ok := RequiredPopulations[population.Name]
+		kind, ok := required[population.Name]
 		if !ok || seen[population.Name] || population.Kind != kind || population.Result != "passed" ||
 			population.SeveringCaught != (kind == "negative") || !hashPattern.MatchString(population.EvidenceSHA256) {
 			return ErrInvalid
@@ -301,6 +311,16 @@ func validatePopulations(populations []Population) error {
 		seen[population.Name] = true
 	}
 	return nil
+}
+
+func planPopulations() map[string]string {
+	result := make(map[string]string, len(RequiredPopulations)-1)
+	for name, kind := range RequiredPopulations {
+		if name != "forged_successful_evidence" {
+			result[name] = kind
+		}
+	}
+	return result
 }
 
 func validateObjectives(objectives Objectives, runStart, runEnd time.Time) error {

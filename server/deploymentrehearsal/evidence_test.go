@@ -29,6 +29,23 @@ func TestEvidenceValidatesOnlyCompleteExactRehearsal(t *testing.T) {
 	}
 }
 
+func TestBaseEvidenceSeparatesNonCircularForgeryPopulation(t *testing.T) {
+	base := validEvidence()
+	populations := make([]Population, 0, len(base.Populations)-1)
+	for _, population := range base.Populations {
+		if population.Name != "forged_successful_evidence" {
+			populations = append(populations, population)
+		}
+	}
+	base.Populations = populations
+	if err := ValidateBaseEvidence(base); err != nil {
+		t.Fatalf("valid 42-population base rejected: %v", err)
+	}
+	if err := Validate(base); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("base accepted as final evidence: %v", err)
+	}
+}
+
 func TestEvidenceRejectsIncompleteForgedAndGuardedClaims(t *testing.T) {
 	mutations := map[string]func(*Evidence){
 		"objective incomplete": func(value *Evidence) { value.ObjectiveCompleted = false },
