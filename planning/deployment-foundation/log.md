@@ -1196,3 +1196,20 @@ together. Rehashing different valid host or objective bytes into the dossier mus
 
 The discriminator will temporarily remove one equality binding and require the permanent rehashed-
 artifact negative to fail. This strengthens evidence only; no runtime population is counted.
+
+## 2026-08-23 — DP-F2 host and recovery observation bindings
+
+Two owning strict contracts now close the top-level assertion gap. `HostObservation` contains the
+exact supported-host fields and a completed/non-guarded interval; `ObjectiveObservation` contains
+the incident, newest valid backup, restore start, authenticated smoke, derived RPO/RTO and restored-
+identity result. Both have strict decoders and exclusive mode-0600 writers. The retained artifact
+directory now has fourteen files, the base dossier binds fifteen hashes including the reviewed
+plan, and the final sealed dossier binds seventeen.
+
+Bound-run validation opens both artifacts after hash comparison, requires their intervals inside
+the run and requires their decoded values to equal the top-level evidence. Tests mutate each into
+a different but independently valid observation, rehash both artifact and base dossier, and still
+require rejection. Removing only the host equality comparison made the isolated base-run test fail
+with `rehashed different host accepted`; restoring it returned both host and objective negatives
+green. Cold rehearsal/command/release-package tests and root vet pass. This adds evidence ownership
+but no observed runtime population; the count remains 25/43.

@@ -15,18 +15,20 @@ import (
 )
 
 var requiredRunArtifactFiles = map[string]string{
-	"candidate_manifest":  "candidate-manifest.json",
-	"previous_manifest":   "previous-manifest.json",
-	"candidate_build":     "candidate-build.json",
-	"previous_build":      "previous-build.json",
-	"release_ledger":      "release-ledger.jsonl",
-	"rotation_ledger":     "rotation-ledger.jsonl",
-	"backup_header":       "backup-header.json",
-	"browser_result":      "browser-result.json",
-	"alert_delivery":      "alert-delivery.json",
-	"journal_observation": "journal-observation.json",
-	"secret_scan":         "secret-scan.json",
-	"supply_chain":        "supply-chain.json",
+	"candidate_manifest":    "candidate-manifest.json",
+	"previous_manifest":     "previous-manifest.json",
+	"candidate_build":       "candidate-build.json",
+	"previous_build":        "previous-build.json",
+	"release_ledger":        "release-ledger.jsonl",
+	"rotation_ledger":       "rotation-ledger.jsonl",
+	"backup_header":         "backup-header.json",
+	"host_observation":      "host-observation.json",
+	"objective_observation": "objective-observation.json",
+	"browser_result":        "browser-result.json",
+	"alert_delivery":        "alert-delivery.json",
+	"journal_observation":   "journal-observation.json",
+	"secret_scan":           "secret-scan.json",
+	"supply_chain":          "supply-chain.json",
 }
 
 func LoadAndValidateRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory, sealDirectory string) (Evidence, error) {
@@ -259,6 +261,16 @@ func validateRunArtifacts(evidence Evidence, directory string) error {
 
 func validateTypedRunArtifact(name string, data []byte, evidence Evidence, candidateSourceCommit string) error {
 	switch name {
+	case "host_observation":
+		observation, err := DecodeHostObservation(data)
+		if err != nil || observation.Host != evidence.Host || observation.StartedAt.Before(evidence.StartedAt) || observation.CompletedAt.After(evidence.CompletedAt) {
+			return ErrInvalid
+		}
+	case "objective_observation":
+		observation, err := DecodeObjectiveObservation(data)
+		if err != nil || !sameObjectives(observation.Objectives, evidence.Objectives) || observation.StartedAt.Before(evidence.StartedAt) || observation.CompletedAt.After(evidence.CompletedAt) {
+			return ErrInvalid
+		}
 	case "browser_result":
 		result, err := deploymentbrowser.DecodeResult(data)
 		if err != nil || result.ManifestSHA256 != evidence.ManifestSHA256 || result.StartedAt.Before(evidence.StartedAt) || result.CompletedAt.After(evidence.CompletedAt) {

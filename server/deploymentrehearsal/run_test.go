@@ -113,6 +113,67 @@ func TestRunValidationRejectsForgedPopulationEvidenceHash(t *testing.T) {
 	}
 }
 
+func TestBaseRunRejectsRehashedDifferentHostAndObjectives(t *testing.T) {
+	for name, mutate := range map[string]func(*testing.T, *boundFixture, *Evidence){
+		"host": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["host_observation"])
+			data, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation, err := DecodeHostObservation(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation.Host.Kernel = "6.12.1"
+			data, _ = json.Marshal(observation)
+			data = append(data, '\n')
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(base, "host_observation", hashBytes(data))
+		},
+		"objectives": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["objective_observation"])
+			data, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation, err := DecodeObjectiveObservation(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation.Objectives.NewestValidBackupAt = observation.Objectives.NewestValidBackupAt.Add(-time.Minute)
+			observation.Objectives.RPOSeconds += 60
+			data, _ = json.Marshal(observation)
+			data = append(data, '\n')
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(base, "objective_observation", hashBytes(data))
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			fixture := boundRunFixture(t)
+			basePath := filepath.Join(fixture.sealDirectory, "base-evidence.json")
+			data, err := os.ReadFile(basePath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			base, err := decodeBaseEvidence(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			mutate(t, &fixture, &base)
+			writeEvidenceFixture(t, basePath, base)
+			if _, err := LoadAndValidateBaseRun(basePath, fixture.planPath, fixture.resultsDirectory,
+				fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("rehashed different %s accepted: %v", name, err)
+			}
+		})
+	}
+}
+
 func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 	for name, mutate := range map[string]func(*testing.T, *boundFixture){
 		"changed artifact": func(t *testing.T, fixture *boundFixture) {
@@ -128,6 +189,45 @@ func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 		},
 		"forged step output": func(t *testing.T, fixture *boundFixture) {
 			fixture.evidence.Steps[0].OutputSHA256 = hashForBuild("f")
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
+		"rehashed different host": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["host_observation"])
+			data, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation, err := DecodeHostObservation(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation.Host.Kernel = "6.12.1"
+			data, _ = json.Marshal(observation)
+			data = append(data, '\n')
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "host_observation", hashBytes(data))
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
+		"rehashed different objectives": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["objective_observation"])
+			data, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation, err := DecodeObjectiveObservation(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			observation.Objectives.NewestValidBackupAt = observation.Objectives.NewestValidBackupAt.Add(-time.Minute)
+			observation.Objectives.RPOSeconds += 60
+			data, _ = json.Marshal(observation)
+			data = append(data, '\n')
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "objective_observation", hashBytes(data))
 			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
 		},
 		"rehashed invalid browser": func(t *testing.T, fixture *boundFixture) {
@@ -295,6 +395,18 @@ func boundRunFixture(t *testing.T) boundFixture {
 		}
 		if name == "previous_build" {
 			artifactBytes[name] = previousBuildBytes
+		}
+		if name == "host_observation" {
+			observation := HostObservation{SchemaVersion: 1, StartedAt: evidence.StartedAt,
+				CompletedAt: evidence.StartedAt.Add(time.Second), Host: evidence.Host, ObjectiveCompleted: true}
+			artifactBytes[name], _ = json.Marshal(observation)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
+		}
+		if name == "objective_observation" {
+			observation := ObjectiveObservation{SchemaVersion: 1, StartedAt: evidence.StartedAt,
+				CompletedAt: evidence.Objectives.AuthenticatedSmokeAt, Objectives: evidence.Objectives, ObjectiveCompleted: true}
+			artifactBytes[name], _ = json.Marshal(observation)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
 		}
 		if name == "browser_result" {
 			result := deploymentbrowser.Result{SchemaVersion: 1, ManifestSHA256: hashBytes(candidateManifestBytes),

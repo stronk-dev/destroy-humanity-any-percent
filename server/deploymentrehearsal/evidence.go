@@ -176,6 +176,8 @@ var BaseRequiredArtifacts = []string{
 	"release_ledger",
 	"rotation_ledger",
 	"backup_header",
+	"host_observation",
+	"objective_observation",
 	"browser_result",
 	"alert_delivery",
 	"journal_observation",
