@@ -2,6 +2,12 @@
   "schema_version": 1,
   "corrections": [
     {
+      "offending_commit": "09d5027a8f57ddacde270a7ac3fc31e2a183f7d3",
+      "corrected_in_version": "0.3.101",
+      "reason": "The pushed operations implementation changed a guarded production path without the same-commit version signal; append-only CI remediation records the missed boundary.",
+      "review_log": "planning/deployment-foundation/log.md"
+    },
+    {
       "offending_commit": "3030f8724dd405e9fccd5d645811a9f862ffcd1c",
       "corrected_in_version": "0.3.17",
       "reason": "The reviewed version-aware save landing changed guarded persistence encoding; append-only review provenance forbids rewriting it to add the missed bump.",
