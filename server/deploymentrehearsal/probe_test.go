@@ -1,10 +1,15 @@
 package deploymentrehearsal
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"cloud-clicker/server/deploymentconfig"
+	"cloud-clicker/server/releasepackage"
 )
 
 func TestBundleMutationProbesRequirePreparedMutationAndGateRejection(t *testing.T) {
@@ -77,6 +82,64 @@ func TestProbeRejectsUnsupportedPopulationAndUnsafePaths(t *testing.T) {
 	if outcome, err := RunProbe(request); !errors.Is(err, ErrInvalid) || outcome == ProbeRejected {
 		t.Fatalf("nested work path accepted: outcome=%d err=%v", outcome, err)
 	}
+}
+
+func TestConfigNegativeProbesExerciseEveryMatrixAndDiscriminate(t *testing.T) {
+	for _, population := range []string{"missing_or_malformed_secret", "duplicate_key_id_or_value", "invalid_origin_or_proxy_depth"} {
+		t.Run(population, func(t *testing.T) {
+			outcome, err := runConfigNegativeProbe(population, deploymentConfigLoader)
+			if err != nil || outcome != ProbeRejected {
+				t.Fatalf("config matrix outcome=%d err=%v", outcome, err)
+			}
+
+			calls := 0
+			outcome, err = runConfigNegativeProbe(population, func(environment []string, readFile deploymentconfig.ReadFile) (deploymentconfig.Config, error) {
+				calls++
+				if calls == 2 {
+					return deploymentconfig.Config{}, nil
+				}
+				return deploymentConfigLoader(environment, readFile)
+			})
+			if err != nil || outcome != ProbeAccepted {
+				t.Fatalf("accepted severing did not fail probe: outcome=%d err=%v", outcome, err)
+			}
+		})
+	}
+}
+
+func TestPublicMetricsProbeRebindsArtifactBeforeSemanticRejection(t *testing.T) {
+	request, _ := probeFixture(t, "public_metrics_route", bundleMutation{path: "Caddyfile"})
+	manifest := releasepackage.ReleaseManifest{Artifacts: []releasepackage.File{{Path: "Caddyfile", SHA256: hashBytes([]byte("fixture"))}}}
+	encoded, err := json.MarshalIndent(manifest, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(request.CandidateBundle, releasepackage.ReleaseManifestPath), append(encoded, '\n'), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	outcome, err := runPreparedBundleProbe(request, preparePublicMetricsRoute, func(root string) error {
+		caddy, readErr := os.ReadFile(filepath.Join(root, "Caddyfile"))
+		if readErr != nil || !strings.Contains(string(caddy), "/metrics") {
+			t.Fatalf("public route fixture missing: %v", readErr)
+		}
+		manifestData, readErr := os.ReadFile(filepath.Join(root, releasepackage.ReleaseManifestPath))
+		var changed releasepackage.ReleaseManifest
+		if readErr != nil || json.Unmarshal(manifestData, &changed) != nil || changed.Artifacts[0].SHA256 != hashBytes(caddy) {
+			t.Fatalf("mutated artifact was not rebound: %v", readErr)
+		}
+		return errors.New("semantic Caddy gate rejected public metrics")
+	})
+	if err != nil || outcome != ProbeRejected {
+		t.Fatalf("public metrics outcome=%d err=%v", outcome, err)
+	}
+	original, err := os.ReadFile(filepath.Join(request.CandidateBundle, "Caddyfile"))
+	if err != nil || string(original) != "fixture" {
+		t.Fatalf("retained Caddyfile changed: %q err=%v", original, err)
+	}
+}
+
+func deploymentConfigLoader(environment []string, readFile deploymentconfig.ReadFile) (deploymentconfig.Config, error) {
+	return deploymentconfig.Load(environment, readFile)
 }
 
 func probeFixture(t *testing.T, name string, mutation bundleMutation) (ProbeRequest, []byte) {

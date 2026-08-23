@@ -140,12 +140,21 @@ positive subject passed or a negative fixture was unexpectedly accepted; exit `1
 a successfully prepared named negative fixture that reached its gate and was rejected; invalid
 input, setup failure and an unimplemented population exit `2`. This prevents a missing file,
 unsupported check or broken probe from satisfying a negative row just because it failed. The
-current fixed probes cover the intact six-image/SBOM/license/provenance population and eight exact
-bundle mutations: removed catalog, client, root license, config or release helper, plus changed
-image digest, runtime-config digest or image SBOM. Each mutation uses a private temporary hardlink
-tree, never edits the retained bundle, and a cleanup failure invalidates the outcome. Runtime,
-browser, recovery, rotation and operations populations remain DP-F2 work and are not inferred from
-these package checks.
+current fixed probes cover the intact six-image/SBOM/license/provenance population, eight exact
+bundle mutations, three production config/secret matrices and a public-metrics-route severing.
+The bundle mutations remove the catalog, client, root license, config or release helper, or change
+an image digest, runtime-config digest or image SBOM. The config matrices use the production
+startup decoder and require every missing/malformed secret, duplicate key identity/value and
+invalid origin/proxy variant to reject. The public-metrics probe first rebinds its changed Caddyfile
+in the manifest so it reaches the semantic route validator rather than passing on an unrelated
+hash mismatch. Bundle mutation uses a private temporary hardlink tree, never edits the retained
+bundle, and a cleanup failure invalidates the outcome. Runtime, browser, recovery, rotation and
+operations populations remain DP-F2 work and are not inferred from these package checks.
+
+Full bundle validation re-runs the semantic validators for the rendered Compose topology, public
+Caddy routes and gameserver Dockerfile after checking manifest byte equality. Assembly-time
+validation alone is insufficient because a later re-signed bundle must not be able to retain valid
+hashes while changing a public route or container boundary.
 
 ## Encrypted Postgres backup and restore
 

@@ -140,6 +140,18 @@ func ValidateBundle(root string) error {
 			return fmt.Errorf("%w: artifact mismatch %q", ErrInvalidContent, actual[index].Path)
 		}
 	}
+	compose, err := os.ReadFile(filepath.Join(root, "compose.yml"))
+	if err != nil || ValidateCompose(compose) != nil {
+		return fmt.Errorf("%w: invalid release Compose", ErrInvalidContent)
+	}
+	caddyfile, err := os.ReadFile(filepath.Join(root, "Caddyfile"))
+	if err != nil || ValidateCaddyfile(caddyfile) != nil {
+		return fmt.Errorf("%w: invalid release Caddyfile", ErrInvalidContent)
+	}
+	dockerfile, err := os.ReadFile(filepath.Join(root, "Dockerfile.gameserver"))
+	if err != nil || ValidateGameserverDockerfile(dockerfile) != nil {
+		return fmt.Errorf("%w: invalid gameserver Dockerfile", ErrInvalidContent)
+	}
 	if data, err := os.ReadFile(filepath.Join(root, "sbom", "application.spdx.json")); err != nil || ValidateSPDX(data) != nil {
 		return fmt.Errorf("%w: invalid application SPDX document", ErrInvalidContent)
 	}

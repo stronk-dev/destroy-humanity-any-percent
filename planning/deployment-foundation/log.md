@@ -767,3 +767,30 @@ attempt was denied access to the user Go cache and is not evidence; the root Mak
 repository cache and produced the binary used for the recorded runs. The full 43-row plan remains
 unwritten and DP-F2 remains open. In particular, no browser, database, recovery, rotation,
 operations, RPO/RTO or clean-host observation is claimed by this slice.
+
+## 2026-08-23 — DP-F2 config matrices and semantic bundle-validation repair
+
+Three additional negative rows now execute the production `deploymentconfig.Load` decoder instead
+of duplicating its rules. A valid current/previous JWT, bootstrap and cursor baseline must load
+first. The missing/malformed matrix then requires missing database material, malformed JWT,
+wrong-length bootstrap, a half current cursor and a half previous JWT to reject. The duplicate
+matrix requires both repeated identity and repeated value to reject for all three key families.
+The origin/proxy matrix requires insecure, path-bearing and noncanonical origins plus both zero and
+two trusted hops to reject. If any one severing is accepted, the aggregate probe exits zero and the
+negative plan row fails. An injected accepted mutation demonstrates that discriminator. All three
+real helper invocations exited one; setup/unimplemented failures retain the separate exit-two path.
+
+The public-metrics population exposed a real bundle validator hole. Its fixture adds a Caddy
+`/metrics` reverse proxy and then updates the Caddyfile artifact hash in `release-manifest.json`,
+ensuring it gets past byte-integrity validation. The retained-bundle probe initially exited zero:
+`ValidateCaddyfile` existed and assembly called it, but `ValidateBundle` did not re-run it. Full
+bundle validation now re-runs `ValidateCompose`, `ValidateCaddyfile` and
+`ValidateGameserverDockerfile` after exact artifact comparison. The re-bound public route now exits
+one. Removing only the new Caddy validation call makes the focused regression fail with
+`manifest-rebound public metrics route accepted`; restoring it returns the test green. This is a
+production release-boundary fix discovered by the negative population, not a relaxed probe.
+
+The probe registry now has 13 of 43 real populations. The current candidate record still describes
+the earlier reproducible input bundle and will be rebuilt after the rehearsal helper/probe surface
+stabilizes; no stale manifest is presented as the final R-006 candidate. Runtime and clean-host
+populations remain open.

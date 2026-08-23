@@ -31,6 +31,35 @@ func TestReleaseManifestBindsEveryBundleByteAndImageSBOM(t *testing.T) {
 	if err := ValidateBundle(root); err != nil {
 		t.Fatal(err)
 	}
+	originalCaddy, err := os.ReadFile(filepath.Join(root, "Caddyfile"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "Caddyfile"), append(originalCaddy, []byte("\n# /metrics\n")...), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	_, rebound, err := BuildReleaseManifest(root, ManifestInput{ReleaseVersion: "0.1.0-preview.1", SourceCommit: strings.Repeat("d", 40),
+		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", DatabaseMigration: 74, Closure: closure, Images: images})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, ReleaseManifestPath), rebound, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := ValidateBundle(root); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("manifest-rebound public metrics route accepted: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "Caddyfile"), originalCaddy, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	_, encoded, err = BuildReleaseManifest(root, ManifestInput{ReleaseVersion: "0.1.0-preview.1", SourceCommit: strings.Repeat("d", 40),
+		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", DatabaseMigration: 74, Closure: closure, Images: images})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, ReleaseManifestPath), encoded, 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if err := os.WriteFile(filepath.Join(root, "site", "index.html"), []byte("tampered"), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -91,6 +120,15 @@ func releaseBundleFixture(t *testing.T) string {
 			t.Fatal(err)
 		}
 	}
+	for _, name := range []string{"Caddyfile", "Dockerfile.gameserver"} {
+		data, err := os.ReadFile(filepath.Join("..", "..", "deployment", name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(root, name), data, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if err := os.RemoveAll(filepath.Join(root, "operations")); err != nil {
 		t.Fatal(err)
 	}
@@ -121,6 +159,22 @@ func releaseBundleFixture(t *testing.T) string {
 		if err := os.WriteFile(path, []byte(fixtureSPDX(strings.ReplaceAll(configIDs[name], ":", "-"))), 0o644); err != nil {
 			t.Fatal(err)
 		}
+	}
+	images := fixtureManifestImages(t, root)
+	imageReferences := map[string]string{}
+	for _, image := range images {
+		imageReferences[image.Name] = image.Reference
+	}
+	template, err := os.ReadFile(filepath.Join("..", "..", "deployment", "compose.template.yml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	compose, err := RenderCompose(template, imageReferences)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "compose.yml"), compose, 0o644); err != nil {
+		t.Fatal(err)
 	}
 	return root
 }
