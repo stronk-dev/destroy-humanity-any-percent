@@ -122,7 +122,7 @@ and a pre-existing output tree.
 The resulting directory contains the runtime content closure, site, gameserver, backup, release,
 operations and R-006 rehearsal helper binaries, the offline gameserver image archive,
 Docker/Caddy/Compose inputs, the strict deployment and rehearsal schemas, operations rules/templates, root and
-third-party licenses, seven SBOM documents and
+third-party licenses, eight SBOM documents and
 `release-manifest.json`. The manifest records the current migration, both save-schema versions,
 epoch/copy/constants identities and the SHA-256 of every other bundle file. Validation re-walks the
 directory and rejects any missing, extra or changed byte, including attribution or an image SBOM.
@@ -167,7 +167,8 @@ validation alone is insufficient because a later re-signed bundle must not be ab
 hashes while changing a public route or container boundary.
 
 Final `validate` is not structural JSON validation. It requires the evidence file, exact reviewed
-plan, exclusive per-population result directory and exclusive retained-artifact directory. The
+plan, exclusive per-population result directory, exclusive retained-artifact directory and exact
+candidate bundle. The
 plan hash must match the `rehearsal_plan` artifact; run and both manifest identities must agree;
 the result directory must contain exactly one mode-0600 result for every canonical plan row and no
 extra entry. Each result's name, kind, step, command hash, expected exit, completed/non-guarded
@@ -179,7 +180,9 @@ journal observation, secret scan and supply-chain result. Every raw digest must 
 row, and both manifest files must also equal the run's top-level identities. Each of the eleven
 step intervals and input/output hashes is derived from the ordered command and raw-result hashes
 of the plan rows assigned to that step. A plausible evidence JSON with invented artifact hashes or
-handwritten step summaries is invalid even when its standalone shape is correct.
+handwritten step summaries is invalid even when its standalone shape is correct. The three tool
+identities must equal the executable bytes of `deployment-rehearsal`, `deployment-release` and
+`deployment-browser` in that candidate bundle; a changed, non-executable or symlinked tool rejects.
 
 `deployment-browser` is the clean-host browser-driver component under construction. It is a
 reproducible static Linux/amd64 Go binary using Chrome DevTools directly; it does not require Node,
@@ -196,8 +199,10 @@ manual intent received HTTP 200 and no page exception fired. It writes only thos
 timestamps and the candidate manifest hash to a new mode-0600 JSON file; it never serializes a
 credential, Founder/account identifier, request body or WebSocket payload. A loopback-HTTP flag
 exists solely for the isolated driver fixture and is not admissible in the reviewed R-006 plan.
-The binary, pinned browser image identity and its SBOM still need to enter the rebuilt release
-bundle before `phase0_browser_flow_through_caddy` can count as implemented or observed.
+The binary, pinned browser image identity and its SBOM are part of the rebuilt release bundle and
+its exact manifest. That construction does not itself mark
+`phase0_browser_flow_through_caddy` implemented or observed; the driver must still execute the
+product flow through Caddy on the authorized clean host.
 
 ## Encrypted Postgres backup and restore
 

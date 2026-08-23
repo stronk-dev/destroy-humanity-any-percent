@@ -921,3 +921,20 @@ reproduced the first valid bytes. `make test-deployment-rehearsal` passed cold a
 untouched previous build record plus the new schema-v2 candidate record. This completes the exact
 candidate input replacement, not R-006: no clean-host runtime population has yet been observed and
 the probe count remains 15/43.
+
+## 2026-08-23 — DP-F2 candidate tool-identity binding
+
+Final evidence validation now requires the exact candidate bundle in addition to the evidence,
+plan, raw result and retained-artifact directories. The declared `deployment-rehearsal`,
+`deployment-release` and `browser-driver` hashes must equal the executable bytes named by the
+candidate bundle; missing, changed, non-executable or symlinked tools reject. This removes the path
+where a forged evidence file could name plausible tool hashes unrelated to the programs that
+actually produced the run.
+
+Cold focused tests and vet passed. The binding discriminator was executed by replacing only the
+candidate browser bytes and temporarily neutralizing only the hash comparison: the permanent
+negative failed with `unbound candidate tool accepted`. Restoring the comparison returned the full
+focused population green. The first mutation edit accidentally removed the comparison in a way
+that left unused variables and produced a compile error; that attempt is not cited as the
+discriminator. Artifact-specific schemas and the final evidence/forgery execution order remain
+open, so `forged_successful_evidence` and the overall probe count remain unchanged.

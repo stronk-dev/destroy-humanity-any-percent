@@ -23,7 +23,7 @@ var requiredRunArtifactFiles = map[string]string{
 	"supply_chain":        "supply-chain.json",
 }
 
-func LoadAndValidateRun(evidencePath, planPath, resultsDirectory, artifactsDirectory string) (Evidence, error) {
+func LoadAndValidateRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory string) (Evidence, error) {
 	evidence, err := Load(evidencePath)
 	if err != nil {
 		return Evidence{}, err
@@ -36,17 +36,20 @@ func LoadAndValidateRun(evidencePath, planPath, resultsDirectory, artifactsDirec
 	if err != nil {
 		return Evidence{}, err
 	}
-	if err := ValidateRunBindings(evidence, plan, planBytes, resultsDirectory, artifactsDirectory); err != nil {
+	if err := ValidateRunBindings(evidence, plan, planBytes, resultsDirectory, artifactsDirectory, candidateBundleDirectory); err != nil {
 		return Evidence{}, err
 	}
 	return evidence, nil
 }
 
-func ValidateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte, resultsDirectory, artifactsDirectory string) error {
-	if Validate(evidence) != nil || ValidateExecutionPlan(plan) != nil || len(planBytes) == 0 || resultsDirectory == "" || artifactsDirectory == "" ||
+func ValidateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte, resultsDirectory, artifactsDirectory, candidateBundleDirectory string) error {
+	if Validate(evidence) != nil || ValidateExecutionPlan(plan) != nil || len(planBytes) == 0 || resultsDirectory == "" || artifactsDirectory == "" || candidateBundleDirectory == "" ||
 		evidence.RunID != plan.RunID || evidence.ManifestSHA256 != plan.ManifestSHA256 ||
 		evidence.PreviousManifestSHA256 != plan.PreviousManifestSHA256 || artifactDigest(evidence.Artifacts, "rehearsal_plan") != hashBytes(planBytes) {
 		return ErrInvalid
+	}
+	if err := validateToolBindings(evidence.Tools, candidateBundleDirectory); err != nil {
+		return err
 	}
 	if err := validateRunArtifacts(evidence, artifactsDirectory); err != nil {
 		return err
@@ -96,6 +99,29 @@ func ValidateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte
 	for _, step := range evidence.Steps {
 		if len(stepCommandHashes[step.Name]) == 0 || step.StartedAt != stepStarts[step.Name] || step.CompletedAt != stepEnds[step.Name] ||
 			step.InputSHA256 != hashJSON(stepCommandHashes[step.Name]) || step.OutputSHA256 != hashJSON(stepResultHashes[step.Name]) {
+			return ErrInvalid
+		}
+	}
+	return nil
+}
+
+func validateToolBindings(tools []Tool, candidateBundleDirectory string) error {
+	paths := map[string]string{
+		"deployment-rehearsal": "deployment-rehearsal",
+		"deployment-release":   "deployment-release",
+		"browser-driver":       "deployment-browser",
+	}
+	toolHashes := make(map[string]string, len(tools))
+	for _, tool := range tools {
+		toolHashes[tool.Name] = tool.SHA256
+	}
+	for name, path := range paths {
+		info, err := os.Lstat(filepath.Join(candidateBundleDirectory, path))
+		if err != nil || !info.Mode().IsRegular() || info.Mode()&os.ModeSymlink != 0 || info.Mode().Perm()&0o111 == 0 || info.Size() <= 0 {
+			return ErrInvalid
+		}
+		data, err := os.ReadFile(filepath.Join(candidateBundleDirectory, path))
+		if err != nil || toolHashes[name] != hashBytes(data) {
 			return ErrInvalid
 		}
 	}

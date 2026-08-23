@@ -11,7 +11,7 @@ import (
 
 func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
 	fixture := boundRunFixture(t)
-	validated, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory)
+	validated, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory)
 	if err != nil || validated.RunID != fixture.evidence.RunID {
 		t.Fatalf("bound run rejected: run=%s err=%v", validated.RunID, err)
 	}
@@ -27,7 +27,7 @@ func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
 	if err := os.WriteFile(fixture.evidencePath, append(data, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
+	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("structurally valid forged evidence accepted: %v", err)
 	}
 }
@@ -69,7 +69,7 @@ func TestRunValidationRejectsRewrittenMissingAndUnsafeResults(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
 			mutate(t, fixture)
-			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("invalid result population accepted: %v", err)
 			}
 		})
@@ -86,7 +86,7 @@ func TestRunValidationRejectsForgedPopulationEvidenceHash(t *testing.T) {
 	if err := os.WriteFile(fixture.evidencePath, append(data, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
+	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("forged population evidence hash accepted: %v", err)
 	}
 }
@@ -112,20 +112,60 @@ func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
 			mutate(t, &fixture)
-			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("forged artifact/step accepted: %v", err)
 			}
 		})
 	}
 }
 
+func TestRunValidationBindsExactCandidateToolBytes(t *testing.T) {
+	for name, mutate := range map[string]func(*testing.T, boundFixture){
+		"changed tool": func(t *testing.T, fixture boundFixture) {
+			path := filepath.Join(fixture.candidateBundleDirectory, "deployment-browser")
+			if err := os.Chmod(path, 0o755); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(path, []byte("forged\n"), 0o555); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.Chmod(path, 0o555); err != nil {
+				t.Fatal(err)
+			}
+		},
+		"non executable": func(t *testing.T, fixture boundFixture) {
+			if err := os.Chmod(filepath.Join(fixture.candidateBundleDirectory, "deployment-release"), 0o444); err != nil {
+				t.Fatal(err)
+			}
+		},
+		"symlinked tool": func(t *testing.T, fixture boundFixture) {
+			path := filepath.Join(fixture.candidateBundleDirectory, "deployment-rehearsal")
+			if err := os.Remove(path); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.Symlink("deployment-release", path); err != nil {
+				t.Fatal(err)
+			}
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			fixture := boundRunFixture(t)
+			mutate(t, fixture)
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("unbound candidate tool accepted: %v", err)
+			}
+		})
+	}
+}
+
 type boundFixture struct {
-	evidence           Evidence
-	plan               ExecutionPlan
-	evidencePath       string
-	planPath           string
-	resultsDirectory   string
-	artifactsDirectory string
+	evidence                 Evidence
+	plan                     ExecutionPlan
+	evidencePath             string
+	planPath                 string
+	resultsDirectory         string
+	artifactsDirectory       string
+	candidateBundleDirectory string
 }
 
 func boundRunFixture(t *testing.T) boundFixture {
@@ -133,13 +173,25 @@ func boundRunFixture(t *testing.T) boundFixture {
 	root := t.TempDir()
 	results := filepath.Join(root, "results")
 	artifactsDirectory := filepath.Join(root, "artifacts")
+	candidateBundleDirectory := filepath.Join(root, "candidate-bundle")
 	if err := os.Mkdir(results, 0o700); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.Mkdir(artifactsDirectory, 0o700); err != nil {
 		t.Fatal(err)
 	}
+	if err := os.Mkdir(candidateBundleDirectory, 0o700); err != nil {
+		t.Fatal(err)
+	}
 	evidence := validEvidence()
+	toolFiles := map[string]string{"deployment-rehearsal": "deployment-rehearsal", "deployment-release": "deployment-release", "browser-driver": "deployment-browser"}
+	for index := range evidence.Tools {
+		data := []byte(evidence.Tools[index].Name + " binary\n")
+		if err := os.WriteFile(filepath.Join(candidateBundleDirectory, toolFiles[evidence.Tools[index].Name]), data, 0o555); err != nil {
+			t.Fatal(err)
+		}
+		evidence.Tools[index].SHA256 = hashBytes(data)
+	}
 	artifactBytes := map[string][]byte{}
 	for name, file := range requiredRunArtifactFiles {
 		artifactBytes[name] = []byte(name + "\n")
@@ -225,7 +277,7 @@ func boundRunFixture(t *testing.T) boundFixture {
 		t.Fatal(err)
 	}
 	return boundFixture{evidence: evidence, plan: plan, evidencePath: evidencePath, planPath: planPath,
-		resultsDirectory: results, artifactsDirectory: artifactsDirectory}
+		resultsDirectory: results, artifactsDirectory: artifactsDirectory, candidateBundleDirectory: candidateBundleDirectory}
 }
 
 func writeEvidenceFixture(t *testing.T, path string, evidence Evidence) {
