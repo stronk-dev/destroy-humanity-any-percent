@@ -1537,3 +1537,45 @@ The corrective range is predeclared as:
 5. run cold focused Go/Postgres tests, both previously red leaf commands, topology negative
    controls and the complete `make verify-push` before handoff. No timeout, hosted workflow,
    gameplay, balance, migration, content or deployment-secret behavior enters this range.
+
+## 2026-08-24 — DP-E/DP8 corrective implementation and first filter
+
+The predeclared correction landed in three concern-separated commits after predeclaration
+`e0e2201`: realtime composition `73bb4ee`, append-only kernel correction `32ee744`, and CI parity
+gate `5d72591`.
+
+The realtime correction preserves `http.Hijacker` through operations instrumentation and enables
+that middleware in the existing real Postgres/account-revocation WebSocket population. The exact
+population failed its Centrifuge handshake with HTTP 500 before forwarding and passed cold after
+it. Repeated composed execution then exposed two independent client ordering defects instead of
+being retried away: an exit-offer decline could release the next click before binding its consumed
+revision, and a successor snapshot could advance the cursor past the preceding run's terminal
+publication. Permanent browser/runtime witnesses failed before each correction. Severing the
+decline refresh made all three browser engines report zero snapshot calls where one was required;
+the terminal race fixture received only `transport_recovered` until the bounded immediate-successor
+delivery rule was restored. Older snapshot responses now also cannot regress either live revision
+coordinate. Three consecutive real Chromium/Vite/gameserver/Postgres/WebSocket composed runs then
+passed both terminal variants, next-run continuation and recovery.
+
+Kernel `0.3.101` records pushed offending commit
+`09d5027a8f57ddacde270a7ac3fc31e2a183f7d3` without rewriting published history. With that one
+correction removed, `make verify-kernel-version` failed against `server/production/intents.go`;
+restored, the parity/history gate and its adversarial fixtures passed.
+
+`make verify-push` now contains exactly the six blocking workflow leaves in job order. The topology
+guard binds each hosted job to its exact Make command and binds the local aggregate back to the same
+set. Thirteen negative controls reject a substituted hosted leaf, missing/extra local leaf, missing
+job, exhaustive push work, trigger drift, cache drift and maintenance-evidence weakening.
+
+The first aggregate invocation was invalid evidence: the restricted execution sandbox denied two
+legitimate `httptest` localhost listeners with `bind: operation not permitted`. The exact command
+was rerun with local test-network authority and exited zero. Executed leaves were cold server core,
+fast harness, strict client type/build/unit/boundary/history gates (6,662 unit tests), the complete
+three-engine functional browser population (20,049 tests) plus isolated performance, the real
+composed browser path, and schema/catalog validation. No workflow timeout, skipped job, hosted-only
+exception or retry was changed.
+
+**Review by:** Codex. **Recorded by:** Codex. **Decision:** **APPROVED AS FIRST FILTER** for
+`e0e2201..5d72591`; this does not satisfy the designated cross-party gate. The corrective batch is
+ready for Claude's adversarial review of that exact range plus this record commit. It is not
+archival authority and does not promote DP-E or Deployment Foundation lifecycle state.
