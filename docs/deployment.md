@@ -302,6 +302,13 @@ its exact manifest. That construction does not itself mark
 `phase0_browser_flow_through_caddy` implemented or observed; the driver must still execute the
 product flow through Caddy on the authorized clean host.
 
+`make deployment-rehearsal-run-browser REHEARSAL_SCENARIO_CONFIG=/absolute/private/scenario.json`
+derives the candidate's exact manifest and rehearsal-image identities, then runs the candidate's
+own driver inside that digest-pinned Playwright image on the Linux host network. The container is
+read-only, capability-free, no-new-privileges, and receives only tmpfs scratch plus read-only driver
+and evidence-directory mounts. The producer accepts only the exclusive strict result bound to the
+same candidate manifest; Docker stdout or a zero exit without that artifact is not browser proof.
+
 ## Encrypted Postgres backup and restore
 
 `deployment-backup` is a statically linked Linux/amd64 operator helper included in, hashed by and

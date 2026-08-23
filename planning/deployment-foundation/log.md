@@ -1347,3 +1347,18 @@ existing output, wrong image/driver/manifest, Docker failure or incomplete brows
 Tests inject the Docker command boundary, assert the exact security and identity argv, and write
 only a typed result. The discriminator will remove the manifest comparison and require a wrong-
 manifest result to fail. This constructs but does not execute the product browser population.
+
+## 2026-08-23 — DP-F2 exact product-browser producer
+
+`deployment-rehearsal run-browser` now validates the candidate, derives its exact manifest and
+Playwright identities and runs the candidate's own browser driver inside the digest-pinned image.
+The direct Docker argv fixes linux/amd64, host networking, read-only root, tmpfs/shm bounds,
+no-new-privileges, dropped capabilities and only the driver/evidence mounts. Loopback HTTP is never
+enabled. A zero Docker exit is insufficient: the producer strictly decodes the exclusive browser
+artifact and requires its manifest to equal the candidate bytes.
+
+Injected Docker tests assert every security/identity argument and reject Docker failure, missing
+artifact, wrong result manifest, invalid candidate and overwrite. Removing only the final manifest
+comparison made the wrong-manifest test fail with `invalid product browser result accepted`;
+restoring it returned the cold rehearsal/command/browser packages green. Root vet passes. The Make
+lane is ready, but the product workflow has not run on the clean Linux host and 25/43 is unchanged.

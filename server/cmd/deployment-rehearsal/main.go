@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"cloud-clicker/server/deploymentbrowser"
 	"cloud-clicker/server/deploymentrehearsal"
 )
 
@@ -61,9 +62,27 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal candidate install passed")
+	case "run-browser":
+		if _, err := runBrowser(context.Background(), os.Args[2:]); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal product browser passed")
 	default:
 		fail("usage")
 	}
+}
+
+func runBrowser(ctx context.Context, args []string) (deploymentbrowser.Result, error) {
+	set := flag.NewFlagSet("run-browser", flag.ContinueOnError)
+	configPath := set.String("config", "", "private runtime scenario input")
+	if set.Parse(args) != nil || set.NArg() != 0 || *configPath == "" {
+		return deploymentbrowser.Result{}, deploymentrehearsal.ErrInvalid
+	}
+	config, err := deploymentrehearsal.LoadScenarioConfig(*configPath)
+	if err != nil {
+		return deploymentbrowser.Result{}, err
+	}
+	return deploymentrehearsal.RunBrowser(ctx, config)
 }
 
 func runInstallCandidate(ctx context.Context, args []string) error {
