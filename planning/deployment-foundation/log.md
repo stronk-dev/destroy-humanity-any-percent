@@ -892,3 +892,32 @@ Removing the retained browser after assembly and supplying missing/mutable brows
 permanent negative fixtures. This is construction evidence only: the retained candidate and its
 independent rebuild still need regeneration from the committed source point, and the real product
 browser population remains unobserved. The implemented probe count therefore remains 15/43.
+
+## 2026-08-23 — DP-F2 exact candidate v2 rebuild
+
+The interim candidate is superseded by two independent builds from clean committed source
+`83a0e7fc7e814e2dc514939b07e15ddd2671eeeb`, timestamped from that commit at
+`2026-08-23T08:51:16Z`. Each build independently regenerated the client, all six static
+Linux/amd64 Go commands, staged content, application metadata, the no-cache gameserver image, six
+production image package graphs and the Playwright package graph. The exact 72-artifact bundle
+trees are byte-identical. Both release manifests hash to
+`sha256:9f920670e3674b6ef8fd44639c451c5d80adb1cbda4a1c3f3fe67ff6fda47cf4`;
+both offline gameserver archives hash to
+`sha256:e4d21ec1cfa3543328bca33903a7bbf3b4f161309cc6e497a9e70edd41e2e474`;
+and both gameserver OCI configs are
+`sha256:f7d1c0fc076bf246b54c16220360206a4659b16f06f719f2029d1d4c0be4d207`.
+
+All seven normalized SPDX pairs matched byte-for-byte after independent discovery. Their candidate
+hashes are Alertmanager `71c14e93…`, Caddy `0d6317a4…`, gameserver `418f5af1…`, node-exporter
+`1e21ae83…`, Postgres `da45be36…`, Prometheus `dc52283b…` and Playwright `912af379…`. The two
+browser executables also matched at `fa80f3c3…`. The full release secret scan covered 1,381 tracked
+source files plus the exact candidate gameserver image and reported no findings.
+
+The first image attempt failed before output because the staged-content primitive was mistakenly
+treated as a complete OCI context; the corrected invocation then exposed that content had to live
+under the Dockerfile's declared `content/` path. Neither setup failure produced an accepted archive
+or evidence row. The independently rebuilt context used the corrected explicit construction and
+reproduced the first valid bytes. `make test-deployment-rehearsal` passed cold and validated the
+untouched previous build record plus the new schema-v2 candidate record. This completes the exact
+candidate input replacement, not R-006: no clean-host runtime population has yet been observed and
+the probe count remains 15/43.
