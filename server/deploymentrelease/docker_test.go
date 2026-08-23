@@ -206,6 +206,24 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 	if err := runtime.Restore(context.Background(), bundle, backup); err != nil {
 		t.Fatal(err)
 	}
+	recoveryHeader := header
+	recoveryHeader.PreUpgrade = false
+	runner.output = func(call []string) ([]byte, error) {
+		if slices.Contains(call, "create") {
+			return json.Marshal(map[string]any{"status": "completed", "backup": "/backups/" + filepath.Base(hostBackup), "header": recoveryHeader})
+		}
+		if slices.Contains(call, "restore") {
+			return json.Marshal(map[string]any{"status": "restored", "header": recoveryHeader})
+		}
+		return nil, errors.New("unexpected command")
+	}
+	recovery, err := runtime.CreateRecoveryBackup(context.Background(), bundle)
+	if err != nil || recovery != backup {
+		t.Fatalf("recovery backup=%+v err=%v", recovery, err)
+	}
+	if err := runtime.RestoreRecoveryBackup(context.Background(), bundle, recovery); err != nil {
+		t.Fatal(err)
+	}
 	for _, call := range runner.calls {
 		joined := strings.Join(call, " ")
 		if strings.Contains(strings.ToLower(joined), " down ") || strings.Contains(strings.ToLower(joined), "migrate down") {
@@ -230,6 +248,50 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 	}
 	if err := runtime.Restore(context.Background(), bundle, BackupReference{ID: "20260822T180000Z-acde00000002", Path: symlink}); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("symlinked backup accepted: %v", err)
+	}
+
+	severed.output = func(call []string) ([]byte, error) {
+		if slices.Contains(call, "restore") {
+			return json.Marshal(map[string]any{"status": "restored", "header": header})
+		}
+		return json.Marshal(map[string]any{"status": "completed", "backup": "/backups/" + filepath.Base(hostBackup), "header": header})
+	}
+	badRuntime = dockerFixtureRuntime(&severed, target, identity)
+	if _, err := badRuntime.CreateRecoveryBackup(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("pre-upgrade backup accepted as scheduled recovery backup: %v", err)
+	}
+	if err := badRuntime.RestoreRecoveryBackup(context.Background(), bundle, backup); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("pre-upgrade backup accepted by recovery restore: %v", err)
+	}
+}
+
+func TestDockerRuntimeObservesStrictPrivateRecoveryIdentity(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	digest := "sha256:" + strings.Repeat("c", 64)
+	domain := deploymentbackup.RecoveryDomainIdentity{Rows: 1, SHA256: digest}
+	identity := deploymentbackup.RecoveryIdentity{SchemaVersion: 1, DatabaseMigration: bundle.Manifest.DatabaseMigration,
+		Database: domain, Player: domain, Founder: domain, Company: domain, Events: domain, Board: domain, Epoch: domain}
+	runner := &commandFixture{output: func(call []string) ([]byte, error) {
+		if !slices.Contains(call, "recovery-identity") || !slices.Contains(call, "--database-url-file=/run/secrets/database-url") {
+			return nil, errors.New("wrong private identity command")
+		}
+		return json.Marshal(map[string]any{"status": "observed", "identity": identity})
+	}}
+	runtime := dockerFixtureRuntime(runner, t.TempDir(), "")
+	observed, err := runtime.InspectRecoveryIdentity(context.Background(), bundle)
+	if err != nil || observed != identity {
+		t.Fatalf("identity=%+v err=%v", observed, err)
+	}
+	identity.DatabaseMigration--
+	if _, err := runtime.InspectRecoveryIdentity(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("wrong-migration recovery identity accepted: %v", err)
+	}
+	runner.output = func([]string) ([]byte, error) {
+		data, _ := json.Marshal(map[string]any{"status": "observed", "identity": observed})
+		return append(data, []byte("\n{}")...), nil
+	}
+	if _, err := runtime.InspectRecoveryIdentity(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("trailing recovery identity output accepted: %v", err)
 	}
 }
 
@@ -327,7 +389,7 @@ func dockerFixtureBundle(t *testing.T) Bundle {
 	t.Helper()
 	root := t.TempDir()
 	return Bundle{Root: root, ManifestSHA256: "sha256:" + strings.Repeat("a", 64), Manifest: releasepackage.ReleaseManifest{
-		ReleaseVersion: "1.0.0", EpochID: 8, ConstantsHash: "sha256:" + strings.Repeat("b", 64), Images: []releasepackage.Image{
+		ReleaseVersion: "1.0.0", DatabaseMigration: 74, EpochID: 8, ConstantsHash: "sha256:" + strings.Repeat("b", 64), Images: []releasepackage.Image{
 			{Name: "alertmanager", Reference: "alertmanager:v1@sha256:" + strings.Repeat("1", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("7", 64)},
 			{Name: "caddy", Reference: "caddy:v1@sha256:" + strings.Repeat("1", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("4", 64)},
 			{Name: "gameserver", Reference: "sha256:" + strings.Repeat("2", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("2", 64)},

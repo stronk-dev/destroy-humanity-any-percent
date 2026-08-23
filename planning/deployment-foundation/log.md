@@ -1424,3 +1424,19 @@ trailing output. Exact paths are `server/deploymentrelease/docker.go`, focused D
 `docs/deployment.md` and this log. Cold release/backup tests and root vet must pass. The discriminator
 will remove the scheduled/pre-upgrade separation and require the wrong-header fixture to fail. No
 runtime population is claimed; the count remains 25/43.
+
+## 2026-08-23 — DP-F2 exact recovery runtime adapter
+
+`DockerRuntime` now provides scheduled recovery backup, private semantic identity inspection and
+scheduled recovery restore using only the exact bundle's Compose file and backup helper. Shared
+creation/restore implementations bind the decoded output to the candidate manifest, epoch, server,
+host encrypted file and the caller's exact pre-upgrade class. Release and rollback retain the
+pre-upgrade-only methods; rehearsal recovery cannot consume or produce that authority.
+
+Focused command fixtures assert the private database-secret mount, strict/trailing-output rejection,
+manifest migration binding, both valid backup classes and cross-class refusal. Replacing the
+creation gate's expected class with the returned header's own value made
+`TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest` fail with `pre-upgrade backup accepted
+as scheduled recovery backup`; restoring the caller-bound value returned the cold release/backup
+packages green. Root vet and `git diff --check` pass. No real host state was observed, so 25/43
+remains the runtime count.

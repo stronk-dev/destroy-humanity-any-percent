@@ -135,6 +135,16 @@ func (runtime DockerRuntime) preflightCommon(ctx context.Context, bundle Bundle)
 }
 
 func (runtime DockerRuntime) CreatePreUpgradeBackup(ctx context.Context, bundle Bundle) (BackupReference, error) {
+	return runtime.createBackup(ctx, bundle, true)
+}
+
+// CreateRecoveryBackup creates a manifest-bound scheduled/recovery backup. It
+// cannot be cited as the pre-upgrade authority required by rollback.
+func (runtime DockerRuntime) CreateRecoveryBackup(ctx context.Context, bundle Bundle) (BackupReference, error) {
+	return runtime.createBackup(ctx, bundle, false)
+}
+
+func (runtime DockerRuntime) createBackup(ctx context.Context, bundle Bundle, preUpgrade bool) (BackupReference, error) {
 	runtime, err := runtime.normalized()
 	if err != nil {
 		return BackupReference{}, err
@@ -142,7 +152,10 @@ func (runtime DockerRuntime) CreatePreUpgradeBackup(ctx context.Context, bundle 
 	args := composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "create",
 		"--target=/backups", "--database-url-file=/run/secrets/database-url",
 		"--release-manifest=/opt/cloud-clicker/release-manifest.json", "--epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json",
-		"--age-recipient="+runtime.AgeRecipient, "--server-id="+runtime.ServerID, "--metrics-dir=/operations", "--pre-upgrade")
+		"--age-recipient="+runtime.AgeRecipient, "--server-id="+runtime.ServerID, "--metrics-dir=/operations")
+	if preUpgrade {
+		args = append(args, "--pre-upgrade")
+	}
 	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", args...)
 	if err != nil {
 		return BackupReference{}, err
@@ -152,7 +165,7 @@ func (runtime DockerRuntime) CreatePreUpgradeBackup(ctx context.Context, bundle 
 		Backup string                  `json:"backup"`
 		Header deploymentbackup.Header `json:"header"`
 	}
-	if decodeExact(output, &result) != nil || result.Status != "completed" || !validBackupHeader(result.Header, bundle, runtime.ServerID, true) ||
+	if decodeExact(output, &result) != nil || result.Status != "completed" || !validBackupHeader(result.Header, bundle, runtime.ServerID, preUpgrade) ||
 		result.Header.ReleaseManifestSHA256 != bundle.ManifestSHA256 || result.Backup != "/backups/"+result.Header.BackupID+".ccbackup" {
 		return BackupReference{}, ErrInvalid
 	}
@@ -161,6 +174,29 @@ func (runtime DockerRuntime) CreatePreUpgradeBackup(ctx context.Context, bundle 
 		return BackupReference{}, ErrInvalid
 	}
 	return BackupReference{ID: result.Header.BackupID, Path: hostPath}, nil
+}
+
+// InspectRecoveryIdentity observes the database through the exact private
+// backup service in the release bundle; it never opens Postgres from the host.
+func (runtime DockerRuntime) InspectRecoveryIdentity(ctx context.Context, bundle Bundle) (deploymentbackup.RecoveryIdentity, error) {
+	runtime, err := runtime.normalized()
+	if err != nil {
+		return deploymentbackup.RecoveryIdentity{}, err
+	}
+	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "recovery-identity",
+		"--database-url-file=/run/secrets/database-url")...)
+	if err != nil {
+		return deploymentbackup.RecoveryIdentity{}, err
+	}
+	var result struct {
+		Status   string                            `json:"status"`
+		Identity deploymentbackup.RecoveryIdentity `json:"identity"`
+	}
+	if decodeExact(output, &result) != nil || result.Status != "observed" || deploymentbackup.ValidateRecoveryIdentity(result.Identity) != nil ||
+		result.Identity.DatabaseMigration != bundle.Manifest.DatabaseMigration {
+		return deploymentbackup.RecoveryIdentity{}, ErrInvalid
+	}
+	return result.Identity, nil
 }
 
 func (runtime DockerRuntime) Prepare(ctx context.Context, bundle Bundle) error {
@@ -337,6 +373,16 @@ func (runtime DockerRuntime) ResetDatabase(ctx context.Context, bundle Bundle) e
 }
 
 func (runtime DockerRuntime) Restore(ctx context.Context, bundle Bundle, backup BackupReference) error {
+	return runtime.restoreBackup(ctx, bundle, backup, true)
+}
+
+// RestoreRecoveryBackup restores a non-pre-upgrade recovery backup. Rollback
+// continues to use Restore and refuses this population as rollback authority.
+func (runtime DockerRuntime) RestoreRecoveryBackup(ctx context.Context, bundle Bundle, backup BackupReference) error {
+	return runtime.restoreBackup(ctx, bundle, backup, false)
+}
+
+func (runtime DockerRuntime) restoreBackup(ctx context.Context, bundle Bundle, backup BackupReference, preUpgrade bool) error {
 	runtime, err := runtime.normalized()
 	if err != nil || runtime.AgeIdentityFile == "" || filepath.Dir(backup.Path) != filepath.Clean(runtime.BackupTarget) || filepath.Base(backup.Path) != backup.ID+".ccbackup" {
 		return ErrInvalid
@@ -363,7 +409,7 @@ func (runtime DockerRuntime) Restore(ctx context.Context, bundle Bundle, backup 
 		Header deploymentbackup.Header `json:"header"`
 	}
 	if decodeExact(output, &result) != nil || result.Status != "restored" || result.Header.BackupID != backup.ID ||
-		!validBackupHeader(result.Header, bundle, runtime.ServerID, true) {
+		!validBackupHeader(result.Header, bundle, runtime.ServerID, preUpgrade) {
 		return ErrInvalid
 	}
 	return nil

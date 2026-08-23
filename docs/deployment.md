@@ -356,6 +356,12 @@ counts cannot hide substituted content. Empty rehearsal databases must have no p
 but must retain epoch/catalog authority; populated rehearsals require all six semantic domains to
 be nonempty. Recovery evidence compares the complete before/after identity.
 
+The manifest-bound Docker runtime invokes backup creation, recovery identity and restore only as
+one-off services on the bundle's private database network. Scheduled/recovery backups and release
+pre-upgrade backups are distinct typed populations: the ordinary recovery path requires
+`pre_upgrade=false`, while rollback requires `pre_upgrade=true`. Neither path accepts the other's
+header even when every digest, epoch and server identity otherwise matches.
+
 Build the helper with:
 
 ```sh
