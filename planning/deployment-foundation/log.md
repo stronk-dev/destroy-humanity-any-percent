@@ -1362,3 +1362,28 @@ artifact, wrong result manifest, invalid candidate and overwrite. Removing only 
 comparison made the wrong-manifest test fail with `invalid product browser result accepted`;
 restoring it returned the cold rehearsal/command/browser packages green. Root vet passes. The Make
 lane is ready, but the product workflow has not run on the clean Linux host and 25/43 is unchanged.
+
+## 2026-08-23 — DP-F2 predeclaration: canonical recovery identity
+
+The database recovery populations need a semantic identity boundary before orchestration. Counts
+alone would let a restore silently exchange one player, Founder, Company, event, board or epoch row
+for another while still passing. `deploymentbackup` will therefore expose one strict recovery-
+identity observation whose six domains each carry both a row count and a SHA-256 digest over
+canonical, deterministically ordered Postgres row bytes. The player domain includes accounts,
+email and account-to-Founder ownership; Founder and Company cover their complete stream/revision
+histories; events include intent and event records; board covers projection claims and verified
+runs; epoch covers catalog bytes, epoch/hash authority and run epoch pins. Secrets and row content
+never leave the helper: only counts and hashes are emitted.
+
+The bundled `deployment-backup recovery-identity` command will read the existing file-backed
+database URL and emit the strict observation. Empty recovery means zero player/Founder/Company/
+event/board rows while retaining nonempty current epoch/catalog authority; populated recovery must
+have every domain nonempty. The later rehearsal producer must compare the complete observation,
+not independently editable booleans or counts, before and after restore.
+
+Exact implementation paths are `server/deploymentbackup/identity.go`, its unit and real-Postgres
+integration tests, `server/cmd/deployment-backup/main.go` plus command tests, and the canonical
+backup/rehearsal sections of `docs/deployment.md`. Cold package tests and the declared Postgres
+population must pass. The discriminator will remove one canonical row field from the digest input
+and require a same-count content mutation to stop changing that domain's identity. This constructs
+the evidence boundary only; it does not count an R-006 runtime population and leaves 25/43 honest.
