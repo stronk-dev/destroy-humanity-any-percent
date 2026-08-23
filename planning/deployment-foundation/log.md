@@ -1502,3 +1502,38 @@ independent-build records still strict-validated at their recorded previous/cand
 identities. This verifies tooling compatibility only; the records predate the new command surface
 and remain inputs to be rebuilt after DP-F command construction stabilizes, not evidence that the
 new recovery producer ran.
+
+## 2026-08-24 — DP-E/DP8 corrective predeclaration after hosted CI failure
+
+GitHub Actions run `32637134690` failed at pushed HEAD `7b510df` in two blocking jobs. Both exact
+leaf commands reproduce locally and therefore expose a local verification/process failure, not a
+host-only divergence:
+
+- `make verify-client` rejects pushed commit `09d5027` because its edit to the kernel-watched
+  `server/production/intents.go` did not carry a real version bump or append-only correction;
+- `make test-game-ui-composed` reaches HTTP readiness but every Centrifuge WebSocket upgrade fails.
+  The DP-E operations middleware replaces the response writer with `statusWriter`, which does not
+  preserve `http.Hijacker`; the real browser then reports repeated proxy `EPIPE`/`ECONNRESET` and
+  times out before the visitor counter.
+
+The repository-wide evidence language was also false: `docs/ci.md` called `make verify` the exact
+blocking aggregate, but that target omits `test-game-ui-composed`; the DP-F rehearsal lane includes
+neither failed leaf. No single local command was mechanically bound to all six push jobs.
+
+**Review by:** Codex. **Recorded by:** Codex. **Decision:** **CHANGES REQUIRED** for the exact
+offending DP-E implementation commit (`09d5027^..09d5027`). This is the implementer's first filter,
+not the designated cross-party pass. History is already pushed and remains append-only.
+
+The corrective range is predeclared as:
+
+1. forward `http.Hijacker` through the operations status writer and make an operations-enabled real
+   composition WebSocket population permanent; severing only the forwarding method must fail the
+   handshake;
+2. add `09d5027` to `kernel/history-corrections.json` in the same commit as kernel `0.3.101` across
+   all three parity files; removal of the correction or any parity byte must fail the history gate;
+3. add `make verify-push` with exactly the six blocking leaf commands and extend the topology guard
+   plus its negative fixtures to bind workflow jobs and aggregate dependencies bidirectionally;
+4. correct `docs/ci.md` to distinguish the developer aggregate from the exact push aggregate; and
+5. run cold focused Go/Postgres tests, both previously red leaf commands, topology negative
+   controls and the complete `make verify-push` before handoff. No timeout, hosted workflow,
+   gameplay, balance, migration, content or deployment-secret behavior enters this range.
