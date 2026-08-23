@@ -491,6 +491,9 @@ credential cleanup, and named invariant families. User-controlled paths collapse
 classes. Metric labels and ordinary structured logs exclude credentials, recovery codes, raw IPs,
 payloads and account/founder/stream/intent identifiers. Backup, restore and release helpers write
 atomic node-exporter textfiles; a later failure does not erase the last successful timestamp.
+The HTTP metrics wrapper preserves the underlying writer's WebSocket hijack capability; the
+operations-enabled Postgres composition population performs a real Centrifuge upgrade so ordinary
+HTTP instrumentation cannot silently disable the realtime path.
 
 The seven blocking alert families cover five-minute ingress/readiness loss, missing/late/failed
 six-hour backups, two-minute Postgres or collector failure, storage pressure above 80%, three

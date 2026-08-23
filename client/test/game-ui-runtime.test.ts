@@ -58,6 +58,23 @@ function eventEnvelope(revision: number, eventID = `event-${revision}`, cursorEf
   };
 }
 
+function runEndedEnvelope(revision: number, runSeq: number): unknown {
+  return {
+    v: 2, ch: `player:${snapshot.run.founder_id}`, kind: "event", rev: revision, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:01Z",
+    payload: {
+      event_id: `run-ended-${runSeq}`, kind: "run_ended", scope: "company", rev: revision, cursor_effect: "advance",
+      payload: {
+        assisted: { advisor: false, commons: false }, attended_ms: 500, ended_at_ms: 1_800_000_001_000,
+        executed_routes: [], exit_type: "scripted_first", faction: null, founder_id: snapshot.run.founder_id,
+        gates_crossed: ["gate.t0_to_t1"], generators_purchased_total: 1, ledger_fact_kinds: [], lifetime_value: "1e3",
+        payout: { clout_reach_note: "clout.reach.preserved", network_slot_unlocks: [], reputation_delta: 2, route_knowledge: 25 },
+        pre_timer: false, rta_ms: 1_000, run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: runSeq },
+        started_at_ms: 1_800_000_000_000, terminal_seq: 2, tier: 1,
+      },
+    },
+  };
+}
+
 function publication(socket: FakeSocket, channel: string, offset: number, data: unknown): void {
   socket.reply({ push: { channel, pub: { offset, data } } });
 }
@@ -104,6 +121,35 @@ describe("browser Game UI runtime", () => {
     expect((await runtime.snapshot()).revision).toBe(1);
     await runtime.intent({ kind: "perform_manual_batch" });
     expect(requests.map((request) => (request.headers as Record<string, string>).Authorization)).toEqual(["Bearer access", "Bearer access"]);
+  });
+
+  it("does not let an older concurrent snapshot regress the live revision cursor", async () => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const responses: Array<(response: Response) => void> = [];
+    const runtime = createBrowserGameUIRuntime(storage, () => new Promise<Response>((resolve) => responses.push(resolve)));
+    const older = runtime.snapshot();
+    const newer = runtime.snapshot();
+    responses[1](new Response(JSON.stringify({ ...currentSnapshot, founder_revision: 2, revision: 2 }), { status: 200 }));
+    expect((await newer).revision).toBe(2);
+    responses[0](new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    expect(await older).toMatchObject({ founder_revision: 2, revision: 2 });
+  });
+
+  it("delivers the immediately preceding run terminal when a successor snapshot wins the race", async () => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    let response = { ...currentSnapshot, revision: 8, run: { ...currentSnapshot.run, run_seq: 2, tier: 1 } };
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(response), { status: 200 }), crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    await runtime.snapshot();
+    const received: unknown[] = [];
+    runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(socket); subscribeReplies(socket);
+    response = { ...response, founder_revision: 2, revision: 10, run: { ...response.run, run_seq: 3 } };
+    await runtime.snapshot();
+    publication(socket, `player:${snapshot.run.founder_id}`, 1, runEndedEnvelope(9, 2));
+    expect(received).toContainEqual(expect.objectContaining({ kind: "event", revision: 9, value: expect.objectContaining({ kind: "run_ended" }) }));
   });
 
   it("rejects a legacy receipt snapshot on the live sync operation", async () => {

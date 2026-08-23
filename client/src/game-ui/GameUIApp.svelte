@@ -139,7 +139,9 @@
     const task = (async () => {
       try {
         await runtime.intent({ intent_id: newIntentID(), expected_revision: snapshot!.revision, ...body });
-        if (kind === "cross_gate") bindSnapshot(await runtime.snapshot());
+        if (kind === "cross_gate" || kind === "decline_exit_offer") {
+          bindSnapshot(await runtime.snapshot());
+        }
       } catch { offline = true; }
       finally {
         actionTask = undefined;

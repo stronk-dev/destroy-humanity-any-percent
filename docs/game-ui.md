@@ -45,7 +45,9 @@ Company Gate events trigger one deduplicated authoritative refresh before the ne
 action and refresh state are tracked independently, and a click that races that refresh waits for
 its revision instead of disappearing. When Gate is committed before the WebSocket subscription is
 ready, the HTTP command path also fetches the authoritative snapshot; the same-revision
-`gate_crossed` event can still record its split when it arrives. Terminal actions still
+`gate_crossed` event can still record its split when it arrives.
+Declining an exit offer likewise holds the action boundary through an authoritative snapshot, so
+the next player intent cannot reuse the revision consumed by the decline. Terminal actions still
 rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`: Wind Down and
 offer acceptance remain disabled until the player subscription reports `transport_recovered`, and
 disable again on close, drain, or resync. Once `run_ended` arrives, the trailing command receipt

@@ -263,7 +263,9 @@ it.skipIf(typeof document === "undefined")("records immutable gate timing locall
   expect(target.textContent).toContain("Garage");
   expect([...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")?.disabled).toBe(false);
   runtime.snapshotCalls = 0;
-  runtime.listener?.({ kind: "event", revision: 3, scope: "company", value: ended }); flushSync();
+  // Centrifuge may deliver the ordered terminal event and its trailing receipt
+  // synchronously inside one browser message callback, before Svelte flushes.
+  runtime.listener?.({ kind: "event", revision: 3, scope: "company", value: ended });
   runtime.current = { ...snapshot, revision: 4, run: { ...snapshot.run, run_seq: 2 } };
   runtime.listener?.({ kind: "receipt" });
   runtime.listener?.({ kind: "event", revision: 4, scope: "company", value: { ...offer, cursor: 4 } });
@@ -289,9 +291,15 @@ it.skipIf(typeof document === "undefined")("replays a v1 bootstrap receipt fail-
   expect(sign.disabled).toBe(false);
   sign.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
   expect(runtime.requests[0]).toMatchObject({ kind: "accept_exit_offer", expected_founder_revision: 1, offer_id: offer.payload.offer_id });
-  decline.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  runtime.current = { ...snapshot, revision: 2 };
+  runtime.snapshotCalls = 0;
+  decline.click();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  flushSync();
   expect(runtime.requests[1]).toMatchObject({ kind: "decline_exit_offer", offer_id: offer.payload.offer_id });
   expect(runtime.requests[1]).not.toHaveProperty("expected_founder_revision");
+  expect(runtime.snapshotCalls).toBe(1);
   await unmount(app); target.remove();
 });
 

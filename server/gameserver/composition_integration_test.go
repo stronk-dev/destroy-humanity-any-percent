@@ -724,6 +724,10 @@ func TestComposedAccountFamilyRevocationRevalidatesSocketsIntegration(t *testing
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
+	operationRegistry, err := operations.NewRegistry(db)
+	if err != nil {
+		t.Fatal(err)
+	}
 	const cleanDatabase = `TRUNCATE bootstrap_receipts,accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
 	if _, err := db.ExecContext(ctx, cleanDatabase); err != nil {
 		t.Fatal(err)
@@ -739,6 +743,7 @@ func TestComposedAccountFamilyRevocationRevalidatesSocketsIntegration(t *testing
 		ActivityBracket: "activity.standard", Clock: time.Now,
 		SigningKeys:   account.SigningKeys{CurrentID: "composition-revocation", Current: bytes.Repeat([]byte{0x66}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-revocation", Current: bytes.Repeat([]byte{0x67}, 32)},
+		Operations:    operationRegistry,
 	})
 	if err != nil {
 		t.Fatal(err)

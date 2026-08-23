@@ -96,6 +96,10 @@ export function createBrowserGameUIRuntime(
     return { Authorization: `Bearer ${current.accessToken}`, "Content-Type": "application/json" };
   };
   const rememberSnapshot = (value: ParsedGameUISnapshot): ParsedGameUISnapshot => {
+    if (latestSnapshot && "founder_revision" in latestSnapshot && "founder_revision" in value &&
+        (value.revision < latestSnapshot.revision || value.founder_revision < latestSnapshot.founder_revision)) {
+      return latestSnapshot;
+    }
     latestSnapshot = value;
     activeCursor?.reset("company", value.revision);
     activeCursor?.reset("founder", "founder_revision" in value ? value.founder_revision : 0);
@@ -176,6 +180,8 @@ export function createBrowserGameUIRuntime(
       const consumeEnvelope = (channel: string, publication: { data?: unknown; offset?: unknown }): boolean => {
         if (!channels.has(channel) || publication.data === undefined || !Number.isSafeInteger(publication.offset) || (publication.offset as number) < 0) return false;
         const offset = publication.offset as number;
+        const priorPosition = positions[channel];
+        if (offset > 0 && priorPosition && offset <= priorPosition.offset) return true;
         let raw = publication.data;
         if (typeof raw === "string") raw = JSON.parse(raw);
         const envelope = decodeTransportEnvelope(raw);
@@ -191,15 +197,15 @@ export function createBrowserGameUIRuntime(
         if (envelope.kind === "event") {
           const disposition = cursor.event(envelope);
           if (disposition === "resync_required") { authoritativeResync(); return true; }
-          if (disposition === "deliver") {
+          const event = decodeGameUIEvent(envelope);
+          const successorTerminal = disposition === "duplicate" && event?.kind === "run_ended" && latestSnapshot !== undefined &&
+            latestSnapshot.run.founder_id === event.payload.founder_id && latestSnapshot.run.run_seq === event.payload.run_id.run_seq + 1;
+          if (disposition === "deliver" || successorTerminal) {
             const scope = envelope.payload.scope as "company" | "founder";
             if (envelope.payload.cursor_effect === "historical") {
               listener({ kind: "historical_event", revision: envelope.rev, scope, eventID: envelope.payload.event_id as string,
                 eventKind: envelope.payload.kind as string, value: envelope.payload.payload as Readonly<Record<string, unknown>> });
-            } else {
-              const event = decodeGameUIEvent(envelope);
-              if (event) listener({ kind: "event", revision: envelope.rev, scope, value: event });
-            }
+            } else if (event) listener({ kind: "event", revision: envelope.rev, scope, value: event });
           }
         } else if (envelope.kind === "receipt") {
           listener({ kind: "receipt" });

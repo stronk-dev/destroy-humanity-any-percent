@@ -192,6 +192,28 @@ function receivedLifecycleKinds(frames) {
   return frames.flatMap((frame) => kinds.filter((kind) => frame.includes(`\\"kind\\":\\"${kind}\\"`) || frame.includes(`"kind":"${kind}"`)));
 }
 
+function receivedPlayerCoordinates(frames, channel) {
+  const coordinates = [];
+  const record = (publication) => {
+    if (!publication || typeof publication !== "object") return;
+    let envelope = publication.data;
+    if (typeof envelope === "string") {
+      try { envelope = JSON.parse(envelope); } catch { return; }
+    }
+    if (envelope?.ch !== channel) return;
+    coordinates.push({ envelope_kind: envelope.kind, event_kind: envelope.payload?.kind, offset: publication.offset, revision: envelope.rev });
+  };
+  for (const frame of frames) {
+    for (const line of String(frame).split("\n").filter(Boolean)) {
+      let value;
+      try { value = JSON.parse(line); } catch { continue; }
+      if (value?.push?.channel === channel) record(value.push.pub);
+      if (value?.subscribe && Array.isArray(value.subscribe.publications)) value.subscribe.publications.forEach(record);
+    }
+  }
+  return coordinates;
+}
+
 try {
   await waitForReady();
   vite = await createServer({
@@ -223,7 +245,15 @@ try {
   const pageErrors = [];
   const websocketFrames = [];
   const websocketReceivedFrames = [];
+  const snapshotRevisions = [];
   page.on("pageerror", (error) => pageErrors.push(error));
+  page.on("response", async (response) => {
+    if (new URL(response.url()).pathname !== "/api/v1/founder/state" || response.status() !== 200) return;
+    try {
+      const body = await response.json();
+      snapshotRevisions.push({ founder_revision: body?.founder_revision, revision: body?.revision, run_seq: body?.run?.run_seq });
+    } catch { snapshotRevisions.push({ invalid_json: true }); }
+  });
   page.on("websocket", (socket) => {
     socket.on("framesent", (event) => websocketFrames.push(String(event.payload)));
     socket.on("framereceived", (event) => websocketReceivedFrames.push(String(event.payload)));
@@ -319,7 +349,7 @@ try {
   } catch (error) {
     const finalSurface = await page.locator("main").getAttribute("data-surface");
     const playerFrames = websocketReceivedFrames.filter((frame) => frame.includes(`player:${liveSnapshot.body.run.founder_id}`));
-    throw new Error(`first terminal did not render; command=${JSON.stringify(receiptCoordinate(firstExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))}`, { cause: error });
+    throw new Error(`first terminal did not render; command=${JSON.stringify(receiptCoordinate(firstExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))} player_coordinates=${JSON.stringify(receivedPlayerCoordinates(websocketReceivedFrames, playerChannel))} snapshots=${JSON.stringify(snapshotRevisions)}`, { cause: error });
   }
   await page.getByText("Your First Company Failed", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
@@ -345,7 +375,7 @@ try {
   } catch (error) {
     const finalSurface = await page.locator("main").getAttribute("data-surface");
     const playerFrames = websocketReceivedFrames.filter((frame) => frame.includes(`player:${liveSnapshot.body.run.founder_id}`));
-    throw new Error(`second terminal did not render; command=${JSON.stringify(receiptCoordinate(secondExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))}`, { cause: error });
+    throw new Error(`second terminal did not render; command=${JSON.stringify(receiptCoordinate(secondExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))} player_coordinates=${JSON.stringify(receivedPlayerCoordinates(websocketReceivedFrames, playerChannel))} snapshots=${JSON.stringify(snapshotRevisions)}`, { cause: error });
   }
   await page.getByText("The Company Has Exited", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
