@@ -1440,3 +1440,30 @@ creation gate's expected class with the returned header's own value made
 as scheduled recovery backup`; restoring the caller-bound value returned the cold release/backup
 packages green. Root vet and `git diff --check` pass. No real host state was observed, so 25/43
 remains the runtime count.
+
+## 2026-08-23 — DP-F2 predeclaration: destructive empty/populated recovery producer
+
+`deployment-rehearsal recover-empty --config=<private path>` will consume the installed candidate
+after the browser population, require a genuinely populated semantic identity, create its encrypted
+scheduled backup, declare the incident, stop the stack, remove the Postgres volume, start only the
+candidate gameserver/Caddy core to migrate and seed a genuinely empty player database, and require
+the strict empty identity. It then backs up that empty population, destroys the volume again,
+restores into the clean target, restarts the core and requires complete identity equality. The core
+start deliberately excludes the continuously scheduled backup worker so the observed backup cannot
+race an untracked second writer.
+
+`deployment-rehearsal recover-populated` will consume only that strict private checkpoint, destroy
+the empty-restored volume, restore the exact populated backup, restart and verify manifest/epoch/
+artifact and semantic identity, then complete the authenticated Caddy smoke. It derives RPO from
+the populated backup completion to the declared incident and RTO from restore start to smoke pass,
+uses `deploymentbackup.MeasureObjectives`, and exclusively writes the retained typed objective
+observation. The post-restore smoke may create new session/player state only after before/after
+identity equality has been established.
+
+Exact paths are a new `server/deploymentrehearsal/recovery.go` and tests, the rehearsal CLI and
+Make lanes, a production `DockerRuntime.StartRecoveryCore` adapter plus focused test, canonical
+docs and this log. Tests inject state transitions but retain strict bundle/header/checkpoint/
+observation validation. Failure, wrong population, wrong backup class/manifest/path, incomplete
+checkpoint, identity mismatch, objective overrun and output overwrite all reject. The discriminator
+will neutralize the populated identity comparison and require its mismatch fixture to fail. This
+constructs the producer only; no local/macOS execution counts toward the Linux R-006 25/43 state.
