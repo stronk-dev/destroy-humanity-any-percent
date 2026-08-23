@@ -145,16 +145,19 @@ a successfully prepared named negative fixture that reached its gate and was rej
 input, setup failure and an unimplemented population exit `2`. This prevents a missing file,
 unsupported check or broken probe from satisfying a negative row just because it failed. The
 current fixed probes cover the intact six-image/SBOM/license/provenance population, eight exact
-bundle mutations, three production config/secret matrices, a public-metrics-route severing and
-seeded source/image secret detection.
+bundle mutations, three production config/secret matrices, a public-metrics-route severing,
+seeded source/image secret detection, the clean-host/source-checkout evidence boundary, alert and
+journal evidence severings, incomplete/guarded observation and the RPO/RTO limits.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and
 invalid origin/proxy variant to reject. The public-metrics probe first rebinds its changed Caddyfile
 in the manifest so it reaches the semantic route validator rather than passing on an unrelated
 hash mismatch. Bundle mutation uses a private temporary hardlink tree, never edits the retained
-bundle, and a cleanup failure invalidates the outcome. Runtime, browser, recovery, rotation and
-operations populations remain DP-F2 work and are not inferred from these package checks.
+bundle, and a cleanup failure invalidates the outcome. The typed host, alert, journal and objective
+negatives exercise their production evidence validators; they are falsifiers, not claims that a
+clean host or runtime operation has been observed. Positive runtime, browser, recovery, rotation
+and operations populations remain DP-F2 work and are not inferred from these package checks.
 
 The seeded-source probe scans a valid tracked-file fixture; the seeded-image probe scans a valid
 tar member rather than relying on a malformed archive to fail. Each requires exactly the scanner's

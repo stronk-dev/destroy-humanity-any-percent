@@ -1058,3 +1058,30 @@ This completes the non-circular mechanism but does not count the real
 `forged_successful_evidence` population: it must run after the exact 42-row R-006 base exists. The
 implemented real-probe count therefore remains 15/43, and the retained candidate must still be
 rebuilt after the full DP-F2 command surface stabilizes.
+
+## 2026-08-23 — DP-F2 typed evidence-boundary probes
+
+Six additional negative populations now have fixed native-helper probes. `source_checkout_present`
+requires a valid clean Linux/amd64 host baseline before severing the source-checkout-absent field.
+The two alert rows start from all seven canonical families delivered in both firing and resolved
+states, then sever receipt, rule-fixture or resolution evidence. The two journal rows start from a
+complete privacy-preserving fourteen-day-capacity observation, then force early eviction, shortened
+retention, incomplete termination or guard exhaustion. `rpo_or_rto_above_bound` starts from a
+time-consistent objective record and independently exceeds the ruled six-hour RPO and four-hour RTO.
+Every probe calls the production evidence validator; setup and an invalid positive baseline remain
+exit two, an accepted severing remains exit zero, and only the named rejection returns exit one.
+
+The native retained-bundle helper executed all six populations and each returned exact exit one
+with `fixture_rejected`. Cold focused tests passed for `deploymentrehearsal`, `operations` and the
+rehearsal command, and root `make vet` passed. The direct root `go vet` attempt and a nonexistent
+`make lint-go` target were invocation errors and are not cited as evidence. For discrimination,
+the objective probe's mutation-result check was temporarily disabled; its sleeping-validator
+subtest then failed with `sleeping objective gate satisfied negative`. Restoring the check returned
+the complete typed-probe population green. Permanent injected sleeping validators cover the host,
+alert, journal and objective gates independently.
+
+This brings the implemented probe count to 21/43. These are typed negative fixtures, not runtime
+claims: no clean-host installation, browser flow, database recovery, release/rollback, rotation,
+positive alert delivery, journal measurement or objective observation is marked complete. The
+retained candidate also predates this command surface and must be rebuilt again after DP-F2
+construction stabilizes.

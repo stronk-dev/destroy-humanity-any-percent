@@ -7,8 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"cloud-clicker/server/deploymentconfig"
+	"cloud-clicker/server/operations"
 	"cloud-clicker/server/releasepackage"
 )
 
@@ -151,6 +153,53 @@ func TestSeededSecretProbesRequireAnActualScannerFinding(t *testing.T) {
 				t.Fatalf("sleeping secret gate satisfied row: outcome=%d err=%v", outcome, err)
 			}
 		})
+	}
+}
+
+func TestTypedHostAlertJournalAndObjectiveProbesDiscriminate(t *testing.T) {
+	for _, population := range []string{"source_checkout_present", "health_only_alert_receiver", "severed_alert_rule_or_counter",
+		"early_journal_eviction", "incomplete_or_guarded_observation", "rpo_or_rto_above_bound"} {
+		t.Run(population, func(t *testing.T) {
+			request := validProbeDirectories(t, population)
+			outcome, err := RunProbe(request)
+			if err != nil || outcome != ProbeRejected {
+				t.Fatalf("typed probe outcome=%d err=%v", outcome, err)
+			}
+		})
+	}
+
+	if outcome, err := runHostNegativeProbe(func(Host) error { return nil }); err != nil || outcome != ProbeAccepted {
+		t.Fatalf("sleeping host gate satisfied negative: outcome=%d err=%v", outcome, err)
+	}
+	alertCalls := 0
+	if outcome, err := runAlertNegativeProbe("health_only_alert_receiver", func(value operations.AlertDeliveryObservation) error {
+		alertCalls++
+		if alertCalls == 2 {
+			return nil
+		}
+		return operations.ValidateAlertDeliveryObservation(value)
+	}); err != nil || outcome != ProbeAccepted {
+		t.Fatalf("sleeping alert gate satisfied negative: outcome=%d err=%v", outcome, err)
+	}
+	journalCalls := 0
+	if outcome, err := runJournalNegativeProbe("early_journal_eviction", func(value operations.JournalObservation) error {
+		journalCalls++
+		if journalCalls == 2 {
+			return nil
+		}
+		return operations.ValidateJournalObservation(value)
+	}); err != nil || outcome != ProbeAccepted {
+		t.Fatalf("sleeping journal gate satisfied negative: outcome=%d err=%v", outcome, err)
+	}
+	objectiveCalls := 0
+	if outcome, err := runObjectiveNegativeProbe(func(value Objectives, start, end time.Time) error {
+		objectiveCalls++
+		if objectiveCalls == 2 {
+			return nil
+		}
+		return validateObjectives(value, start, end)
+	}); err != nil || outcome != ProbeAccepted {
+		t.Fatalf("sleeping objective gate satisfied negative: outcome=%d err=%v", outcome, err)
 	}
 }
 

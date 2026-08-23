@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/deploymentconfig"
+	"cloud-clicker/server/operations"
 	"cloud-clicker/server/releasepackage"
 )
 
@@ -73,11 +74,126 @@ func RunProbe(request ProbeRequest) (ProbeOutcome, error) {
 	if request.Population == "seeded_source_secret" || request.Population == "seeded_image_secret" {
 		return runSecretNegativeProbe(request, releasepackage.RequireNoSecrets)
 	}
+	switch request.Population {
+	case "source_checkout_present":
+		return runHostNegativeProbe(validateHost)
+	case "health_only_alert_receiver", "severed_alert_rule_or_counter":
+		return runAlertNegativeProbe(request.Population, operations.ValidateAlertDeliveryObservation)
+	case "early_journal_eviction", "incomplete_or_guarded_observation":
+		return runJournalNegativeProbe(request.Population, operations.ValidateJournalObservation)
+	case "rpo_or_rto_above_bound":
+		return runObjectiveNegativeProbe(validateObjectives)
+	}
 	mutation, ok := bundleMutations[request.Population]
 	if !ok {
 		return ProbeAccepted, ErrInvalid
 	}
 	return runBundleMutationProbe(request, mutation, releasepackage.ValidateBundle)
+}
+
+func runHostNegativeProbe(validate func(Host) error) (ProbeOutcome, error) {
+	valid := Host{OS: "linux", Architecture: "amd64", Distribution: "debian-13", Kernel: "6.12.0",
+		DockerEngine: "28.4.0", DockerCompose: "2.39.4", CleanStart: true, SourceCheckoutAbsent: true, ProviderCredentialsAbsent: true}
+	if validate(valid) != nil {
+		return ProbeAccepted, ErrInvalid
+	}
+	valid.SourceCheckoutAbsent = false
+	if validate(valid) != nil {
+		return ProbeRejected, nil
+	}
+	return ProbeAccepted, nil
+}
+
+func runAlertNegativeProbe(population string, validate func(operations.AlertDeliveryObservation) error) (ProbeOutcome, error) {
+	start := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	alerts := make([]operations.AlertObservation, len(operations.ReleaseFloorAlertNames))
+	for index, name := range operations.ReleaseFloorAlertNames {
+		alerts[index] = operations.AlertObservation{Name: name, FiringDelivered: true, ResolvedDelivered: true}
+	}
+	valid := operations.AlertDeliveryObservation{SchemaVersion: 1, ManifestSHA256: hashBytes([]byte("alert-probe")), StartedAt: start,
+		CompletedAt: start.Add(time.Second), RuleFixturesPassed: true, Alerts: alerts, ObjectiveCompleted: true}
+	if validate(valid) != nil {
+		return ProbeAccepted, ErrInvalid
+	}
+	mutations := []func(*operations.AlertDeliveryObservation){}
+	if population == "health_only_alert_receiver" {
+		mutations = append(mutations, func(value *operations.AlertDeliveryObservation) { value.Alerts[0].FiringDelivered = false })
+	} else if population == "severed_alert_rule_or_counter" {
+		mutations = append(mutations,
+			func(value *operations.AlertDeliveryObservation) { value.RuleFixturesPassed = false },
+			func(value *operations.AlertDeliveryObservation) { value.Alerts[0].ResolvedDelivered = false })
+	} else {
+		return ProbeAccepted, ErrInvalid
+	}
+	for _, mutate := range mutations {
+		value := valid
+		value.Alerts = append([]operations.AlertObservation(nil), valid.Alerts...)
+		mutate(&value)
+		if validate(value) == nil {
+			return ProbeAccepted, nil
+		}
+	}
+	return ProbeRejected, nil
+}
+
+func runJournalNegativeProbe(population string, validate func(operations.JournalObservation) error) (ProbeOutcome, error) {
+	start := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	valid := operations.JournalObservation{SchemaVersion: 1, Population: "r006-release-workload", StartedAt: start,
+		CompletedAt: start.Add(time.Second), ObjectiveCompleted: true, Samples: 2, ObservedBytes: 100,
+		PeakBytesPerDay: 100, FilesystemBytes: 10_000, JournalMaxUseBytes: 1_400,
+		JournalRetentionSeconds: int64(operations.JournalRetention / time.Second), StorageAlertFraction: 0.8}
+	if validate(valid) != nil {
+		return ProbeAccepted, ErrInvalid
+	}
+	mutations := []func(*operations.JournalObservation){}
+	if population == "early_journal_eviction" {
+		mutations = append(mutations,
+			func(value *operations.JournalObservation) { value.JournalMaxUseBytes = 1_300 },
+			func(value *operations.JournalObservation) { value.JournalRetentionSeconds-- })
+	} else if population == "incomplete_or_guarded_observation" {
+		mutations = append(mutations,
+			func(value *operations.JournalObservation) { value.ObjectiveCompleted = false },
+			func(value *operations.JournalObservation) { value.GuardExhausted = true })
+	} else {
+		return ProbeAccepted, ErrInvalid
+	}
+	for _, mutate := range mutations {
+		value := valid
+		mutate(&value)
+		if validate(value) == nil {
+			return ProbeAccepted, nil
+		}
+	}
+	return ProbeRejected, nil
+}
+
+func runObjectiveNegativeProbe(validate func(Objectives, time.Time, time.Time) error) (ProbeOutcome, error) {
+	start := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	end := start.Add(12 * time.Hour)
+	incident := start.Add(7 * time.Hour)
+	valid := Objectives{IncidentAt: incident, NewestValidBackupAt: incident.Add(-time.Hour), RestoreStartedAt: incident.Add(time.Minute),
+		AuthenticatedSmokeAt: incident.Add(2 * time.Minute), RPOSeconds: 3600, RTOSeconds: 60, RestoredIdentityMatch: true}
+	if validate(valid, start, end) != nil {
+		return ProbeAccepted, ErrInvalid
+	}
+	mutations := []func(*Objectives){
+		func(value *Objectives) {
+			value.NewestValidBackupAt = value.IncidentAt.Add(-MaximumRPO - time.Second)
+			value.RPOSeconds = int64((MaximumRPO + time.Second) / time.Second)
+		},
+		func(value *Objectives) {
+			value.AuthenticatedSmokeAt = value.RestoreStartedAt.Add(MaximumRTO + time.Second)
+			value.RTOSeconds = int64((MaximumRTO + time.Second) / time.Second)
+		},
+	}
+	for _, mutate := range mutations {
+		value := valid
+		mutate(&value)
+		if validate(value, start, end) == nil {
+			return ProbeAccepted, nil
+		}
+	}
+	return ProbeRejected, nil
 }
 
 type secretGate func([]releasepackage.SecretFinding) error
