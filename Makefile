@@ -110,6 +110,7 @@ test-deployment-operations:
 # destructive clean-host execution requires an explicitly authorized host.
 test-deployment-rehearsal:
 	$(MAKE) test-go GO_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal ./deploymentrelease ./cmd/deployment-release' GO_TEST_FLAGS='-count=1'
+	cd server && go run ./cmd/deployment-rehearsal validate-build --record=../planning/deployment-foundation/release-builds/previous.json
 
 # Validate the complete embedded migration chain on real Postgres while keeping
 # the scope focused on the package that owns it. Migration-named unit probes and
@@ -265,7 +266,12 @@ assemble-release-bundle:
 		-docker-version="$(RELEASE_DOCKER_VERSION)" -compose-version="$(RELEASE_COMPOSE_VERSION)" \
 		-alertmanager-image="$(ALERTMANAGER_IMAGE)" -caddy-image="$(CADDY_IMAGE)" -gameserver-image="$(GAMESERVER_IMAGE)" -node-exporter-image="$(NODE_EXPORTER_IMAGE)" -postgres-image="$(POSTGRES_IMAGE)" -prometheus-image="$(PROMETHEUS_IMAGE)" \
 		-alertmanager-config-id="$(ALERTMANAGER_CONFIG_ID)" -caddy-config-id="$(CADDY_CONFIG_ID)" -gameserver-config-id="$(GAMESERVER_CONFIG_ID)" -node-exporter-config-id="$(NODE_EXPORTER_CONFIG_ID)" -postgres-config-id="$(POSTGRES_CONFIG_ID)" -prometheus-config-id="$(PROMETHEUS_CONFIG_ID)" \
-		-alertmanager-sbom="$(ALERTMANAGER_SBOM)" -caddy-sbom="$(CADDY_SBOM)" -gameserver-sbom="$(GAMESERVER_SBOM)" -node-exporter-sbom="$(NODE_EXPORTER_SBOM)" -postgres-sbom="$(POSTGRES_SBOM)" -prometheus-sbom="$(PROMETHEUS_SBOM)"
+		-alertmanager-sbom="$(if $(filter /%,$(ALERTMANAGER_SBOM)),$(ALERTMANAGER_SBOM),../$(ALERTMANAGER_SBOM))" \
+		-caddy-sbom="$(if $(filter /%,$(CADDY_SBOM)),$(CADDY_SBOM),../$(CADDY_SBOM))" \
+		-gameserver-sbom="$(if $(filter /%,$(GAMESERVER_SBOM)),$(GAMESERVER_SBOM),../$(GAMESERVER_SBOM))" \
+		-node-exporter-sbom="$(if $(filter /%,$(NODE_EXPORTER_SBOM)),$(NODE_EXPORTER_SBOM),../$(NODE_EXPORTER_SBOM))" \
+		-postgres-sbom="$(if $(filter /%,$(POSTGRES_SBOM)),$(POSTGRES_SBOM),../$(POSTGRES_SBOM))" \
+		-prometheus-sbom="$(if $(filter /%,$(PROMETHEUS_SBOM)),$(PROMETHEUS_SBOM),../$(PROMETHEUS_SBOM))"
 
 release-secret-scan:
 	cd server && go run ./cmd/release-secret-scan -root=.. \

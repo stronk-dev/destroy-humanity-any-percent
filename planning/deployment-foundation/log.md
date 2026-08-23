@@ -694,3 +694,23 @@ registry scans normalized to byte-identical SPDX JSON, both SHA-256
 timestamp. Focused cold package tests and vet passed. This verifies the generator mechanism only;
 the exact six-image candidate/previous SBOM set and byte-identical release bundles remain DP-F2
 work, and no R-006 or release claim follows.
+
+The retained previous rehearsal bundle is now built at ignored local path
+`.cache/release/previous/bundle` from clean source commit
+`44a4a72a52ef1b299075389bfa5f365baa00e4c8` as semantic version
+`0.1.0-preview.0`. Its manifest contains 70 artifacts and hashes to
+`sha256:75fafa3126c9372fe5c70da948d27962f22ca75e805da95fdfd2651095ed169d`; its
+offline gameserver archive hashes to
+`sha256:701e60d11106d7dc432eb6416b19b5d4ebff5c98db32f5f627626f9e7fe0b006`.
+An independent cold rebuild regenerated five Linux binaries, the client, metadata, runtime closure,
+gameserver archive and all six real Syft package graphs. The complete accepted bundle trees are
+byte-identical; the raw Syft documents differ in their nondeterministic headers while all six
+normalized documents match byte-for-byte, demonstrating that the normalizer removes only the
+known nondeterminism rather than reusing first-run inputs. The strict, trackable build record is
+`release-builds/previous.json` and passes `deployment-rehearsal validate-build`.
+
+The first assembly attempt correctly failed before a manifest existed because the Make wrapper
+resolved relative SBOM paths from `server/` instead of the repository root. Its partial directory
+was preserved as `.cache/release/previous/bundle.failed-relative-sbom-path`; the wrapper now applies
+the same root-relative conversion as every other build input, and assembly into a new empty
+destination passed. This is a build-system defect found and fixed, not a softened input rule.

@@ -9,14 +9,25 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 || os.Args[1] != "validate" {
+	if len(os.Args) < 2 {
 		fail("usage")
 	}
-	validated, err := runValidate(os.Args[2:])
-	if err != nil {
-		fail("invalid_evidence")
+	switch os.Args[1] {
+	case "validate":
+		validated, err := runValidate(os.Args[2:])
+		if err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Printf("R-006 evidence valid: run=%s manifest=%s\n", validated.RunID, validated.ManifestSHA256)
+	case "validate-build":
+		validated, err := runValidateBuild(os.Args[2:])
+		if err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Printf("release build valid: role=%s manifest=%s\n", validated.Role, validated.ManifestSHA256)
+	default:
+		fail("usage")
 	}
-	fmt.Printf("R-006 evidence valid: run=%s manifest=%s\n", validated.RunID, validated.ManifestSHA256)
 }
 
 func runValidate(args []string) (deploymentrehearsal.Evidence, error) {
@@ -30,6 +41,15 @@ func runValidate(args []string) (deploymentrehearsal.Evidence, error) {
 		return deploymentrehearsal.Evidence{}, err
 	}
 	return validated, nil
+}
+
+func runValidateBuild(args []string) (deploymentrehearsal.BuildRecord, error) {
+	set := flag.NewFlagSet("validate-build", flag.ContinueOnError)
+	record := set.String("record", "", "exact release build record JSON")
+	if set.Parse(args) != nil || set.NArg() != 0 || *record == "" {
+		return deploymentrehearsal.BuildRecord{}, deploymentrehearsal.ErrInvalid
+	}
+	return deploymentrehearsal.LoadBuildRecord(*record)
 }
 
 func fail(class string) {
