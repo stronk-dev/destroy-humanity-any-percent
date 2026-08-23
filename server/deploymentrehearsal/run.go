@@ -11,6 +11,7 @@ import (
 
 	"cloud-clicker/server/deploymentbrowser"
 	"cloud-clicker/server/operations"
+	"cloud-clicker/server/releasepackage"
 )
 
 var requiredRunArtifactFiles = map[string]string{
@@ -136,6 +137,14 @@ func validateRunArtifacts(evidence Evidence, directory string) error {
 	if err != nil || len(entries) != len(requiredRunArtifactFiles) {
 		return ErrInvalid
 	}
+	candidateManifestBytes, err := os.ReadFile(filepath.Join(directory, requiredRunArtifactFiles["candidate_manifest"]))
+	if err != nil {
+		return ErrInvalid
+	}
+	candidateSourceCommit, err := manifestSourceCommit(candidateManifestBytes)
+	if err != nil {
+		return ErrInvalid
+	}
 	fileToName := map[string]string{}
 	for name, file := range requiredRunArtifactFiles {
 		fileToName[file] = name
@@ -162,14 +171,14 @@ func validateRunArtifacts(evidence Evidence, directory string) error {
 			(name == "previous_manifest" && evidence.PreviousManifestSHA256 != hashBytes(data)) {
 			return ErrInvalid
 		}
-		if err := validateTypedRunArtifact(name, data, evidence); err != nil {
+		if err := validateTypedRunArtifact(name, data, evidence, candidateSourceCommit); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func validateTypedRunArtifact(name string, data []byte, evidence Evidence) error {
+func validateTypedRunArtifact(name string, data []byte, evidence Evidence, candidateSourceCommit string) error {
 	switch name {
 	case "browser_result":
 		result, err := deploymentbrowser.DecodeResult(data)
@@ -181,8 +190,24 @@ func validateTypedRunArtifact(name string, data []byte, evidence Evidence) error
 		if err != nil || observation.StartedAt.Before(evidence.StartedAt) || observation.CompletedAt.After(evidence.CompletedAt) {
 			return ErrInvalid
 		}
+	case "secret_scan":
+		result, err := releasepackage.DecodeSecretScanResult(data)
+		if err != nil || result.ManifestSHA256 != evidence.ManifestSHA256 || result.SourceCommit != candidateSourceCommit ||
+			result.StartedAt.Before(evidence.StartedAt) || result.CompletedAt.After(evidence.CompletedAt) {
+			return ErrInvalid
+		}
 	}
 	return nil
+}
+
+func manifestSourceCommit(data []byte) (string, error) {
+	var manifest struct {
+		SourceCommit string `json:"source_commit"`
+	}
+	if json.Unmarshal(data, &manifest) != nil || !commitPattern.MatchString(manifest.SourceCommit) {
+		return "", ErrInvalid
+	}
+	return manifest.SourceCommit, nil
 }
 
 func decodeCheckResult(data []byte) (CheckResult, error) {

@@ -161,6 +161,14 @@ tar member rather than relying on a malformed archive to fail. Each requires exa
 named sentinel finding before the no-secrets gate may produce exit `1`. A parser/setup error is
 therefore not accepted as secret-detection evidence.
 
+For a release run, `make release-secret-scan` receives the exact candidate manifest hash, candidate
+gameserver archive and an exclusive result path. It scans the real Git-tracked population and
+image, derives the source commit from Git, and writes a strict mode-0600 result containing counts
+and identities but no paths or content. Final evidence rejects a source-only scan, findings,
+incomplete/guarded state, a different manifest or source commit, unknown fields and output
+overwrite. The ordinary developer invocation may still print a non-evidentiary scan result without
+creating an R-006 artifact.
+
 Full bundle validation re-runs the semantic validators for the rendered Compose topology, public
 Caddy routes and gameserver Dockerfile after checking manifest byte equality. Assembly-time
 validation alone is insufficient because a later re-signed bundle must not be able to retain valid

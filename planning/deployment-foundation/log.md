@@ -954,3 +954,22 @@ negative failed with `forged artifact/step accepted`. Restoring typed validation
 population green. A separately rehashed invalid journal document also rejects. Alert-delivery,
 secret-scan and supply-chain artifacts still need owning structured producers/decoders, so the
 forged-evidence population and 15/43 total remain unchanged.
+
+## 2026-08-23 — DP-F2 structured secret-scan evidence
+
+`release-secret-scan` can now write an exclusive mode-0600 result for the final run. The typed
+result records the exact candidate manifest, Git-derived source commit, measurement interval,
+tracked-file count, mandatory image-archive inclusion, zero findings and completed/non-guarded
+termination. The scanner still uses the existing source and Docker-archive rules; it does not
+serialize matched paths or bytes. The non-evidentiary developer console mode remains available,
+but final rehearsal validation accepts only the structured source-plus-image population and binds
+it to the candidate manifest's embedded source commit.
+
+Cold tests passed for `releasepackage`, the scanner command and `deploymentrehearsal`; focused vet
+passed. The discriminator rehashed an invalid secret-scan summary into the evidence, then replaced
+only the typed secret validation with an unconditional return: the permanent negative failed with
+`forged artifact/step accepted`. Restoring validation returned the full population green. A first
+mutation removed the entire case and failed at compile time due to the then-unused package import;
+it is not cited as the discriminator. The retained candidate predates this producer, so no final
+secret artifact is claimed and the candidate must be rebuilt after producer construction ends.
+Alert-delivery and supply-chain typed producers remain open; the probe count remains 15/43.

@@ -303,7 +303,9 @@ assemble-release-bundle:
 
 release-secret-scan:
 	cd server && go run ./cmd/release-secret-scan -root=.. \
-		$(if $(GAMESERVER_IMAGE_ARCHIVE),-gameserver-archive="$(if $(filter /%,$(GAMESERVER_IMAGE_ARCHIVE)),$(GAMESERVER_IMAGE_ARCHIVE),../$(GAMESERVER_IMAGE_ARCHIVE))",)
+		$(if $(GAMESERVER_IMAGE_ARCHIVE),-gameserver-archive="$(if $(filter /%,$(GAMESERVER_IMAGE_ARCHIVE)),$(GAMESERVER_IMAGE_ARCHIVE),../$(GAMESERVER_IMAGE_ARCHIVE))",) \
+		$(if $(SECRET_SCAN_MANIFEST_SHA256),-manifest-sha256="$(SECRET_SCAN_MANIFEST_SHA256)",) \
+		$(if $(SECRET_SCAN_OUTPUT),-output="$(if $(filter /%,$(SECRET_SCAN_OUTPUT)),$(SECRET_SCAN_OUTPUT),../$(SECRET_SCAN_OUTPUT))",)
 
 vectors:
 	node tools/gen-vectors.mjs

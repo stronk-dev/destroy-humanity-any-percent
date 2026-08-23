@@ -5,11 +5,13 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/deploymentbrowser"
 	"cloud-clicker/server/operations"
+	"cloud-clicker/server/releasepackage"
 )
 
 func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
@@ -129,6 +131,15 @@ func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 			setArtifactDigest(&fixture.evidence, "journal_observation", hashBytes(data))
 			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
 		},
+		"rehashed invalid secret scan": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["secret_scan"])
+			data := []byte(`{"schema_version":1,"objective_completed":true}` + "\n")
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "secret_scan", hashBytes(data))
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
@@ -205,6 +216,7 @@ func boundRunFixture(t *testing.T) boundFixture {
 		t.Fatal(err)
 	}
 	evidence := validEvidence()
+	candidateManifestBytes := []byte(`{"source_commit":"` + strings.Repeat("c", 40) + `"}` + "\n")
 	toolFiles := map[string]string{"deployment-rehearsal": "deployment-rehearsal", "deployment-release": "deployment-release", "browser-driver": "deployment-browser"}
 	for index := range evidence.Tools {
 		data := []byte(evidence.Tools[index].Name + " binary\n")
@@ -216,11 +228,21 @@ func boundRunFixture(t *testing.T) boundFixture {
 	artifactBytes := map[string][]byte{}
 	for name, file := range requiredRunArtifactFiles {
 		artifactBytes[name] = []byte(name + "\n")
+		if name == "candidate_manifest" {
+			artifactBytes[name] = candidateManifestBytes
+		}
 		if name == "browser_result" {
-			result := deploymentbrowser.Result{SchemaVersion: 1, ManifestSHA256: hashBytes([]byte("candidate_manifest\n")),
+			result := deploymentbrowser.Result{SchemaVersion: 1, ManifestSHA256: hashBytes(candidateManifestBytes),
 				StartedAt: evidence.StartedAt.Add(time.Second), CompletedAt: evidence.StartedAt.Add(2 * time.Second), Surface: "desk",
 				BootstrapCommitted: true, CredentialsPresent: true, WebSocketObserved: true, ManualIntentObserved: true,
 				ManualIntentStatus: 200, ObjectiveCompleted: true}
+			artifactBytes[name], _ = json.Marshal(result)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
+		}
+		if name == "secret_scan" {
+			result := releasepackage.SecretScanResult{SchemaVersion: 1, ManifestSHA256: hashBytes(candidateManifestBytes), SourceCommit: strings.Repeat("c", 40),
+				StartedAt: evidence.StartedAt.Add(5 * time.Second), CompletedAt: evidence.StartedAt.Add(6 * time.Second), TrackedFiles: 100,
+				ImageArchiveScanned: true, ObjectiveCompleted: true}
 			artifactBytes[name], _ = json.Marshal(result)
 			artifactBytes[name] = append(artifactBytes[name], '\n')
 		}
