@@ -140,6 +140,15 @@ func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 			setArtifactDigest(&fixture.evidence, "secret_scan", hashBytes(data))
 			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
 		},
+		"rehashed invalid supply chain": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["supply_chain"])
+			data := []byte(`{"schema_version":1,"objective_completed":true}` + "\n")
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "supply_chain", hashBytes(data))
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
@@ -217,6 +226,22 @@ func boundRunFixture(t *testing.T) boundFixture {
 	}
 	evidence := validEvidence()
 	candidateManifestBytes := []byte(`{"source_commit":"` + strings.Repeat("c", 40) + `"}` + "\n")
+	previousManifestBytes := []byte(`{"source_commit":"` + strings.Repeat("d", 40) + `"}` + "\n")
+	candidateBuild := validBuildRecord()
+	candidateBuild.SchemaVersion = 2
+	candidateBuild.Role = "candidate"
+	candidateBuild.SourceCommit = strings.Repeat("c", 40)
+	candidateBuild.ManifestSHA256 = hashBytes(candidateManifestBytes)
+	candidateBuild.RebuildManifestSHA256 = candidateBuild.ManifestSHA256
+	candidateBuild.RehearsalImages = []BuildImage{validRehearsalImage()}
+	previousBuild := validBuildRecord()
+	previousBuild.SourceCommit = strings.Repeat("d", 40)
+	previousBuild.ManifestSHA256 = hashBytes(previousManifestBytes)
+	previousBuild.RebuildManifestSHA256 = previousBuild.ManifestSHA256
+	candidateBuildBytes, _ := json.Marshal(candidateBuild)
+	candidateBuildBytes = append(candidateBuildBytes, '\n')
+	previousBuildBytes, _ := json.Marshal(previousBuild)
+	previousBuildBytes = append(previousBuildBytes, '\n')
 	toolFiles := map[string]string{"deployment-rehearsal": "deployment-rehearsal", "deployment-release": "deployment-release", "browser-driver": "deployment-browser"}
 	for index := range evidence.Tools {
 		data := []byte(evidence.Tools[index].Name + " binary\n")
@@ -231,6 +256,15 @@ func boundRunFixture(t *testing.T) boundFixture {
 		if name == "candidate_manifest" {
 			artifactBytes[name] = candidateManifestBytes
 		}
+		if name == "previous_manifest" {
+			artifactBytes[name] = previousManifestBytes
+		}
+		if name == "candidate_build" {
+			artifactBytes[name] = candidateBuildBytes
+		}
+		if name == "previous_build" {
+			artifactBytes[name] = previousBuildBytes
+		}
 		if name == "browser_result" {
 			result := deploymentbrowser.Result{SchemaVersion: 1, ManifestSHA256: hashBytes(candidateManifestBytes),
 				StartedAt: evidence.StartedAt.Add(time.Second), CompletedAt: evidence.StartedAt.Add(2 * time.Second), Surface: "desk",
@@ -243,6 +277,15 @@ func boundRunFixture(t *testing.T) boundFixture {
 			result := releasepackage.SecretScanResult{SchemaVersion: 1, ManifestSHA256: hashBytes(candidateManifestBytes), SourceCommit: strings.Repeat("c", 40),
 				StartedAt: evidence.StartedAt.Add(5 * time.Second), CompletedAt: evidence.StartedAt.Add(6 * time.Second), TrackedFiles: 100,
 				ImageArchiveScanned: true, ObjectiveCompleted: true}
+			artifactBytes[name], _ = json.Marshal(result)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
+		}
+		if name == "supply_chain" {
+			result := SupplyChainResult{SchemaVersion: 1, CandidateManifestSHA256: hashBytes(candidateManifestBytes),
+				PreviousManifestSHA256: hashBytes(previousManifestBytes), CandidateBuildSHA256: hashBytes(candidateBuildBytes),
+				PreviousBuildSHA256: hashBytes(previousBuildBytes), StartedAt: evidence.StartedAt.Add(7 * time.Second),
+				CompletedAt: evidence.StartedAt.Add(8 * time.Second), ProductionImages: 6, RehearsalImages: 1, SBOMDocuments: 8,
+				RootAttributionPresent: true, SiteAttributionPresent: true, SourceAndImageProvenance: true, ObjectiveCompleted: true}
 			artifactBytes[name], _ = json.Marshal(result)
 			artifactBytes[name] = append(artifactBytes[name], '\n')
 		}
@@ -261,6 +304,17 @@ func boundRunFixture(t *testing.T) boundFixture {
 	}
 	evidence.ManifestSHA256 = hashBytes(artifactBytes["candidate_manifest"])
 	evidence.PreviousManifestSHA256 = hashBytes(artifactBytes["previous_manifest"])
+	secretScanDigest := hashBytes(artifactBytes["secret_scan"])
+	var supplyResult SupplyChainResult
+	if json.Unmarshal(artifactBytes["supply_chain"], &supplyResult) != nil {
+		t.Fatal("decode supply fixture")
+	}
+	supplyResult.SecretScanSHA256 = secretScanDigest
+	artifactBytes["supply_chain"], _ = json.Marshal(supplyResult)
+	artifactBytes["supply_chain"] = append(artifactBytes["supply_chain"], '\n')
+	if err := os.WriteFile(filepath.Join(artifactsDirectory, requiredRunArtifactFiles["supply_chain"]), artifactBytes["supply_chain"], 0o600); err != nil {
+		t.Fatal(err)
+	}
 	plan := validExecutionPlan()
 	plan.RunID = evidence.RunID
 	plan.ManifestSHA256 = evidence.ManifestSHA256

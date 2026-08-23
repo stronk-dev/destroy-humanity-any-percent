@@ -17,6 +17,8 @@ import (
 var requiredRunArtifactFiles = map[string]string{
 	"candidate_manifest":  "candidate-manifest.json",
 	"previous_manifest":   "previous-manifest.json",
+	"candidate_build":     "candidate-build.json",
+	"previous_build":      "previous-build.json",
 	"release_ledger":      "release-ledger.jsonl",
 	"rotation_ledger":     "rotation-ledger.jsonl",
 	"backup_header":       "backup-header.json",
@@ -145,6 +147,30 @@ func validateRunArtifacts(evidence Evidence, directory string) error {
 	if err != nil {
 		return ErrInvalid
 	}
+	previousManifestBytes, err := os.ReadFile(filepath.Join(directory, requiredRunArtifactFiles["previous_manifest"]))
+	if err != nil {
+		return ErrInvalid
+	}
+	previousSourceCommit, err := manifestSourceCommit(previousManifestBytes)
+	if err != nil {
+		return ErrInvalid
+	}
+	candidateBuildBytes, err := os.ReadFile(filepath.Join(directory, requiredRunArtifactFiles["candidate_build"]))
+	if err != nil {
+		return ErrInvalid
+	}
+	candidateBuild, err := DecodeBuildRecord(candidateBuildBytes)
+	if err != nil || candidateBuild.Role != "candidate" || candidateBuild.SchemaVersion != 2 || candidateBuild.SourceCommit != candidateSourceCommit || candidateBuild.ManifestSHA256 != hashBytes(candidateManifestBytes) {
+		return ErrInvalid
+	}
+	previousBuildBytes, err := os.ReadFile(filepath.Join(directory, requiredRunArtifactFiles["previous_build"]))
+	if err != nil {
+		return ErrInvalid
+	}
+	previousBuild, err := DecodeBuildRecord(previousBuildBytes)
+	if err != nil || previousBuild.Role != "previous" || previousBuild.SourceCommit != previousSourceCommit || previousBuild.ManifestSHA256 != hashBytes(previousManifestBytes) {
+		return ErrInvalid
+	}
 	fileToName := map[string]string{}
 	for name, file := range requiredRunArtifactFiles {
 		fileToName[file] = name
@@ -193,6 +219,15 @@ func validateTypedRunArtifact(name string, data []byte, evidence Evidence, candi
 	case "secret_scan":
 		result, err := releasepackage.DecodeSecretScanResult(data)
 		if err != nil || result.ManifestSHA256 != evidence.ManifestSHA256 || result.SourceCommit != candidateSourceCommit ||
+			result.StartedAt.Before(evidence.StartedAt) || result.CompletedAt.After(evidence.CompletedAt) {
+			return ErrInvalid
+		}
+	case "supply_chain":
+		result, err := DecodeSupplyChainResult(data)
+		if err != nil || result.CandidateManifestSHA256 != evidence.ManifestSHA256 || result.PreviousManifestSHA256 != evidence.PreviousManifestSHA256 ||
+			result.CandidateBuildSHA256 != artifactDigest(evidence.Artifacts, "candidate_build") ||
+			result.PreviousBuildSHA256 != artifactDigest(evidence.Artifacts, "previous_build") ||
+			result.SecretScanSHA256 != artifactDigest(evidence.Artifacts, "secret_scan") ||
 			result.StartedAt.Before(evidence.StartedAt) || result.CompletedAt.After(evidence.CompletedAt) {
 			return ErrInvalid
 		}

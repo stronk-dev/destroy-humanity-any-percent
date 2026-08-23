@@ -41,9 +41,30 @@ func main() {
 			failCode("fixture_rejected", 1)
 		}
 		fmt.Println("deployment rehearsal probe passed")
+	case "supply-chain":
+		if _, err := runSupplyChain(os.Args[2:]); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal supply chain passed")
 	default:
 		fail("usage")
 	}
+}
+
+func runSupplyChain(args []string) (deploymentrehearsal.SupplyChainResult, error) {
+	set := flag.NewFlagSet("supply-chain", flag.ContinueOnError)
+	candidateBundle := set.String("candidate-bundle", "", "exact candidate bundle")
+	previousBundle := set.String("previous-bundle", "", "exact previous bundle")
+	candidateBuild := set.String("candidate-build", "", "candidate independent-build record")
+	previousBuild := set.String("previous-build", "", "previous independent-build record")
+	secretScan := set.String("secret-scan", "", "structured source/image scan")
+	output := set.String("output", "", "exclusive supply-chain result")
+	if set.Parse(args) != nil || set.NArg() != 0 {
+		return deploymentrehearsal.SupplyChainResult{}, deploymentrehearsal.ErrInvalid
+	}
+	return deploymentrehearsal.ObserveSupplyChain(deploymentrehearsal.SupplyChainRequest{CandidateBundle: *candidateBundle,
+		PreviousBundle: *previousBundle, CandidateBuild: *candidateBuild, PreviousBuild: *previousBuild,
+		SecretScan: *secretScan, Output: *output, Now: time.Now})
 }
 
 func runProbe(args []string) (deploymentrehearsal.ProbeOutcome, error) {

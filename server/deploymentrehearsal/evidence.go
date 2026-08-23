@@ -171,6 +171,8 @@ var RequiredPopulations = map[string]string{
 var RequiredArtifacts = []string{
 	"candidate_manifest",
 	"previous_manifest",
+	"candidate_build",
+	"previous_build",
 	"release_ledger",
 	"rotation_ledger",
 	"backup_header",

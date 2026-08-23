@@ -973,3 +973,23 @@ mutation removed the entire case and failed at compile time due to the then-unus
 it is not cited as the discriminator. The retained candidate predates this producer, so no final
 secret artifact is claimed and the candidate must be rebuilt after producer construction ends.
 Alert-delivery and supply-chain typed producers remain open; the probe count remains 15/43.
+
+## 2026-08-23 — DP-F2 derived supply-chain evidence
+
+The supply-chain artifact now has an owning producer instead of being an operator-authored JSON
+summary. `deployment-rehearsal supply-chain` reopens both complete bundles through the production
+validator, decodes both independent-build records, checks their exact manifest and source
+identities, consumes the typed source/image secret scan, and derives the six production images,
+one rehearsal image, eight SBOM documents and both attribution surfaces. It writes only after all
+inputs pass, into an exclusive mode-0600 file. The root Make lane exposes the same direct command.
+
+Candidate and previous build records are now first-class retained run artifacts, increasing the
+artifact directory from ten to twelve files. Final validation decodes both records, requires a
+schema-v2 candidate, binds them to the retained manifest bytes/source commits, then requires the
+supply-chain result to name the hashes of both records, both manifests and the secret scan. Cold
+focused tests passed and the producer rejects a failing bundle validator, mismatched scan identity
+and output overwrite. The discriminator rehashed an invalid supply-chain summary and temporarily
+replaced only its typed validation with an unconditional return; the permanent negative failed
+with `forged artifact/step accepted`. Restoring validation returned the focused population green.
+Alert-delivery is now the last untyped retained artifact. The retained candidate still predates
+these producers, no R-006 run is claimed, and the probe count remains 15/43.

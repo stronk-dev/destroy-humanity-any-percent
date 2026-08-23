@@ -169,6 +169,14 @@ incomplete/guarded state, a different manifest or source commit, unknown fields 
 overwrite. The ordinary developer invocation may still print a non-evidentiary scan result without
 creating an R-006 artifact.
 
+`make deployment-rehearsal-supply-chain` derives the supply-chain result by reopening both exact
+bundles, both independent-build records and the structured secret scan. It requires the candidate
+record's schema-v2 Playwright closure, matching source/manifest identities, six production images,
+one rehearsal image, eight SBOM documents and root plus site attribution. The emitted mode-0600
+result binds the hashes of every input. Final validation also retains and opens both build records,
+so a rehashed supply-chain summary cannot invent an independent rebuild or detach itself from the
+candidate and previous manifests.
+
 Full bundle validation re-runs the semantic validators for the rendered Compose topology, public
 Caddy routes and gameserver Dockerfile after checking manifest byte equality. Assembly-time
 validation alone is insufficient because a later re-signed bundle must not be able to retain valid
@@ -182,8 +190,8 @@ the result directory must contain exactly one mode-0600 result for every canonic
 extra entry. Each result's name, kind, step, command hash, expected exit, completed/non-guarded
 state, observation interval and raw file hash must agree with the plan and its evidence population.
 
-The artifact directory contains exactly ten mode-0600 retained inputs/outputs: candidate and
-previous manifests, release and rotation ledgers, backup header, browser result, alert delivery,
+The artifact directory contains exactly twelve mode-0600 retained inputs/outputs: candidate and
+previous manifests, their independent-build records, release and rotation ledgers, backup header, browser result, alert delivery,
 journal observation, secret scan and supply-chain result. Every raw digest must equal its evidence
 row, and both manifest files must also equal the run's top-level identities. Each of the eleven
 step intervals and input/output hashes is derived from the ordered command and raw-result hashes

@@ -41,3 +41,9 @@ func TestRunProbeDistinguishesInvalidSetupFromExpectedRejection(t *testing.T) {
 		t.Fatalf("missing probe inputs counted as rejection: outcome=%d err=%v", outcome, err)
 	}
 }
+
+func TestRunSupplyChainRequiresExactInputs(t *testing.T) {
+	if _, err := runSupplyChain(nil); !errors.Is(err, deploymentrehearsal.ErrInvalid) {
+		t.Fatalf("empty supply-chain inputs accepted: %v", err)
+	}
+}
