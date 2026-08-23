@@ -714,3 +714,15 @@ resolved relative SBOM paths from `server/` instead of the repository root. Its 
 was preserved as `.cache/release/previous/bundle.failed-relative-sbom-path`; the wrapper now applies
 the same root-relative conversion as every other build input, and assembly into a new empty
 destination passed. This is a build-system defect found and fixed, not a softened input rule.
+
+The fixed-command driver boundary is now implemented for the candidate binary. A strict execution
+plan is bound to both manifest hashes and must enumerate all 43 predeclared positive/negative
+populations in canonical order, with a ruled step, direct argv vector, exact expected exit and
+bounded timeout. Shells and sudo are structurally refused; secret-shaped arguments, output beyond
+one MiB, timeout/guard exhaustion, wrong exit, non-monotonic time and any nonempty result directory
+fail. Each executed check writes one exclusive mode-0600 result containing only command/output
+hashes, time, exit, kind and result. Tests execute the complete 43-command positive/severing
+population and demonstrate that a vacuous negative, shell command, secret argument, missing check,
+wrong order, absent guard, output truncation and overwrite each fail. The DP-F3 plan itself remains
+to be generated after the candidate manifest exists and receives review as a hashed evidence
+artifact; implementation of the driver does not mark any rehearsal population observed.

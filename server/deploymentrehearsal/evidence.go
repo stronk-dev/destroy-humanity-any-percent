@@ -177,6 +177,7 @@ var RequiredArtifacts = []string{
 	"browser_result",
 	"alert_delivery",
 	"journal_observation",
+	"rehearsal_plan",
 	"secret_scan",
 	"supply_chain",
 }

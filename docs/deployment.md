@@ -126,6 +126,15 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
+The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
+evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
+shell—into a new empty result directory. The plan must enumerate every declared positive and
+negative population in canonical order, require exit zero for positive checks and exact exit one
+for severing checks, and give every command a one-second to four-hour guard. Output is capped at
+one MiB per check; timeout, truncation, wrong exit, unsafe shell/sudo invocation, secret-shaped
+argument, prior result byte or non-monotonic observation fails the lane. The final evidence binds
+the reviewed plan hash, so an operator cannot silently substitute a shorter command list.
+
 ## Encrypted Postgres backup and restore
 
 `deployment-backup` is a statically linked Linux/amd64 operator helper included in, hashed by and
