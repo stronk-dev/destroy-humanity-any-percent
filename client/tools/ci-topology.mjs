@@ -44,7 +44,25 @@ function requireExactJobs(source, expected, message) {
   }
 }
 
-export function verifyCITopology(ciSource, maintenanceSource) {
+function requireExactMakeCommand(source, job, target) {
+  const commands = jobSection(source, job)
+    .filter((line) => /^      - run: make\s+/.test(line))
+    .map((line) => line.trim());
+  if (commands.length !== 1 || commands[0] !== `- run: make ${target}`) {
+    throw new Error(`blocking ${job} job must run exactly make ${target}`);
+  }
+}
+
+function requireExactMakeDependencies(source, target, expected) {
+  const matching = lines(source).filter((line) => line.startsWith(`${target}:`));
+  if (matching.length !== 1) throw new Error(`Makefile must define ${target} exactly once`);
+  const dependencies = matching[0].slice(target.length + 1).trim().split(/\s+/).filter(Boolean);
+  if (dependencies.length !== expected.length || dependencies.some((dependency, index) => dependency !== expected[index])) {
+    throw new Error(`${target} must contain exactly the six blocking CI leaf commands in workflow order`);
+  }
+}
+
+export function verifyCITopology(ciSource, maintenanceSource, makeSource) {
   const ciTriggers = triggerSection(ciSource);
   requireLine(ciTriggers, /^  push:\s*$/, "CI must run on push");
   requireLine(ciTriggers, /^  pull_request:\s*$/, "CI must run on pull requests");
@@ -52,6 +70,16 @@ export function verifyCITopology(ciSource, maintenanceSource) {
   requireLine(lines(ciSource), /^permissions:\s*$/, "CI permissions block is missing");
   requireLine(lines(ciSource), /^  contents: read\s*$/, "CI must use read-only contents permission");
   requireExactJobs(ciSource, ["server", "harness", "client", "browser", "game-ui-composed", "schema"], "blocking CI must contain exactly the six governed jobs");
+  const blocking = [
+    ["server", "verify-server-core"],
+    ["harness", "verify-harness-fast"],
+    ["client", "verify-client"],
+    ["browser", "test-browser"],
+    ["game-ui-composed", "test-game-ui-composed"],
+    ["schema", "verify-schema"],
+  ];
+  for (const [job, target] of blocking) requireExactMakeCommand(ciSource, job, target);
+  requireExactMakeDependencies(makeSource, "verify-push", blocking.map(([, target]) => target));
 
   const harness = jobSection(ciSource, "harness");
   requireLine(harness, /^    timeout-minutes: 5\s*$/, "blocking harness must retain the five-minute budget");

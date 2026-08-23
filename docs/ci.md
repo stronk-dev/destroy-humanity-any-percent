@@ -87,11 +87,15 @@ apply the same rules. CI checks out complete history for the server job.
 
 ## Local use
 
-Run the exact aggregate gate from the repository root:
+Run the exact blocking push aggregate from the repository root:
 
 ```sh
-make verify
+make verify-push
 ```
+
+`make verify-push` is mechanically bound to the six workflow leaf commands in job order. The
+broader developer aggregate, `make verify`, retains the exhaustive server harness but does not
+stand in for the composed browser job and must not be cited as push-workflow parity.
 
 The narrower commands are useful while iterating:
 
@@ -107,6 +111,7 @@ make test-game-ui-performance
 make verify-server-ci
 make verify-harness-ci HARNESS_WORKERS=12
 make verify-harness-fast
+make verify-push
 make verify-ci-topology
 make fuzz-ci
 make vectors-check
@@ -152,7 +157,9 @@ runs. Both harness lanes have the same cold package-test contract through `HARNE
 (default `1`). `make verify-ci-topology` rejects exhaustive work in push CI, push triggers in
 maintenance, unbounded/missing observations, success-only uploads, build-cache restoration, and
 missing observation validation. It also binds the exact job populations and observation path; the
-cache check covers both workflows. Use these targets when host-platform success could mask
+cache check covers both workflows. The same guard binds every blocking job to its one Make leaf and
+binds those six leaves, in order, to `make verify-push`; removing, adding, or substituting either
+side fails a permanent negative fixture. Use these targets when host-platform success could mask
 scheduling, architecture, or cold-run behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
