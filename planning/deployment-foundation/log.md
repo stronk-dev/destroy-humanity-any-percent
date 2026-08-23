@@ -1177,3 +1177,22 @@ malformed recipient/server, missing directory, symlink and public-file negatives
 `DisallowUnknownFields` made the strict-input test fail with `unknown field accepted`; restoring it
 returned the full package green. Root vet also passes. This is input authority for later runtime
 orchestration and does not implement or count a population; the total remains 25/43.
+
+## 2026-08-23 — DP-F2 predeclaration: observed-host and objective artifact bindings
+
+Adversarial tracing found that raw command results and twelve retained artifacts are byte-bound,
+but `Evidence.Host` and `Evidence.Objectives` are only shape-validated top-level claims. A dossier
+can currently replace a real machine identity or recovery timestamps with any independently valid
+values and re-encode itself without changing a retained artifact. That is inadmissible for the
+clean-host, RPO and RTO claims.
+
+The next batch adds two owning mode-0600 artifacts: a timed host observation and a timed recovery-
+objective observation. Their strict decoders reject unknown/trailing fields, invalid intervals,
+unsafe host/objective values and incomplete/guarded termination. Final/base validation will require
+their hashes, open their bytes, bind their intervals inside the run and require exact equality with
+the top-level host/objective values. The base artifact count becomes fifteen including the reviewed
+plan; the final sealed count becomes seventeen. Schema, fixtures, docs and seal expectations change
+together. Rehashing different valid host or objective bytes into the dossier must still reject.
+
+The discriminator will temporarily remove one equality binding and require the permanent rehashed-
+artifact negative to fail. This strengthens evidence only; no runtime population is counted.
