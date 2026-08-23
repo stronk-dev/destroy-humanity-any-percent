@@ -1213,3 +1213,26 @@ require rejection. Removing only the host equality comparison made the isolated 
 with `rehashed different host accepted`; restoring it returned both host and objective negatives
 green. Cold rehearsal/command/release-package tests and root vet pass. This adds evidence ownership
 but no observed runtime population; the count remains 25/43.
+
+## 2026-08-23 — DP-F2 predeclaration: semantic operator-record authority
+
+The retained `release_ledger` cannot honestly witness both AC1 and AC3–AC5. AC1 requires a clean
+install of the exact candidate; the release/rollback lifecycle requires an existing previous
+release, a forward previous→candidate transition and a candidate→previous rollback. The production
+ledger correctly closes install authority after its first success, so those are two independent
+operator histories. Combining them in one append-only file would be an impossible timeline.
+
+The next batch adds a separate retained `install_ledger` and strict byte decoders for install/
+release and rotation ledgers plus the backup header. Final validation will require the install
+ledger to contain the exact candidate success, while the lifecycle ledger must contain the exact
+previous install, candidate release and previous rollback in order, with manifest/version/image/
+backup bindings and the seven-day authority. The retained pre-upgrade header must bind the previous
+manifest and the release/rollback backup ID. The rotation ledger must contain governed activation
+and removal for JWT, bootstrap and cursor with each minimum overlap met. Unknown, malformed,
+impossible, mismatched and extra success histories reject; negative-fixture scratch ledgers remain
+outside retained authority.
+
+This raises the retained directory to fifteen files, the base dossier to sixteen hashes including
+the reviewed plan and the final dossier to eighteen. The discriminator will neutralize one exact
+manifest binding and require a rehashed, structurally valid wrong-ledger fixture to fail. No runtime
+population is counted until these records are produced by the real clean-host commands.
