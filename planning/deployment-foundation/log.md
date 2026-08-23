@@ -1330,3 +1330,20 @@ Temporarily replacing the exact install matcher with shape/image checks made the
 fail with `invalid candidate install authority accepted`; restoring it returned the cold package
 green. Root vet passes. The Make lane exposes the command, but it has not run on Linux; the positive
 install row and overall 25/43 count remain unchanged.
+
+## 2026-08-23 — DP-F2 predeclaration: exact product-browser producer
+
+The browser row will execute through `deployment-rehearsal run-browser --config=<private path>` so
+the reviewed command cannot substitute an arbitrary Chromium image, driver or output. The producer
+will validate the candidate, derive its exact rehearsal-only Playwright image and manifest digest,
+then run the candidate's own `deployment-browser` read-only inside that digest-pinned image on the
+Linux host network. It will drop capabilities, prohibit privilege escalation, provide only tmpfs
+scratch space and mount only the driver plus exclusive artifact directory. No provider or product
+secret enters the container.
+
+Success requires the real driver to create `browser-result.json`, after which the producer reopens
+it through the strict browser decoder and binds its candidate manifest. Missing output, an already
+existing output, wrong image/driver/manifest, Docker failure or incomplete browser result rejects.
+Tests inject the Docker command boundary, assert the exact security and identity argv, and write
+only a typed result. The discriminator will remove the manifest comparison and require a wrong-
+manifest result to fail. This constructs but does not execute the product browser population.
