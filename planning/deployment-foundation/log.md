@@ -1014,3 +1014,25 @@ Restoring validation returned the population green. The evidence JSON Schema now
 top-level artifact hashes (the reviewed plan plus twelve retained files). All retained artifact
 types are now strict, but `forged_successful_evidence` remains uncounted until its non-circular real
 execution is authored and run. The overall implemented-probe total remains 15/43.
+
+## 2026-08-23 — DP-F2 predeclaration: non-circular forgery proof
+
+The final open evidence-integrity row cannot lawfully execute inside the same result set it is meant
+to authenticate: its result hash would enter the evidence it must first mutate, creating a circular
+dependency or forcing a vacuous already-invalid subject. The implementation boundary is therefore
+predeclared as a two-stage seal without changing the required 43 populations:
+
+1. the fixed command plan executes the 42 non-forgery populations and produces their exclusive raw
+   results plus the twelve typed run artifacts;
+2. a base dossier containing exactly those 42 populations and thirteen hashes (the reviewed plan
+   plus twelve artifacts) must pass the full plan/result/artifact/tool validator;
+3. the forgery producer mutates one named base-dossier binding, requires the same base validator to
+   reject it, and writes a typed proof bound to the unmodified base bytes; and
+4. the final dossier adds the retained base and proof hashes plus the 43rd
+   `forged_successful_evidence` population. Final validation replays the named mutation itself and
+   rejects a proof that merely claims success.
+
+The discriminator will remove only the replayed rejection and must make a forged proof pass. A
+missing base, pre-invalid base, unknown mutation, mismatched subject hash, self-authored result hash
+or proof generated before all 42 rows complete is invalid. This dependency-order correction does
+not remove a population, weaken a validator or count the row before the real proof executes.
