@@ -1105,3 +1105,25 @@ green. A separately injected sleeping create gate permanently covers the interru
 
 The implemented probe count is now 25/43. This does not claim the real empty/populated Postgres
 restore, non-clean target refusal, measured RPO/RTO, clean-host install or any other runtime row.
+
+## 2026-08-23 — DP-F2 predeclaration: dependency-ordered execution plan
+
+The exact-plan validator currently sorts all 42 non-forgery population names alphabetically. That
+order is incompatible with the accepted runtime sequence: it places bounded drain before initial
+install, rollback before its authorizing release, and interleaves checks from later evidence steps
+into earlier ones. No truthful clean-host plan can obey it without hiding multiple lifecycle steps
+behind opaque commands or manufacturing state outside the reviewed plan.
+
+The next batch will replace name sorting with one explicit canonical population sequence grouped
+under the eleven already accepted `RequiredSteps`. Every population remains present exactly once,
+with its existing positive/negative kind and expected exit. Validation will require both the exact
+name at every position and its owning step, so an operator cannot reorder, duplicate, omit or route
+a check through a more convenient step. The order will be host preflight, install, browser, empty
+restore, populated restore, incident recovery, candidate release, previous rollback, rotation,
+operations, then provider-off supply chain. Within stateful release and rollback groups, refusal
+fixtures precede the successful transition that would consume their authority.
+
+Permanent tests will require the exact ordered closure and reject a swap, a correct name under the
+wrong step and a duplicate. The discriminator will temporarily restore alphabetical comparison;
+the canonical lifecycle fixture must then fail. This batch changes plan authority only and does
+not implement or count any runtime population.
