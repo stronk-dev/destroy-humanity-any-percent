@@ -135,6 +135,18 @@ one MiB per check; timeout, truncation, wrong exit, unsafe shell/sudo invocation
 argument, prior result byte or non-monotonic observation fails the lane. The final evidence binds
 the reviewed plan hash, so an operator cannot silently substitute a shorter command list.
 
+The helper's `probe` boundary distinguishes the subject result from probe setup. Exit `0` means a
+positive subject passed or a negative fixture was unexpectedly accepted; exit `1` is reserved for
+a successfully prepared named negative fixture that reached its gate and was rejected; invalid
+input, setup failure and an unimplemented population exit `2`. This prevents a missing file,
+unsupported check or broken probe from satisfying a negative row just because it failed. The
+current fixed probes cover the intact six-image/SBOM/license/provenance population and eight exact
+bundle mutations: removed catalog, client, root license, config or release helper, plus changed
+image digest, runtime-config digest or image SBOM. Each mutation uses a private temporary hardlink
+tree, never edits the retained bundle, and a cleanup failure invalidates the outcome. Runtime,
+browser, recovery, rotation and operations populations remain DP-F2 work and are not inferred from
+these package checks.
+
 ## Encrypted Postgres backup and restore
 
 `deployment-backup` is a statically linked Linux/amd64 operator helper included in, hashed by and

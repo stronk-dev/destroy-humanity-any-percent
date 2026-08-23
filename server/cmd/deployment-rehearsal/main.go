@@ -32,9 +32,31 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal plan passed")
+	case "probe":
+		outcome, err := runProbe(os.Args[2:])
+		if err != nil {
+			failCode("invalid_probe", 2)
+		}
+		if outcome == deploymentrehearsal.ProbeRejected {
+			failCode("fixture_rejected", 1)
+		}
+		fmt.Println("deployment rehearsal probe passed")
 	default:
 		fail("usage")
 	}
+}
+
+func runProbe(args []string) (deploymentrehearsal.ProbeOutcome, error) {
+	set := flag.NewFlagSet("probe", flag.ContinueOnError)
+	population := set.String("population", "", "exact R-006 population")
+	candidate := set.String("candidate-bundle", "", "absolute candidate bundle path")
+	previous := set.String("previous-bundle", "", "absolute previous bundle path")
+	work := set.String("work-directory", "", "absolute private rehearsal work directory")
+	if set.Parse(args) != nil || set.NArg() != 0 {
+		return deploymentrehearsal.ProbeAccepted, deploymentrehearsal.ErrInvalid
+	}
+	return deploymentrehearsal.RunProbe(deploymentrehearsal.ProbeRequest{Population: *population,
+		CandidateBundle: *candidate, PreviousBundle: *previous, WorkDirectory: *work})
 }
 
 func runPlan(ctx context.Context, args []string) error {
@@ -79,4 +101,9 @@ func fail(class string) {
 	}
 	fmt.Fprintf(os.Stderr, "deployment rehearsal failed: error_class=%s\n", class)
 	os.Exit(1)
+}
+
+func failCode(class string, code int) {
+	fmt.Fprintf(os.Stderr, "deployment rehearsal failed: error_class=%s\n", class)
+	os.Exit(code)
 }

@@ -35,3 +35,9 @@ func TestRunPlanRequiresReviewedPlanAndEmptyOutput(t *testing.T) {
 		t.Fatal("missing plan accepted")
 	}
 }
+
+func TestRunProbeDistinguishesInvalidSetupFromExpectedRejection(t *testing.T) {
+	if outcome, err := runProbe(nil); !errors.Is(err, deploymentrehearsal.ErrInvalid) || outcome == deploymentrehearsal.ProbeRejected {
+		t.Fatalf("missing probe inputs counted as rejection: outcome=%d err=%v", outcome, err)
+	}
+}

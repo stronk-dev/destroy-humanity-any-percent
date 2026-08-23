@@ -741,3 +741,29 @@ DP-F2 has therefore produced the exact two-bundle input population and proven in
 It is not yet complete: the reviewed 43-check command plan must bind these two manifest hashes,
 and the complete source/image secret scan must run against the candidate bytes before DP-F3 can
 touch an authorized clean host. No component result is being promoted to R-006 evidence.
+
+## 2026-08-23 — DP-F2 typed bundle-probe slice
+
+The fixed-command boundary had a remaining false-positive class before the real plan could be
+authored: a negative row expected exit one, so an unsupported command or failed fixture setup could
+look identical to the intended gate rejecting a severing. The new `deployment-rehearsal probe`
+contract reserves exit zero for accepted subjects, exit one only for a fully prepared named
+negative that reaches and is rejected by the release-package validator, and exit two for invalid
+input, unsupported populations or setup failure. Cleanup failure also invalidates the result.
+
+Nine of the 43 declared populations now have real bundle-only probes. The positive validates both
+exact bundles' six-image, SPDX, license, provenance and complete artifact closure. Eight negatives
+hardlink the candidate into a private temporary tree, then remove the catalog, client entry point,
+root license, config schema or release helper, or alter the gameserver image digest, an image
+runtime-config identity or an image SBOM. Rewrites unlink before writing so the retained hardlinked
+candidate cannot be changed. Tests prove every mutation exists, the original remains byte-exact,
+an accepted mutation returns zero, missing mutation input cannot count as rejection and unsafe work
+placement fails.
+
+The current retained bundles were exercised directly with the native helper: the intact population
+exited zero; all eight mutations exited one with `fixture_rejected`; the deliberately unsupported
+`rpo_or_rto_above_bound` runtime population exited two with `invalid_probe`. A first `go run`
+attempt was denied access to the user Go cache and is not evidence; the root Make build uses the
+repository cache and produced the binary used for the recorded runs. The full 43-row plan remains
+unwritten and DP-F2 remains open. In particular, no browser, database, recovery, rotation,
+operations, RPO/RTO or clean-host observation is claimed by this slice.
