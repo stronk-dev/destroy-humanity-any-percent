@@ -51,9 +51,27 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal forgery proof passed")
+	case "observe-host":
+		if _, err := runObserveHost(context.Background(), os.Args[2:]); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal host observation passed")
 	default:
 		fail("usage")
 	}
+}
+
+func runObserveHost(ctx context.Context, args []string) (deploymentrehearsal.HostObservation, error) {
+	set := flag.NewFlagSet("observe-host", flag.ContinueOnError)
+	configPath := set.String("config", "", "private runtime scenario input")
+	if set.Parse(args) != nil || set.NArg() != 0 || *configPath == "" {
+		return deploymentrehearsal.HostObservation{}, deploymentrehearsal.ErrInvalid
+	}
+	config, err := deploymentrehearsal.LoadScenarioConfig(*configPath)
+	if err != nil {
+		return deploymentrehearsal.HostObservation{}, err
+	}
+	return deploymentrehearsal.ObserveHost(ctx, config)
 }
 
 func runForgeProof(args []string) (deploymentrehearsal.ForgeryProof, error) {

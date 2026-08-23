@@ -1276,3 +1276,20 @@ identity, nonempty project state, provider credentials, checkout metadata, outpu
 invalid/incomplete timing reject. Tests inject exact command output and independently sever each
 predicate; the discriminator will make one provider credential invisible and require its permanent
 negative to fail. This is producer construction, not an observed clean-host population.
+
+## 2026-08-23 — DP-F2 clean-host observation producer
+
+`deployment-rehearsal observe-host` now consumes the private scenario config and writes the bound
+host artifact. It validates both exact bundles, observes `uname`, `/etc/os-release`, Docker Engine
+and Compose directly, and rejects a non-Linux/non-amd64 host, malformed distro/version, a nonempty
+Cloud Clicker container/volume population, checkout metadata in any configured run directory or a
+nonempty optional identity/mail/AI/payment/cloud-provider environment variable. The root Make lane
+exposes the exact command; no secret value enters argv or output.
+
+Injected command tests prove valid Debian/Linux/amd64 output and independently reject dirty project
+state, checkout metadata, provider credentials, wrong OS/architecture, malformed distribution,
+invalid bundle and output overwrite. The provider-family table covers AWS, Azure, Google/GCP,
+OpenAI, Anthropic, Stripe, SendGrid, Mailgun, Twilio, SMTP, Sentry, Datadog and New Relic. Removing
+only the OpenAI entry made the provider detector fail with `provider credential OPENAI_API_KEY
+accepted`; restoring it returned the cold package green. Root vet passes. The producer has not run
+on the authorized clean Linux host, so no positive population is counted and the total stays 25/43.

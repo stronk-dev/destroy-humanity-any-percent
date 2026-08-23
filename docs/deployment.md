@@ -154,6 +154,14 @@ missing/symlinked directories and a group/world-readable age identity reject bef
 Secret values are not scenario fields: production Compose continues to read its existing mounted
 secret files, and the reviewed plan contains only the scenario document path.
 
+`make deployment-rehearsal-observe-host REHEARSAL_SCENARIO_CONFIG=/absolute/private/scenario.json`
+validates both bundles, directly records Linux/amd64 distribution/kernel and Docker/Compose
+versions, and requires the exact Compose project and Postgres volume to be absent. It also rejects
+checkout metadata anywhere in the configured run surface and nonempty optional identity, mail,
+AI, payment or cloud-monitoring credential variables. Its only output is the exclusive typed
+`host-observation.json`; running this producer on another platform or a dirty host cannot create a
+clean-host claim.
+
 The helper's `probe` boundary distinguishes the subject result from probe setup. Exit `0` means a
 positive subject passed or a negative fixture was unexpectedly accepted; exit `1` is reserved for
 a successfully prepared named negative fixture that reached its gate and was rejected; invalid
