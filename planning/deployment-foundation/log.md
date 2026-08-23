@@ -1293,3 +1293,23 @@ OpenAI, Anthropic, Stripe, SendGrid, Mailgun, Twilio, SMTP, Sentry, Datadog and 
 only the OpenAI entry made the provider detector fail with `provider credential OPENAI_API_KEY
 accepted`; restoring it returned the cold package green. Root vet passes. The producer has not run
 on the authorized clean Linux host, so no positive population is counted and the total stays 25/43.
+
+## 2026-08-23 — DP-F2 predeclaration: exact candidate-install producer
+
+The semantic-authority split requires the scenario input body to replace its singular
+`operator_state` with distinct `install_operator_state` and `lifecycle_operator_state` directories
+and to add a bounded non-secret operator ID. The same edit will reconcile docs and strict-input
+tests; leaving the singular field live would contradict the accepted evidence model.
+
+`deployment-rehearsal install-candidate --config=<private path>` will then validate the candidate
+bundle and invoke the production `deploymentrelease.Controller.Install` with the production
+`DockerRuntime`. Its durable state lives only in the install operator directory. After success, the
+producer strictly decodes that ledger, requires the single candidate install identity and copies
+its exact bytes exclusively to retained `install-ledger.jsonl`; a controller success with missing,
+extra, wrong or malformed authority is failure. It will not tear down the stack because the browser,
+database and recovery populations consume that exact installed candidate next.
+
+Tests inject only the controller execution boundary while keeping real bundle/ledger validation and
+exclusive output. They cover controller failure, missing/wrong/extra ledger, overwrite and sleeping
+identity gate. The discriminator will neutralize the exact candidate-manifest check and require the
+wrong-ledger negative to fail. This constructs but does not execute the clean-host install row.
