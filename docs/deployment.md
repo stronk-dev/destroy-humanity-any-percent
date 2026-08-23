@@ -183,6 +183,10 @@ of the plan rows assigned to that step. A plausible evidence JSON with invented 
 handwritten step summaries is invalid even when its standalone shape is correct. The three tool
 identities must equal the executable bytes of `deployment-rehearsal`, `deployment-release` and
 `deployment-browser` in that candidate bundle; a changed, non-executable or symlinked tool rejects.
+The browser and journal artifacts are decoded through their owning production contracts after
+their hashes match: unknown/trailing fields, an incomplete browser outcome, a different candidate
+manifest, an invalid journal budget/retention observation or a time interval outside the run all
+reject even if the forged bytes are rehashed into the top-level evidence.
 
 `deployment-browser` is the clean-host browser-driver component under construction. It is a
 reproducible static Linux/amd64 Go binary using Chrome DevTools directly; it does not require Node,

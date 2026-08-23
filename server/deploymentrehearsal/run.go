@@ -8,6 +8,9 @@ import (
 	"path/filepath"
 	"sort"
 	"time"
+
+	"cloud-clicker/server/deploymentbrowser"
+	"cloud-clicker/server/operations"
 )
 
 var requiredRunArtifactFiles = map[string]string{
@@ -157,6 +160,25 @@ func validateRunArtifacts(evidence Evidence, directory string) error {
 		}
 		if (name == "candidate_manifest" && evidence.ManifestSHA256 != hashBytes(data)) ||
 			(name == "previous_manifest" && evidence.PreviousManifestSHA256 != hashBytes(data)) {
+			return ErrInvalid
+		}
+		if err := validateTypedRunArtifact(name, data, evidence); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateTypedRunArtifact(name string, data []byte, evidence Evidence) error {
+	switch name {
+	case "browser_result":
+		result, err := deploymentbrowser.DecodeResult(data)
+		if err != nil || result.ManifestSHA256 != evidence.ManifestSHA256 || result.StartedAt.Before(evidence.StartedAt) || result.CompletedAt.After(evidence.CompletedAt) {
+			return ErrInvalid
+		}
+	case "journal_observation":
+		observation, err := operations.DecodeJournalObservation(data)
+		if err != nil || observation.StartedAt.Before(evidence.StartedAt) || observation.CompletedAt.After(evidence.CompletedAt) {
 			return ErrInvalid
 		}
 	}

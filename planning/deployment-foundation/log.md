@@ -938,3 +938,19 @@ focused population green. The first mutation edit accidentally removed the compa
 that left unused variables and produced a compile error; that attempt is not cited as the
 discriminator. Artifact-specific schemas and the final evidence/forgery execution order remain
 open, so `forged_successful_evidence` and the overall probe count remain unchanged.
+
+## 2026-08-23 — DP-F2 typed browser and journal evidence
+
+The final validator now opens the retained browser and journal bytes after their evidence hashes
+match. Browser evidence uses the driver's strict decoder, must bind the exact candidate manifest,
+and must fall within the run interval. Journal evidence uses the operations package's existing
+strict observation decoder and must also fall within the run. Both reject unknown/trailing fields
+and invalid objective, guard, timing, retention, capacity and privacy states; no duplicate summary
+schema was added in the rehearsal package.
+
+Cold focused tests and vet passed. The discriminator rehashed an invalid browser summary into the
+top-level artifact row, then temporarily removed only typed-artifact validation: the permanent
+negative failed with `forged artifact/step accepted`. Restoring typed validation returned the full
+population green. A separately rehashed invalid journal document also rejects. Alert-delivery,
+secret-scan and supply-chain artifacts still need owning structured producers/decoders, so the
+forged-evidence population and 15/43 total remain unchanged.

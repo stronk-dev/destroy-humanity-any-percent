@@ -1,6 +1,7 @@
 package deploymentbrowser
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -55,5 +56,30 @@ func TestBrowserConfigAndResultOutputFailClosed(t *testing.T) {
 	info, err := os.Stat(config.Output)
 	if err != nil || info.Mode().Perm() != 0o600 {
 		t.Fatalf("result mode=%v err=%v", info.Mode(), err)
+	}
+}
+
+func TestDecodeBrowserResultRejectsUnknownTrailingAndInvalidEvidence(t *testing.T) {
+	start := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	valid := Result{SchemaVersion: 1, ManifestSHA256: "sha256:" + strings.Repeat("a", 64), StartedAt: start,
+		CompletedAt: start.Add(time.Second), Surface: "desk", BootstrapCommitted: true, CredentialsPresent: true,
+		WebSocketObserved: true, ManualIntentObserved: true, ManualIntentStatus: 200, ObjectiveCompleted: true}
+	data, err := json.Marshal(valid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := DecodeResult(data); err != nil {
+		t.Fatal(err)
+	}
+	for name, mutated := range map[string][]byte{
+		"unknown":  append(append([]byte(nil), data[:len(data)-1]...), []byte(`,"summary":"passed"}`)...),
+		"trailing": append(append([]byte(nil), data...), []byte(` {}`)...),
+		"invalid":  []byte(`{"schema_version":1}`),
+	} {
+		t.Run(name, func(t *testing.T) {
+			if _, err := DecodeResult(mutated); err == nil {
+				t.Fatal("invalid browser evidence accepted")
+			}
+		})
 	}
 }

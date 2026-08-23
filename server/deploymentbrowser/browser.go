@@ -1,9 +1,11 @@
 package deploymentbrowser
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -142,6 +144,16 @@ func ValidateResult(result Result) error {
 		return errors.New("invalid browser result")
 	}
 	return nil
+}
+
+func DecodeResult(data []byte) (Result, error) {
+	var result Result
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&result) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateResult(result) != nil {
+		return Result{}, errors.New("invalid browser result")
+	}
+	return result, nil
 }
 
 func validateConfig(config Config) error {

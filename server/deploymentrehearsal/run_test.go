@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+
+	"cloud-clicker/server/deploymentbrowser"
+	"cloud-clicker/server/operations"
 )
 
 func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
@@ -108,6 +111,24 @@ func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 			fixture.evidence.Steps[0].OutputSHA256 = hashForBuild("f")
 			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
 		},
+		"rehashed invalid browser": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["browser_result"])
+			data := []byte(`{"schema_version":1,"summary":"passed"}` + "\n")
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "browser_result", hashBytes(data))
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
+		"rehashed invalid journal": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["journal_observation"])
+			data := []byte(`{"schema_version":1,"objective_completed":true}` + "\n")
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "journal_observation", hashBytes(data))
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
@@ -195,6 +216,23 @@ func boundRunFixture(t *testing.T) boundFixture {
 	artifactBytes := map[string][]byte{}
 	for name, file := range requiredRunArtifactFiles {
 		artifactBytes[name] = []byte(name + "\n")
+		if name == "browser_result" {
+			result := deploymentbrowser.Result{SchemaVersion: 1, ManifestSHA256: hashBytes([]byte("candidate_manifest\n")),
+				StartedAt: evidence.StartedAt.Add(time.Second), CompletedAt: evidence.StartedAt.Add(2 * time.Second), Surface: "desk",
+				BootstrapCommitted: true, CredentialsPresent: true, WebSocketObserved: true, ManualIntentObserved: true,
+				ManualIntentStatus: 200, ObjectiveCompleted: true}
+			artifactBytes[name], _ = json.Marshal(result)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
+		}
+		if name == "journal_observation" {
+			observation := operations.JournalObservation{SchemaVersion: 1, Population: "r006-standard-workload",
+				StartedAt: evidence.StartedAt.Add(3 * time.Second), CompletedAt: evidence.StartedAt.Add(4 * time.Second),
+				ObjectiveCompleted: true, Samples: 2, ObservedBytes: 100, PeakBytesPerDay: 100,
+				FilesystemBytes: 10_000, JournalMaxUseBytes: 1_400, JournalRetentionSeconds: int64(operations.JournalRetention / time.Second),
+				StorageAlertFraction: 0.8}
+			artifactBytes[name], _ = json.Marshal(observation)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
+		}
 		if err := os.WriteFile(filepath.Join(artifactsDirectory, file), artifactBytes[name], 0o600); err != nil {
 			t.Fatal(err)
 		}
@@ -278,6 +316,15 @@ func boundRunFixture(t *testing.T) boundFixture {
 	}
 	return boundFixture{evidence: evidence, plan: plan, evidencePath: evidencePath, planPath: planPath,
 		resultsDirectory: results, artifactsDirectory: artifactsDirectory, candidateBundleDirectory: candidateBundleDirectory}
+}
+
+func setArtifactDigest(evidence *Evidence, name, digest string) {
+	for index := range evidence.Artifacts {
+		if evidence.Artifacts[index].Name == name {
+			evidence.Artifacts[index].SHA256 = digest
+			return
+		}
+	}
 }
 
 func writeEvidenceFixture(t *testing.T, path string, evidence Evidence) {
