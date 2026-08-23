@@ -362,6 +362,23 @@ pre-upgrade backups are distinct typed populations: the ordinary recovery path r
 `pre_upgrade=false`, while rollback requires `pre_upgrade=true`. Neither path accepts the other's
 header even when every digest, epoch and server identity otherwise matches.
 
+The destructive R-006 database sequence is split into two restart-safe commands. First run
+`make deployment-rehearsal-recover-empty REHEARSAL_SCENARIO_CONFIG=/absolute/private/scenario.json`
+after the browser population. It requires nonempty player, Founder, Company, event, board and epoch
+identities, captures the populated encrypted backup, declares the incident, recreates Postgres from
+a clean volume, starts only gameserver/Caddy to migrate and seed an empty player database, and then
+backs up, destroys and restores that empty population with exact identity equality. It records a
+strict private checkpoint only after the restored empty database passes manifest/epoch/artifact and
+semantic checks.
+
+Then run `make deployment-rehearsal-recover-populated` with the same scenario. It consumes that
+checkpoint, destroys the empty-restored volume, restores the exact populated backup, compares the
+complete database identity before any new smoke state can be written, and finally runs the
+authenticated Caddy smoke. RPO is derived from backup completion to the declared incident; RTO is
+derived from restore start to smoke completion through the production objective validator. Only
+then is `objective-observation.json` written. Both lanes are destructive and belong only in the
+explicit clean-host release rehearsal, never push CI.
+
 Build the helper with:
 
 ```sh

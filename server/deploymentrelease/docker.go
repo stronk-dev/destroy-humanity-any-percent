@@ -291,6 +291,25 @@ func (runtime DockerRuntime) Start(ctx context.Context, bundle Bundle) error {
 	return nil
 }
 
+// StartRecoveryCore starts only the data plane needed to migrate, seed and
+// authenticate a recovery target. Excluding the scheduled backup worker keeps
+// the rehearsal's explicitly observed backup population single-writer.
+func (runtime DockerRuntime) StartRecoveryCore(ctx context.Context, bundle Bundle) error {
+	runtime, err := runtime.normalized()
+	if err != nil {
+		return err
+	}
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy")...); err != nil {
+		return err
+	}
+	readyCtx, cancel := context.WithTimeout(ctx, time.Minute)
+	defer cancel()
+	if !waitHTTPState(readyCtx, runtime.Client, runtime.PublicOrigin+"/readyz", true) {
+		return ErrInvalid
+	}
+	return nil
+}
+
 func (runtime DockerRuntime) StartInstall(ctx context.Context, bundle Bundle) error {
 	runtime, err := runtime.normalized()
 	if err != nil {

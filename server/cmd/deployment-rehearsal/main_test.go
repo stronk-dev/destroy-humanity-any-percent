@@ -53,3 +53,12 @@ func TestRunForgeProofRequiresCompleteBaseInputs(t *testing.T) {
 		t.Fatalf("empty forge-proof inputs accepted: %v", err)
 	}
 }
+
+func TestRecoveryCommandsRequirePrivateScenario(t *testing.T) {
+	if _, err := runEmptyRecovery(context.Background(), nil); !errors.Is(err, deploymentrehearsal.ErrInvalid) {
+		t.Fatalf("empty recovery accepted without scenario: %v", err)
+	}
+	if _, err := runPopulatedRecovery(context.Background(), nil); !errors.Is(err, deploymentrehearsal.ErrInvalid) {
+		t.Fatalf("populated recovery accepted without scenario: %v", err)
+	}
+}

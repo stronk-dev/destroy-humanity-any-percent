@@ -1467,3 +1467,29 @@ observation validation. Failure, wrong population, wrong backup class/manifest/p
 checkpoint, identity mismatch, objective overrun and output overwrite all reject. The discriminator
 will neutralize the populated identity comparison and require its mismatch fixture to fail. This
 constructs the producer only; no local/macOS execution counts toward the Linux R-006 25/43 state.
+
+## 2026-08-23 — DP-F2 destructive empty/populated recovery producer
+
+The two manifest-bound recovery commands now exist. `recover-empty` refuses to begin destruction
+unless every populated semantic domain has rows, captures the exact scheduled backup, records the
+incident, rebuilds Postgres from a clean volume using the candidate's core only, requires an
+epoch-bearing empty identity, and proves the empty backup by a second destroy/restore/full-identity
+comparison. Its mode-0600 checkpoint is written only after every step succeeds. `recover-populated`
+then destroys that restored-empty target, restores the exact populated backup, compares the full
+database identity before smoke can add state, performs the authenticated Caddy smoke and derives
+the retained RPO/RTO observation through the production objective validator.
+
+The production core-start adapter explicitly starts only gameserver and Caddy with `--no-deps`;
+the scheduled backup worker and operations containers cannot race the observed backup. Strict
+checkpoint validation reopens regular backup files, exact-decodes both headers, binds manifest,
+epoch/server/class/path and rejects unknown/trailing state. Unit populations cover the complete
+empty/populated sequence, every runtime failure boundary, wrong starting population, wrong backup
+class/path, trailing checkpoint, identity mismatch, failed smoke, RTO overrun and pre-destructive
+objective overwrite refusal. Neutralizing only the populated comparison by comparing the restored
+identity with itself made the mismatch population fail with `mismatched populated identity
+accepted`; restoring the before/after comparison returned all focused packages and root vet green.
+
+This construction intentionally exposes a real next gate: the current minimal browser producer
+does not create a verified board row, so `recover-empty` will refuse that state as an incomplete
+populated recovery fixture. The browser/product population must be strengthened; the recovery gate
+will not be loosened. No Linux run occurred and the honest count remains 25/43.

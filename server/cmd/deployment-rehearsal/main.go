@@ -67,9 +67,44 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal product browser passed")
+	case "recover-empty":
+		if _, err := runEmptyRecovery(context.Background(), os.Args[2:]); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal empty recovery passed")
+	case "recover-populated":
+		if _, err := runPopulatedRecovery(context.Background(), os.Args[2:]); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal populated recovery passed")
 	default:
 		fail("usage")
 	}
+}
+
+func runEmptyRecovery(ctx context.Context, args []string) (deploymentrehearsal.RecoveryCheckpoint, error) {
+	config, err := recoveryConfig(args)
+	if err != nil {
+		return deploymentrehearsal.RecoveryCheckpoint{}, err
+	}
+	return deploymentrehearsal.RunEmptyRecovery(ctx, config)
+}
+
+func runPopulatedRecovery(ctx context.Context, args []string) (deploymentrehearsal.ObjectiveObservation, error) {
+	config, err := recoveryConfig(args)
+	if err != nil {
+		return deploymentrehearsal.ObjectiveObservation{}, err
+	}
+	return deploymentrehearsal.RunPopulatedRecovery(ctx, config)
+}
+
+func recoveryConfig(args []string) (deploymentrehearsal.ScenarioConfig, error) {
+	set := flag.NewFlagSet("recovery", flag.ContinueOnError)
+	configPath := set.String("config", "", "private runtime scenario input")
+	if set.Parse(args) != nil || set.NArg() != 0 || *configPath == "" {
+		return deploymentrehearsal.ScenarioConfig{}, deploymentrehearsal.ErrInvalid
+	}
+	return deploymentrehearsal.LoadScenarioConfig(*configPath)
 }
 
 func runBrowser(ctx context.Context, args []string) (deploymentbrowser.Result, error) {

@@ -379,6 +379,29 @@ func TestDockerRuntimeStartRecreatesCandidateServerProxyAndBackupWorker(t *testi
 	}
 }
 
+func TestDockerRuntimeRecoveryCoreExcludesUnobservedBackupWriter(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	runner := &commandFixture{}
+	runtime := dockerFixtureRuntime(runner, t.TempDir(), "")
+	runtime.Client = &http.Client{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: http.StatusNoContent, Body: io.NopCloser(strings.NewReader(""))}, nil
+	})}
+	if err := runtime.StartRecoveryCore(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	joined := strings.Join(runner.calls[0], " ")
+	for _, required := range []string{"--no-deps", "--force-recreate", "gameserver", "caddy"} {
+		if !strings.Contains(joined, required) {
+			t.Fatalf("recovery core missing %q: %s", required, joined)
+		}
+	}
+	for _, excluded := range []string{"backup", "prometheus", "alertmanager", "node-exporter"} {
+		if strings.Contains(joined, " "+excluded) {
+			t.Fatalf("recovery core started %q: %s", excluded, joined)
+		}
+	}
+}
+
 func dockerFixtureRuntime(runner CommandRunner, target, identity string) DockerRuntime {
 	return DockerRuntime{Runner: runner, PublicOrigin: "https://game.example", ReceiverHealthURL: "http://alertmanager:9093/-/healthy",
 		BackupTarget: target, MetricsDirectory: target, AgeRecipient: "age1fixture",
