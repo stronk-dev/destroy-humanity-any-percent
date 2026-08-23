@@ -19,6 +19,7 @@ var requiredRunArtifactFiles = map[string]string{
 	"previous_manifest":     "previous-manifest.json",
 	"candidate_build":       "candidate-build.json",
 	"previous_build":        "previous-build.json",
+	"install_ledger":        "install-ledger.jsonl",
 	"release_ledger":        "release-ledger.jsonl",
 	"rotation_ledger":       "rotation-ledger.jsonl",
 	"backup_header":         "backup-header.json",
@@ -95,7 +96,7 @@ func validateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte
 	if err := validateToolBindings(evidence.Tools, candidateBundleDirectory); err != nil {
 		return err
 	}
-	if err := validateRunArtifacts(evidence, artifactsDirectory); err != nil {
+	if err := validateRunArtifacts(evidence, artifactsDirectory, candidateBundleDirectory); err != nil {
 		return err
 	}
 	entries, err := os.ReadDir(resultsDirectory)
@@ -189,13 +190,17 @@ func validateToolBindings(tools []Tool, candidateBundleDirectory string) error {
 	return nil
 }
 
-func validateRunArtifacts(evidence Evidence, directory string) error {
+func validateRunArtifacts(evidence Evidence, directory, candidateBundleDirectory string) error {
 	entries, err := os.ReadDir(directory)
 	if err != nil || len(entries) != len(requiredRunArtifactFiles) {
 		return ErrInvalid
 	}
 	candidateManifestBytes, err := os.ReadFile(filepath.Join(directory, requiredRunArtifactFiles["candidate_manifest"]))
 	if err != nil {
+		return ErrInvalid
+	}
+	bundledCandidateManifest, err := os.ReadFile(filepath.Join(candidateBundleDirectory, releasepackage.ReleaseManifestPath))
+	if err != nil || !bytes.Equal(candidateManifestBytes, bundledCandidateManifest) {
 		return ErrInvalid
 	}
 	candidateSourceCommit, err := manifestSourceCommit(candidateManifestBytes)
@@ -227,6 +232,7 @@ func validateRunArtifacts(evidence Evidence, directory string) error {
 		return ErrInvalid
 	}
 	fileToName := map[string]string{}
+	artifactData := make(map[string][]byte, len(requiredRunArtifactFiles))
 	for name, file := range requiredRunArtifactFiles {
 		fileToName[file] = name
 	}
@@ -255,8 +261,9 @@ func validateRunArtifacts(evidence Evidence, directory string) error {
 		if err := validateTypedRunArtifact(name, data, evidence, candidateSourceCommit); err != nil {
 			return err
 		}
+		artifactData[name] = data
 	}
-	return nil
+	return validateOperatorRecords(evidence, artifactData)
 }
 
 func validateTypedRunArtifact(name string, data []byte, evidence Evidence, candidateSourceCommit string) error {

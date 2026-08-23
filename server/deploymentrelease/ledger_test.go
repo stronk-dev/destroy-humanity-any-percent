@@ -38,6 +38,44 @@ func TestRotationLedgerEnforcesAllGovernedOverlaps(t *testing.T) {
 	}
 }
 
+func TestLedgerByteDecodersMatchFileAuthorityAndRejectTrailingData(t *testing.T) {
+	root := t.TempDir()
+	rotationPath := filepath.Join(root, "rotation.jsonl")
+	base := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	if err := ActivateRotation(rotationPath, FamilyJWT, "new-id", "old-id", "operator-1", base); err != nil {
+		t.Fatal(err)
+	}
+	rotationBytes, err := os.ReadFile(rotationPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if records, err := DecodeRotationLedger(rotationBytes); err != nil || len(records) != 1 {
+		t.Fatalf("rotation records=%+v err=%v", records, err)
+	}
+	if _, err := DecodeRotationLedger(append(rotationBytes, []byte("{}\n")...)); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("trailing rotation record accepted: %v", err)
+	}
+
+	releasePath := filepath.Join(root, "release.jsonl")
+	record := fixtureReleaseRecord(base)
+	record.Action = "install"
+	record.PreviousVersion, record.PreviousManifestSHA256 = "", ""
+	record.BackupID, record.RollbackUntil = "none", time.Time{}
+	if err := AppendReleaseRecord(releasePath, record); err != nil {
+		t.Fatal(err)
+	}
+	releaseBytes, err := os.ReadFile(releasePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if records, err := DecodeReleaseLedger(releaseBytes); err != nil || len(records) != 1 {
+		t.Fatalf("release records=%+v err=%v", records, err)
+	}
+	if _, err := DecodeReleaseLedger(append(releaseBytes, []byte("{}\n")...)); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("trailing release record accepted: %v", err)
+	}
+}
+
 func TestRotationLedgerRejectsRewriteAndUnmatchedRemoval(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "rotation-ledger.jsonl")
 	base := time.Date(2026, 8, 22, 12, 0, 0, 0, time.UTC)

@@ -147,8 +147,16 @@ func ReadRotationLedger(path string) ([]RotationRecord, error) {
 		return nil, err
 	}
 	defer file.Close()
+	return decodeRotationLedger(file)
+}
+
+func DecodeRotationLedger(data []byte) ([]RotationRecord, error) {
+	return decodeRotationLedger(bytes.NewReader(data))
+}
+
+func decodeRotationLedger(reader io.Reader) ([]RotationRecord, error) {
 	result := []RotationRecord{}
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(reader)
 	scanner.Buffer(make([]byte, 4096), 64<<10)
 	for scanner.Scan() {
 		var record RotationRecord
@@ -217,8 +225,16 @@ func ReadReleaseLedger(path string) ([]ReleaseRecord, error) {
 		return nil, err
 	}
 	defer file.Close()
+	return decodeReleaseLedger(file)
+}
+
+func DecodeReleaseLedger(data []byte) ([]ReleaseRecord, error) {
+	return decodeReleaseLedger(bytes.NewReader(data))
+}
+
+func decodeReleaseLedger(reader io.Reader) ([]ReleaseRecord, error) {
 	result := []ReleaseRecord{}
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(reader)
 	scanner.Buffer(make([]byte, 4096), 256<<10)
 	for scanner.Scan() {
 		var record ReleaseRecord

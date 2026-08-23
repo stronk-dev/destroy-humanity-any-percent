@@ -173,6 +173,7 @@ var BaseRequiredArtifacts = []string{
 	"previous_manifest",
 	"candidate_build",
 	"previous_build",
+	"install_ledger",
 	"release_ledger",
 	"rotation_ledger",
 	"backup_header",

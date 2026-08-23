@@ -1236,3 +1236,26 @@ This raises the retained directory to fifteen files, the base dossier to sixteen
 the reviewed plan and the final dossier to eighteen. The discriminator will neutralize one exact
 manifest binding and require a rehashed, structurally valid wrong-ledger fixture to fail. No runtime
 population is counted until these records are produced by the real clean-host commands.
+
+## 2026-08-23 — DP-F2 semantic operator-record bindings
+
+The retained authority is now split as predeclared. `install-ledger.jsonl` must contain exactly one
+successful install of the candidate manifest/version/six images. `release-ledger.jsonl` must
+contain exactly the previous install, forward candidate release and exact previous rollback, with
+one operator, matching manifest/version/image identities, the same pre-upgrade backup and a full
+seven-day authority. The strict decoded backup header must bind that backup to the previous
+manifest/epoch and lie inside the run. The strict rotation decoder and semantic gate require the
+JWT, bootstrap and cursor activation/removal pairs and their 30-minute, 31-day and 366-day minimums.
+
+`deploymentrelease` now exposes byte decoders using the same append-only validation as file reads;
+`deploymentbackup` exposes a strict header decoder and also rejects backward header intervals, a
+gap found while making the artifact admissible. The candidate manifest artifact must now equal the
+candidate bundle's actual manifest bytes. The retained directory has fifteen files, base evidence
+sixteen hashes and sealed final evidence eighteen.
+
+Cold rehearsal, backup and release tests cover strict/trailing data and rehashed wrong candidate
+install, extra lifecycle success, wrong backup manifest and shortened rotation authority. Removing
+only the install-manifest equality made the isolated base test fail with `rehashed wrong candidate
+install manifest accepted`; restoring it returned the population green. Root vet and schema checks
+pass. These are validator and authority contracts; the real records remain unobserved and the probe
+count remains 25/43.

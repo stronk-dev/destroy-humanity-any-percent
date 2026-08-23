@@ -9,7 +9,9 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/deploymentbrowser"
+	"cloud-clicker/server/deploymentrelease"
 	"cloud-clicker/server/operations"
 	"cloud-clicker/server/releasepackage"
 )
@@ -169,6 +171,73 @@ func TestBaseRunRejectsRehashedDifferentHostAndObjectives(t *testing.T) {
 			if _, err := LoadAndValidateBaseRun(basePath, fixture.planPath, fixture.resultsDirectory,
 				fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("rehashed different %s accepted: %v", name, err)
+			}
+		})
+	}
+}
+
+func TestBaseRunRejectsRehashedOperatorAuthority(t *testing.T) {
+	for name, mutate := range map[string]func(*testing.T, *boundFixture, *Evidence){
+		"wrong candidate install manifest": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["install_ledger"])
+			records, err := deploymentrelease.DecodeReleaseLedger(mustRead(t, path))
+			if err != nil {
+				t.Fatal(err)
+			}
+			records[0].ManifestSHA256 = base.PreviousManifestSHA256
+			data := encodeReleaseRecords(records)
+			mustRewrite(t, path, data)
+			setArtifactDigest(base, "install_ledger", hashBytes(data))
+		},
+		"extra lifecycle success": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["release_ledger"])
+			records, err := deploymentrelease.DecodeReleaseLedger(mustRead(t, path))
+			if err != nil {
+				t.Fatal(err)
+			}
+			extra := records[2]
+			extra.StartedAt = extra.CompletedAt.Add(time.Second)
+			extra.CompletedAt = extra.StartedAt.Add(time.Second)
+			data := encodeReleaseRecords(append(records, extra))
+			mustRewrite(t, path, data)
+			setArtifactDigest(base, "release_ledger", hashBytes(data))
+		},
+		"wrong backup manifest": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["backup_header"])
+			header, err := deploymentbackup.DecodeHeader(mustRead(t, path))
+			if err != nil {
+				t.Fatal(err)
+			}
+			header.ReleaseManifestSHA256 = base.ManifestSHA256
+			data, _ := json.Marshal(header)
+			data = append(data, '\n')
+			mustRewrite(t, path, data)
+			setArtifactDigest(base, "backup_header", hashBytes(data))
+		},
+		"short rotation": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["rotation_ledger"])
+			records, err := deploymentrelease.DecodeRotationLedger(mustRead(t, path))
+			if err != nil {
+				t.Fatal(err)
+			}
+			records = records[:4]
+			data := encodeRotationRecords(records)
+			mustRewrite(t, path, data)
+			setArtifactDigest(base, "rotation_ledger", hashBytes(data))
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			fixture := boundRunFixture(t)
+			basePath := filepath.Join(fixture.sealDirectory, "base-evidence.json")
+			base, err := decodeBaseEvidence(mustRead(t, basePath))
+			if err != nil {
+				t.Fatal(err)
+			}
+			mutate(t, &fixture, &base)
+			writeEvidenceFixture(t, basePath, base)
+			if _, err := LoadAndValidateBaseRun(basePath, fixture.planPath, fixture.resultsDirectory,
+				fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("rehashed %s accepted: %v", name, err)
 			}
 		})
 	}
@@ -356,8 +425,8 @@ func boundRunFixture(t *testing.T) boundFixture {
 		t.Fatal(err)
 	}
 	evidence := validEvidence()
-	candidateManifestBytes := []byte(`{"source_commit":"` + strings.Repeat("c", 40) + `"}` + "\n")
-	previousManifestBytes := []byte(`{"source_commit":"` + strings.Repeat("d", 40) + `"}` + "\n")
+	candidateManifestBytes := authorityManifestFixture(strings.Repeat("c", 40), "1.0.0", "a")
+	previousManifestBytes := authorityManifestFixture(strings.Repeat("d", 40), "0.9.0", "b")
 	candidateBuild := validBuildRecord()
 	candidateBuild.SchemaVersion = 2
 	candidateBuild.Role = "candidate"
@@ -381,6 +450,9 @@ func boundRunFixture(t *testing.T) boundFixture {
 		}
 		evidence.Tools[index].SHA256 = hashBytes(data)
 	}
+	if err := os.WriteFile(filepath.Join(candidateBundleDirectory, releasepackage.ReleaseManifestPath), candidateManifestBytes, 0o444); err != nil {
+		t.Fatal(err)
+	}
 	artifactBytes := map[string][]byte{}
 	for name, file := range requiredRunArtifactFiles {
 		artifactBytes[name] = []byte(name + "\n")
@@ -395,6 +467,32 @@ func boundRunFixture(t *testing.T) boundFixture {
 		}
 		if name == "previous_build" {
 			artifactBytes[name] = previousBuildBytes
+		}
+		if name == "install_ledger" {
+			records := []deploymentrelease.ReleaseRecord{authorityInstallRecord(evidence.StartedAt.Add(time.Second), "1.0.0",
+				hashBytes(candidateManifestBytes), authorityImageReferences("a"))}
+			artifactBytes[name] = encodeReleaseRecords(records)
+		}
+		if name == "release_ledger" {
+			backupID := "20260823T120004Z-abcdef123456"
+			previousInstall := authorityInstallRecord(evidence.StartedAt.Add(3*time.Second), "0.9.0",
+				hashBytes(previousManifestBytes), authorityImageReferences("b"))
+			release := authorityTransitionRecord(evidence.StartedAt.Add(5*time.Second), "release", "1.0.0",
+				hashBytes(candidateManifestBytes), authorityImageReferences("a"), "0.9.0", hashBytes(previousManifestBytes), backupID)
+			release.RollbackUntil = release.CompletedAt.Add(deploymentrelease.RollbackWindow)
+			rollback := authorityTransitionRecord(evidence.StartedAt.Add(7*time.Second), "rollback", "0.9.0",
+				hashBytes(previousManifestBytes), authorityImageReferences("b"), "1.0.0", hashBytes(candidateManifestBytes), backupID)
+			artifactBytes[name] = encodeReleaseRecords([]deploymentrelease.ReleaseRecord{previousInstall, release, rollback})
+		}
+		if name == "rotation_ledger" {
+			artifactBytes[name] = authorityRotationLedger(evidence.StartedAt)
+		}
+		if name == "backup_header" {
+			header := deploymentbackup.Header{SchemaVersion: 1, BackupID: "20260823T120004Z-abcdef123456", ServerID: "r006-server",
+				ReleaseManifestSHA256: hashBytes(previousManifestBytes), EpochID: 8, StartedAt: evidence.StartedAt.Add(4 * time.Second),
+				CompletedAt: evidence.StartedAt.Add(5 * time.Second), PayloadSHA256: hashForBuild("7"), PayloadBytes: 1024, PreUpgrade: true}
+			artifactBytes[name], _ = json.Marshal(header)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
 		}
 		if name == "host_observation" {
 			observation := HostObservation{SchemaVersion: 1, StartedAt: evidence.StartedAt,
@@ -580,6 +678,101 @@ func setPopulationDigest(evidence *Evidence, name, digest string) {
 			evidence.Populations[index].EvidenceSHA256 = digest
 			return
 		}
+	}
+}
+
+func authorityManifestFixture(source, version, fill string) []byte {
+	type image struct {
+		Reference string `json:"reference"`
+	}
+	value := struct {
+		SourceCommit   string  `json:"source_commit"`
+		ReleaseVersion string  `json:"release_version"`
+		EpochID        int64   `json:"epoch_id"`
+		Images         []image `json:"images"`
+	}{SourceCommit: source, ReleaseVersion: version, EpochID: 8}
+	for _, reference := range authorityImageReferences(fill) {
+		value.Images = append(value.Images, image{Reference: reference})
+	}
+	data, _ := json.Marshal(value)
+	return append(data, '\n')
+}
+
+func authorityImageReferences(fill string) []string {
+	result := make([]string, 6)
+	for index := range result {
+		result[index] = "image" + string(rune('a'+index)) + "@sha256:" + strings.Repeat(fill, 64)
+	}
+	return result
+}
+
+func authorityInstallRecord(start time.Time, version, manifest string, images []string) deploymentrelease.ReleaseRecord {
+	return deploymentrelease.ReleaseRecord{SchemaVersion: 1, Action: "install", ReleaseVersion: version,
+		ManifestSHA256: manifest, ImageDigests: images, BackupID: "none", StartedAt: start,
+		CompletedAt: start.Add(time.Second), Result: "succeeded", Operator: "operator-1"}
+}
+
+func authorityTransitionRecord(start time.Time, action, version, manifest string, images []string,
+	previousVersion, previousManifest, backupID string) deploymentrelease.ReleaseRecord {
+	return deploymentrelease.ReleaseRecord{SchemaVersion: 1, Action: action, ReleaseVersion: version,
+		ManifestSHA256: manifest, PreviousVersion: previousVersion, PreviousManifestSHA256: previousManifest,
+		ImageDigests: images, BackupID: backupID, StartedAt: start, CompletedAt: start.Add(time.Second),
+		Result: "succeeded", Operator: "operator-1"}
+}
+
+func encodeReleaseRecords(records []deploymentrelease.ReleaseRecord) []byte {
+	result := []byte{}
+	for _, record := range records {
+		data, _ := json.Marshal(record)
+		result = append(result, data...)
+		result = append(result, '\n')
+	}
+	return result
+}
+
+func authorityRotationLedger(start time.Time) []byte {
+	result := []byte{}
+	clock := start
+	for _, family := range []deploymentrelease.KeyFamily{deploymentrelease.FamilyJWT, deploymentrelease.FamilyBootstrap, deploymentrelease.FamilyCursor} {
+		overlap, _ := deploymentrelease.MinimumOverlap(family)
+		activated := deploymentrelease.RotationRecord{SchemaVersion: 1, Family: family, Action: "activated",
+			CurrentID: string(family) + "-new", PreviousID: string(family) + "-old", OccurredAt: clock, Operator: "operator-1"}
+		removed := activated
+		removed.Action = "removed"
+		removed.OccurredAt = clock.Add(overlap)
+		for _, record := range []deploymentrelease.RotationRecord{activated, removed} {
+			data, _ := json.Marshal(record)
+			result = append(result, data...)
+			result = append(result, '\n')
+		}
+		clock = removed.OccurredAt.Add(time.Second)
+	}
+	return result
+}
+
+func encodeRotationRecords(records []deploymentrelease.RotationRecord) []byte {
+	result := []byte{}
+	for _, record := range records {
+		data, _ := json.Marshal(record)
+		result = append(result, data...)
+		result = append(result, '\n')
+	}
+	return result
+}
+
+func mustRead(t *testing.T, path string) []byte {
+	t.Helper()
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+
+func mustRewrite(t *testing.T, path string, data []byte) {
+	t.Helper()
+	if err := os.WriteFile(path, data, 0o600); err != nil {
+		t.Fatal(err)
 	}
 }
 

@@ -3,6 +3,7 @@ package deploymentbackup
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -190,6 +191,16 @@ func ReadHeader(path string) (Header, error) {
 	return header, nil
 }
 
+func DecodeHeader(data []byte) (Header, error) {
+	var header Header
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&header) != nil || decoder.Decode(&struct{}{}) != io.EOF || validateHeader(header) != nil {
+		return Header{}, ErrInvalid
+	}
+	return header, nil
+}
+
 func Restore(path, expectedManifest string, identity age.Identity, output io.Writer) (Header, error) {
 	if identity == nil || output == nil || !hash.MatchString(expectedManifest) {
 		return Header{}, fmt.Errorf("%w: restore inputs", ErrInvalid)
@@ -351,7 +362,7 @@ func ApplyRetention(paths []string, now time.Time) (Retention, error) {
 
 func validateHeader(header Header) error {
 	if header.SchemaVersion != 1 || !backupID.MatchString(header.BackupID) || header.ServerID == "" || !hash.MatchString(header.ReleaseManifestSHA256) ||
-		header.EpochID < 1 || header.StartedAt.IsZero() || header.CompletedAt.IsZero() || !hash.MatchString(header.PayloadSHA256) || header.PayloadBytes < 1 || header.UpgradeResolved && !header.PreUpgrade {
+		header.EpochID < 1 || header.StartedAt.IsZero() || header.CompletedAt.Before(header.StartedAt) || !hash.MatchString(header.PayloadSHA256) || header.PayloadBytes < 1 || header.UpgradeResolved && !header.PreUpgrade {
 		return ErrInvalid
 	}
 	return nil

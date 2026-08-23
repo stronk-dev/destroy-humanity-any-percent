@@ -2,6 +2,7 @@ package deploymentbackup
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -44,6 +45,29 @@ func TestEncryptedBackupRoundTripAndFailClosedInputs(t *testing.T) {
 	}
 	if _, err := Restore(path, manifest, identity, &bytes.Buffer{}); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("corruption accepted: %v", err)
+	}
+}
+
+func TestBackupHeaderDecoderRejectsUnknownTrailingAndBackwardTime(t *testing.T) {
+	now := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	header := Header{SchemaVersion: 1, BackupID: "20260823T120000Z-abcdef123456", ServerID: "server",
+		ReleaseManifestSHA256: "sha256:" + strings.Repeat("a", 64), EpochID: 8, StartedAt: now,
+		CompletedAt: now.Add(time.Minute), PayloadSHA256: "sha256:" + strings.Repeat("b", 64), PayloadBytes: 100, PreUpgrade: true}
+	data, _ := json.Marshal(header)
+	if decoded, err := DecodeHeader(data); err != nil || decoded.BackupID != header.BackupID {
+		t.Fatalf("decoded=%+v err=%v", decoded, err)
+	}
+	unknown := append(data[:len(data)-1], []byte(`,"unknown":true}`)...)
+	if _, err := DecodeHeader(unknown); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("unknown header field accepted: %v", err)
+	}
+	if _, err := DecodeHeader(append(data, []byte(`{}`)...)); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("trailing header accepted: %v", err)
+	}
+	header.CompletedAt = header.StartedAt.Add(-time.Second)
+	data, _ = json.Marshal(header)
+	if _, err := DecodeHeader(data); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("backward header interval accepted: %v", err)
 	}
 }
 

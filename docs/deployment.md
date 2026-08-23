@@ -217,10 +217,11 @@ the result directory must contain exactly one mode-0600 result for every canonic
 extra entry. Each result's name, kind, step, command hash, expected exit, completed/non-guarded
 state, observation interval and raw file hash must agree with the plan and its evidence population.
 
-The artifact directory contains exactly fourteen mode-0600 retained inputs/outputs: candidate and
-previous manifests, their independent-build records, release and rotation ledgers, backup header,
-host and recovery-objective observations, browser result, alert delivery, journal observation,
-secret scan and supply-chain result. Every raw digest must equal its evidence
+The artifact directory contains exactly fifteen mode-0600 retained inputs/outputs: candidate and
+previous manifests, their independent-build records, separate candidate-install and lifecycle
+release ledgers, the rotation ledger, backup header, host and recovery-objective observations,
+browser result, alert delivery, journal observation, secret scan and supply-chain result. Every raw
+digest must equal its evidence
 row, and both manifest files must also equal the run's top-level identities. Each of the eleven
 step intervals and input/output hashes is derived from the ordered command and raw-result hashes
 of the plan rows assigned to that step. A plausible evidence JSON with invented artifact hashes or
@@ -236,8 +237,16 @@ The host and recovery-objective artifacts are also strict timed observations. Th
 and objective values must equal the corresponding top-level evidence field by field (with times
 compared as instants) and lie inside the run. This makes Linux/amd64, clean-start, provider-off,
 restored identity, RPO and RTO values derived claims rather than editable summaries. The base
-dossier therefore binds fifteen artifacts including the reviewed plan; the final sealed dossier
-binds seventeen after adding the immutable base and forgery proof.
+dossier therefore binds sixteen artifacts including the reviewed plan; the final sealed dossier
+binds eighteen after adding the immutable base and forgery proof.
+
+Operator records are semantic evidence, not arbitrary JSONL. The candidate-install ledger must be
+the single exact candidate success. The separate lifecycle ledger must be the exact previous
+install, candidate release and previous rollback in order, with matching versions, manifests, six
+image identities, operator, pre-upgrade backup and seven-day rollback authority. The decoded
+backup header binds that backup to the previous manifest and epoch. Rotation evidence contains the
+JWT, bootstrap and cursor activation/removal pairs and cannot shorten any governed overlap. Scratch
+failure ledgers used by negative fixtures are not retained as successful authority.
 
 The 43rd `forged_successful_evidence` population is sealed after the 42 command results complete,
 so it never hashes itself. A base dossier must first pass the full plan/result/artifact/tool

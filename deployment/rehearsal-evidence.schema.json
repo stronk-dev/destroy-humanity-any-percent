@@ -106,8 +106,8 @@
     },
     "artifacts": {
       "type": "array",
-      "minItems": 17,
-      "maxItems": 17,
+      "minItems": 18,
+      "maxItems": 18,
       "items": { "$ref": "#/$defs/namedHash" }
     },
     "exclusions": {
