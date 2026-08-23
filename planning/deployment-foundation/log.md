@@ -1259,3 +1259,20 @@ only the install-manifest equality made the isolated base test fail with `rehash
 install manifest accepted`; restoring it returned the population green. Root vet and schema checks
 pass. These are validator and authority contracts; the real records remain unobserved and the probe
 count remains 25/43.
+
+## 2026-08-23 — DP-F2 predeclaration: clean-host observation producer
+
+The first runtime producer will be `deployment-rehearsal observe-host --config=<private path>`.
+It will consume the strict scenario input, validate both exact bundles, observe Linux kernel/
+architecture/distribution and Docker/Compose versions through direct commands, prove the named
+Compose project has no containers or Postgres volume, reject source-control metadata in every
+configured run/bundle directory and reject any optional identity/mail/AI/payment/cloud-provider
+credential in its inherited environment. Production database/key/receiver secret-file plumbing is
+not an optional-provider credential and its values are never read into evidence.
+
+The producer writes only `host-observation.json` in the exclusive artifact directory, using the
+already bound strict mode-0600 contract. Command errors, unknown OS/architecture, malformed distro
+identity, nonempty project state, provider credentials, checkout metadata, output overwrite and
+invalid/incomplete timing reject. Tests inject exact command output and independently sever each
+predicate; the discriminator will make one provider credential invisible and require its permanent
+negative to fail. This is producer construction, not an observed clean-host population.
