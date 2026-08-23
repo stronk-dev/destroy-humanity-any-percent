@@ -1144,3 +1144,20 @@ production sequence by name made that oracle fail immediately, beginning with
 the focused test green. Permanent negatives also swap rows, duplicate a row and put the correct
 name under the wrong step. No runtime population was implemented or counted by this repair, so the
 total remains 25/43.
+
+## 2026-08-23 — DP-F2 predeclaration: strict runtime-scenario input
+
+The remaining seventeen non-forgery rows require shared clean-host state and cannot be represented
+honestly by the four probe paths alone. Before orchestration, the next batch will add one strict,
+private scenario-input contract containing only non-secret identities and absolute paths: run ID,
+candidate/previous bundles, work/artifact/operator/backup/metrics directories, age identity path,
+public origin, receiver-health URL, public age recipient and server UUID. Secret values remain in
+the production Compose secret files and never enter this document or the reviewed argv vectors.
+
+The decoder will reject unknown/trailing fields, relative or non-clean paths, overlapping mutable
+directories, malformed public/receiver URLs, malformed age recipient/server identity, non-0600 or
+non-regular input and unsafe directory/file types. A config whose values are syntactically valid
+but whose runtime paths do not exist will also reject; orchestration may not create authority by
+guessing operator locations. Permanent mutations cover each field class and output overwrite is
+not applicable because this batch only establishes input authority. The discriminator will remove
+unknown-field refusal and require the strict-decoder test to fail. No population count changes.
