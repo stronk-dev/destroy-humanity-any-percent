@@ -1,5 +1,5 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration test-deployment-backup validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 build-deployment-backup-linux-amd64 build-deployment-release-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
-.PHONY: test-deployment-release test-deployment-operations test-deployment-rehearsal deployment-rehearsal-probe build-deployment-rehearsal build-deployment-operations-linux-amd64 build-deployment-rehearsal-linux-amd64 generate-image-sbom
+.PHONY: setup install-browsers install-browsers-ci mod-tidy test test-go test-go-core test-harness test-go-ci test-save-integration test-deployment-backup validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver build-gameserver-linux-amd64 build-deployment-backup-linux-amd64 build-deployment-release-linux-amd64 create-release-builder build-gameserver-image deployment-config-check stage-release-content render-release-compose generate-release-metadata assemble-release-bundle release-secret-scan vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-observe harness-observation-check relevance-registered-observe harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check publication-authority-check publication-authority-fresh-clone-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness-fast verify-harness verify-server-ci verify-harness-ci verify-client verify-game-ui verify
+.PHONY: test-deployment-release test-deployment-operations test-deployment-rehearsal deployment-rehearsal-probe build-deployment-rehearsal build-deployment-browser-linux-amd64 build-deployment-operations-linux-amd64 build-deployment-rehearsal-linux-amd64 generate-image-sbom
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -10,6 +10,7 @@ GO_TEST_FLAGS ?=
 RELEASE_BUILDX_BUILDER ?= cloud-clicker-release-v1
 RELEASE_BUILDKIT_IMAGE := moby/buildkit:v0.24.0@sha256:6eceb8971ce4fceb3daca562832642706238b7eea72941fcf9896c93c3c4a53e
 SYFT_IMAGE := anchore/syft:v1.51.0@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0
+PLAYWRIGHT_IMAGE := mcr.microsoft.com/playwright:v1.62.0-noble@sha256:02bbb2155cd7109e3e9c741941097ed1608cf8b6fa44ee2595896da2bdc1f471
 PROMETHEUS_RULE_IMAGE := prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac
 CORE_TEST_COUNT ?= 1
 HARNESS_TEST_COUNT ?= 1
@@ -43,6 +44,9 @@ FIRST_HOUR_GENERATED_TOWERS ?=
 setup:
 	pnpm --dir client install --frozen-lockfile
 	$(MAKE) install-browsers
+
+mod-tidy:
+	cd server && go mod tidy
 
 install-browsers:
 	pnpm --dir client run setup:browsers
@@ -197,6 +201,13 @@ build-deployment-rehearsal-linux-amd64:
 		-ldflags='-s -w -buildid=' \
 		-o "$(if $(filter /%,$(RELEASE_REHEARSAL_OUTPUT)),$(RELEASE_REHEARSAL_OUTPUT),../$(RELEASE_REHEARSAL_OUTPUT))" \
 		./cmd/deployment-rehearsal
+
+build-deployment-browser-linux-amd64:
+	@test -n "$(RELEASE_BROWSER_OUTPUT)" || (echo "RELEASE_BROWSER_OUTPUT is required" >&2; exit 1)
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false \
+		-ldflags='-s -w -buildid=' \
+		-o "$(if $(filter /%,$(RELEASE_BROWSER_OUTPUT)),$(RELEASE_BROWSER_OUTPUT),../$(RELEASE_BROWSER_OUTPUT))" \
+		./cmd/deployment-browser
 
 # Syft discovers the image package graph; the repository normalizer binds its
 # nondeterministic header to the exact runtime config and release timestamp.

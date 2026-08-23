@@ -177,6 +177,24 @@ step intervals and input/output hashes is derived from the ordered command and r
 of the plan rows assigned to that step. A plausible evidence JSON with invented artifact hashes or
 handwritten step summaries is invalid even when its standalone shape is correct.
 
+`deployment-browser` is the clean-host browser-driver component under construction. It is a
+reproducible static Linux/amd64 Go binary using Chrome DevTools directly; it does not require Node,
+Vite, a package install or repository source on the rehearsal host. The browser executable comes
+from the rehearsal-only Playwright 1.62.0 Noble image pinned to amd64 manifest
+`sha256:02bbb2155cd7109e3e9c741941097ed1608cf8b6fa44ee2595896da2bdc1f471` (runtime config
+`sha256:50cbb76d250a50002045a95f484c5f40573cde831adbe40c784052c037e36118`). This image is a
+measurement tool, not another running Cloud Clicker service.
+
+The driver navigates the canonical HTTPS Caddy origin in real headless Chromium, clicks the visible
+`BEGIN ATTEMPT` and `Fix Computer` controls, and accepts a result only when the desk renders, the
+bootstrap credential is gone, durable credentials exist, a WebSocket handshake completed, the
+manual intent received HTTP 200 and no page exception fired. It writes only those booleans/status,
+timestamps and the candidate manifest hash to a new mode-0600 JSON file; it never serializes a
+credential, Founder/account identifier, request body or WebSocket payload. A loopback-HTTP flag
+exists solely for the isolated driver fixture and is not admissible in the reviewed R-006 plan.
+The binary, pinned browser image identity and its SBOM still need to enter the rebuilt release
+bundle before `phase0_browser_flow_through_caddy` can count as implemented or observed.
+
 ## Encrypted Postgres backup and restore
 
 `deployment-backup` is a statically linked Linux/amd64 operator helper included in, hashed by and

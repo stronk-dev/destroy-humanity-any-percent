@@ -835,3 +835,33 @@ step test fail with `forged artifact/step accepted`; restoring it returns the te
 This still does not mark `forged_successful_evidence` complete: tool-binary identities and schemas
 for the retained browser/alert/journal/scan/supply-chain files remain to bind, and the final plan
 must avoid a circular dependency between producing evidence and testing its forgery rejection.
+
+## 2026-08-23 — DP-F2 clean-host browser-driver construction
+
+The repository's composed Game UI script cannot serve as R-006's browser tool: it builds the Go
+server, starts Vite, reads repository paths and shells into the test Compose database. A clean host
+with only Docker/Compose and release bytes needs a different executable boundary. A new static
+Linux/amd64 `deployment-browser` uses pinned `chromedp` v0.15.1 and drives Chromium from the pinned
+Playwright 1.62.0 Noble amd64 manifest
+`sha256:02bbb2155cd7109e3e9c741941097ed1608cf8b6fa44ee2595896da2bdc1f471`; the selected runtime
+config is `sha256:50cbb76d250a50002045a95f484c5f40573cde831adbe40c784052c037e36118` and browser path is
+`/ms-playwright/chromium-1234/chrome-linux64/chrome`. The multi-platform index initially hit Docker
+Desktop's cached-manifest collision after download; resolving and executing the amd64 manifest
+directly worked without changing the selected bytes.
+
+The driver records only the exact candidate manifest hash, UTC bounds, desk surface, credential
+handoff booleans, completed WebSocket handshake, manual-intent observation/status, page-exception
+count and objective/guard state in an exclusive mode-0600 result. It never captures credential
+values, response bodies, player IDs or socket frames. Unit negatives cover retained bootstrap,
+missing durable credentials, no handshake, no intent, non-200 intent, page exception, incomplete
+objective, guard exhaustion, insecure production origin and output overwrite.
+
+A real Linux/amd64 driver binary ran inside the pinned Playwright image against the local isolated
+fixture: Chromium navigated, clicked both visible controls, completed the socket handshake and
+intent, and wrote a 437-byte sanitized result in 3.35 seconds. Severing only the fixture's WebSocket
+upgrade made the same driver exit one and write no success artifact. The first sandboxed fixture
+listener was denied and is not evidence; the exact unrestricted local rerun is the claimed result.
+This is driver discrimination only, not the real product browser population. Bundle inclusion,
+Playwright SBOM/provenance, tool-hash binding and exact Caddy execution remain open, so the probe
+count stays 15/43. Two independent trimpath/build-ID-free Linux/amd64 driver builds were
+byte-identical.
