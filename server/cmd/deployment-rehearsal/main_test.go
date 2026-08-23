@@ -13,7 +13,7 @@ func TestRunValidateRejectsMissingAndInvalidEvidence(t *testing.T) {
 		t.Fatalf("empty evidence path accepted: %v", err)
 	}
 	path := t.TempDir() + "/missing.json"
-	if _, err := runValidate([]string{"--evidence", path, "--plan", path, "--results", t.TempDir(), "--artifacts", t.TempDir(), "--candidate-bundle", t.TempDir()}); err == nil {
+	if _, err := runValidate([]string{"--evidence", path, "--plan", path, "--results", t.TempDir(), "--artifacts", t.TempDir(), "--candidate-bundle", t.TempDir(), "--seal", t.TempDir()}); err == nil {
 		t.Fatal("missing evidence accepted")
 	}
 }
@@ -45,5 +45,11 @@ func TestRunProbeDistinguishesInvalidSetupFromExpectedRejection(t *testing.T) {
 func TestRunSupplyChainRequiresExactInputs(t *testing.T) {
 	if _, err := runSupplyChain(nil); !errors.Is(err, deploymentrehearsal.ErrInvalid) {
 		t.Fatalf("empty supply-chain inputs accepted: %v", err)
+	}
+}
+
+func TestRunForgeProofRequiresCompleteBaseInputs(t *testing.T) {
+	if _, err := runForgeProof(nil); !errors.Is(err, deploymentrehearsal.ErrInvalid) {
+		t.Fatalf("empty forge-proof inputs accepted: %v", err)
 	}
 }

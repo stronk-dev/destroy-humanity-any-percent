@@ -16,7 +16,7 @@ import (
 
 func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
 	fixture := boundRunFixture(t)
-	validated, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory)
+	validated, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory)
 	if err != nil || validated.RunID != fixture.evidence.RunID {
 		t.Fatalf("bound run rejected: run=%s err=%v", validated.RunID, err)
 	}
@@ -32,8 +32,25 @@ func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
 	if err := os.WriteFile(fixture.evidencePath, append(data, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("structurally valid forged evidence accepted: %v", err)
+	}
+}
+
+func TestBaseRunValidationAcceptsOnlyTheFortyTwoCompletedInputs(t *testing.T) {
+	fixture := boundRunFixture(t)
+	base := fixture.evidence
+	base.Populations = removePopulation(base.Populations, "forged_successful_evidence")
+	base.Artifacts = filterNamedArtifacts(base.Artifacts, BaseRequiredArtifacts)
+	writeEvidenceFixture(t, fixture.evidencePath, base)
+	validated, err := LoadAndValidateBaseRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory,
+		fixture.artifactsDirectory, fixture.candidateBundleDirectory)
+	if err != nil || len(validated.Populations) != len(planPopulations()) {
+		t.Fatalf("base run rejected: populations=%d err=%v", len(validated.Populations), err)
+	}
+	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory,
+		fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("unsealed base accepted as final: %v", err)
 	}
 }
 
@@ -74,7 +91,7 @@ func TestRunValidationRejectsRewrittenMissingAndUnsafeResults(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
 			mutate(t, fixture)
-			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("invalid result population accepted: %v", err)
 			}
 		})
@@ -91,7 +108,7 @@ func TestRunValidationRejectsForgedPopulationEvidenceHash(t *testing.T) {
 	if err := os.WriteFile(fixture.evidencePath, append(data, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("forged population evidence hash accepted: %v", err)
 	}
 }
@@ -162,7 +179,7 @@ func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
 			mutate(t, &fixture)
-			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("forged artifact/step accepted: %v", err)
 			}
 		})
@@ -201,7 +218,7 @@ func TestRunValidationBindsExactCandidateToolBytes(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
 			mutate(t, fixture)
-			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory); !errors.Is(err, ErrInvalid) {
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("unbound candidate tool accepted: %v", err)
 			}
 		})
@@ -216,6 +233,7 @@ type boundFixture struct {
 	resultsDirectory         string
 	artifactsDirectory       string
 	candidateBundleDirectory string
+	sealDirectory            string
 }
 
 func boundRunFixture(t *testing.T) boundFixture {
@@ -224,6 +242,7 @@ func boundRunFixture(t *testing.T) boundFixture {
 	results := filepath.Join(root, "results")
 	artifactsDirectory := filepath.Join(root, "artifacts")
 	candidateBundleDirectory := filepath.Join(root, "candidate-bundle")
+	sealDirectory := filepath.Join(root, "seal")
 	if err := os.Mkdir(results, 0o700); err != nil {
 		t.Fatal(err)
 	}
@@ -231,6 +250,9 @@ func boundRunFixture(t *testing.T) boundFixture {
 		t.Fatal(err)
 	}
 	if err := os.Mkdir(candidateBundleDirectory, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Mkdir(sealDirectory, 0o700); err != nil {
 		t.Fatal(err)
 	}
 	evidence := validEvidence()
@@ -402,6 +424,32 @@ func boundRunFixture(t *testing.T) boundFixture {
 	if err := os.WriteFile(planPath, planBytes, 0o600); err != nil {
 		t.Fatal(err)
 	}
+	base := evidence
+	base.Populations = removePopulation(base.Populations, "forged_successful_evidence")
+	base.Artifacts = filterNamedArtifacts(base.Artifacts, BaseRequiredArtifacts)
+	base.CompletedAt = evidence.CompletedAt.Add(-2 * time.Second)
+	baseBytes, err := json.MarshalIndent(base, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	baseBytes = append(baseBytes, '\n')
+	if err := os.WriteFile(filepath.Join(sealDirectory, "base-evidence.json"), baseBytes, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	proof := ForgeryProof{SchemaVersion: 1, RunID: base.RunID, ManifestSHA256: base.ManifestSHA256,
+		BaseEvidenceSHA256: hashBytes(baseBytes), Mutation: ForgeryMutation, StartedAt: base.CompletedAt,
+		CompletedAt: base.CompletedAt.Add(time.Second), RejectionObserved: true, ObjectiveCompleted: true}
+	proofBytes, err := json.Marshal(proof)
+	if err != nil {
+		t.Fatal(err)
+	}
+	proofBytes = append(proofBytes, '\n')
+	if err := os.WriteFile(filepath.Join(sealDirectory, "forgery-proof.json"), proofBytes, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	setArtifactDigest(&evidence, "base_evidence", hashBytes(baseBytes))
+	setArtifactDigest(&evidence, "forgery_proof", hashBytes(proofBytes))
+	setPopulationDigest(&evidence, "forged_successful_evidence", hashBytes(proofBytes))
 	evidenceBytes, err := json.MarshalIndent(evidence, "", "  ")
 	if err != nil {
 		t.Fatal(err)
@@ -411,7 +459,16 @@ func boundRunFixture(t *testing.T) boundFixture {
 		t.Fatal(err)
 	}
 	return boundFixture{evidence: evidence, plan: plan, evidencePath: evidencePath, planPath: planPath,
-		resultsDirectory: results, artifactsDirectory: artifactsDirectory, candidateBundleDirectory: candidateBundleDirectory}
+		resultsDirectory: results, artifactsDirectory: artifactsDirectory, candidateBundleDirectory: candidateBundleDirectory, sealDirectory: sealDirectory}
+}
+
+func setPopulationDigest(evidence *Evidence, name, digest string) {
+	for index := range evidence.Populations {
+		if evidence.Populations[index].Name == name {
+			evidence.Populations[index].EvidenceSHA256 = digest
+			return
+		}
+	}
 }
 
 func setArtifactDigest(evidence *Evidence, name, digest string) {
@@ -421,6 +478,16 @@ func setArtifactDigest(evidence *Evidence, name, digest string) {
 			return
 		}
 	}
+}
+
+func removePopulation(populations []Population, name string) []Population {
+	result := make([]Population, 0, len(populations)-1)
+	for _, population := range populations {
+		if population.Name != name {
+			result = append(result, population)
+		}
+	}
+	return result
 }
 
 func writeEvidenceFixture(t *testing.T, path string, evidence Evidence) {

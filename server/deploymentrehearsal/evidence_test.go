@@ -38,6 +38,7 @@ func TestBaseEvidenceSeparatesNonCircularForgeryPopulation(t *testing.T) {
 		}
 	}
 	base.Populations = populations
+	base.Artifacts = filterNamedArtifacts(base.Artifacts, BaseRequiredArtifacts)
 	if err := ValidateBaseEvidence(base); err != nil {
 		t.Fatalf("valid 42-population base rejected: %v", err)
 	}

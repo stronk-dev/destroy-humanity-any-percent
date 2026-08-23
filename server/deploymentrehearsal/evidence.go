@@ -184,7 +184,7 @@ var BaseRequiredArtifacts = []string{
 	"supply_chain",
 }
 
-var RequiredArtifacts = append([]string(nil), BaseRequiredArtifacts...)
+var RequiredArtifacts = append(append([]string(nil), BaseRequiredArtifacts...), "base_evidence", "forgery_proof")
 
 var RequiredExclusions = []string{
 	"public_hosting",

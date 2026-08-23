@@ -132,8 +132,8 @@ can claim supported self-hosting.
 
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
-shell—into a new empty result directory. The plan must enumerate every declared positive and
-negative population in canonical order, require exit zero for positive checks and exact exit one
+shell—into a new empty result directory. The plan must enumerate the 42 non-forgery positive and
+negative populations in canonical order, require exit zero for positive checks and exact exit one
 for severing checks, and give every command a one-second to four-hour guard. Output is capped at
 one MiB per check; timeout, truncation, wrong exit, unsafe shell/sudo invocation, secret-shaped
 argument, prior result byte or non-monotonic observation fails the lane. The final evidence binds
@@ -183,8 +183,8 @@ validation alone is insufficient because a later re-signed bundle must not be ab
 hashes while changing a public route or container boundary.
 
 Final `validate` is not structural JSON validation. It requires the evidence file, exact reviewed
-plan, exclusive per-population result directory, exclusive retained-artifact directory and exact
-candidate bundle. The
+plan, exclusive per-population result directory, exclusive retained-artifact directory, exact
+candidate bundle and exclusive two-file seal directory. The
 plan hash must match the `rehearsal_plan` artifact; run and both manifest identities must agree;
 the result directory must contain exactly one mode-0600 result for every canonical plan row and no
 extra entry. Each result's name, kind, step, command hash, expected exit, completed/non-guarded
@@ -203,6 +203,14 @@ The browser and journal artifacts are decoded through their owning production co
 their hashes match: unknown/trailing fields, an incomplete browser outcome, a different candidate
 manifest, an invalid journal budget/retention observation or a time interval outside the run all
 reject even if the forged bytes are rehashed into the top-level evidence.
+
+The 43rd `forged_successful_evidence` population is sealed after the 42 command results complete,
+so it never hashes itself. A base dossier must first pass the full plan/result/artifact/tool
+validator. `make deployment-rehearsal-forge-proof` then changes the base dossier's browser-result
+hash and succeeds only when the same base validator rejects that exact mutation. The final dossier
+binds the immutable base and proof files as two additional artifact hashes; final validation checks
+their mode and bytes, confirms the final dossier is only the base plus the seal, and independently
+replays the mutation. A proof document saying `rejection_observed: true` is not trusted by itself.
 
 `deployment-operations alert-observe` first validates the exact candidate bundle and executes its
 checked-in seven-family rule population with `promtool` from the candidate's digest-pinned

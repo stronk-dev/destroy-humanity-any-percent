@@ -1036,3 +1036,25 @@ The discriminator will remove only the replayed rejection and must make a forged
 missing base, pre-invalid base, unknown mutation, mismatched subject hash, self-authored result hash
 or proof generated before all 42 rows complete is invalid. This dependency-order correction does
 not remove a population, weaken a validator or count the row before the real proof executes.
+
+## 2026-08-23 — DP-F2 non-circular evidence seal implementation
+
+The fixed execution plan now contains exactly the 42 non-forgery populations. A base dossier has a
+separate strict decoder and must bind all 42 raw results, the reviewed plan, twelve typed artifacts
+and the exact candidate tool bytes before the forgery producer will run. `deployment-rehearsal
+forge-proof` mutates only the base dossier's browser-result hash and writes an exclusive mode-0600
+proof only when the same base validator rejects that mutation. A pre-invalid base is refused.
+
+The final dossier retains fifteen artifact hashes: the thirteen base hashes plus the immutable base
+dossier and forgery proof. Final `validate` requires a separate two-file mode-0600 seal directory,
+checks that the final dossier is exactly the base plus those two hashes and the 43rd population,
+and independently replays the named mutation. Focused tests cover base/final separation, input and
+output binding, pre-invalid base refusal, unknown/claim-only proof rejection and seal modes. The
+replay discriminator replaced the real mutation with an identity function; the otherwise-valid
+final fixture failed with `invalid deployment rehearsal evidence`. Restoring the mutation returned
+the focused population green. The JSON Schema now requires all fifteen final artifact hashes.
+
+This completes the non-circular mechanism but does not count the real
+`forged_successful_evidence` population: it must run after the exact 42-row R-006 base exists. The
+implemented real-probe count therefore remains 15/43, and the retained candidate must still be
+rebuilt after the full DP-F2 command surface stabilizes.

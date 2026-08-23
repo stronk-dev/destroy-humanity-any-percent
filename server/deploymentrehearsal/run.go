@@ -29,10 +29,28 @@ var requiredRunArtifactFiles = map[string]string{
 	"supply_chain":        "supply-chain.json",
 }
 
-func LoadAndValidateRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory string) (Evidence, error) {
+func LoadAndValidateRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory, sealDirectory string) (Evidence, error) {
+	return loadAndValidateBoundRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory, sealDirectory, false)
+}
+
+func LoadAndValidateBaseRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory string) (Evidence, error) {
+	return loadAndValidateBoundRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory, "", true)
+}
+
+func loadAndValidateBoundRun(evidencePath, planPath, resultsDirectory, artifactsDirectory, candidateBundleDirectory, sealDirectory string, base bool) (Evidence, error) {
 	evidence, err := Load(evidencePath)
 	if err != nil {
-		return Evidence{}, err
+		if !base {
+			return Evidence{}, err
+		}
+		data, readErr := os.ReadFile(evidencePath)
+		if readErr != nil {
+			return Evidence{}, readErr
+		}
+		evidence, err = decodeBaseEvidence(data)
+		if err != nil {
+			return Evidence{}, err
+		}
 	}
 	planBytes, err := os.ReadFile(planPath)
 	if err != nil {
@@ -42,14 +60,32 @@ func LoadAndValidateRun(evidencePath, planPath, resultsDirectory, artifactsDirec
 	if err != nil {
 		return Evidence{}, err
 	}
-	if err := ValidateRunBindings(evidence, plan, planBytes, resultsDirectory, artifactsDirectory, candidateBundleDirectory); err != nil {
+	if err := validateRunBindings(evidence, plan, planBytes, resultsDirectory, artifactsDirectory, candidateBundleDirectory, base); err != nil {
 		return Evidence{}, err
+	}
+	if !base && ValidateFinalSeal(evidence, plan, planBytes, resultsDirectory, artifactsDirectory, candidateBundleDirectory, sealDirectory) != nil {
+		return Evidence{}, ErrInvalid
 	}
 	return evidence, nil
 }
 
-func ValidateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte, resultsDirectory, artifactsDirectory, candidateBundleDirectory string) error {
-	if Validate(evidence) != nil || ValidateExecutionPlan(plan) != nil || len(planBytes) == 0 || resultsDirectory == "" || artifactsDirectory == "" || candidateBundleDirectory == "" ||
+func ValidateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte, resultsDirectory, artifactsDirectory, candidateBundleDirectory, sealDirectory string) error {
+	if err := validateRunBindings(evidence, plan, planBytes, resultsDirectory, artifactsDirectory, candidateBundleDirectory, false); err != nil {
+		return err
+	}
+	return ValidateFinalSeal(evidence, plan, planBytes, resultsDirectory, artifactsDirectory, candidateBundleDirectory, sealDirectory)
+}
+
+func ValidateBaseRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte, resultsDirectory, artifactsDirectory, candidateBundleDirectory string) error {
+	return validateRunBindings(evidence, plan, planBytes, resultsDirectory, artifactsDirectory, candidateBundleDirectory, true)
+}
+
+func validateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte, resultsDirectory, artifactsDirectory, candidateBundleDirectory string, base bool) error {
+	validateEvidence := Validate
+	if base {
+		validateEvidence = ValidateBaseEvidence
+	}
+	if validateEvidence(evidence) != nil || ValidateExecutionPlan(plan) != nil || len(planBytes) == 0 || resultsDirectory == "" || artifactsDirectory == "" || candidateBundleDirectory == "" ||
 		evidence.RunID != plan.RunID || evidence.ManifestSHA256 != plan.ManifestSHA256 ||
 		evidence.PreviousManifestSHA256 != plan.PreviousManifestSHA256 || artifactDigest(evidence.Artifacts, "rehearsal_plan") != hashBytes(planBytes) {
 		return ErrInvalid
@@ -109,6 +145,19 @@ func ValidateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte
 		}
 	}
 	return nil
+}
+
+func decodeBaseEvidence(data []byte) (Evidence, error) {
+	if containsForbiddenEvidenceKey(data) {
+		return Evidence{}, ErrInvalid
+	}
+	var evidence Evidence
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&evidence) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateBaseEvidence(evidence) != nil {
+		return Evidence{}, ErrInvalid
+	}
+	return evidence, nil
 }
 
 func validateToolBindings(tools []Tool, candidateBundleDirectory string) error {

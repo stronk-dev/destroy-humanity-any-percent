@@ -46,9 +46,29 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal supply chain passed")
+	case "forge-proof":
+		if _, err := runForgeProof(os.Args[2:]); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal forgery proof passed")
 	default:
 		fail("usage")
 	}
+}
+
+func runForgeProof(args []string) (deploymentrehearsal.ForgeryProof, error) {
+	set := flag.NewFlagSet("forge-proof", flag.ContinueOnError)
+	base := set.String("base-evidence", "", "validated 42-population base dossier")
+	plan := set.String("plan", "", "reviewed exact-command rehearsal plan")
+	results := set.String("results", "", "exclusive per-population result directory")
+	artifacts := set.String("artifacts", "", "exclusive retained run-artifact directory")
+	candidateBundle := set.String("candidate-bundle", "", "exact candidate release bundle")
+	output := set.String("output", "", "exclusive forgery-proof result")
+	if set.Parse(args) != nil || set.NArg() != 0 {
+		return deploymentrehearsal.ForgeryProof{}, deploymentrehearsal.ErrInvalid
+	}
+	return deploymentrehearsal.ProduceForgeryProof(deploymentrehearsal.ForgeryRequest{BaseEvidence: *base, Plan: *plan,
+		Results: *results, Artifacts: *artifacts, CandidateBundle: *candidateBundle, Output: *output, Now: time.Now})
 }
 
 func runSupplyChain(args []string) (deploymentrehearsal.SupplyChainResult, error) {
@@ -101,10 +121,11 @@ func runValidate(args []string) (deploymentrehearsal.Evidence, error) {
 	results := set.String("results", "", "exclusive per-population result directory")
 	artifacts := set.String("artifacts", "", "exclusive retained run-artifact directory")
 	candidateBundle := set.String("candidate-bundle", "", "exact candidate release bundle")
-	if set.Parse(args) != nil || set.NArg() != 0 || *evidence == "" || *plan == "" || *results == "" || *artifacts == "" || *candidateBundle == "" {
+	seal := set.String("seal", "", "exclusive base-evidence and forgery-proof directory")
+	if set.Parse(args) != nil || set.NArg() != 0 || *evidence == "" || *plan == "" || *results == "" || *artifacts == "" || *candidateBundle == "" || *seal == "" {
 		return deploymentrehearsal.Evidence{}, deploymentrehearsal.ErrInvalid
 	}
-	return deploymentrehearsal.LoadAndValidateRun(*evidence, *plan, *results, *artifacts, *candidateBundle)
+	return deploymentrehearsal.LoadAndValidateRun(*evidence, *plan, *results, *artifacts, *candidateBundle, *seal)
 }
 
 func runValidateBuild(args []string) (deploymentrehearsal.BuildRecord, error) {
