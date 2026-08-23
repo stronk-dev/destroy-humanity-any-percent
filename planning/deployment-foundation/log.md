@@ -993,3 +993,24 @@ replaced only its typed validation with an unconditional return; the permanent n
 with `forged artifact/step accepted`. Restoring validation returned the focused population green.
 Alert-delivery is now the last untyped retained artifact. The retained candidate still predates
 these producers, no R-006 run is claimed, and the probe count remains 15/43.
+
+## 2026-08-23 — DP-F2 seven-family alert-delivery evidence
+
+The last retained artifact now has an owning production contract. `deployment-operations
+alert-observe` validates the exact bundle, derives its digest-pinned Prometheus image, runs the
+bundled `promtool` population, then sends all seven canonical release-floor identities through the
+private Alertmanager API. It waits for seven receiver notifications in firing state, posts the same
+identities resolved, and waits for seven more notifications. Its exclusive mode-0600 observation
+binds the candidate manifest and records ordered per-family firing/resolved delivery without
+storing receiver URLs, nonces or payloads. Final rehearsal validation decodes that observation and
+binds its manifest and interval.
+
+Cold focused tests passed across operations, the command, release-package manifest loading and the
+final evidence validator. The HTTP population proves all seven names traverse both states; a
+health-only/single-notification fixture times out instead of passing. The final typed discriminator
+rehashed a health-only alert summary and temporarily replaced only alert validation with an
+unconditional return; the permanent negative failed with `forged artifact/step accepted`.
+Restoring validation returned the population green. The evidence JSON Schema now reflects thirteen
+top-level artifact hashes (the reviewed plan plus twelve retained files). All retained artifact
+types are now strict, but `forged_successful_evidence` remains uncounted until its non-circular real
+execution is authored and run. The overall implemented-probe total remains 15/43.

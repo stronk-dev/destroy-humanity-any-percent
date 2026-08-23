@@ -149,6 +149,15 @@ func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
 			setArtifactDigest(&fixture.evidence, "supply_chain", hashBytes(data))
 			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
 		},
+		"rehashed health-only alert": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["alert_delivery"])
+			data := []byte(`{"schema_version":1,"objective_completed":true}` + "\n")
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setArtifactDigest(&fixture.evidence, "alert_delivery", hashBytes(data))
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
@@ -295,6 +304,17 @@ func boundRunFixture(t *testing.T) boundFixture {
 				ObjectiveCompleted: true, Samples: 2, ObservedBytes: 100, PeakBytesPerDay: 100,
 				FilesystemBytes: 10_000, JournalMaxUseBytes: 1_400, JournalRetentionSeconds: int64(operations.JournalRetention / time.Second),
 				StorageAlertFraction: 0.8}
+			artifactBytes[name], _ = json.Marshal(observation)
+			artifactBytes[name] = append(artifactBytes[name], '\n')
+		}
+		if name == "alert_delivery" {
+			alerts := make([]operations.AlertObservation, len(operations.ReleaseFloorAlertNames))
+			for index, alertName := range operations.ReleaseFloorAlertNames {
+				alerts[index] = operations.AlertObservation{Name: alertName, FiringDelivered: true, ResolvedDelivered: true}
+			}
+			observation := operations.AlertDeliveryObservation{SchemaVersion: 1, ManifestSHA256: hashBytes(candidateManifestBytes),
+				StartedAt: evidence.StartedAt.Add(9 * time.Second), CompletedAt: evidence.StartedAt.Add(10 * time.Second),
+				RuleFixturesPassed: true, Alerts: alerts, ObjectiveCompleted: true}
 			artifactBytes[name], _ = json.Marshal(observation)
 			artifactBytes[name] = append(artifactBytes[name], '\n')
 		}

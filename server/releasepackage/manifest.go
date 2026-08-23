@@ -140,16 +140,29 @@ func ValidateReleaseManifest(manifest ReleaseManifest) error {
 	return nil
 }
 
-func ValidateBundle(root string) error {
-	data, err := os.ReadFile(filepath.Join(root, ReleaseManifestPath))
-	if err != nil {
-		return errors.Join(ErrInvalidContent, err)
-	}
+func DecodeReleaseManifest(data []byte) (ReleaseManifest, error) {
 	var manifest ReleaseManifest
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	if decoder.Decode(&manifest) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateReleaseManifest(manifest) != nil {
-		return ErrInvalidContent
+		return ReleaseManifest{}, ErrInvalidContent
+	}
+	return manifest, nil
+}
+
+func LoadReleaseManifest(root string) (ReleaseManifest, []byte, error) {
+	data, err := os.ReadFile(filepath.Join(root, ReleaseManifestPath))
+	if err != nil {
+		return ReleaseManifest{}, nil, errors.Join(ErrInvalidContent, err)
+	}
+	manifest, err := DecodeReleaseManifest(data)
+	return manifest, data, err
+}
+
+func ValidateBundle(root string) error {
+	manifest, _, err := LoadReleaseManifest(root)
+	if err != nil {
+		return err
 	}
 	actual, err := hashBundleFiles(root)
 	if err != nil || len(actual) != len(manifest.Artifacts) {

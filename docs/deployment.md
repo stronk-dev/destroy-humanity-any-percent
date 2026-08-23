@@ -204,6 +204,15 @@ their hashes match: unknown/trailing fields, an incomplete browser outcome, a di
 manifest, an invalid journal budget/retention observation or a time interval outside the run all
 reject even if the forged bytes are rehashed into the top-level evidence.
 
+`deployment-operations alert-observe` first validates the exact candidate bundle and executes its
+checked-in seven-family rule population with `promtool` from the candidate's digest-pinned
+Prometheus image. It then posts all seven canonical alert identities through the private
+Alertmanager API, waits for seven configured-receiver notifications, resolves the same identities,
+and waits for seven resolved notifications. The retained mode-0600 observation names each family
+and accepts only when both states were delivered, the rule fixtures passed, and the exact candidate
+manifest and run interval match. Receiver health or a single synthetic notification cannot satisfy
+this artifact.
+
 `deployment-browser` is the clean-host browser-driver component under construction. It is a
 reproducible static Linux/amd64 Go binary using Chrome DevTools directly; it does not require Node,
 Vite, a package install or repository source on the rehearsal host. The browser executable comes

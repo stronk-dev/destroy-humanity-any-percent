@@ -19,6 +19,12 @@ func TestOperationsFailureOutputIsBounded(t *testing.T) {
 	}
 }
 
+func TestAlertObserveRequiresExactBundleAndOutput(t *testing.T) {
+	if err := runAlertObserve(nil); err == nil {
+		t.Fatal("empty alert observation inputs accepted")
+	}
+}
+
 func TestRecordAndJournalRenderCommands(t *testing.T) {
 	directory := t.TempDir()
 	if err := runRecord([]string{"--metrics-dir=" + directory, "--operation=restore", "--result=success", "--at=2026-08-22T12:00:00Z"}); err != nil {

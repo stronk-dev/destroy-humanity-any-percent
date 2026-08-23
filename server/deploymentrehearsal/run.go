@@ -216,6 +216,11 @@ func validateTypedRunArtifact(name string, data []byte, evidence Evidence, candi
 		if err != nil || observation.StartedAt.Before(evidence.StartedAt) || observation.CompletedAt.After(evidence.CompletedAt) {
 			return ErrInvalid
 		}
+	case "alert_delivery":
+		observation, err := operations.DecodeAlertDeliveryObservation(data)
+		if err != nil || observation.ManifestSHA256 != evidence.ManifestSHA256 || observation.StartedAt.Before(evidence.StartedAt) || observation.CompletedAt.After(evidence.CompletedAt) {
+			return ErrInvalid
+		}
 	case "secret_scan":
 		result, err := releasepackage.DecodeSecretScanResult(data)
 		if err != nil || result.ManifestSHA256 != evidence.ManifestSHA256 || result.SourceCommit != candidateSourceCommit ||

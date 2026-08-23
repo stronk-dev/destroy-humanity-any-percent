@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -18,6 +20,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/operations"
+	"cloud-clicker/server/releasepackage"
 )
 
 func main() {
@@ -28,6 +31,8 @@ func main() {
 	switch os.Args[1] {
 	case "alert-test":
 		err = runAlertTest(os.Args[2:])
+	case "alert-observe":
+		err = runAlertObserve(os.Args[2:])
 	case "host-observe":
 		err = runHostObserve(os.Args[2:])
 	case "journal-observe":
@@ -42,6 +47,48 @@ func main() {
 	if err != nil {
 		fail(os.Args[1], err)
 	}
+}
+
+func runAlertObserve(args []string) error {
+	set := flag.NewFlagSet("alert-observe", flag.ContinueOnError)
+	bundle := set.String("bundle", "", "exact candidate release bundle")
+	alertmanager := set.String("alertmanager-url", "", "private Alertmanager URL")
+	receiverHealth := set.String("receiver-health-url", "", "configured receiver health URL")
+	output := set.String("output", "", "exclusive alert-delivery observation")
+	if set.Parse(args) != nil || set.NArg() != 0 || !filepath.IsAbs(*bundle) || !filepath.IsAbs(*output) {
+		return operations.ErrInvalid
+	}
+	if err := releasepackage.ValidateBundle(*bundle); err != nil {
+		return err
+	}
+	manifest, manifestBytes, err := releasepackage.LoadReleaseManifest(*bundle)
+	if err != nil {
+		return err
+	}
+	prometheusImage := ""
+	for _, image := range manifest.Images {
+		if image.Name == "prometheus" {
+			prometheusImage = image.Reference
+			break
+		}
+	}
+	if prometheusImage == "" {
+		return operations.ErrInvalid
+	}
+	rules := filepath.Join(*bundle, "operations")
+	if _, err := commandOutput("docker", "run", "--rm", "--platform", "linux/amd64", "-v", rules+":/rules:ro", prometheusImage,
+		"promtool", "test", "rules", "/rules/cloud-clicker-alerts.test.yml"); err != nil {
+		return err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	client := &http.Client{Timeout: 5 * time.Second}
+	manifestHash := fmt.Sprintf("sha256:%x", sha256.Sum256(manifestBytes))
+	observation, err := operations.ObserveReleaseFloorAlertDelivery(ctx, client, *alertmanager, *receiverHealth, manifestHash, time.Now)
+	if err != nil {
+		return err
+	}
+	return operations.WriteAlertDeliveryObservation(*output, observation)
 }
 
 var commandOutput = func(name string, args ...string) ([]byte, error) { return exec.Command(name, args...).Output() }
@@ -254,7 +301,7 @@ func fail(command string, err error) {
 }
 
 func boundedFailure(command string, err error) (string, string) {
-	if command != "alert-test" && command != "host-observe" && command != "journal-observe" && command != "journal-render" && command != "record" {
+	if command != "alert-test" && command != "alert-observe" && command != "host-observe" && command != "journal-observe" && command != "journal-render" && command != "record" {
 		command = "unknown"
 	}
 	class := "operation_failed"
