@@ -1161,3 +1161,19 @@ but whose runtime paths do not exist will also reject; orchestration may not cre
 guessing operator locations. Permanent mutations cover each field class and output overwrite is
 not applicable because this batch only establishes input authority. The discriminator will remove
 unknown-field refusal and require the strict-decoder test to fail. No population count changes.
+
+## 2026-08-23 — DP-F2 strict runtime-scenario input contract
+
+`deploymentrehearsal` now owns the strict private input boundary for the seventeen stateful rows.
+It records only non-secret values and absolute paths, rejects unknown/trailing JSON, and validates
+the ruled HTTPS public origin, receiver endpoint, age X25519 recipient and canonical server UUID.
+All five mutable directories must be pairwise non-overlapping and outside both immutable bundles;
+the identity file must also live outside mutable state. Load-time checks require every directory to
+exist as a real directory and the identity to be a private nonempty regular file. The scenario JSON
+itself must be a real exact mode-0600 file no larger than 64 KiB.
+
+Cold rehearsal tests cover valid load plus relative, nested, colliding, credentialed/queried URL,
+malformed recipient/server, missing directory, symlink and public-file negatives. Removing only
+`DisallowUnknownFields` made the strict-input test fail with `unknown field accepted`; restoring it
+returned the full package green. Root vet also passes. This is input authority for later runtime
+orchestration and does not implement or count a population; the total remains 25/43.

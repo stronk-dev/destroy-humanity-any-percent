@@ -133,8 +133,8 @@ can claim supported self-hosting.
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
 shell—into a new empty result directory. The plan must enumerate the 42 non-forgery positive and
-negative populations in canonical lifecycle order, require exit zero for positive checks and exact exit one
-for severing checks, and give every command a one-second to four-hour guard. Output is capped at
+negative populations in canonical lifecycle order, require exit zero for positive checks and exact
+exit one for severing checks, and give every command a one-second to four-hour guard. Output is capped at
 one MiB per check; timeout, truncation, wrong exit, unsafe shell/sudo invocation, secret-shaped
 argument, prior result byte or non-monotonic observation fails the lane. The final evidence binds
 the reviewed plan hash, so an operator cannot silently substitute a shorter command list.
@@ -145,6 +145,14 @@ provider-off supply chain. Refusal fixtures inside stateful release and rollback
 the successful transition consumes their authority. A correct population name assigned to the
 wrong step, an alphabetic reorder, duplicate or omission is invalid. Result files remain named by
 population and are matched by exact name; filesystem directory sorting is not execution order.
+
+The stateful rows consume one strict mode-0600 scenario-input document. It contains only the run
+identity, candidate/previous bundle paths, distinct work/artifact/operator/backup/metrics paths,
+the private age-identity file path, public origin, receiver-health URL, public age recipient and
+server UUID. Unknown/trailing fields, relative or nested mutable paths, unsafe URL identities,
+missing/symlinked directories and a group/world-readable age identity reject before orchestration.
+Secret values are not scenario fields: production Compose continues to read its existing mounted
+secret files, and the reviewed plan contains only the scenario document path.
 
 The helper's `probe` boundary distinguishes the subject result from probe setup. Exit `0` means a
 positive subject passed or a negative fixture was unexpectedly accepted; exit `1` is reserved for
