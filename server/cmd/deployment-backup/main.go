@@ -45,12 +45,27 @@ func main() {
 		err = runRetention(os.Args[2:])
 	case "inspect":
 		err = runInspect(ctx, os.Args[2:])
+	case "recovery-identity":
+		err = runRecoveryIdentity(ctx, os.Args[2:])
 	default:
 		err = errors.New("unknown deployment backup command")
 	}
 	if err != nil {
 		fail(os.Args[1], err)
 	}
+}
+
+func runRecoveryIdentity(ctx context.Context, args []string) error {
+	set := flag.NewFlagSet("recovery-identity", flag.ContinueOnError)
+	databaseURL := set.String("database-url-file", "", "Postgres URL secret file")
+	if err := set.Parse(args); err != nil || set.NArg() != 0 || *databaseURL == "" {
+		return errors.New("recovery-identity requires database-url-file")
+	}
+	identity, err := deploymentbackup.InspectRecoveryIdentity(ctx, deploymentbackup.RecoveryIdentityInput{DatabaseURLFile: *databaseURL})
+	if err != nil {
+		return err
+	}
+	return emit(map[string]any{"status": "observed", "identity": identity})
 }
 
 func runInspect(ctx context.Context, args []string) error {
@@ -236,7 +251,7 @@ func fail(command string, err error) {
 }
 
 func boundedFailure(command string, err error) (string, string) {
-	if command != "create" && command != "schedule" && command != "restore" && command != "retention" && command != "inspect" {
+	if command != "create" && command != "schedule" && command != "restore" && command != "retention" && command != "inspect" && command != "recovery-identity" {
 		command = "unknown"
 	}
 	class := "operation_failed"

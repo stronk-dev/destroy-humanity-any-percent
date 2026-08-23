@@ -49,6 +49,7 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 	manifestPath := writeRegular(t, workspace, "release-manifest.json", manifest)
 	epochPath := writeRegular(t, workspace, "epoch.json", epoch)
 	manifestHash := digest(manifest)
+	seedBackupEpoch(t, source)
 	wrongManifest := fixtureReleaseManifestForMigration(t, epoch, migration-1)
 	if _, _, err := CreatePostgresBackup(ctx, PostgresBackupInput{
 		Directory: t.TempDir(), BackupID: "20260822T175900Z-000000000000", ServerID: "server",
@@ -67,6 +68,18 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 				seedBackupPopulation(t, source)
 			}
 			before := readBackupIdentity(t, source)
+			beforeRecovery, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: sourceSecret})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if population.seed {
+				err = ValidatePopulatedRecoveryIdentity(beforeRecovery)
+			} else {
+				err = ValidateEmptyRecoveryIdentity(beforeRecovery)
+			}
+			if err != nil {
+				t.Fatalf("%s recovery population invalid: %+v err=%v", population.name, beforeRecovery, err)
+			}
 			resetDatabase(t, adminURL, "cloud_clicker_restore")
 			backupDirectory := t.TempDir()
 			now := time.Date(2026, 8, 22, 18, 0, 0, 0, time.UTC)
@@ -96,6 +109,10 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 			}
 			if before != after {
 				t.Fatalf("restore identity mismatch\nbefore=%s\nafter=%s", before, after)
+			}
+			afterRecovery, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: targetSecret})
+			if err != nil || CompareRecoveryIdentity(beforeRecovery, afterRecovery) != nil {
+				t.Fatalf("semantic recovery identity mismatch\nbefore=%+v\nafter=%+v\nerr=%v", beforeRecovery, afterRecovery, err)
 			}
 		})
 	}
@@ -153,32 +170,84 @@ func TestPostgresRestoreRefusesNonCleanTargetIntegration(t *testing.T) {
 	}
 }
 
+func TestRecoveryIdentityDetectsSameCountContentMutationIntegration(t *testing.T) {
+	sourceURL := os.Getenv("TEST_DATABASE_URL")
+	adminURL := os.Getenv("TEST_ADMIN_DATABASE_URL")
+	if sourceURL == "" || adminURL == "" {
+		t.Skip("deployment backup database URLs not set")
+	}
+	ctx := context.Background()
+	resetDatabase(t, adminURL, "cloud_clicker_source")
+	database, err := save.OpenPostgres(ctx, sourceURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer database.Close()
+	if err := save.Migrate(ctx, database); err != nil {
+		t.Fatal(err)
+	}
+	seedBackupEpoch(t, database)
+	seedBackupPopulation(t, database)
+	secret := writeSecret(t, t.TempDir(), "source-url", sourceURL)
+	before, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: secret})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := database.ExecContext(ctx, `UPDATE accounts SET recovery_hash='same-count-mutated'`); err != nil {
+		t.Fatal(err)
+	}
+	after, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{DatabaseURLFile: secret})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if before.Player.Rows != after.Player.Rows || before.Database.Rows != after.Database.Rows {
+		t.Fatalf("content mutation changed row counts: before=%+v after=%+v", before, after)
+	}
+	if before.Player.SHA256 == after.Player.SHA256 || before.Database.SHA256 == after.Database.SHA256 {
+		t.Fatalf("same-count content mutation escaped identity: before=%+v after=%+v", before, after)
+	}
+}
+
 func seedBackupPopulation(t *testing.T, database *sql.DB) {
 	t.Helper()
 	ctx := context.Background()
 	const (
-		accountID = "01986666-c001-7000-8000-000000000001"
-		founderID = "01986666-c002-7000-8000-000000000002"
-		streamID  = "01986666-c003-7000-8000-000000000003"
-		eventID   = "01986666-c004-7000-8000-000000000004"
-		verifyID  = "01986666-c005-7000-8000-000000000005"
-		hash      = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+		accountID       = "01986666-c001-7000-8000-000000000001"
+		founderID       = "01986666-c002-7000-8000-000000000002"
+		streamID        = "01986666-c003-7000-8000-000000000003"
+		founderStreamID = "01986666-c006-7000-8000-000000000006"
+		eventID         = "01986666-c004-7000-8000-000000000004"
+		verifyID        = "01986666-c005-7000-8000-000000000005"
+		hash            = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	)
 	statements := []string{
 		`INSERT INTO accounts(account_id,recovery_hash) VALUES('` + accountID + `','backup-fixture')`,
 		`INSERT INTO account_founders(account_id,founder_id) VALUES('` + accountID + `','` + founderID + `')`,
+		`INSERT INTO save_streams(id,owner_kind,owner_id,scope) VALUES('` + founderStreamID + `','founder','` + founderID + `','founder')`,
+		`INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES('` + founderStreamID + `',1,1,'{"founder":"backup-fixture"}','` + hash + `')`,
 		`INSERT INTO save_streams(id,owner_kind,owner_id,scope) VALUES('` + streamID + `','founder','` + founderID + `','company')`,
 		`INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES('` + streamID + `',1,1,'{"company":"backup-fixture"}','` + hash + `')`,
 		`INSERT INTO events(event_id,stream_id,revision,schema_version,kind,constants_hash,payload) VALUES('` + eventID + `','` + streamID + `',1,1,'generator_purchased','` + hash + `','{"fixture":true}')`,
-		`INSERT INTO catalog_sets(constants_hash) VALUES('` + hash + `')`,
-		`INSERT INTO epochs(epoch_id,name,started_at,changelog_ref) VALUES(8,'Backup Epoch','2026-08-22T00:00:00Z','changelog/epoch-8.md')`,
-		`INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES(8,'` + hash + `')`,
 		`INSERT INTO verification_projection_events(event_id) VALUES('` + verifyID + `')`,
 		`INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,verified_at) VALUES('` + streamID + `:1','` + verifyID + `','` + founderID + `','category.any','{"commons":false,"advisor":false,"glitched":false,"faction":null}',8,0,1234,'2026-08-22T01:00:00Z')`,
 	}
 	for _, statement := range statements {
 		if _, err := database.ExecContext(ctx, statement); err != nil {
 			t.Fatalf("seed %q: %v", statement, err)
+		}
+	}
+}
+
+func seedBackupEpoch(t *testing.T, database *sql.DB) {
+	t.Helper()
+	const hash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	for _, statement := range []string{
+		`INSERT INTO catalog_sets(constants_hash) VALUES('` + hash + `')`,
+		`INSERT INTO epochs(epoch_id,name,started_at,changelog_ref) VALUES(8,'Backup Epoch','2026-08-22T00:00:00Z','changelog/epoch-8.md')`,
+		`INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES(8,'` + hash + `')`,
+	} {
+		if _, err := database.ExecContext(context.Background(), statement); err != nil {
+			t.Fatalf("seed epoch %q: %v", statement, err)
 		}
 	}
 }

@@ -1,11 +1,22 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
 	"testing"
 )
+
+func TestRecoveryIdentityRequiresDatabaseSecretPath(t *testing.T) {
+	if err := runRecoveryIdentity(context.Background(), nil); err == nil {
+		t.Fatal("recovery identity accepted without database URL secret")
+	}
+	command, class := boundedFailure("recovery-identity", errors.New("database unavailable"))
+	if command != "recovery-identity" || class != "operation_failed" {
+		t.Fatalf("command=%q class=%q", command, class)
+	}
+}
 
 func TestBackupFailureOutputIsBounded(t *testing.T) {
 	command, class := boundedFailure("recovery_code=private", errors.New("database_url=private"))

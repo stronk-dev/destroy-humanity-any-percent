@@ -347,6 +347,15 @@ only an empty target database, checks the custom archive before mutation, uses `
 and requires the restored Goose migration to equal the release manifest. It never cleans or
 overwrites a live database.
 
+`deployment-backup recovery-identity --database-url-file=/run/secrets/database-url` streams a
+canonical identity of the private database without exporting row content. It emits row counts and
+SHA-256 identities for the complete public-table population and separately for player ownership,
+Founder state, Company state, events, boards and epoch/catalog authority. Every table name and
+every full `to_jsonb` row contributes length-delimited bytes in deterministic order, so equal
+counts cannot hide substituted content. Empty rehearsal databases must have no player-state rows
+but must retain epoch/catalog authority; populated rehearsals require all six semantic domains to
+be nonempty. Recovery evidence compares the complete before/after identity.
+
 Build the helper with:
 
 ```sh
@@ -359,8 +368,8 @@ Run the cold empty/populated Postgres restore population with:
 make test-deployment-backup
 ```
 
-That lane checks exact account, Founder, Company save, event, leaderboard and epoch identity. It
-also proves a non-clean target is refused. Corrupt/truncated envelopes, wrong age identities,
+That lane checks exact account, Founder, Company save, event, leaderboard, epoch and whole-database
+identity. It also proves a non-clean target is refused. Corrupt/truncated envelopes, wrong age identities,
 wrong manifests, wrong epoch bytes, partial output, missing/late populations and incomplete or
 out-of-bound objective measurements have focused negative tests.
 

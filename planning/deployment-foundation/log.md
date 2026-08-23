@@ -1387,3 +1387,22 @@ backup/rehearsal sections of `docs/deployment.md`. Cold package tests and the de
 population must pass. The discriminator will remove one canonical row field from the digest input
 and require a same-count content mutation to stop changing that domain's identity. This constructs
 the evidence boundary only; it does not count an R-006 runtime population and leaves 25/43 honest.
+
+## 2026-08-23 — DP-F2 canonical recovery identity
+
+`deployment-backup recovery-identity` now streams a complete public-table fingerprint plus separate
+player, Founder, Company, event, board and epoch/catalog identities from the file-backed private
+Postgres connection. Each full JSONB row and table identity is length-delimited into SHA-256; only
+hashes and counts leave the backup service. Strict validators distinguish an epoch-bearing empty
+player population from a populated one in which all six semantic domains have rows, and the shared
+comparison gate requires every field and the complete database identity to match.
+
+The real Postgres 16 lane now restores both populations and compares the structured identity before
+and after. Its populated fixture includes a Founder stream, Company stream, event and verified board
+row rather than allowing an empty semantic domain to pass. A permanent same-count mutation changes
+an account recovery hash and requires both the player and database digests to change. As the
+declared discrimination probe, narrowing the production account query to hash only `account_id`
+made that integration test fail with `same-count content mutation escaped identity`; restoring the
+full-row query returned all three Postgres populations green. Focused cold Go tests, root vet and
+`git diff --check` pass. (`make lint-go` is not a repository target; the canonical `make vet` lane
+was used.) This is still construction, not a Linux R-006 observation, so the count remains 25/43.
