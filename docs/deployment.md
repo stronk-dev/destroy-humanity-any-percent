@@ -147,9 +147,10 @@ wrong step, an alphabetic reorder, duplicate or omission is invalid. Result file
 population and are matched by exact name; filesystem directory sorting is not execution order.
 
 The stateful rows consume one strict mode-0600 scenario-input document. It contains only the run
-identity, candidate/previous bundle paths, distinct work/artifact/operator/backup/metrics paths,
+identity, candidate/previous bundle paths, distinct work/artifact/install-operator/lifecycle-operator/
+backup/metrics paths,
 the private age-identity file path, public origin, receiver-health URL, public age recipient and
-server UUID. Unknown/trailing fields, relative or nested mutable paths, unsafe URL identities,
+server UUID and bounded operator ID. Unknown/trailing fields, relative or nested mutable paths, unsafe URL identities,
 missing/symlinked directories and a group/world-readable age identity reject before orchestration.
 Secret values are not scenario fields: production Compose continues to read its existing mounted
 secret files, and the reviewed plan contains only the scenario document path.
@@ -161,6 +162,14 @@ checkout metadata anywhere in the configured run surface and nonempty optional i
 AI, payment or cloud-monitoring credential variables. Its only output is the exclusive typed
 `host-observation.json`; running this producer on another platform or a dirty host cannot create a
 clean-host claim.
+
+`make deployment-rehearsal-install-candidate REHEARSAL_SCENARIO_CONFIG=/absolute/private/scenario.json`
+then invokes the production install controller against the exact candidate. The controller uses the
+candidate's Compose/image/config preflight, starts the clean Postgres and stack, reconciles epoch
+and artifact identity, and performs authenticated Caddy smoke. Its append-only state is isolated in
+`install_operator_state`; the rehearsal retains `install-ledger.jsonl` only after strict decoding
+proves a single successful candidate manifest/version/six-image identity. The installed stack stays
+up for the following browser, backup and recovery populations.
 
 The helper's `probe` boundary distinguishes the subject result from probe setup. Exit `0` means a
 positive subject passed or a negative fixture was unexpectedly accepted; exit `1` is reserved for

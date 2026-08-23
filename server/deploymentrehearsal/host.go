@@ -120,7 +120,7 @@ func parseDistribution(data []byte) (string, error) {
 
 func sourceMetadataAbsent(config ScenarioConfig) bool {
 	for _, directory := range []string{config.CandidateBundle, config.PreviousBundle, config.WorkDirectory,
-		config.ArtifactsDirectory, config.OperatorState, config.BackupTarget, config.MetricsDirectory} {
+		config.ArtifactsDirectory, config.InstallOperatorState, config.LifecycleOperatorState, config.BackupTarget, config.MetricsDirectory} {
 		if _, err := os.Lstat(filepath.Join(directory, ".git")); !errors.Is(err, os.ErrNotExist) {
 			return false
 		}

@@ -1313,3 +1313,20 @@ Tests inject only the controller execution boundary while keeping real bundle/le
 exclusive output. They cover controller failure, missing/wrong/extra ledger, overwrite and sleeping
 identity gate. The discriminator will neutralize the exact candidate-manifest check and require the
 wrong-ledger negative to fail. This constructs but does not execute the clean-host install row.
+
+## 2026-08-23 — DP-F2 exact candidate-install producer
+
+The scenario body now has distinct install/lifecycle operator-state directories and a bounded
+operator ID; its path-separation, filesystem and checkout scans cover both authorities. The new
+`install-candidate` command validates the exact candidate and invokes the production install
+controller/Docker runtime with the scenario's origin, receiver, backup, metrics, recipient and
+server identity. After success it reopens the durable install ledger, strictly requires one exact
+candidate install and exclusively retains those same bytes as `install-ledger.jsonl`. It deliberately
+leaves the installed candidate running for the browser/database/recovery sequence.
+
+Tests keep real manifest/ledger validation while injecting the controller boundary. They reject
+controller failure, missing ledger, wrong manifest, an extra success and retained-output overwrite.
+Temporarily replacing the exact install matcher with shape/image checks made the wrong-manifest test
+fail with `invalid candidate install authority accepted`; restoring it returned the cold package
+green. Root vet passes. The Make lane exposes the command, but it has not run on Linux; the positive
+install row and overall 25/43 count remain unchanged.

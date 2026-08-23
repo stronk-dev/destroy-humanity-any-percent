@@ -56,9 +56,27 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal host observation passed")
+	case "install-candidate":
+		if err := runInstallCandidate(context.Background(), os.Args[2:]); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal candidate install passed")
 	default:
 		fail("usage")
 	}
+}
+
+func runInstallCandidate(ctx context.Context, args []string) error {
+	set := flag.NewFlagSet("install-candidate", flag.ContinueOnError)
+	configPath := set.String("config", "", "private runtime scenario input")
+	if set.Parse(args) != nil || set.NArg() != 0 || *configPath == "" {
+		return deploymentrehearsal.ErrInvalid
+	}
+	config, err := deploymentrehearsal.LoadScenarioConfig(*configPath)
+	if err != nil {
+		return err
+	}
+	return deploymentrehearsal.InstallCandidate(ctx, config)
 }
 
 func runObserveHost(ctx context.Context, args []string) (deploymentrehearsal.HostObservation, error) {

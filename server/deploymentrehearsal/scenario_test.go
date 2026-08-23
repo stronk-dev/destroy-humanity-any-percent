@@ -52,6 +52,7 @@ func TestScenarioConfigRejectsEveryUnsafeFieldClass(t *testing.T) {
 		"queried receiver":      func(value *ScenarioConfig) { value.ReceiverHealthURL = "https://receiver.example/health?secret=no" },
 		"invalid recipient":     func(value *ScenarioConfig) { value.AgeRecipient = "age1invalid" },
 		"invalid server":        func(value *ScenarioConfig) { value.ServerID = "server-1" },
+		"invalid operator":      func(value *ScenarioConfig) { value.Operator = "operator with spaces" },
 	} {
 		t.Run(name, func(t *testing.T) {
 			config := validScenarioConfig(t)
@@ -117,7 +118,8 @@ func validScenarioConfig(t *testing.T) ScenarioConfig {
 	}
 	return ScenarioConfig{SchemaVersion: 1, RunID: "r006-runtime-001", CandidateBundle: directory("candidate"),
 		PreviousBundle: directory("previous"), WorkDirectory: directory("work"), ArtifactsDirectory: directory("artifacts"),
-		OperatorState: directory("operator"), BackupTarget: directory("backup"), MetricsDirectory: directory("metrics"),
+		InstallOperatorState: directory("install-operator"), LifecycleOperatorState: directory("lifecycle-operator"),
+		BackupTarget: directory("backup"), MetricsDirectory: directory("metrics"),
 		AgeIdentityFile: identityPath, PublicOrigin: "https://game.example", ReceiverHealthURL: "https://receiver.example/health",
-		AgeRecipient: identity.Recipient().String(), ServerID: "01986666-b001-4000-8000-000000000001"}
+		AgeRecipient: identity.Recipient().String(), ServerID: "01986666-b001-4000-8000-000000000001", Operator: "operator-1"}
 }

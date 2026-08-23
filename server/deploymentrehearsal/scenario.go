@@ -20,20 +20,22 @@ const maximumScenarioConfigBytes = 64 << 10
 var scenarioServerID = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
 
 type ScenarioConfig struct {
-	SchemaVersion      int    `json:"schema_version"`
-	RunID              string `json:"run_id"`
-	CandidateBundle    string `json:"candidate_bundle"`
-	PreviousBundle     string `json:"previous_bundle"`
-	WorkDirectory      string `json:"work_directory"`
-	ArtifactsDirectory string `json:"artifacts_directory"`
-	OperatorState      string `json:"operator_state"`
-	BackupTarget       string `json:"backup_target"`
-	MetricsDirectory   string `json:"metrics_directory"`
-	AgeIdentityFile    string `json:"age_identity_file"`
-	PublicOrigin       string `json:"public_origin"`
-	ReceiverHealthURL  string `json:"receiver_health_url"`
-	AgeRecipient       string `json:"age_recipient"`
-	ServerID           string `json:"server_id"`
+	SchemaVersion          int    `json:"schema_version"`
+	RunID                  string `json:"run_id"`
+	CandidateBundle        string `json:"candidate_bundle"`
+	PreviousBundle         string `json:"previous_bundle"`
+	WorkDirectory          string `json:"work_directory"`
+	ArtifactsDirectory     string `json:"artifacts_directory"`
+	InstallOperatorState   string `json:"install_operator_state"`
+	LifecycleOperatorState string `json:"lifecycle_operator_state"`
+	BackupTarget           string `json:"backup_target"`
+	MetricsDirectory       string `json:"metrics_directory"`
+	AgeIdentityFile        string `json:"age_identity_file"`
+	PublicOrigin           string `json:"public_origin"`
+	ReceiverHealthURL      string `json:"receiver_health_url"`
+	AgeRecipient           string `json:"age_recipient"`
+	ServerID               string `json:"server_id"`
+	Operator               string `json:"operator"`
 }
 
 func LoadScenarioConfig(path string) (ScenarioConfig, error) {
@@ -67,13 +69,13 @@ func DecodeScenarioConfig(data []byte) (ScenarioConfig, error) {
 
 func ValidateScenarioConfig(config ScenarioConfig) error {
 	paths := []string{config.CandidateBundle, config.PreviousBundle, config.WorkDirectory, config.ArtifactsDirectory,
-		config.OperatorState, config.BackupTarget, config.MetricsDirectory, config.AgeIdentityFile}
+		config.InstallOperatorState, config.LifecycleOperatorState, config.BackupTarget, config.MetricsDirectory, config.AgeIdentityFile}
 	for _, path := range paths {
 		if !filepath.IsAbs(path) || filepath.Clean(path) != path {
 			return ErrInvalid
 		}
 	}
-	if config.SchemaVersion != 1 || !identifierPattern.MatchString(config.RunID) || !scenarioServerID.MatchString(config.ServerID) ||
+	if config.SchemaVersion != 1 || !identifierPattern.MatchString(config.RunID) || !identifierPattern.MatchString(config.Operator) || !scenarioServerID.MatchString(config.ServerID) ||
 		!deploymentconfig.ValidProductionOrigin(config.PublicOrigin) {
 		return ErrInvalid
 	}
@@ -88,7 +90,8 @@ func ValidateScenarioConfig(config ScenarioConfig) error {
 	if config.CandidateBundle == config.PreviousBundle || pathsOverlap(config.CandidateBundle, config.PreviousBundle) {
 		return ErrInvalid
 	}
-	mutable := []string{config.WorkDirectory, config.ArtifactsDirectory, config.OperatorState, config.BackupTarget, config.MetricsDirectory}
+	mutable := []string{config.WorkDirectory, config.ArtifactsDirectory, config.InstallOperatorState,
+		config.LifecycleOperatorState, config.BackupTarget, config.MetricsDirectory}
 	for index, left := range mutable {
 		for _, right := range mutable[index+1:] {
 			if pathsOverlap(left, right) {
@@ -111,7 +114,7 @@ func ValidateScenarioConfig(config ScenarioConfig) error {
 
 func validateScenarioFilesystem(config ScenarioConfig) error {
 	for _, directory := range []string{config.CandidateBundle, config.PreviousBundle, config.WorkDirectory, config.ArtifactsDirectory,
-		config.OperatorState, config.BackupTarget, config.MetricsDirectory} {
+		config.InstallOperatorState, config.LifecycleOperatorState, config.BackupTarget, config.MetricsDirectory} {
 		info, err := os.Lstat(directory)
 		if err != nil || !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
 			return ErrInvalid
