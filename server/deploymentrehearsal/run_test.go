@@ -11,7 +11,7 @@ import (
 
 func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
 	fixture := boundRunFixture(t)
-	validated, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory)
+	validated, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory)
 	if err != nil || validated.RunID != fixture.evidence.RunID {
 		t.Fatalf("bound run rejected: run=%s err=%v", validated.RunID, err)
 	}
@@ -27,7 +27,7 @@ func TestRunValidationBindsPlanAndEveryExactResultByte(t *testing.T) {
 	if err := os.WriteFile(fixture.evidencePath, append(data, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory); !errors.Is(err, ErrInvalid) {
+	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("structurally valid forged evidence accepted: %v", err)
 	}
 }
@@ -69,7 +69,7 @@ func TestRunValidationRejectsRewrittenMissingAndUnsafeResults(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			fixture := boundRunFixture(t)
 			mutate(t, fixture)
-			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory); !errors.Is(err, ErrInvalid) {
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("invalid result population accepted: %v", err)
 			}
 		})
@@ -86,27 +86,69 @@ func TestRunValidationRejectsForgedPopulationEvidenceHash(t *testing.T) {
 	if err := os.WriteFile(fixture.evidencePath, append(data, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory); !errors.Is(err, ErrInvalid) {
+	if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("forged population evidence hash accepted: %v", err)
 	}
 }
 
+func TestRunValidationRejectsForgedArtifactsAndStepAggregation(t *testing.T) {
+	for name, mutate := range map[string]func(*testing.T, *boundFixture){
+		"changed artifact": func(t *testing.T, fixture *boundFixture) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["browser_result"])
+			if err := os.WriteFile(path, []byte("forged browser result\n"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+		},
+		"missing artifact": func(t *testing.T, fixture *boundFixture) {
+			if err := os.Remove(filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["alert_delivery"])); err != nil {
+				t.Fatal(err)
+			}
+		},
+		"forged step output": func(t *testing.T, fixture *boundFixture) {
+			fixture.evidence.Steps[0].OutputSHA256 = hashForBuild("f")
+			writeEvidenceFixture(t, fixture.evidencePath, fixture.evidence)
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			fixture := boundRunFixture(t)
+			mutate(t, &fixture)
+			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("forged artifact/step accepted: %v", err)
+			}
+		})
+	}
+}
+
 type boundFixture struct {
-	evidence         Evidence
-	plan             ExecutionPlan
-	evidencePath     string
-	planPath         string
-	resultsDirectory string
+	evidence           Evidence
+	plan               ExecutionPlan
+	evidencePath       string
+	planPath           string
+	resultsDirectory   string
+	artifactsDirectory string
 }
 
 func boundRunFixture(t *testing.T) boundFixture {
 	t.Helper()
 	root := t.TempDir()
 	results := filepath.Join(root, "results")
+	artifactsDirectory := filepath.Join(root, "artifacts")
 	if err := os.Mkdir(results, 0o700); err != nil {
 		t.Fatal(err)
 	}
+	if err := os.Mkdir(artifactsDirectory, 0o700); err != nil {
+		t.Fatal(err)
+	}
 	evidence := validEvidence()
+	artifactBytes := map[string][]byte{}
+	for name, file := range requiredRunArtifactFiles {
+		artifactBytes[name] = []byte(name + "\n")
+		if err := os.WriteFile(filepath.Join(artifactsDirectory, file), artifactBytes[name], 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	evidence.ManifestSHA256 = hashBytes(artifactBytes["candidate_manifest"])
+	evidence.PreviousManifestSHA256 = hashBytes(artifactBytes["previous_manifest"])
 	plan := validExecutionPlan()
 	plan.RunID = evidence.RunID
 	plan.ManifestSHA256 = evidence.ManifestSHA256
@@ -119,6 +161,8 @@ func boundRunFixture(t *testing.T) boundFixture {
 	for index := range evidence.Artifacts {
 		if evidence.Artifacts[index].Name == "rehearsal_plan" {
 			evidence.Artifacts[index].SHA256 = hashBytes(planBytes)
+		} else if data, ok := artifactBytes[evidence.Artifacts[index].Name]; ok {
+			evidence.Artifacts[index].SHA256 = hashBytes(data)
 		}
 	}
 	populationIndex := map[string]int{}
@@ -140,6 +184,34 @@ func boundRunFixture(t *testing.T) boundFixture {
 		}
 		evidence.Populations[populationIndex[check.Name]].EvidenceSHA256 = hashBytes(data)
 	}
+	for index := range evidence.Steps {
+		step := &evidence.Steps[index]
+		commandHashes, resultHashes := []string{}, []string{}
+		var started, completed time.Time
+		for _, check := range plan.Checks {
+			if check.Step != step.Name {
+				continue
+			}
+			data, err := os.ReadFile(filepath.Join(results, check.Name+".json"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			result, err := decodeCheckResult(data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			commandHashes = append(commandHashes, result.CommandSHA256)
+			resultHashes = append(resultHashes, hashBytes(data))
+			if started.IsZero() || result.StartedAt.Before(started) {
+				started = result.StartedAt
+			}
+			if result.CompletedAt.After(completed) {
+				completed = result.CompletedAt
+			}
+		}
+		step.StartedAt, step.CompletedAt = started, completed
+		step.InputSHA256, step.OutputSHA256 = hashJSON(commandHashes), hashJSON(resultHashes)
+	}
 	planPath := filepath.Join(root, "plan.json")
 	if err := os.WriteFile(planPath, planBytes, 0o600); err != nil {
 		t.Fatal(err)
@@ -152,5 +224,17 @@ func boundRunFixture(t *testing.T) boundFixture {
 	if err := os.WriteFile(evidencePath, append(evidenceBytes, '\n'), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	return boundFixture{evidence: evidence, plan: plan, evidencePath: evidencePath, planPath: planPath, resultsDirectory: results}
+	return boundFixture{evidence: evidence, plan: plan, evidencePath: evidencePath, planPath: planPath,
+		resultsDirectory: results, artifactsDirectory: artifactsDirectory}
+}
+
+func writeEvidenceFixture(t *testing.T, path string, evidence Evidence) {
+	t.Helper()
+	data, err := json.MarshalIndent(evidence, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, append(data, '\n'), 0o600); err != nil {
+		t.Fatal(err)
+	}
 }

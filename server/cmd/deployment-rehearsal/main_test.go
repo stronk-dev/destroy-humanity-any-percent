@@ -13,7 +13,7 @@ func TestRunValidateRejectsMissingAndInvalidEvidence(t *testing.T) {
 		t.Fatalf("empty evidence path accepted: %v", err)
 	}
 	path := t.TempDir() + "/missing.json"
-	if _, err := runValidate([]string{"--evidence", path, "--plan", path, "--results", t.TempDir()}); err == nil {
+	if _, err := runValidate([]string{"--evidence", path, "--plan", path, "--results", t.TempDir(), "--artifacts", t.TempDir()}); err == nil {
 		t.Fatal("missing evidence accepted")
 	}
 }

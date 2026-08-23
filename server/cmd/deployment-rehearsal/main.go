@@ -78,10 +78,11 @@ func runValidate(args []string) (deploymentrehearsal.Evidence, error) {
 	evidence := set.String("evidence", "", "exact R-006 evidence JSON")
 	plan := set.String("plan", "", "reviewed exact-command rehearsal plan")
 	results := set.String("results", "", "exclusive per-population result directory")
-	if set.Parse(args) != nil || set.NArg() != 0 || *evidence == "" || *plan == "" || *results == "" {
+	artifacts := set.String("artifacts", "", "exclusive retained run-artifact directory")
+	if set.Parse(args) != nil || set.NArg() != 0 || *evidence == "" || *plan == "" || *results == "" || *artifacts == "" {
 		return deploymentrehearsal.Evidence{}, deploymentrehearsal.ErrInvalid
 	}
-	return deploymentrehearsal.LoadAndValidateRun(*evidence, *plan, *results)
+	return deploymentrehearsal.LoadAndValidateRun(*evidence, *plan, *results, *artifacts)
 }
 
 func runValidateBuild(args []string) (deploymentrehearsal.BuildRecord, error) {

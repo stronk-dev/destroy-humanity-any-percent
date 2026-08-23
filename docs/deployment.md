@@ -162,13 +162,20 @@ Caddy routes and gameserver Dockerfile after checking manifest byte equality. As
 validation alone is insufficient because a later re-signed bundle must not be able to retain valid
 hashes while changing a public route or container boundary.
 
-Final `validate` is not structural JSON validation. It requires the evidence file, the exact
-reviewed plan and the exclusive per-population result directory. The plan hash must match the
-`rehearsal_plan` artifact; run and both manifest identities must agree; the directory must contain
-exactly one mode-0600 result for every canonical plan row and no extra entry. Each result's name,
-kind, step, command hash, expected exit, completed/non-guarded state, observation interval and raw
-file hash must agree with the plan and its evidence population. A plausible evidence JSON with
-invented hashes is invalid even when its standalone shape is correct.
+Final `validate` is not structural JSON validation. It requires the evidence file, exact reviewed
+plan, exclusive per-population result directory and exclusive retained-artifact directory. The
+plan hash must match the `rehearsal_plan` artifact; run and both manifest identities must agree;
+the result directory must contain exactly one mode-0600 result for every canonical plan row and no
+extra entry. Each result's name, kind, step, command hash, expected exit, completed/non-guarded
+state, observation interval and raw file hash must agree with the plan and its evidence population.
+
+The artifact directory contains exactly ten mode-0600 retained inputs/outputs: candidate and
+previous manifests, release and rotation ledgers, backup header, browser result, alert delivery,
+journal observation, secret scan and supply-chain result. Every raw digest must equal its evidence
+row, and both manifest files must also equal the run's top-level identities. Each of the eleven
+step intervals and input/output hashes is derived from the ordered command and raw-result hashes
+of the plan rows assigned to that step. A plausible evidence JSON with invented artifact hashes or
+handwritten step summaries is invalid even when its standalone shape is correct.
 
 ## Encrypted Postgres backup and restore
 

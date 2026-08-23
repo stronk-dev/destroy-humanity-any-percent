@@ -105,7 +105,8 @@ func validExecutionPlan() ExecutionPlan {
 		if kind == "negative" {
 			mode, expected = "fail", 1
 		}
-		checks[index] = PlannedCheck{Name: name, Kind: kind, Step: RequiredSteps[index%len(RequiredSteps)],
+		stepIndex := index * len(RequiredSteps) / len(names)
+		checks[index] = PlannedCheck{Name: name, Kind: kind, Step: RequiredSteps[stepIndex],
 			Command: helperCommand(mode), ExpectedExit: expected, TimeoutSeconds: 10}
 	}
 	return ExecutionPlan{SchemaVersion: 1, RunID: "r006-plan-001", ManifestSHA256: hashForBuild("a"),

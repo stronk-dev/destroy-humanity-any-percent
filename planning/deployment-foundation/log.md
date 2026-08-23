@@ -819,3 +819,19 @@ closes the first forgery route. Removing only the raw-result/population hash com
 focused forgery test fail with `forged population evidence hash accepted`; restoring it returns
 the test green. Remaining final artifacts and step aggregation still need their own byte bindings
 before the forged-evidence population can be marked implemented.
+
+The binding was then extended over the remaining retained surface rather than stopping at result
+files. CLI `validate` also requires an exclusive artifact directory containing exactly ten named,
+mode-0600 files: both manifests, both ledgers, backup header, browser result, alert delivery,
+journal observation, secret scan and supply-chain result. Their raw hashes must equal the evidence
+rows; candidate/previous manifest bytes must additionally equal the run identities. The eleven
+step summaries are now derived from the earliest/latest underlying result interval and the ordered
+command/result-hash lists for their assigned rows. Changed/missing artifacts and a forged step
+output hash fail. The test plan fixture was corrected from round-robin to contiguous step
+assignment because round-robin made truthful aggregate intervals overlap later steps; no product
+plan or criterion changed. Removing only the step-derivation comparison makes the focused forged
+step test fail with `forged artifact/step accepted`; restoring it returns the test green.
+
+This still does not mark `forged_successful_evidence` complete: tool-binary identities and schemas
+for the retained browser/alert/journal/scan/supply-chain files remain to bind, and the final plan
+must avoid a circular dependency between producing evidence and testing its forgery rejection.
