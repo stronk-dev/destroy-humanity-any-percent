@@ -100,6 +100,10 @@ func validateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte
 	if err != nil || len(entries) != len(plan.Checks) {
 		return ErrInvalid
 	}
+	resultEntries := make(map[string]os.DirEntry, len(entries))
+	for _, entry := range entries {
+		resultEntries[entry.Name()] = entry
+	}
 	populations := make(map[string]Population, len(evidence.Populations))
 	for _, population := range evidence.Populations {
 		populations[population.Name] = population
@@ -108,9 +112,9 @@ func validateRunBindings(evidence Evidence, plan ExecutionPlan, planBytes []byte
 	stepResultHashes := map[string][]string{}
 	stepStarts := map[string]time.Time{}
 	stepEnds := map[string]time.Time{}
-	for index, check := range plan.Checks {
-		entry := entries[index]
-		if entry.Name() != check.Name+".json" || entry.Type()&os.ModeSymlink != 0 {
+	for _, check := range plan.Checks {
+		entry, ok := resultEntries[check.Name+".json"]
+		if !ok || entry.Type()&os.ModeSymlink != 0 {
 			return ErrInvalid
 		}
 		info, err := entry.Info()

@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 )
@@ -33,6 +32,56 @@ type PlannedCheck struct {
 	Command        []string `json:"command"`
 	ExpectedExit   int      `json:"expected_exit"`
 	TimeoutSeconds int      `json:"timeout_seconds"`
+}
+
+type requiredPlanCheck struct {
+	name string
+	step string
+}
+
+var requiredPlanChecks = []requiredPlanCheck{
+	{name: "source_checkout_present", step: "host_preflight"},
+	{name: "missing_or_malformed_secret", step: "host_preflight"},
+	{name: "duplicate_key_id_or_value", step: "host_preflight"},
+	{name: "invalid_origin_or_proxy_depth", step: "host_preflight"},
+	{name: "clean_linux_amd64_bundle_only_install", step: "candidate_install"},
+	{name: "phase0_browser_flow_through_caddy", step: "browser_phase0"},
+	{name: "non_clean_restore_target", step: "empty_backup_restore"},
+	{name: "truncated_or_corrupt_backup", step: "empty_backup_restore"},
+	{name: "wrong_age_identity", step: "empty_backup_restore"},
+	{name: "wrong_release_manifest", step: "empty_backup_restore"},
+	{name: "empty_database_backup_restore", step: "empty_backup_restore"},
+	{name: "interrupted_backup_writer", step: "populated_backup_restore"},
+	{name: "populated_database_identity_restore", step: "populated_backup_restore"},
+	{name: "rpo_or_rto_above_bound", step: "incident_recovery"},
+	{name: "rpo_within_six_hours", step: "incident_recovery"},
+	{name: "rto_within_four_hours", step: "incident_recovery"},
+	{name: "gameserver_restart_during_admitted_work", step: "candidate_release"},
+	{name: "wrong_epoch_or_artifact_set", step: "candidate_release"},
+	{name: "bounded_drain_and_restart", step: "candidate_release"},
+	{name: "missing_previous_image_or_backup", step: "previous_release_rollback"},
+	{name: "irreversible_or_down_migration", step: "previous_release_rollback"},
+	{name: "exact_previous_release_rollback", step: "previous_release_rollback"},
+	{name: "current_previous_key_overlap", step: "key_rotation"},
+	{name: "public_metrics_route", step: "operations_alerts_retention"},
+	{name: "health_only_alert_receiver", step: "operations_alerts_retention"},
+	{name: "severed_alert_rule_or_counter", step: "operations_alerts_retention"},
+	{name: "early_journal_eviction", step: "operations_alerts_retention"},
+	{name: "incomplete_or_guarded_observation", step: "operations_alerts_retention"},
+	{name: "private_metrics_and_alert_delivery", step: "operations_alerts_retention"},
+	{name: "fourteen_day_journal_budget", step: "operations_alerts_retention"},
+	{name: "removed_catalog", step: "provider_off_supply_chain"},
+	{name: "removed_client", step: "provider_off_supply_chain"},
+	{name: "removed_license", step: "provider_off_supply_chain"},
+	{name: "removed_config", step: "provider_off_supply_chain"},
+	{name: "removed_helper", step: "provider_off_supply_chain"},
+	{name: "changed_image_digest", step: "provider_off_supply_chain"},
+	{name: "changed_runtime_config_digest", step: "provider_off_supply_chain"},
+	{name: "changed_sbom", step: "provider_off_supply_chain"},
+	{name: "seeded_source_secret", step: "provider_off_supply_chain"},
+	{name: "seeded_image_secret", step: "provider_off_supply_chain"},
+	{name: "provider_off_operation", step: "provider_off_supply_chain"},
+	{name: "six_image_sbom_license_provenance", step: "provider_off_supply_chain"},
 }
 
 type CheckResult struct {
@@ -73,19 +122,20 @@ func ValidateExecutionPlan(plan ExecutionPlan) error {
 		len(plan.Checks) != len(populations) {
 		return ErrInvalid
 	}
-	required := make([]string, 0, len(populations))
-	for name := range populations {
-		required = append(required, name)
+	if len(requiredPlanChecks) != len(populations) {
+		return ErrInvalid
 	}
-	sort.Strings(required)
+	seen := make(map[string]bool, len(requiredPlanChecks))
 	for index, check := range plan.Checks {
+		required := requiredPlanChecks[index]
 		kind := populations[check.Name]
-		if check.Name != required[index] || check.Kind != kind || !slicesContains(RequiredSteps, check.Step) ||
+		if required.name != check.Name || required.step != check.Step || seen[check.Name] || kind == "" || check.Kind != kind ||
 			len(check.Command) == 0 || len(check.Command) > 32 || check.TimeoutSeconds < 1 || check.TimeoutSeconds > 4*60*60 ||
 			kind == "positive" && check.ExpectedExit != 0 || kind == "negative" && check.ExpectedExit != 1 ||
 			invalidCommand(check.Command) {
 			return ErrInvalid
 		}
+		seen[check.Name] = true
 	}
 	return nil
 }

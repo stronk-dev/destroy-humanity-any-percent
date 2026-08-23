@@ -1127,3 +1127,20 @@ Permanent tests will require the exact ordered closure and reject a swap, a corr
 wrong step and a duplicate. The discriminator will temporarily restore alphabetical comparison;
 the canonical lifecycle fixture must then fail. This batch changes plan authority only and does
 not implement or count any runtime population.
+
+## 2026-08-23 — DP-F2 dependency-ordered execution contract
+
+The plan contract now owns one explicit 42-row sequence and the exact step for every population.
+It follows the accepted lifecycle rather than map/alphabetical order, keeps refusal fixtures ahead
+of authority-consuming release/rollback successes, and rejects wrong-step routing as well as
+reorder, duplicate and omission. The bound-run validator was also repaired to open result files by
+their exact population names: directory enumeration is lexically sorted and therefore cannot be
+used as a proxy for the reviewed execution order.
+
+Cold rehearsal-package and command tests passed. The independent order oracle spells out all 42
+names rather than deriving its expectation from the production sequence. Temporarily sorting the
+production sequence by name made that oracle fail immediately, beginning with
+`bounded_drain_and_restart` instead of `source_checkout_present`; restoring lifecycle order returned
+the focused test green. Permanent negatives also swap rows, duplicate a row and put the correct
+name under the wrong step. No runtime population was implemented or counted by this repair, so the
+total remains 25/43.
