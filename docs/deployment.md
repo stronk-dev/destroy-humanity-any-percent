@@ -147,7 +147,8 @@ unsupported check or broken probe from satisfying a negative row just because it
 current fixed probes cover the intact six-image/SBOM/license/provenance population, eight exact
 bundle mutations, three production config/secret matrices, a public-metrics-route severing,
 seeded source/image secret detection, the clean-host/source-checkout evidence boundary, alert and
-journal evidence severings, incomplete/guarded observation and the RPO/RTO limits.
+journal evidence severings, incomplete/guarded observation, the RPO/RTO limits and four encrypted
+backup-envelope failure populations.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and
@@ -163,6 +164,14 @@ The seeded-source probe scans a valid tracked-file fixture; the seeded-image pro
 tar member rather than relying on a malformed archive to fail. Each requires exactly the scanner's
 named sentinel finding before the no-secrets gate may produce exit `1`. A parser/setup error is
 therefore not accepted as secret-detection evidence.
+
+The backup-envelope probes first create and restore a valid encrypted production envelope. They
+then independently require truncated and corrupted payloads, the wrong age identity and a wrong
+release-manifest identity to fail through the production restore gate. The interrupted-writer row
+injects a dump read failure only after valid bytes were consumed and accepts the negative only when
+creation fails and leaves no completed or temporary backup file. These are envelope and atomicity
+falsifiers; the empty/populated database restore and non-clean target checks still require their
+real Postgres populations.
 
 For a release run, `make release-secret-scan` receives the exact candidate manifest hash, candidate
 gameserver archive and an exclusive result path. It scans the real Git-tracked population and

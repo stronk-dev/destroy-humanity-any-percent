@@ -3,12 +3,16 @@ package deploymentrehearsal
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"filippo.io/age"
+
+	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/deploymentconfig"
 	"cloud-clicker/server/operations"
 	"cloud-clicker/server/releasepackage"
@@ -200,6 +204,39 @@ func TestTypedHostAlertJournalAndObjectiveProbesDiscriminate(t *testing.T) {
 		return validateObjectives(value, start, end)
 	}); err != nil || outcome != ProbeAccepted {
 		t.Fatalf("sleeping objective gate satisfied negative: outcome=%d err=%v", outcome, err)
+	}
+}
+
+func TestBackupEnvelopeProbesDiscriminate(t *testing.T) {
+	for _, population := range []string{"truncated_or_corrupt_backup", "wrong_age_identity", "wrong_release_manifest", "interrupted_backup_writer"} {
+		t.Run(population, func(t *testing.T) {
+			request := validProbeDirectories(t, population)
+			outcome, err := RunProbe(request)
+			if err != nil || outcome != ProbeRejected {
+				t.Fatalf("backup probe outcome=%d err=%v", outcome, err)
+			}
+		})
+	}
+
+	request := validProbeDirectories(t, "wrong_release_manifest")
+	restoreCalls := 0
+	outcome, err := runBackupRestoreNegativeProbe(request, func(path, manifest string, identity age.Identity, output io.Writer) (deploymentbackup.Header, error) {
+		restoreCalls++
+		if restoreCalls == 2 {
+			return deploymentbackup.Header{}, nil
+		}
+		return deploymentbackup.Restore(path, manifest, identity, output)
+	})
+	if err != nil || outcome != ProbeAccepted {
+		t.Fatalf("sleeping restore gate satisfied negative: outcome=%d err=%v", outcome, err)
+	}
+
+	request = validProbeDirectories(t, "interrupted_backup_writer")
+	outcome, err = runInterruptedBackupProbe(request, func(deploymentbackup.CreateInput) (deploymentbackup.Header, string, error) {
+		return deploymentbackup.Header{}, "", nil
+	})
+	if err != nil || outcome != ProbeAccepted {
+		t.Fatalf("sleeping create gate satisfied negative: outcome=%d err=%v", outcome, err)
 	}
 }
 

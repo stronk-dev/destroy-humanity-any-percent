@@ -1085,3 +1085,23 @@ claims: no clean-host installation, browser flow, database recovery, release/rol
 positive alert delivery, journal measurement or objective observation is marked complete. The
 retained candidate also predates this command surface and must be rebuilt again after DP-F2
 construction stabilizes.
+
+## 2026-08-23 — DP-F2 encrypted backup-envelope probes
+
+Four backup negatives now run through the production `deploymentbackup` envelope rather than a
+rehearsal-owned imitation. Every restore row first creates and successfully restores a valid age
+X25519-encrypted envelope with matching payload bytes. The corruption row then tests both a
+truncated file and a changed ciphertext byte; the identity and manifest rows supply independently
+valid but wrong values. The interrupted-writer row delivers valid dump bytes before returning an
+injected read failure, then requires both failure and an empty target directory so a partial or
+apparently complete backup cannot survive.
+
+The rebuilt native helper executed all four rows against the retained candidate/previous bundle
+directories; each returned exact exit one with `fixture_rejected`. Cold `deploymentrehearsal` and
+`deploymentbackup` tests and root `make vet` passed. For discrimination, the restore loop's
+accepted-severing branch was temporarily disabled; the sleeping restore gate then failed with
+`sleeping restore gate satisfied negative`. Restoring it returned the full focused population
+green. A separately injected sleeping create gate permanently covers the interrupted-writer row.
+
+The implemented probe count is now 25/43. This does not claim the real empty/populated Postgres
+restore, non-clean target refusal, measured RPO/RTO, clean-host install or any other runtime row.

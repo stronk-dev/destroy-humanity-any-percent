@@ -6,12 +6,16 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"filippo.io/age"
+
+	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/deploymentconfig"
 	"cloud-clicker/server/operations"
 	"cloud-clicker/server/releasepackage"
@@ -83,12 +87,139 @@ func RunProbe(request ProbeRequest) (ProbeOutcome, error) {
 		return runJournalNegativeProbe(request.Population, operations.ValidateJournalObservation)
 	case "rpo_or_rto_above_bound":
 		return runObjectiveNegativeProbe(validateObjectives)
+	case "truncated_or_corrupt_backup", "wrong_age_identity", "wrong_release_manifest":
+		return runBackupRestoreNegativeProbe(request, deploymentbackup.Restore)
+	case "interrupted_backup_writer":
+		return runInterruptedBackupProbe(request, deploymentbackup.Create)
 	}
 	mutation, ok := bundleMutations[request.Population]
 	if !ok {
 		return ProbeAccepted, ErrInvalid
 	}
 	return runBundleMutationProbe(request, mutation, releasepackage.ValidateBundle)
+}
+
+type backupRestoreGate func(string, string, age.Identity, io.Writer) (deploymentbackup.Header, error)
+
+func runBackupRestoreNegativeProbe(request ProbeRequest, restore backupRestoreGate) (outcome ProbeOutcome, resultErr error) {
+	root, err := os.MkdirTemp(request.WorkDirectory, "backup-probe-")
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	defer func() {
+		if cleanupErr := os.RemoveAll(root); cleanupErr != nil {
+			outcome = ProbeAccepted
+			resultErr = errors.Join(resultErr, cleanupErr)
+		}
+	}()
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	manifest := "sha256:" + strings.Repeat("a", 64)
+	payload := []byte("PGDMP\x01rehearsal backup payload")
+	started := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	_, path, err := deploymentbackup.Create(deploymentbackup.CreateInput{Directory: root,
+		BackupID: "20260823T120000Z-abcdef123456", ServerID: "r006-probe", ReleaseManifestSHA256: manifest,
+		EpochID: 8, StartedAt: started, Now: func() time.Time { return started.Add(time.Minute) },
+		Recipient: identity.Recipient().String(), Dump: bytes.NewReader(payload)})
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	var baseline bytes.Buffer
+	if _, err := restore(path, manifest, identity, &baseline); err != nil || !bytes.Equal(baseline.Bytes(), payload) {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
+
+	type restoreInput struct {
+		path     string
+		manifest string
+		identity age.Identity
+	}
+	inputs := []restoreInput{}
+	switch request.Population {
+	case "truncated_or_corrupt_backup":
+		data, err := os.ReadFile(path)
+		if err != nil || len(data) < 2 {
+			return ProbeAccepted, errors.Join(ErrInvalid, err)
+		}
+		truncated := filepath.Join(root, "truncated.ccbackup")
+		corrupt := filepath.Join(root, "corrupt.ccbackup")
+		corruptData := append([]byte(nil), data...)
+		corruptData[len(corruptData)-1] ^= 0xff
+		if err := os.WriteFile(truncated, data[:len(data)-1], 0o600); err != nil {
+			return ProbeAccepted, err
+		}
+		if err := os.WriteFile(corrupt, corruptData, 0o600); err != nil {
+			return ProbeAccepted, err
+		}
+		inputs = append(inputs, restoreInput{path: truncated, manifest: manifest, identity: identity},
+			restoreInput{path: corrupt, manifest: manifest, identity: identity})
+	case "wrong_age_identity":
+		wrong, err := age.GenerateX25519Identity()
+		if err != nil {
+			return ProbeAccepted, err
+		}
+		inputs = append(inputs, restoreInput{path: path, manifest: manifest, identity: wrong})
+	case "wrong_release_manifest":
+		inputs = append(inputs, restoreInput{path: path, manifest: "sha256:" + strings.Repeat("b", 64), identity: identity})
+	default:
+		return ProbeAccepted, ErrInvalid
+	}
+	for _, input := range inputs {
+		if _, err := restore(input.path, input.manifest, input.identity, io.Discard); !errors.Is(err, deploymentbackup.ErrInvalid) {
+			if err != nil {
+				return ProbeAccepted, err
+			}
+			return ProbeAccepted, nil
+		}
+	}
+	return ProbeRejected, nil
+}
+
+type backupCreateGate func(deploymentbackup.CreateInput) (deploymentbackup.Header, string, error)
+
+func runInterruptedBackupProbe(request ProbeRequest, create backupCreateGate) (outcome ProbeOutcome, resultErr error) {
+	root, err := os.MkdirTemp(request.WorkDirectory, "backup-interruption-probe-")
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	defer func() {
+		if cleanupErr := os.RemoveAll(root); cleanupErr != nil {
+			outcome = ProbeAccepted
+			resultErr = errors.Join(resultErr, cleanupErr)
+		}
+	}()
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		return ProbeAccepted, err
+	}
+	started := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	_, _, err = create(deploymentbackup.CreateInput{Directory: root, BackupID: "20260823T120000Z-abcdef123456",
+		ServerID: "r006-probe", ReleaseManifestSHA256: "sha256:" + strings.Repeat("a", 64), EpochID: 8,
+		StartedAt: started, Now: func() time.Time { return started.Add(time.Minute) }, Recipient: identity.Recipient().String(),
+		Dump: &interruptedBackupReader{data: []byte("PGDMP partial")}})
+	if err == nil {
+		return ProbeAccepted, nil
+	}
+	entries, readErr := os.ReadDir(root)
+	if readErr != nil || len(entries) != 0 {
+		return ProbeAccepted, errors.Join(ErrInvalid, readErr)
+	}
+	return ProbeRejected, nil
+}
+
+type interruptedBackupReader struct {
+	data      []byte
+	delivered bool
+}
+
+func (reader *interruptedBackupReader) Read(destination []byte) (int, error) {
+	if reader.delivered {
+		return 0, errors.New("injected interrupted backup writer")
+	}
+	reader.delivered = true
+	return copy(destination, reader.data), nil
 }
 
 func runHostNegativeProbe(validate func(Host) error) (ProbeOutcome, error) {
