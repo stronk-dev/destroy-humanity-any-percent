@@ -111,6 +111,7 @@ test-deployment-operations:
 test-deployment-rehearsal:
 	$(MAKE) test-go GO_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal ./deploymentrelease ./cmd/deployment-release' GO_TEST_FLAGS='-count=1'
 	cd server && go run ./cmd/deployment-rehearsal validate-build --record=../planning/deployment-foundation/release-builds/previous.json
+	cd server && go run ./cmd/deployment-rehearsal validate-build --record=../planning/deployment-foundation/release-builds/candidate.json
 
 # Validate the complete embedded migration chain on real Postgres while keeping
 # the scope focused on the package that owns it. Migration-named unit probes and

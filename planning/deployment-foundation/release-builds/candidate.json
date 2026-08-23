@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "role": "candidate",
+  "release_version": "0.1.0-preview.1",
+  "source_commit": "469db5e42320b91a9c610c0e015c437aa6356d63",
+  "source_date_epoch": 1787471018,
+  "created_at": "2026-08-23T07:43:38Z",
+  "docker_engine": "28.4.0",
+  "docker_compose": "2.39.4-desktop.1",
+  "buildkit_image": "moby/buildkit:v0.24.0@sha256:6eceb8971ce4fceb3daca562832642706238b7eea72941fcf9896c93c3c4a53e",
+  "syft_image": "anchore/syft:v1.51.0@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0",
+  "manifest_sha256": "sha256:8ab2efa35e8850b974614ce26cb689fc6b29691b4608c1bea771ae9dadc3fb68",
+  "gameserver_archive_sha256": "sha256:37db56def353a38903431628df13ac49230a6b11ed4680bd592bb4cc70e34462",
+  "images": [
+    {
+      "name": "alertmanager",
+      "reference": "prom/alertmanager:v0.32.1@sha256:51a825c2a40acc3e338fdd00d622e01ec090f72be2b3ea46be0839cd47a4d286",
+      "runtime_config_sha256": "sha256:23b56bfdedbae904f3f0d2b620a523d4a425bb63fd1d6986f561403e33fcde08",
+      "sbom_sha256": "sha256:1850c4eecc36b95adf0e40194d065e18d068a5c18e40f5fe29013765678abf4a"
+    },
+    {
+      "name": "caddy",
+      "reference": "caddy:2.11.4-alpine@sha256:98eb57d882ccd5213d1688764db10c1ca2c58a1ca3a6717a3411ad798f7a423a",
+      "runtime_config_sha256": "sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe",
+      "sbom_sha256": "sha256:a5e7d84b7520fa2490fac4025dc5e17b093e01d814c3071258823cb7d982dfc1"
+    },
+    {
+      "name": "gameserver",
+      "reference": "sha256:fec3fe1812c2af121345c95e2f6ce7038787e0f6f19af92fb5bc671085b4b5b9",
+      "runtime_config_sha256": "sha256:fec3fe1812c2af121345c95e2f6ce7038787e0f6f19af92fb5bc671085b4b5b9",
+      "sbom_sha256": "sha256:fdcbc48e86be3f74fd88d272828ab239c3dbb84f7e6f9ecf6f05381bad481d1a"
+    },
+    {
+      "name": "node-exporter",
+      "reference": "prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0",
+      "runtime_config_sha256": "sha256:84acc55a7ba518e054cc71dcddbd1a120973f7926c2c0d6855f7d8d8e2b983e0",
+      "sbom_sha256": "sha256:e5c0336b5a42f1634d9f9b4d0b394bf85f9e9e2e7ad621d070381b1166ef9e71"
+    },
+    {
+      "name": "postgres",
+      "reference": "postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685",
+      "runtime_config_sha256": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+      "sbom_sha256": "sha256:9fb3e61749481e9f557a6425341677a43b18b5456d1b99b8f8338efbbd663871"
+    },
+    {
+      "name": "prometheus",
+      "reference": "prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac",
+      "runtime_config_sha256": "sha256:d2f7aaa363e1c220487d776f21a5d7a3416834826038c1d2b38f1adb9079ed93",
+      "sbom_sha256": "sha256:2fbc65cc798b9aece1b08130f313366b8506ab17060cecb69d44f75327839dc6"
+    }
+  ],
+  "independent_rebuild": true,
+  "rebuild_manifest_sha256": "sha256:8ab2efa35e8850b974614ce26cb689fc6b29691b4608c1bea771ae9dadc3fb68",
+  "rebuild_archive_sha256": "sha256:37db56def353a38903431628df13ac49230a6b11ed4680bd592bb4cc70e34462",
+  "normalized_sboms_equal": true,
+  "objective_completed": true,
+  "guard_exhausted": false
+}

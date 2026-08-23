@@ -726,3 +726,18 @@ population and demonstrate that a vacuous negative, shell command, secret argume
 wrong order, absent guard, output truncation and overwrite each fail. The DP-F3 plan itself remains
 to be generated after the candidate manifest exists and receives review as a hashed evidence
 artifact; implementation of the driver does not mark any rehearsal population observed.
+
+The retained candidate rehearsal bundle is now built twice from clean source commit
+`469db5e42320b91a9c610c0e015c437aa6356d63` as `0.1.0-preview.1`. Both complete 70-artifact trees
+are byte-identical. The manifest is
+`sha256:8ab2efa35e8850b974614ce26cb689fc6b29691b4608c1bea771ae9dadc3fb68`, the gameserver archive is
+`sha256:37db56def353a38903431628df13ac49230a6b11ed4680bd592bb4cc70e34462`, and its OCI runtime config
+is `sha256:fec3fe1812c2af121345c95e2f6ce7038787e0f6f19af92fb5bc671085b4b5b9`. All six normalized SBOM
+pairs match independently regenerated package graphs. The strict candidate record is
+`release-builds/candidate.json`; the manual rehearsal target validates both candidate and previous
+records cold.
+
+DP-F2 has therefore produced the exact two-bundle input population and proven independent rebuilds.
+It is not yet complete: the reviewed 43-check command plan must bind these two manifest hashes,
+and the complete source/image secret scan must run against the candidate bytes before DP-F3 can
+touch an authorized clean host. No component result is being promoted to R-006 evidence.
