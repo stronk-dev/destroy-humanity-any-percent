@@ -1493,3 +1493,12 @@ This construction intentionally exposes a real next gate: the current minimal br
 does not create a verified board row, so `recover-empty` will refuse that state as an incomplete
 populated recovery fixture. The browser/product population must be strengthened; the recovery gate
 will not be loosened. No Linux run occurred and the honest count remains 25/43.
+
+## 2026-08-23 — DP-F2 recovery boundary full-lane verification
+
+After `7bb65d1`, the complete cold `make test-deployment-rehearsal` lane passed: rehearsal,
+rehearsal CLI, release runtime and release CLI packages were green at `-count=1`, and both retained
+independent-build records still strict-validated at their recorded previous/candidate manifest
+identities. This verifies tooling compatibility only; the records predate the new command surface
+and remain inputs to be rebuilt after DP-F command construction stabilizes, not evidence that the
+new recovery producer ran.
