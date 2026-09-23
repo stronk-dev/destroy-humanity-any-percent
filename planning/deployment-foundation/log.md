@@ -1826,3 +1826,24 @@ diff check passed; no product gameplay or historical bundle byte changed. RP-111
 Make-wrapper defect discovered while generating the build evidence. This is an implementer-side
 first filter only; **Claude's designated cross-party verdict for the exact range is absent** and
 DP-F cannot archive or claim release acceptance from this entry.
+
+## 2026-09-23 — DP-F2/AC5 follow-up predeclaration: versioned rollback and scan output
+
+RP-112 is a latent seven-day rollback break: `ValidateReleaseManifest` currently requires the
+previous bundle's company/founder save versions to equal the *new validator binary's*
+`save.Latest…Version` constants. The exact previous bundle happens to pass now because both
+versions still match. At the next save-version bump, a byte-exact previous bundle would be
+rejected before the mandated backup restore. The accepted DP5/AC5 contract is to validate that
+bundle and prove rollback from its pre-upgrade backup, not to pretend its historical version was
+rewritten. RP-111 independently makes the root secret-scan target fail for a relative result path.
+
+This follow-up may change only manifest version validation, the root Make secret-scan output-path
+forwarding, focused fixtures/tests and canonical deployment docs. A generated historical-shaped
+bundle with lower positive company/founder versions must validate, while zero or future versions
+must refuse; the builder must still emit both current latest versions. The exact retained
+candidate/previous pair must still validate. For the scan wrapper, a repository-relative ignored
+output must succeed and an existing output must fail without overwrite; an absolute path still
+works. The old failing relative-path run is the pre-change discriminator. No gameplay migration,
+schema, historic bundle byte, release image or owner rollback interval changes. After source
+changes, candidate-v4 remains evidence for its pinned source commit but is **not** the current
+candidate; rebuild two independent exact trees before any R-006 clean-host run.
