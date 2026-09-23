@@ -2708,3 +2708,34 @@ D-008/D-009/D-015 and legal review remain open. Receipt families, every
 historic event encoder, other nested stores and the joined populated deletion
 witness remain. No product/test/migration byte, owner copy, accepted RFC or
 release status changed.
+
+## 2026-09-23 — selected receipt stores and retention controls
+
+Codex predeclared `data-rights-receipts-plan.md` and traced core intent,
+Minigame API/session, Guild intent, and Soul terminal receipts. The bounded
+`data-rights-receipts.md` distinguishes API response snapshots from kernel
+resolution receipts and the replay/outbox copies. Guild per-account receipts
+have an account-cascade FK, unlike retained Minigame/Soul and core receipts.
+
+Cold real-Postgres Minigame repository, production create, production
+resolution, Soul recovery and Guild lifecycle tests passed separately with
+`-count=1 -v`; Guild ran on a freshly restarted temporary database. Read-only
+fixture queries found the production Minigame create API response's nine keys,
+one terminal API response with nested resolution, matching session receipts
+for the separate API and core resolution populations (1/1 each), and 14/14
+Soul terminal session receipts equal to their core intent receipts. All 14
+terminal Soul rows still held non-null `progress_token`; their receipt JSON
+did not contain the token. RP-127 records this retained historic capability
+material without calling it an active authorization bypass.
+
+RP-128 records a transaction-scoped Minigame parent-session deletion negative:
+an exact fixture session with create+command API receipts failed with
+`minigame API receipts are immutable` from the FK-cascade child trigger,
+exit 1; the transaction rolled back and the session remained. This blocks
+parent-expiry cleanup under current migration, not account deletion's current
+archive-only path. The temporary Postgres service/network was removed after
+the checks; the named Go cache volume remains.
+
+D-008/D-009/D-015 and legal review remain open. No joined account deletion
+after these payloads, full receipt union, expiry contract, product/test or
+migration edit, owner copy, RFC status or release claim was made.

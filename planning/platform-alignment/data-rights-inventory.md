@@ -50,7 +50,13 @@ Minigame and Soul identity fields are traced in
 [`data-rights-events.md`](data-rights-events.md): 48 kinds, 52 SQL-accepted
 kind/version pairs, 51 Go-write-validator-admissible pairs, and tested Soul
 event→outbox copying. This is not a complete event-key or historic-encoder
-classification. Other payload families remain unclassified. No group gets a made-up
+classification. The selected core, Minigame, Guild and Soul receipt/response
+stores are mapped in [`data-rights-receipts.md`](data-rights-receipts.md):
+Guild per-account receipts cascade on account deletion, whereas retained
+Minigame/Soul receipts have distinct copies and no adopted expiry; terminal
+Soul rows retain progress tokens (RP-127), and Minigame API receipt triggers
+block parent-session cascade cleanup (RP-128). Other payload families remain
+unclassified. No group gets a made-up
 duration from its package name or apparent lifecycle.
 
 The account/save, history/board, shared catalog/Routes/Commons, Guild and final

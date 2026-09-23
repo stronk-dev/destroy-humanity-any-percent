@@ -339,3 +339,22 @@ initiate the push or change the branch's publication state in this checkpoint.
   Soul/Minigame event bodies. This is selected identity mapping, not every
   event key/version or an export schema. D-008/D-009/D-015, legal review and
   accepted joined-rights work remain; no product/release state changed.
+
+## 2026-09-23 — selected receipt and response checkpoint
+
+- **Coordinate:** product `7e8aa70`, planning after `14884fa`; predeclared
+  `platform-alignment/data-rights-receipts-plan.md` and bounded result
+  `platform-alignment/data-rights-receipts.md`.
+- **Evidence:** five focused real-Postgres tests passed cold. Production
+  Minigame API/session and core resolution receipt pairs matched in their
+  separate fixtures (1/1 each). Soul's 14 terminal sessions held non-null
+  progress tokens and matching core terminal receipt JSON (14/14). An exact
+  Minigame parent-delete probe with API receipt children failed from the
+  immutable-child trigger and rolled back. RP-127/RP-128 record the distinct
+  token-retention and cleanup-migration boundaries. Temporary database
+  service/network was removed; named cache retained.
+- **Limit/next:** Guild intent receipts cascade with account rows, but shared
+  Guild event history remains separate. None of the Minigame/Soul fixtures
+  joins account deletion; other receipt variants and nested records remain.
+  D-008/D-009/D-015 and legal review still own policy; no product, RFC or
+  release state changed.

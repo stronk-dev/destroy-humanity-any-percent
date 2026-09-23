@@ -85,7 +85,9 @@ with empty payloads/no matched events). Those existing findings remain open.
   preservation exception for nested Founder/run/session links and their
   event→outbox/archive copies. Account unlinking alone is insufficient to
   describe the remaining bytes as erased.
-- Receipt-family schemas, every core event's exact keys/historic encoders,
-  separate Guild/Minigame/Soul JSON, verification dead letters, and a joined
-  populated deletion/restore witness remain open. No rights implementation or
-  release status is authorized by this research.
+- Selected core, Minigame, Guild and Soul receipt stores now have a bounded
+  follow-up map in [`data-rights-receipts.md`](data-rights-receipts.md). The
+  full receipt union, every core event's exact keys/historic encoders,
+  separate non-receipt Guild/Minigame/Soul JSON, verification dead letters,
+  and joined populated deletion/restore witnesses remain open. No rights
+  implementation or release status is authorized by this research.

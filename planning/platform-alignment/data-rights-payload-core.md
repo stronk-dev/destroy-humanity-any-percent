@@ -55,6 +55,10 @@ volume preserved.
   constraints. The uncalled intent-prune helper and unbounded outbox history
   need an implementation contract, not a label on a diagram.
 
-Remaining payload work includes event-kind/version and receipt-family schemas,
-Founder log, Minigame/Soul/Guild nested records, verification dead letters,
-and operator/browser-adjacent fields. This tranche does not close those.
+Later bounded maps now cover the core-event registry/selected identity fields
+in [`data-rights-events.md`](data-rights-events.md) and selected core,
+Minigame, Guild and Soul receipt stores in
+[`data-rights-receipts.md`](data-rights-receipts.md). Exact historic event
+encoders, the full receipt union, Founder-log payload variants, non-receipt
+Minigame/Soul/Guild JSON, verification dead letters and joined rights proofs
+remain open. This original tranche does not close them.
