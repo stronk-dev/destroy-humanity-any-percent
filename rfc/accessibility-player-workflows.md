@@ -161,8 +161,9 @@ measurement choices, not a conformance claim.
 1. Adopt the exact Phase-0 release-task manifest; the current D-001/D-007 ruling fixes the
    bounded T0–T1 direction but not every included task/surface.
 2. Rule D-018's supported manual assistive-technology/browser/OS matrix and who executes/releases
-   its records. The current Mac run could not start Firefox twice; that is a test-environment
-   gap, not permission to drop Firefox or screen-reader evidence.
+   its records. The Mac Firefox launcher failed twice, but the declared Linux lane executed
+   Firefox and reproduced the defects. This does not substitute for manual screen-reader or
+   real-task evidence.
 3. Decide under D-018 whether the independent in-game reduced-motion and visual-noise settings recommended
    by design research belong to the next release, and adopt any required copy separately.
 4. Resolve under D-018 whether the current Offer countdown's authoritative expiry needs an additional

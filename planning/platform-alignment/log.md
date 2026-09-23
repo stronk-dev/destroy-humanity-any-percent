@@ -2465,3 +2465,18 @@ It is **draft**, not accepted or implementation authority. D-018 records the own
 matrix and settings posture; R-005 stays open. No product, test, theme, copy or archived RFC
 behavior changed. This is Codex's first-filter research/draft work; no designated cross-party
 verdict or release-accessibility claim follows.
+
+## 2026-09-23 — Linux Firefox closes the diagnostic observation gap
+
+The prior Mac Vitest/Playwright startup timeout left Firefox unexecuted. Codex reintroduced the
+same temporary focus/reflow probes and ran the declared `make test-browser-ci` Linux container.
+All three engines executed. The six targeted assertions failed with identical properties:
+Offer focus `BODY`, heading without a `tabindex` attribute, and complete Desk/document width
+`647/320` at a 320-pixel CSS viewport. The rest of that first browser population recorded
+20,049 passes and three skips; the expected exit 2 stopped the second performance command.
+The probes were removed byte-identically, and the unmodified `make test-browser-ci` passed:
+123 files, 20,049 tests green, three skips, then one separate simulated-60-second Chromium
+budget test green. The contrast demonstrates the ordinary fixture gate's blind spot; it does
+not close RP-082/RP-083 or R-005. RP-116's missing Firefox product observation is resolved by
+the declared Linux lane; the Mac launcher remains an environment note. No product or permanent
+test byte changed, and no accepted RFC/release status advanced.

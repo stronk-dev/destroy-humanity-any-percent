@@ -90,8 +90,10 @@ research question; they authorize only the stated downstream action.
 - **Precondition:** D-001 names the exact release tasks and their surfaces exist under accepted
   owners. Already-observed focus/reflow/shell-motion failures remain valid implementation inputs.
 - **Current-source input (2026-09-23):** `accessibility-current-audit.md` reproduces focus loss
-  and 647/320 Desk overflow in Chromium/WebKit at product `7e8aa70`; Firefox timed out before
-  executing either test. `rfc/accessibility-player-workflows.md` is a draft contract only; its
+  and 647/320 Desk overflow in Chromium, Firefox and WebKit at product `7e8aa70`; Firefox timed
+  out on the Mac runner but executed in the declared Linux lane. The unmodified Linux browser
+  lane subsequently passed, exposing the fixture oracle's blind spot.
+  `rfc/accessibility-player-workflows.md` is a draft contract only; its
   task/AT matrix, implementation, real workflow and R-005 evidence are still open.
 - **Question:** Does the ruled release workflow work with keyboard, screen reader, 200%/400% zoom,
   reduced motion, coarse pointer, and common color-vision states?

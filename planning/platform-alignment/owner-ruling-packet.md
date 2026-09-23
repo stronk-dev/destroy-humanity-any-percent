@@ -206,8 +206,9 @@ promise may be inferred from that target.
 ## O-007 — accessibility player-task acceptance (D-018; prepared 2026-09-23)
 
 The current-source audit in `accessibility-current-audit.md` reproduces lost Offer focus and
-647/320 horizontal overflow in Chromium and WebKit. Firefox did not launch in this Mac test
-environment; that is missing evidence, not an exemption. `rfc/accessibility-player-workflows.md`
+647/320 horizontal overflow in Chromium, Firefox and WebKit. Firefox did not launch in the Mac
+test environment, but the declared Linux lane executed it; the unmodified lane passes while the
+desired-behavior probes fail. `rfc/accessibility-player-workflows.md`
 is draft only. D-007's exact release manifest names the tasks; this decision chooses how their
 accessibility will be demonstrated, **not** a smaller task/content set.
 
@@ -227,5 +228,5 @@ Exact release tasks: [cite D-007 manifest; do not duplicate it here]
 ```
 
 The ruling then reconciles the draft RFC body. Accepted tests must prove the chosen matrix on
-real player workflows, including the Firefox path that failed to start locally; no source-only
+real player workflows; no source-only
 trace, fixture axe pass or future-surface promise closes R-005.

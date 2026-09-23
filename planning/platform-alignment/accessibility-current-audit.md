@@ -17,13 +17,33 @@ Make target's second performance command did not run and is not claimed. [V]
 
 | Property | Current observation | Verdict |
 |---|---|---|
-| Authoritative Offer preempts a focused Desk manual button | Chromium and WebKit: Offer heading exists but has `tabIndex=-1` (not programmatically focusable); `document.activeElement` becomes `BODY`. | **Fails** meaningful focus transfer in both executed engines. RP-082 persists. |
+| Authoritative Offer preempts a focused Desk manual button | Chromium and WebKit: Offer heading exists but has no `tabindex` attribute; `document.activeElement` becomes `BODY`. | **Fails** meaningful focus transfer in both executed engines. RP-082 persists. |
 | Full Desk at 320×720 CSS-pixel viewport | Chromium and WebKit: `main.scrollWidth=647`, `main.clientWidth=320`; document `scrollWidth=647`, `clientWidth=320`. | **Fails** horizontal reflow in both executed engines. RP-083 persists. |
-| Firefox arm | Multi-engine run and a separate `--browser.name=firefox` retry both failed to connect to the Firefox browser session within 60 seconds, before setup/import/test execution. | **Invalid/unexecuted**, not a product pass or fail. Three-engine acceptance remains open. |
+| Firefox on the Mac runner | Multi-engine run and a separate `--browser.name=firefox` retry both failed to connect within 60 seconds, before setup/import/test execution. | **Invalid locally**; the declared Linux browser lane resolved the missing Firefox product observation below. |
 
-The diagnostic assertions were *expected to fail* on broken behavior and did. In both executed
-engines the emitted exception included the observed focus element or width pair. The temporary
-test file was restored byte-identically. The browser runner wrote ignored failure screenshots;
+## Declared Linux browser-lane follow-up — 2026-09-23
+
+With the same temporary diagnostic tests, `make test-browser-ci` installed from the frozen
+lockfile inside its declared Playwright Linux image and executed the complete three-engine
+population. The six desired-behavior assertions failed: in **Chromium, Firefox and WebKit**,
+Offer focus landed on `BODY` with the heading lacking a `tabindex` attribute (`tabIndex=-1`
+property), and the complete Desk/document measured
+`scrollWidth/clientWidth=647/320`. Each failure included the targeted state/measurement; the
+other 20,049 tests passed (three skipped). The command exited 2 as expected and did not run its
+second performance command. This resolves the *product-observation* gap left by the Mac Firefox
+startup timeout, not the product accessibility defects or R-005. [V]
+
+The temporary tests were then removed byte-identically. A cold unmodified
+`make test-browser-ci` rerun passed: 123 browser test files, 20,049 tests passed, three skipped,
+plus the separately invoked Chromium simulated-60-second budget test (one passed, 17 excluded by that lane's
+selector). This green baseline is a useful control precisely because it coexists with the six
+failing desired-behavior probes. The Mac Firefox launcher remains a local environment issue;
+the repository's declared Linux lane can execute Firefox. [V]
+
+The diagnostic assertions were *expected to fail* on broken behavior and did. In all three
+engines executed across the Mac/Linux runs, the exception included the observed focus element
+or width pair. The temporary test file was restored byte-identically. The browser runner wrote
+ignored failure screenshots;
 they are diagnostics, not tracked or cited as acceptance baselines.
 
 ## Current production path trace
@@ -45,7 +65,8 @@ by this check.
 
 ## Consequence and next proof
 
-The Phase-0 release floor cannot cite the current Game UI as task-accessible. A cross-surface
+The Phase-0 release floor cannot cite the current Game UI as task-accessible. Three-engine
+negative reproduction is now complete; passing task accessibility is still absent. A cross-surface
 successor contract must own focus/context on lifecycle replacement, full-surface 320-pixel and
 200%/400% reflow, live OS reduced motion including numeric shell, keyboard traversal,
 coarse-pointer and non-color state, plus manual screen-reader records. It must name seeded

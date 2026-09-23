@@ -145,3 +145,20 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Next:** rule D-018 and the exact release-task manifest, accept or revise the successor, then
   implement with failing controls and composed/manual task proof. The independent Deployment
   R-006/review path remains required.
+
+## 2026-09-23 — three-engine accessibility negative and green ordinary control
+
+- **Observed change:** the Mac Firefox startup gap no longer limits the current-source product
+  finding. The declared Linux browser lane executed the same temporary probes in Chromium,
+  Firefox and WebKit; focus and reflow failed identically in all three.
+- **Executed evidence:** six deliberate failures named `BODY` focus and 647/320 Desk/document
+  width, alongside 20,049 ordinary passes and three skips. After removing the probes, cold
+  `make test-browser-ci` passed 123 files/20,049 tests (three skips), then its separate
+  Chromium simulated-60-second budget test. The normal gate can be green while these two
+  player-task properties fail.
+- **Limits:** the Mac Firefox launcher remains unexplained; the declared Linux lane works.
+  No accessibility implementation, real keyboard/screen-reader task, R-005 completion, owner
+  D-018 ruling, designated review or release status follows from negative reproduction.
+- **Next:** accept or revise the exact task contract and repair RP-082/RP-083/RP-084 under
+  authority with permanent negative/positive witnesses; retain full manual and composed
+  release-task proof.
