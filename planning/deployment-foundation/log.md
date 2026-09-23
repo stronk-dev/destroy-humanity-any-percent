@@ -1898,3 +1898,13 @@ The old relative output failed; the corrected path succeeded and the existing-ou
 failed without changing its digest. Cold focused tests, vet, exact prior pair probe and diff check
 passed. This is not Claude's mandatory designated cross-party verdict. The later planning/build
 record range `b7a9587..` also remains unreviewed by the designated party.
+
+## 2026-09-23 — bounded designated-review handoff prepared
+
+Prepared `designated-review-handoff.md` for the five DP-A–DP-E batches plus the separate DP-E/DP8
+corrective range. Git history confirms the six `base..tip` ranges are contiguous within each batch
+and disjoint across the DP-F construction interval: commit counts are 3, 9, 4, 3, 3 and 5. The
+handoff points to the accepted RFC, this append-only log, cold root Make lanes and the required
+independent severing checks. One cross-party session can review them efficiently, but each batch
+still needs its own exact-range verdict. No designated review, DP-F approval, R-006 host result,
+archival or release claim is inferred from preparing the packet.
