@@ -2535,3 +2535,28 @@ were stopped and removed; named Go cache volume was retained.
 
 D-008/D-009/D-015 remain owner/legal decisions. No retention bound, export scope, player copy,
 product code, migration, accepted RFC or release status changed.
+
+## 2026-09-23 — shared catalog/Routes/Commons field tranche
+
+Codex predeclared `data-rights-fields-shared-plan.md`, then traced all current SQL columns
+in the 4 catalog/epoch, 5 Routes and 7 Commons tables through migration `00074`, current
+writers/readers and account-deletion source. `data-rights-fields-shared.md` brings the
+column-mapped denominator to **40/60** game tables; Guild, Minigame, Soul and Transport are
+the remaining 20. Nested payloads and browser/operator stores remain unclassified at field
+level. The shared catalog/epoch rows are the negative control against treating every stored
+record as one player's deletion target; Founder-linked Routes and Commons rows are the
+positive control against calling retained projections anonymous.
+
+Cold real-Postgres `make test-save-integration` with `-run Integration -count=1 -v` passed
+the two Route, one Commons and four Leaderboard/epoch integration tests. Those fixtures do
+not combine account deletion with populated projections, so no rights outcome is inferred.
+Source tracing found RP-119: deletion archives Founder streams without clearing a signed
+Commons membership, and `refreshScope` counts `member=true` samples without an archival
+filter. A departed Founder's sample can affect later health recomputation, but this is
+source-derived and still needs a joined cold witness and owner-approved active/historical
+semantics. `registry_routes.name` can be changed by package methods, but they have no
+non-test production caller; no public UGC or naming-expiry claim follows. The ephemeral
+Postgres container/network was removed; the named Go cache volume remains.
+
+D-008/D-009/D-015, RP-118 and RP-119 remain open. No product/test byte, authored copy,
+retention duration, accepted RFC or release status changed.

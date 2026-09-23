@@ -211,3 +211,19 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Limit/next:** 36 game tables, nested payloads and non-DB fields remain; owner/legal
   D-008/D-009/D-015 and D-007/D-018 remain open. No product/release status changed. Continue
   classification and require an accepted rights contract before a joined deletion witness.
+
+## 2026-09-23 — shared data field tranche and Commons deletion risk
+
+- **Coordinate:** product `7e8aa70`, planning after `345a3dc`; no product-path change.
+  The predeclared catalog/Routes/Commons tranche maps 16 more SQL schemas, making 40/60
+  game tables with field-level disposition. Twenty Guild/Minigame/Soul/Transport tables,
+  nested payloads and non-DB stores remain.
+- **Executed evidence:** seven Route/Commons/Leaderboard integration tests passed cold on
+  real Postgres with `-count=1 -v`. They establish projector/epoch behavior, not deletion
+  after those projections exist. The ephemeral DB container/network was removed.
+- **New boundary:** RP-119 records the source-derived possibility that a deleted account's
+  archived Founder remains `member=true` and therefore contributes a stored sample to
+  later Commons health recomputation. No synthetic leave or cleanup policy was inferred;
+  it requires D-009/D-015 semantics, accepted contract and joined witness.
+- **Next:** finish the 20 remaining game tables and payload/non-DB classification, while
+  independent Deployment review/R-006, D-007 exact tasks and D-018 accessibility remain open.
