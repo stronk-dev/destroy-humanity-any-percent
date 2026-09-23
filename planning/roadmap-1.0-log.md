@@ -281,3 +281,24 @@ initiate the push or change the branch's publication state in this checkpoint.
   D-008/D-009/D-015 still choose export/deletion/retention details. Continue
   nested game-data payload and backup/log/metric/operator-field classification.
   No product/test byte, ruling, RFC status or release claim changed.
+
+## 2026-09-23 — retained save/replay/transport payload lineage
+
+- **Coordinate:** product `7e8aa70`, planning after `f09ba51`. The predeclared
+  `data-rights-payload-core-plan.md` produced a bounded lineage dossier for
+  versioned save state, event/intent payloads, command/replay logs, immutable
+  gzip run archives and player transport rows.
+- **Evidence:** cold real-Postgres archive-compaction and outbox integration
+  tests passed with `-count=1 -v`; replay-input envelope validation passed in
+  the non-DB Go lane. Source tracing confirms archive compaction copies full
+  command, receipt, replay-input, genesis and matched-event bytes before
+  removing unreferenced active rows, and transport publication retains payload.
+  The ephemeral test Postgres service/network was removed; named cache kept.
+- **Evidence limit:** the archive fixture uses `{}` command/replay/receipt
+  payloads and expects no events. RP-124 records that its green result cannot
+  prove nontrivial payload or matched-event preservation; those claims remain
+  source-derived pending a populated, severable witness.
+- **Limit/next:** these tests do not delete an account with all payloads
+  populated. The dossier does not classify every event kind/version, receipt
+  family, Founder log, Minigame/Soul/Guild JSON or operator artifact. D-008/
+  D-009/D-015 and legal review remain open; no product/release status changed.

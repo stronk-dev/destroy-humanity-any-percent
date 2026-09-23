@@ -41,7 +41,11 @@ otherwise it is `not established`, never assumed to cascade.
 
 The groups are a **relation-complete census**, not a field-by-field personal-data classification.
 For all families, a future contract must specify nested payloads' inclusion and
-erasure disposition. No group gets a made-up
+erasure disposition. The selected save/replay/transport lineage is traced in
+[`data-rights-payload-core.md`](data-rights-payload-core.md): verified-run
+compaction retains full commands, receipts, replay inputs, genesis and matched
+events inside an immutable gzip archive, while transport publication leaves its
+payload row intact. Other payload families remain unclassified. No group gets a made-up
 duration from its package name or apparent lifecycle.
 
 The account/save, history/board, shared catalog/Routes/Commons, Guild and final

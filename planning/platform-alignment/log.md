@@ -2633,3 +2633,30 @@ completed player workflow or an owner decision to retain the code on-device.
 D-008/D-009/D-015 and legal review remain open. No product/test byte, owner
 copy, accepted RFC or release status changed. Operator-field and nested
 payload work remain separate.
+
+## 2026-09-23 — core save/replay/transport payload lineage
+
+Codex predeclared `data-rights-payload-core-plan.md`, then traced writers,
+formats and readers for `save_revisions.state`, `events.payload`,
+`intent_records.receipt`, `run_log` command/replay/receipt fields,
+`run_log_archive.bytes` and `transport_player_outbox.payload`. The bounded
+`data-rights-payload-core.md` records exact v8 replay-input coordinates and
+`gzip+json.v1` archive envelope. The archive preserves genesis, full commands,
+receipts, resolved inputs and matched Company/Founder events; deleting
+unreferenced live `run_log` rows after verification is compaction, not erasure.
+The player outbox stores direct receipts or event wrappers with the source
+payload and retains rows after publication. Other event-kind/receipt schemas
+and operator/non-DB fields are not promoted to complete classification.
+
+Cold `TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration`
+and `TestPlayerOutboxOrderingDeadLetterAndSizeIntegration` passed on real
+Postgres with `-count=1 -v`; `TestValidateReplayInputsPinsOfflineCatchupCoordinates`
+passed through `make test-go` with `-count=1 -v`. None joins account deletion
+with all these payloads. The archive fixture itself uses `{}` for the three
+logged payloads and expects zero archived events, so it cannot falsify lost
+nontrivial fields or Company/Founder events. RP-124 preserves that acceptance
+gap; the full content lineage is source-derived until a populated, severable
+witness exists. The temporary Postgres service/network was removed;
+the named Go cache volume was preserved. D-008/D-009/D-015, legal review,
+remaining nested payloads and accepted rights workflows remain open. No
+product/test byte, owner copy, RFC state or release claim changed.
