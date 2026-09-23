@@ -109,3 +109,22 @@ The six jobs — server, harness, schema, client, browser and game-ui-composed �
 successfully. This corrects the prior in-progress observation; it is hosted code CI, not a
 clean-host deployment rehearsal, R-006 evidence or designated cross-party review. Codex did not
 initiate the push or change the branch's publication state in this checkpoint.
+
+## 2026-09-23 — data-rights inventory against product `7e8aa70`
+
+- **Observed change:** a predeclared relation-complete census now names all 60 live game tables
+  in 11 disjoint families, plus browser, backup, journal, metrics and operator outputs. D-008,
+  D-009 and D-015 link to this evidence, but remain owner/legal decisions.
+- **Executed evidence:** the current migrations applied on real Postgres and showed 60 game
+  tables plus `goose_db_version`; migration Up create/drop accounting matched. The existing
+  Account integration test passed cold with a temporary diagnostic that reported **one retained
+  account-linked bootstrap tombstone after deletion**. The diagnostic was removed, leaving no
+  product or test change. The dropped historical outbox and metadata table were exclusion
+  controls; absence of a production intent-pruner caller and player export route was rechecked.
+- **Limits:** this is a relation-complete family map, not a per-column legal classification,
+  retention ruling, privacy notice, rights workflow or R-003/R-007 completion. The prior
+  no-backup/no-metrics audit claims are dated; current Deployment mechanisms still need R-006.
+  No release status, designated implementation review or clean-host result changed.
+- **Next:** owner/legal rulings for export, deletion and retention; accepted implementation
+  contracts and real player/operator rehearsals. In parallel, finish Deployment's exact-host
+  R-006 and obtain its required cross-party review.

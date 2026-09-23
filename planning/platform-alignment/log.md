@@ -2424,3 +2424,25 @@ unruled. A current `cf4ac25` overlay now points to the accepted Deployment RFC, 
 still-unreviewed CI correction range; the old table remains visibly dated history. No product,
 balance, RFC body, content or CI behavior changed in this planning checkpoint. The next goal
 checkpoint requires actual reviewed evidence, not elapsed time or an implementation count.
+
+## 2026-09-23 — data-rights relation census and deletion-residual diagnostic
+
+Codex predeclared `data-rights-inventory-plan.md` at `70784af` before the data census. The
+current migration Up chain yielded 61 created/one dropped game tables; a real Postgres migration
+confirmed 60 live game tables plus Goose metadata. Eleven disjoint inventory groups cover all
+60 names exactly; the historical outbox and Goose metadata are negative controls. A temporary
+read-only diagnostic in the existing Account deletion integration test found one
+`bootstrap_receipts` tombstone still carrying the deleted `account_id`. The declared Docker
+Postgres test passed cold with `-count=1 -v`; the diagnostic edit was then removed. This does
+not invalidate the existing live-secret-removal witness, but prevents treating it as complete
+account-linked erasure. A production caller search still finds only the orphaned
+`PruneIntentRecords` declaration. The mounted Account router and Game UI contain no player export
+or deletion/recovery rights workflow.
+
+The result is `data-rights-inventory.md`, RP-113/RP-114, and D-008/D-009/D-015 evidence updates.
+The D-008/R-003 circular prerequisite was removed as RP-115: choose export scope first, then
+build and test the prototype; participant results cannot retroactively make that owner choice.
+Deployment's configured backups, metrics and journald correct three dated 2026-08-20 audit
+negatives, but clean-host operation is not claimed. No retention period, legal basis, deletion
+mechanism, RFC implementation or player-facing wording was adopted; R-003/R-007 remain open.
+This is a Codex research first filter, not designated implementation review.

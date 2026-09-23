@@ -117,6 +117,10 @@ research question; they authorize only the stated downstream action.
 ## R-007 — retention and observability rehearsal
 
 - **Precondition:** D-001/D-006/D-009 and an accepted operations/retention owner.
+- **Current evidence input (2026-09-23):** `data-rights-inventory.md` covers all 60 live game
+  relations plus browser, backup, journal, metrics and operator outputs at product `7e8aa70`.
+  It supplies a relation-complete population and a fired deletion-residual diagnostic; it does
+  not choose durations, complete per-column classification or close this rehearsal.
 - **Question:** Can the chosen operator detect, diagnose, retain, delete, restore, and disclose the
   ruled production data without silent loss, indefinite accidental retention, or identifier/IP
   leakage?
