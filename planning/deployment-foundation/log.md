@@ -1859,3 +1859,16 @@ create while the result SHA-256 remained unchanged. The pre-change relative invo
 with `invalid release runtime content`, so this is a demonstrated path correction. The retained
 previous and candidate-v4 pair still need revalidation after the commit; candidate-v4 remains
 bound to its older source and cannot stand in for the rebuilt release candidate.
+
+## 2026-09-23 — DP-F2 predeclaration: final-source candidate refresh
+
+The rollback-version and Make wrapper correction landed at `b7a9587`. The `candidate-v4` pair
+must not be relabelled to this new source. Build fresh `candidate-v5a` and `candidate-v5b` trees
+from the next clean commit, with the same pinned Docker/Compose/BuildKit/Syft and seven immutable
+image inputs, version label `0.1.0-preview.2`, and that commit's timestamp. Rebuild six Linux/amd64
+commands, the client, staged content, no-cache gameserver archives, seven independent real image
+SBOM scans and both bundles. Demand byte equality of normalized outputs and full bundle trees;
+then rerun both candidate/previous probes, a manifest-bound structured source/image secret scan,
+the retained build-record validator and full supply-chain check. Update the candidate build record
+and strategic trackers only to the proven v5 manifest. No current-head source edit may be treated
+as covered by the old bundle. Clean-host R-006 and designated review remain separate gates.
