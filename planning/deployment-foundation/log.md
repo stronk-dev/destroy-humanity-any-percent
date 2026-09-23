@@ -1872,3 +1872,29 @@ then rerun both candidate/previous probes, a manifest-bound structured source/im
 the retained build-record validator and full supply-chain check. Update the candidate build record
 and strategic trackers only to the proven v5 manifest. No current-head source edit may be treated
 as covered by the old bundle. Clean-host R-006 and designated review remain separate gates.
+
+The clean source coordinate was `7e8aa708ff9e002e7ec4b46242d7d889f76b7fdd` at
+`2026-09-23T13:07:52Z`. Both fresh trees built six static Linux/amd64 commands, client output,
+staged content, no-cache gameserver archives and seven independent real Syft scans. Their binaries,
+client, metadata, content, archives, normalized SPDX documents and complete 72-artifact bundles
+compare byte-identical. The gameserver archives hash to
+`sha256:660d95778fe9d015a376d97e0024614fc0ed1ede3c4154c8c9d319`, config ID
+`sha256:37ba4070b3d2316a600781dd314513437ee58e937d30869fd6e0c136318888d7`;
+both manifests hash to
+`sha256:677e94bbc51af65e394599ac3951120d324579ac3f129c0dc52bf0ac5247818e`.
+Both exact candidate/previous probes passed. The structured scan through the corrected *relative*
+Make output path covered 1,407 Git-tracked files and the exact image archive with zero findings.
+The candidate build record binds these exact hashes; `make test-deployment-rehearsal` passed cold
+and validated both candidate and previous records. The full supply-chain command reopened both
+bundles, both records and the scan result and passed. Raw Syft headers are not compared or shipped;
+the seven normalized documents are byte-equal. These are local DP-F2 facts, not R-006 runtime
+evidence, designated review, an archival gate or an owner release call.
+
+**First-filter review — Review by: Codex; Recorded by: Codex.** Reviewed implementation range
+`df8f6d7..b7a9587`: the versioned manifest gate, historical/current/invalid fixture, root
+secret-scan path correction, canonical doc and backlog disposition. The old equality-rule mutant
+failed the prior-version positive; the corrected rule passed it and rejected zero/future values.
+The old relative output failed; the corrected path succeeded and the existing-output negative
+failed without changing its digest. Cold focused tests, vet, exact prior pair probe and diff check
+passed. This is not Claude's mandatory designated cross-party verdict. The later planning/build
+record range `b7a9587..` also remains unreviewed by the designated party.

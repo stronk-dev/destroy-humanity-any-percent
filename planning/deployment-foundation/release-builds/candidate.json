@@ -2,51 +2,51 @@
   "schema_version": 2,
   "role": "candidate",
   "release_version": "0.1.0-preview.2",
-  "source_commit": "8621f33f2c2f6d419691a59a2c17ea6249d934fe",
-  "source_date_epoch": 1790167859,
-  "created_at": "2026-09-23T12:50:59Z",
+  "source_commit": "7e8aa708ff9e002e7ec4b46242d7d889f76b7fdd",
+  "source_date_epoch": 1790168872,
+  "created_at": "2026-09-23T13:07:52Z",
   "docker_engine": "28.4.0",
   "docker_compose": "2.39.4-desktop.1",
   "buildkit_image": "moby/buildkit:v0.24.0@sha256:6eceb8971ce4fceb3daca562832642706238b7eea72941fcf9896c93c3c4a53e",
   "syft_image": "anchore/syft:v1.51.0@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0",
-  "manifest_sha256": "sha256:521e5bcaf4ff32bec47ec79eec7e44e1794c87513c5aefa1db8b04a599334d36",
-  "gameserver_archive_sha256": "sha256:3ce0a9d45d5b333817d7b99a778179f3d195809ac79e5265e0be94bc06079205",
+  "manifest_sha256": "sha256:677e94bbc51af65e394599ac3951120d324579ac3f129c0dc52bf0ac5247818e",
+  "gameserver_archive_sha256": "sha256:660d95778fe9d015a376d97e0024614fc0ed1ede3c4154c8fd2efcf4c8c9d319",
   "images": [
     {
       "name": "alertmanager",
       "reference": "prom/alertmanager:v0.32.1@sha256:51a825c2a40acc3e338fdd00d622e01ec090f72be2b3ea46be0839cd47a4d286",
       "runtime_config_sha256": "sha256:23b56bfdedbae904f3f0d2b620a523d4a425bb63fd1d6986f561403e33fcde08",
-      "sbom_sha256": "sha256:f4f1f39b2e237c13dea24b24c55d3359f5f2ec51bb4af1d90fd052f7767520e8"
+      "sbom_sha256": "sha256:5bcf9d4eb7743b06b48da40f3a1d8fe05dcf4a5077aec9d9a3e055c9f371c80a"
     },
     {
       "name": "caddy",
       "reference": "caddy:2.11.4-alpine@sha256:98eb57d882ccd5213d1688764db10c1ca2c58a1ca3a6717a3411ad798f7a423a",
       "runtime_config_sha256": "sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe",
-      "sbom_sha256": "sha256:1e0c8bf6378572955f8cf7470d4f69a6db3a55d323c5745053ec66d091f6f070"
+      "sbom_sha256": "sha256:355dd445dbdff6339559f6bc86b56e21b6389ac4403a5a59199c378d2494346d"
     },
     {
       "name": "gameserver",
-      "reference": "sha256:34d48155b28d09fc929a0891ce05a09b2a33d8d77fbbb559bb7e4c40c4218ddd",
-      "runtime_config_sha256": "sha256:34d48155b28d09fc929a0891ce05a09b2a33d8d77fbbb559bb7e4c40c4218ddd",
-      "sbom_sha256": "sha256:9f2eaa50986b1b690b4ea8ff13127333e45af12ca4a01d95e720226f9c0b93d0"
+      "reference": "sha256:37ba4070b3d2316a600781dd314513437ee58e937d30869fd6e0c136318888d7",
+      "runtime_config_sha256": "sha256:37ba4070b3d2316a600781dd314513437ee58e937d30869fd6e0c136318888d7",
+      "sbom_sha256": "sha256:56fc2cc24c782fb4d82a5e121b4d0bbdcc0ab7c87200464540fe2b0371fc475f"
     },
     {
       "name": "node-exporter",
       "reference": "prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0",
       "runtime_config_sha256": "sha256:84acc55a7ba518e054cc71dcddbd1a120973f7926c2c0d6855f7d8d8e2b983e0",
-      "sbom_sha256": "sha256:05fec4e73b6c06bbb916d231cbde741b6c291d0b8500bee0633e61ce6c47463c"
+      "sbom_sha256": "sha256:e4a096e7706e44ab54751ebfa6cc2d2b178618f667deae3a80f964506cf5c081"
     },
     {
       "name": "postgres",
       "reference": "postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685",
       "runtime_config_sha256": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
-      "sbom_sha256": "sha256:0a86a650d6f0a6a8c47f17136bb6b2c9deb26363dec85f617856208074b73b46"
+      "sbom_sha256": "sha256:3e7a2bb4dafa7f8577dd3df3ec50dfe08a2aee528b54afa2a966519bbc5b3bdb"
     },
     {
       "name": "prometheus",
       "reference": "prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac",
       "runtime_config_sha256": "sha256:d2f7aaa363e1c220487d776f21a5d7a3416834826038c1d2b38f1adb9079ed93",
-      "sbom_sha256": "sha256:4415542e2b6a9ee741a85a716cfa189c352b31e55b3035a53e0d1443c74a1eb5"
+      "sbom_sha256": "sha256:11ff7c1abea12f51b80945be0a85c0b78e2b15a5eac37ed12dae035c03634a05"
     }
   ],
   "rehearsal_images": [
@@ -54,12 +54,12 @@
       "name": "playwright",
       "reference": "mcr.microsoft.com/playwright:v1.62.0-noble@sha256:02bbb2155cd7109e3e9c741941097ed1608cf8b6fa44ee2595896da2bdc1f471",
       "runtime_config_sha256": "sha256:50cbb76d250a50002045a95f484c5f40573cde831adbe40c784052c037e36118",
-      "sbom_sha256": "sha256:82bb0478a0df47a411bbae6f6c4ad9f7c60bf30bbdc341550e78995b1db51aae"
+      "sbom_sha256": "sha256:8ff36f9068d5d71735cf44535612ae7bae4ba416c496286ee681fbf5219bfa64"
     }
   ],
   "independent_rebuild": true,
-  "rebuild_manifest_sha256": "sha256:521e5bcaf4ff32bec47ec79eec7e44e1794c87513c5aefa1db8b04a599334d36",
-  "rebuild_archive_sha256": "sha256:3ce0a9d45d5b333817d7b99a778179f3d195809ac79e5265e0be94bc06079205",
+  "rebuild_manifest_sha256": "sha256:677e94bbc51af65e394599ac3951120d324579ac3f129c0dc52bf0ac5247818e",
+  "rebuild_archive_sha256": "sha256:660d95778fe9d015a376d97e0024614fc0ed1ede3c4154c8fd2efcf4c8c9d319",
   "normalized_sboms_equal": true,
   "objective_completed": true,
   "guard_exhausted": false

@@ -77,3 +77,26 @@ long-term release picture.
 - **Next:** designated review of the pending implementation ranges and exact-bundle clean-host
   execution/severing under the accepted Deployment plan. This is candidate construction, not
   supported self-hosting or 1.0 readiness.
+
+## 2026-09-23 — rollback-version correction and final-source candidate `7e8aa70`
+
+- **Observed change:** a future save-version bump no longer makes a byte-exact previous bundle
+  fail manifest validation solely because it records the older company/founder versions. New
+  bundles still record the current versions; zero and future versions refuse. The root secret-scan
+  target now resolves a repository-relative result path and retains exclusive output creation.
+- **Executed evidence:** the old equality-rule mutant failed the prior-version positive, and the
+  corrected rule passed with zero/future negatives still red. The old relative scan invocation
+  failed; the corrected one passed, then refused an overwrite without changing the output hash.
+  Two fresh trees from `7e8aa70` match across binaries, client, image archive, seven normalized
+  SBOMs and all 72 bundle artifacts. Both exact candidate/previous probes pass. The manifest hash
+  is `677e94bb…47818e`; the retained record, zero-finding tracked-source/image scan and full local
+  supply-chain result validate.
+- **Limits:** source `8621f33` and its candidate-v4 pair are historical evidence, not the current
+  candidate. None of the local passes prove a clean Linux host, player journey, populated restore,
+  rollback, R-006 or designated cross-party verdict. The 25/43 probe count is unchanged. Codex
+  did not push, archive, change release status or make an owner release call. During this checkpoint
+  `origin/main` advanced externally to `7e8aa70`; hosted CI run `35865261957` was observed
+  `in_progress`, not passed, at that exact source commit.
+- **Next:** obtain the designated implementation-range review and an authorized clean Linux/amd64
+  target for exact-bundle R-006 execution and severing. Continue the independent account-rights,
+  accessibility and later-phase tracks under their own decisions and accepted RFCs.
