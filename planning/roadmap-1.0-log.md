@@ -302,3 +302,24 @@ initiate the push or change the branch's publication state in this checkpoint.
   populated. The dossier does not classify every event kind/version, receipt
   family, Founder log, Minigame/Soul/Guild JSON or operator artifact. D-008/
   D-009/D-015 and legal review remain open; no product/release status changed.
+
+## 2026-09-23 — operator-held data and restore/deletion collision
+
+- **Coordinate:** source after `dfdd6f4`, planning-only research. The
+  predeclared `data-rights-operator-plan.md` produced a bounded map of full-DB
+  encrypted backups, journald, private metrics/alerts, release/rotation
+  ledgers and rehearsal/recovery identity artifacts.
+- **Evidence:** `make test-go` for deploymentbackup/operations/deploymentrelease
+  passed cold. `make test-deployment-backup` passed four real-Postgres 16
+  populations, including populated encrypted backup→restore and non-clean
+  refusal; its dedicated temporary Compose project was removed. These are
+  local tests, not R-006/R-007 on the supported clean host.
+- **New boundaries:** RP-125 records that newest/unresolved backup protection
+  makes 30 days a non-hard maximum and that restoring a pre-deletion full dump
+  can recreate a deleted account without a deletion replay. RP-126 records
+  caller-supplied operator identifiers in append-only release/rotation ledgers
+  without an adopted lifecycle. The restore/deletion collision is source-
+  derived, not executed by the current backup test.
+- **Next:** finish event/receipt and other nested-payload schemas, seek owner/
+  legal D-008/D-009/D-015 rulings, then accepted rights/restore workflows and
+  exact-host proof. No product, deployment or release status changed.

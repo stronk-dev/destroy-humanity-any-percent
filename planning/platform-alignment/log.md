@@ -2660,3 +2660,26 @@ witness exists. The temporary Postgres service/network was removed;
 the named Go cache volume was preserved. D-008/D-009/D-015, legal review,
 remaining nested payloads and accepted rights workflows remain open. No
 product/test byte, owner copy, RFC state or release claim changed.
+
+## 2026-09-23 — operator-persisted data and pre-deletion restore risk
+
+Codex predeclared `data-rights-operator-plan.md` and traced the accepted
+Deployment contract plus backup, journal, metrics, ledger and rehearsal
+source/config. `data-rights-operator.md` classifies plaintext backup-header
+fields, the encrypted full-DB package, configured backup exceptions, tagged
+journald, private Prometheus/Alertmanager stores, bounded gameserver/host
+metrics, append-only release/rotation fields and R-006/recovery identity
+artifacts. RP-125 records two connected source-derived facts: protected newest
+or unresolved pre-upgrade backups can outlive day 30, and a full restore of a
+pre-deletion dump has no post-restore deletion replay. RP-126 records the
+caller-supplied `operator` identifier in append-only ledgers with no adopted
+data lifecycle. No private host data or secrets were read.
+
+Cold Go package suites for `./deploymentbackup ./operations ./deploymentrelease`
+passed. The dedicated `make test-deployment-backup` real-Postgres 16 target
+passed empty/populated encrypted backup→restore, wrong-target refusal and
+identity-mutation populations; the target removed its temporary Compose
+container/network/project volumes. It does not test account deletion between
+backup and restore, nor constitute R-006/R-007 on a supported clean host.
+D-008/D-009/D-015 and legal review remain open. No product/test/deployment
+byte, accepted RFC, authored copy or release claim changed.
