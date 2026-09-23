@@ -358,3 +358,19 @@ initiate the push or change the branch's publication state in this checkpoint.
   joins account deletion; other receipt variants and nested records remain.
   D-008/D-009/D-015 and legal review still own policy; no product, RFC or
   release state changed.
+
+## 2026-09-23 — verification/board diagnostic checkpoint
+
+- **Coordinate:** product `7e8aa70`, planning after `5714ee3`; predeclared
+  `platform-alignment/data-rights-verification-plan.md` and bounded result
+  `platform-alignment/data-rights-verification.md`.
+- **Evidence:** three verifier and one leaderboard real-Postgres tests passed
+  cold. A synthetic transient failure was retained exactly in queue/poison
+  text; deterministic failure stored only its fixed verdict phrase. The board
+  fixture had five rows, four event markers and exactly four allowed variable
+  keys. The temporary Postgres service/network was removed, cache retained.
+- **New boundary:** RP-129 covers unsanitized upstream error text in immutable
+  poison history, not a proved secret leak. Neither these tests nor the prior
+  rights tests delete an account after populating boards/dead letters. D-008/
+  D-009/D-015, legal review, accepted retention contract and joined proof
+  remain; no product, RFC or release state changed.

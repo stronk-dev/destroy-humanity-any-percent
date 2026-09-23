@@ -2739,3 +2739,29 @@ the checks; the named Go cache volume remains.
 D-008/D-009/D-015 and legal review remain open. No joined account deletion
 after these payloads, full receipt union, expiry contract, product/test or
 migration edit, owner copy, RFC status or release claim was made.
+
+## 2026-09-23 — verification diagnostics and board variables
+
+Codex predeclared `data-rights-verification-plan.md`, then traced the five
+verification/board tables' content-bearing fields and producer/reader paths.
+The bounded `data-rights-verification.md` distinguishes fixed deterministic
+dead-letter verdict text from transient/projector `err.Error()` pass-through,
+and maps the four exact board-variable keys and event-ID projection markers.
+
+Cold real-Postgres verifier tests for transient poison, deterministic dead
+letter and projector-failure poison passed separately with `-count=1 -v`.
+Read-only fixture queries found the injected synthetic transient error text
+unchanged in both a terminal queue row and immutable poison detail, the fixed
+`constants_mismatch` phrase in deterministic dead letters, and a retained
+synthetic projector error. A cold leaderboard projector integration test also
+passed; its fixture left five board rows, four event markers and exactly
+`advisor,commons,faction,glitched` variable keys. One marker can cover
+multiple categories; a marker is not itself an anonymization proof.
+
+RP-129 records bounded but unredacted arbitrary upstream error text copied
+into immutable poison history/invariant reports. This is a verified mechanism,
+not an observed secret leak. RP-118's joined populated-board/dead-letter
+account deletion witness remains absent. D-008/D-009/D-015 and legal review
+remain open. The temporary Postgres container/network was removed; cache
+retained. No product/test/migration, owner copy, RFC status or release claim
+changed.

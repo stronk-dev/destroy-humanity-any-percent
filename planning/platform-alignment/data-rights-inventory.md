@@ -56,8 +56,12 @@ Guild per-account receipts cascade on account deletion, whereas retained
 Minigame/Soul receipts have distinct copies and no adopted expiry; terminal
 Soul rows retain progress tokens (RP-127), and Minigame API receipt triggers
 block parent-session cascade cleanup (RP-128). Other payload families remain
-unclassified. No group gets a made-up
-duration from its package name or apparent lifecycle.
+unclassified. The five verification/board tables' selected diagnostics,
+variables and marker joins are traced in
+[`data-rights-verification.md`](data-rights-verification.md): deterministic
+dead-letter text is fixed, but transient/poison details pass bounded,
+unredacted upstream error text into immutable history (RP-129). No group gets
+a made-up duration from its package name or apparent lifecycle.
 
 The account/save, history/board, shared catalog/Routes/Commons, Guild and final
 Minigame/Soul/Transport SQL-column tranches are in

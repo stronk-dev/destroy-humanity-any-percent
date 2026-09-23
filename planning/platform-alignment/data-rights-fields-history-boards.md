@@ -59,6 +59,13 @@ deletion proof. The latter remains a named acceptance gap.
   `detail`/`last_error` text are **content-bearing**. SQL-column classification does not imply
   their nested contents are understood or safe to export/publish.
 
+A later bounded producer/consumer trace of the five verification/board
+tables' content-bearing fields is in
+[`data-rights-verification.md`](data-rights-verification.md). It distinguishes
+fixed deterministic verdict text from unredacted transient error text and
+classifies the current `variables` keys without claiming a joined deletion
+witness or public board.
+
 ## Owner/legal handoff
 
 **D-008:** choose whether all these histories, archives, board rows and diagnostics belong in
