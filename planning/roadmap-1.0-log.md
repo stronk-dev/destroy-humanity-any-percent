@@ -246,3 +246,20 @@ initiate the push or change the branch's publication state in this checkpoint.
   payloads or adopt deletion semantics. Seven game tables, nested payloads and
   non-DB stores remain, alongside D-008/D-009/D-015 and legal review. D-007,
   D-018 and the independent Deployment/R-006 path remain unchanged.
+
+## 2026-09-23 — all game-table SQL columns mapped, payload decisions still open
+
+- **Coordinate:** product `7e8aa70`, planning after `22967d1`; no product/test-path
+  change. The predeclared final tranche maps five Minigame, one Soul and one
+  Transport table in `data-rights-fields-final.md`, reaching **60/60** current
+  game tables at SQL-column level.
+- **Evidence:** selected Minigame, Soul and player-outbox tests passed on real
+  Postgres with `-count=1 -v`. Source/FK trace shows account deletion retains
+  Founder/streams, so those families' cascades do not fire on account removal
+  (RP-122). No joined populated-family deletion outcome is claimed. The
+  ephemeral Postgres service/network was removed; named Go cache retained.
+- **Limit/next:** 60/60 is not privacy-policy completeness: nested JSON,
+  command bytes, device-local credentials/timing, backups, logs, metrics and
+  operator artifacts need field/disposition work. D-008/D-009/D-015 and legal
+  review must rule export/deletion/retention before implementation. D-007,
+  D-018, Deployment review and R-006 remain independent release gates.

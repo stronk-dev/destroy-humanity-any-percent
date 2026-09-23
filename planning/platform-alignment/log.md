@@ -2585,3 +2585,28 @@ authored copy, RFC status or release claim changed. Continue the seven-table and
 nested/non-DB map, then bring a complete evidence packet for decisions. The test
 isolation repair requires its own accepted lane and discrimination; it is not
 smuggled into research.
+
+## 2026-09-23 — final seven SQL-column schemas, rights denominator complete
+
+Codex predeclared `data-rights-fields-final-plan.md`, then traced current
+Minigame/Soul/Transport schemas through migrations `00040`–`00071`, their
+writers/readers, account deletion and FK paths. `data-rights-fields-final.md`
+maps the remaining seven tables, completing **60/60 game tables at SQL-column
+level**. This does not classify nested JSON/binary/text or non-DB fields.
+
+Cold selected Postgres tests passed with `-count=1 -v`:
+`TestSessionClaimIntegration` (`./minigame`),
+`TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity`
+(`./production`), and `TestPlayerOutboxOrderingDeadLetterAndSizeIntegration`
+(`./save`). They prove bounded producer/consumer behavior, not joined account
+deletion with those families populated. RP-122 records the source-derived
+boundary: account deletion archives and preserves Founder/streams, so FKs from
+these seven tables to Founder/stream/session do not cascade on account removal.
+Published transport rows still hold payload; no production delete/pruner for
+these seven tables was found. The ephemeral Postgres service/network was removed;
+named Go cache retained.
+
+D-008/D-009/D-015 remain owner/legal decisions; no export schema, retention
+duration, deletion copy, product/test byte, RFC state or release claim changed.
+Next map nested payload and non-DB fields and seek a joined deletion witness
+only under an accepted rights contract.

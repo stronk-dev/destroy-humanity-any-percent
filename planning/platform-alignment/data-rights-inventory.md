@@ -35,24 +35,24 @@ otherwise it is `not established`, never assumed to cascade.
 | **Routes (5):** `route_projection_events`, `founder_route_executions`, `founder_route_state`, `route_hint_projection_events`, `registry_routes` | Route registry and execution → route state, hints and projection. Founder-linked rows remain a distinct export/deletion subject; registry definitions are shared authority. No adopted family-wide expiry/export. [V] |
 | **Commons (7):** `commons_cohorts`, `founder_commons_assignments`, `company_compact_memberships`, `commons_projection_events`, `commons_member_samples`, `commons_health_scopes`, `commons_recruitment_offers` | Commons producer/projector → cohort and membership accounting. Founder/company IDs and samples are joinable; shared cohorts are not simply an account row. Deletion archives a Founder's stream without clearing `member=true`, while health recomputation selects those members without an archival check (RP-119, source-derived; joined witness missing). No complete deletion/export/expiry contract. [V for source trace] |
 | **Guild (13):** `guilds`, `guild_members`, `guild_applications`, `guild_invitations`, `guild_account_revisions`, `guild_intent_records`, `guild_events`, `guild_health_inputs`, `guild_exchange_boundaries`, `guild_presence_outbox`, `guild_projection_events`, `guild_activity_windows`, `guild_clearing_results` | Guild intents/projector/presence relay → shared Guild history and membership. Deletion closes memberships and removes that account's applications/invitations; Guilds and event history remain. FK-linked account columns null or cascade by table. A cold diagnostic found the deleted UUID retained in `guild_events.payload` despite nulled actor FK (RP-120). `guild_presence_outbox.account_ref` can retain the UUID until successful publication, when it is nulled; no bounded failure/dead-letter retention has been shown. Shared-member disclosure/export needs a separate rule. [V] |
-| **Minigame (5):** `minigame_sessions`, `minigame_session_commands`, `minigame_faucet_window`, `minigame_create_receipts`, `minigame_command_receipts` | Minigame API/tenant → session and idempotent command result. Account/Founder and session links require a deletion/export decision; no complete expiry or player export workflow was found. [V] |
-| **Soul (1):** `soul_recovery_sessions` | Soul recovery API → resumable recovery state. Founder/session linkage and expiry/deletion semantics must be specified alongside export. [V] |
-| **Transport (1):** `transport_player_outbox` | Transport producer → player socket/recovery delivery. Scope/Founder-linked messages and delivery history remain a distinct disclosure/retention subject; delivery is not by itself proof of row removal. [V] |
+| **Minigame (5):** `minigame_sessions`, `minigame_session_commands`, `minigame_faucet_window`, `minigame_create_receipts`, `minigame_command_receipts` | Minigame API/tenant → session and idempotent command result. These rows refer to Founder/streams/sessions that account deletion retains, so their cascade FKs do not fire on account removal (RP-122, source-derived). Nested JSON/command bytes and expiry/export remain open. [V for source trace] |
+| **Soul (1):** `soul_recovery_sessions` | Soul recovery API → resumable recovery state. Founder/stream-linked active or terminal session survives the account deletion path by source/FK trace (RP-122); nested receipt and expiry/export require decisions. [V for source trace] |
+| **Transport (1):** `transport_player_outbox` | Transport producer → player socket/recovery delivery. The Founder stream remains after account deletion, so queued/published/dead-lettered rows remain by source/FK trace (RP-122). Publishing updates the row; it does not remove nested receipt/event payload or settle retention. [V for source trace] |
 
 The groups are a **relation-complete census**, not a field-by-field personal-data classification.
-For the seven unmapped Minigame/Soul/Transport tables, a future tranche must still
-classify each SQL column. For all families, a future contract must specify nested
-payloads' inclusion and erasure disposition. No group gets a made-up
+For all families, a future contract must specify nested payloads' inclusion and
+erasure disposition. No group gets a made-up
 duration from its package name or apparent lifecycle.
 
-The account/save, history/board, shared catalog/Routes/Commons and Guild SQL-column tranches are in
+The account/save, history/board, shared catalog/Routes/Commons, Guild and final
+Minigame/Soul/Transport SQL-column tranches are in
 [`data-rights-fields-account-save.md`](data-rights-fields-account-save.md),
 [`data-rights-fields-history-boards.md`](data-rights-fields-history-boards.md) and
 [`data-rights-fields-shared.md`](data-rights-fields-shared.md), and
-[`data-rights-fields-guild.md`](data-rights-fields-guild.md). Together they cover **53 of 60**
-game tables. The remaining seven (Minigame, Soul, Transport), nested JSON/binary/text
-payloads and non-DB stores are **not** field-classified; this relation-complete census remains
-the parent inventory.
+[`data-rights-fields-guild.md`](data-rights-fields-guild.md), and
+[`data-rights-fields-final.md`](data-rights-fields-final.md). Together they cover **60 of 60**
+game tables' SQL columns. Nested JSON/binary/text payloads and non-DB stores are
+**not** fully field-classified; this relation-complete census remains the parent inventory.
 
 ## Other persisted surfaces
 
