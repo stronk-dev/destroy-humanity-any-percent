@@ -263,3 +263,21 @@ initiate the push or change the branch's publication state in this checkpoint.
   operator artifacts need field/disposition work. D-008/D-009/D-015 and legal
   review must rule export/deletion/retention before implementation. D-007,
   D-018, Deployment review and R-006 remain independent release gates.
+
+## 2026-09-23 — browser persistence and recovery-code posture
+
+- **Coordinate:** source `a6956de`, planning-only research. The predeclared
+  `data-rights-browser-plan.md` led to a four-key current browser storage map
+  in `data-rights-browser.md`: bootstrap retry key, credential document,
+  per-Founder transport positions and per-Founder timing/splits. Production
+  client search found no other client-managed storage API.
+- **Evidence:** source traces exact writers/readers/clear paths; `make test-client`
+  passed cold (39 files/6,662 tests passed, 2 files/22 tests skipped). Existing
+  tests verify bootstrap credential storage and transport/timing mechanics,
+  not a one-time recovery display or deletion of populated local state. RP-123
+  records that the recovery code is silently kept in `localStorage` while the
+  current Game UI lacks the owner-ruled display/copy/download consumer.
+- **Limit/next:** D-005's recovery posture is settled but unimplemented;
+  D-008/D-009/D-015 still choose export/deletion/retention details. Continue
+  nested game-data payload and backup/log/metric/operator-field classification.
+  No product/test byte, ruling, RFC status or release claim changed.

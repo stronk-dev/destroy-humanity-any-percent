@@ -2610,3 +2610,26 @@ D-008/D-009/D-015 remain owner/legal decisions; no export schema, retention
 duration, deletion copy, product/test byte, RFC state or release claim changed.
 Next map nested payload and non-DB fields and seek a joined deletion witness
 only under an accepted rights contract.
+
+## 2026-09-23 — browser storage field map and recovery-code mismatch
+
+Codex predeclared `data-rights-browser-plan.md` and traced all current
+production client browser-storage calls. `data-rights-browser.md` maps four
+localStorage key families with exact schemas, producers, readers and cleanup:
+bootstrap retry, credential document, per-Founder transport positions and
+per-Founder local timing/splits. No production client use of sessionStorage,
+IndexedDB, Cache API, cookie or service-worker storage was found in source.
+Memory-only UI/runtime state was not counted as browser persistence.
+
+Cold `make test-client` passed: 39 files/6,662 tests passed; 2 files/22 tests
+skipped. Existing tests verify bootstrap storage and some transport/timing
+behavior but no account-delete-with-populated-local-state or one-time recovery
+player task. RP-123 records the exact D-005 gap: the current bootstrap writes
+the once-returned recovery code into long-lived localStorage credentials,
+requires it when parsing credentials, and provides no Game UI display/copy/
+download consumer. This is source/test-confirmed current behavior, not a
+completed player workflow or an owner decision to retain the code on-device.
+
+D-008/D-009/D-015 and legal review remain open. No product/test byte, owner
+copy, accepted RFC or release status changed. Operator-field and nested
+payload work remain separate.
