@@ -192,3 +192,7 @@ development surface. **Never push, publish, deploy, or open a PR unless the user
 The numeric, economy, save, production, harness, route, Commons, and client-shell foundations are
 implemented and archived. Choose work only from the active index in `rfc/README.md`; draft and
 accept missing Phase-0 contracts before starting from the roadmap.
+
+For the long-term 1.0 objective, read `planning/roadmap-1.0.md` and its append-only checkpoint log.
+That board tracks the whole product through Transcendence; it never substitutes for an accepted
+RFC or the current per-RFC implementation plan.

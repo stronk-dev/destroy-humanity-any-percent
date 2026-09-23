@@ -1,7 +1,23 @@
 # Executable queue
 
-Only `READY` rows are presently authorized. “Blocked” is a routing fact,
-not a request to improvise.
+## Current overlay — 2026-09-23 at `cf4ac25`
+
+The detailed table below preserves the 2026-08-22 platform-alignment routing snapshot; several
+Deployment status statements in it have been superseded by the accepted RFC and implementation.
+For the complete strategic path through 1.0, use [`planning/roadmap-1.0.md`](../roadmap-1.0.md).
+Implementation authority still comes from accepted RFCs and their current per-RFC plans.
+
+| State now | Work and exact boundary |
+|---|---|
+| **IMPLEMENTING — accepted Deployment Foundation** | DP-A–DP-E have local implementation evidence and await their required designated review unions. DP-F is constructing the exact release rehearsal; its plan records the remaining browser population and clean-host gates. The accepted RFC and [`planning/deployment-foundation/plan.md`](../deployment-foundation/plan.md) own execution. |
+| **READY FOR DESIGNATED REVIEW** | CI parity correction `e0e2201..cf4ac25` has a cold local `make verify-push` pass and Codex first-filter record. Claude's cross-party verdict is absent; do not treat it as archival or hosted proof. |
+| **BLOCKED ON OWNER/CONTRACT WORK** | Account export/deletion/retention D-008/D-009/D-015 and cross-surface accessibility acceptance still need their own rulings/RFCs and player-workflow evidence. |
+| **LATER PHASES** | v0.1–1.0 content and systems remain design intent until milestone manifests, dependency decisions and accepted RFCs authorize bounded work. |
+
+The historical routing rows below are useful defect/dependency leads. Their `READY` and `BLOCKED`
+labels are not current authority where later accepted RFCs or verdicts supersede them.
+
+## 2026-08-22 routing snapshot
 
 | Order | State | Work | Exit |
 |---|---|---|---|
@@ -52,7 +68,7 @@ not a request to improvise.
   Prestige 2a received that delegation on 2026-08-21 and is complete.
 - No archival based on this audit alone.
 
-## Handoff
+## Historical handoff at the 2026-08-22 routing snapshot
 
 The 433-child capability, 208-key Copy, 579-unit gameplay-content, and 802-unit row-oracle evidence
 populations are complete. Q-001/Q-002/Q-003 are closed by designated approvals `34d04a5`,
@@ -60,5 +76,5 @@ populations are complete. Q-001/Q-002/Q-003 are closed by designated approvals `
 fresh-clone proof recorded in `publication-disposition-execution-08.md`; Prestige, Leaderboards and
 Fiscal are closed over their exact ranges by `440dbba`; Game UI is closed by implementation verdict
 `c105da0` and archival verdict `f199f9a`. No implementation row is READY. The shortest release path
-is the remaining Deployment/operations/sunset owner rulings plus ruling-author body reconciliation;
+was the remaining Deployment/operations/sunset owner rulings plus ruling-author body reconciliation;
 no feature implementation, release, push, or publication is inferred.

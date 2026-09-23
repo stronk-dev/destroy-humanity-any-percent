@@ -174,7 +174,10 @@ larger product capability to proven integration.
   closeout gap; RP-102 later archived four completed threads without rewriting the snapshot.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,
   current truth class, and evidence/repair route.
-- `execution-queue.md` — the only presently authorized queue.
+- `execution-queue.md` — current tactical routing overlay and retained historical audit queue;
+  accepted RFCs and their plans determine implementation authority.
+- `../roadmap-1.0.md` / `../roadmap-1.0-log.md` — the long-term 1.0 rollup and dated progress
+  checkpoints; accepted RFCs and the current executable queue still control implementation.
 - `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
   forbidden scope, conflicts, and review protocol.
 - `review-handoff.md` — final Codex-authored cross-party review packet; Claude must still review and

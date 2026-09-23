@@ -2409,3 +2409,18 @@ Do not accept the RFC or begin implementation before that verdict and subsequent
 - **ACCEPTED:** status flipped draft → accepted in this same change, per the adopted owner ruling
   ("implementation still requires the reconciled RFC to reach accepted status"). Codex may create
   the implementation plan and begin. No deployment, push, or archival is authorized by this entry.
+
+## 2026-09-23 — long-term 1.0 goal and queue coordinate
+
+The owner asked for an enduring goal and visible progress toward a proper 1.0. Codex created the
+active task goal and added `planning/roadmap-1.0.md` with an append-only checkpoint log. The board
+uses the sibling `chess-drills` model of explicit milestone exits, capability dimensions and
+evidence-linked progress, while preserving Cloud Clicker's existing design, decision, RFC,
+execution and per-RFC planning authorities. It does not reinterpret the Phase-0 preview as 1.0 or
+authorize later-phase product work.
+
+The executable queue's former handoff still claimed Deployment was a draft and its owner values
+unruled. A current `cf4ac25` overlay now points to the accepted Deployment RFC, DP-F plan and
+still-unreviewed CI correction range; the old table remains visibly dated history. No product,
+balance, RFC body, content or CI behavior changed in this planning checkpoint. The next goal
+checkpoint requires actual reviewed evidence, not elapsed time or an implementation count.
