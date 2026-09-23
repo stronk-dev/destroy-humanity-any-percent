@@ -39,3 +39,20 @@ long-term release picture.
   execution and exact bundle rebuild. The per-RFC plan/log remains the implementation authority.
 - **Provenance:** Codex first-filtered the construction range in the Deployment log; it did not
   substitute for the designated reviewer or mark AC1/AC4 complete.
+
+## 2026-09-23 — verified-board recovery construction at local `6d89880`
+
+- **Observed change:** the recovery identity now distinguishes a real `verified_runs` row from
+  projection-event-only history. The rehearsal waits with a bounded guard for that asynchronous
+  row, then checks identity again after backup before any destructive reset. Identity and private
+  checkpoint schemas advanced to version 2.
+- **Executed evidence:** cold focused/aggregate tests and vet passed. The declared backup lane
+  passed against real Postgres 16 for empty/populated backup/restore and for an event-only board
+  that the populated gate rejects. A first negative-fixture attempt tried to delete immutable
+  board history and was rejected by the database; the corrected fixture never inserted the run.
+- **Limits:** no actual fresh-player browser run, clean-host projection observation, exact rebuilt
+  bundle, R-006 dossier or designated cross-party verdict. The 25/43 rehearsal probe count remains
+  unchanged; no release status or plan checkbox moved.
+- **Next:** execute the full player journey and populated recovery on the exact supported host,
+  with named severing failures, then reconcile the release evidence. The Deployment per-RFC plan
+  continues to own the detailed order.

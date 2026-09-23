@@ -1706,3 +1706,10 @@ This construction does not prove that the new browser driver actually reaches a 
 the clean host. It does not add an executed R-006 population or change the 25/43 count. The exact
 candidate bundle still predates these bytes and must be rebuilt; AC4 and Deployment archival
 remain open.
+
+**Review by:** Codex. **Recorded by:** Codex. Exact construction range
+`30cd7b9..6d89880` was inspected with the cold focused, aggregate and real-Postgres outputs
+above. **APPROVED AS FIRST FILTER OF THIS AC4 CONSTRUCTION SLICE ONLY.** The real
+projection-event-only database is a non-vacuous negative for the new verified-row count; the
+fake runtime fails on permanent absence and a changed post-backup identity before destructive
+calls. This is not the designated cross-party verdict, a clean-host run, or archival authority.

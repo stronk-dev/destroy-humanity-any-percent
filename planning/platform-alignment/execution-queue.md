@@ -1,6 +1,6 @@
 # Executable queue
 
-## Current overlay — 2026-09-23 at local `44f5b3f`
+## Current overlay — 2026-09-23 at local `6d89880`
 
 The detailed table below preserves the 2026-08-22 platform-alignment routing snapshot; several
 Deployment status statements in it have been superseded by the accepted RFC and implementation.
@@ -9,7 +9,7 @@ Implementation authority still comes from accepted RFCs and their current per-RF
 
 | State now | Work and exact boundary |
 |---|---|
-| **IMPLEMENTING — accepted Deployment Foundation** | DP-A–DP-E have local implementation evidence and await their required designated review unions. DP-F has a constructed full-run browser driver, not an executed product witness; asynchronous verified-board arrival and the exact clean-host rehearsal remain open. The accepted RFC and [`planning/deployment-foundation/plan.md`](../deployment-foundation/plan.md) own execution. |
+| **IMPLEMENTING — accepted Deployment Foundation** | DP-A–DP-E have local implementation evidence and await their required designated review unions. DP-F has a constructed full-run browser driver and a locally discriminating verified-board recovery gate, not an executed clean-host product witness. Exact-bundle rehearsal remains open. The accepted RFC and [`planning/deployment-foundation/plan.md`](../deployment-foundation/plan.md) own execution. |
 | **READY FOR DESIGNATED REVIEW** | CI parity correction `e0e2201..cf4ac25` has a cold local `make verify-push` pass and Codex first-filter record. Claude's cross-party verdict is absent; do not treat it as archival or hosted proof. |
 | **BLOCKED ON OWNER/CONTRACT WORK** | Account export/deletion/retention D-008/D-009/D-015 and cross-surface accessibility acceptance still need their own rulings/RFCs and player-workflow evidence. |
 | **LATER PHASES** | v0.1–1.0 content and systems remain design intent until milestone manifests, dependency decisions and accepted RFCs authorize bounded work. |
