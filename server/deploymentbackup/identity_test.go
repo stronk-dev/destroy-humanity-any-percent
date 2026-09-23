@@ -13,7 +13,7 @@ func TestRecoveryIdentityPopulationContractsRejectVacuousRows(t *testing.T) {
 	sum := sha256.Sum256([]byte("fixture"))
 	domain.SHA256 = "sha256:" + hex.EncodeToString(sum[:])
 	empty := RecoveryDomainIdentity{SHA256: domain.SHA256}
-	identity := RecoveryIdentity{SchemaVersion: 1, DatabaseMigration: 74, Database: domain, Epoch: domain,
+	identity := RecoveryIdentity{SchemaVersion: 2, DatabaseMigration: 74, Database: domain, Epoch: domain,
 		Player: empty, Founder: empty, Company: empty, Events: empty, Board: empty}
 	if err := ValidateEmptyRecoveryIdentity(identity); err != nil {
 		t.Fatalf("valid empty identity rejected: %v", err)
@@ -22,6 +22,10 @@ func TestRecoveryIdentityPopulationContractsRejectVacuousRows(t *testing.T) {
 		t.Fatal("empty identity accepted as populated")
 	}
 	identity.Player, identity.Founder, identity.Company, identity.Events, identity.Board = domain, domain, domain, domain, domain
+	if err := ValidatePopulatedRecoveryIdentity(identity); err == nil {
+		t.Fatal("projection-event-only board accepted as a verified run")
+	}
+	identity.VerifiedRunRows = 1
 	if err := ValidatePopulatedRecoveryIdentity(identity); err != nil {
 		t.Fatalf("valid populated identity rejected: %v", err)
 	}
@@ -47,7 +51,7 @@ func TestRecoveryIdentityDigestChangesForSameCountContentMutation(t *testing.T) 
 func TestRecoveryIdentityComparisonRequiresEveryDomain(t *testing.T) {
 	sum := sha256.Sum256([]byte("fixture"))
 	domain := RecoveryDomainIdentity{Rows: 1, SHA256: "sha256:" + hex.EncodeToString(sum[:])}
-	left := RecoveryIdentity{SchemaVersion: 1, DatabaseMigration: 74, Database: domain, Player: domain,
+	left := RecoveryIdentity{SchemaVersion: 2, DatabaseMigration: 74, VerifiedRunRows: 1, Database: domain, Player: domain,
 		Founder: domain, Company: domain, Events: domain, Board: domain, Epoch: domain}
 	right := left
 	if err := CompareRecoveryIdentity(left, right); err != nil {

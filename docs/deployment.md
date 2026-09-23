@@ -356,11 +356,14 @@ overwrites a live database.
 `deployment-backup recovery-identity --database-url-file=/run/secrets/database-url` streams a
 canonical identity of the private database without exporting row content. It emits row counts and
 SHA-256 identities for the complete public-table population and separately for player ownership,
-Founder state, Company state, events, boards and epoch/catalog authority. Every table name and
+Founder state, Company state, events, boards and epoch/catalog authority. The version-2 identity
+also reports the separate `verified_runs` row count: a projection event by itself does not prove
+a leaderboard row. Every table name and
 every full `to_jsonb` row contributes length-delimited bytes in deterministic order, so equal
 counts cannot hide substituted content. Empty rehearsal databases must have no player-state rows
 but must retain epoch/catalog authority; populated rehearsals require all six semantic domains to
-be nonempty. Recovery evidence compares the complete before/after identity.
+be nonempty **and** at least one actual verified run. Recovery evidence compares the complete
+before/after identity.
 
 The manifest-bound Docker runtime invokes backup creation, recovery identity and restore only as
 one-off services on the bundle's private database network. Scheduled/recovery backups and release
@@ -370,12 +373,17 @@ header even when every digest, epoch and server identity otherwise matches.
 
 The destructive R-006 database sequence is split into two restart-safe commands. First run
 `make deployment-rehearsal-recover-empty REHEARSAL_SCENARIO_CONFIG=/absolute/private/scenario.json`
-after the browser population. It requires nonempty player, Founder, Company, event, board and epoch
-identities, captures the populated encrypted backup, declares the incident, recreates Postgres from
-a clean volume, starts only gameserver/Caddy to migrate and seed an empty player database, and then
+after the browser population. It requires nonempty player, Founder, Company, event and epoch
+identities immediately, then waits only for the asynchronously projected verified run. A six-minute
+safety guard covers the verifier's five-minute claim lease and bounded retry cadence; exhaustion
+fails before any destructive step and is not a release-latency promise. It captures the populated
+encrypted backup, rechecks that the complete semantic identity stayed unchanged during capture,
+declares the incident, recreates Postgres from a clean volume, starts only gameserver/Caddy to
+migrate and seed an empty player database, and then
 backs up, destroys and restores that empty population with exact identity equality. It records a
 strict private checkpoint only after the restored empty database passes manifest/epoch/artifact and
-semantic checks.
+semantic checks. The private checkpoint is version 2 because it embeds the version-2 recovery
+identity and refuses older event-only board evidence.
 
 Then run `make deployment-rehearsal-recover-populated` with the same scenario. It consumes that
 checkpoint, destroys the empty-restored volume, restores the exact populated backup, compares the

@@ -1643,3 +1643,66 @@ CONSTRUCTION SLICE ONLY.** The validator's new forged-field negatives and the en
 selection matrix discriminate locally. No running-product/browser-action severing, verified-board
 arrival, clean-host result or cross-party designated review is imported by this verdict. The
 candidate bundle predates these driver bytes and must be rebuilt before any R-006 claim.
+
+## 2026-09-23 — DP-F2 predeclaration: asynchronous board-arrival boundary
+
+The verifier runs every 100 ms and projects a verified run asynchronously. `recover-empty`
+currently makes one immediate identity read, so even a legitimate completed browser run can race
+the board row. This slice changes only the rehearsal recovery producer, its focused fake-runtime
+tests and canonical deployment documentation. It does not alter verification, game state,
+backup content, RPO/RTO, the populated-domain rule or the product browser.
+
+Before the first encrypted backup, poll only the explicitly pending-board state: player, Founder,
+Company, event and epoch domains must already be populated and structurally valid; only board
+rows may still be zero. The safety guard is six minutes, covering the verifier's five-minute
+claim lease plus five five-second retry backoffs and its 100 ms cadence, rounded upward only to
+avoid a boundary race. This is an observation guard, not a release latency promise or permission
+to increase an objective bound. An inspection error, any other missing domain, context cancellation
+or guard expiry fails without stopping or resetting the database. After creating the populated
+backup, re-inspect and require byte-equal semantic identity before any destructive operation;
+a mutation during capture must not produce a checkpoint.
+
+The positive fixture presents board-absent then board-present identities before backup, and the
+same identity after capture. Negatives hold the board absent through a short injected guard,
+remove a non-board domain, inject an inspection error and mutate an identity during backup. Each
+must fail with no destructive runtime call and no checkpoint. Cold focused recovery tests, the
+rehearsal aggregate and vet are required. This is local producer proof only; no clean-host board
+arrival or AC4 claim follows from a fake runtime.
+
+### Scope correction before implementation commit
+
+Inspection of `deploymentbackup.RecoveryIdentity` found that `Board.Rows` aggregates both
+`verification_projection_events` and `verified_runs`. A projection-event-only state can therefore
+pass a mere nonempty-board check without the required verified leaderboard row. The board-arrival
+slice must also update the canonical recovery identity producer/validator and its private Docker
+adapter fixtures: add an explicit `verified_runs` count, bump that rehearsal identity schema, and
+require at least one actual verified run for populated recovery. Empty recovery requires zero.
+The full board hash still protects content equality. A projection-event-only negative is mandatory.
+This is DP6/AC4 evidence-contract tightening, not a gameplay or board-projector change; no
+previously accepted migration, backup body or product API is edited.
+
+## 2026-09-23 — DP-F2 board-arrival and exact verified-row construction
+
+`recover-empty` now waits only when player, Founder, Company, event and epoch identities are
+already populated but the verifier's actual `verified_runs` row is pending. The six-minute
+safety guard and 100 ms poll fail closed on expiry, cancellation, malformed identity or runtime
+error. The producer re-inspects after the populated backup and refuses a changed identity before
+any stop/reset/restore. The recovery identity and private checkpoint are version 2; the former
+reports `verified_run_rows` separately from the complete board-domain content hash. A projection
+event alone no longer satisfies populated recovery.
+
+Executed cold evidence: focused `make test-go` for deploymentbackup, deploymentrehearsal and
+deploymentrelease; `make test-deployment-rehearsal`; focused `make vet`; and
+`make test-deployment-backup` against real Postgres 16 all passed. The Postgres negative first
+attempt tried to delete an immutable verified board row and correctly failed at the database
+history trigger; the corrected fixture instead starts with a projection event and never inserts a
+verified run, and the inspector returns board rows > 0 with verified rows = 0, rejected by the
+populated contract. Fake-runtime negatives prove permanent absence and mid-backup mutation leave
+no checkpoint and never enter the destructive phase. The earlier red assertion about the number
+of legitimate stop calls was corrected before the cold green rerun; it was test expectation drift,
+not a production failure.
+
+This construction does not prove that the new browser driver actually reaches a verified run on
+the clean host. It does not add an executed R-006 population or change the 25/43 count. The exact
+candidate bundle still predates these bytes and must be rebuilt; AC4 and Deployment archival
+remain open.

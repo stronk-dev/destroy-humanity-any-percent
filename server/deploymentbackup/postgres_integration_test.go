@@ -72,6 +72,9 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 			if err != nil {
 				t.Fatal(err)
 			}
+			if population.seed && beforeRecovery.VerifiedRunRows != 1 {
+				t.Fatalf("populated recovery identity has %d verified runs, want one", beforeRecovery.VerifiedRunRows)
+			}
 			if population.seed {
 				err = ValidatePopulatedRecoveryIdentity(beforeRecovery)
 			} else {
@@ -115,6 +118,34 @@ func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T)
 				t.Fatalf("semantic recovery identity mismatch\nbefore=%+v\nafter=%+v\nerr=%v", beforeRecovery, afterRecovery, err)
 			}
 		})
+	}
+}
+
+func TestRecoveryIdentityRejectsProjectionEventWithoutVerifiedRunIntegration(t *testing.T) {
+	sourceURL := os.Getenv("TEST_DATABASE_URL")
+	adminURL := os.Getenv("TEST_ADMIN_DATABASE_URL")
+	if sourceURL == "" || adminURL == "" {
+		t.Skip("deployment backup database URLs not set")
+	}
+	ctx := context.Background()
+	resetDatabase(t, adminURL, "cloud_clicker_source")
+	database, err := save.OpenPostgres(ctx, sourceURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer database.Close()
+	if err := save.Migrate(ctx, database); err != nil {
+		t.Fatal(err)
+	}
+	seedBackupEpoch(t, database)
+	seedBackupPopulationWithVerifiedRun(t, database, false)
+	identity, err := InspectRecoveryIdentity(ctx, RecoveryIdentityInput{
+		DatabaseURLFile: writeSecret(t, t.TempDir(), "source-url", sourceURL)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if identity.Board.Rows < 1 || identity.VerifiedRunRows != 0 || ValidatePopulatedRecoveryIdentity(identity) == nil {
+		t.Fatalf("projection-event-only board accepted: board=%d verified=%d", identity.Board.Rows, identity.VerifiedRunRows)
 	}
 }
 
@@ -209,6 +240,10 @@ func TestRecoveryIdentityDetectsSameCountContentMutationIntegration(t *testing.T
 }
 
 func seedBackupPopulation(t *testing.T, database *sql.DB) {
+	seedBackupPopulationWithVerifiedRun(t, database, true)
+}
+
+func seedBackupPopulationWithVerifiedRun(t *testing.T, database *sql.DB, verifiedRun bool) {
 	t.Helper()
 	ctx := context.Background()
 	const (
@@ -229,7 +264,9 @@ func seedBackupPopulation(t *testing.T, database *sql.DB) {
 		`INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES('` + streamID + `',1,1,'{"company":"backup-fixture"}','` + hash + `')`,
 		`INSERT INTO events(event_id,stream_id,revision,schema_version,kind,constants_hash,payload) VALUES('` + eventID + `','` + streamID + `',1,1,'generator_purchased','` + hash + `','{"fixture":true}')`,
 		`INSERT INTO verification_projection_events(event_id) VALUES('` + verifyID + `')`,
-		`INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,verified_at) VALUES('` + streamID + `:1','` + verifyID + `','` + founderID + `','category.any','{"commons":false,"advisor":false,"glitched":false,"faction":null}',8,0,1234,'2026-08-22T01:00:00Z')`,
+	}
+	if verifiedRun {
+		statements = append(statements, `INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,verified_at) VALUES('`+streamID+`:1','`+verifyID+`','`+founderID+`','category.any','{"commons":false,"advisor":false,"glitched":false,"faction":null}',8,0,1234,'2026-08-22T01:00:00Z')`)
 	}
 	for _, statement := range statements {
 		if _, err := database.ExecContext(ctx, statement); err != nil {

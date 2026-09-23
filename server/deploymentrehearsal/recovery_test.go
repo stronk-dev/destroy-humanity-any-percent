@@ -14,15 +14,16 @@ import (
 )
 
 type recoveryRuntimeFixture struct {
-	identities []deploymentbackup.RecoveryIdentity
-	backups    []deploymentrelease.BackupReference
-	restored   []deploymentrelease.BackupReference
-	stops      int
-	resets     int
-	starts     int
-	verifies   int
-	smokes     int
-	failAt     string
+	identities     []deploymentbackup.RecoveryIdentity
+	stickyIdentity bool
+	backups        []deploymentrelease.BackupReference
+	restored       []deploymentrelease.BackupReference
+	stops          int
+	resets         int
+	starts         int
+	verifies       int
+	smokes         int
+	failAt         string
 }
 
 func (runtime *recoveryRuntimeFixture) InspectRecoveryIdentity(context.Context, deploymentrelease.Bundle) (deploymentbackup.RecoveryIdentity, error) {
@@ -33,7 +34,9 @@ func (runtime *recoveryRuntimeFixture) InspectRecoveryIdentity(context.Context, 
 		return deploymentbackup.RecoveryIdentity{}, errors.New("unexpected identity inspection")
 	}
 	identity := runtime.identities[0]
-	runtime.identities = runtime.identities[1:]
+	if !runtime.stickyIdentity || len(runtime.identities) > 1 {
+		runtime.identities = runtime.identities[1:]
+	}
 	return identity, nil
 }
 func (runtime *recoveryRuntimeFixture) CreateRecoveryBackup(context.Context, deploymentrelease.Bundle) (deploymentrelease.BackupReference, error) {
@@ -145,6 +148,67 @@ func TestRecoveryProducerRejectsWrongPopulationAndIdentityMismatch(t *testing.T)
 	})
 }
 
+func TestEmptyRecoveryWaitsForRealBoardProjectionBeforeBackup(t *testing.T) {
+	config, _, dependencies, runtime := recoveryProducerFixture(t)
+	pending := runtime.identities[0]
+	pending.Board.Rows = 0
+	pending.VerifiedRunRows = 0
+	runtime.identities = append([]deploymentbackup.RecoveryIdentity{pending}, runtime.identities...)
+	checkpoint, err := runEmptyRecovery(context.Background(), config, dependencies)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if checkpoint.PopulatedIdentity.VerifiedRunRows < 1 || runtime.stops != 2 || len(runtime.backups) != 0 {
+		t.Fatalf("board did not arrive before backup: checkpoint=%+v runtime=%+v", checkpoint, runtime)
+	}
+}
+
+func TestEmptyRecoveryRefusesAbsentBoardAndOtherMissingDomainsBeforeMutation(t *testing.T) {
+	for _, sample := range []struct {
+		name   string
+		mutate func(*deploymentbackup.RecoveryIdentity)
+		sticky bool
+	}{
+		{name: "board never arrives", mutate: func(value *deploymentbackup.RecoveryIdentity) { value.Board.Rows, value.VerifiedRunRows = 0, 0 }, sticky: true},
+		{name: "projection event only", mutate: func(value *deploymentbackup.RecoveryIdentity) { value.VerifiedRunRows = 0 }, sticky: true},
+		{name: "events absent", mutate: func(value *deploymentbackup.RecoveryIdentity) { value.Events.Rows = 0 }},
+	} {
+		t.Run(sample.name, func(t *testing.T) {
+			config, _, dependencies, runtime := recoveryProducerFixture(t)
+			pending := runtime.identities[0]
+			sample.mutate(&pending)
+			runtime.identities = []deploymentbackup.RecoveryIdentity{pending}
+			runtime.stickyIdentity = sample.sticky
+			dependencies.boardGuard = 10 * time.Millisecond
+			if _, err := runEmptyRecovery(context.Background(), config, dependencies); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("invalid population accepted: %v", err)
+			}
+			if runtime.stops != 0 || runtime.resets != 0 || len(runtime.backups) != 2 {
+				t.Fatalf("invalid population reached backup or destructive phase: %+v", runtime)
+			}
+			if _, err := os.Lstat(filepath.Join(config.WorkDirectory, recoveryCheckpointName)); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("invalid population committed checkpoint: %v", err)
+			}
+		})
+	}
+}
+
+func TestEmptyRecoveryRefusesPopulationChangedDuringBackup(t *testing.T) {
+	config, _, dependencies, runtime := recoveryProducerFixture(t)
+	changed := runtime.identities[1]
+	changed.Company.SHA256 = hashForBuild("f")
+	runtime.identities[1] = changed
+	if _, err := runEmptyRecovery(context.Background(), config, dependencies); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("changed population accepted: %v", err)
+	}
+	if runtime.stops != 0 || runtime.resets != 0 || len(runtime.backups) != 1 {
+		t.Fatalf("changed population reached destructive phase: %+v", runtime)
+	}
+	if _, err := os.Lstat(filepath.Join(config.WorkDirectory, recoveryCheckpointName)); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("changed population committed checkpoint: %v", err)
+	}
+}
+
 func TestEmptyRecoveryFailsClosedAtEveryRuntimeBoundary(t *testing.T) {
 	for _, stage := range []string{"inspect", "backup", "stop", "reset", "start", "verify", "restore"} {
 		t.Run(stage, func(t *testing.T) {
@@ -246,20 +310,21 @@ func recoveryProducerFixture(t *testing.T) (ScenarioConfig, deploymentrelease.Bu
 		headers[path] = header
 		backups = append(backups, deploymentrelease.BackupReference{ID: header.BackupID, Path: path})
 	}
-	runtime := &recoveryRuntimeFixture{identities: []deploymentbackup.RecoveryIdentity{populated, empty, empty}, backups: backups}
+	runtime := &recoveryRuntimeFixture{identities: []deploymentbackup.RecoveryIdentity{populated, populated, empty, empty}, backups: backups}
 	dependencies := recoveryDependencies{loadBundle: func(string) (deploymentrelease.Bundle, error) { return bundle, nil },
 		readHeader: func(path string) (deploymentbackup.Header, error) { return headers[path], nil }, runtime: runtime,
-		now: sequenceClock(time.Date(2026, 8, 23, 12, 2, 0, 0, time.UTC))}
+		now: sequenceClock(time.Date(2026, 8, 23, 12, 2, 0, 0, time.UTC)), boardGuard: time.Second, boardPoll: time.Millisecond}
 	return config, bundle, dependencies, runtime
 }
 
 func recoveryIdentity(populated bool, value string) deploymentbackup.RecoveryIdentity {
 	domain := deploymentbackup.RecoveryDomainIdentity{Rows: 1, SHA256: hashForBuild(value)}
 	empty := deploymentbackup.RecoveryDomainIdentity{SHA256: hashForBuild(value)}
-	identity := deploymentbackup.RecoveryIdentity{SchemaVersion: 1, DatabaseMigration: 74, Database: domain, Epoch: domain,
+	identity := deploymentbackup.RecoveryIdentity{SchemaVersion: 2, DatabaseMigration: 74, Database: domain, Epoch: domain,
 		Player: empty, Founder: empty, Company: empty, Events: empty, Board: empty}
 	if populated {
 		identity.Player, identity.Founder, identity.Company, identity.Events, identity.Board = domain, domain, domain, domain, domain
+		identity.VerifiedRunRows = 1
 	}
 	return identity
 }

@@ -15,6 +15,8 @@ import (
 )
 
 const recoveryCheckpointName = "recovery-checkpoint.json"
+const boardProjectionGuard = 6 * time.Minute
+const boardProjectionPoll = 100 * time.Millisecond
 
 type recoveryBackup struct {
 	ID     string                  `json:"id"`
@@ -48,6 +50,8 @@ type recoveryDependencies struct {
 	readHeader func(string) (deploymentbackup.Header, error)
 	runtime    recoveryRuntime
 	now        func() time.Time
+	boardGuard time.Duration
+	boardPoll  time.Duration
 }
 
 func RunEmptyRecovery(ctx context.Context, config ScenarioConfig) (RecoveryCheckpoint, error) {
@@ -55,7 +59,8 @@ func RunEmptyRecovery(ctx context.Context, config ScenarioConfig) (RecoveryCheck
 		BackupTarget: config.BackupTarget, MetricsDirectory: config.MetricsDirectory, AgeRecipient: config.AgeRecipient,
 		AgeIdentityFile: config.AgeIdentityFile, ServerID: config.ServerID, DrainTimeout: 20 * time.Second}
 	return runEmptyRecovery(ctx, config, recoveryDependencies{loadBundle: deploymentrelease.LoadBundle,
-		readHeader: deploymentbackup.ReadHeader, runtime: runtime, now: time.Now})
+		readHeader: deploymentbackup.ReadHeader, runtime: runtime, now: time.Now,
+		boardGuard: boardProjectionGuard, boardPoll: boardProjectionPoll})
 }
 
 func RunPopulatedRecovery(ctx context.Context, config ScenarioConfig) (ObjectiveObservation, error) {
@@ -75,13 +80,17 @@ func runEmptyRecovery(ctx context.Context, config ScenarioConfig, dependencies r
 	if _, err := os.Lstat(checkpointPath); !errors.Is(err, os.ErrNotExist) {
 		return RecoveryCheckpoint{}, ErrInvalid
 	}
-	populated, err := dependencies.runtime.InspectRecoveryIdentity(ctx, bundle)
-	if err != nil || deploymentbackup.ValidatePopulatedRecoveryIdentity(populated) != nil {
-		return RecoveryCheckpoint{}, errors.Join(ErrInvalid, err)
+	populated, err := awaitPopulatedIdentity(ctx, dependencies.runtime, bundle, dependencies.boardGuard, dependencies.boardPoll)
+	if err != nil {
+		return RecoveryCheckpoint{}, err
 	}
 	populatedBackup, err := captureRecoveryBackup(ctx, config, bundle, dependencies)
 	if err != nil {
 		return RecoveryCheckpoint{}, err
+	}
+	postBackup, err := dependencies.runtime.InspectRecoveryIdentity(ctx, bundle)
+	if err != nil || deploymentbackup.CompareRecoveryIdentity(populated, postBackup) != nil {
+		return RecoveryCheckpoint{}, errors.Join(ErrInvalid, err)
 	}
 	incidentAt := dependencies.now().UTC()
 	if incidentAt.Before(populatedBackup.Header.CompletedAt) {
@@ -117,7 +126,7 @@ func runEmptyRecovery(ctx context.Context, config ScenarioConfig, dependencies r
 	if err != nil || deploymentbackup.CompareRecoveryIdentity(empty, restoredEmpty) != nil {
 		return RecoveryCheckpoint{}, errors.Join(ErrInvalid, err)
 	}
-	checkpoint := RecoveryCheckpoint{SchemaVersion: 1, ManifestSHA256: bundle.ManifestSHA256, IncidentAt: incidentAt,
+	checkpoint := RecoveryCheckpoint{SchemaVersion: 2, ManifestSHA256: bundle.ManifestSHA256, IncidentAt: incidentAt,
 		PopulatedBackup: populatedBackup, PopulatedIdentity: populated, EmptyBackup: emptyBackup, EmptyIdentity: empty}
 	if validateRecoveryCheckpoint(checkpoint, config, bundle) != nil {
 		return RecoveryCheckpoint{}, ErrInvalid
@@ -127,6 +136,39 @@ func runEmptyRecovery(ctx context.Context, config ScenarioConfig, dependencies r
 		return RecoveryCheckpoint{}, err
 	}
 	return checkpoint, nil
+}
+
+func awaitPopulatedIdentity(ctx context.Context, runtime recoveryRuntime, bundle deploymentrelease.Bundle,
+	guard, poll time.Duration) (deploymentbackup.RecoveryIdentity, error) {
+	if runtime == nil || guard <= 0 || poll <= 0 || poll >= guard {
+		return deploymentbackup.RecoveryIdentity{}, ErrInvalid
+	}
+	bounded, cancel := context.WithTimeout(ctx, guard)
+	defer cancel()
+	ticker := time.NewTicker(poll)
+	defer ticker.Stop()
+	for {
+		if err := bounded.Err(); err != nil {
+			return deploymentbackup.RecoveryIdentity{}, errors.Join(ErrInvalid, err)
+		}
+		identity, err := runtime.InspectRecoveryIdentity(bounded, bundle)
+		if err != nil {
+			return deploymentbackup.RecoveryIdentity{}, errors.Join(ErrInvalid, err)
+		}
+		if deploymentbackup.ValidatePopulatedRecoveryIdentity(identity) == nil {
+			return identity, nil
+		}
+		if deploymentbackup.ValidateRecoveryIdentity(identity) != nil || identity.VerifiedRunRows != 0 ||
+			identity.Player.Rows < 1 || identity.Founder.Rows < 1 || identity.Company.Rows < 1 ||
+			identity.Events.Rows < 1 || identity.Epoch.Rows < 1 {
+			return deploymentbackup.RecoveryIdentity{}, ErrInvalid
+		}
+		select {
+		case <-bounded.Done():
+			return deploymentbackup.RecoveryIdentity{}, errors.Join(ErrInvalid, bounded.Err())
+		case <-ticker.C:
+		}
+	}
 }
 
 func runPopulatedRecovery(ctx context.Context, config ScenarioConfig, dependencies recoveryDependencies) (ObjectiveObservation, error) {
@@ -234,7 +276,7 @@ func validateRecoveryBackup(backup recoveryBackup, config ScenarioConfig, bundle
 }
 
 func validateRecoveryCheckpoint(checkpoint RecoveryCheckpoint, config ScenarioConfig, bundle deploymentrelease.Bundle) error {
-	if checkpoint.SchemaVersion != 1 || checkpoint.ManifestSHA256 != bundle.ManifestSHA256 || checkpoint.IncidentAt.IsZero() ||
+	if checkpoint.SchemaVersion != 2 || checkpoint.ManifestSHA256 != bundle.ManifestSHA256 || checkpoint.IncidentAt.IsZero() ||
 		validateRecoveryBackup(checkpoint.PopulatedBackup, config, bundle) != nil || validateRecoveryBackup(checkpoint.EmptyBackup, config, bundle) != nil ||
 		deploymentbackup.ValidatePopulatedRecoveryIdentity(checkpoint.PopulatedIdentity) != nil ||
 		deploymentbackup.ValidateEmptyRecoveryIdentity(checkpoint.EmptyIdentity) != nil || checkpoint.IncidentAt.Before(checkpoint.PopulatedBackup.Header.CompletedAt) ||

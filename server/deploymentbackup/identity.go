@@ -29,6 +29,7 @@ type RecoveryDomainIdentity struct {
 type RecoveryIdentity struct {
 	SchemaVersion     int                    `json:"schema_version"`
 	DatabaseMigration int                    `json:"database_migration"`
+	VerifiedRunRows   int64                  `json:"verified_run_rows"`
 	Database          RecoveryDomainIdentity `json:"database"`
 	Player            RecoveryDomainIdentity `json:"player"`
 	Founder           RecoveryDomainIdentity `json:"founder"`
@@ -73,7 +74,7 @@ func InspectRecoveryIdentity(ctx context.Context, input RecoveryIdentityInput) (
 		return RecoveryIdentity{}, err
 	}
 
-	identity := RecoveryIdentity{SchemaVersion: 1, DatabaseMigration: migration}
+	identity := RecoveryIdentity{SchemaVersion: 2, DatabaseMigration: migration}
 	if identity.Database, err = hashIdentityQueries(ctx, database, tableQueries(allTables)); err != nil {
 		return RecoveryIdentity{}, err
 	}
@@ -92,6 +93,9 @@ func InspectRecoveryIdentity(ctx context.Context, input RecoveryIdentityInput) (
 	if identity.Board, err = hashIdentityQueries(ctx, database, tableQueries([]string{"verification_projection_events", "verified_runs"})); err != nil {
 		return RecoveryIdentity{}, err
 	}
+	if err := database.QueryRowContext(ctx, `SELECT count(*) FROM public.verified_runs`).Scan(&identity.VerifiedRunRows); err != nil {
+		return RecoveryIdentity{}, err
+	}
 	if identity.Epoch, err = hashIdentityQueries(ctx, database, tableQueries([]string{"catalog_sets", "catalog_artifacts", "epochs", "epoch_hashes", "run_epochs"})); err != nil {
 		return RecoveryIdentity{}, err
 	}
@@ -102,7 +106,8 @@ func InspectRecoveryIdentity(ctx context.Context, input RecoveryIdentityInput) (
 }
 
 func ValidateRecoveryIdentity(identity RecoveryIdentity) error {
-	if identity.SchemaVersion != 1 || identity.DatabaseMigration < 1 || identity.Database.Rows < 1 {
+	if identity.SchemaVersion != 2 || identity.DatabaseMigration < 1 || identity.Database.Rows < 1 ||
+		identity.VerifiedRunRows < 0 || identity.VerifiedRunRows > identity.Board.Rows {
 		return ErrInvalid
 	}
 	for _, domain := range []RecoveryDomainIdentity{identity.Database, identity.Player, identity.Founder, identity.Company, identity.Events, identity.Board, identity.Epoch} {
@@ -115,14 +120,14 @@ func ValidateRecoveryIdentity(identity RecoveryIdentity) error {
 
 func ValidateEmptyRecoveryIdentity(identity RecoveryIdentity) error {
 	if ValidateRecoveryIdentity(identity) != nil || identity.Epoch.Rows < 1 || identity.Player.Rows != 0 || identity.Founder.Rows != 0 ||
-		identity.Company.Rows != 0 || identity.Events.Rows != 0 || identity.Board.Rows != 0 {
+		identity.Company.Rows != 0 || identity.Events.Rows != 0 || identity.Board.Rows != 0 || identity.VerifiedRunRows != 0 {
 		return ErrInvalid
 	}
 	return nil
 }
 
 func ValidatePopulatedRecoveryIdentity(identity RecoveryIdentity) error {
-	if ValidateRecoveryIdentity(identity) != nil {
+	if ValidateRecoveryIdentity(identity) != nil || identity.VerifiedRunRows < 1 {
 		return ErrInvalid
 	}
 	for _, domain := range []RecoveryDomainIdentity{identity.Player, identity.Founder, identity.Company, identity.Events, identity.Board, identity.Epoch} {

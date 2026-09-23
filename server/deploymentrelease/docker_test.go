@@ -269,7 +269,7 @@ func TestDockerRuntimeObservesStrictPrivateRecoveryIdentity(t *testing.T) {
 	bundle := dockerFixtureBundle(t)
 	digest := "sha256:" + strings.Repeat("c", 64)
 	domain := deploymentbackup.RecoveryDomainIdentity{Rows: 1, SHA256: digest}
-	identity := deploymentbackup.RecoveryIdentity{SchemaVersion: 1, DatabaseMigration: bundle.Manifest.DatabaseMigration,
+	identity := deploymentbackup.RecoveryIdentity{SchemaVersion: 2, DatabaseMigration: bundle.Manifest.DatabaseMigration, VerifiedRunRows: 1,
 		Database: domain, Player: domain, Founder: domain, Company: domain, Events: domain, Board: domain, Epoch: domain}
 	runner := &commandFixture{output: func(call []string) ([]byte, error) {
 		if !slices.Contains(call, "recovery-identity") || !slices.Contains(call, "--database-url-file=/run/secrets/database-url") {
