@@ -2446,3 +2446,22 @@ Deployment's configured backups, metrics and journald correct three dated 2026-0
 negatives, but clean-host operation is not claimed. No retention period, legal basis, deletion
 mechanism, RFC implementation or player-facing wording was adopted; R-003/R-007 remain open.
 This is a Codex research first filter, not designated implementation review.
+
+## 2026-09-23 — current accessibility negatives and draft workflow owner
+
+After predeclaration at `dc77031`, Codex mounted temporary focus/reflow probes beside the
+existing five-surface Game UI fixture. The current source failed both in Chromium and WebKit:
+authoritative Offer replacement left focus on `BODY`, and the full Desk measured
+`scrollWidth/clientWidth=647/320` (document also `647/320`) at a real 320×720 CSS-pixel
+viewport. The multi-engine Firefox instance and a separate Firefox-only retry both timed out
+before executing tests; no Firefox product verdict is claimed. The diagnostic test edit was
+removed byte-identically. A source trace independently confirms no media-query change listener
+and no reduced-motion value passed from `GameUIShell` to `ShellController`/`DisplayCounter`.
+The exact observations and limits are in `accessibility-current-audit.md`.
+
+The draft `rfc/accessibility-player-workflows.md` now gives RP-082–RP-084 a successor home and
+names negative fixtures, manual AT records, real task evidence and future-surface dependencies.
+It is **draft**, not accepted or implementation authority. D-018 records the owner task/AT
+matrix and settings posture; R-005 stays open. No product, test, theme, copy or archived RFC
+behavior changed. This is Codex's first-filter research/draft work; no designated cross-party
+verdict or release-accessibility claim follows.

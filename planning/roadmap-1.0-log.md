@@ -128,3 +128,20 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Next:** owner/legal rulings for export, deletion and retention; accepted implementation
   contracts and real player/operator rehearsals. In parallel, finish Deployment's exact-host
   R-006 and obtain its required cross-party review.
+
+## 2026-09-23 — accessibility current-source negatives and draft contract
+
+- **Observed change:** a predeclared check at product `7e8aa70` reconfirmed lifecycle focus loss
+  and 320-pixel Desk overflow, then a draft cross-surface RFC was added. D-018 names the owner
+  task/assistive-technology matrix; nothing was accepted for implementation.
+- **Executed evidence:** temporary fixture-adjacent browser probes failed meaningfully in
+  Chromium and WebKit: Offer focus became `BODY`, and the full Desk/document width was 647/320.
+  A Firefox-only retry, like the multi-engine attempt, timed out before test execution. The
+  probe file was restored byte-identically. Source trace shows CSS theme motion is sampled but
+  the numeric shell receives the default non-reduced mode and has no live preference listener.
+- **Limits:** no full keyboard, screen-reader, zoom, coarse-pointer, color-vision or real player
+  task claim follows; R-005 is open. The draft RFC and D-018 need owner acceptance, task scope
+  and manual test environment. No product change, release status or designated verdict moved.
+- **Next:** rule D-018 and the exact release-task manifest, accept or revise the successor, then
+  implement with failing controls and composed/manual task proof. The independent Deployment
+  R-006/review path remains required.

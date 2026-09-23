@@ -194,10 +194,38 @@ promise may be inferred from that target.
 | D-001/D-007 milestone/content | **PARTIALLY RULED** | Development snapshot now; Phase-0 Playable Preview next. Exact final content/surface manifest still belongs to its release RFC. |
 | D-002 repository disposition | **RULED AND EXECUTED** | All 96 artifacts were dispositioned; the fresh-clone authority gate passed and rejected three forged states. |
 | D-005/D-008 account recovery/export | **RECOVERY RULED; EXPORT OPEN** | Build the ruled one-time copy/download posture; choose export semantics before R-003. |
-| D-009/D-015 deletion/retention | **PARTIALLY RULED; PRODUCT/LEGAL FAMILIES OPEN** | Log/IP/backup windows are ruled; complete account/history/moderation data-family review and adopt exact deletion disclosure. |
+| D-009/D-015 deletion/retention | **PARTIALLY RULED; PRODUCT/LEGAL FAMILIES OPEN** | Log/IP/backup windows are ruled; the current relation-complete inventory is in `data-rights-inventory.md`, but per-column/legal review and exact deletion disclosure remain. |
 | D-003 sunset | **RULED** | Public MIT source now; target a supported bundle after R-006; defer covenant/notice/artifact/mirror/ratchet promises. |
 | D-006/D-011 topology/operations | **RULED FOR DEPLOYMENT** | One Compose node, proxy/origin, backup objectives, rollback, key overlap, metrics/logs, alerts and operator are exact. |
 | D-010 lifecycle locations | **READY FOR OWNER/PROCESS AUTHOR** | Choose one archive home for withdrawn RFCs and completed non-RFC threads. |
 | D-012/D-013 product scope | **DEFERRED; BODY RECONCILIATION PENDING** | Advisor and async are out of the preview; ruling authors must reconcile the active bodies. |
 | D-014 CI contract | **RULED 2026-08-21 — FAST BLOCKING / SLOW EVIDENCE SPLIT** | Nine consecutive cancellations plus the accepted local observation supplied the decision evidence. |
 | D-016/D-017 telemetry/UGC | **DEFERRED FROM PREVIEW** | No gameplay telemetry or public UGC/social content in the Phase-0 preview; revisit only through a later owner ruling. |
+| D-018 accessibility test floor | **OPEN** | D-007 owns exact release tasks. Choose the manual browser/OS/assistive-technology matrix, dynamic Offer announcement behavior and independent settings posture below before accepting the draft successor. |
+
+## O-007 — accessibility player-task acceptance (D-018; prepared 2026-09-23)
+
+The current-source audit in `accessibility-current-audit.md` reproduces lost Offer focus and
+647/320 horizontal overflow in Chromium and WebKit. Firefox did not launch in this Mac test
+environment; that is missing evidence, not an exemption. `rfc/accessibility-player-workflows.md`
+is draft only. D-007's exact release manifest names the tasks; this decision chooses how their
+accessibility will be demonstrated, **not** a smaller task/content set.
+
+| Choice | Proposed options and consequence |
+|---|---|
+| Manual assistive-technology matrix | **A — broad task coverage:** VoiceOver/Safari on macOS and iOS, NVDA/Firefox on Windows, TalkBack/Chrome on Android, plus keyboard-only runs in Chromium/Firefox/WebKit. Record exact OS/AT/browser versions, devices, tasks and failure states at execution. **B:** a specifically named smaller matrix, with an explicit unsupported-platform disclosure and release-scope consequence; automated axe alone is not an option. |
+| Dynamic Offer/countdown context | **A — action-change announcements:** focus the preempting Offer heading once; announce expiry/status changes only when actionability changes, avoiding a spoken per-second countdown. **B:** a named cadence with a tested non-visual reason and no duplicate announcements. Neither option changes server expiry/payout. |
+| Independent settings | **A:** include an in-game reduced-motion and visual-noise control in addition to live OS preference, with owner-authored labels and persisted precedence. **B:** ship the mandatory live OS preference path in the next milestone and defer the independent controls to a named later successor, with no claim that research suggestions shipped. |
+
+Required ruling text:
+
+```text
+D-018 AT/browser/OS matrix: [A/B + exact supported set and execution owner]
+D-018 Offer dynamic announcement: [A/B + exact behavior]
+D-018 independent motion/noise settings: [A/B + milestone and copy owner]
+Exact release tasks: [cite D-007 manifest; do not duplicate it here]
+```
+
+The ruling then reconciles the draft RFC body. Accepted tests must prove the chosen matrix on
+real player workflows, including the Firefox path that failed to start locally; no source-only
+trace, fixture axe pass or future-surface promise closes R-005.

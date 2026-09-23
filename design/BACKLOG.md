@@ -127,6 +127,7 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-113 | Account deletion tombstones bootstrap secrets but permanently retains `bootstrap_receipts.account_id` and digest; the AC6 test counts only live secrets. A cold Postgres deletion diagnostic found one account-linked tombstone after deletion. | 🔬 verified retention/disclosure gap -> D-009/D-015; `planning/platform-alignment/data-rights-inventory.md` |
 | RP-114 | Account deletion can leave the departed UUID in `guild_presence_outbox.account_ref` until successful relay publication, while shared Guild history and device-local timing/credentials have no complete deletion/export contract. | 🔬 data-family boundary -> D-008/D-009/D-015; `planning/platform-alignment/data-rights-inventory.md` |
 | RP-115 | D-008 required R-003 as decision evidence while R-003 required D-008 to build the tested export prototype: a circular gate. | ✅ queue dependency corrected to owner scope -> accepted prototype -> R-003 participant validation; export choice still open |
+| RP-116 | The current Mac Vitest/Playwright Firefox session failed to connect twice within 60 s, so current-source accessibility probes executed only in Chromium/WebKit. | 🔬 test-environment/evidence gap -> R-005; three-engine and manual AT acceptance remain open |
 
 Owner choices D-001–D-017 and their evidence prerequisites live in
 `planning/platform-alignment/decision-queue.md`; agents may not answer them through code.
