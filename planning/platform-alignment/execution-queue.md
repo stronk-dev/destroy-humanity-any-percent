@@ -10,7 +10,7 @@ Implementation authority still comes from accepted RFCs and their current per-RF
 | State now | Work and exact boundary |
 |---|---|
 | **IMPLEMENTING — accepted Deployment Foundation** | DP-A–DP-E have local implementation evidence and await their required designated review unions. DP-F has a constructed browser/recovery driver and two independently byte-matched 72-artifact candidate bundles at source `7e8aa70`; exact candidate/previous local probes, build records, secret scan and supply-chain validation pass. No clean-host product witness, browser journey, restore or rollback is claimed. The accepted RFC and [`planning/deployment-foundation/plan.md`](../deployment-foundation/plan.md) own execution. |
-| **READY FOR DESIGNATED REVIEW** | CI parity correction `e0e2201..cf4ac25` has a cold local `make verify-push` pass and Codex first-filter record. Claude's cross-party verdict is absent; do not treat it as archival or hosted proof. |
+| **READY FOR DESIGNATED REVIEW** | CI parity correction `e0e2201..cf4ac25` has a cold local `make verify-push` pass and Codex first-filter record. Hosted CI at `7e8aa70` passed all six jobs (run `35865261957`), but Claude's cross-party verdict is absent; do not treat the green run as archival or deployment proof. |
 | **BLOCKED ON OWNER/CONTRACT WORK** | Account export/deletion/retention D-008/D-009/D-015 and cross-surface accessibility acceptance still need their own rulings/RFCs and player-workflow evidence. |
 | **LATER PHASES** | v0.1–1.0 content and systems remain design intent until milestone manifests, dependency decisions and accepted RFCs authorize bounded work. |
 

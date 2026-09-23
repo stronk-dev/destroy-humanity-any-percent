@@ -100,3 +100,12 @@ long-term release picture.
 - **Next:** obtain the designated implementation-range review and an authorized clean Linux/amd64
   target for exact-bundle R-006 execution and severing. Continue the independent account-rights,
   accessibility and later-phase tracks under their own decisions and accepted RFCs.
+
+## 2026-09-23 — hosted CI observed at candidate source `7e8aa70`
+
+GitHub Actions [run 35865261957](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/35865261957)
+completed `success` for exact head `7e8aa708ff9e002e7ec4b46242d7d889f76b7fdd`.
+The six jobs — server, harness, schema, client, browser and game-ui-composed — each completed
+successfully. This corrects the prior in-progress observation; it is hosted code CI, not a
+clean-host deployment rehearsal, R-006 evidence or designated cross-party review. Codex did not
+initiate the push or change the branch's publication state in this checkpoint.
