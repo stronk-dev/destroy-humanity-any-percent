@@ -55,16 +55,19 @@ The source search found no non-test production calls to `SubmitName`, `ResolveNa
 not proof a future interface cannot write a name; it bounds the current preview claim.
 No row-level payload classification is inferred from an identifier or numeric field name.
 
-**Source-derived Commons hazard (RP-119):** `account.DeleteAccount` archives the Founder's
+**Commons hazard (RP-119):** `account.DeleteAccount` archives the Founder's
 `save_streams` and deletes the account but touches no Commons membership. A signed
 `company_compact_memberships.member=true` row therefore stays true; `refreshScope` selects
 `commons_member_samples` joined to those membership rows with `m.member=true`, without a
 `save_streams.archived_at` or account check. A future recomputation can continue counting the
-departed Founder's stored sample in cohort/server health. This is a concrete producer→reader
-trace, **not yet** a cold joined account-delete→refresh witness or a ruled policy to subtract
-historical contributions. The rights/Commons successor must decide active-vs-historical
-semantics, implement the chosen transition without corrupting replay, and prove it on real
-Postgres.
+departed Founder's stored sample in cohort/server health. A later cold Account API probe with
+an active Founder and seeded Commons records confirmed that the exact World count and
+`refreshScope` sample-selection predicates remain 1/1 after account deletion; a rollback-only
+`member=false` mutation drops both to zero. See
+[`data-rights-commons-delete.md`](data-rights-commons-delete.md). This does not execute the
+full signed-event→delete→World/health workflow or rule subtraction of historical
+contributions. The rights/Commons successor must decide active-vs-historical semantics,
+implement the chosen transition without corrupting replay, and prove it on real Postgres.
 
 ## Decision handoff
 

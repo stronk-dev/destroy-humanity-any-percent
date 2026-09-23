@@ -2788,3 +2788,28 @@ full projector→history/dead-letter→board→deletion and public-reader proof.
 No owner retention/export/deletion choice, player-facing workflow, legal
 conclusion, product change, RFC status or release claim follows from the
 probe. D-008/D-009/D-015 remain open.
+
+## 2026-09-23 — Commons active-count after account deletion
+
+Codex predeclared `data-rights-commons-delete-plan.md` at `f050057`, then
+temporarily extended the existing Account API integration test with a cohort,
+assignment, live membership and sample for its active imported Founder.
+The first invocation was invalid test-driver evidence: `FounderID` was used
+for the `Founder` response's actual `ID` field, so the test did not compile.
+After correcting that temporary field reference, the same declared
+Postgres `-count=1 -v` lane passed without skip.
+
+Before deletion, the Founder was active and both exact production SQL
+predicates counted one. After the real DELETE returned 204 and the Company
+stream was archived, the World Compact count and the `refreshScope` server
+sample-selection predicate still returned one. A rollback-only negative
+control set `member=false` and both counts fell to zero. The temporary test
+edit was removed by exact patch and `git diff --exit-code` returned zero;
+the Postgres container/network was removed and the named cache retained.
+The bounded result is in `data-rights-commons-delete.md`.
+
+RP-119 is now a verified stale live-count/sample-selection outcome rather
+than source-only risk. The full signed-event→delete→World/health/player
+workflow, owner semantics for active versus historical contributions and
+D-009/D-015 disclosure/retention contract remain open. No product/test,
+owner-authored text, RFC status or release claim changed.

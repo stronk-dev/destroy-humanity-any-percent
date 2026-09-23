@@ -391,3 +391,19 @@ initiate the push or change the branch's publication state in this checkpoint.
   log/dead-letter and public-reader joined population. D-008/D-009/D-015,
   legal review, player workflow and clean-host evidence remain open; no RFC
   or release state changed.
+
+## 2026-09-23 — Commons active-count deletion checkpoint
+
+- **Coordinate:** product `7e8aa70`, predeclaration `f050057`; bounded dossier
+  `platform-alignment/data-rights-commons-delete.md`.
+- **Evidence:** the first temporary probe did not compile due to a test-driver
+  field-name error. The corrected cold Account API/Postgres test passed without
+  skip. An active Founder and its sample counted 1/1 before deletion; after
+  account deletion archived its stream, the exact World-count and
+  `refreshScope` sample-selection SQL still counted 1/1. A rollback-only
+  `member=false` control made both zero. The temporary test change was removed
+  exactly and the Postgres service/network shut down.
+- **New boundary:** RP-119 is now verified at the deletion/predicate boundary,
+  not as a full World/health/player workflow. Owner D-009/D-015 must rule active
+  versus historical Commons semantics before a repair; a complete signed-event
+  and recomputation witness remains. No product, RFC or release state changed.
