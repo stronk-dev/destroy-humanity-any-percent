@@ -1713,3 +1713,15 @@ above. **APPROVED AS FIRST FILTER OF THIS AC4 CONSTRUCTION SLICE ONLY.** The rea
 projection-event-only database is a non-vacuous negative for the new verified-row count; the
 fake runtime fails on permanent absence and a changed post-backup identity before destructive
 calls. This is not the designated cross-party verdict, a clean-host run, or archival authority.
+
+## 2026-09-23 — DP-F2 supported-architecture binary preflight
+
+From clean local source commit `85f8e9f`, the root Make targets built the changed
+`deployment-browser`, `deployment-backup` and `deployment-rehearsal` commands as static
+Linux/amd64 ELF binaries. Their ignored local outputs have SHA-256 digests respectively
+`ee8ce4f2cf4034262c07d0bbef2ab6b348fb72af2c79864e27e84c7505a45fa1`,
+`569941aca0908a20a5576bea11dfaa91c2e1c74ee4f62af314eb1ffe840c9454`, and
+`b37be504bd30548b9c9e0e92fd890a256a294e29ac172b2ec45d43d31986e563`.
+`file` confirmed each is an x86-64 statically linked executable. This checks the supported
+architecture compilation, not an independently rebuilt six-image release bundle, browser run,
+secret scan or clean-host result. No retained build ledger is updated yet.
