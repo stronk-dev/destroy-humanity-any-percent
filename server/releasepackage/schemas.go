@@ -35,6 +35,13 @@ func ValidateDeploymentSchemas(root string) error {
 }
 
 func validateSchema(data []byte, name string, required []string) error {
+	return validateSchemaRehearsalClosure(data, name, required, true)
+}
+
+// A retained pre-browser release can be rolled back with its exact historical
+// schema. New source schemas and every browser-bearing bundle still require
+// the rehearsal image declaration.
+func validateSchemaRehearsalClosure(data []byte, name string, required []string, requireRehearsalImage bool) error {
 	var schema schemaEnvelope
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	if decoder.Decode(&schema) != nil || decoder.Decode(&struct{}{}) != io.EOF ||
@@ -54,7 +61,7 @@ func validateSchema(data []byte, name string, required []string) error {
 			return ErrInvalidContent
 		}
 	}
-	if name == "release-manifest.schema.json" && len(schema.Properties["rehearsal_images"]) == 0 {
+	if name == "release-manifest.schema.json" && requireRehearsalImage && len(schema.Properties["rehearsal_images"]) == 0 {
 		return ErrInvalidContent
 	}
 	return nil

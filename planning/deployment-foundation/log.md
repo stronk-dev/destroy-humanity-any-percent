@@ -1744,3 +1744,37 @@ normalized SBOMs; record the source/tool/image/output digests and a real source/
 Any mismatch, mutable image identity, missing input, network/build failure or dirty source
 invalidates the candidate and leaves old retained records untouched. This is DP-F2 construction,
 not a clean-host run, supported-self-host claim, status promotion or authorization to push.
+
+## 2026-09-23 — DP-F2/AC5 predeclaration: previous-bundle schema compatibility
+
+The refreshed candidate assembled as `0.1.0-preview.2` with 72 artifacts and validates locally.
+The first exact candidate+previous positive probe refused the retained previous bundle even
+though its 70 manifest artifact hashes, Compose/Caddy/Dockerfile, application/image SBOMs,
+operations profile and gameserver archive independently pass. The remaining mismatch is that
+current `validateSchema` unconditionally requires the `rehearsal_images` property in the bundled
+release-manifest schema, while the exact previously retained bundle predates the browser lane
+and has neither that optional property nor a browser artifact/image. AC5 explicitly needs the
+previous bundle to validate for rollback; loosening the new candidate's browser closure would
+be the wrong fix.
+
+This narrowly scoped correction may change the release-manifest schema validator and its tests:
+accept the legacy schema shape only when the loaded manifest has no rehearsal image and no
+browser artifact/SBOM; retain the current property requirement for any browser-bearing bundle
+and for the canonical repository schema. The positive population is a generated legacy-shaped
+bundle plus the exact retained previous bundle. The negatives remove the property from a
+browser-bearing candidate and alter other required schema fields; both must still fail.
+No previous bundle byte, migration, production gameplay behavior, image digest or R-006 evidence
+is changed. After the fix, rerun cold releasepackage tests and the exact candidate+previous
+supply-chain probe; then continue independent candidate rebuilding and scans.
+
+The narrow validator change is implemented with self-contained generated bundle tests. The
+legacy-shaped positive removes the browser helper, Playwright SBOM, rehearsal image and optional
+schema declaration together; a second test keeps the browser closure while removing only the
+schema declaration. A third mutation removes another required schema field from the historical
+fixture. `make test-go GO_PACKAGES='./releasepackage ./deploymentrehearsal ./deploymentrelease'
+GO_TEST_FLAGS='-count=1'`, `make vet`, and the exact retained candidate-v3 plus previous-bundle
+`six_image_sbom_license_provenance` probe passed. The probe previously exited 2 on the unchanged
+previous bundle, so this is a demonstrated refusal-to-accept correction, not a merely green
+fixture. Candidate-v3 was assembled before the fix and contains an obsolete rehearsal binary;
+it is diagnostic only and cannot become R-006 evidence. Rebuild from the corrected committed
+source before independent comparison, build records or a clean-host run.

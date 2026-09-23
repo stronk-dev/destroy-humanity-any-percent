@@ -211,7 +211,7 @@ func ValidateBundle(root string) error {
 			"release-manifest.schema.json":   {"schema_version", "release_version", "source_commit", "platform", "docker_engine_version", "docker_compose_version", "database_migration", "company_save_version", "founder_save_version", "epoch_id", "constants_hash", "copy_hash", "images", "artifacts"},
 			"rehearsal-evidence.schema.json": {"schema_version", "run_id", "manifest_sha256", "previous_manifest_sha256", "release_version", "previous_release_version", "started_at", "completed_at", "host", "tools", "steps", "populations", "objectives", "artifacts", "exclusions", "objective_completed", "guard_exhausted"},
 		}[name]
-		if validateSchema(data, name, required) != nil {
+		if validateSchemaRehearsalClosure(data, name, required, len(manifest.RehearsalImages) == 1) != nil {
 			return ErrInvalidContent
 		}
 	}

@@ -3,6 +3,7 @@ package releasepackage
 import (
 	"archive/tar"
 	"encoding/binary"
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -60,6 +61,109 @@ func TestAssembleBundleRequiresCompleteRehearsalBrowserClosure(t *testing.T) {
 	}
 	if err := ValidateBundle(inputs.Output); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("bundle without browser driver accepted: %v", err)
+	}
+}
+
+func TestValidateBundleRetainsPreBrowserRollbackSchema(t *testing.T) {
+	inputs := bundleInputs(t, filepath.Join("..", ".."))
+	if _, err := AssembleBundle(inputs); err != nil {
+		t.Fatal(err)
+	}
+	removeRehearsalDeclaration(t, inputs.Output, true)
+	if err := ValidateBundle(inputs.Output); err != nil {
+		t.Fatalf("historical bundle rejected: %v", err)
+	}
+
+	// A historical schema may omit only the later optional browser declaration.
+	mutateBundledSchema(t, inputs.Output, func(schema map[string]any) {
+		required := schema["required"].([]any)
+		schema["required"] = required[1:]
+	})
+	if err := ValidateBundle(inputs.Output); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("historical bundle with missing required schema field accepted: %v", err)
+	}
+}
+
+func TestValidateBundleRequiresBrowserDeclarationInCurrentBundle(t *testing.T) {
+	inputs := bundleInputs(t, filepath.Join("..", ".."))
+	if _, err := AssembleBundle(inputs); err != nil {
+		t.Fatal(err)
+	}
+	mutateBundledSchema(t, inputs.Output, func(schema map[string]any) {
+		delete(schema["properties"].(map[string]any), "rehearsal_images")
+	})
+	if err := ValidateBundle(inputs.Output); !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("browser bundle without rehearsal_images schema property accepted: %v", err)
+	}
+}
+
+func removeRehearsalDeclaration(t *testing.T, root string, removeBrowserArtifacts bool) {
+	t.Helper()
+	manifest, _, err := LoadReleaseManifest(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	manifest.RehearsalImages = nil
+	if removeBrowserArtifacts {
+		for _, name := range []string{"deployment-browser", "sbom/playwright.spdx.json"} {
+			if err := os.Remove(filepath.Join(root, name)); err != nil {
+				t.Fatal(err)
+			}
+		}
+		artifacts := manifest.Artifacts[:0]
+		for _, artifact := range manifest.Artifacts {
+			if artifact.Path != "deployment-browser" && artifact.Path != "sbom/playwright.spdx.json" {
+				artifacts = append(artifacts, artifact)
+			}
+		}
+		manifest.Artifacts = artifacts
+	}
+	writeFixtureManifest(t, root, manifest)
+	mutateBundledSchema(t, root, func(schema map[string]any) {
+		delete(schema["properties"].(map[string]any), "rehearsal_images")
+	})
+}
+
+func mutateBundledSchema(t *testing.T, root string, mutate func(map[string]any)) {
+	t.Helper()
+	path := filepath.Join(root, "release-manifest.schema.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var schema map[string]any
+	if err := json.Unmarshal(data, &schema); err != nil {
+		t.Fatal(err)
+	}
+	mutate(schema)
+	data, err = json.MarshalIndent(schema, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	data = append(data, '\n')
+	if err := os.WriteFile(path, data, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	manifest, _, err := LoadReleaseManifest(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for index := range manifest.Artifacts {
+		if manifest.Artifacts[index].Path == "release-manifest.schema.json" {
+			manifest.Artifacts[index].SHA256 = digest(data)
+		}
+	}
+	writeFixtureManifest(t, root, manifest)
+}
+
+func writeFixtureManifest(t *testing.T, root string, manifest ReleaseManifest) {
+	t.Helper()
+	data, err := json.MarshalIndent(manifest, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, ReleaseManifestPath), append(data, '\n'), 0o644); err != nil {
+		t.Fatal(err)
 	}
 }
 

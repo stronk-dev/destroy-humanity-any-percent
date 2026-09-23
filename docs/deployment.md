@@ -126,6 +126,10 @@ third-party licenses, eight SBOM documents and
 `release-manifest.json`. The manifest records the current migration, both save-schema versions,
 epoch/copy/constants identities and the SHA-256 of every other bundle file. Validation re-walks the
 directory and rejects any missing, extra or changed byte, including attribution or an image SBOM.
+For rollback, an exact retained pre-browser bundle may carry its original manifest schema without
+the later optional `rehearsal_images` property, but only when its manifest also has no rehearsal
+image, browser helper or Playwright SBOM. The current source schema and every browser-bearing
+candidate still require that property; all other required schema fields remain mandatory.
 It intentionally describes a release *candidate*: designated approval of the implementation
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
