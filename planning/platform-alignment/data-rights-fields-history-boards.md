@@ -36,8 +36,8 @@ every row has a prescribed indefinite legal retention period.
 
 No field above is automatically removed by `DeleteAccount`: the account transaction archives
 Founder-owned streams and nulls `account_founders.account_id`, but does not traverse these
-history/board rows. This is a schema/source conclusion, **not** an executed populated-board
-deletion proof. The latter remains a named acceptance gap.
+history/board rows. A later cold joined probe now confirms this for **one directly seeded board
+row**, not for the full history/dead-letter population or public reader.
 
 ## Executed controls and limitations
 
@@ -45,16 +45,16 @@ deletion proof. The latter remains a named acceptance gap.
   passed with `-count=1 -v`. It checks deterministic bytes/hash, compaction, rollback and
   archive immutability. `TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration`
   separately passed cold and exercises board projection/retry. These are separate properties;
-  neither test deletes an account with populated history and boards.
+  neither original test deletes an account with populated history and boards.
 - The first combined Make invocation used a `|` alternation in `SAVE_TEST_FLAGS`; the Make
   recipe expanded it as a shell pipe, yielded `command not found`/broken pipe and exited 2.
   It is **invalid evidence**. Two separate simple-name invocations then passed. This is a
   command-shape limitation, not a claim that the tests failed.
-- The earlier cold Account deletion witness proves retained archived Founder/save rows, the
-  positive control for identity survival. It does not populate the fourteen-table denominator.
-  Source DDL and `DeleteAccount` determine the expected no-cascade result, but a future
-  end-to-end rights witness must create a verified run/dead-letter and execute deletion before
-  claiming the exact populated behavior.
+- A later temporary extension of the cold Account API test inserted one schema-valid board row,
+  then executed the real deletion route. The row remained linked to an archived/unlinked Founder
+  and two archived streams. See [`data-rights-board-delete.md`](data-rights-board-delete.md).
+  It was a relational seed, not a projector-produced run; the full fourteen-table history and
+  dead-letter population still needs a joined end-to-end rights witness.
 - Archive bytes, `run_genesis.state`, `founder_genesis.state`, event/log JSON and diagnostic
   `detail`/`last_error` text are **content-bearing**. SQL-column classification does not imply
   their nested contents are understood or safe to export/publish.
@@ -64,7 +64,8 @@ tables' content-bearing fields is in
 [`data-rights-verification.md`](data-rights-verification.md). It distinguishes
 fixed deterministic verdict text from unredacted transient error text and
 classifies the current `variables` keys without claiming a joined deletion
-witness or public board.
+witness or public board. The later joined *relational* deletion result is
+separately bounded in `data-rights-board-delete.md`.
 
 ## Owner/legal handoff
 

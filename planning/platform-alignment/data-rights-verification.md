@@ -24,6 +24,9 @@ conclusion comes from the SQL FKs and deletion source, **not** a joined test
 that first populates the board and dead letters, then deletes the account.
 RP-118 continues to own that missing rights witness. The immutable terminal
 and board guards mean D-015 cannot assume an unmodified generic delete job.
+Later, a cold Account API probe retained one directly seeded board row linked
+to an archived Founder after deletion; see `data-rights-board-delete.md`.
+That narrows RP-118 but does not join the projector and dead-letter paths.
 
 ## Executed checks and limitations
 

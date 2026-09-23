@@ -2765,3 +2765,26 @@ account deletion witness remains absent. D-008/D-009/D-015 and legal review
 remain open. The temporary Postgres container/network was removed; cache
 retained. No product/test/migration, owner copy, RFC status or release claim
 changed.
+
+## 2026-09-23 — populated-board account-delete relational probe
+
+Codex predeclared `data-rights-board-delete-plan.md` at `d753360` before
+temporarily extending the existing Account API integration test. The cold
+`make test-save-integration SAVE_TEST_PACKAGES='./account'
+SAVE_TEST_FLAGS='-run TestAccountSessionIntegration -v' SAVE_TEST_COUNT=1`
+ran against the declared Postgres service and passed without skip. Its
+pre-delete board→account join was 1. After the real authenticated DELETE
+returned 204, the account/session assertions passed and the seeded board row
+remained: 1 board row, 1 archived/unlinked Founder join, 2 archived Founder
+streams. The test's explicit counts would fail for a missing seed, vanished
+board row or severed/active Founder link. The temporary test edit was removed
+by exact patch and `git diff --exit-code` verified zero residual product/test
+diff. `data-rights-board-delete.md` records fixture and inference limits.
+The temporary Postgres container/network was stopped and removed; the named
+test cache volume was retained.
+
+RP-130 now records the executed relational retention; RP-118 narrows to the
+full projector→history/dead-letter→board→deletion and public-reader proof.
+No owner retention/export/deletion choice, player-facing workflow, legal
+conclusion, product change, RFC status or release claim follows from the
+probe. D-008/D-009/D-015 remain open.

@@ -374,3 +374,20 @@ initiate the push or change the branch's publication state in this checkpoint.
   rights tests delete an account after populating boards/dead letters. D-008/
   D-009/D-015, legal review, accepted retention contract and joined proof
   remain; no product, RFC or release state changed.
+
+## 2026-09-23 — populated-board deletion link checkpoint
+
+- **Coordinate:** product `7e8aa70`, predeclaration `d753360`; bounded dossier
+  `platform-alignment/data-rights-board-delete.md`.
+- **Evidence:** a temporary addition to the Account API integration test
+  inserted one schema-valid board row joined to its account before the real
+  DELETE. The cold declared Postgres lane passed without skip and observed
+  `1` pre-delete join, then `1` retained board row linked to `1`
+  archived/unlinked Founder and `2` archived streams after the account was
+  removed. The diagnostic edit was removed exactly; no product/test diff
+  remains.
+- **New boundary:** RP-130 is an executed relational-retention fact, not a
+  retention-policy ruling. RP-118 still needs the full projector, historic
+  log/dead-letter and public-reader joined population. D-008/D-009/D-015,
+  legal review, player workflow and clean-host evidence remain open; no RFC
+  or release state changed.
