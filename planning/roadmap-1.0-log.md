@@ -323,3 +323,19 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Next:** finish event/receipt and other nested-payload schemas, seek owner/
   legal D-008/D-009/D-015 rulings, then accepted rights/restore workflows and
   exact-host proof. No product, deployment or release status changed.
+
+## 2026-09-23 — retained core-event identity checkpoint
+
+- **Coordinate:** product `7e8aa70`, planning after `eeb2a3f`; predeclared
+  `platform-alignment/data-rights-event-plan.md` and bounded result
+  `platform-alignment/data-rights-events.md`. No later server diff was present.
+- **Evidence:** SQL and Go have the same 48 event kinds. SQL permits 52
+  kind/version pairs; the Go write validator admits 51, excluding historical
+  `run_ended` v1. Ten selected validator tests and three separate real-Postgres Account,
+  Soul and Minigame integration tests passed cold. A read-only fixture query
+  matched all 28 Soul recovery events to outbox copies with equal nested JSON.
+  The temporary Postgres service/network was removed; cache retained.
+- **Limit/next:** none of the tests deletes an account after populating these
+  Soul/Minigame event bodies. This is selected identity mapping, not every
+  event key/version or an export schema. D-008/D-009/D-015, legal review and
+  accepted joined-rights work remain; no product/release state changed.

@@ -45,7 +45,12 @@ erasure disposition. The selected save/replay/transport lineage is traced in
 [`data-rights-payload-core.md`](data-rights-payload-core.md): verified-run
 compaction retains full commands, receipts, replay inputs, genesis and matched
 events inside an immutable gzip archive, while transport publication leaves its
-payload row intact. Other payload families remain unclassified. No group gets a made-up
+payload row intact. The bounded core-event registry and selected run/Founder,
+Minigame and Soul identity fields are traced in
+[`data-rights-events.md`](data-rights-events.md): 48 kinds, 52 SQL-accepted
+kind/version pairs, 51 Go-write-validator-admissible pairs, and tested Soul
+event→outbox copying. This is not a complete event-key or historic-encoder
+classification. Other payload families remain unclassified. No group gets a made-up
 duration from its package name or apparent lifecycle.
 
 The account/save, history/board, shared catalog/Routes/Commons, Guild and final

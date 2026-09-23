@@ -2683,3 +2683,28 @@ container/network/project volumes. It does not test account deletion between
 backup and restore, nor constitute R-006/R-007 on a supported clean host.
 D-008/D-009/D-015 and legal review remain open. No product/test/deployment
 byte, accepted RFC, authored copy or release claim changed.
+
+## 2026-09-23 — core event registry and retained identity payloads
+
+Codex predeclared `data-rights-event-plan.md`, compared the latest SQL
+kind/version constraints to the Go registry/write validator, and traced
+run/Founder, Guild-accrual, Minigame and Soul recovery nested identity
+families. The bounded `data-rights-events.md` records 48 exact kind literals,
+52 SQL-accepted pairs and 51 Go-write-validator-admissible pairs. SQL allows
+historical `run_ended` v1, while the current validator accepts v2/v3 only.
+`git diff 7e8aa70 HEAD -- server` was empty before this planning edit.
+
+Ten selected event-validator tests passed cold. Real-Postgres Account deletion,
+Soul recovery and Minigame resolution integration tests each passed cold in
+separate runs. A read-only query after the Soul fixture found 28 recovery
+events and 28 matching player outbox event rows with equal nested JSON and
+kind. This executes one producer→outbox edge, not account deletion after those
+records were populated. The Account test checks archived streams but does not
+join deletion to Soul/Minigame event bodies. No new backlog row duplicates
+RP-118/RP-122/RP-124. The temporary Postgres container/network was removed;
+the named Go cache volume remains.
+
+D-008/D-009/D-015 and legal review remain open. Receipt families, every
+historic event encoder, other nested stores and the joined populated deletion
+witness remain. No product/test/migration byte, owner copy, accepted RFC or
+release status changed.
