@@ -1847,3 +1847,15 @@ works. The old failing relative-path run is the pre-change discriminator. No gam
 schema, historic bundle byte, release image or owner rollback interval changes. After source
 changes, candidate-v4 remains evidence for its pinned source commit but is **not** the current
 candidate; rebuild two independent exact trees before any R-006 clean-host run.
+
+The local correction keeps `BuildReleaseManifest` current-version-only and changes structural
+validation to admit positive versions no newer than the running validator's known versions.
+The generated-bundle test covers both lower previous versions and zero/future refusals. Reverting
+the validator to its old equality rule made the named previous-version subtest fail; restoring
+the rule made it pass. Cold focused releasepackage, rehearsal, release and scan-command tests and
+`make vet` passed. The root Make target now resolves `SECRET_SCAN_OUTPUT` against the repository
+root: a relative ignored output succeeded, and the exact second invocation failed on exclusive
+create while the result SHA-256 remained unchanged. The pre-change relative invocation failed
+with `invalid release runtime content`, so this is a demonstrated path correction. The retained
+previous and candidate-v4 pair still need revalidation after the commit; candidate-v4 remains
+bound to its older source and cannot stand in for the rebuilt release candidate.

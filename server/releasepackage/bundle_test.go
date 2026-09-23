@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"cloud-clicker/server/save"
 )
 
 func TestAssembleBundleBindsBuiltInputsWithoutCheckout(t *testing.T) {
@@ -94,6 +96,40 @@ func TestValidateBundleRequiresBrowserDeclarationInCurrentBundle(t *testing.T) {
 	})
 	if err := ValidateBundle(inputs.Output); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("browser bundle without rehearsal_images schema property accepted: %v", err)
+	}
+}
+
+func TestValidateBundlePreservesPreviousSaveVersions(t *testing.T) {
+	for name, mutate := range map[string]func(*ReleaseManifest){
+		"previous company and founder": func(manifest *ReleaseManifest) {
+			manifest.CompanySaveVersion--
+			manifest.FounderSaveVersion--
+		},
+		"zero company":   func(manifest *ReleaseManifest) { manifest.CompanySaveVersion = 0 },
+		"zero founder":   func(manifest *ReleaseManifest) { manifest.FounderSaveVersion = 0 },
+		"future company": func(manifest *ReleaseManifest) { manifest.CompanySaveVersion++ },
+		"future founder": func(manifest *ReleaseManifest) { manifest.FounderSaveVersion++ },
+	} {
+		t.Run(name, func(t *testing.T) {
+			inputs := bundleInputs(t, filepath.Join("..", ".."))
+			manifest, err := AssembleBundle(inputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if manifest.CompanySaveVersion != save.LatestCompanyVersion || manifest.FounderSaveVersion != save.LatestFounderVersion {
+				t.Fatalf("new bundle did not use current save versions: company=%d founder=%d", manifest.CompanySaveVersion, manifest.FounderSaveVersion)
+			}
+			mutate(&manifest)
+			writeFixtureManifest(t, inputs.Output, manifest)
+			err = ValidateBundle(inputs.Output)
+			if name == "previous company and founder" {
+				if err != nil {
+					t.Fatalf("exact previous-version bundle rejected: %v", err)
+				}
+			} else if !errors.Is(err, ErrInvalidContent) {
+				t.Fatalf("invalid save-version bundle accepted: %v", err)
+			}
+		})
 	}
 }
 

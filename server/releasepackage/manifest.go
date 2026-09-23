@@ -83,7 +83,8 @@ func BuildReleaseManifest(bundleRoot string, input ManifestInput) (ReleaseManife
 func ValidateReleaseManifest(manifest ReleaseManifest) error {
 	if manifest.SchemaVersion != 1 || !validReleaseVersion(manifest.ReleaseVersion) || !commitPattern.MatchString(manifest.SourceCommit) ||
 		manifest.Platform != "linux/amd64" || manifest.DockerEngineVersion == "" || manifest.DockerComposeVersion == "" || manifest.DatabaseMigration < 1 ||
-		manifest.CompanySaveVersion != save.LatestCompanyVersion || manifest.FounderSaveVersion != save.LatestFounderVersion || manifest.EpochID < 1 ||
+		manifest.CompanySaveVersion < 1 || manifest.CompanySaveVersion > save.LatestCompanyVersion ||
+		manifest.FounderSaveVersion < 1 || manifest.FounderSaveVersion > save.LatestFounderVersion || manifest.EpochID < 1 ||
 		!hashPattern.MatchString(manifest.ConstantsHash) || !hashPattern.MatchString(manifest.CopyHash) || len(manifest.Images) != len(releaseImageNames) ||
 		len(manifest.RehearsalImages) > 1 || len(manifest.Artifacts) == 0 {
 		return ErrInvalidContent

@@ -130,6 +130,10 @@ For rollback, an exact retained pre-browser bundle may carry its original manife
 the later optional `rehearsal_images` property, but only when its manifest also has no rehearsal
 image, browser helper or Playwright SBOM. The current source schema and every browser-bearing
 candidate still require that property; all other required schema fields remain mandatory.
+The assembler records the current company and founder save versions in a new bundle. Validation
+also accepts a retained previous bundle's lower positive versions (never a future version), so
+a later save-version bump does not invalidate the exact previous manifest before rollback. The
+governed rollback still requires the pre-upgrade backup, previous image and live smoke proof.
 It intentionally describes a release *candidate*: designated approval of the implementation
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
@@ -215,7 +219,8 @@ image, derives the source commit from Git, and writes a strict mode-0600 result 
 and identities but no paths or content. Final evidence rejects a source-only scan, findings,
 incomplete/guarded state, a different manifest or source commit, unknown fields and output
 overwrite. The ordinary developer invocation may still print a non-evidentiary scan result without
-creating an R-006 artifact.
+creating an R-006 artifact. The root Make target resolves a repository-relative result path to
+an absolute path before invoking the scanner; the scanner itself still requires an absolute path.
 
 `make deployment-rehearsal-supply-chain` derives the supply-chain result by reopening both exact
 bundles, both independent-build records and the structured secret scan. It requires the candidate
