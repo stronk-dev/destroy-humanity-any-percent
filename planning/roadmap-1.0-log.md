@@ -227,3 +227,22 @@ initiate the push or change the branch's publication state in this checkpoint.
   it requires D-009/D-015 semantics, accepted contract and joined witness.
 - **Next:** finish the 20 remaining game tables and payload/non-DB classification, while
   independent Deployment review/R-006, D-007 exact tasks and D-018 accessibility remain open.
+
+## 2026-09-23 — Guild field tranche, retained JSON UUID and reused-DB test failure
+
+- **Coordinate:** product `7e8aa70`, planning after `0b4b53f`; no product/test-path
+  change. The predeclared Guild tranche maps all 13 current Guild schemas in
+  `data-rights-fields-guild.md`, making 53/60 game tables field-mapped.
+- **Executed evidence:** a temporary diagnostic in the existing real-Postgres
+  Guild deletion fixture found one retained `exchange_cleared` event whose
+  `actor_account` was null but `payload.producer_account_id` was the deleted
+  UUID. The diagnostic edit was removed byte-identically. The unmodified
+  three-test Guild suite passed cold. It failed on a warm rerun (invalid
+  intents/duplicate account IDs), passed after resetting the ephemeral
+  Postgres database, then failed again on a second warm rerun. RP-120 records
+  the data residual; RP-121 records test isolation. The ephemeral test
+  container/network was removed, preserving the named Go cache volume.
+- **Limit/next:** neither the Guild result nor FK rules classify all nested
+  payloads or adopt deletion semantics. Seven game tables, nested payloads and
+  non-DB stores remain, alongside D-008/D-009/D-015 and legal review. D-007,
+  D-018 and the independent Deployment/R-006 path remain unchanged.

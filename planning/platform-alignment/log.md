@@ -2560,3 +2560,28 @@ Postgres container/network was removed; the named Go cache volume remains.
 
 D-008/D-009/D-015, RP-118 and RP-119 remain open. No product/test byte, authored copy,
 retention duration, accepted RFC or release status changed.
+
+## 2026-09-23 — Guild field tranche and two cold/warm findings
+
+Codex predeclared `data-rights-fields-guild-plan.md`, traced migrations `00025`–`00029`,
+`00044` and `00046`, and mapped all 13 current Guild SQL schemas in
+`data-rights-fields-guild.md`. This advances the SQL-column denominator to **53/60**;
+Minigame, Soul and Transport contain the remaining seven tables. Shared Guild name,
+membership, events, outbox and settlement cannot be treated as one account's cascade.
+
+A temporary diagnostic in `TestGuildLifecycleConcurrencyAndHistoryIntegration` counted
+one surviving clearing event with a null actor FK but the deleted account UUID in
+`payload.producer_account_id`. The edit was removed byte-identically. RP-120 records
+the observed JSON residual; other nested payloads remain open. The unmodified three-test
+Guild Postgres suite passed cold, then failed on immediate reuse of the same test DB:
+two invalid intents and duplicate account primary keys. Resetting the ephemeral
+Postgres service restored green; a second warm rerun reproduced the failure. Fixed
+fixture IDs and no per-run DB reset make this a test-isolation defect (RP-121), not
+evidence of a product regression. Both failed runs are retained in the evidence record.
+The test container/network was removed after execution; named Go cache volume retained.
+
+D-008/D-009/D-015 remain owner/legal decisions. No product, migration, test assertion,
+authored copy, RFC status or release claim changed. Continue the seven-table and
+nested/non-DB map, then bring a complete evidence packet for decisions. The test
+isolation repair requires its own accepted lane and discrimination; it is not
+smuggled into research.
