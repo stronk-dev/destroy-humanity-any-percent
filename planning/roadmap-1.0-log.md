@@ -182,3 +182,17 @@ initiate the push or change the branch's publication state in this checkpoint.
   remain independent blockers.
 - **Next:** seek the exact D-007 boundary ruling; meanwhile continue authorized Deployment
   and relation/retention research without pretending this proposal authorizes implementation.
+
+## 2026-09-23 — account/save fields classified, rights decisions still open
+
+- **Coordinate:** product source `7e8aa70`, planning after `4492424`; no product-path change.
+  The predeclared `data-rights-fields-plan.md` selects ten of the 60 current game tables and
+  refuses to extrapolate to the other 50 or nested JSON.
+- **Evidence:** every SQL column in those ten tables is mapped in
+  `data-rights-fields-account-save.md`. The cold Postgres account-deletion integration witness
+  passed with `-count=1`; it proves removal of live account/credentials and Founder unlink,
+  not erasure of retained saves or permanent bootstrap UUID tombstones. Source search still
+  finds no production intent-pruner caller. No new owner/legal conclusion follows.
+- **Next:** D-008/D-009/D-015 choose export/deletion/retention semantics with legal review;
+  continue the remaining 50-table/payload/non-DB classification before a complete rights
+  claim. D-007 exact preview tasks, D-018, Deployment designated review and R-006 remain open.

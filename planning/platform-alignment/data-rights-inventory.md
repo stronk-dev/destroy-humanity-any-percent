@@ -44,6 +44,11 @@ For verification, Commons, routes, Minigames, Soul and transport, a future contr
 specify each column/payload's inclusion and erasure disposition. No group gets a made-up
 duration from its package name or apparent lifecycle.
 
+The ten-table account/credential/save/intent tranche now has an exact SQL-column disposition
+in [`data-rights-fields-account-save.md`](data-rights-fields-account-save.md). That field map
+does **not** classify the 50 other tables, nested save/receipt JSON or non-DB stores; the
+relation-complete denominator above remains the parent inventory.
+
 ## Other persisted surfaces
 
 | Surface | Current behavior and evidence boundary |

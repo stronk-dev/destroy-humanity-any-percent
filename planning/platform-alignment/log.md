@@ -2495,3 +2495,21 @@ D-007 still requires Marco's exact in/out adoption and a release RFC before its 
 authorize implementation or D-018's manual task population. No product, test, owner-authored
 copy, accepted RFC or public-release status changed. Deployment review and R-006, account-rights
 decisions, R-005 and R-008 remain separate gates.
+
+## 2026-09-23 — account/save field-disposition tranche
+
+Codex predeclared `data-rights-fields-plan.md` and traced every current SQL column in the
+seven account/credential and three save/intent tables against Up migrations through `00074`,
+their production writers/readers, deletion transaction and cleanup jobs. The current-source
+result is `data-rights-fields-account-save.md`; the remaining 50 game tables, nested JSON and
+non-DB stores are explicitly outside this tranche. A cold real-Postgres
+`TestAccountSessionIntegration -count=1 -v` passed; it proves live account/credential removal,
+Founder unlink/archive and retained saves, but deliberately does not assert absence of bootstrap
+tombstones. The earlier temporary diagnostic and migration trigger prove the account-linked
+UUID/digest/time tombstone survives. `PruneIntentRecords` still has no non-test caller, while
+credential cleanup is composed on a minute schedule. The controls distinguish real removal
+from permanent/unknown retention rather than calling the whole account erased.
+
+D-008/D-009/D-015 remain owner/legal choices. No export schema, deletion copy, retention period,
+cleanup mechanism, migration, product/test byte or release status was adopted. R-003 remains
+downstream of those decisions and a built player workflow.
