@@ -21,6 +21,8 @@ import (
 )
 
 const DefaultBrowserPath = "/ms-playwright/chromium-1234/chrome-linux64/chrome"
+const phase0JourneyGuard = 2 * time.Hour
+const phase0ActionGuard = 20000
 
 var hashPattern = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
 
@@ -45,6 +47,14 @@ type Result struct {
 	ManualIntentObserved bool      `json:"manual_intent_observed"`
 	ManualIntentStatus   int64     `json:"manual_intent_status"`
 	PageExceptionCount   int       `json:"page_exception_count"`
+	GateCrossed          bool      `json:"gate_crossed"`
+	RunEndObserved       bool      `json:"run_end_observed"`
+	NextRunObserved      bool      `json:"next_run_observed"`
+	InitialRunSeq        int       `json:"initial_run_seq"`
+	FinalRunSeq          int       `json:"final_run_seq"`
+	ActionCount          int       `json:"action_count"`
+	IntentResponseCount  int       `json:"intent_response_count"`
+	FailedIntentCount    int       `json:"failed_intent_count"`
 	ObjectiveCompleted   bool      `json:"objective_completed"`
 	GuardExhausted       bool      `json:"guard_exhausted"`
 }
@@ -68,6 +78,8 @@ func Run(ctx context.Context, config Config) (Result, error) {
 	intentRequests := map[network.RequestID]bool{}
 	intentObserved := false
 	intentStatus := int64(0)
+	intentResponseCount := 0
+	failedIntentCount := 0
 	chromedp.ListenTarget(browserContext, func(event any) {
 		lock.Lock()
 		defer lock.Unlock()
@@ -88,6 +100,11 @@ func Run(ctx context.Context, config Config) (Result, error) {
 			if intentRequests[value.RequestID] {
 				intentObserved = true
 				intentStatus = value.Response.Status
+				intentResponseCount++
+				if value.Response.Status != 200 {
+					failedIntentCount++
+				}
+				delete(intentRequests, value.RequestID)
 			}
 		case *cdpruntime.EventExceptionThrown:
 			pageExceptions++
@@ -118,10 +135,28 @@ func Run(ctx context.Context, config Config) (Result, error) {
 		return Result{}, errors.New("invalid browser storage observation")
 	}
 	lock.Lock()
-	result := Result{SchemaVersion: 1, ManifestSHA256: config.ManifestSHA256, StartedAt: started, CompletedAt: config.Now().UTC(),
-		Surface: "desk", BootstrapCommitted: storage.BootstrapCommitted, CredentialsPresent: storage.CredentialsPresent,
-		WebSocketObserved: websocketObserved, ManualIntentObserved: intentObserved, ManualIntentStatus: intentStatus,
-		PageExceptionCount: pageExceptions, ObjectiveCompleted: true}
+	manualObserved, manualStatus := intentObserved, intentStatus
+	lock.Unlock()
+	initialRunSeq, err := readRunSeq(browserContext)
+	if err != nil || initialRunSeq != 1 {
+		return Result{}, errors.New("invalid initial browser run")
+	}
+	journey, err := drivePhase0(browserContext)
+	if err != nil {
+		return Result{}, err
+	}
+	finalRunSeq, err := readRunSeq(browserContext)
+	if err != nil || finalRunSeq != initialRunSeq+1 {
+		return Result{}, errors.New("browser did not reach the next run")
+	}
+	lock.Lock()
+	result := Result{SchemaVersion: 2, ManifestSHA256: config.ManifestSHA256, StartedAt: started, CompletedAt: config.Now().UTC(),
+		Surface: "run_2_desk", BootstrapCommitted: storage.BootstrapCommitted, CredentialsPresent: storage.CredentialsPresent,
+		WebSocketObserved: websocketObserved, ManualIntentObserved: manualObserved, ManualIntentStatus: manualStatus,
+		PageExceptionCount: pageExceptions, GateCrossed: journey.gateCrossed, RunEndObserved: journey.runEndObserved,
+		NextRunObserved: journey.nextRunObserved, InitialRunSeq: initialRunSeq, FinalRunSeq: finalRunSeq,
+		ActionCount: journey.actionCount, IntentResponseCount: intentResponseCount, FailedIntentCount: failedIntentCount,
+		ObjectiveCompleted: true}
 	lock.Unlock()
 	if err := ValidateResult(result); err != nil {
 		return Result{}, err
@@ -137,9 +172,12 @@ func Run(ctx context.Context, config Config) (Result, error) {
 }
 
 func ValidateResult(result Result) error {
-	if result.SchemaVersion != 1 || !hashPattern.MatchString(result.ManifestSHA256) || result.StartedAt.IsZero() ||
-		!result.CompletedAt.After(result.StartedAt) || result.Surface != "desk" || !result.BootstrapCommitted ||
+	if result.SchemaVersion != 2 || !hashPattern.MatchString(result.ManifestSHA256) || result.StartedAt.IsZero() ||
+		!result.CompletedAt.After(result.StartedAt) || result.CompletedAt.Sub(result.StartedAt) > phase0JourneyGuard ||
+		result.Surface != "run_2_desk" || !result.BootstrapCommitted ||
 		!result.CredentialsPresent || !result.WebSocketObserved || !result.ManualIntentObserved || result.ManualIntentStatus != 200 ||
+		!result.GateCrossed || !result.RunEndObserved || !result.NextRunObserved || result.InitialRunSeq != 1 || result.FinalRunSeq != 2 ||
+		result.ActionCount < 2 || result.ActionCount > phase0ActionGuard || result.IntentResponseCount < 2 || result.FailedIntentCount != 0 ||
 		result.PageExceptionCount != 0 || !result.ObjectiveCompleted || result.GuardExhausted {
 		return errors.New("invalid browser result")
 	}

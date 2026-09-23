@@ -46,9 +46,11 @@ func (runner browserRunnerFixture) Run(_ context.Context, _ string, name string,
 		manifest = runner.manifestDigest
 	}
 	start := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
-	result := deploymentbrowser.Result{SchemaVersion: 1, ManifestSHA256: manifest, StartedAt: start, CompletedAt: start.Add(time.Second),
-		Surface: "desk", BootstrapCommitted: true, CredentialsPresent: true, WebSocketObserved: true,
-		ManualIntentObserved: true, ManualIntentStatus: 200, ObjectiveCompleted: true}
+	result := deploymentbrowser.Result{SchemaVersion: 2, ManifestSHA256: manifest, StartedAt: start, CompletedAt: start.Add(time.Second),
+		Surface: "run_2_desk", BootstrapCommitted: true, CredentialsPresent: true, WebSocketObserved: true,
+		ManualIntentObserved: true, ManualIntentStatus: 200, GateCrossed: true, RunEndObserved: true,
+		NextRunObserved: true, InitialRunSeq: 1, FinalRunSeq: 2, ActionCount: 3, IntentResponseCount: 3,
+		ObjectiveCompleted: true}
 	data, _ := json.Marshal(result)
 	path := filepath.Join(runner.config.ArtifactsDirectory, requiredRunArtifactFiles["browser_result"])
 	if err := os.WriteFile(path, append(data, '\n'), 0o600); err != nil {

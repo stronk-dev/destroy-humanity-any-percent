@@ -507,10 +507,11 @@ func boundRunFixture(t *testing.T) boundFixture {
 			artifactBytes[name] = append(artifactBytes[name], '\n')
 		}
 		if name == "browser_result" {
-			result := deploymentbrowser.Result{SchemaVersion: 1, ManifestSHA256: hashBytes(candidateManifestBytes),
-				StartedAt: evidence.StartedAt.Add(time.Second), CompletedAt: evidence.StartedAt.Add(2 * time.Second), Surface: "desk",
+			result := deploymentbrowser.Result{SchemaVersion: 2, ManifestSHA256: hashBytes(candidateManifestBytes),
+				StartedAt: evidence.StartedAt.Add(time.Second), CompletedAt: evidence.StartedAt.Add(2 * time.Second), Surface: "run_2_desk",
 				BootstrapCommitted: true, CredentialsPresent: true, WebSocketObserved: true, ManualIntentObserved: true,
-				ManualIntentStatus: 200, ObjectiveCompleted: true}
+				ManualIntentStatus: 200, GateCrossed: true, RunEndObserved: true, NextRunObserved: true,
+				InitialRunSeq: 1, FinalRunSeq: 2, ActionCount: 3, IntentResponseCount: 3, ObjectiveCompleted: true}
 			artifactBytes[name], _ = json.Marshal(result)
 			artifactBytes[name] = append(artifactBytes[name], '\n')
 		}

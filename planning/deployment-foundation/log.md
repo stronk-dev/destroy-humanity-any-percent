@@ -1579,3 +1579,60 @@ exception or retry was changed.
 `e0e2201..5d72591`; this does not satisfy the designated cross-party gate. The corrective batch is
 ready for Claude's adversarial review of that exact range plus this record commit. It is not
 archival authority and does not promote DP-E or Deployment Foundation lifecycle state.
+
+## 2026-09-23 — DP-F2 predeclaration: populated browser journey
+
+The current `deployment-browser` stops after one manual intent. That proves only initial Caddy,
+bootstrap, WebSocket and intent transport. `recover-empty` correctly refuses its database because
+the required verified board domain is absent. The browser producer must not report Phase-0
+completion or feed the recovery gate from this fragment.
+
+**Authority and scope:** accepted DP-F/AC1/AC4 and the previously declared clean-host product
+population. This slice may change only the rehearsal browser driver, its strict evidence schema,
+the binding adapter fixtures, focused tests and canonical deployment documentation. It may not
+add a product clock, test-only public endpoint, direct database seed, gameplay balance/content
+change, looser recovery identity or a broad hosted run claim. The first manual intent and every
+subsequent gameplay intent must originate from an enabled visible DOM control against the real
+Caddy origin; read-only state inspection is permitted but is not a substitute for the UI action.
+
+**Positive population:** fresh anonymous bootstrap → Desk and committed credentials → real
+WebSocket → manual intent → earn/buy through the default T0 gate → cross gate → first Exit/run-end
+→ continue into run 2. The result binds exact manifest, observed controls/surfaces, successful
+intent responses, zero page exceptions, completed objective and a bounded elapsed/attempt count.
+The recovery producer then observes a *real* populated identity, including its asynchronously
+verified board row, before the encrypted backup. A guard expiry or missing projection fails and
+cannot be labelled a successful browser or recovery observation.
+
+**Falsifiers:** sever each gate, Exit and continuation DOM action; make an intent receipt reject;
+remove WebSocket handshake; force an offer interruption; suppress verified-board projection; and
+forge a result with absent transition/terminal fields. Each relevant witness must fail the
+appropriate browser or recovery validator. Focused tests must run cold. The complete clean-host
+population and timing objective remain unclaimed until DP-F3 executes on the exact bundle.
+
+**Sequence:** first strengthen the browser journey and typed result with local discriminating
+tests. In a separate bounded slice, make recovery wait for the real asynchronous board projection
+with a fixed guard and test both eventual arrival and permanent absence. Only then rebuild the
+candidate bundle and attempt the external rehearsal. No plan checkbox flips on this predeclaration.
+
+## 2026-09-23 — DP-F2 browser-journey construction (unexecuted product population)
+
+The browser driver now uses visible, enabled player controls to bootstrap, perform a manual
+action, buy generators at a deliberately spaced cadence so buying cannot indefinitely starve the
+gate, cross the T0 gate, reach run-end and continue to run 2. An offer interruption is declined
+through its UI control. Read-only production snapshot calls verify run sequence 1 → 2; no direct
+gameplay intent, fixture state, clock advance or database seed was introduced. Its strict result
+is version 2 and refuses absent gate/terminal/next-run observations, failed intent HTTP responses,
+page exceptions, invalid sequence, action/elapsed guard exhaustion and missing transport evidence.
+The command's former ten-minute maximum could not contain the already designed first-hour
+journey; it now has the same two-hour execution guard as the driver. This guard is not a pacing
+target and cannot turn a timed-out run green.
+
+Cold `make test-go GO_PACKAGES='./cmd/deployment-browser ./deploymentbrowser ./deploymentrehearsal'
+GO_TEST_FLAGS='-count=1'` and focused `make vet` passed. The complete
+`make test-deployment-rehearsal` also passed after its first attempt was invalidated by sandbox
+denial of Go module-cache writes; that first attempt is not cited as a product failure or pass.
+The strict result test runs negative cases for each new boundary; the policy table exercises
+offer interruption, gate, purchase, manual, Exit and continuation selections. The actual
+two-hour browser population, DOM-action severing probes and asynchronous verified-board arrival
+have **not** been executed. The real clean-host browser row and 25/43 rehearsal population count
+remain unchanged. This code is construction ready for product execution, not AC1/AC4 acceptance.

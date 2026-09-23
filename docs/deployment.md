@@ -291,12 +291,18 @@ from the rehearsal-only Playwright 1.62.0 Noble image pinned to amd64 manifest
 measurement tool, not another running Cloud Clicker service.
 
 The driver navigates the canonical HTTPS Caddy origin in real headless Chromium, clicks the visible
-`BEGIN ATTEMPT` and `Fix Computer` controls, and accepts a result only when the desk renders, the
-bootstrap credential is gone, durable credentials exist, a WebSocket handshake completed, the
-manual intent received HTTP 200 and no page exception fired. It writes only those booleans/status,
-timestamps and the candidate manifest hash to a new mode-0600 JSON file; it never serializes a
-credential, Founder/account identifier, request body or WebSocket payload. A loopback-HTTP flag
-exists solely for the isolated driver fixture and is not admissible in the reviewed R-006 plan.
+`BEGIN ATTEMPT` and `Fix Computer` controls, then uses enabled player controls to buy generators,
+cross the T0 gate, reach the first run-end and continue into run 2. It does not seed the database,
+call the intent API directly or advance the product clock. It accepts a result only when the desk
+and run-2 state render, bootstrap credentials are retired, durable credentials exist, a WebSocket
+handshake completed, the manual and later intent responses succeeded, the gate and terminal were
+observed, and no page exception fired. The action and two-hour execution guards fail closed; they
+are not pacing acceptance bounds. The strict version-2 result records transition booleans, run
+sequence numbers, action/response counts, timestamps and candidate manifest hash in a new
+mode-0600 JSON file. It never serializes a credential, Founder/account identifier, request body or
+WebSocket payload. A loopback-HTTP flag exists solely for the isolated driver fixture and is not
+admissible in the reviewed R-006 plan. The separate populated-recovery step must still observe
+the asynchronous verified board row; a completed browser journey alone cannot assert it.
 The binary, pinned browser image identity and its SBOM are part of the rebuilt release bundle and
 its exact manifest. That construction does not itself mark
 `phase0_browser_flow_through_caddy` implemented or observed; the driver must still execute the

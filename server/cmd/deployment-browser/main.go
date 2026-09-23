@@ -16,9 +16,9 @@ func main() {
 	manifest := flag.String("manifest-sha256", "", "exact candidate release manifest hash")
 	browser := flag.String("browser", deploymentbrowser.DefaultBrowserPath, "absolute pinned Chromium path")
 	allowLoopback := flag.Bool("allow-loopback-http", false, "test-only loopback HTTP origin")
-	timeout := flag.Duration("timeout", 2*time.Minute, "bounded browser workflow timeout")
+	timeout := flag.Duration("timeout", 2*time.Hour, "bounded browser workflow timeout")
 	flag.Parse()
-	if flag.NArg() != 0 || *timeout < time.Second || *timeout > 10*time.Minute {
+	if flag.NArg() != 0 || *timeout < time.Second || *timeout > 2*time.Hour {
 		fail()
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
