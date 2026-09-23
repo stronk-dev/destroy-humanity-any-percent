@@ -1790,3 +1790,39 @@ validate both with the corrected helper and run the exact candidate-plus-previou
 probe. The first copy is only a release candidate if all checks pass and a retained source/image
 secret scan and release-build record validate. Neither copy is R-006 clean-host evidence. Any
 new source edit invalidates this coordinate and requires another rebuild.
+
+The clean build coordinate was `8621f33f2c2f6d419691a59a2c17ea6249d934fe`, timestamp
+`2026-09-23T12:50:59Z`, with Docker Engine 28.4.0, Compose 2.39.4-desktop.1 and the pinned
+BuildKit/Syft images in the Makefile. Two fresh ignored trees, `candidate-v4a` and `candidate-v4b`,
+each built six static Linux/amd64 binaries, client output, staged content, a no-cache gameserver
+archive, and seven separate real Syft scans. The first image-context attempt failed because content
+was copied beside, not under, `content/`; corrected fresh contexts succeeded without changing
+source. The two archives are byte-identical at
+`sha256:3ce0a9d45d5b333817d7b99a778179f3d195809ac79e5265e0be94bc06079205`;
+their runtime config ID is
+`sha256:34d48155b28d09fc929a0891ce05a09b2a33d8d77fbbb559bb7e4c40c4218ddd`.
+All six binaries, client distributions, metadata, content, seven *normalized* SPDX documents and
+both 72-artifact bundle trees compare byte-identical. Raw Syft headers differed and are not the
+release evidence. Both manifests hash to
+`sha256:521e5bcaf4ff32bec47ec79eec7e44e1794c87513c5aefa1db8b04a599334d36`.
+
+The exact candidate-v4a and candidate-v4b versus retained previous-bundle supply-chain probes
+each passed. A first structured secret-scan attempt exited 1 because the Make wrapper forwarded
+a relative output path to an absolute-path-only result writer; no secret finding occurred. The
+rerun with an explicit absolute output scanned 1,407 tracked files and the exact gameserver
+archive with zero findings; RP-111 tracks the tooling defect. The candidate build record now
+names this exact source/manifest/archive/SBOM closure; `make test-deployment-rehearsal` validated
+both candidate and previous records after cold tests. The full supply-chain command reopened the
+two bundles, records and structured scan and passed, writing an ignored result. These are local
+DP-F2 construction and supply-chain facts, **not** a clean-host install, browser journey,
+restore/rollback, R-006 completion, supported-self-host claim, designated review or owner release.
+
+**First-filter review — Review by: Codex; Recorded by: Codex.** Reviewed implementation range
+`86dfdbc..578fda0` (rollback schema compatibility, self-contained positive/negative bundle
+fixtures and canonical doc). The previous-bundle rejection was reproduced before the fix; the
+exact pair probe passes after it. The historical fixture rejects a removed required field and
+the browser-bearing fixture rejects the missing new declaration. Cold focused tests, vet and
+diff check passed; no product gameplay or historical bundle byte changed. RP-111 is a separate
+Make-wrapper defect discovered while generating the build evidence. This is an implementer-side
+first filter only; **Claude's designated cross-party verdict for the exact range is absent** and
+DP-F cannot archive or claim release acceptance from this entry.

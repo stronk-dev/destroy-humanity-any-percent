@@ -56,3 +56,24 @@ long-term release picture.
 - **Next:** execute the full player journey and populated recovery on the exact supported host,
   with named severing failures, then reconcile the release evidence. The Deployment per-RFC plan
   continues to own the detailed order.
+
+## 2026-09-23 — corrected local release candidate at source `8621f33`
+
+- **Observed change:** the validator now admits the exact retained pre-browser rollback schema
+  only with a manifest lacking the whole browser closure. A browser-bearing bundle without its
+  schema declaration and a historical bundle missing another required field still fail. The
+  earlier candidate-v3 is diagnostic only because it embeds the old validator.
+- **Executed evidence:** cold releasepackage/rehearsal/release tests, vet and the exact
+  candidate-v3/previous probe passed after correction. Two independently rebuilt
+  `0.1.0-preview.2` trees then matched across six static binaries, client, staged content,
+  gameserver archive, seven normalized real image SBOMs and full 72-artifact bundles. Manifest
+  SHA-256 is `521e5bca…334d36`; both candidate/previous probes, retained build-record validation,
+  structured tracked-source/image secret scan and full local supply-chain check passed.
+- **Limits:** raw Syft headers differ as expected; normalized release SBOMs match. The first
+  Docker context and relative secret-scan output attempts failed and were corrected; RP-111
+  tracks the latter tooling defect. No clean Linux host, actual player browser journey,
+  populated restore, governed rollback, complete R-006, designated cross-party implementation
+  verdict or release call has occurred. The 25/43 executed-probe count is unchanged.
+- **Next:** designated review of the pending implementation ranges and exact-bundle clean-host
+  execution/severing under the accepted Deployment plan. This is candidate construction, not
+  supported self-hosting or 1.0 readiness.
