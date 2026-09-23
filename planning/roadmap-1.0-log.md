@@ -162,3 +162,23 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Next:** accept or revise the exact task contract and repair RP-082/RP-083/RP-084 under
   authority with permanent negative/positive witnesses; retain full manual and composed
   release-task proof.
+
+## 2026-09-23 — D-007 exact-preview-manifest proposal prepared
+
+- **Coordinate and scope:** product source `7e8aa70`; planning HEAD `e7d61f6` before this record;
+  no product-path diff between them. Predeclared the Phase-0 source/evidence population and
+  controls in `phase0-manifest-plan.md`. No code, authored copy or release authority changed.
+- **Observed result:** `phase0-manifest-proposal.md` names seven candidate player tasks and five
+  mandatory public-preview floor outcomes. Epoch 8 pins 19 artifact families, but only five
+  Game UI surfaces mount; registered achievements and pets are the negative control against
+  treating every pinned artifact as a shipped player task. Gate/Exit/next-run is the positive
+  control, with designated-approved composed-browser evidence. The first-hour 97-run harness,
+  branch proofs and composed server/Postgres seed are kept distinct from the narrower browser
+  journey, which does not click every generator/upgrade or prove player comprehension.
+- **Authority and limit:** D-001/D-007 adopted the bounded T0–T1 direction and public-hosting
+  floor, not this exact P01–P07 manifest. D-007 still needs Marco's adoption/edit and a release
+  RFC; D-018 and R-008 then consume the adopted task list. Static tracing is not a player study,
+  clean-host R-006 or legal review. Deployment designated review and account-rights decisions
+  remain independent blockers.
+- **Next:** seek the exact D-007 boundary ruling; meanwhile continue authorized Deployment
+  and relation/retention research without pretending this proposal authorizes implementation.

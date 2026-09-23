@@ -2480,3 +2480,18 @@ budget test green. The contrast demonstrates the ordinary fixture gate's blind s
 not close RP-082/RP-083 or R-005. RP-116's missing Firefox product observation is resolved by
 the declared Linux lane; the Mac launcher remains an environment note. No product or permanent
 test byte changed, and no accepted RFC/release status advanced.
+
+## 2026-09-23 — D-007 exact-preview-manifest proposal, not adoption
+
+Codex predeclared `phase0-manifest-plan.md` and traced current epoch 8, the five mounted Game UI
+surfaces, the composed browser journey, the T0–T1 content proofs and the adopted owner boundary.
+`phase0-manifest-proposal.md` names P01–P07 candidate player tasks and F01–F05 mandatory
+public-preview outcomes. The positive control is the independently reviewed Gate/Exit/next-run
+browser path; the negative control is pinned pet/achievement data without a mounted player task.
+The proposal keeps the 97-run pacing/branch proofs separate from narrower browser coverage,
+including the absence of row-sensitive browser clicks for every generator and upgrade.
+
+D-007 still requires Marco's exact in/out adoption and a release RFC before its task list can
+authorize implementation or D-018's manual task population. No product, test, owner-authored
+copy, accepted RFC or public-release status changed. Deployment review and R-006, account-rights
+decisions, R-005 and R-008 remain separate gates.

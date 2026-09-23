@@ -88,9 +88,10 @@ RFCs before implementation. No date or team-capacity promise is inferred.
    through designated review and an authorized clean Linux host, then execute and sever the browser
    journey, board-arrival gate, recovery and rollback on those exact candidate/previous bundles.
    Record R-006 and its negative cases; local supply-chain success is not product proof.
-3. Prepare the account export/deletion/retention owner decisions and the cross-surface
-   accessibility acceptance contract. These are public-release floor obligations alongside
-   Deployment, not optional polish after it.
+3. Bring the source-traced [`Phase-0 exact-manifest proposal`](platform-alignment/phase0-manifest-proposal.md)
+   to Marco for D-007 adoption or edits; it names P01–P07 player tasks and F01–F05 public-release
+   floor obligations without calling them complete. Then bind D-018 and R-008 to the adopted tasks.
+   Prepare the separate account export/deletion/retention decisions; none is optional preview polish.
 4. Once the preview floor is proved, reconcile the v0.1–1.0 design into bounded milestone manifests
    and dependency-ordered RFCs. Do not implement later content directly from this board.
 
