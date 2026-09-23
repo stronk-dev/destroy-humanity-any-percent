@@ -196,3 +196,18 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Next:** D-008/D-009/D-015 choose export/deletion/retention semantics with legal review;
   continue the remaining 50-table/payload/non-DB classification before a complete rights
   claim. D-007 exact preview tasks, D-018, Deployment designated review and R-006 remain open.
+
+## 2026-09-23 — history/board field tranche and cold archive/board witnesses
+
+- **Coordinate:** product `7e8aa70`, planning after `624a2cb`; no product-path change.
+  Predeclared fourteen history/verification tables and mapped their current SQL columns in
+  `data-rights-fields-history-boards.md`, making 24/60 field-mapped game tables.
+- **Evidence and correction:** archive-compaction and board-projection integration tests
+  passed separately on real Postgres with `-count=1 -v`. A combined regex command had first
+  failed because Make passed `|` to the shell; it was discarded as invalid evidence. RP-117
+  corrects the parent inventory's blanket immutable wording for active `run_log` rows.
+  RP-118 names the missing joined account-deletion-with-populated-board witness; source
+  retention is not promoted to executed rights proof.
+- **Limit/next:** 36 game tables, nested payloads and non-DB fields remain; owner/legal
+  D-008/D-009/D-015 and D-007/D-018 remain open. No product/release status changed. Continue
+  classification and require an accepted rights contract before a joined deletion witness.

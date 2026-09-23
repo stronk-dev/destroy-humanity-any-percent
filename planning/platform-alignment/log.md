@@ -2513,3 +2513,25 @@ from permanent/unknown retention rather than calling the whole account erased.
 D-008/D-009/D-015 remain owner/legal choices. No export schema, deletion copy, retention period,
 cleanup mechanism, migration, product/test byte or release status was adopted. R-003 remains
 downstream of those decisions and a built player workflow.
+
+## 2026-09-23 — history/board fields and archive-compaction correction
+
+Codex predeclared `data-rights-fields-history-plan.md`, then traced all current SQL columns
+in nine run/Founder and five verification/board tables through migration `00074`, production
+writers/readers, archive compaction and account deletion. The resulting
+`data-rights-fields-history-boards.md` brings the SQL-column denominator to 24/60 tables;
+36 game tables plus nested payloads and non-DB stores remain. RP-117 records and closes the
+parent inventory's overbroad append-only/immutable wording: verified `run_log` entries are
+compressed into full immutable archives, and FK-referenced active rows may remain.
+
+The first combined `SAVE_TEST_FLAGS` invocation was invalid: the Make recipe interpreted
+`|` as a shell pipe and exited 2 (`command not found`/broken pipe). Two simple-name cold
+Postgres invocations then passed independently with `-count=1 -v`:
+`TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration` and
+`TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration`. These prove their
+archive/board properties, not deletion of an account containing both. RP-118 preserves
+that joined witness gap. The ephemeral Postgres container/network created for these tests
+were stopped and removed; named Go cache volume was retained.
+
+D-008/D-009/D-015 remain owner/legal decisions. No retention bound, export scope, player copy,
+product code, migration, accepted RFC or release status changed.
