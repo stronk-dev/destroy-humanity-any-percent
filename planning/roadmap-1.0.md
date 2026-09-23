@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-09-23 at `cf4ac25` (local and `origin/main`); see
+**Current checkpoint:** 2026-09-23 at local `44f5b3f` (`origin/main` remains `cf4ac25`); see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.
 **Next accepted release target:** the bounded Phase-0 Playable Preview, per D-001/D-007. The
 long-term 1.0 goal does not promote the preview's scope or authorize public hosting.
@@ -76,7 +76,7 @@ RFCs before implementation. No date or team-capacity promise is inferred.
 | API, transport and minigames | Transport recovery and exact API witnesses are approved; generated client, public readers and player minigame surfaces remain incomplete. | Reconcile ruling bodies, accept the missing surface contracts, then prove full production routes and consumers. |
 | Account, rights and privacy | Backend security/deletion tests exist; player recovery/export/delete and retention disclosure do not. | D-008/D-009/D-015 decisions, accepted Account/UI/retention contracts, R-003 on the actual workflow. |
 | Accessibility and usability | Component/browser accessibility evidence exists; task focus, 320 px reflow, motion and assistive journeys have recorded gaps. | Accepted cross-surface acceptance contract; R-005 and R-008 against built player tasks. |
-| Deployment and operations | Deployment Foundation is accepted and implementing; component proofs exist. CI parity correction at `e0e2201..cf4ac25` has only Codex first-filter review. | Designated cross-party review of that range; finish DP-F; execute R-006 and R-007 on the exact release artifact and operator path. |
+| Deployment and operations | Deployment Foundation is accepted and implementing; component proofs exist. The Phase-0 browser driver now has a run-2 construction path, but no real clean-host run or verified-board projection proof. CI parity correction at `e0e2201..cf4ac25` has only Codex first-filter review. | Designated cross-party review of the correction range; execute/sever the browser path, prove populated recovery, finish DP-F, then run R-006 and R-007 on the exact release artifact and operator path. |
 | Multiplayer, world and later content | Server Commons/guild/faction primitives exist; real social/world/feed and later-tier player journeys are incomplete. | Decide later public social/telemetry scope, then dependency-ordered RFCs, content and integrated proofs. |
 | Release governance | Dated audits, defect ledger, research/decision queues, RFC graph and per-RFC logs exist. The old executable-queue handoff was stale at this HEAD. | Reconcile the live queue and this checkpoint whenever a reviewed batch, ruling or release witness changes the critical path. |
 
@@ -84,9 +84,10 @@ RFCs before implementation. No date or team-capacity promise is inferred.
 
 1. Obtain the designated cross-party verdict for `e0e2201..cf4ac25`; its local
    `make verify-push` pass is a first filter, not the required independent review.
-2. Continue the accepted Deployment Foundation DP-F plan: strengthen the browser population to
-   create a verified board row, complete the exact candidate/previous bundle and clean-host
-   rehearsal, then record R-006 and its negative cases. Per-RFC planning controls the exact order.
+2. Continue the accepted Deployment Foundation DP-F plan: execute and sever the constructed browser
+   journey, prove asynchronous verified-board arrival before populated recovery, rebuild the exact
+   candidate/previous bundle and run the clean-host rehearsal, then record R-006 and its negative
+   cases. Per-RFC planning controls the exact order; the local driver tests are not product proof.
 3. Prepare the account export/deletion/retention owner decisions and the cross-surface
    accessibility acceptance contract. These are public-release floor obligations alongside
    Deployment, not optional polish after it.

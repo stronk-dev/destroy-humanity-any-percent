@@ -1636,3 +1636,10 @@ offer interruption, gate, purchase, manual, Exit and continuation selections. Th
 two-hour browser population, DOM-action severing probes and asynchronous verified-board arrival
 have **not** been executed. The real clean-host browser row and 25/43 rehearsal population count
 remain unchanged. This code is construction ready for product execution, not AC1/AC4 acceptance.
+
+**Review by:** Codex. **Recorded by:** Codex. Exact construction range
+`b2fde65..44f5b3f` was inspected after the cold runs. **APPROVED AS FIRST FILTER OF THE
+CONSTRUCTION SLICE ONLY.** The validator's new forged-field negatives and the enabled-control
+selection matrix discriminate locally. No running-product/browser-action severing, verified-board
+arrival, clean-host result or cross-party designated review is imported by this verdict. The
+candidate bundle predates these driver bytes and must be rebuilt before any R-006 claim.
