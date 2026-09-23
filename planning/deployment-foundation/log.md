@@ -1778,3 +1778,15 @@ previous bundle, so this is a demonstrated refusal-to-accept correction, not a m
 fixture. Candidate-v3 was assembled before the fix and contains an obsolete rehearsal binary;
 it is diagnostic only and cannot become R-006 evidence. Rebuild from the corrected committed
 source before independent comparison, build records or a clean-host run.
+
+## 2026-09-23 — DP-F2 predeclaration: corrected candidate rebuild
+
+The compatibility correction landed at `578fda0`. Candidate-v3 remains an immutable diagnostic
+comparison input, not a candidate to promote. From the next clean committed source coordinate,
+build two independent `0.1.0-preview.2` candidate trees in empty ignored output directories
+with identical pinned tools, seven immutable image identities and source timestamp. Require
+byte-identical binaries, client, image archive, normalized SBOMs and complete bundle trees;
+validate both with the corrected helper and run the exact candidate-plus-previous supply-chain
+probe. The first copy is only a release candidate if all checks pass and a retained source/image
+secret scan and release-build record validate. Neither copy is R-006 clean-host evidence. Any
+new source edit invalidates this coordinate and requires another rebuild.
