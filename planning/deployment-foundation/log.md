@@ -1725,3 +1725,22 @@ Linux/amd64 ELF binaries. Their ignored local outputs have SHA-256 digests respe
 `file` confirmed each is an x86-64 statically linked executable. This checks the supported
 architecture compilation, not an independently rebuilt six-image release bundle, browser run,
 secret scan or clean-host result. No retained build ledger is updated yet.
+
+## 2026-09-23 — DP-F2 predeclaration: refreshed exact candidate bundle
+
+The retained `candidate.json` and local candidate bundle predate the Phase-0 browser journey and
+version-2 verified-row recovery identity. They cannot be used to run or claim R-006. The next
+local build will use a clean committed source coordinate after this entry, with a new
+`0.1.0-preview.2` *candidate label only* (not an owner release call), the existing pinned
+BuildKit/Syft tools, Docker Engine 28.4.0 and Compose 2.39.4-desktop.1, and the six plus one
+previously selected immutable Linux/amd64 image references/config digests. The prior `previous`
+bundle remains the rollback input; it is not silently rebuilt or relabelled.
+
+Build all six static Linux/amd64 commands and the client from that coordinate, stage the exact
+content closure, build the gameserver image/archive, generate all seven real normalized image
+SBOMs and assemble a new candidate directory. Repeat in an independent empty output tree with
+the same declared source timestamp. Require byte-identical bundle trees, image archive and
+normalized SBOMs; record the source/tool/image/output digests and a real source/image secret scan.
+Any mismatch, mutable image identity, missing input, network/build failure or dirty source
+invalidates the candidate and leaves old retained records untouched. This is DP-F2 construction,
+not a clean-host run, supported-self-host claim, status promotion or authorization to push.
