@@ -156,10 +156,38 @@ func Create(input CreateInput) (Header, string, error) {
 	if err != nil {
 		return Header{}, "", err
 	}
+	if beforeEnvelopeCommit != nil {
+		if err := beforeEnvelopeCommit(temporaryPath); err != nil {
+			return Header{}, "", err
+		}
+	}
+	// Verify the exact bytes about to be committed, not the payload they were
+	// built from: a torn or short envelope write must never become a backup.
+	if written, err := ReadHeader(temporaryPath); err != nil || written != header {
+		return Header{}, "", errors.Join(ErrInvalid, err)
+	}
 	if err := os.Rename(temporaryPath, finalPath); err != nil {
 		return Header{}, "", err
 	}
+	// Persist the rename itself; without a directory sync a crash can lose a
+	// backup whose success was already reported.
+	if err := syncDirectory(input.Directory); err != nil {
+		return Header{}, "", err
+	}
 	return header, finalPath, nil
+}
+
+// beforeEnvelopeCommit is a test seam that runs on the closed temporary
+// envelope immediately before commit verification. It is nil in production.
+var beforeEnvelopeCommit func(path string) error
+
+func syncDirectory(directory string) error {
+	handle, err := os.Open(directory)
+	if err != nil {
+		return err
+	}
+	syncErr := handle.Sync()
+	return errors.Join(syncErr, handle.Close())
 }
 
 func ReadHeader(path string) (Header, error) {

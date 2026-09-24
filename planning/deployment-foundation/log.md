@@ -3055,3 +3055,24 @@ remedy.
 **Coverage boundary.** Semantic rejection of each rebound mutation on a *real current-rule* bundle
 still needs a rebuilt candidate. R4's releasepackage test already proves the removed-catalog case
 with a rebound manifest on an assembled bundle.
+
+## 2026-09-24 — R16: verify the committed envelope; sync the rename (DP-C F3)
+
+**Process note:** there is no separate predeclaration commit. The scope is the recorded DP-C F3
+remedy.
+
+**Change:**
+- `Create` now reads the closed temporary envelope with `ReadHeader` and requires it to equal the
+  header it built before renaming.
+- After the rename it fsyncs the target directory.
+- An unexported `beforeEnvelopeCommit` test seam (nil in production) lets a test tear the
+  envelope.
+
+**Evidence:**
+- `TestCreateVerifiesTheCommittedEnvelopeBytes` truncates the closed envelope by one byte. `Create`
+  returns `ErrInvalid` with no final path, and the target directory is empty.
+- Disabling the verification failed the test; the change was restored.
+- `make test-go` over deploymentbackup and cmd/deployment-backup passed.
+
+**Limit:** the directory fsync has no crash-simulation witness; it is stated in the docs, not
+proven by a test.

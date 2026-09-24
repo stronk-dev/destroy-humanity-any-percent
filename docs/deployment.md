@@ -381,7 +381,9 @@ after all of the following succeed:
 - the release manifest and its exact epoch declaration validate and agree;
 - the dump, manifest, epoch and authenticated metadata are encrypted to the operator's age X25519
   recipient; and
-- the encrypted checksum is verified, synced and atomically renamed to `<backup-id>.ccbackup`.
+- the complete temporary envelope is re-read and its header, payload length and checksum verified
+  (so a torn or short write never commits), synced, atomically renamed to `<backup-id>.ccbackup`,
+  and the target directory is synced so the rename survives a crash.
 
 No unencrypted dump is written to the off-host target. Interrupted reads and writes remove their
 temporary output.

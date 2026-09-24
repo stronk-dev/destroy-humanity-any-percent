@@ -304,3 +304,32 @@ func TestHeaderChecksumGuardsScheduleRetentionAndRestore(t *testing.T) {
 		}
 	})
 }
+
+func TestCreateVerifiesTheCommittedEnvelopeBytes(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	directory := t.TempDir()
+	beforeEnvelopeCommit = func(path string) error {
+		info, err := os.Stat(path)
+		if err != nil {
+			return err
+		}
+		// A torn write: the envelope lost its final bytes after close.
+		return os.Truncate(path, info.Size()-1)
+	}
+	t.Cleanup(func() { beforeEnvelopeCommit = nil })
+	now := time.Date(2026, 9, 24, 12, 0, 0, 0, time.UTC)
+	_, path, err := Create(CreateInput{Directory: directory, BackupID: "20260924T120000Z-abcdef123456",
+		ServerID: "01986666-b001-4000-8000-000000000001", ReleaseManifestSHA256: "sha256:" + strings.Repeat("a", 64), EpochID: 8,
+		StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String(),
+		Dump: bytes.NewReader([]byte("PGDMP\x01torn envelope"))})
+	if !errors.Is(err, ErrInvalid) || path != "" {
+		t.Fatalf("torn envelope committed: path=%q err=%v", path, err)
+	}
+	entries, err := os.ReadDir(directory)
+	if err != nil || len(entries) != 0 {
+		t.Fatalf("torn envelope left files behind: %v err=%v", entries, err)
+	}
+}
