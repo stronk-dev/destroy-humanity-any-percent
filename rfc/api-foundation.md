@@ -72,8 +72,11 @@ duplicate IDs, and duplicate method/path pairs.
 
 ### A6 — Public v1 DTOs and normalized board query
 
-C12's DTO rows are the literal proposed contracts: catalog artifacts embed sorted named JSON;
-epochs include ordered accepted hashes and changelog bytes; board items use the closed time/count/
+C12's DTO rows are the literal proposed contracts, with catalog artifacts governed by C18: each
+`CatalogArtifact` is one arm of a closed `oneOf` discriminated by the literal artifact `name`,
+carrying `{name, sha256, json}` validated against the artifact owner's exact exported schema
+descriptor (no free-form JSON/map arm); the union has one arm per artifact name in the served
+epoch set, sorted by name; epochs include ordered accepted hashes and changelog bytes; board items use the closed time/count/
 magnitude key union; Route Registry exposes public credit/naming/adoption fields only; optional
 values are explicit null and empty lists are `[]`. List limit defaults to 50 and is bounded 1..100.
 Boards use `GET boards/{category}?variables=&epoch=&mandate=&cursor=`. Variables decode from the
@@ -173,8 +176,9 @@ ruled 3600/60/31536000/300 seconds; secrets never appear in the file.
 3. Public reads: each endpoint golden-tested (content + cache headers + limiter application);
    the verification endpoint round-trips a real verified run's evidence references; auth
    endpoints reject nothing new (no regression).
-4. Generated TS types compile and the client's hand-written API layer is replaced by wrappers
-   over them (diff shows deletion, not addition).
+4. Generated TS types compile and the generated TS client is the ONLY HTTP-calling code; a lint
+   forbids raw `fetch` to `/api/` outside `client/src/api/generated/` (C9: there is no
+   hand-written client HTTP layer to delete).
 5. The privacy assertion: an integration test enumerates `/api/public/v1/` responses against a
    seeded founder and proves no founder-identifying field beyond public board identity appears.
 
@@ -560,5 +564,11 @@ a write transaction or exposes an operator mutation path.
 - 2026-08-03: C20 records the still-absent operational limiter/proxy/request-ID literals; middleware
   does not invent production security policy.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+- 2026-09-24: body reconciliation by the drafter (Claude), no ruling text changed: A6's catalog
+  artifact description now matches the C18 ruling (closed name-discriminated union, no free-form
+  JSON), and AC4 now states the C9-ruled criterion instead of the superseded "diff shows deletion".
+  The C18 ruling's sequencing note is owner-ruled text and is left for its author; the served epoch
+  set now pins 19 artifact families (epoch 8), so the union must carry 19 arms before the catalogs
+  reader is composed.
 - 2026-08-07: C18–C20 ruled (artifact oneOf by name + FCE sequencing note; schema|raw response
   union; the complete C20 operational literal set, provisional bytes).

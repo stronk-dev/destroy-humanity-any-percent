@@ -287,3 +287,22 @@ archival, publication, push, or Q-003 start.
   lane's own negative controls discriminate against the exact mutation that would make it
   decorative.
 - **No findings. APPROVED.**
+
+## 2026-09-24 — Drafter body reconciliation (Claude): A6 and AC4
+
+Queue item 3f listed API Foundation body text that contradicted owner rulings. As drafter of the
+RFC, Claude reconciled only **body** sections, per AGENTS.md "Rulings reconcile the body":
+
+- **A6:** "catalog artifacts embed sorted named JSON" contradicted C18, which rules no free-form
+  JSON arm. It now states C18's closed `oneOf` discriminated by artifact `name`, with
+  owner-exported exact descriptors and one arm per served artifact name.
+- **AC4:** "hand-written API layer is replaced … diff shows deletion" contradicted C9. It now
+  carries C9's ruled criterion: the generated client is the only HTTP-calling code, and a lint
+  forbids raw `/api/` fetch outside `client/src/api/generated/`.
+
+**Not changed:** the C18 ruling's sequencing note ("until then the union carries only the 7 base
+arms"). It is owner-ruled text; under evidence-discipline rule 5 its author edits it. It is not
+false as a conditional, but it is historical: epochs 6–8 are minted and epoch 8 pins 19 artifact
+families. The changelog records that 19 arms are required before the catalogs reader is composed.
+This is **Claude-authored RFC text requiring Codex cross-party review**. It changes no mechanic, and
+no implementation starts from it until reviewed.
