@@ -2945,3 +2945,28 @@ successful install.
 
 **Witness:** a recording-runner test where only `cloud-clicker_caddy_data` exists must refuse
 preflight with no `up` and no `down`. Narrowing the check back to `postgres_data` must fail it.
+
+## 2026-09-24 — R13 implemented: recovery smoke dependencies and install volume safety
+
+**Implementation:**
+- `smokeDependencies` (`gameserver`, `caddy`, `alertmanager`) drives `StartRecoveryCore`.
+- `requireCleanInstallState` refuses when any of the five declared project volumes exists.
+
+**Test changes:**
+- Codex's `TestDockerRuntimeRecoveryCoreExcludesUnobservedBackupWriter` previously required
+  Alertmanager to stay stopped, which contradicted the smoke dependency. It now requires
+  Alertmanager and keeps the backup writer, Prometheus and node-exporter excluded.
+- New `TestRecoveryCoreStartsEverySmokeDependency`.
+- A new occupied-host case for a retained `caddy_data`.
+- The occupied-host subtests now reuse the clean-host runner, so only the occupied state differs.
+
+**Evidence (cold):** `make test-go` over deploymentrelease and deploymentrehearsal passed.
+Severing probes, each failed and was restored:
+- removing Alertmanager from `smokeDependencies`;
+- narrowing the volume check to `postgres_data`, which failed the retained-certificate case;
+- ignoring containers.
+
+**Correction to this batch's own probing:** one severing run was first misread as a survivor. It
+was a build failure (an unused import) hidden by an output filter. Re-verification on the
+*original* occupied-host harness showed it was **not** vacuous: its no-helper assertion caught the
+container severing. The harness change is an isolation improvement, not a repair of a vacuous test.

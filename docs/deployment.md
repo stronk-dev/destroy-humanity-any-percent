@@ -484,9 +484,13 @@ invocations cannot race the ledgers or the live stack.
 Initial installation is a separate fail-closed operation, not a release with a fictional current
 version. It loads and verifies all six manifest-bound image/config identities without starting a
 service, then checks twice—around candidate configuration preflight—that the exact Compose project
-has no container and that the named Postgres volume does not exist. It then starts Postgres and the
+has no container and that none of its five declared named volumes (`postgres_data`, `caddy_data`,
+`caddy_config`, `prometheus_data`, `alertmanager_data`) already exists. An operator who kept a
+volume from an earlier attempt—for example retained ACME certificates in `caddy_data`—must move it
+aside first; install refuses rather than risk deleting it. It then starts Postgres and the
 remaining stack, reconciles migration/epoch/artifact identity and runs the authenticated Caddy
-smoke. A post-start failure removes only that exact Compose project's containers and new volumes;
+smoke. A post-start failure removes only that exact Compose project's containers and the volumes
+this install created;
 a pre-start failure is non-destructive. A success is durable only after an append-only `install`
 row is synced. If that final write fails, the new stack is removed rather than left running without
 operator authority. Failed install rows may be retried after correction, while any successful

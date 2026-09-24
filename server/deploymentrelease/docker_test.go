@@ -106,7 +106,7 @@ func TestDockerRuntimeInitialInstallRequiresCleanStateAndCleansFailedStart(t *te
 		if strings.Contains(joined, " ps --all --quiet") {
 			psChecks++
 		}
-		if strings.Contains(joined, "volume ls --quiet --filter=name=^cloud-clicker_postgres_data$") {
+		if strings.Contains(joined, "volume ls --quiet --filter=name=^cloud-clicker_") {
 			volumeChecks++
 		}
 		if strings.Contains(joined, " backup inspect ") {
@@ -130,10 +130,25 @@ func TestDockerRuntimeInitialInstallRequiresCleanStateAndCleansFailedStart(t *te
 			}
 			return nil
 		},
+		"retained certificate volume": func(call []string) []byte {
+			if strings.Contains(strings.Join(call, " "), "volume ls --quiet") {
+				return []byte("cloud-clicker_caddy_data\n")
+			}
+			return nil
+		},
 	} {
 		t.Run(name, func(t *testing.T) {
-			severed := &commandFixture{output: func(call []string) ([]byte, error) { return occupied(call), nil }}
-			if err := dockerFixtureRuntime(severed, t.TempDir(), "").PreflightInstall(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
+			// Everything else answers exactly as on the clean host above, so
+			// only the occupied state can make preflight refuse.
+			severed := &commandFixture{output: func(call []string) ([]byte, error) {
+				if value := occupied(call); value != nil {
+					return value, nil
+				}
+				return runner.output(call)
+			}}
+			severedRuntime := dockerFixtureRuntime(severed, t.TempDir(), "")
+			severedRuntime.Client = runtime.Client
+			if err := severedRuntime.PreflightInstall(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("occupied host accepted: %v", err)
 			}
 			for _, call := range severed.calls {
@@ -436,12 +451,14 @@ func TestDockerRuntimeRecoveryCoreExcludesUnobservedBackupWriter(t *testing.T) {
 		t.Fatal(err)
 	}
 	joined := strings.Join(runner.calls[0], " ")
-	for _, required := range []string{"--no-deps", "--force-recreate", "gameserver", "caddy"} {
+	for _, required := range []string{"--no-deps", "--force-recreate", "gameserver", "caddy", "alertmanager"} {
 		if !strings.Contains(joined, required) {
 			t.Fatalf("recovery core missing %q: %s", required, joined)
 		}
 	}
-	for _, excluded := range []string{"backup", "prometheus", "alertmanager", "node-exporter"} {
+	// Alertmanager is a smoke dependency (receiver delivery); the unobserved
+	// backup writer and the metrics collectors stay out of the RTO window.
+	for _, excluded := range []string{"backup", "prometheus", "node-exporter"} {
 		if strings.Contains(joined, " "+excluded) {
 			t.Fatalf("recovery core started %q: %s", excluded, joined)
 		}
@@ -686,6 +703,36 @@ func TestDockerRuntimeVerifyIdentityBindsEveryInspectedIdentity(t *testing.T) {
 		mutate(&inspection)
 		if err := verify(inspection); !errors.Is(err, ErrInvalid) {
 			t.Fatalf("wrong %s accepted: %v", name, err)
+		}
+	}
+}
+
+func TestRecoveryCoreStartsEverySmokeDependency(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	runner := &commandFixture{}
+	runtime := dockerFixtureRuntime(runner, t.TempDir(), "")
+	runtime.Client = &http.Client{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: http.StatusNoContent, Body: io.NopCloser(strings.NewReader(""))}, nil
+	})}
+	if err := runtime.StartRecoveryCore(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	if len(runner.calls) != 1 || !slices.Contains(runner.calls[0], "up") {
+		t.Fatalf("recovery start calls=%v", runner.calls)
+	}
+	started := runner.calls[0]
+	// AuthenticatedSmoke ends with a compose-run alert test against the
+	// Alertmanager service by name; that service must be running.
+	runner.calls = nil
+	if err := runtime.verifyAlertDelivery(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Contains(runner.calls[0], "--alertmanager-url=http://alertmanager:9093") {
+		t.Fatalf("alert test target changed: %v", runner.calls[0])
+	}
+	for _, service := range []string{"gameserver", "caddy", "alertmanager"} {
+		if !slices.Contains(started, service) {
+			t.Fatalf("recovery start omits smoke dependency %s: %v", service, started)
 		}
 	}
 }

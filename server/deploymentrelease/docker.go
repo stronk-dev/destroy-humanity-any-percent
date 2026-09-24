@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"syscall"
 	"time"
@@ -101,11 +102,23 @@ func (runtime DockerRuntime) PreflightInstall(ctx context.Context, bundle Bundle
 	return runtime.requireCleanInstallState(ctx, bundle)
 }
 
+// projectVolumes are the named volumes the release Compose file declares.
+// A failed initial install's `down --volumes` removes all of them, so install
+// authority requires that none already exists: it can then only ever delete
+// state it created itself (never, for example, retained ACME certificates).
+var projectVolumes = []string{"cloud-clicker_alertmanager_data", "cloud-clicker_caddy_config", "cloud-clicker_caddy_data",
+	"cloud-clicker_postgres_data", "cloud-clicker_prometheus_data"}
+
 func (runtime DockerRuntime) requireCleanInstallState(ctx context.Context, bundle Bundle) error {
 	containers, containerErr := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "ps", "--all", "--quiet")...)
-	volumes, volumeErr := runtime.Runner.Run(ctx, bundle.Root, "docker", "volume", "ls", "--quiet", "--filter=name=^cloud-clicker_postgres_data$")
-	if containerErr != nil || volumeErr != nil || strings.TrimSpace(string(containers)) != "" || strings.TrimSpace(string(volumes)) != "" {
+	volumes, volumeErr := runtime.Runner.Run(ctx, bundle.Root, "docker", "volume", "ls", "--quiet", "--filter=name=^cloud-clicker_")
+	if containerErr != nil || volumeErr != nil || strings.TrimSpace(string(containers)) != "" {
 		return errors.Join(ErrInvalid, containerErr, volumeErr)
+	}
+	for _, name := range strings.Fields(string(volumes)) {
+		if slices.Contains(projectVolumes, name) {
+			return fmt.Errorf("%w: existing project volume %s", ErrInvalid, name)
+		}
 	}
 	return nil
 }
@@ -316,12 +329,17 @@ func (runtime DockerRuntime) Start(ctx context.Context, bundle Bundle) error {
 // StartRecoveryCore starts only the data plane needed to migrate, seed and
 // authenticate a recovery target. Excluding the scheduled backup worker keeps
 // the rehearsal's explicitly observed backup population single-writer.
+// smokeDependencies are every service AuthenticatedSmoke reaches: the Caddy
+// origin, the gameserver behind it, and Alertmanager for receiver delivery.
+var smokeDependencies = []string{"gameserver", "caddy", "alertmanager"}
+
 func (runtime DockerRuntime) StartRecoveryCore(ctx context.Context, bundle Bundle) error {
 	runtime, err := runtime.normalized()
 	if err != nil {
 		return err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy")...); err != nil {
+	args := append([]string{"up", "--detach", "--no-deps", "--force-recreate"}, smokeDependencies...)
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, args...)...); err != nil {
 		return err
 	}
 	readyCtx, cancel := context.WithTimeout(ctx, time.Minute)
