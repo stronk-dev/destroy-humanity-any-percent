@@ -2491,3 +2491,42 @@ The manifest test fixture now stages the real runtime closure instead of a place
   `previous`, `candidate-v4a`, `candidate-v5a` and `candidate-v5b` bundles, so historical-bundle
   rollback is not broken.
 - `database_migration` stays runtime-bound, as predeclared.
+
+## 2026-09-24 — R5 predeclaration: operations alert corrections (DP-E F1/F2/F3)
+
+**F1 — the cleanup alert can never fire.**
+- Rename the application label `job` to `job_name` on `cloud_clicker_job_runs_total` and
+  `cloud_clicker_job_last_success_timestamp_seconds`. `job` is a Prometheus target label, and with
+  default `honor_labels: false` the application's value becomes `exported_job`.
+- Pre-create every closed-set job's success and failure series at 0, so the first failure is an
+  `increase()`.
+- Update the rule and promtool fixtures.
+- Witnesses:
+  - a registry test proves no family exposes a reserved target label (`job`/`instance`), and that
+    failure series exist at 0 before any run;
+  - the Docker operations lane serves the **real** registry, not a hand-written text fixture;
+  - after one real `ObserveJob` failure, Prometheus must report `CloudClickerCleanupJobFailed`
+    firing via its API. Severing either the label rename or the pre-creation must fail this.
+
+**F2 — delivery counts attempts.**
+- Delivery success is the rise in `alertmanager_notifications_total − alertmanager_notifications_failed_total`,
+  summed over integrations, and any rise in `failed_total` during the window fails. This applies to
+  both `VerifyAlertDelivery` and `ObserveReleaseFloorAlertDelivery`.
+- Unit witness: a metrics fixture where attempts rise but every attempt fails must be rejected.
+- Real-lane witness: an Alertmanager receiver that answers 500 must fail `VerifyAlertDelivery`.
+- Stated limitation: Alertmanager metrics cannot attribute deliveries to alert families or to the
+  nonce without receiver-side evidence, so the per-family booleans remain count-derived. That is
+  documented and not claimed as per-family proof.
+
+**F3 — the Caddy admin API is reachable by every peer.**
+- Remove `admin :2019` so the admin API keeps Caddy's default localhost-only listener.
+- Serve Caddy metrics from a dedicated `:2020` read-only `metrics` site.
+- Compose exposes `2020`, and Prometheus scrapes `caddy:2020`.
+- `ValidateCaddyfile` rejects a non-localhost admin listener, and `ValidateCompose` requires the
+  `2020` exposure.
+- Witnesses:
+  - template/unit rejection of `admin :2019`;
+  - in the operations lane, a peer request to `caddy:2019/config/` must fail, while Prometheus's
+    `caddy` target is up on `:2020`.
+
+Docs are updated in the same commits. No hosted CI or timeout change.
