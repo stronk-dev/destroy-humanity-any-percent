@@ -2447,3 +2447,25 @@ separate commits.
   that literal is now split like the existing sentinel.
 - The structured result still records no per-layer count, so no visible count of opened layers
   exists yet. This is a follow-up; the result schema is bound by the rehearsal evidence validator.
+
+## 2026-09-24 — R4 predeclaration: manifest ↔ bundle cross-binding (DP-B F2)
+
+**Defect:** `ValidateBundle` hash-binds files but never checks the manifest's own claims against
+them. Forged Caddy/Postgres digests, `epoch_id`, `constants_hash`, `copy_hash` and
+`database_migration` each validated as nil.
+
+**Change:**
+1. **Compose images.** `ValidateBundle` decodes the hash-bound `compose.yml`. Each service image
+   must equal the manifest reference of the same name, the backup service must equal the Postgres
+   reference, and the gameserver must equal its config ID.
+2. **Content closure.** `ValidateBundle` re-derives the runtime closure from the bundle's own
+   `content/` tree using the same `DeriveRuntimeClosure` authority, then requires:
+   - an exact staged file set (`ValidateStagedContent`);
+   - manifest `epoch_id`, `constants_hash` and `copy_hash` equal to the derived values.
+3. **Database migration.** Migrations are compiled into the gameserver binary, so no bundle byte
+   derives `database_migration`. It stays bound at runtime by the private database inspection and
+   `VerifyIdentity`. The docs will say this, and no bundle-level claim is made.
+4. **Tests.** One negative per forged field (caddy, postgres, prometheus digests; epoch; constants;
+   copy) must fail on the current code and pass after the change. A removed content file must fail
+   even with a rebound manifest, which is AC1's catalog-removal case that generic integrity cannot
+   cover. The retained `previous` and `candidate-v5a` bundles must still validate.
