@@ -2776,3 +2776,28 @@ is gofmt'd in this range.
 
 **Remaining DP-D F5:** the irreversible-migration and wrong-image rollback fixtures are the next
 range.
+
+## 2026-09-24 — R10 predeclaration: rollback-authority negatives (DP-D F5)
+
+**Wrong image.** Since R1, rollback runs `Prepare(previous)` before any destructive step, and
+`Prepare` compares each image's inspected ID to the manifest config identity. The existing
+`docker_test.go` wrong-ID case covers the refusal, and R1's severed `prepare` rollback stage proves
+the controller stops before `stop_failed`/`reset_database`. No new code is needed; this entry
+records the coverage.
+
+**Irreversible change — the interpretation recorded for Codex review.** DP5 makes rollback
+restore-based: no Down migration ever runs, and a forward migration or content change is undone
+by restoring the exact pre-upgrade backup into a clean volume. A change becomes irreversible
+exactly when that backup cannot serve as rollback authority. Today `createBackup` trusts the
+backup container's reported header and only `Lstat`s the host file.
+
+**Change.** After the container reports completion, `createBackup` reads the host envelope with
+`deploymentbackup.ReadHeader`, which verifies payload length and SHA-256. It then requires the
+decoded header to equal the reported one, bound to the current manifest, epoch, server and class.
+Otherwise release fails at `preupgrade_backup` before drain, so a release whose rollback authority
+is unusable never starts.
+
+**Witnesses.**
+- The existing backup/restore test switches to a real age envelope.
+- New negatives: a corrupt host payload, and a host header that differs from the reported header.
+  Each must refuse, and severing the host re-read must fail them.
