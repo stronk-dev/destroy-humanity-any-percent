@@ -3339,3 +3339,26 @@ The residual concern (advisory F6) is **re-verifiability**: the checkpoint and b
 identities are not retained artifacts, so final validation cannot recompute the comparison.
 Retaining them would change the 16/18-artifact evidence contract. That is recorded as the narrowed
 DESIGN-GAP 6 for the RFC author.
+
+## 2026-09-24 — Two-tree reproducibility under the corrected rules
+
+**What was compared.** From clean `c333b17` (source time `2026-09-24T14:15:04Z`), two independent
+`0.1.0-preview.4` candidate trees were built: `diag-candidate-a` and `diag-candidate-b`. Each tree
+independently rebuilt:
+- the client (fresh `client/dist` per tree);
+- six Linux/amd64 commands;
+- staged content;
+- a no-cache gameserver image and its real Syft SBOM;
+- metadata (the sourcemap-derived client inventory, R8);
+- the assembled bundle.
+
+**Results.** The complete bundle trees compare identical (`diff -r`), as do the binaries, client
+output, metadata, image context, gameserver archive (config
+`sha256:6eff9bb26876a29cbee33b893d4f83bebc03cece7c6b8b27a2268627c2ce459b`) and normalized
+gameserver SBOM. The R3–R20 changes therefore preserve byte reproducibility, including the new
+build-graph licence inventory.
+
+**Limits (same as the earlier diagnostic build):**
+- The six upstream SBOMs were reused rather than regenerated.
+- Nothing was reviewed, and `release-builds/*.json` is not updated.
+- This is not R-006.
