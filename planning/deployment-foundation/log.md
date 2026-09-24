@@ -2722,3 +2722,32 @@ neither notice is delivered.
 
 **Process note:** `releasepackage/bundle_test.go` was committed unformatted in R4 (`751717f`). It
 is gofmt'd in this range.
+
+## 2026-09-24 — R9 predeclaration: production release observers (DP-D F4)
+
+**Defects:**
+- `DockerRuntime.DrainCurrent` and `VerifyIdentity` have no test.
+- `waitHTTPState(..., false)` treats any non-204 or transport error as "readiness down". A Caddy
+  502 after the gameserver died therefore satisfies `ReadinessDown`.
+- Three drain properties are derived from one exit bit.
+
+**Change:**
+1. **Readiness down.** It now requires the gameserver's own `503 Service Unavailable` from
+   `/readyz` while draining, polled at 25 ms. A 502/504 proxy error or a transport error is not
+   evidence.
+2. **Drain evidence.** Derivation moves into a pure `deriveDrainEvidence` from the observed
+   readiness, socket (courtesy/closed), stop error, inspect error, exit code and elapsed time
+   against the bound.
+   - `IntentsRefused`, `AdmittedComplete` and `JobsFlushed` stay derived from a clean exit 0,
+     because the gameserver exits 0 only after its admission gate closes and its admitted
+     work/jobs/outbox/transport shutdown returns. The real Caddy lane separately witnesses the
+     refusal.
+   - The docs will state this derivation plainly instead of implying three independent
+     observations.
+3. **Tests.**
+   - A `deriveDrainEvidence` table: each single failing input yields invalid evidence, and only
+     the all-good input is valid.
+   - A readiness-poller test: 502, then transport error, never counts, while 503 does.
+   - A `VerifyIdentity` table against a bundle with the real staged runtime closure: a matching
+     inspection passes, and a wrong migration, epoch, constants hash or artifact count each fail.
+   - Severing the 503 requirement, or the artifact-count comparison, must fail its test.
