@@ -3328,3 +3328,14 @@ certificates or metrics/alert state is not reported as a clean start.
 
 **Evidence.** A new `retained certificate volume` host negative. Reverting to the Postgres-only
 check fails it; the change was restored. `make test-go ./deploymentrehearsal` passed.
+
+## 2026-09-24 — DESIGN-GAP 6 fully re-read
+
+`RestoredIdentityMatch` is also derived. `recovery.go` writes the objective only after
+`CompareRecoveryIdentity(checkpoint.PopulatedIdentity, restored)` succeeds; otherwise the producer
+fails. So none of the gap-6 fields is a bare assertion.
+
+The residual concern (advisory F6) is **re-verifiability**: the checkpoint and both recovery
+identities are not retained artifacts, so final validation cannot recompute the comparison.
+Retaining them would change the 16/18-artifact evidence contract. That is recorded as the narrowed
+DESIGN-GAP 6 for the RFC author.
