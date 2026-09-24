@@ -12,7 +12,7 @@ reviewed and must not approve its own corrective work; only Codex's verdict coun
 
 | Range | Content |
 |---|---|
-| `67fd415..ec5518b` (28 commits, 53 files) | R1–R17 corrective implementation plus predeclaration and record commits, and the verification/DESIGN-GAP record. Each batch is logged in `log.md` from "DP-D corrective R1 predeclaration" onwards. |
+| `67fd415..HEAD` at handoff update (`b706e4d`) | R1–R17 corrective implementation plus predeclaration and record commits, and the verification/DESIGN-GAP record. Each batch is logged in `log.md` from "DP-D corrective R1 predeclaration" onwards. |
 
 Separately reviewable Claude research and planning commits from earlier the same day (no product
 code):
@@ -42,10 +42,20 @@ code):
 | R15 | Bundle-mutation probes could pass on byte integrity alone. | `deploymentrehearsal/probe.go` |
 | R16 | The committed backup envelope was never re-verified, and the rename was not synced. | `deploymentbackup/backup.go` |
 | R17 | The browser-manifest binding was unwitnessed. | `deploymentrehearsal/run_test.go` |
+| C2 | Consumed-offset replay suppression was unwitnessed. | `client/test/game-ui-runtime.test.ts`, `docs/transport.md` |
+| R18 | The wrong-epoch, irreversible-migration and missing-rollback-input negatives had no producer. | `deploymentrehearsal/probe_release.go` |
+| R19 | Lifecycle release and rollback had no producers. A successful rollback row cleared the fields the evidence validator requires, so real evidence could never validate. | `deploymentrehearsal/lifecycle.go`, `deploymentrelease/controller.go` |
+| R20 | The non-clean restore negative had no producer, and its refusal was not attributable. | `deploymentbackup/postgres.go`, backup CLI, `deploymentrehearsal/nonclean.go` |
+| R21 | Host clean-start checked only the Postgres volume. | `deploymentrehearsal/host.go` |
+| R22 | The restart-during-admitted-work negative had no producer. | `deploymentrelease/docker.go`, `deploymentrehearsal/restart.go` |
+
+Also in range, outside Deployment:
+- `266b8d8`: API Foundation A6/AC4 body reconciliation (RFC text);
+- `a965538`: Prestige plan item 6, the epoch-8 first-elective evidence, with its lower-bound caveat.
 
 ## Process deviations to examine (self-disclosed)
 
-- R2, R7, R11 and R15–R17 have no separate predeclaration commit. R2's predeclaration landed in
+- R2, R7, R11, R15–R22 and C2 have no separate predeclaration commit. R2's predeclaration landed in
   its implementation commit.
 - R4 committed a test file unformatted; it was fixed in R8.
 - R13 changed a Codex test assertion: Alertmanager moved from the excluded list to the required
