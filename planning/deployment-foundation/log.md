@@ -2667,3 +2667,30 @@ named in Claude's DP-A B1 verdict plus the N1/N2 rows, recorded here with its ev
 
 **Carried:** N3 (duplicate env keys are unreachable through `os.Environ`) and N4 (the shared-env
 allowlist) remain DP-B/`.env`-preflight items.
+
+## 2026-09-24 — R8 predeclaration: shipped client attribution (DP-B F3)
+
+**Defect.** `gen-release-metadata` attributes only the three direct `client/package.json`
+dependencies. The built client also ships `pad-end@1.0.2` (MIT) and `tslib@2.8.1` (0BSD), and
+neither notice is delivered.
+
+**Change.**
+- Derive the client inventory from the build's own module graph: every `client/dist/**/*.map`
+  `sources` entry under `node_modules/`, resolved on disk to the exact package directory. This
+  distinguishes, for example, the installed `break_infinity.js` 1.3.0 from the aliased, shipped
+  2.2.0.
+- Each resolved package still needs a LICENSE/COPYING file whose detected license equals its
+  `package.json` license. Fail closed if the build output or its sourcemaps are absent. Over- and
+  under-attribution are both impossible by construction: only shipped modules are listed, and all
+  of them are.
+- **License policy change, explicit:** add `0BSD`, recognized as ISC-form permission text without
+  the notice-retention clause. ISC recognition also accepts the common "and/or distribute" wording.
+  This expands the audited permissive allowlist by one license, needed for a dependency already
+  shipped to players, and needs owner/review visibility.
+
+**Witnesses.**
+- A fixture-root unit test: a sourcemap naming a transitive package that is not in
+  `package.json` must appear in the inventory. A missing `dist` fails, a license/metadata mismatch
+  fails, and 0BSD and ISC texts classify correctly.
+- A real run of `make generate-release-metadata` against the current build must list `pad-end` and
+  `tslib`.
