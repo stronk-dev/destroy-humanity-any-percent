@@ -36,7 +36,7 @@ func ValidateOperationsProfile(root string) error {
 		}
 	}
 	prometheus := string(files["prometheus.yml"])
-	for target, count := range map[string]int{"gameserver:8080": 1, "caddy:2019": 1, "node-exporter:9100": 1, "alertmanager:9093": 2, "localhost:9090": 1} {
+	for target, count := range map[string]int{"gameserver:8080": 1, "caddy:2020": 1, "node-exporter:9100": 1, "alertmanager:9093": 2, "localhost:9090": 1} {
 		if strings.Count(prometheus, target) != count {
 			return fmt.Errorf("%w: Prometheus target %s", ErrInvalidContent, target)
 		}

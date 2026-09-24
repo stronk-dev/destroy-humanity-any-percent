@@ -34,7 +34,7 @@ func TestRegistryUsesOnlyBoundedHTTPAndJobLabels(t *testing.T) {
 	text := gatheredText(t, registry)
 	for _, want := range []string{
 		`cloud_clicker_http_requests_total{method="post",route="api",status_class="4xx"} 1`,
-		`cloud_clicker_job_runs_total{job="credential_cleanup",result="failure"} 1`,
+		`cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"} 1`,
 		`cloud_clicker_invariants_total{kind="unknown"} 1`,
 		`cloud_clicker_postgres_reachable 0`,
 		`cloud_clicker_database_collection_success 0`,
@@ -63,8 +63,8 @@ func TestRegistryReadinessAndSuccessfulJobAreObservable(t *testing.T) {
 	text := gatheredText(t, registry)
 	for _, want := range []string{
 		"cloud_clicker_ready 1",
-		`cloud_clicker_job_runs_total{job="verification",result="success"} 1`,
-		`cloud_clicker_job_last_success_timestamp_seconds{job="verification"} 1.7e+09`,
+		`cloud_clicker_job_runs_total{job_name="verification",result="success"} 1`,
+		`cloud_clicker_job_last_success_timestamp_seconds{job_name="verification"} 1.7e+09`,
 	} {
 		if !strings.Contains(text, want) {
 			t.Fatalf("missing metric %q in:\n%s", want, text)
@@ -92,8 +92,8 @@ func gatheredText(t *testing.T, registry *Registry) string {
 	}
 	var builder strings.Builder
 	for _, family := range families {
-		builder.WriteString(family.GetName())
 		for _, metric := range family.Metric {
+			builder.WriteString(family.GetName())
 			builder.WriteString("{")
 			for index, label := range metric.Label {
 				if index > 0 {
@@ -122,4 +122,39 @@ func fmtFloat(value float64) string {
 		return strconv.FormatInt(int64(value), 10)
 	}
 	return strconv.FormatFloat(value, 'g', -1, 64)
+}
+
+func TestRegistryAvoidsTargetLabelsAndPrecreatesJobFailureSeries(t *testing.T) {
+	registry, err := NewRegistry(fakeDatabase{ping: errors.New("offline")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	families, err := registry.Prometheus().Gather()
+	if err != nil {
+		t.Fatal(err)
+	}
+	failures := map[string]float64{}
+	for _, family := range families {
+		for _, metric := range family.GetMetric() {
+			labels := map[string]string{}
+			for _, label := range metric.GetLabel() {
+				// Prometheus attaches job/instance to every scraped target; an
+				// application label with either name is renamed exported_* and
+				// silently stops matching rules that select it.
+				if label.GetName() == "job" || label.GetName() == "instance" {
+					t.Fatalf("%s exposes reserved target label %q", family.GetName(), label.GetName())
+				}
+				labels[label.GetName()] = label.GetValue()
+			}
+			if family.GetName() == "cloud_clicker_job_runs_total" && labels["result"] == "failure" {
+				failures[labels["job_name"]] = metric.GetCounter().GetValue()
+			}
+		}
+	}
+	for name := range jobNames {
+		value, ok := failures[name]
+		if !ok || value != 0 {
+			t.Fatalf("job %s failure series before any run present=%t value=%v", name, ok, value)
+		}
+	}
 }

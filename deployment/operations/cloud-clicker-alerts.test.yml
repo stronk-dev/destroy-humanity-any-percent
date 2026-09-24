@@ -84,13 +84,13 @@ tests:
 
   - interval: 1m
     input_series:
-      - series: 'cloud_clicker_job_runs_total{job="credential_cleanup",result="failure"}'
+      - series: 'cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}'
         values: '0 0 1 1'
     alert_rule_test:
       - eval_time: 3m
         alertname: CloudClickerCleanupJobFailed
         exp_alerts:
-          - exp_labels: {job: credential_cleanup, result: failure, severity: page}
+          - exp_labels: {job_name: credential_cleanup, result: failure, severity: page}
             exp_annotations: {summary: The composed expired-credential cleanup job failed.}
 
   - interval: 15s
@@ -130,7 +130,7 @@ tests:
         values: '100x22'
       - series: 'cloud_clicker_gameserver_restart_count'
         values: '0x22'
-      - series: 'cloud_clicker_job_runs_total{job="credential_cleanup",result="failure"}'
+      - series: 'cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}'
         values: '0x22'
       - series: 'cloud_clicker_dead_letters{queue="transport"}'
         values: '0x22'

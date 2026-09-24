@@ -94,6 +94,19 @@ func TestCaddyRejectsMissingWebSocketRouteAndPublicMetrics(t *testing.T) {
 	if err := ValidateCaddyfile(withMetrics); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("public metrics route accepted: %v", err)
 	}
+	if err := ValidateCaddyfile(data); err != nil {
+		t.Fatalf("shipped Caddyfile rejected: %v", err)
+	}
+	for name, mutated := range map[string][]byte{
+		"network admin listener": bytes.Replace(data, []byte("\tadmin off\n"), []byte("\tadmin :2019\n"), 1),
+		"default admin listener": bytes.Replace(data, []byte("\tadmin off\n"), nil, 1),
+		"metrics on public site": bytes.Replace(data, []byte(":2020 {\n\tmetrics\n}"), nil, 1),
+		"second admin directive": append(append([]byte(nil), data...), []byte("\n{\n\tadmin 0.0.0.0:2019\n}\n")...),
+	} {
+		if err := ValidateCaddyfile(mutated); !errors.Is(err, ErrInvalidContent) {
+			t.Fatalf("%s accepted: %v", name, err)
+		}
+	}
 }
 
 func TestGameserverDockerfileRejectsMutableFrontendAndRootUser(t *testing.T) {

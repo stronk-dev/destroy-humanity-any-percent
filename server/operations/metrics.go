@@ -51,10 +51,10 @@ func NewRegistry(database Database) (*Registry, error) {
 		}, []string{"route", "method"}),
 		jobRuns: prometheus.NewCounterVec(prometheus.CounterOpts{
 			Namespace: "cloud_clicker", Name: "job_runs_total", Help: "Composed background job executions by bounded name and result.",
-		}, []string{"job", "result"}),
+		}, []string{"job_name", "result"}),
 		jobLastSuccess: prometheus.NewGaugeVec(prometheus.GaugeOpts{
 			Namespace: "cloud_clicker", Name: "job_last_success_timestamp_seconds", Help: "Unix timestamp of the latest successful composed job execution.",
-		}, []string{"job"}),
+		}, []string{"job_name"}),
 		invariants: prometheus.NewCounterVec(prometheus.CounterOpts{
 			Namespace: "cloud_clicker", Name: "invariants_total", Help: "Operational invariant reports by bounded kind.",
 		}, []string{"kind"}),
@@ -68,6 +68,12 @@ func NewRegistry(database Database) (*Registry, error) {
 		if err := registry.Register(collector); err != nil {
 			return nil, errors.Join(ErrInvalid, err)
 		}
+	}
+	// Every closed-set job starts with explicit zero success/failure series so
+	// the first failure after a process start is an observable increase().
+	for name := range jobNames {
+		result.jobRuns.WithLabelValues(name, "success")
+		result.jobRuns.WithLabelValues(name, "failure")
 	}
 	return result, nil
 }

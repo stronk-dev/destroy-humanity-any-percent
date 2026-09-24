@@ -7,7 +7,7 @@ services:
       CLOUD_CLICKER_PUBLIC_ORIGIN: ":8081"
     volumes:
       - ./deployment/Caddyfile:/etc/caddy/Caddyfile:ro
-    expose: ["2019"]
+    expose: ["2020"]
     networks: [operations]
 
   prometheus:

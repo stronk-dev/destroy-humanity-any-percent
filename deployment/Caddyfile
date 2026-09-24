@@ -1,5 +1,11 @@
 {
-	admin :2019
+	admin off
+	metrics
+}
+
+# Private scrape listener. The management API is disabled above so
+# no peer on a shared network can read or replace the live configuration.
+:2020 {
 	metrics
 }
 

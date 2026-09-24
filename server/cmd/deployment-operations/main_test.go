@@ -69,7 +69,7 @@ func TestAlertDeliveryRequiresNotificationCounterIncrease(t *testing.T) {
 			requests++
 			response.WriteHeader(http.StatusOK)
 		case "/metrics":
-			fmt.Fprintf(response, "alertmanager_notifications_total{integration=\"webhook\"} %d\n", 4+requests)
+			fmt.Fprintf(response, "alertmanager_notification_requests_total{integration=\"webhook\"} %d\nalertmanager_notification_requests_failed_total{integration=\"webhook\",reason=\"other\"} 0\n", 4+requests)
 		default:
 			response.WriteHeader(http.StatusNotFound)
 		}
@@ -83,7 +83,7 @@ func TestAlertDeliveryRequiresNotificationCounterIncrease(t *testing.T) {
 	requests = 0
 	stalled := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		if request.URL.Path == "/metrics" {
-			fmt.Fprintln(response, `alertmanager_notifications_total{integration="webhook"} 4`)
+			fmt.Fprintln(response, "alertmanager_notification_requests_total{integration=\"webhook\"} 4\nalertmanager_notification_requests_failed_total{integration=\"webhook\",reason=\"other\"} 0")
 			return
 		}
 		response.WriteHeader(http.StatusOK)

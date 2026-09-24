@@ -532,8 +532,10 @@ The release bundle contains a provider-off operations profile: Prometheus, Alert
 node-exporter share an internal Compose network and publish no host ports. Alertmanager alone also
 joins the non-publishing edge network so an operator may choose either a local or remote receiver;
 Prometheus and node-exporter have no external route. Prometheus scrapes the
-gameserver's private `/metrics` route, Caddy's private `:2019` administration metrics,
-node-exporter, Alertmanager and itself. The public Caddy site has no metrics route. Production
+gameserver's private `/metrics` route, Caddy's dedicated private `:2020` metrics listener,
+node-exporter, Alertmanager and itself. The public Caddy site has no metrics route. Caddy's
+management API is disabled (`admin off`), so no container sharing a Caddy network can read or
+replace the live ingress configuration; template validation rejects any admin listener. Production
 template validation rejects a published private port, an operations service on the wrong network,
 a mutable image, a non-distinct journald tag or a missing operations mount/config/secret.
 
@@ -542,7 +544,11 @@ health, HTTP/WebSocket route classes and latency, Postgres reachability and coll
 pending outbox and dead-letter populations, background-job results and last success, composed
 credential cleanup, and named invariant families. User-controlled paths collapse to fixed route
 classes. Metric labels and ordinary structured logs exclude credentials, recovery codes, raw IPs,
-payloads and account/founder/stream/intent identifiers. Backup, restore and release helpers write
+payloads and account/founder/stream/intent identifiers. No application label is named `job` or
+`instance`: Prometheus owns those target labels and would rename a colliding application label to
+`exported_*`, silently detaching it from rules. Background jobs therefore use `job_name`, and every
+closed-set job's success and failure series is created at zero at startup so the first failure is
+an observable `increase()`. Backup, restore and release helpers write
 atomic node-exporter textfiles; a later failure does not erase the last successful timestamp.
 The HTTP metrics wrapper preserves the underlying writer's WebSocket hijack capability; the
 operations-enabled Postgres composition population performs a real Centrifuge upgrade so ordinary
@@ -551,10 +557,17 @@ HTTP instrumentation cannot silently disable the realtime path.
 The seven blocking alert families cover five-minute ingress/readiness loss, missing/late/failed
 six-hour backups, two-minute Postgres or collector failure, storage pressure above 80%, three
 gameserver restarts in ten minutes, credential-cleanup failure and dead-letter growth across two
-15-second intervals. The checked-in `promtool` population proves each firing path and the resolved
-population. Release preflight also sends a fresh nonce-bearing synthetic alert and requires both a
-healthy configured receiver and an increase in Alertmanager's successful-notification counter.
-The private-network integration proves that exact nonce reaches the receiver; health alone fails.
+15-second intervals. The checked-in `promtool` population exercises each firing path. The
+private-network integration scrapes the real gameserver registry: after one real
+`credential_cleanup` failure, Prometheus must report `CloudClickerCleanupJobFailed` firing through
+the shipped scrape and rule configuration. Release preflight also sends a fresh nonce-bearing
+synthetic alert and requires a healthy configured receiver plus successful delivery, measured as
+the rise in Alertmanager's `notification_requests_total` minus `notification_requests_failed_total`.
+Any rise in failed requests during the window fails the proof; the notification-level
+`notifications_failed_total` is not used because it moves only after all retries are exhausted.
+The integration proves the exact nonce reaches the receiver and that a receiver answering 500
+fails the proof on recorded failures. Alertmanager metrics cannot attribute a delivery to one alert
+family or nonce, so the seven-family delivery record is count-derived, not per-family proof.
 
 All seven services write to persistent journald with a unique bounded tag. Journal capacity is not
 a guessed constant: `deployment-operations journal-observe` records the predeclared workload,

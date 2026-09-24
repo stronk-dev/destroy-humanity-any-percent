@@ -2530,3 +2530,42 @@ The manifest test fixture now stages the real runtime closure instead of a place
     `caddy` target is up on `:2020`.
 
 Docs are updated in the same commits. No hosted CI or timeout change.
+
+## 2026-09-24 — R5 implemented: operations alert corrections
+
+- **F1.** The job metrics use `job_name` instead of `job`, and each closed-set job's success and
+  failure series is pre-created at 0. The rule and promtool fixtures are updated. The operations
+  lane now scrapes the real registry and requires `CloudClickerCleanupJobFailed` to fire after one
+  real `ObserveJob` failure.
+- **F2.** Delivery is measured as `notification_requests_total − notification_requests_failed_total`,
+  and any rise in failed requests fails. This correction was found by execution: the first
+  implementation used the notification-level `notifications_failed_total`, and the lane showed it
+  does not move until retries are exhausted, so the rejecting receiver still passed. Pinned
+  Alertmanager v0.32.1 exposes the request-level counters, confirmed live.
+- **F3.** `admin off` is set, and a dedicated `:2020` site serves Caddy metrics only.
+  - Compose exposes `2020` and Prometheus scrapes `caddy:2020`.
+  - `ValidateCaddyfile` rejects network, default or duplicate admin listeners and metrics outside
+    `:2020`.
+  - The lane asserts that `caddy:2019/config/` is unreachable from a peer.
+
+**Evidence (cold):**
+- promtool passed (SUCCESS).
+- `make test-go` over operations, cmd/deployment-operations, releasepackage, deploymentrelease
+  and deploymentrehearsal passed.
+- `make test-deployment-operations` passed: `TestPrivateOperationsProfileIntegration` took 66s and
+  covered the real registry, delivery, cleanup firing, the rejecting receiver and admin
+  unreachability.
+- The unit/validator test `TestCaddyRejectsMissingWebSocketRouteAndPublicMetrics` rejects
+  `admin :2019`.
+
+**Severing probes, each restored:**
+- Removing series pre-creation failed `TestRegistryAvoidsTargetLabelsAndPrecreatesJobFailureSeries`.
+- Reverting the label to `job` failed three registry tests. Separately, the Docker integration
+  alone, compiled with that mutation, failed with "never scraped the pre-created cleanup failure
+  series".
+- Restoring `admin :2019` failed Caddyfile/bundle validation.
+- The notifications-level counter variant let a rejecting receiver pass (observed above).
+- The unit fixture `TestAlertDeliveryRejectsAttemptsThatFailed` rejects attempts equal to failures.
+
+**Limitation (documented):** per-family delivery attribution is not observable from Alertmanager
+metrics.

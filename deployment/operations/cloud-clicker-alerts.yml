@@ -40,7 +40,7 @@ groups:
           summary: The gameserver restarted at least three times inside ten minutes.
 
       - alert: CloudClickerCleanupJobFailed
-        expr: increase(cloud_clicker_job_runs_total{job="credential_cleanup",result="failure"}[5m]) > 0
+        expr: increase(cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}[5m]) > 0
         labels:
           severity: page
         annotations:

@@ -115,7 +115,7 @@ func ValidateCompose(data []byte) error {
 	if len(caddy.Ports) != 2 || !sameStrings(caddy.Networks, []string{"application", "edge", "operations"}) || !sameStrings(gameserver.Networks, []string{"application", "database"}) ||
 		!sameStrings(postgres.Networks, []string{"database"}) || !sameStrings(backup.Networks, []string{"database"}) ||
 		!sameStrings(prometheus.Networks, []string{"application", "operations"}) || !sameStrings(alertmanager.Networks, []string{"edge", "operations"}) || !sameStrings(nodeExporter.Networks, []string{"operations"}) ||
-		!sameStrings(caddy.Expose, []string{"2019"}) || !sameStrings(gameserver.Expose, []string{"8080"}) || !sameStrings(prometheus.Expose, []string{"9090"}) ||
+		!sameStrings(caddy.Expose, []string{"2020"}) || !sameStrings(gameserver.Expose, []string{"8080"}) || !sameStrings(prometheus.Expose, []string{"9090"}) ||
 		!sameStrings(alertmanager.Expose, []string{"9093"}) || !sameStrings(nodeExporter.Expose, []string{"9100"}) || len(postgres.Expose) != 0 || len(backup.Expose) != 0 {
 		return fmt.Errorf("%w: invalid service topology caddy_ports=%v caddy_networks=%v gameserver_expose=%v gameserver_networks=%v postgres_expose=%v postgres_networks=%v",
 			ErrInvalidContent, caddy.Ports, caddy.Networks, gameserver.Expose, gameserver.Networks, postgres.Expose, postgres.Networks)
@@ -158,7 +158,10 @@ func ValidateCompose(data []byte) error {
 
 func ValidateCaddyfile(data []byte) error {
 	text := string(data)
-	for _, required := range []string{"admin :2019", "metrics", "{$CLOUD_CLICKER_PUBLIC_ORIGIN}", "/api/*", "/connection/websocket", "/healthz", "/readyz", "reverse_proxy gameserver:8080", "root * /srv", "try_files {path} /index.html"} {
+	if strings.Count(text, "metrics") != 2 || strings.Count(text, "\tadmin off\n") != 1 || strings.Count(text, ":2020 {\n\tmetrics\n}") != 1 || strings.Count(text, "admin") != 1 {
+		return fmt.Errorf("%w: Caddy admin API must be off and metrics served only by the private :2020 listener", ErrInvalidContent)
+	}
+	for _, required := range []string{"{$CLOUD_CLICKER_PUBLIC_ORIGIN}", "/api/*", "/connection/websocket", "/healthz", "/readyz", "reverse_proxy gameserver:8080", "root * /srv", "try_files {path} /index.html"} {
 		if strings.Count(text, required) != 1 {
 			return fmt.Errorf("%w: Caddy route %q", ErrInvalidContent, required)
 		}

@@ -24,7 +24,7 @@ func TestObserveReleaseFloorAlertDeliveryRequiresFiringAndResolutionForAllSeven(
 			lock.Lock()
 			count := notifications
 			lock.Unlock()
-			_, _ = fmt.Fprintf(response, "alertmanager_notifications_total %d\n", count)
+			_, _ = fmt.Fprintf(response, "alertmanager_notification_requests_total %d\nalertmanager_notification_requests_failed_total 0\n", count)
 		case "/api/v2/alerts":
 			var alerts []struct {
 				Labels map[string]string `json:"labels"`
@@ -94,7 +94,7 @@ func TestObserveReleaseFloorAlertDeliveryRejectsSingleHealthNotification(t *test
 		case "/healthz":
 			response.WriteHeader(http.StatusNoContent)
 		case "/metrics":
-			_, _ = fmt.Fprintf(response, "alertmanager_notifications_total %d\n", notifications)
+			_, _ = fmt.Fprintf(response, "alertmanager_notification_requests_total %d\nalertmanager_notification_requests_failed_total 0\n", notifications)
 		case "/api/v2/alerts":
 			notifications++
 			response.WriteHeader(http.StatusAccepted)
@@ -106,5 +106,34 @@ func TestObserveReleaseFloorAlertDeliveryRejectsSingleHealthNotification(t *test
 	if _, err := ObserveReleaseFloorAlertDelivery(ctx, server.Client(), server.URL, server.URL+"/healthz",
 		"sha256:"+strings.Repeat("a", 64), time.Now); err == nil {
 		t.Fatal("one health notification accepted for seven alert families")
+	}
+}
+
+func TestAlertDeliveryRejectsAttemptsThatFailed(t *testing.T) {
+	attempts := 0
+	server := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		switch request.URL.Path {
+		case "/healthz":
+			response.WriteHeader(http.StatusNoContent)
+		case "/metrics":
+			// Every attempt reaches a receiver that rejects it: attempts and
+			// failures rise together, so nothing was delivered.
+			_, _ = fmt.Fprintf(response, "alertmanager_notification_requests_total{integration=\"webhook\"} %d\nalertmanager_notification_requests_failed_total{integration=\"webhook\",reason=\"serverError\"} %d\n", attempts, attempts)
+		case "/api/v2/alerts":
+			attempts += len(ReleaseFloorAlertNames)
+			response.WriteHeader(http.StatusAccepted)
+		}
+	}))
+	defer server.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	if _, err := VerifyAlertDelivery(ctx, server.Client(), server.URL, server.URL+"/healthz"); err == nil {
+		t.Fatal("rejected receiver delivery accepted by preflight")
+	}
+	ctx, cancel = context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	if _, err := ObserveReleaseFloorAlertDelivery(ctx, server.Client(), server.URL, server.URL+"/healthz",
+		"sha256:"+strings.Repeat("a", 64), time.Now); err == nil {
+		t.Fatal("rejected receiver delivery accepted for seven alert families")
 	}
 }

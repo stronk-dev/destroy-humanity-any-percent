@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -116,7 +117,7 @@ func ObserveReleaseFloorAlertDelivery(ctx context.Context, client *http.Client, 
 		return AlertDeliveryObservation{}, err
 	}
 	metricsURL := alertmanager.ResolveReference(&url.URL{Path: "/metrics"}).String()
-	baseline, err := notificationCount(ctx, client, metricsURL)
+	baseline, err := notificationCounts(ctx, client, metricsURL)
 	if err != nil {
 		return AlertDeliveryObservation{}, err
 	}
@@ -128,14 +129,14 @@ func ObserveReleaseFloorAlertDelivery(ctx context.Context, client *http.Client, 
 	if err := postReleaseFloorAlerts(ctx, client, alertmanager, nonce, time.Time{}); err != nil {
 		return AlertDeliveryObservation{}, err
 	}
-	fired, err := waitForNotificationCount(ctx, client, metricsURL, baseline+float64(len(ReleaseFloorAlertNames)))
+	fired, err := waitForDeliveries(ctx, client, metricsURL, baseline, float64(len(ReleaseFloorAlertNames)))
 	if err != nil {
 		return AlertDeliveryObservation{}, err
 	}
 	if err := postReleaseFloorAlerts(ctx, client, alertmanager, nonce, now().UTC().Add(-time.Second)); err != nil {
 		return AlertDeliveryObservation{}, err
 	}
-	if _, err := waitForNotificationCount(ctx, client, metricsURL, fired+float64(len(ReleaseFloorAlertNames))); err != nil {
+	if _, err := waitForDeliveries(ctx, client, metricsURL, fired, float64(len(ReleaseFloorAlertNames))); err != nil {
 		return AlertDeliveryObservation{}, err
 	}
 	alerts := make([]AlertObservation, len(ReleaseFloorAlertNames))
@@ -202,23 +203,46 @@ func postReleaseFloorAlerts(ctx context.Context, client *http.Client, alertmanag
 	return nil
 }
 
-func waitForNotificationCount(ctx context.Context, client *http.Client, metricsURL string, minimum float64) (float64, error) {
+var (
+	// Per-HTTP-request counters: alertmanager_notifications_failed_total only
+	// moves after every retry is exhausted, so it cannot witness a rejecting
+	// receiver inside a bounded proof window.
+	notificationMetric       = regexp.MustCompile(`^alertmanager_notification_requests_total(?:\{[^}]*\})? ([0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)$`)
+	failedNotificationMetric = regexp.MustCompile(`^alertmanager_notification_requests_failed_total(?:\{[^}]*\})? ([0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)$`)
+)
+
+// deliveryCounts are Alertmanager's notification request attempts and
+// failures, summed over integrations. Only attempts minus failures delivered.
+type deliveryCounts struct {
+	attempts, failures float64
+}
+
+func (counts deliveryCounts) delivered() float64 { return counts.attempts - counts.failures }
+
+// waitForDeliveries waits until at least want more notifications than the
+// baseline succeeded. Any new failed notification fails the proof: an attempt
+// counter rising against a rejecting receiver is not delivery.
+func waitForDeliveries(ctx context.Context, client *http.Client, metricsURL string, baseline deliveryCounts, want float64) (deliveryCounts, error) {
 	ticker := time.NewTicker(100 * time.Millisecond)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ctx.Done():
-			return 0, errors.Join(ErrInvalid, ctx.Err())
+			return deliveryCounts{}, errors.Join(ErrInvalid, ctx.Err())
 		case <-ticker.C:
-			count, err := notificationCount(ctx, client, metricsURL)
-			if err == nil && count >= minimum {
-				return count, nil
+			counts, err := notificationCounts(ctx, client, metricsURL)
+			if err != nil {
+				continue
+			}
+			if counts.failures > baseline.failures {
+				return deliveryCounts{}, fmt.Errorf("%w: Alertmanager recorded %v failed notification(s) during the delivery proof", ErrInvalid, counts.failures-baseline.failures)
+			}
+			if counts.delivered()-baseline.delivered() >= want {
+				return counts, nil
 			}
 		}
 	}
 }
-
-var notificationMetric = regexp.MustCompile(`^alertmanager_notifications_total(?:\{[^}]*\})? ([0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)$`)
 
 // VerifyAlertDelivery proves that a healthy receiver is actually reached through
 // Alertmanager. Receiver health alone is deliberately insufficient evidence.
@@ -240,7 +264,7 @@ func VerifyAlertDelivery(ctx context.Context, client *http.Client, alertmanagerU
 		return "", ErrInvalid
 	}
 	metricsURL := alertmanager.ResolveReference(&url.URL{Path: "/metrics"}).String()
-	baseline, err := notificationCount(ctx, client, metricsURL)
+	baseline, err := notificationCounts(ctx, client, metricsURL)
 	if err != nil {
 		return "", err
 	}
@@ -261,48 +285,45 @@ func VerifyAlertDelivery(ctx context.Context, client *http.Client, alertmanagerU
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		return "", ErrInvalid
 	}
-	ticker := time.NewTicker(100 * time.Millisecond)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ctx.Done():
-			return "", errors.Join(ErrInvalid, ctx.Err())
-		case <-ticker.C:
-			count, countErr := notificationCount(ctx, client, metricsURL)
-			if countErr == nil && count > baseline {
-				return nonce, nil
-			}
-		}
+	if _, err := waitForDeliveries(ctx, client, metricsURL, baseline, 1); err != nil {
+		return "", err
 	}
+	return nonce, nil
 }
 
-func notificationCount(ctx context.Context, client *http.Client, metricsURL string) (float64, error) {
+func notificationCounts(ctx context.Context, client *http.Client, metricsURL string) (deliveryCounts, error) {
 	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, metricsURL, nil)
 	response, err := client.Do(request)
 	if err != nil {
-		return 0, err
+		return deliveryCounts{}, err
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		return 0, ErrInvalid
+		return deliveryCounts{}, ErrInvalid
 	}
 	scanner := bufio.NewScanner(response.Body)
-	total := 0.0
-	matched := false
+	var counts deliveryCounts
+	matchedAttempts, matchedFailures := false, false
 	for scanner.Scan() {
-		match := notificationMetric.FindStringSubmatch(scanner.Text())
+		line := scanner.Text()
+		target, matched := &counts.attempts, &matchedAttempts
+		match := notificationMetric.FindStringSubmatch(line)
+		if len(match) != 2 {
+			target, matched = &counts.failures, &matchedFailures
+			match = failedNotificationMetric.FindStringSubmatch(line)
+		}
 		if len(match) != 2 {
 			continue
 		}
 		value, err := strconv.ParseFloat(match[1], 64)
 		if err != nil {
-			return 0, ErrInvalid
+			return deliveryCounts{}, ErrInvalid
 		}
-		total += value
-		matched = true
+		*target += value
+		*matched = true
 	}
-	if err := scanner.Err(); err != nil || total < 0 || !matched {
-		return 0, errors.Join(ErrInvalid, err)
+	if err := scanner.Err(); err != nil || counts.attempts < 0 || counts.failures < 0 || counts.failures > counts.attempts || !matchedAttempts || !matchedFailures {
+		return deliveryCounts{}, errors.Join(ErrInvalid, err)
 	}
-	return total, nil
+	return counts, nil
 }
