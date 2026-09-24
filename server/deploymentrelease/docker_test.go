@@ -1,6 +1,7 @@
 package deploymentrelease
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -12,6 +13,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"filippo.io/age"
 
 	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/releasepackage"
@@ -420,4 +423,75 @@ func dockerFixtureBundle(t *testing.T) Bundle {
 			{Name: "postgres", Reference: "postgres:v1@sha256:" + strings.Repeat("3", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("5", 64)},
 			{Name: "prometheus", Reference: "prometheus:v1@sha256:" + strings.Repeat("9", 64), RuntimeConfigSHA256: "sha256:" + strings.Repeat("a", 64)},
 		}}}
+}
+
+func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	target := t.TempDir()
+	identityPath := filepath.Join(t.TempDir(), "identity")
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(identityPath, []byte(identity.String()+"\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 8, 22, 18, 1, 0, 0, time.UTC)
+	create := func(id string, manifest string, preUpgrade bool) BackupReference {
+		t.Helper()
+		header, path, err := deploymentbackup.Create(deploymentbackup.CreateInput{Directory: target, BackupID: id, ServerID: "server-1",
+			ReleaseManifestSHA256: manifest, EpochID: bundle.Manifest.EpochID, StartedAt: now.Add(-time.Minute),
+			Now: func() time.Time { return now }, Recipient: identity.Recipient().String(),
+			Dump: bytes.NewReader([]byte("PGDMP\x01restore-input fixture")), PreUpgrade: preUpgrade})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return BackupReference{ID: header.BackupID, Path: path}
+	}
+	valid := create("20260822T180000Z-acde00000001", bundle.ManifestSHA256, true)
+	runner := &commandFixture{}
+	runtime := dockerFixtureRuntime(runner, target, identityPath)
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, valid); err != nil {
+		t.Fatalf("valid restore inputs rejected: %v", err)
+	}
+
+	missing := BackupReference{ID: "20260822T180000Z-acde00000009", Path: filepath.Join(target, "20260822T180000Z-acde00000009.ccbackup")}
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, missing); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("missing backup accepted: %v", err)
+	}
+	wrongManifest := create("20260822T180000Z-acde00000002", "sha256:"+strings.Repeat("e", 64), true)
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, wrongManifest); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("wrong-manifest backup accepted: %v", err)
+	}
+	recoveryClass := create("20260822T180000Z-acde00000003", bundle.ManifestSHA256, false)
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, recoveryClass); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("non-pre-upgrade backup accepted as rollback input: %v", err)
+	}
+	corrupt := create("20260822T180000Z-acde00000004", bundle.ManifestSHA256, true)
+	data, err := os.ReadFile(corrupt.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data[len(data)-1] ^= 0xff
+	if err := os.WriteFile(corrupt.Path, data, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, corrupt); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("corrupt backup payload accepted: %v", err)
+	}
+	if err := os.Chmod(identityPath, 0o640); err != nil {
+		t.Fatal(err)
+	}
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, valid); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("group-readable identity accepted: %v", err)
+	}
+	if err := os.Remove(identityPath); err != nil {
+		t.Fatal(err)
+	}
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, valid); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("missing identity accepted: %v", err)
+	}
+	if len(runner.calls) != 0 {
+		t.Fatalf("restore-input verification issued runtime commands: %v", runner.calls)
+	}
 }

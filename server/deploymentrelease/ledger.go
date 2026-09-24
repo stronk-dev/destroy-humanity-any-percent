@@ -308,7 +308,7 @@ func validFailureStage(action, stage string) bool {
 	release := map[string]bool{"candidate_bundle": true, "current_bundle": true, "compatibility": true, "preflight": true,
 		"preupgrade_backup": true, "supply_chain": true, "bounded_drain": true, "startup_migration": true,
 		"epoch_artifact_identity": true, "authenticated_smoke": true}
-	rollback := map[string]bool{"failed_bundle": true, "previous_bundle": true, "rollback_authority": true, "preflight": true,
+	rollback := map[string]bool{"failed_bundle": true, "previous_bundle": true, "rollback_authority": true, "supply_chain": true, "preflight": true, "restore_inputs": true,
 		"stop_failed_release": true, "clean_database": true, "exact_restore": true, "previous_startup": true,
 		"epoch_artifact_identity": true, "authenticated_smoke": true}
 	if action == "install" {

@@ -449,8 +449,10 @@ operator authority. Failed install rows may be retried after correction, while a
 install or later release/rollback row permanently closes initial-install authority.
 
 A release runs these gates in order and records the first failed stage without ever emitting a
-success row: exact-bundle/config/receiver/free-space preflight; encrypted pre-upgrade backup;
-image load/pull plus runtime-config digest verification; Compose-governed SIGTERM stop; observed
+success row: image load/pull plus runtime-config digest verification (first, because the candidate
+config preflight runs inside the candidate image, whose bare `sha256:` reference resolves only after
+`docker load`); exact-bundle/config/receiver/free-space preflight; encrypted pre-upgrade backup;
+Compose-governed SIGTERM stop; observed
 readiness-down, authenticated `server_restarting` WebSocket publication, intent refusal and clean
 bounded process exit; candidate startup and forward migrations; exact database migration,
 epoch/hash/artifact reconciliation; then authenticated HTTP and WebSocket smoke through Caddy.
@@ -462,7 +464,13 @@ version can enter service only through the governed rollback command.
 
 Every successful release row binds the candidate version, manifest SHA-256, all six image
 digests, exact pre-upgrade backup, exact previous version/manifest and a seven-day rollback
-deadline. Rollback accepts only those recorded values. It stops the failed stack, removes only the
+deadline. Rollback accepts only those recorded values. Before it stops anything it loads and
+verifies the previous bundle's images, runs the previous-bundle preflight, and verifies the restore
+inputs on the host: the backup path is a regular non-empty file in the backup target, the age
+identity is an owner-only regular file, and the envelope header's payload length/SHA-256, backup ID,
+server, previous manifest, epoch and pre-upgrade class all match (`restore_inputs` stage). A
+missing, corrupt or wrong backup or identity therefore refuses with the live database untouched.
+Only then does it stop the failed stack, remove only the
 named Postgres data volume, starts a clean Postgres service, restores the exact encrypted backup,
 starts the exact previous bundle, repeats epoch/artifact reconciliation and runs the same Caddy
 smoke. There is no Down-migration operation in the rollback interface or command.

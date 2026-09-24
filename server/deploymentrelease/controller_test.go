@@ -54,6 +54,9 @@ func (runtime *runtimeFixture) ResetDatabase(context.Context, Bundle) error {
 func (runtime *runtimeFixture) Restore(context.Context, Bundle, BackupReference) error {
 	return runtime.call("restore")
 }
+func (runtime *runtimeFixture) VerifyRestoreInputs(context.Context, Bundle, BackupReference) error {
+	return runtime.call("restore_inputs")
+}
 func (runtime *runtimeFixture) PreflightInstall(context.Context, Bundle) error {
 	return runtime.call("install_preflight")
 }
@@ -156,7 +159,7 @@ func TestInstallRejectsRuntimeWithoutInstallAuthority(t *testing.T) {
 
 func TestReleaseSequenceAndEveryRuledSeveringStage(t *testing.T) {
 	current, candidate, loader := fixtureBundles()
-	for _, stage := range []string{"preflight", "backup", "prepare", "drain", "start", "identity", "smoke"} {
+	for _, stage := range []string{"prepare", "preflight", "backup", "drain", "start", "identity", "smoke"} {
 		t.Run(stage, func(t *testing.T) {
 			clock := &sequenceClock{now: time.Date(2026, 8, 22, 12, 0, 0, 0, time.UTC)}
 			runtime := validRuntime()
@@ -180,7 +183,7 @@ func TestReleaseSequenceAndEveryRuledSeveringStage(t *testing.T) {
 	if err := controller.Release(context.Background(), ReleaseRequest{CurrentBundle: current, CandidateBundle: candidate}); err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"preflight", "backup", "prepare", "drain", "start", "identity", "smoke"}
+	want := []string{"prepare", "preflight", "backup", "drain", "start", "identity", "smoke"}
 	if strings.Join(runtime.calls, ",") != strings.Join(want, ",") {
 		t.Fatalf("sequence=%v want=%v", runtime.calls, want)
 	}
@@ -226,7 +229,7 @@ func TestRollbackUsesExactPreviousManifestBackupAndSevenDayWindow(t *testing.T) 
 		if err := controller.Rollback(context.Background(), RollbackRequest{FailedBundle: candidate, PreviousBundle: current, Backup: runtime.backup}); err != nil {
 			t.Fatal(err)
 		}
-		want := []string{"preflight", "stop_failed", "reset_database", "restore", "start", "identity", "smoke"}
+		want := []string{"prepare", "preflight", "restore_inputs", "stop_failed", "reset_database", "restore", "start", "identity", "smoke"}
 		if strings.Join(runtime.calls, ",") != strings.Join(want, ",") {
 			t.Fatalf("rollback sequence=%v", runtime.calls)
 		}
@@ -264,7 +267,7 @@ func TestRollbackUsesExactPreviousManifestBackupAndSevenDayWindow(t *testing.T) 
 
 func TestRollbackRecordsEverySeveredExecutionStage(t *testing.T) {
 	current, candidate, loader := fixtureBundles()
-	for _, stage := range []string{"preflight", "stop_failed", "reset_database", "restore", "start", "identity", "smoke"} {
+	for _, stage := range []string{"prepare", "preflight", "restore_inputs", "stop_failed", "reset_database", "restore", "start", "identity", "smoke"} {
 		t.Run(stage, func(t *testing.T) {
 			clock := &sequenceClock{now: time.Date(2026, 8, 22, 12, 0, 0, 0, time.UTC)}
 			ledger := filepath.Join(t.TempDir(), "release-ledger.jsonl")
@@ -283,6 +286,12 @@ func TestRollbackRecordsEverySeveredExecutionStage(t *testing.T) {
 			records, err := ReadReleaseLedger(ledger)
 			if err != nil || len(records) != 2 || records[1].Action != "rollback" || records[1].Result != "failed" || records[1].FailureStage == "" {
 				t.Fatalf("rollback records=%+v err=%v", records, err)
+			}
+			// No input failure may stop the failed release or remove the live database.
+			if stage == "prepare" || stage == "preflight" || stage == "restore_inputs" {
+				if slices.Contains(severed.calls, "stop_failed") || slices.Contains(severed.calls, "reset_database") {
+					t.Fatalf("severed %s reached destructive rollback: %v", stage, severed.calls)
+				}
 			}
 		})
 	}

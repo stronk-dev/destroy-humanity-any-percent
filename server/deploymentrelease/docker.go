@@ -401,20 +401,43 @@ func (runtime DockerRuntime) RestoreRecoveryBackup(ctx context.Context, bundle B
 	return runtime.restoreBackup(ctx, bundle, backup, false)
 }
 
-func (runtime DockerRuntime) restoreBackup(ctx context.Context, bundle Bundle, backup BackupReference, preUpgrade bool) error {
-	runtime, err := runtime.normalized()
-	if err != nil || runtime.AgeIdentityFile == "" || filepath.Dir(backup.Path) != filepath.Clean(runtime.BackupTarget) || filepath.Base(backup.Path) != backup.ID+".ccbackup" {
-		return ErrInvalid
-	}
-	identity, err := filepath.Abs(runtime.AgeIdentityFile)
+// VerifyRestoreInputs reads the host backup envelope and restore identity
+// without touching Compose state: the payload length/checksum, backup ID,
+// server, previous manifest, epoch and pre-upgrade class must all bind.
+func (runtime DockerRuntime) VerifyRestoreInputs(_ context.Context, bundle Bundle, backup BackupReference) error {
+	runtime, _, err := runtime.restoreFiles(backup)
 	if err != nil {
 		return err
 	}
+	header, err := deploymentbackup.ReadHeader(backup.Path)
+	if err != nil || header.BackupID != backup.ID || !validBackupHeader(header, bundle, runtime.ServerID, true) {
+		return errors.Join(ErrInvalid, err)
+	}
+	return nil
+}
+
+func (runtime DockerRuntime) restoreFiles(backup BackupReference) (DockerRuntime, string, error) {
+	runtime, err := runtime.normalized()
+	if err != nil || runtime.AgeIdentityFile == "" || filepath.Dir(backup.Path) != filepath.Clean(runtime.BackupTarget) || filepath.Base(backup.Path) != backup.ID+".ccbackup" {
+		return runtime, "", ErrInvalid
+	}
+	identity, err := filepath.Abs(runtime.AgeIdentityFile)
+	if err != nil {
+		return runtime, "", err
+	}
 	if backupInfo, err := os.Lstat(backup.Path); err != nil || !backupInfo.Mode().IsRegular() || backupInfo.Size() < 1 {
-		return ErrInvalid
+		return runtime, "", ErrInvalid
 	}
 	if identityInfo, err := os.Lstat(identity); err != nil || !identityInfo.Mode().IsRegular() || identityInfo.Mode().Perm()&0o077 != 0 {
-		return ErrInvalid
+		return runtime, "", ErrInvalid
+	}
+	return runtime, identity, nil
+}
+
+func (runtime DockerRuntime) restoreBackup(ctx context.Context, bundle Bundle, backup BackupReference, preUpgrade bool) error {
+	runtime, identity, err := runtime.restoreFiles(backup)
+	if err != nil {
+		return err
 	}
 	args := composeArgs(bundle, "run", "--rm", "--no-deps", "--volume", identity+":/run/secrets/age-identity:ro", "backup", "restore",
 		"--backup=/backups/"+filepath.Base(backup.Path), "--release-manifest=/opt/cloud-clicker/release-manifest.json",

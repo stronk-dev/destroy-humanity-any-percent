@@ -55,6 +55,9 @@ type Runtime interface {
 	StopFailed(context.Context, Bundle) error
 	ResetDatabase(context.Context, Bundle) error
 	Restore(context.Context, Bundle, BackupReference) error
+	// VerifyRestoreInputs proves, without mutating runtime state, that the
+	// backup and restore credential can drive Restore for this bundle.
+	VerifyRestoreInputs(context.Context, Bundle, BackupReference) error
 }
 
 type InstallRuntime interface {
@@ -182,6 +185,11 @@ func (controller Controller) Release(ctx context.Context, request ReleaseRequest
 	if versionErr != nil || versionOrder <= 0 || candidate.Manifest.DatabaseMigration < current.Manifest.DatabaseMigration {
 		return controller.fail(base, "compatibility", ErrInvalid)
 	}
+	// The candidate config preflight runs inside the candidate image, which a
+	// bare config-ID reference can only resolve after the bundle archive loads.
+	if err := controller.Runtime.Prepare(ctx, candidate); err != nil {
+		return controller.fail(base, "supply_chain", err)
+	}
 	if err := controller.Runtime.Preflight(ctx, candidate); err != nil {
 		return controller.fail(base, "preflight", err)
 	}
@@ -190,9 +198,6 @@ func (controller Controller) Release(ctx context.Context, request ReleaseRequest
 		return controller.fail(base, "preupgrade_backup", errors.Join(ErrInvalid, err))
 	}
 	base.BackupID = backup.ID
-	if err := controller.Runtime.Prepare(ctx, candidate); err != nil {
-		return controller.fail(base, "supply_chain", err)
-	}
 	evidence, err := controller.Runtime.DrainCurrent(ctx, current)
 	if err != nil || !evidence.Valid() {
 		return controller.fail(base, "bounded_drain", errors.Join(ErrInvalid, err))
@@ -245,8 +250,16 @@ func (controller Controller) Rollback(ctx context.Context, request RollbackReque
 		started.After(approved.RollbackUntil) {
 		return controller.fail(base, "rollback_authority", ErrInvalid)
 	}
+	// Every rollback input is proved before the failed release stops or the
+	// live database volume is removed.
+	if err := controller.Runtime.Prepare(ctx, previous); err != nil {
+		return controller.fail(base, "supply_chain", err)
+	}
 	if err := controller.Runtime.Preflight(ctx, previous); err != nil {
 		return controller.fail(base, "preflight", err)
+	}
+	if err := controller.Runtime.VerifyRestoreInputs(ctx, previous, request.Backup); err != nil {
+		return controller.fail(base, "restore_inputs", err)
 	}
 	if err := controller.Runtime.StopFailed(ctx, failed); err != nil {
 		return controller.fail(base, "stop_failed_release", err)
