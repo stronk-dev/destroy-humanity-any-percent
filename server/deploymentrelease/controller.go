@@ -281,7 +281,8 @@ func (controller Controller) Rollback(ctx context.Context, request RollbackReque
 	}
 	base.CompletedAt = controller.Now().UTC()
 	base.Result = "succeeded"
-	base.PreviousVersion, base.PreviousManifestSHA256 = "", ""
+	// The row keeps the release it rolled back from (as failed rollback rows
+	// already do); R-006 operator evidence binds that linkage.
 	base.RollbackUntil = time.Time{}
 	return AppendReleaseRecord(controller.LedgerPath, base)
 }

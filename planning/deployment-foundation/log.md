@@ -3226,3 +3226,47 @@ that previously had no producer.
   - negatives: non-clean restore target (Postgres) and restart during admitted work (live
     gameserver);
   - 12 runtime positives, which need the host.
+
+## 2026-09-24 — R19: lifecycle release/rollback producers; rollback-row contract bug fixed
+
+**Process note:** there is no separate predeclaration commit. The scope is producers for two
+existing positives, `bounded_drain_and_restart` and `exact_previous_release_rollback`, whose exact
+contract `validateOperatorRecords` already defined.
+
+**Bug found by building the producer.** On a successful rollback, `deploymentrelease.Controller.Rollback`
+cleared `PreviousVersion` and `PreviousManifestSHA256`. Failed rollback rows kept them. Final R-006
+validation (`validateOperatorRecords` → `matchesTransition(lifecycle[2], "rollback", …)`) requires
+the rolled-back-from candidate in those fields. A real run could therefore **never** produce
+accepting lifecycle evidence; the rehearsal fixtures hand-wrote rows the controller cannot emit.
+
+**Fix:** the successful rollback row keeps its rolled-back-from release fields. The ledger's
+validity rules already permit this, and the rollback-authority chain does not read them. This is
+witnessed by the new `TestSuccessfulRollbackRecordsTheReleaseItRolledBackFrom`.
+
+**New producers (`deploymentrehearsal/lifecycle.go`, CLI, Make):**
+- `lifecycle-release` requires the exact candidate install row and an empty lifecycle state. It
+  runs `AbortInstall` for the candidate stack, `Install(previous)` and `Release(previous →
+  candidate)` through the production controller, and requires the two exact ledger rows.
+- `lifecycle-rollback` re-reads the release's pre-upgrade envelope, which must be bound to the
+  previous manifest. It then runs `Rollback(candidate → previous)`, requires three rows, and writes
+  the `release_ledger` and `backup_header` artifacts.
+- Both are bound as the producers of their plan rows.
+
+**Tests** (fake install runtime, real controller, real age envelope):
+- Contract-order call sequences for both producers.
+- Produced rows satisfy `matchesInstall`/`matchesTransition` exactly as the final validator applies
+  them.
+- Refusals with zero runtime calls: release before the candidate install, release over an existing
+  lifecycle, and rollback before a release.
+- A rollback with a missing backup never reaches `reset_database`.
+- Restoring the old clearing fails both the controller test and the lifecycle test.
+
+**Evidence:** `make test-go` over deploymentrelease, deploymentrehearsal and both cmds passed, and
+`make verify-ci-topology` passed. Producer-backed populations are now 30 of 43. No host run has
+happened.
+
+**DESIGN-GAP 7 (rotation population).** `validateRotationAuthority` needs real JWT, bootstrap and
+cursor activation/removal pairs that respect 30 min / 31 d / 366 d overlaps. A real-time rehearsal
+cannot complete the 31-day and 366-day overlaps. DP4 allows a governed clock for tests, but R-006
+evidence is a real run. The RFC author must rule how rotation is evidenced, for example the
+activation plus a governed-clock removal fixture, or a long-running observation.

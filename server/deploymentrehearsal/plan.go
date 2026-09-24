@@ -32,6 +32,8 @@ var populationProducers = map[string]string{
 	"populated_database_identity_restore":   "recover-populated",
 	"rpo_within_six_hours":                  "recover-populated",
 	"rto_within_four_hours":                 "recover-populated",
+	"bounded_drain_and_restart":             "lifecycle-release",
+	"exact_previous_release_rollback":       "lifecycle-rollback",
 }
 
 // boundToProducer requires the row to invoke the rehearsal tool itself with

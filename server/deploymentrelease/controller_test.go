@@ -429,3 +429,23 @@ func fixtureBundles() (string, string, func(string) (Bundle, error)) {
 		return bundle, nil
 	}
 }
+
+func TestSuccessfulRollbackRecordsTheReleaseItRolledBackFrom(t *testing.T) {
+	current, candidate, loader := fixtureBundles()
+	clock := &sequenceClock{now: time.Date(2026, 8, 22, 12, 0, 0, 0, time.UTC)}
+	runtime := validRuntime()
+	ledger := filepath.Join(t.TempDir(), "release-ledger.jsonl")
+	controller := Controller{Runtime: runtime, LedgerPath: ledger, Operator: "operator-1", Now: clock.Time, Load: loader}
+	if err := controller.Release(context.Background(), ReleaseRequest{CurrentBundle: current, CandidateBundle: candidate}); err != nil {
+		t.Fatal(err)
+	}
+	if err := controller.Rollback(context.Background(), RollbackRequest{FailedBundle: candidate, PreviousBundle: current, Backup: runtime.backup}); err != nil {
+		t.Fatal(err)
+	}
+	records, err := ReadReleaseLedger(ledger)
+	if err != nil || len(records) != 2 || records[1].Action != "rollback" || records[1].Result != "succeeded" ||
+		records[1].PreviousVersion != records[0].ReleaseVersion || records[1].PreviousManifestSHA256 != records[0].ManifestSHA256 ||
+		!records[1].RollbackUntil.IsZero() {
+		t.Fatalf("rollback row lost its rolled-back-from release: %+v err=%v", records, err)
+	}
+}

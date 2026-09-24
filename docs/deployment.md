@@ -156,7 +156,8 @@ negative populations in canonical lifecycle order, require exit zero for positiv
 exit three for severing checks, and give every command a one-second to four-hour guard. Every row
 is bound to its producer: the command must be an absolute path to the `deployment-rehearsal` tool
 itself running the population's own subcommand (`install-candidate`, `run-browser`,
-`recover-empty`, `recover-populated` for their positives; `probe --population=<row>` for every
+`recover-empty`, `recover-populated`, `lifecycle-release`, `lifecycle-rollback` for their positives;
+`probe --population=<row>` for every
 other population). A constant command such as `/usr/bin/true` or `/usr/bin/false`, a probe for a
 different population, or a generic failure exit therefore cannot stand in for proof. Populations
 that no producer can exercise yet (currently the release-drain, rollback, rotation, alert-delivery,
@@ -215,9 +216,19 @@ a candidate migration below the running release, refuses at `compatibility` with
 after the unmodified pair is shown to reach the runtime), and a missing previous backup or image
 (the production `VerifyRestoreInputs` and `Prepare` gates accept the intact inputs, then refuse a
 removed pre-upgrade envelope and an absent previous image before anything destructive). The
-non-clean restore target and restart-during-admitted-work negatives, and the runtime release,
-rollback, rotation, alert-delivery, journal-budget and provider-off positives, still have no
-producer and exit `2`.
+non-clean restore target and restart-during-admitted-work negatives, and the rotation,
+alert-delivery, journal-budget and provider-off runtime positives, still have no producer and exit
+`2`.
+
+`lifecycle-release` (`make deployment-rehearsal-lifecycle-release`) requires the exact single
+candidate install row in the install operator state and an empty lifecycle operator state. It
+removes the installed candidate stack, installs the exact previous bundle into the lifecycle state,
+and releases the candidate over it through the production controller; the lifecycle ledger must then
+hold exactly that install and the succeeded release. `lifecycle-rollback` rolls the candidate back
+to the previous bundle with that release's own pre-upgrade backup (header re-read and bound to the
+previous manifest before the controller runs), then retains the three-row lifecycle ledger and the
+decoded backup header as the operator evidence final validation binds. A successful rollback row
+keeps the release it rolled back from, like failed rollback rows.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and

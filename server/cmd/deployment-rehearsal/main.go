@@ -62,6 +62,16 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal candidate install passed")
+	case "lifecycle-release":
+		if err := runScenarioStep(context.Background(), "lifecycle-release", os.Args[2:], deploymentrehearsal.ReleaseLifecycle); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal lifecycle release passed")
+	case "lifecycle-rollback":
+		if err := runScenarioStep(context.Background(), "lifecycle-rollback", os.Args[2:], deploymentrehearsal.RollbackLifecycle); err != nil {
+			fail("invalid_evidence")
+		}
+		fmt.Println("deployment rehearsal lifecycle rollback passed")
 	case "run-browser":
 		if _, err := runBrowser(context.Background(), os.Args[2:]); err != nil {
 			fail("invalid_evidence")
@@ -118,6 +128,19 @@ func runBrowser(ctx context.Context, args []string) (deploymentbrowser.Result, e
 		return deploymentbrowser.Result{}, err
 	}
 	return deploymentrehearsal.RunBrowser(ctx, config)
+}
+
+func runScenarioStep(ctx context.Context, name string, args []string, step func(context.Context, deploymentrehearsal.ScenarioConfig) error) error {
+	set := flag.NewFlagSet(name, flag.ContinueOnError)
+	configPath := set.String("config", "", "private runtime scenario input")
+	if set.Parse(args) != nil || set.NArg() != 0 || *configPath == "" {
+		return deploymentrehearsal.ErrInvalid
+	}
+	config, err := deploymentrehearsal.LoadScenarioConfig(*configPath)
+	if err != nil {
+		return err
+	}
+	return step(ctx, config)
 }
 
 func runInstallCandidate(ctx context.Context, args []string) error {
