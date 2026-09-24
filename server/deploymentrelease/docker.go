@@ -27,6 +27,11 @@ type DockerRuntime struct {
 	ServerID          string
 	DrainTimeout      time.Duration
 	Now               func() time.Time
+	// RotationLedgerPath is the operator-state rotation ledger. An open
+	// JWT+bootstrap overlap adds the bundled rotation overlay to every Compose
+	// invocation; see RotationOverlay.
+	RotationLedgerPath string
+	rotationOverlay    bool
 }
 
 func (runtime DockerRuntime) normalized() (DockerRuntime, error) {
@@ -54,6 +59,11 @@ func (runtime DockerRuntime) normalized() (DockerRuntime, error) {
 	if info, err := os.Lstat(runtime.MetricsDirectory); err != nil || !info.IsDir() {
 		return DockerRuntime{}, ErrInvalid
 	}
+	overlay, err := RotationOverlay(runtime.RotationLedgerPath)
+	if err != nil {
+		return DockerRuntime{}, err
+	}
+	runtime.rotationOverlay = overlay
 	return runtime, nil
 }
 
@@ -92,7 +102,7 @@ func (runtime DockerRuntime) PreflightInstall(ctx context.Context, bundle Bundle
 }
 
 func (runtime DockerRuntime) requireCleanInstallState(ctx context.Context, bundle Bundle) error {
-	containers, containerErr := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "ps", "--all", "--quiet")...)
+	containers, containerErr := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "ps", "--all", "--quiet")...)
 	volumes, volumeErr := runtime.Runner.Run(ctx, bundle.Root, "docker", "volume", "ls", "--quiet", "--filter=name=^cloud-clicker_postgres_data$")
 	if containerErr != nil || volumeErr != nil || strings.TrimSpace(string(containers)) != "" || strings.TrimSpace(string(volumes)) != "" {
 		return errors.Join(ErrInvalid, containerErr, volumeErr)
@@ -101,13 +111,13 @@ func (runtime DockerRuntime) requireCleanInstallState(ctx context.Context, bundl
 }
 
 func (runtime DockerRuntime) preflightCommon(ctx context.Context, bundle Bundle) (uint64, string, error) {
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "config", "--quiet")...); err != nil {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "config", "--quiet")...); err != nil {
 		return 0, "", err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "gameserver", "validate-config")...); err != nil {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "gameserver", "validate-config")...); err != nil {
 		return 0, "", err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=amtool", "alertmanager", "check-config", "/run/secrets/alertmanager-config")...); err != nil {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=amtool", "alertmanager", "check-config", "/run/secrets/alertmanager-config")...); err != nil {
 		return 0, "", err
 	}
 	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, runtime.ReceiverHealthURL, nil)
@@ -149,7 +159,7 @@ func (runtime DockerRuntime) createBackup(ctx context.Context, bundle Bundle, pr
 	if err != nil {
 		return BackupReference{}, err
 	}
-	args := composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "create",
+	args := runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "create",
 		"--target=/backups", "--database-url-file=/run/secrets/database-url",
 		"--release-manifest=/opt/cloud-clicker/release-manifest.json", "--epoch=/opt/cloud-clicker/content/balance/epochs/phase0.json",
 		"--age-recipient="+runtime.AgeRecipient, "--server-id="+runtime.ServerID, "--metrics-dir=/operations")
@@ -183,7 +193,7 @@ func (runtime DockerRuntime) InspectRecoveryIdentity(ctx context.Context, bundle
 	if err != nil {
 		return deploymentbackup.RecoveryIdentity{}, err
 	}
-	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "recovery-identity",
+	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "recovery-identity",
 		"--database-url-file=/run/secrets/database-url")...)
 	if err != nil {
 		return deploymentbackup.RecoveryIdentity{}, err
@@ -231,7 +241,7 @@ func (runtime DockerRuntime) DrainCurrent(ctx context.Context, bundle Bundle) (D
 		return DrainEvidence{}, err
 	}
 	defer session.Close()
-	containerOutput, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "ps", "--quiet", "gameserver")...)
+	containerOutput, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "ps", "--quiet", "gameserver")...)
 	containerID := strings.TrimSpace(string(containerOutput))
 	if err != nil || containerID == "" || strings.ContainsAny(containerID, " \t\r\n") {
 		return DrainEvidence{}, errors.Join(ErrInvalid, err)
@@ -251,7 +261,7 @@ func (runtime DockerRuntime) DrainCurrent(ctx context.Context, bundle Bundle) (D
 	stop := make(chan error, 1)
 	go func() {
 		seconds := int(runtime.DrainTimeout / time.Second)
-		_, stopErr := runtime.Runner.Run(drainCtx, bundle.Root, "docker", composeArgs(bundle, "stop", "--timeout", fmt.Sprint(seconds), "gameserver")...)
+		_, stopErr := runtime.Runner.Run(drainCtx, bundle.Root, "docker", runtime.composeArgs(bundle, "stop", "--timeout", fmt.Sprint(seconds), "gameserver")...)
 		stop <- stopErr
 	}()
 	readiness := make(chan bool, 1)
@@ -280,7 +290,7 @@ func (runtime DockerRuntime) Start(ctx context.Context, bundle Bundle) error {
 	if err != nil {
 		return err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy", "backup", "prometheus", "alertmanager", "node-exporter")...); err != nil {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy", "backup", "prometheus", "alertmanager", "node-exporter")...); err != nil {
 		return err
 	}
 	readyCtx, cancel := context.WithTimeout(ctx, time.Minute)
@@ -299,7 +309,7 @@ func (runtime DockerRuntime) StartRecoveryCore(ctx context.Context, bundle Bundl
 	if err != nil {
 		return err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy")...); err != nil {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "up", "--detach", "--no-deps", "--force-recreate", "gameserver", "caddy")...); err != nil {
 		return err
 	}
 	readyCtx, cancel := context.WithTimeout(ctx, time.Minute)
@@ -315,7 +325,7 @@ func (runtime DockerRuntime) StartInstall(ctx context.Context, bundle Bundle) er
 	if err != nil {
 		return err
 	}
-	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--wait", "postgres")...); err != nil {
+	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "up", "--detach", "--wait", "postgres")...); err != nil {
 		return err
 	}
 	return runtime.Start(ctx, bundle)
@@ -325,7 +335,7 @@ func (runtime DockerRuntime) AbortInstall(ctx context.Context, bundle Bundle) er
 	if _, err := runtime.normalized(); err != nil {
 		return err
 	}
-	_, err := runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "down", "--volumes", "--remove-orphans")...)
+	_, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "down", "--volumes", "--remove-orphans")...)
 	return err
 }
 
@@ -365,7 +375,7 @@ func (runtime DockerRuntime) verifyAlertDelivery(ctx context.Context, bundle Bun
 	if err != nil {
 		return err
 	}
-	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=/opt/cloud-clicker/deployment-operations", "alertmanager", "alert-test",
+	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "--entrypoint=/opt/cloud-clicker/deployment-operations", "alertmanager", "alert-test",
 		"--alertmanager-url=http://alertmanager:9093", "--receiver-health-url="+runtime.ReceiverHealthURL)...)
 	return err
 }
@@ -375,7 +385,7 @@ func (runtime DockerRuntime) StopFailed(ctx context.Context, bundle Bundle) erro
 	if err != nil {
 		return err
 	}
-	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "down", "--remove-orphans")...)
+	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "down", "--remove-orphans")...)
 	return err
 }
 
@@ -387,7 +397,7 @@ func (runtime DockerRuntime) ResetDatabase(ctx context.Context, bundle Bundle) e
 	if _, err := runtime.Runner.Run(ctx, bundle.Root, "docker", "volume", "rm", "cloud-clicker_postgres_data"); err != nil {
 		return err
 	}
-	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", composeArgs(bundle, "up", "--detach", "--wait", "postgres")...)
+	_, err = runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "up", "--detach", "--wait", "postgres")...)
 	return err
 }
 
@@ -439,7 +449,7 @@ func (runtime DockerRuntime) restoreBackup(ctx context.Context, bundle Bundle, b
 	if err != nil {
 		return err
 	}
-	args := composeArgs(bundle, "run", "--rm", "--no-deps", "--volume", identity+":/run/secrets/age-identity:ro", "backup", "restore",
+	args := runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "--volume", identity+":/run/secrets/age-identity:ro", "backup", "restore",
 		"--backup=/backups/"+filepath.Base(backup.Path), "--release-manifest=/opt/cloud-clicker/release-manifest.json",
 		"--identity-file=/run/secrets/age-identity", "--target-database-url-file=/run/secrets/database-url", "--metrics-dir=/operations")
 	output, err := runtime.Runner.Run(ctx, bundle.Root, "docker", args...)
@@ -469,7 +479,7 @@ func (runtime DockerRuntime) inspectDatabase(ctx context.Context, bundle Bundle,
 	if err != nil {
 		return deploymentbackup.PostgresInspection{}, err
 	}
-	args := composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "inspect",
+	args := runtime.composeArgs(bundle, "run", "--rm", "--no-deps", "backup", "inspect",
 		"--database-url-file=/run/secrets/database-url", "--release-manifest=/opt/cloud-clicker/release-manifest.json",
 		"--content-root=/opt/cloud-clicker/content")
 	if requireIdentity {

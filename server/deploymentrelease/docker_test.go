@@ -408,7 +408,8 @@ func TestDockerRuntimeRecoveryCoreExcludesUnobservedBackupWriter(t *testing.T) {
 func dockerFixtureRuntime(runner CommandRunner, target, identity string) DockerRuntime {
 	return DockerRuntime{Runner: runner, PublicOrigin: "https://game.example", ReceiverHealthURL: "http://alertmanager:9093/-/healthy",
 		BackupTarget: target, MetricsDirectory: target, AgeRecipient: "age1fixture",
-		AgeIdentityFile: identity, ServerID: "server-1", DrainTimeout: 20 * time.Second}
+		AgeIdentityFile: identity, ServerID: "server-1", DrainTimeout: 20 * time.Second,
+		RotationLedgerPath: filepath.Join(target, "rotation-ledger.jsonl")}
 }
 
 func dockerFixtureBundle(t *testing.T) Bundle {
@@ -493,5 +494,55 @@ func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) 
 	}
 	if len(runner.calls) != 0 {
 		t.Fatalf("restore-input verification issued runtime commands: %v", runner.calls)
+	}
+}
+
+func TestDockerRuntimeComposesRotationOverlayOnlyForAnOpenPair(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	target := t.TempDir()
+	ledger := filepath.Join(target, "rotation-ledger.jsonl")
+	now := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	stopArgs := func() ([]string, error) {
+		t.Helper()
+		runner := &commandFixture{}
+		err := dockerFixtureRuntime(runner, target, "").StopFailed(context.Background(), bundle)
+		if len(runner.calls) == 0 {
+			return nil, err
+		}
+		return runner.calls[0], err
+	}
+	overlay := bundle.Root + "/compose.rotation.yml"
+	if call, err := stopArgs(); err != nil || slices.Contains(call, overlay) {
+		t.Fatalf("no-ledger composition call=%v err=%v", call, err)
+	}
+	if err := ActivateRotation(ledger, FamilyJWT, "jwt-2", "jwt-1", "operator-1", now); err != nil {
+		t.Fatal(err)
+	}
+	if call, err := stopArgs(); !errors.Is(err, ErrInvalid) || call != nil {
+		t.Fatalf("single open overlap composed without its previous key: call=%v err=%v", call, err)
+	}
+	if err := ActivateRotation(ledger, FamilyBootstrap, "boot-2", "boot-1", "operator-1", now); err != nil {
+		t.Fatal(err)
+	}
+	call, err := stopArgs()
+	if err != nil || !slices.Contains(call, overlay) || slices.Index(call, overlay) > slices.Index(call, "down") {
+		t.Fatalf("open JWT+bootstrap overlap omitted rotation overlay: call=%v err=%v", call, err)
+	}
+	if err := RemovePrevious(ledger, FamilyJWT, "jwt-2", "jwt-1", "operator-1", now.Add(JWTOverlap)); err != nil {
+		t.Fatal(err)
+	}
+	if call, err := stopArgs(); !errors.Is(err, ErrInvalid) || call != nil {
+		t.Fatalf("remaining bootstrap overlap composed without its previous key: call=%v err=%v", call, err)
+	}
+	if err := RemovePrevious(ledger, FamilyBootstrap, "boot-2", "boot-1", "operator-1", now.Add(BootstrapOverlap)); err != nil {
+		t.Fatal(err)
+	}
+	if call, err := stopArgs(); err != nil || slices.Contains(call, overlay) {
+		t.Fatalf("closed overlaps still composed overlay: call=%v err=%v", call, err)
+	}
+	relative := dockerFixtureRuntime(&commandFixture{}, target, "")
+	relative.RotationLedgerPath = "rotation-ledger.jsonl"
+	if err := relative.StopFailed(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("relative rotation ledger accepted: %v", err)
 	}
 }

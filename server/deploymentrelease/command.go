@@ -25,6 +25,10 @@ func (ExecRunner) Run(ctx context.Context, directory, name string, args ...strin
 	return stdout.Bytes(), nil
 }
 
-func composeArgs(bundle Bundle, values ...string) []string {
-	return append([]string{"compose", "--project-name", "cloud-clicker", "--file", bundle.Root + "/compose.yml"}, values...)
+func (runtime DockerRuntime) composeArgs(bundle Bundle, values ...string) []string {
+	args := []string{"compose", "--project-name", "cloud-clicker", "--file", bundle.Root + "/compose.yml"}
+	if runtime.rotationOverlay {
+		args = append(args, "--file", bundle.Root+"/compose.rotation.yml")
+	}
+	return append(args, values...)
 }

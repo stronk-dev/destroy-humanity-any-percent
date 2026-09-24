@@ -2386,3 +2386,37 @@ corrective ranges, and Claude never approves or archives its own work.
 
 **Not in scope:** rotation overlay (F3), DrainCurrent/VerifyIdentity witnesses (F4),
 irreversible-migration and wrong-image fixtures (rest of F5). Those are the next corrective ranges.
+
+## 2026-09-24 — DP-D corrective R1 implemented; R2 predeclaration (rotation overlay)
+
+**R1 implemented at `1978660`** (Claude):
+- Release now runs `Prepare → Preflight → pre-upgrade backup`.
+- Rollback now runs `Prepare(previous) → Preflight(previous) → VerifyRestoreInputs → StopFailed →
+  ResetDatabase → Restore`.
+- `VerifyRestoreInputs` reads the host envelope with `deploymentbackup.ReadHeader` (payload
+  length/sha256) and binds the backup ID, server, previous manifest, epoch and pre-upgrade class,
+  plus a regular owner-only age identity.
+- The ledger admits the new `supply_chain`/`restore_inputs` rollback stages.
+
+Cold `make test-go` over deploymentrelease, cmd/deployment-release, deploymentrehearsal and
+cmd/deployment-rehearsal (`-count=1`) passed. Severing probes, each restored exactly:
+- moving `VerifyRestoreInputs` after `ResetDatabase` failed
+  `TestRollbackUsesExactPreviousManifestBackupAndSevenDayWindow` and
+  `TestRollbackRecordsEverySeveredExecutionStage`;
+- restoring preflight-before-prepare failed `TestReleaseSequenceAndEveryRuledSeveringStage`;
+- dropping the header read failed `TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands`.
+
+**R2 predeclaration (DP4/AC6, DP-D F3):** release, rollback, install and recovery compose only
+`compose.yml`, so an open previous-key overlap is silently shortened on recreate.
+- Add `RotationOverlay(ledgerPath)`: the overlay applies when both the JWT and bootstrap latest
+  rows are `activated`, and the result is invalid when exactly one is. The bundled overlay requires
+  both pairs, so a single-family overlap cannot be composed and must fail closed. A per-family
+  overlay would change hash-bound bundle contents and break historical-bundle rollback, so it is
+  recorded as a follow-up.
+- `DockerRuntime` gains an absolute `RotationLedgerPath`, resolved in `normalized()`. Every Compose
+  invocation goes through `runtime.composeArgs`.
+- The CLI and rehearsal constructors pass the operator-state ledger.
+- Witness: a recording-runner test covers no ledger, JWT-only, both open, bootstrap-only and both
+  removed, plus a relative-path refusal.
+- Severing either the overlay append or the single-open refusal must fail it.
+- The docs are updated in the same commit.

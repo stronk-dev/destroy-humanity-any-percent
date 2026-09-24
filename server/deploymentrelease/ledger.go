@@ -141,6 +141,36 @@ func RemovePrevious(path string, family KeyFamily, currentID, previousID, operat
 		CurrentID: currentID, PreviousID: previousID, OccurredAt: now.UTC(), Operator: operator})
 }
 
+// RotationOverlay reports whether Compose must carry the bundled
+// compose.rotation.yml previous-key overlay. That overlay binds the previous
+// JWT and bootstrap pairs together, so it applies only while both overlaps are
+// open; exactly one open overlap cannot be composed from the bundle and fails
+// closed rather than silently recreating the gameserver without its previous
+// key. Cursor keys are not composed until public cursor readers exist.
+func RotationOverlay(path string) (bool, error) {
+	if !filepath.IsAbs(path) {
+		return false, ErrInvalid
+	}
+	records, err := ReadRotationLedger(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	open := map[KeyFamily]bool{}
+	for _, record := range records {
+		open[record.Family] = record.Action == "activated"
+	}
+	if open[FamilyJWT] && open[FamilyBootstrap] {
+		return true, nil
+	}
+	if open[FamilyJWT] || open[FamilyBootstrap] {
+		return false, fmt.Errorf("%w: exactly one of the JWT/bootstrap overlaps is open; the bundled rotation overlay needs both", ErrInvalid)
+	}
+	return false, nil
+}
+
 func ReadRotationLedger(path string) ([]RotationRecord, error) {
 	file, err := os.Open(path)
 	if err != nil {

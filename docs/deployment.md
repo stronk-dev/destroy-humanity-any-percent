@@ -484,6 +484,16 @@ until a public reader exists, but its durable timing/config contract is already 
 runtime current/previous key decoder remains the authority for actual values and rejects half
 pairs, duplicate IDs and duplicate values; the ledger stores IDs only.
 
+Install, release, rollback and recovery read the operator-state `rotation-ledger.jsonl` before any
+Compose command. While both the JWT and bootstrap overlaps are open (latest ledger row for each
+family is `activated`), every Compose invocation adds the bundled `compose.rotation.yml`, so a
+recreated gameserver keeps both previous keys for the whole governed overlap. The bundled overlay
+binds both families together; while exactly one of them is open the helper refuses before any
+Compose command rather than recreating the gameserver without that previous key. Operators either
+rotate JWT and bootstrap keys together or wait for the single open overlap to be removed. A
+per-family overlay is a recorded follow-up, not current behavior. The ledger path must be absolute;
+a missing ledger means no open overlap.
+
 Build the release helper with:
 
 ```sh

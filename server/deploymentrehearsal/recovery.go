@@ -57,7 +57,8 @@ type recoveryDependencies struct {
 func RunEmptyRecovery(ctx context.Context, config ScenarioConfig) (RecoveryCheckpoint, error) {
 	runtime := deploymentrelease.DockerRuntime{PublicOrigin: config.PublicOrigin, ReceiverHealthURL: config.ReceiverHealthURL,
 		BackupTarget: config.BackupTarget, MetricsDirectory: config.MetricsDirectory, AgeRecipient: config.AgeRecipient,
-		AgeIdentityFile: config.AgeIdentityFile, ServerID: config.ServerID, DrainTimeout: 20 * time.Second}
+		AgeIdentityFile: config.AgeIdentityFile, ServerID: config.ServerID, DrainTimeout: 20 * time.Second,
+		RotationLedgerPath: filepath.Join(config.LifecycleOperatorState, "rotation-ledger.jsonl")}
 	return runEmptyRecovery(ctx, config, recoveryDependencies{loadBundle: deploymentrelease.LoadBundle,
 		readHeader: deploymentbackup.ReadHeader, runtime: runtime, now: time.Now,
 		boardGuard: boardProjectionGuard, boardPoll: boardProjectionPoll})
@@ -66,7 +67,8 @@ func RunEmptyRecovery(ctx context.Context, config ScenarioConfig) (RecoveryCheck
 func RunPopulatedRecovery(ctx context.Context, config ScenarioConfig) (ObjectiveObservation, error) {
 	runtime := deploymentrelease.DockerRuntime{PublicOrigin: config.PublicOrigin, ReceiverHealthURL: config.ReceiverHealthURL,
 		BackupTarget: config.BackupTarget, MetricsDirectory: config.MetricsDirectory, AgeRecipient: config.AgeRecipient,
-		AgeIdentityFile: config.AgeIdentityFile, ServerID: config.ServerID, DrainTimeout: 20 * time.Second}
+		AgeIdentityFile: config.AgeIdentityFile, ServerID: config.ServerID, DrainTimeout: 20 * time.Second,
+		RotationLedgerPath: filepath.Join(config.LifecycleOperatorState, "rotation-ledger.jsonl")}
 	return runPopulatedRecovery(ctx, config, recoveryDependencies{loadBundle: deploymentrelease.LoadBundle,
 		readHeader: deploymentbackup.ReadHeader, runtime: runtime, now: time.Now})
 }

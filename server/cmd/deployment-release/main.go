@@ -134,7 +134,8 @@ func controllerFromFlags(values runtimeFlags) (deploymentrelease.Controller, err
 	}
 	runtime := deploymentrelease.DockerRuntime{PublicOrigin: values.origin, ReceiverHealthURL: values.receiver,
 		BackupTarget: values.backupTarget, MetricsDirectory: values.metricsDirectory, AgeRecipient: values.recipient,
-		AgeIdentityFile: values.identity, ServerID: serverID, DrainTimeout: 20 * time.Second}
+		AgeIdentityFile: values.identity, ServerID: serverID, DrainTimeout: 20 * time.Second,
+		RotationLedgerPath: filepath.Join(state, "rotation-ledger.jsonl")}
 	return deploymentrelease.Controller{Runtime: runtime, LedgerPath: filepath.Join(state, "release-ledger.jsonl"), Operator: values.operator, Now: time.Now}, nil
 }
 

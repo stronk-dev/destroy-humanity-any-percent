@@ -50,7 +50,8 @@ func installCandidate(ctx context.Context, config ScenarioConfig, dependencies c
 func executeCandidateInstall(ctx context.Context, config ScenarioConfig) error {
 	runtime := deploymentrelease.DockerRuntime{PublicOrigin: config.PublicOrigin, ReceiverHealthURL: config.ReceiverHealthURL,
 		BackupTarget: config.BackupTarget, MetricsDirectory: config.MetricsDirectory, AgeRecipient: config.AgeRecipient,
-		ServerID: config.ServerID, DrainTimeout: 20 * time.Second}
+		ServerID: config.ServerID, DrainTimeout: 20 * time.Second,
+		RotationLedgerPath: filepath.Join(config.InstallOperatorState, "rotation-ledger.jsonl")}
 	controller := deploymentrelease.Controller{Runtime: runtime,
 		LedgerPath: filepath.Join(config.InstallOperatorState, "release-ledger.jsonl"), Operator: config.Operator, Now: time.Now}
 	return controller.Install(ctx, deploymentrelease.InstallRequest{Bundle: config.CandidateBundle})
