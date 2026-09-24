@@ -2636,3 +2636,34 @@ tests:
 **Process note:** `target.go` was untracked during probing, so `git checkout` could not restore
 it. The one-line mutation was restored manually, and that line was re-verified before the green
 rerun.
+
+## 2026-09-24 — R7: DP-A proxy-hop/origin wiring witness and decoder rows
+
+**Process note:** R7 has no separate predeclaration commit. Its scope is exactly the remedy (a)
+named in Claude's DP-A B1 verdict plus the N1/N2 rows, recorded here with its evidence.
+
+**Change:**
+- New `TestComposedProductionBoundaryTrustsExactlyOneProxyHopIntegration` in gameserver, on the
+  declared Postgres service. It composes with `PublicOrigin` and `TrustedProxyHops: 1`, exhausts
+  the unauthenticated limiter for `X-Forwarded-For: 203.0.113.10`, and requires a second forwarded
+  client not to be limited. It then requires a WebSocket upgrade from the public origin to succeed
+  (101) and one from a foreign origin to be refused (403).
+- New deploymentconfig rows:
+  - a JWT half-pair missing its ID;
+  - readable secrets at a non-`/run/secrets` path and a non-normalized path, via a new
+    `movedSecret` helper so a missing file cannot mask the rule;
+  - an origin with userinfo;
+  - an origin with a trailing dot.
+
+**Evidence (cold):**
+- `make test-save-integration SAVE_TEST_PACKAGES='./gameserver' SAVE_TEST_FLAGS='-run TestComposedProductionBoundary -v'`
+  passed with no skip.
+- Severing P11 (hop assignment) failed with "second forwarded client inherited the first client's
+  limit".
+- Severing P12 (origin assignment) failed with a 403 on the configured origin.
+- `make test-go ./deploymentconfig` passed. P7 (prefix), P8 (normalization), P9 (userinfo),
+  P10 (trailing dot) and P3 (half-pair incl. JWT) each now fail their named row.
+- All mutated files were restored, with a clean diff against the implementation.
+
+**Carried:** N3 (duplicate env keys are unreachable through `os.Environ`) and N4 (the shared-env
+allowlist) remain DP-B/`.env`-preflight items.

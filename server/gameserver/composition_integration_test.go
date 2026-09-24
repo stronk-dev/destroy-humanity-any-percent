@@ -1462,3 +1462,95 @@ func readEnvelope(t *testing.T, socket *compositionSocket, channel string) trans
 	t.Fatalf("no publication for %s", channel)
 	return transport.Envelope{}
 }
+
+// TestComposedProductionBoundaryTrustsExactlyOneProxyHopIntegration witnesses
+// the production origin/proxy wiring through the real composed server: one
+// trusted hop keys unauthenticated limits by the forwarded client, and the
+// WebSocket upgrade accepts only the configured public origin.
+func TestComposedProductionBoundaryTrustsExactlyOneProxyHopIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	const cleanDatabase = `TRUNCATE bootstrap_receipts,accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
+	if _, err := db.ExecContext(ctx, cleanDatabase); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if _, err := db.ExecContext(context.Background(), cleanDatabase); err != nil {
+			t.Errorf("clean production-boundary database: %v", err)
+		}
+	})
+	const publicOrigin = "https://play.example.test"
+	composition, err := Compose(ctx, CompositionConfig{
+		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000305",
+		ActivityBracket: "activity.standard", Clock: time.Now,
+		SigningKeys:   account.SigningKeys{CurrentID: "composition-boundary", Current: bytes.Repeat([]byte{0x68}, 32)},
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-boundary", Current: bytes.Repeat([]byte{0x69}, 32)},
+		PublicOrigin:  publicOrigin, TrustedProxyHops: 1,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	serverContext, cancelServer := context.WithCancel(ctx)
+	defer cancelServer()
+	if err := composition.Server.Start(serverContext); err != nil {
+		t.Fatal(err)
+	}
+	httpServer := httptest.NewServer(composition.Server.Handler())
+	defer httpServer.Close()
+	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusNoContent)
+
+	sessionFrom := func(forwardedFor string) int {
+		t.Helper()
+		request, _ := http.NewRequest(http.MethodPost, httpServer.URL+"/api/v1/session", strings.NewReader(`{}`))
+		request.Header.Set("Content-Type", "application/json")
+		request.Header.Set("X-Forwarded-For", forwardedFor)
+		response, err := httpServer.Client().Do(request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_ = response.Body.Close()
+		return response.StatusCode
+	}
+	limited := false
+	for attempt := 0; attempt < 64 && !limited; attempt++ {
+		limited = sessionFrom("203.0.113.10") == http.StatusTooManyRequests
+	}
+	if !limited {
+		t.Fatal("unauthenticated limiter never engaged for one forwarded client")
+	}
+	if status := sessionFrom("203.0.113.20"); status == http.StatusTooManyRequests {
+		t.Fatal("a second forwarded client inherited the first client's limit: the trusted proxy hop is not wired")
+	}
+
+	websocketURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/connection/websocket"
+	dial := func(origin string) (int, error) {
+		dialContext, cancel := context.WithTimeout(ctx, 5*time.Second)
+		defer cancel()
+		connection, response, err := websocket.Dial(dialContext, websocketURL, &websocket.DialOptions{
+			HTTPClient: httpServer.Client(), HTTPHeader: http.Header{"Origin": []string{origin}}})
+		if connection != nil {
+			connection.CloseNow()
+		}
+		if response == nil {
+			return 0, err
+		}
+		return response.StatusCode, err
+	}
+	if status, err := dial(publicOrigin); err != nil || status != http.StatusSwitchingProtocols {
+		t.Fatalf("configured public origin refused: status=%d err=%v", status, err)
+	}
+	if status, err := dial("https://attacker.example"); err == nil || status != http.StatusForbidden {
+		t.Fatalf("foreign origin upgrade status=%d err=%v", status, err)
+	}
+}

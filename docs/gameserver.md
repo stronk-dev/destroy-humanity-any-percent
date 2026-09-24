@@ -17,7 +17,9 @@ Production sets `CLOUD_CLICKER_DEPLOYMENT_MODE=production` and requires:
 - one canonical `CLOUD_CLICKER_PUBLIC_ORIGIN` using HTTPS with no credentials, path, query,
   fragment, uppercase hostname, trailing dot, or redundant `:443` port;
 - `CLOUD_CLICKER_TRUSTED_PROXY_HOPS=1`, wired to account/IP handling, and that same sole origin
-  wired to the WebSocket origin allowlist;
+  wired to the WebSocket origin allowlist. The composed-server Postgres witness proves both: an
+  exhausted unauthenticated limit for one forwarded client does not limit a second forwarded
+  client, and the upgrade accepts the configured origin while refusing a foreign one;
 - `CLOUD_CLICKER_CONTENT_ROOT=/opt/cloud-clicker/content` and a canonical UUID
   `CLOUD_CLICKER_SERVER_ID`;
 - `DATABASE_URL_FILE`, an absolute clean path below `/run/secrets` containing the Postgres URL;

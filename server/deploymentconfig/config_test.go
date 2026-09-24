@@ -79,6 +79,11 @@ func TestProductionConfigRejectsEveryFailClosedFamily(t *testing.T) {
 		{"half previous cursor pair", removeEnv("CLOUD_CLICKER_CURSOR_PREVIOUS_ID")},
 		{"duplicate cursor ID", setEnv("CLOUD_CLICKER_CURSOR_PREVIOUS_ID", "cursor-current")},
 		{"duplicate cursor value", copySecret("/run/secrets/cursor-current", "/run/secrets/cursor-previous")},
+		{"half previous JWT pair without ID", removeEnv("CLOUD_CLICKER_JWT_PREVIOUS_ID")},
+		{"readable secret outside /run/secrets", movedSecret("/run/secrets/database-url", "/etc/cloud-clicker/database-url")},
+		{"non-normalized secret path", movedSecret("/run/secrets/database-url", "/run/secrets/../secrets/database-url")},
+		{"origin with userinfo", setEnv("CLOUD_CLICKER_PUBLIC_ORIGIN", "https://operator:secret@play.example.test")},
+		{"origin with trailing dot", setEnv("CLOUD_CLICKER_PUBLIC_ORIGIN", "https://play.example.test.")},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -199,6 +204,15 @@ func fixtureReader(secrets map[string][]byte) ReadFile {
 }
 
 type fixtureMutation func([]string, map[string][]byte) ([]string, map[string][]byte)
+
+// movedSecret points DATABASE_URL_FILE at another path that the fixture reader
+// can actually read, so only the path rule (not a missing file) can reject it.
+func movedSecret(from, to string) fixtureMutation {
+	return func(environment []string, secrets map[string][]byte) ([]string, map[string][]byte) {
+		secrets[to] = secrets[from]
+		return setEnv("DATABASE_URL_FILE", to)(environment, secrets)
+	}
+}
 
 func setEnv(name, value string) fixtureMutation {
 	return func(environment []string, secrets map[string][]byte) ([]string, map[string][]byte) {
