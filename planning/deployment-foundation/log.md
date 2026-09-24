@@ -3076,3 +3076,25 @@ remedy.
 
 **Limit:** the directory fsync has no crash-simulation witness; it is stated in the docs, not
 proven by a test.
+
+## 2026-09-24 — R17: witness the browser-manifest binding (DP-F advisory 8)
+
+**Process note:** there is no separate predeclaration commit.
+
+**Change (tests only).** `TestBaseRunRejectsRehashedOperatorAuthority` gains two cases:
+- a schema-valid browser result for another manifest, with its digest rebound;
+- a different candidate-manifest artifact, with its digest rebound.
+
+**Findings from severing:**
+- Removing the `browser_result` manifest comparison now fails the new base-run case, so that check
+  is witnessed.
+- Removing the `candidate_manifest` byte comparison is **not** detected, because another binding
+  rejects the same forgery. The check is redundant defence-in-depth and not independently
+  load-bearing, consistent with the advisory note. No claim is made that it is.
+- The same two cases placed in the *final-run* table
+  (`TestRunValidationRejectsForgedArtifactsAndStepAggregation`) passed with either check removed.
+  Rewriting the final evidence breaks its seal binding to the unchanged base evidence. The
+  existing "rehashed …" rows in that table therefore mostly witness the seal rather than their
+  named typed checks.
+  - Typed-artifact witnesses belong in the base-run table.
+  - Auditing the existing final-run rows individually is a recorded follow-up for Codex.

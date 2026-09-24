@@ -214,6 +214,27 @@ func TestBaseRunRejectsRehashedOperatorAuthority(t *testing.T) {
 			mustRewrite(t, path, data)
 			setArtifactDigest(base, "backup_header", hashBytes(data))
 		},
+		"valid browser result for another manifest": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["browser_result"])
+			result, err := deploymentbrowser.DecodeResult(mustRead(t, path))
+			if err != nil {
+				t.Fatal(err)
+			}
+			result.ManifestSHA256 = hashForBuild("9")
+			data, _ := json.Marshal(result)
+			data = append(data, '\n')
+			if _, err := deploymentbrowser.DecodeResult(data); err != nil {
+				t.Fatalf("forged browser result must stay schema-valid: %v", err)
+			}
+			mustRewrite(t, path, data)
+			setArtifactDigest(base, "browser_result", hashBytes(data))
+		},
+		"different candidate manifest artifact": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["candidate_manifest"])
+			data := append(mustRead(t, path), '\n')
+			mustRewrite(t, path, data)
+			setArtifactDigest(base, "candidate_manifest", hashBytes(data))
+		},
 		"short rotation": func(t *testing.T, fixture *boundFixture, base *Evidence) {
 			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["rotation_ledger"])
 			records, err := deploymentrelease.DecodeRotationLedger(mustRead(t, path))
