@@ -2607,3 +2607,32 @@ fail its test.
 **F4.** The crash-temp witness uses Create's real dot-prefixed names. Docs gain the operator
 guidance that the target must be a dedicated directory, not a filesystem root containing
 `lost+found`.
+
+## 2026-09-24 — R6 implemented: backup schedule and checksum witnesses
+
+**Implementation:**
+- `deploymentbackup.InspectTarget` and `RemoveStaleTemporaries` classify the target (new
+  `target.go`).
+- `cmd/deployment-backup` `scheduleRound` inspects the target before creating: it removes stale
+  own temporaries, defers on active temporaries, and blocks with a failure record and no create on
+  foreign or invalid entries.
+- The loop waits five minutes after deferred/blocked rounds and six hours after a created round,
+  and never exits for a blocked target.
+
+**Evidence (cold):** `make test-go` over deploymentbackup and cmd/deployment-backup passed. New
+tests:
+- `TestScheduleRoundNeverCreatesIntoABlockedTarget`: `lost+found` and a corrupt backup block with
+  zero creates and a failure record; a stale `.backup-envelope-*.tmp` is removed and the round
+  creates; an active `.backup-payload-*.tmp` defers without a failure.
+- `TestHeaderChecksumGuardsScheduleRetentionAndRestore`: a truncated payload with an intact header
+  is invalid for `ReadHeader`, `PlanRetention` and `EvaluateSchedule`. A same-ID substituted but
+  age-valid payload is refused by `Restore` and `ReadHeader`.
+
+**Severing probes, all restored:**
+- dropping Restore's length/sha check failed the swapped-payload case;
+- dropping ReadHeader's length/sha check failed both cases;
+- disabling stale classification failed the stale-temporary round.
+
+**Process note:** `target.go` was untracked during probing, so `git checkout` could not restore
+it. The one-line mutation was restored manually, and that line was re-verified before the green
+rerun.

@@ -239,3 +239,68 @@ func (reader *errorReader) Read(target []byte) (int, error) {
 	copy(target[:n], bytes.Repeat([]byte{'x'}, n))
 	return n, nil
 }
+
+func TestHeaderChecksumGuardsScheduleRetentionAndRestore(t *testing.T) {
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 9, 24, 12, 0, 0, 0, time.UTC)
+	manifest := "sha256:" + strings.Repeat("a", 64)
+	create := func(t *testing.T, directory string, dump []byte) (Header, string) {
+		t.Helper()
+		header, path, err := Create(CreateInput{Directory: directory, BackupID: "20260924T110000Z-abcdef123456",
+			ServerID: "01986666-b001-4000-8000-000000000001", ReleaseManifestSHA256: manifest, EpochID: 8,
+			StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String(), Dump: bytes.NewReader(dump)})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return header, path
+	}
+	splitEnvelope := func(t *testing.T, path string) ([]byte, []byte) {
+		t.Helper()
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		first := bytes.IndexByte(data, '\n')
+		second := bytes.IndexByte(data[first+1:], '\n') + first + 1
+		return data[:second+1], data[second+1:]
+	}
+
+	t.Run("truncated payload with intact header", func(t *testing.T) {
+		directory := t.TempDir()
+		_, path := create(t, directory, []byte("PGDMP\x01truncation fixture"))
+		prefix, payload := splitEnvelope(t, path)
+		if err := os.WriteFile(path, append(append([]byte(nil), prefix...), payload[:len(payload)-1]...), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := ReadHeader(path); !errors.Is(err, ErrInvalid) {
+			t.Fatalf("truncated payload header accepted: %v", err)
+		}
+		if plan := PlanRetention([]string{path}, now); len(plan.Invalid) != 1 || len(plan.Keep) != 0 {
+			t.Fatalf("truncated backup counted as retainable: %+v", plan)
+		}
+		if status := EvaluateSchedule([]string{path}, now); !status.Missing || len(status.Invalid) != 1 {
+			t.Fatalf("truncated backup counted as newest valid: %+v", status)
+		}
+	})
+
+	t.Run("swapped authenticated payload", func(t *testing.T) {
+		header, original := create(t, t.TempDir(), []byte("PGDMP\x01original"))
+		_, other := create(t, t.TempDir(), []byte("PGDMP\x01substituted dump of the same length"))
+		prefix, _ := splitEnvelope(t, original)
+		_, substitute := splitEnvelope(t, other)
+		if err := os.WriteFile(original, append(append([]byte(nil), prefix...), substitute...), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		// Age authentication and the encrypted header copy both still verify;
+		// only the plaintext header's payload length/checksum binds the bytes.
+		if _, err := Restore(original, manifest, identity, &bytes.Buffer{}); !errors.Is(err, ErrInvalid) {
+			t.Fatalf("substituted payload restored under header %s: %v", header.PayloadSHA256, err)
+		}
+		if _, err := ReadHeader(original); !errors.Is(err, ErrInvalid) {
+			t.Fatalf("substituted payload header accepted: %v", err)
+		}
+	})
+}

@@ -101,6 +101,72 @@ func runCreate(ctx context.Context, args []string) error {
 	return emit(map[string]any{"status": "completed", "backup": path, "header": header})
 }
 
+const scheduleRetryInterval = 5 * time.Minute
+
+type scheduleOutcome string
+
+const (
+	scheduleCreated  scheduleOutcome = "completed"
+	scheduleDeferred scheduleOutcome = "deferred"
+	scheduleBlocked  scheduleOutcome = "blocked"
+)
+
+// scheduleRound is one scheduled-backup decision. It inspects the complete
+// target before writing anything: a foreign entry or invalid backup records a
+// visible failure and creates nothing, so a blocked target can neither fill
+// with repeated backups nor push the worker into a restart loop.
+type scheduleRound struct {
+	target, metricsDirectory string
+	now                      func() time.Time
+	create                   func(started time.Time) (deploymentbackup.Header, string, error)
+	emit                     func(any) error
+}
+
+func (round scheduleRound) run() (scheduleOutcome, error) {
+	started := round.now().UTC()
+	fail := func(reason string, detail map[string]any, cause error) (scheduleOutcome, error) {
+		detail["status"], detail["reason"] = string(scheduleBlocked), reason
+		return scheduleBlocked, errors.Join(cause, round.emit(detail),
+			operations.RecordOperation(round.metricsDirectory, "backup", "failure", round.now().UTC()))
+	}
+	state, err := deploymentbackup.InspectTarget(round.target, started)
+	if err != nil {
+		return fail("target_unreadable", map[string]any{}, err)
+	}
+	if err := deploymentbackup.RemoveStaleTemporaries(state, started); err != nil {
+		return fail("stale_temporary_cleanup", map[string]any{"stale_temporaries": len(state.StaleTemporaries)}, err)
+	}
+	if len(state.ActiveTemporaries) != 0 {
+		return scheduleDeferred, round.emit(map[string]any{"status": string(scheduleDeferred), "reason": "backup_in_progress",
+			"active_temporaries": len(state.ActiveTemporaries), "removed_stale_temporaries": len(state.StaleTemporaries)})
+	}
+	plan := deploymentbackup.PlanRetention(state.Backups, started)
+	if len(state.Foreign) != 0 || len(plan.Invalid) != 0 {
+		foreign := make([]string, len(state.Foreign))
+		for index, path := range state.Foreign {
+			foreign[index] = filepath.Base(path)
+		}
+		invalid := make([]string, len(plan.Invalid))
+		for index, path := range plan.Invalid {
+			invalid[index] = filepath.Base(path)
+		}
+		return fail("target_not_exclusive_or_invalid", map[string]any{"foreign": foreign, "invalid": invalid}, nil)
+	}
+	header, path, err := round.create(started)
+	if err != nil {
+		return fail("create_failed", map[string]any{}, err)
+	}
+	if err := operations.RecordOperation(round.metricsDirectory, "backup", "success", header.CompletedAt); err != nil {
+		return scheduleBlocked, err
+	}
+	retention, err := deploymentbackup.ApplyRetention(append(append([]string(nil), state.Backups...), path), round.now().UTC())
+	if err != nil {
+		return fail("retention_failed", map[string]any{}, err)
+	}
+	return scheduleCreated, round.emit(map[string]any{"status": string(scheduleCreated), "backup": path, "header": header,
+		"retention": retention, "removed_stale_temporaries": len(state.StaleTemporaries)})
+}
+
 func runSchedule(ctx context.Context, args []string) error {
 	flags, err := parseCreateFlags("schedule", args)
 	if err != nil {
@@ -109,30 +175,22 @@ func runSchedule(ctx context.Context, args []string) error {
 	if flags.preUpgrade {
 		return errors.New("scheduled backups cannot be marked pre-upgrade")
 	}
+	round := scheduleRound{target: flags.target, metricsDirectory: flags.metricsDirectory, now: time.Now, emit: emit,
+		create: func(started time.Time) (deploymentbackup.Header, string, error) {
+			return createOnce(ctx, flags, started)
+		}}
 	for {
 		started := time.Now().UTC()
-		header, path, err := createOnce(ctx, flags, started)
+		outcome, err := round.run()
 		if err != nil {
-			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
+			slog.New(slog.NewJSONHandler(os.Stderr, nil)).Error("scheduled backup round failed", "outcome", string(outcome), "error_class", "operation_failed")
 		}
-		paths, err := backupPaths(flags.target)
-		if err != nil {
-			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
-		}
-		if err := operations.RecordOperation(flags.metricsDirectory, "backup", "success", header.CompletedAt); err != nil {
-			return err
-		}
-		plan, err := deploymentbackup.ApplyRetention(paths, time.Now().UTC())
-		if err != nil {
-			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
-		}
-		if err := emit(map[string]any{"status": "completed", "backup": path, "header": header, "retention": plan}); err != nil {
-			return errors.Join(err, operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
-		}
-		next := started.Add(scheduleInterval)
-		delay := time.Until(next)
-		if delay <= 0 {
-			return errors.Join(errors.New("backup exceeded its six-hour schedule interval"), operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
+		delay := scheduleRetryInterval
+		if outcome == scheduleCreated {
+			delay = time.Until(started.Add(scheduleInterval))
+			if delay <= 0 {
+				return errors.Join(errors.New("backup exceeded its six-hour schedule interval"), operations.RecordOperation(flags.metricsDirectory, "backup", "failure", time.Now().UTC()))
+			}
 		}
 		timer := time.NewTimer(delay)
 		select {

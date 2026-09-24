@@ -359,8 +359,27 @@ after all of the following succeed:
 - the encrypted checksum is verified, synced and atomically renamed to `<backup-id>.ccbackup`.
 
 No unencrypted dump is written to the off-host target. Interrupted reads and writes remove their
-temporary output; a crash-surviving temporary or otherwise invalid file makes the next retention
-pass fail rather than disappear quietly.
+temporary output.
+
+Every scheduled round classifies the complete target *before* writing anything:
+- **Completed backups:** regular `*.ccbackup` files.
+- **The helper's own temporaries** (`.backup-payload-*.tmp` / `.backup-envelope-*.tmp`):
+  - *Stale:* unmodified for more than one hour. These are crash debris; the round removes them and
+    reports the count.
+  - *Active:* possibly a concurrent pre-upgrade backup. The round defers, records no failure, and
+    retries in five minutes.
+- **Foreign entries:** anything else. A foreign entry or an invalid/corrupt backup records a
+  backup failure, which fires the any-failure alert, and the round creates nothing and retries in
+  five minutes.
+
+The worker never exits for a blocked target, so a blocked target cannot fill with repeated backups
+or drive a restart loop. The backup target must therefore be a dedicated directory; a filesystem
+root containing `lost+found` blocks backups until the operator points the target at a
+subdirectory.
+
+The plaintext header's payload length and SHA-256 are verified on every read. A truncated or
+substituted payload is invalid for schedule, retention and restore, even when age authentication
+and the encrypted header copy would still verify.
 
 The retention policy keeps every completed six-hour backup for seven days, then one completed
 backup per UTC day through day 30. It always protects the newest valid backup and every unresolved
