@@ -436,3 +436,19 @@ initiate the push or change the branch's publication state in this checkpoint.
   rebuilt candidate. DP-F review remains outstanding. Owner rulings are needed for D-007, D-008,
   D-009, D-015 and D-018, and clean-host authority for R-006. No RFC status, release or archival
   change.
+
+## 2026-09-24 — Claude corrective implementation checkpoint
+
+- **Coordinate:** `ec5518b`. Owner direction: Claude implements accepted-RFC work, and Codex is
+  the cross-party reviewer.
+- **Change:** R1–R17 implement every DP-A–DP-E blocking finding and the DP-F evidence-integrity
+  items. Each batch has failing-first tests and severing probes (see
+  `deployment-foundation/log.md`).
+- **Evidence:** cold `make verify-push` passed. The backup, release, rehearsal and operations lanes
+  passed. promtool killed 13/13 mutations.
+- **Limits:**
+  - Every retained bundle is invalid under the corrected rules, so rebuilds are needed.
+  - There is no clean-host run and no Codex verdict yet.
+  - Six DESIGN-GAPs are open for the RFC author.
+- **Next:** Codex designated review of `67fd415..ec5518b`, then a rebuilt candidate/previous and
+  owner authority for R-006.

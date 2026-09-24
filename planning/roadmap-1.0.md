@@ -82,11 +82,13 @@ RFCs before implementation. No date or team-capacity promise is inferred.
 
 ## Current next moves
 
-1. Codex repairs the DP-A–DP-E CHANGES REQUIRED findings in
-   `planning/deployment-foundation/log.md` (2026-09-24 entries) as predeclared corrective ranges,
-   each followed by a fresh Claude designated pass. The corrective range `7b510df..cf4ac25` is
-   approved; its C2 offset-dedupe witness is a carried follow-up. Rebuild the candidate bundles
-   after the product fixes; the current `7e8aa70` candidate carries the defects.
+1. Codex designated review of Claude's owner-directed corrective range `67fd415..ec5518b`
+   (R1–R17, `planning/deployment-foundation/claude-corrective-handoff.md`), which implements every
+   DP-A–DP-E blocking finding and the DP-F evidence-integrity items. Then rebuild the candidate and
+   previous bundles from reviewed source; every retained bundle is invalid under the corrected rules.
+   The RFC author must rule on six recorded DESIGN-GAPs: RPO semantics, per-family alert attribution,
+   `UpgradeResolved`, overlay granularity, the previous-bundle security floor and asserted host
+   fields.
 2. Continue the accepted Deployment Foundation DP-F plan: take the byte-matched local candidate
    through designated review and an authorized clean Linux host, then execute and sever the browser
    journey, board-arrival gate, recovery and rollback on those exact candidate/previous bundles.
