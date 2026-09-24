@@ -75,9 +75,16 @@ func observeHost(ctx context.Context, config ScenarioConfig, dependencies hostOb
 	if err != nil || strings.TrimSpace(string(containers)) != "" {
 		return HostObservation{}, errors.Join(ErrInvalid, err)
 	}
-	volumes, err := dependencies.runner.Run(ctx, config.WorkDirectory, "docker", "volume", "ls", "--quiet", "--filter=name=^cloud-clicker_postgres_data$")
-	if err != nil || strings.TrimSpace(string(volumes)) != "" {
+	// A clean start owns no project volume at all: retained certificates,
+	// metrics or alert state are prior operator state, not a fresh host.
+	volumes, err := dependencies.runner.Run(ctx, config.WorkDirectory, "docker", "volume", "ls", "--quiet", "--filter=name=^cloud-clicker_")
+	if err != nil {
 		return HostObservation{}, errors.Join(ErrInvalid, err)
+	}
+	for _, name := range strings.Fields(string(volumes)) {
+		if strings.HasPrefix(name, "cloud-clicker_") {
+			return HostObservation{}, ErrInvalid
+		}
 	}
 	completed := dependencies.now().UTC()
 	observation := HostObservation{SchemaVersion: 1, StartedAt: started, CompletedAt: completed,

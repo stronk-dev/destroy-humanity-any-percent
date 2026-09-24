@@ -3311,3 +3311,20 @@ activation plus a governed-clock removal fixture, or a long-running observation.
 - provider-off operation.
 
 No host run has happened.
+
+## 2026-09-24 — R21: host clean-start covers every project volume; DESIGN-GAP 6 corrected
+
+**Correction to DESIGN-GAP 6.** Reading `deploymentrehearsal/host.go` shows `SourceCheckoutAbsent`
+and `ProviderCredentialsAbsent` are **already derived**. `sourceMetadataAbsent` (no `.git` ancestor
+of any scenario path) and `providerCredentialsAbsent` (a closed environment-variable family list)
+gate the observation, and the literal `true` values are written only after those checks pass.
+`RestoredIdentityMatch` in the objective observation remains a producer-set literal (advisory F6),
+and the kernel/Docker strings are observed command output. Gap 6 is narrowed to
+`RestoredIdentityMatch` only.
+
+**Fix.** Clean start checked only `cloud-clicker_postgres_data`. The host observer now refuses any
+`cloud-clicker_*` volume, consistent with R13's install rule, so a host carrying retained Caddy
+certificates or metrics/alert state is not reported as a clean start.
+
+**Evidence.** A new `retained certificate volume` host negative. Reverting to the Postgres-only
+check fails it; the change was restored. `make test-go ./deploymentrehearsal` passed.
