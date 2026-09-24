@@ -3153,3 +3153,43 @@ had no witness and no description.
 - **Checks.** `make typecheck` passed, and the runtime suite passed 12/12.
 
 This is Claude-authored client test and doc work, for Codex review.
+
+## 2026-09-24 — Diagnostic rebuild under corrected rules; real R3/R4/R12/R14/R15 checks
+
+**What was built.**
+- Source: clean HEAD `b60a86e`, source timestamp `2026-09-24T12:50:45Z`.
+- One tree per role:
+  - `diag-previous` (`0.1.0-preview.3`);
+  - `diag-candidate` (`0.1.0-preview.4`).
+- Each tree contains the six Linux/amd64 commands, client, staged content, a no-cache gameserver
+  archive, a real Syft SBOM for the new gameserver image, metadata (53 dependencies, including
+  `pad-end` and `tslib`) and a 72-artifact bundle.
+- Assembly ran the corrected `ValidateBundle` and the layer-opening image scan.
+- Candidate gameserver config: `sha256:bb1e0575a869299073e843a6e968d991b7c7465b4b3f8ece0ccd2ba15c2366bf`.
+- Candidate manifest: `sha256:434c0675c548e4d448883d17a001be5ae1d6653b1b06f709bf1db356ef5bc547`.
+
+**Diagnostic limits (not release evidence):**
+- one tree per role, with no two-tree reproducibility comparison;
+- the six upstream normalized SBOMs reused from `candidate-v5a` (config IDs unchanged);
+- the build records for the supply-chain run written from the actual bytes, with operator-attested
+  flags copied, and not committed;
+- `planning/deployment-foundation/release-builds/*.json` unchanged, still naming v5, which is now
+  invalid.
+
+**Real results on these bundles:**
+- **Positive probe.** `six_image_sbom_license_provenance` exits 0, so both bundles validate under
+  the corrected rules.
+- **Negative probes.** All 24 real negative probes exit **3**. This covers every `removed_*` and
+  `changed_*` probe with a rebound manifest (semantic rejection, R15), `seeded_image_secret` inside
+  a gzip layer (R3), config, alert, journal, objective, backup and host probes, and
+  `interrupted_backup_writer`.
+- **Missing probe.** `non_clean_restore_target` exits **2**: it has no probe yet, and fails loudly
+  (R12).
+- **Secret scan.** `make release-secret-scan` covered 1,446 tracked files plus the new image
+  archive with its layers opened, and reported 0 findings.
+- **Supply chain (R14).** `make deployment-rehearsal-supply-chain` with byte-true records exited 0.
+  A wrong gameserver SBOM, a self-consistent wrong archive pair and a wrong Playwright config each
+  failed. These are the three cases the DP-F advisory pass showed being *accepted* before R14.
+
+**Still not done.** There is no clean-host R-006 run, no two-tree reproducible candidate record, no
+Codex review of the source, and no owner authority for the host.
