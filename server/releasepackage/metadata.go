@@ -72,10 +72,11 @@ type spdxHeader struct {
 	CreationInfo      CreationInfo `json:"creationInfo"`
 }
 
-var spdxLicense = regexp.MustCompile(`^(Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|MIT)( AND (Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|MIT))*$`)
+var spdxLicense = regexp.MustCompile(`^(0BSD|Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|MIT)( AND (0BSD|Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|MIT))*$`)
 
 func DetectPermissiveLicense(text string) (string, error) {
-	normalized := strings.ToLower(strings.ReplaceAll(text, "\r\n", "\n"))
+	// Collapse all whitespace so wrapped license lines match their clauses.
+	normalized := strings.Join(strings.Fields(strings.ToLower(text)), " ")
 	licenses := []string{}
 	if strings.Contains(normalized, "apache license") && strings.Contains(normalized, "version 2.0") {
 		licenses = append(licenses, "Apache-2.0")
@@ -83,10 +84,17 @@ func DetectPermissiveLicense(text string) (string, error) {
 	if strings.Contains(normalized, "permission is hereby granted, free of charge") && strings.Contains(normalized, "the software is provided \"as is\"") {
 		licenses = append(licenses, "MIT")
 	}
-	if strings.Contains(normalized, "permission to use, copy, modify, and distribute this software") &&
+	if (strings.Contains(normalized, "permission to use, copy, modify, and distribute this software") ||
+		strings.Contains(normalized, "permission to use, copy, modify, and/or distribute this software")) &&
 		strings.Contains(normalized, "with or without fee is hereby granted") &&
 		strings.Contains(normalized, "the software is provided \"as is\"") {
-		licenses = append(licenses, "ISC")
+		// ISC requires the notice to be retained; 0BSD is the same grant
+		// without that condition.
+		if strings.Contains(normalized, "provided that the above copyright notice") {
+			licenses = append(licenses, "ISC")
+		} else {
+			licenses = append(licenses, "0BSD")
+		}
 	}
 	if strings.Contains(normalized, "redistribution and use in source and binary forms") {
 		if strings.Contains(normalized, "neither the name") {

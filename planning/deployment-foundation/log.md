@@ -2694,3 +2694,31 @@ neither notice is delivered.
   fails, and 0BSD and ISC texts classify correctly.
 - A real run of `make generate-release-metadata` against the current build must list `pad-end` and
   `tslib`.
+
+## 2026-09-24 — R8 implemented: shipped client attribution
+
+**Implementation:**
+- `gen-release-metadata` discovers npm packages from `client/dist/**/*.map` sources, resolving
+  each to its package root (scoped packages supported) with `package.json` license equal to the
+  detected LICENSE.
+- `DetectPermissiveLicense` collapses whitespace, and the ISC-form grant becomes `0BSD` when the
+  notice-retention clause is absent.
+- The SPDX license pattern admits `0BSD`. This is the explicit license-policy expansion
+  predeclared at `6214874`.
+
+**Evidence:**
+- New unit tests: `TestClientInventoryFollowsShippedModulesNotDirectDependencies` covers a
+  transitive and a scoped package, a license mismatch and a missing build.
+  `TestDetectPermissiveLicenseSeparatesISCAndZeroClauseBSD` covers both classifications.
+- The existing `TestDetectPermissiveLicenseRecognizesISC` initially failed because wrapped real
+  ISC text split the notice clause. That failure led to the whitespace normalization.
+- A real `make build-client` plus `make generate-release-metadata` produced 53 dependencies. The
+  npm set is exactly `@antimatter-dimensions/notations@1.6.0`, `break_infinity.js@2.2.0`,
+  `pad-end@1.0.2`, `svelte@5.56.8` and `tslib@2.8.1`.
+- Diffing licenseConcluded against the retained v5 candidate SBOM shows only those two additions;
+  no Go dependency was reclassified by the normalization.
+- Severing probes (both failed, both restored): disabling scoped resolution, and mapping 0BSD to
+  ISC.
+
+**Process note:** `releasepackage/bundle_test.go` was committed unformatted in R4 (`751717f`). It
+is gofmt'd in this range.

@@ -459,8 +459,10 @@ func TestValidateBundleBindsManifestClaimsToComposeAndContent(t *testing.T) {
 		"postgres digest":   image("postgres"),
 		"prometheus digest": image("prometheus"),
 		"epoch id":          func(manifest *ReleaseManifest, _ string) { manifest.EpochID += 91 },
-		"constants hash":    func(manifest *ReleaseManifest, _ string) { manifest.ConstantsHash = "sha256:" + strings.Repeat("e", 64) },
-		"copy hash":         func(manifest *ReleaseManifest, _ string) { manifest.CopyHash = "sha256:" + strings.Repeat("e", 64) },
+		"constants hash": func(manifest *ReleaseManifest, _ string) {
+			manifest.ConstantsHash = "sha256:" + strings.Repeat("e", 64)
+		},
+		"copy hash": func(manifest *ReleaseManifest, _ string) { manifest.CopyHash = "sha256:" + strings.Repeat("e", 64) },
 		"removed catalog with rebound manifest": func(manifest *ReleaseManifest, root string) {
 			const catalog = "content/balance/catalogs/phase0.json"
 			if err := os.Remove(filepath.Join(root, catalog)); err != nil {

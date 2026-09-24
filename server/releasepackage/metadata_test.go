@@ -79,3 +79,14 @@ func TestValidateSPDXRejectsPlausibleButUnidentifiedJSON(t *testing.T) {
 		t.Fatalf("unidentified JSON accepted as SPDX: %v", err)
 	}
 }
+
+func TestDetectPermissiveLicenseSeparatesISCAndZeroClauseBSD(t *testing.T) {
+	grant := "Permission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted"
+	disclaimer := "\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES.\n"
+	if license, err := DetectPermissiveLicense(grant + "." + disclaimer); err != nil || license != "0BSD" {
+		t.Fatalf("0BSD text license=%q err=%v", license, err)
+	}
+	if license, err := DetectPermissiveLicense(grant + ", provided that the above copyright notice and this permission notice appear in all copies." + disclaimer); err != nil || license != "ISC" {
+		t.Fatalf("ISC text license=%q err=%v", license, err)
+	}
+}

@@ -74,10 +74,14 @@ actual secret files.
 gameserver, deployment-backup, deployment-release, deployment-operations, deployment-rehearsal and
 deployment-browser
 commands (not the much larger `go.sum`
-graph), adds the Go standard library, and reads the
-three exact browser runtime dependencies from `client/package.json` plus their installed package
-manifests. It reads shipped LICENSE/COPYING bytes directly, recognizes only the audited MIT,
-ISC, Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
+graph), adds the Go standard library, and derives the browser inventory from the built client's
+own sourcemaps (`client/dist/**/*.map`): every shipped module under `node_modules/` resolves to its
+exact installed package directory, so transitive packages the bundler inlines (currently `pad-end`
+and `tslib`) are attributed, and an aliased version (`break_infinity.js` 2.2.0, not the 1.3.0 that
+the notations package also installs) is attributed as shipped. The client must be built with
+sourcemaps first; a missing build fails. It reads shipped LICENSE/COPYING bytes directly
+(whitespace-normalized so wrapped clauses match), recognizes only the audited 0BSD, MIT, ISC,
+Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
 
 The outputs are `third-party-licenses.txt` and an SPDX-2.3 JSON document with package-manager purls,

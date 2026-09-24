@@ -17,10 +17,6 @@ import (
 	"cloud-clicker/server/releasepackage"
 )
 
-type clientManifest struct {
-	Dependencies map[string]string `json:"dependencies"`
-}
-
 type packageManifest struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
@@ -141,41 +137,104 @@ func discoverGoDependencies(root string) ([]releasepackage.Dependency, error) {
 	return result, nil
 }
 
+// discoverClientDependencies inventories exactly the npm packages whose
+// modules the built client ships, from the build's own sourcemaps. Direct
+// package.json entries are not the shipped graph: bundlers inline transitive
+// packages and aliases can select a different installed version.
 func discoverClientDependencies(root string) ([]releasepackage.Dependency, error) {
-	data, err := os.ReadFile(filepath.Join(root, "client", "package.json"))
-	if err != nil {
-		return nil, err
+	dist := filepath.Join(root, "client", "dist")
+	var maps []string
+	err := filepath.WalkDir(dist, func(path string, entry os.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".map") {
+			maps = append(maps, path)
+		}
+		return nil
+	})
+	if err != nil || len(maps) == 0 {
+		return nil, fmt.Errorf("%w: build the client with sourcemaps before inventorying shipped dependencies: %v", releasepackage.ErrInvalidContent, err)
 	}
-	var manifest clientManifest
-	if json.Unmarshal(data, &manifest) != nil || len(manifest.Dependencies) == 0 {
-		return nil, fmt.Errorf("%w: client dependency manifest", releasepackage.ErrInvalidContent)
+	sort.Strings(maps)
+	packages := map[string]string{}
+	for _, mapPath := range maps {
+		data, err := os.ReadFile(mapPath)
+		if err != nil {
+			return nil, err
+		}
+		var sourceMap struct {
+			SourceRoot string   `json:"sourceRoot"`
+			Sources    []string `json:"sources"`
+		}
+		if json.Unmarshal(data, &sourceMap) != nil || len(sourceMap.Sources) == 0 {
+			return nil, fmt.Errorf("%w: unreadable sourcemap %s", releasepackage.ErrInvalidContent, filepath.Base(mapPath))
+		}
+		for _, source := range sourceMap.Sources {
+			if !strings.Contains(source, "node_modules/") {
+				continue
+			}
+			resolved := filepath.Clean(filepath.Join(filepath.Dir(mapPath), filepath.FromSlash(sourceMap.SourceRoot), filepath.FromSlash(source)))
+			directory, err := packageDirectory(resolved)
+			if err != nil {
+				return nil, fmt.Errorf("%w: shipped module %s has no package manifest", releasepackage.ErrInvalidContent, source)
+			}
+			packages[directory] = source
+		}
 	}
-	names := make([]string, 0, len(manifest.Dependencies))
-	for name := range manifest.Dependencies {
-		names = append(names, name)
+	directories := make([]string, 0, len(packages))
+	for directory := range packages {
+		directories = append(directories, directory)
 	}
-	sort.Strings(names)
-	result := make([]releasepackage.Dependency, 0, len(names))
-	for _, name := range names {
-		directory := filepath.Join(root, "client", "node_modules", filepath.FromSlash(name))
+	sort.Strings(directories)
+	result := make([]releasepackage.Dependency, 0, len(directories))
+	seen := map[string]bool{}
+	for _, directory := range directories {
 		packageBytes, err := os.ReadFile(filepath.Join(directory, "package.json"))
 		if err != nil {
 			return nil, err
 		}
 		var installed packageManifest
-		if json.Unmarshal(packageBytes, &installed) != nil || installed.Name != name || installed.Version != manifest.Dependencies[name] {
-			return nil, fmt.Errorf("%w: installed client dependency %s expected=%s got=%s@%s", releasepackage.ErrInvalidContent, name, manifest.Dependencies[name], installed.Name, installed.Version)
+		if json.Unmarshal(packageBytes, &installed) != nil || installed.Name == "" || installed.Version == "" {
+			return nil, fmt.Errorf("%w: shipped package manifest %s", releasepackage.ErrInvalidContent, directory)
 		}
+		identity := installed.Name + "@" + installed.Version
+		if seen[identity] {
+			continue
+		}
+		seen[identity] = true
 		text, detected, err := licenseAt(directory)
 		if err != nil || installed.License != detected {
-			return nil, fmt.Errorf("%s: package license mismatch: %w", name, err)
+			return nil, fmt.Errorf("%s: package license mismatch declared=%q detected=%q: %w", identity, installed.License, detected, err)
 		}
-		escaped := strings.ReplaceAll(name, "/", "%2f")
-		archive := strings.TrimPrefix(name[strings.LastIndex(name, "/")+1:], "@") + "-" + installed.Version + ".tgz"
-		result = append(result, releasepackage.Dependency{Name: name, Version: installed.Version, Kind: "npm", License: detected, LicenseText: text,
-			Download: "https://registry.npmjs.org/" + escaped + "/-/" + archive, PackageURL: "pkg:npm/" + name + "@" + installed.Version})
+		escaped := strings.ReplaceAll(installed.Name, "/", "%2f")
+		archive := strings.TrimPrefix(installed.Name[strings.LastIndex(installed.Name, "/")+1:], "@") + "-" + installed.Version + ".tgz"
+		result = append(result, releasepackage.Dependency{Name: installed.Name, Version: installed.Version, Kind: "npm", License: detected, LicenseText: text,
+			Download: "https://registry.npmjs.org/" + escaped + "/-/" + archive, PackageURL: "pkg:npm/" + installed.Name + "@" + installed.Version})
+	}
+	if len(result) == 0 {
+		return nil, fmt.Errorf("%w: built client ships no npm package", releasepackage.ErrInvalidContent)
 	}
 	return result, nil
+}
+
+// packageDirectory walks up from a shipped module to the nearest enclosing
+// package root directly beneath a node_modules directory.
+func packageDirectory(module string) (string, error) {
+	for directory := filepath.Dir(module); ; directory = filepath.Dir(directory) {
+		parent := filepath.Dir(directory)
+		scopedParent := filepath.Dir(parent)
+		underModules := filepath.Base(parent) == "node_modules" ||
+			strings.HasPrefix(filepath.Base(parent), "@") && filepath.Base(scopedParent) == "node_modules"
+		if underModules {
+			if _, err := os.Stat(filepath.Join(directory, "package.json")); err == nil {
+				return directory, nil
+			}
+		}
+		if parent == directory {
+			return "", os.ErrNotExist
+		}
+	}
 }
 
 func licenseAt(directory string) (string, string, error) {
