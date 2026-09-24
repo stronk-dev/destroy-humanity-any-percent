@@ -3362,3 +3362,40 @@ build-graph licence inventory.
 - The six upstream SBOMs were reused rather than regenerated.
 - Nothing was reviewed, and `release-builds/*.json` is not updated.
 - This is not R-006.
+
+## 2026-09-24 — R22: restart-during-admitted-work producer
+
+**Process note:** there is no separate predeclaration commit. The scope is the DP-F predeclared
+negative "gameserver restart during admitted work", which had no producer.
+
+**Change:**
+- `deploymentrelease.DockerRuntime.KillGameserver` sends `docker kill --signal=KILL`, observes
+  readiness through the R9 rule (only the gameserver's own 503 counts) and inspects the exit code,
+  then derives evidence with the release's `deriveDrainEvidence`. There is no courtesy or socket
+  observation.
+- The new rehearsal producer `restart-admitted-work` (CLI, bound to
+  `gameserver_restart_during_admitted_work`):
+  1. requires the exact candidate install row;
+  2. kills the gameserver;
+  3. always restores service (`Start` plus `AuthenticatedSmoke`);
+  4. exits 3 only when the evidence is invalid, the exit is non-zero and service is restored.
+  An accepted graceful drain exits 0, and an unrestored host exits 2.
+
+**Evidence:**
+- `TestKillGameserverIsNeverABoundedDrain`: a recording runner returns exit 137 and the proxy
+  answers 502. The evidence is invalid, with no readiness, courtesy or intent refusal.
+- `TestRestartDuringAdmittedWorkRequiresARejectedDrainAndRestoredService` covers: rejected with
+  restore and smoke; a graceful drain accepted; an unrestored host not rejected; no install means
+  no kill.
+- Severing the producer classification and forging the kill derivation each fail their test; both
+  were restored.
+- `make test-go` over deploymentrelease, deploymentrehearsal and cmd/deployment-rehearsal passed.
+
+**Coverage:** producer-backed populations are now 32 of 43. Still without a producer:
+- key overlap (DESIGN-GAP 7);
+- alert delivery (DESIGN-GAP 2);
+- journal budget, which needs workload/max-use inputs the strict scenario schema does not carry
+  (a contract addition);
+- provider-off operation (a composite row with no single command defined).
+
+No host run has happened.

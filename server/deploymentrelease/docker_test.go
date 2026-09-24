@@ -736,3 +736,34 @@ func TestRecoveryCoreStartsEverySmokeDependency(t *testing.T) {
 		}
 	}
 }
+
+func TestKillGameserverIsNeverABoundedDrain(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	runner := &commandFixture{output: func(call []string) ([]byte, error) {
+		joined := strings.Join(call, " ")
+		switch {
+		case strings.Contains(joined, " ps --quiet gameserver"):
+			return []byte("gameserver-container\n"), nil
+		case strings.HasPrefix(joined, "docker kill --signal=KILL gameserver-container"):
+			return nil, nil
+		case strings.HasPrefix(joined, "docker inspect --format={{.State.ExitCode}} gameserver-container"):
+			return []byte("137\n"), nil
+		}
+		return nil, errors.New("unexpected command: " + joined)
+	}}
+	runtime := dockerFixtureRuntime(runner, t.TempDir(), "")
+	runtime.DrainTimeout = time.Second
+	// After SIGKILL the proxy answers 502; the gameserver never withdrew readiness itself.
+	runtime.Client = &http.Client{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: http.StatusBadGateway, Body: io.NopCloser(strings.NewReader(""))}, nil
+	})}
+	evidence, exitCode, err := runtime.KillGameserver(context.Background(), bundle)
+	if err != nil || exitCode != "137" || evidence.Valid() || evidence.ReadinessDown || evidence.CourtesyFrame || evidence.IntentsRefused {
+		t.Fatalf("killed gameserver evidence=%+v exit=%q err=%v", evidence, exitCode, err)
+	}
+	if !slices.ContainsFunc(runner.calls, func(call []string) bool {
+		return strings.Join(call, " ") == "docker kill --signal=KILL gameserver-container"
+	}) {
+		t.Fatalf("SIGKILL not sent: %v", runner.calls)
+	}
+}

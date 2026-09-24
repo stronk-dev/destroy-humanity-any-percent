@@ -62,6 +62,15 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal candidate install passed")
+	case "restart-admitted-work":
+		outcome, err := runScenarioProbe(context.Background(), "restart-admitted-work", os.Args[2:], deploymentrehearsal.ProbeRestartDuringAdmittedWork)
+		if err != nil {
+			failCode("invalid_probe", 2)
+		}
+		if outcome == deploymentrehearsal.ProbeRejected {
+			failCode("fixture_rejected", deploymentrehearsal.ProbeRejectedExit)
+		}
+		fmt.Println("deployment rehearsal restart was accepted as a drain")
 	case "restore-non-clean":
 		outcome, err := runNonCleanRestore(context.Background(), os.Args[2:])
 		if err != nil {
@@ -137,6 +146,19 @@ func runBrowser(ctx context.Context, args []string) (deploymentbrowser.Result, e
 		return deploymentbrowser.Result{}, err
 	}
 	return deploymentrehearsal.RunBrowser(ctx, config)
+}
+
+func runScenarioProbe(ctx context.Context, name string, args []string, probe func(context.Context, deploymentrehearsal.ScenarioConfig) (deploymentrehearsal.ProbeOutcome, error)) (deploymentrehearsal.ProbeOutcome, error) {
+	set := flag.NewFlagSet(name, flag.ContinueOnError)
+	configPath := set.String("config", "", "private runtime scenario input")
+	if set.Parse(args) != nil || set.NArg() != 0 || *configPath == "" {
+		return deploymentrehearsal.ProbeAccepted, deploymentrehearsal.ErrInvalid
+	}
+	config, err := deploymentrehearsal.LoadScenarioConfig(*configPath)
+	if err != nil {
+		return deploymentrehearsal.ProbeAccepted, err
+	}
+	return probe(ctx, config)
 }
 
 func runNonCleanRestore(ctx context.Context, args []string) (deploymentrehearsal.ProbeOutcome, error) {

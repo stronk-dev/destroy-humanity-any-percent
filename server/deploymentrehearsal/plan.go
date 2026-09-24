@@ -26,15 +26,16 @@ const ProbeRejectedExit = 3
 // population's result. Every other population is produced by `probe`, which
 // fails loudly (exit 2) for a population it cannot yet exercise.
 var populationProducers = map[string]string{
-	"clean_linux_amd64_bundle_only_install": "install-candidate",
-	"phase0_browser_flow_through_caddy":     "run-browser",
-	"empty_database_backup_restore":         "recover-empty",
-	"populated_database_identity_restore":   "recover-populated",
-	"rpo_within_six_hours":                  "recover-populated",
-	"rto_within_four_hours":                 "recover-populated",
-	"bounded_drain_and_restart":             "lifecycle-release",
-	"exact_previous_release_rollback":       "lifecycle-rollback",
-	"non_clean_restore_target":              "restore-non-clean",
+	"clean_linux_amd64_bundle_only_install":   "install-candidate",
+	"phase0_browser_flow_through_caddy":       "run-browser",
+	"empty_database_backup_restore":           "recover-empty",
+	"populated_database_identity_restore":     "recover-populated",
+	"rpo_within_six_hours":                    "recover-populated",
+	"rto_within_four_hours":                   "recover-populated",
+	"bounded_drain_and_restart":               "lifecycle-release",
+	"exact_previous_release_rollback":         "lifecycle-rollback",
+	"non_clean_restore_target":                "restore-non-clean",
+	"gameserver_restart_during_admitted_work": "restart-admitted-work",
 }
 
 // boundToProducer requires the row to invoke the rehearsal tool itself with

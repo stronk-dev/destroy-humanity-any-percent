@@ -565,3 +565,33 @@ func hasFreeBytes(path string, required uint64) bool {
 func IsNonCleanRestoreRefusal(err error) bool {
 	return err != nil && strings.Contains(err.Error(), `"error_class":"non_clean_target"`)
 }
+
+// KillGameserver observes an ungraceful gameserver restart during admitted
+// work: SIGKILL instead of the governed stop. The same drain derivation the
+// release uses must classify it as invalid (no gameserver-owned readiness
+// withdrawal, no courtesy frame, non-zero exit), so a restart that skips the
+// drain can never pass as a bounded drain. The caller restores service.
+func (runtime DockerRuntime) KillGameserver(ctx context.Context, bundle Bundle) (DrainEvidence, string, error) {
+	runtime, err := runtime.normalized()
+	if err != nil {
+		return DrainEvidence{}, "", err
+	}
+	containerOutput, err := runtime.Runner.Run(ctx, bundle.Root, "docker", runtime.composeArgs(bundle, "ps", "--quiet", "gameserver")...)
+	containerID := strings.TrimSpace(string(containerOutput))
+	if err != nil || containerID == "" || strings.ContainsAny(containerID, " \t\r\n") {
+		return DrainEvidence{}, "", errors.Join(ErrInvalid, err)
+	}
+	observeCtx, cancel := context.WithTimeout(ctx, runtime.DrainTimeout)
+	defer cancel()
+	readiness := make(chan bool, 1)
+	go func() { readiness <- waitHTTPState(observeCtx, runtime.Client, runtime.PublicOrigin+"/readyz", false) }()
+	started := runtime.Now()
+	_, killErr := runtime.Runner.Run(ctx, bundle.Root, "docker", "kill", "--signal=KILL", containerID)
+	exitOutput, inspectErr := runtime.Runner.Run(ctx, bundle.Root, "docker", "inspect", "--format={{.State.ExitCode}}", containerID)
+	cancel()
+	evidence := deriveDrainEvidence(<-readiness, false, false, killErr, inspectErr, string(exitOutput), runtime.Now().Sub(started), runtime.DrainTimeout)
+	if killErr != nil || inspectErr != nil {
+		return evidence, "", errors.Join(ErrInvalid, killErr, inspectErr)
+	}
+	return evidence, strings.TrimSpace(string(exitOutput)), nil
+}
