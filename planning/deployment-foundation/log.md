@@ -2970,3 +2970,31 @@ Severing probes, each failed and was restored:
 was a build failure (an unused import) hidden by an output filter. Re-verification on the
 *original* occupied-host harness showed it was **not** vacuous: its no-helper assertion caught the
 container severing. The harness change is an isolation improvement, not a repair of a vacuous test.
+
+## 2026-09-24 — R14 predeclaration: bind build records to bundle bytes (DP-F advisory 5)
+
+**Defect (advisory, verified by execution).** `ObserveSupplyChain` binds each build record only
+by manifest hash and source commit. The real `supply-chain` command accepted a candidate record
+with a wrong `gameserver_archive_sha256`/`rebuild_archive_sha256`, a wrong gameserver
+`sbom_sha256`, or a wrong Playwright `runtime_config_sha256`.
+
+**Change.** For both the candidate and the previous record, `ObserveSupplyChain` requires:
+- `gameserver_archive_sha256` equal to the SHA-256 of the bundle's `images/gameserver.docker.tar`,
+  and `rebuild_archive_sha256` equal to it;
+- `rebuild_manifest_sha256` equal to the manifest hash;
+- every record image and rehearsal image equal, in order, to the manifest's name, reference,
+  runtime config and SBOM hash.
+
+`ValidateBundle` already binds those manifest fields to Compose and the SBOM bytes (R4), so each
+record field reduces to bundle bytes.
+
+**Limitation stated, not claimed.** `independent_rebuild` and `normalized_sboms_equal` describe the
+build procedure and cannot be recomputed from one bundle. They remain operator-attested, and the
+docs say so.
+
+**Witnesses.**
+- Unit cases, each one wrong field that the current code accepts: archive, rebuild archive,
+  rebuild manifest, a gameserver SBOM hash, and a Playwright config.
+- A real `make deployment-rehearsal-supply-chain` run against the retained v5a/previous bundles
+  and records must still pass.
+- The same run with one mutated record field must fail.
