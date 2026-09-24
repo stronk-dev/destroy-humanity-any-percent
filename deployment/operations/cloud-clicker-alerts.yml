@@ -26,11 +26,11 @@ groups:
           summary: The authoritative Postgres database or its bounded operations collector has failed for two minutes.
 
       - alert: CloudClickerStoragePressure
-        expr: cloud_clicker_filesystem_usage_ratio > 0.8 or cloud_clicker_journal_usage_bytes / cloud_clicker_journal_budget_bytes > 0.8 or absent(cloud_clicker_filesystem_usage_ratio{storage="backup"}) == 1 or absent(cloud_clicker_filesystem_usage_ratio{storage="persistent"}) == 1 or absent(cloud_clicker_journal_usage_bytes) == 1 or absent(cloud_clicker_journal_budget_bytes) == 1
+        expr: cloud_clicker_filesystem_usage_ratio > 0.8 or cloud_clicker_journal_usage_bytes / cloud_clicker_journal_budget_bytes > 0.8 or absent(cloud_clicker_filesystem_usage_ratio{storage="backup"}) == 1 or absent(cloud_clicker_filesystem_usage_ratio{storage="persistent"}) == 1 or absent(cloud_clicker_journal_usage_bytes) == 1 or absent(cloud_clicker_journal_budget_bytes) == 1 or time() - node_textfile_mtime_seconds{file=~".*host\\.prom"} > 300 or node_textfile_scrape_error == 1 or absent(node_textfile_mtime_seconds{file=~".*host\\.prom"}) == 1
         labels:
           severity: page
         annotations:
-          summary: Persistent, backup, or journal storage crossed the release-floor threshold.
+          summary: Persistent, backup, or journal storage crossed the release-floor threshold, or its host observation is stale.
 
       - alert: CloudClickerGameserverRestartLoop
         expr: increase(cloud_clicker_gameserver_restart_count[10m]) >= 3

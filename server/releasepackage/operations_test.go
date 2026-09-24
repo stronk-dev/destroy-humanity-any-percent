@@ -59,7 +59,7 @@ func TestOperationsProfileRejectsMissingAlertAndResolvedEvidence(t *testing.T) {
 		if !bytes.Contains(data, needle) {
 			t.Fatal("resolved fixture shape changed")
 		}
-		data = bytes.Replace(data, needle, replacement, 1)
+		data = bytes.ReplaceAll(data, needle, replacement)
 		if err := os.WriteFile(path, data, 0o644); err != nil {
 			t.Fatal(err)
 		}

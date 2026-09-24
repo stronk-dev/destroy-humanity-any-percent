@@ -13,6 +13,9 @@ tests:
       - series: 'cloud_clicker_ready'
         values: '1x22'
     alert_rule_test:
+      - eval_time: 4m45s
+        alertname: CloudClickerPublicEndpointOrReadinessUnavailable
+        exp_alerts: []
       - eval_time: 5m
         alertname: CloudClickerPublicEndpointOrReadinessUnavailable
         exp_alerts:
@@ -35,6 +38,9 @@ tests:
       - series: 'cloud_clicker_database_collection_success'
         values: '1x12'
     alert_rule_test:
+      - eval_time: 1m45s
+        alertname: CloudClickerPostgresUnreachable
+        exp_alerts: []
       - eval_time: 2m
         alertname: CloudClickerPostgresUnreachable
         exp_alerts:
@@ -64,12 +70,16 @@ tests:
         values: '1x2'
       - series: 'cloud_clicker_journal_budget_bytes'
         values: '100x2'
+      - series: 'node_textfile_mtime_seconds{file="/textfile/host.prom"}'
+        values: '0+15x2'
+      - series: 'node_textfile_scrape_error'
+        values: '0x2'
     alert_rule_test:
       - eval_time: 15s
         alertname: CloudClickerStoragePressure
         exp_alerts:
           - exp_labels: {storage: backup, severity: page}
-            exp_annotations: {summary: "Persistent, backup, or journal storage crossed the release-floor threshold."}
+            exp_annotations: {summary: "Persistent, backup, or journal storage crossed the release-floor threshold, or its host observation is stale."}
 
   - interval: 1m
     input_series:
@@ -134,6 +144,10 @@ tests:
         values: '0x22'
       - series: 'cloud_clicker_dead_letters{queue="transport"}'
         values: '0x22'
+      - series: 'node_textfile_mtime_seconds{file="/textfile/host.prom"}'
+        values: '0+15x22'
+      - series: 'node_textfile_scrape_error'
+        values: '0x22'
     alert_rule_test:
       - eval_time: 5m
         alertname: CloudClickerPublicEndpointOrReadinessUnavailable
@@ -154,5 +168,171 @@ tests:
         alertname: CloudClickerCleanupJobFailed
         exp_alerts: []
       - eval_time: 5m
+        alertname: CloudClickerDeadLetterGrowth
+        exp_alerts: []
+
+  # Discriminating and resolution populations: each case fails if its
+  # threshold, clause or lower duration bound is weakened.
+  - interval: 15s
+    input_series:
+      - series: 'up{job="caddy"}'
+        values: '1x40'
+      - series: 'up{job="gameserver"}'
+        values: '1x40'
+      - series: 'cloud_clicker_ready'
+        values: '0x24 1x16'
+    alert_rule_test:
+      - eval_time: 5m30s
+        alertname: CloudClickerPublicEndpointOrReadinessUnavailable
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: Public ingress or authoritative readiness has been unavailable for five minutes.}
+      - eval_time: 7m
+        alertname: CloudClickerPublicEndpointOrReadinessUnavailable
+        exp_alerts: []
+
+  - interval: 1h
+    input_series:
+      - series: 'cloud_clicker_backup_last_success_timestamp_seconds'
+        values: '0x8'
+      - series: 'cloud_clicker_backup_last_failure_timestamp_seconds'
+        values: '0x8'
+    alert_rule_test:
+      - eval_time: 5h
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts: []
+      - eval_time: 7h
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The six-hour encrypted backup contract is missing, late, or failed."}
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_backup_last_success_timestamp_seconds'
+        values: '10x2'
+      - series: 'cloud_clicker_backup_last_failure_timestamp_seconds'
+        values: '20x2'
+    alert_rule_test:
+      - eval_time: 15s
+        alertname: CloudClickerBackupMissingOrFailed
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "The six-hour encrypted backup contract is missing, late, or failed."}
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="backup"}'
+        values: '0.79x2'
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="persistent"}'
+        values: '0.2x2'
+      - series: 'cloud_clicker_journal_usage_bytes'
+        values: '20x2'
+      - series: 'cloud_clicker_journal_budget_bytes'
+        values: '100x2'
+      - series: 'node_textfile_mtime_seconds{file="/textfile/host.prom"}'
+        values: '0+15x2'
+      - series: 'node_textfile_scrape_error'
+        values: '0x2'
+    alert_rule_test:
+      - eval_time: 15s
+        alertname: CloudClickerStoragePressure
+        exp_alerts: []
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="backup"}'
+        values: '0.2x2'
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="persistent"}'
+        values: '0.2x2'
+      - series: 'cloud_clicker_journal_usage_bytes'
+        values: '81x2'
+      - series: 'cloud_clicker_journal_budget_bytes'
+        values: '100x2'
+      - series: 'node_textfile_mtime_seconds{file="/textfile/host.prom"}'
+        values: '0+15x2'
+      - series: 'node_textfile_scrape_error'
+        values: '0x2'
+    alert_rule_test:
+      - eval_time: 15s
+        alertname: CloudClickerStoragePressure
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "Persistent, backup, or journal storage crossed the release-floor threshold, or its host observation is stale."}
+
+  - interval: 1m
+    input_series:
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="backup"}'
+        values: '0.2x12'
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="persistent"}'
+        values: '0.2x12'
+      - series: 'cloud_clicker_journal_usage_bytes'
+        values: '20x12'
+      - series: 'cloud_clicker_journal_budget_bytes'
+        values: '100x12'
+      - series: 'node_textfile_mtime_seconds{file="/textfile/host.prom"}'
+        values: '0x12'
+      - series: 'node_textfile_scrape_error'
+        values: '0x12'
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: CloudClickerStoragePressure
+        exp_alerts: []
+      - eval_time: 10m
+        alertname: CloudClickerStoragePressure
+        exp_alerts:
+          - exp_labels: {file: /textfile/host.prom, severity: page}
+            exp_annotations: {summary: "Persistent, backup, or journal storage crossed the release-floor threshold, or its host observation is stale."}
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="backup"}'
+        values: '0.2x2'
+      - series: 'cloud_clicker_filesystem_usage_ratio{storage="persistent"}'
+        values: '0.2x2'
+      - series: 'cloud_clicker_journal_usage_bytes'
+        values: '20x2'
+      - series: 'cloud_clicker_journal_budget_bytes'
+        values: '100x2'
+      - series: 'node_textfile_mtime_seconds{file="/textfile/host.prom"}'
+        values: '0+15x2'
+      - series: 'node_textfile_scrape_error'
+        values: '1x2'
+    alert_rule_test:
+      - eval_time: 15s
+        alertname: CloudClickerStoragePressure
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations: {summary: "Persistent, backup, or journal storage crossed the release-floor threshold, or its host observation is stale."}
+
+  - interval: 1m
+    input_series:
+      - series: 'cloud_clicker_gameserver_restart_count'
+        values: '0 1 2 2 2 2'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: CloudClickerGameserverRestartLoop
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'cloud_clicker_job_runs_total{job_name="credential_cleanup",result="failure"}'
+        values: '0 1 1 1 1 1 1 1 1'
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts:
+          - exp_labels: {job_name: credential_cleanup, result: failure, severity: page}
+            exp_annotations: {summary: The composed expired-credential cleanup job failed.}
+      - eval_time: 8m
+        alertname: CloudClickerCleanupJobFailed
+        exp_alerts: []
+
+  - interval: 15s
+    input_series:
+      - series: 'cloud_clicker_dead_letters{queue="transport"}'
+        values: '0 0 1 1'
+    alert_rule_test:
+      - eval_time: 30s
         alertname: CloudClickerDeadLetterGrowth
         exp_alerts: []

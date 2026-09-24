@@ -592,7 +592,16 @@ HTTP instrumentation cannot silently disable the realtime path.
 The seven blocking alert families cover five-minute ingress/readiness loss, missing/late/failed
 six-hour backups, two-minute Postgres or collector failure, storage pressure above 80%, three
 gameserver restarts in ten minutes, credential-cleanup failure and dead-letter growth across two
-15-second intervals. The checked-in `promtool` population exercises each firing path. The
+15-second intervals. Storage pressure also fires when the host observation behind it is stale:
+node-exporter's `host.prom` textfile older than five minutes (the observer runs every minute), a
+textfile scrape error, or an absent host textfile, so a broken observer cannot keep serving its
+last healthy values. The checked-in `promtool` population exercises each firing path and is
+discriminating: it pins the lower duration bounds (no public alert at 4m45s, no Postgres alert at
+1m45s), the six-hour backup deadline (quiet at five hours, firing at seven), the backup
+any-failure clause, sub-threshold storage (0.79) and restart (two in ten minutes) populations, the
+journal clause, the `cloud_clicker_ready` clause, single-interval dead-letter growth, both stale
+host-observation clauses, and fire-then-clear resolution for the public-readiness and cleanup
+alerts. Thirteen single-clause/threshold mutations each fail it. The
 private-network integration scrapes the real gameserver registry: after one real
 `credential_cleanup` failure, Prometheus must report `CloudClickerCleanupJobFailed` firing through
 the shipped scrape and rule configuration. Release preflight also sends a fresh nonce-bearing

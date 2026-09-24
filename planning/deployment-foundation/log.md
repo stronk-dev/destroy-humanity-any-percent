@@ -2819,3 +2819,37 @@ change was restored.
 **Evidence (cold).** `make test-go` over deploymentrelease and deploymentrehearsal passed.
 Wrong-image rollback is covered by `Prepare(previous)` (R1 plus the existing wrong-ID test), as
 recorded in the predeclaration.
+
+## 2026-09-24 — R11: discriminating alert fixtures and stale host observation (DP-E F4/F5)
+
+**Process note:** R11 has no separate predeclaration commit. Its scope is the remedy for Claude's
+DP-E F4/F5 findings, recorded here with its evidence.
+
+**Change:**
+- `CloudClickerStoragePressure` gains stale-observation clauses:
+  - `time() - node_textfile_mtime_seconds{file=~".*host\.prom"} > 300`;
+  - `node_textfile_scrape_error == 1`;
+  - absence of the host textfile.
+  Its summary text is extended accordingly. Seven families are unchanged; there is no eighth alert.
+- The promtool population gains discriminating and resolution cases (see docs).
+- `TestOperationsProfileRejectsMissingAlertAndResolvedEvidence` now removes **every** resolved case
+  for the probed alert. The new cleanup resolution case had made its single replacement
+  non-discriminating (caught by execution).
+
+**Evidence:**
+- promtool passed (SUCCESS).
+- Each of 13 mutations was killed:
+  - public `for` lowered to 1m;
+  - Postgres `for` lowered to 0s and to 30s;
+  - the backup deadline raised to 9999999;
+  - the backup any-failure clause removed;
+  - restart `>= 2`;
+  - the dead-letter second interval removed;
+  - filesystem 0.5;
+  - the journal clause removed;
+  - the ready clause removed;
+  - the stale-mtime clause removed;
+  - the scrape-error clause removed;
+  - the cleanup window widened to 60m.
+- `make test-go ./releasepackage` passed.
+- `make test-deployment-operations` passed (integration 67s).
