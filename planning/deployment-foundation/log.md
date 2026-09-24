@@ -2801,3 +2801,21 @@ is unusable never starts.
 - The existing backup/restore test switches to a real age envelope.
 - New negatives: a corrupt host payload, and a host header that differs from the reported header.
   Each must refuse, and severing the host re-read must fail them.
+
+## 2026-09-24 — R10 implemented: rollback authority is the host envelope
+
+**Implementation.** `createBackup` re-reads the host envelope with `deploymentbackup.ReadHeader`
+and requires equality with the reported header. Release refuses at `preupgrade_backup` otherwise.
+
+**Tests.**
+- `TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest` now uses real age envelopes for
+  both the pre-upgrade and recovery classes.
+- New negatives: a reported header one second off from the host envelope, and a corrupt host
+  payload. Each refuses.
+
+**Severing.** Disabling the re-read made the differing-header case pass, so the test failed. The
+change was restored.
+
+**Evidence (cold).** `make test-go` over deploymentrelease and deploymentrehearsal passed.
+Wrong-image rollback is covered by `Prepare(previous)` (R1 plus the existing wrong-ID test), as
+recorded in the predeclaration.

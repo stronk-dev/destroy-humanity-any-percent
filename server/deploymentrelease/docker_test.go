@@ -186,14 +186,26 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 	if err := os.WriteFile(identity, []byte("AGE-SECRET-KEY-fixture\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	header := deploymentbackup.Header{SchemaVersion: 1, BackupID: "20260822T180000Z-acde00000001", ServerID: "server-1",
-		ReleaseManifestSHA256: bundle.ManifestSHA256, EpochID: bundle.Manifest.EpochID,
-		StartedAt: time.Date(2026, 8, 22, 18, 0, 0, 0, time.UTC), CompletedAt: time.Date(2026, 8, 22, 18, 1, 0, 0, time.UTC),
-		PayloadSHA256: "sha256:" + strings.Repeat("d", 64), PayloadBytes: 4096, PreUpgrade: true}
-	hostBackup := filepath.Join(target, header.BackupID+".ccbackup")
-	if err := os.WriteFile(hostBackup, []byte("encrypted fixture"), 0o600); err != nil {
+	recipient, err := age.GenerateX25519Identity()
+	if err != nil {
 		t.Fatal(err)
 	}
+	// writeEnvelope replaces the host backup with a real authenticated
+	// envelope, because release now re-reads the host bytes it will roll back to.
+	writeEnvelope := func(preUpgrade bool) deploymentbackup.Header {
+		t.Helper()
+		_ = os.Remove(filepath.Join(target, "20260822T180000Z-acde00000001.ccbackup"))
+		written, _, err := deploymentbackup.Create(deploymentbackup.CreateInput{Directory: target, BackupID: "20260822T180000Z-acde00000001",
+			ServerID: "server-1", ReleaseManifestSHA256: bundle.ManifestSHA256, EpochID: bundle.Manifest.EpochID,
+			StartedAt: time.Date(2026, 8, 22, 18, 0, 0, 0, time.UTC), Now: func() time.Time { return time.Date(2026, 8, 22, 18, 1, 0, 0, time.UTC) },
+			Recipient: recipient.Recipient().String(), Dump: bytes.NewReader([]byte("PGDMP\x01release fixture")), PreUpgrade: preUpgrade})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return written
+	}
+	header := writeEnvelope(true)
+	hostBackup := filepath.Join(target, header.BackupID+".ccbackup")
 	runner := &commandFixture{}
 	runner.output = func(call []string) ([]byte, error) {
 		if slices.Contains(call, "create") {
@@ -212,8 +224,7 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 	if err := runtime.Restore(context.Background(), bundle, backup); err != nil {
 		t.Fatal(err)
 	}
-	recoveryHeader := header
-	recoveryHeader.PreUpgrade = false
+	recoveryHeader := writeEnvelope(false)
 	runner.output = func(call []string) ([]byte, error) {
 		if slices.Contains(call, "create") {
 			return json.Marshal(map[string]any{"status": "completed", "backup": "/backups/" + filepath.Base(hostBackup), "header": recoveryHeader})
@@ -268,6 +279,35 @@ func TestDockerRuntimeBindsBackupAndRestoreOutputToExactManifest(t *testing.T) {
 	}
 	if err := badRuntime.RestoreRecoveryBackup(context.Background(), bundle, backup); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("pre-upgrade backup accepted by recovery restore: %v", err)
+	}
+
+	// Rollback authority is the host envelope, not the container's report.
+	header = writeEnvelope(true)
+	reportThenCreate := func(reported deploymentbackup.Header) error {
+		runner := &commandFixture{output: func([]string) ([]byte, error) {
+			return json.Marshal(map[string]any{"status": "completed", "backup": "/backups/" + filepath.Base(hostBackup), "header": reported})
+		}}
+		_, err := dockerFixtureRuntime(runner, target, identity).CreatePreUpgradeBackup(context.Background(), bundle)
+		return err
+	}
+	if err := reportThenCreate(header); err != nil {
+		t.Fatalf("exact host envelope rejected: %v", err)
+	}
+	differing := header
+	differing.CompletedAt = differing.CompletedAt.Add(time.Second)
+	if err := reportThenCreate(differing); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("reported header differing from the host envelope accepted: %v", err)
+	}
+	data, err := os.ReadFile(hostBackup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data[len(data)-1] ^= 0xff
+	if err := os.WriteFile(hostBackup, data, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := reportThenCreate(header); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("corrupt host pre-upgrade payload accepted as rollback authority: %v", err)
 	}
 }
 

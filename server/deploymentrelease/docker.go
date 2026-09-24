@@ -183,6 +183,12 @@ func (runtime DockerRuntime) createBackup(ctx context.Context, bundle Bundle, pr
 	if info, err := os.Lstat(hostPath); err != nil || !info.Mode().IsRegular() || info.Size() < 1 {
 		return BackupReference{}, ErrInvalid
 	}
+	// The reported header is only a claim. Rollback authority is the host
+	// envelope itself: its checksummed header must be exactly what was reported.
+	hostHeader, err := deploymentbackup.ReadHeader(hostPath)
+	if err != nil || hostHeader != result.Header {
+		return BackupReference{}, errors.Join(ErrInvalid, err)
+	}
 	return BackupReference{ID: result.Header.BackupID, Path: hostPath}, nil
 }
 

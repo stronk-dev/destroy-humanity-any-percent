@@ -502,6 +502,13 @@ does not race this sequence: the helper uses `docker compose stop`, not a raw co
 Normal release is strictly forward by semantic release version and database migration; an older
 version can enter service only through the governed rollback command.
 
+The pre-upgrade backup is rollback authority only as host bytes: after the backup container
+reports completion, the release helper re-reads the host envelope, verifies its payload length and
+SHA-256, and requires its header to equal the reported header (manifest, epoch, server, pre-upgrade
+class). Because rollback is restore-based and never runs a Down migration, a forward migration or
+content change is irreversible exactly when that backup is unusable; release therefore refuses at
+`preupgrade_backup`, before drain, rather than proceeding without a working rollback.
+
 Every successful release row binds the candidate version, manifest SHA-256, all six image
 digests, exact pre-upgrade backup, exact previous version/manifest and a seven-day rollback
 deadline. Rollback accepts only those recorded values. Before it stops anything it loads and
