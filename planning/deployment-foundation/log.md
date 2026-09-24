@@ -2253,3 +2253,100 @@ surface, and it does not approve any DP-F commit.
 Only `7b510df..cf4ac25` is designated-approved. DP-A–DP-E each need a corrective range and a
 fresh designated pass. DP-F (`65099e7..7b510df` and the deployment commits after `cf4ac25`) remains
 unreviewed. No archival, release or R-006 claim changes.
+
+## 2026-09-24 — Claude advisory inspection of DP-F construction (not a designated verdict)
+
+**Review by:** Claude, in three advisory subagent passes plus one parent lane run.
+**Recorded by:** Claude (parent session).
+
+DP-F has not been handed off for designated review. These are advisory findings for the
+implementer and do not approve or reject any range.
+
+**Coverage:**
+- The ranges inspected were `65099e7..0693bbd` (15 commits), `0693bbd..7b510df` (29 commits) and
+  the four product commits after `cf4ac25` (44f5b3f, 6d89880, 578fda0, b7a9587) with their records.
+- Cold runs, all exiting 0: focused `make test-go -count=1 -v` over the rehearsal, release,
+  backup, operations, release-package and browser packages; `make test-deployment-rehearsal`
+  (both `validate-build` records passed); and `make test-deployment-release`.
+- The parent ran `make test-deployment-backup` at HEAD. It exited 0, and all four Postgres tests
+  ran with no SKIP, including `TestRecoveryIdentityRejectsProjectionEventWithoutVerifiedRunIntegration`.
+
+**Severing probes that failed their witnesses:**
+- population, tool and step-output hash binding;
+- install abort on smoke failure, and the clean-state recheck;
+- the RPO bound;
+- backup-class separation and the objective-overwrite refusal;
+- populated-identity validation and `no_image`;
+- next-run and gate-crossed journey guards, and `VerifiedRunRows`;
+- the post-backup identity recheck;
+- the board-wait coast and no-wait variants;
+- the historical/current `rehearsal_images` rule;
+- both save-version bounds.
+
+**Probes that left tests green (advisory findings):**
+- final-bundle manifest-byte and browser-manifest binding (still unwitnessed at HEAD);
+- the scanner seeded-rule check;
+- `finalExtendsBase` and the proof-before-base check;
+- the empty-restore identity comparison;
+- the resolved-alert wait;
+- the checkpoint-exists refusal before destructive steps;
+- the empty-backup-after-incident check;
+- the browser DOM labels, whose driving code has never run.
+
+**Advisory findings, all present at HEAD unless noted:**
+1. **High.** `ValidateExecutionPlan` does not bind commands to populations. A plan of
+   `/usr/bin/true` positives and `/usr/bin/false` negatives executes and records all rows as
+   passed.
+   - The shell denylist is basename-only: `dash -c`, `env bash -c` and `python3 -c` are all
+     accepted.
+   - `deployment-rehearsal` usage and validation errors also exit 1, so a typo counts as a caught
+     severing.
+   - The accepting `boundRunFixture` is itself a complete hand-authored dossier.
+   - `forged_successful_evidence` therefore does not prove forgery is rejected, and the docs
+     overstate final `validate`.
+2. **High.** Seven-family alert-delivery evidence inherits DP-E F1/F2/F4.
+   - It marks all 7×2 firing/resolved deliveries true from one aggregate attempt counter.
+   - It was accepted with a receiver that failed every delivery, and with only 4 of 7 families
+     notified.
+   - Alerts are hand-posted, so the unfireable cleanup rule cannot show.
+3. **High.** The structured secret-scan and supply-chain evidence inherit DP-B F1.
+   - A seeded private key inside a gzip layer gave `findings: 0, image_archive_scanned: true`.
+   - The DP-F `seeded_image_secret` probe seeds a flat tar member, which hides the defect.
+   - The v5 candidate's "image scan passes" claim therefore says nothing about layer contents.
+4. **High (source-verified, not executed).** `recover-populated` will fail at smoke on a real host:
+   - Its core start is `--no-deps` gameserver and Caddy only.
+   - `AuthenticatedSmoke` then runs the Alertmanager `alert-test` against a service that is not
+     running.
+5. **Medium.** Build-record checks bind only the manifest hash and source commit.
+   - The real `supply-chain` command accepted records with a wrong archive hash, SBOM hash or
+     Playwright config.
+   - `independent_rebuild` and `normalized_sboms_equal` are self-asserted.
+   - Log line 1881 quotes a truncated archive hash.
+6. **Medium.** The bundle `removed_*` and `changed_sbom` negatives are satisfied by generic manifest
+   byte integrity. Deleting the catalog and its manifest entry passes `ValidateBundle`, because
+   the catalog is not a required artifact, so AC1's removed-catalog failure is unproven.
+7. **Medium.** RPO is near zero by construction: the incident is declared right after the
+   rehearsal's own fresh backup. The six-hour cadence is never measured, and RTO starts after
+   stop/reset.
+8. **Medium.**
+   - `AbortInstall`'s `down --volumes` removes pre-existing `caddy_data` (ACME material) and the
+     other named volumes, which contradicts "removes only the newly created" state.
+   - The browser result records no origin, and it takes its manifest hash from a flag.
+   - `RestoredIdentityMatch` is a literal, and the checkpoint/identities are not retained
+     artifacts.
+   - The log's "reopens regular backup files, exact-decodes both headers" overclaims an `Lstat`.
+9. **Low.**
+   - Browser guard exhaustion collapses to `workflow_failed` with no visible guard field.
+   - Five early DP-F2 slices relied on the umbrella predeclaration only.
+   - The alphabetical plan-order defect in `65099e7..0693bbd` is fixed at HEAD.
+
+**Sound in these passes:**
+- The install ordering (load, then preflight, then destructive steps).
+- The board-arrival wait is bounded and fails loud.
+- Recovery identity hashes full rows.
+- Rollback schema compatibility has no older-binary-on-newer-schema path.
+- The four post-`cf4ac25` product commits, whose checks discriminated in 10 of 10 severings.
+
+**Consequence:** before DP-F handoff, Codex should repair the evidence-integrity items (1–3 and 5–6)
+and the recovery smoke composition (4), in addition to the DP-A–DP-E correctives. Until then, an
+R-006 run on the current candidate could produce accepting evidence that proves nothing.
