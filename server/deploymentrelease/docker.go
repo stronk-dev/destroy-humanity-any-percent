@@ -557,3 +557,11 @@ func hasFreeBytes(path string, required uint64) bool {
 	}
 	return uint64(state.Bavail)*uint64(state.Bsize) >= required
 }
+
+// IsNonCleanRestoreRefusal reports whether a restore failed because the
+// backup tool's clean-target gate refused a database that already holds
+// relations. The tool reports that refusal as a dedicated structured error
+// class, so a network, identity or checksum failure cannot be mistaken for it.
+func IsNonCleanRestoreRefusal(err error) bool {
+	return err != nil && strings.Contains(err.Error(), `"error_class":"non_clean_target"`)
+}

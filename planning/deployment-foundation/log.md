@@ -3270,3 +3270,44 @@ cursor activation/removal pairs that respect 30 min / 31 d / 366 d overlaps. A r
 cannot complete the 31-day and 366-day overlaps. DP4 allows a governed clock for tests, but R-006
 evidence is a real run. The RFC author must rule how rotation is evidenced, for example the
 activation plus a governed-clock removal fixture, or a long-running observation.
+
+## 2026-09-24 — R20: non-clean restore producer with attributable refusal
+
+**Process note:** there is no separate predeclaration commit. The scope is the RFC AC4 negative
+"non-clean restore target", which had no producer.
+
+**Change:**
+- `deploymentbackup.RequireCleanTarget` returns the dedicated `ErrNonCleanTarget`, which wraps
+  `ErrInvalid`, so existing callers still fail closed. A query error stays a generic `ErrInvalid`.
+- The backup CLI reports it as error class `non_clean_target`.
+- `deploymentrelease.IsNonCleanRestoreRefusal` recognizes that structured class.
+- The new rehearsal producer `restore-non-clean` (CLI, bound to `non_clean_restore_target`) does
+  the following on the installed candidate stack:
+  1. requires the exact candidate install row;
+  2. inspects the live recovery identity and creates a recovery backup;
+  3. restores it in place;
+  4. counts as rejected (exit 3) only on the `non_clean_target` class with an unchanged identity.
+  An accepted restore exits 0, and any other failure exits 2. The probe removes its own backup.
+
+**Evidence:**
+- `make test-deployment-backup` (real Postgres) passed.
+  `TestPostgresRestoreRefusesNonCleanTargetIntegration` now requires
+  `errors.Is(err, ErrNonCleanTarget)`.
+- Unit tests:
+  - `TestNonCleanRestoreRefusalHasItsOwnClass`;
+  - `TestNonCleanRestoreProducerRequiresTheCleanTargetRefusal`, which uses the exact slog/ExecRunner
+    error rendering and covers refusal, acceptance, a refusal for another reason, an identity
+    change, and a missing install.
+- Severing the class attribution and severing the identity comparison each fail the producer
+  test; both were restored.
+- Two identity-severing attempts first failed to compile (unused variables). They were not counted.
+- `make test-go` over deploymentrehearsal, cmd/deployment-rehearsal and deploymentrelease passed.
+
+**Coverage:** producer-backed populations are now 31 of 43. Still without a producer:
+- restart during admitted work (a live gameserver kill);
+- key overlap (DESIGN-GAP 7);
+- alert delivery (DESIGN-GAP 2);
+- journal budget;
+- provider-off operation.
+
+No host run has happened.

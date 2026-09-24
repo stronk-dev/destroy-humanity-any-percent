@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -29,6 +30,15 @@ func TestBackupFailureOutputIsBounded(t *testing.T) {
 	command, class := boundedFailure("recovery_code=private", errors.New("database_url=private"))
 	if command != "unknown" || class != "operation_failed" {
 		t.Fatalf("unbounded failure escaped: command=%q class=%q", command, class)
+	}
+}
+
+func TestNonCleanRestoreRefusalHasItsOwnClass(t *testing.T) {
+	if _, class := boundedFailure("restore", fmt.Errorf("restore: %w", deploymentbackup.ErrNonCleanTarget)); class != "non_clean_target" {
+		t.Fatalf("non-clean refusal class=%q", class)
+	}
+	if _, class := boundedFailure("restore", deploymentbackup.ErrInvalid); class != "invalid_input" {
+		t.Fatalf("generic invalid restore class=%q", class)
 	}
 }
 

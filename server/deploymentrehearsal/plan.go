@@ -34,6 +34,7 @@ var populationProducers = map[string]string{
 	"rto_within_four_hours":                 "recover-populated",
 	"bounded_drain_and_restart":             "lifecycle-release",
 	"exact_previous_release_rollback":       "lifecycle-rollback",
+	"non_clean_restore_target":              "restore-non-clean",
 }
 
 // boundToProducer requires the row to invoke the rehearsal tool itself with

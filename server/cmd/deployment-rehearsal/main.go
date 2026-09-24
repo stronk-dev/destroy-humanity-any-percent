@@ -62,6 +62,15 @@ func main() {
 			fail("invalid_evidence")
 		}
 		fmt.Println("deployment rehearsal candidate install passed")
+	case "restore-non-clean":
+		outcome, err := runNonCleanRestore(context.Background(), os.Args[2:])
+		if err != nil {
+			failCode("invalid_probe", 2)
+		}
+		if outcome == deploymentrehearsal.ProbeRejected {
+			failCode("fixture_rejected", deploymentrehearsal.ProbeRejectedExit)
+		}
+		fmt.Println("deployment rehearsal non-clean restore was accepted")
 	case "lifecycle-release":
 		if err := runScenarioStep(context.Background(), "lifecycle-release", os.Args[2:], deploymentrehearsal.ReleaseLifecycle); err != nil {
 			fail("invalid_evidence")
@@ -128,6 +137,19 @@ func runBrowser(ctx context.Context, args []string) (deploymentbrowser.Result, e
 		return deploymentbrowser.Result{}, err
 	}
 	return deploymentrehearsal.RunBrowser(ctx, config)
+}
+
+func runNonCleanRestore(ctx context.Context, args []string) (deploymentrehearsal.ProbeOutcome, error) {
+	set := flag.NewFlagSet("restore-non-clean", flag.ContinueOnError)
+	configPath := set.String("config", "", "private runtime scenario input")
+	if set.Parse(args) != nil || set.NArg() != 0 || *configPath == "" {
+		return deploymentrehearsal.ProbeAccepted, deploymentrehearsal.ErrInvalid
+	}
+	config, err := deploymentrehearsal.LoadScenarioConfig(*configPath)
+	if err != nil {
+		return deploymentrehearsal.ProbeAccepted, err
+	}
+	return deploymentrehearsal.ProbeNonCleanRestore(ctx, config)
 }
 
 func runScenarioStep(ctx context.Context, name string, args []string, step func(context.Context, deploymentrehearsal.ScenarioConfig) error) error {

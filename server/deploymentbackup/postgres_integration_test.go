@@ -196,8 +196,8 @@ func TestPostgresRestoreRefusesNonCleanTargetIntegration(t *testing.T) {
 		BackupPath: path, ExpectedManifestSHA256: digest(manifest), IdentityFile: writeSecret(t, workspace, "identity", identity.String()),
 		TargetDatabaseURLFile: writeSecret(t, workspace, "target-url", targetURL),
 	})
-	if !errors.Is(err, ErrInvalid) {
-		t.Fatalf("non-clean target accepted: %v", err)
+	if !errors.Is(err, ErrNonCleanTarget) {
+		t.Fatalf("non-clean target not refused as non-clean: %v", err)
 	}
 }
 

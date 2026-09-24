@@ -313,7 +313,9 @@ func boundedFailure(command string, err error) (string, string) {
 		command = "unknown"
 	}
 	class := "operation_failed"
-	if errors.Is(err, deploymentbackup.ErrInvalid) || errors.Is(err, operations.ErrInvalid) {
+	if errors.Is(err, deploymentbackup.ErrNonCleanTarget) {
+		class = "non_clean_target"
+	} else if errors.Is(err, deploymentbackup.ErrInvalid) || errors.Is(err, operations.ErrInvalid) {
 		class = "invalid_input"
 	}
 	return command, class

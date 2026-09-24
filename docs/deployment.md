@@ -156,8 +156,8 @@ negative populations in canonical lifecycle order, require exit zero for positiv
 exit three for severing checks, and give every command a one-second to four-hour guard. Every row
 is bound to its producer: the command must be an absolute path to the `deployment-rehearsal` tool
 itself running the population's own subcommand (`install-candidate`, `run-browser`,
-`recover-empty`, `recover-populated`, `lifecycle-release`, `lifecycle-rollback` for their positives;
-`probe --population=<row>` for every
+`recover-empty`, `recover-populated`, `lifecycle-release`, `lifecycle-rollback` for their positives,
+`restore-non-clean` for the non-clean restore negative; `probe --population=<row>` for every
 other population). A constant command such as `/usr/bin/true` or `/usr/bin/false`, a probe for a
 different population, or a generic failure exit therefore cannot stand in for proof. Populations
 that no producer can exercise yet (currently the release-drain, rollback, rotation, alert-delivery,
@@ -216,7 +216,7 @@ a candidate migration below the running release, refuses at `compatibility` with
 after the unmodified pair is shown to reach the runtime), and a missing previous backup or image
 (the production `VerifyRestoreInputs` and `Prepare` gates accept the intact inputs, then refuse a
 removed pre-upgrade envelope and an absent previous image before anything destructive). The
-non-clean restore target and restart-during-admitted-work negatives, and the rotation,
+restart-during-admitted-work negative, and the rotation,
 alert-delivery, journal-budget and provider-off runtime positives, still have no producer and exit
 `2`.
 
@@ -229,6 +229,13 @@ to the previous bundle with that release's own pre-upgrade backup (header re-rea
 previous manifest before the controller runs), then retains the three-row lifecycle ledger and the
 decoded backup header as the operator evidence final validation binds. A successful rollback row
 keeps the release it rolled back from, like failed rollback rows.
+
+`restore-non-clean` runs on the installed candidate stack. It first proves the live database is
+real and populated by taking a recovery backup of it, then restores that backup in place without a
+clean volume. The backup tool's clean-target gate must refuse with its dedicated
+`non_clean_target` error class and the live database's recovery identity must be unchanged; only
+then does the row exit `3`. An accepted restore exits `0`; any other failure (including a refusal
+for another reason or a changed identity) exits `2`. The probe removes its own recovery backup.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and

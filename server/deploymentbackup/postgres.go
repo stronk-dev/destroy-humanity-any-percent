@@ -204,11 +204,18 @@ func RequireCleanTarget(ctx context.Context, database *sql.DB) error {
 		WHERE n.nspname NOT IN ('pg_catalog','information_schema')
 		  AND n.nspname !~ '^pg_toast'
 		  AND c.relkind IN ('r','p','v','m','S','f')`).Scan(&objects)
-	if err != nil || objects != 0 {
+	if err != nil {
 		return errors.Join(ErrInvalid, err)
+	}
+	if objects != 0 {
+		return ErrNonCleanTarget
 	}
 	return nil
 }
+
+// ErrNonCleanTarget is the restore refusal for a database that already holds
+// relations; it wraps ErrInvalid so existing callers keep failing closed.
+var ErrNonCleanTarget = fmt.Errorf("%w: restore target database is not clean", ErrInvalid)
 
 func requireMigrationIdentity(ctx context.Context, database *sql.DB, expected int) error {
 	var migration int
