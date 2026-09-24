@@ -3193,3 +3193,36 @@ This is Claude-authored client test and doc work, for Codex review.
 
 **Still not done.** There is no clean-host R-006 run, no two-tree reproducible candidate record, no
 Codex review of the source, and no owner authority for the host.
+
+## 2026-09-24 — R18: three more R-006 negative producers (DP-F)
+
+**Process note:** there is no separate predeclaration commit. The scope is RFC AC3/AC5 negatives
+that previously had no producer.
+
+**New probes:**
+- `wrong_epoch_or_artifact_set` is a bundle mutation. It decrements the packaged
+  `current_epoch_id`, rebinds the manifest, and `ValidateBundle`'s content-identity binding (R4)
+  rejects it.
+- `irreversible_or_down_migration` runs the production `deploymentrelease.Controller.Release` over
+  the exact `LoadBundle`-validated pair with a guard runtime. The unmodified pair must reach the
+  runtime. A candidate migration one below the running release must fail at `compatibility`, with
+  zero runtime calls and one failed ledger row.
+- `missing_previous_image_or_backup` uses the production `DockerRuntime.VerifyRestoreInputs` and
+  `Prepare`, with a scripted docker runner. A real age pre-upgrade envelope bound to the previous
+  manifest and the intact image IDs are accepted first. Then the removed envelope and an absent
+  image (`image inspect` fails) are both refused.
+
+**Real evidence, CLI against the `diag-*` bundles:** all three exit **3**.
+
+**Severing probes, each restored:**
+- the release migration gate severed → `irreversible_or_down_migration` exits 0;
+- the image-ID comparison severed → `missing_previous_image_or_backup` exits 0;
+- the content-identity binding severed → `wrong_epoch_or_artifact_set` exits 0.
+
+**Also:**
+- `make test-go` over deploymentrehearsal and cmd/deployment-rehearsal passed.
+- The generic mutation test gained an epoch fixture.
+- Probe-backed populations are now 28 of 43: 27 negatives and 1 positive. Still without a producer:
+  - negatives: non-clean restore target (Postgres) and restart during admitted work (live
+    gameserver);
+  - 12 runtime positives, which need the host.

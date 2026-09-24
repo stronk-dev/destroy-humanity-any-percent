@@ -52,6 +52,7 @@ var bundleMutations = map[string]bundleMutation{
 	"changed_image_digest":          {path: "release-manifest.json", mutate: replaceManifestHash("reference")},
 	"changed_runtime_config_digest": {path: "release-manifest.json", mutate: replaceManifestHash("runtime_config_sha256")},
 	"changed_sbom":                  {path: "sbom/caddy.spdx.json", mutate: changeSPDXSubject},
+	"wrong_epoch_or_artifact_set":   {path: "content/balance/epochs/phase0.json", mutate: changeCurrentEpoch},
 }
 
 // RunProbe returns ProbeRejected only when a fully prepared, named negative
@@ -94,6 +95,10 @@ func RunProbe(request ProbeRequest) (ProbeOutcome, error) {
 		return runBackupRestoreNegativeProbe(request, deploymentbackup.Restore)
 	case "interrupted_backup_writer":
 		return runInterruptedBackupProbe(request, deploymentbackup.Create)
+	case "irreversible_or_down_migration":
+		return runIrreversibleMigrationProbe(request)
+	case "missing_previous_image_or_backup":
+		return runMissingPreviousInputProbe(request)
 	}
 	mutation, ok := bundleMutations[request.Population]
 	if !ok {

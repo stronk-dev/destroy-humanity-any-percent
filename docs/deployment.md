@@ -207,8 +207,17 @@ unsupported check or broken probe from satisfying a negative row just because it
 current fixed probes cover the intact six-image/SBOM/license/provenance population, eight exact
 bundle mutations, three production config/secret matrices, a public-metrics-route severing,
 seeded source/image secret detection, the clean-host/source-checkout evidence boundary, alert and
-journal evidence severings, incomplete/guarded observation, the RPO/RTO limits and four encrypted
-backup-envelope failure populations.
+journal evidence severings, incomplete/guarded observation, the RPO/RTO limits, four encrypted
+backup-envelope failure populations, a wrong epoch declaration (packaged `current_epoch_id`
+changed, manifest rebound, rejected because the content no longer derives the manifest identity),
+an irreversible/Down migration (the production release controller, given the exact bundle pair but
+a candidate migration below the running release, refuses at `compatibility` with no runtime step,
+after the unmodified pair is shown to reach the runtime), and a missing previous backup or image
+(the production `VerifyRestoreInputs` and `Prepare` gates accept the intact inputs, then refuse a
+removed pre-upgrade envelope and an absent previous image before anything destructive). The
+non-clean restore target and restart-during-admitted-work negatives, and the runtime release,
+rollback, rotation, alert-delivery, journal-budget and provider-off positives, still have no
+producer and exit `2`.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and

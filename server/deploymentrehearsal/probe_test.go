@@ -264,7 +264,9 @@ func probeFixture(t *testing.T, name string, mutation bundleMutation) (ProbeRequ
 	candidate := request.CandidateBundle
 	original := []byte("fixture")
 	if mutation.mutate != nil {
-		if name == "changed_sbom" {
+		if name == "wrong_epoch_or_artifact_set" {
+			original = []byte("{\"current_epoch_id\": 8}\n")
+		} else if name == "changed_sbom" {
 			original = []byte("{\"name\":\"sha256-" + strings.Repeat("a", 64) + "\"}\n")
 		} else {
 			original = []byte("{\"reference\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"runtime_config_sha256\": \"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}\n")
