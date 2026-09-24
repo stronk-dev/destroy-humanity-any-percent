@@ -1908,3 +1908,222 @@ handoff points to the accepted RFC, this append-only log, cold root Make lanes a
 independent severing checks. One cross-party session can review them efficiently, but each batch
 still needs its own exact-range verdict. No designated review, DP-F approval, R-006 host result,
 archival or release claim is inferred from preparing the packet.
+
+## 2026-09-24 — Claude designated cross-party review: DP-A, DP-B, DP-C, DP-D
+
+**Review by:** Claude — the designated cross-party pass required by AGENTS.md (c). Each range was
+inspected by a separate Claude review subagent working in an isolated detached worktree at the
+range tip, and the parent Claude session re-checked the load-bearing findings in source.
+**Recorded by:** Claude (parent session). Codex first-filter verdicts were read as input only.
+**Environment:** macOS 27 arm64 host, go1.27.1, Docker 28.4.0 / Compose v2.39.4. Linux/amd64
+containers ran under emulation. This is not a clean supported host, and no R-006 claim follows
+from it. Every worktree mutation was restored with `git checkout -- .` and a clean `git status`.
+The worktrees and the Docker projects `cloud-clicker-backup-test` and `cloud-clicker-release-test`
+were removed afterwards.
+
+### DP-A — exact range `cd102d7..d7d443f` (bbff0b6, a906398, d7d443f) — **CHANGES REQUIRED**
+
+Executed cold at `d7d443f`:
+- `make test-go GO_PACKAGES='./deploymentconfig ./gameserver ./cmd/gameserver ./account ./transport ./publicapi' GO_TEST_FLAGS='-count=1 -v'`
+  exited 0: 188 PASS, 10 SKIP, 0 FAIL. Every skip is a pre-existing Postgres `*Integration` test
+  or the first-hour replay. All seven load-bearing config tests ran, including all 43 fail-closed rows.
+- `make vet` exited 0 and `gofmt -l` reported nothing.
+- The real built binary, run under `env -i`, exited 1 before any database attempt for a missing
+  secret file, an `http://` origin and the legacy `DATABASE_URL`. No secret value appeared in its output.
+
+Severing probes:
+- These failed their witnesses as required:
+  - proxy depth;
+  - the insecure-origin scheme;
+  - the half-pair check (bootstrap/cursor);
+  - duplicate previous IDs;
+  - duplicate previous values;
+  - the legacy-variable list.
+- These left every test green:
+  - the `/run/secrets/` prefix check;
+  - path normalization;
+  - origin userinfo;
+  - the trailing-dot origin check;
+  - `gameserver/composition.go` `apiConfig.TrustedProxyHops = trustedProxyHops`;
+  - `policy.AllowedOrigins = allowedOrigins`.
+- As a carry-over, the same two composition mutations were run in DP-D's real Caddy lane at
+  `3f58fea`. The origin severing failed there (WebSocket 403). The proxy-hop severing still passed.
+
+- **B1 (blocking):** the production proxy-hop wiring has no witness that can fail. The log and
+  `docs/gameserver.md` say that composition binds one trusted hop into account/IP handling. Nothing
+  in this range or in DP-D's lane fails when that assignment is removed, so production could
+  silently treat every player as Caddy's single IP.
+- **Non-blocking:**
+  - The JWT half-pair row passes through the empty-path guard, not the half-pair branch.
+  - The four surviving decoder rules above lack rows.
+  - Duplicate environment keys are unreachable through `os.Environ()`: Go keeps only the first.
+    DP3's duplicate-key rule must therefore be enforced at the `.env`/schema preflight, and the
+    `duplicate_environment_key` row does not prove it for `LoadEnvironment`.
+  - The gameserver's closed `CLOUD_CLICKER_*` allowlist rejects the other services' variables if
+    the env file is shared (source reading).
+  - Fail-before-migration ordering has no automated test.
+
+### DP-B — exact range `d7d443f..9b916c2` (f62e0b7…9b916c2, 9 commits) — **CHANGES REQUIRED**
+
+Executed cold at `9b916c2`:
+- `make test-go` over releasepackage and the new cmd/config packages exited 0; releasepackage
+  passed 19/19 with none skipped.
+- The five new cmd packages have no tests.
+- These all exited 0: `make stage-release-content` (31 files), `make release-secret-scan`,
+  `make render-release-compose`, `make generate-release-metadata`,
+  `make build-gameserver-linux-amd64` and a client `vite build`.
+- Two `--no-cache` `make build-gameserver-image` runs produced byte-identical archives, so the
+  reproducibility claim holds.
+- Not run: `docker compose up` from an extracted bundle, and `make deployment-config-check`
+  (it needs secrets).
+
+Severing probes:
+- These failed as required:
+  - removing a closure file;
+  - removing the image source-revision check;
+  - weakening the seeded-secret quantifier.
+- Removing the `scanSecretBytes` call inside `ScanDockerArchive` failed nothing.
+
+- **F1 (blocking, executed):** the image secret scan cannot see inside the image. BuildKit
+  `type=docker` layers are gzip blobs and `ScanDockerArchive` scans raw outer tar members.
+  - An image built with `content/leaked.txt` holding a PEM private-key header passed
+    `make release-secret-scan` with "no findings", although the file is present in the layer.
+  - The only image test appends the sentinel after the tar end marker.
+  - AC2's image-scan negative is therefore unproven. Parent check: `ScanDockerArchive` at HEAD
+    still does not decompress layers.
+- **F2 (blocking, executed):** `ValidateBundle` accepts a manifest whose Caddy or Postgres digest,
+  `epoch_id`, `constants_hash`, `copy_hash` or `database_migration` has been forged. All six
+  single-field forgeries returned nil. It hash-binds files but never cross-checks the manifest
+  against `compose.yml` or `content/`. The predeclared "change one image digest" and
+  "forge epoch/copy identity" negatives, and AC8, are therefore unmet.
+- **F3 (blocking for AC8 attribution, executed):** `third-party-licenses.txt` lists only direct
+  client dependencies. The built client bundle also ships `pad-end` (MIT) and `tslib` (0BSD), and
+  their notices are missing. 0BSD is also absent from the license allowlist.
+- **Non-blocking:**
+  - `compose.rotation.yml` is hash-bound but never validated.
+  - YAML is decoded non-strictly.
+  - The runtime closure hard-codes two runtime reads, with no staged-closure startup test.
+
+### DP-C — exact range `9b916c2..ab70327` (86cf4d6, 23a590d, 120343c, ab70327) — **CHANGES REQUIRED**
+
+Executed cold at `ab70327`:
+- The focused `make test-go` exited 0; both Postgres tests skip natively, as designed.
+- `make test-deployment-backup` exited 0. Both Postgres tests ran with no SKIP:
+  - `TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration`, with both subtests;
+  - `TestPostgresRestoreRefusesNonCleanTargetIntegration`.
+  The same result held on a clean rerun.
+- Removing the `GODEBUG` AVX2 workaround still passed 3/3 under this emulator. That is
+  informational only.
+
+Severing probes:
+- These failed as required:
+  - removing the unresolved pre-upgrade protection;
+  - removing newest-backup protection;
+  - removing the 30-day daily keep;
+  - removing the Restore manifest check;
+  - making the clean-target check vacuous (real Postgres).
+- These left every test green:
+  - Restore payload length/sha256 verification;
+  - ReadHeader payload length/sha256 verification;
+  - the extracted dump sha256 check;
+  - temp-file cleanup;
+  - future-dated `CompletedAt` invalidation;
+  - skipping dot-named temp files in `backupPaths`;
+  - the post-restore migration identity check (real Postgres).
+
+- **F1 (blocking, parent-verified in source):** `runSchedule` creates a backup before applying
+  retention. Any entry in the target that is not a valid backup makes retention return an error,
+  the worker exit and `restart: unless-stopped` re-run it. Examples are a crash-left `.backup-*.tmp`
+  (AC4's mid-write/restart case) or `lost+found` on a dedicated ext4 mount. Each restart writes
+  another full backup and never prunes, so the off-host target fills. The docs give the operator
+  no recovery step, and HEAD has the same loop shape.
+- **F2 (blocking):** the DP6 checksum checks have no failing witness. The header checksum is what
+  lets schedule and retention recognize a truncated backup whose header is intact. Without a
+  witness, such a file can count as "newest valid".
+- **F4 (blocking as overclaim):**
+  - There is no partial-rename or mid-write/restart fixture; the only crash-temp witness uses a
+    non-dot name.
+  - The real-Postgres lane has only migration-mismatch and non-clean-target negatives. Truncation,
+    corruption, identity and manifest checks are envelope-level unit tests.
+- **Non-blocking:**
+  - The committed envelope is never re-read and verified before rename, and there is no directory
+    fsync.
+  - `UpgradeResolved` can never become true, so pre-upgrade backups are kept forever. This is a
+    DESIGN-GAP to route.
+  - The test-boundary expansion landed in the same commit as its CI-environment edit, so its
+    predeclaration order cannot be shown. Hosted workflow behavior is unchanged.
+  - The lane leaves its Postgres dependency container running.
+  - RPO is measured from `CompletedAt`, not from snapshot time (this matters for DP-F).
+  - The 256 MB `/tmp` tmpfs caps the dump size and is undocumented.
+
+### DP-D — exact range `ab70327..3f58fea` (6c626c2, 23adca6, 3f58fea) — **CHANGES REQUIRED**
+
+Executed cold at `3f58fea`:
+- `make test-deployment-release` exited 0. `TestCaddyIntegrationDrainReleaseAndExactBackupRollback`
+  ran against real Postgres 16 and Caddy (no SKIP). It is the lane's only test.
+- The focused `make test-go` over nine packages exited 0: 80 PASS, 7 env-gated SKIP, 0 FAIL.
+
+Severing probes:
+- Every RFC-named AC3 severing failed at the controller level:
+  - drain validity;
+  - migration propagation;
+  - epoch identity;
+  - smoke;
+  - the rotation-overlap minimum for JWT/bootstrap/cursor.
+- In the real Caddy lane, these also failed as required:
+  - skipping the transport courtesy publish;
+  - disabling the artifact comparison;
+  - making `/readyz` ignore draining.
+- These production `DockerRuntime` observations left every test green:
+  - forcing `CourtesyFrame=true`;
+  - `VerifyIdentity` returning nil;
+  - dropping the `ArtifactsVerified` count check;
+  - forcing `ReadinessDown`.
+
+- **F1 (blocking, executed and parent-verified):** `Rollback` runs `StopFailed` →
+  `ResetDatabase` (`docker volume rm …postgres_data`) → `Restore`. The backup file and age identity
+  file are checked only inside `Restore`. A throwaway fixture with a missing backup and a missing
+  identity file removed the volume, then refused at `exact_restore`. A path typo therefore wipes
+  the live database. AC5's missing-backup refusal only happens after that destruction, and there
+  is no missing-backup fixture. The ordering is unchanged at HEAD.
+- **F2 (blocking, executed):** `Release` runs candidate `Preflight` (`compose run gameserver
+  validate-config` on the candidate Compose file) before `Prepare` performs `docker load`. The
+  manifest pins the gameserver as a bare `sha256:` config ID, which does not resolve before the
+  load: `pull access denied`, exit 1. A normal release therefore fails at preflight on a host
+  without the image; the unit runner mock hides this. At HEAD, `Install` was reordered, but
+  `Release` still preflights first.
+- **F3 (blocking, executed):** `composeArgs` passes only `compose.yml`. `compose.rotation.yml`,
+  which carries the previous keys, is never included. Any release or rollback during a JWT or
+  bootstrap overlap recreates the gameserver without previous keys, which shortens DP4's mandatory
+  overlaps. The rotation ledger is not bound to runtime secret state. This is unchanged at HEAD.
+- **F4 (blocking):** no test calls `DockerRuntime.DrainCurrent` or `VerifyIdentity`.
+  - Three drain properties are derived from one `cleanExit` bit.
+  - `waitHTTPState(false)` accepts any non-204, so a Caddy 502 satisfies "readiness down".
+  - The lane proves the gameserver drain and backup/restore components, not the helper's state
+    machine as the log claims.
+- **F5 (blocking for AC5):**
+  - There is no irreversible-migration fixture or detection.
+  - There is no wrong-image rollback fixture.
+  - Rollback never loads or inspects the previous image.
+  - The integration "rollback" restores into a new database on a shared server with the same code,
+    not a clean volume with the previous version.
+- **Non-blocking:**
+  - `docs/ci.md` says failed release-lane runs retain containers; the Make target always removes them.
+  - Both scope-expansion notes landed in the implementation commit, and the ISC license-allowlist
+    expansion is unrecorded.
+  - Suspicion, not executed: the `backup` service's `user: 70:70` cannot read an operator-owned
+    0600 identity file on rollback.
+- **Controller-level gates with no finding:** ledger ordering, locks, rotation continuity,
+  downgrade refusal and window arithmetic.
+
+### Consequence
+
+None of DP-A–DP-D is approved; each exact range needs a corrective range from the implementer
+and a fresh designated pass over that correction. Several findings persist at HEAD and affect
+DP-F:
+- the vacuous image-layer secret scan (so the DP-F2 "image scan passes" record proves nothing
+  about layer contents);
+- the release preflight-before-load failure (a clean-host R-006 release step would fail);
+- destructive rollback ordering;
+- the ignored rotation overlay.
+Per the handoff, Claude records the findings and does not repair them.
