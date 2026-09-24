@@ -250,7 +250,12 @@ an absolute path before invoking the scanner; the scanner itself still requires 
 `make deployment-rehearsal-supply-chain` derives the supply-chain result by reopening both exact
 bundles, both independent-build records and the structured secret scan. It requires the candidate
 record's schema-v2 Playwright closure, matching source/manifest identities, six production images,
-one rehearsal image, eight SBOM documents and root plus site attribution. The emitted mode-0600
+one rehearsal image, eight SBOM documents and root plus site attribution. Every verifiable
+build-record field is reduced to bundle bytes: the gameserver archive and rebuild-archive hashes
+must equal the bundle's `images/gameserver.docker.tar`, the rebuild manifest hash must equal the
+manifest, and every image and rehearsal image (reference, runtime config, SBOM hash) must equal the
+manifest's, which `ValidateBundle` binds to Compose and SBOM bytes. `independent_rebuild` and
+`normalized_sboms_equal` describe the build procedure and remain operator-attested. The emitted mode-0600
 result binds the hashes of every input. Final validation also retains and opens both build records,
 so a rehashed supply-chain summary cannot invent an independent rebuild or detach itself from the
 candidate and previous manifests.

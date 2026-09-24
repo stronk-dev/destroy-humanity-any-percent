@@ -91,6 +91,10 @@ func ObserveSupplyChain(request SupplyChainRequest) (SupplyChainResult, error) {
 		!slices.Contains(candidateIdentity.Artifacts, "site/third-party-licenses.txt") {
 		return SupplyChainResult{}, ErrInvalid
 	}
+	if bindBuildToBundle(candidateBuild, request.CandidateBundle, candidateIdentity) != nil ||
+		bindBuildToBundle(previousBuild, request.PreviousBundle, previousIdentity) != nil {
+		return SupplyChainResult{}, ErrInvalid
+	}
 	result := SupplyChainResult{SchemaVersion: 1, CandidateManifestSHA256: hashBytes(candidateManifest), PreviousManifestSHA256: hashBytes(previousManifest),
 		CandidateBuildSHA256: hashBytes(candidateBuildBytes), PreviousBuildSHA256: hashBytes(previousBuildBytes), SecretScanSHA256: hashBytes(secretBytes),
 		StartedAt: started, CompletedAt: request.Now().UTC(), ProductionImages: len(candidateIdentity.Images),
@@ -131,9 +135,9 @@ func DecodeSupplyChainResult(data []byte) (SupplyChainResult, error) {
 }
 
 type supplyManifest struct {
-	SourceCommit    string `json:"source_commit"`
-	Images          []any  `json:"images"`
-	RehearsalImages []any  `json:"rehearsal_images"`
+	SourceCommit    string       `json:"source_commit"`
+	Images          []BuildImage `json:"images"`
+	RehearsalImages []BuildImage `json:"rehearsal_images"`
 	Artifacts       []struct {
 		Path string `json:"path"`
 	} `json:"artifacts"`
@@ -141,8 +145,8 @@ type supplyManifest struct {
 
 type supplyManifestIdentity struct {
 	SourceCommit    string
-	Images          []any
-	RehearsalImages []any
+	Images          []BuildImage
+	RehearsalImages []BuildImage
 	Artifacts       []string
 }
 
@@ -157,6 +161,25 @@ func decodeSupplyManifest(data []byte) (supplyManifestIdentity, error) {
 	}
 	return supplyManifestIdentity{SourceCommit: manifest.SourceCommit, Images: manifest.Images,
 		RehearsalImages: manifest.RehearsalImages, Artifacts: paths}, nil
+}
+
+// bindBuildToBundle reduces every verifiable build-record field to the
+// bundle's own bytes: the shipped gameserver archive, the manifest and the
+// manifest's image identities (themselves bound to Compose and SBOM bytes by
+// ValidateBundle). independent_rebuild and normalized_sboms_equal describe the
+// build procedure and remain operator-attested.
+func bindBuildToBundle(record BuildRecord, bundle string, manifest supplyManifestIdentity) error {
+	archive, err := os.ReadFile(filepath.Join(bundle, "images", "gameserver.docker.tar"))
+	if err != nil {
+		return ErrInvalid
+	}
+	archiveHash := hashBytes(archive)
+	if record.GameserverArchiveSHA256 != archiveHash || record.RebuildArchiveSHA256 != archiveHash ||
+		record.RebuildManifestSHA256 != record.ManifestSHA256 ||
+		!slices.Equal(record.Images, manifest.Images) || !slices.Equal(record.RehearsalImages, manifest.RehearsalImages) {
+		return ErrInvalid
+	}
+	return nil
 }
 
 func loadBuildBytes(path string) ([]byte, BuildRecord, error) {

@@ -52,6 +52,31 @@ func TestObserveSupplyChainRejectsUnvalidatedOrMismatchedInputs(t *testing.T) {
 	})
 }
 
+func TestObserveSupplyChainBindsBuildRecordFieldsToBundleBytes(t *testing.T) {
+	for name, mutate := range map[string]func(*BuildRecord){
+		// Self-consistent but wrong: the record agrees with itself, so only
+		// the bundle's actual archive bytes can reject it.
+		"archive and rebuild archive": func(record *BuildRecord) {
+			record.GameserverArchiveSHA256, record.RebuildArchiveSHA256 = hashForBuild("e"), hashForBuild("e")
+		},
+		"gameserver SBOM":   func(record *BuildRecord) { record.Images[2].SBOMSHA256 = hashForBuild("e") },
+		"playwright config": func(record *BuildRecord) { record.RehearsalImages[0].RuntimeConfigSHA256 = hashForBuild("e") },
+	} {
+		t.Run(name, func(t *testing.T) {
+			fixture := supplyChainFixture(t)
+			record, err := LoadBuildRecord(fixture.request.CandidateBuild)
+			if err != nil {
+				t.Fatal(err)
+			}
+			mutate(&record)
+			writeJSONFile(t, fixture.request.CandidateBuild, record)
+			if _, err := ObserveSupplyChain(fixture.request); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("build record field not bound to bundle bytes: %v", err)
+			}
+		})
+	}
+}
+
 type supplyFixture struct {
 	request           SupplyChainRequest
 	candidateManifest []byte
@@ -69,8 +94,18 @@ func supplyChainFixture(t *testing.T) supplyFixture {
 	if err := os.Mkdir(previousBundle, 0o700); err != nil {
 		t.Fatal(err)
 	}
-	candidateManifest := supplyManifestBytes(t, strings.Repeat("c", 40), true)
-	previousManifest := supplyManifestBytes(t, strings.Repeat("d", 40), false)
+	records := validBuildRecord()
+	candidateManifest := supplyManifestBytes(t, strings.Repeat("c", 40), records.Images, []BuildImage{validRehearsalImage()})
+	previousManifest := supplyManifestBytes(t, strings.Repeat("d", 40), records.Images, nil)
+	archive := []byte("gameserver image archive fixture\n")
+	for _, bundle := range []string{candidateBundle, previousBundle} {
+		if err := os.MkdirAll(filepath.Join(bundle, "images"), 0o700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(bundle, "images", "gameserver.docker.tar"), archive, 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if err := os.WriteFile(filepath.Join(candidateBundle, releasepackage.ReleaseManifestPath), candidateManifest, 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -84,10 +119,12 @@ func supplyChainFixture(t *testing.T) supplyFixture {
 	candidateBuild.ManifestSHA256 = hashBytes(candidateManifest)
 	candidateBuild.RebuildManifestSHA256 = candidateBuild.ManifestSHA256
 	candidateBuild.RehearsalImages = []BuildImage{validRehearsalImage()}
+	candidateBuild.GameserverArchiveSHA256, candidateBuild.RebuildArchiveSHA256 = hashBytes(archive), hashBytes(archive)
 	previousBuild := validBuildRecord()
 	previousBuild.SourceCommit = strings.Repeat("d", 40)
 	previousBuild.ManifestSHA256 = hashBytes(previousManifest)
 	previousBuild.RebuildManifestSHA256 = previousBuild.ManifestSHA256
+	previousBuild.GameserverArchiveSHA256, previousBuild.RebuildArchiveSHA256 = hashBytes(archive), hashBytes(archive)
 	candidateBuildPath := filepath.Join(root, "candidate-build.json")
 	previousBuildPath := filepath.Join(root, "previous-build.json")
 	writeJSONFile(t, candidateBuildPath, candidateBuild)
@@ -111,15 +148,13 @@ func supplyChainFixture(t *testing.T) supplyFixture {
 			Output: filepath.Join(root, "supply-chain.json"), Now: now}}
 }
 
-func supplyManifestBytes(t *testing.T, commit string, rehearsal bool) []byte {
+func supplyManifestBytes(t *testing.T, commit string, images, rehearsal []BuildImage) []byte {
 	t.Helper()
-	manifest := map[string]any{"source_commit": commit, "images": []any{1, 2, 3, 4, 5, 6},
-		"artifacts": []map[string]string{{"path": "LICENSE"}, {"path": "third-party-licenses.txt"}, {"path": "site/third-party-licenses.txt"}}}
-	if rehearsal {
-		manifest["rehearsal_images"] = []any{1}
-	} else {
-		manifest["rehearsal_images"] = []any{}
+	if rehearsal == nil {
+		rehearsal = []BuildImage{}
 	}
+	manifest := map[string]any{"source_commit": commit, "images": images, "rehearsal_images": rehearsal,
+		"artifacts": []map[string]string{{"path": "LICENSE"}, {"path": "third-party-licenses.txt"}, {"path": "site/third-party-licenses.txt"}}}
 	data, err := json.Marshal(manifest)
 	if err != nil {
 		t.Fatal(err)

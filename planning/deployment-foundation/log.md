@@ -2998,3 +2998,31 @@ docs say so.
 - A real `make deployment-rehearsal-supply-chain` run against the retained v5a/previous bundles
   and records must still pass.
 - The same run with one mutated record field must fail.
+
+## 2026-09-24 — R14 implemented: build records bound to bundle bytes; retained bundles invalidated
+
+**Implementation.** `bindBuildToBundle` in `ObserveSupplyChain` applies to both the candidate and
+the previous record. The manifest images decode as typed `BuildImage` values.
+
+**Tests.** `TestObserveSupplyChainBindsBuildRecordFieldsToBundleBytes` covers:
+- a self-consistent wrong archive/rebuild-archive pair;
+- a wrong gameserver SBOM hash;
+- a wrong Playwright config.
+
+The first draft also mutated single self-consistency fields. Those cases were already rejected by
+record decoding, so they did not witness byte binding and were replaced (found by severing).
+Severing the candidate binding fails all three cases.
+
+**Real-run finding (important for DP-F).** `make deployment-rehearsal-supply-chain` against the
+retained `candidate-v5a`/`previous` bundles now fails on committed HEAD as well as with R14. The
+cause is `ValidateBundle`. Since R5 it requires `admin off` and Caddy `expose: ["2020"]`, and
+**every retained bundle (v1–v5 candidates and the previous bundle) still exposes the admin API on
+`:2019` and is correctly rejected.** Consequences:
+- The earlier R4 statement that those bundles validate was true at R4 and became false at R5.
+- No retained bundle can be an R-006 candidate *or* previous input. Both must be rebuilt from
+  corrected source, the previous one at a lower release version.
+- Current security validation also applies to the previous bundle, so a pre-R5 bundle can no
+  longer be a rollback target. No instance is deployed, so no real rollback is affected. This is
+  a policy choice flagged for Codex/owner review, not silently decided.
+
+A real run of R14 on rebuilt bundles is therefore still owed.
