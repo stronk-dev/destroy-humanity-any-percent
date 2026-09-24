@@ -418,3 +418,70 @@ func fixtureDockerArchive(t *testing.T, directory, architecture string) (string,
 	}
 	return path, imageID
 }
+
+func TestValidateBundleBindsManifestClaimsToComposeAndContent(t *testing.T) {
+	repositoryRoot := filepath.Join("..", "..")
+	forge := func(t *testing.T, mutate func(*ReleaseManifest, string)) error {
+		t.Helper()
+		inputs := bundleInputs(t, repositoryRoot)
+		if _, err := AssembleBundle(inputs); err != nil {
+			t.Fatal(err)
+		}
+		if err := ValidateBundle(inputs.Output); err != nil {
+			t.Fatalf("unforged bundle rejected: %v", err)
+		}
+		manifest, _, err := LoadReleaseManifest(inputs.Output)
+		if err != nil {
+			t.Fatal(err)
+		}
+		mutate(&manifest, inputs.Output)
+		encoded, err := json.MarshalIndent(manifest, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(inputs.Output, ReleaseManifestPath), append(encoded, '\n'), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		return ValidateBundle(inputs.Output)
+	}
+	image := func(name string) func(*ReleaseManifest, string) {
+		return func(manifest *ReleaseManifest, _ string) {
+			for index := range manifest.Images {
+				if manifest.Images[index].Name == name {
+					reference := manifest.Images[index].Reference
+					manifest.Images[index].Reference = reference[:strings.LastIndex(reference, "@sha256:")] + "@sha256:" + strings.Repeat("0", 64)
+				}
+			}
+		}
+	}
+	for name, mutate := range map[string]func(*ReleaseManifest, string){
+		"caddy digest":      image("caddy"),
+		"postgres digest":   image("postgres"),
+		"prometheus digest": image("prometheus"),
+		"epoch id":          func(manifest *ReleaseManifest, _ string) { manifest.EpochID += 91 },
+		"constants hash":    func(manifest *ReleaseManifest, _ string) { manifest.ConstantsHash = "sha256:" + strings.Repeat("e", 64) },
+		"copy hash":         func(manifest *ReleaseManifest, _ string) { manifest.CopyHash = "sha256:" + strings.Repeat("e", 64) },
+		"removed catalog with rebound manifest": func(manifest *ReleaseManifest, root string) {
+			const catalog = "content/balance/catalogs/phase0.json"
+			if err := os.Remove(filepath.Join(root, catalog)); err != nil {
+				t.Fatal(err)
+			}
+			kept := manifest.Artifacts[:0]
+			for _, artifact := range manifest.Artifacts {
+				if artifact.Path != catalog {
+					kept = append(kept, artifact)
+				}
+			}
+			if len(kept) == len(manifest.Artifacts) {
+				t.Fatalf("fixture bundle has no %s", catalog)
+			}
+			manifest.Artifacts = kept
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			if err := forge(t, mutate); !errors.Is(err, ErrInvalidContent) {
+				t.Fatalf("forged manifest claim accepted: %v", err)
+			}
+		})
+	}
+}

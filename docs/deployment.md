@@ -126,6 +126,13 @@ third-party licenses, eight SBOM documents and
 `release-manifest.json`. The manifest records the current migration, both save-schema versions,
 epoch/copy/constants identities and the SHA-256 of every other bundle file. Validation re-walks the
 directory and rejects any missing, extra or changed byte, including attribution or an image SBOM.
+It then binds the manifest's own claims to those bytes: every service image in the hash-bound
+`compose.yml` must equal the manifest reference of that name (the backup worker runs the Postgres
+reference), and the runtime closure re-derived from the bundle's `content/` through the same epoch
+authority must match the staged file set exactly and carry the manifest's epoch ID, constants hash
+and copy hash. Removing a catalog therefore fails even if the manifest is rebound. The database
+migration is compiled into the gameserver and is bound at runtime by the private database
+inspection, not by bundle bytes.
 For rollback, an exact retained pre-browser bundle may carry its original manifest schema without
 the later optional `rehearsal_images` property, but only when its manifest also has no rehearsal
 image, browser helper or Playwright SBOM. The current source schema and every browser-bearing

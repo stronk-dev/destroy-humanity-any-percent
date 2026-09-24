@@ -2469,3 +2469,25 @@ them. Forged Caddy/Postgres digests, `epoch_id`, `constants_hash`, `copy_hash` a
    copy) must fail on the current code and pass after the change. A removed content file must fail
    even with a rebound manifest, which is AC1's catalog-removal case that generic integrity cannot
    cover. The retained `previous` and `candidate-v5a` bundles must still validate.
+
+## 2026-09-24 — R4 implemented: manifest claims bound to Compose and content
+
+**Implementation:** `ValidateBundle` adds two checks.
+- `bindComposeImages`: the service set and every image equal the manifest (backup equals Postgres).
+- `bindContentIdentity`: `DeriveRuntimeClosure` runs over bundle `content/`, followed by
+  `ValidateStagedContent`, and the epoch, constants and copy values must equal the manifest's.
+
+The manifest test fixture now stages the real runtime closure instead of a placeholder epoch file.
+
+**Evidence:**
+- New `TestValidateBundleBindsManifestClaimsToComposeAndContent` covers seven forgeries: the
+  caddy, postgres and prometheus digests; epoch; constants; copy; and a removed catalog with a
+  rebound manifest. All seven failed on the pre-change validator.
+- The first Prometheus variant reused the fixture's own all-`f` digest, which was a test-driver
+  error. It is corrected to a zero digest.
+- Cold `make test-go` over releasepackage, deploymentrelease, deploymentbackup,
+  deploymentrehearsal, operations and their cmds passed.
+- A throwaway validator (created and deleted, never committed) accepted the retained real
+  `previous`, `candidate-v4a`, `candidate-v5a` and `candidate-v5b` bundles, so historical-bundle
+  rollback is not broken.
+- `database_migration` stays runtime-bound, as predeclared.

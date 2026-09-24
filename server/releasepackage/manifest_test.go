@@ -18,7 +18,10 @@ func TestCurrentMigrationIsContiguous(t *testing.T) {
 
 func TestReleaseManifestBindsEveryBundleByteAndImageSBOM(t *testing.T) {
 	root := releaseBundleFixture(t)
-	closure := Closure{EpochID: 8, ConstantsHash: "sha256:" + strings.Repeat("a", 64), CopyHash: "sha256:" + strings.Repeat("b", 64), Files: []File{{Path: "fixture", SHA256: "sha256:" + strings.Repeat("c", 64)}}}
+	closure, err := DeriveRuntimeClosure(filepath.Join(root, "content"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	images := fixtureManifestImages(t, root)
 	manifest, encoded, err := BuildReleaseManifest(root, ManifestInput{ReleaseVersion: "0.1.0-preview.1", SourceCommit: strings.Repeat("d", 40),
 		DockerEngineVersion: "28.3.3", DockerComposeVersion: "2.39.1", DatabaseMigration: 74, Closure: closure, Images: images})
@@ -96,7 +99,7 @@ func releaseBundleFixture(t *testing.T) string {
 		"compose.yml": "fixture\n", "compose.rotation.yml": "fixture\n", "config.schema.json": "{}\n", "release-manifest.schema.json": "{}\n", "rehearsal-evidence.schema.json": "{}\n",
 		"sbom/application.spdx.json": fixtureSPDX("application"),
 		"third-party-licenses.txt":   "fixture\n", "site/index.html": "<html></html>\n", "site/third-party-licenses.txt": "fixture\n",
-		"gameserver": "binary\n", "deployment-backup": "binary\n", "deployment-release": "binary\n", "deployment-operations": "binary\n", "deployment-rehearsal": "binary\n", "content/balance/epochs/phase0.json": "{}\n",
+		"gameserver": "binary\n", "deployment-backup": "binary\n", "deployment-release": "binary\n", "deployment-operations": "binary\n", "deployment-rehearsal": "binary\n",
 		"operations/prometheus.yml": "fixture\n", "operations/cloud-clicker-alerts.yml": "fixture\n", "operations/cloud-clicker-alerts.test.yml": "fixture\n",
 		"operations/alertmanager.example.yml": "fixture\n", "operations/journald.template.conf": "fixture\n",
 		"operations/cloud-clicker-observe.service": "fixture\n", "operations/cloud-clicker-observe.timer": "fixture\n",
@@ -133,6 +136,9 @@ func releaseBundleFixture(t *testing.T) string {
 		t.Fatal(err)
 	}
 	if err := copyTree(filepath.Join("..", "..", "deployment", "operations"), filepath.Join(root, "operations")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := StageRuntimeContent(filepath.Join("..", ".."), filepath.Join(root, "content")); err != nil {
 		t.Fatal(err)
 	}
 	archive, gameserverID := fixtureDockerArchive(t, t.TempDir(), "amd64")

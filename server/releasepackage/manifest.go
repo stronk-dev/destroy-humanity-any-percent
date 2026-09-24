@@ -14,6 +14,8 @@ import (
 	"strings"
 
 	"cloud-clicker/server/save"
+
+	yaml "go.yaml.in/yaml/v2"
 )
 
 const ReleaseManifestPath = "release-manifest.json"
@@ -178,6 +180,12 @@ func ValidateBundle(root string) error {
 	if err != nil || ValidateCompose(compose) != nil {
 		return fmt.Errorf("%w: invalid release Compose", ErrInvalidContent)
 	}
+	if err := bindComposeImages(compose, manifest.Images); err != nil {
+		return err
+	}
+	if err := bindContentIdentity(filepath.Join(root, "content"), manifest); err != nil {
+		return err
+	}
 	caddyfile, err := os.ReadFile(filepath.Join(root, "Caddyfile"))
 	if err != nil || ValidateCaddyfile(caddyfile) != nil {
 		return fmt.Errorf("%w: invalid release Caddyfile", ErrInvalidContent)
@@ -215,6 +223,49 @@ func ValidateBundle(root string) error {
 		if validateSchemaRehearsalClosure(data, name, required, len(manifest.RehearsalImages) == 1) != nil {
 			return ErrInvalidContent
 		}
+	}
+	return nil
+}
+
+// bindComposeImages requires every image the hash-bound Compose file will run
+// to be the manifest's declared reference for that service; the backup worker
+// runs the Postgres image for its pg_dump/pg_restore major.
+func bindComposeImages(compose []byte, images []Image) error {
+	var model composeModel
+	if yaml.Unmarshal(compose, &model) != nil {
+		return ErrInvalidContent
+	}
+	declared := map[string]string{}
+	for _, image := range images {
+		declared[image.Name] = image.Reference
+	}
+	declared["backup"] = declared["postgres"]
+	if len(model.Services) != len(declared) {
+		return fmt.Errorf("%w: Compose service set differs from manifest images", ErrInvalidContent)
+	}
+	for name, service := range model.Services {
+		if want, ok := declared[name]; !ok || service.Image != want {
+			return fmt.Errorf("%w: Compose image for %s differs from the manifest", ErrInvalidContent, name)
+		}
+	}
+	return nil
+}
+
+// bindContentIdentity re-derives the runtime closure from the bundle's own
+// content tree with the same epoch authority used at build time. The staged
+// files must be exactly that closure and its epoch, constants and copy
+// identity must equal the manifest's claims. Database migration is compiled
+// into the gameserver binary and is bound at runtime instead.
+func bindContentIdentity(content string, manifest ReleaseManifest) error {
+	closure, err := DeriveRuntimeClosure(content)
+	if err != nil {
+		return fmt.Errorf("%w: bundle content does not derive a runtime closure", ErrInvalidContent)
+	}
+	if err := ValidateStagedContent(content, closure); err != nil {
+		return err
+	}
+	if closure.EpochID != manifest.EpochID || closure.ConstantsHash != manifest.ConstantsHash || closure.CopyHash != manifest.CopyHash {
+		return fmt.Errorf("%w: manifest content identity differs from bundle content", ErrInvalidContent)
 	}
 	return nil
 }
