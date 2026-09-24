@@ -2569,3 +2569,41 @@ Docs are updated in the same commits. No hosted CI or timeout change.
 
 **Limitation (documented):** per-family delivery attribution is not observable from Alertmanager
 metrics.
+
+## 2026-09-24 — R6 predeclaration: backup schedule and checksum witnesses (DP-C F1/F2/F4)
+
+**F1 — schedule loop.** A foreign entry such as `lost+found`, a crash-left temp or a corrupt
+backup makes retention fail after a new backup has already been written. The worker exits, and
+`restart: unless-stopped` repeats that until the target fills.
+
+**Change:** `deploymentbackup.InspectTarget` classifies the target before any create:
+- regular `*.ccbackup` files;
+- Create's own `.backup-{payload,envelope}-*.tmp` files, split into stale (mtime older than
+  1 h, crash debris) and active (possibly a concurrent pre-upgrade `create`);
+- foreign entries.
+
+Each round of the schedule worker then:
+- removes and reports stale own temporaries;
+- defers without a failure record while an active temporary exists;
+- records a backup failure (so the any-failure alert fires) and retries in 5 min *without creating
+  a backup* while any foreign entry or invalid backup exists;
+- otherwise creates, records success and applies retention over the classified backups;
+- never exits for a blocked target, so there is no restart churn.
+
+The loop body becomes an injected-create round function so the decisions are unit-testable without
+Postgres.
+
+**Witnesses:**
+- a foreign directory yields a failure record and zero create calls;
+- a stale envelope temp is removed and the round creates;
+- an active temp defers with neither a failure record nor a create;
+- a corrupt backup blocks.
+
+**F2 — checksum witnesses.** Tests where a backup's header is intact but its payload is truncated
+or has a flipped byte must be rejected by `ReadHeader`, marked invalid by
+`PlanRetention`/`EvaluateSchedule`, and refused by `Restore`. Removing each respective check must
+fail its test.
+
+**F4.** The crash-temp witness uses Create's real dot-prefixed names. Docs gain the operator
+guidance that the target must be a dedicated directory, not a filesystem root containing
+`lost+found`.
