@@ -193,19 +193,24 @@ func decodeResponse(reader io.Reader, target any) error {
 	return nil
 }
 
+// waitHTTPState waits for the gameserver's own readiness answer: 204 when
+// ready, 503 while draining. A proxy 502/504 or a transport error after the
+// process has gone is not evidence that readiness was withdrawn in order.
 func waitHTTPState(ctx context.Context, client *http.Client, endpoint string, ready bool) bool {
-	ticker := time.NewTicker(100 * time.Millisecond)
+	interval, want := 100*time.Millisecond, http.StatusNoContent
+	if !ready {
+		interval, want = 25*time.Millisecond, http.StatusServiceUnavailable
+	}
+	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 	for {
 		request, _ := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
 		response, err := client.Do(request)
 		if err == nil {
 			_ = response.Body.Close()
-			if (response.StatusCode == http.StatusNoContent) == ready {
+			if response.StatusCode == want {
 				return true
 			}
-		} else if !ready {
-			return true
 		}
 		select {
 		case <-ctx.Done():

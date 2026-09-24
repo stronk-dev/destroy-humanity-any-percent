@@ -491,8 +491,13 @@ Compose-governed SIGTERM stop; observed
 readiness-down, authenticated `server_restarting` WebSocket publication, intent refusal and clean
 bounded process exit; candidate startup and forward migrations; exact database migration,
 epoch/hash/artifact reconciliation; then authenticated HTTP and WebSocket smoke through Caddy.
-The clean exit is meaningful because the gameserver exits zero only after admitted requests,
-background jobs, relay/outbox flush and transport shutdown complete. `restart: unless-stopped`
+Readiness-down means the gameserver's own `503` from `/readyz` while draining; a proxy 502/504 or
+a transport error after the process has gone is not accepted. Readiness, the courtesy frame, socket
+closure and the drain bound are observed directly. Intent refusal, admitted-work completion and
+job/outbox flush are attested by the process contract rather than observed separately: the
+gameserver exits zero only after admission closed and admitted requests, background jobs,
+relay/outbox flush and transport shutdown completed. The real Caddy population separately
+witnesses the exact intent refusal during drain. `restart: unless-stopped`
 does not race this sequence: the helper uses `docker compose stop`, not a raw container kill.
 Normal release is strictly forward by semantic release version and database migration; an older
 version can enter service only through the governed rollback command.

@@ -269,20 +269,26 @@ func (runtime DockerRuntime) DrainCurrent(ctx context.Context, bundle Bundle) (D
 	stopErr := <-stop
 	exitOutput, inspectErr := runtime.Runner.Run(drainCtx, bundle.Root, "docker", "inspect", "--format={{.State.ExitCode}}", containerID)
 	socketState := <-socket
-	evidence := DrainEvidence{ReadinessDown: <-readiness, CourtesyFrame: socketState.courtesy,
-		SocketsClosed: socketState.closed, WithinBound: runtime.Now().Sub(started) <= runtime.DrainTimeout}
-	cleanExit := stopErr == nil && inspectErr == nil && strings.TrimSpace(string(exitOutput)) == "0"
-	// The gameserver process exits zero only after its admitted-work gate, jobs,
-	// relay/outbox flush, and transport shutdown have all returned successfully.
-	// beginDrain closes intent admission before those waits. The real Caddy
-	// population independently sends an intent during this interval and requires
-	// the exact refusal; the release helper must not invent a minimum drain delay
-	// merely to make that race observable on an otherwise idle server.
-	evidence.IntentsRefused, evidence.AdmittedComplete, evidence.JobsFlushed = cleanExit, cleanExit, cleanExit
+	evidence := deriveDrainEvidence(<-readiness, socketState.courtesy, socketState.closed, stopErr, inspectErr,
+		string(exitOutput), runtime.Now().Sub(started), runtime.DrainTimeout)
 	if !evidence.Valid() {
 		return evidence, errors.Join(ErrInvalid, stopErr, inspectErr)
 	}
 	return evidence, nil
+}
+
+// deriveDrainEvidence turns the observed drain into evidence. Readiness,
+// courtesy frame, socket close and the bound are observed directly. Intent
+// refusal, admitted-work completion and job/outbox flush are attested by the
+// process contract instead: the gameserver exits 0 only after beginDrain closed
+// intent admission and its admitted-work gate, jobs, relay/outbox flush and
+// transport shutdown all returned. The real Caddy population separately sends
+// an intent during drain and requires the exact refusal; the helper does not
+// invent a drain delay merely to observe that race on an idle server.
+func deriveDrainEvidence(readinessDown, courtesy, socketsClosed bool, stopErr, inspectErr error, exitCode string, elapsed, bound time.Duration) DrainEvidence {
+	cleanExit := stopErr == nil && inspectErr == nil && strings.TrimSpace(exitCode) == "0"
+	return DrainEvidence{ReadinessDown: readinessDown, CourtesyFrame: courtesy, SocketsClosed: socketsClosed,
+		IntentsRefused: cleanExit, AdmittedComplete: cleanExit, JobsFlushed: cleanExit, WithinBound: elapsed <= bound}
 }
 
 func (runtime DockerRuntime) Start(ctx context.Context, bundle Bundle) error {

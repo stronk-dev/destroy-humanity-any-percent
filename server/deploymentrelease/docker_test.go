@@ -7,16 +7,19 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"filippo.io/age"
 
 	"cloud-clicker/server/deploymentbackup"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/releasepackage"
 )
 
@@ -544,5 +547,105 @@ func TestDockerRuntimeComposesRotationOverlayOnlyForAnOpenPair(t *testing.T) {
 	relative.RotationLedgerPath = "rotation-ledger.jsonl"
 	if err := relative.StopFailed(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("relative rotation ledger accepted: %v", err)
+	}
+}
+
+func TestDeriveDrainEvidenceRequiresEveryObservation(t *testing.T) {
+	good := func() DrainEvidence {
+		return deriveDrainEvidence(true, true, true, nil, nil, "0\n", 5*time.Second, 20*time.Second)
+	}
+	if !good().Valid() {
+		t.Fatalf("complete drain rejected: %+v", good())
+	}
+	for name, evidence := range map[string]DrainEvidence{
+		"readiness never withdrawn": deriveDrainEvidence(false, true, true, nil, nil, "0", time.Second, 20*time.Second),
+		"no courtesy frame":         deriveDrainEvidence(true, false, true, nil, nil, "0", time.Second, 20*time.Second),
+		"socket left open":          deriveDrainEvidence(true, true, false, nil, nil, "0", time.Second, 20*time.Second),
+		"stop failed":               deriveDrainEvidence(true, true, true, errors.New("stop timed out"), nil, "0", time.Second, 20*time.Second),
+		"exit not inspected":        deriveDrainEvidence(true, true, true, nil, errors.New("inspect failed"), "0", time.Second, 20*time.Second),
+		"nonzero exit":              deriveDrainEvidence(true, true, true, nil, nil, "137", time.Second, 20*time.Second),
+		"empty exit code":           deriveDrainEvidence(true, true, true, nil, nil, "", time.Second, 20*time.Second),
+		"over the drain bound":      deriveDrainEvidence(true, true, true, nil, nil, "0", 21*time.Second, 20*time.Second),
+	} {
+		if evidence.Valid() {
+			t.Fatalf("%s accepted as a complete drain: %+v", name, evidence)
+		}
+	}
+}
+
+func TestReadinessDownRequiresTheGameserverDrainingAnswer(t *testing.T) {
+	status := http.StatusBadGateway
+	var lock sync.Mutex
+	server := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+		lock.Lock()
+		defer lock.Unlock()
+		response.WriteHeader(status)
+	}))
+	wait := func() bool {
+		ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
+		defer cancel()
+		return waitHTTPState(ctx, server.Client(), server.URL+"/readyz", false)
+	}
+	for _, proxyStatus := range []int{http.StatusBadGateway, http.StatusGatewayTimeout, http.StatusNoContent} {
+		lock.Lock()
+		status = proxyStatus
+		lock.Unlock()
+		if wait() {
+			t.Fatalf("status %d counted as the gameserver withdrawing readiness", proxyStatus)
+		}
+	}
+	lock.Lock()
+	status = http.StatusServiceUnavailable
+	lock.Unlock()
+	if !wait() {
+		t.Fatal("gameserver draining 503 not observed")
+	}
+	url := server.URL
+	server.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
+	defer cancel()
+	if waitHTTPState(ctx, http.DefaultClient, url+"/readyz", false) {
+		t.Fatal("a vanished upstream counted as readiness withdrawal")
+	}
+}
+
+func TestDockerRuntimeVerifyIdentityBindsEveryInspectedIdentity(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	content := filepath.Join(bundle.Root, "content")
+	if _, err := releasepackage.StageRuntimeContent(filepath.Join("..", ".."), content); err != nil {
+		t.Fatal(err)
+	}
+	epoch, err := epochseed.Load(content)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle.Manifest.ConstantsHash, bundle.Manifest.EpochID = epoch.Hash, epoch.Seed.CurrentEpochID
+	exact := deploymentbackup.PostgresInspection{SchemaVersion: 1, DatabaseBytes: 4096, DatabaseMigration: bundle.Manifest.DatabaseMigration,
+		EpochID: bundle.Manifest.EpochID, ConstantsHash: bundle.Manifest.ConstantsHash, ArtifactsVerified: len(epoch.Artifacts)}
+	verify := func(inspection deploymentbackup.PostgresInspection) error {
+		runner := &commandFixture{output: func(call []string) ([]byte, error) {
+			if slices.Contains(call, "inspect") {
+				return json.Marshal(map[string]any{"status": "inspected", "inspection": inspection})
+			}
+			return nil, errors.New("unexpected command")
+		}}
+		return dockerFixtureRuntime(runner, t.TempDir(), "").VerifyIdentity(context.Background(), bundle)
+	}
+	if err := verify(exact); err != nil {
+		t.Fatalf("exact identity rejected: %v", err)
+	}
+	for name, mutate := range map[string]func(*deploymentbackup.PostgresInspection){
+		"migration": func(value *deploymentbackup.PostgresInspection) { value.DatabaseMigration-- },
+		"epoch":     func(value *deploymentbackup.PostgresInspection) { value.EpochID++ },
+		"constants hash": func(value *deploymentbackup.PostgresInspection) {
+			value.ConstantsHash = "sha256:" + strings.Repeat("e", 64)
+		},
+		"artifact count": func(value *deploymentbackup.PostgresInspection) { value.ArtifactsVerified-- },
+	} {
+		inspection := exact
+		mutate(&inspection)
+		if err := verify(inspection); !errors.Is(err, ErrInvalid) {
+			t.Fatalf("wrong %s accepted: %v", name, err)
+		}
 	}
 }

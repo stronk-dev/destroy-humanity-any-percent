@@ -2751,3 +2751,28 @@ is gofmt'd in this range.
    - A `VerifyIdentity` table against a bundle with the real staged runtime closure: a matching
      inspection passes, and a wrong migration, epoch, constants hash or artifact count each fail.
    - Severing the 503 requirement, or the artifact-count comparison, must fail its test.
+
+## 2026-09-24 — R9 implemented: release observer witnesses
+
+**Implementation:**
+- `waitHTTPState(false)` now requires the gameserver's `503` (25 ms poll). A 502/504, a 204 or a
+  transport error never counts.
+- The drain derivation moves into the pure `deriveDrainEvidence`, with the process-contract
+  attestation of three properties stated in code and docs.
+
+**Evidence (cold):**
+- `make test-go ./deploymentrelease` passed with three new tests:
+  - `TestDeriveDrainEvidenceRequiresEveryObservation`: eight single-failure inputs;
+  - `TestReadinessDownRequiresTheGameserverDrainingAnswer`: 502, 504, 204 and a vanished
+    upstream are rejected, 503 is accepted;
+  - `TestDockerRuntimeVerifyIdentityBindsEveryInspectedIdentity`: real staged closure; wrong
+    migration, epoch, constants or artifact count each rejected.
+- `make test-deployment-release` passed on real Postgres+Caddy with the stricter readiness rule.
+
+**Severing probes, each failed and was restored:**
+- restoring any-non-204 readiness failed the readiness test;
+- dropping the artifact-count comparison failed the identity test;
+- ignoring the exit code failed the derivation test.
+
+**Remaining DP-D F5:** the irreversible-migration and wrong-image rollback fixtures are the next
+range.
