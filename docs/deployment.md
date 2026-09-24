@@ -200,8 +200,9 @@ negatives exercise their production evidence validators; they are falsifiers, no
 clean host or runtime operation has been observed. Positive runtime, browser, recovery, rotation
 and operations populations remain DP-F2 work and are not inferred from these package checks.
 
-The seeded-source probe scans a valid tracked-file fixture; the seeded-image probe scans a valid
-tar member rather than relying on a malformed archive to fail. Each requires exactly the scanner's
+The seeded-source probe scans a valid tracked-file fixture; the seeded-image probe hides its
+sentinel in a file inside a gzip-compressed layer blob, the shape BuildKit's `type=docker` export
+produces, rather than relying on a malformed archive or a flat outer member. Each requires exactly the scanner's
 named sentinel finding before the no-secrets gate may produce exit `1`. A parser/setup error is
 therefore not accepted as secret-detection evidence.
 
@@ -215,7 +216,11 @@ real Postgres populations.
 
 For a release run, `make release-secret-scan` receives the exact candidate manifest hash, candidate
 gameserver archive and an exclusive result path. It scans the real Git-tracked population and
-image, derives the source commit from Git, and writes a strict mode-0600 result containing counts
+image. The image scan opens every outer archive member, gunzips compressed layers, walks plain tar
+layers and nested gzip/tar files inside them (to a fixed depth and a 1 GiB decompressed bound),
+and matches each file's bytes and tar entry names once, at the innermost readable form. A zstd
+member, corrupt gzip, truncated tar or depth/size overflow fails the scan closed instead of being
+skipped. It derives the source commit from Git, and writes a strict mode-0600 result containing counts
 and identities but no paths or content. Final evidence rejects a source-only scan, findings,
 incomplete/guarded state, a different manifest or source commit, unknown fields and output
 overwrite. The ordinary developer invocation may still print a non-evidentiary scan result without

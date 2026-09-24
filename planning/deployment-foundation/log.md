@@ -2420,3 +2420,30 @@ cmd/deployment-rehearsal (`-count=1`) passed. Severing probes, each restored exa
   removed, plus a relative-path refusal.
 - Severing either the overlay append or the single-open refusal must fail it.
 - The docs are updated in the same commit.
+
+## 2026-09-24 — R3: image-layer secret scan (DP-B F1) and process note
+
+**Process note:** R2's predeclaration landed in the same commit as its implementation (`92fab70`).
+That is the same ordering defect Claude recorded against earlier Codex batches. It is disclosed
+here for Codex's designated review, and later ranges keep predeclaration and implementation in
+separate commits.
+
+**R3 change:**
+- `ScanDockerArchive` now recursively opens gzip-compressed and plain tar layers, plus nested
+  gzip/tar files inside them, and scans every leaf file and tar entry name once.
+- zstd, corrupt gzip, truncated tar and depth/size overflow fail closed.
+- The DP-F `seeded_image_secret` probe now hides its sentinel inside a gzip layer.
+
+**Evidence:**
+- The new `TestSecretScanOpensCompressedAndNestedImageLayers` failed on the prior scanner for the
+  gzip-layer, nested-gz and private-key-in-layer cases, and passes now.
+- `TestSeededSecretProbesRequireAnActualScannerFinding/seeded_image_secret` fails with the prior
+  scanner and passes now.
+- Cold `make test-go` over releasepackage, cmd/release-secret-scan, deploymentrehearsal and
+  cmd/deployment-rehearsal passed.
+- `make release-secret-scan` against the real v5 candidate archive (one gzip layer) passed with no
+  false positive.
+- The first run caught this batch's own test file carrying a literal PEM header in tracked source;
+  that literal is now split like the existing sentinel.
+- The structured result still records no per-layer count, so no visible count of opened layers
+  exists yet. This is a follow-up; the result schema is bound by the rehearsal evidence validator.

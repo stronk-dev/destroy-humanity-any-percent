@@ -2,6 +2,8 @@ package releasepackage
 
 import (
 	"archive/tar"
+	"bytes"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"io"
@@ -82,6 +84,10 @@ func ScanTree(root string) ([]SecretFinding, error) {
 	return findings, nil
 }
 
+// ScanDockerArchive scans every byte an image can deliver at runtime: each
+// outer archive member, each gzip-compressed or plain tar layer, and every
+// regular file inside those layers (recursively through nested gzip/tar up to
+// a fixed depth). Compression the scanner cannot open fails closed.
 func ScanDockerArchive(path string) ([]SecretFinding, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -105,7 +111,11 @@ func ScanDockerArchive(path string) ([]SecretFinding, error) {
 		if err != nil || int64(len(data)) != header.Size {
 			return nil, ErrInvalidContent
 		}
-		findings = append(findings, scanSecretBytes("images/gameserver.docker.tar:"+header.Name, data)...)
+		nested, err := scanArchiveMember("images/gameserver.docker.tar:"+header.Name, data, 0)
+		if err != nil {
+			return nil, err
+		}
+		findings = append(findings, nested...)
 	}
 	position, seekErr := file.Seek(0, io.SeekCurrent)
 	info, statErr := file.Stat()
@@ -114,6 +124,69 @@ func ScanDockerArchive(path string) ([]SecretFinding, error) {
 	}
 	sortFindings(findings)
 	return findings, nil
+}
+
+const (
+	maximumSecretScanDepth        = 4
+	maximumSecretScanDecompressed = 1 << 30
+)
+
+var (
+	gzipMagic = []byte{0x1f, 0x8b}
+	zstdMagic = []byte{0x28, 0xb5, 0x2f, 0xfd}
+)
+
+func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, error) {
+	if depth > maximumSecretScanDepth {
+		return nil, fmt.Errorf("%w: secret scan nesting exceeds %d at %s", ErrInvalidContent, maximumSecretScanDepth, path)
+	}
+	// Each byte is scanned once, at the innermost readable representation:
+	// compressed and tar-framed bytes are opened rather than pattern-matched.
+	findings := []SecretFinding{}
+	switch {
+	case bytes.HasPrefix(data, zstdMagic):
+		return nil, fmt.Errorf("%w: zstd-compressed member cannot be secret-scanned: %s", ErrInvalidContent, path)
+	case bytes.HasPrefix(data, gzipMagic):
+		decompressor, err := gzip.NewReader(bytes.NewReader(data))
+		if err != nil {
+			return nil, fmt.Errorf("%w: unreadable gzip member %s", ErrInvalidContent, path)
+		}
+		plain, err := io.ReadAll(io.LimitReader(decompressor, maximumSecretScanDecompressed+1))
+		if err != nil || len(plain) > maximumSecretScanDecompressed || decompressor.Close() != nil {
+			return nil, fmt.Errorf("%w: gzip member %s is corrupt or exceeds the scan bound", ErrInvalidContent, path)
+		}
+		return scanArchiveMember(path+"!gunzip", plain, depth+1)
+	case isTarStream(data):
+		reader := tar.NewReader(bytes.NewReader(data))
+		for {
+			header, err := reader.Next()
+			if errors.Is(err, io.EOF) {
+				return findings, nil
+			}
+			if err != nil || header.Size < 0 || header.Size > maximumSecretScanDecompressed {
+				return nil, fmt.Errorf("%w: unreadable tar member in %s", ErrInvalidContent, path)
+			}
+			findings = append(findings, scanSecretBytes(path+"!"+header.Name+"#name", []byte(header.Name+"\x00"+header.Linkname))...)
+			if header.Typeflag != tar.TypeReg && header.Typeflag != tar.TypeRegA {
+				continue
+			}
+			member, err := io.ReadAll(io.LimitReader(reader, header.Size+1))
+			if err != nil || int64(len(member)) != header.Size {
+				return nil, fmt.Errorf("%w: truncated tar member in %s", ErrInvalidContent, path)
+			}
+			nested, err := scanArchiveMember(path+"!"+header.Name, member, depth+1)
+			if err != nil {
+				return nil, err
+			}
+			findings = append(findings, nested...)
+		}
+	default:
+		return scanSecretBytes(path, data), nil
+	}
+}
+
+func isTarStream(data []byte) bool {
+	return len(data) >= 512 && (bytes.Equal(data[257:262], []byte("ustar")))
 }
 
 func RequireNoSecrets(findings []SecretFinding) error {

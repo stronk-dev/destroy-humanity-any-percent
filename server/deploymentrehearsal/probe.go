@@ -3,6 +3,7 @@ package deploymentrehearsal
 import (
 	"archive/tar"
 	"bytes"
+	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -366,16 +367,40 @@ func runSecretNegativeProbe(request ProbeRequest, requireNone secretGate) (outco
 	return ProbeAccepted, nil
 }
 
+// writeSecretTar writes a docker-archive-shaped tar whose only secret is a
+// file inside a gzip-compressed layer blob, the shape BuildKit exports. A
+// scanner that only pattern-matches outer archive members cannot see it.
 func writeSecretTar(path, seed string) error {
+	var layerTar bytes.Buffer
+	layer := tar.NewWriter(&layerTar)
+	data := []byte(seed + "\n")
+	writeErr := layer.WriteHeader(&tar.Header{Name: "opt/cloud-clicker/content/seed.txt", Mode: 0o600, Size: int64(len(data)), ModTime: time.Unix(0, 0).UTC()})
+	if writeErr == nil {
+		_, writeErr = layer.Write(data)
+	}
+	if closeErr := layer.Close(); writeErr == nil {
+		writeErr = closeErr
+	}
+	var compressed bytes.Buffer
+	compressor := gzip.NewWriter(&compressed)
+	if writeErr == nil {
+		_, writeErr = compressor.Write(layerTar.Bytes())
+	}
+	if closeErr := compressor.Close(); writeErr == nil {
+		writeErr = closeErr
+	}
+	if writeErr != nil {
+		return writeErr
+	}
 	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
 	if err != nil {
 		return err
 	}
 	writer := tar.NewWriter(file)
-	data := []byte(seed + "\n")
-	writeErr := writer.WriteHeader(&tar.Header{Name: "layer/seed.txt", Mode: 0o600, Size: int64(len(data)), ModTime: time.Unix(0, 0).UTC()})
+	blob := compressed.Bytes()
+	writeErr = writer.WriteHeader(&tar.Header{Name: "blobs/sha256/layer", Mode: 0o600, Size: int64(len(blob)), ModTime: time.Unix(0, 0).UTC()})
 	if writeErr == nil {
-		_, writeErr = writer.Write(data)
+		_, writeErr = writer.Write(blob)
 	}
 	if closeErr := writer.Close(); writeErr == nil {
 		writeErr = closeErr
