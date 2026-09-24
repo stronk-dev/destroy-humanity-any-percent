@@ -3098,3 +3098,42 @@ proven by a test.
   named typed checks.
   - Typed-artifact witnesses belong in the base-run table.
   - Auditing the existing final-run rows individually is a recorded follow-up for Codex.
+
+## 2026-09-24 — Verification of R1–R14 and DESIGN-GAPs for the RFC author
+
+**Cold aggregate.** `make verify-push` exited 0. It started after R14 (`ee551f1`); R15–R17 touch
+only rehearsal and backup code, which was tested separately. Results:
+- 58 Go packages ok, with cold core and fast harness;
+- client unit tests: 6,662 passed, 22 skipped;
+- three-engine browser: 20,049 passed, 3 skipped;
+- performance lane: 1 passed, 17 skipped;
+- the composed Game UI v3 path (both terminals, next-run continuation and WebSocket recovery)
+  passed;
+- `verify-schema` passed.
+
+**DESIGN-GAPs.** None of these is decided by Claude, per AGENTS.md; each needs an RFC-author or
+owner ruling.
+
+1. **RPO semantics (DP6, AC4).** The recovery producer declares the incident immediately after its
+   own fresh backup, so the measured RPO is about zero by construction and never exercises the
+   six-hour cadence. Should R-006 RPO be measured from the newest *scheduled* backup, possibly
+   over a longer or forced-late window? Or should the RFC state that the cadence is proven by the
+   backup-missing alert rather than by the RPO row?
+2. **Per-family alert delivery (DP7, AC7).** Alertmanager metrics cannot attribute a delivery to
+   one alert family or nonce. Proving seven fired-and-resolved families needs receiver-side
+   evidence: a rehearsal-owned receiver alongside the operator's, or receiver logs. The current
+   observation marks families from a count (R5 documents this).
+3. **`UpgradeResolved` lifecycle (DP6).** No code ever sets it, so every pre-upgrade backup is kept
+   forever. Something has to record that an upgrade is "resolved", perhaps the rollback window
+   closing.
+4. **Rotation overlay granularity (DP4).** The bundled overlay binds JWT and bootstrap previous keys
+   together, so a single-family overlap now refuses release (R2). Should the bundle ship
+   per-family overlays? That changes hash-bound bundle contents.
+5. **Security floor for previous bundles (DP5).** Current `ValidateBundle` rules apply to the
+   previous bundle, so every pre-R5 bundle, which exposes the Caddy admin API, is refused as a
+   rollback target. Nothing is deployed, but the policy for future floor changes should be ruled:
+   is it acceptable to refuse rollback to a less-secure previous release?
+6. **Asserted host fields (DP-F evidence).** `Host.CleanStart`, `SourceCheckoutAbsent` and
+   `ProviderCredentialsAbsent`, the kernel/Docker strings and `Objectives.RestoredIdentityMatch`
+   remain producer-asserted values in the evidence schema. Deriving them needs host-side
+   observation contracts.
