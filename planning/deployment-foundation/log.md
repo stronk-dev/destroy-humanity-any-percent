@@ -2917,3 +2917,31 @@ expecting exit 1, the wrong producer for install, and a relative tool path.
   manifest.
 - 7: RPO by construction.
 - 8: `AbortInstall` volumes.
+
+## 2026-09-24 — R13 predeclaration: recovery smoke composition and install volume safety (DP-F advisory 4 and 8)
+
+**4 — recovery smoke.** `StartRecoveryCore` runs `up --no-deps` for `gameserver` and `caddy` only.
+Its `AuthenticatedSmoke` ends in `verifyAlertDelivery`, a `compose run` that targets
+`http://alertmanager:9093`, a service that is not running after `StopFailed`'s `down`. The step
+would fail on a real host.
+
+**Change:** a single `smokeDependencies` list (`gameserver`, `caddy`, `alertmanager`) drives
+`StartRecoveryCore`.
+
+**Witness:** a recording-runner test requires the recovery `up` to include every smoke dependency
+and the alert test to target the started Alertmanager. Removing `alertmanager` from the list must
+fail it.
+
+**8 — initial-install volumes.** `requireCleanInstallState` checks only
+`cloud-clicker_postgres_data`, yet a failed install's `AbortInstall` runs `down --volumes`, which
+removes every declared named volume. That includes a pre-existing `caddy_data` holding ACME
+material, contradicting the documented "removes only the newly created" guarantee.
+
+**Change:** clean install state requires that none of the five declared project volumes exists
+(`caddy_data`, `caddy_config`, `postgres_data`, `prometheus_data`, `alertmanager_data`). An install
+over any retained volume refuses before anything starts, so `down --volumes` can only remove
+volumes this install created. Operators who want to keep certificates must restore them after a
+successful install.
+
+**Witness:** a recording-runner test where only `cloud-clicker_caddy_data` exists must refuse
+preflight with no `up` and no `down`. Narrowing the check back to `postgres_data` must fail it.
