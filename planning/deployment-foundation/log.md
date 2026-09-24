@@ -2853,3 +2853,33 @@ DP-E F4/F5 findings, recorded here with its evidence.
   - the cleanup window widened to 60m.
 - `make test-go ./releasepackage` passed.
 - `make test-deployment-operations` passed (integration 67s).
+
+## 2026-09-24 — R12 predeclaration: bind rehearsal plan rows to their producers (DP-F advisory 1)
+
+**Defect (advisory, verified).** `ValidateExecutionPlan` accepts any non-shell executable per row.
+A plan of `/usr/bin/true` positives and `/usr/bin/false` negatives executes and records every row
+as passed. Negative rows expect exit 1, which `deployment-rehearsal` also emits for usage and
+validation failures, so a typo counts as a caught severing.
+
+**Change.**
+1. **Exit code.** `deployment-rehearsal probe` exits **3** only for `ProbeRejected`, the fully
+   prepared named fixture rejected by its production gate. Usage, invalid-evidence and setup errors
+   keep exit 1 or 2. Plan negatives must expect exit 3.
+2. **Producer binding.** `ValidateExecutionPlan` binds every row to its owning producer.
+   `Command[0]` must be an absolute path whose basename is `deployment-rehearsal`, and
+   `Command[1]` must be that population's subcommand:
+   - `probe`, carrying exactly one `--population=<row name>`, for every population `RunProbe`
+     supports;
+   - `install-candidate`, `run-browser` and `recover-empty` for their positives;
+   - `recover-populated` for the populated-identity, RPO and RTO positives.
+3. **Unbindable populations.** A population with no producer yet makes every plan invalid. This is
+   deliberate: no R-006 plan can pass until each population has a real producer, which matches the
+   honest 25/43 state. The unbindable set is listed in the docs.
+4. **Witnesses.**
+   - The constant-command plan is rejected.
+   - A `probe` row naming a different population is rejected.
+   - A negative row expecting exit 1 is rejected.
+   - The CLI returns 3 for a rejected fixture and not for a usage error.
+   - Severing the binding or the exit code must fail these tests.
+
+The existing plan-execution tests switch to bound fixture commands.
