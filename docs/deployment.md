@@ -220,6 +220,13 @@ negatives exercise their production evidence validators; they are falsifiers, no
 clean host or runtime operation has been observed. Positive runtime, browser, recovery, rotation
 and operations populations remain DP-F2 work and are not inferred from these package checks.
 
+Bundle-mutation probes (`removed_*`, `changed_sbom`) first require the unmutated candidate to
+validate, so an already-invalid bundle yields a setup error (exit `2`) rather than a false
+rejection. After the mutation they rebind every manifest artifact hash (and a mutated image SBOM's
+hash), so the release gate can reject only on meaning: a missing required artifact, content that no
+longer derives the manifest's closure, or an SBOM whose subject no longer names the image's config
+identity. A mutation caught only by a stale byte hash therefore no longer counts.
+
 The seeded-source probe scans a valid tracked-file fixture; the seeded-image probe hides its
 sentinel in a file inside a gzip-compressed layer blob, the shape BuildKit's `type=docker` export
 produces, rather than relying on a malformed archive or a flat outer member. Each requires exactly the scanner's

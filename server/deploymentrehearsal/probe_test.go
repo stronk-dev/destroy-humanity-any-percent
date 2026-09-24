@@ -22,8 +22,17 @@ func TestBundleMutationProbesRequirePreparedMutationAndGateRejection(t *testing.
 	for name, mutation := range bundleMutations {
 		t.Run(name, func(t *testing.T) {
 			request, original := probeFixture(t, name, mutation)
+			calls := 0
 			outcome, err := runBundleMutationProbe(request, mutation, func(root string) error {
+				calls++
 				path := filepath.Join(root, filepath.FromSlash(mutation.path))
+				if calls == 1 {
+					// Unmutated baseline: the candidate must validate first.
+					if baseline, err := os.ReadFile(path); err != nil || string(baseline) != string(original) {
+						t.Fatalf("baseline validation saw a mutated candidate: %v", err)
+					}
+					return nil
+				}
 				if mutation.mutate == nil {
 					if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
 						t.Fatalf("removal fixture remained: %v", err)
@@ -36,8 +45,8 @@ func TestBundleMutationProbesRequirePreparedMutationAndGateRejection(t *testing.
 				}
 				return errors.New("release gate rejected exact mutation")
 			})
-			if err != nil || outcome != ProbeRejected {
-				t.Fatalf("prepared rejected fixture outcome=%d err=%v", outcome, err)
+			if err != nil || outcome != ProbeRejected || calls != 2 {
+				t.Fatalf("prepared rejected fixture outcome=%d calls=%d err=%v", outcome, calls, err)
 			}
 			unchanged, err := os.ReadFile(filepath.Join(request.CandidateBundle, filepath.FromSlash(mutation.path)))
 			if err != nil || string(unchanged) != string(original) {
@@ -58,8 +67,13 @@ func TestBundleMutationProbeSetupFailureCannotCountAsRejection(t *testing.T) {
 	if err := os.Remove(filepath.Join(request.CandidateBundle, filepath.FromSlash(mutation.path))); err != nil {
 		t.Fatal(err)
 	}
+	calls := 0
 	outcome, err := runBundleMutationProbe(request, mutation, func(string) error {
-		t.Fatal("validator reached after fixture setup failure")
+		// Only the baseline check may run; the mutated gate must never be
+		// reached when the mutation itself could not be prepared.
+		if calls++; calls > 1 {
+			t.Fatal("validator reached after fixture setup failure")
+		}
 		return nil
 	})
 	if err == nil || outcome == ProbeRejected {
@@ -251,7 +265,7 @@ func probeFixture(t *testing.T, name string, mutation bundleMutation) (ProbeRequ
 	original := []byte("fixture")
 	if mutation.mutate != nil {
 		if name == "changed_sbom" {
-			original = []byte("{\"spdx\":true}\n")
+			original = []byte("{\"name\":\"sha256-" + strings.Repeat("a", 64) + "\"}\n")
 		} else {
 			original = []byte("{\"reference\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"runtime_config_sha256\": \"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}\n")
 		}
@@ -262,6 +276,12 @@ func probeFixture(t *testing.T, name string, mutation bundleMutation) (ProbeRequ
 	}
 	if err := os.WriteFile(path, original, 0o600); err != nil {
 		t.Fatal(err)
+	}
+	if mutation.path != releasepackage.ReleaseManifestPath {
+		manifest := []byte(`{"images":[{"name":"caddy","sbom_path":"sbom/caddy.spdx.json"}]}` + "\n")
+		if err := os.WriteFile(filepath.Join(candidate, releasepackage.ReleaseManifestPath), manifest, 0o600); err != nil {
+			t.Fatal(err)
+		}
 	}
 	return request, original
 }

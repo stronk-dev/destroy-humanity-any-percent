@@ -3026,3 +3026,32 @@ cause is `ValidateBundle`. Since R5 it requires `admin off` and Caddy `expose: [
   a policy choice flagged for Codex/owner review, not silently decided.
 
 A real run of R14 on rebuilt bundles is therefore still owed.
+
+## 2026-09-24 — R15: semantic bundle-mutation probes (DP-F advisory 6)
+
+**Process note:** R15 has no separate predeclaration commit. Its scope is the recorded advisory
+remedy.
+
+**Change (`deploymentrehearsal/probe.go`):** `runBundleMutationProbe` now works in three steps.
+1. It validates the unmutated hardlinked candidate first; failure is a setup error, never a
+   rejection.
+2. It applies the mutation, then `rebindManifest` rehashes every artifact and a mutated image
+   SBOM's hash. The manifest file is rewritten, never the hardlinked source.
+3. It requires the gate to reject on meaning.
+
+`changed_sbom` now changes the SBOM subject (`sha256-<config>`), which is semantically bound by
+`ValidateImageSPDX`, instead of appending a JSON-valid space.
+
+**Tests:**
+- The mutation-probe test now requires exactly two validator calls, a clean baseline first.
+- The setup-failure test permits only the baseline call.
+
+**Evidence:**
+- `make test-go` over deploymentrehearsal and cmd/deployment-rehearsal passed.
+- The real CLI `removed_catalog` against the pre-R5 v5a bundle now exits **2** (baseline
+  invalid). Consequence: the R12 real-run observation "`removed_catalog` → 3" was **vacuous**.
+  That bundle was already invalid after R5, so any mutation "was rejected".
+
+**Coverage boundary.** Semantic rejection of each rebound mutation on a *real current-rule* bundle
+still needs a rebuilt candidate. R4's releasepackage test already proves the removed-catalog case
+with a rebound manifest on an assembled bundle.

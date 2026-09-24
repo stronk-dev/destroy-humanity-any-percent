@@ -11,6 +11,8 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -49,7 +51,7 @@ var bundleMutations = map[string]bundleMutation{
 	"removed_helper":                {path: "deployment-release"},
 	"changed_image_digest":          {path: "release-manifest.json", mutate: replaceManifestHash("reference")},
 	"changed_runtime_config_digest": {path: "release-manifest.json", mutate: replaceManifestHash("runtime_config_sha256")},
-	"changed_sbom":                  {path: "sbom/caddy.spdx.json", mutate: appendByte},
+	"changed_sbom":                  {path: "sbom/caddy.spdx.json", mutate: changeSPDXSubject},
 }
 
 // RunProbe returns ProbeRejected only when a fully prepared, named negative
@@ -653,6 +655,11 @@ func runBundleMutationProbe(request ProbeRequest, mutation bundleMutation, valid
 	if err := hardlinkBundle(request.CandidateBundle, root); err != nil {
 		return ProbeAccepted, err
 	}
+	// The unmutated candidate must validate, or a rejection below would say
+	// nothing about the named mutation.
+	if err := validate(root); err != nil {
+		return ProbeAccepted, errors.Join(ErrInvalid, err)
+	}
 	target := filepath.Join(root, filepath.FromSlash(mutation.path))
 	if mutation.mutate == nil {
 		if err := os.Remove(target); err != nil {
@@ -660,6 +667,13 @@ func runBundleMutationProbe(request ProbeRequest, mutation bundleMutation, valid
 		}
 	} else if err := rewriteHardlink(target, mutation.mutate); err != nil {
 		return ProbeAccepted, err
+	}
+	// Rebind every artifact hash (and a mutated image SBOM's hash) so the
+	// release gate can reject only on meaning, never on a stale byte hash.
+	if mutation.path != releasepackage.ReleaseManifestPath {
+		if err := rebindManifest(root, mutation.path); err != nil {
+			return ProbeAccepted, err
+		}
 	}
 	if err := validate(root); err != nil {
 		return ProbeRejected, nil
@@ -730,8 +744,87 @@ func replaceManifestHash(field string) func([]byte) ([]byte, error) {
 	}
 }
 
-func appendByte(data []byte) ([]byte, error) {
-	return append(append([]byte(nil), data...), ' '), nil
+var spdxSubject = regexp.MustCompile(`sha256-[0-9a-f]{64}`)
+
+// changeSPDXSubject rebinds the SBOM document to a different image config,
+// a semantic change a hash-only check cannot distinguish once rebound.
+func changeSPDXSubject(data []byte) ([]byte, error) {
+	location := spdxSubject.FindIndex(data)
+	if location == nil {
+		return nil, ErrInvalid
+	}
+	changed := append([]byte(nil), data...)
+	digit := location[0] + len("sha256-")
+	if changed[digit] == '0' {
+		changed[digit] = '1'
+	} else {
+		changed[digit] = '0'
+	}
+	return changed, nil
+}
+
+func rebindManifest(root, mutated string) error {
+	path := filepath.Join(root, releasepackage.ReleaseManifestPath)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	var manifest releasepackage.ReleaseManifest
+	if err := json.Unmarshal(data, &manifest); err != nil {
+		return errors.Join(ErrInvalid, err)
+	}
+	artifacts := []releasepackage.File{}
+	err = filepath.WalkDir(root, func(file string, entry fs.DirEntry, walkErr error) error {
+		if walkErr != nil || entry.IsDir() {
+			return walkErr
+		}
+		relative, err := filepath.Rel(root, file)
+		if err != nil {
+			return err
+		}
+		relative = filepath.ToSlash(relative)
+		if relative == releasepackage.ReleaseManifestPath {
+			return nil
+		}
+		bytes, err := os.ReadFile(file)
+		if err != nil {
+			return err
+		}
+		artifacts = append(artifacts, releasepackage.File{Path: relative, SHA256: hashBytes(bytes)})
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	sort.Slice(artifacts, func(left, right int) bool { return artifacts[left].Path < artifacts[right].Path })
+	manifest.Artifacts = artifacts
+	for index := range manifest.Images {
+		if manifest.Images[index].SBOMPath == mutated {
+			manifest.Images[index].SBOMSHA256 = artifactHash(artifacts, mutated)
+		}
+	}
+	for index := range manifest.RehearsalImages {
+		if manifest.RehearsalImages[index].SBOMPath == mutated {
+			manifest.RehearsalImages[index].SBOMSHA256 = artifactHash(artifacts, mutated)
+		}
+	}
+	encoded, err := json.MarshalIndent(manifest, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.Remove(path); err != nil {
+		return err
+	}
+	return os.WriteFile(path, append(encoded, '\n'), 0o644)
+}
+
+func artifactHash(artifacts []releasepackage.File, path string) string {
+	for _, artifact := range artifacts {
+		if artifact.Path == path {
+			return artifact.SHA256
+		}
+	}
+	return ""
 }
 
 func pathContains(parent, child string) bool {
