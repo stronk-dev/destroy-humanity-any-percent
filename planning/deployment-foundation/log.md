@@ -2127,3 +2127,129 @@ DP-F:
 - destructive rollback ordering;
 - the ignored rotation overlay.
 Per the handoff, Claude records the findings and does not repair them.
+
+## 2026-09-24 — Claude designated cross-party review: DP-E and DP-E/DP8 corrective
+
+**Review by:** Claude, as the designated cross-party pass. A Claude review subagent worked in
+detached worktrees at `65099e7` and `cf4ac25`, plus a scratch probe worktree. The parent session
+read the C2 hunk in source.
+**Recorded by:** Claude (parent session).
+**Environment:** the same host as the DP-A–DP-D entry. Docker and host-listener commands ran
+outside the sandbox. All worktrees, containers, networks and volumes from these lanes were removed.
+
+### DP-E — exact range `3f58fea..65099e7` (e2fc1c4, 09d5027, 65099e7) — **CHANGES REQUIRED**
+
+Executed cold at `65099e7`:
+- `make test-deployment-operations` exited 0. promtool reported SUCCESS, 11 Go packages passed,
+  and `TestPrivateOperationsProfileIntegration` passed against real Caddy, Prometheus, Alertmanager
+  and node-exporter. Postgres-gated tests in those packages skip in this lane.
+- `make verify-kernel-version` exited 2 on `09d5027`'s `server/production/intents.go`. This
+  reproduces known defect (a).
+- Removing only `statusWriter.Hijack` made the real-Postgres socket-revocation test fail with
+  HTTP 500. This reproduces known defect (b).
+- Both known defects are remediated by the corrective range below.
+
+Severing probes:
+- These failed as required:
+  - a Prometheus host port;
+  - a Caddy `/metrics` route;
+  - a Caddy admin host port;
+  - public-outage `for: 6m`;
+  - restart `> 3`;
+  - cleanup `> 1`.
+- These 9 of 13 promtool mutations left the rule tests green:
+  - public-outage `for` lowered to 1m;
+  - Postgres `for` lowered to 0s and to 30s;
+  - the backup deadline raised to 9999999;
+  - the backup any-failure clause deleted;
+  - restart `>= 2`;
+  - the dead-letter consecutive-interval clause deleted;
+  - the filesystem threshold changed to 0.5;
+  - the journal-budget clause deleted;
+  - the `cloud_clicker_ready == 0` clause deleted.
+
+- **F1 (blocking, executed against pinned Prometheus v3.12.0):** alert 6 (cleanup failure) can
+  never fire in the shipped stack, for two independent reasons:
+  - The counter's `job` label is rewritten to `exported_job` under `job_name: gameserver`
+    (default `honor_labels: false`). The rule's `{job="credential_cleanup"}` selector returns
+    nothing.
+  - The lazily created failure series starts at 1, so `increase()` reports 0 for the first failure
+    after a process start.
+  promtool feeds synthetic `job=` series, and the integration test scrapes a fixture `/metrics`, so
+  neither caught this.
+- **F2 (blocking, executed against pinned Alertmanager v0.32.1):** `VerifyAlertDelivery` treats a
+  rise in `alertmanager_notifications_total`, which counts attempts, as success, and it is not
+  bound to the nonce. Against a receiver that returned 500 for every `/alerts` delivery,
+  `deployment-operations alert-test` exited 0. DP7's successful-delivery gate is therefore not
+  enforced, and `docs/deployment.md` misnames the counter.
+- **F3 (blocking, executed):** `admin :2019` exposes Caddy's full admin API on every Caddy network.
+  A peer container read `/config/` and `POST /load`ed a replacement, and the public listener then
+  served the injected config. A compromised gameserver, Alertmanager or exporter could rewrite
+  public ingress.
+- **F4 (blocking as overclaim):**
+  - The nine surviving mutations above show the alert tests don't discriminate thresholds,
+    clauses or lower duration bounds.
+  - No alert is taken through fault → fire → clear, so the claim that the tests prove "firing for
+    its exact duration/population and resolved" is unsupported.
+  - The backup test covers only the `absent()` branch.
+- **F5 (Medium, source-verified):** `host-observe` rewrites `host.prom` only on success, and no rule
+  checks textfile freshness or scrape errors. A broken observer therefore serves the last healthy
+  storage, journal and restart values indefinitely.
+- **F6 (process):** the first filter did not run `verify-client` or the composed browser lane,
+  which is how both known defects were pushed.
+- **Open item:** AC7's optional raw-IP 7-day sink is refused, not built. It needs an explicit
+  open item or DESIGN-GAP rather than a satisfied row.
+- **Status at HEAD:** F1–F3 source is unchanged at HEAD. `alert.go` was rewritten in unreviewed
+  DP-F work, and the attempt-counter check is still present there.
+
+### DP-E/DP8 corrective — exact range `7b510df..cf4ac25` (e0e2201, 73bb4ee, 32ee744, 5d72591, cf4ac25) — **APPROVED**
+
+Executed cold at `cf4ac25`, all exiting 0:
+- `make test-deployment-operations`.
+- `make verify-kernel-version`: `0.3.101`; the adversarial fixtures passed.
+- `make verify-ci-topology`: 13 negative controls rejected.
+- `make verify-push` (5m02s). All six leaves ran with no silently skipped lane:
+  - core Go with `-count=1`;
+  - the fast harness;
+  - client type/build/unit: 6,662 passed, 22 skipped;
+  - boundary/kernel/topology/copy checks;
+  - three-engine browser: 20,049 passed, 3 skipped;
+  - the performance lane;
+  - the real composed lane, both terminals plus continuation plus recovery;
+  - `verify-schema`.
+
+Severing probes, each of which failed as required:
+- removing the Hijack forwarding (real Postgres, HTTP 500);
+- removing the `09d5027` history correction (exit 2);
+- reverting `client/src/kernel/version.ts` to 0.3.100 (drift, exit 2);
+- dropping or reordering a `verify-push` leaf (topology, exit 2);
+- removing the snapshot anti-regression guard;
+- removing successor-terminal delivery.
+
+Findings recorded with this approval:
+- **C1 (process):** `73bb4ee` carries player-visible client transport-ordering changes, which the
+  predeclaration's "no gameplay behavior" boundary did not list, and it mixes them with the server
+  fix in one commit.
+  - They are ordering repairs, not new mechanics.
+  - Except for C2, each is witnessed and fails when severed, `docs/game-ui.md` was updated, and the
+    composed lane passes.
+  - The C1 changes are covered by this verdict because they were executed and severed, not because
+    they were predeclared.
+- **C2 (Low, required follow-up):** the new early return
+  `if (offset > 0 && priorPosition && offset <= priorPosition.offset) return true;` in
+  `client/src/game-ui/runtime.ts` makes duplicate or regressed channel offsets count as consumed,
+  where before they forced a resync.
+  - Removing it fails no unit test, and the log does not describe it.
+  - The revision cursor still guards authoritative state, so it does not block this range.
+  - A witness (or a documented justification for silently consuming same-channel offset
+    regressions) must land in the next client transport change.
+- **Suspicion, not executed:** `statusWriter` does not forward `http.Flusher`.
+
+This approval covers exactly `7b510df..cf4ac25`. It does not approve DP-E's AC7 alert or receiver
+surface, and it does not approve any DP-F commit.
+
+### Review-union status after these six verdicts
+
+Only `7b510df..cf4ac25` is designated-approved. DP-A–DP-E each need a corrective range and a
+fresh designated pass. DP-F (`65099e7..7b510df` and the deployment commits after `cf4ac25`) remains
+unreviewed. No archival, release or R-006 claim changes.
