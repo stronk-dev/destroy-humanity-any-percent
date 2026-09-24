@@ -2350,3 +2350,39 @@ implementer and do not approve or reject any range.
 **Consequence:** before DP-F handoff, Codex should repair the evidence-integrity items (1–3 and 5–6)
 and the recovery smoke composition (4), in addition to the DP-A–DP-E correctives. Until then, an
 R-006 run on the current candidate could produce accepting evidence that proves nothing.
+
+## 2026-09-24 — DP-D corrective R1 predeclaration (Claude implements; Codex designated reviewer)
+
+**Owner direction (Marco, 2026-09-24):** Claude implements accepted-RFC work directly. Under
+AGENTS.md (c), Codex is therefore the cross-party designated reviewer for these Claude-authored
+corrective ranges, and Claude never approves or archives its own work.
+
+**Authority:** RFC DP5 and AC3/AC5, addressing the findings recorded in the 2026-09-24 DP-D verdict:
+- F1: rollback destroys data before validating its inputs;
+- F2: release runs preflight before loading the image;
+- F5 (partial): rollback never loads or verifies the previous image.
+
+**Change:**
+1. `Release`: `Prepare(candidate)` (image load plus digest verification) runs before
+   `Preflight(candidate)`, so the candidate-image config check can resolve the loaded image.
+2. `Rollback`: after ledger authority, run these non-destructive steps in order before
+   `StopFailed`/`ResetDatabase`:
+   - `Prepare(previous)`: load and verify the previous release's images;
+   - `Preflight(previous)`;
+   - a new `VerifyRestoreInputs(previous, backup)`: target-path binding, regular non-empty backup
+     file, owner-only age identity, and host-side `deploymentbackup.ReadHeader` (payload
+     length/sha256 verified), with the header bound to the backup ID, server, previous manifest,
+     epoch and pre-upgrade class.
+   `restoreBackup` keeps the same checks by calling the shared helper.
+3. Tests:
+   - The exact call sequences change.
+   - New severed stages `prepare` and `restore_inputs` in rollback must fail before
+     `stop_failed`/`reset_database` appear in the call list.
+   - A DockerRuntime-level test with a recording runner proves that a missing backup file, a
+     group-readable identity file and a corrupt payload each refuse with no `down`/`volume rm`
+     command issued.
+   - Demonstrated failing-first: each new test fails on the pre-change code.
+4. `docs/deployment.md` release/rollback sequence updated in the same commit.
+
+**Not in scope:** rotation overlay (F3), DrainCurrent/VerifyIdentity witnesses (F4),
+irreversible-migration and wrong-image fixtures (rest of F5). Those are the next corrective ranges.
