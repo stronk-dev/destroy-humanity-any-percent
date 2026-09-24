@@ -17,6 +17,48 @@ import (
 
 const maximumCommandOutput = 1 << 20
 
+// ProbeRejectedExit is the only exit code that proves a negative row: the
+// named fixture was fully prepared and its production gate rejected it. The
+// rehearsal command never uses it for usage, validation or setup failures.
+const ProbeRejectedExit = 3
+
+// populationProducers names the rehearsal subcommand that alone may produce a
+// population's result. Every other population is produced by `probe`, which
+// fails loudly (exit 2) for a population it cannot yet exercise.
+var populationProducers = map[string]string{
+	"clean_linux_amd64_bundle_only_install": "install-candidate",
+	"phase0_browser_flow_through_caddy":     "run-browser",
+	"empty_database_backup_restore":         "recover-empty",
+	"populated_database_identity_restore":   "recover-populated",
+	"rpo_within_six_hours":                  "recover-populated",
+	"rto_within_four_hours":                 "recover-populated",
+}
+
+// boundToProducer requires the row to invoke the rehearsal tool itself with
+// the population's producer, so a constant command cannot stand in for proof.
+func boundToProducer(check PlannedCheck) bool {
+	if len(check.Command) < 2 || !filepath.IsAbs(check.Command[0]) || filepath.Base(check.Command[0]) != "deployment-rehearsal" {
+		return false
+	}
+	producer := populationProducers[check.Name]
+	if producer == "" {
+		producer = "probe"
+	}
+	if check.Command[1] != producer {
+		return false
+	}
+	populations := 0
+	for _, argument := range check.Command[2:] {
+		if strings.HasPrefix(argument, "--population=") {
+			populations++
+			if argument != "--population="+check.Name {
+				return false
+			}
+		}
+	}
+	return producer == "probe" && populations == 1 || producer != "probe" && populations == 0
+}
+
 type ExecutionPlan struct {
 	SchemaVersion          int            `json:"schema_version"`
 	RunID                  string         `json:"run_id"`
@@ -131,8 +173,8 @@ func ValidateExecutionPlan(plan ExecutionPlan) error {
 		kind := populations[check.Name]
 		if required.name != check.Name || required.step != check.Step || seen[check.Name] || kind == "" || check.Kind != kind ||
 			len(check.Command) == 0 || len(check.Command) > 32 || check.TimeoutSeconds < 1 || check.TimeoutSeconds > 4*60*60 ||
-			kind == "positive" && check.ExpectedExit != 0 || kind == "negative" && check.ExpectedExit != 1 ||
-			invalidCommand(check.Command) {
+			kind == "positive" && check.ExpectedExit != 0 || kind == "negative" && check.ExpectedExit != ProbeRejectedExit ||
+			invalidCommand(check.Command) || !boundToProducer(check) {
 			return ErrInvalid
 		}
 		seen[check.Name] = true

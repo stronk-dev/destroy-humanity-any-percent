@@ -153,7 +153,15 @@ The bundled `deployment-rehearsal` command validates retained release-build reco
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
 shell—into a new empty result directory. The plan must enumerate the 42 non-forgery positive and
 negative populations in canonical lifecycle order, require exit zero for positive checks and exact
-exit one for severing checks, and give every command a one-second to four-hour guard. Output is capped at
+exit three for severing checks, and give every command a one-second to four-hour guard. Every row
+is bound to its producer: the command must be an absolute path to the `deployment-rehearsal` tool
+itself running the population's own subcommand (`install-candidate`, `run-browser`,
+`recover-empty`, `recover-populated` for their positives; `probe --population=<row>` for every
+other population). A constant command such as `/usr/bin/true` or `/usr/bin/false`, a probe for a
+different population, or a generic failure exit therefore cannot stand in for proof. Populations
+that no producer can exercise yet (currently the release-drain, rollback, rotation, alert-delivery,
+journal-budget, provider-off and non-clean-target runtime rows among others) are bound to `probe`,
+which exits `2` for them, so a real run fails loudly until each gains a producer. Output is capped at
 one MiB per check; timeout, truncation, wrong exit, unsafe shell/sudo invocation, secret-shaped
 argument, prior result byte or non-monotonic observation fails the lane. The final evidence binds
 the reviewed plan hash, so an operator cannot silently substitute a shorter command list.
@@ -191,9 +199,10 @@ proves a single successful candidate manifest/version/six-image identity. The in
 up for the following browser, backup and recovery populations.
 
 The helper's `probe` boundary distinguishes the subject result from probe setup. Exit `0` means a
-positive subject passed or a negative fixture was unexpectedly accepted; exit `1` is reserved for
+positive subject passed or a negative fixture was unexpectedly accepted; exit `3` is reserved for
 a successfully prepared named negative fixture that reached its gate and was rejected; invalid
-input, setup failure and an unimplemented population exit `2`. This prevents a missing file,
+input, setup failure and an unimplemented population exit `2`, and usage or validation errors exit
+`1`. This prevents a missing file,
 unsupported check or broken probe from satisfying a negative row just because it failed. The
 current fixed probes cover the intact six-image/SBOM/license/provenance population, eight exact
 bundle mutations, three production config/secret matrices, a public-metrics-route severing,
@@ -214,7 +223,7 @@ and operations populations remain DP-F2 work and are not inferred from these pac
 The seeded-source probe scans a valid tracked-file fixture; the seeded-image probe hides its
 sentinel in a file inside a gzip-compressed layer blob, the shape BuildKit's `type=docker` export
 produces, rather than relying on a malformed archive or a flat outer member. Each requires exactly the scanner's
-named sentinel finding before the no-secrets gate may produce exit `1`. A parser/setup error is
+named sentinel finding before the no-secrets gate may produce exit `3`. A parser/setup error is
 therefore not accepted as secret-detection evidence.
 
 The backup-envelope probes first create and restore a valid encrypted production envelope. They

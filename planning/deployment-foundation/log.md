@@ -2883,3 +2883,37 @@ validation failures, so a typo counts as a caught severing.
    - Severing the binding or the exit code must fail these tests.
 
 The existing plan-execution tests switch to bound fixture commands.
+
+## 2026-09-24 — R12 implemented: rehearsal plan rows bound to producers
+
+**Implementation:**
+- `ProbeRejectedExit = 3`: the CLI `probe` exits 3 only for `ProbeRejected`.
+- `populationProducers` plus `boundToProducer` make every plan row require an absolute
+  `deployment-rehearsal` tool, the population's producer subcommand, and exactly one matching
+  `--population=` for `probe` rows.
+- Plan negatives must expect exit 3.
+
+**Tests:** plan tests now use a bound fixture executable named `deployment-rehearsal`. New
+rejections cover constant true/false commands, a probe for another population, a negative
+expecting exit 1, the wrong producer for install, and a relative tool path.
+
+**Evidence (cold):**
+- `make test-go` over deploymentrehearsal and cmd/deployment-rehearsal passed.
+- The real built CLI against the retained v5a/previous bundles gave:
+  - `seeded_source_secret` → 3;
+  - `removed_catalog` → 3;
+  - unsupported `gameserver_restart_during_admitted_work` → 2;
+  - typo subcommand → 1;
+  - bad flag → 2.
+- Severing the binding failed five rejection cases. Relaxing the negative exit failed the
+  generic-exit case. Both were restored.
+
+**Remaining DP-F advisory items:**
+- 2: alert-delivery attribution is limited as documented in R5; the observation still marks all
+  families from a count.
+- 4: `recover-populated` smoke composition.
+- 5: build-record self-assertions.
+- 6: the `removed_*` probes now also fail semantically after R4, but still do not rebind the
+  manifest.
+- 7: RPO by construction.
+- 8: `AbortInstall` volumes.

@@ -39,7 +39,7 @@ func main() {
 			failCode("invalid_probe", 2)
 		}
 		if outcome == deploymentrehearsal.ProbeRejected {
-			failCode("fixture_rejected", 1)
+			failCode("fixture_rejected", deploymentrehearsal.ProbeRejectedExit)
 		}
 		fmt.Println("deployment rehearsal probe passed")
 	case "supply-chain":
