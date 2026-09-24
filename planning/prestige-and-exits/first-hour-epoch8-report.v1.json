@@ -1,0 +1,5695 @@
+{
+  "schema_version": 1,
+  "scenario_id": "scenario.t0_t1_first_hour",
+  "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+  "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+  "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+  "experiment": {
+    "acquihire_purchased_minimum": 200,
+    "burnout_price_factor": "2e0",
+    "route_knowledge_bonus": 50,
+    "seed_capital": "1e4",
+    "generated_beige_towers": 10
+  },
+  "runs": [
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "0",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 540000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "0",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 540000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "1",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 385000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "1",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 385000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "10",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 505000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "10",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 505000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "11",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 505000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "11",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 505000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "12",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 550000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "12",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 550000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "13",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 395000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "13",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 395000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "14",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 360000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "14",
+        "branch": "pivot",
+        "generator_purchased_total": 166,
+        "upgrade_count": 2,
+        "cash": "2.15806676498e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.50838288122e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 360000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "15",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "15",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "9.24800691677e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "16",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "16",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "6.66706806921e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "17",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 525000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "17",
+        "branch": "pivot",
+        "generator_purchased_total": 166,
+        "upgrade_count": 2,
+        "cash": "2.44823049744e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.50838288122e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 525000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "18",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "18",
+        "branch": "pivot",
+        "generator_purchased_total": 166,
+        "upgrade_count": 2,
+        "cash": "3.2592148496e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.50838288122e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "19",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "19",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "6.10159578357e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "2",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 3413
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 53413
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 123413
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 588413
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 903413
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2703413
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "2",
+        "branch": "pivot",
+        "generator_purchased_total": 166,
+        "upgrade_count": 2,
+        "cash": "2.73361516266e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.50838288122e4",
+        "run_one_gate_ms": 588413,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "20",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 485000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "20",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 485000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "21",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "21",
+        "branch": "pivot",
+        "generator_purchased_total": 165,
+        "upgrade_count": 2,
+        "cash": "3.41787167873e6",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.48198697105e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "22",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "22",
+        "branch": "pivot",
+        "generator_purchased_total": 166,
+        "upgrade_count": 2,
+        "cash": "2.51181998987e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.50838288122e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "23",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "23",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "7.73590841701e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "24",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 505000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "24",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 505000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "25",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 530000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "25",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 530000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "26",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "26",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "6.77264388553e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "27",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 410000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "27",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 410000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "28",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "28",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "7.67079142913e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "29",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "29",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "8.46080923864e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "3",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "3",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "6.24007317389e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "30",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "30",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "5.44051709399e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "31",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 505000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "31",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 505000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "4",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 475000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "4",
+        "branch": "pivot",
+        "generator_purchased_total": 166,
+        "upgrade_count": 2,
+        "cash": "2.34716278994e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.50838288122e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 475000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "5",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 550000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "5",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 550000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "6",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 510000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "6",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 510000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "7",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 535000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "7",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 535000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "8",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 560000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "8",
+        "branch": "pivot",
+        "generator_purchased_total": 164,
+        "upgrade_count": 2,
+        "cash": "6.77629334112e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.35029216307e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 560000
+      },
+      "transition_count": 1084,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "casual.t0_t1",
+        "policy_version": 1,
+        "seed": "9",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 120000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 585000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 540000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "casual.t0_t1",
+        "seed": "9",
+        "branch": "pivot",
+        "generator_purchased_total": 163,
+        "upgrade_count": 2,
+        "cash": "1.23831488976e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "4.07453361005e4",
+        "run_one_gate_ms": 585000,
+        "run_two_gate_ms": 540000
+      },
+      "transition_count": 1086,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "0",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 68000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 404000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 266000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "0",
+        "branch": "acquihire",
+        "generator_purchased_total": 252,
+        "upgrade_count": 5,
+        "cash": "3.22500897707e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "2.2512947866e5",
+        "run_one_gate_ms": 404000,
+        "run_two_gate_ms": 266000
+      },
+      "transition_count": 2350,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "1",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 426000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 272000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "1",
+        "branch": "acquihire",
+        "generator_purchased_total": 258,
+        "upgrade_count": 5,
+        "cash": "2.30259019719e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "3.67067673788e5",
+        "run_one_gate_ms": 426000,
+        "run_two_gate_ms": 272000
+      },
+      "transition_count": 2370,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "10",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 398000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 268000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "10",
+        "branch": "acquihire",
+        "generator_purchased_total": 249,
+        "upgrade_count": 5,
+        "cash": "3.3029812302e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.35113471205e5",
+        "run_one_gate_ms": 398000,
+        "run_two_gate_ms": 268000
+      },
+      "transition_count": 2327,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "11",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 418000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 270000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "11",
+        "branch": "acquihire",
+        "generator_purchased_total": 258,
+        "upgrade_count": 5,
+        "cash": "1.3227857011e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.76309404542e5",
+        "run_one_gate_ms": 418000,
+        "run_two_gate_ms": 270000
+      },
+      "transition_count": 2338,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "12",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 28000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 474000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 262000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "12",
+        "branch": "acquihire",
+        "generator_purchased_total": 248,
+        "upgrade_count": 5,
+        "cash": "4.5448117961e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.38076125415e5",
+        "run_one_gate_ms": 474000,
+        "run_two_gate_ms": 262000
+      },
+      "transition_count": 2355,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "13",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 26000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 436000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 272000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "13",
+        "branch": "acquihire",
+        "generator_purchased_total": 259,
+        "upgrade_count": 5,
+        "cash": "1.06725099407e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "9.56936811253e4",
+        "run_one_gate_ms": 436000,
+        "run_two_gate_ms": 272000
+      },
+      "transition_count": 2350,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "14",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 52000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 426000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 258000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "14",
+        "branch": "acquihire",
+        "generator_purchased_total": 251,
+        "upgrade_count": 5,
+        "cash": "1.53048929291e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "8.46846735622e4",
+        "run_one_gate_ms": 426000,
+        "run_two_gate_ms": 258000
+      },
+      "transition_count": 2360,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "15",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 428000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 318000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "15",
+        "branch": "acquihire",
+        "generator_purchased_total": 262,
+        "upgrade_count": 5,
+        "cash": "1.12083152106e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "8.46846735622e4",
+        "run_one_gate_ms": 428000,
+        "run_two_gate_ms": 318000
+      },
+      "transition_count": 2337,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "16",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 396000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 280000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "16",
+        "branch": "acquihire",
+        "generator_purchased_total": 245,
+        "upgrade_count": 5,
+        "cash": "7.20284118748e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.20637027861e5",
+        "run_one_gate_ms": 396000,
+        "run_two_gate_ms": 280000
+      },
+      "transition_count": 2345,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "17",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 30000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 72000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 428000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 274000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "17",
+        "branch": "acquihire",
+        "generator_purchased_total": 260,
+        "upgrade_count": 5,
+        "cash": "4.7196560153e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "2.95008419062e5",
+        "run_one_gate_ms": 428000,
+        "run_two_gate_ms": 274000
+      },
+      "transition_count": 2342,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "18",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 412000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 278000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "18",
+        "branch": "acquihire",
+        "generator_purchased_total": 256,
+        "upgrade_count": 5,
+        "cash": "6.56177288675e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.76309404542e5",
+        "run_one_gate_ms": 412000,
+        "run_two_gate_ms": 278000
+      },
+      "transition_count": 2331,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "19",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 54000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 414000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 294000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "19",
+        "branch": "acquihire",
+        "generator_purchased_total": 255,
+        "upgrade_count": 5,
+        "cash": "1.12425061911e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "5.86907267547e4",
+        "run_one_gate_ms": 414000,
+        "run_two_gate_ms": 294000
+      },
+      "transition_count": 2364,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "2",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 424000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 274000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "2",
+        "branch": "acquihire",
+        "generator_purchased_total": 253,
+        "upgrade_count": 5,
+        "cash": "3.54800007727e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "3.31678238327e5",
+        "run_one_gate_ms": 424000,
+        "run_two_gate_ms": 274000
+      },
+      "transition_count": 2351,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "20",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 430000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 294000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "20",
+        "branch": "acquihire",
+        "generator_purchased_total": 268,
+        "upgrade_count": 5,
+        "cash": "5.65917594743e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "4.69998964359e5",
+        "run_one_gate_ms": 430000,
+        "run_two_gate_ms": 294000
+      },
+      "transition_count": 2368,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "21",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 58000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 406000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 276000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "21",
+        "branch": "acquihire",
+        "generator_purchased_total": 247,
+        "upgrade_count": 5,
+        "cash": "8.41587901357e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "9.61711000169e4",
+        "run_one_gate_ms": 406000,
+        "run_two_gate_ms": 276000
+      },
+      "transition_count": 2343,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "22",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 426000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 274000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "22",
+        "branch": "acquihire",
+        "generator_purchased_total": 255,
+        "upgrade_count": 5,
+        "cash": "1.3576373764e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.99229627133e5",
+        "run_one_gate_ms": 426000,
+        "run_two_gate_ms": 274000
+      },
+      "transition_count": 2314,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "23",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 68000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 420000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 306000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "23",
+        "branch": "acquihire",
+        "generator_purchased_total": 253,
+        "upgrade_count": 5,
+        "cash": "5.80751225776e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "9.56936811253e4",
+        "run_one_gate_ms": 420000,
+        "run_two_gate_ms": 306000
+      },
+      "transition_count": 2344,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "24",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 60000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 460000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 276000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "24",
+        "branch": "acquihire",
+        "generator_purchased_total": 246,
+        "upgrade_count": 5,
+        "cash": "7.00815466379e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.35113471205e5",
+        "run_one_gate_ms": 460000,
+        "run_two_gate_ms": 276000
+      },
+      "transition_count": 2357,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "25",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 426000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 266000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "25",
+        "branch": "acquihire",
+        "generator_purchased_total": 266,
+        "upgrade_count": 5,
+        "cash": "5.66474374843e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "4.6870871266e5",
+        "run_one_gate_ms": 426000,
+        "run_two_gate_ms": 266000
+      },
+      "transition_count": 2339,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "26",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 74000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 402000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 270000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "26",
+        "branch": "acquihire",
+        "generator_purchased_total": 257,
+        "upgrade_count": 5,
+        "cash": "3.99361932186e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "2.98692838682e5",
+        "run_one_gate_ms": 402000,
+        "run_two_gate_ms": 270000
+      },
+      "transition_count": 2335,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "27",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 406000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 298000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "27",
+        "branch": "acquihire",
+        "generator_purchased_total": 251,
+        "upgrade_count": 5,
+        "cash": "5.3137547293e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "1.42093286325e5",
+        "run_one_gate_ms": 406000,
+        "run_two_gate_ms": 298000
+      },
+      "transition_count": 2342,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "28",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 78000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 430000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 294000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "28",
+        "branch": "acquihire",
+        "generator_purchased_total": 249,
+        "upgrade_count": 5,
+        "cash": "5.61875475081e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "9.56936811253e4",
+        "run_one_gate_ms": 430000,
+        "run_two_gate_ms": 294000
+      },
+      "transition_count": 2338,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "29",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 408000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 316000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "29",
+        "branch": "acquihire",
+        "generator_purchased_total": 259,
+        "upgrade_count": 5,
+        "cash": "5.47829365525e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "3.63479873126e5",
+        "run_one_gate_ms": 408000,
+        "run_two_gate_ms": 316000
+      },
+      "transition_count": 2353,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "3",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 440000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 270000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "3",
+        "branch": "acquihire",
+        "generator_purchased_total": 256,
+        "upgrade_count": 5,
+        "cash": "4.88519522144e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "3.34535979324e5",
+        "run_one_gate_ms": 440000,
+        "run_two_gate_ms": 270000
+      },
+      "transition_count": 2342,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "30",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 400000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 312000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "30",
+        "branch": "acquihire",
+        "generator_purchased_total": 257,
+        "upgrade_count": 5,
+        "cash": "4.46068246149e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "8.46846735622e4",
+        "run_one_gate_ms": 400000,
+        "run_two_gate_ms": 312000
+      },
+      "transition_count": 2364,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "31",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 26000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 60000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 406000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 264000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "31",
+        "branch": "acquihire",
+        "generator_purchased_total": 252,
+        "upgrade_count": 5,
+        "cash": "9.66293791397e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.35113471205e5",
+        "run_one_gate_ms": 406000,
+        "run_two_gate_ms": 264000
+      },
+      "transition_count": 2341,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "32",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 428000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 248000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "32",
+        "branch": "acquihire",
+        "generator_purchased_total": 263,
+        "upgrade_count": 5,
+        "cash": "5.72573045541e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "4.1478647138e5",
+        "run_one_gate_ms": 428000,
+        "run_two_gate_ms": 248000
+      },
+      "transition_count": 2312,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "33",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 26000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 422000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 322000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "33",
+        "branch": "acquihire",
+        "generator_purchased_total": 255,
+        "upgrade_count": 5,
+        "cash": "1.06731302952e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "6.11184726808e4",
+        "run_one_gate_ms": 422000,
+        "run_two_gate_ms": 322000
+      },
+      "transition_count": 2332,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "34",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 68000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 490000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 274000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "34",
+        "branch": "acquihire",
+        "generator_purchased_total": 247,
+        "upgrade_count": 5,
+        "cash": "6.39955673055e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "2.66690034537e5",
+        "run_one_gate_ms": 490000,
+        "run_two_gate_ms": 274000
+      },
+      "transition_count": 2335,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "35",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 50000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 406000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 280000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "35",
+        "branch": "acquihire",
+        "generator_purchased_total": 261,
+        "upgrade_count": 5,
+        "cash": "7.35274237558e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "2.87467831301e5",
+        "run_one_gate_ms": 406000,
+        "run_two_gate_ms": 280000
+      },
+      "transition_count": 2352,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "36",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 26000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 418000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 244000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "36",
+        "branch": "acquihire",
+        "generator_purchased_total": 253,
+        "upgrade_count": 5,
+        "cash": "1.15654540348e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.38076125415e5",
+        "run_one_gate_ms": 418000,
+        "run_two_gate_ms": 244000
+      },
+      "transition_count": 2349,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "37",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 436000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 272000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "37",
+        "branch": "acquihire",
+        "generator_purchased_total": 265,
+        "upgrade_count": 5,
+        "cash": "7.61149054679e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.99229627133e5",
+        "run_one_gate_ms": 436000,
+        "run_two_gate_ms": 272000
+      },
+      "transition_count": 2326,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "38",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 404000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 280000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "38",
+        "branch": "acquihire",
+        "generator_purchased_total": 254,
+        "upgrade_count": 5,
+        "cash": "5.61707289866e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.35113471205e5",
+        "run_one_gate_ms": 404000,
+        "run_two_gate_ms": 280000
+      },
+      "transition_count": 2352,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "39",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 64000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 408000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 288000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "39",
+        "branch": "acquihire",
+        "generator_purchased_total": 246,
+        "upgrade_count": 5,
+        "cash": "7.15222786177e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "6.11184726808e4",
+        "run_one_gate_ms": 408000,
+        "run_two_gate_ms": 288000
+      },
+      "transition_count": 2326,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "4",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 58000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 436000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 258000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "4",
+        "branch": "acquihire",
+        "generator_purchased_total": 249,
+        "upgrade_count": 5,
+        "cash": "6.45702936103e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "4.59634480028e4",
+        "run_one_gate_ms": 436000,
+        "run_two_gate_ms": 258000
+      },
+      "transition_count": 2369,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "40",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 70000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 390000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 258000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "40",
+        "branch": "acquihire",
+        "generator_purchased_total": 257,
+        "upgrade_count": 5,
+        "cash": "6.18426382203e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "4.59634480028e4",
+        "run_one_gate_ms": 390000,
+        "run_two_gate_ms": 258000
+      },
+      "transition_count": 2368,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "41",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 54000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 426000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 276000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "41",
+        "branch": "acquihire",
+        "generator_purchased_total": 263,
+        "upgrade_count": 5,
+        "cash": "8.08693569136e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "2.95008419062e5",
+        "run_one_gate_ms": 426000,
+        "run_two_gate_ms": 276000
+      },
+      "transition_count": 2346,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "42",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 64000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 446000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 266000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "42",
+        "branch": "acquihire",
+        "generator_purchased_total": 252,
+        "upgrade_count": 5,
+        "cash": "1.08348726607e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "1.75073138081e5",
+        "run_one_gate_ms": 446000,
+        "run_two_gate_ms": 266000
+      },
+      "transition_count": 2351,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "43",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 52000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 428000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 266000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "43",
+        "branch": "acquihire",
+        "generator_purchased_total": 258,
+        "upgrade_count": 5,
+        "cash": "8.65443129837e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.69486338279e5",
+        "run_one_gate_ms": 428000,
+        "run_two_gate_ms": 266000
+      },
+      "transition_count": 2370,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "44",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 36000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 58000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 438000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 304000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "44",
+        "branch": "acquihire",
+        "generator_purchased_total": 251,
+        "upgrade_count": 5,
+        "cash": "1.18237108771e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.08133859672e5",
+        "run_one_gate_ms": 438000,
+        "run_two_gate_ms": 304000
+      },
+      "transition_count": 2368,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "45",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 408000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 240000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "45",
+        "branch": "acquihire",
+        "generator_purchased_total": 258,
+        "upgrade_count": 5,
+        "cash": "7.80980347241e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.99229627133e5",
+        "run_one_gate_ms": 408000,
+        "run_two_gate_ms": 240000
+      },
+      "transition_count": 2342,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "46",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 58000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 422000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 308000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "46",
+        "branch": "acquihire",
+        "generator_purchased_total": 273,
+        "upgrade_count": 5,
+        "cash": "4.61586472725e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.76309404542e5",
+        "run_one_gate_ms": 422000,
+        "run_two_gate_ms": 308000
+      },
+      "transition_count": 2332,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "47",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 428000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 260000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "47",
+        "branch": "acquihire",
+        "generator_purchased_total": 243,
+        "upgrade_count": 5,
+        "cash": "7.46051949101e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "3.59961218598e4",
+        "run_one_gate_ms": 428000,
+        "run_two_gate_ms": 260000
+      },
+      "transition_count": 2324,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "48",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 28000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 72000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 390000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 244000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "48",
+        "branch": "acquihire",
+        "generator_purchased_total": 270,
+        "upgrade_count": 5,
+        "cash": "6.6316728446e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "3.67067673788e5",
+        "run_one_gate_ms": 390000,
+        "run_two_gate_ms": 244000
+      },
+      "transition_count": 2375,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "49",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 78000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 414000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 278000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "49",
+        "branch": "acquihire",
+        "generator_purchased_total": 266,
+        "upgrade_count": 5,
+        "cash": "9.15099095309e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.47843551678e5",
+        "run_one_gate_ms": 414000,
+        "run_two_gate_ms": 278000
+      },
+      "transition_count": 2350,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "5",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 58000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 398000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 288000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "5",
+        "branch": "acquihire",
+        "generator_purchased_total": 263,
+        "upgrade_count": 5,
+        "cash": "1.32857160735e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "9.56936811253e4",
+        "run_one_gate_ms": 398000,
+        "run_two_gate_ms": 288000
+      },
+      "transition_count": 2350,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "50",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 58000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 444000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 294000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "50",
+        "branch": "acquihire",
+        "generator_purchased_total": 273,
+        "upgrade_count": 5,
+        "cash": "2.86279355874e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "4.47843551678e5",
+        "run_one_gate_ms": 444000,
+        "run_two_gate_ms": 294000
+      },
+      "transition_count": 2330,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "51",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 56000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 388000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 266000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "51",
+        "branch": "acquihire",
+        "generator_purchased_total": 264,
+        "upgrade_count": 5,
+        "cash": "2.4291466235e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.08133859672e5",
+        "run_one_gate_ms": 388000,
+        "run_two_gate_ms": 266000
+      },
+      "transition_count": 2347,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "52",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 64000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 396000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 316000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "52",
+        "branch": "acquihire",
+        "generator_purchased_total": 264,
+        "upgrade_count": 5,
+        "cash": "5.68821848135e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "2.2512947866e5",
+        "run_one_gate_ms": 396000,
+        "run_two_gate_ms": 316000
+      },
+      "transition_count": 2360,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "53",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 28000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 408000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 274000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "53",
+        "branch": "acquihire",
+        "generator_purchased_total": 248,
+        "upgrade_count": 5,
+        "cash": "1.28290060176e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.38076125415e5",
+        "run_one_gate_ms": 408000,
+        "run_two_gate_ms": 274000
+      },
+      "transition_count": 2335,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "54",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 94000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 436000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 260000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "54",
+        "branch": "acquihire",
+        "generator_purchased_total": 269,
+        "upgrade_count": 5,
+        "cash": "5.29673285588e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "4.1478647138e5",
+        "run_one_gate_ms": 436000,
+        "run_two_gate_ms": 260000
+      },
+      "transition_count": 2382,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "55",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 74000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 412000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 268000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "55",
+        "branch": "acquihire",
+        "generator_purchased_total": 261,
+        "upgrade_count": 5,
+        "cash": "6.42302344022e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "1.94331183269e5",
+        "run_one_gate_ms": 412000,
+        "run_two_gate_ms": 268000
+      },
+      "transition_count": 2338,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "56",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 72000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 410000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 252000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "56",
+        "branch": "acquihire",
+        "generator_purchased_total": 262,
+        "upgrade_count": 5,
+        "cash": "7.10463247813e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.35113471205e5",
+        "run_one_gate_ms": 410000,
+        "run_two_gate_ms": 252000
+      },
+      "transition_count": 2362,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "57",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 62000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 402000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 310000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "57",
+        "branch": "acquihire",
+        "generator_purchased_total": 246,
+        "upgrade_count": 5,
+        "cash": "1.06885486569e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.51327087749e5",
+        "run_one_gate_ms": 402000,
+        "run_two_gate_ms": 310000
+      },
+      "transition_count": 2302,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "58",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 54000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 422000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 282000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "58",
+        "branch": "acquihire",
+        "generator_purchased_total": 260,
+        "upgrade_count": 5,
+        "cash": "7.73621464897e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "2.15707613429e5",
+        "run_one_gate_ms": 422000,
+        "run_two_gate_ms": 282000
+      },
+      "transition_count": 2340,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "59",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 76000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 388000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 250000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "59",
+        "branch": "acquihire",
+        "generator_purchased_total": 259,
+        "upgrade_count": 5,
+        "cash": "1.0116172552e6",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "2.39435450906e5",
+        "run_one_gate_ms": 388000,
+        "run_two_gate_ms": 250000
+      },
+      "transition_count": 2350,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "6",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 68000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 458000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 302000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "6",
+        "branch": "acquihire",
+        "generator_purchased_total": 256,
+        "upgrade_count": 5,
+        "cash": "1.75399390173e6",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "1.51327087749e5",
+        "run_one_gate_ms": 458000,
+        "run_two_gate_ms": 302000
+      },
+      "transition_count": 2331,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "60",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 64000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 390000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 290000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "60",
+        "branch": "acquihire",
+        "generator_purchased_total": 259,
+        "upgrade_count": 4,
+        "cash": "4.72593406271e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.76309404542e5",
+        "run_one_gate_ms": 390000,
+        "run_two_gate_ms": 290000
+      },
+      "transition_count": 2359,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "61",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 58000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 414000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 296000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "61",
+        "branch": "acquihire",
+        "generator_purchased_total": 263,
+        "upgrade_count": 5,
+        "cash": "5.38563177237e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "3.2483864937e5",
+        "run_one_gate_ms": 414000,
+        "run_two_gate_ms": 296000
+      },
+      "transition_count": 2338,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "62",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 64000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 432000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 278000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "62",
+        "branch": "acquihire",
+        "generator_purchased_total": 257,
+        "upgrade_count": 5,
+        "cash": "5.37803419122e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "2.95008419062e5",
+        "run_one_gate_ms": 432000,
+        "run_two_gate_ms": 278000
+      },
+      "transition_count": 2343,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "63",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 22000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 428000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 288000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "63",
+        "branch": "acquihire",
+        "generator_purchased_total": 261,
+        "upgrade_count": 5,
+        "cash": "8.15313129169e5",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "2.54396310886e5",
+        "run_one_gate_ms": 428000,
+        "run_two_gate_ms": 288000
+      },
+      "transition_count": 2346,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "7",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 68000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 416000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 298000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "7",
+        "branch": "acquihire",
+        "generator_purchased_total": 267,
+        "upgrade_count": 5,
+        "cash": "6.42848325334e5",
+        "cheapest_unowned_generator": "generator.dot_matrix_queue",
+        "cheapest_unowned_price": "2.66690034537e5",
+        "run_one_gate_ms": 416000,
+        "run_two_gate_ms": 298000
+      },
+      "transition_count": 2332,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "8",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 20000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 68000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 420000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 306000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "8",
+        "branch": "acquihire",
+        "generator_purchased_total": 261,
+        "upgrade_count": 5,
+        "cash": "6.09536824994e5",
+        "cheapest_unowned_generator": "generator.nephew_intern",
+        "cheapest_unowned_price": "3.31678238327e5",
+        "run_one_gate_ms": 420000,
+        "run_two_gate_ms": 306000
+      },
+      "transition_count": 2351,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "chaos.t0_t1",
+        "policy_version": 1,
+        "seed": "9",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 24000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 60000
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 416000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 274000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "chaos.t0_t1",
+        "seed": "9",
+        "branch": "acquihire",
+        "generator_purchased_total": 248,
+        "upgrade_count": 5,
+        "cash": "5.71849319804e5",
+        "cheapest_unowned_generator": "generator.answering_machine",
+        "cheapest_unowned_price": "1.03897386301e5",
+        "run_one_gate_ms": 416000,
+        "run_two_gate_ms": 274000
+      },
+      "transition_count": 2319,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.t0_t1_first_hour",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+        "policy_id": "reference.greedy",
+        "policy_version": 1,
+        "seed": "0",
+        "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
+      },
+      "policy_hash": "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3",
+      "outcome": "completed",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator",
+          "first_ms": 10000
+        },
+        {
+          "id": "milestone.first_upgrade",
+          "first_ms": 66992
+        },
+        {
+          "id": "milestone.garage_gate",
+          "first_ms": 356000
+        },
+        {
+          "id": "milestone.scripted_failure",
+          "first_ms": 900000
+        },
+        {
+          "id": "milestone.run2_garage_gate",
+          "first_ms": 346000
+        },
+        {
+          "id": "milestone.first_elective_exit",
+          "first_ms": 2700000
+        }
+      ],
+      "ending": {
+        "policy_id": "reference.greedy",
+        "seed": "0",
+        "branch": "pivot",
+        "generator_purchased_total": 77,
+        "upgrade_count": 4,
+        "cash": "1.25502784541e6",
+        "cheapest_unowned_generator": "generator.beige_tower",
+        "cheapest_unowned_price": "1.17505797906e3",
+        "run_one_gate_ms": 356000,
+        "run_two_gate_ms": 346000
+      },
+      "transition_count": 11916,
+      "invariant_failures": []
+    }
+  ],
+  "aggregate": {
+    "schema_version": 1,
+    "scenario_id": "scenario.t0_t1_first_hour",
+    "scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+    "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+    "run_count": 97,
+    "values": [
+      {
+        "policy_id": "chaos.t0_t1",
+        "milestone_id": "milestone.first_generator",
+        "statistic": "p50",
+        "value_ms": 22000
+      },
+      {
+        "policy_id": "chaos.t0_t1",
+        "milestone_id": "milestone.first_upgrade",
+        "statistic": "p50",
+        "value_ms": 62000
+      },
+      {
+        "policy_id": "chaos.t0_t1",
+        "milestone_id": "milestone.garage_gate",
+        "statistic": "p50",
+        "value_ms": 418000
+      },
+      {
+        "policy_id": "chaos.t0_t1",
+        "milestone_id": "milestone.scripted_failure",
+        "statistic": "p50",
+        "value_ms": 900000
+      },
+      {
+        "policy_id": "chaos.t0_t1",
+        "milestone_id": "milestone.run2_garage_gate",
+        "statistic": "p50",
+        "value_ms": 274000
+      },
+      {
+        "policy_id": "chaos.t0_t1",
+        "milestone_id": "milestone.first_elective_exit",
+        "statistic": "p50",
+        "value_ms": 2700000
+      },
+      {
+        "policy_id": "casual.t0_t1",
+        "milestone_id": "milestone.first_elective_exit",
+        "statistic": "p95",
+        "value_ms": 2700000
+      }
+    ],
+    "warnings": [],
+    "failures": []
+  }
+}

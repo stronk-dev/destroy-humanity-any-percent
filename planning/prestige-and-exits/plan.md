@@ -11,8 +11,10 @@
 3. [x] Implement deterministic offers, timers, decline, wind-down, accept, and gated IPO intents.
 4. [x] Implement atomic two-stream Exit persistence and exact event schemas.
 5. [x] Add real-Postgres fault, replay, and concurrency tests plus arithmetic properties.
-6. [ ] Reconcile the already-implemented first-elective-Exit harness evidence in the same
+6. [x] Reconcile the already-implemented first-elective-Exit harness evidence in the same
    designated-review range as this checkbox flip; do not infer completion from the older audit.
+   Evidence: `first-hour-epoch8-report.v1.json` (current epoch 8, 97 runs, 0 failures) and the
+   2026-09-24 log entry, including the lower-bound caveat.
 7. [x] Update canonical docs and run focused verification.
 8. [x] Replace the provisional terminal revision with Leaderboards L1's atomic run-log sequence.
 9. [ ] Record independent review before archival.

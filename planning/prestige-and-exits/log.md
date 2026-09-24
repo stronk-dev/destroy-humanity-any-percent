@@ -293,3 +293,37 @@ gate_crossed intact; decline drift scoped per run with validator-enforced run_se
   that particular severing — the unit lane is what discriminates reseed's input coupling; the
   integration witnesses discriminate lifecycle/ledger/eligibility, per their predeclaration.
   Defense in depth, not overlap. **No findings. APPROVED.**
+
+## 2026-09-24 — Plan item 6: first-elective-Exit evidence on the current epoch (Claude)
+
+**What was measured.** Earlier evidence (`first-hour-c40-proposed-report.v1.json`) measured
+constants `sha256:6c7fab…`, not the served epoch, so it cannot close this item. Claude re-ran the
+governed first-hour suite cold against the current epoch-8 bundle
+`sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`, using:
+- the ratified scenario/policy bytes (`harness-scenario-v1.json`, `first-hour-policy-v1.json`);
+- the knobs set to the *shipped* `balance/curriculum/t0-t1.json` values: acquihire 200, burnout
+  price factor 2e0, route knowledge 50, seed capital 1e4, 10 generated towers.
+
+The command was `go run ./cmd/balance-harness -mode=first-hour … -workers=8`, 66 s wall.
+
+**Results (97 runs, 0 failures, 0 warnings; retained as `first-hour-epoch8-report.v1.json`):**
+- Chaos p50 first elective Exit: 2,700,000 ms. Casual p95 first elective Exit: 2,700,000 ms. Both
+  are inside the AC8 envelope [2,700,000, 5,400,000].
+- Other Chaos p50 values: first generator 22 s, first upgrade 62 s, Garage 418 s, scripted
+  failure 900 s, run-2 Garage 274 s.
+
+**Discrimination:**
+- The harness refuses non-ratified scenario/policy bytes, so a tightened-envelope data mutation is
+  rejected before it runs. That is itself a control.
+- A code mutation tightening every envelope maximum (by 2,700,001 ms) failed the run with exit 1.
+  The report named `casual.t0_t1/milestone.first_elective_exit/p95=2700000 outside bounds`, the
+  Chaos elective row and the five other Chaos milestones. The code was restored.
+
+**Honest limit.** The persona rule `t01_c32_readiness` (ruled C32) winds down at the first
+boundary where attended time is at least 2,700,000 ms **and** the preview grants persistent value.
+So the 45-minute lower bound is imposed by the persona rule and cannot fail. The discriminating
+outcomes are that the Exit is reached at all (`must_reach`) and the 90-minute upper bound. This
+narrows what the envelope proves; it does not change any ruling.
+
+**Review.** The checkbox flips in this same commit, which carries its evidence. The item requires
+Codex's cross-party review of this range.
