@@ -407,3 +407,32 @@ initiate the push or change the branch's publication state in this checkpoint.
   not as a full World/health/player workflow. Owner D-009/D-015 must rule active
   versus historical Commons semantics before a repair; a complete signed-event
   and recomputation witness remains. No product, RFC or release state changed.
+
+## 2026-09-24 — Deployment designated review and RP-122 checkpoint
+
+- **Coordinate:** HEAD after `c08b592`; product source still `7e8aa70`. Review and probe by Claude.
+- **Deployment evidence:** Claude's designated cross-party pass executed the root lanes cold at
+  each range tip and ran severing probes per range. The lanes were
+  `test-deployment-backup/-release/-operations`, `verify-kernel-version`, `verify-ci-topology`
+  and `verify-push`. Results:
+  - DP-A–DP-E are CHANGES REQUIRED.
+  - The corrective range `7b510df..cf4ac25` is APPROVED.
+  - Verified defects persisting at HEAD make the `7e8aa70` candidate an unsuitable R-006 input:
+    - the image-layer secret scan checks nothing inside the image;
+    - release preflights before `docker load`;
+    - rollback deletes the database volume before checking its inputs;
+    - the rotation overlay is never applied;
+    - the cleanup alert cannot fire;
+    - receiver delivery counts attempts, not successes;
+    - the Caddy admin API is reachable from peer containers.
+  Details are in `deployment-foundation/log.md`.
+- **Rights evidence:** RP-122 was predeclared at `8a02a3c`. A seeded cold joined Account API
+  deletion returned 204 and kept eight Minigame/Soul/intent/outbox families 1/1, including the
+  Soul progress token. The controls fired, and RP-128 still blocks the parent delete. The
+  temporary test was removed exactly.
+- **Decision support:** `platform-alignment/rights-decision-sheet.md` frames the D-008/D-009/D-015
+  options and a ruling template. It adopts nothing.
+- **Next boundary:** Codex corrective ranges for DP-A–DP-E, then fresh designated passes and a
+  rebuilt candidate. DP-F review remains outstanding. Owner rulings are needed for D-007, D-008,
+  D-009, D-015 and D-018, and clean-host authority for R-006. No RFC status, release or archival
+  change.

@@ -2813,3 +2813,28 @@ than source-only risk. The full signed-event→delete→World/health/player
 workflow, owner semantics for active versus historical contributions and
 D-009/D-015 disclosure/retention contract remain open. No product/test,
 owner-authored text, RFC status or release claim changed.
+
+## 2026-09-24 — Minigame/Soul/Transport rows after account deletion (RP-122)
+
+Claude predeclared `data-rights-minigame-soul-delete-plan.md` at `8a02a3c`. It then temporarily
+extended `TestAccountSessionIntegration` to seed, for the active imported Founder:
+- an active Minigame session with create and command receipts;
+- a faucet window;
+- an active Soul session with a progress token.
+
+The real applied intent's `intent_records` and `transport_player_outbox` rows were counted, not
+seeded. The declared Postgres `-count=1 -v` lane passed on its first invocation, with no skip.
+
+Results:
+- All eight families counted 1 before deletion.
+- The real DELETE returned 204, and the Founder was unlinked and archived.
+- All eight families still counted 1 afterwards.
+- A rollback-only delete of the Soul and faucet rows made those counts 0.
+- A rollback-only parent-session delete still failed with RP-128's immutability error.
+- The temporary edit was removed with `git checkout`, `git diff --exit-code` returned 0, and the
+  Postgres container and network were removed.
+
+The bounded result is in `data-rights-minigame-soul-delete.md`, and RP-122 is upgraded to a
+verified seeded-row outcome. Also added `rights-decision-sheet.md`, which frames the
+D-008/D-009/D-015 options without adopting any. No product, owner-authored text, RFC status or
+release claim changed.
