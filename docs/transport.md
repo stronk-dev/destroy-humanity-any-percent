@@ -41,8 +41,10 @@ causing the one full-state resync path; world recovery returns only the latest s
 The production browser now owns one recovery controller. It persists each subscribed channel's
 Centrifuge epoch/offset under the active Founder, reconnects after ordinary drops, and sends those
 positions with `recover: true`. Recovered publications pass through the same strict decoder and
-per-scope `PlayerRevisionCursor` as live publications. Duplicate event IDs at the current revision
-are suppressed; historical compensation is emitted to the runtime consumer as structured audit
+per-scope `PlayerRevisionCursor` as live publications. A publication whose channel offset is at
+or below that channel's already-consumed offset is treated as delivered without being decoded,
+re-emitted or forcing a resync (at-least-once replay cannot re-apply presence, receipts or world
+snapshots). Duplicate event IDs at the current revision are suppressed; historical compensation is emitted to the runtime consumer as structured audit
 output without moving a cursor (the current Game UI has no owner-authored presentation for it); a
 forward gap, an unrecoverable stream, `resync_required`, queue overflow (4000), or invalid frame
 (4004) clears both positions and performs the existing authenticated `GET /api/v1/founder/state`

@@ -3137,3 +3137,19 @@ owner ruling.
    `ProviderCredentialsAbsent`, the kernel/Docker strings and `Objectives.RestoredIdentityMatch`
    remain producer-asserted values in the evidence schema. Deriving them needs host-side
    observation contracts.
+
+## 2026-09-24 — C2 follow-up closed: consumed-offset witness
+
+This closes the follow-up carried in Claude's approval of `7b510df..cf4ac25`: the
+`client/src/game-ui/runtime.ts` early return for a channel offset at or below the consumed position
+had no witness and no description.
+
+- **Test.** `test/game-ui-runtime.test.ts` gains "treats an already-consumed channel offset as
+  delivered without re-emitting or resyncing". World presence at offsets 1 and 2 is delivered; a
+  replay at offset 2 (count 99) and a regression to offset 1 (count 98) emit nothing, the socket
+  stays open, and the stored world position remains offset 2.
+- **Severing.** Disabling the early return fails the test; the change was restored.
+- **Docs.** `docs/transport.md` now documents the rule.
+- **Checks.** `make typecheck` passed, and the runtime suite passed 12/12.
+
+This is Claude-authored client test and doc work, for Codex review.

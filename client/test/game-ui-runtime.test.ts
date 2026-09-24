@@ -189,6 +189,31 @@ describe("browser Game UI runtime", () => {
     });
   });
 
+  it("treats an already-consumed channel offset as delivered without re-emitting or resyncing", () => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetch, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    const received: unknown[] = [];
+    runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(socket);
+    subscribeReplies(socket);
+    const presence = (count: number) => ({ v: 2, ch: "world", kind: "presence", rev: 1, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z", payload: { joined: [], left: [], count } });
+    publication(socket, "world", 1, presence(7));
+    publication(socket, "world", 2, presence(8));
+    // A redelivered offset and a regressed offset are consumed silently: the
+    // server's at-least-once replay must not re-apply state or force a resync.
+    publication(socket, "world", 2, presence(99));
+    publication(socket, "world", 1, presence(98));
+    expect(received).toEqual([
+      { kind: "transport_recovered" },
+      { kind: "presence", count: 7 },
+      { kind: "presence", count: 8 },
+    ]);
+    expect(socket.closeCount).toBe(0);
+    expect(JSON.parse(storage.getItem(`cloud-clicker.transport.v1.${snapshot.run.founder_id}`)!).world).toEqual({ epoch: "world-epoch", offset: 2 });
+  });
+
   it("recovers saved positions, suppresses duplicates, and does not let historical events move the scope cursor", async () => {
     vi.useFakeTimers();
     const storage = new MemoryStorage();
