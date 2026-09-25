@@ -25,16 +25,23 @@ func apiObject(fields ...publicapi.Field) *publicapi.Schema {
 	return &publicapi.Schema{Kind: publicapi.SchemaObject, Fields: fields}
 }
 
+// APIErrorSchema is the one API-wide typed-rejection descriptor (A4). The
+// private and public registries both reference this single definition; its
+// detail enum is the union of every registered operation's exact pairs.
+func APIErrorSchema() publicapi.NamedSchema {
+	return publicapi.NamedSchema{Name: "APIError", Schema: apiObject(
+		apiField("category", apiString("", "conflict", "idempotency_conflict", "internal_invariant", "invalid", "not_configured", "not_eligible", "rate_limited", "unauthorized", "unknown_id")),
+		apiField("detail", apiString("", "access_token", "account", "body", "bootstrap", "bootstrap_expired", "cursor", "duplicate_card", "exclusive_activity", "fiscal_unlock_required", "founder", "founder_state", "game_ui_snapshot", "hack_slots_full", "hand_too_large", "human_content_locked", "illegal_phase", "insufficient_currency", "ip", "limit", "minigame_api", "minigame_command", "minigame_create", "minigame_revision", "minigame_session", "minigame_tenant", "public_api", "recovery_progress", "recovery_session", "recovery_token", "session_id", "soul_recovery_cancel", "soul_recovery_not_ready", "soul_recovery_progress", "soul_recovery_resolve", "soul_recovery_start", "unknown_card", "unknown_offer")),
+	)}
+}
+
 func minigameAPISchemas() []publicapi.NamedSchema {
 	integer := func(minimum, maximum int64) *publicapi.Schema {
 		return &publicapi.Schema{Kind: publicapi.SchemaInteger, Minimum: apiInteger(minimum), Maximum: apiInteger(maximum)}
 	}
 	stringArray := &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiString("")}
 	return []publicapi.NamedSchema{
-		{Name: "APIError", Schema: apiObject(
-			apiField("category", apiString("", "conflict", "idempotency_conflict", "internal_invariant", "invalid", "not_configured", "not_eligible", "rate_limited", "unauthorized", "unknown_id")),
-			apiField("detail", apiString("", "access_token", "account", "body", "bootstrap", "bootstrap_expired", "duplicate_card", "exclusive_activity", "fiscal_unlock_required", "founder", "founder_state", "game_ui_snapshot", "hack_slots_full", "hand_too_large", "human_content_locked", "illegal_phase", "insufficient_currency", "ip", "minigame_api", "minigame_command", "minigame_create", "minigame_revision", "minigame_session", "minigame_tenant", "recovery_progress", "recovery_session", "recovery_token", "session_id", "soul_recovery_cancel", "soul_recovery_not_ready", "soul_recovery_progress", "soul_recovery_resolve", "soul_recovery_start", "unknown_card", "unknown_offer")),
-		)},
+		APIErrorSchema(),
 		{Name: "MinigameCommandRequest", Schema: apiObject(
 			apiField("command", apiRef("MinigameTenantCommand")),
 			apiField("command_id", apiString("opaque-id")),

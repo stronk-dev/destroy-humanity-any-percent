@@ -25,6 +25,7 @@
               "body",
               "bootstrap",
               "bootstrap_expired",
+              "cursor",
               "duplicate_card",
               "exclusive_activity",
               "fiscal_unlock_required",
@@ -37,12 +38,14 @@
               "illegal_phase",
               "insufficient_currency",
               "ip",
+              "limit",
               "minigame_api",
               "minigame_command",
               "minigame_create",
               "minigame_revision",
               "minigame_session",
               "minigame_tenant",
+              "public_api",
               "recovery_progress",
               "recovery_session",
               "recovery_token",
@@ -1330,6 +1333,97 @@
         ],
         "type": "object"
       },
+      "PublicEpoch": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted_hashes": {
+            "items": {
+              "format": "sha256-prefixed",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "changelog_markdown": {
+            "type": "string"
+          },
+          "changelog_ref": {
+            "type": "string"
+          },
+          "ended_at": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time-ms",
+                "type": "string"
+              }
+            ]
+          },
+          "epoch_id": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time-ms",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accepted_hashes",
+          "changelog_markdown",
+          "changelog_ref",
+          "ended_at",
+          "epoch_id",
+          "name",
+          "started_at"
+        ],
+        "type": "object"
+      },
+      "PublicEpochCursorKey": {
+        "additionalProperties": false,
+        "properties": {
+          "epoch_id": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "epoch_id"
+        ],
+        "type": "object"
+      },
+      "PublicEpochPage": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PublicEpoch"
+            },
+            "type": "array"
+          },
+          "next_cursor": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "type": "object"
+      },
       "SoulRecoveryFinishRequest": {
         "additionalProperties": false,
         "properties": {
@@ -1560,6 +1654,73 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/public/v1/epochs": {
+      "get": {
+        "operationId": "list_public_epochs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicEpochPage"
+                }
+              }
+            },
+            "description": "HTTP 200"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        }
+      }
+    },
     "/api/v1/bootstrap": {
       "post": {
         "operationId": "create_bootstrap",

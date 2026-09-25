@@ -53,7 +53,33 @@ current or previous deployment key before parsing JSON, binds the cursor to oper
 normalized query, and rejects noncanonical or oversized input. Board variables use canonical
 exact-key JSON with integer booleans and explicit-null faction.
 
-Public endpoint registration/readers and the generated client's thin HTTP transport remain
-pending. The current generated document therefore covers the mounted authenticated Recovery and
-minigame surface only; it does not claim the public-read acceptance criteria. Historical formulas
-never fall back to current bytes.
+## Public reads
+
+`server/publicread` owns the unauthenticated `/api/public/v1/` registry. `account.APIErrorSchema()`
+is the single `APIError` definition that both registries reference. `publicapi.MergeRegistries`
+unions the private and public registries into one generation authority. A schema name may be
+shared only if the definition is byte-identical, and operation IDs must not collide. As a result,
+`docs/generated/api.json`, the TypeScript module and the compatibility pin cover both surfaces,
+while each surface still mounts from its own registry.
+
+`GET /api/public/v1/epochs` (`list_public_epochs`) returns the C12 `PublicEpochPage`:
+
+- `items` are newest-first. Each has `accepted_hashes` (byte-sorted in Go, an empty list when
+  there are none), the exact UTF-8 `changelog_markdown` read from the staged `changelog_ref`, and
+  UTC millisecond `started_at`/`ended_at` (`ended_at` is explicit `null` while open).
+- `next_cursor` is a C15 keyset cursor on `epoch_id`, bound to the normalized filter
+  `{"limit":N}`. `limit` defaults to 50 and is bounded 1..100.
+- **Rejections:** a malformed limit returns exactly `400 {"category":"invalid","detail":"limit"}`.
+  A malformed, tampered or filter-mismatched cursor returns `400 invalid/cursor`.
+- **Failures:** repository or changelog failures, including a missing or non-UTF-8 staged
+  changelog, return `500 internal_invariant/public_api`.
+- **Caching and validation:** successful bytes are validated against the registry row. They are
+  then served through the shared cache/limiter runtime with the `catalogs_epochs` class
+  (`public,max-age=3600`, strong ETag, and a 304 that spends no rate token).
+- **Page source:** `leaderboard.Repository.PublicEpochPage`, which reads the page from a single SQL
+  statement.
+
+The public router is not composed into the gameserver yet. The catalogs, boards, verification and
+registry readers, the thin generated-client transport, and the full public privacy enumeration all
+remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
+historical formulas never fall back to current bytes.

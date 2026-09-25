@@ -94,6 +94,24 @@
       ]
     },
     {
+      "id": "list_public_epochs",
+      "method": "GET",
+      "path": "/api/public/v1/epochs",
+      "surface": "public_v1",
+      "auth": "none",
+      "parameters": [],
+      "query": [
+        "cursor=false:{\"type\":\"string\"}",
+        "limit=false:{\"maximum\":100,\"minimum\":1,\"type\":\"integer\"}"
+      ],
+      "responses": [
+        "200:schema:application/json:PublicEpochPage",
+        "400:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "play_minigame_command",
       "method": "POST",
       "path": "/api/v1/minigames/sessions/{session_id}/commands",
@@ -218,6 +236,7 @@
             "body",
             "bootstrap",
             "bootstrap_expired",
+            "cursor",
             "duplicate_card",
             "exclusive_activity",
             "fiscal_unlock_required",
@@ -230,12 +249,14 @@
             "illegal_phase",
             "insufficient_currency",
             "ip",
+            "limit",
             "minigame_api",
             "minigame_command",
             "minigame_create",
             "minigame_revision",
             "minigame_session",
             "minigame_tenant",
+            "public_api",
             "recovery_progress",
             "recovery_session",
             "recovery_token",
@@ -1520,6 +1541,97 @@
         "run_currency",
         "shop_offers",
         "slotted_hacks"
+      ],
+      "type": "object"
+    },
+    "PublicEpoch": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_hashes": {
+          "items": {
+            "format": "sha256-prefixed",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "changelog_markdown": {
+          "type": "string"
+        },
+        "changelog_ref": {
+          "type": "string"
+        },
+        "ended_at": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "format": "date-time-ms",
+              "type": "string"
+            }
+          ]
+        },
+        "epoch_id": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time-ms",
+          "type": "string"
+        }
+      },
+      "required": [
+        "accepted_hashes",
+        "changelog_markdown",
+        "changelog_ref",
+        "ended_at",
+        "epoch_id",
+        "name",
+        "started_at"
+      ],
+      "type": "object"
+    },
+    "PublicEpochCursorKey": {
+      "additionalProperties": false,
+      "properties": {
+        "epoch_id": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "epoch_id"
+      ],
+      "type": "object"
+    },
+    "PublicEpochPage": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/PublicEpoch"
+          },
+          "type": "array"
+        },
+        "next_cursor": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "next_cursor"
       ],
       "type": "object"
     },

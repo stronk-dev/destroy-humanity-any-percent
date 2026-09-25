@@ -8,13 +8,23 @@ import (
 
 	"cloud-clicker/server/account"
 	"cloud-clicker/server/publicapi"
+	"cloud-clicker/server/publicread"
 )
 
 func main() {
 	root := flag.String("root", "..", "repository root")
 	updatePin := flag.Bool("update-pin", false, "replace the additive-v1 compatibility pin")
 	flag.Parse()
-	registry, err := account.PrivateAPIRegistry()
+	private, err := account.PrivateAPIRegistry()
+	if err != nil {
+		fatal(err)
+	}
+	public, err := publicread.Registry()
+	if err != nil {
+		fatal(err)
+	}
+	// One generated authority covers both independently mounted surfaces.
+	registry, err := publicapi.MergeRegistries(private, public)
 	if err != nil {
 		fatal(err)
 	}
