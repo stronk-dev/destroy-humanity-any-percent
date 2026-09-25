@@ -35,6 +35,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Minigame — Terminal Typer](minigame-terminal-typer.md) | draft — not implementation authority; platform amendments TT-PA1–PA4 pending | Minigame Platform / Minigame API & Surface |
 | [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | draft — not implementation authority; OD-1–OD-16, findings AR-F1–F3 routed | Minigame Platform / Minigame API & Surface |
 | [Tier 2 Content — IT Company](tier2-content.md) | draft — not implementation authority; 10 owner decisions pending | Economy Kernel / Routes / Balance Harness |
+| [Minigame — Server Garden](minigame-server-garden.md) | draft — not implementation authority; persistent-tenant platform amendments SG-P1–P3, 22 owner decisions | Minigame Platform / Fiscal / Tier 2 |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,
