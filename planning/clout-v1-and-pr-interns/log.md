@@ -155,3 +155,19 @@ with Tier 2 content or is dropped).
   - Client `vitest run` passes 6845.
   - `validate-migrations` passes.
 - **Kernel:** 0.3.126 → 0.3.127.
+
+## 2026-09-25 — P4: Gaia-law structural test (AC4) and AC10 failing case (Claude)
+
+- **AC4:** `server/production/gaia_law_test.go` parses every non-test Go file under `server/` (a
+  sanity floor of more than 100 files). It collects every assignment, increment or composite-literal
+  write of `CloutLifetime` outside the save codec (`save/state.go`, which only round-trips the
+  value). Under Option A the allowed writer set is **empty**. The pinned epoch-8 economy and the
+  fixture economy declare no Clout resource, so no reward union (minigame payout, Fiscal,
+  opportunities, Commons), all of which bind to catalog resources, can name a Clout arm.
+  - **Seeded failing case:** three synthetic writers (`+=`, `++`, literal key) are all reported.
+  - **Real severing:** adding `state.CloutLifetime += definition.ScoreGrant` inside `attainRun`
+    fails the test at `production/axis_stack.go:101:3`. It was restored afterwards.
+- **AC10:** the formula publication landed in its own commit `63aa0b62` (schema 14, `axis_stack`
+  section, new authorities `AxisInput`/`axisFactor`/`attainRun` fingerprinted, `pinned: null`
+  because no epoch declares the stack). **Failing case:** moving `SlotAxisStack` after `faction`
+  without regenerating makes `make formulas-check` exit 2. Restored, it exits 0.
