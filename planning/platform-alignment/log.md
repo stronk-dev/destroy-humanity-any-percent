@@ -2886,3 +2886,18 @@ No findings.
 **Open from the same audit:** D-014 CI split `bb615ed..add2d09` plus record `38d1ccd`, which
 blocks CI-RFC archival. Its lanes need Docker, which is currently unhealthy on this host
 (containerd metadata I/O error); that review is next once Docker recovers.
+
+## 2026-09-25 — Designated review: D-014 CI split `bb615ed..add2d09` + record `38d1ccd`
+
+**Review by:** Claude (cross-party designated reviewer for Codex implementation). **Recorded by:** Claude.
+**Range:** `bb615ed..add2d09` (`add2d09` "ci: split fast gates from exhaustive evidence") and planning record `38d1ccd`.
+
+Executed at `add2d09` in a detached worktree (not read-only):
+- `make verify-ci-topology` → "CI fast/maintenance topology ok"; the built-in negative-control set rejected 10/10.
+- Sever 1 (real workflow): swapped the push harness step `make verify-harness-fast` for the exhaustive `make verify-harness HARNESS_WORKERS=12` → the check rejected it with "blocking harness must run the fast gate".
+- Sever 2 (real workflow): changed `cache: false` to `true` on the first blocking Go job → the check rejected it with "blocking Go jobs may cache modules only, never build/test outputs".
+- Exhaustive harness and numeric work moved to `maintenance.yml`; the push harness has a 5-minute timeout.
+
+Finding (non-blocking, already closed): at `add2d09` the local `verify-harness-ci` still ran the full `verify-harness`, while hosted CI ran `verify-harness-fast`. This local/hosted parity gap was closed later by the approved corrective range, so no action is needed.
+
+**Verdict: APPROVED** for `bb615ed..add2d09` and `38d1ccd`. The only finding was the parity gap noted above, and later approved work has already closed it.
