@@ -43,3 +43,29 @@ Severing (all restored afterwards):
   `reject_item_price: accepted`. This is AC1's named failing case.
 - **T1:** TS `exactObject` checking only required keys fails `reject_item_price`.
 - **T2:** TS skipping the duplicate-key check fails `reject_duplicate_key`.
+
+## 2026-09-25 — C2: `cosmetics` joins the replay bundle (Claude)
+
+- **Go:**
+  - `production.CatalogBundle.Cosmetics` joins `valid()`, with the artifact count and the
+    requirement `withCosmetics ⇒ withPetSpecies ∧ bytes`.
+  - `replaycatalog.Load`, `validArtifactNames` (the name set and the `cosmetics ⇒ pet_species`
+    chain rule) and `want++`.
+  - `settleAndActivateFoundations` now enforces §2's permanent-ID rule first, before any state
+    validation. A next bundle that drops a pinned id or drops the artifact cannot settle an Exit.
+- **TS:** `ReplayArtifacts.cosmetics`, the allowed name, the chain rule, and
+  `loadCosmeticCatalog`.
+
+Evidence (cold):
+- `make test-go GO_PACKAGES='./cosmetic ./replaycatalog ./production' GO_TEST_FLAGS='-count=1'`
+  passes.
+- Client `tsc` is clean, and the full `vitest run` passes 6767.
+- New tests: `TestLoadCosmeticsRequiresItsChain`, `TestSettleRejectsCosmeticIDDrop`, and
+  `client/test/cosmetic-bundle.test.ts`.
+
+Severing (all restored):
+- Dropping the Go chain rule fails with "cosmetics loaded without pet_species".
+- Dropping the TS chain rule fails the TS bundle test.
+- Disabling the settle check fails with "dropped artifact: settle accepted".
+
+Kernel 0.3.122 → 0.3.123.

@@ -12,6 +12,7 @@ import (
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/copykeys"
+	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
@@ -295,6 +296,13 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.PetSpecies = species
 	}
+	if cosmeticsBytes, active := artifacts["cosmetics"]; active {
+		cosmetics, cosmeticsErr := cosmetic.Load(cosmeticsBytes)
+		if cosmeticsErr != nil {
+			return production.CatalogBundle{}, cosmeticsErr
+		}
+		bundle.Cosmetics = cosmetics
+	}
 	return bundle, nil
 }
 
@@ -307,7 +315,7 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer"} {
+	for _, name := range [...]string{"achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -330,10 +338,11 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, curriculumActive := artifacts["curriculum"]
 	_, reputationActive := artifacts["reputation_tree"]
 	_, petSpeciesActive := artifacts["pet_species"]
+	_, cosmeticsActive := artifacts["cosmetics"]
 	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
 		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive || typerActive && !minigameAPIActive ||
 		opportunitiesActive && !doctrines || relevanceActive && !opportunitiesActive || curriculumActive && !relevanceActive || reputationActive && !minigameAPIActive ||
-		petSpeciesActive && (!reputationActive || !pets) {
+		petSpeciesActive && (!reputationActive || !pets) || cosmeticsActive && !petSpeciesActive {
 		return false
 	}
 	want := len(base)
@@ -377,6 +386,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if petSpeciesActive {
+		want++
+	}
+	if cosmeticsActive {
 		want++
 	}
 	return len(artifacts) == want

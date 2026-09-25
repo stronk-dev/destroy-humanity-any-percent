@@ -6,6 +6,7 @@ import (
 
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/copykeys"
+	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/fiscal"
@@ -240,6 +241,11 @@ func validateFounderCarryFoundationState(bundle CatalogBundle, state *save.State
 func settleAndActivateFoundations(current, next CatalogBundle, founder, company, newCompany *save.State) error {
 	if founder == nil || company == nil || newCompany == nil {
 		return ErrInvalidEngineState
+	}
+	// Cosmetic Shop v1 §2: ids are permanent and slots never change across
+	// epochs; the artifact cannot disappear once pinned.
+	if err := cosmetic.ValidateTransition(current.Cosmetics, next.Cosmetics); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
 	}
 	currentActive, nextActive := current.foundationsActive(), next.foundationsActive()
 	if currentActive {

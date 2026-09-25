@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/activeplay"
+	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/doctrine"
@@ -64,7 +65,10 @@ type CatalogBundle struct {
 	// PetSpecies is the optional pet_species artifact (Pet Adoption v1 PA2). On
 	// the scalar Founder chain it requires reputation_tree (Founder v23 ⊃ v22).
 	PetSpecies *pet.SpeciesCatalog
-	Next       *CatalogBundle
+	// Cosmetics is the optional cosmetics artifact (Cosmetic Shop v1 §2, OD-10).
+	// On the scalar Founder chain it requires pet_species (Founder v24 ⊃ v23).
+	Cosmetics *cosmetic.Catalog
+	Next      *CatalogBundle
 }
 
 type ReplayCommonsPolicy interface {
@@ -163,6 +167,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withCurriculum := bundle.Curriculum != nil
 	withReputation := bundle.ReputationTree != nil
 	withPetSpecies := bundle.PetSpecies != nil
+	withCosmetics := bundle.Cosmetics != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
@@ -206,6 +211,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withPetSpecies {
 		expectedArtifacts++
 	}
+	if withCosmetics {
+		expectedArtifacts++
+	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
 		return false
@@ -235,7 +243,8 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withCurriculum && (!withRelevance || len(bundle.Artifacts["curriculum"]) == 0) ||
 		withReputation && (!withMinigameAPI || len(bundle.Artifacts["reputation_tree"]) == 0) ||
 		withReputation != ReputationDeclared(bundle.Economy) ||
-		withPetSpecies && (!withReputation || bundle.Pets == nil || len(bundle.Artifacts["pet_species"]) == 0) {
+		withPetSpecies && (!withReputation || bundle.Pets == nil || len(bundle.Artifacts["pet_species"]) == 0) ||
+		withCosmetics && (!withPetSpecies || len(bundle.Artifacts["cosmetics"]) == 0) {
 		return false
 	}
 	if withOpportunities && (bundle.Opportunities.Schedule.MinimumIntervalMS > decimal.MaxExactInteger-bundle.Opportunities.Schedule.LifetimeMS ||
