@@ -100,7 +100,7 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource) {
   forbidLine(maintenanceTriggers, /^  (push|pull_request):/, "maintenance must not run on push or pull request");
   requireLine(lines(maintenanceSource), /^permissions:\s*$/, "maintenance permissions block is missing");
   requireLine(lines(maintenanceSource), /^  contents: read\s*$/, "maintenance must use read-only contents permission");
-  requireExactJobs(maintenanceSource, ["harness-evidence", "numeric-maintenance"], "maintenance must contain exactly the two evidence jobs");
+  requireExactJobs(maintenanceSource, ["harness-evidence", "numeric-maintenance", "reputation-evidence"], "maintenance must contain exactly the three evidence jobs");
 
   const evidence = jobSection(maintenanceSource, "harness-evidence");
   requireLine(evidence, /^    timeout-minutes: 55\s*$/, "exhaustive harness job must have the bounded 55-minute budget");
@@ -116,10 +116,14 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource) {
   requireLine(numeric, /^      - run: make fuzz-ci\s*$/, "numeric maintenance must run bounded fuzzing");
   requireLine(numeric, /^      - run: make vectors-check\s*$/, "numeric maintenance must check vector regeneration");
 
+  const reputation = jobSection(maintenanceSource, "reputation-evidence");
+  requireLine(reputation, /^    timeout-minutes: 60\s*$/, "exhaustive Reputation evidence must have its bounded 60-minute budget");
+  requireLine(reputation, /^      - run: make reputation-harness-check\s*$/, "maintenance must run the exhaustive Reputation harness evidence");
+
   const setupGoCount = lines(maintenanceSource).filter((line) => /^      - uses: actions\/setup-go@v6\s*$/.test(line)).length;
   const cacheDisabledCount = lines(maintenanceSource).filter((line) => /^          cache: false\s*$/.test(line)).length;
   const moduleCacheCount = lines(maintenanceSource).filter((line) => /^          path: ~\/go\/pkg\/mod\s*$/.test(line)).length;
-  if (setupGoCount !== 2 || cacheDisabledCount !== 2 || moduleCacheCount !== 2) {
+  if (setupGoCount !== 3 || cacheDisabledCount !== 3 || moduleCacheCount !== 3) {
     throw new Error("maintenance Go jobs must cache modules only, never build/test outputs");
   }
 }

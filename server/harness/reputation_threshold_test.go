@@ -166,3 +166,14 @@ func TestReputationRecordingIsFirstHourNeutral(t *testing.T) {
 		}
 	}
 }
+
+// requireReputationExhaustive gates the multi-minute Reputation career and
+// relevance recomputations out of the 5-minute push harness. They run in the
+// maintenance lane via `make reputation-harness-check`; the skip is explicit
+// and named so a fast run never looks like it exercised them.
+func requireReputationExhaustive(t *testing.T) {
+	t.Helper()
+	if os.Getenv("CLOUD_CLICKER_REPUTATION_EXHAUSTIVE") != "1" {
+		t.Skip("exhaustive Reputation harness evidence runs in `make reputation-harness-check` (CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1)")
+	}
+}

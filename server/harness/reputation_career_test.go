@@ -79,6 +79,7 @@ type reputationCareerReport struct {
 // Casual buy the cheapest available node; Chaos draws uniformly (R10 H4).
 // REPUTATION_UPDATE_CAREER=1 regenerates the pinned report.
 func TestReputationCareerStartersShortenRunThree(t *testing.T) {
+	requireReputationExhaustive(t)
 	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
 	if err != nil {
 		t.Fatal(err)

@@ -675,3 +675,27 @@ the RFC's DG-7 expectation that these nodes cannot be relevant in Phase 1.
 - AC15 (a composed real-Postgres career across three runs) also needs a composed epoch pinning the
   tree. I did not fake it with a fixture epoch in the composed lane. Postgres witnesses cover the
   same transitions piecewise: purchase, Exit plan, activation, and frozen row.
+
+## 2026-09-25 — Fast-harness timeout regression fixed (Claude, orchestrator)
+
+**Implemented by:** Claude. Awaiting Codex's designated review.
+
+`TestReputationTreeRelevance` (875 s) and `TestReputationCareerStartersShortenRunThree` (201 s)
+pushed `make test-harness`, and with it `verify-harness-fast` and the 5-minute push harness, past
+Go's default 600 s timeout. The fix moves this evidence to its own lane without loosening any bound:
+- Both tests now call `requireReputationExhaustive`. Without
+  `CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1` they skip, with a named `t.Skip` pointing at the lane
+  that runs them.
+- A new `make reputation-harness-check` target runs exactly those two tests with a 60-minute
+  timeout.
+- A new maintenance job, `reputation-evidence` (60-minute budget), runs that target.
+  `client/tools/ci-topology.mjs` now requires the job, its budget and its run line, and three Go
+  jobs caching modules only.
+
+Evidence, all cold:
+- `make test-harness` passes in 32.8 s.
+- `make reputation-harness-check` passes: career 145.69 s, relevance 645.47 s, package 791 s,
+  exit 0.
+- `make verify-ci-topology` passes, and its negative controls reject 13/13.
+- **Severing:** deleting the `make reputation-harness-check` line from `maintenance.yml` fails with
+  "maintenance must run the exhaustive Reputation harness evidence". It was restored afterwards.

@@ -69,6 +69,7 @@ func classifyReputationRelevance(row *reputationNodeRelevance) {
 // either relevant or excluded with a reason; a starter node that is bought
 // yet moves nothing fails. REPUTATION_UPDATE_RELEVANCE=1 regenerates.
 func TestReputationTreeRelevance(t *testing.T) {
+	requireReputationExhaustive(t)
 	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
 	if err != nil {
 		t.Fatal(err)

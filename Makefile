@@ -590,6 +590,9 @@ verify-server: vet test-go pitch-corpus-check formulas-check api-check harness-c
 
 verify-server-core: vet test-go-core pitch-corpus-check formulas-check api-check verify-routes-boundary verify-commons-boundary
 
+reputation-harness-check:
+	cd server && CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1 go test -p 1 -count=1 -timeout 60m ./harness -run '^(TestReputationTreeRelevance|TestReputationCareerStartersShortenRunThree)$$' -v
+
 verify-harness-fast: test-harness t0-t1-role-check commons-harness-check harness-guard-check
 
 verify-harness: test-harness t0-t1-role-check harness-check
