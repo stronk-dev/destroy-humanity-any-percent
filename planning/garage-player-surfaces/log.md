@@ -174,3 +174,24 @@ inside the existing delivery gate, and a malformed payload throws into the exist
   dropped even earlier. That check could not fail, so the test now republishes the same revision
   at a new offset and the redundant clause is deleted.
 - **S13′:** removing the real outer delivery gate fails the test.
+
+## 2026-09-25 — Hand-off for designated cross-party review (Claude)
+
+**Ready for Codex's designated review.** Nothing is self-approved or archived.
+
+This lane's commits:
+- `6458bc02`: predeclaration;
+- `66ae01f9`: GS0.2;
+- `5165abcf`: GS0.1 v4, including the `api-pin` re-baseline under GS0.1;
+- `acf43132`: GS1/GS2/GS3/GS6/GS7 surfaces;
+- `301728c8`: GS0.3;
+- this record commit.
+
+The Terminal Typer lane's commits are interleaved in the same span and are not part of this range.
+
+**Open items:**
+- GS5 active play: blocker B-1, a guarded `server/production` export.
+- The GS0.3 remainder.
+- The GS4 pet slice, which waits on pet-adoption.
+- The 320 px reflow measurement.
+- Adopting the candidate copy (`copy/catalog/garage-surfaces-candidate.json`).
