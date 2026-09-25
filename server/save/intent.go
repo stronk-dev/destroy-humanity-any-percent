@@ -82,6 +82,8 @@ const (
 	EventSoulRecovered             EventKind = "soul_recovered.v1"
 	// EventReputationNodePurchased is Reputation Tree v1 R5 (Founder scope).
 	EventReputationNodePurchased EventKind = "reputation_node_purchased.v1"
+	// EventPetAdopted is Pet Adoption v1 PA4.7 (Founder scope, player outbox only).
+	EventPetAdopted EventKind = "pet_adopted.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -91,7 +93,7 @@ var AllEventKinds = [...]EventKind{
 	EventCompactRecovered, EventCompactRecruitmentOffered, EventCompactSampled,
 	EventCompactSigned, EventCompactTitheRaised, EventCompensation,
 	EventComputeCreditSpent, EventDoctrinePicked,
-	EventFiscalCreditSpent, EventFiscalPeriodHarvested, EventReputationNodePurchased,
+	EventFiscalCreditSpent, EventFiscalPeriodHarvested, EventReputationNodePurchased, EventPetAdopted,
 	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferResolved, EventExitOfferSpawned,
 	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
@@ -799,6 +801,19 @@ func validateEventPayload(event EventWrite) error {
 			}
 		} else {
 			return fmt.Errorf("%w: invalid fiscal_period_harvested.v1 source", ErrInvalidStream)
+		}
+	case EventPetAdopted:
+		var payload struct {
+			PetID       string `json:"pet_id"`
+			SpeciesID   string `json:"species_id"`
+			Temperament string `json:"temperament"`
+			PaletteID   string `json:"palette_id"`
+			NameKey     string `json:"name_key"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil ||
+			pet.ValidateIdentityShape(map[string]pet.Identity{payload.PetID: {SpeciesID: payload.SpeciesID, Temperament: payload.Temperament,
+				PaletteID: payload.PaletteID, NameKey: payload.NameKey}}, map[string]pet.CareState{payload.PetID: {}}) != nil {
+			return fmt.Errorf("%w: invalid pet_adopted.v1 payload", ErrInvalidStream)
 		}
 	case EventReputationNodePurchased:
 		var payload struct {

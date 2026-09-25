@@ -14,8 +14,8 @@ const v23PetID = "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"
 
 func v23CareState() pet.CareState {
 	return pet.CareState{
-		StatsPPM:               map[pet.StatID]int64{"affection": 700_000, "cleanliness": 700_000, "energy": 700_000, "hunger": 700_000},
-		StatDecayRemaindersPPM: map[pet.StatID]int64{"affection": 0, "cleanliness": 0, "energy": 0, "hunger": 0},
+		StatsPPM:                map[pet.StatID]int64{"affection": 700_000, "cleanliness": 700_000, "energy": 700_000, "hunger": 700_000},
+		StatDecayRemaindersPPM:  map[pet.StatID]int64{"affection": 0, "cleanliness": 0, "energy": 0, "hunger": 0},
 		CooldownUntilAttendedMS: map[string]int64{}, TrustPPM: 500_000, EvaluatedThroughAttendedMS: 5_400_000,
 		BehaviorState: pet.BehaviorIdle, BehaviorEnteredAtAttendedMS: 5_400_000, BehaviorQueue: []pet.BehaviorQueueEntry{},
 	}

@@ -11,7 +11,7 @@ import (
 
 func TestCurrentMigrationIsContiguous(t *testing.T) {
 	current, err := CurrentMigration(filepath.Join("..", ".."))
-	if err != nil || current != 78 {
+	if err != nil || current != 79 {
 		t.Fatalf("migration=%d err=%v", current, err)
 	}
 }

@@ -32,6 +32,10 @@ type founderReplayInputsWire struct {
 	Resolved      json.RawMessage           `json:"resolved"`
 }
 
+// founderTransitionTestArm is nil in production. AC6's tests set it to a
+// deliberately violating feature arm to prove the transition layer rejects it.
+var founderTransitionTestArm func(*save.State)
+
 // ApplyFounderLogged is the projection-free Founder transition used by live
 // Founder commands and career replay. It reads only its four arguments.
 func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBundle, replayInputs []byte) (result FounderLoggedTransition, resultErr error) {
@@ -58,9 +62,24 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		}
 		fiscalStateToSave(state, fiscalState)
 	}
+	var resolvedKind struct {
+		Kind string `json:"kind"`
+	}
+	_ = json.Unmarshal(wire.Resolved, &resolvedKind)
 	defer func() {
 		if resultErr != nil || result.Outcome != save.IntentApplied {
 			*state = *stateBefore
+			return
+		}
+		// Pet Adoption v1 PA3.5: every Founder transition other than adopt_pet
+		// leaves pet_identities byte-identical; adopt_pet adds exactly one key.
+		if founderTransitionTestArm != nil {
+			founderTransitionTestArm(state)
+		}
+		if err := checkPetIdentityTransition(stateBefore.PetIdentities, state.PetIdentities, resolvedKind.Kind == IntentAdoptPet); err != nil {
+			*state = *stateBefore
+			result = FounderLoggedTransition{}
+			resultErr = err
 			return
 		}
 		if sweep != nil {
@@ -132,6 +151,8 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		return applyFounderFiscalSpendResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case IntentPurchaseReputationNode:
 		return applyFounderReputationPurchaseResolved(state, request, revision, catalogs, wire.Resolved)
+	case IntentAdoptPet:
+		return applyFounderAdoptionResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case founderExitResolvedKind, founderExitPlanResolvedKind:
 		explicitExit := request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO
 		if explicitExit && request.ExpectedFounderRevision != wire.Command.Revision {

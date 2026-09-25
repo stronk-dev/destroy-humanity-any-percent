@@ -59,3 +59,41 @@ It sets `pet_identities: {}`. It is legal only while `pets` is empty, because an
 synthesized. The Company replay carry holds `pet_identities` from replay-inputs v10 onward when the
 pinned Founder floor is at least 23. v10 is otherwise byte-identical to v9 apart from the version
 field.
+
+## The `adopt_pet` intent
+
+The wire is exactly `{intent_id, kind:"adopt_pet", expected_revision, species_id, name_key}`, with
+`expected_revision` as the Founder revision. The client never sends a pet ID, temperament, palette,
+Company, run, or clock coordinate. Any extra key yields `invalid/adopt_pet.fields`. The command
+runs through `ApplyFounderLogged` with the same Founder-attendance resolution and Soul-recovery
+exclusivity as `care_action`.
+
+**Validation order** (the first failure wins; a rejection is logged and consumes no revision):
+
+| # | Check | Rejection |
+|---|---|---|
+| 1 | Exact keys and mechanical ids | `invalid` + field |
+| 2 | Founder v23 with `pet_species` pinned | `not_eligible/adoption_inactive` |
+| 3 | The species exists | `unknown_id/unknown_species` |
+| 4 | The name belongs to the species | `unknown_id/unknown_name` |
+| 5 | The species is a starter | `not_eligible/species_locked` (unreachable in v1: the loader admits only starter rows) |
+| 6 | The Founder is below the cap | `not_eligible/adoption_cap_reached` |
+
+**Applying** the command inserts the identity and PA4.6's canonical initial care record (initial
+stats and Trust, zero remainders, idle, watermark at the frozen attendance total A) and advances the
+Founder revision.
+
+- **Receipt:** `{intent_id, outcome, founder_revision, pet_id, species_id, temperament,
+  palette_id, name_key, adopted_at_attended_ms, status_band, eligible_action_ids}`. Like every
+  Founder receipt, it gains `fiscal_sweep` when an automatic Fiscal sweep fires in the same
+  command.
+- **Event:** `pet_adopted.v1 {pet_id, species_id, temperament, palette_id, name_key}`, on the
+  player outbox only. Migration `00079` registers it in `events_kind_check`.
+- **Resolved inputs:** `{kind:"adopt_pet", attendance, adoption_nonce}`. Replay re-derives every
+  drawn value from the nonce.
+- **Idempotency:** a retry returns the recorded receipt without running the callback, so exactly
+  one nonce is drawn. `WithAdoptionNonceSource` is the test seam.
+- **No release, rename or re-roll:** none of these verbs exists.
+
+`testdata/replay/pet-adoption-v1.json` is the Go-authored corpus that the TS replay byte-matches.
+Regenerate it with `PET_ADOPTION_UPDATE_FIXTURE=1`.

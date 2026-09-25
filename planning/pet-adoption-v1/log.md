@@ -134,3 +134,73 @@ because the field is now required.
 
 Docs: new `docs/pet-adoption.md`; `docs/pet-care.md` pointer; `docs/production-engine.md` stale
 carry sentence corrected (v9 Reputation, v10 pets).
+
+## 2026-09-25 — P5: the adopt_pet intent (Claude)
+
+**Go** (`server/production/pet_adoption_intent.go`):
+- the handler: attendance resolution, the Soul-guarded store path, and one CSPRNG nonce drawn
+  inside the callback;
+- `applyFounderAdoptionResolved`: the PA4.2 order, the draws, and the single-transaction effect;
+- the receipt and `pet_adopted.v1` event;
+- `checkPetIdentityTransition`, run by `ApplyFounderLogged`'s defer for every applied arm
+  (PA3.5);
+- `save.EventPetAdopted` with strict payload validation;
+- migration `00079_pet_adopted.sql`, with the contiguity pin moved to 79;
+- parser case and routing.
+
+**TS:** the `adopt_pet` parser case, the `applyFounderAdoption` arm, and the same immutability
+check in `finish`. `pet_adopted.v1` joins `REPLAY_EVENT_KINDS`.
+
+**Recorded readings** (filling what the RFC leaves unspecified):
+- **Rejection details:** the RFC names `unknown_id` for rows 3 and 4 without a detail. The details
+  are `unknown_species` and `unknown_name`, following care's `unknown_pet`.
+- **Soul exclusivity:** adoption uses care's Soul-recovery exclusivity guard (`exclusive_activity`).
+  The RFC says attendance behaves "identically to care_action" and is silent on exclusivity, so the
+  sibling's rule is mirrored rather than inventing an exemption.
+- **Row 5 (`species_locked`)** is unreachable in v1, because the loader admits only starter rows.
+  It is implemented but has no vector.
+
+**Tests:**
+- `pet_adoption_test.go`:
+  - the corpus: rows 1–4 and 6, apply, the unknown-species-at-cap ordering, and care on the
+    adopted pet (AC4/AC5);
+  - a tampered nonce cannot reproduce the receipt (AC7);
+  - direct unit coverage of `checkPetIdentityTransition` (AC6);
+  - `TestTransitionLayerRejectsIdentityMutatingArms`, via an explicit test-only
+    `founderTransitionTestArm`: an arm that mutates a temperament, or one that drops the map,
+    fails with `ErrInvalidEngineState` and restores state (the AC6 failing cases).
+- `pet_adoption_integration_test.go`, real Postgres, run verbosely and confirmed to have
+  executed:
+  - applies through `Service.Handle`;
+  - the retry is byte-identical with `draws == 1` (AC10);
+  - a changed body yields `idempotency_conflict` with no draw;
+  - the event persists, and the constraint rejects an unregistered kind (AC9);
+  - the second adoption is refused at cap;
+  - `VerifyFounderHistory` returns `ReplayVerified`.
+- `client/test/pet-adoption-replay.test.ts`: TS byte-matches all 10 corpus cases; a tampered
+  nonce fails to reproduce the receipt; a stripped nonce throws (AC7).
+
+**Severing:**
+
+| Probe | Change | Result |
+|---|---|---|
+| S1 | cap check moved before the species lookup | corpus build failed ("unknown-species-at-cap: adoption_cap_reached") |
+| S2 | watermark seeded at 0 | failed |
+| S3 | immutability check disabled | `TestTransitionLayerRejectsIdentityMutatingArms` failed |
+| S4 | draw at server time + 1 | the draw/receipt check failed |
+| TS T1 | cap check before species | failed 1 of 12 |
+| TS T2 | watermark 0 | failed 1 of 12 |
+| AC10 | an extra nonce draw outside the callback | the integration test failed with `draws=3` |
+
+**Invalid probe, recorded:** severing migration `00079` in place isn't meaningful, because the
+shared Postgres has already applied it. The constraint witness itself (an unregistered kind is
+rejected) is live.
+
+**Evidence (cold):**
+- Go: `./production ./save ./pet ./replaycatalog ./gameui ./account ./gameserver ./releasepackage`
+  pass.
+- The full `docker compose -f compose.save-test.yml run --rm test` suite passes.
+- Client: 6753 tests pass, and typecheck is clean.
+
+**Housekeeping:** `server/save/pet_identity_state_test.go`, committed in P4 unformatted, is
+gofmt'd here.

@@ -39,7 +39,10 @@ full run has been archived, preserving the relational proof without retaining th
 
 `production.ApplyFounderLogged` is the single projection-free transition used by the live Founder
 path and by replay. Its closed Phase-A union includes invalid commands, Route hints, pet care,
-Fiscal commands, minigame resolution, Soul recovery, and Exit; the Exit arm
+pet adoption (`adopt_pet`, [Pet adoption](pet-adoption.md)), Reputation purchases, Fiscal commands,
+minigame resolution, Soul recovery, and Exit. After any applied arm, the transition layer checks
+that `pet_identities` is unchanged, or grew by exactly one key under `adopt_pet`, and otherwise
+fails the transaction. The Exit arm
 updates only Founder-owned facts and generates a separate `founder_advanced` event and audit
 receipt. The TypeScript port consumes the same Go-authored corpus and byte-compares the resulting
 state, receipt, ordered events, and result constants hash. The production path also runs the same

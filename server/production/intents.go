@@ -276,6 +276,7 @@ type Service struct {
 	simulation           *simulationPolicy
 	currentConstantsHash string
 	soulRecoveries       *soul.RecoveryRepository
+	adoptionNonce        func() (string, error)
 }
 
 func WithSoulRecovery(repository *soul.RecoveryRepository) ServiceOption {
@@ -320,6 +321,8 @@ type IntentRequest struct {
 	FiscalTarget            fiscal.SpendTarget
 	OpportunityID           string
 	ReputationNodeID        string
+	PetSpeciesID            string
+	PetNameKey              string
 	// ReputationPlan is R6's optional Exit-attached purchase plan, in
 	// purchase order; nil when the key is absent.
 	ReputationPlan []string
@@ -426,6 +429,9 @@ func (s *Service) Handle(
 	}
 	if request.Kind == IntentPurchaseReputationNode {
 		return s.handleFounderReputation(ctx, streamID, request)
+	}
+	if request.Kind == IntentAdoptPet {
+		return s.handleFounderAdoption(ctx, streamID, now, request)
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
@@ -645,7 +651,7 @@ func (s *Service) Handle(
 
 func isCompanyIntent(kind string) bool {
 	return kind != IntentBuyRouteHint && kind != IntentCareAction && kind != IntentHarvestFiscalPeriod && kind != IntentSpendFiscalCredit &&
-		kind != IntentPurchaseReputationNode
+		kind != IntentPurchaseReputationNode && kind != IntentAdoptPet
 }
 
 type founderRouteHintResolved struct {
@@ -2138,6 +2144,16 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 		}
 		if err := json.Unmarshal(root["node_id"], &request.ReputationNodeID); err != nil || !intentIDPattern.MatchString(request.ReputationNodeID) {
 			request.InvalidDetail = "node_id"
+		}
+	case IntentAdoptPet:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "species_id", "name_key") {
+			request.InvalidDetail = "adopt_pet.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["species_id"], &request.PetSpeciesID); err != nil || !intentIDPattern.MatchString(request.PetSpeciesID) {
+			request.InvalidDetail = "species_id"
+		} else if err := json.Unmarshal(root["name_key"], &request.PetNameKey); err != nil || !intentIDPattern.MatchString(request.PetNameKey) {
+			request.InvalidDetail = "name_key"
 		}
 	case IntentClaimOpportunity:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "opportunity_id") {

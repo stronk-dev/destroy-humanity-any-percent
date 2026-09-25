@@ -20,12 +20,12 @@ import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputatio
 import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
-import { parsePetSpeciesCatalog, type PetSpeciesCatalog } from "./pet/species";
-import { encodePetIdentities, parsePetIdentities, type PetIdentity } from "./pet/identity";
+import { drawPetAdoption, parsePetSpeciesCatalog, petSpeciesRow, type PetSpeciesCatalog } from "./pet/species";
+import { encodePetIdentities, initialPetCareState, parsePetIdentities, type PetIdentity } from "./pet/identity";
 import { parseTyperCatalog, type TyperCatalog } from "./typer/catalog";
 import { parsePitchCatalog, type PitchCatalog } from "./pitch/catalog";
 import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
-import { applyPetCareTransition, careStatus } from "./pet/transition";
+import { applyPetCareTransition, careStatus, eligibleCareActions } from "./pet/transition";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
 import { parseSoulCatalog, soulBand, type SoulCatalog } from "./soul/catalog";
 import { substream } from "./combat/rng";
@@ -240,7 +240,7 @@ const REPLAY_EVENT_KINDS = Object.freeze([
 	"minigame_rating_changed.v1", "minigame_resolved.v1",
 	"soul_price_paid.v1", "soul_band_changed.v1", "soul_depleted.v1",
 	"soul_recovery_started.v1", "soul_recovery_cancelled.v1", "soul_recovered.v1",
-	"reputation_node_purchased.v1",
+	"reputation_node_purchased.v1", "pet_adopted.v1",
 ] as const);
 
 function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
@@ -702,6 +702,8 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
   }
   const finish = (transition: FounderLoggedTransition): FounderLoggedTransition => {
     if (transition.outcome !== "applied") { rollback(); return transition; }
+    // Pet Adoption v1 PA3.5: only adopt_pet may change pet_identities, by exactly one key.
+    checkPetIdentityTransition(before.petIdentities, state.petIdentities, string(wire.resolved.kind) === "adopt_pet", before.wireVersion < 23);
     if (!fiscalSweep) return transition;
     const receipt = exactObject(transition.receipt, Object.keys(transition.receipt as Record<string, unknown>), "Founder receipt");
     const fiscal_sweep = fiscalSweepWire(fiscalSweep);
@@ -775,6 +777,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (kind === "harvest_fiscal_period") return finish(await applyFounderFiscalHarvest(state, request, wire, catalogs));
     if (kind === "spend_fiscal_credit") return finish(applyFounderFiscalSpend(state, request, wire, catalogs));
     if (kind === "purchase_reputation_node") return finish(applyFounderReputationPurchase(state, request, wire, catalogs));
+    if (kind === "adopt_pet") return finish(await applyFounderAdoption(state, request, wire, catalogs, rollback));
     if (kind === "exit.v1" || kind === "exit.v2") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
@@ -2168,6 +2171,12 @@ function parseIntent(payload: string, intentId: string): Intent {
       if (!hasExactKeys(raw, ["kind", "expected_revision", "route_id"])) { base.invalid = "buy_route_hint.fields"; return base; }
       if (!isMechanical(raw.route_id)) base.invalid = "route_id"; else base.route_id = raw.route_id;
       return base;
+    case "adopt_pet":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "species_id", "name_key"])) { base.invalid = "adopt_pet.fields"; return base; }
+      if (!isMechanical(raw.species_id)) base.invalid = "species_id";
+      else if (!isMechanical(raw.name_key)) base.invalid = "name_key";
+      else { base.species_id = raw.species_id; base.name_key = raw.name_key; }
+      return base;
     case "care_action":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "pet_id", "action_id"])) { base.invalid = "care_action.fields"; return base; }
       if (!isUUIDV7(raw.pet_id)) base.invalid = "pet_id"; else base.pet_id = raw.pet_id;
@@ -2268,3 +2277,50 @@ function cursor(value: unknown, label: string): number { const source = string(v
 function sortedRecord<T>(value: Record<string, T>): Record<string, T> { return Object.fromEntries(Object.keys(value).sort(byteCompare).map((key) => [key, value[key]!])); }
 function same(left: readonly string[], right: readonly string[]): boolean { return left.length === right.length && left.every((value, index) => value === right[index]); }
 function byteCompare(left: string, right: string): number { const a = new TextEncoder().encode(left); const b = new TextEncoder().encode(right); for (let i = 0; i < Math.min(a.length, b.length); i++) if (a[i] !== b[i]) return a[i]! - b[i]!; return a.length - b.length; }
+
+// Pet Adoption v1 PA4: the adopt_pet replay arm, byte twin of
+// server/production/pet_adoption_intent.go.
+async function applyFounderAdoption(state: FounderReplayState, request: ReturnType<typeof parseIntent>, wire: ReturnType<typeof parseFounderReplayWire>,
+  catalogs: ReplayCatalogBundle, rollback: () => void): Promise<FounderLoggedTransition> {
+  exactKeys(wire.resolved, ["kind", "attendance", "adoption_nonce"], "pet adoption inputs");
+  if (request.kind !== "adopt_pet" || request.invalid !== undefined || request.expected_revision !== wire.command.revision) throw new RangeError("pet adoption command mismatch");
+  const nonce = string(wire.resolved.adoption_nonce);
+  if (!/^[0-9a-f]{32}$/u.test(nonce)) throw new RangeError("invalid pet adoption nonce");
+  const sample = parseFounderAttendanceSample(wire.resolved.attendance);
+  if (sample.companyConstantsHash !== catalogs.constantsHash) throw new RangeError("pet adoption catalog context mismatch");
+  const attended = validateFounderAttendanceSample(state, wire.command.revision, request.expected_revision, sample);
+  const reject = (category: string, detail: string) => founderRejected(state, request.intent_id, wire.command.revision, category, detail, catalogs.constantsHash, rollback);
+  if (!catalogs.petSpecies || !catalogs.pets || state.wireVersion < 23) return reject("not_eligible", "adoption_inactive");
+  const speciesId = string(request.species_id), nameKey = string(request.name_key);
+  const row = petSpeciesRow(catalogs.petSpecies, speciesId);
+  if (!row) return reject("unknown_id", "unknown_species");
+  if (!row.name_keys.includes(nameKey)) return reject("unknown_id", "unknown_name");
+  if (row.availability !== "starter") return reject("not_eligible", "species_locked");
+  if (Object.keys(state.petIdentities).length >= catalogs.petSpecies.max_pets_per_founder) return reject("not_eligible", "adoption_cap_reached");
+  const draws = await drawPetAdoption(string(wire.command.founder_id), nonce, wire.command.server_ts_ms, row);
+  if (state.petIdentities[draws.pet_id] !== undefined || state.pets[draws.pet_id] !== undefined) throw new RangeError("adopted pet ID collides");
+  const care = initialPetCareState(catalogs.pets, attended);
+  state.pets[draws.pet_id] = care;
+  state.petIdentities[draws.pet_id] = { species_id: row.species_id, temperament: draws.temperament, palette_id: draws.palette_id,
+    name_key: nameKey, adopted_at_ms: wire.command.server_ts_ms, adopted_at_attended_ms: attended };
+  const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, pet_id: draws.pet_id,
+    species_id: row.species_id, temperament: draws.temperament, palette_id: draws.palette_id, name_key: nameKey, adopted_at_attended_ms: attended,
+    status_band: careStatus(care, catalogs.pets).status_band, eligible_action_ids: [...eligibleCareActions(care, catalogs.pets, attended)] };
+  return { state, outcome: "applied", receipt, events: [event("pet_adopted.v1", request.intent_id, { pet_id: draws.pet_id, species_id: row.species_id,
+    temperament: draws.temperament, palette_id: draws.palette_id, name_key: nameKey })], resultConstantsHash: catalogs.constantsHash };
+}
+
+function checkPetIdentityTransition(before: Readonly<Record<string, PetIdentity>>, after: Readonly<Record<string, PetIdentity>>, adoption: boolean, activation: boolean): void {
+  if (activation) {
+    if (Object.keys(after).length !== 0) throw new RangeError("pet identities appeared outside activation");
+    return;
+  }
+  let added = 0;
+  for (const [id, identity] of Object.entries(after)) {
+    const prior = before[id];
+    if (prior === undefined) { added += 1; continue; }
+    if (JSON.stringify(encodePetIdentities({ [id]: prior })) !== JSON.stringify(encodePetIdentities({ [id]: identity }))) throw new RangeError("pet identity changed");
+  }
+  for (const id of Object.keys(before)) if (after[id] === undefined) throw new RangeError("pet identity disappeared");
+  if (adoption ? added !== 1 : added !== 0) throw new RangeError("unexpected pet identity additions");
+}
