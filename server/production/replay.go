@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/garden"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
@@ -72,7 +73,10 @@ type CatalogBundle struct {
 	// Cosmetics is the optional cosmetics artifact (Cosmetic Shop v1 §2, OD-10).
 	// On the scalar Founder chain it requires pet_species (Founder v24 ⊃ v23).
 	Cosmetics *cosmetic.Catalog
-	Next      *CatalogBundle
+	// Garden is the optional server_garden artifact (Server Garden SG1). On
+	// the scalar Founder chain it requires cosmetics (Founder v25 ⊃ v24).
+	Garden *garden.Catalog
+	Next   *CatalogBundle
 }
 
 type ReplayCommonsPolicy interface {
@@ -180,6 +184,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withReputation := bundle.ReputationTree != nil
 	withPetSpecies := bundle.PetSpecies != nil
 	withCosmetics := bundle.Cosmetics != nil
+	withGarden := bundle.Garden != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
@@ -229,6 +234,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withCosmetics {
 		expectedArtifacts++
 	}
+	if withGarden {
+		expectedArtifacts++
+	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
 		return false
@@ -261,6 +269,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withReputation != ReputationDeclared(bundle.Economy) ||
 		withPetSpecies && (!withReputation || bundle.Pets == nil || len(bundle.Artifacts["pet_species"]) == 0) ||
 		withCosmetics && (!withPetSpecies || len(bundle.Artifacts["cosmetics"]) == 0) ||
+		withGarden && (!withCosmetics || bundle.Fiscal == nil || len(bundle.Artifacts[garden.ArtifactName]) == 0) ||
 		AxisStackDeclared(bundle.Economy) && !withOpportunities {
 		return false
 	}
@@ -303,6 +312,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	}
 	if bundle.Cosmetics != nil {
 		founder = 24
+	}
+	if bundle.Garden != nil {
+		founder = 25
 	}
 	if bundle.Opportunities != nil {
 		company = 18
@@ -387,6 +399,9 @@ type replayFounderExtensions struct {
 	// Replay-inputs v11 (Cosmetic Shop v1 §3): present exactly when the pinned
 	// bundle's Founder floor is at least 24.
 	Cosmetics *cosmetic.State `json:"cosmetics,omitempty"`
+	// Replay-inputs v12 (Server Garden SG2): present exactly when the pinned
+	// bundle's Founder floor is at least 25; decoded by the strict SG2 codec.
+	ServerGarden json.RawMessage `json:"server_garden,omitempty"`
 }
 
 type replayInputsWire struct {
@@ -1056,6 +1071,9 @@ func validFounderCarry(carry replayFounderCarry, wireVersion int, catalogs Catal
 		if founderFloor >= 24 && (wireVersion < 11 || extensions.Cosmetics == nil) || founderFloor < 24 && extensions.Cosmetics != nil {
 			return false
 		}
+		if founderFloor >= 25 && (wireVersion < 12 || len(extensions.ServerGarden) == 0) || founderFloor < 25 && len(extensions.ServerGarden) != 0 {
+			return false
+		}
 	}
 	last := ""
 	for _, fact := range carry.LedgerFactKinds {
@@ -1181,6 +1199,15 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 		}
 		state.Cosmetics = extensions.Cosmetics.Clone()
 	} else if extensions.Cosmetics != nil {
+		return nil, ErrInvalidReplayInputs
+	}
+	if founderFloor >= 25 {
+		carried, err := garden.DecodeState(extensions.ServerGarden)
+		if err != nil {
+			return nil, ErrInvalidReplayInputs
+		}
+		state.ServerGarden = carried
+	} else if len(extensions.ServerGarden) != 0 {
 		return nil, ErrInvalidReplayInputs
 	}
 	if err := catalogs.ValidateFoundationState(state); err != nil {
@@ -1452,6 +1479,11 @@ func founderCarry(state *save.State) replayFounderCarry {
 		if save.VersionForState(state) >= 24 {
 			extensions.Cosmetics = state.Cosmetics.Clone()
 		}
+		if save.VersionForState(state) >= 25 {
+			if encoded, err := garden.EncodeState(state.ServerGarden); err == nil {
+				extensions.ServerGarden = encoded
+			}
+		}
 		if extensions.MinigameRatings == nil {
 			extensions.MinigameRatings = map[string]save.MinigameRatingState{}
 		}
@@ -1483,6 +1515,7 @@ func cloneFounderExtensions(source *replayFounderExtensions) *replayFounderExten
 		ReputationNodesOwned: cloneStringSlicePointer(source.ReputationNodesOwned),
 		PetIdentities:        clonePetIdentitiesPointer(source.PetIdentities),
 		Cosmetics:            source.Cosmetics.Clone(),
+		ServerGarden:         append(json.RawMessage(nil), source.ServerGarden...),
 	}
 }
 
@@ -1570,7 +1603,7 @@ func boolMapFromSorted(values []string) map[string]bool {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != 9 && wire.Version != 10 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != 9 && wire.Version != 10 && wire.Version != 11 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

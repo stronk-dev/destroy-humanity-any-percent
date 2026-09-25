@@ -17,13 +17,14 @@ import (
 	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/garden"
 	"cloud-clicker/server/pet"
 )
 
 const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
-	LatestFounderVersion     = 24
+	LatestFounderVersion     = 25
 	LatestCompanyVersion     = 19
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
@@ -105,7 +106,10 @@ type State struct {
 	PetIdentities map[string]pet.Identity
 	// Cosmetics is Founder v24 (Cosmetic Shop v1 §3): owned ids and the
 	// per-pet equip map; nil exactly below v24.
-	Cosmetics              *cosmetic.State
+	Cosmetics *cosmetic.State
+	// ServerGarden is Founder v25 (Server Garden SG2, landing-order next-free
+	// after cosmetics): the persistent wall-clock garden; nil exactly below v25.
+	ServerGarden           *garden.State
 	NetworkSlots           []NetworkSlot
 	CloutLifetime          int64
 	Soul                   int64
@@ -364,6 +368,11 @@ type stateV22 struct {
 	ReputationNodesOwned []string `json:"reputation_nodes_owned"`
 }
 
+type stateV25 struct {
+	stateV24
+	ServerGarden json.RawMessage `json:"server_garden"`
+}
+
 type stateV24 struct {
 	stateV23
 	Cosmetics *wireCosmetics `json:"cosmetics"`
@@ -567,7 +576,7 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 	if normalized.Ledger.Scope() == economy.ScopeFounder {
 		maximum = LatestFounderVersion
 	}
-	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 && version != 21 && version != 22 && version != 23 && version != 24 {
+	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 && version != 21 && version != 22 && version != 23 && version != 24 && version != 25 {
 		return nil, fmt.Errorf("%w: unsupported encode version %d", ErrInvalidState, version)
 	}
 	if err := validateFoundationState(&normalized, version, normalized.Ledger.Scope()); err != nil {
@@ -663,7 +672,15 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 											v23 := stateV23{stateV22: v22, PetIdentities: encodePetIdentities(normalized.PetIdentities)}
 											wire = v23
 											if version >= 24 {
-												wire = stateV24{stateV23: v23, Cosmetics: encodeCosmetics(normalized.Cosmetics)}
+												v24 := stateV24{stateV23: v23, Cosmetics: encodeCosmetics(normalized.Cosmetics)}
+												wire = v24
+												if version >= 25 {
+													encodedGarden, gardenErr := garden.EncodeState(normalized.ServerGarden)
+													if gardenErr != nil {
+														return nil, fmt.Errorf("%w: %v", ErrInvalidState, gardenErr)
+													}
+													wire = stateV25{stateV24: v24, ServerGarden: encodedGarden}
+												}
 											}
 										}
 									}
@@ -726,6 +743,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	var reputationSource *stateV22
 	var petIdentitySource *stateV23
 	var cosmeticsSource *stateV24
+	var gardenSource *stateV25
 	var computeBurstRemainingMS int64
 	var activeCompany *companyStateV18
 	var attainmentCompany *companyStateV19
@@ -837,6 +855,14 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		source.stateV17.stateV16 = company.stateV16
 		computeBurstRemainingMS, activeCompany, attainmentCompany = *company.ComputeBurstRemainingMS, &company.companyStateV18, &company
+	} else if version == 25 && scope == economy.ScopeFounder {
+		var grown stateV25
+		if err := decodeState(data, &grown); err != nil {
+			return nil, err
+		}
+		shop := grown.stateV24
+		tree := shop.stateV23.stateV22
+		source, fiscalSource, soulSource, minigameAPISource, reputationSource, petIdentitySource, cosmeticsSource, gardenSource = tree.stateV21.stateV20.stateV19.stateV18, &grown.stateV24.stateV23.stateV22.stateV21.stateV20.stateV19, &grown.stateV24.stateV23.stateV22.stateV21.stateV20, &grown.stateV24.stateV23.stateV22.stateV21, &grown.stateV24.stateV23.stateV22, &grown.stateV24.stateV23, &grown.stateV24, &grown
 	} else if version == 24 && scope == economy.ScopeFounder {
 		var shop stateV24
 		if err := decodeState(data, &shop); err != nil {
@@ -1078,6 +1104,15 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if scope == economy.ScopeFounder && version >= 21 {
 		state.MinigameSessionSeq = *minigameAPISource.MinigameSessionSeq
 	}
+	if scope == economy.ScopeFounder && version >= 25 {
+		if gardenSource == nil || len(gardenSource.ServerGarden) == 0 {
+			return nil, fmt.Errorf("%w: server_garden Founder state is required", ErrInvalidState)
+		}
+		state.ServerGarden, err = garden.DecodeState(gardenSource.ServerGarden)
+		if err != nil {
+			return nil, fmt.Errorf("%w: %v", ErrInvalidState, err)
+		}
+	}
 	if scope == economy.ScopeFounder && version >= 24 {
 		if cosmeticsSource == nil {
 			return nil, fmt.Errorf("%w: cosmetics Founder state is required", ErrInvalidState)
@@ -1180,6 +1215,9 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	}
 	// Reputation Tree v1 R1/R7: no shipped path writes reputation_unlock_ppm
 	// before v22, so a non-zero value there is corruption, never repaired.
+	if version < 25 && state.ServerGarden != nil {
+		return fmt.Errorf("%w: server_garden present before v25", ErrInvalidState)
+	}
 	if version < 24 && state.Cosmetics != nil {
 		return fmt.Errorf("%w: cosmetics present before v24", ErrInvalidState)
 	}
@@ -1342,6 +1380,12 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		pets[id] = struct{}{}
 	}
 	if err := cosmetic.ValidateShape(state.Cosmetics, pets); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidState, err)
+	}
+	if version < 25 {
+		return nil
+	}
+	if err := garden.ValidateShape(state.ServerGarden); err != nil {
 		return fmt.Errorf("%w: %v", ErrInvalidState, err)
 	}
 	return nil

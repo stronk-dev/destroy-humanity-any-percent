@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
 
+import { newGardenState } from "../src/garden/engine";
 import { initialPetCareState } from "../src/pet/identity";
 import { encodeFounderReplayState, loadReplayCatalogBundle, restoreFounderReplayState, type FounderReplayState, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
-import { constantsHashArtifacts, cosmeticsArtifacts, petSpeciesArtifacts } from "./cosmetic-fixture-bundle";
+import { constantsHashArtifacts, cosmeticsArtifacts, gardenArtifacts } from "./garden-fixture-bundle";
+
+const load = async (artifacts: ReplayArtifacts) => loadReplayCatalogBundle(await constantsHashArtifacts(artifacts), artifacts);
 
 const PET = "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa";
 const identity = { species_id: "pet_species.server_room_cat", temperament: "curious" as const, palette_id: "pet_palette.fur_03",
   name_key: "pet.name.server_room_cat.n07", adopted_at_ms: 1_790_000_000_000, adopted_at_attended_ms: 5_400_000 };
 
-const load = async (artifacts: ReplayArtifacts) => loadReplayCatalogBundle(await constantsHashArtifacts(artifacts), artifacts);
 
 function founderState(bundle: ReplayCatalogBundle, overrides: Partial<FounderReplayState>): FounderReplayState {
   const founderResources = bundle.economy.resources.filter((row) => row.scope === "founder");
@@ -32,41 +34,40 @@ function founderState(bundle: ReplayCatalogBundle, overrides: Partial<FounderRep
   };
 }
 
-describe("Founder v24 cosmetics (Cosmetic Shop v1 AC3)", () => {
-  it("round-trips owned + equipped canonically and rejects every shape violation", async () => {
-    const bundle = await load(cosmeticsArtifacts);
-    const encoded = encodeFounderReplayState(founderState(bundle, {})) as Record<string, unknown>;
-    expect(encoded.cosmetics).toEqual({ owned: ["horse_armor"], equipped: { [PET]: "horse_armor" } });
-    const restored = restoreFounderReplayState(encoded, 24, bundle);
-    expect(restored.cosmetics).toEqual({ owned: ["horse_armor"], equipped: { [PET]: "horse_armor" } });
-    expect(encodeFounderReplayState(restored)).toEqual(encoded);
-    const cases: [string, unknown][] = [
-      ["null owned", { owned: null, equipped: {} }],
-      ["null equipped", { owned: [], equipped: null }],
-      ["unsorted owned", { owned: ["zebra_armor", "horse_armor"], equipped: {} }],
-      ["duplicate owned", { owned: ["horse_armor", "horse_armor"], equipped: {} }],
-      ["unknown id", { owned: ["zebra_armor"], equipped: {} }],
-      ["equipped by a non-pet", { owned: ["horse_armor"], equipped: { "01986666-bbbb-7bbb-8bbb-bbbbbbbbbbbb": "horse_armor" } }],
-      ["equipped not owned", { owned: [], equipped: { [PET]: "horse_armor" } }],
-      ["extra key", { owned: [], equipped: {}, price: 0 }],
-      ["missing equipped", { owned: [] }],
-    ];
-    for (const [name, cosmetics] of cases) {
-      expect(() => restoreFounderReplayState({ ...encoded, cosmetics }, 24, bundle), name).toThrow();
-    }
-    const { cosmetics: _omitted, ...missing } = encoded;
-    expect(() => restoreFounderReplayState(missing, 24, bundle), "v24 without cosmetics").toThrow();
+
+describe("Founder v25 server_garden (Server Garden SG2, AC2)", () => {
+  it("pins Founder v25 only on the full chain against the pinned Fiscal rows", async () => {
+    const bundle = await load(gardenArtifacts);
+    expect(bundle.garden?.species.length).toBe(5);
+    const { cosmetics: _cosmetics, ...withoutCosmetics } = gardenArtifacts;
+    await expect(load(withoutCosmetics as ReplayArtifacts)).rejects.toThrow(/artifact set/u);
+    await expect(load({ ...gardenArtifacts, fiscal: cosmeticsArtifacts.fiscal! })).rejects.toThrow(/unlock_id/u);
   });
 
-  it("binds v24 to the pinned cosmetics artifact in both directions", async () => {
+  it("round-trips the garden and rejects its absence at v25 and its presence below v25", async () => {
+    const bundle = await load(gardenArtifacts);
     const shop = await load(cosmeticsArtifacts);
-    const species = await load(petSpeciesArtifacts);
+    // Build a v24 save through the real codec, then extend it to v25.
     const v24 = encodeFounderReplayState(founderState(shop, {})) as Record<string, unknown>;
-    expect(() => restoreFounderReplayState(v24, 24, species)).toThrow(/requires cosmetics/u);
-    const v23 = encodeFounderReplayState(founderState(species, { wireVersion: 23 })) as Record<string, unknown>;
-    expect(v23.cosmetics).toBeUndefined();
-    expect(() => restoreFounderReplayState(v23, 23, species)).not.toThrow();
-    expect(() => restoreFounderReplayState(v23, 23, shop)).toThrow(/requires Founder v24/u);
-    expect(() => restoreFounderReplayState({ ...v23, cosmetics: { owned: [], equipped: {} } }, 23, species)).toThrow();
+    const garden = { ...newGardenState(bundle.garden!), salt_hex: "0123456789abcdef", tick_anchor_wall_ms: 1_000_000, tick_seq: 7,
+      plots: [{ row: 0, col: 1, species_id: "strain_a", age_ticks: 3, matured_effect_ppm: 1_000_000 }] };
+    const v25 = { ...v24, server_garden: garden };
+    const restored = restoreFounderReplayState(v25, 25, bundle);
+    expect(restored.serverGarden).toEqual(garden);
+    expect(encodeFounderReplayState(restored)).toEqual(v25);
+    expect(JSON.stringify((encodeFounderReplayState(restored) as Record<string, unknown>).server_garden))
+      .toBe('{"salt_hex":"0123456789abcdef","tick_anchor_wall_ms":1000000,"tick_seq":7,"substrate_id":"bare_metal","substrate_set_wall_ms":null,"plots":[{"row":0,"col":1,"species_id":"strain_a","age_ticks":3,"matured_effect_ppm":1000000}],"seed_collection":["strain_a","strain_b"]}');
+    expect(() => restoreFounderReplayState(v24, 25, bundle), "v25 without server_garden").toThrow();
+    expect(() => restoreFounderReplayState(v25, 24, shop), "server_garden at v24").toThrow();
+    const cases: [string, unknown][] = [
+      ["missing tick_seq", (({ tick_seq: _t, ...rest }) => rest)(garden)],
+      ["uppercase salt", { ...garden, salt_hex: "0123456789ABCDEF" }],
+      ["unknown substrate", { ...garden, substrate_id: "quantum" }],
+      ["unknown species", { ...garden, plots: [{ ...garden.plots[0]!, species_id: "strain_z" }] }],
+      ["missing starter seed", { ...garden, seed_collection: ["strain_a"] }],
+      ["extra key", { ...garden, cursor: 1 }],
+    ];
+    for (const [name, value] of cases) expect(() => restoreFounderReplayState({ ...v24, server_garden: value }, 25, bundle), name).toThrow();
   });
 });
+

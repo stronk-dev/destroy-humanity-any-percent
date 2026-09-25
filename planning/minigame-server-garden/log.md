@@ -75,3 +75,48 @@ Evidence, cold (`-count=1`):
   worst case is ⌈604,800,000 / 60,000⌉ × 36 = 362,880, well under 2,000,000. No artifact fixture
   can reach it, so `TestGardenBudgetRuleRejects` proves the check directly on an out-of-domain
   catalog. The rule is redundant as specified; this is logged, not a defect.
+
+## 2026-09-25 — G2 + G3: bundle pinning and Founder v25 (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review. Kernel bumped 0.3.131 → 0.3.132 in
+the same commit.
+
+**Bundle pinning (G2):**
+- `server_garden` joins constants identity in both runtimes.
+- It sits on the scalar Founder chain above `cosmetics`. Both runtimes reject a garden bundle
+  without cosmetics, and the Go bundle check also requires a pinned Fiscal catalog.
+- SG1 rule 10 binds to the pinned Fiscal catalog's unlock and generator rows, and rule 9 binds to
+  the pinned economy's resources. A bundle pairing the fixture garden with the production Fiscal
+  artifact (no `minigame.server_garden` row) rejects.
+- Epoch transitions run SG1 rule 11 (`garden.ValidateTransition`).
+
+**Founder v25 (G3):**
+- **Codec:** `save.State.ServerGarden` is Founder **v25**, the landing-order next-free version.
+  `garden.DecodeState` decodes it strictly: exact keys at both levels, so a missing `tick_seq` or
+  `matured_effect_ppm` is never read as zero.
+- **Activation:** v24→v25 activates in `settleAndActivateFoundations`, the single path shared by
+  the new-run boundary and New-Founder initialization, and in replay `activateFounderFeatureState`.
+- **Carry:** Replay-inputs **v12** carries `server_garden` in the Founder extensions whenever the
+  floor is ≥ 25. Only the version field changed in the regenerated Go-authored fixtures
+  (`apply-logged-v1`, `cosmetic-v1`, `reputation-tree-v1`); every diff line is `"v": 11` → `"v": 12`.
+- **TS twin:** `restoreFounderReplayState` and `encodeFounderReplayState` handle v25, Exit
+  activation and extension carry are in place, and parse accepts v12.
+
+Evidence, cold:
+- `make test-go` passes for save, production, replaycatalog, garden, gameui, gameserver, account,
+  harness, kernel and releasepackage.
+- The full Postgres suite (`docker compose -f compose.save-test.yml run --rm test`) exits 0.
+- Client: 6,869 unit tests pass, and typecheck is clean.
+- **New tests:**
+  - `save.TestFounderV25GardenRoundTripAndInvariants`: canonical bytes, plus 14 rejections.
+  - `production.TestGardenBundleChainAndFloor`.
+  - `production.TestGardenOwnsFounderV25Activation`: activation, New Founder, and byte identity
+    across a later boundary (AC11).
+  - `replaycatalog.TestLoadGardenRequiresItsChain`.
+  - `test/garden-founder-state.test.ts`.
+- **Severing:**
+  - Loosening the strict codec's missing-key check → "missing tick_seq key" and "missing plot
+    stage key" load (red).
+  - A boundary that resets the garden → "a run boundary changed the garden" (red). This is AC11's
+    named failing case.
+  - Dropping the TS starter-seed rule → "missing starter seed" loads (red).

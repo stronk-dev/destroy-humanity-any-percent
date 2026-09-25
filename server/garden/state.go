@@ -186,3 +186,55 @@ func cloneInt(value *int64) *int64 {
 	copy := *value
 	return &copy
 }
+
+var stateKeys = []string{"salt_hex", "tick_anchor_wall_ms", "tick_seq", "substrate_id", "substrate_set_wall_ms", "plots", "seed_collection"}
+var plotKeys = []string{"row", "col", "species_id", "age_ticks", "matured_effect_ppm"}
+
+// DecodeState is the strict SG2 codec: exact keys at both levels (a missing
+// key is never a zero value), safe integers, and the shape rules.
+func DecodeState(data []byte) (*State, error) {
+	if err := exactKeys(data, stateKeys); err != nil {
+		return nil, err
+	}
+	var raw struct {
+		Plots []json.RawMessage `json:"plots"`
+	}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return nil, fmt.Errorf("%w: plots", ErrInvalidState)
+	}
+	for _, plot := range raw.Plots {
+		if err := exactKeys(plot, plotKeys); err != nil {
+			return nil, err
+		}
+	}
+	var state State
+	if err := strictDecode(data, &state); err != nil {
+		return nil, fmt.Errorf("%w: %v", ErrInvalidState, err)
+	}
+	if err := ValidateShape(&state); err != nil {
+		return nil, err
+	}
+	return &state, nil
+}
+
+// EncodeState is the canonical SG2 encoding (Go field order).
+func EncodeState(state *State) (json.RawMessage, error) {
+	if err := ValidateShape(state); err != nil {
+		return nil, err
+	}
+	return json.Marshal(state)
+}
+
+func exactKeys(data []byte, keys []string) error {
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &fields); err != nil || fields == nil || len(fields) != len(keys) || !uniqueKeys(data) {
+		return fmt.Errorf("%w: object keys are not exact", ErrInvalidState)
+	}
+	for _, key := range keys {
+		value, ok := fields[key]
+		if !ok || !safeNumbers(value) {
+			return fmt.Errorf("%w: key %q missing or not a safe integer", ErrInvalidState, key)
+		}
+	}
+	return nil
+}

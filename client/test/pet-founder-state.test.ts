@@ -27,7 +27,7 @@ function founderState(bundle: ReplayCatalogBundle, overrides: Partial<FounderRep
     pets: { [PET]: initialPetCareState(bundle.pets!, 5_400_000) }, fiscalCredit: 0, fiscalPeriodOpenedWallMs: 1_786_000_000_000, fiscalPeriodSequence: 0,
     fiscalGeneratorLevels: Object.fromEntries(bundle.fiscal!.generatorLevelRows.map((row) => [row.generatorId, 0])), fiscalUnlocks: new Set(),
     soulExhaustedSourceIds: new Set(), minigameSessionSeq: 0, reputationUnlockPpm: 0, reputationSpent: 0, reputationNodesOwned: [],
-    petIdentities: { [PET]: identity }, cosmetics: { owned: [], equipped: {} },
+    petIdentities: { [PET]: identity }, cosmetics: { owned: [], equipped: {} }, serverGarden: null,
     ...overrides,
   };
 }

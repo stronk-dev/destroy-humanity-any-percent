@@ -19,6 +19,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/garden"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/meters"
@@ -331,6 +332,32 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Cosmetics = cosmetics
 	}
+	if gardenBytes, active := artifacts[garden.ArtifactName]; active {
+		// Server Garden SG1 rules 9 and 10: payout resources, Fiscal unlock and
+		// host rows, and copy keys resolve against the pinned bundle.
+		declarations := garden.Declarations{CopyKeys: map[string]struct{}{}, ResourceIDs: map[string]struct{}{},
+			FiscalUnlockIDs: map[string]struct{}{}, FiscalGeneratorIDs: map[string]struct{}{}}
+		for _, key := range copykeys.All() {
+			declarations.CopyKeys[key] = struct{}{}
+		}
+		for _, resource := range economyCatalog.Resources() {
+			declarations.ResourceIDs[resource.ID] = struct{}{}
+		}
+		if bundle.Fiscal == nil {
+			return production.CatalogBundle{}, garden.ErrInvalidCatalog
+		}
+		for _, row := range bundle.Fiscal.UnlockRows() {
+			declarations.FiscalUnlockIDs[row.UnlockID] = struct{}{}
+		}
+		for _, row := range bundle.Fiscal.GeneratorLevelRows() {
+			declarations.FiscalGeneratorIDs[row.GeneratorID] = struct{}{}
+		}
+		gardenCatalog, gardenErr := garden.LoadCatalog(gardenBytes, declarations)
+		if gardenErr != nil {
+			return production.CatalogBundle{}, gardenErr
+		}
+		bundle.Garden = gardenCatalog
+	}
 	return bundle, nil
 }
 
@@ -343,7 +370,7 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer", "arcade"} {
+	for _, name := range [...]string{"achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer", "arcade", garden.ArtifactName} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -368,10 +395,12 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, reputationActive := artifacts["reputation_tree"]
 	_, petSpeciesActive := artifacts["pet_species"]
 	_, cosmeticsActive := artifacts["cosmetics"]
+	_, gardenActive := artifacts[garden.ArtifactName]
 	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
 		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive || typerActive && !minigameAPIActive || arcadeActive && !minigameAPIActive ||
 		opportunitiesActive && !doctrines || relevanceActive && !opportunitiesActive || curriculumActive && !relevanceActive || reputationActive && !minigameAPIActive ||
-		petSpeciesActive && (!reputationActive || !pets) || cosmeticsActive && !petSpeciesActive {
+		petSpeciesActive && (!reputationActive || !pets) || cosmeticsActive && !petSpeciesActive ||
+		gardenActive && (!cosmeticsActive || !fiscalActive) {
 		return false
 	}
 	want := len(base)
@@ -421,6 +450,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if cosmeticsActive {
+		want++
+	}
+	if gardenActive {
 		want++
 	}
 	return len(artifacts) == want

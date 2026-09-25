@@ -518,6 +518,9 @@ func applyFounderReplayOutput(target, replayed *save.State) error {
 	if save.VersionForState(replayed) >= 24 {
 		target.Cosmetics = replayed.Cosmetics.Clone()
 	}
+	if save.VersionForState(replayed) >= 25 {
+		target.ServerGarden = replayed.ServerGarden.Clone()
+	}
 	return nil
 }
 

@@ -10,6 +10,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/garden"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/pet"
@@ -125,6 +126,24 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		if err := validateFounderCosmetics(bundle.Cosmetics, state); err != nil {
 			return err
 		}
+		if err := validateFounderGarden(bundle.Garden, state); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// validateFounderGarden is Server Garden SG2's pinned half: the object exists
+// exactly when server_garden is pinned, and resolves under it.
+func validateFounderGarden(catalog *garden.Catalog, state *save.State) error {
+	if catalog == nil {
+		if state.ServerGarden != nil {
+			return fmt.Errorf("%w: server_garden without pinned server_garden artifact", ErrInvalidEngineState)
+		}
+		return nil
+	}
+	if err := garden.ValidateAgainst(catalog, state.ServerGarden); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
 	}
 	return nil
 }
@@ -274,6 +293,9 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	}
 	// Cosmetic Shop v1 §2: ids are permanent and slots never change across
 	// epochs; the artifact cannot disappear once pinned.
+	if err := garden.ValidateTransition(current.Garden, next.Garden); err != nil {
+		return err
+	}
 	if err := cosmetic.ValidateTransition(current.Cosmetics, next.Cosmetics); err != nil {
 		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
 	}
@@ -365,6 +387,14 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 			return fmt.Errorf("%w: cosmetics cannot pre-exist activation", ErrInvalidEngineState)
 		}
 		founder.Cosmetics = cosmetic.NewState()
+	}
+	if next.Garden != nil && current.Garden == nil {
+		// Server Garden SG2: activation at a new-run boundary or New-Founder
+		// initialization initializes an empty garden with every starter.
+		if founder.ServerGarden != nil {
+			return fmt.Errorf("%w: server_garden cannot pre-exist activation", ErrInvalidEngineState)
+		}
+		founder.ServerGarden = garden.NewState(next.Garden)
 	}
 	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)

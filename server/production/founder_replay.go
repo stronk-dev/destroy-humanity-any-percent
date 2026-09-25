@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/garden"
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
@@ -789,6 +790,13 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 			return ErrInvalidReplayInputs
 		}
 		state.Cosmetics = cosmetic.NewState()
+	}
+	if resultVersion >= 25 && current < 25 {
+		// Server Garden SG2: activation at the new-run boundary only.
+		if catalogs.Garden == nil || state.ServerGarden != nil {
+			return ErrInvalidReplayInputs
+		}
+		state.ServerGarden = garden.NewState(catalogs.Garden)
 	}
 	return nil
 }

@@ -5,13 +5,13 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
-- [ ] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
+- [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure
   half of AC7.
-- [ ] G2 — Pin `server_garden` in replay bundles (Go and TS), chain it on `cosmetics` (scalar Founder
+- [x] G2 — Pin `server_garden` in replay bundles (Go and TS), chain it on `cosmetics` (scalar Founder
   chain), and add the Fiscal cross-artifact rules (unlock row, host generator row). AC2 (bundle half).
-- [ ] G3 — Founder v25 `server_garden` save codec, activation at a new-run boundary and at
+- [x] G3 — Founder v25 `server_garden` save codec, activation at a new-run boundary and at
   New-Founder initialization, replay-inputs carry, Exit byte-identity. AC2, AC11.
 - [ ] G4 — Founder intents `garden_plant`, `garden_uproot`, `garden_set_substrate`; the SG-P3
   advance pre-step on garden commands and `spend_fiscal_credit`; the frozen server-drawn salt;
