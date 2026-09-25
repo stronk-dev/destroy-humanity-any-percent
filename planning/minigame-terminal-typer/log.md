@@ -176,3 +176,30 @@ Consequences:
 - **B6 (UI):** blocked on the transport shape.
 - **B7:** the composed AC8 path must use the production service directly rather than the MA
   endpoints.
+
+## 2026-09-25 — B7: composed platform path (AC8 partial, AC9, AC11) (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated review.
+
+- **Legacy start path fix.** `StartMinigameSession`, the non-API start path that the composed
+  tests drive, now also applies `TierUnlockFailure`, so neither start path bypasses TT-PA2.
+  Kernel 0.3.106 → 0.3.107.
+- **`TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality`** runs on real Postgres with a real
+  store and the minigame platform, pinning the complete Typer chain. It checks:
+  - Tier 0 rejects with `ErrMinigameTierRequired`, and Tier 1 with no exit rejects with
+    `ErrMinigameCurriculumExitRequired` (AC9);
+  - Tier 1 with one exit starts, then plays begin, one miss and 8 clears through
+    `platform.Play`, using DB-clock stamps (TT-PA1);
+  - resolution: certified facts clean 7 / cleared 8 / misses 1; faucet payout into `company.cash`
+    equals the receipt's `credited_delta` (3e0); the retry returns identical bytes; Founder history
+    is `ReplayVerified` (AC8, first half);
+  - a timed and an untimed Founder with identical commands receive identical nonzero credit
+    (AC11).
+- **Severing, each turned red:**
+  - The legacy-path tier check disabled: Tier-0 start accepted, and the test fails.
+  - Payout keyed on `typer.assisted` (AC11's named mutant): both modes credited 0, and the test
+    fails. Honest note: the mutant was caught by the nonzero clause, not by the timed/untimed
+    equality alone. At conversion 0.5 an assisted fact of 1 floors to 0 in the first send.
+- **Not yet covered by AC8:** the faucet-cap forfeit, "Exit rejects while active and succeeds
+  after `end_run`", and "through the MA endpoints". The last one is blocked by the TT-PA4/C2
+  DESIGN-GAP (no v1 Typer route).

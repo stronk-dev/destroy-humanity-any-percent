@@ -99,6 +99,12 @@ func (s *Service) StartMinigameSession(ctx context.Context, platform *minigame.S
 			return minigame.Session{}, fmt.Errorf("%w: fiscal_unlock_required", ErrInvalidIntent)
 		}
 	}
+	switch definition.Unlock.TierUnlockFailure(company.State.Tier, int64(len(founder.State.ExitHistory))) {
+	case "tier_required":
+		return minigame.Session{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrMinigameTierRequired)
+	case "curriculum_exit_required":
+		return minigame.Session{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrMinigameCurriculumExitRequired)
+	}
 	if definition.SoulGate == "human_hobby" {
 		if bundle.Soul == nil || save.VersionForState(founder.State) < 20 {
 			return minigame.Session{}, ErrInvalidIntent
