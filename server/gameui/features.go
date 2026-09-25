@@ -540,7 +540,8 @@ func featureFacts(features featureRows) []factRow {
 		{FactID: "feature.meters", Value: features.Meters != nil},
 		{FactID: "feature.minigame.pitch", Value: pitch},
 		{FactID: "feature.pet_adoption", Value: features.PetAdoption != nil},
-		{FactID: "feature.pets", Value: features.Pets != nil},
+		// GS4: the pet care surface mounts only when an adopted pet exists (GS4-A2).
+		{FactID: "feature.pets", Value: features.PetAdoption != nil && len(features.PetAdoption.Pets) > 0},
 		{FactID: "feature.reputation_tree", Value: features.Reputation != nil},
 		{FactID: "feature.axis_stack", Value: features.AxisStack != nil},
 	}

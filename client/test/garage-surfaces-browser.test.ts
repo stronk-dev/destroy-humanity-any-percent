@@ -298,3 +298,43 @@ it.skipIf(!browser)("renders an expired claim's typed reason (GS5 error mapping)
     expect(target.querySelector(".intent-notice")?.textContent).toBe("Too late. That opportunity expired.");
   } finally { await dispose(); }
 });
+
+const petRow = { eligible_action_ids: ["care.feed", "care.pet"], name_key: "pet.name.server_room_cat.n04", palette_id: "pet_palette.fur_02",
+  pet_id: "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa", species_id: "pet_species.server_room_cat", status_band: "normal" as const, temperament: "sassy" as const };
+const withPet = (): GameUISnapshot => ({ ...v4,
+  facts: [...v4.facts.map((fact) => fact.fact_id === "feature.pets" ? { ...fact, value: true } : fact)],
+  features: { ...v4.features,
+    pet_adoption: { pet_adoption: { cap: 1, count: 1, name_keys: ["pet.name.server_room_cat.n04"], starter_species_id: "pet_species.server_room_cat" }, pets: [petRow] },
+    cosmetics: { active: true, items: [{ acquirable: false, cosmetic_id: "horse_armor", lock: null, owned: true, worn_by: [petRow.pet_id] }], wearers: [{ pet_id: petRow.pet_id, worn: "horse_armor" }] } } } as GameUISnapshot);
+
+it.skipIf(!browser)("never offers the pet surface without an adopted pet (GS4-A2)", async () => {
+  const { target, dispose } = await mounted();
+  try {
+    expect([...target.querySelectorAll("nav button")].map((node) => node.textContent)).not.toContain("PENDING OWNER COPY: care panel title");
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("states unavailable care actions in text, sends Founder-scoped care, and maps rejections (GS4-A1/A3)", async () => {
+  const runtime = new Runtime(); runtime.current = withPet();
+  const { target, dispose } = await mounted(runtime);
+  try {
+    button(target, "PENDING OWNER COPY: care panel title").click(); await settle();
+    const surface = target.querySelector(".pet-care")!;
+    const items = [...surface.querySelectorAll(".actions li")];
+    expect(items.map((item) => item.querySelector("button")!.textContent)).toEqual(["feed", "groom", "pet", "play", "rest"].map((id) => `PENDING OWNER COPY: care.${id}`));
+    for (const item of items) {
+      const disabled = item.querySelector("button")!.disabled;
+      expect(Boolean(item.querySelector("small")?.textContent?.includes("action unavailable")), item.textContent ?? "").toBe(disabled);
+    }
+    expect(items.filter((item) => !item.querySelector("button")!.disabled)).toHaveLength(2);
+    expect(surface.textContent).toContain("PENDING OWNER COPY: band normal");
+    expect(surface.querySelector(".overlay[data-render='horse_armor']")).not.toBeNull();
+    await assertAxe(target, "pet care");
+    button(target, "PENDING OWNER COPY: care.feed").click(); await settle();
+    expect(runtime.requests.at(-1)).toEqual(expect.objectContaining({ kind: "care_action", pet_id: petRow.pet_id, action_id: "care.feed", expected_revision: 7 }));
+    expect(target.querySelector(".intent-notice")?.textContent).toBe("PENDING OWNER COPY: care applied");
+    runtime.outcome = { outcome: "rejected", category: "not_eligible", detail: "cooldown", currentRevision: 7, sessionExpired: false };
+    button(target, "PENDING OWNER COPY: care.pet").click(); await settle();
+    expect(target.querySelector(".intent-notice")?.textContent).toBe("PENDING OWNER COPY: rejection cooldown");
+  } finally { await dispose(); }
+});

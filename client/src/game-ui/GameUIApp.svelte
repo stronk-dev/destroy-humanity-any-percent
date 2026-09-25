@@ -19,6 +19,7 @@
   import RunEndSurface from "./RunEndSurface.svelte";
   import ReputationTreeSurface from "./ReputationTreeSurface.svelte";
   import AdoptionCard from "./pet/AdoptionCard.svelte";
+  import PetCareSurface from "./pet/PetCareSurface.svelte";
   import CosmeticShelf from "./cosmetics/CosmeticShelf.svelte";
   import { COSMETIC_SHOP_PRESENTATION } from "./cosmetics/presentation";
   import ReputationPlanPanel from "./ReputationPlanPanel.svelte";
@@ -344,6 +345,11 @@
   ]);
   function reputationApplied(): CopyKey { void refresh(); return "reputation_tree.result.applied"; }
   // Pet Adoption v1 PA8: adoption rejections render inline on the card.
+  // GS4: exact care rejection pairs (server/pet grammar + founder_replay).
+  const CARE_REJECTIONS: SurfaceRejections = new Map([
+    ["not_eligible/cooldown", "pet.care.rejection.cooldown"], ["not_eligible/ineligible", "pet.care.rejection.ineligible"],
+    ["not_eligible/saturated", "pet.care.rejection.saturated"], ["not_eligible/human_content_locked", "pet.care.rejection.soul_locked"],
+  ]);
   const ADOPTION_REJECTIONS: SurfaceRejections = new Map([
     ["not_eligible/adoption_inactive", "pet.adoption.reject.adoption_inactive"],
     ["not_eligible/species_locked", "pet.adoption.reject.species_locked"],
@@ -446,6 +452,7 @@
         <button type="button" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
         {#if factTrue("feature.achievements")}<button type="button" aria-current={surface === "achievements" ? "page" : undefined} onclick={() => show("achievements")}>{t("surface.achievements.title", {}, era)}</button>{/if}
         {#if factTrue("feature.fiscal")}<button type="button" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.pets")}<button type="button" aria-current={surface === "pet" ? "page" : undefined} onclick={() => show("pet")}>{t("pet.care.panel.title", {}, era)}</button>{/if}
         {#if factTrue("feature.meters")}<button type="button" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}{#if metersChanged} {t("meters.nav_changed_badge", {}, era)}{/if}</button>{/if}
         {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
         {#if runtime.soulRecovery}<button type="button" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
@@ -631,6 +638,9 @@
     {#if pitchAvailability && !pitchAvailability.unlocked}<p class="intent-notice" role="note">{t("minigame.availability.fiscal_locked", {}, era)}</p>{/if}
     {#if pitchAvailability?.human_content_locked}<p class="intent-notice" role="note">{t("minigame.availability.soul_locked", {}, era)}</p>{/if}
     <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
+  {:else if snapshot && surface === "pet" && liveFeatures?.pet_adoption && liveFeatures.pet_adoption.pets.length > 0}
+    <PetCareSurface pets={liveFeatures.pet_adoption.pets} cosmetics={liveFeatures.cosmetics ?? null} {era} {pending} controlsEnabled={founderControls} reducedMotion={prefersReducedMotion}
+      onCare={(petID, actionID) => act({ kind: "care_action", pet_id: petID, action_id: actionID }, { scope: "founder", rejections: CARE_REJECTIONS, applied: () => "pet.care.applied" })} />
   {:else if snapshot && surface === "garden" && runtime.garden}
     <GardenSurface port={runtime.garden} {era} {pending} refreshKey={gardenRefresh}
       rejection={intentNotice?.startsWith("error.garden.") ? intentNotice : null}
