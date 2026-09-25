@@ -723,3 +723,36 @@ unbroken, no gap, no prior verdict cites this range.
 LOGIC (prior verdicts) and TYPES. The minigame RFC's typecheck blocker is lifted. Still open (not by
 this range): pet-care AC3 (combat obedience cross-verify) and the RFCs' own acceptance/archival —
 nothing self-archives here.**
+
+## 2026-09-25 — AR-F1: zero-credit resolutions stranded their session (fixed)
+
+**Implemented by:** Claude. **Status:** awaiting Codex's designated cross-party review. Not self-approved.
+
+**Finding.** Routed from the Demo Disc Arcade draft (AR-F1). It is confirmed by execution, not just by reading the code.
+- When a resolution's payout leaves `company.cash` unchanged, `economy.Ledger.ApplyAccrual` returns a receipt with no changes. This happens with a zero score, an exhausted daily faucet window, or cash already at its hardcap.
+- `resolveMinigameSession` then returned an empty `MinigameResolutionDecision` with a nil error.
+- `save.ApplyMinigameResolutionTransaction` rejected it with `invalid save stream: invalid minigame resolution receipt` and rolled back.
+- The session stayed `claimed` forever, which blocks Exit under MA-C12.
+- Both replays had the same `len(Changes) != 1` rule: Go `applyCompanyMinigameResolution` and TS `replay.ts`.
+
+**Reading, not a new mechanic.** The RFC already says configured-cap forfeiture and numeric saturation are typed outcomes of an applied resolution (§250). It also says the receipt reports the gross, applied and forfeited amounts (§758). A zero applied credit is therefore an applied resolution with `credited_delta: "0"` (canonical zero). The faucet and forfeit fields are unchanged.
+
+**Change:**
+- New shared helper `minigameCreditedDelta` in `server/production/minigame_resolution.go`. It maps no ledger change to `"0"` and exactly one change on the credited resource to its delta; anything else is a divergence. It is used on both the live and the replay paths.
+- TS `replay.ts` got the same rule.
+
+**Evidence:**
+- **Postgres integration** (`TestResolveMinigameSessionIntegrationAtomicReplayAndFaults`, new zero-score block): red at HEAD with the exact stranded-session error. It is green with the fix, and asserts the receipt `"credited_delta":"0"`, session `resolved`, Company revision +1, cash unchanged, and Founder history verified.
+- **Go replay unit** (`TestCompanyMinigameResolutionReplaysZeroCredit`): replays with cash at its hardcap and `"0"` recorded. As a control, a recorded `"5e1"` must return `ErrInvalidReplayInputs`.
+- **TS replay** (`replay.test.ts`, "zero-credit"): the same saturation case, with the same `"5e1"` control that must reject with "payout ledger divergence".
+
+**Severing probes.** I reverted each fix and ran its own test, then restored it:
+- live Go fix reverted: the integration test failed;
+- Go replay fix reverted (live fix kept): the unit test failed with `invalid replay inputs`;
+- TS fix reverted: the TS test failed with "payout ledger divergence".
+
+**Cold gates:**
+- `make test-go GO_PACKAGES='./minigame ./production ./save' GO_TEST_FLAGS=-count=1`: ok.
+- The Docker Postgres `Integration` run for production, minigame, save, gameserver and account: ok.
+- `vitest test/replay.test.ts`: 86 tests passed.
+- `gofmt` and `go vet ./production`: clean.

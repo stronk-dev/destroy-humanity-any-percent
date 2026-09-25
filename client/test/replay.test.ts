@@ -241,6 +241,29 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			{ revision: 2, version: 17, constantsHash: fixture.minigame_constants_hash, state: founderCase.post_state }, [bundle])).resolves.toBe("verified");
 	});
 
+	it("replays a zero-credit minigame resolution (payout saturated at the hardcap) as applied with credited delta 0", async () => {
+		const bundle = await loadReplayCatalogBundle(fixture.minigame_constants_hash, fixture.minigame_artifacts);
+		if (!bundle.meters || !bundle.achievements) throw new Error("minigame replay fixture lacks foundation catalogs");
+		const foundationCatalogs = { meters: bundle.meters, achievements: bundle.achievements };
+		const companyCase = fixture.minigame_company_case;
+		const cap = bundle.economy.resources.find((resource) => resource.id === "company.cash")?.hardcap;
+		if (!cap) throw new Error("fixture company.cash has no hardcap");
+		const saturated = structuredClone(companyCase.pre_state) as { balances: Record<string, string> };
+		saturated.balances["company.cash"] = cap.amount;
+		const inputs = (credited: string) => {
+			const wire = structuredClone(companyCase.replay_inputs) as { resolved: { credited_delta: string } };
+			wire.resolved.credited_delta = credited;
+			return wire;
+		};
+		const transition = await applyLogged(restoreReplayState(saturated, 16, bundle.economy, foundationCatalogs),
+			canonicalJSONString(companyCase.canonical_payload), bundle, inputs("0"));
+		expect((transition.receipt as { credited_delta: string }).credited_delta).toBe("0");
+		expect(transition.state.balances["company.cash"]).toBe(cap.amount);
+		// Control: a recorded nonzero credit that the saturated ledger cannot reproduce still diverges.
+		await expect(applyLogged(restoreReplayState(saturated, 16, bundle.economy, foundationCatalogs),
+			canonicalJSONString(companyCase.canonical_payload), bundle, inputs("5e1"))).rejects.toThrow("payout ledger divergence");
+	});
+
 	it("replays one Soul recovery across the Company suppression and Founder audit arms", async () => {
 		const bundle = await loadReplayCatalogBundle(fixture.soul_constants_hash, fixture.soul_artifacts);
 		if (!bundle.meters || !bundle.achievements || !bundle.soul) throw new Error("Soul replay fixture lacks pinned catalogs");

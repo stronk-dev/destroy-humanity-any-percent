@@ -220,10 +220,13 @@ func (s *Service) resolveMinigameSession(ctx context.Context, platform *minigame
 		ledgerReceipt, ledgerErr := company.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{
 			ResourceID: definition.Payout.CreditedResourceID, Delta: requested,
 		}}})
-		if ledgerErr != nil || len(ledgerReceipt.Changes) != 1 {
+		if ledgerErr != nil {
 			return save.MinigameResolutionDecision{}, ledgerErr
 		}
-		creditedDelta := ledgerReceipt.Changes[0].Delta
+		creditedDelta, creditErr := minigameCreditedDelta(ledgerReceipt, definition.Payout.CreditedResourceID)
+		if creditErr != nil {
+			return save.MinigameResolutionDecision{}, creditErr
+		}
 		certifiedHash := certifiedResultHash(view.ResultBytes)
 		ratingChange := minigameRatingChangeReceipt{Rated: view.Result.RatingDelta != nil,
 			OldElo: oldRating.Elo, NewElo: newRating.Elo, SeasonMember: newRating.SeasonMember,
@@ -311,6 +314,21 @@ func (s *Service) resolveMinigameSession(ctx context.Context, platform *minigame
 		return HandleResult{}, err
 	}
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+// minigameCreditedDelta reads the payout ledger receipt. A zero credit (a zero
+// score, an exhausted faucet window, or a saturated hardcap) leaves the balance
+// unchanged, so the ledger reports no change; that is still an applied
+// resolution with credited delta "0", never a failed one.
+func minigameCreditedDelta(receipt economy.Receipt, resourceID string) (string, error) {
+	switch {
+	case len(receipt.Changes) == 0:
+		return decimal.Zero.String(), nil
+	case len(receipt.Changes) == 1 && receipt.Changes[0].ResourceID == resourceID:
+		return receipt.Changes[0].Delta, nil
+	default:
+		return "", fmt.Errorf("%w: minigame payout ledger divergence", ErrInvalidIntent)
+	}
 }
 
 func certifiedResultHash(data []byte) string {
@@ -401,7 +419,10 @@ func applyCompanyMinigameResolution(state *save.State, canonicalPayload []byte, 
 	ledgerReceipt, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{
 		ResourceID: definition.Payout.CreditedResourceID, Delta: delta,
 	}}})
-	if err != nil || len(ledgerReceipt.Changes) != 1 || ledgerReceipt.Changes[0].Delta != resolved.CreditedDelta {
+	if err != nil {
+		return LoggedTransition{}, ErrInvalidReplayInputs
+	}
+	if credited, creditErr := minigameCreditedDelta(ledgerReceipt, definition.Payout.CreditedResourceID); creditErr != nil || credited != resolved.CreditedDelta {
 		return LoggedTransition{}, ErrInvalidReplayInputs
 	}
 	receipt := minigameResolutionReceipt{IntentID: payload.SessionID, Outcome: string(save.IntentApplied),

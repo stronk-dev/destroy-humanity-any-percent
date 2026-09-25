@@ -322,4 +322,37 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+
+	// A resolution whose faucet credits nothing (zero score here; an exhausted
+	// daily window or a saturated hardcap reach the same empty ledger receipt)
+	// must still commit its terminal receipt. Otherwise the claimed session is
+	// stranded and blocks Exit (MA-C12).
+	zeroSessionID := "01986666-a965-7000-8000-000000000200"
+	if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: zeroSessionID, MinigameID: "fixture.counter", FounderID: founderID,
+		CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
+		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "4", Mode: minigame.ModeSolo}); err != nil {
+		t.Fatal(err)
+	}
+	zeroPlay, err := platform.Play(ctx, minigame.PlayRequest{FounderID: founderID, SessionID: zeroSessionID, ExpectedRevision: 1,
+		Command: json.RawMessage(`{"add":0,"finish":true}`)})
+	if err != nil || zeroPlay.Resolution == nil {
+		t.Fatalf("zero play resolution=%v err=%v", zeroPlay.Resolution, err)
+	}
+	beforeZero, _ := store.LoadLatest(ctx, companyRevision.StreamID)
+	beforeCash, _ := beforeZero.State.Ledger.Balance("company.cash")
+	zeroResult, err := production.ResolveMinigameSession(ctx, platform, zeroPlay.Resolution, now.Add(4*time.Minute), nil)
+	if err != nil || zeroResult.Replay || !bytes.Contains(zeroResult.Receipt, []byte(`"credited_delta":"0"`)) {
+		t.Fatalf("zero-credit resolution receipt=%s replay=%v err=%v", zeroResult.Receipt, zeroResult.Replay, err)
+	}
+	zeroSession, err := repository.Load(ctx, founderID, zeroSessionID)
+	afterZero, _ := store.LoadLatest(ctx, companyRevision.StreamID)
+	afterCash, _ := afterZero.State.Ledger.Balance("company.cash")
+	if err != nil || zeroSession.Status != minigame.StatusResolved || afterZero.Revision.Number != beforeZero.Revision.Number+1 || !afterCash.Eq(beforeCash) {
+		t.Fatalf("zero-credit session=%+v company=%d/%d cash=%s/%s err=%v", zeroSession, beforeZero.Revision.Number,
+			afterZero.Revision.Number, beforeCash, afterCash, err)
+	}
+	founderHistory, err = store.LoadFounderHistory(ctx, founderRevision.StreamID)
+	if err != nil || VerifyFounderHistory(founderHistory, ReplayCatalogSet{bundle.ConstantsHash: bundle}) != ReplayVerified {
+		t.Fatalf("zero-credit Founder history did not verify: %v", err)
+	}
 }

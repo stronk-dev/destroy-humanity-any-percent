@@ -917,7 +917,9 @@ async function applyCompanyMinigameLogged(state: ReplayState, canonicalPayload: 
   const ratingChange = parseRatingChange(resolved.rating_change); const qualityChange = parseQualityChange(resolved.quality_change);
   const creditedDelta = canonical(resolved.credited_delta); if (parseCanonical(creditedDelta).lt(0)) throw new RangeError("negative payout");
   const changes = applyLedger(state, catalogs.economy, [{ resource: string(payout.credited_resource_id), delta: parseCanonical(creditedDelta) }], true);
-  if (changes.length !== 1 || changes[0]!.delta !== creditedDelta) throw new RangeError("payout ledger divergence");
+  // A zero credit leaves the balance unchanged, so the ledger reports no change.
+  const ledgerDelta = changes.length === 0 ? "0" : changes.length === 1 && changes[0]!.resource_id === string(payout.credited_resource_id) ? changes[0]!.delta : undefined;
+  if (ledgerDelta !== creditedDelta) throw new RangeError("payout ledger divergence");
   const receipt = { intent_id: payload.session_id, outcome: "applied", session_id: payload.session_id, minigame_id: minigameId,
     certified_result_hash: payload.resultHash, company_revision: companyRevision, founder_revision: founderRevision,
     credited_resource_id: string(payout.credited_resource_id), credited_delta: creditedDelta,

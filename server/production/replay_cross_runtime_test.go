@@ -3,6 +3,7 @@ package production
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -966,6 +967,69 @@ func makeActivePlayExitFixture(t *testing.T, now time.Time) crossRuntimeActiveEx
 	}
 	return crossRuntimeActiveExit{ConstantsHash: catalogs.ConstantsHash, Artifacts: stringArtifacts(catalogs.Artifacts),
 		NextConstantsHash: catalogs.ConstantsHash, NextArtifacts: stringArtifacts(catalogs.Artifacts), Case: result}
+}
+
+// TestCompanyMinigameResolutionReplaysZeroCredit mirrors the TypeScript
+// zero-credit case: a payout saturated at the hardcap leaves the ledger
+// unchanged and replays as applied with credited delta "0"; a recorded nonzero
+// credit the saturated ledger cannot reproduce still diverges.
+func TestCompanyMinigameResolutionReplaysZeroCredit(t *testing.T) {
+	now := time.Date(2026, 8, 5, 17, 0, 0, 0, time.UTC)
+	_, _, companyCase, _ := makeMinigameResolutionReplayFixture(t, now)
+	_, active := foundationTestBundles(t)
+	artifact, err := os.ReadFile("../../testdata/minigame/catalog-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs := active
+	catalogs.Artifacts = cloneArtifactMap(active.Artifacts)
+	catalogs.Artifacts["minigames"] = artifact
+	if catalogs.ConstantsHash, err = save.ConstantsHashArtifacts(catalogs.Artifacts); err != nil {
+		t.Fatal(err)
+	}
+	if catalogs.Minigames, err = minigame.LoadCatalog(artifact); err != nil {
+		t.Fatal(err)
+	}
+	cash, ok := catalogs.Economy.Resource("company.cash")
+	if !ok || cash.Hardcap == nil {
+		t.Fatal("fixture company.cash has no hardcap")
+	}
+	apply := func(credited string) (LoggedTransition, error) {
+		var wire replayInputsWire
+		if err := json.Unmarshal(companyCase.ReplayInputs, &wire); err != nil {
+			t.Fatal(err)
+		}
+		var resolved minigameCompanyResolved
+		if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+			t.Fatal(err)
+		}
+		resolved.CreditedDelta = credited
+		wire.Resolved = mustJSON(resolved)
+		company := replayFixtureState(t, catalogs.Economy, now)
+		company.WireVersion, company.MeterBands = 16, nil
+		meterState, err := meters.NewRunState(catalogs.Meters, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+		company.AchievementsEarnedRun = map[string]bool{}
+		snapshot := company.Ledger.Snapshot()
+		snapshot["company.cash"] = cash.Hardcap.Amount.String()
+		if company.Ledger, err = economy.RestoreLedger(catalogs.Economy, economy.ScopeCompany, snapshot); err != nil {
+			t.Fatal(err)
+		}
+		return applyCompanyMinigameResolution(company, companyCase.CanonicalPayload, catalogs, wire)
+	}
+	transition, err := apply("0")
+	if err != nil || transition.Outcome != save.IntentApplied || !bytes.Contains(transition.Receipt, []byte(`"credited_delta":"0"`)) {
+		t.Fatalf("zero-credit replay receipt=%s err=%v", transition.Receipt, err)
+	}
+	if balance, _ := transition.State.Ledger.Balance("company.cash"); !balance.Eq(cash.Hardcap.Amount) {
+		t.Fatalf("zero-credit replay moved cash to %s", balance)
+	}
+	if _, err := apply("5e1"); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("unreproducible nonzero credit err=%v", err)
+	}
 }
 
 func TestExitResetsComputeBurst(t *testing.T) {
