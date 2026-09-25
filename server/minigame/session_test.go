@@ -141,17 +141,17 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if reclaimed.ClaimToken == winner.ClaimToken || reclaimed.Revision != winner.Revision {
 		t.Fatalf("stale claim was not safely replaced: old=%+v new=%+v", winner, reclaimed)
 	}
-	if _, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken,
+	if _, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, winner.claimServerMS,
 		json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
 		t.Fatalf("replaced-token error=%v", err)
 	}
 	winner = reclaimed
 	if _, err := repository.completePlay(ctx, testFounderID, testSessionID,
-		"018f0000-0000-4000-8000-000000000999", json.RawMessage(`{"advance":1}`),
+		"018f0000-0000-4000-8000-000000000999", winner.claimServerMS, json.RawMessage(`{"advance":1}`),
 		json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
 		t.Fatalf("wrong-token error=%v", err)
 	}
-	played, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken,
+	played, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, winner.claimServerMS,
 		json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":1}`))
 	if err != nil {
 		t.Fatal(err)
@@ -169,7 +169,8 @@ func TestSessionClaimIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	identity := resolutionIdentity{sessionID: testSessionID, minigameID: "combat.duel", founderID: testFounderID, companyStreamID: testStreamID,
-		runSeq: 1, engineRef: "combat.duel", engineVersion: "1.0.0", constantsHash: testHash, claimToken: claimed.ClaimToken}
+		runSeq: 1, engineRef: "combat.duel", engineVersion: "1.0.0", constantsHash: testHash, claimToken: claimed.ClaimToken,
+		serverMS: claimed.claimServerMS}
 	if _, err := resolveTx(ctx, rollbackTx, identity, json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":2}`),
 		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`), json.RawMessage(`{"outcome":"applied"}`), 2, 2); err != nil {
 		_ = rollbackTx.Rollback()
@@ -273,7 +274,7 @@ func TestAPIReceiptAndCurrentSessionIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	commandResponse := json.RawMessage(`{"revision":2,"session_id":"018f0000-0000-7000-8000-000000000104"}`)
-	played, err := repository.CompletePlayWithReceipt(ctx, testFounderID, testSessionID, claimed.ClaimToken,
+	played, err := repository.CompletePlayWithReceipt(ctx, testFounderID, testSessionID, claimed.ClaimToken, claimed.claimServerMS,
 		json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":1}`), "command-1", testHash, commandResponse)
 	if err != nil || played.Revision != 2 {
 		t.Fatalf("played=%+v err=%v", played, err)

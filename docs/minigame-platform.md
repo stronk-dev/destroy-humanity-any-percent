@@ -28,6 +28,16 @@ events, and replay logs in one transaction. Fault injection covers every write b
 answered from the durable session-ID idempotency receipt without executing the tenant or faucet
 again.
 
+## Server-sampled command time (TT-PA1)
+
+The claim transaction samples the database clock once, as
+`floor(extract(epoch FROM clock_timestamp())*1000)`, before the tenant runs. The sampled value
+reaches the tenant as `ApplyInput.ServerTimeMs`. Both command-append statements, nonterminal and
+terminal, insert exactly that value as `server_ts_ms` and never read the clock again at insert
+time. Verification replay passes each row's persisted `server_ts_ms`. A rejected command appends
+nothing, so its sample is discarded. Tenants that don't measure time, such as Pitch, ignore the
+field. No tenant reads a clock, and no API accepts a client time.
+
 ## Authenticated composed API
 
 The composed server mounts the generated private-v1 registry as the only route authority for

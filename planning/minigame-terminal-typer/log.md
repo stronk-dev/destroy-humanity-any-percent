@@ -49,3 +49,29 @@ Implementation decisions, all within ruled text:
 **DESIGN-GAP (minor, recorded):** the RFC does not say whether U+FFFD submitted legitimately is a
 miss or `invalid_text`. Both runtimes treat it as `invalid_text`, because Go's decoder cannot tell
 it apart from invalid UTF-8.
+
+## 2026-09-25 — B2: TT-PA1 server-sampled command time (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated review.
+
+- **What changed.** `Repository.claim` samples the DB clock in the claim transaction and carries it
+  on the claimed session. `play` hands it to the tenant (`ServerTimeMs`). `completePlay` and
+  `CompletePlayWithReceipt` insert it (both have a new `serverMS` parameter). The terminal
+  resolution carries it in `resolutionIdentity.serverMS`, and `resolveTx` inserts it.
+  `validateReplayTx` replays with each row's persisted `server_ts_ms` and with the resolution's
+  sample for the terminal command. Kernel 0.3.103 → 0.3.104 (`server/minigame` is guarded).
+- **AC3 witness.** `TestServerTimeSampleReachesTenantAndLogIntegration` (real Postgres) uses a
+  tenant that records `ServerTimeMs` and stalls 25 ms inside `Apply`. The persisted stamp must
+  equal the tenant's stamp for all 3 commands, terminal included, and certified replay must pass.
+- **Severing, each turned red:**
+  - reinstating the insert-time `clock_timestamp()` read (anchor match confirmed): replay
+    diverges;
+  - replay that omits the persisted stamps: diverges.
+- **Evidence (cold):**
+  - `./minigame ./production ./typer ./pitch` unit tests pass.
+  - Postgres integration for `./minigame`, `./production ./save` and `./gameserver ./account`
+    passes on separate runs.
+  - One earlier combined run failed across packages because another agent's concurrent
+    `compose.save-test.yml` run restarted and truncated the shared Postgres service. Each package
+    passed when re-run alone. This is noted as environment interference, not treated as a pass
+    of the combined run.

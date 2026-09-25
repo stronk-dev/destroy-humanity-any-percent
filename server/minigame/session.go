@@ -87,6 +87,11 @@ type Session struct {
 	ResolutionReceipt         json.RawMessage
 	ResolutionCompanyRevision *int64
 	ResolutionFounderRevision *int64
+	// claimServerMS is the coordinator's single database-clock sample taken in
+	// the claim transaction, before tenant execution (TT-PA1). It is set only
+	// on a freshly claimed session and is persisted as that command's
+	// server_ts_ms.
+	claimServerMS int64
 }
 
 type sessionCommand struct {
@@ -287,29 +292,35 @@ func (repository *Repository) claim(ctx context.Context, founderID, sessionID st
 	if err != nil {
 		return Session{}, err
 	}
+	if err := tx.QueryRowContext(ctx, sampleServerMSSQL).Scan(&claimed.claimServerMS); err != nil {
+		return Session{}, err
+	}
+	if claimed.claimServerMS < 1 {
+		return Session{}, ErrInvalidSession
+	}
 	if err := tx.Commit(); err != nil {
 		return Session{}, err
 	}
 	return claimed, nil
 }
 
-func (repository *Repository) completePlay(ctx context.Context, founderID, sessionID, claimToken string, command, state json.RawMessage) (Session, error) {
-	return repository.completePlayWithReceipt(ctx, founderID, sessionID, claimToken, command, state, "", "", nil)
+func (repository *Repository) completePlay(ctx context.Context, founderID, sessionID, claimToken string, serverMS int64, command, state json.RawMessage) (Session, error) {
+	return repository.completePlayWithReceipt(ctx, founderID, sessionID, claimToken, serverMS, command, state, "", "", nil)
 }
 
 // CompletePlayWithReceipt commits the nonterminal command, authoritative
 // snapshot, and exact API response under one claim token.
-func (repository *Repository) CompletePlayWithReceipt(ctx context.Context, founderID, sessionID, claimToken string,
+func (repository *Repository) CompletePlayWithReceipt(ctx context.Context, founderID, sessionID, claimToken string, serverMS int64,
 	command, state json.RawMessage, commandID, requestHash string, response json.RawMessage,
 ) (Session, error) {
-	return repository.completePlayWithReceipt(ctx, founderID, sessionID, claimToken, command, state, commandID, requestHash, response)
+	return repository.completePlayWithReceipt(ctx, founderID, sessionID, claimToken, serverMS, command, state, commandID, requestHash, response)
 }
 
-func (repository *Repository) completePlayWithReceipt(ctx context.Context, founderID, sessionID, claimToken string,
+func (repository *Repository) completePlayWithReceipt(ctx context.Context, founderID, sessionID, claimToken string, serverMS int64,
 	command, state json.RawMessage, commandID, requestHash string, response json.RawMessage,
 ) (Session, error) {
 	if repository == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) ||
-		!uuidPattern.MatchString(claimToken) || !validJSONObject(command) || !validJSONObject(state) {
+		!uuidPattern.MatchString(claimToken) || serverMS < 1 || !validJSONObject(command) || !validJSONObject(state) {
 		return Session{}, ErrInvalidSession
 	}
 	withReceipt := commandID != "" || requestHash != "" || len(response) != 0
@@ -324,7 +335,7 @@ func (repository *Repository) completePlayWithReceipt(ctx context.Context, found
 	if err := lockFounder(ctx, tx, founderID); err != nil {
 		return Session{}, err
 	}
-	if err := appendSessionCommand(ctx, tx, sessionID, founderID, claimToken, command, resolutionIdentity{}); err != nil {
+	if err := appendSessionCommand(ctx, tx, sessionID, founderID, claimToken, serverMS, command, resolutionIdentity{}); err != nil {
 		return Session{}, err
 	}
 	if withReceipt {
@@ -420,7 +431,7 @@ func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, com
 		companyRevision < 1 || companyRevision > 9_007_199_254_740_991 || founderRevision < 1 || founderRevision > 9_007_199_254_740_991 {
 		return Session{}, ErrInvalidSession
 	}
-	if err := appendSessionCommand(ctx, tx, identity.sessionID, identity.founderID, identity.claimToken, command, identity); err != nil {
+	if err := appendSessionCommand(ctx, tx, identity.sessionID, identity.founderID, identity.claimToken, identity.serverMS, command, identity); err != nil {
 		return Session{}, err
 	}
 	resolved, err := scanSession(tx.QueryRowContext(ctx, resolveSessionSQL, identity.sessionID, identity.claimToken,
@@ -432,9 +443,12 @@ func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, com
 	return resolved, err
 }
 
-func appendSessionCommand(ctx context.Context, tx *sql.Tx, sessionID, founderID, claimToken string, command json.RawMessage, identity resolutionIdentity) error {
+func appendSessionCommand(ctx context.Context, tx *sql.Tx, sessionID, founderID, claimToken string, serverMS int64, command json.RawMessage, identity resolutionIdentity) error {
+	if serverMS < 1 {
+		return ErrInvalidSession
+	}
 	query := appendPlayCommandSQL
-	args := []any{sessionID, founderID, claimToken, []byte(command)}
+	args := []any{sessionID, founderID, claimToken, []byte(command), serverMS}
 	if identity.sessionID != "" {
 		query = appendResolvedCommandSQL
 		args = append(args, identity.companyStreamID, identity.runSeq, identity.engineRef, identity.engineVersion, identity.constantsHash)
@@ -578,6 +592,8 @@ type resolutionIdentity struct {
 	engineVersion   string
 	constantsHash   string
 	claimToken      string
+	// serverMS is the terminal command's claim-transaction clock sample.
+	serverMS int64
 }
 
 func validResolutionIdentity(value resolutionIdentity) bool {
@@ -623,14 +639,17 @@ const resolveSessionSQL = "UPDATE minigame_sessions SET state=$3,result=$4,statu
 	"resolution_receipt=$11,resolution_company_revision=$12,resolution_founder_revision=$13 " +
 	"WHERE session_id=$1 AND status='claimed' AND claim_token=$2 AND founder_id=$5 AND company_stream_id=$6 " +
 	"AND run_seq=$7 AND engine_ref=$8 AND engine_version=$9 AND constants_hash=$10 RETURNING " + sessionColumns
+// The command stamp is the claim transaction's sample ($5), never a second
+// clock read at insert time (TT-PA1).
+const sampleServerMSSQL = "SELECT floor(extract(epoch FROM clock_timestamp())*1000)::bigint"
 const appendPlayCommandSQL = "INSERT INTO minigame_session_commands(session_id,seq,command,applied_revision,server_ts_ms) " +
-	"SELECT session_id,revision,$4,revision+1,floor(extract(epoch FROM clock_timestamp())*1000)::bigint " +
+	"SELECT session_id,revision,$4,revision+1,$5 " +
 	"FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2 AND status='claimed' AND claim_token=$3 " +
 	"RETURNING seq"
 const appendResolvedCommandSQL = "INSERT INTO minigame_session_commands(session_id,seq,command,applied_revision,server_ts_ms) " +
-	"SELECT session_id,revision,$4,revision+1,floor(extract(epoch FROM clock_timestamp())*1000)::bigint " +
+	"SELECT session_id,revision,$4,revision+1,$5 " +
 	"FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2 AND status='claimed' AND claim_token=$3 " +
-	"AND company_stream_id=$5 AND run_seq=$6 AND engine_ref=$7 AND engine_version=$8 AND constants_hash=$9 RETURNING seq"
+	"AND company_stream_id=$6 AND run_seq=$7 AND engine_ref=$8 AND engine_version=$9 AND constants_hash=$10 RETURNING seq"
 const loadClaimedReplaySQL = "SELECT " + sessionColumns + " FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2 " +
 	"AND company_stream_id=$3 AND run_seq=$4 AND engine_ref=$5 AND engine_version=$6 AND constants_hash=$7 " +
 	"AND status='claimed' AND claim_token=$8 FOR UPDATE"

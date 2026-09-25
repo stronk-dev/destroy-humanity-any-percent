@@ -235,7 +235,7 @@ func (service *Service) play(ctx context.Context, request PlayRequest, commandID
 	output, err := service.tenants.Apply(claimed.EngineRef, claimed.EngineVersion, ApplyInput{
 		Mode: claimed.Mode, Seed: seed, Revision: claimed.Revision, Snapshot: claimed.State,
 		Command: request.Command, ScalingInputs: scaling, Content: content.Bytes,
-		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
+		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion, ServerTimeMs: claimed.claimServerMS,
 	})
 	if err != nil {
 		return APIPlayDecision{}, err
@@ -249,7 +249,8 @@ func (service *Service) play(ctx context.Context, request PlayRequest, commandID
 		decision.PlayDecision = PlayDecision{Session: claimed, Resolution: &CertifiedResolution{
 			identity: resolutionIdentity{sessionID: claimed.SessionID, minigameID: claimed.MinigameID, founderID: claimed.FounderID,
 				companyStreamID: claimed.CompanyStreamID, runSeq: claimed.RunSeq, engineRef: claimed.EngineRef,
-				engineVersion: claimed.EngineVersion, constantsHash: claimed.ConstantsHash, claimToken: claimed.ClaimToken},
+				engineVersion: claimed.EngineVersion, constantsHash: claimed.ConstantsHash, claimToken: claimed.ClaimToken,
+				serverMS: claimed.claimServerMS},
 			command: bytes.Clone(request.Command), state: output.Snapshot,
 			result: cloneResult(output.Result), bytes: resultBytes,
 		}}
@@ -270,10 +271,10 @@ func (service *Service) play(ctx context.Context, request PlayRequest, commandID
 	var updated Session
 	if withReceipt {
 		updated, err = service.repository.CompletePlayWithReceipt(ctx, request.FounderID, request.SessionID,
-			claimed.ClaimToken, request.Command, output.Snapshot, commandID, requestHash, receipt)
+			claimed.ClaimToken, claimed.claimServerMS, request.Command, output.Snapshot, commandID, requestHash, receipt)
 	} else {
 		updated, err = service.repository.completePlay(ctx, request.FounderID, request.SessionID,
-			claimed.ClaimToken, request.Command, output.Snapshot)
+			claimed.ClaimToken, claimed.claimServerMS, request.Command, output.Snapshot)
 	}
 	if err != nil {
 		return APIPlayDecision{}, err
@@ -367,7 +368,7 @@ func (service *Service) validateReplayTx(ctx context.Context, tx *sql.Tx, resolu
 		output, applyErr := service.tenants.Apply(session.EngineRef, session.EngineVersion, ApplyInput{
 			Mode: session.Mode, Seed: seed, Revision: revision, Snapshot: snapshot,
 			Command: command.Command, ScalingInputs: scaling, Content: content.Bytes,
-			ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
+			ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion, ServerTimeMs: command.ServerTSMS,
 		})
 		if applyErr != nil || output.Result != nil {
 			return ErrTenantDivergence
@@ -380,7 +381,7 @@ func (service *Service) validateReplayTx(ctx context.Context, tx *sql.Tx, resolu
 	output, err := service.tenants.Apply(session.EngineRef, session.EngineVersion, ApplyInput{
 		Mode: session.Mode, Seed: seed, Revision: revision, Snapshot: snapshot,
 		Command: resolution.command, ScalingInputs: scaling, Content: content.Bytes,
-		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
+		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion, ServerTimeMs: resolution.identity.serverMS,
 	})
 	if err != nil || output.Result == nil || !bytes.Equal(output.Snapshot, resolution.state) ||
 		service.tenants.validateCertifiedResult(session.EngineRef, session.EngineVersion, output.Result) != nil {
