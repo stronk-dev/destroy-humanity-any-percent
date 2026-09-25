@@ -45,3 +45,16 @@ Both runtimes are bound by two shared corpora:
 - `testdata/reputation/tree-fixtures-v1.json`: one or more rejection fixtures per rule.
 - `testdata/reputation/bonus-vectors-v1.json`: Go-authored vectors. Setting
   `REPUTATION_UPDATE_VECTORS=1` regenerates them from Go.
+
+## Bundle wiring
+
+`reputation_tree` is an optional epoch artifact, loaded by `server/replaycatalog` and
+`client/src/replay.ts` into `CatalogBundle.ReputationTree` / `reputationTree`.
+
+- **Chain.** It requires `minigame_api`, the artifact that owns Founder v21. Its own Founder save
+  version lands in B3, so no version floor is raised yet.
+- **Pairing (R2).** The artifact is present exactly when the economy declares a multiplier source
+  with provider `reputation_tree`. If either is present without the other, the bundle is rejected.
+  Go checks this again in `CatalogBundle.valid`.
+- **Frozen contributions.** `production.ResolveFrozenContributions` now accepts that provider as
+  well as `fiscal`, ready for the run-frozen `reputation.founder_bonus` row (B5).

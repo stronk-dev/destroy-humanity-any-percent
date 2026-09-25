@@ -10,6 +10,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/reputation"
 	"cloud-clicker/server/save"
 )
 
@@ -52,8 +53,8 @@ func ResolveFrozenContributions(catalog *economy.Catalog, values []save.FrozenCo
 	seen := map[string]bool{}
 	for index, value := range values {
 		declaration, ok := catalog.MultiplierSource(value.SourceID)
-		if !ok || seen[value.SourceID] || declaration.Provider != "fiscal" || multiplier.Slot(declaration.Slot) != value.Slot || declaration.Target != value.Target {
-			return nil, fmt.Errorf("%w: frozen Fiscal contribution declaration", ErrInvalidEngineState)
+		if !ok || seen[value.SourceID] || declaration.Provider != "fiscal" && declaration.Provider != reputation.Provider || multiplier.Slot(declaration.Slot) != value.Slot || declaration.Target != value.Target {
+			return nil, fmt.Errorf("%w: frozen Founder contribution declaration", ErrInvalidEngineState)
 		}
 		factor, err := decimal.ParseCanonical(value.Factor)
 		if err != nil || !factor.IsStateValue() || !factor.Gt(decimal.Zero) {

@@ -28,6 +28,7 @@ import (
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/relevancepolicy"
+	"cloud-clicker/server/reputation"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
@@ -58,7 +59,9 @@ type CatalogBundle struct {
 	Opportunities *activeplay.Catalog
 	Relevance     *relevancepolicy.RelevancePolicy
 	Curriculum    *curriculum.Catalog
-	Next          *CatalogBundle
+	// ReputationTree is the optional reputation_tree artifact (Reputation Tree v1 R2).
+	ReputationTree *reputation.Tree
+	Next           *CatalogBundle
 }
 
 type ReplayCommonsPolicy interface {
@@ -155,6 +158,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withOpportunities := bundle.Opportunities != nil
 	withRelevance := bundle.Relevance != nil
 	withCurriculum := bundle.Curriculum != nil
+	withReputation := bundle.ReputationTree != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
@@ -192,6 +196,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withCurriculum {
 		expectedArtifacts++
 	}
+	if withReputation {
+		expectedArtifacts++
+	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
 		return false
@@ -218,7 +225,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withTyper && (!withMinigameAPI || len(bundle.Artifacts["typer"]) == 0) ||
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) ||
 		withRelevance && (!withOpportunities || len(bundle.Artifacts["relevance"]) == 0) ||
-		withCurriculum && (!withRelevance || len(bundle.Artifacts["curriculum"]) == 0) {
+		withCurriculum && (!withRelevance || len(bundle.Artifacts["curriculum"]) == 0) ||
+		withReputation && (!withMinigameAPI || len(bundle.Artifacts["reputation_tree"]) == 0) ||
+		withReputation != ReputationDeclared(bundle.Economy) {
 		return false
 	}
 	if withOpportunities && (bundle.Opportunities.Schedule.MinimumIntervalMS > decimal.MaxExactInteger-bundle.Opportunities.Schedule.LifetimeMS ||
@@ -1506,4 +1515,19 @@ func decodeReplayStrict(data []byte, target any) error {
 		return err
 	}
 	return nil
+}
+
+// ReputationDeclared reports whether the economy declares the Reputation
+// tree's Founder-bonus source. R2 pairs the declaration row and the artifact:
+// either without the other rejects the bundle.
+func ReputationDeclared(catalog *economy.Catalog) bool {
+	if catalog == nil {
+		return false
+	}
+	for _, source := range catalog.MultiplierSources() {
+		if source.Provider == reputation.Provider {
+			return true
+		}
+	}
+	return false
 }

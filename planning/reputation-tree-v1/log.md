@@ -47,3 +47,37 @@ epoch is created.
   yet. The loader enforces the declared-copy-key half now. Registration, and
   `balance/reputation-tree.schema.json`, land with the production artifact at the mint (B-mint),
   and the gap is recorded here rather than improvised.
+
+## 2026-09-25 — B2 landed (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**What landed:**
+- The Go and TS bundle loaders accept `reputation_tree`, which requires the `minigame_api` chain.
+  The pairing rule applies in the loaders and in Go's `valid()`.
+- The frozen-contribution resolver accepts provider `reputation_tree`.
+- Tests: `server/replaycatalog/reputation_test.go` and
+  `server/production/reputation_contributions_test.go` (both against the live epoch-8 artifact
+  set), plus `client/test/reputation-bundle.test.ts`.
+- Kernel version 0.3.108 → 0.3.109, bumped in the same commit.
+
+**Evidence (cold):** `go test -count=1` passes for `./reputation`, `./replaycatalog`,
+`./production`, `./curriculum` and `./economy`. `make typecheck test-client` passes (6702 tests).
+
+**Severing probes.** Each check below was disabled and turned its test red, then was restored:
+- loader pairing and loader chain, in Go and in TS;
+- the `valid()` pairing check, in Go;
+- the resolver's provider acceptance, in Go.
+
+**Probe corrections:**
+- The first resolver sever failed only because the build broke (an unused import). I redid it as a
+  mutant that compiles and passes vet, and it still turned the test red.
+- My first `valid()` pairing test was vacuous: the hash/count mismatch masked it. I replaced it with
+  an isolated case. A live bundle stays valid until only its Economy is swapped for one that
+  declares the source.
+
+**Deliberately not done:** B2 raises no Founder version floor, because v22 lands in B3. No epoch
+pins a tree, so this is not a live hole.
+
+**Unrelated finding:** `server/replaycatalog/catalog_test.go` at HEAD (committed in `391beb76`) is
+not gofmt-clean. Its owner or review should fix it; I left it untouched.
