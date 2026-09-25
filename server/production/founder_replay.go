@@ -187,6 +187,8 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		return applyFounderAdoptionResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case IntentAcquireCosmetic, IntentEquipCosmetic, IntentUnequipCosmetic:
 		return applyFounderCosmeticResolved(state, request, revision, catalogs, wire.Resolved)
+	case IntentGardenHarvest, gardenHarvestCreditedKind:
+		return applyFounderGardenHarvestResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved, gardenAdvance)
 	case IntentGardenPlant, IntentGardenUproot, IntentGardenSetSubstrate:
 		return applyFounderGardenResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved, gardenAdvance)
 	case founderExitResolvedKind, founderExitPlanResolvedKind:

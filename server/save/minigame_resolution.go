@@ -26,6 +26,10 @@ type MinigameResolutionDecision struct {
 	FounderReplayResolved json.RawMessage
 	CompanyEvents         []EventWrite
 	FounderEvents         []EventWrite
+	// CompanyCanonicalPayload, when set, is the Company run-log command bytes
+	// (Server Garden SG6's internal credit_garden_harvest); otherwise the
+	// request payload is logged on both streams.
+	CompanyCanonicalPayload json.RawMessage
 }
 
 type MinigameResolutionMutation func(ctx context.Context, tx *sql.Tx, founder *State,
@@ -47,6 +51,10 @@ type MinigameResolutionRequest struct {
 	// whose audit contract requires the Company replay row to precede the
 	// Founder audit row. Minigame resolution retains its established order.
 	CompanyLogFirst bool
+	// FounderIdempotency keys the exactly-once intent record on the Founder
+	// stream (Server Garden SG6: the authority is the Founder intent record)
+	// instead of the Company stream.
+	FounderIdempotency bool
 }
 
 // ApplyMinigameResolutionTransaction is the C38 Founder→Company coordinator.
@@ -83,11 +91,15 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 			return IntentResult{}, ErrArchived
 		}
 	}
+	recordStream, recordScope := request.CompanyStreamID, economy.ScopeCompany
+	if request.FounderIdempotency {
+		recordStream, recordScope = founderStreamID, economy.ScopeFounder
+	}
 	var recordedHash string
 	var recordedOutcome IntentOutcome
 	var recordedReceipt []byte
 	err = tx.QueryRowContext(ctx, `SELECT request_hash,outcome,receipt FROM intent_records WHERE stream_id=$1 AND intent_id=$2`,
-		request.CompanyStreamID, request.SessionID).Scan(&recordedHash, &recordedOutcome, &recordedReceipt)
+		recordStream, request.SessionID).Scan(&recordedHash, &recordedOutcome, &recordedReceipt)
 	if err == nil {
 		if recordedHash != request.RequestHash {
 			return IntentResult{}, ErrIdempotencyConflict
@@ -155,6 +167,13 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err != nil || !jsonObject(decision.Receipt) {
 		return IntentResult{}, fmt.Errorf("%w: invalid minigame resolution receipt", ErrInvalidStream)
 	}
+	companyPayload := request.CanonicalPayload
+	if len(decision.CompanyCanonicalPayload) != 0 {
+		companyPayload = decision.CompanyCanonicalPayload
+		if !jsonObject(companyPayload) {
+			return IntentResult{}, fmt.Errorf("%w: invalid Company run-log payload", ErrInvalidStream)
+		}
+	}
 	companyLogReceipt := decision.Receipt
 	if len(decision.CompanyLogReceipt) != 0 {
 		companyLogReceipt, err = normalizeJSON(decision.CompanyLogReceipt)
@@ -213,7 +232,7 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 			return IntentResult{}, err
 		}
 		if err := insertRunLog(ctx, tx, request.CompanyStreamID, company.RunSeq, runLogSequence, request.SessionID,
-			request.CanonicalPayload, decision.CompanyReplayInputs, companyLogReceipt, &companyNext); err != nil {
+			companyPayload, decision.CompanyReplayInputs, companyLogReceipt, &companyNext); err != nil {
 			return IntentResult{}, err
 		}
 		if err := runExitFault(fault, "run_log"); err != nil {
@@ -252,7 +271,7 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 			return IntentResult{}, err
 		}
 		if err := insertRunLog(ctx, tx, request.CompanyStreamID, company.RunSeq, runLogSequence, request.SessionID,
-			request.CanonicalPayload, decision.CompanyReplayInputs, companyLogReceipt, &companyNext); err != nil {
+			companyPayload, decision.CompanyReplayInputs, companyLogReceipt, &companyNext); err != nil {
 			return IntentResult{}, err
 		}
 		if err := runExitFault(fault, "run_log"); err != nil {
@@ -267,12 +286,16 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err := runExitFault(fault, "founder_log"); err != nil {
 		return IntentResult{}, err
 	}
+	recordRevision := companyNext
+	if request.FounderIdempotency {
+		recordRevision = founderNext
+	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO intent_records(stream_id,intent_id,request_hash,outcome,receipt) VALUES($1,$2,$3,$4,$5)`,
-		request.CompanyStreamID, request.SessionID, request.RequestHash, IntentApplied, decision.Receipt); err != nil {
+		recordStream, request.SessionID, request.RequestHash, IntentApplied, decision.Receipt); err != nil {
 		return IntentResult{}, err
 	}
-	if err := insertReceiptOutbox(ctx, tx, request.FounderID, request.CompanyStreamID, request.SessionID,
-		economy.ScopeCompany, companyNext, companyHash, decision.Receipt); err != nil {
+	if err := insertReceiptOutbox(ctx, tx, request.FounderID, recordStream, request.SessionID,
+		recordScope, recordRevision, companyHash, decision.Receipt); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "intent_record"); err != nil {

@@ -13,11 +13,11 @@ Replay inputs take the next free wire version, and the event migration takes the
   chain), and add the Fiscal cross-artifact rules (unlock row, host generator row). AC2 (bundle half).
 - [x] G3 — Founder v25 `server_garden` save codec, activation at a new-run boundary and at
   New-Founder initialization, replay-inputs carry, Exit byte-identity. AC2, AC11.
-- [ ] G4 — Founder intents `garden_plant`, `garden_uproot`, `garden_set_substrate`; the SG-P3
+- [x] G4 — Founder intents `garden_plant`, `garden_uproot`, `garden_set_substrate`; the SG-P3
   advance pre-step on garden commands and `spend_fiscal_credit`; the frozen server-drawn salt;
   events and migration; TS replay; the AC6 trigger-set property test; Postgres witness. AC6, AC7,
   AC9 (Founder half), AC12.
-- [ ] G5 — `garden_harvest` through `save.Store.ApplyGardenHarvestTransaction` (SG-P1/SG-P2):
+- [x] G5 — `garden_harvest` through `save.Store.ApplyGardenHarvestTransaction` (SG-P1/SG-P2):
   faucet window keyed `server_garden`, Company `credit_garden_harvest`, both logs binding
   `harvest_hash`, fault injection, idempotency. AC8, AC9.
 - [ ] G6 — `GET /api/v1/garden/current` new operation (discarded-clone projection, no salt).

@@ -21,6 +21,17 @@ type FaucetApplication struct {
 	ConfiguredCapReasonKey string
 }
 
+// ApplyPersistentFaucetWindowTx is SG-P1/SG-P2's narrow export for a
+// persistent tenant (Server Garden: faucet owner "server_garden"). The window
+// arithmetic is the same kernel; persistent tenants are solo, so the fallback
+// rate reduction is zero. The caller's multi-stream coordinator holds the
+// exactly-once authority (the Founder intent record) in the same transaction.
+func ApplyPersistentFaucetWindowTx(ctx context.Context, tx *sql.Tx, founderID, faucetOwnerID string,
+	effectiveFounderAttendedMS int64, policy PayoutPolicy, score int64,
+) (FaucetApplication, error) {
+	return applyFaucetWindowTx(ctx, tx, founderID, faucetOwnerID, effectiveFounderAttendedMS, policy, score, 0)
+}
+
 // applyFaucetWindowTx is deliberately unexported: the future resolve composer
 // calls it only after the session's claim token has been validated in this
 // same transaction. The claim-owned session transition is the idempotency

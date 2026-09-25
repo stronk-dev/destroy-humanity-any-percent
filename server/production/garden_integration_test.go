@@ -2,7 +2,6 @@ package production
 
 import (
 	"context"
-	"errors"
 	"os"
 	"strings"
 	"testing"
@@ -23,7 +22,7 @@ import (
 //   - the advance pre-step on a garden command and on spend_fiscal_credit
 //     (server_ms is the database clock, so real-time ticks are ~0 here; tick
 //     behaviour is the corpus's job);
-//   - harvest failing closed until the SG-P2 coordinator lands;
+//   - an immature harvest rejected Founder-only;
 //   - no salt in any receipt or stored event (AC10's persisted half);
 //   - an unregistered event kind refused by the database;
 //   - Founder history replaying clean.
@@ -138,9 +137,10 @@ func TestGardenIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	if !strings.Contains(string(spent.Receipt), `"garden_advance"`) || !strings.Contains(string(spent.Receipt), `"outcome":"applied"`) {
 		t.Fatalf("spend_fiscal_credit must carry the garden pre-step: %s", spent.Receipt)
 	}
-	if _, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, cursor.Add(4*time.Hour),
-		[]byte(`{"intent_id":"01986666-7f00-7000-8000-000000000008","kind":"garden_harvest","expected_revision":5,"plots":[{"row":0,"col":0}]}`)); !errors.Is(err, ErrInvalidIntent) {
-		t.Fatalf("harvest must fail closed until the SG-P2 coordinator lands: %v", err)
+	immature, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, time.Now(),
+		[]byte(`{"intent_id":"01986666-7f00-7000-8000-000000000008","kind":"garden_harvest","expected_revision":5,"plots":[{"row":0,"col":0}]}`))
+	if err != nil || !strings.Contains(string(immature.Receipt), `"detail":"plant_not_mature"`) {
+		t.Fatalf("an immature harvest must reject Founder-only: receipt=%s err=%v", immature.Receipt, err)
 	}
 	loaded, err := store.LoadLatest(ctx, founderRevision.StreamID)
 	if err != nil || loaded.Revision.Number != 5 || save.VersionForState(loaded.State) != 25 || loaded.State.ServerGarden.SaltHex == nil || len(loaded.State.ServerGarden.Plots) != 2 ||

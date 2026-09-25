@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/garden"
@@ -24,7 +25,7 @@ func isGardenIntent(kind string) bool {
 // AC6 proves the set sufficient; any future transition that mutates a garden
 // input must join it.
 func isGardenAdvanceTrigger(kind string) bool {
-	return isGardenIntent(kind) || kind == IntentSpendFiscalCredit
+	return isGardenIntent(kind) || kind == gardenHarvestCreditedKind || kind == IntentSpendFiscalCredit
 }
 
 // founderGardenResolved is the `garden_command.v1` resolved arm: the server
@@ -180,12 +181,12 @@ func checkGardenTransition(before, after *garden.State, trigger bool) error {
 	return nil
 }
 
-func (s *Service) handleFounderGarden(ctx context.Context, companyStreamID string, request IntentRequest) (HandleResult, error) {
+func (s *Service) handleFounderGarden(ctx context.Context, companyStreamID string, now time.Time, request IntentRequest) (HandleResult, error) {
 	if s.replayCatalogs == nil {
 		return HandleResult{}, fmt.Errorf("%w: Founder replay runtime unavailable", ErrInvalidIntent)
 	}
 	if request.Kind == IntentGardenHarvest && request.InvalidDetail == "" {
-		return s.handleGardenHarvest(ctx, companyStreamID, request)
+		return s.handleGardenHarvest(ctx, companyStreamID, request, now)
 	}
 	founder, err := s.store.LoadSiblingLatest(ctx, companyStreamID, economy.ScopeFounder)
 	if err != nil {
@@ -316,13 +317,4 @@ func advanceEqual(left, right garden.Advance) bool {
 	leftJSON, leftErr := json.Marshal(left)
 	rightJSON, rightErr := json.Marshal(right)
 	return leftErr == nil && rightErr == nil && string(leftJSON) == string(rightJSON)
-}
-
-// handleGardenHarvest is SG6's multi-stream coordinator entry (SG-P2). Until
-// the coordinator lands, a well-formed harvest fails closed rather than
-// touching either stream.
-func (s *Service) handleGardenHarvest(ctx context.Context, companyStreamID string, request IntentRequest) (HandleResult, error) {
-	_ = ctx
-	_ = companyStreamID
-	return HandleResult{}, fmt.Errorf("%w: garden harvest coordinator is not composed yet", ErrInvalidIntent)
 }

@@ -454,7 +454,7 @@ func (s *Service) Handle(
 		return s.handleFounderCosmetic(ctx, streamID, request)
 	}
 	if isGardenIntent(request.Kind) {
-		return s.handleFounderGarden(ctx, streamID, request)
+		return s.handleFounderGarden(ctx, streamID, now, request)
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64

@@ -48,7 +48,8 @@ func VerifyFounderHistory(history save.FounderHistory, catalogs ReplayCatalogRes
 		if json.Unmarshal(wire.Resolved, &kind) != nil {
 			return ReplayStateDivergence
 		}
-		linked := kind.Kind == founderExitResolvedKind || kind.Kind == founderExitPlanResolvedKind || kind.Kind == minigameResolutionKind || kind.Kind == "soul_recovery"
+		linked := kind.Kind == founderExitResolvedKind || kind.Kind == founderExitPlanResolvedKind || kind.Kind == minigameResolutionKind || kind.Kind == "soul_recovery" ||
+			kind.Kind == gardenHarvestCreditedKind
 		if linked != (entry.Source != nil) {
 			return ReplayStateDivergence
 		}

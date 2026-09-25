@@ -24,7 +24,7 @@ import { drawPetAdoption, parsePetSpeciesCatalog, petSpeciesRow, type PetSpecies
 import { cosmeticItem, loadCosmeticCatalog, type CosmeticCatalog } from "./cosmetic/catalog";
 import { cosmeticStatesEqual, emptyCosmeticState, encodeCosmeticState, parseCosmeticState, type CosmeticState } from "./cosmetic/state";
 import { loadGardenCatalog, type GardenCatalog } from "./garden/catalog";
-import { advanceGarden, encodeGardenState, gardenAdvanceVisible, gateGarden, GardenRejection, newGardenState, parseGardenState, plantGarden, setGardenSubstrate, uprootGarden, validGardenHarvestTargets, type GardenAdvance, type GardenState } from "./garden/engine";
+import { advanceGarden, encodeGardenState, gardenAdvanceVisible, gateGarden, GardenRejection, harvestGarden, newGardenState, parseGardenState, plantGarden, setGardenSubstrate, uprootGarden, validGardenHarvestTargets, type GardenAdvance, type GardenHarvest, type GardenState } from "./garden/engine";
 import { encodePetIdentities, initialPetCareState, parsePetIdentities, type PetIdentity } from "./pet/identity";
 import { parseTyperCatalog, type TyperCatalog } from "./typer/catalog";
 import { ARCADE_ENGINE_VERSION, parseArcadeCatalog, type ArcadeCatalog } from "./arcade/catalog";
@@ -787,7 +787,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
   // Server Garden SG-P3: the lazy advance runs after the Fiscal sweep and
   // before the command body, for exactly the SG3 trigger set.
   const resolvedKind = typeof wire.resolved.kind === "string" ? wire.resolved.kind : "";
-  const gardenTrigger = GARDEN_INTENTS.has(resolvedKind) || resolvedKind === "spend_fiscal_credit";
+  const gardenTrigger = GARDEN_INTENTS.has(resolvedKind) || resolvedKind === "garden_harvest_credited" || resolvedKind === "spend_fiscal_credit";
   let gardenAdvance: GardenAdvance | null = null;
   if (gardenTrigger) {
     try { gardenAdvance = preAdvanceGarden(state, catalogs, wire.command.server_ts_ms, resolvedGardenSalt(wire.resolved)); }
@@ -882,6 +882,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (kind === "adopt_pet") return finish(await applyFounderAdoption(state, request, wire, catalogs, rollback));
     if (COSMETIC_INTENTS.has(kind)) return finish(applyFounderCosmetic(state, request, wire, catalogs, rollback));
     if (kind === "garden_plant" || kind === "garden_uproot" || kind === "garden_set_substrate") return finish(applyFounderGarden(state, request, wire, catalogs, gardenAdvance));
+    if (kind === "garden_harvest" || kind === "garden_harvest_credited") return finish(await applyFounderGardenHarvest(state, request, wire, catalogs, gardenAdvance));
     if (kind === "exit.v1" || kind === "exit.v2") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
@@ -1023,7 +1024,8 @@ export async function verifyFounderReplayHistory(genesis: unknown, genesisRevisi
       const wire = parseFounderReplayWire(entry.replayInputs);
       if (wire.command.intent_id !== entry.intentId || wire.command.founder_stream_id !== founderStreamId || wire.command.founder_id !== founderId || wire.command.revision !== revision || wire.command.founder_log_seq !== entry.seq || wire.command.server_ts_ms !== entry.serverTSMS) return "log_gap";
       const exitArm = wire.resolved.kind === "exit.v1" || wire.resolved.kind === "exit.v2"; const minigameArm = wire.resolved.kind === "resolve_minigame_session"; const soulRecoveryArm = wire.resolved.kind === "soul_recovery";
-      if ((exitArm || minigameArm || soulRecoveryArm) !== (entry.source !== null)) return "state_divergence";
+      const gardenCreditArm = wire.resolved.kind === "garden_harvest_credited";
+      if ((exitArm || minigameArm || soulRecoveryArm || gardenCreditArm) !== (entry.source !== null)) return "state_divergence";
       if (entry.source) {
         if (exitArm && (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq || wire.resolved.run_log_seq !== entry.source.runLogSeq)) return "state_divergence";
         if (soulRecoveryArm && (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq)) return "state_divergence";
@@ -1182,6 +1184,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   const wire = parseReplayWire(replayInputs, state, catalogs);
 	if (wire.resolved.kind === "soul_recovery_suppression") return applySuppressedLogged(state, canonicalPayload, catalogs, wire);
   if (wire.resolved.kind === "resolve_minigame_session") return applyCompanyMinigameLogged(state, canonicalPayload, catalogs, wire);
+  if (wire.resolved.kind === "credit_garden_harvest") return applyCompanyGardenHarvest(state, canonicalPayload, catalogs, wire);
   const request = parseIntent(canonicalPayload, wire.command.intent_id);
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== state.runSeq) throw new RangeError("command/state mismatch");
   if (request.kind === "buy_route_hint") throw new RangeError("founder-scope intent is not replayable");
@@ -2632,4 +2635,76 @@ function checkPetIdentityTransition(before: Readonly<Record<string, PetIdentity>
   }
   for (const id of Object.keys(before)) if (after[id] === undefined) throw new RangeError("pet identity disappeared");
   if (adoption ? added !== 1 : added !== 0) throw new RangeError("unexpected pet identity additions");
+}
+
+// Server Garden SG6 Founder side, byte twin of applyFounderGardenHarvestResolved:
+// `garden_harvest` (Founder-only) must reject; `garden_harvest_credited`
+// (the coordinator's arm) must apply.
+async function applyFounderGardenHarvest(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle, advance: GardenAdvance | null): Promise<FounderLoggedTransition> {
+  if (request.kind !== "garden_harvest" || request.invalid !== undefined || request.expected_revision !== wire.command.revision) throw new RangeError("garden harvest command mismatch");
+  exactKeys(wire.resolved, ["kind", "server_ms", "advance", "attendance", ...("garden_salt_hex" in wire.resolved ? ["garden_salt_hex"] : [])], "garden harvest inputs");
+  const credited = wire.resolved.kind === "garden_harvest_credited";
+  if (!credited && wire.resolved.kind !== "garden_harvest") throw new RangeError("garden harvest arm mismatch");
+  if (safeInteger(wire.resolved.server_ms, 0, MAX_EXACT_INTEGER) !== wire.command.server_ts_ms) throw new RangeError("garden server_ms mismatch");
+  const sample = parseFounderAttendanceSample(wire.resolved.attendance);
+  if (sample.companyConstantsHash !== catalogs.constantsHash) throw new RangeError("garden harvest catalog context mismatch");
+  validateFounderAttendanceSample(state, wire.command.revision, wire.command.revision, sample);
+  const recomputed: GardenAdvance = advance ?? { ticks_applied: 0, tick_seq_after: 0, catchup_forfeited_ms: 0, catchup_reason_key: null, matured: [], spawned: [] };
+  if (canonicalJSONString(recomputed) !== canonicalJSONString(wire.resolved.advance)) throw new RangeError("garden advance diverged from resolved inputs");
+  const reject = (category: string, detail: string): FounderLoggedTransition => {
+    if (credited) throw new RangeError("a credited harvest cannot be rejected");
+    return founderRejected(state, request.intent_id, wire.command.revision, category, detail, catalogs.constantsHash);
+  };
+  if (!gardenActive(catalogs, state)) return reject("not_eligible", "garden_inactive");
+  const garden = catalogs.garden!, { unlocked } = gardenInputs(catalogs, state);
+  const humanLocked = garden.soulGate === "human_hobby" && humanContentLocked(catalogs.soul!, state.soul);
+  let harvest: GardenHarvest;
+  try {
+    gateGarden(garden, unlocked, humanLocked);
+    harvest = await harvestGarden(garden, state.serverGarden!, request.intent_id, request.plots);
+  } catch (error) {
+    if (error instanceof GardenRejection) return reject(error.category, error.detail);
+    throw error;
+  }
+  if (!credited) throw new RangeError("an applied harvest must be credited through the coordinator");
+  const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, kind: request.kind, harvest };
+  return { state, outcome: "applied", receipt, events: [event("garden_harvested.v1", request.intent_id, harvest)], resultConstantsHash: catalogs.constantsHash };
+}
+
+// The Company run-log replay of credit_garden_harvest (SG6), byte twin of
+// applyCompanyGardenHarvest: faucet arithmetic re-derived from the pinned
+// payout row (solo: zero rate reduction), credit re-applied saturating.
+async function applyCompanyGardenHarvest(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, wire: ReplayWire): Promise<LoggedTransition> {
+  if (!catalogs.garden) throw new RangeError("missing pinned server_garden policy");
+  const payload = exactObject(parseJSON(canonicalPayload), ["kind", "intent_id", "harvest_hash"], "garden credit payload");
+  if (payload.kind !== "credit_garden_harvest" || payload.intent_id !== wire.command.intent_id || canonicalJSONString(payload) !== canonicalPayload) throw new RangeError("garden credit command mismatch");
+  const resolved = exactObject(wire.resolved, ["kind", "intent_id", "harvest_hash", "policy_hash", "selected_units", "faucet", "credited", "forfeited_units", "cap_reason_key", "faucet_applied", "founder_log_coordinate", "company_revision", "founder_revision"], "garden credit inputs");
+  const policy = catalogs.garden.payout;
+  const policyWire = { credited_resource_id: policy.credited_resource_id, sends_per_day: policy.sends_per_day, per_send_cap: policy.per_send_cap,
+    conversion_ppm: policy.conversion_ppm, payout_score_fact_id: policy.payout_score_fact_id, cap_reason_key: policy.cap_reason_key };
+  const policyDigest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify(policyWire))));
+  const policyHash = `sha256:${[...policyDigest].map((part) => part.toString(16).padStart(2, "0")).join("")}`;
+  const selected = safeInteger(resolved.selected_units, 0, MAX_EXACT_INTEGER), faucetApplied = boolean(resolved.faucet_applied);
+  const companyRevision = safeInteger(resolved.company_revision, 2, MAX_EXACT_INTEGER), founderRevision = safeInteger(resolved.founder_revision, 2, MAX_EXACT_INTEGER);
+  const founderLog = exactObject(resolved.founder_log_coordinate, ["stream_id", "revision", "sequence"], "Founder log coordinate");
+  if (resolved.kind !== "credit_garden_harvest" || resolved.intent_id !== payload.intent_id || resolved.harvest_hash !== payload.harvest_hash || resolved.policy_hash !== policyHash ||
+      companyRevision !== wire.command.revision + 1 || uuidString(founderLog.stream_id) === "" || safeInteger(founderLog.revision, 2, MAX_EXACT_INTEGER) !== founderRevision ||
+      safeInteger(founderLog.sequence, 1, MAX_EXACT_INTEGER) < 1 || faucetApplied !== selected > 0 || faucetApplied !== (resolved.faucet !== null)) throw new RangeError("garden credit coordinate mismatch");
+  let credit = 0, expectedForfeit = 0, expectedReason: string | null = null;
+  if (resolved.faucet !== null) {
+    const faucet = parseMinigameFaucet(resolved.faucet);
+    validateMinigameFaucet(faucet, { kind: "solo" }, policyWire, selected);
+    credit = faucet.credited_units; expectedForfeit = faucet.forfeited_units; expectedReason = faucet.cap_reason_key === "" ? null : faucet.cap_reason_key;
+  }
+  const capReason = resolved.cap_reason_key === null ? null : string(resolved.cap_reason_key);
+  if (safeInteger(resolved.forfeited_units, 0, MAX_EXACT_INTEGER) !== expectedForfeit || capReason !== expectedReason) throw new RangeError("garden forfeiture mismatch");
+  const credited = canonical(resolved.credited);
+  const changes = applyLedger(state, catalogs.economy, [{ resource: policy.credited_resource_id, delta: parseCanonical(canonicalString(credit)) }], true);
+  const ledgerDelta = changes.length === 0 ? "0" : changes.length === 1 && changes[0]!.resource_id === policy.credited_resource_id ? changes[0]!.delta : undefined;
+  if (ledgerDelta !== credited) throw new RangeError("garden payout ledger divergence");
+  const receipt = { intent_id: payload.intent_id, outcome: "applied", harvest_hash: payload.harvest_hash, credited_resource_id: policy.credited_resource_id, credited,
+    forfeited_units: expectedForfeit, cap_reason_key: capReason, faucet_applied: faucetApplied, company_revision: companyRevision, founder_revision: founderRevision };
+  const eventValue = event("garden_harvest_credited.v1", string(payload.intent_id), { harvest_hash: payload.harvest_hash, selected_units: selected, credited,
+    forfeited_units: expectedForfeit, cap_reason_key: capReason, faucet_applied: faucetApplied });
+  return { state, outcome: "applied", receipt, events: [eventValue], invariants: [] };
 }

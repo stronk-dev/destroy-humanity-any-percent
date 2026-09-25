@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import corpus from "../../testdata/replay/garden-v1.json";
-import { applyFounderLogged, applyLoggedExit, canonicalJSONString, encodeFounderReplayState, encodeReplayState, loadReplayCatalogBundle, restoreFounderReplayState, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
+import { applyFounderLogged, applyLogged, applyLoggedExit, canonicalJSONString, encodeFounderReplayState, encodeReplayState, loadReplayCatalogBundle, restoreFounderReplayState, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
 
 // Server Garden AC7/AC9 (Founder half) and the v25 Exit-activation witness:
 // the TS Founder replay byte-matches the Go-authored testdata/replay/garden-v1.json.
@@ -39,6 +39,31 @@ describe("garden intents cross-runtime corpus", () => {
     inputs.resolved.advance.ticks_applied = 1;
     const state = restoreFounderReplayState(applied.pre_state, applied.state_version, catalogs);
     await expect(applyFounderLogged(state, canonicalJSONString(applied.canonical_payload), catalogs, inputs)).rejects.toThrow(/advance/u);
+  });
+});
+
+describe("garden Company credit arm (SG6, AC9 Company half)", () => {
+  it("pins every credit shape", () => {
+    expect(corpus.company_cases.map((row) => row.name)).toEqual(["credits-a-harvest", "caps-a-single-send", "forfeits-past-the-daily-sends", "zero-harvest-touches-no-window"]);
+    expect(corpus.cases.map((row) => row.name)).toEqual(expect.arrayContaining(["rejects-harvest-empty-plot", "applies-credited-harvest"]));
+  });
+
+  it.each(corpus.company_cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
+    const catalogs = await bundle(testCase.bundle);
+    const state = restoreReplayState(testCase.pre_state, testCase.state_version, catalogs.economy, { meters: catalogs.meters!, achievements: catalogs.achievements!, doctrines: catalogs.doctrines, opportunities: catalogs.opportunities });
+    const transition = await applyLogged(state, canonicalJSONString(testCase.canonical_payload), catalogs, testCase.replay_inputs);
+    expect(transition.outcome).toBe(testCase.outcome);
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+    expect(canonicalJSONString(encodeReplayState(transition.state))).toBe(testCase.post_state_json);
+  });
+
+  it("refuses a Company payload whose harvest_hash no longer binds its resolved arm", async () => {
+    const credit = corpus.company_cases[0]!;
+    const catalogs = await bundle(credit.bundle);
+    const state = restoreReplayState(credit.pre_state, credit.state_version, catalogs.economy, { meters: catalogs.meters!, achievements: catalogs.achievements!, doctrines: catalogs.doctrines, opportunities: catalogs.opportunities });
+    const payload = { ...(credit.canonical_payload as Record<string, unknown>), harvest_hash: `sha256:${"0".repeat(64)}` };
+    await expect(applyLogged(state, canonicalJSONString(payload), catalogs, credit.replay_inputs)).rejects.toThrow();
   });
 });
 

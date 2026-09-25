@@ -465,6 +465,9 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		}
 		return LoggedTransition{State: suppressed.State, Outcome: save.IntentApplied, Receipt: suppressed.Receipt, Events: suppressed.Events}, nil
 	}
+	if isGardenHarvestCreditPayload(canonicalPayload) {
+		return applyCompanyGardenHarvest(state, canonicalPayload, catalogs, wire)
+	}
 	if isMinigameResolutionPayload(canonicalPayload) {
 		return applyCompanyMinigameResolution(state, canonicalPayload, catalogs, wire)
 	}
@@ -1634,6 +1637,19 @@ func parseReplayInputs(data []byte) (replayInputsWire, error) {
 		var value replayExitResolved
 		if err := decodeReplayStrict(wire.Resolved, &value); err != nil || value.IntentKind == "" || value.SelectedExitType == "" ||
 			!jsonObjectValue(value.SelectedTerms) || len(value.NextConstantsHash) != len("sha256:")+64 || !strings.HasPrefix(value.NextConstantsHash, "sha256:") {
+			return replayInputsWire{}, ErrInvalidReplayInputs
+		}
+	case minigameResolutionKind:
+		// The Company half of a certified minigame resolution (C38); its
+		// strict decode runs in applyCompanyMinigameResolution.
+		var value minigameCompanyResolved
+		if err := decodeReplayStrict(wire.Resolved, &value); err != nil {
+			return replayInputsWire{}, ErrInvalidReplayInputs
+		}
+	case gardenCompanyCreditKind:
+		// Server Garden SG6's Company credit arm.
+		var value gardenCompanyResolved
+		if err := decodeReplayStrict(wire.Resolved, &value); err != nil {
 			return replayInputsWire{}, ErrInvalidReplayInputs
 		}
 	case "soul_recovery_suppression":

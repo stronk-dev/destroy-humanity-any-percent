@@ -198,3 +198,84 @@ Evidence, cold:
 - Garden commands are not exempt from the Soul-recovery exclusivity gate; the default applies,
   like `care_action`.
 - The advance event carries only visible advances, per SG8's emission rule.
+
+## 2026-09-25 — G5: garden_harvest through the SG-P2 coordinator (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review. Kernel bumped 0.3.133 → 0.3.134 in
+the same commit.
+
+**Faucet identity (SG-P1).** `minigame_faucet_window.minigame_id` is constrained by pattern only, so
+the faucet owner `server_garden` fits without a migration.
+`minigame.ApplyPersistentFaucetWindowTx` is the one narrow export: the same kernel, with a zero
+fallback reduction because the garden is solo.
+
+**Coordinator (SG-P2).** `ApplyMinigameResolutionTransaction` gains two request/decision options:
+- `FounderIdempotency` puts the exactly-once intent record on the Founder stream.
+- `CompanyCanonicalPayload` means the Company run log records the internal
+  `{kind:"credit_garden_harvest", intent_id, harvest_hash}`.
+
+`creditGardenHarvest` runs the following in one transaction, locking Founder then Company:
+1. the Founder transition (advance pre-step, harvest);
+2. the faucet window, only if `total_units > 0`;
+3. the saturating credit to `company.cash`;
+4. both revisions, both logs, the events, the intent record and the outbox.
+
+**Routing.** A clone-probe decides whether a harvest applies. If it applies, it goes through the
+coordinator. If it would reject, it is logged Founder-only (`garden_harvest` arm) and touches
+neither the Company nor the window. The Founder-only arm refuses to apply
+(`errGardenHarvestMustCredit`), and the credited arm (`garden_harvest_credited`) refuses to reject.
+
+**Migration 00083** (append-only, since 00082 is already committed) admits
+`garden_harvest_credited` into `founder_log_multistream_source_shape`. The contiguity pin moves
+to 83.
+
+**Replay.**
+- **Company side:** `applyCompanyGardenHarvest` re-derives the window arithmetic from the pinned
+  payout row and binds `policy_hash` and `harvest_hash`.
+- **TS twins:** `applyFounderGardenHarvest` and `applyCompanyGardenHarvest`.
+- **Founder-history verifier:** in both runtimes it now treats `garden_harvest_credited` as
+  Company-linked.
+
+**Pre-existing defect found and fixed:** `parseReplayInputs` rejected the minigame resolution's
+Company envelope (`resolve_minigame_session` was absent from its kind switch). `ApplyLogged`, and
+therefore `VerifyReplayRun`, could never reach `applyCompanyMinigameResolution` for a persisted run
+log. Existing tests called the arm function directly, which hid it.
+- **Fix:** the switch accepts `resolve_minigame_session` and `credit_garden_harvest`.
+- **Witness:** `TestCompanyArmEnvelopesParse`. Severing the case fails it with "the minigame
+  resolution Company envelope must parse".
+- **Routing:** this is Minigame Platform lane debt, fixed here because SG6 depends on the same
+  gate.
+
+**Evidence, cold:**
+- `go vet ./...` is clean.
+- `make test-go` passes for garden, minigame, save, production, replaycatalog, gameui, gameserver,
+  account, releasepackage, kernel and harness.
+- The full Postgres suite **exit=0**.
+- Client: 6,901 tests pass; typecheck, `api-check` and `copy-check` are clean.
+- **Corpus:** `garden-v1.json` adds `rejects-harvest-empty-plot`, `applies-credited-harvest` and 4
+  Company cases (credit, per-send cap, past-quota forfeit, zero harvest). TS replays all 32/32
+  byte-for-byte.
+- **`TestGardenHarvestIntegration`** (Postgres):
+  - an immature harvest is Founder-only, with the Company and the window untouched;
+  - a credit of 2e1 with seeds `[strain_c]`, and an identical-bytes retry with no second credit;
+  - a zero harvest consumes no send;
+  - after 8 credited sends, a harvest forfeits 40 with `cap.minigame_faucet` and still records
+    seed `strain_d`;
+  - `company.cash` is exactly 1.6e2;
+  - the Founder event and the Company run log bind the same `harvest_hash`;
+  - Founder history is `ReplayVerified`;
+  - all 10 run-log entries replay through `ApplyLogged` with identical receipts and Company events.
+- **`TestGardenHarvestFaultsAreAllOrNothing`:** injecting a fault after each of 9 write points
+  leaves no revision, window, run-log, event or intent-record row. AC8's named failing case: a
+  deliberately split transaction leaves quota=1 and goes red.
+- **Other severing:** removing the TS `harvest_hash` binding lets the tampered payload replay, and
+  the test goes red.
+- **G4 witness updated:** harvest no longer fails closed. An immature harvest now rejects
+  Founder-only.
+
+**Finding (not fixed, routed):** the harvest path, like minigame resolution, freezes `server_ms`
+from the handler's `now`, while other Founder commands are stamped by the database clock. A handler
+clock behind the last database stamp makes the Fiscal sweep fail with "fiscal wall clock
+regressed". The G4 witness hit this with a synthetic past `now`. Production passes `time.Now()`, so
+it only bites under clock skew. Options for the Minigame Platform owner: stamp from the database, or
+clamp to the last Founder-log stamp.
