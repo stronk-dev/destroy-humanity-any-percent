@@ -195,3 +195,33 @@ The Terminal Typer lane's commits are interleaved in the same span and are not p
 - The GS4 pet slice, which waits on pet-adoption.
 - The 320 px reflow measurement.
 - Adopting the candidate copy (`copy/catalog/garage-surfaces-candidate.json`).
+
+## 2026-09-25 — Predeclaration: GS5, GS4 care panel, GS0.3 remainder, 320 px (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review. This lane now owns kernel-guarded
+paths: HEAD is at kernel `0.3.135`, and every guarded edit bumps the version in the same commit.
+
+1. **GS5 (B-1 unblock):** `production.ProjectActiveCombo`, a read-only export that wraps the existing
+   `activePlayContributionsWithClamp` and adds no arithmetic.
+   - It feeds a new optional sibling arm, `features.opportunity`. The null-only `active_play` stays
+     null, following the `pet_adoption` precedent, because the compatibility gate rejects widening a
+     null-only property. The `feature.active_play` fact then follows `opportunity`.
+   - `pending` is emitted only while `expires_attended_ms > attended_now_ms`, and expired buffs are
+     omitted.
+   - The Desk gets an always-present `desk.region.opportunity` with a claim button. It sends no
+     synthetic commands and never moves focus.
+   - Acceptance rows: GS5-A1/A2/A3/A5, plus A4 on the composed lane if the seconds-scale schedule
+     allows it.
+2. **GS4 care panel, over the PA7 arm (`features.pet_adoption.pets`):** status band and
+   server-eligible actions, with one `care_action` button per eligible action in catalog order. The
+   `CosmeticOverlay` is mounted on the live pet (cosmetic-shop G10).
+   - **DESIGN-GAP GS4×PA7:** GS4's `PetsArm` wants decayed stats, mood, behaviour, per-action
+     cooldowns and `soul_gate`. The later-accepted PA7 forbids projecting raw stats and cooldown
+     cursors. Both RFCs are accepted, so no raw care field is added and the panel renders only what
+     PA7 projects. The conflict goes to the RFC author.
+3. **GS0.3 remainder:** decoders for `fiscal_period_harvested.v1` (the Fiscal nav badge, OD-3) and
+   `buff_started.v1` (a Desk announcement).
+4. **320 px reflow:** a browser measurement with no horizontal overflow, at the 320 CSS px viewport,
+   on the Desk, Fiscal, Meters, Achievements and pet panel.
+5. **Docs reconciliation:** the Reputation and Clout surfaces shipped in their own lanes, and
+   `docs/game-ui.md` points at them rather than duplicating them.
