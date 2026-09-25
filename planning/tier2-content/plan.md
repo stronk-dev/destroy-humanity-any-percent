@@ -7,12 +7,12 @@ the `headcount_budget_respected` invariant, the P4 `headcount_seats` role row an
 held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; epoch 9 is NOT minted
 (M1–M4 owner-gated).
 
-- [ ] C1 — Candidate artifacts (§A1, §A2, §B1 minus `headcount_seats`, §B2, §B3): economy
+- [x] C1 — Candidate artifacts (§A1, §A2, §B1 minus `headcount_seats`, §B2, §B3): economy
   (schema v4 carry; v5 is headcount-only), routes, categories under `balance/testdata/t2/`,
   derived from the epoch-8 bytes by insertion only, with a SHA file.
-- [ ] C2 — Strict loaders accept the candidates in Go and TS; categories missing
+- [x] C2 — Strict loaders accept the candidates in Go and TS; categories missing
   `gate.t1_to_t2` is rejected against candidate routes (AC1 subset).
-- [ ] C3 — AC0 reachability: a Tier-1 company on the candidate bundle crosses `gate.t1_to_t2`,
+- [x] C3 — AC0 reachability: a Tier-1 company on the candidate bundle crosses `gate.t1_to_t2`,
   gets `Tier == 2`, and `incorporate` applies; the same on the epoch-8 bundle rejects.
 - [ ] C4 — UI (§E1–E3 minus Headcount panel): `era_2010` theme/era, tier-2 era mapping (tier ≥ 3
   still throws), Gate control for any projected gate, minimal Incorporate control, FarmVille
