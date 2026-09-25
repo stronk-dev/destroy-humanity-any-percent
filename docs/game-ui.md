@@ -62,6 +62,34 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   empty by default. It orders selections in tree order and gates them on prerequisites and a
   projected budget. Deselecting a node also drops the selections that depended on it. A non-empty
   plan is sent as `reputation_plan`; the server re-validates the whole plan.
+- **Desk opportunity region (GS5):** always present, directly after the manual action. It sits in a
+  fixed DOM position and never moves focus, so an opportunity spawning never shifts the page. It
+  renders the optional `features.opportunity` arm:
+  - the pending opportunity, with its effect presentation row and the attended seconds remaining as
+    of the last snapshot (never a wall-clock countdown);
+  - live buffs;
+  - the combo hardcap text whenever the kernel clamp saturates.
+  
+  Claim sends a Company-scoped `claim_opportunity`. An applied receipt's `receipt.opportunity`
+  evidence shows the lucky credit, and the `cap.cash` reason when saturated. Expired and gone
+  claims map to typed notices. The UI never sends a synthetic command to cause a spawn. A spawn is
+  announced politely once per `opportunity_id` while the Desk is mounted.
+- **Pet (GS4):** a nav tab unlocked by `feature.pets`, which the server sets true only when an adopted
+  pet exists. It renders the PA7 projection only: name, status band text, and one button per
+  catalog care action in catalog order. An action the server does not list as eligible is disabled
+  and says so in text (never greying alone). Care sends a Founder-scoped `care_action`, and the four
+  `not_eligible` pairs map to typed notices. A worn cosmetic mounts `CosmeticOverlay` on the live
+  pet's sprite (cosmetic-shop G10). GS4's raw stats, mood, behaviour and cooldowns are not projected:
+  PA7 forbids them, and the conflict is recorded as a DESIGN-GAP in
+  `planning/garage-player-surfaces/log.md`.
+- **Fiscal badge and buff announcements (GS0.3 remainder):**
+  - A `fiscal_period_harvested.v1` event badges the Fiscal nav `(harvested)` while the player is
+    elsewhere, and visiting Fiscal clears it (OD-3: no modal).
+  - A `buff_started.v1` event announces politely while the Desk is mounted.
+  - Both decoders mirror the exact server validators and fail closed.
+- **320 px reflow:** the Desk, Fiscal, Meters, Trophy Case and pet surfaces are measured in all three
+  browsers at a 320 CSS px viewport, with no element past the viewport edge and no horizontal
+  scroll. The chrome nav wraps, and card grids use `minmax(min(…, 100%), 1fr)`.
 - Recovery: a nav tab hosting `client/src/game-ui/soul/SoulRecoverySurface.svelte` whenever the runtime
   supplies a Soul-recovery port; a terminal recovery refreshes the snapshot once.
 
@@ -96,8 +124,19 @@ save predates the version that activates it:
   `fiscal_unlock` rule, the `human_hobby` Soul gate, and the active-session predicate for every
   supported tenant.
 
-`active_play` and `pets` are always `null` in this implementation; the planning log records the
-blockers. Facts add the six `feature.*` booleans derived from the arms.
+`active_play` and `pets` stay null-only on the wire, because the compatibility gate rejects widening
+a registered null-only property. Their projections land as the optional sibling arms
+`opportunity` and `pet_adoption`, alongside `reputation`, `cosmetics` and `axis_stack`. Each is
+documented in its own section, and the Reputation and Clout surfaces are covered in
+[Reputation tree](reputation-tree.md) and [Axis stack](axis-stack.md).
+
+- **`opportunity` (GS5):** Company v18 with the opportunities artifact. It carries the pending
+  opportunity only while `expires_attended_ms > attended_now_ms`, and the live buffs only. The
+  combo `saturated` flag comes from the read-only kernel export `production.ProjectActiveCombo`,
+  the same clamp rates use.
+
+`feature.active_play` follows `opportunity`. `feature.pets` is true only when `pet_adoption` holds
+at least one pet.
 
 Intents return their typed outcome (GS0.2). A rejected intent is an HTTP 200 whose reason renders
 in the chrome `role="status"` line. A stale revision (`revision_conflict`) triggers one

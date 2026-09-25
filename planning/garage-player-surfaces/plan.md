@@ -15,8 +15,10 @@ that would need one is recorded as a blocker in `log.md` instead.
 - [x] GS2 Achievements arm + surface.
 - [x] GS1 Fiscal arm + surface.
 - [x] GS7 minigames availability arm wired into the existing Pitch surface/nav.
-- [ ] GS5 active-play arm + Desk opportunity region. **Blocked (B-1):** combo saturation needs a guarded `server/production` export.
+- [x] GS5 active-play arm (`features.opportunity`, kernel export `ProjectActiveCombo`) + Desk opportunity region + composed claim witness (`cdb8fe61`, `f32f6175`).
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.
 - [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
-- [ ] GS0.3 remainder: `fiscal_period_harvested.v1` nav badge (OD-3) and `buff_started.v1` (waits on GS5/B-1).
+- [x] GS0.3 remainder: `fiscal_period_harvested.v1` nav badge (OD-3) and `buff_started.v1` announcement (`6594b646`).
+- [x] GS4 pet care surface over the PA7 arm + cosmetic overlay (G10) (`7a61e4b6`); raw-care fields blocked by DESIGN-GAP GS4×PA7.
+- [x] 320 px reflow measurement across Desk/Fiscal/Meters/Trophy Case/pet (`6594b646`).
 - [ ] Canonical docs, cold gates, hand-off for Codex designated review (never self-archive).

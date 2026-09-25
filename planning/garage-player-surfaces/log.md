@@ -225,3 +225,79 @@ paths: HEAD is at kernel `0.3.135`, and every guarded edit bumps the version in 
    on the Desk, Fiscal, Meters, Achievements and pet panel.
 5. **Docs reconciliation:** the Reputation and Clout surfaces shipped in their own lanes, and
    `docs/game-ui.md` points at them rather than duplicating them.
+
+## 2026-09-25 — GS5, GS4 care panel, GS0.3 remainder, 320 px: record (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review; nothing is self-approved or
+archived.
+
+**Range:** `d035b8f8..` this commit, made up of:
+- `d035b8f8`: predeclaration;
+- `cdb8fe61`: GS5 arm plus kernel export, kernel `0.3.135 → 0.3.136` bumped in the same commit;
+- `f32f6175`: Desk region plus composed witness;
+- `7a61e4b6`: GS4;
+- `6594b646`: decoders and reflow;
+- this commit: docs and record.
+
+**GS5:** the arm and the kernel export.
+- `production.ProjectActiveCombo` wraps `activePlayContributionsWithClamp` read-only, with no new
+  arithmetic.
+- The projection lands as the optional `features.opportunity` arm. `active_play` stays null-only,
+  because the compatibility gate rejects widening it, as with `pet_adoption`. `api-compat-v1.json`
+  is unchanged, so there was no re-pin, and `feature.active_play` follows the new arm.
+- **Tests:** Go projector tests (pending only while unexpired, expired buffs omitted, saturation
+  from the kernel clamp, null below v18), a client parser that fails closed on expired rows, and
+  Postgres for gameui/gameserver/account (compose exit 0; the gameui integration test was confirmed
+  to run, not skip).
+- **Severing:**
+  - O1: pending projected with `>=` → red;
+  - O2: saturation forced false → red (the first attempt didn't compile and was redone with
+    `&& false`);
+  - O3: no buff filter → red;
+  - O4: the client parser without its expiry check → red.
+- **Desk region:** always present; browser tests A1/A2/A3/A5 pass in three browsers.
+  - B1: making the region conditional → red.
+  - B2: an auto-claim `$effect` → red.
+  - B3: discarding the receipt → red.
+  - B4: focusing the claim button on spawn → red.
+- **GS5-A4 composed:** real manual clicks until the region projects, then a DOM claim. The effect
+  shows in the next snapshot, witnessed as 13, 18, 12 and 6 clicks across the runs.
+  - Severing the server projection makes the witness fail with its own message. The first severed
+    run instead hit the account limiter (429) at 150 ms per click, so the loop now runs at 4
+    clicks/s, bounded at 60 clicks.
+
+**GS4:** the `pet` surface, unlocked by `feature.pets`, which the server now sets true only when
+`pet_adoption` holds at least one pet (GS4-A2, Go test). It shows one button per catalog care
+action, and ineligible actions are disabled with visible text. Care is Founder-scoped with the
+typed rejections, and the cosmetic overlay is mounted on the live pet.
+- Severing: P1 greying without text → red; P2 Company revision → red; P3 fact on an empty arm → red
+  (Go); P4 no overlay → red.
+- **DESIGN-GAP GS4×PA7, for the RFC author:** GS4 specifies decayed stats, mood, behaviour,
+  per-action cooldowns and `soul_gate`. The later-accepted PA7 forbids projecting raw care fields.
+  Both RFCs are accepted, so nothing raw was added, and the cooldown/soul-lock states surface only
+  as typed rejections after a click.
+
+**GS0.3 remainder:** `fiscal_period_harvested.v1`, both arms, and `buff_started.v1`, v1 and v2,
+mirror the producer and validator keys exactly.
+- Unit severing: D1 dropping the credit-sum check → red; D3 leaving the buff decoder unwired → red.
+- Host severing: D2 a badge that never clears → red.
+
+**320 px:** the new reflow test failed first on real overflow: the chrome nav didn't wrap, titlebar
+items couldn't shrink, the Desk `.cards` track minimum was `15rem`, and the adoption card inherited
+that width. Those are fixed with the `minmax(min(…, 100%), 1fr)` pattern Achievements and Fiscal
+already use, and it now passes in three browsers. That pre-fix failure is the check's demonstrated
+failing case.
+
+**Cold gates:**
+- `make typecheck test-client`: 6905 passed.
+- `verify-client-boundary`: 22 component files.
+- `copy-check`: 657 keys.
+- `test-browser`: 20,940 passed.
+- `test-game-ui-composed`: GS5, Pitch and v4 lifecycle all pass.
+- `make test-go` for gameui, production and account; Postgres for gameui, gameserver and account.
+- `api-check` is clean.
+- `verify-kernel-version` still stops at the pre-existing `50a3a514` history item.
+
+**Candidate copy:** the new `desk.opportunity.*`, `desk.buff*`, `cap.active_combo`, `cap.cash` and
+`fiscal.nav.harvest_badge` rows, plus `pet.care.*` (companion tone, `PENDING OWNER COPY`), are in
+`copy/catalog/garage-surfaces-candidate.json` for Marco to adopt.
