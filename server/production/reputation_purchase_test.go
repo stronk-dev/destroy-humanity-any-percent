@@ -44,6 +44,15 @@ type reputationCorpus struct {
 	// Exit is the R4/R7 terminal witness: a scripted-first burnout Exit on a
 	// tree bundle whose Founder owns starter nodes (AC8, run_started v2).
 	Exit crossRuntimeActiveExit `json:"exit"`
+	// ExitCases are R6/B3 terminal witnesses on the Company log, each paired
+	// with its Founder-log arm (exit.v1 or exit.v2).
+	ExitCases []reputationExitCase `json:"exit_cases"`
+}
+
+type reputationExitCase struct {
+	Name    string                 `json:"name"`
+	Company crossRuntimeActiveExit `json:"company"`
+	Founder *reputationCorpusCase  `json:"founder"`
 }
 
 // reputationFounderState is an encodable Founder at the bundle's floor with
@@ -207,7 +216,18 @@ func buildReputationCorpus(t *testing.T) reputationCorpus {
 	}
 
 	cases := append(append(append([]reputationCorpusCase{}, inactive.cases...), rejections.cases...), chain.cases...)
-	return reputationCorpus{Version: 1, Exit: makeReputationExitFixture(t, now), Bundles: map[string]reputationCorpusBundle{
+	live2 := activeContentBundle(t)
+	tree2 := reputationContentBundle(t)
+	exitCases := []reputationExitCase{
+		makeReputationPlanExitCase(t, "plan-applies-with-in-plan-prerequisite", tree2, tree2, 22, 6,
+			[]string{"reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.unlock.p05"}, now),
+		makeReputationPlanExitCase(t, "plan-unaffordable-rejects-whole-exit", tree2, tree2, 22, 6,
+			[]string{"reputation.unlock.p05", "reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.unlock.p25"}, now),
+		makeReputationPlanExitCase(t, "plan-rejected-without-next-tree", live2, live2, 21, 6, []string{"reputation.unlock.p05"}, now),
+		makeReputationPlanExitCase(t, "exit-activates-founder-v22", live2, tree2, 21, 4, nil, now),
+		makeReputationPlanExitCase(t, "activating-exit-applies-plan", live2, tree2, 21, 4, []string{"reputation.unlock.p05"}, now),
+	}
+	return reputationCorpus{Version: 1, Exit: makeReputationExitFixture(t, now), ExitCases: exitCases, Bundles: map[string]reputationCorpusBundle{
 		"tree": {ConstantsHash: tree.ConstantsHash, Artifacts: stringArtifacts(tree.Artifacts)},
 		"live": {ConstantsHash: live.ConstantsHash, Artifacts: stringArtifacts(live.Artifacts)},
 	}, Cases: cases}
@@ -386,4 +406,132 @@ func replayFixtureStateFromEncoded(t *testing.T, catalogs CatalogBundle, encoded
 		t.Fatal(err)
 	}
 	return state
+}
+
+// makeReputationPlanExitCase drives one wind_down (collapse) through the
+// Company-log Exit transition and, when it applies, the matching Founder-log
+// arm built by the live audit path (buildFounderExitAudit).
+func makeReputationPlanExitCase(t *testing.T, name string, current, next CatalogBundle, founderVersion int, level int64, plan []string, now time.Time) reputationExitCase {
+	t.Helper()
+	if current.ConstantsHash != next.ConstantsHash {
+		copied := next
+		current.Next = &copied
+	}
+	founderID := "01986666-8d00-7000-8000-000000000001"
+	company := replayFixtureState(t, current.Economy, now.Add(-time.Minute))
+	company.WireVersion, company.Tier, company.RunSeq = 18, 1, 2
+	company.GatesCrossed["gate.t0_to_t1"] = true
+	company.MeterBands = nil
+	meterState, err := meters.NewRunState(current.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	if _, err := initializeActivePlayState(company, current.Opportunities, founderID); err != nil {
+		t.Fatal(err)
+	}
+	founder := reputationFounderState(t, current, founderVersion, now, level)
+	founder.ExitHistory = []save.ExitRecord{{RunID: 1, ExitType: "collapse", OccurredAt: now.Add(-time.Hour)}}
+	preState := mustEncodeState(t, company)
+	body := `{"intent_id":"01986666-8d01-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1`
+	if plan != nil {
+		encodedPlan, _ := json.Marshal(plan)
+		body += `,"reputation_plan":` + string(encodedPlan)
+	}
+	request, err := ParseIntent([]byte(body + "}"))
+	if err != nil || request.InvalidDetail != "" {
+		t.Fatalf("%s request invalid=%q err=%v", name, request.InvalidDetail, err)
+	}
+	carry := founderCarry(founder)
+	carry.FounderRevision, carry.FounderConstantsHash = 1, current.ConstantsHash
+	minigameActive := false
+	activeEvidence, err := resolveActivePlaySchedule(company, current.Opportunities, current.Prestige, founderID, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	nextSpawn, err := next.Opportunities.Spawn(founderID, company.RunSeq+1, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-8e00-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 2, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
+		SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash,
+		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
+	if err != nil {
+		t.Fatal(err)
+	}
+	probe := replayFixtureStateFromEncoded(t, current, preState)
+	transition, err := ApplyLoggedExit(probe, request.CanonicalPayload, current, inputs)
+	if err != nil {
+		t.Fatalf("%s: %v", name, err)
+	}
+	var result crossRuntimeTerminalCase
+	if transition.Decision.Outcome == save.IntentApplied {
+		result = executeTerminalFixture(t, name, current, replayFixtureStateFromEncoded(t, current, preState), preState, request, inputs, carry)
+	} else {
+		result = crossRuntimeTerminalCase{Name: name, PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+			Outcome: string(transition.Decision.Outcome), Receipt: transition.Decision.Receipt, FounderEvents: []fixtureEvent{},
+			CompanyEndedEvents: []fixtureEvent{}, CompanyStartedEvents: []fixtureEvent{},
+			ReceiptJSON: canonicalFixtureJSON(t, transition.Decision.Receipt)}
+	}
+	out := reputationExitCase{Name: name, Company: crossRuntimeActiveExit{ConstantsHash: current.ConstantsHash, Artifacts: stringArtifacts(current.Artifacts),
+		NextConstantsHash: next.ConstantsHash, NextArtifacts: stringArtifacts(next.Artifacts), Case: result}}
+	if transition.Decision.Outcome != save.IntentApplied {
+		return out
+	}
+	founderRevision := save.Revision{OwnerID: founderID, Number: 1, ConstantsHash: current.ConstantsHash}
+	resolved, _, err := buildFounderExitAudit(command, founderRevision, founder, transition.Founder, transition.Decision, current)
+	if err != nil {
+		t.Fatalf("%s audit: %v", name, err)
+	}
+	founderCommand := save.FounderReplayCommand{IntentID: request.IntentID, FounderStreamID: "01986666-8c00-4000-8000-000000000001",
+		FounderID: founderID, Revision: 1, FounderLogSeq: 1, ServerTSMS: now.UnixMilli()}
+	founderInputs, err := save.MarshalFounderReplayInputs(founderCommand, json.RawMessage(resolved))
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderPre := mustEncodeState(t, founder)
+	founderTransition, err := ApplyFounderLogged(founder, request.CanonicalPayload, current, founderInputs)
+	if err != nil || founderTransition.Outcome != save.IntentApplied {
+		t.Fatalf("%s Founder arm outcome=%s err=%v", name, founderTransition.Outcome, err)
+	}
+	events := fixtureEvents(founderTransition.Events)
+	out.Founder = &reputationCorpusCase{Name: name + "-founder", Bundle: name, StateVersion: founderVersion, PreState: founderPre,
+		CanonicalPayload: request.CanonicalPayload, ReplayInputs: founderInputs, Outcome: string(founderTransition.Outcome),
+		ReceiptJSON: canonicalFixtureJSON(t, founderTransition.Receipt), EventsJSON: canonicalFixtureValue(t, events),
+		PostStateJSON: canonicalFixtureJSON(t, mustEncodeState(t, founder))}
+	return out
+}
+
+// TestReputationExitV2RefusesTamperedPurchases proves the Founder exit.v2 arm
+// re-derives the plan instead of trusting the recorded purchases.
+func TestReputationExitV2RefusesTamperedPurchases(t *testing.T) {
+	tree := reputationContentBundle(t)
+	now := time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
+	exitCase := makeReputationPlanExitCase(t, "tamper", tree, tree, 22, 6,
+		[]string{"reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.unlock.p05"}, now)
+	founderCase := exitCase.Founder
+	var inputs map[string]any
+	if err := json.Unmarshal(founderCase.ReplayInputs, &inputs); err != nil {
+		t.Fatal(err)
+	}
+	resolved := inputs["resolved"].(map[string]any)
+	purchases := resolved["reputation_purchases"].([]any)
+	purchases[0].(map[string]any)["resolved_cost"] = 3
+	tampered, _ := json.Marshal(inputs)
+	state, err := save.RestoreState(founderCase.PreState, 22, tree.Economy, economy.ScopeFounder, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ApplyFounderLogged(state, founderCase.CanonicalPayload, tree, tampered); err == nil {
+		t.Fatal("tampered exit.v2 purchases replayed")
+	}
+	delete(resolved, "reputation_purchases")
+	resolved["kind"] = "exit.v1"
+	downgraded, _ := json.Marshal(inputs)
+	if _, err := ApplyFounderLogged(state, founderCase.CanonicalPayload, tree, downgraded); err == nil {
+		t.Fatal("a planned Exit replayed under exit.v1")
+	}
 }

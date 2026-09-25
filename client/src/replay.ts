@@ -756,7 +756,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (kind === "harvest_fiscal_period") return finish(await applyFounderFiscalHarvest(state, request, wire, catalogs));
     if (kind === "spend_fiscal_credit") return finish(applyFounderFiscalSpend(state, request, wire, catalogs));
     if (kind === "purchase_reputation_node") return finish(applyFounderReputationPurchase(state, request, wire, catalogs));
-    if (kind === "exit.v1") return finish(applyFounderExit(state, request, wire, catalogs));
+    if (kind === "exit.v1" || kind === "exit.v2") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
 }
@@ -896,7 +896,7 @@ export async function verifyFounderReplayHistory(genesis: unknown, genesisRevisi
     try {
       const wire = parseFounderReplayWire(entry.replayInputs);
       if (wire.command.intent_id !== entry.intentId || wire.command.founder_stream_id !== founderStreamId || wire.command.founder_id !== founderId || wire.command.revision !== revision || wire.command.founder_log_seq !== entry.seq || wire.command.server_ts_ms !== entry.serverTSMS) return "log_gap";
-      const exitArm = wire.resolved.kind === "exit.v1"; const minigameArm = wire.resolved.kind === "resolve_minigame_session"; const soulRecoveryArm = wire.resolved.kind === "soul_recovery";
+      const exitArm = wire.resolved.kind === "exit.v1" || wire.resolved.kind === "exit.v2"; const minigameArm = wire.resolved.kind === "resolve_minigame_session"; const soulRecoveryArm = wire.resolved.kind === "soul_recovery";
       if ((exitArm || minigameArm || soulRecoveryArm) !== (entry.source !== null)) return "state_divergence";
       if (entry.source) {
         if (exitArm && (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq || wire.resolved.run_log_seq !== entry.source.runLogSeq)) return "state_divergence";
@@ -1226,7 +1226,11 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
   if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, true, prefix);
-  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, selectedBranch, prefix, executedRoutes, request.kind === "accept_exit_offer" ? request.offer_id : null, catalogs, next,nextActive);
+  const extensionsBefore = founder.founder_extensions;
+  const planRejection = reputationPlanRejection(next, extensionsBefore?.reputation_spent ?? 0, extensionsBefore?.reputation_nodes_owned ?? [], founderVersionFloor(catalogs) >= 22,
+    founder.reputation_level + Math.min(terms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level), request.reputation_plan);
+  if (planRejection) return rejectState(planRejection[0], planRejection[1]);
+  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, selectedBranch, prefix, executedRoutes, request.kind === "accept_exit_offer" ? request.offer_id : null, catalogs, next,nextActive,request.reputation_plan);
   } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
 }
 
@@ -1687,7 +1691,7 @@ function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogB
   founder.founder_extensions = parseFounderExtensions(extensions, next);
 }
 
-async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, branch: CurriculumBranch | null, prefix: ReplayEvent[], executedRoutes: string[], acceptedOfferId: string | null, current: ReplayCatalogBundle, next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
+async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, branch: CurriculumBranch | null, prefix: ReplayEvent[], executedRoutes: string[], acceptedOfferId: string | null, current: ReplayCatalogBundle, next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null,reputationPlan?:readonly string[]): Promise<LoggedExitTransition> {
   const attended = attendedMS(company, nowMs);
   const terms = { ...inputTerms, reputation_delta: Math.min(inputTerms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level), route_knowledge: inputTerms.route_knowledge + (branch?.route_knowledge_bonus ?? 0) };
   if (terms.route_knowledge > MAX_EXACT_INTEGER - founder.route_knowledge_balance || attended > MAX_EXACT_INTEGER - founder.age_ms) throw new RangeError("founder carry overflow");
@@ -1714,6 +1718,13 @@ async function finishLoggedExit(company: ReplayState, founder: FounderCarry, int
     founder.achievement_score_lifetime = 0;
   }
   advanceFounderExtensions(founder, current, next, nowMs);
+  let planEvents: ReplayEvent[] = [];
+  if (reputationPlan && reputationPlan.length !== 0) {
+    const extensions = founder.founder_extensions!;
+    const account = { level: founder.reputation_level, spent: extensions.reputation_spent!, owned: [...extensions.reputation_nodes_owned!], unlock: extensions.reputation_unlock_ppm! };
+    planEvents = applyReputationPlan(next.reputationTree!, account, intentId, reputationPlan).events;
+    extensions.reputation_spent = account.spent; extensions.reputation_nodes_owned = account.owned; extensions.reputation_unlock_ppm = account.unlock;
+  }
   const newCompany = newRunState(next, company, founder, nowMs);
   if (branch !== null) applyCurriculumStarter(newCompany, next.economy, branch.starter_package);
   const reputationStarted = applyReputationStarters(next, founder, newCompany);
@@ -1726,7 +1737,7 @@ async function finishLoggedExit(company: ReplayState, founder: FounderCarry, int
   const startedBase = { assisted: { advisor: founder.advisor_mode, commons: false }, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: newCompany.runSeq }, started_at_ms: nowMs };
   const startedEvent = reputationStarted === null ? event("run_started", intentId, startedBase) : event("run_started", intentId, { ...startedBase, reputation_tree: reputationStarted }, 2);
   const receipt = { applied_count: 1, evaluated_at: rfc3339(nowMs), founder_revision: founder.founder_revision + 1, intent_id: intentId, new_revision: command.revision + 2, outcome: "applied", receipt: { changes: [] }, snapshot: wireSnapshot(newCompany, next.economy) };
-  return { founder, finalCompany: company, newCompany, outcome: "applied", receipt, founderEvents: [founderEvent], companyEndedEvents: [...prefix, endedEvent], companyStartedEvents: [startedEvent] };
+  return { founder, finalCompany: company, newCompany, outcome: "applied", receipt, founderEvents: [founderEvent, ...planEvents], companyEndedEvents: [...prefix, endedEvent], companyStartedEvents: [startedEvent] };
 }
 
 function newRunState(bundle: ReplayCatalogBundle, prior: ReplayState, founder: FounderCarry, nowMs: number): ReplayState {
@@ -1742,6 +1753,45 @@ function newRunState(bundle: ReplayCatalogBundle, prior: ReplayState, founder: F
 
 function rejectedExit(company: ReplayState, founder: FounderCarry, intentId: string, revision: number, category: string, detail: string): LoggedExitTransition {
   return { founder, finalCompany: company, newCompany: null, outcome: "rejected", receipt: { current_revision: revision, intent_id: intentId, outcome: "rejected", rejection: { category, detail } }, founderEvents: [], companyEndedEvents: [], companyStartedEvents: [] };
+}
+
+// R6: consume the optional reputation_plan key (0–64 unique mechanical ids in
+// purchase order) so the remaining keys are checked exactly; byte-parallel to
+// Go parseReputationPlan.
+function takeReputationPlan(raw: Record<string, unknown>, base: Intent): boolean {
+  if (!("reputation_plan" in raw)) return true;
+  const plan = raw.reputation_plan; delete raw.reputation_plan;
+  if (!Array.isArray(plan) || plan.length > 64 || plan.some((id) => !isMechanical(id)) || new Set(plan).size !== plan.length) { base.invalid = "reputation_plan"; return false; }
+  base.reputation_plan = [...plan] as string[];
+  return true;
+}
+
+// R6 dry run (Go reputationPlanRejection): null when the plan can apply.
+function reputationPlanRejection(next: ReplayCatalogBundle, spentIn: number, ownedIn: readonly string[], activated: boolean, creditedLevel: number, plan: readonly string[] | undefined): [string, string] | null {
+  if (!plan || plan.length === 0) return null;
+  if (!next.reputationTree) return ["not_eligible", "reputation_plan.tree_inactive"];
+  let spent = activated ? spentIn : 0, owned: readonly string[] = activated ? ownedIn : [];
+  for (const id of plan) {
+    const outcome = reputationPurchase(next.reputationTree, creditedLevel, spent, owned, id);
+    if (outcome.kind === "rejected") return [outcome.category, `reputation_plan.${outcome.category === "unknown_id" ? "unknown_id" : outcome.detail}`];
+    spent = outcome.spentAfter; owned = outcome.ownedAfter;
+  }
+  return null;
+}
+
+// R6 application (Go applyReputationPlan) on Founder tree fields.
+function applyReputationPlan(tree: ReputationTree, account: { level: number; spent: number; owned: string[]; unlock: number }, intentId: string, plan: readonly string[]): { purchases: { node_id: string; resolved_cost: number }[]; events: ReplayEvent[] } {
+  const purchases: { node_id: string; resolved_cost: number }[] = [], events: ReplayEvent[] = [];
+  for (const id of plan) {
+    const spentBefore = account.spent;
+    const outcome = reputationPurchase(tree, account.level, account.spent, account.owned, id);
+    if (outcome.kind === "rejected") throw new RangeError(`pre-validated reputation plan failed at ${id}`);
+    account.spent = outcome.spentAfter; account.owned = [...outcome.ownedAfter]; account.unlock = outcome.unlockPpmAfter;
+    purchases.push({ node_id: id, resolved_cost: outcome.node.cost });
+    events.push(event("reputation_node_purchased.v1", intentId, { node_id: id, node_kind: outcome.node.kind, cost: outcome.node.cost, reputation_level: account.level,
+      reputation_spent_before: spentBefore, reputation_spent_after: outcome.spentAfter, unlock_ppm_after: outcome.unlockPpmAfter, source: "exit_plan" }));
+  }
+  return { purchases, events };
 }
 
 function sortedUniqueMechanical(source: unknown[]): string[] {
@@ -1803,9 +1853,12 @@ function founderWireSnapshot(state: FounderReplayState): unknown {
 function applyFounderExit(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): FounderLoggedTransition {
 	const inputHash = catalogs.constantsHash;
 	const probe = wire.resolved;
-	const probedVersion = safeInteger(probe.result_founder_wire_version, 1, 21);
+	const probedVersion = safeInteger(probe.result_founder_wire_version, 1, 22);
+	// exit.v2 exists exactly when the request carries a non-empty plan and the Exit applied (R6).
+	const planned = (request.reputation_plan?.length ?? 0) !== 0 && probe.outcome === "applied";
+	if ((probe.kind === "exit.v2") !== planned) throw new RangeError("Founder Exit arm/plan mismatch");
 	const activatesSoul = probedVersion >= 20 && state.wireVersion < 20;
-  const keys = ["kind", "outcome", "company_stream_id", "run_seq", "run_log_seq", "result_constants_hash", "reputation_delta", "route_knowledge_delta", "attended_ms", "age_ms_before", "age_ms_after", "achievement_score_delta", "added_network_slots", "added_ledger_fact_kinds", "added_lifetime_achievements", "exit_record", "result_founder_wire_version", "rejection", ...(activatesSoul ? ["next_soul"] : [])];
+  const keys = ["kind", "outcome", "company_stream_id", "run_seq", "run_log_seq", "result_constants_hash", "reputation_delta", "route_knowledge_delta", "attended_ms", "age_ms_before", "age_ms_after", "achievement_score_delta", "added_network_slots", "added_ledger_fact_kinds", "added_lifetime_achievements", "exit_record", "result_founder_wire_version", "rejection", ...(activatesSoul ? ["next_soul"] : []), ...(planned ? ["reputation_purchases"] : [])];
 	const raw = exactObject(wire.resolved, keys, "Founder Exit inputs");
   const explicitExit = request.kind === "accept_exit_offer" || request.kind === "wind_down" || request.kind === "file_ipo";
   if (explicitExit && request.expected_founder_revision !== wire.command.revision) throw new RangeError("Founder Exit revision mismatch");
@@ -1813,8 +1866,8 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
   const resultHash = string(raw.result_constants_hash); if (!hashPattern.test(resultHash)) throw new SyntaxError("invalid Founder result hash");
   const ageBefore = safeInteger(raw.age_ms_before, 0, MAX_EXACT_INTEGER); const ageAfter = safeInteger(raw.age_ms_after, 0, MAX_EXACT_INTEGER); const attended = safeInteger(raw.attended_ms, 0, MAX_EXACT_INTEGER);
   if (ageBefore !== state.ageMs || ageAfter < ageBefore || attended !== ageAfter - ageBefore) throw new RangeError("invalid Founder attendance facts");
-	const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 21);
-	if (![14, 15, 16, 17, 18, 19, 20, 21].includes(resultVersion)) throw new RangeError("unsupported Founder result version");
+	const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 22);
+	if (![14, 15, 16, 17, 18, 19, 20, 21, 22].includes(resultVersion)) throw new RangeError("unsupported Founder result version");
   const outcome = string(raw.outcome);
   if (outcome === "rejected") {
     const rejection = exactObject(raw.rejection, ["category", "detail"], "Founder Exit rejection"); const category = string(rejection.category); const detail = string(rejection.detail);
@@ -1868,10 +1921,21 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
 		state.reputationSpent = 0; state.reputationNodesOwned = [];
 	}
 	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22;
+  let planEvents: ReplayEvent[] = [];
+  if (planned) {
+    const plan = request.reputation_plan as string[];
+    if (reputationPlanRejection(resultCatalogs, state.reputationSpent, state.reputationNodesOwned, true, state.reputationLevel, plan)) throw new RangeError("Founder Exit plan does not apply");
+    const account = { level: state.reputationLevel, spent: state.reputationSpent, owned: [...state.reputationNodesOwned], unlock: state.reputationUnlockPpm };
+    const applied = applyReputationPlan(resultCatalogs.reputationTree!, account, wire.command.intent_id, plan);
+    const recorded = array(raw.reputation_purchases, "Founder Exit reputation purchases").map((row) => exactObject(row, ["node_id", "resolved_cost"], "Founder Exit purchase"));
+    if (recorded.length !== applied.purchases.length || recorded.some((row, index) => row.node_id !== applied.purchases[index]!.node_id || row.resolved_cost !== applied.purchases[index]!.resolved_cost)) throw new RangeError("Founder Exit purchase mismatch");
+    state.reputationSpent = account.spent; state.reputationNodesOwned = account.owned; state.reputationUnlockPpm = account.unlock;
+    planEvents = applied.events;
+  }
   Object.assign(state, restoreFounderReplayState(encodeFounderReplayState(state), resultVersion, resultCatalogs));
   const receipt = { intent_id: wire.command.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, result_constants_hash: resultHash };
   const founderEvent = event("founder_advanced", wire.command.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: companyStreamId, run_seq: runSeq }, exit_type: exit.exit_type, reputation_delta: reputationDelta, route_knowledge: routeDelta, occurred_at_ms: exit.occurred_at_ms });
-  return { state, outcome: "applied", receipt, events: [founderEvent], resultConstantsHash: resultHash };
+  return { state, outcome: "applied", receipt, events: [founderEvent, ...planEvents], resultConstantsHash: resultHash };
 }
 function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAccrual {
   const raw = objectWithOnlyKeys(source, ["contributions", "commons_weight_ppm", "guild_settlement_batch", "route_context_version"], "accrual");
@@ -2090,12 +2154,14 @@ function parseIntent(payload: string, intentId: string): Intent {
       if (!isMechanical(raw.faction_id)) base.invalid = "faction_id"; else base.faction_id = raw.faction_id;
       return base;
     case "accept_exit_offer":
+      if (!takeReputationPlan(raw, base)) return base;
       if (!hasExactKeys(raw, ["kind", "expected_revision", "expected_founder_revision", "offer_id"])) { base.invalid = "accept_exit_offer.fields"; return base; }
       if (!isPositiveSafeInteger(raw.expected_founder_revision)) base.invalid = "expected_founder_revision"; else base.expected_founder_revision = raw.expected_founder_revision;
       if (!isUUIDV7(raw.offer_id)) base.invalid = "offer_id"; else base.offer_id = raw.offer_id;
       return base;
     case "wind_down":
     case "file_ipo":
+      if (kind === "wind_down" && !takeReputationPlan(raw, base)) return base;
       if (!hasExactKeys(raw, ["kind", "expected_revision", "expected_founder_revision"])) { base.invalid = `${kind}.fields`; return base; }
       if (!isPositiveSafeInteger(raw.expected_founder_revision)) base.invalid = "expected_founder_revision"; else base.expected_founder_revision = raw.expected_founder_revision;
       return base;

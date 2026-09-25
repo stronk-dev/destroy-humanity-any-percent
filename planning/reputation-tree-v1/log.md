@@ -360,3 +360,49 @@ There is no conflict, and no compatibility pin was touched.
 - A TS cross-runtime plan case.
 
 These are the next commit.
+
+## 2026-09-25 — B6 (TS) and B3 witness landed (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**What landed (TS):**
+- `takeReputationPlan`, `reputationPlanRejection` and `applyReputationPlan` in `client/src/replay.ts`.
+- The Company-log Exit now pre-validates the plan before finishing (rejection path) and applies it
+  after v22 activation.
+- The Founder arm accepts `exit.v2`, re-derives the plan's purchases, and compares them against the
+  recorded ones.
+- **B3 defect fixed:** `applyFounderExit` capped `result_founder_wire_version` at 21, so the TS v22
+  activation branch was unreachable. The cap is now 22.
+
+**Kernel:** 0.3.114 → 0.3.115, bumped in this commit (`client/src/replay.ts` is guarded).
+
+**Corpus (Go-authored):** `exit_cases`, each a Company-log Exit plus its Founder arm:
+- a plan with an in-plan prerequisite (`exit.v2`);
+- an unaffordable plan (whole Exit rejected);
+- a plan with no tree in the next bundle (`not_eligible / reputation_plan.tree_inactive`);
+- an Exit activating Founder v22 (`exit.v1`, epoch 8 → tree bundle; the B3 witness);
+- an activating Exit that also applies a plan (`exit.v2`).
+
+**Evidence (cold):**
+- `client/test/reputation-replay.test.ts`: 29/29, byte-matching Go on:
+  - Company receipt, Founder output, new Company and events;
+  - Founder receipt, events and post-state.
+- Tamper tests:
+  - TS: altered `exit.v2` purchases are refused.
+  - Go (`TestReputationExitV2RefusesTamperedPurchases`): altered purchases, and a planned Exit
+    downgraded to `exit.v1`, are both refused.
+- Go tests pass for production, save, replaycatalog and reputation; the client passes 6733 tests.
+
+**Severing probes (TS):**
+- Red, as expected:
+  - the B3 cap put back to 21 (3 cases fail);
+  - pre-validation removed;
+  - Company plan events dropped;
+  - Founder unlock mirror not updated.
+- Survived, redundant:
+  - the activation `owned = []` initialization. A v21 restore already yields `[]`.
+
+**Severing probe (Go):**
+- Red: the exit.v2 comparison checking node id only, not cost.
+
+**Plan boxes:** B3 and B6 flip in the following planning commit. Their tests are in this range.

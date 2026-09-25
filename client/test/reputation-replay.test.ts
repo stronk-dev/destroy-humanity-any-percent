@@ -60,3 +60,41 @@ describe("Reputation starters at new-run assembly", () => {
     expect(transition.companyStartedEvents[0]).toMatchObject({ kind: "run_started", schema_version: 2 });
   });
 });
+
+describe("Reputation Exit plan and v22 activation (R6, B3)", () => {
+  it.each(corpus.exit_cases)("replays $name on the Company log and its Founder arm", async (exitCase) => {
+    const company = exitCase.company;
+    const current = await loadReplayCatalogBundle(company.constants_hash, company.artifacts as unknown as ReplayArtifacts);
+    const next = company.next_constants_hash === company.constants_hash ? current : await loadReplayCatalogBundle(company.next_constants_hash, company.next_artifacts as unknown as ReplayArtifacts);
+    const bundle = next === current ? current : withNextReplayCatalogBundle(current, next);
+    const testCase = company.case;
+    const state = restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+    expect(transition.outcome).toBe(testCase.outcome);
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    if (testCase.outcome === "applied") {
+      expect(canonicalJSONString(transition.founder)).toBe(testCase.founder_output_json);
+      expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(testCase.new_company_json);
+      expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
+      expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
+    }
+    const founderCase = exitCase.founder;
+    if (!founderCase) return;
+    const founderState = restoreFounderReplayState(founderCase.pre_state, founderCase.state_version, bundle);
+    const founderTransition = await applyFounderLogged(founderState, canonicalJSONString(founderCase.canonical_payload), bundle, founderCase.replay_inputs);
+    expect(founderTransition.outcome).toBe(founderCase.outcome);
+    expect(canonicalJSONString(founderTransition.receipt)).toBe(founderCase.receipt_json);
+    expect(canonicalJSONString(founderTransition.events)).toBe(founderCase.events_json);
+    expect(canonicalJSONString(encodeFounderReplayState(founderTransition.state))).toBe(founderCase.post_state_json);
+  });
+
+  it("refuses an exit.v2 arm whose recorded purchases differ", async () => {
+    const exitCase = corpus.exit_cases.find((row) => row.name === "plan-applies-with-in-plan-prerequisite")!;
+    const bundle = await loadReplayCatalogBundle(exitCase.company.constants_hash, exitCase.company.artifacts as unknown as ReplayArtifacts);
+    const founderCase = exitCase.founder!;
+    const inputs = structuredClone(founderCase.replay_inputs) as { resolved: { reputation_purchases: { resolved_cost: number }[] } };
+    inputs.resolved.reputation_purchases[0]!.resolved_cost += 1;
+    const state = restoreFounderReplayState(founderCase.pre_state, founderCase.state_version, bundle);
+    await expect(applyFounderLogged(state, canonicalJSONString(founderCase.canonical_payload), bundle, inputs)).rejects.toThrow();
+  });
+});
