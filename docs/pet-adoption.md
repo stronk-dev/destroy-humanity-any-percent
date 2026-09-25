@@ -115,3 +115,29 @@ partial). This is the same total a care or adoption command would freeze.
 
 The pre-existing null-only `features.pets` property stays null, because the API compatibility gate
 rejects widening a null property. The Reputation R9 optional-arm precedent is followed instead.
+
+## Adoption surface and visual contract (PA8)
+
+**Adoption card.** `client/src/game-ui/pet/AdoptionCard.svelte` is the inline, non-modal card at
+the top of the Desk. It appears whenever `features.pet_adoption` is present.
+
+- **Layout:** the species description, the name pool as a native radio group (the first name is
+  preselected; arrow keys move between names), then Adopt and Not now.
+- **Not now** collapses the card to a persistent entry point. It sets no timer and never badges or
+  re-nags.
+- **Adoption:** Adopt sends `adopt_pet` as a Founder intent. On success, a welcome state takes
+  over. Focus moves to its heading, and exactly one polite live-region announcement fires per pet;
+  a resync that re-delivers the same pet neither re-announces nor steals focus.
+- **Rejections** render inline and are tied to Adopt through `aria-describedby`.
+- **No price appears anywhere:** no `$`, no `0.00`, and no "free".
+
+**Visual contract.** `client/src/game-ui/pet/visual.ts` provides `petVisualSpec(identity,
+status_band, reduced_motion) → {family: "cat", palette_id, pose, animate}`.
+
+- **Poses:** `high`/`normal` → `content`, `low` → `low`, `floor` → `withdrawn`.
+- **Motion:** `animate` is false under reduced motion.
+- **Sprite:** `PetSprite.svelte` is a CSS-only, nested-div, `aria-hidden` sprite. It animates only
+  through governed motion tokens, and a reduced-motion query stops it.
+- **Palettes:** `palette.json` maps each `palette_id` to a `{fur, outline}` swatch. Every outline
+  must reach a 3:1 non-text contrast ratio against each era's `bg` and `surface`, and
+  `test/pet-visual.test.ts` checks this.

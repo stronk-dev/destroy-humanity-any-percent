@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "swatches": [
+    { "palette_id": "pet_palette.fur_00", "fur": "#2b2b2b", "outline": "#000000" },
+    { "palette_id": "pet_palette.fur_01", "fur": "#5a3b1e", "outline": "#1a0f05" },
+    { "palette_id": "pet_palette.fur_02", "fur": "#c46a1f", "outline": "#3a1c04" },
+    { "palette_id": "pet_palette.fur_03", "fur": "#e0b070", "outline": "#3d2a10" },
+    { "palette_id": "pet_palette.fur_04", "fur": "#8a8a8a", "outline": "#1c1c1c" },
+    { "palette_id": "pet_palette.fur_05", "fur": "#f2efe8", "outline": "#2a2826" },
+    { "palette_id": "pet_palette.fur_06", "fur": "#4a4e5a", "outline": "#0e1016" },
+    { "palette_id": "pet_palette.fur_07", "fur": "#b58b5c", "outline": "#2e2012" },
+    { "palette_id": "pet_palette.fur_08", "fur": "#6e5a4a", "outline": "#1a130d" },
+    { "palette_id": "pet_palette.fur_09", "fur": "#d9c9b0", "outline": "#302a22" }
+  ]
+}

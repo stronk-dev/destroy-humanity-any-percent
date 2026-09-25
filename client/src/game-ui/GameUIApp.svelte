@@ -18,6 +18,7 @@
   import { formatAmount } from "../ui/amount-format";
   import RunEndSurface from "./RunEndSurface.svelte";
   import ReputationTreeSurface from "./ReputationTreeSurface.svelte";
+  import AdoptionCard from "./pet/AdoptionCard.svelte";
   import ReputationPlanPanel from "./ReputationPlanPanel.svelte";
   import AchievementsSurface from "./AchievementsSurface.svelte";
   import FiscalSurface from "./FiscalSurface.svelte";
@@ -316,6 +317,14 @@
     ["invalid/*", "reputation_tree.error.invalid"],
   ]);
   function reputationApplied(): CopyKey { void refresh(); return "reputation_tree.result.applied"; }
+  // Pet Adoption v1 PA8: adoption rejections render inline on the card.
+  const ADOPTION_REJECTIONS: SurfaceRejections = new Map([
+    ["not_eligible/adoption_inactive", "pet.adoption.reject.adoption_inactive"],
+    ["not_eligible/species_locked", "pet.adoption.reject.species_locked"],
+    ["not_eligible/adoption_cap_reached", "pet.adoption.reject.adoption_cap_reached"],
+  ]);
+  function adoptionApplied(): null { void refresh(); return null; }
+  const prefersReducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const HARVEST_OUTCOMES: Readonly<Record<string, CopyKey>> = {
     consumed_by_auto: "fiscal.outcome.consumed_by_auto", early_failed: "fiscal.outcome.early_failed",
     early_succeeded: "fiscal.outcome.early_succeeded", guaranteed: "fiscal.outcome.guaranteed",
@@ -407,6 +416,12 @@
   {:else if snapshot && surface === "desk"}
     <section class="surface desk" aria-labelledby="desk-heading">
       <h1 id="desk-heading">{t("surface.desk.title", {}, era)}</h1>
+      {#if liveFeatures?.pet_adoption}
+        {@const adoption = liveFeatures.pet_adoption}
+        <AdoptionCard availability={adoption.pet_adoption} adopted={adoption.pets[0]} {era} {pending} controlsEnabled={founderControls}
+          rejection={intentNotice?.startsWith("pet.adoption.reject.") ? intentNotice : null} reducedMotion={prefersReducedMotion}
+          onAdopt={(speciesID, nameKey) => act({ kind: "adopt_pet", species_id: speciesID, name_key: nameKey }, { scope: "founder", rejections: ADOPTION_REJECTIONS, applied: adoptionApplied })} />
+      {/if}
       <section class="manual cc-window">
         <h2>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).title_key, {}, era)}</h2>
         <p>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).description_key, {}, era)}</p>

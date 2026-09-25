@@ -235,3 +235,60 @@ precedent. No re-pin was made.
 
 **Evidence (cold):** `./gameui ./account ./gameserver ./pet` pass; the client passes 6753 tests;
 typecheck, gofmt and vet are clean; the generated API is updated.
+
+## 2026-09-25 — P6b: the adoption surface and visual contract (Claude)
+
+**What landed** (all under the unguarded `client/src/game-ui/pet/`, so no kernel bump):
+- the `petVisualSpec` pure contract;
+- `palette.json`: 10 fur swatches, each a `{fur, outline}` pair;
+- the CSS-only `PetSprite.svelte`, using governed animation longhands; the boundary lint rejects
+  the literal `animation` shorthand;
+- `AdoptionCard.svelte`, mounted on the Desk in `GameUIApp.svelte` and wired as a Founder-scope
+  intent with inline rejection copy.
+
+**Recorded readings:**
+- **Swatch contrast:** PA8.5 says "each swatch pair must pass the non-text contrast check against
+  its background". The outline is what carries the shape boundary, so the outline must reach 3:1
+  against each era's `bg` and `surface`. The fur colour is decorative.
+- **Swatch colours** are implementer-chosen presentation data (OD-7 "ported from the cattery fur
+  palette"). The cattery source is not in this repo, so they are placeholders for owner
+  ratification.
+
+**Tests:**
+- `test/pet-visual.test.ts`: the pose map; animate is false under reduced motion; unknown palettes
+  are refused; palette coverage of the fixture ids; the 3:1 outline contrast in both eras; a pale
+  outline proven to fail the gate.
+- `test/pet-adoption-browser.test.ts`, through the `test/PetAdoptionHarness.svelte` resync
+  harness, 9/9 across chromium, firefox and webkit:
+  - keyboard name choice and Adopt;
+  - no price or urgency text;
+  - focus lands on the welcome heading;
+  - exactly one live region, and no re-announce or focus theft on resync;
+  - the sprite is `aria-hidden`;
+  - under reduced motion the pose is static, with computed `animationName: none`;
+  - 320 px reflow;
+  - an inline rejection tied through `aria-describedby`;
+  - Not now collapses to an entry point and reopens;
+  - axe WCAG 2.2 AA in three states.
+
+**Severing** (chromium, each ran 1 failed | 2 passed):
+
+| Probe | Change |
+|---|---|
+| B1 | announcement dedupe removed (caught by the focus-theft check; a first version of this assertion only compared text and was strengthened before severing) |
+| B2 | animate forced true under reduced motion |
+| B3 | sprite not `aria-hidden` |
+| B4 | a "$0.00" line injected |
+
+**Evidence (cold):**
+- `make typecheck build-client test-client verify-client-boundary copy-check` pass.
+- `make test-browser` gives 20422 passed and 2 failed. Both failures are in `test/replay.test.ts`
+  "loads Typer only with its definition…" (TT-PA3): the browser dynamic `?raw` import of
+  `balance/testdata/typer-v1.json`. It is **pre-existing and out of scope**: it reproduces at clean
+  `c380896a` and at `ec47af68`, which predates any Pet Adoption commit. It belongs to the Typer
+  lane.
+- `make test-game-ui-composed` passes (Pitch phase plus v4 lifecycle).
+
+**Not done here:**
+- AC12's full R-005 D-018 matrix, which stays carried.
+- A composed real-server adoption witness, which needs a minted epoch pinning `pet_species`.
