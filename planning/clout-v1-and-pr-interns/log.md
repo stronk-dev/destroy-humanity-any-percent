@@ -253,3 +253,47 @@ interns[{upgrade_id, minimum, factor_ppm, owned, factor}]}` (CV5/CV9).
   and `test-game-ui-composed` all pass.
 
 **Kernel:** 0.3.127 → 0.3.128, because `server/production/axis_stack.go` gained the read helpers.
+
+## 2026-09-25 — P6 (partial): harness refusal and the axis_input_within_cap invariant (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review.
+
+**Finding (blocks the rest of CV10):** both harness runtimes execute pre-foundation Company
+semantics. `newFirstHourCompany` builds a v14-shaped state, and no achievement hook runs, so the
+run-local attainment input cannot be evaluated inside the harness. Severing probe H1 demonstrates
+the consequence: with the refusal below removed, a first-hour run on the v5 fixture economy
+**completes with a silently neutral stack**. The policy never buys a PR row and nothing reports it.
+PR-row relevance (AC9 ANY/ALL), the `factor_ppm = 1` dead-row fixture and the time-to-first-PR
+observation all need the harness to execute the attainment pass. Two choices:
+- (a) the harness runs the served foundation hook (a larger harness change that affects every
+  pacing baseline); or
+- (b) a harness-local attainment observer over simulated decisions.
+
+This is a harness-architecture decision for the RFC author/owner (DESIGN-GAP DG-D); nothing was
+improvised.
+
+**What landed (`server/harness/axis_stack.go`):**
+- `refuseAxisStack`: the Phase-0 `newSuite` and the first-hour `runWithModes` refuse any economy
+  declaring `axis_stack` (`ErrAxisStackUnevaluated`). This is AC9's "a v5 economy must fail loudly
+  rather than run neutral".
+- `CheckAxisInputWithinCap`, the `axis_input_within_cap` invariant, is wired into
+  `validateFirstHourCompany`. It is inert without a Company v19 set, so it is currently
+  unreachable in scenarios.
+- Tests:
+  - `TestHarnessRefusesUnevaluatedAxisStack`: Phase-0 and first-hour both refuse; the epoch-8
+    control completes.
+  - `TestAxisInputWithinCapInvariant`: 8 is accepted, 60 saturates and is accepted, -1 is
+    rejected, and the check is inert without the set.
+
+**Severing:**
+- H1 (removing the first-hour refusal) → the test fails, and shows the neutral completion above.
+- H2 (removing the invariant's own negative check) **survives**: `production.AxisInput` already
+  rejects a negative input, so this is a redundant layer, not a vacuous check. The explicit check is
+  kept as documentation.
+
+**Push harness:** `make test-harness` takes 42.5 s cold. Nothing multi-minute was added, so no
+exhaustive flag is needed.
+
+**Not done:** PR-row relevance, the dead-row fixture, the time-to-first-PR observation, the pacing
+envelopes on a minted bundle, and ratcheting the invariant into the scenario `required_invariants`
+registry. All wait on DG-D; the registry ratchet would change the ratified scenario bytes.

@@ -140,6 +140,9 @@ func (suite *FirstHourSuite) runWithModes(spec RunSpec, seed uint64, experiment 
 	if err := validateFirstHourExperiment(experiment); err != nil {
 		return failFirstHour(result, err), commands, career, tier2
 	}
+	if err := refuseAxisStack(suite.Bundle.Economy); err != nil {
+		return failFirstHour(result, err), commands, career, tier2
+	}
 	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
 	if !ok {
 		return failFirstHour(result, fmt.Errorf("unknown first-hour policy %s v%d", spec.PolicyID, spec.PolicyVersion)), commands, career, tier2
@@ -717,7 +720,7 @@ func validateFirstHourCompany(catalog *economy.Catalog, state *save.State) error
 	if err := validateStateDomain(catalog, state); err != nil {
 		return fmt.Errorf("first-hour numeric/resource domain: %w", err)
 	}
-	return nil
+	return CheckAxisInputWithinCap(catalog, state)
 }
 
 func (runtime *firstHourRuntime) selectBranch() (string, string, decimal.Decimal, error) {

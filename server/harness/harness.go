@@ -236,6 +236,9 @@ func newSuite(scenario Scenario, scenarioBytes, catalogBytes, routesCatalogBytes
 	if err != nil {
 		return nil, err
 	}
+	if err := refuseAxisStack(catalog); err != nil {
+		return nil, err
+	}
 	commonsCatalog, err := commons.LoadCatalog(commonsCatalogBytes)
 	if err != nil {
 		return nil, err

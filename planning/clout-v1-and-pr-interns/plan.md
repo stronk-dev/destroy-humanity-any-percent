@@ -23,8 +23,8 @@ lands, with the allowed writer set empty.
   pass (Go + TS), `achievement_reattained.v1` event + migration, new-run activation, Exit discard,
   migration corpus. ACs 3, 5, 6, 7, 8.
 - [x] P4 (`4c089f00`) — AC4 Gaia-law structural test (empty writer set under A; seeded writer fails).
-- [x] P5 (`see log P5`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress. AC11.
-- [ ] P6 — CV10 harness: scenario bundle rejection without achievements, relevance mask, dead-row
+- [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress. AC11.
+- [ ] P6 — PARTIAL (see log P6; blocked on harness attainment evaluation) — CV10 harness: scenario bundle rejection without achievements, relevance mask, dead-row
   fixture, observation + `axis_input_within_cap` invariant. AC9.
 - [ ] P7 — Canon docs (AC12). Partial: `docs/axis-stack.md` and pointers landed; RFC index/manifest G09 rows and the final range are owed at completion.
 - [ ] Designated Codex review, archival (Codex).
