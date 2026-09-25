@@ -454,3 +454,18 @@ func (tree *Tree) Purchase(level, spent int64, owned []string, nodeID string) (P
 	}
 	return PurchaseResult{Node: node, SpentAfter: spent + node.Cost, OwnedAfter: after, UnlockPPMAfter: unlock}, nil, nil
 }
+
+// OwnedStarters returns the owned starter nodes known to this tree, in tree
+// array order (R4 step 4). Unknown owned ids are ignored (OD-7).
+func (tree *Tree) OwnedStarters(owned []string) ([]Node, error) {
+	if tree == nil || !SortedUnique(owned) {
+		return nil, ErrInvalidState
+	}
+	result := []Node{}
+	for _, node := range tree.nodes {
+		if node.Kind == KindStarter && contains(owned, node.NodeID) {
+			result = append(result, node)
+		}
+	}
+	return result, nil
+}

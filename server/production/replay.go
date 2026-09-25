@@ -333,6 +333,11 @@ type replayFounderExtensions struct {
 	Soul                   int64                                       `json:"soul"`
 	SoulExhaustedSourceIDs []string                                    `json:"soul_exhausted_source_ids"`
 	MinigameSessionSeq     int64                                       `json:"minigame_session_seq"`
+	// Replay-inputs v9 (Reputation Tree v1 R6): present exactly when the
+	// pinned bundle's Founder floor is at least 22.
+	ReputationSpent      *int64    `json:"reputation_spent,omitempty"`
+	ReputationUnlockPPM  *int64    `json:"reputation_unlock_ppm,omitempty"`
+	ReputationNodesOwned *[]string `json:"reputation_nodes_owned,omitempty"`
 }
 
 type replayInputsWire struct {
@@ -990,6 +995,13 @@ func validFounderCarry(carry replayFounderCarry, wireVersion int, catalogs Catal
 	} else if (founderFloor >= 17) != (carry.FounderExtensions != nil) {
 		return false
 	}
+	if extensions := carry.FounderExtensions; extensions != nil {
+		present := extensions.ReputationSpent != nil && extensions.ReputationUnlockPPM != nil && extensions.ReputationNodesOwned != nil
+		absent := extensions.ReputationSpent == nil && extensions.ReputationUnlockPPM == nil && extensions.ReputationNodesOwned == nil
+		if founderFloor >= 22 && (wireVersion < 9 || !present) || founderFloor < 22 && !absent {
+			return false
+		}
+	}
 	last := ""
 	for _, fact := range carry.LedgerFactKinds {
 		if fact <= last {
@@ -1092,10 +1104,12 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 		return nil, ErrInvalidReplayInputs
 	}
 	if founderFloor >= 22 {
-		// DESIGN-GAP RT-DG-C: the Founder carry has no Reputation tree fields
-		// until the next replay-inputs version (R6, B5/B6). Reconstructing a
-		// v22 Founder without them would silently zero spent/owned, so the
-		// carry fails closed instead.
+		if extensions.ReputationSpent == nil || extensions.ReputationUnlockPPM == nil || extensions.ReputationNodesOwned == nil {
+			return nil, ErrInvalidReplayInputs
+		}
+		state.ReputationSpent, state.ReputationUnlockPPM = *extensions.ReputationSpent, *extensions.ReputationUnlockPPM
+		state.ReputationNodesOwned = append([]string{}, (*extensions.ReputationNodesOwned)...)
+	} else if extensions.ReputationSpent != nil || extensions.ReputationUnlockPPM != nil || extensions.ReputationNodesOwned != nil {
 		return nil, ErrInvalidReplayInputs
 	}
 	if err := catalogs.ValidateFoundationState(state); err != nil {
@@ -1356,6 +1370,10 @@ func founderCarry(state *save.State) replayFounderCarry {
 			FiscalPeriodSequence: state.FiscalPeriodSequence, FiscalGeneratorLevels: cloneInt64Counts(state.FiscalGeneratorLevels), FiscalUnlocks: unlocks,
 			Soul: state.Soul, SoulExhaustedSourceIDs: exhausted, MinigameSessionSeq: state.MinigameSessionSeq,
 		}
+		if save.VersionForState(state) >= 22 {
+			spent, unlock, owned := state.ReputationSpent, state.ReputationUnlockPPM, append([]string{}, state.ReputationNodesOwned...)
+			extensions.ReputationSpent, extensions.ReputationUnlockPPM, extensions.ReputationNodesOwned = &spent, &unlock, &owned
+		}
 		if extensions.MinigameRatings == nil {
 			extensions.MinigameRatings = map[string]save.MinigameRatingState{}
 		}
@@ -1383,7 +1401,25 @@ func cloneFounderExtensions(source *replayFounderExtensions) *replayFounderExten
 		FiscalPeriodSequence: source.FiscalPeriodSequence, FiscalGeneratorLevels: cloneInt64Counts(source.FiscalGeneratorLevels),
 		FiscalUnlocks: append([]string{}, source.FiscalUnlocks...), Soul: source.Soul,
 		SoulExhaustedSourceIDs: append([]string{}, source.SoulExhaustedSourceIDs...), MinigameSessionSeq: source.MinigameSessionSeq,
+		ReputationSpent: cloneInt64Pointer(source.ReputationSpent), ReputationUnlockPPM: cloneInt64Pointer(source.ReputationUnlockPPM),
+		ReputationNodesOwned: cloneStringSlicePointer(source.ReputationNodesOwned),
 	}
+}
+
+func cloneInt64Pointer(value *int64) *int64 {
+	if value == nil {
+		return nil
+	}
+	copied := *value
+	return &copied
+}
+
+func cloneStringSlicePointer(value *[]string) *[]string {
+	if value == nil {
+		return nil
+	}
+	copied := append([]string{}, (*value)...)
+	return &copied
 }
 
 func cloneMinigameRatingsForReplay(source map[string]save.MinigameRatingState) map[string]save.MinigameRatingState {
@@ -1446,7 +1482,7 @@ func boolMapFromSorted(values []string) map[string]bool {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

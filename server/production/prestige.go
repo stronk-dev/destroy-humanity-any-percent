@@ -276,6 +276,10 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 			return save.ExitDecision{}, err
 		}
 	}
+	reputationStarted, err := applyReputationStarters(nextBundle, founder, newCompany)
+	if err != nil {
+		return save.ExitDecision{}, err
+	}
 	if (nextBundle.Opportunities != nil) != (nextActive != nil) {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
@@ -305,7 +309,15 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		endedPayloadMap["starter_package"] = branch.StarterPackage
 	}
 	endedPayload, _ := json.Marshal(endedPayloadMap)
-	startedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}})
+	startedPayloadMap := map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}}
+	startedSchema := 1
+	if reputationStarted != nil {
+		// run_started v2 (R7): the [NEW ROUTE] carry-over summary. Emitted only
+		// for runs whose bundle pins a tree (RT-DG-D); v1 stays byte-identical.
+		startedSchema = 2
+		startedPayloadMap["reputation_tree"] = reputationStarted
+	}
+	startedPayload, _ := json.Marshal(startedPayloadMap)
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})
 	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany, nextBundle.Economy)})
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
@@ -322,7 +334,7 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		NewRunFrozenContributions: frozen,
 		VersionFloors:             exitVersionFloors(currentBundle, nextBundle),
 		FounderEvents:             []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
-		CompanyEndedEvents:        endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: startedPayload}}}, nil
+		CompanyEndedEvents:        endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: startedSchema, IntentID: request.IntentID, Payload: startedPayload}}}, nil
 }
 
 func (s *Service) executedRoutesAt(ctx context.Context, streamID string, expectedRevision int64) ([]string, error) {
@@ -545,4 +557,62 @@ func setTierFromGate(state *save.State, gateID string) error {
 		state.Tier = tier
 	}
 	return nil
+}
+
+// reputationRunStarted is run_started v2's reputation_tree block.
+type reputationRunStarted struct {
+	BonusFactor           string   `json:"bonus_factor"`
+	AppliedStarterNodeIDs []string `json:"applied_starter_node_ids"`
+}
+
+// applyReputationStarters is R4 step 4: every owned starter node known to the
+// next bundle's tree, in tree array order, applied additively after the
+// curriculum starter. R2 rule 7 guarantees headroom, so any cap violation is
+// an engine-state error, never a clamp. It returns run_started v2's summary,
+// or nil when the next bundle has no tree.
+func applyReputationStarters(next CatalogBundle, founder, newCompany *save.State) (*reputationRunStarted, error) {
+	tree := next.ReputationTree
+	if tree == nil {
+		return nil, nil
+	}
+	if founder == nil || newCompany == nil || validateFounderReputationState(tree, founder) != nil {
+		return nil, ErrInvalidEngineState
+	}
+	starters, err := tree.OwnedStarters(founder.ReputationNodesOwned)
+	if err != nil {
+		return nil, ErrInvalidEngineState
+	}
+	applied := make([]string, 0, len(starters))
+	for _, node := range starters {
+		starter := node.Starter
+		switch starter.Kind {
+		case "resource_grant":
+			amount, parseErr := decimal.ParseCanonical(starter.Amount)
+			if parseErr != nil {
+				return nil, ErrInvalidEngineState
+			}
+			if _, applyErr := newCompany.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{ResourceID: starter.ResourceID, Delta: amount}}}); applyErr != nil {
+				return nil, fmt.Errorf("%w: reputation starter %s: %v", ErrInvalidEngineState, node.NodeID, applyErr)
+			}
+		case "generated_generators":
+			limit := decimal.MaxExactInteger
+			if generator, ok := next.Economy.GeneratorClass(starter.GeneratorID); ok && generator.ProvisionedHardcap != nil {
+				limit = generator.ProvisionedHardcap.Count
+			}
+			if newCompany.GeneratorProvisioned[starter.GeneratorID] > limit-starter.Count {
+				return nil, fmt.Errorf("%w: reputation starter %s exceeds the provisioned hardcap", ErrInvalidEngineState, node.NodeID)
+			}
+			newCompany.GeneratorProvisioned[starter.GeneratorID] += starter.Count
+		case "preowned_upgrade":
+			newCompany.UpgradesOwned[starter.UpgradeID] = true
+		default:
+			return nil, ErrInvalidEngineState
+		}
+		applied = append(applied, node.NodeID)
+	}
+	factor, err := tree.BonusFactor(founder.ReputationLevel, founder.ReputationSpent, founder.ReputationUnlockPPM)
+	if err != nil {
+		return nil, err
+	}
+	return &reputationRunStarted{BonusFactor: factor.String(), AppliedStarterNodeIDs: applied}, nil
 }

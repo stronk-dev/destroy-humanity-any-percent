@@ -16,7 +16,7 @@ import { advanceMeters, contributionKey as meterContributionKey, newRunMeterStat
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseRelevancePolicy, type RelevancePolicy } from "./relevance";
-import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationPurchase, reputationUnlockPpm as reputationUnlockPpmFor, type ReputationTree } from "./reputation";
+import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationBonusFactor, reputationPurchase, reputationUnlockPpm as reputationUnlockPpmFor, type ReputationTree } from "./reputation";
 import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
@@ -123,7 +123,7 @@ interface ActiveSpawnEvidence { sequence:number; sampled_interval_ms:number; eff
 interface ActiveClaimEvidence { opportunity_id:string; effect_row_id:string; selected_target:string|null; buff_instance_id:string|null; requested_delta:string|null; actual_credited_delta:string|null; saturated:boolean|null; cap_reason_key:string|null; next_sampled_interval_ms:number; next_opportunity_attended_ms:number }
 interface ActiveScheduleEvidence { attended_now_ms:number; before_sequence:number; before_next_opportunity_attended_ms:number; after_sequence:number; after_next_opportunity_attended_ms:number; expired_buffs:{buff_instance_id:string}[]; missed_opportunity_id:string|null; spawned:ActiveSpawnEvidence|null; claim:ActiveClaimEvidence|null }
 interface ReplayOfflineCatchup { opened_at_ms: number; offline_span: { from_ms: number; to_ms: number } }
-interface ReplayWire { v: 2 | 3 | 4 | 5 | 6 | 7 | 8; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; offline_catchup: ReplayOfflineCatchup | null; resolved: Record<string, unknown> }
+interface ReplayWire { v: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; offline_catchup: ReplayOfflineCatchup | null; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
 interface FounderExtensions {
   minigame_ratings: Record<string, { elo: number; season_member: string; games_counted: number }>;
@@ -132,6 +132,8 @@ interface FounderExtensions {
   fiscal_credit: number; fiscal_period_opened_wall_ms: number; fiscal_period_seq: number;
   fiscal_generator_levels: Record<string, number>; fiscal_unlocks: string[];
   soul: number; soul_exhausted_source_ids: string[]; minigame_session_seq: number;
+  // Replay-inputs v9 (Reputation Tree v1 R6): present exactly when the Founder floor is at least 22.
+  reputation_spent?: number; reputation_unlock_ppm?: number; reputation_nodes_owned?: string[];
 }
 interface FounderCarry {
   founder_revision: number; founder_constants_hash: string; reputation_level: number; route_knowledge_balance: number;
@@ -1618,6 +1620,31 @@ function applyCurriculumStarter(state: ReplayState, economy: EconomyCatalog, sta
   }
 }
 
+// Reputation Tree v1 R4 step 4, byte-parallel to Go applyReputationStarters:
+// owned starter nodes in tree array order, applied additively after the
+// curriculum starter; returns run_started v2's summary or null without a tree.
+function applyReputationStarters(next: ReplayCatalogBundle, founder: FounderCarry, company: ReplayState): { bonus_factor: string; applied_starter_node_ids: string[] } | null {
+  const tree = next.reputationTree;
+  if (!tree) return null;
+  const extensions = founder.founder_extensions;
+  if (!extensions || extensions.reputation_spent === undefined || extensions.reputation_unlock_ppm === undefined || extensions.reputation_nodes_owned === undefined) throw new RangeError("missing Founder Reputation carry");
+  if (reputationUnlockPpmFor(tree, extensions.reputation_nodes_owned) !== extensions.reputation_unlock_ppm) throw new RangeError("Founder Reputation mirror mismatch");
+  const applied: string[] = [];
+  for (const node of tree.nodes) {
+    if (node.kind !== "starter" || !extensions.reputation_nodes_owned.includes(node.node_id)) continue;
+    const starter = node.starter;
+    if (starter.kind === "resource_grant") applyLedger(company, next.economy, [{ resource: starter.resource_id, delta: parseCanonical(starter.amount) }], false);
+    else if (starter.kind === "generated_generators") {
+      const limit = next.economy.generatorClass(starter.generator_id)?.provisionedHardcap?.count ?? MAX_EXACT_INTEGER;
+      const current = company.generatorsProvisioned[starter.generator_id] ?? 0;
+      if (current > limit - starter.count) throw new RangeError("Reputation starter exceeds the provisioned hardcap");
+      company.generatorsProvisioned[starter.generator_id] = current + starter.count;
+    } else company.upgradesOwned.add(starter.upgrade_id);
+    applied.push(node.node_id);
+  }
+  return { applied_starter_node_ids: applied, bonus_factor: reputationBonusFactor(founder.reputation_level, extensions.reputation_spent, tree.bonus.per_level_ppm, extensions.reputation_unlock_ppm) };
+}
+
 function promiseTerms(preview: ExitTerms, current: ExitTerms): ExitTerms {
   const slots = new Map<string, NetworkSlot>();
   for (const slot of current.network_slot_unlocks) slots.set(slot.slot, slot);
@@ -1656,9 +1683,7 @@ function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogB
     extensions.soul = next.soul.policy.soul_initial; extensions.soul_exhausted_source_ids = [];
   }
   if (nextFloor >= 21) extensions.minigame_session_seq = 0;
-  // DESIGN-GAP RT-DG-C: the carry gains Reputation tree fields only with the
-  // next replay-inputs version (R6); until then a v22 carry fails closed.
-  if (nextFloor >= 22) throw new RangeError("Founder carry cannot yet represent Reputation tree state");
+  if (nextFloor >= 22 && currentFloor < 22) { extensions.reputation_spent = 0; extensions.reputation_unlock_ppm = 0; extensions.reputation_nodes_owned = []; }
   founder.founder_extensions = parseFounderExtensions(extensions, next);
 }
 
@@ -1691,13 +1716,15 @@ async function finishLoggedExit(company: ReplayState, founder: FounderCarry, int
   advanceFounderExtensions(founder, current, next, nowMs);
   const newCompany = newRunState(next, company, founder, nowMs);
   if (branch !== null) applyCurriculumStarter(newCompany, next.economy, branch.starter_package);
+  const reputationStarted = applyReputationStarters(next, founder, newCompany);
   if(next.opportunities){if(nextActive===null||nextActive.sequence!==0||nextActive.spawned_attended_ms!==nextActive.sampled_interval_ms||nextActive.expires_attended_ms-nextActive.spawned_attended_ms!==next.opportunities.schedule.lifetimeMs)throw new RangeError("missing next active schedule");const seed=await founderSeed(command.founder_id,newCompany.runSeq),selection=selectActivePlayEffect(next.opportunities,seed,0);if(selection.effectRowId!==nextActive.effect_row_id||selection.effectDraw.toString()!==nextActive.effect_draw||(selection.generatorDraw?.toString()??null)!==nextActive.generator_draw||selection.selectedGenerator!==nextActive.selected_generator_id||activePlayOpportunityId(seed,0,nextActive.spawned_attended_ms)!==nextActive.opportunity_id)throw new RangeError("next active selection mismatch");newCompany.nextOpportunityAttendedMs=nextActive.spawned_attended_ms;}else if(nextActive!==null)throw new RangeError("unexpected next active schedule");
   const runID = { company_stream_id: command.company_stream_id, run_seq: company.runSeq };
   const founderEvent = event("founder_advanced", intentId, { exit_type: exitType, founder_id: command.founder_id, occurred_at_ms: nowMs, reputation_delta: terms.reputation_delta, route_knowledge: terms.route_knowledge, run_id: runID });
   if (acceptedOfferId !== null) prefix.push(event("exit_offer_resolved", intentId, { offer_id: acceptedOfferId, resolution: "accepted" }));
   const endedBase = { assisted: { advisor: founder.advisor_mode, commons: company.compactMember }, attended_ms: attended, ended_at_ms: nowMs, executed_routes: executedRoutes, exit_type: exitType, faction: company.factionId || null, founder_id: command.founder_id, gates_crossed: Object.keys(company.gatesCrossed).filter((gate) => company.gatesCrossed[gate]).sort(byteCompare), generators_purchased_total: company.generatorPurchasedTotal, ledger_fact_kinds: [...company.ledgerFactKinds].sort(byteCompare), lifetime_value: company.lifetimeValue, payout: terms, pre_timer: company.runPreTimer, rta_ms: nowMs - company.runStartedAtMs, run_id: runID, started_at_ms: company.runStartedAtMs, terminal_seq: command.run_log_seq, tier: company.tier };
   const endedEvent = branch === null ? event("run_ended", intentId, endedBase, 2) : event("run_ended", intentId, { ...endedBase, branch: branch.branch, starter_package: branch.starter_package }, 3);
-  const startedEvent = event("run_started", intentId, { assisted: { advisor: founder.advisor_mode, commons: false }, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: newCompany.runSeq }, started_at_ms: nowMs });
+  const startedBase = { assisted: { advisor: founder.advisor_mode, commons: false }, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: newCompany.runSeq }, started_at_ms: nowMs };
+  const startedEvent = reputationStarted === null ? event("run_started", intentId, startedBase) : event("run_started", intentId, { ...startedBase, reputation_tree: reputationStarted }, 2);
   const receipt = { applied_count: 1, evaluated_at: rfc3339(nowMs), founder_revision: founder.founder_revision + 1, intent_id: intentId, new_revision: command.revision + 2, outcome: "applied", receipt: { changes: [] }, snapshot: wireSnapshot(newCompany, next.economy) };
   return { founder, finalCompany: company, newCompany, outcome: "applied", receipt, founderEvents: [founderEvent], companyEndedEvents: [...prefix, endedEvent], companyStartedEvents: [startedEvent] };
 }
@@ -1725,7 +1752,7 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
 function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire {
   const hasCatchupKey = isRecord(source) && "offline_catchup" in source; const hasCatchup = hasCatchupKey && source.offline_catchup !== null;
   const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", ...(hasCatchupKey ? ["offline_catchup"] : []), "resolved"], "replay inputs");
-  if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 && root.v !== 7 && root.v !== 8 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline" || hasCatchup && root.v < 7) throw new SyntaxError("invalid replay envelope");
+  if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 && root.v !== 7 && root.v !== 8 && root.v !== 9 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline" || hasCatchup && root.v < 7) throw new SyntaxError("invalid replay envelope");
   const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command");
   const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) };
   if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch");
@@ -1893,7 +1920,8 @@ function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementB
 
 function parseFounderExtensions(source: unknown, catalogs: ReplayCatalogBundle): FounderExtensions {
   if (!catalogs.minigames) throw new SyntaxError("Founder extensions require minigames");
-  const raw = exactObject(source, ["minigame_ratings", "minigame_offline_quality", "pets", "fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks", "soul", "soul_exhausted_source_ids", "minigame_session_seq"], "Founder extensions");
+  const reputationKeys = catalogs.reputationTree ? ["reputation_spent", "reputation_unlock_ppm", "reputation_nodes_owned"] : [];
+  const raw = exactObject(source, ["minigame_ratings", "minigame_offline_quality", "pets", "fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks", "soul", "soul_exhausted_source_ids", "minigame_session_seq", ...reputationKeys], "Founder extensions");
   const ratingRows = exactRecord(raw.minigame_ratings, catalogs.minigames.minigameIds, "Founder carry ratings");
   const qualityRows = exactRecord(raw.minigame_offline_quality, catalogs.minigames.minigameIds, "Founder carry quality");
   const minigame_ratings = Object.fromEntries(catalogs.minigames.minigameIds.map((id) => {
@@ -1929,10 +1957,17 @@ function parseFounderExtensions(source: unknown, catalogs: ReplayCatalogBundle):
     for (const id of soul_exhausted_source_ids) if (!catalogs.soul.debit_sources.find((row) => row.source_id === id)?.may_exhaust) throw new SyntaxError("unknown Founder carry exhausted Soul source");
   } else if (safeInteger(raw.soul, 0, 0) !== 0 || array(raw.soul_exhausted_source_ids, "inactive Soul sources").length !== 0) throw new SyntaxError("Soul state without artifact");
   const minigame_session_seq = catalogs.minigameAPI ? safeInteger(raw.minigame_session_seq, 0, MAX_EXACT_INTEGER) : safeInteger(raw.minigame_session_seq, 0, 0);
-  return { minigame_ratings, minigame_offline_quality, pets, fiscal_credit, fiscal_period_opened_wall_ms, fiscal_period_seq, fiscal_generator_levels, fiscal_unlocks, soul, soul_exhausted_source_ids, minigame_session_seq };
+  const extensions: FounderExtensions = { minigame_ratings, minigame_offline_quality, pets, fiscal_credit, fiscal_period_opened_wall_ms, fiscal_period_seq, fiscal_generator_levels, fiscal_unlocks, soul, soul_exhausted_source_ids, minigame_session_seq };
+  if (catalogs.reputationTree) {
+    extensions.reputation_spent = safeInteger(raw.reputation_spent, 0, MAX_EXACT_INTEGER);
+    extensions.reputation_unlock_ppm = safeInteger(raw.reputation_unlock_ppm, 0, 1_000_000);
+    extensions.reputation_nodes_owned = sortedUniqueMechanical(array(raw.reputation_nodes_owned, "Founder carry reputation nodes"));
+    if (extensions.reputation_unlock_ppm !== reputationUnlockPpmFor(catalogs.reputationTree, extensions.reputation_nodes_owned)) throw new SyntaxError("Founder carry reputation unlock mirror mismatch");
+  }
+  return extensions;
 }
 
-function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6 | 7 | 8): FounderCarry {
+function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9): FounderCarry {
   const legacyKeys = ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"];
   const floor = founderVersionFloor(catalogs);
   const keys = wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys;
@@ -1954,6 +1989,7 @@ function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireV
     if (wireVersion < 3 || achievementScore(catalogs.achievements, new Set(earnedLifetime)) !== lifetimeScore) throw new RangeError("invalid active Founder achievement carry");
   } else if (earnedLifetime.length !== 0 || lifetimeScore !== 0) throw new RangeError("legacy Founder carry contains active foundation state");
   if (wireVersion < 6 && floor > 16) throw new SyntaxError("legacy replay inputs cannot carry Founder feature state");
+  if (wireVersion < 9 && floor >= 22) throw new SyntaxError("pre-v9 replay inputs cannot carry Reputation tree state");
   if (wireVersion >= 6 && floor >= 17) carry.founder_extensions = parseFounderExtensions(carry.founder_extensions, catalogs);
   let lastFact = "";
   for (const item of array(carry.ledger_fact_kinds, "founder facts")) {

@@ -137,3 +137,22 @@ row fails the commit.
 
 Production reads a run's bonus only from the stored rows, so a mid-run purchase leaves the current
 run's contributions byte-identical and changes only the next run's frozen factor.
+
+## Starters, run_started v2, and the v9 carry (R4, R6 carry half, R7)
+
+**Replay inputs v9.** Replay-inputs moves to v9 (`save.ReplayInputsVersion`), and v2–v8 remain
+readable. The Founder carry extension adds `reputation_spent`, `reputation_unlock_ppm` and
+`reputation_nodes_owned`. These fields are present exactly when the pinned bundle's Founder floor is
+22 or higher. They are rejected before v9 and absent below floor 22. A v22 Founder therefore now
+reconstructs from a carry in both runtimes, replacing the earlier fail-closed behavior.
+
+**New-run assembly.** After the curriculum starter, every owned `starter` node known to the next
+bundle's tree is applied additively, in tree array order:
+- `resource_grant` credits the ledger;
+- `generated_generators` adds to provisioned units, and exceeding the provisioned hardcap is an
+  engine error, never a clamp;
+- `preowned_upgrade` sets ownership.
+
+**run_started v2.** When the new run's bundle has a tree, `run_started` is emitted at schema 2 with
+`reputation_tree: {bonus_factor, applied_starter_node_ids}`; otherwise v1 stays byte-identical.
+`save.validateEvent` checks the arm, and migration 00077 admits schema 2.

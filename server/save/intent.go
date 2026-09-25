@@ -574,11 +574,38 @@ func validateIntentDecision(decision IntentDecision, intentID string) error {
 	return nil
 }
 
+// validRunStartedReputation is run_started v2's reputation_tree arm (Reputation
+// Tree v1 R7): null, or {bonus_factor >= 1, unique mechanical node ids}.
+func validRunStartedReputation(raw json.RawMessage) bool {
+	if string(raw) == "null" {
+		return true
+	}
+	var value struct {
+		BonusFactor           string   `json:"bonus_factor"`
+		AppliedStarterNodeIDs []string `json:"applied_starter_node_ids"`
+	}
+	if decodeStrictJSON(raw, &value) != nil || value.AppliedStarterNodeIDs == nil {
+		return false
+	}
+	factor, err := decimal.ParseCanonical(value.BonusFactor)
+	if err != nil || !factor.IsStateValue() || factor.Lt(decimal.One) {
+		return false
+	}
+	seen := map[string]bool{}
+	for _, id := range value.AppliedStarterNodeIDs {
+		if !mechanicalIDPattern.MatchString(id) || seen[id] {
+			return false
+		}
+		seen[id] = true
+	}
+	return true
+}
+
 func validEventSchemaVersion(event EventWrite) bool {
 	if event.Kind == EventRunEnded {
 		return event.SchemaVersion == 2 || event.SchemaVersion == 3
 	}
-	if event.Kind == EventOpportunityClaimed || event.Kind == EventBuffStarted {
+	if event.Kind == EventOpportunityClaimed || event.Kind == EventBuffStarted || event.Kind == EventRunStarted {
 		return event.SchemaVersion == 1 || event.SchemaVersion == 2
 	}
 	return event.SchemaVersion == 1
@@ -1115,13 +1142,15 @@ func validateEventPayload(event EventWrite) error {
 		}
 	case EventRunStarted:
 		var payload struct {
-			FounderID   string        `json:"founder_id"`
-			RunID       routeRunID    `json:"run_id"`
-			StartedAtMS int64         `json:"started_at_ms"`
-			Assisted    eventAssisted `json:"assisted"`
+			FounderID      string          `json:"founder_id"`
+			RunID          routeRunID      `json:"run_id"`
+			StartedAtMS    int64           `json:"started_at_ms"`
+			Assisted       eventAssisted   `json:"assisted"`
+			ReputationTree json.RawMessage `json:"reputation_tree"`
 		}
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) ||
-			!validRouteRunID(payload.RunID) || payload.StartedAtMS <= 0 || payload.StartedAtMS > decimal.MaxExactInteger {
+			!validRouteRunID(payload.RunID) || payload.StartedAtMS <= 0 || payload.StartedAtMS > decimal.MaxExactInteger ||
+			(event.SchemaVersion == 1) != (payload.ReputationTree == nil) || event.SchemaVersion == 2 && !validRunStartedReputation(payload.ReputationTree) {
 			return fmt.Errorf("%w: invalid run_started payload", ErrInvalidStream)
 		}
 	case EventFounderAdvanced:

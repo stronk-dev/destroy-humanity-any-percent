@@ -235,3 +235,43 @@ plan box therefore stays unchecked until then.
   contributions. The positive byte-identity check is recorded instead.
 - **B5b remains:** the R4 starter application at new-run assembly (a replay-inputs carry
   extension, RT-DG-C), `run_started` v2, and the TS side of the frozen row.
+
+## 2026-09-25 — B5b landed: starters, run_started v2, replay-inputs v9 (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**What landed:**
+- Go:
+  - `applyReputationStarters` in `prestige.go` (R4 step 4) and the run_started v2 emit;
+  - `reputation.Tree.OwnedStarters`;
+  - the replay-inputs v9 carry extension in `replay.go` (closes RT-DG-C);
+  - the run_started v2 payload/schema validation in `save/intent.go`;
+  - migration `00077_run_started_v2.sql`.
+- TS (`client/src/replay.ts`): v9 accepted, carry parse/advance with the tree fields,
+  `applyReputationStarters`, and the run_started v2 emit.
+- The shared corpus `testdata/replay/apply-logged-v1.json` was regenerated with `make
+  replay-fixture`. The diff is only the `v` field (8 → 9); no receipt, event or state byte moved.
+- Kernel version 0.3.112 → 0.3.113.
+
+**Process finding (mine):** `releasepackage.TestCurrentMigrationIsContiguous` pins the latest
+migration number (74).
+- My committed `541da96e` (00075) and `7ea6b942` (00076) broke that pin without my noticing,
+  because I ran `./releasepackage` only before those migrations existed.
+- The coordinator flagged it. This commit updates the pin to 77, the contiguous head.
+- Other `DatabaseMigration: 74` literals are fixture values, not pins, so they were left as-is.
+
+**Evidence (cold):**
+- Go: `go test -count=1` passes for save, production, replaycatalog, reputation, gameui,
+  account, gameserver and harness (harness ran the full 30 s).
+- Go: releasepackage, deploymentbackup, deploymentrelease and deploymentrehearsal pass.
+- Postgres integration passes for `./save` and `./production`, with 00077 applied.
+- Client: `make typecheck test-client` passes 6726 tests; existing replay parity is intact under
+  v9.
+
+**Not yet witnessed:**
+- Go and TS starter application across a real Exit with a tree bundle.
+- run_started v2 Go/TS byte parity.
+- AC8, the burnout curriculum plus `generated_beige_tower` totalling 15 generated.
+
+These need an Exit cross-runtime case on a tree bundle; that case is the next commit. B5's plan box
+stays open until then.
