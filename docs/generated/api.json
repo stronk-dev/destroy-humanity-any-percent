@@ -252,6 +252,143 @@
         ],
         "type": "object"
       },
+      "GameUIAxisAttained": {
+        "additionalProperties": false,
+        "properties": {
+          "achievement_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "earned_this_run": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "achievement_id",
+          "earned_this_run"
+        ],
+        "type": "object"
+      },
+      "GameUIAxisContribution": {
+        "additionalProperties": false,
+        "properties": {
+          "factor": {
+            "format": "canonical-decimal",
+            "type": "string"
+          },
+          "source_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "upgrade_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "factor",
+          "source_id",
+          "upgrade_id"
+        ],
+        "type": "object"
+      },
+      "GameUIAxisIntern": {
+        "additionalProperties": false,
+        "properties": {
+          "factor": {
+            "format": "canonical-decimal",
+            "type": "string"
+          },
+          "factor_ppm": {
+            "maximum": 1000000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "minimum": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "owned": {
+            "type": "boolean"
+          },
+          "upgrade_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "factor",
+          "factor_ppm",
+          "minimum",
+          "owned",
+          "upgrade_id"
+        ],
+        "type": "object"
+      },
+      "GameUIAxisStackArm": {
+        "additionalProperties": false,
+        "properties": {
+          "attained": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIAxisAttained"
+            },
+            "type": "array"
+          },
+          "cap_reason_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "contributions": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIAxisContribution"
+            },
+            "type": "array"
+          },
+          "input_cap": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "input_kind": {
+            "enum": [
+              "achievement_attainment_run",
+              "achievement_score_run"
+            ],
+            "type": "string"
+          },
+          "input_value": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "interns": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIAxisIntern"
+            },
+            "type": "array"
+          },
+          "product": {
+            "format": "canonical-decimal",
+            "type": "string"
+          },
+          "saturated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "attained",
+          "cap_reason_key",
+          "contributions",
+          "input_cap",
+          "input_kind",
+          "input_value",
+          "interns",
+          "product",
+          "saturated"
+        ],
+        "type": "object"
+      },
       "GameUICosmeticItem": {
         "additionalProperties": false,
         "properties": {
@@ -408,6 +545,16 @@
           },
           "active_play": {
             "type": "null"
+          },
+          "axis_stack": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIAxisStackArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "cosmetics": {
             "oneOf": [

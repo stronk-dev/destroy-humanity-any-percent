@@ -11,6 +11,15 @@
     "achievements.state.earned_lifetime",
     "achievements.state.earned_run",
     "achievements.state.locked",
+    "axis_stack.factor_label",
+    "axis_stack.formula.caption",
+    "axis_stack.input_frame",
+    "axis_stack.panel.title",
+    "axis_stack.product_label",
+    "axis_stack.progress_frame",
+    "axis_stack.saturated",
+    "axis_stack.tooltip.why",
+    "cap.axis_stack_input",
     "cap.fiscal_credit",
     "cap.fiscal_level.beige_tower",
     "cap.minigame_faucet",
@@ -449,6 +458,10 @@
     "upgrade.nap_pod.description",
     "upgrade.nap_pod.title",
     "upgrade.ping_pong_table.description",
-    "upgrade.ping_pong_table.title"
+    "upgrade.ping_pong_table.title",
+    "upgrade.pr_intern_1.description",
+    "upgrade.pr_intern_1.title",
+    "upgrade.pr_intern_2.description",
+    "upgrade.pr_intern_2.title"
   ]
 }

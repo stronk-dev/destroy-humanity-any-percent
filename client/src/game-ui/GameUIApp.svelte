@@ -31,6 +31,8 @@
   import { GameUIShell } from "./shell-bridge";
   import { noticeForError, noticeForOutcome, type SurfaceRejections } from "./intent-outcome";
   import { FEATURES_PRESENTATION } from "./features-presentation";
+  import { upgradePresentation } from "./axis-presentation";
+  import AxisStackPanel from "./AxisStackPanel.svelte";
   import type { GameUIAnnouncementEvent } from "./events";
 
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();
@@ -485,11 +487,12 @@
         </div>
       </section>
 
+      {#if liveFeatures?.axis_stack}<AxisStackPanel arm={liveFeatures.axis_stack} {era} />{/if}
       <section aria-labelledby="upgrades-heading">
         <h2 id="upgrades-heading">{t("desk.upgrades_label", {}, era)}</h2>
         <div class="cards">
           {#each snapshot.upgrades as upgrade (upgrade.upgrade_id)}
-            {@const presentation = requirePresentation(GAME_UI_PRESENTATION.upgrades, upgrade.upgrade_id)}
+            {@const presentation = upgradePresentation(upgrade.upgrade_id)}
             <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} />{#if upgrade.owned}<strong>{t("desk.upgrade.owned", {}, era)}</strong>{/if}<button type="button" disabled={pending || !upgrade.eligible || upgrade.owned} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
           {/each}
         </div>

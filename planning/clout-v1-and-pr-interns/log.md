@@ -197,3 +197,59 @@ with Tier 2 content or is dropped).
     `achievements_earned_run` differs by Founder.
   - DG-C: AC2's float-division mutant is equivalent after canonical quantization.
   - The migration-corpus v15+ gap, shared with Reputation's RT-DG-B.
+
+## 2026-09-25 — P5: snapshot producer and Desk PR rows (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review.
+
+**Producer:** `server/gameui/axis_stack.go` `projectAxisStack` builds the optional v4 arm
+`features.axis_stack`: `{input_kind, input_value, input_cap, cap_reason_key, saturated, product,
+contributions[{source_id, upgrade_id, factor}], attained[{achievement_id, earned_this_run}],
+interns[{upgrade_id, minimum, factor_ppm, owned, factor}]}` (CV5/CV9).
+- Every factor comes from `production.AxisFactors`/`AxisProduct`, the same private arithmetic as
+  live rates.
+- A new fact `feature.axis_stack` is added; the arm is null or omitted unless the pinned economy
+  declares the stack.
+- API schema `GameUIAxisStackArm` is an optional field (C2). `make api-generate` accepted it with
+  `docs/generated/api-compat-v1.json` byte-unchanged; no re-pin.
+
+**Client:**
+- `parseAxisStackArm` rejects contradictions: a saturation flag against input/cap, a contribution
+  for an unowned intern or with a factor different from its intern's, an owned intern without a
+  contribution, unsorted rows, a non-canonical product, an unknown input kind, and extra fields.
+- `AxisStackPanel.svelte` on the Desk shows the input against the visible cap, the saturation
+  notice with the cap reason, the product, and each intern's progress bar (unowned) and factor.
+  Everything is server-derived.
+- PR rows in the upgrade list resolve through `axis-presentation.json` (a strict, byte-sorted
+  map, with duplicates of pinned upgrades rejected, following the Garage lane's
+  features-presentation precedent). An unknown ID still fails loudly.
+- Copy: `copy/catalog/clout-candidate.json` (13 keys) is candidate text awaiting owner adoption
+  (OD-7). The "PR Intern" naming collision with the `design/01` Intern autoclicker and
+  `nephew_intern` stays with the owner.
+
+**Witness:**
+- `TestAxisStackArmIsServerDerived` pins the arm for a fixture Company v19 (x=8: product 1.2e0;
+  pr_intern_2 factor 1.16e0 with minimum 10; saturation at 60 → 2.1e0; epoch-8 → null) and writes
+  the golden `testdata/axis-stack/game-ui-arm-v1.json`.
+- `client/test/axis-stack-arm.test.ts` (9) decodes that exact golden and rejects 8 contradictions.
+- `client/test/axis-stack-browser.test.ts` (3 browsers × 2) mounts `GameUIApp` with that golden. It
+  checks the readout text, the progress bars, the PR titles in the upgrade list, that no mechanical
+  ID leaks, axe, and that there is no panel without the arm.
+- **Composed lane:** a real fixture-bundle composed run is not possible without a mint (the
+  composed gameserver serves only the pinned epoch); this matches Reputation's B7 note. The lane now
+  asserts the real server withholds `axis_stack` and reports `feature.axis_stack=false` on the
+  pinned epoch. It passes.
+
+**Severing (each red):**
+- P5a: removing the Desk panel wiring → browser 1 failed.
+- P5b: removing the decoder owned-count check → 1 failed.
+- P5c: the producer contributes unowned interns → the Go golden fails.
+- Composed: removing the `feature.axis_stack` fact makes the composed lane throw.
+
+**Cold gates:**
+- `make test-go GO_PACKAGES='./gameui ./account ./gameserver ./production' GO_TEST_FLAGS=-count=1`
+  passes.
+- `verify-client-boundary` (17 component files), `copy-check`, `svelte-check`, `formulas-check`
+  and `test-game-ui-composed` all pass.
+
+**Kernel:** 0.3.127 → 0.3.128, because `server/production/axis_stack.go` gained the read helpers.

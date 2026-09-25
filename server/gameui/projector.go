@@ -286,6 +286,9 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 	if features.Reputation, err = projectReputation(bundle, founder, contributions); err != nil {
 		return nil, err
 	}
+	if features.AxisStack, err = projectAxisStack(bundle, state); err != nil {
+		return nil, err
+	}
 	facts := append([]factRow{{FactID: "bootstrap.needed", Value: false}, {FactID: "run.pre_timer", Value: state.RunPreTimer}}, featureFacts(features)...)
 	for _, gate := range bundle.Routes.Gates() {
 		facts = append(facts, factRow{FactID: gate.ID, Value: state.GatesCrossed[gate.ID]})

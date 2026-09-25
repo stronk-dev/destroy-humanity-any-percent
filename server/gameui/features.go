@@ -28,6 +28,8 @@ type featureRows struct {
 	PetAdoption  *petsArm         `json:"pet_adoption,omitempty"`
 	Cosmetics    *cosmeticsArm    `json:"cosmetics,omitempty"`
 	Reputation   *reputationArm   `json:"reputation"`
+	// Clout v1 CV9: additive optional arm (C2), null unless axis_stack is pinned.
+	AxisStack *axisStackArm `json:"axis_stack,omitempty"`
 }
 
 // cosmeticsArm is Cosmetic Shop v1 §7.1: catalog-ordered items with the
@@ -471,5 +473,6 @@ func featureFacts(features featureRows) []factRow {
 		{FactID: "feature.pet_adoption", Value: features.PetAdoption != nil},
 		{FactID: "feature.pets", Value: features.Pets != nil},
 		{FactID: "feature.reputation_tree", Value: features.Reputation != nil},
+		{FactID: "feature.axis_stack", Value: features.AxisStack != nil},
 	}
 }

@@ -1,0 +1,45 @@
+{
+  "input_kind": "achievement_attainment_run",
+  "input_value": 8,
+  "input_cap": 44,
+  "cap_reason_key": "cap.axis_stack_input",
+  "saturated": false,
+  "product": "1.2e0",
+  "contributions": [
+    {
+      "source_id": "upgrade.pr_intern_1.axis",
+      "upgrade_id": "upgrade.pr_intern_1",
+      "factor": "1.2e0"
+    }
+  ],
+  "attained": [
+    {
+      "achievement_id": "achievement.first_gate",
+      "earned_this_run": true
+    },
+    {
+      "achievement_id": "achievement.generators_purchased_1",
+      "earned_this_run": false
+    },
+    {
+      "achievement_id": "achievement.generators_purchased_25",
+      "earned_this_run": false
+    }
+  ],
+  "interns": [
+    {
+      "upgrade_id": "upgrade.pr_intern_1",
+      "minimum": 6,
+      "factor_ppm": 25000,
+      "owned": true,
+      "factor": "1.2e0"
+    },
+    {
+      "upgrade_id": "upgrade.pr_intern_2",
+      "minimum": 10,
+      "factor_ppm": 20000,
+      "owned": false,
+      "factor": "1.16e0"
+    }
+  ]
+}

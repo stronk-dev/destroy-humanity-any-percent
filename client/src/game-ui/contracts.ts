@@ -169,7 +169,8 @@ export function parseFeatures(source: unknown): GameUIFeatures {
   // Reputation Tree v1 R9: `reputation` is an additive optional v4 arm.
   // Pet Adoption v1 PA7: `pet_adoption` is likewise an additive optional arm.
   // Cosmetic Shop v1 §7.1: `cosmetics` is likewise an additive optional arm.
-  exact(features, ["achievements", "active_play", ...("cosmetics" in features ? ["cosmetics"] : []), "fiscal", "meters", "minigames", ...("pet_adoption" in features ? ["pet_adoption"] : []), "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
+  // Clout v1 CV9: `axis_stack` is likewise an additive optional arm.
+  exact(features, ["achievements", "active_play", ...("axis_stack" in features ? ["axis_stack"] : []), ...("cosmetics" in features ? ["cosmetics"] : []), "fiscal", "meters", "minigames", ...("pet_adoption" in features ? ["pet_adoption"] : []), "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
   if (features.active_play !== null || features.pets !== null) throw new SyntaxError("unproduced game UI arm must be null");
   if (features.achievements !== null) {
     const arm = object(features.achievements, "achievements arm");
@@ -240,7 +241,53 @@ export function parseFeatures(source: unknown): GameUIFeatures {
   if (features.reputation !== undefined && features.reputation !== null) parseReputationArm(features.reputation);
   if (features.pet_adoption !== undefined && features.pet_adoption !== null) parsePetAdoptionArm(features.pet_adoption);
   if (features.cosmetics !== undefined && features.cosmetics !== null) parseCosmeticsArm(features.cosmetics);
+  if (features.axis_stack !== undefined && features.axis_stack !== null) parseAxisStackArm(features.axis_stack);
   return features as unknown as GameUIFeatures;
+}
+
+const canonicalDecimal = { test: (value: string): boolean => { try { parseCanonical(value); return true; } catch { return false; } } };
+
+// Clout v1 CV9: the decoder rejects contradictions — a saturation flag that
+// disagrees with input/cap, a contribution for an unowned intern or with a
+// factor differing from the intern's, and unsorted rows.
+export function parseAxisStackArm(source: unknown): void {
+  const arm = object(source, "axis stack arm");
+  exact(arm, ["attained", "cap_reason_key", "contributions", "input_cap", "input_kind", "input_value", "interns", "product", "saturated"], "axis stack arm");
+  if (arm.input_kind !== "achievement_attainment_run" && arm.input_kind !== "achievement_score_run") throw new SyntaxError("invalid axis input kind");
+  const cap = integer(arm.input_cap, 1), value = integer(arm.input_value, 0);
+  identifier(arm.cap_reason_key);
+  if (typeof arm.saturated !== "boolean" || arm.saturated !== value > cap) throw new SyntaxError("axis saturation contradicts input and cap");
+  if (typeof arm.product !== "string" || !canonicalDecimal.test(arm.product)) throw new SyntaxError("axis product must be canonical");
+  if (!Array.isArray(arm.interns) || !Array.isArray(arm.contributions) || !Array.isArray(arm.attained)) throw new SyntaxError("axis rows must be arrays");
+  const interns = new Map<string, { owned: boolean; factor: string }>();
+  let prior = "";
+  for (const [index, value] of arm.interns.entries()) {
+    const row = object(value, `axis intern ${index}`);
+    exact(row, ["factor", "factor_ppm", "minimum", "owned", "upgrade_id"], "axis intern");
+    const id = identifier(row.upgrade_id);
+    if (id <= prior || typeof row.factor !== "string" || !canonicalDecimal.test(row.factor)) throw new SyntaxError("axis interns must be sorted with canonical factors");
+    integer(row.factor_ppm, 1, 1_000_000); integer(row.minimum, 0); bool(row.owned, "axis intern owned");
+    interns.set(id, { owned: row.owned as boolean, factor: row.factor });
+    prior = id;
+  }
+  prior = "";
+  for (const [index, value] of arm.contributions.entries()) {
+    const row = object(value, `axis contribution ${index}`);
+    exact(row, ["factor", "source_id", "upgrade_id"], "axis contribution");
+    const source = identifier(row.source_id), intern = interns.get(identifier(row.upgrade_id));
+    if (source <= prior || !intern || !intern.owned || row.factor !== intern.factor) throw new SyntaxError("axis contribution contradicts its intern");
+    prior = source;
+  }
+  if (arm.contributions.length !== [...interns.values()].filter((row) => row.owned).length) throw new SyntaxError("every owned intern contributes exactly once");
+  prior = "";
+  for (const [index, value] of arm.attained.entries()) {
+    const row = object(value, `axis attained ${index}`);
+    exact(row, ["achievement_id", "earned_this_run"], "axis attained");
+    const id = identifier(row.achievement_id);
+    if (id <= prior) throw new SyntaxError("axis attained rows must be sorted");
+    bool(row.earned_this_run, "earned this run");
+    prior = id;
+  }
 }
 
 const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;

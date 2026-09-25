@@ -214,6 +214,96 @@
       "tone": "achievement"
     },
     {
+      "key": "axis_stack.factor_label",
+      "text": "Multiplier at current attainment",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "axis_stack.formula.caption",
+      "text": "Each intern multiplies production by 1 + attainment × its rate.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "axis_stack.input_frame",
+      "text": "Achievement attainment this run: {value} of {cap}",
+      "params": [
+        {
+          "name": "cap",
+          "type": "integer"
+        },
+        {
+          "name": "value",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "axis_stack.panel.title",
+      "text": "PR Interns",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "axis_stack.product_label",
+      "text": "Combined intern multiplier",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "axis_stack.progress_frame",
+      "text": "Unlocks at attainment {minimum} (now {value})",
+      "params": [
+        {
+          "name": "minimum",
+          "type": "integer"
+        },
+        {
+          "name": "value",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "axis_stack.saturated",
+      "text": "At the cap. More achievements add nothing this run.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "axis_stack.tooltip.why",
+      "text": "Achievements you reach this run feed every intern you own. They reset when the run ends.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.axis_stack_input",
+      "text": "Achievement attainment counts up to a fixed cap.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "cap.fiscal_credit",
       "text": "Investor Confidence is capped. Quarters past the cap credit nothing.",
       "params": [],
@@ -4430,6 +4520,38 @@
       "era_variants": null,
       "provenance": [],
       "tone": "diegetic"
+    },
+    {
+      "key": "upgrade.pr_intern_1.description",
+      "text": "Turns this run's achievements into buzz. Multiplies all production by the formula below.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "upgrade.pr_intern_1.title",
+      "text": "PR Intern",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "upgrade.pr_intern_2.description",
+      "text": "A second intern who also turns this run's achievements into buzz. Stacks with the first.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "upgrade.pr_intern_2.title",
+      "text": "Senior PR Intern",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
     },
     {
       "key": "upgrade.rack_rail_standardization.description",

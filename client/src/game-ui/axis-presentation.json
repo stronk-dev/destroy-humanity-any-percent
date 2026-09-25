@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "upgrades": [
+    { "id": "upgrade.pr_intern_1", "title_key": "upgrade.pr_intern_1.title", "description_key": "upgrade.pr_intern_1.description" },
+    { "id": "upgrade.pr_intern_2", "title_key": "upgrade.pr_intern_2.title", "description_key": "upgrade.pr_intern_2.description" }
+  ]
+}

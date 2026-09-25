@@ -14,6 +14,14 @@ export type GameUIAchievementRow = { achievement_id: string; condition_scope: "c
 
 export type GameUIAchievementsArm = { rows: Array<GameUIAchievementRow>; score: { lifetime: number; run: number } };
 
+export type GameUIAxisAttained = { achievement_id: string; earned_this_run: boolean };
+
+export type GameUIAxisContribution = { factor: string; source_id: string; upgrade_id: string };
+
+export type GameUIAxisIntern = { factor: string; factor_ppm: number; minimum: number; owned: boolean; upgrade_id: string };
+
+export type GameUIAxisStackArm = { attained: Array<GameUIAxisAttained>; cap_reason_key: string; contributions: Array<GameUIAxisContribution>; input_cap: number; input_kind: "achievement_attainment_run" | "achievement_score_run"; input_value: number; interns: Array<GameUIAxisIntern>; product: string; saturated: boolean };
+
 export type GameUICosmeticItem = { acquirable: boolean; cosmetic_id: string; lock: GameUICosmeticLock | null; owned: boolean; worn_by: Array<string> };
 
 export type GameUICosmeticLock = { kind: "active_company_tier_at_least"; tier: number };
@@ -24,7 +32,7 @@ export type GameUICosmeticsArm = { active: boolean; items: Array<GameUICosmeticI
 
 export type GameUIFact = { fact_id: string; value: boolean | number | string };
 
-export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; cosmetics?: GameUICosmeticsArm | null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pet_adoption?: GameUIPetsArm | null; pets: null; reputation?: GameUIReputationArm | null };
+export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; axis_stack?: GameUIAxisStackArm | null; cosmetics?: GameUICosmeticsArm | null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pet_adoption?: GameUIPetsArm | null; pets: null; reputation?: GameUIReputationArm | null };
 
 export type GameUIFiscalArm = { credit: number; credit_cap: GameUIIntCap; credit_per_period: number; generator_levels: Array<GameUIFiscalLevel>; hoard: { cap_credits: number; preview_ppm: number; reason_note: "next_run" }; period: { auto_ms: number; early_ms: number; early_success_ppm: number; guaranteed_ms: number; opened_wall_ms: number; seq: number }; sweep_preview: { credit_after: number; credited: number; periods: number; saturated: boolean }; unlocks: Array<GameUIFiscalUnlock> };
 

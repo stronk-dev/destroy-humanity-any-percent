@@ -80,6 +80,8 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 		{Name: "GameUIFeatures", Schema: apiObject(
 			apiField("achievements", nullable(apiRef("GameUIAchievementsArm"))),
 			apiField("active_play", &publicapi.Schema{Kind: publicapi.SchemaNull}),
+			// Clout v1 CV9: additive optional arm (C2; no re-pin).
+			publicapi.Field{Required: false, Name: "axis_stack", Schema: nullable(apiRef("GameUIAxisStackArm"))},
 			// Cosmetic Shop v1 §7.1: additive optional arm (C2: never a required
 			// response property). No price field exists anywhere in it (I1).
 			publicapi.Field{Required: false, Name: "cosmetics", Schema: nullable(apiRef("GameUICosmeticsArm"))},
@@ -94,6 +96,33 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			// Reputation Tree v1 R9: an additive optional v4 arm (a new required
 			// response property would violate the C2 compatibility gate).
 			publicapi.Field{Required: false, Name: "reputation", Schema: nullable(apiRef("GameUIReputationArm"))},
+		)},
+		{Name: "GameUIAxisStackArm", Schema: apiObject(
+			apiField("attained", array("GameUIAxisAttained")),
+			apiField("cap_reason_key", apiString("mechanical-id")),
+			apiField("contributions", array("GameUIAxisContribution")),
+			apiField("input_cap", integer(1, apiMaxExactInteger)),
+			apiField("input_kind", apiString("", "achievement_attainment_run", "achievement_score_run")),
+			apiField("input_value", integer(0, apiMaxExactInteger)),
+			apiField("interns", array("GameUIAxisIntern")),
+			apiField("product", apiString("canonical-decimal")),
+			apiField("saturated", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+		)},
+		{Name: "GameUIAxisAttained", Schema: apiObject(
+			apiField("achievement_id", apiString("mechanical-id")),
+			apiField("earned_this_run", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+		)},
+		{Name: "GameUIAxisContribution", Schema: apiObject(
+			apiField("factor", apiString("canonical-decimal")),
+			apiField("source_id", apiString("mechanical-id")),
+			apiField("upgrade_id", apiString("mechanical-id")),
+		)},
+		{Name: "GameUIAxisIntern", Schema: apiObject(
+			apiField("factor", apiString("canonical-decimal")),
+			apiField("factor_ppm", integer(1, 1_000_000)),
+			apiField("minimum", integer(0, apiMaxExactInteger)),
+			apiField("owned", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+			apiField("upgrade_id", apiString("mechanical-id")),
 		)},
 		{Name: "GameUICosmeticsArm", Schema: apiObject(
 			apiField("active", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),

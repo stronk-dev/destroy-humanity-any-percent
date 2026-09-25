@@ -7,6 +7,7 @@ import (
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/save"
 )
 
@@ -37,6 +38,42 @@ func AxisInput(state *save.State, catalog *economy.Catalog) (x int64, saturated 
 		return axis.InputCap, true, nil
 	}
 	return input, false, nil
+}
+
+// AxisFactors returns every axis effect's factor at the current input, owned
+// or not (the read projection's "projected factor", CV9), through the same
+// private arithmetic as live rates.
+func AxisFactors(state *save.State, catalog *economy.Catalog) (map[string]decimal.Decimal, error) {
+	result := map[string]decimal.Decimal{}
+	for _, upgrade := range catalog.Upgrades() {
+		for _, effect := range upgrade.Effects {
+			if effect.Slot != economy.SlotAxisStack {
+				continue
+			}
+			factor, err := axisFactor(state, catalog, effect.FactorPPM)
+			if err != nil {
+				return nil, err
+			}
+			result[effect.SourceID] = factor
+		}
+	}
+	return result, nil
+}
+
+// AxisProduct is the owned axis_stack contributions' product as the engine
+// folds them for target "all" (CV3 read projection).
+func AxisProduct(state *save.State, catalog *economy.Catalog) (decimal.Decimal, error) {
+	contributions, err := contentContributions(state, catalog)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	axis := make([]multiplier.Contribution, 0)
+	for _, contribution := range contributions {
+		if contribution.Slot == economy.SlotAxisStack {
+			axis = append(axis, contribution)
+		}
+	}
+	return contributionFactorForTarget(catalog, "all", axis)
 }
 
 // axisFactor is factor_i = (1,000,000 + x * factor_ppm_i) / 1,000,000 with

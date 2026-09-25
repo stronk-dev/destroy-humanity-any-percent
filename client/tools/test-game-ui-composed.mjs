@@ -414,6 +414,13 @@ try {
       !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.fiscal" && fact.value === true)) {
     throw new Error(`composed live Game UI v4 features arms are not the pinned live systems: ${JSON.stringify(features)}`);
   }
+  // Clout v1 CV9: the pinned epoch declares no axis_stack, so the composed
+  // server withholds the arm and reports the feature fact false (the arm is
+  // fixture-first until a content mint pins the v5 economy).
+  if (features.axis_stack !== undefined && features.axis_stack !== null ||
+      !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.axis_stack" && fact.value === false)) {
+    throw new Error(`composed live Game UI projected an axis stack the pinned epoch does not declare: ${JSON.stringify(features.axis_stack)}`);
+  }
   if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 4 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1 ||
       liveSnapshot.body?.transitions?.cross_gate?.gate_id !== "gate.t0_to_t1" || liveSnapshot.body.transitions.cross_gate.eligible !== false || liveSnapshot.body?.transitions?.wind_down?.eligible !== false) {
     throw new Error("composed live Game UI v4 transition snapshot round trip failed");
