@@ -1,6 +1,6 @@
 # RFC: Clout v1 — Achievements into PR Interns (the run-local attention stack)
 
-- **Status:** draft — not implementation authority
+- **Status:** accepted — owner batch acceptance 2026-09-25; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-09-25
 - **Design refs:** `design/07` Phase 1 ("Clout v1 (achievements + PR Interns)"); `design/02 §6`
@@ -660,3 +660,12 @@ ruling deleted. OD-5's literal bytes are ratified at mint review, not at accepta
 
 - 2026-09-25: created (draft — not implementation authority) from a static trace at `c2d9bbc`,
   for the v0.1 manifest's G09 / OQ-5.
+
+## Owner acceptance (2026-09-25)
+
+Marco accepted this RFC in the 2026-09-25 batch (the answer to a direct batch question in-session,
+recorded by Claude). Every owner decision this RFC lists is **ruled at its stated recommended
+default**. Where the text offers alternatives, the recommended option is the normative one and the
+alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
+measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
+implementation ships copy keys, with any placeholder or candidate text clearly marked.

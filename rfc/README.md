@@ -30,18 +30,18 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | implementing — accepted at `cd102d7` | Gameserver / Client / Account / API / CI / operations |
 | [Accessibility of Player Workflows](accessibility-player-workflows.md) | draft — current Game UI failures measured; owner task/AT matrix pending | UI Foundation / Game UI Screens; later surface RFCs consume its acceptance floor |
-| [v0.1 "The Garage" — Release Manifest & RFC DAG](v0.1-garage-release-manifest.md) | draft — not implementation authority; owner acceptance batch pending | design/07 Phase 1 |
-| [Reputation Tree v1](reputation-tree-v1.md) | draft — not implementation authority; OD-1–OD-12 pending | Prestige & Exits / Leaderboards & Epochs |
-| [Minigame — Terminal Typer](minigame-terminal-typer.md) | draft — not implementation authority; platform amendments TT-PA1–PA4 pending | Minigame Platform / Minigame API & Surface |
-| [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | draft — not implementation authority; OD-1–OD-16, findings AR-F1–F3 routed | Minigame Platform / Minigame API & Surface |
-| [Tier 2 Content — IT Company](tier2-content.md) | draft — not implementation authority; 10 owner decisions pending | Economy Kernel / Routes / Balance Harness |
-| [Minigame — Server Garden](minigame-server-garden.md) | draft — not implementation authority; persistent-tenant platform amendments SG-P1–P3, 22 owner decisions | Minigame Platform / Fiscal / Tier 2 |
-| [Garage Player Surfaces](garage-player-surfaces.md) | draft — not implementation authority; OD-1–OD-17, findings F1–F13 | Game UI Screens / Fiscal / Achievements / Meters / Pet / Active Play / Minigame API |
-| [Clout v1 & PR Interns](clout-v1-and-pr-interns.md) | draft — not implementation authority; OD-1 mint conflict (A recommended), NewlyEarned veteran-shrink defect named | Achievements / Economy Kernel |
-| [Cosmetic Shop v1 — Horse Armor](cosmetic-shop-v1.md) | draft — not implementation authority; OD-1–OD-16 | Game UI / Save Layer / Pet |
-| [Pet Adoption v1](pet-adoption-v1.md) | draft — not implementation authority; OD-1–OD-15; Founder v22 collision with Cosmetic Shop named (OD-15) | Pet Care / Save Layer / Game UI |
-| [Ticker Launch Corpus](ticker-launch-corpus.md) | draft — not implementation authority; blocked on Feed & Dispatch narrowing (VQ-3); OD-1–OD-14 | Feed & Dispatch / Copy Pipeline |
-| [Headcount Allocation](headcount-allocation.md) | draft — not implementation authority; OD-1 seat source CONFLICTS with Tier 2 draft OD-1 (hire intent vs generator-granted) — owner picks one | Economy Kernel / Tier 2 Content |
+| [v0.1 "The Garage" — Release Manifest & RFC DAG](v0.1-garage-release-manifest.md) | accepted 2026-09-25 (recommended defaults); implementing | design/07 Phase 1 |
+| [Reputation Tree v1](reputation-tree-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Prestige & Exits / Leaderboards & Epochs |
+| [Minigame — Terminal Typer](minigame-terminal-typer.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Minigame API & Surface |
+| [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Minigame API & Surface |
+| [Tier 2 Content — IT Company](tier2-content.md) | accepted 2026-09-25 (recommended defaults; seat source OD-1 held); implementing | Economy Kernel / Routes / Balance Harness |
+| [Minigame — Server Garden](minigame-server-garden.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Fiscal / Tier 2 |
+| [Garage Player Surfaces](garage-player-surfaces.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI Screens / Fiscal / Achievements / Meters / Pet / Active Play / Minigame API |
+| [Clout v1 & PR Interns](clout-v1-and-pr-interns.md) | accepted 2026-09-25 (recommended defaults); implementing | Achievements / Economy Kernel |
+| [Cosmetic Shop v1 — Horse Armor](cosmetic-shop-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI / Save Layer / Pet |
+| [Pet Adoption v1](pet-adoption-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Pet Care / Save Layer / Game UI |
+| [Ticker Launch Corpus](ticker-launch-corpus.md) | accepted 2026-09-25 (recommended defaults; blocked on Feed VQ-3); implementing | Feed & Dispatch / Copy Pipeline |
+| [Headcount Allocation](headcount-allocation.md) | accepted 2026-09-25 (recommended defaults; seat source OD-1 held); implementing | Economy Kernel / Tier 2 Content |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,

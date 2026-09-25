@@ -1,6 +1,6 @@
 # RFC: Tier 2 Playable Content (T0–T2 completion)
 
-- **Status:** draft — not implementation authority
+- **Status:** accepted — owner batch acceptance 2026-09-25; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-09-25
 - **Design refs:** `design/01 §Tier 2` (IT Company: headcount allocation, procurement, startup
@@ -633,3 +633,13 @@ before the green run is claimed. All gate claims run with `-count=1`.
 ## Changelog
 
 - 2026-09-25: created (draft) by Claude for Marco's batch acceptance.
+
+## Owner acceptance (2026-09-25)
+
+Marco accepted this RFC in the 2026-09-25 batch (the answer to a direct batch question in-session,
+recorded by Claude). Every owner decision this RFC lists is **ruled at its stated recommended
+default**. Where the text offers alternatives, the recommended option is the normative one and the
+alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
+measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
+implementation ships copy keys, with any placeholder or candidate text clearly marked.
+**Exception:** OD-1 (source of the hiring budget) is NOT ruled: it conflicts with Headcount Allocation OD-1 and is held for an owner explanation; implement nothing that depends on the seat source until it is ruled.

@@ -1,6 +1,6 @@
 # RFC: Reputation Tree v1
 
-- **Status:** draft — not implementation authority
+- **Status:** accepted — owner batch acceptance 2026-09-25; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-09-25
 - **Design refs:** `design/02 §2.2` (production stack: `FounderBonus (+1% per Reputation level,
@@ -618,3 +618,12 @@ Each criterion ships with its demonstrated failing case (evidence rule 1). `-cou
 ## Changelog
 
 - 2026-09-25: created (draft — not implementation authority).
+
+## Owner acceptance (2026-09-25)
+
+Marco accepted this RFC in the 2026-09-25 batch (the answer to a direct batch question in-session,
+recorded by Claude). Every owner decision this RFC lists is **ruled at its stated recommended
+default**. Where the text offers alternatives, the recommended option is the normative one and the
+alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
+measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
+implementation ships copy keys, with any placeholder or candidate text clearly marked.

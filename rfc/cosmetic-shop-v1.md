@@ -1,6 +1,6 @@
 # RFC: Cosmetic Shop v1 — $0.00, Horse Armor
 
-- **Status:** draft — not implementation authority
+- **Status:** accepted — owner batch acceptance 2026-09-25; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-09-25
 - **Design refs:** `design/07` Phase 1 ("the cosmetic shop ($0.00, Horse Armor)"); `design/04` §4
@@ -696,3 +696,12 @@ fixture.
 ## Changelog
 
 - 2026-09-25: created as a draft (not implementation authority) for release-manifest row G10.
+
+## Owner acceptance (2026-09-25)
+
+Marco accepted this RFC in the 2026-09-25 batch (the answer to a direct batch question in-session,
+recorded by Claude). Every owner decision this RFC lists is **ruled at its stated recommended
+default**. Where the text offers alternatives, the recommended option is the normative one and the
+alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
+measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
+implementation ships copy keys, with any placeholder or candidate text clearly marked.

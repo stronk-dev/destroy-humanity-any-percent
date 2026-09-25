@@ -1,6 +1,6 @@
 # RFC: Demo Disc Arcade (the container and its first two cover-disc toys)
 
-- **Status:** draft — not implementation authority
+- **Status:** accepted — owner batch acceptance 2026-09-25; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-09-25
 - **Design refs:** `design/03 §8` (Demo Disc Arcade, Tier 0–1, host: the CRT — the evolving
@@ -707,3 +707,12 @@ Work slices, each reviewed separately:
 
 - 2026-09-25: created (draft) — container, `mine_grid`, and `snake` on the platform, following the
   Pitch template; findings AR-F1–AR-F3 filed.
+
+## Owner acceptance (2026-09-25)
+
+Marco accepted this RFC in the 2026-09-25 batch (the answer to a direct batch question in-session,
+recorded by Claude). Every owner decision this RFC lists is **ruled at its stated recommended
+default**. Where the text offers alternatives, the recommended option is the normative one and the
+alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
+measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
+implementation ships copy keys, with any placeholder or candidate text clearly marked.

@@ -1,6 +1,6 @@
 # RFC: Ticker v1 & the Launch Corpus Slice
 
-- **Status:** draft — not implementation authority
+- **Status:** accepted — owner batch acceptance 2026-09-25; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-09-25
 - **Design refs:** `design/07` Phase 1 ("ticker/dispatch system v1 with the launch corpus slice")
@@ -751,3 +751,13 @@ Recommended defaults are listed first. None is inferred by implementers.
 
 - 2026-09-25: created (draft — not implementation authority) as the v0.1 child of Feed & Dispatch
   Foundation, from a static trace at `c2d9bbc`. All corpus text is pending owner authorship.
+
+## Owner acceptance (2026-09-25)
+
+Marco accepted this RFC in the 2026-09-25 batch (the answer to a direct batch question in-session,
+recorded by Claude). Every owner decision this RFC lists is **ruled at its stated recommended
+default**. Where the text offers alternatives, the recommended option is the normative one and the
+alternatives are rejected. Provisional numbers stay provisional and are ratified by harness
+measurement and SHA, as the RFC already requires. Owner-authored copy stays owner-authored:
+implementation ships copy keys, with any placeholder or candidate text clearly marked.
+**Exception:** Implementation stays blocked on the named Feed & Dispatch narrowing (VQ-3), as the RFC states.
