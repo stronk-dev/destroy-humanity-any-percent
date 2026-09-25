@@ -12,13 +12,13 @@ threshold retune is measured and reported, then ratified by owner SHA).
 - [x] B2 (`c62afe47`) — Bundle wiring: `reputation_tree` optional artifact in the Go/TS bundle loaders, economy
   declaration pairing rule (tree ⇔ `reputation.founder_bonus` row), frozen-contribution resolver
   accepts provider `reputation_tree`. AC1 (bundle half).
-- [ ] B3 — PARTIAL (`fb0ab3b1`: Go codec/activation/validation + TS codec witnessed; the TS Founder-log Exit activation arm awaits a TS Exit-replay fixture with a tree, B5/B6) — Founder save v22 (R1/R7): fields, codec invariants, v21→v22 migration, migration corpus
+- [x] B3 (`fb0ab3b1`; TS activation witness in `cf57e956`) — Founder save v22 (R1/R7): fields, codec invariants, v21→v22 migration, migration corpus
   cases + baseline ratchet. ACs 2, 10.
 - [x] B4 (`541da96e`) — R5 `purchase_reputation_node` Founder intent (Go + TS replay parity, corpus). ACs 3, 4.
-- [ ] B5 — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
+- [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.
-- [ ] B6 — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
+- [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [ ] B7 — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
 - [ ] B8 — R10 harness H1–H5 and the OD-2 threshold measurement report. AC13.
 - [ ] B9 — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
