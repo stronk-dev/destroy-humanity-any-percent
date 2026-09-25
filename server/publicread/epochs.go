@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 
@@ -58,7 +59,7 @@ var (
 // the single account-owned definition shared with the private registry.
 func Schemas() []publicapi.NamedSchema {
 	const maxExactInteger = int64(9_007_199_254_740_991)
-	return []publicapi.NamedSchema{
+	schemas := []publicapi.NamedSchema{
 		account.APIErrorSchema(),
 		{Name: "PublicEpoch", Schema: &publicapi.Schema{Kind: publicapi.SchemaObject, Fields: []publicapi.Field{
 			field("accepted_hashes", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: stringSchema("sha256-prefixed")}),
@@ -77,6 +78,9 @@ func Schemas() []publicapi.NamedSchema {
 			field("next_cursor", nullable(stringSchema(""))),
 		}}},
 	}
+	schemas = append(schemas, boardSchemas()...)
+	sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
+	return schemas
 }
 
 // Operations are the public registry rows. Error responses are narrowed to the
@@ -85,7 +89,7 @@ func Operations() []publicapi.Operation {
 	errorResponse := func(status int, body ...[]byte) publicapi.Response {
 		return publicapi.Response{Kind: publicapi.ResponseSchema, Status: status, ContentType: publicapi.ContentJSON, SchemaRef: "APIError", ExactJSON: body}
 	}
-	return []publicapi.Operation{{
+	return []publicapi.Operation{boardOperation(errorResponse), {
 		ID: ListEpochsOperation, Method: http.MethodGet, Path: "/api/public/v1/epochs",
 		Surface: publicapi.SurfacePublicV1, Auth: publicapi.AuthNone, Public: true,
 		Query: []publicapi.QueryParameter{

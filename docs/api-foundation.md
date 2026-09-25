@@ -80,6 +80,31 @@ while each surface still mounts from its own registry.
 - **Page source:** `leaderboard.Repository.PublicEpochPage`, which reads the page from a single SQL
   statement.
 
+`GET /api/public/v1/boards/{category}` (`list_public_board`) returns the C12 `BoardPage`
+`{category_id, epoch_id, items, mandate_level, next_cursor, ranking_kind, variables}`.
+
+- **Query:** C13's normalized query. `variables` is the base64url canonical JSON
+  `{advisor,commons,faction,glitched}` (sorted keys, 0/1 flags, explicit-null faction). `epoch`,
+  `mandate` (0..20) and `variables` are required; `limit` (1..100, default 50) and `cursor` are
+  optional.
+- **Ranking kind:** resolved from the pinned categories artifact of every stored constants hash
+  accepted into the epoch. Timed categories (`rta`/`attended`) are `time_ms` and the untimed
+  valuation category is `magnitude`. `count` is declared for the union, but no category produces
+  it yet. Catalogs that disagree, or a stored catalog that cannot load, are internal invariants.
+- **Items:** `{founder_id, key, rank, run_id, verified_at, world_first}`, where `key` is the closed
+  union `{kind:"time_ms"|"count",value}` / `{kind:"magnitude",exponent,quantized_mantissa}`.
+  `rank` is the competition rank over the whole board.
+- **Cursor:** the keyset cursor (`{key|exponent+quantized_mantissa, run_id}`) is MAC-bound to the
+  complete normalized filter (category, variables, epoch, mandate, limit). A cursor whose arm
+  doesn't match the ranking kind is rejected.
+- **Paging:** the reader fetches `limit+1` rows, so a page that is exactly full carries no cursor.
+- **Rejections:**
+  - `400 invalid/{cursor,epoch,limit,mandate,variables}`;
+  - `404 unknown_id/{category,epoch}`;
+  - `429 rate_limited/ip`;
+  - `500 internal_invariant/public_api`.
+- **Caching:** the `boards` class (`public,max-age=60`).
+
 `publicread.NewRouter` composes the surface. It loads the strict policy, resolves the named cursor
 secrets (`CursorSecretResolver`, see `docs/gameserver.md`), builds the request-ID runtime and
 limiter, and mounts every public registry operation (and only those) through `Registry.Mount`.
@@ -90,6 +115,6 @@ the served epoch page, request-ID echo, cache headers, a 304 on a matching ETag,
 404, and fail-closed composition. The composed Game UI lane also fetches the page through the Vite
 proxy.
 
-The catalogs, boards, verification and registry readers, the thin generated-client transport, and the full public privacy enumeration all
+The catalogs, verification and registry readers, the thin generated-client transport, and the full public privacy enumeration all
 remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
 historical formulas never fall back to current bytes.

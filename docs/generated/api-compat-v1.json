@@ -94,6 +94,30 @@
       ]
     },
     {
+      "id": "list_public_board",
+      "method": "GET",
+      "path": "/api/public/v1/boards/{category}",
+      "surface": "public_v1",
+      "auth": "none",
+      "parameters": [
+        "category={\"format\":\"mechanical-id\",\"type\":\"string\"}"
+      ],
+      "query": [
+        "cursor=false:{\"type\":\"string\"}",
+        "epoch=true:{\"maximum\":9007199254740991,\"minimum\":1,\"type\":\"integer\"}",
+        "limit=false:{\"maximum\":100,\"minimum\":1,\"type\":\"integer\"}",
+        "mandate=true:{\"maximum\":20,\"minimum\":0,\"type\":\"integer\"}",
+        "variables=true:{\"type\":\"string\"}"
+      ],
+      "responses": [
+        "200:schema:application/json:PublicBoardPage",
+        "400:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "list_public_epochs",
       "method": "GET",
       "path": "/api/public/v1/epochs",
@@ -236,8 +260,11 @@
             "body",
             "bootstrap",
             "bootstrap_expired",
+            "category",
+            "curriculum_exit_required",
             "cursor",
             "duplicate_card",
+            "epoch",
             "exclusive_activity",
             "fiscal_unlock_required",
             "founder",
@@ -248,8 +275,12 @@
             "human_content_locked",
             "illegal_phase",
             "insufficient_currency",
+            "invalid_assist_level",
+            "invalid_text",
             "ip",
             "limit",
+            "line_too_long",
+            "mandate",
             "minigame_api",
             "minigame_command",
             "minigame_create",
@@ -266,8 +297,10 @@
             "soul_recovery_progress",
             "soul_recovery_resolve",
             "soul_recovery_start",
+            "tier_required",
             "unknown_card",
-            "unknown_offer"
+            "unknown_offer",
+            "variables"
           ],
           "type": "string"
         }
@@ -2190,6 +2223,240 @@
         "run_currency",
         "shop_offers",
         "slotted_hacks"
+      ],
+      "type": "object"
+    },
+    "PublicBoardCursorKey": {
+      "additionalProperties": false,
+      "properties": {
+        "exponent": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "maximum": 8999999999999999,
+              "minimum": -8999999999999999,
+              "type": "integer"
+            }
+          ]
+        },
+        "key": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer"
+            }
+          ]
+        },
+        "quantized_mantissa": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "maximum": 999999999999,
+              "minimum": 0,
+              "type": "integer"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exponent",
+        "key",
+        "quantized_mantissa",
+        "run_id"
+      ],
+      "type": "object"
+    },
+    "PublicBoardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "founder_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "key": {
+          "$ref": "#/components/schemas/PublicBoardKey"
+        },
+        "rank": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "verified_at": {
+          "format": "date-time-ms",
+          "type": "string"
+        },
+        "world_first": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "founder_id",
+        "key",
+        "rank",
+        "run_id",
+        "verified_at",
+        "world_first"
+      ],
+      "type": "object"
+    },
+    "PublicBoardKey": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "count",
+                "time_ms"
+              ],
+              "type": "string"
+            },
+            "value": {
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "exponent": {
+              "maximum": 8999999999999999,
+              "minimum": -8999999999999999,
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "magnitude"
+              ],
+              "type": "string"
+            },
+            "quantized_mantissa": {
+              "maximum": 999999999999,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "exponent",
+            "kind",
+            "quantized_mantissa"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "PublicBoardPage": {
+      "additionalProperties": false,
+      "properties": {
+        "category_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "epoch_id": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/PublicBoardItem"
+          },
+          "type": "array"
+        },
+        "mandate_level": {
+          "maximum": 20,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "next_cursor": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "ranking_kind": {
+          "enum": [
+            "count",
+            "magnitude",
+            "time_ms"
+          ],
+          "type": "string"
+        },
+        "variables": {
+          "$ref": "#/components/schemas/PublicBoardVariables"
+        }
+      },
+      "required": [
+        "category_id",
+        "epoch_id",
+        "items",
+        "mandate_level",
+        "next_cursor",
+        "ranking_kind",
+        "variables"
+      ],
+      "type": "object"
+    },
+    "PublicBoardVariables": {
+      "additionalProperties": false,
+      "properties": {
+        "advisor": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "commons": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "faction": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "format": "mechanical-id",
+              "type": "string"
+            }
+          ]
+        },
+        "glitched": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "advisor",
+        "commons",
+        "faction",
+        "glitched"
       ],
       "type": "object"
     },

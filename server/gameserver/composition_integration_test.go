@@ -24,6 +24,7 @@ import (
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/operations"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/publicapi"
 	"cloud-clicker/server/publicread"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
@@ -1622,6 +1623,22 @@ func assertComposedPublicEpochs(t *testing.T, server *httptest.Server) {
 	_ = responseBody(notModified)
 	if notModified.StatusCode != http.StatusNotModified {
 		t.Fatalf("conditional public epochs status=%d", notModified.StatusCode)
+	}
+	variables, err := publicapi.EncodeBoardVariables(publicapi.BoardVariables{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	board := compositionRequest(t, server.Client(), http.MethodGet, fmt.Sprintf("%s/api/public/v1/boards/valuation?epoch=%d&mandate=0&variables=%s",
+		server.URL, page.Items[0].EpochID, variables), "", "")
+	boardBody := responseBody(board)
+	wantBoard := fmt.Sprintf(`{"category_id":"valuation","epoch_id":%d,"items":[],"mandate_level":0,"next_cursor":null,"ranking_kind":"magnitude","variables":{"advisor":0,"commons":0,"faction":null,"glitched":0}}`+"\n", page.Items[0].EpochID)
+	if board.StatusCode != http.StatusOK || boardBody != wantBoard || board.Header.Get("Cache-Control") != "public,max-age=60" {
+		t.Fatalf("composed board status=%d body=%s", board.StatusCode, boardBody)
+	}
+	unknownCategory := compositionRequest(t, server.Client(), http.MethodGet, fmt.Sprintf("%s/api/public/v1/boards/no_such_board?epoch=%d&mandate=0&variables=%s",
+		server.URL, page.Items[0].EpochID, variables), "", "")
+	if unknownCategory.StatusCode != http.StatusNotFound || responseBody(unknownCategory) != "{\"category\":\"unknown_id\",\"detail\":\"category\"}\n" {
+		t.Fatalf("composed unknown board status=%d", unknownCategory.StatusCode)
 	}
 	unknown := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/public/v1/account", "", "")
 	if unknown.StatusCode != http.StatusNotFound || responseBody(unknown) != "{\"category\":\"unknown_id\",\"detail\":\"route\"}\n" {

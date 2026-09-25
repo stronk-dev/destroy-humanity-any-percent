@@ -149,6 +149,12 @@ func (repository *Repository) TimeBoard(ctx context.Context, categoryID string, 
 	if !mechanicalPattern.MatchString(categoryID) || !validVariables(variables) || epochID < 1 || mandateLevel < 0 || mandateLevel > 20 || limit < 1 || limit > 100 || after != nil && after.RunID == "" {
 		return nil, ErrInvalidEpoch
 	}
+	return repository.timeBoard(ctx, categoryID, variables, epochID, mandateLevel, limit, after)
+}
+
+// timeBoard is the unbounded-limit query shared with the public reader, which
+// fetches limit+1 rows to decide whether a next page exists.
+func (repository *Repository) timeBoard(ctx context.Context, categoryID string, variables Variables, epochID int64, mandateLevel, limit int, after *Cursor) ([]BoardEntry, error) {
 	encoded, _ := json.Marshal(variables)
 	afterKey, afterRun, hasAfter := int64(0), "", false
 	if after != nil {
@@ -187,6 +193,12 @@ func (repository *Repository) CountBoard(ctx context.Context, categoryID string,
 	if !mechanicalPattern.MatchString(categoryID) || !validVariables(variables) || epochID < 1 || mandateLevel < 0 || mandateLevel > 20 || limit < 1 || limit > 100 || after != nil && after.RunID == "" {
 		return nil, ErrInvalidEpoch
 	}
+	return repository.countBoard(ctx, categoryID, variables, epochID, mandateLevel, limit, after)
+}
+
+// countBoard is the unbounded-limit query shared with the public reader, which
+// fetches limit+1 rows to decide whether a next page exists.
+func (repository *Repository) countBoard(ctx context.Context, categoryID string, variables Variables, epochID int64, mandateLevel, limit int, after *Cursor) ([]BoardEntry, error) {
 	encoded, _ := json.Marshal(variables)
 	afterKey, afterRun, hasAfter := int64(0), "", false
 	if after != nil {
@@ -223,6 +235,12 @@ func (repository *Repository) MagnitudeBoard(ctx context.Context, categoryID str
 		after != nil && (after.RunID == "" || !validMagnitudeKey(after.Key)) {
 		return nil, ErrInvalidEpoch
 	}
+	return repository.magnitudeBoard(ctx, categoryID, variables, epochID, mandateLevel, limit, after)
+}
+
+// magnitudeBoard is the unbounded-limit query shared with the public reader, which
+// fetches limit+1 rows to decide whether a next page exists.
+func (repository *Repository) magnitudeBoard(ctx context.Context, categoryID string, variables Variables, epochID int64, mandateLevel, limit int, after *MagnitudeCursor) ([]MagnitudeBoardEntry, error) {
 	encoded, _ := json.Marshal(variables)
 	afterExponent, afterMantissa, afterRun, afterZero, hasAfter := int64(0), int64(0), "", false, false
 	if after != nil {

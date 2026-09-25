@@ -141,7 +141,13 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 	return nil
 }
 
-func loadPinnedCategoryCatalog(ctx context.Context, tx *sql.Tx, constantsHash string) (*CategoryCatalog, error) {
+// rowQuerier is satisfied by *sql.DB and *sql.Tx so the projector (inside its
+// transaction) and the public board reader share one pinned-catalog loader.
+type rowQuerier interface {
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+}
+
+func loadPinnedCategoryCatalog(ctx context.Context, tx rowQuerier, constantsHash string) (*CategoryCatalog, error) {
 	rows, err := tx.QueryContext(ctx, `SELECT artifact_name,bytes FROM catalog_artifacts
 		WHERE constants_hash=$1 AND artifact_name IN ('categories','routes') ORDER BY artifact_name`, constantsHash)
 	if err != nil {

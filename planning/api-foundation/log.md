@@ -522,3 +522,63 @@ package compiled again. None of my files are involved.
 
 **Next in this lane:** the boards reader (C12/C13), the routes reader (C12 RoutePage), and the AC5
 privacy enumeration.
+
+## 2026-09-25 — Public boards reader (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review; not
+self-approved. Authority: accepted A6, C12 (BoardPage literal), C13 (normalized query, ranking
+kind from the pinned catalog) and C15 (cursor MAC over the full filter). This is a new operation,
+so the widening is additive under C2. The pin was refreshed (`make api-pin`) after `gen-api`
+accepted the change against the prior pin.
+
+**Delivered:**
+- `list_public_board` at `GET /api/public/v1/boards/{category}`.
+- `leaderboard.PublicBoardRankingKind`, with the pure `resolveRankingKind`.
+- `leaderboard.PublicBoardPage`, which fetches `limit+1` through the existing board SQL, now split
+  into a bounded exported wrapper and an internal query.
+- `rowQuerier` lets the projector's pinned-catalog loader be shared read-only.
+- The shared `APIError` detail enum is widened by `category`, `epoch`, `mandate` and `variables`
+  (a C2 response-enum widening).
+- No kernel-guarded path is touched: `leaderboard/categories.go` is unchanged.
+
+**Evidence (cold):**
+- Unit and integration runs:
+  - `make test-go GO_PACKAGES='./publicapi ./publicread ./leaderboard ./gameserver ./account
+    ./cmd/gen-api' GO_TEST_FLAGS='-count=1'` passes.
+  - Docker Postgres: `./leaderboard` passes, covering the ranking kinds from the real seeded epoch,
+    unknown category/epoch, paging with ties, variables partitioning, magnitude order, no cursor on
+    an exactly-full page, and a stored unloadable catalog failing loudly. `./account` passes.
+  - `./gameserver` passes; the composed witness now also serves an empty valuation board with exact
+    bytes and a `404 unknown_id/category`.
+- **One full `./gameserver` Postgres run failed** in
+  `TestComposedAccountFamilyRevocationRevalidatesSocketsIntegration` (24 s). The test passed alone
+  and the whole package passed on rerun. I can't attribute it: no other test container was running
+  at the rerun. It is logged as an unexplained single failure, not as a pass.
+- `make api-generate` then `make api-pin`: the diff contains the new operation, its schemas and
+  the widened detail enum. Client `tsc` is clean.
+
+**Severings (each run red; restored):**
+- B1: fetch `limit` instead of `limit+1`. The Postgres witness fails (`more=false`).
+- B2: cursor filter drops `limit`. The limit-mutated cursor is accepted, and the unit test fails.
+- B3a/B3b: the cursor-arm checks. My first B3 mutation SURVIVED because `false && …` still left the
+  other checks active. I added a both-arms cursor case and severed exactly the `Key != nil` and
+  magnitude-field checks, and both then failed.
+- B4: advisor flag dropped before the reader. The unit test fails.
+- B5: timer disagreement ignored. The resolver unit test fails.
+
+**Honest non-discrimination, corrected:** my first integration "disagreement" case was VACUOUS. The
+canonical-shape category loader rejects any non-phase-0 timer, so the rewritten catalog failed to
+load, and `ErrInvalidEpoch` came from the loader rather than from the disagreement branch. The
+integration step now asserts what it actually shows: an unloadable stored catalog fails loudly for
+every category. Disagreement is tested on the pure `resolveRankingKind`. With the current loader,
+disagreement between loadable catalogs is unreachable, so the branch is defensive.
+
+**DESIGN-GAPs:**
+8. **Unruled details.** `invalid/{epoch,mandate,variables}` follow the ruled per-parameter pattern.
+   `unknown_id/{category,epoch}` follow C12's `unknown_id/constants_hash` pattern. A malformed path
+   category is treated as unknown (404), not as 400. All of this needs ratification.
+9. **Required query parameters.** `epoch`, `mandate` and `variables` are required because C13
+   lists them as the normalized filter and names no defaults. A "current epoch" default would need
+   a ruling.
+10. **Mandate rows.** The projector only writes `mandate_level` 0 today, so `mandate>0` boards are
+    always empty until a mandate producer exists.

@@ -53,6 +53,7 @@ type Dependencies struct {
 	PolicyJSON []byte
 	CursorKeys CursorKeys
 	Epochs     EpochReader
+	Boards     BoardReader
 	Clock      func() time.Time
 	Random     io.Reader
 }
@@ -62,7 +63,7 @@ var notFound = []byte(`{"category":"unknown_id","detail":"route"}` + "\n")
 // NewRouter mounts every public operation from the public registry, and only
 // those, behind the shared request-ID middleware.
 func NewRouter(dependencies Dependencies) (http.Handler, error) {
-	if dependencies.Epochs == nil || dependencies.Clock == nil || dependencies.Random == nil {
+	if dependencies.Epochs == nil || dependencies.Boards == nil || dependencies.Clock == nil || dependencies.Random == nil {
 		return nil, ErrComposition
 	}
 	policy, err := publicapi.LoadPolicy(dependencies.PolicyJSON)
@@ -93,6 +94,7 @@ func NewRouter(dependencies Dependencies) (http.Handler, error) {
 		writeExact(response, http.StatusNotFound, notFound)
 	})
 	bindings := []publicapi.Binding{
+		{OperationID: ListBoardOperation, Handler: BoardHandler{Registry: registry, Cursors: cursors, Runtime: runtime, Boards: dependencies.Boards}},
 		{OperationID: ListEpochsOperation, Handler: EpochsHandler{Registry: registry, Cursors: cursors, Runtime: runtime, Epochs: dependencies.Epochs}},
 	}
 	if err := registry.Mount(router, bindings, nil); err != nil {
