@@ -48,11 +48,11 @@ func VerifyFounderHistory(history save.FounderHistory, catalogs ReplayCatalogRes
 		if json.Unmarshal(wire.Resolved, &kind) != nil {
 			return ReplayStateDivergence
 		}
-		linked := kind.Kind == founderExitResolvedKind || kind.Kind == minigameResolutionKind || kind.Kind == "soul_recovery"
+		linked := kind.Kind == founderExitResolvedKind || kind.Kind == founderExitPlanResolvedKind || kind.Kind == minigameResolutionKind || kind.Kind == "soul_recovery"
 		if linked != (entry.Source != nil) {
 			return ReplayStateDivergence
 		}
-		if entry.Source != nil && kind.Kind == founderExitResolvedKind {
+		if entry.Source != nil && (kind.Kind == founderExitResolvedKind || kind.Kind == founderExitPlanResolvedKind) {
 			var facts founderExitResolvedWire
 			if decodeReplayStrict(wire.Resolved, &facts) != nil || facts.CompanyStreamID != entry.Source.CompanyStreamID ||
 				facts.RunSeq != entry.Source.RunSeq || facts.RunLogSeq != entry.Source.RunLogSeq {

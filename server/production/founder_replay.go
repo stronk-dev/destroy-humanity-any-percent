@@ -132,7 +132,7 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		return applyFounderFiscalSpendResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case IntentPurchaseReputationNode:
 		return applyFounderReputationPurchaseResolved(state, request, revision, catalogs, wire.Resolved)
-	case founderExitResolvedKind:
+	case founderExitResolvedKind, founderExitPlanResolvedKind:
 		explicitExit := request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO
 		if explicitExit && request.ExpectedFounderRevision != wire.Command.Revision {
 			return FounderLoggedTransition{}, fmt.Errorf("%w: Exit Founder revision", ErrInvalidReplayInputs)
@@ -593,7 +593,13 @@ func cloneFounderReplayState(state *save.State, catalog *economy.Catalog) (*save
 
 func applyFounderExitResolved(state *save.State, command save.FounderReplayCommand, request IntentRequest, catalogs CatalogBundle, resolved founderExitResolvedWire) (FounderLoggedTransition, error) {
 	inputHash := catalogs.ConstantsHash
-	if resolved.Kind != founderExitResolvedKind || resolved.CompanyStreamID == "" || resolved.RunSeq < 1 ||
+	// exit.v2 exists exactly when the request carries a non-empty plan and
+	// the Exit applied; exit.v1 never carries purchases (R6).
+	planned := len(request.ReputationPlan) != 0 && resolved.Outcome == string(save.IntentApplied)
+	if resolved.Kind == founderExitPlanResolvedKind != planned || (resolved.ReputationPurchases != nil) != planned {
+		return FounderLoggedTransition{}, ErrInvalidReplayInputs
+	}
+	if resolved.Kind != founderExitResolvedKind && resolved.Kind != founderExitPlanResolvedKind || resolved.CompanyStreamID == "" || resolved.RunSeq < 1 ||
 		resolved.RunLogSeq < 1 || resolved.AgeMSBefore != state.AgeMS || resolved.AgeMSAfter < resolved.AgeMSBefore ||
 		resolved.AttendedMS != resolved.AgeMSAfter-resolved.AgeMSBefore || resolved.AgeMSAfter > decimal.MaxExactInteger ||
 		resolved.ResultConstantsHash == "" || resolved.ResultFounderWireVersion < 1 {
@@ -658,6 +664,22 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		state.MinigameSessionSeq = 0
 	}
 	state.WireVersion = resolved.ResultFounderWireVersion
+	var planEvents []save.EventWrite
+	if planned {
+		if category, detail, ok := reputationPlanRejection(resultCatalogs, state, state.ReputationLevel, request.ReputationPlan); !ok {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: exit plan %s/%s", ErrInvalidReplayInputs, category, detail)
+		}
+		purchases, events, planErr := applyReputationPlan(resultCatalogs, state, command.IntentID, request.ReputationPlan)
+		if planErr != nil || len(purchases) != len(*resolved.ReputationPurchases) {
+			return FounderLoggedTransition{}, ErrInvalidReplayInputs
+		}
+		for index, purchase := range purchases {
+			if (*resolved.ReputationPurchases)[index] != purchase {
+				return FounderLoggedTransition{}, fmt.Errorf("%w: exit plan purchase %d", ErrInvalidReplayInputs, index)
+			}
+		}
+		planEvents = events
+	}
 	if err := resultCatalogs.ValidateFoundationState(state); err != nil {
 		return FounderLoggedTransition{}, err
 	}
@@ -668,8 +690,8 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		"run_id":    map[string]any{"company_stream_id": resolved.CompanyStreamID, "run_seq": resolved.RunSeq},
 		"exit_type": resolved.ExitRecord.ExitType, "reputation_delta": resolved.ReputationDelta,
 		"route_knowledge": resolved.RouteKnowledgeDelta, "occurred_at_ms": resolved.ExitRecord.OccurredAtMS})
-	events := []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1,
-		IntentID: command.IntentID, Payload: eventPayload}}
+	events := append([]save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1,
+		IntentID: command.IntentID, Payload: eventPayload}}, planEvents...)
 	return FounderLoggedTransition{State: state, Outcome: save.IntentApplied, Receipt: receipt,
 		Events: events, ResultConstantsHash: resolved.ResultConstantsHash}, nil
 }

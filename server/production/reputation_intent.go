@@ -153,3 +153,66 @@ func applyFounderReputationPurchaseResolved(state *save.State, request IntentReq
 		Events: []save.EventWrite{{Kind: save.EventReputationNodePurchased, SchemaVersion: 1,
 			IntentID: request.IntentID, Payload: payload}}, ResultConstantsHash: catalogs.ConstantsHash}, nil
 }
+
+// reputationPlanPurchase is one applied Exit-plan purchase (R6), frozen in the
+// Founder log's exit.v2 arm.
+type reputationPlanPurchase struct {
+	NodeID       string `json:"node_id"`
+	ResolvedCost int64  `json:"resolved_cost"`
+}
+
+// reputationPlanRejection dry-runs R6 steps 1–2 against the Founder state the
+// plan would see inside the Exit transaction: the credited level, and an
+// empty tree state when this Exit activates v22. It returns the whole-Exit
+// rejection (category, "reputation_plan.<detail>"), or ok.
+func reputationPlanRejection(next CatalogBundle, founder *save.State, creditedLevel int64, plan []string) (string, string, bool) {
+	if len(plan) == 0 {
+		return "", "", true
+	}
+	if next.ReputationTree == nil {
+		return "not_eligible", "reputation_plan.tree_inactive", false
+	}
+	spent, owned := founder.ReputationSpent, append([]string{}, founder.ReputationNodesOwned...)
+	if save.VersionForState(founder) < 22 {
+		spent, owned = 0, []string{}
+	}
+	for _, id := range plan {
+		applied, rejection, err := next.ReputationTree.Purchase(creditedLevel, spent, owned, id)
+		if err != nil {
+			return "not_eligible", "reputation_plan.state", false
+		}
+		if rejection != nil {
+			detail := rejection.Detail
+			if rejection.Category == "unknown_id" {
+				detail = "unknown_id"
+			}
+			return rejection.Category, "reputation_plan." + detail, false
+		}
+		spent, owned = applied.SpentAfter, applied.OwnedAfter
+	}
+	return "", "", true
+}
+
+// applyReputationPlan is R6 steps 2–3 on the activated Founder: each id in
+// order, returning the frozen purchases and their events (source exit_plan).
+func applyReputationPlan(next CatalogBundle, founder *save.State, intentID string, plan []string) ([]reputationPlanPurchase, []save.EventWrite, error) {
+	purchases := []reputationPlanPurchase{}
+	events := []save.EventWrite{}
+	for _, id := range plan {
+		spentBefore := founder.ReputationSpent
+		applied, rejection, err := next.ReputationTree.Purchase(founder.ReputationLevel, founder.ReputationSpent, founder.ReputationNodesOwned, id)
+		if err != nil || rejection != nil {
+			return nil, nil, fmt.Errorf("%w: pre-validated reputation plan failed at %s", ErrInvalidEngineState, id)
+		}
+		founder.ReputationSpent, founder.ReputationNodesOwned, founder.ReputationUnlockPPM = applied.SpentAfter, applied.OwnedAfter, applied.UnlockPPMAfter
+		payload, err := json.Marshal(map[string]any{"node_id": id, "node_kind": applied.Node.Kind, "cost": applied.Node.Cost,
+			"reputation_level": founder.ReputationLevel, "reputation_spent_before": spentBefore,
+			"reputation_spent_after": applied.SpentAfter, "unlock_ppm_after": applied.UnlockPPMAfter, "source": "exit_plan"})
+		if err != nil {
+			return nil, nil, err
+		}
+		purchases = append(purchases, reputationPlanPurchase{NodeID: id, ResolvedCost: applied.Node.Cost})
+		events = append(events, save.EventWrite{Kind: save.EventReputationNodePurchased, SchemaVersion: 1, IntentID: intentID, Payload: payload})
+	}
+	return purchases, events, nil
+}

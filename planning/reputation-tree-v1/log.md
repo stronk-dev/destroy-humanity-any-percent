@@ -306,3 +306,57 @@ the new Company, and the started events. The file passes 23/23.
 - The TS Founder-log Exit activation arm (`resultVersion >= 22` in `applyFounderExit`, from B3)
   has no TS witness yet.
 - R6, the Exit-attached plan, is the next batch (B6).
+
+## 2026-09-25 — B6 (Go) landed: Exit-attached plan (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**C2 ruling check.** `/api/v1/intents` is not an operation in the generated API registry
+(`docs/generated/api.json` has no such path), so the optional key widens no v1 request union.
+There is no conflict, and no compatibility pin was touched.
+
+**What landed:**
+- `parseReputationPlan` in `intents.go`.
+- Pre-validation and application in `finishExitResolved`; `reputationPlanRejection` and
+  `applyReputationPlan` in `reputation_intent.go`.
+- The `exit.v2` audit arm, derived from the decision's `exit_plan` events, in
+  `founder_exit_replay.go`.
+- The Founder replay `exit.v2` arm, which re-derives and compares purchases.
+- History linking for `exit.v2`.
+- Migration `00078_founder_exit_v2.sql`.
+- Migration pin 77 → 78.
+- Kernel 0.3.113 → 0.3.114.
+
+**Corrections to my own earlier log:**
+- **B4's "R7 item 3 is N/A" was wrong.** The founder_log arm constraint exists: `00057`/`00062`/
+  `00069` `founder_log_multistream_source_shape`. I missed it by grepping for the wrong identifier.
+  Migration 00078 extends that constraint.
+- **Real defect found by the live witness:** `applyFounderReplayOutput` (the live Exit parity
+  expected state) did not copy the v22 tree fields. Any live Exit that carried a plan or activated
+  v22 would have failed parity. It is fixed, and this also covers B3's live activation path.
+
+**Evidence:**
+- **AC9 (`TestReputationExitPlanIntegration`), real Postgres through `Service.Handle` with
+  `wind_down`:**
+  - A plan whose last entry is unaffordable is rejected as
+    `unaffordable / reputation_plan.reputation`. Both streams stay unchanged: same run, spent 0, no
+    owned nodes, one exit record.
+  - A valid plan (with an in-plan prerequisite ordering) applies:
+    - run 3 starts with `generated_beige_tower` applied (5 provisioned);
+    - spent is 6 and unlock ppm is 50,000;
+    - three `exit_plan` events are persisted;
+    - the next run's frozen bonus is `1.003e0`;
+    - the Founder log arms read `[exit.v1 exit.v2]`, which is live proof that 00078 was applied,
+      since the insert would otherwise fail its constraint;
+    - `VerifyFounderHistory` returns `verified`.
+- **Severing probes (Postgres), both turned red and were restored:**
+  - removing pre-validation;
+  - dropping the plan events from Founder replay.
+- **Cold runs:** Go tests pass for save, production, replaycatalog, reputation, gameui, account,
+  gameserver and releasepackage. The client passes 6727 tests.
+
+**Not yet done:**
+- The TS side of R6: the Company-log Exit with a plan, and the Founder `exit.v2` arm.
+- A TS cross-runtime plan case.
+
+These are the next commit.

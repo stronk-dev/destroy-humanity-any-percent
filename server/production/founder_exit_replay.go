@@ -12,6 +12,11 @@ import (
 
 const founderExitResolvedKind = "exit.v1"
 
+// founderExitPlanResolvedKind is the append-only exit.v2 arm (Reputation Tree
+// v1 R6): identical to exit.v1 plus the applied reputation_purchases. It is
+// written exactly when the Exit request carries a non-empty reputation_plan.
+const founderExitPlanResolvedKind = "exit.v2"
+
 type founderExitRecordWire struct {
 	RunID           int64  `json:"run_id"`
 	ExitType        string `json:"exit_type"`
@@ -20,25 +25,26 @@ type founderExitRecordWire struct {
 }
 
 type founderExitResolvedWire struct {
-	Kind                      string                 `json:"kind"`
-	Outcome                   string                 `json:"outcome"`
-	CompanyStreamID           string                 `json:"company_stream_id"`
-	RunSeq                    int64                  `json:"run_seq"`
-	RunLogSeq                 int64                  `json:"run_log_seq"`
-	ResultConstantsHash       string                 `json:"result_constants_hash"`
-	ReputationDelta           int64                  `json:"reputation_delta"`
-	RouteKnowledgeDelta       int64                  `json:"route_knowledge_delta"`
-	AttendedMS                int64                  `json:"attended_ms"`
-	AgeMSBefore               int64                  `json:"age_ms_before"`
-	AgeMSAfter                int64                  `json:"age_ms_after"`
-	AchievementScoreDelta     int64                  `json:"achievement_score_delta"`
-	AddedNetworkSlots         []save.NetworkSlot     `json:"added_network_slots"`
-	AddedLedgerFactKinds      []string               `json:"added_ledger_fact_kinds"`
-	AddedLifetimeAchievements []string               `json:"added_lifetime_achievements"`
-	ExitRecord                *founderExitRecordWire `json:"exit_record"`
-	ResultFounderWireVersion  int                    `json:"result_founder_wire_version"`
-	Rejection                 *founderAuditRejection `json:"rejection"`
-	NextSoul                  *nextSoulWire          `json:"next_soul,omitempty"`
+	Kind                      string                    `json:"kind"`
+	Outcome                   string                    `json:"outcome"`
+	CompanyStreamID           string                    `json:"company_stream_id"`
+	RunSeq                    int64                     `json:"run_seq"`
+	RunLogSeq                 int64                     `json:"run_log_seq"`
+	ResultConstantsHash       string                    `json:"result_constants_hash"`
+	ReputationDelta           int64                     `json:"reputation_delta"`
+	RouteKnowledgeDelta       int64                     `json:"route_knowledge_delta"`
+	AttendedMS                int64                     `json:"attended_ms"`
+	AgeMSBefore               int64                     `json:"age_ms_before"`
+	AgeMSAfter                int64                     `json:"age_ms_after"`
+	AchievementScoreDelta     int64                     `json:"achievement_score_delta"`
+	AddedNetworkSlots         []save.NetworkSlot        `json:"added_network_slots"`
+	AddedLedgerFactKinds      []string                  `json:"added_ledger_fact_kinds"`
+	AddedLifetimeAchievements []string                  `json:"added_lifetime_achievements"`
+	ExitRecord                *founderExitRecordWire    `json:"exit_record"`
+	ResultFounderWireVersion  int                       `json:"result_founder_wire_version"`
+	Rejection                 *founderAuditRejection    `json:"rejection"`
+	NextSoul                  *nextSoulWire             `json:"next_soul,omitempty"`
+	ReputationPurchases       *[]reputationPlanPurchase `json:"reputation_purchases,omitempty"`
 }
 
 type nextSoulWire struct {
@@ -99,6 +105,13 @@ func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revi
 		facts.ExitRecord = &founderExitRecordWire{RunID: last.RunID, ExitType: last.ExitType,
 			OccurredAtMS: last.OccurredAt.UnixMilli(), ReputationDelta: last.ReputationDelta}
 		facts.ResultFounderWireVersion = save.VersionForState(after)
+		purchases, purchaseErr := planPurchasesFromEvents(decision.FounderEvents)
+		if purchaseErr != nil {
+			return nil, nil, purchaseErr
+		}
+		if len(purchases) != 0 {
+			facts.Kind, facts.ReputationPurchases = founderExitPlanResolvedKind, &purchases
+		}
 		if save.VersionForState(before) < 20 && facts.ResultFounderWireVersion >= 20 {
 			resultCatalogs := catalogs
 			if decision.NewConstantsHash != catalogs.ConstantsHash {
@@ -270,4 +283,25 @@ func addedNetworkSlots(before, after []save.NetworkSlot) []save.NetworkSlot {
 		return result[left].CarriedRef < result[right].CarriedRef
 	})
 	return result
+}
+
+// planPurchasesFromEvents recovers the Exit plan's applied purchases, in
+// order, from the decision's reputation_node_purchased.v1 (exit_plan) events.
+func planPurchasesFromEvents(events []save.EventWrite) ([]reputationPlanPurchase, error) {
+	purchases := []reputationPlanPurchase{}
+	for _, event := range events {
+		if event.Kind != save.EventReputationNodePurchased {
+			continue
+		}
+		var payload struct {
+			NodeID string `json:"node_id"`
+			Cost   int64  `json:"cost"`
+			Source string `json:"source"`
+		}
+		if err := json.Unmarshal(event.Payload, &payload); err != nil || payload.Source != "exit_plan" {
+			return nil, ErrInvalidEngineState
+		}
+		purchases = append(purchases, reputationPlanPurchase{NodeID: payload.NodeID, ResolvedCost: payload.Cost})
+	}
+	return purchases, nil
 }

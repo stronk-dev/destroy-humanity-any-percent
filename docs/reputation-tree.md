@@ -156,3 +156,30 @@ bundle's tree is applied additively, in tree array order:
 **run_started v2.** When the new run's bundle has a tree, `run_started` is emitted at schema 2 with
 `reputation_tree: {bonus_factor, applied_starter_node_ids}`; otherwise v1 stays byte-identical.
 `save.validateEvent` checks the arm, and migration 00077 admits schema 2.
+
+## Exit-attached purchase plan (R6)
+
+`accept_exit_offer` and `wind_down` accept an optional `reputation_plan` key: 0–64 unique
+mechanical node ids, listed in purchase order. The key belongs to the canonical request and its
+hash. Requests without it are byte-identical to before. `/api/v1/intents` is not an operation in
+the generated API registry, so API Foundation C2's rule that v1 request unions must not widen does
+not apply.
+
+Inside the Exit, after the Exit's own Reputation credit, the plan is dry-run first:
+- If the next bundle has no tree, the whole Exit is rejected with
+  `not_eligible / reputation_plan.tree_inactive`.
+- Otherwise the purchase rules run in order, each against the state left by the previous entry, so
+  a node may require one bought earlier in the same plan. The first failure rejects the whole Exit
+  before any mutation, as `<category> / reputation_plan.<detail>`.
+
+The purchases are then applied after v22 activation and before starter assembly and the frozen
+bonus row. Each emits `reputation_node_purchased.v1` with `source: "exit_plan"`, ordered after
+`founder_advanced`.
+
+The Founder log records an Exit with an applied non-empty plan under the append-only `exit.v2` arm:
+`exit.v1` plus `reputation_purchases: [{node_id, resolved_cost}]`. Founder replay re-derives those
+purchases and refuses any mismatch. Migration 00078 admits `exit.v2` as a Company-linked Founder-log
+arm.
+
+When the live Exit is checked against its replay (parity), the expected Founder state now copies
+the v22 tree fields. Without that, a live Exit with a plan, or one activating v22, diverged.

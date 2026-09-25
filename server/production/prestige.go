@@ -246,6 +246,10 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		}
 		terms.RouteKnowledge += branch.RouteKnowledgeBonus
 	}
+	// R6: a plan that cannot apply rejects the whole Exit before any mutation.
+	if category, detail, ok := reputationPlanRejection(nextBundle, founder, founder.ReputationLevel+terms.ReputationDelta, request.ReputationPlan); !ok {
+		return rejectedExitDecision(request, companyRevision.Number, category, detail), nil
+	}
 	founder.ReputationLevel += terms.ReputationDelta
 	founder.RouteKnowledgeBalance += terms.RouteKnowledge
 	founder.AgeMS += attended
@@ -270,6 +274,12 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	}
 	if err := settleAndActivateFoundations(currentBundle, nextBundle, founder, company, newCompany); err != nil {
 		return save.ExitDecision{}, err
+	}
+	var planEvents []save.EventWrite
+	if len(request.ReputationPlan) != 0 {
+		if _, planEvents, err = applyReputationPlan(nextBundle, founder, request.IntentID, request.ReputationPlan); err != nil {
+			return save.ExitDecision{}, err
+		}
 	}
 	if branch != nil {
 		if err := nextBundle.Curriculum.ApplyStarter(newCompany, *branch); err != nil {
@@ -333,7 +343,7 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: nextBundle.ConstantsHash,
 		NewRunFrozenContributions: frozen,
 		VersionFloors:             exitVersionFloors(currentBundle, nextBundle),
-		FounderEvents:             []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
+		FounderEvents:             append([]save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}}, planEvents...),
 		CompanyEndedEvents:        endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: startedSchema, IntentID: request.IntentID, Payload: startedPayload}}}, nil
 }
 
@@ -496,6 +506,10 @@ func applyFounderReplayOutput(target, replayed *save.State) error {
 		target.Soul = replayed.Soul
 		target.SoulExhaustedSourceIDs = append([]string{}, replayed.SoulExhaustedSourceIDs...)
 		target.MinigameSessionSeq = replayed.MinigameSessionSeq
+	}
+	if save.VersionForState(replayed) >= 22 {
+		target.ReputationSpent, target.ReputationUnlockPPM = replayed.ReputationSpent, replayed.ReputationUnlockPPM
+		target.ReputationNodesOwned = append([]string{}, replayed.ReputationNodesOwned...)
 	}
 	return nil
 }

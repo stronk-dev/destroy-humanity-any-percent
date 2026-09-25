@@ -320,7 +320,10 @@ type IntentRequest struct {
 	FiscalTarget            fiscal.SpendTarget
 	OpportunityID           string
 	ReputationNodeID        string
-	ScriptedExit            bool
+	// ReputationPlan is R6's optional Exit-attached purchase plan, in
+	// purchase order; nil when the key is absent.
+	ReputationPlan []string
+	ScriptedExit   bool
 }
 
 type CompactTitheBand struct {
@@ -2184,6 +2187,9 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 			request.InvalidDetail = "faction_id"
 		}
 	case IntentAcceptExitOffer:
+		if !parseReputationPlan(root, &request) {
+			return request, nil
+		}
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "expected_founder_revision", "offer_id") {
 			request.InvalidDetail = "accept_exit_offer.fields"
 			return request, nil
@@ -2195,6 +2201,9 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 			request.InvalidDetail = "offer_id"
 		}
 	case IntentWindDown, IntentFileIPO:
+		if request.Kind == IntentWindDown && !parseReputationPlan(root, &request) {
+			return request, nil
+		}
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "expected_founder_revision") {
 			request.InvalidDetail = request.Kind + ".fields"
 			return request, nil
@@ -2270,4 +2279,31 @@ func ensureIntentJSONEnd(decoder *json.Decoder) error {
 		return errors.New("multiple JSON values")
 	}
 	return err
+}
+
+// parseReputationPlan consumes R6's optional reputation_plan key from root so
+// the remaining keys can be checked exactly: an array of 0–64 unique
+// mechanical node ids in purchase order. It records an invalid detail and
+// returns false on a malformed plan.
+func parseReputationPlan(root map[string]json.RawMessage, request *IntentRequest) bool {
+	raw, present := root["reputation_plan"]
+	if !present {
+		return true
+	}
+	delete(root, "reputation_plan")
+	var plan []string
+	if err := json.Unmarshal(raw, &plan); err != nil || plan == nil || len(plan) > 64 {
+		request.InvalidDetail = "reputation_plan"
+		return false
+	}
+	seen := map[string]bool{}
+	for _, id := range plan {
+		if !intentIDPattern.MatchString(id) || seen[id] {
+			request.InvalidDetail = "reputation_plan"
+			return false
+		}
+		seen[id] = true
+	}
+	request.ReputationPlan = plan
+	return true
 }
