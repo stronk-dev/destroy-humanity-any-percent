@@ -2,8 +2,8 @@ import accountAPISource from "../../server/account/api.go?raw";
 import { describe, expect, it } from "vitest";
 
 import { COPY_KEYS } from "../src/copy";
-import { MinigameAPIError, MinigameTransportError } from "../src/minigame/session-port";
-import { createBrowserSoulRecoveryPort, loadSoulRecoveryContent, RECOVERY_REJECTIONS, recoveryRejectionFor, toyCellOrder } from "../src/soul/recovery-surface";
+import { MinigameAPIError, MinigameTransportError } from "../src/game-ui/minigame/session-port";
+import { createBrowserSoulRecoveryPort, loadSoulRecoveryContent, RECOVERY_REJECTIONS, recoveryRejectionFor, toyCellOrder } from "../src/game-ui/soul/recovery-surface";
 
 describe("soul recovery surface content", () => {
   it("derives the SR-C6 cadence as the pinned ceiling / 3 and exposes every pinned activity", () => {

@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 
 import type { MinigameSessionResponseActive, PitchSnapshot } from "../src/api/generated/types";
 import { COPY_KEYS } from "../src/copy";
-import { loadPitchContent, pitchContentFor, PitchContentMismatch } from "../src/minigame/pitch-content";
-import { createBrowserMinigameSessionPort, MinigameAPIError, MinigameTransportError } from "../src/minigame/session-port";
-import { MINIGAME_REJECTIONS, rejectionFor, stateFromCurrent, stateFromSession } from "../src/minigame/session-surface";
-import { MINIGAME_TENANT_SURFACES, parseTenantSurfaceRegistry } from "../src/minigame/tenant-registry";
+import { loadPitchContent, pitchContentFor, PitchContentMismatch } from "../src/game-ui/minigame/pitch-content";
+import { createBrowserMinigameSessionPort, MinigameAPIError, MinigameTransportError } from "../src/game-ui/minigame/session-port";
+import { MINIGAME_REJECTIONS, rejectionFor, stateFromCurrent, stateFromSession } from "../src/game-ui/minigame/session-surface";
+import { MINIGAME_TENANT_SURFACES, parseTenantSurfaceRegistry } from "../src/game-ui/minigame/tenant-registry";
 
 const descriptor = { constants_hash: `sha256:${"a".repeat(64)}`, engine_ref: "pitch", engine_version: "1.0.0", minigame_id: "pitch", mode: "solo" as const, revision: 2, session_id: "01986666-0000-7000-8000-000000000001" };
 const snapshot: PitchSnapshot = { deck_count: 17, funding_target: "1e2", hand: ["api_call#1"], hands_remaining: 3, phase: "playing", pitch_content_hash: `sha256:${"b".repeat(64)}`, pitch_schema_version: 1, revision: 2, round: 1, round_best_valuation: "0", run_currency: 4, shop_offers: [], slotted_hacks: [] };

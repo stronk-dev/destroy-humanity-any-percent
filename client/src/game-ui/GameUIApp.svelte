@@ -17,9 +17,9 @@
   import { priorPersonalBest, readLocalTiming, RTATimer, writeLocalRunTiming, type LocalTimingStorage } from "./timing";
   import { formatAmount } from "../ui/amount-format";
   import RunEndSurface from "./RunEndSurface.svelte";
-  import MinigameSessionSurface from "../minigame/MinigameSessionSurface.svelte";
-  import SoulRecoverySurface from "../soul/SoulRecoverySurface.svelte";
-  import { loadSoulRecoveryContent } from "../soul/recovery-surface";
+  import MinigameSessionSurface from "./minigame/MinigameSessionSurface.svelte";
+  import SoulRecoverySurface from "./soul/SoulRecoverySurface.svelte";
+  import { loadSoulRecoveryContent } from "./soul/recovery-surface";
   import { GameUIShell } from "./shell-bridge";
 
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();

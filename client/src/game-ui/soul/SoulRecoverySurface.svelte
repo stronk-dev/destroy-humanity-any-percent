@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onDestroy, tick } from "svelte";
 
-  import type { SoulRecoveryProgressResponse, SoulRecoveryStartResponse, SoulRecoveryTerminalResponse } from "../api/generated/types";
-  import { t, type CopyEra, type CopyKey } from "../copy";
-  import type { SoulRecoveryActivity } from "./catalog";
-  import { RecoveryScheduler, type RecoveryPauseReason, type RecoveryVisibility } from "./recovery-scheduler";
+  import type { SoulRecoveryProgressResponse, SoulRecoveryStartResponse, SoulRecoveryTerminalResponse } from "../../api/generated/types";
+  import { t, type CopyEra, type CopyKey } from "../../copy";
+  import type { SoulRecoveryActivity } from "../../soul/catalog";
+  import { RecoveryScheduler, type RecoveryPauseReason, type RecoveryVisibility } from "../../soul/recovery-scheduler";
   import { localToySeed, recoveryActivity, recoveryRejectionFor, type SoulRecoveryContent, type SoulRecoveryPort } from "./recovery-surface";
   import RecoveryToy from "./RecoveryToy.svelte";
 

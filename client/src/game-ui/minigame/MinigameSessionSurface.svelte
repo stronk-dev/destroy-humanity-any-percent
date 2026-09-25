@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onDestroy, onMount, tick } from "svelte";
 
-  import type { MinigameResolutionReceipt, MinigameTenantCommand } from "../api/generated/types";
-  import { t, type CopyEra, type CopyKey } from "../copy";
-  import Amount from "../ui/Amount.svelte";
+  import type { MinigameResolutionReceipt, MinigameTenantCommand } from "../../api/generated/types";
+  import { t, type CopyEra, type CopyKey } from "../../copy";
+  import Amount from "../../ui/Amount.svelte";
   import PitchTable from "./PitchTable.svelte";
   import { PitchContentMismatch, pitchContentFor, type PitchContent } from "./pitch-content";
   import type { MinigameSessionPort } from "./session-port";

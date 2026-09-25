@@ -18,10 +18,10 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   owns the exact-next-Company continuation control.
 - Settings/System: save status, drain notice, and explicit resync action.
 - Minigame session (The Pitch): a nav tab present whenever the runtime supplies a minigame port.
-  It hosts `client/src/minigame/MinigameSessionSurface.svelte`; see
+  It hosts `client/src/game-ui/minigame/MinigameSessionSurface.svelte`; see
   [Minigame platform § Client surface](minigame-platform.md#client-surface). Leaving the tab keeps
   the server session. A terminal receipt triggers one authoritative snapshot refresh.
-- Recovery: a nav tab hosting `client/src/soul/SoulRecoverySurface.svelte` whenever the runtime
+- Recovery: a nav tab hosting `client/src/game-ui/soul/SoulRecoverySurface.svelte` whenever the runtime
   supplies a Soul-recovery port; a terminal recovery refreshes the snapshot once.
 
 The persistent chrome derives its era only from the authoritative tier (`0` is `era_1995`, `1` is

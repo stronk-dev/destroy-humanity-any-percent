@@ -3,9 +3,9 @@ import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it } from "vitest";
 
 import type { MinigameCommandRequest, MinigameCurrentResponse, MinigameResolutionReceipt, MinigameSessionResponse, MinigameSessionResponseActive, MinigameSessionResponseTerminal, PitchSnapshot } from "../src/api/generated/types";
-import MinigameSessionSurface from "../src/minigame/MinigameSessionSurface.svelte";
-import { loadPitchContent } from "../src/minigame/pitch-content";
-import { MinigameAPIError, MinigameTransportError, type MinigameSessionPort } from "../src/minigame/session-port";
+import MinigameSessionSurface from "../src/game-ui/minigame/MinigameSessionSurface.svelte";
+import { loadPitchContent } from "../src/game-ui/minigame/pitch-content";
+import { MinigameAPIError, MinigameTransportError, type MinigameSessionPort } from "../src/game-ui/minigame/session-port";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
 
 const browser = typeof document !== "undefined";

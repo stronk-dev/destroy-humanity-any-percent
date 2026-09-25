@@ -1,11 +1,11 @@
-import pinnedPrestigeBytes from "../../../balance/prestige/phase0.json?raw";
-import pinnedSoulBytes from "../../../balance/soul/first-content.json?raw";
+import pinnedPrestigeBytes from "../../../../balance/prestige/phase0.json?raw";
+import pinnedSoulBytes from "../../../../balance/soul/first-content.json?raw";
 
-import { operations, type SoulRecoveryProgressResponse, type SoulRecoveryStartResponse, type SoulRecoveryTerminalResponse } from "../api/generated/types";
-import { COPY_KEYS, type CopyKey } from "../copy";
+import { operations, type SoulRecoveryProgressResponse, type SoulRecoveryStartResponse, type SoulRecoveryTerminalResponse } from "../../api/generated/types";
+import { COPY_KEYS, type CopyKey } from "../../copy";
 import { createOperationCall, MinigameAPIError, MinigameTransportError, type Fetcher } from "../minigame/session-port";
-import { parsePrestigePolicy } from "../prestige";
-import { parseSoulCatalog, type SoulCatalog, type SoulRecoveryActivity } from "./catalog";
+import { parsePrestigePolicy } from "../../prestige";
+import { parseSoulCatalog, type SoulCatalog, type SoulRecoveryActivity } from "../../soul/catalog";
 
 // SoulRecoveryPort is the recovery surface's only transport seam (SR-C3,
 // MA-C9): the generated MA2 operations typed by the generated DTOs.

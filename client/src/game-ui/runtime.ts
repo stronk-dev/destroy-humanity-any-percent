@@ -1,6 +1,6 @@
 import type { BootstrapResponse } from "../api/generated/types";
-import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "../minigame/session-port";
-import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "../soul/recovery-surface";
+import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "./minigame/session-port";
+import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "./soul/recovery-surface";
 import { decodeTransportEnvelope, decodeWorldSnapshot, PlayerRevisionCursor } from "../transport";
 import { parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
 import { decodeGameUIEvent, decodeGameUISystemEvent, type GameUILifecycleEvent, type GameUISystemEvent } from "./events";

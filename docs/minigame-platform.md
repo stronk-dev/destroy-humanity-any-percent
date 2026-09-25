@@ -51,7 +51,7 @@ leak across the public schema boundary.
 
 ## Client surface
 
-`client/src/minigame/` holds the MA3/MA-C9 client surface. Components never call `fetch`:
+`client/src/game-ui/minigame/` holds the MA3/MA-C9 client surface. Components never call `fetch`:
 `MinigameSessionPort` (`session-port.ts`) is the only transport seam. It is built from the
 generated operation table and typed with the generated DTOs. A non-2xx response whose body is
 exactly `{category, detail}` with a known category becomes a `MinigameAPIError`; any other failure
@@ -96,7 +96,7 @@ wording drafted by the implementer and awaits owner adoption; it is not ruled co
 - failing closed on an unknown tenant or foreign content;
 - the create-key hold.
 
-`client/src/soul/SoulRecoverySurface.svelte` is the SR-C3 `soul_recovery` surface. It uses
+`client/src/game-ui/soul/SoulRecoverySurface.svelte` is the SR-C3 `soul_recovery` surface. It uses
 `SoulRecoveryPort` (`recovery-surface.ts`) with the generated start/progress/resolve/cancel
 operations, and the pinned `balance/soul/first-content.json` plus the prestige catch-up ceiling
 bundled with the client.

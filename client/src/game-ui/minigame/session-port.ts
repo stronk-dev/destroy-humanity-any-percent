@@ -1,4 +1,4 @@
-import { operations, type APIError, type MinigameCommandRequest, type MinigameCurrentResponse, type MinigameSessionResponse, type MinigameSessionResponseActive, type MinigameSessionResponseTerminal } from "../api/generated/types";
+import { operations, type APIError, type MinigameCommandRequest, type MinigameCurrentResponse, type MinigameSessionResponse, type MinigameSessionResponseActive, type MinigameSessionResponseTerminal } from "../../api/generated/types";
 
 // MinigameSessionPort is the only transport seam the minigame_session surface
 // sees (MA-C9). Components never call fetch; every shape is the generated DTO.

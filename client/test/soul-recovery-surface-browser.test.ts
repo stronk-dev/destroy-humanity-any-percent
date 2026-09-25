@@ -3,10 +3,10 @@ import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it } from "vitest";
 
 import type { SoulRecoveryProgressResponse, SoulRecoveryStartResponse, SoulRecoveryTerminalResponse } from "../src/api/generated/types";
-import { MinigameAPIError, MinigameTransportError } from "../src/minigame/session-port";
+import { MinigameAPIError, MinigameTransportError } from "../src/game-ui/minigame/session-port";
 import type { RecoveryVisibility } from "../src/soul/recovery-scheduler";
-import { loadSoulRecoveryContent, type SoulRecoveryContent, type SoulRecoveryPort } from "../src/soul/recovery-surface";
-import SoulRecoverySurface from "../src/soul/SoulRecoverySurface.svelte";
+import { loadSoulRecoveryContent, type SoulRecoveryContent, type SoulRecoveryPort } from "../src/game-ui/soul/recovery-surface";
+import SoulRecoverySurface from "../src/game-ui/soul/SoulRecoverySurface.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
 
 const browser = typeof document !== "undefined";

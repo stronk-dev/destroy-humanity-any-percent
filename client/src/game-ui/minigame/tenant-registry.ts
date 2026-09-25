@@ -1,4 +1,4 @@
-import pinnedMinigameAPI from "../../../balance/minigame-api/first-content.json";
+import pinnedMinigameAPI from "../../../../balance/minigame-api/first-content.json";
 
 // The client tenant-surface registry is keyed by the same (engine_ref,
 // engine_version) arm as the pinned minigame_api artifact (MA-C9). It is not a

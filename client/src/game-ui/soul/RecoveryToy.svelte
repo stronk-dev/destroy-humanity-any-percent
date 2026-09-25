@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SoulToyKind } from "./catalog";
+  import type { SoulToyKind } from "../../soul/catalog";
   import { toyCellOrder } from "./recovery-surface";
 
   // Presentation only (SR-C3): the toy receives a local decorative seed and

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { PitchSnapshot } from "../api/generated/types";
-  import { t, type CopyEra, type CopyKey } from "../copy";
-  import Amount from "../ui/Amount.svelte";
+  import type { PitchSnapshot } from "../../api/generated/types";
+  import { t, type CopyEra, type CopyKey } from "../../copy";
+  import Amount from "../../ui/Amount.svelte";
   import { pitchCardInstanceBase, type PitchContent } from "./pitch-content";
 
   // Tenant child for (pitch, 1.0.0). Presentation only: it renders the server

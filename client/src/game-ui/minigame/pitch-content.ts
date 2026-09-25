@@ -1,7 +1,7 @@
-import pinnedPitchBytes from "../../../balance/pitch.json?raw";
+import pinnedPitchBytes from "../../../../balance/pitch.json?raw";
 
-import { COPY_KEYS } from "../copy";
-import { parsePitchCatalog, pitchContentHash, type PitchCatalog } from "../pitch/catalog";
+import { COPY_KEYS } from "../../copy";
+import { parsePitchCatalog, pitchContentHash, type PitchCatalog } from "../../pitch/catalog";
 
 // The Pitch snapshot carries only instance IDs and pitch_content_hash. The
 // table resolves presentation from the pinned catalog bytes bundled with the

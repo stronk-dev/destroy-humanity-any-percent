@@ -1,5 +1,5 @@
-import type { MinigameCommandRequest, MinigameCurrentResponse, MinigameSessionDescriptor, MinigameSessionResponse, MinigameSessionResponseTerminal, PitchSnapshot } from "../api/generated/types";
-import type { CopyKey } from "../copy";
+import type { MinigameCommandRequest, MinigameCurrentResponse, MinigameSessionDescriptor, MinigameSessionResponse, MinigameSessionResponseTerminal, PitchSnapshot } from "../../api/generated/types";
+import type { CopyKey } from "../../copy";
 import { MinigameAPIError, MinigameTransportError } from "./session-port";
 
 // The closed MA-C9 surface states. `none` is not a surface state: a
