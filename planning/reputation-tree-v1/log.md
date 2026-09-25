@@ -204,3 +204,34 @@ plan box therefore stays unchecked until then.
 - R7 item 3, extending the founder_log resolved-arm check, is N/A: no such database constraint
   exists (only the events kind and schema-version checks do).
 - R5 step 2's Fiscal sweep runs through the existing ApplyFounderLogged prelude and decorator.
+
+## 2026-09-25 — B5a landed: frozen bonus row and pin completeness (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**What landed**
+- `FrozenFounderContributions`, wired into the Exit path and `FounderInitializer`.
+- Migration `00076_reputation_frozen_contribution.sql`: `CREATE OR REPLACE` of the completeness
+  function, with Down restoring the 00065 body.
+- `TestReputationFrozenFounderContributionsAddTheBonusRow`.
+- The Postgres test now also covers AC6 and AC7:
+  - AC6: a pin missing the reputation row and a pin with an extra row both fail with the new
+    message, which proves 00076 is live on the test database; the complete pin commits.
+  - AC7: a purchase leaves `FrozenContributionProvider` output for the pinned run byte-identical,
+    while `FrozenFounderContributions` for the next run changes.
+- Kernel version bumped 0.3.111 → 0.3.112.
+
+**Evidence (cold)**
+- Go tests pass for production, save and reputation.
+- The Postgres test passes.
+
+**Severing probes (both turned the tests red; restored afterwards)**
+- Omitting the reputation row.
+- Computing the factor from available instead of level.
+
+**Not yet done**
+- **AC7's failing case** ("a live-Founder-read implementation changes the current projection") is
+  not demonstrated as a mutant, because no production path reads Founder state for a run's
+  contributions. The positive byte-identity check is recorded instead.
+- **B5b remains:** the R4 starter application at new-run assembly (a replay-inputs carry
+  extension, RT-DG-C), `run_started` v2, and the TS side of the frozen row.

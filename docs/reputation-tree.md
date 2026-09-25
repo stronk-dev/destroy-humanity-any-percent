@@ -118,3 +118,22 @@ validated strictly in `save.validateEvent` and admitted to the database by migra
 invalid, unknown, requires, owned and unaffordable rows (including the `cost == available + 1`
 boundary), plus a nine-node chain with an automatic Fiscal sweep. Set
 `REPUTATION_UPDATE_FIXTURE=1` to regenerate it from Go.
+
+## Frozen Founder bonus (R3)
+
+`production.FrozenFounderContributions(bundle, founder)` produces the complete run-frozen Founder
+contribution set. It holds the Fiscal rows, plus exactly one `reputation.founder_bonus` row
+(prestige slot, target `all`) whenever the pinned bundle carries `reputation_tree`. That includes
+a `1e0` factor for a Founder with no unlock node.
+
+The factor is `1 + level × per_level_ppm × unlock_ppm / 1e12`, computed from the Founder state
+after the Exit's Reputation credit. The earned level is used, not the available balance, and a
+mismatched unlock mirror is refused. Exit (`prestige.go`) and New-Founder initialization
+(`FounderInitializer`, which account import also uses) both call it.
+
+Migration 00076 replaces `require_fiscal_frozen_contributions()`. A run pin now expects the Fiscal
+rows plus one extra row when the pin's bundle has a `reputation_tree` artifact. A missing or extra
+row fails the commit.
+
+Production reads a run's bonus only from the stored rows, so a mid-run purchase leaves the current
+run's contributions byte-identical and changes only the next run's frozen factor.

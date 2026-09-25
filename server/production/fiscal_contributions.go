@@ -40,6 +40,33 @@ func FrozenFiscalContributions(catalog *fiscal.Catalog, founder *save.State) ([]
 	return result, nil
 }
 
+// FrozenFounderContributions is the complete run-frozen Founder contribution
+// set for a new run pinned to bundle: the Fiscal rows plus, when the bundle
+// pins a reputation_tree, exactly one reputation.founder_bonus row (R3),
+// including the unit factor for a Founder with no unlock node. It reads the
+// Founder state after the Exit's Reputation credit and any Exit-plan buys.
+func FrozenFounderContributions(bundle CatalogBundle, founder *save.State) ([]save.FrozenContribution, error) {
+	result, err := FrozenFiscalContributions(bundle.Fiscal, founder)
+	if err != nil {
+		return nil, err
+	}
+	tree := bundle.ReputationTree
+	if tree == nil {
+		return result, nil
+	}
+	if founder == nil || validateFounderReputationState(tree, founder) != nil {
+		return nil, ErrInvalidEngineState
+	}
+	factor, err := tree.BonusFactor(founder.ReputationLevel, founder.ReputationSpent, founder.ReputationUnlockPPM)
+	if err != nil {
+		return nil, err
+	}
+	result = append(result, save.FrozenContribution{SourceID: tree.Bonus.SourceID, Slot: tree.Bonus.Slot,
+		Target: tree.Bonus.Target, Factor: factor.String()})
+	sort.Slice(result, func(left, right int) bool { return result[left].SourceID < result[right].SourceID })
+	return result, nil
+}
+
 type FrozenContributionProvider struct{ DB *sql.DB }
 
 // ResolveFrozenContributions validates immutable run contributions against

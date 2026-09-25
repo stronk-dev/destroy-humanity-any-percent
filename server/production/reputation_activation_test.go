@@ -138,3 +138,41 @@ func TestFounderCarryFailsClosedForV22UntilTheReplayInputsCarryTreeState(t *test
 		t.Fatalf("v22 carry reconstructed without tree fields: %v", err)
 	}
 }
+
+func TestReputationFrozenFounderContributionsAddTheBonusRow(t *testing.T) {
+	tree := reputationContentBundle(t)
+	live := activeContentBundle(t)
+	now := time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
+	liveFounder := reputationFounderState(t, live, 21, now, 3)
+	plain, err := FrozenFounderContributions(live, liveFounder)
+	if err != nil || len(plain) != len(live.Fiscal.GeneratorLevelRows())+1 {
+		t.Fatalf("tree-less bundle rows=%v err=%v", plain, err)
+	}
+	founder := reputationFounderState(t, tree, 22, now, 552)
+	rows, err := FrozenFounderContributions(tree, founder)
+	if err != nil || len(rows) != len(plain)+1 {
+		t.Fatalf("tree bundle rows=%v err=%v", rows, err)
+	}
+	factor := func(values []save.FrozenContribution) string {
+		for _, row := range values {
+			if row.SourceID == "reputation.founder_bonus" {
+				return row.Factor
+			}
+		}
+		return ""
+	}
+	if factor(rows) != "1e0" {
+		t.Fatalf("no unlock node factor = %q", factor(rows))
+	}
+	founder.ReputationSpent, founder.ReputationNodesOwned = 552, []string{"reputation.starter.cash_large", "reputation.starter.cash_small",
+		"reputation.starter.generated_beige_tower", "reputation.starter.upgrade_continuous_feed_paper", "reputation.unlock.p05",
+		"reputation.unlock.p100", "reputation.unlock.p25", "reputation.unlock.p50", "reputation.unlock.p75"}
+	founder.ReputationUnlockPPM = 1_000_000
+	if rows, err = FrozenFounderContributions(tree, founder); err != nil || factor(rows) != "6.52e0" {
+		t.Fatalf("full tree factor = %q err=%v (from the earned level, not available)", factor(rows), err)
+	}
+	founder.ReputationUnlockPPM = 750_000
+	if _, err := FrozenFounderContributions(tree, founder); err == nil {
+		t.Fatal("a mismatched unlock mirror froze a factor")
+	}
+}

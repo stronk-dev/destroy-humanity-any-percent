@@ -26,5 +26,5 @@ func (initializer FounderInitializer) InitializeNewFounder(constantsHash, founde
 			return nil, err
 		}
 	}
-	return FrozenFiscalContributions(bundle.Fiscal, founder)
+	return FrozenFounderContributions(bundle, founder)
 }

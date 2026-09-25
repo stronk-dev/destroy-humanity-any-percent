@@ -314,7 +314,7 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventExitOfferResolved, SchemaVersion: 1, IntentID: request.IntentID, Payload: resolvedPayload})
 	}
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: endedSchema, IntentID: request.IntentID, Payload: endedPayload})
-	frozen, err := FrozenFiscalContributions(nextBundle.Fiscal, founder)
+	frozen, err := FrozenFounderContributions(nextBundle, founder)
 	if err != nil {
 		return save.ExitDecision{}, err
 	}
