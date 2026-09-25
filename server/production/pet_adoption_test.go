@@ -304,3 +304,27 @@ func TestTransitionLayerRejectsIdentityMutatingArms(t *testing.T) {
 		}
 	}
 }
+
+// AC15: adoption touches no Company state and no Founder input to Company
+// economics. The frozen Founder contributions pinned at every run start (the
+// sole Founder→Company economic channel) are byte-identical with and without
+// an adopted pet.
+func TestPetAdoptionIsEconomicallyIsolated(t *testing.T) {
+	species := petSpeciesContentBundle(t)
+	now := time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
+	runner := &petAdoptionRunner{t: t, catalogs: species, bundle: "species", state: petFounderState(t, species, 23, now, 5_000_000), revision: 1}
+	before, err := FrozenFounderContributions(species, runner.state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if transition := runner.command("isolation-adoption", IntentAdoptPet, `"species_id":"pet_species.server_room_cat","name_key":"pet.name.server_room_cat.n05"`, nonceA, now, 0); transition.Outcome != save.IntentApplied {
+		t.Fatalf("adoption rejected: %s", transition.Receipt)
+	}
+	after, err := FrozenFounderContributions(species, runner.state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if petJSON(t, before) != petJSON(t, after) {
+		t.Fatalf("adoption changed frozen Founder contributions:\n%s\n%s", petJSON(t, before), petJSON(t, after))
+	}
+}

@@ -43,6 +43,8 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 
 Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/features-presentation.json`
 (strict, byte-sorted, every key checked against the copy catalog), not in code.
+- Pet adoption: when the optional snapshot arm `features.pet_adoption` is present, the Desk shows
+  the inline adoption card and then the welcome state. See [Pet adoption](pet-adoption.md).
 - Minigame session (The Pitch): a nav tab present whenever the runtime supplies a minigame port.
   It hosts `client/src/game-ui/minigame/MinigameSessionSurface.svelte`; see
   [Minigame platform § Client surface](minigame-platform.md#client-surface). Leaving the tab keeps

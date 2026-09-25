@@ -292,3 +292,23 @@ typecheck, gofmt and vet are clean; the generated API is updated.
 **Not done here:**
 - AC12's full R-005 D-018 matrix, which stays carried.
 - A composed real-server adoption witness, which needs a minted epoch pinning `pet_species`.
+
+## 2026-09-25 — P7: economy isolation and docs canon (Claude)
+
+- **AC15 (Company half):** `TestPetAdoptionIsEconomicallyIsolated`. `FrozenFounderContributions`
+  is the only Founder→Company economic input, pinned at each run start, and it is byte-identical
+  before and after an applied adoption. Adoption receives no Company state by construction:
+  `applyFounderAdoptionResolved` takes only the Founder state. **Severing:** a test-only adoption
+  mutation that also bumps Fiscal generator levels fails the test.
+- **AC15 (harness half):** the harness pins no `pet_species`, so no scenario can adopt, and its
+  outputs are unaffected by construction. `make verify-harness-fast` is running; its result is
+  recorded in the next entry. P7 stays open until then.
+- **AC17 docs:** `docs/pet-adoption.md` is the canonical page. `docs/pet-care.md`,
+  `docs/founder-transitions.md`, `docs/production-engine.md` and `docs/game-ui.md` point to it.
+  `docs/save-layer.md` holds no per-version Founder list, so it is unchanged. The RFC index status
+  stays "accepted; implementing"; archival is Codex's.
+- **AC16:** carried under the release floor, because D-008/D-009/D-015 are unruled.
+- **Kernel audit:** every guarded commit in `e5b7541a..HEAD` (`9d01eef2`, `2f9878bc`,
+  `b29e70c0`, `5ff37cc1`, `c380896a`) bumps `kernel/VERSION` in the same commit, taking it from
+  0.3.117 to 0.3.121. `make verify-kernel-version` still stops at the pre-existing `50a3a514`,
+  which this lane doesn't own.
