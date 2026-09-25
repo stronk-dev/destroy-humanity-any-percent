@@ -79,6 +79,7 @@ func Schemas() []publicapi.NamedSchema {
 		}}},
 	}
 	schemas = append(schemas, boardSchemas()...)
+	schemas = append(schemas, routeSchemas()...)
 	sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
 	return schemas
 }
@@ -103,7 +104,7 @@ func Operations() []publicapi.Operation {
 			errorResponse(http.StatusTooManyRequests, exactErrors([2]string{"rate_limited", "ip"})...),
 			errorResponse(http.StatusInternalServerError, internalPublic),
 		},
-	}}
+	}, routesOperation(errorResponse)}
 }
 
 // Registry is the immutable public-read authority used for mounting, cursor

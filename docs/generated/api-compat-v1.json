@@ -136,6 +136,24 @@
       ]
     },
     {
+      "id": "list_public_routes",
+      "method": "GET",
+      "path": "/api/public/v1/registry/routes",
+      "surface": "public_v1",
+      "auth": "none",
+      "parameters": [],
+      "query": [
+        "cursor=false:{\"type\":\"string\"}",
+        "limit=false:{\"maximum\":100,\"minimum\":1,\"type\":\"integer\"}"
+      ],
+      "responses": [
+        "200:schema:application/json:PublicRoutePage",
+        "400:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "play_minigame_command",
       "method": "POST",
       "path": "/api/v1/minigames/sessions/{session_id}/commands",
@@ -2531,6 +2549,100 @@
         "items": {
           "items": {
             "$ref": "#/components/schemas/PublicEpoch"
+          },
+          "type": "array"
+        },
+        "next_cursor": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "next_cursor"
+      ],
+      "type": "object"
+    },
+    "PublicRoute": {
+      "additionalProperties": false,
+      "properties": {
+        "adoption_count": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "credited_at": {
+          "format": "date-time-ms",
+          "type": "string"
+        },
+        "first_executor_founder_id": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "format": "uuid",
+              "type": "string"
+            }
+          ]
+        },
+        "naming_deadline": {
+          "format": "date-time-ms",
+          "type": "string"
+        },
+        "naming_status": {
+          "enum": [
+            "house",
+            "pending",
+            "published",
+            "reserved"
+          ],
+          "type": "string"
+        },
+        "public_name": {
+          "type": "string"
+        },
+        "route_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "adoption_count",
+        "credited_at",
+        "first_executor_founder_id",
+        "naming_deadline",
+        "naming_status",
+        "public_name",
+        "route_id"
+      ],
+      "type": "object"
+    },
+    "PublicRouteCursorKey": {
+      "additionalProperties": false,
+      "properties": {
+        "route_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "route_id"
+      ],
+      "type": "object"
+    },
+    "PublicRoutePage": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/PublicRoute"
           },
           "type": "array"
         },

@@ -28,7 +28,7 @@ func secret(fill byte) []byte { return bytes.Repeat([]byte{fill}, 32) }
 
 func routerFor(t *testing.T, policy []byte, keys CursorKeys, epochs EpochReader) (http.Handler, error) {
 	t.Helper()
-	return NewRouter(Dependencies{PolicyJSON: policy, CursorKeys: keys, Epochs: epochs, Boards: &fakeBoards{},
+	return NewRouter(Dependencies{PolicyJSON: policy, CursorKeys: keys, Epochs: epochs, Boards: &fakeBoards{}, Routes: &fakeRoutes{},
 		Clock: func() time.Time { return time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC) }, Random: rand.Reader})
 }
 

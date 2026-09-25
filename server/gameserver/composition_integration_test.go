@@ -225,6 +225,14 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
+	company, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assertPublicSurfacePrivacy(t, httpServer, map[string]string{
+		"account_id": created.AccountID, "recovery_code": created.RecoveryCode, "access_token": tokens.AccessToken,
+		"refresh_token": tokens.RefreshToken, "founder_id": founder.ID, "company_stream_id": company.StreamID,
+	})
 	if uiSnapshot.ConstantsHash != composition.CurrentHash || uiSnapshot.EvaluatedThrough != clock.Time().UnixMilli() ||
 		uiSnapshot.Revision != 1 || uiSnapshot.Run.FounderID != founder.ID || uiSnapshot.Run.RunSeq != 1 ||
 		uiSnapshot.ManualAction.ID != "manual.click" || !reflect.DeepEqual(generatorIDs(uiSnapshot.Generators), []string{
@@ -1643,5 +1651,64 @@ func assertComposedPublicEpochs(t *testing.T, server *httptest.Server) {
 	unknown := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/public/v1/account", "", "")
 	if unknown.StatusCode != http.StatusNotFound || responseBody(unknown) != "{\"category\":\"unknown_id\",\"detail\":\"route\"}\n" {
 		t.Fatalf("unknown public route status=%d", unknown.StatusCode)
+	}
+}
+
+// assertPublicSurfacePrivacy is the AC5 enumeration: every operation in the
+// public registry is requested against the composed server with a seeded
+// account, and no response may contain any of that account's identifying
+// values. The seeded founder has no verified run or credited route, so even the
+// ruled public board identity must not surface it. A public operation without
+// a request builder here fails the test, so new readers cannot skip it.
+func assertPublicSurfacePrivacy(t *testing.T, server *httptest.Server, secrets map[string]string) {
+	t.Helper()
+	registry, err := publicread.Registry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	epochs := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/public/v1/epochs?limit=1", "", "")
+	var page struct {
+		Items []struct {
+			EpochID int64 `json:"epoch_id"`
+		} `json:"items"`
+	}
+	if err := json.Unmarshal([]byte(responseBody(epochs)), &page); err != nil || len(page.Items) != 1 {
+		t.Fatalf("privacy enumeration needs the current epoch: %v", err)
+	}
+	variables, err := publicapi.EncodeBoardVariables(publicapi.BoardVariables{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	requests := map[string][]string{
+		publicread.ListEpochsOperation: {"/api/public/v1/epochs", "/api/public/v1/epochs?limit=100"},
+		publicread.ListRoutesOperation: {"/api/public/v1/registry/routes", "/api/public/v1/registry/routes?limit=100"},
+		publicread.ListBoardOperation:  {},
+	}
+	for _, category := range []string{"any_percent", "ethical_percent", "hundred_percent", "low_percent", "valuation"} {
+		requests[publicread.ListBoardOperation] = append(requests[publicread.ListBoardOperation],
+			fmt.Sprintf("/api/public/v1/boards/%s?epoch=%d&mandate=0&variables=%s", category, page.Items[0].EpochID, variables))
+	}
+	enumerated := 0
+	for _, operation := range registry.Operations() {
+		paths, ok := requests[operation.ID]
+		if !ok || len(paths) == 0 {
+			t.Fatalf("public operation %s has no privacy enumeration request", operation.ID)
+		}
+		for _, path := range paths {
+			response := compositionRequest(t, server.Client(), http.MethodGet, server.URL+path, "", "")
+			body := responseBody(response)
+			if response.StatusCode != http.StatusOK {
+				t.Fatalf("privacy enumeration %s status=%d body=%s", path, response.StatusCode, body)
+			}
+			for name, value := range secrets {
+				if value != "" && (strings.Contains(body, value) || strings.Contains(fmt.Sprint(response.Header), value)) {
+					t.Fatalf("public response %s leaked the seeded %s", path, name)
+				}
+			}
+			enumerated++
+		}
+	}
+	if enumerated != 9 {
+		t.Fatalf("privacy enumeration covered %d requests, want 9", enumerated)
 	}
 }

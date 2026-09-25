@@ -582,3 +582,72 @@ disagreement between loadable catalogs is unreachable, so the branch is defensiv
    a ruling.
 10. **Mandate rows.** The projector only writes `mandate_level` 0 today, so `mandate>0` boards are
     always empty until a mandate producer exists.
+
+## 2026-09-25 — Route Registry reader and AC5 privacy enumeration (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review; not
+self-approved.
+
+**Authority:**
+- A3's `GET registry/routes`.
+- C12's RoutePage: "route ID, public name, first-executor founder ID (nullable after
+  anonymization), credited-at, naming status/deadline, and adoption count … Define its exact DB
+  source and ordering".
+- C10 and AC5 for privacy.
+- `list_public_routes` is a new operation, so the widening is additive under C2. The pin was
+  refreshed after `gen-api` accepted the change against the prior pin.
+
+**Decisions within the C12 delegation, recorded for the reviewer:**
+- **Source:** `registry_routes` LEFT JOIN `account_founders`.
+- **Order:** by the immutable `route_id`, because `occurred_at` is rewritten when an earlier
+  execution re-credits a route.
+- **`public_name`:** the player name only when `published`, otherwise the house name. Pending names
+  are unmoderated, and exposing them would publish unreviewed text.
+- **Executor:** withheld when the ownership row's `account_id` is NULL (anonymized) and also when
+  no ownership row exists (privacy-conservative).
+- **Field names:** snake_case of the C12 phrases (`first_executor_founder_id`, `credited_at`,
+  `naming_status`, `naming_deadline`, `adoption_count`, `public_name`, `route_id`).
+
+**Evidence (cold):**
+- `make test-go GO_PACKAGES='./publicapi ./publicread ./leaderboard ./routeprojection ./gameserver
+  ./account ./deploymentconfig ./releasepackage ./cmd/gameserver' GO_TEST_FLAGS='-count=1'` passes
+  apart from `releasepackage` (see interference).
+- Docker Postgres `./routeprojection ./leaderboard ./gameserver ./account -run Integration` passes.
+  The new route witness covers route_id order, keyset paging, a pending name hidden behind the
+  house name, the anonymized and orphaned executors withheld, a published name with its live
+  executor shown, and no cursor on an exactly-full page. The AC5 enumeration runs inside the
+  composed-server test.
+- `make test-game-ui-composed` passes.
+- `make api-generate` / `make api-pin` add only the routes schemas and operation.
+
+**Severings (each run red; restored):**
+- R1: leak the pending name. The Postgres witness fails.
+- R2: leak the anonymized executor. The Postgres witness fails.
+- R3: the route cursor ignores `limit`. The unit test fails.
+- P1: add `PublicRoute.account_id`. The structural privacy test fails.
+- P2: an unlisted founder field. The structural privacy test fails.
+- A1: drop one operation's enumeration request. The composed test fails ("has no privacy
+  enumeration request").
+- A2: a canary secret known to appear (`ranking_kind`). The composed scan fails, which shows the
+  value scan can detect presence.
+
+**Honest limit of the value scan:** the seeded founder has no verified run and no credited route,
+so the scan proves that none of the account's private values leak through any public operation.
+It cannot exercise the allowed public-identity positions with that founder. Those positions are
+covered structurally (P1/P2) and by the route witness (R2).
+
+**Interference, not mine (logged, not counted as a pass):** while this batch ran, the concurrent
+Reputation lane had uncommitted work in progress. `server/save/migrations/00075_reputation_node_purchased.sql`
+is untracked, which fails `releasepackage.TestCurrentMigrationIsContiguous` (migration 75 against
+the manifest), and `client/src/replay.ts` is mid-edit, so client `tsc` reports undefined names
+there. Neither involves my files. The same releasepackage test passed at `731bb3e7`.
+
+**API Foundation status after this lane:**
+- Implemented: the epochs, boards and routes readers are composed and mounted, and AC5 is
+  enforced.
+- Still open:
+  - the verification endpoints (C14 raw-bytes manifest);
+  - the catalogs reader (C18 descriptors, gap 5);
+  - the thin generated-client transport and the AC4 raw-fetch lint;
+  - the conformance test's 304 enumeration (gap 3).
+- Gaps 6 to 10 are in the entries above.

@@ -2316,6 +2316,100 @@
         ],
         "type": "object"
       },
+      "PublicRoute": {
+        "additionalProperties": false,
+        "properties": {
+          "adoption_count": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "credited_at": {
+            "format": "date-time-ms",
+            "type": "string"
+          },
+          "first_executor_founder_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "uuid",
+                "type": "string"
+              }
+            ]
+          },
+          "naming_deadline": {
+            "format": "date-time-ms",
+            "type": "string"
+          },
+          "naming_status": {
+            "enum": [
+              "house",
+              "pending",
+              "published",
+              "reserved"
+            ],
+            "type": "string"
+          },
+          "public_name": {
+            "type": "string"
+          },
+          "route_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "adoption_count",
+          "credited_at",
+          "first_executor_founder_id",
+          "naming_deadline",
+          "naming_status",
+          "public_name",
+          "route_id"
+        ],
+        "type": "object"
+      },
+      "PublicRouteCursorKey": {
+        "additionalProperties": false,
+        "properties": {
+          "route_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "route_id"
+        ],
+        "type": "object"
+      },
+      "PublicRoutePage": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PublicRoute"
+            },
+            "type": "array"
+          },
+          "next_cursor": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "type": "object"
+      },
       "SoulRecoveryFinishRequest": {
         "additionalProperties": false,
         "properties": {
@@ -2689,6 +2783,73 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PublicEpochPage"
+                }
+              }
+            },
+            "description": "HTTP 200"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        }
+      }
+    },
+    "/api/public/v1/registry/routes": {
+      "get": {
+        "operationId": "list_public_routes",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicRoutePage"
                 }
               }
             },

@@ -122,6 +122,12 @@ export type PublicEpochCursorKey = { epoch_id: number };
 
 export type PublicEpochPage = { items: Array<PublicEpoch>; next_cursor: null | string };
 
+export type PublicRoute = { adoption_count: number; credited_at: string; first_executor_founder_id: null | string; naming_deadline: string; naming_status: "house" | "pending" | "published" | "reserved"; public_name: string; route_id: string };
+
+export type PublicRouteCursorKey = { route_id: string };
+
+export type PublicRoutePage = { items: Array<PublicRoute>; next_cursor: null | string };
+
 export type SoulRecoveryFinishRequest = { session_id: string };
 
 export type SoulRecoveryProgressRequest = { progress_token: string; session_id: string };
@@ -142,6 +148,7 @@ export const operations = {
   get_game_ui_snapshot: { auth: "access_token", method: "GET", path: "/api/v1/founder/state", pathParameters: [] },
   list_public_board: { auth: "none", method: "GET", path: "/api/public/v1/boards/{category}", pathParameters: ["category"], queryParameters: ["cursor", "epoch", "limit", "mandate", "variables"] },
   list_public_epochs: { auth: "none", method: "GET", path: "/api/public/v1/epochs", pathParameters: [], queryParameters: ["cursor", "limit"] },
+  list_public_routes: { auth: "none", method: "GET", path: "/api/public/v1/registry/routes", pathParameters: [], queryParameters: ["cursor", "limit"] },
   play_minigame_command: { auth: "access_token", method: "POST", path: "/api/v1/minigames/sessions/{session_id}/commands", pathParameters: ["session_id"] },
   progress_soul_recovery: { auth: "access_token", method: "POST", path: "/api/v1/soul-recovery/progress", pathParameters: [] },
   resolve_minigame_session: { auth: "access_token", method: "POST", path: "/api/v1/minigames/sessions/{session_id}/resolve", pathParameters: ["session_id"] },
@@ -159,6 +166,7 @@ export interface OperationTypes {
   get_game_ui_snapshot: { path: {  }; request: null; response: GameUISnapshot | APIError };
   list_public_board: { path: { category: string }; query: { cursor?: string; epoch: number; limit?: number; mandate: number; variables: string }; request: null; response: PublicBoardPage | APIError };
   list_public_epochs: { path: {  }; query: { cursor?: string; limit?: number }; request: null; response: PublicEpochPage | APIError };
+  list_public_routes: { path: {  }; query: { cursor?: string; limit?: number }; request: null; response: PublicRoutePage | APIError };
   play_minigame_command: { path: { session_id: string }; request: MinigameCommandRequest; response: MinigameSessionResponse | APIError };
   progress_soul_recovery: { path: {  }; request: SoulRecoveryProgressRequest; response: SoulRecoveryProgressResponse | APIError };
   resolve_minigame_session: { path: { session_id: string }; request: MinigameEmptyRequest; response: MinigameSessionResponseTerminal | APIError };

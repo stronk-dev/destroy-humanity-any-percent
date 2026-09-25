@@ -105,6 +105,37 @@ while each surface still mounts from its own registry.
   - `500 internal_invariant/public_api`.
 - **Caching:** the `boards` class (`public,max-age=60`).
 
+`GET /api/public/v1/registry/routes` (`list_public_routes`) returns the C12 `RoutePage`
+`{items, next_cursor}`.
+
+- **Source:** `registry_routes` joined with `account_founders`, through
+  `routeprojection.Projector.PublicRoutePage`.
+- **Items:** `{adoption_count, credited_at, first_executor_founder_id, naming_deadline,
+  naming_status, public_name, route_id}`.
+  - `public_name` is the approved player name only when `published`. Reserved, pending
+    (unmoderated) and expired names show the house name.
+  - `first_executor_founder_id` is `null` once that Founder's account is anonymized (or no
+    ownership row exists).
+  - Moderation state beyond the status enum and all account identity are absent.
+- **Order and paging:** ordered by the immutable `route_id`; `credited_at` can move when an
+  earlier execution re-credits a route. The keyset cursor is bound to `{"limit":N}`, and `limit`
+  is 1..100 (default 50).
+- **Rejections:** `400 invalid/{cursor,limit}`, `429 rate_limited/ip`,
+  `500 internal_invariant/public_api`.
+- **Caching:** the `registry` class (`public,max-age=300`).
+
+**Privacy (AC5)** is enforced two ways:
+
+- **Structural:** `publicread/privacy_test.go` requires every public operation to be an
+  unauthenticated GET under `/api/public/v1/` with no request body. It walks every public schema
+  field and rejects account, email, token, session, recovery, password, secret, stream, save, IP,
+  device and presence fields. It permits founder identity only at `PublicBoardItem.founder_id` and
+  `PublicRoute.first_executor_founder_id`.
+- **Composed:** the composed-server witness seeds a real account. It then requests every public
+  registry operation (a missing request builder fails the test) and asserts that no response
+  body or header contains the seeded account ID, recovery code, tokens, founder ID or company
+  stream ID.
+
 `publicread.NewRouter` composes the surface. It loads the strict policy, resolves the named cursor
 secrets (`CursorSecretResolver`, see `docs/gameserver.md`), builds the request-ID runtime and
 limiter, and mounts every public registry operation (and only those) through `Registry.Mount`.
@@ -115,6 +146,5 @@ the served epoch page, request-ID echo, cache headers, a 304 on a matching ETag,
 404, and fail-closed composition. The composed Game UI lane also fetches the page through the Vite
 proxy.
 
-The catalogs, verification and registry readers, the thin generated-client transport, and the full public privacy enumeration all
-remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
+The catalogs and verification readers, and the thin generated-client transport remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
 historical formulas never fall back to current bytes.

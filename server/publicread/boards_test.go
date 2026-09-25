@@ -65,8 +65,18 @@ func boardRows() []leaderboard.PublicBoardRow {
 
 func boardRouter(t *testing.T, boards *fakeBoards) http.Handler {
 	t.Helper()
+	return composedTestRouter(t, boards, &fakeRoutes{})
+}
+
+func boardRouterWithRoutes(t *testing.T, routes *fakeRoutes) http.Handler {
+	t.Helper()
+	return composedTestRouter(t, &fakeBoards{}, routes)
+}
+
+func composedTestRouter(t *testing.T, boards *fakeBoards, routes *fakeRoutes) http.Handler {
+	t.Helper()
 	router, err := NewRouter(Dependencies{PolicyJSON: phase0PolicyJSON(t), CursorKeys: CursorKeys{CurrentID: "k1", Current: secret(1)},
-		Epochs: &fakeEpochs{rows: epochRows()}, Boards: boards,
+		Epochs: &fakeEpochs{rows: epochRows()}, Boards: boards, Routes: routes,
 		Clock: func() time.Time { return time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC) }, Random: rand.Reader})
 	if err != nil {
 		t.Fatal(err)
