@@ -214,6 +214,129 @@ function receivedPlayerCoordinates(frames, channel) {
   return coordinates;
 }
 
+function uuidV7() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  let timestamp = Date.now();
+  for (let index = 5; index >= 0; index -= 1) { bytes[index] = timestamp % 256; timestamp = Math.floor(timestamp / 256); }
+  bytes[6] = (bytes[6] & 0x0f) | 0x70;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = [...bytes].map((value) => value.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+async function founderIntent(accessToken, body) {
+  const response = await fetch(`${gameserverURL}/api/v1/intents`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ intent_id: uuidV7(), ...body }),
+  });
+  return { status: response.status, body: await response.json() };
+}
+
+async function founderState(accessToken) {
+  const response = await fetch(`${gameserverURL}/api/v1/founder/state`, { headers: { Authorization: `Bearer ${accessToken}` } });
+  if (response.status !== 200) throw new Error(`founder state read failed (${response.status})`);
+  return response.json();
+}
+
+async function unlockPitchWithFiscalIntents(accessToken) {
+  // The composed Fiscal clock guarantees a harvest 200 ms after the period
+  // opens; wait past it, then spend the credit on the Pitch unlock.
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  let state = await founderState(accessToken);
+  const harvest = await founderIntent(accessToken, { kind: "harvest_fiscal_period", expected_revision: state.founder_revision });
+  if (harvest.status !== 200 || harvest.body?.outcome !== "applied") throw new Error(`fiscal harvest was not applied (${harvest.status}): ${JSON.stringify(harvest.body)}`);
+  state = await founderState(accessToken);
+  const spend = await founderIntent(accessToken, { kind: "spend_fiscal_credit", expected_revision: state.founder_revision, target: { kind: "unlock", unlock_id: "minigame.pitch" } });
+  if (spend.status !== 200 || spend.body?.outcome !== "applied") throw new Error(`fiscal Pitch unlock was not applied (${spend.status}): ${JSON.stringify(spend.body)}`);
+}
+
+async function playPitchThroughUI(page, accessToken) {
+  const minigameResponses = [];
+  const snapshotRevisions = [];
+  page.on("response", async (response) => {
+    const pathname = new URL(response.url()).pathname;
+    if (pathname === "/api/v1/founder/state" && response.status() === 200) {
+      try { snapshotRevisions.push((await response.json()).revision); } catch { snapshotRevisions.push(undefined); }
+      return;
+    }
+    if (!pathname.startsWith("/api/v1/minigames/")) return;
+    try { minigameResponses.push({ pathname, status: response.status(), body: await response.json() }); }
+    catch { minigameResponses.push({ pathname, status: response.status(), invalid_json: true }); }
+  });
+  const nav = page.getByRole("button", { name: "The Pitch", exact: true });
+  await nav.click();
+  await page.locator('main[data-surface="minigame_session"]').waitFor({ state: "visible", timeout: 30_000 });
+
+  // Locked first: the real server answers 409 not_eligible/fiscal_unlock_required
+  // and the surface stays on the launcher with the typed reason.
+  const lockedCreate = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 });
+  await page.getByRole("button", { name: "Start a pitch", exact: true }).click();
+  const locked = await lockedCreate;
+  const lockedBody = await locked.json();
+  if (locked.status() !== 409 || lockedBody.category !== "not_eligible" || lockedBody.detail !== "fiscal_unlock_required") {
+    throw new Error(`locked Pitch create was not the typed fiscal rejection (${locked.status()}): ${JSON.stringify(lockedBody)}`);
+  }
+  await page.getByText("Locked. Unlock it with Fiscal credit first.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+
+  await unlockPitchWithFiscalIntents(accessToken);
+  const create = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 });
+  await page.getByRole("button", { name: "Start a pitch", exact: true }).click();
+  const created = await create;
+  if (created.status() !== 200) throw new Error(`unlocked Pitch create failed (${created.status()}): ${JSON.stringify(await created.json())}`);
+
+  let commands = 0;
+  const terminal = page.getByText("Credited to the company", { exact: false });
+  for (let step = 0; step < 64; step += 1) {
+    if (await terminal.isVisible()) break;
+    const hand = page.locator("fieldset input[type=checkbox]");
+    await page.waitForFunction(() => document.querySelector("fieldset input[type=checkbox]") !== null ||
+      [...document.querySelectorAll("button")].some((button) => button.textContent?.trim() === "Close the shop" && !button.disabled) ||
+      document.body.textContent?.includes("Credited to the company"), undefined, { timeout: 30_000 });
+    if (await terminal.isVisible()) break;
+    const commandResponse = page.waitForResponse((response) => /^\/api\/v1\/minigames\/sessions\/[^/]+\/commands$/u.test(new URL(response.url()).pathname), { timeout: 30_000 });
+    if (await hand.count() > 0) {
+      // Keyboard-only selection: focus each native checkbox and press Space.
+      const count = Math.min(4, await hand.count());
+      for (let index = 0; index < count; index += 1) {
+        await hand.nth(index).focus();
+        await page.keyboard.press("Space");
+      }
+      const selected = await page.locator("fieldset input[type=checkbox]:checked").count();
+      if (selected !== count) throw new Error(`keyboard selection checked ${selected} of ${count} cards`);
+      await page.getByRole("button", { name: "Pitch these cards", exact: true }).focus();
+      await page.keyboard.press("Enter");
+    } else {
+      await page.getByRole("button", { name: "Close the shop", exact: true }).focus();
+      await page.keyboard.press("Enter");
+    }
+    const response = await commandResponse;
+    if (response.status() !== 200) throw new Error(`Pitch command failed (${response.status()}): ${JSON.stringify(await response.json())}`);
+    commands += 1;
+    await page.waitForFunction(() => document.querySelector("main section[aria-busy]")?.getAttribute("aria-busy") !== "true", undefined, { timeout: 30_000 });
+  }
+  if (!await terminal.isVisible()) throw new Error(`Pitch did not reach a terminal receipt within the step bound; responses=${JSON.stringify(minigameResponses.map((row) => [row.pathname, row.status]))}`);
+  const final = minigameResponses.filter((row) => row.status === 200 && row.body?.status === "resolved").at(-1);
+  const receipt = final?.body?.resolution_receipt;
+  if (!receipt || receipt.outcome !== "applied" || receipt.credited_resource_id !== "company.cash") throw new Error(`terminal response carried no applied receipt: ${JSON.stringify(final)}`);
+  // The host refreshes the authoritative Game UI snapshot exactly once after
+  // the terminal receipt; it must reflect the resolution's Company revision.
+  const deadline = Date.now() + 30_000;
+  while (!snapshotRevisions.some((revision) => Number.isSafeInteger(revision) && revision >= receipt.company_revision) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  const refreshedRevision = snapshotRevisions.filter((revision) => Number.isSafeInteger(revision) && revision >= receipt.company_revision).at(0);
+  if (refreshedRevision === undefined) {
+    const state = await founderState(accessToken);
+    throw new Error(`no post-terminal Game UI refresh reached company revision ${receipt.company_revision}; UI snapshots=${JSON.stringify(snapshotRevisions)} server=${state.revision}`);
+  }
+  const current = await fetch(`${gameserverURL}/api/v1/minigames/sessions/current`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((response) => response.json());
+  if (current.kind !== "none") throw new Error(`resolved Pitch session is still current: ${JSON.stringify(current)}`);
+  await page.getByRole("button", { name: "Back to the desk", exact: true }).click();
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  return { commands, credited: receipt.credited_delta, companyRevision: receipt.company_revision, refreshedRevision };
+}
+
 try {
   await waitForReady();
   vite = await createServer({
@@ -380,7 +503,13 @@ try {
   await page.getByText("The Company Has Exited", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  // MA AC5: The Pitch through the Game UI against the composed server. The
+  // Fiscal unlock is bought with real player intents over the public intent
+  // API (the composed epoch pins minigame.pitch at 3 credit); no Fiscal
+  // surface exists yet, and no database row is written for eligibility.
+  const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
+  console.log(`composed Pitch surface: unlock via Fiscal intents, ${pitch.commands} UI commands, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
   console.log("composed Game UI v3 transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));

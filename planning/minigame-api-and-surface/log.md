@@ -650,3 +650,34 @@ Evidence (cold):
 
 Still open for AC5: the Soul-Recovery surface (MA3's second contract), and a composed real-server
 Pitch-through-UI witness.
+
+## 2026-09-25 — MA AC5: composed Pitch-through-UI witness (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review; not
+self-approved.
+
+`client/tools/test-game-ui-composed.mjs` now adds a Pitch phase after the existing run-3
+continuation. Chromium runs through the real Vite proxy, the composed gameserver and Postgres:
+- **Locked path:** opens the `The Pitch` nav tab and presses Start. The server returns a real 409
+  `not_eligible/fiscal_unlock_required`, and the typed launcher notice appears.
+- **Honest unlock:** `harvest_fiscal_period` then `spend_fiscal_credit {unlock minigame.pitch}`, as
+  UUIDv7 player intents over `/api/v1/intents` against the composed epoch's Fiscal catalog
+  (100/200/300 ms windows, cost 3). No DB write or fixture clock is used.
+- **Play:** Start succeeds (200). Cards are selected by focus+Space on native checkboxes, and
+  "Pitch these cards" and "Close the shop" are pressed with Enter, until a terminal receipt appears.
+- **Assertions:** the resolved response carries an `applied` `company.cash` receipt; the Game UI
+  fetches a snapshot at or beyond `receipt.company_revision`; `current` reads `none`; Back returns
+  to the Desk.
+
+Cold result: `make test-game-ui-composed`: "6 UI commands, terminal receipt credited 1e0 at
+company revision 11, snapshot refreshed to 11: PASS" followed by the existing lifecycle PASS.
+
+Failing cases, demonstrated then restored:
+- **P1:** expecting detail `human_content_locked` fails with "locked Pitch create was not the typed
+  fiscal rejection".
+- **P2:** aborting every `/api/v1/founder/state` request during play fails with "no post-terminal
+  Game UI refresh reached company revision 11; UI snapshots=[10,10] server=11".
+
+Finding: none blocking. The shop phase was exercised only through "Close the shop". Buying a hack
+through the composed UI isn't witnessed, because the deterministic seed decides whether the
+start-currency covers an offer; the browser suite covers buy_hack.

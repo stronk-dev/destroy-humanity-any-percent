@@ -77,7 +77,13 @@ Gate and Wind Down through `runtime.ts`, render scripted and standard Run End, a
 after fetching the exact successor run. No browser intent bypass, fixture clock, or two-hour replay
 is used. The harness preflights exclusive ownership of its gameserver port, builds and starts one
 ignored repository-local binary, and waits for that exact process on teardown; another listener
-fails the witness before bootstrap. `make verify-game-ui` composes the existing client, browser,
+fails the witness before bootstrap. On the third run the witness opens the Pitch tab. Start first
+receives the server's real 409 `not_eligible/fiscal_unlock_required`, and the launcher notice is
+checked. The player then buys `minigame.pitch` with real `harvest_fiscal_period` and
+`spend_fiscal_credit` intents over the public intent API; no database write is involved. Cards are
+selected and played by keyboard until the session reaches a terminal `applied` receipt. The Game UI
+must then fetch a snapshot at or beyond the receipt's Company revision, and `current` must read
+`none`. `make verify-game-ui` composes the existing client, browser,
 and composed lanes.
 
 The deterministic performance lane runs in an isolated Chromium process after the functional
