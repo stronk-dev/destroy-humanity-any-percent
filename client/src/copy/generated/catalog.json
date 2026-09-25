@@ -482,6 +482,22 @@
       "tone": "corporate"
     },
     {
+      "key": "cosmetic.horse_armor_free.anchor",
+      "text": "Was: a real price, somewhere else, once. Now: nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "cosmetic.horse_armor_free.anchor_disclosure",
+      "text": "The struck-out line is a reference to what this kind of item once sold for elsewhere. It is not a discount. Nothing is being saved, because nothing was ever charged.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "cosmetic.horse_armor_free.description",
       "text": "Decorative armor for a horse. You do not have a horse. Price: {price}, forever.",
       "params": [
@@ -3359,6 +3375,175 @@
     {
       "key": "settings.save_status.saving",
       "text": "Saving…",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "shop.cosmetics.buy",
+      "text": "Buy for {price}",
+      "params": [
+        {
+          "name": "price",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.checkout_disclosure",
+      "text": "This is a parody of a store checkout. No payment is taken, no payment details are ever requested, and every receipt records a zero-price transaction.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "shop.cosmetics.equip",
+      "text": "Put it on {pet}",
+      "params": [
+        {
+          "name": "pet",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.heading",
+      "text": "Premium Content",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.locked",
+      "text": "Unlocks at Tier {tier}.",
+      "params": [
+        {
+          "name": "tier",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.no_wearer",
+      "text": "Nobody to wear it yet.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.owned",
+      "text": "Owned. It does nothing. That was always the deal.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.reject.already_equipped",
+      "text": "Already wearing it.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.reject.inactive",
+      "text": "The shop is not open for this company yet.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.reject.locked",
+      "text": "Not available at this tier yet.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.reject.not_owned",
+      "text": "Buy it before putting it on anyone.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.reject.nothing_equipped",
+      "text": "Nothing to take off.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.reject.owned",
+      "text": "You already own this.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.reject.unknown",
+      "text": "That item or pet is not here any more.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.cosmetics.unequip",
+      "text": "Take it off {pet}",
+      "params": [
+        {
+          "name": "pet",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "shop.receipt.line",
+      "text": "Order #{order_number}: {item}, {price}.",
+      "params": [
+        {
+          "name": "item",
+          "type": "string"
+        },
+        {
+          "name": "order_number",
+          "type": "integer"
+        },
+        {
+          "name": "price",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "shop.receipt.payment_method",
+      "text": "Payment method: none required.",
       "params": [],
       "era_variants": null,
       "provenance": [],

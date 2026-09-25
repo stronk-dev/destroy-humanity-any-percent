@@ -19,6 +19,8 @@
   import RunEndSurface from "./RunEndSurface.svelte";
   import ReputationTreeSurface from "./ReputationTreeSurface.svelte";
   import AdoptionCard from "./pet/AdoptionCard.svelte";
+  import CosmeticShelf from "./cosmetics/CosmeticShelf.svelte";
+  import { COSMETIC_SHOP_PRESENTATION } from "./cosmetics/presentation";
   import ReputationPlanPanel from "./ReputationPlanPanel.svelte";
   import AchievementsSurface from "./AchievementsSurface.svelte";
   import FiscalSurface from "./FiscalSurface.svelte";
@@ -325,6 +327,27 @@
     ["not_eligible/adoption_cap_reached", "pet.adoption.reject.adoption_cap_reached"],
   ]);
   function adoptionApplied(): null { void refresh(); return null; }
+  // Cosmetic Shop v1 §7.3: inline rejections and the session-local parody
+  // receipt (not re-announced after a reload; ownership comes from the snapshot).
+  const COSMETIC_REJECTIONS: SurfaceRejections = new Map([
+    ["not_eligible/inactive", "shop.cosmetics.reject.inactive"], ["not_eligible/locked", "shop.cosmetics.reject.locked"],
+    ["not_eligible/owned", "shop.cosmetics.reject.owned"], ["not_eligible/not_owned", "shop.cosmetics.reject.not_owned"],
+    ["not_eligible/already_equipped", "shop.cosmetics.reject.already_equipped"], ["not_eligible/nothing_equipped", "shop.cosmetics.reject.nothing_equipped"],
+    ["unknown_id/*", "shop.cosmetics.reject.unknown"],
+  ]);
+  let cosmeticReceipt = $state<Readonly<{ cosmeticId: string; orderNumber: number }> | null>(null);
+  function cosmeticApplied(receipt: Readonly<Record<string, unknown>>): null {
+    const event = receipt.event as { kind?: unknown; payload?: { cosmetic_id?: unknown; order_number?: unknown } } | undefined;
+    if (receipt.kind === "acquire_cosmetic" && typeof event?.payload?.cosmetic_id === "string" && Number.isSafeInteger(event.payload.order_number)) {
+      cosmeticReceipt = { cosmeticId: event.payload.cosmetic_id, orderNumber: event.payload.order_number as number };
+    }
+    void refresh();
+    return null;
+  }
+  function cosmeticPetName(petID: string): string {
+    const row = liveFeatures?.pet_adoption?.pets.find((pet) => pet.pet_id === petID);
+    return row ? t(row.name_key as CopyKey, {}, era) : "";
+  }
   const prefersReducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const HARVEST_OUTCOMES: Readonly<Record<string, CopyKey>> = {
     consumed_by_auto: "fiscal.outcome.consumed_by_auto", early_failed: "fiscal.outcome.early_failed",
@@ -476,7 +499,20 @@
         <details><summary>{t("chrome.splits.label", {}, era)}</summary>{#each splits as split}<p>{t(requirePresentation(GAME_UI_PRESENTATION.gates, split.gate_id).title_key, {}, era)} {duration(split.rta_ms)}</p>{/each}{#if personalBestMS === undefined}<p>{t("chrome.splits.first_attempt_note", {}, era)}</p>{/if}</details>
       {/if}
 
+      {#if liveFeatures?.cosmetics?.active}
+        {@const shop = liveFeatures.cosmetics}
+        {#if shop.items.some((item) => item.acquirable || item.owned)}
+          <CosmeticShelf arm={shop} presentation={COSMETIC_SHOP_PRESENTATION} price={requirePresentationConstant("constant.price_zero")} {era} {pending}
+            controlsEnabled={founderControls} petName={cosmeticPetName} receipt={cosmeticReceipt}
+            rejection={intentNotice?.startsWith("shop.cosmetics.reject.") ? intentNotice : null}
+            onAcquire={(id) => act({ kind: "acquire_cosmetic", cosmetic_id: id }, { scope: "founder", rejections: COSMETIC_REJECTIONS, applied: cosmeticApplied })}
+            onEquip={(id, petID) => act({ kind: "equip_cosmetic", cosmetic_id: id, pet_id: petID }, { scope: "founder", rejections: COSMETIC_REJECTIONS, applied: cosmeticApplied })}
+            onUnequip={(petID) => act({ kind: "unequip_cosmetic", pet_id: petID }, { scope: "founder", rejections: COSMETIC_REJECTIONS, applied: cosmeticApplied })} />
+        {/if}
+      {:else}
+        <!-- §6 pre-activation: the static card, unchanged (fail closed). -->
       <section class="card"><h2>{t("cosmetic.horse_armor_free.title", {}, era)}</h2><p>{t("cosmetic.horse_armor_free.description", { price: requirePresentationConstant("constant.price_zero") }, era)}</p><small>{t("cosmetic.horse_armor_free.disclosure", {}, era)}</small></section>
+      {/if}
       {#if snapshot.schema_version >= 3 && "transitions" in snapshot}
         {@const transitions = snapshot.transitions}
         <section class="card">

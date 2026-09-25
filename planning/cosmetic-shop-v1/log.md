@@ -219,3 +219,72 @@ Severing (all restored):
 - A Go `acquirable` that ignores the lock fails with "tier-0 row".
 
 No kernel-guarded path was touched, so there is no version bump.
+
+## 2026-09-25 — C6: Desk shelf, parody receipt, overlay, curtain contract (Claude)
+
+- **`client/src/game-ui/cosmetics/presentation.{json,ts}`:** the §7.2/§8 presentation and
+  curtain-binding contract. It is a strict separate presentation file, like the Garage lane's
+  `features-presentation.json`, not a presentation-catalog v4 bump (a recorded deviation in form
+  only). The loader rejects:
+  - a missing `paid_cosmetic_dlc`;
+  - an anchor without `reference_price_anchor`, or the reverse;
+  - `checkout_flow` on an item;
+  - a shop that does not bind exactly `checkout_flow`;
+  - a duplicate or unknown pattern;
+  - `re_release` (reserved, unbound in v1);
+  - an undeclared copy key;
+  - any extra key.
+
+  It exports `curtainList` for the future honesty appendix, and it loads eagerly so a violation
+  fails every build and test.
+- **`CosmeticShelf.svelte`:**
+  - per-item curtain small print in every state, which Buy and the anchor reference through
+    `aria-describedby`;
+  - the shop-level checkout curtain under the heading;
+  - the anchor as `<s>` inside readable text;
+  - Buy, `locked` with its tier, owned, per-wearer equip/unequip, and `no_wearer`;
+  - an inline `role=status` receipt (`shop.receipt.line` + `payment_method`), no modal;
+  - focus moves to the owned heading after the authoritative snapshot;
+  - no cart, confirm, quantity, timer, badge or upsell.
+- **`CosmeticOverlay.svelte`:** a CSS layer plus the `annoyed` pose (ears back, tail flick) with
+  no text node, `aria-hidden`, and static under reduced motion. Mounting it into the live pet panel
+  remains manifest row G10 (§7.4); it is not claimed here.
+- **`GameUIApp.svelte`:** it shows the shelf iff `features.cosmetics.active` and some item is
+  acquirable or owned. That makes it absent at T0 until something is owned (OD-4), and it persists
+  once owned. Below v24 or unpinned, the static card is unchanged (§6, fail closed). Intents are
+  Founder-scoped through `runtime.intent` with `COSMETIC_REJECTIONS`, and the receipt order number
+  comes from the applied receipt's event payload.
+- **Copy:** `copy/catalog/cosmetics-candidate.json` holds 19 keys: the §9 keys plus 7 inline
+  rejection keys. It is **candidate text for owner adoption**, with no currency literal (price
+  only via `{price}` ← `constant.price_zero`). The three ratified Horse Armor keys are reused
+  unchanged.
+
+Evidence (cold):
+- `make typecheck build-client test-client verify-client-boundary copy-check test-browser` all
+  pass: 6796 unit, boundary scan over 16 components, 20556 browser.
+- `make test-game-ui-composed` passes (v4 features lane).
+- New tests:
+  - `cosmetic-presentation.test.ts`: the curtain contract, and presentation IDs equal to the
+    pinned catalog IDs.
+  - `cosmetic-shelf-browser.test.ts`, in 3 engines:
+    - keyboard buy, with no owned state while pending and focus on the owned heading;
+    - the receipt order number;
+    - curtains visible (not hover-gated, non-zero height) in unowned, pending, owned and equipped;
+    - axe;
+    - the lock and no-wearer paths, and 320 px reflow;
+    - the overlay: no text node, pose, and static under reduced motion.
+  - `cosmetic-host-browser.test.ts`: T0/T1/owned visibility, the pre-activation static card, and an
+    exact-key `acquire_cosmetic` request at the Founder revision.
+
+Severing (chromium, all restored):
+- **S1:** curtains removed once owned fail the render test. This is AC12's named failing case
+  (the render test fails, not just the loader).
+- **S2:** "owned" rendered while pending fails. This is AC11's optimistic-ownership failing case.
+- **S3:** the shelf shown at T0 when nothing is owned fails the host test.
+
+**Carried (AC14, like Pet Adoption's composed witness):** the composed real-server Buy → reload
+witness needs a bundle that pins `cosmetics`. No epoch pins it (fixture-first, no mint), so the
+composed lane cannot render the shelf yet. It is carried to the mint epoch, together with the N5
+network trap run on that flow (C7 adds the trap to the component-level flow).
+
+No kernel-guarded path was touched, so there is no version bump.

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "cosmetics": [
+    {
+      "cosmetic_id": "horse_armor",
+      "title_key": "cosmetic.horse_armor_free.title",
+      "description_key": "cosmetic.horse_armor_free.description",
+      "anchor_key": "cosmetic.horse_armor_free.anchor",
+      "render_key": "horse_armor",
+      "wearer_reaction": "annoyed",
+      "curtains": [
+        { "pattern": "paid_cosmetic_dlc", "key": "cosmetic.horse_armor_free.disclosure" },
+        { "pattern": "reference_price_anchor", "key": "cosmetic.horse_armor_free.anchor_disclosure" }
+      ]
+    }
+  ],
+  "cosmetic_shop": {
+    "heading_key": "shop.cosmetics.heading",
+    "curtains": [{ "pattern": "checkout_flow", "key": "shop.cosmetics.checkout_disclosure" }]
+  }
+}
