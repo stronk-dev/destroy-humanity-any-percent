@@ -1,6 +1,7 @@
 import type { BootstrapResponse } from "../api/generated/types";
 import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "./minigame/session-port";
 import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "./soul/recovery-surface";
+import { createBrowserGardenPort, type GardenPort } from "./garden/garden-port";
 import { decodeTransportEnvelope, decodeWorldSnapshot, PlayerRevisionCursor } from "../transport";
 import { isLiveSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
 import { parseIntentErrorBody, parseIntentOutcome, type IntentOutcome } from "./intent-outcome";
@@ -36,6 +37,8 @@ export interface GameUIRuntime {
   readonly minigame?: MinigameSessionPort;
   // The soul_recovery surface transport (SR-C3); absent in fixtures that do not mount it.
   readonly soulRecovery?: SoulRecoveryPort;
+  // The Server Garden read (SG9/SG10); absent in fixtures that do not mount it.
+  readonly garden?: GardenPort;
 }
 
 export interface RuntimeStorage {
@@ -127,9 +130,11 @@ export function createBrowserGameUIRuntime(
   };
   const minigame = createBrowserMinigameSessionPort(accessToken, fetcher);
   const soulRecovery = createBrowserSoulRecoveryPort(accessToken, fetcher);
+  const garden = createBrowserGardenPort(accessToken, fetcher);
   return {
     minigame,
     soulRecovery,
+    garden,
     hasCredentials: () => credentials(storage) !== undefined,
     async bootstrap() {
       let pending = storage.getItem(bootstrapKey);

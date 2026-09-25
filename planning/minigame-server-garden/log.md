@@ -320,3 +320,46 @@ attaches it through `api.AttachGarden(productionService)`.
 **Gap:** the active and locked views are proven by unit tests and schema validation. They cannot be
 witnessed through the real server until an epoch pins `server_garden`, which is the production mint
 (SG13).
+
+## 2026-09-25 — G7: the garden surface, plus docs (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review. There is no kernel bump: every path
+is unguarded (`client/src/game-ui/garden/`, `GameUIApp.svelte`, `runtime.ts`, generated copy).
+
+**What landed:**
+- `GardenPort` over the generated `get_current_garden` operation.
+- `GardenSurface.svelte`, which implements SG10.
+- The Game UI's `garden` surface row. Its tab shows only for a `locked` or `active` read.
+- Commands go through the Founder-scoped `act()` with every SG5 detail mapped to `error.garden.*`.
+- The substrate list comes from the copy registry (`garden.substrate.*.name`), not a second
+  hardcoded catalog.
+- Docs: `docs/minigame-server-garden.md` (canonical) and a persistent-tenant pointer in
+  `docs/minigame-platform.md`.
+
+**Bugs found while testing (fixed):**
+- The refresh `$effect` depended on `load()`'s own state read, an infinite effect loop that hung
+  the browser run. Fixed with `untrack`.
+- An occupied plot outside the active grid rendered "growing". The server's `dormant` flag now wins.
+- The boundary lint caught a literal `": "`. Replaced with the `garden.action.plant_frame` copy key.
+
+**Evidence, cold:**
+- `make typecheck build-client test-client test-browser` **exit=0**: 6,901 unit tests and 20,904
+  browser tests.
+- `make test-game-ui-composed` passes.
+- `verify-client-boundary` (20 component files) and `copy-check` pass.
+- `garden-surface-browser.test.ts` passes 12/12 across chromium, firefox and webkit. It covers:
+  - axe in the active, plant-menu, locked and error states;
+  - a single roving tab stop and arrow-key focus;
+  - stage as visible text and accessible name;
+  - harvest, harvest-all, plant (collected seeds only) and substrate dispatch;
+  - focus returning after the menu;
+  - no salt in the DOM;
+  - one polite announcement ("1 matured, 1 new seedlings") per refresh;
+  - the 320 px reflow with at least 24 px targets.
+- **Severing (chromium):**
+  - A colour-only stage fails (AC13's named failing case).
+  - Every cell set to tabindex 0 fails.
+
+**AC13's status:** the RFC gates it on the Accessibility RFC's acceptance plus the A5 evidence
+record. The structural floor is implemented and tested here. The A5 record is not produced; it is
+blocked on D-018.

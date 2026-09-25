@@ -27,6 +27,7 @@
   import MetersSurface from "./MetersSurface.svelte";
   import MinigameSessionSurface from "./minigame/MinigameSessionSurface.svelte";
   import SoulRecoverySurface from "./soul/SoulRecoverySurface.svelte";
+  import GardenSurface from "./garden/GardenSurface.svelte";
   import { loadSoulRecoveryContent } from "./soul/recovery-surface";
   import { GameUIShell } from "./shell-bridge";
   import { noticeForError, noticeForOutcome, type SurfaceRejections } from "./intent-outcome";
@@ -101,6 +102,7 @@
   }
 
   function bindSnapshot(value: ParsedGameUISnapshot): void {
+    if (snapshot === undefined) void probeGarden();
     const sampledMonotonicMs = performance.now();
     if (snapshot === undefined) {
       const authoritativeDefault = defaultSurface(Object.fromEntries(value.facts.map((fact) => [fact.fact_id, fact.value])));
@@ -331,6 +333,22 @@
   function adoptionApplied(): null { void refresh(); return null; }
   // Cosmetic Shop v1 §7.3: inline rejections and the session-local parody
   // receipt (not re-announced after a reload; ownership comes from the snapshot).
+  // Server Garden SG5: every closed detail maps to its error.garden.* key.
+  const GARDEN_REJECTIONS: SurfaceRejections = new Map<string, CopyKey>([
+    ...["garden_inactive", "fiscal_unlock_required", "human_content_locked", "plot_dormant", "plot_occupied", "seed_not_collected", "plant_not_mature",
+      "substrate_unchanged", "substrate_lockout"].map((detail): [string, CopyKey] => [`not_eligible/${detail}`, `error.garden.${detail}` as CopyKey]),
+    ...["garden_species", "garden_plot", "garden_substrate"].map((detail): [string, CopyKey] => [`unknown_id/${detail}`, `error.garden.${detail}` as CopyKey]),
+  ]);
+  // The garden tab appears only when the read says locked or active (SG10).
+  let gardenVisible = $state(false);
+  let gardenRefresh = $state(0);
+  async function probeGarden(): Promise<void> {
+    if (!runtime.garden) return;
+    try { const view = await runtime.garden.current(); gardenVisible = view.kind !== "inactive"; } catch { gardenVisible = false; }
+  }
+  function gardenAct(body: Record<string, unknown>): void {
+    void act(body, { scope: "founder", rejections: GARDEN_REJECTIONS }).then(() => { gardenRefresh += 1; });
+  }
   const COSMETIC_REJECTIONS: SurfaceRejections = new Map([
     ["not_eligible/inactive", "shop.cosmetics.reject.inactive"], ["not_eligible/locked", "shop.cosmetics.reject.locked"],
     ["not_eligible/owned", "shop.cosmetics.reject.owned"], ["not_eligible/not_owned", "shop.cosmetics.reject.not_owned"],
@@ -413,6 +431,7 @@
         {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
         {#if runtime.soulRecovery}<button type="button" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
         {#if factTrue("feature.reputation_tree")}<button type="button" aria-current={surface === "reputation_tree" ? "page" : undefined} onclick={() => show("reputation_tree")}>{t("reputation_tree.title", {}, era)}</button>{/if}
+        {#if runtime.garden && gardenVisible}<button type="button" aria-current={surface === "garden" ? "page" : undefined} onclick={() => show("garden")}>{t("garden.title", {}, era)}</button>{/if}
         <button type="button" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
       </nav>
       {#if snapshot.run.run_seq === 1 && visitorCount !== undefined}<span class="visitor" title={t("chrome.visitor_counter.tooltip", {}, era)}>{t("chrome.visitor_counter.frame", { count: visitorCount }, era)}</span>{/if}
@@ -591,6 +610,13 @@
     {#if pitchAvailability && !pitchAvailability.unlocked}<p class="intent-notice" role="note">{t("minigame.availability.fiscal_locked", {}, era)}</p>{/if}
     {#if pitchAvailability?.human_content_locked}<p class="intent-notice" role="note">{t("minigame.availability.soul_locked", {}, era)}</p>{/if}
     <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
+  {:else if snapshot && surface === "garden" && runtime.garden}
+    <GardenSurface port={runtime.garden} {era} {pending} refreshKey={gardenRefresh}
+      rejection={intentNotice?.startsWith("error.garden.") ? intentNotice : null}
+      onPlant={(row, col, species) => gardenAct({ kind: "garden_plant", row, col, species_id: species })}
+      onUproot={(row, col) => gardenAct({ kind: "garden_uproot", row, col })}
+      onHarvest={(plots) => gardenAct({ kind: "garden_harvest", plots: plots.map((plot) => ({ row: plot.row, col: plot.col })) })}
+      onSetSubstrate={(substrate) => gardenAct({ kind: "garden_set_substrate", substrate_id: substrate })} />
   {:else if snapshot && surface === "soul_recovery" && runtime.soulRecovery}
     <SoulRecoverySurface port={runtime.soulRecovery} content={loadSoulRecoveryContent()} {era} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "settings"}

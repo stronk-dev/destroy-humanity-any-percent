@@ -22,6 +22,6 @@ Replay inputs take the next free wire version, and the event migration takes the
   `harvest_hash`, fault injection, idempotency. AC8, AC9.
 - [x] G6 — `GET /api/v1/garden/current` new operation (discarded-clone projection, no salt).
   AC10, AC15.
-- [ ] G7 — Garden surface under `client/src/game-ui/` (grid, roving tabindex, non-colour stage,
+- [x] G7 — Garden surface under `client/src/game-ui/` (grid, roving tabindex, non-colour stage,
   reduced motion, 320 px). AC13 stays blocked on the Accessibility RFC's acceptance; AC14 copy.
 - [ ] Docs, then hand off for Codex's designated review. Never self-archive.

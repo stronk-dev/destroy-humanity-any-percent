@@ -268,3 +268,9 @@ the engine-certified rating delta with exact checked arithmetic and catalog boun
 TypeScript replay the same shared fixture to byte-identical receipts, event order, and post-state;
 the two immutable logs bind the same certified-result hash and are joined by a deferrable relational
 source coordinate.
+
+## Persistent tenants
+
+Server Garden is the first persistent (non-session) tenant. It uses only the faucet window, keyed by
+faucet owner `server_garden` through `ApplyPersistentFaucetWindowTx`, and the coordinator's
+`FounderIdempotency` / `CompanyCanonicalPayload` options. See [Server Garden](minigame-server-garden.md).

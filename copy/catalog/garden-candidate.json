@@ -122,6 +122,14 @@
    "tone": "corporate"
   },
   {
+   "key": "garden.action.close",
+   "text": "Close",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
    "key": "garden.action.harvest",
    "text": "Harvest",
    "params": [],
@@ -140,6 +148,27 @@
   {
    "key": "garden.action.plant",
    "text": "Plant",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.action.plant_frame",
+   "text": "Plant {species}",
+   "params": [
+    {
+     "name": "species",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.action.refresh",
+   "text": "Refresh",
    "params": [],
    "era_variants": null,
    "provenance": [],
@@ -204,6 +233,38 @@
    "tone": "corporate"
   },
   {
+   "key": "garden.glyph.dormant",
+   "text": "Off",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.glyph.empty",
+   "text": "Empty",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.glyph.growing",
+   "text": "Sprout",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.glyph.mature",
+   "text": "Bloom",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
    "key": "garden.hint.first",
    "text": "Plant a strain in an empty rack slot. It grows on the wall clock, even while you are away.",
    "params": [],
@@ -220,6 +281,14 @@
      "type": "string"
     }
    ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.plot.choose_seed",
+   "text": "Choose a seed",
+   "params": [],
    "era_variants": null,
    "provenance": [],
    "tone": "corporate"
@@ -362,6 +431,38 @@
    "tone": "corporate"
   },
   {
+   "key": "garden.state.error",
+   "text": "The garden could not be loaded.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.state.loading",
+   "text": "Loading the garden.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.state.locked",
+   "text": "Locked. Unlock the garden with Fiscal credit first.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.state.stale",
+   "text": "This view may be out of date. Refreshing.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
    "key": "garden.substrate.bare_metal.name",
    "text": "Bare metal",
    "params": [],
@@ -404,6 +505,14 @@
   {
    "key": "garden.substrate.containerized.tooltip",
    "text": "Faster ticks, smaller harvests.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.label",
+   "text": "Substrate",
    "params": [],
    "era_variants": null,
    "provenance": [],
