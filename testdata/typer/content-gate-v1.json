@@ -1,0 +1,1043 @@
+{
+  "version": 1,
+  "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+  "transition_budget": 61,
+  "scenarios": [
+    {
+      "name": "completed_timed_seed_1",
+      "seed": "1",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "assist_level": "timed",
+            "kind": "begin"
+          },
+          "server_time_ms": 1000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "top"
+          },
+          "server_time_ms": 6000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "./configure —prefix=/usr/local"
+          },
+          "server_time_ms": 11000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "grep “404” access_log"
+          },
+          "server_time_ms": 16000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "df -h"
+          },
+          "server_time_ms": 21000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "echo ‘hello world’ \u003e index.html"
+          },
+          "server_time_ms": 26000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "cd /var/www/html"
+          },
+          "server_time_ms": 31000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "make install"
+          },
+          "server_time_ms": 36000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "telnet localhost 25"
+          },
+          "server_time_ms": 41000,
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": "timed",
+        "clean_lines": 8,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": 121000,
+        "era_tier": 1,
+        "last_server_ms": 41000,
+        "last_submission": {
+          "first_mismatch_index": null,
+          "outcome": "cleared"
+        },
+        "lines_cleared": 8,
+        "misses": 0,
+        "phase": "terminal",
+        "prompt_index": 8,
+        "prompts_total": 8,
+        "revision": 10,
+        "started_server_ms": 1000,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "completed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 0
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 8
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 40000
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 8
+          },
+          {
+            "kind": "typer.misses",
+            "value": 0
+          }
+        ]
+      },
+      "covers_prompts": [
+        "cd_www",
+        "configure_prefix",
+        "df_h",
+        "echo_hello",
+        "grep_404",
+        "make_install",
+        "telnet_smtp",
+        "top"
+      ]
+    },
+    {
+      "name": "completed_timed_seed_2",
+      "seed": "2",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "assist_level": "timed",
+            "kind": "begin"
+          },
+          "server_time_ms": 1000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ping -c 4 localhost"
+          },
+          "server_time_ms": 6000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "vi index.html"
+          },
+          "server_time_ms": 11000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "echo ‘hello world’ \u003e index.html"
+          },
+          "server_time_ms": 16000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "grep “404” access_log"
+          },
+          "server_time_ms": 21000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "chmod 755 cgi-bin/counter.pl"
+          },
+          "server_time_ms": 26000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "df -h"
+          },
+          "server_time_ms": 31000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ls -la"
+          },
+          "server_time_ms": 36000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "top"
+          },
+          "server_time_ms": 41000,
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": "timed",
+        "clean_lines": 8,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": 121000,
+        "era_tier": 1,
+        "last_server_ms": 41000,
+        "last_submission": {
+          "first_mismatch_index": null,
+          "outcome": "cleared"
+        },
+        "lines_cleared": 8,
+        "misses": 0,
+        "phase": "terminal",
+        "prompt_index": 8,
+        "prompts_total": 8,
+        "revision": 10,
+        "started_server_ms": 1000,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "completed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 0
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 8
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 40000
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 8
+          },
+          {
+            "kind": "typer.misses",
+            "value": 0
+          }
+        ]
+      },
+      "covers_prompts": [
+        "chmod_counter",
+        "df_h",
+        "echo_hello",
+        "grep_404",
+        "ls_la",
+        "ping_localhost",
+        "top",
+        "vi_index"
+      ]
+    },
+    {
+      "name": "completed_timed_seed_3",
+      "seed": "3",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "assist_level": "timed",
+            "kind": "begin"
+          },
+          "server_time_ms": 1000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "top"
+          },
+          "server_time_ms": 6000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "chmod 755 cgi-bin/counter.pl"
+          },
+          "server_time_ms": 11000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "cd /var/www/html"
+          },
+          "server_time_ms": 16000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "./configure —prefix=/usr/local"
+          },
+          "server_time_ms": 21000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "vi index.html"
+          },
+          "server_time_ms": 26000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ping -c 4 localhost"
+          },
+          "server_time_ms": 31000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "echo ‘hello world’ \u003e index.html"
+          },
+          "server_time_ms": 36000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "cat README.TXT"
+          },
+          "server_time_ms": 41000,
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": "timed",
+        "clean_lines": 8,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": 121000,
+        "era_tier": 1,
+        "last_server_ms": 41000,
+        "last_submission": {
+          "first_mismatch_index": null,
+          "outcome": "cleared"
+        },
+        "lines_cleared": 8,
+        "misses": 0,
+        "phase": "terminal",
+        "prompt_index": 8,
+        "prompts_total": 8,
+        "revision": 10,
+        "started_server_ms": 1000,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "completed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 0
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 8
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 40000
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 8
+          },
+          {
+            "kind": "typer.misses",
+            "value": 0
+          }
+        ]
+      },
+      "covers_prompts": [
+        "cat_readme",
+        "cd_www",
+        "chmod_counter",
+        "configure_prefix",
+        "echo_hello",
+        "ping_localhost",
+        "top",
+        "vi_index"
+      ]
+    },
+    {
+      "name": "completed_timed_seed_4",
+      "seed": "4",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "assist_level": "timed",
+            "kind": "begin"
+          },
+          "server_time_ms": 1000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "vi index.html"
+          },
+          "server_time_ms": 6000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ps aux"
+          },
+          "server_time_ms": 11000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "./configure —prefix=/usr/local"
+          },
+          "server_time_ms": 16000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "make install"
+          },
+          "server_time_ms": 21000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "cat README.TXT"
+          },
+          "server_time_ms": 26000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "grep “404” access_log"
+          },
+          "server_time_ms": 31000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "telnet localhost 25"
+          },
+          "server_time_ms": 36000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "echo ‘hello world’ \u003e index.html"
+          },
+          "server_time_ms": 41000,
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": "timed",
+        "clean_lines": 8,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": 121000,
+        "era_tier": 1,
+        "last_server_ms": 41000,
+        "last_submission": {
+          "first_mismatch_index": null,
+          "outcome": "cleared"
+        },
+        "lines_cleared": 8,
+        "misses": 0,
+        "phase": "terminal",
+        "prompt_index": 8,
+        "prompts_total": 8,
+        "revision": 10,
+        "started_server_ms": 1000,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "completed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 0
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 8
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 40000
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 8
+          },
+          {
+            "kind": "typer.misses",
+            "value": 0
+          }
+        ]
+      },
+      "covers_prompts": [
+        "cat_readme",
+        "configure_prefix",
+        "echo_hello",
+        "grep_404",
+        "make_install",
+        "ps_aux",
+        "telnet_smtp",
+        "vi_index"
+      ]
+    },
+    {
+      "name": "completed_timed_seed_8",
+      "seed": "8",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "assist_level": "timed",
+            "kind": "begin"
+          },
+          "server_time_ms": 1000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ls -la"
+          },
+          "server_time_ms": 6000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ps aux"
+          },
+          "server_time_ms": 11000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "chmod 755 cgi-bin/counter.pl"
+          },
+          "server_time_ms": 16000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "./configure —prefix=/usr/local"
+          },
+          "server_time_ms": 21000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "vi index.html"
+          },
+          "server_time_ms": 26000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "cd /var/www/html"
+          },
+          "server_time_ms": 31000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "tar -czf backup.tgz site/"
+          },
+          "server_time_ms": 36000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "make install"
+          },
+          "server_time_ms": 41000,
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": "timed",
+        "clean_lines": 8,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": 121000,
+        "era_tier": 1,
+        "last_server_ms": 41000,
+        "last_submission": {
+          "first_mismatch_index": null,
+          "outcome": "cleared"
+        },
+        "lines_cleared": 8,
+        "misses": 0,
+        "phase": "terminal",
+        "prompt_index": 8,
+        "prompts_total": 8,
+        "revision": 10,
+        "started_server_ms": 1000,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "completed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 0
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 8
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 40000
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 8
+          },
+          {
+            "kind": "typer.misses",
+            "value": 0
+          }
+        ]
+      },
+      "covers_prompts": [
+        "cd_www",
+        "chmod_counter",
+        "configure_prefix",
+        "ls_la",
+        "make_install",
+        "ps_aux",
+        "tar_backup",
+        "vi_index"
+      ]
+    },
+    {
+      "name": "completed_untimed_misses_and_rejections",
+      "seed": "42",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ls"
+          },
+          "server_time_ms": 10,
+          "expect": "illegal_phase"
+        },
+        {
+          "command": {
+            "assist_level": "sometimes",
+            "kind": "begin"
+          },
+          "server_time_ms": 10,
+          "expect": "invalid_assist_level"
+        },
+        {
+          "command": {
+            "assist_level": "untimed",
+            "kind": "begin"
+          },
+          "server_time_ms": 100000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ls\u0007"
+          },
+          "server_time_ms": 100001,
+          "expect": "invalid_text"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "server_time_ms": 100002,
+          "expect": "line_too_long"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "PING -C 4 LOCALHOST"
+          },
+          "server_time_ms": 90000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ping -c 4 localhostx"
+          },
+          "server_time_ms": 100010,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ｐing -c 4 localhost"
+          },
+          "server_time_ms": 100011,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ping -c 4 localhost"
+          },
+          "server_time_ms": 100100,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "vi index.html"
+          },
+          "server_time_ms": 100101,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ls -la"
+          },
+          "server_time_ms": 100102,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "echo 'hello world' \u003e index.html"
+          },
+          "server_time_ms": 100103,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "grep \"404\" access_log"
+          },
+          "server_time_ms": 100104,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "make install"
+          },
+          "server_time_ms": 100105,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "cd /var/www/html"
+          },
+          "server_time_ms": 100106,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "top"
+          },
+          "server_time_ms": 100107,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "end_run"
+          },
+          "server_time_ms": 200000,
+          "expect": "illegal_phase"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": "untimed",
+        "clean_lines": 7,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": null,
+        "era_tier": 1,
+        "last_server_ms": 100107,
+        "last_submission": {
+          "first_mismatch_index": null,
+          "outcome": "cleared"
+        },
+        "lines_cleared": 8,
+        "misses": 3,
+        "phase": "terminal",
+        "prompt_index": 8,
+        "prompts_total": 8,
+        "revision": 13,
+        "started_server_ms": 100000,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "completed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 1
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 7
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 107
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 8
+          },
+          {
+            "kind": "typer.misses",
+            "value": 3
+          }
+        ]
+      },
+      "covers_prompts": [
+        "cd_www",
+        "echo_hello",
+        "grep_404",
+        "ls_la",
+        "make_install",
+        "ping_localhost",
+        "top",
+        "vi_index"
+      ]
+    },
+    {
+      "name": "timed_out_after_exact_deadline",
+      "seed": "77",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "assist_level": "timed",
+            "kind": "begin"
+          },
+          "server_time_ms": 5000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "vi index.html"
+          },
+          "server_time_ms": 125000,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ps aux"
+          },
+          "server_time_ms": 125001,
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": "timed",
+        "clean_lines": 1,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": 125000,
+        "era_tier": 1,
+        "last_server_ms": 125001,
+        "last_submission": {
+          "first_mismatch_index": null,
+          "outcome": "cleared"
+        },
+        "lines_cleared": 1,
+        "misses": 0,
+        "phase": "terminal",
+        "prompt_index": 1,
+        "prompts_total": 8,
+        "revision": 4,
+        "started_server_ms": 5000,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "timed_out",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 0
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 1
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 120000
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 1
+          },
+          {
+            "kind": "typer.misses",
+            "value": 0
+          }
+        ]
+      },
+      "covers_prompts": [
+        "ps_aux",
+        "vi_index"
+      ]
+    },
+    {
+      "name": "ended_early_before_begin",
+      "seed": "13",
+      "era_tier": 1,
+      "steps": [
+        {
+          "command": {
+            "kind": "end_run"
+          },
+          "server_time_ms": 1,
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "assist_level": null,
+        "clean_lines": 0,
+        "current_prompt_id": null,
+        "current_prompt_misses": 0,
+        "current_prompt_text": null,
+        "deadline_server_ms": null,
+        "era_tier": 1,
+        "last_server_ms": 1,
+        "last_submission": null,
+        "lines_cleared": 0,
+        "misses": 0,
+        "phase": "terminal",
+        "prompt_index": 0,
+        "prompts_total": 8,
+        "revision": 2,
+        "started_server_ms": null,
+        "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
+        "typer_schema_version": 1
+      },
+      "expected_result": {
+        "outcome": "ended_early",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "typer.assisted",
+            "value": 0
+          },
+          {
+            "kind": "typer.clean_lines",
+            "value": 0
+          },
+          {
+            "kind": "typer.elapsed_ms",
+            "value": 0
+          },
+          {
+            "kind": "typer.lines_cleared",
+            "value": 0
+          },
+          {
+            "kind": "typer.misses",
+            "value": 0
+          }
+        ]
+      },
+      "covers_prompts": []
+    }
+  ]
+}

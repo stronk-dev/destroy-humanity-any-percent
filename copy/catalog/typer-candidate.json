@@ -1,0 +1,328 @@
+{
+ "schema_version": 1,
+ "entries": [
+  {
+   "key": "cap.typer_elapsed",
+   "text": "Run time is capped for display.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "cap.typer_line_bytes",
+   "text": "That line is longer than the terminal accepts.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "cap.typer_misses",
+   "text": "Miss count is capped for display.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "cap.typer_run_length",
+   "text": "A run has a fixed number of commands.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "typer.begin",
+   "text": "Begin",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.end_run",
+   "text": "End run",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.era.garage_2000",
+   "text": "The garage PC",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.expired",
+   "text": "Time is up. End the run to collect what you typed.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.feedback.cleared",
+   "text": "Command accepted.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.feedback.miss",
+   "text": "Not quite. First difference at character {index}.",
+   "params": [
+    {
+     "name": "index",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.host",
+   "text": "The garage PC",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.input_label",
+   "text": "Command line",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.mode.timed",
+   "text": "Timed run",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.mode.untimed",
+   "text": "Untimed run",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.mode.untimed.note",
+   "text": "Untimed runs pay exactly the same as timed runs.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.outcome.completed",
+   "text": "Every command typed.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.outcome.ended_early",
+   "text": "Run ended early.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.outcome.timed_out",
+   "text": "Time ran out.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.progress_frame",
+   "text": "Command {current} of {total}",
+   "params": [
+    {
+     "name": "current",
+     "type": "integer"
+    },
+    {
+     "name": "total",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.cat_readme.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.cd_www.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.chmod_counter.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.configure_prefix.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.df_h.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.echo_hello.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.grep_404.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.ls_la.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.make_install.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.ping_localhost.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.ps_aux.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.tar_backup.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.telnet_smtp.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.top.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt.vi_index.scene",
+   "text": "Placeholder scene line pending owner copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.prompt_label",
+   "text": "Type this command",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.submit",
+   "text": "Enter",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.time_remaining",
+   "text": "{seconds} seconds left",
+   "params": [
+    {
+     "name": "seconds",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "typer.title",
+   "text": "Terminal Typer",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  }
+ ]
+}

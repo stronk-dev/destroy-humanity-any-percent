@@ -54,6 +54,10 @@ type ApplyInput struct {
 	Content              json.RawMessage
 	ContentHash          string
 	ContentSchemaVersion int
+	// ServerTimeMs is the coordinator's single database-clock sample for this
+	// admitted command (TT-PA1). Replay passes the persisted server_ts_ms.
+	// Tenants that do not measure time ignore it; no tenant reads a clock.
+	ServerTimeMs int64
 }
 
 // TenantContent is the immutable, constants-hash-pinned content input for a

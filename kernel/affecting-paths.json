@@ -20,6 +20,7 @@
     "client/src/replay.ts",
     "client/src/routes.ts",
     "client/src/soul/",
+    "client/src/typer/",
     "server/accrualhook/",
     "server/achievements/",
     "server/activeplay/",
@@ -54,6 +55,7 @@
     "server/save/minigame_start.go",
     "server/save/runlog.go",
     "server/save/state.go",
-    "server/soul/"
+    "server/soul/",
+    "server/typer/"
   ]
 }

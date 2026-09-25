@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "run_length": 8,
+    "timed_budget_ms": 120000,
+    "max_line_bytes": 256,
+    "elapsed_hardcap_ms": 86400000,
+    "misses_hardcap": 1000000,
+    "run_length_reason_key": "cap.typer_run_length",
+    "line_bytes_reason_key": "cap.typer_line_bytes",
+    "elapsed_reason_key": "cap.typer_elapsed",
+    "misses_reason_key": "cap.typer_misses"
+  },
+  "eras": [
+    {
+      "era_id": "garage_2000",
+      "min_tier": 1,
+      "copy_key": "typer.era.garage_2000"
+    }
+  ],
+  "prompts": [
+    {
+      "prompt_id": "cat_readme",
+      "era_id": "garage_2000",
+      "text": "cat README.TXT",
+      "scene_copy_key": "typer.prompt.cat_readme.scene"
+    },
+    {
+      "prompt_id": "cd_www",
+      "era_id": "garage_2000",
+      "text": "cd /var/www/html",
+      "scene_copy_key": "typer.prompt.cd_www.scene"
+    },
+    {
+      "prompt_id": "chmod_counter",
+      "era_id": "garage_2000",
+      "text": "chmod 755 cgi-bin/counter.pl",
+      "scene_copy_key": "typer.prompt.chmod_counter.scene"
+    },
+    {
+      "prompt_id": "configure_prefix",
+      "era_id": "garage_2000",
+      "text": "./configure --prefix=/usr/local",
+      "scene_copy_key": "typer.prompt.configure_prefix.scene"
+    },
+    {
+      "prompt_id": "df_h",
+      "era_id": "garage_2000",
+      "text": "df -h",
+      "scene_copy_key": "typer.prompt.df_h.scene"
+    },
+    {
+      "prompt_id": "echo_hello",
+      "era_id": "garage_2000",
+      "text": "echo 'hello world' > index.html",
+      "scene_copy_key": "typer.prompt.echo_hello.scene"
+    },
+    {
+      "prompt_id": "grep_404",
+      "era_id": "garage_2000",
+      "text": "grep \"404\" access_log",
+      "scene_copy_key": "typer.prompt.grep_404.scene"
+    },
+    {
+      "prompt_id": "ls_la",
+      "era_id": "garage_2000",
+      "text": "ls -la",
+      "scene_copy_key": "typer.prompt.ls_la.scene"
+    },
+    {
+      "prompt_id": "make_install",
+      "era_id": "garage_2000",
+      "text": "make install",
+      "scene_copy_key": "typer.prompt.make_install.scene"
+    },
+    {
+      "prompt_id": "ping_localhost",
+      "era_id": "garage_2000",
+      "text": "ping -c 4 localhost",
+      "scene_copy_key": "typer.prompt.ping_localhost.scene"
+    },
+    {
+      "prompt_id": "ps_aux",
+      "era_id": "garage_2000",
+      "text": "ps aux",
+      "scene_copy_key": "typer.prompt.ps_aux.scene"
+    },
+    {
+      "prompt_id": "tar_backup",
+      "era_id": "garage_2000",
+      "text": "tar -czf backup.tgz site/",
+      "scene_copy_key": "typer.prompt.tar_backup.scene"
+    },
+    {
+      "prompt_id": "telnet_smtp",
+      "era_id": "garage_2000",
+      "text": "telnet localhost 25",
+      "scene_copy_key": "typer.prompt.telnet_smtp.scene"
+    },
+    {
+      "prompt_id": "top",
+      "era_id": "garage_2000",
+      "text": "top",
+      "scene_copy_key": "typer.prompt.top.scene"
+    },
+    {
+      "prompt_id": "vi_index",
+      "era_id": "garage_2000",
+      "text": "vi index.html",
+      "scene_copy_key": "typer.prompt.vi_index.scene"
+    }
+  ]
+}
