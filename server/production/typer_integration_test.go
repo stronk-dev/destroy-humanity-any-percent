@@ -272,6 +272,27 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 	untimed := seedTyperFounder(t, ctx, db, store, bundle, now, "03", 1, 1)
 	timedCredit, _ := play(timed, "01986666-c202-7000-8000-000000000003", "timed")
 	untimedCredit, _ := play(untimed, "01986666-c203-7000-8000-000000000003", "untimed")
+	// AC8 / TT5: end_run is legal before begin, so an open Typer session (which
+	// blocks Exit, MA-C12) always has a reachable exit.
+	stalled := seedTyperFounder(t, ctx, db, store, bundle, now, "04", 1, 1)
+	stalledSession := "01986666-c204-7000-8000-000000000003"
+	if _, err := service.StartMinigameSession(ctx, platform, startRequest(stalled, stalledSession), now); err != nil {
+		t.Fatal(err)
+	}
+	if active, err := repository.ActiveMinigame(ctx, stalled.founderID); err != nil || !active {
+		t.Fatalf("open Typer session must hold the Exit block: active=%v err=%v", active, err)
+	}
+	ended, err := platform.Play(ctx, minigame.PlayRequest{FounderID: stalled.founderID, SessionID: stalledSession, ExpectedRevision: 1,
+		Command: json.RawMessage(`{"kind":"end_run"}`)})
+	if err != nil || ended.Resolution == nil || ended.Resolution.Result().Outcome != typer.OutcomeEndedEarly {
+		t.Fatalf("end_run before begin must end the run: %+v err=%v", ended, err)
+	}
+	if _, err := service.ResolveMinigameSession(ctx, platform, ended.Resolution, now.Add(time.Minute), nil); err != nil {
+		t.Fatalf("ended_early resolution err=%v", err)
+	}
+	if active, err := repository.ActiveMinigame(ctx, stalled.founderID); err != nil || active {
+		t.Fatalf("resolved Typer session must release the Exit block: active=%v err=%v", active, err)
+	}
 	t.Logf("credited timed=%s untimed=%s", timedCredit, untimedCredit)
 	// AC11 (OD-2 as ruled): identical facts pay identically in both modes.
 	if timedCredit != untimedCredit || timedCredit == "0" {

@@ -203,3 +203,10 @@ Consequences:
 - **Not yet covered by AC8:** the faucet-cap forfeit, "Exit rejects while active and succeeds
   after `end_run`", and "through the MA endpoints". The last one is blocked by the TT-PA4/C2
   DESIGN-GAP (no v1 Typer route).
+
+### B7 addendum — `end_run` releases the Exit block (Claude)
+
+The composed test also opens a Typer session and checks `ActiveMinigame` is true (the MA-C12 Exit
+block). It then plays `end_run` before `begin` (outcome `ended_early`), resolves, and checks
+`ActiveMinigame` is false. Severing: making `end_run` legal only while typing turns it red with
+`illegal_phase`. Test-only commit (`_test.go` is outside the kernel guard).
