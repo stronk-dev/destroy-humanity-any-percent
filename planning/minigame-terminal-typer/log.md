@@ -210,3 +210,41 @@ The composed test also opens a Typer session and checks `ActiveMinigame` is true
 block). It then plays `end_run` before `begin` (outcome `ended_early`), resolves, and checks
 `ActiveMinigame` is false. Severing: making `end_run` legal only while typing turns it red with
 `illegal_phase`. Test-only commit (`_test.go` is outside the kernel guard).
+
+## 2026-09-25 — B6 (partial): `TyperTable` child and TT8 accessibility contract (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated review.
+
+`client/src/game-ui/minigame/TyperTable.svelte` follows the TT9 prop contract: `snapshot`,
+`serverTimeSample`, `pending`, `era`, `dispatch`, `exitToHost`. It is presentation only.
+
+- **Modes.** Timed and untimed are offered as two buttons, neither preselected. The untimed button
+  describes the equal-payout note (`aria-describedby`).
+- **Prompt and input.** The current prompt is a labelled `<code>`. The input is a native text field
+  with `autocomplete=off`, `autocapitalize=off`, `spellcheck=false` and `autocorrect=off`.
+- **Submitting.** Enter submits the form; Enter during IME composition never submits, and paste is
+  never blocked. The field clears only when the prompt advances, and focus stays in it.
+- **Feedback and time.** A miss is announced as text with a 1-based position (polite status). In
+  timed runs the remaining time is plain text (no periodic announcements); once expired, the
+  expired state and `end_run` are shown.
+- **Reflow.** The prompt wraps (`overflow-wrap:anywhere`), so a 256-byte token reflows at 320 px.
+
+**Evidence:**
+- `test/typer-table-browser.test.ts` passes 15/15 across chromium, firefox and webkit: axe on the
+  ready, typing, miss and expired states; keyboard begin; composition and paste; text miss
+  feedback; time; 320 px reflow.
+- `verify-client-boundary` scans 10 component files, all clean.
+- AC13's named mutants, each red on chromium (1 failed | 4 passed):
+  - seeded paste `preventDefault`;
+  - submit during composition;
+  - hue-only miss, with the text removed;
+  - no prompt wrapping.
+
+**Not yet done:**
+- **Registration.** The child isn't registered in `tenant-registry.ts`. The pinned
+  `balance/minigame-api/first-content.json` lists only Pitch, and the registry fails closed on a
+  child with no pinned tenant. There is also no v1 route carrying Typer commands or snapshots (the
+  TT-PA4/C2 gap). A keyboard-only run through the host surface therefore waits on both.
+- **Scene lines.** The per-prompt `typer.prompt.<id>.scene` line isn't shown, because the client
+  doesn't bundle Typer content. It would follow the Pitch hash-verified pattern once a mint pins
+  it.
