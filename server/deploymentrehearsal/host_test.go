@@ -114,8 +114,8 @@ func validHostDependencies() hostObservationDependencies {
 		"uname -s": []byte("Linux\n"),
 		"uname -m": []byte("x86_64\n"),
 		"uname -r": []byte("6.12.0\n"),
-		"docker version --format={{.Server.Version}}":                          []byte("28.4.0\n"),
-		"docker compose version --short":                                       []byte("2.39.4\n"),
+		"docker version --format={{.Server.Version}}":            []byte("28.4.0\n"),
+		"docker compose version --short":                         []byte("2.39.4\n"),
 		"docker volume ls --quiet --filter=name=^cloud-clicker_": nil,
 	}}, readFile: func(string) ([]byte, error) { return []byte("ID=debian\nVERSION_ID=\"13\"\n"), nil },
 		environment: []string{"PATH=/usr/bin"}, validateBundle: func(string) error { return nil }, now: func() time.Time {

@@ -270,14 +270,19 @@ func TestLoadTyperChainIsAllOrNothing(t *testing.T) {
 		}
 	}
 	cases := map[string]func(map[string][]byte){
-		"definition without artifact": func(a map[string][]byte) { delete(a, "typer"); a["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json") },
+		"definition without artifact": func(a map[string][]byte) {
+			delete(a, "typer")
+			a["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json")
+		},
 		"artifact without definition": func(a map[string][]byte) { a["minigames"] = read("testdata", "minigame", "pitch-v3.json") },
 		"api tenant without definition": func(a map[string][]byte) {
 			delete(a, "typer")
 			a["minigames"] = read("testdata", "minigame", "pitch-v3.json")
 		},
-		"artifact without api tenant": func(a map[string][]byte) { a["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json") },
-		"artifact without minigame_api": func(a map[string][]byte) { delete(a, "minigame_api") },
+		"artifact without api tenant": func(a map[string][]byte) {
+			a["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json")
+		},
+		"artifact without minigame_api":      func(a map[string][]byte) { delete(a, "minigame_api") },
 		"definition without api or artifact": func(a map[string][]byte) { delete(a, "minigame_api"); delete(a, "typer") },
 	}
 	for name, mutate := range cases {
