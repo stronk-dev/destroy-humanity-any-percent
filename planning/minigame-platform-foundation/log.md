@@ -756,3 +756,21 @@ nothing self-archives here.**
 - The Docker Postgres `Integration` run for production, minigame, save, gameserver and account: ok.
 - `vitest test/replay.test.ts`: 86 tests passed.
 - `gofmt` and `go vet ./production`: clean.
+
+### 2026-09-25 — Kernel version correction for `8add475` (Claude)
+
+`make verify-kernel-version` rejected `8add475` (AR-F1 zero-credit resolution): it changes the
+guarded `server/production/minigame_resolution.go` and `client/src/replay.ts` semantics (a
+zero-delta resolution now applies instead of failing closed) without a same-commit
+`kernel/VERSION` bump. This is a real semantic change, not a behavior-identical one, so neither of
+CLAUDE.md's rewrite classes applies. The correction is append-only: `kernel/VERSION`
+0.3.101 → 0.3.102 (Go and TS constants), with a `kernel/history-corrections.json` row naming
+`8add475`. Runs pinned to 0.3.101 that replay a zero-credit resolution now diverge by design, and
+the existing engine_mismatch drift policy applies. Awaiting Codex designated review together with
+`8add475`.
+
+**Consequence:** `make verify-kernel-version` (so `verify-client`/`verify-push`) stays RED until
+Codex records the independent review of `8add475` as a `## ` section with `**Review by:**`,
+`**Decision:**` and the range (`8add475^..8add475`). This is the guard working as designed; no
+workaround is taken. The alternative, amending the unpushed and uncited `8add475` to carry the
+bump, is outside CLAUDE.md's two permitted rewrite classes, so it needs an explicit owner ruling.

@@ -24,6 +24,12 @@
       "corrected_in_version": "0.3.17",
       "reason": "Reviewed save activation remediation changed guarded persistence semantics before the version bump could land without rewriting cited history.",
       "review_log": "planning/meters-foundation/log.md"
+    },
+    {
+      "offending_commit": "8add475ad49977b9266f68ae27dd8c966011c16b",
+      "corrected_in_version": "0.3.102",
+      "reason": "The zero-credit minigame resolution fix changed guarded resolution and replay semantics without the same-commit version signal; append-only correction records the boundary instead of rewriting.",
+      "review_log": "planning/minigame-platform-foundation/log.md"
     }
   ]
 }
