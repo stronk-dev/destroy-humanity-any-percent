@@ -49,6 +49,11 @@ type GameUIHandler interface {
 	BootstrapSnapshotBuilder
 }
 
+// GardenHandler is Server Garden SG9's read owner.
+type GardenHandler interface {
+	GardenView(context.Context, string, time.Time) (json.RawMessage, error)
+}
+
 type APIConfig struct {
 	UnauthenticatedBurst  int
 	UnauthenticatedPerMin int
@@ -76,6 +81,7 @@ type API struct {
 	recoveries       SoulRecoveryHandler
 	minigames        MinigameAPIHandler
 	gameUI           GameUIHandler
+	garden           GardenHandler
 	privateRegistry  *publicapi.Registry
 	config           APIConfig
 	unauth           *httpapi.TokenBuckets
@@ -112,6 +118,14 @@ func (api *API) AttachGameUI(handler GameUIHandler) error {
 		return ErrInvalidRequest
 	}
 	api.gameUI = handler
+	return nil
+}
+
+func (api *API) AttachGarden(handler GardenHandler) error {
+	if api == nil || handler == nil || api.garden != nil {
+		return ErrInvalidRequest
+	}
+	api.garden = handler
 	return nil
 }
 
@@ -174,6 +188,7 @@ func (api *API) Router() http.Handler {
 		{OperationID: "cancel_soul_recovery", Handler: http.HandlerFunc(api.cancelSoulRecovery)},
 		{OperationID: "create_bootstrap", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createBootstrap))},
 		{OperationID: "create_minigame_session", Handler: http.HandlerFunc(api.createMinigameSession)},
+		{OperationID: "get_current_garden", Handler: http.HandlerFunc(api.getCurrentGarden)},
 		{OperationID: "get_current_minigame_session", Handler: http.HandlerFunc(api.getCurrentMinigameSession)},
 		{OperationID: "get_game_ui_snapshot", Handler: http.HandlerFunc(api.getGameUISnapshot)},
 		{OperationID: "play_minigame_command", Handler: http.HandlerFunc(api.playMinigameCommand)},
@@ -237,6 +252,30 @@ func (api *API) getGameUISnapshot(response http.ResponseWriter, request *http.Re
 	encoded, err := api.gameUI.GameUISnapshot(request.Context(), state.StreamID, api.repository.clock())
 	if err != nil || api.privateRegistry.ValidateResponse("get_game_ui_snapshot", http.StatusOK, encoded) != nil {
 		writeError(response, http.StatusInternalServerError, "internal_invariant", "game_ui_snapshot")
+		return
+	}
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusOK)
+	_, _ = response.Write(encoded)
+}
+
+func (api *API) getCurrentGarden(response http.ResponseWriter, request *http.Request) {
+	if api.garden == nil {
+		writeError(response, http.StatusServiceUnavailable, "not_configured", "garden")
+		return
+	}
+	if decodeNoRequestBody(response, request, api.config.MaxBodyBytes) != nil {
+		writeError(response, http.StatusBadRequest, "invalid", "body")
+		return
+	}
+	state, err := api.repository.ActiveCompanyState(request.Context(), requestClaims(request).Subject)
+	if err != nil {
+		writeError(response, http.StatusNotFound, "unknown_id", "founder_state")
+		return
+	}
+	encoded, err := api.garden.GardenView(request.Context(), state.StreamID, api.repository.clock())
+	if err != nil || api.privateRegistry.ValidateResponse("get_current_garden", http.StatusOK, encoded) != nil {
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "garden")
 		return
 	}
 	response.Header().Set("Content-Type", "application/json")

@@ -1,0 +1,118 @@
+{
+ "active": {
+  "founder_revision": 3,
+  "garden": {
+   "width": 2,
+   "height": 2,
+   "max_width": 6,
+   "max_height": 6,
+   "substrate_id": "bare_metal",
+   "substrate_lockout_until_ms": null,
+   "next_tick_wall_ms": 1790341500000,
+   "tick_seq": 12,
+   "pending_catchup_forfeited_ms": 0,
+   "seed_collection": [
+    "strain_a",
+    "strain_b"
+   ],
+   "species_total": 5,
+   "plots": [
+    {
+     "row": 0,
+     "col": 0,
+     "species_id": "strain_a",
+     "stage": "mature",
+     "age_ticks": 3,
+     "maturation_ticks": 3,
+     "dormant": false
+    },
+    {
+     "row": 0,
+     "col": 1,
+     "species_id": "strain_a",
+     "stage": "mature",
+     "age_ticks": 3,
+     "maturation_ticks": 3,
+     "dormant": false
+    },
+    {
+     "row": 1,
+     "col": 1,
+     "species_id": "strain_b",
+     "stage": "mature",
+     "age_ticks": 4,
+     "maturation_ticks": 4,
+     "dormant": false
+    },
+    {
+     "row": 5,
+     "col": 5,
+     "species_id": "strain_a",
+     "stage": "growing",
+     "age_ticks": 0,
+     "maturation_ticks": 3,
+     "dormant": true
+    }
+   ]
+  },
+  "kind": "active",
+  "server_ms": 1790341200000
+ },
+ "fresh": {
+  "founder_revision": 1,
+  "garden": {
+   "width": 2,
+   "height": 2,
+   "max_width": 6,
+   "max_height": 6,
+   "substrate_id": "bare_metal",
+   "substrate_lockout_until_ms": null,
+   "next_tick_wall_ms": 1790337900000,
+   "tick_seq": 0,
+   "pending_catchup_forfeited_ms": 0,
+   "seed_collection": [
+    "strain_a",
+    "strain_b"
+   ],
+   "species_total": 5,
+   "plots": [
+    {
+     "row": 0,
+     "col": 0,
+     "species_id": "strain_a",
+     "stage": "mature",
+     "age_ticks": 3,
+     "maturation_ticks": 3,
+     "dormant": false
+    },
+    {
+     "row": 1,
+     "col": 1,
+     "species_id": "strain_b",
+     "stage": "growing",
+     "age_ticks": 0,
+     "maturation_ticks": 4,
+     "dormant": false
+    },
+    {
+     "row": 5,
+     "col": 5,
+     "species_id": "strain_a",
+     "stage": "growing",
+     "age_ticks": 0,
+     "maturation_ticks": 3,
+     "dormant": true
+    }
+   ]
+  },
+  "kind": "active",
+  "server_ms": 1790337600000
+ },
+ "inactive": {
+  "kind": "inactive"
+ },
+ "locked": {
+  "kind": "locked",
+  "unlock_id": "minigame.server_garden"
+ }
+}

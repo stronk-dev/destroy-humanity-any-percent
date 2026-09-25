@@ -347,6 +347,9 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err := api.AttachGameUI(gameUIProjector); err != nil {
 		return nil, err
 	}
+	if err := api.AttachGarden(productionService); err != nil {
+		return nil, err
+	}
 	policyBytes, err := os.ReadFile(filepath.Join(config.RepositoryRoot, "balance", "transport", "phase0.json"))
 	if err != nil {
 		return nil, err

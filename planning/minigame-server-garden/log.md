@@ -279,3 +279,44 @@ clock behind the last database stamp makes the Fiscal sweep fail with "fiscal wa
 regressed". The G4 witness hit this with a synthetic past `now`. Production passes `time.Now()`, so
 it only bites under clock skew. Options for the Minigame Platform owner: stamp from the database, or
 clamp to the last Founder-log stamp.
+
+## 2026-09-25 — G6: `GET /api/v1/garden/current` (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review. Kernel bumped 0.3.134 → 0.3.135 in
+the same commit, because `production/garden_view.go` is guarded.
+
+**The operation.** `get_current_garden` is a new private-v1 operation (allowed widening under C2)
+with schemas `GardenCurrentResponse = GardenActive | GardenInactive | GardenLocked`, plus
+`GardenView` and `GardenPlot`, exactly the SG9 shape. The `APIError` detail enum gains `garden`
+(for `not_configured/garden` and `internal_invariant/garden`). `make api-generate` passed the
+existing compatibility gate, and the pin is unchanged.
+
+**The handler.** It calls `production.Service.GardenView`, which runs the SG3 advance on a discarded
+clone and never commits. An unsalted garden is always unanchored, so the projection uses a
+placeholder salt that cannot influence any draw (zero ticks); the code asserts this. Composition
+attaches it through `api.AttachGarden(productionService)`.
+
+**Evidence, cold:**
+- `go vet ./...` is clean, and `make test-go` passes for garden, minigame, save, production,
+  replaycatalog, gameui, gameserver, account, publicapi, releasepackage and kernel.
+- The full Postgres suite exits 0. Client: 6,901 tests pass; typecheck is clean.
+- **AC15, `TestGardenViewMatchesTheNextCommit`:** at the same `server_ms`, the projected
+  `tick_seq`, plots and stages equal what the next committed command persists. Dormant plots
+  project as dormant, and the projection leaves the Founder bytes untouched.
+- **AC10:** `TestGardenViewHidesTheSaltAndValidates` finds no salt, "salt", "base" or "draw" in the
+  view. It covers the locked, inactive and unsalted shapes and pins
+  `testdata/garden/view-fixtures-v1.json`.
+- `account.TestGardenViewFixturesValidate` validates all four fixtures against the registry, and a
+  salt field is rejected by the schema. This check lives in `account` because `account` imports
+  `production`.
+- **Composed real-socket witness:** in `TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration`,
+  `GET /api/v1/garden/current` returns exactly `{"kind":"inactive"}` under the pinned epoch (no
+  garden artifact) and passes schema validation.
+- **Severing, each red:**
+  - projecting without the advance → `projection tick_seq=0 … commit tick_seq=60`;
+  - leaking the salt into the view → "the garden view leaks";
+  - detaching `AttachGarden` → the composed test gets 503 `not_configured/garden`.
+
+**Gap:** the active and locked views are proven by unit tests and schema validation. They cannot be
+witnessed through the real server until an epoch pins `server_garden`, which is the production mint
+(SG13).

@@ -35,6 +35,7 @@
               "founder",
               "founder_state",
               "game_ui_snapshot",
+              "garden",
               "hack_slots_full",
               "hand_too_large",
               "human_content_locked",
@@ -1927,6 +1928,230 @@
         ],
         "type": "object"
       },
+      "GardenActive": {
+        "additionalProperties": false,
+        "properties": {
+          "founder_revision": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "garden": {
+            "$ref": "#/components/schemas/GardenView"
+          },
+          "kind": {
+            "enum": [
+              "active"
+            ],
+            "type": "string"
+          },
+          "server_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "founder_revision",
+          "garden",
+          "kind",
+          "server_ms"
+        ],
+        "type": "object"
+      },
+      "GardenCurrentResponse": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/GardenActive"
+          },
+          {
+            "$ref": "#/components/schemas/GardenInactive"
+          },
+          {
+            "$ref": "#/components/schemas/GardenLocked"
+          }
+        ]
+      },
+      "GardenInactive": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "inactive"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "type": "object"
+      },
+      "GardenLocked": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "locked"
+            ],
+            "type": "string"
+          },
+          "unlock_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "unlock_id"
+        ],
+        "type": "object"
+      },
+      "GardenPlot": {
+        "additionalProperties": false,
+        "properties": {
+          "age_ticks": {
+            "maximum": 1000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "col": {
+            "maximum": 5,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "dormant": {
+            "type": "boolean"
+          },
+          "maturation_ticks": {
+            "maximum": 1000000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "row": {
+            "maximum": 5,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "species_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "stage": {
+            "enum": [
+              "growing",
+              "mature"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "age_ticks",
+          "col",
+          "dormant",
+          "maturation_ticks",
+          "row",
+          "species_id",
+          "stage"
+        ],
+        "type": "object"
+      },
+      "GardenView": {
+        "additionalProperties": false,
+        "properties": {
+          "height": {
+            "maximum": 6,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "max_height": {
+            "maximum": 6,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "max_width": {
+            "maximum": 6,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "next_tick_wall_ms": {
+            "oneOf": [
+              {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pending_catchup_forfeited_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "plots": {
+            "items": {
+              "$ref": "#/components/schemas/GardenPlot"
+            },
+            "type": "array"
+          },
+          "seed_collection": {
+            "items": {
+              "format": "mechanical-id",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "species_total": {
+            "maximum": 256,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "substrate_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "substrate_lockout_until_ms": {
+            "oneOf": [
+              {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tick_seq": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "width": {
+            "maximum": 6,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "height",
+          "max_height",
+          "max_width",
+          "next_tick_wall_ms",
+          "pending_catchup_forfeited_ms",
+          "plots",
+          "seed_collection",
+          "species_total",
+          "substrate_id",
+          "substrate_lockout_until_ms",
+          "tick_seq",
+          "width"
+        ],
+        "type": "object"
+      },
       "MinigameCommandRequest": {
         "additionalProperties": false,
         "properties": {
@@ -3513,6 +3738,98 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GameUISnapshot"
+                }
+              }
+            },
+            "description": "HTTP 200"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 401"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 404"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 409"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 503"
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/garden/current": {
+      "get": {
+        "operationId": "get_current_garden",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GardenCurrentResponse"
                 }
               }
             },

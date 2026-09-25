@@ -115,6 +115,16 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatalf("create envelope=%s", createdBytes)
 	}
 
+	// Server Garden SG9: the composed garden read answers through the same
+	// registry; the pinned epoch carries no server_garden artifact, so the
+	// exact inactive shape is the witness.
+	gardenResponse := compositionRequest(t, httpServer.Client(), http.MethodGet, httpServer.URL+"/api/v1/garden/current", tokens.AccessToken, "")
+	gardenBytes := readCompositionBytes(t, gardenResponse)
+	if gardenResponse.StatusCode != http.StatusOK || string(gardenBytes) != `{"kind":"inactive"}` ||
+		registry.ValidateResponse("get_current_garden", http.StatusOK, gardenBytes) != nil {
+		t.Fatalf("garden status=%d body=%s", gardenResponse.StatusCode, gardenBytes)
+	}
+
 	// Reconnect is a read through the composed adapter, not a session-local
 	// object retained by this test client.
 	currentResponse := compositionRequest(t, httpServer.Client(), http.MethodGet, httpServer.URL+"/api/v1/minigames/sessions/current", tokens.AccessToken, "")
