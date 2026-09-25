@@ -20,6 +20,7 @@ type compatibilityOperation struct {
 	Auth       AuthMode `json:"auth"`
 	Request    string   `json:"request,omitempty"`
 	Parameters []string `json:"parameters"`
+	Query      []string `json:"query,omitempty"`
 	Responses  []string `json:"responses"`
 }
 
@@ -32,7 +33,8 @@ const (
 
 // CheckCompatibilityPin enforces the additive-only v1 law against a committed
 // pin. New operations are allowed. Existing method/path/auth, path parameters,
-// request identity, and statuses remain; request unions/enums do not grow;
+// query parameters (exactly — stricter than C2 requires), request identity,
+// and statuses remain; request unions/enums do not grow;
 // response enums/unions may widen and response objects may add optional fields.
 func CheckCompatibilityPin(prior []byte, current *Registry) error {
 	var old compatibilityDocument
@@ -55,7 +57,7 @@ func CheckCompatibilityPin(prior []byte, current *Registry) error {
 	for _, before := range old.Operations {
 		after, ok := nextOperations[before.ID]
 		if !ok || before.Method != after.Method || before.Path != after.Path || before.Surface != after.Surface ||
-			before.Auth != after.Auth || before.Request != after.Request || !equalStrings(before.Parameters, after.Parameters) ||
+			before.Auth != after.Auth || before.Request != after.Request || !equalStrings(before.Parameters, after.Parameters) || !equalStrings(before.Query, after.Query) ||
 			!containsAll(after.Responses, before.Responses) {
 			return fmt.Errorf("%w: incompatible operation %s", ErrInvalidOperation, before.ID)
 		}

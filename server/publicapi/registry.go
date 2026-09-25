@@ -64,6 +64,7 @@ type Operation struct {
 	Auth       AuthMode
 	Public     bool
 	Parameters []Parameter
+	Query      []QueryParameter
 	Request    string
 	CursorKey  string
 	Responses  []Response
@@ -72,6 +73,15 @@ type Operation struct {
 type Parameter struct {
 	Name   string
 	Schema *Schema
+}
+
+// QueryParameter is an exact scalar query descriptor. Rows are byte-sorted by
+// name, never shadow a path parameter, and the reserved `cursor` parameter is
+// present exactly when the operation declares a cursor key (and is optional).
+type QueryParameter struct {
+	Name     string
+	Schema   *Schema
+	Required bool
 }
 
 type Registry struct {
@@ -113,6 +123,9 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		if operation.CursorKey != "" && (definitions[operation.CursorKey] == nil || definitions[operation.CursorKey].Kind != SchemaObject) {
 			return nil, fmt.Errorf("%w: cursor key schema", ErrInvalidOperation)
 		}
+		if !validQueryParameters(operation, definitions) {
+			return nil, fmt.Errorf("%w: query parameters", ErrInvalidOperation)
+		}
 		lastResponse := ""
 		for _, response := range operation.Responses {
 			key := fmt.Sprintf("%03d\x00%s", response.Status, response.ContentType)
@@ -128,6 +141,7 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		seenRoutes[key] = true
 		operation.Responses = cloneResponses(operation.Responses)
 		operation.Parameters = cloneParameters(operation.Parameters)
+		operation.Query = cloneQueryParameters(operation.Query)
 		result.operations[index], result.byID[operation.ID], lastID = operation, operation, operation.ID
 	}
 	return result, nil
@@ -140,6 +154,7 @@ func (registry *Registry) Operation(id string) (Operation, bool) {
 	operation, ok := registry.byID[id]
 	operation.Responses = cloneResponses(operation.Responses)
 	operation.Parameters = cloneParameters(operation.Parameters)
+	operation.Query = cloneQueryParameters(operation.Query)
 	return operation, ok
 }
 
@@ -151,6 +166,7 @@ func (registry *Registry) Operations() []Operation {
 	for index, operation := range registry.operations {
 		operation.Responses = cloneResponses(operation.Responses)
 		operation.Parameters = cloneParameters(operation.Parameters)
+		operation.Query = cloneQueryParameters(operation.Query)
 		result[index] = operation
 	}
 	return result

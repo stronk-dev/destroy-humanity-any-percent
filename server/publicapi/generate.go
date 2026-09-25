@@ -33,10 +33,13 @@ func GenerateOpenAPI(registry *Registry, title string) ([]byte, error) {
 		if operation.Auth == AuthAccessToken {
 			generated["security"] = []any{map[string]any{"accessToken": []any{}}}
 		}
-		if len(operation.Parameters) != 0 {
-			parameters := make([]any, len(operation.Parameters))
-			for index, parameter := range operation.Parameters {
-				parameters[index] = map[string]any{"in": "path", "name": parameter.Name, "required": true, "schema": openAPISchema(parameter.Schema)}
+		if len(operation.Parameters)+len(operation.Query) != 0 {
+			parameters := make([]any, 0, len(operation.Parameters)+len(operation.Query))
+			for _, parameter := range operation.Parameters {
+				parameters = append(parameters, map[string]any{"in": "path", "name": parameter.Name, "required": true, "schema": openAPISchema(parameter.Schema)})
+			}
+			for _, parameter := range operation.Query {
+				parameters = append(parameters, map[string]any{"in": "query", "name": parameter.Name, "required": parameter.Required, "schema": openAPISchema(parameter.Schema)})
 			}
 			generated["parameters"] = parameters
 		}
@@ -160,7 +163,18 @@ func GenerateTypeScript(registry *Registry) ([]byte, error) {
 			}
 			fmt.Fprintf(&output, "%q", parameter.Name)
 		}
-		output.WriteString("] },\n")
+		output.WriteString("]")
+		if len(operation.Query) != 0 {
+			output.WriteString(", queryParameters: [")
+			for index, parameter := range operation.Query {
+				if index != 0 {
+					output.WriteString(", ")
+				}
+				fmt.Fprintf(&output, "%q", parameter.Name)
+			}
+			output.WriteString("]")
+		}
+		output.WriteString(" },\n")
 	}
 	output.WriteString("} as const;\n\nexport type OperationID = keyof typeof operations;\n\n")
 	output.WriteString("export interface OperationTypes {\n")
@@ -181,8 +195,20 @@ func GenerateTypeScript(registry *Registry) ([]byte, error) {
 		for _, parameter := range operation.Parameters {
 			pathFields = append(pathFields, fmt.Sprintf("%s: %s", parameter.Name, typeScriptSchema(parameter.Schema)))
 		}
-		fmt.Fprintf(&output, "  %s: { path: { %s }; request: %s; response: %s };\n", operation.ID,
-			strings.Join(pathFields, "; "), request, strings.Join(responses, " | "))
+		query := ""
+		if len(operation.Query) != 0 {
+			queryFields := make([]string, len(operation.Query))
+			for index, parameter := range operation.Query {
+				optional := "?"
+				if parameter.Required {
+					optional = ""
+				}
+				queryFields[index] = fmt.Sprintf("%s%s: %s", parameter.Name, optional, typeScriptSchema(parameter.Schema))
+			}
+			query = fmt.Sprintf(" query: { %s };", strings.Join(queryFields, "; "))
+		}
+		fmt.Fprintf(&output, "  %s: { path: { %s };%s request: %s; response: %s };\n", operation.ID,
+			strings.Join(pathFields, "; "), query, request, strings.Join(responses, " | "))
 	}
 	output.WriteString("}\n")
 	return output.Bytes(), nil
@@ -242,6 +268,7 @@ func CanonicalOperationPins(registry *Registry) ([]byte, error) {
 		Auth       AuthMode `json:"auth"`
 		Request    string   `json:"request,omitempty"`
 		Parameters []string `json:"parameters"`
+		Query      []string `json:"query,omitempty"`
 		Responses  []string `json:"responses"`
 	}
 	pins := make([]pin, 0, len(registry.operations))
@@ -254,12 +281,20 @@ func CanonicalOperationPins(registry *Registry) ([]byte, error) {
 			}
 			parameters[index] = parameter.Name + "=" + string(encoded)
 		}
+		var query []string
+		for _, parameter := range operation.Query {
+			encoded, err := json.Marshal(openAPISchema(parameter.Schema))
+			if err != nil {
+				return nil, err
+			}
+			query = append(query, fmt.Sprintf("%s=%t:%s", parameter.Name, parameter.Required, encoded))
+		}
 		responses := make([]string, len(operation.Responses))
 		for index, response := range operation.Responses {
 			responses[index] = fmt.Sprintf("%d:%s:%s:%s", response.Status, response.Kind, response.ContentType, response.SchemaRef)
 		}
 		pins = append(pins, pin{ID: operation.ID, Method: operation.Method, Path: operation.Path, Surface: operation.Surface,
-			Auth: operation.Auth, Request: operation.Request, Parameters: parameters, Responses: responses})
+			Auth: operation.Auth, Request: operation.Request, Parameters: parameters, Query: query, Responses: responses})
 	}
 	sort.Slice(pins, func(left, right int) bool { return pins[left].ID < pins[right].ID })
 	schemas := map[string]any{}

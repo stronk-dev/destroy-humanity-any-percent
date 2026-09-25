@@ -11,6 +11,20 @@ values consumed by runtime mounting, OpenAPI generation, TypeScript generation, 
 v1 compatibility pin. Authenticated Soul Recovery and minigame routes mount exclusively from this
 registry; missing, extra, unsorted, or nil runtime bindings fail during router construction.
 
+Operations may declare exact scalar query parameters (string, bounded integer, or boolean). They
+are byte-sorted by name and never shadow a path parameter. The reserved `cursor` parameter is a
+non-required string, and it is present exactly when the operation declares a cursor key.
+`Registry.ParseQuery` decodes only declared parameters. Each parameter may appear at most once,
+integers are strict base-10 (no sign, padding, or leading zero), and every value is checked by the
+same descriptor validator as response bodies. A failure returns `InvalidQueryError` naming the
+parameter; undeclared parameters are ignored.
+
+Query parameters are generated as OpenAPI `in: query` entries, and TypeScript gets
+`queryParameters` plus an optional-aware `query` type. Query-free operations generate
+byte-identical output. The compatibility pin records the query set only for operations that have
+one, and rejects any change to an existing operation's query set. That is stricter than C2 (which
+would allow a new optional request field), but never looser.
+
 A schema response may also declare a sorted immutable set of exact JSON wire bytes. This is a
 runtime-validation narrowing layered over the generated DTO, not a generated-client or OpenAPI
 shape change. Minigame error responses use it to bind each operation/status to the shipped

@@ -42,7 +42,10 @@ func testSchemas() []NamedSchema {
 func testOperations() []Operation {
 	return []Operation{
 		{ID: "get_board", Method: "GET", Path: "/api/public/v1/boards/{category}", Surface: SurfacePublicV1, Auth: AuthNone, Public: true,
-			Parameters: []Parameter{{Name: "category", Schema: &Schema{Kind: SchemaString, Format: "mechanical-id"}}}, CursorKey: "TimeKey", Responses: []Response{
+			Parameters: []Parameter{{Name: "category", Schema: &Schema{Kind: SchemaString, Format: "mechanical-id"}}}, CursorKey: "TimeKey", Query: []QueryParameter{
+				{Name: "cursor", Schema: &Schema{Kind: SchemaString}},
+				{Name: "limit", Schema: &Schema{Kind: SchemaInteger, Minimum: integerPointer(1), Maximum: integerPointer(100)}},
+			}, Responses: []Response{
 				{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"},
 				{Kind: ResponseSchema, Status: 400, ContentType: ContentJSON, SchemaRef: "APIError"},
 			}},
