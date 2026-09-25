@@ -124,6 +124,10 @@ func (api *API) writeMinigameResult(response http.ResponseWriter, receipt json.R
 		writeError(response, http.StatusConflict, "not_eligible", rejection.Code)
 	case errors.Is(err, production.ErrMinigameFiscalUnlockRequired):
 		writeError(response, http.StatusConflict, "not_eligible", "fiscal_unlock_required")
+	case errors.Is(err, production.ErrMinigameTierRequired):
+		writeError(response, http.StatusConflict, "not_eligible", "tier_required")
+	case errors.Is(err, production.ErrMinigameCurriculumExitRequired):
+		writeError(response, http.StatusConflict, "not_eligible", "curriculum_exit_required")
 	case errors.Is(err, production.ErrMinigameHumanContentLocked):
 		writeError(response, http.StatusConflict, "not_eligible", "human_content_locked")
 	case errors.Is(err, minigame.ErrExclusiveActivity):

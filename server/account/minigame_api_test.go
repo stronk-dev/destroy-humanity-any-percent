@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -113,6 +114,11 @@ func TestMinigameDeterministicErrorTableIsClosed(t *testing.T) {
 		{"tenant", "command", "play_minigame_command", &minigame.Rejection{Code: "illegal_phase", Detail: "x"}, 409, "{\"category\":\"not_eligible\",\"detail\":\"illegal_phase\"}\n"},
 		{"unlock", "create", "create_minigame_session", production.ErrMinigameFiscalUnlockRequired, 409, "{\"category\":\"not_eligible\",\"detail\":\"fiscal_unlock_required\"}\n"},
 		{"soul", "create", "create_minigame_session", production.ErrMinigameHumanContentLocked, 409, "{\"category\":\"not_eligible\",\"detail\":\"human_content_locked\"}\n"},
+		{"tier", "create", "create_minigame_session", fmt.Errorf("%w: %w", production.ErrInvalidIntent, production.ErrMinigameTierRequired), 409, "{\"category\":\"not_eligible\",\"detail\":\"tier_required\"}\n"},
+		{"curriculum-exit", "create", "create_minigame_session", fmt.Errorf("%w: %w", production.ErrInvalidIntent, production.ErrMinigameCurriculumExitRequired), 409, "{\"category\":\"not_eligible\",\"detail\":\"curriculum_exit_required\"}\n"},
+		{"typer-text", "command", "play_minigame_command", &minigame.Rejection{Code: "invalid_text", Detail: "x"}, 409, "{\"category\":\"not_eligible\",\"detail\":\"invalid_text\"}\n"},
+		{"typer-length", "command", "play_minigame_command", &minigame.Rejection{Code: "line_too_long", Detail: "x"}, 409, "{\"category\":\"not_eligible\",\"detail\":\"line_too_long\"}\n"},
+		{"typer-assist", "command", "play_minigame_command", &minigame.Rejection{Code: "invalid_assist_level", Detail: "x"}, 409, "{\"category\":\"not_eligible\",\"detail\":\"invalid_assist_level\"}\n"},
 		{"exclusive", "create", "create_minigame_session", minigame.ErrExclusiveActivity, 409, "{\"category\":\"not_eligible\",\"detail\":\"exclusive_activity\"}\n"},
 		{"create-idempotency", "create", "create_minigame_session", minigame.ErrAPIIdempotency, 409, "{\"category\":\"idempotency_conflict\",\"detail\":\"minigame_session\"}\n"},
 		{"command-idempotency", "command", "play_minigame_command", minigame.ErrAPIIdempotency, 409, "{\"category\":\"idempotency_conflict\",\"detail\":\"minigame_command\"}\n"},

@@ -72,3 +72,11 @@ a fullwidth look-alike miss.
 The TT1 row fixture is `testdata/minigame/pitch-typer-v3.json`, with the two-tenant API fixture
 `balance/testdata/minigame-api-typer-candidate-v1.json`. No live epoch pins either one.
 
+## API status
+
+The v1 error taxonomy carries the Typer rejection details (`invalid_assist_level`, `invalid_text`,
+`line_too_long`) and the TT-PA2 start details (`tier_required`, `curriculum_exit_required`). These
+are exact 409 bytes on the minigame operations. **No v1 route carries Typer commands or snapshots
+yet.** The accepted API Foundation C2 law forbids growing request unions inside v1. The transport
+shape is an open DESIGN-GAP; see `planning/minigame-terminal-typer/log.md`.
+

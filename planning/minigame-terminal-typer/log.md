@@ -130,3 +130,49 @@ it apart from invalid UTF-8.
   - Go chain checks disabled: red on "definition without api or artifact". The first attempt
     didn't compile (unused variables) and is not counted; it was redone as a compiling mutant.
   - TS chain check disabled: red.
+
+## 2026-09-25 — B5 (partial): API error details; DESIGN-GAP TT-PA4 vs API Foundation C2 (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated review.
+
+**Landed (C2-legal):**
+- **Response-enum widening.** The `APIError` detail enum gains `curriculum_exit_required`,
+  `invalid_assist_level`, `invalid_text`, `line_too_long` and `tier_required`.
+- **Exact bytes and handler mapping.** The matching exact 409 bytes are in `minigameErrorJSON`.
+  `writeMinigameResult` maps `ErrMinigameTierRequired` / `ErrMinigameCurriculumExitRequired`
+  ahead of the `ErrInvalidIntent` → 400 fallthrough.
+- **Generated artifacts.** Regenerated; `gen-api`'s compatibility check against the committed pin
+  passes, and `api-compat-v1.json` is byte-unchanged.
+- **Witness.** `TestMinigameDeterministicErrorTableIsClosed` gains 5 rows, each validated against
+  the registry's exact bytes.
+- **Severing, each turned red:**
+  - removing the tier mapping;
+  - removing the `line_too_long` exact pair.
+
+**DESIGN-GAP (blocking the rest of TT-PA4, filed for the RFC author, not worked around):**
+TT-PA4 says the v1 minigame API "gains the Typer 1.0.0 discriminated snapshot arm and the Typer
+command union as request arms (additive, MA-C7)". Accepted API Foundation **C2** rules that
+`/api/v1/` is additive-only and "request enums do NOT grow inside v1 … Exceptions are `/v2`, never a
+bypass tag". Running the implementation proves the conflict:
+- **Command arms.** Adding the Typer arms to `MinigameTenantCommand` grows a request `oneOf`.
+  `CheckCompatibility` rejects it (`mode&compatibilityRequest … len(nextOne) != len(oldOne)`).
+- **Snapshot arm.** Changing the response `snapshot` from `$ref PitchSnapshot` to a union ref is a
+  ref change, which is rejected. `gen-api` failed with "schema MinigameSessionResponse: invalid API
+  schema".
+
+Refreshing the pin (`make api-pin`) would be exactly the bypass C2 forbids, so it was not done.
+Options for the author:
+- **(a) New v1 operations for Typer** (C2 allows new operations), for example
+  `create/current/play/resolve` under `/api/v1/minigames/typer/...` with Typer-specific
+  request/response schemas. This is additive and keeps the Pitch operations byte-stable.
+- **(b) A `/v2` tenant-generic minigame namespace** with snapshot/command unions from day one.
+- **(c)** An owner ruling that private-v1 minigame operations are pre-release and re-pinnable. This
+  contradicts C2's "never a bypass" and is not recommended.
+
+Recommended: **(a)**, because it keeps the stable Pitch wire unchanged. Until this is ruled, Typer
+sessions are fully functional server-side (engine, TT-PA1 time, TT-PA2 unlock, TT-PA3 content and
+composition), but there is no v1 HTTP route that can carry a Typer command or snapshot.
+Consequences:
+- **B6 (UI):** blocked on the transport shape.
+- **B7:** the composed AC8 path must use the production service directly rather than the MA
+  endpoints.
