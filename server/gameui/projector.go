@@ -98,13 +98,14 @@ type factRow struct {
 }
 
 type generatorRow struct {
-	GeneratorID      string `json:"generator_id"`
-	MaxAffordable    int64  `json:"max_affordable"`
-	NextCost         string `json:"next_cost"`
-	NextCostResource string `json:"next_cost_resource_id"`
-	Owned            int64  `json:"owned"`
-	Provisioned      int64  `json:"provisioned"`
-	RateContribution string `json:"rate_contribution"`
+	GeneratorID      string  `json:"generator_id"`
+	MaxAffordable    int64   `json:"max_affordable"`
+	NextCost         string  `json:"next_cost"`
+	NextCostResource string  `json:"next_cost_resource_id"`
+	Owned            int64   `json:"owned"`
+	Provisioned      int64   `json:"provisioned"`
+	ProvisionCap     *intCap `json:"provision_cap"`
+	RateContribution string  `json:"rate_contribution"`
 }
 
 type upgradeRow struct {
@@ -157,6 +158,7 @@ type snapshot struct {
 	ConstantsHash      string          `json:"constants_hash"`
 	EvaluatedThroughMS int64           `json:"evaluated_through_ms"`
 	Facts              []factRow       `json:"facts"`
+	Features           featureRows     `json:"features"`
 	FounderRevision    int64           `json:"founder_revision"`
 	Generators         []generatorRow  `json:"generators"`
 	ManualAction       manualActionRow `json:"manual_action"`
@@ -265,7 +267,11 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 		}
 		progress = append(progress, progressRow{Current: value.String(), StageID: "progress.tier", Target: "1e0"})
 	}
-	facts := []factRow{{FactID: "bootstrap.needed", Value: false}, {FactID: "run.pre_timer", Value: state.RunPreTimer}}
+	features, err := projectFeatures(bundle, state, founder, now, minigameActive)
+	if err != nil {
+		return nil, err
+	}
+	facts := append([]factRow{{FactID: "bootstrap.needed", Value: false}, {FactID: "run.pre_timer", Value: state.RunPreTimer}}, featureFacts(features)...)
 	for _, gate := range bundle.Routes.Gates() {
 		facts = append(facts, factRow{FactID: gate.ID, Value: state.GatesCrossed[gate.ID]})
 	}
@@ -284,6 +290,7 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 	result := snapshot{
 		ConstantsHash:   bundle.ConstantsHash,
 		Facts:           facts,
+		Features:        features,
 		FounderRevision: founderRevision,
 		Generators:      generators,
 		ManualAction: manualActionRow{ActionID: manualActions[0].ID, BucketCapMilli: policy.BucketCapMilli,
@@ -292,7 +299,7 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 		Progress: progress, Resources: resources, Revision: revision,
 		Run: runRow{Category: "any_percent", ExitCount: int64(len(founder.ExitHistory)), FounderID: founderID,
 			RunSeq: state.RunSeq, RunStartedAtMS: state.RunStartedAt.UnixMilli(), Tier: state.Tier},
-		EvaluatedThroughMS: state.EvaluatedThrough.UnixMilli(), SchemaVersion: 3,
+		EvaluatedThroughMS: state.EvaluatedThrough.UnixMilli(), SchemaVersion: snapshotSchemaVersion,
 		ServerNowMS: save.CanonicalServerTime(now).UnixMilli(), Transitions: transitions, Upgrades: upgrades,
 	}
 	encoded, err := json.Marshal(result)
@@ -355,7 +362,11 @@ func generatorRows(catalog *economy.Catalog, state *save.State, rates []producti
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, generatorRow{GeneratorID: generator.ID, MaxAffordable: affordable.Count,
+		var provisionCap *intCap
+		if generator.ProvisionedHardcap != nil {
+			provisionCap = &intCap{Amount: generator.ProvisionedHardcap.Count, ReasonKey: generator.ProvisionedHardcap.ReasonKey}
+		}
+		result = append(result, generatorRow{GeneratorID: generator.ID, MaxAffordable: affordable.Count, ProvisionCap: provisionCap,
 			NextCost: next.String(), NextCostResource: generator.Price.ResourceID, Owned: owned,
 			Provisioned: provisioned, RateContribution: rate.String()})
 	}

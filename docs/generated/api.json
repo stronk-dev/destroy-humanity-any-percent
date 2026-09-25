@@ -118,6 +118,9 @@
               },
               {
                 "$ref": "#/components/schemas/GameUISnapshotV2"
+              },
+              {
+                "$ref": "#/components/schemas/GameUISnapshotV3"
               }
             ]
           },
@@ -148,6 +151,98 @@
         ],
         "type": "object"
       },
+      "GameUIAchievementRow": {
+        "additionalProperties": false,
+        "properties": {
+          "achievement_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "condition_scope": {
+            "enum": [
+              "career",
+              "run"
+            ],
+            "type": "string"
+          },
+          "copy_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "earned": {
+            "oneOf": [
+              {
+                "enum": [
+                  "lifetime",
+                  "run"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "proof_kind": {
+            "enum": [
+              "burn",
+              "possession",
+              "provenance"
+            ],
+            "type": "string"
+          },
+          "score_grant": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "achievement_id",
+          "condition_scope",
+          "copy_key",
+          "earned",
+          "proof_kind",
+          "score_grant"
+        ],
+        "type": "object"
+      },
+      "GameUIAchievementsArm": {
+        "additionalProperties": false,
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIAchievementRow"
+            },
+            "type": "array"
+          },
+          "score": {
+            "additionalProperties": false,
+            "properties": {
+              "lifetime": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "run": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "lifetime",
+              "run"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "rows",
+          "score"
+        ],
+        "type": "object"
+      },
       "GameUIFact": {
         "additionalProperties": false,
         "properties": {
@@ -174,6 +269,273 @@
         "required": [
           "fact_id",
           "value"
+        ],
+        "type": "object"
+      },
+      "GameUIFeatures": {
+        "additionalProperties": false,
+        "properties": {
+          "achievements": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIAchievementsArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "active_play": {
+            "type": "null"
+          },
+          "fiscal": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIFiscalArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meters": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIMetersArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minigames": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIMinigamesArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pets": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "achievements",
+          "active_play",
+          "fiscal",
+          "meters",
+          "minigames",
+          "pets"
+        ],
+        "type": "object"
+      },
+      "GameUIFiscalArm": {
+        "additionalProperties": false,
+        "properties": {
+          "credit": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "credit_cap": {
+            "$ref": "#/components/schemas/GameUIIntCap"
+          },
+          "credit_per_period": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "generator_levels": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIFiscalLevel"
+            },
+            "type": "array"
+          },
+          "hoard": {
+            "additionalProperties": false,
+            "properties": {
+              "cap_credits": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "preview_ppm": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "reason_note": {
+                "enum": [
+                  "next_run"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "cap_credits",
+              "preview_ppm",
+              "reason_note"
+            ],
+            "type": "object"
+          },
+          "period": {
+            "additionalProperties": false,
+            "properties": {
+              "auto_ms": {
+                "maximum": 9007199254740991,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "early_ms": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "early_success_ppm": {
+                "maximum": 1000000,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "guaranteed_ms": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "opened_wall_ms": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "seq": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "auto_ms",
+              "early_ms",
+              "early_success_ppm",
+              "guaranteed_ms",
+              "opened_wall_ms",
+              "seq"
+            ],
+            "type": "object"
+          },
+          "sweep_preview": {
+            "additionalProperties": false,
+            "properties": {
+              "credit_after": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "credited": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "periods": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "saturated": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "credit_after",
+              "credited",
+              "periods",
+              "saturated"
+            ],
+            "type": "object"
+          },
+          "unlocks": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIFiscalUnlock"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "credit",
+          "credit_cap",
+          "credit_per_period",
+          "generator_levels",
+          "hoard",
+          "period",
+          "sweep_preview",
+          "unlocks"
+        ],
+        "type": "object"
+      },
+      "GameUIFiscalLevel": {
+        "additionalProperties": false,
+        "properties": {
+          "generator_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "level": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "level_cap": {
+            "$ref": "#/components/schemas/GameUIIntCap"
+          },
+          "next_level_cost": {
+            "oneOf": [
+              {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ppm_per_level": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "generator_id",
+          "level",
+          "level_cap",
+          "next_level_cost",
+          "ppm_per_level"
+        ],
+        "type": "object"
+      },
+      "GameUIFiscalUnlock": {
+        "additionalProperties": false,
+        "properties": {
+          "cost": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "owned": {
+            "type": "boolean"
+          },
+          "unlock_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cost",
+          "owned",
+          "unlock_id"
         ],
         "type": "object"
       },
@@ -223,6 +585,82 @@
         ],
         "type": "object"
       },
+      "GameUIGeneratorV4": {
+        "additionalProperties": false,
+        "properties": {
+          "generator_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "max_affordable": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "next_cost": {
+            "format": "canonical-decimal",
+            "type": "string"
+          },
+          "next_cost_resource_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "owned": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "provision_cap": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIIntCap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provisioned": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "rate_contribution": {
+            "format": "canonical-decimal",
+            "type": "string"
+          }
+        },
+        "required": [
+          "generator_id",
+          "max_affordable",
+          "next_cost",
+          "next_cost_resource_id",
+          "owned",
+          "provision_cap",
+          "provisioned",
+          "rate_contribution"
+        ],
+        "type": "object"
+      },
+      "GameUIIntCap": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "reason_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "reason_key"
+        ],
+        "type": "object"
+      },
       "GameUIManualAction": {
         "additionalProperties": false,
         "properties": {
@@ -257,6 +695,123 @@
           "refill_milli_per_ms",
           "refilled_at_ms",
           "tokens_milli"
+        ],
+        "type": "object"
+      },
+      "GameUIMeterBand": {
+        "additionalProperties": false,
+        "properties": {
+          "band_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "floor_value": {
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "band_id",
+          "floor_value"
+        ],
+        "type": "object"
+      },
+      "GameUIMeterRow": {
+        "additionalProperties": false,
+        "properties": {
+          "band_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "bands": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIMeterBand"
+            },
+            "type": "array"
+          },
+          "max": {
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "meter_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "min": {
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "value": {
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "band_id",
+          "bands",
+          "max",
+          "meter_id",
+          "min",
+          "value"
+        ],
+        "type": "object"
+      },
+      "GameUIMetersArm": {
+        "additionalProperties": false,
+        "properties": {
+          "meters": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIMeterRow"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "meters"
+        ],
+        "type": "object"
+      },
+      "GameUIMinigameAvailability": {
+        "additionalProperties": false,
+        "properties": {
+          "active_session": {
+            "type": "boolean"
+          },
+          "human_content_locked": {
+            "type": "boolean"
+          },
+          "minigame_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "unlocked": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "active_session",
+          "human_content_locked",
+          "minigame_id",
+          "unlocked"
+        ],
+        "type": "object"
+      },
+      "GameUIMinigamesArm": {
+        "additionalProperties": false,
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIMinigameAvailability"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "rows"
         ],
         "type": "object"
       },
@@ -395,6 +950,9 @@
             },
             "type": "array"
           },
+          "features": {
+            "$ref": "#/components/schemas/GameUIFeatures"
+          },
           "founder_revision": {
             "maximum": 9007199254740991,
             "minimum": 1,
@@ -402,7 +960,7 @@
           },
           "generators": {
             "items": {
-              "$ref": "#/components/schemas/GameUIGenerator"
+              "$ref": "#/components/schemas/GameUIGeneratorV4"
             },
             "type": "array"
           },
@@ -430,8 +988,8 @@
             "$ref": "#/components/schemas/GameUIRun"
           },
           "schema_version": {
-            "maximum": 3,
-            "minimum": 3,
+            "maximum": 4,
+            "minimum": 4,
             "type": "integer"
           },
           "server_now_ms": {
@@ -453,6 +1011,7 @@
           "constants_hash",
           "evaluated_through_ms",
           "facts",
+          "features",
           "founder_revision",
           "generators",
           "manual_action",
@@ -629,6 +1188,96 @@
           "run",
           "schema_version",
           "server_now_ms",
+          "upgrades"
+        ],
+        "type": "object"
+      },
+      "GameUISnapshotV3": {
+        "additionalProperties": false,
+        "properties": {
+          "constants_hash": {
+            "format": "sha256-prefixed",
+            "type": "string"
+          },
+          "evaluated_through_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "facts": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIFact"
+            },
+            "type": "array"
+          },
+          "founder_revision": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "generators": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIGenerator"
+            },
+            "type": "array"
+          },
+          "manual_action": {
+            "$ref": "#/components/schemas/GameUIManualAction"
+          },
+          "progress": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIProgress"
+            },
+            "type": "array"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIResource"
+            },
+            "type": "array"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "run": {
+            "$ref": "#/components/schemas/GameUIRun"
+          },
+          "schema_version": {
+            "maximum": 3,
+            "minimum": 3,
+            "type": "integer"
+          },
+          "server_now_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "transitions": {
+            "$ref": "#/components/schemas/GameUITransitions"
+          },
+          "upgrades": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIUpgrade"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "constants_hash",
+          "evaluated_through_ms",
+          "facts",
+          "founder_revision",
+          "generators",
+          "manual_action",
+          "progress",
+          "resources",
+          "revision",
+          "run",
+          "schema_version",
+          "server_now_ms",
+          "transitions",
           "upgrades"
         ],
         "type": "object"

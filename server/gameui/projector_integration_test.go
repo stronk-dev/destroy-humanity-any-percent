@@ -145,7 +145,7 @@ func TestGameUISnapshotProjectsStoredSchemaV4CompanyV18RatesIntegration(t *testi
 	if json.Unmarshal(encoded, &projected) != nil {
 		t.Fatal("snapshot JSON")
 	}
-	if projected.SchemaVersion != 3 || projected.FounderRevision != founderRevision.Number ||
+	if projected.SchemaVersion != snapshotSchemaVersion || projected.FounderRevision != founderRevision.Number ||
 		len(projected.Generators) != 9 || projected.Generators[1].GeneratorID != "generator.beige_tower" ||
 		projected.Generators[1].RateContribution != "4.018e2" || len(projected.Resources) != 2 ||
 		projected.Resources[0].ResourceID != "company.cash" || projected.Resources[0].RatePerSecond != "4.018e2" ||

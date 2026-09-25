@@ -12,7 +12,8 @@ const snapshot = {
   run: { category: "any_percent", exit_count: 0, founder_id: "01985555-1111-7111-8111-111111111111", run_seq: 1, run_started_at_ms: 1_799_999_000_000, tier: 0 },
   schema_version: 1, server_now_ms: 1_800_000_000_000, upgrades: [],
 };
-const currentSnapshot = { ...snapshot, founder_revision: 1, schema_version: 3,
+const currentSnapshot = { ...snapshot, founder_revision: 1, schema_version: 4,
+  features: { achievements: null, active_play: null, fiscal: null, meters: null, minigames: null, pets: null },
   transitions: { cross_gate: { eligible: false, gate_id: "gate.t0_to_t1", route_id: null }, wind_down: { eligible: false } } };
 
 class MemoryStorage implements RuntimeStorage {
@@ -156,7 +157,10 @@ describe("browser Game UI runtime", () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
     const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(snapshot), { status: 200 }));
-    await expect(runtime.snapshot()).rejects.toThrow(/schema v3/);
+    await expect(runtime.snapshot()).rejects.toThrow(/schema v4/);
+    const { features: _features, ...v3 } = currentSnapshot;
+    const retained = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify({ ...v3, schema_version: 3 }), { status: 200 }));
+    await expect(retained.snapshot()).rejects.toThrow(/schema v4/);
   });
 
   it("records initial stream positions and decodes raw publications inside the runtime boundary", () => {

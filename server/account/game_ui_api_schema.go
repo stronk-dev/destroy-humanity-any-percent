@@ -2,6 +2,7 @@ package account
 
 import (
 	"net/http"
+	"sort"
 
 	"cloud-clicker/server/publicapi"
 )
@@ -14,17 +15,27 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 	factValue := &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{
 		{Kind: publicapi.SchemaBoolean}, integer(-apiMaxExactInteger, apiMaxExactInteger), apiString(""),
 	}}
+	nullable := func(schema *publicapi.Schema) *publicapi.Schema {
+		return &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{schema, {Kind: publicapi.SchemaNull}}}
+	}
+	boolean := &publicapi.Schema{Kind: publicapi.SchemaBoolean}
+	array := func(item string) *publicapi.Schema {
+		return &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef(item)}
+	}
 	snapshotFields := func(version int, founderRevision, transitions bool) []publicapi.Field {
 		fields := []publicapi.Field{
 			apiField("constants_hash", apiString("sha256-prefixed")),
 			apiField("evaluated_through_ms", integer(1, apiMaxExactInteger)),
 			apiField("facts", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIFact")}),
 		}
+		if version >= 4 {
+			fields = append(fields, apiField("features", apiRef("GameUIFeatures")))
+		}
 		if founderRevision {
 			fields = append(fields, apiField("founder_revision", integer(1, apiMaxExactInteger)))
 		}
 		fields = append(fields,
-			apiField("generators", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIGenerator")}),
+			apiField("generators", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef(map[bool]string{true: "GameUIGeneratorV4", false: "GameUIGenerator"}[version >= 4])}),
 			apiField("manual_action", apiRef("GameUIManualAction")),
 			apiField("progress", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIProgress")}),
 			apiField("resources", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIResource")}),
@@ -38,7 +49,7 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 		}
 		return append(fields, apiField("upgrades", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIUpgrade")}))
 	}
-	return []publicapi.NamedSchema{
+	schemas := []publicapi.NamedSchema{
 		{Name: "GameUIFact", Schema: apiObject(
 			apiField("fact_id", apiString("mechanical-id")),
 			apiField("value", factValue),
@@ -51,6 +62,101 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("owned", integer(0, apiMaxExactInteger)),
 			apiField("provisioned", integer(0, apiMaxExactInteger)),
 			apiField("rate_contribution", apiString("canonical-decimal")),
+		)},
+		{Name: "GameUIGeneratorV4", Schema: apiObject(
+			apiField("generator_id", apiString("mechanical-id")),
+			apiField("max_affordable", integer(0, apiMaxExactInteger)),
+			apiField("next_cost", apiString("canonical-decimal")),
+			apiField("next_cost_resource_id", apiString("mechanical-id")),
+			apiField("owned", integer(0, apiMaxExactInteger)),
+			apiField("provision_cap", nullable(apiRef("GameUIIntCap"))),
+			apiField("provisioned", integer(0, apiMaxExactInteger)),
+			apiField("rate_contribution", apiString("canonical-decimal")),
+		)},
+		{Name: "GameUIIntCap", Schema: apiObject(
+			apiField("amount", integer(0, apiMaxExactInteger)),
+			apiField("reason_key", apiString("mechanical-id")),
+		)},
+		{Name: "GameUIFeatures", Schema: apiObject(
+			apiField("achievements", nullable(apiRef("GameUIAchievementsArm"))),
+			apiField("active_play", &publicapi.Schema{Kind: publicapi.SchemaNull}),
+			apiField("fiscal", nullable(apiRef("GameUIFiscalArm"))),
+			apiField("meters", nullable(apiRef("GameUIMetersArm"))),
+			apiField("minigames", nullable(apiRef("GameUIMinigamesArm"))),
+			apiField("pets", &publicapi.Schema{Kind: publicapi.SchemaNull}),
+		)},
+		{Name: "GameUIAchievementsArm", Schema: apiObject(
+			apiField("rows", array("GameUIAchievementRow")),
+			apiField("score", apiObject(
+				apiField("lifetime", integer(0, apiMaxExactInteger)),
+				apiField("run", integer(0, apiMaxExactInteger)),
+			)),
+		)},
+		{Name: "GameUIAchievementRow", Schema: apiObject(
+			apiField("achievement_id", apiString("mechanical-id")),
+			apiField("condition_scope", apiString("", "career", "run")),
+			apiField("copy_key", apiString("mechanical-id")),
+			apiField("earned", nullable(apiString("", "lifetime", "run"))),
+			apiField("proof_kind", apiString("", "burn", "possession", "provenance")),
+			apiField("score_grant", integer(0, apiMaxExactInteger)),
+		)},
+		{Name: "GameUIMetersArm", Schema: apiObject(apiField("meters", array("GameUIMeterRow")))},
+		{Name: "GameUIMeterRow", Schema: apiObject(
+			apiField("band_id", apiString("mechanical-id")),
+			apiField("bands", array("GameUIMeterBand")),
+			apiField("max", integer(0, 100)),
+			apiField("meter_id", apiString("mechanical-id")),
+			apiField("min", integer(0, 100)),
+			apiField("value", integer(0, 100)),
+		)},
+		{Name: "GameUIMeterBand", Schema: apiObject(
+			apiField("band_id", apiString("mechanical-id")),
+			apiField("floor_value", integer(0, 100)),
+		)},
+		{Name: "GameUIFiscalArm", Schema: apiObject(
+			apiField("credit", integer(0, apiMaxExactInteger)),
+			apiField("credit_cap", apiRef("GameUIIntCap")),
+			apiField("credit_per_period", integer(0, apiMaxExactInteger)),
+			apiField("generator_levels", array("GameUIFiscalLevel")),
+			apiField("hoard", apiObject(
+				apiField("cap_credits", integer(0, apiMaxExactInteger)),
+				apiField("preview_ppm", integer(0, apiMaxExactInteger)),
+				apiField("reason_note", apiString("", "next_run")),
+			)),
+			apiField("period", apiObject(
+				apiField("auto_ms", integer(1, apiMaxExactInteger)),
+				apiField("early_ms", integer(0, apiMaxExactInteger)),
+				apiField("early_success_ppm", integer(0, 1_000_000)),
+				apiField("guaranteed_ms", integer(0, apiMaxExactInteger)),
+				apiField("opened_wall_ms", integer(0, apiMaxExactInteger)),
+				apiField("seq", integer(0, apiMaxExactInteger)),
+			)),
+			apiField("sweep_preview", apiObject(
+				apiField("credit_after", integer(0, apiMaxExactInteger)),
+				apiField("credited", integer(0, apiMaxExactInteger)),
+				apiField("periods", integer(0, apiMaxExactInteger)),
+				apiField("saturated", boolean),
+			)),
+			apiField("unlocks", array("GameUIFiscalUnlock")),
+		)},
+		{Name: "GameUIFiscalLevel", Schema: apiObject(
+			apiField("generator_id", apiString("mechanical-id")),
+			apiField("level", integer(0, apiMaxExactInteger)),
+			apiField("level_cap", apiRef("GameUIIntCap")),
+			apiField("next_level_cost", nullable(integer(0, apiMaxExactInteger))),
+			apiField("ppm_per_level", integer(0, apiMaxExactInteger)),
+		)},
+		{Name: "GameUIFiscalUnlock", Schema: apiObject(
+			apiField("cost", integer(0, apiMaxExactInteger)),
+			apiField("owned", boolean),
+			apiField("unlock_id", apiString("mechanical-id")),
+		)},
+		{Name: "GameUIMinigamesArm", Schema: apiObject(apiField("rows", array("GameUIMinigameAvailability")))},
+		{Name: "GameUIMinigameAvailability", Schema: apiObject(
+			apiField("active_session", boolean),
+			apiField("human_content_locked", boolean),
+			apiField("minigame_id", apiString("mechanical-id")),
+			apiField("unlocked", boolean),
 		)},
 		{Name: "GameUIManualAction", Schema: apiObject(
 			apiField("action_id", apiString("mechanical-id")),
@@ -82,7 +188,8 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("run_started_at_ms", integer(1, apiMaxExactInteger)),
 			apiField("tier", integer(0, 9)),
 		)},
-		{Name: "GameUISnapshot", Schema: apiObject(snapshotFields(3, true, true)...)},
+		{Name: "GameUISnapshot", Schema: apiObject(snapshotFields(4, true, true)...)},
+		{Name: "GameUISnapshotV3", Schema: apiObject(snapshotFields(3, true, true)...)},
 		{Name: "GameUISnapshotV1", Schema: apiObject(snapshotFields(1, false, false)...)},
 		{Name: "GameUISnapshotV2", Schema: apiObject(snapshotFields(2, true, false)...)},
 		{Name: "GameUITransitionCrossGate", Schema: apiObject(
@@ -105,6 +212,8 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("upgrade_id", apiString("mechanical-id")),
 		)},
 	}
+	sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
+	return schemas
 }
 
 func gameUIAPIOperations() []publicapi.Operation {

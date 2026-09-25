@@ -6,15 +6,41 @@ export type BootstrapAccount = { account_id: string; created_at: string; recover
 
 export type BootstrapRequest = { idempotency_key: string };
 
-export type BootstrapResponse = { account: BootstrapAccount; game_ui_snapshot: GameUISnapshot | GameUISnapshotV1 | GameUISnapshotV2; session: BootstrapSession };
+export type BootstrapResponse = { account: BootstrapAccount; game_ui_snapshot: GameUISnapshot | GameUISnapshotV1 | GameUISnapshotV2 | GameUISnapshotV3; session: BootstrapSession };
 
 export type BootstrapSession = { access_token: string; refresh_token: string };
 
+export type GameUIAchievementRow = { achievement_id: string; condition_scope: "career" | "run"; copy_key: string; earned: "lifetime" | "run" | null; proof_kind: "burn" | "possession" | "provenance"; score_grant: number };
+
+export type GameUIAchievementsArm = { rows: Array<GameUIAchievementRow>; score: { lifetime: number; run: number } };
+
 export type GameUIFact = { fact_id: string; value: boolean | number | string };
+
+export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pets: null };
+
+export type GameUIFiscalArm = { credit: number; credit_cap: GameUIIntCap; credit_per_period: number; generator_levels: Array<GameUIFiscalLevel>; hoard: { cap_credits: number; preview_ppm: number; reason_note: "next_run" }; period: { auto_ms: number; early_ms: number; early_success_ppm: number; guaranteed_ms: number; opened_wall_ms: number; seq: number }; sweep_preview: { credit_after: number; credited: number; periods: number; saturated: boolean }; unlocks: Array<GameUIFiscalUnlock> };
+
+export type GameUIFiscalLevel = { generator_id: string; level: number; level_cap: GameUIIntCap; next_level_cost: number | null; ppm_per_level: number };
+
+export type GameUIFiscalUnlock = { cost: number; owned: boolean; unlock_id: string };
 
 export type GameUIGenerator = { generator_id: string; max_affordable: number; next_cost: string; next_cost_resource_id: string; owned: number; provisioned: number; rate_contribution: string };
 
+export type GameUIGeneratorV4 = { generator_id: string; max_affordable: number; next_cost: string; next_cost_resource_id: string; owned: number; provision_cap: GameUIIntCap | null; provisioned: number; rate_contribution: string };
+
+export type GameUIIntCap = { amount: number; reason_key: string };
+
 export type GameUIManualAction = { action_id: string; bucket_cap_milli: number; refill_milli_per_ms: number; refilled_at_ms: number; tokens_milli: number };
+
+export type GameUIMeterBand = { band_id: string; floor_value: number };
+
+export type GameUIMeterRow = { band_id: string; bands: Array<GameUIMeterBand>; max: number; meter_id: string; min: number; value: number };
+
+export type GameUIMetersArm = { meters: Array<GameUIMeterRow> };
+
+export type GameUIMinigameAvailability = { active_session: boolean; human_content_locked: boolean; minigame_id: string; unlocked: boolean };
+
+export type GameUIMinigamesArm = { rows: Array<GameUIMinigameAvailability> };
 
 export type GameUIProgress = { current: string; stage_id: string; target: string };
 
@@ -24,11 +50,13 @@ export type GameUIResourceCap = { amount: string; reason_key: string };
 
 export type GameUIRun = { category: string; exit_count: number; founder_id: string; run_seq: number; run_started_at_ms: number; tier: number };
 
-export type GameUISnapshot = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; founder_revision: number; generators: Array<GameUIGenerator>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; transitions: GameUITransitions; upgrades: Array<GameUIUpgrade> };
+export type GameUISnapshot = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; features: GameUIFeatures; founder_revision: number; generators: Array<GameUIGeneratorV4>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; transitions: GameUITransitions; upgrades: Array<GameUIUpgrade> };
 
 export type GameUISnapshotV1 = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; generators: Array<GameUIGenerator>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; upgrades: Array<GameUIUpgrade> };
 
 export type GameUISnapshotV2 = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; founder_revision: number; generators: Array<GameUIGenerator>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; upgrades: Array<GameUIUpgrade> };
+
+export type GameUISnapshotV3 = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; founder_revision: number; generators: Array<GameUIGenerator>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; transitions: GameUITransitions; upgrades: Array<GameUIUpgrade> };
 
 export type GameUITransitionCrossGate = { eligible: boolean; gate_id: string; route_id: null };
 

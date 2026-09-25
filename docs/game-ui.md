@@ -1,7 +1,7 @@
 # Game UI
 
 The Game UI is the Svelte Phase-A play surface mounted by the production client entrypoint. It
-consumes the generated `game_ui_snapshot.v3` projection, decoded lifecycle events, bootstrap and
+consumes the generated `game_ui_snapshot.v4` projection, decoded lifecycle events, bootstrap and
 intent operations, and the ratified Copy/Presentation catalogs. Components do not import transport
 or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and envelope decoding.
 
@@ -33,7 +33,35 @@ placeholders never substitute a formatted zero or an unrelated company label. Mi
 throw. Payout labels and any shipped network-slot titles also resolve only through that catalog;
 unknown future slot IDs are withheld rather than rendered mechanically.
 
-Live sync requires snapshot v3, its positive `founder_revision`, and the exact `transitions` object. The
+Live sync requires snapshot v4: v3's positive `founder_revision` and exact `transitions`, plus the
+Garage Player Surfaces GS0.1 `features` object and a `generators[].provision_cap`
+(`null | {amount, reason_key}` from the pinned economy `provisioned_hardcap`). Snapshots v1–v3 stay
+decodable only for stored bootstrap receipts.
+
+`features` has exactly six keys. Each arm is `null` when the pinned bundle lacks its artifact or the
+save predates the version that activates it:
+
+- **`achievements`:** Company v16. Every pinned row, its earned state (`run`, `lifetime` or `null`;
+  an overlap fails the projection), and both scores.
+- **`meters`:** Company v16. Committed values with `meters.BandFor` bands; decay is never
+  extrapolated.
+- **`fiscal`:** Founder v19. Persisted credit, period and levels. The `sweep_preview` runs
+  `fiscal.Catalog.Sweep` on a discarded clone at canonical server time and equals what the next
+  harvest's auto-sweep reports. `next_level_cost` comes from `GeneratorLevelCost`, and
+  `hoard.preview_ppm` is the published `min(credit_after, cap_credits) × ppm_per_credit`.
+- **`minigames`:** Founder v21 with `minigame_api`. It restates the create gates read-only: the
+  `fiscal_unlock` rule, the `human_hobby` Soul gate, and the active-session predicate for every
+  supported tenant.
+
+`active_play` and `pets` are always `null` in this implementation; the planning log records the
+blockers. Facts add the six `feature.*` booleans derived from the arms.
+
+Intents return their typed outcome (GS0.2). A rejected intent is an HTTP 200 whose reason renders
+in the chrome `role="status"` line. A stale revision (`revision_conflict`) triggers one
+authoritative refresh and is never auto-retried. Founder-scoped intents send the Founder revision.
+Only transport failures and 401/404/5xx mark the UI offline.
+
+The
 `transitions.wind_down.eligible` preview applies the same read-only MA-C12 active-minigame
 predicate that Exit freezes into replay. While a session is `active|claimed`, the preview is false,
 matching the server's `not_eligible/minigame_session_active` rejection. A bundle that pins
@@ -76,7 +104,7 @@ style literals. `make test-browser` applies the WCAG 2.2 AA axe gate to all five
 Chromium, Firefox, and WebKit and includes the sixty-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.
 `make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed
-gameserver, Postgres bootstrap transaction, authenticated live snapshot-v3 route, and Centrifuge
+gameserver, Postgres bootstrap transaction, authenticated live snapshot-v4 route (asserting the live `features` arms), and Centrifuge
 world subscription; its schema/revision and visible visitor-counter assertions prove the production
 HTTP synchronization and WebSocket handshake completed. The composed witness then closes the
 production browser socket, commits an intent while disconnected, and requires the reconnect to send

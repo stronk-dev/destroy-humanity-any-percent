@@ -184,3 +184,37 @@ describe("Game UI decoded event boundary", () => {
     expect(decodeGameUISystemEvent(resync)).toEqual({ kind: "resync_required" });
   });
 });
+
+describe("Game UI snapshot v4 features (GS0.1)", () => {
+  const features = {
+    achievements: { rows: [{ achievement_id: "achievement.a", condition_scope: "run", copy_key: "achievement.a", earned: "run", proof_kind: "provenance", score_grant: 2 }], score: { lifetime: 0, run: 2 } },
+    active_play: null,
+    fiscal: { credit: 3, credit_cap: { amount: 1000, reason_key: "cap.fiscal_credit" }, credit_per_period: 3,
+      generator_levels: [{ generator_id: "generator.beige_tower", level: 0, level_cap: { amount: 10, reason_key: "cap.fiscal_level.beige_tower" }, next_level_cost: 1, ppm_per_level: 50_000 }],
+      hoard: { cap_credits: 100, preview_ppm: 0, reason_note: "next_run" },
+      period: { auto_ms: 300, early_ms: 100, early_success_ppm: 500_000, guaranteed_ms: 200, opened_wall_ms: 1_800_000_000_000, seq: 0 },
+      sweep_preview: { credit_after: 3, credited: 0, periods: 0, saturated: false }, unlocks: [{ cost: 3, owned: false, unlock_id: "minigame.pitch" }] },
+    meters: { meters: [{ band_id: "low", bands: [{ band_id: "low", floor_value: 0 }, { band_id: "high", floor_value: 70 }], max: 100, meter_id: "doom.probability", min: 0, value: 50 }] },
+    minigames: { rows: [{ active_session: false, human_content_locked: false, minigame_id: "pitch", unlocked: false }] },
+    pets: null,
+  };
+  const v4 = { ...snapshot, features, generators: [{ ...snapshot.generators[0], provision_cap: null }], schema_version: 4 };
+
+  it("accepts the exact v4 envelope and requires features only there", () => {
+    expect(parseGameUISnapshot(v4)).toHaveProperty("features.fiscal.credit", 3);
+    expect(() => parseGameUISnapshot({ ...snapshot, schema_version: 4 })).toThrow(/exact/);
+    expect(() => parseGameUISnapshot({ ...v4, schema_version: 3 })).toThrow(/exact/);
+  });
+
+  it("fails closed on malformed arms", () => {
+    const bad = (patch: Record<string, unknown>) => ({ ...v4, features: { ...features, ...patch } });
+    expect(() => parseGameUISnapshot(bad({ active_play: {} }))).toThrow(/null/);
+    expect(() => parseGameUISnapshot(bad({ meters: { meters: [{ ...features.meters.meters[0], value: 101 }] } }))).toThrow(/safe integer/);
+    expect(() => parseGameUISnapshot(bad({ meters: { meters: [{ ...features.meters.meters[0], band_id: "mid" }] } }))).toThrow(/not declared/);
+    expect(() => parseGameUISnapshot(bad({ fiscal: { ...features.fiscal, credit: 1001 } }))).toThrow(/safe integer/);
+    expect(() => parseGameUISnapshot(bad({ fiscal: { ...features.fiscal, generator_levels: [{ ...features.fiscal.generator_levels[0], level: 10 }] } }))).toThrow(/cost disagrees/);
+    expect(() => parseGameUISnapshot(bad({ achievements: { ...features.achievements, rows: [{ ...features.achievements.rows[0], earned: "maybe" }] } }))).toThrow(/earned/);
+    expect(() => parseGameUISnapshot(bad({ minigames: { rows: [{ ...features.minigames.rows[0], extra: 1 }] } }))).toThrow(/exact/);
+    expect(() => parseGameUISnapshot({ ...v4, generators: [{ ...v4.generators[0], provisioned: 3, provision_cap: { amount: 2, reason_key: "cap.x" } }] })).toThrow(/visible cap/);
+  });
+});

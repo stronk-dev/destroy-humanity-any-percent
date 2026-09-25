@@ -372,7 +372,7 @@
       {/if}
 
       <section class="card"><h2>{t("cosmetic.horse_armor_free.title", {}, era)}</h2><p>{t("cosmetic.horse_armor_free.description", { price: requirePresentationConstant("constant.price_zero") }, era)}</p><small>{t("cosmetic.horse_armor_free.disclosure", {}, era)}</small></section>
-      {#if snapshot.schema_version === 3 && "transitions" in snapshot}
+      {#if snapshot.schema_version >= 3 && "transitions" in snapshot}
         {@const transitions = snapshot.transitions}
         <section class="card">
           {#if transitions.cross_gate}

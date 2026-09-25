@@ -397,9 +397,17 @@ try {
     const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
     return { body: await response.json(), status: response.status };
   });
-  if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 3 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1 ||
+  const features = liveSnapshot.body?.features;
+  const doom = features?.meters?.meters?.find((row) => row.meter_id === "doom.probability");
+  if (!features || features.active_play !== null || features.pets !== null || features.meters?.meters?.length !== 11 || doom?.value !== 50 ||
+      !Array.isArray(features.achievements?.rows) || features.achievements.rows.length === 0 || !Number.isSafeInteger(features.fiscal?.credit) ||
+      features.minigames?.rows?.find((row) => row.minigame_id === "pitch")?.unlocked !== false ||
+      !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.fiscal" && fact.value === true)) {
+    throw new Error(`composed live Game UI v4 features arms are not the pinned live systems: ${JSON.stringify(features)}`);
+  }
+  if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 4 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1 ||
       liveSnapshot.body?.transitions?.cross_gate?.gate_id !== "gate.t0_to_t1" || liveSnapshot.body.transitions.cross_gate.eligible !== false || liveSnapshot.body?.transitions?.wind_down?.eligible !== false) {
-    throw new Error("composed live Game UI v3 transition snapshot round trip failed");
+    throw new Error("composed live Game UI v4 transition snapshot round trip failed");
   }
   const recoveryBefore = await page.evaluate(() => {
     const key = Object.keys(localStorage).find((candidate) => candidate.startsWith("cloud-clicker.transport.v1."));
@@ -510,7 +518,7 @@ try {
   const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
   console.log(`composed Pitch surface: unlock via Fiscal intents, ${pitch.commands} UI commands, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
-  console.log("composed Game UI v3 transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
+  console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));
 } finally {

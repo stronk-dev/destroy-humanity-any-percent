@@ -2,7 +2,7 @@ import type { BootstrapResponse } from "../api/generated/types";
 import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "./minigame/session-port";
 import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "./soul/recovery-surface";
 import { decodeTransportEnvelope, decodeWorldSnapshot, PlayerRevisionCursor } from "../transport";
-import { parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
+import { isLiveSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
 import { parseIntentErrorBody, parseIntentOutcome, type IntentOutcome } from "./intent-outcome";
 import { decodeGameUIEvent, decodeGameUISystemEvent, type GameUILifecycleEvent, type GameUISystemEvent } from "./events";
 
@@ -116,7 +116,7 @@ export function createBrowserGameUIRuntime(
   };
   const loadSnapshot = async (): Promise<ParsedGameUISnapshot> => {
     const parsed = parseGameUISnapshot(await responseJSON(await fetcher("/api/v1/founder/state", { headers: authHeaders() })));
-    if (parsed.schema_version !== 3 || !("founder_revision" in parsed) || !("transitions" in parsed)) throw new SyntaxError("live Game UI snapshot must use schema v3");
+    if (!isLiveSnapshot(parsed)) throw new SyntaxError("live Game UI snapshot must use schema v4");
     return rememberSnapshot(parsed);
   };
   const accessToken = (): string => {

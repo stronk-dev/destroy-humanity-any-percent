@@ -9,7 +9,7 @@ that would need one is recorded as a blocker in `log.md` instead.
 
 - [x] GS0.2 runtime: `intent()` returns the typed outcome; non-2xx throws `GameUIRequestError`;
   `act()` scopes `expected_revision` (Company vs Founder); rejected intents render their reason.
-- [ ] GS0.1 projection: Game UI snapshot v4 (`features` arms + `generators[].provision_cap` +
+- [x] GS0.1 projection: Game UI snapshot v4 (`features` arms + `generators[].provision_cap` +
   feature facts), registered schema, generated types, client parser; live sync requires v4.
 - [ ] GS3 Meters arm + surface.
 - [ ] GS2 Achievements arm + surface.

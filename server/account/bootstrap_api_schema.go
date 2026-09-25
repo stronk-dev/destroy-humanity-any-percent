@@ -19,7 +19,7 @@ func bootstrapAPISchemas() []publicapi.NamedSchema {
 		{Name: "BootstrapResponse", Schema: apiObject(
 			apiField("account", apiRef("BootstrapAccount")),
 			apiField("game_ui_snapshot", &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{
-				apiRef("GameUISnapshot"), apiRef("GameUISnapshotV1"), apiRef("GameUISnapshotV2"),
+				apiRef("GameUISnapshot"), apiRef("GameUISnapshotV1"), apiRef("GameUISnapshotV2"), apiRef("GameUISnapshotV3"),
 			}}),
 			apiField("session", apiRef("BootstrapSession")),
 		)},
