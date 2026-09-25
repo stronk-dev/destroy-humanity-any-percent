@@ -12,6 +12,7 @@ import (
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/pet"
+	"cloud-clicker/server/reputation"
 	"cloud-clicker/server/save"
 )
 
@@ -109,6 +110,30 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		} else if state.MinigameSessionSeq < 0 || state.MinigameSessionSeq > decimal.MaxExactInteger {
 			return fmt.Errorf("%w: invalid minigame API state", ErrInvalidEngineState)
 		}
+		if err := validateFounderReputationState(bundle.ReputationTree, state); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// validateFounderReputationState is R1's pinned-tree half of the v22
+// invariants: available is derivable and reputation_unlock_ppm mirrors the
+// owned bonus_unlock nodes of the pinned tree (a checked mirror, never an
+// independent authority).
+func validateFounderReputationState(tree *reputation.Tree, state *save.State) error {
+	if tree == nil {
+		if state.ReputationSpent != 0 || state.ReputationNodesOwned != nil || state.ReputationUnlockPPM != 0 {
+			return fmt.Errorf("%w: Reputation tree state without pinned artifact", ErrInvalidEngineState)
+		}
+		return nil
+	}
+	if _, err := reputation.Available(state.ReputationLevel, state.ReputationSpent); err != nil || state.ReputationNodesOwned == nil {
+		return fmt.Errorf("%w: invalid Reputation accounting", ErrInvalidEngineState)
+	}
+	unlock, err := tree.UnlockPPM(state.ReputationNodesOwned)
+	if err != nil || unlock != state.ReputationUnlockPPM {
+		return fmt.Errorf("%w: reputation_unlock_ppm does not mirror the owned unlock nodes", ErrInvalidEngineState)
 	}
 	return nil
 }
@@ -261,6 +286,14 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	}
 	if next.MinigameAPI != nil {
 		founder.MinigameSessionSeq = 0
+	}
+	if next.ReputationTree != nil && current.ReputationTree == nil {
+		// R7 v21→v22: Reputation earned before activation stays in
+		// reputation_level and is fully spendable; nothing is spent or owned.
+		if founder.ReputationUnlockPPM != 0 || founder.ReputationSpent != 0 || founder.ReputationNodesOwned != nil {
+			return fmt.Errorf("%w: Reputation tree state before activation", ErrInvalidEngineState)
+		}
+		founder.ReputationSpent, founder.ReputationNodesOwned = 0, []string{}
 	}
 	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)

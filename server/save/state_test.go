@@ -1101,3 +1101,98 @@ func TestNewCompanyStreamRequiresAlignedCursors(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestFounderV22ReputationTreeRoundTripAndInvariants(t *testing.T) {
+	catalog := stateCatalog(t)
+	ledger, err := economy.NewLedger(catalog, economy.ScopeFounder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := &State{WireVersion: 22, Ledger: ledger, GeneratorCounts: map[string]int64{}, GeneratorProvisioned: map[string]int64{},
+		ProvisionRemaindersPPM: map[string]int64{}, UpgradesOwned: map[string]bool{}, EvaluatedThrough: testCursor,
+		ManualTokenRefilledAt: testCursor, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
+		LedgerFactKinds: map[string]bool{}, MeterValues: map[string]int{}, MeterDecayRemainders: map[string]int64{}, MeterInputRemainders: map[string]int64{},
+		AchievementsEarnedRun: map[string]bool{}, AchievementsEarnedLifetime: map[string]bool{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
+		CompactSamples: []CompactSample{}, OfflineSpans: []OfflineSpan{}, NetworkSlots: []NetworkSlot{}, ExitHistory: []ExitRecord{},
+		MinigameRatings: map[string]MinigameRatingState{}, MinigameOfflineQuality: map[string]MinigameOfflineQualityState{}, Pets: map[string]pet.CareState{},
+		FiscalPeriodOpenedWallMS: 1_786_000_000_000, FiscalGeneratorLevels: map[string]int64{}, FiscalUnlocks: map[string]bool{},
+		Soul: 73, SoulExhaustedSourceIDs: []string{}, MinigameSessionSeq: 2,
+		ReputationLevel: 9, ReputationUnlockPPM: 250_000, ReputationSpent: 6, ReputationNodesOwned: []string{"reputation.unlock.p05", "reputation.unlock.p25"}}
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, 22, catalog, economy.ScopeFounder, time.Time{})
+	if err != nil || restored.ReputationSpent != 6 || restored.ReputationUnlockPPM != 250_000 || strings.Join(restored.ReputationNodesOwned, ",") != "reputation.unlock.p05,reputation.unlock.p25" {
+		t.Fatalf("v22 restore=%+v err=%v", restored, err)
+	}
+	var object map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"reputation_spent", "reputation_nodes_owned"} {
+		candidate := make(map[string]json.RawMessage, len(object))
+		for name, value := range object {
+			candidate[name] = value
+		}
+		delete(candidate, key)
+		missing, _ := json.Marshal(candidate)
+		if _, err := RestoreState(missing, 22, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+			t.Fatalf("Founder v22 accepted missing %s: %v", key, err)
+		}
+	}
+	if _, err := RestoreState(encoded, 22, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("Company accepted Founder v22: %v", err)
+	}
+
+	// AC2: spent over level is rejected on encode and on load.
+	overspent := *state
+	overspent.ReputationSpent = overspent.ReputationLevel + 1
+	if _, err := EncodeState(&overspent); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("encode accepted spent > level: %v", err)
+	}
+	object["reputation_spent"] = json.RawMessage("10")
+	overspentBytes, _ := json.Marshal(object)
+	if _, err := RestoreState(overspentBytes, 22, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("load accepted spent > level: %v", err)
+	}
+	object["reputation_spent"] = json.RawMessage("6")
+	for _, owned := range []string{`["reputation.unlock.p25","reputation.unlock.p05"]`, `["reputation.unlock.p05","reputation.unlock.p05"]`, `["Not Mechanical"]`, `null`} {
+		object["reputation_nodes_owned"] = json.RawMessage(owned)
+		invalid, _ := json.Marshal(object)
+		if _, err := RestoreState(invalid, 22, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+			t.Fatalf("load accepted owned set %s: %v", owned, err)
+		}
+	}
+	unsorted := *state
+	unsorted.ReputationNodesOwned = []string{"reputation.unlock.p25", "reputation.unlock.p05"}
+	if _, err := EncodeState(&unsorted); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("encode accepted unsorted owned ids: %v", err)
+	}
+
+	// Pre-v22 Founder states may not carry tree state, and a non-zero unlock
+	// mirror before v22 is corruption (R7), rejected rather than repaired.
+	legacy := *state
+	legacy.WireVersion = 21
+	if _, err := EncodeState(&legacy); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v21 silently discarded Reputation tree state: %v", err)
+	}
+	legacy.ReputationSpent, legacy.ReputationNodesOwned = 0, nil
+	if _, err := EncodeState(&legacy); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v21 accepted a non-zero reputation_unlock_ppm: %v", err)
+	}
+	legacy.ReputationUnlockPPM = 0
+	clean, err := EncodeState(&legacy)
+	if err != nil {
+		t.Fatalf("clean v21 encode: %v", err)
+	}
+	var v21 map[string]json.RawMessage
+	if err := json.Unmarshal(clean, &v21); err != nil {
+		t.Fatal(err)
+	}
+	v21["reputation_unlock_ppm"] = json.RawMessage("50000")
+	corrupt, _ := json.Marshal(v21)
+	if _, err := RestoreState(corrupt, 21, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v21 load accepted a non-zero reputation_unlock_ppm: %v", err)
+	}
+}

@@ -261,6 +261,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	if bundle.MinigameAPI != nil {
 		founder = 21
 	}
+	if bundle.ReputationTree != nil {
+		founder = 22
+	}
 	if bundle.Opportunities != nil {
 		company = 18
 	}
@@ -1086,6 +1089,13 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 	if founderFloor >= 21 {
 		state.MinigameSessionSeq = extensions.MinigameSessionSeq
 	} else if extensions.MinigameSessionSeq != 0 {
+		return nil, ErrInvalidReplayInputs
+	}
+	if founderFloor >= 22 {
+		// DESIGN-GAP RT-DG-C: the Founder carry has no Reputation tree fields
+		// until the next replay-inputs version (R6, B5/B6). Reconstructing a
+		// v22 Founder without them would silently zero spent/owned, so the
+		// carry fails closed instead.
 		return nil, ErrInvalidReplayInputs
 	}
 	if err := catalogs.ValidateFoundationState(state); err != nil {

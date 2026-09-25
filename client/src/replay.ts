@@ -16,7 +16,7 @@ import { advanceMeters, contributionKey as meterContributionKey, newRunMeterStat
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseRelevancePolicy, type RelevancePolicy } from "./relevance";
-import { loadReputationTree, REPUTATION_PROVIDER, type ReputationTree } from "./reputation";
+import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationUnlockPpm as reputationUnlockPpmFor, type ReputationTree } from "./reputation";
 import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
@@ -71,7 +71,7 @@ export interface LoggedExitTransition {
   readonly founderEvents: readonly ReplayEvent[]; readonly companyEndedEvents: readonly ReplayEvent[]; readonly companyStartedEvents: readonly ReplayEvent[];
 }
 export interface FounderReplayState {
-	wireVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
+	wireVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22;
   balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number;
   upgradesOwned: Set<string>; generatorsProvisioned: Record<string, number>; provisionRemaindersPpm: Record<string, number>;
   stockRateRemainderPpm: number; evaluatedThroughMs: number; computeCreditMs: number; manualTokenMilli: number;
@@ -86,6 +86,9 @@ export interface FounderReplayState {
   fiscalGeneratorLevels: Record<string, number>; fiscalUnlocks: Set<string>;
 	soulExhaustedSourceIds: Set<string>;
 	minigameSessionSeq: number;
+	// Founder v22 (Reputation Tree v1 R1): the unlock mirror, the purchase total,
+	// and the byte-sorted owned node ids.
+	reputationUnlockPpm: number; reputationSpent: number; reputationNodesOwned: string[];
 }
 export interface FounderLoggedTransition {
   readonly state: FounderReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
@@ -96,7 +99,7 @@ export interface FounderReplayLogEntry {
   readonly replayInputs: unknown; readonly receiptJSON: string; readonly eventsJSON: string; readonly appliedRevision: number | null;
   readonly serverTSMS: number; readonly source: null | { readonly companyStreamId: string; readonly runSeq: number; readonly runLogSeq: number };
 }
-export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; readonly constantsHash: string; readonly state: unknown }
+export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22; readonly constantsHash: string; readonly state: unknown }
 export interface FounderAttendanceSample {
   readonly companyStreamId: string; readonly runSeq: number; readonly companyRevision: number; readonly companyConstantsHash: string;
   readonly completedAttendedMs: number; readonly currentRunPartialAttendedMs: number; readonly effectiveFounderAttendedMs: number;
@@ -242,8 +245,9 @@ function foundationsActive(bundle: ReplayCatalogBundle): bundle is ReplayCatalog
   return bundle.meters !== undefined && bundle.achievements !== undefined;
 }
 
-function founderVersionFloor(bundle: ReplayCatalogBundle): 14 | 16 | 17 | 18 | 19 | 20 | 21 {
+function founderVersionFloor(bundle: ReplayCatalogBundle): 14 | 16 | 17 | 18 | 19 | 20 | 21 | 22 {
   if (!foundationsActive(bundle)) return 14;
+  if (bundle.reputationTree) return 22;
   if (bundle.minigameAPI) return 21;
   if (bundle.soul) return 20;
   if (bundle.fiscal) return 19;
@@ -351,6 +355,7 @@ const founderPetSaveKeys = ["pets"] as const;
 const founderFiscalSaveKeys = ["fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks"] as const;
 const founderSoulSaveKeys = ["soul_exhausted_source_ids"] as const;
 const founderMinigameAPISaveKeys = ["minigame_session_seq"] as const;
+const founderReputationSaveKeys = ["reputation_spent", "reputation_nodes_owned"] as const;
 
 export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog, foundationCatalogs?: { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly opportunities?: ActivePlayCatalog }): ReplayState {
   const requestedVersion = version;
@@ -529,11 +534,11 @@ function parseReplayActiveBuffs(source: unknown, catalog: ActivePlayCatalog): Re
 export function restoreFounderReplayState(source: unknown, version: number, catalogs: ReplayCatalogBundle): FounderReplayState {
   const requestedVersion = version;
   let foundationRaw: Record<string, unknown> | null = null;
-	if (version >= 15 && version <= 21) {
-		const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length), ...(version >= 17 ? founderMinigameSaveKeys : []), ...(version >= 18 ? founderPetSaveKeys : []), ...(version >= 19 ? founderFiscalSaveKeys : []), ...(version >= 20 ? founderSoulSaveKeys : []), ...(version >= 21 ? founderMinigameAPISaveKeys : [])];
+	if (version >= 15 && version <= 22) {
+		const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length), ...(version >= 17 ? founderMinigameSaveKeys : []), ...(version >= 18 ? founderPetSaveKeys : []), ...(version >= 19 ? founderFiscalSaveKeys : []), ...(version >= 20 ? founderSoulSaveKeys : []), ...(version >= 21 ? founderMinigameAPISaveKeys : []), ...(version >= 22 ? founderReputationSaveKeys : [])];
     foundationRaw = exactObject(source, activeKeys, "Founder save v16");
     source = { ...foundationRaw, meter_bands: {} };
-		for (const key of [...foundationSaveKeys, ...founderMinigameSaveKeys, ...founderPetSaveKeys, ...founderFiscalSaveKeys, ...founderSoulSaveKeys, ...founderMinigameAPISaveKeys]) delete (source as Record<string, unknown>)[key];
+		for (const key of [...foundationSaveKeys, ...founderMinigameSaveKeys, ...founderPetSaveKeys, ...founderFiscalSaveKeys, ...founderSoulSaveKeys, ...founderMinigameAPISaveKeys, ...founderReputationSaveKeys]) delete (source as Record<string, unknown>)[key];
     version = 14;
   }
   if (version !== 14) throw new SyntaxError("unsupported Founder replay save version");
@@ -614,13 +619,26 @@ export function restoreFounderReplayState(source: unknown, version: number, cata
 		if (!catalogs.minigameAPI) throw new SyntaxError("Founder v21 requires minigame API artifact");
 		minigameSessionSeq = safeInteger(foundationRaw!.minigame_session_seq, 0, MAX_EXACT_INTEGER);
 	} else if (catalogs.minigameAPI) throw new SyntaxError("minigame API artifact requires Founder v21");
-	return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
+	const reputationUnlockPpm = safeInteger(raw.reputation_unlock_ppm, 0, 1_000_000);
+	let reputationSpent = 0, reputationNodesOwned: string[] = [];
+	if (requestedVersion >= 22) {
+		if (!catalogs.reputationTree) throw new SyntaxError("Founder v22 requires reputation_tree artifact");
+		reputationSpent = safeInteger(foundationRaw!.reputation_spent, 0, MAX_EXACT_INTEGER);
+		reputationNodesOwned = sortedUniqueMechanical(array(foundationRaw!.reputation_nodes_owned, "reputation nodes owned"));
+		reputationAvailable(safeInteger(raw.reputation_level, 0, MAX_EXACT_INTEGER), reputationSpent);
+		if (reputationUnlockPpm !== reputationUnlockPpmFor(catalogs.reputationTree, reputationNodesOwned)) throw new SyntaxError("reputation_unlock_ppm does not mirror the owned unlock nodes");
+	} else {
+		// R7: no shipped path writes the mirror before v22; non-zero is corruption.
+		if (reputationUnlockPpm !== 0) throw new SyntaxError("reputation_unlock_ppm present before Founder v22");
+		if (catalogs.reputationTree) throw new SyntaxError("reputation_tree artifact requires Founder v22");
+	}
+	return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
     stockRateRemainderPpm: 0, evaluatedThroughMs, computeCreditMs: 0, manualTokenMilli: 0, manualTokenRefilledAtMs,
     routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked), ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds),
 		reputationLevel: safeInteger(raw.reputation_level, 0, MAX_EXACT_INTEGER), networkSlots, cloutLifetime: safeInteger(raw.clout_lifetime, 0, MAX_EXACT_INTEGER), soul: requestedVersion >= 20 ? safeInteger(raw.soul, catalogs.soul!.policy.soul_floor, catalogs.soul!.policy.soul_max) : 0,
     ageMs: safeInteger(raw.age_ms, 0, MAX_EXACT_INTEGER), notoriety: safeInteger(raw.notoriety, 0, MAX_EXACT_INTEGER), advisorMode: boolean(raw.advisor_mode), exitHistory,
     achievementsEarnedLifetime: earnedLifetime, achievementScoreLifetime: lifetimeScore, minigameRatings, minigameOfflineQuality, pets,
-		fiscalCredit, fiscalPeriodOpenedWallMs, fiscalPeriodSequence, fiscalGeneratorLevels, fiscalUnlocks, soulExhaustedSourceIds, minigameSessionSeq };
+		fiscalCredit, fiscalPeriodOpenedWallMs, fiscalPeriodSequence, fiscalGeneratorLevels, fiscalUnlocks, soulExhaustedSourceIds, minigameSessionSeq, reputationUnlockPpm, reputationSpent, reputationNodesOwned };
 }
 
 export function encodeFounderReplayState(state: FounderReplayState): unknown {
@@ -630,7 +648,7 @@ export function encodeFounderReplayState(state: FounderReplayState): unknown {
     evaluated_through: rfc3339(state.evaluatedThroughMs), compute_credit_ms: 0, manual_token_milli: 0, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs),
     gates_crossed: {}, run_seq: 0, doctrines_by_transition: {}, structure_id: "", ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), meter_bands: {}, region_traits: [],
     route_knowledge_balance: state.routeKnowledgeBalance, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), compact_member: false, compact_tithe_ppm: 0, compact_solidarity_ppm: 0, compact_solidarity_samples: [],
-    tier: 0, lifetime_value: "0", offer_state: null, run_started_at_ms: 0, reputation_level: state.reputationLevel, reputation_unlock_ppm: 0, network_slots: [...state.networkSlots],
+    tier: 0, lifetime_value: "0", offer_state: null, run_started_at_ms: 0, reputation_level: state.reputationLevel, reputation_unlock_ppm: state.reputationUnlockPpm, network_slots: [...state.networkSlots],
     clout_lifetime: state.cloutLifetime, soul: state.soul, age_ms: state.ageMs, notoriety: state.notoriety, advisor_mode: state.advisorMode, exit_history: [...state.exitHistory], run_pre_timer: false,
     offline_spans: [], collapsed_offline_ms: 0, faction_id: null, incorporated_at_ms: null, stock_units: 0, stock_progress_ms: 0, consumed_stock_units: 0,
     guild_tithe_carry_ppm: 0, guild_boundary_seq: 0, guild_consumed_window_units: 0, guild_boundary_guild_id: null,
@@ -646,6 +664,7 @@ export function encodeFounderReplayState(state: FounderReplayState): unknown {
 		fiscal_period_seq: state.fiscalPeriodSequence, fiscal_generator_levels: sortedRecord(state.fiscalGeneratorLevels), fiscal_unlocks: [...state.fiscalUnlocks].sort(byteCompare) });
 	if (state.wireVersion >= 20) Object.assign(active, { soul_exhausted_source_ids: [...state.soulExhaustedSourceIds].sort(byteCompare) });
 	if (state.wireVersion >= 21) Object.assign(active, { minigame_session_seq: state.minigameSessionSeq });
+	if (state.wireVersion >= 22) Object.assign(active, { reputation_spent: state.reputationSpent, reputation_nodes_owned: [...state.reputationNodesOwned] });
   return active;
 }
 
@@ -830,7 +849,7 @@ function applyFounderFiscalSpend(state: FounderReplayState, request: Intent, wir
   return { state, outcome: "applied", receipt: { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, fiscal_sweep: null, target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit }, events: [event("fiscal_credit_spent.v1", request.intent_id, { target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit })], resultConstantsHash: catalogs.constantsHash };
 }
 
-export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21, genesisHash: string,
+export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22, genesisHash: string,
   founderStreamId: string, founderId: string, entries: readonly FounderReplayLogEntry[], head: FounderReplayHead,
   bundles: readonly ReplayCatalogBundle[]): Promise<ReplayVerdict> {
   const catalogs = new Map(bundles.map((value) => [value.constantsHash, value]));
@@ -1610,6 +1629,9 @@ function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogB
     extensions.soul = next.soul.policy.soul_initial; extensions.soul_exhausted_source_ids = [];
   }
   if (nextFloor >= 21) extensions.minigame_session_seq = 0;
+  // DESIGN-GAP RT-DG-C: the carry gains Reputation tree fields only with the
+  // next replay-inputs version (R6); until then a v22 carry fails closed.
+  if (nextFloor >= 22) throw new RangeError("Founder carry cannot yet represent Reputation tree state");
   founder.founder_extensions = parseFounderExtensions(extensions, next);
 }
 
@@ -1787,7 +1809,11 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
 		state.minigameSessionSeq = 0;
 	}
 	if (resultVersion >= 21) state.minigameSessionSeq = 0;
-	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
+	if (resultVersion >= 22 && state.wireVersion < 22) {
+		if (!resultCatalogs.reputationTree || state.reputationUnlockPpm !== 0 || state.reputationSpent !== 0 || state.reputationNodesOwned.length !== 0) throw new RangeError("invalid Reputation tree activation");
+		state.reputationSpent = 0; state.reputationNodesOwned = [];
+	}
+	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22;
   Object.assign(state, restoreFounderReplayState(encodeFounderReplayState(state), resultVersion, resultCatalogs));
   const receipt = { intent_id: wire.command.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, result_constants_hash: resultHash };
   const founderEvent = event("founder_advanced", wire.command.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: companyStreamId, run_seq: runSeq }, exit_type: exit.exit_type, reputation_delta: reputationDelta, route_knowledge: routeDelta, occurred_at_ms: exit.occurred_at_ms });

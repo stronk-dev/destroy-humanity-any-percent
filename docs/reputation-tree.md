@@ -58,3 +58,29 @@ Both runtimes are bound by two shared corpora:
   Go checks this again in `CatalogBundle.valid`.
 - **Frozen contributions.** `production.ResolveFrozenContributions` now accepts that provider as
   well as `fiscal`, ready for the run-frozen `reputation.founder_bonus` row (B5).
+
+## Founder save v22
+
+`save.LatestFounderVersion` is 22. Founder v22 adds the required fields `reputation_spent` and
+`reputation_nodes_owned` (byte-sorted and unique). The pinned bundle owns v22 when it carries
+`reputation_tree`, so its `versionFloors` founder floor is 22.
+
+**Codec (`server/save`):**
+- v22 rejects `spent > level` and any unsorted or duplicate owned set, on encode and on load.
+- Any state before v22 must carry no tree state and must have `reputation_unlock_ppm == 0`.
+  A non-zero mirror is corruption, rejected rather than repaired (R7).
+
+**Pinned-tree validation (`CatalogBundle.ValidateFoundationState`):** the owned set must derive
+exactly the persisted `reputation_unlock_ppm`, and the available balance must be derivable.
+Without a tree, all tree state must be empty.
+
+**Activation.** At a new-run boundary, and on the Founder-log Exit replay arm, a Founder moving
+onto a tree bundle starts with `spent = 0` and `owned = []`. Earned `reputation_level` carries
+over in full.
+
+The TypeScript `restoreFounderReplayState` / `encodeFounderReplayState` enforce the same rules and
+now carry the unlock mirror; before v22 the mirror is always 0.
+
+**Temporarily fail-closed:** the Company-side Founder carry in replay inputs has no tree fields
+yet. Reconstructing a v22 Founder from a carry therefore fails closed, in Go and in TS, until the
+next replay-inputs version (R6) adds them.

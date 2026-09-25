@@ -717,6 +717,12 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 		}
 		state.MinigameSessionSeq = 0
 	}
+	if resultVersion >= 22 && current < 22 {
+		if catalogs.ReputationTree == nil || state.ReputationUnlockPPM != 0 || state.ReputationSpent != 0 || state.ReputationNodesOwned != nil {
+			return ErrInvalidReplayInputs
+		}
+		state.ReputationSpent, state.ReputationNodesOwned = 0, []string{}
+	}
 	return nil
 }
 

@@ -22,7 +22,7 @@ import (
 const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
-	LatestFounderVersion     = 21
+	LatestFounderVersion     = 22
 	LatestCompanyVersion     = 18
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
@@ -91,23 +91,27 @@ type State struct {
 	CollapsedOfflineMS         int64
 	ReputationLevel            int64
 	ReputationUnlockPPM        int64
-	NetworkSlots               []NetworkSlot
-	CloutLifetime              int64
-	Soul                       int64
-	SoulExhaustedSourceIDs     []string
-	AgeMS                      int64
-	Notoriety                  int64
-	AdvisorMode                bool
-	ExitHistory                []ExitRecord
-	FactionID                  string
-	IncorporatedAt             time.Time
-	StockUnits                 int64
-	StockProgressMS            int64
-	ConsumedStockUnits         int64
-	GuildTitheCarryPPM         int64
-	GuildBoundaryGuildID       string
-	GuildBoundarySeq           int64
-	GuildConsumedWindow        int64
+	// ReputationSpent and ReputationNodesOwned are Founder v22 (Reputation
+	// Tree v1 R1): the purchase total and the byte-sorted owned node ids.
+	ReputationSpent        int64
+	ReputationNodesOwned   []string
+	NetworkSlots           []NetworkSlot
+	CloutLifetime          int64
+	Soul                   int64
+	SoulExhaustedSourceIDs []string
+	AgeMS                  int64
+	Notoriety              int64
+	AdvisorMode            bool
+	ExitHistory            []ExitRecord
+	FactionID              string
+	IncorporatedAt         time.Time
+	StockUnits             int64
+	StockProgressMS        int64
+	ConsumedStockUnits     int64
+	GuildTitheCarryPPM     int64
+	GuildBoundaryGuildID   string
+	GuildBoundarySeq       int64
+	GuildConsumedWindow    int64
 	// FactionStockResource is derived from FactionID and the pinned catalog at
 	// runtime. It is intentionally not persisted as a second source of truth.
 	FactionStockResource string
@@ -337,6 +341,12 @@ type stateV21 struct {
 	MinigameSessionSeq *int64 `json:"minigame_session_seq"`
 }
 
+type stateV22 struct {
+	stateV21
+	ReputationSpent      *int64   `json:"reputation_spent"`
+	ReputationNodesOwned []string `json:"reputation_nodes_owned"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -475,7 +485,7 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 	if normalized.Ledger.Scope() == economy.ScopeFounder {
 		maximum = LatestFounderVersion
 	}
-	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 && version != 21 {
+	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 && version != 21 && version != 22 {
 		return nil, fmt.Errorf("%w: unsupported encode version %d", ErrInvalidState, version)
 	}
 	if err := validateFoundationState(&normalized, version, normalized.Ledger.Scope()); err != nil {
@@ -556,7 +566,12 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 								wire = v20
 								if version >= 21 {
 									sequence := normalized.MinigameSessionSeq
-									wire = stateV21{stateV20: v20, MinigameSessionSeq: &sequence}
+									v21 := stateV21{stateV20: v20, MinigameSessionSeq: &sequence}
+									wire = v21
+									if version >= 22 {
+										spent := normalized.ReputationSpent
+										wire = stateV22{stateV21: v21, ReputationSpent: &spent, ReputationNodesOwned: append([]string{}, normalized.ReputationNodesOwned...)}
+									}
 								}
 							}
 						}
@@ -613,6 +628,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	var fiscalSource *stateV19
 	var soulSource *stateV20
 	var minigameAPISource *stateV21
+	var reputationSource *stateV22
 	var computeBurstRemainingMS int64
 	var activeCompany *companyStateV18
 	if version == 1 {
@@ -712,6 +728,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		source.stateV17.stateV16 = company.stateV16
 		computeBurstRemainingMS, activeCompany = *company.ComputeBurstRemainingMS, &company
+	} else if version == 22 && scope == economy.ScopeFounder {
+		var tree stateV22
+		if err := decodeState(data, &tree); err != nil {
+			return nil, err
+		}
+		source, fiscalSource, soulSource, minigameAPISource, reputationSource = tree.stateV21.stateV20.stateV19.stateV18, &tree.stateV21.stateV20.stateV19, &tree.stateV21.stateV20, &tree.stateV21, &tree
 	} else if version == 21 && scope == economy.ScopeFounder {
 		var api stateV21
 		if err := decodeState(data, &api); err != nil {
@@ -811,6 +833,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 	if scope == economy.ScopeFounder && version >= 21 && (minigameAPISource == nil || minigameAPISource.MinigameSessionSeq == nil) {
 		return nil, fmt.Errorf("%w: minigame API Founder state is required", ErrInvalidState)
+	}
+	if scope == economy.ScopeFounder && version >= 22 && (reputationSource == nil || reputationSource.ReputationSpent == nil || reputationSource.ReputationNodesOwned == nil) {
+		return nil, fmt.Errorf("%w: Reputation tree Founder state is required", ErrInvalidState)
 	}
 	ownedUpgrades, err := validateOwnedUpgrades(catalog, scope, source.UpgradesOwned)
 	if err != nil {
@@ -922,6 +947,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if scope == economy.ScopeFounder && version >= 21 {
 		state.MinigameSessionSeq = *minigameAPISource.MinigameSessionSeq
 	}
+	if scope == economy.ScopeFounder && version >= 22 {
+		state.ReputationSpent = *reputationSource.ReputationSpent
+		state.ReputationNodesOwned, err = sortedUniqueMechanicalSlice(reputationSource.ReputationNodesOwned, "reputation_nodes_owned")
+		if err != nil {
+			return nil, err
+		}
+	}
 	if source.GuildBoundaryGuildID != nil {
 		state.GuildBoundaryGuildID = *source.GuildBoundaryGuildID
 	}
@@ -992,6 +1024,11 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	}
 	if version < 21 && state.MinigameSessionSeq != 0 {
 		return fmt.Errorf("%w: minigame session sequence present before v21", ErrInvalidState)
+	}
+	// Reputation Tree v1 R1/R7: no shipped path writes reputation_unlock_ppm
+	// before v22, so a non-zero value there is corruption, never repaired.
+	if version < 22 && (state.ReputationSpent != 0 || state.ReputationNodesOwned != nil || state.ReputationUnlockPPM != 0) {
+		return fmt.Errorf("%w: Reputation tree state present before v22", ErrInvalidState)
 	}
 	if version < 15 {
 		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
@@ -1119,6 +1156,12 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	}
 	if scope != economy.ScopeFounder || state.MinigameSessionSeq < 0 || state.MinigameSessionSeq > decimal.MaxExactInteger {
 		return fmt.Errorf("%w: invalid minigame session sequence", ErrInvalidState)
+	}
+	if version < 22 {
+		return nil
+	}
+	if state.ReputationSpent < 0 || state.ReputationSpent > state.ReputationLevel || state.ReputationNodesOwned == nil || !sortedMechanicalSlice(state.ReputationNodesOwned) {
+		return fmt.Errorf("%w: invalid Reputation tree accounting", ErrInvalidState)
 	}
 	return nil
 }

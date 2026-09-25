@@ -81,3 +81,68 @@ pins a tree, so this is not a live hole.
 
 **Unrelated finding:** `server/replaycatalog/catalog_test.go` at HEAD (committed in `391beb76`) is
 not gofmt-clean. Its owner or review should fix it; I left it untouched.
+
+## 2026-09-25 — B3 landed (Claude)
+
+**Implemented by:** Claude. Awaiting Codex designated review.
+
+**What landed:**
+- **Founder save v22.** The next free version: HEAD's `LatestFounderVersion` was 21, and no
+  other stream claimed 22.
+  - Go codec: `server/save/state.go`.
+  - Floor, activation and pinned-tree validation: `server/production/replay.go`,
+    `foundations.go` and `founder_replay.go`.
+  - TS restore/encode/activation: `client/src/replay.ts`.
+- **Tests:**
+  - `TestFounderV22ReputationTreeRoundTripAndInvariants` in `save/state_test.go`.
+  - `production/reputation_activation_test.go`: floor 22; run-boundary activation through
+    `settleAndActivateFoundations` (epoch 5 → epoch 8 → tree); the replay activation arm; the
+    mirror and accounting validation; the carry failing closed.
+  - `client/test/reputation-founder-state.test.ts`.
+- **Kernel version:** 0.3.109 → 0.3.110, in the same commit.
+
+**Evidence (cold):**
+- `go test -count=1` passes for save, production, replaycatalog, reputation, releasepackage,
+  deploymentbackup, gameui and account.
+- Postgres integration passes for `./production`.
+- `./save` integration passes when run alone.
+  - My first combined run failed `TestStoreIntegrationRevisionLifecycle` (outbox claims) while
+    another agent's `test-run` container shared the Postgres service.
+  - After that container exited, `./save` integration passed alone. I'm logging this as
+    interference, not as a pass of the combined run.
+- `make typecheck test-client` passes 6702 tests; the new TS test passes 2/2.
+
+**Severing probes:**
+- Go codec: 3 of 4 turned red (spent over level, the pre-v22 unlock mirror, the required-field
+  check). The one survivor is explained below.
+- Go production: 6 of 6 turned red (floor, settle initialization, mirror, accounting, the replay
+  pre-activation unlock, the carry failing closed).
+- TS: 4 of 5 turned red (accounting, mirror, pre-v22 mirror, encoding the mirror). The one
+  survivor is explained below.
+- **The two survivors are redundant layers, not vacuous checks.** Removing the load-side
+  sortedness check alone (Go `sortedUniqueMechanicalSlice` on restore; TS
+  `sortedUniqueMechanical`) still rejects, because `validateFoundationState` / the tree's
+  `UnlockPPM` independently enforce sortedness. Each invariant is enforced; the load-side layer is
+  defense in depth.
+
+**Probe corrections:**
+- `TestPinnedTreeValidatesTheUnlockMirrorAndAccounting` did not match the probe `-run` filter, so
+  my first mirror and accounting probes ran no test for them. The mirror "FAIL" was also a compile
+  failure.
+- I renamed the test to `TestReputation…` and re-ran both as compiling mutants. Both turned red.
+
+**DESIGN-GAPs:**
+- **RT-DG-B.** R7 names cases in `testdata/save-migrations.json`. That corpus is the v1–v9 codec
+  corpus, restoring and expecting a v5-shaped result; it has no Founder v15+ arm. Founder v17–v21
+  were witnessed by codec and activation unit tests, and v22 follows that precedent:
+  - `founder-v21-to-v22` is the activation tests;
+  - `founder-v22-spent-over-level` and `founder-v21-nonzero-unlock` are codec cases;
+  - `founder-v22-unlock-mismatch` is the pinned-tree validation.
+
+  The baseline manifest ratchet is therefore unchanged.
+- **RT-DG-C.** The Founder carry in replay inputs has no tree fields yet. A v22 carry fails closed,
+  in Go and TS, until B5/B6 add them with the next replay-inputs version.
+
+**Not yet witnessed:** the TS Founder-log Exit activation arm (`resultVersion >= 22`) has no TS
+test. It needs a TS Exit-replay fixture with a tree bundle, which lands with the B5/B6 corpus. B3's
+plan box therefore stays unchecked until then.
