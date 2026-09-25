@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/garden"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/pet"
@@ -58,6 +59,12 @@ const (
 	IntentClaimOpportunity    = "claim_opportunity"
 	// IntentPurchaseReputationNode is Reputation Tree v1 R5 (Founder scope).
 	IntentPurchaseReputationNode = "purchase_reputation_node"
+	// Server Garden SG5 (Founder scope). Harvest commits through its own
+	// multi-stream coordinator (SG6); the other three through ApplyFounderLogged.
+	IntentGardenPlant        = "garden_plant"
+	IntentGardenUproot       = "garden_uproot"
+	IntentGardenHarvest      = "garden_harvest"
+	IntentGardenSetSubstrate = "garden_set_substrate"
 )
 
 type PrestigePolicyResolver interface {
@@ -326,6 +333,13 @@ type IntentRequest struct {
 	// CosmeticID and CosmeticPetID are Cosmetic Shop v1 §4's request fields.
 	CosmeticID    string
 	CosmeticPetID string
+	// Garden* are Server Garden SG5's request fields. Row/Col are checked at
+	// decode ([0,5]); GardenPlots is 1–36 (row, col)-sorted unique targets.
+	GardenRow         int64
+	GardenCol         int64
+	GardenSpeciesID   string
+	GardenSubstrateID string
+	GardenPlots       []garden.HarvestTarget
 	// ReputationPlan is R6's optional Exit-attached purchase plan, in
 	// purchase order; nil when the key is absent.
 	ReputationPlan []string
@@ -438,6 +452,9 @@ func (s *Service) Handle(
 	}
 	if isCosmeticIntent(request.Kind) {
 		return s.handleFounderCosmetic(ctx, streamID, request)
+	}
+	if isGardenIntent(request.Kind) {
+		return s.handleFounderGarden(ctx, streamID, request)
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
@@ -657,7 +674,7 @@ func (s *Service) Handle(
 
 func isCompanyIntent(kind string) bool {
 	return kind != IntentBuyRouteHint && kind != IntentCareAction && kind != IntentHarvestFiscalPeriod && kind != IntentSpendFiscalCredit &&
-		kind != IntentPurchaseReputationNode && kind != IntentAdoptPet && !isCosmeticIntent(kind)
+		kind != IntentPurchaseReputationNode && kind != IntentAdoptPet && !isCosmeticIntent(kind) && !isGardenIntent(kind)
 }
 
 type founderRouteHintResolved struct {
@@ -900,8 +917,12 @@ func (s *Service) handleFounderFiscal(ctx context.Context, companyStreamID strin
 				if costErr != nil {
 					cost = 0
 				}
+				salt, saltErr := liveGardenSalt(bundle, state)
+				if saltErr != nil {
+					return save.IntentDecision{}, nil, saltErr
+				}
 				resolved = founderFiscalSpendResolved{Kind: IntentSpendFiscalCredit,
-					Target: fiscalTargetFromRequest(request), ResolvedCost: cost}
+					Target: fiscalTargetFromRequest(request), ResolvedCost: cost, GardenSaltHex: salt}
 			default:
 				return save.IntentDecision{}, nil, ErrInvalidIntent
 			}
@@ -2198,6 +2219,55 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 		if err := json.Unmarshal(root["pet_id"], &request.CosmeticPetID); err != nil || !intentUUIDV7Pattern.MatchString(request.CosmeticPetID) {
 			request.InvalidDetail = "pet_id"
 		}
+	case IntentGardenPlant, IntentGardenUproot:
+		keys := []string{"intent_id", "kind", "expected_revision", "row", "col"}
+		if request.Kind == IntentGardenPlant {
+			keys = append(keys, "species_id")
+		}
+		if !hasExactKeys(root, keys...) {
+			request.InvalidDetail = request.Kind + ".fields"
+			return request, nil
+		}
+		if !parseGardenCoordinate(root["row"], &request.GardenRow) {
+			request.InvalidDetail = "row"
+		} else if !parseGardenCoordinate(root["col"], &request.GardenCol) {
+			request.InvalidDetail = "col"
+		} else if request.Kind == IntentGardenPlant {
+			if err := json.Unmarshal(root["species_id"], &request.GardenSpeciesID); err != nil || !intentIDPattern.MatchString(request.GardenSpeciesID) {
+				request.InvalidDetail = "species_id"
+			}
+		}
+	case IntentGardenSetSubstrate:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "substrate_id") {
+			request.InvalidDetail = "garden_set_substrate.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["substrate_id"], &request.GardenSubstrateID); err != nil || !intentIDPattern.MatchString(request.GardenSubstrateID) {
+			request.InvalidDetail = "substrate_id"
+		}
+	case IntentGardenHarvest:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "plots") {
+			request.InvalidDetail = "garden_harvest.fields"
+			return request, nil
+		}
+		var plots []json.RawMessage
+		if err := json.Unmarshal(root["plots"], &plots); err != nil || plots == nil {
+			request.InvalidDetail = "plots"
+			return request, nil
+		}
+		for _, raw := range plots {
+			var fields map[string]json.RawMessage
+			var target garden.HarvestTarget
+			if err := json.Unmarshal(raw, &fields); err != nil || !hasExactKeys(fields, "row", "col") ||
+				!parseGardenCoordinate(fields["row"], &target.Row) || !parseGardenCoordinate(fields["col"], &target.Col) {
+				request.InvalidDetail = "plots"
+				return request, nil
+			}
+			request.GardenPlots = append(request.GardenPlots, target)
+		}
+		if !garden.ValidHarvestTargets(request.GardenPlots) {
+			request.InvalidDetail = "plots"
+		}
 	case IntentClaimOpportunity:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "opportunity_id") {
 			request.InvalidDetail = "claim_opportunity.fields"
@@ -2307,6 +2377,11 @@ func canonicalRequest(root map[string]json.RawMessage) ([]byte, string) {
 	}
 	digest := sha256.Sum256(encoded)
 	return encoded, "sha256:" + hex.EncodeToString(digest[:])
+}
+
+// parseGardenCoordinate accepts an exact integer row/column in [0,5] (SG5).
+func parseGardenCoordinate(raw json.RawMessage, destination *int64) bool {
+	return parseNonNegativeSafeInt(raw, destination) && *destination < garden.MaxGridSide
 }
 
 func parsePositiveSafeInt(raw json.RawMessage, destination *int64) bool {

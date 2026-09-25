@@ -10,6 +10,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/garden"
+	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/save"
 )
 
@@ -62,6 +63,7 @@ func gardenDeclarationsForTest(bundle CatalogBundle) garden.Declarations {
 	for _, row := range bundle.Fiscal.GeneratorLevelRows() {
 		declarations.FiscalGeneratorIDs[row.GeneratorID] = struct{}{}
 	}
+	declarations.ValidatePayout = minigame.GardenPayoutValidator(declarations.ResourceIDs, declarations.CopyKeys)
 	return declarations
 }
 

@@ -68,6 +68,16 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		Kind string `json:"kind"`
 	}
 	_ = json.Unmarshal(wire.Resolved, &resolvedKind)
+	// Server Garden SG-P3: the lazy advance runs after the Fiscal sweep and
+	// before the command body, for exactly the SG3 trigger set.
+	var gardenAdvance *garden.Advance
+	gardenTrigger := isGardenAdvanceTrigger(resolvedKind.Kind)
+	if gardenTrigger {
+		if gardenAdvance, err = preAdvanceGarden(state, catalogs, wire.Command.ServerTSMS, resolvedGardenSalt(wire.Resolved)); err != nil {
+			*state = *stateBefore
+			return FounderLoggedTransition{}, err
+		}
+	}
 	defer func() {
 		if resultErr != nil || result.Outcome != save.IntentApplied {
 			*state = *stateBefore
@@ -89,6 +99,20 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 			result = FounderLoggedTransition{}
 			resultErr = err
 			return
+		}
+		if err := checkGardenTransition(stateBefore.ServerGarden, state.ServerGarden, gardenTrigger); err != nil {
+			*state = *stateBefore
+			result = FounderLoggedTransition{}
+			resultErr = err
+			return
+		}
+		if gardenAdvance != nil {
+			if err := decorateGardenAdvance(&result, wire.Command.IntentID, gardenAdvance); err != nil {
+				*state = *stateBefore
+				result = FounderLoggedTransition{}
+				resultErr = err
+				return
+			}
 		}
 		if sweep != nil {
 			if err := decorateFounderFiscalSweep(&result, wire.Command.IntentID, sweep); err != nil {
@@ -163,6 +187,8 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		return applyFounderAdoptionResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case IntentAcquireCosmetic, IntentEquipCosmetic, IntentUnequipCosmetic:
 		return applyFounderCosmeticResolved(state, request, revision, catalogs, wire.Resolved)
+	case IntentGardenPlant, IntentGardenUproot, IntentGardenSetSubstrate:
+		return applyFounderGardenResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved, gardenAdvance)
 	case founderExitResolvedKind, founderExitPlanResolvedKind:
 		explicitExit := request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO
 		if explicitExit && request.ExpectedFounderRevision != wire.Command.Revision {
@@ -299,6 +325,9 @@ type founderFiscalSpendResolved struct {
 	Kind         string           `json:"kind"`
 	Target       fiscalTargetWire `json:"target"`
 	ResolvedCost int64            `json:"resolved_cost"`
+	// GardenSaltHex is Server Garden OD-12's frozen server draw, present only
+	// when this spend's SG-P3 advance pre-step initializes the hidden salt.
+	GardenSaltHex string `json:"garden_salt_hex,omitempty"`
 }
 
 func fiscalStateFromSave(state *save.State) fiscal.State {

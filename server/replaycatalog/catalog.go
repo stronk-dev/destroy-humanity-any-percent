@@ -352,6 +352,7 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		for _, row := range bundle.Fiscal.GeneratorLevelRows() {
 			declarations.FiscalGeneratorIDs[row.GeneratorID] = struct{}{}
 		}
+		declarations.ValidatePayout = minigame.GardenPayoutValidator(declarations.ResourceIDs, declarations.CopyKeys)
 		gardenCatalog, gardenErr := garden.LoadCatalog(gardenBytes, declarations)
 		if gardenErr != nil {
 			return production.CatalogBundle{}, gardenErr

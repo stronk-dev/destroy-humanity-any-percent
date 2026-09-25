@@ -108,6 +108,8 @@ var AllEventKinds = [...]EventKind{
 	EventComputeCreditSpent, EventDoctrinePicked,
 	EventFiscalCreditSpent, EventFiscalPeriodHarvested, EventReputationNodePurchased, EventPetAdopted,
 	EventCosmeticAcquired, EventCosmeticEquipped, EventCosmeticUnequipped,
+	EventGardenAdvanced, EventGardenPlanted, EventGardenUprooted, EventGardenSubstrateSet,
+	EventGardenHarvested, EventGardenHarvestCredited,
 	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferResolved, EventExitOfferSpawned,
 	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
@@ -628,6 +630,9 @@ func validEventSchemaVersion(event EventWrite) bool {
 }
 
 func validateEventPayload(event EventWrite) error {
+	if isGardenEvent(event.Kind) {
+		return validateGardenEventPayload(event)
+	}
 	switch event.Kind {
 	case EventOpportunitySpawned:
 		var payload struct {

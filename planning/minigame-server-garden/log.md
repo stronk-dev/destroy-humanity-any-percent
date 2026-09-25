@@ -120,3 +120,81 @@ Evidence, cold:
   - A boundary that resets the garden → "a run boundary changed the garden" (red). This is AC11's
     named failing case.
   - Dropping the TS starter-seed rule → "missing starter seed" loads (red).
+
+## 2026-09-25 — G4: garden Founder intents and the SG-P3 advance pre-step (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review. Kernel bumped 0.3.132 → 0.3.133 in
+the same commit.
+
+**Intents:**
+- `garden_plant`, `garden_uproot` and `garden_set_substrate` run through `ApplyFounderLogged` with
+  the `garden_command.v1` resolved arm `{kind, server_ms, garden_salt_hex?, advance}`.
+- `garden_harvest` decodes, but fails closed with `ErrInvalidIntent` until the SG-P2 coordinator
+  lands (G5). It never touches either stream.
+- Decode is exact. Row and col are checked at decode ([0,5]), and harvest plots must be 1–36,
+  sorted and unique. A client `tick_seq` or `salt_hex` is terminal `invalid/<kind>.fields` (AC12).
+
+**Pre-step (SG-P3):**
+- It runs after the Fiscal sweep and before the body, for exactly the trigger set: every garden
+  command plus `spend_fiscal_credit`, which now carries an optional frozen `garden_salt_hex`.
+- A rejected command rolls the advance back with everything else.
+- An applied trigger's receipt gains `garden_advance`, and `garden_advanced.v1` precedes the
+  command's event only when SG8 emits it.
+- `checkGardenTransition`: only the trigger set may change `server_garden`.
+
+**Salt:** the live draw is 8 bytes from `crypto/rand`, frozen in the row's resolved inputs.
+Replay never draws.
+
+**Events:** six SG8 kinds are registered with strict payload grammars in `save/garden_events.go`,
+and migration **00082** extends the database kind constraint. The contiguity pin moves to 82.
+
+**Correction to G3 (`415bea4d`), self-found:** it introduced an import cycle that stopped
+`server/minigame`'s internal tests from compiling (`minigame` tests → `save` → `garden` →
+`minigame`).
+- **Why it went unnoticed:** my G3 Postgres claim was based on a grep-filtered log whose exit code
+  was grep's, and my `make test-go` package list omitted `./minigame`.
+- **Fix, in this commit:** `garden` no longer imports `minigame`. The platform loader stays the
+  SG1 rule-9 authority, injected as `Declarations.ValidatePayout` through
+  `minigame.GardenPayoutValidator`; `garden` then exact-decodes the same six keys.
+  `go list -deps ./garden` is now `{determinism, garden}`, and `go vet ./...` compiles every test
+  package clean.
+- **Gate discipline from here on:** Postgres claims record the compose command's own exit code.
+
+Evidence, cold:
+- `go vet ./...` is clean.
+- `make test-go` passes for garden, minigame, save, production, replaycatalog, gameui, gameserver,
+  account, releasepackage, kernel and harness.
+- Full Postgres suite: **exit=0**, 61 `ok` lines.
+- Client: 6,893 unit tests pass and typecheck is clean.
+- `copy-check` and `api-check` are clean; `api-check` is unchanged because the Founder intent route
+  is not in the generated registry.
+- **Corpus:** `testdata/replay/garden-v1.json` holds 21 Founder cases plus the v24→v25 Exit
+  activation (`GARDEN_UPDATE_FIXTURE=1`). TS replays all of it byte-for-byte:
+  `garden-replay.test.ts` passes 24/24.
+- **AC6:** `TestGardenTriggerSetIsSufficient` covers 150 random timelines; advancing before every
+  command equals advancing at the SG3 set.
+- **Postgres witness:** `TestGardenIntegrationPersistsReplayableFounderLog` covers:
+  - the live salt draw and idempotent retry;
+  - a client tick field rejected;
+  - the substrate switch;
+  - `spend_fiscal_credit` carrying `garden_advance`;
+  - harvest failing closed;
+  - no salt in any receipt or stored event;
+  - an unregistered kind refused by the database;
+  - Founder history `ReplayVerified`.
+
+  Postgres stamps `server_ms` from the database clock, so real-time ticks are about 0 here; tick
+  behaviour is the corpus's job.
+- **Severing:**
+  - `spend_fiscal_credit` dropped from the trigger set → the corpus test fails.
+  - The carry law disabled → `TestTransitionLayerRejectsGardenMutatingArms` goes red.
+  - TS receipt decoration removed → 8/24 TS cases go red.
+  - A receipt leaking the salt → the Postgres witness catches it.
+  - AC6's named failing case (no `spend_fiscal_credit` → divergence when a level-up widens the
+    grid) is kept in-suite as `TestGardenTriggerSetWithoutSpendDiverges`.
+  - AC7's tampered-advance case is kept in-suite in Go and TS.
+
+**Readings logged (not DESIGN-GAPs):**
+- Garden commands are not exempt from the Soul-recovery exclusivity gate; the default applies,
+  like `care_action`.
+- The advance event carries only visible advances, per SG8's emission rule.

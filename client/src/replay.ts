@@ -24,7 +24,7 @@ import { drawPetAdoption, parsePetSpeciesCatalog, petSpeciesRow, type PetSpecies
 import { cosmeticItem, loadCosmeticCatalog, type CosmeticCatalog } from "./cosmetic/catalog";
 import { cosmeticStatesEqual, emptyCosmeticState, encodeCosmeticState, parseCosmeticState, type CosmeticState } from "./cosmetic/state";
 import { loadGardenCatalog, type GardenCatalog } from "./garden/catalog";
-import { cloneGardenState, encodeGardenState, newGardenState, parseGardenState, type GardenState } from "./garden/engine";
+import { advanceGarden, encodeGardenState, gardenAdvanceVisible, gateGarden, GardenRejection, newGardenState, parseGardenState, plantGarden, setGardenSubstrate, uprootGarden, validGardenHarvestTargets, type GardenAdvance, type GardenState } from "./garden/engine";
 import { encodePetIdentities, initialPetCareState, parsePetIdentities, type PetIdentity } from "./pet/identity";
 import { parseTyperCatalog, type TyperCatalog } from "./typer/catalog";
 import { ARCADE_ENGINE_VERSION, parseArcadeCatalog, type ArcadeCatalog } from "./arcade/catalog";
@@ -32,7 +32,7 @@ import { parsePitchCatalog, type PitchCatalog } from "./pitch/catalog";
 import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
 import { applyPetCareTransition, careStatus, eligibleCareActions } from "./pet/transition";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
-import { parseSoulCatalog, soulBand, type SoulCatalog } from "./soul/catalog";
+import { parseSoulCatalog, soulBand, type SoulCatalog, humanContentLocked } from "./soul/catalog";
 import { substream } from "./combat/rng";
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -784,8 +784,24 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (state.wireVersion < 19) throw new RangeError("inactive Fiscal state");
     const fiscalState = founderFiscalState(state); fiscalSweep = sweepFiscal(catalogs.fiscal, fiscalState, wire.command.server_ts_ms); applyFounderFiscalState(state, fiscalState);
   }
+  // Server Garden SG-P3: the lazy advance runs after the Fiscal sweep and
+  // before the command body, for exactly the SG3 trigger set.
+  const resolvedKind = typeof wire.resolved.kind === "string" ? wire.resolved.kind : "";
+  const gardenTrigger = GARDEN_INTENTS.has(resolvedKind) || resolvedKind === "spend_fiscal_credit";
+  let gardenAdvance: GardenAdvance | null = null;
+  if (gardenTrigger) {
+    try { gardenAdvance = preAdvanceGarden(state, catalogs, wire.command.server_ts_ms, resolvedGardenSalt(wire.resolved)); }
+    catch (error) { rollback(); throw error; }
+  }
   const finish = (transition: FounderLoggedTransition): FounderLoggedTransition => {
     if (transition.outcome !== "applied") { rollback(); return transition; }
+    // Server Garden SG2/AC11: only the trigger set may change server_garden.
+    checkGardenTransition(before, state, gardenTrigger);
+    if (gardenAdvance) {
+      const decorated = exactObject(transition.receipt, Object.keys(transition.receipt as Record<string, unknown>), "Founder receipt");
+      transition = { ...transition, receipt: { ...decorated, garden_advance: gardenAdvance },
+        events: gardenAdvanceVisible(gardenAdvance) ? [event("garden_advanced.v1", wire.command.intent_id, gardenAdvance), ...transition.events] : transition.events };
+    }
     // Pet Adoption v1 PA3.5: only adopt_pet may change pet_identities, by exactly one key.
     checkPetIdentityTransition(before.petIdentities, state.petIdentities, string(wire.resolved.kind) === "adopt_pet", before.wireVersion < 23);
     // Cosmetic Shop v1 §4.5/AC8: only the three cosmetic intents may change cosmetics.
@@ -865,6 +881,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (kind === "purchase_reputation_node") return finish(applyFounderReputationPurchase(state, request, wire, catalogs));
     if (kind === "adopt_pet") return finish(await applyFounderAdoption(state, request, wire, catalogs, rollback));
     if (COSMETIC_INTENTS.has(kind)) return finish(applyFounderCosmetic(state, request, wire, catalogs, rollback));
+    if (kind === "garden_plant" || kind === "garden_uproot" || kind === "garden_set_substrate") return finish(applyFounderGarden(state, request, wire, catalogs, gardenAdvance));
     if (kind === "exit.v1" || kind === "exit.v2") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
@@ -951,7 +968,7 @@ async function applyFounderFiscalHarvest(state: FounderReplayState, request: Int
 
 function applyFounderFiscalSpend(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): FounderLoggedTransition {
   if (request.kind !== "spend_fiscal_credit" || request.invalid !== undefined || request.expected_revision !== wire.command.revision || !catalogs.fiscal || state.wireVersion < 19) throw new RangeError("Fiscal spend command mismatch");
-  exactKeys(wire.resolved, ["kind", "target", "resolved_cost"], "Fiscal spend inputs"); const target = parseFiscalTarget(request.target), resolvedTarget = parseFiscalTarget(wire.resolved.target);
+  exactKeys(wire.resolved, ["kind", "target", "resolved_cost", ...("garden_salt_hex" in wire.resolved ? ["garden_salt_hex"] : [])], "Fiscal spend inputs"); const target = parseFiscalTarget(request.target), resolvedTarget = parseFiscalTarget(wire.resolved.target);
   if (canonicalJSONString(fiscalTargetWire(target)) !== canonicalJSONString(fiscalTargetWire(resolvedTarget))) throw new RangeError("Fiscal target mismatch");
   const fiscalState = founderFiscalState(state); let expectedCost = 0; try { expectedCost = fiscalResolvedCost(catalogs.fiscal, fiscalState, target); } catch { expectedCost = 0; }
   const resolvedCost = safeInteger(wire.resolved.resolved_cost, 0, MAX_EXACT_INTEGER); if (resolvedCost !== expectedCost) throw new RangeError("Fiscal cost mismatch"); const creditBefore = fiscalState.credit;
@@ -2319,6 +2336,31 @@ function parseIntent(payload: string, intentId: string): Intent {
       else { base.cosmetic_id = raw.cosmetic_id; if (kind === "equip_cosmetic") base.pet_id = raw.pet_id; }
       return base;
     }
+    case "garden_plant":
+    case "garden_uproot": {
+      const keys = ["kind", "expected_revision", "row", "col", ...(kind === "garden_plant" ? ["species_id"] : [])];
+      if (!hasExactKeys(raw, keys)) { base.invalid = `${kind}.fields`; return base; }
+      if (!isGardenCoordinate(raw.row)) base.invalid = "row";
+      else if (!isGardenCoordinate(raw.col)) base.invalid = "col";
+      else if (kind === "garden_plant" && !isMechanical(raw.species_id)) base.invalid = "species_id";
+      else { base.row = raw.row; base.col = raw.col; if (kind === "garden_plant") base.species_id = raw.species_id; }
+      return base;
+    }
+    case "garden_set_substrate":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "substrate_id"])) { base.invalid = "garden_set_substrate.fields"; return base; }
+      if (!isMechanical(raw.substrate_id)) base.invalid = "substrate_id"; else base.substrate_id = raw.substrate_id;
+      return base;
+    case "garden_harvest": {
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "plots"])) { base.invalid = "garden_harvest.fields"; return base; }
+      if (!Array.isArray(raw.plots)) { base.invalid = "plots"; return base; }
+      const plots: { row: number; col: number }[] = [];
+      for (const item of raw.plots) {
+        if (!isRecord(item) || !hasExactKeys(item, ["row", "col"]) || !isGardenCoordinate(item.row) || !isGardenCoordinate(item.col)) { base.invalid = "plots"; return base; }
+        plots.push({ row: item.row as number, col: item.col as number });
+      }
+      if (!validGardenHarvestTargets(plots)) base.invalid = "plots"; else base.plots = plots;
+      return base;
+    }
     case "unequip_cosmetic":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "pet_id"])) { base.invalid = "unequip_cosmetic.fields"; return base; }
       if (!isUUIDV7(raw.pet_id)) base.invalid = "pet_id"; else base.pet_id = raw.pet_id;
@@ -2435,6 +2477,62 @@ function byteCompare(left: string, right: string): number { const a = new TextEn
 // server/production/cosmetic_intent.go. No ledger read or write; no receipt
 // field carries an amount, price, currency, or payment.
 const COSMETIC_INTENTS: ReadonlySet<string> = new Set(["acquire_cosmetic", "equip_cosmetic", "unequip_cosmetic"]);
+
+// Server Garden SG5 (Founder scope), byte twin of server/production/garden_intent.go.
+const GARDEN_INTENTS: ReadonlySet<string> = new Set(["garden_plant", "garden_uproot", "garden_set_substrate", "garden_harvest"]);
+
+function isGardenCoordinate(value: unknown): value is number { return isNonNegativeSafeInteger(value) && (value as number) < 6; }
+
+function gardenActive(catalogs: ReplayCatalogBundle, state: FounderReplayState): boolean { return catalogs.garden !== undefined && state.wireVersion >= 25 && state.serverGarden !== null; }
+
+function gardenInputs(catalogs: ReplayCatalogBundle, state: FounderReplayState): { hostLevel: number; unlocked: boolean } {
+  return { hostLevel: state.fiscalGeneratorLevels[catalogs.garden!.hostGeneratorId] ?? 0, unlocked: state.fiscalUnlocks.has(catalogs.garden!.unlockId) };
+}
+
+function resolvedGardenSalt(resolved: Record<string, unknown>): string {
+  if (!("garden_salt_hex" in resolved)) return "";
+  if (typeof resolved.garden_salt_hex !== "string" || resolved.garden_salt_hex === "") throw new SyntaxError("garden salt must be a non-empty string when present");
+  return resolved.garden_salt_hex;
+}
+
+function preAdvanceGarden(state: FounderReplayState, catalogs: ReplayCatalogBundle, serverMs: number, salt: string): GardenAdvance | null {
+  if (!gardenActive(catalogs, state)) { if (salt !== "") throw new RangeError("garden salt without an active garden"); return null; }
+  const { hostLevel, unlocked } = gardenInputs(catalogs, state);
+  return advanceGarden(catalogs.garden!, state.serverGarden!, { serverMs, hostLevel, unlocked, salt });
+}
+
+function checkGardenTransition(before: FounderReplayState, after: FounderReplayState, trigger: boolean): void {
+  if (before.serverGarden === null) {
+    const garden = after.serverGarden;
+    if (garden !== null && (garden.salt_hex !== null || garden.tick_anchor_wall_ms !== null || garden.tick_seq !== 0 || garden.plots.length !== 0)) throw new RangeError("server_garden appeared outside activation");
+    return;
+  }
+  if (!trigger && canonicalJSONString(encodeGardenState(before.serverGarden)) !== canonicalJSONString(after.serverGarden === null ? null : encodeGardenState(after.serverGarden))) throw new RangeError("a non-garden Founder transition changed server_garden");
+}
+
+function applyFounderGarden(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle, advance: GardenAdvance | null): FounderLoggedTransition {
+  if (!GARDEN_INTENTS.has(request.kind) || request.kind === "garden_harvest" || wire.resolved.kind !== request.kind || request.invalid !== undefined || request.expected_revision !== wire.command.revision) throw new RangeError("garden command mismatch");
+  exactKeys(wire.resolved, ["kind", "server_ms", "advance", ...("garden_salt_hex" in wire.resolved ? ["garden_salt_hex"] : [])], "garden inputs");
+  if (safeInteger(wire.resolved.server_ms, 0, MAX_EXACT_INTEGER) !== wire.command.server_ts_ms) throw new RangeError("garden server_ms mismatch");
+  const recomputed: GardenAdvance = advance ?? { ticks_applied: 0, tick_seq_after: 0, catchup_forfeited_ms: 0, catchup_reason_key: null, matured: [], spawned: [] };
+  if (canonicalJSONString(recomputed) !== canonicalJSONString(wire.resolved.advance)) throw new RangeError("garden advance diverged from resolved inputs");
+  const reject = (category: string, detail: string) => founderRejected(state, request.intent_id, wire.command.revision, category, detail, catalogs.constantsHash);
+  if (!gardenActive(catalogs, state)) return reject("not_eligible", "garden_inactive");
+  const garden = catalogs.garden!, { hostLevel, unlocked } = gardenInputs(catalogs, state);
+  const humanLocked = garden.soulGate === "human_hobby" && humanContentLocked(catalogs.soul!, state.soul);
+  let emitted: ReplayEvent;
+  try {
+    gateGarden(garden, unlocked, humanLocked);
+    if (request.kind === "garden_plant") emitted = event("garden_planted.v1", request.intent_id, plantGarden(garden, state.serverGarden!, hostLevel, request.row, request.col, request.species_id));
+    else if (request.kind === "garden_uproot") emitted = event("garden_uprooted.v1", request.intent_id, uprootGarden(state.serverGarden!, request.row, request.col));
+    else emitted = event("garden_substrate_set.v1", request.intent_id, setGardenSubstrate(garden, state.serverGarden!, wire.command.server_ts_ms, request.substrate_id));
+  } catch (error) {
+    if (error instanceof GardenRejection) return reject(error.category, error.detail);
+    throw error;
+  }
+  const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, kind: request.kind, event: { kind: emitted.kind, payload: emitted.payload } };
+  return { state, outcome: "applied", receipt, events: [emitted], resultConstantsHash: catalogs.constantsHash };
+}
 
 function applyFounderCosmetic(state: FounderReplayState, request: ReturnType<typeof parseIntent>, wire: ReturnType<typeof parseFounderReplayWire>,
   catalogs: ReplayCatalogBundle, rollback: () => void): FounderLoggedTransition {

@@ -14,8 +14,6 @@ import (
 	"fmt"
 	"io"
 	"regexp"
-
-	"cloud-clicker/server/minigame"
 )
 
 const (
@@ -105,11 +103,27 @@ type Catalog struct {
 	Substrates           []Substrate
 	Species              []Species
 	Recipes              []Recipe
-	Payout               minigame.PayoutPolicy
+	Payout               PayoutPolicy
 
 	substrateIndex map[string]int
 	speciesIndex   map[string]int
 }
+
+// PayoutPolicy mirrors the platform's six-key payout row (SG1 rule 9).
+type PayoutPolicy struct {
+	CreditedResourceID string `json:"credited_resource_id"`
+	SendsPerDay        int64  `json:"sends_per_day"`
+	PerSendCap         int64  `json:"per_send_cap"`
+	ConversionPPM      int64  `json:"conversion_ppm"`
+	PayoutScoreFactID  string `json:"payout_score_fact_id"`
+	CapReasonKey       string `json:"cap_reason_key"`
+}
+
+// PayoutValidator is the platform's payout loader, injected so the garden
+// never imports the session platform (and the save layer can import the
+// garden). It validates the row against the declared score set; the garden
+// then decodes the same six keys exactly.
+type PayoutValidator func(data []byte, scoreFactIDs map[string]struct{}) error
 
 // Declarations are the cross-artifact authorities SG1 rules 9 and 10 bind to.
 type Declarations struct {
@@ -117,6 +131,7 @@ type Declarations struct {
 	ResourceIDs        map[string]struct{}
 	FiscalUnlockIDs    map[string]struct{}
 	FiscalGeneratorIDs map[string]struct{}
+	ValidatePayout     PayoutValidator
 }
 
 // Substrate returns the substrate row for id.
@@ -203,7 +218,7 @@ type wireClock struct {
 // LoadCatalog decodes and validates a `server_garden` artifact against every
 // SG1 rule. Any violation fails the whole load.
 func LoadCatalog(data []byte, declarations Declarations) (*Catalog, error) {
-	if declarations.CopyKeys == nil || declarations.ResourceIDs == nil || declarations.FiscalUnlockIDs == nil || declarations.FiscalGeneratorIDs == nil {
+	if declarations.CopyKeys == nil || declarations.ResourceIDs == nil || declarations.FiscalUnlockIDs == nil || declarations.FiscalGeneratorIDs == nil || declarations.ValidatePayout == nil {
 		return nil, fmt.Errorf("%w: declarations are required", ErrInvalidCatalog)
 	}
 	if !uniqueKeys(data) {
@@ -258,8 +273,10 @@ func LoadCatalog(data []byte, declarations Declarations) (*Catalog, error) {
 		return nil, err
 	}
 	scoreFacts := map[string]struct{}{PayoutScoreFactID: {}}
-	payout, err := minigame.LoadPayoutPolicy(wire.Payout, minigame.PayoutDeclarations{ResourceIDs: declarations.ResourceIDs, ScoreFactIDs: scoreFacts, CopyKeys: declarations.CopyKeys})
-	if err != nil || payout.PayoutScoreFactID != PayoutScoreFactID {
+	var payout PayoutPolicy
+	if err := declarations.ValidatePayout(wire.Payout, scoreFacts); err != nil ||
+		exactDecode(wire.Payout, &payout, "credited_resource_id", "sends_per_day", "per_send_cap", "conversion_ppm", "payout_score_fact_id", "cap_reason_key") != nil ||
+		payout.PayoutScoreFactID != PayoutScoreFactID {
 		return nil, fmt.Errorf("%w: payout policy", ErrInvalidCatalog)
 	}
 	catalog.Payout = payout

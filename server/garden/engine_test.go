@@ -439,3 +439,67 @@ func TestGardenAdvanceSaltContract(t *testing.T) {
 		t.Fatal("a second salt must fail")
 	}
 }
+
+// timelineEvent is one Founder command in AC6's property: a garden command, a
+// host-level purchase (spend_fiscal_credit), or any other Founder command.
+type timelineEvent struct {
+	at   int64
+	kind string
+}
+
+// replayTimeline advances the garden before each command whose kind is in
+// triggers, applying level purchases after their own pre-step, then closes
+// with a garden command at end.
+func replayTimeline(t *testing.T, catalog *Catalog, events []timelineEvent, end int64, triggers map[string]bool) *State {
+	t.Helper()
+	state := matureState(t, Plot{Row: 0, Col: 0, SpeciesID: "strain_a", AgeTicks: 3, MaturedEffectPPM: ppmPointer(1_000_000)},
+		Plot{Row: 1, Col: 1, SpeciesID: "strain_b", AgeTicks: 4, MaturedEffectPPM: ppmPointer(1_000_000)})
+	level := int64(0)
+	for _, event := range append(append([]timelineEvent{}, events...), timelineEvent{at: end, kind: "garden"}) {
+		if triggers[event.kind] {
+			if _, err := catalog.Advance(state, AdvanceInput{ServerMS: event.at, HostLevel: level, Unlocked: true}); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if event.kind == "level_up" {
+			level = min(level+1, 8)
+		}
+	}
+	return state
+}
+
+// TestGardenTriggerSetIsSufficient is AC6: advancing before every Founder
+// command equals advancing only before the SG3 set (garden commands and
+// spend_fiscal_credit), because no other command changes an advance input.
+func TestGardenTriggerSetIsSufficient(t *testing.T) {
+	catalog := scenarioCatalog(t, []fixtureOp{setOp(150_000, "recipes", 0, "chance_ppm"), setOp(150_000, "recipes", 1, "chance_ppm"), setOp(80_000, "recipes", 2, "chance_ppm")})
+	random := rand.New(rand.NewSource(11))
+	every := map[string]bool{"garden": true, "level_up": true, "other": true}
+	set := map[string]bool{"garden": true, "level_up": true}
+	for trial := 0; trial < 150; trial++ {
+		events := []timelineEvent{}
+		at := int64(1_000_000)
+		for index := 0; index < 12; index++ {
+			at += int64(random.Intn(3_600_000)) + 1
+			events = append(events, timelineEvent{at: at, kind: []string{"garden", "level_up", "other", "other"}[random.Intn(4)]})
+		}
+		end := at + int64(random.Intn(3_600_000)) + 1
+		if !replayTimeline(t, catalog, events, end, every).Equal(replayTimeline(t, catalog, events, end, set)) {
+			t.Fatalf("trial %d: the SG3 trigger set diverged from advancing before every command", trial)
+		}
+	}
+}
+
+// TestGardenTriggerSetWithoutSpendDiverges is AC6's failing case: dropping
+// spend_fiscal_credit from the set diverges once a mid-interval level
+// purchase widens the grid.
+func TestGardenTriggerSetWithoutSpendDiverges(t *testing.T) {
+	catalog := scenarioCatalog(t, []fixtureOp{setOp(400_000, "recipes", 0, "chance_ppm"), setOp(400_000, "recipes", 1, "chance_ppm")})
+	events := []timelineEvent{{at: 1_000_000 + 2*3_600_000, kind: "level_up"}}
+	end := int64(1_000_000 + 4*3_600_000)
+	withSpend := replayTimeline(t, catalog, events, end, map[string]bool{"garden": true, "level_up": true})
+	withoutSpend := replayTimeline(t, catalog, events, end, map[string]bool{"garden": true})
+	if withSpend.Equal(withoutSpend) {
+		t.Fatal("removing spend_fiscal_credit from the trigger set must diverge when a level purchase widens the grid")
+	}
+}

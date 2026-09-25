@@ -11,6 +11,7 @@ import (
 
 	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/minigame"
 )
 
 const repositoryRoot = "../../"
@@ -81,6 +82,7 @@ func fixtureDeclarations(t testing.TB, corpus fixtureCorpus) Declarations {
 	for _, row := range raw.UnlockRows {
 		declarations.FiscalUnlockIDs[row.UnlockID] = struct{}{}
 	}
+	declarations.ValidatePayout = minigame.GardenPayoutValidator(declarations.ResourceIDs, declarations.CopyKeys)
 	return declarations
 }
 

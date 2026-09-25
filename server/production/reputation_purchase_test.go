@@ -12,6 +12,7 @@ import (
 	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/garden"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/reputation"
@@ -79,6 +80,9 @@ func reputationFounderState(t *testing.T, catalogs CatalogBundle, version int, n
 	}
 	if version >= 24 {
 		state.Cosmetics = cosmetic.NewState()
+	}
+	if version >= 25 {
+		state.ServerGarden = garden.NewState(catalogs.Garden)
 	}
 	if err := catalogs.ValidateFoundationState(state); err != nil {
 		t.Fatalf("reputation Founder fixture invalid: %v", err)
