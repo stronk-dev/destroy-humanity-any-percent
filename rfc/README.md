@@ -34,6 +34,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Reputation Tree v1](reputation-tree-v1.md) | accepted 2026-09-25 (recommended defaults); implementing | Prestige & Exits / Leaderboards & Epochs |
 | [Minigame — Terminal Typer](minigame-terminal-typer.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Minigame API & Surface |
 | [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Minigame API & Surface |
+| [Minigame — Arcade Pinball](minigame-arcade-pinball.md) | draft — not implementation authority; owner-requested addition (not in design/03), OD-P1–P15 | Demo Disc Arcade / Minigame Platform |
 | [Tier 2 Content — IT Company](tier2-content.md) | accepted 2026-09-25 (recommended defaults; seat source OD-1 held); implementing | Economy Kernel / Routes / Balance Harness |
 | [Minigame — Server Garden](minigame-server-garden.md) | accepted 2026-09-25 (recommended defaults); implementing | Minigame Platform / Fiscal / Tier 2 |
 | [Garage Player Surfaces](garage-player-surfaces.md) | accepted 2026-09-25 (recommended defaults); implementing | Game UI Screens / Fiscal / Achievements / Meters / Pet / Active Play / Minigame API |
