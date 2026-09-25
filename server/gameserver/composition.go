@@ -330,7 +330,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err := api.AttachMinigames(minigameAPIAdapter{accounts: accounts, production: productionService, platform: minigameService}); err != nil {
 		return nil, err
 	}
-	gameUIProjector, err := gameui.New(store, catalogs, providers)
+	gameUIProjector, err := gameui.New(store, catalogs, providers, gameui.WithMinigameActivity(minigameRepository))
 	if err != nil {
 		return nil, err
 	}

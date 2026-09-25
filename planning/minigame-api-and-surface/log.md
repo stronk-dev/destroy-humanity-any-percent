@@ -724,3 +724,51 @@ a reconnect. The fix plus a dedicated test are in this batch. Severing the fix m
 **AC5 status:** both surface contracts are implemented and pass the UI Foundation gates. The Pitch
 child seam is proven in the unit/browser suites and through the composed server (`06edddba`).
 MA's remaining boxes are designated review and archival, both owned by Codex.
+
+## 2026-09-25 — F9: Wind Down preview agrees with the MA-C12 rejection (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review; not
+self-approved.
+
+**Defect.** Under a `minigame_api` bundle, `transitions.wind_down.eligible` was `tier >= 1`. Exit
+nevertheless rejects `not_eligible/minigame_session_active` while a session is `active|claimed`
+(`production/prestige.go` freezes `ActiveMinigame` into replay, and `replay.go` rejects on it). So
+the Desk offered a Wind Down that silently failed (garage-player-surfaces F9).
+
+**Fix.** No new mechanic.
+- `gameui.WithMinigameActivity` binds the same read-only `minigame.Repository.ActiveMinigame`.
+- The projector consults it only when the run bundle pins `minigame_api`, the same condition
+  production uses, and fails loud without it.
+- `previewPhaseATransitions` sets `WindDown = tier >= 1 && !minigameActive`.
+- The bootstrap initial projection passes `false`: a Founder created in that transaction cannot
+  own a session.
+- Composition wires the repository.
+- `server/gameui` isn't in `kernel/affecting-paths.json`, so there's no version bump.
+
+**Other Exit previews and AR-F3.**
+- The snapshot projects no `accept_exit_offer` eligibility. The Offer Sheet button is gated
+  client-side only, so its rejection still surfaces through the receipt path, a separate
+  known-open item (garage-player-surfaces F-receipt).
+- The previewed `cross_gate` is refuted as an Exit case. The only previewed gate is the uncrossed
+  `gate.t0_to_t1`. `scriptedExitDue` under the live curriculum requires
+  `GatesCrossed[first_failure.gate_id = gate.t0_to_t1]`, so the previewed crossing is always the
+  ordinary transition. Its preview already runs the production transition.
+- AR-F3's broader claim is CONFIRMED by code read but not fixed here, since it is design
+  territory routed to Game UI/Curriculum. Once the scripted first failure is due, *every* Company
+  intent routes to `handleScriptedCrossGateExit`, which rejects with `minigame_session_active`
+  while a session is active. The Company is therefore frozen until the session ends.
+- Separately, an active Soul-recovery session rejects all non-fiscal intents with
+  `exclusive_activity`. The wind_down preview doesn't reflect that either, which is the same class
+  of gap and a follow-up for the recovery-exclusivity owner.
+
+**Evidence (cold).**
+- **Go:** `make test-go GO_PACKAGES='./gameui ./gameserver ./production' GO_TEST_FLAGS='-count=1'`
+  passes. `TestPhaseATransitionPreviewWithholdsWindDownWhileMinigameSessionActive` and
+  `TestProjectorMinigameActivityMirrorsExitGate` are new.
+- **Postgres integration:** passes for `./gameserver ./account ./gameui ./deploymentrelease`.
+- **Composed lane:** `make test-game-ui-composed` passes (Pitch and v3).
+- **Severing:**
+  - S1: dropping `&& !minigameActive` fails the preview test.
+  - S2: making a missing resolver silent fails the gate test.
+  - S3: omitting `WithMinigameActivity` in composition fails the composed lane (exit 2: "composed
+    live Game UI v3 transition snapshot round trip failed").

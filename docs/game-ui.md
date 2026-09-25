@@ -33,7 +33,14 @@ placeholders never substitute a formatted zero or an unrelated company label. Mi
 throw. Payout labels and any shipped network-slot titles also resolve only through that catalog;
 unknown future slot IDs are withheld rather than rendered mechanically.
 
-Live sync requires snapshot v3, its positive `founder_revision`, and the exact `transitions` object.
+Live sync requires snapshot v3, its positive `founder_revision`, and the exact `transitions` object. The
+`transitions.wind_down.eligible` preview applies the same read-only MA-C12 active-minigame
+predicate that Exit freezes into replay. While a session is `active|claimed`, the preview is false,
+matching the server's `not_eligible/minigame_session_active` rejection. A bundle that pins
+`minigame_api` cannot be projected without that resolver: the projector fails loud instead of
+offering a control the server would refuse. The previewed `cross_gate` (only the uncrossed
+`gate.t0_to_t1`) is never the curriculum's scripted Exit, because that Exit requires the gate to
+already be crossed.
 The Game UI projector derives the first Gate by invoking the existing production transition on a
 discarded decoded-state clone and applies the existing Tier-1 Wind Down rule. The production
 kernel itself is unchanged. The first Gate is the only Phase-A gate exposed;

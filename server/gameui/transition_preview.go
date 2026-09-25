@@ -24,15 +24,22 @@ type crossGatePreview struct {
 // previewPhaseATransitions projects only the Phase-A presentation contract.
 // It invokes the existing production transition on a decoded state copy; the
 // real intent receipt remains authoritative and no kernel semantic changes.
+//
+// minigameActive is the same read-only MA-C12 predicate Exit freezes: while a
+// session is active|claimed, wind_down rejects with
+// not_eligible/minigame_session_active, so the preview must not offer it. The
+// previewed cross_gate is never an Exit here: the only previewed gate is the
+// uncrossed gate.t0_to_t1, and the curriculum's scripted Exit requires that
+// gate already crossed, so the ordinary transition is the authoritative one.
 func previewPhaseATransitions(bundle production.CatalogBundle, company, founder *save.State, revision save.Revision,
-	now time.Time, contributions []multiplier.Contribution) (transitionPreview, error) {
+	now time.Time, contributions []multiplier.Contribution, minigameActive bool) (transitionPreview, error) {
 	if bundle.Economy == nil || bundle.Routes == nil || company == nil || company.Ledger == nil ||
 		company.Ledger.Scope() != economy.ScopeCompany || founder == nil || founder.Ledger == nil ||
 		founder.Ledger.Scope() != economy.ScopeFounder || revision.OwnerID == "" || revision.Number < 1 ||
 		revision.ConstantsHash != bundle.ConstantsHash || now.IsZero() {
 		return transitionPreview{}, production.ErrInvalidEngineState
 	}
-	preview := transitionPreview{WindDown: company.Tier >= 1}
+	preview := transitionPreview{WindDown: company.Tier >= 1 && !minigameActive}
 	if company.Tier != 0 || company.GatesCrossed[phaseAStandardGateID] {
 		return preview, nil
 	}

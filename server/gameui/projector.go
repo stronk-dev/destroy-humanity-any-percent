@@ -27,17 +27,57 @@ type ContributionProvider interface {
 	Contributions(context.Context, *save.State, *economy.Catalog, save.Revision) ([]multiplier.Contribution, error)
 }
 
-type Projector struct {
-	store         *save.Store
-	catalogs      CatalogResolver
-	contributions ContributionProvider
+// MinigameActivityResolver is the read-only MA-C12 active-session predicate
+// (minigame.Repository.ActiveMinigame), the same one Exit freezes into replay.
+type MinigameActivityResolver interface {
+	ActiveMinigame(context.Context, string) (bool, error)
 }
 
-func New(store *save.Store, catalogs CatalogResolver, contributions ContributionProvider) (*Projector, error) {
+type Projector struct {
+	store            *save.Store
+	catalogs         CatalogResolver
+	contributions    ContributionProvider
+	minigameActivity MinigameActivityResolver
+}
+
+type Option func(*Projector) error
+
+// WithMinigameActivity binds the active-session predicate. Bundles that pin a
+// minigame_api artifact cannot be projected without it: an omitted resolver
+// would silently preview a wind_down the server rejects.
+func WithMinigameActivity(resolver MinigameActivityResolver) Option {
+	return func(projector *Projector) error {
+		if resolver == nil {
+			return ErrInvalidProjection
+		}
+		projector.minigameActivity = resolver
+		return nil
+	}
+}
+
+func New(store *save.Store, catalogs CatalogResolver, contributions ContributionProvider, options ...Option) (*Projector, error) {
 	if store == nil || catalogs == nil {
 		return nil, ErrInvalidProjection
 	}
-	return &Projector{store: store, catalogs: catalogs, contributions: contributions}, nil
+	projector := &Projector{store: store, catalogs: catalogs, contributions: contributions}
+	for _, option := range options {
+		if err := option(projector); err != nil {
+			return nil, err
+		}
+	}
+	return projector, nil
+}
+
+// minigameActive mirrors production's Exit gate: the predicate applies only
+// when the run's bundle pins minigame_api, and fails loud without a resolver.
+func (projector *Projector) minigameActive(ctx context.Context, bundle production.CatalogBundle, founderID string) (bool, error) {
+	if bundle.MinigameAPI == nil {
+		return false, nil
+	}
+	if projector.minigameActivity == nil {
+		return false, ErrInvalidProjection
+	}
+	return projector.minigameActivity.ActiveMinigame(ctx, founderID)
 }
 
 type resourceCap struct {
@@ -159,7 +199,11 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 	if err != nil || founder.State == nil {
 		return nil, errors.Join(ErrInvalidProjection, err)
 	}
-	return projectSnapshot(bundle, loaded.Key.OwnerID, loaded.Revision.Number, founder.Revision.Number, state, founder.State, contributions, now)
+	minigameActive, err := projector.minigameActive(ctx, bundle, loaded.Key.OwnerID)
+	if err != nil {
+		return nil, err
+	}
+	return projectSnapshot(bundle, loaded.Key.OwnerID, loaded.Revision.Number, founder.Revision.Number, state, founder.State, contributions, now, minigameActive)
 }
 
 // InitialGameUISnapshot projects transaction-local initial states without a
@@ -178,11 +222,12 @@ func (projector *Projector) InitialGameUISnapshot(_ context.Context, constantsHa
 	if err != nil {
 		return nil, err
 	}
-	return projectSnapshot(bundle, founderID, 1, 1, company, founder, contributions, now)
+	// A Founder created in this transaction cannot own a minigame session.
+	return projectSnapshot(bundle, founderID, 1, 1, company, founder, contributions, now, false)
 }
 
 func projectSnapshot(bundle production.CatalogBundle, founderID string, revision, founderRevision int64, state, founder *save.State,
-	contributions []multiplier.Contribution, now time.Time) (json.RawMessage, error) {
+	contributions []multiplier.Contribution, now time.Time, minigameActive bool) (json.RawMessage, error) {
 	if state == nil || state.Ledger == nil || founder == nil || founder.Ledger == nil || founderID == "" || revision < 1 || founderRevision < 1 || now.IsZero() {
 		return nil, ErrInvalidProjection
 	}
@@ -227,7 +272,7 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 	sort.Slice(facts, func(left, right int) bool { return facts[left].FactID < facts[right].FactID })
 	transitionPreview, err := previewPhaseATransitions(bundle, state, founder, save.Revision{
 		OwnerID: founderID, Number: revision, ConstantsHash: bundle.ConstantsHash,
-	}, now, contributions)
+	}, now, contributions, minigameActive)
 	if err != nil {
 		return nil, err
 	}
