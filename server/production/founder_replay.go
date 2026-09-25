@@ -9,6 +9,7 @@ import (
 	"sort"
 	"time"
 
+	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/fiscal"
@@ -773,6 +774,13 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 			return ErrInvalidReplayInputs
 		}
 		state.PetIdentities = map[string]pet.Identity{}
+	}
+	if resultVersion >= 24 && current < 24 {
+		// Cosmetic Shop v1 §6: activation at the new-run boundary only.
+		if catalogs.Cosmetics == nil || state.Cosmetics != nil {
+			return ErrInvalidReplayInputs
+		}
+		state.Cosmetics = cosmetic.NewState()
 	}
 	return nil
 }

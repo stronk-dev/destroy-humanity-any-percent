@@ -284,6 +284,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	if bundle.PetSpecies != nil {
 		founder = 23
 	}
+	if bundle.Cosmetics != nil {
+		founder = 24
+	}
 	if bundle.Opportunities != nil {
 		company = 18
 	}
@@ -361,6 +364,9 @@ type replayFounderExtensions struct {
 	// Replay-inputs v10 (Pet Adoption v1 PA6.4): present exactly when the
 	// pinned bundle's Founder floor is at least 23.
 	PetIdentities *map[string]pet.Identity `json:"pet_identities,omitempty"`
+	// Replay-inputs v11 (Cosmetic Shop v1 §3): present exactly when the pinned
+	// bundle's Founder floor is at least 24.
+	Cosmetics *cosmetic.State `json:"cosmetics,omitempty"`
 }
 
 type replayInputsWire struct {
@@ -1027,6 +1033,9 @@ func validFounderCarry(carry replayFounderCarry, wireVersion int, catalogs Catal
 		if founderFloor >= 23 && (wireVersion < 10 || extensions.PetIdentities == nil) || founderFloor < 23 && extensions.PetIdentities != nil {
 			return false
 		}
+		if founderFloor >= 24 && (wireVersion < 11 || extensions.Cosmetics == nil) || founderFloor < 24 && extensions.Cosmetics != nil {
+			return false
+		}
 	}
 	last := ""
 	for _, fact := range carry.LedgerFactKinds {
@@ -1144,6 +1153,14 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 		}
 		state.PetIdentities = pet.CloneIdentities(*extensions.PetIdentities)
 	} else if extensions.PetIdentities != nil {
+		return nil, ErrInvalidReplayInputs
+	}
+	if founderFloor >= 24 {
+		if extensions.Cosmetics == nil {
+			return nil, ErrInvalidReplayInputs
+		}
+		state.Cosmetics = extensions.Cosmetics.Clone()
+	} else if extensions.Cosmetics != nil {
 		return nil, ErrInvalidReplayInputs
 	}
 	if err := catalogs.ValidateFoundationState(state); err != nil {
@@ -1412,6 +1429,9 @@ func founderCarry(state *save.State) replayFounderCarry {
 			identities := pet.CloneIdentities(state.PetIdentities)
 			extensions.PetIdentities = &identities
 		}
+		if save.VersionForState(state) >= 24 {
+			extensions.Cosmetics = state.Cosmetics.Clone()
+		}
 		if extensions.MinigameRatings == nil {
 			extensions.MinigameRatings = map[string]save.MinigameRatingState{}
 		}
@@ -1442,6 +1462,7 @@ func cloneFounderExtensions(source *replayFounderExtensions) *replayFounderExten
 		ReputationSpent: cloneInt64Pointer(source.ReputationSpent), ReputationUnlockPPM: cloneInt64Pointer(source.ReputationUnlockPPM),
 		ReputationNodesOwned: cloneStringSlicePointer(source.ReputationNodesOwned),
 		PetIdentities:        clonePetIdentitiesPointer(source.PetIdentities),
+		Cosmetics:            source.Cosmetics.Clone(),
 	}
 }
 
@@ -1529,7 +1550,7 @@ func boolMapFromSorted(values []string) map[string]bool {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != 9 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != 9 && wire.Version != 10 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

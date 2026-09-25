@@ -14,7 +14,7 @@ import (
 	"cloud-clicker/server/decimal"
 )
 
-const ReplayInputsVersion = 10
+const ReplayInputsVersion = 11
 
 type ReplayCommand struct {
 	IntentID        string `json:"intent_id"`

@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/pet"
@@ -22,7 +23,7 @@ import (
 const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
-	LatestFounderVersion     = 23
+	LatestFounderVersion     = 24
 	LatestCompanyVersion     = 18
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
@@ -97,7 +98,10 @@ type State struct {
 	ReputationNodesOwned []string
 	// PetIdentities is Founder v23 (Pet Adoption v1 PA3): immutable adopted
 	// identities keyed exactly like Pets.
-	PetIdentities          map[string]pet.Identity
+	PetIdentities map[string]pet.Identity
+	// Cosmetics is Founder v24 (Cosmetic Shop v1 §3): owned ids and the
+	// per-pet equip map; nil exactly below v24.
+	Cosmetics              *cosmetic.State
 	NetworkSlots           []NetworkSlot
 	CloutLifetime          int64
 	Soul                   int64
@@ -350,6 +354,30 @@ type stateV22 struct {
 	ReputationNodesOwned []string `json:"reputation_nodes_owned"`
 }
 
+type stateV24 struct {
+	stateV23
+	Cosmetics *wireCosmetics `json:"cosmetics"`
+}
+
+// wireCosmetics decodes through pointers so an omitted or null collection is
+// a missing field, never an empty default (§3: [] / {} are canonical).
+type wireCosmetics struct {
+	Owned    *[]string          `json:"owned"`
+	Equipped *map[string]string `json:"equipped"`
+}
+
+func encodeCosmetics(state *cosmetic.State) *wireCosmetics {
+	clone := state.Clone()
+	return &wireCosmetics{Owned: &clone.Owned, Equipped: &clone.Equipped}
+}
+
+func decodeCosmetics(wire *wireCosmetics) (*cosmetic.State, error) {
+	if wire == nil || wire.Owned == nil || wire.Equipped == nil || *wire.Owned == nil || *wire.Equipped == nil {
+		return nil, fmt.Errorf("%w: cosmetics Founder state is required and never null", ErrInvalidState)
+	}
+	return (&cosmetic.State{Owned: *wire.Owned, Equipped: *wire.Equipped}).Clone(), nil
+}
+
 type stateV23 struct {
 	stateV22
 	PetIdentities map[string]wirePetIdentity `json:"pet_identities"`
@@ -529,7 +557,7 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 	if normalized.Ledger.Scope() == economy.ScopeFounder {
 		maximum = LatestFounderVersion
 	}
-	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 && version != 21 && version != 22 && version != 23 {
+	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 && version != 21 && version != 22 && version != 23 && version != 24 {
 		return nil, fmt.Errorf("%w: unsupported encode version %d", ErrInvalidState, version)
 	}
 	if err := validateFoundationState(&normalized, version, normalized.Ledger.Scope()); err != nil {
@@ -617,7 +645,11 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 										v22 := stateV22{stateV21: v21, ReputationSpent: &spent, ReputationNodesOwned: append([]string{}, normalized.ReputationNodesOwned...)}
 										wire = v22
 										if version >= 23 {
-											wire = stateV23{stateV22: v22, PetIdentities: encodePetIdentities(normalized.PetIdentities)}
+											v23 := stateV23{stateV22: v22, PetIdentities: encodePetIdentities(normalized.PetIdentities)}
+											wire = v23
+											if version >= 24 {
+												wire = stateV24{stateV23: v23, Cosmetics: encodeCosmetics(normalized.Cosmetics)}
+											}
 										}
 									}
 								}
@@ -678,6 +710,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	var minigameAPISource *stateV21
 	var reputationSource *stateV22
 	var petIdentitySource *stateV23
+	var cosmeticsSource *stateV24
 	var computeBurstRemainingMS int64
 	var activeCompany *companyStateV18
 	if version == 1 {
@@ -777,6 +810,14 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		source.stateV17.stateV16 = company.stateV16
 		computeBurstRemainingMS, activeCompany = *company.ComputeBurstRemainingMS, &company
+	} else if version == 24 && scope == economy.ScopeFounder {
+		var shop stateV24
+		if err := decodeState(data, &shop); err != nil {
+			return nil, err
+		}
+		pets := shop.stateV23
+		tree := pets.stateV22
+		source, fiscalSource, soulSource, minigameAPISource, reputationSource, petIdentitySource, cosmeticsSource = tree.stateV21.stateV20.stateV19.stateV18, &shop.stateV23.stateV22.stateV21.stateV20.stateV19, &shop.stateV23.stateV22.stateV21.stateV20, &shop.stateV23.stateV22.stateV21, &shop.stateV23.stateV22, &shop.stateV23, &shop
 	} else if version == 23 && scope == economy.ScopeFounder {
 		var pets stateV23
 		if err := decodeState(data, &pets); err != nil {
@@ -1003,6 +1044,15 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if scope == economy.ScopeFounder && version >= 21 {
 		state.MinigameSessionSeq = *minigameAPISource.MinigameSessionSeq
 	}
+	if scope == economy.ScopeFounder && version >= 24 {
+		if cosmeticsSource == nil {
+			return nil, fmt.Errorf("%w: cosmetics Founder state is required", ErrInvalidState)
+		}
+		state.Cosmetics, err = decodeCosmetics(cosmeticsSource.Cosmetics)
+		if err != nil {
+			return nil, err
+		}
+	}
 	if scope == economy.ScopeFounder && version >= 23 {
 		if petIdentitySource == nil {
 			return nil, fmt.Errorf("%w: pet identity Founder state is required", ErrInvalidState)
@@ -1092,6 +1142,9 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	}
 	// Reputation Tree v1 R1/R7: no shipped path writes reputation_unlock_ppm
 	// before v22, so a non-zero value there is corruption, never repaired.
+	if version < 24 && state.Cosmetics != nil {
+		return fmt.Errorf("%w: cosmetics present before v24", ErrInvalidState)
+	}
 	if version < 23 && state.PetIdentities != nil {
 		return fmt.Errorf("%w: pet identities present before v23", ErrInvalidState)
 	}
@@ -1235,6 +1288,16 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		return nil
 	}
 	if err := pet.ValidateIdentityShape(state.PetIdentities, state.Pets); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidState, err)
+	}
+	if version < 24 {
+		return nil
+	}
+	pets := make(map[string]struct{}, len(state.Pets))
+	for id := range state.Pets {
+		pets[id] = struct{}{}
+	}
+	if err := cosmetic.ValidateShape(state.Cosmetics, pets); err != nil {
 		return fmt.Errorf("%w: %v", ErrInvalidState, err)
 	}
 	return nil

@@ -515,6 +515,9 @@ func applyFounderReplayOutput(target, replayed *save.State) error {
 	if save.VersionForState(replayed) >= 23 {
 		target.PetIdentities = pet.CloneIdentities(replayed.PetIdentities)
 	}
+	if save.VersionForState(replayed) >= 24 {
+		target.Cosmetics = replayed.Cosmetics.Clone()
+	}
 	return nil
 }
 

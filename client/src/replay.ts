@@ -22,6 +22,7 @@ import { applyFounderMinigameResolution, type CertifiedMinigameResult, type Mini
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
 import { drawPetAdoption, parsePetSpeciesCatalog, petSpeciesRow, type PetSpeciesCatalog } from "./pet/species";
 import { loadCosmeticCatalog, type CosmeticCatalog } from "./cosmetic/catalog";
+import { emptyCosmeticState, encodeCosmeticState, parseCosmeticState, type CosmeticState } from "./cosmetic/state";
 import { encodePetIdentities, initialPetCareState, parsePetIdentities, type PetIdentity } from "./pet/identity";
 import { parseTyperCatalog, type TyperCatalog } from "./typer/catalog";
 import { parsePitchCatalog, type PitchCatalog } from "./pitch/catalog";
@@ -74,7 +75,7 @@ export interface LoggedExitTransition {
   readonly founderEvents: readonly ReplayEvent[]; readonly companyEndedEvents: readonly ReplayEvent[]; readonly companyStartedEvents: readonly ReplayEvent[];
 }
 export interface FounderReplayState {
-	wireVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23;
+	wireVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
   balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number;
   upgradesOwned: Set<string>; generatorsProvisioned: Record<string, number>; provisionRemaindersPpm: Record<string, number>;
   stockRateRemainderPpm: number; evaluatedThroughMs: number; computeCreditMs: number; manualTokenMilli: number;
@@ -94,6 +95,9 @@ export interface FounderReplayState {
 	reputationUnlockPpm: number; reputationSpent: number; reputationNodesOwned: string[];
 	// Founder v23 (Pet Adoption v1 PA3): immutable identities keyed like pets.
 	petIdentities: Record<string, PetIdentity>;
+	// Founder v24 (Cosmetic Shop v1 §3): owned ids and the per-pet equip map;
+	// empty below v24 and never encoded there.
+	cosmetics: CosmeticState;
 }
 export interface FounderLoggedTransition {
   readonly state: FounderReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
@@ -104,7 +108,7 @@ export interface FounderReplayLogEntry {
   readonly replayInputs: unknown; readonly receiptJSON: string; readonly eventsJSON: string; readonly appliedRevision: number | null;
   readonly serverTSMS: number; readonly source: null | { readonly companyStreamId: string; readonly runSeq: number; readonly runLogSeq: number };
 }
-export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23; readonly constantsHash: string; readonly state: unknown }
+export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24; readonly constantsHash: string; readonly state: unknown }
 export interface FounderAttendanceSample {
   readonly companyStreamId: string; readonly runSeq: number; readonly companyRevision: number; readonly companyConstantsHash: string;
   readonly completedAttendedMs: number; readonly currentRunPartialAttendedMs: number; readonly effectiveFounderAttendedMs: number;
@@ -128,7 +132,7 @@ interface ActiveSpawnEvidence { sequence:number; sampled_interval_ms:number; eff
 interface ActiveClaimEvidence { opportunity_id:string; effect_row_id:string; selected_target:string|null; buff_instance_id:string|null; requested_delta:string|null; actual_credited_delta:string|null; saturated:boolean|null; cap_reason_key:string|null; next_sampled_interval_ms:number; next_opportunity_attended_ms:number }
 interface ActiveScheduleEvidence { attended_now_ms:number; before_sequence:number; before_next_opportunity_attended_ms:number; after_sequence:number; after_next_opportunity_attended_ms:number; expired_buffs:{buff_instance_id:string}[]; missed_opportunity_id:string|null; spawned:ActiveSpawnEvidence|null; claim:ActiveClaimEvidence|null }
 interface ReplayOfflineCatchup { opened_at_ms: number; offline_span: { from_ms: number; to_ms: number } }
-interface ReplayWire { v: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; offline_catchup: ReplayOfflineCatchup | null; resolved: Record<string, unknown> }
+interface ReplayWire { v: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; offline_catchup: ReplayOfflineCatchup | null; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
 interface FounderExtensions {
   minigame_ratings: Record<string, { elo: number; season_member: string; games_counted: number }>;
@@ -141,6 +145,8 @@ interface FounderExtensions {
   reputation_spent?: number; reputation_unlock_ppm?: number; reputation_nodes_owned?: string[];
   // Replay-inputs v10 (Pet Adoption v1 PA6.4): present exactly when the Founder floor is at least 23.
   pet_identities?: Record<string, PetIdentity>;
+  // Replay-inputs v11 (Cosmetic Shop v1 §3): present exactly when the Founder floor is at least 24.
+  cosmetics?: CosmeticState;
 }
 interface FounderCarry {
   founder_revision: number; founder_constants_hash: string; reputation_level: number; route_knowledge_balance: number;
@@ -264,8 +270,9 @@ function foundationsActive(bundle: ReplayCatalogBundle): bundle is ReplayCatalog
   return bundle.meters !== undefined && bundle.achievements !== undefined;
 }
 
-function founderVersionFloor(bundle: ReplayCatalogBundle): 14 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 {
+function founderVersionFloor(bundle: ReplayCatalogBundle): 14 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 {
   if (!foundationsActive(bundle)) return 14;
+  if (bundle.cosmetics) return 24;
   if (bundle.petSpecies) return 23;
   if (bundle.reputationTree) return 22;
   if (bundle.minigameAPI) return 21;
@@ -377,6 +384,7 @@ const founderSoulSaveKeys = ["soul_exhausted_source_ids"] as const;
 const founderMinigameAPISaveKeys = ["minigame_session_seq"] as const;
 const founderReputationSaveKeys = ["reputation_spent", "reputation_nodes_owned"] as const;
 const founderPetIdentitySaveKeys = ["pet_identities"] as const;
+const founderCosmeticSaveKeys = ["cosmetics"] as const;
 
 export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog, foundationCatalogs?: { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly opportunities?: ActivePlayCatalog }): ReplayState {
   const requestedVersion = version;
@@ -555,11 +563,11 @@ function parseReplayActiveBuffs(source: unknown, catalog: ActivePlayCatalog): Re
 export function restoreFounderReplayState(source: unknown, version: number, catalogs: ReplayCatalogBundle): FounderReplayState {
   const requestedVersion = version;
   let foundationRaw: Record<string, unknown> | null = null;
-	if (version >= 15 && version <= 23) {
-		const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length), ...(version >= 17 ? founderMinigameSaveKeys : []), ...(version >= 18 ? founderPetSaveKeys : []), ...(version >= 19 ? founderFiscalSaveKeys : []), ...(version >= 20 ? founderSoulSaveKeys : []), ...(version >= 21 ? founderMinigameAPISaveKeys : []), ...(version >= 22 ? founderReputationSaveKeys : []), ...(version >= 23 ? founderPetIdentitySaveKeys : [])];
+	if (version >= 15 && version <= 24) {
+		const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length), ...(version >= 17 ? founderMinigameSaveKeys : []), ...(version >= 18 ? founderPetSaveKeys : []), ...(version >= 19 ? founderFiscalSaveKeys : []), ...(version >= 20 ? founderSoulSaveKeys : []), ...(version >= 21 ? founderMinigameAPISaveKeys : []), ...(version >= 22 ? founderReputationSaveKeys : []), ...(version >= 23 ? founderPetIdentitySaveKeys : []), ...(version >= 24 ? founderCosmeticSaveKeys : [])];
     foundationRaw = exactObject(source, activeKeys, "Founder save v16");
     source = { ...foundationRaw, meter_bands: {} };
-		for (const key of [...foundationSaveKeys, ...founderMinigameSaveKeys, ...founderPetSaveKeys, ...founderFiscalSaveKeys, ...founderSoulSaveKeys, ...founderMinigameAPISaveKeys, ...founderReputationSaveKeys, ...founderPetIdentitySaveKeys]) delete (source as Record<string, unknown>)[key];
+		for (const key of [...foundationSaveKeys, ...founderMinigameSaveKeys, ...founderPetSaveKeys, ...founderFiscalSaveKeys, ...founderSoulSaveKeys, ...founderMinigameAPISaveKeys, ...founderReputationSaveKeys, ...founderPetIdentitySaveKeys, ...founderCosmeticSaveKeys]) delete (source as Record<string, unknown>)[key];
     version = 14;
   }
   if (version !== 14) throw new SyntaxError("unsupported Founder replay save version");
@@ -658,13 +666,18 @@ export function restoreFounderReplayState(source: unknown, version: number, cata
 		if (!catalogs.petSpecies) throw new SyntaxError("Founder v23 requires pet_species artifact");
 		petIdentities = parsePetIdentities(foundationRaw!.pet_identities, pets, catalogs.petSpecies);
 	} else if (catalogs.petSpecies) throw new SyntaxError("pet_species artifact requires Founder v23");
-	return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
+	let cosmetics = emptyCosmeticState();
+	if (requestedVersion >= 24) {
+		if (!catalogs.cosmetics) throw new SyntaxError("Founder v24 requires cosmetics artifact");
+		cosmetics = parseCosmeticState(foundationRaw!.cosmetics, new Set(Object.keys(pets)), catalogs.cosmetics);
+	} else if (catalogs.cosmetics) throw new SyntaxError("cosmetics artifact requires Founder v24");
+	return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
     stockRateRemainderPpm: 0, evaluatedThroughMs, computeCreditMs: 0, manualTokenMilli: 0, manualTokenRefilledAtMs,
     routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked), ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds),
 		reputationLevel: safeInteger(raw.reputation_level, 0, MAX_EXACT_INTEGER), networkSlots, cloutLifetime: safeInteger(raw.clout_lifetime, 0, MAX_EXACT_INTEGER), soul: requestedVersion >= 20 ? safeInteger(raw.soul, catalogs.soul!.policy.soul_floor, catalogs.soul!.policy.soul_max) : 0,
     ageMs: safeInteger(raw.age_ms, 0, MAX_EXACT_INTEGER), notoriety: safeInteger(raw.notoriety, 0, MAX_EXACT_INTEGER), advisorMode: boolean(raw.advisor_mode), exitHistory,
     achievementsEarnedLifetime: earnedLifetime, achievementScoreLifetime: lifetimeScore, minigameRatings, minigameOfflineQuality, pets,
-		fiscalCredit, fiscalPeriodOpenedWallMs, fiscalPeriodSequence, fiscalGeneratorLevels, fiscalUnlocks, soulExhaustedSourceIds, minigameSessionSeq, reputationUnlockPpm, reputationSpent, reputationNodesOwned, petIdentities };
+		fiscalCredit, fiscalPeriodOpenedWallMs, fiscalPeriodSequence, fiscalGeneratorLevels, fiscalUnlocks, soulExhaustedSourceIds, minigameSessionSeq, reputationUnlockPpm, reputationSpent, reputationNodesOwned, petIdentities, cosmetics };
 }
 
 export function encodeFounderReplayState(state: FounderReplayState): unknown {
@@ -692,6 +705,7 @@ export function encodeFounderReplayState(state: FounderReplayState): unknown {
 	if (state.wireVersion >= 21) Object.assign(active, { minigame_session_seq: state.minigameSessionSeq });
 	if (state.wireVersion >= 22) Object.assign(active, { reputation_spent: state.reputationSpent, reputation_nodes_owned: [...state.reputationNodesOwned] });
 	if (state.wireVersion >= 23) Object.assign(active, { pet_identities: encodePetIdentities(state.petIdentities) });
+	if (state.wireVersion >= 24) Object.assign(active, { cosmetics: encodeCosmeticState(state.cosmetics) });
   return active;
 }
 
@@ -905,7 +919,7 @@ function applyFounderReputationPurchase(state: FounderReplayState, request: Inte
     unlock_ppm_after: outcome.unlockPpmAfter, source: "direct" })], resultConstantsHash: catalogs.constantsHash };
 }
 
-export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23, genesisHash: string,
+export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24, genesisHash: string,
   founderStreamId: string, founderId: string, entries: readonly FounderReplayLogEntry[], head: FounderReplayHead,
   bundles: readonly ReplayCatalogBundle[]): Promise<ReplayVerdict> {
   const catalogs = new Map(bundles.map((value) => [value.constantsHash, value]));
@@ -1720,6 +1734,11 @@ function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogB
     if (Object.keys(extensions.pets).length !== 0 || extensions.pet_identities !== undefined) throw new RangeError("pet state cannot activate pet identities");
     extensions.pet_identities = {};
   }
+  if (nextFloor >= 24 && currentFloor < 24) {
+    // Cosmetic Shop v1 §6: activation at the new-run boundary with nothing owned.
+    if (extensions.cosmetics !== undefined) throw new RangeError("cosmetics cannot pre-exist activation");
+    extensions.cosmetics = emptyCosmeticState();
+  }
   founder.founder_extensions = parseFounderExtensions(extensions, next);
 }
 
@@ -1834,7 +1853,7 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
 function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire {
   const hasCatchupKey = isRecord(source) && "offline_catchup" in source; const hasCatchup = hasCatchupKey && source.offline_catchup !== null;
   const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", ...(hasCatchupKey ? ["offline_catchup"] : []), "resolved"], "replay inputs");
-  if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 && root.v !== 7 && root.v !== 8 && root.v !== 9 && root.v !== 10 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline" || hasCatchup && root.v < 7) throw new SyntaxError("invalid replay envelope");
+  if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 && root.v !== 7 && root.v !== 8 && root.v !== 9 && root.v !== 10 && root.v !== 11 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline" || hasCatchup && root.v < 7) throw new SyntaxError("invalid replay envelope");
   const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command");
   const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) };
   if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch");
@@ -1956,7 +1975,11 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
 		if (!resultCatalogs.petSpecies || Object.keys(state.petIdentities).length !== 0 || Object.keys(state.pets).length !== 0) throw new RangeError("invalid pet identity activation");
 		state.petIdentities = {};
 	}
-	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23;
+	if (resultVersion >= 24 && state.wireVersion < 24) {
+		if (!resultCatalogs.cosmetics || state.cosmetics.owned.length !== 0 || Object.keys(state.cosmetics.equipped).length !== 0) throw new RangeError("invalid cosmetics activation");
+		state.cosmetics = emptyCosmeticState();
+	}
+	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
   let planEvents: ReplayEvent[] = [];
   if (planned) {
     const plan = request.reputation_plan as string[];
@@ -2022,6 +2045,7 @@ function parseFounderExtensions(source: unknown, catalogs: ReplayCatalogBundle):
   if (!catalogs.minigames) throw new SyntaxError("Founder extensions require minigames");
   const reputationKeys = catalogs.reputationTree ? ["reputation_spent", "reputation_unlock_ppm", "reputation_nodes_owned"] : [];
   if (catalogs.petSpecies) reputationKeys.push("pet_identities");
+  if (catalogs.cosmetics) reputationKeys.push("cosmetics");
   const raw = exactObject(source, ["minigame_ratings", "minigame_offline_quality", "pets", "fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks", "soul", "soul_exhausted_source_ids", "minigame_session_seq", ...reputationKeys], "Founder extensions");
   const ratingRows = exactRecord(raw.minigame_ratings, catalogs.minigames.minigameIds, "Founder carry ratings");
   const qualityRows = exactRecord(raw.minigame_offline_quality, catalogs.minigames.minigameIds, "Founder carry quality");
@@ -2066,10 +2090,11 @@ function parseFounderExtensions(source: unknown, catalogs: ReplayCatalogBundle):
     if (extensions.reputation_unlock_ppm !== reputationUnlockPpmFor(catalogs.reputationTree, extensions.reputation_nodes_owned)) throw new SyntaxError("Founder carry reputation unlock mirror mismatch");
   }
   if (catalogs.petSpecies) extensions.pet_identities = parsePetIdentities(raw.pet_identities, pets, catalogs.petSpecies);
+  if (catalogs.cosmetics) extensions.cosmetics = parseCosmeticState(raw.cosmetics, new Set(Object.keys(pets)), catalogs.cosmetics);
   return extensions;
 }
 
-function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10): FounderCarry {
+function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11): FounderCarry {
   const legacyKeys = ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"];
   const floor = founderVersionFloor(catalogs);
   const keys = wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys;
@@ -2093,6 +2118,7 @@ function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireV
   if (wireVersion < 6 && floor > 16) throw new SyntaxError("legacy replay inputs cannot carry Founder feature state");
   if (wireVersion < 9 && floor >= 22) throw new SyntaxError("pre-v9 replay inputs cannot carry Reputation tree state");
   if (wireVersion < 10 && floor >= 23) throw new SyntaxError("pre-v10 replay inputs cannot carry pet identities");
+  if (wireVersion < 11 && floor >= 24) throw new SyntaxError("pre-v11 replay inputs cannot carry cosmetics");
   if (wireVersion >= 6 && floor >= 17) carry.founder_extensions = parseFounderExtensions(carry.founder_extensions, catalogs);
   let lastFact = "";
   for (const item of array(carry.ledger_fact_kinds, "founder facts")) {

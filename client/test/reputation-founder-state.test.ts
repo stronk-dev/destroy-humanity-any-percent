@@ -54,7 +54,7 @@ function founderState(bundle: ReplayCatalogBundle, overrides: Partial<FounderRep
     pets: {}, fiscalCredit: 0, fiscalPeriodOpenedWallMs: 1_786_000_000_000, fiscalPeriodSequence: 0,
     fiscalGeneratorLevels: Object.fromEntries(bundle.fiscal!.generatorLevelRows.map((row) => [row.generatorId, 0])), fiscalUnlocks: new Set(),
     soulExhaustedSourceIds: new Set(), minigameSessionSeq: 0,
-    reputationUnlockPpm: 250_000, reputationSpent: 6, reputationNodesOwned: ["reputation.unlock.p05", "reputation.unlock.p25"], petIdentities: {},
+    reputationUnlockPpm: 250_000, reputationSpent: 6, reputationNodesOwned: ["reputation.unlock.p05", "reputation.unlock.p25"], petIdentities: {}, cosmetics: { owned: [], equipped: {} },
     ...overrides,
   };
 }

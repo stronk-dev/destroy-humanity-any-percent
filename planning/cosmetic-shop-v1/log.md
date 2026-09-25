@@ -69,3 +69,53 @@ Severing (all restored):
 - Disabling the settle check fails with "dropped artifact: settle accepted".
 
 Kernel 0.3.122 → 0.3.123.
+
+## 2026-09-25 — C3: Founder v24 `cosmetics` (Claude)
+
+Numbering is landing-order, so the RFC's "v22" (OD-16: next free) is **Founder v24**, and the
+replay-inputs carry is **v11** (v9 went to Reputation, v10 to Pet Adoption).
+
+What changed:
+- **Go:**
+  - `server/cosmetic/state.go` holds `State`, `NewState`, `Clone`, `Equal`, `ValidateShape` and
+    `ValidateAgainst`.
+  - `save/state.go`: `LatestFounderVersion=24`, the `stateV24` wire with pointer-decoded
+    `owned`/`equipped` (null or missing rejects), encode/decode, and "cosmetics before v24"
+    rejection. From v24 on, the shape is validated against the `pets` key set.
+  - `production`:
+    - the version floor is 24 when `cosmetics` is pinned;
+    - `validateFounderCosmetics`: present iff pinned, and resolving under the catalog;
+    - activation in `settleAndActivateFoundations` and `activateFounderFeatureState`, which
+      rejects any pre-existing value;
+    - the `applyFounderReplayOutput` Exit carry;
+    - replay-extension `cosmetics`, which the carry validity requires at floor ≥ 24 with
+      wire ≥ 11 and forbids below that.
+  - `save.ReplayInputsVersion` is 11, and the parser still accepts 10.
+- **TS:**
+  - `client/src/cosmetic/state.ts`, plus the `replay.ts` twins: the floor, the save keys and
+    their stripping, restore/encode, activation (the carry and replay arms), the `FounderExtensions`
+    parse, and the v11 envelope and carry guard.
+- **Regenerated Go-authored fixtures:** `testdata/replay/apply-logged-v1.json` via
+  `make replay-fixture`, and `testdata/replay/reputation-tree-v1.json` via
+  `REPUTATION_UPDATE_FIXTURE=1`. The diff is only the replay-inputs `"v": 10` → `"v": 11`
+  (137 lines, nothing else).
+
+Evidence (cold):
+- `make test-go GO_PACKAGES='./cosmetic ./save ./production ./replaycatalog ./pet ./gameui ./account ./gameserver ./harness'`
+  with `-count=1 -timeout 45m` passes.
+- Client `tsc` is clean, and `vitest run` passes 6769.
+- New tests: `TestFounderV24CosmeticsRoundTripAndInvariants` (15 decode rejections, 4 encode
+  rejections, canonical `[]`/`{}` bytes), `TestCosmeticsOwnsFounderV24Activation`,
+  `TestPinnedCosmeticsValidatesAndCarries` (catalog-aware rejections, the AC8 Exit output carry,
+  the v11 carry rule), and `client/test/cosmetic-founder-state.test.ts` (TS codec rejections plus
+  artifact binding in both directions).
+
+Severing (all restored):
+- **S1:** dropping "cosmetics before v24" gives "encode accepted cosmetics before v24".
+- **S2:** dropping the settle activation makes the activated Founder invalid.
+- **S3:** the TS path without "cosmetics artifact requires Founder v24" fails the binding test.
+
+**Carried to C4:** the TS Exit-activation witness. As with Reputation, it is proven through a
+Go-authored Exit corpus case, which C4's cosmetic corpus will include.
+
+Kernel 0.3.123 → 0.3.124.

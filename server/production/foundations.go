@@ -117,6 +117,31 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		if err := validateFounderPetIdentities(bundle.PetSpecies, state); err != nil {
 			return err
 		}
+		if err := validateFounderCosmetics(bundle.Cosmetics, state); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// validateFounderCosmetics is Cosmetic Shop v1 §3's pinned half: the object
+// exists exactly when cosmetics is pinned, and resolves under it.
+func validateFounderCosmetics(catalog *cosmetic.Catalog, state *save.State) error {
+	if catalog == nil {
+		if state.Cosmetics != nil {
+			return fmt.Errorf("%w: cosmetics without pinned cosmetics artifact", ErrInvalidEngineState)
+		}
+		return nil
+	}
+	pets := make(map[string]struct{}, len(state.Pets))
+	for id := range state.Pets {
+		pets[id] = struct{}{}
+	}
+	if err := cosmetic.ValidateShape(state.Cosmetics, pets); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
+	}
+	if err := cosmetic.ValidateAgainst(catalog, state.Cosmetics); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
 	}
 	return nil
 }
@@ -328,6 +353,13 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 			return fmt.Errorf("%w: pet state cannot activate pet identities", ErrInvalidEngineState)
 		}
 		founder.PetIdentities = map[string]pet.Identity{}
+	}
+	if next.Cosmetics != nil && current.Cosmetics == nil {
+		// Cosmetic Shop v1 §6: v23→v24 activates with nothing owned.
+		if founder.Cosmetics != nil {
+			return fmt.Errorf("%w: cosmetics cannot pre-exist activation", ErrInvalidEngineState)
+		}
+		founder.Cosmetics = cosmetic.NewState()
 	}
 	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)
