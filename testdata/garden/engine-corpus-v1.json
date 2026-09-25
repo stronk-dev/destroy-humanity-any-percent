@@ -1,0 +1,1915 @@
+{
+ "version": 1,
+ "scenarios": [
+  {
+   "name": "maturation_then_spread",
+   "catalog_ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "chance_ppm"
+     ],
+     "value": 900000
+    }
+   ],
+   "initial": {
+    "salt_hex": null,
+    "tick_anchor_wall_ms": null,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 5000
+    },
+    {
+     "op": "advance",
+     "server_ms": 10000,
+     "unlocked": true,
+     "salt": "0123456789abcdef"
+    },
+    {
+     "op": "plant",
+     "species_id": "strain_a"
+    },
+    {
+     "op": "advance",
+     "server_ms": 910000,
+     "unlocked": true
+    },
+    {
+     "op": "advance",
+     "server_ms": 1810123,
+     "unlocked": true
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 0,
+      "tick_seq_after": 0,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": []
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": null,
+      "tick_anchor_wall_ms": null,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "ticks_applied": 0,
+      "tick_seq_after": 0,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": []
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 10000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a"
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 10000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "ticks_applied": 3,
+      "tick_seq_after": 3,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a"
+       }
+      ],
+      "spawned": [
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       }
+      ]
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 910000,
+      "tick_seq": 3,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "ticks_applied": 3,
+      "tick_seq_after": 6,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a"
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a"
+       }
+      ],
+      "spawned": [
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       }
+      ]
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1810000,
+      "tick_seq": 6,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 2,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "diagonal_only_cross",
+   "catalog_ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "chance_ppm"
+     ],
+     "value": 1
+    },
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      1,
+      "chance_ppm"
+     ],
+     "value": 1
+    },
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      2,
+      "chance_ppm"
+     ],
+     "value": 999990
+    }
+   ],
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     },
+     {
+      "row": 1,
+      "col": 2,
+      "species_id": "strain_b",
+      "age_ticks": 4,
+      "matured_effect_ppm": 1000000
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 1300000,
+     "host_level": 1,
+     "unlocked": true
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 1,
+      "tick_seq_after": 1,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": [
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_c",
+        "recipe_id": "r_c_cross"
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_c",
+        "recipe_id": "r_c_cross"
+       }
+      ]
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1300000,
+      "tick_seq": 1,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_c",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_c",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       },
+       {
+        "row": 1,
+        "col": 2,
+        "species_id": "strain_b",
+        "age_ticks": 4,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "cluster_min_three",
+   "catalog_ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "chance_ppm"
+     ],
+     "value": 1
+    },
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      4,
+      "chance_ppm"
+     ],
+     "value": 999990
+    }
+   ],
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     },
+     {
+      "row": 0,
+      "col": 1,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     },
+     {
+      "row": 1,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 1300000,
+     "unlocked": true
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 1,
+      "tick_seq_after": 1,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": [
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_e",
+        "recipe_id": "r_e_cluster"
+       }
+      ]
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1300000,
+      "tick_seq": 1,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_e",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "dormant_plots",
+   "catalog_ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "chance_ppm"
+     ],
+     "value": 1000000
+    }
+   ],
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 2,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     },
+     {
+      "row": 2,
+      "col": 0,
+      "species_id": "strain_b",
+      "age_ticks": 0,
+      "matured_effect_ppm": null
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 2500000,
+     "unlocked": true
+    },
+    {
+     "op": "plant",
+     "col": 2,
+     "species_id": "strain_a"
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 5,
+      "tick_seq_after": 5,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": []
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 2500000,
+      "tick_seq": 5,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 2,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 2,
+        "col": 0,
+        "species_id": "strain_b",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "not_eligible",
+      "detail": "plot_dormant"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 2500000,
+      "tick_seq": 5,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 2,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 2,
+        "col": 0,
+        "species_id": "strain_b",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "chaos_cumulative_clamp",
+   "catalog_ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "chance_ppm"
+     ],
+     "value": 500000
+    },
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      4,
+      "chance_ppm"
+     ],
+     "value": 500000
+    }
+   ],
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "chaos_monkey",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     },
+     {
+      "row": 0,
+      "col": 1,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     },
+     {
+      "row": 1,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 3,
+      "matured_effect_ppm": 1000000
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 1300000,
+     "unlocked": true
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 1,
+      "tick_seq_after": 1,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": [
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       }
+      ]
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1300000,
+      "tick_seq": 1,
+      "substrate_id": "chaos_monkey",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "fixed_point_skip",
+   "catalog_ops": null,
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_e",
+      "age_ticks": 5,
+      "matured_effect_ppm": 1000000
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 81000000,
+     "unlocked": true
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 266,
+      "tick_seq_after": 266,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": []
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 80800000,
+      "tick_seq": 266,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_e",
+        "age_ticks": 5,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "retune_below_age",
+   "catalog_ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      3,
+      "maturation_ticks"
+     ],
+     "value": 3
+    }
+   ],
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_d",
+      "age_ticks": 5,
+      "matured_effect_ppm": null
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 1300000,
+     "unlocked": true
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 1,
+      "tick_seq_after": 1,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_d"
+       }
+      ],
+      "spawned": []
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1300000,
+      "tick_seq": 1,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_d",
+        "age_ticks": 6,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "catchup_cap_and_regression",
+   "catalog_ops": null,
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 0,
+      "matured_effect_ppm": null
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 109000000,
+     "unlocked": true
+    },
+    {
+     "op": "advance",
+     "server_ms": 500,
+     "unlocked": true
+    },
+    {
+     "op": "advance",
+     "server_ms": 999999999
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 288,
+      "tick_seq_after": 288,
+      "catchup_forfeited_ms": 21600000,
+      "catchup_reason_key": "cap.garden_catchup",
+      "matured": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a"
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a"
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a"
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a"
+       }
+      ],
+      "spawned": [
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       }
+      ]
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 109000000,
+      "tick_seq": 288,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "ticks_applied": 0,
+      "tick_seq_after": 288,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": []
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 109000000,
+      "tick_seq": 288,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "ticks_applied": 0,
+      "tick_seq_after": 288,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [],
+      "spawned": []
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 109000000,
+      "tick_seq": 288,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "effect_frozen_harvest",
+   "catalog_ops": null,
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "mainframe",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 2,
+      "matured_effect_ppm": null
+     },
+     {
+      "row": 0,
+      "col": 1,
+      "species_id": "strain_c",
+      "age_ticks": 6,
+      "matured_effect_ppm": 750000
+     },
+     {
+      "row": 1,
+      "col": 1,
+      "species_id": "strain_e",
+      "age_ticks": 5,
+      "matured_effect_ppm": 1000000
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "advance",
+     "server_ms": 1900000,
+     "unlocked": true
+    },
+    {
+     "op": "set_substrate",
+     "server_ms": 1901000,
+     "substrate_id": "bare_metal"
+    },
+    {
+     "op": "harvest",
+     "intent_id": "01986666-0000-7000-8000-000000000001",
+     "plots": [
+      {
+       "row": 5,
+       "col": 5
+      }
+     ]
+    },
+    {
+     "op": "harvest",
+     "intent_id": "01986666-0000-7000-8000-000000000002",
+     "plots": [
+      {
+       "row": 0,
+       "col": 0
+      },
+      {
+       "row": 0,
+       "col": 1
+      },
+      {
+       "row": 1,
+       "col": 1
+      }
+     ]
+    }
+   ],
+   "outcomes": [
+    {
+     "result": {
+      "ticks_applied": 1,
+      "tick_seq_after": 1,
+      "catchup_forfeited_ms": 0,
+      "catchup_reason_key": null,
+      "matured": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a"
+       }
+      ],
+      "spawned": [
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "recipe_id": "r_a_spread"
+       }
+      ]
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1900000,
+      "tick_seq": 1,
+      "substrate_id": "mainframe",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1250000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_c",
+        "age_ticks": 6,
+        "matured_effect_ppm": 750000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_e",
+        "age_ticks": 5,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "from_substrate_id": "mainframe",
+      "to_substrate_id": "bare_metal",
+      "partial_tick_forfeited_ms": 1000
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1901000,
+      "tick_seq": 1,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": 1901000,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1250000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_c",
+        "age_ticks": 6,
+        "matured_effect_ppm": 750000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_e",
+        "age_ticks": 5,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "unknown_id",
+      "detail": "garden_plot"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1901000,
+      "tick_seq": 1,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": 1901000,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 3,
+        "matured_effect_ppm": 1250000
+       },
+       {
+        "row": 0,
+        "col": 1,
+        "species_id": "strain_c",
+        "age_ticks": 6,
+        "matured_effect_ppm": 750000
+       },
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       },
+       {
+        "row": 1,
+        "col": 1,
+        "species_id": "strain_e",
+        "age_ticks": 5,
+        "matured_effect_ppm": 1000000
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "plots": [
+       {
+        "col": 0,
+        "row": 0,
+        "species_id": "strain_a",
+        "units": 6
+       },
+       {
+        "col": 1,
+        "row": 0,
+        "species_id": "strain_c",
+        "units": 15
+       },
+       {
+        "col": 1,
+        "row": 1,
+        "species_id": "strain_e",
+        "units": 0
+       }
+      ],
+      "total_units": 21,
+      "seeds_discovered": [
+       "strain_c",
+       "strain_e"
+      ],
+      "harvest_hash": "sha256:7cbdb2f85b9b4895aa722db0ee0af239f56a2f148bf24ee5e9127b9e42318720"
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1901000,
+      "tick_seq": 1,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": 1901000,
+      "plots": [
+       {
+        "row": 1,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b",
+       "strain_c",
+       "strain_e"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "command_rejections",
+   "catalog_ops": null,
+   "initial": {
+    "salt_hex": "0123456789abcdef",
+    "tick_anchor_wall_ms": 1000000,
+    "tick_seq": 0,
+    "substrate_id": "bare_metal",
+    "substrate_set_wall_ms": null,
+    "plots": [
+     {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a",
+      "age_ticks": 1,
+      "matured_effect_ppm": null
+     }
+    ],
+    "seed_collection": [
+     "strain_a",
+     "strain_b"
+    ]
+   },
+   "steps": [
+    {
+     "op": "plant",
+     "row": 3,
+     "species_id": "strain_a"
+    },
+    {
+     "op": "plant",
+     "species_id": "strain_a"
+    },
+    {
+     "op": "plant",
+     "col": 1,
+     "species_id": "strain_zz"
+    },
+    {
+     "op": "plant",
+     "col": 1,
+     "species_id": "strain_c"
+    },
+    {
+     "op": "uproot",
+     "row": 1,
+     "col": 1
+    },
+    {
+     "op": "harvest",
+     "intent_id": "01986666-0000-7000-8000-000000000003",
+     "plots": [
+      {
+       "row": 0,
+       "col": 0
+      }
+     ]
+    },
+    {
+     "op": "set_substrate",
+     "server_ms": 2000000,
+     "substrate_id": "quantum"
+    },
+    {
+     "op": "set_substrate",
+     "server_ms": 2000000,
+     "substrate_id": "bare_metal"
+    },
+    {
+     "op": "set_substrate",
+     "server_ms": 2000000,
+     "substrate_id": "containerized"
+    },
+    {
+     "op": "set_substrate",
+     "server_ms": 2599999,
+     "substrate_id": "mainframe"
+    },
+    {
+     "op": "set_substrate",
+     "server_ms": 2600000,
+     "substrate_id": "mainframe"
+    },
+    {
+     "op": "plant",
+     "host_level": 8,
+     "row": 5,
+     "col": 5,
+     "species_id": "strain_b"
+    },
+    {
+     "op": "uproot"
+    }
+   ],
+   "outcomes": [
+    {
+     "result": null,
+     "rejection": {
+      "category": "not_eligible",
+      "detail": "plot_dormant"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "not_eligible",
+      "detail": "plot_occupied"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "unknown_id",
+      "detail": "garden_species"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "not_eligible",
+      "detail": "seed_not_collected"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "unknown_id",
+      "detail": "garden_plot"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "not_eligible",
+      "detail": "plant_not_mature"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "unknown_id",
+      "detail": "garden_substrate"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "not_eligible",
+      "detail": "substrate_unchanged"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 1000000,
+      "tick_seq": 0,
+      "substrate_id": "bare_metal",
+      "substrate_set_wall_ms": null,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "from_substrate_id": "bare_metal",
+      "to_substrate_id": "containerized",
+      "partial_tick_forfeited_ms": 1000000
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 2000000,
+      "tick_seq": 0,
+      "substrate_id": "containerized",
+      "substrate_set_wall_ms": 2000000,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": null,
+     "rejection": {
+      "category": "not_eligible",
+      "detail": "substrate_lockout"
+     },
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 2000000,
+      "tick_seq": 0,
+      "substrate_id": "containerized",
+      "substrate_set_wall_ms": 2000000,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "from_substrate_id": "containerized",
+      "to_substrate_id": "mainframe",
+      "partial_tick_forfeited_ms": 600000
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 2600000,
+      "tick_seq": 0,
+      "substrate_id": "mainframe",
+      "substrate_set_wall_ms": 2600000,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "row": 5,
+      "col": 5,
+      "species_id": "strain_b"
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 2600000,
+      "tick_seq": 0,
+      "substrate_id": "mainframe",
+      "substrate_set_wall_ms": 2600000,
+      "plots": [
+       {
+        "row": 0,
+        "col": 0,
+        "species_id": "strain_a",
+        "age_ticks": 1,
+        "matured_effect_ppm": null
+       },
+       {
+        "row": 5,
+        "col": 5,
+        "species_id": "strain_b",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    },
+    {
+     "result": {
+      "row": 0,
+      "col": 0,
+      "species_id": "strain_a",
+      "was_mature": false
+     },
+     "rejection": null,
+     "state": {
+      "salt_hex": "0123456789abcdef",
+      "tick_anchor_wall_ms": 2600000,
+      "tick_seq": 0,
+      "substrate_id": "mainframe",
+      "substrate_set_wall_ms": 2600000,
+      "plots": [
+       {
+        "row": 5,
+        "col": 5,
+        "species_id": "strain_b",
+        "age_ticks": 0,
+        "matured_effect_ppm": null
+       }
+      ],
+      "seed_collection": [
+       "strain_a",
+       "strain_b"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

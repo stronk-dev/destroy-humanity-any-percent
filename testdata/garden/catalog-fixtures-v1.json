@@ -1,0 +1,726 @@
+{
+ "version": 1,
+ "valid": "balance/testdata/server-garden/fixture-v1.json",
+ "fiscal": "balance/testdata/server-garden/fiscal-fixture-v1.json",
+ "resource_ids": [
+  "company.cash"
+ ],
+ "cases": [
+  {
+   "name": "unknown_top_key",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "extra"
+     ],
+     "value": 1
+    }
+   ]
+  },
+  {
+   "name": "missing_top_key",
+   "ops": [
+    {
+     "op": "delete",
+     "path": [
+      "soul_gate"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "schema_version",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "schema_version"
+     ],
+     "value": 2
+    }
+   ]
+  },
+  {
+   "name": "fractional_number",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "substrates",
+      0,
+      "tick_ms"
+     ],
+     "value": 300000.5
+    }
+   ]
+  },
+  {
+   "name": "unsafe_integer",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      0,
+      "harvest_units"
+     ],
+     "value": 9007199254740993
+    }
+   ]
+  },
+  {
+   "name": "unknown_soul_gate",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "soul_gate"
+     ],
+     "value": "always"
+    }
+   ]
+  },
+  {
+   "name": "species_id_grammar",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      0,
+      "species_id"
+     ],
+     "value": "Strain_A"
+    }
+   ]
+  },
+  {
+   "name": "species_unsorted",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      0,
+      "species_id"
+     ],
+     "value": "strain_z"
+    }
+   ]
+  },
+  {
+   "name": "substrate_duplicate",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "substrates",
+      1,
+      "substrate_id"
+     ],
+     "value": "bare_metal"
+    }
+   ]
+  },
+  {
+   "name": "recipe_unsorted",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "recipe_id"
+     ],
+     "value": "z_recipe"
+    }
+   ]
+  },
+  {
+   "name": "parents_unsorted",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      2,
+      "parents"
+     ],
+     "value": [
+      {
+       "species_id": "strain_b",
+       "min_mature_neighbours": 1
+      },
+      {
+       "species_id": "strain_a",
+       "min_mature_neighbours": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "parents_duplicate",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      2,
+      "parents"
+     ],
+     "value": [
+      {
+       "species_id": "strain_a",
+       "min_mature_neighbours": 1
+      },
+      {
+       "species_id": "strain_a",
+       "min_mature_neighbours": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "parents_three",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      2,
+      "parents"
+     ],
+     "value": [
+      {
+       "species_id": "strain_a",
+       "min_mature_neighbours": 1
+      },
+      {
+       "species_id": "strain_b",
+       "min_mature_neighbours": 1
+      },
+      {
+       "species_id": "strain_c",
+       "min_mature_neighbours": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "parents_empty",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "parents"
+     ],
+     "value": []
+    }
+   ]
+  },
+  {
+   "name": "tick_ms_low",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "substrates",
+      0,
+      "tick_ms"
+     ],
+     "value": 59999
+    }
+   ]
+  },
+  {
+   "name": "tick_ms_high",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "substrates",
+      0,
+      "tick_ms"
+     ],
+     "value": 86400001
+    }
+   ]
+  },
+  {
+   "name": "effect_ppm_high",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "substrates",
+      0,
+      "effect_ppm"
+     ],
+     "value": 10000001
+    }
+   ]
+  },
+  {
+   "name": "chance_factor_negative",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "substrates",
+      0,
+      "chance_factor_ppm"
+     ],
+     "value": -1
+    }
+   ]
+  },
+  {
+   "name": "maturation_zero",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      0,
+      "maturation_ticks"
+     ],
+     "value": 0
+    }
+   ]
+  },
+  {
+   "name": "harvest_units_negative",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      0,
+      "harvest_units"
+     ],
+     "value": -1
+    }
+   ]
+  },
+  {
+   "name": "chance_zero",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "chance_ppm"
+     ],
+     "value": 0
+    }
+   ]
+  },
+  {
+   "name": "chance_high",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "chance_ppm"
+     ],
+     "value": 1000001
+    }
+   ]
+  },
+  {
+   "name": "min_neighbours_nine",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "parents",
+      0,
+      "min_mature_neighbours"
+     ],
+     "value": 9
+    }
+   ]
+  },
+  {
+   "name": "parent_sum_over_eight",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      2,
+      "parents"
+     ],
+     "value": [
+      {
+       "species_id": "strain_a",
+       "min_mature_neighbours": 5
+      },
+      {
+       "species_id": "strain_b",
+       "min_mature_neighbours": 4
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "catchup_zero",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "clock",
+      "catchup_cap_ms"
+     ],
+     "value": 0
+    }
+   ]
+  },
+  {
+   "name": "catchup_high",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "clock",
+      "catchup_cap_ms"
+     ],
+     "value": 604800001
+    }
+   ]
+  },
+  {
+   "name": "lockout_high",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "clock",
+      "substrate_lockout_ms"
+     ],
+     "value": 86400001
+    }
+   ]
+  },
+  {
+   "name": "max_width_seven",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "max_width"
+     ],
+     "value": 7
+    }
+   ]
+  },
+  {
+   "name": "no_starter",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      0,
+      "starter"
+     ],
+     "value": false
+    },
+    {
+     "op": "set",
+     "path": [
+      "species",
+      1,
+      "starter"
+     ],
+     "value": false
+    }
+   ]
+  },
+  {
+   "name": "default_substrate_missing",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "default_substrate_id"
+     ],
+     "value": "quantum"
+    }
+   ]
+  },
+  {
+   "name": "recipe_child_missing",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "child_species_id"
+     ],
+     "value": "strain_z"
+    }
+   ]
+  },
+  {
+   "name": "recipe_parent_missing",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      0,
+      "parents",
+      0,
+      "species_id"
+     ],
+     "value": "strain_z"
+    }
+   ]
+  },
+  {
+   "name": "unreachable_species",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "recipes",
+      3,
+      "parents"
+     ],
+     "value": [
+      {
+       "species_id": "strain_d",
+       "min_mature_neighbours": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "unsatisfiable_recipe",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "max_width"
+     ],
+     "value": 2
+    },
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "max_height"
+     ],
+     "value": 1
+    },
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "dimension_rows"
+     ],
+     "value": [
+      {
+       "min_level": 0,
+       "width": 2,
+       "height": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "dimension_first_not_zero",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "dimension_rows",
+      0,
+      "min_level"
+     ],
+     "value": 1
+    }
+   ]
+  },
+  {
+   "name": "dimension_not_ascending",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "dimension_rows",
+      1,
+      "min_level"
+     ],
+     "value": 0
+    }
+   ]
+  },
+  {
+   "name": "dimension_shrinks",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "dimension_rows",
+      2,
+      "width"
+     ],
+     "value": 2
+    }
+   ]
+  },
+  {
+   "name": "dimension_last_not_max",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "dimension_rows"
+     ],
+     "value": [
+      {
+       "min_level": 0,
+       "width": 2,
+       "height": 2
+      },
+      {
+       "min_level": 1,
+       "width": 6,
+       "height": 5
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "dimension_empty",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "grid",
+      "dimension_rows"
+     ],
+     "value": []
+    }
+   ]
+  },
+  {
+   "name": "payout_wrong_fact",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "payout",
+      "payout_score_fact_id"
+     ],
+     "value": "pitch.best_hand_exponent"
+    }
+   ]
+  },
+  {
+   "name": "payout_unknown_resource",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "payout",
+      "credited_resource_id"
+     ],
+     "value": "company.gold"
+    }
+   ]
+  },
+  {
+   "name": "payout_extra_key",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "payout",
+      "bonus"
+     ],
+     "value": 1
+    }
+   ]
+  },
+  {
+   "name": "unlock_not_fiscal",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "unlock_id"
+     ],
+     "value": "minigame.garden_of_eden"
+    }
+   ]
+  },
+  {
+   "name": "host_not_fiscal",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "host_generator_id"
+     ],
+     "value": "generator.crt_wall"
+    }
+   ]
+  },
+  {
+   "name": "unknown_copy_key",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "species",
+      0,
+      "name_copy_key"
+     ],
+     "value": "garden.species.strain_a.nickname"
+    }
+   ]
+  },
+  {
+   "name": "unknown_reason_key",
+   "ops": [
+    {
+     "op": "set",
+     "path": [
+      "clock",
+      "catchup_reason_key"
+     ],
+     "value": "cap.garden_nope"
+    }
+   ]
+  },
+  {
+   "name": "duplicate_top_key",
+   "duplicate_key": "soul_gate"
+  }
+ ]
+}

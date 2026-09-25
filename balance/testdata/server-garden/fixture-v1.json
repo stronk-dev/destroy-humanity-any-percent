@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "unlock_id": "minigame.server_garden",
+  "host_generator_id": "generator.beige_tower",
+  "soul_gate": "unrelated",
+  "grid": {
+    "max_width": 6,
+    "max_height": 6,
+    "dimension_rows": [
+      {
+        "min_level": 0,
+        "width": 2,
+        "height": 2
+      },
+      {
+        "min_level": 1,
+        "width": 3,
+        "height": 2
+      },
+      {
+        "min_level": 2,
+        "width": 3,
+        "height": 3
+      },
+      {
+        "min_level": 3,
+        "width": 4,
+        "height": 3
+      },
+      {
+        "min_level": 4,
+        "width": 4,
+        "height": 4
+      },
+      {
+        "min_level": 5,
+        "width": 5,
+        "height": 4
+      },
+      {
+        "min_level": 6,
+        "width": 5,
+        "height": 5
+      },
+      {
+        "min_level": 7,
+        "width": 6,
+        "height": 5
+      },
+      {
+        "min_level": 8,
+        "width": 6,
+        "height": 6
+      }
+    ],
+    "hardcap_reason_key": "cap.garden_grid"
+  },
+  "clock": {
+    "catchup_cap_ms": 86400000,
+    "catchup_reason_key": "cap.garden_catchup",
+    "substrate_lockout_ms": 600000,
+    "lockout_reason_key": "cap.garden_substrate_lockout"
+  },
+  "default_substrate_id": "bare_metal",
+  "substrates": [
+    {
+      "substrate_id": "bare_metal",
+      "tick_ms": 300000,
+      "effect_ppm": 1000000,
+      "chance_factor_ppm": 1000000,
+      "name_copy_key": "garden.substrate.bare_metal.name",
+      "tooltip_copy_key": "garden.substrate.bare_metal.tooltip"
+    },
+    {
+      "substrate_id": "chaos_monkey",
+      "tick_ms": 300000,
+      "effect_ppm": 750000,
+      "chance_factor_ppm": 3000000,
+      "name_copy_key": "garden.substrate.chaos_monkey.name",
+      "tooltip_copy_key": "garden.substrate.chaos_monkey.tooltip"
+    },
+    {
+      "substrate_id": "containerized",
+      "tick_ms": 180000,
+      "effect_ppm": 750000,
+      "chance_factor_ppm": 1000000,
+      "name_copy_key": "garden.substrate.containerized.name",
+      "tooltip_copy_key": "garden.substrate.containerized.tooltip"
+    },
+    {
+      "substrate_id": "mainframe",
+      "tick_ms": 900000,
+      "effect_ppm": 1250000,
+      "chance_factor_ppm": 1000000,
+      "name_copy_key": "garden.substrate.mainframe.name",
+      "tooltip_copy_key": "garden.substrate.mainframe.tooltip"
+    }
+  ],
+  "species": [
+    {
+      "species_id": "strain_a",
+      "maturation_ticks": 3,
+      "harvest_units": 5,
+      "starter": true,
+      "name_copy_key": "garden.species.strain_a.name",
+      "description_copy_key": "garden.species.strain_a.description"
+    },
+    {
+      "species_id": "strain_b",
+      "maturation_ticks": 4,
+      "harvest_units": 8,
+      "starter": true,
+      "name_copy_key": "garden.species.strain_b.name",
+      "description_copy_key": "garden.species.strain_b.description"
+    },
+    {
+      "species_id": "strain_c",
+      "maturation_ticks": 6,
+      "harvest_units": 20,
+      "starter": false,
+      "name_copy_key": "garden.species.strain_c.name",
+      "description_copy_key": "garden.species.strain_c.description"
+    },
+    {
+      "species_id": "strain_d",
+      "maturation_ticks": 8,
+      "harvest_units": 40,
+      "starter": false,
+      "name_copy_key": "garden.species.strain_d.name",
+      "description_copy_key": "garden.species.strain_d.description"
+    },
+    {
+      "species_id": "strain_e",
+      "maturation_ticks": 5,
+      "harvest_units": 0,
+      "starter": false,
+      "name_copy_key": "garden.species.strain_e.name",
+      "description_copy_key": "garden.species.strain_e.description"
+    }
+  ],
+  "recipes": [
+    {
+      "recipe_id": "r_a_spread",
+      "child_species_id": "strain_a",
+      "parents": [
+        {
+          "species_id": "strain_a",
+          "min_mature_neighbours": 1
+        }
+      ],
+      "chance_ppm": 50000
+    },
+    {
+      "recipe_id": "r_b_spread",
+      "child_species_id": "strain_b",
+      "parents": [
+        {
+          "species_id": "strain_b",
+          "min_mature_neighbours": 1
+        }
+      ],
+      "chance_ppm": 50000
+    },
+    {
+      "recipe_id": "r_c_cross",
+      "child_species_id": "strain_c",
+      "parents": [
+        {
+          "species_id": "strain_a",
+          "min_mature_neighbours": 1
+        },
+        {
+          "species_id": "strain_b",
+          "min_mature_neighbours": 1
+        }
+      ],
+      "chance_ppm": 5000
+    },
+    {
+      "recipe_id": "r_d_pair",
+      "child_species_id": "strain_d",
+      "parents": [
+        {
+          "species_id": "strain_c",
+          "min_mature_neighbours": 2
+        }
+      ],
+      "chance_ppm": 2000
+    },
+    {
+      "recipe_id": "r_e_cluster",
+      "child_species_id": "strain_e",
+      "parents": [
+        {
+          "species_id": "strain_a",
+          "min_mature_neighbours": 3
+        }
+      ],
+      "chance_ppm": 8000
+    }
+  ],
+  "payout": {
+    "credited_resource_id": "company.cash",
+    "sends_per_day": 8,
+    "per_send_cap": 300,
+    "conversion_ppm": 1000000,
+    "payout_score_fact_id": "garden.harvest_units",
+    "cap_reason_key": "cap.minigame_faucet"
+  }
+}

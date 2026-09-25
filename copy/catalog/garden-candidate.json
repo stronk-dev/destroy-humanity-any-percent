@@ -1,0 +1,445 @@
+{
+ "schema_version": 1,
+ "entries": [
+  {
+   "key": "cap.garden_catchup",
+   "text": "Growth while away is capped; time beyond the cap was not simulated.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "cap.garden_grid",
+   "text": "The rack is at its largest size.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "cap.garden_substrate_lockout",
+   "text": "The substrate was changed recently and is locked for a while.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.fiscal_unlock_required",
+   "text": "Locked. Unlock it with Fiscal credit first.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.garden_inactive",
+   "text": "The garden is not open yet.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.garden_plot",
+   "text": "That slot is empty.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.garden_species",
+   "text": "That strain does not exist.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.garden_substrate",
+   "text": "That substrate does not exist.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.human_content_locked",
+   "text": "Not right now. Your Soul needs looking after first.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.plant_not_mature",
+   "text": "That plant is not mature yet.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.plot_dormant",
+   "text": "That slot is outside the current rack.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.plot_occupied",
+   "text": "That slot is already planted.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.seed_not_collected",
+   "text": "You have not collected that seed yet.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.substrate_lockout",
+   "text": "The substrate is locked after a recent change.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "error.garden.substrate_unchanged",
+   "text": "That substrate is already in use.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.action.harvest",
+   "text": "Harvest",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.action.harvest_all",
+   "text": "Harvest all mature",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.action.plant",
+   "text": "Plant",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.action.set_substrate",
+   "text": "Switch substrate",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.action.uproot",
+   "text": "Uproot",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.announce.tick",
+   "text": "{matured} matured, {spawned} new seedlings",
+   "params": [
+    {
+     "name": "matured",
+     "type": "integer"
+    },
+    {
+     "name": "spawned",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.codex",
+   "text": "Seed collection",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.collection.progress",
+   "text": "{count}/{total} strains collected",
+   "params": [
+    {
+     "name": "count",
+     "type": "integer"
+    },
+    {
+     "name": "total",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.hint.first",
+   "text": "Plant a strain in an empty rack slot. It grows on the wall clock, even while you are away.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.next_tick",
+   "text": "Next growth tick: {remaining}",
+   "params": [
+    {
+     "name": "remaining",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.plot.dormant",
+   "text": "Dormant slot",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.plot.empty",
+   "text": "Empty slot",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.plot.label",
+   "text": "Row {row}, column {col}: {species}, {stage}",
+   "params": [
+    {
+     "name": "col",
+     "type": "integer"
+    },
+    {
+     "name": "row",
+     "type": "integer"
+    },
+    {
+     "name": "species",
+     "type": "string"
+    },
+    {
+     "name": "stage",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.species.strain_a.description",
+   "text": "PENDING OWNER COPY",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_a.name",
+   "text": "Strain A (PENDING OWNER NAME)",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_b.description",
+   "text": "PENDING OWNER COPY",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_b.name",
+   "text": "Strain B (PENDING OWNER NAME)",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_c.description",
+   "text": "PENDING OWNER COPY",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_c.name",
+   "text": "Strain C (PENDING OWNER NAME)",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_d.description",
+   "text": "PENDING OWNER COPY",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_d.name",
+   "text": "Strain D (PENDING OWNER NAME)",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_e.description",
+   "text": "PENDING OWNER COPY",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.species.strain_e.name",
+   "text": "Strain E (PENDING OWNER NAME)",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "diegetic"
+  },
+  {
+   "key": "garden.stage.growing",
+   "text": "Growing",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.stage.mature",
+   "text": "Mature",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.bare_metal.name",
+   "text": "Bare metal",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.bare_metal.tooltip",
+   "text": "Standard growth speed and harvest.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.chaos_monkey.name",
+   "text": "Chaos Monkey",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.chaos_monkey.tooltip",
+   "text": "Triple mutation odds, smaller harvests. PENDING OWNER VALUE.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.containerized.name",
+   "text": "Containerized",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.containerized.tooltip",
+   "text": "Faster ticks, smaller harvests.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.mainframe.name",
+   "text": "Mainframe",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.substrate.mainframe.tooltip",
+   "text": "Slower ticks, larger harvests.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.title",
+   "text": "Server Garden",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "garden.why",
+   "text": "Harvesting a mature strain pays cash and keeps its seed forever. Neighbouring mature strains can crossbreed.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  }
+ ]
+}
