@@ -1,6 +1,8 @@
 package harness
 
 import (
+	"cloud-clicker/server/accrualhook"
+	"cloud-clicker/server/multiplier"
 	"errors"
 	"fmt"
 	"sort"
@@ -36,14 +38,28 @@ type FirstHourEndingSample struct {
 	RunTwoGateMS             int64  `json:"run_two_gate_ms"`
 }
 
+// FirstHourReputationSample is Reputation Tree v1 H1: the Reputation facts
+// of one Exit, recorded as first-class fields so the OD-2 threshold
+// measurement can re-derive paid Reputation exactly under any threshold.
+type FirstHourReputationSample struct {
+	RunSeq          int64  `json:"run_seq"`
+	ExitType        string `json:"exit_type"`
+	LifetimeValue   string `json:"lifetime_value"`
+	LevelBefore     int64  `json:"reputation_level_before"`
+	ReputationDelta int64  `json:"reputation_delta"`
+	LevelAfter      int64  `json:"reputation_level_after"`
+	AvailableAfter  int64  `json:"reputation_available_after"`
+}
+
 type FirstHourRunResult struct {
-	Key               RunKey                 `json:"key"`
-	PolicyHash        string                 `json:"policy_hash"`
-	Outcome           string                 `json:"outcome"`
-	Milestones        []TimedMilestone       `json:"milestones"`
-	Ending            *FirstHourEndingSample `json:"ending,omitempty"`
-	TransitionCount   int64                  `json:"transition_count"`
-	InvariantFailures []string               `json:"invariant_failures"`
+	Key               RunKey                      `json:"key"`
+	PolicyHash        string                      `json:"policy_hash"`
+	Outcome           string                      `json:"outcome"`
+	Milestones        []TimedMilestone            `json:"milestones"`
+	Ending            *FirstHourEndingSample      `json:"ending,omitempty"`
+	ReputationExits   []FirstHourReputationSample `json:"reputation_exits"`
+	TransitionCount   int64                       `json:"transition_count"`
+	InvariantFailures []string                    `json:"invariant_failures"`
 }
 
 // FirstHourScriptCommand is one player decision emitted by the ratified
@@ -88,6 +104,7 @@ type firstHourRuntime struct {
 	ending            *FirstHourEndingSample
 	lastSession       int64
 	commands          *[]FirstHourScriptCommand
+	reputationExits   []FirstHourReputationSample
 }
 
 func (suite *FirstHourSuite) RunExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment) FirstHourRunResult {
@@ -103,7 +120,8 @@ func (suite *FirstHourSuite) RunExperimentScript(spec RunSpec, seed uint64, expe
 }
 
 func (suite *FirstHourSuite) runExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment, capture bool) (FirstHourRunResult, []FirstHourScriptCommand) {
-	result := FirstHourRunResult{Key: suite.RunKey(spec, seed), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{}}
+	result := FirstHourRunResult{Key: suite.RunKey(spec, seed), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{},
+		ReputationExits: []FirstHourReputationSample{}}
 	commands := []FirstHourScriptCommand{}
 	if err := validateFirstHourExperiment(experiment); err != nil {
 		return failFirstHour(result, err), commands
@@ -139,6 +157,12 @@ func (suite *FirstHourSuite) runExperiment(spec RunSpec, seed uint64, experiment
 	}
 	result.Milestones = firstHourMilestoneReport(suite.Scenario.Milestones, runtime.milestones, &result.InvariantFailures)
 	result.Ending, result.TransitionCount = runtime.ending, runtime.transitions
+	result.ReputationExits = append(result.ReputationExits, runtime.reputationExits...)
+	// H1: a run that reached its elective Exit must have recorded the Exit's
+	// Reputation terms; a missing sample is an invalid measurement.
+	if runtime.milestones["milestone.first_elective_exit"] != nil && (len(result.ReputationExits) == 0 || result.ReputationExits[len(result.ReputationExits)-1].ExitType != "collapse") {
+		result.InvariantFailures = append(result.InvariantFailures, "reputation_exit_unrecorded")
+	}
 	if len(result.InvariantFailures) != 0 {
 		result.Outcome = "failed"
 	}
@@ -336,7 +360,7 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 	}
 	runtime.lastSession = boundary.sessionIndex
 	advanced, err := production.SimulateAdvance(runtime.company, runtime.suite.Bundle.Economy,
-		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes}, runtime.companyRevision(), mode, now, nil, production.AblationMask{})
+		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), mode, now, nil, production.AblationMask{})
 	if err != nil {
 		return err
 	}
@@ -352,6 +376,11 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 		return runtime.applyEnding(now, boundary.atMS, attended)
 	}
 	if runtime.electiveExitReady(founderAttended) {
+		terms, termsErr := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.suite.Bundle.Prestige, "collapse")
+		if termsErr != nil {
+			return termsErr
+		}
+		runtime.recordReputationExit("collapse", terms.ReputationDelta)
 		runtime.recordCommand(boundary.atMS, mode, production.IntentRequest{Kind: production.IntentWindDown})
 		runtime.observeRunEnded(boundary.atMS, "collapse")
 		return nil
@@ -493,7 +522,7 @@ func (runtime *firstHourRuntime) commandApplies(request production.IntentRequest
 		return false
 	}
 	result, err := production.SimulateTransition(request, clone, runtime.suite.Bundle.Economy,
-		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes}, runtime.companyRevision(), production.ModeOnline,
+		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), production.ModeOnline,
 		now, nil, nil, production.AblationMask{})
 	return err == nil && result.Decision.Outcome == save.IntentApplied
 }
@@ -633,6 +662,7 @@ func (runtime *firstHourRuntime) applyEnding(now time.Time, wallMS, attended int
 		terms.RouteKnowledge > decimal.MaxExactInteger-runtime.founder.RouteKnowledgeBalance-bonus {
 		return errors.New("first-hour Route Knowledge overflow")
 	}
+	runtime.recordReputationExit("scripted_first", terms.ReputationDelta)
 	runtime.founder.ReputationLevel += terms.ReputationDelta
 	runtime.founder.RouteKnowledgeBalance += terms.RouteKnowledge + bonus
 	runtime.founder.AgeMS += attended
@@ -799,4 +829,27 @@ func failFirstHour(report FirstHourRunResult, err error) FirstHourRunResult {
 
 func firstHourIntentID(revision int64) string {
 	return fmt.Sprintf("0198aaaa-0000-7000-8000-%012d", revision%1_000_000_000_000)
+}
+
+func (runtime *firstHourRuntime) recordReputationExit(exitType string, delta int64) {
+	after := runtime.founder.ReputationLevel + delta
+	runtime.reputationExits = append(runtime.reputationExits, FirstHourReputationSample{RunSeq: runtime.company.RunSeq, ExitType: exitType,
+		LifetimeValue: runtime.company.LifetimeValue.String(), LevelBefore: runtime.founder.ReputationLevel, ReputationDelta: delta,
+		LevelAfter: after, AvailableAfter: after})
+}
+
+// firstHourLifetimeHook accrues the prestige value resource into the Company's
+// lifetime value exactly as the served prestige accrual hook does
+// (prestigecore.AccumulateLifetimeValue). It deliberately omits the served
+// hook's offline-span bookkeeping: the first-hour runner records session gaps
+// itself, and the ratified milestone clock must not move (H3). Without it the
+// harness Exit terms were computed from a lifetime value that never grew.
+type firstHourLifetimeHook struct{ valueResourceID string }
+
+func (hook firstHourLifetimeHook) AfterAccrual(state *save.State, _ *economy.Catalog, _ save.Revision, result accrualhook.Result, _ []multiplier.Contribution) ([]save.EventWrite, error) {
+	return nil, prestigecore.AccumulateLifetimeValue(state, result.Receipt, hook.valueResourceID)
+}
+
+func (runtime *firstHourRuntime) lifetimeHook() production.AccrualHook {
+	return firstHourLifetimeHook{valueResourceID: runtime.suite.Bundle.Prestige.ValueResourceID}
 }

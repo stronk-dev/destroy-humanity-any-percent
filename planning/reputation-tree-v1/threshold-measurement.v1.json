@@ -1,0 +1,1102 @@
+{
+ "schema_version": 1,
+ "source_scenario_hash": "sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba",
+ "source_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+ "envelope": {
+  "minimum": 3,
+  "maximum": 10
+ },
+ "gated_personas": [
+  "casual.t0_t1",
+  "chaos.t0_t1"
+ ],
+ "rows": [
+  {
+   "threshold": "1e3",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 12,
+     "p50": 18,
+     "p95": 27,
+     "min": 9,
+     "max": 32,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 22,
+     "p50": 24,
+     "p95": 26,
+     "min": 16,
+     "max": 28,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 3,
+     "p50": 3,
+     "p95": 3,
+     "min": 3,
+     "max": 3,
+     "p50_in_envelope": true
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e3",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 9,
+     "p50": 14,
+     "p95": 21,
+     "min": 7,
+     "max": 25,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 18,
+     "p50": 19,
+     "p95": 21,
+     "min": 13,
+     "max": 22,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 2,
+     "p50": 2,
+     "p95": 2,
+     "min": 2,
+     "max": 2,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e3",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 6,
+     "p50": 11,
+     "p95": 16,
+     "min": 5,
+     "max": 18,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 12,
+     "p50": 14,
+     "p95": 15,
+     "min": 9,
+     "max": 16,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 1,
+     "p50": 1,
+     "p95": 1,
+     "min": 1,
+     "max": 1,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e4",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 5,
+     "p50": 8,
+     "p95": 12,
+     "min": 3,
+     "max": 15,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 10,
+     "p50": 11,
+     "p95": 12,
+     "min": 7,
+     "max": 13,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e4",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 4,
+     "p50": 6,
+     "p95": 9,
+     "min": 3,
+     "max": 11,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 8,
+     "p50": 9,
+     "p95": 9,
+     "min": 6,
+     "max": 10,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 1,
+     "p50": 1,
+     "p95": 1,
+     "min": 1,
+     "max": 1,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": true
+  },
+  {
+   "threshold": "5e4",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 3,
+     "p50": 4,
+     "p95": 7,
+     "min": 3,
+     "max": 8,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 6,
+     "p50": 6,
+     "p95": 6,
+     "min": 4,
+     "max": 8,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 1,
+     "p50": 1,
+     "p95": 1,
+     "min": 1,
+     "max": 1,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": true
+  },
+  {
+   "threshold": "1e5",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 2,
+     "p50": 3,
+     "p95": 6,
+     "min": 2,
+     "max": 6,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 4,
+     "p50": 5,
+     "p95": 6,
+     "min": 3,
+     "max": 6,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": true
+  },
+  {
+   "threshold": "2e5",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 2,
+     "p50": 3,
+     "p95": 5,
+     "min": 1,
+     "max": 6,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 3,
+     "p50": 4,
+     "p95": 4,
+     "min": 3,
+     "max": 4,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": true
+  },
+  {
+   "threshold": "5e5",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 1,
+     "p50": 2,
+     "p95": 3,
+     "min": 1,
+     "max": 3,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 3,
+     "p50": 3,
+     "p95": 3,
+     "min": 2,
+     "max": 3,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e6",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 1,
+     "p95": 2,
+     "min": 0,
+     "max": 3,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 2,
+     "p50": 3,
+     "p95": 3,
+     "min": 1,
+     "max": 3,
+     "p50_in_envelope": true
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e6",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 1,
+     "p95": 2,
+     "min": 0,
+     "max": 3,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 1,
+     "p50": 1,
+     "p95": 1,
+     "min": 1,
+     "max": 2,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e6",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 1,
+     "p95": 1,
+     "min": 0,
+     "max": 2,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 1,
+     "p50": 1,
+     "p95": 1,
+     "min": 0,
+     "max": 1,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e7",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 1,
+     "min": 0,
+     "max": 1,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 1,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e7",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 1,
+     "min": 0,
+     "max": 1,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e7",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e8",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e8",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e8",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e9",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e9",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e9",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e10",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e10",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e10",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e11",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e11",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e11",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "1e12",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "2e12",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  },
+  {
+   "threshold": "5e12",
+   "personas": [
+    {
+     "policy_id": "casual.t0_t1",
+     "runs": 32,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "chaos.t0_t1",
+     "runs": 64,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    },
+    {
+     "policy_id": "reference.greedy",
+     "runs": 1,
+     "p05": 0,
+     "p50": 0,
+     "p95": 0,
+     "min": 0,
+     "max": 0,
+     "p50_in_envelope": false
+    }
+   ],
+   "satisfies_envelope": false
+  }
+ ],
+ "satisfying_thresholds": [
+  "2e4",
+  "5e4",
+  "1e5",
+  "2e5"
+ ],
+ "note": "measurement only: thresholds are proposals for owner SHA ratification (OD-2/OD-10); nothing is minted"
+}

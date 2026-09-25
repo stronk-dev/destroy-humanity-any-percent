@@ -505,3 +505,67 @@ and only Buy remains; it now fails as it should.
   reached honestly until a mint. This is recorded as a gap, not a pass.
 - The Run End `[NEW ROUTE]` rendering of `run_started` v2. The Game UI event decoder does not
   surface `run_started` yet (DESIGN-GAP RT-DG-E).
+
+## 2026-09-25 — B8a landed: H1, H2, H3 and the OD-2 threshold measurement (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review. `server/harness` is not a
+kernel-guarded path.
+
+**Harness fidelity finding, fixed here.** The first-hour runner advanced production without the
+served prestige accrual hook. As a result `company.LifetimeValue` never grew, and every simulated
+Exit computed Reputation from lifetime 0. The first H1 run recorded `lifetime_value: 0` in all 97
+runs, which is exactly the "looks like data" failure the evidence rules forbid.
+
+The fix is `firstHourLifetimeHook`, which calls the served `prestigecore.AccumulateLifetimeValue`.
+It deliberately omits the served hook's offline-span bookkeeping, because the runner records
+session gaps itself and the ratified milestone clock must not move. The earlier epoch-8 first-hour
+evidence stands, as H3 below shows: nothing it measured depends on Reputation.
+
+**What landed:**
+- **H1.** `FirstHourRunResult.reputation_exits` records, for each Exit: `run_seq`, `exit_type`,
+  `lifetime_value`, level before and after, `reputation_delta` and available after. A run that
+  reached its elective Exit without a recorded collapse sample fails as
+  `reputation_exit_unrecorded`.
+- **Re-run report.** `planning/reputation-tree-v1/first-hour-reputation.v1.json`: 97 runs, all
+  completed, using the same epoch-8 command and knobs as `first-hour-epoch8-report.v1.json`.
+- **H3, first-hour non-regression.** Against the epoch-8 evidence, every run's milestones and ending
+  and the whole aggregate are byte-identical. The only differing key is the new
+  `reputation_exits`. (This was checked by script; the check is recorded here and is not yet a
+  pinned test.)
+- **Measured lifetime values.** Scripted first Exit p50: Chaos 2.34e7, Casual 3.92e6. Elective
+  collapse p50: Chaos 2.24e8, Casual 5.33e7. The RFC's "~1e4 cash" estimate referred to *cash on
+  hand*, not lifetime value.
+- **H2 and OD-2.** `harness/reputation_threshold.go` re-derives the paid Reputation at the first
+  elective Exit under any threshold, using `prestigecore.ReputationDelta`: run 1's scripted_first
+  credit sets the level, and run 2's collapse pays against it. This is exact because runs 1–2 are
+  threshold-independent.
+- **Pinned measurement.** `threshold-measurement.v1.json` covers a 30-point grid from 1e3 to 5e12.
+  - **Thresholds satisfying the envelope** (paid in [3, 10] at Chaos p50 and Casual p50):
+    **2e4, 5e4, 1e5, 2e5**.
+  - The RFC's 1e8 placeholder pays 0.
+  - The live 1e12 pays 0 for every persona. This is H2's demonstrated failing case, and the test
+    asserts it.
+- **Nothing is ratified or minted.** The report is owner SHA-ratification input (OD-2/OD-10).
+
+**Evidence:**
+- `TestReputationThresholdMeasurement` pins the measurement to its source report and asserts the H2
+  failing case.
+- `TestReputationThresholdMeasurementFailsLoud` rejects missing H1 samples, a failed run, and a
+  missing gated persona.
+- `TestFirstHourRecordsReputationAtEachExit` is a live Chaos run with two ordered samples, each
+  lifetime above 1e5 and each delta 0 under 1e12.
+- `make test-go GO_PACKAGES=./harness -count=1` passes.
+
+**Severing probes (each turned the test red; restored):**
+- the lifetime hook made a no-op;
+- the elective sample dropped (the first attempt did not compile and was redone as a compiling
+  mutant);
+- the run-1 level ignored in the re-derivation.
+
+**Not yet done:**
+- **H4, the runs 1–3 career scenario.** The first-hour runner stops at the first elective Exit
+  (run 2). H4 needs a third run with tree purchases and starters applied, under a fixture threshold
+  taken from this measurement.
+- **H5, per-node relevance across runs.**
+
+These are the next batch.
