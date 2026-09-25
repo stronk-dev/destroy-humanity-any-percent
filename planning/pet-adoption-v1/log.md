@@ -62,3 +62,27 @@ stays true.
   test/pet-species.test.ts` passes 4/4, and `tsc` is clean.
 - **Kernel:** `server/pet/` and `client/src/pet/` are guarded, so this commit bumps
   `kernel/VERSION`.
+
+## 2026-09-25 — P3: pet_species bundle wiring (Claude)
+
+- **Go:** `CatalogBundle.PetSpecies`. `replaycatalog.Load` loads `pet_species` against the
+  generated copy and companion registries. `validArtifactNames` allows it only with
+  `reputation_tree` and `pets`, and counts it in the artifact set. `valid()` rechecks the chain.
+- **TS:** `ReplayArtifacts.pet_species` and `bundle.petSpecies`, with the same chain rule.
+- **Tests:**
+  - `server/replaycatalog/pet_species_test.go`: complete chain loads and resolves; `pet_species`
+    changes the constants hash; loading is rejected without `reputation_tree` and without `pets`,
+    and for an invalid artifact.
+  - `client/test/pet-species-bundle.test.ts`: mirrors the Go test.
+  - `client/test/pet-fixture-bundle.ts` is a shared fixture chain for later TS tests.
+- **Severing:**
+  - Go: removing the loader chain rule failed the test ("pet_species loaded without
+    reputation_tree").
+  - TS: removing the chain rule failed 1 of 2.
+  - Go `valid()` recheck (**survived, recorded, not vacuous**): severing it did not fail. The
+    artifact count plus the Reputation declaration pairing already reject every forged bundle I
+    could build. It stays as defense in depth; the same precedent is in the Reputation log.
+- **Evidence (cold):** `./replaycatalog` and `./production` pass; the client passes 6739 tests; tsc
+  and vet are clean.
+- **Out of scope:** `server/replaycatalog/catalog_test.go` has a pre-existing gofmt drift from
+  Typer's committed edits. This change doesn't touch that file.
