@@ -1,0 +1,314 @@
+{
+ "schema_version": 1,
+ "entries": [
+  {
+   "key": "pet.adoption.action.adopt",
+   "text": "PENDING OWNER COPY: action.adopt",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.action.later",
+   "text": "PENDING OWNER COPY: action.later",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.announce.adopted",
+   "text": "PENDING OWNER COPY: announce adopted {pet_name}",
+   "params": [
+    {
+     "name": "pet_name",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.cap.label",
+   "text": "PENDING OWNER COPY: {count} of {cap}",
+   "params": [
+    {
+     "name": "cap",
+     "type": "integer"
+    },
+    {
+     "name": "count",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.card.body",
+   "text": "PENDING OWNER COPY: card.body",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.card.title",
+   "text": "PENDING OWNER COPY: card.title",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.entry_point",
+   "text": "PENDING OWNER COPY: entry point",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.name_choice.label",
+   "text": "PENDING OWNER COPY: name choice.label",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.reject.adoption_cap_reached",
+   "text": "PENDING OWNER COPY: reject.adoption cap reached",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.reject.adoption_inactive",
+   "text": "PENDING OWNER COPY: reject.adoption inactive",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.reject.species_locked",
+   "text": "PENDING OWNER COPY: reject.species locked",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.sprite.alt",
+   "text": "PENDING OWNER COPY: {pet_name}, {species}, {temperament}",
+   "params": [
+    {
+     "name": "pet_name",
+     "type": "string"
+    },
+    {
+     "name": "species",
+     "type": "string"
+    },
+    {
+     "name": "temperament",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.welcome.body",
+   "text": "PENDING OWNER COPY: welcome body {pet_name}",
+   "params": [
+    {
+     "name": "pet_name",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.adoption.welcome.title",
+   "text": "PENDING OWNER COPY: welcome title {pet_name}",
+   "params": [
+    {
+     "name": "pet_name",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n00",
+   "text": "PENDING OWNER COPY: name 00",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n01",
+   "text": "PENDING OWNER COPY: name 01",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n02",
+   "text": "PENDING OWNER COPY: name 02",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n03",
+   "text": "PENDING OWNER COPY: name 03",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n04",
+   "text": "PENDING OWNER COPY: name 04",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n05",
+   "text": "PENDING OWNER COPY: name 05",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n06",
+   "text": "PENDING OWNER COPY: name 06",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n07",
+   "text": "PENDING OWNER COPY: name 07",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n08",
+   "text": "PENDING OWNER COPY: name 08",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n09",
+   "text": "PENDING OWNER COPY: name 09",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n10",
+   "text": "PENDING OWNER COPY: name 10",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.name.server_room_cat.n11",
+   "text": "PENDING OWNER COPY: name 11",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.species.server_room_cat.description",
+   "text": "PENDING OWNER COPY: species description",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.species.server_room_cat.name",
+   "text": "PENDING OWNER COPY: species name",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.temperament.chaotic.label",
+   "text": "PENDING OWNER COPY: chaotic",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.temperament.curious.label",
+   "text": "PENDING OWNER COPY: curious",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.temperament.lazy.label",
+   "text": "PENDING OWNER COPY: lazy",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.temperament.playful.label",
+   "text": "PENDING OWNER COPY: playful",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.temperament.sassy.label",
+   "text": "PENDING OWNER COPY: sassy",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  },
+  {
+   "key": "pet.temperament.shy.label",
+   "text": "PENDING OWNER COPY: shy",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "companion"
+  }
+ ]
+}

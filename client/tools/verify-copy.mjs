@@ -59,6 +59,14 @@ for (const fixture of ["{amount}%", "version twelve", "company.cash", "NOTUSD12"
   if (containsStatistic(fixture)) throw new Error(`statistic detector overmatched ${fixture}`);
 }
 const safetyEntry = { key: "fixture.statistic", text: "Adoption reached 12%", params: [], era_variants: null, provenance: [], tone: "corporate" };
+const companionEntry = { key: "pet.fixture.line", text: "She settles in beside you.", params: [], era_variants: null, provenance: [], tone: "companion" };
+validateCopySafety([companionEntry], claims, terms);
+for (const [text, pattern] of [["Adopt her for $0.00", /price token/], ["Adopt now, limited time only", /urgency or streak token/], ["Free cat!", /price token/],
+  ["This disclosure explains the cat", /curtain or disclosure phrasing/], ["Her mood is 50%", /statistic/]]) {
+  expectFailure(`companion lint fixture: ${text}`, () => validateCopySafety([{ ...companionEntry, text }], claims, terms), pattern);
+}
+expectFailure("pet key outside the companion tone fixture", () => validateCopySafety([{ ...companionEntry, tone: "diegetic" }], claims, terms), /pet copy must use the companion tone/);
+validateCopySafety([{ ...companionEntry, text: "Not now" }], claims, terms);
 expectFailure("missing statistic provenance fixture", () => validateCopySafety([safetyEntry], claims, terms), /requires verified provenance/);
 expectFailure("known-name copy fixture", () => validateCopySafety([{ ...safetyEntry, text: "Habbo", provenance: [] }], claims, terms), /known red-list term habbo/);
 for (const fixture of ["     indented code", ">quoted", "#", "<!DOCTYPE html>", "<?xml version=\"1.0\"?>", "line  \nnext", "Heading\n=", "Heading\n--"]) {

@@ -9,7 +9,7 @@ export const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.met
 const mechanicalID = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 const paramName = /^[a-z][a-z0-9_]*$/;
 const canonicalDecimal = /^(?:0|-?[1-9](?:\.\d{0,10}[1-9])?e(?:0|-?[1-9]\d*))$/;
-const tones = new Set(["achievement", "corporate", "diegetic", "lore_card"]);
+const tones = new Set(["achievement", "companion", "corporate", "diegetic", "lore_card"]);
 const paramTypes = new Set(["canonical_decimal", "integer", "string"]);
 const textKinds = new Set(["longform", "plain"]);
 const eras = new Set(["era_1995", "era_2000"]);
@@ -331,8 +331,28 @@ export function containsStatistic(text) {
   return (literal.match(/\b\d{4}\b/gu) ?? []).some((value) => Number(value) >= historicalYearMin && Number(value) <= historicalYearMax);
 }
 
+// Pet Adoption v1 PA8.2/AC13: the sincere companion register. Every pet.* key
+// must use it, and it rejects price, urgency, statistic, and curtain phrasing.
+// A bare "now" is not banned because PA8.1 itself names a "Not now" control;
+// urgency is matched as phrases.
+const companionForbidden = [
+  [/\$|0\.00|(?<![\p{L}\p{N}_])(?:free|cost|costs|price|priced|buy|purchase)(?![\p{L}\p{N}_])/iu, "price token"],
+  [/(?<![\p{L}\p{N}_])(?:limited|hurry|last chance|act now|right now|now or never|expires?|expiring|countdown|only today|don't miss|streak)(?![\p{L}\p{N}_])/iu, "urgency or streak token"],
+  [/(?<![\p{L}\p{N}_])(?:disclosure|dark pattern|parody|satire|this is a joke|curtain)(?![\p{L}\p{N}_])/iu, "curtain or disclosure phrasing"],
+];
+
+export function validateCompanionEntry(entry) {
+  if (entry.key.startsWith("pet.") && entry.tone !== "companion") fail(entry.key, "pet copy must use the companion tone");
+  if (entry.tone !== "companion") return;
+  for (const text of [entry.text, ...Object.values(entry.era_variants ?? {})]) {
+    for (const [pattern, label] of companionForbidden) if (pattern.test(withoutPlaceholders(text))) fail(entry.key, `companion copy may not contain a ${label}`);
+    if (containsStatistic(text)) fail(entry.key, "companion copy may not contain a statistic");
+  }
+}
+
 export function validateCopySafety(entries, claims, denylist) {
   for (const entry of entries) {
+    validateCompanionEntry(entry);
     const texts = [entry.text, ...Object.values(entry.era_variants ?? {})];
     const requiresProvenance = entry.tone === "lore_card" || texts.some(containsStatistic) || entry.provenance.length > 0;
     if (requiresProvenance && entry.provenance.length === 0) fail(entry.key, "requires verified provenance");
@@ -518,7 +538,7 @@ function goConstantName(key) {
   return key.split(/[._]/u).map((part) => part[0].toUpperCase() + part.slice(1)).join("");
 }
 
-export function generatedGoKeys(keys, allKeys = keys) {
+export function generatedGoKeys(keys, allKeys = keys, companionKeys = []) {
   const names = keys.map(goConstantName);
   if (new Set(names).size !== names.length) fail("copy code references", "generated Go constant names collide");
   return [
@@ -528,6 +548,9 @@ export function generatedGoKeys(keys, allKeys = keys) {
     ...keys.map((key, index) => `const ${names[index]} = ${JSON.stringify(key)}`),
     "",
     `func All() []string { return []string{${allKeys.map((key) => JSON.stringify(key)).join(", ")}} }`,
+    "",
+    "// CompanionKeys lists the keys whose tone is companion (Pet Adoption v1 PA8.6).",
+    `func CompanionKeys() []string { return []string{${companionKeys.map((key) => JSON.stringify(key)).join(", ")}} }`,
     "",
   ].join("\n");
 }
@@ -540,7 +563,7 @@ export function generatedOutputs() {
     [generatedHashPath, `${built.copyHash}\n`],
     [generatedOrphansPath, `${JSON.stringify({ schema_version: 1, keys: built.orphans }, null, 2)}\n`],
     [generatedCodeReferencesPath, `${JSON.stringify({ schema_version: 1, keys: built.codeReferences }, null, 2)}\n`],
-    [generatedGoKeysPath, generatedGoKeys(built.codeReferences, built.artifact.entries.map((entry) => entry.key))],
+    [generatedGoKeysPath, generatedGoKeys(built.codeReferences, built.artifact.entries.map((entry) => entry.key), built.artifact.entries.filter((entry) => entry.tone === "companion").map((entry) => entry.key))],
   ]);
 }
 
