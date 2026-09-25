@@ -33,6 +33,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [v0.1 "The Garage" — Release Manifest & RFC DAG](v0.1-garage-release-manifest.md) | draft — not implementation authority; owner acceptance batch pending | design/07 Phase 1 |
 | [Reputation Tree v1](reputation-tree-v1.md) | draft — not implementation authority; OD-1–OD-12 pending | Prestige & Exits / Leaderboards & Epochs |
 | [Minigame — Terminal Typer](minigame-terminal-typer.md) | draft — not implementation authority; platform amendments TT-PA1–PA4 pending | Minigame Platform / Minigame API & Surface |
+| [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | draft — not implementation authority; OD-1–OD-16, findings AR-F1–F3 routed | Minigame Platform / Minigame API & Surface |
+| [Tier 2 Content — IT Company](tier2-content.md) | draft — not implementation authority; 10 owner decisions pending | Economy Kernel / Routes / Balance Harness |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,
