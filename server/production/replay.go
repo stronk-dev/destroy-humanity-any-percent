@@ -31,6 +31,7 @@ import (
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
+	"cloud-clicker/server/typer"
 )
 
 var ErrInvalidReplayInputs = errors.New("invalid replay inputs")
@@ -53,6 +54,7 @@ type CatalogBundle struct {
 	Fiscal        *fiscal.Catalog
 	Soul          *soul.Catalog
 	Pitch         *pitch.Catalog
+	Typer         *typer.Catalog
 	Opportunities *activeplay.Catalog
 	Relevance     *relevancepolicy.RelevancePolicy
 	Curriculum    *curriculum.Catalog
@@ -113,14 +115,31 @@ func (set ReplayCatalogSet) ResolveFaction(constantsHash string) (*faction.Catal
 
 func (set ReplayCatalogSet) ResolveTenantContent(constantsHash, engineRef, engineVersion string) (minigame.TenantContent, bool) {
 	bundle, ok := set.ResolveReplayCatalogs(constantsHash)
-	if !ok || engineRef != pitch.EngineRef || engineVersion != pitch.EngineVersion || bundle.Pitch == nil {
+	if !ok {
 		return minigame.TenantContent{}, false
 	}
-	data := bundle.Artifacts["pitch"]
-	if len(data) == 0 {
+	return bundle.TenantContent(engineRef, engineVersion)
+}
+
+// TenantContent is the pinned content for one tenant arm (TT-PA3). A bundle
+// that pins Pitch but not Typer still resolves Pitch.
+func (bundle CatalogBundle) TenantContent(engineRef, engineVersion string) (minigame.TenantContent, bool) {
+	switch {
+	case engineRef == pitch.EngineRef && engineVersion == pitch.EngineVersion && bundle.Pitch != nil:
+		data := bundle.Artifacts["pitch"]
+		if len(data) == 0 {
+			return minigame.TenantContent{}, false
+		}
+		return minigame.TenantContent{Bytes: bytes.Clone(data), Hash: pitch.ContentHash(data), SchemaVersion: pitch.SchemaVersion}, true
+	case engineRef == typer.EngineRef && engineVersion == typer.EngineVersion && bundle.Typer != nil:
+		data := bundle.Artifacts["typer"]
+		if len(data) == 0 {
+			return minigame.TenantContent{}, false
+		}
+		return minigame.TenantContent{Bytes: bytes.Clone(data), Hash: typer.ContentHash(data), SchemaVersion: typer.SchemaVersion}, true
+	default:
 		return minigame.TenantContent{}, false
 	}
-	return minigame.TenantContent{Bytes: bytes.Clone(data), Hash: pitch.ContentHash(data), SchemaVersion: pitch.SchemaVersion}, true
 }
 
 func (bundle CatalogBundle) valid(constantsHash string) bool {
@@ -132,6 +151,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withSoul := bundle.Soul != nil
 	withPitch := bundle.Pitch != nil
 	withMinigameAPI := bundle.MinigameAPI != nil
+	withTyper := bundle.Typer != nil
 	withOpportunities := bundle.Opportunities != nil
 	withRelevance := bundle.Relevance != nil
 	withCurriculum := bundle.Curriculum != nil
@@ -158,6 +178,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		expectedArtifacts++
 	}
 	if withMinigameAPI {
+		expectedArtifacts++
+	}
+	if withTyper {
 		expectedArtifacts++
 	}
 	if withOpportunities {
@@ -192,6 +215,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withSoul && (!withFiscal || len(bundle.Artifacts["soul"]) == 0 || !bundle.Minigames.SchemaSupportsSoul() || !bundle.Pets.SchemaSupportsSoul()) ||
 		withPitch && (!withSoul || len(bundle.Artifacts["pitch"]) == 0) ||
 		withMinigameAPI && (!withPitch || len(bundle.Artifacts["minigame_api"]) == 0) ||
+		withTyper && (!withMinigameAPI || len(bundle.Artifacts["typer"]) == 0) ||
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) ||
 		withRelevance && (!withOpportunities || len(bundle.Artifacts["relevance"]) == 0) ||
 		withCurriculum && (!withRelevance || len(bundle.Artifacts["curriculum"]) == 0) {

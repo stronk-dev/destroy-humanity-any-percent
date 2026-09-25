@@ -30,6 +30,7 @@ import (
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
+	"cloud-clicker/server/typer"
 )
 
 func LoadDatabase(ctx context.Context, db *sql.DB) (production.ReplayCatalogSet, error) {
@@ -195,6 +196,17 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Pitch = pitchCatalog
 	}
+	if typerBytes, active := artifacts["typer"]; active {
+		keys := make(map[string]struct{})
+		for _, key := range copykeys.All() {
+			keys[key] = struct{}{}
+		}
+		typerCatalog, typerErr := typer.LoadCatalog(typerBytes, typer.Declarations{CopyKeys: keys})
+		if typerErr != nil {
+			return production.CatalogBundle{}, typerErr
+		}
+		bundle.Typer = typerCatalog
+	}
 	if apiBytes, active := artifacts["minigame_api"]; active {
 		apiCatalog, apiErr := minigameapi.LoadCatalog(apiBytes)
 		if apiErr != nil || bundle.Minigames == nil || bundle.Pitch == nil {
@@ -204,7 +216,22 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		if !ok || !apiCatalog.SupportsTenant(definition.MinigameID, definition.EngineRef, definition.EngineVersion) {
 			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
 		}
+		// TT-PA3 loader chain: a typer definition row, the pinned typer artifact,
+		// and the minigame_api typer tenant exist together or not at all.
+		typerDefinition, hasTyperDefinition := bundle.Minigames.Definition(typer.EngineRef)
+		typerTenant := apiCatalog.SupportsTenant(typer.EngineRef, typer.EngineRef, typer.EngineVersion)
+		if hasTyperDefinition != (bundle.Typer != nil) || typerTenant != (bundle.Typer != nil) ||
+			hasTyperDefinition && (typerDefinition.EngineRef != typer.EngineRef || typerDefinition.EngineVersion != typer.EngineVersion) {
+			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
+		}
 		bundle.MinigameAPI = apiCatalog
+	}
+	// A typer definition row without its pinned artifact fails even without
+	// minigame_api (the artifact itself already requires minigame_api).
+	if bundle.Minigames != nil {
+		if _, hasTyperDefinition := bundle.Minigames.Definition(typer.EngineRef); hasTyperDefinition != (bundle.Typer != nil) {
+			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
+		}
 	}
 	if opportunityBytes, active := artifacts["opportunities"]; active {
 		opportunityCatalog, opportunityErr := activeplay.LoadCatalog(opportunityBytes, economyCatalog)
@@ -251,7 +278,7 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "relevance", "soul"} {
+	for _, name := range [...]string{"achievements", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "relevance", "soul", "typer"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -268,11 +295,12 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, soulActive := artifacts["soul"]
 	_, pitchActive := artifacts["pitch"]
 	_, minigameAPIActive := artifacts["minigame_api"]
+	_, typerActive := artifacts["typer"]
 	_, opportunitiesActive := artifacts["opportunities"]
 	_, relevanceActive := artifacts["relevance"]
 	_, curriculumActive := artifacts["curriculum"]
 	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
-		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive ||
+		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive || typerActive && !minigameAPIActive ||
 		opportunitiesActive && !doctrines || relevanceActive && !opportunitiesActive || curriculumActive && !relevanceActive {
 		return false
 	}
@@ -299,6 +327,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if minigameAPIActive {
+		want++
+	}
+	if typerActive {
 		want++
 	}
 	if opportunitiesActive {

@@ -34,6 +34,7 @@ import (
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
 	"cloud-clicker/server/transport"
+	"cloud-clicker/server/typer"
 )
 
 var (
@@ -280,7 +281,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
-	minigameTenants, err := minigame.NewTenantRegistry(pitch.NewTenant())
+	minigameTenants, err := minigame.NewTenantRegistry(pitch.NewTenant(), typer.NewTenant())
 	if err != nil {
 		return nil, err
 	}

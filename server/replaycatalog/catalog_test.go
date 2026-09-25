@@ -175,6 +175,133 @@ func TestLoadActivatesFiscalOnlyAfterPets(t *testing.T) {
 	}
 }
 
+// pitchChainArtifacts is the complete Soul → Pitch chain scaffold shared by
+// the Pitch and Typer chain tests.
+func pitchChainArtifacts(t *testing.T) map[string][]byte {
+	t.Helper()
+	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "replay", "apply-logged-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture struct {
+		PetArtifacts map[string]string `json:"pet_founder_artifacts"`
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	artifacts := make(map[string][]byte, len(fixture.PetArtifacts)+4)
+	for name, value := range fixture.PetArtifacts {
+		artifacts[name] = []byte(value)
+	}
+	var economyRoot map[string]any
+	if err := json.Unmarshal(artifacts["economy"], &economyRoot); err != nil {
+		t.Fatal(err)
+	}
+	economyRoot["multiplier_sources"] = append(economyRoot["multiplier_sources"].([]any),
+		map[string]any{"id": "fiscal.generator.beige_tower", "slot": "prestige", "target": "generator.beige_tower", "provider": "fiscal"},
+		map[string]any{"id": "fiscal.hoard", "slot": "prestige", "target": "all", "provider": "fiscal"})
+	artifacts["economy"], _ = json.Marshal(economyRoot)
+	fiscalFixture, err := os.ReadFile(filepath.Join("..", "..", "balance", "testdata", "fiscal-foundation-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fiscalEnvelope struct {
+		Baseline map[string]any `json:"baseline"`
+	}
+	if err := json.Unmarshal(fiscalFixture, &fiscalEnvelope); err != nil {
+		t.Fatal(err)
+	}
+	rows := fiscalEnvelope.Baseline["unlock_rows"].([]any)
+	fiscalEnvelope.Baseline["unlock_rows"] = append([]any{map[string]any{"unlock_id": "minigame.pitch", "cost": float64(3)}}, rows...)
+	artifacts["fiscal"], _ = json.Marshal(fiscalEnvelope.Baseline)
+	artifacts["minigames"], err = os.ReadFile(filepath.Join("..", "..", "testdata", "minigame", "pitch-v3.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var petRoot map[string]any
+	if err := json.Unmarshal(artifacts["pets"], &petRoot); err != nil {
+		t.Fatal(err)
+	}
+	petRoot["schema_version"] = float64(2)
+	for _, row := range petRoot["actions"].([]any) {
+		row.(map[string]any)["soul_gate"] = "ordinary"
+	}
+	artifacts["pets"], _ = json.Marshal(petRoot)
+	artifacts["soul"] = []byte(`{"schema_version":1,"policy":{"soul_floor":0,"soul_initial":100,"soul_max":100,"recovery_beat_ceiling_ms":5000,"max_session_wall_ms":86400000},"bands":[{"band_member":"near_zero","min_inclusive":0,"max_inclusive":9,"human_content_locked":true,"reason_key":"category.low_percent"},{"band_member":"hollow","min_inclusive":10,"max_inclusive":39,"human_content_locked":false,"reason_key":"category.ethical_percent"},{"band_member":"dimming","min_inclusive":40,"max_inclusive":74,"human_content_locked":false,"reason_key":"category.hundred_percent"},{"band_member":"whole","min_inclusive":75,"max_inclusive":100,"human_content_locked":false,"reason_key":"category.any_percent"}],"debit_sources":[],"recovery_activities":[],"ending_policy":{"whole_variant":"earnest_ascension","depleted_variant":"training_data"}}`)
+	artifacts["pitch"], err = os.ReadFile(filepath.Join("..", "..", "balance", "testdata", "pitch-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return artifacts
+}
+
+// TT-PA3 / Typer AC1: the typer definition row, the pinned typer artifact,
+// and the minigame_api typer tenant load together or not at all.
+func TestLoadTyperChainIsAllOrNothing(t *testing.T) {
+	read := func(parts ...string) []byte {
+		data, err := os.ReadFile(filepath.Join(append([]string{"..", ".."}, parts...)...))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	complete := func() map[string][]byte {
+		artifacts := pitchChainArtifacts(t)
+		artifacts["minigames"] = read("testdata", "minigame", "pitch-typer-v3.json")
+		artifacts["minigame_api"] = read("balance", "testdata", "minigame-api-typer-candidate-v1.json")
+		artifacts["typer"] = read("balance", "testdata", "typer-v1.json")
+		return artifacts
+	}
+	load := func(artifacts map[string][]byte) (production.CatalogBundle, string, error) {
+		hash, err := save.ConstantsHashArtifacts(artifacts)
+		if err != nil {
+			t.Fatal(err)
+		}
+		bundle, err := Load(hash, artifacts)
+		return bundle, hash, err
+	}
+	bundle, hash, err := load(complete())
+	if err != nil || bundle.Typer == nil || bundle.Pitch == nil {
+		t.Fatalf("complete Typer chain bundle=%+v err=%v", bundle.Typer, err)
+	}
+	for _, arm := range [][2]string{{"typer", "1.0.0"}, {"pitch", "1.0.0"}} {
+		if _, ok := (production.ReplayCatalogSet{hash: bundle}).ResolveTenantContent(hash, arm[0], arm[1]); !ok {
+			t.Fatalf("%s content did not resolve", arm[0])
+		}
+	}
+	cases := map[string]func(map[string][]byte){
+		"definition without artifact": func(a map[string][]byte) { delete(a, "typer"); a["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json") },
+		"artifact without definition": func(a map[string][]byte) { a["minigames"] = read("testdata", "minigame", "pitch-v3.json") },
+		"api tenant without definition": func(a map[string][]byte) {
+			delete(a, "typer")
+			a["minigames"] = read("testdata", "minigame", "pitch-v3.json")
+		},
+		"artifact without api tenant": func(a map[string][]byte) { a["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json") },
+		"artifact without minigame_api": func(a map[string][]byte) { delete(a, "minigame_api") },
+		"definition without api or artifact": func(a map[string][]byte) { delete(a, "minigame_api"); delete(a, "typer") },
+	}
+	for name, mutate := range cases {
+		artifacts := complete()
+		mutate(artifacts)
+		if _, _, err := load(artifacts); err == nil {
+			t.Fatalf("%s: incomplete Typer chain loaded", name)
+		}
+	}
+	// A bundle with Pitch but no Typer still resolves Pitch content.
+	pitchOnly := pitchChainArtifacts(t)
+	pitchOnly["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json")
+	pitchBundle, pitchHash, err := load(pitchOnly)
+	if err != nil || pitchBundle.Typer != nil {
+		t.Fatalf("pitch-only bundle err=%v", err)
+	}
+	if _, ok := (production.ReplayCatalogSet{pitchHash: pitchBundle}).ResolveTenantContent(pitchHash, "pitch", "1.0.0"); !ok {
+		t.Fatal("pitch-only bundle lost Pitch content")
+	}
+	if _, ok := (production.ReplayCatalogSet{pitchHash: pitchBundle}).ResolveTenantContent(pitchHash, "typer", "1.0.0"); ok {
+		t.Fatal("pitch-only bundle resolved Typer content")
+	}
+}
+
 func TestLoadActivatesPitchOnlyOnCompleteSoulChain(t *testing.T) {
 	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "replay", "apply-logged-v1.json"))
 	if err != nil {

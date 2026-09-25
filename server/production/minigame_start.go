@@ -133,7 +133,7 @@ func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigam
 		_ int64,
 	) (save.MinigameStartDecision, error) {
 		bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(companyRevision.ConstantsHash)
-		if !ok || bundle.MinigameAPI == nil || bundle.Minigames == nil || bundle.Pitch == nil ||
+		if !ok || bundle.MinigameAPI == nil || bundle.Minigames == nil ||
 			founderRevision.ConstantsHash != companyRevision.ConstantsHash || company.RunSeq < 1 ||
 			save.VersionForState(founder) < 21 {
 			return save.MinigameStartDecision{}, ErrInvalidIntent
@@ -141,6 +141,11 @@ func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigam
 		definition, ok := bundle.Minigames.Definition(request.MinigameID)
 		if !ok || !bundle.MinigameAPI.SupportsTenant(request.MinigameID, definition.EngineRef, definition.EngineVersion) ||
 			len(definition.Modes) == 0 || definition.Modes[0] != minigame.ModeSolo {
+			return save.MinigameStartDecision{}, ErrInvalidIntent
+		}
+		// TT-PA3: the start requires pinned content for the requested tenant,
+		// not Pitch content specifically.
+		if _, hasContent := bundle.TenantContent(definition.EngineRef, definition.EngineVersion); !hasContent {
 			return save.MinigameStartDecision{}, ErrInvalidIntent
 		}
 		if definition.Unlock.Kind == "fiscal_unlock" {

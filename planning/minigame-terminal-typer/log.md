@@ -102,3 +102,31 @@ it apart from invalid UTF-8.
 - **Note for other owners:** `server/gameui/features.go`, uncommitted and owned by the Garage agent,
   computes minigame availability with only the `fiscal_unlock` arm. It must call
   `TierUnlockFailure` for Typer's row, or the availability preview will disagree with the server.
+
+## 2026-09-25 — B4: TT-PA3 content resolver, loader chain, composition (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated review.
+
+- **What changed.**
+  - `CatalogBundle.Typer` and `CatalogBundle.TenantContent`; `ResolveTenantContent` now delegates
+    to it.
+  - Bundle validation counts `typer` and requires `minigame_api`.
+  - `replaycatalog.Load` loads `typer` and enforces the definition ⟺ artifact ⟺ API-tenant chain,
+    including a definition row with no API.
+  - The start coordinator checks the requested tenant's own content instead of
+    `bundle.Pitch != nil`.
+  - `gameserver.Compose` registers the Typer tenant.
+  - TS `loadReplayCatalogBundle` mirrors all of it.
+  - Fixtures: the TT1 row (`testdata/minigame/pitch-typer-v3.json`) and the two-tenant API
+    fixture.
+  - Kernel 0.3.105 → 0.3.106.
+- **Evidence (cold):**
+  - Go `./production ./replaycatalog ./gameserver ./minigame ./typer ./harness` pass.
+    `TestLoadTyperChainIsAllOrNothing` covers the complete chain, 6 broken chains and the
+    Pitch-only resolution. `TestTyperTenantRowLoads` passes.
+  - TS: `replay.test.ts` passes 86/86 (the new chain test has 5 broken-chain cases).
+    `test-client` passes 6691. Typecheck is clean.
+- **Severing:**
+  - Go chain checks disabled: red on "definition without api or artifact". The first attempt
+    didn't compile (unused variables) and is not counted; it was redone as a compiling mutant.
+  - TS chain check disabled: red.

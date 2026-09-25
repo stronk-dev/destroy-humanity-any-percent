@@ -54,3 +54,21 @@ replays every step in TS: rejections, the terminal snapshot, the result and the 
 The corpus covers every prompt, all three outcomes, both modes, every rejection code, the
 exact-deadline and one-late vectors, a backwards clock, the smart-punctuation map, a case miss and
 a fullwidth look-alike miss.
+
+## Content pinning and composition (TT-PA3)
+
+`typer` is a replay-catalog artifact name in both runtimes.
+
+- **What its presence requires.** A pinned `typer` artifact requires `minigame_api`. It is legal
+  only together with a `typer` definition row in `minigames` and a
+  `{"engine_ref":"typer","engine_version":"1.0.0","minigame_id":"typer"}` tenant in
+  `minigame_api`. Any one of the three without the others hard-fails load in Go and TS.
+- **Content lookup.** `CatalogBundle.TenantContent(engine_ref, engine_version)` resolves the pinned
+  bytes for Pitch or Typer. A Pitch-only bundle still resolves Pitch and does not resolve Typer.
+- **Starting a session.** The start coordinator requires the requested tenant's own content rather
+  than Pitch's.
+- **Registration.** `gameserver.Compose` registers `typer.NewTenant()` beside Pitch.
+
+The TT1 row fixture is `testdata/minigame/pitch-typer-v3.json`, with the two-tenant API fixture
+`balance/testdata/minigame-api-typer-candidate-v1.json`. No live epoch pins either one.
+

@@ -525,6 +525,34 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(() => restoreFounderReplayState(source, 21, { ...bundle, minigameAPI: undefined })).toThrow(/requires minigame API/);
 	});
 
+	it("loads Typer only with its definition, artifact, and minigame API tenant together (TT-PA3)", async () => {
+		const complete = async () => {
+			const artifacts = structuredClone(fixture.soul_artifacts) as unknown as Record<string, string>;
+			artifacts.pitch = JSON.stringify((await import("../../balance/testdata/pitch-v1.json")).default);
+			artifacts.minigames = JSON.stringify((await import("../../testdata/minigame/pitch-typer-v3.json")).default);
+			artifacts.minigame_api = JSON.stringify((await import("../../balance/testdata/minigame-api-typer-candidate-v1.json")).default);
+			artifacts.typer = (await import("../../balance/testdata/typer-v1.json?raw")).default;
+			return artifacts;
+		};
+		const load = async (artifacts: Record<string, string>) =>
+			loadReplayCatalogBundle(await artifactHash(artifacts as unknown as ReplayArtifacts), artifacts as unknown as ReplayArtifacts);
+		expect((await load(await complete())).typer?.prompts.length).toBeGreaterThanOrEqual(12);
+		const pitchOnlyAPI = JSON.stringify((await import("../../balance/testdata/minigame-api-candidate-v1.json")).default);
+		const pitchOnlyMinigames = JSON.stringify((await import("../../testdata/minigame/pitch-v3.json")).default);
+		const mutations: Record<string, (a: Record<string, string>) => void> = {
+			"definition without artifact": (a) => { delete a.typer; a.minigame_api = pitchOnlyAPI; },
+			"artifact without definition": (a) => { a.minigames = pitchOnlyMinigames; },
+			"api tenant without definition": (a) => { delete a.typer; a.minigames = pitchOnlyMinigames; },
+			"artifact without api tenant": (a) => { a.minigame_api = pitchOnlyAPI; },
+			"artifact without minigame_api": (a) => { delete a.minigame_api; },
+		};
+		for (const [name, mutate] of Object.entries(mutations)) {
+			const artifacts = await complete();
+			mutate(artifacts);
+			await expect(load(artifacts), name).rejects.toThrow();
+		}
+	});
+
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
     const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
     const state = restoreReplayState(testCase.pre_state, 14, bundle.economy);
