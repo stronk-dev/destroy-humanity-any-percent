@@ -7,7 +7,7 @@
   "required": ["schema_version", "era", "color", "type", "space", "border", "chrome", "motion"],
   "properties": {
     "schema_version": { "const": 1 },
-    "era": { "enum": ["era_1995", "era_2000"] },
+    "era": { "enum": ["era_1995", "era_2000", "era_2010"] },
     "color": { "$ref": "#/$defs/color" },
     "type": { "$ref": "#/$defs/type" },
     "space": { "$ref": "#/$defs/space" },

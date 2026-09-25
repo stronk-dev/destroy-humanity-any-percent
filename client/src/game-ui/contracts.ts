@@ -287,8 +287,10 @@ export function toShellSnapshot(snapshot: ParsedGameUISnapshot): AuthoritativeSn
   };
 }
 
-export function eraForSnapshot(snapshot: ParsedGameUISnapshot): "era_1995" | "era_2000" {
+export function eraForSnapshot(snapshot: ParsedGameUISnapshot): "era_1995" | "era_2000" | "era_2010" {
   if (snapshot.run.tier === 0) return "era_1995";
   if (snapshot.run.tier === 1) return "era_2000";
+  // Tier 2 is the IT Company era (rfc/tier2-content.md §E1); tier >= 3 stays fail-closed.
+  if (snapshot.run.tier === 2) return "era_2010";
   throw new RangeError(`tier ${snapshot.run.tier} has no shipped UI era`);
 }

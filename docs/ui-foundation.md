@@ -7,8 +7,9 @@ Game UI and minigame surfaces build on this boundary.
 
 ## Era themes
 
-[`ui/themes.schema.json`](../ui/themes.schema.json) is the closed theme wire. Phase A ships exactly
-`era_1995` and `era_2000`, each with the same 41 tokens across color, type, space, border, chrome,
+[`ui/themes.schema.json`](../ui/themes.schema.json) is the closed theme wire. Phase A shipped
+`era_1995` and `era_2000`; Tier 2 content (`rfc/tier2-content.md` §E1) adds `era_2010`, the flat
+2010 startup era, inside the same closed token domains. All three carry the same 41 tokens across color, type, space, border, chrome,
 and motion groups. The runtime loader rejects missing, additional, and out-of-domain leaves before
 installing them as `--cc-{group}-{key}` properties on a single `data-era` root. An era change
 replaces only that attribute and those tokens; primitive DOM structure remains unchanged.

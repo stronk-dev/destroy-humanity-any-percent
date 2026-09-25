@@ -50,3 +50,28 @@ row literal. When OD-1 is ruled, the role is appended to `generator.open_plan_fl
 - **Noted, not mine:** `gofmt -l server` lists four pre-existing files
   (`copykeys/generated.go`, `deploymentrehearsal/host_test.go`, `minigame/session.go`,
   `replaycatalog/catalog_test.go`).
+
+## 2026-09-25 — C4a: `era_2010` theme and tier-2 era mapping (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review.
+
+- `ui/themes/era_2010.json`: a flat 2010 startup theme (white/cool-grey surfaces, flat blue accent,
+  radius 6px, 120/200/320 ms eased motion under `budget: respect`). It stays inside the closed UI
+  Foundation token domains: the font domain allows only the three shipped stacks, so the theme
+  uses Verdana rather than extending the domain. The values are **candidate design data** for owner
+  ratification (§M3).
+- The era joins `UI_ERAS`, `CopyEra`, the copy pipeline's era set, the theme schema enum and the
+  schema verifier (exactly three themes, in file order). `eraForSnapshot` and `RunEndSurface` map
+  tier 2 to `era_2010`; tier ≥ 3 still throws. No `era_2010` copy variants are added: E4 copy is
+  owner-authored, and variantless keys resolve to their base text.
+- **Evidence, cold:**
+  - `game-ui.test.ts` covers tier 1 → `era_2000`, tier 2 → `era_2010`, and tier 3 throwing.
+  - A new three-browser test renders the tier-2 Desk and Run End under the WCAG 2.2 AA axe gate and
+    checks the installed accent token.
+  - svelte-check, the 6760 unit tests, `verify-schema`, `copy-check` and `verify-client-boundary`
+    all pass.
+- **Severing:** removing the tier-2 mapping makes the browser test fail with the AC8 `RangeError`
+  and fails `game-ui.test.ts`. Setting `color.text` to `#dddddd` fails axe on `color-contrast`.
+  Both were restored.
+- `client/src/copy/index.ts`, `client/src/ui/themes.ts` and `client/src/game-ui/*` are not
+  kernel-guarded, so no version bump was needed.

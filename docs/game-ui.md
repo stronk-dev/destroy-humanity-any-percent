@@ -63,7 +63,9 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   supplies a Soul-recovery port; a terminal recovery refreshes the snapshot once.
 
 The persistent chrome derives its era only from the authoritative tier (`0` is `era_1995`, `1` is
-`era_2000`). RTA uses the snapshot's server-time sample plus monotonic elapsed time. Gate splits and
+`era_2000`, `2` is `era_2010`; tier 3 and above still throw until a later tier ships its era).
+The `era_2010` token values are candidate design data awaiting owner ratification with the Tier 2
+content. RTA uses the snapshot's server-time sample plus monotonic elapsed time. Gate splits and
 personal-best timing are local display records only and never feed an intent or leaderboard.
 Presence is hidden until the real world-channel count arrives; the UI never invents a visitor.
 Presentation schema v3 owns the literal `$0.00` and pre-naming `Founder` constants, so copy

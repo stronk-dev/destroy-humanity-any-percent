@@ -516,8 +516,8 @@ async function main() {
   const themeSchema = await readJSON(path.join(uiDirectory, "themes.schema.json"));
   const validateTheme = ajv.compile(themeSchema);
   const themeCatalogs = await jsonFiles(path.join(uiDirectory, "themes"));
-  if (themeCatalogs.length !== 2) throw new Error("UI Foundation requires exactly two Phase-A theme artifacts");
-  const expectedEras = ["era_1995", "era_2000"];
+  if (themeCatalogs.length !== 3) throw new Error("UI Foundation requires exactly the three shipped era theme artifacts");
+  const expectedEras = ["era_1995", "era_2000", "era_2010"];
   for (const [index, filename] of themeCatalogs.entries()) {
     const data = await readJSON(filename);
     if (!validateTheme(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateTheme)}`);

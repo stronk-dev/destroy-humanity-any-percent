@@ -45,7 +45,10 @@ describe("Game UI snapshot contract", () => {
       revision: 1,
     });
     expect(eraForSnapshot(parsed)).toBe("era_1995");
-    expect(() => eraForSnapshot(parseGameUISnapshot({ ...snapshot, run: { ...snapshot.run, tier: 2 } }))).toThrow(/no shipped UI era/);
+    expect(eraForSnapshot(parseGameUISnapshot({ ...snapshot, run: { ...snapshot.run, tier: 1 } }))).toBe("era_2000");
+    expect(eraForSnapshot(parseGameUISnapshot({ ...snapshot, run: { ...snapshot.run, tier: 2 } }))).toBe("era_2010");
+    // Tier >= 3 remains fail-closed until a later tier RFC ships its era (rfc/tier2-content.md §E1).
+    expect(() => eraForSnapshot(parseGameUISnapshot({ ...snapshot, run: { ...snapshot.run, tier: 3 } }))).toThrow(/no shipped UI era/);
   });
 
   it("fails closed on unsorted rows, extra save bytes, and cap overflow", () => {

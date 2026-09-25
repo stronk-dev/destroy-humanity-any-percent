@@ -1,7 +1,8 @@
 import era1995Source from "../../../ui/themes/era_1995.json";
 import era2000Source from "../../../ui/themes/era_2000.json";
+import era2010Source from "../../../ui/themes/era_2010.json";
 
-export const UI_ERAS = ["era_1995", "era_2000"] as const;
+export const UI_ERAS = ["era_1995", "era_2000", "era_2010"] as const;
 export type UIEra = (typeof UI_ERAS)[number];
 
 export const THEME_KEYS = Object.freeze({
@@ -106,6 +107,7 @@ export function parseTheme(source: unknown): UITheme {
 export const UI_THEMES: Readonly<Record<UIEra, UITheme>> = Object.freeze({
   era_1995: parseTheme(era1995Source),
   era_2000: parseTheme(era2000Source),
+  era_2010: parseTheme(era2010Source),
 });
 
 export function installTheme(root: HTMLElement, theme: UITheme, reducedMotion = false): void {

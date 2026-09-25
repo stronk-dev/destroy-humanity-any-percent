@@ -5,7 +5,7 @@
   import { renderPrestigeTermRows } from "./prestige-terms";
 
   let { ended }: RunEndSurfaceProps = $props();
-  const era = $derived<CopyEra>(ended.payload.tier === 0 ? "era_1995" : ended.payload.tier === 1 ? "era_2000" : (() => { throw new RangeError(`tier ${ended.payload.tier} has no shipped UI era`); })());
+  const era = $derived<CopyEra>(ended.payload.tier === 0 ? "era_1995" : ended.payload.tier === 1 ? "era_2000" : ended.payload.tier === 2 ? "era_2010" : (() => { throw new RangeError(`tier ${ended.payload.tier} has no shipped UI era`); })());
 
   function duration(ms: number): string {
     const seconds = Math.max(0, Math.floor(ms / 1000));

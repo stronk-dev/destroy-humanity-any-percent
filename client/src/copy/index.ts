@@ -5,7 +5,7 @@ import { COPY_HASH, COPY_MAX_TEXT_LINES, COPY_MAX_TEXT_UTF8_BYTES, type CopyKey,
 
 export { COPY_HASH, COPY_KEYS, COPY_MAX_TEXT_LINES, COPY_MAX_TEXT_UTF8_BYTES, type CopyKey, type CopyParamsByKey } from "./generated/types";
 
-export type CopyEra = "era_1995" | "era_2000";
+export type CopyEra = "era_1995" | "era_2000" | "era_2010";
 export type CopyTone = "corporate" | "diegetic" | "lore_card" | "achievement" | "companion";
 export type CopyParamType = "string" | "integer" | "canonical_decimal";
 export type CopyTextKind = "plain" | "longform";
@@ -46,7 +46,7 @@ const paramName = /^[a-z][a-z0-9_]*$/;
 const tones = new Set<CopyTone>(["achievement", "companion", "corporate", "diegetic", "lore_card"]);
 const paramTypes = new Set<CopyParamType>(["canonical_decimal", "integer", "string"]);
 const textKinds = new Set<CopyTextKind>(["longform", "plain"]);
-const eras = new Set<CopyEra>(["era_1995", "era_2000"]);
+const eras = new Set<CopyEra>(["era_1995", "era_2000", "era_2010"]);
 
 function syntax(message: string): never {
   throw new SyntaxError(message);

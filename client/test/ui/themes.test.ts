@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import era1995 from "../../../ui/themes/era_1995.json";
 import era2000 from "../../../ui/themes/era_2000.json";
+import era2010 from "../../../ui/themes/era_2010.json";
 import { THEME_KEYS, UI_THEMES, installTheme, parseTheme } from "../../src/ui/themes";
 
 describe("UI theme contract", () => {
-  it("loads both exact 41-token era artifacts", () => {
+  it("loads every exact 41-token era artifact", () => {
     expect(parseTheme(era1995)).toEqual(UI_THEMES.era_1995);
     expect(parseTheme(era2000)).toEqual(UI_THEMES.era_2000);
+    expect(parseTheme(era2010)).toEqual(UI_THEMES.era_2010);
     expect(Object.values(THEME_KEYS).flat()).toHaveLength(41);
     expect(UI_THEMES.era_1995.motion).toEqual({
       duration_fast: "0ms",

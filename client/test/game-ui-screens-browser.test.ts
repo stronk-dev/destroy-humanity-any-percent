@@ -362,6 +362,19 @@ it.skipIf(typeof document === "undefined")("switches the authoritative tier era 
   await unmount(app); target.remove();
 });
 
+it.skipIf(typeof document === "undefined")("renders the Tier-2 era_2010 Desk and Run End under the axe gate (rfc/tier2-content.md §E1)", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  app.fixtureSnapshot({ ...snapshot, run: { ...snapshot.run, tier: 2 } }); app.fixtureSurface("desk"); flushSync();
+  expect(target.querySelector("main")?.getAttribute("data-era")).toBe("era_2010");
+  expect(target.querySelector("main")?.style.getPropertyValue("--cc-color-accent")).toBe("#1864ab");
+  assertNoMechanicalPresentation(target); await assertAxe(target, "tier-2 desk");
+  app.fixtureRunEnd({ ...ended, payload: { ...ended.payload, tier: 2 } }); flushSync();
+  assertNoMechanicalPresentation(target); await assertAxe(target, "tier-2 run_end");
+  await unmount(app); target.remove();
+});
+
 it.skipIf(typeof document === "undefined")("feeds authoritative Game UI snapshots through the archived 20 Hz shell worker", async () => {
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
