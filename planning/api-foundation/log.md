@@ -421,3 +421,36 @@ reader commit that follows this entry.
 - the boards, verification and registry readers;
 - the thin generated-client transport;
 - the full public privacy enumeration (AC5).
+
+## 2026-09-25 — Predeclaration: compose the public router (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+The batch is authorized by accepted A5, A7, A8, C10 and C20, together with Deployment Foundation's
+table row "CLOUD_CLICKER_CURSOR_* … required when public cursor readers are composed". Scope:
+
+1. Gameserver composition loads `balance/api/phase0.json` through `publicapi.LoadPolicy`. It builds
+   the public registry, `ResolveCursorCodec` and a `publicapi.Runtime`, and mounts every public
+   operation from the registry under `/api/public/v1/`, beside the account routes. Startup
+   **fails** if the policy or cursor secrets are missing or invalid. There is no
+   restart-generated fallback.
+2. **Cursor-secret resolution (literal reading, flagged for review):** the C20 key ID `k1` resolves
+   to the deployment cursor pair entry whose ID is `k1`, and `k0` to the entry whose ID is `k0`.
+   When the deployment supplies no previous pair, `k0` resolves to the current secret. That is the
+   C20 clause "at first deployment both names MAY resolve to the same secret value", and the
+   deployment decoder forbids a previous value equal to the current one. Any other ID set fails
+   startup.
+3. The production profile makes the cursor pair **required** (Deployment Foundation row). The
+   compose template, config schema, `.env.example` and release-template validation provision it
+   the way they provision JWT. The development profile gains a required inline `CLOUD_CLICKER_CURSOR_KEY`.
+4. **Tests:**
+   - composition fails without keys;
+   - a real composed `GET /api/public/v1/epochs` returns the ruled page with request-ID,
+     ETag/Cache-Control and limiter behaviour;
+   - a cursor minted under `k1` still decodes after rotating `k1→k0`;
+   - the composed Game UI lane sets the dev key.
+
+   Each check gets a severing probe.
+
+Out of this batch: boards, routes, verification readers, AC5 enumeration (next batches), and C18
+(still a gap).
