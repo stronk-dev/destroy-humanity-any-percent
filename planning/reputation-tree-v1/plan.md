@@ -19,9 +19,9 @@ threshold retune is measured and reported, then ratified by owner SHA).
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
-- [ ] B7 — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
-- [ ] B8 — R10 harness H1–H5 and the OD-2 threshold measurement report. AC13.
-- [ ] B9 — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
+- [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+- [x] B8 (`b522c577`, `293c3ac7`, `6d821bab`; H4 verdict FAIL recorded as owner input, not loosened) — R10 harness H1–H5 and the OD-2 threshold measurement report. AC13.
+- [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
 - [ ] Canonical docs, designated Codex review, archival (Codex).
 
 Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bumps
