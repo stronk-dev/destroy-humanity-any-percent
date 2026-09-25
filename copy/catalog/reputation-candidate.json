@@ -2,6 +2,173 @@
  "schema_version": 1,
  "entries": [
   {
+   "key": "reputation_tree.action.buy",
+   "text": "PENDING OWNER COPY: action buy {cost}",
+   "params": [
+    {
+     "name": "cost",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.action.cancel",
+   "text": "PENDING OWNER COPY: action cancel",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.action.confirm",
+   "text": "PENDING OWNER COPY: action confirm",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.applies_next_run",
+   "text": "PENDING OWNER COPY: applies next run",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.balance.available",
+   "text": "PENDING OWNER COPY: balance available {amount}",
+   "params": [
+    {
+     "name": "amount",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.balance.level",
+   "text": "PENDING OWNER COPY: balance level {amount}",
+   "params": [
+    {
+     "name": "amount",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.balance.spent",
+   "text": "PENDING OWNER COPY: balance spent {amount}",
+   "params": [
+    {
+     "name": "amount",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.bonus.formula",
+   "text": "PENDING OWNER COPY: bonus formula {perlevel} per level times {unlock} unlocked",
+   "params": [
+    {
+     "name": "perlevel",
+     "type": "integer"
+    },
+    {
+     "name": "unlock",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.bonus.next_run",
+   "text": "PENDING OWNER COPY: bonus next run {factor}",
+   "params": [
+    {
+     "name": "factor",
+     "type": "canonical_decimal"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.bonus.this_run",
+   "text": "PENDING OWNER COPY: bonus this run {factor}",
+   "params": [
+    {
+     "name": "factor",
+     "type": "canonical_decimal"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.bonus.this_run_none",
+   "text": "PENDING OWNER COPY: bonus this run none",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.error.invalid",
+   "text": "PENDING OWNER COPY: error invalid",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.error.not_eligible",
+   "text": "PENDING OWNER COPY: error not eligible",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.error.unaffordable",
+   "text": "PENDING OWNER COPY: error unaffordable",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.error.unknown_id",
+   "text": "PENDING OWNER COPY: error unknown id",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.intro",
+   "text": "PENDING OWNER COPY: intro",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
    "key": "reputation_tree.node.starter_cash_large.body",
    "text": "PENDING OWNER COPY: reputation tree node starter cash large body",
    "params": [],
@@ -140,6 +307,96 @@
   {
    "key": "reputation_tree.node.unlock_p75.title",
    "text": "PENDING OWNER COPY: reputation tree node unlock p75 title",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.plan.clear",
+   "text": "PENDING OWNER COPY: plan clear",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.plan.heading",
+   "text": "PENDING OWNER COPY: plan heading",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.plan.projected",
+   "text": "PENDING OWNER COPY: plan projected {amount}",
+   "params": [
+    {
+     "name": "amount",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.requires",
+   "text": "PENDING OWNER COPY: requires {list}",
+   "params": [
+    {
+     "name": "list",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.result.applied",
+   "text": "PENDING OWNER COPY: result applied",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.state.available",
+   "text": "PENDING OWNER COPY: state available",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.state.locked",
+   "text": "PENDING OWNER COPY: state locked",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.state.owned",
+   "text": "PENDING OWNER COPY: state owned",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.state.unaffordable",
+   "text": "PENDING OWNER COPY: state unaffordable",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "reputation_tree.title",
+   "text": "PENDING OWNER COPY: title",
    "params": [],
    "era_variants": null,
    "provenance": [],

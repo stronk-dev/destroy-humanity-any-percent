@@ -450,3 +450,58 @@ null`:
 - Removing the `locked` requires-check fails the test.
 - The unaffordable boundary mutant (`available+1`) at first survived, because no row had
   `cost == available + 1`. I added that boundary row, and the mutant now fails.
+
+## 2026-09-25 — B7b landed: Reputation tree surface and Exit plan panel (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**What landed**
+- `client/src/game-ui/ReputationTreeSurface.svelte`
+- `client/src/game-ui/ReputationPlanPanel.svelte`
+- Game UI wiring:
+  - surface row `reputation_tree`, unlocked by fact `feature.reputation_tree`;
+  - a nav tab, and the surface closes when the arm goes null;
+  - the Founder-scope purchase intent, a rejection map, and a snapshot refresh after an applied
+    purchase;
+  - `withPlan` for `wind_down` and `accept_exit_offer`, which omits the key when the plan is empty;
+    the plan resets on run continuation.
+- Copy: the R9 key list in `copy/catalog/reputation-candidate.json`, every entry marked
+  `PENDING OWNER COPY` (OD-11).
+- Docs: `docs/game-ui.md`.
+- Nothing here touches a kernel-guarded path.
+
+**Evidence**
+- `test/reputation-surface-browser.test.ts` passes 9/9 across Chromium, Firefox and WebKit. It
+  covers:
+  - axe checks;
+  - no mechanical ids rendered;
+  - server states rendered as text;
+  - only an available node has a control;
+  - Buy → Confirm (focus moves) → Escape cancels (group gone, focus back on Buy);
+  - Confirm purchases;
+  - controls disabled when Founder controls are unavailable;
+  - the plan panel keeps tree order, gates on prerequisite and budget, and cascades deselection.
+- Full lanes pass:
+  - `make build-client test-client test-browser verify-client-boundary copy-check`, including
+    20340 browser tests;
+  - `make test-game-ui-composed`, both lanes.
+
+**Severing probes (chromium)**
+
+| Mutant | Result |
+|---|---|
+| Buy without confirm | red |
+| Button shown on locked nodes | red |
+| Plan budget gate removed | red |
+| Cascading deselection removed | red |
+| Escape handler removed | first survived, then red |
+
+The Escape mutant first survived because my assertion was vacuous: it checked focus on "the first
+button", which was the still-open Confirm. I tightened it to require that the confirm group is gone
+and only Buy remains; it now fails as it should.
+
+**Not done**
+- The composed real-server purchase through the UI. No composed epoch pins a tree, so it cannot be
+  reached honestly until a mint. This is recorded as a gap, not a pass.
+- The Run End `[NEW ROUTE]` rendering of `run_started` v2. The Game UI event decoder does not
+  surface `run_started` yet (DESIGN-GAP RT-DG-E).

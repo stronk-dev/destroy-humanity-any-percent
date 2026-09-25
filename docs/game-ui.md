@@ -47,6 +47,16 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   It hosts `client/src/game-ui/minigame/MinigameSessionSurface.svelte`; see
   [Minigame platform § Client surface](minigame-platform.md#client-surface). Leaving the tab keeps
   the server session. A terminal receipt triggers one authoritative snapshot refresh.
+- Reputation tree: a nav tab shown when the `feature.reputation_tree` fact is true. It hosts
+  `client/src/game-ui/ReputationTreeSurface.svelte` over the optional v4 `features.reputation` arm,
+  and every node state comes from the server. Buy opens an inline Confirm/Cancel pair and moves
+  focus to Confirm; Escape cancels and returns focus to Buy. Owned, locked and unaffordable nodes
+  show their state as text and have no control. Purchases send `purchase_reputation_node` at the
+  Founder revision; an applied receipt refreshes the snapshot.
+  `ReputationPlanPanel.svelte` is an advisory plan shown on the Offer Sheet and beside Wind Down,
+  empty by default. It orders selections in tree order and gates them on prerequisites and a
+  projected budget. Deselecting a node also drops the selections that depended on it. A non-empty
+  plan is sent as `reputation_plan`; the server re-validates the whole plan.
 - Recovery: a nav tab hosting `client/src/game-ui/soul/SoulRecoverySurface.svelte` whenever the runtime
   supplies a Soul-recovery port; a terminal recovery refreshes the snapshot once.
 

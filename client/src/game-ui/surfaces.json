@@ -5,6 +5,7 @@
   {"mount_id": "game.surface.meters", "surface_id": "meters", "unlock": {"fact_id": "feature.meters", "kind": "fact_equals", "value": true}},
   {"mount_id": "game.surface.minigame_session", "surface_id": "minigame_session", "unlock": {"fact_id": "feature.minigame.pitch", "kind": "fact_equals", "value": true}},
   {"mount_id": "game.surface.offer_sheet", "surface_id": "offer_sheet", "unlock": {"kind": "always"}},
+  {"mount_id": "game.surface.reputation_tree", "surface_id": "reputation_tree", "unlock": {"fact_id": "feature.reputation_tree", "kind": "fact_equals", "value": true}},
   {"mount_id": "game.surface.run_end", "surface_id": "run_end", "unlock": {"kind": "always"}},
   {"mount_id": "game.surface.settings", "surface_id": "settings", "unlock": {"kind": "always"}},
   {"mount_id": "game.surface.soul_recovery", "surface_id": "soul_recovery", "unlock": {"kind": "always"}},

@@ -17,6 +17,8 @@
   import { priorPersonalBest, readLocalTiming, RTATimer, writeLocalRunTiming, type LocalTimingStorage } from "./timing";
   import { formatAmount } from "../ui/amount-format";
   import RunEndSurface from "./RunEndSurface.svelte";
+  import ReputationTreeSurface from "./ReputationTreeSurface.svelte";
+  import ReputationPlanPanel from "./ReputationPlanPanel.svelte";
   import AchievementsSurface from "./AchievementsSurface.svelte";
   import FiscalSurface from "./FiscalSurface.svelte";
   import MetersSurface from "./MetersSurface.svelte";
@@ -182,9 +184,15 @@
     return task;
   }
 
+  // R6: the advisory Exit plan; the key is omitted when empty so existing
+  // requests stay byte-identical.
+  let exitPlan = $state<string[]>([]);
+  function withPlan(body: Record<string, unknown>): Record<string, unknown> {
+    return exitPlan.length === 0 ? body : { ...body, reputation_plan: [...exitPlan] };
+  }
   function acceptOffer(): void {
     if (!offer || founderRevision === undefined) return;
-    void act({ kind: "accept_exit_offer", expected_founder_revision: founderRevision, offer_id: offer.payload.offer_id });
+    void act(withPlan({ kind: "accept_exit_offer", expected_founder_revision: founderRevision, offer_id: offer.payload.offer_id }));
   }
 
   async function continueRun(): Promise<void> {
@@ -197,6 +205,7 @@
       bindSnapshot(value);
       ended = undefined;
       offer = undefined;
+      exitPlan = [];
       show("desk");
     } catch { offline = true; }
     finally { actionPending = false; }
@@ -300,6 +309,13 @@
     ["unaffordable/fiscal_credit", "fiscal.rejection.unaffordable"],
     ["not_eligible/already_unlocked", "fiscal.rejection.already_unlocked"],
   ]);
+  const REPUTATION_REJECTIONS: SurfaceRejections = new Map([
+    ["not_eligible/*", "reputation_tree.error.not_eligible"],
+    ["unknown_id/*", "reputation_tree.error.unknown_id"],
+    ["unaffordable/reputation", "reputation_tree.error.unaffordable"],
+    ["invalid/*", "reputation_tree.error.invalid"],
+  ]);
+  function reputationApplied(): CopyKey { void refresh(); return "reputation_tree.result.applied"; }
   const HARVEST_OUTCOMES: Readonly<Record<string, CopyKey>> = {
     consumed_by_auto: "fiscal.outcome.consumed_by_auto", early_failed: "fiscal.outcome.early_failed",
     early_succeeded: "fiscal.outcome.early_succeeded", guaranteed: "fiscal.outcome.guaranteed",
@@ -312,7 +328,7 @@
   // GS0.5: an arm going null while its surface is mounted returns to the Desk.
   $effect(() => {
     const armless = surface === "achievements" && !liveFeatures?.achievements || surface === "fiscal" && !liveFeatures?.fiscal ||
-      surface === "meters" && !liveFeatures?.meters;
+      surface === "meters" && !liveFeatures?.meters || surface === "reputation_tree" && !liveFeatures?.reputation;
     if (snapshot && armless) show("desk");
   });
   const founderControls = $derived(founderRevision !== undefined && !offline && !resyncing);
@@ -356,6 +372,7 @@
         {#if factTrue("feature.meters")}<button type="button" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}{#if metersChanged} {t("meters.nav_changed_badge", {}, era)}{/if}</button>{/if}
         {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
         {#if runtime.soulRecovery}<button type="button" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.reputation_tree")}<button type="button" aria-current={surface === "reputation_tree" ? "page" : undefined} onclick={() => show("reputation_tree")}>{t("reputation_tree.title", {}, era)}</button>{/if}
         <button type="button" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
       </nav>
       {#if snapshot.run.run_seq === 1 && visitorCount !== undefined}<span class="visitor" title={t("chrome.visitor_counter.tooltip", {}, era)}>{t("chrome.visitor_counter.frame", { count: visitorCount }, era)}</span>{/if}
@@ -445,7 +462,8 @@
           {#if transitions.cross_gate}
             <button type="button" disabled={pending || !transitions.cross_gate.eligible} onclick={() => act({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null })}>{t("desk.cross_gate", {}, era)}</button>
           {/if}
-          <button type="button" disabled={pending || !transportReady || !transitions.wind_down.eligible || founderRevision === undefined} onclick={() => act({ kind: "wind_down", expected_founder_revision: founderRevision })}>{t("desk.wind_down", {}, era)}</button>
+          <button type="button" disabled={pending || !transportReady || !transitions.wind_down.eligible || founderRevision === undefined} onclick={() => act(withPlan({ kind: "wind_down", expected_founder_revision: founderRevision }))}>{t("desk.wind_down", {}, era)}</button>
+          {#if liveFeatures?.reputation && transitions.wind_down.eligible}<ReputationPlanPanel arm={liveFeatures.reputation} {era} previewDelta={0} onChange={(plan) => { exitPlan = [...plan]; }} />{/if}
         </section>
       {/if}
       {#if era === "era_1995"}
@@ -470,6 +488,7 @@
       <p>{exitTitle(offer.payload.exit_type)}</p>
       {#each renderPrestigeTermRows(offer.payload.payout_preview, era) as row}<p>{row}</p>{/each}
       <p title={t("screen.offer_sheet.countdown_tooltip", {}, era)}>{t("screen.offer_sheet.countdown_frame", { remaining: duration(offer.payload.expires_at_ms - estimatedServerNowMS()) }, era)}</p>
+      {#if liveFeatures?.reputation}<ReputationPlanPanel arm={liveFeatures.reputation} {era} previewDelta={offer.payload.payout_preview.reputation_delta} onChange={(plan) => { exitPlan = [...plan]; }} />{/if}
       <button type="button" disabled={pending || !transportReady || founderRevision === undefined} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
       <button type="button" disabled={pending} onclick={() => act({ kind: "decline_exit_offer", offer_id: offer!.payload.offer_id })}>{t("screen.offer_sheet.decline", {}, era)}</button>
     </section>
@@ -481,6 +500,9 @@
     <AchievementsSurface arm={liveFeatures.achievements} {era} />
   {:else if surface === "meters" && liveFeatures?.meters}
     <MetersSurface arm={liveFeatures.meters} {era} />
+  {:else if surface === "reputation_tree" && liveFeatures?.reputation}
+    <ReputationTreeSurface arm={liveFeatures.reputation} {era} {pending} controlsEnabled={founderControls}
+      onPurchase={(nodeID) => act({ kind: "purchase_reputation_node", node_id: nodeID }, { scope: "founder", rejections: REPUTATION_REJECTIONS, applied: reputationApplied })} />
   {:else if surface === "fiscal" && liveFeatures?.fiscal}
     <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls}
       onHarvest={() => act({ kind: "harvest_fiscal_period" }, { scope: "founder", rejections: FISCAL_REJECTIONS, applied: harvestNotice })}
