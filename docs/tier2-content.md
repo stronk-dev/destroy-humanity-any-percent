@@ -59,6 +59,11 @@ The owner ratifies the literal from that report (§M3).
 ## Not yet implemented
 
 - §H headcount, the P4 seats row and P5 (OD-1).
-- The §P3 T1–T2 combined relevance scenario and policy rows.
+- An authoritative §P3 relevance report. The combined `scenario.t1_t2_relevance`
+  (`balance/testdata/t2/relevance-scenario-t1-t2-v1.json`, policy `relevance-candidate-v1.json`)
+  currently fails its gate. Its non-authoritative diagnostic
+  (`relevance-t1-t2-diagnostic-v1.json`) shows `open_plan_floor` and `managed_services_contract`
+  with zero individual contribution to 1e9, and the three Tier-2 upgrades never bought. Retuning
+  is an owner decision.
 - §M mint: goldens, the formulas regeneration, `changelog/epoch-9.md`, and the composed Postgres
   proof.

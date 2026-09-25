@@ -1,0 +1,684 @@
+{
+  "schema_version": 1,
+  "kind": "non_authoritative_relevance_diagnostic",
+  "authoritative": false,
+  "report": {
+    "schema_version": 6,
+    "scenario_id": "scenario.t1_t2_relevance",
+    "scenario_hash": "sha256:48b48f701d57420ebc426c19f9f7ff212abe52ff505da8e19069dc360749d9dc",
+    "constants_hash": "sha256:1243f60d4cd34f3bd197e68723f008160043a80b6cc4b9ec7831ea7618415e4b",
+    "relevance_policy_hash": "sha256:f88ade9526956e3e559adc924c254af7c9e2223f1815d5f5e0333bd81bd45d69",
+    "run_budget": {
+      "declared_runs": 167,
+      "executed_runs": 167,
+      "declared_transitions": 4715708,
+      "executed_transitions": 4715708
+    },
+    "greedy_oracle": null,
+    "deviation_oracle": {
+      "kind": "deviation.v1",
+      "milestone_id": "milestone.t2_cash",
+      "status": "passed",
+      "eligible_coordinates": 265,
+      "selected_coordinates": 4,
+      "executed_probes": 8,
+      "reached_probes": 8,
+      "unreached_probes": 0,
+      "starved_probes": 0,
+      "unprobed_coordinates": 261,
+      "maximum_forced_deviations": 1,
+      "maximum_ppm": 50000,
+      "witness": null
+    },
+    "items": [
+      {
+        "purchasable_id": "generator.beige_tower_v2",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 1,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": false,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 24900000,
+            "ablated_ms": 24900000,
+            "delta_ms": 0
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "generator.crt_wall",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 25,
+        "excluded_persona_ids": [
+          "casual.phase0"
+        ],
+        "instrument_affected": false,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 27000000,
+            "ablated_ms": 28800000,
+            "delta_ms": 1800000
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 5171281,
+            "delta_ms": 1140752
+          }
+        ],
+        "support": "individual",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 0,
+        "relevance_passed": true,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "generator.first_hire",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 2,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 27000000,
+            "ablated_ms": 28800000,
+            "delta_ms": 1800000
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "individual",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 0,
+        "relevance_passed": true,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "generator.garage_rack",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 32,
+        "excluded_persona_ids": [],
+        "instrument_affected": false,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 39600000,
+            "ablated_ms": 86400000,
+            "delta_ms": 46800000
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 4325839,
+            "delta_ms": 295310
+          }
+        ],
+        "support": "individual",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 0,
+        "relevance_passed": true,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "generator.hot_desk_program",
+        "availability_window": {
+          "from_gate": "gate.t1_to_t2",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 1,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 27000000,
+            "ablated_ms": 28800000,
+            "delta_ms": 1800000
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "individual",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 0,
+        "relevance_passed": true,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "generator.managed_services_contract",
+        "availability_window": {
+          "from_gate": "gate.t1_to_t2",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 2,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 24900000,
+            "ablated_ms": 24900000,
+            "delta_ms": 0
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "generator.open_plan_floor",
+        "availability_window": {
+          "from_gate": "gate.t1_to_t2",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 30,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 27000000,
+            "ablated_ms": 27000000,
+            "delta_ms": 0
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "upgrade.crt_degauss_button",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 1,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0"
+        ],
+        "instrument_affected": false,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 4171577,
+            "delta_ms": 141048
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 4171577,
+            "delta_ms": 141048
+          }
+        ],
+        "support": "individual",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 0,
+        "relevance_passed": true,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "upgrade.employee_handbook_v0",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 0,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": false
+      },
+      {
+        "purchasable_id": "upgrade.institutional_memory",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 1,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0"
+        ],
+        "instrument_affected": false,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 4051657,
+            "delta_ms": 21128
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 4051657,
+            "delta_ms": 21128
+          }
+        ],
+        "support": "individual",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 0,
+        "relevance_passed": true,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "upgrade.move_fast_break_things",
+        "availability_window": {
+          "from_gate": "gate.t1_to_t2",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 0,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": false
+      },
+      {
+        "purchasable_id": "upgrade.nap_pod",
+        "availability_window": {
+          "from_gate": "gate.t1_to_t2",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 0,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": false
+      },
+      {
+        "purchasable_id": "upgrade.ping_pong_table",
+        "availability_window": {
+          "from_gate": "gate.t1_to_t2",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 0,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": true,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": false
+      },
+      {
+        "purchasable_id": "upgrade.rack_rail_standardization",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 1,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0"
+        ],
+        "instrument_affected": false,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 4100913,
+            "delta_ms": 70384
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_reached",
+            "baseline_ms": 4030529,
+            "ablated_ms": 4100913,
+            "delta_ms": 70384
+          }
+        ],
+        "support": "individual",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 0,
+        "relevance_passed": true,
+        "trap_passed": true
+      },
+      {
+        "purchasable_id": "upgrade.refurbished_sticker",
+        "availability_window": {
+          "from_gate": "gate.t0_to_t1",
+          "to_gate": "gate.t2_to_t3"
+        },
+        "epsilon_ms": 1000,
+        "trap_exempt": false,
+        "justification_key": null,
+        "baseline_purchase_count": 0,
+        "excluded_persona_ids": [
+          "casual.phase0",
+          "chaos.phase0",
+          "reference.greedy"
+        ],
+        "instrument_affected": false,
+        "individual_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "action_removal_deltas": [
+          {
+            "milestone_id": "milestone.t2_cash",
+            "status": "both_unreached",
+            "baseline_ms": null,
+            "ablated_ms": null,
+            "delta_ms": null
+          }
+        ],
+        "support": "failed",
+        "supporting_group_id": null,
+        "nearest_passing_epsilon_ms": 1000,
+        "relevance_passed": false,
+        "trap_passed": false
+      }
+    ],
+    "groups": [],
+    "tier_contributions": [],
+    "role_activations": [
+      {
+        "generator_id": "generator.answering_machine",
+        "kind": "manual_output",
+        "target_id": "manual.click",
+        "count": 488
+      },
+      {
+        "generator_id": "generator.beige_tower",
+        "kind": "manual_output",
+        "target_id": "manual.click",
+        "count": 657
+      },
+      {
+        "generator_id": "generator.beige_tower",
+        "kind": "synergy_feed",
+        "target_id": "pool.operational_excellence",
+        "count": 1239
+      },
+      {
+        "generator_id": "generator.crt_wall",
+        "kind": "synergy_feed",
+        "target_id": "pool.institutional_knowledge",
+        "count": 206
+      },
+      {
+        "generator_id": "generator.dot_matrix_queue",
+        "kind": "synergy_feed",
+        "target_id": "pool.operational_excellence",
+        "count": 1143
+      },
+      {
+        "generator_id": "generator.garage_rack",
+        "kind": "synergy_feed",
+        "target_id": "pool.institutional_knowledge",
+        "count": 616
+      }
+    ],
+    "instrument_excluded_ids": [
+      "generator.answering_machine",
+      "generator.first_hire",
+      "generator.hot_desk_program",
+      "generator.managed_services_contract",
+      "generator.open_plan_floor"
+    ],
+    "failures": [
+      "instrument_affected:effect_target:generator.first_hire:relevance_floor:upgrade.employee_handbook_v0",
+      "instrument_affected:effect_target:generator.first_hire:trap_floor:upgrade.employee_handbook_v0",
+      "instrument_affected:effect_target:generator.hot_desk_program:relevance_floor:upgrade.nap_pod",
+      "instrument_affected:effect_target:generator.hot_desk_program:trap_floor:upgrade.nap_pod",
+      "instrument_affected:effect_target:generator.managed_services_contract:relevance_floor:upgrade.move_fast_break_things",
+      "instrument_affected:effect_target:generator.managed_services_contract:trap_floor:upgrade.move_fast_break_things",
+      "instrument_affected:effect_target:generator.open_plan_floor:relevance_floor:upgrade.ping_pong_table",
+      "instrument_affected:effect_target:generator.open_plan_floor:trap_floor:upgrade.ping_pong_table",
+      "instrument_affected:exact_id:generator.managed_services_contract:relevance_floor:generator.managed_services_contract",
+      "instrument_affected:exact_id:generator.open_plan_floor:relevance_floor:generator.open_plan_floor",
+      "relevance_floor:generator.beige_tower_v2",
+      "relevance_floor:upgrade.refurbished_sticker",
+      "trap_floor:upgrade.refurbished_sticker"
+    ]
+  }
+}

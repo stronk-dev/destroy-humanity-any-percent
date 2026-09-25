@@ -138,11 +138,27 @@ presentation = insertOnce(presentation, `"id": "upgrade.nephew_business_cards", 
 presentation = insertOnce(presentation, `{ "id": "gate.t0_to_t1", "title_key": "gate.t0_to_t1.title" }`,
   `,\n    { "id": "gate.t1_to_t2", "title_key": "gate.t1_to_t2.title" }`, "T1→T2 gate presentation");
 
+// §P3 relevance: the six Tier-2 rows (window gate.t1_to_t2 → gate.t2_to_t3, epsilon 1000 ms,
+// no trap exemptions) inserted into the epoch-8 policy in raw-byte order.
+let relevance = read("balance/relevance/t0-t1.json");
+const relevanceRow = (id) => `    { "purchasable_id": "${id}", "availability_window": { "from_gate": "gate.t1_to_t2", "to_gate": "gate.t2_to_t3" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },\n`;
+const insertRelevanceBefore = (nextID, rows) => {
+  const anchor = `    { "purchasable_id": "${nextID}",`;
+  const index = relevance.indexOf(anchor);
+  if (index < 0 || relevance.indexOf(anchor, index + 1) >= 0) throw new Error(`relevance anchor ${nextID} must occur exactly once`);
+  relevance = relevance.slice(0, index) + rows.map(relevanceRow).join("") + relevance.slice(index);
+};
+insertRelevanceBefore("generator.nephew_intern", ["generator.hot_desk_program", "generator.managed_services_contract"]);
+insertRelevanceBefore("upgrade.beige_tower_cache", ["generator.open_plan_floor"]);
+insertRelevanceBefore("upgrade.nephew_business_cards", ["upgrade.move_fast_break_things", "upgrade.nap_pod"]);
+insertRelevanceBefore("upgrade.rack_rail_standardization", ["upgrade.ping_pong_table"]);
+
 const outputs = {
   "balance/testdata/t2/economy-candidate-v1.json": economy,
   "balance/testdata/t2/routes-candidate-v1.json": routes,
   "balance/testdata/t2/categories-candidate-v1.json": categories,
   "balance/testdata/t2/presentation-candidate-v3.json": presentation,
+  "balance/testdata/t2/relevance-candidate-v1.json": relevance,
 };
 const sha = Object.entries(outputs).map(([file, bytes]) => `${createHash("sha256").update(bytes).digest("hex")}  ${file}`).join("\n") + "\n";
 outputs["balance/testdata/t2/candidates.sha256"] = sha;

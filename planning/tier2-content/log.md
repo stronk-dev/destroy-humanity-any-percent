@@ -216,3 +216,70 @@ Founder-attended time at `gate.t1_to_t2`; unreached seeds sort as +inf. The enve
   one; that is the drift gate's demonstrated failing case.
 - **Reproducibility:** a cold, non-update `TestTier2PacingCalibration` run over the committed
   default sweep re-derives `pacing-calibration-v1.json` byte-identically (`ok`, 1185.8 s).
+
+## 2026-09-25 — C6: combined T1–T2 relevance on the candidate bundle (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review. Scope is
+harness only; no kernel-guarded path is touched (Cosmetic Shop owns those).
+
+- **Inputs, generated insertion-only by the candidate tool:**
+  - `balance/testdata/t2/relevance-candidate-v1.json` is the epoch-8 policy plus the six Tier-2
+    rows, each windowed `gate.t1_to_t2 → gate.t2_to_t3` at `epsilon_ms` 1000 with no trap
+    exemption.
+  - `relevance-scenario-t1-t2-v1.json` is §P3's `scenario.t1_t2_relevance`: a 1e9 cash target, the
+    three segments `[null→t0_to_t1]`, `[t0_to_t1→t1_to_t2]` and `[t1_to_t2→t2_to_t3]`, and the
+    epoch-8 T1 scenario's personas and solver parameters.
+- **Test:** `TestTier2RelevanceCandidateAddsExactlyTheSixTierTwoRows` loads the suite and requires
+  the policy to equal epoch 8 plus exactly those six rows. Severing it by dropping `upgrade.nap_pod`
+  fails the test.
+- **Budgets, T01-C17 from measurement.** The first run used a provisional ceiling of 1024 runs and
+  2e7 transitions and measured 167 runs and 4,590,515 transitions. The committed budgets are
+  **400 runs and 1e7 transitions** (≥ 2× measured). Severing: `max_runs` 166 fails loud at
+  preflight ("relevance run budget exceeds scenario limit").
+- **Reproduction at the committed budgets:**
+  - Every item result, oracle and failure is identical to the ceiling run.
+  - `executed_transitions` differs: 4,715,708 against 4,590,515. That is still under the budget,
+    at 2.12×. The cause is not isolated; it is recorded rather than smoothed over.
+  - The diagnostic is committed as non-authoritative evidence
+    (`relevance-t1-t2-diagnostic-v1.json`); the `balance-harness` relevance mode refuses to write
+    an authoritative report while failures exist.
+
+### Result: the gate FAILS. Tier-2 content is weak or dominated at 1e9.
+
+Reference trajectory to 1e9 cash. "Bought" is the reference purchase count; "individual" is the
+change in time-to-1e9 when that row is removed.
+
+| Row | Bought | Individual | Verdict |
+|---|---|---|---|
+| `generator.open_plan_floor` | 30 | **0 ms** | **dominated**: removing it does not slow the target (instrument-affected, target excluded) |
+| `generator.managed_services_contract` | 2 | **0 ms** | **dominated** (instrument-affected) |
+| `generator.hot_desk_program` | 1 | +1,800,000 ms | relevant, bought once |
+| `upgrade.ping_pong_table` | 0 | unreached | **never bought** (effect target excluded) |
+| `upgrade.move_fast_break_things` | 0 | unreached | **never bought** |
+| `upgrade.nap_pod` | 0 | unreached | **never bought** |
+
+**Knock-on effects on Tier 1, compared with the epoch-8 golden:**
+- `generator.first_hire` falls from 10 to 2 purchases. `upgrade.employee_handbook_v0` falls from
+  1 to 0 and fails its floor as instrument-affected, because its target `first_hire` is excluded.
+  Tier-2 content therefore crowds out part of Tier 1.
+- `upgrade.crt_degauss_button` now passes (it failed in the epoch-8 golden).
+- `generator.beige_tower_v2` and `upgrade.refurbished_sticker` still fail. Both failures predate
+  this work: they are in the epoch-8 golden and covered by its branch report.
+
+**Instrument exclusions:** `answering_machine`, `first_hire`, `hot_desk_program`,
+`managed_services_contract` and `open_plan_floor`. The greedy oracle is null. The deviation oracle
+**passed** (8/8 probes reached, none starved).
+
+**Reading.** At the provisional prices (§B1/§B2) and a 1e9 target, the Tier-2 generators mostly
+substitute for Tier-1 production instead of adding a new axis. The upgrades are never bought
+before 1e9 is banked: their costs of 3e7–3.6e8 compete with generator ladders that pay back
+faster. The RFC expects headcount (§H) to be Tier 2's growth engine, and headcount is held on
+OD-1. This measurement is therefore on content without its defining mechanic, which is itself a
+finding for the owner.
+
+**Decisions for the owner or ruling author (the implementer does not retune):**
+- retune the §B1/§B2 prices and yields, a balance change requiring owner SHA ratification;
+- let headcount (OD-1) land first and re-measure;
+- record trap exemptions with justification keys, a policy change.
+
+No production artifact changed, and the gate literal stays `1e7`.
