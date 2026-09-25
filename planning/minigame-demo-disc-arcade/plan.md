@@ -15,10 +15,10 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   the two AR2 rows and tenant rows.
 - [x] A5 — composed platform witness (Postgres): `always` unlock, `human_hobby` lock at near-zero
   Soul, start → play → terminal → zero-credit applied resolution, `quit` releases the session.
-- [ ] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
+- [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
   with the AR6.2/AR6.3/AR6.4 contract, test-only mounted (no pinned tenant row yet), axe in three
   browsers.
-- [ ] A7 — docs (`docs/minigame-demo-disc-arcade.md`, platform pointers).
+- [x] A7 — docs (`docs/minigame-demo-disc-arcade.md`, platform pointers).
 
 **Blocked (owner ruling pending, not built):** AR-P4 public API arms and AR-P5 tenant-registry
 registration. Adding arms to the existing v1 minigame unions conflicts with API Foundation C2 (the
