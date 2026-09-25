@@ -1,0 +1,30 @@
+# Reputation Tree v1 implementation plan
+
+RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at its recommended
+default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
+threshold retune is measured and reported, then ratified by owner SHA).
+
+## Batches
+
+- [ ] B1 — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1
+  accounting helpers, R3 bonus arithmetic; shared rejection-fixture corpus and bonus vectors.
+  ACs 1 (loader half), 5.
+- [ ] B2 — Bundle wiring: `reputation_tree` optional artifact in the Go/TS bundle loaders, economy
+  declaration pairing rule (tree ⇔ `reputation.founder_bonus` row), frozen-contribution resolver
+  accepts provider `reputation_tree`. AC1 (bundle half).
+- [ ] B3 — Founder save v22 (R1/R7): fields, codec invariants, v21→v22 migration, migration corpus
+  cases + baseline ratchet. ACs 2, 10.
+- [ ] B4 — R5 `purchase_reputation_node` Founder intent (Go + TS replay parity, corpus). ACs 3, 4.
+- [ ] B5 — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
+  starter application, DB migrations (completeness function, event kinds, founder_log arms),
+  `run_started` v2. ACs 6, 7, 8, 11.
+- [ ] B6 — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
+- [ ] B7 — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+- [ ] B8 — R10 harness H1–H5 and the OD-2 threshold measurement report. AC13.
+- [ ] B9 — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
+- [ ] Canonical docs, designated Codex review, archival (Codex).
+
+Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bumps
+`kernel/VERSION` (+ Go/TS constants) in the same commit; `server/reputation/` and
+`client/src/reputation.ts` are registered in the commit that creates them. Save/snapshot versions
+are assigned in landing order (the RFC's "v22" means next-free).
