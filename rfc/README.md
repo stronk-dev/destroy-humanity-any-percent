@@ -41,6 +41,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Cosmetic Shop v1 — Horse Armor](cosmetic-shop-v1.md) | draft — not implementation authority; OD-1–OD-16 | Game UI / Save Layer / Pet |
 | [Pet Adoption v1](pet-adoption-v1.md) | draft — not implementation authority; OD-1–OD-15; Founder v22 collision with Cosmetic Shop named (OD-15) | Pet Care / Save Layer / Game UI |
 | [Ticker Launch Corpus](ticker-launch-corpus.md) | draft — not implementation authority; blocked on Feed & Dispatch narrowing (VQ-3); OD-1–OD-14 | Feed & Dispatch / Copy Pipeline |
+| [Headcount Allocation](headcount-allocation.md) | draft — not implementation authority; OD-1 seat source CONFLICTS with Tier 2 draft OD-1 (hire intent vs generator-granted) — owner picks one | Economy Kernel / Tier 2 Content |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,
