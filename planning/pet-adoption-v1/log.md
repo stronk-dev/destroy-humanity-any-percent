@@ -312,3 +312,19 @@ typecheck, gofmt and vet are clean; the generated API is updated.
   `b29e70c0`, `5ff37cc1`, `c380896a`) bumps `kernel/VERSION` in the same commit, taking it from
   0.3.117 to 0.3.121. `make verify-kernel-version` still stops at the pre-existing `50a3a514`,
   which this lane doesn't own.
+
+## 2026-09-25 — P7 harness half recorded (Claude)
+
+`go test -p 1 -count=1 -timeout=45m -v ./harness` ran: **40 tests, 40 `--- PASS`, 0 `--- FAIL`**,
+and the command exited 0. My `sort | head` output filter dropped the package summary line, so the
+verdict rests on the 40 per-test lines.
+
+The harness pins no `pet_species`, so no scenario can adopt, and its pacing outputs are unaffected.
+Together with `TestPetAdoptionIsEconomicallyIsolated`, that satisfies AC15. P7 closes.
+
+**Finding for another lane (Reputation):** `make test-harness` and `make verify-harness-fast`
+leave the package on Go's default 600 s timeout. At HEAD they fail with a timeout, not an assertion
+failure. `TestReputationTreeRelevance` alone takes 875 s, and
+`TestReputationCareerStartersShortenRunThree` takes 201 s. The fix (a timeout budget, or moving
+those tests to the maintenance lane) belongs to the Reputation/CI owners. The CLAUDE.md rule forbids
+raising a bound for convenience, so no timeout was changed here.

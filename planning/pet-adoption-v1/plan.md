@@ -21,7 +21,7 @@ free replay-inputs version. Cosmetic Shop then takes v24.
   Founder replay, idempotency (AC4, AC5, AC7, AC9, AC10), and the replay-inputs Founder carry (AC8).
 - [x] P6 The snapshot `features.pet` projection (AC11) and the adoption surface with its visual
   contract (AC12, AC13 DOM).
-- [ ] P7 Economy isolation (AC15) and docs canon (AC17). The AC15 test and docs have landed. The
+- [x] P7 Economy isolation (AC15) and docs canon (AC17). The AC15 test and docs have landed. The
   box stays open until the harness half of AC15 is recorded in this log. AC16 is carried under the release floor
   (D-008/D-009/D-015 are unruled).
 
