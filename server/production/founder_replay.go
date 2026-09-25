@@ -130,6 +130,8 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		return applyFounderFiscalHarvestResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case IntentSpendFiscalCredit:
 		return applyFounderFiscalSpendResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
+	case IntentPurchaseReputationNode:
+		return applyFounderReputationPurchaseResolved(state, request, revision, catalogs, wire.Resolved)
 	case founderExitResolvedKind:
 		explicitExit := request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO
 		if explicitExit && request.ExpectedFounderRevision != wire.Command.Revision {

@@ -84,3 +84,37 @@ now carry the unlock mirror; before v22 the mirror is always 0.
 **Temporarily fail-closed:** the Company-side Founder carry in replay inputs has no tree fields
 yet. Reconstructing a v22 Founder from a carry therefore fails closed, in Go and in TS, until the
 next replay-inputs version (R6) adds them.
+
+## `purchase_reputation_node` (R5)
+
+This is a Founder-scope intent on `POST /api/v1/intents`:
+`{intent_id, kind: "purchase_reputation_node", expected_revision, node_id}`.
+`Service.handleFounderReputation` routes it through `ApplyFounderLogged`, and the Go and TS replay
+arms share one contract. Like the Fiscal intents, it is exempt from the Soul-recovery exclusivity
+gate.
+
+Validation runs in this order, and the first failure wins. Every rejection is a recorded
+`founder_log` row that emits no event and changes no state.
+
+| Step | Condition | Rejection |
+|---|---|---|
+| 0 | Wrong fields, or a non-mechanical `node_id` | `invalid / purchase_reputation_node.fields` or `invalid / node_id` |
+| 3 | Inactive: the bundle has no tree, or the Founder is below v22 | `not_eligible / reputation_tree_inactive` |
+| 4 | Unknown node | `unknown_id / <node_id>` |
+| 5 | Node already owned | `not_eligible / owned` |
+| 6 | Prerequisite missing | `not_eligible / requires` |
+| 7 | Cost exceeds available | `unaffordable / reputation` |
+
+The resolved inputs are `{kind, node_id, resolved_cost, reputation_level, reputation_spent_before,
+owned_before}`. `resolved_cost` is 0 unless the purchase applies. Replay recomputes every field and
+refuses tampered inputs.
+
+An applied purchase adds the cost to `reputation_spent`, inserts the id in sorted order, and updates
+the unlock mirror. It returns a receipt with `effective_from: "next_run"` (a Fiscal sweep, if any,
+decorates it) and emits `reputation_node_purchased.v1` with `source: "direct"`. The event is
+validated strictly in `save.validateEvent` and admitted to the database by migration 00075.
+
+`testdata/replay/reputation-tree-v1.json` is the Go-authored cross-runtime corpus: the inactive,
+invalid, unknown, requires, owned and unaffordable rows (including the `cost == available + 1`
+boundary), plus a nine-node chain with an automatic Fiscal sweep. Set
+`REPUTATION_UPDATE_FIXTURE=1` to regenerate it from Go.

@@ -56,6 +56,8 @@ const (
 	IntentHarvestFiscalPeriod = "harvest_fiscal_period"
 	IntentSpendFiscalCredit   = "spend_fiscal_credit"
 	IntentClaimOpportunity    = "claim_opportunity"
+	// IntentPurchaseReputationNode is Reputation Tree v1 R5 (Founder scope).
+	IntentPurchaseReputationNode = "purchase_reputation_node"
 )
 
 type PrestigePolicyResolver interface {
@@ -317,6 +319,7 @@ type IntentRequest struct {
 	Target                  string
 	FiscalTarget            fiscal.SpendTarget
 	OpportunityID           string
+	ReputationNodeID        string
 	ScriptedExit            bool
 }
 
@@ -379,7 +382,7 @@ func (s *Service) Handle(
 		return HandleResult{}, err
 	}
 	if s.soulRecoveries != nil && request.Kind != IntentBuyRouteHint &&
-		request.Kind != IntentHarvestFiscalPeriod && request.Kind != IntentSpendFiscalCredit {
+		request.Kind != IntentHarvestFiscalPeriod && request.Kind != IntentSpendFiscalCredit && request.Kind != IntentPurchaseReputationNode {
 		loaded, loadErr := s.store.LoadLatest(ctx, streamID)
 		if loadErr != nil {
 			return HandleResult{}, loadErr
@@ -417,6 +420,9 @@ func (s *Service) Handle(
 	}
 	if request.Kind == IntentHarvestFiscalPeriod || request.Kind == IntentSpendFiscalCredit {
 		return s.handleFounderFiscal(ctx, streamID, request)
+	}
+	if request.Kind == IntentPurchaseReputationNode {
+		return s.handleFounderReputation(ctx, streamID, request)
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
@@ -635,7 +641,8 @@ func (s *Service) Handle(
 }
 
 func isCompanyIntent(kind string) bool {
-	return kind != IntentBuyRouteHint && kind != IntentCareAction && kind != IntentHarvestFiscalPeriod && kind != IntentSpendFiscalCredit
+	return kind != IntentBuyRouteHint && kind != IntentCareAction && kind != IntentHarvestFiscalPeriod && kind != IntentSpendFiscalCredit &&
+		kind != IntentPurchaseReputationNode
 }
 
 type founderRouteHintResolved struct {
@@ -2120,6 +2127,14 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 			}
 		default:
 			request.InvalidDetail = "target.kind"
+		}
+	case IntentPurchaseReputationNode:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "node_id") {
+			request.InvalidDetail = "purchase_reputation_node.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["node_id"], &request.ReputationNodeID); err != nil || !intentIDPattern.MatchString(request.ReputationNodeID) {
+			request.InvalidDetail = "node_id"
 		}
 	case IntentClaimOpportunity:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "opportunity_id") {

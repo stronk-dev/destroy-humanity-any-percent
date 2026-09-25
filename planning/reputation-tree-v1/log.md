@@ -146,3 +146,61 @@ not gofmt-clean. Its owner or review should fix it; I left it untouched.
 **Not yet witnessed:** the TS Founder-log Exit activation arm (`resultVersion >= 22`) has no TS
 test. It needs a TS Exit-replay fixture with a tree bundle, which lands with the B5/B6 corpus. B3's
 plan box therefore stays unchecked until then.
+
+## 2026-09-25 — B4 landed (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**What landed:**
+- The R5 intent: `server/production/reputation_intent.go`, with `reputation.Tree.Purchase` as the
+  pure evaluator.
+- The replay arm in `founder_replay.go`.
+- Intent parse and dispatch in `intents.go`.
+- The event kind and strict payload validator in `save/intent.go`.
+- Migration `00075_reputation_node_purchased.sql` (next free number; the event-kind constraint).
+- The TS parse, `reputationPurchase`, and the `applyFounderReputationPurchase` replay arm.
+- Tests:
+  - the corpus test, the rejection table, and the replay-tamper test in `production/reputation_purchase_test.go`;
+  - the Postgres witness in `production/reputation_purchase_integration_test.go`;
+  - `client/test/reputation-replay.test.ts`.
+- Kernel version 0.3.110 → 0.3.111.
+
+**Evidence, all run cold:**
+- Go tests pass for reputation, production, save, replaycatalog, gameui, account and gameserver.
+- TS: `reputation-replay.test.ts` passes 22/22 (every corpus case byte-matches Go on receipt,
+  events and post-state), and 6726 client tests pass.
+- Postgres: `TestReputationPurchaseIntegrationRecordsReplayableFounderLog` passes. It covers an
+  applied purchase, an idempotent retry that returns identical bytes with `Replay`, the owned
+  rejection as a recorded founder_log row, one persisted event, a `VerifyFounderHistory` result of
+  `verified`, and the persisted Founder state.
+
+**Severing probes.** Each mutant compiled and was restored after the run.
+
+| Area | Mutant | Result |
+|---|---|---|
+| Go | requires check | red |
+| Go | owned check | red |
+| Go | inactive arm | red |
+| Go | owned_before comparison | red |
+| Go | unaffordable at `available+1` | survived the first corpus (see finding 1), then red |
+| TS | cost off by one | red, 11 cases |
+| TS | requires check | red |
+| TS | receipt literal | red |
+| TS | inactive detail | red |
+| TS | owned_before comparison | red |
+| TS | unaffordable at `available+1` | red |
+| Postgres | event validator narrowed so a valid `direct` event is rejected | red, so the validator is on the real persistence path |
+
+**Findings:**
+1. The unaffordable boundary mutant survived the first corpus, because no row had
+   `cost == available + 1`. I added `rejects-cost-one-over-available` (level 1, cost 2).
+2. **The migration probe is invalid.** Removing the kind from the uncommitted 00075 still passed
+   because the shared test Postgres had already recorded goose version 75, so the edited file was
+   never re-applied. I did not restart the shared service while other agents were using it.
+   Positive evidence only: the event persisted under the migrated database, and the pre-00075
+   constraint (00072) does not list the kind.
+
+**RFC notes:**
+- R7 item 3, extending the founder_log resolved-arm check, is N/A: no such database constraint
+  exists (only the events kind and schema-version checks do).
+- R5 step 2's Fiscal sweep runs through the existing ApplyFounderLogged prelude and decorator.

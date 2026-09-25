@@ -16,7 +16,7 @@ import { advanceMeters, contributionKey as meterContributionKey, newRunMeterStat
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseRelevancePolicy, type RelevancePolicy } from "./relevance";
-import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationUnlockPpm as reputationUnlockPpmFor, type ReputationTree } from "./reputation";
+import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationPurchase, reputationUnlockPpm as reputationUnlockPpmFor, type ReputationTree } from "./reputation";
 import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
@@ -227,6 +227,7 @@ const REPLAY_EVENT_KINDS = Object.freeze([
 	"minigame_rating_changed.v1", "minigame_resolved.v1",
 	"soul_price_paid.v1", "soul_band_changed.v1", "soul_depleted.v1",
 	"soul_recovery_started.v1", "soul_recovery_cancelled.v1", "soul_recovered.v1",
+	"reputation_node_purchased.v1",
 ] as const);
 
 function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
@@ -752,6 +753,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     }
     if (kind === "harvest_fiscal_period") return finish(await applyFounderFiscalHarvest(state, request, wire, catalogs));
     if (kind === "spend_fiscal_credit") return finish(applyFounderFiscalSpend(state, request, wire, catalogs));
+    if (kind === "purchase_reputation_node") return finish(applyFounderReputationPurchase(state, request, wire, catalogs));
     if (kind === "exit.v1") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
@@ -847,6 +849,31 @@ function applyFounderFiscalSpend(state: FounderReplayState, request: Intent, wir
   catch (error) { const message = error instanceof Error ? error.message : ""; const [category, detail] = message.includes("already unlocked") ? ["not_eligible", "already_unlocked"] : message.includes("insufficient") ? ["unaffordable", "fiscal_credit"] : message.includes("level purchase") ? ["cap_exceeded", target.kind === "generator_level" ? target.generatorId : target.unlockId] : ["unknown_id", target.kind === "generator_level" ? target.generatorId : target.unlockId]; return founderRejected(state, request.intent_id, wire.command.revision, category, detail, catalogs.constantsHash); }
   if (applied.resolvedCost !== resolvedCost) throw new RangeError("Fiscal spend result mismatch"); applyFounderFiscalState(state, fiscalState); const wireTarget = fiscalTargetWire(target);
   return { state, outcome: "applied", receipt: { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, fiscal_sweep: null, target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit }, events: [event("fiscal_credit_spent.v1", request.intent_id, { target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit })], resultConstantsHash: catalogs.constantsHash };
+}
+
+// Reputation Tree v1 R5 replay arm, byte-parallel to applyFounderReputationPurchaseResolved.
+function applyFounderReputationPurchase(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): FounderLoggedTransition {
+  if (request.kind !== "purchase_reputation_node" || request.invalid !== undefined || request.expected_revision !== wire.command.revision) throw new RangeError("Reputation purchase command mismatch");
+  exactKeys(wire.resolved, ["kind", "node_id", "resolved_cost", "reputation_level", "reputation_spent_before", "owned_before"], "Reputation purchase inputs");
+  const nodeId = mechanicalString(request.node_id);
+  const active = catalogs.reputationTree !== undefined && state.wireVersion >= 22;
+  const outcome = active ? reputationPurchase(catalogs.reputationTree!, state.reputationLevel, state.reputationSpent, state.reputationNodesOwned, nodeId) : undefined;
+  const expectedCost = outcome?.kind === "applied" ? outcome.node.cost : 0;
+  const owned = array(wire.resolved.owned_before, "Reputation owned before");
+  if (wire.resolved.node_id !== nodeId || safeInteger(wire.resolved.resolved_cost, 0, MAX_EXACT_INTEGER) !== expectedCost ||
+      safeInteger(wire.resolved.reputation_level, 0, MAX_EXACT_INTEGER) !== state.reputationLevel ||
+      safeInteger(wire.resolved.reputation_spent_before, 0, MAX_EXACT_INTEGER) !== state.reputationSpent ||
+      owned.length !== state.reputationNodesOwned.length || owned.some((id, index) => id !== state.reputationNodesOwned[index])) throw new RangeError("Reputation purchase resolution mismatch");
+  if (!outcome) return founderRejected(state, request.intent_id, wire.command.revision, "not_eligible", "reputation_tree_inactive", catalogs.constantsHash);
+  if (outcome.kind === "rejected") return founderRejected(state, request.intent_id, wire.command.revision, outcome.category, outcome.detail, catalogs.constantsHash);
+  const availableBefore = reputationAvailable(state.reputationLevel, state.reputationSpent), spentBefore = state.reputationSpent;
+  state.reputationSpent = outcome.spentAfter; state.reputationNodesOwned = [...outcome.ownedAfter]; state.reputationUnlockPpm = outcome.unlockPpmAfter;
+  const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, fiscal_sweep: null, node_id: nodeId,
+    resolved_cost: outcome.node.cost, reputation_available_before: availableBefore, reputation_available_after: availableBefore - outcome.node.cost,
+    reputation_unlock_ppm_after: outcome.unlockPpmAfter, effective_from: "next_run" };
+  return { state, outcome: "applied", receipt, events: [event("reputation_node_purchased.v1", request.intent_id, { node_id: nodeId, node_kind: outcome.node.kind,
+    cost: outcome.node.cost, reputation_level: state.reputationLevel, reputation_spent_before: spentBefore, reputation_spent_after: outcome.spentAfter,
+    unlock_ppm_after: outcome.unlockPpmAfter, source: "direct" })], resultConstantsHash: catalogs.constantsHash };
 }
 
 export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22, genesisHash: string,
@@ -1997,6 +2024,10 @@ function parseIntent(payload: string, intentId: string): Intent {
     case "spend_fiscal_credit":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "target"])) { base.invalid = "spend_fiscal_credit.fields"; return base; }
       try { base.target = fiscalTargetWire(parseFiscalTarget(raw.target)); } catch { base.invalid = "target"; }
+      return base;
+    case "purchase_reputation_node":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "node_id"])) { base.invalid = "purchase_reputation_node.fields"; return base; }
+      if (!isMechanical(raw.node_id)) base.invalid = "node_id"; else base.node_id = raw.node_id;
       return base;
     case "claim_opportunity":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "opportunity_id"])) { base.invalid = "claim_opportunity.fields"; return base; }

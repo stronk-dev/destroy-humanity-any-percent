@@ -408,3 +408,49 @@ func decodeStrict(data []byte, destination any) error {
 	}
 	return nil
 }
+
+// Rejection is a typed, recorded purchase refusal (R5 steps 4–7).
+type Rejection struct {
+	Category string
+	Detail   string
+}
+
+// PurchaseResult is an applied purchase (R5 step 8).
+type PurchaseResult struct {
+	Node           Node
+	SpentAfter     int64
+	OwnedAfter     []string
+	UnlockPPMAfter int64
+}
+
+// Purchase evaluates R5 steps 4–8 against Founder accounting. Exactly one of
+// the result and the rejection is meaningful when err is nil; err reports an
+// invalid input state, never a player-facing refusal.
+func (tree *Tree) Purchase(level, spent int64, owned []string, nodeID string) (PurchaseResult, *Rejection, error) {
+	available, err := Available(level, spent)
+	if tree == nil || err != nil || !SortedUnique(owned) {
+		return PurchaseResult{}, nil, ErrInvalidState
+	}
+	node, ok := tree.Node(nodeID)
+	if !ok {
+		return PurchaseResult{}, &Rejection{Category: "unknown_id", Detail: nodeID}, nil
+	}
+	if contains(owned, nodeID) {
+		return PurchaseResult{}, &Rejection{Category: "not_eligible", Detail: "owned"}, nil
+	}
+	for _, requirement := range node.Requires {
+		if !contains(owned, requirement) {
+			return PurchaseResult{}, &Rejection{Category: "not_eligible", Detail: "requires"}, nil
+		}
+	}
+	if node.Cost > available {
+		return PurchaseResult{}, &Rejection{Category: "unaffordable", Detail: "reputation"}, nil
+	}
+	after := append(append([]string{}, owned...), nodeID)
+	sort.Strings(after)
+	unlock, err := tree.UnlockPPM(after)
+	if err != nil {
+		return PurchaseResult{}, nil, err
+	}
+	return PurchaseResult{Node: node, SpentAfter: spent + node.Cost, OwnedAfter: after, UnlockPPMAfter: unlock}, nil, nil
+}

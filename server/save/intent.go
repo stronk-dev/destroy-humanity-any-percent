@@ -80,6 +80,8 @@ const (
 	EventSoulRecoveryStarted       EventKind = "soul_recovery_started.v1"
 	EventSoulRecoveryCancelled     EventKind = "soul_recovery_cancelled.v1"
 	EventSoulRecovered             EventKind = "soul_recovered.v1"
+	// EventReputationNodePurchased is Reputation Tree v1 R5 (Founder scope).
+	EventReputationNodePurchased EventKind = "reputation_node_purchased.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -89,7 +91,7 @@ var AllEventKinds = [...]EventKind{
 	EventCompactRecovered, EventCompactRecruitmentOffered, EventCompactSampled,
 	EventCompactSigned, EventCompactTitheRaised, EventCompensation,
 	EventComputeCreditSpent, EventDoctrinePicked,
-	EventFiscalCreditSpent, EventFiscalPeriodHarvested,
+	EventFiscalCreditSpent, EventFiscalPeriodHarvested, EventReputationNodePurchased,
 	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferResolved, EventExitOfferSpawned,
 	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
@@ -770,6 +772,24 @@ func validateEventPayload(event EventWrite) error {
 			}
 		} else {
 			return fmt.Errorf("%w: invalid fiscal_period_harvested.v1 source", ErrInvalidStream)
+		}
+	case EventReputationNodePurchased:
+		var payload struct {
+			NodeID                string `json:"node_id"`
+			NodeKind              string `json:"node_kind"`
+			Cost                  int64  `json:"cost"`
+			ReputationLevel       int64  `json:"reputation_level"`
+			ReputationSpentBefore int64  `json:"reputation_spent_before"`
+			ReputationSpentAfter  int64  `json:"reputation_spent_after"`
+			UnlockPPMAfter        int64  `json:"unlock_ppm_after"`
+			Source                string `json:"source"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.NodeID) ||
+			payload.NodeKind != "bonus_unlock" && payload.NodeKind != "starter" || payload.Source != "direct" && payload.Source != "exit_plan" ||
+			payload.Cost < 1 || payload.ReputationSpentBefore < 0 || payload.ReputationSpentBefore > decimal.MaxExactInteger || payload.ReputationLevel > decimal.MaxExactInteger ||
+			payload.ReputationSpentAfter != payload.ReputationSpentBefore+payload.Cost || payload.ReputationSpentAfter > payload.ReputationLevel ||
+			payload.UnlockPPMAfter < 0 || payload.UnlockPPMAfter > 1_000_000 {
+			return fmt.Errorf("%w: invalid reputation_node_purchased.v1 payload", ErrInvalidStream)
 		}
 	case EventFiscalCreditSpent:
 		var payload struct {

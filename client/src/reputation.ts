@@ -185,3 +185,20 @@ function exact(source: unknown, keys: readonly string[], rule: number): Record<s
   return source;
 }
 function byteCompare(left: string, right: string): number { const a = new TextEncoder().encode(left); const b = new TextEncoder().encode(right); for (let index = 0; index < Math.min(a.length, b.length); index++) if (a[index] !== b[index]) return a[index]! - b[index]!; return a.length - b.length; }
+
+export type ReputationPurchase =
+  | Readonly<{ kind: "rejected"; category: string; detail: string }>
+  | Readonly<{ kind: "applied"; node: ReputationNode; spentAfter: number; ownedAfter: readonly string[]; unlockPpmAfter: number }>;
+
+/** R5 steps 4–8, byte-parallel to reputation.Tree.Purchase. Throws on an invalid input state. */
+export function reputationPurchase(tree: ReputationTree, level: number, spent: number, owned: readonly string[], nodeId: string): ReputationPurchase {
+  const available = reputationAvailable(level, spent);
+  if (!sortedUnique(owned)) throw new RangeError("invalid reputation state");
+  const node = tree.nodes.find((candidate) => candidate.node_id === nodeId);
+  if (!node) return { kind: "rejected", category: "unknown_id", detail: nodeId };
+  if (owned.includes(nodeId)) return { kind: "rejected", category: "not_eligible", detail: "owned" };
+  if (node.requires.some((requirement) => !owned.includes(requirement))) return { kind: "rejected", category: "not_eligible", detail: "requires" };
+  if (node.cost > available) return { kind: "rejected", category: "unaffordable", detail: "reputation" };
+  const ownedAfter = [...owned, nodeId].sort(byteCompare);
+  return { kind: "applied", node, spentAfter: spent + node.cost, ownedAfter, unlockPpmAfter: reputationUnlockPpm(tree, ownedAfter) };
+}
