@@ -2838,3 +2838,51 @@ The bounded result is in `data-rights-minigame-soul-delete.md`, and RP-122 is up
 verified seeded-row outcome. Also added `rights-decision-sheet.md`, which frames the
 D-008/D-009/D-015 options without adopting any. No product, owner-authored text, RFC status or
 release claim changed.
+
+## 2026-09-25 — Claude designated cross-party review: `ab05f2d` and `e44e1a6`+`7ad5b54`
+
+**Review by:** Claude. **Recorded by:** Claude.
+
+A read-only audit of every active planning log found these two Codex commits (both 2026-08-21)
+without a designated verdict.
+
+### `ab05f2d^..ab05f2d` (RP-099: repository-local Go cache for boundary guards) — **APPROVED**
+
+**Scope.** Makefile only: `verify-routes-boundary` and `verify-commons-boundary` drop their fixed
+`/tmp` `GOCACHE` and use the exported repository-local cache. Backlog and log records are included.
+The Make recipes are unchanged at HEAD.
+
+**Executed at HEAD:**
+- `make verify-routes-boundary verify-commons-boundary` passed.
+- Severing probes, each temporary file removed:
+  - `server/commons/zz_probe.go` importing `production` failed `verify-commons-boundary`.
+  - `server/routes/zz_probe.go` importing `httpapi`, `deploymentconfig` or `determinism` each
+    failed with "routes package has disallowed internal imports: <pkg>".
+  - A `save` import failed through the enumeration-error path (an import cycle), which also fails
+    closed.
+
+No findings.
+
+### `e44e1a6^..7ad5b54` (D-002 publication-authority verifier, manifest and Make targets; record commit) — **APPROVED**
+
+**Scope.**
+- `tools/verify-publication-authority.mjs` (277 lines), which is byte-unchanged at HEAD;
+- `planning/platform-alignment/publication-authority-manifest.json`;
+- two Make targets;
+- the record commit.
+
+**Executed at HEAD:**
+- `make publication-authority-check` passed: 11 public and 56 private Class-C dossiers, 3
+  duplicates, 7 diagnostics. Three built-in negative controls rejected, each for its named reason.
+- `make publication-authority-fresh-clone-check` passed.
+
+**Independent severing.** Removing the private Class-C count comparison (line 116) made the
+self-test fail with "private-source denominator truncation rejected for the wrong reason:
+Class-C denominator drift". The harness asserts the exact rejection reason, not just that a
+rejection happened. The check was restored byte-exact.
+
+No findings.
+
+**Open from the same audit:** D-014 CI split `bb615ed..add2d09` plus record `38d1ccd`, which
+blocks CI-RFC archival. Its lanes need Docker, which is currently unhealthy on this host
+(containerd metadata I/O error); that review is next once Docker recovers.
