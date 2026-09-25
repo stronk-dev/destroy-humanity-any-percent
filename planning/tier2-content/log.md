@@ -203,3 +203,16 @@ Founder-attended time at `gate.t1_to_t2`; unreached seeds sort as +inf. The enve
   policy, plus solver budgets from measurement (T01-C17). It is not started, and it is the next
   item for this lane.
 - The Headcount panel, §H, P4 seats and P5 are held on OD-1.
+
+### 2026-09-25 — C5 addendum: cliff probe and reproducibility (Claude)
+
+- **Cliff probe (`T2_GATE_AMOUNTS="5e7 7e7"`, not committed to the report):**
+  - at 5e7, Chaos reaches the gate in 62/64 seeds (p50 1.90 h) and Casual in 32/32 (p50 1.30 h);
+  - at 7e7, Chaos reaches it in only **6/64** seeds (p50 unreached), while Casual reaches 32/32
+    (p50 1.31 h).
+
+  The Chaos cliff therefore lies between 5e7 and 7e7, and Casual stays below 2 h throughout. The
+  probe run failed the report-drift check, as designed, since its sweep differs from the committed
+  one; that is the drift gate's demonstrated failing case.
+- **Reproducibility:** a cold, non-update `TestTier2PacingCalibration` run over the committed
+  default sweep re-derives `pacing-calibration-v1.json` byte-identically (`ok`, 1185.8 s).
