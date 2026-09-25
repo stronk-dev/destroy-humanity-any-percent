@@ -51,3 +51,63 @@ Protocol:
 - T1: changing TS's food substream label fails the replay.
 - T2: a TS tail that never leaves fails it.
 - T3: TS without zero cascades fails it.
+
+## 2026-09-25 — A4/A5: platform chain, resolver, composition, and a Postgres witness (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review.
+
+**AR-P1:**
+- `CatalogBundle.Arcade` is added. `replaycatalog.Load` loads the `arcade` artifact, which requires
+  `minigame_api`; the name is added to `validArtifactNames`.
+- `validArcadeChain` enforces:
+  - arcade-engine definitions (`mine_grid` or `snake`) exist exactly when the artifact does;
+  - they pin engine version `1.0.0`;
+  - each is a `minigame_api` tenant;
+  - every stage toy resolves to one.
+- The TS replay loader mirrors the chain.
+
+**AR-P2:** `CatalogBundle.TenantContent` resolves `(mine_grid|snake, 1.0.0)` to the single
+pinned arcade artifact. Unknown pairs still resolve nothing.
+
+**AR-P3:** already generalized by TT-PA3, and reused as is. An arcade start needs only its own
+tenant content.
+
+**Composition:** the gameserver registers `arcade.NewMineGridTenant()` and
+`arcade.NewSnakeTenant()`.
+
+**Fixtures:**
+- `testdata/minigame/pitch-typer-arcade-v3.json` holds the two AR2 rows verbatim: zero faucet,
+  inert quality, neutral rating, `always`, `human_hobby`.
+- `balance/testdata/minigame-api-arcade-candidate-v1.json` adds the two tenant rows.
+- Neither is production bytes (AR8).
+
+**Kernel:** 0.3.129 → 0.3.130 in this commit.
+
+**Evidence (cold):**
+- `make test-go` passes for arcade, production, replaycatalog, gameserver, minigame and kernel.
+- Postgres (`compose.save-test.yml`) passes for production, minigame, gameserver and
+  replaycatalog.
+- `typecheck` passes, and `test-client` passes 6861.
+- TS `replay.test.ts` passes 87/87.
+
+**A5 witness:** `TestArcadeComposedIntegrationUnlockLockPlayAndZeroCreditResolution` covers:
+- near-zero Soul (5) rejecting start with the shipped `human_content_locked`;
+- a Tier-0, no-Exit Founder starting both toys (the `always` unlock);
+- `mine_grid` choose → reveal → quit, and `snake` crashing into the wall at tick 10;
+- each resolution applied with `credited_delta: "0"` and zero forfeit;
+- cash, rating (Elo 1000) and offline quality (200000 ppm) unchanged;
+- an identical-bytes retry;
+- Founder history `ReplayVerified`;
+- the Exit block held during the session and released on resolution.
+
+This end-to-end witness confirms AR-F1's zero-credit fix (`8add475`) for a zero-rate faucet.
+
+**Severing** (each restored):
+- R1: skipping the tenant check fails "definitions without tenants".
+- R2: skipping the stage-toy check fails "stage toy without definition".
+- T4: the TS stage-toy check severed fails the TS chain test.
+- P1: removing the resolver arm makes the start fail (`minigame tenant returned invalid output`).
+- P2: a paying fixture row makes the zero-credit assertion fail (`credited_delta: "5.1e1"`).
+- R3 survives, and is logged as redundant rather than vacuous: `CatalogBundle.valid`'s arcade arm
+  duplicates `validArtifactNames`, which already rejects an arcade without `minigame_api` before
+  `valid` runs.

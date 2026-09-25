@@ -16,6 +16,7 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"cloud-clicker/server/account"
+	"cloud-clicker/server/arcade"
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/commonsprojection"
@@ -289,7 +290,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
-	minigameTenants, err := minigame.NewTenantRegistry(pitch.NewTenant(), typer.NewTenant())
+	minigameTenants, err := minigame.NewTenantRegistry(pitch.NewTenant(), typer.NewTenant(), arcade.NewMineGridTenant(), arcade.NewSnakeTenant())
 	if err != nil {
 		return nil, err
 	}

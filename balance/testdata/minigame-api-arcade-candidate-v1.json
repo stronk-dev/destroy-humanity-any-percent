@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "operations": [
+    {
+      "operation_id": "create_minigame_session",
+      "version": 1
+    },
+    {
+      "operation_id": "get_current_minigame_session",
+      "version": 1
+    },
+    {
+      "operation_id": "play_minigame_command",
+      "version": 1
+    },
+    {
+      "operation_id": "resolve_minigame_session",
+      "version": 1
+    }
+  ],
+  "tenants": [
+    {
+      "engine_ref": "mine_grid",
+      "engine_version": "1.0.0",
+      "minigame_id": "arcade.mine_grid"
+    },
+    {
+      "engine_ref": "pitch",
+      "engine_version": "1.0.0",
+      "minigame_id": "pitch"
+    },
+    {
+      "engine_ref": "snake",
+      "engine_version": "1.0.0",
+      "minigame_id": "arcade.snake"
+    },
+    {
+      "engine_ref": "typer",
+      "engine_version": "1.0.0",
+      "minigame_id": "typer"
+    }
+  ]
+}

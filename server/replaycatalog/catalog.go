@@ -9,6 +9,7 @@ import (
 
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/activeplay"
+	"cloud-clicker/server/arcade"
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/copykeys"
@@ -219,6 +220,17 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Typer = typerCatalog
 	}
+	if arcadeBytes, active := artifacts["arcade"]; active {
+		keys := make(map[string]struct{})
+		for _, key := range copykeys.All() {
+			keys[key] = struct{}{}
+		}
+		arcadeCatalog, arcadeErr := arcade.LoadCatalog(arcadeBytes, arcade.Declarations{CopyKeys: keys})
+		if arcadeErr != nil {
+			return production.CatalogBundle{}, arcadeErr
+		}
+		bundle.Arcade = arcadeCatalog
+	}
 	if apiBytes, active := artifacts["minigame_api"]; active {
 		apiCatalog, apiErr := minigameapi.LoadCatalog(apiBytes)
 		if apiErr != nil || bundle.Minigames == nil || bundle.Pitch == nil {
@@ -236,12 +248,18 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 			hasTyperDefinition && (typerDefinition.EngineRef != typer.EngineRef || typerDefinition.EngineVersion != typer.EngineVersion) {
 			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
 		}
+		if !validArcadeChain(bundle, apiCatalog) {
+			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
+		}
 		bundle.MinigameAPI = apiCatalog
 	}
 	// A typer definition row without its pinned artifact fails even without
 	// minigame_api (the artifact itself already requires minigame_api).
 	if bundle.Minigames != nil {
 		if _, hasTyperDefinition := bundle.Minigames.Definition(typer.EngineRef); hasTyperDefinition != (bundle.Typer != nil) {
+			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
+		}
+		if !validArcadeChain(bundle, nil) {
 			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
 		}
 	}
@@ -325,7 +343,7 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer"} {
+	for _, name := range [...]string{"achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer", "arcade"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -343,6 +361,7 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, pitchActive := artifacts["pitch"]
 	_, minigameAPIActive := artifacts["minigame_api"]
 	_, typerActive := artifacts["typer"]
+	_, arcadeActive := artifacts["arcade"]
 	_, opportunitiesActive := artifacts["opportunities"]
 	_, relevanceActive := artifacts["relevance"]
 	_, curriculumActive := artifacts["curriculum"]
@@ -350,7 +369,7 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, petSpeciesActive := artifacts["pet_species"]
 	_, cosmeticsActive := artifacts["cosmetics"]
 	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
-		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive || typerActive && !minigameAPIActive ||
+		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive || typerActive && !minigameAPIActive || arcadeActive && !minigameAPIActive ||
 		opportunitiesActive && !doctrines || relevanceActive && !opportunitiesActive || curriculumActive && !relevanceActive || reputationActive && !minigameAPIActive ||
 		petSpeciesActive && (!reputationActive || !pets) || cosmeticsActive && !petSpeciesActive {
 		return false
@@ -383,6 +402,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	if typerActive {
 		want++
 	}
+	if arcadeActive {
+		want++
+	}
 	if opportunitiesActive {
 		want++
 	}
@@ -402,4 +424,37 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	return len(artifacts) == want
+}
+
+// validArcadeChain is AR-P1's composition check: arcade-engine definition
+// rows exist exactly when the arcade artifact does; every stage toy resolves
+// to such a definition at the pinned engine version; and, when minigame_api
+// is present, each arcade definition is exactly one of its tenants.
+func validArcadeChain(bundle production.CatalogBundle, api *minigameapi.Catalog) bool {
+	arcadeDefinitions := map[string]bool{}
+	for _, id := range bundle.Minigames.MinigameIDs() {
+		definition, _ := bundle.Minigames.Definition(id)
+		if definition.EngineRef != arcade.MineGridEngineRef && definition.EngineRef != arcade.SnakeEngineRef {
+			continue
+		}
+		if bundle.Arcade == nil || definition.EngineVersion != arcade.EngineVersion ||
+			api != nil && !api.SupportsTenant(definition.MinigameID, definition.EngineRef, definition.EngineVersion) {
+			return false
+		}
+		arcadeDefinitions[id] = true
+	}
+	if bundle.Arcade == nil {
+		return true
+	}
+	if len(arcadeDefinitions) == 0 {
+		return false
+	}
+	for _, stage := range bundle.Arcade.Container.Stages {
+		for _, toy := range stage.Toys {
+			if !arcadeDefinitions[toy] {
+				return false
+			}
+		}
+	}
+	return true
 }

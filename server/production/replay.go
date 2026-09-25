@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/activeplay"
+	"cloud-clicker/server/arcade"
 	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/decimal"
@@ -57,6 +58,9 @@ type CatalogBundle struct {
 	Soul          *soul.Catalog
 	Pitch         *pitch.Catalog
 	Typer         *typer.Catalog
+	// Arcade is the pinned Demo Disc Arcade artifact (AR-P1); it requires
+	// minigame_api and serves both mine_grid and snake content.
+	Arcade        *arcade.Catalog
 	Opportunities *activeplay.Catalog
 	Relevance     *relevancepolicy.RelevancePolicy
 	Curriculum    *curriculum.Catalog
@@ -147,6 +151,13 @@ func (bundle CatalogBundle) TenantContent(engineRef, engineVersion string) (mini
 			return minigame.TenantContent{}, false
 		}
 		return minigame.TenantContent{Bytes: bytes.Clone(data), Hash: typer.ContentHash(data), SchemaVersion: typer.SchemaVersion}, true
+	case (engineRef == arcade.MineGridEngineRef || engineRef == arcade.SnakeEngineRef) && engineVersion == arcade.EngineVersion && bundle.Arcade != nil:
+		// AR-P2: both cover-disc toys resolve to the one pinned arcade artifact.
+		data := bundle.Artifacts["arcade"]
+		if len(data) == 0 {
+			return minigame.TenantContent{}, false
+		}
+		return minigame.TenantContent{Bytes: bytes.Clone(data), Hash: arcade.ContentHash(data), SchemaVersion: arcade.SchemaVersion}, true
 	default:
 		return minigame.TenantContent{}, false
 	}
@@ -162,6 +173,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withPitch := bundle.Pitch != nil
 	withMinigameAPI := bundle.MinigameAPI != nil
 	withTyper := bundle.Typer != nil
+	withArcade := bundle.Arcade != nil
 	withOpportunities := bundle.Opportunities != nil
 	withRelevance := bundle.Relevance != nil
 	withCurriculum := bundle.Curriculum != nil
@@ -194,6 +206,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		expectedArtifacts++
 	}
 	if withTyper {
+		expectedArtifacts++
+	}
+	if withArcade {
 		expectedArtifacts++
 	}
 	if withOpportunities {
@@ -238,6 +253,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withPitch && (!withSoul || len(bundle.Artifacts["pitch"]) == 0) ||
 		withMinigameAPI && (!withPitch || len(bundle.Artifacts["minigame_api"]) == 0) ||
 		withTyper && (!withMinigameAPI || len(bundle.Artifacts["typer"]) == 0) ||
+		withArcade && (!withMinigameAPI || len(bundle.Artifacts["arcade"]) == 0) ||
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) ||
 		withRelevance && (!withOpportunities || len(bundle.Artifacts["relevance"]) == 0) ||
 		withCurriculum && (!withRelevance || len(bundle.Artifacts["curriculum"]) == 0) ||

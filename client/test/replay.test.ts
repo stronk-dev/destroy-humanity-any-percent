@@ -1,5 +1,8 @@
 import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
 import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
+import arcadeV1Raw from "../../balance/testdata/arcade-v1.json?raw";
+import arcadeMinigamesRaw from "../../testdata/minigame/pitch-typer-arcade-v3.json?raw";
+import arcadeAPIRaw from "../../balance/testdata/minigame-api-arcade-candidate-v1.json?raw";
 import attendanceFixtureJSON from "../../testdata/founder-attendance-v1.json";
 import { describe, expect, it } from "vitest";
 
@@ -546,6 +549,35 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			"api tenant without definition": (a) => { delete a.typer; a.minigames = pitchOnlyMinigames; },
 			"artifact without api tenant": (a) => { a.minigame_api = pitchOnlyAPI; },
 			"artifact without minigame_api": (a) => { delete a.minigame_api; },
+		};
+		for (const [name, mutate] of Object.entries(mutations)) {
+			const artifacts = await complete();
+			mutate(artifacts);
+			await expect(load(artifacts), name).rejects.toThrow();
+		}
+	});
+
+	it("loads the arcade only with its definitions, artifact, and minigame API tenants together (AR-P1)", async () => {
+		const complete = async () => {
+			const artifacts = structuredClone(fixture.soul_artifacts) as unknown as Record<string, string>;
+			artifacts.pitch = JSON.stringify((await import("../../balance/testdata/pitch-v1.json")).default);
+			artifacts.minigames = arcadeMinigamesRaw;
+			artifacts.minigame_api = arcadeAPIRaw;
+			artifacts.typer = typerV1Raw;
+			artifacts.arcade = arcadeV1Raw;
+			return artifacts;
+		};
+		const load = async (artifacts: Record<string, string>) =>
+			loadReplayCatalogBundle(await artifactHash(artifacts as unknown as ReplayArtifacts), artifacts as unknown as ReplayArtifacts);
+		expect((await load(await complete())).arcade?.container.stages[0]?.toys).toEqual(["arcade.mine_grid", "arcade.snake"]);
+		const typerMinigames = JSON.stringify((await import("../../testdata/minigame/pitch-typer-v3.json")).default);
+		const typerAPI = JSON.stringify((await import("../../balance/testdata/minigame-api-typer-candidate-v1.json")).default);
+		const mutations: Record<string, (a: Record<string, string>) => void> = {
+			"definitions without artifact": (a) => { delete a.arcade; },
+			"artifact without definitions": (a) => { a.minigames = typerMinigames; },
+			"definitions without tenants": (a) => { a.minigame_api = typerAPI; },
+			"artifact without minigame_api": (a) => { delete a.minigame_api; delete a.typer; },
+			"stage toy without definition": (a) => { const value = JSON.parse(a.arcade!); value.container.stages[0].toys = ["arcade.mine_grid", "arcade.pinball"]; a.arcade = JSON.stringify(value); },
 		};
 		for (const [name, mutate] of Object.entries(mutations)) {
 			const artifacts = await complete();
