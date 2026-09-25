@@ -109,6 +109,34 @@ func TestCaddyRejectsMissingWebSocketRouteAndPublicMetrics(t *testing.T) {
 	}
 }
 
+// Cosmetic Shop v1 AC13 N6: the deployment config fails when a payment
+// header is absent, widened, or duplicated.
+func TestCaddyRequiresPaymentBlockingHeaders(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "deployment", "Caddyfile"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, mutate := range map[string]func(string) string{
+		"no Permissions-Policy": func(text string) string {
+			return strings.Replace(text, "\t\tPermissions-Policy \"payment=()\"\n", "", 1)
+		},
+		"payment allowed": func(text string) string { return strings.Replace(text, "payment=()", "payment=(self)", 1) },
+		"no CSP": func(text string) string {
+			return strings.Replace(text, "\t\tContent-Security-Policy \"connect-src 'self' wss://{host}\"\n", "", 1)
+		},
+		"widened connect-src": func(text string) string {
+			return strings.Replace(text, "wss://{host}", "wss://{host} https://checkout.example", 1)
+		},
+		"duplicated CSP override": func(text string) string {
+			return strings.Replace(text, "\t\tReferrer-Policy", "\t\tContent-Security-Policy \"default-src *\"\n\t\tReferrer-Policy", 1)
+		},
+	} {
+		if err := ValidateCaddyfile([]byte(mutate(string(data)))); !errors.Is(err, ErrInvalidContent) {
+			t.Fatalf("%s accepted: %v", name, err)
+		}
+	}
+}
+
 func TestGameserverDockerfileRejectsMutableFrontendAndRootUser(t *testing.T) {
 	data, err := os.ReadFile(filepath.Join("..", "..", "deployment", "Dockerfile.gameserver"))
 	if err != nil {

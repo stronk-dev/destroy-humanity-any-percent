@@ -24,6 +24,10 @@
 	}
 
 	header {
+		# Cosmetic Shop v1 N6: no Payment Request API, and the page may only
+		# connect to its own origin and the same-host gameserver WebSocket.
+		Permissions-Policy "payment=()"
+		Content-Security-Policy "connect-src 'self' wss://{host}"
 		Referrer-Policy "strict-origin-when-cross-origin"
 		X-Content-Type-Options "nosniff"
 		X-Frame-Options "DENY"

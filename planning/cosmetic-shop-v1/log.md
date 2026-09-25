@@ -288,3 +288,64 @@ composed lane cannot render the shelf yet. It is carried to the mint epoch, toge
 network trap run on that flow (C7 adds the trap to the component-level flow).
 
 No kernel-guarded path was touched, so there is no version bump.
+
+## 2026-09-25 — C7: no real money, by construction (Claude)
+
+- **N4:** `client/tools/verify-no-payment.mjs` (`make verify-no-payment`, now in `verify-client`).
+  - **The gate:** the client's runtime `dependencies` must equal
+    `client/tools/runtime-dependency-allowlist.json` exactly.
+  - **The secondary net:** a boundary-aware denylist scan of `client/pnpm-lock.yaml`,
+    `server/go.mod` and `server/go.sum` for payment, IAP and ads SDK names.
+  - **Built-in fixtures:** 6 rejected (an extra runtime dependency, `/stripe@`,
+    `@stripe/stripe-js`, `github.com/stripe/stripe-go`, `in-app-purchase`, `@paypal/paypal-js`),
+    and 2 near-misses accepted (`squared-distance`, `stripes-css`).
+- **N5:** `client/test/network-trap.ts` traps fetch, WebSocket, `PaymentRequest`,
+  `navigator.credentials.*` and `window.open` to same-origin allowlisted paths.
+  - It wraps the whole host-level shop flow in `cosmetic-host-browser.test.ts` (acquire through
+    `runtime.intent`, snapshot, owned).
+  - Its own failing case is recorded: off-origin checkout, `PaymentRequest` and `window.open` are
+    all logged.
+  - Because the host test uses a fixture runtime, the trap witnesses that **the shop UI code**
+    issues no network or payment calls. The composed real-server run is carried with AC14.
+- **N6:** `deployment/Caddyfile` adds `Permissions-Policy "payment=()"` and
+  `Content-Security-Policy "connect-src 'self' wss://{host}"`. `ValidateCaddyfile` requires each
+  exactly once.
+  - `TestCaddyRequiresPaymentBlockingHeaders` rejects: a missing Permissions-Policy, `payment=(self)`,
+    a missing CSP, a widened `connect-src`, and a second CSP header.
+  - The real-Caddy `make test-deployment-release` passes. Its fixture uses
+    `deployment/Caddyfile.release-integration`, **not** the shipped file, so I dropped an
+    attempted header assertion there: it would have witnessed the wrong file. The shipped file is
+    covered by the validator test above.
+- **N7:** `copy-pipeline.mjs` `validateShopCurrency`. No `shop.*`/`cosmetic.*` text may contain a
+  currency symbol or ISO code with a number, or "N [word] points", unless it carries provenance;
+  placeholders are exempt. It ships with 4 failing fixtures and 3 accepted ones in
+  `verify-copy.mjs`.
+- **N8 / §5 / N3:** `client/tools/verify-cosmetic-boundaries.mjs` (`make verify-cosmetic-boundary`,
+  in `verify-client`). `go list -deps ./cosmetic` must be standard library only, and
+  `client/src/cosmetic/*.ts` may import siblings only. It ships with 9 rejected fixtures (economy,
+  production, save, prometheus, operations; `../replay`, `../economy-kernel`,
+  `../game-ui/runtime`, a telemetry package).
+
+Evidence (cold):
+- `make typecheck test-client verify-client-boundary verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-cosmetic-boundary verify-no-payment copy-check`
+  passes.
+- `make test-go GO_PACKAGES='./releasepackage' GO_TEST_FLAGS='-count=1'` passes.
+- `make test-deployment-release`, `test-deployment-rehearsal` and `test-deployment-operations` all
+  pass.
+
+AC13 failing runs (all restored):
+- **N5:** an off-origin `fetch("https://example.invalid/checkout")` injected into the shelf's Buy
+  fails the host test ("fetch https://example.invalid/checkout").
+- **N7:** `shop.cosmetics.buy` = "Buy for $2.50" fails `make copy-check` ("shop copy may not
+  contain a currency amount").
+- **N4:** adding a `left-pad` runtime dependency fails `make verify-no-payment` ("differ from the
+  allowlist").
+- **N8:** `client/src/cosmetic/catalog.ts` importing `../replay` fails
+  `make verify-cosmetic-boundary`.
+- **N6:** the five mutations in `TestCaddyRequiresPaymentBlockingHeaders`.
+
+**Pre-existing, not caused here:** `make deployment-config-check` fails identically at `1bba27ba`
+without these changes. It validates environment-provided runtime configuration, which this
+workspace does not set.
+
+No kernel-guarded path was touched, so there is no version bump.

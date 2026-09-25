@@ -17,6 +17,7 @@ import {
   validatePlainCopyText,
   validateProvenanceRegistry,
   validateReferences,
+  validateShopCurrency,
   verifyAppendOnlyHistory,
 } from "./copy-pipeline.mjs";
 
@@ -51,6 +52,15 @@ const verifiedFixture = { claim_id: "fixture.verified", source_file: "design/res
 expectFailure("verified provenance mutation history fixture", () => assertVerifiedClaimsStable([verifiedFixture], [{ ...verifiedFixture, source_anchor: "changed" }], "fixture"), /mutates or removes verified provenance claim/);
 assertVerifiedClaimsStable([verifiedFixture], [{ ...verifiedFixture, source_file: "design/research/provenance-extracts.md", source_anchor: "changed" }], "fixture", () => true);
 expectFailure("verified provenance status-mutation-under-escape fixture", () => assertVerifiedClaimsStable([verifiedFixture], [{ ...verifiedFixture, source_anchor: "changed", status: "attributed" }], "fixture", () => true), /mutates or removes verified provenance claim/);
+
+// Cosmetic Shop v1 N7: the shop currency rule and its failing fixtures.
+const shopEntry = (key, text, provenance = []) => ({ key, text, params: [], era_variants: null, provenance, tone: "diegetic" });
+for (const [key, text] of [["shop.cosmetics.buy", "Buy for $2.50"], ["cosmetic.horse_armor_free.anchor", "Was 200 Microsoft Points"], ["shop.receipt.line", "Paid 3 EUR"], ["shop.cosmetics.buy", "Only 5 points"]]) {
+  expectFailure(`shop currency fixture ${text}`, () => validateShopCurrency(shopEntry(key, text)), /shop copy may not contain a currency amount/);
+}
+validateShopCurrency(shopEntry("shop.cosmetics.buy", "Buy for {price}"));
+validateShopCurrency(shopEntry("achievement.fixture", "Buy for $2.50"));
+validateShopCurrency(shopEntry("cosmetic.fixture", "Was 200 Microsoft Points", ["fixture.verified"]));
 
 for (const fixture of ["100%", "$12", "12$", "12€", "12 EUR", "12 ppm", "12 days", "1995"]) {
   if (!containsStatistic(fixture)) throw new Error(`statistic detector missed ${fixture}`);

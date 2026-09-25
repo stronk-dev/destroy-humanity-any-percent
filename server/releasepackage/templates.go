@@ -168,6 +168,16 @@ func ValidateCaddyfile(data []byte) error {
 			return fmt.Errorf("%w: Caddy route %q", ErrInvalidContent, required)
 		}
 	}
+	// Cosmetic Shop v1 N6: payment-blocking headers are mandatory, exact, and
+	// never widened (no other connect-src origin, no payment allowance).
+	for _, required := range []string{"Permissions-Policy \"payment=()\"", "Content-Security-Policy \"connect-src 'self' wss://{host}\""} {
+		if strings.Count(text, required) != 1 {
+			return fmt.Errorf("%w: Caddy header %q", ErrInvalidContent, required)
+		}
+	}
+	if strings.Count(text, "Permissions-Policy") != 1 || strings.Count(text, "Content-Security-Policy") != 1 {
+		return fmt.Errorf("%w: Caddy payment headers must be declared exactly once", ErrInvalidContent)
+	}
 	for _, forbidden := range []string{"/metrics", "prometheus", "localhost"} {
 		if strings.Contains(strings.ToLower(text), forbidden) {
 			return fmt.Errorf("%w: public Caddy config contains %q", ErrInvalidContent, forbidden)

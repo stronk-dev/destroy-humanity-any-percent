@@ -9,6 +9,7 @@ import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import type { IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
+import { installNetworkTrap, sameOriginAllowed } from "./network-trap";
 
 const browser = typeof document !== "undefined";
 const NOW = 1_800_000_000_000;
@@ -96,6 +97,7 @@ const staticCard = (target: HTMLElement) => [...target.querySelectorAll("section
 it.skipIf(!browser)("hides the shelf at T0, shows it at T1, keeps it once owned, and keeps the static card before activation", async () => {
   const runtime = new Runtime();
   runtime.current = withShop(undefined, 0);
+  const trap = installNetworkTrap();
   const { target, dispose } = await mounted(runtime);
   try {
     expect(shelf(target)).toBeNull();
@@ -123,5 +125,20 @@ it.skipIf(!browser)("hides the shelf at T0, shows it at T1, keeps it once owned,
     expect(shelf(target)!.textContent).toContain("Owned.");
     const result = await axe.run(target, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } });
     expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical")).toEqual([]);
-  } finally { await dispose(); }
+    // N5: the whole shop flow issued no off-origin request and touched no payment API.
+    expect(trap.violations).toEqual([]);
+  } finally { trap.restore(); await dispose(); }
+});
+
+// N5 failing case: the trap itself records off-origin checkout and payment calls.
+it.skipIf(!browser)("the network trap rejects off-origin checkout and PaymentRequest", async () => {
+  const trap = installNetworkTrap();
+  try {
+    await window.fetch("https://example.invalid/checkout").catch(() => undefined);
+    try { new (window as unknown as { PaymentRequest: new () => unknown }).PaymentRequest(); } catch { /* trapped */ }
+    window.open("https://pay.example.invalid");
+    expect(trap.violations).toEqual(["fetch https://example.invalid/checkout", "PaymentRequest", "window.open https://pay.example.invalid"]);
+    expect(sameOriginAllowed("/api/v1/intents", window.location.origin)).toBe(true);
+    expect(sameOriginAllowed("/checkout", window.location.origin)).toBe(false);
+  } finally { trap.restore(); }
 });

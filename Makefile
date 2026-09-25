@@ -586,6 +586,12 @@ verify-meters-boundary:
 verify-achievements-boundary:
 	node client/tools/verify-achievements-boundaries.mjs
 
+verify-cosmetic-boundary:
+	node client/tools/verify-cosmetic-boundaries.mjs
+
+verify-no-payment:
+	node client/tools/verify-no-payment.mjs
+
 verify-server: vet test-go pitch-corpus-check formulas-check api-check harness-check verify-routes-boundary verify-commons-boundary
 
 verify-server-core: vet test-go-core pitch-corpus-check formulas-check api-check verify-routes-boundary verify-commons-boundary
@@ -603,7 +609,7 @@ verify-server-ci:
 verify-harness-ci:
 	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-harness HARNESS_WORKERS=$(HARNESS_WORKERS)'
 
-verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary copy-check
+verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-cosmetic-boundary verify-no-payment copy-check
 
 verify-push: verify-server-core verify-harness-fast verify-client test-browser test-game-ui-composed verify-schema
 

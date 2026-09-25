@@ -350,9 +350,23 @@ export function validateCompanionEntry(entry) {
   }
 }
 
+// Cosmetic Shop v1 §9/N7: no shop.* or cosmetic.* string may carry a currency
+// amount (a currency symbol or ISO code with a number, or a number of
+// "points"), except through a placeholder or a row with a provenance claim.
+const shopCurrencyAmount = /(?:(?<![\p{L}\p{N}_])(?:\$|€|£|¥|USD|EUR|GBP|JPY)\s*\d|\d+(?:[.,]\d+)?\s*(?:\$|€|£|¥|USD|EUR|GBP|JPY|(?:[\p{L}]+\s+)?points?)(?![\p{L}\p{N}_]))/iu;
+
+export function validateShopCurrency(entry) {
+  if (!entry.key.startsWith("shop.") && !entry.key.startsWith("cosmetic.")) return;
+  if (entry.provenance.length > 0) return;
+  for (const text of [entry.text, ...Object.values(entry.era_variants ?? {})]) {
+    if (shopCurrencyAmount.test(withoutPlaceholders(text))) fail(entry.key, "shop copy may not contain a currency amount");
+  }
+}
+
 export function validateCopySafety(entries, claims, denylist) {
   for (const entry of entries) {
     validateCompanionEntry(entry);
+    validateShopCurrency(entry);
     const texts = [entry.text, ...Object.values(entry.era_variants ?? {})];
     const requiresProvenance = entry.tone === "lore_card" || texts.some(containsStatistic) || entry.provenance.length > 0;
     if (requiresProvenance && entry.provenance.length === 0) fail(entry.key, "requires verified provenance");

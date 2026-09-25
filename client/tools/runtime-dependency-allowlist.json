@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "note": "Cosmetic Shop v1 N4: the client's runtime dependencies must equal this list exactly. Adding a runtime dependency is a reviewed change to this file.",
+  "dependencies": ["@antimatter-dimensions/notations", "break_infinity.js", "svelte"]
+}
