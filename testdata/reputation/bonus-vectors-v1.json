@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "level": 0,
+      "spent": 0,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 0,
+      "factor": "1e0"
+    },
+    {
+      "level": 0,
+      "spent": 0,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 1000000,
+      "factor": "1e0"
+    },
+    {
+      "level": 7,
+      "spent": 3,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 0,
+      "factor": "1e0"
+    },
+    {
+      "level": 1,
+      "spent": 1,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 50000,
+      "factor": "1.0005e0"
+    },
+    {
+      "level": 4,
+      "spent": 1,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 50000,
+      "factor": "1.002e0"
+    },
+    {
+      "level": 552,
+      "spent": 552,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 1000000,
+      "factor": "6.52e0"
+    },
+    {
+      "level": 1000,
+      "spent": 17,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 750000,
+      "factor": "8.5e0"
+    },
+    {
+      "level": 3,
+      "spent": 2,
+      "per_level_ppm": 1,
+      "unlock_ppm": 1,
+      "factor": "1e0"
+    },
+    {
+      "level": 9007199254740991,
+      "spent": 5,
+      "per_level_ppm": 1000000,
+      "unlock_ppm": 1000000,
+      "factor": "9.00719925474e15"
+    },
+    {
+      "level": 9007199254740991,
+      "spent": 0,
+      "per_level_ppm": 10000,
+      "unlock_ppm": 250000,
+      "factor": "2.25179981369e13"
+    }
+  ]
+}

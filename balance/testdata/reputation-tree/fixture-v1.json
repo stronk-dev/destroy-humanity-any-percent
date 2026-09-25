@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "bonus": {
+    "per_level_ppm": 10000,
+    "source_id": "reputation.founder_bonus",
+    "slot": "prestige",
+    "target": "all"
+  },
+  "nodes": [
+    {
+      "node_id": "reputation.unlock.p05",
+      "kind": "bonus_unlock",
+      "cost": 1,
+      "requires": [],
+      "unlock_ppm": 50000,
+      "title_key": "reputation_tree.node.unlock_p05.title",
+      "body_key": "reputation_tree.node.unlock_p05.body"
+    },
+    {
+      "node_id": "reputation.starter.cash_small",
+      "kind": "starter",
+      "cost": 2,
+      "requires": [],
+      "starter": {
+        "kind": "resource_grant",
+        "resource_id": "company.cash",
+        "amount": "1e3"
+      },
+      "title_key": "reputation_tree.node.starter_cash_small.title",
+      "body_key": "reputation_tree.node.starter_cash_small.body"
+    },
+    {
+      "node_id": "reputation.starter.generated_beige_tower",
+      "kind": "starter",
+      "cost": 3,
+      "requires": [
+        "reputation.starter.cash_small"
+      ],
+      "starter": {
+        "kind": "generated_generators",
+        "generator_id": "generator.beige_tower",
+        "count": 5
+      },
+      "title_key": "reputation_tree.node.starter_generated_beige_tower.title",
+      "body_key": "reputation_tree.node.starter_generated_beige_tower.body"
+    },
+    {
+      "node_id": "reputation.unlock.p25",
+      "kind": "bonus_unlock",
+      "cost": 5,
+      "requires": [
+        "reputation.unlock.p05"
+      ],
+      "unlock_ppm": 250000,
+      "title_key": "reputation_tree.node.unlock_p25.title",
+      "body_key": "reputation_tree.node.unlock_p25.body"
+    },
+    {
+      "node_id": "reputation.starter.upgrade_continuous_feed_paper",
+      "kind": "starter",
+      "cost": 4,
+      "requires": [
+        "reputation.starter.generated_beige_tower"
+      ],
+      "starter": {
+        "kind": "preowned_upgrade",
+        "upgrade_id": "upgrade.continuous_feed_paper"
+      },
+      "title_key": "reputation_tree.node.starter_upgrade_continuous_feed_paper.title",
+      "body_key": "reputation_tree.node.starter_upgrade_continuous_feed_paper.body"
+    },
+    {
+      "node_id": "reputation.starter.cash_large",
+      "kind": "starter",
+      "cost": 12,
+      "requires": [
+        "reputation.starter.cash_small",
+        "reputation.unlock.p25"
+      ],
+      "starter": {
+        "kind": "resource_grant",
+        "resource_id": "company.cash",
+        "amount": "1e5"
+      },
+      "title_key": "reputation_tree.node.starter_cash_large.title",
+      "body_key": "reputation_tree.node.starter_cash_large.body"
+    },
+    {
+      "node_id": "reputation.unlock.p50",
+      "kind": "bonus_unlock",
+      "cost": 25,
+      "requires": [
+        "reputation.unlock.p25"
+      ],
+      "unlock_ppm": 500000,
+      "title_key": "reputation_tree.node.unlock_p50.title",
+      "body_key": "reputation_tree.node.unlock_p50.body"
+    },
+    {
+      "node_id": "reputation.unlock.p75",
+      "kind": "bonus_unlock",
+      "cost": 100,
+      "requires": [
+        "reputation.unlock.p50"
+      ],
+      "unlock_ppm": 750000,
+      "title_key": "reputation_tree.node.unlock_p75.title",
+      "body_key": "reputation_tree.node.unlock_p75.body"
+    },
+    {
+      "node_id": "reputation.unlock.p100",
+      "kind": "bonus_unlock",
+      "cost": 400,
+      "requires": [
+        "reputation.unlock.p75"
+      ],
+      "unlock_ppm": 1000000,
+      "title_key": "reputation_tree.node.unlock_p100.title",
+      "body_key": "reputation_tree.node.unlock_p100.body"
+    }
+  ]
+}

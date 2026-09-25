@@ -18,3 +18,32 @@ vector.
 B2 predeclares the bundle wiring described in the plan. The fixture tree (the RFC's proposed R2
 table) lives in `balance/testdata/reputation-tree/fixture-v1.json`; no production artifact or
 epoch is created.
+
+## 2026-09-25 — B1 landed (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+- **Delivered:**
+  - `server/reputation/tree.go` and `client/src/reputation.ts`, both registered as kernel-guarded
+    paths. The kernel version bump is in the same commit.
+  - `curriculum.ValidateStarter`, exported as a pure wrapper so the tree reuses the exact starter
+    grammar.
+  - The fixture tree, the 24-case rejection corpus and the 10 Go-authored bonus vectors.
+  - Placeholder node copy.
+  - `docs/reputation-tree.md`.
+- **Evidence, all runs cold:** `go test -count=1 ./reputation ./curriculum ./kernel` passes, and
+  `vitest run test/reputation.test.ts` passes 4/4.
+- **Severing probes:** each breaks one check, and each turned its test red; every file was then
+  restored.
+  - Go: rule 1 (whole declaration, provider only), rule 2, rule 3, rule 4, rule 5, rule 6
+    (monotonic, final rung), rule 7 (whole headroom, resource branch, generator branch, duplicate
+    upgrade), rule 8, and the AC5 mutant that computes from available instead of level.
+  - TS: rules 1–8 and the AC5 mutant.
+- **Finding during probing:** the TS rule-1 provider-only mutant first survived, because no fixture
+  bound a declared row that had the wrong provider. I added `bonus_source_wrong_provider`, which
+  uses `fiscal.hoard`; both the Go and TS provider mutants now fail.
+- **DESIGN-GAP RT-DG-A:** R2 rule 8 names `copy/references.v1.json` registration. The copy
+  reference registry is keyed to epoch artifact schemas, and this artifact has no epoch or schema
+  yet. The loader enforces the declared-copy-key half now. Registration, and
+  `balance/reputation-tree.schema.json`, land with the production artifact at the mint (B-mint),
+  and the gap is recorded here rather than improvised.

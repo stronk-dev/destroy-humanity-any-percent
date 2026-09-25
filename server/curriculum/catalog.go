@@ -120,6 +120,15 @@ func (catalog *Catalog) validate(declarations Declarations) error {
 	return nil
 }
 
+// ValidateStarter applies the starter-package grammar to a starter owned by
+// another catalog (the Reputation tree reuses this exact union).
+func ValidateStarter(starter StarterPackage, catalog *economy.Catalog) error {
+	if catalog == nil {
+		return ErrInvalidCatalog
+	}
+	return validateStarter(starter, catalog)
+}
+
 func validateStarter(starter StarterPackage, catalog *economy.Catalog) error {
 	switch starter.Kind {
 	case "resource_grant":
