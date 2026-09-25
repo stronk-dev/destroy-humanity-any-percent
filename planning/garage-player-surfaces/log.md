@@ -96,3 +96,49 @@ the same change, as `docs/api-foundation.md` requires.
 - **S5:** dropping the Founder v19 gate makes the version test fail.
 - **S6:** accepting an undeclared meter band makes the client parser test fail (1 failed | 15
   passed).
+
+## 2026-09-25 — GS1/GS2/GS3/GS6 surfaces + GS7 availability (Claude)
+
+- **Surfaces added:** Trophy Case (GS2), Earnings Calls (GS1) and Reputation Board (GS3) mount
+  from registry rows gated by `feature.*` facts. The `minigame_session` row now unlocks on
+  `feature.minigame.pitch`, as GS0.4 specifies.
+- **Pitch availability:** the Pitch host shows the minigames-arm lock reason before any create.
+- **Desk:** provisioned counts with the cap reason, owned-upgrade text, and F10 (a missing cap copy
+  withholds the cap and logs an invariant instead of throwing).
+- **Recorded deviation:** ID→copy rows live in a new strict `features-presentation.json` rather
+  than a presentation-catalog v4 bump. The catalog bump belongs to the Game UI copy-candidate
+  compiler lane. The rows are data, sorted, and every key is verified against the copy catalog at
+  load.
+- **Not done in this batch:** the 320 px reflow measurement (GS1-A5/GS3-A3) is not claimed. The
+  Desk's measured 647 px defect is owned by the accessibility RFC.
+
+**Evidence (cold):**
+- `garage-surfaces.test.ts` 3/3. It covers the exact phase edges 99/100/199/200 and the
+  presentation fail-closed checks.
+- `garage-surfaces-browser.test.ts` 21/21 across three browsers:
+  - nav from facts;
+  - meters text and axe;
+  - achievements text states;
+  - Fiscal phases, Founder-scoped requests (`expected_revision: 7` against Company 1), the rejection
+    and outcome text, and the spend targets;
+  - GS6 cap reason;
+  - F10;
+  - arm-null → Desk;
+  - Pitch availability.
+- Full lanes pass: `make typecheck build-client test-client verify-client-boundary copy-check
+  test-browser` (20193+) and `test-game-ui-composed`.
+- **Composed-lane finding, fixed:** the first composed run failed with a Playwright strict-mode
+  duplicate, because the availability hint reused the launcher's rejection text. It now uses its
+  own `minigame.availability.*` keys.
+
+**Severing probes:**
+- **S7:** a Company-scoped harvest fails the Fiscal test.
+- **S8:** a cap number with no reason fails GS6.
+- **S9:** achievement state with no text fails GS2-A1.
+- **S10:** `<=` at `early_ms` fails the phase unit test.
+- **S11:** no availability hint fails GS7.
+
+**Still open in this plan:**
+- GS5 active play (blocker B-1, guarded export);
+- GS0.3 event decoders and announcements;
+- the pet slice, which is out of scope.

@@ -11,11 +11,11 @@ that would need one is recorded as a blocker in `log.md` instead.
   `act()` scopes `expected_revision` (Company vs Founder); rejected intents render their reason.
 - [x] GS0.1 projection: Game UI snapshot v4 (`features` arms + `generators[].provision_cap` +
   feature facts), registered schema, generated types, client parser; live sync requires v4.
-- [ ] GS3 Meters arm + surface.
-- [ ] GS2 Achievements arm + surface.
-- [ ] GS1 Fiscal arm + surface.
-- [ ] GS7 minigames availability arm wired into the existing Pitch surface/nav.
-- [ ] GS5 active-play arm + Desk opportunity region.
-- [ ] GS6 provisioning caps + owned-upgrade text on the Desk.
+- [x] GS3 Meters arm + surface.
+- [x] GS2 Achievements arm + surface.
+- [x] GS1 Fiscal arm + surface.
+- [x] GS7 minigames availability arm wired into the existing Pitch surface/nav.
+- [ ] GS5 active-play arm + Desk opportunity region. **Blocked (B-1):** combo saturation needs a guarded `server/production` export.
+- [x] GS6 provisioning caps + owned-upgrade text on the Desk.
 - [ ] GS0.3 event decoders (announcements only).
 - [ ] Canonical docs, cold gates, hand-off for Codex designated review (never self-archive).

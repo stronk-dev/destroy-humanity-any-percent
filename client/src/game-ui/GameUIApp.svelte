@@ -17,6 +17,9 @@
   import { priorPersonalBest, readLocalTiming, RTATimer, writeLocalRunTiming, type LocalTimingStorage } from "./timing";
   import { formatAmount } from "../ui/amount-format";
   import RunEndSurface from "./RunEndSurface.svelte";
+  import AchievementsSurface from "./AchievementsSurface.svelte";
+  import FiscalSurface from "./FiscalSurface.svelte";
+  import MetersSurface from "./MetersSurface.svelte";
   import MinigameSessionSurface from "./minigame/MinigameSessionSurface.svelte";
   import SoulRecoverySurface from "./soul/SoulRecoverySurface.svelte";
   import { loadSoulRecoveryContent } from "./soul/recovery-surface";
@@ -130,7 +133,7 @@
 
   // GS0.2: `scope` binds expected_revision to the Company or Founder stream;
   // a rejected outcome renders its reason instead of looking like offline.
-  async function act(body: Record<string, unknown>, options: Readonly<{ scope?: "company" | "founder"; rejections?: SurfaceRejections }> = {}): Promise<void> {
+  async function act(body: Record<string, unknown>, options: Readonly<{ scope?: "company" | "founder"; rejections?: SurfaceRejections; applied?: (receipt: Readonly<Record<string, unknown>>) => CopyKey | null }> = {}): Promise<void> {
     if (!snapshot) return;
     if (options.scope === "founder" && founderRevision === undefined) return;
     const kind = typeof body.kind === "string" ? body.kind : "";
@@ -150,7 +153,7 @@
         const expected = options.scope === "founder" ? founderRevision! : snapshot!.revision;
         const outcome = await runtime.intent({ intent_id: newIntentID(), expected_revision: expected, ...body });
         const notice = noticeForOutcome(outcome, options.rejections);
-        intentNotice = notice.notice;
+        intentNotice = outcome.outcome === "applied" && options.applied ? options.applied(outcome.receipt) : notice.notice;
         if (notice.effect === "refresh") void refresh();
         else if (outcome.outcome === "applied" && (kind === "cross_gate" || kind === "decline_exit_offer")) {
           bindSnapshot(await runtime.snapshot());
@@ -258,11 +261,38 @@
     return t(key, {}, era);
   }
 
+  function factTrue(id: string): boolean { return snapshot?.facts.some((fact) => fact.fact_id === id && fact.value === true) ?? false; }
+  const liveFeatures = $derived(snapshot && "features" in snapshot ? snapshot.features : undefined);
+  const pitchAvailability = $derived(liveFeatures?.minigames?.rows.find((row) => row.minigame_id === "pitch"));
+  const FISCAL_REJECTIONS: SurfaceRejections = new Map([
+    ["not_eligible/period_not_ripe", "fiscal.rejection.period_not_ripe"],
+    ["unaffordable/fiscal_credit", "fiscal.rejection.unaffordable"],
+    ["not_eligible/already_unlocked", "fiscal.rejection.already_unlocked"],
+  ]);
+  const HARVEST_OUTCOMES: Readonly<Record<string, CopyKey>> = {
+    consumed_by_auto: "fiscal.outcome.consumed_by_auto", early_failed: "fiscal.outcome.early_failed",
+    early_succeeded: "fiscal.outcome.early_succeeded", guaranteed: "fiscal.outcome.guaranteed",
+  };
+  function harvestNotice(receipt: Readonly<Record<string, unknown>>): CopyKey | null {
+    const key = typeof receipt.harvest_outcome === "string" ? HARVEST_OUTCOMES[receipt.harvest_outcome] : undefined;
+    if (!key) { console.error("game UI invariant: unknown Fiscal harvest outcome"); return "intent.rejection.unknown"; }
+    return key;
+  }
+  // GS0.5: an arm going null while its surface is mounted returns to the Desk.
+  $effect(() => {
+    const armless = surface === "achievements" && !liveFeatures?.achievements || surface === "fiscal" && !liveFeatures?.fiscal ||
+      surface === "meters" && !liveFeatures?.meters;
+    if (snapshot && armless) show("desk");
+  });
+  const founderControls = $derived(founderRevision !== undefined && !offline && !resyncing);
+
   function exitTitle(exitType: string): string { return t(requirePresentation(GAME_UI_PRESENTATION.exitTypes, exitType).title_key, {}, era); }
 
   function capFor(cap: GameUISnapshot["resources"][number]["cap"]): { amount: string; reason_key: CopyKey } | undefined {
     if (cap === null) return undefined;
-    if (!applicationCopyCatalog.byKey.has(cap.reason_key)) throw new RangeError(`missing cap copy ${cap.reason_key}`);
+    // F10: a missing reason key must not take the Desk down. The cap is
+    // withheld and one invariant is reported loudly (tests assert it).
+    if (!applicationCopyCatalog.byKey.has(cap.reason_key)) { console.error(`game UI invariant: missing cap copy ${cap.reason_key}`); return undefined; }
     return { amount: cap.amount, reason_key: cap.reason_key as CopyKey };
   }
 
@@ -290,7 +320,10 @@
       </div>
       <nav aria-label={t("surface.desk.title", {}, era)}>
         <button type="button" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
-        {#if runtime.minigame}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.achievements")}<button type="button" aria-current={surface === "achievements" ? "page" : undefined} onclick={() => show("achievements")}>{t("surface.achievements.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.fiscal")}<button type="button" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.meters")}<button type="button" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}</button>{/if}
+        {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
         {#if runtime.soulRecovery}<button type="button" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
         <button type="button" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
       </nav>
@@ -351,6 +384,8 @@
               <h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p>
               <span>{t("desk.owned_frame", { count: generator.owned }, era)}</span><span>{t("desk.rate_frame", { rate: formatAmount(generator.rate_contribution) }, era)}</span>
               <Amount value={generator.next_cost} era={era} />
+              {#if generator.provisioned > 0}<span>{t("desk.provisioned_frame", { count: generator.provisioned }, era)}</span>{/if}
+              {#if "provision_cap" in generator && generator.provision_cap !== null && generator.provisioned >= generator.provision_cap.amount}<span>{t(generator.provision_cap.reason_key as CopyKey, {}, era)}</span>{/if}
               <div><button type="button" disabled={pending || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "exact", value: 1 } })}>{t("desk.buy_one", {}, era)}</button><button type="button" disabled={pending || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "max" } })}>{t("desk.buy_max", {}, era)}</button></div>
             </article>
           {/each}
@@ -362,7 +397,7 @@
         <div class="cards">
           {#each snapshot.upgrades as upgrade (upgrade.upgrade_id)}
             {@const presentation = requirePresentation(GAME_UI_PRESENTATION.upgrades, upgrade.upgrade_id)}
-            <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} /><button type="button" disabled={pending || !upgrade.eligible || upgrade.owned} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
+            <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} />{#if upgrade.owned}<strong>{t("desk.upgrade.owned", {}, era)}</strong>{/if}<button type="button" disabled={pending || !upgrade.eligible || upgrade.owned} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
           {/each}
         </div>
       </section>
@@ -410,7 +445,18 @@
     <RunEndSurface {ended} />
     <button type="button" disabled={pending} onclick={continueRun}>{t("screen.run_end.continue", {}, era)}</button>
     {#if offline}<p role="alert">{t("settings.save_status.offline", {}, era)}</p>{/if}
+  {:else if surface === "achievements" && liveFeatures?.achievements}
+    <AchievementsSurface arm={liveFeatures.achievements} {era} />
+  {:else if surface === "meters" && liveFeatures?.meters}
+    <MetersSurface arm={liveFeatures.meters} {era} />
+  {:else if surface === "fiscal" && liveFeatures?.fiscal}
+    <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls}
+      onHarvest={() => act({ kind: "harvest_fiscal_period" }, { scope: "founder", rejections: FISCAL_REJECTIONS, applied: harvestNotice })}
+      onSpendLevel={(generatorID) => act({ kind: "spend_fiscal_credit", target: { kind: "generator_level", generator_id: generatorID, levels: 1 } }, { scope: "founder", rejections: FISCAL_REJECTIONS })}
+      onSpendUnlock={(unlockID) => act({ kind: "spend_fiscal_credit", target: { kind: "unlock", unlock_id: unlockID } }, { scope: "founder", rejections: FISCAL_REJECTIONS })} />
   {:else if snapshot && surface === "minigame_session" && runtime.minigame}
+    {#if pitchAvailability && !pitchAvailability.unlocked}<p class="intent-notice" role="note">{t("minigame.availability.fiscal_locked", {}, era)}</p>{/if}
+    {#if pitchAvailability?.human_content_locked}<p class="intent-notice" role="note">{t("minigame.availability.soul_locked", {}, era)}</p>{/if}
     <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "soul_recovery" && runtime.soulRecovery}
     <SoulRecoverySurface port={runtime.soulRecovery} content={loadSoulRecoveryContent()} {era} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />

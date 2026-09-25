@@ -17,6 +17,32 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 - Run End: a payload-isolated component that accepts only the decoded `run_ended` event; its parent
   owns the exact-next-Company continuation control.
 - Settings/System: save status, drain notice, and explicit resync action.
+- **Trophy Case (`achievements`):** read-only, unlocked by `feature.achievements`. It shows the run
+  and career score, an earned/total count, and each row's scope, text state (earned this run,
+  earned in career, not earned yet), score grant, and the existing possession warning. The score is
+  never labelled Clout.
+- **Earnings Calls (`fiscal`):** unlocked by `feature.fiscal`.
+  - Shows credit against its visible cap, the auto-sweep preview, the hoard preview (next run only),
+    and a display-only phase (`fiscal-phase.ts`: ripening, early with its stated success chance, or
+    guaranteed).
+  - The Harvest button carries its curtain small print. There are +1 level buttons and unlock rows.
+  - Unlock rows without a `features-presentation.json` row are withheld; `unlock.arcade` is
+    withheld (F12).
+  - Intents are Founder-scoped. Harvest outcomes and Fiscal rejections render in the status line.
+- **Reputation Board (`meters`):** read-only, unlocked by `feature.meters`. It is a 5 × 2 table of
+  constituency Standing/Grievance plus p(doom). Each cell has a native `<meter>`, numeric text and
+  band text. Below 30rem it collapses to labelled rows. It carries the curtain and the "as of last
+  update" note.
+- **Pitch availability:** the Pitch tab is unlocked by `feature.minigame.pitch`. Before any create
+  request it shows the Fiscal-lock or Soul-lock reason from the minigames arm.
+- **Desk additions:** provisioned counts show `desk.provisioned_frame`, plus the cap reason text
+  once provisioning reaches its visible cap. Owned upgrades show text, not only a disabled button.
+  A resource cap whose reason key has no copy is withheld with a loud `console.error` invariant
+  instead of crashing the Desk (F10).
+- **Arm going null:** if a mounted surface's arm becomes null, the UI returns to the Desk.
+
+Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/features-presentation.json`
+(strict, byte-sorted, every key checked against the copy catalog), not in code.
 - Minigame session (The Pitch): a nav tab present whenever the runtime supplies a minigame port.
   It hosts `client/src/game-ui/minigame/MinigameSessionSurface.svelte`; see
   [Minigame platform § Client surface](minigame-platform.md#client-surface). Leaving the tab keeps

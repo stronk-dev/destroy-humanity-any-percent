@@ -106,6 +106,117 @@
       "tone": "achievement"
     },
     {
+      "key": "achievements.empty",
+      "text": "No achievements are defined for this build.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.grant_frame",
+      "text": "Worth {score} score",
+      "params": [
+        {
+          "name": "score",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.progress_frame",
+      "text": "{earned} of {total} earned",
+      "params": [
+        {
+          "name": "earned",
+          "type": "integer"
+        },
+        {
+          "name": "total",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.scope.career",
+      "text": "Career",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.scope.run",
+      "text": "This run",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.score_frame",
+      "text": "Score this run: {run}. Career score: {lifetime}.",
+      "params": [
+        {
+          "name": "lifetime",
+          "type": "integer"
+        },
+        {
+          "name": "run",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.state.earned_lifetime",
+      "text": "Earned in your career",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.state.earned_run",
+      "text": "Earned this run",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievements.state.locked",
+      "text": "Not earned yet",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "cap.fiscal_credit",
+      "text": "Investor Confidence is capped. Quarters past the cap credit nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.fiscal_level.beige_tower",
+      "text": "This upgrade has reached its level cap.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "cap.minigame_faucet",
       "text": "Daily minigame payout limit",
       "params": [],
@@ -549,6 +660,19 @@
       "tone": "corporate"
     },
     {
+      "key": "desk.provisioned_frame",
+      "text": "Provisioned: {count}",
+      "params": [
+        {
+          "name": "count",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "desk.rate_frame",
       "text": "{rate}/sec",
       "params": [
@@ -557,6 +681,14 @@
           "type": "string"
         }
       ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.upgrade.owned",
+      "text": "Owned",
+      "params": [],
       "era_variants": null,
       "provenance": [],
       "tone": "corporate"
@@ -730,6 +862,275 @@
     {
       "key": "exit_type.scripted_first.title",
       "text": "First Failure",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.credit_frame",
+      "text": "{credit} of {cap}",
+      "params": [
+        {
+          "name": "cap",
+          "type": "integer"
+        },
+        {
+          "name": "credit",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.credit_label",
+      "text": "Investor Confidence",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.harvest",
+      "text": "Hold the earnings call",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.harvest_tooltip",
+      "text": "Calling early is a gamble with a stated chance. The clock itself cannot be bought.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.hoard_frame",
+      "text": "Confidence hoard: +{percent} percent production next run (counts up to {cap} confidence).",
+      "params": [
+        {
+          "name": "cap",
+          "type": "integer"
+        },
+        {
+          "name": "percent",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.level_buy",
+      "text": "Add a level for {cost}",
+      "params": [
+        {
+          "name": "cost",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.level_frame",
+      "text": "Level {level} of {cap}",
+      "params": [
+        {
+          "name": "cap",
+          "type": "integer"
+        },
+        {
+          "name": "level",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.levels_label",
+      "text": "Permanent upgrades",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.next_run_note",
+      "text": "Spending here and the confidence hoard take effect on your next run, not this one.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.outcome.consumed_by_auto",
+      "text": "That quarter had already closed on its own. Its confidence was credited automatically.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.outcome.early_failed",
+      "text": "The early call missed. That quarter is spent and nothing was credited.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.outcome.early_succeeded",
+      "text": "The early call landed. Confidence credited.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.outcome.guaranteed",
+      "text": "The call landed. Confidence credited.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.period.auto_note",
+      "text": "Unclaimed quarters are booked automatically after {remaining}.",
+      "params": [
+        {
+          "name": "remaining",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.period.early_frame",
+      "text": "Early call: {success_percent} percent chance it lands. A miss spends the quarter for nothing.",
+      "params": [
+        {
+          "name": "success_percent",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.period.guaranteed",
+      "text": "The quarter is ripe. Calling now always lands.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.period.ripening_frame",
+      "text": "Next earnings call opens in {remaining}.",
+      "params": [
+        {
+          "name": "remaining",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.rejection.already_unlocked",
+      "text": "Already unlocked.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.rejection.period_not_ripe",
+      "text": "It is too soon for an earnings call.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.rejection.unaffordable",
+      "text": "Not enough Investor Confidence for that.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.sweep_preview_frame",
+      "text": "{periods} quarters closed on their own since your last call, crediting {credited}.",
+      "params": [
+        {
+          "name": "credited",
+          "type": "integer"
+        },
+        {
+          "name": "periods",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.unlock.minigame_pitch.description",
+      "text": "Opens the pitch table, a card game played for company cash.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.unlock.minigame_pitch.title",
+      "text": "The Pitch",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.unlock_buy",
+      "text": "Unlock for {cost}",
+      "params": [
+        {
+          "name": "cost",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.unlock_owned",
+      "text": "Unlocked",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.unlocks_label",
+      "text": "Unlocks",
       "params": [],
       "era_variants": null,
       "provenance": [],
@@ -998,6 +1399,151 @@
       "era_variants": null,
       "provenance": [],
       "tone": "diegetic"
+    },
+    {
+      "key": "meters.as_of_note",
+      "text": "Values as of the last update. They only move when the company acts.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.axis.grievance",
+      "text": "Grievance",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.axis.standing",
+      "text": "Standing",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.band.high",
+      "text": "High",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.band.low",
+      "text": "Low",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.constituency.employees",
+      "text": "Employees",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.constituency.investors",
+      "text": "Investors",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.constituency.press",
+      "text": "Press",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.constituency.regulators",
+      "text": "Regulators",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.constituency.users",
+      "text": "Users",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.constituency_label",
+      "text": "Constituency",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.curtain",
+      "text": "Every meter here is visible, published, and never for sale.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.doom.title",
+      "text": "p(doom)",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.doom.tooltip",
+      "text": "A pressure meter, not a moral score. It moves with what the company does.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "meters.value_frame",
+      "text": "{value} of {max}",
+      "params": [
+        {
+          "name": "max",
+          "type": "integer"
+        },
+        {
+          "name": "value",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "minigame.availability.fiscal_locked",
+      "text": "Not open yet. Unlock it with Investor Confidence on the Earnings Calls screen.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "minigame.availability.soul_locked",
+      "text": "Closed for now. Look after your Soul first.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
     },
     {
       "key": "minigame.conflict.revision",
@@ -2196,12 +2742,36 @@
       "tone": "diegetic"
     },
     {
+      "key": "surface.achievements.title",
+      "text": "Trophy Case",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "surface.desk.title",
       "text": "The Desk",
       "params": [],
       "era_variants": null,
       "provenance": [],
       "tone": "diegetic"
+    },
+    {
+      "key": "surface.fiscal.title",
+      "text": "Earnings Calls",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "surface.meters.title",
+      "text": "Reputation Board",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
     },
     {
       "key": "surface.offer_sheet.title",

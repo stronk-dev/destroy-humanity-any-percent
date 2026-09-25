@@ -91,7 +91,7 @@ describe("Game UI payout presentation", () => {
 
 describe("Game UI lifecycle and local timing", () => {
   it("pins the five literal surfaces and authoritative default", () => {
-    expect(GAME_UI_SURFACES.map((row) => row.surface_id)).toEqual(["desk", "minigame_session", "offer_sheet", "run_end", "settings", "soul_recovery", "vision_slide"]);
+    expect(GAME_UI_SURFACES.map((row) => row.surface_id)).toEqual(["achievements", "desk", "fiscal", "meters", "minigame_session", "offer_sheet", "run_end", "settings", "soul_recovery", "vision_slide"]);
     expect(defaultSurface({ "bootstrap.needed": true })).toBe("vision_slide");
     expect(defaultSurface({ "bootstrap.needed": false })).toBe("desk");
   });

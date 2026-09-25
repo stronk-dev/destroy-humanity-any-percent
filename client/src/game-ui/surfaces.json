@@ -1,9 +1,12 @@
 [
-  { "mount_id": "game.surface.desk", "surface_id": "desk", "unlock": { "kind": "always" } },
-  { "mount_id": "game.surface.minigame_session", "surface_id": "minigame_session", "unlock": { "kind": "always" } },
-  { "mount_id": "game.surface.offer_sheet", "surface_id": "offer_sheet", "unlock": { "kind": "always" } },
-  { "mount_id": "game.surface.run_end", "surface_id": "run_end", "unlock": { "kind": "always" } },
-  { "mount_id": "game.surface.settings", "surface_id": "settings", "unlock": { "kind": "always" } },
-  { "mount_id": "game.surface.soul_recovery", "surface_id": "soul_recovery", "unlock": { "kind": "always" } },
-  { "mount_id": "game.surface.vision_slide", "surface_id": "vision_slide", "unlock": { "fact_id": "bootstrap.needed", "kind": "fact_equals", "value": true } }
+  {"mount_id": "game.surface.achievements", "surface_id": "achievements", "unlock": {"fact_id": "feature.achievements", "kind": "fact_equals", "value": true}},
+  {"mount_id": "game.surface.desk", "surface_id": "desk", "unlock": {"kind": "always"}},
+  {"mount_id": "game.surface.fiscal", "surface_id": "fiscal", "unlock": {"fact_id": "feature.fiscal", "kind": "fact_equals", "value": true}},
+  {"mount_id": "game.surface.meters", "surface_id": "meters", "unlock": {"fact_id": "feature.meters", "kind": "fact_equals", "value": true}},
+  {"mount_id": "game.surface.minigame_session", "surface_id": "minigame_session", "unlock": {"fact_id": "feature.minigame.pitch", "kind": "fact_equals", "value": true}},
+  {"mount_id": "game.surface.offer_sheet", "surface_id": "offer_sheet", "unlock": {"kind": "always"}},
+  {"mount_id": "game.surface.run_end", "surface_id": "run_end", "unlock": {"kind": "always"}},
+  {"mount_id": "game.surface.settings", "surface_id": "settings", "unlock": {"kind": "always"}},
+  {"mount_id": "game.surface.soul_recovery", "surface_id": "soul_recovery", "unlock": {"kind": "always"}},
+  {"mount_id": "game.surface.vision_slide", "surface_id": "vision_slide", "unlock": {"fact_id": "bootstrap.needed", "kind": "fact_equals", "value": true}}
 ]
