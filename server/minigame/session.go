@@ -639,6 +639,7 @@ const resolveSessionSQL = "UPDATE minigame_sessions SET state=$3,result=$4,statu
 	"resolution_receipt=$11,resolution_company_revision=$12,resolution_founder_revision=$13 " +
 	"WHERE session_id=$1 AND status='claimed' AND claim_token=$2 AND founder_id=$5 AND company_stream_id=$6 " +
 	"AND run_seq=$7 AND engine_ref=$8 AND engine_version=$9 AND constants_hash=$10 RETURNING " + sessionColumns
+
 // The command stamp is the claim transaction's sample ($5), never a second
 // clock read at insert time (TT-PA1).
 const sampleServerMSSQL = "SELECT floor(extract(epoch FROM clock_timestamp())*1000)::bigint"

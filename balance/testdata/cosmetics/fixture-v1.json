@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "cosmetic_id": "horse_armor",
+      "slot": "pet",
+      "unlock": {
+        "kind": "active_company_tier_at_least",
+        "tier": 1
+      }
+    }
+  ]
+}

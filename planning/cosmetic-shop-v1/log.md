@@ -11,3 +11,35 @@ Base: `3a5234d4`, kernel 0.3.121, latest migration 00079.
 Batches C1–C8 are listed in `plan.md`. The known numbering deviation is recorded there
 (Founder v24). `server/minigame/session.go` (left unformatted by the Typer lane) is gofmt'd inside
 the first kernel-bumping commit, never in a standalone commit.
+
+## 2026-09-25 — C1: `cosmetics` catalog grammar (Claude)
+
+- **Go:** `server/cosmetic/catalog.go`, holding `Load` and `ValidateTransition`.
+- **TypeScript:** `client/src/cosmetic/catalog.ts`, holding `loadCosmeticCatalog` /
+  `parseCosmeticCatalog` / `validateCosmeticTransition`.
+- **Shared corpus:** `testdata/cosmetic/catalog-fixtures-v1.json` has 25 cases. The accept cases
+  are v1 and two sorted rows. The reject cases are:
+  - each of `price`/`currency`/`sku`/`product_id`/`cost`/`store`/`amount` on an item;
+  - `price` at the top level and inside `unlock`;
+  - an unknown slot or unlock kind;
+  - tier 9, -1 and 1.5;
+  - a duplicate id, unsorted rows, or a non-mechanical id;
+  - schema 2, empty or null items, a missing unlock;
+  - a duplicate JSON key, trailing data.
+- **Pinned fixture artifact:** `balance/testdata/cosmetics/fixture-v1.json`, which holds only
+  Horse Armor at tier 1.
+- **TS duplicate keys:** the TS loader carries its own recursive duplicate-key check, because
+  `JSON.parse` collapses duplicates and the Go loader rejects them.
+- **Registration and kernel:** `server/cosmetic/` and `client/src/cosmetic/` are registered in
+  `kernel/affecting-paths.json`. Kernel 0.3.121 → 0.3.122. `server/minigame/session.go` is
+  gofmt'd in this same bumping commit (one blank line; behavior-identical).
+
+Evidence (cold):
+- `make test-go GO_PACKAGES='./cosmetic' GO_TEST_FLAGS='-count=1'` passes, 3 tests.
+- `vitest run test/cosmetic-catalog.test.ts` passes 3/3, deciding every shared case identically.
+
+Severing (all restored afterwards):
+- **G1:** Go `exactObject` without the key-count check fails
+  `reject_item_price: accepted`. This is AC1's named failing case.
+- **T1:** TS `exactObject` checking only required keys fails `reject_item_price`.
+- **T2:** TS skipping the duplicate-key check fails `reject_duplicate_key`.

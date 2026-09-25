@@ -1,0 +1,130 @@
+{
+ "schema_version": 1,
+ "cases": [
+  {
+   "name": "valid_v1",
+   "valid": true,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_item_price",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1},\"price\":0}]}"
+  },
+  {
+   "name": "reject_item_currency",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1},\"currency\":\"USD\"}]}"
+  },
+  {
+   "name": "reject_item_sku",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1},\"sku\":0}]}"
+  },
+  {
+   "name": "reject_item_product_id",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1},\"product_id\":0}]}"
+  },
+  {
+   "name": "reject_item_cost",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1},\"cost\":0}]}"
+  },
+  {
+   "name": "reject_item_store",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1},\"store\":0}]}"
+  },
+  {
+   "name": "reject_item_amount",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1},\"amount\":0}]}"
+  },
+  {
+   "name": "reject_top_price",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}],\"price\":0}"
+  },
+  {
+   "name": "reject_unlock_extra",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1,\"price\":0}}]}"
+  },
+  {
+   "name": "reject_unknown_slot",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"hat\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_unknown_unlock_kind",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"always\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_tier_9",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":9}}]}"
+  },
+  {
+   "name": "reject_tier_negative",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":-1}}]}"
+  },
+  {
+   "name": "reject_tier_fractional",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1.5}}]}"
+  },
+  {
+   "name": "reject_duplicate_id",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}},{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_unsorted_rows",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}},{\"cosmetic_id\":\"aardvark_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "valid_two_rows_sorted",
+   "valid": true,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}},{\"cosmetic_id\":\"zebra_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_non_mechanical_id",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"Horse-Armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_schema_2",
+   "valid": false,
+   "artifact": "{\"schema_version\":2,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_empty_items",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[]}"
+  },
+  {
+   "name": "reject_missing_unlock",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\"}]}"
+  },
+  {
+   "name": "reject_duplicate_key",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_null_items",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":null}"
+  },
+  {
+   "name": "reject_trailing",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]} {}"
+  }
+ ]
+}
