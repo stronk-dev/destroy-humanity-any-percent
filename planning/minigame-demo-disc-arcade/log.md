@@ -111,3 +111,52 @@ This end-to-end witness confirms AR-F1's zero-credit fix (`8add475`) for a zero-
 - R3 survives, and is logged as redundant rather than vacuous: `CatalogBundle.valid`'s arcade arm
   duplicates `validArtifactNames`, which already rejects an arcade without `minigame_api` before
   `valid` runs.
+
+## 2026-09-25 — A6/A7: client toy boards and docs (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review.
+
+`MineGridBoard.svelte` (AR6.2) and `SnakeBoard.svelte` (AR6.3/6.4) live under the unguarded
+`client/src/game-ui/minigame/`. They are mounted only in tests: no pinned `minigame_api` artifact
+carries arcade tenants yet, and AR-P5 registration is blocked with the API arms.
+
+`SnakeBoard` takes `submit`/`current` callbacks from its host, so it never touches transport.
+
+**Candidate copy gap (logged):** AR6.6 has no key for the per-response "N cells revealed"
+announcement, the visible glyphs, the board labels, the pause state, or the pace label. These are
+added as candidate keys and await owner adoption:
+- `arcade.mine_grid.cells_open_frame`
+- `arcade.mine_grid.glyph.{flag,mine}`
+- `arcade.{mine_grid,snake}.board_label`
+- `arcade.snake.{score_frame,paused,pace_label}`
+
+The mine glyph is `X` because the copy linter treats `*` as Markdown.
+
+**Evidence (cold):**
+- `test/arcade-boards-browser.test.ts` passes 12/12 across chromium, firefox and webkit, twice. It
+  covers:
+  - axe checks on setup, playing, terminal, snake ready and snake terminal;
+  - the roving tabindex, and the F/Arrow/C keys and mode toggle producing exact commands;
+  - no mine leak before terminal;
+  - quit confirmation;
+  - D-pad steering flushing exactly `{through_tick:3, turns:[{tick:1,"up"}]}`, validated by the
+    real TS engine;
+  - `flushEvery`, blur auto-pause, resync on a rejected flush, and the max-lead freeze.
+- The Snake tests are real-time (20–40 ms ticks). Timing margins are logged as a flake risk, not a
+  proven stability claim.
+- Full lanes pass:
+  - `make typecheck build-client test-client verify-client-boundary copy-check test-browser`
+    (20772 tests; boundary scan now 19 files);
+  - `make test-game-ui-composed`, both the Pitch phase and the v4 lifecycle.
+
+**Severing (chromium, 1 failed | 3 passed each; restored):**
+- B1: no freeze.
+- B2: no blur auto-pause.
+- B3: no roving tabindex.
+- B4: no mine glyph.
+
+**Not built (blocked or owner-gated):**
+- AR-P4 API arms and AR-P5 registration (the owner's TT-PA4/C2 ruling);
+- the AR6.1 arcade surface host and AR6.5 Desk copy, which need the public wire;
+- the OD-3 Fiscal `unlock.arcade` retirement and all production bytes (AR8 mint);
+- toy names and all prose (OD-15).

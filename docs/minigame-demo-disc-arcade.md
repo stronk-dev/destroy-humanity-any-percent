@@ -54,3 +54,44 @@ success/detonate/unsatisfied, a clear-board win, all four walls, self-collision,
 chase, a `cleared` board, and every rejection code of both engines.
 `client/test/arcade-content-gate.test.ts` replays it byte for byte in TypeScript, and checks that
 every rejection leaves the snapshot unchanged.
+
+## Platform chain
+
+`CatalogBundle.Arcade` joins the replay bundle. The `arcade` artifact requires `minigame_api`, and
+`validArcadeChain` (Go) and the TS replay loader enforce three things:
+- arcade-engine definition rows exist exactly when the artifact does;
+- each such row is a `minigame_api` tenant at engine version `1.0.0`;
+- every stage toy resolves to one of those rows.
+
+`CatalogBundle.TenantContent` resolves both `(mine_grid, 1.0.0)` and `(snake, 1.0.0)` to the one
+arcade artifact, and the gameserver registers both tenants.
+
+The fixture rows are `testdata/minigame/pitch-typer-arcade-v3.json` and
+`balance/testdata/minigame-api-arcade-candidate-v1.json`. They carry AR2 verbatim: zero faucet,
+inert quality, neutral rating, `always`, `human_hobby`.
+`TestArcadeComposedIntegrationUnlockLockPlayAndZeroCreditResolution` witnesses on Postgres:
+- the near-zero-Soul lock;
+- Tier-0 play of both toys;
+- zero-credit applied resolutions that leave cash, rating and quality unchanged;
+- identical-bytes retries and verified Founder history;
+- release of the Exit block.
+
+## Client toys (test-only mount)
+
+`client/src/game-ui/minigame/MineGridBoard.svelte` (AR6.2) renders server snapshots only:
+- a `role="grid"` of buttons with roving tabindex;
+- arrows move, Enter/Space act in the visible Reveal/Flag mode, `F` flags, `C` chords;
+- cell names come from copy keys, with glyph text rather than colour;
+- one polite live-region message per response;
+- a quit confirmation;
+- no timer.
+
+`SnakeBoard.svelte` (AR6.3) runs the shared TS engine locally at `presentation_tick_ms` divided by
+the chosen pace. It flushes `advance` every 16 ticks and immediately at a terminal tick, with one
+command in flight, and freezes at `max_ticks_per_advance` while unacknowledged. A rejected or
+mismatched flush resyncs from `current()`. It auto-pauses on hidden, blur and focus loss, pauses
+on `P`/`Esc`, starts paused, steers by arrows, WASD or a D-pad, and has no decorative animation.
+
+Both components pass axe in three browsers. They are not in the tenant registry: no pinned
+`minigame_api` artifact carries the arcade tenants, and the public wire is blocked (see the top of
+this page).

@@ -294,6 +294,14 @@
       "tone": "diegetic"
     },
     {
+      "key": "arcade.mine_grid.board_label",
+      "text": "Game board",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "arcade.mine_grid.cell.flagged",
       "text": "Row {row}, column {column}: flagged",
       "params": [
@@ -349,6 +357,19 @@
       "tone": "diegetic"
     },
     {
+      "key": "arcade.mine_grid.cells_open_frame",
+      "text": "{count} cells open",
+      "params": [
+        {
+          "name": "count",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "arcade.mine_grid.flags_remaining",
       "text": "Mines left: {count}",
       "params": [
@@ -357,6 +378,22 @@
           "type": "integer"
         }
       ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.glyph.flag",
+      "text": "F",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.glyph.mine",
+      "text": "X",
+      "params": [],
       "era_variants": null,
       "provenance": [],
       "tone": "diegetic"
@@ -442,6 +479,14 @@
       "tone": "diegetic"
     },
     {
+      "key": "arcade.snake.board_label",
+      "text": "Worm board",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "arcade.snake.dpad.down",
       "text": "Down",
       "params": [],
@@ -493,6 +538,35 @@
       "key": "arcade.snake.pace.three_quarter",
       "text": "Three-quarter speed",
       "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.pace_label",
+      "text": "Pace",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.paused",
+      "text": "Paused",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.score_frame",
+      "text": "Snacks eaten: {count}",
+      "params": [
+        {
+          "name": "count",
+          "type": "integer"
+        }
+      ],
       "era_variants": null,
       "provenance": [],
       "tone": "diegetic"
