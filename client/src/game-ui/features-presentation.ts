@@ -10,6 +10,11 @@ export interface FeaturesPresentation {
   readonly trustMeters: ReadonlyMap<string, TrustMeterRow>;
   readonly meterBands: ReadonlyMap<string, CopyKey>;
   readonly fiscalUnlocks: ReadonlyMap<string, Readonly<{ title_key: CopyKey; description_key: CopyKey }>>;
+  // GS5: active-play effect rows; an unknown effect row withholds its opportunity.
+  readonly opportunityEffects: ReadonlyMap<string, Readonly<{ title_key: CopyKey; description_key: CopyKey }>>;
+  // GS4: care actions in catalog order and the PA7 status bands.
+  readonly petActions: ReadonlyMap<string, CopyKey>;
+  readonly petBands: ReadonlyMap<string, CopyKey>;
 }
 
 function key(value: unknown): CopyKey {
@@ -44,8 +49,8 @@ function sortedRows<T>(values: unknown, idField: string, label: string, parse: (
 }
 
 export function parseFeaturesPresentation(value: unknown): FeaturesPresentation {
-  const root = exact(value, ["doom_meter", "fiscal_unlocks", "meter_bands", "schema_version", "trust_meters"], "features presentation");
-  if (root.schema_version !== 1) throw new SyntaxError("features presentation must be schema v1");
+  const root = exact(value, ["doom_meter", "fiscal_unlocks", "meter_bands", "opportunity_effects", "pet_actions", "pet_bands", "schema_version", "trust_meters"], "features presentation");
+  if (root.schema_version !== 2) throw new SyntaxError("features presentation must be schema v2");
   const doom = exact(root.doom_meter, ["meter_id", "title_key", "tooltip_key"], "doom meter");
   return Object.freeze({
     doomMeter: Object.freeze({ meter_id: id(doom.meter_id), title_key: key(doom.title_key), tooltip_key: key(doom.tooltip_key) }),
@@ -58,6 +63,12 @@ export function parseFeaturesPresentation(value: unknown): FeaturesPresentation 
       exact(row, ["description_key", "title_key", "unlock_id"], "fiscal unlock");
       return Object.freeze({ title_key: key(row.title_key), description_key: key(row.description_key) });
     }),
+    opportunityEffects: sortedRows(root.opportunity_effects, "effect_row_id", "opportunity effects", (row) => {
+      exact(row, ["description_key", "effect_row_id", "title_key"], "opportunity effect");
+      return Object.freeze({ title_key: key(row.title_key), description_key: key(row.description_key) });
+    }),
+    petActions: sortedRows(root.pet_actions, "action_id", "pet actions", (row) => { exact(row, ["action_id", "title_key"], "pet action"); return key(row.title_key); }),
+    petBands: sortedRows(root.pet_bands, "band_id", "pet bands", (row) => { exact(row, ["band_id", "title_key"], "pet band"); return key(row.title_key); }),
   });
 }
 

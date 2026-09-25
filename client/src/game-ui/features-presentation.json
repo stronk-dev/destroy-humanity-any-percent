@@ -1,5 +1,4 @@
 {
- "schema_version": 1,
  "doom_meter": {
   "meter_id": "doom.probability",
   "title_key": "meters.doom.title",
@@ -22,6 +21,69 @@
    "title_key": "meters.band.low"
   }
  ],
+ "opportunity_effects": [
+  {
+   "description_key": "desk.opportunity.effect.building.description",
+   "effect_row_id": "active.building",
+   "title_key": "desk.opportunity.effect.building.title"
+  },
+  {
+   "description_key": "desk.opportunity.effect.click.description",
+   "effect_row_id": "active.click",
+   "title_key": "desk.opportunity.effect.click.title"
+  },
+  {
+   "description_key": "desk.opportunity.effect.lucky.description",
+   "effect_row_id": "active.lucky",
+   "title_key": "desk.opportunity.effect.lucky.title"
+  },
+  {
+   "description_key": "desk.opportunity.effect.production.description",
+   "effect_row_id": "active.production",
+   "title_key": "desk.opportunity.effect.production.title"
+  }
+ ],
+ "pet_actions": [
+  {
+   "action_id": "care.feed",
+   "title_key": "pet.care.action.feed.title"
+  },
+  {
+   "action_id": "care.groom",
+   "title_key": "pet.care.action.groom.title"
+  },
+  {
+   "action_id": "care.pet",
+   "title_key": "pet.care.action.pet.title"
+  },
+  {
+   "action_id": "care.play",
+   "title_key": "pet.care.action.play.title"
+  },
+  {
+   "action_id": "care.rest",
+   "title_key": "pet.care.action.rest.title"
+  }
+ ],
+ "pet_bands": [
+  {
+   "band_id": "floor",
+   "title_key": "pet.care.band.floor"
+  },
+  {
+   "band_id": "high",
+   "title_key": "pet.care.band.high"
+  },
+  {
+   "band_id": "low",
+   "title_key": "pet.care.band.low"
+  },
+  {
+   "band_id": "normal",
+   "title_key": "pet.care.band.normal"
+  }
+ ],
+ "schema_version": 2,
  "trust_meters": [
   {
    "axis_key": "meters.axis.grievance",

@@ -177,6 +177,43 @@ async function clickAppliedIntentChoice(page, buttonLabels, label) {
   return { body, clickedLabel, intent: request.postDataJSON() };
 }
 
+// GS5-A4: DOM-only manual clicks on the real server until the Desk region
+// projects an opportunity, then a DOM claim; the next authoritative snapshot
+// must show the claim's effect (a live buff, or a credited lucky payout).
+async function witnessOpportunityClaim(page) {
+  const expiredClaims = [];
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    const claimable = await page.evaluate(() => [...document.querySelectorAll("[data-region='desk.region.opportunity'] button")]
+      .some((button) => button.textContent?.trim() === "Claim" && !button.disabled));
+    if (!claimable) {
+      await clickAppliedIntent(page, "Fix Computer", "GS5 manual click toward an opportunity spawn");
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      continue;
+    }
+    let result;
+    try { result = await clickAppliedIntent(page, "Claim", "GS5 opportunity claim"); }
+    catch (error) {
+      if (!/opportunity_expired|opportunity_not_pending/u.test(String(error?.message))) throw error;
+      expiredClaims.push(String(error.message).slice(0, 200));
+      if (expiredClaims.length >= 3) throw new Error(`GS5 claims kept expiring: ${JSON.stringify(expiredClaims)}`);
+      continue;
+    }
+    const claim = result.body?.receipt?.opportunity;
+    if (result.intent?.kind !== "claim_opportunity" || !claim?.effect_row_id) throw new Error(`GS5 claim receipt carried no opportunity evidence: ${JSON.stringify(result.body)}`);
+    const after = await page.evaluate(async () => {
+      const parsed = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
+      const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+      return response.json();
+    });
+    const arm = after?.features?.opportunity;
+    const lucky = claim.effect_row_id === "active.lucky" && typeof claim.actual_credited_delta === "string";
+    const buffed = typeof claim.buff_instance_id === "string" && arm?.buffs?.some((buff) => buff.buff_instance_id === claim.buff_instance_id);
+    if (!lucky && !buffed) throw new Error(`GS5 claim effect is absent from the next snapshot: ${JSON.stringify({ claim, arm })}`);
+    return { effect_row_id: claim.effect_row_id, manual_clicks: attempt - expiredClaims.length, expired_claims: expiredClaims.length };
+  }
+  throw new Error("GS5: no opportunity became claimable within 60 manual clicks (4/s, under the account limiter)");
+}
+
 function receiptCoordinate(result) {
   return {
     clicked_label: result.clickedLabel,
@@ -421,6 +458,12 @@ try {
       !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.axis_stack" && fact.value === false)) {
     throw new Error(`composed live Game UI projected an axis stack the pinned epoch does not declare: ${JSON.stringify(features.axis_stack)}`);
   }
+  // GS5: the pinned epoch has the opportunities artifact, so the live arm is
+  // projected beside the null-only active_play and the feature fact follows it.
+  if (features.opportunity === null || typeof features.opportunity !== "object" || !Array.isArray(features.opportunity.buffs) ||
+      !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.active_play" && fact.value === true)) {
+    throw new Error(`composed live Game UI did not project the GS5 opportunity arm: ${JSON.stringify(features.opportunity)}`);
+  }
   if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 4 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1 ||
       liveSnapshot.body?.transitions?.cross_gate?.gate_id !== "gate.t0_to_t1" || liveSnapshot.body.transitions.cross_gate.eligible !== false || liveSnapshot.body?.transitions?.wind_down?.eligible !== false) {
     throw new Error("composed live Game UI v4 transition snapshot round trip failed");
@@ -531,6 +574,8 @@ try {
   // Fiscal unlock is bought with real player intents over the public intent
   // API (the composed epoch pins minigame.pitch at 3 credit); no Fiscal
   // surface exists yet, and no database row is written for eligibility.
+  const opportunity = await witnessOpportunityClaim(page);
+  console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks, claimed ${opportunity.effect_row_id} (${opportunity.expired_claims} expired attempts), effect visible in the next snapshot: PASS`);
   const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
   console.log(`composed Pitch surface: unlock via Fiscal intents, ${pitch.commands} UI commands, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);

@@ -694,8 +694,24 @@
       "tone": "corporate"
     },
     {
+      "key": "cap.active_combo",
+      "text": "Boost combo cap",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "cap.axis_stack_input",
       "text": "Achievement attainment counts up to a fixed cap.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.cash",
+      "text": "Cash cap",
       "params": [],
       "era_variants": null,
       "provenance": [],
@@ -1113,6 +1129,48 @@
       "tone": "diegetic"
     },
     {
+      "key": "desk.buff.combo_capped",
+      "text": "Your boosts are stacked up to the combo cap. Extra stacking adds nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.buff.remaining_frame",
+      "text": "{seconds} s of attention left",
+      "params": [
+        {
+          "name": "seconds",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.buff.started_announcement",
+      "text": "Boost started: {effect}",
+      "params": [
+        {
+          "name": "effect",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.buffs_label",
+      "text": "Active boosts",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "desk.buy_max",
       "text": "Buy Max",
       "params": [],
@@ -1186,6 +1244,165 @@
       "era_variants": null,
       "provenance": [],
       "tone": "diegetic"
+    },
+    {
+      "key": "desk.opportunity.attended_note",
+      "text": "The window only counts time you spend here. It pauses while you are away.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.claim",
+      "text": "Claim",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.building.description",
+      "text": "Boosts one generator for every copy you own.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.building.title",
+      "text": "Building special",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.click.description",
+      "text": "Makes clicking pay far more for a moment.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.click.title",
+      "text": "Click frenzy",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.lucky.description",
+      "text": "Pays a slice of your cash bank at once.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.lucky.title",
+      "text": "Lucky break",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.production.description",
+      "text": "Multiplies all production for a moment.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.effect.production.title",
+      "text": "Production frenzy",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.lucky_capped",
+      "text": "The lucky break hit the cash cap.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.lucky_frame",
+      "text": "Lucky break credited: {amount}",
+      "params": [
+        {
+          "name": "amount",
+          "type": "canonical_decimal"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.lucky_tooltip",
+      "text": "Not luck: the payout is min(fraction × bank, cap × rate) + a small bonus, published in the rules.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.region_label",
+      "text": "Opportunities",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.rejection.expired",
+      "text": "Too late. That opportunity expired.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.rejection.not_pending",
+      "text": "That opportunity is already gone.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.remaining_frame",
+      "text": "{seconds} s of attention left to claim it",
+      "params": [
+        {
+          "name": "seconds",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "desk.opportunity.spawned_announcement",
+      "text": "An opportunity appeared: {effect}",
+      "params": [
+        {
+          "name": "effect",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
     },
     {
       "key": "desk.owned_frame",
@@ -1627,6 +1844,14 @@
     {
       "key": "fiscal.levels_label",
       "text": "Permanent upgrades",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "fiscal.nav.harvest_badge",
+      "text": "(harvested)",
       "params": [],
       "era_variants": null,
       "provenance": [],
@@ -3059,6 +3284,134 @@
           "type": "string"
         }
       ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.action.feed.title",
+      "text": "PENDING OWNER COPY: care.feed",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.action.groom.title",
+      "text": "PENDING OWNER COPY: care.groom",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.action.pet.title",
+      "text": "PENDING OWNER COPY: care.pet",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.action.play.title",
+      "text": "PENDING OWNER COPY: care.play",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.action.rest.title",
+      "text": "PENDING OWNER COPY: care.rest",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.action.unavailable",
+      "text": "PENDING OWNER COPY: action unavailable",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.applied",
+      "text": "PENDING OWNER COPY: care applied",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.band.floor",
+      "text": "PENDING OWNER COPY: band floor",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.band.high",
+      "text": "PENDING OWNER COPY: band high",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.band.low",
+      "text": "PENDING OWNER COPY: band low",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.band.normal",
+      "text": "PENDING OWNER COPY: band normal",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.panel.title",
+      "text": "PENDING OWNER COPY: care panel title",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.rejection.cooldown",
+      "text": "PENDING OWNER COPY: rejection cooldown",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.rejection.ineligible",
+      "text": "PENDING OWNER COPY: rejection ineligible",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.rejection.saturated",
+      "text": "PENDING OWNER COPY: rejection saturated",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "companion"
+    },
+    {
+      "key": "pet.care.rejection.soul_locked",
+      "text": "PENDING OWNER COPY: rejection soul locked",
+      "params": [],
       "era_variants": null,
       "provenance": [],
       "tone": "companion"

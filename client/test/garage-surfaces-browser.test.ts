@@ -223,3 +223,78 @@ it.skipIf(!browser)("announces an earned achievement once per cursor and badges 
     expect(target.querySelector(".announcement")!.textContent).toBe("p(doom) is now High.");
   } finally { await dispose(); }
 });
+
+const opportunityArm = (pending: boolean, buffs = true, saturated = false) => ({
+  attended_now_ms: 2_000,
+  buffs: buffs ? [{ buff_instance_id: "01986666-0000-7000-8000-00000000000b", effect_row_id: "active.production", expires_attended_ms: 6_000, selected_target: null }] : [],
+  combo: { cap: "1e4", reason_key: "cap.active_combo", saturated },
+  pending: pending ? { effect_row_id: "active.lucky", expires_attended_ms: 5_500, opportunity_id: "01986666-0000-7000-8000-000000000001", selected_generator_id: null } : null,
+});
+const withOpportunity = (arm: ReturnType<typeof opportunityArm> | null): GameUISnapshot => ({ ...v4,
+  facts: v4.facts.map((fact) => fact.fact_id === "feature.active_play" ? { ...fact, value: arm !== null } : fact),
+  features: { ...v4.features, ...(arm === null ? {} : { opportunity: arm }) } } as GameUISnapshot);
+
+function regionIndex(target: HTMLElement): number {
+  const desk = target.querySelector("section.desk")!;
+  return [...desk.children].findIndex((child) => child.getAttribute("data-region") === "desk.region.opportunity");
+}
+
+it.skipIf(!browser)("keeps the opportunity region in a fixed Desk position and never moves focus on spawn (GS5-A1/A5)", async () => {
+  const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(false, false));
+  const { target, app, dispose } = await mounted(runtime);
+  try {
+    const before = regionIndex(target);
+    expect(before).toBeGreaterThan(0);
+    const manual = target.querySelector<HTMLButtonElement>("section.manual button")!;
+    manual.focus();
+    app.fixtureSnapshot(withOpportunity(opportunityArm(true)));
+    await settle();
+    expect(regionIndex(target)).toBe(before);
+    expect(document.activeElement).toBe(manual);
+    const region = target.querySelector("[data-region='desk.region.opportunity']")!;
+    expect(region.textContent).toContain("Lucky break");
+    expect(region.textContent).toContain("4 s of attention left to claim it");
+    expect(region.textContent).toContain("Production frenzy");
+    expect(target.querySelector(".announcement")?.textContent).toContain("An opportunity appeared: Lucky break");
+    await assertAxe(target, "opportunity region");
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("sends no command while an opportunity waits on an idle Desk (GS5-A2)", async () => {
+  const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(true));
+  const { app, dispose } = await mounted(runtime);
+  try {
+    app.fixtureMonotonicElapsed(60_000);
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await settle();
+    expect(runtime.requests).toEqual([]);
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("claims by keyboard and shows a saturated lucky payout's cap reason as text (GS5-A3/A5)", async () => {
+  const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(true, true, true));
+  runtime.outcome = { outcome: "applied", receipt: { outcome: "applied", receipt: { opportunity: { opportunity_id: "01986666-0000-7000-8000-000000000001", effect_row_id: "active.lucky",
+    selected_target: null, buff_instance_id: null, requested_delta: "5e3", actual_credited_delta: "1e3", saturated: true, cap_reason_key: "cap.cash", next_sampled_interval_ms: 1_000, next_opportunity_attended_ms: 9_000 } } } };
+  const { target, dispose } = await mounted(runtime);
+  try {
+    const region = target.querySelector("[data-region='desk.region.opportunity']")!;
+    expect(region.textContent).toContain("Your boosts are stacked up to the combo cap.");
+    expect(region.textContent).toContain("Boost combo cap");
+    const claim = button(target, "Claim");
+    claim.focus(); claim.click(); await settle();
+    expect(runtime.requests).toEqual([expect.objectContaining({ kind: "claim_opportunity", opportunity_id: "01986666-0000-7000-8000-000000000001", expected_revision: 1 })]);
+    expect(region.textContent).toContain("The lucky break hit the cash cap. Cash cap");
+    expect(region.textContent).toContain("Lucky break credited: 1e3");
+    await assertAxe(target, "claimed");
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("renders an expired claim's typed reason (GS5 error mapping)", async () => {
+  const runtime = new Runtime(); runtime.current = withOpportunity(opportunityArm(true));
+  runtime.outcome = { outcome: "rejected", category: "not_eligible", detail: "opportunity_expired", currentRevision: 1, sessionExpired: false };
+  const { target, dispose } = await mounted(runtime);
+  try {
+    button(target, "Claim").click(); await settle();
+    expect(target.querySelector(".intent-notice")?.textContent).toBe("Too late. That opportunity expired.");
+  } finally { await dispose(); }
+});

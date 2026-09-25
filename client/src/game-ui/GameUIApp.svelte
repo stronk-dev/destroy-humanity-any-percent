@@ -34,6 +34,8 @@
   import { FEATURES_PRESENTATION } from "./features-presentation";
   import { upgradePresentation } from "./axis-presentation";
   import AxisStackPanel from "./AxisStackPanel.svelte";
+  import OpportunityRegion from "./OpportunityRegion.svelte";
+  import { lastClaimFromReceipt, OPPORTUNITY_REJECTIONS, type LastClaim } from "./opportunity-claim";
   import type { GameUIAnnouncementEvent } from "./events";
 
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();
@@ -311,6 +313,23 @@
 
   function factTrue(id: string): boolean { return snapshot?.facts.some((fact) => fact.fact_id === id && fact.value === true) ?? false; }
   const liveFeatures = $derived(snapshot && "features" in snapshot ? snapshot.features : undefined);
+
+  // GS5: the last applied claim (receipt evidence) and a once-per-opportunity
+  // polite spawn announcement while the Desk is mounted. Focus never moves.
+  let lastClaim = $state<LastClaim | undefined>();
+  const announcedOpportunities = new Set<string>();
+  $effect(() => {
+    const offer = liveFeatures?.opportunity?.pending;
+    if (!offer || surface !== "desk" || announcedOpportunities.has(offer.opportunity_id)) return;
+    announcedOpportunities.add(offer.opportunity_id);
+    const row = FEATURES_PRESENTATION.opportunityEffects.get(offer.effect_row_id);
+    if (row) announcement = t("desk.opportunity.spawned_announcement", { effect: t(row.title_key, {}, era) }, era);
+  });
+  function claimApplied(receipt: Readonly<Record<string, unknown>>): CopyKey | null {
+    try { lastClaim = lastClaimFromReceipt(receipt); }
+    catch { console.error("game UI invariant: applied claim without opportunity evidence"); return "intent.rejection.unknown"; }
+    return lastClaim.saturated && lastClaim.credited !== null ? "desk.opportunity.lucky_capped" : null;
+  }
   const pitchAvailability = $derived(liveFeatures?.minigames?.rows.find((row) => row.minigame_id === "pitch"));
   const FISCAL_REJECTIONS: SurfaceRejections = new Map([
     ["not_eligible/period_not_ripe", "fiscal.rejection.period_not_ripe"],
@@ -479,6 +498,8 @@
         <output>{t("desk.manual.meter_frame", { current: Math.floor(visibleManualTokensMilli() / 1000), cap: Math.floor(snapshot.manual_action.bucket_cap_milli / 1000) }, era)}</output>
         <button type="button" disabled={pending} title={t("desk.manual.meter_tooltip", {}, era)} onclick={() => act({ kind: "perform_manual_batch", action_id: snapshot!.manual_action.action_id, count: 1, window_ms: 1 })}>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).title_key, {}, era)}</button>
       </section>
+      <OpportunityRegion arm={liveFeatures?.opportunity ?? null} {era} {pending} controlsEnabled={!offline && !resyncing} {lastClaim}
+        onClaim={(opportunityID) => act({ kind: "claim_opportunity", opportunity_id: opportunityID }, { rejections: OPPORTUNITY_REJECTIONS, applied: claimApplied })} />
 
       <section aria-labelledby="resources-heading">
         <h2 id="resources-heading">{t("desk.capped_label", {}, era)}</h2>
