@@ -53,7 +53,10 @@ whose ID is pinned to the policy name `k1`). `compose.rotation.template.yml` add
 only during an actual overlap—ordinary installations do not manufacture placeholder previous
 secrets. Every rendered Caddy/gameserver/Postgres image reference must include an immutable
 `@sha256:` digest. The Caddy route list includes only the SPA, API, WebSocket, health and readiness;
-metrics are deliberately absent from the public proxy.
+metrics are deliberately absent from the public proxy. The public site also sends
+`Permissions-Policy: payment=()` and `Content-Security-Policy: connect-src 'self' wss://{host}`.
+`ValidateCaddyfile` requires both exactly once and rejects a widened `connect-src` or a second
+policy (Cosmetic Shop v1 N6, [Cosmetics](cosmetics.md)).
 
 `make render-release-compose` replaces the six image tokens only when each supplied reference is
 digest-pinned, validates the private topology, and refuses to overwrite an existing output. The

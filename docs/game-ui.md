@@ -43,6 +43,9 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 
 Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/features-presentation.json`
 (strict, byte-sorted, every key checked against the copy catalog), not in code.
+- Cosmetic shop: when the optional arm `features.cosmetics` is active and an item is acquirable or
+  owned, the Desk shows the $0.00 shelf in place of the static Horse Armor card. Below Founder v24
+  the static card is unchanged. See [Cosmetics](cosmetics.md).
 - Pet adoption: when the optional snapshot arm `features.pet_adoption` is present, the Desk shows
   the inline adoption card and then the welcome state. See [Pet adoption](pet-adoption.md).
 - Minigame session (The Pitch): a nav tab present whenever the runtime supplies a minigame port.

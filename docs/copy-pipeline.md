@@ -75,6 +75,11 @@ currency/unit tokens, and configured historical years. Runtime placeholders are 
 literal, voluntary citation, or lore card requires verified provenance. This prevents known numeric
 provenance omissions; it does not detect every factual assertion or re-perform research.
 
+The shop currency rule (Cosmetic Shop v1 N7) is stricter for `shop.*` and `cosmetic.*` keys. No
+text may contain a currency symbol or ISO code with a number, or a number of "points", unless the
+row carries a provenance claim. Placeholders are exempt, so the zero price reaches copy only
+through `{price}`. `verify-copy.mjs` carries its failing fixtures.
+
 The known-name lint checks case-folded NFC tokens and separator/punctuation bypasses. It enforces
 the maintained red list; it is not a general trademark, defamation, or editorial-safety proof.
 Independent full-range review remains the human assurance record. No self-asserted

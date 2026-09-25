@@ -160,6 +160,9 @@ artifact; v18 adds the replay-owned `pets` map and requires both `minigames` and
 `pets` artifact. Company remains v14/v16 and rejects v17/v18. Exit derives the reachable mixed
 tuple from the pinned bundle (Founder 17 or 18, Company 16), so no client or deployment setting
 chooses a version. No production content is activated merely by supporting these codecs.
+Later links on the same chain are documented with their mechanics. Founder v24 adds `cosmetics`
+(`{owned, equipped}` with canonical `[]`/`{}`, never null), requires the pinned `cosmetics`
+artifact, and activates only at a new-run boundary ([Cosmetics](cosmetics.md)).
 
 The Company scalar chain is independently v14, then the paired foundation overlays through v16,
 then doctrine/Compute-burst v17. A pinned doctrine bundle cannot skip the lower Meters and

@@ -349,3 +349,50 @@ without these changes. It validates environment-provided runtime configuration, 
 workspace does not set.
 
 No kernel-guarded path was touched, so there is no version bump.
+
+## 2026-09-25 — C8: the mechanical-isolation property, docs, and handoff (Claude)
+
+- **`server/production/cosmetic_isolation_test.go` (AC7):**
+  - It runs the existing `TestIntentPolicyPropertyTwentyFourHoursTwoHundredSeeds` shape, 200 seeds
+    × 288 five-minute Company steps (manual batch / buy-max), in two arms.
+  - The second arm interleaves seeded Founder cosmetic intents (acquire at a random tier 0/1,
+    equip, unequip) on a v24 Founder with an adopted wearer.
+  - **Assertions:** identical Company bytes; identical frozen Founder contributions (the
+    Founder→production multiplier channel); every non-`cosmetics` Founder byte identical.
+  - **Non-vacuity:** all three kinds must actually apply somewhere in the run.
+  - **Fixed during authoring:** Founder commands pin the server time to the Fiscal period-open
+    instant. Otherwise the automatic Fiscal sweep, which is time and not cosmetics, would
+    confound the comparison (first observed as a `fiscal_period_seq` divergence).
+  - **Failing case (in-suite):** `TestCosmeticIsolationCatchesAMultiplierLeak` installs a
+    test-only arm that raises a Fiscal generator level (a multiplier input) on every cosmetic
+    transition and requires the property to report a divergence. My first draft of this test
+    passed for the wrong reason: the run errored on the unrelated sweep. It now asserts the error
+    text contains "diverged", so a crash cannot satisfy it.
+- **Docs (AC16):**
+  - new `docs/cosmetics.md`;
+  - `docs/founder-transitions.md`: the cosmetic arms and the commit guard;
+  - `docs/game-ui.md`: the shelf;
+  - `docs/production-engine.md`: replay-inputs v11 carry;
+  - `docs/save-layer.md`: Founder v24;
+  - `docs/copy-pipeline.md`: the N7 rule;
+  - `docs/deployment.md`: the N6 headers.
+
+Evidence (cold): `make test-go GO_PACKAGES='./cosmetic ./save ./production ./replaycatalog ./gameui ./account ./gameserver ./releasepackage' GO_TEST_FLAGS='-count=1'`
+passes; gofmt and vet are clean.
+
+**Handoff: ready for Codex designated cross-party review. Not self-approved; not archived; no
+mint.**
+- **Implementation range:** `8d88248a..` this commit (C1–C8). Kernel 0.3.121 → 0.3.125. Every
+  guarded commit bumped in the same commit: `afe6529b`, `8e315569`, `581886a4`, `500d944c`.
+- **Open:**
+  - AC14 composed witness (needs a `cosmetics`-pinning epoch);
+  - G10 pet-panel overlay mount;
+  - owner adoption of `copy/catalog/cosmetics-candidate.json`;
+  - the RFC author's reconciliation of the two recorded shape notes: the snapshot arm is
+    optional, not a "required v4" field (C2); and the presentation is a separate strict file, not
+    a presentation-catalog v4 bump.
+- **Findings for other lanes:**
+  - the TS Founder Exit arm's v22 cap, fixed in C4 (Pet Adoption lane impact);
+  - `make deployment-config-check` fails at HEAD without these changes (environment config).
+- **`verify-kernel-version`:** it still stops at the pre-existing `50a3a514` history item. None of
+  this range's hashes is named.
