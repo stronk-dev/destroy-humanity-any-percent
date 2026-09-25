@@ -135,3 +135,71 @@ the target is the office *system*, never employees.
   title key) each fail the test. All were restored, and `--check` is clean.
 - **Mint note (M1):** at mint, `client/src/game-ui/presentation.generated.json` and the
   game-UI-copy candidate lane consume this file. That wiring belongs to the owner-gated M lane.
+
+## 2026-09-25 — C5: Tier 2 pacing measurement and gate-literal calibration (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review.
+
+- **Runner (`server/harness/first_hour_runner.go`, unguarded).** `runWithCareer` now delegates to
+  `runWithModes`, which takes an optional Tier 2 runtime. Without it the behavior is unchanged.
+  - **Evidence:** `make first-hour-harness` with the ratified epoch-8 tuple (200/2e0/50/1e4/10)
+    regenerates `first-hour-epoch8-report.v1.json` semantically identically, except for the
+    Reputation lane's already-landed `reputation_exits` field (a JSON compare that strips that
+    field is equal). The full default `./harness` package passes cold (42.6 s).
+- **`server/harness/tier2_pacing.go` (§P1/§P2 subset).** It reuses the ratified Chaos and Casual
+  T0–T1 literals.
+  - The exit rule is `t01_c32_readiness_once`: the elective Exit is taken only while the Founder
+    Exit history holds exactly one entry.
+  - `gate.t1_to_t2` joins the crossing set.
+  - `milestone.it_company_gate` records Founder-attended time at the first crossing in any run.
+  - An unreached seed is a visible `must_reach` failure; any other runner failure is an invalid
+    measurement.
+  - Offers are never answered, since the simulated transitions spawn none.
+  - `reference.greedy` v2 and the allocation arms are refused while OD-1 is held.
+- **Witness.** `TestTier2PacingReachesTheITCompanyGate`: Chaos seed 0 crosses in run 3 with
+  exactly one elective Exit. A bundle without the gate is refused, the held policy is refused, and
+  a 1 h horizon yields exactly `must_reach:milestone.it_company_gate`.
+  **Severing:** without the exit-once clause, seed 0 Exits 11 times at the Garage gate and never
+  reaches Tier 2, which confirms the RFC's §P1 claim.
+
+### Calibration (`TestTier2PacingCalibration`, report `balance/testdata/t2/pacing-calibration-v1.json`)
+
+Chaos ran 64 seeds with a 6 h horizon and Casual 32 seeds with a 12 h wall horizon. Each p50 is the
+Founder-attended time at `gate.t1_to_t2`; unreached seeds sort as +inf. The envelope is §P2/OD-8,
+[2 h, 3 h] for **both** p50s:
+
+| gate literal | Chaos reached | Chaos p50 | Casual reached | Casual p50 |
+|---|---|---|---|---|
+| 3e6 | 64/64 | 0.62 h | 32/32 | 0.50 h |
+| 1e7 (RFC provisional) | 64/64 | 1.40 h | 32/32 | 0.72 h |
+| 3e7 | 64/64 | 1.74 h | 32/32 | 1.28 h |
+| 1e8 | **0/64** | unreached | 32/32 | 1.51 h |
+| 2e8 | 0/64 | unreached | 32/32 | 1.56 h |
+| 3e8 | 0/64 | unreached | 32/32 | 1.59 h |
+| 5e8 | 0/64 | unreached | 32/32 | 1.78 h |
+
+**Result: no literal in [1e7, 1e9) meets the OD-8 envelope for both personas.**
+
+- **Casual.** Casual is below 2 h at every literal up to 5e8. It earns most of its progress
+  offline (90% rate), and offline time is not Founder-attended time, so its attended clock is
+  short. The gate cannot exceed `1e9`: that is the ratified `gate.t2_to_t3` literal, and the §B0
+  price band caps Tier 2 below it.
+- **Chaos.** Chaos crosses by 1.74 h at 3e7 and not at all within 6 h from 1e8. Its uniform spending
+  over every affordable command never banks 1e8 of cash. A follow-up probe at 5e7/7e7 locates the
+  cliff (appended below).
+- **Owner decisions this blocks (OD-7/OD-8), for the ruling author.** The RFC's defaults cannot
+  both hold. Options:
+  - (a) Read the envelope on a different clock or statistic, for example Casual on wall time, or a
+    single persona.
+  - (b) Retune content so Casual slows and Chaos can bank, for example Tier-1 price or yield changes,
+    which are epoch-8 content edits outside this RFC.
+  - (c) Accept a literal outside the envelope with a recorded deviation.
+
+  The implementer does not pick; the gate literal stays at the provisional `1e7` in the candidate.
+
+### Not done in this session
+- **C6, §P3 relevance.** The epoch-8 registered scenario is the T1 scenario that §P3 retires. The
+  combined `scenario.t1_t2_relevance` needs the six T2 rows authored into a candidate relevance
+  policy, plus solver budgets from measurement (T01-C17). It is not started, and it is the next
+  item for this lane.
+- The Headcount panel, §H, P4 seats and P5 are held on OD-1.

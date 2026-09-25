@@ -106,6 +106,7 @@ type firstHourRuntime struct {
 	commands          *[]FirstHourScriptCommand
 	reputationExits   []FirstHourReputationSample
 	career            *careerRuntime
+	tier2             *tier2Runtime
 }
 
 func (suite *FirstHourSuite) RunExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment) FirstHourRunResult {
@@ -126,38 +127,45 @@ func (suite *FirstHourSuite) runExperiment(spec RunSpec, seed uint64, experiment
 }
 
 func (suite *FirstHourSuite) runWithCareer(spec RunSpec, seed uint64, experiment FirstHourExperiment, capture bool, career *careerRuntime) (FirstHourRunResult, []FirstHourScriptCommand, *careerRuntime) {
+	result, commands, career, _ := suite.runWithModes(spec, seed, experiment, capture, career, nil)
+	return result, commands, career
+}
+
+// runWithModes runs one seed; a non-nil career or tier2 runtime selects the
+// Reputation career (H4) or the Tier 2 pacing measurement (rfc/tier2-content.md §P).
+func (suite *FirstHourSuite) runWithModes(spec RunSpec, seed uint64, experiment FirstHourExperiment, capture bool, career *careerRuntime, tier2 *tier2Runtime) (FirstHourRunResult, []FirstHourScriptCommand, *careerRuntime, *tier2Runtime) {
 	result := FirstHourRunResult{Key: suite.RunKey(spec, seed), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{},
 		ReputationExits: []FirstHourReputationSample{}}
 	commands := []FirstHourScriptCommand{}
 	if err := validateFirstHourExperiment(experiment); err != nil {
-		return failFirstHour(result, err), commands, career
+		return failFirstHour(result, err), commands, career, tier2
 	}
 	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
 	if !ok {
-		return failFirstHour(result, fmt.Errorf("unknown first-hour policy %s v%d", spec.PolicyID, spec.PolicyVersion)), commands, career
+		return failFirstHour(result, fmt.Errorf("unknown first-hour policy %s v%d", spec.PolicyID, spec.PolicyVersion)), commands, career, tier2
 	}
 	company, err := newFirstHourCompany(suite.Bundle.Economy)
 	if err != nil {
-		return failFirstHour(result, err), commands, career
+		return failFirstHour(result, err), commands, career, tier2
 	}
 	founder := &save.State{ReputationLevel: 0, RouteKnowledgeBalance: 0, LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
 	runtime := firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: seed, experiment: experiment,
-		company: company, founder: founder, revision: 1, milestones: map[string]*int64{}, lastSession: -1, career: career}
+		company: company, founder: founder, revision: 1, milestones: map[string]*int64{}, lastSession: -1, career: career, tier2: tier2}
 	if capture {
 		runtime.commands = &commands
 	}
 	boundaries, err := firstHourBoundaries(policy, seed, spec.HorizonMS)
 	if err != nil {
-		return failFirstHour(result, err), commands, career
+		return failFirstHour(result, err), commands, career, tier2
 	}
 	for _, boundary := range boundaries {
 		if runtime.transitions >= suite.Scenario.TransitionBudget {
-			return failFirstHour(result, fmt.Errorf("first-hour transition budget exceeded: executed %d, maximum %d", runtime.transitions, suite.Scenario.TransitionBudget)), commands, career
+			return failFirstHour(result, fmt.Errorf("first-hour transition budget exceeded: executed %d, maximum %d", runtime.transitions, suite.Scenario.TransitionBudget)), commands, career, tier2
 		}
 		if err := runtime.step(boundary); err != nil {
-			return failFirstHour(result, err), commands, career
+			return failFirstHour(result, err), commands, career, tier2
 		}
-		if career == nil && runtime.milestones["milestone.first_elective_exit"] != nil || career != nil && career.done() {
+		if career == nil && tier2 == nil && runtime.milestones["milestone.first_elective_exit"] != nil || career != nil && career.done() || tier2 != nil && tier2.done() {
 			break
 		}
 	}
@@ -172,7 +180,7 @@ func (suite *FirstHourSuite) runWithCareer(spec RunSpec, seed uint64, experiment
 	if len(result.InvariantFailures) != 0 {
 		result.Outcome = "failed"
 	}
-	return result, commands, career
+	return result, commands, career, tier2
 }
 
 func (suite *FirstHourSuite) RunAllExperiments(experiment FirstHourExperiment, workerLimit int) (FirstHourExperimentReport, error) {
@@ -384,7 +392,13 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 	if runtime.career != nil && runtime.company.RunSeq == 2 && runtime.electiveExitReady(founderAttended) {
 		return runtime.applyCareerExit(now, boundary.atMS, attended)
 	}
-	if runtime.electiveExitReady(founderAttended) {
+	if runtime.tier2 != nil {
+		// exit_rule t01_c32_readiness_once: the shipped predicate, taken only
+		// while Founder Exit history has exactly one entry.
+		if len(runtime.founder.ExitHistory) == 1 && runtime.electiveExitReady(founderAttended) {
+			return runtime.applyTier2Exit(now, boundary.atMS, attended)
+		}
+	} else if runtime.electiveExitReady(founderAttended) {
 		terms, termsErr := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.prestigePolicy(), "collapse")
 		if termsErr != nil {
 			return termsErr
@@ -431,7 +445,7 @@ func (runtime *firstHourRuntime) electiveExitReady(founderAttended int64) bool {
 }
 
 func (runtime *firstHourRuntime) nextReadyGate() (string, bool) {
-	for _, gateID := range runtime.suite.GateIDs() {
+	for _, gateID := range runtime.gateIDs() {
 		if runtime.company.GatesCrossed[gateID] {
 			continue
 		}
@@ -635,6 +649,9 @@ func (runtime *firstHourRuntime) apply(request production.IntentRequest, now tim
 	runtime.revision++
 	runtime.observeDecision(atMS, request.Kind, result.Decision)
 	if err := runtime.observeCareerGate(request, now); err != nil {
+		return err
+	}
+	if err := runtime.observeTier2Gate(request, now); err != nil {
 		return err
 	}
 	return validateFirstHourCompany(runtime.suite.Bundle.Economy, runtime.company)

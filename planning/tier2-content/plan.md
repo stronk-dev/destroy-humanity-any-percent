@@ -17,10 +17,10 @@ held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; e
 - [x] C4 — UI (§E1–E3 minus Headcount panel): `era_2010` theme/era, tier-2 era mapping (tier ≥ 3
   still throws), Gate control for any projected gate, minimal Incorporate control, FarmVille
   energy-bar chrome stub with curtain; candidate copy (§E4 keys).
-- [ ] C5 — Harness policy registry v2 subset (§P1 `exit_rule: t01_c32_readiness_once`,
+- [~] C5 — Harness policy registry v2 subset (§P1 `exit_rule: t01_c32_readiness_once`,
   `offer_rule: ignore`, T2 gate crossing) and the T2 pacing scenario; measurement report for the
   `gate.t1_to_t2` literal against the [2h,3h] envelope (§P2, OD-7/OD-8).
-- [ ] C6 — Relevance: T0 identity vs epoch 8 on the candidate bundle; T1–T2 combined scenario
+- [ ] C6 — (next; see log 2026-09-25 C5 "Not done") Relevance: T0 identity vs epoch 8 on the candidate bundle; T1–T2 combined scenario
   report (§P3).
 - [ ] Held — §H headcount, P4 seats row, P5, AC2/AC3 (headcount parity/partition) — OD-1.
 - [ ] Owner — M3 SHA ratification, E4 copy round, M1–M4 mint.
