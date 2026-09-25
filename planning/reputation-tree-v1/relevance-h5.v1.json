@@ -1,0 +1,108 @@
+{
+ "schema_version": 1,
+ "fixture_threshold": "1e5",
+ "epsilon_ms": 1,
+ "nodes": [
+  {
+   "node_id": "reputation.unlock.p05",
+   "kind": "bonus_unlock",
+   "delta_ms_p50_by_policy": {
+    "casual.t0_t1": 0,
+    "chaos.t0_t1": -24000,
+    "reference.greedy": -107000
+   },
+   "purchased_runs_by_policy": {
+    "casual.t0_t1": 32,
+    "chaos.t0_t1": 64,
+    "reference.greedy": 1
+   },
+   "relevant": false,
+   "excluded": "owner_exempt:OD-5"
+  },
+  {
+   "node_id": "reputation.starter.cash_small",
+   "kind": "starter",
+   "delta_ms_p50_by_policy": {
+    "casual.t0_t1": 70000,
+    "chaos.t0_t1": 102000
+   },
+   "purchased_runs_by_policy": {
+    "casual.t0_t1": 32,
+    "chaos.t0_t1": 64
+   },
+   "relevant": true,
+   "excluded": ""
+  },
+  {
+   "node_id": "reputation.starter.generated_beige_tower",
+   "kind": "starter",
+   "delta_ms_p50_by_policy": {
+    "casual.t0_t1": 15000,
+    "chaos.t0_t1": 30000
+   },
+   "purchased_runs_by_policy": {
+    "casual.t0_t1": 23,
+    "chaos.t0_t1": 53
+   },
+   "relevant": true,
+   "excluded": ""
+  },
+  {
+   "node_id": "reputation.unlock.p25",
+   "kind": "bonus_unlock",
+   "delta_ms_p50_by_policy": {
+    "chaos.t0_t1": -46000
+   },
+   "purchased_runs_by_policy": {
+    "chaos.t0_t1": 42
+   },
+   "relevant": false,
+   "excluded": "owner_exempt:OD-5"
+  },
+  {
+   "node_id": "reputation.starter.upgrade_continuous_feed_paper",
+   "kind": "starter",
+   "delta_ms_p50_by_policy": {
+    "chaos.t0_t1": 40000
+   },
+   "purchased_runs_by_policy": {
+    "chaos.t0_t1": 22
+   },
+   "relevant": true,
+   "excluded": ""
+  },
+  {
+   "node_id": "reputation.starter.cash_large",
+   "kind": "starter",
+   "delta_ms_p50_by_policy": {},
+   "purchased_runs_by_policy": {},
+   "relevant": false,
+   "excluded": "unreachable_in_horizon"
+  },
+  {
+   "node_id": "reputation.unlock.p50",
+   "kind": "bonus_unlock",
+   "delta_ms_p50_by_policy": {},
+   "purchased_runs_by_policy": {},
+   "relevant": false,
+   "excluded": "unreachable_in_horizon"
+  },
+  {
+   "node_id": "reputation.unlock.p75",
+   "kind": "bonus_unlock",
+   "delta_ms_p50_by_policy": {},
+   "purchased_runs_by_policy": {},
+   "relevant": false,
+   "excluded": "unreachable_in_horizon"
+  },
+  {
+   "node_id": "reputation.unlock.p100",
+   "kind": "bonus_unlock",
+   "delta_ms_p50_by_policy": {},
+   "purchased_runs_by_policy": {},
+   "relevant": false,
+   "excluded": "unreachable_in_horizon"
+  }
+ ],
+ "note": "fixture-first H5: leave-one-out on the following run's Garage gate; the elective-Exit dimension needs a run-4 horizon (DESIGN-GAP RT-DG-F)"
+}

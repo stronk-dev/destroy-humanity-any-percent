@@ -34,6 +34,8 @@ type ReputationCareerConfig struct {
 	Bundle    production.CatalogBundle
 	Threshold string
 	Policy    ReputationCareerPolicy
+	// Exclude is H5's leave-one-out mask: the policy never buys this node.
+	Exclude string
 }
 
 type ReputationCareerResult struct {
@@ -139,6 +141,9 @@ func (runtime *firstHourRuntime) applyCareerExit(now time.Time, wallMS, attended
 	for ordinal := int64(0); career.config.Policy != CareerNone; ordinal++ {
 		available := []string{}
 		for _, node := range tree.Nodes() {
+			if node.NodeID == career.config.Exclude {
+				continue
+			}
 			if _, rejection, err := tree.Purchase(runtime.founder.ReputationLevel, runtime.founder.ReputationSpent, runtime.founder.ReputationNodesOwned, node.NodeID); err == nil && rejection == nil {
 				available = append(available, node.NodeID)
 			}

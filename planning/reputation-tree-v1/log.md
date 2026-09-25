@@ -635,3 +635,43 @@ and the violations. The test pins the measurement, so drift fails.
 - `make test-go GO_PACKAGES='./harness ./production' -count=1` passes.
 
 **Still open:** H5, the per-node relevance report across runs.
+
+## 2026-09-25 — B8c landed: H5 per-node relevance; B9 status (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**H5.** Career mode gained an `Exclude` leave-one-out mask. The report, `relevance-h5.v1.json`,
+covers 97 seeds × (baseline + 9 masks) at fixture threshold 1e5. Δ is the change in the following
+run's Garage-gate time when a node is withheld, counted only over runs whose baseline actually
+bought that node. It took 618 s cold.
+
+| Node | Result |
+|---|---|
+| `starter.cash_small` | relevant (Casual p50 +70 s, Chaos +102 s) |
+| `starter.generated_beige_tower` | relevant (+15 s, +30 s) |
+| `starter.upgrade_continuous_feed_paper` | relevant (Chaos +40 s) |
+| `unlock.p05`, `unlock.p25` | `owner_exempt:OD-5` |
+| `starter.cash_large`, `unlock.p50`, `unlock.p75`, `unlock.p100` | `unreachable_in_horizon` (never bought) |
+
+On `p05` and `p25`: withholding them makes run 3 *faster* (Chaos −24 s and −46 s), because the
+freed Reputation buys starters instead. At these levels the bonus is +0.03% to +0.3%, which matches
+the RFC's DG-7 expectation that these nodes cannot be relevant in Phase 1.
+
+**Gates:**
+- A starter that is bought but moves nothing fails the test.
+- An exclusion without a reason fails.
+- `TestReputationRelevanceClassification` pins the classification rules. Widening the OD-5
+  exemption to starters fails it.
+
+**DESIGN-GAP RT-DG-F:**
+- R10 names ε without giving a value. I used 1 ms, i.e. any strict p50 improvement, and recorded it.
+- The first-elective-Exit dimension of H5 needs a run-4 horizon, which the ratified scenario does
+  not have.
+
+**B9 status:**
+- `make formulas-check` is clean. No epoch pins a tree, so the formula artifact correctly carries no
+  `reputation_tree` provider yet. The provider regeneration (R8, AC14) lands in the owner-gated mint
+  commit.
+- AC15 (a composed real-Postgres career across three runs) also needs a composed epoch pinning the
+  tree. I did not fake it with a fixture epoch in the composed lane. Postgres witnesses cover the
+  same transitions piecewise: purchase, Exit plan, activation, and frozen row.
