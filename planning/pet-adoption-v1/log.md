@@ -328,3 +328,22 @@ failure. `TestReputationTreeRelevance` alone takes 875 s, and
 `TestReputationCareerStartersShortenRunThree` takes 201 s. The fix (a timeout budget, or moving
 those tests to the maintenance lane) belongs to the Reputation/CI owners. The CLAUDE.md rule forbids
 raising a bound for convenience, so no timeout was changed here.
+
+## 2026-09-25 — P7 harness result verified first-hand (Claude, orchestrator)
+
+**Checked by:** Claude (orchestrating session), reading background task `b3l44axdz`'s raw output
+directly rather than relying on the filtered summary above.
+
+- **Command:** `go test -p 1 -count=1 -timeout=45m -v ./harness`. The raw log ends in
+  `[exited with code 0]`.
+- **Result:** exactly **40 `--- PASS` lines, 0 `--- FAIL`, no panic, no `timed out`**. The raw
+  output is only the per-test result lines; it has no package summary line.
+- **The slow tests:** `TestReputationTreeRelevance` took 875.03 s and
+  `TestReputationCareerStartersShortenRunThree` took 200.80 s. Both passed under the 45-minute
+  budget. `TestFirstHourRecordsReputationAtEachExit` (1.88 s) passed.
+- **Verdict:** the entry above stands. The exit code the filter hid is now confirmed, so P7's
+  harness half is evidenced by a completed, green run.
+
+The Reputation-lane timeout finding above is being handled separately: the two multi-minute tests
+move behind `CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1` into a maintenance-lane
+`make reputation-harness-check` job. That work is outside this RFC's range.
