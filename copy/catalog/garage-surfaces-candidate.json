@@ -2,6 +2,19 @@
  "schema_version": 1,
  "entries": [
   {
+   "key": "achievements.earned_announcement",
+   "text": "Achievement earned: {achievement}",
+   "params": [
+    {
+     "name": "achievement",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "achievement"
+  },
+  {
    "key": "achievements.empty",
    "text": "No achievements are defined for this build.",
    "params": [],
@@ -531,6 +544,23 @@
    "tone": "corporate"
   },
   {
+   "key": "meters.band_changed_announcement",
+   "text": "{meter} is now {band}.",
+   "params": [
+    {
+     "name": "band",
+     "type": "string"
+    },
+    {
+     "name": "meter",
+     "type": "string"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
    "key": "meters.constituency.employees",
    "text": "Employees",
    "params": [],
@@ -598,6 +628,31 @@
    "key": "meters.doom.tooltip",
    "text": "A pressure meter, not a moral score. It moves with what the company does.",
    "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "meters.nav_changed_badge",
+   "text": "(changed)",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "meters.row_frame",
+   "text": "{constituency} {axis}",
+   "params": [
+    {
+     "name": "axis",
+     "type": "string"
+    },
+    {
+     "name": "constituency",
+     "type": "string"
+    }
+   ],
    "era_variants": null,
    "provenance": [],
    "tone": "corporate"

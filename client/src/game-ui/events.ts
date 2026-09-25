@@ -147,3 +147,28 @@ export function decodeGameUISystemEvent(envelope: TransportEnvelope): GameUISyst
   if (envelope.payload.code === "server_restarting") return { kind: "server_restarting", resume_after_ms: safe(envelope.payload.resume_after_ms) };
   return undefined;
 }
+
+// GS0.3: closed announcement decoders. They drive announcements only; every
+// displayed value still comes from the next snapshot. A malformed payload
+// throws, taking the runtime's existing authoritative-resync path.
+export type AchievementEarnedEvent = Readonly<{ cursor: number; kind: "achievement_earned"; payload: Readonly<{ achievement_id: string; condition_scope: "career" | "run"; run_id: RunID; score_grant: number }> }>;
+export type MeterBandChangedEvent = Readonly<{ cursor: number; kind: "meter_band_changed"; payload: Readonly<{ direction: "down" | "up"; from_band: string; meter_id: string; run_id: RunID; to_band: string; value_after: number; value_before: number }> }>;
+export type GameUIAnnouncementEvent = AchievementEarnedEvent | MeterBandChangedEvent;
+
+export function decodeGameUIAnnouncement(envelope: TransportEnvelope): GameUIAnnouncementEvent | undefined {
+  if (envelope.kind !== "event" || !Number.isSafeInteger(envelope.rev)) return undefined;
+  const kind = envelope.payload.kind;
+  if (kind !== "achievement_earned.v1" && kind !== "meter_band_changed.v1") return undefined;
+  const payload = object(envelope.payload.payload, "Game UI announcement payload");
+  if (kind === "achievement_earned.v1") {
+    exact(payload, ["achievement_id", "condition_scope", "run_id", "score_grant"], kind);
+    if (payload.condition_scope !== "run" && payload.condition_scope !== "career") throw new SyntaxError("invalid achievement scope");
+    return { cursor: envelope.rev, kind: "achievement_earned", payload: { achievement_id: id(payload.achievement_id), condition_scope: payload.condition_scope, run_id: runID(payload.run_id), score_grant: safe(payload.score_grant, 1) } };
+  }
+  exact(payload, ["direction", "from_band", "meter_id", "run_id", "to_band", "value_after", "value_before"], kind);
+  if (payload.direction !== "up" && payload.direction !== "down") throw new SyntaxError("invalid meter direction");
+  const from = id(payload.from_band), to = id(payload.to_band);
+  const before = safe(payload.value_before), after = safe(payload.value_after);
+  if (from === to || before > 100 || after > 100) throw new SyntaxError("invalid meter band change");
+  return { cursor: envelope.rev, kind: "meter_band_changed", payload: { direction: payload.direction, from_band: from, meter_id: id(payload.meter_id), run_id: runID(payload.run_id), to_band: to, value_after: after, value_before: before } };
+}

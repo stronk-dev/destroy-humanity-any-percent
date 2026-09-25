@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createBrowserGameUIRuntime, newIntentID, type RuntimeStorage } from "../src/game-ui/runtime";
+import { decodeGameUIAnnouncement } from "../src/game-ui/events";
+import { decodeTransportEnvelope } from "../src/transport";
 
 const snapshot = {
   constants_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -339,5 +341,44 @@ describe("browser Game UI runtime", () => {
     expect(sockets).toHaveLength(1);
     expect(requests).toBe(0);
     expect(received.at(-1)).toEqual({ kind: "transport_closed" });
+  });
+});
+
+describe("GS0.3 announcement decoders", () => {
+  const achievement = (revision: number, payload: Record<string, unknown> = {}) => ({
+    v: 2, ch: `player:${snapshot.run.founder_id}`, kind: "event", rev: revision, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z",
+    payload: { event_id: `achievement-${revision}`, kind: "achievement_earned.v1", scope: "company", rev: revision, cursor_effect: "advance",
+      payload: { achievement_id: "achievement.first_gate", condition_scope: "run", run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 }, score_grant: 2, ...payload } },
+  });
+
+  it("delivers a decoded achievement announcement once and never replays a consumed offset", () => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const socket = new FakeSocket();
+    const runtime = createBrowserGameUIRuntime(storage, fetch, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    const received: Array<{ kind: string }> = [];
+    runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    openAndConnect(socket);
+    subscribeReplies(socket);
+    publication(socket, `player:${snapshot.run.founder_id}`, 1, achievement(1));
+    // A consumed offset is dropped by position; the same revision republished
+    // at a new offset is a cursor duplicate and must not announce again.
+    publication(socket, `player:${snapshot.run.founder_id}`, 1, achievement(1));
+    publication(socket, `player:${snapshot.run.founder_id}`, 2, achievement(1));
+    expect(received.filter((message) => message.kind === "announcement")).toEqual([
+      { kind: "announcement", scope: "company", value: { cursor: 1, kind: "achievement_earned", payload: { achievement_id: "achievement.first_gate", condition_scope: "run", run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 }, score_grant: 2 } } },
+    ]);
+  });
+
+  it("fails closed on malformed announcement payloads", () => {
+    const envelope = (value: unknown) => decodeTransportEnvelope(value)!;
+    expect(decodeGameUIAnnouncement(envelope(achievement(2)))).toMatchObject({ kind: "achievement_earned" });
+    expect(() => decodeGameUIAnnouncement(envelope(achievement(2, { extra: 1 })))).toThrow(/exact/);
+    expect(() => decodeGameUIAnnouncement(envelope(achievement(2, { condition_scope: "forever" })))).toThrow(/scope/);
+    const meter = { ...achievement(3), payload: { ...achievement(3).payload, kind: "meter_band_changed.v1",
+      payload: { direction: "up", from_band: "low", meter_id: "doom.probability", run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 }, to_band: "high", value_after: 71, value_before: 69 } } };
+    expect(decodeGameUIAnnouncement(envelope(meter))).toMatchObject({ kind: "meter_band_changed", payload: { to_band: "high" } });
+    expect(() => decodeGameUIAnnouncement(envelope({ ...meter, payload: { ...meter.payload, payload: { ...meter.payload.payload, to_band: "low" } } }))).toThrow(/band change/);
+    expect(decodeGameUIAnnouncement(envelope(eventEnvelope(4)))).toBeUndefined();
   });
 });

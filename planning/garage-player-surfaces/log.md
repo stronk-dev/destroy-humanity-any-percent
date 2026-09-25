@@ -142,3 +142,35 @@ the same change, as `docs/api-foundation.md` requires.
 - GS5 active play (blocker B-1, guarded export);
 - GS0.3 event decoders and announcements;
 - the pet slice, which is out of scope.
+
+## 2026-09-25 — GS0.3 announcement decoders (Claude)
+
+**What landed:** `decodeGameUIAnnouncement` adds exact, fail-closed decoders for
+`achievement_earned.v1` and `meter_band_changed.v1`. The field domains mirror
+`server/save/intent.go validateEventPayload`. The runtime forwards decoded announcements only
+inside the existing delivery gate, and a malformed payload throws into the existing resync path.
+
+**How the host announces:**
+- One polite chrome `role="status"` region.
+- Deduped by `scope\0cursor`.
+- An achievement announces its catalog copy.
+- A meter band change announces only while the Meters surface is mounted. Otherwise the Meters nav
+  button gains the `(changed)` badge until visited.
+- Unknown IDs are withheld with an invariant.
+
+**Not in this batch:** the `fiscal_period_harvested.v1` decoder (its nav-badge consumer, OD-3) and
+`buff_started.v1` (it waits on GS5/B-1). Both stay open in the plan.
+
+**Evidence (cold):**
+- The runtime announcement tests pass 14/14. They include a same-revision republish at a new offset
+  and the malformed-payload rejections.
+- The garage browser tests pass 24/24 across three browsers.
+- Full client lanes and the composed lane pass.
+
+**Severing probes:**
+- **S12:** without the host cursor dedupe, the replay re-announces and the test fails.
+- **S13, first attempt, survived:** removing a redundant inner `disposition === "deliver"` clause
+  changed nothing, because the outer delivery gate already filters, and a consumed offset is
+  dropped even earlier. That check could not fail, so the test now republishes the same revision
+  at a new offset and the redundant clause is deleted.
+- **S13′:** removing the real outer delivery gate fails the test.

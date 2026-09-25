@@ -17,5 +17,6 @@ that would need one is recorded as a blocker in `log.md` instead.
 - [x] GS7 minigames availability arm wired into the existing Pitch surface/nav.
 - [ ] GS5 active-play arm + Desk opportunity region. **Blocked (B-1):** combo saturation needs a guarded `server/production` export.
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.
-- [ ] GS0.3 event decoders (announcements only).
+- [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
+- [ ] GS0.3 remainder: `fiscal_period_harvested.v1` nav badge (OD-3) and `buff_started.v1` (waits on GS5/B-1).
 - [ ] Canonical docs, cold gates, hand-off for Codex designated review (never self-archive).

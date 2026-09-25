@@ -4,7 +4,7 @@ import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "./soul/rec
 import { decodeTransportEnvelope, decodeWorldSnapshot, PlayerRevisionCursor } from "../transport";
 import { isLiveSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
 import { parseIntentErrorBody, parseIntentOutcome, type IntentOutcome } from "./intent-outcome";
-import { decodeGameUIEvent, decodeGameUISystemEvent, type GameUILifecycleEvent, type GameUISystemEvent } from "./events";
+import { decodeGameUIAnnouncement, decodeGameUIEvent, decodeGameUISystemEvent, type GameUIAnnouncementEvent, type GameUILifecycleEvent, type GameUISystemEvent } from "./events";
 
 export interface GameUICredentials {
   readonly accessToken: string;
@@ -15,6 +15,7 @@ export interface GameUICredentials {
 
 export type GameUIRuntimeMessage =
   | Readonly<{ kind: "event"; revision: number; scope: "company" | "founder"; value: GameUILifecycleEvent }>
+  | Readonly<{ kind: "announcement"; scope: "company" | "founder"; value: GameUIAnnouncementEvent }>
   | Readonly<{ kind: "historical_event"; revision: number; scope: "company" | "founder"; eventID: string; eventKind: string; value: Readonly<Record<string, unknown>> }>
   | Readonly<{ kind: "presence"; count: number }>
   | Readonly<{ kind: "receipt" }>
@@ -219,6 +220,7 @@ export function createBrowserGameUIRuntime(
           const disposition = cursor.event(envelope);
           if (disposition === "resync_required") { authoritativeResync(); return true; }
           const event = decodeGameUIEvent(envelope);
+          const announcement = decodeGameUIAnnouncement(envelope);
           const successorTerminal = disposition === "duplicate" && event?.kind === "run_ended" && latestSnapshot !== undefined &&
             latestSnapshot.run.founder_id === event.payload.founder_id && latestSnapshot.run.run_seq === event.payload.run_id.run_seq + 1;
           if (disposition === "deliver" || successorTerminal) {
@@ -227,6 +229,7 @@ export function createBrowserGameUIRuntime(
               listener({ kind: "historical_event", revision: envelope.rev, scope, eventID: envelope.payload.event_id as string,
                 eventKind: envelope.payload.kind as string, value: envelope.payload.payload as Readonly<Record<string, unknown>> });
             } else if (event) listener({ kind: "event", revision: envelope.rev, scope, value: event });
+            else if (announcement) listener({ kind: "announcement", scope, value: announcement });
           }
         } else if (envelope.kind === "receipt") {
           listener({ kind: "receipt" });

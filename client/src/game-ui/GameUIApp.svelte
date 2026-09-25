@@ -25,6 +25,8 @@
   import { loadSoulRecoveryContent } from "./soul/recovery-surface";
   import { GameUIShell } from "./shell-bridge";
   import { noticeForError, noticeForOutcome, type SurfaceRejections } from "./intent-outcome";
+  import { FEATURES_PRESENTATION } from "./features-presentation";
+  import type { GameUIAnnouncementEvent } from "./events";
 
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();
   function localTimingStorage(): LocalTimingStorage { return timingStorage ?? localStorage; }
@@ -49,6 +51,11 @@
   let ended = $state<RunEndedEvent | undefined>();
   let orderPlaced = $state(false);
   let intentNotice = $state<CopyKey | null>(null);
+  // GS0.6: one polite chrome region for cross-surface announcements, deduped
+  // by stream cursor so a replay after reconnect announces nothing.
+  let announcement = $state("");
+  let metersChanged = $state(false);
+  const announcedCursors = new Set<string>();
   let monotonicMS = $state(0);
   let snapshotMonotonicMS = $state(0);
   let subscribedFounderID: string | undefined;
@@ -80,6 +87,7 @@
   }
 
   function show(next: GameUISurfaceID): void {
+    if (next === "meters") metersChanged = false;
     navigation.select(next);
     surface = navigation.active;
   }
@@ -205,6 +213,7 @@
     // the player explicitly continues.
     if (message.kind === "receipt") { if (!ended) void refresh(); return; }
     if (message.kind === "presence") { visitorCount = message.count; return; }
+    if (message.kind === "announcement") { announce(message.scope, message.value); return; }
     if (message.kind === "system") {
       transportReady = false;
       if (message.value.kind === "server_restarting") draining = true;
@@ -259,6 +268,28 @@
     const key = keys[category as keyof typeof keys];
     if (!key) throw new RangeError(`missing category presentation for ${category}`);
     return t(key, {}, era);
+  }
+
+  function meterLabel(meterID: string): string | undefined {
+    if (meterID === FEATURES_PRESENTATION.doomMeter.meter_id) return t(FEATURES_PRESENTATION.doomMeter.title_key, {}, era);
+    const row = FEATURES_PRESENTATION.trustMeters.get(meterID);
+    return row ? t("meters.row_frame", { constituency: t(row.constituency_key, {}, era), axis: t(row.axis_key, {}, era) }, era) : undefined;
+  }
+
+  function announce(scope: "company" | "founder", value: GameUIAnnouncementEvent): void {
+    const key = `${scope}\0${value.cursor}`;
+    if (announcedCursors.has(key)) return;
+    announcedCursors.add(key);
+    if (value.kind === "achievement_earned") {
+      const row = liveFeatures?.achievements?.rows.find((candidate) => candidate.achievement_id === value.payload.achievement_id);
+      if (!row || !applicationCopyCatalog.byKey.has(row.copy_key)) { console.error(`game UI invariant: unannounceable achievement ${value.payload.achievement_id}`); return; }
+      announcement = t("achievements.earned_announcement", { achievement: t(row.copy_key as CopyKey, {}, era) }, era);
+      return;
+    }
+    const meter = meterLabel(value.payload.meter_id), band = FEATURES_PRESENTATION.meterBands.get(value.payload.to_band);
+    if (!meter || !band) { console.error(`game UI invariant: unannounceable meter change ${value.payload.meter_id}`); return; }
+    if (surface === "meters") announcement = t("meters.band_changed_announcement", { meter, band: t(band, {}, era) }, era);
+    else metersChanged = true;
   }
 
   function factTrue(id: string): boolean { return snapshot?.facts.some((fact) => fact.fact_id === id && fact.value === true) ?? false; }
@@ -322,7 +353,7 @@
         <button type="button" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
         {#if factTrue("feature.achievements")}<button type="button" aria-current={surface === "achievements" ? "page" : undefined} onclick={() => show("achievements")}>{t("surface.achievements.title", {}, era)}</button>{/if}
         {#if factTrue("feature.fiscal")}<button type="button" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}</button>{/if}
-        {#if factTrue("feature.meters")}<button type="button" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.meters")}<button type="button" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}{#if metersChanged} {t("meters.nav_changed_badge", {}, era)}{/if}</button>{/if}
         {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
         {#if runtime.soulRecovery}<button type="button" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
         <button type="button" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
@@ -331,6 +362,7 @@
     </header>
   {/if}
 
+  {#if snapshot}<p class="announcement" role="status">{announcement}</p>{/if}
   {#if snapshot}<p class="intent-notice" role="status">{intentNotice ? t(intentNotice, {}, era) : ""}</p>{/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>

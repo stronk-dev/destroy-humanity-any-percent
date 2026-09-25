@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "keys": [
+    "achievements.earned_announcement",
     "achievements.empty",
     "achievements.grant_frame",
     "achievements.progress_frame",
@@ -134,6 +135,7 @@
     "meters.axis.standing",
     "meters.band.high",
     "meters.band.low",
+    "meters.band_changed_announcement",
     "meters.constituency.employees",
     "meters.constituency.investors",
     "meters.constituency.press",
@@ -143,6 +145,8 @@
     "meters.curtain",
     "meters.doom.title",
     "meters.doom.tooltip",
+    "meters.nav_changed_badge",
+    "meters.row_frame",
     "meters.value_frame",
     "minigame.availability.fiscal_locked",
     "minigame.availability.soul_locked",

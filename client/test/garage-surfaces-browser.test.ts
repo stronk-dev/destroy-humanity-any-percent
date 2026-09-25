@@ -56,7 +56,8 @@ class Runtime implements GameUIRuntime {
   async bootstrap(): Promise<ParsedGameUISnapshot> { return this.current; }
   async snapshot(): Promise<ParsedGameUISnapshot> { return this.current; }
   async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> { this.requests.push(body); return this.outcome; }
-  subscribe(_founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void { queueMicrotask(() => listener({ kind: "transport_recovered" })); return () => {}; }
+  listener: ((message: GameUIRuntimeMessage) => void) | undefined;
+  subscribe(_founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void { this.listener = listener; queueMicrotask(() => listener({ kind: "transport_recovered" })); return () => {}; }
 }
 
 interface AppExports { fixtureSnapshot(value: ParsedGameUISnapshot): void; fixtureSurface(value: GameUISurfaceID): void; fixtureMonotonicElapsed(value: number): void }
@@ -194,5 +195,31 @@ it.skipIf(!browser)("shows the Pitch availability reason before any create reque
     expect(target.textContent).toContain("Not open yet. Unlock it with Investor Confidence");
     expect(port.create).not.toHaveBeenCalled();
     await assertAxe(target, "pitch availability");
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("announces an earned achievement once per cursor and badges meter changes off-surface (GS0.3/GS2-A2/GS3)", async () => {
+  const { target, runtime, dispose } = await mounted();
+  try {
+    const runID = { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 };
+    const earned = { kind: "announcement" as const, scope: "company" as const, value: { cursor: 9, kind: "achievement_earned" as const,
+      payload: { achievement_id: "achievement.generators_purchased_1", condition_scope: "run" as const, run_id: runID, score_grant: 1 } } };
+    runtime.listener!(earned); await settle();
+    const region = target.querySelector(".announcement")!;
+    const first = region.textContent!;
+    expect(first).toMatch(/^Achievement earned: /u);
+
+    const band = { kind: "announcement" as const, scope: "company" as const, value: { cursor: 10, kind: "meter_band_changed" as const,
+      payload: { direction: "up" as const, from_band: "low", meter_id: "doom.probability", run_id: runID, to_band: "high", value_after: 71, value_before: 69 } } };
+    runtime.listener!(band); await settle();
+    const metersNav = [...target.querySelectorAll("nav button")].find((node) => node.textContent?.includes("Reputation Board")) as HTMLButtonElement;
+    expect(metersNav.textContent).toContain("(changed)");
+    metersNav.click(); await settle();
+    expect(metersNav.textContent).not.toContain("(changed)");
+    runtime.listener!({ ...band, value: { ...band.value, cursor: 11 } }); await settle();
+    expect(target.querySelector(".announcement")!.textContent).toBe("p(doom) is now High.");
+    // Replaying cursor 9 after reconnect must announce nothing.
+    runtime.listener!(earned); await settle();
+    expect(target.querySelector(".announcement")!.textContent).toBe("p(doom) is now High.");
   } finally { await dispose(); }
 });
