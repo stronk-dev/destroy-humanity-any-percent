@@ -30,6 +30,9 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | implementing — accepted at `cd102d7` | Gameserver / Client / Account / API / CI / operations |
 | [Accessibility of Player Workflows](accessibility-player-workflows.md) | draft — current Game UI failures measured; owner task/AT matrix pending | UI Foundation / Game UI Screens; later surface RFCs consume its acceptance floor |
+| [v0.1 "The Garage" — Release Manifest & RFC DAG](v0.1-garage-release-manifest.md) | draft — not implementation authority; owner acceptance batch pending | design/07 Phase 1 |
+| [Reputation Tree v1](reputation-tree-v1.md) | draft — not implementation authority; OD-1–OD-12 pending | Prestige & Exits / Leaderboards & Epochs |
+| [Minigame — Terminal Typer](minigame-terminal-typer.md) | draft — not implementation authority; platform amendments TT-PA1–PA4 pending | Minigame Platform / Minigame API & Surface |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,
