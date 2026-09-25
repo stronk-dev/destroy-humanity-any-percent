@@ -51,7 +51,9 @@ func DeriveRuntimeClosure(root string) (Closure, error) {
 	if err != nil || !epochseed.Accepts(epochseed.Current(bundle.Seed), bundle.Hash) {
 		return Closure{}, errors.Join(ErrInvalidContent, err)
 	}
-	paths := []string{epochseed.Path, "balance/transport/phase0.json", "moderation/guild-names.txt", "deployment/content-manifest.v1.json"}
+	// balance/api/phase0.json is the public API operational policy the
+	// gameserver loads at startup (API Foundation A8/C20).
+	paths := []string{epochseed.Path, "balance/api/phase0.json", "balance/transport/phase0.json", "moderation/guild-names.txt", "deployment/content-manifest.v1.json"}
 	for _, artifact := range bundle.Seed.Artifacts {
 		paths = append(paths, artifact.Path)
 	}

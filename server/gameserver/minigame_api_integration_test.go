@@ -48,7 +48,8 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 	now := time.Now().UTC().Add(-time.Second).Truncate(100 * time.Millisecond)
 	clock := &mutableClock{now: now}
 	composition, err := Compose(ctx, CompositionConfig{
-		DB: db, RepositoryRoot: composedMinigameRepositoryRoot(t, filepathRoot(t)),
+		PublicCursorKeys: testPublicCursorKeys(),
+		DB:               db, RepositoryRoot: composedMinigameRepositoryRoot(t, filepathRoot(t)),
 		ServerID: "01986666-f100-4000-8000-000000000001", ActivityBracket: "activity.standard",
 		Clock: clock.Time, SigningKeys: account.SigningKeys{CurrentID: "minigame-lifecycle", Current: bytes.Repeat([]byte{0x57}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-minigame", Current: bytes.Repeat([]byte{0x58}, 32)},
@@ -425,6 +426,7 @@ func composedMinigameRepositoryRoot(t *testing.T, repositoryRoot string) string 
 	}
 
 	root := t.TempDir()
+	writeCompositionFixture(t, root, "balance/api/phase0.json", readCompositionFixture(t, repositoryRoot, "balance/api/phase0.json"))
 	names := make([]string, 0, len(artifacts))
 	for name := range artifacts {
 		names = append(names, name)

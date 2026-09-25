@@ -2,14 +2,18 @@ package gameserver
 
 import (
 	"context"
+	"crypto/rand"
 	"database/sql"
 	"errors"
 	"io"
 	"log/slog"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"time"
+
+	"github.com/go-chi/chi/v5"
 
 	"cloud-clicker/server/account"
 	"cloud-clicker/server/commons"
@@ -27,6 +31,7 @@ import (
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/publicread"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/replayverify"
 	"cloud-clicker/server/routeprojection"
@@ -57,6 +62,9 @@ type CompositionConfig struct {
 	Logger             *slog.Logger
 	Operations         *operations.Registry
 	GuildNameAdditions []byte
+	// PublicCursorKeys is the deployment cursor pair the public read surface
+	// requires (API Foundation A7/C20). Composition fails without it.
+	PublicCursorKeys publicread.CursorKeys
 }
 
 type Composition struct {
@@ -381,7 +389,20 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
-	server, err := New(config.DB, api.Router(), node, playerRelay, synchronizer, seed.Hash)
+	publicPolicy, err := os.ReadFile(filepath.Join(config.RepositoryRoot, "balance", "api", "phase0.json"))
+	if err != nil {
+		return nil, err
+	}
+	random := config.Random
+	if random == nil {
+		random = rand.Reader
+	}
+	publicRouter, err := publicread.NewRouter(publicread.Dependencies{PolicyJSON: publicPolicy, CursorKeys: config.PublicCursorKeys,
+		Epochs: epochRepository, Clock: config.Clock, Random: random})
+	if err != nil {
+		return nil, err
+	}
+	server, err := New(config.DB, mountPublicRead(api.Router(), publicRouter), node, playerRelay, synchronizer, seed.Hash)
 	if err != nil {
 		return nil, err
 	}
@@ -451,4 +472,14 @@ func deploymentBoundary(config CompositionConfig) ([]string, int, error) {
 		return nil, 0, ErrComposition
 	}
 	return []string{config.PublicOrigin}, 1, nil
+}
+
+// mountPublicRead serves the unauthenticated /api/public/v1/ surface from its
+// own registry-mounted router (C10) beside the account routes.
+func mountPublicRead(account, public http.Handler) http.Handler {
+	router := chi.NewRouter()
+	router.Handle("/api/public/v1", public)
+	router.Handle("/api/public/v1/*", public)
+	router.Handle("/*", account)
+	return router
 }

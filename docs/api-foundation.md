@@ -80,7 +80,16 @@ while each surface still mounts from its own registry.
 - **Page source:** `leaderboard.Repository.PublicEpochPage`, which reads the page from a single SQL
   statement.
 
-The public router is not composed into the gameserver yet. The catalogs, boards, verification and
-registry readers, the thin generated-client transport, and the full public privacy enumeration all
+`publicread.NewRouter` composes the surface. It loads the strict policy, resolves the named cursor
+secrets (`CursorSecretResolver`, see `docs/gameserver.md`), builds the request-ID runtime and
+limiter, and mounts every public registry operation (and only those) through `Registry.Mount`.
+Unknown public paths and non-GET methods return `404 unknown_id/route` and never fall through to
+the account router. The gameserver mounts it at `/api/public/v1/`, and composition fails closed
+without a valid policy or cursor pair. The composed-server Postgres witness checks all of this:
+the served epoch page, request-ID echo, cache headers, a 304 on a matching ETag, the unknown-route
+404, and fail-closed composition. The composed Game UI lane also fetches the page through the Vite
+proxy.
+
+The catalogs, boards, verification and registry readers, the thin generated-client transport, and the full public privacy enumeration all
 remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
 historical formulas never fall back to current bytes.

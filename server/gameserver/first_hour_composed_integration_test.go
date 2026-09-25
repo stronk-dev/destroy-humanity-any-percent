@@ -80,7 +80,8 @@ func TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed(t *testing.T) {
 	base := time.Now().UTC().Truncate(time.Second)
 	clock := &mutableClock{now: base}
 	composition, err := Compose(ctx, CompositionConfig{
-		DB: db, RepositoryRoot: root, ServerID: "018f0000-0000-4000-8000-000000000331", ActivityBracket: "activity.standard",
+		PublicCursorKeys: testPublicCursorKeys(),
+		DB:               db, RepositoryRoot: root, ServerID: "018f0000-0000-4000-8000-000000000331", ActivityBracket: "activity.standard",
 		SigningKeys:   account.SigningKeys{CurrentID: "first-hour-composed", Current: bytes.Repeat([]byte{0x52}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "first-hour-composed", Current: bytes.Repeat([]byte{0x53}, 32)},
 		Clock:         clock.Time,

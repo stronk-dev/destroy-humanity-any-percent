@@ -48,7 +48,8 @@ commit is rejected.
 ports; Caddy and gameserver share an internal application network; gameserver and Postgres share a
 separate internal database network; the backup worker shares only that private database network.
 The gameserver and backup worker are read-only, nonroot and drop all capabilities. The gameserver
-mounts only current file-backed secrets. `compose.rotation.template.yml` adds previous JWT/bootstrap pairs
+mounts only current file-backed secrets (database URL, JWT, bootstrap and the public cursor secret,
+whose ID is pinned to the policy name `k1`). `compose.rotation.template.yml` adds previous JWT/bootstrap pairs
 only during an actual overlap—ordinary installations do not manufacture placeholder previous
 secrets. Every rendered Caddy/gameserver/Postgres image reference must include an immutable
 `@sha256:` digest. The Caddy route list includes only the SPA, API, WebSocket, health and readiness;
@@ -587,8 +588,10 @@ successful rollback or any unrelated intervening transition closes that authorit
 
 Key rotation is also operator-driven. `rotation-activate` records new-current/former-current IDs;
 `rotation-remove` refuses removal until the governed interval has elapsed: 30 minutes for JWT,
-31 days for bootstrap receipts and 366 days for public cursors. Cursor rotation stays inactive
-until a public reader exists, but its durable timing/config contract is already enforced. The
+31 days for bootstrap receipts and 366 days for public cursors. The public cursor reader now
+exists, but cursor rotation stays inactive. The API policy fixes the names `k1`/`k0` (C20), which
+conflicts with the ledger's per-rotation IDs; this is an open DESIGN-GAP in
+`planning/api-foundation/log.md`. Its durable timing/config contract is already enforced. The
 runtime current/previous key decoder remains the authority for actual values and rejects half
 pairs, duplicate IDs and duplicate values; the ledger stores IDs only.
 

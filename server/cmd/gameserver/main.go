@@ -14,6 +14,7 @@ import (
 	"cloud-clicker/server/deploymentconfig"
 	"cloud-clicker/server/gameserver"
 	"cloud-clicker/server/operations"
+	"cloud-clicker/server/publicread"
 	"cloud-clicker/server/save"
 )
 
@@ -59,6 +60,8 @@ func run(logger *slog.Logger) error {
 		DB: db, RepositoryRoot: runtime.ContentRoot, ServerID: runtime.ServerID, ActivityBracket: runtime.ActivityBracket,
 		PublicOrigin: runtime.PublicOrigin, TrustedProxyHops: runtime.TrustedProxyHops,
 		SigningKeys: signingKeys, BootstrapKeys: bootstrapKeys, Logger: logger, Operations: operationRegistry,
+		PublicCursorKeys: publicread.CursorKeys{CurrentID: runtime.Cursor.CurrentID, Current: runtime.Cursor.Current,
+			PreviousID: runtime.Cursor.PreviousID, Previous: runtime.Cursor.Previous},
 	})
 	if err != nil {
 		return err

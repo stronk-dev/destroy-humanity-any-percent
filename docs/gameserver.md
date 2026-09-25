@@ -29,15 +29,26 @@ Production sets `CLOUD_CLICKER_DEPLOYMENT_MODE=production` and requires:
   must differ from current. The composed verifier accepts previous JWTs, and stored bootstrap
   receipts remain decryptable through the previous-key map.
 
-The production decoder also validates an optional current/previous cursor pair so the deployment
-contract does not fall back to a restart-generated secret. No public cursor reader is composed yet,
-so the pair is not required or consumed at runtime. Secret paths must be absolute, normalized and
+The production decoder also **requires** the public cursor pair (current `CLOUD_CLICKER_CURSOR_*`
+ID and `_KEY_FILE`, optional previous pair), because the public cursor readers are composed. The
+deployment contract never falls back to a restart-generated secret. The API policy
+(`balance/api/phase0.json`, C20) fixes the cursor key names `k1` (current) and `k0` (previous), so
+the compose template pins `CLOUD_CLICKER_CURSOR_CURRENT_ID=k1`.
+
+`publicread.CursorSecretResolver` maps those names onto the deployment pair by ID. With no previous
+pair, `k0` resolves to the current secret: C20 allows both names to share one value at first
+deployment. Any other ID set fails startup. Composition loads the policy from the content root
+(the runtime content closure stages `balance/api/phase0.json`). It mounts every public registry
+operation under `/api/public/v1/` beside the account routes, behind the shared request-ID
+middleware, and fails composition on a missing or invalid policy or cursor pair. The development
+profile requires an inline `CLOUD_CLICKER_CURSOR_KEY`, bound to `k1`, which is rejected in
+production. Secret paths must be absolute, normalized and
 under `/run/secrets`; files may have one final newline but no surrounding or embedded whitespace.
 Unknown `CLOUD_CLICKER_*` names and the legacy inline secret variables fail closed in production.
 `LISTEN_ADDR` defaults to `:8080`.
 
 The development profile retains the existing local/test inputs: `DATABASE_URL`,
-`CLOUD_CLICKER_JWT_KEY`, `CLOUD_CLICKER_BOOTSTRAP_KEY_ID`,
+`CLOUD_CLICKER_JWT_KEY`, `CLOUD_CLICKER_BOOTSTRAP_KEY_ID`, `CLOUD_CLICKER_CURSOR_KEY`,
 `CLOUD_CLICKER_BOOTSTRAP_KEY`, `CLOUD_CLICKER_REPOSITORY_ROOT`,
 `CLOUD_CLICKER_ACTIVITY_BRACKET`, and `LISTEN_ADDR`. These inline secrets are not accepted by the
 production profile. Build the process with `make build-gameserver`.

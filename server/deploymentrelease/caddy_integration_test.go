@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/gameserver"
+	"cloud-clicker/server/publicread"
 	"cloud-clicker/server/releasepackage"
 	"cloud-clicker/server/save"
 	"filippo.io/age"
@@ -335,7 +336,8 @@ func startReleaseServer(t *testing.T, ctx context.Context, database *sql.DB, roo
 	t.Helper()
 	composition, err := gameserver.Compose(ctx, gameserver.CompositionConfig{DB: database, RepositoryRoot: root,
 		ServerID: "018f0000-0000-4000-8000-000000000901", ActivityBracket: "activity.standard",
-		PublicOrigin: origin, TrustedProxyHops: 1, SigningKeys: keys, BootstrapKeys: bootstrap})
+		PublicOrigin: origin, TrustedProxyHops: 1, SigningKeys: keys, BootstrapKeys: bootstrap,
+		PublicCursorKeys: publicread.CursorKeys{CurrentID: "k1", Current: []byte("0123456789abcdef0123456789abcdef")}})
 	if err != nil {
 		t.Fatal(err)
 	}

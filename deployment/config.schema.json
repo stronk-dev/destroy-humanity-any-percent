@@ -17,6 +17,7 @@
     "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE",
     "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE",
     "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE",
+    "CLOUD_CLICKER_CURSOR_CURRENT_SECRET_FILE",
     "CLOUD_CLICKER_ALERTMANAGER_CONFIG"
   ],
   "properties": {
@@ -34,6 +35,7 @@
     "CLOUD_CLICKER_POSTGRES_PASSWORD_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
+    "CLOUD_CLICKER_CURSOR_CURRENT_SECRET_FILE": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_ALERTMANAGER_CONFIG": { "$ref": "#/$defs/secretPath" },
     "CLOUD_CLICKER_HTTP_PORT": { "$ref": "#/$defs/port" },
     "CLOUD_CLICKER_HTTPS_PORT": { "$ref": "#/$defs/port" }

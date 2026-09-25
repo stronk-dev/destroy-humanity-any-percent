@@ -20,8 +20,8 @@ func TestRepositoryRuntimeClosureIsManifestDrivenAndExact(t *testing.T) {
 		t.Fatal(err)
 	}
 	// One epoch declaration, every manifest-owned artifact/changelog, and the
-	// three non-epoch composition/identity files.
-	wantFiles := 1 + len(bundle.Seed.Artifacts) + len(bundle.Seed.Epochs) + 3
+	// four non-epoch composition/identity files.
+	wantFiles := 1 + len(bundle.Seed.Artifacts) + len(bundle.Seed.Epochs) + 4
 	if closure.EpochID != bundle.Seed.CurrentEpochID || len(closure.Files) != wantFiles {
 		t.Fatalf("epoch=%d files=%d", closure.EpochID, len(closure.Files))
 	}
@@ -30,7 +30,7 @@ func TestRepositoryRuntimeClosureIsManifestDrivenAndExact(t *testing.T) {
 		seen[file.Path] = true
 	}
 	for _, required := range []string{
-		"balance/epochs/phase0.json", "balance/catalogs/phase0.json", "balance/transport/phase0.json",
+		"balance/epochs/phase0.json", "balance/catalogs/phase0.json", "balance/transport/phase0.json", "balance/api/phase0.json",
 		"changelog/epoch-8.md", "moderation/guild-names.txt", "deployment/content-manifest.v1.json",
 	} {
 		if !seen[required] {
@@ -88,7 +88,7 @@ func TestStageRuntimeContentRefusesAStaleDestination(t *testing.T) {
 
 func TestRuntimeClosureFailsWhenADeclaredArtifactIsAbsent(t *testing.T) {
 	root := filepath.Join(t.TempDir(), "repo")
-	for _, directory := range []string{"balance/epochs", "balance/transport", "moderation", "deployment", "changelog"} {
+	for _, directory := range []string{"balance/epochs", "balance/api", "balance/transport", "moderation", "deployment", "changelog"} {
 		if err := os.MkdirAll(filepath.Join(root, filepath.FromSlash(directory)), 0o755); err != nil {
 			t.Fatal(err)
 		}
@@ -96,6 +96,7 @@ func TestRuntimeClosureFailsWhenADeclaredArtifactIsAbsent(t *testing.T) {
 	files := map[string]string{
 		"balance/epochs/phase0.json":          `{"schema_version":1,"current_epoch_id":1,"artifacts":[{"name":"missing","path":"balance/missing.json"}],"epochs":[{"epoch_id":1,"name":"fixture","changelog_ref":"changelog/epoch-1.md","accepted_hashes":["sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]}]}`,
 		"balance/transport/phase0.json":       `{}`,
+		"balance/api/phase0.json":             `{}`,
 		"moderation/guild-names.txt":          "blocked\n",
 		"deployment/content-manifest.v1.json": `{"schema_version":1,"constants_hash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","copy_hash":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}`,
 		"changelog/epoch-1.md":                "# fixture\n",

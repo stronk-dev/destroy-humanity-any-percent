@@ -46,9 +46,11 @@ services:
       CLOUD_CLICKER_JWT_CURRENT_KEY_FILE: /run/secrets/jwt-current
       CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID: "${CLOUD_CLICKER_BOOTSTRAP_CURRENT_ID:?set the current bootstrap key ID}"
       CLOUD_CLICKER_BOOTSTRAP_CURRENT_KEY_FILE: /run/secrets/bootstrap-current
+      CLOUD_CLICKER_CURSOR_CURRENT_ID: k1
+      CLOUD_CLICKER_CURSOR_CURRENT_KEY_FILE: /run/secrets/cursor-current
       DATABASE_URL_FILE: /run/secrets/database-url
       LISTEN_ADDR: :8080
-    secrets: [database-url, jwt-current, bootstrap-current]
+    secrets: [database-url, jwt-current, bootstrap-current, cursor-current]
     expose: ["8080"]
     networks: [application, database]
     depends_on:
@@ -208,5 +210,7 @@ secrets:
     file: "${CLOUD_CLICKER_JWT_CURRENT_SECRET_FILE:?set the current JWT secret file}"
   bootstrap-current:
     file: "${CLOUD_CLICKER_BOOTSTRAP_CURRENT_SECRET_FILE:?set the current bootstrap secret file}"
+  cursor-current:
+    file: "${CLOUD_CLICKER_CURSOR_CURRENT_SECRET_FILE:?set the current public cursor secret file}"
   alertmanager-config:
     file: "${CLOUD_CLICKER_ALERTMANAGER_CONFIG:?set the Alertmanager receiver configuration file}"

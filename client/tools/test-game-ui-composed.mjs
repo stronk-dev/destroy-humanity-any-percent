@@ -28,6 +28,7 @@ const gameserverEnvironment = {
   CLOUD_CLICKER_ACTIVITY_BRACKET: "activity.standard",
   CLOUD_CLICKER_BOOTSTRAP_KEY: key,
   CLOUD_CLICKER_BOOTSTRAP_KEY_ID: "browser-fixture",
+  CLOUD_CLICKER_CURSOR_KEY: key,
   CLOUD_CLICKER_JWT_KEY: key,
   CLOUD_CLICKER_REPOSITORY_ROOT: repositoryRoot,
   CLOUD_CLICKER_SERVER_ID: "01986666-b001-4000-8000-000000000001",
@@ -353,6 +354,14 @@ try {
     },
   });
   await vite.listen();
+  // The composed binary mounts the unauthenticated public read surface
+  // beside the account API (API Foundation C10); prove it through the proxy.
+  const publicEpochs = await fetch(`${uiURL}/api/public/v1/epochs?limit=1`);
+  const publicEpochsBody = await publicEpochs.json();
+  if (publicEpochs.status !== 200 || !publicEpochs.headers.get("x-request-id") || !publicEpochs.headers.get("etag") ||
+      !Array.isArray(publicEpochsBody.items) || publicEpochsBody.items.length !== 1 || publicEpochsBody.items[0].ended_at !== null) {
+    throw new Error(`composed public epochs failed: ${publicEpochs.status} ${JSON.stringify(publicEpochsBody)}`);
+  }
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   await page.addInitScript(() => {

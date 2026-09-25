@@ -49,7 +49,7 @@ type Config struct {
 	ActivityBracket  string
 	JWT              KeyPair
 	Bootstrap        KeyPair
-	Cursor           *KeyPair
+	Cursor           KeyPair
 }
 
 type ReadFile func(string) ([]byte, error)
@@ -105,7 +105,9 @@ func loadProduction(values map[string]string, readFile ReadFile) (Config, error)
 	if err != nil {
 		return Config{}, err
 	}
-	cursor, err := optionalKeyPair(values, readFile, "CLOUD_CLICKER_CURSOR", 32, false)
+	// Required since the public cursor readers are composed (Deployment
+	// Foundation: "required when public cursor readers are composed").
+	cursor, err := requiredKeyPair(values, readFile, "CLOUD_CLICKER_CURSOR", 32, false)
 	if err != nil {
 		return Config{}, err
 	}
@@ -118,9 +120,10 @@ func loadDevelopment(values map[string]string) (Config, error) {
 	databaseURL := values["DATABASE_URL"]
 	jwtValue, jwtErr := decodeInlineKey(values["CLOUD_CLICKER_JWT_KEY"], 32, false)
 	bootstrapValue, bootstrapErr := decodeInlineKey(values["CLOUD_CLICKER_BOOTSTRAP_KEY"], 32, true)
+	cursorValue, cursorErr := decodeInlineKey(values["CLOUD_CLICKER_CURSOR_KEY"], 32, false)
 	serverID := values["CLOUD_CLICKER_SERVER_ID"]
 	bootstrapID := values["CLOUD_CLICKER_BOOTSTRAP_KEY_ID"]
-	if databaseURL == "" || !uuid.MatchString(serverID) || jwtErr != nil || bootstrapErr != nil || !keyID.MatchString(bootstrapID) {
+	if databaseURL == "" || !uuid.MatchString(serverID) || jwtErr != nil || bootstrapErr != nil || cursorErr != nil || !keyID.MatchString(bootstrapID) {
 		return Config{}, ErrInvalid
 	}
 	root := values["CLOUD_CLICKER_REPOSITORY_ROOT"]
@@ -141,7 +144,10 @@ func loadDevelopment(values map[string]string) (Config, error) {
 	return Config{Mode: "development", ContentRoot: root, ServerID: serverID, ListenAddress: listen,
 		DatabaseURL: databaseURL, ActivityBracket: activity,
 		JWT:       KeyPair{CurrentID: "runtime", Current: jwtValue},
-		Bootstrap: KeyPair{CurrentID: bootstrapID, Current: bootstrapValue}}, nil
+		Bootstrap: KeyPair{CurrentID: bootstrapID, Current: bootstrapValue},
+		// The development cursor secret is the C20 current name; with no
+		// previous pair the previous name shares it (first deployment).
+		Cursor: KeyPair{CurrentID: "k1", Current: cursorValue}}, nil
 }
 
 func environmentMap(environ []string) (map[string]string, error) {
@@ -187,7 +193,7 @@ func rejectUnknownProductionKeys(values map[string]string) error {
 			return fieldError(name)
 		}
 	}
-	for _, legacy := range []string{"DATABASE_URL", "CLOUD_CLICKER_JWT_KEY", "CLOUD_CLICKER_BOOTSTRAP_KEY", "CLOUD_CLICKER_BOOTSTRAP_KEY_ID"} {
+	for _, legacy := range []string{"DATABASE_URL", "CLOUD_CLICKER_JWT_KEY", "CLOUD_CLICKER_BOOTSTRAP_KEY", "CLOUD_CLICKER_BOOTSTRAP_KEY_ID", "CLOUD_CLICKER_CURSOR_KEY"} {
 		if _, exists := values[legacy]; exists {
 			return fieldError(legacy)
 		}
@@ -226,22 +232,6 @@ func requiredKeyPair(values map[string]string, readFile ReadFile, prefix string,
 	}
 	pair.PreviousID, pair.Previous = previousID, previous
 	return pair, nil
-}
-
-func optionalKeyPair(values map[string]string, readFile ReadFile, prefix string, minimum int, exact bool) (*KeyPair, error) {
-	currentID, currentFile := values[prefix+"_CURRENT_ID"], values[prefix+"_CURRENT_KEY_FILE"]
-	previousID, previousFile := values[prefix+"_PREVIOUS_ID"], values[prefix+"_PREVIOUS_KEY_FILE"]
-	if currentID == "" && currentFile == "" && previousID == "" && previousFile == "" {
-		return nil, nil
-	}
-	if currentID == "" || currentFile == "" {
-		return nil, fieldError(prefix + "_CURRENT")
-	}
-	pair, err := requiredKeyPair(values, readFile, prefix, minimum, exact)
-	if err != nil {
-		return nil, err
-	}
-	return &pair, nil
 }
 
 func readEncodedKey(field, path string, readFile ReadFile, minimum int, exact bool) ([]byte, error) {

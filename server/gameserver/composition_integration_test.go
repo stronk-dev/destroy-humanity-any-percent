@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -23,6 +24,7 @@ import (
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/operations"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/publicread"
 	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/transport"
@@ -118,11 +120,19 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	// anchoring it to the day the test runs, so this real-socket proof cannot
 	// expire merely because its authored calendar date has passed.
 	clock := &mutableClock{now: time.Now().UTC().Truncate(time.Second)}
+	// The public cursor readers are composed, so composition without the
+	// deployment cursor pair must fail closed (API Foundation A7/C20).
+	if _, err := Compose(ctx, CompositionConfig{DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000301",
+		ActivityBracket: "activity.standard", SigningKeys: account.SigningKeys{CurrentID: "composition-integration", Current: bytes.Repeat([]byte{0x42}, 32)},
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-integration", Current: bytes.Repeat([]byte{0x43}, 32)}, Clock: clock.Time}); !errors.Is(err, publicread.ErrComposition) {
+		t.Fatalf("composition without cursor keys: %v", err)
+	}
 	composition, err := Compose(ctx, CompositionConfig{
-		DB:              db,
-		RepositoryRoot:  filepathRoot(t),
-		ServerID:        "018f0000-0000-4000-8000-000000000301",
-		ActivityBracket: "activity.standard",
+		PublicCursorKeys: testPublicCursorKeys(),
+		DB:               db,
+		RepositoryRoot:   filepathRoot(t),
+		ServerID:         "018f0000-0000-4000-8000-000000000301",
+		ActivityBracket:  "activity.standard",
 		SigningKeys: account.SigningKeys{
 			CurrentID: "composition-integration",
 			Current:   bytes.Repeat([]byte{0x42}, 32),
@@ -144,6 +154,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	httpServer := httptest.NewServer(composition.Server.Handler())
 	defer httpServer.Close()
 	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusNoContent)
+	assertComposedPublicEpochs(t, httpServer)
 
 	invalidBootstrap := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "",
 		`{"idempotency_key":"guessable"}`)
@@ -637,7 +648,8 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 		t.Fatal(err)
 	}
 	composition, err := Compose(ctx, CompositionConfig{
-		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000303",
+		PublicCursorKeys: testPublicCursorKeys(),
+		DB:               db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000303",
 		ActivityBracket: "activity.standard", Clock: clock.Time,
 		SigningKeys:   account.SigningKeys{CurrentID: "composition-prime", Current: bytes.Repeat([]byte{0x63}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-prime", Current: bytes.Repeat([]byte{0x64}, 32)},
@@ -739,7 +751,8 @@ func TestComposedAccountFamilyRevocationRevalidatesSocketsIntegration(t *testing
 	})
 
 	composition, err := Compose(ctx, CompositionConfig{
-		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000304",
+		PublicCursorKeys: testPublicCursorKeys(),
+		DB:               db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000304",
 		ActivityBracket: "activity.standard", Clock: time.Now,
 		SigningKeys:   account.SigningKeys{CurrentID: "composition-revocation", Current: bytes.Repeat([]byte{0x66}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-revocation", Current: bytes.Repeat([]byte{0x67}, 32)},
@@ -864,7 +877,8 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 
 	now := time.Date(2026, 8, 2, 14, 0, 0, 0, time.UTC)
 	composition, err := Compose(ctx, CompositionConfig{
-		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000302",
+		PublicCursorKeys: testPublicCursorKeys(),
+		DB:               db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000302",
 		ActivityBracket: "activity.standard", Clock: func() time.Time { return now },
 		SigningKeys:   account.SigningKeys{CurrentID: "composition-verification", Current: bytes.Repeat([]byte{0x24}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-verification", Current: bytes.Repeat([]byte{0x25}, 32)},
@@ -1492,7 +1506,8 @@ func TestComposedProductionBoundaryTrustsExactlyOneProxyHopIntegration(t *testin
 	})
 	const publicOrigin = "https://play.example.test"
 	composition, err := Compose(ctx, CompositionConfig{
-		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000305",
+		PublicCursorKeys: testPublicCursorKeys(),
+		DB:               db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000305",
 		ActivityBracket: "activity.standard", Clock: time.Now,
 		SigningKeys:   account.SigningKeys{CurrentID: "composition-boundary", Current: bytes.Repeat([]byte{0x68}, 32)},
 		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-boundary", Current: bytes.Repeat([]byte{0x69}, 32)},
@@ -1552,5 +1567,64 @@ func TestComposedProductionBoundaryTrustsExactlyOneProxyHopIntegration(t *testin
 	}
 	if status, err := dial("https://attacker.example"); err == nil || status != http.StatusForbidden {
 		t.Fatalf("foreign origin upgrade status=%d err=%v", status, err)
+	}
+}
+
+// testPublicCursorKeys is a first-deployment cursor pair (C20 name k1 only).
+func testPublicCursorKeys() publicread.CursorKeys {
+	return publicread.CursorKeys{CurrentID: "k1", Current: []byte("0123456789abcdef0123456789abcdef")}
+}
+
+// assertComposedPublicEpochs witnesses the public router mounted beside the
+// account routes: the seeded epoch registry is served newest-first with the
+// shared request-ID, ETag/304 and cache headers, and unknown public paths
+// never fall through to the account router.
+func assertComposedPublicEpochs(t *testing.T, server *httptest.Server) {
+	t.Helper()
+	request, err := http.NewRequest(http.MethodGet, server.URL+"/api/public/v1/epochs?limit=100", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("X-Request-ID", "composition-public-1")
+	response, err := server.Client().Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := responseBody(response)
+	if response.StatusCode != http.StatusOK || response.Header.Get("X-Request-ID") != "composition-public-1" ||
+		response.Header.Get("Cache-Control") != "public,max-age=3600" || response.Header.Get("ETag") == "" {
+		t.Fatalf("public epochs status=%d headers=%v body=%s", response.StatusCode, response.Header, body)
+	}
+	var page struct {
+		Items []struct {
+			EpochID int64   `json:"epoch_id"`
+			EndedAt *string `json:"ended_at"`
+		} `json:"items"`
+		NextCursor *string `json:"next_cursor"`
+	}
+	if err := json.Unmarshal([]byte(body), &page); err != nil || len(page.Items) == 0 || page.NextCursor != nil || page.Items[0].EndedAt != nil {
+		t.Fatalf("public epochs page %s: %v", body, err)
+	}
+	for index := 1; index < len(page.Items); index++ {
+		if page.Items[index-1].EpochID <= page.Items[index].EpochID {
+			t.Fatalf("public epochs are not newest-first: %s", body)
+		}
+	}
+	conditional, err := http.NewRequest(http.MethodGet, server.URL+"/api/public/v1/epochs?limit=100", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	conditional.Header.Set("If-None-Match", response.Header.Get("ETag"))
+	notModified, err := server.Client().Do(conditional)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = responseBody(notModified)
+	if notModified.StatusCode != http.StatusNotModified {
+		t.Fatalf("conditional public epochs status=%d", notModified.StatusCode)
+	}
+	unknown := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/public/v1/account", "", "")
+	if unknown.StatusCode != http.StatusNotFound || responseBody(unknown) != "{\"category\":\"unknown_id\",\"detail\":\"route\"}\n" {
+		t.Fatalf("unknown public route status=%d", unknown.StatusCode)
 	}
 }

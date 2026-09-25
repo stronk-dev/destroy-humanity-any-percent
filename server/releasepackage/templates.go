@@ -130,13 +130,15 @@ func ValidateCompose(data []byte) error {
 		"DATABASE_URL_FILE":                        "/run/secrets/database-url",
 		"CLOUD_CLICKER_JWT_CURRENT_KEY_FILE":       "/run/secrets/jwt-current",
 		"CLOUD_CLICKER_BOOTSTRAP_CURRENT_KEY_FILE": "/run/secrets/bootstrap-current",
+		"CLOUD_CLICKER_CURSOR_CURRENT_ID":          "k1",
+		"CLOUD_CLICKER_CURSOR_CURRENT_KEY_FILE":    "/run/secrets/cursor-current",
 	}
 	for name, want := range wantEnvironment {
 		if gameserver.Environment[name] != want {
 			return fmt.Errorf("%w: gameserver environment %s", ErrInvalidContent, name)
 		}
 	}
-	if !sameStrings(gameserver.Secrets, []string{"bootstrap-current", "database-url", "jwt-current"}) ||
+	if !sameStrings(gameserver.Secrets, []string{"bootstrap-current", "cursor-current", "database-url", "jwt-current"}) ||
 		!sameStrings(postgres.Secrets, []string{"postgres-password"}) || !sameStrings(backup.Secrets, []string{"database-url"}) {
 		return fmt.Errorf("%w: invalid secret mounts gameserver=%v postgres=%v", ErrInvalidContent, gameserver.Secrets, postgres.Secrets)
 	}

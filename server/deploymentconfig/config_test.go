@@ -25,7 +25,7 @@ func TestProductionConfigLoadsFileSecretsAndRotationPairs(t *testing.T) {
 	if config.Bootstrap.CurrentID != "bootstrap-current" || config.Bootstrap.PreviousID != "bootstrap-previous" || len(config.Bootstrap.Current) != 32 || len(config.Bootstrap.Previous) != 32 {
 		t.Fatalf("unexpected bootstrap rotation pair: %+v", config.Bootstrap)
 	}
-	if config.Cursor == nil || config.Cursor.CurrentID != "cursor-current" || config.Cursor.PreviousID != "cursor-previous" {
+	if config.Cursor.CurrentID != "cursor-current" || config.Cursor.PreviousID != "cursor-previous" {
 		t.Fatalf("unexpected cursor rotation pair: %+v", config.Cursor)
 	}
 }
@@ -97,14 +97,20 @@ func TestProductionConfigRejectsEveryFailClosedFamily(t *testing.T) {
 	}
 }
 
-func TestProductionConfigAllowsCursorKeysToRemainUncomposed(t *testing.T) {
+// The public cursor readers are composed, so the cursor pair is required
+// (Deployment Foundation: "required when public cursor readers are composed").
+func TestProductionConfigRequiresCursorKeysOnceReadersAreComposed(t *testing.T) {
 	environment, secrets := validProductionFixture()
 	for _, name := range []string{"CLOUD_CLICKER_CURSOR_CURRENT_ID", "CLOUD_CLICKER_CURSOR_CURRENT_KEY_FILE", "CLOUD_CLICKER_CURSOR_PREVIOUS_ID", "CLOUD_CLICKER_CURSOR_PREVIOUS_KEY_FILE"} {
 		environment, secrets = removeEnv(name)(environment, secrets)
 	}
-	config, err := Load(environment, fixtureReader(secrets))
-	if err != nil || config.Cursor != nil {
-		t.Fatalf("cursor=%+v err=%v", config.Cursor, err)
+	if _, err := Load(environment, fixtureReader(secrets)); err == nil {
+		t.Fatal("a production config without the cursor pair must fail closed")
+	}
+	legacy, secrets := validProductionFixture()
+	legacy, secrets = appendEnv("CLOUD_CLICKER_CURSOR_KEY=inline")(legacy, secrets)
+	if _, err := Load(legacy, fixtureReader(secrets)); err == nil {
+		t.Fatal("the development inline cursor key must fail closed in production")
 	}
 }
 
@@ -116,7 +122,7 @@ func TestProductionConfigAcceptsGovernedPreviousKeyRemoval(t *testing.T) {
 		environment, secrets = removeEnv(name)(environment, secrets)
 	}
 	config, err := Load(environment, fixtureReader(secrets))
-	if err != nil || config.JWT.PreviousID != "" || config.Bootstrap.PreviousID != "" || config.Cursor == nil || config.Cursor.PreviousID != "" {
+	if err != nil || config.JWT.PreviousID != "" || config.Bootstrap.PreviousID != "" || config.Cursor.CurrentID == "" || config.Cursor.PreviousID != "" {
 		t.Fatalf("governed removal config=%+v err=%v", config, err)
 	}
 }
@@ -129,12 +135,23 @@ func TestDevelopmentConfigRetainsTheDeclaredLegacyProfileOnly(t *testing.T) {
 		"CLOUD_CLICKER_JWT_KEY=" + key,
 		"CLOUD_CLICKER_BOOTSTRAP_KEY_ID=dev-bootstrap",
 		"CLOUD_CLICKER_BOOTSTRAP_KEY=" + key,
+		"CLOUD_CLICKER_CURSOR_KEY=" + key,
 		"CLOUD_CLICKER_REPOSITORY_ROOT=/workspace",
 		"CLOUD_CLICKER_ACTIVITY_BRACKET=activity.standard",
 		"LISTEN_ADDR=127.0.0.1:18081",
 	}, fixtureReader(nil))
-	if err != nil || config.Mode != "development" || config.ContentRoot != "/workspace" || config.PublicOrigin != "" || config.TrustedProxyHops != 0 {
+	if err != nil || config.Mode != "development" || config.ContentRoot != "/workspace" || config.PublicOrigin != "" || config.TrustedProxyHops != 0 ||
+		config.Cursor.CurrentID != "k1" || len(config.Cursor.Current) != 32 || config.Cursor.PreviousID != "" {
 		t.Fatalf("config=%+v err=%v", config, err)
+	}
+	if _, err := Load([]string{
+		"DATABASE_URL=postgres://cloud:secret@localhost/cloud?sslmode=disable",
+		"CLOUD_CLICKER_SERVER_ID=01986666-b001-4000-8000-000000000001",
+		"CLOUD_CLICKER_JWT_KEY=" + key,
+		"CLOUD_CLICKER_BOOTSTRAP_KEY_ID=dev-bootstrap",
+		"CLOUD_CLICKER_BOOTSTRAP_KEY=" + key,
+	}, fixtureReader(nil)); err == nil {
+		t.Fatal("a development config without the cursor key must fail closed")
 	}
 }
 

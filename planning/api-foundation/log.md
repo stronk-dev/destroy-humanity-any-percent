@@ -454,3 +454,71 @@ table row "CLOUD_CLICKER_CURSOR_* … required when public cursor readers are co
 
 Out of this batch: boards, routes, verification readers, AC5 enumeration (next batches), and C18
 (still a gap).
+
+## 2026-09-25 — Public router composed (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review. Not
+self-approved; nothing flipped or archived. Predeclared in `5825ad24`; the implementation is the
+commit that follows this entry.
+
+**Delivered:**
+- `publicread.NewRouter` composes the public surface. It uses the strict policy,
+  `ResolveCursorCodec`, request IDs, the runtime and limiter, and `Registry.Mount`. Unknown paths
+  and methods return `404 unknown_id/route` (the account router's existing pair).
+- `CursorSecretResolver` binds the C20 names `k1`/`k0` to the deployment pair by ID. With no
+  previous pair, `k0` resolves to the current secret (the C20 first-deployment clause).
+- The gameserver mounts the router at `/api/public/v1/` beside the account routes. Composition
+  **fails closed** without a valid policy or cursor pair.
+- The production cursor pair is required (Deployment Foundation row). The compose template pins
+  `CLOUD_CLICKER_CURSOR_CURRENT_ID=k1` and mounts the `cursor-current` secret. The config schema,
+  `.env.example`, template validation and the manifest/schema required lists all carry the new
+  secret-file input.
+- The development profile requires `CLOUD_CLICKER_CURSOR_KEY`, bound to `k1`, which is rejected in
+  production.
+- The runtime content closure stages `balance/api/phase0.json`.
+
+**Evidence (cold):**
+- `make test-go GO_PACKAGES='./publicapi ./publicread ./leaderboard ./gameserver ./deploymentconfig
+  ./cmd/gameserver ./releasepackage' GO_TEST_FLAGS='-count=1'`, and the Docker Postgres
+  `./gameserver -run Integration` run, both pass.
+  - The new composed witness covers the fail-closed no-keys composition, the epochs page,
+    request-ID echo, cache headers, a 304, and the unknown public route.
+- The deployment lanes are all green:
+  - `make test-deployment-release`, including the real Caddy integration;
+  - `make test-deployment-rehearsal` (both retained build records still validate);
+  - `make test-deployment-operations` (promtool SUCCESS and the private profile integration).
+- `make test-game-ui-composed` passes, and now fetches `/api/public/v1/epochs` through the Vite
+  proxy from the built binary.
+- `make api-check` shows no diff, and client `tsc` and go vet/gofmt are clean.
+- `make deployment-config-check` validates the ambient environment. With an explicit dev
+  environment it passes when `CLOUD_CLICKER_CURSOR_KEY` is set and fails without it.
+
+**Severings (each run red; code restored):**
+- S1: remove the gameserver mount. The composed witness fails with 404.
+- S2: drop the first-deployment `k0` rule. Three `publicread` tests fail.
+- S3: production cursor pair not required. Four config tests fail.
+- S4: silently fall back to account-only routes when the public router errors. The composed witness
+  fails ("composition without cursor keys: <nil>").
+- S5: omit the API policy from the closure. `TestRepositoryRuntimeClosureIsManifestDrivenAndExact`
+  fails. My first S5 run used a `-run` filter that selected no closure test and printed `ok`; it is
+  not counted and was redone on the whole package.
+- S6: remove the dev cursor key from the composed lane. The gameserver exits 1.
+
+**Interference, logged:** the first composed-lane run failed to build because the concurrent
+Reputation lane was mid-edit in `server/production` (`undefined: reputation`). It passed once that
+package compiled again. None of my files are involved.
+
+**DESIGN-GAPs (for the ruling authors):**
+6. **Cursor rotation vs the fixed C20 names.** `validPolicy` pins `k1`/`k0`, and C20 says rotation
+   changes only deployment config. Deployment Foundation's rotation ledger (`rotation-activate` /
+   `rotation-remove`) records a new ID per rotation and forbids a previous ID equal to the current
+   one. A fixed-name scheme instead swaps the secret files behind `k1`/`k0`, which the ID-based
+   ledger cannot express. Cursor rotation therefore stays inactive (the compose rotation overlay has
+   no cursor entry). The API and Deployment authors need to reconcile: either the policy stops
+   pinning names, or the ledger learns fixed-name secret swaps.
+7. **Retained release bundles:** candidates built before this commit lack the cursor secret mount.
+   `ValidateComposeTemplate` now rejects them, adding to the existing R5 invalidation. R-006 needs
+   fresh bundles anyway.
+
+**Next in this lane:** the boards reader (C12/C13), the routes reader (C12 RoutePage), and the AC5
+privacy enumeration.
