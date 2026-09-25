@@ -275,3 +275,34 @@ migration number (74).
 
 These need an Exit cross-runtime case on a tree bundle; that case is the next commit. B5's plan box
 stays open until then.
+
+## 2026-09-25 — B5 witness: AC8 Exit cross-runtime case (Claude)
+
+**Implemented by:** Claude. This awaits Codex designated review.
+
+**What landed.** The reputation corpus gains `exit`. It is a scripted-first burnout Exit on a tree
+bundle whose next epoch pins `curriculum-v2`. The Founder is at v22, level 6, spent 6, and owns
+`p05`, `cash_small` and `generated_beige_tower`.
+
+**Go assertions:**
+- The burnout curriculum grants 10 generated beige towers; the `generated_beige_tower` node adds 5,
+  for exactly 15 generated and 0 purchased.
+- `cash_small` grants cash, which stands at `1e3`.
+- `run_started` is emitted at schema 2, listing the two applied starters in tree order, with a
+  `bonus_factor` of `1.003e0`. That value is 6 × 1% × 5%. My first hand-computed expectation was
+  wrong, and the test caught it.
+
+**TS replay.** `test/reputation-replay.test.ts` byte-matches the Go receipt, the Founder output,
+the new Company, and the started events. The file passes 23/23.
+
+**Severing probes.** Each compiled and was restored afterwards.
+- Assignment instead of addition (the RFC's named AC8 failing case) fails in Go and TS.
+- Dropping the v2 emit fails in Go.
+- Computing the TS factor from available instead of level fails.
+
+**Kernel version:** no bump. Only `_test.go` and testdata change, which the guard exempts.
+
+**Still open:**
+- The TS Founder-log Exit activation arm (`resultVersion >= 22` in `applyFounderExit`, from B3)
+  has no TS witness yet.
+- R6, the Exit-attached plan, is the next batch (B6).

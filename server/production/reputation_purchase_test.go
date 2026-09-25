@@ -8,7 +8,12 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/copykeys"
+	"cloud-clicker/server/curriculum"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/meters"
 	"cloud-clicker/server/pet"
+	"cloud-clicker/server/reputation"
 	"cloud-clicker/server/save"
 )
 
@@ -36,6 +41,9 @@ type reputationCorpus struct {
 	Version int                               `json:"version"`
 	Bundles map[string]reputationCorpusBundle `json:"bundles"`
 	Cases   []reputationCorpusCase            `json:"cases"`
+	// Exit is the R4/R7 terminal witness: a scripted-first burnout Exit on a
+	// tree bundle whose Founder owns starter nodes (AC8, run_started v2).
+	Exit crossRuntimeActiveExit `json:"exit"`
 }
 
 // reputationFounderState is an encodable Founder at the bundle's floor with
@@ -199,7 +207,7 @@ func buildReputationCorpus(t *testing.T) reputationCorpus {
 	}
 
 	cases := append(append(append([]reputationCorpusCase{}, inactive.cases...), rejections.cases...), chain.cases...)
-	return reputationCorpus{Version: 1, Bundles: map[string]reputationCorpusBundle{
+	return reputationCorpus{Version: 1, Exit: makeReputationExitFixture(t, now), Bundles: map[string]reputationCorpusBundle{
 		"tree": {ConstantsHash: tree.ConstantsHash, Artifacts: stringArtifacts(tree.Artifacts)},
 		"live": {ConstantsHash: live.ConstantsHash, Artifacts: stringArtifacts(live.Artifacts)},
 	}, Cases: cases}
@@ -262,4 +270,120 @@ func TestReputationPurchaseReplayRejectsTamperedResolvedInputs(t *testing.T) {
 			t.Fatalf("tampered %s resolved inputs replayed", name)
 		}
 	}
+}
+
+// makeReputationExitFixture mirrors makeCurriculumExitFixture on a tree
+// bundle: the burnout curriculum starter (10 generated beige towers) plus the
+// owned generated_beige_tower node (5) must yield exactly 15 generated and 0
+// purchased, with cash_small's grant and run_started v2's summary.
+func makeReputationExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
+	t.Helper()
+	current := reputationContentBundle(t)
+	artifacts := cloneArtifactMap(current.Artifacts)
+	curriculumBytes, err := os.ReadFile("../../balance/testdata/t0-t1/curriculum-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts["curriculum"] = curriculumBytes
+	nextHash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	next := current
+	next.ConstantsHash, next.Artifacts, next.Next = nextHash, artifacts, nil
+	keys := map[string]struct{}{}
+	for _, key := range copykeys.All() {
+		keys[key] = struct{}{}
+	}
+	gateIDs := map[string]struct{}{}
+	for _, gate := range next.Routes.Gates() {
+		gateIDs[gate.ID] = struct{}{}
+	}
+	if next.Curriculum, err = curriculum.Load(curriculumBytes, curriculum.Declarations{Economy: next.Economy, CopyKeys: keys, GateIDs: gateIDs}); err != nil {
+		t.Fatal(err)
+	}
+	if next.ReputationTree, err = reputation.LoadTree(artifacts["reputation_tree"], reputation.Declarations{Economy: next.Economy, Curriculum: next.Curriculum, CopyKeys: keys}); err != nil {
+		t.Fatal(err)
+	}
+	if !next.valid(nextHash) {
+		t.Fatal("next reputation bundle is invalid")
+	}
+	current.Next = &next
+	founderID := "01986666-6d00-7000-8000-000000000001"
+	company := replayFixtureState(t, current.Economy, now.Add(-15*time.Minute))
+	company.WireVersion, company.Tier = 18, 1
+	company.GatesCrossed["gate.t0_to_t1"] = true
+	company.MeterBands = nil
+	meterState, err := meters.NewRunState(current.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	if _, err := initializeActivePlayState(company, current.Opportunities, founderID); err != nil {
+		t.Fatal(err)
+	}
+	advanceActivePlayFixtureAttendance(t, company, current.Opportunities, current.Prestige, founderID, now)
+	company.ManualTokenRefilledAt = now
+	founder := reputationFounderState(t, current, 22, now, 6)
+	founder.ReputationSpent, founder.ReputationUnlockPPM = 6, 50_000
+	founder.ReputationNodesOwned = []string{"reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.unlock.p05"}
+	if err := current.ValidateFoundationState(founder); err != nil {
+		t.Fatal(err)
+	}
+	preState := mustEncodeState(t, company)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-6d01-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	carry := founderCarry(founder)
+	carry.FounderRevision, carry.FounderConstantsHash = 1, current.ConstantsHash
+	minigameActive := false
+	activeEvidence, err := resolveActivePlaySchedule(company, current.Opportunities, current.Prestige, founderID, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	nextSpawn, err := next.Opportunities.Spawn(founderID, company.RunSeq+1, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	branch, err := next.Curriculum.SelectBranch(company, current.Economy)
+	if err != nil || branch.Branch != "burnout" {
+		t.Fatalf("reputation exit branch=%q err=%v", branch.Branch, err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-6e00-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
+		SelectedExitType: "scripted_first", SelectedBranch: &branch.Branch, SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash,
+		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLoggedExit(company, request.CanonicalPayload, current, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	newCompany := transition.Decision.NewCompanyState
+	cash, _ := newCompany.Ledger.Balance("company.cash")
+	if newCompany.GeneratorProvisioned["generator.beige_tower"] != 15 || newCompany.GeneratorCounts["generator.beige_tower"] != 0 || cash.String() != "1e3" {
+		t.Fatalf("AC8 starters generated=%d purchased=%d cash=%s", newCompany.GeneratorProvisioned["generator.beige_tower"], newCompany.GeneratorCounts["generator.beige_tower"], cash)
+	}
+	started := transition.Decision.CompanyStartedEvents[0]
+	if started.SchemaVersion != 2 || !bytes.Contains(started.Payload, []byte(`"applied_starter_node_ids":["reputation.starter.cash_small","reputation.starter.generated_beige_tower"]`)) ||
+		!bytes.Contains(started.Payload, []byte(`"bonus_factor":"1.003e0"`)) {
+		t.Fatalf("run_started v2 payload schema=%d %s", started.SchemaVersion, started.Payload)
+	}
+	company = replayFixtureStateFromEncoded(t, current, preState)
+	result := executeTerminalFixture(t, "reputation-starters-after-burnout", current, company, preState, request, inputs, carry)
+	return crossRuntimeActiveExit{ConstantsHash: current.ConstantsHash, Artifacts: stringArtifacts(current.Artifacts),
+		NextConstantsHash: next.ConstantsHash, NextArtifacts: stringArtifacts(next.Artifacts), Case: result}
+}
+
+func replayFixtureStateFromEncoded(t *testing.T, catalogs CatalogBundle, encoded json.RawMessage) *save.State {
+	t.Helper()
+	state, err := save.RestoreState(encoded, 18, catalogs.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return state
 }
