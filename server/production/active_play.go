@@ -65,7 +65,9 @@ func initializeActivePlayState(state *save.State, catalog *activeplay.Catalog, f
 	if err != nil {
 		return nil, err
 	}
-	state.WireVersion = 18
+	if state.WireVersion < 18 {
+		state.WireVersion = 18
+	}
 	state.OpportunitySpawnSeq = 0
 	state.NextOpportunityAttendedMS = spawn.SpawnedAttendedMS
 	state.PendingOpportunity = nil
@@ -80,7 +82,7 @@ func spawnEvidence(spawn activeplay.Spawn) *activePlaySpawnEvidence {
 }
 
 func resolveActivePlaySchedule(state *save.State, catalog *activeplay.Catalog, policy *prestigecore.Policy, founderID string, now time.Time) (activePlayScheduleEvidence, error) {
-	if state == nil || catalog == nil || policy == nil || founderID == "" || state.WireVersion != 18 {
+	if state == nil || catalog == nil || policy == nil || founderID == "" || state.WireVersion < 18 {
 		return activePlayScheduleEvidence{}, ErrInvalidEngineState
 	}
 	clone := *state
@@ -111,7 +113,7 @@ func resolveActivePlaySchedule(state *save.State, catalog *activeplay.Catalog, p
 }
 
 func applyActivePlaySchedule(state *save.State, catalog *activeplay.Catalog, policy *prestigecore.Policy, founderID string, now time.Time, evidence activePlayScheduleEvidence) ([]save.EventWrite, error) {
-	if state == nil || catalog == nil || policy == nil || founderID == "" || state.WireVersion != 18 ||
+	if state == nil || catalog == nil || policy == nil || founderID == "" || state.WireVersion < 18 ||
 		evidence.BeforeSequence != state.OpportunitySpawnSeq || evidence.BeforeNextOpportunityMS != state.NextOpportunityAttendedMS {
 		return nil, ErrInvalidReplayInputs
 	}

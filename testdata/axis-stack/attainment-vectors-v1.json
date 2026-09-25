@@ -1,0 +1,201 @@
+{
+  "economy": "balance/testdata/axis-stack/economy-v5-fixture.json",
+  "schema_version": 1,
+  "vectors": [
+    {
+      "name": "veteran_reattains_first_purchase",
+      "attained_before": null,
+      "earned_now": null,
+      "counters": {
+        "generators_purchased_total": 1,
+        "tier": 0
+      },
+      "generators": null,
+      "event_kinds": [
+        "generator_purchased"
+      ],
+      "cash_debit": null,
+      "attained_after": [
+        "achievement.generators_purchased_1"
+      ],
+      "score_after": 2,
+      "reattained_order": [
+        "achievement.generators_purchased_1"
+      ]
+    },
+    {
+      "name": "newly_earned_attains_without_reattained_event",
+      "attained_before": null,
+      "earned_now": [
+        "achievement.generators_purchased_1"
+      ],
+      "counters": {
+        "generators_purchased_total": 1,
+        "tier": 0
+      },
+      "generators": null,
+      "event_kinds": [
+        "generator_purchased"
+      ],
+      "cash_debit": null,
+      "attained_after": [
+        "achievement.generators_purchased_1"
+      ],
+      "score_after": 2,
+      "reattained_order": []
+    },
+    {
+      "name": "latched_id_grants_once",
+      "attained_before": [
+        "achievement.generators_purchased_1"
+      ],
+      "earned_now": null,
+      "counters": {
+        "generators_purchased_total": 30,
+        "tier": 0
+      },
+      "generators": null,
+      "event_kinds": [
+        "generator_purchased"
+      ],
+      "cash_debit": null,
+      "attained_after": [
+        "achievement.generators_purchased_1",
+        "achievement.generators_purchased_25"
+      ],
+      "score_after": 6,
+      "reattained_order": [
+        "achievement.generators_purchased_25"
+      ]
+    },
+    {
+      "name": "provenance_without_event_does_not_attain",
+      "attained_before": null,
+      "earned_now": null,
+      "counters": {
+        "generators_purchased_total": 1,
+        "tier": 0
+      },
+      "generators": null,
+      "event_kinds": null,
+      "cash_debit": null,
+      "attained_after": [
+        "achievement.generators_purchased_1"
+      ],
+      "score_after": 2,
+      "reattained_order": [
+        "achievement.generators_purchased_1"
+      ]
+    },
+    {
+      "name": "burn_without_debit_does_not_attain",
+      "attained_before": null,
+      "earned_now": null,
+      "counters": {
+        "generators_purchased_total": 0,
+        "tier": 3
+      },
+      "generators": null,
+      "event_kinds": [
+        "gate_crossed"
+      ],
+      "cash_debit": null,
+      "attained_after": [
+        "achievement.first_gate"
+      ],
+      "score_after": 2,
+      "reattained_order": [
+        "achievement.first_gate"
+      ]
+    },
+    {
+      "name": "burn_with_debit_attains",
+      "attained_before": null,
+      "earned_now": null,
+      "counters": {
+        "generators_purchased_total": 0,
+        "tier": 3
+      },
+      "generators": null,
+      "event_kinds": [
+        "gate_crossed"
+      ],
+      "cash_debit": "1e9",
+      "attained_after": [
+        "achievement.first_gate",
+        "achievement.gate_burn_t3"
+      ],
+      "score_after": 10,
+      "reattained_order": [
+        "achievement.first_gate",
+        "achievement.gate_burn_t3"
+      ]
+    },
+    {
+      "name": "possession_attains_on_count",
+      "attained_before": null,
+      "earned_now": null,
+      "counters": {
+        "generators_purchased_total": 0,
+        "tier": 0
+      },
+      "generators": {
+        "generator.beige_tower": 100
+      },
+      "event_kinds": null,
+      "cash_debit": null,
+      "attained_after": [
+        "achievement.generators_owned_100"
+      ],
+      "score_after": 4,
+      "reattained_order": [
+        "achievement.generators_owned_100"
+      ]
+    },
+    {
+      "name": "career_definitions_never_attain",
+      "attained_before": null,
+      "earned_now": null,
+      "counters": {
+        "age_ms": 1000000000,
+        "generators_purchased_total": 0,
+        "tier": 0
+      },
+      "generators": null,
+      "event_kinds": [
+        "founder_advanced",
+        "run_ended"
+      ],
+      "cash_debit": null,
+      "attained_after": [],
+      "score_after": 0,
+      "reattained_order": []
+    },
+    {
+      "name": "byte_order_of_several",
+      "attained_before": null,
+      "earned_now": null,
+      "counters": {
+        "generators_purchased_total": 25,
+        "tier": 1
+      },
+      "generators": null,
+      "event_kinds": [
+        "gate_crossed",
+        "generator_purchased"
+      ],
+      "cash_debit": null,
+      "attained_after": [
+        "achievement.first_gate",
+        "achievement.generators_purchased_1",
+        "achievement.generators_purchased_25"
+      ],
+      "score_after": 8,
+      "reattained_order": [
+        "achievement.first_gate",
+        "achievement.generators_purchased_1",
+        "achievement.generators_purchased_25"
+      ]
+    }
+  ]
+}

@@ -489,7 +489,7 @@ func (s *Service) Handle(
 		}
 		build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
 			DeclinedExitOfferCount: declinedOffers, RouteContextVersion: bundle.Routes.ContextVersion()}
-		if state.WireVersion == 18 {
+		if state.WireVersion >= 18 {
 			activeEvidence, activeErr := resolveActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, revision.OwnerID, now)
 			if activeErr != nil {
 				return save.IntentDecision{}, nil, activeErr
@@ -1121,6 +1121,15 @@ func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *
 	eligible, err := routes.EvaluatePredicate(upgrade.Requires, context)
 	if err != nil {
 		return save.IntentDecision{}, err
+	}
+	if eligible && upgrade.AxisMinimum > 0 {
+		// CV1: the upgrade-only axis_at_least reads the same clamped axis as
+		// CV3; a shortfall is a requires failure (log R3 / DG-A).
+		x, _, axisErr := AxisInput(state, catalog)
+		if axisErr != nil {
+			return save.IntentDecision{}, axisErr
+		}
+		eligible = x >= upgrade.AxisMinimum
 	}
 	if !eligible {
 		return rejectedDecision(request, revision.Number, "not_eligible", "requires")
@@ -1872,6 +1881,10 @@ func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 		snapshot["next_opportunity_attended_ms"] = state.NextOpportunityAttendedMS
 		snapshot["pending_opportunity"] = clonePendingOpportunityRow(state.PendingOpportunity)
 		snapshot["active_buffs"] = cloneActiveBuffRows(state.ActiveBuffs)
+	}
+	if state.Ledger.Scope() == economy.ScopeCompany && save.VersionForState(state) >= 19 {
+		snapshot["achievements_attained_run"] = sortedBoolKeys(state.AchievementsAttainedRun)
+		snapshot["attainment_score_run"] = state.AttainmentScoreRun
 	}
 	return snapshot
 }

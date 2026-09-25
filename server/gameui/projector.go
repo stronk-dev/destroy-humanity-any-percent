@@ -414,6 +414,13 @@ func upgradeRows(catalog *economy.Catalog, routeCatalog *routes.Catalog, state *
 		if err != nil {
 			return nil, err
 		}
+		if eligible && upgrade.AxisMinimum > 0 {
+			x, _, axisErr := production.AxisInput(state, catalog)
+			if axisErr != nil {
+				return nil, axisErr
+			}
+			eligible = x >= upgrade.AxisMinimum
+		}
 		balance, exists := state.Ledger.Balance(upgrade.Cost.ResourceID)
 		if !exists {
 			return nil, ErrInvalidProjection

@@ -1196,3 +1196,67 @@ func TestFounderV22ReputationTreeRoundTripAndInvariants(t *testing.T) {
 		t.Fatalf("v21 load accepted a non-zero reputation_unlock_ppm: %v", err)
 	}
 }
+
+// Clout v1 CV4/AC7: Company v19 carries the run-local attainment set.
+func TestCompanyV19AttainmentRoundTripAndRejections(t *testing.T) {
+	v19 := func() *State {
+		state := testState(t)
+		state.WireVersion = 19
+		state.MeterValues = map[string]int{}
+		state.MeterDecayRemainders = map[string]int64{}
+		state.MeterInputRemainders = map[string]int64{}
+		state.AchievementsEarnedRun = map[string]bool{}
+		state.AchievementsEarnedLifetime = map[string]bool{}
+		state.ActiveBuffs = []ActiveBuff{}
+		state.AchievementsAttainedRun = map[string]bool{"achievement.first_gate": true, "achievement.generators_purchased_1": true}
+		state.AttainmentScoreRun = 4
+		return state
+	}
+	encoded, err := EncodeState(v19())
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, 19, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if VersionForState(restored) != 19 || len(restored.AchievementsAttainedRun) != 2 || restored.AttainmentScoreRun != 4 {
+		t.Fatalf("v19=%+v", restored)
+	}
+	var object map[string]json.RawMessage
+	_ = json.Unmarshal(encoded, &object)
+	if string(object["achievements_attained_run"]) != `["achievement.first_gate","achievement.generators_purchased_1"]` || string(object["attainment_score_run"]) != "4" {
+		t.Fatalf("v19 wire = %s / %s", object["achievements_attained_run"], object["attainment_score_run"])
+	}
+	for _, field := range []string{"achievements_attained_run", "attainment_score_run"} {
+		clone := map[string]json.RawMessage{}
+		for key, value := range object {
+			clone[key] = value
+		}
+		delete(clone, field)
+		missing, _ := json.Marshal(clone)
+		if _, err := RestoreState(missing, 19, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+			t.Fatalf("v19 without %s accepted: %v", field, err)
+		}
+	}
+	// A v18 state carrying the field is rejected in both directions.
+	early := v19()
+	early.WireVersion = 18
+	if _, err := EncodeState(early); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v18 encode with attainment accepted: %v", err)
+	}
+	if _, err := RestoreState(encoded, 18, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v18 restore of v19 bytes accepted: %v", err)
+	}
+	// The Founder scope never carries attainment.
+	founder := v19()
+	founder.WireVersion = 19
+	if _, err := RestoreState(encoded, 19, stateCatalog(t), economy.ScopeFounder, time.Time{}); err == nil {
+		t.Fatal("Founder v19 restore of Company attainment bytes accepted")
+	}
+	negative := v19()
+	negative.AttainmentScoreRun = -1
+	if _, err := EncodeState(negative); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("negative attainment score accepted: %v", err)
+	}
+}

@@ -66,6 +66,11 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		return nil
 	}
 	founderFloor, companyFloor := bundle.versionFloors()
+	if state.Ledger.Scope() == economy.ScopeCompany && companyFloor >= 19 {
+		if err := validateAttainmentState(bundle, state); err != nil {
+			return err
+		}
+	}
 	wantVersion := companyFloor
 	if state.Ledger.Scope() == economy.ScopeFounder {
 		wantVersion = founderFloor
@@ -373,6 +378,12 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	newCompany.MeterInputRemainders = newMeters.InputRemainders
 	newCompany.AchievementsEarnedRun = map[string]bool{}
 	newCompany.AchievementScoreRun = 0
+	// Clout v1 CV4: attainment is new-run bound and discarded at Exit; it
+	// exists only when the next run's pinned economy declares the axis stack.
+	newCompany.AchievementsAttainedRun, newCompany.AttainmentScoreRun = nil, 0
+	if AxisStackDeclared(next.Economy) {
+		newCompany.AchievementsAttainedRun = map[string]bool{}
+	}
 	if err := next.ValidateFoundationState(founder); err != nil {
 		return err
 	}

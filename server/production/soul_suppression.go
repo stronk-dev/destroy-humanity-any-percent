@@ -83,7 +83,7 @@ func ApplySuppressedLogged(state *save.State, canonicalPayload []byte, catalogs 
 	if state.CompactMember != (resolved.Accrual.CommonsWeightPPM != nil) {
 		return SuppressedTransition{}, fmt.Errorf("%w: suppressed commons weight", ErrInvalidReplayInputs)
 	}
-	if (state.WireVersion == 18) != (resolved.ActivePlay != nil) {
+	if (state.WireVersion >= 18) != (resolved.ActivePlay != nil) {
 		return SuppressedTransition{}, fmt.Errorf("%w: suppressed active-play evidence", ErrInvalidReplayInputs)
 	}
 	before, err := cloneReplayState(state, catalogs.Economy)
@@ -140,6 +140,8 @@ func ApplySuppressedLogged(state *save.State, canonicalPayload []byte, catalogs 
 	state.MeterInputRemainders = before.MeterInputRemainders
 	state.AchievementsEarnedRun = before.AchievementsEarnedRun
 	state.AchievementScoreRun = before.AchievementScoreRun
+	state.AchievementsAttainedRun = before.AchievementsAttainedRun
+	state.AttainmentScoreRun = before.AttainmentScoreRun
 	state.LifetimeValue = before.LifetimeValue
 	refillManualTokens(state, catalogs.Economy.ManualPolicy(), effectiveNow)
 	afterOutputs, err := suppressionOutputSnapshot(state)
@@ -204,6 +206,8 @@ func suppressionOutputSnapshot(state *save.State) ([]byte, error) {
 		"meter_input_remainders":      state.MeterInputRemainders,
 		"achievements_earned_run":     state.AchievementsEarnedRun,
 		"achievement_score_run":       state.AchievementScoreRun,
+		"achievements_attained_run":   state.AchievementsAttainedRun,
+		"attainment_score_run":        state.AttainmentScoreRun,
 		"lifetime_value":              state.LifetimeValue,
 	})
 }

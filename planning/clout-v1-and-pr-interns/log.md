@@ -70,3 +70,88 @@ with Tier 2 content or is dropped).
   - `make formulas-check` fails, as expected, on the new slot; the regeneration follows in its own
     commit (AC10).
 - **Kernel:** 0.3.125 → 0.3.126.
+
+## 2026-09-25 — P2 + P3: axis formula, Company v19 attainment, re-attainment event (Claude)
+
+**Implemented by:** Claude. Awaiting Codex's designated review.
+
+**P3: CV2, CV4, CV5**
+- **Save:** Company save v19 (`LatestCompanyVersion` 18 → 19) adds `achievements_attained_run` and
+  `attainment_score_run`.
+  - Both are required at v19 and rejected before v19 and in Founder scope.
+  - The Go codec has a new `companyStateV19` arm; TS restore/encode are mirrored.
+- **Derivation check:** `production.validateAttainmentState` / TS `validateReplayAttainment` require
+  that every attained ID is run-scoped, that the score equals their summed grants, and that run
+  earnings are a subset of attainment. It runs whenever the pinned floor is v19.
+- **Version floor:** the Company floor becomes 19 exactly when the pinned economy declares
+  `axis_stack`, and such a bundle must also pin `opportunities` (Go `bundle.valid`, TS loader).
+- **Activation:** the new-run assembly in `settleAndActivateFoundations` resets attainment to `{}`
+  under an axis economy, and to nil otherwise, so nothing carries across an Exit.
+  `initializeActivePlayState` no longer lowers a v19 Company to 18.
+- **v18 checks now inclusive:** every Go/TS `WireVersion == 18` meaning "active play present" is
+  now `>= 18`.
+- **Second hook pass:** `attainRun`, which never reads Founder state, and TS `newlyAttained` +
+  `attainRun`. It uses the same pre-achievement observation and the same proof batch as the first
+  pass.
+- **Events:** `achievement_reattained.v1` is emitted for IDs attained without being newly earned. It
+  is registered in the Go and TS registries, with migration **00081** (the next free number) and
+  the contiguity pin moved to 81.
+- **Snapshots:** the receipt snapshot (`wireSnapshot`, both runtimes) and Soul-suppression restore
+  carry the v19 fields.
+
+**P2: CV3**
+- `AxisInput` gives x = min(input, cap) and `saturated`, from Company state only.
+- The axis contribution is `countPPMFactor(x, factor_ppm)`, in slot `axis_stack`, target `all`.
+- `buy_upgrade` enforces `axis_at_least` against the same x (`not_eligible/requires`, R3), and the
+  Game UI projector's upgrade eligibility agrees.
+
+**Evidence (cold)**
+- **AC5:** `testdata/axis-stack/attainment-vectors-v1.json` (9 Go-authored vectors) is replayed
+  10/10 by TS `attainment-vectors.test.ts`.
+- **AC2:** `testdata/axis-stack/formula-vectors-v1.json` (8 vectors) is replayed 9/9 by TS
+  `axis-formula-vectors.test.ts`. x=8 gives ×1.2 and the cap gives ×2.1 / ×1.88, matching RFC
+  CV8.
+- **AC3:** `TestCarryRuleIsStructural`. A fresh and a veteran Founder on byte-identical Company
+  states produce identical attainment and axis product under the attainment input. The veteran's
+  events are `achievement_reattained.v1` ×2 and the fresh Founder's are `achievement_earned.v1` ×2.
+  Under `achievement_score_run` the veteran's product diverges, which is the discriminating case.
+  Receipts are not byte-identical, because the shipped `achievements_earned_run` field
+  legitimately differs by Founder. The RFC's "identical receipts" wording is recorded as
+  DESIGN-GAP DG-B for the author.
+- **AC7:** `TestCompanyV19AttainmentRoundTripAndRejections` (save) covers the wire, missing fields,
+  v18 carrying the fields in both directions, the Founder scope and a negative score.
+  `TestAttainmentDerivationIsValidated` covers a tampered score, a career ID, an unknown ID,
+  earned-not-attained and a nil set. `TestAxisStackOwnsCompanyV19Activation` covers new-run
+  activation in the real Exit order.
+  - The migration corpus (`testdata/save-migrations.json`) has no v15+ arm, the same gap Reputation
+    logged as RT-DG-B, so v19 is witnessed by these unit tests.
+  - No existing run replays differently: every pre-axis bundle keeps its semantics, and all
+    existing suites pass unchanged.
+- **AC8:** `TestAxisStackIntegrationReattainsAndBuysPRIntern` runs on Postgres, through
+  `Service.Handle` → store → Postgres, for a veteran Founder:
+  - the purchase re-attains `generators_purchased_1` (one `achievement_reattained.v1` row with the
+    exact payload, no earned row for it);
+  - the receipt shows `attainment_score_run` 8;
+  - `pr_intern_2` is rejected `not_eligible/requires` at x=8 < 10, and `pr_intern_1` applies;
+  - the constraint rejects an unregistered kind and schema version 2.
+- **Severing:**
+  - T1 (TS includes career definitions) → 1/10 vectors fail.
+  - G1 (Go emits re-attained for newly earned IDs) → the vector golden file fails.
+  - G2 (Go drops the earned⊆attained check) → the `earned_not_attained` case fails.
+  - AC3 mutant (attain only newly earned IDs, which is equivalent to reading Founder lifetime) →
+    `TestCarryRuleIsStructural` fails.
+  - AC8 mutant (purchase ignores `axis_at_least`) → the integration test fails.
+  - AC2 additive-stacking mutant → 4/9 TS vectors fail.
+  - **AC2 float-division mutant: SURVIVES, and is an equivalent mutant.** A search over x ∈ {3, 7,
+    11, 13, 29, 37, 43, 44, 97, 1,000,003, 123,456,789} × 127 `factor_ppm` values found no
+    difference after the mandated canonical quantization. AC2's named float mutant is therefore not
+    observable in this domain; this is recorded as DESIGN-GAP DG-C for the RFC author. It is not
+    claimed as a check.
+- **Suites:**
+  - `make test-go GO_PACKAGES='./save ./production ./replaycatalog ./economy ./achievements
+    ./gameui ./multiplier ./routes ./fiscal ./reputation ./gameserver ./account ./releasepackage'
+    GO_TEST_FLAGS=-count=1` passes.
+  - Docker Postgres `./save ./production ./gameui ./gameserver` passes.
+  - Client `vitest run` passes 6845.
+  - `validate-migrations` passes.
+- **Kernel:** 0.3.126 → 0.3.127.

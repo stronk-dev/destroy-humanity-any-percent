@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "name": "x_zero_is_neutral",
+      "input": "achievement_attainment_run",
+      "attainment_score_run": 0,
+      "achievement_score_run": 0,
+      "owned": [
+        "upgrade.pr_intern_1"
+      ],
+      "extra_intern_ppm": 0,
+      "x": 0,
+      "saturated": false,
+      "contributions": [
+        "upgrade.pr_intern_1.axis=1e0"
+      ],
+      "product": "1e0"
+    },
+    {
+      "name": "x_at_threshold",
+      "input": "achievement_attainment_run",
+      "attainment_score_run": 6,
+      "achievement_score_run": 0,
+      "owned": [
+        "upgrade.pr_intern_1"
+      ],
+      "extra_intern_ppm": 0,
+      "x": 6,
+      "saturated": false,
+      "contributions": [
+        "upgrade.pr_intern_1.axis=1.15e0"
+      ],
+      "product": "1.15e0"
+    },
+    {
+      "name": "x_eight_one_intern",
+      "input": "achievement_attainment_run",
+      "attainment_score_run": 8,
+      "achievement_score_run": 0,
+      "owned": [
+        "upgrade.pr_intern_1"
+      ],
+      "extra_intern_ppm": 0,
+      "x": 8,
+      "saturated": false,
+      "contributions": [
+        "upgrade.pr_intern_1.axis=1.2e0"
+      ],
+      "product": "1.2e0"
+    },
+    {
+      "name": "x_at_cap_two_interns",
+      "input": "achievement_attainment_run",
+      "attainment_score_run": 44,
+      "achievement_score_run": 0,
+      "owned": [
+        "upgrade.pr_intern_1",
+        "upgrade.pr_intern_2"
+      ],
+      "extra_intern_ppm": 0,
+      "x": 44,
+      "saturated": false,
+      "contributions": [
+        "upgrade.pr_intern_1.axis=2.1e0",
+        "upgrade.pr_intern_2.axis=1.88e0"
+      ],
+      "product": "3.948e0"
+    },
+    {
+      "name": "x_out_of_bounds_clamps",
+      "input": "achievement_attainment_run",
+      "attainment_score_run": 50,
+      "achievement_score_run": 0,
+      "owned": [
+        "upgrade.pr_intern_1",
+        "upgrade.pr_intern_2"
+      ],
+      "extra_intern_ppm": 0,
+      "x": 44,
+      "saturated": true,
+      "contributions": [
+        "upgrade.pr_intern_1.axis=2.1e0",
+        "upgrade.pr_intern_2.axis=1.88e0"
+      ],
+      "product": "3.948e0"
+    },
+    {
+      "name": "three_interns_multiply_in_byte_order",
+      "input": "achievement_attainment_run",
+      "attainment_score_run": 12,
+      "achievement_score_run": 0,
+      "owned": [
+        "upgrade.pr_intern_1",
+        "upgrade.pr_intern_2",
+        "upgrade.pr_intern_9"
+      ],
+      "extra_intern_ppm": 15000,
+      "x": 12,
+      "saturated": false,
+      "contributions": [
+        "upgrade.pr_intern_1.axis=1.3e0",
+        "upgrade.pr_intern_2.axis=1.24e0",
+        "upgrade.pr_intern_9.axis=1.18e0"
+      ],
+      "product": "1.90216e0"
+    },
+    {
+      "name": "score_run_contrast_arm_reads_score",
+      "input": "achievement_score_run",
+      "attainment_score_run": 0,
+      "achievement_score_run": 10,
+      "owned": [
+        "upgrade.pr_intern_1",
+        "upgrade.pr_intern_2"
+      ],
+      "extra_intern_ppm": 0,
+      "x": 10,
+      "saturated": false,
+      "contributions": [
+        "upgrade.pr_intern_1.axis=1.25e0",
+        "upgrade.pr_intern_2.axis=1.2e0"
+      ],
+      "product": "1.5e0"
+    },
+    {
+      "name": "unowned_interns_contribute_nothing",
+      "input": "achievement_attainment_run",
+      "attainment_score_run": 12,
+      "achievement_score_run": 0,
+      "owned": null,
+      "extra_intern_ppm": 0,
+      "x": 12,
+      "saturated": false,
+      "contributions": [],
+      "product": "1e0"
+    }
+  ]
+}

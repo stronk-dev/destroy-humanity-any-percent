@@ -244,7 +244,8 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withReputation && (!withMinigameAPI || len(bundle.Artifacts["reputation_tree"]) == 0) ||
 		withReputation != ReputationDeclared(bundle.Economy) ||
 		withPetSpecies && (!withReputation || bundle.Pets == nil || len(bundle.Artifacts["pet_species"]) == 0) ||
-		withCosmetics && (!withPetSpecies || len(bundle.Artifacts["cosmetics"]) == 0) {
+		withCosmetics && (!withPetSpecies || len(bundle.Artifacts["cosmetics"]) == 0) ||
+		AxisStackDeclared(bundle.Economy) && !withOpportunities {
 		return false
 	}
 	if withOpportunities && (bundle.Opportunities.Schedule.MinimumIntervalMS > decimal.MaxExactInteger-bundle.Opportunities.Schedule.LifetimeMS ||
@@ -289,6 +290,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	}
 	if bundle.Opportunities != nil {
 		company = 18
+	}
+	if AxisStackDeclared(bundle.Economy) {
+		company = 19
 	}
 	return founder, company
 }
@@ -508,7 +512,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if catalogs.foundationsActive() && wire.Version >= 4 && founder == nil {
 		return LoggedTransition{}, fmt.Errorf("%w: active foundation founder carry", ErrInvalidReplayInputs)
 	}
-	if (state.WireVersion == 18) != (activeEvidence != nil) || state.WireVersion == 18 && wire.Version < 5 {
+	if (state.WireVersion >= 18) != (activeEvidence != nil) || state.WireVersion >= 18 && wire.Version < 5 {
 		return LoggedTransition{}, fmt.Errorf("%w: active-play resolved presence", ErrInvalidReplayInputs)
 	}
 	externalContributions, err := contributionsFromReplay(accrual)
@@ -541,7 +545,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		}
 	}
 	contributionInputs := append([]multiplier.Contribution(nil), externalContributions...)
-	if state.WireVersion == 18 {
+	if state.WireVersion >= 18 {
 		activeContributions, activeErr := activePlayContributions(state, catalogs.Opportunities, activeEvidence.AttendedNowMS)
 		if activeErr != nil {
 			return LoggedTransition{}, activeErr
@@ -644,7 +648,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if (catalogs.MinigameAPI != nil) != (resolved.MinigameSessionActive != nil) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal minigame activity evidence", ErrInvalidReplayInputs)
 	}
-	if (company.WireVersion == 18) != (resolved.ActivePlay != nil) || company.WireVersion == 18 && wire.Version < 5 ||
+	if (company.WireVersion >= 18) != (resolved.ActivePlay != nil) || company.WireVersion >= 18 && wire.Version < 5 ||
 		(next.Opportunities != nil) != (resolved.NextActivePlay != nil) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal active-play evidence", ErrInvalidReplayInputs)
 	}
@@ -1634,6 +1638,16 @@ func decodeReplayStrict(data []byte, target any) error {
 // ReputationDeclared reports whether the economy declares the Reputation
 // tree's Founder-bonus source. R2 pairs the declaration row and the artifact:
 // either without the other rejects the bundle.
+// AxisStackDeclared reports whether the pinned economy carries the Clout v1
+// axis stack (economy schema v5, CV1), which activates Company v19.
+func AxisStackDeclared(catalog *economy.Catalog) bool {
+	if catalog == nil {
+		return false
+	}
+	_, declared := catalog.AxisStack()
+	return declared
+}
+
 func ReputationDeclared(catalog *economy.Catalog) bool {
 	if catalog == nil {
 		return false

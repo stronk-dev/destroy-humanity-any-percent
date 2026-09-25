@@ -2,7 +2,7 @@ import Decimal from "break_infinity.js";
 
 import { loadAchievementCatalog, type AchievementCatalog, type AchievementRegistry } from "./achievements/catalog";
 import { activePlayBuffId, activePlayLuckyRequested, activePlayOpportunityId, loadActivePlayCatalog, selectActivePlayEffect, type ActivePlayCatalog, type ActivePlayEffect } from "./active-play";
-import { achievementScore, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
+import { achievementScore, newlyAttained, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
 import { applicationCopyCatalog, COPY_KEYS } from "./copy";
 import { parseCurriculumCatalog, type CurriculumBranch, type CurriculumCatalog, type CurriculumStarter } from "./curriculum";
@@ -52,7 +52,7 @@ export interface ReplayInvariant { readonly kind: "afford_fallback" | "residual_
 export interface ReplayPendingOpportunity { opportunityId: string; spawnedAttendedMs: number; expiresAttendedMs: number; effectRowId: string; selectedGeneratorId: string | null }
 export interface ReplayActiveBuff { buffInstanceId: string; effectRowId: string; selectedTarget: string | null; activatedAttendedMs: number; expiresAttendedMs: number }
 export interface ReplayState {
-  wireVersion: 14 | 16 | 17 | 18;
+  wireVersion: 14 | 16 | 17 | 18 | 19;
   balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number;
   upgradesOwned: Set<string>; generatorsProvisioned: Record<string, number>; provisionRemaindersPpm: Record<string, number>; stockRateRemainderPpm: number;
   evaluatedThroughMs: number; computeCreditMs: number; computeBurstRemainingMs: number;
@@ -67,6 +67,8 @@ export interface ReplayState {
   consumedStockUnits: number; guildTitheCarryPpm: number; guildBoundaryGuildId: string; guildBoundarySeq: number; guildConsumedWindow: number;
   meterValues: Record<string, number>; meterDecayRemainders: Record<string, number>; meterInputRemainders: Record<string, number>;
   achievementsEarnedRun: Set<string>; achievementScoreRun: number;
+  // Company v19 (Clout v1 CV2): the run-local attainment set; null before v19.
+  achievementsAttainedRun: Set<string> | null; attainmentScoreRun: number;
 }
 export interface LoggedTransition { readonly state: ReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown; readonly events: readonly ReplayEvent[]; readonly invariants: readonly ReplayInvariant[] }
 export interface LoggedExitTransition {
@@ -203,6 +205,8 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const typerTenant = minigameAPI?.tenants.some((row) => row.minigameId === "typer" && row.engineRef === "typer" && row.engineVersion === "1.0.0") ?? false;
   if (typerDefinition !== (typer !== undefined) || minigameAPI !== undefined && typerTenant !== (typer !== undefined)) throw new SyntaxError("Typer requires its definition, artifact, and minigame API tenant together");
   const opportunities = artifacts.opportunities === undefined ? undefined : loadActivePlayCatalog(parseJSON(artifacts.opportunities), economy);
+  // Clout v1 CV4: Company v19 extends the v18 active-play wire.
+  if (economy.axisStack !== null && opportunities === undefined) throw new SyntaxError("axis stack requires the pinned opportunities artifact");
   if (opportunities && opportunities.schedule.minimumIntervalMs + opportunities.schedule.lifetimeMs <= prestige.catchupCeilingMs) throw new SyntaxError("opportunity schedule exceeds one pending transition per online horizon");
   const relevance = artifacts.relevance === undefined ? undefined : parseRelevancePolicy(artifacts.relevance, {
     generators: economy.generatorClasses.map((row) => ({ id: row.id, tier: row.tier, category: row.category })),
@@ -244,6 +248,7 @@ function parseMinigameAPIPolicy(source: unknown): MinigameAPIPolicy {
 
 const REPLAY_EVENT_KINDS = Object.freeze([
 	"achievement_earned.v1",
+	"achievement_reattained.v1",
   "compact_cascade_started", "compact_health_band_changed", "compact_left", "compact_recovered", "compact_recruitment_offered", "compact_sampled", "compact_signed", "compact_tithe_raised", "compensation",
 	"compute_credit_spent", "doctrine_picked",
   "exit_offer_declined", "exit_offer_expired", "exit_offer_resolved", "exit_offer_spawned", "faction_stock_saturated", "founder_advanced", "gate_crossed", "generator_purchased", "guild_activity_evaluated", "guild_tithe_accrued",
@@ -256,7 +261,7 @@ const REPLAY_EVENT_KINDS = Object.freeze([
 	"cosmetic_acquired.v1", "cosmetic_equipped.v1", "cosmetic_unequipped.v1",
 ] as const);
 
-function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
+export function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
   return {
     copyKeys: new Set(COPY_KEYS), generatorIds: new Set(catalog.generatorClasses.map((value) => value.id)), eventKinds: new Set(REPLAY_EVENT_KINDS), resourceIds: new Set(catalog.resources.map((value) => value.id)),
     runCounters: new Set(["generators_purchased_total", "tier"]), careerCounters: new Set(["age_ms", "notoriety"]),
@@ -379,6 +384,7 @@ const saveV14Keys = ["balances", "generators", "generators_purchased_total", "up
 const foundationSaveKeys = ["meter_values", "meter_decay_remainders", "meter_input_remainders", "achievements_earned_run", "achievement_score_run", "achievements_earned_lifetime", "achievement_score_lifetime"] as const;
 const companyDoctrineSaveKeys = ["compute_burst_remaining_ms"] as const;
 const companyActivePlaySaveKeys = ["opportunity_spawn_seq", "next_opportunity_attended_ms", "pending_opportunity", "active_buffs"] as const;
+const companyAttainmentSaveKeys = ["achievements_attained_run", "attainment_score_run"] as const;
 const founderMinigameSaveKeys = ["minigame_ratings", "minigame_offline_quality"] as const;
 const founderPetSaveKeys = ["pets"] as const;
 const founderFiscalSaveKeys = ["fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks"] as const;
@@ -391,11 +397,11 @@ const founderCosmeticSaveKeys = ["cosmetics"] as const;
 export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog, foundationCatalogs?: { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly opportunities?: ActivePlayCatalog }): ReplayState {
   const requestedVersion = version;
   let foundationRaw: Record<string, unknown> | null = null;
-  if (version === 16 || version === 17 || version === 18) {
-    const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys, ...(version >= 17 ? companyDoctrineSaveKeys : []), ...(version >= 18 ? companyActivePlaySaveKeys : [])];
+  if (version === 16 || version === 17 || version === 18 || version === 19) {
+    const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys, ...(version >= 17 ? companyDoctrineSaveKeys : []), ...(version >= 18 ? companyActivePlaySaveKeys : []), ...(version >= 19 ? companyAttainmentSaveKeys : [])];
     foundationRaw = exactObject(source, activeKeys, `save v${version}`);
     source = { ...foundationRaw, meter_bands: {} };
-    for (const key of [...foundationSaveKeys, ...companyDoctrineSaveKeys, ...companyActivePlaySaveKeys]) delete (source as Record<string, unknown>)[key];
+    for (const key of [...foundationSaveKeys, ...companyDoctrineSaveKeys, ...companyActivePlaySaveKeys, ...companyAttainmentSaveKeys]) delete (source as Record<string, unknown>)[key];
     version = 14;
   }
   if (version === 12) {
@@ -438,14 +444,14 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
   let offerState: ReplayState["offerState"] = null;
   if (raw.offer_state !== null) { const value = exactObject(raw.offer_state, ["offer_id", "exit_type", "terms_json", "spawned_at_ms", "expires_at_ms"], "offer state"); if (typeof value.offer_id !== "string" || !uuidV7.test(value.offer_id) || typeof value.exit_type !== "string") throw new SyntaxError("invalid offer"); offerState = { offerId: value.offer_id, exitType: value.exit_type, terms: value.terms_json, spawnedAtMs: safeInteger(value.spawned_at_ms, 1, MAX_EXACT_INTEGER), expiresAtMs: safeInteger(value.expires_at_ms, 1, MAX_EXACT_INTEGER) }; }
   const factionId = nullableMechanical(raw.faction_id); const incorporatedAtMs = raw.incorporated_at_ms === null ? null : safeInteger(raw.incorporated_at_ms, 1, MAX_EXACT_INTEGER);
-  const state: ReplayState = { wireVersion: requestedVersion === 18 ? 18 : requestedVersion === 17 ? 17 : requestedVersion === 16 ? 16 : 14, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm, stockRateRemainderPpm: safeInteger(raw.stock_rate_remainder_ppm, 0, 999_999), evaluatedThroughMs, computeCreditMs: safeInteger(raw.compute_credit_ms, 0, MAX_EXACT_INTEGER), computeBurstRemainingMs: 0, opportunitySpawnSeq: 0, nextOpportunityAttendedMs: 0, pendingOpportunity: null, activeBuffs: [], manualTokenMilli: safeInteger(raw.manual_token_milli, 0, MAX_EXACT_INTEGER), manualTokenRefilledAtMs,
+  const state: ReplayState = { wireVersion: requestedVersion === 19 ? 19 : requestedVersion === 18 ? 18 : requestedVersion === 17 ? 17 : requestedVersion === 16 ? 16 : 14, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm, stockRateRemainderPpm: safeInteger(raw.stock_rate_remainder_ppm, 0, 999_999), evaluatedThroughMs, computeCreditMs: safeInteger(raw.compute_credit_ms, 0, MAX_EXACT_INTEGER), computeBurstRemainingMs: 0, opportunitySpawnSeq: 0, nextOpportunityAttendedMs: 0, pendingOpportunity: null, activeBuffs: [], manualTokenMilli: safeInteger(raw.manual_token_milli, 0, MAX_EXACT_INTEGER), manualTokenRefilledAtMs,
     gatesCrossed: booleanRecord(raw.gates_crossed), runSeq: safeInteger(raw.run_seq, 1, MAX_EXACT_INTEGER), doctrinesByTransition: mechanicalRecord(raw.doctrines_by_transition), structureId: nullableMechanical(raw.structure_id, false),
     ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds), meterBands: integerRecord(raw.meter_bands, 0, 100, "meter_bands"), regionTraits: mechanicalSet(raw.region_traits), routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked),
     compactMember: boolean(raw.compact_member), compactTithePpm: safeInteger(raw.compact_tithe_ppm, 0, 1_000_000), compactSolidarityPpm: safeInteger(raw.compact_solidarity_ppm, 0, 1_000_000), compactSamples,
     tier: safeInteger(raw.tier, 0, 9), lifetimeValue: canonical(raw.lifetime_value), offerState, runStartedAtMs: safeInteger(raw.run_started_at_ms, 0, MAX_EXACT_INTEGER), runPreTimer: boolean(raw.run_pre_timer), offlineSpans, collapsedOfflineMs: safeInteger(raw.collapsed_offline_ms, 0, MAX_EXACT_INTEGER),
     factionId, incorporatedAtMs, factionStockResource: "", stockUnits: safeInteger(raw.stock_units, 0, MAX_EXACT_INTEGER), stockProgressMs: safeInteger(raw.stock_progress_ms, 0, MAX_EXACT_INTEGER), consumedStockUnits: safeInteger(raw.consumed_stock_units, 0, MAX_EXACT_INTEGER),
     guildTitheCarryPpm: safeInteger(raw.guild_tithe_carry_ppm, 0, 999_999), guildBoundaryGuildId: nullableUUID(raw.guild_boundary_guild_id), guildBoundarySeq: safeInteger(raw.guild_boundary_seq, 0, MAX_EXACT_INTEGER), guildConsumedWindow: safeInteger(raw.guild_consumed_window_units, 0, MAX_EXACT_INTEGER),
-    meterValues: {}, meterDecayRemainders: {}, meterInputRemainders: {}, achievementsEarnedRun: new Set(), achievementScoreRun: 0 };
+    meterValues: {}, meterDecayRemainders: {}, meterInputRemainders: {}, achievementsEarnedRun: new Set(), achievementScoreRun: 0, achievementsAttainedRun: null, attainmentScoreRun: 0 };
   if (safeInteger(raw.reputation_level, 0, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.reputation_unlock_ppm, 0, 1_000_000) !== 0 || array(raw.network_slots, "network_slots").length !== 0 || safeInteger(raw.clout_lifetime, 0, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.soul, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.age_ms, 0, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.notoriety, 0, MAX_EXACT_INTEGER) !== 0 || boolean(raw.advisor_mode) || array(raw.exit_history, "exit_history").length !== 0) throw new SyntaxError("founder prestige state leaked into company scope");
   if (state.routeKnowledgeBalance !== 0 || state.hintsUnlocked.size !== 0 || Object.values(state.gatesCrossed).some((value) => !value)) throw new SyntaxError("invalid company route state");
   if (parseCanonical(state.lifetimeValue).lt(0)) throw new SyntaxError("negative lifetime value");
@@ -462,8 +468,10 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
   if (state.factionId === "" && (state.incorporatedAtMs !== null || state.stockUnits !== 0 || state.stockProgressMs !== 0 || state.consumedStockUnits !== 0)) throw new SyntaxError("orphan faction stock state");
   if (state.factionId !== "" && (state.incorporatedAtMs === null || state.incorporatedAtMs > state.evaluatedThroughMs)) throw new SyntaxError("invalid faction incorporation");
   if (state.guildBoundaryGuildId === "" && state.guildBoundarySeq !== 0) throw new SyntaxError("invalid guild watermark");
-  if (requestedVersion === 16 || requestedVersion === 17 || requestedVersion === 18) {
+  if (requestedVersion === 16 || requestedVersion === 17 || requestedVersion === 18 || requestedVersion === 19) {
     if (!foundationCatalogs || !foundationRaw) throw new SyntaxError("save v16 requires pinned foundation catalogs");
+    // Clout v1 CV4: Company v19 exists exactly when the pinned economy declares the axis stack.
+    if ((requestedVersion === 19) !== (catalog.axisStack !== null)) throw new SyntaxError("pinned axis stack/save version mismatch");
     state.meterValues = integerRecord(foundationRaw.meter_values, 0, 100, "meter_values");
     state.meterDecayRemainders = integerRecord(foundationRaw.meter_decay_remainders, 0, 3_599_999, "meter_decay_remainders");
     state.meterInputRemainders = plainIntegerRecord(foundationRaw.meter_input_remainders, 0, 3_599_999, "meter_input_remainders");
@@ -482,8 +490,28 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
       state.pendingOpportunity = parseReplayPendingOpportunity(foundationRaw.pending_opportunity, foundationCatalogs.opportunities);
       state.activeBuffs = parseReplayActiveBuffs(foundationRaw.active_buffs, foundationCatalogs.opportunities);
     }
+    if (requestedVersion >= 19) {
+      state.achievementsAttainedRun = new Set(sortedUniqueMechanical(array(foundationRaw.achievements_attained_run, "attained achievements")));
+      state.attainmentScoreRun = safeInteger(foundationRaw.attainment_score_run, 0, MAX_EXACT_INTEGER);
+      validateReplayAttainment(foundationCatalogs.achievements, state);
+    }
   }
   return state;
+}
+
+// Clout v1 CV2: every attained ID is a run-scoped definition, the stored score
+// is their summed grant, and every run-scoped ID earned this run is attained.
+export function validateReplayAttainment(achievements: AchievementCatalog, state: ReplayState): void {
+  const attained = state.achievementsAttainedRun;
+  if (attained === null) throw new SyntaxError("Company v19 attainment state is required");
+  let score = 0;
+  for (const id of attained) {
+    const definition = achievements.byId.get(id);
+    if (!definition || definition.conditionScope !== "run") throw new SyntaxError(`attained achievement ${id} is not a run-scoped definition`);
+    score += definition.scoreGrant;
+  }
+  if (score !== state.attainmentScoreRun) throw new SyntaxError("attainment score does not derive from attained IDs");
+  for (const id of state.achievementsEarnedRun) if (achievements.byId.get(id)?.conditionScope === "run" && !attained.has(id)) throw new SyntaxError(`run-scoped earned achievement ${id} is not attained`);
 }
 
 export function encodeReplayStateV14(state: ReplayState): unknown {
@@ -523,11 +551,15 @@ export function encodeReplayState(state: ReplayState): unknown {
     if (state.opportunitySpawnSeq !== 0 || state.nextOpportunityAttendedMs !== 0 || state.pendingOpportunity !== null || state.activeBuffs.length !== 0) throw new RangeError("inactive active-play state");
     return doctrinal;
   }
-  return { ...doctrinal, opportunity_spawn_seq: state.opportunitySpawnSeq, next_opportunity_attended_ms: state.nextOpportunityAttendedMs,
+  if (state.wireVersion < 19 && (state.achievementsAttainedRun !== null || state.attainmentScoreRun !== 0)) throw new RangeError("attainment state before Company v19");
+  const activePlay = { ...doctrinal, opportunity_spawn_seq: state.opportunitySpawnSeq, next_opportunity_attended_ms: state.nextOpportunityAttendedMs,
     pending_opportunity: state.pendingOpportunity === null ? null : { opportunity_id: state.pendingOpportunity.opportunityId, spawned_attended_ms: state.pendingOpportunity.spawnedAttendedMs,
       expires_attended_ms: state.pendingOpportunity.expiresAttendedMs, effect_row_id: state.pendingOpportunity.effectRowId, selected_generator_id: state.pendingOpportunity.selectedGeneratorId },
     active_buffs: state.activeBuffs.map((value) => ({ buff_instance_id: value.buffInstanceId, effect_row_id: value.effectRowId, selected_target: value.selectedTarget,
       activated_attended_ms: value.activatedAttendedMs, expires_attended_ms: value.expiresAttendedMs })) };
+  if (state.wireVersion === 18) return activePlay;
+  if (state.achievementsAttainedRun === null) throw new RangeError("Company v19 attainment state is required");
+  return { ...activePlay, achievements_attained_run: [...state.achievementsAttainedRun].sort(byteCompare), attainment_score_run: state.attainmentScoreRun };
 }
 
 function activePlayEffect(catalog: ActivePlayCatalog, id: string): ActivePlayCatalog["effects"][number] {
@@ -1174,7 +1206,7 @@ async function applySuppressedLogged(state: ReplayState, canonicalPayload: strin
 	if (accrual.guild_settlement_batch.settlements.length !== 0 || state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("Soul suppression accrual mismatch");
 	const before = cloneReplayState(state, catalogs);
 	const activeEvidence = resolved.active_play === null ? null : parseActiveSchedule(resolved.active_play);
-	if ((state.wireVersion === 18) !== (activeEvidence !== null)) throw new RangeError("Soul suppression active-play evidence");
+	if ((state.wireVersion >= 18) !== (activeEvidence !== null)) throw new RangeError("Soul suppression active-play evidence");
 	const events = activeEvidence === null ? [] : (await applyActiveSchedule(state, catalogs, wire.command, to, activeEvidence))
 		.map((item) => ({ ...item, intent_id: sessionId }));
 	const evaluation = evaluate(state, catalogs.economy, to, "online", accrual.contributions);
@@ -1184,6 +1216,7 @@ async function applySuppressedLogged(state: ReplayState, canonicalPayload: strin
 	state.guildTitheCarryPpm = before.guildTitheCarryPpm; state.guildBoundaryGuildId = before.guildBoundaryGuildId; state.guildBoundarySeq = before.guildBoundarySeq; state.guildConsumedWindow = before.guildConsumedWindow;
 	state.meterValues = { ...before.meterValues }; state.meterDecayRemainders = { ...before.meterDecayRemainders }; state.meterInputRemainders = { ...before.meterInputRemainders };
 	state.achievementsEarnedRun = new Set(before.achievementsEarnedRun); state.achievementScoreRun = before.achievementScoreRun; state.lifetimeValue = before.lifetimeValue;
+	state.achievementsAttainedRun = before.achievementsAttainedRun === null ? null : new Set(before.achievementsAttainedRun); state.attainmentScoreRun = before.attainmentScoreRun;
 	if (to > state.manualTokenRefilledAtMs) { const elapsed = to - state.manualTokenRefilledAtMs, policy = catalogs.economy.manualPolicy!; state.manualTokenMilli = Math.min(policy.bucketCapMilli, state.manualTokenMilli + elapsed * policy.refillMilliPerMs); state.manualTokenRefilledAtMs = to; }
 	return { state, outcome: "applied", receipt: { intent_id: sessionId, outcome: "applied", revision: wire.command.revision + 1, session_id: sessionId,
 		from_evaluated_ms: from, to_evaluated_ms: to, suppressed_output: true }, events, invariants: [] };
@@ -1380,9 +1413,9 @@ async function claimOpportunity(state:ReplayState,catalogs:ReplayCatalogBundle,c
   if(canonicalJSONString(claim)!==canonicalJSONString(expected))throw new RangeError("active claim evidence mismatch");events.unshift(event("opportunity_claimed.v1",request.intent_id,claimPayload,effect.kind==="lucky_payout"?1:2));return{claim,events};
 }
 
-function contentContributions(state: ReplayState, catalog: EconomyCatalog): ReplayContribution[] {
+export function contentContributions(state: ReplayState, catalog: EconomyCatalog): ReplayContribution[] {
   const result: ReplayContribution[] = [];
-  for (const upgrade of catalog.upgrades) if (state.upgradesOwned.has(upgrade.id)) for (const effect of upgrade.effects) if (effect.slot === "upgrades") result.push({ slot: effect.slot, source_id: effect.sourceId, target: effect.target, factor: effect.factor });
+  for (const upgrade of catalog.upgrades) if (state.upgradesOwned.has(upgrade.id)) for (const effect of upgrade.effects) result.push(effect.slot === "upgrades" ? { slot: effect.slot, source_id: effect.sourceId, target: effect.target, factor: effect.factor } : { slot: "axis_stack", source_id: effect.sourceId, target: "all", factor: countPpmFactor(axisInput(state, catalog).x, effect.factorPpm) });
   for (const generator of catalog.generatorClasses) {
     const purchased = state.generators[generator.id]; if (!Number.isSafeInteger(purchased) || purchased! < 0) throw new RangeError("invalid purchased generator count");
     for (const rung of generator.ladder) { if (purchased! < rung.purchasedAt) break; result.push({ slot: "milestones", source_id: ladderSourceId(generator.id, rung.purchasedAt), target: generator.id, factor: canonicalString(quantize(new Decimal(rung.multiplierPpm).div(1_000_000))) }); }
@@ -1398,12 +1431,25 @@ function contentContributions(state: ReplayState, catalog: EconomyCatalog): Repl
   return result.sort((a, b) => byteCompare(contributionKey(a), contributionKey(b)));
 }
 
-function countPpmFactor(count: number, perCountPpm: number): string { return canonicalString(quantize(new Decimal((BigInt(count) * BigInt(perCountPpm)).toString()).div(1_000_000).add(1))); }
+// Clout v1 CV3: x = min(input, input_cap) from Company state only; the
+// attainment input never reads Founder lifetime state (AC3).
+export function axisInput(state: ReplayState, catalog: EconomyCatalog): { x: number; saturated: boolean } {
+  const axis = catalog.axisStack;
+  if (axis === null) throw new RangeError("axis input without an axis stack");
+  let input: number;
+  if (axis.input === "achievement_attainment_run") {
+    if (state.achievementsAttainedRun === null) throw new RangeError("attainment input without Company v19 state");
+    input = state.attainmentScoreRun;
+  } else input = state.achievementScoreRun;
+  if (!Number.isSafeInteger(input) || input < 0) throw new RangeError("invalid axis input");
+  return input > axis.inputCap ? { x: axis.inputCap, saturated: true } : { x: input, saturated: false };
+}
+export function countPpmFactor(count: number, perCountPpm: number): string { return canonicalString(quantize(new Decimal((BigInt(count) * BigInt(perCountPpm)).toString()).div(1_000_000).add(1))); }
 function synergyFactor(curve: "linear" | "log", totalPpm: bigint): string { const base = new Decimal(totalPpm.toString()).div(1_000_000).add(1); return canonicalString(quantize(curve === "linear" ? base : new Decimal(base.log10()).add(1))); }
 function contributionKey(value: ReplayContribution): string { return `${value.slot}\0${value.source_id}\0${value.target}`; }
 function validateContributionSet(catalog: EconomyCatalog, values: readonly ReplayContribution[]): void { const declared = new Map(catalog.multiplierSources.map((value) => [value.id, value])); const seen = new Set<string>(); for (const value of values) { const declarationId=activeDeclarationId(value.source_id);const source=declared.get(declarationId)??(declarationId===value.source_id?undefined:declared.get(`${declarationId}.${value.target}`)); const factor = parseCanonical(value.factor);const identity=`${value.source_id}\0${value.target}`; if (!source || source.slot !== value.slot || source.target !== value.target || declarationId!==value.source_id&&source.provider!=="active_play" || seen.has(identity) || !isStateValue(factor) || !factor.gt(0)) throw new RangeError("invalid multiplier contribution"); seen.add(identity); } }
 function activeDeclarationId(sourceId:string):string{if(!sourceId.startsWith("active_play."))return sourceId;const parts=sourceId.slice("active_play.".length).split(".");const index=parts.findIndex((part)=>part.includes("-"));return index<1?sourceId:parts.slice(0,index).join(".");}
-function contributionFactorForTarget(catalog: EconomyCatalog, target: string, values: readonly ReplayContribution[]): Decimal { validateContributionSet(catalog, values); let factor = new Decimal(1); for (const slot of MULTIPLIER_SLOT_ORDER) for (const value of values.filter((item) => item.slot === slot && item.target === target).sort((a, b) => byteCompare(a.source_id, b.source_id))) factor = factor.mul(parseCanonical(value.factor)); const result = quantize(factor); if (!isStateValue(result) || !result.gt(0)) throw new RangeError("invalid target contribution factor"); return result; }
+export function contributionFactorForTarget(catalog: EconomyCatalog, target: string, values: readonly ReplayContribution[]): Decimal { validateContributionSet(catalog, values); let factor = new Decimal(1); for (const slot of MULTIPLIER_SLOT_ORDER) for (const value of values.filter((item) => item.slot === slot && item.target === target).sort((a, b) => byteCompare(a.source_id, b.source_id))) factor = factor.mul(parseCanonical(value.factor)); const result = quantize(factor); if (!isStateValue(result) || !result.gt(0)) throw new RangeError("invalid target contribution factor"); return result; }
 
 function evaluate(state: ReplayState, catalog: EconomyCatalog, nowMs: number, mode: "online" | "offline", contributions: readonly ReplayContribution[]): Evaluation {
   if (nowMs < state.evaluatedThroughMs) throw new ReplayClockViolation(); if (nowMs === state.evaluatedThroughMs) return { changes: [], elapsedMs: 0, productionMs: 0, bankedMs: 0, progressDeltaPpm: 0 };
@@ -1514,12 +1560,24 @@ function applyFoundationTransition(catalogs: ReplayCatalogBundle, before: Replay
   const career: AchievementObservation = { facts: careerFacts, counters: { age_ms: ageMs, notoriety: founder.notoriety }, exitCount, generators: {} };
   const earned = newlyEarned(catalogs.achievements, state.achievementsEarnedRun, new Set(founder.achievements_earned_lifetime), run, career)
     .filter((definition) => achievementProofSatisfied(definition, actionDebits, events));
+  const proofEvents = [...events];
   for (const definition of earned) state.achievementsEarnedRun.add(definition.id);
   state.achievementScoreRun = achievementScore(catalogs.achievements, state.achievementsEarnedRun);
   for (const definition of earned) events.push(event("achievement_earned.v1", request.intent_id, { run_id: runId, achievement_id: definition.id, condition_scope: definition.conditionScope, score_grant: definition.scoreGrant }));
+  attainRun(catalogs.achievements, state, run, new Set(earned.map((definition) => definition.id)), (definition) => achievementProofSatisfied(definition, actionDebits, proofEvents), runId, request.intent_id, events);
 }
 
-function achievementProofSatisfied(definition: AchievementCatalog["definitions"][number], actionDebits: Readonly<Record<string, string>>, events: readonly ReplayEvent[]): boolean {
+// Clout v1 CV2: the hook's second pass (mirrors Go production.attainRun).
+export function attainRun(achievements: AchievementCatalog, state: ReplayState, run: AchievementObservation, earnedNow: ReadonlySet<string>, proof: (definition: AchievementCatalog["definitions"][number]) => boolean, runId: unknown, intentId: string, events: ReplayEvent[]): void {
+  const attained = state.achievementsAttainedRun;
+  if (attained === null) return;
+  const staged = newlyAttained(achievements, attained, run, proof);
+  for (const definition of staged) { attained.add(definition.id); state.attainmentScoreRun += definition.scoreGrant; }
+  for (const definition of staged) if (!earnedNow.has(definition.id)) events.push(event("achievement_reattained.v1", intentId, { run_id: runId, achievement_id: definition.id, score_grant: definition.scoreGrant }));
+  validateReplayAttainment(achievements, state);
+}
+
+export function achievementProofSatisfied(definition: AchievementCatalog["definitions"][number], actionDebits: Readonly<Record<string, string>>, events: readonly ReplayEvent[]): boolean {
   const proof = definition.proof;
   if (proof.kind !== "burn") return true;
   if (!events.some((value) => value.kind === proof.eventKind)) return false;
@@ -1561,6 +1619,7 @@ function buyUpgrade(state: ReplayState, catalog: EconomyCatalog, routes: RoutesC
   if (upgrade.window.fromGate !== null && !state.gatesCrossed[upgrade.window.fromGate] || upgrade.window.toGate !== null && state.gatesCrossed[upgrade.window.toGate]) return { rejection: ["not_eligible", "window"] };
   const context: RouteContext = { contextVersion: routes.contextVersion, resources: state.balances, doctrinesByTransition: state.doctrinesByTransition, structureId: state.structureId, ledgerFactKinds: state.ledgerFactKinds, meterBands: state.wireVersion >= 16 ? state.meterValues : state.meterBands, regionTraits: state.regionTraits };
   if (!evaluatePredicate(upgrade.requires, context)) return { rejection: ["not_eligible", "requires"] };
+  if (upgrade.axisMinimum > 0 && axisInput(state, catalog).x < upgrade.axisMinimum) return { rejection: ["not_eligible", "requires"] };
   const balance = parseCanonical(state.balances[upgrade.cost.resourceId]!); const cost = parseCanonical(upgrade.cost.amount);
   if (balance.lt(cost)) return { rejection: ["unaffordable", request.upgrade_id] };
   applyLedger(state, catalog, [{ resource: upgrade.cost.resourceId, delta: cost.neg() }], false); state.upgradesOwned.add(upgrade.id); request.cost = upgrade.cost.amount; request.costResource = upgrade.cost.resourceId; return {};
@@ -1804,7 +1863,8 @@ function newRunState(bundle: ReplayCatalogBundle, prior: ReplayState, founder: F
   const active = foundationsActive(bundle);
   const meterState = active ? newRunMeterState(bundle.meters, founder.notoriety) : null;
   const reseed = founder.notoriety >= 100 ? 55 : Math.max(55, Math.min(90, 90 - Math.floor(founder.notoriety * 35 / 100)));
-  return { wireVersion: bundle.opportunities ? 18 : bundle.doctrines ? 17 : active ? 16 : 14, balances, generators, generatorPurchasedTotal: 0, upgradesOwned: new Set(), generatorsProvisioned: Object.fromEntries(Object.keys(generators).map((id) => [id, 0])), provisionRemaindersPpm: Object.fromEntries(catalog.generatorClasses.filter((value) => value.provision !== null).map((value) => [value.provision!.generatorId, 0])), stockRateRemainderPpm: 0, evaluatedThroughMs: nowMs, computeCreditMs: 0, computeBurstRemainingMs: 0, opportunitySpawnSeq: 0, nextOpportunityAttendedMs: 0, pendingOpportunity: null, activeBuffs: [], manualTokenMilli: catalog.manualPolicy!.bucketCapMilli, manualTokenRefilledAtMs: nowMs, gatesCrossed: {}, runSeq: prior.runSeq + 1, doctrinesByTransition: {}, structureId: "", ledgerFactKinds: new Set(), meterBands: active ? {} : { "trust.regulators.standing": reseed, "trust.regulators.grievance": 100 - reseed }, regionTraits: new Set(), routeKnowledgeBalance: 0, hintsUnlocked: new Set(), compactMember: false, compactTithePpm: 0, compactSolidarityPpm: 0, compactSamples: [], tier: 0, lifetimeValue: "0", offerState: null, runStartedAtMs: nowMs, runPreTimer: false, offlineSpans: [], collapsedOfflineMs: 0, factionId: "", incorporatedAtMs: null, factionStockResource: "", stockUnits: 0, stockProgressMs: 0, consumedStockUnits: 0, guildTitheCarryPpm: 0, guildBoundaryGuildId: prior.guildBoundaryGuildId, guildBoundarySeq: prior.guildBoundarySeq, guildConsumedWindow: 0, meterValues: meterState?.values ?? {}, meterDecayRemainders: meterState?.decayRemainders ?? {}, meterInputRemainders: meterState?.inputRemainders ?? {}, achievementsEarnedRun: new Set(), achievementScoreRun: 0 };
+  const axis = bundle.economy.axisStack !== null;
+  return { wireVersion: axis ? 19 : bundle.opportunities ? 18 : bundle.doctrines ? 17 : active ? 16 : 14, balances, generators, generatorPurchasedTotal: 0, upgradesOwned: new Set(), generatorsProvisioned: Object.fromEntries(Object.keys(generators).map((id) => [id, 0])), provisionRemaindersPpm: Object.fromEntries(catalog.generatorClasses.filter((value) => value.provision !== null).map((value) => [value.provision!.generatorId, 0])), stockRateRemainderPpm: 0, evaluatedThroughMs: nowMs, computeCreditMs: 0, computeBurstRemainingMs: 0, opportunitySpawnSeq: 0, nextOpportunityAttendedMs: 0, pendingOpportunity: null, activeBuffs: [], manualTokenMilli: catalog.manualPolicy!.bucketCapMilli, manualTokenRefilledAtMs: nowMs, gatesCrossed: {}, runSeq: prior.runSeq + 1, doctrinesByTransition: {}, structureId: "", ledgerFactKinds: new Set(), meterBands: active ? {} : { "trust.regulators.standing": reseed, "trust.regulators.grievance": 100 - reseed }, regionTraits: new Set(), routeKnowledgeBalance: 0, hintsUnlocked: new Set(), compactMember: false, compactTithePpm: 0, compactSolidarityPpm: 0, compactSamples: [], tier: 0, lifetimeValue: "0", offerState: null, runStartedAtMs: nowMs, runPreTimer: false, offlineSpans: [], collapsedOfflineMs: 0, factionId: "", incorporatedAtMs: null, factionStockResource: "", stockUnits: 0, stockProgressMs: 0, consumedStockUnits: 0, guildTitheCarryPpm: 0, guildBoundaryGuildId: prior.guildBoundaryGuildId, guildBoundarySeq: prior.guildBoundarySeq, guildConsumedWindow: 0, meterValues: meterState?.values ?? {}, meterDecayRemainders: meterState?.decayRemainders ?? {}, meterInputRemainders: meterState?.inputRemainders ?? {}, achievementsEarnedRun: new Set(), achievementScoreRun: 0, achievementsAttainedRun: axis ? new Set() : null, attainmentScoreRun: 0 };
 }
 
 function rejectedExit(company: ReplayState, founder: FounderCarry, intentId: string, revision: number, category: string, detail: string): LoggedExitTransition {
@@ -2285,6 +2345,7 @@ function wireSnapshot(state: ReplayState, catalog: EconomyCatalog): unknown {
       expires_attended_ms: state.pendingOpportunity.expiresAttendedMs, effect_row_id: state.pendingOpportunity.effectRowId, selected_generator_id: state.pendingOpportunity.selectedGeneratorId },
     active_buffs: state.activeBuffs.map((value) => ({ buff_instance_id: value.buffInstanceId, effect_row_id: value.effectRowId, selected_target: value.selectedTarget,
       activated_attended_ms: value.activatedAttendedMs, expires_attended_ms: value.expiresAttendedMs })) });
+  if (state.wireVersion >= 19) Object.assign(snapshot, { achievements_attained_run: [...state.achievementsAttainedRun!].sort(byteCompare), attainment_score_run: state.attainmentScoreRun });
   return snapshot;
 }
 function provisionedHardcaps(catalog: EconomyCatalog): Record<string, { count: number; reason_key: string }> { return Object.fromEntries(catalog.generatorClasses.filter((value) => value.provisionedHardcap !== null).sort((a, b) => byteCompare(a.id, b.id)).map((value) => [value.id, { count: value.provisionedHardcap!.count, reason_key: value.provisionedHardcap!.reasonKey }])); }

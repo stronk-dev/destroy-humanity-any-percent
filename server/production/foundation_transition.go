@@ -77,10 +77,19 @@ func applyFoundationTransition(bundle CatalogBundle, before, state, founder *sav
 		return err
 	}
 	state.AchievementScoreRun = score
+	// Both passes judge proofs against the same action debits and event batch.
+	proofEvents := append([]save.EventWrite(nil), (*events)...)
+	earnedNow := make(map[string]bool, len(staged))
 	for _, definition := range staged {
+		earnedNow[definition.ID] = true
 		payload, _ := json.Marshal(map[string]any{"run_id": runID, "achievement_id": definition.ID,
 			"condition_scope": definition.ConditionScope, "score_grant": definition.ScoreGrant})
 		*events = append(*events, save.EventWrite{Kind: save.EventAchievementEarned, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+	}
+	if err := attainRun(bundle, state, run, earnedNow, func(definition achievements.Definition) bool {
+		return achievementProofSatisfied(definition, actionDebits, proofEvents)
+	}, runID, request.IntentID, events); err != nil {
+		return err
 	}
 	return bundle.ValidateFoundationState(state)
 }

@@ -427,7 +427,7 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		}
 		build.MinigameSessionActive = &active
 	}
-	if company.WireVersion == 18 {
+	if company.WireVersion >= 18 {
 		activeEvidence, activeErr := resolveActivePlaySchedule(company, current.Opportunities, current.Prestige, companyRevision.OwnerID, now)
 		if activeErr != nil {
 			return save.ExitDecision{}, nil, activeErr

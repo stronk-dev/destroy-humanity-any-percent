@@ -31,3 +31,11 @@ export function achievementScore(catalog: AchievementCatalog, earned: ReadonlySe
   }
   return result;
 }
+
+// Clout v1 CV2 second pass: run-scoped definitions not yet attained this run
+// whose condition holds against the same pre-achievement run observation and
+// whose proof holds for the same batch. It never reads Founder lifetime state
+// and returns catalog (byte) order.
+export function newlyAttained(catalog: AchievementCatalog, attained: ReadonlySet<string>, run: AchievementObservation, proof: (definition: AchievementDefinition) => boolean): readonly AchievementDefinition[] {
+  return Object.freeze(catalog.definitions.filter((definition) => definition.conditionScope === "run" && !attained.has(definition.id) && achievementEligible(definition.condition, run) && proof(definition)));
+}

@@ -341,7 +341,7 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 			ToEvaluatedMS: terminalMS, FounderAttendedStart: claimed.FounderAttendedStartMS,
 			FounderAttendedEnd: claimed.FounderAttendedStartMS + claimed.AttendedProgressMS, SessionID: claimed.SessionID}
 		var activeEvidence *activePlayScheduleEvidence
-		if company.WireVersion == 18 {
+		if company.WireVersion >= 18 {
 			resolved, activeErr := resolveActivePlaySchedule(company, bundle.Opportunities, bundle.Prestige,
 				companyRevision.OwnerID, time.UnixMilli(terminalMS))
 			if activeErr != nil {

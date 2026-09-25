@@ -24,7 +24,7 @@ const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
 	LatestFounderVersion     = 24
-	LatestCompanyVersion     = 18
+	LatestCompanyVersion     = 19
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -67,31 +67,35 @@ type State struct {
 	AchievementScoreRun        int64
 	AchievementsEarnedLifetime map[string]bool
 	AchievementScoreLifetime   int64
-	MinigameRatings            map[string]MinigameRatingState
-	MinigameOfflineQuality     map[string]MinigameOfflineQualityState
-	MinigameSessionSeq         int64
-	Pets                       map[string]pet.CareState
-	FiscalCredit               int64
-	FiscalPeriodOpenedWallMS   int64
-	FiscalPeriodSequence       int64
-	FiscalGeneratorLevels      map[string]int64
-	FiscalUnlocks              map[string]bool
-	RegionTraits               map[string]bool
-	RouteKnowledgeBalance      int64
-	HintsUnlocked              map[string]bool
-	CompactMember              bool
-	CompactTithePPM            int64
-	CompactSolidarityPPM       int64
-	CompactSamples             []CompactSample
-	Tier                       int64
-	LifetimeValue              decimal.Decimal
-	OfferState                 *ExitOfferState
-	RunStartedAt               time.Time
-	RunPreTimer                bool
-	OfflineSpans               []OfflineSpan
-	CollapsedOfflineMS         int64
-	ReputationLevel            int64
-	ReputationUnlockPPM        int64
+	// Company v19 (Clout v1 CV2): the run-local attainment set and its
+	// derived score. Nil means the Company predates v19.
+	AchievementsAttainedRun  map[string]bool
+	AttainmentScoreRun       int64
+	MinigameRatings          map[string]MinigameRatingState
+	MinigameOfflineQuality   map[string]MinigameOfflineQualityState
+	MinigameSessionSeq       int64
+	Pets                     map[string]pet.CareState
+	FiscalCredit             int64
+	FiscalPeriodOpenedWallMS int64
+	FiscalPeriodSequence     int64
+	FiscalGeneratorLevels    map[string]int64
+	FiscalUnlocks            map[string]bool
+	RegionTraits             map[string]bool
+	RouteKnowledgeBalance    int64
+	HintsUnlocked            map[string]bool
+	CompactMember            bool
+	CompactTithePPM          int64
+	CompactSolidarityPPM     int64
+	CompactSamples           []CompactSample
+	Tier                     int64
+	LifetimeValue            decimal.Decimal
+	OfferState               *ExitOfferState
+	RunStartedAt             time.Time
+	RunPreTimer              bool
+	OfflineSpans             []OfflineSpan
+	CollapsedOfflineMS       int64
+	ReputationLevel          int64
+	ReputationUnlockPPM      int64
 	// ReputationSpent and ReputationNodesOwned are Founder v22 (Reputation
 	// Tree v1 R1): the purchase total and the byte-sorted owned node ids.
 	ReputationSpent      int64
@@ -322,6 +326,12 @@ type companyStateV18 struct {
 	NextOpportunityAttendedMS *int64              `json:"next_opportunity_attended_ms"`
 	PendingOpportunity        *PendingOpportunity `json:"pending_opportunity"`
 	ActiveBuffs               []ActiveBuff        `json:"active_buffs"`
+}
+
+type companyStateV19 struct {
+	companyStateV18
+	AchievementsAttainedRun []string `json:"achievements_attained_run"`
+	AttainmentScoreRun      *int64   `json:"attainment_score_run"`
 }
 
 type stateV18 struct {
@@ -617,8 +627,13 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 					wire = company
 					if version >= 18 {
 						sequence, next := normalized.OpportunitySpawnSeq, normalized.NextOpportunityAttendedMS
-						wire = companyStateV18{companyStateV17: company, OpportunitySpawnSeq: &sequence, NextOpportunityAttendedMS: &next,
+						v18 := companyStateV18{companyStateV17: company, OpportunitySpawnSeq: &sequence, NextOpportunityAttendedMS: &next,
 							PendingOpportunity: clonePendingOpportunity(normalized.PendingOpportunity), ActiveBuffs: cloneActiveBuffs(normalized.ActiveBuffs)}
+						wire = v18
+						if version >= 19 {
+							score := normalized.AttainmentScoreRun
+							wire = companyStateV19{companyStateV18: v18, AchievementsAttainedRun: sortedTrueKeys(normalized.AchievementsAttainedRun), AttainmentScoreRun: &score}
+						}
 					}
 				} else {
 					v17 := stateV17{stateV16: v16, MinigameRatings: cloneMinigameRatings(normalized.MinigameRatings),
@@ -713,6 +728,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	var cosmeticsSource *stateV24
 	var computeBurstRemainingMS int64
 	var activeCompany *companyStateV18
+	var attainmentCompany *companyStateV19
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -810,6 +826,17 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		source.stateV17.stateV16 = company.stateV16
 		computeBurstRemainingMS, activeCompany = *company.ComputeBurstRemainingMS, &company
+	} else if version == 19 && scope == economy.ScopeCompany {
+		var company companyStateV19
+		if err := decodeState(data, &company); err != nil {
+			return nil, err
+		}
+		if company.ComputeBurstRemainingMS == nil || company.OpportunitySpawnSeq == nil || company.NextOpportunityAttendedMS == nil || company.ActiveBuffs == nil ||
+			company.AchievementsAttainedRun == nil || company.AttainmentScoreRun == nil {
+			return nil, fmt.Errorf("%w: active-play and attainment Company state are required at v19", ErrInvalidState)
+		}
+		source.stateV17.stateV16 = company.stateV16
+		computeBurstRemainingMS, activeCompany, attainmentCompany = *company.ComputeBurstRemainingMS, &company.companyStateV18, &company
 	} else if version == 24 && scope == economy.ScopeFounder {
 		var shop stateV24
 		if err := decodeState(data, &shop); err != nil {
@@ -1007,6 +1034,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		state.PendingOpportunity = clonePendingOpportunity(activeCompany.PendingOpportunity)
 		state.ActiveBuffs = cloneActiveBuffs(activeCompany.ActiveBuffs)
 	}
+	if scope == economy.ScopeCompany && version >= 19 {
+		state.AchievementsAttainedRun, err = sortedUniqueMechanicalKeys(attainmentCompany.AchievementsAttainedRun, "achievements_attained_run")
+		if err != nil {
+			return nil, err
+		}
+		state.AttainmentScoreRun = *attainmentCompany.AttainmentScoreRun
+	}
 	if version >= 16 {
 		state.AchievementsEarnedRun, err = sortedUniqueMechanicalKeys(source.AchievementsEarnedRun, "achievements_earned_run")
 		if err != nil {
@@ -1137,6 +1171,10 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if scope == economy.ScopeCompany && version > LatestCompanyVersion {
 		return fmt.Errorf("%w: Company scope rejects Founder-only save v%d", ErrInvalidState, version)
 	}
+	// Clout v1 CV4: the attainment set exists only on Company v19+.
+	if (scope != economy.ScopeCompany || version < 19) && (state.AchievementsAttainedRun != nil || state.AttainmentScoreRun != 0) {
+		return fmt.Errorf("%w: attainment state outside Company v19", ErrInvalidState)
+	}
 	if version < 21 && state.MinigameSessionSeq != 0 {
 		return fmt.Errorf("%w: minigame session sequence present before v21", ErrInvalidState)
 	}
@@ -1199,6 +1237,9 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
 			return fmt.Errorf("%w: Founder mechanics leaked into Company v17", ErrInvalidState)
 		}
+		if version < 19 && (state.AchievementsAttainedRun != nil || state.AttainmentScoreRun != 0) {
+			return fmt.Errorf("%w: attainment state present before Company v19", ErrInvalidState)
+		}
 		if version < 18 {
 			if activePlayStatePresent(state) {
 				return fmt.Errorf("%w: active-play state present before Company v18", ErrInvalidState)
@@ -1207,6 +1248,9 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		}
 		if err := validateActivePlayState(state); err != nil {
 			return err
+		}
+		if version >= 19 && (state.AchievementsAttainedRun == nil || state.AttainmentScoreRun < 0 || state.AttainmentScoreRun > decimal.MaxExactInteger) {
+			return fmt.Errorf("%w: invalid Company v19 attainment state", ErrInvalidState)
 		}
 		return nil
 	}

@@ -62,6 +62,7 @@ const (
 	EventGuildActivityEvaluated    EventKind = "guild_activity_evaluated"
 	EventMeterBandChanged          EventKind = "meter_band_changed.v1"
 	EventAchievementEarned         EventKind = "achievement_earned.v1"
+	EventAchievementReattained     EventKind = "achievement_reattained.v1"
 	EventPetCareApplied            EventKind = "pet_care_applied.v1"
 	EventPetStatusChanged          EventKind = "pet_status_changed.v1"
 	EventMinigameResolved          EventKind = "minigame_resolved.v1"
@@ -113,7 +114,7 @@ var AllEventKinds = [...]EventKind{
 	EventIncorporated, EventInvariantReported, EventRouteExecuted,
 	EventRouteHintPurchased, EventRouteKnowledgeGranted, EventRunEnded,
 	EventRunStarted, EventUpgradePurchased, EventMeterBandChanged,
-	EventAchievementEarned,
+	EventAchievementEarned, EventAchievementReattained,
 	EventPetCareApplied, EventPetStatusChanged,
 	EventMinigameResolved, EventMinigameRatingChanged,
 	EventOpportunitySpawned, EventOpportunityExpired, EventOpportunityClaimed,
@@ -936,6 +937,16 @@ func validateEventPayload(event EventWrite) error {
 			!mechanicalIDPattern.MatchString(payload.AchievementID) || (payload.ConditionScope != "run" && payload.ConditionScope != "career") ||
 			payload.ScoreGrant < 1 || payload.ScoreGrant > decimal.MaxExactInteger {
 			return fmt.Errorf("%w: invalid achievement_earned.v1 payload", ErrInvalidStream)
+		}
+	case EventAchievementReattained:
+		var payload struct {
+			RunID         routeRunID `json:"run_id"`
+			AchievementID string     `json:"achievement_id"`
+			ScoreGrant    int64      `json:"score_grant"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !validRouteRunID(payload.RunID) ||
+			!mechanicalIDPattern.MatchString(payload.AchievementID) || payload.ScoreGrant < 1 || payload.ScoreGrant > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid achievement_reattained.v1 payload", ErrInvalidStream)
 		}
 	case EventPetCareApplied:
 		var payload struct {
