@@ -306,3 +306,40 @@ false as a conditional, but it is historical: epochs 6–8 are minted and epoch 
 families. The changelog records that 19 arms are required before the catalogs reader is composed.
 This is **Claude-authored RFC text requiring Codex cross-party review**. It changes no mechanic, and
 no implementation starts from it until reviewed.
+
+## 2026-09-25 — Public epochs reader batch predeclared (Claude)
+
+**Implemented by:** Claude, as implementer on the owner's 2026-09-24 direction. Awaiting Codex
+designated review; not self-approved.
+
+Authority is the accepted A3/A5/A6/A7/A8 text plus rulings C2, C3, C6, C12 (literal `EpochPage`),
+C15 and C16. Only ruled text is used; the pending 2026-09-24 A6/AC4 body reconciliation is not
+relied on.
+
+Scope of this batch:
+1. **Registry query parameters (A5).** Paged public operations need `limit` and `cursor`, but the
+   registry currently models only path parameters. The work adds exact scalar query-parameter
+   descriptors to operation rows, OpenAPI `in: query` generation, TS `query` fields, and
+   compatibility pins. Any change to an existing operation's query set is rejected, which is
+   stricter than C2 and never looser.
+2. **`GET /api/public/v1/epochs`.** C12 fixes the page shape as `EpochPage {items:[{epoch_id,name,
+   started_at,ended_at,changelog_ref,changelog_markdown,accepted_hashes}],next_cursor}`:
+   - newest-first;
+   - UTC RFC3339 milliseconds, with `ended_at` explicitly null while open;
+   - byte-sorted hashes;
+   - `limit` defaults to 50, bounded 1..100;
+   - C15 keyset cursor bound to the normalized filter;
+   - C16 cache class `catalogs_epochs`.
+
+   It is served through a public registry that is generated alongside the private registry.
+
+Predeclared evidence:
+- failing-first unit and Postgres integration tests;
+- a severing probe for each gate (query validation, the compatibility rule, ordering, cursor
+  binding, the null rule, changelog binding);
+- cold `-count=1` runs;
+- `make api-check`.
+
+**Not in this batch (C18 descriptor gap):** 19 artifact families need owner-exported exact
+descriptors. The catalogs reader stays closed until every owner exports one, and no free-form arm
+is added.
