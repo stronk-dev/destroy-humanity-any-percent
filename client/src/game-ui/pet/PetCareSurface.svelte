@@ -58,7 +58,7 @@
   .pet-care { display: grid; gap: var(--cc-space-lg); max-width: 72rem; margin: auto; padding: var(--cc-space-lg); }
   .pet { display: grid; gap: var(--cc-space-sm); padding: var(--cc-space-md); }
   .portrait { position: relative; inline-size: fit-content; }
-  .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: var(--cc-space-sm); margin: 0; padding: 0; list-style: none; }
+  .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr)); gap: var(--cc-space-sm); margin: 0; padding: 0; list-style: none; }
   .actions li { display: grid; gap: var(--cc-space-xs); }
   h1, h2, p { margin: 0; }
 </style>

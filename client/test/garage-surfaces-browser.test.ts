@@ -338,3 +338,43 @@ it.skipIf(!browser)("states unavailable care actions in text, sends Founder-scop
     expect(target.querySelector(".intent-notice")?.textContent).toBe("PENDING OWNER COPY: rejection cooldown");
   } finally { await dispose(); }
 });
+
+it.skipIf(!browser)("badges the Fiscal nav on an off-surface harvest and announces a buff start on the Desk (GS0.3 remainder)", async () => {
+  const { target, runtime, dispose } = await mounted();
+  try {
+    const fiscalNav = () => [...target.querySelectorAll<HTMLButtonElement>("nav button")].find((node) => node.textContent?.startsWith("Earnings Calls"))!;
+    runtime.listener?.({ kind: "announcement", scope: "company", value: { cursor: 11, kind: "buff_started", payload: { buff_instance_id: "01986666-0000-7000-8000-00000000000b", effect_row_id: "active.production", expires_attended_ms: 6_000 } } });
+    await settle();
+    expect(target.querySelector(".announcement")?.textContent).toBe("Boost started: Production frenzy");
+    runtime.listener?.({ kind: "announcement", scope: "founder", value: { cursor: 12, kind: "fiscal_period_harvested", payload: { source: "automatic", credit_after: 10 } } });
+    await settle();
+    expect(fiscalNav().querySelector(".nav-badge")?.textContent).toBe("(harvested)");
+    fiscalNav().click(); await settle();
+    expect(fiscalNav().querySelector(".nav-badge")).toBeNull();
+  } finally { await dispose(); }
+});
+
+// GS0.4 / AC 320 px: no garage surface forces horizontal scrolling at a 320
+// CSS px viewport (WCAG 1.4.10 reflow). Measured, not assumed.
+it.skipIf(!browser)("reflows the Desk, Fiscal, Meters, Trophy Case and pet surfaces at 320 CSS px without horizontal overflow", async () => {
+  const { page } = await import("vitest/browser");
+  await page.viewport(320, 640);
+  const runtime = new Runtime();
+  const full = withPet();
+  runtime.current = { ...full, features: { ...full.features, opportunity: opportunityArm(true, true, true) } } as GameUISnapshot;
+  const { target, dispose } = await mounted(runtime);
+  try {
+    const overflow = (label: string) => {
+      const root = document.documentElement;
+      const offenders = [...target.querySelectorAll<HTMLElement>("*")].filter((node) => node.getBoundingClientRect().right > root.clientWidth + 1)
+        .map((node) => `${node.tagName.toLowerCase()}.${node.className}`).slice(0, 5);
+      expect({ label, scrollWidth: root.scrollWidth <= root.clientWidth + 1, offenders }).toEqual({ label, scrollWidth: true, offenders: [] });
+    };
+    overflow("desk");
+    for (const [nav, label] of [["Earnings Calls", "fiscal"], ["Reputation Board", "meters"], ["Trophy Case", "achievements"], ["PENDING OWNER COPY: care panel title", "pet"]] as const) {
+      const control = [...target.querySelectorAll("nav button")].find((node) => node.textContent?.startsWith(nav)) as HTMLButtonElement;
+      control.click(); await settle();
+      overflow(label);
+    }
+  } finally { await dispose(); await page.viewport(1280, 720); }
+});

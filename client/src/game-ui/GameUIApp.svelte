@@ -67,6 +67,8 @@
   // by stream cursor so a replay after reconnect announces nothing.
   let announcement = $state("");
   let metersChanged = $state(false);
+  // OD-3: a Fiscal harvest while elsewhere badges the Fiscal nav (no modal).
+  let fiscalHarvested = $state(false);
   const announcedCursors = new Set<string>();
   let monotonicMS = $state(0);
   let snapshotMonotonicMS = $state(0);
@@ -100,6 +102,7 @@
 
   function show(next: GameUISurfaceID): void {
     if (next === "meters") metersChanged = false;
+    if (next === "fiscal") fiscalHarvested = false;
     navigation.select(next);
     surface = navigation.active;
   }
@@ -306,6 +309,16 @@
       announcement = t("achievements.earned_announcement", { achievement: t(row.copy_key as CopyKey, {}, era) }, era);
       return;
     }
+    if (value.kind === "fiscal_period_harvested") {
+      if (surface !== "fiscal") fiscalHarvested = true;
+      return;
+    }
+    if (value.kind === "buff_started") {
+      const row = FEATURES_PRESENTATION.opportunityEffects.get(value.payload.effect_row_id);
+      if (!row) { console.error(`game UI invariant: unannounceable buff ${value.payload.effect_row_id}`); return; }
+      if (surface === "desk") announcement = t("desk.buff.started_announcement", { effect: t(row.title_key, {}, era) }, era);
+      return;
+    }
     const meter = meterLabel(value.payload.meter_id), band = FEATURES_PRESENTATION.meterBands.get(value.payload.to_band);
     if (!meter || !band) { console.error(`game UI invariant: unannounceable meter change ${value.payload.meter_id}`); return; }
     if (surface === "meters") announcement = t("meters.band_changed_announcement", { meter, band: t(band, {}, era) }, era);
@@ -451,7 +464,7 @@
       <nav aria-label={t("surface.desk.title", {}, era)}>
         <button type="button" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
         {#if factTrue("feature.achievements")}<button type="button" aria-current={surface === "achievements" ? "page" : undefined} onclick={() => show("achievements")}>{t("surface.achievements.title", {}, era)}</button>{/if}
-        {#if factTrue("feature.fiscal")}<button type="button" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}</button>{/if}
+        {#if factTrue("feature.fiscal")}<button type="button" aria-current={surface === "fiscal" ? "page" : undefined} onclick={() => show("fiscal")}>{t("surface.fiscal.title", {}, era)}{#if fiscalHarvested}<span class="nav-badge">{t("fiscal.nav.harvest_badge", {}, era)}</span>{/if}</button>{/if}
         {#if factTrue("feature.pets")}<button type="button" aria-current={surface === "pet" ? "page" : undefined} onclick={() => show("pet")}>{t("pet.care.panel.title", {}, era)}</button>{/if}
         {#if factTrue("feature.meters")}<button type="button" aria-current={surface === "meters" ? "page" : undefined} onclick={() => show("meters")}>{t("surface.meters.title", {}, era)}{#if metersChanged} {t("meters.nav_changed_badge", {}, era)}{/if}</button>{/if}
         {#if runtime.minigame && factTrue("feature.minigame.pitch")}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
@@ -660,11 +673,13 @@
   .cc-window, .surface, .card, .notice, .readme { border: var(--cc-border-width) var(--cc-border-style) var(--cc-chrome-window_border); border-radius: var(--cc-border-radius); background: var(--cc-chrome-window_bg); }
   .chrome { display: grid; gap: var(--cc-space-sm); margin-block-end: var(--cc-space-lg); }
   .cc-titlebar { display: flex; flex-wrap: wrap; gap: var(--cc-space-md); padding: var(--cc-space-sm) var(--cc-space-md); color: var(--cc-chrome-titlebar_text); background: var(--cc-chrome-titlebar_bg); font-family: var(--cc-type-font_display); font-weight: var(--cc-type-weight_bold); }
-  nav, .visitor { display: flex; gap: var(--cc-space-sm); padding: 0 var(--cc-space-md) var(--cc-space-sm); }
+  nav, .visitor { display: flex; flex-wrap: wrap; gap: var(--cc-space-sm); padding: 0 var(--cc-space-md) var(--cc-space-sm); }
+  .cc-titlebar > *, nav > button { min-inline-size: 0; overflow-wrap: anywhere; }
   .surface { display: grid; gap: var(--cc-space-lg); max-width: 72rem; margin: auto; padding: var(--cc-space-lg); }
-  .vision { grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+  .vision { grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
   .slide, .contract, .card, .notice, .readme { padding: var(--cc-space-lg); }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--cc-space-md); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: var(--cc-space-md); }
+  .surface > *, .surface h1 { min-inline-size: 0; overflow-wrap: anywhere; }
   .card { display: grid; gap: var(--cc-space-sm); }
   .manual { display: grid; gap: var(--cc-space-sm); padding: var(--cc-space-lg); }
   .notice { display: flex; flex-wrap: wrap; gap: var(--cc-space-sm); margin-block-end: var(--cc-space-md); color: var(--cc-color-text); background: var(--cc-color-surface); }
@@ -674,5 +689,6 @@
   h1, h2, h3, p { margin: 0; }
   h1, h2, h3 { font-family: var(--cc-type-font_display); }
   pre { overflow: auto; color: var(--cc-color-text); background: var(--cc-color-surface); font-family: var(--cc-type-font_mono); white-space: pre-wrap; }
+  .nav-badge { margin-inline-start: var(--cc-space-xs); }
   meter { inline-size: 100%; accent-color: var(--cc-color-accent); }
 </style>

@@ -153,13 +153,50 @@ export function decodeGameUISystemEvent(envelope: TransportEnvelope): GameUISyst
 // throws, taking the runtime's existing authoritative-resync path.
 export type AchievementEarnedEvent = Readonly<{ cursor: number; kind: "achievement_earned"; payload: Readonly<{ achievement_id: string; condition_scope: "career" | "run"; run_id: RunID; score_grant: number }> }>;
 export type MeterBandChangedEvent = Readonly<{ cursor: number; kind: "meter_band_changed"; payload: Readonly<{ direction: "down" | "up"; from_band: string; meter_id: string; run_id: RunID; to_band: string; value_after: number; value_before: number }> }>;
-export type GameUIAnnouncementEvent = AchievementEarnedEvent | MeterBandChangedEvent;
+// GS0.3 remainder: the Fiscal harvest drives only a nav badge (OD-3); a buff
+// start drives only a polite Desk announcement. Both mirror the exact server
+// payload validators in server/save/intent.go.
+export type FiscalPeriodHarvestedEvent = Readonly<{ cursor: number; kind: "fiscal_period_harvested"; payload: Readonly<{ source: "automatic" | "manual"; credit_after: number }> }>;
+export type BuffStartedEvent = Readonly<{ cursor: number; kind: "buff_started"; payload: Readonly<{ buff_instance_id: string; effect_row_id: string; expires_attended_ms: number }> }>;
+export type GameUIAnnouncementEvent = AchievementEarnedEvent | MeterBandChangedEvent | FiscalPeriodHarvestedEvent | BuffStartedEvent;
+
+const buffUUIDv7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+
+function decodeFiscalHarvest(rev: number, payload: Record<string, unknown>): FiscalPeriodHarvestedEvent {
+  if (payload.source === "automatic") {
+    exact(payload, ["credit_after", "credit_before", "credited", "hardcap_reason_key", "opened_after_ms", "opened_before_ms", "periods", "saturated", "seq_after", "seq_before", "source"], "fiscal_period_harvested.v1");
+    const periods = safe(payload.periods, 1), before = safe(payload.credit_before), credited = safe(payload.credited), after = safe(payload.credit_after);
+    const openedBefore = safe(payload.opened_before_ms, 1), seqBefore = safe(payload.seq_before);
+    if (after !== before + credited || safe(payload.opened_after_ms, 1) <= openedBefore || safe(payload.seq_after) !== seqBefore + periods || typeof payload.saturated !== "boolean") throw new SyntaxError("invalid automatic Fiscal harvest");
+    id(payload.hardcap_reason_key);
+    return { cursor: rev, kind: "fiscal_period_harvested", payload: { source: "automatic", credit_after: after } };
+  }
+  if (payload.source !== "manual") throw new SyntaxError("invalid Fiscal harvest source");
+  exact(payload, ["credit_after", "credit_before", "draw_ppm", "outcome", "period_opened_wall_ms_after", "period_opened_wall_ms_before", "saturated", "seq_after", "seq_before", "source"], "fiscal_period_harvested.v1");
+  if (payload.outcome !== "early_succeeded" && payload.outcome !== "early_failed" && payload.outcome !== "guaranteed") throw new SyntaxError("invalid manual Fiscal outcome");
+  const before = safe(payload.credit_before), after = safe(payload.credit_after);
+  if (after < before || safe(payload.period_opened_wall_ms_after, 1) <= safe(payload.period_opened_wall_ms_before, 1) || safe(payload.seq_after) !== safe(payload.seq_before) + 1 ||
+      payload.draw_ppm !== null && safe(payload.draw_ppm) >= 1_000_000 || typeof payload.saturated !== "boolean") throw new SyntaxError("invalid manual Fiscal harvest");
+  return { cursor: rev, kind: "fiscal_period_harvested", payload: { source: "manual", credit_after: after } };
+}
+
+function decodeBuffStarted(rev: number, payload: Record<string, unknown>): BuffStartedEvent {
+  exact(payload, ["activated_attended_ms", "buff_instance_id", "effect_row_id", "expires_attended_ms", "selected_target", ...("hardcap_reason_key" in payload ? ["hardcap_reason_key"] : [])], "buff_started.v1");
+  if (typeof payload.buff_instance_id !== "string" || !buffUUIDv7.test(payload.buff_instance_id)) throw new SyntaxError("invalid buff instance id");
+  if (payload.selected_target !== null) id(payload.selected_target);
+  if ("hardcap_reason_key" in payload && payload.hardcap_reason_key !== null) id(payload.hardcap_reason_key);
+  const activated = safe(payload.activated_attended_ms), expires = safe(payload.expires_attended_ms, 1);
+  if (expires <= activated) throw new SyntaxError("buff must expire after it starts");
+  return { cursor: rev, kind: "buff_started", payload: { buff_instance_id: payload.buff_instance_id, effect_row_id: id(payload.effect_row_id), expires_attended_ms: expires } };
+}
 
 export function decodeGameUIAnnouncement(envelope: TransportEnvelope): GameUIAnnouncementEvent | undefined {
   if (envelope.kind !== "event" || !Number.isSafeInteger(envelope.rev)) return undefined;
   const kind = envelope.payload.kind;
-  if (kind !== "achievement_earned.v1" && kind !== "meter_band_changed.v1") return undefined;
+  if (kind !== "achievement_earned.v1" && kind !== "meter_band_changed.v1" && kind !== "fiscal_period_harvested.v1" && kind !== "buff_started.v1") return undefined;
   const payload = object(envelope.payload.payload, "Game UI announcement payload");
+  if (kind === "fiscal_period_harvested.v1") return decodeFiscalHarvest(envelope.rev, payload);
+  if (kind === "buff_started.v1") return decodeBuffStarted(envelope.rev, payload);
   if (kind === "achievement_earned.v1") {
     exact(payload, ["achievement_id", "condition_scope", "run_id", "score_grant"], kind);
     if (payload.condition_scope !== "run" && payload.condition_scope !== "career") throw new SyntaxError("invalid achievement scope");
