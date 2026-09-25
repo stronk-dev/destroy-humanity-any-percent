@@ -4,6 +4,7 @@
   "multiplier_slot_order": [
     "upgrades",
     "milestones",
+    "axis_stack",
     "faction",
     "doctrine",
     "commons",
@@ -12,7 +13,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "10e36583ae17a43dc14e06b541388f2802bcdea1bcd7ea3154c8d422aa78e99f",
+  "source_fingerprint": "6a61af92a3eaba6bf8851ffa60812a0c9d5a70a3dd2bccc17bc70b3841e23b16",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
