@@ -88,6 +88,9 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("fiscal", nullable(apiRef("GameUIFiscalArm"))),
 			apiField("meters", nullable(apiRef("GameUIMetersArm"))),
 			apiField("minigames", nullable(apiRef("GameUIMinigamesArm"))),
+			// Garage Player Surfaces GS5: additive optional arm beside the
+			// null-only "active_play" (the compatibility gate rejects widening it).
+			publicapi.Field{Required: false, Name: "opportunity", Schema: nullable(apiRef("GameUIOpportunityArm"))},
 			// Pet Adoption v1 PA7: additive optional arm. The compatibility gate
 			// rejects widening the null-only "pets" property, so the adoption
 			// projection lands beside it (the Reputation R9 precedent).
@@ -96,6 +99,29 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			// Reputation Tree v1 R9: an additive optional v4 arm (a new required
 			// response property would violate the C2 compatibility gate).
 			publicapi.Field{Required: false, Name: "reputation", Schema: nullable(apiRef("GameUIReputationArm"))},
+		)},
+		{Name: "GameUIOpportunityArm", Schema: apiObject(
+			apiField("attended_now_ms", integer(0, apiMaxExactInteger)),
+			apiField("buffs", array("GameUIOpportunityBuff")),
+			apiField("combo", apiRef("GameUIOpportunityCombo")),
+			apiField("pending", nullable(apiRef("GameUIOpportunityPending"))),
+		)},
+		{Name: "GameUIOpportunityBuff", Schema: apiObject(
+			apiField("buff_instance_id", apiString("uuid-v7")),
+			apiField("effect_row_id", apiString("mechanical-id")),
+			apiField("expires_attended_ms", integer(1, apiMaxExactInteger)),
+			apiField("selected_target", nullable(apiString("mechanical-id"))),
+		)},
+		{Name: "GameUIOpportunityCombo", Schema: apiObject(
+			apiField("cap", apiString("canonical-decimal")),
+			apiField("reason_key", apiString("mechanical-id")),
+			apiField("saturated", boolean),
+		)},
+		{Name: "GameUIOpportunityPending", Schema: apiObject(
+			apiField("effect_row_id", apiString("mechanical-id")),
+			apiField("expires_attended_ms", integer(1, apiMaxExactInteger)),
+			apiField("opportunity_id", apiString("uuid-v7")),
+			apiField("selected_generator_id", nullable(apiString("mechanical-id"))),
 		)},
 		{Name: "GameUIAxisStackArm", Schema: apiObject(
 			apiField("attained", array("GameUIAxisAttained")),

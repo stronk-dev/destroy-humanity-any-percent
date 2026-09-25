@@ -597,6 +597,16 @@
               }
             ]
           },
+          "opportunity": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIOpportunityArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "pet_adoption": {
             "oneOf": [
               {
@@ -1111,6 +1121,136 @@
         },
         "required": [
           "rows"
+        ],
+        "type": "object"
+      },
+      "GameUIOpportunityArm": {
+        "additionalProperties": false,
+        "properties": {
+          "attended_now_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "buffs": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIOpportunityBuff"
+            },
+            "type": "array"
+          },
+          "combo": {
+            "$ref": "#/components/schemas/GameUIOpportunityCombo"
+          },
+          "pending": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIOpportunityPending"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "attended_now_ms",
+          "buffs",
+          "combo",
+          "pending"
+        ],
+        "type": "object"
+      },
+      "GameUIOpportunityBuff": {
+        "additionalProperties": false,
+        "properties": {
+          "buff_instance_id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "effect_row_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "expires_attended_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "selected_target": {
+            "oneOf": [
+              {
+                "format": "mechanical-id",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "buff_instance_id",
+          "effect_row_id",
+          "expires_attended_ms",
+          "selected_target"
+        ],
+        "type": "object"
+      },
+      "GameUIOpportunityCombo": {
+        "additionalProperties": false,
+        "properties": {
+          "cap": {
+            "format": "canonical-decimal",
+            "type": "string"
+          },
+          "reason_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "saturated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "cap",
+          "reason_key",
+          "saturated"
+        ],
+        "type": "object"
+      },
+      "GameUIOpportunityPending": {
+        "additionalProperties": false,
+        "properties": {
+          "effect_row_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "expires_attended_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "opportunity_id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "selected_generator_id": {
+            "oneOf": [
+              {
+                "format": "mechanical-id",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "effect_row_id",
+          "expires_attended_ms",
+          "opportunity_id",
+          "selected_generator_id"
         ],
         "type": "object"
       },

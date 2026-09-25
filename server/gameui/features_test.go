@@ -72,7 +72,7 @@ func TestProjectFeaturesProjectsTheLiveArms(t *testing.T) {
 		t.Fatal(err)
 	}
 	if features.Meters == nil || len(features.Meters.Meters) != len(bundle.Meters.MeterIDs()) || features.Achievements == nil ||
-		features.Fiscal == nil || features.Minigames == nil || features.ActivePlay != nil || features.Pets != nil {
+		features.Fiscal == nil || features.Minigames == nil || features.ActivePlay != nil || features.Opportunity == nil || features.Pets != nil {
 		t.Fatalf("arms=%+v", features)
 	}
 	for _, row := range features.Meters.Meters {
@@ -88,7 +88,7 @@ func TestProjectFeaturesProjectsTheLiveArms(t *testing.T) {
 	for _, fact := range featureFacts(features) {
 		facts[fact.FactID] = fact.Value
 	}
-	if facts["feature.fiscal"] != true || facts["feature.minigame.pitch"] != true || facts["feature.pets"] != false || facts["feature.active_play"] != false {
+	if facts["feature.fiscal"] != true || facts["feature.minigame.pitch"] != true || facts["feature.pets"] != false || facts["feature.active_play"] != true {
 		t.Fatalf("facts=%v", facts)
 	}
 }

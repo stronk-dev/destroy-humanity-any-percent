@@ -30,6 +30,68 @@ type featureRows struct {
 	Reputation   *reputationArm   `json:"reputation"`
 	// Clout v1 CV9: additive optional arm (C2), null unless axis_stack is pinned.
 	AxisStack *axisStackArm `json:"axis_stack,omitempty"`
+	// Garage Player Surfaces GS5: the active-play projection lands beside the
+	// null-only `active_play` (the compatibility gate rejects widening it).
+	Opportunity *opportunityArm `json:"opportunity,omitempty"`
+}
+
+// opportunityArm is GS5's ActivePlayArm: the Company's pending opportunity
+// and live buffs as of the snapshot's attended coordinate, plus the combo
+// hardcap and whether the live buff product is clamped by it.
+type opportunityArm struct {
+	AttendedNowMS int64                `json:"attended_now_ms"`
+	Buffs         []opportunityBuffRow `json:"buffs"`
+	Combo         opportunityCombo     `json:"combo"`
+	Pending       *opportunityPending  `json:"pending"`
+}
+
+type opportunityPending struct {
+	EffectRowID         string  `json:"effect_row_id"`
+	ExpiresAttendedMS   int64   `json:"expires_attended_ms"`
+	OpportunityID       string  `json:"opportunity_id"`
+	SelectedGeneratorID *string `json:"selected_generator_id"`
+}
+
+type opportunityBuffRow struct {
+	BuffInstanceID    string  `json:"buff_instance_id"`
+	EffectRowID       string  `json:"effect_row_id"`
+	ExpiresAttendedMS int64   `json:"expires_attended_ms"`
+	SelectedTarget    *string `json:"selected_target"`
+}
+
+type opportunityCombo struct {
+	Cap       string `json:"cap"`
+	ReasonKey string `json:"reason_key"`
+	Saturated bool   `json:"saturated"`
+}
+
+func projectOpportunity(bundle production.CatalogBundle, state *save.State, attendedNow int64) (*opportunityArm, error) {
+	saturated, err := production.ProjectActiveCombo(state, bundle.Opportunities, attendedNow)
+	if err != nil {
+		return nil, err
+	}
+	arm := &opportunityArm{AttendedNowMS: attendedNow, Buffs: []opportunityBuffRow{},
+		Combo: opportunityCombo{Cap: bundle.Opportunities.Combo.Cap.String(), ReasonKey: bundle.Opportunities.Combo.HardcapReasonKey, Saturated: saturated}}
+	if pending := state.PendingOpportunity; pending != nil && pending.ExpiresAttendedMS > attendedNow {
+		arm.Pending = &opportunityPending{EffectRowID: pending.EffectRowID, ExpiresAttendedMS: pending.ExpiresAttendedMS,
+			OpportunityID: pending.OpportunityID, SelectedGeneratorID: cloneOptional(pending.SelectedGeneratorID)}
+	}
+	for _, buff := range state.ActiveBuffs {
+		if buff.ExpiresAttendedMS > attendedNow {
+			arm.Buffs = append(arm.Buffs, opportunityBuffRow{BuffInstanceID: buff.BuffInstanceID, EffectRowID: buff.EffectRowID,
+				ExpiresAttendedMS: buff.ExpiresAttendedMS, SelectedTarget: cloneOptional(buff.SelectedTarget)})
+		}
+	}
+	sort.Slice(arm.Buffs, func(left, right int) bool { return arm.Buffs[left].BuffInstanceID < arm.Buffs[right].BuffInstanceID })
+	return arm, nil
+}
+
+func cloneOptional(value *string) *string {
+	if value == nil {
+		return nil
+	}
+	copied := *value
+	return &copied
 }
 
 // cosmeticsArm is Cosmetic Shop v1 §7.1: catalog-ordered items with the
@@ -308,6 +370,13 @@ func projectFeatures(bundle production.CatalogBundle, state, founder *save.State
 		}
 		result.Minigames = arm
 	}
+	if bundle.Opportunities != nil && save.VersionForState(state) >= 18 {
+		arm, err := projectOpportunity(bundle, state, runAttendedMS)
+		if err != nil {
+			return featureRows{}, err
+		}
+		result.Opportunity = arm
+	}
 	return result, nil
 }
 
@@ -465,7 +534,7 @@ func featureFacts(features featureRows) []factRow {
 	}
 	return []factRow{
 		{FactID: "feature.achievements", Value: features.Achievements != nil},
-		{FactID: "feature.active_play", Value: features.ActivePlay != nil},
+		{FactID: "feature.active_play", Value: features.Opportunity != nil},
 		{FactID: "feature.cosmetics", Value: features.Cosmetics != nil && features.Cosmetics.Active},
 		{FactID: "feature.fiscal", Value: features.Fiscal != nil},
 		{FactID: "feature.meters", Value: features.Meters != nil},

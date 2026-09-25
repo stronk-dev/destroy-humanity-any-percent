@@ -32,7 +32,7 @@ export type GameUICosmeticsArm = { active: boolean; items: Array<GameUICosmeticI
 
 export type GameUIFact = { fact_id: string; value: boolean | number | string };
 
-export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; axis_stack?: GameUIAxisStackArm | null; cosmetics?: GameUICosmeticsArm | null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pet_adoption?: GameUIPetsArm | null; pets: null; reputation?: GameUIReputationArm | null };
+export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; axis_stack?: GameUIAxisStackArm | null; cosmetics?: GameUICosmeticsArm | null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; opportunity?: GameUIOpportunityArm | null; pet_adoption?: GameUIPetsArm | null; pets: null; reputation?: GameUIReputationArm | null };
 
 export type GameUIFiscalArm = { credit: number; credit_cap: GameUIIntCap; credit_per_period: number; generator_levels: Array<GameUIFiscalLevel>; hoard: { cap_credits: number; preview_ppm: number; reason_note: "next_run" }; period: { auto_ms: number; early_ms: number; early_success_ppm: number; guaranteed_ms: number; opened_wall_ms: number; seq: number }; sweep_preview: { credit_after: number; credited: number; periods: number; saturated: boolean }; unlocks: Array<GameUIFiscalUnlock> };
 
@@ -57,6 +57,14 @@ export type GameUIMetersArm = { meters: Array<GameUIMeterRow> };
 export type GameUIMinigameAvailability = { active_session: boolean; human_content_locked: boolean; minigame_id: string; unlocked: boolean };
 
 export type GameUIMinigamesArm = { rows: Array<GameUIMinigameAvailability> };
+
+export type GameUIOpportunityArm = { attended_now_ms: number; buffs: Array<GameUIOpportunityBuff>; combo: GameUIOpportunityCombo; pending: GameUIOpportunityPending | null };
+
+export type GameUIOpportunityBuff = { buff_instance_id: string; effect_row_id: string; expires_attended_ms: number; selected_target: string | null };
+
+export type GameUIOpportunityCombo = { cap: string; reason_key: string; saturated: boolean };
+
+export type GameUIOpportunityPending = { effect_row_id: string; expires_attended_ms: number; opportunity_id: string; selected_generator_id: string | null };
 
 export type GameUIPetRow = { eligible_action_ids: Array<string>; name_key: string; palette_id: string; pet_id: string; species_id: string; status_band: "floor" | "high" | "low" | "normal"; temperament: "chaotic" | "curious" | "lazy" | "playful" | "sassy" | "shy" };
 

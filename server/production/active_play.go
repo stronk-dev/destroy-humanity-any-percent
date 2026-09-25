@@ -242,6 +242,15 @@ func activePlayScheduleEvents(evidence activePlayScheduleEvidence) []save.EventW
 	return events
 }
 
+// ProjectActiveCombo reports, read-only, whether the live buff product at
+// attendedNow is clamped by the combo hardcap. It is the Game UI projection
+// seam (Garage Player Surfaces GS5): no arithmetic of its own, the same clamp
+// rates use.
+func ProjectActiveCombo(state *save.State, catalog *activeplay.Catalog, attendedNow int64) (bool, error) {
+	_, saturated, err := activePlayContributionsWithClamp(state, catalog, attendedNow)
+	return saturated, err
+}
+
 func activePlayContributions(state *save.State, catalog *activeplay.Catalog, attendedNow int64) ([]multiplier.Contribution, error) {
 	result, _, err := activePlayContributionsWithClamp(state, catalog, attendedNow)
 	return result, err

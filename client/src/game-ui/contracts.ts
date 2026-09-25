@@ -170,7 +170,8 @@ export function parseFeatures(source: unknown): GameUIFeatures {
   // Pet Adoption v1 PA7: `pet_adoption` is likewise an additive optional arm.
   // Cosmetic Shop v1 §7.1: `cosmetics` is likewise an additive optional arm.
   // Clout v1 CV9: `axis_stack` is likewise an additive optional arm.
-  exact(features, ["achievements", "active_play", ...("axis_stack" in features ? ["axis_stack"] : []), ...("cosmetics" in features ? ["cosmetics"] : []), "fiscal", "meters", "minigames", ...("pet_adoption" in features ? ["pet_adoption"] : []), "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
+  // Garage Player Surfaces GS5: `opportunity` is likewise an additive optional arm.
+  exact(features, ["achievements", "active_play", ...("axis_stack" in features ? ["axis_stack"] : []), ...("cosmetics" in features ? ["cosmetics"] : []), "fiscal", "meters", "minigames", ...("opportunity" in features ? ["opportunity"] : []), ...("pet_adoption" in features ? ["pet_adoption"] : []), "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
   if (features.active_play !== null || features.pets !== null) throw new SyntaxError("unproduced game UI arm must be null");
   if (features.achievements !== null) {
     const arm = object(features.achievements, "achievements arm");
@@ -242,6 +243,7 @@ export function parseFeatures(source: unknown): GameUIFeatures {
   if (features.pet_adoption !== undefined && features.pet_adoption !== null) parsePetAdoptionArm(features.pet_adoption);
   if (features.cosmetics !== undefined && features.cosmetics !== null) parseCosmeticsArm(features.cosmetics);
   if (features.axis_stack !== undefined && features.axis_stack !== null) parseAxisStackArm(features.axis_stack);
+  if (features.opportunity !== undefined && features.opportunity !== null) parseOpportunityArm(features.opportunity);
   return features as unknown as GameUIFeatures;
 }
 
@@ -330,6 +332,37 @@ export function parseCosmeticsArm(source: unknown): void {
   for (const [id, pets] of wornBy) for (const pet of pets) {
     const wearer = (arm.wearers as { pet_id: string; worn: string | null }[]).find((row) => row.pet_id === pet);
     if (!wearer || wearer.worn !== id) throw new SyntaxError("worn_by names a pet that does not wear the item");
+  }
+}
+
+function nullableIdentifier(value: unknown): void { if (value !== null) identifier(value); }
+
+// GS5: the pending opportunity and live buffs are projected only while
+// unexpired at attended_now_ms; a row at or past its expiry is a projector
+// contradiction and fails closed.
+function parseOpportunityArm(source: unknown): void {
+  const arm = object(source, "opportunity arm");
+  exact(arm, ["attended_now_ms", "buffs", "combo", "pending"], "opportunity arm");
+  const now = integer(arm.attended_now_ms, 0);
+  const combo = object(arm.combo, "opportunity combo");
+  exact(combo, ["cap", "reason_key", "saturated"], "opportunity combo");
+  decimal(combo.cap, true); identifier(combo.reason_key); bool(combo.saturated, "combo saturated");
+  if (arm.pending !== null) {
+    const pending = object(arm.pending, "pending opportunity");
+    exact(pending, ["effect_row_id", "expires_attended_ms", "opportunity_id", "selected_generator_id"], "pending opportunity");
+    identifier(pending.effect_row_id); nullableIdentifier(pending.selected_generator_id);
+    if (typeof pending.opportunity_id !== "string" || !uuidV7.test(pending.opportunity_id)) throw new SyntaxError("opportunity id must be UUIDv7");
+    if (integer(pending.expires_attended_ms, 1) <= now) throw new SyntaxError("an expired opportunity must not be projected");
+  }
+  if (!Array.isArray(arm.buffs)) throw new SyntaxError("buffs must be an array");
+  let prior = "";
+  for (const [index, value] of arm.buffs.entries()) {
+    const row = object(value, `buff ${index}`);
+    exact(row, ["buff_instance_id", "effect_row_id", "expires_attended_ms", "selected_target"], "buff row");
+    if (typeof row.buff_instance_id !== "string" || !uuidV7.test(row.buff_instance_id) || row.buff_instance_id <= prior) throw new SyntaxError("buffs must be UUIDv7, sorted and unique");
+    prior = row.buff_instance_id;
+    identifier(row.effect_row_id); nullableIdentifier(row.selected_target);
+    if (integer(row.expires_attended_ms, 1) <= now) throw new SyntaxError("an expired buff must not be projected");
   }
 }
 
