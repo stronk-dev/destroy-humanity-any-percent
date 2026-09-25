@@ -1,0 +1,2846 @@
+{
+  "version": 1,
+  "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+  "transition_budget": 43,
+  "scenarios": [
+    {
+      "name": "mine_grid_preset_large",
+      "engine": "mine_grid",
+      "seed": "101",
+      "steps": [
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "large"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 40,
+            "kind": "reveal"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": -1,
+        "first_cell": 40,
+        "flags": [],
+        "height": 9,
+        "mine_cells": [
+          13,
+          25,
+          35,
+          37,
+          44,
+          55,
+          56,
+          59,
+          62,
+          72
+        ],
+        "mines": 10,
+        "phase": "terminal",
+        "preset_id": "large",
+        "revealed": [
+          {
+            "adjacent": 0,
+            "cell": 0
+          },
+          {
+            "adjacent": 0,
+            "cell": 1
+          },
+          {
+            "adjacent": 0,
+            "cell": 2
+          },
+          {
+            "adjacent": 1,
+            "cell": 3
+          },
+          {
+            "adjacent": 0,
+            "cell": 9
+          },
+          {
+            "adjacent": 0,
+            "cell": 10
+          },
+          {
+            "adjacent": 0,
+            "cell": 11
+          },
+          {
+            "adjacent": 1,
+            "cell": 12
+          },
+          {
+            "adjacent": 0,
+            "cell": 18
+          },
+          {
+            "adjacent": 0,
+            "cell": 19
+          },
+          {
+            "adjacent": 0,
+            "cell": 20
+          },
+          {
+            "adjacent": 1,
+            "cell": 21
+          },
+          {
+            "adjacent": 1,
+            "cell": 22
+          },
+          {
+            "adjacent": 1,
+            "cell": 23
+          },
+          {
+            "adjacent": 1,
+            "cell": 24
+          },
+          {
+            "adjacent": 1,
+            "cell": 27
+          },
+          {
+            "adjacent": 1,
+            "cell": 28
+          },
+          {
+            "adjacent": 1,
+            "cell": 29
+          },
+          {
+            "adjacent": 0,
+            "cell": 30
+          },
+          {
+            "adjacent": 0,
+            "cell": 31
+          },
+          {
+            "adjacent": 0,
+            "cell": 32
+          },
+          {
+            "adjacent": 1,
+            "cell": 33
+          },
+          {
+            "adjacent": 3,
+            "cell": 34
+          },
+          {
+            "adjacent": 1,
+            "cell": 38
+          },
+          {
+            "adjacent": 0,
+            "cell": 39
+          },
+          {
+            "adjacent": 0,
+            "cell": 40
+          },
+          {
+            "adjacent": 0,
+            "cell": 41
+          },
+          {
+            "adjacent": 0,
+            "cell": 42
+          },
+          {
+            "adjacent": 2,
+            "cell": 43
+          },
+          {
+            "adjacent": 3,
+            "cell": 47
+          },
+          {
+            "adjacent": 1,
+            "cell": 48
+          },
+          {
+            "adjacent": 1,
+            "cell": 49
+          },
+          {
+            "adjacent": 1,
+            "cell": 50
+          },
+          {
+            "adjacent": 1,
+            "cell": 51
+          },
+          {
+            "adjacent": 2,
+            "cell": 52
+          }
+        ],
+        "revision": 4,
+        "width": 9
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 35
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mine_grid_preset_medium",
+      "engine": "mine_grid",
+      "seed": "101",
+      "steps": [
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "medium"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 15,
+            "kind": "reveal"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": -1,
+        "first_cell": 15,
+        "flags": [],
+        "height": 5,
+        "mine_cells": [
+          1,
+          13,
+          18
+        ],
+        "mines": 3,
+        "phase": "terminal",
+        "preset_id": "medium",
+        "revealed": [
+          {
+            "adjacent": 1,
+            "cell": 2
+          },
+          {
+            "adjacent": 0,
+            "cell": 3
+          },
+          {
+            "adjacent": 0,
+            "cell": 4
+          },
+          {
+            "adjacent": 0,
+            "cell": 5
+          },
+          {
+            "adjacent": 2,
+            "cell": 8
+          },
+          {
+            "adjacent": 0,
+            "cell": 9
+          },
+          {
+            "adjacent": 0,
+            "cell": 10
+          },
+          {
+            "adjacent": 0,
+            "cell": 11
+          },
+          {
+            "adjacent": 1,
+            "cell": 14
+          },
+          {
+            "adjacent": 0,
+            "cell": 15
+          },
+          {
+            "adjacent": 0,
+            "cell": 16
+          },
+          {
+            "adjacent": 0,
+            "cell": 17
+          },
+          {
+            "adjacent": 2,
+            "cell": 19
+          },
+          {
+            "adjacent": 1,
+            "cell": 20
+          },
+          {
+            "adjacent": 0,
+            "cell": 21
+          },
+          {
+            "adjacent": 0,
+            "cell": 22
+          },
+          {
+            "adjacent": 0,
+            "cell": 23
+          },
+          {
+            "adjacent": 1,
+            "cell": 25
+          },
+          {
+            "adjacent": 0,
+            "cell": 26
+          },
+          {
+            "adjacent": 0,
+            "cell": 27
+          },
+          {
+            "adjacent": 0,
+            "cell": 28
+          },
+          {
+            "adjacent": 0,
+            "cell": 29
+          }
+        ],
+        "revision": 4,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 22
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mine_grid_preset_small",
+      "engine": "mine_grid",
+      "seed": "101",
+      "steps": [
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "small"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 12,
+            "kind": "reveal"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": -1,
+        "first_cell": 12,
+        "flags": [],
+        "height": 5,
+        "mine_cells": [
+          1
+        ],
+        "mines": 1,
+        "phase": "terminal",
+        "preset_id": "small",
+        "revealed": [
+          {
+            "adjacent": 1,
+            "cell": 2
+          },
+          {
+            "adjacent": 0,
+            "cell": 3
+          },
+          {
+            "adjacent": 0,
+            "cell": 4
+          },
+          {
+            "adjacent": 1,
+            "cell": 5
+          },
+          {
+            "adjacent": 1,
+            "cell": 6
+          },
+          {
+            "adjacent": 1,
+            "cell": 7
+          },
+          {
+            "adjacent": 0,
+            "cell": 8
+          },
+          {
+            "adjacent": 0,
+            "cell": 9
+          },
+          {
+            "adjacent": 0,
+            "cell": 10
+          },
+          {
+            "adjacent": 0,
+            "cell": 11
+          },
+          {
+            "adjacent": 0,
+            "cell": 12
+          },
+          {
+            "adjacent": 0,
+            "cell": 13
+          },
+          {
+            "adjacent": 0,
+            "cell": 14
+          },
+          {
+            "adjacent": 0,
+            "cell": 15
+          },
+          {
+            "adjacent": 0,
+            "cell": 16
+          },
+          {
+            "adjacent": 0,
+            "cell": 17
+          },
+          {
+            "adjacent": 0,
+            "cell": 18
+          },
+          {
+            "adjacent": 0,
+            "cell": 19
+          },
+          {
+            "adjacent": 0,
+            "cell": 20
+          },
+          {
+            "adjacent": 0,
+            "cell": 21
+          },
+          {
+            "adjacent": 0,
+            "cell": 22
+          },
+          {
+            "adjacent": 0,
+            "cell": 23
+          },
+          {
+            "adjacent": 0,
+            "cell": 24
+          }
+        ],
+        "revision": 4,
+        "width": 5
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 23
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mine_grid_clear_small",
+      "engine": "mine_grid",
+      "seed": "202",
+      "steps": [
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "small"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 12,
+            "kind": "reveal"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": -1,
+        "first_cell": 12,
+        "flags": [],
+        "height": 5,
+        "mine_cells": [
+          24
+        ],
+        "mines": 1,
+        "phase": "terminal",
+        "preset_id": "small",
+        "revealed": [
+          {
+            "adjacent": 0,
+            "cell": 0
+          },
+          {
+            "adjacent": 0,
+            "cell": 1
+          },
+          {
+            "adjacent": 0,
+            "cell": 2
+          },
+          {
+            "adjacent": 0,
+            "cell": 3
+          },
+          {
+            "adjacent": 0,
+            "cell": 4
+          },
+          {
+            "adjacent": 0,
+            "cell": 5
+          },
+          {
+            "adjacent": 0,
+            "cell": 6
+          },
+          {
+            "adjacent": 0,
+            "cell": 7
+          },
+          {
+            "adjacent": 0,
+            "cell": 8
+          },
+          {
+            "adjacent": 0,
+            "cell": 9
+          },
+          {
+            "adjacent": 0,
+            "cell": 10
+          },
+          {
+            "adjacent": 0,
+            "cell": 11
+          },
+          {
+            "adjacent": 0,
+            "cell": 12
+          },
+          {
+            "adjacent": 0,
+            "cell": 13
+          },
+          {
+            "adjacent": 0,
+            "cell": 14
+          },
+          {
+            "adjacent": 0,
+            "cell": 15
+          },
+          {
+            "adjacent": 0,
+            "cell": 16
+          },
+          {
+            "adjacent": 0,
+            "cell": 17
+          },
+          {
+            "adjacent": 1,
+            "cell": 18
+          },
+          {
+            "adjacent": 1,
+            "cell": 19
+          },
+          {
+            "adjacent": 0,
+            "cell": 20
+          },
+          {
+            "adjacent": 0,
+            "cell": 21
+          },
+          {
+            "adjacent": 0,
+            "cell": 22
+          },
+          {
+            "adjacent": 1,
+            "cell": 23
+          }
+        ],
+        "revision": 3,
+        "width": 5
+      },
+      "expected_result": {
+        "outcome": "cleared",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 24
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "mine_grid_flags_and_rejections",
+      "engine": "mine_grid",
+      "seed": "303",
+      "steps": [
+        {
+          "command": {
+            "cell": 0,
+            "kind": "reveal"
+          },
+          "expect": "illegal_phase"
+        },
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "huge"
+          },
+          "expect": "unknown_preset"
+        },
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "large"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "large"
+          },
+          "expect": "illegal_phase"
+        },
+        {
+          "command": {
+            "cell": 81,
+            "kind": "reveal"
+          },
+          "expect": "cell_out_of_range"
+        },
+        {
+          "command": {
+            "cell": 0,
+            "kind": "toggle_flag"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 0,
+            "kind": "toggle_flag"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 0,
+            "kind": "toggle_flag"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 0,
+            "kind": "reveal"
+          },
+          "expect": "cell_flagged"
+        },
+        {
+          "command": {
+            "cell": 40,
+            "kind": "reveal"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 40,
+            "kind": "reveal"
+          },
+          "expect": "cell_revealed"
+        },
+        {
+          "command": {
+            "cell": 40,
+            "kind": "toggle_flag"
+          },
+          "expect": "cell_revealed"
+        },
+        {
+          "command": {
+            "cell": 1,
+            "kind": "chord"
+          },
+          "expect": "chord_unsatisfied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "illegal_phase"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": -1,
+        "first_cell": 40,
+        "flags": [
+          0
+        ],
+        "height": 9,
+        "mine_cells": [
+          7,
+          24,
+          26,
+          28,
+          34,
+          35,
+          55,
+          58,
+          63,
+          74
+        ],
+        "mines": 10,
+        "phase": "terminal",
+        "preset_id": "large",
+        "revealed": [
+          {
+            "adjacent": 0,
+            "cell": 1
+          },
+          {
+            "adjacent": 0,
+            "cell": 2
+          },
+          {
+            "adjacent": 0,
+            "cell": 3
+          },
+          {
+            "adjacent": 0,
+            "cell": 4
+          },
+          {
+            "adjacent": 0,
+            "cell": 5
+          },
+          {
+            "adjacent": 1,
+            "cell": 6
+          },
+          {
+            "adjacent": 0,
+            "cell": 9
+          },
+          {
+            "adjacent": 0,
+            "cell": 10
+          },
+          {
+            "adjacent": 0,
+            "cell": 11
+          },
+          {
+            "adjacent": 0,
+            "cell": 12
+          },
+          {
+            "adjacent": 0,
+            "cell": 13
+          },
+          {
+            "adjacent": 1,
+            "cell": 14
+          },
+          {
+            "adjacent": 2,
+            "cell": 15
+          },
+          {
+            "adjacent": 1,
+            "cell": 18
+          },
+          {
+            "adjacent": 1,
+            "cell": 19
+          },
+          {
+            "adjacent": 1,
+            "cell": 20
+          },
+          {
+            "adjacent": 0,
+            "cell": 21
+          },
+          {
+            "adjacent": 0,
+            "cell": 22
+          },
+          {
+            "adjacent": 1,
+            "cell": 23
+          },
+          {
+            "adjacent": 1,
+            "cell": 29
+          },
+          {
+            "adjacent": 0,
+            "cell": 30
+          },
+          {
+            "adjacent": 0,
+            "cell": 31
+          },
+          {
+            "adjacent": 1,
+            "cell": 32
+          },
+          {
+            "adjacent": 2,
+            "cell": 33
+          },
+          {
+            "adjacent": 1,
+            "cell": 38
+          },
+          {
+            "adjacent": 0,
+            "cell": 39
+          },
+          {
+            "adjacent": 0,
+            "cell": 40
+          },
+          {
+            "adjacent": 0,
+            "cell": 41
+          },
+          {
+            "adjacent": 1,
+            "cell": 42
+          },
+          {
+            "adjacent": 2,
+            "cell": 43
+          },
+          {
+            "adjacent": 2,
+            "cell": 44
+          },
+          {
+            "adjacent": 1,
+            "cell": 47
+          },
+          {
+            "adjacent": 1,
+            "cell": 48
+          },
+          {
+            "adjacent": 1,
+            "cell": 49
+          },
+          {
+            "adjacent": 1,
+            "cell": 50
+          },
+          {
+            "adjacent": 0,
+            "cell": 51
+          },
+          {
+            "adjacent": 0,
+            "cell": 52
+          },
+          {
+            "adjacent": 0,
+            "cell": 53
+          },
+          {
+            "adjacent": 1,
+            "cell": 59
+          },
+          {
+            "adjacent": 0,
+            "cell": 60
+          },
+          {
+            "adjacent": 0,
+            "cell": 61
+          },
+          {
+            "adjacent": 0,
+            "cell": 62
+          },
+          {
+            "adjacent": 2,
+            "cell": 66
+          },
+          {
+            "adjacent": 1,
+            "cell": 67
+          },
+          {
+            "adjacent": 1,
+            "cell": 68
+          },
+          {
+            "adjacent": 0,
+            "cell": 69
+          },
+          {
+            "adjacent": 0,
+            "cell": 70
+          },
+          {
+            "adjacent": 0,
+            "cell": 71
+          },
+          {
+            "adjacent": 1,
+            "cell": 75
+          },
+          {
+            "adjacent": 0,
+            "cell": 76
+          },
+          {
+            "adjacent": 0,
+            "cell": 77
+          },
+          {
+            "adjacent": 0,
+            "cell": 78
+          },
+          {
+            "adjacent": 0,
+            "cell": 79
+          },
+          {
+            "adjacent": 0,
+            "cell": 80
+          }
+        ],
+        "revision": 7,
+        "width": 9
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 54
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mine_grid_quit_setup",
+      "engine": "mine_grid",
+      "seed": "404",
+      "steps": [
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": -1,
+        "first_cell": -1,
+        "flags": [],
+        "height": 0,
+        "mine_cells": [],
+        "mines": 0,
+        "phase": "terminal",
+        "preset_id": null,
+        "revealed": [],
+        "revision": 2,
+        "width": 0
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 0
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mine_grid_chord_success",
+      "engine": "mine_grid",
+      "seed": "1",
+      "steps": [
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "large"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 40,
+            "kind": "reveal"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 20,
+            "kind": "toggle_flag"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 29,
+            "kind": "chord"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": -1,
+        "first_cell": 40,
+        "flags": [
+          20
+        ],
+        "height": 9,
+        "mine_cells": [
+          1,
+          4,
+          12,
+          13,
+          20,
+          22,
+          42,
+          46,
+          54,
+          75
+        ],
+        "mines": 10,
+        "phase": "terminal",
+        "preset_id": "large",
+        "revealed": [
+          {
+            "adjacent": 2,
+            "cell": 5
+          },
+          {
+            "adjacent": 0,
+            "cell": 6
+          },
+          {
+            "adjacent": 0,
+            "cell": 7
+          },
+          {
+            "adjacent": 0,
+            "cell": 8
+          },
+          {
+            "adjacent": 3,
+            "cell": 14
+          },
+          {
+            "adjacent": 0,
+            "cell": 15
+          },
+          {
+            "adjacent": 0,
+            "cell": 16
+          },
+          {
+            "adjacent": 0,
+            "cell": 17
+          },
+          {
+            "adjacent": 1,
+            "cell": 19
+          },
+          {
+            "adjacent": 4,
+            "cell": 21
+          },
+          {
+            "adjacent": 2,
+            "cell": 23
+          },
+          {
+            "adjacent": 0,
+            "cell": 24
+          },
+          {
+            "adjacent": 0,
+            "cell": 25
+          },
+          {
+            "adjacent": 0,
+            "cell": 26
+          },
+          {
+            "adjacent": 1,
+            "cell": 28
+          },
+          {
+            "adjacent": 1,
+            "cell": 29
+          },
+          {
+            "adjacent": 2,
+            "cell": 30
+          },
+          {
+            "adjacent": 1,
+            "cell": 31
+          },
+          {
+            "adjacent": 2,
+            "cell": 32
+          },
+          {
+            "adjacent": 1,
+            "cell": 33
+          },
+          {
+            "adjacent": 1,
+            "cell": 34
+          },
+          {
+            "adjacent": 0,
+            "cell": 35
+          },
+          {
+            "adjacent": 1,
+            "cell": 37
+          },
+          {
+            "adjacent": 1,
+            "cell": 38
+          },
+          {
+            "adjacent": 0,
+            "cell": 39
+          },
+          {
+            "adjacent": 0,
+            "cell": 40
+          },
+          {
+            "adjacent": 1,
+            "cell": 41
+          },
+          {
+            "adjacent": 1,
+            "cell": 43
+          },
+          {
+            "adjacent": 0,
+            "cell": 44
+          },
+          {
+            "adjacent": 1,
+            "cell": 47
+          },
+          {
+            "adjacent": 0,
+            "cell": 48
+          },
+          {
+            "adjacent": 0,
+            "cell": 49
+          },
+          {
+            "adjacent": 1,
+            "cell": 50
+          },
+          {
+            "adjacent": 1,
+            "cell": 51
+          },
+          {
+            "adjacent": 1,
+            "cell": 52
+          },
+          {
+            "adjacent": 0,
+            "cell": 53
+          },
+          {
+            "adjacent": 1,
+            "cell": 56
+          },
+          {
+            "adjacent": 0,
+            "cell": 57
+          },
+          {
+            "adjacent": 0,
+            "cell": 58
+          },
+          {
+            "adjacent": 0,
+            "cell": 59
+          },
+          {
+            "adjacent": 0,
+            "cell": 60
+          },
+          {
+            "adjacent": 0,
+            "cell": 61
+          },
+          {
+            "adjacent": 0,
+            "cell": 62
+          },
+          {
+            "adjacent": 1,
+            "cell": 65
+          },
+          {
+            "adjacent": 1,
+            "cell": 66
+          },
+          {
+            "adjacent": 1,
+            "cell": 67
+          },
+          {
+            "adjacent": 0,
+            "cell": 68
+          },
+          {
+            "adjacent": 0,
+            "cell": 69
+          },
+          {
+            "adjacent": 0,
+            "cell": 70
+          },
+          {
+            "adjacent": 0,
+            "cell": 71
+          },
+          {
+            "adjacent": 1,
+            "cell": 76
+          },
+          {
+            "adjacent": 0,
+            "cell": 77
+          },
+          {
+            "adjacent": 0,
+            "cell": 78
+          },
+          {
+            "adjacent": 0,
+            "cell": 79
+          },
+          {
+            "adjacent": 0,
+            "cell": 80
+          }
+        ],
+        "revision": 6,
+        "width": 9
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 55
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "mine_grid_chord_detonate",
+      "engine": "mine_grid",
+      "seed": "1",
+      "steps": [
+        {
+          "command": {
+            "kind": "choose_board",
+            "preset_id": "large"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 40,
+            "kind": "reveal"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 19,
+            "kind": "toggle_flag"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "cell": 29,
+            "kind": "chord"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "exploded_cell": 20,
+        "first_cell": 40,
+        "flags": [
+          19
+        ],
+        "height": 9,
+        "mine_cells": [
+          1,
+          4,
+          12,
+          13,
+          20,
+          22,
+          42,
+          46,
+          54,
+          75
+        ],
+        "mines": 10,
+        "phase": "terminal",
+        "preset_id": "large",
+        "revealed": [
+          {
+            "adjacent": 2,
+            "cell": 5
+          },
+          {
+            "adjacent": 0,
+            "cell": 6
+          },
+          {
+            "adjacent": 0,
+            "cell": 7
+          },
+          {
+            "adjacent": 0,
+            "cell": 8
+          },
+          {
+            "adjacent": 3,
+            "cell": 14
+          },
+          {
+            "adjacent": 0,
+            "cell": 15
+          },
+          {
+            "adjacent": 0,
+            "cell": 16
+          },
+          {
+            "adjacent": 0,
+            "cell": 17
+          },
+          {
+            "adjacent": 2,
+            "cell": 23
+          },
+          {
+            "adjacent": 0,
+            "cell": 24
+          },
+          {
+            "adjacent": 0,
+            "cell": 25
+          },
+          {
+            "adjacent": 0,
+            "cell": 26
+          },
+          {
+            "adjacent": 1,
+            "cell": 29
+          },
+          {
+            "adjacent": 2,
+            "cell": 30
+          },
+          {
+            "adjacent": 1,
+            "cell": 31
+          },
+          {
+            "adjacent": 2,
+            "cell": 32
+          },
+          {
+            "adjacent": 1,
+            "cell": 33
+          },
+          {
+            "adjacent": 1,
+            "cell": 34
+          },
+          {
+            "adjacent": 0,
+            "cell": 35
+          },
+          {
+            "adjacent": 1,
+            "cell": 38
+          },
+          {
+            "adjacent": 0,
+            "cell": 39
+          },
+          {
+            "adjacent": 0,
+            "cell": 40
+          },
+          {
+            "adjacent": 1,
+            "cell": 41
+          },
+          {
+            "adjacent": 1,
+            "cell": 43
+          },
+          {
+            "adjacent": 0,
+            "cell": 44
+          },
+          {
+            "adjacent": 1,
+            "cell": 47
+          },
+          {
+            "adjacent": 0,
+            "cell": 48
+          },
+          {
+            "adjacent": 0,
+            "cell": 49
+          },
+          {
+            "adjacent": 1,
+            "cell": 50
+          },
+          {
+            "adjacent": 1,
+            "cell": 51
+          },
+          {
+            "adjacent": 1,
+            "cell": 52
+          },
+          {
+            "adjacent": 0,
+            "cell": 53
+          },
+          {
+            "adjacent": 1,
+            "cell": 56
+          },
+          {
+            "adjacent": 0,
+            "cell": 57
+          },
+          {
+            "adjacent": 0,
+            "cell": 58
+          },
+          {
+            "adjacent": 0,
+            "cell": 59
+          },
+          {
+            "adjacent": 0,
+            "cell": 60
+          },
+          {
+            "adjacent": 0,
+            "cell": 61
+          },
+          {
+            "adjacent": 0,
+            "cell": 62
+          },
+          {
+            "adjacent": 1,
+            "cell": 65
+          },
+          {
+            "adjacent": 1,
+            "cell": 66
+          },
+          {
+            "adjacent": 1,
+            "cell": 67
+          },
+          {
+            "adjacent": 0,
+            "cell": 68
+          },
+          {
+            "adjacent": 0,
+            "cell": 69
+          },
+          {
+            "adjacent": 0,
+            "cell": 70
+          },
+          {
+            "adjacent": 0,
+            "cell": 71
+          },
+          {
+            "adjacent": 1,
+            "cell": 76
+          },
+          {
+            "adjacent": 0,
+            "cell": 77
+          },
+          {
+            "adjacent": 0,
+            "cell": 78
+          },
+          {
+            "adjacent": 0,
+            "cell": 79
+          },
+          {
+            "adjacent": 0,
+            "cell": 80
+          }
+        ],
+        "revision": 5,
+        "width": 9
+      },
+      "expected_result": {
+        "outcome": "detonated",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "mine_grid.cells_revealed",
+            "value": 51
+          },
+          {
+            "kind": "mine_grid.cleared",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_wall_east",
+      "engine": "snake",
+      "seed": "505",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 3,
+            "turns": []
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          17,
+          16
+        ],
+        "direction": "right",
+        "food_cell": 9,
+        "food_index": 1,
+        "food_seed": "1660325719035975237",
+        "height": 5,
+        "pending_growth": 0,
+        "phase": "terminal",
+        "revision": 2,
+        "score": 0,
+        "tick": 3,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "crashed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 0
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_wall_north",
+      "engine": "snake",
+      "seed": "505",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 3,
+            "turns": [
+              {
+                "direction": "up",
+                "tick": 1
+              }
+            ]
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          3,
+          9,
+          15
+        ],
+        "direction": "up",
+        "food_cell": 1,
+        "food_index": 2,
+        "food_seed": "1660325719035975237",
+        "height": 5,
+        "pending_growth": 0,
+        "phase": "terminal",
+        "revision": 2,
+        "score": 1,
+        "tick": 3,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "crashed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 1
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_wall_south",
+      "engine": "snake",
+      "seed": "505",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 3,
+            "turns": [
+              {
+                "direction": "down",
+                "tick": 1
+              }
+            ]
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          27,
+          21
+        ],
+        "direction": "down",
+        "food_cell": 9,
+        "food_index": 1,
+        "food_seed": "1660325719035975237",
+        "height": 5,
+        "pending_growth": 0,
+        "phase": "terminal",
+        "revision": 2,
+        "score": 0,
+        "tick": 3,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "crashed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 0
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_wall_west",
+      "engine": "snake",
+      "seed": "505",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 5,
+            "turns": [
+              {
+                "direction": "up",
+                "tick": 1
+              },
+              {
+                "direction": "left",
+                "tick": 2
+              }
+            ]
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          6,
+          7,
+          8
+        ],
+        "direction": "left",
+        "food_cell": 1,
+        "food_index": 2,
+        "food_seed": "1660325719035975237",
+        "height": 5,
+        "pending_growth": 0,
+        "phase": "terminal",
+        "revision": 2,
+        "score": 1,
+        "tick": 5,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "crashed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 1
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 5
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_cleared",
+      "engine": "snake",
+      "seed": "606",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 64,
+            "turns": [
+              {
+                "direction": "up",
+                "tick": 1
+              },
+              {
+                "direction": "right",
+                "tick": 2
+              },
+              {
+                "direction": "down",
+                "tick": 3
+              },
+              {
+                "direction": "right",
+                "tick": 6
+              },
+              {
+                "direction": "up",
+                "tick": 7
+              },
+              {
+                "direction": "left",
+                "tick": 11
+              },
+              {
+                "direction": "down",
+                "tick": 16
+              },
+              {
+                "direction": "right",
+                "tick": 20
+              },
+              {
+                "direction": "up",
+                "tick": 21
+              },
+              {
+                "direction": "right",
+                "tick": 24
+              },
+              {
+                "direction": "down",
+                "tick": 25
+              },
+              {
+                "direction": "right",
+                "tick": 28
+              },
+              {
+                "direction": "up",
+                "tick": 29
+              },
+              {
+                "direction": "right",
+                "tick": 32
+              },
+              {
+                "direction": "down",
+                "tick": 33
+              },
+              {
+                "direction": "right",
+                "tick": 36
+              },
+              {
+                "direction": "up",
+                "tick": 37
+              },
+              {
+                "direction": "left",
+                "tick": 41
+              },
+              {
+                "direction": "down",
+                "tick": 46
+              },
+              {
+                "direction": "right",
+                "tick": 50
+              },
+              {
+                "direction": "up",
+                "tick": 51
+              },
+              {
+                "direction": "right",
+                "tick": 54
+              },
+              {
+                "direction": "down",
+                "tick": 55
+              },
+              {
+                "direction": "right",
+                "tick": 58
+              },
+              {
+                "direction": "up",
+                "tick": 59
+              },
+              {
+                "direction": "right",
+                "tick": 62
+              },
+              {
+                "direction": "down",
+                "tick": 63
+              }
+            ]
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 128,
+            "turns": [
+              {
+                "direction": "right",
+                "tick": 66
+              },
+              {
+                "direction": "up",
+                "tick": 67
+              },
+              {
+                "direction": "left",
+                "tick": 71
+              },
+              {
+                "direction": "down",
+                "tick": 76
+              },
+              {
+                "direction": "right",
+                "tick": 80
+              },
+              {
+                "direction": "up",
+                "tick": 81
+              },
+              {
+                "direction": "right",
+                "tick": 84
+              },
+              {
+                "direction": "down",
+                "tick": 85
+              },
+              {
+                "direction": "right",
+                "tick": 88
+              },
+              {
+                "direction": "up",
+                "tick": 89
+              },
+              {
+                "direction": "right",
+                "tick": 92
+              },
+              {
+                "direction": "down",
+                "tick": 93
+              },
+              {
+                "direction": "right",
+                "tick": 96
+              },
+              {
+                "direction": "up",
+                "tick": 97
+              },
+              {
+                "direction": "left",
+                "tick": 101
+              },
+              {
+                "direction": "down",
+                "tick": 106
+              },
+              {
+                "direction": "right",
+                "tick": 110
+              },
+              {
+                "direction": "up",
+                "tick": 111
+              },
+              {
+                "direction": "right",
+                "tick": 114
+              },
+              {
+                "direction": "down",
+                "tick": 115
+              },
+              {
+                "direction": "right",
+                "tick": 118
+              },
+              {
+                "direction": "up",
+                "tick": 119
+              },
+              {
+                "direction": "right",
+                "tick": 122
+              },
+              {
+                "direction": "down",
+                "tick": 123
+              },
+              {
+                "direction": "right",
+                "tick": 126
+              },
+              {
+                "direction": "up",
+                "tick": 127
+              }
+            ]
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 192,
+            "turns": [
+              {
+                "direction": "left",
+                "tick": 131
+              },
+              {
+                "direction": "down",
+                "tick": 136
+              },
+              {
+                "direction": "right",
+                "tick": 140
+              },
+              {
+                "direction": "up",
+                "tick": 141
+              },
+              {
+                "direction": "right",
+                "tick": 144
+              },
+              {
+                "direction": "down",
+                "tick": 145
+              },
+              {
+                "direction": "right",
+                "tick": 148
+              },
+              {
+                "direction": "up",
+                "tick": 149
+              },
+              {
+                "direction": "right",
+                "tick": 152
+              },
+              {
+                "direction": "down",
+                "tick": 153
+              },
+              {
+                "direction": "right",
+                "tick": 156
+              },
+              {
+                "direction": "up",
+                "tick": 157
+              },
+              {
+                "direction": "left",
+                "tick": 161
+              },
+              {
+                "direction": "down",
+                "tick": 166
+              },
+              {
+                "direction": "right",
+                "tick": 170
+              },
+              {
+                "direction": "up",
+                "tick": 171
+              },
+              {
+                "direction": "right",
+                "tick": 174
+              },
+              {
+                "direction": "down",
+                "tick": 175
+              },
+              {
+                "direction": "right",
+                "tick": 178
+              },
+              {
+                "direction": "up",
+                "tick": 179
+              },
+              {
+                "direction": "right",
+                "tick": 182
+              },
+              {
+                "direction": "down",
+                "tick": 183
+              },
+              {
+                "direction": "right",
+                "tick": 186
+              },
+              {
+                "direction": "up",
+                "tick": 187
+              },
+              {
+                "direction": "left",
+                "tick": 191
+              }
+            ]
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 256,
+            "turns": [
+              {
+                "direction": "down",
+                "tick": 196
+              },
+              {
+                "direction": "right",
+                "tick": 200
+              },
+              {
+                "direction": "up",
+                "tick": 201
+              },
+              {
+                "direction": "right",
+                "tick": 204
+              },
+              {
+                "direction": "down",
+                "tick": 205
+              },
+              {
+                "direction": "right",
+                "tick": 208
+              },
+              {
+                "direction": "up",
+                "tick": 209
+              },
+              {
+                "direction": "right",
+                "tick": 212
+              },
+              {
+                "direction": "down",
+                "tick": 213
+              },
+              {
+                "direction": "right",
+                "tick": 216
+              },
+              {
+                "direction": "up",
+                "tick": 217
+              },
+              {
+                "direction": "left",
+                "tick": 221
+              },
+              {
+                "direction": "down",
+                "tick": 226
+              },
+              {
+                "direction": "right",
+                "tick": 230
+              },
+              {
+                "direction": "up",
+                "tick": 231
+              },
+              {
+                "direction": "right",
+                "tick": 234
+              },
+              {
+                "direction": "down",
+                "tick": 235
+              },
+              {
+                "direction": "right",
+                "tick": 238
+              },
+              {
+                "direction": "up",
+                "tick": 239
+              },
+              {
+                "direction": "right",
+                "tick": 242
+              },
+              {
+                "direction": "down",
+                "tick": 243
+              },
+              {
+                "direction": "right",
+                "tick": 246
+              },
+              {
+                "direction": "up",
+                "tick": 247
+              },
+              {
+                "direction": "left",
+                "tick": 251
+              },
+              {
+                "direction": "down",
+                "tick": 256
+              }
+            ]
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 271,
+            "turns": [
+              {
+                "direction": "right",
+                "tick": 260
+              },
+              {
+                "direction": "up",
+                "tick": 261
+              },
+              {
+                "direction": "right",
+                "tick": 264
+              },
+              {
+                "direction": "down",
+                "tick": 265
+              },
+              {
+                "direction": "right",
+                "tick": 268
+              },
+              {
+                "direction": "up",
+                "tick": 269
+              }
+            ]
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          9,
+          15,
+          21,
+          27,
+          26,
+          20,
+          14,
+          8,
+          7,
+          13,
+          19,
+          25,
+          24,
+          18,
+          12,
+          6,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          11,
+          17,
+          23,
+          29,
+          28,
+          22,
+          16,
+          10
+        ],
+        "direction": "up",
+        "food_cell": -1,
+        "food_index": 30,
+        "food_seed": "10984344863445522360",
+        "height": 5,
+        "pending_growth": 1,
+        "phase": "terminal",
+        "revision": 6,
+        "score": 29,
+        "tick": 271,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "cleared",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 29
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 271
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_tail_chase",
+      "engine": "snake",
+      "seed": "3",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 48,
+            "turns": [
+              {
+                "direction": "up",
+                "tick": 1
+              },
+              {
+                "direction": "right",
+                "tick": 2
+              },
+              {
+                "direction": "down",
+                "tick": 3
+              },
+              {
+                "direction": "right",
+                "tick": 6
+              },
+              {
+                "direction": "up",
+                "tick": 7
+              },
+              {
+                "direction": "left",
+                "tick": 11
+              },
+              {
+                "direction": "down",
+                "tick": 16
+              },
+              {
+                "direction": "right",
+                "tick": 20
+              },
+              {
+                "direction": "up",
+                "tick": 21
+              },
+              {
+                "direction": "right",
+                "tick": 24
+              },
+              {
+                "direction": "down",
+                "tick": 25
+              },
+              {
+                "direction": "right",
+                "tick": 28
+              },
+              {
+                "direction": "up",
+                "tick": 29
+              },
+              {
+                "direction": "right",
+                "tick": 32
+              },
+              {
+                "direction": "down",
+                "tick": 33
+              },
+              {
+                "direction": "right",
+                "tick": 36
+              },
+              {
+                "direction": "up",
+                "tick": 37
+              },
+              {
+                "direction": "left",
+                "tick": 41
+              },
+              {
+                "direction": "down",
+                "tick": 46
+              }
+            ]
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 56,
+            "turns": [
+              {
+                "direction": "right",
+                "tick": 49
+              },
+              {
+                "direction": "up",
+                "tick": 50
+              },
+              {
+                "direction": "left",
+                "tick": 51
+              },
+              {
+                "direction": "down",
+                "tick": 52
+              },
+              {
+                "direction": "right",
+                "tick": 53
+              },
+              {
+                "direction": "up",
+                "tick": 54
+              },
+              {
+                "direction": "left",
+                "tick": 55
+              },
+              {
+                "direction": "down",
+                "tick": 56
+              }
+            ]
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          18,
+          12,
+          13,
+          19
+        ],
+        "direction": "down",
+        "food_cell": 3,
+        "food_index": 3,
+        "food_seed": "12263467022380166773",
+        "height": 5,
+        "pending_growth": 0,
+        "phase": "terminal",
+        "revision": 4,
+        "score": 2,
+        "tick": 56,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 2
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 56
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_self_collision",
+      "engine": "snake",
+      "seed": "1",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 21,
+            "turns": [
+              {
+                "direction": "up",
+                "tick": 1
+              },
+              {
+                "direction": "right",
+                "tick": 2
+              },
+              {
+                "direction": "down",
+                "tick": 3
+              },
+              {
+                "direction": "right",
+                "tick": 6
+              },
+              {
+                "direction": "up",
+                "tick": 7
+              },
+              {
+                "direction": "left",
+                "tick": 11
+              },
+              {
+                "direction": "down",
+                "tick": 16
+              },
+              {
+                "direction": "right",
+                "tick": 20
+              },
+              {
+                "direction": "up",
+                "tick": 21
+              }
+            ]
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 24,
+            "turns": [
+              {
+                "direction": "right",
+                "tick": 22
+              },
+              {
+                "direction": "down",
+                "tick": 23
+              },
+              {
+                "direction": "left",
+                "tick": 24
+              }
+            ]
+          },
+          "expect": "applied"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          26,
+          20,
+          19,
+          25,
+          24
+        ],
+        "direction": "left",
+        "food_cell": 17,
+        "food_index": 4,
+        "food_seed": "18234939732938604063",
+        "height": 5,
+        "pending_growth": 0,
+        "phase": "terminal",
+        "revision": 3,
+        "score": 3,
+        "tick": 24,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "crashed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 3
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 24
+          }
+        ]
+      }
+    },
+    {
+      "name": "snake_rejections",
+      "engine": "snake",
+      "seed": "707",
+      "steps": [
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 0,
+            "turns": []
+          },
+          "expect": "advance_window"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 65,
+            "turns": []
+          },
+          "expect": "advance_window"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 2,
+            "turns": [
+              {
+                "direction": "up",
+                "tick": 3
+              }
+            ]
+          },
+          "expect": "advance_window"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 2,
+            "turns": [
+              {
+                "direction": "up",
+                "tick": 2
+              },
+              {
+                "direction": "left",
+                "tick": 2
+              }
+            ]
+          },
+          "expect": "turns_not_ascending"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 1,
+            "turns": [
+              {
+                "direction": "right",
+                "tick": 1
+              }
+            ]
+          },
+          "expect": "invalid_turn"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 1,
+            "turns": [
+              {
+                "direction": "left",
+                "tick": 1
+              }
+            ]
+          },
+          "expect": "invalid_turn"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 5,
+            "turns": []
+          },
+          "expect": "advance_past_terminal"
+        },
+        {
+          "command": {
+            "kind": "advance",
+            "through_tick": 1,
+            "turns": []
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "quit"
+          },
+          "expect": "illegal_phase"
+        }
+      ],
+      "expected_terminal": {
+        "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+        "arcade_schema_version": 1,
+        "body": [
+          16,
+          15
+        ],
+        "direction": "right",
+        "food_cell": 22,
+        "food_index": 1,
+        "food_seed": "2806551794041360339",
+        "height": 5,
+        "pending_growth": 0,
+        "phase": "terminal",
+        "revision": 3,
+        "score": 0,
+        "tick": 1,
+        "width": 6
+      },
+      "expected_result": {
+        "outcome": "quit",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "snake.food_eaten",
+            "value": 0
+          },
+          {
+            "kind": "snake.ticks_survived",
+            "value": 1
+          }
+        ]
+      }
+    }
+  ]
+}

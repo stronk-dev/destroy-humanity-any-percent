@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "container": {
+    "stages": [
+      {
+        "stage_id": "cover_disc",
+        "min_tier": 0,
+        "title_copy_key": "arcade.stage.cover_disc.title",
+        "toys": [
+          "arcade.mine_grid",
+          "arcade.snake"
+        ]
+      }
+    ]
+  },
+  "mine_grid": {
+    "presets": [
+      {
+        "preset_id": "large",
+        "width": 30,
+        "height": 16,
+        "mines": 99,
+        "copy_key": "arcade.mine_grid.preset.large"
+      },
+      {
+        "preset_id": "medium",
+        "width": 16,
+        "height": 16,
+        "mines": 40,
+        "copy_key": "arcade.mine_grid.preset.medium"
+      },
+      {
+        "preset_id": "small",
+        "width": 9,
+        "height": 9,
+        "mines": 10,
+        "copy_key": "arcade.mine_grid.preset.small"
+      }
+    ]
+  },
+  "snake": {
+    "width": 20,
+    "height": 20,
+    "start_length": 3,
+    "growth_per_food": 1,
+    "max_ticks_per_advance": 64,
+    "presentation_tick_ms": 125
+  }
+}

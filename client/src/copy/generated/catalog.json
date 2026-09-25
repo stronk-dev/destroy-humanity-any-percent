@@ -214,6 +214,330 @@
       "tone": "achievement"
     },
     {
+      "key": "arcade.action.pause",
+      "text": "Pause",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.action.play",
+      "text": "Play",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.action.quit",
+      "text": "Quit",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.action.quit_confirm",
+      "text": "Quit this game? Nothing is lost.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.action.resume",
+      "text": "Resume",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.blocked.session_active",
+      "text": "Another game is still open. Finish or quit it first.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.container.title",
+      "text": "Demo Disc",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.error.rejected",
+      "text": "That move is not allowed right now.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.exit_blocked",
+      "text": "A game from the demo disc is still open. Quit it before ending the run.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.hint.first_open",
+      "text": "Everything on this disc is free to play. Pick one and have fun.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.cell.flagged",
+      "text": "Row {row}, column {column}: flagged",
+      "params": [
+        {
+          "name": "column",
+          "type": "integer"
+        },
+        {
+          "name": "row",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.cell.hidden",
+      "text": "Row {row}, column {column}: hidden",
+      "params": [
+        {
+          "name": "column",
+          "type": "integer"
+        },
+        {
+          "name": "row",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.cell.revealed",
+      "text": "Row {row}, column {column}: {adjacent} nearby",
+      "params": [
+        {
+          "name": "adjacent",
+          "type": "integer"
+        },
+        {
+          "name": "column",
+          "type": "integer"
+        },
+        {
+          "name": "row",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.flags_remaining",
+      "text": "Mines left: {count}",
+      "params": [
+        {
+          "name": "count",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.mode.flag",
+      "text": "Flag",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.mode.reveal",
+      "text": "Reveal",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.preset.large",
+      "text": "Large board",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.preset.medium",
+      "text": "Medium board",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.mine_grid.preset.small",
+      "text": "Small board",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.outcome.cleared",
+      "text": "Board cleared. Nicely done!",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.outcome.crashed",
+      "text": "The worm hit something. Game over.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.outcome.detonated",
+      "text": "Boom. The whole board is shown now.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.outcome.quit",
+      "text": "Game ended.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.resync.notice",
+      "text": "The game caught up with the server.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.dpad.down",
+      "text": "Down",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.dpad.left",
+      "text": "Left",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.dpad.right",
+      "text": "Right",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.dpad.up",
+      "text": "Up",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.pace.full",
+      "text": "Full speed",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.pace.half",
+      "text": "Half speed",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.snake.pace.three_quarter",
+      "text": "Three-quarter speed",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.stage.cover_disc.title",
+      "text": "Free cover disc",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.toy.mine_grid.description",
+      "text": "Clear the grid without touching a mine. The numbers tell you how many are next door.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.toy.mine_grid.title",
+      "text": "PENDING OWNER NAME: deduction grid",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.toy.snake.description",
+      "text": "Steer the worm to the snacks. Do not bump the walls or your own tail.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "arcade.toy.snake.title",
+      "text": "PENDING OWNER NAME: worm game",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "axis_stack.factor_label",
       "text": "Multiplier at current attainment",
       "params": [],

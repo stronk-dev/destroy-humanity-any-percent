@@ -3,6 +3,7 @@
   "paths": [
     "client/src/achievements/",
     "client/src/active-play.ts",
+    "client/src/arcade/",
     "client/src/commons.ts",
     "client/src/cosmetic/",
     "client/src/curriculum.ts",
@@ -26,6 +27,7 @@
     "server/accrualhook/",
     "server/achievements/",
     "server/activeplay/",
+    "server/arcade/",
     "server/commons/",
     "server/commonsbinding/",
     "server/cosmetic/",
