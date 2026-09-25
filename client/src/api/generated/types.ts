@@ -16,7 +16,7 @@ export type GameUIAchievementsArm = { rows: Array<GameUIAchievementRow>; score: 
 
 export type GameUIFact = { fact_id: string; value: boolean | number | string };
 
-export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pets: null };
+export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pets: null; reputation?: GameUIReputationArm | null };
 
 export type GameUIFiscalArm = { credit: number; credit_cap: GameUIIntCap; credit_per_period: number; generator_levels: Array<GameUIFiscalLevel>; hoard: { cap_credits: number; preview_ppm: number; reason_note: "next_run" }; period: { auto_ms: number; early_ms: number; early_success_ppm: number; guaranteed_ms: number; opened_wall_ms: number; seq: number }; sweep_preview: { credit_after: number; credited: number; periods: number; saturated: boolean }; unlocks: Array<GameUIFiscalUnlock> };
 
@@ -43,6 +43,10 @@ export type GameUIMinigameAvailability = { active_session: boolean; human_conten
 export type GameUIMinigamesArm = { rows: Array<GameUIMinigameAvailability> };
 
 export type GameUIProgress = { current: string; stage_id: string; target: string };
+
+export type GameUIReputationArm = { available: number; bonus_factor_next_run: string; bonus_factor_this_run: string | null; level: number; nodes: Array<GameUIReputationNode>; per_level_ppm: number; spent: number; unlock_ppm: number };
+
+export type GameUIReputationNode = { body_key: string; cost: number; kind: "bonus_unlock" | "starter"; node_id: string; requires: Array<string>; state: "available" | "locked" | "owned" | "unaffordable"; title_key: string };
 
 export type GameUIResource = { amount: string; cap: GameUIResourceCap | null; rate_per_second: string; resource_id: string };
 

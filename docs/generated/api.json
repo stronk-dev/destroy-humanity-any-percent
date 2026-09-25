@@ -329,6 +329,16 @@
           },
           "pets": {
             "type": "null"
+          },
+          "reputation": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIReputationArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -844,6 +854,123 @@
           "current",
           "stage_id",
           "target"
+        ],
+        "type": "object"
+      },
+      "GameUIReputationArm": {
+        "additionalProperties": false,
+        "properties": {
+          "available": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "bonus_factor_next_run": {
+            "format": "canonical-decimal",
+            "type": "string"
+          },
+          "bonus_factor_this_run": {
+            "oneOf": [
+              {
+                "format": "canonical-decimal",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "level": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIReputationNode"
+            },
+            "type": "array"
+          },
+          "per_level_ppm": {
+            "maximum": 1000000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "spent": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "unlock_ppm": {
+            "maximum": 1000000,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "available",
+          "bonus_factor_next_run",
+          "bonus_factor_this_run",
+          "level",
+          "nodes",
+          "per_level_ppm",
+          "spent",
+          "unlock_ppm"
+        ],
+        "type": "object"
+      },
+      "GameUIReputationNode": {
+        "additionalProperties": false,
+        "properties": {
+          "body_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "cost": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "bonus_unlock",
+              "starter"
+            ],
+            "type": "string"
+          },
+          "node_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "requires": {
+            "items": {
+              "format": "mechanical-id",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "state": {
+            "enum": [
+              "available",
+              "locked",
+              "owned",
+              "unaffordable"
+            ],
+            "type": "string"
+          },
+          "title_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "body_key",
+          "cost",
+          "kind",
+          "node_id",
+          "requires",
+          "state",
+          "title_key"
         ],
         "type": "object"
       },

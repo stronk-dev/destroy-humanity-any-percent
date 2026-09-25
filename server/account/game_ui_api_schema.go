@@ -84,6 +84,28 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("meters", nullable(apiRef("GameUIMetersArm"))),
 			apiField("minigames", nullable(apiRef("GameUIMinigamesArm"))),
 			apiField("pets", &publicapi.Schema{Kind: publicapi.SchemaNull}),
+			// Reputation Tree v1 R9: an additive optional v4 arm (a new required
+			// response property would violate the C2 compatibility gate).
+			publicapi.Field{Required: false, Name: "reputation", Schema: nullable(apiRef("GameUIReputationArm"))},
+		)},
+		{Name: "GameUIReputationArm", Schema: apiObject(
+			apiField("available", integer(0, apiMaxExactInteger)),
+			apiField("bonus_factor_next_run", apiString("canonical-decimal")),
+			apiField("bonus_factor_this_run", nullable(apiString("canonical-decimal"))),
+			apiField("level", integer(0, apiMaxExactInteger)),
+			apiField("nodes", array("GameUIReputationNode")),
+			apiField("per_level_ppm", integer(1, 1_000_000)),
+			apiField("spent", integer(0, apiMaxExactInteger)),
+			apiField("unlock_ppm", integer(0, 1_000_000)),
+		)},
+		{Name: "GameUIReputationNode", Schema: apiObject(
+			apiField("body_key", apiString("mechanical-id")),
+			apiField("cost", integer(1, apiMaxExactInteger)),
+			apiField("kind", apiString("", "bonus_unlock", "starter")),
+			apiField("node_id", apiString("mechanical-id")),
+			apiField("requires", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiString("mechanical-id")}),
+			apiField("state", apiString("", "available", "locked", "owned", "unaffordable")),
+			apiField("title_key", apiString("mechanical-id")),
 		)},
 		{Name: "GameUIAchievementsArm", Schema: apiObject(
 			apiField("rows", array("GameUIAchievementRow")),

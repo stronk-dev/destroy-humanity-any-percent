@@ -406,3 +406,47 @@ These are the next commit.
 - Red: the exit.v2 comparison checking node id only, not cost.
 
 **Plan boxes:** B3 and B6 flip in the following planning commit. Their tests are in this range.
+
+## 2026-09-25 — B7a landed: server-derived `features.reputation` arm (Claude)
+
+**Implemented by:** Claude. Awaiting Codex designated review.
+
+**Snapshot versioning decision (per the coordinator's instruction).** R9 predates the Garage
+lane's v4. Adding a new *required* `reputation` property to the pinned v4 `GameUIFeatures` fails
+the API compatibility gate. I tried it: `gen-api` rejected it with "schema BootstrapResponse:
+invalid API schema", because response mode forbids new required properties. That rejection is this
+gate's demonstrated failing case.
+
+The lawful additive route is an **optional** v4 key, `features.reputation: GameUIReputationArm |
+null`:
+- the server always emits it;
+- the compatibility pin (`docs/generated/api-compat-v1.json`) is unchanged and was **not**
+  re-pinned;
+- no v5 is needed.
+
+**Deviations from R9, recorded for the RFC author:**
+- The block lives in the `features` arm pattern rather than at top level.
+- The fact is `feature.reputation_tree`, following the v4 `feature.*` convention, instead of
+  `founder.reputation_tree_active`.
+- `tree_active` is implied by the arm being non-null.
+
+**What landed:**
+- **Server:** `server/gameui/reputation.go` (`projectReputation`):
+  - fields: level, spent, available and unlock ppm;
+  - `bonus_factor_this_run`, read from the run's pinned contributions, or null;
+  - `bonus_factor_next_run`;
+  - per-node state (owned, available, locked or unaffordable), derived on the server.
+- **Schema:** `GameUIReputationArm` and `GameUIReputationNode` in `account/game_ui_api_schema.go`.
+- **Generated files:** regenerated.
+- **Client:** the TS v4 parser accepts and strictly validates the optional arm: `available` must
+  equal `level - spent`, and every `requires` entry must name an earlier node.
+
+**Evidence:**
+- `TestReputationArmIsServerDerived` covers every node state, a null arm for a tree-less bundle or a
+  pre-v22 Founder, and rejects an overspent Founder.
+- Go `./gameui`, `./account` and `./gameserver` pass cold; the client passes 6733 tests.
+
+**Severing probes:**
+- Removing the `locked` requires-check fails the test.
+- The unaffordable boundary mutant (`available+1`) at first survived, because no row had
+  `cost == available + 1`. I added that boundary row, and the mutant now fails.

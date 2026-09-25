@@ -150,7 +150,8 @@ function parseIntCap(value: unknown, label: string): { amount: number; reason_ke
 // malformed arms fail closed; arms that are not produced yet must be null.
 export function parseFeatures(source: unknown): GameUIFeatures {
   const features = object(source, "game UI features");
-  exact(features, ["achievements", "active_play", "fiscal", "meters", "minigames", "pets"], "game UI features");
+  // Reputation Tree v1 R9: `reputation` is an additive optional v4 arm.
+  exact(features, ["achievements", "active_play", "fiscal", "meters", "minigames", "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
   if (features.active_play !== null || features.pets !== null) throw new SyntaxError("unproduced game UI arm must be null");
   if (features.achievements !== null) {
     const arm = object(features.achievements, "achievements arm");
@@ -218,7 +219,28 @@ export function parseFeatures(source: unknown): GameUIFeatures {
       bool(row.active_session, "active session"); bool(row.human_content_locked, "human content lock"); bool(row.unlocked, "unlocked");
     }
   }
+  if (features.reputation !== undefined && features.reputation !== null) parseReputationArm(features.reputation);
   return features as unknown as GameUIFeatures;
+}
+
+function parseReputationArm(source: unknown): void {
+  const arm = object(source, "reputation arm");
+  exact(arm, ["available", "bonus_factor_next_run", "bonus_factor_this_run", "level", "nodes", "per_level_ppm", "spent", "unlock_ppm"], "reputation arm");
+  const level = integer(arm.level, 0), spent = integer(arm.spent, 0, level);
+  if (integer(arm.available, 0) !== level - spent) throw new SyntaxError("reputation available must equal level - spent");
+  integer(arm.per_level_ppm, 1, 1_000_000); integer(arm.unlock_ppm, 0, 1_000_000);
+  if (typeof arm.bonus_factor_next_run !== "string" || arm.bonus_factor_this_run !== null && typeof arm.bonus_factor_this_run !== "string") throw new SyntaxError("reputation bonus factors must be canonical strings");
+  if (!Array.isArray(arm.nodes)) throw new SyntaxError("reputation nodes must be an array");
+  const seen = new Set<string>();
+  for (const [index, value] of arm.nodes.entries()) {
+    const row = object(value, `reputation node ${index}`);
+    exact(row, ["body_key", "cost", "kind", "node_id", "requires", "state", "title_key"], "reputation node");
+    const id = identifier(row.node_id); identifier(row.title_key); identifier(row.body_key); integer(row.cost, 1);
+    oneOf(row.kind, ["bonus_unlock", "starter"], "reputation node kind"); oneOf(row.state, ["available", "locked", "owned", "unaffordable"], "reputation node state");
+    if (!Array.isArray(row.requires) || row.requires.some((requirement) => typeof requirement !== "string" || !seen.has(requirement))) throw new SyntaxError("reputation requires must name earlier nodes");
+    if (seen.has(id)) throw new SyntaxError("duplicate reputation node");
+    seen.add(id);
+  }
 }
 
 export function toShellSnapshot(snapshot: ParsedGameUISnapshot): AuthoritativeSnapshot {

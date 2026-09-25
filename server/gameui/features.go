@@ -24,6 +24,7 @@ type featureRows struct {
 	Meters       *metersArm       `json:"meters"`
 	Minigames    *minigamesArm    `json:"minigames"`
 	Pets         *struct{}        `json:"pets"`
+	Reputation   *reputationArm   `json:"reputation"`
 }
 
 type achievementsArm struct {
@@ -318,5 +319,6 @@ func featureFacts(features featureRows) []factRow {
 		{FactID: "feature.meters", Value: features.Meters != nil},
 		{FactID: "feature.minigame.pitch", Value: pitch},
 		{FactID: "feature.pets", Value: features.Pets != nil},
+		{FactID: "feature.reputation_tree", Value: features.Reputation != nil},
 	}
 }
