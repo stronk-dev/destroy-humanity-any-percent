@@ -1,4 +1,5 @@
 import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
+import typerV1Raw from "../../balance/testdata/typer-v1.json?raw";
 import attendanceFixtureJSON from "../../testdata/founder-attendance-v1.json";
 import { describe, expect, it } from "vitest";
 
@@ -531,7 +532,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			artifacts.pitch = JSON.stringify((await import("../../balance/testdata/pitch-v1.json")).default);
 			artifacts.minigames = JSON.stringify((await import("../../testdata/minigame/pitch-typer-v3.json")).default);
 			artifacts.minigame_api = JSON.stringify((await import("../../balance/testdata/minigame-api-typer-candidate-v1.json")).default);
-			artifacts.typer = (await import("../../balance/testdata/typer-v1.json?raw")).default;
+			artifacts.typer = typerV1Raw;
 			return artifacts;
 		};
 		const load = async (artifacts: Record<string, string>) =>

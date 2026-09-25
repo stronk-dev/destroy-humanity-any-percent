@@ -248,3 +248,11 @@ block). It then plays `end_run` before `begin` (outcome `ended_early`), resolves
 - **Scene lines.** The per-prompt `typer.prompt.<id>.scene` line isn't shown, because the client
   doesn't bundle Typer content. It would follow the Pitch hash-verified pattern once a mint pins
   it.
+
+### 2026-09-25 — Browser-lane fix for the TT-PA3 replay test (Claude)
+
+`make test-browser` failed 2 cases in `client/test/replay.test.ts` in the browser configuration
+(first reproduced at `ec47af68`): a dynamic `await import("…/typer-v1.json?raw")` cannot be fetched
+by the Vite browser runner. The fix is test-only: a static top-level `?raw` import of the same bytes.
+Cold results: browser `replay.test.ts` passes 258/258 across 3 browsers, and node passes 86/86. No
+product code changed.
