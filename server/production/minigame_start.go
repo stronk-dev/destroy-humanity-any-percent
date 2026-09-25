@@ -19,6 +19,9 @@ import (
 var (
 	ErrMinigameFiscalUnlockRequired = errors.New("minigame fiscal unlock required")
 	ErrMinigameHumanContentLocked   = errors.New("minigame human content locked")
+	// TT-PA2: the tier_at_least arm's two server-side predicates.
+	ErrMinigameTierRequired           = errors.New("minigame tier required")
+	ErrMinigameCurriculumExitRequired = errors.New("minigame curriculum exit required")
 )
 
 const startMinigameSessionKind = "start_minigame_session"
@@ -147,6 +150,12 @@ func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigam
 			if _, declared := bundle.Fiscal.Unlock(definition.Unlock.UnlockID); !declared || !founder.FiscalUnlocks[definition.Unlock.UnlockID] {
 				return save.MinigameStartDecision{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrMinigameFiscalUnlockRequired)
 			}
+		}
+		switch definition.Unlock.TierUnlockFailure(company.Tier, int64(len(founder.ExitHistory))) {
+		case "tier_required":
+			return save.MinigameStartDecision{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrMinigameTierRequired)
+		case "curriculum_exit_required":
+			return save.MinigameStartDecision{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrMinigameCurriculumExitRequired)
 		}
 		if definition.SoulGate == "human_hobby" {
 			if bundle.Soul == nil || save.VersionForState(founder) < 20 {

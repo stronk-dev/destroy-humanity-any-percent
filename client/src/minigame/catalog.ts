@@ -154,6 +154,15 @@ function parseUnlock(source: unknown): Readonly<Record<string, unknown>> {
 		mechanicalString(row.unlock_id, "fiscal unlock id");
 		return Object.freeze(row);
 	}
+  if (probe.kind === "tier_at_least") {
+    // TT-PA2: the optional exit_history_at_least clause is the OD-3(a) run-1 guard.
+    const row = "exit_history_at_least" in probe
+      ? exactObject(source, ["exit_history_at_least", "kind", "tier"], "tier unlock")
+      : exactObject(source, ["kind", "tier"], "tier unlock");
+    safeInteger(row.tier, 0, 9, "unlock tier");
+    if ("exit_history_at_least" in row) safeInteger(row.exit_history_at_least, 0, MAX_EXACT_INTEGER, "unlock exit history");
+    return Object.freeze(row);
+  }
   if (probe.kind !== "fact_equals") throw new SyntaxError("invalid unlock condition");
   const row = exactObject(source, ["kind", "fact_id", "value"], "fact unlock");
   mechanicalString(row.fact_id, "unlock fact");

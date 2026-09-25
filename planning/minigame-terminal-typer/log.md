@@ -75,3 +75,30 @@ it apart from invalid UTF-8.
     `compose.save-test.yml` run restarted and truncated the shared Postgres service. Each package
     passed when re-run alone. This is noted as environment interference, not treated as a pass
     of the combined run.
+
+## 2026-09-25 — B3: TT-PA2 `tier_at_least` unlock arm (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated review.
+
+- **What changed.** The Go loader (`loadUnlockCondition`) and TS loader (`parseUnlock`) accept the
+  exact arm with an optional `exit_history_at_least`. `UnlockCondition.TierUnlockFailure` is the
+  single predicate. The start coordinator (`StartMinigameAPISession`) rejects with the new
+  sentinel errors before Founder transition and tenant creation. Kernel 0.3.104 → 0.3.105.
+- **Evidence (cold):**
+  - `./minigame ./production` pass. `TestTierAtLeastUnlockArm` covers 4 accepted rows, 7 rejected
+    rows and the predicate truth table. The TS `minigame-catalog.test.ts` passes 4/4.
+  - Severing, each turned red:
+    - Go without the tier bound;
+    - Go without the exit clause;
+    - TS without the tier integer check (1 failed).
+- **Deferred, stated:**
+  - The HTTP mapping of the two details and the schema detail enum move to B5 (TT-PA4). The
+    concurrent Garage-surfaces agent holds uncommitted edits in `server/account/*_schema.go` and
+    the generated API artifacts, and regenerating now would sweep them into this commit. Until
+    then a gated start surfaces as an unmapped error; no production bundle pins a tier-gated row
+    yet.
+  - The composed AC9 start witness (Tier 0 rejects, Tier 1 with an exit starts) lands with B4,
+    which makes a Typer row pinnable.
+- **Note for other owners:** `server/gameui/features.go`, uncommitted and owned by the Garage agent,
+  computes minigame availability with only the `fiscal_unlock` arm. It must call
+  `TierUnlockFailure` for Typer's row, or the availability preview will disagree with the server.

@@ -28,6 +28,16 @@ events, and replay logs in one transaction. Fault injection covers every write b
 answered from the durable session-ID idempotency receipt without executing the tenant or faucet
 again.
 
+## Tier unlock arm (TT-PA2)
+
+`unlock_condition` also accepts `{"kind":"tier_at_least","tier":0..9}`, with an optional
+`"exit_history_at_least": n ≥ 0`. The Go and TS loaders reject unknown keys, non-integers and
+out-of-domain values. The composed start coordinator evaluates `UnlockCondition.TierUnlockFailure`
+from pinned server state only: the Company `tier` and `len(founder.exit_history)`. It rejects
+before tenant creation with `ErrMinigameTierRequired` or `ErrMinigameCurriculumExitRequired`. The
+public error details `not_eligible/tier_required` and `not_eligible/curriculum_exit_required` are
+mapped in the API batch (TT-PA4).
+
 ## Server-sampled command time (TT-PA1)
 
 The claim transaction samples the database clock once, as

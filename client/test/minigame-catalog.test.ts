@@ -22,4 +22,15 @@ describe("pinned minigame catalog", () => {
     expect(definition.unlock_condition).toEqual({ kind: "fiscal_unlock", unlock_id: "minigame.pitch" });
     expect(definition.payout.credited_resource_id).toBe("company.cash");
   });
+
+  it("loads the tier_at_least arm and rejects out-of-domain rows like Go (TT-PA2)", () => {
+    const withUnlock = (unlock: unknown) => ({ ...pitchFixture, minigames: [{ ...pitchFixture.minigames[0]!, unlock_condition: unlock }] });
+    for (const accepted of [{ kind: "tier_at_least", tier: 1 }, { exit_history_at_least: 1, kind: "tier_at_least", tier: 1 }, { kind: "tier_at_least", tier: 9 }]) {
+      expect(parseMinigameCatalog(withUnlock(accepted)).minigames[0]!.unlock_condition).toEqual(accepted);
+    }
+    for (const rejected of [{ kind: "tier_at_least" }, { kind: "tier_at_least", tier: 10 }, { kind: "tier_at_least", tier: -1 }, { kind: "tier_at_least", tier: 1.5 },
+      { extra: 1, kind: "tier_at_least", tier: 1 }, { exit_history_at_least: -1, kind: "tier_at_least", tier: 1 }, { kind: "tier_at_least", tier: "1" }]) {
+      expect(() => parseMinigameCatalog(withUnlock(rejected)), JSON.stringify(rejected)).toThrow();
+    }
+  });
 });

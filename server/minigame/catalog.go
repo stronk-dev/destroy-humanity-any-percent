@@ -25,6 +25,26 @@ type UnlockCondition struct {
 	FactID   string          `json:"fact_id,omitempty"`
 	Value    json.RawMessage `json:"value,omitempty"`
 	UnlockID string          `json:"unlock_id,omitempty"`
+	// Tier and ExitHistoryAtLeast are the tier_at_least arm (TT-PA2). The
+	// predicate reads only pinned server state: the Company tier and the
+	// Founder's exit history length.
+	Tier               *int64 `json:"tier,omitempty"`
+	ExitHistoryAtLeast *int64 `json:"exit_history_at_least,omitempty"`
+}
+
+// TierUnlockFailure reports which tier_at_least clause a start fails, or ""
+// when the arm is satisfied or the condition is another kind.
+func (condition UnlockCondition) TierUnlockFailure(companyTier, exitHistoryCount int64) string {
+	if condition.Kind != "tier_at_least" || condition.Tier == nil {
+		return ""
+	}
+	if companyTier < *condition.Tier {
+		return "tier_required"
+	}
+	if condition.ExitHistoryAtLeast != nil && exitHistoryCount < *condition.ExitHistoryAtLeast {
+		return "curriculum_exit_required"
+	}
+	return ""
 }
 
 type Definition struct {
@@ -228,6 +248,18 @@ func loadUnlockCondition(data []byte) (UnlockCondition, error) {
 			return UnlockCondition{}, ErrInvalidCatalog
 		}
 		return UnlockCondition{Kind: wire.Kind, UnlockID: wire.UnlockID}, nil
+	case "tier_at_least":
+		var wire struct {
+			Kind               string `json:"kind"`
+			Tier               *int64 `json:"tier"`
+			ExitHistoryAtLeast *int64 `json:"exit_history_at_least"`
+		}
+		if !hasExactJSONKeys(data, "kind", "tier") && !hasExactJSONKeys(data, "exit_history_at_least", "kind", "tier") ||
+			decodeExact(data, &wire) != nil || wire.Tier == nil || *wire.Tier < 0 || *wire.Tier > 9 ||
+			wire.ExitHistoryAtLeast != nil && (*wire.ExitHistoryAtLeast < 0 || *wire.ExitHistoryAtLeast > decimal.MaxExactInteger) {
+			return UnlockCondition{}, ErrInvalidCatalog
+		}
+		return UnlockCondition{Kind: wire.Kind, Tier: wire.Tier, ExitHistoryAtLeast: wire.ExitHistoryAtLeast}, nil
 	default:
 		return UnlockCondition{}, ErrInvalidCatalog
 	}

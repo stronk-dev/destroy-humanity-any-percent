@@ -74,3 +74,36 @@ func TestLoadCatalogRejectsPartialOrDuplicatedPolicy(t *testing.T) {
 		}
 	}
 }
+
+func TestTierAtLeastUnlockArm(t *testing.T) {
+	for _, accepted := range []string{`{"kind":"tier_at_least","tier":1}`, `{"exit_history_at_least":1,"kind":"tier_at_least","tier":1}`,
+		`{"kind":"tier_at_least","tier":0}`, `{"kind":"tier_at_least","tier":9}`} {
+		if _, err := loadUnlockCondition([]byte(accepted)); err != nil {
+			t.Fatalf("%s: %v", accepted, err)
+		}
+	}
+	for _, rejected := range []string{`{"kind":"tier_at_least"}`, `{"kind":"tier_at_least","tier":10}`, `{"kind":"tier_at_least","tier":-1}`,
+		`{"kind":"tier_at_least","tier":1.5}`, `{"kind":"tier_at_least","tier":1,"extra":1}`,
+		`{"exit_history_at_least":-1,"kind":"tier_at_least","tier":1}`, `{"kind":"tier_at_least","tier":"1"}`} {
+		if _, err := loadUnlockCondition([]byte(rejected)); err == nil {
+			t.Fatalf("%s: accepted", rejected)
+		}
+	}
+	guarded, _ := loadUnlockCondition([]byte(`{"exit_history_at_least":1,"kind":"tier_at_least","tier":1}`))
+	for _, row := range []struct {
+		tier, exits int64
+		want        string
+	}{{0, 0, "tier_required"}, {0, 5, "tier_required"}, {1, 0, "curriculum_exit_required"}, {1, 1, ""}, {3, 2, ""}} {
+		if got := guarded.TierUnlockFailure(row.tier, row.exits); got != row.want {
+			t.Fatalf("tier=%d exits=%d: got %q want %q", row.tier, row.exits, got, row.want)
+		}
+	}
+	plain, _ := loadUnlockCondition([]byte(`{"kind":"tier_at_least","tier":1}`))
+	if plain.TierUnlockFailure(1, 0) != "" || plain.TierUnlockFailure(0, 9) != "tier_required" {
+		t.Fatal("tier-only arm must ignore exit history")
+	}
+	fiscal, _ := loadUnlockCondition([]byte(`{"kind":"fiscal_unlock","unlock_id":"minigame.pitch"}`))
+	if fiscal.TierUnlockFailure(0, 0) != "" {
+		t.Fatal("other arms are not tier-gated")
+	}
+}
