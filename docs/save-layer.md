@@ -22,6 +22,11 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
+**Company v19** (`LatestCompanyVersion = 19`) extends v18 with `achievements_attained_run` and
+`attainment_score_run`. Both are required at v19 and rejected before v19 and in Founder scope; see
+[Axis stack](axis-stack.md). The migration corpus has no v15+ arm, so v19 is witnessed by
+`TestCompanyV19AttainmentRoundTripAndRejections`.
+
 The base Company schema is strict v14 JSON, with separately activated v15-v17 overlays. It contains
 the economy, production, Routes, Commons, Prestige, Faction, Guild, and purchasable-content fields
 described by their owning canonical docs; unknown or missing required fields remain invalid. A

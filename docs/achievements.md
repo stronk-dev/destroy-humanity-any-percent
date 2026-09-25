@@ -1,5 +1,10 @@
 # Achievements
 
+> **Run-local attainment (Clout v1, fixture-first):** under an economy declaring `axis_stack`, the
+> hook's second pass attains run-scoped achievements per run whether or not the Founder owns them for
+> life. This emits `achievement_reattained.v1` and feeds the PR Intern axis. It mints no Clout. See
+> [Axis stack](axis-stack.md).
+
 The Achievements foundation owns permanent achievement IDs and exact integer achievement score.
 It does not mint Clout, import lifetime Clout into production, or expose achievement score as an
 economy resource.

@@ -7,6 +7,10 @@ intents and never mutate state directly.
 
 ## Phase-0 scenario
 
+Economy schema v5 bundles must pin `achievements`. A v5 economy whose `axis_stack` reads an
+achievement input fails bundle loading (`ValidateAxisInputs`) rather than running with a silently
+neutral stack. Relevance and observation rows for PR Interns (RFC CV10) are not yet delivered.
+
 `testdata/harness/scenarios/phase0-production.json` is scenario version 4 (the economy + Routes + Commons
 balance bundle) and runs two versioned policies:
 

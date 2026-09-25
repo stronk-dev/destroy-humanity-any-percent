@@ -9,6 +9,10 @@ capability rather than claiming unshipped balance content.
 
 ## Catalog and ownership
 
+Economy schema v5 adds the optional `axis_stack` block, the axis upgrade-effect arm
+(`slot: axis_stack`, `factor_ppm`) and the upgrade-only `axis_at_least` requirement. All three are
+specified in [Axis stack](axis-stack.md). Schema 4 catalogs load unchanged.
+
 An upgrade has an immutable cost, a gate-bounded availability window, a closed Route-condition
 predicate, and zero or more Decimal multiplier contributions. `buy_upgrade` evaluates accrued
 state first, checks the window and predicate against that state, applies the exact ledger purchase,

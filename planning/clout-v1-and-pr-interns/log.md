@@ -171,3 +171,29 @@ with Tier 2 content or is dropped).
   section, new authorities `AxisInput`/`axisFactor`/`attainRun` fingerprinted, `pinned: null`
   because no epoch declares the stack). **Failing case:** moving `SlotAxisStack` after `faction`
   without regenerating makes `make formulas-check` exit 2. Restored, it exits 0.
+
+## 2026-09-25 — Docs and plan record; hand-off state (Claude)
+
+- **Docs:** new `docs/axis-stack.md`, plus pointers in `docs/achievements.md`,
+  `docs/purchasable-content.md`, `docs/production-engine.md`, `docs/save-layer.md` and
+  `docs/balance-harness.md`.
+- **Plan boxes:** P1–P4 are flipped against their test-bearing commits (`ace4e67e`, `f256b235`,
+  `4c089f00`). Formula commits `80f1bd47` and `63aa0b62` sit in the same range.
+- **Cold runs at this coordinate:** `make test-harness` passes (41 s).
+  `make verify-kernel-version` stops only at the pre-existing `50a3a514` history item. None of this
+  range's commits is named: `ace4e67e` bumps to 0.3.126 and `f256b235` to 0.3.127, and the other
+  commits touch only test, planning, formula, tool or doc paths.
+
+**Open (not done in this range):**
+- **P5 / AC11:** the snapshot `axis_stack` producer and Desk PR-row progress, plus the composed
+  witness.
+- **P6 / AC9:** harness relevance for PR rows, the dead-row (`factor_ppm = 1`) fixture, the
+  time-to-first-PR observation, and the `axis_input_within_cap` invariant. The scenario-bundle
+  rejection already holds, because `ValidateAxisInputs` runs in `replaycatalog`.
+- **Copy:** the RFC CV8 keys are owner-authored and pending (OD-7).
+- **DESIGN-GAPs for the RFC author:**
+  - DG-A: the `requirement_not_met` detail versus the shipped `not_eligible/requires`.
+  - DG-B: AC3's "identical receipts" cannot hold literally, because the shipped
+    `achievements_earned_run` differs by Founder.
+  - DG-C: AC2's float-division mutant is equivalent after canonical quantization.
+  - The migration-corpus v15+ gap, shared with Reputation's RT-DG-B.

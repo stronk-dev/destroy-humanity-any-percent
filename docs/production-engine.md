@@ -7,6 +7,10 @@ in client intent data.
 
 ## Catalog and multiplier boundary
 
+The multiplier slot order is `upgrades, milestones, axis_stack, faction, doctrine, commons, trust,
+event_buffs, prestige`. `axis_stack` contributions are derived from Company state by
+`production.AxisInput`/`axisFactor`; see [Axis stack](axis-stack.md).
+
 Catalog schema v3 adds manual actions, declared multiplier sources, T0–T3 progress coordinates,
 manual-token policy, and offline/Compute Credit policy. Schema v4 adds the purchasable-content
 definitions described in [Purchasable content](purchasable-content.md). The shipped Phase-0 artifact is
