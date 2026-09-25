@@ -10,11 +10,13 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
+	"math/big"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
@@ -33,6 +35,25 @@ type formulaArtifact struct {
 	PurchasableContent  contentFormula    `json:"purchasable_content"`
 	Meters              meterFormula      `json:"meters"`
 	MinigameScaling     minigameFormula   `json:"minigame_scaling"`
+	AxisStack           axisStackFormula  `json:"axis_stack"`
+}
+
+// axisStackFormula publishes the Clout v1 run-local axis stack (CV3). Pinned
+// is null until an epoch's economy declares axis_stack.
+type axisStackFormula struct {
+	Input  string            `json:"input"`
+	Factor string            `json:"factor"`
+	Stack  string            `json:"stack"`
+	Slot   string            `json:"slot"`
+	Timing string            `json:"timing"`
+	Pinned *axisStackPinning `json:"pinned"`
+}
+
+type axisStackPinning struct {
+	Input           string `json:"input"`
+	InputCap        int64  `json:"input_cap"`
+	CapReasonKey    string `json:"cap_reason_key"`
+	MaximumAtCapPPM string `json:"maximum_product_at_cap"`
 }
 
 type minigameFormula struct {
@@ -155,6 +176,9 @@ var formulaAuthorities = []authoritySpec{
 	{label: "production.accrueContent", path: "production/engine.go", kind: authorityFunction, symbol: "accrueContent"},
 	{label: "production.contentContributionsWithPolicy", path: "production/content.go", kind: authorityFunction, symbol: "contentContributionsWithPolicy"},
 	{label: "production.countPPMFactor", path: "production/content.go", kind: authorityFunction, symbol: "countPPMFactor"},
+	{label: "production.AxisInput", path: "production/axis_stack.go", kind: authorityFunction, symbol: "AxisInput"},
+	{label: "production.axisFactor", path: "production/axis_stack.go", kind: authorityFunction, symbol: "axisFactor"},
+	{label: "production.attainRun", path: "production/axis_stack.go", kind: authorityFunction, symbol: "attainRun"},
 	{label: "production.synergyFactor", path: "production/content.go", kind: authorityFunction, symbol: "synergyFactor"},
 	{label: "production.materializeProvisionBoundaryWithPolicy", path: "production/content.go", kind: authorityFunction, symbol: "materializeProvisionBoundaryWithPolicy"},
 	{label: "production.applyFoundationTransition", path: "production/foundation_transition.go", kind: authorityFunction, symbol: "applyFoundationTransition"},
@@ -224,8 +248,28 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	axisFormula := axisStackFormula{
+		Input:  "x = min(input, input_cap); input = attainment_score_run (sum of score_grant over run-scoped achievements attained this run) or achievement_score_run, per the pinned axis_stack.input; Company state only",
+		Factor: "factor_i = (1000000 + x * factor_ppm_i) / 1000000, exact integers then one Decimal quantization",
+		Stack:  "product over owned axis-scaled upgrades in raw-byte source_id order",
+		Slot:   "axis_stack, after milestones and before faction; target all",
+		Timing: "the input changes only in the achievement hook after accrual; a new value applies from the next accrual interval",
+	}
+	if axis, declared := economyCatalog.AxisStack(); declared {
+		product := decimal.One
+		for _, upgrade := range economyCatalog.Upgrades() {
+			for _, effect := range upgrade.Effects {
+				if effect.Slot == economy.SlotAxisStack {
+					scaled := new(big.Int).Mul(big.NewInt(axis.InputCap), big.NewInt(effect.FactorPPM))
+					product = product.Mul(decimal.One.Add(decimal.FromString(scaled.String()).Div(decimal.FromFloat64(1_000_000))).Quantize(decimal.CanonicalSignificantDigits))
+				}
+			}
+		}
+		axisFormula.Pinned = &axisStackPinning{Input: string(axis.Input), InputCap: axis.InputCap, CapReasonKey: axis.CapReasonKey, MaximumAtCapPPM: product.Quantize(decimal.CanonicalSignificantDigits).String()}
+	}
 	artifact := formulaArtifact{
-		SchemaVersion:       13,
+		AxisStack:           axisFormula,
+		SchemaVersion:       14,
 		ProductionRate:      "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,

@@ -1,5 +1,5 @@
 {
-  "schema_version": 13,
+  "schema_version": 14,
   "production_rate": "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -13,7 +13,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "6a61af92a3eaba6bf8851ffa60812a0c9d5a70a3dd2bccc17bc70b3841e23b16",
+  "source_fingerprint": "0ae49515ce2f06f8babdc90f02b4ebf5e0f22337347bf33fcddd7af27218d77f",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -201,5 +201,13 @@
       "increment quota_used for each admitted send"
     ],
     "payout_math": "exact integer intermediates; legal exact-domain inputs cannot overflow the converted output"
+  },
+  "axis_stack": {
+    "input": "x = min(input, input_cap); input = attainment_score_run (sum of score_grant over run-scoped achievements attained this run) or achievement_score_run, per the pinned axis_stack.input; Company state only",
+    "factor": "factor_i = (1000000 + x * factor_ppm_i) / 1000000, exact integers then one Decimal quantization",
+    "stack": "product over owned axis-scaled upgrades in raw-byte source_id order",
+    "slot": "axis_stack, after milestones and before faction; target all",
+    "timing": "the input changes only in the achievement hook after accrual; a new value applies from the next accrual interval",
+    "pinned": null
   }
 }
