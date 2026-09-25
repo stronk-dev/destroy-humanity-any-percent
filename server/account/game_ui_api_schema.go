@@ -241,11 +241,21 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("gate_id", apiString("mechanical-id")),
 			apiField("route_id", &publicapi.Schema{Kind: publicapi.SchemaNull}),
 		)},
+		{Name: "GameUITransitionIncorporate", Schema: apiObject(
+			apiField("factions", array("GameUITransitionIncorporateFaction")),
+		)},
+		{Name: "GameUITransitionIncorporateFaction", Schema: apiObject(
+			apiField("copy_key", apiString("mechanical-id")),
+			apiField("faction_id", apiString("mechanical-id")),
+		)},
 		{Name: "GameUITransitionEligibility", Schema: apiObject(
 			apiField("eligible", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
 		)},
 		{Name: "GameUITransitions", Schema: apiObject(
 			apiField("cross_gate", &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{apiRef("GameUITransitionCrossGate"), {Kind: publicapi.SchemaNull}}}),
+			// Tier 2 content §E2: additive optional control, present only when
+			// incorporate can apply (a required property would violate C2).
+			publicapi.Field{Required: false, Name: "incorporate", Schema: apiRef("GameUITransitionIncorporate")},
 			apiField("wind_down", apiRef("GameUITransitionEligibility")),
 		)},
 		{Name: "GameUIUpgrade", Schema: apiObject(

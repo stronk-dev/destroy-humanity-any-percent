@@ -150,8 +150,20 @@ type eligibilityTransition struct {
 }
 
 type transitionRows struct {
-	CrossGate *crossGateTransition  `json:"cross_gate"`
-	WindDown  eligibilityTransition `json:"wind_down"`
+	CrossGate *crossGateTransition `json:"cross_gate"`
+	// Incorporate is omitted unless incorporate can apply (Tier 2 content §E2);
+	// an optional property keeps v3/v4 snapshots below Tier 2 byte-identical.
+	Incorporate *incorporateTransition `json:"incorporate,omitempty"`
+	WindDown    eligibilityTransition  `json:"wind_down"`
+}
+
+type incorporateTransition struct {
+	Factions []incorporateFaction `json:"factions"`
+}
+
+type incorporateFaction struct {
+	CopyKey   string `json:"copy_key"`
+	FactionID string `json:"faction_id"`
 }
 
 type snapshot struct {
@@ -289,6 +301,13 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 	if transitionPreview.CrossGate != nil {
 		transitions.CrossGate = &crossGateTransition{Eligible: transitionPreview.CrossGate.Eligible,
 			GateID: transitionPreview.CrossGate.GateID, RouteID: nil}
+	}
+	if transitionPreview.Incorporate != nil {
+		transitions.Incorporate = &incorporateTransition{Factions: make([]incorporateFaction, 0, len(transitionPreview.Incorporate))}
+		for _, factionID := range transitionPreview.Incorporate {
+			row, _ := bundle.Faction.Faction(factionID)
+			transitions.Incorporate.Factions = append(transitions.Incorporate.Factions, incorporateFaction{CopyKey: row.IncorporationCopyKey, FactionID: row.ID})
+		}
 	}
 	result := snapshot{
 		ConstantsHash:   bundle.ConstantsHash,

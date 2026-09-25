@@ -75,3 +75,41 @@ row literal. When OD-1 is ruled, the role is appended to `generator.open_plan_fl
   Both were restored.
 - `client/src/copy/index.ts`, `client/src/ui/themes.ts` and `client/src/game-ui/*` are not
   kernel-guarded, so no version bump was needed.
+
+## 2026-09-25 — C4b: Tier-2 Gate and Incorporate controls, energy-bar stub (Claude)
+
+**Implemented by:** Claude. **Review:** awaiting Codex designated cross-party review.
+
+- **Server (`server/gameui`, unguarded).** The Gate preview now projects the next adjacent
+  standard gate: `gate.t0_to_t1` at Tier 0 and `gate.t1_to_t2` at Tier 1, but only when the pinned
+  routes declare it, so the epoch-8 output is unchanged. `transitions.incorporate` (the sorted
+  faction ids plus their existing `incorporation_copy_key`s) is emitted only when `incorporate` can
+  apply (Tier ≥ 2, no faction) and is `omitempty` otherwise. In the API schema it is an additive,
+  optional `GameUITransitions.incorporate`: `make api-generate` changed `api.json`/`types.ts`, and
+  `api-compat-v1.json` did not change (no re-pin).
+- **Client.** The contract accepts the optional control only at Tier ≥ 2 with sorted rows,
+  `copy_key == incorporate.<id>` and exact keys. The Desk renders one button per faction and
+  submits `incorporate {faction_id}`. The era_2010 FarmVille energy bar is presentation only: its
+  curtain is in the tooltip and in small print, and Refill emits no intent. Candidate copy for
+  owner adoption is in `copy/catalog/tier2-candidate.json` (6 keys).
+- **Preview limitation, recorded (AR-F3 family):** at Tier 1, a run-1 Company whose scripted first
+  failure is due routes every command, `cross_gate` included, into that Exit. The preview models
+  only the ordinary transition, and the command's receipt/event stays authoritative.
+- **Evidence (cold):**
+  - `gameui` Tier-2 tests on the candidate catalogs: the gate is ineligible at 9.99e6 and eligible
+    at 1e7, agreeing with `production.TransitionWithRoutes`, and is absent once crossed.
+    Incorporate is offered at tier 2 and 3 with no faction, and not at tier 1 or with a faction.
+    The wire is omitted when nil.
+  - `gameui`/`account` unit tests pass; Postgres integration for `gameui`, `gameserver` and
+    `production` passes.
+  - Client: `game-ui.test.ts` (17) passes, covering the six contract accept/reject rows. A
+    three-browser test checks the incorporate submit, energy-bar inertness (zero intents on
+    Refill) and axe.
+  - `typecheck`, `test-client` (6761), `test-browser` (20439), `verify-client-boundary`,
+    `copy-check` and `test-game-ui-composed` (v4 lifecycle plus the Pitch phase) all pass.
+- **Severing, all restored:**
+  - G1, dropping the tier-1 gate map entry, fails the gate test.
+  - G2, ignoring the existing faction, fails the incorporate test.
+  - G3, removing `omitempty`, fails the wire test.
+  - U1, binding a fixed faction to every button, fails the browser test.
+  - U2, making Refill submit an intent, fails the browser test.

@@ -109,7 +109,23 @@ export function parseGameUISnapshot(source: unknown): ParsedGameUISnapshot {
   if (root.schema_version === 4) parseFeatures(root.features);
   if (root.schema_version >= 3) {
     const transitions = object(root.transitions, "game UI transitions");
-    exact(transitions, ["cross_gate", "wind_down"], "game UI transitions");
+    // Tier 2 content §E2: `incorporate` is an optional control, present only when incorporate can apply.
+    const offersIncorporate = Object.hasOwn(transitions, "incorporate");
+    exact(transitions, offersIncorporate ? ["cross_gate", "incorporate", "wind_down"] : ["cross_gate", "wind_down"], "game UI transitions");
+    if (offersIncorporate) {
+      if ((run.tier as number) < 2) throw new SyntaxError("incorporate control below Tier 2");
+      const incorporate = object(transitions.incorporate, "game UI incorporate transition");
+      exact(incorporate, ["factions"], "game UI incorporate transition");
+      if (!Array.isArray(incorporate.factions) || incorporate.factions.length === 0) throw new SyntaxError("invalid game UI incorporate factions");
+      let prior = "";
+      for (const source of incorporate.factions) {
+        const row = object(source, "game UI incorporate faction");
+        exact(row, ["copy_key", "faction_id"], "game UI incorporate faction");
+        const factionID = identifier(row.faction_id);
+        if (factionID <= prior || row.copy_key !== `incorporate.${factionID}`) throw new SyntaxError("invalid game UI incorporate faction");
+        prior = factionID;
+      }
+    }
     if (transitions.cross_gate !== null) {
       const crossGate = object(transitions.cross_gate, "game UI cross-gate transition");
       exact(crossGate, ["eligible", "gate_id", "route_id"], "game UI cross-gate transition");

@@ -375,6 +375,31 @@ it.skipIf(typeof document === "undefined")("renders the Tier-2 era_2010 Desk and
   await unmount(app); target.remove();
 });
 
+it.skipIf(typeof document === "undefined")("submits incorporate from the Tier-2 control and keeps the energy bar inert (rfc/tier2-content.md §E2/§E3)", async () => {
+  const runtime = new FixtureRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  const tier2 = { ...snapshot, run: { ...snapshot.run, tier: 2 }, transitions: { cross_gate: null, wind_down: { eligible: false },
+    incorporate: { factions: [{ copy_key: "incorporate.bootstrapper", faction_id: "bootstrapper" }, { copy_key: "incorporate.open_source", faction_id: "open_source" }] } } } as ParsedGameUISnapshot;
+  runtime.current = tier2;
+  app.fixtureSnapshot(tier2); app.fixtureSurface("desk"); flushSync();
+  const buttons = [...target.querySelectorAll("fieldset.incorporate button")] as HTMLButtonElement[];
+  expect(buttons).toHaveLength(2);
+  expect(buttons.map((button) => button.textContent)).not.toContain("open_source");
+  const refill = [...target.querySelectorAll("section.energy button")] as HTMLButtonElement[];
+  expect(refill).toHaveLength(1);
+  refill[0]!.click(); flushSync();
+  expect(runtime.requests).toHaveLength(0);
+  expect(target.querySelector("section.energy [role=status]")).not.toBeNull();
+  expect(target.querySelector("section.energy small")?.textContent).toMatch(/Parody/);
+  assertNoMechanicalPresentation(target); await assertAxe(target, "tier-2 incorporate and energy");
+  buttons[1]!.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.requests).toHaveLength(1);
+  expect(runtime.requests[0]).toMatchObject({ kind: "incorporate", faction_id: "open_source", expected_revision: snapshot.revision });
+  await unmount(app); target.remove();
+});
+
 it.skipIf(typeof document === "undefined")("feeds authoritative Game UI snapshots through the archived 20 Hz shell worker", async () => {
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;

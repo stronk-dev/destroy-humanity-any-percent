@@ -1568,6 +1568,39 @@
         ],
         "type": "object"
       },
+      "GameUITransitionIncorporate": {
+        "additionalProperties": false,
+        "properties": {
+          "factions": {
+            "items": {
+              "$ref": "#/components/schemas/GameUITransitionIncorporateFaction"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "factions"
+        ],
+        "type": "object"
+      },
+      "GameUITransitionIncorporateFaction": {
+        "additionalProperties": false,
+        "properties": {
+          "copy_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "faction_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "copy_key",
+          "faction_id"
+        ],
+        "type": "object"
+      },
       "GameUITransitions": {
         "additionalProperties": false,
         "properties": {
@@ -1580,6 +1613,9 @@
                 "type": "null"
               }
             ]
+          },
+          "incorporate": {
+            "$ref": "#/components/schemas/GameUITransitionIncorporate"
           },
           "wind_down": {
             "$ref": "#/components/schemas/GameUITransitionEligibility"

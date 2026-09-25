@@ -51,6 +51,18 @@ describe("Game UI snapshot contract", () => {
     expect(() => eraForSnapshot(parseGameUISnapshot({ ...snapshot, run: { ...snapshot.run, tier: 3 } }))).toThrow(/no shipped UI era/);
   });
 
+  it("accepts the optional Tier-2 incorporate control only when it can apply (rfc/tier2-content.md §E2)", () => {
+    const tier2 = { ...snapshot, run: { ...snapshot.run, tier: 2 } };
+    const incorporate = { factions: [{ copy_key: "incorporate.bootstrapper", faction_id: "bootstrapper" }, { copy_key: "incorporate.open_source", faction_id: "open_source" }] };
+    const parsed = parseGameUISnapshot({ ...tier2, transitions: { ...snapshot.transitions, incorporate } });
+    expect("transitions" in parsed && parsed.transitions.incorporate?.factions.map((row) => row.faction_id)).toEqual(["bootstrapper", "open_source"]);
+    expect(() => parseGameUISnapshot({ ...snapshot, transitions: { ...snapshot.transitions, incorporate } })).toThrow(/below Tier 2/);
+    expect(() => parseGameUISnapshot({ ...tier2, transitions: { ...snapshot.transitions, incorporate: { factions: [...incorporate.factions].reverse() } } })).toThrow(/incorporate faction/);
+    expect(() => parseGameUISnapshot({ ...tier2, transitions: { ...snapshot.transitions, incorporate: { factions: [{ copy_key: "incorporate.other", faction_id: "open_source" }] } } })).toThrow(/incorporate faction/);
+    expect(() => parseGameUISnapshot({ ...tier2, transitions: { ...snapshot.transitions, incorporate: { factions: [] } } })).toThrow(/incorporate factions/);
+    expect(() => parseGameUISnapshot({ ...tier2, transitions: { ...snapshot.transitions, incorporate, surprise: true } })).toThrow(/exact/);
+  });
+
   it("fails closed on unsorted rows, extra save bytes, and cap overflow", () => {
     expect(() => parseGameUISnapshot({ ...snapshot, facts: [...snapshot.facts].reverse() })).toThrow(/sorted/);
     expect(() => parseGameUISnapshot({ ...snapshot, save_state: {} })).toThrow(/exact/);

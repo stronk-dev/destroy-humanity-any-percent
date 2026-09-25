@@ -106,9 +106,21 @@ The
 predicate that Exit freezes into replay. While a session is `active|claimed`, the preview is false,
 matching the server's `not_eligible/minigame_session_active` rejection. A bundle that pins
 `minigame_api` cannot be projected without that resolver: the projector fails loud instead of
-offering a control the server would refuse. The previewed `cross_gate` (only the uncrossed
-`gate.t0_to_t1`) is never the curriculum's scripted Exit, because that Exit requires the gate to
-already be crossed.
+offering a control the server would refuse. The previewed `cross_gate` is the next adjacent
+standard gate: the uncrossed `gate.t0_to_t1` at Tier 0 and, only when the pinned routes declare it
+(Tier 2 content, `rfc/tier2-content.md` §E2), the uncrossed `gate.t1_to_t2` at Tier 1. At Tier 0 it
+is never the curriculum's scripted Exit, which requires the first gate already crossed. At Tier 1 a
+run-1 Company whose scripted first failure is due routes every command into that Exit; the preview
+does not model this, and the terminal receipt/event stays authoritative.
+
+`transitions.incorporate` is an optional control, present exactly when `incorporate` can apply
+(Tier ≥ 2 and no faction). It lists every pinned faction by `faction_id` with its existing
+`incorporation_copy_key` and is omitted otherwise, so snapshots below Tier 2 are byte-unchanged
+and the API compatibility pin is untouched. The client rejects the control below Tier 2 or with an
+unsorted list or mismatched copy key. The Desk renders one button per faction, and each submits
+`incorporate {faction_id}`. At `era_2010` the Desk also shows the FarmVille-era energy bar: a
+presentation-only chrome stub with its curtain in both the tooltip and small print. It holds no
+state, always reads full, and its Refill button emits no intent.
 The Game UI projector derives the first Gate by invoking the existing production transition on a
 discarded decoded-state clone and applies the existing Tier-1 Wind Down rule. The production
 kernel itself is unchanged. The first Gate is the only Phase-A gate exposed;

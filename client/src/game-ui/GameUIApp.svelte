@@ -53,6 +53,7 @@
   let offer = $state<ExitOfferSpawnedEvent | undefined>();
   let ended = $state<RunEndedEvent | undefined>();
   let orderPlaced = $state(false);
+  let energyRefilled = $state(false);
   let intentNotice = $state<CopyKey | null>(null);
   // GS0.6: one polite chrome region for cross-surface announcements, deduped
   // by stream cursor so a replay after reconnect announces nothing.
@@ -344,6 +345,11 @@
 
   function exitTitle(exitType: string): string { return t(requirePresentation(GAME_UI_PRESENTATION.exitTypes, exitType).title_key, {}, era); }
 
+  function declaredCopyKey(key: string): CopyKey {
+    if (!applicationCopyCatalog.byKey.has(key)) throw new RangeError(`missing copy ${key}`);
+    return key as CopyKey;
+  }
+
   function capFor(cap: GameUISnapshot["resources"][number]["cap"]): { amount: string; reason_key: CopyKey } | undefined {
     if (cap === null) return undefined;
     // F10: a missing reason key must not take the Desk down. The cap is
@@ -477,8 +483,27 @@
           {#if transitions.cross_gate}
             <button type="button" disabled={pending || !transitions.cross_gate.eligible} onclick={() => act({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null })}>{t("desk.cross_gate", {}, era)}</button>
           {/if}
+          {#if transitions.incorporate}
+            <fieldset class="incorporate">
+              <legend>{t("incorporate.panel.title", {}, era)}</legend>
+              <p>{t("incorporate.panel.hint", {}, era)}</p>
+              {#each transitions.incorporate.factions as row (row.faction_id)}
+                <button type="button" disabled={pending} onclick={() => act({ kind: "incorporate", faction_id: row.faction_id })}>{t(declaredCopyKey(row.copy_key), {}, era)}</button>
+              {/each}
+            </fieldset>
+          {/if}
           <button type="button" disabled={pending || !transportReady || !transitions.wind_down.eligible || founderRevision === undefined} onclick={() => act(withPlan({ kind: "wind_down", expected_founder_revision: founderRevision }))}>{t("desk.wind_down", {}, era)}</button>
           {#if liveFeatures?.reputation && transitions.wind_down.eligible}<ReputationPlanPanel arm={liveFeatures.reputation} {era} previewDelta={0} onChange={(plan) => { exitPlan = [...plan]; }} />{/if}
+        </section>
+      {/if}
+      {#if era === "era_2010"}
+        <!-- FarmVille-era energy bar: presentation only. It limits nothing, holds no state, and its refill emits no intent (§E3). -->
+        <section class="card energy" aria-labelledby="energy-heading" title={t("era_2010.energy_bar.curtain", {}, era)}>
+          <h2 id="energy-heading">{t("era_2010.energy_bar.label", {}, era)}</h2>
+          <meter min={0} max={1} value={1} aria-labelledby="energy-heading" aria-describedby="energy-curtain"></meter>
+          <button type="button" onclick={() => { energyRefilled = true; }}>{t("era_2010.energy_bar.refill", {}, era)}</button>
+          {#if energyRefilled}<p role="status">{t("era_2010.energy_bar.refilled", {}, era)}</p>{/if}
+          <small id="energy-curtain">{t("era_2010.energy_bar.curtain", {}, era)}</small>
         </section>
       {/if}
       {#if era === "era_1995"}

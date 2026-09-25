@@ -723,6 +723,38 @@
       "tone": "corporate"
     },
     {
+      "key": "era_2010.energy_bar.curtain",
+      "text": "Parody: free-to-play games of this era rationed play with energy bars and timers. This one limits nothing, never empties, and costs nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "era_2010.energy_bar.label",
+      "text": "Energy",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "era_2010.energy_bar.refill",
+      "text": "Refill energy",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "era_2010.energy_bar.refilled",
+      "text": "Refilled. It was already full. It is always full.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "event.exit_offer_declined",
       "text": "Offer declined. Run {run_seq} continues.",
       "params": [
@@ -1328,6 +1360,22 @@
     {
       "key": "incorporate.open_source",
       "text": "Open Source",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "incorporate.panel.hint",
+      "text": "Pick what kind of company this becomes. The choice holds until the run ends.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "incorporate.panel.title",
+      "text": "Incorporate",
       "params": [],
       "era_variants": null,
       "provenance": [],
