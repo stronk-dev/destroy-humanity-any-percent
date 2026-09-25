@@ -14,7 +14,7 @@ held until it is. Fixture-first: candidates live under `balance/testdata/t2/`; e
   `gate.t1_to_t2` is rejected against candidate routes (AC1 subset).
 - [x] C3 — AC0 reachability: a Tier-1 company on the candidate bundle crosses `gate.t1_to_t2`,
   gets `Tier == 2`, and `incorporate` applies; the same on the epoch-8 bundle rejects.
-- [~] C4 — UI (§E1–E3 minus Headcount panel): `era_2010` theme/era, tier-2 era mapping (tier ≥ 3
+- [x] C4 — UI (§E1–E3 minus Headcount panel): `era_2010` theme/era, tier-2 era mapping (tier ≥ 3
   still throws), Gate control for any projected gate, minimal Incorporate control, FarmVille
   energy-bar chrome stub with curtain; candidate copy (§E4 keys).
 - [ ] C5 — Harness policy registry v2 subset (§P1 `exit_rule: t01_c32_readiness_once`,

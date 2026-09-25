@@ -5,6 +5,8 @@ import candidateHash from "../../balance/testdata/t2/candidate-bundle-hash.txt?r
 import categoriesCandidate from "../../balance/testdata/t2/categories-candidate-v1.json?raw";
 import economyCandidate from "../../balance/testdata/t2/economy-candidate-v1.json?raw";
 import routesCandidate from "../../balance/testdata/t2/routes-candidate-v1.json?raw";
+import presentationCandidate from "../../balance/testdata/t2/presentation-candidate-v3.json";
+import { applicationCopyCatalog } from "../src/copy";
 import { parseCatalog } from "../src/economy-kernel";
 import { loadReplayCatalogBundle, type ReplayArtifacts } from "../src/replay";
 import { parseRoutesCatalog } from "../src/routes";
@@ -79,6 +81,29 @@ describe("Tier 2 content candidates (rfc/tier2-content.md §A/§B, fixture-first
     await expect(loadReplayCatalogBundle(await artifactHash(artifacts), artifacts)).rejects.toThrow();
     const accepted = { ...artifacts, categories: categoriesCandidate } as unknown as ReplayArtifacts;
     expect(await artifactHash(accepted)).toBe(candidateHash.trim());
+  });
+});
+
+describe("Tier 2 presentation candidate (§E4)", () => {
+  const economy = JSON.parse(economyCandidate) as { generator_classes: { id: string; provisioned_hardcap?: { reason_key: string } }[]; upgrades: { id: string }[] };
+  type Row = { id: string; title_key: string; description_key?: string; cap_reason_key?: string | null };
+  const sorted = (rows: readonly Row[]) => rows.every((row, index) => index === 0 || rows[index - 1]!.id < row.id);
+  const declared = (key: string | null | undefined) => key === null || key === undefined || applicationCopyCatalog.byKey.has(key);
+
+  it("binds every candidate generator, upgrade, and previewable gate to declared copy", () => {
+    const generators = presentationCandidate.generators as Row[], upgrades = presentationCandidate.upgrades as Row[], gates = presentationCandidate.gates as Row[];
+    expect(presentationCandidate.schema_version).toBe(3);
+    expect(sorted(generators) && sorted(upgrades) && sorted(gates)).toBe(true);
+    expect(generators.map((row) => row.id)).toEqual(economy.generator_classes.map((row) => row.id).sort());
+    expect(upgrades.map((row) => row.id)).toEqual(economy.upgrades.map((row) => row.id).sort());
+    expect(gates.map((row) => row.id)).toEqual(["gate.t0_to_t1", "gate.t1_to_t2"]);
+    for (const row of [...generators, ...upgrades, ...gates]) {
+      for (const key of [row.title_key, row.description_key, row.cap_reason_key]) expect(declared(key), `${row.id} -> ${key}`).toBe(true);
+    }
+    for (const generator of economy.generator_classes) {
+      const binding = generators.find((row) => row.id === generator.id)!;
+      expect(binding.cap_reason_key ?? null, generator.id).toBe(generator.provisioned_hardcap?.reason_key ?? null);
+    }
   });
 });
 

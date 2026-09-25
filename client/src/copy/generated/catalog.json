@@ -1190,6 +1190,14 @@
       "tone": "diegetic"
     },
     {
+      "key": "gate.t1_to_t2.title",
+      "text": "IT Company",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "generator.answering_machine.description",
       "text": "Takes jobs while you're out!! Every blink of the red light is a neighbor who didn't hang up.",
       "params": [],
@@ -1302,8 +1310,32 @@
       "tone": "diegetic"
     },
     {
+      "key": "generator.garage_rack.provisioned_cap",
+      "text": "Contracted racks stop at the printed limit. Every cap in this program is a number you can read.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "generator.garage_rack.title",
       "text": "Garage Rack",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "generator.hot_desk_program.description",
+      "text": "Fewer desks than people, and a booking app to manage the difference. Everyone is always somewhere.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "generator.hot_desk_program.title",
+      "text": "Hot-Desk Program",
       "params": [],
       "era_variants": null,
       "provenance": [],
@@ -1326,6 +1358,22 @@
       "tone": "corporate"
     },
     {
+      "key": "generator.managed_services_contract.description",
+      "text": "You run other companies' servers now, including the garage racks you used to run for yourself.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "generator.managed_services_contract.title",
+      "text": "Managed Services Contract",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "generator.nephew_intern.description",
       "text": "Your sister's kid. Great with computers. Paid in pizza and experience. Keeps a stack of finished jobs ready for Monday.",
       "params": [],
@@ -1336,6 +1384,22 @@
     {
       "key": "generator.nephew_intern.title",
       "text": "The Nephew",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "generator.open_plan_floor.description",
+      "text": "One big room, no walls, headphones sold separately. Collaboration is now mandatory.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "generator.open_plan_floor.title",
+      "text": "Open-Plan Floor",
       "params": [],
       "era_variants": null,
       "provenance": [],
@@ -4119,6 +4183,38 @@
       "tone": "diegetic"
     },
     {
+      "key": "upgrade.move_fast_break_things.description",
+      "text": "The motto goes on the wall. The incident report template goes in a drawer.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "upgrade.move_fast_break_things.title",
+      "text": "Move Fast and Break Things",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "upgrade.nap_pod.description",
+      "text": "A reclining egg for recovering from the hours the egg exists to enable.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "upgrade.nap_pod.title",
+      "text": "Nap Pod",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "upgrade.nephew_business_cards.description",
       "text": "Five hundred cards, raised lettering. He hands them to everyone he meets. It works. Nobody can explain why it works.",
       "params": [],
@@ -4129,6 +4225,22 @@
     {
       "key": "upgrade.nephew_business_cards.title",
       "text": "Nephew's Business Cards",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "upgrade.ping_pong_table.description",
+      "text": "Culture, in regulation size. It gets used most during the all-hands.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "upgrade.ping_pong_table.title",
+      "text": "Ping-Pong Table",
       "params": [],
       "era_variants": null,
       "provenance": [],

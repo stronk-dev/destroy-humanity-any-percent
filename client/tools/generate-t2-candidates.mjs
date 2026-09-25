@@ -114,10 +114,35 @@ routes = insertOnce(routes, `      "requirement": [{ "resource_id": "company.cas
 let categories = read("balance/categories/phase0.json");
 categories = insertOnce(categories, `"full_gate_set": ["gate.t0_to_t1", `, `"gate.t1_to_t2", `, "categories gate set");
 
+// Presentation schema v3 carry with the Tier-2 bindings (§E4), so minting cannot leave a
+// rendered generator, upgrade, or previewed gate without its copy binding.
+let presentation = read("balance/testdata/t0-t1/presentation-v3.json");
+presentation = insertOnce(presentation,
+  `"id": "generator.garage_rack", "title_key": "generator.garage_rack.title", "description_key": "generator.garage_rack.description", "cap_reason_key": null`,
+  "", "garage_rack presentation anchor");
+presentation = presentation.replace(
+  `"id": "generator.garage_rack", "title_key": "generator.garage_rack.title", "description_key": "generator.garage_rack.description", "cap_reason_key": null`,
+  `"id": "generator.garage_rack", "title_key": "generator.garage_rack.title", "description_key": "generator.garage_rack.description", "cap_reason_key": "generator.garage_rack.provisioned_cap"`);
+const generatorBinding = (id) => `    { "id": "${id}", "title_key": "${id}.title", "description_key": "${id}.description", "cap_reason_key": null },\n`;
+const upgradeBinding = (id) => `    { "id": "${id}", "title_key": "${id}.title", "description_key": "${id}.description" },\n`;
+presentation = insertOnce(presentation, `"cap_reason_key": "generator.garage_rack.provisioned_cap" },\n`,
+  generatorBinding("generator.hot_desk_program"), "hot desk presentation");
+presentation = insertOnce(presentation, `"id": "generator.legal_dept", "title_key": "generator.legal_dept.title", "description_key": "generator.legal_dept.description", "cap_reason_key": null },\n`,
+  generatorBinding("generator.managed_services_contract"), "managed services presentation");
+presentation = insertOnce(presentation, `"id": "generator.nephew_intern", "title_key": "generator.nephew_intern.title", "description_key": "generator.nephew_intern.description", "cap_reason_key": null }`,
+  `,\n${generatorBinding("generator.open_plan_floor").trimEnd().replace(/,$/, "")}`, "open plan presentation");
+presentation = insertOnce(presentation, `"id": "upgrade.institutional_memory", "title_key": "upgrade.institutional_memory.title", "description_key": "upgrade.institutional_memory.description" },\n`,
+  upgradeBinding("upgrade.move_fast_break_things") + upgradeBinding("upgrade.nap_pod"), "move fast / nap pod presentation");
+presentation = insertOnce(presentation, `"id": "upgrade.nephew_business_cards", "title_key": "upgrade.nephew_business_cards.title", "description_key": "upgrade.nephew_business_cards.description" },\n`,
+  upgradeBinding("upgrade.ping_pong_table"), "ping pong presentation");
+presentation = insertOnce(presentation, `{ "id": "gate.t0_to_t1", "title_key": "gate.t0_to_t1.title" }`,
+  `,\n    { "id": "gate.t1_to_t2", "title_key": "gate.t1_to_t2.title" }`, "T1→T2 gate presentation");
+
 const outputs = {
   "balance/testdata/t2/economy-candidate-v1.json": economy,
   "balance/testdata/t2/routes-candidate-v1.json": routes,
   "balance/testdata/t2/categories-candidate-v1.json": categories,
+  "balance/testdata/t2/presentation-candidate-v3.json": presentation,
 };
 const sha = Object.entries(outputs).map(([file, bytes]) => `${createHash("sha256").update(bytes).digest("hex")}  ${file}`).join("\n") + "\n";
 outputs["balance/testdata/t2/candidates.sha256"] = sha;
