@@ -83,10 +83,32 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("fiscal", nullable(apiRef("GameUIFiscalArm"))),
 			apiField("meters", nullable(apiRef("GameUIMetersArm"))),
 			apiField("minigames", nullable(apiRef("GameUIMinigamesArm"))),
+			// Pet Adoption v1 PA7: additive optional arm. The compatibility gate
+			// rejects widening the null-only "pets" property, so the adoption
+			// projection lands beside it (the Reputation R9 precedent).
+			publicapi.Field{Required: false, Name: "pet_adoption", Schema: nullable(apiRef("GameUIPetsArm"))},
 			apiField("pets", &publicapi.Schema{Kind: publicapi.SchemaNull}),
 			// Reputation Tree v1 R9: an additive optional v4 arm (a new required
 			// response property would violate the C2 compatibility gate).
 			publicapi.Field{Required: false, Name: "reputation", Schema: nullable(apiRef("GameUIReputationArm"))},
+		)},
+		{Name: "GameUIPetsArm", Schema: apiObject(
+			apiField("pet_adoption", apiObject(
+				apiField("cap", integer(1, apiMaxExactInteger)),
+				apiField("count", integer(0, apiMaxExactInteger)),
+				apiField("name_keys", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiString("mechanical-id")}),
+				apiField("starter_species_id", apiString("mechanical-id")),
+			)),
+			apiField("pets", array("GameUIPetRow")),
+		)},
+		{Name: "GameUIPetRow", Schema: apiObject(
+			apiField("eligible_action_ids", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiString("mechanical-id")}),
+			apiField("name_key", apiString("mechanical-id")),
+			apiField("palette_id", apiString("mechanical-id")),
+			apiField("pet_id", apiString("uuid-v7")),
+			apiField("species_id", apiString("mechanical-id")),
+			apiField("status_band", apiString("", "floor", "high", "low", "normal")),
+			apiField("temperament", apiString("", "chaotic", "curious", "lazy", "playful", "sassy", "shy")),
 		)},
 		{Name: "GameUIReputationArm", Schema: apiObject(
 			apiField("available", integer(0, apiMaxExactInteger)),

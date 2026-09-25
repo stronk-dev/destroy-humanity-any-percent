@@ -93,3 +93,21 @@ func InitialCareState(catalog *Catalog, attendedMS int64) (CareState, error) {
 		TrustPPM: catalog.TrustPolicy.InitialPPM, EvaluatedThroughAttendedMS: attendedMS, BehaviorState: BehaviorIdle,
 		BehaviorEnteredAtAttendedMS: attendedMS, BehaviorQueue: []BehaviorQueueEntry{}}, nil
 }
+
+// ProjectCareStatus is the read-only snapshot projection (Pet Adoption v1 PA7):
+// the band and eligible actions a care command would see at attendedMS, by
+// decaying a discarded clone from the care watermark. It never mutates state.
+func ProjectCareStatus(state CareState, catalog *Catalog, attendedMS int64) (StatusBand, []string, error) {
+	if catalog == nil || attendedMS < state.EvaluatedThroughAttendedMS {
+		return "", nil, ErrInvalidCareTransition
+	}
+	clone := cloneCareStates(map[string]CareState{"projection": state})["projection"]
+	if err := applyCareDecay(&clone, catalog, attendedMS-state.EvaluatedThroughAttendedMS); err != nil {
+		return "", nil, err
+	}
+	band, _, err := CareStatus(clone, catalog)
+	if err != nil {
+		return "", nil, err
+	}
+	return band, EligibleCareActions(clone, catalog, attendedMS), nil
+}

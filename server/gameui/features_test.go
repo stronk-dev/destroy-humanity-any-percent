@@ -67,7 +67,7 @@ func TestProjectFeaturesProjectsTheLiveArms(t *testing.T) {
 	bundle := pinnedBundle(t)
 	company, founder := featureStates(bundle)
 	now := time.UnixMilli(1_800_000_000_000).UTC()
-	features, err := projectFeatures(bundle, company, founder, now, false)
+	features, err := projectFeatures(bundle, company, founder, now, false, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +97,7 @@ func TestProjectFeaturesNullsArmsBelowTheirActivatingVersions(t *testing.T) {
 	bundle := pinnedBundle(t)
 	company, founder := featureStates(bundle)
 	founder.WireVersion = 18
-	features, err := projectFeatures(bundle, company, founder, time.UnixMilli(1_800_000_000_000).UTC(), false)
+	features, err := projectFeatures(bundle, company, founder, time.UnixMilli(1_800_000_000_000).UTC(), false, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,7 +107,7 @@ func TestProjectFeaturesNullsArmsBelowTheirActivatingVersions(t *testing.T) {
 	withoutFiscal := bundle
 	withoutFiscal.Fiscal = nil
 	founder.WireVersion = 21
-	if _, err := projectFeatures(withoutFiscal, company, founder, time.UnixMilli(1_800_000_000_000).UTC(), false); !errors.Is(err, ErrInvalidProjection) {
+	if _, err := projectFeatures(withoutFiscal, company, founder, time.UnixMilli(1_800_000_000_000).UTC(), false, 0); !errors.Is(err, ErrInvalidProjection) {
 		t.Fatalf("a fiscal_unlock minigame without its Fiscal artifact projected: %v", err)
 	}
 }

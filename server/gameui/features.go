@@ -7,6 +7,7 @@ import (
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/pet"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/save"
 )
@@ -24,7 +25,77 @@ type featureRows struct {
 	Meters       *metersArm       `json:"meters"`
 	Minigames    *minigamesArm    `json:"minigames"`
 	Pets         *struct{}        `json:"pets"`
+	PetAdoption  *petsArm         `json:"pet_adoption,omitempty"`
 	Reputation   *reputationArm   `json:"reputation"`
+}
+
+// petsArm is Pet Adoption v1 PA7: the owner's own immutable identities plus
+// the band and eligible actions only (no raw stats, Trust, remainders,
+// cooldown cursors, behavior queue, or mood), and the adoption availability.
+type petsArm struct {
+	PetAdoption petAdoptionRow `json:"pet_adoption"`
+	Pets        []petRow       `json:"pets"`
+}
+
+type petAdoptionRow struct {
+	Cap              int64    `json:"cap"`
+	Count            int64    `json:"count"`
+	NameKeys         []string `json:"name_keys"`
+	StarterSpeciesID string   `json:"starter_species_id"`
+}
+
+type petRow struct {
+	EligibleActionIDs []string       `json:"eligible_action_ids"`
+	NameKey           string         `json:"name_key"`
+	PaletteID         string         `json:"palette_id"`
+	PetID             string         `json:"pet_id"`
+	SpeciesID         string         `json:"species_id"`
+	StatusBand        pet.StatusBand `json:"status_band"`
+	Temperament       string         `json:"temperament"`
+}
+
+// projectPets projects at the Founder's effective attendance: completed
+// age_ms plus the current run's attended partial, the same total a care or
+// adoption command would freeze.
+func projectPets(bundle production.CatalogBundle, founder *save.State, runAttendedMS int64) (*petsArm, error) {
+	effective, err := production.EffectiveFounderAttendedMS(founder.AgeMS, runAttendedMS)
+	if err != nil {
+		return nil, err
+	}
+	var starter *pet.SpeciesRow
+	for index := range bundle.PetSpecies.Species {
+		if bundle.PetSpecies.Species[index].Availability == pet.AvailabilityStarter {
+			starter = &bundle.PetSpecies.Species[index]
+		}
+	}
+	if starter == nil {
+		return nil, ErrInvalidProjection
+	}
+	arm := &petsArm{PetAdoption: petAdoptionRow{Cap: bundle.PetSpecies.MaxPetsPerFounder, Count: int64(len(founder.PetIdentities)),
+		NameKeys: append([]string{}, starter.NameKeys...), StarterSpeciesID: starter.SpeciesID}, Pets: []petRow{}}
+	for id, identity := range founder.PetIdentities {
+		care, ok := founder.Pets[id]
+		if !ok {
+			return nil, ErrInvalidProjection
+		}
+		band, eligible, err := pet.ProjectCareStatus(care, bundle.Pets, max(effective, care.EvaluatedThroughAttendedMS))
+		if err != nil {
+			return nil, err
+		}
+		if eligible == nil {
+			eligible = []string{}
+		}
+		arm.Pets = append(arm.Pets, petRow{EligibleActionIDs: eligible, NameKey: identity.NameKey, PaletteID: identity.PaletteID, PetID: id,
+			SpeciesID: identity.SpeciesID, StatusBand: band, Temperament: identity.Temperament})
+	}
+	sort.Slice(arm.Pets, func(left, right int) bool {
+		a, b := founder.PetIdentities[arm.Pets[left].PetID], founder.PetIdentities[arm.Pets[right].PetID]
+		if a.AdoptedAtAttendedMS != b.AdoptedAtAttendedMS {
+			return a.AdoptedAtAttendedMS < b.AdoptedAtAttendedMS
+		}
+		return arm.Pets[left].PetID < arm.Pets[right].PetID
+	})
+	return arm, nil
 }
 
 type achievementsArm struct {
@@ -127,8 +198,15 @@ type minigameAvailability struct {
 	Unlocked           bool   `json:"unlocked"`
 }
 
-func projectFeatures(bundle production.CatalogBundle, state, founder *save.State, now time.Time, minigameActive bool) (featureRows, error) {
+func projectFeatures(bundle production.CatalogBundle, state, founder *save.State, now time.Time, minigameActive bool, runAttendedMS int64) (featureRows, error) {
 	var result featureRows
+	if bundle.PetSpecies != nil && bundle.Pets != nil && save.VersionForState(founder) >= 23 {
+		arm, err := projectPets(bundle, founder, runAttendedMS)
+		if err != nil {
+			return featureRows{}, err
+		}
+		result.PetAdoption = arm
+	}
 	if bundle.Achievements != nil && save.VersionForState(state) >= 16 {
 		arm, err := projectAchievements(bundle.Achievements, state, founder)
 		if err != nil {
@@ -318,6 +396,7 @@ func featureFacts(features featureRows) []factRow {
 		{FactID: "feature.fiscal", Value: features.Fiscal != nil},
 		{FactID: "feature.meters", Value: features.Meters != nil},
 		{FactID: "feature.minigame.pitch", Value: pitch},
+		{FactID: "feature.pet_adoption", Value: features.PetAdoption != nil},
 		{FactID: "feature.pets", Value: features.Pets != nil},
 		{FactID: "feature.reputation_tree", Value: features.Reputation != nil},
 	}

@@ -97,3 +97,21 @@ Founder revision.
 
 `testdata/replay/pet-adoption-v1.json` is the Go-authored corpus that the TS replay byte-matches.
 Regenerate it with `PET_ADOPTION_UPDATE_FIXTURE=1`.
+
+## Snapshot projection (PA7)
+
+Game UI snapshot v4 has an additive optional arm, `features.pet_adoption`, and the fact
+`feature.pet_adoption`. The arm is present only when the Founder is at v23 with `pet_species` and
+`pets` pinned.
+
+It is exactly `{pet_adoption: {cap, count, name_keys, starter_species_id}, pets[]}`. Each pet row
+is exactly `{eligible_action_ids, name_key, palette_id, pet_id, species_id, status_band,
+temperament}`, sorted by `(adopted_at_attended_ms, pet_id)`. No raw stats, Trust, remainders,
+cooldowns, behavior or mood appear.
+
+The band and the eligible actions come from `pet.ProjectCareStatus`, which decays a discarded
+clone to the Founder's effective attendance (completed `age_ms` plus the current run's attended
+partial). This is the same total a care or adoption command would freeze.
+
+The pre-existing null-only `features.pets` property stays null, because the API compatibility gate
+rejects widening a null property. The Reputation R9 optional-arm precedent is followed instead.

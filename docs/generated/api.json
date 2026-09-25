@@ -327,6 +327,16 @@
               }
             ]
           },
+          "pet_adoption": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUIPetsArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "pets": {
             "type": "null"
           },
@@ -831,6 +841,113 @@
         },
         "required": [
           "rows"
+        ],
+        "type": "object"
+      },
+      "GameUIPetRow": {
+        "additionalProperties": false,
+        "properties": {
+          "eligible_action_ids": {
+            "items": {
+              "format": "mechanical-id",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name_key": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "palette_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "pet_id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "species_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "status_band": {
+            "enum": [
+              "floor",
+              "high",
+              "low",
+              "normal"
+            ],
+            "type": "string"
+          },
+          "temperament": {
+            "enum": [
+              "chaotic",
+              "curious",
+              "lazy",
+              "playful",
+              "sassy",
+              "shy"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "eligible_action_ids",
+          "name_key",
+          "palette_id",
+          "pet_id",
+          "species_id",
+          "status_band",
+          "temperament"
+        ],
+        "type": "object"
+      },
+      "GameUIPetsArm": {
+        "additionalProperties": false,
+        "properties": {
+          "pet_adoption": {
+            "additionalProperties": false,
+            "properties": {
+              "cap": {
+                "maximum": 9007199254740991,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "count": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "name_keys": {
+                "items": {
+                  "format": "mechanical-id",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "starter_species_id": {
+                "format": "mechanical-id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "cap",
+              "count",
+              "name_keys",
+              "starter_species_id"
+            ],
+            "type": "object"
+          },
+          "pets": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIPetRow"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "pet_adoption",
+          "pets"
         ],
         "type": "object"
       },

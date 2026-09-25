@@ -204,3 +204,34 @@ rejected) is live.
 
 **Housekeeping:** `server/save/pet_identity_state_test.go`, committed in P4 unformatted, is
 gofmt'd here.
+
+## 2026-09-25 — P6a: snapshot projection (Claude)
+
+**What landed:**
+- `pet.ProjectCareStatus`: a read-only decay of a clone to the effective attendance.
+- `gameui.projectPets` and the additive optional v4 arm `features.pet_adoption`, with fact
+  `feature.pet_adoption`.
+- The generated API schemas `GameUIPetsArm` and `GameUIPetRow`.
+- The client `parsePetAdoptionArm`, exact-key and fail-closed.
+
+**Recorded reconciliation (OD-11):** PA7 names the fields `pets` and `pet_adoption`. v4 already
+has a required null-only `features.pets`, which the Garage lane registered, and widening it fails
+the C2 compatibility gate (`make api-generate` compat check). `pets` therefore stays null, and both
+PA7 fields live inside the optional `features.pet_adoption` object. This follows the Reputation R9
+precedent. No re-pin was made.
+
+**Tests:**
+- `server/gameui/pet_adoption_test.go`: absent before v23; empty arm at v23; exact row keys; the
+  band decays with a day of attendance; the projection does not mutate the care record; the fact
+  is present.
+- `client/test/pet-adoption-arm.test.ts`: `stats_ppm`, `trust_ppm`, `mood` and `behavior_queue`
+  leaks all reject; count mismatches reject.
+
+**Severing:**
+- Server: projecting at the watermark instead of effective attendance fails the test ("projected
+  band ignores attendance"). The first attempt at this sever broke the build and was redone with a
+  compiling mutant.
+- Client: replacing the exact-key row check with a plain object check fails 1 of 2.
+
+**Evidence (cold):** `./gameui ./account ./gameserver ./pet` pass; the client passes 6753 tests;
+typecheck, gofmt and vet are clean; the generated API is updated.

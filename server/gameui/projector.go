@@ -267,7 +267,7 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 		}
 		progress = append(progress, progressRow{Current: value.String(), StageID: "progress.tier", Target: "1e0"})
 	}
-	features, err := projectFeatures(bundle, state, founder, now, minigameActive)
+	features, err := projectFeatures(bundle, state, founder, now, minigameActive, attendedMS)
 	if err != nil {
 		return nil, err
 	}

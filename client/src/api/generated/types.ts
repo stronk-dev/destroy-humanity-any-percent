@@ -16,7 +16,7 @@ export type GameUIAchievementsArm = { rows: Array<GameUIAchievementRow>; score: 
 
 export type GameUIFact = { fact_id: string; value: boolean | number | string };
 
-export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pets: null; reputation?: GameUIReputationArm | null };
+export type GameUIFeatures = { achievements: GameUIAchievementsArm | null; active_play: null; fiscal: GameUIFiscalArm | null; meters: GameUIMetersArm | null; minigames: GameUIMinigamesArm | null; pet_adoption?: GameUIPetsArm | null; pets: null; reputation?: GameUIReputationArm | null };
 
 export type GameUIFiscalArm = { credit: number; credit_cap: GameUIIntCap; credit_per_period: number; generator_levels: Array<GameUIFiscalLevel>; hoard: { cap_credits: number; preview_ppm: number; reason_note: "next_run" }; period: { auto_ms: number; early_ms: number; early_success_ppm: number; guaranteed_ms: number; opened_wall_ms: number; seq: number }; sweep_preview: { credit_after: number; credited: number; periods: number; saturated: boolean }; unlocks: Array<GameUIFiscalUnlock> };
 
@@ -41,6 +41,10 @@ export type GameUIMetersArm = { meters: Array<GameUIMeterRow> };
 export type GameUIMinigameAvailability = { active_session: boolean; human_content_locked: boolean; minigame_id: string; unlocked: boolean };
 
 export type GameUIMinigamesArm = { rows: Array<GameUIMinigameAvailability> };
+
+export type GameUIPetRow = { eligible_action_ids: Array<string>; name_key: string; palette_id: string; pet_id: string; species_id: string; status_band: "floor" | "high" | "low" | "normal"; temperament: "chaotic" | "curious" | "lazy" | "playful" | "sassy" | "shy" };
+
+export type GameUIPetsArm = { pet_adoption: { cap: number; count: number; name_keys: Array<string>; starter_species_id: string }; pets: Array<GameUIPetRow> };
 
 export type GameUIProgress = { current: string; stage_id: string; target: string };
 

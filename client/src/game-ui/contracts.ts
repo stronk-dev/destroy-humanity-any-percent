@@ -151,7 +151,8 @@ function parseIntCap(value: unknown, label: string): { amount: number; reason_ke
 export function parseFeatures(source: unknown): GameUIFeatures {
   const features = object(source, "game UI features");
   // Reputation Tree v1 R9: `reputation` is an additive optional v4 arm.
-  exact(features, ["achievements", "active_play", "fiscal", "meters", "minigames", "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
+  // Pet Adoption v1 PA7: `pet_adoption` is likewise an additive optional arm.
+  exact(features, ["achievements", "active_play", "fiscal", "meters", "minigames", ...("pet_adoption" in features ? ["pet_adoption"] : []), "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
   if (features.active_play !== null || features.pets !== null) throw new SyntaxError("unproduced game UI arm must be null");
   if (features.achievements !== null) {
     const arm = object(features.achievements, "achievements arm");
@@ -220,7 +221,35 @@ export function parseFeatures(source: unknown): GameUIFeatures {
     }
   }
   if (features.reputation !== undefined && features.reputation !== null) parseReputationArm(features.reputation);
+  if (features.pet_adoption !== undefined && features.pet_adoption !== null) parsePetAdoptionArm(features.pet_adoption);
   return features as unknown as GameUIFeatures;
+}
+
+const petStatusBands = ["floor", "high", "low", "normal"] as const;
+const petTemperaments = ["chaotic", "curious", "lazy", "playful", "sassy", "shy"] as const;
+
+// PA7: identities plus band and eligible actions only; any raw care field
+// (stats, Trust, remainders, cooldowns, behavior, mood) fails closed.
+function parsePetAdoptionArm(source: unknown): void {
+  const arm = object(source, "pet adoption arm");
+  exact(arm, ["pet_adoption", "pets"], "pet adoption arm");
+  const adoption = object(arm.pet_adoption, "pet adoption availability");
+  exact(adoption, ["cap", "count", "name_keys", "starter_species_id"], "pet adoption availability");
+  const cap = integer(adoption.cap, 1), count = integer(adoption.count, 0);
+  if (count > cap) throw new SyntaxError("pet count exceeds its cap");
+  if (!Array.isArray(adoption.name_keys) || adoption.name_keys.length === 0) throw new SyntaxError("pet name pool must be non-empty");
+  for (const key of adoption.name_keys) identifier(key);
+  identifier(adoption.starter_species_id);
+  if (!Array.isArray(arm.pets) || arm.pets.length !== count) throw new SyntaxError("pet rows must match the pet count");
+  for (const [index, value] of arm.pets.entries()) {
+    const row = object(value, `pet ${index}`);
+    exact(row, ["eligible_action_ids", "name_key", "palette_id", "pet_id", "species_id", "status_band", "temperament"], "pet row");
+    oneOf(row.status_band, petStatusBands, "pet status band"); oneOf(row.temperament, petTemperaments, "pet temperament");
+    if (typeof row.pet_id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(row.pet_id)) throw new SyntaxError("pet id must be UUIDv7");
+    for (const key of [row.name_key, row.palette_id, row.species_id]) identifier(key);
+    if (!Array.isArray(row.eligible_action_ids)) throw new SyntaxError("pet eligible actions must be an array");
+    for (const action of row.eligible_action_ids) identifier(action);
+  }
 }
 
 function parseReputationArm(source: unknown): void {
