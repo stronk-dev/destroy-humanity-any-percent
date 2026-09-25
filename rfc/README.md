@@ -36,6 +36,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Minigame — Demo Disc Arcade](minigame-demo-disc-arcade.md) | draft — not implementation authority; OD-1–OD-16, findings AR-F1–F3 routed | Minigame Platform / Minigame API & Surface |
 | [Tier 2 Content — IT Company](tier2-content.md) | draft — not implementation authority; 10 owner decisions pending | Economy Kernel / Routes / Balance Harness |
 | [Minigame — Server Garden](minigame-server-garden.md) | draft — not implementation authority; persistent-tenant platform amendments SG-P1–P3, 22 owner decisions | Minigame Platform / Fiscal / Tier 2 |
+| [Garage Player Surfaces](garage-player-surfaces.md) | draft — not implementation authority; OD-1–OD-17, findings F1–F13 | Game UI Screens / Fiscal / Achievements / Meters / Pet / Active Play / Minigame API |
 
 **Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
 — the evidence-derived READY/BLOCKED queue at HEAD. The older July batch manifest is history,
