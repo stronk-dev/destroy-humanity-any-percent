@@ -15,7 +15,7 @@
 - [x] Extend the composed real-socket lifecycle through the Soul Recovery half required by AC1.
 - [x] Prove authenticated minigame-command flooding is bounded by the ruled account/session policy.
 - [x] Enumerate and verify the privacy contract for all four public minigame endpoints.
-- [ ] Implement surface components after UI Foundation, per MA-C9.
+- [x] Implement surface components after UI Foundation, per MA-C9. (Pitch `50a3a51`, composed witness `06edddba`, recovery `b92a05de`; tests in those commits.)
 - [ ] Hand the complete range off for designated cross-party review; do not self-archive.
 
 ## Q-002 — platform-alignment backend witness closeout
