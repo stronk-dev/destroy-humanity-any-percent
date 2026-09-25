@@ -7,7 +7,7 @@ import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./comm
 import { applicationCopyCatalog, COPY_KEYS } from "./copy";
 import { parseCurriculumCatalog, type CurriculumBranch, type CurriculumCatalog, type CurriculumStarter } from "./curriculum";
 import { loadDoctrineCatalog, validateDoctrineRoutes, type DoctrineCatalog } from "./doctrines";
-import { ladderSourceId, manualRoleSourceId, parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
+import { ladderSourceId, manualRoleSourceId, parseCatalog, validateAxisInputs, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
 import { fiscalResolvedCost, harvestFiscal, loadFiscalCatalog, spendFiscal, sweepFiscal, type FiscalCatalog, type FiscalSpendTarget, type FiscalState, type FiscalSweep } from "./fiscal";
 import { parseGuildCatalog, type GuildCatalog } from "./guild";
@@ -181,10 +181,11 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const guilds = parseGuildCatalog(parseJSON(artifacts.guilds));
   // Reputation Tree v1 R2: the artifact and its economy declaration row pair.
   if ((artifacts.reputation_tree !== undefined) !== economy.multiplierSources.some((row) => row.provider === REPUTATION_PROVIDER)) throw new SyntaxError("reputation tree and its economy declaration must pair");
-  if (!foundations) return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds });
+  if (!foundations) { validateAxisInputs(economy, false, 0, 0); return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds }); }
   const meters = loadMeterCatalog(artifacts.meters!);
   validateMeterResourceSeparation(meters, economy.resources.map((value) => value.id));
   const achievements = loadAchievementCatalog(artifacts.achievements!, foundationAchievementRegistry(economy));
+  validateAxisInputs(economy, true, achievements.definitions.filter((row) => row.conditionScope === "run").reduce((sum, row) => sum + row.scoreGrant, 0), achievements.definitions.reduce((sum, row) => sum + row.scoreGrant, 0));
   const doctrines = artifacts.doctrines === undefined ? undefined : loadDoctrineCatalog(artifacts.doctrines);
   if (doctrines) validateDoctrineRoutes(doctrines, routes);
   const minigames = artifacts.minigames === undefined ? undefined : parseMinigameCatalog(parseJSON(artifacts.minigames));
@@ -1381,7 +1382,7 @@ async function claimOpportunity(state:ReplayState,catalogs:ReplayCatalogBundle,c
 
 function contentContributions(state: ReplayState, catalog: EconomyCatalog): ReplayContribution[] {
   const result: ReplayContribution[] = [];
-  for (const upgrade of catalog.upgrades) if (state.upgradesOwned.has(upgrade.id)) for (const effect of upgrade.effects) result.push({ slot: effect.slot, source_id: effect.sourceId, target: effect.target, factor: effect.factor });
+  for (const upgrade of catalog.upgrades) if (state.upgradesOwned.has(upgrade.id)) for (const effect of upgrade.effects) if (effect.slot === "upgrades") result.push({ slot: effect.slot, source_id: effect.sourceId, target: effect.target, factor: effect.factor });
   for (const generator of catalog.generatorClasses) {
     const purchased = state.generators[generator.id]; if (!Number.isSafeInteger(purchased) || purchased! < 0) throw new RangeError("invalid purchased generator count");
     for (const rung of generator.ladder) { if (purchased! < rung.purchasedAt) break; result.push({ slot: "milestones", source_id: ladderSourceId(generator.id, rung.purchasedAt), target: generator.id, factor: canonicalString(quantize(new Decimal(rung.multiplierPpm).div(1_000_000))) }); }

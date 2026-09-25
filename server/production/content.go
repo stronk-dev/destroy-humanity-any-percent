@@ -27,6 +27,9 @@ func contentContributionsWithPolicy(state *save.State, catalog *economy.Catalog,
 			continue
 		}
 		for _, effect := range upgrade.Effects {
+			if effect.Slot == economy.SlotAxisStack {
+				continue // axis contributions are derived from the run-local input (CV3)
+			}
 			result = append(result, multiplier.Contribution{Slot: effect.Slot, SourceID: effect.SourceID, Target: effect.Target, Factor: effect.Factor})
 		}
 	}

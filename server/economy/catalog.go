@@ -16,7 +16,7 @@ import (
 	"cloud-clicker/server/routes"
 )
 
-const CatalogSchemaVersion = 4
+const CatalogSchemaVersion = 5
 
 var (
 	ErrInvalidCatalog        = errors.New("invalid economy catalog")
@@ -46,6 +46,7 @@ type MultiplierSlot = multiplier.Slot
 const (
 	SlotUpgrades   = multiplier.SlotUpgrades
 	SlotMilestones = multiplier.SlotMilestones
+	SlotAxisStack  = multiplier.SlotAxisStack
 	SlotFaction    = multiplier.SlotFaction
 	SlotDoctrine   = multiplier.SlotDoctrine
 	SlotCommons    = multiplier.SlotCommons
@@ -141,11 +142,15 @@ type AvailabilityWindow struct {
 	ToGate   string
 }
 
+// UpgradeEffect is one of two closed arms. The static arm (slot
+// "upgrades") carries Factor; the axis arm (slot "axis_stack", schema v5)
+// carries FactorPPM and its factor is derived from the run-local axis input.
 type UpgradeEffect struct {
-	SourceID string
-	Slot     MultiplierSlot
-	Target   string
-	Factor   decimal.Decimal
+	SourceID  string
+	Slot      MultiplierSlot
+	Target    string
+	Factor    decimal.Decimal
+	FactorPPM int64
 }
 
 type UpgradeDefinition struct {
@@ -153,9 +158,29 @@ type UpgradeDefinition struct {
 	Cost     UpgradeCost
 	Window   AvailabilityWindow
 	Requires []routes.Condition
-	Effects  []UpgradeEffect
-	Roles    []string
-	CopyKey  string
+	// AxisMinimum is the upgrade-only `axis_at_least` requirement (0 = none).
+	// It is not a route condition: route predicates and gates never see it.
+	AxisMinimum int64
+	Effects     []UpgradeEffect
+	Roles       []string
+	CopyKey     string
+}
+
+// AxisInput is the closed run-local input enum of the axis stack (CV1).
+type AxisInput string
+
+const (
+	AxisInputAttainmentRun AxisInput = "achievement_attainment_run"
+	AxisInputScoreRun      AxisInput = "achievement_score_run"
+	AxisInputCloutRun      AxisInput = "clout_run"
+	// AxisStackProvider is the single provider ID of the axis_stack slot.
+	AxisStackProvider = "axis_stack"
+)
+
+type AxisStack struct {
+	Input        AxisInput
+	InputCap     int64
+	CapReasonKey string
 }
 
 type UpgradeCost struct {
@@ -264,6 +289,7 @@ type Catalog struct {
 	manualPolicy    ManualPolicy
 	offlinePolicy   OfflinePolicy
 	provisionTickMS int64
+	axisStack       *AxisStack
 }
 
 type rawCatalog struct {
@@ -278,6 +304,13 @@ type rawCatalog struct {
 	ProgressCoordinates []rawProgressCoordinate `json:"progress_coordinates"`
 	ManualPolicy        *rawManualPolicy        `json:"manual_policy"`
 	OfflinePolicy       *rawOfflinePolicy       `json:"offline_policy"`
+	AxisStack           *rawAxisStack           `json:"axis_stack"`
+}
+
+type rawAxisStack struct {
+	Input        string `json:"input"`
+	InputCap     int64  `json:"input_cap"`
+	CapReasonKey string `json:"cap_reason_key"`
 }
 
 type rawResource struct {
@@ -350,10 +383,11 @@ type rawWindow struct {
 }
 
 type rawUpgradeEffect struct {
-	SourceID string `json:"source_id"`
-	Slot     string `json:"slot"`
-	Target   string `json:"target"`
-	Factor   string `json:"factor"`
+	SourceID  string  `json:"source_id"`
+	Slot      string  `json:"slot"`
+	Target    string  `json:"target"`
+	Factor    *string `json:"factor"`
+	FactorPPM *int64  `json:"factor_ppm"`
 }
 
 type rawSynergyPool struct {
@@ -506,6 +540,9 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		catalog.generatorByID[definition.ID] = definition
 	}
 
+	if raw.SchemaVersion < 5 && raw.AxisStack != nil {
+		return nil, catalogError("schema_version", errors.New("catalog versions before 5 forbid axis_stack"))
+	}
 	if raw.SchemaVersion < 3 {
 		if raw.ManualActions != nil || raw.MultiplierSources != nil || raw.ProgressCoordinates != nil || raw.ManualPolicy != nil || raw.OfflinePolicy != nil ||
 			raw.Upgrades != nil || raw.SynergyPools != nil || raw.ProvisionTickMS != 0 {
@@ -548,6 +585,12 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 			if !generatorExists && !manualExists {
 				return nil, catalogError("multiplier_sources", fmt.Errorf("%q references unknown target %q", definition.ID, definition.Target))
 			}
+		}
+		if (definition.Slot == SlotAxisStack) != (definition.Provider == AxisStackProvider) {
+			return nil, catalogError("multiplier_sources", fmt.Errorf("%q: the axis_stack slot and provider pair exactly", definition.ID))
+		}
+		if definition.Slot == SlotAxisStack && raw.SchemaVersion < 5 {
+			return nil, catalogError("multiplier_sources", fmt.Errorf("%q: catalog versions before 5 forbid the axis_stack slot", definition.ID))
 		}
 		if definition.Slot == SlotCommons || definition.Slot == SlotTrust {
 			if prior, exists := singleProviderSlots[definition.Slot]; exists {
@@ -598,15 +641,36 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	}
 	catalog.provisionTickMS = raw.ProvisionTickMS
 
+	if raw.AxisStack != nil {
+		axis, err := parseAxisStack(*raw.AxisStack)
+		if err != nil {
+			return nil, catalogError("axis_stack", err)
+		}
+		catalog.axisStack = &axis
+	}
+	axisEffects, axisRequirements := 0, 0
 	for index, source := range raw.Upgrades {
-		definition, err := parseUpgrade(source, catalog.resourceByID)
+		definition, err := parseUpgrade(source, catalog.resourceByID, raw.SchemaVersion)
 		if err != nil {
 			return nil, catalogError(fmt.Sprintf("upgrades[%d]", index), err)
 		}
 		if _, duplicate := catalog.upgradeByID[definition.ID]; duplicate {
 			return nil, catalogError("upgrades", fmt.Errorf("duplicate id %q", definition.ID))
 		}
+		if definition.AxisMinimum > 0 {
+			axisRequirements++
+		}
 		for _, effect := range definition.Effects {
+			if effect.Slot == SlotAxisStack {
+				// Axis effects are declared explicitly in multiplier_sources
+				// (CV1 item 4); the loader verifies that one exact row exists.
+				declaration, declared := catalog.multiplierByID[effect.SourceID]
+				if !declared || declaration.Slot != SlotAxisStack || declaration.Target != "all" || declaration.Provider != AxisStackProvider {
+					return nil, catalogError("upgrades", fmt.Errorf("%q axis effect %q needs one multiplier_sources row {slot: axis_stack, target: all, provider: axis_stack}", definition.ID, effect.SourceID))
+				}
+				axisEffects++
+				continue
+			}
 			if _, duplicate := catalog.multiplierByID[effect.SourceID]; duplicate {
 				return nil, catalogError("upgrades", fmt.Errorf("duplicate contribution source %q", effect.SourceID))
 			}
@@ -621,6 +685,9 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		}
 		catalog.upgrades = append(catalog.upgrades, definition)
 		catalog.upgradeByID[definition.ID] = definition
+	}
+	if err := catalog.validateAxisStack(axisEffects, axisRequirements); err != nil {
+		return nil, catalogError("axis_stack", err)
 	}
 
 	for index, source := range raw.SynergyPools {
@@ -994,7 +1061,7 @@ func parseGeneratorRole(source rawGeneratorRole) (GeneratorRole, string, error) 
 	}
 }
 
-func parseUpgrade(source rawUpgrade, resources map[string]ResourceDefinition) (UpgradeDefinition, error) {
+func parseUpgrade(source rawUpgrade, resources map[string]ResourceDefinition, schemaVersion int) (UpgradeDefinition, error) {
 	if !validID(source.ID) || !validID(source.Cost.ResourceID) || !validID(source.CopyKey) || len(source.Effects) == 0 || source.Roles == nil {
 		return UpgradeDefinition{}, errors.New("id, cost resource, copy_key, effects, and roles are required")
 	}
@@ -1010,22 +1077,46 @@ func parseUpgrade(source rawUpgrade, resources map[string]ResourceDefinition) (U
 	if err != nil {
 		return UpgradeDefinition{}, err
 	}
-	requires, err := routes.ParseConditions(source.Requires)
+	requires, axisMinimum, err := parseUpgradeRequires(source.Requires, schemaVersion)
 	if err != nil {
 		return UpgradeDefinition{}, fmt.Errorf("requires: %v", err)
 	}
-	definition := UpgradeDefinition{ID: source.ID, Cost: UpgradeCost{ResourceID: source.Cost.ResourceID, Amount: amount}, Window: window, Requires: requires, CopyKey: source.CopyKey}
+	definition := UpgradeDefinition{ID: source.ID, Cost: UpgradeCost{ResourceID: source.Cost.ResourceID, Amount: amount}, Window: window, Requires: requires, AxisMinimum: axisMinimum, CopyKey: source.CopyKey}
 	seenEffects := map[string]bool{}
+	axisArms := 0
 	for index, sourceEffect := range source.Effects {
-		if !validID(sourceEffect.SourceID) || !validID(sourceEffect.Target) || sourceEffect.Slot != string(SlotUpgrades) || seenEffects[sourceEffect.SourceID] {
-			return UpgradeDefinition{}, fmt.Errorf("effects[%d] requires a unique source_id, upgrades slot, and mechanical target", index)
-		}
-		factor, err := parseCatalogDecimal(sourceEffect.Factor)
-		if err != nil || !factor.Gt(decimal.Zero) {
-			return UpgradeDefinition{}, fmt.Errorf("effects[%d] factor must be a positive canonical Decimal", index)
+		if !validID(sourceEffect.SourceID) || !validID(sourceEffect.Target) && sourceEffect.Target != "all" || seenEffects[sourceEffect.SourceID] {
+			return UpgradeDefinition{}, fmt.Errorf("effects[%d] requires a unique source_id and a target", index)
 		}
 		seenEffects[sourceEffect.SourceID] = true
-		definition.Effects = append(definition.Effects, UpgradeEffect{SourceID: sourceEffect.SourceID, Slot: SlotUpgrades, Target: sourceEffect.Target, Factor: factor})
+		switch MultiplierSlot(sourceEffect.Slot) {
+		case SlotUpgrades:
+			if sourceEffect.Factor == nil || sourceEffect.FactorPPM != nil || sourceEffect.Target == "all" {
+				return UpgradeDefinition{}, fmt.Errorf("effects[%d] static arm requires factor, a mechanical target, and no factor_ppm", index)
+			}
+			factor, err := parseCatalogDecimal(*sourceEffect.Factor)
+			if err != nil || !factor.Gt(decimal.Zero) {
+				return UpgradeDefinition{}, fmt.Errorf("effects[%d] factor must be a positive canonical Decimal", index)
+			}
+			definition.Effects = append(definition.Effects, UpgradeEffect{SourceID: sourceEffect.SourceID, Slot: SlotUpgrades, Target: sourceEffect.Target, Factor: factor})
+		case SlotAxisStack:
+			if schemaVersion < 5 {
+				return UpgradeDefinition{}, fmt.Errorf("effects[%d]: catalog versions before 5 forbid the axis arm", index)
+			}
+			if sourceEffect.Factor != nil || sourceEffect.FactorPPM == nil || sourceEffect.Target != "all" {
+				return UpgradeDefinition{}, fmt.Errorf("effects[%d] axis arm requires factor_ppm, target all, and no factor", index)
+			}
+			if *sourceEffect.FactorPPM < 1 || *sourceEffect.FactorPPM > 1_000_000 {
+				return UpgradeDefinition{}, fmt.Errorf("effects[%d] factor_ppm must be in [1, 1000000]", index)
+			}
+			axisArms++
+			definition.Effects = append(definition.Effects, UpgradeEffect{SourceID: sourceEffect.SourceID, Slot: SlotAxisStack, Target: "all", Factor: decimal.One, FactorPPM: *sourceEffect.FactorPPM})
+		default:
+			return UpgradeDefinition{}, fmt.Errorf("effects[%d] slot must be upgrades or axis_stack", index)
+		}
+	}
+	if axisArms != 0 && axisArms != len(definition.Effects) {
+		return UpgradeDefinition{}, errors.New("an upgrade may not mix static and axis effect arms")
 	}
 	seenRoles := map[string]bool{}
 	for index, role := range source.Roles {
@@ -1037,6 +1128,127 @@ func parseUpgrade(source rawUpgrade, resources map[string]ResourceDefinition) (U
 		definition.Roles = append(definition.Roles, role)
 	}
 	return definition, nil
+}
+
+// parseUpgradeRequires splits the upgrade-only `axis_at_least` condition off
+// the requirement array before the remainder reaches the route condition
+// parser, so no route predicate or gate can ever carry it (CV1 item 3).
+func parseUpgradeRequires(data json.RawMessage, schemaVersion int) ([]routes.Condition, int64, error) {
+	var items []json.RawMessage
+	if err := decodeStrict(data, &items); err != nil || len(items) == 0 {
+		if err == nil {
+			err = errors.New("at least one condition is required")
+		}
+		return nil, 0, err
+	}
+	remaining := make([]json.RawMessage, 0, len(items))
+	var axisMinimum int64
+	for index, item := range items {
+		var probe struct {
+			Kind string `json:"kind"`
+		}
+		if err := json.Unmarshal(item, &probe); err != nil {
+			return nil, 0, fmt.Errorf("[%d]: %v", index, err)
+		}
+		if probe.Kind != "axis_at_least" {
+			remaining = append(remaining, item)
+			continue
+		}
+		if schemaVersion < 5 {
+			return nil, 0, fmt.Errorf("[%d]: catalog versions before 5 forbid axis_at_least", index)
+		}
+		var condition struct {
+			Kind    string `json:"kind"`
+			Minimum *int64 `json:"minimum"`
+		}
+		if err := decodeStrict(item, &condition); err != nil || condition.Minimum == nil || *condition.Minimum < 1 || *condition.Minimum > decimal.MaxExactInteger || axisMinimum != 0 {
+			return nil, 0, fmt.Errorf("[%d]: axis_at_least requires one exact-safe minimum >= 1 and may appear once", index)
+		}
+		axisMinimum = *condition.Minimum
+	}
+	if len(remaining) == 0 {
+		return []routes.Condition{}, axisMinimum, nil
+	}
+	encoded, err := json.Marshal(remaining)
+	if err != nil {
+		return nil, 0, err
+	}
+	requires, err := routes.ParseConditions(encoded)
+	if err != nil {
+		return nil, 0, err
+	}
+	return requires, axisMinimum, nil
+}
+
+func parseAxisStack(source rawAxisStack) (AxisStack, error) {
+	input := AxisInput(source.Input)
+	switch input {
+	case AxisInputAttainmentRun, AxisInputScoreRun:
+	case AxisInputCloutRun:
+		// Option A (owner ruling 2026-09-25): no Clout ledger exists, so a
+		// clout_run input would read an unwritten axis.
+		return AxisStack{}, errors.New("input clout_run requires the Clout ledger, which is not active")
+	default:
+		return AxisStack{}, fmt.Errorf("unknown input %q", source.Input)
+	}
+	if source.InputCap < 1 || source.InputCap > decimal.MaxExactInteger || !validID(source.CapReasonKey) {
+		return AxisStack{}, errors.New("input_cap must be a positive exact-safe integer and cap_reason_key a mechanical key")
+	}
+	return AxisStack{Input: input, InputCap: source.InputCap, CapReasonKey: source.CapReasonKey}, nil
+}
+
+// validateAxisStack enforces "axis_stack is required iff any upgrade carries
+// an axis effect", that axis_at_least only appears with an axis stack, and
+// that every declared axis_stack source belongs to exactly one axis effect.
+func (c *Catalog) validateAxisStack(axisEffects, axisRequirements int) error {
+	if (c.axisStack != nil) != (axisEffects > 0) {
+		return errors.New("axis_stack is required if and only if an upgrade carries an axis effect")
+	}
+	if axisRequirements > 0 && c.axisStack == nil {
+		return errors.New("axis_at_least requires an axis_stack")
+	}
+	effects := map[string]bool{}
+	for _, upgrade := range c.upgrades {
+		for _, effect := range upgrade.Effects {
+			if effect.Slot == SlotAxisStack {
+				effects[effect.SourceID] = true
+			}
+		}
+	}
+	for _, declaration := range c.multipliers {
+		if declaration.Slot == SlotAxisStack && !effects[declaration.ID] {
+			return fmt.Errorf("axis_stack source %q has no axis effect", declaration.ID)
+		}
+	}
+	return nil
+}
+
+// AxisStack returns the pinned axis stack, if the catalog declares one.
+func (c *Catalog) AxisStack() (AxisStack, bool) {
+	if c.axisStack == nil {
+		return AxisStack{}, false
+	}
+	return *c.axisStack, true
+}
+
+// ValidateAxisInputs is the cross-artifact check (CV1): an achievement input
+// needs the pinned achievements artifact, and input_cap must cover the
+// maximum reachable input so the clamp is provably unreachable for it.
+func (c *Catalog) ValidateAxisInputs(achievementsPinned bool, maximumAttainmentRun, maximumScoreRun int64) error {
+	if c.axisStack == nil {
+		return nil
+	}
+	if !achievementsPinned {
+		return fmt.Errorf("%w: axis_stack input %q requires the pinned achievements artifact", ErrInvalidCatalog, c.axisStack.Input)
+	}
+	maximum := maximumAttainmentRun
+	if c.axisStack.Input == AxisInputScoreRun {
+		maximum = maximumScoreRun
+	}
+	if c.axisStack.InputCap < maximum {
+		return fmt.Errorf("%w: axis_stack input_cap %d is below the reachable maximum %d", ErrInvalidCatalog, c.axisStack.InputCap, maximum)
+	}
+	return nil
 }
 
 func parseWindow(source rawWindow) (AvailabilityWindow, error) {

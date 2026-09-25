@@ -13,6 +13,7 @@ type Slot string
 const (
 	SlotUpgrades   Slot = "upgrades"
 	SlotMilestones Slot = "milestones"
+	SlotAxisStack  Slot = "axis_stack"
 	SlotFaction    Slot = "faction"
 	SlotDoctrine   Slot = "doctrine"
 	SlotCommons    Slot = "commons"
@@ -22,7 +23,7 @@ const (
 )
 
 var Order = [...]Slot{
-	SlotUpgrades, SlotMilestones, SlotFaction, SlotDoctrine,
+	SlotUpgrades, SlotMilestones, SlotAxisStack, SlotFaction, SlotDoctrine,
 	SlotCommons, SlotTrust, SlotEventBuffs, SlotPrestige,
 }
 

@@ -7,7 +7,8 @@ import (
 
 func TestSlotOrderIsClosedExactAndUnique(t *testing.T) {
 	want := []Slot{
-		SlotUpgrades, SlotMilestones, SlotFaction, SlotDoctrine,
+		// OD-6 (Clout v1): axis_stack after milestones, before faction.
+		SlotUpgrades, SlotMilestones, SlotAxisStack, SlotFaction, SlotDoctrine,
 		SlotCommons, SlotTrust, SlotEventBuffs, SlotPrestige,
 	}
 	if !reflect.DeepEqual(Order[:], want) {

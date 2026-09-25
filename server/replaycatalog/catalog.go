@@ -144,6 +144,16 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Meters, bundle.Achievements = meterCatalog, achievementCatalog
 	}
+	var maximumAttainment, maximumScore int64
+	if bundle.Achievements != nil {
+		var scoreErr error
+		if maximumAttainment, maximumScore, scoreErr = bundle.Achievements.MaximumScores(); scoreErr != nil {
+			return production.CatalogBundle{}, scoreErr
+		}
+	}
+	if err := economyCatalog.ValidateAxisInputs(bundle.Achievements != nil, maximumAttainment, maximumScore); err != nil {
+		return production.CatalogBundle{}, err
+	}
 	if doctrineBytes, active := artifacts["doctrines"]; active {
 		doctrineCatalog, doctrineErr := doctrine.LoadCatalog(doctrineBytes)
 		if doctrineErr != nil {

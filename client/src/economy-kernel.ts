@@ -11,7 +11,7 @@ import {
 } from "./numeric";
 import { parseRoutePredicate, type RouteCondition } from "./routes";
 
-export const CATALOG_SCHEMA_VERSION = 4;
+export const CATALOG_SCHEMA_VERSION = 5;
 
 export type Scope = "company" | "founder" | "world" | "guild";
 
@@ -71,10 +71,23 @@ export interface UpgradeDefinition {
   readonly cost: { readonly resourceId: string; readonly amount: string };
   readonly window: { readonly fromGate: string | null; readonly toGate: string | null };
   readonly requires: readonly RouteCondition[];
-  readonly effects: readonly { readonly sourceId: string; readonly slot: "upgrades"; readonly target: string; readonly factor: string }[];
+  // Upgrade-only `axis_at_least` minimum (0 = none); never a route condition.
+  readonly axisMinimum: number;
+  readonly effects: readonly UpgradeEffect[];
   readonly roles: readonly GeneratorRole["kind"][];
   readonly copyKey: string;
 }
+
+// Closed effect arms: static (slot "upgrades", factor) or axis (slot
+// "axis_stack", factorPpm; schema v5, CV1). The axis factor is derived from
+// the run-local input at evaluation time.
+export type UpgradeEffect =
+  | { readonly sourceId: string; readonly slot: "upgrades"; readonly target: string; readonly factor: string }
+  | { readonly sourceId: string; readonly slot: "axis_stack"; readonly target: "all"; readonly factorPpm: number };
+
+export type AxisInput = "achievement_attainment_run" | "achievement_score_run";
+export const AXIS_STACK_PROVIDER = "axis_stack";
+export interface AxisStackDefinition { readonly input: AxisInput; readonly inputCap: number; readonly capReasonKey: string }
 
 export interface SynergyPoolDefinition {
   readonly id: string;
@@ -84,7 +97,7 @@ export interface SynergyPoolDefinition {
 }
 
 export const MULTIPLIER_SLOT_ORDER = [
-  "upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige",
+  "upgrades", "milestones", "axis_stack", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige",
 ] as const;
 export type MultiplierSlot = (typeof MULTIPLIER_SLOT_ORDER)[number];
 export type ProgressKind = "resource_log" | "count_fraction" | "composite";
@@ -154,6 +167,7 @@ export class EconomyCatalog {
   readonly progressCoordinates: readonly ProgressCoordinateDefinition[];
   readonly manualPolicy: ManualPolicy | null;
   readonly offlinePolicy: OfflinePolicy | null;
+  readonly axisStack: AxisStackDefinition | null;
   readonly #resourceById: ReadonlyMap<string, ResourceDefinition>;
   readonly #generatorById: ReadonlyMap<string, GeneratorClassDefinition>;
   readonly #upgradeById: ReadonlyMap<string, UpgradeDefinition>;
@@ -170,6 +184,7 @@ export class EconomyCatalog {
     progressCoordinates: readonly ProgressCoordinateDefinition[] = [],
     manualPolicy: ManualPolicy | null = null,
     offlinePolicy: OfflinePolicy | null = null,
+    axisStack: AxisStackDefinition | null = null,
   ) {
     this.resources = Object.freeze([...resources]);
     this.generatorClasses = Object.freeze([...generatorClasses]);
@@ -181,6 +196,7 @@ export class EconomyCatalog {
     this.progressCoordinates = Object.freeze([...progressCoordinates]);
     this.manualPolicy = manualPolicy;
     this.offlinePolicy = offlinePolicy;
+    this.axisStack = axisStack;
     this.#resourceById = new Map(resources.map((definition) => [definition.id, definition]));
     this.#generatorById = new Map(
       generatorClasses.map((definition) => [definition.id, definition]),
@@ -233,12 +249,14 @@ export class EconomyCatalog {
 export function parseCatalog(source: unknown): EconomyCatalog {
   if (!isRecord(source)) throw new SyntaxError("catalog must be an object");
   const version = source.schema_version;
-  if (version !== 1 && version !== 2 && version !== 3 && version !== CATALOG_SCHEMA_VERSION) {
+  if (version !== 1 && version !== 2 && version !== 3 && version !== 4 && version !== CATALOG_SCHEMA_VERSION) {
     throw new SyntaxError(`unsupported catalog schema_version: ${String(version)}`);
   }
   const root = exactObject(
     source,
-    version === 4
+    version === 5 && "axis_stack" in source
+      ? ["schema_version", "resources", "generator_classes", "upgrades", "synergy_pools", "provision_tick_ms", "manual_actions", "multiplier_sources", "progress_coordinates", "manual_policy", "offline_policy", "axis_stack"]
+      : version >= 4
       ? ["schema_version", "resources", "generator_classes", "upgrades", "synergy_pools", "provision_tick_ms", "manual_actions", "multiplier_sources", "progress_coordinates", "manual_policy", "offline_policy"]
       : version === 3
       ? ["schema_version", "resources", "generator_classes", "manual_actions", "multiplier_sources", "progress_coordinates", "manual_policy", "offline_policy"]
@@ -289,6 +307,10 @@ export function parseCatalog(source: unknown): EconomyCatalog {
   ensureUnique(manualActions, "manual action");
   const multiplierSources = root.multiplier_sources.map((value, index) => parseMultiplierSource(value, index, generatorClasses, manualActions));
   ensureUnique(multiplierSources, "multiplier source");
+  for (const definition of multiplierSources) {
+    if ((definition.slot === "axis_stack") !== (definition.provider === AXIS_STACK_PROVIDER)) throw new SyntaxError(`multiplier source ${definition.id}: the axis_stack slot and provider pair exactly`);
+    if (definition.slot === "axis_stack" && (version as number) < 5) throw new SyntaxError(`multiplier source ${definition.id}: catalog versions before 5 forbid the axis_stack slot`);
+  }
   for (const slot of ["commons", "trust"] as const) {
     if (multiplierSources.filter((definition) => definition.slot === slot).length > 1) {
       throw new SyntaxError(`multiplier slot ${slot} is single-provider`);
@@ -305,19 +327,31 @@ export function parseCatalog(source: unknown): EconomyCatalog {
 
   if (!Array.isArray(root.upgrades) || !Array.isArray(root.synergy_pools)) throw new SyntaxError("catalog purchasable-content collections must be arrays");
   const provisionTickMs = parsePositiveSafeInteger(root.provision_tick_ms, "catalog.provision_tick_ms");
-  const upgrades = root.upgrades.map((value, index) => parseUpgrade(value, index, resourceById));
+  const axisStack = root.axis_stack === undefined ? null : parseAxisStack(root.axis_stack);
+  const upgrades = root.upgrades.map((value, index) => parseUpgrade(value, index, resourceById, version as number));
   ensureUnique(upgrades, "upgrade");
   const upgradeById = new Map(upgrades.map((definition) => [definition.id, definition]));
   const allMultiplierSources = [...multiplierSources];
   const multiplierIds = new Set(multiplierSources.map((definition) => definition.id));
+  let axisEffects = 0;
   for (const upgrade of upgrades) {
     for (const effect of upgrade.effects) {
+      if (effect.slot === "axis_stack") {
+        const declaration = multiplierSources.find((value) => value.id === effect.sourceId);
+        if (!declaration || declaration.slot !== "axis_stack" || declaration.target !== "all" || declaration.provider !== AXIS_STACK_PROVIDER) throw new SyntaxError(`upgrade ${upgrade.id} axis effect ${effect.sourceId} needs one multiplier_sources row {slot: axis_stack, target: all, provider: axis_stack}`);
+        axisEffects += 1;
+        continue;
+      }
       if (multiplierIds.has(effect.sourceId)) throw new SyntaxError(`duplicate multiplier source id: ${effect.sourceId}`);
       if (!generatorClasses.some((generator) => generator.id === effect.target) && !manualActions.some((action) => action.id === effect.target)) throw new SyntaxError(`upgrade ${upgrade.id} references unknown effect target ${effect.target}`);
       multiplierIds.add(effect.sourceId);
       allMultiplierSources.push(Object.freeze({ id: effect.sourceId, slot: effect.slot, target: effect.target, provider: upgrade.id }));
     }
   }
+  if ((axisStack !== null) !== (axisEffects > 0)) throw new SyntaxError("axis_stack is required if and only if an upgrade carries an axis effect");
+  if (axisStack === null && upgrades.some((upgrade) => upgrade.axisMinimum > 0)) throw new SyntaxError("axis_at_least requires an axis_stack");
+  const axisSourceIds = new Set(upgrades.flatMap((upgrade) => upgrade.effects.filter((effect) => effect.slot === "axis_stack").map((effect) => effect.sourceId)));
+  for (const declaration of multiplierSources) if (declaration.slot === "axis_stack" && !axisSourceIds.has(declaration.id)) throw new SyntaxError(`axis_stack source ${declaration.id} has no axis effect`);
   const synergyPools = root.synergy_pools.map((value, index) => parseSynergyPool(value, index, generatorClasses, upgradeById));
   ensureUnique(synergyPools, "synergy pool");
   for (const pool of synergyPools) {
@@ -340,7 +374,40 @@ export function parseCatalog(source: unknown): EconomyCatalog {
       allMultiplierSources.push(Object.freeze({ id, slot: "upgrades", target: role.actionId, provider: generator.id }));
     }
   }
-  return new EconomyCatalog(resources, generatorClasses, upgrades, synergyPools, provisionTickMs, manualActions, allMultiplierSources, progressCoordinates, manualPolicy, offlinePolicy);
+  return new EconomyCatalog(resources, generatorClasses, upgrades, synergyPools, provisionTickMs, manualActions, allMultiplierSources, progressCoordinates, manualPolicy, offlinePolicy, axisStack);
+}
+
+function parseAxisStack(source: unknown): AxisStackDefinition {
+  const raw = exactObject(source, ["input", "input_cap", "cap_reason_key"], "catalog.axis_stack");
+  if (raw.input === "clout_run") throw new SyntaxError("catalog.axis_stack input clout_run requires the Clout ledger, which is not active");
+  if (raw.input !== "achievement_attainment_run" && raw.input !== "achievement_score_run") throw new SyntaxError("catalog.axis_stack.input is unknown");
+  return Object.freeze({ input: raw.input, inputCap: parsePositiveSafeInteger(raw.input_cap, "catalog.axis_stack.input_cap"), capReasonKey: parseId(raw.cap_reason_key, "catalog.axis_stack.cap_reason_key") });
+}
+
+// Cross-artifact check (CV1): an achievement input needs the pinned
+// achievements artifact, and input_cap must cover the reachable maximum.
+export function validateAxisInputs(catalog: EconomyCatalog, achievementsPinned: boolean, maximumAttainmentRun: number, maximumScoreRun: number): void {
+  const axis = catalog.axisStack;
+  if (axis === null) return;
+  if (!achievementsPinned) throw new SyntaxError(`axis_stack input ${axis.input} requires the pinned achievements artifact`);
+  const maximum = axis.input === "achievement_score_run" ? maximumScoreRun : maximumAttainmentRun;
+  if (axis.inputCap < maximum) throw new SyntaxError(`axis_stack input_cap ${axis.inputCap} is below the reachable maximum ${maximum}`);
+}
+
+// Upgrade-only `axis_at_least` is split off before the route predicate
+// parser runs, so no route predicate or gate can carry it (CV1 item 3).
+function parseUpgradeRequires(source: unknown, path: string, version: number): { requires: readonly RouteCondition[]; axisMinimum: number } {
+  if (!Array.isArray(source) || source.length === 0) throw new SyntaxError(`${path}.requires must be a non-empty array`);
+  let axisMinimum = 0;
+  const remaining: unknown[] = [];
+  source.forEach((item, index) => {
+    if (!isRecord(item) || item.kind !== "axis_at_least") { remaining.push(item); return; }
+    if (version < 5) throw new SyntaxError(`${path}.requires[${index}]: catalog versions before 5 forbid axis_at_least`);
+    const raw = exactObject(item, ["kind", "minimum"], `${path}.requires[${index}]`);
+    if (axisMinimum !== 0) throw new SyntaxError(`${path}.requires: axis_at_least may appear once`);
+    axisMinimum = parsePositiveSafeInteger(raw.minimum, `${path}.requires[${index}].minimum`);
+  });
+  return { requires: remaining.length === 0 ? Object.freeze([]) : parseRoutePredicate(remaining), axisMinimum };
 }
 
 export function ladderSourceId(generatorId: string, purchasedAt: number): string { return `${generatorId}.ladder.purchased_${purchasedAt}`; }
@@ -520,7 +587,7 @@ function parseGeneratorClass(
   schemaVersion: unknown,
 ): GeneratorClassDefinition {
   const path = `catalog.generator_classes[${index}]`;
-  const value = schemaVersion === 4
+  const value = (schemaVersion === 4 || schemaVersion === 5)
     ? exactObjectWithOptional(source, ["id", "tier", "category", "price", "production", "ladder", "roles"], ["provisions", "provisioned_hardcap"], path)
     : exactObject(source, schemaVersion === 1 ? ["id", "price"] : ["id", "price", "production"], path);
   const id = parseId(value.id, `${path}.id`);
@@ -549,7 +616,7 @@ function parseGeneratorClass(
     throw new SyntaxError(`${path}.production.base_rate must be positive`);
   }
   const production = Object.freeze({ resourceId: productionResourceId, baseRate });
-  if (schemaVersion !== 4) return Object.freeze({ id, tier: 0, category: "", price, production, provision: null, provisionedHardcap: null, ladder: Object.freeze([]), roles: Object.freeze([]) });
+  if (schemaVersion !== 4 && schemaVersion !== 5) return Object.freeze({ id, tier: 0, category: "", price, production, provision: null, provisionedHardcap: null, ladder: Object.freeze([]), roles: Object.freeze([]) });
 
   const tier = safeInteger(value.tier, 0, 3);
   const category = parseId(value.category, `${path}.category`);
@@ -597,7 +664,7 @@ function parseGeneratorRole(source: unknown, path: string): GeneratorRole {
   }
 }
 
-function parseUpgrade(source: unknown, index: number, resources: ReadonlyMap<string, ResourceDefinition>): UpgradeDefinition {
+function parseUpgrade(source: unknown, index: number, resources: ReadonlyMap<string, ResourceDefinition>, version: number): UpgradeDefinition {
   const path = `catalog.upgrades[${index}]`;
   const value = exactObject(source, ["id", "cost", "window", "requires", "effects", "roles", "copy_key"], path);
   const id = parseId(value.id, `${path}.id`);
@@ -609,25 +676,39 @@ function parseUpgrade(source: unknown, index: number, resources: ReadonlyMap<str
   const windowRaw = exactObject(value.window, ["from_gate", "to_gate"], `${path}.window`);
   const fromGate = nullableId(windowRaw.from_gate, `${path}.window.from_gate`);
   const toGate = nullableId(windowRaw.to_gate, `${path}.window.to_gate`);
-  const requires = parseRoutePredicate(value.requires);
+  const { requires, axisMinimum } = parseUpgradeRequires(value.requires, path, version);
   if (!Array.isArray(value.effects) || value.effects.length === 0 || !Array.isArray(value.roles)) throw new SyntaxError(`${path} requires non-empty effects and roles array`);
   const effectIds = new Set<string>();
-  const effects = value.effects.map((source, effectIndex) => {
-    const raw = exactObject(source, ["source_id", "slot", "target", "factor"], `${path}.effects[${effectIndex}]`);
-    const sourceId = parseId(raw.source_id, `${path}.effects[${effectIndex}].source_id`);
-    if (effectIds.has(sourceId) || raw.slot !== "upgrades") throw new SyntaxError(`${path}.effects must have unique sources in upgrades slot`);
+  const effects = value.effects.map((source, effectIndex): UpgradeEffect => {
+    const effectPath = `${path}.effects[${effectIndex}]`;
+    if (!isRecord(source)) throw new SyntaxError(`${effectPath} must be an object`);
+    if (source.slot === "axis_stack") {
+      if (version < 5) throw new SyntaxError(`${effectPath}: catalog versions before 5 forbid the axis arm`);
+      const raw = exactObject(source, ["source_id", "slot", "target", "factor_ppm"], effectPath);
+      const sourceId = parseId(raw.source_id, `${effectPath}.source_id`);
+      if (effectIds.has(sourceId) || raw.target !== "all") throw new SyntaxError(`${effectPath} axis arm requires a unique source and target all`);
+      effectIds.add(sourceId);
+      const factorPpm = parsePositiveSafeInteger(raw.factor_ppm, `${effectPath}.factor_ppm`);
+      if (factorPpm > 1_000_000) throw new SyntaxError(`${effectPath}.factor_ppm must be in [1, 1000000]`);
+      return Object.freeze({ sourceId, slot: "axis_stack" as const, target: "all" as const, factorPpm });
+    }
+    const raw = exactObject(source, ["source_id", "slot", "target", "factor"], effectPath);
+    const sourceId = parseId(raw.source_id, `${effectPath}.source_id`);
+    if (effectIds.has(sourceId) || raw.slot !== "upgrades") throw new SyntaxError(`${path}.effects must have unique sources in upgrades or axis_stack slot`);
     effectIds.add(sourceId);
-    const factor = parseCanonicalField(raw.factor, `${path}.effects[${effectIndex}].factor`);
+    const factor = parseCanonicalField(raw.factor, `${effectPath}.factor`);
     if (!parseCanonical(factor).gt(0)) throw new SyntaxError(`${path}.effects factor must be positive`);
-    return Object.freeze({ sourceId, slot: "upgrades" as const, target: parseId(raw.target, `${path}.effects[${effectIndex}].target`), factor });
+    return Object.freeze({ sourceId, slot: "upgrades" as const, target: parseId(raw.target, `${effectPath}.target`), factor });
   });
+  const axisArms = effects.filter((effect) => effect.slot === "axis_stack").length;
+  if (axisArms !== 0 && axisArms !== effects.length) throw new SyntaxError(`${path} may not mix static and axis effect arms`);
   const roleSet = new Set<string>();
   const roles = value.roles.map((role, roleIndex) => {
     if (typeof role !== "string" || !["provision", "synergy_feed", "manual_output", "stock_rate"].includes(role) || roleSet.has(role)) throw new SyntaxError(`${path}.roles[${roleIndex}] is invalid or duplicate`);
     roleSet.add(role);
     return role as GeneratorRole["kind"];
   });
-  return Object.freeze({ id, cost: Object.freeze({ resourceId, amount }), window: Object.freeze({ fromGate, toGate }), requires, effects: Object.freeze(effects), roles: Object.freeze(roles), copyKey: parseId(value.copy_key, `${path}.copy_key`) });
+  return Object.freeze({ id, cost: Object.freeze({ resourceId, amount }), window: Object.freeze({ fromGate, toGate }), requires, axisMinimum, effects: Object.freeze(effects), roles: Object.freeze(roles), copyKey: parseId(value.copy_key, `${path}.copy_key`) });
 }
 
 function parseSynergyPool(source: unknown, index: number, generators: readonly GeneratorClassDefinition[], upgrades: ReadonlyMap<string, UpgradeDefinition>): SynergyPoolDefinition {

@@ -434,3 +434,23 @@ func SortedEarnedIDs(ids map[string]bool) []string {
 	sort.Strings(result)
 	return result
 }
+
+// MaximumScores returns the summed score grants of the run-scoped definitions
+// and of every definition. The axis stack's input_cap must cover the one its
+// input reads (economy.ValidateAxisInputs).
+func (catalog *Catalog) MaximumScores() (int64, int64, error) {
+	if catalog == nil {
+		return 0, 0, ErrInvalidCatalog
+	}
+	var run, all int64
+	for _, definition := range catalog.Definitions {
+		if all > decimal.MaxExactInteger-definition.ScoreGrant {
+			return 0, 0, ErrInvalidCatalog
+		}
+		all += definition.ScoreGrant
+		if definition.ConditionScope == ScopeRun {
+			run += definition.ScoreGrant
+		}
+	}
+	return run, all, nil
+}
