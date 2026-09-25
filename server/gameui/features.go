@@ -26,7 +26,71 @@ type featureRows struct {
 	Minigames    *minigamesArm    `json:"minigames"`
 	Pets         *struct{}        `json:"pets"`
 	PetAdoption  *petsArm         `json:"pet_adoption,omitempty"`
+	Cosmetics    *cosmeticsArm    `json:"cosmetics,omitempty"`
 	Reputation   *reputationArm   `json:"reputation"`
+}
+
+// cosmeticsArm is Cosmetic Shop v1 §7.1: catalog-ordered items with the
+// owner's ownership, an advisory acquirable flag against the active Company
+// tier, a visible lock reason, and per-pet wearers. It never carries a price.
+type cosmeticsArm struct {
+	Active  bool                `json:"active"`
+	Items   []cosmeticItemRow   `json:"items"`
+	Wearers []cosmeticWearerRow `json:"wearers"`
+}
+
+type cosmeticLock struct {
+	Kind string `json:"kind"`
+	Tier int64  `json:"tier"`
+}
+
+type cosmeticItemRow struct {
+	CosmeticID string        `json:"cosmetic_id"`
+	Owned      bool          `json:"owned"`
+	Acquirable bool          `json:"acquirable"`
+	Lock       *cosmeticLock `json:"lock"`
+	WornBy     []string      `json:"worn_by"`
+}
+
+type cosmeticWearerRow struct {
+	PetID string  `json:"pet_id"`
+	Worn  *string `json:"worn"`
+}
+
+func projectCosmetics(bundle production.CatalogBundle, company, founder *save.State) (*cosmeticsArm, error) {
+	arm := &cosmeticsArm{Items: []cosmeticItemRow{}, Wearers: []cosmeticWearerRow{}}
+	if save.VersionForState(founder) < 24 || founder.Cosmetics == nil {
+		return arm, nil
+	}
+	arm.Active = true
+	petIDs := make([]string, 0, len(founder.Pets))
+	for id := range founder.Pets {
+		petIDs = append(petIDs, id)
+	}
+	sort.Strings(petIDs)
+	for _, item := range bundle.Cosmetics.Items {
+		row := cosmeticItemRow{CosmeticID: item.CosmeticID, Owned: founder.Cosmetics.Owns(item.CosmeticID), WornBy: []string{}}
+		locked := company.Tier < item.Unlock.Tier
+		row.Acquirable = !row.Owned && !locked
+		if locked && !row.Owned {
+			row.Lock = &cosmeticLock{Kind: item.Unlock.Kind, Tier: item.Unlock.Tier}
+		}
+		for _, id := range petIDs {
+			if founder.Cosmetics.Equipped[id] == item.CosmeticID {
+				row.WornBy = append(row.WornBy, id)
+			}
+		}
+		arm.Items = append(arm.Items, row)
+	}
+	for _, id := range petIDs {
+		wearer := cosmeticWearerRow{PetID: id}
+		if worn, ok := founder.Cosmetics.Equipped[id]; ok {
+			worn := worn
+			wearer.Worn = &worn
+		}
+		arm.Wearers = append(arm.Wearers, wearer)
+	}
+	return arm, nil
 }
 
 // petsArm is Pet Adoption v1 PA7: the owner's own immutable identities plus
@@ -200,6 +264,13 @@ type minigameAvailability struct {
 
 func projectFeatures(bundle production.CatalogBundle, state, founder *save.State, now time.Time, minigameActive bool, runAttendedMS int64) (featureRows, error) {
 	var result featureRows
+	if bundle.Cosmetics != nil {
+		arm, err := projectCosmetics(bundle, state, founder)
+		if err != nil {
+			return featureRows{}, err
+		}
+		result.Cosmetics = arm
+	}
 	if bundle.PetSpecies != nil && bundle.Pets != nil && save.VersionForState(founder) >= 23 {
 		arm, err := projectPets(bundle, founder, runAttendedMS)
 		if err != nil {
@@ -393,6 +464,7 @@ func featureFacts(features featureRows) []factRow {
 	return []factRow{
 		{FactID: "feature.achievements", Value: features.Achievements != nil},
 		{FactID: "feature.active_play", Value: features.ActivePlay != nil},
+		{FactID: "feature.cosmetics", Value: features.Cosmetics != nil && features.Cosmetics.Active},
 		{FactID: "feature.fiscal", Value: features.Fiscal != nil},
 		{FactID: "feature.meters", Value: features.Meters != nil},
 		{FactID: "feature.minigame.pitch", Value: pitch},

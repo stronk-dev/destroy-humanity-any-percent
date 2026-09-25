@@ -168,7 +168,8 @@ export function parseFeatures(source: unknown): GameUIFeatures {
   const features = object(source, "game UI features");
   // Reputation Tree v1 R9: `reputation` is an additive optional v4 arm.
   // Pet Adoption v1 PA7: `pet_adoption` is likewise an additive optional arm.
-  exact(features, ["achievements", "active_play", "fiscal", "meters", "minigames", ...("pet_adoption" in features ? ["pet_adoption"] : []), "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
+  // Cosmetic Shop v1 §7.1: `cosmetics` is likewise an additive optional arm.
+  exact(features, ["achievements", "active_play", ...("cosmetics" in features ? ["cosmetics"] : []), "fiscal", "meters", "minigames", ...("pet_adoption" in features ? ["pet_adoption"] : []), "pets", ...("reputation" in features ? ["reputation"] : [])], "game UI features");
   if (features.active_play !== null || features.pets !== null) throw new SyntaxError("unproduced game UI arm must be null");
   if (features.achievements !== null) {
     const arm = object(features.achievements, "achievements arm");
@@ -238,7 +239,51 @@ export function parseFeatures(source: unknown): GameUIFeatures {
   }
   if (features.reputation !== undefined && features.reputation !== null) parseReputationArm(features.reputation);
   if (features.pet_adoption !== undefined && features.pet_adoption !== null) parsePetAdoptionArm(features.pet_adoption);
+  if (features.cosmetics !== undefined && features.cosmetics !== null) parseCosmeticsArm(features.cosmetics);
   return features as unknown as GameUIFeatures;
+}
+
+const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+
+// Cosmetic Shop v1 §7.1: the decoder rejects internal contradictions, e.g. an
+// owned item that is still acquirable, or a worn value absent from worn_by.
+export function parseCosmeticsArm(source: unknown): void {
+  const arm = object(source, "cosmetics arm");
+  exact(arm, ["active", "items", "wearers"], "cosmetics arm");
+  if (typeof arm.active !== "boolean" || !Array.isArray(arm.items) || !Array.isArray(arm.wearers)) throw new SyntaxError("invalid cosmetics arm");
+  if (!arm.active && (arm.items.length !== 0 || arm.wearers.length !== 0)) throw new SyntaxError("inactive cosmetics must be empty");
+  const wornBy = new Map<string, string[]>();
+  let prior = "";
+  for (const [index, value] of arm.items.entries()) {
+    const row = object(value, `cosmetic ${index}`);
+    exact(row, ["acquirable", "cosmetic_id", "lock", "owned", "worn_by"], "cosmetic item");
+    identifier(row.cosmetic_id);
+    if (typeof row.owned !== "boolean" || typeof row.acquirable !== "boolean") throw new SyntaxError("cosmetic flags must be boolean");
+    if (row.owned && row.acquirable) throw new SyntaxError("an owned cosmetic cannot be acquirable");
+    if (row.lock !== null) {
+      const lock = object(row.lock, "cosmetic lock");
+      exact(lock, ["kind", "tier"], "cosmetic lock");
+      oneOf(lock.kind, ["active_company_tier_at_least"] as const, "cosmetic lock kind"); integer(lock.tier, 0);
+      if (row.acquirable || row.owned) throw new SyntaxError("a locked cosmetic cannot be owned or acquirable");
+    }
+    if (!Array.isArray(row.worn_by) || row.worn_by.some((pet) => typeof pet !== "string" || !uuidV7.test(pet))) throw new SyntaxError("cosmetic worn_by must be pet ids");
+    if (row.worn_by.length !== 0 && !row.owned) throw new SyntaxError("an unowned cosmetic cannot be worn");
+    if ((row.cosmetic_id as string) <= prior) throw new SyntaxError("cosmetic items must follow catalog order");
+    prior = row.cosmetic_id as string;
+    wornBy.set(row.cosmetic_id as string, row.worn_by as string[]);
+  }
+  let priorPet = "";
+  for (const [index, value] of arm.wearers.entries()) {
+    const row = object(value, `cosmetic wearer ${index}`);
+    exact(row, ["pet_id", "worn"], "cosmetic wearer");
+    if (typeof row.pet_id !== "string" || !uuidV7.test(row.pet_id) || row.pet_id <= priorPet) throw new SyntaxError("cosmetic wearers must be sorted pet ids");
+    priorPet = row.pet_id;
+    if (row.worn !== null && !(wornBy.get(identifier(row.worn)) ?? []).includes(row.pet_id)) throw new SyntaxError("a worn cosmetic is absent from its worn_by");
+  }
+  for (const [id, pets] of wornBy) for (const pet of pets) {
+    const wearer = (arm.wearers as { pet_id: string; worn: string | null }[]).find((row) => row.pet_id === pet);
+    if (!wearer || wearer.worn !== id) throw new SyntaxError("worn_by names a pet that does not wear the item");
+  }
 }
 
 const petStatusBands = ["floor", "high", "low", "normal"] as const;

@@ -1,0 +1,85 @@
+{
+ "version": 1,
+ "cases": {
+  "acquirable-at-tier-1": {
+   "active": true,
+   "items": [
+    {
+     "cosmetic_id": "horse_armor",
+     "owned": false,
+     "acquirable": true,
+     "lock": null,
+     "worn_by": []
+    }
+   ],
+   "wearers": []
+  },
+  "locked-at-tier-0": {
+   "active": true,
+   "items": [
+    {
+     "cosmetic_id": "horse_armor",
+     "owned": false,
+     "acquirable": false,
+     "lock": {
+      "kind": "active_company_tier_at_least",
+      "tier": 1
+     },
+     "worn_by": []
+    }
+   ],
+   "wearers": []
+  },
+  "owned-no-wearer": {
+   "active": true,
+   "items": [
+    {
+     "cosmetic_id": "horse_armor",
+     "owned": true,
+     "acquirable": false,
+     "lock": null,
+     "worn_by": []
+    }
+   ],
+   "wearers": []
+  },
+  "owned-not-worn": {
+   "active": true,
+   "items": [
+    {
+     "cosmetic_id": "horse_armor",
+     "owned": true,
+     "acquirable": false,
+     "lock": null,
+     "worn_by": []
+    }
+   ],
+   "wearers": [
+    {
+     "pet_id": "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa",
+     "worn": null
+    }
+   ]
+  },
+  "owned-worn": {
+   "active": true,
+   "items": [
+    {
+     "cosmetic_id": "horse_armor",
+     "owned": true,
+     "acquirable": false,
+     "lock": null,
+     "worn_by": [
+      "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"
+     ]
+    }
+   ],
+   "wearers": [
+    {
+     "pet_id": "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa",
+     "worn": "horse_armor"
+    }
+   ]
+  }
+ }
+}

@@ -252,6 +252,118 @@
         ],
         "type": "object"
       },
+      "GameUICosmeticItem": {
+        "additionalProperties": false,
+        "properties": {
+          "acquirable": {
+            "type": "boolean"
+          },
+          "cosmetic_id": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "lock": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUICosmeticLock"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "owned": {
+            "type": "boolean"
+          },
+          "worn_by": {
+            "items": {
+              "format": "uuid-v7",
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "acquirable",
+          "cosmetic_id",
+          "lock",
+          "owned",
+          "worn_by"
+        ],
+        "type": "object"
+      },
+      "GameUICosmeticLock": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "active_company_tier_at_least"
+            ],
+            "type": "string"
+          },
+          "tier": {
+            "maximum": 8,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "kind",
+          "tier"
+        ],
+        "type": "object"
+      },
+      "GameUICosmeticWearer": {
+        "additionalProperties": false,
+        "properties": {
+          "pet_id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "worn": {
+            "oneOf": [
+              {
+                "format": "mechanical-id",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "pet_id",
+          "worn"
+        ],
+        "type": "object"
+      },
+      "GameUICosmeticsArm": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/GameUICosmeticItem"
+            },
+            "type": "array"
+          },
+          "wearers": {
+            "items": {
+              "$ref": "#/components/schemas/GameUICosmeticWearer"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "active",
+          "items",
+          "wearers"
+        ],
+        "type": "object"
+      },
       "GameUIFact": {
         "additionalProperties": false,
         "properties": {
@@ -296,6 +408,16 @@
           },
           "active_play": {
             "type": "null"
+          },
+          "cosmetics": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUICosmeticsArm"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "fiscal": {
             "oneOf": [

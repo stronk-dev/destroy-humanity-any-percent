@@ -80,6 +80,9 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 		{Name: "GameUIFeatures", Schema: apiObject(
 			apiField("achievements", nullable(apiRef("GameUIAchievementsArm"))),
 			apiField("active_play", &publicapi.Schema{Kind: publicapi.SchemaNull}),
+			// Cosmetic Shop v1 §7.1: additive optional arm (C2: never a required
+			// response property). No price field exists anywhere in it (I1).
+			publicapi.Field{Required: false, Name: "cosmetics", Schema: nullable(apiRef("GameUICosmeticsArm"))},
 			apiField("fiscal", nullable(apiRef("GameUIFiscalArm"))),
 			apiField("meters", nullable(apiRef("GameUIMetersArm"))),
 			apiField("minigames", nullable(apiRef("GameUIMinigamesArm"))),
@@ -91,6 +94,26 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			// Reputation Tree v1 R9: an additive optional v4 arm (a new required
 			// response property would violate the C2 compatibility gate).
 			publicapi.Field{Required: false, Name: "reputation", Schema: nullable(apiRef("GameUIReputationArm"))},
+		)},
+		{Name: "GameUICosmeticsArm", Schema: apiObject(
+			apiField("active", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+			apiField("items", array("GameUICosmeticItem")),
+			apiField("wearers", array("GameUICosmeticWearer")),
+		)},
+		{Name: "GameUICosmeticItem", Schema: apiObject(
+			apiField("acquirable", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+			apiField("cosmetic_id", apiString("mechanical-id")),
+			apiField("lock", nullable(apiRef("GameUICosmeticLock"))),
+			apiField("owned", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
+			apiField("worn_by", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiString("uuid-v7")}),
+		)},
+		{Name: "GameUICosmeticLock", Schema: apiObject(
+			apiField("kind", apiString("", "active_company_tier_at_least")),
+			apiField("tier", integer(0, 8)),
+		)},
+		{Name: "GameUICosmeticWearer", Schema: apiObject(
+			apiField("pet_id", apiString("uuid-v7")),
+			apiField("worn", nullable(apiString("mechanical-id"))),
 		)},
 		{Name: "GameUIPetsArm", Schema: apiObject(
 			apiField("pet_adoption", apiObject(

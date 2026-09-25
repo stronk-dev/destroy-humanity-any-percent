@@ -182,3 +182,40 @@ Severing (all restored):
 - **T2:** the TS Exit cap back at 22 fails the v24 Exit activation case.
 
 Kernel 0.3.124 → 0.3.125.
+
+## 2026-09-25 — C5: the Game UI `features.cosmetics` arm (Claude)
+
+This is the §7.1 projection as an **optional** v4 arm, like Reputation R9 and Pet Adoption PA7. A
+required property would violate API Foundation C2, and the RFC's "v4 plus a required `cosmetics`"
+text predates snapshot v4's landing. It is recorded here as a numbering/shape reconciliation, not a
+mechanic change.
+
+- **Server:**
+  - `server/gameui/features.go` `projectCosmetics`. Items follow catalog order, with `owned`, an
+    advisory `acquirable` (not owned and the active Company tier ≥ unlock), `lock` (non-null only
+    while locked and unowned) and sorted `worn_by`. `wearers` follow the byte-sorted pets keys.
+  - The arm is emitted exactly when `cosmetics` is pinned; `active` means Founder ≥ v24.
+  - Fact `feature.cosmetics`, which the client `GAME_UI_FACT_IDS` also registers.
+- **Schema:** `server/account/game_ui_api_schema.go` adds `GameUICosmeticsArm`/`Item`/`Lock`/
+  `Wearer`. `make api-generate` regenerated `docs/generated/api.json` and the client types.
+  `docs/generated/api-compat-v1.json` is **unchanged**: the additive optional field passes the
+  compatibility gate with no re-pin.
+- **Client:** `parseCosmeticsArm` in `client/src/game-ui/contracts.ts` uses exact keys and rejects:
+  - owned together with acquirable;
+  - a lock on an owned or acquirable item;
+  - an unowned item that is worn;
+  - a `worn` value absent from its `worn_by`, and the reverse;
+  - an inactive arm that is non-empty.
+- **Shared fixture:** the Go-authored `testdata/gameui/cosmetics-arm-v1.json` has 5 cases
+  (locked at T0, acquirable at T1, owned with no wearer, worn, not worn).
+
+Evidence (cold):
+- `make test-go GO_PACKAGES='./gameui ./account ./gameserver' GO_TEST_FLAGS='-count=1'` passes.
+- Client `tsc` is clean, and `vitest run` passes 6794.
+
+Severing (all restored):
+- Dropping the TS owned+acquirable and lock checks fails `cosmetics-arm.test.ts`. This is AC10's
+  named failing case.
+- A Go `acquirable` that ignores the lock fails with "tier-0 row".
+
+No kernel-guarded path was touched, so there is no version bump.
