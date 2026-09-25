@@ -1,0 +1,1914 @@
+{
+ "schema_version": 1,
+ "fixture_threshold": "1e5",
+ "seeds": [
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 0,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper",
+    "reputation.unlock.p05"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 320000,
+   "control_run_three_gate_ms": 442000,
+   "saved_ms": 122000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 1,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 314000,
+   "control_run_three_gate_ms": 392000,
+   "saved_ms": 78000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 2,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 322000,
+   "control_run_three_gate_ms": 390000,
+   "saved_ms": 68000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 3,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper",
+    "reputation.unlock.p05"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 292000,
+   "control_run_three_gate_ms": 404000,
+   "saved_ms": 112000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 4,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 300000,
+   "control_run_three_gate_ms": 462000,
+   "saved_ms": 162000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 5,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 320000,
+   "control_run_three_gate_ms": 460000,
+   "saved_ms": 140000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 6,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 412000,
+   "control_run_three_gate_ms": 458000,
+   "saved_ms": 46000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 7,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 352000,
+   "control_run_three_gate_ms": 392000,
+   "saved_ms": 40000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 8,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p05",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 270000,
+   "control_run_three_gate_ms": 404000,
+   "saved_ms": 134000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 9,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0225e0",
+   "run_three_gate_ms": 314000,
+   "control_run_three_gate_ms": 434000,
+   "saved_ms": 120000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 10,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 280000,
+   "control_run_three_gate_ms": 400000,
+   "saved_ms": 120000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 11,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 344000,
+   "control_run_three_gate_ms": 420000,
+   "saved_ms": 76000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 12,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 312000,
+   "control_run_three_gate_ms": 390000,
+   "saved_ms": 78000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 13,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 260000,
+   "control_run_three_gate_ms": 428000,
+   "saved_ms": 168000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 14,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper",
+    "reputation.unlock.p05"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 246000,
+   "control_run_three_gate_ms": 412000,
+   "saved_ms": 166000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 15,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper",
+    "reputation.unlock.p05"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 254000,
+   "control_run_three_gate_ms": 438000,
+   "saved_ms": 184000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 16,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 280000,
+   "control_run_three_gate_ms": 404000,
+   "saved_ms": 124000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 17,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 316000,
+   "control_run_three_gate_ms": 410000,
+   "saved_ms": 94000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 18,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 300000,
+   "control_run_three_gate_ms": 394000,
+   "saved_ms": 94000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 19,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 320000,
+   "control_run_three_gate_ms": 410000,
+   "saved_ms": 90000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 20,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 294000,
+   "control_run_three_gate_ms": 418000,
+   "saved_ms": 124000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 21,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 362000,
+   "control_run_three_gate_ms": 420000,
+   "saved_ms": 58000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 22,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p05",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 274000,
+   "control_run_three_gate_ms": 404000,
+   "saved_ms": 130000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 23,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 270000,
+   "control_run_three_gate_ms": 424000,
+   "saved_ms": 154000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 24,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 326000,
+   "control_run_three_gate_ms": 418000,
+   "saved_ms": 92000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 25,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 312000,
+   "control_run_three_gate_ms": 390000,
+   "saved_ms": 78000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 26,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 392000,
+   "control_run_three_gate_ms": 446000,
+   "saved_ms": 54000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 27,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 326000,
+   "control_run_three_gate_ms": 444000,
+   "saved_ms": 118000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 28,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 370000,
+   "control_run_three_gate_ms": 450000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 29,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 284000,
+   "control_run_three_gate_ms": 414000,
+   "saved_ms": 130000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 30,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 354000,
+   "control_run_three_gate_ms": 418000,
+   "saved_ms": 64000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 31,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 302000,
+   "control_run_three_gate_ms": 398000,
+   "saved_ms": 96000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 32,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 318000,
+   "control_run_three_gate_ms": 414000,
+   "saved_ms": 96000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 33,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 306000,
+   "control_run_three_gate_ms": 436000,
+   "saved_ms": 130000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 34,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p05",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 258000,
+   "control_run_three_gate_ms": 424000,
+   "saved_ms": 166000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 35,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 302000,
+   "control_run_three_gate_ms": 378000,
+   "saved_ms": 76000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 36,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 292000,
+   "control_run_three_gate_ms": 416000,
+   "saved_ms": 124000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 37,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 332000,
+   "control_run_three_gate_ms": 458000,
+   "saved_ms": 126000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 38,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 302000,
+   "control_run_three_gate_ms": 386000,
+   "saved_ms": 84000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 39,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 288000,
+   "control_run_three_gate_ms": 434000,
+   "saved_ms": 146000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 40,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 304000,
+   "control_run_three_gate_ms": 398000,
+   "saved_ms": 94000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 41,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p05",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 272000,
+   "control_run_three_gate_ms": 404000,
+   "saved_ms": 132000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 42,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 322000,
+   "control_run_three_gate_ms": 394000,
+   "saved_ms": 72000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 43,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 286000,
+   "control_run_three_gate_ms": 440000,
+   "saved_ms": 154000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 44,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 346000,
+   "control_run_three_gate_ms": 402000,
+   "saved_ms": 56000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 45,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 314000,
+   "control_run_three_gate_ms": 416000,
+   "saved_ms": 102000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 46,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.03e0",
+   "run_three_gate_ms": 308000,
+   "control_run_three_gate_ms": 446000,
+   "saved_ms": 138000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 47,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 290000,
+   "control_run_three_gate_ms": 408000,
+   "saved_ms": 118000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 48,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 318000,
+   "control_run_three_gate_ms": 434000,
+   "saved_ms": 116000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 49,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 314000,
+   "control_run_three_gate_ms": 432000,
+   "saved_ms": 118000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 50,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper",
+    "reputation.unlock.p05"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 272000,
+   "control_run_three_gate_ms": 484000,
+   "saved_ms": 212000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 51,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 324000,
+   "control_run_three_gate_ms": 466000,
+   "saved_ms": 142000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 52,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 280000,
+   "control_run_three_gate_ms": 442000,
+   "saved_ms": 162000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 53,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 328000,
+   "control_run_three_gate_ms": 420000,
+   "saved_ms": 92000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 54,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 292000,
+   "control_run_three_gate_ms": 434000,
+   "saved_ms": 142000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 55,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 356000,
+   "control_run_three_gate_ms": 394000,
+   "saved_ms": 38000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 56,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 244000,
+   "control_run_three_gate_ms": 392000,
+   "saved_ms": 148000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 57,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.unlock.p05",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 260000,
+   "control_run_three_gate_ms": 434000,
+   "saved_ms": 174000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 58,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.unlock.p25",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 282000,
+   "control_run_three_gate_ms": 470000,
+   "saved_ms": 188000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 59,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper",
+    "reputation.unlock.p05"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.0055e0",
+   "run_three_gate_ms": 318000,
+   "control_run_three_gate_ms": 428000,
+   "saved_ms": 110000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 60,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p05",
+    "reputation.unlock.p25"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 322000,
+   "control_run_three_gate_ms": 434000,
+   "saved_ms": 112000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 61,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.starter.upgrade_continuous_feed_paper"
+   ],
+   "bonus_factor": "1.005e0",
+   "run_three_gate_ms": 304000,
+   "control_run_three_gate_ms": 384000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 62,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0275e0",
+   "run_three_gate_ms": 294000,
+   "control_run_three_gate_ms": 400000,
+   "saved_ms": 106000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "chaos.t0_t1",
+   "seed": 63,
+   "career_policy": "seeded_uniform",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.unlock.p25",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.025e0",
+   "run_three_gate_ms": 292000,
+   "control_run_three_gate_ms": 432000,
+   "saved_ms": 140000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 0,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.004e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 1,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 275000,
+   "control_run_three_gate_ms": 275000,
+   "saved_ms": 0,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 2,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0035e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 3,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0035e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 4,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": null,
+   "control_run_three_gate_ms": null,
+   "saved_ms": null,
+   "excluded": "run3_gate_beyond_ratified_horizon_in_both_arms"
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 5,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 525000,
+   "control_run_three_gate_ms": 540000,
+   "saved_ms": 15000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 6,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 425000,
+   "control_run_three_gate_ms": 425000,
+   "saved_ms": 0,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 7,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 455000,
+   "control_run_three_gate_ms": 565000,
+   "saved_ms": 110000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 8,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 405000,
+   "control_run_three_gate_ms": 405000,
+   "saved_ms": 0,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 9,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.004e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": null,
+   "saved_ms": null,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 10,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 525000,
+   "control_run_three_gate_ms": 555000,
+   "saved_ms": 30000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 11,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 265000,
+   "control_run_three_gate_ms": 265000,
+   "saved_ms": 0,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 12,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 425000,
+   "control_run_three_gate_ms": 535000,
+   "saved_ms": 110000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 13,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 525000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 65000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 14,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": null,
+   "control_run_three_gate_ms": null,
+   "saved_ms": null,
+   "excluded": "run3_gate_beyond_ratified_horizon_in_both_arms"
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 15,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 175000,
+   "control_run_three_gate_ms": 525000,
+   "saved_ms": 350000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 16,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.004e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 17,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0035e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 18,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 420000,
+   "control_run_three_gate_ms": 565000,
+   "saved_ms": 145000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 19,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0035e0",
+   "run_three_gate_ms": 330000,
+   "control_run_three_gate_ms": 485000,
+   "saved_ms": 155000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 20,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.004e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 21,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0035e0",
+   "run_three_gate_ms": null,
+   "control_run_three_gate_ms": null,
+   "saved_ms": null,
+   "excluded": "run3_gate_beyond_ratified_horizon_in_both_arms"
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 22,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 23,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0035e0",
+   "run_three_gate_ms": 345000,
+   "control_run_three_gate_ms": 400000,
+   "saved_ms": 55000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 24,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 360000,
+   "control_run_three_gate_ms": 360000,
+   "saved_ms": 0,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 25,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 430000,
+   "control_run_three_gate_ms": 430000,
+   "saved_ms": 0,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 26,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.0045e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 27,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small"
+   ],
+   "bonus_factor": "1.0025e0",
+   "run_three_gate_ms": 445000,
+   "control_run_three_gate_ms": 555000,
+   "saved_ms": 110000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 28,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 475000,
+   "control_run_three_gate_ms": 570000,
+   "saved_ms": 95000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 29,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.004e0",
+   "run_three_gate_ms": 510000,
+   "control_run_three_gate_ms": 590000,
+   "saved_ms": 80000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 30,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 500000,
+   "control_run_three_gate_ms": 585000,
+   "saved_ms": 85000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "casual.t0_t1",
+   "seed": 31,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "applied_starter_node_ids": [
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower"
+   ],
+   "bonus_factor": "1.003e0",
+   "run_three_gate_ms": 490000,
+   "control_run_three_gate_ms": 585000,
+   "saved_ms": 95000,
+   "excluded": ""
+  },
+  {
+   "policy_id": "reference.greedy",
+   "seed": 0,
+   "career_policy": "cheapest",
+   "purchased_node_ids": [
+    "reputation.unlock.p05"
+   ],
+   "applied_starter_node_ids": [],
+   "bonus_factor": "1.001e0",
+   "run_three_gate_ms": 355000,
+   "control_run_three_gate_ms": 357000,
+   "saved_ms": 2000,
+   "excluded": ""
+  }
+ ],
+ "gated_seeds": 93,
+ "excluded_seeds": 3,
+ "h4_gate_passed": false,
+ "h4_violations": [
+  "casual.t0_t1 seed 1: run-3 gate 275000 is not sooner than control 275000 with starters [reputation.starter.cash_small]",
+  "casual.t0_t1 seed 6: run-3 gate 425000 is not sooner than control 425000 with starters [reputation.starter.cash_small]",
+  "casual.t0_t1 seed 8: run-3 gate 405000 is not sooner than control 405000 with starters [reputation.starter.cash_small reputation.starter.generated_beige_tower]",
+  "casual.t0_t1 seed 11: run-3 gate 265000 is not sooner than control 265000 with starters [reputation.starter.cash_small]",
+  "casual.t0_t1 seed 24: run-3 gate 360000 is not sooner than control 360000 with starters [reputation.starter.cash_small]",
+  "casual.t0_t1 seed 25: run-3 gate 430000 is not sooner than control 430000 with starters [reputation.starter.cash_small]"
+ ],
+ "saved_ms_min_p50_max_by_policy": {
+  "casual.t0_t1": [
+   15000,
+   80000,
+   350000
+  ],
+  "chaos.t0_t1": [
+   38000,
+   118000,
+   212000
+  ]
+ },
+ "note": "fixture-first H4: fixture threshold from the OD-2 measurement's satisfying set; nothing is ratified or minted"
+}

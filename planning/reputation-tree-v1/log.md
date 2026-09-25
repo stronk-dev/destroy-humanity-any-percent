@@ -569,3 +569,69 @@ evidence stands, as H3 below shows: nothing it measured depends on Reputation.
 - **H5, per-node relevance across runs.**
 
 These are the next batch.
+
+## 2026-09-25 — B8b landed: H4 runs 1–3 career (Claude)
+
+**Implemented by:** Claude; awaiting Codex designated review.
+
+**Self-correction to B8a.** The lifetime-hook edit in `b522c577` attached the hook to the discarded
+`commandApplies` probe clone instead of `apply()`. That commit's summary ("the served
+`AccumulateLifetimeValue`") was therefore incomplete. This commit adds the hook to `apply()` and
+re-measures cold. The first-hour report came out **byte-identical** to the committed B8a report:
+every transition follows a same-instant advance, so no accrual is folded into transitions. The B8a
+threshold measurement stands.
+
+**What landed:**
+- **Harness.** `harness/reputation_career.go` adds career mode to the first-hour runner. At the
+  run-2 elective Exit it:
+  - credits Reputation under a fixture threshold;
+  - buys nodes by the declared policy: `cheapest` for Casual and Reference, `seeded_uniform` for
+    Chaos, and `none` for the control arm;
+  - assembles run 3 through the served `production.ApplyReputationStarters`, a new thin export of
+    R4 step 4 (kernel-guarded, so kernel 0.3.115 → 0.3.116 in this commit);
+  - carries the frozen Founder bonus into run-3 production (checked via
+    `production.ResolveFrozenContributions`).
+
+  The whole career runs on the tree bundle, which differs from the suite bundle only by the R2
+  declaration row. `runExperiment` is unchanged in behaviour: it calls `runWithCareer` with no
+  career.
+- **Report.** `career-h4.v1.json` covers all 97 seeds, each with a treated and a control arm,
+  at fixture threshold 1e5, which is in the OD-2 satisfying set.
+  - 93 seeds are gated.
+  - 3 Casual seeds are **excluded, and visible**, because the run-3 gate lies beyond the ratified
+    2-hour horizon in both arms. I did not extend the horizon to fit.
+  - Time saved on the run-3 Garage gate (min/p50/max): Chaos 38 / 118 / 212 s; Casual
+    15 / 80 / 350 s.
+
+**H4 verdict: FAIL, recorded rather than loosened.** In 6 Casual seeds, run 3 with starters reaches
+the Garage gate at *exactly* the same attended time as control:
+
+| Seed | Gate time (both arms) | Starters |
+|---|---|---|
+| 1 | 275 s | `cash_small` |
+| 6 | 425 s | `cash_small` |
+| 8 | 405 s | `cash_small` + `generated_beige_tower` |
+| 11 | 265 s | `cash_small` |
+| 24 | 360 s | `cash_small` |
+| 25 | 430 s | `cash_small` |
+
+Casual's session-quantized decision schedule absorbs the small starter advantage. Under the
+proposed R2 data (OD-10 is provisional), the RFC's "strictly sooner at every seed" gate is not met.
+
+This is owner/RFC-author input. Options:
+- stronger starters;
+- a different Casual node choice;
+- stating the gate on a distribution rather than every seed.
+
+Each of these is a ruling, not something I can choose. The report records `h4_gate_passed: false`
+and the violations. The test pins the measurement, so drift fails.
+
+**Evidence and severing probes:**
+- `TestReputationCareerGateRejectsTiesAndMissingTreatment`: the gate rejects ties, a slower
+  treatment, and a missing treatment, and accepts a strictly sooner one. Severing `>=` to `>` makes
+  it fail.
+- `TestReputationCareerStartersShortenRunThree` regenerates and pins the report. It fails outright
+  if no seed is gated, which would be vacuous. Severing the served starter call makes it fail.
+- `make test-go GO_PACKAGES='./harness ./production' -count=1` passes.
+
+**Still open:** H5, the per-node relevance report across runs.

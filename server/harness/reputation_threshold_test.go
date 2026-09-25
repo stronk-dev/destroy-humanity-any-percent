@@ -137,3 +137,32 @@ func TestFirstHourRecordsReputationAtEachExit(t *testing.T) {
 		t.Fatalf("Exit order=%+v", result.ReputationExits)
 	}
 }
+
+// TestReputationRecordingIsFirstHourNeutral is H3: adding H1 recording and
+// the lifetime hook left every epoch-8 milestone, ending, and aggregate
+// byte-identical; only reputation_exits differs.
+func TestReputationRecordingIsFirstHourNeutral(t *testing.T) {
+	load := func(path string) FirstHourExperimentReport {
+		var report FirstHourExperimentReport
+		data, err := os.ReadFile(filepath.Join(repositoryRootForReputation, path))
+		if err != nil || json.Unmarshal(data, &report) != nil {
+			t.Fatalf("%s: %v", path, err)
+		}
+		return report
+	}
+	before := load("planning/prestige-and-exits/first-hour-epoch8-report.v1.json")
+	after := load("planning/reputation-tree-v1/first-hour-reputation.v1.json")
+	if before.ConstantsHash != after.ConstantsHash || before.ScenarioHash != after.ScenarioHash || len(before.Runs) != len(after.Runs) {
+		t.Fatal("reports are not the same measurement")
+	}
+	encode := func(value any) string { data, _ := json.Marshal(value); return string(data) }
+	if encode(before.Aggregate) != encode(after.Aggregate) {
+		t.Fatal("aggregate moved")
+	}
+	for index := range before.Runs {
+		left, right := before.Runs[index], after.Runs[index]
+		if encode(left.Milestones) != encode(right.Milestones) || encode(left.Ending) != encode(right.Ending) || encode(left.Key) != encode(right.Key) {
+			t.Fatalf("run %d moved", index)
+		}
+	}
+}

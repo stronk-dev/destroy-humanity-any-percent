@@ -630,3 +630,14 @@ func applyReputationStarters(next CatalogBundle, founder, newCompany *save.State
 	}
 	return &reputationRunStarted{BonusFactor: factor.String(), AppliedStarterNodeIDs: applied}, nil
 }
+
+// ApplyReputationStarters exposes R4 step 4 to measurement tooling (the
+// balance harness career scenario) so it drives the exact served starter
+// application rather than a re-implementation. It returns the applied node ids.
+func ApplyReputationStarters(next CatalogBundle, founder, newCompany *save.State) ([]string, error) {
+	started, err := applyReputationStarters(next, founder, newCompany)
+	if err != nil || started == nil {
+		return nil, err
+	}
+	return started.AppliedStarterNodeIDs, nil
+}

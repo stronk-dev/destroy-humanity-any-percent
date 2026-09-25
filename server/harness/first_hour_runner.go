@@ -105,6 +105,7 @@ type firstHourRuntime struct {
 	lastSession       int64
 	commands          *[]FirstHourScriptCommand
 	reputationExits   []FirstHourReputationSample
+	career            *careerRuntime
 }
 
 func (suite *FirstHourSuite) RunExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment) FirstHourRunResult {
@@ -120,38 +121,43 @@ func (suite *FirstHourSuite) RunExperimentScript(spec RunSpec, seed uint64, expe
 }
 
 func (suite *FirstHourSuite) runExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment, capture bool) (FirstHourRunResult, []FirstHourScriptCommand) {
+	result, commands, _ := suite.runWithCareer(spec, seed, experiment, capture, nil)
+	return result, commands
+}
+
+func (suite *FirstHourSuite) runWithCareer(spec RunSpec, seed uint64, experiment FirstHourExperiment, capture bool, career *careerRuntime) (FirstHourRunResult, []FirstHourScriptCommand, *careerRuntime) {
 	result := FirstHourRunResult{Key: suite.RunKey(spec, seed), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{},
 		ReputationExits: []FirstHourReputationSample{}}
 	commands := []FirstHourScriptCommand{}
 	if err := validateFirstHourExperiment(experiment); err != nil {
-		return failFirstHour(result, err), commands
+		return failFirstHour(result, err), commands, career
 	}
 	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
 	if !ok {
-		return failFirstHour(result, fmt.Errorf("unknown first-hour policy %s v%d", spec.PolicyID, spec.PolicyVersion)), commands
+		return failFirstHour(result, fmt.Errorf("unknown first-hour policy %s v%d", spec.PolicyID, spec.PolicyVersion)), commands, career
 	}
 	company, err := newFirstHourCompany(suite.Bundle.Economy)
 	if err != nil {
-		return failFirstHour(result, err), commands
+		return failFirstHour(result, err), commands, career
 	}
 	founder := &save.State{ReputationLevel: 0, RouteKnowledgeBalance: 0, LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
 	runtime := firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: seed, experiment: experiment,
-		company: company, founder: founder, revision: 1, milestones: map[string]*int64{}, lastSession: -1}
+		company: company, founder: founder, revision: 1, milestones: map[string]*int64{}, lastSession: -1, career: career}
 	if capture {
 		runtime.commands = &commands
 	}
 	boundaries, err := firstHourBoundaries(policy, seed, spec.HorizonMS)
 	if err != nil {
-		return failFirstHour(result, err), commands
+		return failFirstHour(result, err), commands, career
 	}
 	for _, boundary := range boundaries {
 		if runtime.transitions >= suite.Scenario.TransitionBudget {
-			return failFirstHour(result, fmt.Errorf("first-hour transition budget exceeded: executed %d, maximum %d", runtime.transitions, suite.Scenario.TransitionBudget)), commands
+			return failFirstHour(result, fmt.Errorf("first-hour transition budget exceeded: executed %d, maximum %d", runtime.transitions, suite.Scenario.TransitionBudget)), commands, career
 		}
 		if err := runtime.step(boundary); err != nil {
-			return failFirstHour(result, err), commands
+			return failFirstHour(result, err), commands, career
 		}
-		if runtime.milestones["milestone.first_elective_exit"] != nil {
+		if career == nil && runtime.milestones["milestone.first_elective_exit"] != nil || career != nil && career.done() {
 			break
 		}
 	}
@@ -166,7 +172,7 @@ func (suite *FirstHourSuite) runExperiment(spec RunSpec, seed uint64, experiment
 	if len(result.InvariantFailures) != 0 {
 		result.Outcome = "failed"
 	}
-	return result, commands
+	return result, commands, career
 }
 
 func (suite *FirstHourSuite) RunAllExperiments(experiment FirstHourExperiment, workerLimit int) (FirstHourExperimentReport, error) {
@@ -360,7 +366,7 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 	}
 	runtime.lastSession = boundary.sessionIndex
 	advanced, err := production.SimulateAdvance(runtime.company, runtime.suite.Bundle.Economy,
-		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), mode, now, nil, production.AblationMask{})
+		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), mode, now, runtime.external(), production.AblationMask{})
 	if err != nil {
 		return err
 	}
@@ -375,8 +381,11 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 		runtime.recordCommand(boundary.atMS, mode, runtime.manualRequest())
 		return runtime.applyEnding(now, boundary.atMS, attended)
 	}
+	if runtime.career != nil && runtime.company.RunSeq == 2 && runtime.electiveExitReady(founderAttended) {
+		return runtime.applyCareerExit(now, boundary.atMS, attended)
+	}
 	if runtime.electiveExitReady(founderAttended) {
-		terms, termsErr := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.suite.Bundle.Prestige, "collapse")
+		terms, termsErr := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.prestigePolicy(), "collapse")
 		if termsErr != nil {
 			return termsErr
 		}
@@ -417,7 +426,7 @@ func (runtime *firstHourRuntime) electiveExitReady(founderAttended int64) bool {
 	if runtime.company.RunSeq < 2 || !runtime.company.GatesCrossed["gate.t0_to_t1"] || founderAttended < 2_700_000 {
 		return false
 	}
-	terms, err := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.suite.Bundle.Prestige, "collapse")
+	terms, err := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.prestigePolicy(), "collapse")
 	return err == nil && (terms.ReputationDelta > 0 || terms.RouteKnowledge > 0 || len(terms.NetworkSlotUnlocks) > 0)
 }
 
@@ -523,7 +532,7 @@ func (runtime *firstHourRuntime) commandApplies(request production.IntentRequest
 	}
 	result, err := production.SimulateTransition(request, clone, runtime.suite.Bundle.Economy,
 		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), production.ModeOnline,
-		now, nil, nil, production.AblationMask{})
+		now, runtime.external(), nil, production.AblationMask{})
 	return err == nil && result.Decision.Outcome == save.IntentApplied
 }
 
@@ -615,7 +624,7 @@ func (runtime *firstHourRuntime) observeReferencePurchase(atMS int64, id string)
 func (runtime *firstHourRuntime) apply(request production.IntentRequest, now time.Time, atMS int64, mode production.EvaluationMode) error {
 	runtime.recordCommand(atMS, mode, request)
 	result, err := production.SimulateTransition(request, runtime.company, runtime.suite.Bundle.Economy,
-		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes}, runtime.companyRevision(), mode, now, nil, nil, production.AblationMask{})
+		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes, Hook: runtime.lifetimeHook()}, runtime.companyRevision(), mode, now, runtime.external(), nil, production.AblationMask{})
 	if err != nil {
 		return err
 	}
@@ -625,6 +634,9 @@ func (runtime *firstHourRuntime) apply(request production.IntentRequest, now tim
 	}
 	runtime.revision++
 	runtime.observeDecision(atMS, request.Kind, result.Decision)
+	if err := runtime.observeCareerGate(request, now); err != nil {
+		return err
+	}
 	return validateFirstHourCompany(runtime.suite.Bundle.Economy, runtime.company)
 }
 
@@ -635,7 +647,7 @@ func (runtime *firstHourRuntime) recordCommand(atMS int64, mode production.Evalu
 }
 
 func (runtime *firstHourRuntime) applyEnding(now time.Time, wallMS, attended int64) error {
-	terms, err := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.suite.Bundle.Prestige, "scripted_first")
+	terms, err := prestigecore.ComputeTerms(runtime.company, runtime.founder, runtime.prestigePolicy(), "scripted_first")
 	if err != nil {
 		return err
 	}
