@@ -323,6 +323,9 @@ type IntentRequest struct {
 	ReputationNodeID        string
 	PetSpeciesID            string
 	PetNameKey              string
+	// CosmeticID and CosmeticPetID are Cosmetic Shop v1 §4's request fields.
+	CosmeticID    string
+	CosmeticPetID string
 	// ReputationPlan is R6's optional Exit-attached purchase plan, in
 	// purchase order; nil when the key is absent.
 	ReputationPlan []string
@@ -432,6 +435,9 @@ func (s *Service) Handle(
 	}
 	if request.Kind == IntentAdoptPet {
 		return s.handleFounderAdoption(ctx, streamID, now, request)
+	}
+	if isCosmeticIntent(request.Kind) {
+		return s.handleFounderCosmetic(ctx, streamID, request)
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
@@ -651,7 +657,7 @@ func (s *Service) Handle(
 
 func isCompanyIntent(kind string) bool {
 	return kind != IntentBuyRouteHint && kind != IntentCareAction && kind != IntentHarvestFiscalPeriod && kind != IntentSpendFiscalCredit &&
-		kind != IntentPurchaseReputationNode && kind != IntentAdoptPet
+		kind != IntentPurchaseReputationNode && kind != IntentAdoptPet && !isCosmeticIntent(kind)
 }
 
 type founderRouteHintResolved struct {
@@ -2154,6 +2160,30 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 			request.InvalidDetail = "species_id"
 		} else if err := json.Unmarshal(root["name_key"], &request.PetNameKey); err != nil || !intentIDPattern.MatchString(request.PetNameKey) {
 			request.InvalidDetail = "name_key"
+		}
+	case IntentAcquireCosmetic, IntentEquipCosmetic:
+		keys := []string{"intent_id", "kind", "expected_revision", "cosmetic_id"}
+		if request.Kind == IntentEquipCosmetic {
+			keys = append(keys, "pet_id")
+		}
+		if !hasExactKeys(root, keys...) {
+			request.InvalidDetail = request.Kind + ".fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["cosmetic_id"], &request.CosmeticID); err != nil || !intentIDPattern.MatchString(request.CosmeticID) {
+			request.InvalidDetail = "cosmetic_id"
+		} else if request.Kind == IntentEquipCosmetic {
+			if err := json.Unmarshal(root["pet_id"], &request.CosmeticPetID); err != nil || !intentUUIDV7Pattern.MatchString(request.CosmeticPetID) {
+				request.InvalidDetail = "pet_id"
+			}
+		}
+	case IntentUnequipCosmetic:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "pet_id") {
+			request.InvalidDetail = "unequip_cosmetic.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["pet_id"], &request.CosmeticPetID); err != nil || !intentUUIDV7Pattern.MatchString(request.CosmeticPetID) {
+			request.InvalidDetail = "pet_id"
 		}
 	case IntentClaimOpportunity:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "opportunity_id") {

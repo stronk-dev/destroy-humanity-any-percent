@@ -119,3 +119,66 @@ Severing (all restored):
 Go-authored Exit corpus case, which C4's cosmetic corpus will include.
 
 Kernel 0.3.123 → 0.3.124.
+
+## 2026-09-25 — C4: the three cosmetic intents, events and migration (Claude)
+
+- **Go:** `server/production/cosmetic_intent.go`
+  - `handleFounderCosmetic`. It is the unguarded Founder boundary, because §4.5 says cosmetics are
+    never `exclusive_activity`.
+  - `resolveCosmeticActiveCompany`, which freezes the active Company's
+    `{stream, revision, run_seq, tier}` for acquire only. The client never sends a tier.
+  - `applyFounderCosmeticResolved`, which follows the §4.1 prefix (`not_eligible/inactive`,
+    `unknown_id/cosmetic_id`) and then the per-intent order:
+    - acquire: `owned`, then `locked`;
+    - equip: `unknown_id/pet_id`, `not_owned`, `already_equipped`;
+    - unequip: `unknown_id/pet_id`, `nothing_equipped`.
+  - `checkCosmeticsTransition` runs in `ApplyFounderLogged`'s commit guard. Only the three intents
+    may change `cosmetics`; the one exception is activation from absent to empty.
+  - `ParseIntent` uses strict exact keys, so `price` or `tier` in a request is terminal
+    `invalid/<kind>.fields` (N2).
+- **Events:** `save/intent.go` adds `cosmetic_acquired.v1` / `cosmetic_equipped.v1` /
+  `cosmetic_unequipped.v1` with strict payloads. `replaced_cosmetic_id` must be present, possibly
+  null. Migration `00080_cosmetic_events.sql` extends the closed kind constraint, and the
+  migration pin moves to 80.
+- **Receipts:** `{intent_id, outcome, founder_revision, kind, cosmetics, event}`. There is no
+  amount, price, currency or payment field; the corpus asserts this.
+- **TS:** `applyFounderCosmetic`, the parse cases, the event kinds and `checkCosmeticsTransition`
+  in `replay.ts`.
+- **Corpus:** Go-authored `testdata/replay/cosmetic-v1.json` holds 21 Founder cases across
+  `species`/`shop`/`pair` bundles (the two-item fixture catalog reaches replace and `not_owned`),
+  plus the Exit case `exit-activates-founder-v24` (current `pet_species` → next `cosmetics`).
+  `reputationFounderState` (test-only) gained the v23/v24 defaults so that case can be built.
+
+**Finding, fixed here (pre-existing, Pet Adoption lane):** the TS Founder Exit arm capped
+`result_founder_wire_version` at 22 (`safeInteger(…, 1, 22)` and the allowed-version list). Any
+Exit whose Founder result is v23 (Pet Adoption) or v24 was therefore unreplayable in TS; no TS
+Exit witness at v23 existed to reveal it. Both caps now allow 23 and 24. The new Exit case fails
+with "integer outside exact domain" when the cap is put back at 22.
+
+Evidence (cold):
+- `make test-go GO_PACKAGES='./cosmetic ./save ./production ./replaycatalog ./pet ./gameui ./account ./gameserver ./releasepackage' GO_TEST_FLAGS='-count=1'`
+  passes.
+- Client `tsc` is clean, and `vitest run` passes 6792, including all 23 cases of
+  `cosmetic-replay.test.ts`.
+- Postgres `docker compose -f compose.save-test.yml run --rm test go test -p 1 ./save ./production ./gameserver ./account -run Integration -count=1`
+  passes, including the new `TestCosmeticIntegrationPersistsReplayableFounderLog`. It covers:
+  - an applied acquire, a byte-identical retry, `idempotency_conflict`, then `owned` and the
+    `invalid` price field;
+  - exactly one event row, with the rejections storing none;
+  - the Company stream bytes and revision left untouched;
+  - `UPDATE … kind='cosmetic_purchased.v1'` refused by the constraint;
+  - Founder history `ReplayVerified`.
+- `TestCosmeticEventPayloadsAreStrict` checks the extra-field, missing-replace and order-0
+  payloads. AC9's "database rejects an extra payload field" is enforced by the save layer's strict
+  decoder before any insert; the database constrains kinds only (DESIGN-GAP note: no JSON-schema
+  check exists in SQL for any event kind).
+
+Severing (all restored):
+- **G1:** dropping Go's `locked` check fails the corpus build at `rejects-locked-at-tier-0`. This
+  is AC5's named failing case.
+- **G2:** disabling the commit guard gives "adopt_pet arm that cleared cosmetics: err=<nil>".
+  This is the AC8 failing case.
+- **T1:** dropping the TS `locked` check fails 2 corpus cases.
+- **T2:** the TS Exit cap back at 22 fails the v24 Exit activation case.
+
+Kernel 0.3.124 → 0.3.125.

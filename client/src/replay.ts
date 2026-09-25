@@ -21,8 +21,8 @@ import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
 import { drawPetAdoption, parsePetSpeciesCatalog, petSpeciesRow, type PetSpeciesCatalog } from "./pet/species";
-import { loadCosmeticCatalog, type CosmeticCatalog } from "./cosmetic/catalog";
-import { emptyCosmeticState, encodeCosmeticState, parseCosmeticState, type CosmeticState } from "./cosmetic/state";
+import { cosmeticItem, loadCosmeticCatalog, type CosmeticCatalog } from "./cosmetic/catalog";
+import { cosmeticStatesEqual, emptyCosmeticState, encodeCosmeticState, parseCosmeticState, type CosmeticState } from "./cosmetic/state";
 import { encodePetIdentities, initialPetCareState, parsePetIdentities, type PetIdentity } from "./pet/identity";
 import { parseTyperCatalog, type TyperCatalog } from "./typer/catalog";
 import { parsePitchCatalog, type PitchCatalog } from "./pitch/catalog";
@@ -252,6 +252,7 @@ const REPLAY_EVENT_KINDS = Object.freeze([
 	"soul_price_paid.v1", "soul_band_changed.v1", "soul_depleted.v1",
 	"soul_recovery_started.v1", "soul_recovery_cancelled.v1", "soul_recovered.v1",
 	"reputation_node_purchased.v1", "pet_adopted.v1",
+	"cosmetic_acquired.v1", "cosmetic_equipped.v1", "cosmetic_unequipped.v1",
 ] as const);
 
 function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
@@ -723,6 +724,8 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (transition.outcome !== "applied") { rollback(); return transition; }
     // Pet Adoption v1 PA3.5: only adopt_pet may change pet_identities, by exactly one key.
     checkPetIdentityTransition(before.petIdentities, state.petIdentities, string(wire.resolved.kind) === "adopt_pet", before.wireVersion < 23);
+    // Cosmetic Shop v1 §4.5/AC8: only the three cosmetic intents may change cosmetics.
+    checkCosmeticsTransition(before, state, COSMETIC_INTENTS.has(string(wire.resolved.kind)));
     if (!fiscalSweep) return transition;
     const receipt = exactObject(transition.receipt, Object.keys(transition.receipt as Record<string, unknown>), "Founder receipt");
     const fiscal_sweep = fiscalSweepWire(fiscalSweep);
@@ -797,6 +800,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (kind === "spend_fiscal_credit") return finish(applyFounderFiscalSpend(state, request, wire, catalogs));
     if (kind === "purchase_reputation_node") return finish(applyFounderReputationPurchase(state, request, wire, catalogs));
     if (kind === "adopt_pet") return finish(await applyFounderAdoption(state, request, wire, catalogs, rollback));
+    if (COSMETIC_INTENTS.has(kind)) return finish(applyFounderCosmetic(state, request, wire, catalogs, rollback));
     if (kind === "exit.v1" || kind === "exit.v2") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
@@ -1904,7 +1908,7 @@ function founderWireSnapshot(state: FounderReplayState): unknown {
 function applyFounderExit(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): FounderLoggedTransition {
 	const inputHash = catalogs.constantsHash;
 	const probe = wire.resolved;
-	const probedVersion = safeInteger(probe.result_founder_wire_version, 1, 22);
+	const probedVersion = safeInteger(probe.result_founder_wire_version, 1, 24);
 	// exit.v2 exists exactly when the request carries a non-empty plan and the Exit applied (R6).
 	const planned = (request.reputation_plan?.length ?? 0) !== 0 && probe.outcome === "applied";
 	if ((probe.kind === "exit.v2") !== planned) throw new RangeError("Founder Exit arm/plan mismatch");
@@ -1917,8 +1921,8 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
   const resultHash = string(raw.result_constants_hash); if (!hashPattern.test(resultHash)) throw new SyntaxError("invalid Founder result hash");
   const ageBefore = safeInteger(raw.age_ms_before, 0, MAX_EXACT_INTEGER); const ageAfter = safeInteger(raw.age_ms_after, 0, MAX_EXACT_INTEGER); const attended = safeInteger(raw.attended_ms, 0, MAX_EXACT_INTEGER);
   if (ageBefore !== state.ageMs || ageAfter < ageBefore || attended !== ageAfter - ageBefore) throw new RangeError("invalid Founder attendance facts");
-	const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 22);
-	if (![14, 15, 16, 17, 18, 19, 20, 21, 22].includes(resultVersion)) throw new RangeError("unsupported Founder result version");
+	const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 24);
+	if (![14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].includes(resultVersion)) throw new RangeError("unsupported Founder result version");
   const outcome = string(raw.outcome);
   if (outcome === "rejected") {
     const rejection = exactObject(raw.rejection, ["category", "detail"], "Founder Exit rejection"); const category = string(rejection.category); const detail = string(rejection.detail);
@@ -2202,6 +2206,19 @@ function parseIntent(payload: string, intentId: string): Intent {
       if (!hasExactKeys(raw, ["kind", "expected_revision", "route_id"])) { base.invalid = "buy_route_hint.fields"; return base; }
       if (!isMechanical(raw.route_id)) base.invalid = "route_id"; else base.route_id = raw.route_id;
       return base;
+    case "acquire_cosmetic":
+    case "equip_cosmetic": {
+      const keys = ["kind", "expected_revision", "cosmetic_id", ...(kind === "equip_cosmetic" ? ["pet_id"] : [])];
+      if (!hasExactKeys(raw, keys)) { base.invalid = `${kind}.fields`; return base; }
+      if (!isMechanical(raw.cosmetic_id)) base.invalid = "cosmetic_id";
+      else if (kind === "equip_cosmetic" && !isUUIDV7(raw.pet_id)) base.invalid = "pet_id";
+      else { base.cosmetic_id = raw.cosmetic_id; if (kind === "equip_cosmetic") base.pet_id = raw.pet_id; }
+      return base;
+    }
+    case "unequip_cosmetic":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "pet_id"])) { base.invalid = "unequip_cosmetic.fields"; return base; }
+      if (!isUUIDV7(raw.pet_id)) base.invalid = "pet_id"; else base.pet_id = raw.pet_id;
+      return base;
     case "adopt_pet":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "species_id", "name_key"])) { base.invalid = "adopt_pet.fields"; return base; }
       if (!isMechanical(raw.species_id)) base.invalid = "species_id";
@@ -2308,6 +2325,64 @@ function cursor(value: unknown, label: string): number { const source = string(v
 function sortedRecord<T>(value: Record<string, T>): Record<string, T> { return Object.fromEntries(Object.keys(value).sort(byteCompare).map((key) => [key, value[key]!])); }
 function same(left: readonly string[], right: readonly string[]): boolean { return left.length === right.length && left.every((value, index) => value === right[index]); }
 function byteCompare(left: string, right: string): number { const a = new TextEncoder().encode(left); const b = new TextEncoder().encode(right); for (let i = 0; i < Math.min(a.length, b.length); i++) if (a[i] !== b[i]) return a[i]! - b[i]!; return a.length - b.length; }
+
+// Cosmetic Shop v1 §4: the three cosmetic replay arms, byte twin of
+// server/production/cosmetic_intent.go. No ledger read or write; no receipt
+// field carries an amount, price, currency, or payment.
+const COSMETIC_INTENTS: ReadonlySet<string> = new Set(["acquire_cosmetic", "equip_cosmetic", "unequip_cosmetic"]);
+
+function applyFounderCosmetic(state: FounderReplayState, request: ReturnType<typeof parseIntent>, wire: ReturnType<typeof parseFounderReplayWire>,
+  catalogs: ReplayCatalogBundle, rollback: () => void): FounderLoggedTransition {
+  const acquire = request.kind === "acquire_cosmetic";
+  exactKeys(wire.resolved, acquire ? ["kind", "active_company"] : ["kind"], "cosmetic inputs");
+  if (!COSMETIC_INTENTS.has(request.kind) || wire.resolved.kind !== request.kind || request.invalid !== undefined || request.expected_revision !== wire.command.revision) throw new RangeError("cosmetic command mismatch");
+  let tier = 0;
+  if (acquire) {
+    const active = exactObject(wire.resolved.active_company, ["company_stream_id", "company_revision", "run_seq", "tier"], "cosmetic active Company");
+    if (typeof active.company_stream_id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(active.company_stream_id)) throw new RangeError("invalid cosmetic active Company stream");
+    safeInteger(active.company_revision, 1, MAX_EXACT_INTEGER); safeInteger(active.run_seq, 0, MAX_EXACT_INTEGER);
+    tier = safeInteger(active.tier, 0, 8);
+  }
+  const reject = (category: string, detail: string) => founderRejected(state, request.intent_id, wire.command.revision, category, detail, catalogs.constantsHash, rollback);
+  if (!catalogs.cosmetics || state.wireVersion < 24) return reject("not_eligible", "inactive");
+  const item = request.kind === "unequip_cosmetic" ? undefined : cosmeticItem(catalogs.cosmetics, string(request.cosmetic_id));
+  if (request.kind !== "unequip_cosmetic" && item === undefined) return reject("unknown_id", "cosmetic_id");
+  const next = { owned: [...state.cosmetics.owned], equipped: { ...state.cosmetics.equipped } };
+  let emitted: ReplayEvent;
+  if (acquire) {
+    if (next.owned.includes(item!.cosmetic_id)) return reject("not_eligible", "owned");
+    if (tier < item!.unlock.tier) return reject("not_eligible", "locked");
+    next.owned = [...next.owned, item!.cosmetic_id].sort(byteCompare);
+    emitted = event("cosmetic_acquired.v1", request.intent_id, { cosmetic_id: item!.cosmetic_id, order_number: next.owned.length });
+  } else {
+    const petId = string(request.pet_id);
+    if (state.pets[petId] === undefined) return reject("unknown_id", "pet_id");
+    if (request.kind === "equip_cosmetic") {
+      if (!next.owned.includes(item!.cosmetic_id)) return reject("not_eligible", "not_owned");
+      const previous = next.equipped[petId];
+      if (previous === item!.cosmetic_id) return reject("not_eligible", "already_equipped");
+      next.equipped[petId] = item!.cosmetic_id;
+      emitted = event("cosmetic_equipped.v1", request.intent_id, { cosmetic_id: item!.cosmetic_id, pet_id: petId, replaced_cosmetic_id: previous ?? null });
+    } else {
+      const worn = next.equipped[petId];
+      if (worn === undefined) return reject("not_eligible", "nothing_equipped");
+      delete next.equipped[petId];
+      emitted = event("cosmetic_unequipped.v1", request.intent_id, { cosmetic_id: worn, pet_id: petId });
+    }
+  }
+  state.cosmetics = next;
+  const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, kind: request.kind,
+    cosmetics: encodeCosmeticState(next), event: { kind: emitted.kind, payload: emitted.payload } };
+  return { state, outcome: "applied", receipt, events: [emitted], resultConstantsHash: catalogs.constantsHash };
+}
+
+function checkCosmeticsTransition(before: FounderReplayState, after: FounderReplayState, cosmeticIntent: boolean): void {
+  if (before.wireVersion < 24) {
+    if (after.cosmetics.owned.length !== 0 || Object.keys(after.cosmetics.equipped).length !== 0) throw new RangeError("cosmetics appeared outside activation");
+    return;
+  }
+  if (!cosmeticIntent && !cosmeticStatesEqual(before.cosmetics, after.cosmetics)) throw new RangeError("a non-cosmetic Founder transition changed cosmetics");
+}
 
 // Pet Adoption v1 PA4: the adopt_pet replay arm, byte twin of
 // server/production/pet_adoption_intent.go.

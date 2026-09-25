@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	"cloud-clicker/server/decimal"
@@ -84,6 +85,17 @@ const (
 	EventReputationNodePurchased EventKind = "reputation_node_purchased.v1"
 	// EventPetAdopted is Pet Adoption v1 PA4.7 (Founder scope, player outbox only).
 	EventPetAdopted EventKind = "pet_adopted.v1"
+	// Cosmetic Shop v1 §4 (Founder scope, player outbox only).
+	EventCosmeticAcquired   EventKind = "cosmetic_acquired.v1"
+	EventCosmeticEquipped   EventKind = "cosmetic_equipped.v1"
+	EventCosmeticUnequipped EventKind = "cosmetic_unequipped.v1"
+)
+
+// Cosmetic Shop v1 §4 payload identifiers (strict; mirror the save layer's
+// mechanical-ID and UUIDv7 pet-ID patterns).
+var (
+	cosmeticIDPattern    = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+	cosmeticPetIDPattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -94,6 +106,7 @@ var AllEventKinds = [...]EventKind{
 	EventCompactSigned, EventCompactTitheRaised, EventCompensation,
 	EventComputeCreditSpent, EventDoctrinePicked,
 	EventFiscalCreditSpent, EventFiscalPeriodHarvested, EventReputationNodePurchased, EventPetAdopted,
+	EventCosmeticAcquired, EventCosmeticEquipped, EventCosmeticUnequipped,
 	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferResolved, EventExitOfferSpawned,
 	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
@@ -814,6 +827,34 @@ func validateEventPayload(event EventWrite) error {
 			pet.ValidateIdentityShape(map[string]pet.Identity{payload.PetID: {SpeciesID: payload.SpeciesID, Temperament: payload.Temperament,
 				PaletteID: payload.PaletteID, NameKey: payload.NameKey}}, map[string]pet.CareState{payload.PetID: {}}) != nil {
 			return fmt.Errorf("%w: invalid pet_adopted.v1 payload", ErrInvalidStream)
+		}
+	case EventCosmeticAcquired:
+		var payload struct {
+			CosmeticID  string `json:"cosmetic_id"`
+			OrderNumber *int64 `json:"order_number"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) ||
+			payload.OrderNumber == nil || *payload.OrderNumber < 1 || *payload.OrderNumber > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid cosmetic_acquired.v1 payload", ErrInvalidStream)
+		}
+	case EventCosmeticEquipped:
+		var payload struct {
+			CosmeticID         string  `json:"cosmetic_id"`
+			PetID              string  `json:"pet_id"`
+			ReplacedCosmeticID *string `json:"replaced_cosmetic_id"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) ||
+			!cosmeticPetIDPattern.MatchString(payload.PetID) || !strings.Contains(string(event.Payload), `"replaced_cosmetic_id":`) ||
+			payload.ReplacedCosmeticID != nil && !cosmeticIDPattern.MatchString(*payload.ReplacedCosmeticID) {
+			return fmt.Errorf("%w: invalid cosmetic_equipped.v1 payload", ErrInvalidStream)
+		}
+	case EventCosmeticUnequipped:
+		var payload struct {
+			CosmeticID string `json:"cosmetic_id"`
+			PetID      string `json:"pet_id"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !cosmeticIDPattern.MatchString(payload.CosmeticID) || !cosmeticPetIDPattern.MatchString(payload.PetID) {
+			return fmt.Errorf("%w: invalid cosmetic_unequipped.v1 payload", ErrInvalidStream)
 		}
 	case EventReputationNodePurchased:
 		var payload struct {

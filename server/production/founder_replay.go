@@ -83,6 +83,12 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 			resultErr = err
 			return
 		}
+		if err := checkCosmeticsTransition(stateBefore.Cosmetics, state.Cosmetics, isCosmeticIntent(resolvedKind.Kind)); err != nil {
+			*state = *stateBefore
+			result = FounderLoggedTransition{}
+			resultErr = err
+			return
+		}
 		if sweep != nil {
 			if err := decorateFounderFiscalSweep(&result, wire.Command.IntentID, sweep); err != nil {
 				*state = *stateBefore
@@ -154,6 +160,8 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		return applyFounderReputationPurchaseResolved(state, request, revision, catalogs, wire.Resolved)
 	case IntentAdoptPet:
 		return applyFounderAdoptionResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
+	case IntentAcquireCosmetic, IntentEquipCosmetic, IntentUnequipCosmetic:
+		return applyFounderCosmeticResolved(state, request, revision, catalogs, wire.Resolved)
 	case founderExitResolvedKind, founderExitPlanResolvedKind:
 		explicitExit := request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO
 		if explicitExit && request.ExpectedFounderRevision != wire.Command.Revision {
