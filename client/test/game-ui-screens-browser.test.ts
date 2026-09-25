@@ -6,6 +6,7 @@ import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import RunEndSurface from "../src/game-ui/RunEndSurface.svelte";
 import type { ExitOfferSpawnedEvent, GateCrossedEvent, RunEndedEvent } from "../src/game-ui/events";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
+import type { IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUISnapshot } from "../src/api/generated/types";
 import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { canonicalString } from "../src/numeric";
@@ -54,7 +55,8 @@ class FixtureRuntime implements GameUIRuntime {
   hasCredentials(): boolean { return this.authenticated; }
   async bootstrap(): Promise<GameUISnapshot> { this.authenticated = true; return snapshot; }
   async snapshot(): Promise<ParsedGameUISnapshot> { this.snapshotCalls += 1; if (this.failSnapshot) throw new Error("offline"); return this.current; }
-  async intent(body: Readonly<Record<string, unknown>>): Promise<void> { this.requests.push(body); await this.intentBlock; }
+  intentOutcome: IntentOutcome = { outcome: "applied", receipt: {} };
+  async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> { this.requests.push(body); await this.intentBlock; return this.intentOutcome; }
   subscribe(_founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void {
     this.listener = listener;
     if (this.recoverTransport) queueMicrotask(() => { if (this.listener === listener) listener({ kind: "transport_recovered" }); });
@@ -397,3 +399,24 @@ it.skipIf(!chromiumPerformanceLane)("holds the observable 20 Hz / 10 Hz screen b
   validatePerformanceObservation({ formattedCommits, inputs: GAME_UI_PERFORMANCE_BUDGET.inputCount, longestTaskMS });
   await unmount(app); target.remove();
 }, 75_000);
+
+it.skipIf(typeof document === "undefined")("renders a rejected intent's reason in the status region instead of going offline (GS0.2, F2)", async () => {
+  const runtime = new FixtureRuntime(true);
+  runtime.intentOutcome = { outcome: "rejected", category: "unaffordable", detail: "company.cash", currentRevision: 1, sessionExpired: false };
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } });
+  await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  const buy = [...target.querySelectorAll("button")].find((button) => button.textContent === "Buy 1")!;
+  buy.click();
+  await new Promise((resolve) => setTimeout(resolve, 0)); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.requests[0]).toMatchObject({ kind: "buy_generator", expected_revision: 1 });
+  expect(target.querySelector(".intent-notice")?.textContent).toBe("Not enough funds for that.");
+  expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+  runtime.intentOutcome = { outcome: "rejected", category: "revision_conflict", detail: "expected_revision", currentRevision: 2, sessionExpired: false };
+  runtime.snapshotCalls = 0;
+  buy.click();
+  await new Promise((resolve) => setTimeout(resolve, 0)); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(target.querySelector(".intent-notice")?.textContent).toContain("The books changed");
+  expect(runtime.snapshotCalls).toBe(1);
+  await unmount(app); target.remove();
+});

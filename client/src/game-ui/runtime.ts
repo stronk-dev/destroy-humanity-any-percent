@@ -3,6 +3,7 @@ import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "./mi
 import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "./soul/recovery-surface";
 import { decodeTransportEnvelope, decodeWorldSnapshot, PlayerRevisionCursor } from "../transport";
 import { parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
+import { parseIntentErrorBody, parseIntentOutcome, type IntentOutcome } from "./intent-outcome";
 import { decodeGameUIEvent, decodeGameUISystemEvent, type GameUILifecycleEvent, type GameUISystemEvent } from "./events";
 
 export interface GameUICredentials {
@@ -26,7 +27,9 @@ export interface GameUIRuntime {
   hasCredentials(): boolean;
   bootstrap(): Promise<ParsedGameUISnapshot>;
   snapshot(): Promise<ParsedGameUISnapshot>;
-  intent(body: Readonly<Record<string, unknown>>): Promise<void>;
+  // Applied or rejected (HTTP 200) resolves; a typed non-2xx throws
+  // GameUIRequestError; a network failure throws anything else.
+  intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome>;
   subscribe(founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void;
   // The minigame_session surface transport (MA-C9); absent in fixtures that do not mount it.
   readonly minigame?: MinigameSessionPort;
@@ -138,7 +141,10 @@ export function createBrowserGameUIRuntime(
     },
     snapshot: loadSnapshot,
     async intent(body) {
-      await responseJSON(await fetcher("/api/v1/intents", { method: "POST", headers: authHeaders(), body: JSON.stringify(body) }));
+      const response = await fetcher("/api/v1/intents", { method: "POST", headers: authHeaders(), body: JSON.stringify(body) });
+      const value = await response.json();
+      if (!response.ok) throw parseIntentErrorBody(response.status, value) ?? new Error(`game UI intent failed (${response.status})`);
+      return parseIntentOutcome(value);
     },
     subscribe(founderID, listener) {
       const socketLocation = locationSource ?? location;

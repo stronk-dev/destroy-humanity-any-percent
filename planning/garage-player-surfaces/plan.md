@@ -7,7 +7,7 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-- [ ] GS0.2 runtime: `intent()` returns the typed outcome; non-2xx throws `GameUIRequestError`;
+- [x] GS0.2 runtime: `intent()` returns the typed outcome; non-2xx throws `GameUIRequestError`;
   `act()` scopes `expected_revision` (Company vs Founder); rejected intents render their reason.
 - [ ] GS0.1 projection: Game UI snapshot v4 (`features` arms + `generators[].provision_cap` +
   feature facts), registered schema, generated types, client parser; live sync requires v4.

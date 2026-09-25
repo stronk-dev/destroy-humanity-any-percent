@@ -21,6 +21,7 @@
   import SoulRecoverySurface from "./soul/SoulRecoverySurface.svelte";
   import { loadSoulRecoveryContent } from "./soul/recovery-surface";
   import { GameUIShell } from "./shell-bridge";
+  import { noticeForError, noticeForOutcome, type SurfaceRejections } from "./intent-outcome";
 
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();
   function localTimingStorage(): LocalTimingStorage { return timingStorage ?? localStorage; }
@@ -44,6 +45,7 @@
   let offer = $state<ExitOfferSpawnedEvent | undefined>();
   let ended = $state<RunEndedEvent | undefined>();
   let orderPlaced = $state(false);
+  let intentNotice = $state<CopyKey | null>(null);
   let monotonicMS = $state(0);
   let snapshotMonotonicMS = $state(0);
   let subscribedFounderID: string | undefined;
@@ -126,8 +128,11 @@
     finally { actionPending = false; }
   }
 
-  async function act(body: Record<string, unknown>): Promise<void> {
+  // GS0.2: `scope` binds expected_revision to the Company or Founder stream;
+  // a rejected outcome renders its reason instead of looking like offline.
+  async function act(body: Record<string, unknown>, options: Readonly<{ scope?: "company" | "founder"; rejections?: SurfaceRejections }> = {}): Promise<void> {
     if (!snapshot) return;
+    if (options.scope === "founder" && founderRevision === undefined) return;
     const kind = typeof body.kind === "string" ? body.kind : "";
     if (actionTask) {
       if (activeActionKind === kind) return;
@@ -141,11 +146,21 @@
     activeActionKind = kind;
     const task = (async () => {
       try {
-        await runtime.intent({ intent_id: newIntentID(), expected_revision: snapshot!.revision, ...body });
-        if (kind === "cross_gate" || kind === "decline_exit_offer") {
+        intentNotice = null;
+        const expected = options.scope === "founder" ? founderRevision! : snapshot!.revision;
+        const outcome = await runtime.intent({ intent_id: newIntentID(), expected_revision: expected, ...body });
+        const notice = noticeForOutcome(outcome, options.rejections);
+        intentNotice = notice.notice;
+        if (notice.effect === "refresh") void refresh();
+        else if (outcome.outcome === "applied" && (kind === "cross_gate" || kind === "decline_exit_offer")) {
           bindSnapshot(await runtime.snapshot());
         }
-      } catch { offline = true; }
+      } catch (error) {
+        const notice = noticeForError(error);
+        intentNotice = notice.notice;
+        if (notice.effect === "offline") offline = true;
+        else if (notice.effect === "refresh") void refresh();
+      }
       finally {
         actionTask = undefined;
         activeActionKind = undefined;
@@ -283,6 +298,7 @@
     </header>
   {/if}
 
+  {#if snapshot}<p class="intent-notice" role="status">{intentNotice ? t(intentNotice, {}, era) : ""}</p>{/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>
   {/if}

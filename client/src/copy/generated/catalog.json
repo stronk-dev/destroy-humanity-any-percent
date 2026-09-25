@@ -286,6 +286,38 @@
       "tone": "diegetic"
     },
     {
+      "key": "common.loading",
+      "text": "Loading.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "common.pending",
+      "text": "Working on it.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "common.stale_note",
+      "text": "These numbers are from the last update. Actions return when the connection does.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "common.surface_error",
+      "text": "This panel could not be shown. The rest of the game still works.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "compact.recruitment.mid_t3",
       "text": "Mutual Aid Compact recruitment",
       "params": [],
@@ -858,6 +890,62 @@
     {
       "key": "incorporate.vc_funded",
       "text": "VC-Funded",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "intent.conflict",
+      "text": "The books changed while you were deciding. Showing the latest numbers; try again.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "intent.rate_limited",
+      "text": "Too many requests at once. Wait a moment, then try again.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "intent.rejection.cap_exceeded",
+      "text": "That would go past a visible cap.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "intent.rejection.exclusive_activity",
+      "text": "Finish what you are doing first.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "intent.rejection.minigame_session_active",
+      "text": "A game is still in progress. Finish or leave it before winding down.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "intent.rejection.unaffordable",
+      "text": "Not enough funds for that.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "intent.rejection.unknown",
+      "text": "That did not go through, and the server did not say why in a way this screen understands.",
       "params": [],
       "era_variants": null,
       "provenance": [],
