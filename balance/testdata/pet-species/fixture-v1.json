@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "max_pets_per_founder": 1,
+  "species": [
+    {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+        "lazy",
+        "playful",
+        "curious",
+        "sassy",
+        "shy",
+        "chaotic"
+      ],
+      "palette_ids": [
+        "pet_palette.fur_00",
+        "pet_palette.fur_01",
+        "pet_palette.fur_02",
+        "pet_palette.fur_03",
+        "pet_palette.fur_04",
+        "pet_palette.fur_05",
+        "pet_palette.fur_06",
+        "pet_palette.fur_07",
+        "pet_palette.fur_08",
+        "pet_palette.fur_09"
+      ],
+      "name_keys": [
+        "pet.name.server_room_cat.n00",
+        "pet.name.server_room_cat.n01",
+        "pet.name.server_room_cat.n02",
+        "pet.name.server_room_cat.n03",
+        "pet.name.server_room_cat.n04",
+        "pet.name.server_room_cat.n05",
+        "pet.name.server_room_cat.n06",
+        "pet.name.server_room_cat.n07",
+        "pet.name.server_room_cat.n08",
+        "pet.name.server_room_cat.n09",
+        "pet.name.server_room_cat.n10",
+        "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+    }
+  ]
+}

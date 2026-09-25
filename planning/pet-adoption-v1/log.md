@@ -37,3 +37,28 @@ stays true.
 - **Evidence:** `make copy-check` passes (457 keys). The seeded companion rows ("$0.00", "limited
   time", "Free", disclosure, "50%") and a `pet.*` key in the diegetic tone all fail. "Not now"
   passes. Severing the `validateCompanionEntry` call made `verify-copy` fail on the "$0.00" fixture.
+
+## 2026-09-25 — P2: the pet_species loader and adoption draws (Claude)
+
+- **Go:** `server/pet/species.go` has `LoadSpeciesCatalog` (exact keys; PA2 grammar; exactly one
+  starter; canonical combat temperament order; name and species copy keys registered and
+  companion tone) and `DrawAdoption` (PA4.3–PA4.5). **TS:** `client/src/pet/species.ts` is the
+  byte twin.
+- **Fixtures:**
+  - `balance/testdata/pet-species/fixture-v1.json`: one cat, 12 names, 10 palettes.
+  - `testdata/pet/species-fixtures-v1.json`: 18 loader cases, each shared by Go and TS. They cover
+    every AC1 failing class except "pet_species without pets", which is a bundle rule (P3).
+- **Vectors:** `testdata/pet/adoption-draw-vectors-v1.json` has 79 vectors, computed by an
+  independent Python implementation of the PA4 recipe. They cover all 6 temperaments and 10
+  palettes, and include pairs that differ only in `intent_id` but expect identical draws (AC3).
+  Go and TS both match them.
+- **Temperament parity:** `TestTemperamentOrderIsTheCombatEnum` checks the order against
+  `server/combat`. Its negative probe shows that combat rejects an unknown member.
+- **Severing:** each of these turned a test red.
+  - Go: S1 digest bytes [1:9]; S2 version nibble 0x60; S3 starter count `< 1`; S4 the companion
+    check removed; S5 the temperament order ignored.
+  - TS: the ID digest shifted a byte; the companion check removed.
+- **Evidence (cold):** `make test-go GO_PACKAGES=./pet GO_TEST_FLAGS=-count=1` passes, `vitest
+  test/pet-species.test.ts` passes 4/4, and `tsc` is clean.
+- **Kernel:** `server/pet/` and `client/src/pet/` are guarded, so this commit bumps
+  `kernel/VERSION`.

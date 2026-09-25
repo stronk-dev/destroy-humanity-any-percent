@@ -1,0 +1,913 @@
+{
+ "schema_version": 1,
+ "cases": [
+  {
+   "name": "valid",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": true
+  },
+  {
+   "name": "unknown_top_key",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ],
+    "extra": 1
+   },
+   "valid": false
+  },
+  {
+   "name": "unknown_row_key",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description",
+      "extra": 1
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "zero_starters",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "tier_unlock",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "two_starters",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     },
+     {
+      "species_id": "pet_species.zz_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "temperament_outside_six",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "grumpy"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "temperament_out_of_order",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "playful",
+       "lazy"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "temperament_duplicate",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "lazy"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "palette_unsorted",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_01",
+       "pet_palette.fur_00"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "palette_duplicate",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_00"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "name_keys_unsorted",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n00"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "cap_zero",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 0,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "name_key_unregistered",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n99"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "name_key_not_companion",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "minigame.pitch.title",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "species_outside_namespace",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "visual_family_unknown",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "dog",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "schema_version_two",
+   "artifact": {
+    "schema_version": 2,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "lazy",
+       "playful",
+       "curious",
+       "sassy",
+       "shy",
+       "chaotic"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": false
+  },
+  {
+   "name": "single_temperament_ok",
+   "artifact": {
+    "schema_version": 1,
+    "max_pets_per_founder": 1,
+    "species": [
+     {
+      "species_id": "pet_species.server_room_cat",
+      "availability": "starter",
+      "visual_family": "cat",
+      "allowed_temperaments": [
+       "shy"
+      ],
+      "palette_ids": [
+       "pet_palette.fur_00",
+       "pet_palette.fur_01",
+       "pet_palette.fur_02",
+       "pet_palette.fur_03",
+       "pet_palette.fur_04",
+       "pet_palette.fur_05",
+       "pet_palette.fur_06",
+       "pet_palette.fur_07",
+       "pet_palette.fur_08",
+       "pet_palette.fur_09"
+      ],
+      "name_keys": [
+       "pet.name.server_room_cat.n00",
+       "pet.name.server_room_cat.n01",
+       "pet.name.server_room_cat.n02",
+       "pet.name.server_room_cat.n03",
+       "pet.name.server_room_cat.n04",
+       "pet.name.server_room_cat.n05",
+       "pet.name.server_room_cat.n06",
+       "pet.name.server_room_cat.n07",
+       "pet.name.server_room_cat.n08",
+       "pet.name.server_room_cat.n09",
+       "pet.name.server_room_cat.n10",
+       "pet.name.server_room_cat.n11"
+      ],
+      "name_copy_key": "pet.species.server_room_cat.name",
+      "description_copy_key": "pet.species.server_room_cat.description"
+     }
+    ]
+   },
+   "valid": true
+  }
+ ]
+}

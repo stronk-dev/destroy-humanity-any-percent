@@ -1,0 +1,757 @@
+{
+ "schema_version": 1,
+ "note": "intent_id is present only to prove it never enters a hash input (AC3): pairs differing only in intent_id share expected draws.",
+ "row": {
+  "allowed_temperaments": [
+   "lazy",
+   "playful",
+   "curious",
+   "sassy",
+   "shy",
+   "chaotic"
+  ],
+  "palette_ids": [
+   "pet_palette.fur_00",
+   "pet_palette.fur_01",
+   "pet_palette.fur_02",
+   "pet_palette.fur_03",
+   "pet_palette.fur_04",
+   "pet_palette.fur_05",
+   "pet_palette.fur_06",
+   "pet_palette.fur_07",
+   "pet_palette.fur_08",
+   "pet_palette.fur_09"
+  ]
+ },
+ "vectors": [
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-7080-9ddf-bb5ad76f3166",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-7080-9ddf-bb5ad76f3166",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-7080-9ddf-bb5ad76f3166",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-7080-9ddf-bb5ad76f3166",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-7080-9ddf-bb5ad76f3166",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-7080-9ddf-bb5ad76f3166",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-76da-87b8-f5b239eba884",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-76da-87b8-f5b239eba884",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-76da-87b8-f5b239eba884",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-76da-87b8-f5b239eba884",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-76da-87b8-f5b239eba884",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-76da-87b8-f5b239eba884",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-7763-a76c-4dd804201c4e",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-7763-a76c-4dd804201c4e",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-7763-a76c-4dd804201c4e",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-7763-a76c-4dd804201c4e",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-7763-a76c-4dd804201c4e",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-7763-a76c-4dd804201c4e",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-70dd-a8cf-2c0c8446d756",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-70dd-a8cf-2c0c8446d756",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-70dd-a8cf-2c0c8446d756",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-70dd-a8cf-2c0c8446d756",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-70dd-a8cf-2c0c8446d756",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-70dd-a8cf-2c0c8446d756",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-7951-ae05-6bdd733df2d0",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-7951-ae05-6bdd733df2d0",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-7951-ae05-6bdd733df2d0",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-7951-ae05-6bdd733df2d0",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-7951-ae05-6bdd733df2d0",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-7951-ae05-6bdd733df2d0",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-7912-a32d-3b6ff0a954ef",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-7912-a32d-3b6ff0a954ef",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-7912-a32d-3b6ff0a954ef",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-7912-a32d-3b6ff0a954ef",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-7912-a32d-3b6ff0a954ef",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-7912-a32d-3b6ff0a954ef",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-7651-a26e-861ebbe1ca58",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-7651-a26e-861ebbe1ca58",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-7651-a26e-861ebbe1ca58",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-7651-a26e-861ebbe1ca58",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-7651-a26e-861ebbe1ca58",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "00000000000000000000000000000000",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-7651-a26e-861ebbe1ca58",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-72c6-99b5-2d6eeb644d9c",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-72c6-99b5-2d6eeb644d9c",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-72c6-99b5-2d6eeb644d9c",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-72c6-99b5-2d6eeb644d9c",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-72c6-99b5-2d6eeb644d9c",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-72c6-99b5-2d6eeb644d9c",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-7780-b28a-878eaf9e095c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-7780-b28a-878eaf9e095c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-7780-b28a-878eaf9e095c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-7780-b28a-878eaf9e095c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-7780-b28a-878eaf9e095c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-7780-b28a-878eaf9e095c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_04"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-76e4-8212-72b70a45957c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-76e4-8212-72b70a45957c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-76e4-8212-72b70a45957c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-76e4-8212-72b70a45957c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-76e4-8212-72b70a45957c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-76e4-8212-72b70a45957c",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-794e-9ca1-57669e67fa44",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-794e-9ca1-57669e67fa44",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-794e-9ca1-57669e67fa44",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-794e-9ca1-57669e67fa44",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-794e-9ca1-57669e67fa44",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "deadbeefcafebabe0011223344556677",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-794e-9ca1-57669e67fa44",
+   "temperament": "chaotic",
+   "palette_id": "pet_palette.fur_00"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "00000000-0000-7b53-b942-6a08a19f1c9b",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 0,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "00000000-0000-7b53-b942-6a08a19f1c9b",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "01a0c450-6c00-7b53-b942-6a08a19f1c9b",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 1790000000000,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "01a0c450-6c00-7b53-b942-6a08a19f1c9b",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000aaaa",
+   "pet_id": "ffffffff-ffff-7b53-b942-6a08a19f1c9b",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-2222-7222-8222-222222222222",
+   "nonce": "9e3779b97f4a7c15f39cc0605cedc834",
+   "server_time_ms": 281474976710655,
+   "intent_id": "01986666-0000-7000-8000-00000000bbbb",
+   "pet_id": "ffffffff-ffff-7b53-b942-6a08a19f1c9b",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_09"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "b8307c82326ea0a0c94fd00956aeada4",
+   "server_time_ms": 1790000000001,
+   "intent_id": "01986666-0000-7000-8000-00000000cccc",
+   "pet_id": "01a0c450-6c01-788a-890c-a4c656639170",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_01"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "96c4f36cd72e8dd90e83fd155e9b648b",
+   "server_time_ms": 1790000000002,
+   "intent_id": "01986666-0000-7000-8000-00000000cccc",
+   "pet_id": "01a0c450-6c02-7eb5-9bb3-25ae1058376a",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_02"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "87482ca34e58469b1190f84269b79631",
+   "server_time_ms": 1790000000003,
+   "intent_id": "01986666-0000-7000-8000-00000000cccc",
+   "pet_id": "01a0c450-6c03-78dc-a2bf-89faf25ba4eb",
+   "temperament": "playful",
+   "palette_id": "pet_palette.fur_08"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "eeab513bd554e79893bd0605cf03036f",
+   "server_time_ms": 1790000000005,
+   "intent_id": "01986666-0000-7000-8000-00000000cccc",
+   "pet_id": "01a0c450-6c05-7429-9c74-77567b641dbe",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_07"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "be9580cca550394bbd09056d8633a63a",
+   "server_time_ms": 1790000000007,
+   "intent_id": "01986666-0000-7000-8000-00000000cccc",
+   "pet_id": "01a0c450-6c07-7c42-8a9b-71af83a5984a",
+   "temperament": "sassy",
+   "palette_id": "pet_palette.fur_06"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "de307884bf782e94475ca326e0da2c65",
+   "server_time_ms": 1790000000009,
+   "intent_id": "01986666-0000-7000-8000-00000000cccc",
+   "pet_id": "01a0c450-6c09-7a7d-aecc-10c8b3ff5df1",
+   "temperament": "lazy",
+   "palette_id": "pet_palette.fur_05"
+  },
+  {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "b3bab1a093d713c70ed41c0a99bcf154",
+   "server_time_ms": 1790000000013,
+   "intent_id": "01986666-0000-7000-8000-00000000cccc",
+   "pet_id": "01a0c450-6c0d-7e9f-a183-62c2050240e9",
+   "temperament": "curious",
+   "palette_id": "pet_palette.fur_03"
+  }
+ ],
+ "restricted_row": {
+  "allowed_temperaments": [
+   "shy"
+  ],
+  "palette_ids": [
+   "pet_palette.fur_00",
+   "pet_palette.fur_01",
+   "pet_palette.fur_02"
+  ],
+  "vector": {
+   "founder_id": "01986666-1111-7111-8111-111111111111",
+   "nonce": "0123456789abcdef0123456789abcdef",
+   "server_time_ms": 1790000000000,
+   "pet_id": "01a0c450-6c00-76da-87b8-f5b239eba884",
+   "temperament": "shy",
+   "palette_id": "pet_palette.fur_01"
+  }
+ }
+}
