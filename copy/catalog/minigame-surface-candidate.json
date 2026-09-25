@@ -1,0 +1,344 @@
+{
+ "schema_version": 1,
+ "entries": [
+  {
+   "key": "minigame.conflict.revision",
+   "text": "The table moved on without you. Showing where it is now.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.error.content_mismatch",
+   "text": "This table's rulebook changed. Reload the page to deal a fresh copy.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.error.generic",
+   "text": "This session hit a problem the table cannot explain.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.error.unavailable",
+   "text": "The tables are closed right now. Try again shortly.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.leave_table",
+   "text": "Leave the table",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.pitch.title",
+   "text": "The Pitch",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.rate_limited",
+   "text": "Slow down. The table accepts one move at a time.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.receipt.credited_label",
+   "text": "Credited to the company",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.receipt.forfeit_frame",
+   "text": "Over today's limit and not paid: {units}",
+   "params": [
+    {
+     "name": "units",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.rejection.exclusive_activity",
+   "text": "Finish what you are doing first.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.rejection.fiscal_unlock_required",
+   "text": "Locked. Unlock it with Fiscal credit first.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.rejection.human_content_locked",
+   "text": "Not right now. Your Soul needs looking after first.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.retry",
+   "text": "Retry",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.return",
+   "text": "Back to the desk",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.start",
+   "text": "Start a pitch",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.state.loading",
+   "text": "Setting up the table.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.state.none",
+   "text": "No pitch in progress.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "minigame.state.paused_reconnect",
+   "text": "Connection lost. Your last move is kept and will be sent again.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.rejection.bad_selection",
+   "text": "That hand does not match your cards. The selection was cleared.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.rejection.hack_slots_full",
+   "text": "Every hack slot is taken.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.rejection.hand_too_large",
+   "text": "Too many cards for one pitch.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.rejection.illegal_phase",
+   "text": "That move is not available right now.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.rejection.insufficient_currency",
+   "text": "Not enough runway for that.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.rejection.unknown_offer",
+   "text": "That offer is gone.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.best_label",
+   "text": "Best valuation this round",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.card_metric_label",
+   "text": "Metric",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.currency_frame",
+   "text": "Runway: {count}",
+   "params": [
+    {
+     "name": "count",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.deck_frame",
+   "text": "Cards left in the deck: {count}",
+   "params": [
+    {
+     "name": "count",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.end_shop",
+   "text": "Close the shop",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.hand_legend",
+   "text": "Your hand. Choose up to {max} cards.",
+   "params": [
+    {
+     "name": "max",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.hands_frame",
+   "text": "Pitches left this round: {count}",
+   "params": [
+    {
+     "name": "count",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.offer_frame",
+   "text": "Buy for {price} runway",
+   "params": [
+    {
+     "name": "price",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.play",
+   "text": "Pitch these cards",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.round_frame",
+   "text": "Round {round}",
+   "params": [
+    {
+     "name": "round",
+     "type": "integer"
+    }
+   ],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.shop_heading",
+   "text": "Growth hacks for sale",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.slotted_heading",
+   "text": "Slotted hacks",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.target_label",
+   "text": "Funding target",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
+   "key": "pitch.table.terminal",
+   "text": "The pitch is over.",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  }
+ ]
+}

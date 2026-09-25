@@ -17,6 +17,7 @@
   import { priorPersonalBest, readLocalTiming, RTATimer, writeLocalRunTiming, type LocalTimingStorage } from "./timing";
   import { formatAmount } from "../ui/amount-format";
   import RunEndSurface from "./RunEndSurface.svelte";
+  import MinigameSessionSurface from "../minigame/MinigameSessionSurface.svelte";
   import { GameUIShell } from "./shell-bridge";
 
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();
@@ -272,6 +273,7 @@
       </div>
       <nav aria-label={t("surface.desk.title", {}, era)}>
         <button type="button" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
+        {#if runtime.minigame}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
         <button type="button" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
       </nav>
       {#if snapshot.run.run_seq === 1 && visitorCount !== undefined}<span class="visitor" title={t("chrome.visitor_counter.tooltip", {}, era)}>{t("chrome.visitor_counter.frame", { count: visitorCount }, era)}</span>{/if}
@@ -389,6 +391,8 @@
     <RunEndSurface {ended} />
     <button type="button" disabled={pending} onclick={continueRun}>{t("screen.run_end.continue", {}, era)}</button>
     {#if offline}<p role="alert">{t("settings.save_status.offline", {}, era)}</p>{/if}
+  {:else if snapshot && surface === "minigame_session" && runtime.minigame}
+    <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "settings"}
     <section class="surface" aria-labelledby="settings-heading"><h1 id="settings-heading">{t("surface.settings.title", {}, era)}</h1><p>{offline ? t("settings.save_status.offline", {}, era) : pending ? t("settings.save_status.saving", {}, era) : t("settings.save_status.saved_frame", { ago: duration(Math.max(0, monotonicMS - snapshotMonotonicMS)) }, era)}</p><p>{t("settings.account_note", {}, era)}</p></section>
   {/if}

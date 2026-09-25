@@ -17,6 +17,10 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 - Run End: a payload-isolated component that accepts only the decoded `run_ended` event; its parent
   owns the exact-next-Company continuation control.
 - Settings/System: save status, drain notice, and explicit resync action.
+- Minigame session (The Pitch): a nav tab present whenever the runtime supplies a minigame port.
+  It hosts `client/src/minigame/MinigameSessionSurface.svelte`; see
+  [Minigame platform § Client surface](minigame-platform.md#client-surface). Leaving the tab keeps
+  the server session. A terminal receipt triggers one authoritative snapshot refresh.
 
 The persistent chrome derives its era only from the authoritative tier (`0` is `era_1995`, `1` is
 `era_2000`). RTA uses the snapshot's server-time sample plus monotonic elapsed time. Gate splits and
@@ -59,7 +63,7 @@ also cannot replace the terminal screen.
 
 `make verify-client-boundary` scans the Game UI components alongside the archived UI primitives.
 It rejects transport/replay imports, raw network calls, player-facing text literals, and governed
-style literals. `make test-browser` applies the WCAG 2.2 AA axe gate to all five surfaces in
+style literals. `make test-browser` applies the WCAG 2.2 AA axe gate to all five lifecycle surfaces and to every minigame surface state in
 Chromium, Firefox, and WebKit and includes the sixty-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.
 `make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed

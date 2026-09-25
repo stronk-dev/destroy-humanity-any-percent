@@ -49,6 +49,55 @@ The internal recovery command kind remains `resolve_soul_recovery` or
 `action: "resolve" | "cancel"`; the distinction is explicit so internal command vocabulary cannot
 leak across the public schema boundary.
 
+## Client surface
+
+`client/src/minigame/` holds the MA3/MA-C9 client surface. Components never call `fetch`:
+`MinigameSessionPort` (`session-port.ts`) is the only transport seam. It is built from the
+generated operation table and typed with the generated DTOs. A non-2xx response whose body is
+exactly `{category, detail}` with a known category becomes a `MinigameAPIError`; any other failure
+becomes a `MinigameTransportError`.
+
+`MinigameSessionSurface.svelte` owns the chrome, lifecycle and errors. Its closed states are
+`loading | active | paused_reconnect | required_terminal | error`, plus a host-level launcher for a
+`{kind:"none"}` current answer.
+
+- **Rejections:** `session-surface.ts` maps exactly the server's `minigameErrorJSON` pairs to one
+  of five effects: stay, refetch, launcher, pause or error. Each effect has a copy notice and a
+  flag saying whether it clears the selection. An unit test checks that the table's keys match the
+  server source. Unlisted pairs, `invalid/*` and `internal_invariant/*` render the error state.
+- **Idempotent retries:** a transport failure moves the surface to `paused_reconnect`, which
+  retries automatically every second (at most five times) and also offers a manual Retry. A retry
+  resends the same `command_id` and body, relying on the MA-C13 receipt. A create keeps its
+  idempotency key until it succeeds.
+- **Terminal receipt:** it is rendered once and moves focus to the surface heading. The host's
+  `onTerminal` then runs a single authoritative refresh.
+
+The tenant-surface registry (`tenant-registry.ts`) is keyed by the same `(engine_ref,
+engine_version)` arm as the pinned `balance/minigame-api/first-content.json` tenant rows. Loading
+fails in either direction: a tenant row with no child, or a child with no tenant row. A session
+whose arm or `minigame_id` is not registered renders the error state. Pitch `1.0.0` registers one
+presentation-only child, `PitchTable.svelte`: native checkboxes (capped at `play_size`, with
+`cap.pitch_play` text shown), a play button, shop offer buttons, and close-shop.
+
+The Pitch snapshot carries only instance IDs. The table resolves card and hack copy from the pinned
+`balance/pitch.json` bytes bundled with the client, and only when their SHA-256 equals the
+snapshot's `pitch_content_hash`. A mismatch renders `minigame.error.content_mismatch`; there is no
+deploy-current fallback.
+
+Surface copy lives in `copy/catalog/minigame-surface-candidate.json`. It is plain functional
+wording drafted by the implementer and awaits owner adoption; it is not ruled copy.
+`test/minigame-surface-browser.test.ts` runs in all three browsers and covers:
+
+- axe checks in every state;
+- keyboard selection with the play-size cap;
+- the complete launcher → table → shop → terminal flow;
+- same-ID retry;
+- selection clearing on a revision conflict;
+- failing closed on an unknown tenant or foreign content;
+- the create-key hold.
+
+The Soul-Recovery surface is not built yet.
+
 ## Tenant boundary
 
 A tenant registers one immutable descriptor: engine/version identity, command/snapshot/result

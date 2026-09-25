@@ -603,3 +603,50 @@ and the API Foundation range `b9ebab7..a854e46`. Q-003 remains blocked until Q-0
   improvement landed anyway — in its right lane.
 - **No findings. APPROVED. Q-002 closes; Q-003 is unblocked** and may begin serially per the
   accepted queue. No archival or surface claim is authorized.
+
+## 2026-09-25 — MA AC5 (Pitch half): minigame_session surface implemented (Claude)
+
+**Implemented by:** Claude, on the owner's 2026-09-24 direction that Claude implements. **Review:**
+pending Codex designated cross-party review. This is not self-approved.
+
+Scope, following the ruled MA-C9 contract:
+- a generated-DTO `MinigameSessionPort`;
+- the closed five-state surface plus a host launcher, as GS7/OD-17's alternative, so the ruled
+  five states are unchanged;
+- an exact rejection table for the server's `minigameErrorJSON` pairs;
+- a tenant-surface registry keyed by the pinned `minigame_api` tenant arm, failing closed in both
+  directions;
+- a presentation-only `PitchTable` child;
+- the bundled, hash-verified Pitch content binding;
+- Game UI wiring: surface row `minigame_session`, always unlocked. The server's
+  `fiscal_unlock_required` answer drives the launcher notice, so no client unlock predicate is
+  invented.
+
+For exact props, transitions and the error table, the component enumeration follows the draft
+`rfc/garage-player-surfaces.md` GS7 proposal. That section awaits the MA ruling author's adoption,
+and any divergence found there is a follow-up. The copy in
+`copy/catalog/minigame-surface-candidate.json` is implementer-drafted plain wording. It is owner
+adoption material, not ruled copy (AGENTS evidence rule 6).
+
+Evidence (cold):
+- **Unit tests:** `vitest run test/minigame-surface.test.ts`, 9/9. Four severings each turned the
+  suite red (1 failed | 8 passed):
+  - S1 drop the `unknown_offer` rejection row;
+  - S2 skip the content-hash check;
+  - S3 skip the registry's reverse check;
+  - S4 accept an error body with extra keys.
+- **Browser tests:** `test/minigame-surface-browser.test.ts`, 12/12 across chromium, firefox and
+  webkit. Four severings each turned chromium red (1 failed | 3 passed):
+  - B1 retry mints a new `command_id`;
+  - B2 no tenant check;
+  - B3 fresh create key per attempt;
+  - B4 no `play_size` cap.
+- **Other gates:** `make typecheck build-client test-client verify-client-boundary
+  verify-ci-topology verify-combat-boundary verify-meters-boundary verify-achievements-boundary
+  copy-check test-browser` all passed (20094 browser tests), and `make test-game-ui-composed`
+  passed.
+- **Kernel guard:** `make verify-kernel-version` is RED because of `8add475`'s pending correction
+  review (see `planning/minigame-platform-foundation/log.md`). This batch doesn't touch it.
+
+Still open for AC5: the Soul-Recovery surface (MA3's second contract), and a composed real-server
+Pitch-through-UI witness.
