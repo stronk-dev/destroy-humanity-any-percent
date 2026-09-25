@@ -21,6 +21,8 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   It hosts `client/src/minigame/MinigameSessionSurface.svelte`; see
   [Minigame platform § Client surface](minigame-platform.md#client-surface). Leaving the tab keeps
   the server session. A terminal receipt triggers one authoritative snapshot refresh.
+- Recovery: a nav tab hosting `client/src/soul/SoulRecoverySurface.svelte` whenever the runtime
+  supplies a Soul-recovery port; a terminal recovery refreshes the snapshot once.
 
 The persistent chrome derives its era only from the authoritative tier (`0` is `era_1995`, `1` is
 `era_2000`). RTA uses the snapshot's server-time sample plus monotonic elapsed time. Gate splits and

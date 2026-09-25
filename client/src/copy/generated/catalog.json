@@ -1918,6 +1918,164 @@
       "tone": "diegetic"
     },
     {
+      "key": "soul.recovery_surface.back",
+      "text": "Back",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.begin",
+      "text": "Begin",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.cancel",
+      "text": "Stop early",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.cancel_note",
+      "text": "Stopping early restores nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.cancelled",
+      "text": "Stopped. Nothing was restored.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.duration_frame",
+      "text": "Takes about {minutes} minutes of your attention.",
+      "params": [
+        {
+          "name": "minutes",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.finish",
+      "text": "Finish",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.gone",
+      "text": "This session has already ended.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.heading",
+      "text": "Take a break",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.intro",
+      "text": "Step away from the company for a while. Nothing here earns anything.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.not_ready",
+      "text": "Not quite done yet.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.paused_hidden",
+      "text": "Paused while this tab is in the background.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.paused_network",
+      "text": "Connection lost. Reconnect to keep going.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.progress_label",
+      "text": "Progress",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.reconnect",
+      "text": "Reconnect",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.resolved_frame",
+      "text": "Done. Soul went from {before} to {after}.",
+      "params": [
+        {
+          "name": "after",
+          "type": "integer"
+        },
+        {
+          "name": "before",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.title",
+      "text": "Recovery",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery_surface.watchdog",
+      "text": "This session ran too long and was closed. Nothing was restored.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "surface.desk.title",
       "text": "The Desk",
       "params": [],

@@ -96,7 +96,35 @@ wording drafted by the implementer and awaits owner adoption; it is not ruled co
 - failing closed on an unknown tenant or foreign content;
 - the create-key hold.
 
-The Soul-Recovery surface is not built yet.
+`client/src/soul/SoulRecoverySurface.svelte` is the SR-C3 `soul_recovery` surface. It uses
+`SoulRecoveryPort` (`recovery-surface.ts`) with the generated start/progress/resolve/cancel
+operations, and the pinned `balance/soul/first-content.json` plus the prestige catch-up ceiling
+bundled with the client.
+
+- **Picker:** lists every pinned activity with its title, description, duration and disclosure
+  small print. The disclosure is also the Begin button's `aria-describedby`.
+- **Heartbeat:** one `RecoveryScheduler` beats every `recovery_beat_ceiling_ms / 3` (SR-C6), and
+  only while the page is visible. Progress is shown with a native `<progress>`.
+- **Pauses:** a hidden tab pauses the session. A transport failure or a gap longer than the
+  ceiling requires reconnecting. A required reconnect stays visible across a background/foreground
+  cycle. Reconnect calls start again, which rotates the token for the same session. A different
+  session ID rebinds the scheduler.
+- **Session gone:** a `404 unknown_id/recovery_session` ends the surface without a reconnect-start,
+  so a watchdog-ended session is never silently replaced.
+- **Finish and Stop:** Finish appears once the session is eligible. "Stop early" states that
+  nothing is restored. The terminal message shows the Soul before/after or the watchdog
+  cancellation, focus moves to the heading, and the host refreshes once.
+- **Rejections:** `RECOVERY_REJECTIONS` maps exact recovery-handler pairs. A unit test checks that
+  every mapped pair is written by `server/account/api.go`.
+- **Toy:** `RecoveryToy.svelte` is decorative only (`aria-hidden`, no animation). Its cells follow a
+  client-local seed that is generated on mount and never sent.
+
+`test/soul-recovery-surface-browser.test.ts` runs in all three browsers with a controllable clock
+and visibility. It covers axe checks in every state, beats, the hidden pause, the ceiling-gap
+pause, a network pause with no beats replayed, reconnect token rotation, finish, the
+gone/watchdog/not-ready paths, and reconnect precedence across a background/foreground cycle.
+`make verify-client-boundary` now scans the `minigame/` and `soul/` Svelte components with the
+same literal, style, import and network rules as the Game UI.
 
 ## Tenant boundary
 

@@ -7,6 +7,8 @@ const client = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const shell = path.join(client, "src", "shell");
 const ui = path.join(client, "src", "ui");
 const gameUI = path.join(client, "src", "game-ui");
+// Player surface components mounted by the Game UI obey the same boundary.
+const surfaceDirectories = ["game-ui", "minigame", "soul"];
 async function sourceFiles(directory, prefix = "") {
   const found = [];
   for (const entry of (await fs.readdir(directory, { withFileTypes: true })).sort((left, right) => left.name.localeCompare(right.name))) {
@@ -84,12 +86,15 @@ for (const name of uiFiles) {
   if (name.endsWith(".svelte")) verifySvelteSource(source, name);
 }
 
-const gameUIFiles = (await sourceFiles(gameUI)).filter((name) => name.endsWith(".svelte"));
+const gameUIFiles = [];
+for (const directory of surfaceDirectories) {
+  for (const name of (await sourceFiles(path.join(client, "src", directory))).filter((file) => file.endsWith(".svelte"))) gameUIFiles.push(path.join(directory, name));
+}
 for (const name of gameUIFiles) {
-  const source = await fs.readFile(path.join(gameUI, name), "utf8");
+  const source = await fs.readFile(path.join(client, "src", name), "utf8");
   if (forbiddenImports.test(source)) throw new Error(`${name}: Game UI component may not import authoritative or transport internals`);
   if (forbiddenNetwork.test(source)) throw new Error(`${name}: Game UI component may not open raw fetch/WebSocket connections`);
-  verifySvelteSource(source, `game-ui/${name}`);
+  verifySvelteSource(source, name);
 }
 
 verifySvelteSource(`<p style="width: 3px"><span class="ok">{value}</span></p><style>.ok{color:var(--cc-color-text);width:3px}</style>`, "seeded pass");

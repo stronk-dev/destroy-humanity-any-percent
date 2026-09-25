@@ -1,5 +1,6 @@
 import type { BootstrapResponse } from "../api/generated/types";
 import { createBrowserMinigameSessionPort, type MinigameSessionPort } from "../minigame/session-port";
+import { createBrowserSoulRecoveryPort, type SoulRecoveryPort } from "../soul/recovery-surface";
 import { decodeTransportEnvelope, decodeWorldSnapshot, PlayerRevisionCursor } from "../transport";
 import { parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
 import { decodeGameUIEvent, decodeGameUISystemEvent, type GameUILifecycleEvent, type GameUISystemEvent } from "./events";
@@ -29,6 +30,8 @@ export interface GameUIRuntime {
   subscribe(founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void;
   // The minigame_session surface transport (MA-C9); absent in fixtures that do not mount it.
   readonly minigame?: MinigameSessionPort;
+  // The soul_recovery surface transport (SR-C3); absent in fixtures that do not mount it.
+  readonly soulRecovery?: SoulRecoveryPort;
 }
 
 export interface RuntimeStorage {
@@ -113,13 +116,16 @@ export function createBrowserGameUIRuntime(
     if (parsed.schema_version !== 3 || !("founder_revision" in parsed) || !("transitions" in parsed)) throw new SyntaxError("live Game UI snapshot must use schema v3");
     return rememberSnapshot(parsed);
   };
-  const minigame = createBrowserMinigameSessionPort(() => {
+  const accessToken = (): string => {
     const current = credentials(storage);
     if (!current) throw new Error("missing game UI credentials");
     return current.accessToken;
-  }, fetcher);
+  };
+  const minigame = createBrowserMinigameSessionPort(accessToken, fetcher);
+  const soulRecovery = createBrowserSoulRecoveryPort(accessToken, fetcher);
   return {
     minigame,
+    soulRecovery,
     hasCredentials: () => credentials(storage) !== undefined,
     async bootstrap() {
       let pending = storage.getItem(bootstrapKey);

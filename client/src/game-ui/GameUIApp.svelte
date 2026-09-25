@@ -18,6 +18,8 @@
   import { formatAmount } from "../ui/amount-format";
   import RunEndSurface from "./RunEndSurface.svelte";
   import MinigameSessionSurface from "../minigame/MinigameSessionSurface.svelte";
+  import SoulRecoverySurface from "../soul/SoulRecoverySurface.svelte";
+  import { loadSoulRecoveryContent } from "../soul/recovery-surface";
   import { GameUIShell } from "./shell-bridge";
 
   let { runtime = createBrowserGameUIRuntime(), timingStorage }: { runtime?: GameUIRuntime; timingStorage?: LocalTimingStorage } = $props();
@@ -274,6 +276,7 @@
       <nav aria-label={t("surface.desk.title", {}, era)}>
         <button type="button" aria-current={surface === "desk" ? "page" : undefined} onclick={() => show("desk")}>{t("surface.desk.title", {}, era)}</button>
         {#if runtime.minigame}<button type="button" aria-current={surface === "minigame_session" ? "page" : undefined} onclick={() => show("minigame_session")}>{t("minigame.pitch.title", {}, era)}</button>{/if}
+        {#if runtime.soulRecovery}<button type="button" aria-current={surface === "soul_recovery" ? "page" : undefined} onclick={() => show("soul_recovery")}>{t("soul.recovery_surface.title", {}, era)}</button>{/if}
         <button type="button" aria-current={surface === "settings" ? "page" : undefined} onclick={() => show("settings")}>{t("surface.settings.title", {}, era)}</button>
       </nav>
       {#if snapshot.run.run_seq === 1 && visitorCount !== undefined}<span class="visitor" title={t("chrome.visitor_counter.tooltip", {}, era)}>{t("chrome.visitor_counter.frame", { count: visitorCount }, era)}</span>{/if}
@@ -393,6 +396,8 @@
     {#if offline}<p role="alert">{t("settings.save_status.offline", {}, era)}</p>{/if}
   {:else if snapshot && surface === "minigame_session" && runtime.minigame}
     <MinigameSessionSurface port={runtime.minigame} minigameID="pitch" {era} newCommandID={() => newIntentID()} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
+  {:else if snapshot && surface === "soul_recovery" && runtime.soulRecovery}
+    <SoulRecoverySurface port={runtime.soulRecovery} content={loadSoulRecoveryContent()} {era} onExitToHost={() => show("desk")} onTerminal={() => { void refresh(); }} />
   {:else if snapshot && surface === "settings"}
     <section class="surface" aria-labelledby="settings-heading"><h1 id="settings-heading">{t("surface.settings.title", {}, era)}</h1><p>{offline ? t("settings.save_status.offline", {}, era) : pending ? t("settings.save_status.saving", {}, era) : t("settings.save_status.saved_frame", { ago: duration(Math.max(0, monotonicMS - snapshotMonotonicMS)) }, era)}</p><p>{t("settings.account_note", {}, era)}</p></section>
   {/if}

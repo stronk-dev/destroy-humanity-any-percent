@@ -681,3 +681,46 @@ Failing cases, demonstrated then restored:
 Finding: none blocking. The shop phase was exercised only through "Close the shop". Buying a hack
 through the composed UI isn't witnessed, because the deterministic seed decides whether the
 start-currency covers an offer; the browser suite covers buy_hack.
+
+## 2026-09-25 — MA AC5 (recovery half): soul_recovery surface implemented (Claude)
+
+**Implemented by:** Claude. **Review:** pending Codex designated cross-party review; not
+self-approved.
+
+Scope (SR-C3 / SR-C6 / SR-C14):
+- `SoulRecoveryPort` over the generated operations;
+- the pinned Soul catalog and prestige ceiling bundled with the client, with cadence
+  `recovery_beat_ceiling_ms / 3`;
+- the picker, with activity copy and disclosures;
+- a single `RecoveryScheduler` wired to document visibility;
+- hidden and network pauses, with network outranking hidden;
+- reconnect-start with token rotation;
+- a gone session ends the surface with no reconnect-start;
+- finish/stop, and a watchdog message;
+- a decorative, seeded, `aria-hidden` toy;
+- a `soul_recovery` Game UI tab.
+
+The shared `createOperationCall` was extracted from the minigame port so both ports use the same
+exact-error rules. The boundary scanner now covers `src/minigame` and `src/soul` Svelte files.
+Copy is added to the candidate catalog, which awaits owner adoption.
+
+**Finding while testing:** a WebKit timing run exposed a real ordering bug, now fixed. A hidden
+pause after a network pause replaced the Reconnect prompt, even though the scheduler still required
+a reconnect. The fix plus a dedicated test are in this batch. Severing the fix makes that test fail
+(chromium 1 failed | 4 passed).
+
+**Evidence (cold):**
+- Unit: `soul-recovery-surface.test.ts` passes 5/5. Severing the cadence divisor (/3 → /2) makes it
+  fail.
+- Browser: 15/15 across three browsers. Severing the gone guard makes the chromium run fail
+  (1 failed | 4 passed).
+- Boundary: seeding a literal into `RecoveryToy.svelte` is rejected by `verify-client-boundary`.
+- Full lanes, all green:
+  - `make typecheck build-client test-client verify-client-boundary copy-check test-browser`
+    (20124 browser tests);
+  - `make test-game-ui-composed`, both the Pitch phase and the v3 lifecycle.
+- `verify-kernel-version` remains RED only for `8add475`'s pending correction review.
+
+**AC5 status:** both surface contracts are implemented and pass the UI Foundation gates. The Pitch
+child seam is proven in the unit/browser suites and through the composed server (`06edddba`).
+MA's remaining boxes are designated review and archival, both owned by Codex.
