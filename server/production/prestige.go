@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
@@ -510,6 +511,9 @@ func applyFounderReplayOutput(target, replayed *save.State) error {
 	if save.VersionForState(replayed) >= 22 {
 		target.ReputationSpent, target.ReputationUnlockPPM = replayed.ReputationSpent, replayed.ReputationUnlockPPM
 		target.ReputationNodesOwned = append([]string{}, replayed.ReputationNodesOwned...)
+	}
+	if save.VersionForState(replayed) >= 23 {
+		target.PetIdentities = pet.CloneIdentities(replayed.PetIdentities)
 	}
 	return nil
 }

@@ -194,7 +194,7 @@ semantics. V6 adds the closed `founder_extensions` view required by Founder v17-
 minigame rating/quality, pet care, Fiscal, Soul, and minigame-session sequence state. The extension
 is required exactly when the pinned current bundle's Founder floor is at least 17, is validated
 against those pinned artifact bytes in both runtimes, and is carried through Exit so same-epoch
-Founder state cannot disappear; the session sequence still resets at every v21 Exit. The extension has no Reputation tree fields: a Founder v22 (Reputation tree) carry fails closed in both runtimes until the next replay-inputs version adds them (`docs/reputation-tree.md`). Non-empty settlement batches already have
+Founder state cannot disappear; the session sequence still resets at every v21 Exit. From replay-inputs v9 the extension carries the Founder v22 Reputation tree fields (`docs/reputation-tree.md`). From v10 it also carries `pet_identities` when the pinned Founder floor is at least 23 (`docs/pet-adoption.md`). A carry below either threshold fails closed in both runtimes. Non-empty settlement batches already have
 closed UUID/safe-integer/order validation, so composition does not require a replay schema change.
 
 Rows written before replay-input migration deliberately retain SQL NULL and will become `log_gap`

@@ -2,8 +2,9 @@
 
 The Pet Care foundation owns the cross-runtime wire grammar, replay-owned Founder v18 state, the
 pure care transition, and the server-authoritative `care_action` command. Epoch 6 pins the complete
-care-policy artifact. Pet identity/species acquisition and combat consumption remain unimplemented
-and are not claimed here.
+care-policy artifact. Pet identity, species, and acquisition are specified by Pet Adoption v1
+([Pet adoption](pet-adoption.md)), which is fixture-first and unpinned in production. Combat
+consumption remains unimplemented.
 
 ## Closed Phase-A vocabulary
 

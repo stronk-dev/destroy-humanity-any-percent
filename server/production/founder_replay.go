@@ -747,6 +747,12 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 		}
 		state.ReputationSpent, state.ReputationNodesOwned = 0, []string{}
 	}
+	if resultVersion >= 23 && current < 23 {
+		if catalogs.PetSpecies == nil || state.PetIdentities != nil || len(state.Pets) != 0 {
+			return ErrInvalidReplayInputs
+		}
+		state.PetIdentities = map[string]pet.Identity{}
+	}
 	return nil
 }
 

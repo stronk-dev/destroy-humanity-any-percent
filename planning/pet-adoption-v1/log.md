@@ -86,3 +86,51 @@ stays true.
   and vet are clean.
 - **Out of scope:** `server/replaycatalog/catalog_test.go` has a pre-existing gofmt drift from
   Typer's committed edits. This change doesn't touch that file.
+
+## 2026-09-25 — P4: the Founder v23 codec, activation, and the replay-inputs v10 carry (Claude)
+
+**Go:**
+- `save.LatestFounderVersion = 23`, with a `stateV23.pet_identities` pointer-field wire, so a
+  missing key never becomes a zero value.
+- `pet.ValidateIdentityShape` (key sets equal to `pets`, UUIDv7, grammar, adoption coordinate no
+  later than the watermark) and `pet.ValidateIdentitiesAgainst` (catalog resolution, cap). The
+  second runs from `CatalogBundle.ValidateFoundationState`.
+- Activation, in both `settleAndActivateFoundations` and the replay `activateFounderFeatureState`,
+  is legal only with empty `pets`.
+- `versionFloors` sets founder 23 when `PetSpecies` is pinned.
+- `replayFounderExtensions.PetIdentities` is required at floor ≥ 23 with wire ≥ 10, and forbidden
+  otherwise. `save.ReplayInputsVersion` goes 9 → 10.
+- The Exit live/replay parity copy (`prestige.go`) carries identities at v23.
+- `pet.InitialCareState` implements PA4.6.2.
+
+**TS:** the same rules in `replay.ts` and `client/src/pet/identity.ts`. The Founder v23
+restore/encode, floor, carry and activation are all twins of the Go side.
+
+**Recorded numbering:** the RFC's "replay-inputs v7" maps to the next free version, v10. The golden
+fixtures `testdata/replay/apply-logged-v1.json` and `reputation-tree-v1.json` were regenerated
+(`make replay-fixture`, `REPUTATION_UPDATE_FIXTURE=1`). The diff is exclusively `"v": 9` →
+`"v": 10`: 137 lines. `client/test/reputation-founder-state.test.ts` gained `petIdentities: {}`,
+because the field is now required.
+
+**Tests:**
+- `server/save/pet_identity_state_test.go` (AC2 shape) and
+  `server/production/pet_adoption_activation_test.go`: AC14 run-boundary, New-Founder-forward and
+  replay activation, with a pet-without-identity refusal; AC2 catalog-aware half; AC8 carry.
+- `client/test/pet-founder-state.test.ts` (AC2 twin and artifact binding).
+
+**Severing:**
+- TS T1 (key-set check removed) and T2 (catalog resolution removed): each failed 1 of 2.
+- Go G2 (v10 gate removed): `TestFounderCarryHoldsPetIdentitiesAtFloor23` failed.
+- Go G1 (**survived, recorded, not vacuous**): with the activation guard's `len(Pets) != 0` clause
+  removed, the case is still refused. The post-activation identity-shape check rejects `{}`
+  identities against one care record. The guard is a redundant earlier refusal.
+
+**Evidence (cold):**
+- Go: `./production ./save ./pet ./replaycatalog ./gameui ./account ./gameserver` all pass.
+- Client: 6739 tests pass, and tsc is clean.
+- `./harness` hit the 600 s `go test` timeout inside a combined `test-go` run, which is an
+  instrument limit and not an assertion; it is not counted either way. It is rerun through its own
+  targets later.
+
+Docs: new `docs/pet-adoption.md`; `docs/pet-care.md` pointer; `docs/production-engine.md` stale
+carry sentence corrected (v9 Reputation, v10 pets).

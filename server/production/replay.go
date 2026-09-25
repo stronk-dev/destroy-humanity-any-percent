@@ -272,6 +272,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	if bundle.ReputationTree != nil {
 		founder = 22
 	}
+	if bundle.PetSpecies != nil {
+		founder = 23
+	}
 	if bundle.Opportunities != nil {
 		company = 18
 	}
@@ -346,6 +349,9 @@ type replayFounderExtensions struct {
 	ReputationSpent      *int64    `json:"reputation_spent,omitempty"`
 	ReputationUnlockPPM  *int64    `json:"reputation_unlock_ppm,omitempty"`
 	ReputationNodesOwned *[]string `json:"reputation_nodes_owned,omitempty"`
+	// Replay-inputs v10 (Pet Adoption v1 PA6.4): present exactly when the
+	// pinned bundle's Founder floor is at least 23.
+	PetIdentities *map[string]pet.Identity `json:"pet_identities,omitempty"`
 }
 
 type replayInputsWire struct {
@@ -1009,6 +1015,9 @@ func validFounderCarry(carry replayFounderCarry, wireVersion int, catalogs Catal
 		if founderFloor >= 22 && (wireVersion < 9 || !present) || founderFloor < 22 && !absent {
 			return false
 		}
+		if founderFloor >= 23 && (wireVersion < 10 || extensions.PetIdentities == nil) || founderFloor < 23 && extensions.PetIdentities != nil {
+			return false
+		}
 	}
 	last := ""
 	for _, fact := range carry.LedgerFactKinds {
@@ -1118,6 +1127,14 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 		state.ReputationSpent, state.ReputationUnlockPPM = *extensions.ReputationSpent, *extensions.ReputationUnlockPPM
 		state.ReputationNodesOwned = append([]string{}, (*extensions.ReputationNodesOwned)...)
 	} else if extensions.ReputationSpent != nil || extensions.ReputationUnlockPPM != nil || extensions.ReputationNodesOwned != nil {
+		return nil, ErrInvalidReplayInputs
+	}
+	if founderFloor >= 23 {
+		if extensions.PetIdentities == nil {
+			return nil, ErrInvalidReplayInputs
+		}
+		state.PetIdentities = pet.CloneIdentities(*extensions.PetIdentities)
+	} else if extensions.PetIdentities != nil {
 		return nil, ErrInvalidReplayInputs
 	}
 	if err := catalogs.ValidateFoundationState(state); err != nil {
@@ -1382,6 +1399,10 @@ func founderCarry(state *save.State) replayFounderCarry {
 			spent, unlock, owned := state.ReputationSpent, state.ReputationUnlockPPM, append([]string{}, state.ReputationNodesOwned...)
 			extensions.ReputationSpent, extensions.ReputationUnlockPPM, extensions.ReputationNodesOwned = &spent, &unlock, &owned
 		}
+		if save.VersionForState(state) >= 23 {
+			identities := pet.CloneIdentities(state.PetIdentities)
+			extensions.PetIdentities = &identities
+		}
 		if extensions.MinigameRatings == nil {
 			extensions.MinigameRatings = map[string]save.MinigameRatingState{}
 		}
@@ -1411,7 +1432,16 @@ func cloneFounderExtensions(source *replayFounderExtensions) *replayFounderExten
 		SoulExhaustedSourceIDs: append([]string{}, source.SoulExhaustedSourceIDs...), MinigameSessionSeq: source.MinigameSessionSeq,
 		ReputationSpent: cloneInt64Pointer(source.ReputationSpent), ReputationUnlockPPM: cloneInt64Pointer(source.ReputationUnlockPPM),
 		ReputationNodesOwned: cloneStringSlicePointer(source.ReputationNodesOwned),
+		PetIdentities:        clonePetIdentitiesPointer(source.PetIdentities),
 	}
+}
+
+func clonePetIdentitiesPointer(value *map[string]pet.Identity) *map[string]pet.Identity {
+	if value == nil {
+		return nil
+	}
+	cloned := pet.CloneIdentities(*value)
+	return &cloned
 }
 
 func cloneInt64Pointer(value *int64) *int64 {
@@ -1490,7 +1520,7 @@ func boolMapFromSorted(values []string) map[string]bool {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != 9 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

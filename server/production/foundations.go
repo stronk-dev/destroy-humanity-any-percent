@@ -113,6 +113,27 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		if err := validateFounderReputationState(bundle.ReputationTree, state); err != nil {
 			return err
 		}
+		if err := validateFounderPetIdentities(bundle.PetSpecies, state); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// validateFounderPetIdentities is Pet Adoption v1 PA3's pinned half: identities
+// exist exactly when pet_species is pinned, and resolve under it within the cap.
+func validateFounderPetIdentities(species *pet.SpeciesCatalog, state *save.State) error {
+	if species == nil {
+		if state.PetIdentities != nil {
+			return fmt.Errorf("%w: pet identities without pinned pet_species", ErrInvalidEngineState)
+		}
+		return nil
+	}
+	if err := pet.ValidateIdentityShape(state.PetIdentities, state.Pets); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
+	}
+	if err := pet.ValidateIdentitiesAgainst(species, state.PetIdentities); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
 	}
 	return nil
 }
@@ -294,6 +315,13 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 			return fmt.Errorf("%w: Reputation tree state before activation", ErrInvalidEngineState)
 		}
 		founder.ReputationSpent, founder.ReputationNodesOwned = 0, []string{}
+	}
+	if next.PetSpecies != nil && current.PetSpecies == nil {
+		// PA6.2 v22→v23: legal only with no pet; identity is never synthesized.
+		if founder.PetIdentities != nil || len(founder.Pets) != 0 {
+			return fmt.Errorf("%w: pet state cannot activate pet identities", ErrInvalidEngineState)
+		}
+		founder.PetIdentities = map[string]pet.Identity{}
 	}
 	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)
