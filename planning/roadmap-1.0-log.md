@@ -553,3 +553,21 @@ module-cache creation for `chromedp`. A retry of the exact root `make vet` targe
 scoped module-cache access downloaded the declared dependencies and exited 0 (`go vet ./...`).
 This closes the environmental verification gap only; `make verify-kernel-version` remains red
 on pushed `50a3a514`, and no full `verify-push` success or release proof is inferred.
+
+## 2026-09-30 — Deployment R2 targeted review finds post-stop rotation race
+
+- **Coordinate:** Claude's R2 commit `92fab70^..92fab70`; predeclared probe `fe4fae24` on
+  clean product source `d19b5d8a` (later commits to planning/RFC/review only). Codex's
+  targeted CHANGES REQUIRED verdict is in `deployment-foundation/log.md` as RP-134.
+- **Evidence:** the current R2 static overlay test passed cold and failed when Codex
+  temporarily severed overlay insertion. The independent interleaving probe held the
+  release lock, recorded a both-open rollback `down`, then successfully removed previous JWT
+  through the different rotation lock after its governed minimum. Bootstrap stayed open;
+  `ResetDatabase` refused before its volume operation. With no rotation the same steps
+  proceeded; holding the rotation lock blocked removal. Both temporary probe and mutation
+  were restored exactly.
+- **Limit and route:** this proves a reachable recording-runner/control-flow interleaving,
+  not a measured live-host outage. It is a new safety defect distinct from the already
+  recorded single-family-overlay owner decision. The accepted DP4/DP5 repair must prevent
+  rotation from changing the governed overlay mid-operation and retain a permanent negative
+  witness. No Deployment range is approved or archived by this finding; R-006 remains open.

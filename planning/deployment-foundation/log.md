@@ -3487,3 +3487,31 @@ or a green `verify-push` while RP-131 remains.
   possible stranded rollback interleaving and blocks R2's safe composition claim. A mere
   refusal before `down` is not the defect. The probe does not measure real operator timing or
   substitute for clean-host rollback; any repair must preserve independent key-overlap minima.
+
+## 2026-09-30 — Codex targeted R2 review: interleaving fired (RP-134)
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `92fab70^..92fab70`,
+  limited to R2's rotation-overlay/rollback safety claim. This is not a full-range verdict on
+  the Deployment RFC.
+- **Decision:** **CHANGES REQUIRED.** The static both-open path works, and the existing
+  `TestDockerRuntimeComposesRotationOverlayOnlyForAnOpenPair` passed cold. Temporarily removing
+  the overlay append made that test fail, proving it catches the static omission. But release
+  and rotation commands acquire different lock files. Each DockerRuntime method calls
+  `normalized()` and rereads the rotation ledger, so a legal rotation between rollback steps
+  changes which Compose overlay is usable after a destructive step.
+- **Executed interleaving:** the predeclared temporary test activated both overlaps, held the
+  release-ledger lock, and recorded a `StopFailed` `down` with `compose.rotation.yml` present.
+  While that lock stayed held, `RemovePrevious` for JWT succeeded at the governed 30-minute
+  minimum, leaving bootstrap open. `ResetDatabase` then returned `ErrInvalid` before its
+  `docker volume rm` call. The unchanged-ledger control accepted both steps; holding the
+  rotation-ledger lock blocked removal. The cold test exited 0 because it asserted the defect.
+  The temporary test and static-overlay mutation were both removed exactly; product/test tree
+  returned clean.
+- **Scope boundary:** this proves a possible post-stop refusal in the recording-runner/lock
+  composition, not a real clean-host outage or its frequency. It is distinct from the RFC
+  author's existing DESIGN-GAP 4: whether a single-family open overlap should be independently
+  composable. Even if the owner keeps fail-closed single-family behavior, rotation must not
+  interleave between preflight and destructive release/rollback/recovery steps. A correction
+  needs shared serialization or a governed operation-wide immutable overlay decision, plus a
+  permanent failing-first interleaving witness and cross-party review. No R2 approval or
+  archival is recorded.
