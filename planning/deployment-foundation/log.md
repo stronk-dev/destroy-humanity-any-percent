@@ -3582,3 +3582,18 @@ existence of this unreviewed correction.
   finding and no error. This would be a parser-recognition gap in R3's stated recursive-tar
   contract. The probe does not establish that the current BuildKit image emits V7 or that
   Docker's runtime accepts this specific archive; those claims require separate evidence.
+
+## 2026-09-30 — R3 legacy-tar probe fired; correction predeclared
+
+- **Executed result:** the first gzip fixture was invalid because its raw compressed bytes
+  retained the sentinel, so a scanner that did no recursion could still report a finding.
+  Rebuilt with Go gzip best compression and a raw-byte absence assertion. With that control,
+  the USTAR layer produced a finding; the modified V7 header failed Go tar parsing until its
+  checksum was recomputed; the checksummed V7 header and gzip payload passed Go tar parsing;
+  `ScanDockerArchive` returned `findings=[] err=<nil>`. The predeclared criterion fired.
+- **Scope:** this demonstrates an R3 parser-recognition gap for a Go-readable nested tar,
+  not a claim about current BuildKit output or Docker runtime support for V7. Under accepted
+  DP2/AC2, retain the permanent USTAR/V7/malformed-header controls; recognize a valid
+  non-USTAR tar via Go's tar reader while preserving the current fail-closed path for
+  malformed USTAR. The old recognizer must fail the new V7 test; unrelated source/image
+  secret fixtures and a clean image must still pass. Current bundles remain unrehearsed.
