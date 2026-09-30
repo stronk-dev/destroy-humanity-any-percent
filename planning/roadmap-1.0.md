@@ -92,7 +92,9 @@ rechecked the CI/kernel, PA7 and RP-133 rollback boundaries recorded below.
    ranges. The first targeted finding, RP-132, requires Pet Adoption PA7/C2 author reconciliation;
    Typer/Arcade public wire and adopted content/copy remain separate open boundaries. Do not
    archive by counting implemented RFCs.
-2. Resolve RP-131's kernel-history/provenance gate under explicit process authority. At the
+2. Resolve RP-131's kernel-history/provenance gate under explicit process authority. The
+   [Kernel History Guard Integrity draft](../rfc/kernel-history-guard-integrity.md) frames the
+   path-scope exception and forged-review controls; it is not implementation authority. At the
    current HEAD, the red `verify-kernel-version` result blocks a green `verify-push` claim;
    `origin/main` already contains the offending commits, so no unpushed-history rewrite route exists.
 3. Codex designated review of Claude's Deployment corrective range `67fd415..ec5518b`

@@ -10,6 +10,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [Balance Harness Dispatch Integrity](balance-harness-dispatch-integrity.md) | withdrawn — premise refuted | Balance Harness Foundation |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
+| [Kernel History Guard Integrity](kernel-history-guard-integrity.md) | draft — RP-131, owner choice pending; not implementation authority | Run Genesis & Replay KV-1 / CI Baseline |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |

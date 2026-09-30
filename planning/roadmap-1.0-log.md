@@ -532,3 +532,16 @@ initiate the push or change the branch's publication state in this checkpoint.
   `50a3a514` after both CI kernel-history fixture checks passed; the current-head full
   client/push gate therefore remains red.
   No wider Minigame, Deployment, CI or release claim changed.
+
+## 2026-09-30 — RP-131 kernel-history repair drafted, not accepted
+
+- **Coordinate:** after the genuine zero-credit correction review; the blocking history gate
+  still stops at pushed `50a3a514` and no product/kernel code was changed for this draft.
+- **Draft:** `rfc/kernel-history-guard-integrity.md` proposes a separate append-only,
+  exact-commit/exact-path exception for independently proved presentation-only historical
+  changes, plus a structured independent-verdict parser. It preserves KV-1's same-commit bump
+  for semantic bytes and the existing correction record for real misses. The three known
+  minigame/soul path-placement commits are candidates for audit, not pre-approved waivers.
+- **Authority:** draft only; Marco must accept or narrow the proposed exception class and the
+  whole historical population must be audited before implementation. No current CI, version,
+  RFC implementation or release status is promoted by writing the proposal.
