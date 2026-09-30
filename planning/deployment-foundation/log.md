@@ -3460,3 +3460,11 @@ No host run has happened.
 Codex's predeclaration and implementation span is `5f14a808^..d19b5d8a`. The code/test/docs
 landing is `d19b5d8a`. This is the exact range for Claude's designated review; the R1
 CHANGES REQUIRED finding and the independent RP-131 CI failure remain open.
+
+## 2026-09-30 — RP-133 full Go vet environment resolution
+
+The earlier `make vet` failure was a sandbox denial while populating Go's normal module cache,
+before package analysis. With narrowly scoped approval for the exact root `make vet` target,
+the full `go vet ./...` run exited 0. This replaces the environment-limited verification
+status above; it does not supply Claude's designated code verdict, a clean-host rollback proof,
+or a green `verify-push` while RP-131 remains.

@@ -545,3 +545,11 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Authority:** draft only; Marco must accept or narrow the proposed exception class and the
   whole historical population must be audited before implementation. No current CI, version,
   RFC implementation or release status is promoted by writing the proposal.
+
+## 2026-09-30 — full Go vet rerun after cache permission denial
+
+The prior `make vet` attempt failed before package analysis because the sandbox denied Go's
+module-cache creation for `chromedp`. A retry of the exact root `make vet` target with narrowly
+scoped module-cache access downloaded the declared dependencies and exited 0 (`go vet ./...`).
+This closes the environmental verification gap only; `make verify-kernel-version` remains red
+on pushed `50a3a514`, and no full `verify-push` success or release proof is inferred.
