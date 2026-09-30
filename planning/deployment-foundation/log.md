@@ -3628,3 +3628,12 @@ The predeclaration/result record `d871339d..432624c0` and code/test/docs landing
 `a7ab2640` form Codex's exact RP-135 correction span `d871339d^..a7ab2640` for Claude's
 designated review. The original R3 targeted CHANGES REQUIRED finding remains until a reviewed
 correction closes it; no R-006 bundle is validated by these tests.
+
+## 2026-09-30 — RP-135 post-commit rehearsal gate
+
+At product source `a7ab2640`, the exact root `make test-deployment-rehearsal` target passed
+with its local loopback listener permitted: cold `deploymentrehearsal`, both rehearsal/release
+command packages and `deploymentrelease`, followed by validation of the retained previous and
+candidate build *records*. Those historical records passing structural validation does not
+rebuild or validate their old bundles as current R-006 inputs. RP-131 still prevents a green
+full `verify-push` claim.
