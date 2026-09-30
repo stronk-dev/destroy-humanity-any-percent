@@ -3567,3 +3567,18 @@ Codex's predeclaration and implementation span is `8e9b46d0^..2d8ca3f1`; the cod
 landing is `2d8ca3f1`. Claude is the required designated reviewer for this exact range.
 R2's original targeted CHANGES REQUIRED verdict is not silently converted to approval by the
 existence of this unreviewed correction.
+
+## 2026-09-30 — R3 image scanner legacy-tar probe predeclaration
+
+- **Question:** R3 claims to recurse through plain tar members, but `isTarStream` recognizes
+  only the `ustar` magic. Can a valid Go-readable V7 tar member hide a gzip-compressed secret
+  because the scanner treats the whole tar as opaque bytes?
+- **Population/arms:** a Docker-archive-shaped outer tar containing one layer tar with a
+  nested `.gz` file and a generated secret sentinel. The USTAR inner tar is the positive
+  control. For the V7 arm, clear only the inner header's USTAR magic/version, recompute its
+  checksum, and require Go's `archive/tar.Reader` to accept the header and file before asking
+  `ScanDockerArchive` for a finding. A corrupted-checksum arm must not be mislabeled valid.
+- **Fired criterion:** USTAR yields a finding, V7 is Go-readable but the scanner returns no
+  finding and no error. This would be a parser-recognition gap in R3's stated recursive-tar
+  contract. The probe does not establish that the current BuildKit image emits V7 or that
+  Docker's runtime accepts this specific archive; those claims require separate evidence.
