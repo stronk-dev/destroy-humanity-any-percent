@@ -3468,3 +3468,22 @@ before package analysis. With narrowly scoped approval for the exact root `make 
 the full `go vet ./...` run exited 0. This replaces the environment-limited verification
 status above; it does not supply Claude's designated code verdict, a clean-host rollback proof,
 or a green `verify-push` while RP-131 remains.
+
+## 2026-09-30 — R2 rotation/rollback interleaving probe predeclaration
+
+- **Question:** can the rotation command change the ledger while `Controller.Rollback` holds its
+  release lock, so `StopFailed` executes under a both-open overlay but `ResetDatabase` rereads a
+  single-open ledger and refuses after the live service has stopped?
+- **Population:** current `deploymentrelease` package, its real `acquireOperatorLock`,
+  `ActivateRotation`/`RemovePrevious` ledger path, and `DockerRuntime` with a recording Docker
+  runner (no real containers or database). Start with JWT and bootstrap overlaps both open.
+- **Arms/controls:** hold the release-ledger lock; first show both-open `StopFailed` and
+  `ResetDatabase` accept when the ledger stays unchanged. In the interleaving arm, run
+  `StopFailed`, then legally remove previous JWT after its governed 30-minute overlap, leaving
+  bootstrap open; ask `ResetDatabase` to continue. As a control, hold the rotation-ledger lock
+  and show the same removal is refused, proving the probe actually exercises lock exclusion.
+- **Fired condition:** rotation removal succeeds while the release lock is held, the recorded
+  `down` occurs, and `ResetDatabase` refuses before its volume action. This establishes a
+  possible stranded rollback interleaving and blocks R2's safe composition claim. A mere
+  refusal before `down` is not the defect. The probe does not measure real operator timing or
+  substitute for clean-host rollback; any repair must preserve independent key-overlap minima.
