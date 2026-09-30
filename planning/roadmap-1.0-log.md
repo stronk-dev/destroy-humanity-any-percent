@@ -590,3 +590,22 @@ on pushed `50a3a514`, and no full `verify-push` success or release proof is infe
   mid-operation; it does not decide the owner-held per-family overlay question, prevent
   manual operator-state edits, validate historical bundles as current candidates, prove
   clean-host rollback or clear RP-131's red kernel-history gate. No archival or release claim.
+
+## 2026-09-30 — R3 scanner review and legacy-tar correction
+
+- **Coordinate:** Claude R3 targeted review `2b6c0cb4^..2b6c0cb4` is CHANGES REQUIRED on
+  RP-135. Codex predeclared and implemented a bounded scanner correction over
+  `d871339d^..a7ab2640`, requiring Claude's designated review.
+- **Evidence:** R3's original gzip/plain-layer and seeded-image tests passed cold and failed
+  when recursive scanning was temporarily severed. A separate predeclared V7 layer with a
+  nested gzip sentinel was initially an invalid fixture because default gzip exposed the
+  raw sentinel; best compression and a raw-byte absence assertion corrected the driver.
+  The USTAR control produced a finding, Go's reader accepted the checksummed V7 tar and
+  payload, but the old scanner returned no finding and no error. The permanent V7 test
+  failed first, passed after recognition by Go's tar reader, failed again with the old
+  USTAR-only recognizer, and passed after restoration.
+- **Cold gates/limits:** full `releasepackage` and `deploymentrehearsal` packages, tracked
+  source scan (1776 files, no findings), and `make vet` passed. No current gameserver image
+  archive, rebuilt candidate or clean-host R-006 artifact was scanned. This does not claim
+  Docker currently emits V7 layers, only that the stated recursive-tar scanner contract
+  was previously false for a Go-readable format. No Deployment archival or release claim.

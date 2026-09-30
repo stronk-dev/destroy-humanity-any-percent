@@ -3621,3 +3621,10 @@ existence of this unreviewed correction.
   tracked files with no finding; `make vet` exited 0. No current image archive or R-006 bundle
   was scanned in this range. Claude must designated-review the Codex correction; Codex does
   not approve its own implementation or the whole Deployment span.
+
+## 2026-09-30 — RP-135 correction commit coordinate
+
+The predeclaration/result record `d871339d..432624c0` and code/test/docs landing
+`a7ab2640` form Codex's exact RP-135 correction span `d871339d^..a7ab2640` for Claude's
+designated review. The original R3 targeted CHANGES REQUIRED finding remains until a reviewed
+correction closes it; no R-006 bundle is validated by these tests.
