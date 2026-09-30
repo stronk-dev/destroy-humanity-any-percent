@@ -571,3 +571,22 @@ on pushed `50a3a514`, and no full `verify-push` success or release proof is infe
   recorded single-family-overlay owner decision. The accepted DP4/DP5 repair must prevent
   rotation from changing the governed overlay mid-operation and retain a permanent negative
   witness. No Deployment range is approved or archived by this finding; R-006 remains open.
+
+## 2026-09-30 — RP-134 shared operator lock correction
+
+- **Coordinate:** Codex predeclaration `8e9b46d0`, implementation `2d8ca3f1`; exact range
+  `8e9b46d0^..2d8ca3f1` awaits Claude's designated review. The source is not an R-006
+  release artifact.
+- **Implementation/evidence:** install, release, rollback, both recovery producers and
+  rotation mutation now share the canonical release-ledger lock for each entire operation;
+  rotation retains its own ledger lock. Permanent rollback and recovery interleaving tests
+  failed on old code, passed after the correction, and both failed again when the new
+  `RemovePrevious` shared-lock call was temporarily severed. The mutation was restored.
+  Cold full `deploymentrelease`/`deploymentrehearsal` packages, real Compose/Postgres/Caddy
+  release lane, `make vet`, and the root rehearsal target passed. The rehearsal target's first
+  sandboxed attempt was denied an `httptest` loopback socket before assertions; its exact
+  rerun with local socket access passed, including the old build-record validators.
+- **Boundary:** this prevents supported helper commands from changing rotation state
+  mid-operation; it does not decide the owner-held per-family overlay question, prevent
+  manual operator-state edits, validate historical bundles as current candidates, prove
+  clean-host rollback or clear RP-131's red kernel-history gate. No archival or release claim.

@@ -3560,3 +3560,10 @@ or a green `verify-push` while RP-131 remains.
   no clean-host rotation/recovery/rollback or production-sized RTO was proved. The known
   single-family-overlay DESIGN-GAP 4 remains an RFC-author choice. This Codex implementation
   needs Claude's designated review of its exact range and cannot be self-archived.
+
+## 2026-09-30 — RP-134 correction commit coordinate
+
+Codex's predeclaration and implementation span is `8e9b46d0^..2d8ca3f1`; the code/test/docs
+landing is `2d8ca3f1`. Claude is the required designated reviewer for this exact range.
+R2's original targeted CHANGES REQUIRED verdict is not silently converted to approval by the
+existence of this unreviewed correction.
