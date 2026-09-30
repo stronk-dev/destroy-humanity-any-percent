@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"compress/gzip"
 	"errors"
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -117,5 +119,84 @@ func TestSecretScanOpensCompressedAndNestedImageLayers(t *testing.T) {
 	}
 	if _, err := ScanDockerArchive(archive([]byte{0x1f, 0x8b, 0x08, 0x00, 0x01})); !errors.Is(err, ErrInvalidContent) {
 		t.Fatalf("corrupt gzip layer accepted: %v", err)
+	}
+}
+
+func TestSecretScanOpensLegacyTarNestedGzip(t *testing.T) {
+	secret := strings.Join([]string{"CLOUD_CLICKER_", "SECRET_SCAN_SENTINEL_", "abcdefghijklmnop"}, "")
+	var compressed bytes.Buffer
+	gz, err := gzip.NewWriterLevel(&compressed, gzip.BestCompression)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := gz.Write([]byte("key=" + secret + "\n")); err != nil {
+		t.Fatal(err)
+	}
+	if err := gz.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Contains(compressed.Bytes(), []byte(secret)) {
+		t.Fatal("gzip fixture exposes the sentinel in raw bytes")
+	}
+	var inner bytes.Buffer
+	writer := tar.NewWriter(&inner)
+	if err := writer.WriteHeader(&tar.Header{Name: "nested/leak.gz", Mode: 0o644, Size: int64(compressed.Len()), Typeflag: tar.TypeReg}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := writer.Write(compressed.Bytes()); err != nil {
+		t.Fatal(err)
+	}
+	if err := writer.Close(); err != nil {
+		t.Fatal(err)
+	}
+	archive := func(layer []byte) string {
+		t.Helper()
+		var outer bytes.Buffer
+		writer := tar.NewWriter(&outer)
+		if err := writer.WriteHeader(&tar.Header{Name: "blobs/sha256/layer", Mode: 0o644, Size: int64(len(layer)), Typeflag: tar.TypeReg}); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := writer.Write(layer); err != nil {
+			t.Fatal(err)
+		}
+		if err := writer.Close(); err != nil {
+			t.Fatal(err)
+		}
+		path := filepath.Join(t.TempDir(), "image.tar")
+		if err := os.WriteFile(path, outer.Bytes(), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		return path
+	}
+	if findings, err := ScanDockerArchive(archive(inner.Bytes())); err != nil || len(findings) == 0 {
+		t.Fatalf("USTAR control not found: findings=%v err=%v", findings, err)
+	}
+	legacy := append([]byte(nil), inner.Bytes()...)
+	if string(legacy[257:262]) != "ustar" {
+		t.Fatal("inner fixture lacks USTAR magic")
+	}
+	for index := 257; index < 265; index++ {
+		legacy[index] = 0
+	}
+	if _, err := tar.NewReader(bytes.NewReader(legacy)).Next(); err == nil {
+		t.Fatal("corrupted-checksum control was unexpectedly valid")
+	}
+	for index := 148; index < 156; index++ {
+		legacy[index] = ' '
+	}
+	sum := 0
+	for _, value := range legacy[:512] {
+		sum += int(value)
+	}
+	copy(legacy[148:156], []byte(fmt.Sprintf("%06o\x00 ", sum)))
+	reader := tar.NewReader(bytes.NewReader(legacy))
+	if _, err := reader.Next(); err != nil {
+		t.Fatalf("V7 tar header rejected by Go reader: %v", err)
+	}
+	if data, err := io.ReadAll(reader); err != nil || !bytes.Equal(data, compressed.Bytes()) {
+		t.Fatalf("V7 tar payload rejected: err=%v", err)
+	}
+	if findings, err := ScanDockerArchive(archive(legacy)); err != nil || len(findings) == 0 {
+		t.Fatalf("Go-readable V7 nested gzip not found: findings=%v err=%v", findings, err)
 	}
 }

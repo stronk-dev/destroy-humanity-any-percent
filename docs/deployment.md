@@ -282,7 +282,8 @@ real Postgres populations.
 For a release run, `make release-secret-scan` receives the exact candidate manifest hash, candidate
 gameserver archive and an exclusive result path. It scans the real Git-tracked population and
 image. The image scan opens every outer archive member, gunzips compressed layers, walks plain tar
-layers and nested gzip/tar files inside them (to a fixed depth and a 1 GiB decompressed bound),
+layers (including valid magic-less V7 headers) and nested gzip/tar files inside them (to a fixed
+depth and a 1 GiB decompressed bound),
 and matches each file's bytes and tar entry names once, at the innermost readable form. A zstd
 member, corrupt gzip, truncated tar or depth/size overflow fails the scan closed instead of being
 skipped. It derives the source commit from Git, and writes a strict mode-0600 result containing counts

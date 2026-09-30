@@ -3597,3 +3597,27 @@ existence of this unreviewed correction.
   non-USTAR tar via Go's tar reader while preserving the current fail-closed path for
   malformed USTAR. The old recognizer must fail the new V7 test; unrelated source/image
   secret fixtures and a clean image must still pass. Current bundles remain unrehearsed.
+
+## 2026-09-30 — Codex targeted R3 finding and local scanner correction (RP-135)
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed Claude range:**
+  `2b6c0cb4^..2b6c0cb4`, limited to R3's recursive image-layer scan claim.
+  **Decision:** **CHANGES REQUIRED.** R3's existing gzip/plain/nested fixtures passed cold,
+  and reverting its recursion to raw outer-member scanning made the scanner test and the
+  seeded-image rehearsal probe fail. That proves its principal fix is real, but the
+  predeclared V7 probe established a missed Go-readable tar family carrying a nested gzip
+  secret; the accepted DP2/AC2 scanner may not return a false clean result for it.
+- **Codex correction:** keep USTAR as a fail-closed tar candidate even with a bad header;
+  otherwise ask Go's tar reader whether the first header is valid, recognizing magic-less
+  V7 without treating arbitrary bytes as tar. The permanent test has a USTAR positive, a
+  V7 header rejected until its checksum is recomputed, a Go-readable V7 payload, and an
+  assertion that the compressed bytes do **not** expose the sentinel in raw form. The first
+  version of this fixture was invalid because default gzip did expose the sentinel; that
+  driver error was corrected before drawing the V7 conclusion.
+- **Discrimination and checks:** the permanent test failed on the prior recognizer with
+  `findings=[] err=<nil>`, passed on the correction, failed again when the old recognizer was
+  temporarily restored, and passed after restoration. Cold full `./releasepackage` and
+  `./deploymentrehearsal` Go packages passed; `make release-secret-scan` scanned 1776
+  tracked files with no finding; `make vet` exited 0. No current image archive or R-006 bundle
+  was scanned in this range. Claude must designated-review the Codex correction; Codex does
+  not approve its own implementation or the whole Deployment span.

@@ -186,7 +186,17 @@ func scanArchiveMember(path string, data []byte, depth int) ([]SecretFinding, er
 }
 
 func isTarStream(data []byte) bool {
-	return len(data) >= 512 && (bytes.Equal(data[257:262], []byte("ustar")))
+	if len(data) < 512 {
+		return false
+	}
+	// Preserve fail-closed parsing for a malformed USTAR stream. Older V7 tar
+	// has no magic, so ask the same tar reader used below whether its first
+	// header is valid instead of treating its nested files as opaque bytes.
+	if bytes.Equal(data[257:262], []byte("ustar")) {
+		return true
+	}
+	_, err := tar.NewReader(bytes.NewReader(data)).Next()
+	return err == nil
 }
 
 func RequireNoSecrets(findings []SecretFinding) error {
