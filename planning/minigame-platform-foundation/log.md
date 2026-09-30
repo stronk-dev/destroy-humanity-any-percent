@@ -774,3 +774,31 @@ Codex records the independent review of `8add475` as a `## ` section with `**Rev
 `**Decision:**` and the range (`8add475^..8add475`). This is the guard working as designed; no
 workaround is taken. The alternative, amending the unpushed and uncited `8add475` to carry the
 bump, is outside CLAUDE.md's two permitted rewrite classes, so it needs an explicit owner ruling.
+
+## 2026-09-30 — Codex designated review of zero-credit resolution and kernel correction
+
+- **Review by:** Codex. **Recorded by:** Codex.
+- **Reviewed range:** `8add475^..0cf9f7a` (the zero-credit behavior commit and its append-only
+  kernel correction). The exact offending-commit anchor required by the history guard is
+  (`8add475^..8add475`). This is the first actual independent verdict on that correction;
+  the 2026-09-25 paragraph above was an instruction to obtain one, not a verdict.
+- **Decision:** **APPROVED for this two-commit scope.** The live resolution now commits a
+  terminal receipt with credited delta `"0"` when the ledger has no changed balance, while
+  nonzero credits still have to equal the ledger receipt. Go and TS replay accept the same
+  zero-credit outcome and refuse a recorded nonzero credit that the saturated ledger cannot
+  reproduce. Version `0.3.101` → `0.3.102` correctly records the behavioral replay boundary;
+  the correction row points to the exact offending commit instead of rewriting pushed history.
+- **Executed evidence at `d19b5d8a`:** cold Go
+  `TestCompanyMinigameResolutionReplaysZeroCredit` passed; the real Postgres
+  `TestResolveMinigameSessionIntegrationAtomicReplayAndFaults` passed without skip;
+  `make test-client` passed 6905 tests (76 skipped), including the TS zero-credit replay case;
+  the cross-runtime fixture passed with `-count=1`; `make vectors-check` regenerated 6296
+  vectors byte-identically. I temporarily severed `minigameCreditedDelta`'s empty-receipt
+  return from `"0"` to `"1"`; the focused Go replay test failed with
+  `zero-credit replay receipt=null err=invalid replay inputs`. The mutation was restored
+  exactly. The dedicated Postgres test service was shut down after the run.
+- **Limits:** this approves neither the wider Minigame API/Surface implementation nor its
+  archival. RP-131's validator still accepts *instructions about a future review* as a fake
+  verdict in general; this genuine review closes only the `8add475` provenance need.
+  `make verify-kernel-version` remains red on the separate pushed `50a3a514` history item,
+  so no current-head CI or release claim follows.

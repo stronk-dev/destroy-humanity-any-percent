@@ -514,3 +514,21 @@ initiate the push or change the branch's publication state in this checkpoint.
 - **Next boundary:** Claude designated review of exact Codex correction range
   `5f14a808^..d19b5d8a`; Codex continues the independent review of the remaining Claude
   Deployment ranges. No RFC archival, candidate validity or release status changed.
+
+## 2026-09-30 — zero-credit minigame and kernel correction designated review
+
+- **Coordinate:** exact Claude implementation/correction range `8add475^..0cf9f7a`; product
+  source for checks `d19b5d8a`. Codex's first actual independent verdict is in
+  `minigame-platform-foundation/log.md` and approves only this two-commit scope.
+- **Executed evidence:** cold Go zero-credit replay passed; a real Postgres session-resolution
+  integration test passed without skip; the full client suite passed 6905 tests (76 skipped),
+  including TS replay; the cross-runtime fixture passed cold; 6296 numeric vectors regenerated
+  byte-identically. A temporary mutation changing the empty ledger receipt from `"0"` to `"1"`
+  made the focused Go replay test fail; it was restored exactly. The dedicated Postgres service
+  was shut down.
+- **Boundary:** the genuine verdict now gives the `0.3.102` correction real provenance, rather
+  than the validator's false-positive reading of a future-review instruction. RP-131's parser
+  defect remains. A post-verdict cold `make verify-kernel-version` exited 2 at pushed
+  `50a3a514` after both CI kernel-history fixture checks passed; the current-head full
+  client/push gate therefore remains red.
+  No wider Minigame, Deployment, CI or release claim changed.
