@@ -578,10 +578,13 @@ Every successful release row binds the candidate version, manifest SHA-256, all 
 digests, exact pre-upgrade backup, exact previous version/manifest and a seven-day rollback
 deadline. Rollback accepts only those recorded values. Before it stops anything it loads and
 verifies the previous bundle's images, runs the previous-bundle preflight, and verifies the restore
-inputs on the host: the backup path is a regular non-empty file in the backup target, the age
-identity is an owner-only regular file, and the envelope header's payload length/SHA-256, backup ID,
-server, previous manifest, epoch and pre-upgrade class all match (`restore_inputs` stage). A
-missing, corrupt or wrong backup or identity therefore refuses with the live database untouched.
+inputs on the host: the backup path is a regular non-empty file in the backup target; the age
+identity is an owner-only regular file containing exactly one parseable identity; and a full
+authenticated decrypt to a discard sink proves that identity opens the backup and that the
+envelope's payload length/SHA-256, backup ID, server, previous manifest, epoch and pre-upgrade
+class all match (`restore_inputs` stage). A missing, corrupt or wrong backup or identity therefore
+refuses with the live database untouched. This preflight does not claim a database restore has
+already succeeded; the clean-volume restore and exact identity checks remain required.
 Only then does it stop the failed stack, remove only the
 named Postgres data volume, starts a clean Postgres service, restores the exact encrypted backup,
 starts the exact previous bundle, repeats epoch/artifact reconciliation and runs the same Caddy

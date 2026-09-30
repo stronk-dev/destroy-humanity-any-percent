@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -11,6 +12,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"filippo.io/age"
 
 	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/epochseed"
@@ -441,15 +444,25 @@ func (runtime DockerRuntime) RestoreRecoveryBackup(ctx context.Context, bundle B
 	return runtime.restoreBackup(ctx, bundle, backup, false)
 }
 
-// VerifyRestoreInputs reads the host backup envelope and restore identity
-// without touching Compose state: the payload length/checksum, backup ID,
-// server, previous manifest, epoch and pre-upgrade class must all bind.
+// VerifyRestoreInputs authenticates the host backup with the same single age
+// identity population as the real restore before rollback touches Compose state.
+// It proves the key can decrypt the envelope, not that a database restore has
+// already succeeded; the clean-volume restore still runs and rechecks inputs.
 func (runtime DockerRuntime) VerifyRestoreInputs(_ context.Context, bundle Bundle, backup BackupReference) error {
-	runtime, _, err := runtime.restoreFiles(backup)
+	runtime, identityPath, err := runtime.restoreFiles(backup)
 	if err != nil {
 		return err
 	}
-	header, err := deploymentbackup.ReadHeader(backup.Path)
+	identityFile, err := os.Open(identityPath)
+	if err != nil {
+		return errors.Join(ErrInvalid, err)
+	}
+	identities, parseErr := age.ParseIdentities(identityFile)
+	closeErr := identityFile.Close()
+	if parseErr != nil || closeErr != nil || len(identities) != 1 {
+		return errors.Join(ErrInvalid, parseErr, closeErr)
+	}
+	header, err := deploymentbackup.Restore(backup.Path, bundle.ManifestSHA256, identities[0], io.Discard)
 	if err != nil || header.BackupID != backup.ID || !validBackupHeader(header, bundle, runtime.ServerID, true) {
 		return errors.Join(ErrInvalid, err)
 	}

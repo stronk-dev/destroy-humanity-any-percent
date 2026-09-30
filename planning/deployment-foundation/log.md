@@ -3429,3 +3429,28 @@ No host run has happened.
   recheck its inputs. The preflight may cost an additional full backup read; do not claim the
   four-hour RTO until the clean-host R-006 run measures it. Codex's correction will require
   Claude's independent cross-party review; Codex cannot approve its own fix or archive the RFC.
+
+## 2026-09-30 — RP-133 Codex rollback preflight correction, ready for Claude review
+
+- **Scope:** `DockerRuntime.VerifyRestoreInputs` now parses exactly one age identity and runs
+  the backup package's authenticated `Restore` to `io.Discard` before rollback's destructive
+  steps. That existing package routine verifies full ciphertext length/hash, successful age
+  decryption and the authenticated envelope fields; the returned header is then bound to the
+  requested backup, server, previous manifest, epoch and pre-upgrade class. The actual restore
+  still runs after the clean-volume reset. The canonical Deployment page states both boundaries.
+- **Failing-first evidence:** the test extension initially failed cold on the old
+  check with `wrong but well-formed identity accepted before destructive rollback: <nil>`.
+  Its negatives also include malformed and multiple identity files and changed ciphertext with
+  a recomputed outer SHA-256. The pre-change run demonstrates the wrong-key discriminator; no
+  separate post-fix mutation run is claimed. The earlier ephemeral review probe was removed
+  before this implementation.
+- **Cold checks:** focused `TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands` passed;
+  full `make test-go GO_PACKAGES='./deploymentrelease' GO_TEST_FLAGS='-count=1'` passed; real
+  Compose/Postgres/Caddy `make test-deployment-release` passed. `make vet` could not reach its
+  package check because the sandbox denied creating the Go module-cache directory for
+  `github.com/chromedp`; the focused Go test still ran its package-level default vet. No
+  current-head `verify-push` claim: the independent RP-131 kernel history gate remains red.
+- **Limits:** this authenticates and reads the whole backup before destruction, but does not
+  prove `pg_restore` will accept its logical contents or that a production-sized backup meets
+  the four-hour RTO. Those remain clean-host R-006 gates. This is Codex-authored implementation,
+  not a designated verdict; Claude must review the exact correction range before it counts.

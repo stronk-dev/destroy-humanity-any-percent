@@ -3,6 +3,8 @@ package deploymentrelease
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"io"
@@ -551,6 +553,63 @@ func TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands(t *testing.T) 
 	}
 	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, valid); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("missing identity accepted: %v", err)
+	}
+	wrongIdentity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(identityPath, []byte(wrongIdentity.String()+"\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, valid); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("wrong but well-formed identity accepted before destructive rollback: %v", err)
+	}
+	for label, content := range map[string]string{
+		"malformed": "not-an-age-identity\n",
+		"multiple":  identity.String() + "\n" + wrongIdentity.String() + "\n",
+	} {
+		if err := os.WriteFile(identityPath, []byte(content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		if err := runtime.VerifyRestoreInputs(context.Background(), bundle, valid); !errors.Is(err, ErrInvalid) {
+			t.Fatalf("%s identity file accepted before destructive rollback: %v", label, err)
+		}
+	}
+	if err := os.WriteFile(identityPath, []byte(identity.String()+"\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	// Recompute the unauthenticated outer checksum after changing ciphertext.
+	// A header-only/checksum-only preflight accepts this, but authentication must not.
+	tampered := create("20260822T180000Z-acde00000005", bundle.ManifestSHA256, true)
+	raw, err := os.ReadFile(tampered.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first := bytes.IndexByte(raw, '\n')
+	secondRelative := bytes.IndexByte(raw[first+1:], '\n')
+	if first < 0 || secondRelative < 0 {
+		t.Fatal("invalid fixture envelope framing")
+	}
+	second := first + 1 + secondRelative
+	var tamperedHeader deploymentbackup.Header
+	if err := json.Unmarshal(raw[first+1:second], &tamperedHeader); err != nil {
+		t.Fatal(err)
+	}
+	payload := append([]byte(nil), raw[second+1:]...)
+	payload[len(payload)-1] ^= 0xff
+	digest := sha256.Sum256(payload)
+	tamperedHeader.PayloadSHA256 = "sha256:" + hex.EncodeToString(digest[:])
+	headerJSON, err := json.Marshal(tamperedHeader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	forged := append(append(append([]byte{}, raw[:first+1]...), headerJSON...), '\n')
+	forged = append(forged, payload...)
+	if err := os.WriteFile(tampered.Path, forged, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := runtime.VerifyRestoreInputs(context.Background(), bundle, tampered); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("tampered ciphertext with recomputed outer checksum accepted: %v", err)
 	}
 	if len(runner.calls) != 0 {
 		t.Fatalf("restore-input verification issued runtime commands: %v", runner.calls)
