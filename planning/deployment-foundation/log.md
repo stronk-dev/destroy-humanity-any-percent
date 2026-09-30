@@ -3515,3 +3515,22 @@ or a green `verify-push` while RP-131 remains.
   needs shared serialization or a governed operation-wide immutable overlay decision, plus a
   permanent failing-first interleaving witness and cross-party review. No R2 approval or
   archival is recorded.
+
+## 2026-09-30 — RP-134 Codex correction predeclaration
+
+- **Authority/scope:** accepted DP4/DP5 safe key overlap and stop-drain-start contract. Share
+  the existing canonical `release-ledger.jsonl.lock` across Controller install/release/rollback,
+  rotation activation/removal and both R-006 recovery producers for their entire operation.
+  Rotation also retains its own ledger lock for backwards-compatible mutation exclusion.
+  Lock acquisition is nonblocking and refuses before any Compose/volume command. No change to
+  the current single-family fail-closed policy; DESIGN-GAP 4 stays with the RFC author.
+- **Population/controls:** permanently test a both-open rotation under a held release lock.
+  `StopFailed` and `ResetDatabase` must use the overlay; a governed JWT removal must fail while
+  that lock is held, then succeed after release. Remove the shared-lock call to make the
+  wrong-interleaving test fail. A second test exercises the recovery producer: at its stop
+  boundary, a rotation command must refuse while the recovery operation lock is held. Existing
+  rotation overlap-time tests and release/recovery suites remain green.
+- **Limits:** this serializes commands using the supported helper and operator-state directory;
+  it does not prove an external/manual edit of the append-only ledger is impossible. It does
+  not resolve whether a deliberate single-family rotation should allow an upgrade. Clean-host
+  R-006 and Claude's cross-party review remain mandatory.
