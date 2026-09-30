@@ -488,3 +488,29 @@ initiate the push or change the branch's publication state in this checkpoint.
   ruled kernel-guard/PA7 reconciliation, then bounded independent range reviews (including
   Deployment R1–R17) with cold/severing evidence. Do not use the historical green CI claims or
   Claude's handoff as current-head release proof.
+
+## 2026-09-30 — RP-133 rollback safety review and Codex correction
+
+- **Coordinate:** targeted source review of Claude's R1 commit `1978660^..1978660` at product
+  `fc4191fe`; Codex predeclaration `5f14a808` and correction `d19b5d8a` followed. No release
+  artifact was rebuilt or deployed.
+- **Cross-party verdict boundary:** Codex recorded **CHANGES REQUIRED** on R1's
+  `VerifyRestoreInputs` safety claim. A second valid age key, mode 0600, passed host preflight
+  for a backup encrypted to the first key. Temporary cold probe failed with the actual nil
+  result; it was removed and the original focused test rerun green. Thus R1 could erase the
+  database volume before the containerized restore rejected a wrong operator identity.
+- **Correction and discrimination:** under accepted DP5/AC5, Codex added exactly-one-key parsing
+  and a full authenticated decrypt to a discard sink before `StopFailed`/`ResetDatabase`. The
+  permanent wrong-key test failed first on the old code, then passed with the correction;
+  malformed/multiple identities and ciphertext whose outer hash was recomputed after mutation
+  also refuse. Canonical Deployment docs and the owning log changed with code/tests. This is
+  Codex-authored implementation, not Codex approval of itself.
+- **Executed gates:** cold focused and full `deploymentrelease` Go suites passed; real
+  `make test-deployment-release` passed through Compose/Postgres/Caddy. `make vet` failed before
+  package analysis because the sandbox denied Go module-cache creation for `chromedp`; the
+  focused `go test` ran its default package vet. RP-131's independent kernel-history failure
+  remains, so current-head `verify-push` is not green. No RTO claim follows from the tiny test
+  backup; a production-sized exact-bundle clean-host rehearsal remains required.
+- **Next boundary:** Claude designated review of exact Codex correction range
+  `5f14a808^..d19b5d8a`; Codex continues the independent review of the remaining Claude
+  Deployment ranges. No RFC archival, candidate validity or release status changed.

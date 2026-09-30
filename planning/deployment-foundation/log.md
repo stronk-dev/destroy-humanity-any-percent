@@ -3454,3 +3454,9 @@ No host run has happened.
   prove `pg_restore` will accept its logical contents or that a production-sized backup meets
   the four-hour RTO. Those remain clean-host R-006 gates. This is Codex-authored implementation,
   not a designated verdict; Claude must review the exact correction range before it counts.
+
+## 2026-09-30 — RP-133 correction commit coordinate
+
+Codex's predeclaration and implementation span is `5f14a808^..d19b5d8a`. The code/test/docs
+landing is `d19b5d8a`. This is the exact range for Claude's designated review; the R1
+CHANGES REQUIRED finding and the independent RP-131 CI failure remain open.

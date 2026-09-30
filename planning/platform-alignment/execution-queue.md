@@ -1,6 +1,6 @@
 # Executable queue
 
-## Current overlay — 2026-09-30, product source `fc4191fe`
+## Current overlay — 2026-09-30, product source `d19b5d8a`
 
 The 2026-09-25 Claude implementation handoff is [`planning/v0.1-claude-implementation-handoff.md`](../v0.1-claude-implementation-handoff.md).
 These are review/decision lanes, not permission to archive or release. The older overlay below is
@@ -10,8 +10,9 @@ accepted implementation RFCs.
 | State now | Work and exact boundary |
 |---|---|
 | **RED CI / process-gate defect** | Cold `make verify-kernel-version` fails at pushed `50a3a514`; `verify-client` and `verify-push` cannot be called green. RP-131 also shows that a prospective-review instruction falsely satisfies the `8add475` correction's independent-review parser. `make verify-ci-topology` passes with 13 negative controls, but does not cancel the red kernel gate. An accepted process repair and real cross-party correction review are needed; do not rewrite pushed history or record a cosmetic version bump. |
+| **READY FOR DESIGNATED REVIEW — rollback safety correction** | Codex's targeted review found RP-133 in Claude's R1 commit `1978660`; a wrong valid age identity passed the non-destructive check before volume removal. Codex predeclared and implemented authenticated host-side preflight over `5f14a808^..d19b5d8a`. The failing-first wrong-key test, full Deployment release package and real Compose release lane pass. Claude must independently review the exact Codex correction range; Codex's targeted R1 finding is CHANGES REQUIRED, not an R1–R22 approval. A production-sized clean-host RTO/rollback still has no proof. |
 | **CHANGES REQUIRED — targeted Pet PA7 review** | Codex reviewed `c380896a^..c380896a` for PA7/AC11 and found RP-132: snapshot v4's optional nested adoption arm and null-only `pets` do not match the accepted sibling-field contract; a cold schema fixture omitting adoption passes. The PA7/C2 ruling author must reconcile the body and choose an exact versioned wire route before a corrected implementation/test range can be approved. The rest of Pet Adoption is not reviewed by this finding. |
-| **READY FOR DESIGNATED REVIEW — Deployment** | Claude's R1–R17 corrective range through `ec5518b` and the remaining DP-F range await Codex adversarial review. Retained bundles are invalid under the new implementation and no current clean-host R-006 evidence exists. Six documented DESIGN-GAPs remain with the RFC author. |
+| **READY FOR DESIGNATED REVIEW — Deployment** | Claude's R1–R17 corrective range through `ec5518b` and the remaining DP-F range await Codex adversarial review, with the R1 RP-133 safety finding above. Retained bundles are invalid under the new implementation and no current clean-host R-006 evidence exists. Six documented DESIGN-GAPs remain with the RFC author. |
 | **READY FOR DESIGNATED REVIEW — v0.1 implementation** | Claude landed accepted RFC implementations for Minigame API/Surface, API Foundation, Typer, Garage Surfaces, Reputation, Pet Adoption, Tier 2, Cosmetics, Clout, Arcade and Server Garden. The handoff names ranges but is not a verdict; review each exact range and its tests, content, docs and closeout. Owner copy/content mint, public Typer/Arcade wire and release decisions remain blocked separately. |
 | **BLOCKED ON OWNER/CONTRACT WORK** | Account export/deletion/retention D-008/D-009/D-015 and cross-surface accessibility retain the evidence gaps in the prior overlay. No later gameplay wave waives the preview or 1.0 rights/access/operations floor. |
 
