@@ -3399,3 +3399,33 @@ negative "gameserver restart during admitted work", which had no producer.
 - provider-off operation (a composite row with no single command defined).
 
 No host run has happened.
+## 2026-09-30 — Codex targeted review of Claude's R1 rollback correction
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `1978660^..1978660`,
+  limited to the `VerifyRestoreInputs` safety claim, its Docker fixture and DP5/AC5. This is
+  not an approval or complete range review of R1–R22.
+- **Decision:** **CHANGES REQUIRED (RP-133).** `Rollback` does call
+  `VerifyRestoreInputs` before `StopFailed` and `ResetDatabase`, and the host check binds the
+  envelope metadata/checksum, backup path and key-file permissions. But it never tests whether
+  that well-formed key decrypts this backup. The later containerized restore is the first
+  decryption attempt, after the database volume is removed. This leaves the primary safety
+  property of R1 false for a plausible operator key mismatch.
+- **Executed negative:** temporarily extended
+  `TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands` with a second valid age X25519
+  identity, mode `0600`, for a backup encrypted to the first. Cold
+  `make test-go GO_PACKAGES='./deploymentrelease'
+  GO_TEST_FLAGS='-run TestDockerRuntimeVerifiesRestoreInputsWithoutRuntimeCommands -count=1 -v'`
+  failed in 0.08 s with `wrong but well-formed identity accepted before destructive rollback:
+  <nil>`. Removed the temporary test exactly; the original focused lane then passed cold.
+  No product/test bytes from the probe remain.
+- **Predeclared Codex correction (accepted DP5/AC5, no new mechanic):** before destructive
+  rollback, parse exactly the identity population the real restore accepts (one age identity),
+  authenticate and consume the backup with that identity while discarding plaintext, then retain
+  the existing envelope/bundle checks. The positive case is a valid bound backup/key with zero
+  runtime commands; negatives are a distinct valid key, malformed/multiple key file, and
+  ciphertext whose untrusted header checksum is recomputed after tampering. These must all
+  refuse before stop/volume removal. A severing probe that removes the new decryption call must
+  make the wrong-key test fail. `Restore` remains the actual database restore and must still
+  recheck its inputs. The preflight may cost an additional full backup read; do not claim the
+  four-hour RTO until the clean-host R-006 run measures it. Codex's correction will require
+  Claude's independent cross-party review; Codex cannot approve its own fix or archive the RFC.
