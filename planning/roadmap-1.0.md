@@ -5,7 +5,8 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-09-24, candidate source `7e8aa70` (Deployment DP-A–DP-E CHANGES REQUIRED); see
+**Current checkpoint:** 2026-09-30, product source `fc4191fe` (Claude's v0.1 implementation
+wave awaits Codex designated review; kernel-version CI gate red); see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.
 **Next accepted release target:** the bounded Phase-0 Playable Preview, per D-001/D-007. The
 long-term 1.0 goal does not promote the preview's scope or authorize public hosting.
@@ -57,51 +58,59 @@ postponed by changing the release label.
 
 | Gate | State at checkpoint | Product exit from `design/07` | Main dependency / proof still needed |
 |---|---|---|---|
-| Phase-0 Playable Preview | **In construction; unreleased** | Honest T0–T1 click → generator → first Exit → next Company browser journey, with the bounded preview manifest. | Finish and independently review Deployment Foundation; run R-006 on the exact clean-host bundle. Account rights, recovery, task accessibility and retention still need their own decisions/contracts and end-to-end proof. |
-| v0.1 The Garage | **Not yet scoped in accepted release RFC** | T0–T2, first Exit/Reputation, Fiscal/Clout/shop, three named minigames, pet care, ambient presence/feed/counters, era UI and launch content. | Preview floor plus accepted producer→API→surface→content contracts and a tested default player journey for every named feature. |
+| Phase-0 Playable Preview | **In construction; unreleased** | Honest T0–T1 click → generator → first Exit → next Company browser journey, with the bounded preview manifest. | Independently review Deployment Foundation's corrective range, rebuild both bundles, and run R-006 on the exact clean-host artifact. Account rights, recovery, task accessibility and retention still need their own decisions/contracts and end-to-end proof. |
+| v0.1 The Garage | **Accepted feature RFCs implementing; release unproved** | T0–T2, first Exit/Reputation, Fiscal/Clout/shop, three named minigames, pet care, ambient presence/feed/counters, era UI and launch content. | Claude landed implementation ranges for the accepted v0.1 RFCs, but Codex has not approved their complete range union. RP-132 blocks Pet Adoption PA7; public Typer/Arcade wire, adopted copy/content mint and integrated player journeys remain open. The Phase-0 floor also applies. |
 | v0.2 Incorporation | **Design intent; blocked by upstream systems** | Factions, guild/exchange, Tier 3 and the first measured community milestone; Events Layers 1–2. | Rule and prove privacy-preserving milestone measurement before threshold selection; complete social/world/event dependencies and real content. |
 | v0.3 Hyperscale | **Design intent; blocked by upstream systems** | Tier 4, The Lane, clocks/shop, ranked board-game queue with fair bot backfill, Event Layer 3, GM/war log and speedrun surfaces. | Accepted combat/match, feed/world, leaderboard readers, operator and content contracts with real multiplayer/bot fallback proof. |
 | v0.4 Frontier | **Design intent; blocked by upstream systems** | Tier 5, research/canonization/casino, pet battles, Commons/Ethical%, challenge runs, Compute Credits and Soul-gated content. | Earlier world/social/combat paths and measured balance; accessible player surfaces and reviewed content for each mode. |
 | v1.0 Transcendence | **Long-term goal; not release-ready** | Tiers 6–8, all three designed endings and variants, complete category/challenge set, run-end retrospectives and the Honesty appendix. | All prior gates plus an owner-adopted exact 1.0 content/release manifest, full-path ending proofs and preservation posture appropriate to the final release. |
 
 The Phase-0 label and scope are adopted; the exact later release manifests have not been adopted.
-Rows for v0.1–1.0 are design intent and must be converted into decisions, research and accepted
-RFCs before implementation. No date or team-capacity promise is inferred.
+Several v0.1 feature RFCs have been accepted and implemented locally, but that does not adopt a
+v0.1 release manifest or complete a milestone. Rows for v0.2–1.0 remain design intent requiring
+decisions, research and accepted RFCs before implementation. No date or team-capacity promise is inferred.
 
 ## Cross-cutting workstreams at this checkpoint
 
+Rows retaining the older `7e8aa70` audit population are leads, not assertions that every
+underlying table or browser failure was re-executed at `fc4191fe`; this checkpoint independently
+rechecked only the CI/kernel and PA7 boundaries recorded below.
+
 | Workstream | Current evidence boundary | Next authority or proof |
 |---|---|---|
-| Gameplay foundation and T0–T1 | Strong server foundations and a bounded, designated-approved Game UI browser flow; tiers 2–8 and terminal endings absent. | Complete Phase-0 manifest and then phase-specific content/RFC DAG; preserve fixed historical and player workflow witnesses. |
-| API, transport and minigames | Transport recovery and exact API witnesses are approved; generated client, public readers and player minigame surfaces remain incomplete. | Reconcile ruling bodies, accept the missing surface contracts, then prove full production routes and consumers. |
+| Gameplay foundation and T0–T1 | Strong server foundations and a bounded, designated-approved Game UI browser flow. Claude landed Tier 2 feature/content code, not yet designated-reviewed or proved as a default journey; higher tiers and terminal endings remain unproved. | Complete Phase-0 manifest and then phase-specific content/RFC DAG; preserve fixed historical and player workflow witnesses. |
+| API, transport and minigames | Transport recovery and exact API witnesses were approved in earlier ranges. Claude has since landed new API, minigame and Game UI surfaces, but the new ranges are not designated-approved. The PA7/C2 conflict is an observed current contract mismatch (RP-132). | Review the exact new implementation ranges and settle PA7/C2 plus Typer/Arcade public-wire conflicts; then prove production routes, generated consumers and current data in default player workflows. |
 | Account, rights and privacy | Backend security/deletion tests exist; player recovery/export/delete and retention disclosure do not. All 60 game tables have SQL-column maps; browser, core-payload, selected core-event/receipt, verification/board and operator surfaces have bounded traces, while other nested payloads and clean-host behavior remain open. The event registry has 48 kinds/52 SQL kind-version pairs, and a cold fixture showed 28/28 Soul events copied into the player outbox; that fixture did not delete an account. Selected receipt fixtures exposed raw progress tokens on 14/14 terminal Soul rows (RP-127) and a Minigame API receipt trigger that blocks parent-session cleanup (RP-128). Verification's immutable poison path retains bounded but unredacted upstream error text (RP-129), not a proved secret leak. A separate cold joined Account API probe retained one seeded verified board row linked to an archived Founder and two archived streams after deletion (RP-130); full projector/dead-letter and public-reader deletion proof remains absent (RP-118). Source shows verified-run compaction preserving full content, but its fixture has empty payloads/no events (RP-124). The browser silently persists the one-time recovery code without a player display/copy/download path (RP-123). Guild deletion leaves a UUID in event JSON (RP-120); the reused-DB Guild suite is not isolated (RP-121). Another joined deletion probe showed the exact Commons World-count and health sample-selection predicates still counting an archived Founder; the full projection/recompute/player flow remains absent (RP-119). A seeded joined probe kept Minigame session/receipt/faucet, active Soul session with token, intent receipt and player-outbox rows 1/1 after a 204 deletion (RP-122, composed coordinators unproved). Backup restoration of a deleted account (RP-125) remains a source-derived risk. The ledgers' operator identity lacks retention policy (RP-126). | Owner/legal D-008/D-009/D-015 decisions (options framed in `platform-alignment/rights-decision-sheet.md`), remaining nested-field/clean-host classification and full rights/Commons witnesses, accepted Account/UI/retention contracts, R-003 on the actual workflow. |
 | Accessibility and usability | Current-source probes fail lifecycle focus and 320 px reflow in Chromium, Firefox and WebKit; the unmodified Linux browser lane passes, proving its fixture oracle misses both. Numeric shell motion still ignores OS preference. A cross-surface RFC is drafted but not accepted. | Owner task/AT matrix and accepted contract, RP-082–RP-084 repairs under that authority, then R-005/R-008 on built player tasks. |
-| Deployment and operations | Deployment Foundation is accepted and implementing. Two independent 72-artifact candidate bundles at source `7e8aa70` match byte-for-byte; both pass the exact previous-bundle probe, and the retained build record, source/image secret scan and full local supply-chain check pass. Historical save-version rollback validation now has a discriminating fixture. Hosted code CI at that source passed all six jobs. The browser and bounded verified-board recovery gates are constructed and locally tested, including a real-Postgres event-only negative. No real clean-host player run or projection arrival is proved. **Claude's designated review (2026-09-24)** approved only the corrective range `7b510df..cf4ac25`; DP-A–DP-E are CHANGES REQUIRED. Defects still present at HEAD include a vacuous image-layer secret scan, release preflight before image load, destructive rollback before input checks, an ignored rotation overlay, an unfireable cleanup alert, attempt-counted receiver delivery and an exposed Caddy admin API. | Codex corrective ranges for DP-A–DP-E plus fresh designated passes; designated review of the DP-F ranges; execute/sever the browser path and populated recovery on the exact clean-host bundle, then finish R-006 and R-007 with the operator path. |
+| Deployment and operations | Deployment Foundation remains accepted and implementing. The `7e8aa70` candidate and previous bundle are historical and invalid as current R-006 inputs. Claude landed R1–R17 corrective commits through `ec5518b`, but Codex has not designated-reviewed them and no clean-host player/recovery run exists. At `fc4191fe`, cold `make verify-kernel-version` fails on pushed history; therefore the full `verify-client`/`verify-push` lane is not green even though the CI-topology fixture gate passes. RP-131 also exposes a false-positive review-provenance check in the kernel correction validator. | Review the corrective Deployment span and new CI/kernel history; repair the provenance gate under accepted authority, resolve the real red version boundary without rewriting pushed history or a false bump, rebuild both bundles, then execute/sever R-006 and R-007 on the exact clean-host artifacts. |
 | Multiplayer, world and later content | Server Commons/guild/faction primitives exist; real social/world/feed and later-tier player journeys are incomplete. | Decide later public social/telemetry scope, then dependency-ordered RFCs, content and integrated proofs. |
-| Release governance | Dated audits, defect ledger, research/decision queues, RFC graph and per-RFC logs exist. The old executable-queue handoff was stale at this HEAD. | Reconcile the live queue and this checkpoint whenever a reviewed batch, ruling or release witness changes the critical path. |
+| Release governance | Dated audits, defect ledger, research/decision queues, RFC graph and per-RFC logs exist. The executable queue now has a `fc4191fe` overlay, but the underlying earlier routing table remains a dated snapshot. | Reconcile the live queue and this checkpoint whenever a reviewed batch, ruling or release witness changes the critical path. |
 
 ## Current next moves
 
-1. Codex designated review of Claude's owner-directed corrective range `67fd415..ec5518b`
-   (R1–R17, `planning/deployment-foundation/claude-corrective-handoff.md`), which implements every
-   DP-A–DP-E blocking finding and the DP-F evidence-integrity items. Then rebuild the candidate and
-   previous bundles from reviewed source; every retained bundle is invalid under the corrected rules.
-   The RFC author must rule on six recorded DESIGN-GAPs: RPO semantics, per-family alert attribution,
-   `UpgradeResolved`, overlay granularity, the previous-bundle security floor and asserted host
-   fields.
-2. Continue the accepted Deployment Foundation DP-F plan: take the byte-matched local candidate
-   through designated review and an authorized clean Linux host, then execute and sever the browser
-   journey, board-arrival gate, recovery and rollback on those exact candidate/previous bundles.
-   Record R-006 and its negative cases; local supply-chain success is not product proof.
-3. Bring the source-traced [`Phase-0 exact-manifest proposal`](platform-alignment/phase0-manifest-proposal.md)
+1. Keep the newly landed v0.1 implementation **unapproved** until Codex reviews exact commit
+   ranges. The first targeted finding, RP-132, requires Pet Adoption PA7/C2 author reconciliation;
+   Typer/Arcade public wire and adopted content/copy remain separate open boundaries. Do not
+   archive by counting implemented RFCs.
+2. Resolve RP-131's kernel-history/provenance gate under explicit process authority. At the
+   current HEAD, the red `verify-kernel-version` result blocks a green `verify-push` claim;
+   `origin/main` already contains the offending commits, so no unpushed-history rewrite route exists.
+3. Codex designated review of Claude's Deployment corrective range `67fd415..ec5518b`
+   (R1–R17, `planning/deployment-foundation/claude-corrective-handoff.md`) and remaining DP-F
+   ranges. The RFC author must rule on six recorded DESIGN-GAPs: RPO semantics, per-family alert
+   attribution, `UpgradeResolved`, overlay granularity, the previous-bundle security floor and
+   asserted host fields. Rebuild candidate and previous bundles after review, then take them
+   through authorized clean-host browser, board-arrival, recovery and rollback witnesses (R-006/R-007).
+4. Bring the source-traced [`Phase-0 exact-manifest proposal`](platform-alignment/phase0-manifest-proposal.md)
    to Marco for D-007 adoption or edits; it names P01–P07 player tasks and F01–F05 public-release
    floor obligations without calling them complete. Then bind D-018 and R-008 to the adopted tasks.
    Finish remaining nested-payload classification and clean-host operator proof, then
    prepare the separate account export/deletion/retention decisions. RP-119's predicate-level
    joined probe now confirms stale active counts; the full projection/recompute/player witness
    and owner semantics remain. None of this is optional preview polish.
-4. Once the preview floor is proved, reconcile the v0.1–1.0 design into bounded milestone manifests
-   and dependency-ordered RFCs. Do not implement later content directly from this board.
+5. Reconcile v0.1's accepted feature set to its still-unadopted exact release manifest, then
+   advance v0.2–1.0 through bounded manifests and dependency-ordered RFCs. Do not implement later
+   content directly from this board; the preview floor never replaces the 1.0 obligations.
 
 ## Update protocol
 

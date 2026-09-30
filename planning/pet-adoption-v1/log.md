@@ -347,3 +347,24 @@ directly rather than relying on the filtered summary above.
 The Reputation-lane timeout finding above is being handled separately: the two multi-minute tests
 move behind `CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1` into a maintenance-lane
 `make reputation-harness-check` job. That work is outside this RFC's range.
+
+## 2026-09-30 — cross-party targeted PA7 review finding
+
+- **Review by:** Codex. **Recorded by:** Codex.
+- **Reviewed range:** `c380896a^..c380896a`, limited to its PA7 snapshot/schema/client
+  contract. This is **not** a verdict on the Pet Adoption implementation span or its other ACs.
+- **Decision:** **CHANGES REQUIRED for PA7/AC11.** The accepted PA7 says the next snapshot version
+  gains sibling fields `features.pets` (pet rows) and `features.pet_adoption` (object or null).
+  The implementation retains required `features.pets: null` in snapshot v4 and adds optional
+  `features.pet_adoption?: {pet_adoption, pets}`. The generated client and canonical docs describe
+  that different shape. API Foundation C2 bars making new response fields required on an existing
+  v1 operation, so the conflict needs a ruling-author body reconciliation and an exact versioned
+  API route/schema decision, not an implementer-invented wire rewrite.
+- **Executed evidence:** at `fc4191fe`, cold `make test-go GO_PACKAGES='./account'
+  GO_TEST_FLAGS='-run TestGameUISnapshotAPIRegistryPinsTheProjectionEnvelope -count=1 -v'`
+  passed, while its v4 fixture omits `pet_adoption` entirely. Thus it cannot enforce the PA7
+  required presence or sibling shape. Source inspection confirms `server/gameui/features.go`
+  still serializes `pets` as null and places pet rows inside the optional arm.
+- **Exit:** the RFC/API ruling author reconciles PA7 against C2; a reviewed implementation and
+  negative tests then enforce the exact adopted wire in server registry, generated client,
+  runtime and docs. No archival or broader approval follows from this targeted finding.

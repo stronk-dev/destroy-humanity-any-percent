@@ -452,3 +452,39 @@ initiate the push or change the branch's publication state in this checkpoint.
   - Six DESIGN-GAPs are open for the RFC author.
 - **Next:** Codex designated review of `67fd415..ec5518b`, then a rebuilt candidate/previous and
   owner authority for R-006.
+
+## 2026-09-30 — resume audit after Claude's v0.1 wave
+
+- **Coordinate:** product source `fc4191fed050f4adeadf3da333e7c1a3aa54d87b`, equal to
+  `origin/main` before this record-only checkpoint. Worktree was clean. Claude's
+  `planning/v0.1-claude-implementation-handoff.md` names implementation ranges; it is a
+  handoff, not Codex's designated verdict. No release artifact was tested here.
+- **Observed state:** the accepted v0.1 RFC index now lists implementing feature contracts and
+  substantial code, API, client, content and test landings. This supersedes the prior board's
+  “no accepted v0.1 RFC” assertion, but none of those new ranges has a complete Codex
+  cross-party approval/archival union. Phase-0 and 1.0 remain unreleased.
+- **Executed CI evidence:** cold `make verify-kernel-version` exited 2 at historical commit
+  `50a3a514` (guarded `client/src/minigame/` paths without a same-commit bump). Thus the
+  dependent `verify-client`/`verify-push` gate is red at current source; neither was claimed
+  green. Cold `make verify-ci-topology` exited 0 and its 13 negative controls rejected. The
+  passing topology check is only that check, not the whole CI lane.
+- **Provenance finding RP-131:** the current kernel validator searches a `##` log section for
+  literal `**Review by:**`, `**Decision:**` and the offending commit range. The `8add475`
+  correction's log contains precisely those strings in an instruction saying the review is
+  *still awaited*. The guard reaches the later `50a3a514` failure instead of rejecting that
+  correction, so the provenance oracle is falsely satisfied. This is a source-and-execution
+  inference, not yet a dedicated forged-review fixture. The correction's semantic code and
+  tests have not received a Codex verdict in this checkpoint.
+- **Targeted cross-party finding RP-132:** inspection of accepted Pet Adoption PA7/AC11,
+  `c380896a`, current server schema/projector, generated client and docs found a different
+  snapshot contract. Cold `make test-go GO_PACKAGES='./account'
+  GO_TEST_FLAGS='-run TestGameUISnapshotAPIRegistryPinsTheProjectionEnvelope -count=1 -v'`
+  exited 0 while the v4 fixture omitted `pet_adoption`; it cannot enforce PA7's sibling-field
+  presence/shape. Codex recorded a CHANGES REQUIRED finding for that one commit/criterion in
+  `pet-adoption-v1/log.md`, **not** a full-range Pet Adoption verdict. API C2's additive-only
+  law is a genuine authority conflict requiring the ruling author's choice.
+- **Limits and next:** no product code, RFC body, copy, release bundle or deployment changed.
+  RP-131/RP-132 entered the shared ledger and the executable overlay was updated. Next is a
+  ruled kernel-guard/PA7 reconciliation, then bounded independent range reviews (including
+  Deployment R1–R17) with cold/severing evidence. Do not use the historical green CI claims or
+  Claude's handoff as current-head release proof.
