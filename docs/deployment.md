@@ -530,8 +530,11 @@ helper containers on the private database network; Postgres remains unpublished 
 mode-0700 storage outside either bundle and holds two mode-0600 append-only JSONL records:
 `release-ledger.jsonl` and `rotation-ledger.jsonl`. Records contain identifiers, timestamps,
 digests and outcomes, never key, password, recovery-code or token values.
-Mode-0600 nonblocking lock files serialize release/rollback and rotation mutations so two operator
-invocations cannot race the ledgers or the live stack.
+The mode-0600 `release-ledger.jsonl.lock` is shared for the entire install, release, rollback and
+recovery operation and for each rotation mutation. Rotation additionally holds its own ledger
+lock. A concurrent rotation refuses before changing overlap state, so a rollback cannot stop the
+service under one Compose overlay and resume under another. These locks coordinate supported
+helper commands, not manual edits to operator-state files.
 
 Initial installation is a separate fail-closed operation, not a release with a fictional current
 version. It loads and verifies all six manifest-bound image/config identities without starting a

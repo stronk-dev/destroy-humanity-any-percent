@@ -78,6 +78,11 @@ func runEmptyRecovery(ctx context.Context, config ScenarioConfig, dependencies r
 	if err != nil {
 		return RecoveryCheckpoint{}, err
 	}
+	operationLock, err := deploymentrelease.AcquireOperatorStateLock(config.LifecycleOperatorState)
+	if err != nil {
+		return RecoveryCheckpoint{}, err
+	}
+	defer operationLock.Close()
 	checkpointPath := filepath.Join(config.WorkDirectory, recoveryCheckpointName)
 	if _, err := os.Lstat(checkpointPath); !errors.Is(err, os.ErrNotExist) {
 		return RecoveryCheckpoint{}, ErrInvalid
@@ -178,6 +183,11 @@ func runPopulatedRecovery(ctx context.Context, config ScenarioConfig, dependenci
 	if err != nil {
 		return ObjectiveObservation{}, err
 	}
+	operationLock, err := deploymentrelease.AcquireOperatorStateLock(config.LifecycleOperatorState)
+	if err != nil {
+		return ObjectiveObservation{}, err
+	}
+	defer operationLock.Close()
 	objectivePath := filepath.Join(config.ArtifactsDirectory, requiredRunArtifactFiles["objective_observation"])
 	if _, err := os.Lstat(objectivePath); !errors.Is(err, os.ErrNotExist) {
 		return ObjectiveObservation{}, ErrInvalid

@@ -24,6 +24,7 @@ type recoveryRuntimeFixture struct {
 	verifies       int
 	smokes         int
 	failAt         string
+	onStop         func()
 }
 
 func (runtime *recoveryRuntimeFixture) InspectRecoveryIdentity(context.Context, deploymentrelease.Bundle) (deploymentbackup.RecoveryIdentity, error) {
@@ -52,6 +53,9 @@ func (runtime *recoveryRuntimeFixture) CreateRecoveryBackup(context.Context, dep
 }
 func (runtime *recoveryRuntimeFixture) StopFailed(context.Context, deploymentrelease.Bundle) error {
 	runtime.stops++
+	if runtime.onStop != nil {
+		runtime.onStop()
+	}
 	if runtime.failAt == "stop" {
 		return errors.New("injected stop failure")
 	}
@@ -115,6 +119,33 @@ func TestRecoveryProducerRestoresExactEmptyAndPopulatedIdentities(t *testing.T) 
 	}
 	if _, err := DecodeObjectiveObservation(mustRead(t, filepath.Join(config.ArtifactsDirectory, requiredRunArtifactFiles["objective_observation"]))); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestRecoveryHoldsOperatorLockAgainstRotationDuringStop(t *testing.T) {
+	config, _, dependencies, runtime := recoveryProducerFixture(t)
+	ledger := filepath.Join(config.LifecycleOperatorState, "rotation-ledger.jsonl")
+	base := time.Date(2026, 8, 22, 12, 0, 0, 0, time.UTC)
+	if err := deploymentrelease.ActivateRotation(ledger, deploymentrelease.FamilyJWT, "jwt-2", "jwt-1", "operator-1", base); err != nil {
+		t.Fatal(err)
+	}
+	if err := deploymentrelease.ActivateRotation(ledger, deploymentrelease.FamilyBootstrap, "boot-2", "boot-1", "operator-1", base); err != nil {
+		t.Fatal(err)
+	}
+	var rotationErr error
+	runtime.onStop = func() {
+		if runtime.stops == 1 {
+			rotationErr = deploymentrelease.RemovePrevious(ledger, deploymentrelease.FamilyJWT, "jwt-2", "jwt-1", "operator-1", base.Add(deploymentrelease.JWTOverlap))
+		}
+	}
+	if _, err := runEmptyRecovery(context.Background(), config, dependencies); err != nil {
+		t.Fatal(err)
+	}
+	if !errors.Is(rotationErr, deploymentrelease.ErrInvalid) {
+		t.Fatalf("rotation changed recovery overlay after stop: %v", rotationErr)
+	}
+	if err := deploymentrelease.RemovePrevious(ledger, deploymentrelease.FamilyJWT, "jwt-2", "jwt-1", "operator-1", base.Add(deploymentrelease.JWTOverlap)); err != nil {
+		t.Fatalf("rotation stayed blocked after recovery: %v", err)
 	}
 }
 

@@ -3534,3 +3534,29 @@ or a green `verify-push` while RP-131 remains.
   it does not prove an external/manual edit of the append-only ledger is impossible. It does
   not resolve whether a deliberate single-family rotation should allow an upgrade. Clean-host
   R-006 and Claude's cross-party review remain mandatory.
+
+## 2026-09-30 — RP-134 Codex shared-lock correction, ready for Claude review
+
+- **Implementation:** the existing canonical `release-ledger.jsonl.lock` now spans the full
+  Controller install/release/rollback operation, each rotation activation/removal, and the
+  empty/populated recovery producers. Rotation retains its own ledger lock for mutation
+  serialization. The shared lock is nonblocking, so a competing rotation refuses before
+  changing the ledger; a helper operation then keeps one governed overlay state through its
+  destructive steps. The Deployment page records this supported-helper boundary.
+- **Fired tests:** `TestRotationCannotChangeBetweenRollbackStopAndReset` and
+  `TestRecoveryHoldsOperatorLockAgainstRotationDuringStop` both failed cold on the previous
+  code with a successful illegal rotation. They pass with the correction. The rollback test
+  also checks activation and removal refusal while locked, successful rotation after unlock,
+  and overlay preservation through `StopFailed`/`ResetDatabase`. Removing only
+  `RemovePrevious`'s new shared-lock call made **both** tests fail; it was restored and both
+  passed cold again. The initial diagnostic probe was removed exactly.
+- **Cold gates:** full `./deploymentrelease ./deploymentrehearsal` Go packages passed;
+  `make test-deployment-release` passed its real Compose/Postgres/Caddy integration;
+  `make vet` exited 0. `make test-deployment-rehearsal` first failed before assertions when the
+  sandbox denied an `httptest` loopback listener; the exact root target passed with narrowly
+  scoped local-socket access, including its build-record validators. The retained bundles are
+  still historical inputs, not rebuilt release candidates.
+- **Limits:** direct manual edits to operator-state files are outside helper serialization;
+  no clean-host rotation/recovery/rollback or production-sized RTO was proved. The known
+  single-family-overlay DESIGN-GAP 4 remains an RFC-author choice. This Codex implementation
+  needs Claude's designated review of its exact range and cannot be self-archived.

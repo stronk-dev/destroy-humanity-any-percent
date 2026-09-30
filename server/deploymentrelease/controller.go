@@ -99,7 +99,7 @@ func (controller Controller) Install(ctx context.Context, request InstallRequest
 	if !ok {
 		return ErrInvalid
 	}
-	lock, err := acquireOperatorLock(controller.LedgerPath + ".lock")
+	lock, err := AcquireOperatorStateLock(filepath.Dir(controller.LedgerPath))
 	if err != nil {
 		return err
 	}
@@ -165,7 +165,7 @@ func (controller Controller) Release(ctx context.Context, request ReleaseRequest
 	if err != nil {
 		return err
 	}
-	lock, err := acquireOperatorLock(controller.LedgerPath + ".lock")
+	lock, err := AcquireOperatorStateLock(filepath.Dir(controller.LedgerPath))
 	if err != nil {
 		return err
 	}
@@ -222,7 +222,7 @@ func (controller Controller) Rollback(ctx context.Context, request RollbackReque
 	if err != nil {
 		return err
 	}
-	lock, err := acquireOperatorLock(controller.LedgerPath + ".lock")
+	lock, err := AcquireOperatorStateLock(filepath.Dir(controller.LedgerPath))
 	if err != nil {
 		return err
 	}

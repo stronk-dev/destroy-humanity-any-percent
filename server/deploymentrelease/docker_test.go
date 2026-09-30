@@ -666,6 +666,53 @@ func TestDockerRuntimeComposesRotationOverlayOnlyForAnOpenPair(t *testing.T) {
 	}
 }
 
+func TestRotationCannotChangeBetweenRollbackStopAndReset(t *testing.T) {
+	bundle := dockerFixtureBundle(t)
+	target := t.TempDir()
+	ledger := filepath.Join(target, "rotation-ledger.jsonl")
+	now := time.Date(2026, 8, 23, 12, 0, 0, 0, time.UTC)
+	if err := ActivateRotation(ledger, FamilyJWT, "jwt-2", "jwt-1", "operator-1", now); err != nil {
+		t.Fatal(err)
+	}
+	if err := ActivateRotation(ledger, FamilyBootstrap, "boot-2", "boot-1", "operator-1", now); err != nil {
+		t.Fatal(err)
+	}
+	lock, err := acquireOperatorLock(filepath.Join(target, "release-ledger.jsonl.lock"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	runner := &commandFixture{}
+	runtime := dockerFixtureRuntime(runner, target, "")
+	if err := runtime.StopFailed(context.Background(), bundle); err != nil {
+		t.Fatal(err)
+	}
+	if err := RemovePrevious(ledger, FamilyJWT, "jwt-2", "jwt-1", "operator-1", now.Add(JWTOverlap)); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("rotation changed the ledger under a release lock after stop: %v", err)
+	}
+	if err := ActivateRotation(ledger, FamilyCursor, "cursor-2", "cursor-1", "operator-1", now); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("new rotation activated under a release lock: %v", err)
+	}
+	if err := runtime.ResetDatabase(context.Background(), bundle); err != nil {
+		t.Fatalf("stable both-open overlay refused after stop: %v", err)
+	}
+	if len(runner.calls) != 3 || !slices.Contains(runner.calls[0], bundle.Root+"/compose.rotation.yml") ||
+		!slices.Contains(runner.calls[2], bundle.Root+"/compose.rotation.yml") {
+		t.Fatalf("rollback lost its governed overlay: %v", runner.calls)
+	}
+	if err := lock.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := RemovePrevious(ledger, FamilyJWT, "jwt-2", "jwt-1", "operator-1", now.Add(JWTOverlap)); err != nil {
+		t.Fatalf("rotation stayed blocked after release lock closed: %v", err)
+	}
+	if err := ActivateRotation(ledger, FamilyCursor, "cursor-2", "cursor-1", "operator-1", now.Add(JWTOverlap)); err != nil {
+		t.Fatalf("new rotation stayed blocked after release lock closed: %v", err)
+	}
+	if err := runtime.StopFailed(context.Background(), bundle); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("single-open overlay unexpectedly composed: %v", err)
+	}
+}
+
 func TestDeriveDrainEvidenceRequiresEveryObservation(t *testing.T) {
 	good := func() DrainEvidence {
 		return deriveDrainEvidence(true, true, true, nil, nil, "0\n", 5*time.Second, 20*time.Second)

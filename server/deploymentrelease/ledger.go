@@ -79,6 +79,11 @@ func ActivateRotation(path string, family KeyFamily, currentID, previousID, oper
 	if !validRotationFields(family, currentID, previousID, operator, now) || currentID == previousID {
 		return ErrInvalid
 	}
+	operationLock, err := AcquireOperatorStateLock(filepath.Dir(path))
+	if err != nil {
+		return err
+	}
+	defer operationLock.Close()
 	lock, err := acquireOperatorLock(path + ".lock")
 	if err != nil {
 		return err
@@ -109,6 +114,11 @@ func RemovePrevious(path string, family KeyFamily, currentID, previousID, operat
 	if !validRotationFields(family, currentID, previousID, operator, now) || currentID == previousID {
 		return ErrInvalid
 	}
+	operationLock, err := AcquireOperatorStateLock(filepath.Dir(path))
+	if err != nil {
+		return err
+	}
+	defer operationLock.Close()
 	lock, err := acquireOperatorLock(path + ".lock")
 	if err != nil {
 		return err
@@ -387,6 +397,17 @@ func appendJSONLine(path string, value any) error {
 		err = file.Sync()
 	}
 	return errors.Join(err, file.Close())
+}
+
+// AcquireOperatorStateLock excludes key rotation for the full duration of an
+// install, release, rollback or recovery operation. It reuses the release
+// ledger's established lock filename so concurrent older release helpers
+// cannot overlap a new rotation command in the supported operator state.
+func AcquireOperatorStateLock(directory string) (io.Closer, error) {
+	if !filepath.IsAbs(directory) {
+		return nil, ErrInvalid
+	}
+	return acquireOperatorLock(filepath.Join(directory, "release-ledger.jsonl.lock"))
 }
 
 func acquireOperatorLock(path string) (*os.File, error) {
