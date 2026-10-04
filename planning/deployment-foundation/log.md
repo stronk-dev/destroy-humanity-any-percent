@@ -3700,3 +3700,6 @@ full `verify-push` claim.
 - The original Claude R6 range remains CHANGES REQUIRED until this Codex test correction gets
   Claude's designated verdict. Do not treat the local first filter or these package tests as
   a full R6/Deployment acceptance or as clean-host backup/restore proof.
+- Codex's predeclaration/finding and test-correction commits are `934420f4` and `ae69a64c`;
+  Claude's designated review should cite the exact correction range
+  `934420f4^..ae69a64c`. This record commit is coordination only, not a new test or approval.
