@@ -828,3 +828,25 @@ this test-only addition remains required. This is a component keyboard proof,
 not Firefox, assistive-technology task, real-server Soul UI or wider MA
 range-union acceptance evidence. The current default Firefox launch failure,
 historical kernel CI failure and 1.0 floor remain open.
+
+## 2026-10-04 — Typer prompt announcement and keyboard-evidence correction
+
+Product/evidence source `9b7137c2`. A targeted Codex review of Claude's Typer child
+`ade1083b` found that TT8.3's new-prompt announcement was absent and the browser
+"begins by keyboard" test used `.click()`. RP-149 and the Typer log record the
+CHANGES REQUIRED slice, predeclaration and original failing browser output. A
+test-only harness advances prompts in one mounted instance; the initial check
+failed with zero prompt live regions. The correction maintains one initially
+empty polite region and updates it on prompt-ID changes while focus stays in
+the input. Removing its assignment made the same check fail again. The ready
+and line-submit controls now have actual Enter-driven browser witnesses.
+
+Cold full Chromium and WebKit browser suites each pass 6,986 tests plus the
+performance lane; client suite passes 6,905; typecheck has zero diagnostics;
+boundary, copy and build checks pass. Firefox remains unavailable on this
+host, and no manual assistive-technology task was performed. The Typer child
+is still unregistered, no public v1 route carries its commands/snapshot, and
+content is provisional; the TT-PA4/C2 owner contract and broader B1–B7
+designated review remain open. **Review by:** Codex of the targeted Claude
+slice; **recorded by:** Codex. Claude must cross-party review Codex's
+`9b7137c2` corrective range before it is accepted as an implementation batch.
