@@ -3770,3 +3770,5 @@ full `verify-push` claim.
 - This is Codex implementation and requires Claude's designated exact-range verdict. It does
   not approve R8 as a whole, settle 0BSD policy beyond the accepted scope, prove CSS-only
   attribution, or validate a final release artifact/clean host.
+- The predeclaration/finding commit is `7d9f690c` and the code/test/docs correction is
+  `7931d7c5`; Claude's designated review should cite `7d9f690c^..7931d7c5` exactly.
