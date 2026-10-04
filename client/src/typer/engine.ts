@@ -182,21 +182,40 @@ function validSubmittedText(text: string): boolean {
 }
 
 function decodeSnapshot(source: string): Mutable {
-  const value = JSON.parse(source) as Mutable;
+  const parsed: unknown = JSON.parse(source);
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) throw new SyntaxError("invalid Typer snapshot");
+  const value = parsed as Mutable;
   const keys = ["assist_level", "clean_lines", "current_prompt_id", "current_prompt_misses", "current_prompt_text", "deadline_server_ms", "era_tier",
     "last_server_ms", "last_submission", "lines_cleared", "misses", "phase", "prompt_index", "prompts_total", "revision", "started_server_ms",
     "typer_content_hash", "typer_schema_version"];
+  const counter = (number: unknown, minimum = 0): number is number => typeof number === "number" && Number.isSafeInteger(number) && number >= minimum;
+  const nullableTime = (number: unknown): number is number | null => number === null || typeof number === "number" && Number.isSafeInteger(number);
+  const submission = value.last_submission;
+  const validSubmission = submission === null || submission !== null && typeof submission === "object" && !Array.isArray(submission) &&
+    Object.keys(submission).sort().join("\0") === "first_mismatch_index\0outcome" &&
+    (submission.outcome === "cleared" && submission.first_mismatch_index === null ||
+      submission.outcome === "miss" && counter(submission.first_mismatch_index));
   if (Object.keys(value).sort().join("\0") !== keys.join("\0") || value.typer_schema_version !== TYPER_SCHEMA_VERSION ||
-    !/^sha256:[0-9a-f]{64}$/.test(value.typer_content_hash) || !["ready", "typing", "terminal"].includes(value.phase) ||
-    value.prompt_index < 0 || value.prompt_index > value.prompts_total || value.lines_cleared !== value.prompt_index ||
-    value.clean_lines > value.lines_cleared || (value.phase === "typing") !== (value.current_prompt_id !== null) ||
+    typeof value.typer_content_hash !== "string" || !/^sha256:[0-9a-f]{64}$/.test(value.typer_content_hash) ||
+    !["ready", "typing", "terminal"].includes(value.phase) || !counter(value.era_tier, TYPER_ERA_TIER_MIN) || value.era_tier > TYPER_ERA_TIER_MAX ||
+    !counter(value.revision, 1) || !counter(value.prompts_total, 1) || !counter(value.prompt_index) || value.prompt_index > value.prompts_total ||
+    !counter(value.current_prompt_misses) || !counter(value.lines_cleared) || value.lines_cleared !== value.prompt_index ||
+    !counter(value.clean_lines) || value.clean_lines > value.lines_cleared || !counter(value.misses) ||
+    value.assist_level !== null && value.assist_level !== "timed" && value.assist_level !== "untimed" ||
+    (value.current_prompt_id === null) !== (value.current_prompt_text === null) ||
+    value.current_prompt_id !== null && typeof value.current_prompt_id !== "string" ||
+    value.current_prompt_text !== null && typeof value.current_prompt_text !== "string" ||
+    !nullableTime(value.started_server_ms) || !nullableTime(value.deadline_server_ms) || !nullableTime(value.last_server_ms) || !validSubmission ||
+    (value.phase === "typing") !== (value.current_prompt_id !== null) ||
+    value.phase === "ready" && (value.assist_level !== null || value.started_server_ms !== null || value.last_server_ms !== null || value.prompt_index !== 0) ||
     (value.assist_level === null) !== (value.started_server_ms === null) ||
     (value.deadline_server_ms !== null) !== (value.assist_level === "timed")) throw new SyntaxError("invalid Typer snapshot");
   return value;
 }
 
 function validateAgainstCatalog(snapshot: Mutable, catalog: TyperCatalog, seed: bigint): void {
-  if (snapshot.prompts_total !== catalog.policy.run_length) throw new SyntaxError("Typer snapshot/catalog divergence");
+  if (snapshot.prompts_total !== catalog.policy.run_length || snapshot.misses > catalog.policy.misses_hardcap ||
+    snapshot.current_prompt_misses > catalog.policy.misses_hardcap) throw new SyntaxError("Typer snapshot/catalog divergence");
   if (snapshot.phase === "typing") {
     const expected = typerPromptOrder(catalog, seed, snapshot.era_tier)[snapshot.prompt_index];
     if (!expected || expected.prompt_id !== snapshot.current_prompt_id || expected.text !== snapshot.current_prompt_text) throw new SyntaxError("Typer snapshot prompt divergence");

@@ -74,6 +74,28 @@ describe("Typer shared content gate", () => {
     }
   });
 
+  it("rejects malformed snapshot state that the Go tenant validator rejects", async () => {
+    const identity = { content, content_hash: corpus.typer_content_hash, content_schema_version: 1, seed: 42n, mode: "solo" as const,
+      scaling_inputs: { "typer.era_tier": 1 } };
+    const ready = await createTyper(identity);
+    const begun = await applyTyper({ ...identity, revision: 1, snapshot: ready,
+      command: '{"assist_level":"untimed","kind":"begin"}', server_time_ms: 1 });
+    const missesHardcap = parseTyperCatalog(JSON.parse(content), new Set(COPY_KEYS)).policy.misses_hardcap;
+    for (const [name, mutate] of [
+      ["negative misses", (row: Record<string, any>) => { row.misses = -1; }],
+      ["negative clean lines", (row: Record<string, any>) => { row.clean_lines = -1; }],
+      ["negative prompt misses", (row: Record<string, any>) => { row.current_prompt_misses = -1; }],
+      ["unknown assist level", (row: Record<string, any>) => { row.assist_level = "custom"; }],
+      ["malformed submission", (row: Record<string, any>) => { row.last_submission = { outcome: "miss", first_mismatch_index: null }; }],
+      ["misses above pinned cap", (row: Record<string, any>) => { row.misses = missesHardcap + 1; }],
+    ] as const) {
+      const row = JSON.parse(begun.snapshot) as Record<string, any>;
+      mutate(row);
+      await expect(applyTyper({ ...identity, revision: 2, snapshot: JSON.stringify(row),
+        command: '{"kind":"end_run"}', server_time_ms: 2 }), name).rejects.toThrow(SyntaxError);
+    }
+  });
+
   it("rejects catalog defects the Go loader rejects", () => {
     const keys = new Set(COPY_KEYS);
     const mutate = (change: (value: Record<string, any>) => void) => { const value = JSON.parse(content); change(value); return value; };

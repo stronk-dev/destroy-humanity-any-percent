@@ -26,7 +26,8 @@ replaced before any production mint.
 ## Engine (`typer` `1.0.0`)
 
 - **Snapshot.** `typer.snapshot.v1` has exactly eighteen keys. Only the current prompt is ever
-  exposed.
+  exposed. Both replay engines reject negative counters, unknown assist levels, malformed
+  submission feedback and miss counters above the pinned catalog hardcap before applying a command.
 - **Scaling.** The `typer.era_tier` input and stored snapshot identity must be in the pinned
   TT1 clamp range 1..9, even if content declares a valid tier-zero era with a full prompt pool.
 - **Prompt order.** A downward Fisher–Yates over the byte-sorted eligible pool, using the

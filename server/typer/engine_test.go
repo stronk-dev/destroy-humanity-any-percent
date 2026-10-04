@@ -335,6 +335,54 @@ func TestTyperSnapshotNeverContainsAFuturePrompt(t *testing.T) {
 	}
 }
 
+func TestTyperSnapshotRejectsMalformedState(t *testing.T) {
+	h := newHarness(t, 42)
+	if err := h.apply(`{"assist_level":"untimed","kind":"begin"}`, 1); err != nil {
+		t.Fatal(err)
+	}
+	for name, mutate := range map[string]func(map[string]any){
+		"negative misses":        func(row map[string]any) { row["misses"] = -1 },
+		"negative clean lines":   func(row map[string]any) { row["clean_lines"] = -1 },
+		"negative prompt misses": func(row map[string]any) { row["current_prompt_misses"] = -1 },
+		"unknown assist level":   func(row map[string]any) { row["assist_level"] = "custom" },
+		"malformed submission": func(row map[string]any) {
+			row["last_submission"] = map[string]any{"outcome": "miss", "first_mismatch_index": nil}
+		},
+	} {
+		var row map[string]any
+		if err := json.Unmarshal(h.snapshot, &row); err != nil {
+			t.Fatal(err)
+		}
+		mutate(row)
+		encoded, err := json.Marshal(row)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := NewTenant().ValidateSnapshot(encoded); err == nil {
+			t.Fatalf("%s: Go tenant admitted malformed snapshot", name)
+		}
+	}
+	var overCap map[string]any
+	if err := json.Unmarshal(h.snapshot, &overCap); err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := LoadCatalog(h.content, declarations())
+	if err != nil {
+		t.Fatal(err)
+	}
+	overCap["misses"] = float64(catalog.Policy.MissesHardcap + 1)
+	encoded, err := json.Marshal(overCap)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = NewTenant().Apply(minigame.ApplyInput{Mode: minigame.ModeSolo, Seed: h.seed, Revision: h.revision,
+		Snapshot: encoded, Command: json.RawMessage(`{"kind":"end_run"}`), ScalingInputs: map[string]int64{ScalingDestination: 1},
+		Content: h.content, ContentHash: h.hash, ContentSchemaVersion: SchemaVersion, ServerTimeMs: 2})
+	if !errors.Is(err, minigame.ErrTenantDivergence) {
+		t.Fatalf("above-cap misses should diverge against pinned content: %v", err)
+	}
+}
+
 func TestTyperIsolation(t *testing.T) {
 	for _, path := range []string{"engine.go", "catalog.go"} {
 		source, err := os.ReadFile(path)
