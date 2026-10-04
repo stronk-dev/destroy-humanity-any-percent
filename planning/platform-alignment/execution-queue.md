@@ -1,6 +1,18 @@
 # Executable queue
 
-## Current overlay — 2026-09-30, product source `a7ab2640`
+## Current delta — 2026-10-04, product source `19f71825`, evidence through `11c7af4b`
+
+The 2026-09-30 overlay below is a dated baseline, not a fresh verdict on the later v0.1
+implementation or Codex corrections. The [1.0 board](../roadmap-1.0.md) and its append-only log
+hold the newer cross-workstream checkpoint; this delta names only the Typer lane checked here.
+
+| State now | Work and exact boundary |
+|---|---|
+| **READY FOR CROSS-PARTY REVIEW — bounded Typer corrections** | Claude must independently review the exact Codex ranges recorded in `planning/minigame-terminal-typer/log.md`, including the B3 API-start gate, B4 engine-chain parity, B6 keyboard child, and B7 real Exit, daily-cap/quality and replay quota negatives through `11c7af4b`. Codex's own tests and first-filter notes are not the designated approval. |
+| **PARTIAL / BLOCKED — Typer B7 public AC8 path** | Real-Postgres service-level witnesses prove the live Exit block/release, five credited sends and sixth forfeit, offline-quality charge and identical retry; a unit negative rejects a forged replay quota credit. The accepted AC8 still requires the public MA endpoint create→play→terminal path. TT-PA4 versus API C2 needs ruling-author reconciliation before a public Typer wire, generated consumer, production pin or default player journey can be claimed. B7 stays unchecked. |
+| **RED CI — historical kernel guard** | `make verify-kernel-version` still fails at pushed `50a3a514` per RP-131; the draft [Kernel History Guard Integrity](../../rfc/kernel-history-guard-integrity.md) and owner choice remain prerequisites to a lawful repair. No green `make verify-push` or release claim follows from the Typer-local green tests. |
+
+## Baseline overlay — 2026-09-30, product source `a7ab2640`
 
 The 2026-09-25 Claude implementation handoff is [`planning/v0.1-claude-implementation-handoff.md`](../v0.1-claude-implementation-handoff.md).
 These are review/decision lanes, not permission to archive or release. The older overlay below is
