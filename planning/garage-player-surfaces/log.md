@@ -301,3 +301,64 @@ failing case.
 **Candidate copy:** the new `desk.opportunity.*`, `desk.buff*`, `cap.active_combo`, `cap.cash` and
 `fiscal.nav.harvest_badge` rows, plus `pet.care.*` (companion tone, `PENDING OWNER COPY`), are in
 `copy/catalog/garage-surfaces-candidate.json` for Marco to adopt.
+
+## 2026-10-04 — Codex GS0.2/GS1-A6 applied-refresh probe, predeclared
+
+- **Observed composed failure:** replacing the Pitch test's direct Fiscal API
+  setup with DOM-only Earnings Calls controls applied harvest, then the
+  immediate Pitch unlock returned HTTP 200 `outcome:rejected` with
+  `revision_conflict/expected_revision` (`current_revision:4`). The test
+  did not retry; the exact player journey stopped before Pitch creation.
+- **Question:** GS0.2 says an applied intent awaits an authoritative refresh
+  before clearing pending. Does the host actually do so before permitting the
+  next Founder action, or can it send the pre-harvest Founder revision?
+- **Population:** real Game UI component in the browser with a runtime double
+  that applies Fiscal harvest at Founder revision 7, defers the authoritative
+  snapshot at revision 8, then observes the Pitch unlock control. Use the
+  existing composed browser/Postgres path as the integrated confirmation.
+- **Criterion:** the host starts one authoritative refresh, remains pending
+  until it resolves, and the subsequent DOM unlock intent carries revision 8.
+  The composed path must apply both DOM-issued Fiscal intents and reach the
+  existing Pitch terminal receipt. No auto-retry of a rejected intent.
+- **Negative controls:** on current code the deferred snapshot is never
+  requested and the second intent carries revision 7. In the composed lane,
+  sever either the harvest or unlock DOM click; each must fail at that action
+  or locked Pitch creation. No direct API mutation may rescue the run.
+- **Limit:** this targets GS0.2/GS1-A6/GS7-A7 sequencing; it cannot alone
+  approve the full Garage Surfaces or MA implementation ranges.
+
+## 2026-10-04 — Codex RP-147 Fiscal→Pitch player journey correction
+
+- **Review by:** Codex. **Recorded by:** Codex. **Targeted source:** Claude's
+  Garage Surfaces GS0.2 host and the MA composed Pitch witness. **Decision:**
+  **CHANGES REQUIRED** on applied-intent sequencing and the GS1-A6/GS7-A7
+  composed acceptance claim; this is not a range-union verdict for either RFC.
+- The first browser-double draft deferred the initial bootstrap snapshot and
+  failed at a missing nav button; that invalid fixture was corrected before
+  counting it. With bootstrap normal and only the post-harvest snapshot held,
+  the test failed on the actual GS0.2 property: zero authoritative refresh
+  requests after a 200 applied harvest. The original composed path also failed
+  at the following DOM unlock with `revision_conflict/expected_revision`.
+- The host now awaits an authoritative refresh before clearing pending for
+  applied intents outside its existing terminal-transition special path.
+  The browser-double test holds that refresh, verifies the unlock remains
+  disabled, then releases revision 8 and observes a DOM unlock intent with
+  `expected_revision:8`. Rejected intents remain never auto-retried.
+- The composed witness removed its direct `founderIntent` setup and uses the
+  rendered Earnings Calls harvest and Pitch-specific unlock controls. It
+  asserts both emitted applied intents, then plays Pitch by keyboard to the
+  terminal receipt and checks the refreshed Company snapshot/current session.
+  Against real Postgres/Vite/gameserver it passes unmodified. Temporarily
+  disconnecting the harvest callback failed at `Fiscal harvest for Pitch
+  emitted no intent request`; disconnecting the unlock callback failed at its
+  `waitForRequest` (no intent). Both callbacks were restored.
+- **Cold gates:** `make typecheck` (0 diagnostics), `make test-client` (6,905
+  passed), `make verify-client-boundary`, `make copy-check`, `make build-client`,
+  and full Chromium/WebKit `make test-browser` (6,984 passed, one skipped per
+  browser, performance lane passed) all pass. `make test-game-ui-composed`
+  passes after both restorations. The Firefox-inclusive browser gate remains
+  unverified on this host because Playwright Firefox aborts before test import.
+- **Cross-party gate:** this Codex-authored GS0.2/test correction needs Claude's
+  exact-range designated review. Neither party has approved the complete
+  Garage Surfaces or MA implementation spans; the historical kernel-history
+  CI failure is separate and still red.

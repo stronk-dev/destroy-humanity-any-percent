@@ -141,6 +141,8 @@ at least one pet.
 Intents return their typed outcome (GS0.2). A rejected intent is an HTTP 200 whose reason renders
 in the chrome `role="status"` line. A stale revision (`revision_conflict`) triggers one
 authoritative refresh and is never auto-retried. Founder-scoped intents send the Founder revision.
+An applied intent keeps its controls pending through an authoritative snapshot refresh, so the
+next action uses the updated Founder or Company revision even if the stream receipt arrives late.
 Only transport failures and 401/404/5xx mark the UI offline.
 
 The
@@ -210,8 +212,9 @@ is used. The harness preflights exclusive ownership of its gameserver port, buil
 ignored repository-local binary, and waits for that exact process on teardown; another listener
 fails the witness before bootstrap. On the third run the witness opens the Pitch tab. Start first
 receives the server's real 409 `not_eligible/fiscal_unlock_required`, and the launcher notice is
-checked. The player then buys `minigame.pitch` with real `harvest_fiscal_period` and
-`spend_fiscal_credit` intents over the public intent API; no database write is involved. Cards are
+checked. The player then visits Earnings Calls and uses its rendered harvest and Pitch-specific
+unlock buttons; both issue real applied intents over the public API, without a database setup write.
+Cards are
 selected and played by keyboard until the session reaches a terminal `applied` receipt. The Game UI
 must then fetch a snapshot at or beyond the receipt's Company revision, and `current` must read
 `none`. `make verify-game-ui` composes the existing client, browser,

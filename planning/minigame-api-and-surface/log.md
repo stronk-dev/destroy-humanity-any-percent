@@ -938,3 +938,36 @@ them. It went unnoticed because the guard was already red on `8add475`'s pending
 - **Cross-party gate:** Claude must designate-review this Codex correction
   over its exact commit range. Neither this self-authored correction nor its
   tests authorize MA archival or close the wider MA AC1–AC5 review.
+
+## 2026-10-04 — Codex MA AC5 Fiscal-to-Pitch composed witness, predeclared
+
+- **Question:** now that the Fiscal surface exists, can a player unlock The
+  Pitch and start it using only rendered controls, rather than the composed
+  test's direct API setup? The existing witness proves Pitch keyboard play
+  and a real server receipt, but injects both prerequisite Fiscal intents.
+- **Population:** the existing composed browser/Vite/gameserver/Postgres lane
+  after the next Company begins. Attempt locked Pitch as before, navigate to
+  Earnings Calls, click the harvest control after the pinned clock opens,
+  then click the Pitch-specific unlock in its list item and return to Pitch.
+- **Criterion:** both DOM actions emit applied `/api/v1/intents` requests with
+  exact kinds/target; the subsequent UI Start creates a 200 session and the
+  existing keyboard-driven Pitch run reaches an applied terminal receipt and
+  refreshed Company snapshot. No direct API mutation is allowed in setup.
+- **Negative controls:** sever the Fiscal harvest click and separately sever
+  the Pitch unlock click. Each must fail at a named action or at locked
+  creation; a direct API helper may not rescue the run. This test establishes
+  the composed Fiscal→Pitch journey, not all MA AC1–AC5 or 1.0.
+
+## 2026-10-04 — Codex MA AC5 composed handoff result (RP-147)
+
+The direct Fiscal API setup in the Pitch composed path was replaced with
+Earnings Calls DOM harvest and Pitch-specific unlock controls. That exposed
+the accepted Garage Surfaces GS0.2 applied-refresh violation documented in
+`planning/garage-player-surfaces/log.md`. With the host correction, the
+Postgres/Vite/browser journey applies both DOM intents, starts Pitch, sends
+five keyboard-driven commands, reaches a terminal applied receipt, and
+observes a refreshed Company snapshot. Disconnecting either prerequisite
+control fails the composed path, and no direct API mutation remains in setup.
+This is a Codex-authored test correction awaiting Claude's exact-range
+cross-party review; MA AC1–AC5 and the original Claude implementation range
+are not thereby approved.

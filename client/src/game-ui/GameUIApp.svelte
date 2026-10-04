@@ -181,6 +181,10 @@
         if (notice.effect === "refresh") void refresh();
         else if (outcome.outcome === "applied" && (kind === "cross_gate" || kind === "decline_exit_offer")) {
           bindSnapshot(await runtime.snapshot());
+        } else if (outcome.outcome === "applied") {
+          // GS0.2: keep controls pending until the next intent can bind to the
+          // authoritative revision, even when its stream receipt arrives late.
+          await refresh();
         }
       } catch (error) {
         const notice = noticeForError(error);

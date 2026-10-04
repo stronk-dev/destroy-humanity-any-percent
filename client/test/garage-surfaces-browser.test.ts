@@ -153,6 +153,46 @@ it.skipIf(!browser)("derives Fiscal phases at the window edges and sends Founder
   } finally { await dispose(); }
 });
 
+it.skipIf(!browser)("keeps Fiscal pending until the applied harvest refresh supplies the next Founder revision (GS0.2/GS1-A6)", async () => {
+  class DelayedFiscalRuntime extends Runtime {
+    snapshotCalls = 0;
+    releaseRefresh: () => void = () => {};
+    override async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> {
+      this.requests.push(body);
+      if (body.kind === "harvest_fiscal_period") {
+        this.current = { ...this.current, founder_revision: 8 };
+        return { outcome: "applied", receipt: { harvest_outcome: "guaranteed", founder_revision: 8 } };
+      }
+      return { outcome: "applied", receipt: { founder_revision: 9 } };
+    }
+    override async snapshot(): Promise<ParsedGameUISnapshot> {
+      if (this.requests.length === 0) return this.current;
+      this.snapshotCalls += 1;
+      if (this.snapshotCalls === 1) await new Promise<void>((resolve) => { this.releaseRefresh = resolve; });
+      return this.current;
+    }
+  }
+  const runtime = new DelayedFiscalRuntime();
+  const { target, app, dispose } = await mounted(runtime);
+  try {
+    button(target, "Earnings Calls").click();
+    app.fixtureSnapshot({ ...v4, features: { ...v4.features, fiscal: { ...v4.features.fiscal!, period: { ...v4.features.fiscal!.period, opened_wall_ms: NOW - 250_000 } } } });
+    await settle();
+    button(target, "Hold the earnings call").click();
+    await settle();
+    expect(runtime.requests[0]).toMatchObject({ kind: "harvest_fiscal_period", expected_revision: 7 });
+    expect(runtime.snapshotCalls).toBe(1);
+    expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+    expect(button(target, "Unlock for 3").disabled).toBe(true);
+    runtime.releaseRefresh();
+    await settle();
+    expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+    button(target, "Unlock for 3").click();
+    await settle();
+    expect(runtime.requests[1]).toMatchObject({ kind: "spend_fiscal_credit", expected_revision: 8, target: { kind: "unlock", unlock_id: "minigame.pitch" } });
+  } finally { runtime.releaseRefresh(); await dispose(); }
+});
+
 it.skipIf(!browser)("shows provisioned counts with their cap reason and owned upgrades as text on the Desk (GS6)", async () => {
   const { target, dispose } = await mounted();
   try {

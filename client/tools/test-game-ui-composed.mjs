@@ -252,41 +252,39 @@ function receivedPlayerCoordinates(frames, channel) {
   return coordinates;
 }
 
-function uuidV7() {
-  const bytes = crypto.getRandomValues(new Uint8Array(16));
-  let timestamp = Date.now();
-  for (let index = 5; index >= 0; index -= 1) { bytes[index] = timestamp % 256; timestamp = Math.floor(timestamp / 256); }
-  bytes[6] = (bytes[6] & 0x0f) | 0x70;
-  bytes[8] = (bytes[8] & 0x3f) | 0x80;
-  const hex = [...bytes].map((value) => value.toString(16).padStart(2, "0")).join("");
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
-}
-
-async function founderIntent(accessToken, body) {
-  const response = await fetch(`${gameserverURL}/api/v1/intents`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ intent_id: uuidV7(), ...body }),
-  });
-  return { status: response.status, body: await response.json() };
-}
-
 async function founderState(accessToken) {
   const response = await fetch(`${gameserverURL}/api/v1/founder/state`, { headers: { Authorization: `Bearer ${accessToken}` } });
   if (response.status !== 200) throw new Error(`founder state read failed (${response.status})`);
   return response.json();
 }
 
-async function unlockPitchWithFiscalIntents(accessToken) {
+async function unlockPitchThroughFiscalUI(page) {
+  await page.getByRole("button", { name: "Earnings Calls", exact: true }).click();
+  await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
   // The composed Fiscal clock guarantees a harvest 200 ms after the period
-  // opens; wait past it, then spend the credit on the Pitch unlock.
+  // opens. The player uses the rendered controls for both prerequisite intents.
   await new Promise((resolve) => setTimeout(resolve, 400));
-  let state = await founderState(accessToken);
-  const harvest = await founderIntent(accessToken, { kind: "harvest_fiscal_period", expected_revision: state.founder_revision });
-  if (harvest.status !== 200 || harvest.body?.outcome !== "applied") throw new Error(`fiscal harvest was not applied (${harvest.status}): ${JSON.stringify(harvest.body)}`);
-  state = await founderState(accessToken);
-  const spend = await founderIntent(accessToken, { kind: "spend_fiscal_credit", expected_revision: state.founder_revision, target: { kind: "unlock", unlock_id: "minigame.pitch" } });
-  if (spend.status !== 200 || spend.body?.outcome !== "applied") throw new Error(`fiscal Pitch unlock was not applied (${spend.status}): ${JSON.stringify(spend.body)}`);
+  const harvest = await clickAppliedIntent(page, "Hold the earnings call", "Fiscal harvest for Pitch");
+  if (harvest.intent?.kind !== "harvest_fiscal_period") throw new Error(`Fiscal harvest control emitted ${JSON.stringify(harvest.intent)}`);
+  const pitchUnlock = page.locator('section[aria-labelledby="fiscal-unlocks-heading"] li')
+    .filter({ has: page.getByRole("heading", { name: "The Pitch", exact: true }) })
+    .getByRole("button", { name: /^Unlock for /u });
+  const intentRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/v1/intents", { timeout: 30_000 });
+  await pitchUnlock.click({ timeout: 30_000 });
+  let request;
+  try { request = await intentRequest; }
+  catch (error) { throw new Error("Pitch Fiscal unlock control emitted no intent request", { cause: error }); }
+  const intent = request.postDataJSON();
+  if (intent?.kind !== "spend_fiscal_credit" || intent.target?.kind !== "unlock" || intent.target?.unlock_id !== "minigame.pitch") {
+    throw new Error(`Pitch-specific Fiscal unlock control emitted ${JSON.stringify(intent)}`);
+  }
+  const response = await request.response();
+  if (!response) throw new Error("Pitch Fiscal unlock emitted no response");
+  const body = await response.json();
+  if (response.status() !== 200 || body?.outcome !== "applied") throw new Error(`Pitch Fiscal unlock was not applied (${response.status()}): ${JSON.stringify(body)}`);
+  await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+  await page.getByRole("button", { name: "The Pitch", exact: true }).click();
+  await page.locator('main[data-surface="minigame_session"]').waitFor({ state: "visible", timeout: 30_000 });
 }
 
 async function playPitchThroughUI(page, accessToken) {
@@ -317,7 +315,7 @@ async function playPitchThroughUI(page, accessToken) {
   }
   await page.getByText("Locked. Unlock it with Fiscal credit first.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
 
-  await unlockPitchWithFiscalIntents(accessToken);
+  await unlockPitchThroughFiscalUI(page);
   const beforeSession = await founderState(accessToken);
   if (beforeSession?.transitions?.wind_down?.eligible !== true) {
     throw new Error(`Tier-1 Wind Down was not eligible before Pitch: ${JSON.stringify(beforeSession?.transitions)}`);
@@ -583,9 +581,8 @@ try {
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
   // MA AC5: The Pitch through the Game UI against the composed server. The
-  // Fiscal unlock is bought with real player intents over the public intent
-  // API (the composed epoch pins minigame.pitch at 3 credit); no Fiscal
-  // surface exists yet, and no database row is written for eligibility.
+  // The Fiscal prerequisite and Pitch play both originate in rendered player
+  // controls; the composed epoch pins minigame.pitch at 3 credit.
   const opportunity = await witnessOpportunityClaim(page);
   console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks, claimed ${opportunity.effect_row_id} (${opportunity.expired_claims} expired attempts), effect visible in the next snapshot: PASS`);
   seedGateRequirement(liveSnapshot.body.run.founder_id);
@@ -594,7 +591,7 @@ try {
   await clickAppliedIntent(page, pitchTierGate, "Pitch-run cross-gate");
   const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
-  console.log(`composed Pitch surface: unlock via Fiscal intents, ${pitch.commands} UI commands, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
+  console.log(`composed Fiscal UI harvest + Pitch unlock: ${pitch.commands} Pitch UI commands, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
   console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));
