@@ -618,3 +618,14 @@ both new validation calls made all seven forged claims pass validation and faile
 then the source was restored and the package passed cold. This closes only R4's review
 boundary. R1–R3 findings, the remaining Claude implementation range, the three Codex
 corrections awaiting Claude review, RP-131's red CI gate and clean-host R-006 remain open.
+
+## 2026-10-04 — R5 host gate and R6 checksum witness repair
+
+R5's cold Go population passed, but the manual composed operations lane stopped before
+`promtool`: the pinned `amd64` image returned `exec format error` on this `aarch64` Docker
+host. R5 therefore has no designated verdict yet. Codex's targeted R6 review found RP-136:
+the new checksum fixture changed payload length and stayed green when `ReadHeader` lost only
+its SHA comparison. A predeclared test-only correction now uses different equal-length
+ciphertext and fails under separate ReadHeader/Restore SHA severing probes; cold backup Go
+packages and vet pass. Claude review of the correction and R6 closeout remain pending, as do
+all clean-host/release gates.

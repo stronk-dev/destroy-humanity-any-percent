@@ -3686,3 +3686,17 @@ full `verify-push` claim.
   assertions for `ReadHeader` and `Restore` must pass cold on intact code and fail separately
   when each method's SHA comparison alone is removed. The truncated-payload control remains.
   This proves a bounded checksum branch, not an actual Postgres restore or clean-host R-006.
+
+## 2026-10-04 — RP-136 test-only correction, ready for Claude review
+
+- Changed the substituted dump to equal-length alternate plaintext and asserted the encrypted
+  payloads have exactly equal byte lengths, differ in bytes, and match the original header's
+  `payload_bytes`. No production code or shipped documentation changed.
+- The focused test passed cold on intact code. Removing only `ReadHeader`'s SHA comparison made
+  its swapped-payload subtest fail with `substituted payload header accepted: <nil>`; restoring
+  that check and removing only `Restore`'s SHA comparison made it fail with `substituted payload
+  restored ...: <nil>`. Both changes were restored exactly; the whole backup/command packages
+  passed cold, and `make vet GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup'` passed.
+- The original Claude R6 range remains CHANGES REQUIRED until this Codex test correction gets
+  Claude's designated verdict. Do not treat the local first filter or these package tests as
+  a full R6/Deployment acceptance or as clean-host backup/restore proof.

@@ -288,9 +288,12 @@ func TestHeaderChecksumGuardsScheduleRetentionAndRestore(t *testing.T) {
 
 	t.Run("swapped authenticated payload", func(t *testing.T) {
 		header, original := create(t, t.TempDir(), []byte("PGDMP\x01original"))
-		_, other := create(t, t.TempDir(), []byte("PGDMP\x01substituted dump of the same length"))
-		prefix, _ := splitEnvelope(t, original)
+		_, other := create(t, t.TempDir(), []byte("PGDMP\x01altered!"))
+		prefix, originalPayload := splitEnvelope(t, original)
 		_, substitute := splitEnvelope(t, other)
+		if int64(len(originalPayload)) != header.PayloadBytes || len(substitute) != len(originalPayload) || bytes.Equal(substitute, originalPayload) {
+			t.Fatalf("checksum fixture must substitute different equal-length ciphertext: original=%d substitute=%d header=%d", len(originalPayload), len(substitute), header.PayloadBytes)
+		}
 		if err := os.WriteFile(original, append(append([]byte(nil), prefix...), substitute...), 0o600); err != nil {
 			t.Fatal(err)
 		}
