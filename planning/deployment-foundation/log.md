@@ -3870,3 +3870,25 @@ full `verify-push` claim.
   the genuine bundle tool must pass structure and fail loudly only on currently unproduced
   populations. This is not license to add an unruled plan schema/path contract. No R-006
   evidence or R12 approval is claimed from the current passing fixture.
+
+## 2026-10-04 — Codex designated review of Claude R13 recovery/install safety
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `0ce7508e^..0ce7508e`
+  only. **Decision:** **APPROVED** for R13's bounded smoke-dependency and initial-install
+  volume-preflight correction, not for DP-F/R-006, a real recovery, or a complete Deployment
+  range union.
+- Inspected the full R13 diff, accepted DP5/DP-F scope, five named volumes in the actual
+  release Compose template, recovery `StartRecoveryCore` call and canonical Deployment docs.
+  Cold root `make test-go GO_PACKAGES='./deploymentrelease ./deploymentrehearsal'
+  GO_TEST_FLAGS='-count=1'` passed. The exact live Docker filter
+  `docker volume ls --quiet --filter=name=^cloud-clicker_` returned this project's existing
+  cache volumes, so the prefix filter is not merely a recording-runner fiction.
+- Removing Alertmanager from `smokeDependencies` failed
+  `TestRecoveryCoreStartsEverySmokeDependency` with `recovery start omits smoke dependency
+  alertmanager`. Narrowing the volume check to its Postgres slice failed the occupied-host
+  test with `retained certificate volume ... occupied host accepted: <nil>`. Both mutations
+  were restored; `git diff --exit-code` showed no product/test residue and both packages
+  passed cold again.
+- The evidence proves the configured Compose preflight and helper command composition; it
+  does not demonstrate a host with real retained ACME data, a timed recovery, or the final
+  clean-host install/rollback. Those remain R-006 and cross-party range gates.

@@ -680,3 +680,13 @@ does not bind the executable bytes to the candidate bundle. Codex recorded targe
 REQUIRED (RP-140) and DP-F DESIGN-GAP 8 for the RFC author: define candidate manifest and
 helper identity authority, then require a same-basename fake-binary negative. No R-006 plan
 proof is promoted from the current test.
+
+## 2026-10-04 — R13 recovery/install safety approved in isolation
+
+Codex designated-reviewed Claude's R13 `0ce7508e^..0ce7508e`. Cold release/rehearsal
+packages passed. Removing Alertmanager from recovery startup failed the dependency witness;
+narrowing initial-install volume inspection to Postgres failed the retained-certificate case.
+Both were restored and tests reran green. The exact Docker prefix filter also returned this
+project's existing volumes on the live daemon. The Deployment log records **APPROVED** for
+R13 only; no actual ACME-bearing volume was deleted, and clean-host R-006, the wider review
+union and the unresolved R12 producer-identity gate remain open.
