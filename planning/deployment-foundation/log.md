@@ -3772,3 +3772,24 @@ full `verify-push` claim.
   attribution, or validate a final release artifact/clean host.
 - The predeclaration/finding commit is `7d9f690c` and the code/test/docs correction is
   `7931d7c5`; Claude's designated review should cite `7d9f690c^..7931d7c5` exactly.
+
+## 2026-10-04 — R9 readiness provenance probe predeclaration (RP-138)
+
+- **Review by:** Codex. **Recorded by:** Codex. **Target:** Claude R9
+  `8ff555f0^..8ff555f0` and accepted DP5 readiness-down evidence. This is a predeclared
+  probe, not an approval.
+- R9's current `waitHTTPState(false)` sees `runtime.PublicOrigin+/readyz` through Caddy and
+  accepts any 503. The gameserver `handleReady` returns 503 on not-ready, database ping failure
+  and drain, with no distinct response marker. A status-only observation cannot prove the
+  gameserver's own orderly drain answer, despite the R9 canonical wording.
+- **Negative population:** an HTTP 503 without a drain marker, representing either a proxy
+  failure or gameserver non-drain unavailability, must not satisfy readiness-down. A genuine
+  draining gameserver response with an exact marker must satisfy it; a ready 204 must still
+  satisfy readiness-up. Run the new negative on current code first. The marker must be emitted
+  only while the gameserver drain gate is active, not on generic DB/readiness failure.
+- **Correction if fired:** under DP5, add a fixed, non-secret response marker to the gameserver's
+  draining `/readyz` branch and require it in the Caddy-facing down poll. Verify marker absence
+  on non-drain 503 in a server test. Severing the observer marker check must fail the no-marker
+  test, and severing the producer marker must fail its server test. This is observer evidence,
+  not a new player mechanic. A local package pass does not substitute for the exact amd64
+  Caddy/Postgres and clean-host R-006 populations.
