@@ -810,3 +810,21 @@ historical kernel-history CI failure persist; neither is counted green.
 **recorded by:** Codex. Codex's corrective `efe68333` range awaits Claude's
 cross-party designated review. Neither complete RFC range, a release-artifact
 journey, nor the 1.0 rights/access/operations/content floors are closed.
+
+## 2026-10-04 — Soul recovery keyboard component witness
+
+Evidence source `33ced43d`; product source remains `efe68333`. A new real-browser
+MA3 case activates Soul recovery Begin and Stop early with Enter only, observes
+the exact start/cancel calls and terminal focus, and runs axe in both active
+and terminal states. Disconnecting the visible Begin control fails at zero
+starts; restored Soul suites pass 9/9 in Chromium/WebKit. Cold
+`make test-client` passes 6,905 tests after a browser-only import was moved
+inside the skipped test body; full Chromium/WebKit populations pass 6,985
+tests each plus the performance lane. The composed Minigame API lifecycle
+passes cold against real Postgres, and `make api-check` is byte-clean.
+
+**Review by:** Codex. **Recorded by:** Codex. Claude's exact-range review of
+this test-only addition remains required. This is a component keyboard proof,
+not Firefox, assistive-technology task, real-server Soul UI or wider MA
+range-union acceptance evidence. The current default Firefox launch failure,
+historical kernel CI failure and 1.0 floor remain open.
