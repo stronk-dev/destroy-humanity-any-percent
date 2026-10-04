@@ -762,3 +762,24 @@ the terminal receipt. Removing the `!minigameActive` predicate fails the middle
 assertion; the restored full composed target passes. Claude must review the Codex
 test-only range `f773cf07^..5ad457ce`. This is one player-facing seam, not closure
 of MA AC1–AC5, the v0.1 handoff, accessibility or 1.0.
+
+## 2026-10-04 — Soul surface lifecycle corrected; MA review still open
+
+Product source `47562850`. Codex targeted Claude's MA3 Soul surface and found two
+player-lifecycle defects: an already-hidden document still sent recovery beats
+(RP-145), and deferred start/reconnect responses restarted the heartbeat
+scheduler after unmount (RP-146). Predeclared browser negatives fired before
+each correction. Removing the initial visibility callback after the fix
+produced two hidden-tab beats; the deferred-response tests observed three
+post-unmount beats after start and one after reconnect on the original code.
+
+Codex's bounded corrections `9ceed1cf^..47562850` now pass cold typecheck,
+6,905 client tests, boundary/copy checks, client build, and full Chromium and
+WebKit browser suites (6,983 tests each, plus the performance lane). The
+composed Postgres/Pitch path passed before the second correction and does not
+exercise Soul recovery. Local Playwright Firefox aborts before test import, so
+the three-browser gate remains unverified. **Review by:** Codex on Claude's
+targeted Soul code; **recorded by:** Codex. The Codex-authored correction awaits
+Claude's exact-range designated cross-party review. The larger MA acceptance
+set, release-artifact workflow, historical kernel CI failure and 1.0 rights,
+access, operations and content floors remain open; no release claim changed.
