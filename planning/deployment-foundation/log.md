@@ -3726,3 +3726,25 @@ full `verify-push` claim.
   Only the R7 file range is approved. The R7 predeclaration was not a separate prior commit,
   as the original implementation log already discloses; the executed review did not erase
   that provenance limitation.
+
+## 2026-10-04 — R8 packaging-rights probe predeclaration (RP-137)
+
+- **Review by:** Codex. **Recorded by:** Codex. **Target range:** Claude R8
+  `1f048de9^..1f048de9`, specifically the claim that the new source-map extractor cannot
+  under-attribute a shipped JavaScript package. This entry is a predeclared test, not a verdict.
+- Current-source positive: `make build-client` and `make generate-release-metadata` on the fresh
+  build produced 53 dependencies, including `pad-end@1.0.2` and `tslib@2.8.1` (0BSD). Current
+  `dist` contains two JavaScript assets and matching maps. That does not exercise a partial
+  source-map population.
+- **Negative population:** a fixture `dist` with one mapped JavaScript asset and a second
+  emitted JavaScript asset whose `sourceMappingURL` names a missing map. The existing mapped
+  asset carries one recognized npm package; the unmapped asset imports a distinct package.
+  `discoverClientDependencies` must reject the build, not return the mapped subset. A companion
+  case has an orphan `.map` without its referenced JavaScript asset and must also refuse; a
+  complete pair is the positive control. Run the new negative on current code first.
+- **Bounded correction if fired:** validate a one-to-one, local `sourceMappingURL` ↔ map pairing
+  for every emitted `.js` asset before reading package sources. Do not change actual release
+  content or license-policy classification. A severing probe that removes the pairing gate must
+  make the missing-map test fail. This proves JavaScript map completeness only; CSS-only
+  package attribution is not silently claimed and needs a separate build-graph route before a
+  full client-rights closure.
