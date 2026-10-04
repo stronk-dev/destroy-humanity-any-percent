@@ -1,7 +1,7 @@
 {
   "version": 1,
   "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
-  "transition_budget": 62,
+  "transition_budget": 67,
   "scenarios": [
     {
       "name": "completed_timed_seed_1",

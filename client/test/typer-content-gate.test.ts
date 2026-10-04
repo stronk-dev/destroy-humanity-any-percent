@@ -27,10 +27,11 @@ describe("Typer shared content gate", () => {
       let result: TyperResult | null = null;
       let revision = 1;
       for (const step of scenario.steps) {
+        transitions++;
         try {
           const output = await applyTyper({ ...identity, revision, snapshot, command: JSON.stringify(step.command), server_time_ms: step.server_time_ms });
           expect("applied", `${scenario.name} ${JSON.stringify(step.command)}`).toBe(step.expect);
-          snapshot = output.snapshot; result = output.result; revision++; transitions++;
+          snapshot = output.snapshot; result = output.result; revision++;
         } catch (error) {
           if (!(error instanceof TyperRejection)) throw error;
           expect(error.code, `${scenario.name} ${JSON.stringify(step.command)}`).toBe(step.expect);

@@ -170,17 +170,20 @@ func generateCorpus(t *testing.T) contentCorpus {
 	b.step(`{"kind":"end_run"}`, 1)
 	corpus.Scenarios = append(corpus.Scenarios, b.finish())
 	for _, scenario := range corpus.Scenarios {
-		for _, step := range scenario.Steps {
-			if step.Expect == "applied" {
-				corpus.TransitionBudget++
-			}
-		}
+		corpus.TransitionBudget += len(scenario.Steps)
 	}
 	return corpus
 }
 
 func TestTyperContentGate(t *testing.T) {
 	corpus := generateCorpus(t)
+	commandCount := 0
+	for _, scenario := range corpus.Scenarios {
+		commandCount += len(scenario.Steps)
+	}
+	if corpus.TransitionBudget != commandCount {
+		t.Fatalf("content-gate budget=%d must count all %d commands, including rejections", corpus.TransitionBudget, commandCount)
+	}
 	encoded, err := json.MarshalIndent(corpus, "", "  ")
 	if err != nil {
 		t.Fatal(err)
