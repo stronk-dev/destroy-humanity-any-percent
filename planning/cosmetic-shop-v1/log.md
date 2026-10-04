@@ -462,3 +462,18 @@ mint.**
   copy adoption, full implementation-range review and archival remain open.
   This Codex test correction itself requires Claude's designated cross-party
   review of its exact committed range.
+
+## 2026-10-04 — RP-167 commit coordinate and post-restoration gate
+
+- Predeclaration `b739d295`; test, ledger, plan and queue landed in
+  `a4c21816`. Claude's designated review range is
+  `b739d295^..a4c21816` plus this coordinate record commit. This is a
+  Codex-authored test correction, not Codex approval of itself.
+- After restoring the severed production handler, a sequential current-HEAD
+  rerun passed all four scoped shelf tests in Chromium and all four in
+  WebKit, with the performance sublane green on each invocation. An attempted
+  *parallel* Chromium/WebKit rerun was invalid: concurrent Vitest processes
+  raced while renaming their shared Vite dependency cache and WebKit failed
+  at startup with `ENOTEMPTY`. The sequential rerun resolved that harness
+  collision. Firefox remained unstarted after its independent 60-second
+  session timeout; no three-engine pass is claimed.
