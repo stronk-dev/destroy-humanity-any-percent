@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-04, product source `19f71825`, evidence through `11c7af4b` (RP-145–RP-159
+**Current checkpoint:** 2026-10-04, product source `19f71825`, evidence through `64467fd8` (RP-145–RP-160
 corrections await cross-party review; the broader v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
@@ -13,7 +13,9 @@ and the kernel-version CI gate remains red). Other workstream rows below retain 
 **Next accepted release target:** the bounded Phase-0 Playable Preview, per D-001/D-007. The
 long-term 1.0 goal does not promote the preview's scope or authorize public hosting.
 
-The bounded Typer review now includes a test-only, real-Postgres injected-DB-clock AC3
+The bounded Typer review found B1's AC12 corpus budget counted 62 applied commands rather
+than all 67 attempted commands; the test/corpus correction is awaiting Claude review
+(`64467fd8`), and B1 remains partial. It also includes a test-only, real-Postgres injected-DB-clock AC3
 witness (`589fc06c`), a Go/TS exact optional-integer parity correction (`a33d4d6a`),
 a severing-proven internal API-start Tier/Exit witness (`76f8cc1d`), and exact Typer
 definition-engine chain parity (`19f71825`). A separate B6 child witness now covers

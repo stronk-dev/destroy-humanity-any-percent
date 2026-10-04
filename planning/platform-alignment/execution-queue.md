@@ -1,6 +1,6 @@
 # Executable queue
 
-## Current delta — 2026-10-04, product source `19f71825`, evidence through `11c7af4b`
+## Current delta — 2026-10-04, product source `19f71825`, evidence through `64467fd8`
 
 The 2026-09-30 overlay below is a dated baseline, not a fresh verdict on the later v0.1
 implementation or Codex corrections. The [1.0 board](../roadmap-1.0.md) and its append-only log
@@ -9,6 +9,7 @@ hold the newer cross-workstream checkpoint; this delta names only the Typer lane
 | State now | Work and exact boundary |
 |---|---|
 | **READY FOR CROSS-PARTY REVIEW — bounded Typer corrections** | Claude must independently review the exact Codex ranges recorded in `planning/minigame-terminal-typer/log.md`, including the B3 API-start gate, B4 engine-chain parity, B6 keyboard child, and B7 real Exit, daily-cap/quality and replay quota negatives through `11c7af4b`. Codex's own tests and first-filter notes are not the designated approval. |
+| **CHANGES REQUIRED — Typer B1 AC12 budget** | Codex found that B1 counted only 62 applied transitions, although AC12 requires all 67 corpus commands. The test/corpus correction `64467fd8` fails first on the old Go budget and fails on a restored old TS counter. B1 is partial: Claude must cross-party review this Codex correction, and Codex must still review the rest of Claude's B1 range before a complete verdict. |
 | **COMPLETE — bounded B5 error-detail review** | Codex designated-approved Claude's `d7c1ce6e^..d7c1ce6e` exact error-detail increment after cold account/public API tests, byte-stable API regeneration and a firing wrong-detail mutation. This verdict covers no Typer public request/snapshot arm and does not mark B5 complete. |
 | **PARTIAL / BLOCKED — Typer B7 public AC8 path** | Real-Postgres service-level witnesses prove the live Exit block/release, five credited sends and sixth forfeit, offline-quality charge and identical retry; a unit negative rejects a forged replay quota credit. The accepted AC8 still requires the public MA endpoint create→play→terminal path. TT-PA4 versus API C2 needs ruling-author reconciliation before a public Typer wire, generated consumer, production pin or default player journey can be claimed. B7 stays unchecked. |
 | **RED CI — historical kernel guard** | `make verify-kernel-version` still fails at pushed `50a3a514` per RP-131; the draft [Kernel History Guard Integrity](../../rfc/kernel-history-guard-integrity.md) and owner choice remain prerequisites to a lawful repair. No green `make verify-push` or release claim follows from the Typer-local green tests. |

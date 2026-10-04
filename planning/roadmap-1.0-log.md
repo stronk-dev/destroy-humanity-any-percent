@@ -932,3 +932,7 @@ Evidence source `11c7af4b`; product source remains `19f71825`. A separate fixtur
 ## 2026-10-04 — Typer B5 partial cross-party verdict
 
 Codex designated-approved Claude's `d7c1ce6e^..d7c1ce6e` error-detail increment after cold account/public API tests, unchanged generated API artifacts and v1 pin, and a tier-detail mutation that failed its exact 409-body assertion. The precise verdict is in `planning/minigame-terminal-typer/log.md`. The approval is only for B5's response-enum and handler mapping subset; the TT-PA4 versus API C2 public-wire conflict still blocks request/snapshot arms, generated client and the MA-endpoint acceptance path. No B5 checkbox or Typer lifecycle status changed.
+
+## 2026-10-04 — Typer B1 corpus-budget review finding
+
+Evidence source `64467fd8`; product source remains `19f71825`. Codex's targeted review of Claude B1 found AC12's transition budget violated its stated population: 67 corpus command attempts but only 62 applied transitions counted. A Go equality assertion failed first; the bounded test/corpus correction sets the budget to 67 and counts all attempts in TS. Restoring the old TS counter fails its gate 62/67; no mechanics or content scenarios changed. Cold Go Typer, full client, typecheck and vet pass; the separate corpus-check target passed with cache reuse. RP-160 records the finding, B1 is now marked partial, and Claude must cross-party review this Codex correction. This is not a full B1 verdict or 1.0 proof; the public wire, content mint, accessibility and CI-history issues remain open.
