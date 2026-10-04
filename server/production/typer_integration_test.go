@@ -296,6 +296,14 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 	order := typer.PromptOrder(catalog, 1, 1)
 	play := func(founder typerFounder, sessionID, assist string) (string, []byte) {
 		t.Helper()
+		beforeCompany, err := store.LoadLatest(ctx, founder.companyStreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cashBefore, ok := beforeCompany.State.Ledger.Balance("company.cash")
+		if !ok {
+			t.Fatal("company cash balance missing before Typer run")
+		}
 		session, err := service.StartMinigameSession(ctx, platform, startRequest(founder, sessionID), now)
 		if err != nil || session.Revision != 1 {
 			t.Fatalf("Typer start session=%+v err=%v", session, err)
@@ -342,10 +350,16 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 		if facts["typer.clean_lines"] != catalog.Policy.RunLength-1 || facts["typer.lines_cleared"] != catalog.Policy.RunLength || facts["typer.misses"] != 1 {
 			t.Fatalf("%s facts=%v", assist, facts)
 		}
-		loadedCompany, _ := store.LoadLatest(ctx, founder.companyStreamID)
-		cash, _ := loadedCompany.State.Ledger.Balance("company.cash")
-		if cash.String() != string(match[1]) {
-			t.Fatalf("%s cash=%s credited=%s", assist, cash, match[1])
+		loadedCompany, err := store.LoadLatest(ctx, founder.companyStreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cash, ok := loadedCompany.State.Ledger.Balance("company.cash")
+		if !ok {
+			t.Fatal("company cash balance missing after Typer run")
+		}
+		if cash.Sub(cashBefore).String() != string(match[1]) {
+			t.Fatalf("%s cash before=%s after=%s credited=%s", assist, cashBefore, cash, match[1])
 		}
 		history, err := store.LoadFounderHistory(ctx, founder.founderStreamID)
 		if verdict := VerifyFounderHistory(history, set); err != nil || verdict != ReplayVerified {
@@ -357,6 +371,31 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 	untimed := seedTyperFounder(t, ctx, db, store, bundle, now, "03", 1, 1, 20)
 	timedCredit, _ := play(timed, "01986666-c202-7000-8000-000000000003", "timed")
 	untimedCredit, _ := play(untimed, "01986666-c203-7000-8000-000000000003", "untimed")
+	qualityFounder, err := store.LoadLatest(ctx, timed.founderStreamID)
+	if err != nil || qualityFounder.State.MinigameOfflineQuality["typer"].GradePPM != 800_000 {
+		t.Fatalf("clean-seven Typer result did not charge offline quality: founder=%+v err=%v", qualityFounder, err)
+	}
+	for _, sessionID := range []string{
+		"01986666-c205-7000-8000-000000000003",
+		"01986666-c206-7000-8000-000000000003",
+		"01986666-c207-7000-8000-000000000003",
+		"01986666-c208-7000-8000-000000000003",
+	} {
+		if credited, _ := play(timed, sessionID, "timed"); credited == "0" {
+			t.Fatalf("a send inside the daily quota forfeited: session=%s", sessionID)
+		}
+	}
+	forfeitedCredit, forfeitedReceipt := play(timed, "01986666-c209-7000-8000-000000000003", "timed")
+	var capped struct {
+		ForfeitedUnits int64  `json:"configured_cap_forfeit_units"`
+		ReasonKey      string `json:"cap_reason_key"`
+	}
+	if err := json.Unmarshal(forfeitedReceipt, &capped); err != nil {
+		t.Fatal(err)
+	}
+	if forfeitedCredit != "0" || capped.ForfeitedUnits <= 0 || capped.ReasonKey != "cap.minigame_faucet" {
+		t.Fatalf("sixth same-day Typer send did not forfeit with its reason: credit=%s receipt=%s", forfeitedCredit, forfeitedReceipt)
+	}
 	// AC8 / TT5: end_run is legal before begin, so an open Typer session (which
 	// blocks Exit, MA-C12) always has a reachable exit.
 	stalled := seedTyperFounder(t, ctx, db, store, bundle, now, "04", 1, 1, 21)
