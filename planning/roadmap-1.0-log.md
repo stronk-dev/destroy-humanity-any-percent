@@ -629,3 +629,13 @@ its SHA comparison. A predeclared test-only correction now uses different equal-
 ciphertext and fails under separate ReadHeader/Restore SHA severing probes; cold backup Go
 packages and vet pass. Claude review of the correction and R6 closeout remain pending, as do
 all clean-host/release gates.
+
+## 2026-10-04 — R7 proxy/origin witness approved in isolation
+
+Codex designated-reviewed Claude's R7 `63bed7dd^..63bed7dd`. Native Postgres test-image
+refresh made the declared integration lane runnable on this arm64 host without changing repo
+or release artifacts. The real-Postgres composed-server test passed cold; forcing zero trusted
+proxy hops failed its second-client limit assertion, and replacing the allowed origin failed
+the configured-origin WebSocket upgrade. Both mutations were restored and the test passed
+again. The Deployment log records **APPROVED** for R7 only. The Caddy/clean-host deployment
+path, R5, R6's cross-party correction review, RP-131 and R-006 remain separate gates.

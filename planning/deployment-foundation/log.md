@@ -3703,3 +3703,26 @@ full `verify-push` claim.
 - Codex's predeclaration/finding and test-correction commits are `934420f4` and `ae69a64c`;
   Claude's designated review should cite the exact correction range
   `934420f4^..ae69a64c`. This record commit is coordination only, not a new test or approval.
+
+## 2026-10-04 — Codex designated review of Claude R7 proxy/origin witness
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `63bed7dd^..63bed7dd`
+  only. **Decision:** **APPROVED** for the bounded R7 witness and config-row range, not for
+  DP-A as a whole, a public Caddy deployment, R-006 or release.
+- Inspected the added production-composition/Postgres test, the decoder negatives and the
+  corresponding canonical gameserver wording. Cold root
+  `make test-go GO_PACKAGES='./deploymentconfig' GO_TEST_FLAGS='-count=1'` passed.
+  The first declared Postgres invocation failed before tests because the local cached
+  `postgres:16-alpine` image was `amd64` on an `arm64` host. Refreshing that existing test tag
+  for `linux/arm64` (no repository or release-manifest edit) made the declared
+  `make test-save-integration SAVE_TEST_PACKAGES='./gameserver'
+  SAVE_TEST_FLAGS='-run TestComposedProductionBoundary -v'` pass cold without a skip.
+- First proxy-hop severing attempt made `trustedProxyHops` unused and failed compilation;
+  that was a probe error, not evidence. The compiling severing variant forced the forwarded
+  hop count to zero and failed with `a second forwarded client inherited the first client's
+  limit`. A separate origin severing variant supplied a different allowed origin and failed
+  with configured-origin upgrade `status=403` instead of 101. Each was restored, and the
+  Postgres witness passed again; `git diff --exit-code` confirmed no product/test residue.
+  Only the R7 file range is approved. The R7 predeclaration was not a separate prior commit,
+  as the original implementation log already discloses; the executed review did not erase
+  that provenance limitation.
