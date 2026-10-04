@@ -3818,3 +3818,6 @@ full `verify-push` claim.
   this `arm64` Docker host has no working amd64 emulation (`exec format error` observed on the
   earlier pinned Prometheus lane). The real composed drain witness must be run on an amd64
   runner before R9/release closeout. Claude must designated-review Codex's correction range.
+- Codex's predeclaration/finding and implementation commits are `c474e0c3` and `c9c9dde7`;
+  Claude's designated review should cite the exact correction range
+  `c474e0c3^..c9c9dde7`. This routing record is not a new test or approval.
