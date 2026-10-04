@@ -1063,3 +1063,25 @@ production bytes were restored and the suite passed again. This is not the old C
 credential-revival proof at current HEAD, nor supported-host R-006 or a D-009/D-015 ruling.
 The exact counts/limits live in `platform-alignment/data-rights-restore-resurrection.md`.
 Cross-party review of the Codex range remains open; no release status changed.
+
+## 2026-10-04 — Cosmetic AC14 composed witness and Pitch CI reliability boundary
+
+The accepted Cosmetic Shop AC14 now has a retained built-client/Chromium → composed gameserver
+and Postgres witness on a synthetic current-epoch artifact set: live WebSocket visitor presence,
+T0 locked shelf, visible T1 cross-gate and Buy, one applied `acquire_cosmetic` intent and event,
+then server-owned state after a full reload under the strict N5 request/payment audit. The
+synthetic Cosmetics pin is fixture-only, not a production content mint. Temporarily severing
+`server/gameui/features.go` Cosmetics projection fails the first arm check; production bytes were
+restored. The exact `make test-game-ui-composed` target with a committed ARM64 image override
+passed both drivers in 17 seconds, and `make verify-ci-topology` plus typecheck passed. This is
+local first-filter evidence; Claude's designated cross-party review is still due.
+
+The older composed Game UI driver independently failed on intermittent no-request Pitch Start
+and Fiscal Unlock clicks in multiple cold runs, even though it also passed several runs. In one
+failure, the Fiscal unlock remained enabled with `main[aria-busy=false]` after its 30-second
+wait. An explicit reset of the named ephemeral test DB prevents the synthetic Cosmetics epoch
+from contaminating the older driver but did not remove the intermittent failure. Temporary
+`act` logging produced only passing runs and was restored byte-exact, so handler entry/drop was
+not established. RP-172 records the unresolved CI reliability boundary; no retry or relaxed
+assertion was added. Separately, the historical kernel-version gate remains red, and no hosted
+CI success or release status is inferred from this local target pass.

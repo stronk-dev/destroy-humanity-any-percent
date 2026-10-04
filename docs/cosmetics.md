@@ -98,6 +98,9 @@ blocked as `exclusive_activity`.
 
 - **Copy:** all shop copy is candidate text for owner adoption
   (`copy/catalog/cosmetics-candidate.json`).
-- **Composed witness (AC14):** a real-server Buy → reload run under the network trap needs an epoch
-  that pins `cosmetics`.
+- **Composed witness (AC14):** `make test-game-ui-composed` uses a test-only epoch that pins
+  `cosmetics` and runs the built browser client through real Postgres, gameserver, and WebSocket
+  transport. It observes T0 locked → visible T1 Buy → applied intent → server-owned state after
+  reload under the request/payment trap; severing the server Cosmetics projector fails the run.
+  This fixture is not a production content mint, and its Codex range awaits cross-party review.
 - **Integrated pet-panel overlay:** release-manifest row G10.

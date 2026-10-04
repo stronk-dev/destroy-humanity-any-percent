@@ -16,7 +16,7 @@ runners, deployment credentials, or deployment steps.
 | `harness` | `make verify-harness-fast` | Cold harness tests, role proofs, Commons invariance, and complete balance/epoch history guards; no pacing/relevance simulation |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
-| `game-ui-composed` | `make test-game-ui-composed` | Real Chromium/Vite/gameserver/Postgres/WebSocket bootstrap, recovery, transitions, both terminals, and next-run flow |
+| `game-ui-composed` | `make test-game-ui-composed` | Real Chromium/gameserver/Postgres/WebSocket bootstrap, recovery, transitions and terminals; test-only Cosmetics Buy→reload with a built client |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 
 The fast harness, client, and schema jobs have five-minute ceilings. Server, browser, and
@@ -162,8 +162,8 @@ binds those six leaves, in order, to `make verify-push`; removing, adding, or su
 side fails a permanent negative fixture. Use these targets when host-platform success could mask
 scheduling, architecture, or cold-run behavior.
 
-`make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
-and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
+`make test-game-ui-composed` starts its isolated repository Postgres service. Its first driver
+starts the real composed gameserver and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
 `/api/v1/founder/state` v3 round trip, and the actual Centrifuge WebSocket subscription. The
 snapshot assertion and visitor-counter assertion prove both HTTP synchronization and the socket
 handshake. The same witness uses server-side precondition setup, then requires visible enabled
@@ -174,6 +174,14 @@ intent call is substituted. The dedicated
 The witness first requires exclusive ownership of `127.0.0.1:18081`, builds an ignored
 repository-local gameserver binary, and owns that exact child through teardown. A stale listener is
 a loud setup failure and cannot satisfy `/readyz` for a newly failed child.
+The second driver resets only that named ephemeral test database, pins Cosmetics in a synthetic
+fixture epoch, serves the compiled client through a same-origin static/API/WebSocket proxy, and
+requires live visitor presence before T0 locked → T1 Buy → server-owned reload. It audits browser
+requests and refuses payment APIs or unexpected destinations. The fixture does not mint production
+content. On local ARM64 hosts, use
+`make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`;
+hosted x86 CI uses the default Compose file. The older Pitch subflow has shown intermittent
+no-request timeouts locally, so a single green combined run is not a CI reliability claim.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:

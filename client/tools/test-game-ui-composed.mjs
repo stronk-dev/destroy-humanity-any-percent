@@ -15,6 +15,14 @@ const uiURL = "http://localhost:5173";
 const key = Buffer.alloc(32, 7).toString("base64");
 const processErrors = [];
 
+// The composed target runs multiple fixture epochs in one named, ephemeral
+// database. A later invocation must not inherit the previous witness's epoch.
+const resetDatabase = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+  "psql", "-v", "ON_ERROR_STOP=1", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test",
+  "-c", "SET client_min_messages TO WARNING; DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;"],
+{ cwd: repositoryRoot, encoding: "utf8" });
+if (resetDatabase.status !== 0) throw new Error(`composed test DB reset failed: ${resetDatabase.stderr || resetDatabase.stdout}`);
+
 await new Promise((resolve, reject) => {
   const probe = createTCPServer();
   probe.once("error", (error) => reject(new Error(`composed gameserver port 18081 is not exclusively available: ${error.message}`)));
@@ -273,7 +281,17 @@ async function unlockPitchThroughFiscalUI(page) {
   await pitchUnlock.click({ timeout: 30_000 });
   let request;
   try { request = await intentRequest; }
-  catch (error) { throw new Error("Pitch Fiscal unlock control emitted no intent request", { cause: error }); }
+  catch (error) {
+    const state = await page.evaluate(() => ({
+      surface: document.querySelector("main")?.getAttribute("data-surface"),
+      busy: document.querySelector("main")?.getAttribute("aria-busy"),
+      unlock: [...document.querySelectorAll('section[aria-labelledby="fiscal-unlocks-heading"] li')]
+        .filter((item) => item.querySelector("h3")?.textContent?.trim() === "The Pitch")
+        .map((item) => ({ text: item.textContent?.trim(), disabled: item.querySelector("button")?.disabled })),
+      alerts: [...document.querySelectorAll('[role="alert"]')].map((item) => item.textContent?.trim()),
+    }));
+    throw new Error(`Pitch Fiscal unlock control emitted no intent request; state=${JSON.stringify(state)}`, { cause: error });
+  }
   const intent = request.postDataJSON();
   if (intent?.kind !== "spend_fiscal_credit" || intent.target?.kind !== "unlock" || intent.target?.unlock_id !== "minigame.pitch") {
     throw new Error(`Pitch-specific Fiscal unlock control emitted ${JSON.stringify(intent)}`);
@@ -306,9 +324,16 @@ async function playPitchThroughUI(page, accessToken) {
 
   // Locked first: the real server answers 409 not_eligible/fiscal_unlock_required
   // and the surface stays on the launcher with the typed reason.
-  const lockedCreate = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 });
-  await page.getByRole("button", { name: "Start a pitch", exact: true }).click();
+  const lockedCreate = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 }).catch((error) => error);
+  const lockedButton = page.getByRole("button", { name: "Start a pitch", exact: true });
+  try { await lockedButton.click({ timeout: 10_000 }); }
+  catch (error) {
+    throw new Error(`locked Pitch control could not be clicked; enabled=${await lockedButton.isEnabled()} surface=${await page.locator("main").getAttribute("data-surface")} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))}`, { cause: error });
+  }
   const locked = await lockedCreate;
+  if (locked instanceof Error) {
+    throw new Error(`locked Pitch create emitted no response; surface=${await page.locator("main").getAttribute("data-surface")} minigame_responses=${JSON.stringify(minigameResponses)} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))}`, { cause: locked });
+  }
   const lockedBody = await locked.json();
   if (locked.status() !== 409 || lockedBody.category !== "not_eligible" || lockedBody.detail !== "fiscal_unlock_required") {
     throw new Error(`locked Pitch create was not the typed fiscal rejection (${locked.status()}): ${JSON.stringify(lockedBody)}`);

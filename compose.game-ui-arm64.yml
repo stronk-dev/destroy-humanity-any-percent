@@ -1,0 +1,7 @@
+# Local ARM64 override for the composed Game UI witness. Hosted x86 CI uses
+# compose.game-ui-test.yml alone; this selects the matching Postgres image on
+# ARM hosts without changing the test database, port or service name.
+services:
+  game-ui-postgres:
+    image: arm64v8/postgres:16-alpine
+    platform: linux/arm64

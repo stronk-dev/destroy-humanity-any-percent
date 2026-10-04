@@ -187,12 +187,14 @@ test-browser:
 test-browser-ci:
 	docker compose -f compose.browser-test.yml run --rm browser
 
-# Real browser -> Vite proxy -> composed gameserver/Postgres. The visible
-# visitor counter is the assertion that runtime.ts completed its actual
-# Centrifuge WebSocket handshake, not a mocked socket exchange.
+# Real browser -> composed gameserver/Postgres. Both drivers require the
+# visible visitor counter: runtime.ts completed its actual Centrifuge
+# WebSocket handshake, not a mocked socket exchange.
+GAME_UI_COMPOSE_FILES ?= -f compose.game-ui-test.yml
 test-game-ui-composed:
-	docker compose -f compose.game-ui-test.yml up -d --wait game-ui-postgres
+	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-game-ui-composed.mjs
+	node client/tools/test-cosmetic-composed.mjs
 
 verify-game-ui: verify-client test-browser test-game-ui-composed
 

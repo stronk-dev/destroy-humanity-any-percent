@@ -20,8 +20,9 @@ migration take the next free numbers at landing.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
-- [ ] AC14 composed real-server witness (Buy → reload under the N5 trap, with a severed-producer
-  failing case). **Carried:** this needs an epoch that pins `cosmetics`; fixture-first, no mint.
+- [x] AC14 composed real-server witness (Buy → reload under the N5 trap, with a severed-producer
+  failing case). A test-only epoch pins `cosmetics`; no production mint. The test and checkbox
+  land in the same range; Claude's designated review remains an independent archival gate.
 - [ ] C6/AC11 keyboard acceptance supplement (RP-167): real Enter and Space Buy activation is
   mutation-proven; the cold Linux three-engine lane passes, while Firefox cannot start on this
   macOS 27 host. The test-only Codex range still needs Claude's designated review. Do not cite
@@ -29,7 +30,8 @@ migration take the next free numbers at landing.
 - [ ] C7/AC13 N5 network witness (RP-168): a browser-level observer now captures four HTTP
   transport/resource classes on a disallowed served path in the cold Linux three-engine lane,
   with RP-170's full-suite race corrected and a fired listener-severing control. Off-origin
-  attempts blocked before a request and the real-server AC14 flow are not proved; Claude's
+  attempts blocked before a request remain unproved; the real-server AC14 flow is now locally
+  witnessed but awaits Claude's cross-party review. Claude's
   review of both Codex test ranges is required.
 - [ ] Integrated pet-panel overlay (release manifest G10) and owner adoption of the candidate copy.
 - [ ] Designated cross-party review (Codex) and archival. Not self-approved.
