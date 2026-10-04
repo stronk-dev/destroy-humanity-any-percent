@@ -944,3 +944,7 @@ Product/evidence source `cdc6c20c`. TT1's scaler clamps `typer.era_tier` to 1..9
 ## 2026-10-04 — Typer B1 result-bound authority gap
 
 Codex's B1 review found RP-162: TT4.7 says `ValidateResult` checks `lines_cleared ≤ run_length`, while the shipped `Tenant.ValidateResult(*Result)` interface carries no pinned run length. A temporary cold diagnostic showed a nine-line result accepted against the fixture's eight-line run, then was removed with the tree clean. The normal engine still stops at eight and the platform does not accept client-submitted scores, so this is a false independent-validator claim, not a demonstrated payout exploit. The Typer/Minigame Platform ruling authors must choose a context-bearing validation route or reconcile an engine/replay-owned bound and its negative witness. B1/AC7 stays partial; no spec or product change was made for this gap.
+
+## 2026-10-04 — Typer AC2 seeded-order evidence
+
+Codex independently severed `typer.prompts.v1` in Go and TS one at a time. The Go corpus gate failed stale; TS failed both the first replayed terminal state and its explicit dealt-order check. After restoration, cold Go content-gate and full client tests passed. The detailed targeted evidence is in the Typer log. This verifies AC2's current mechanism only, not a designated verdict for all of Claude's B1 commit or an archival gate. B1 remains partial on RP-162, cross-party review of Codex corrections, and the rest of the range.
