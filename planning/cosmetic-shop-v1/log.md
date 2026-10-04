@@ -535,3 +535,18 @@ mint.**
   two near-miss controls; `make copy-check` passed; full `make test-client`
   passed 6912 with browser-only skips; `make typecheck` reported zero errors
   or warnings. These are C7 context checks, not a full AC13 or release verdict.
+
+## 2026-10-04 — RP-168 final local gate and review coordinate
+
+- Predeclaration `459858f6`; test-only observer, fired negatives, ledger and
+  queue landed in `f58a0f6e`. Claude's designated review must cover
+  `459858f6^..f58a0f6e` plus this coordinate record commit. Codex did not
+  self-approve the C7 correction or Claude's original C7 range.
+- Sequential final current-HEAD runs passed seven scoped host+shelf tests in
+  Chromium and seven in WebKit; each invocation's performance sublane passed.
+  Full client unit suite passed 6912 with 85 browser-only skips; typecheck
+  reported zero errors or warnings. `make verify-no-payment` and
+  `make copy-check` passed. Firefox's independent browser-session timeout
+  from RP-167 remains unresolved on this host; it was not rerun for this
+  C7 supplement. AC14, off-origin pre-request observation and copy adoption
+  remain open.
