@@ -3972,3 +3972,22 @@ full `verify-push` claim.
   independently witnessed check, exactly as Claude disclosed. Both mutations were
   restored, the focused population reran cold green, and `git diff --exit-code` is clean.
   The earlier log's follow-up to audit final-run table rows individually remains open.
+
+## 2026-10-04 — Codex targeted R18 review: two negative producers are unwitnessed
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `82a78b53^..82a78b53`
+  for the migration and missing-rollback-input producers. **Decision:** **CHANGES REQUIRED
+  (RP-141)** for those two claimed R-006 negatives. The epoch bundle mutation remains in
+  the generic probe path; this verdict does not pronounce on every R18 path.
+- Inspected the new `probe_release.go`, dispatch, tests and the earlier diagnostic-run
+  record. No test invokes either `runIrreversibleMigrationProbe` or
+  `runMissingPreviousInputProbe`; the `plan_test.go` rows only list their names. Codex
+  temporarily replaced both dispatch arms with unconditional `ProbeRejected, nil`.
+  Cold root `make test-go GO_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal'
+  GO_TEST_FLAGS='-count=1'` still passed. The original dispatch was restored exactly.
+- The 2026-09-24 log records exit 3 for both CLI probes on `diag-*` bundles, but neither
+  bundle nor its build record is retained, so this review cannot replay those results.
+  A fixture for each producer must show that intact release/rollback inputs reach the
+  relevant gate, the named mutation is refused for the intended reason, and severing
+  that producer makes a cold test fail. Until then the rows are not independently
+  witnessed and may not be counted toward clean-host R-006 acceptance.

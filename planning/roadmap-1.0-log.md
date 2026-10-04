@@ -690,3 +690,22 @@ Both were restored and tests reran green. The exact Docker prefix filter also re
 project's existing volumes on the live daemon. The Deployment log records **APPROVED** for
 R13 only; no actual ACME-bearing volume was deleted, and clean-host R-006, the wider review
 union and the unresolved R12 producer-identity gate remain open.
+
+## 2026-10-04 — R14–R18 bounded review; two proof gaps corrected, one remains
+
+Codex reviewed Claude's R14–R18 commits in sequence. R14's build-record-to-bundle
+comparison is sound in the bounded unit lane, but its original tests did not exercise the
+previous-release branch: removing that branch left the suite green. A Codex-added
+self-consistent previous-record corruption now fails on the severing and passes restored.
+R15's probe test likewise passed without its manifest-rebind call; a Codex-added artifact
+and SBOM hash assertion now fails on the severing. Both Codex test corrections await Claude
+cross-party review. The R16 envelope-commit and R17 browser-manifest batches received
+bounded designated approvals with executed severing checks; neither establishes R-006.
+
+R18's migration and missing-rollback-input negative producers have no invoking tests.
+Replacing both dispatch arms with unconditional `ProbeRejected, nil` left the cold rehearsal
+and CLI packages green. RP-141 records CHANGES REQUIRED: add reproducible positive/negative
+fixtures and producer severing before these rows count. Earlier diagnostic bundles were not
+retained, so their recorded CLI exits cannot substitute for release-artifact evidence. The
+Deployment review union, R5 composed amd64 lane, D-019 recovery-proof choice, kernel CI
+repair, owner/privacy/accessibility decisions and real clean-host R-006 all remain open.
