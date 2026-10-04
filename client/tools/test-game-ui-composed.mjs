@@ -318,10 +318,18 @@ async function playPitchThroughUI(page, accessToken) {
   await page.getByText("Locked. Unlock it with Fiscal credit first.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
 
   await unlockPitchWithFiscalIntents(accessToken);
+  const beforeSession = await founderState(accessToken);
+  if (beforeSession?.transitions?.wind_down?.eligible !== true) {
+    throw new Error(`Tier-1 Wind Down was not eligible before Pitch: ${JSON.stringify(beforeSession?.transitions)}`);
+  }
   const create = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 });
   await page.getByRole("button", { name: "Start a pitch", exact: true }).click();
   const created = await create;
   if (created.status() !== 200) throw new Error(`unlocked Pitch create failed (${created.status()}): ${JSON.stringify(await created.json())}`);
+  const duringSession = await founderState(accessToken);
+  if (duringSession?.transitions?.wind_down?.eligible !== false) {
+    throw new Error(`active Pitch session offered Wind Down: ${JSON.stringify(duringSession?.transitions)}`);
+  }
 
   let commands = 0;
   const terminal = page.getByText("Credited to the company", { exact: false });
@@ -370,6 +378,10 @@ async function playPitchThroughUI(page, accessToken) {
   }
   const current = await fetch(`${gameserverURL}/api/v1/minigames/sessions/current`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((response) => response.json());
   if (current.kind !== "none") throw new Error(`resolved Pitch session is still current: ${JSON.stringify(current)}`);
+  const afterSession = await founderState(accessToken);
+  if (afterSession?.transitions?.wind_down?.eligible !== true) {
+    throw new Error(`Tier-1 Wind Down did not return after Pitch: ${JSON.stringify(afterSession?.transitions)}`);
+  }
   await page.getByRole("button", { name: "Back to the desk", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
   return { commands, credited: receipt.credited_delta, companyRevision: receipt.company_revision, refreshedRevision };
@@ -576,6 +588,10 @@ try {
   // surface exists yet, and no database row is written for eligibility.
   const opportunity = await witnessOpportunityClaim(page);
   console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks, claimed ${opportunity.effect_row_id} (${opportunity.expired_claims} expired attempts), effect visible in the next snapshot: PASS`);
+  seedGateRequirement(liveSnapshot.body.run.founder_id);
+  await page.reload({ waitUntil: "networkidle" });
+  const pitchTierGate = await waitForEnabledButton(page, "Move Into the Garage");
+  await clickAppliedIntent(page, pitchTierGate, "Pitch-run cross-gate");
   const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
   console.log(`composed Pitch surface: unlock via Fiscal intents, ${pitch.commands} UI commands, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
