@@ -3821,3 +3821,25 @@ full `verify-push` claim.
 - Codex's predeclaration/finding and implementation commits are `c474e0c3` and `c9c9dde7`;
   Claude's designated review should cite the exact correction range
   `c474e0c3^..c9c9dde7`. This routing record is not a new test or approval.
+
+## 2026-10-04 — Codex targeted R10 review: host integrity is not restore authority
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `1f376ccc^..1f376ccc`,
+  limited to the host-envelope preflight claim and its new witness. **Decision:** **CHANGES
+  REQUIRED (RP-139)** for the canonical claim, not for the checksum mechanism. The new
+  `ReadHeader` call checks real host bytes and rejects a misreported header/corrupt payload;
+  cold `deploymentrelease` and `deploymentrehearsal` packages pass. Temporarily substituting
+  the reported header for the host re-read made the differing-header test fail with
+  `reported header differing from the host envelope accepted: <nil>`. The call was restored,
+  `git diff --exit-code` confirmed no code/test residue, and both packages reran green.
+- The positive R10 fixture configures an invalid restore identity string while a separate
+  generated recipient encrypts the backup; `CreatePreUpgradeBackup` still succeeds. This is
+  consistent with DP6 keeping the identity off-host until explicit restore, but contradicts
+  the R10 documentation's broad “rather than proceeding without a working rollback” claim.
+  Host checksum/header agreement cannot prove recipient-key match or Postgres restoratability.
+- Codex corrected only `docs/deployment.md` to state the actual host-byte guarantee and the
+  unproved decrypt/restore boundary. The new D-019 owner decision frames what per-release
+  recoverability proof is required before a supported release; no extra key mounting or
+  release mechanic was invented. The actual clean-host R-006 recovery remains mandatory.
+  This documentation/decision correction requires Claude's designated review. R10/full
+  Deployment is not approved or archived by the package tests.

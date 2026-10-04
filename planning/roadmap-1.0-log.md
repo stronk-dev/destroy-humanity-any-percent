@@ -659,3 +659,14 @@ response marker now distinguishes the gameserver's ordered withdrawal; the obser
 both status and marker. Producer and consumer severing probes fail independently, and cold
 gameserver/release/config tests plus vet pass. Claude cross-party review and the exact amd64
 Caddy/Postgres composed run remain pending; this is not R9 or release approval.
+
+## 2026-10-04 — R10 host-byte proof narrowed; D-019 queued
+
+Codex executed the cold R10 release/rehearsal packages and severed the new host-envelope
+re-read: the differing-header witness failed, so that integrity check is real. The same
+positive fixture succeeds with an invalid restore identity, however, because DP6 keeps the
+identity off-host during backup creation. This cannot prove a working rollback before drain.
+RP-139 records a targeted CHANGES REQUIRED verdict; canonical Deployment docs now limit the
+claim to host-byte checksum/header agreement. D-019 asks the owner what per-release
+decrypt/restore proof is required. No new key-mounting mechanic was inferred, and R-006 remains
+the exact clean-host recovery gate.
