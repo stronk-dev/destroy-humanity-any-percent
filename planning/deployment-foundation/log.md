@@ -3637,3 +3637,25 @@ command packages and `deploymentrelease`, followed by validation of the retained
 candidate build *records*. Those historical records passing structural validation does not
 rebuild or validate their old bundles as current R-006 inputs. RP-131 still prevents a green
 full `verify-push` claim.
+
+## 2026-10-04 — Codex designated review of Claude R4 manifest cross-binding
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `751717f4^..751717f4`
+  only (R4). **Decision:** **APPROVED** for this bounded range, not for R1–R22, DP-B/DP-F,
+  archival, or a release claim.
+- Inspected the full R4 diff, accepted R4 predeclaration, `ValidateBundle`, the manifest's
+  image-name/order validation, Compose service validation, runtime closure derivation, exact
+  staged-file validation, and the matching canonical Deployment documentation. The migration
+  claim is explicitly runtime-bound and was not promoted to a bundle-level proof.
+- Cold root `make test-go GO_PACKAGES='./releasepackage'
+  GO_TEST_FLAGS='-run TestValidateBundleBindsManifestClaimsToComposeAndContent -count=1 -v'`
+  passed all seven forged-claim cases; cold whole-package `-count=1` passed after restoration.
+  A temporary severing probe removed both new `ValidateBundle` bindings. All seven forgeries
+  then passed validation and the focused test failed on every case with `forged manifest claim
+  accepted: <nil>`. The exact bindings were restored; `git diff --exit-code` confirmed no
+  product/test residue. A scratch-worktree creation was denied by local `.git` permissions,
+  so the reversible probe ran in the primary checkout instead.
+- This proves the seven checked R4 claims discriminate at package level. It does not validate
+  retained historical bundles on this host, the runtime database-migration check, clean-host
+  R-006, or any other Deployment batch. Prior R1–R3 CHANGES REQUIRED findings and Codex
+  correction ranges awaiting Claude review remain unchanged.

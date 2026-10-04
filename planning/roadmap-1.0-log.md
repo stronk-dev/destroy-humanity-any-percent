@@ -609,3 +609,12 @@ on pushed `50a3a514`, and no full `verify-push` success or release proof is infe
   archive, rebuilt candidate or clean-host R-006 artifact was scanned. This does not claim
   Docker currently emits V7 layers, only that the stated recursive-tar scanner contract
   was previously false for a Go-readable format. No Deployment archival or release claim.
+
+## 2026-10-04 — Bounded Deployment R4 designated review
+
+Codex designated-reviewed Claude's manifest cross-binding commit `751717f4^..751717f4`
+and recorded **APPROVED** in the Deployment log. Cold forged-claim tests passed; removing
+both new validation calls made all seven forged claims pass validation and failed the test,
+then the source was restored and the package passed cold. This closes only R4's review
+boundary. R1–R3 findings, the remaining Claude implementation range, the three Codex
+corrections awaiting Claude review, RP-131's red CI gate and clean-host R-006 remain open.
