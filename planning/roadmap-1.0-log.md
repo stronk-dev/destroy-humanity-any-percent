@@ -928,3 +928,7 @@ Evidence source `1260be38`; product source remains `19f71825`. Six same-day Type
 ## 2026-10-04 — Typer B7 replay quota-forgery negative
 
 Evidence source `11c7af4b`; product source remains `19f71825`. A separate fixture-derived validation negative now accepts the honest exhausted-quota forfeit and rejects a forged sixth credit. Broadening the replay comparison from `<` to `<=` makes the new test fail; the mutation was restored. This resolves RP-159's narrow test gap, not a full forged-log end-to-end or public MA journey. Cold production tests, real-Postgres `TestTyper`, and vet pass. Claude's designated cross-party review of this Codex range and the full 1.0 release floor remain open.
+
+## 2026-10-04 — Typer B5 partial cross-party verdict
+
+Codex designated-approved Claude's `d7c1ce6e^..d7c1ce6e` error-detail increment after cold account/public API tests, unchanged generated API artifacts and v1 pin, and a tier-detail mutation that failed its exact 409-body assertion. The precise verdict is in `planning/minigame-terminal-typer/log.md`. The approval is only for B5's response-enum and handler mapping subset; the TT-PA4 versus API C2 public-wire conflict still blocks request/snapshot arms, generated client and the MA-endpoint acceptance path. No B5 checkbox or Typer lifecycle status changed.
