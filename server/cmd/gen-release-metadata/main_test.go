@@ -42,11 +42,11 @@ func clientFixture(t *testing.T, license string) string {
 	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "index.js.map"),
 		`{"version":3,"sources":["../../src/main.ts","../../node_modules/.pnpm/pad-end@1.0.2/node_modules/pad-end/index.js","../../node_modules/.pnpm/@scope+pkg@2.0.0/node_modules/@scope/pkg/dist/index.js"],"mappings":""}`)
 	writeFixture(t, filepath.Join(root, "client", "dist", "css-dependency-graph.json"),
-		`{"schema_version":1,"assets":[],"package_css_modules":[]}`)
+		`{"schema_version":2,"assets":[],"package_css_modules":[],"package_css_assets":[]}`)
 	return root
 }
 
-func writeCSSFixtureGraph(t *testing.T, root string, styles map[string]string, modules []string) {
+func writeCSSFixtureGraph(t *testing.T, root string, styles map[string]string, modules []string, assets ...string) {
 	t.Helper()
 	graph := struct {
 		SchemaVersion int `json:"schema_version"`
@@ -55,7 +55,8 @@ func writeCSSFixtureGraph(t *testing.T, root string, styles map[string]string, m
 			SHA256 string `json:"sha256"`
 		} `json:"assets"`
 		PackageCSSModules []string `json:"package_css_modules"`
-	}{SchemaVersion: 1, PackageCSSModules: modules}
+		PackageCSSAssets  []string `json:"package_css_assets"`
+	}{SchemaVersion: 2, PackageCSSModules: append([]string{}, modules...), PackageCSSAssets: append([]string{}, assets...)}
 	graph.Assets = make([]struct {
 		Path   string `json:"path"`
 		SHA256 string `json:"sha256"`
@@ -169,5 +170,60 @@ func TestClientInventoryIncludesCSSOnlyPackageAndBindsStyles(t *testing.T) {
 	}
 	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
 		t.Fatalf("missing package stylesheet accepted: %v", err)
+	}
+}
+
+func TestClientInventoryIncludesCSSURLAssetOnlyPackage(t *testing.T) {
+	root := clientFixture(t, "MIT")
+	module := "node_modules/.pnpm/asset-only@1.0.0/node_modules/asset-only/logo.svg"
+	packageRoot := filepath.Join(root, "client", "node_modules", ".pnpm", "asset-only@1.0.0", "node_modules", "asset-only")
+	writeFixture(t, filepath.Join(packageRoot, "package.json"), `{"name":"asset-only","version":"1.0.0","license":"MIT"}`)
+	writeFixture(t, filepath.Join(packageRoot, "LICENSE"), mitText)
+	writeFixture(t, filepath.Join(packageRoot, "logo.svg"), `<svg><text>fixture-logo</text></svg>`)
+	writeCSSFixtureGraph(t, root, map[string]string{"assets/style.css": "body{background:url(data:image/svg+xml;base64,fixture)}\n"}, nil, module)
+	dependencies, err := discoverClientDependencies(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	notices, err := releasepackage.ThirdPartyNotices(dependencies)
+	if err != nil || !strings.Contains(string(notices), "asset-only 1.0.0 (npm)") {
+		t.Fatalf("CSS URL asset package missing from delivered notices: %v", err)
+	}
+	if err := os.Remove(filepath.Join(packageRoot, "logo.svg")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("missing CSS URL package asset accepted: %v", err)
+	}
+}
+
+func TestClientInventoryIncludesWorkerCSSOmittedByJavaScriptMap(t *testing.T) {
+	root := clientFixture(t, "MIT")
+	module := "node_modules/.pnpm/style-only@1.0.0/node_modules/style-only/theme.css"
+	packageRoot := filepath.Join(root, "client", "node_modules", ".pnpm", "style-only@1.0.0", "node_modules", "style-only")
+	writeFixture(t, filepath.Join(packageRoot, "package.json"), `{"name":"style-only","version":"1.0.0","license":"MIT"}`)
+	writeFixture(t, filepath.Join(packageRoot, "LICENSE"), mitText)
+	writeFixture(t, filepath.Join(packageRoot, "theme.css"), "body { color: red; }\n")
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "worker.js"),
+		"console.log('worker')\n//# sourceMappingURL=worker.js.map\n")
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "worker.js.map"),
+		`{"version":3,"sources":["../../src/worker.ts"],"mappings":""}`)
+	writeCSSFixtureGraph(t, root, map[string]string{}, []string{module})
+	dependencies, err := discoverClientDependencies(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	notices, err := releasepackage.ThirdPartyNotices(dependencies)
+	if err != nil || !strings.Contains(string(notices), "style-only 1.0.0 (npm)") {
+		t.Fatalf("worker CSS package omitted by JavaScript map missing from graph notice: %v", err)
+	}
+}
+
+func TestClientInventoryRejectsStaleCSSGraphSchema(t *testing.T) {
+	root := clientFixture(t, "MIT")
+	writeFixture(t, filepath.Join(root, "client", "dist", "css-dependency-graph.json"),
+		`{"schema_version":1,"assets":[],"package_css_modules":[]}`)
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("stale CSS graph without URL-asset provenance accepted: %v", err)
 	}
 }

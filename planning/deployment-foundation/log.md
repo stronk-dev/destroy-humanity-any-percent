@@ -4253,3 +4253,113 @@ pre-existing pushed kernel-history failure still prevents calling aggregate
   The owner must select actual policy options before body reconciliation.
   Do not cherry-pick the draft as active authority or implement its
   recommendations in Marco's name. The worktree and its commit are preserved.
+
+## 2026-10-04 — RP-164 follow-up predeclaration: CSS resource and worker boundaries
+
+- **Question:** does the new main-build CSS graph omit npm material shipped
+  only through a stylesheet `url(...)` resource or a Vite worker's stylesheet?
+  The prior exact range explicitly left both surfaces open, so neither is
+  counted as packaging-rights closure.
+- **Population:** a real Vite fixture with a local CSS file referring to a
+  small file inside an installed npm package via `url(...)`, and a separate
+  real Vite worker fixture importing a package CSS file. Retain the direct
+  and nested `@import` controls from RP-164. Inspect final emitted bytes and
+  graph, not just source text; only count a case if the package file's bytes
+  actually ship or are inlined into a shipped asset.
+- **Firing criterion:** the build succeeds and ships the package bytes, but
+  the graph lists no path in that package and the metadata inventory would
+  omit its notice. A fixture that cannot build or whose bytes are not shipped
+  is invalid, not a green or red rights result.
+- **If fired:** under accepted DP1/AC8, make the producer and Go inventory
+  capture the missing resource path, bind final asset bytes, and add a test
+  that fails when that producer route is severed. If the Vite architecture
+  cannot provide a trustworthy path for a case, fail closed rather than
+  claiming complete client attribution. No clean-host/image AC8 proof or
+  cross-party verdict follows from this local test.
+
+## 2026-10-04 — RP-165 CSS URL probe fired; worker arm did not
+
+- The URL fixture built with Vite and emitted a CSS data URI. The test decoded
+  its base64 SVG and found the `fixture-logo` sentinel, proving the package
+  bytes shipped; the first diagnostic mistakenly searched the encoded CSS
+  text for raw sentinel bytes and was corrected before assessing attribution.
+  With that control valid, the v1 graph still had no package path and the
+  fixture failed at `expected [] to include node_modules/style-only/logo.svg`.
+- The worker fixture also shipped `worker-style-sentinel`, but its generated
+  JavaScript source map contained the package stylesheet path in `sources`.
+  Therefore the metadata generator's existing map walk could attribute it;
+  the predeclared omission criterion did **not** fire for worker CSS. A Go
+  worker-map fixture now proves that such a source reaches the delivered
+  notice. No worker-specific graph or unsupported-host claim was invented.
+- A bounded v2 CSS graph adds `package_css_assets`. The build hook follows
+  stylesheet `url()` references to installed package files; the Go generator
+  requires v2, resolves the new paths to package manifest/LICENSE and unions
+  them with stylesheet and JavaScript-map packages. An asset-only package
+  reaches delivered notices; a missing asset and a stale v1 graph reject.
+  The final emitted CSS hash still binds the inlined asset bytes. The current
+  product build emits no package URL resource; real metadata generation still
+  reports 53 dependencies.
+- Temporary severing of `resources.add` failed the Vite URL fixture at the
+  named asset path; severing the Go v2 asset-path loop failed the asset-only
+  notice fixture. Both were restored. The full client suite (6912 pass, 83
+  skip) and cold focused Go package pass before final gate aggregation.
+  This is local Codex implementation under accepted DP1/AC8, not cross-party
+  approval, a final bundle/image rights proof, or R-006 evidence.
+
+## 2026-10-04 — Correction to worker arm: raw map text was a false oracle (RP-166)
+
+- The previous entry's worker conclusion was wrong. Its first check searched
+  raw `.js.map` bytes for `style-only/theme.css`; that string came from the
+  worker source's import text, not from the map's `sources` array. The stronger
+  final gate parsed `sources` and failed: the worker CSS sentinel shipped in
+  an emitted asset, but no package stylesheet was listed in either the main
+  graph or the map sources. This is RP-166, a real under-attribution route.
+- A diagnostic `worker.plugins` hook printed the worker bundle's module IDs
+  and showed the exact `node_modules/style-only/theme.css` file. The permanent
+  hook now shares package-module/resource sets between the main and worker
+  builds; Vite config installs the worker hook explicitly. The real worker
+  fixture asserts shipped sentinel bytes, map-source absence and graph
+  inclusion. A Go fixture has a worker JavaScript map with only `worker.ts`
+  in `sources` and proves the worker CSS package still reaches notices through
+  the graph. The diagnostic print hook was removed.
+- This correction retracts the prior worker-map claim in the RP-165 entry and
+  in its initial planning/roadmap text; canonical docs, backlog, plan and
+  current queue now use the executed stronger result. No clean-host or full
+  AC8 claim follows, and Claude's designated review remains required.
+
+## 2026-10-04 — RP-166 worker provenance severing controls
+
+- Removing the worker hook's `scanBundle` call (while leaving the main hook
+  intact) made the real Vite worker fixture fail exactly at the absent
+  `node_modules/style-only/theme.css` graph path. The shipped-byte and
+  source-map-absence controls passed first. Restoring the hook restores the
+  fixture.
+- Separately removing the Go stylesheet-module consumption loop made
+  `TestClientInventoryIncludesWorkerCSSOmittedByJavaScriptMap` fail at the
+  delivered-notice assertion. The original loop was restored. These probes
+  discriminate the worker producer and its metadata consumer independently;
+  they do not substitute for a final image or bundle audit.
+
+## 2026-10-04 — RP-165/RP-166 final local gate and handoff
+
+- `make test-client`: 6912 passed, 83 skipped; `make typecheck`: zero errors or
+  warnings; cold focused `make test-go GO_PACKAGES='./cmd/gen-release-metadata
+  ./releasepackage' GO_TEST_FLAGS='-count=1'`: both packages passed. `make vet`,
+  `make verify-client-boundary` and `make verify-ci-topology` passed (13 topology
+  negative controls rejected). `make build-client` emitted the v2 graph with
+  one final-byte-hashed CSS asset and empty package CSS sets for the current
+  product build; real `make generate-release-metadata` returned 53 dependencies.
+- The first metadata invocation supplied an abbreviated source commit and was
+  rejected as invalid release runtime content. Repeating with the full
+  40-character HEAD succeeded; this was an invocation error, not a dependency
+  inventory failure.
+- The first cold `make test-go-core` run could not bind existing `httptest`
+  loopback listeners in the restricted sandbox (`operation not permitted` in
+  deployment operations/release/alert tests). The exact same target reran with
+  narrowly scoped local-loopback permission and passed every package cold.
+  This is not a claim that the aggregate push gate is green: the pushed
+  historical kernel-version guard remains red, and the final bundle/image
+  and clean-host AC8/R-006 evidence is absent.
+- This Codex batch is ready for Claude's designated independent review over
+  its exact committed range. No RFC status, archival or release promotion is
+  authorized by these local gates.

@@ -985,3 +985,27 @@ authority and negative-producer gaps while claiming complete producer
 coverage. All three worktrees remain untouched and unmerged. The exact
 inventory and routes are in `planning/platform-alignment/log.md`; no owner
 policy, RFC acceptance or product behavior was inferred from them.
+
+## 2026-10-04 — CSS URL rights follow-up
+
+The RP-164 follow-up found RP-165: a Vite-built CSS `url()` inlined an npm
+SVG into shipped CSS while the v1 package graph omitted the asset-only
+package. A base64-decoded shipped-byte control made the omission test valid.
+The v2 graph and Go metadata reader now include such package resources and
+reject a missing file or stale v1 record; separate build-hook and Go-consumer
+severing probes fail. A worker-CSS arm did not fire: its JavaScript source map
+already named the package stylesheet, and a Go fixture confirms that map
+source reaches a notice. Current metadata remains at 53 dependencies with no
+package CSS URL resource. Cross-party review, final bundle/image rights and
+clean-host AC8 remain open; this does not advance a release claim.
+
+## 2026-10-04 — Worker CSS source-map inference retracted
+
+The prior CSS URL checkpoint inferred that worker CSS was covered because
+the raw source-map file contained the package path. Parsing its `sources`
+array disproved that: only the worker's import text carried the path, while
+the package CSS sentinel was actually shipped. RP-166 adds a shared Vite
+worker-build provenance hook and a Go notice fixture with no package source
+in the worker map. The raw-string inference is withdrawn, not silently
+overwritten. This remains locally implemented pending cross-party review and
+the exact release-bundle rights gate.

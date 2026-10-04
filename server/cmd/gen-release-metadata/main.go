@@ -252,9 +252,9 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 	return result, nil
 }
 
-// The build hook records CSS modules because Vite's production sourcemap
-// option does not emit a map for its extracted CSS asset. Its asset hashes
-// bind the graph to the exact CSS bytes being inventoried.
+// The build hook records main/worker CSS modules and their URL resources because
+// Vite's production sourcemap does not cover extracted CSS or all worker inputs.
+// Its asset hashes bind the graph to the exact CSS bytes being inventoried.
 func discoverCSSPackages(root, dist string, styles []string) ([]string, error) {
 	data, err := os.ReadFile(filepath.Join(dist, "css-dependency-graph.json"))
 	if err != nil {
@@ -267,10 +267,11 @@ func discoverCSSPackages(root, dist string, styles []string) ([]string, error) {
 			SHA256 string `json:"sha256"`
 		} `json:"assets"`
 		PackageCSSModules []string `json:"package_css_modules"`
+		PackageCSSAssets  []string `json:"package_css_assets"`
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	if decoder.Decode(&graph) != nil || decoder.Decode(&struct{}{}) != io.EOF || graph.SchemaVersion != 1 || graph.Assets == nil || graph.PackageCSSModules == nil {
+	if decoder.Decode(&graph) != nil || decoder.Decode(&struct{}{}) != io.EOF || graph.SchemaVersion != 2 || graph.Assets == nil || graph.PackageCSSModules == nil || graph.PackageCSSAssets == nil {
 		return nil, fmt.Errorf("%w: invalid CSS build graph", releasepackage.ErrInvalidContent)
 	}
 	actual := make(map[string]string, len(styles))
@@ -297,23 +298,31 @@ func discoverCSSPackages(root, dist string, styles []string) ([]string, error) {
 		return nil, fmt.Errorf("%w: CSS build graph omits an emitted asset", releasepackage.ErrInvalidContent)
 	}
 	packages := map[string]bool{}
-	previous = ""
-	for _, module := range graph.PackageCSSModules {
-		path := filepath.FromSlash(module)
-		if module <= previous || !filepath.IsLocal(path) || filepath.ToSlash(filepath.Clean(path)) != module ||
-			!strings.HasSuffix(module, ".css") || !strings.Contains("/"+module, "/node_modules/") {
-			return nil, fmt.Errorf("%w: invalid CSS package module %q", releasepackage.ErrInvalidContent, module)
+	for _, resourceSet := range []struct {
+		paths   []string
+		cssOnly bool
+	}{
+		{graph.PackageCSSModules, true},
+		{graph.PackageCSSAssets, false},
+	} {
+		previous = ""
+		for _, resource := range resourceSet.paths {
+			path := filepath.FromSlash(resource)
+			if resource <= previous || !filepath.IsLocal(path) || filepath.ToSlash(filepath.Clean(path)) != resource ||
+				(resourceSet.cssOnly && !strings.HasSuffix(resource, ".css")) || !strings.Contains("/"+resource, "/node_modules/") {
+				return nil, fmt.Errorf("%w: invalid CSS package resource %q", releasepackage.ErrInvalidContent, resource)
+			}
+			previous = resource
+			resolved := filepath.Join(root, "client", path)
+			if info, err := os.Stat(resolved); err != nil || info.IsDir() {
+				return nil, fmt.Errorf("%w: missing CSS package resource %q", releasepackage.ErrInvalidContent, resource)
+			}
+			directory, err := packageDirectory(resolved)
+			if err != nil {
+				return nil, fmt.Errorf("%w: CSS package resource has no package manifest %q", releasepackage.ErrInvalidContent, resource)
+			}
+			packages[directory] = true
 		}
-		previous = module
-		resolved := filepath.Join(root, "client", path)
-		if info, err := os.Stat(resolved); err != nil || info.IsDir() {
-			return nil, fmt.Errorf("%w: missing CSS package module %q", releasepackage.ErrInvalidContent, module)
-		}
-		directory, err := packageDirectory(resolved)
-		if err != nil {
-			return nil, fmt.Errorf("%w: CSS package module has no package manifest %q", releasepackage.ErrInvalidContent, module)
-		}
-		packages[directory] = true
 	}
 	directories := make([]string, 0, len(packages))
 	for directory := range packages {

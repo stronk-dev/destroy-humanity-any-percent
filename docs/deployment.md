@@ -86,12 +86,16 @@ and `tslib`) are attributed, and an aliased version (`break_infinity.js` 2.2.0, 
 the notations package also installs) is attributed as shipped. The client must be built with
 sourcemaps first; every emitted JavaScript asset must link to its own present map, and an orphan
 or mismatched map fails instead of yielding a partial inventory. The CSS build hook records
-contributing package stylesheets plus every emitted CSS asset and its final-byte SHA-256. The
-metadata generator rejects a missing graph, omitted CSS asset, changed CSS bytes or missing
-package stylesheet, and unions CSS-only packages with the JavaScript inventory. A real Vite
-fixture imports a package solely for its CSS and fails if the hook omits it. The current build
-has no package CSS module; this is build/metadata proof, not a clean-host bundle or completed
-AC8 verdict. A missing build fails. It reads shipped LICENSE/COPYING bytes directly
+contributing package stylesheets, package assets reached through CSS `url()`, and every emitted
+CSS asset with its final-byte SHA-256. The v2 graph is required; a v1 graph without URL-resource
+provenance refuses. The metadata generator rejects a missing graph, omitted CSS asset, changed CSS bytes or missing
+package stylesheet or URL resource, and unions CSS-only packages with the JavaScript inventory.
+Real Vite fixtures import package CSS directly and through a nested `@import`, inline a
+package SVG from `url()`, and import package CSS in a worker; each fails if its provenance is
+severed. The worker's JavaScript map does not list that stylesheet in `sources`, so the worker
+build hook contributes it to the shared v2 CSS graph.
+The current build has no package CSS module or package CSS URL resource; this is build/metadata
+proof, not a clean-host bundle or completed AC8 verdict. A missing build fails. It reads shipped LICENSE/COPYING bytes directly
 (whitespace-normalized so wrapped clauses match), recognizes only the audited 0BSD, MIT, ISC,
 Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
