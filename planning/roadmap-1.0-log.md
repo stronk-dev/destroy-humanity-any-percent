@@ -709,3 +709,13 @@ fixtures and producer severing before these rows count. Earlier diagnostic bundl
 retained, so their recorded CLI exits cannot substitute for release-artifact evidence. The
 Deployment review union, R5 composed amd64 lane, D-019 recovery-proof choice, kernel CI
 repair, owner/privacy/accessibility decisions and real clean-host R-006 all remain open.
+
+## 2026-10-04 — R19 lifecycle contract approved in unit scope
+
+Codex designated-approved Claude's R19 lifecycle release/rollback producer commit
+`1a8375af` in isolation. Reinstating the old rollback-row field clearing failed both
+controller and lifecycle tests; omitting the release transition failed the lifecycle
+two-row predicate. All four affected Go packages passed cold when restored, and CI
+topology validation passed. The fixture uses a fake runtime, so real Caddy drain,
+Postgres restoration, timing and host artifact evidence remain R-006 obligations; the
+R12 and R18 proof gaps are unchanged.

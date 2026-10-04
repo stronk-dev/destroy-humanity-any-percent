@@ -3991,3 +3991,27 @@ full `verify-push` claim.
   relevant gate, the named mutation is refused for the intended reason, and severing
   that producer makes a cold test fail. Until then the rows are not independently
   witnessed and may not be counted toward clean-host R-006 acceptance.
+
+## 2026-10-04 — Codex designated review of Claude R19 lifecycle producers
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `1a8375af^..1a8375af`
+  only. **Decision:** **APPROVED** for R19's controller rollback linkage and bounded
+  lifecycle producer/control-flow contract, not for a real host drain, database restore,
+  full DP-F or R-006.
+- Inspected the full R19 diff: Make/CLI routes call the production lifecycle functions;
+  the plan names those routes; the controller's successful rollback row retains the
+  rolled-back-from candidate; and the lifecycle result checks the exact install,
+  release and rollback ledger predicates used by final validation. Cold root
+  `make test-go GO_PACKAGES='./deploymentrelease ./deploymentrehearsal
+  ./cmd/deployment-release ./cmd/deployment-rehearsal' GO_TEST_FLAGS='-count=1'` passed,
+  as did `make verify-ci-topology` and its 13 negative controls.
+- Reinstating the old successful-rollback field clearing failed both
+  `TestSuccessfulRollbackRecordsTheReleaseItRolledBackFrom` and
+  `TestLifecycleProducersRunInstallReleaseAndRollbackInContractOrder`. Omitting the
+  lifecycle release transition failed the latter at its exact two-row check. Both
+  mutations were restored; all four Go packages reran cold green and `git diff
+  --exit-code` was clean.
+- The unit fixture uses a fake runtime and minimal manifests; it proves controller
+  order/ledger binding but not Caddy drain frames, Postgres data restore, timing,
+  Docker image availability or an operator-run release. R12 producer identity and
+  R18 negative-producer witnesses remain open, so no R-006 row is promoted here.
