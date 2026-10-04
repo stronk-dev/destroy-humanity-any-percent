@@ -895,3 +895,46 @@ them. It went unnoticed because the guard was already red on `8add475`'s pending
 - **Cross-party gate:** this Codex-authored correction and its record require
   Claude's exact-range designated review. No archive/status promotion follows
   from Codex's own test pass; the larger MA range also remains unreviewed.
+
+## 2026-10-04 — Codex MA3 unmount-during-start probe, predeclared
+
+- **Question:** after the player leaves the Soul surface while a start or
+  reconnect response is pending, can the late response start a heartbeat
+  scheduler on an unmounted component? MA3's surface lifecycle owns exactly
+  one visible-only scheduler while mounted; leaving must stop it.
+- **Population:** real browser component, deferred fake `port.start` response,
+  short beat interval. Click Begin, unmount before the promise resolves, then
+  resolve the response and wait beyond two beat intervals. Repeat for a
+  reconnect response after an already active session is paused.
+- **Criterion and negative control:** no `port.progress` call after unmount in
+  either arm. Current code's only `onDestroy` stop runs before the deferred
+  response; the test must fail on that code if a scheduler is created later.
+  A test that unmounts only after start settles is not discriminating.
+- **Limit:** this checks client lifecycle and heartbeat leakage, not server
+  cancellation or eventual session recovery on remount.
+
+## 2026-10-04 — Codex targeted MA3 lifecycle finding and RP-146 correction
+
+- **Review by:** Codex. **Recorded by:** Codex. **Inspected Claude changes:**
+  Soul surface in `b92a05de` and path-only move `79ff1aa1`. **Decision:**
+  **CHANGES REQUIRED** on the late-response lifecycle boundary; not a
+  range-union approval of the MA RFC.
+- Both predeclared browser negatives fired on the original code. A deferred
+  start response settled after unmount and sent three progress beats. A
+  deferred reconnect response settled after unmount and sent one additional
+  beat. `onDestroy` had stopped the former scheduler, but both async paths
+  rebound a new one afterward. This is RP-146.
+- **Codex correction:** a mount-lifetime flag is set before stopping the
+  scheduler. Begin and reconnect discard late responses before changing view
+  or binding a new scheduler. The two new cases plus the existing six Soul
+  browser cases pass in Chromium and WebKit. No server session, cancellation,
+  token or reward mechanics changed.
+- **Cold gates after correction:** `make typecheck` (0 diagnostics),
+  `make test-client` (6,905 passed, 79 browser-only skipped),
+  `make verify-client-boundary`, `make copy-check`, `make build-client`, full Chromium and WebKit `make test-browser`
+  selectors (6,983 passed, 1 skipped each; performance lane passed) all pass.
+  The Firefox-inclusive browser gate remains unverified because of the known
+  local Firefox launch failure from RP-145, not a product assertion.
+- **Cross-party gate:** Claude must designate-review this Codex correction
+  over its exact commit range. Neither this self-authored correction nor its
+  tests authorize MA archival or close the wider MA AC1–AC5 review.

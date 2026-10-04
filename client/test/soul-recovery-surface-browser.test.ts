@@ -39,7 +39,7 @@ class FakePort implements SoulRecoveryPort {
   starts: string[] = [];
   tokens: string[] = [];
   steady: SoulRecoveryProgressResponse | undefined;
-  startReplies: (() => SoulRecoveryStartResponse)[] = [];
+  startReplies: (() => SoulRecoveryStartResponse | Promise<SoulRecoveryStartResponse>)[] = [];
   progressReplies: (() => SoulRecoveryProgressResponse)[] = [];
   terminalReply: () => SoulRecoveryTerminalResponse = () => terminal("resolve");
   async start(activityID: string): Promise<SoulRecoveryStartResponse> { this.starts.push(activityID); const next = this.startReplies.shift(); if (!next) throw new Error("unexpected start"); return next(); }
@@ -237,4 +237,51 @@ it.skipIf(!browser)("sends no heartbeat when start completes in an already hidde
     if (originalVisibility) Object.defineProperty(document, "visibilityState", originalVisibility);
     else Reflect.deleteProperty(document, "visibilityState");
   }
+});
+
+it.skipIf(!browser)("does not start heartbeats when a pending start resolves after unmount", async () => {
+  const port = new FakePort();
+  const visibility = new FakeVisibility();
+  let releaseStart: (response: SoulRecoveryStartResponse) => void = () => { throw new Error("start was not pending"); };
+  port.startReplies.push(() => new Promise((resolve) => { releaseStart = resolve; }));
+  port.steady = progressed(1_000);
+  const { target, app } = mountSurface(port, visibility, { now: 1_000 });
+  let unmounted = false;
+  try {
+    await settle();
+    target.querySelector<HTMLButtonElement>("li button")!.click();
+    await settle();
+    expect(port.starts).toEqual(["defrag"]);
+    unmount(app);
+    unmounted = true;
+    releaseStart(started());
+    await settle(80);
+    expect(port.tokens).toEqual([]);
+  } finally { if (!unmounted) unmount(app); target.remove(); }
+});
+
+it.skipIf(!browser)("does not restart heartbeats when a pending reconnect resolves after unmount", async () => {
+  const port = new FakePort();
+  const visibility = new FakeVisibility();
+  port.startReplies.push(() => started());
+  port.progressReplies.push(() => { throw new MinigameTransportError("offline"); });
+  const { target, app } = mountSurface(port, visibility, { now: 1_000 });
+  let unmounted = false;
+  try {
+    await settle();
+    target.querySelector<HTMLButtonElement>("li button")!.click();
+    await settle(80);
+    expect(target.querySelector("[role=alert]")?.textContent).toContain("Connection lost");
+    let releaseStart: (response: SoulRecoveryStartResponse) => void = () => { throw new Error("reconnect was not pending"); };
+    port.startReplies.push(() => new Promise((resolve) => { releaseStart = resolve; }));
+    button(target, "Reconnect").click();
+    await settle();
+    expect(port.starts).toEqual(["defrag", "defrag"]);
+    const beatsBeforeUnmount = port.tokens.length;
+    unmount(app);
+    unmounted = true;
+    releaseStart(started(SESSION, TOKEN_2, 1_000));
+    await settle(80);
+    expect(port.tokens).toHaveLength(beatsBeforeUnmount);
+  } finally { if (!unmounted) unmount(app); target.remove(); }
 });

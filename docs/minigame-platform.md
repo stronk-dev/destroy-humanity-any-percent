@@ -126,7 +126,8 @@ bundled with the client.
 - **Heartbeat:** one `RecoveryScheduler` beats every `recovery_beat_ceiling_ms / 3` (SR-C6), and
   only while the page is visible. Its visibility adapter reads the document's current state when
   the scheduler subscribes, so a start response arriving after the tab was hidden cannot schedule
-  an initial beat. Progress is shown with a native `<progress>`.
+  an initial beat. Unmount stops the scheduler, and a start/reconnect response arriving after
+  unmount cannot create another one. Progress is shown with a native `<progress>`.
 - **Pauses:** a hidden tab pauses the session. A transport failure or a gap longer than the
   ceiling requires reconnecting. A required reconnect stays visible across a background/foreground
   cycle. Reconnect calls start again, which rotates the token for the same session. A different
@@ -146,7 +147,8 @@ and visibility. It covers axe checks in every state, beats, the hidden pause, th
 pause, a network pause with no beats replayed, reconnect token rotation, finish, the
 gone/watchdog/not-ready paths, and reconnect precedence across a background/foreground cycle.
 It also starts with the document already hidden and verifies that the first beat waits for a
-visible event.
+visible event, and defers both start and reconnect responses across unmount to prove that no
+heartbeat survives the surface.
 `make verify-client-boundary` now scans the `minigame/` and `soul/` Svelte components with the
 same literal, style, import and network rules as the Game UI.
 
