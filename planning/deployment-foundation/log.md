@@ -4056,3 +4056,21 @@ full `verify-push` claim.
   is claimed. Strict parsing also needs an actual amd64 composed CLI run to show the
   backup log arrives as the expected single structured stderr record; any extra
   Compose stderr fails closed as setup rather than counting a false rejection.
+
+## 2026-10-04 — Codex designated review of Claude R21 clean-host volume boundary
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `a1da95c5^..a1da95c5`
+  only. **Decision:** **APPROVED** for the bounded all-project-volume clean-start
+  correction, not for a clean-host R-006 result or the broader host attestation.
+- Inspected the full R21 diff. Cold `make test-go GO_PACKAGES='./deploymentrehearsal'
+  GO_TEST_FLAGS='-count=1'` passed. Temporarily narrowing the returned-name check
+  back to the Postgres volume left the retained certificate volume visible but made
+  `TestHostObservationRejectsEveryUnsupportedOrDirtyBoundary/retained_certificate_volume`
+  fail with `unsupported host accepted: <nil>`. The prefix check was restored and
+  the package reran green; `git diff --exit-code` is clean.
+- The exact `docker volume ls --quiet --filter=name=^cloud-clicker_` command on this
+  daemon returned three existing project cache volumes, confirming the filter reaches
+  non-Postgres project state. This machine is not a clean host and was not used as
+  R-006 evidence. The R21 record's correction to DESIGN-GAP 6 is limited to source
+  derivation; retaining raw identities for final re-verification remains an RFC-author
+  question.

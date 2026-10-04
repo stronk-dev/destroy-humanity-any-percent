@@ -729,3 +729,11 @@ backup restore refusal. Cold Go suites and vet pass; the old substring path fail
 new test. The pinned amd64 Postgres target exited before testing on this arm64 host, so
 Claude review and a working amd64 composed/host run remain necessary before R20 or
 R-006 can count. No overall release status changed.
+
+## 2026-10-04 — R21 clean-start volume boundary approved in isolation
+
+Codex designated-approved Claude's R21 `a1da95c5`: the cold host-observer test fails if
+the check is narrowed back to Postgres while a retained certificate volume exists. The
+live Docker filter also returned three project cache volumes, confirming it observes
+non-Postgres state on this machine. That demonstrates the rule, not a clean host;
+R-006 and the remaining evidence/decision gates are unchanged.
