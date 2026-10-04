@@ -948,3 +948,7 @@ Codex's B1 review found RP-162: TT4.7 says `ValidateResult` checks `lines_cleare
 ## 2026-10-04 — Typer AC2 seeded-order evidence
 
 Codex independently severed `typer.prompts.v1` in Go and TS one at a time. The Go corpus gate failed stale; TS failed both the first replayed terminal state and its explicit dealt-order check. After restoration, cold Go content-gate and full client tests passed. The detailed targeted evidence is in the Typer log. This verifies AC2's current mechanism only, not a designated verdict for all of Claude's B1 commit or an archival gate. B1 remains partial on RP-162, cross-party review of Codex corrections, and the rest of the range.
+
+## 2026-10-04 — Typer AC4/AC5 timing evidence
+
+Codex separately severed the exact-deadline comparison and backwards-clock max in Go and TS. Each of the four mutations failed the relevant unit or cross-runtime corpus witness; restored cold Go Typer and full client suites pass. The Typer log has the specific failure coordinates. This is bounded evidence for AC4/AC5 mechanics, not a full B1 verdict or an answer to the server-authored DB clock (AC3). RP-162's content-free result-validator gap and the public route remain open.
