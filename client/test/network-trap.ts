@@ -1,7 +1,7 @@
-// Cosmetic Shop v1 §10 N5: a browser network witness. While installed, every
-// fetch/WebSocket must target the same origin under an allowlisted path, and
-// PaymentRequest, navigator.credentials.* and window.open are trapped. Any
-// violation is recorded and fails the test that asserts `violations` empty.
+// Cosmetic Shop v1 §10 N5: trap direct fetch/WebSocket and payment APIs while
+// the browser-level request audit in vitest.browser.config.ts observes HTTP
+// requests made through other transports (XHR, beacon, resource loads). Both
+// signals must be clean; neither is cited as the real-server AC14 witness.
 const ALLOWED_PATHS = [/^\/api\//u, /^\/connection\/websocket$/u, /^\/@fs\//u, /^\/@vite\//u, /^\/node_modules\//u, /^\/src\//u, /^\/test\//u];
 
 export interface NetworkTrap { readonly violations: string[]; restore(): void }

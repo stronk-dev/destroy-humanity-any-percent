@@ -26,6 +26,10 @@ migration take the next free numbers at landing.
   mutation-proven in Chromium/WebKit; Firefox's session could not start on this host, and the
   test-only Codex range still needs Claude's designated review. Do not cite C6's old `.click()`
   test as keyboard proof or claim the three-engine gate complete.
+- [ ] C7/AC13 N5 network witness (RP-168): a browser-level observer now captures four HTTP
+  transport/resource classes on a disallowed served path in Chromium/WebKit, with a fired
+  listener-severing control. Off-origin attempts blocked before a request, Firefox and the real
+  server AC14 flow are not proved; Claude's review of the Codex test range is required.
 - [ ] Integrated pet-panel overlay (release manifest G10) and owner adoption of the candidate copy.
 - [ ] Designated cross-party review (Codex) and archival. Not self-approved.
 - [x] C8 Mechanical-isolation property test, package gates, docs (AC7, AC16).

@@ -500,3 +500,38 @@ mint.**
 - **Scope:** accepted §10 N5/AC13. No payment feature, player copy, endpoint or
   release policy change is authorized. C7's full designated verdict remains
   separate from this focused probe.
+
+## 2026-10-04 — Codex targeted C7/N5 finding and request-audit supplement (RP-168)
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed Claude range:**
+  `a4b22429^..a4b22429`, limited to N5's network-witness completeness.
+  **Decision: CHANGES REQUIRED for evidence.** `installNetworkTrap` patches
+  `fetch` and `WebSocket` but not XHR, `sendBeacon` or resource loads; the
+  C7 log's "every HTTP and WebSocket request" claim exceeded its observer.
+  No current production shop egress was demonstrated.
+- The predeclared Chromium probe used a disallowed local loopback checkout
+  URL. It recorded `fetch` but missed both XHR and beacon: expected three
+  violation labels, received only `fetch`. The test was not left red.
+- A test-only Vitest/Playwright command now attaches request and WebSocket
+  listeners to the actual browser page for the duration of the mocked shop
+  flow. The original API trap remains for direct PaymentRequest/credentials/
+  window.open refusal. A browser negative issues fetch, XHR, beacon and image
+  requests to the same-origin `/checkout` path (which the game allowlist
+  rejects) and requires all four to appear in the page observer. The real
+  shop-flow test requires both the direct trap and page-level request list to
+  be clean. Disabling only the new page `request` listener made the negative
+  fail at an empty request list; it was restored. Chromium and WebKit each
+  passed the three scoped host tests with the listener present.
+- The first browser-observer negative used a disallowed *unserved* loopback
+  port. Chromium recorded the attempts, but WebKit returned no request events
+  for that unreachable destination. Replacing it with a served same-origin
+  path outside the game allowlist made all four transport arms observable in
+  both engines. This shows path-policy discrimination and request capture;
+  it does **not** prove WebKit reports an off-origin attempt that is blocked
+  before a network request. The direct trap still catches fetch/WebSocket,
+  but XHR/beacon/image off-origin attempt coverage and a real-server AC14
+  flow remain open before N5 can be called complete.
+- `make verify-no-payment` passed with six built-in rejected fixtures and
+  two near-miss controls; `make copy-check` passed; full `make test-client`
+  passed 6912 with browser-only skips; `make typecheck` reported zero errors
+  or warnings. These are C7 context checks, not a full AC13 or release verdict.

@@ -3,9 +3,11 @@
 import { defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import type { Page, Request, WebSocket as PlaywrightWebSocket } from "playwright";
 
 const dependencyPath = (relative: string) => decodeURIComponent(new URL(relative, import.meta.url).pathname);
 const performanceOnly = process.env.VITE_GAME_UI_PERFORMANCE === "1";
+const requestAudits = new Map<string, { page: Page; urls: string[]; request: (value: Request) => void; socket: (value: PlaywrightWebSocket) => void }>();
 
 export default defineConfig({
   plugins: [svelte()],
@@ -25,6 +27,26 @@ export default defineConfig({
       enabled: true,
       headless: true,
       provider: playwright(),
+      commands: {
+        startRequestAudit({ provider, sessionId }) {
+          if (requestAudits.has(sessionId)) throw new Error("request audit already active");
+          const page = (provider as typeof provider & { getPage(id: string): Page }).getPage(sessionId);
+          const urls: string[] = [];
+          const request = (value: Request) => { urls.push(value.url()); };
+          const socket = (value: PlaywrightWebSocket) => { urls.push(value.url()); };
+          page.on("request", request);
+          page.on("websocket", socket);
+          requestAudits.set(sessionId, { page, urls, request, socket });
+        },
+        stopRequestAudit({ sessionId }) {
+          const audit = requestAudits.get(sessionId);
+          if (!audit) throw new Error("request audit not active");
+          audit.page.off("request", audit.request);
+          audit.page.off("websocket", audit.socket);
+          requestAudits.delete(sessionId);
+          return audit.urls;
+        },
+      },
       viewport: { width: 1280, height: 720 },
       instances: performanceOnly
         ? [{ browser: "chromium" }]

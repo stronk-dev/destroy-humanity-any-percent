@@ -70,6 +70,11 @@ async function assertAxe(target: HTMLElement, label: string): Promise<void> {
   expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical"), label).toEqual([]);
 }
 
+async function requestAudit() {
+  const { commands } = await import("vitest/browser");
+  return commands as typeof commands & { startRequestAudit(): Promise<void>; stopRequestAudit(): Promise<string[]> };
+}
+
 function button(target: HTMLElement, text: string): HTMLButtonElement {
   const found = [...target.querySelectorAll("button")].find((candidate) => candidate.textContent?.trim() === text);
   if (!found) throw new Error(`missing button ${text}`);
@@ -97,9 +102,15 @@ const staticCard = (target: HTMLElement) => [...target.querySelectorAll("section
 it.skipIf(!browser)("hides the shelf at T0, shows it at T1, keeps it once owned, and keeps the static card before activation", async () => {
   const runtime = new Runtime();
   runtime.current = withShop(undefined, 0);
-  const trap = installNetworkTrap();
-  const { target, dispose } = await mounted(runtime);
+  const observer = await requestAudit();
+  await observer.startRequestAudit();
+  let trap: ReturnType<typeof installNetworkTrap> | undefined;
+  let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+  let requests: string[] = [];
   try {
+    trap = installNetworkTrap();
+    fixture = await mounted(runtime);
+    const { target } = fixture;
     expect(shelf(target)).toBeNull();
     expect(staticCard(target)).toBe(true);
     runtime.current = withShop(arms["locked-at-tier-0"], 0);
@@ -127,7 +138,8 @@ it.skipIf(!browser)("hides the shelf at T0, shows it at T1, keeps it once owned,
     expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical")).toEqual([]);
     // N5: the whole shop flow issued no off-origin request and touched no payment API.
     expect(trap.violations).toEqual([]);
-  } finally { trap.restore(); await dispose(); }
+  } finally { requests = await observer.stopRequestAudit(); trap?.restore(); await fixture?.dispose(); }
+  expect(requests.filter((url) => !sameOriginAllowed(url, window.location.origin))).toEqual([]);
 });
 
 // N5 failing case: the trap itself records off-origin checkout and payment calls.
@@ -141,4 +153,26 @@ it.skipIf(!browser)("the network trap rejects off-origin checkout and PaymentReq
     expect(sameOriginAllowed("/api/v1/intents", window.location.origin)).toBe(true);
     expect(sameOriginAllowed("/checkout", window.location.origin)).toBe(false);
   } finally { trap.restore(); }
+});
+
+it.skipIf(!browser)("the browser-level audit records fetch, XHR, beacon and image egress", async () => {
+  const observer = await requestAudit();
+  await observer.startRequestAudit();
+  const destination = new URL("/checkout", window.location.origin).href;
+  expect(sameOriginAllowed(destination, window.location.origin)).toBe(false);
+  let requests: string[] = [];
+  try {
+    await window.fetch(`${destination}?via=fetch`).catch(() => undefined);
+    const request = new XMLHttpRequest();
+    request.onerror = () => {};
+    request.open("GET", `${destination}?via=xhr`);
+    request.send();
+    navigator.sendBeacon(`${destination}?via=beacon`, "probe");
+    const image = new Image();
+    image.src = `${destination}?via=image`;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  } finally { requests = await observer.stopRequestAudit(); }
+  expect(requests).toContain(`${destination}?via=fetch`);
+  expect(requests.filter((url) => url.startsWith(destination)).map((url) => new URL(url).searchParams.get("via")).sort())
+    .toEqual(["beacon", "fetch", "image", "xhr"]);
 });

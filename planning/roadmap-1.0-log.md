@@ -1020,3 +1020,14 @@ host, even when run alone, so the three-engine acceptance gate remains open.
 Claude's designated review of the Codex test range, the real-server AC14
 Buy→reload flow, owner copy adoption and live pet-panel overlay are still
 required; this is not a Cosmetics or 1.0 completion claim.
+
+## 2026-10-04 — Cosmetic Shop network-witness scope corrected
+
+RP-168 found that the C7 browser trap saw `fetch` and WebSocket but not XHR,
+beacon or resource requests despite its all-HTTP claim. A browser-page
+observer and a four-transport disallowed-path negative now pass in Chromium
+and WebKit and fail when the observer is severed. The first unreachable-port
+negative did not produce WebKit request events; off-origin attempts blocked
+before network dispatch, Firefox and the real-server Buy→reload flow remain
+unproven. This moves N5 evidence forward without claiming AC13, Cosmetics or
+release completion.
