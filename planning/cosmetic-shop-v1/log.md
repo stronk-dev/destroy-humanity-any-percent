@@ -477,3 +477,26 @@ mint.**
   at startup with `ENOTEMPTY`. The sequential rerun resolved that harness
   collision. Firefox remained unstarted after its independent 60-second
   session timeout; no three-engine pass is claimed.
+
+## 2026-10-04 — Codex C7/N5 network-witness predeclaration
+
+- **Question:** does `installNetworkTrap` actually observe every browser HTTP
+  request during the shop flow as Cosmetic Shop §10 N5/AC13 claim, or only
+  calls through its patched `fetch`/`WebSocket` APIs? The current source
+  patches neither `XMLHttpRequest` nor `navigator.sendBeacon`.
+- **Population and controls:** in the existing real-browser host test, install
+  the trap, issue a `fetch` to a disallowed loopback port as the positive
+  control, then issue an `XMLHttpRequest` and a `sendBeacon` to that same
+  disallowed local port. No secret or external host is involved. Catch network
+  errors; count violations recorded by the trap, not request success. Retain
+  the existing `PaymentRequest` and `window.open` controls.
+- **Firing criterion:** the fetch attempt is recorded, while an XHR or beacon
+  attempt is not. That is a witness-coverage defect, not proof that current
+  production shop code sends off-origin traffic. If the criterion fires,
+  either make the test's transport coverage accurate with failing cases for
+  each supported API or move N5 to a browser-level request observer that can
+  support its literal all-requests claim; do not relabel the narrow trap as
+  complete merely because production currently uses `fetch`.
+- **Scope:** accepted §10 N5/AC13. No payment feature, player copy, endpoint or
+  release policy change is authorized. C7's full designated verdict remains
+  separate from this focused probe.
