@@ -146,6 +146,34 @@ func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save
 
 var creditedDeltaPattern = regexp.MustCompile(`"credited_delta":"([^"]+)"`)
 
+func TestTyperReplayRejectsCreditPastDailyQuota(t *testing.T) {
+	bundle := typerFeatureBundle(t)
+	definition, ok := bundle.Minigames.Definition("typer")
+	if !ok {
+		t.Fatal("Typer definition missing")
+	}
+	const score = int64(7)
+	converted, err := minigame.ConvertPayout(score, definition.Fallback.RateReductionPPM,
+		definition.Payout.ConversionPPM, 0)
+	if err != nil || converted.ConvertedUnits <= 0 {
+		t.Fatalf("Typer score must convert to a positive payout: conversion=%+v err=%v", converted, err)
+	}
+	forfeited := minigameFaucetWire{AttendedDay: 0, QuotaBefore: definition.Payout.SendsPerDay,
+		QuotaAfter: definition.Payout.SendsPerDay, RemainderBeforePPM: 0,
+		RemainderAfterPPM: converted.ConversionRemainderPPM, ReducedScore: converted.ReducedScore,
+		ConvertedUnits: converted.ConvertedUnits, CreditedUnits: 0,
+		ForfeitedUnits: converted.ConvertedUnits, CapReasonKey: definition.Payout.CapReasonKey}
+	if err := validateFaucetReplay(forfeited, definition, score); err != nil {
+		t.Fatalf("valid exhausted-quota replay was rejected: %v", err)
+	}
+	forged := forfeited
+	forged.QuotaAfter++
+	forged.CreditedUnits, forged.ForfeitedUnits, forged.CapReasonKey = converted.ConvertedUnits, 0, ""
+	if err := validateFaucetReplay(forged, definition, score); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("replay admitted a forged sixth credit: %+v err=%v", forged, err)
+	}
+}
+
 // TT-PA2: prove the public create coordinator's server-owned gate, not only
 // the older direct StartMinigameSession path exercised below.
 func TestTyperAPIStartIntegrationUsesPinnedTierAndExit(t *testing.T) {
