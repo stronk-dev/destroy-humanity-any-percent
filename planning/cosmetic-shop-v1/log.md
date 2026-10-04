@@ -597,3 +597,26 @@ first filter). **Recorded by:** Codex. The executed positive, producer-severing 
 restored-source check, exact local Make target, typecheck/client/topology and no-payment results
 above are evidence for handoff, not the mandatory designated cross-party verdict. Claude must
 adversarially review this exact range plus this coordinate record before any Cosmetics archival.
+
+## 2026-10-05 — Codex designated C5/AC10 two-wearer decoder review predeclaration
+
+**Review by:** Codex. **Recorded by:** Codex. **Claude range under review:**
+`1a477d9e^..1a477d9e`, limited to the C5 snapshot/projector/decoder contract and its own
+fixtures. This is not approval of C1–C4 or C6–C8, and not an archival verdict for Cosmetics.
+
+The Go projector sorts each `worn_by` list and `wearers` by pet ID, but the current shared fixture
+has at most one wearer. The TypeScript decoder checks wearer-row order and cross-reference
+membership, yet appears not to check each `worn_by` list for strict order or uniqueness. Before
+changing decoder behavior, add a two-pet valid control to the client AC10 test and derive two
+negative arms: reverse the same two `worn_by` IDs while preserving the reciprocal wearers, and
+duplicate one ID while retaining its wearer. The accepted §7.1 requires sorted pet IDs, and a
+duplicate cannot represent a set of pets. Both negatives must fail at the decoder; if they pass,
+record a C5 CHANGES REQUIRED finding and make the bounded fail-closed decoder correction under
+the accepted AC10 contract. Also check `lock.tier=9` against the registry's `[0,8]` domain and
+the accepted catalog. Controls: the original Go-authored fixture cases still parse, and the
+two-pet valid arm parses. An independent temporary severing of the new strict-order check must
+make at least one negative fail, then restore exact bytes. Run cold Go Game UI and client tests,
+typecheck, API compatibility generation/check; no production epoch, schema shape, copy or payment
+behavior change is authorized. The normative §7.1 required-v4 wording conflicts with the
+accepted API Foundation C2 optional-arm contract and the C5 implementation; file that as a
+separate ruling-author body-reconciliation finding, not an implementer rewrite.
