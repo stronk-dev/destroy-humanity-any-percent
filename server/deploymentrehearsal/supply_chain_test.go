@@ -75,6 +75,20 @@ func TestObserveSupplyChainBindsBuildRecordFieldsToBundleBytes(t *testing.T) {
 			}
 		})
 	}
+	t.Run("previous archive and rebuild archive", func(t *testing.T) {
+		fixture := supplyChainFixture(t)
+		record, err := LoadBuildRecord(fixture.request.PreviousBuild)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Keep the record internally consistent; only binding it to the
+		// previous bundle's archive bytes can reject this pair.
+		record.GameserverArchiveSHA256, record.RebuildArchiveSHA256 = hashForBuild("e"), hashForBuild("e")
+		writeJSONFile(t, fixture.request.PreviousBuild, record)
+		if _, err := ObserveSupplyChain(fixture.request); !errors.Is(err, ErrInvalid) {
+			t.Fatalf("previous build record not bound to previous bundle bytes: %v", err)
+		}
+	})
 }
 
 type supplyFixture struct {
