@@ -342,3 +342,96 @@ without a same-commit bump. The new Typer commit itself includes
 history walk halts before a whole-history green verdict. This is the
 pre-existing CI defect, not a passed gate and not authority to create a
 kernel-history exception without the pending owner ruling.
+
+## 2026-10-04 — Codex B2 TT-PA1 designated-review predeclaration
+
+**Review by:** Codex of Claude's exact B2 commit `3eb7e401^..3eb7e401`;
+**recorded by:** Codex. This review targets only the server-sampled command-time
+plumbing (claim → tenant → persisted command, including terminal resolution →
+replay), not the full Typer RFC or later changes. Recheck the committed diff
+against current code; execute the named real-Postgres AC3 population cold with
+`-count=1` and verify the test actually runs. Then sever the command-log write
+to resample at insert time and require that population to fail on stamp
+divergence. Inspect the terminal and replay paths for any way a client time
+field enters the tenant or a second sample replaces the claimed value. A
+surviving mutant or a skipped test is CHANGES REQUIRED, not an approval.
+
+### B2 review result and injected-clock correction predeclaration
+
+**Review by:** Codex of `3eb7e401^..3eb7e401`; **recorded by:** Codex.
+**Verdict:** CHANGES REQUIRED for AC3's exact injected-clock population (RP-151), not for the
+sample plumbing itself. Cold real-Postgres `TestServerTimeSampleReachesTenantAndLogIntegration`
+ran and passed. Independent mutants all failed as intended: nonterminal insert-time resampling
+failed replay; terminal insert-time resampling failed the command-3 stamp equality; replay with
+`ServerTimeMs: 0` failed replay verification. Each mutation was restored, and the witness passed
+again. Source inspection found no client time field in `PlayRequest`; claim samples once in its
+transaction and the persisted nonterminal/terminal writes take that sample.
+
+The current witness nevertheless uses the real wall clock plus a 25 ms tenant stall, whereas
+accepted AC3 names an *injected DB clock*. Predeclare a DB-local temporary sequence with exact
+values 1000001, 1000002, 1000003, forced through a single test connection. First assert that
+sequence on the current production sampler, which must fail. Then add a repository-local
+test-injectable clock-query seam defaulting exactly to the current production SQL; the test sets
+it to `nextval` of the temporary DB sequence. The tenant, persisted rows and replay must each
+carry those exact values, including terminal. A mutant ignoring the injected query must fail the
+new exact oracle. No client input or new game mechanic is authorized.
+
+### B2 injected-clock attempt — retained negative result
+
+The test-only DB sequence `1000001…1000003` plus an exact tenant/log oracle failed against
+the original sampler at command 1 (`tenant/log 1791134241942`, expected `1000001`). An
+unexported repository query seam defaulting to the production SQL let the test inject
+`SELECT nextval('pg_temp.typer_clock_probe')::bigint`; it passed with all three exact stamps.
+Severing that seam back to the production constant failed at command 1 again. This proves the
+exact oracle can discriminate.
+
+The seam was **withdrawn**, not committed: it changed `server/minigame/session.go`, a guarded
+kernel path, solely for testability while keeping production behavior identical. That would
+force a false kernel-version signal under the repository's guard. The exact-sequence test and
+all temporary product mutations were removed; a cold real-Postgres rerun of the original B2
+witness passed after restoration. `git diff` has no product or test changes from this review.
+RP-151 remains CHANGES REQUIRED until a lawful test-only DB-clock injection is found or the
+contract/versioning authority explicitly rules a different path. The three executed severing
+probes support the existing mechanism, but do not erase AC3's named population requirement.
+
+### Test-only alternative predeclaration
+
+Before treating RP-151 as waiting on authority, test whether PostgreSQL can shadow the
+unqualified `clock_timestamp()` in the existing sample SQL with a `pg_temp` function on one
+pooled connection and an explicit `search_path`. The preflight must show the exact injected
+sample value from the unchanged production query. If it does, add a separate composed
+fixed-clock population while retaining the original real-clock/stall witness for its
+insert-time resampling negative. No guarded production bytes or kernel version may change.
+
+### B2 injected-clock witness — test-only correction
+
+The first test-only `pg_temp.clock_timestamp()` attempt did **not** shadow PostgreSQL's
+unqualified function lookup: production SQL still returned the real clock, and the preflight
+failed. An explicitly first-listed regular test schema did shadow it; a preflight confirmed
+the unchanged `sampleServerMSSQL` returned the test function's value. A fixed 1970 timestamp
+then hit the database's monotonic session-time trigger; a future fixed timestamp passed but
+would age badly. The final fixture stores one DB-derived time exactly one day ahead in an
+isolated, per-test schema; its shadow function returns that fixed value. The test pins one
+connection, verifies the injected SQL sample is at least 23 hours beyond the pre-injection
+baseline, then checks all three tenant and persisted command stamps equal it, terminal
+included, while verification replay succeeds. Cleanup drops the exact test-created schema
+and fails loudly if that fails.
+
+Cold real-Postgres runs of both `TestServerTimeSampleReachesTenantAndLogIntegration` and
+`TestServerTimeInjectedDatabaseClockIntegration` pass with `-count=1`; `go vet ./minigame`
+passes. Explicitly qualifying the production sample as `pg_catalog.clock_timestamp()`
+bypassed the injected function and failed the new preflight (`sample` only 4 ms beyond
+baseline), then was restored. The prior three independent nonterminal/terminal/replay
+severing probes remain recorded above. Only `server/minigame/server_time_test.go` changes in
+the supplemental code range: no guarded production byte, kernel version, API or game
+behavior changed.
+
+After the final test-only edit, the whole `./minigame` real-Postgres `Integration`
+population passed cold (`make test-save-integration SAVE_TEST_PACKAGES='./minigame'`), as did
+the non-Postgres `./minigame` package and vet. The exact injected-clock and real-clock tests
+were also run together verbosely, both named and both passing; no silent skip is counted.
+
+**Review by:** Codex of Claude's bounded B2 mechanism; **recorded by:** Codex. The original
+mechanism has strong executed evidence, but B2/AC3 is not closed on Codex's self-review of
+the new supplemental test. Claude must cross-party review the exact Codex test range before
+any plan/RFC promotion or archival. This does not approve B1–B7 as a whole.

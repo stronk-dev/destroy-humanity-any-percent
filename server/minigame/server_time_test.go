@@ -3,6 +3,7 @@ package minigame
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -63,8 +64,50 @@ func (clockTenant) Apply(input ApplyInput) (ApplyOutput, error) {
 // server_ts_ms, terminal included, and verification replay reproduces the
 // snapshot from the persisted stamps.
 func TestServerTimeSampleReachesTenantAndLogIntegration(t *testing.T) {
+	runServerTimeSampleIntegration(t, false)
+}
+
+func TestServerTimeInjectedDatabaseClockIntegration(t *testing.T) {
+	runServerTimeSampleIntegration(t, true)
+}
+
+func runServerTimeSampleIntegration(t *testing.T, injected bool) {
+	t.Helper()
 	db := minigameIntegrationDB(t)
 	seedMinigameRun(t, db)
+	var injectedMS int64
+	if injected {
+		db.SetMaxOpenConns(1)
+		ctx := context.Background()
+		schema := "typer_clock_probe_" + strconv.FormatInt(time.Now().UnixNano(), 10)
+		var baseline int64
+		if err := db.QueryRowContext(ctx, sampleServerMSSQL).Scan(&baseline); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := db.ExecContext(ctx, "CREATE SCHEMA "+schema); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			if _, err := db.ExecContext(context.Background(), "DROP SCHEMA "+schema+" CASCADE"); err != nil {
+				t.Errorf("drop injected clock schema: %v", err)
+			}
+		})
+		if _, err := db.ExecContext(ctx, "CREATE TABLE "+schema+".fixed_clock(value timestamptz NOT NULL)"); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := db.ExecContext(ctx, "INSERT INTO "+schema+".fixed_clock SELECT pg_catalog.clock_timestamp() + interval '1 day'"); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := db.ExecContext(ctx, "CREATE FUNCTION "+schema+`.clock_timestamp() RETURNS timestamptz LANGUAGE SQL STABLE AS $$ SELECT value FROM `+schema+`.fixed_clock $$`); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := db.ExecContext(ctx, "SET search_path TO "+schema+", pg_catalog, public"); err != nil {
+			t.Fatal(err)
+		}
+		if err := db.QueryRowContext(ctx, sampleServerMSSQL).Scan(&injectedMS); err != nil || injectedMS < baseline+23*60*60*1000 {
+			t.Fatalf("production clock SQL sample=%d err=%v, baseline=%d; injected DB clock did not advance one day", injectedMS, err, baseline)
+		}
+	}
 	repository, err := NewRepository(db)
 	if err != nil {
 		t.Fatal(err)
@@ -134,6 +177,9 @@ func TestServerTimeSampleReachesTenantAndLogIntegration(t *testing.T) {
 	for index, stamp := range persisted {
 		if stamp != final.Stamps[index] || stamp < 1 {
 			t.Fatalf("command %d: tenant saw %d, log persisted %d", index+1, final.Stamps[index], stamp)
+		}
+		if injected && stamp != injectedMS {
+			t.Fatalf("command %d: injected DB clock %d, tenant/log %d", index+1, injectedMS, stamp)
 		}
 	}
 }
