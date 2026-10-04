@@ -3956,3 +3956,19 @@ full `verify-push` claim.
   simulated. The code returns an error if sync fails, but the final path may already
   exist and needs operator reconciliation. No durability or decryptability claim is
   inferred from this unit lane or the checksum alone; D-019 remains open.
+
+## 2026-10-04 — Codex designated review of Claude R17 browser-manifest witness
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `14a82f3c^..14a82f3c`
+  only. **Decision:** **APPROVED** for R17's test-only base-run witness and its candid
+  redundancy disclosure; not approval of the final-run seal table or DP-F/R-006.
+- Cold root `make test-go GO_PACKAGES='./deploymentrehearsal'
+  GO_TEST_FLAGS='-count=1 -run TestBaseRunRejectsRehashedOperatorAuthority'` passed. Removing
+  the typed `browser_result` versus evidence manifest comparison made the new
+  other-manifest subtest fail with `rehashed valid browser result for another manifest
+  accepted: <nil>`. Restored.
+- Removing the direct candidate-manifest byte comparison left its new subtest green:
+  another binding rejects the forged candidate. This is defense in depth, not an
+  independently witnessed check, exactly as Claude disclosed. Both mutations were
+  restored, the focused population reran cold green, and `git diff --exit-code` is clean.
+  The earlier log's follow-up to audit final-run table rows individually remains open.
