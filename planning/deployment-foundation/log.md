@@ -3846,3 +3846,27 @@ full `verify-push` claim.
 - The Codex finding/decision route and canonical-doc correction are commits `c576f8f4` and
   `93ec2c10`; Claude's designated review should cite `c576f8f4^..93ec2c10` exactly. This
   routing record is not a new acceptance result.
+
+## 2026-10-04 — Codex targeted R12 review: producer basename is not executable identity
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `4a6c8f27^..4a6c8f27`,
+  limited to R12's assertion that the plan is bound to real rehearsal producers. **Decision:**
+  **CHANGES REQUIRED (RP-140)**. Cold `make test-go` over `deploymentrehearsal` and
+  `cmd/deployment-rehearsal` passed. The focused
+  `TestExecutionPlanRunsEveryExactPositiveAndNegativeCheck` passed cold too, while its
+  `rehearsalFixtureTool` writes a shell script with basename `deployment-rehearsal` that
+  returns 0 or 3 on demand. `boundToProducer` checks absolute path, basename and subcommand,
+  but no binary hash or relation to the candidate bundle; `ExecutePlan` executes that path.
+  Thus the same API that rejects `/usr/bin/true` accepts a renamed constant producer.
+- The R12 exit-3 separation is useful and retained: generic CLI failures cannot satisfy
+  negative rows. The finding is narrower—an executable chosen by the plan can itself emit
+  those exits. `CommandSHA256` and the plan hash bind only command strings, not executable
+  bytes or the release manifest's `deployment-rehearsal` artifact.
+- **DESIGN-GAP 8 for the DP-F author:** specify the exact authority binding before any
+  corrective implementation: how `run-plan` receives the candidate bundle, verifies its
+  manifest hash against the plan, and requires the executable to be the bundle's hash-checked
+  `deployment-rehearsal` rather than an arbitrary same-basename path. A negative using a
+  fake executable with the correct basename/subcommands must fail before any plan row runs;
+  the genuine bundle tool must pass structure and fail loudly only on currently unproduced
+  populations. This is not license to add an unruled plan schema/path contract. No R-006
+  evidence or R12 approval is claimed from the current passing fixture.

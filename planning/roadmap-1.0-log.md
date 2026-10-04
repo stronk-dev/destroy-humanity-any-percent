@@ -670,3 +670,13 @@ RP-139 records a targeted CHANGES REQUIRED verdict; canonical Deployment docs no
 claim to host-byte checksum/header agreement. D-019 asks the owner what per-release
 decrypt/restore proof is required. No new key-mounting mechanic was inferred, and R-006 remains
 the exact clean-host recovery gate.
+
+## 2026-10-04 — R12 plan producer identity is still forgeable
+
+The cold R12 rehearsal/CLI suites pass, including a plan-executor test that runs every canonical
+row through a generated shell script named `deployment-rehearsal` and hard-codes the expected
+0/3 exits. The new basename/subcommand gate rejects obvious `/usr/bin/true` substitutions but
+does not bind the executable bytes to the candidate bundle. Codex recorded targeted CHANGES
+REQUIRED (RP-140) and DP-F DESIGN-GAP 8 for the RFC author: define candidate manifest and
+helper identity authority, then require a same-basename fake-binary negative. No R-006 plan
+proof is promoted from the current test.
