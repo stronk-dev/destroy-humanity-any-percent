@@ -25,13 +25,13 @@ async function assertAxe(target: HTMLElement, label: string): Promise<void> {
   expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical"), label).toEqual([]);
 }
 
-function render(value: TyperSnapshot, commands: TyperCommand[], width?: string) {
+function render(value: TyperSnapshot, commands: TyperCommand[], width?: string, exitToHost: () => void = () => {}) {
   const target = document.createElement("main");
   if (width) target.style.width = width;
   document.body.append(target);
   installTheme(target, UI_THEMES.era_2000, false);
   const app = mount(TyperTable, { target, props: { snapshot: value, serverTimeSample: value.last_server_ms ?? 1_000, pending: false, era: "era_2000",
-    dispatch: (command: TyperCommand) => commands.push(command), exitToHost: () => {} } });
+    dispatch: (command: TyperCommand) => commands.push(command), exitToHost } });
   return { target, dispose: () => { unmount(app); target.remove(); } };
 }
 
@@ -83,6 +83,22 @@ it.skipIf(!browser)("submits the typed line on Enter, never during composition, 
     input.focus();
     await userEvent.keyboard("{Enter}");
     expect(commands).toEqual([{ kind: "submit_line", text: "ls -la" }]);
+  } finally { dispose(); }
+});
+
+it.skipIf(!browser)("ends the run and exits to the host using native keyboard activation", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const commands: TyperCommand[] = [];
+  let exits = 0;
+  const { target, dispose } = render(typing(), commands, undefined, () => { exits++; });
+  try {
+    await settle();
+    button(target, "End run").focus();
+    await userEvent.keyboard("{Enter}");
+    expect(commands).toEqual([{ kind: "end_run" }]);
+    button(target, "Leave the table").focus();
+    await userEvent.keyboard(" ");
+    expect(exits).toBe(1);
   } finally { dispose(); }
 });
 
