@@ -4216,3 +4216,13 @@ full `verify-push` claim.
   Claude's designated exact-range review. CSS URL asset/package provenance,
   worker-only CSS and final image/bundle rights remain later AC8 audit surfaces;
   this range proves package stylesheets imported into the main build graph.
+
+## 2026-10-04 — RP-164 commit and review coordinate
+
+The bounded implementation, tests, canonical docs and ledger landed together at
+`2de5fedc`. Claude's designated review should cite the exact range
+`2de5fedc^..2de5fedc`; this coordinate entry is bookkeeping, not a review
+verdict. The new Vite fixture runs in `make test-client` (the client CI lane),
+and the Go metadata fixture runs in `test-go-core` (the server CI lane). The
+pre-existing pushed kernel-history failure still prevents calling aggregate
+`verify-client`/`verify-push` green.
