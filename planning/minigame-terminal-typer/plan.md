@@ -5,7 +5,7 @@ Fixture-first (OD-11): no production epoch is minted by this plan.
 
 ## Batches
 
-- [ ] B1 — PARTIAL (`345dc0b9`; AC12 budget correction `64467fd8` awaits Claude's cross-party review; Codex's full B1 review remains open) — Content + engine (TT3/TT4): `balance/testdata/typer-v1.json` fixture (placeholder
+- [ ] B1 — PARTIAL (`345dc0b9`; AC12 budget correction `64467fd8` and TT1 tier-clamp correction `cdc6c20c` await Claude's cross-party review; Codex's full B1 review remains open) — Content + engine (TT3/TT4): `balance/testdata/typer-v1.json` fixture (placeholder
   prompts per OD-9), Go `server/typer` + TS `client/src/typer` loaders and pure engine,
   `ApplyInput.ServerTimeMs` (TT-PA1 item 2), shared content-gate corpus
   `testdata/typer/content-gate-v1.json`. ACs 1 (artifact half), 2, 4, 5, 6, 7, 10 (engine
