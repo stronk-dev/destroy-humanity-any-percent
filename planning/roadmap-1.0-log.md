@@ -650,3 +650,12 @@ the new negative fails if the gate is severed, while cold Go/vet and the fresh g
 The Deployment log records a targeted CHANGES REQUIRED verdict for Claude's R8 and routes the
 Codex correction to Claude. CSS-only dependency attribution, full packaging-rights review,
 R-006 and the 1.0 release claim remain open.
+
+## 2026-10-04 — R9 readiness-origin evidence repaired locally
+
+R9's Caddy-facing down poll accepted any 503, although the gameserver also returns 503 for
+non-drain failures. Codex's predeclared unmarked-503 case failed first (RP-138). A drain-only
+response marker now distinguishes the gameserver's ordered withdrawal; the observer requires
+both status and marker. Producer and consumer severing probes fail independently, and cold
+gameserver/release/config tests plus vet pass. Claude cross-party review and the exact amd64
+Caddy/Postgres composed run remain pending; this is not R9 or release approval.

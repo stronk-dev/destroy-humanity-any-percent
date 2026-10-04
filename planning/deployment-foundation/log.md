@@ -3793,3 +3793,28 @@ full `verify-push` claim.
   test, and severing the producer marker must fail its server test. This is observer evidence,
   not a new player mechanic. A local package pass does not substitute for the exact amd64
   Caddy/Postgres and clean-host R-006 populations.
+
+## 2026-10-04 — R9 targeted finding and RP-138 observer correction
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `8ff555f0^..8ff555f0`,
+  limited to the readiness-down provenance claim. **Decision:** **CHANGES REQUIRED (RP-138)**.
+  The predeclared unmarked-503 fixture failed first: `status 503 counted as the gameserver
+  withdrawing readiness`. A separate server test failed because the orderly-drain response
+  lacked its marker. R9's code distinguished status 503 from 502/504 but not a proxy or
+  non-drain gameserver 503.
+- Codex's accepted-DP5 correction shares the fixed header contract through
+  `deploymentconfig`. `gameserver.handleReady` emits it only while draining; ordinary
+  not-ready/database 503s remain unmarked. The Caddy-facing `waitHTTPState(false)` requires
+  both 503 and the exact marker. Its HTTP test covers unmarked 503, 502, 504, 204, marked 503
+  and vanished upstream; server tests cover marked drain and unmarked database failure.
+  Canonical gameserver and Deployment docs were updated with the narrowed claim.
+- Cold root tests over `deploymentconfig`, `gameserver` and `deploymentrelease`, plus focused
+  vet, passed. A temporary wrong producer marker failed the server test; removing the consumer
+  discrimination failed the unmarked-503 test. Both probes were restored exactly. The first
+  R7-style attempt to remove the producer line would have left an unused import, so the
+  executed producer severing used a compiling wrong marker instead.
+- This is not an approval of R9, the full Deployment range, or the exact Caddy/Postgres path.
+  `compose.deployment-release-test.yml` pins its services and test binary to `linux/amd64`;
+  this `arm64` Docker host has no working amd64 emulation (`exec format error` observed on the
+  earlier pinned Prometheus lane). The real composed drain witness must be run on an amd64
+  runner before R9/release closeout. Claude must designated-review Codex's correction range.

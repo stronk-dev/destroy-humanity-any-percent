@@ -15,6 +15,8 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
+
+	"cloud-clicker/server/deploymentconfig"
 )
 
 type SmokeSession struct {
@@ -208,7 +210,7 @@ func waitHTTPState(ctx context.Context, client *http.Client, endpoint string, re
 		response, err := client.Do(request)
 		if err == nil {
 			_ = response.Body.Close()
-			if response.StatusCode == want {
+			if response.StatusCode == want && (ready || response.Header.Get(deploymentconfig.DrainReadinessHeader) == deploymentconfig.DrainReadinessValue) {
 				return true
 			}
 		}

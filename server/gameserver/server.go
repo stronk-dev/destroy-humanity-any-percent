@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+
+	"cloud-clicker/server/deploymentconfig"
 )
 
 var (
@@ -334,7 +336,12 @@ func (server *Server) setReady(ready bool) {
 }
 
 func (server *Server) handleReady(response http.ResponseWriter, request *http.Request) {
-	if !server.ready.Load() || server.draining.Load() || server.gate.isDraining() || server.database.PingContext(request.Context()) != nil {
+	if server.draining.Load() || server.gate.isDraining() {
+		response.Header().Set(deploymentconfig.DrainReadinessHeader, deploymentconfig.DrainReadinessValue)
+		response.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+	if !server.ready.Load() || server.database.PingContext(request.Context()) != nil {
 		response.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}

@@ -563,8 +563,10 @@ Compose-governed SIGTERM stop; observed
 readiness-down, authenticated `server_restarting` WebSocket publication, intent refusal and clean
 bounded process exit; candidate startup and forward migrations; exact database migration,
 epoch/hash/artifact reconciliation; then authenticated HTTP and WebSocket smoke through Caddy.
-Readiness-down means the gameserver's own `503` from `/readyz` while draining; a proxy 502/504 or
-a transport error after the process has gone is not accepted. Readiness, the courtesy frame, socket
+Readiness-down means the gameserver's own `503` from `/readyz` with its fixed
+`X-Cloud-Clicker-Drain: 1` marker while draining; an unmarked proxy/database/unready 503,
+proxy 502/504 or transport error after the process has gone is not accepted. Readiness, the
+courtesy frame, socket
 closure and the drain bound are observed directly. Intent refusal, admitted-work completion and
 job/outbox flush are attested by the process contract rather than observed separately: the
 gameserver exits zero only after admission closed and admitted requests, background jobs,

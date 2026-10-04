@@ -21,8 +21,13 @@ import (
 const (
 	ModeProduction        = "production"
 	ProductionContentRoot = "/opt/cloud-clicker/content"
-	defaultListenAddress  = ":8080"
-	maximumSecretBytes    = 64 << 10
+	// DrainReadinessHeader is emitted only by the gameserver's orderly drain
+	// branch, so the Caddy-facing release observer cannot mistake a generic
+	// upstream/database 503 for the server withdrawing readiness in order.
+	DrainReadinessHeader = "X-Cloud-Clicker-Drain"
+	DrainReadinessValue  = "1"
+	defaultListenAddress = ":8080"
+	maximumSecretBytes   = 64 << 10
 )
 
 var (

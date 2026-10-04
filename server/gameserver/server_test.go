@@ -215,6 +215,9 @@ func TestHealthAndReadinessAreDistinct(t *testing.T) {
 	if health.Code != http.StatusNoContent || ready.Code != http.StatusServiceUnavailable {
 		t.Fatalf("health=%d ready=%d", health.Code, ready.Code)
 	}
+	if ready.Header().Get("X-Cloud-Clicker-Drain") != "" {
+		t.Fatal("generic database/readiness failure impersonated an orderly drain")
+	}
 }
 
 func TestDrainDeadlineStillClosesSockets(t *testing.T) {
@@ -304,6 +307,9 @@ func TestReadinessCannotRiseAfterDrainStarts(t *testing.T) {
 	server.Handler().ServeHTTP(ready, httptest.NewRequest(http.MethodGet, "/readyz", nil))
 	if ready.Code != http.StatusServiceUnavailable {
 		t.Fatalf("ready rose during drain: %d", ready.Code)
+	}
+	if ready.Header().Get("X-Cloud-Clicker-Drain") != "1" {
+		t.Fatal("draining readiness response lacks its provenance marker")
 	}
 }
 

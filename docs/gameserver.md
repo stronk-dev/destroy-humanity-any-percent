@@ -65,6 +65,9 @@ identity, or any owned service constructor disagrees.
 The HTTP process exposes `/healthz`, `/readyz`, the account/Founder/intent API under `/api/v1`, and
 the Centrifuge endpoint at `/connection/websocket`. Health means the process is alive. Readiness
 also requires Postgres, a matching epoch, a running realtime node, and healthy background jobs.
+An orderly drain returns `503` from `/readyz` with `X-Cloud-Clicker-Drain: 1`; a generic
+database or not-ready `503` has no drain marker. The release observer requires both status and
+marker through Caddy, so an unavailable proxy or database cannot impersonate an ordered drain.
 
 ## Runtime ownership
 

@@ -738,10 +738,14 @@ func TestDeriveDrainEvidenceRequiresEveryObservation(t *testing.T) {
 
 func TestReadinessDownRequiresTheGameserverDrainingAnswer(t *testing.T) {
 	status := http.StatusBadGateway
+	markedDrain := false
 	var lock sync.Mutex
 	server := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
 		lock.Lock()
 		defer lock.Unlock()
+		if markedDrain {
+			response.Header().Set("X-Cloud-Clicker-Drain", "1")
+		}
 		response.WriteHeader(status)
 	}))
 	wait := func() bool {
@@ -749,7 +753,7 @@ func TestReadinessDownRequiresTheGameserverDrainingAnswer(t *testing.T) {
 		defer cancel()
 		return waitHTTPState(ctx, server.Client(), server.URL+"/readyz", false)
 	}
-	for _, proxyStatus := range []int{http.StatusBadGateway, http.StatusGatewayTimeout, http.StatusNoContent} {
+	for _, proxyStatus := range []int{http.StatusBadGateway, http.StatusGatewayTimeout, http.StatusNoContent, http.StatusServiceUnavailable} {
 		lock.Lock()
 		status = proxyStatus
 		lock.Unlock()
@@ -759,6 +763,7 @@ func TestReadinessDownRequiresTheGameserverDrainingAnswer(t *testing.T) {
 	}
 	lock.Lock()
 	status = http.StatusServiceUnavailable
+	markedDrain = true
 	lock.Unlock()
 	if !wait() {
 		t.Fatal("gameserver draining 503 not observed")
