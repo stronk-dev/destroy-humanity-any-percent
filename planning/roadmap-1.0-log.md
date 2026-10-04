@@ -1085,3 +1085,19 @@ from contaminating the older driver but did not remove the intermittent failure.
 not established. RP-172 records the unresolved CI reliability boundary; no retry or relaxed
 assertion was added. Separately, the historical kernel-version gate remains red, and no hosted
 CI success or release status is inferred from this local target pass.
+
+## 2026-10-05 — RP-172 composed Pitch click classification and correction
+
+The test's capture-phase trace caught the alleged Fiscal Unlock “click” as only pointerdown/up
+while the button was disabled and `main[aria-busy=true]`; there was no click event. The button
+was enabled after the 30-second timeout, which made the previous post-hoc diagnostic misleading.
+A separate cold run found the legitimate Exit offer preempting Pitch before Start. The test-only
+Garage/Minigame correction now dispatches one exact DOM click only when the host is idle and the
+control enabled, and declines any pre-click offer through its visible UI intent before returning
+to the surface. It never retries after a click was dispatched. Three independent cold runs plus
+the combined Cosmetic/older composed Make target passed; disconnecting Fiscal Unlock's handler
+then produced an enabled click event but no request and failed at the intended oracle. The handler
+was restored byte-exact. The final combined Make run naturally exercised one visible offer decline
+and still passed Pitch and Cosmetics. A forced-offer negative has not run, and hosted CI has not
+run. This is a narrowed test timing defect, not evidence of a product `act`
+drop or a complete CI reliability verdict; Claude's designated review is still due.

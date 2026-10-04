@@ -14,6 +14,7 @@ const uiURL = "http://localhost:5173";
 
 const key = Buffer.alloc(32, 7).toString("base64");
 const processErrors = [];
+let pitchOffersDeclined = 0;
 
 // The composed target runs multiple fixture epochs in one named, ephemeral
 // database. A later invocation must not inherit the previous witness's epoch.
@@ -137,6 +138,36 @@ async function waitForEnabledButton(page, name) {
 
 async function clickAppliedIntent(page, buttonLabel, label) {
   return clickAppliedIntentChoice(page, [buttonLabel], label);
+}
+
+async function clickReadyPitchControl(page, control) {
+  return page.evaluate(async (target) => {
+    const deadline = performance.now() + 30_000;
+    while (performance.now() < deadline) {
+      const main = document.querySelector("main");
+      if (main?.getAttribute("data-surface") === "offer_sheet") return "offer";
+      let button;
+      if (target === "start") button = [...(main?.querySelectorAll("button") ?? [])]
+        .find((candidate) => candidate.textContent?.trim() === "Start a pitch");
+      else button = [...document.querySelectorAll('section[aria-labelledby="fiscal-unlocks-heading"] li')]
+        .find((item) => item.querySelector("h3")?.textContent?.trim() === "The Pitch")
+        ?.querySelector("button");
+      if (main?.getAttribute("aria-busy") === "false" && button && !button.disabled) {
+        button.click();
+        return "clicked";
+      }
+      await new Promise(requestAnimationFrame);
+    }
+    throw new Error(`Pitch ${target} control never became atomically actionable`);
+  }, control);
+}
+
+async function declinePitchOffer(page, destination, surface) {
+  const result = await clickAppliedIntent(page, "Decline", "Pitch offer preemption");
+  if (result.intent?.kind !== "decline_exit_offer") throw new Error(`Pitch preemption did not use visible Decline: ${JSON.stringify(result.intent)}`);
+  pitchOffersDeclined += 1;
+  await page.getByRole("button", { name: destination, exact: true }).click();
+  await page.locator(`main[data-surface="${surface}"]`).waitFor({ state: "visible", timeout: 30_000 });
 }
 
 async function clickAppliedIntentChoice(page, buttonLabels, label) {
@@ -274,11 +305,15 @@ async function unlockPitchThroughFiscalUI(page) {
   await new Promise((resolve) => setTimeout(resolve, 400));
   const harvest = await clickAppliedIntent(page, "Hold the earnings call", "Fiscal harvest for Pitch");
   if (harvest.intent?.kind !== "harvest_fiscal_period") throw new Error(`Fiscal harvest control emitted ${JSON.stringify(harvest.intent)}`);
-  const pitchUnlock = page.locator('section[aria-labelledby="fiscal-unlocks-heading"] li')
-    .filter({ has: page.getByRole("heading", { name: "The Pitch", exact: true }) })
-    .getByRole("button", { name: /^Unlock for /u });
-  const intentRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/v1/intents", { timeout: 30_000 });
-  await pitchUnlock.click({ timeout: 30_000 });
+  const intentRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/v1/intents" &&
+    request.postDataJSON()?.kind === "spend_fiscal_credit", { timeout: 30_000 });
+  let unlockClicked = false;
+  for (let offers = 0; offers < 3 && !unlockClicked; offers += 1) {
+    const action = await clickReadyPitchControl(page, "unlock");
+    if (action === "offer") await declinePitchOffer(page, "Earnings Calls", "fiscal");
+    else unlockClicked = true;
+  }
+  if (!unlockClicked) throw new Error("Pitch Fiscal unlock was repeatedly preempted by Exit offers");
   let request;
   try { request = await intentRequest; }
   catch (error) {
@@ -289,6 +324,7 @@ async function unlockPitchThroughFiscalUI(page) {
         .filter((item) => item.querySelector("h3")?.textContent?.trim() === "The Pitch")
         .map((item) => ({ text: item.textContent?.trim(), disabled: item.querySelector("button")?.disabled })),
       alerts: [...document.querySelectorAll('[role="alert"]')].map((item) => item.textContent?.trim()),
+      trace: globalThis.__composedPitchActionTrace,
     }));
     throw new Error(`Pitch Fiscal unlock control emitted no intent request; state=${JSON.stringify(state)}`, { cause: error });
   }
@@ -325,14 +361,21 @@ async function playPitchThroughUI(page, accessToken) {
   // Locked first: the real server answers 409 not_eligible/fiscal_unlock_required
   // and the surface stays on the launcher with the typed reason.
   const lockedCreate = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 }).catch((error) => error);
-  const lockedButton = page.getByRole("button", { name: "Start a pitch", exact: true });
-  try { await lockedButton.click({ timeout: 10_000 }); }
+  try {
+    let clicked = false;
+    for (let offers = 0; offers < 3 && !clicked; offers += 1) {
+      const action = await clickReadyPitchControl(page, "start");
+      if (action === "offer") await declinePitchOffer(page, "The Pitch", "minigame_session");
+      else clicked = true;
+    }
+    if (!clicked) throw new Error("locked Pitch Start was repeatedly preempted by Exit offers");
+  }
   catch (error) {
-    throw new Error(`locked Pitch control could not be clicked; enabled=${await lockedButton.isEnabled()} surface=${await page.locator("main").getAttribute("data-surface")} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))}`, { cause: error });
+    throw new Error(`locked Pitch control could not be clicked; surface=${await page.locator("main").getAttribute("data-surface")} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: error });
   }
   const locked = await lockedCreate;
   if (locked instanceof Error) {
-    throw new Error(`locked Pitch create emitted no response; surface=${await page.locator("main").getAttribute("data-surface")} minigame_responses=${JSON.stringify(minigameResponses)} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))}`, { cause: locked });
+    throw new Error(`locked Pitch create emitted no response; surface=${await page.locator("main").getAttribute("data-surface")} minigame_responses=${JSON.stringify(minigameResponses)} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: locked });
   }
   const lockedBody = await locked.json();
   if (locked.status() !== 409 || lockedBody.category !== "not_eligible" || lockedBody.detail !== "fiscal_unlock_required") {
@@ -346,7 +389,13 @@ async function playPitchThroughUI(page, accessToken) {
     throw new Error(`Tier-1 Wind Down was not eligible before Pitch: ${JSON.stringify(beforeSession?.transitions)}`);
   }
   const create = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 });
-  await page.getByRole("button", { name: "Start a pitch", exact: true }).click();
+  let startClicked = false;
+  for (let offers = 0; offers < 3 && !startClicked; offers += 1) {
+    const action = await clickReadyPitchControl(page, "start");
+    if (action === "offer") await declinePitchOffer(page, "The Pitch", "minigame_session");
+    else startClicked = true;
+  }
+  if (!startClicked) throw new Error("unlocked Pitch Start was repeatedly preempted by Exit offers");
   const created = await create;
   if (created.status() !== 200) throw new Error(`unlocked Pitch create failed (${created.status()}): ${JSON.stringify(await created.json())}`);
   const duringSession = await founderState(accessToken);
@@ -439,6 +488,15 @@ try {
   await page.addInitScript(() => {
     const BrowserWebSocket = globalThis.WebSocket;
     globalThis.__cloudClickerTestSockets = [];
+    globalThis.__composedPitchActionTrace = [];
+    for (const type of ["pointerdown", "pointerup", "click"]) document.addEventListener(type, (event) => {
+      const button = event.target instanceof Element ? event.target.closest("button") : null;
+      const label = button?.textContent?.trim();
+      if (label !== "Start a pitch" && !label?.startsWith("Unlock for ")) return;
+      globalThis.__composedPitchActionTrace.push({ type, label, disabled: button.disabled,
+        busy: document.querySelector("main")?.getAttribute("aria-busy"), time: performance.now() });
+      if (globalThis.__composedPitchActionTrace.length > 32) globalThis.__composedPitchActionTrace.shift();
+    }, true);
     globalThis.WebSocket = class extends BrowserWebSocket {
       constructor(url, protocols) {
         super(url, protocols);
@@ -616,7 +674,7 @@ try {
   await clickAppliedIntent(page, pitchTierGate, "Pitch-run cross-gate");
   const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
-  console.log(`composed Fiscal UI harvest + Pitch unlock: ${pitch.commands} Pitch UI commands, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
+  console.log(`composed Fiscal UI harvest + Pitch unlock: ${pitch.commands} Pitch UI commands, ${pitchOffersDeclined} visible offer declines, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
   console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));

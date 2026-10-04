@@ -36,9 +36,11 @@ Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/Web
 population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
 corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through
 real Postgres/WebSocket transport to Buy and server-owned reload on a test-only Cosmetics epoch;
-its severed producer fails, but designated review and production content remain open. The existing
-composed Pitch lane also has intermittent no-request timeouts (RP-172), so a passing combined
-run is not a CI reliability verdict. This is local evidence, not a hosted CI result. Native Firefox still cannot launch from this macOS 27 host
+its severed producer fails, but designated review and production content remain open. RP-172's
+intermittent composed Pitch no-request timeouts were narrowed to a disabled/busy pointer sequence
+and legitimate Exit-offer preemption; a test-only single-click correction passes locally and
+fails with the Unlock handler severed, but lacks a forced-offer witness and hosted result. This is
+local evidence, not a CI reliability verdict. Native Firefox still cannot launch from this macOS 27 host
 because its Firefox app-data directory is OS-denied to the launching process.
 
 ## Authority and read order

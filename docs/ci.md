@@ -180,8 +180,9 @@ requires live visitor presence before T0 locked → T1 Buy → server-owned relo
 requests and refuses payment APIs or unexpected destinations. The fixture does not mint production
 content. On local ARM64 hosts, use
 `make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`;
-hosted x86 CI uses the default Compose file. The older Pitch subflow has shown intermittent
-no-request timeouts locally, so a single green combined run is not a CI reliability claim.
+hosted x86 CI uses the default Compose file. RP-172's test-only actionability correction
+addresses observed intermittent Pitch no-request timeouts; an independent hosted run and
+cross-party review are still needed before calling that lane reliable.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:

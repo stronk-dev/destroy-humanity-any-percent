@@ -362,3 +362,53 @@ failing case.
   exact-range designated review. Neither party has approved the complete
   Garage Surfaces or MA implementation spans; the historical kernel-history
   CI failure is separate and still red.
+
+## 2026-10-04 — RP-172 intermittent composed Pitch request, bounded diagnostic
+
+The existing DOM-only composed Pitch lane passed several cold runs but also timed out after
+`Start a pitch` and after an apparently enabled Fiscal `Unlock for 3` click without seeing the
+expected request. At the Fiscal timeout the button was still enabled and `main[aria-busy=false]`.
+A reset of the dedicated test DB removed cross-epoch contamination but did not stop the failure.
+Four temporary console-instrumented product runs passed, so they cannot establish whether the
+failing click reached Svelte or was dropped in `act`; all product instrumentation was restored.
+
+**Next diagnostic (test-only):** install a capture-phase browser event trace for only the Pitch
+Start and Fiscal Unlock controls in the composed driver. On a no-request failure, report bounded
+`pointerdown`/`pointerup`/`click` observations with button disabled state and `main[aria-busy]`.
+The discriminator is whether a browser click actually reached an enabled control: absence or a
+mid-click disable is a test/actionability timing boundary; an enabled click event with no request
+is a host/handler boundary needing a deterministic browser double before product changes. The
+trace must not turn a failed request into a pass, retry the action, or log credentials. Ownership
+remains Garage GS0.2/GS1-A6 and Minigame GS7-A7; Cosmetic AC14 approval cannot repair it.
+
+The first traced cold run reproduced the Fiscal timeout. It captured `pointerdown` and
+`pointerup` on `Unlock for 3` while the button was **disabled** and `main[aria-busy=true]`, with
+no `click` event. Thirty seconds later the page had settled and the button was enabled, but the
+request waiter had been started for an action the browser never dispatched. The earlier locked
+Pitch Start did have a real enabled `click` event and a response. This narrows RP-172 to a test
+actionability race at the Fiscal boundary, not a demonstrated `act` drop. Next correction is
+test-only: wait for idle host and the exact rendered control to be enabled, then invoke its DOM
+button once in that same browser task; keep the prearmed request/response oracle. Apply the same
+one-click discipline to both Pitch Start states. No retry after a click, no timeout increase, no
+product code change. A severed callback must still fail with no request.
+
+The first corrected cold run found a second failure before any Pitch Start click: the legitimate
+Exit offer preempted `minigame_session`, and the page sat on `offer_sheet` with visible `Decline`.
+That was not a lost click; GS0.4 explicitly gives lifecycle preemption precedence. The composed
+driver must distinguish this surface transition from actionability. On an offer before Pitch
+Start/Unlock, it may submit the visible Decline control, return through the Pitch/Fiscal nav and
+then perform the still-unattempted action once. It may not synthesize a backend decline, count the
+decline request as Fiscal unlock, or retry a Pitch action whose click was already dispatched.
+
+The test-only correction now performs one DOM click in the same browser task that observes an
+idle host and enabled exact Pitch/Fiscal control. The three corrected ordinary cold runs passed;
+the prior failing run captured the disabled pointer sequence and no click. A temporary
+disconnection of `FiscalSurface`'s Unlock handler then produced an enabled `click` event with no
+request and failed the composed oracle at the intended assertion. The handler was restored
+byte-exact; the full two-driver `make test-game-ui-composed` target passed. Offer preemption is
+handled only before a Pitch action is dispatched via the visible Decline control, with its own
+applied receipt required; the run output now counts such declines so that path cannot be claimed
+executed merely because the branch exists. The final exact two-driver Make target naturally
+reported **one visible offer decline** and still completed Pitch and Cosmetics in 16.6 seconds.
+Hosted CI and a deterministic forced-offer negative remain separate. No production source was
+retained in this range.
