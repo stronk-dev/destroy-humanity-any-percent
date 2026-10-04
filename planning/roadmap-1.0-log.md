@@ -778,7 +778,10 @@ Codex's bounded corrections `9ceed1cf^..47562850` now pass cold typecheck,
 WebKit browser suites (6,983 tests each, plus the performance lane). The
 composed Postgres/Pitch path passed before the second correction and does not
 exercise Soul recovery. Local Playwright Firefox aborts before test import, so
-the three-browser gate remains unverified. **Review by:** Codex on Claude's
+the three-browser gate remains unverified. A cold `make verify-kernel-version`
+at this checkpoint again exited 2 at historical commit `50a3a514` (the
+original presentation files were under a kernel-watched path without a real
+version bump); `verify-push` therefore remains red. **Review by:** Codex on Claude's
 targeted Soul code; **recorded by:** Codex. The Codex-authored correction awaits
 Claude's exact-range designated cross-party review. The larger MA acceptance
 set, release-artifact workflow, historical kernel CI failure and 1.0 rights,
