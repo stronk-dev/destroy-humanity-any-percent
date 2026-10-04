@@ -396,3 +396,31 @@ mint.**
   - `make deployment-config-check` fails at HEAD without these changes (environment config).
 - **`verify-kernel-version`:** it still stops at the pre-existing `50a3a514` history item. None of
   this range's hashes is named.
+
+## 2026-10-04 — Codex C6/AC11 keyboard-evidence review predeclaration
+
+- **Range under review:** Claude's C6 landing `1bba27ba^..1bba27ba`, limited to
+  AC11 keyboard acquisition and focus. This is not a verdict on the rest of
+  Cosmetic Shop v1 or permission to archive it.
+- **Observed gap before experiment:** the C6 log calls
+  `cosmetic-shelf-browser.test.ts` a three-engine "keyboard buy" witness, but
+  the test focuses the Buy button and invokes `.click()`; the host test does
+  the same. Neither operation proves keyboard activation. The passing client
+  suite is therefore not AC11 keyboard evidence.
+- **Population and method:** mount the real Svelte shelf with its T1
+  acquirable arm in the existing Vitest browser lane, focus Buy, send real
+  `userEvent.keyboard("{Enter}")` and `userEvent.keyboard(" ")` in separate
+  cases, and require exactly one `onAcquire("horse_armor")` call per key.
+  Retain the existing pending/no-optimistic-ownership and authoritative
+  snapshot/focus controls. Run the new cases in Chromium, Firefox and WebKit
+  where this host can start each engine.
+- **Discriminator:** temporarily sever Buy's `onclick` binding; both keyboard
+  cases must fail at zero acquire calls, while the unmodified component
+  passes. A keyboard event merely dispatched on the DOM or a `.click()` call
+  does not count. If an engine cannot start, record it as unavailable, not
+  green. If actual keyboard activation fails, report an implementation
+  defect instead of weakening the test.
+- **Authority and limit:** accepted Cosmetic Shop §7.3/AC11 authorizes a
+  test-only supplement. No player-facing copy, intent semantics, artifact
+  pin, RFC status, or owner decision changes in this batch. Codex's
+  correction needs Claude's cross-party review before closure.
