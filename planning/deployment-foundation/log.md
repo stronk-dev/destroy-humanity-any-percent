@@ -3916,3 +3916,25 @@ full `verify-push` claim.
   inputs; the tracked `release-builds/*.json` still refer to invalid v5 bundles. This
   review therefore accepts the local binding behavior only. It does not convert the
   historical diagnostic account or operator-attested rebuild flags into release proof.
+
+## 2026-10-04 — Codex targeted R15 review: semantic mutation fixture
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `dda9f41f^..dda9f41f`
+  for Claude's R15 probe change. **Decision:** **APPROVED for the bounded probe-preparation
+  mechanism** after a supplemental test; not approval of each real semantic rejection or
+  the complete DP-F/R-006 gate.
+- Cold root `make test-go GO_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal'
+  GO_TEST_FLAGS='-count=1'` passed. Inspected hardlink isolation: both the mutated target
+  and manifest are unlinked before rewrite, so the retained candidate is not changed.
+  The clean baseline executes before the mutation; a setup failure cannot become a
+  negative result. The diagnostic rebuilt-bundle run in the earlier log reported real
+  semantic rejections, but its bundle bytes are not retained here for an independent
+  rerun.
+- The original focused unit test still passed when Codex temporarily removed
+  `rebindManifest`: its fake validator rejected on the second call without inspecting
+  manifest hashes. Codex added a fixed sentinel artifact and assertions for the
+  regenerated artifact hashes and mutated image-SBOM hash in `cad999f4`. Repeating that
+  severing then failed seven negative subtests at `untouched artifact not rebound`.
+  The production call was restored, and both packages passed cold again. The correction
+  is Codex-authored and awaits Claude's designated exact-range review; this record is
+  not a self-approval of that commit.
