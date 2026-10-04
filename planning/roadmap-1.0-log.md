@@ -719,3 +719,13 @@ two-row predicate. All four affected Go packages passed cold when restored, and 
 topology validation passed. The fixture uses a fake runtime, so real Caddy drain,
 Postgres restoration, timing and host artifact evidence remain R-006 obligations; the
 R12 and R18 proof gaps are unchanged.
+
+## 2026-10-04 — R20 dirty-target refusal attribution corrected locally
+
+Codex's predeclared false-positive test showed the R20 rehearsal classifier accepted an
+unrelated error that merely echoed `"error_class":"non_clean_target"` (RP-142). The
+correction carries typed command/exit/stderr provenance and parses the exact structured
+backup restore refusal. Cold Go suites and vet pass; the old substring path fails the
+new test. The pinned amd64 Postgres target exited before testing on this arm64 host, so
+Claude review and a working amd64 composed/host run remain necessary before R20 or
+R-006 can count. No overall release status changed.

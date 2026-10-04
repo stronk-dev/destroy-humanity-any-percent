@@ -4032,3 +4032,27 @@ full `verify-push` claim.
   classes and identity changes stay errors. A temporary severing of the parser must
   fail the permanent test. This authorizes only error-provenance classification, not
   a claim that the R20 host probe or R-006 has run.
+
+## 2026-10-04 — Codex targeted R20 review and local refusal correction
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `680b7bb1^..680b7bb1`
+  for Claude's R20. **Decision:** **CHANGES REQUIRED (RP-142)** for error attribution;
+  the real-Postgres and host producer outcomes are not approved by this review.
+- The predeclared arbitrary-error fixture failed on original HEAD:
+  `IsNonCleanRestoreRefusal` accepted an unrelated error echoing
+  `"error_class":"non_clean_target"`. Codex's accepted-DP-F correction makes `ExecRunner`
+  retain a typed failed executable, exit status and stderr, and requires one exact JSON
+  backup-CLI `restore` error record from a failed Docker command. Tests reject another
+  command/class, wrong exit, extra or embedded log text, and arbitrary error strings.
+  The genuine structured class still drives the rehearsal negative; a real shell exit
+  test confirms `ExecRunner` populates the failure fields.
+- Restoring the substring path temporarily made the new arbitrary-error test fail
+  again; it was removed. Cold root Go tests over `deploymentrelease`,
+  `deploymentrehearsal` and both affected CLIs passed with `-count=1`; focused vet
+  passed. The implementation and canonical-doc correction are `d3fde4c0`; Claude's
+  designated review must cite `5f394f2a^..d3fde4c0` including the predeclaration.
+- `make test-deployment-backup` could not start its pinned `linux/amd64` Postgres
+  container here: it exited 255 on this arm64 host before tests ran. No Postgres pass
+  is claimed. Strict parsing also needs an actual amd64 composed CLI run to show the
+  backup log arrives as the expected single structured stderr record; any extra
+  Compose stderr fails closed as setup rather than counting a false rejection.
