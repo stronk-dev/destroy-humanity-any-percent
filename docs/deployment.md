@@ -254,7 +254,9 @@ uses. The row exits `3` only when that derivation classifies the restart as not 
 readiness with a passing authenticated smoke; an unrestored host is a setup failure (`2`).
 This command does not create or observe an admitted write. Its result establishes crash-versus-
 graceful-drain classification and service recovery only; the named mid-write/restart R-006
-population still needs an in-flight work fixture and post-restart outcome check.
+population still needs an in-flight work fixture and post-restart outcome check. The execution
+plan therefore routes that population to the unsupported probe (exit `2`), not to this diagnostic
+command; a clean-host rehearsal cannot pass by substituting crash classification for work proof.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and

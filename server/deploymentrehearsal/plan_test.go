@@ -89,6 +89,24 @@ func TestRequiredPlanChecksFollowTheLifecycleDependencyOrder(t *testing.T) {
 	}
 }
 
+func TestAdmittedWorkRestartRejectsCrashOnlyProducer(t *testing.T) {
+	check := PlannedCheck{Name: "gameserver_restart_during_admitted_work",
+		Command: []string{"/opt/cloud-clicker/deployment-rehearsal", "restart-admitted-work"}}
+	if boundToProducer(check) {
+		t.Fatal("crash classification accepted as an admitted-work restart witness")
+	}
+	plan := validExecutionPlan()
+	for index := range plan.Checks {
+		if plan.Checks[index].Name == check.Name {
+			plan.Checks[index].Command = check.Command
+			break
+		}
+	}
+	if err := ValidateExecutionPlan(plan); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("R-006 plan accepted crash-only restart command: %v", err)
+	}
+}
+
 func TestExecutionPlanRejectsVacuousUnsafeAndGuardedCommands(t *testing.T) {
 	for name, mutate := range map[string]func(*ExecutionPlan){
 		"missing check": func(value *ExecutionPlan) { value.Checks = value.Checks[:len(value.Checks)-1] },
