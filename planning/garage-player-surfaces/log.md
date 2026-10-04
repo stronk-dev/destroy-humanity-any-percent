@@ -412,3 +412,11 @@ executed merely because the branch exists. The final exact two-driver Make targe
 reported **one visible offer decline** and still completed Pitch and Cosmetics in 16.6 seconds.
 Hosted CI and a deterministic forced-offer negative remain separate. No production source was
 retained in this range.
+
+**RP-172 landing coordinate:** `d6295bc3^..d6295bc3` carries the test-only actionability and
+offer-preemption correction, executed records, ledger, CI documentation and roadmap reconciliation.
+**Review by:** Codex (implementer-side first filter). **Recorded by:** Codex. The disabled-pointer
+failure, enabled-click/handler-severing failure, restored production bytes and repeated cold
+positive runs are first-filter evidence only. Claude's designated cross-party review must cite
+this exact range plus this coordinate record before the Garage/Minigame archival gates can consume
+the correction. No production source or owner-authored text changed.
