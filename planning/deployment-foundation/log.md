@@ -4393,3 +4393,14 @@ pre-existing pushed kernel-history failure still prevents calling aggregate
   queue's architecture limit for composed Deployment tests. It is neither a
   green gate nor an implementation-failure verdict; rerun on an amd64 runner.
 - No new designated verdict or RFC status change follows from this checkpoint.
+
+## 2026-10-04 — RP-169 browser-lane discovery predeclaration
+
+- Cold `make test-browser-ci` on the cached ARM64 Linux Playwright image failed before importing `client/test/css-dependency-graph.test.mjs` in Chromium, Firefox and WebKit: Vite injected `__vite__injectQuery` twice into this Node-only fixture (which uses `node:fs`, temporary directories and nested Vite builds). The current browser config collects every test file, while `make test-client` is the intended Node runner for this fixture.
+- Bounded correction: exclude this exact Node-only file from the browser population without removing it from the Node population or changing the CSS provenance implementation. A cold Node run must execute its four fixture cases; a cold Linux three-engine browser run must not import it and must report its remaining tests. Deleting or skipping the fixture in both lanes is a failing control, not an acceptable fix.
+- The same cold browser run also exposed a separate Cosmetic Shop network-witness failure; that belongs to `planning/cosmetic-shop-v1/log.md`, not this Deployment correction. No R8, AC8, bundle-rights or release status is promoted by fixing test selection.
+
+## 2026-10-04 — RP-169 Node/browser selection result
+
+- The browser config now excludes only `test/css-dependency-graph.test.mjs` using Vitest's default exclusions plus that exact path; future browser-test formats are not globally excluded. The initial unmodified cold Linux run failed import in all three engines. The corrected `make test-browser-ci` completed with exit 0, including Chromium/Firefox/WebKit and the isolated performance lane, without importing this Node-only fixture.
+- The file remained in the Node lane: a focused uncached Vitest run executed all four CSS Vite-build cases, 4/4 passing. Full `make test-client` passed 6912 tests with 85 browser-only skips. No CSS producer/consumer or release-bundle byte changed. Claude's designated review of this Codex correction and the wider R8 range remains pending.

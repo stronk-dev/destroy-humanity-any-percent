@@ -550,3 +550,15 @@ mint.**
   from RP-167 remains unresolved on this host; it was not rerun for this
   C7 supplement. AC14, off-origin pre-request observation and copy adoption
   remain open.
+
+## 2026-10-04 — RP-170 cold Linux request-audit predeclaration
+
+- The cached ARM64 Linux Playwright image bypasses this macOS 27 host's Firefox app-data launch denial without altering the local Firefox directory. Cold `make test-browser-ci` launched all three engines but failed the new RP-168 four-transport negative: Chromium reported only one request, and Firefox reported only `fetch`, rather than all four. The full browser gate is red; prior macOS Chromium/WebKit green results do not override it.
+- Diagnose whether the observer misses requests or the fixture's fire-and-forget XHR/beacon/image requests are not guaranteed to reach Playwright before audit stop. Preserve the browser-level request observer and direct payment/API traps. A correction must exercise four transport/resource attempts in the Linux browser population, require all four observed labels, retain a fired listener-severing negative, and not claim blocked-before-network off-origin attempts or real-server AC14. Avoid a fixed delay as the oracle; wait for observable completion or a bounded explicit timeout.
+- This is test/evidence scope only. CSS fixture collection failure from the same run belongs to the Deployment log; neither is a product Cosmetics defect yet. Claude's cross-party designated review remains required.
+
+## 2026-10-04 — RP-170 cold Linux request-audit result
+
+- Isolated Linux execution of the original four-transport test passed in all three engines; the cold full suite failed Chromium and Firefox. Thus the fixed 100 ms sleep was not a valid completion condition under the full population. The correction gives each transport URL a fresh nonce, asks the Playwright-side audit to wait (bounded at five seconds) until all four exact URLs have been observed, and fails with both expected and observed URL lists on timeout. It keeps the direct payment trap and actual page request/WebSocket observer.
+- Cold `make test-browser-ci` on the cached ARM64 Linux image now exits 0 with 20,976 browser tests passed (3 skipped) across Chromium, Firefox and WebKit, plus the isolated Chromium performance case. Full `make test-client` passed 6912; typecheck had zero errors/warnings. A temporary removal of the page `request` listener made the focused Linux test fail in all three engines with `observed=[]`; the listener was restored and the focused 9/9 tests passed. The Linux run demonstrates browser-engine behavior despite this macOS 27 host's local Firefox launch denial, which matches a Playwright-tracked OS app-data access problem; it does not prove an actual hosted CI job.
+- This remains a test-only correction. Off-origin attempts stopped before network dispatch, the real-server Buy→reload AC14 path, G10 live pet overlay, owner copy adoption and Claude's designated review remain open. No Cosmetics or 1.0 release status changes.

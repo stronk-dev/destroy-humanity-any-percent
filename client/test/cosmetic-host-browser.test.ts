@@ -72,7 +72,7 @@ async function assertAxe(target: HTMLElement, label: string): Promise<void> {
 
 async function requestAudit() {
   const { commands } = await import("vitest/browser");
-  return commands as typeof commands & { startRequestAudit(): Promise<void>; stopRequestAudit(): Promise<string[]> };
+  return commands as typeof commands & { startRequestAudit(): Promise<void>; waitForRequestAudit(expected: string[]): Promise<void>; stopRequestAudit(): Promise<string[]> };
 }
 
 function button(target: HTMLElement, text: string): HTMLButtonElement {
@@ -162,17 +162,18 @@ it.skipIf(!browser)("the browser-level audit records fetch, XHR, beacon and imag
   expect(sameOriginAllowed(destination, window.location.origin)).toBe(false);
   let requests: string[] = [];
   try {
-    await window.fetch(`${destination}?via=fetch`).catch(() => undefined);
+    const nonce = crypto.randomUUID();
+    const url = (via: string) => `${destination}?via=${via}&probe=${nonce}`;
+    await window.fetch(url("fetch"), { cache: "no-store" }).catch(() => undefined);
     const request = new XMLHttpRequest();
     request.onerror = () => {};
-    request.open("GET", `${destination}?via=xhr`);
+    request.open("GET", url("xhr"));
     request.send();
-    navigator.sendBeacon(`${destination}?via=beacon`, "probe");
+    expect(navigator.sendBeacon(url("beacon"), "probe")).toBe(true);
     const image = new Image();
-    image.src = `${destination}?via=image`;
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    image.src = url("image");
+    await observer.waitForRequestAudit(["fetch", "xhr", "beacon", "image"].map(url));
   } finally { requests = await observer.stopRequestAudit(); }
-  expect(requests).toContain(`${destination}?via=fetch`);
   expect(requests.filter((url) => url.startsWith(destination)).map((url) => new URL(url).searchParams.get("via")).sort())
     .toEqual(["beacon", "fetch", "image", "xhr"]);
 });

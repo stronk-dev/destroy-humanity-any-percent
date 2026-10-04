@@ -1,6 +1,6 @@
 /// <reference types="@vitest/browser/providers/playwright" />
 
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import type { Page, Request, WebSocket as PlaywrightWebSocket } from "playwright";
@@ -18,6 +18,9 @@ export default defineConfig({
   optimizeDeps: { include: ["svelte", "@antimatter-dimensions/notations"] },
   ssr: { noExternal: ["@antimatter-dimensions/notations"] },
   test: {
+    // This CSS provenance fixture runs nested Vite builds and uses node:fs.
+    // Keep other future test formats in browser collection by default.
+    exclude: [...configDefaults.exclude, "test/css-dependency-graph.test.mjs"],
     setupFiles: ["./test/browser-error-guard.ts"],
     testNamePattern: performanceOnly
       ? /observable 20 Hz \/ 10 Hz screen budget/u
@@ -37,6 +40,16 @@ export default defineConfig({
           page.on("request", request);
           page.on("websocket", socket);
           requestAudits.set(sessionId, { page, urls, request, socket });
+        },
+        async waitForRequestAudit({ sessionId }, expected: string[]) {
+          const audit = requestAudits.get(sessionId);
+          if (!audit) throw new Error("request audit not active");
+          const deadline = Date.now() + 5_000;
+          while (Date.now() < deadline) {
+            if (expected.every((url) => audit.urls.includes(url))) return;
+            await new Promise((resolve) => setTimeout(resolve, 25));
+          }
+          throw new Error(`request audit timed out: expected=${JSON.stringify(expected)} observed=${JSON.stringify(audit.urls)}`);
         },
         stopRequestAudit({ sessionId }) {
           const audit = requestAudits.get(sessionId);
