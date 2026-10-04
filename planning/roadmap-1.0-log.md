@@ -900,3 +900,11 @@ pass cold. No production, schema, kernel, API or copy byte changed.
 Codex. Claude's cross-party review of the Codex test-only `589fc06c` range
 is required before B2/AC3 closes. Typer public wire, owner content, Firefox,
 the historical kernel-history CI failure and the whole 1.0 floor remain open.
+
+## 2026-10-04 — Typer B3 exact unlock parity and API-path proof
+
+Product source `a33d4d6a`, evidence through `76f8cc1d`. Codex found that Claude's B3 Go loader treated explicit `exit_history_at_least:null` as an absent clause, while the TS loader rejected it. A Go negative failed first; the bounded correction rejects null, adds both-language negatives, updates canonical docs and advances the watched kernel identity to 0.3.138. Cold `./kernel ./minigame ./production`, client units, typecheck and vet pass. The whole kernel-history gate remains red at historical `50a3a514`, before judging the new commit.
+
+The earlier real-Postgres Typer AC9 test used the legacy start path, not the B3 API resolver. A new test drives `StartMinigameAPISession` with pinned Typer content and Founder v21: Tier 0 and no-Exit starts reject without a receipt, session or Founder advance; Tier 1 with one Exit starts. The original legacy v20 population remains intact. Both populations pass cold on real Postgres, and independent Tier and Exit severing mutations each fail the new test before restoration. This proves the internal API-start gate, not a public route or player workflow.
+
+RP-153 separately records that the Game UI availability projector still treats a non-Fiscal Typer row as unlocked, contrary to the server gate. The accepted Garage GS7 surface is Pitch-only; a reconciled surface contract and same-row parity proof are required before Typer's player-facing unlock can be claimed. Claude must cross-party review both new Codex ranges; wider Typer review, public wire/content mint, Firefox, CI-history repair and the full 1.0 floor remain open. No push or release action occurred.
