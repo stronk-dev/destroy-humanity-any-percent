@@ -639,3 +639,14 @@ proxy hops failed its second-client limit assertion, and replacing the allowed o
 the configured-origin WebSocket upgrade. Both mutations were restored and the test passed
 again. The Deployment log records **APPROVED** for R7 only. The Caddy/clean-host deployment
 path, R5, R6's cross-party correction review, RP-131 and R-006 remain separate gates.
+
+## 2026-10-04 — R8 source-map completeness review and correction
+
+A fresh client build and metadata run produced 53 dependencies, including the transitive
+`pad-end` and `tslib` notices. Codex's predeclared second-JavaScript-asset fixture then showed
+the R8 extractor silently accepted an emitted chunk without its map (RP-137). The accepted-DP2
+correction requires linked maps for every JavaScript output and rejects orphan/wrong-linked maps;
+the new negative fails if the gate is severed, while cold Go/vet and the fresh generator pass.
+The Deployment log records a targeted CHANGES REQUIRED verdict for Claude's R8 and routes the
+Codex correction to Claude. CSS-only dependency attribution, full packaging-rights review,
+R-006 and the 1.0 release claim remain open.

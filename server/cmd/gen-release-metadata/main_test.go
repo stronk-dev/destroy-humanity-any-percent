@@ -35,9 +35,34 @@ func clientFixture(t *testing.T, license string) string {
 	writeFixture(t, filepath.Join(scoped, "package.json"), `{"name":"@scope/pkg","version":"2.0.0","license":"MIT"}`)
 	writeFixture(t, filepath.Join(scoped, "LICENSE"), mitText)
 	writeFixture(t, filepath.Join(scoped, "dist", "index.js"), "export {}\n")
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "index.js"), "console.log('fixture')\n//# sourceMappingURL=index.js.map\n")
 	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "index.js.map"),
 		`{"version":3,"sources":["../../src/main.ts","../../node_modules/.pnpm/pad-end@1.0.2/node_modules/pad-end/index.js","../../node_modules/.pnpm/@scope+pkg@2.0.0/node_modules/@scope/pkg/dist/index.js"],"mappings":""}`)
 	return root
+}
+
+func TestClientInventoryRejectsPartialAssetMapPopulation(t *testing.T) {
+	root := clientFixture(t, "MIT")
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "worker.js"),
+		"import 'missing-package'\n//# sourceMappingURL=worker.js.map\n")
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("emitted JavaScript asset without its map accepted: %v", err)
+	}
+
+	root = clientFixture(t, "MIT")
+	if err := os.Remove(filepath.Join(root, "client", "dist", "assets", "index.js")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("orphan sourcemap without its JavaScript asset accepted: %v", err)
+	}
+
+	root = clientFixture(t, "MIT")
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "index.js"),
+		"console.log('fixture')\n//# sourceMappingURL=some-other.js.map\n")
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("asset linked to a different sourcemap accepted: %v", err)
+	}
 }
 
 func TestClientInventoryFollowsShippedModulesNotDirectDependencies(t *testing.T) {

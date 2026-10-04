@@ -83,7 +83,10 @@ own sourcemaps (`client/dist/**/*.map`): every shipped module under `node_module
 exact installed package directory, so transitive packages the bundler inlines (currently `pad-end`
 and `tslib`) are attributed, and an aliased version (`break_infinity.js` 2.2.0, not the 1.3.0 that
 the notations package also installs) is attributed as shipped. The client must be built with
-sourcemaps first; a missing build fails. It reads shipped LICENSE/COPYING bytes directly
+sourcemaps first; every emitted JavaScript asset must link to its own present map, and an orphan
+or mismatched map fails instead of yielding a partial inventory. This binds JavaScript modules;
+CSS-only package attribution is not yet proved by the current build-map check. A missing build
+fails. It reads shipped LICENSE/COPYING bytes directly
 (whitespace-normalized so wrapped clauses match), recognizes only the audited 0BSD, MIT, ISC,
 Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.

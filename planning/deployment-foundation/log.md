@@ -3748,3 +3748,25 @@ full `verify-push` claim.
   make the missing-map test fail. This proves JavaScript map completeness only; CSS-only
   package attribution is not silently claimed and needs a separate build-graph route before a
   full client-rights closure.
+
+## 2026-10-04 — R8 targeted finding and RP-137 correction
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `1f048de9^..1f048de9`,
+  limited to the JavaScript source-map completeness claim. **Decision:** **CHANGES REQUIRED
+  (RP-137)**. The predeclared missing-second-map test failed first on the original code:
+  `emitted JavaScript asset without its map accepted: <nil>`. The fresh current build had two
+  JavaScript assets with matching maps, so this is an acceptance-set hole, not evidence of a
+  missing notice in the present generated output.
+- Codex's accepted-DP2 correction validates every emitted `.js`/`.mjs`/`.cjs` asset has its
+  sibling map and one exact trailing source-map link. Every map must point back to an existing
+  linked JavaScript or CSS asset; symlinks in the build tree refuse. The fixture also rejects
+  orphan maps and wrong map links. This does not infer CSS-only package completeness from
+  absent CSS maps; canonical Deployment docs now state that limit.
+- Cold `make test-go` over `cmd/gen-release-metadata` and `releasepackage`, plus focused vet,
+  passed. A fresh root `make build-client` followed by real `make generate-release-metadata`
+  still emitted 53 dependencies with the five npm packages; `pad-end@1.0.2` and
+  `tslib@2.8.1` (0BSD) were present. Temporarily removing only the new every-script map gate
+  made the missing-map test fail with the same acceptance diagnostic; it was restored.
+- This is Codex implementation and requires Claude's designated exact-range verdict. It does
+  not approve R8 as a whole, settle 0BSD policy beyond the accepted scope, prove CSS-only
+  attribution, or validate a final release artifact/clean host.

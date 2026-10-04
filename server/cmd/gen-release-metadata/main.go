@@ -144,19 +144,39 @@ func discoverGoDependencies(root string) ([]releasepackage.Dependency, error) {
 func discoverClientDependencies(root string) ([]releasepackage.Dependency, error) {
 	dist := filepath.Join(root, "client", "dist")
 	var maps []string
+	var scripts []string
 	err := filepath.WalkDir(dist, func(path string, entry os.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
 		}
+		if entry.Type()&os.ModeSymlink != 0 {
+			return fmt.Errorf("%w: symlink in client build %s", releasepackage.ErrInvalidContent, path)
+		}
 		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".map") {
 			maps = append(maps, path)
 		}
+		if !entry.IsDir() && isClientScript(entry.Name()) {
+			scripts = append(scripts, path)
+		}
 		return nil
 	})
-	if err != nil || len(maps) == 0 {
+	if err != nil || len(maps) == 0 || len(scripts) == 0 {
 		return nil, fmt.Errorf("%w: build the client with sourcemaps before inventorying shipped dependencies: %v", releasepackage.ErrInvalidContent, err)
 	}
 	sort.Strings(maps)
+	mapSet := make(map[string]bool, len(maps))
+	for _, mapPath := range maps {
+		mapSet[mapPath] = true
+		asset := strings.TrimSuffix(mapPath, ".map")
+		if err := requireLinkedSourceMap(asset, mapPath); err != nil {
+			return nil, err
+		}
+	}
+	for _, script := range scripts {
+		if !mapSet[script+".map"] {
+			return nil, fmt.Errorf("%w: shipped JavaScript lacks a sourcemap: %s", releasepackage.ErrInvalidContent, script)
+		}
+	}
 	packages := map[string]string{}
 	for _, mapPath := range maps {
 		data, err := os.ReadFile(mapPath)
@@ -216,6 +236,32 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 		return nil, fmt.Errorf("%w: built client ships no npm package", releasepackage.ErrInvalidContent)
 	}
 	return result, nil
+}
+
+func isClientScript(name string) bool {
+	return strings.HasSuffix(name, ".js") || strings.HasSuffix(name, ".mjs") || strings.HasSuffix(name, ".cjs")
+}
+
+// Every shipped script must have its own linked map. An orphan or stale map
+// cannot authorize a license inventory for unrelated shipped bytes.
+func requireLinkedSourceMap(asset, mapPath string) error {
+	data, err := os.ReadFile(asset)
+	if err != nil {
+		return fmt.Errorf("%w: sourcemap without its asset %s: %v", releasepackage.ErrInvalidContent, mapPath, err)
+	}
+	var marker string
+	switch {
+	case isClientScript(asset):
+		marker = "//# sourceMappingURL=" + filepath.Base(mapPath)
+	case strings.HasSuffix(asset, ".css"):
+		marker = "/*# sourceMappingURL=" + filepath.Base(mapPath) + " */"
+	default:
+		return fmt.Errorf("%w: unsupported client sourcemap asset %s", releasepackage.ErrInvalidContent, asset)
+	}
+	if !strings.HasSuffix(strings.TrimSpace(string(data)), marker) || strings.Count(string(data), "sourceMappingURL=") != 1 {
+		return fmt.Errorf("%w: asset is not linked to its sourcemap %s", releasepackage.ErrInvalidContent, asset)
+	}
+	return nil
 }
 
 // packageDirectory walks up from a shipped module to the nearest enclosing
