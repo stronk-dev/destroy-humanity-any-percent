@@ -22,6 +22,10 @@ migration take the next free numbers at landing.
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
 - [ ] AC14 composed real-server witness (Buy → reload under the N5 trap, with a severed-producer
   failing case). **Carried:** this needs an epoch that pins `cosmetics`; fixture-first, no mint.
+- [ ] C6/AC11 keyboard acceptance supplement (RP-167): real Enter and Space Buy activation is
+  mutation-proven in Chromium/WebKit; Firefox's session could not start on this host, and the
+  test-only Codex range still needs Claude's designated review. Do not cite C6's old `.click()`
+  test as keyboard proof or claim the three-engine gate complete.
 - [ ] Integrated pet-panel overlay (release manifest G10) and owner adoption of the candidate copy.
 - [ ] Designated cross-party review (Codex) and archival. Not self-approved.
 - [x] C8 Mechanical-isolation property test, package gates, docs (AC7, AC16).

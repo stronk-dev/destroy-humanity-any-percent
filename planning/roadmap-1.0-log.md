@@ -1009,3 +1009,14 @@ worker-build provenance hook and a Go notice fixture with no package source
 in the worker map. The raw-string inference is withdrawn, not silently
 overwritten. This remains locally implemented pending cross-party review and
 the exact release-bundle rights gate.
+
+## 2026-10-04 — Cosmetic Shop keyboard evidence correction
+
+Codex's bounded C6/AC11 review found RP-167: the claimed keyboard Buy browser
+witness focused the button but used `.click()`. A test-only Enter/Space
+supplement now passes in Chromium and WebKit and fails both cases when the
+native Buy handler is severed. Firefox could not connect to Vitest on this
+host, even when run alone, so the three-engine acceptance gate remains open.
+Claude's designated review of the Codex test range, the real-server AC14
+Buy→reload flow, owner copy adoption and live pet-panel overlay are still
+required; this is not a Cosmetics or 1.0 completion claim.

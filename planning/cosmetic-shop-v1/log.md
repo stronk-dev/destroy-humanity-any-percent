@@ -424,3 +424,41 @@ mint.**
   test-only supplement. No player-facing copy, intent semantics, artifact
   pin, RFC status, or owner decision changes in this batch. Codex's
   correction needs Claude's cross-party review before closure.
+
+## 2026-10-04 — Codex targeted C6/AC11 review and keyboard supplement (RP-167)
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed Claude range:**
+  `1bba27ba^..1bba27ba`, limited to the AC11 keyboard Buy claim and its
+  browser witness. **Decision: CHANGES REQUIRED for evidence.** The shipped
+  Buy is a native button, but both C6 browser tests invoked `.click()`; the
+  existing green tests did not exercise Enter or Space. This finding does not
+  assert that keyboard Buy is broken and is not a verdict on C6's other ACs.
+- The test-only supplement changes the shelf browser test to focus Buy and
+  send `userEvent.keyboard("{Enter}")`, and adds a separate focused Space
+  case. Both require exactly one acquire call; pending still cannot render
+  owned before an authoritative snapshot. No product source, copy or schema
+  byte changed.
+- **Executed discrimination:** with only Buy's production `onclick` binding
+  temporarily changed to a no-op, the Chromium run failed both keyboard
+  cases at `expected [] to deeply equal ["acquire:horse_armor"]` and
+  `["horse_armor"]`; the other two shelf cases passed. The handler was
+  restored byte-for-byte (`git diff` on the component empty). Before and
+  after severing, the unmodified component passed all four scoped tests in
+  Chromium and WebKit. `make typecheck` passed with zero warnings; full
+  `make test-client` passed 6912 with 84 browser-only skips. Cold Go
+  `./cosmetic ./replaycatalog ./production` packages also passed, as did the
+  focused catalog, bundle and transition negatives; these Go checks are
+  context for C1/C2, not a full Cosmetics verdict.
+- **Firefox limit:** the three-engine run passed 8 tests in Chromium/WebKit
+  but Vitest reported an unhandled Firefox session connection timeout after
+  60 seconds; a Firefox-only retry reached the same timeout before any test
+  started. Both invocations were interrupted after their error summaries
+  because Vitest stayed live. They are not green AC11 evidence. This host
+  cannot close the three-engine criterion; an executable Firefox lane remains
+  required. The initial attempt to combine several Go `-run` regexes through
+  a Make variable was parsed as shell pipelines and was discarded; separate
+  exact focused Go invocations passed.
+- AC14's real-server Buy→reload path, the G10 live pet-panel mount, owner
+  copy adoption, full implementation-range review and archival remain open.
+  This Codex test correction itself requires Claude's designated cross-party
+  review of its exact committed range.

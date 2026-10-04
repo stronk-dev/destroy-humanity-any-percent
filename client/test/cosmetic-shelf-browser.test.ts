@@ -44,6 +44,7 @@ function assertCurtainsVisible(target: HTMLElement, label: string): void {
 }
 
 it.skipIf(!browser)("buys by keyboard, never shows owned before the receipt, then equips; curtains persist in every state", async () => {
+  const { userEvent } = await import("vitest/browser");
   const calls: string[] = [];
   const initial = { arm: arms["acquirable-at-tier-1"]!, presentation: COSMETIC_SHOP_PRESENTATION, price: "$0.00", era: "era_2000" as const, pending: false,
     controlsEnabled: true, petName: () => "Mittens", receipt: null, rejection: null,
@@ -59,7 +60,8 @@ it.skipIf(!browser)("buys by keyboard, never shows owned before the receipt, the
     expect(buy.getAttribute("aria-describedby")!.split(" ").sort()).toEqual([...CURTAINS].sort());
     expect(target.querySelector(".anchor")!.getAttribute("aria-describedby")).toBe("curtain-horse_armor-reference_price_anchor");
     buy.focus();
-    buy.click();
+    expect(document.activeElement).toBe(buy);
+    await userEvent.keyboard("{Enter}");
     expect(calls).toEqual(["acquire:horse_armor"]);
     // Pending: the button stays labelled and disabled; ownership is NOT rendered (I3).
     app.update({ pending: true });
@@ -82,6 +84,29 @@ it.skipIf(!browser)("buys by keyboard, never shows owned before the receipt, the
     assertCurtainsVisible(target, "equipped");
     await assertAxe(target, "equipped");
     for (const token of ["$2", "limited", "Limited", "countdown", "hurry"]) expect(target.textContent, token).not.toContain(token);
+  } finally { unmount(app); target.remove(); }
+});
+
+it.skipIf(!browser)("activates Buy once with Space and waits for authoritative ownership", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const calls: string[] = [];
+  const target = host();
+  const app = mount(CosmeticShelfHarness, { target, props: { initial: {
+    arm: arms["acquirable-at-tier-1"]!, presentation: COSMETIC_SHOP_PRESENTATION, price: "$0.00", era: "era_2000" as const,
+    pending: false, controlsEnabled: true, petName: () => "", receipt: null, rejection: null,
+    onAcquire: (id: string) => { calls.push(id); }, onEquip: () => {}, onUnequip: () => {},
+  } } }) as unknown as { update(patch: Record<string, unknown>): void };
+  try {
+    await settle();
+    const buy = target.querySelector<HTMLButtonElement>("button")!;
+    buy.focus();
+    expect(document.activeElement).toBe(buy);
+    await userEvent.keyboard(" ");
+    expect(calls).toEqual(["horse_armor"]);
+    app.update({ pending: true });
+    await settle();
+    expect(buy.disabled).toBe(true);
+    expect(target.querySelector("[data-state=owned]")).toBeNull();
   } finally { unmount(app); target.remove(); }
 });
 
