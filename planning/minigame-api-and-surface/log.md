@@ -811,3 +811,31 @@ them. It went unnoticed because the guard was already red on `8add475`'s pending
   the active-state assertion. A setup that cannot reach Tier 1 or start Pitch is a
   failed witness, never a green skip. This is a test-only correction under MA-C12/F9;
   it cannot prove every Exit/recovery exclusivity path or the wider MA AC1–AC5 set.
+
+## 2026-10-04 — Codex designated F9 review; composed witness added
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `2def3612^..2def3612`
+  only. **Decision:** **APPROVED** for F9's minigame-session Wind Down preview and
+  production composition binding, with the supplemental composed witness below;
+  not approval of MA AC1–AC5, Soul exclusivity, offer-button eligibility, or the
+  full v0.1 handoff range.
+- Source comparison found `Projector.minigameActive` and production Exit use the same
+  read-only repository predicate and the same `MinigameAPI != nil` activation. Cold
+  `make test-go GO_PACKAGES='./gameui ./gameserver ./production' GO_TEST_FLAGS='-count=1'`
+  passed. The existing composed browser test played Pitch from Tier 0, where Wind
+  Down was already ineligible; that run did not witness the F9 state transition
+  (RP-144). Codex added a Tier-1 cross-gate setup and before/during/after real
+  `/api/v1/founder/state` checks in `5ad457ce`. With real Postgres and the composed
+  gameserver, they observed eligible → ineligible → eligible while UI-driven Pitch
+  reached a terminal receipt. `node --check` passed.
+- Temporarily removing `&& !minigameActive` made the composed run fail at
+  `active Pitch session offered Wind Down` with `eligible:true`. The first severed
+  attempt timed out before Pitch creation, so it was not counted as discrimination;
+  the repeated attempt reached and failed the exact assertion. Omitting
+  `WithMinigameActivity` in composition failed the composed v4 snapshot path.
+  Both mutations were restored, and the full composed target reran green.
+- The first unmutated composed attempt could not start cached amd64 Postgres on this
+  arm64 host. Pulling the same official `postgres:16-alpine` tag for arm64 allowed
+  the declared target to run; no product/Compose file was changed. The test-only
+  Codex range `f773cf07^..5ad457ce` requires Claude's designated cross-party
+  review. This verdict does not turn that self-authored test into its own approval.

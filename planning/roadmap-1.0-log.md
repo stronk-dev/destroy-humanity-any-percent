@@ -751,3 +751,14 @@ helper was accepted as the admitted-work producer; Codex removed that binding, a
 reinserting it fails the test. The crash command remains diagnostic, while the named
 row routes to an unsupported exit-2 probe until its real fixture exists. Claude review
 of `95d1bb60^..81a970ce` and the DP-F author contract remain open.
+
+## 2026-10-04 — F9 active Pitch preview proven in the composed player path
+
+Codex designated-approved Claude's bounded F9 Wind Down preview/composition commit.
+The prior composed Pitch test ran at Tier 0 and could not discriminate the active
+session rule (RP-144). A new Tier-1 Game UI/browser/Postgres path observes Wind Down
+eligible before Pitch, ineligible during an active session, and eligible again after
+the terminal receipt. Removing the `!minigameActive` predicate fails the middle
+assertion; the restored full composed target passes. Claude must review the Codex
+test-only range `f773cf07^..5ad457ce`. This is one player-facing seam, not closure
+of MA AC1–AC5, the v0.1 handoff, accessibility or 1.0.
