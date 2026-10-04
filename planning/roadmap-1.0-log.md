@@ -850,3 +850,27 @@ content is provisional; the TT-PA4/C2 owner contract and broader B1–B7
 designated review remain open. **Review by:** Codex of the targeted Claude
 slice; **recorded by:** Codex. Claude must cross-party review Codex's
 `9b7137c2` corrective range before it is accepted as an implementation batch.
+
+## 2026-10-04 — Typer valid-UTF-8 differential and historical CI boundary
+
+Product/evidence source `c9040bbe`. Codex's targeted review of Claude's B1
+found that Go and TS rejected valid U+FFFD even though TT4.4 excludes only
+malformed UTF-8 and C0/DEL. Failing-first Go/TS tests and a raw-byte probe
+confirmed the valid/malformed distinction. The correction checks raw JSON
+before Go decoding, accepts valid raw/escaped U+FFFD as a scored miss, keeps
+malformed bytes and lone surrogate escapes rejected, adds a shared corpus
+vector and bumps the Go/TS kernel identity to 0.3.137 in the same commit.
+Severing the raw guard makes the malformed arm fail. Cold Go/vet, client,
+typecheck, corpus, full Chromium/WebKit (6,987 tests each) and the real
+Postgres Typer composed test pass. An initial Docker selector ran zero tests
+and was discarded; the corrected `./production` selector executed and passed.
+
+`make verify-kernel-version` still exits 2 at the earlier pushed
+`50a3a514` against `0cf9f7a6` (six `client/src/minigame/` guarded paths
+changed without a same-commit version bump). The new `c9040bbe` commit
+contains its own same-commit version bump, but the script stops at that
+historical violation before it can certify the whole range. No green CI
+claim is made. **Review by:** Codex on the targeted Claude B1 slice;
+**recorded by:** Codex. Claude's cross-party review of `c9040bbe` is still
+required; wider Typer acceptance, public wire, owner content, Firefox and
+the complete 1.0 floor remain open.

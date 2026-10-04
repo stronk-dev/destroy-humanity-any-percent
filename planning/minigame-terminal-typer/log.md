@@ -1,86 +1,5 @@
 # Terminal Typer log
 
-## 2026-10-04 — Codex TT4.4 raw-text differential predeclaration
-
-**Reviewed by:** Codex, targeting Claude's B1 engine `345dc0b9`; **scope:** TT4.4 text validity
-only, not a full B1 or Typer verdict. TT4.4 says valid UTF-8 excluding C0/DEL; U+FFFD encoded as
-`EF BF BD` is valid UTF-8 and should be a scored miss against an ASCII prompt. The current Go and
-TS validators explicitly reject U+FFFD, recorded in B1 as a "DESIGN-GAP" even though the
-accepted text rule names the admissible set. The critical discriminator is not merely allowing
-U+FFFD after JSON parse: malformed raw UTF-8 and unpaired JSON surrogate escapes must still
-reject `invalid_text` before Go's decoder can replace them with that same rune. Run an exact
-three-arm decode test (valid U+FFFD, malformed raw UTF-8, unpaired escape) on current HEAD, with
-the valid arm expected to fail and the malformed arms expected to reject. If confirmed, leave
-kernel behavior untouched pending a scoped correction that preserves Go/TS parity and the
-historical kernel-version gate; never equate a source-reading claim with a proven test result.
-
-### TT4.4 finding, correction and executed evidence — Codex
-
-**Review by:** Codex of Claude's `345dc0b9` B1 text-validity slice. **Recorded by:** Codex.
-**Verdict:** CHANGES REQUIRED on the U+FFFD rule; no full B1/B1–B7 approval is inferred.
-The three-arm temporary Go probe failed on the valid raw U+FFFD arm with `invalid_text`, while
-malformed raw UTF-8 and an unpaired `\ud800` rejected. Persistent Go and TS tests were then
-added; both suites failed on the valid-U+FFFD arm before correction. The B1 log's prior
-"DESIGN-GAP" label did not override TT4.4's explicit valid-UTF-8 rule.
-
-The correction checks raw submit-line JSON before Go's decoder can substitute malformed bytes
-or lone surrogate escapes, then permits a legitimately encoded U+FFFD in both runtimes. It
-rejects malformed raw UTF-8, isolated high/low surrogate escapes and a high surrogate followed
-by a non-low escape; a valid surrogate pair remains accepted. The shared Typer corpus now
-contains the valid-U+FFFD miss, increasing its fixed transition budget from 61 to 62 without
-changing content identity. Removing the new raw validator after correction made the Go test fail
-because malformed input was accepted; the guard was restored. `kernel/VERSION` and Go/TS constants
-move together from 0.3.136 to 0.3.137 in this corrective change.
-
-Cold evidence: Go `./typer ./minigame ./gameserver ./replaycatalog` and vet pass, Typer corpus
-check passes, client suite passes 6,906 tests, typecheck has zero diagnostics, production client
-build passes, and full Chromium/WebKit browser populations each pass 6,987 tests plus the
-performance lane. The first Docker selector accidentally targeted `./gameserver ./minigame` and
-printed `no tests to run`; it is **not** counted. The corrected real-Postgres `./production`
-selector executes `TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality` PASS, crediting
-3e0 in both timed and untimed modes. The default Firefox-inclusive gate and historical
-kernel-history CI repair remain open. This Codex corrective range requires Claude's designated
-cross-party review before the B1 slice is accepted.
-
-## 2026-10-04 — Codex targeted TT8/TT9 review predeclaration
-
-**Reviewed by:** Codex, independent of Claude's `ade1083b` implementation. **Scope:** the
-`TyperTable` child and its browser witness only; this is not a verdict on B1–B7 or an archival
-approval. RP-149 records the observed gap before edits.
-
-The accepted TT8.3 requires focus to remain in the input while one polite announcement names each
-new prompt. Current markup has a static `<code>` and a polite status for miss/clear feedback, but
-no live prompt announcement. The test named "begins by keyboard" focuses a button then calls
-`.click()`. Add a browser assertion that exactly one dedicated polite prompt announcement contains
-the current command while the input owns focus, and use actual Enter keyboard activation for the
-ready-mode control and the submit control. The announcement assertion must fail on current HEAD;
-removing the correction afterward must make it fail again. Run the focused browser suite and
-client typecheck cold. This does not authorize Typer API arms, registry pinning, content mint, or
-the RFC's full AC13 release claim (Firefox and manual assistive-technology tasks remain distinct).
-
-### Targeted finding and correction — Codex
-
-**Review by:** Codex of Claude's `ade1083b` TT8 child/test only. **Recorded by:** Codex.
-**Verdict:** CHANGES REQUIRED on the prompt-announcement and keyboard-evidence slice; no full
-Typer B1–B7 verdict is inferred. The new same-mount prompt-change browser witness failed on the
-original child: zero `.prompt-announcement[aria-live=polite]` elements. The claimed keyboard
-begin test used a programmatic `.click()`; it now uses real browser Enter, as does line submission.
-
-The correction keeps an initially empty polite live region mounted and updates its text when the
-server-owned current prompt ID changes. It introduces no authored prose or gameplay rule. The
-test-only `TyperTableHarness` advances the snapshot on the same mounted child and checks the live
-text changes exactly once while input focus stays put. After correction, removing only the
-announcement assignment failed the focused browser case at `expected '' to contain 'ls -la'`;
-the line was restored and the suite passed again.
-
-Cold evidence at current worktree: Chromium and WebKit full browser populations each pass
-6,986 tests (one existing skip each) plus the performance lane; `make test-client` passes 6,905
-(82 skips); `make typecheck` reports zero errors/warnings; `make verify-client-boundary` and
-`make build-client` pass. The default Firefox-inclusive gate and manual screen-reader evidence
-are **not** claimed. This Codex-authored corrective range requires Claude's designated
-cross-party review before the B6 slice can be accepted; the TT-PA4/C2 public wire conflict,
-registration, provisional content and all remaining B7/AC13 work remain open.
-
 ## 2026-09-25 — Predeclaration (Claude)
 
 **Implemented by:** Claude, per the owner's 2026-09-25 acceptance and implement direction.
@@ -337,3 +256,89 @@ block). It then plays `end_run` before `begin` (outcome `ended_early`), resolves
 by the Vite browser runner. The fix is test-only: a static top-level `?raw` import of the same bytes.
 Cold results: browser `replay.test.ts` passes 258/258 across 3 browsers, and node passes 86/86. No
 product code changed.
+
+## 2026-10-04 — Codex targeted TT8/TT9 review predeclaration
+
+**Reviewed by:** Codex, independent of Claude's `ade1083b` implementation. **Scope:** the
+`TyperTable` child and its browser witness only; this is not a verdict on B1–B7 or an archival
+approval. RP-149 records the observed gap before edits.
+
+The accepted TT8.3 requires focus to remain in the input while one polite announcement names each
+new prompt. The original markup had a static `<code>` and a polite status for miss/clear feedback,
+but no live prompt announcement. The test named "begins by keyboard" focused a button then called
+`.click()`. The predeclared negative was a same-mount prompt change requiring exactly one polite
+prompt region with the new command while input focus remains, plus real Enter activation for ready
+mode and submit. It had to fail before correction and after severing it. This did not authorize
+Typer API arms, registry pinning, content mint, or a full AC13 release claim.
+
+### Targeted finding and correction — Codex
+
+**Review by:** Codex of Claude's `ade1083b` TT8 child/test only. **Recorded by:** Codex.
+**Verdict:** CHANGES REQUIRED on the prompt-announcement and keyboard-evidence slice; no full
+Typer B1–B7 verdict is inferred. The new same-mount prompt-change browser witness failed on the
+original child: zero `.prompt-announcement[aria-live=polite]` elements. The claimed keyboard
+begin test used a programmatic `.click()`; it now uses real browser Enter, as does line submission.
+
+The correction keeps an initially empty polite live region mounted and updates its text when the
+server-owned current prompt ID changes. It introduces no authored prose or gameplay rule. The
+test-only `TyperTableHarness` advances the snapshot on the same mounted child and checks the live
+text changes exactly once while input focus stays put. After correction, removing only the
+announcement assignment failed the focused browser case at `expected '' to contain 'ls -la'`;
+the line was restored and the suite passed again.
+
+Cold evidence at the TT8 corrective `9b7137c2` worktree: Chromium and WebKit full browser
+populations each passed 6,986 tests (one existing skip each) plus the performance lane;
+`make test-client` passed 6,905 (82 skips); `make typecheck` reported zero errors/warnings;
+`make verify-client-boundary`, `make copy-check` and `make build-client` passed. The default
+Firefox-inclusive gate and manual screen-reader evidence are **not** claimed. This Codex-authored
+corrective range requires Claude's designated cross-party review before the B6 slice can be
+accepted; TT-PA4/C2 public wire, registration, provisional content and B7/AC13 remain open.
+
+## 2026-10-04 — Codex TT4.4 raw-text differential predeclaration
+
+**Reviewed by:** Codex, targeting Claude's B1 engine `345dc0b9`; **scope:** TT4.4 text validity
+only, not a full B1 or Typer verdict. TT4.4 says valid UTF-8 excluding C0/DEL; U+FFFD encoded as
+`EF BF BD` is valid UTF-8 and should be a scored miss against an ASCII prompt. The original Go and
+TS validators explicitly rejected U+FFFD, recorded in B1 as a "DESIGN-GAP" even though the
+accepted text rule names the admissible set. The critical discriminator was not merely allowing
+U+FFFD after JSON parse: malformed raw UTF-8 and unpaired JSON surrogate escapes must still
+reject `invalid_text` before Go's decoder can replace them with that same rune. The predeclared
+three-arm decode test required the valid arm to fail on original HEAD while malformed arms reject.
+A correction had to preserve Go/TS parity and account for the historical kernel-version gate.
+
+### TT4.4 finding, correction and executed evidence — Codex
+
+**Review by:** Codex of Claude's `345dc0b9` B1 text-validity slice. **Recorded by:** Codex.
+**Verdict:** CHANGES REQUIRED on the U+FFFD rule; no full B1/B1–B7 approval is inferred.
+The three-arm temporary Go probe failed on the valid raw U+FFFD arm with `invalid_text`, while
+malformed raw UTF-8 and an unpaired `\ud800` rejected. Persistent Go and TS tests were then
+added; both suites failed on the valid-U+FFFD arm before correction. The B1 log's prior
+"DESIGN-GAP" label did not override TT4.4's explicit valid-UTF-8 rule.
+
+The correction checks raw submit-line JSON before Go's decoder can substitute malformed bytes
+or lone surrogate escapes, then permits a legitimately encoded U+FFFD in both runtimes. It
+rejects malformed raw UTF-8, isolated high/low surrogate escapes and a high surrogate followed
+by a non-low escape; a valid surrogate pair and an escaped literal backslash remain accepted.
+The shared Typer corpus now contains the valid-U+FFFD miss, increasing its fixed transition budget
+from 61 to 62 without changing content identity. Removing the new raw validator after correction
+made the Go test fail because malformed input was accepted; the guard was restored.
+`kernel/VERSION` and Go/TS constants move together from 0.3.136 to 0.3.137 in `c9040bbe`.
+
+Cold evidence: Go `./typer ./minigame ./gameserver ./replaycatalog` and vet pass, Typer corpus
+check passes, client suite passes 6,906 tests, typecheck has zero diagnostics, production client
+build passes, and full Chromium/WebKit browser populations each pass 6,987 tests plus the
+performance lane. The first Docker selector accidentally targeted `./gameserver ./minigame` and
+printed `no tests to run`; it is **not** counted. The corrected real-Postgres `./production`
+selector executes `TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality` PASS, crediting
+3e0 in both timed and untimed modes. The default Firefox-inclusive gate remains open. This
+Codex corrective range requires Claude's designated cross-party review before B1 acceptance.
+
+### Post-commit kernel-history gate
+
+At committed `c9040bbe`, `make verify-kernel-version` exits 2 at earlier
+`50a3a514` against `0cf9f7a6`, naming six guarded `client/src/minigame/` paths
+without a same-commit bump. The new Typer commit itself includes
+`kernel/VERSION` 0.3.136→0.3.137 and matching Go/TS constants, but the
+history walk halts before a whole-history green verdict. This is the
+pre-existing CI defect, not a passed gate and not authority to create a
+kernel-history exception without the pending owner ruling.
