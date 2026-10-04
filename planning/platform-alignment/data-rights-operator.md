@@ -45,3 +45,14 @@ R-006/R-007 on the exact release bundle and supported clean host.
 
 No operator runtime/secret was touched, and no policy or deployment change is
 authorized by this dossier.
+
+## 2026-10-04 current-HEAD supplement
+
+The 2026-09-23 “source-derived, not executed” classification above remains accurate for that
+checkpoint but is no longer the latest evidence. A retained real-Postgres repository-level
+test now backs up a seeded account before and after `account.Repository.DeleteAccount` and
+restores both encrypted dumps. Only the pre-deletion backup recreates the deleted account and
+active Founder/streams; the post-deletion backup preserves the deleted/archived state. The
+negative deletion-severing probe fires. See [`data-rights-restore-resurrection.md`](data-rights-restore-resurrection.md)
+for exact counts and limits. This ARM64 local test is not the supported-host R-006/R-007 or a
+credential-revival/HTTP deletion witness, and it changes no D-009/D-015 decision.

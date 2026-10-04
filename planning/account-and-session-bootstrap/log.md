@@ -271,3 +271,14 @@ exclusion made the post-delete assertion fail and was restored byte-exact. Cold 
 gameserver/leaderboard/account controls pass `-count=1`; non-Postgres Go and vet pass. The fuller
 RP-118 dead-letter/poison/backup chain, D-009/D-015 policy and designated Claude review remain
 open. Exact method, counts and limits: `planning/platform-alignment/data-rights-public-board-delete.md`.
+
+## 2026-10-04 — AC6 × Deployment DP6 backup-restore boundary (RP-125)
+
+**Review by:** Codex (implementer first filter). **Recorded by:** Codex. A retained
+`deploymentbackup` Postgres integration test now brackets real repository deletion with encrypted
+pre/post backups. The pre-deletion restore recreates the account and active Founder/streams;
+the post-deletion restore preserves their deleted/archived state. The deletion-severing probe
+fails at the source census; the full local ARM64 backup integration lane passes after byte-exact
+restoration. This observes a cross-RFC rights risk, not an Account AC6 policy change or a public
+workflow. `planning/platform-alignment/data-rights-restore-resurrection.md` states the limits;
+D-009/D-015 and Claude's designated review remain open.

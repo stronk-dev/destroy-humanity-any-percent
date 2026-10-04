@@ -1050,3 +1050,16 @@ and controls are in `platform-alignment/data-rights-public-board-delete.md`. Thi
 old “no public-reader proof” caveat but does not close RP-118's dead-letter/poison or backup-restore
 arms. D-009/D-015 and legal review remain owner choices, and Claude's designated cross-party
 review of the Codex range remains required. No 1.0 or Account archival status changed.
+
+## 2026-10-04 — current-HEAD pre-deletion backup resurrection boundary
+
+The retained RP-125 real-Postgres test now brackets Account repository deletion with age-encrypted
+B_pre/B_post and restores both through the product backup package. Source deletion removes the
+account/active Founder link; B_pre restore re-creates them and live streams, whereas B_post keeps
+the deleted/archived state. A bystander and verified board row persist in both. The complete
+five-test integration population passed without skip on an isolated ARM64 Postgres project;
+temporarily severing the account-row deletion made the test fail at the source census, then
+production bytes were restored and the suite passed again. This is not the old Claude branch's
+credential-revival proof at current HEAD, nor supported-host R-006 or a D-009/D-015 ruling.
+The exact counts/limits live in `platform-alignment/data-rights-restore-resurrection.md`.
+Cross-party review of the Codex range remains open; no release status changed.

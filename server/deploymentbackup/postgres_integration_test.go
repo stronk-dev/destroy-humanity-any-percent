@@ -1,6 +1,7 @@
 package deploymentbackup
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"errors"
@@ -10,9 +11,138 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/account"
+	"cloud-clicker/server/economy"
 	"cloud-clicker/server/save"
 	"filippo.io/age"
 )
+
+type rightsRestoreCatalog struct{}
+
+func (rightsRestoreCatalog) Resolve(hash string) (*economy.Catalog, bool) {
+	return &economy.Catalog{}, hash == "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+
+type rightsRestoreState struct {
+	account, activeLink, archivedLink, liveStreams, archivedStreams, board, bystander int
+}
+
+func readRightsRestoreState(t *testing.T, db *sql.DB) rightsRestoreState {
+	t.Helper()
+	const accountID = "01986666-c001-7000-8000-000000000001"
+	const founderID = "01986666-c002-7000-8000-000000000002"
+	const bystanderID = "01986666-c001-7000-8000-000000000011"
+	var state rightsRestoreState
+	err := db.QueryRow(`SELECT
+		(SELECT count(*) FROM accounts WHERE account_id=$1),
+		(SELECT count(*) FROM account_founders WHERE founder_id=$2 AND account_id=$1 AND archived_at IS NULL),
+		(SELECT count(*) FROM account_founders WHERE founder_id=$2 AND account_id IS NULL AND archived_at IS NOT NULL),
+		(SELECT count(*) FROM save_streams WHERE owner_kind='founder' AND owner_id=$2 AND archived_at IS NULL),
+		(SELECT count(*) FROM save_streams WHERE owner_kind='founder' AND owner_id=$2 AND archived_at IS NOT NULL),
+		(SELECT count(*) FROM verified_runs WHERE founder_id=$2),
+		(SELECT count(*) FROM accounts WHERE account_id=$3)`, accountID, founderID, bystanderID).
+		Scan(&state.account, &state.activeLink, &state.archivedLink, &state.liveStreams, &state.archivedStreams, &state.board, &state.bystander)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return state
+}
+
+func TestPreDeletionBackupRestoresDeletedAccountIntegration(t *testing.T) {
+	sourceURL := os.Getenv("TEST_DATABASE_URL")
+	targetURL := os.Getenv("TEST_RESTORE_DATABASE_URL")
+	adminURL := os.Getenv("TEST_ADMIN_DATABASE_URL")
+	if sourceURL == "" || targetURL == "" || adminURL == "" {
+		t.Skip("deployment backup database URLs not set")
+	}
+	ctx := context.Background()
+	resetDatabase(t, adminURL, "cloud_clicker_source")
+	source, err := save.OpenPostgres(ctx, sourceURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer source.Close()
+	if err := save.Migrate(ctx, source); err != nil {
+		t.Fatal(err)
+	}
+	var migration int
+	if err := source.QueryRowContext(ctx, `SELECT max(version_id) FILTER (WHERE is_applied) FROM goose_db_version`).Scan(&migration); err != nil {
+		t.Fatal(err)
+	}
+	seedBackupEpoch(t, source)
+	seedBackupPopulation(t, source)
+	if _, err := source.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES('01986666-c001-7000-8000-000000000011','backup-bystander')`); err != nil {
+		t.Fatal(err)
+	}
+	pre := rightsRestoreState{account: 1, activeLink: 1, liveStreams: 2, board: 1, bystander: 1}
+	post := rightsRestoreState{archivedLink: 1, archivedStreams: 2, board: 1, bystander: 1}
+	if got := readRightsRestoreState(t, source); got != pre {
+		t.Fatalf("invalid pre-delete population: got=%+v want=%+v", got, pre)
+	}
+	workspace := t.TempDir()
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	epoch := fixtureEpoch(t, 8)
+	manifest := fixtureReleaseManifestForMigration(t, epoch, migration)
+	manifestHash := digest(manifest)
+	sourceSecret := writeSecret(t, workspace, "source-url", sourceURL)
+	targetSecret := writeSecret(t, workspace, "target-url", targetURL)
+	identityPath := writeSecret(t, workspace, "identity", identity.String())
+	manifestPath := writeRegular(t, workspace, "manifest.json", manifest)
+	epochPath := writeRegular(t, workspace, "epoch.json", epoch)
+	now := time.Date(2026, 8, 22, 18, 0, 0, 0, time.UTC)
+	makeBackup := func(id string) string {
+		t.Helper()
+		_, path, err := CreatePostgresBackup(ctx, PostgresBackupInput{
+			Directory: t.TempDir(), BackupID: id, ServerID: "01986666-b001-4000-8000-000000000001",
+			StartedAt: now.Add(-time.Minute), Now: func() time.Time { return now }, Recipient: identity.Recipient().String(),
+			DatabaseURLFile: sourceSecret, ReleaseManifest: manifestPath, EpochDeclaration: epochPath,
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return path
+	}
+	preBackup := makeBackup("20260822T175900Z-000000000004")
+	const accountID = "01986666-c001-7000-8000-000000000001"
+	const hash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	repository, err := account.NewRepository(source, rightsRestoreCatalog{}, hash,
+		account.SigningKeys{CurrentID: "test", Current: bytes.Repeat([]byte{1}, 32)}, func() time.Time { return now }, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := repository.DeleteAccount(ctx, accountID); err != nil {
+		t.Fatal(err)
+	}
+	if got := readRightsRestoreState(t, source); got != post {
+		t.Fatalf("invalid post-delete source: got=%+v want=%+v", got, post)
+	}
+	postBackup := makeBackup("20260822T175900Z-000000000005")
+	for _, arm := range []struct {
+		name, path string
+		want       rightsRestoreState
+	}{{"pre-deletion", preBackup, pre}, {"post-deletion", postBackup, post}} {
+		t.Run(arm.name, func(t *testing.T) {
+			resetDatabase(t, adminURL, "cloud_clicker_restore")
+			if _, err := RestorePostgresBackup(ctx, PostgresRestoreInput{
+				BackupPath: arm.path, ExpectedManifestSHA256: manifestHash, IdentityFile: identityPath,
+				TargetDatabaseURLFile: targetSecret,
+			}); err != nil {
+				t.Fatal(err)
+			}
+			target, err := save.OpenPostgres(ctx, targetURL)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer target.Close()
+			if got := readRightsRestoreState(t, target); got != arm.want {
+				t.Fatalf("%s restore state: got=%+v want=%+v", arm.name, got, arm.want)
+			}
+		})
+	}
+}
 
 func TestPostgresBackupRestoreEmptyAndPopulatedIdentityIntegration(t *testing.T) {
 	sourceURL := os.Getenv("TEST_DATABASE_URL")

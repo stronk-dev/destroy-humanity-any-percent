@@ -12,6 +12,12 @@ Codex's test/record range awaits Claude's designated cross-party review; no Acco
 release promotion follows from this first-filter evidence. The historical kernel CI gate remains
 red, independently of this witness.
 
+RP-125 now also has a retained current-HEAD local Postgres backup/delete/restore test: encrypted
+B_pre resurrects the repository-deleted account and active Founder/streams, while B_post preserves
+deletion; an account-row deletion severing makes the witness fail. This does not prove the HTTP
+route, revived credentials or supported-host R-006. D-009/D-015 still choose the policy; Claude's
+designated review of this separate Codex test/record range is required before archival use.
+
 ## Current delta — 2026-10-04, product/evidence source `505c4e3b`
 
 The 2026-09-30 overlay below is a dated baseline, not a fresh verdict on the later v0.1
