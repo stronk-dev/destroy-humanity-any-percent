@@ -2901,3 +2901,22 @@ Executed at `add2d09` in a detached worktree (not read-only):
 Finding (non-blocking, already closed): at `add2d09` the local `verify-harness-ci` still ran the full `verify-harness`, while hosted CI ran `verify-harness-fast`. This local/hosted parity gap was closed later by the approved corrective range, so no action is needed.
 
 **Verdict: APPROVED** for `bb615ed..add2d09` and `38d1ccd`. The only finding was the parity gap noted above, and later approved work has already closed it.
+
+## 2026-10-04 — Reconcile three unmerged Claude worktrees
+
+Codex inspected `git worktree list` after confirming main was clean. The
+three Claude worktrees are clean and their branch-only commits date to
+2026-09-24; none is on `main`. They remain preserved, not cherry-picked or
+deleted:
+
+| Branch head | Fork source | Material | Current disposition |
+|---|---|---|---|
+| `b27ca321` | `a64ed0e` | RP-125 predeclared real-Postgres pre-delete backup → delete → restore diagnostic and dossier | Historical executed claim with a native-arm64 lane deviation; temporary test/fixtures were removed. Main still labels RP-125 source-derived. Reconstruct and run a retained current-HEAD witness before promoting current release evidence or D-009/D-015 decisions. |
+| `ae98287f` | `c2d9bbc` | RP-118 joined producer → verification/dead letter → board → authenticated delete diagnostic and dossier | Historical executed claim with a native-arm64 Postgres override; temporary test was removed. It exceeds the current seeded RP-130 witness, but is not a current replay or public-board result. Retain as a candidate for a permanent joined rights witness, not an automatic RP-118 closure. |
+| `cd3235a7` | `c2d9bbc` | Draft R-006 evidence-contract amendment, owner options EC1–EC9 | Codex's exact-range cross-party verdict is CHANGES REQUIRED in `planning/deployment-foundation/log.md`: current DG8/DG9, D-019 and R18 are absent, so its all-producers conclusion is stale. No acceptance or implementation authority. |
+
+This inventory does not declare Claude's two old diagnostic executions false.
+Their detailed controls and limitations are readable in the preserved branch
+commits. It also does not upgrade them to current [V] evidence: neither
+temporary executable is retained and both product baselines predate current
+HEAD. No product or rights policy changed in this reconciliation.

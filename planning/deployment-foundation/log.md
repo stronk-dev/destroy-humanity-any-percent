@@ -4226,3 +4226,30 @@ verdict. The new Vite fixture runs in `make test-client` (the client CI lane),
 and the Go metadata fixture runs in `test-go-core` (the server CI lane). The
 pre-existing pushed kernel-history failure still prevents calling aggregate
 `verify-client`/`verify-push` green.
+
+## 2026-10-04 — Codex cross-party review of unmerged Claude R-006 draft
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:**
+  `cd3235a7^..cd3235a7` on the clean Claude worktree branch
+  `worktree-agent-a3833e3f9f9400b0b` (not merged into main).
+  **Decision:** **CHANGES REQUIRED before acceptance or integration.** This is
+  a draft-design verdict, not a verdict on Deployment implementation.
+- Read the full 721-line proposed `deployment-r006-evidence-contract.md`, its
+  index addition and log entry against accepted Deployment DP4–DP8 and the
+  current R12/R18/R22 review records. It offers explicit owner options for
+  seven original DESIGN-GAPs plus journal and provider-off producers, without
+  pretending those options are accepted. That structure is useful and no
+  product byte changed in the branch.
+- Its summary and plan delta say the recommended options leave every R-006
+  row with a producer. At current HEAD that cannot be true: RP-140/DESIGN-GAP
+  8 still permits a same-basename fake plan executable, and RP-143/DESIGN-GAP
+  9 leaves `gameserver_restart_during_admitted_work` intentionally unsupported
+  after the crash-only route was removed. The draft also predates D-019's
+  decryptable-restore authority choice and the R18 negative-producer witness
+  finding. Accepting it now would create a false complete-evidence contract.
+- Required revision: retain the owner-option format, reconcile the current
+  plan population and artifact counts, add explicit DG8/DG9/D-019/R18 routes
+  and decide which are in this amendment versus another accepted successor.
+  The owner must select actual policy options before body reconciliation.
+  Do not cherry-pick the draft as active authority or implement its
+  recommendations in Marco's name. The worktree and its commit are preserved.

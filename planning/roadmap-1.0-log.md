@@ -971,3 +971,17 @@ metadata generation pass at 53 dependencies. This is locally implemented,
 pending Claude's designated review; URL/worker CSS, final bundle/image rights
 and clean-host R-006 remain open. The unrelated pushed kernel-history gate
 still fails at `50a3a514`, so no green full CI or 1.0 claim follows.
+
+## 2026-10-04 — Unmerged Claude worktree reconciliation
+
+Main had no intervening Claude commit, but three clean Claude worktrees from
+2026-09-24 were found. Two hold bounded RP-118/RP-125 data-rights diagnostics
+with real Postgres observations on an arm64 override and no retained executable
+test; their old baselines and limits are recorded, not promoted to current
+rights/release proof. The third holds an unaccepted R-006 options draft.
+Codex reviewed its exact commit `cd3235a7` cross-party and recorded CHANGES
+REQUIRED: it omits the current producer-identity, admitted-work, restore-
+authority and negative-producer gaps while claiming complete producer
+coverage. All three worktrees remain untouched and unmerged. The exact
+inventory and routes are in `planning/platform-alignment/log.md`; no owner
+policy, RFC acceptance or product behavior was inferred from them.
