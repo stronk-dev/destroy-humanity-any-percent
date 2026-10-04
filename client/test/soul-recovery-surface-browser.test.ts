@@ -225,8 +225,8 @@ it.skipIf(!browser)("sends no heartbeat when start completes in an already hidde
     await settle();
     target.querySelector<HTMLButtonElement>("li button")!.click();
     await settle(45);
-    expect(target.textContent).toContain("Paused while this tab is in the background.");
     expect(port.tokens).toEqual([]);
+    expect(target.textContent).toContain("Paused while this tab is in the background.");
     visible = true;
     document.dispatchEvent(new Event("visibilitychange"));
     await settle(45);

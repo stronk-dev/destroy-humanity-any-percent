@@ -874,6 +874,10 @@ them. It went unnoticed because the guard was already red on `8add475`'s pending
   server mechanics changed. The same test now shows hidden pause with zero
   progress calls, then a progress call only after a visible event. The whole
   Soul surface browser file passes 6/6 in each of Chromium and WebKit.
+  A post-fix severing run removed only that initial callback: the tightened
+  assertion failed with two progress calls bearing the old token while the
+  document was hidden. Restoring the callback passed the exact case in both
+  browsers. This proves the heartbeat defect, not merely the missing notice.
 - **Cold gates after correction:** `make typecheck` (0 diagnostics),
   `make test-client` (6,905 passed, 77 skipped), `make copy-check`, and full
   `make test-browser BROWSER_TEST_FLAGS='--browser=chromium'` and
