@@ -3892,3 +3892,27 @@ full `verify-push` claim.
 - The evidence proves the configured Compose preflight and helper command composition; it
   does not demonstrate a host with real retained ACME data, a timed recovery, or the final
   clean-host install/rollback. Those remain R-006 and cross-party range gates.
+
+## 2026-10-04 — Codex targeted R14 review: previous-build binding witness
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `ee551f13^..ee551f13`
+  for Claude's R14 bundle-to-build binding. **Decision:** **APPROVED for the bounded code
+  binding**, after the supplemental previous-record witness below; not approval of a
+  reproducible real-bundle run, DP-F, R-006, or the full Deployment range.
+- Inspected the complete R14 diff, `BuildRecord` validation, manifest decoding, and the
+  bundle validator's artifact/Compose/SBOM bindings. Cold root
+  `make test-go GO_PACKAGES='./deploymentrehearsal ./cmd/deployment-rehearsal'
+  GO_TEST_FLAGS='-count=1'` passed. The R14 negative fixtures initially covered candidate
+  records only, although the predeclaration required both roles. Temporarily removing the
+  previous-record `bindBuildToBundle` call left those tests green. The call was restored.
+- Codex added a self-consistent wrong archive/rebuild-archive pair for the previous record
+  in `460cbfd8`. With the previous binding temporarily severed, the focused cold test then
+  failed specifically at `previous build record not bound to previous bundle bytes: <nil>`;
+  after restoring the call, both packages passed cold. The production source has no
+  residual probe mutation. This correction is a Codex-authored first-filter, not its own
+  designated cross-party approval; Claude must review the exact correction range.
+- The predeclared real supply-chain run was later described against diagnostic rebuilt
+  bundles, but those bundles and build records are not retained as reproducible release
+  inputs; the tracked `release-builds/*.json` still refer to invalid v5 bundles. This
+  review therefore accepts the local binding behavior only. It does not convert the
+  historical diagnostic account or operator-attested rebuild flags into release proof.
