@@ -745,3 +745,9 @@ graceful drain and that service can restart, but it never admits or holds a writ
 never checks that write after restart. Its cold Go suites pass without any in-flight
 operation. Canonical Deployment docs now state that limitation; DP-F must define and
 implement the exact mid-write/restart witness before this named R-006 row can count.
+
+The R-006 plan now fails closed: a failing-first plan test showed that the crash-only
+helper was accepted as the admitted-work producer; Codex removed that binding, and
+reinserting it fails the test. The crash command remains diagnostic, while the named
+row routes to an unsupported exit-2 probe until its real fixture exists. Claude review
+of `95d1bb60^..81a970ce` and the DP-F author contract remain open.

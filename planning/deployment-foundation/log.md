@@ -4111,3 +4111,21 @@ full `verify-push` claim.
   Keep the crash-classification command available for diagnostics; do not rename the
   acceptance population or count it as complete. Severing the refusal route must
   fail the new test.
+
+## 2026-10-04 — R22 fail-closed route implemented, actual mid-write proof still absent
+
+- The predeclared `TestAdmittedWorkRestartRejectsCrashOnlyProducer` failed on original
+  code with `crash classification accepted as an admitted-work restart witness`.
+  Codex removed only the false `populationProducers` binding. The crash helper stays
+  available as a diagnostic, but the named R-006 row now uses `probe`, which has no
+  implementation for that population and exits as unsupported rather than claiming
+  negative proof. `ValidateExecutionPlan` rejects an exact plan row that still tries
+  to run `restart-admitted-work`.
+- Cold root `make test-go GO_PACKAGES='./deploymentrehearsal
+  ./cmd/deployment-rehearsal' GO_TEST_FLAGS='-count=1'` and focused vet passed.
+  Temporarily reinserting the removed mapping failed the new test; it was restored.
+  Canonical Deployment docs distinguish diagnostic crash classification from AC4.
+- This is a Codex implementation correction under accepted DP-F, not Codex's own
+  designated review. Claude must review `95d1bb60^..81a970ce` exactly. The R22
+  CHANGES REQUIRED verdict remains for the absent admitted-write/post-restart witness;
+  no host R-006 acceptance is claimed.
