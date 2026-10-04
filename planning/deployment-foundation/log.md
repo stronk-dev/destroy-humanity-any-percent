@@ -4095,3 +4095,19 @@ full `verify-push` claim.
   specify the exact admitted operation, pause point, allowed client outcome, durable
   post-restart state/receipt check, and severing case. Do not count the current exit 3
   as the AC4/R-006 row until that contract is implemented and executed on the bundle.
+
+## 2026-10-04 — R22 fail-closed plan-route predeclaration
+
+- **Question:** after RP-143, does the canonical execution plan still bind the named
+  admitted-work row to a crash-only helper that can exit 3 without admitted work?
+- **Population and negative control:** the `gameserver_restart_during_admitted_work`
+  plan row with `restart-admitted-work`; the production `probe --population=...`
+  fallback, which currently has no implementation and exits as unsupported. The
+  existing fake-plan test is not an integration oracle because R12 accepts a
+  same-basename constant executable.
+- **Criterion:** a cold test fails on the current mapped crash-only producer. After
+  correction, the plan cannot bind that command to the admitted-work row, and a real
+  bundled CLI must fail loudly until DP-F defines and implements the actual fixture.
+  Keep the crash-classification command available for diagnostics; do not rename the
+  acceptance population or count it as complete. Severing the refusal route must
+  fail the new test.
