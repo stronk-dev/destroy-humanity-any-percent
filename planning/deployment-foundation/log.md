@@ -3843,3 +3843,6 @@ full `verify-push` claim.
   release mechanic was invented. The actual clean-host R-006 recovery remains mandatory.
   This documentation/decision correction requires Claude's designated review. R10/full
   Deployment is not approved or archived by the package tests.
+- The Codex finding/decision route and canonical-doc correction are commits `c576f8f4` and
+  `93ec2c10`; Claude's designated review should cite `c576f8f4^..93ec2c10` exactly. This
+  routing record is not a new acceptance result.
