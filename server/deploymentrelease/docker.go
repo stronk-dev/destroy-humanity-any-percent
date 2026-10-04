@@ -2,6 +2,7 @@ package deploymentrelease
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -576,7 +577,22 @@ func hasFreeBytes(path string, required uint64) bool {
 // relations. The tool reports that refusal as a dedicated structured error
 // class, so a network, identity or checksum failure cannot be mistaken for it.
 func IsNonCleanRestoreRefusal(err error) bool {
-	return err != nil && strings.Contains(err.Error(), `"error_class":"non_clean_target"`)
+	var failure *CommandFailure
+	if !errors.As(err, &failure) || failure.Command != "docker" || failure.ExitCode != 1 || failure.Cause == nil {
+		return false
+	}
+	var record struct {
+		Time       string `json:"time"`
+		Level      string `json:"level"`
+		Message    string `json:"msg"`
+		Command    string `json:"command"`
+		ErrorClass string `json:"error_class"`
+	}
+	decoder := json.NewDecoder(strings.NewReader(failure.Stderr))
+	decoder.DisallowUnknownFields()
+	return decoder.Decode(&record) == nil && decoder.Decode(&struct{}{}) == io.EOF &&
+		record.Time != "" && record.Level == "ERROR" && record.Message == "deployment backup command failed" &&
+		record.Command == "restore" && record.ErrorClass == "non_clean_target"
 }
 
 // KillGameserver observes an ungraceful gameserver restart during admitted

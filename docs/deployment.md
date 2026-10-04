@@ -244,6 +244,8 @@ clean volume. The backup tool's clean-target gate must refuse with its dedicated
 `non_clean_target` error class and the live database's recovery identity must be unchanged; only
 then does the row exit `3`. An accepted restore exits `0`; any other failure (including a refusal
 for another reason or a changed identity) exits `2`. The probe removes its own recovery backup.
+The refusal classifier requires a failed Docker command and the exact structured backup-CLI
+`restore` error record; an echoed class fragment in an unrelated error is not evidence.
 
 `restart-admitted-work` SIGKILLs the installed gameserver instead of the governed stop, observes
 readiness and the exit code, and feeds them through the same drain derivation the release helper

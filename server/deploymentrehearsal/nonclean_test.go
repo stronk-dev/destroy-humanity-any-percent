@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -41,7 +40,7 @@ func (fake *nonCleanFake) InspectRecoveryIdentity(context.Context, deploymentrel
 func realRefusal(class string) error {
 	var stderr bytes.Buffer
 	slog.New(slog.NewJSONHandler(&stderr, nil)).Error("deployment backup command failed", "command", "restore", "error_class", class)
-	return fmt.Errorf("docker failed: %w: %s", errors.New("exit status 1"), bytes.TrimSpace(stderr.Bytes()))
+	return &deploymentrelease.CommandFailure{Command: "docker", ExitCode: 1, Stderr: string(bytes.TrimSpace(stderr.Bytes())), Cause: errors.New("exit status 1")}
 }
 
 func TestNonCleanRestoreProducerRequiresTheCleanTargetRefusal(t *testing.T) {
