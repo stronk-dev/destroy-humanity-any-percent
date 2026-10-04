@@ -43,6 +43,33 @@ func TestBundleMutationProbesRequirePreparedMutationAndGateRejection(t *testing.
 						t.Fatalf("rewrite fixture not changed: %v", err)
 					}
 				}
+				if mutation.path != releasepackage.ReleaseManifestPath {
+					data, err := os.ReadFile(filepath.Join(root, releasepackage.ReleaseManifestPath))
+					if err != nil {
+						t.Fatal(err)
+					}
+					var manifest releasepackage.ReleaseManifest
+					if err := json.Unmarshal(data, &manifest); err != nil {
+						t.Fatalf("mutation manifest was not rebound: %v", err)
+					}
+					if got := artifactHash(manifest.Artifacts, "sentinel.txt"); got != hashBytes([]byte("unchanged sentinel\n")) {
+						t.Fatalf("untouched artifact not rebound: got %q", got)
+					}
+					want := ""
+					if mutation.mutate != nil {
+						changed, err := os.ReadFile(path)
+						if err != nil {
+							t.Fatal(err)
+						}
+						want = hashBytes(changed)
+					}
+					if got := artifactHash(manifest.Artifacts, mutation.path); got != want {
+						t.Fatalf("mutation artifact hash not rebound: got %q want %q", got, want)
+					}
+					if name == "changed_sbom" && manifest.Images[0].SBOMSHA256 != want {
+						t.Fatalf("mutated SBOM hash not rebound in image identity: got %q want %q", manifest.Images[0].SBOMSHA256, want)
+					}
+				}
 				return errors.New("release gate rejected exact mutation")
 			})
 			if err != nil || outcome != ProbeRejected || calls != 2 {
@@ -280,6 +307,9 @@ func probeFixture(t *testing.T, name string, mutation bundleMutation) (ProbeRequ
 		t.Fatal(err)
 	}
 	if mutation.path != releasepackage.ReleaseManifestPath {
+		if err := os.WriteFile(filepath.Join(candidate, "sentinel.txt"), []byte("unchanged sentinel\n"), 0o600); err != nil {
+			t.Fatal(err)
+		}
 		manifest := []byte(`{"images":[{"name":"caddy","sbom_path":"sbom/caddy.spdx.json"}]}` + "\n")
 		if err := os.WriteFile(filepath.Join(candidate, releasepackage.ReleaseManifestPath), manifest, 0o600); err != nil {
 			t.Fatal(err)
