@@ -69,6 +69,7 @@ type typerFounder struct {
 	founderID       string
 	companyStreamID string
 	founderStreamID string
+	runSeq          int64
 }
 
 func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time,
@@ -84,7 +85,7 @@ func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save
 		t.Fatal(err)
 	}
 	company := replayFixtureState(t, bundle.Economy, now)
-	company.WireVersion, company.MeterBands, company.Tier = 16, nil, tier
+	company.WireVersion, company.MeterBands, company.Tier, company.RunSeq = 16, nil, tier, int64(exits+1)
 	meterState, err := meters.NewRunState(bundle.Meters, 0)
 	if err != nil {
 		t.Fatal(err)
@@ -101,7 +102,7 @@ func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save
 	founder.MinigameRatings = map[string]save.MinigameRatingState{"pitch": {Elo: 1000, SeasonMember: "s1"}, "typer": {Elo: 1000, SeasonMember: "s1"}}
 	founder.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{"pitch": {GradePPM: 200_000}, "typer": {GradePPM: 200_000}}
 	founder.Pets = map[string]pet.CareState{}
-	founder.FiscalCredit, founder.FiscalPeriodOpenedWallMS, founder.FiscalPeriodSequence = 0, now.UnixMilli(), 0
+	founder.FiscalCredit, founder.FiscalPeriodOpenedWallMS, founder.FiscalPeriodSequence = 0, now.Add(-time.Minute).UnixMilli(), 0
 	founder.FiscalGeneratorLevels = make(map[string]int64, len(bundle.Fiscal.GeneratorLevelRows()))
 	for _, row := range bundle.Fiscal.GeneratorLevelRows() {
 		founder.FiscalGeneratorLevels[row.GeneratorID] = 0
@@ -128,9 +129,9 @@ func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err = save.PinRunWithGenesisTx(ctx, pinTx, companyRevision.StreamID, founderID, 1,
+	if _, err = save.PinRunWithGenesisTx(ctx, pinTx, companyRevision.StreamID, founderID, company.RunSeq,
 		bundle.ConstantsHash, save.VersionForState(company), genesis); err == nil {
-		err = save.InsertRunFrozenContributionsTx(ctx, pinTx, companyRevision.StreamID, 1, frozen)
+		err = save.InsertRunFrozenContributionsTx(ctx, pinTx, companyRevision.StreamID, company.RunSeq, frozen)
 	}
 	if err == nil {
 		err = pinTx.Commit()
@@ -140,7 +141,7 @@ func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save
 	if err != nil {
 		t.Fatal(err)
 	}
-	return typerFounder{founderID: founderID, companyStreamID: companyRevision.StreamID, founderStreamID: founderRevision.StreamID}
+	return typerFounder{founderID: founderID, companyStreamID: companyRevision.StreamID, founderStreamID: founderRevision.StreamID, runSeq: company.RunSeq}
 }
 
 var creditedDeltaPattern = regexp.MustCompile(`"credited_delta":"([^"]+)"`)
@@ -187,7 +188,7 @@ func TestTyperAPIStartIntegrationUsesPinnedTierAndExit(t *testing.T) {
 		t.Fatal(err)
 	}
 	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundle.ConstantsHash),
-		WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}))
+		WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}), WithMinigameActivity(repository))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -271,13 +272,13 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 		t.Fatal(err)
 	}
 	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundle.ConstantsHash),
-		WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}))
+		WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}), WithMinigameActivity(repository))
 	if err != nil {
 		t.Fatal(err)
 	}
 	startRequest := func(founder typerFounder, sessionID string) minigame.StartRequest {
 		return minigame.StartRequest{SessionID: sessionID, MinigameID: "typer", FounderID: founder.founderID,
-			CompanyStreamID: founder.companyStreamID, RunSeq: 1, EngineRef: typer.EngineRef, EngineVersion: typer.EngineVersion,
+			CompanyStreamID: founder.companyStreamID, RunSeq: founder.runSeq, EngineRef: typer.EngineRef, EngineVersion: typer.EngineVersion,
 			ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{typer.ScalingDestination: 1}, Seed: "1", Mode: minigame.ModeSolo}
 	}
 
@@ -358,7 +359,7 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 	untimedCredit, _ := play(untimed, "01986666-c203-7000-8000-000000000003", "untimed")
 	// AC8 / TT5: end_run is legal before begin, so an open Typer session (which
 	// blocks Exit, MA-C12) always has a reachable exit.
-	stalled := seedTyperFounder(t, ctx, db, store, bundle, now, "04", 1, 1, 20)
+	stalled := seedTyperFounder(t, ctx, db, store, bundle, now, "04", 1, 1, 21)
 	stalledSession := "01986666-c204-7000-8000-000000000003"
 	if _, err := service.StartMinigameSession(ctx, platform, startRequest(stalled, stalledSession), now); err != nil {
 		t.Fatal(err)
@@ -366,16 +367,47 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 	if active, err := repository.ActiveMinigame(ctx, stalled.founderID); err != nil || !active {
 		t.Fatalf("open Typer session must hold the Exit block: active=%v err=%v", active, err)
 	}
+	activeExit := []byte(`{"intent_id":"01986666-c204-7000-8000-000000000005","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`)
+	activeExitResult, err := service.Handle(ctx, stalled.companyStreamID, ModeOnline, now.Add(time.Second), activeExit)
+	if err != nil || !bytes.Contains(activeExitResult.Receipt, []byte(`"detail":"minigame_session_active"`)) {
+		t.Fatalf("open Typer session did not block the real Exit: receipt=%s err=%v", activeExitResult.Receipt, err)
+	}
+	companyBlocked, companyErr := store.LoadLatest(ctx, stalled.companyStreamID)
+	founderBlocked, founderErr := store.LoadLatest(ctx, stalled.founderStreamID)
+	if companyErr != nil || founderErr != nil || companyBlocked.Revision.Number != 1 || founderBlocked.Revision.Number != 1 {
+		t.Fatalf("blocked Exit advanced state: company=%+v founder=%+v errors=%v/%v", companyBlocked, founderBlocked, companyErr, founderErr)
+	}
 	ended, err := platform.Play(ctx, minigame.PlayRequest{FounderID: stalled.founderID, SessionID: stalledSession, ExpectedRevision: 1,
 		Command: json.RawMessage(`{"kind":"end_run"}`)})
 	if err != nil || ended.Resolution == nil || ended.Resolution.Result().Outcome != typer.OutcomeEndedEarly {
 		t.Fatalf("end_run before begin must end the run: %+v err=%v", ended, err)
 	}
-	if _, err := service.ResolveMinigameSession(ctx, platform, ended.Resolution, now.Add(time.Minute), nil); err != nil {
+	if _, err := service.ResolveMinigameSession(ctx, platform, ended.Resolution, now, nil); err != nil {
 		t.Fatalf("ended_early resolution err=%v", err)
 	}
 	if active, err := repository.ActiveMinigame(ctx, stalled.founderID); err != nil || active {
 		t.Fatalf("resolved Typer session must release the Exit block: active=%v err=%v", active, err)
+	}
+	companyAfter, err := store.LoadLatest(ctx, stalled.companyStreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderAfter, err := store.LoadLatest(ctx, stalled.founderStreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	completedExit, err := json.Marshal(map[string]any{"intent_id": "01986666-c204-7000-8000-000000000006", "kind": "wind_down",
+		"expected_revision": companyAfter.Revision.Number, "expected_founder_revision": founderAfter.Revision.Number})
+	if err != nil {
+		t.Fatal(err)
+	}
+	completedExitResult, err := service.Handle(ctx, stalled.companyStreamID, ModeOnline, now.Add(2*time.Minute), completedExit)
+	if err != nil || !bytes.Contains(completedExitResult.Receipt, []byte(`"outcome":"applied"`)) {
+		t.Fatalf("Exit after resolved end_run did not apply: receipt=%s err=%v", completedExitResult.Receipt, err)
+	}
+	founderExited, err := store.LoadLatest(ctx, stalled.founderStreamID)
+	if err != nil || founderExited.Revision.Number != founderAfter.Revision.Number+1 || len(founderExited.State.ExitHistory) != len(founderAfter.State.ExitHistory)+1 {
+		t.Fatalf("applied Exit did not advance Founder history: before=%+v after=%+v err=%v", founderAfter, founderExited, err)
 	}
 	t.Logf("credited timed=%s untimed=%s", timedCredit, untimedCredit)
 	// AC11 (OD-2 as ruled): identical facts pay identically in both modes.
