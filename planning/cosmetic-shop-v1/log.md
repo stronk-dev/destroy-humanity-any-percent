@@ -620,3 +620,24 @@ typecheck, API compatibility generation/check; no production epoch, schema shape
 behavior change is authorized. The normative §7.1 required-v4 wording conflicts with the
 accepted API Foundation C2 optional-arm contract and the C5 implementation; file that as a
 separate ruling-author body-reconciliation finding, not an implementer rewrite.
+
+## 2026-10-05 — Codex targeted C5/AC10 verdict: CHANGES REQUIRED
+
+**Review by:** Codex (designated cross-party reviewer of Claude's C5).
+**Recorded by:** Codex. **Reviewed range:** `1a477d9e^..1a477d9e`.
+**Decision:** CHANGES REQUIRED, limited to C5/AC10; C1–C4 and C6–C8 remain unreviewed by this
+entry. A valid two-pet arm parsed. Three independently named negatives also parsed when they
+must reject: reversed `worn_by` pet IDs, a duplicate `worn_by` ID, and `lock.tier=9`. Cold
+`make test-client` failed 3/5 AC10 cases (6,912 other tests passed), so this is executable
+evidence, not a source-only suspicion. The Go producer sorts the lists; the defect is that the
+public-wire TS reader accepts forms that the accepted contract and API schema reject. The
+bounded correction is ordered pet-ID validation and `[0,8]` tier validation in
+`parseCosmeticsArm`, preserving the Go-authored cases and schema shape. It needs Claude's
+independent review as a Codex-authored corrective range before C5 can close.
+
+**Separate body conflict:** accepted Cosmetic Shop §7.1 says v4 gains a *required* top-level
+`cosmetics` object, while the actual C5 patch adds an *optional* `features.cosmetics` arm under
+the already existing v4 snapshot. The C5 log cites accepted API Foundation C2 as the reason, and
+that optional shape is the right producer/consumer contract at HEAD. But the normative RFC body
+was not reconciled in the same edit. Per the owner/ruling-author body-reconciliation rule, the
+RFC's author must edit §7.1; this review cannot treat the log's explanation as a body amendment.

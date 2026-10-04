@@ -24,4 +24,34 @@ describe("game UI cosmetics arm", () => {
     const inactive = { ...structuredClone(fixture.cases["owned-worn"]), active: false };
     expect(() => parseCosmeticsArm(inactive)).toThrow(/inactive/u);
   });
+
+  function twoPetArm(): { items: { worn_by: string[] }[]; wearers: { pet_id: string; worn: string | null }[] } {
+    const twoPets = structuredClone(fixture.cases["owned-worn"]) as {
+      items: { worn_by: string[] }[];
+      wearers: { pet_id: string; worn: string | null }[];
+    };
+    const secondPet = "01986666-bbbb-7bbb-8bbb-bbbbbbbbbbbb";
+    twoPets.items[0]!.worn_by.push(secondPet);
+    twoPets.wearers.push({ pet_id: secondPet, worn: "horse_armor" });
+    expect(() => parseCosmeticsArm(twoPets)).not.toThrow();
+    return twoPets;
+  }
+
+  it("rejects reversed worn_by pet ids", () => {
+    const reversed = twoPetArm();
+    reversed.items[0]!.worn_by.reverse();
+    expect(() => parseCosmeticsArm(reversed)).toThrow(/worn_by.*sorted/u);
+  });
+
+  it("rejects duplicate worn_by pet ids", () => {
+    const duplicate = twoPetArm();
+    duplicate.items[0]!.worn_by.push(duplicate.wearers[1]!.pet_id);
+    expect(() => parseCosmeticsArm(duplicate)).toThrow(/worn_by.*sorted/u);
+  });
+
+  it("rejects a lock tier outside the catalog's 0..8 domain", () => {
+    const outOfDomain = structuredClone(fixture.cases["locked-at-tier-0"]) as { items: { lock: { tier: number } | null }[] };
+    outOfDomain.items[0]!.lock!.tier = 9;
+    expect(() => parseCosmeticsArm(outOfDomain)).toThrow(/cosmetic lock tier/u);
+  });
 });
