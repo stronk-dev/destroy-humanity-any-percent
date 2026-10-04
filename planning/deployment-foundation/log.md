@@ -4015,3 +4015,20 @@ full `verify-push` claim.
   order/ledger binding but not Caddy drain frames, Postgres data restore, timing,
   Docker image availability or an operator-run release. R12 producer identity and
   R18 negative-producer witnesses remain open, so no R-006 row is promoted here.
+
+## 2026-10-04 — R20 review predeclaration: exact non-clean refusal provenance
+
+- **Question:** can `IsNonCleanRestoreRefusal` classify an unrelated command failure as
+  the required dirty-database refusal merely because its error text contains the
+  substring `"error_class":"non_clean_target"`? Source currently uses `strings.Contains`.
+- **Population and controls:** the production `ExecRunner` failure shape from a Docker
+  restore command; a genuine backup CLI JSON error with `command=restore` and the exact
+  non-clean class; wrong command/class, malformed or embedded JSON, and an arbitrary
+  error containing that substring. The existing real-Postgres dirty-target integration
+  test remains the database-side control.
+- **Criterion:** the adversarial arbitrary-error case must fail on current code; after a
+  correction, only a typed failed Docker command carrying the exact structured backup
+  CLI restore refusal may return true. The genuine class must still pass, while wrong
+  classes and identity changes stay errors. A temporary severing of the parser must
+  fail the permanent test. This authorizes only error-provenance classification, not
+  a claim that the R20 host probe or R-006 has run.
