@@ -4371,3 +4371,25 @@ pre-existing pushed kernel-history failure still prevents calling aggregate
   `7163fe8f..2ea9f316` plus this coordinate commit, inspect the actual diff,
   rerun the relevant gates and record `Review by:` and `Recorded by:` with
   the exact inspected range. Codex's local probes are a first filter only.
+
+## 2026-10-04 — Current-HEAD Deployment review resumption (no verdict)
+
+- Re-read the current execution queue before treating the older R1–R17
+  handoff as pending wholesale: bounded Codex designated verdicts and
+  CHANGES REQUIRED findings already exist for individual R batches. The
+  historical overlay is not authority to approve, repeat or archive the
+  `67fd415..ec5518b` range as one unit. The current queue still names R5's
+  composed witness, corrected ranges awaiting cross-party review, exact
+  bundle rebuilding and clean-host R-006 as open boundaries.
+- At current HEAD `627956be`, `make test-deployment-rehearsal` passed cold:
+  both rehearsal/release Go packages and both retained previous/candidate
+  *build-record* validators. This is structural record evidence, not
+  validation of the now-stale retained bundles.
+- `make test-deployment-release` compiled its Linux/amd64 test binary, then
+  stopped before assertions because the pinned amd64 `postgres:16-alpine`
+  service exited 255 on this arm64/aarch64 Docker host. A direct same-image
+  `postgres --version` diagnostic returned `exec format error`; the test
+  project's `down --volumes` cleanup completed. This reproduces the current
+  queue's architecture limit for composed Deployment tests. It is neither a
+  green gate nor an implementation-failure verdict; rerun on an amd64 runner.
+- No new designated verdict or RFC status change follows from this checkpoint.
