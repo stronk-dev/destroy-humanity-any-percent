@@ -1031,3 +1031,9 @@ negative did not produce WebKit request events; off-origin attempts blocked
 before network dispatch, Firefox and the real-server Buy→reload flow remain
 unproven. This moves N5 evidence forward without claiming AC13, Cosmetics or
 release completion.
+
+## 2026-10-04 — Cold Linux browser-lane correction
+
+Product source `2ea9f316`; test/evidence source `c3311dbd` (coordinate record follows). No newer Claude commit is present on main: the three old Claude worktrees are already inventoried in the platform-alignment log, and the main checkout was clean at `6e6b1786` before this batch. Native Firefox launch timed out both sandboxed and unsandboxed on this macOS 27 host; `~/Library/Application Support/Firefox` is OS-denied to the launching process. The cached ARM64 Linux Playwright image provided a safe three-engine runner without touching user browser data.
+
+The first cold `make test-browser-ci` found two new evidence defects: a Node-only CSS provenance fixture imported and failed before assertions in all three browsers (RP-169), and the Cosmetics four-transport negative failed in full-suite Chromium/Firefox despite passing alone because its 100 ms stop did not await actual request observation (RP-170). An exact browser-config exclusion preserves the CSS fixture's four passing Node cases. A nonce-tagged, bounded request-audit wait now requires all four URLs. Removing the page request listener made the focused test fail in Chromium, Firefox and WebKit with an empty observed set; it was restored. The corrected cold Linux lane passed 20,976 browser tests with three skips plus the separate performance case; `make test-client` passed 6912, typecheck had zero errors/warnings. This is local Linux evidence, not hosted CI, Cosmetics AC14, final packaging rights, or 1.0 release readiness. Claude's designated review of the Codex test correction remains due, and the historical kernel-version gate remains red.
