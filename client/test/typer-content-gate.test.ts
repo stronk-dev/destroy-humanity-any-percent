@@ -59,6 +59,20 @@ describe("Typer shared content gate", () => {
     expect(firstMismatchIndex("ls -lah", "ls -la")).toBe(6);
   });
 
+  it("scores valid U+FFFD as a miss but rejects unpaired surrogate JSON escapes", async () => {
+    const identity = { content, content_hash: corpus.typer_content_hash, content_schema_version: 1, seed: 42n, mode: "solo" as const,
+      scaling_inputs: { "typer.era_tier": 1 } };
+    const ready = await createTyper(identity);
+    const begun = await applyTyper({ ...identity, revision: 1, snapshot: ready, command: '{"kind":"begin","assist_level":"untimed"}', server_time_ms: 1 });
+    const miss = await applyTyper({ ...identity, revision: 2, snapshot: begun.snapshot,
+      command: JSON.stringify({ kind: "submit_line", text: "�" }), server_time_ms: 2 });
+    expect(JSON.parse(miss.snapshot).last_submission).toEqual({ first_mismatch_index: 0, outcome: "miss" });
+    for (const command of [String.raw`{"kind":"submit_line","text":"\ud800"}`, String.raw`{"kind":"submit_line","text":"\udc00"}`]) {
+      await expect(applyTyper({ ...identity, revision: 2, snapshot: begun.snapshot, command, server_time_ms: 2 }))
+        .rejects.toMatchObject({ code: "invalid_text" });
+    }
+  });
+
   it("rejects catalog defects the Go loader rejects", () => {
     const keys = new Set(COPY_KEYS);
     const mutate = (change: (value: Record<string, any>) => void) => { const value = JSON.parse(content); change(value); return value; };

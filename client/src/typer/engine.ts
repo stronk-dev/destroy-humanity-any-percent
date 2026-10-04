@@ -168,12 +168,13 @@ function decodeCommand(source: string): TyperCommand {
   throw new TyperRejection("illegal_phase", "unknown command kind");
 }
 
-// TT4.4 step 1. U+FFFD is refused in both runtimes because Go's JSON decoder
-// substitutes it for invalid UTF-8; lone surrogates are invalid UTF-16 here.
+// TT4.4 step 1. A legitimate U+FFFD is valid; lone surrogates are invalid
+// UTF-16 here. Go checks raw JSON before decode so malformed bytes cannot be
+// silently substituted with the legitimate rune.
 function validSubmittedText(text: string): boolean {
   for (let index = 0; index < text.length; index++) {
     const code = text.charCodeAt(index);
-    if (code < 0x20 || code === 0x7f || code === 0xfffd) return false;
+    if (code < 0x20 || code === 0x7f) return false;
     if (code >= 0xd800 && code <= 0xdbff) { const next = text.charCodeAt(index + 1); if (!(next >= 0xdc00 && next <= 0xdfff)) return false; index++; continue; }
     if (code >= 0xdc00 && code <= 0xdfff) return false;
   }

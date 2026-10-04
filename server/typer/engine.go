@@ -335,7 +335,7 @@ func decodeCommand(data []byte) (command, error) {
 			Kind string `json:"kind"`
 			Text string `json:"text"`
 		}
-		if !hasExactJSONKeys(data, "kind", "text") || strictDecode(data, &wire) != nil {
+		if !hasExactJSONKeys(data, "kind", "text") || !validSubmitLineEncoding(data) || strictDecode(data, &wire) != nil {
 			return command{}, reject("invalid_text", "submit_line schema mismatch")
 		}
 		if !validSubmittedText(wire.Text) {
@@ -352,14 +352,79 @@ func decodeCommand(data []byte) (command, error) {
 	}
 }
 
+// Go's JSON decoder replaces malformed UTF-8 and lone surrogate escapes with
+// U+FFFD. Check the raw command first so a legitimate U+FFFD can remain valid
+// without accepting malformed encodings as the same submitted character.
+func validSubmitLineEncoding(data []byte) bool {
+	if !utf8.Valid(data) {
+		return false
+	}
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil {
+		return false
+	}
+	raw := fields["text"]
+	if len(raw) < 2 || raw[0] != '"' || raw[len(raw)-1] != '"' {
+		return false
+	}
+	for index := 1; index < len(raw)-1; index++ {
+		if raw[index] != '\\' {
+			continue
+		}
+		index++
+		if raw[index] != 'u' {
+			continue
+		}
+		value, ok := hexRune(raw[index+1 : index+5])
+		if !ok {
+			return false
+		}
+		index += 4
+		if value >= 0xd800 && value <= 0xdbff {
+			if index+6 >= len(raw) || raw[index+1] != '\\' || raw[index+2] != 'u' {
+				return false
+			}
+			low, ok := hexRune(raw[index+3 : index+7])
+			if !ok || low < 0xdc00 || low > 0xdfff {
+				return false
+			}
+			index += 6
+		} else if value >= 0xdc00 && value <= 0xdfff {
+			return false
+		}
+	}
+	return true
+}
+
+func hexRune(digits []byte) (rune, bool) {
+	if len(digits) != 4 {
+		return 0, false
+	}
+	var value rune
+	for _, digit := range digits {
+		value <<= 4
+		switch {
+		case digit >= '0' && digit <= '9':
+			value += rune(digit - '0')
+		case digit >= 'a' && digit <= 'f':
+			value += rune(digit-'a') + 10
+		case digit >= 'A' && digit <= 'F':
+			value += rune(digit-'A') + 10
+		default:
+			return 0, false
+		}
+	}
+	return value, true
+}
+
 // validSubmittedText is TT4.4 step 1: valid UTF-8 with no C0 control
-// characters or U+007F.
+// characters or U+007F. U+FFFD itself is valid text.
 func validSubmittedText(text string) bool {
 	if !utf8.ValidString(text) {
 		return false
 	}
 	for _, character := range text {
-		if character < 0x20 || character == 0x7f || character == utf8.RuneError {
+		if character < 0x20 || character == 0x7f {
 			return false
 		}
 	}

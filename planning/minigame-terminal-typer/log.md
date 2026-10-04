@@ -1,5 +1,47 @@
 # Terminal Typer log
 
+## 2026-10-04 — Codex TT4.4 raw-text differential predeclaration
+
+**Reviewed by:** Codex, targeting Claude's B1 engine `345dc0b9`; **scope:** TT4.4 text validity
+only, not a full B1 or Typer verdict. TT4.4 says valid UTF-8 excluding C0/DEL; U+FFFD encoded as
+`EF BF BD` is valid UTF-8 and should be a scored miss against an ASCII prompt. The current Go and
+TS validators explicitly reject U+FFFD, recorded in B1 as a "DESIGN-GAP" even though the
+accepted text rule names the admissible set. The critical discriminator is not merely allowing
+U+FFFD after JSON parse: malformed raw UTF-8 and unpaired JSON surrogate escapes must still
+reject `invalid_text` before Go's decoder can replace them with that same rune. Run an exact
+three-arm decode test (valid U+FFFD, malformed raw UTF-8, unpaired escape) on current HEAD, with
+the valid arm expected to fail and the malformed arms expected to reject. If confirmed, leave
+kernel behavior untouched pending a scoped correction that preserves Go/TS parity and the
+historical kernel-version gate; never equate a source-reading claim with a proven test result.
+
+### TT4.4 finding, correction and executed evidence — Codex
+
+**Review by:** Codex of Claude's `345dc0b9` B1 text-validity slice. **Recorded by:** Codex.
+**Verdict:** CHANGES REQUIRED on the U+FFFD rule; no full B1/B1–B7 approval is inferred.
+The three-arm temporary Go probe failed on the valid raw U+FFFD arm with `invalid_text`, while
+malformed raw UTF-8 and an unpaired `\ud800` rejected. Persistent Go and TS tests were then
+added; both suites failed on the valid-U+FFFD arm before correction. The B1 log's prior
+"DESIGN-GAP" label did not override TT4.4's explicit valid-UTF-8 rule.
+
+The correction checks raw submit-line JSON before Go's decoder can substitute malformed bytes
+or lone surrogate escapes, then permits a legitimately encoded U+FFFD in both runtimes. It
+rejects malformed raw UTF-8, isolated high/low surrogate escapes and a high surrogate followed
+by a non-low escape; a valid surrogate pair remains accepted. The shared Typer corpus now
+contains the valid-U+FFFD miss, increasing its fixed transition budget from 61 to 62 without
+changing content identity. Removing the new raw validator after correction made the Go test fail
+because malformed input was accepted; the guard was restored. `kernel/VERSION` and Go/TS constants
+move together from 0.3.136 to 0.3.137 in this corrective change.
+
+Cold evidence: Go `./typer ./minigame ./gameserver ./replaycatalog` and vet pass, Typer corpus
+check passes, client suite passes 6,906 tests, typecheck has zero diagnostics, production client
+build passes, and full Chromium/WebKit browser populations each pass 6,987 tests plus the
+performance lane. The first Docker selector accidentally targeted `./gameserver ./minigame` and
+printed `no tests to run`; it is **not** counted. The corrected real-Postgres `./production`
+selector executes `TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality` PASS, crediting
+3e0 in both timed and untimed modes. The default Firefox-inclusive gate and historical
+kernel-history CI repair remain open. This Codex corrective range requires Claude's designated
+cross-party review before the B1 slice is accepted.
+
 ## 2026-10-04 — Codex targeted TT8/TT9 review predeclaration
 
 **Reviewed by:** Codex, independent of Claude's `ade1083b` implementation. **Scope:** the

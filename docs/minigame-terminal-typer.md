@@ -34,8 +34,9 @@ replaced before any production mint.
 - **Deadline.** A timed run has deadline `t_begin + timed_budget_ms`. A submit stamped exactly at
   the deadline is scored; one stamped later ends the run `timed_out`, unscored.
 - **Comparison.**
-  - `invalid_text` is decided first: C0, U+007F and U+FFFD are refused. Go substitutes U+FFFD for
-    invalid UTF-8, so both runtimes refuse it.
+  - `invalid_text` is decided first: C0, U+007F, malformed raw UTF-8 and unpaired JSON surrogate
+    escapes are refused. A valid U+FFFD is a scored miss against the ASCII prompt. Go validates
+    raw JSON before decoding so malformed input cannot be substituted into that valid character.
   - Then `line_too_long`, measured on raw bytes.
   - Then the closed OD-7 map (‘ ’ → `'`, “ ” → `"`, NBSP → space, — → `--`), with no other
     normalization.

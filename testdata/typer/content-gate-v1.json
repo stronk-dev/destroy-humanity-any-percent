@@ -1,7 +1,7 @@
 {
   "version": 1,
   "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
-  "transition_budget": 61,
+  "transition_budget": 62,
   "scenarios": [
     {
       "name": "completed_timed_seed_1",
@@ -757,9 +757,17 @@
         {
           "command": {
             "kind": "submit_line",
-            "text": "ｐing -c 4 localhost"
+            "text": "�"
           },
           "server_time_ms": 100011,
+          "expect": "applied"
+        },
+        {
+          "command": {
+            "kind": "submit_line",
+            "text": "ｐing -c 4 localhost"
+          },
+          "server_time_ms": 100012,
           "expect": "applied"
         },
         {
@@ -848,11 +856,11 @@
           "outcome": "cleared"
         },
         "lines_cleared": 8,
-        "misses": 3,
+        "misses": 4,
         "phase": "terminal",
         "prompt_index": 8,
         "prompts_total": 8,
-        "revision": 13,
+        "revision": 14,
         "started_server_ms": 100000,
         "typer_content_hash": "sha256:d57d3532c1396194800c42a5c4dfe37e039b4bb837ef49f33125f12cd8483bf6",
         "typer_schema_version": 1
@@ -879,7 +887,7 @@
           },
           {
             "kind": "typer.misses",
-            "value": 3
+            "value": 4
           }
         ]
       },

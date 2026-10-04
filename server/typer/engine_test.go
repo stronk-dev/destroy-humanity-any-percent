@@ -239,6 +239,32 @@ func TestTyperRejectionsMutateNothing(t *testing.T) {
 	}
 }
 
+func TestTyperSubmitLineDistinguishesValidReplacementRuneFromMalformedEncoding(t *testing.T) {
+	for _, data := range [][]byte{
+		[]byte(`{"kind":"submit_line","text":"�"}`),
+		[]byte(`{"kind":"submit_line","text":"\ufffd"}`),
+		[]byte(`{"kind":"submit_line","text":"\ud83d\ude42"}`),
+		[]byte(`{"kind":"submit_line","text":"\\ud800"}`),
+	} {
+		if _, err := decodeCommand(data); err != nil {
+			t.Fatalf("valid Unicode line %s rejected: %v", data, err)
+		}
+	}
+	malformed := append([]byte(`{"kind":"submit_line","text":"`), 0xff)
+	malformed = append(malformed, []byte(`"}`)...)
+	for _, data := range [][]byte{
+		malformed,
+		[]byte(`{"kind":"submit_line","text":"\ud800"}`),
+		[]byte(`{"kind":"submit_line","text":"\udc00"}`),
+		[]byte(`{"kind":"submit_line","text":"\ud800\u0041"}`),
+	} {
+		_, err := decodeCommand(data)
+		if code := rejectionCode(err); code != "invalid_text" {
+			t.Fatalf("malformed Unicode line %s: got %q, want invalid_text", data, code)
+		}
+	}
+}
+
 func TestTyperCleanLineAccounting(t *testing.T) {
 	h := newHarness(t, 5)
 	if err := h.apply(`{"assist_level":"untimed","kind":"begin"}`, 1); err != nil {

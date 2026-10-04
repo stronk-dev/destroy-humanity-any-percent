@@ -149,9 +149,11 @@ func generateCorpus(t *testing.T) contentCorpus {
 	b.step(submit(strings.Repeat("x", 257)), 100_002)
 	b.step(submit(strings.ToUpper(b.h.currentText())), 90_000)
 	b.step(submit(b.h.currentText()+"x"), 100_010)
+	// A valid U+FFFD byte sequence is a miss, not invalid_text (TT4.4).
+	b.step(submit("�"), 100_011)
 	// A fullwidth look-alike stays a miss: no Unicode normalization (TT4.4).
 	current := b.h.currentText()
-	b.step(submit(string(rune(current[0])+0xfee0)+current[1:]), 100_011)
+	b.step(submit(string(rune(current[0])+0xfee0)+current[1:]), 100_012)
 	for b.h.state().Phase == PhaseTyping {
 		b.step(submit(b.h.currentText()), 100_100+int64(b.h.state().PromptIndex))
 	}
