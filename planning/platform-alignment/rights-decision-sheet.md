@@ -1,10 +1,13 @@
 # D-008 / D-009 / D-015 — owner decision sheet
 
-**Status:** prepared options for Marco, 2026-09-24; **no option is adopted.** Coordinate: product
-source `7e8aa70` (no `server/` diff through HEAD at preparation). Evidence is the 60-table census
+**Status:** prepared options for Marco, 2026-09-24; RP-171 evidence added 2026-10-04;
+**no option is adopted.** Original coordinate: product source `7e8aa70` (no `server/` diff through
+HEAD at preparation); the added public-board witness ran against product source `f9ab1037`.
+Evidence is the 60-table census
 in [`data-rights-inventory.md`](data-rights-inventory.md), its five SQL-column tranches, the
 browser/payload/event/receipt/verification/operator maps, and the executed RP-119/RP-122/RP-127–
-RP-130 probes. This sheet turns those records into choices. It is not a legal opinion, privacy
+RP-130 probes, plus the later current-HEAD RP-171 composed public-board/deletion witness. This
+sheet turns those records into choices. It is not a legal opinion, privacy
 notice or retention policy, and it does not select anything on Marco's behalf. Legal review is
 still required before any adopted policy becomes public copy.
 
@@ -15,7 +18,7 @@ still required before any adopted policy becomes public copy.
 | `DELETE /api/v1/account` deletes account, email, session, token and family rows; it **unlinks and archives** Founder mappings and save streams rather than deleting them. | `TestAccountSessionIntegration`; `data-rights-fields-account-save.md` | Any Founder- or stream-keyed row whose only deletion authority is an FK cascade survives deletion (RP-122). Choosing "delete" for such a family needs new code, not a policy line. |
 | The bootstrap receipt row keeps `account_id`, digest and times permanently; migration `00073` forbids row deletion and `account_id` changes. | Inventory "Executed deletion diagnostic" | "No account-linked row remains" is currently false. Deleting it needs a new append-only migration plus replay/idempotency analysis. |
 | Immutable history (`run_log_archive`, events, genesis, Founder logs, verified runs, Minigame API receipts, terminal Soul rows, poison dead letters) is enforced by triggers. | `data-rights-payload-core.md`, `-receipts.md`, `-verification.md` | Erasure inside those tables conflicts with replay/verification integrity. A delete option must name the replacement integrity mechanism; an anonymize option must name which join keys are severed. |
-| Verified boards keep a row linked to an archived Founder after deletion (RP-130); Commons World-count and health sampling still count a deleted account's active membership (RP-119). | `data-rights-board-delete.md`, `data-rights-commons-delete.md` | Public or aggregate surfaces continue to reflect deleted players unless a transition is specified. |
+| Verified boards keep a row linked to an archived Founder after deletion (RP-130); a naturally projected Founder/run remains readable through the unauthenticated public HTTP board after deletion (RP-171). Commons World-count and health sampling still count a deleted account's active membership (RP-119). | `data-rights-board-delete.md`, `data-rights-public-board-delete.md`, `data-rights-commons-delete.md` | Public or aggregate surfaces continue to reflect deleted players unless a transition is specified. |
 | Guild shared event JSON retains a deleted account UUID even where the FK is nulled (RP-120). | `data-rights-fields-guild.md` | Shared-history disclosure needs its own answer; per-account Guild receipts already cascade. |
 | Minigame API receipt triggers block parent-session deletion even through FK cascade (RP-128); terminal Soul rows keep their progress token (RP-127). | `data-rights-receipts.md` | Any expiry of Minigame sessions needs a migration/contract change; the Soul token is historical capability material, not a proved live bypass. |
 | Full encrypted backups keep deleted accounts up to 30 days, longer for protected newest/pre-upgrade copies; a full restore re-creates deleted accounts with no deletion replay (RP-125). | `data-rights-operator.md`; RFC DP6 | "Deleted within N days" must either include backup lag honestly or add a post-restore deletion replay. |
@@ -48,7 +51,7 @@ this source, not a recommendation.
 | Bootstrap receipt tombstone (`account_id`, digest, times) | Retain forever | Keep, sever `account_id` via new migration, or bounded expiry. |
 | Founder mappings, save streams/revisions, intent receipts | Sever (unlink + archive) | Keep sever, or delete with an integrity replacement. |
 | Run/Founder history, genesis, archives, events | Retain (immutable) | Retain for replay/verification with a duration, or sever further. |
-| Verified boards / public rankings (RP-130) | Retain, linked to archived Founder | Remain on public boards anonymously, or be withdrawn from public readers. |
+| Verified boards / public rankings (RP-130/RP-171) | Retain, linked to archived Founder; the public board still returns its `founder_id` and `run_id` after account deletion | Retain as currently identified, anonymize/sever public identity, or withdraw from public readers; rule the history and duration too. |
 | Active Commons membership (RP-119) | Still counted | Deletion leaves the Commons (live counts drop, historic contributions kept), or counts as historic only. |
 | Guild shared history (RP-120) | UUID retained in JSON | Scrub/replace the UUID, or retain with disclosure. |
 | Minigame sessions/receipts, Soul sessions, player outbox (RP-122/RP-127/RP-128) | Retain | Delete (needs RP-128 migration), sever, or retain with expiry. |

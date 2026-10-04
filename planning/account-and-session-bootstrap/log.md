@@ -258,3 +258,16 @@ or Q-002.
 
 **Verdict: APPROVED.** Q-001 closes. Q-002 (Minigame API witnesses) may begin, serially, per the
 accepted queue. No archival, promotion, or push is authorized by this verdict.
+
+## 2026-10-04 — AC6 joined public-board deletion supplement, first filter only
+
+**Review by:** Codex (implementer first filter). **Recorded by:** Codex. A bounded test-only
+supplement to AC6 extends the existing composed first-hour Postgres population, without changing
+Account or Leaderboards production code. Its actual verifier/projector output is read through
+the unauthenticated public board before and after a real refreshed-session account deletion. The
+account is removed and the Founder/streams archived, yet the exact projected Founder/run remains
+public. The negative board-variable partition excludes it; a temporary archived-Founder reader
+exclusion made the post-delete assertion fail and was restored byte-exact. Cold focused Postgres
+gameserver/leaderboard/account controls pass `-count=1`; non-Postgres Go and vet pass. The fuller
+RP-118 dead-letter/poison/backup chain, D-009/D-015 policy and designated Claude review remain
+open. Exact method, counts and limits: `planning/platform-alignment/data-rights-public-board-delete.md`.

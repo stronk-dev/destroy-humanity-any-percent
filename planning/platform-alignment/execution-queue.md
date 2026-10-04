@@ -1,5 +1,17 @@
 # Executable queue
 
+## Current rights delta — 2026-10-04, product source `f9ab1037`
+
+The bounded Account AC6/RP-118 witness is retained in the composed first-hour Postgres test:
+real verification/projector output survives authenticated account deletion and remains readable
+on the unauthenticated public board (RP-171). A temporary archived-Founder reader exclusion made
+the post-delete assertion fail and was restored. This is current behavior, not owner adoption of
+retention. RP-118 still lacks joined dead-letter/poison and backup-restore arms. D-009/D-015 and
+legal review must choose deletion/public-rank semantics before any behavior change or copy claim.
+Codex's test/record range awaits Claude's designated cross-party review; no Account archival or
+release promotion follows from this first-filter evidence. The historical kernel CI gate remains
+red, independently of this witness.
+
 ## Current delta — 2026-10-04, product/evidence source `505c4e3b`
 
 The 2026-09-30 overlay below is a dated baseline, not a fresh verdict on the later v0.1

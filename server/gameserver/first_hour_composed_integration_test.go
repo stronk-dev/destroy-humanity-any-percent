@@ -20,6 +20,7 @@ import (
 	"cloud-clicker/server/harness"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/publicapi"
 	"cloud-clicker/server/save"
 )
 
@@ -238,6 +239,153 @@ func TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed(t *testing.T) {
 	if err != nil || production.VerifyFounderHistory(founderHistory, composition.Catalogs.replay) != production.ReplayVerified {
 		t.Fatalf("Founder persisted replay verdict=%s err=%v", production.VerifyFounderHistory(founderHistory, composition.Catalogs.replay), err)
 	}
+	assertFirstHourPublicBoardAfterAccountDeletion(t, ctx, db, httpServer, bootstrap, founder.ID)
+}
+
+type firstHourRightsCounts struct {
+	boards, markers, queue, archives, events int
+}
+
+type firstHourBoardEntry struct {
+	FounderID string `json:"founder_id"`
+	RunID     string `json:"run_id"`
+}
+
+func firstHourRightsCensus(t *testing.T, ctx context.Context, db *sql.DB, founderID string) firstHourRightsCounts {
+	t.Helper()
+	var counts firstHourRightsCounts
+	err := db.QueryRowContext(ctx, `SELECT
+		(SELECT count(*) FROM verified_runs WHERE founder_id=$1),
+		(SELECT count(*) FROM verification_projection_events marker JOIN verified_runs board ON board.event_id=marker.event_id WHERE board.founder_id=$1),
+		(SELECT count(*) FROM verification_queue queue JOIN save_streams stream ON stream.id=queue.company_stream_id WHERE stream.owner_id=$1),
+		(SELECT count(*) FROM run_log_archive archive JOIN save_streams stream ON stream.id=archive.company_stream_id WHERE stream.owner_id=$1),
+		(SELECT count(*) FROM events event JOIN save_streams stream ON stream.id=event.stream_id WHERE stream.owner_id=$1)`, founderID).
+		Scan(&counts.boards, &counts.markers, &counts.queue, &counts.archives, &counts.events)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return counts
+}
+
+func firstHourPublicBoardRows(t *testing.T, server *httptest.Server, category string, epoch int64, mandate int, variables string) []firstHourBoardEntry {
+	t.Helper()
+	response := compositionRequest(t, server.Client(), http.MethodGet,
+		fmt.Sprintf("%s/api/public/v1/boards/%s?epoch=%d&mandate=%d&variables=%s", server.URL, category, epoch, mandate, variables), "", "")
+	body := responseBody(response)
+	if response.StatusCode != http.StatusOK {
+		t.Fatalf("public board status=%d body=%s", response.StatusCode, body)
+	}
+	var page struct {
+		Items []firstHourBoardEntry `json:"items"`
+	}
+	if err := json.Unmarshal([]byte(body), &page); err != nil {
+		t.Fatalf("public board decode: %v body=%s", err, body)
+	}
+	return page.Items
+}
+
+func assertFirstHourPublicBoardAfterAccountDeletion(t *testing.T, ctx context.Context, db *sql.DB, server *httptest.Server,
+	bootstrap bootstrapResponseEnvelope, founderID string) {
+	t.Helper()
+	// RP-118: the script's real verifier and projector must produce the row;
+	// no board or log row is seeded by this rights witness.
+	deadline := time.Now().Add(5 * time.Second)
+	var category, runID string
+	var epoch int64
+	var mandate int
+	for time.Now().Before(deadline) {
+		err := db.QueryRowContext(ctx, `SELECT category_id,run_id,epoch_id,mandate_level FROM verified_runs
+			WHERE founder_id=$1 AND category_id='any_percent' ORDER BY run_id LIMIT 1`, founderID).
+			Scan(&category, &runID, &epoch, &mandate)
+		if err == nil {
+			break
+		}
+		if !errors.Is(err, sql.ErrNoRows) {
+			t.Fatal(err)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	if runID == "" {
+		t.Fatal("first-hour projector produced no any_percent row")
+	}
+	variables, err := publicapi.EncodeBoardVariables(publicapi.BoardVariables{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	contains := func(rows []firstHourBoardEntry) bool {
+		for _, row := range rows {
+			if row.FounderID == founderID && row.RunID == runID {
+				return true
+			}
+		}
+		return false
+	}
+	beforeRows := firstHourPublicBoardRows(t, server, category, epoch, mandate, variables)
+	if !contains(beforeRows) {
+		t.Fatalf("projected run %s absent from public board before deletion: %+v", runID, beforeRows)
+	}
+	for _, row := range beforeRows {
+		if row.FounderID != founderID {
+			t.Fatalf("unmatched Founder appeared on isolated pre-delete board: %+v", row)
+		}
+	}
+	otherVariables, err := publicapi.EncodeBoardVariables(publicapi.BoardVariables{Glitched: 1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rows := firstHourPublicBoardRows(t, server, category, epoch, mandate, otherVariables); contains(rows) {
+		t.Fatalf("different board-variable partition returned projected run %s", runID)
+	}
+	before := firstHourRightsCensus(t, ctx, db, founderID)
+	if before.boards < 2 || before.markers < 2 || before.queue < 2 || before.archives < 2 || before.events == 0 {
+		t.Fatalf("joined pre-delete producers incomplete: %+v", before)
+	}
+	var linked int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM account_founders WHERE founder_id=$1 AND account_id=$2 AND archived_at IS NULL`,
+		founderID, bootstrap.Account.AccountID).Scan(&linked); err != nil || linked != 1 {
+		t.Fatalf("pre-delete active account-Founder link=%d err=%v", linked, err)
+	}
+	refresh := compositionRequest(t, server.Client(), http.MethodPost, server.URL+"/api/v1/session/refresh", "",
+		fmt.Sprintf(`{"refresh_token":%q}`, bootstrap.Session.RefreshToken))
+	if refresh.StatusCode != http.StatusOK {
+		t.Fatalf("rights-witness refresh status=%d body=%s", refresh.StatusCode, responseBody(refresh))
+	}
+	var rotated account.TokenPair
+	decodeCompositionResponse(t, refresh, &rotated)
+	deletion := compositionRequest(t, server.Client(), http.MethodDelete, server.URL+"/api/v1/account", rotated.AccessToken, "")
+	if deletion.StatusCode != http.StatusNoContent {
+		t.Fatalf("rights-witness delete status=%d body=%s", deletion.StatusCode, responseBody(deletion))
+	}
+	_ = responseBody(deletion)
+	var accountRows, founderRows, archivedStreams, streamRows int
+	if err := db.QueryRowContext(ctx, `SELECT
+		(SELECT count(*) FROM accounts WHERE account_id=$1),
+		(SELECT count(*) FROM account_founders WHERE founder_id=$2 AND account_id IS NULL AND archived_at IS NOT NULL),
+		(SELECT count(*) FROM save_streams WHERE owner_kind='founder' AND owner_id=$2 AND archived_at IS NOT NULL),
+		(SELECT count(*) FROM save_streams WHERE owner_kind='founder' AND owner_id=$2)`,
+		bootstrap.Account.AccountID, founderID).Scan(&accountRows, &founderRows, &archivedStreams, &streamRows); err != nil ||
+		accountRows != 0 || founderRows != 1 || streamRows < 2 || archivedStreams != streamRows {
+		t.Fatalf("post-delete account=%d archived_founder=%d archived_streams=%d streams=%d err=%v",
+			accountRows, founderRows, archivedStreams, streamRows, err)
+	}
+	after := firstHourRightsCensus(t, ctx, db, founderID)
+	if after != before {
+		t.Fatalf("joined rights families changed on deletion: before=%+v after=%+v", before, after)
+	}
+	afterRows := firstHourPublicBoardRows(t, server, category, epoch, mandate, variables)
+	if !contains(afterRows) {
+		t.Fatalf("deleted Founder's projected run %s is absent from public board: %+v", runID, afterRows)
+	}
+	for _, row := range afterRows {
+		if row.FounderID != founderID {
+			t.Fatalf("unmatched Founder appeared on isolated post-delete board: %+v", row)
+		}
+	}
+	if rows := firstHourPublicBoardRows(t, server, category, epoch, mandate, otherVariables); contains(rows) {
+		t.Fatalf("different board-variable partition returned deleted Founder's run %s", runID)
+	}
+	t.Logf("joined post-delete retained rows: boards=%d markers=%d queue=%d archives=%d events=%d; public board still contains the deleted Founder's run",
+		after.boards, after.markers, after.queue, after.archives, after.events)
 }
 
 func waitFirstHourRunVerifiedAndArchived(t *testing.T, ctx context.Context, db *sql.DB, streamID string, runSeq int64) {
