@@ -31,7 +31,7 @@ again.
 ## Tier unlock arm (TT-PA2)
 
 `unlock_condition` also accepts `{"kind":"tier_at_least","tier":0..9}`, with an optional
-`"exit_history_at_least": n ≥ 0`. The Go and TS loaders reject unknown keys, non-integers and
+`"exit_history_at_least": n ≥ 0`. The Go and TS loaders reject unknown keys, null clauses, non-integers and
 out-of-domain values. The composed start coordinator evaluates `UnlockCondition.TierUnlockFailure`
 from pinned server state only: the Company `tier` and `len(founder.exit_history)`. It rejects
 before tenant creation with `ErrMinigameTierRequired` or `ErrMinigameCurriculumExitRequired`. The

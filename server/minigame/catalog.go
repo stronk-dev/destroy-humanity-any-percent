@@ -254,7 +254,9 @@ func loadUnlockCondition(data []byte) (UnlockCondition, error) {
 			Tier               *int64 `json:"tier"`
 			ExitHistoryAtLeast *int64 `json:"exit_history_at_least"`
 		}
+		var raw map[string]json.RawMessage
 		if !hasExactJSONKeys(data, "kind", "tier") && !hasExactJSONKeys(data, "exit_history_at_least", "kind", "tier") ||
+			json.Unmarshal(data, &raw) != nil || bytes.Equal(bytes.TrimSpace(raw["exit_history_at_least"]), []byte("null")) ||
 			decodeExact(data, &wire) != nil || wire.Tier == nil || *wire.Tier < 0 || *wire.Tier > 9 ||
 			wire.ExitHistoryAtLeast != nil && (*wire.ExitHistoryAtLeast < 0 || *wire.ExitHistoryAtLeast > decimal.MaxExactInteger) {
 			return UnlockCondition{}, ErrInvalidCatalog

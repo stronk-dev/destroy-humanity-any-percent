@@ -84,7 +84,8 @@ func TestTierAtLeastUnlockArm(t *testing.T) {
 	}
 	for _, rejected := range []string{`{"kind":"tier_at_least"}`, `{"kind":"tier_at_least","tier":10}`, `{"kind":"tier_at_least","tier":-1}`,
 		`{"kind":"tier_at_least","tier":1.5}`, `{"kind":"tier_at_least","tier":1,"extra":1}`,
-		`{"exit_history_at_least":-1,"kind":"tier_at_least","tier":1}`, `{"kind":"tier_at_least","tier":"1"}`} {
+		`{"exit_history_at_least":-1,"kind":"tier_at_least","tier":1}`, `{"exit_history_at_least":null,"kind":"tier_at_least","tier":1}`,
+		`{"kind":"tier_at_least","tier":"1"}`} {
 		if _, err := loadUnlockCondition([]byte(rejected)); err == nil {
 			t.Fatalf("%s: accepted", rejected)
 		}

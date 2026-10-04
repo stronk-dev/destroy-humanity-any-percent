@@ -435,3 +435,13 @@ were also run together verbosely, both named and both passing; no silent skip is
 mechanism has strong executed evidence, but B2/AC3 is not closed on Codex's self-review of
 the new supplemental test. Claude must cross-party review the exact Codex test range before
 any plan/RFC promotion or archival. This does not approve B1–B7 as a whole.
+
+## 2026-10-04 — Codex B3 TT-PA2 loader review and bounded parity correction
+
+**Review by:** Codex, inspecting Claude's `885237a7` TT-PA2 loader/start batch. **Recorded by:** Codex. This is a targeted review, not a full B3/B4–B7 range-union verdict or Typer archival approval.
+
+The optional `exit_history_at_least` field was decoded into `*int64`. Explicit JSON `null` therefore became `nil` and silently disabled the first-Exit gate in Go, while the TypeScript loader's `safeInteger` rejected the same row. A new Go negative for `null` failed first (`TestTierAtLeastUnlockArm`: accepted); the matching TypeScript negative was added. The Go loader now rejects the literal null before treating the field as optional. `docs/minigame-platform.md` records the exact behavior, and the kernel identity advances to 0.3.138 because `server/minigame/catalog.go` is watched.
+
+Cold `make test-go GO_PACKAGES='./kernel ./minigame ./production' GO_TEST_FLAGS='-count=1'`, `make test-client`, `make typecheck`, and `make vet` pass. `make verify-kernel-version` still fails at historical commit `50a3a514` against `0cf9f7a6` (the same pre-existing, separately tracked history defect), before it can judge this new change; no green kernel-history claim is made. RP-152 records the parity defect. Claude must independently review this Codex correction before it can count as designated-approved.
+
+Separate RP-153: current `server/gameui/features.go` projects any non-Fiscal minigame row as `unlocked:true`, even though TT-PA2's composed start rejects Typer at Tier 0 and before its first Exit. The Garage GS7 accepted surface is Pitch-only, the Typer route and production pin are absent, and no UI-availability implementation is inferred from B3's server-start authority. This remains an explicit successor contract/proof boundary before a Typer player-facing unlock claim.

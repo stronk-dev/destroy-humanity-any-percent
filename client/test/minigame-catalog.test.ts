@@ -29,7 +29,8 @@ describe("pinned minigame catalog", () => {
       expect(parseMinigameCatalog(withUnlock(accepted)).minigames[0]!.unlock_condition).toEqual(accepted);
     }
     for (const rejected of [{ kind: "tier_at_least" }, { kind: "tier_at_least", tier: 10 }, { kind: "tier_at_least", tier: -1 }, { kind: "tier_at_least", tier: 1.5 },
-      { extra: 1, kind: "tier_at_least", tier: 1 }, { exit_history_at_least: -1, kind: "tier_at_least", tier: 1 }, { kind: "tier_at_least", tier: "1" }]) {
+      { extra: 1, kind: "tier_at_least", tier: 1 }, { exit_history_at_least: -1, kind: "tier_at_least", tier: 1 },
+      { exit_history_at_least: null, kind: "tier_at_least", tier: 1 }, { kind: "tier_at_least", tier: "1" }]) {
       expect(() => parseMinigameCatalog(withUnlock(rejected)), JSON.stringify(rejected)).toThrow();
     }
   });
