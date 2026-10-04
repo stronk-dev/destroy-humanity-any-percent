@@ -795,3 +795,19 @@ them. It went unnoticed because the guard was already red on `8add475`'s pending
   - **Option (b):** append-only history corrections for `50a3a51` and `b92a05de`. This requires a
     `kernel/VERSION` bump with no semantic change behind it, plus Codex's independent review
     sections, as for `8add475`.
+
+## 2026-10-04 — Codex F9 review predeclaration: composed active-session preview
+
+- **Question:** does the actual authenticated Game UI snapshot withhold Wind Down only
+  while a real Pitch session is active, then restore eligibility after its terminal
+  receipt? The existing composed Pitch flow starts from Tier 0 after two Exits, where
+  Wind Down is ineligible independently of session state.
+- **Population:** the declared composed browser lane against real Postgres/gameserver,
+  with a Tier-1 Company reached through the visible cross-gate control. Read the exact
+  `/api/v1/founder/state` snapshot before Pitch creation, during its live session,
+  and after the terminal receipt. The Pitch itself remains UI-driven.
+- **Criterion and negative control:** eligibility is true → false → true across
+  those three states. Temporarily dropping the `!minigameActive` predicate must fail
+  the active-state assertion. A setup that cannot reach Tier 1 or start Pitch is a
+  failed witness, never a green skip. This is a test-only correction under MA-C12/F9;
+  it cannot prove every Exit/recovery exclusivity path or the wider MA AC1–AC5 set.
