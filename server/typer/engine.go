@@ -441,7 +441,7 @@ func decodeSnapshot(data []byte) (Snapshot, error) {
 	if strictDecode(data, &value) != nil || value.TyperSchemaVersion != SchemaVersion ||
 		!strings.HasPrefix(value.TyperContentHash, "sha256:") || len(value.TyperContentHash) != 71 ||
 		value.Phase != PhaseReady && value.Phase != PhaseTyping && value.Phase != PhaseTerminal ||
-		value.EraTier < 0 || value.EraTier > EraTierMax || value.Revision < 1 || value.PromptsTotal < 1 ||
+		value.EraTier < EraTierMin || value.EraTier > EraTierMax || value.Revision < 1 || value.PromptsTotal < 1 ||
 		value.PromptIndex < 0 || value.PromptIndex > value.PromptsTotal || value.CurrentPromptMisses < 0 ||
 		value.LinesCleared != value.PromptIndex || value.CleanLines < 0 || value.CleanLines > value.LinesCleared || value.Misses < 0 ||
 		value.AssistLevel != nil && *value.AssistLevel != AssistTimed && *value.AssistLevel != AssistUntimed ||
@@ -511,7 +511,7 @@ func validScaling(values map[string]int64, catalog *Catalog) (int64, bool) {
 		return 0, false
 	}
 	tier, ok := values[ScalingDestination]
-	if !ok || tier < 0 || tier > EraTierMax || int64(len(catalog.Pool(tier))) < catalog.Policy.RunLength {
+	if !ok || tier < EraTierMin || tier > EraTierMax || int64(len(catalog.Pool(tier))) < catalog.Policy.RunLength {
 		return 0, false
 	}
 	return tier, true

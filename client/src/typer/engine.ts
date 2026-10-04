@@ -1,6 +1,6 @@
 import { substream } from "../combat/rng";
 import { COPY_KEYS } from "../copy";
-import { parseTyperCatalog, typerContentHash, typerPool, TYPER_ERA_TIER_MAX, TYPER_SCHEMA_VERSION, type TyperCatalog, type TyperPrompt } from "./catalog";
+import { parseTyperCatalog, typerContentHash, typerPool, TYPER_ERA_TIER_MAX, TYPER_ERA_TIER_MIN, TYPER_SCHEMA_VERSION, type TyperCatalog, type TyperPrompt } from "./catalog";
 
 // Terminal Typer pure engine (TT4), the TS mirror of server/typer/engine.go.
 export const TYPER_ENGINE_VERSION = "1.0.0" as const;
@@ -217,7 +217,7 @@ async function resolveCatalog(input: TyperContentInput): Promise<TyperCatalog> {
 
 function validScaling(values: Readonly<Record<string, number>>, catalog: TyperCatalog): number {
   const keys = Object.keys(values), tier = values[TYPER_SCALING_DESTINATION];
-  if (keys.length !== 1 || tier === undefined || !Number.isSafeInteger(tier) || tier < 0 || tier > TYPER_ERA_TIER_MAX || typerPool(catalog, tier).length < catalog.policy.run_length) {
+  if (keys.length !== 1 || tier === undefined || !Number.isSafeInteger(tier) || tier < TYPER_ERA_TIER_MIN || tier > TYPER_ERA_TIER_MAX || typerPool(catalog, tier).length < catalog.policy.run_length) {
     throw new SyntaxError("invalid Typer scaling inputs");
   }
   return tier;

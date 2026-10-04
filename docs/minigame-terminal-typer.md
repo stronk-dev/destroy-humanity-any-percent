@@ -3,7 +3,9 @@
 Terminal Typer (`rfc/minigame-terminal-typer.md`) is the Tier-1, solo, session-skill typing tenant
 on the Minigame Platform. **Status: fixture-first.** The engine, content loader and shared
 content-gate corpus exist. No production epoch pins the `typer` artifact yet (OD-11), and the
-platform amendments TT-PA1–PA4 land in later batches (`planning/minigame-terminal-typer/`).
+TT-PA1 command clock, TT-PA2 server unlock and TT-PA3 content chain are implemented in fixture
+paths. TT-PA4's public command/snapshot wire remains blocked by the API C2 conflict
+(`planning/minigame-terminal-typer/`); no default player workflow is claimed.
 
 ## Content (`balance/testdata/typer-v1.json`, schema v1)
 
@@ -25,6 +27,8 @@ replaced before any production mint.
 
 - **Snapshot.** `typer.snapshot.v1` has exactly eighteen keys. Only the current prompt is ever
   exposed.
+- **Scaling.** The `typer.era_tier` input and stored snapshot identity must be in the pinned
+  TT1 clamp range 1..9, even if content declares a valid tier-zero era with a full prompt pool.
 - **Prompt order.** A downward Fisher–Yates over the byte-sorted eligible pool, using the
   `typer.prompts.v1` substream of the `typer.run.v1` run seed.
 - **Commands.** `begin {assist_level: timed|untimed}`, `submit_line {text}` and `end_run`. Exact
@@ -51,7 +55,8 @@ replaced before any production mint.
 
 `make typer-corpus` regenerates `testdata/typer/content-gate-v1.json` from the Go engine, and
 `make typer-corpus-check` fails when the file is stale. `client/test/typer-content-gate.test.ts`
-replays every step in TS: rejections, the terminal snapshot, the result and the transition budget.
+replays every step in TS: rejections, the terminal snapshot, the result and the transition budget
+(all command attempts, including rejections).
 The corpus covers every prompt, all three outcomes, both modes, every rejection code, the
 exact-deadline and one-late vectors, a backwards clock, the smart-punctuation map, a case miss and
 a fullwidth look-alike miss.

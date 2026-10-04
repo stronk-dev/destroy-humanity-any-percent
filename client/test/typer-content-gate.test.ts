@@ -86,6 +86,15 @@ describe("Typer shared content gate", () => {
     ]) expect(() => parseTyperCatalog(mutate(change), keys)).toThrow();
   });
 
+  it("rejects scaling below the pinned tier-one clamp even with a valid tier-zero era", async () => {
+    const value = JSON.parse(content);
+    value.eras[0].min_tier = 0;
+    const tierZeroContent = JSON.stringify(value);
+    expect(() => parseTyperCatalog(value, new Set(COPY_KEYS))).not.toThrow();
+    await expect(createTyper({ content: tierZeroContent, content_hash: await typerContentHash(tierZeroContent), content_schema_version: 1,
+      seed: 1n, mode: "solo", scaling_inputs: { "typer.era_tier": 0 } })).rejects.toThrow("invalid Typer scaling inputs");
+  });
+
   it("orders prompts through the typer.prompts.v1 substream of the run seed", () => {
     const catalog = parseTyperCatalog(JSON.parse(content), new Set(COPY_KEYS));
     const first = corpus.scenarios[0]!;

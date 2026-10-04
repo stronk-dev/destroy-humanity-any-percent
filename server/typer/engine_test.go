@@ -67,6 +67,40 @@ func TestTyperCatalogLoadsFixtureAndRejectsDefects(t *testing.T) {
 	}
 }
 
+func TestTyperCreateRejectsScalingBelowPinnedClamp(t *testing.T) {
+	content := mutateFixture(t, func(value map[string]any) {
+		value["eras"].([]any)[0].(map[string]any)["min_tier"] = float64(0)
+	})
+	if _, err := LoadCatalog(content, declarations()); err != nil {
+		t.Fatalf("tier-zero era is valid content and must reach scaling validation: %v", err)
+	}
+	_, err := NewTenant().Create(minigame.CreateInput{Mode: minigame.ModeSolo, Seed: 1,
+		ScalingInputs: map[string]int64{ScalingDestination: 0}, Content: content,
+		ContentHash: ContentHash(content), ContentSchemaVersion: SchemaVersion})
+	if !errors.Is(err, minigame.ErrInvalidTenant) {
+		t.Fatalf("tier-zero scaling bypassed TT1 clamp_min=1: %v", err)
+	}
+	validContent := fixtureBytes(t)
+	valid, err := NewTenant().Create(minigame.CreateInput{Mode: minigame.ModeSolo, Seed: 1,
+		ScalingInputs: map[string]int64{ScalingDestination: 1}, Content: validContent,
+		ContentHash: ContentHash(validContent), ContentSchemaVersion: SchemaVersion})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var snapshot map[string]any
+	if err := json.Unmarshal(valid, &snapshot); err != nil {
+		t.Fatal(err)
+	}
+	snapshot["era_tier"] = float64(0)
+	mutated, err := json.Marshal(snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := NewTenant().ValidateSnapshot(mutated); !errors.Is(err, minigame.ErrInvalidTenant) {
+		t.Fatalf("tier-zero snapshot bypassed TT1 clamp_min=1: %v", err)
+	}
+}
+
 type harness struct {
 	t        *testing.T
 	content  []byte
