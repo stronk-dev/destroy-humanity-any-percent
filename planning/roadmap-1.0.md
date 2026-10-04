@@ -5,8 +5,8 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-04, product source `2ea9f316`, evidence through `c3311dbd` (RP-145–RP-170
-corrections await cross-party review where named; the broader v0.1 and Deployment ranges remain unapproved,
+**Current checkpoint:** 2026-10-04, product source `2ea9f316`, evidence through `0cf3f719` (RP-145–RP-172
+corrections/witnesses await cross-party review where named; the broader v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.

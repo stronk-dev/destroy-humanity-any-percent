@@ -590,3 +590,10 @@ speculative product fix or test retry. The AC14 driver then tightened its direct
 disallowed fetch/WebSocket calls instead of merely recording them; its live run remained green.
 `make test-client` passed 6912 tests (85 browser-only skips), typecheck reported zero errors or
 warnings, and `make verify-ci-topology` passed all 13 negative fixtures. Hosted CI has not run.
+
+**AC14 landing coordinate:** `0cf3f719^..0cf3f719` carries the test, Make/CI wiring,
+docs, ledger, roadmap and AC14 plan checkbox together. **Review by:** Codex (implementer-side
+first filter). **Recorded by:** Codex. The executed positive, producer-severing failure,
+restored-source check, exact local Make target, typecheck/client/topology and no-payment results
+above are evidence for handoff, not the mandatory designated cross-party verdict. Claude must
+adversarially review this exact range plus this coordinate record before any Cosmetics archival.
