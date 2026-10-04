@@ -786,3 +786,27 @@ targeted Soul code; **recorded by:** Codex. The Codex-authored correction awaits
 Claude's exact-range designated cross-party review. The larger MA acceptance
 set, release-artifact workflow, historical kernel CI failure and 1.0 rights,
 access, operations and content floors remain open; no release claim changed.
+
+## 2026-10-04 — Fiscal→Pitch default player journey closes a real sequencing gap
+
+Product source `efe68333`. The existing composed Pitch witness used direct API
+mutations for Fiscal harvest and unlock even though the Earnings Calls surface
+was implemented. Replacing that setup with rendered player controls caused
+the immediately following unlock to return `revision_conflict` against a stale
+Founder revision (RP-147). This violated accepted Garage Surfaces GS0.2's
+post-apply authoritative-refresh rule. A browser runtime-double test failed
+first because no refresh was requested; after the host held pending through
+refresh, the next DOM unlock used the new revision. The composed real
+Postgres/Vite/gameserver journey now applies both DOM-issued Fiscal intents,
+starts Pitch, sends five keyboard-driven commands, reaches an applied terminal
+receipt and observes the refreshed Company snapshot. Disconnecting either
+Fiscal button fails the composed test before Pitch can start.
+
+Cold typecheck, 6,905 client tests, boundary/copy checks, client build, full
+Chromium and WebKit suites (6,984 tests each plus the performance lane), and
+the unmodified composed target pass. The local Firefox launch failure and
+historical kernel-history CI failure persist; neither is counted green.
+**Review by:** Codex on the targeted Claude implementation and old witness;
+**recorded by:** Codex. Codex's corrective `efe68333` range awaits Claude's
+cross-party designated review. Neither complete RFC range, a release-artifact
+journey, nor the 1.0 rights/access/operations/content floors are closed.
