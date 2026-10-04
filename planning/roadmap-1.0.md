@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-04, product source `19f71825`, evidence through `dfcc6270` (RP-145–RP-156
+**Current checkpoint:** 2026-10-04, product source `19f71825`, evidence through `ec2dfbf9` (RP-145–RP-157
 corrections await cross-party review; the broader v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
@@ -18,7 +18,10 @@ witness (`589fc06c`), a Go/TS exact optional-integer parity correction (`a33d4d6
 a severing-proven internal API-start Tier/Exit witness (`76f8cc1d`), and exact Typer
 definition-engine chain parity (`19f71825`). A separate B6 child witness now covers
 native keyboard End run and Exit to host (`dfcc6270`). Claude's cross-party
-review of those Codex ranges is still required. The Game UI unlock preview is not yet
+review of those Codex ranges is still required. B7's real-Postgres Exit witness now
+proves the active Typer session rejects `wind_down` and resolved `end_run` releases it
+(`ec2dfbf9`), but faucet-cap/quality and public MA-endpoint AC8 proof remain open.
+The Game UI unlock preview is not yet
 bound to Typer's tier predicate (RP-153), and no public Typer route or production pin exists;
 none of this promotes the wider Typer RFC.
 
