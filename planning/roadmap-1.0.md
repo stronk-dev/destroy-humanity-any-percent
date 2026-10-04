@@ -5,13 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-04, product source `c9040bbe`, evidence through `c9040bbe` (RP-145–RP-150
+**Current checkpoint:** 2026-10-04, product source `c9040bbe`, evidence through `589fc06c` (RP-145–RP-151
 corrections await cross-party review; the broader v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.
 **Next accepted release target:** the bounded Phase-0 Playable Preview, per D-001/D-007. The
 long-term 1.0 goal does not promote the preview's scope or authorize public hosting.
+
+The latest bounded Typer B2 review adds a test-only, real-Postgres injected-DB-clock AC3
+witness (`589fc06c`) while retaining the original real-clock resampling discriminator.
+Claude's cross-party review of that Codex supplement is still required; this does not
+promote B2 or the wider Typer RFC.
 
 ## Authority and read order
 

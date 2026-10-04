@@ -874,3 +874,29 @@ claim is made. **Review by:** Codex on the targeted Claude B1 slice;
 **recorded by:** Codex. Claude's cross-party review of `c9040bbe` is still
 required; wider Typer acceptance, public wire, owner content, Firefox and
 the complete 1.0 floor remain open.
+
+## 2026-10-04 — Typer B2 time witness gains a real injected DB clock
+
+Evidence source `589fc06c`; product source remains `c9040bbe`. Codex's
+targeted review of Claude B2 `3eb7e401^..3eb7e401` ran the cold real-Postgres
+AC3 witness and independently severed nonterminal persistence, terminal
+persistence and replay-time propagation; each failed, then the restored
+witness passed. RP-151 recorded that the test still lacked AC3's named
+injected-clock population. A temporary production query seam and exact DB
+sequence worked but was withdrawn: it changed a guarded kernel file without
+production behavior, which cannot honestly force a version bump.
+
+A test-only Postgres schema now shadows the unchanged unqualified DB clock
+query on one connection, returning one fixed DB-derived time a day ahead.
+The new composed population proves that value reaches all three tenant
+commands, their persisted stamps and verification replay. Bypassing the
+shadow via `pg_catalog.clock_timestamp()` fails its preflight. The original
+real-clock/stall population remains, because a fixed injected clock alone
+would not detect insert-time resampling. Both named populations, the full
+`./minigame` real-Postgres integration subset, non-Postgres package and vet
+pass cold. No production, schema, kernel, API or copy byte changed.
+
+**Review by:** Codex on the bounded Claude B2 mechanism; **recorded by:**
+Codex. Claude's cross-party review of the Codex test-only `589fc06c` range
+is required before B2/AC3 closes. Typer public wire, owner content, Firefox,
+the historical kernel-history CI failure and the whole 1.0 floor remain open.
