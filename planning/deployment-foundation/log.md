@@ -3659,3 +3659,30 @@ full `verify-push` claim.
   retained historical bundles on this host, the runtime database-migration check, clean-host
   R-006, or any other Deployment batch. Prior R1–R3 CHANGES REQUIRED findings and Codex
   correction ranges awaiting Claude review remain unchanged.
+
+## 2026-10-04 — R5 execution boundary and targeted R6 review finding
+
+- **R5 review status:** no verdict yet on `78ec39a7^..78ec39a7`. Codex inspected the F1/F2/F3
+  source, tests, templates and docs. The cold Go population for `operations`, `releasepackage`,
+  `deploymentrelease`, `deploymentrehearsal` and `cmd/deployment-operations` passed after granting
+  local loopback for `httptest`. The root `make test-deployment-operations` stopped before
+  `promtool` could run: Docker pulled the pinned Prometheus image then returned `exec format
+  error`. The host is `arm64`, Docker reports `aarch64`, and the pulled image inspects as
+  `amd64/linux`. The composed cleanup-firing, rejecting-receiver and Caddy-peer witnesses were
+  not executed here. Neither a failure nor an approval of R5's product behavior is inferred.
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `1833882c^..1833882c`,
+  limited to R6's schedule precheck and checksum evidence. **Decision:** **CHANGES REQUIRED
+  (RP-136)** for the checksum witness; this is not a full Deployment range verdict. Cold root
+  `make test-go GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup'
+  GO_TEST_FLAGS='-count=1'` passed. Temporarily severing the schedule's foreign-entry branch
+  made the `lost+found` subtest fail because it created a backup; source was restored and the
+  package reran green. But both R6 corruption fixtures changed encrypted payload length.
+  Temporarily removing only `ReadHeader`'s SHA comparison left both new checksum subtests
+  green, proving the test did not discriminate that check. The SHA comparison was restored;
+  `git diff --exit-code` confirmed no product/test residue.
+- **Predeclared RP-136 correction under accepted DP6:** keep production code unchanged.
+  Replace the substituted dump with an equal-length alternate; assert encrypted payload byte
+  lengths match and contents differ before writing the forged envelope. The existing rejection
+  assertions for `ReadHeader` and `Restore` must pass cold on intact code and fail separately
+  when each method's SHA comparison alone is removed. The truncated-payload control remains.
+  This proves a bounded checksum branch, not an actual Postgres restore or clean-host R-006.
