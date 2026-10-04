@@ -209,9 +209,12 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   // TT-PA3 loader chain: the typer definition row, the pinned typer artifact,
   // and the minigame_api typer tenant exist together or not at all.
   const typer = artifacts.typer === undefined ? undefined : parseTyperCatalog(parseJSON(artifacts.typer), new Set(COPY_KEYS));
-  const typerDefinition = minigames?.minigameIds.includes("typer") ?? false;
+  const typerDefinition = minigames?.minigames.find((row) => row.minigame_id === "typer");
   const typerTenant = minigameAPI?.tenants.some((row) => row.minigameId === "typer" && row.engineRef === "typer" && row.engineVersion === "1.0.0") ?? false;
-  if (typerDefinition !== (typer !== undefined) || minigameAPI !== undefined && typerTenant !== (typer !== undefined)) throw new SyntaxError("Typer requires its definition, artifact, and minigame API tenant together");
+  if ((typerDefinition !== undefined) !== (typer !== undefined) || minigameAPI !== undefined && typerTenant !== (typer !== undefined) ||
+      typerDefinition !== undefined && (typerDefinition.engine_ref !== "typer" || typerDefinition.engine_version !== "1.0.0")) {
+    throw new SyntaxError("Typer requires its definition, artifact, and minigame API tenant together");
+  }
   // AR-P1 loader chain: arcade-engine definitions exist exactly when the arcade
   // artifact does, every stage toy resolves to one, and each is a minigame_api tenant.
   const arcade = artifacts.arcade === undefined ? undefined : parseArcadeCatalog(parseJSON(artifacts.arcade), new Set(COPY_KEYS));

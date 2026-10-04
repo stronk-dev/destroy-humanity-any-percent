@@ -549,6 +549,16 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			"api tenant without definition": (a) => { delete a.typer; a.minigames = pitchOnlyMinigames; },
 			"artifact without api tenant": (a) => { a.minigame_api = pitchOnlyAPI; },
 			"artifact without minigame_api": (a) => { delete a.minigame_api; },
+			"definition with wrong engine": (a) => {
+				const catalog = JSON.parse(a.minigames!) as { minigames: { minigame_id: string; engine_ref: string }[] };
+				catalog.minigames.find((row) => row.minigame_id === "typer")!.engine_ref = "pitch";
+				a.minigames = JSON.stringify(catalog);
+			},
+			"definition with wrong version": (a) => {
+				const catalog = JSON.parse(a.minigames!) as { minigames: { minigame_id: string; engine_version: string }[] };
+				catalog.minigames.find((row) => row.minigame_id === "typer")!.engine_version = "1.0.1";
+				a.minigames = JSON.stringify(catalog);
+			},
 		};
 		for (const [name, mutate] of Object.entries(mutations)) {
 			const artifacts = await complete();

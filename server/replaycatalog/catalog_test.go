@@ -269,6 +269,39 @@ func TestLoadTyperChainIsAllOrNothing(t *testing.T) {
 			t.Fatalf("%s content did not resolve", arm[0])
 		}
 	}
+	mutateTyperDefinition := func(a map[string][]byte, field, value string) {
+		var root map[string]json.RawMessage
+		if err := json.Unmarshal(a["minigames"], &root); err != nil {
+			t.Fatal(err)
+		}
+		var rows []map[string]json.RawMessage
+		if err := json.Unmarshal(root["minigames"], &rows); err != nil {
+			t.Fatal(err)
+		}
+		found := false
+		for _, row := range rows {
+			if string(row["minigame_id"]) == `"typer"` {
+				encoded, err := json.Marshal(value)
+				if err != nil {
+					t.Fatal(err)
+				}
+				row[field] = encoded
+				found = true
+			}
+		}
+		if !found {
+			t.Fatal("Typer fixture definition missing")
+		}
+		encodedRows, err := json.Marshal(rows)
+		if err != nil {
+			t.Fatal(err)
+		}
+		root["minigames"] = encodedRows
+		a["minigames"], err = json.Marshal(root)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 	cases := map[string]func(map[string][]byte){
 		"definition without artifact": func(a map[string][]byte) {
 			delete(a, "typer")
@@ -281,6 +314,12 @@ func TestLoadTyperChainIsAllOrNothing(t *testing.T) {
 		},
 		"artifact without api tenant": func(a map[string][]byte) {
 			a["minigame_api"] = read("balance", "testdata", "minigame-api-candidate-v1.json")
+		},
+		"definition with wrong engine": func(a map[string][]byte) {
+			mutateTyperDefinition(a, "engine_ref", "pitch")
+		},
+		"definition with wrong version": func(a map[string][]byte) {
+			mutateTyperDefinition(a, "engine_version", "1.0.1")
 		},
 		"artifact without minigame_api":      func(a map[string][]byte) { delete(a, "minigame_api") },
 		"definition without api or artifact": func(a map[string][]byte) { delete(a, "minigame_api"); delete(a, "typer") },

@@ -66,6 +66,8 @@ a fullwidth look-alike miss.
   `minigame_api`. Any one of the three without the others hard-fails load in Go and TS.
 - **Content lookup.** `CatalogBundle.TenantContent(engine_ref, engine_version)` resolves the pinned
   bytes for Pitch or Typer. A Pitch-only bundle still resolves Pitch and does not resolve Typer.
+- **Chain identity.** Both loaders require the Typer definition row itself to name
+  `engine_ref: typer` and `engine_version: 1.0.0`; matching only its `minigame_id` is insufficient.
 - **Starting a session.** The start coordinator requires the requested tenant's own content rather
   than Pitch's.
 - **Registration.** `gameserver.Compose` registers `typer.NewTenant()` beside Pitch.
