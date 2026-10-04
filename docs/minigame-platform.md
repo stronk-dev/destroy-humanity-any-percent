@@ -124,7 +124,9 @@ bundled with the client.
 - **Picker:** lists every pinned activity with its title, description, duration and disclosure
   small print. The disclosure is also the Begin button's `aria-describedby`.
 - **Heartbeat:** one `RecoveryScheduler` beats every `recovery_beat_ceiling_ms / 3` (SR-C6), and
-  only while the page is visible. Progress is shown with a native `<progress>`.
+  only while the page is visible. Its visibility adapter reads the document's current state when
+  the scheduler subscribes, so a start response arriving after the tab was hidden cannot schedule
+  an initial beat. Progress is shown with a native `<progress>`.
 - **Pauses:** a hidden tab pauses the session. A transport failure or a gap longer than the
   ceiling requires reconnecting. A required reconnect stays visible across a background/foreground
   cycle. Reconnect calls start again, which rotates the token for the same session. A different
@@ -143,6 +145,8 @@ bundled with the client.
 and visibility. It covers axe checks in every state, beats, the hidden pause, the ceiling-gap
 pause, a network pause with no beats replayed, reconnect token rotation, finish, the
 gone/watchdog/not-ready paths, and reconnect precedence across a background/foreground cycle.
+It also starts with the document already hidden and verifies that the first beat waits for a
+visible event.
 `make verify-client-boundary` now scans the `minigame/` and `soul/` Svelte components with the
 same literal, style, import and network rules as the Game UI.
 

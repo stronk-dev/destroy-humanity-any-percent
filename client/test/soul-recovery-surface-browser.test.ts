@@ -210,3 +210,31 @@ it.skipIf(!browser)("keeps a required reconnect visible across a background/fore
     button(target, "Reconnect");
   } finally { unmount(app); target.remove(); }
 });
+
+it.skipIf(!browser)("sends no heartbeat when start completes in an already hidden document", async () => {
+  const originalVisibility = Object.getOwnPropertyDescriptor(document, "visibilityState");
+  let visible = false;
+  Object.defineProperty(document, "visibilityState", { configurable: true, get: () => visible ? "visible" : "hidden" });
+  const port = new FakePort();
+  port.startReplies.push(() => started());
+  port.steady = progressed(1_000);
+  const target = host();
+  const app = mount(SoulRecoverySurface, { target, props: { port, content: content(), era: "era_1995", now: () => 1_000, toySeed: 7,
+    onExitToHost: () => {}, onTerminal: () => {} } });
+  try {
+    await settle();
+    target.querySelector<HTMLButtonElement>("li button")!.click();
+    await settle(45);
+    expect(target.textContent).toContain("Paused while this tab is in the background.");
+    expect(port.tokens).toEqual([]);
+    visible = true;
+    document.dispatchEvent(new Event("visibilitychange"));
+    await settle(45);
+    expect(port.tokens.length).toBeGreaterThan(0);
+  } finally {
+    unmount(app);
+    target.remove();
+    if (originalVisibility) Object.defineProperty(document, "visibilityState", originalVisibility);
+    else Reflect.deleteProperty(document, "visibilityState");
+  }
+});

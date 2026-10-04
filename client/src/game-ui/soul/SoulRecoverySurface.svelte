@@ -40,6 +40,9 @@
     return { subscribe(callback) {
       const listener = () => callback(document.visibilityState === "visible");
       document.addEventListener("visibilitychange", listener);
+      // A start response can arrive after the tab was backgrounded; the
+      // scheduler must know the current state before scheduling its first beat.
+      listener();
       return () => document.removeEventListener("visibilitychange", listener);
     } };
   }

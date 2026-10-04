@@ -839,3 +839,55 @@ them. It went unnoticed because the guard was already red on `8add475`'s pending
   the declared target to run; no product/Compose file was changed. The test-only
   Codex range `f773cf07^..5ad457ce` requires Claude's designated cross-party
   review. This verdict does not turn that self-authored test into its own approval.
+
+## 2026-10-04 — Codex MA3 visible-only review probe, predeclared
+
+- **Question:** if the recovery start response arrives after the document is already
+  hidden, does the default document-visibility adapter suppress every heartbeat
+  until the tab becomes visible? MA3/SR-C6 require visible-only beats.
+- **Population:** mount the real Soul recovery surface in the browser with its
+  default visibility adapter, override `document.visibilityState` to `hidden`
+  before start resolves, use a fake coordinator port and a short test cadence.
+  Then restore `visible` and dispatch `visibilitychange`.
+- **Criterion:** zero progress calls and a visible hidden-pause state throughout
+  the hidden interval; a progress call may begin only after the visible event.
+  A test that starts visible and merely sends a later hidden event does not
+  exercise this case. The negative control is the current adapter with no
+  initial-state callback: the hidden-interval assertion must fail.
+- **Limit:** this is a browser component/adapter boundary, not a real-server
+  Soul terminal or all MA acceptance criteria.
+
+## 2026-10-04 — Codex targeted MA3 Soul-surface review and RP-145 correction
+
+- **Review by:** Codex. **Recorded by:** Codex. **Inspected Claude changes:** the Soul
+  surface in `b92a05de` and its path-only relocation in `79ff1aa1`; this is a
+  targeted review, not a range-union verdict over Minigame API/Surface.
+  **Decision:** **CHANGES REQUIRED** on MA3 visible-only heartbeat behavior.
+- The default document adapter listened only for future visibility events.
+  The predeclared real-browser component test starts hidden before the start
+  response resolves. On the uncorrected code it failed in both Chromium and
+  WebKit because the UI never entered the hidden pause; the scheduler's
+  initial `visible=true` also permits a first beat. This is RP-145, not an
+  inferred defect from static inspection.
+- **Codex correction:** emit the document's current visibility synchronously
+  when the scheduler subscribes. No scheduler contract, transport, copy or
+  server mechanics changed. The same test now shows hidden pause with zero
+  progress calls, then a progress call only after a visible event. The whole
+  Soul surface browser file passes 6/6 in each of Chromium and WebKit.
+- **Cold gates after correction:** `make typecheck` (0 diagnostics),
+  `make test-client` (6,905 passed, 77 skipped), `make copy-check`, and full
+  `make test-browser BROWSER_TEST_FLAGS='--browser=chromium'` and
+  `...='--browser=webkit'` (6,981 passed, 1 skipped per browser, plus the
+  performance lane) all pass. `make verify-client-boundary` also passes on the
+  corrected component.
+  The composed Postgres/Pitch/v4 lane passed before the adapter edit and does
+  not exercise Soul recovery.
+- **Unverified gate:** the default three-browser target and a Firefox-only
+  rerun both failed before test import: Vitest timed out connecting to the
+  Firefox browser session. A direct local Playwright `firefox.launch` reported
+  `SIGABRT` from the installed headless Firefox process. This is a local
+  browser-launch failure, not a green Firefox result or evidence of a Soul
+  assertion failure. The full browser gate stays open.
+- **Cross-party gate:** this Codex-authored correction and its record require
+  Claude's exact-range designated review. No archive/status promotion follows
+  from Codex's own test pass; the larger MA range also remains unreviewed.
