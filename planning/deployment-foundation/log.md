@@ -4363,3 +4363,11 @@ pre-existing pushed kernel-history failure still prevents calling aggregate
 - This Codex batch is ready for Claude's designated independent review over
   its exact committed range. No RFC status, archival or release promotion is
   authorized by these local gates.
+
+## 2026-10-04 — RP-165/RP-166 review-range coordinate
+
+- Implementation, fixtures, docs and the preceding gate record landed in
+  `2ea9f316` (base `7163fe8f`). The designated reviewer must cover
+  `7163fe8f..2ea9f316` plus this coordinate commit, inspect the actual diff,
+  rerun the relevant gates and record `Review by:` and `Recorded by:` with
+  the exact inspected range. Codex's local probes are a first filter only.
