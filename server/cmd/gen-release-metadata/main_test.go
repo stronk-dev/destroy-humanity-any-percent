@@ -1,7 +1,10 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -38,7 +41,37 @@ func clientFixture(t *testing.T, license string) string {
 	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "index.js"), "console.log('fixture')\n//# sourceMappingURL=index.js.map\n")
 	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "index.js.map"),
 		`{"version":3,"sources":["../../src/main.ts","../../node_modules/.pnpm/pad-end@1.0.2/node_modules/pad-end/index.js","../../node_modules/.pnpm/@scope+pkg@2.0.0/node_modules/@scope/pkg/dist/index.js"],"mappings":""}`)
+	writeFixture(t, filepath.Join(root, "client", "dist", "css-dependency-graph.json"),
+		`{"schema_version":1,"assets":[],"package_css_modules":[]}`)
 	return root
+}
+
+func writeCSSFixtureGraph(t *testing.T, root string, styles map[string]string, modules []string) {
+	t.Helper()
+	graph := struct {
+		SchemaVersion int `json:"schema_version"`
+		Assets        []struct {
+			Path   string `json:"path"`
+			SHA256 string `json:"sha256"`
+		} `json:"assets"`
+		PackageCSSModules []string `json:"package_css_modules"`
+	}{SchemaVersion: 1, PackageCSSModules: modules}
+	graph.Assets = make([]struct {
+		Path   string `json:"path"`
+		SHA256 string `json:"sha256"`
+	}, 0, len(styles))
+	for path, content := range styles {
+		writeFixture(t, filepath.Join(root, "client", "dist", filepath.FromSlash(path)), content)
+		graph.Assets = append(graph.Assets, struct {
+			Path   string `json:"path"`
+			SHA256 string `json:"sha256"`
+		}{Path: path, SHA256: fmt.Sprintf("%x", sha256.Sum256([]byte(content)))})
+	}
+	encoded, err := json.Marshal(graph)
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeFixture(t, filepath.Join(root, "client", "dist", "css-dependency-graph.json"), string(encoded))
 }
 
 func TestClientInventoryRejectsPartialAssetMapPopulation(t *testing.T) {
@@ -82,5 +115,59 @@ func TestClientInventoryFollowsShippedModulesNotDirectDependencies(t *testing.T)
 	}
 	if _, err := discoverClientDependencies(t.TempDir()); !errors.Is(err, releasepackage.ErrInvalidContent) {
 		t.Fatalf("missing build output accepted: %v", err)
+	}
+}
+
+func TestClientInventoryIncludesCSSOnlyPackageAndBindsStyles(t *testing.T) {
+	root := clientFixture(t, "MIT")
+	module := "node_modules/.pnpm/style-only@1.0.0/node_modules/style-only/theme.css"
+	packageRoot := filepath.Join(root, "client", "node_modules", ".pnpm", "style-only@1.0.0", "node_modules", "style-only")
+	writeFixture(t, filepath.Join(packageRoot, "package.json"), `{"name":"style-only","version":"1.0.0","license":"MIT"}`)
+	writeFixture(t, filepath.Join(packageRoot, "LICENSE"), mitText)
+	writeFixture(t, filepath.Join(packageRoot, "theme.css"), "body { color: red; }\n")
+	writeCSSFixtureGraph(t, root, map[string]string{"assets/style.css": "body{color:red}\n"}, []string{module})
+	dependencies, err := discoverClientDependencies(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	found := false
+	for _, dependency := range dependencies {
+		if dependency.Name == "style-only" && dependency.Version == "1.0.0" && dependency.License == "MIT" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("CSS-only package omitted from shipped inventory: %+v", dependencies)
+	}
+	notices, err := releasepackage.ThirdPartyNotices(dependencies)
+	if err != nil || !strings.Contains(string(notices), "style-only 1.0.0 (npm)") {
+		t.Fatalf("CSS-only package missing from delivered notices: %v", err)
+	}
+
+	graphPath := filepath.Join(root, "client", "dist", "css-dependency-graph.json")
+	if err := os.Remove(graphPath); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("missing CSS build graph accepted: %v", err)
+	}
+	writeCSSFixtureGraph(t, root, map[string]string{"assets/style.css": "body{color:red}\n"}, []string{module})
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "unrecorded.css"), "body{color:blue}\n")
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("unrecorded CSS asset accepted: %v", err)
+	}
+	if err := os.Remove(filepath.Join(root, "client", "dist", "assets", "unrecorded.css")); err != nil {
+		t.Fatal(err)
+	}
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "style.css"), "body{color:blue}\n")
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("CSS bytes changed after provenance accepted: %v", err)
+	}
+	writeFixture(t, filepath.Join(root, "client", "dist", "assets", "style.css"), "body{color:red}\n")
+	if err := os.Remove(filepath.Join(packageRoot, "theme.css")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := discoverClientDependencies(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("missing package stylesheet accepted: %v", err)
 	}
 }

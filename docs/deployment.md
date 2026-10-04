@@ -79,21 +79,26 @@ gameserver, deployment-backup, deployment-release, deployment-operations, deploy
 deployment-browser
 commands (not the much larger `go.sum`
 graph), adds the Go standard library, and derives the browser inventory from the built client's
-own sourcemaps (`client/dist/**/*.map`): every shipped module under `node_modules/` resolves to its
+own JavaScript sourcemaps (`client/dist/**/*.map`) and the Vite-generated
+`css-dependency-graph.json`: every shipped module under `node_modules/` resolves to its
 exact installed package directory, so transitive packages the bundler inlines (currently `pad-end`
 and `tslib`) are attributed, and an aliased version (`break_infinity.js` 2.2.0, not the 1.3.0 that
 the notations package also installs) is attributed as shipped. The client must be built with
 sourcemaps first; every emitted JavaScript asset must link to its own present map, and an orphan
-or mismatched map fails instead of yielding a partial inventory. This binds JavaScript modules;
-CSS-only package attribution is not yet proved by the current build-map check. A missing build
-fails. It reads shipped LICENSE/COPYING bytes directly
+or mismatched map fails instead of yielding a partial inventory. The CSS build hook records
+contributing package stylesheets plus every emitted CSS asset and its final-byte SHA-256. The
+metadata generator rejects a missing graph, omitted CSS asset, changed CSS bytes or missing
+package stylesheet, and unions CSS-only packages with the JavaScript inventory. A real Vite
+fixture imports a package solely for its CSS and fails if the hook omits it. The current build
+has no package CSS module; this is build/metadata proof, not a clean-host bundle or completed
+AC8 verdict. A missing build fails. It reads shipped LICENSE/COPYING bytes directly
 (whitespace-normalized so wrapped clauses match), recognizes only the audited 0BSD, MIT, ISC,
 Apache-2.0, BSD-2-Clause and BSD-3-Clause family, preserves multi-license modules as SPDX `AND`
 expressions, and fails on missing, ambiguous, unknown or metadata-mismatched licenses.
 
 The outputs are `third-party-licenses.txt` and an SPDX-2.3 JSON document with package-manager purls,
 download locations and root `DEPENDS_ON` relationships. On the current graph the generator finds 47
-linked third-party Go modules, the Go standard library and three browser dependencies (51
+linked third-party Go modules, the Go standard library and five browser dependencies (53
 dependencies total),
 matching the prior license audit while retaining the previously hidden dual Apache-2.0/MIT libyaml
 notice. Version, full commit and RFC3339 creation time are explicit inputs; an existing output

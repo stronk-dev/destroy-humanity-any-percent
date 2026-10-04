@@ -2,10 +2,13 @@ package main
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -145,6 +148,7 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 	dist := filepath.Join(root, "client", "dist")
 	var maps []string
 	var scripts []string
+	var styles []string
 	err := filepath.WalkDir(dist, func(path string, entry os.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
@@ -157,6 +161,9 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 		}
 		if !entry.IsDir() && isClientScript(entry.Name()) {
 			scripts = append(scripts, path)
+		}
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".css") {
+			styles = append(styles, path)
 		}
 		return nil
 	})
@@ -202,6 +209,13 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 			packages[directory] = source
 		}
 	}
+	cssPackages, err := discoverCSSPackages(root, dist, styles)
+	if err != nil {
+		return nil, err
+	}
+	for _, directory := range cssPackages {
+		packages[directory] = "CSS build graph"
+	}
 	directories := make([]string, 0, len(packages))
 	for directory := range packages {
 		directories = append(directories, directory)
@@ -236,6 +250,77 @@ func discoverClientDependencies(root string) ([]releasepackage.Dependency, error
 		return nil, fmt.Errorf("%w: built client ships no npm package", releasepackage.ErrInvalidContent)
 	}
 	return result, nil
+}
+
+// The build hook records CSS modules because Vite's production sourcemap
+// option does not emit a map for its extracted CSS asset. Its asset hashes
+// bind the graph to the exact CSS bytes being inventoried.
+func discoverCSSPackages(root, dist string, styles []string) ([]string, error) {
+	data, err := os.ReadFile(filepath.Join(dist, "css-dependency-graph.json"))
+	if err != nil {
+		return nil, fmt.Errorf("%w: missing CSS build graph: %v", releasepackage.ErrInvalidContent, err)
+	}
+	var graph struct {
+		SchemaVersion int `json:"schema_version"`
+		Assets        []struct {
+			Path   string `json:"path"`
+			SHA256 string `json:"sha256"`
+		} `json:"assets"`
+		PackageCSSModules []string `json:"package_css_modules"`
+	}
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&graph) != nil || decoder.Decode(&struct{}{}) != io.EOF || graph.SchemaVersion != 1 || graph.Assets == nil || graph.PackageCSSModules == nil {
+		return nil, fmt.Errorf("%w: invalid CSS build graph", releasepackage.ErrInvalidContent)
+	}
+	actual := make(map[string]string, len(styles))
+	for _, style := range styles {
+		relative, err := filepath.Rel(dist, style)
+		if err != nil {
+			return nil, err
+		}
+		content, err := os.ReadFile(style)
+		if err != nil {
+			return nil, err
+		}
+		sum := sha256.Sum256(content)
+		actual[filepath.ToSlash(relative)] = hex.EncodeToString(sum[:])
+	}
+	previous := ""
+	for _, asset := range graph.Assets {
+		if asset.Path <= previous || !strings.HasSuffix(asset.Path, ".css") || actual[asset.Path] != asset.SHA256 {
+			return nil, fmt.Errorf("%w: CSS asset not bound to build graph: %s", releasepackage.ErrInvalidContent, asset.Path)
+		}
+		previous = asset.Path
+	}
+	if len(graph.Assets) != len(actual) {
+		return nil, fmt.Errorf("%w: CSS build graph omits an emitted asset", releasepackage.ErrInvalidContent)
+	}
+	packages := map[string]bool{}
+	previous = ""
+	for _, module := range graph.PackageCSSModules {
+		path := filepath.FromSlash(module)
+		if module <= previous || !filepath.IsLocal(path) || filepath.ToSlash(filepath.Clean(path)) != module ||
+			!strings.HasSuffix(module, ".css") || !strings.Contains("/"+module, "/node_modules/") {
+			return nil, fmt.Errorf("%w: invalid CSS package module %q", releasepackage.ErrInvalidContent, module)
+		}
+		previous = module
+		resolved := filepath.Join(root, "client", path)
+		if info, err := os.Stat(resolved); err != nil || info.IsDir() {
+			return nil, fmt.Errorf("%w: missing CSS package module %q", releasepackage.ErrInvalidContent, module)
+		}
+		directory, err := packageDirectory(resolved)
+		if err != nil {
+			return nil, fmt.Errorf("%w: CSS package module has no package manifest %q", releasepackage.ErrInvalidContent, module)
+		}
+		packages[directory] = true
+	}
+	directories := make([]string, 0, len(packages))
+	for directory := range packages {
+		directories = append(directories, directory)
+	}
+	sort.Strings(directories)
+	return directories, nil
 }
 
 func isClientScript(name string) bool {

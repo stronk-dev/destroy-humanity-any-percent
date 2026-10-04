@@ -4,7 +4,8 @@
 
 The 2026-09-30 overlay below is a dated baseline, not a fresh verdict on the later v0.1
 implementation or Codex corrections. The [1.0 board](../roadmap-1.0.md) and its append-only log
-hold the newer cross-workstream checkpoint; this delta names only the Typer lane checked here.
+hold the newer cross-workstream checkpoint; this delta names the newly checked Typer and
+Deployment boundaries.
 
 | State now | Work and exact boundary |
 |---|---|
@@ -16,6 +17,7 @@ hold the newer cross-workstream checkpoint; this delta names only the Typer lane
 | **COMPLETE — bounded B5 error-detail review** | Codex designated-approved Claude's `d7c1ce6e^..d7c1ce6e` exact error-detail increment after cold account/public API tests, byte-stable API regeneration and a firing wrong-detail mutation. This verdict covers no Typer public request/snapshot arm and does not mark B5 complete. |
 | **PARTIAL / BLOCKED — Typer B7 public AC8 path** | Real-Postgres service-level witnesses prove the live Exit block/release, five credited sends and sixth forfeit, offline-quality charge and identical retry; a unit negative rejects a forged replay quota credit. The accepted AC8 still requires the public MA endpoint create→play→terminal path. TT-PA4 versus API C2 needs ruling-author reconciliation before a public Typer wire, generated consumer, production pin or default player journey can be claimed. B7 stays unchecked. |
 | **RED CI — historical kernel guard** | `make verify-kernel-version` still fails at pushed `50a3a514` per RP-131; the draft [Kernel History Guard Integrity](../../rfc/kernel-history-guard-integrity.md) and owner choice remain prerequisites to a lawful repair. No green `make verify-push` or release claim follows from the Typer-local green tests. |
+| **READY FOR CROSS-PARTY REVIEW — Deployment R8 CSS correction** | RP-164: current CSS has no map, and the original metadata generator accepted an unrecorded CSS asset. A bounded Codex correction records final emitted CSS asset hashes and direct/nested package stylesheet provenance from Vite, then unions CSS-only packages into notices. Direct and nested real-Vite fixtures, Go omission/hash/package negatives and two fired severing probes pass locally; Claude must review the exact Codex range. This does not close R8 or AC8: worker/URL CSS attribution, image/bundle rights and clean-host R-006 remain open. The historical kernel CI gate is still red. |
 
 ## Baseline overlay — 2026-09-30, product source `a7ab2640`
 

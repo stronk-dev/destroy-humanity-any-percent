@@ -956,3 +956,18 @@ Codex separately severed the exact-deadline comparison and backwards-clock max i
 ## 2026-10-04 — Typer TT4.5 replay-state parity
 
 Product/evidence source `505c4e3b`. Codex found RP-163: TS `applyTyper` accepted malformed snapshots that Go refused, including negative counters, invalid assist/submission shapes, and counters above the pinned catalog cap; a negative-miss state resolved to `typer.misses:-1` before correction. Matching Go/TS negatives and a bounded TS decoder/catalog validation correction now refuse these states. Removing the new TS cap guard and submission guard separately makes their negative rows fail; both mutations were restored. Kernel identity advances to 0.3.141 with canonical docs. Cold Go decimal/Typer/kernel/replay/minigame, full client tests, typecheck, build, vet, vectors and client-boundary check pass. Whole-history kernel verification remains red at pushed `50a3a514` (RP-131). Claude must cross-party review the Codex range, and B1/AC7 still waits on RP-162's contract decision. No public Typer route, content mint or 1.0 claim follows.
+
+## 2026-10-04 — Deployment packaging-rights CSS provenance
+
+Codex checked the accepted Deployment DP1/AC8 rights boundary and found RP-164:
+the current client emits CSS without a source map, and the release-metadata
+generator accepted an added unmapped stylesheet. A bounded build/metadata
+correction now records final CSS asset hashes and package stylesheets reached
+through both JavaScript imports and nested CSS `@import`, then includes a
+CSS-only package's license in the delivered notices. The nested-import test
+first failed on the initial hook, and separate Vite/Go severing probes failed
+after correction. Cold client, typecheck, focused Go, vet, real build and
+metadata generation pass at 53 dependencies. This is locally implemented,
+pending Claude's designated review; URL/worker CSS, final bundle/image rights
+and clean-host R-006 remain open. The unrelated pushed kernel-history gate
+still fails at `50a3a514`, so no green full CI or 1.0 claim follows.

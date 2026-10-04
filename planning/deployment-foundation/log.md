@@ -4129,3 +4129,90 @@ full `verify-push` claim.
   designated review. Claude must review `95d1bb60^..81a970ce` exactly. The R22
   CHANGES REQUIRED verdict remains for the absent admitted-write/post-restart witness;
   no host R-006 acceptance is claimed.
+
+## 2026-10-04 — R8 CSS attribution diagnostic predeclaration
+
+- **Question:** can the accepted DP1/AC8 client dependency inventory derive and verify
+  packages shipped only through CSS, rather than silently treating the JavaScript
+  source-map set as complete? The current `client/dist` has one CSS asset with no map.
+- **Arms and controls:** enable Vite's CSS sourcemap option for one local build, then
+  inspect whether the emitted CSS has a linked map and whether its `sources` identify
+  the local imported stylesheet. Existing JS map/package inventory is the positive
+  control. A separate fixture with an unmapped CSS asset must show that the current
+  inventory accepts it, proving the under-attribution path.
+- **Exit:** if the build emits a usable CSS map, specify a narrow every-CSS pairing
+  gate and a CSS-only package fixture before implementation. If it does not, restore
+  the diagnostic config edit and route a build-graph provenance requirement; do not
+  claim R8 or AC8 closed. No released artifact or owner license policy is changed by
+  this diagnostic.
+
+## 2026-10-04 — R8 CSS diagnostic fired; build-graph provenance required (RP-164)
+
+- `make build-client` passed with `css.devSourcemap: true` temporarily enabled, but
+  `client/dist` still held one `.css` asset and no `.css.map`; the two JavaScript
+  assets retained their maps. The diagnostic config edit was removed exactly.
+- A temporary `TestDiagnosticClientInventoryRejectsUnmappedCSS` added a second,
+  unmapped CSS asset to the existing two-package fixture and expected refusal.
+  Cold root `make test-go GO_PACKAGES='./cmd/gen-release-metadata'
+  GO_TEST_FLAGS='-count=1 -run TestDiagnosticClientInventoryRejectsUnmappedCSS'`
+  failed: `unmapped CSS asset accepted: <nil>`. The diagnostic test was removed.
+- Thus R8's current source-map inventory proves the JavaScript package set but not
+  CSS-only dependencies. This is a potential under-attribution path, not evidence
+  that today's emitted CSS contains an uncredited npm package: current source has
+  only a local `./shell/styles.css` import. The accepted DP1/AC8 route needs a
+  build-graph-derived CSS provenance producer, a fixture shipping a package only
+  through CSS, a falsifying omission/severing case and exact artifact binding.
+  Until then no full packaging-rights or AC8 claim is authorized.
+
+## 2026-10-04 — R8 CSS graph correction predeclaration
+
+- A temporary Vite `generateBundle` diagnostic showed the production entry chunk's
+  `modules` includes `client/src/shell/styles.css` and 20 Svelte style virtual
+  modules, while the emitted CSS still has no map. The diagnostic plugin was
+  removed. This is a viable build-graph seam, not yet a rights witness.
+- **Implementation scope:** emit a deterministic CSS provenance record from that
+  hook: exact emitted CSS asset names/hashes and all contributing CSS module paths
+  under `client/node_modules`. The release-metadata generator must require the
+  record, compare it against every emitted CSS asset, resolve every package path
+  to installed metadata/LICENSE, and union those packages with the JS map set.
+- **Controls:** an intact production build still inventories the same five npm
+  packages; a Vite-built fixture importing CSS from an npm package not used by JS
+  must include its notice. Removing that CSS module from the graph, adding an
+  unrecorded CSS asset, changing recorded CSS bytes, or removing the graph must
+  fail. A temporary severing of the new graph-consumption guard must fail the
+  CSS-only fixture. This proves the build/metadata boundary, not a clean-host
+  bundle, license-policy adoption, or final AC8 release proof.
+
+## 2026-10-04 — RP-164 local CSS attribution correction; cross-party review pending
+
+- The first hook hashed CSS bytes during Vite `generateBundle`, but Vite changed
+  the emitted CSS before writing it; a real `make generate-release-metadata`
+  rejected the mismatch. The hook now records final CSS hashes in `writeBundle`,
+  and the generator checks each hash against the actual dist file. This failed
+  attempt is not counted as a successful witness.
+- The first real Vite test imported package CSS from JavaScript and passed.
+  A second fixture put `@import "style-only/theme.css"` inside a local
+  stylesheet; it failed with `package_css_modules: []`. The hook now follows
+  CSS `@import` dependencies, including from Svelte style sources, and refuses
+  an import it cannot resolve or parse. Both Vite-built fixture arms pass.
+- The Go generator requires the graph, exact emitted CSS asset set/final-byte
+  hashes and installed package stylesheet/manifest/license. A fixture records
+  a CSS-only npm package in the dependency list and delivered notice; removing
+  the graph, adding an unrecorded CSS asset, changing CSS bytes or removing the
+  package stylesheet each fails. Current client build plus real metadata
+  generation still reports 53 dependencies (five npm packages, none CSS-only).
+- Two temporary severing probes fired and were restored: omitting the Vite
+  module-add operation made the real Vite CSS-only test fail at the expected
+  package path; dropping the Go union made the notice fixture fail with only
+  its two JavaScript packages. Cold full client tests (6910 pass, 83 skip),
+  typecheck/Svelte check, root client build, focused Go metadata/releasepackage
+  tests, vet, client boundary and CI-topology controls pass. The initial
+  `@types/node` install attempt failed on unavailable registry DNS without
+  changing the lockfile; the build hook and test use repo-standard `.mjs` with
+  a narrow TypeScript declaration for the Vite config instead.
+- `make verify-kernel-version` remains independently red at pushed
+  `50a3a514` (RP-131). No full `verify-push`, clean-host bundle or AC8 success
+  is claimed. This is Codex implementation under accepted DP1/AC8, requiring
+  Claude's designated exact-range review. CSS URL asset/package provenance,
+  worker-only CSS and final image/bundle rights remain later AC8 audit surfaces;
+  this range proves package stylesheets imported into the main build graph.

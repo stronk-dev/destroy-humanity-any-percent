@@ -1,5 +1,6 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig } from "vite";
+import { cssDependencyGraph } from "./tools/css-dependency-graph.mjs";
 
 const dependencyPath = (relative: string) => decodeURIComponent(new URL(relative, import.meta.url).pathname);
 
@@ -8,7 +9,7 @@ const dependencyPath = (relative: string) => decodeURIComponent(new URL(relative
 // project's pinned Decimal implementation through an explicit bundler alias.
 
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [svelte(), cssDependencyGraph(decodeURIComponent(new URL(".", import.meta.url).pathname))],
   resolve: { alias: {
     "@antimatter-dimensions/notations": dependencyPath("./node_modules/@antimatter-dimensions/notations/dist/ad-notations.esm.js"),
     "break_infinity.js/break_infinity": dependencyPath("./node_modules/break_infinity.js/dist/break_infinity.esm.js"),
