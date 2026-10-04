@@ -149,6 +149,9 @@ gone/watchdog/not-ready paths, and reconnect precedence across a background/fore
 It also starts with the document already hidden and verifies that the first beat waits for a
 visible event, and defers both start and reconnect responses across unmount to prove that no
 heartbeat survives the surface.
+The keyboard-only component case activates Begin and Stop early with Enter (no click helper),
+checks the cancellation receipt and terminal focus, and runs axe in both active and terminal
+states. This does not substitute for a real assistive-technology task study.
 `make verify-client-boundary` now scans the `minigame/` and `soul/` Svelte components with the
 same literal, style, import and network rules as the Game UI.
 

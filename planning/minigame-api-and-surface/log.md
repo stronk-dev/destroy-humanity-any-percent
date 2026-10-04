@@ -971,3 +971,47 @@ control fails the composed path, and no direct API mutation remains in setup.
 This is a Codex-authored test correction awaiting Claude's exact-range
 cross-party review; MA AC1–AC5 and the original Claude implementation range
 are not thereby approved.
+
+## 2026-10-04 — Codex MA3 Soul keyboard-path probe, predeclared
+
+- **Question:** can a keyboard-only player start a Soul recovery activity and
+  stop it early through native controls, with the active and terminal states
+  understandable and focus placed on the terminal heading? MA3 inherits the
+  UI Foundation keyboard/axe gate; the current Soul tests click controls.
+- **Population:** real Chromium/WebKit browser component with a fake
+  coordinator port and pinned activity content. Focus the first Begin button,
+  activate it with Enter, then focus Stop early and activate it with Enter.
+  No `.click()` or synthetic keydown may perform the action.
+- **Criterion:** exactly one start and one cancel reach the port, terminal
+  cancellation renders, focus moves to the heading, and axe reports no
+  serious/critical violations in active and terminal states.
+- **Negative control:** disconnect the Begin callback while retaining the
+  visible button. The test must fail because no start reaches the port;
+  restoring it passes. This is a component keyboard witness, not an assistive
+  technology study or real-server recovery proof.
+
+## 2026-10-04 — Codex MA3 Soul keyboard witness result (RP-148)
+
+- The new browser case uses `userEvent.keyboard("{Enter}")` after focusing
+  native Begin and Stop early buttons; no `.click()` or synthetic keydown
+  performs either action. It observes one `start`, one `cancel`, a rendered
+  terminal receipt, focus on `#recovery-heading`, and no serious/critical axe
+  violations in active or terminal state. The complete Soul browser file
+  passes 9/9 in Chromium and WebKit, with the performance lane passing.
+- Temporarily replacing the Begin callback with a no-op made the focused case
+  fail at `port.starts` (`[]` instead of `["defrag"]`). The callback was
+  restored and both browsers reran green. Cold real-Postgres
+  `TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration` and
+  `make api-check` also pass at this HEAD; they prove the composed API and
+  generated files, not this keyboard path.
+- The first static `vitest/browser` import made the ordinary Node client suite
+  fail before `skipIf(!browser)` could apply. Moving the import inside the
+  browser-only case restored `make test-client` (6,905 passed, 81 skipped),
+  and the corrected Soul file reran 9/9 in Chromium and WebKit. The full
+  Chromium/WebKit browser populations then passed (6,985 tests each, one
+  skipped, plus the performance lane). The failed intermediate run is not
+  counted as a green gate.
+- **Review by:** Codex. **Recorded by:** Codex. This is a Codex-authored
+  MA3/AC5 test-only correction under the accepted RFC, pending Claude's
+  exact-range cross-party designated review. It does not establish Firefox,
+  screen-reader task success, full MA range-union approval or release readiness.

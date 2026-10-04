@@ -285,3 +285,28 @@ it.skipIf(!browser)("does not restart heartbeats when a pending reconnect resolv
     expect(port.tokens).toHaveLength(beatsBeforeUnmount);
   } finally { if (!unmounted) unmount(app); target.remove(); }
 });
+
+it.skipIf(!browser)("starts and stops Soul recovery with keyboard-only controls", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const port = new FakePort();
+  const visibility = new FakeVisibility();
+  const terminals: SoulRecoveryTerminalResponse[] = [];
+  port.startReplies.push(() => started());
+  port.steady = progressed(1_000);
+  port.terminalReply = () => terminal("cancel", "player");
+  const { target, app } = mountSurface(port, visibility, { now: 1_000 }, terminals);
+  try {
+    await settle();
+    target.querySelector<HTMLButtonElement>("li button")!.focus();
+    await userEvent.keyboard("{Enter}");
+    await settle();
+    expect(port.starts).toEqual(["defrag"]);
+    await assertAxe(target, "keyboard-active recovery");
+    button(target, "Stop early").focus();
+    await userEvent.keyboard("{Enter}");
+    await settle();
+    expect(terminals).toEqual([terminal("cancel", "player")]);
+    expect(document.activeElement?.id).toBe("recovery-heading");
+    await assertAxe(target, "keyboard-terminal recovery");
+  } finally { unmount(app); target.remove(); }
+});
