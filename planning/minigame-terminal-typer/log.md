@@ -1,5 +1,44 @@
 # Terminal Typer log
 
+## 2026-10-04 — Codex targeted TT8/TT9 review predeclaration
+
+**Reviewed by:** Codex, independent of Claude's `ade1083b` implementation. **Scope:** the
+`TyperTable` child and its browser witness only; this is not a verdict on B1–B7 or an archival
+approval. RP-149 records the observed gap before edits.
+
+The accepted TT8.3 requires focus to remain in the input while one polite announcement names each
+new prompt. Current markup has a static `<code>` and a polite status for miss/clear feedback, but
+no live prompt announcement. The test named "begins by keyboard" focuses a button then calls
+`.click()`. Add a browser assertion that exactly one dedicated polite prompt announcement contains
+the current command while the input owns focus, and use actual Enter keyboard activation for the
+ready-mode control and the submit control. The announcement assertion must fail on current HEAD;
+removing the correction afterward must make it fail again. Run the focused browser suite and
+client typecheck cold. This does not authorize Typer API arms, registry pinning, content mint, or
+the RFC's full AC13 release claim (Firefox and manual assistive-technology tasks remain distinct).
+
+### Targeted finding and correction — Codex
+
+**Review by:** Codex of Claude's `ade1083b` TT8 child/test only. **Recorded by:** Codex.
+**Verdict:** CHANGES REQUIRED on the prompt-announcement and keyboard-evidence slice; no full
+Typer B1–B7 verdict is inferred. The new same-mount prompt-change browser witness failed on the
+original child: zero `.prompt-announcement[aria-live=polite]` elements. The claimed keyboard
+begin test used a programmatic `.click()`; it now uses real browser Enter, as does line submission.
+
+The correction keeps an initially empty polite live region mounted and updates its text when the
+server-owned current prompt ID changes. It introduces no authored prose or gameplay rule. The
+test-only `TyperTableHarness` advances the snapshot on the same mounted child and checks the live
+text changes exactly once while input focus stays put. After correction, removing only the
+announcement assignment failed the focused browser case at `expected '' to contain 'ls -la'`;
+the line was restored and the suite passed again.
+
+Cold evidence at current worktree: Chromium and WebKit full browser populations each pass
+6,986 tests (one existing skip each) plus the performance lane; `make test-client` passes 6,905
+(82 skips); `make typecheck` reports zero errors/warnings; `make verify-client-boundary` and
+`make build-client` pass. The default Firefox-inclusive gate and manual screen-reader evidence
+are **not** claimed. This Codex-authored corrective range requires Claude's designated
+cross-party review before the B6 slice can be accepted; the TT-PA4/C2 public wire conflict,
+registration, provisional content and all remaining B7/AC13 work remain open.
+
 ## 2026-09-25 — Predeclaration (Claude)
 
 **Implemented by:** Claude, per the owner's 2026-09-25 acceptance and implement direction.

@@ -5,6 +5,7 @@ import { expect, it } from "vitest";
 import TyperTable from "../src/game-ui/minigame/TyperTable.svelte";
 import type { TyperCommand, TyperSnapshot } from "../src/typer/engine";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
+import TyperTableHarness from "./TyperTableHarness.svelte";
 
 const browser = typeof document !== "undefined";
 const HASH = `sha256:${"a".repeat(64)}`;
@@ -41,6 +42,7 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
 }
 
 it.skipIf(!browser)("offers timed and untimed without a default and begins by keyboard", async () => {
+  const { userEvent } = await import("vitest/browser");
   const commands: TyperCommand[] = [];
   const { target, dispose } = render(snapshot(), commands);
   try {
@@ -50,12 +52,13 @@ it.skipIf(!browser)("offers timed and untimed without a default and begins by ke
     const untimed = button(target, "Untimed run");
     expect(untimed.getAttribute("aria-describedby")).toBe("typer-untimed-note");
     untimed.focus();
-    untimed.click();
+    await userEvent.keyboard("{Enter}");
     expect(commands).toEqual([{ kind: "begin", assist_level: "untimed" }]);
   } finally { dispose(); }
 });
 
 it.skipIf(!browser)("submits the typed line on Enter, never during composition, and never blocks paste", async () => {
+  const { userEvent } = await import("vitest/browser");
   const commands: TyperCommand[] = [];
   const { target, dispose } = render(typing(), commands);
   try {
@@ -77,9 +80,30 @@ it.skipIf(!browser)("submits the typed line on Enter, never during composition, 
     input.value = "ls -la";
     input.dispatchEvent(new Event("input", { bubbles: true }));
     await settle();
-    target.querySelector("form")!.requestSubmit();
+    input.focus();
+    await userEvent.keyboard("{Enter}");
     expect(commands).toEqual([{ kind: "submit_line", text: "ls -la" }]);
   } finally { dispose(); }
+});
+
+it.skipIf(!browser)("announces each new prompt once while focus remains in the input", async () => {
+  const target = document.createElement("main"); document.body.append(target);
+  installTheme(target, UI_THEMES.era_2000, false);
+  const app = mount(TyperTableHarness, { target, props: { initial: typing(), dispatch: () => {} } }) as unknown as { advance(next: TyperSnapshot): void };
+  try {
+    await settle();
+    const input = target.querySelector<HTMLInputElement>("#typer-line")!;
+    expect(document.activeElement).toBe(input);
+    const promptStatus = target.querySelectorAll(".prompt-announcement[aria-live=polite]");
+    expect(promptStatus).toHaveLength(1);
+    expect(promptStatus[0]?.textContent).toContain("ls -la");
+    flushSync(() => app.advance(typing({ current_prompt_id: "cd_www", current_prompt_text: "cd /var/www", prompt_index: 1, revision: 3 })));
+    await settle();
+    expect(document.activeElement).toBe(input);
+    expect(target.querySelectorAll(".prompt-announcement[aria-live=polite]")).toHaveLength(1);
+    expect(promptStatus[0]?.textContent).toContain("cd /var/www");
+    expect(promptStatus[0]?.textContent).not.toContain("ls -la");
+  } finally { unmount(app as never); target.remove(); }
 });
 
 it.skipIf(!browser)("announces a miss as text with a 1-based position, not by colour", async () => {

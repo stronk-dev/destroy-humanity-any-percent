@@ -25,6 +25,7 @@
   let now = $state(0);
   let timer: ReturnType<typeof setInterval> | undefined;
   let lastPromptID: string | null = null;
+  let promptAnnouncement = $state("");
 
   onMount(() => {
     now = monotonicNow();
@@ -42,6 +43,7 @@
     if (promptID !== lastPromptID) {
       const hadFocus = document.activeElement === input;
       lastPromptID = promptID;
+      promptAnnouncement = snapshot.current_prompt_text ?? "";
       line = "";
       if (hadFocus || promptID !== null) void tick().then(() => input?.focus());
     }
@@ -69,6 +71,7 @@
 <section class="typer" aria-labelledby="typer-heading">
   <h2 id="typer-heading">{t("typer.title", {}, era)}</h2>
   <p class="host">{t("typer.host", {}, era)}</p>
+  <p class="prompt-announcement" aria-live="polite" aria-atomic="true">{promptAnnouncement}</p>
 
   {#if snapshot.phase === "ready"}
     <div class="modes">
@@ -112,4 +115,5 @@
     background: var(--cc-color-bg); border: var(--cc-border-width) var(--cc-border-style) var(--cc-color-border); padding: var(--cc-space-xs); }
   input:focus-visible, button:focus-visible { outline: var(--cc-border-width) var(--cc-border-style) var(--cc-color-accent); outline-offset: var(--cc-space-xs); }
   .leave { justify-self: start; }
+  .prompt-announcement { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 </style>

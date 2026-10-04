@@ -72,6 +72,15 @@ a fullwidth look-alike miss.
 The TT1 row fixture is `testdata/minigame/pitch-typer-v3.json`, with the two-tenant API fixture
 `balance/testdata/minigame-api-typer-candidate-v1.json`. No live epoch pins either one.
 
+## Child surface status
+
+`TyperTable` is an unregistered presentation-only child. It offers both timed and untimed starts,
+accepts native text-field input (including paste and composition), and leaves focus in the input
+when a prompt advances. A separate polite live region announces the new prompt text once per
+prompt ID change; miss/clear feedback uses its own status. Its browser gate covers Enter-driven
+start and submit, prompt change, reflow and axe checks, but this does not establish a hosted
+Typer workflow or substitute for manual assistive-technology evidence.
+
 ## API status
 
 The v1 error taxonomy carries the Typer rejection details (`invalid_assist_level`, `invalid_text`,
@@ -79,4 +88,3 @@ The v1 error taxonomy carries the Typer rejection details (`invalid_assist_level
 are exact 409 bytes on the minigame operations. **No v1 route carries Typer commands or snapshots
 yet.** The accepted API Foundation C2 law forbids growing request unions inside v1. The transport
 shape is an open DESIGN-GAP; see `planning/minigame-terminal-typer/log.md`.
-
