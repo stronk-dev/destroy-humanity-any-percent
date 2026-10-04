@@ -3938,3 +3938,21 @@ full `verify-push` claim.
   The production call was restored, and both packages passed cold again. The correction
   is Codex-authored and awaits Claude's designated exact-range review; this record is
   not a self-approval of that commit.
+
+## 2026-10-04 — Codex designated review of Claude R16 envelope commit verification
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `e6c58afc^..e6c58afc`
+  only. **Decision:** **APPROVED** for R16's precommit envelope re-read and directory-sync
+  implementation, not for key ownership, a successful restore, DP-F or the release floor.
+- Inspected the full R16 diff and `Create`/`ReadHeader` sequence. The temporary envelope is
+  closed, then the on-disk header, payload length and checksum are re-read before rename;
+  the directory is synced after rename. Cold root
+  `make test-go GO_PACKAGES='./deploymentbackup ./cmd/deployment-backup'
+  GO_TEST_FLAGS='-count=1'` passed. Removing the precommit `ReadHeader` call caused
+  `TestCreateVerifiesTheCommittedEnvelopeBytes` to fail with a reported successful path
+  for the torn envelope. The call was restored, `git diff --exit-code` was clean, and
+  both packages reran cold green.
+- A crash or filesystem fault between rename and successful directory sync is not
+  simulated. The code returns an error if sync fails, but the final path may already
+  exist and needs operator reconciliation. No durability or decryptability claim is
+  inferred from this unit lane or the checksum alone; D-019 remains open.
