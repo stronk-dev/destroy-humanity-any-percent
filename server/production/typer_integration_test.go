@@ -72,7 +72,7 @@ type typerFounder struct {
 }
 
 func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time,
-	suffix string, tier int64, exits int,
+	suffix string, tier int64, exits, founderWireVersion int,
 ) typerFounder {
 	t.Helper()
 	accountID := "01986666-c2" + suffix + "-4000-8000-000000000001"
@@ -97,7 +97,7 @@ func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save
 		t.Fatal(err)
 	}
 	founder := replayFounderFixtureState(t, bundle, now)
-	founder.WireVersion = 20
+	founder.WireVersion = founderWireVersion
 	founder.MinigameRatings = map[string]save.MinigameRatingState{"pitch": {Elo: 1000, SeasonMember: "s1"}, "typer": {Elo: 1000, SeasonMember: "s1"}}
 	founder.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{"pitch": {GradePPM: 200_000}, "typer": {GradePPM: 200_000}}
 	founder.Pets = map[string]pet.CareState{}
@@ -144,6 +144,90 @@ func seedTyperFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save
 }
 
 var creditedDeltaPattern = regexp.MustCompile(`"credited_delta":"([^"]+)"`)
+
+// TT-PA2: prove the public create coordinator's server-owned gate, not only
+// the older direct StartMinigameSession path exercised below.
+func TestTyperAPIStartIntegrationUsesPinnedTierAndExit(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `TRUNCATE accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	bundle := typerFeatureBundle(t)
+	seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
+	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{bundle.ConstantsHash: bundle.Economy},
+		routes: map[string]*routes.Catalog{bundle.ConstantsHash: bundle.Routes}, prestige: map[string]*prestigecore.Policy{bundle.ConstantsHash: bundle.Prestige},
+		factions: map[string]*faction.Catalog{bundle.ConstantsHash: bundle.Faction}}
+	store, err := save.NewStore(db, resolver, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	repository, err := minigame.NewRepository(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	registry, err := minigame.NewTenantRegistry(pitch.NewTenant(), typer.NewTenant())
+	if err != nil {
+		t.Fatal(err)
+	}
+	set := ReplayCatalogSet{bundle.ConstantsHash: bundle}
+	platform, err := minigame.NewService(repository, registry, set)
+	if err != nil {
+		t.Fatal(err)
+	}
+	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundle.ConstantsHash),
+		WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := save.CanonicalServerTime(time.Now().UTC())
+	for _, row := range []struct {
+		suffix string
+		tier   int64
+		exits  int
+		want   error
+	}{
+		{"10", 0, 1, ErrMinigameTierRequired},
+		{"11", 1, 0, ErrMinigameCurriculumExitRequired},
+		{"12", 1, 1, nil},
+	} {
+		founder := seedTyperFounder(t, ctx, db, store, bundle, now, row.suffix, row.tier, row.exits, 21)
+		request := StartMinigameAPIRequest{SessionID: "01986666-c2" + row.suffix + "-7000-8000-000000000003",
+			IntentID: "01986666-c2" + row.suffix + "-7000-8000-000000000004", FounderID: founder.founderID,
+			CompanyStreamID: founder.companyStreamID, MinigameID: "typer", IdempotencyKey: "typer-" + row.suffix}
+		result, startErr := service.StartMinigameAPISession(ctx, platform, request, now, nil)
+		if row.want != nil {
+			if !errors.Is(startErr, row.want) || len(result.Receipt) != 0 {
+				t.Fatalf("tier=%d exits=%d: receipt=%s err=%v want=%v", row.tier, row.exits, result.Receipt, startErr, row.want)
+			}
+			if _, loadErr := repository.Load(ctx, founder.founderID, request.SessionID); !errors.Is(loadErr, minigame.ErrSessionGone) {
+				t.Fatalf("rejected start persisted a session: %v", loadErr)
+			}
+			latest, loadErr := store.LoadLatest(ctx, founder.founderStreamID)
+			if loadErr != nil || latest.Revision.Number != 1 || latest.State.MinigameSessionSeq != 0 {
+				t.Fatalf("rejected start advanced Founder: %+v err=%v", latest, loadErr)
+			}
+			continue
+		}
+		if startErr != nil || result.Replay || len(result.Receipt) == 0 {
+			t.Fatalf("eligible start receipt=%s replay=%v err=%v", result.Receipt, result.Replay, startErr)
+		}
+		if session, loadErr := repository.Load(ctx, founder.founderID, request.SessionID); loadErr != nil || session.MinigameID != "typer" {
+			t.Fatalf("eligible start session=%+v err=%v", session, loadErr)
+		}
+	}
+}
 
 // Typer AC8/AC9/AC11: a composed platform run through real Postgres.
 func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
@@ -198,11 +282,11 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 	}
 
 	// AC9: the tier arm reads only pinned server state.
-	tierZero := seedTyperFounder(t, ctx, db, store, bundle, now, "00", 0, 1)
+	tierZero := seedTyperFounder(t, ctx, db, store, bundle, now, "00", 0, 1, 20)
 	if _, err := service.StartMinigameSession(ctx, platform, startRequest(tierZero, "01986666-c200-7000-8000-000000000003"), now); !errors.Is(err, ErrMinigameTierRequired) {
 		t.Fatalf("Tier-0 Typer start must reject tier_required: %v", err)
 	}
-	noExit := seedTyperFounder(t, ctx, db, store, bundle, now, "01", 1, 0)
+	noExit := seedTyperFounder(t, ctx, db, store, bundle, now, "01", 1, 0, 20)
 	if _, err := service.StartMinigameSession(ctx, platform, startRequest(noExit, "01986666-c201-7000-8000-000000000003"), now); !errors.Is(err, ErrMinigameCurriculumExitRequired) {
 		t.Fatalf("run-1 Typer start must reject curriculum_exit_required: %v", err)
 	}
@@ -268,13 +352,13 @@ func TestTyperComposedIntegrationUnlockPlayPayoutAndNeutrality(t *testing.T) {
 		}
 		return string(match[1]), result.Receipt
 	}
-	timed := seedTyperFounder(t, ctx, db, store, bundle, now, "02", 1, 1)
-	untimed := seedTyperFounder(t, ctx, db, store, bundle, now, "03", 1, 1)
+	timed := seedTyperFounder(t, ctx, db, store, bundle, now, "02", 1, 1, 20)
+	untimed := seedTyperFounder(t, ctx, db, store, bundle, now, "03", 1, 1, 20)
 	timedCredit, _ := play(timed, "01986666-c202-7000-8000-000000000003", "timed")
 	untimedCredit, _ := play(untimed, "01986666-c203-7000-8000-000000000003", "untimed")
 	// AC8 / TT5: end_run is legal before begin, so an open Typer session (which
 	// blocks Exit, MA-C12) always has a reachable exit.
-	stalled := seedTyperFounder(t, ctx, db, store, bundle, now, "04", 1, 1)
+	stalled := seedTyperFounder(t, ctx, db, store, bundle, now, "04", 1, 1, 20)
 	stalledSession := "01986666-c204-7000-8000-000000000003"
 	if _, err := service.StartMinigameSession(ctx, platform, startRequest(stalled, stalledSession), now); err != nil {
 		t.Fatal(err)
