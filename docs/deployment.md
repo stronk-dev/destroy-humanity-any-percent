@@ -252,6 +252,9 @@ readiness and the exit code, and feeds them through the same drain derivation th
 uses. The row exits `3` only when that derivation classifies the restart as not a bounded drain
 (no gameserver-owned `503`, no courtesy frame, non-zero exit) and the stack is then restored to
 readiness with a passing authenticated smoke; an unrestored host is a setup failure (`2`).
+This command does not create or observe an admitted write. Its result establishes crash-versus-
+graceful-drain classification and service recovery only; the named mid-write/restart R-006
+population still needs an in-flight work fixture and post-restart outcome check.
 The bundle mutations remove the catalog, client, root license, config or release helper, or change
 an image digest, runtime-config digest or image SBOM. The config matrices use the production
 startup decoder and require every missing/malformed secret, duplicate key identity/value and

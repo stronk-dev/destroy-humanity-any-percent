@@ -737,3 +737,11 @@ the check is narrowed back to Postgres while a retained certificate volume exist
 live Docker filter also returned three project cache volumes, confirming it observes
 non-Postgres state on this machine. That demonstrates the rule, not a clean host;
 R-006 and the remaining evidence/decision gates are unchanged.
+
+## 2026-10-04 — R22 restart row does not exercise admitted work
+
+Codex's targeted R22 review found RP-143. The new producer proves SIGKILL is not a
+graceful drain and that service can restart, but it never admits or holds a write and
+never checks that write after restart. Its cold Go suites pass without any in-flight
+operation. Canonical Deployment docs now state that limitation; DP-F must define and
+implement the exact mid-write/restart witness before this named R-006 row can count.

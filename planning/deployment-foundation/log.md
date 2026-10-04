@@ -4074,3 +4074,24 @@ full `verify-push` claim.
   R-006 evidence. The R21 record's correction to DESIGN-GAP 6 is limited to source
   derivation; retaining raw identities for final re-verification remains an RFC-author
   question.
+
+## 2026-10-04 — Codex targeted R22 review: no admitted work at restart
+
+- **Review by:** Codex. **Recorded by:** Codex. **Reviewed range:** `b706e4df^..b706e4df`,
+  limited to R22's claim to produce `gameserver_restart_during_admitted_work`.
+  **Decision:** **CHANGES REQUIRED (RP-143)** for that R-006 population. The narrower
+  SIGKILL-versus-graceful-drain classifier is not disputed or promoted to AC4 proof.
+- Inspected the full R22 diff, `ProbeRestartDuringAdmittedWork`, `KillGameserver`, both
+  new tests and the plan binding. The producer requires an install row, runs `docker
+  kill`, reads readiness/exit, restarts and smokes. Neither its runtime interface nor
+  its fake test contains an admitted intent, a held write, a receipt, or a post-restart
+  data/result comparison. Cold root `make test-go GO_PACKAGES='./deploymentrelease
+  ./deploymentrehearsal ./cmd/deployment-rehearsal' GO_TEST_FLAGS='-count=1'` passed,
+  demonstrating the current tests can be green without that named population.
+- RFC AC4 requires mid-write/restart fixtures to fail loudly; the existing composed
+  release test holds an admitted intent during governed drain, but R22 does not use
+  that fixture for an ungraceful kill. Canonical Deployment docs now explicitly limit
+  R22 to crash classification and service recovery. **DESIGN-GAP 9 for DP-F author:**
+  specify the exact admitted operation, pause point, allowed client outcome, durable
+  post-restart state/receipt check, and severing case. Do not count the current exit 3
+  as the AC4/R-006 row until that contract is implemented and executed on the bundle.
