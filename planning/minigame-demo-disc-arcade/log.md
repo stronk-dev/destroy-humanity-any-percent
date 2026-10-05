@@ -1085,3 +1085,58 @@ root generation/check aliases, docs and tracking only. Original v1/v2 Arcade evi
 all production/kernel/balance/copy/public-wire/CI-workflow bytes remain unchanged. The
 content-fixture commit uses AR7's required BALANCE-CHANGE subject without minting a
 production epoch. No whole-A3 approval, self-archive, push or deployment.
+
+## 2026-10-05 — A3 rules / RP-197 rejection-atomicity predeclaration (Codex)
+
+**Authority:** accepted A3, AR4.4–AR4.7, AR7 and AC5/AC6; existing A5 composition owns the
+real-Postgres test-side path. Original Claude range `508fe19a^..508fe19a` for pure rules;
+`b9b3e9aa^..b9b3e9aa` is NOT assumed as the A5 hash: derive its actual commit before any
+designated verdict. Starting clean HEAD `90a2437a`. No rule/content/schema/wire/mint/copy
+change; independent correction review remains mandatory.
+
+**Inventory/read-derived question:** current v2 covers all eight original Snake scenarios,
+tail chase/self collision, food/growth, four walls, all rejection names and plain terminal
+overshoot. RP-196 adds exact 5×5 clearing and another plain overshoot. Neither supplies an
+explicit turn after the terminal tick, or an invalid same/opposite turn after earlier ticks
+have already executed. A5's real-DB witness contains only successful play/resolution; no
+durable rejected-command row comparison. This is RP-197, not proof of a production defect.
+
+**Stage 1, existing-instrument review:** cold Go Arcade and whole TS client baseline. Independently
+sever tail-vacate handling, empty-cell food selection, reversal refusal and terminal-window
+refusal in each pure engine; restore after each, record which actual gate fires. Separately
+change only the guard for a command containing a future turn after death, leaving plain
+overshoot refusal intact. Run the OLD full Go Arcade and client populations on that conditional
+probe before adding tests. Survival is an instrument finding, not permission to retain a
+wrong engine. Partial working-copy mutation that cannot escape the tenant is not automatically
+a durable-state defect; identify the actual observed boundary.
+
+**Conditional supplement, fixed before execution:** use actual current corpus genesis
+and grown tail/self-collision sources plus the existing exact 5×5 fixture. Explicit advance
+cases: future turn after east-wall death, late same-direction turn, late reversal, invalid
+window, non-ascending turns, successful advance/quit and post-terminal refusal. Refused
+attempts compare literal state/result and revision; successful controls execute real output.
+Do not rewrite existing corpus/fixture or conflate the 6×5 source with the 5×5 source.
+
+The real-Postgres arm uses the existing candidate 20×20 Arcade bundle, a real Founder and
+actual minigame Service Play. Before/after each rejection, compare repository-loaded state,
+genesis, result and revision; SQL command-row aggregate (including payload/sequence/revision/
+server timestamp); active status and cleared claim/token. Exclude UpdatedAt only because
+claim/release legitimately change it. Execute at both genesis (empty command history) and
+after a successful advance (nonempty history); late turns and future terminal turns must
+refuse with their exact taxonomy. Every error is inspected, not ignored. Successful play
+must advance revision and append exactly one row; eventual quit/resolution must remain usable.
+This is DB/library composition, not the owner-blocked public API/socket/AC8 route.
+
+**Discrimination:** conditional future-turn discard must fail the new pure/DB witnesses.
+Independently force rejected-command persistence in the service error path and suppress claim
+release: the new DB comparison must fail each, without changing the tenant error itself.
+Restore every production probe before complete retained cold verification. If the existing
+instruments already discriminate a hypothesis, record that positive result and add no redundant
+test merely to inflate counts. Any actual runtime rule defect needs its own conditional
+accepted-contract correction range and honest watched identity; this declaration authorizes
+no new mechanic or speculative production edit.
+
+**Exit:** cold selected Go, whole client/type/build, root boundaries/vet/vectors/corpus,
+complete three-browser target and declared real-DB selector. Report historical RP-131
+separately, with no bypass. Bounded original verdict + exact Codex supplement span; no full
+A3/AR7 promotion, self-review archival, push or deployment.
