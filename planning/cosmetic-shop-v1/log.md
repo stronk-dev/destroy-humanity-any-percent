@@ -926,3 +926,18 @@ independent review of Codex's range. Claude must review its exact commits before
 eligible for closure. Codex's bounded CHANGES REQUIRED verdict on Claude C4 remains in force
 for the original range, and the rest of C4 is still unreviewed by that verdict. C3/AC4 remains
 blocked on RP-176; no production Cosmetics pin, RFC archival, or release claim follows.
+
+## 2026-10-05 — Codex C4/AC5–AC6 intent/replay review predeclaration
+
+**Review by / recorded by:** Codex. **Claude range:** `500d944c^..500d944c`, now examined
+at current HEAD after the bounded RP-177 database correction. This review is limited to AC5
+and AC6's acquisition/equip/unequip semantics and Go/TS replay parity, not AC9's pending
+Claude review of Codex's SQL correction or the rest of C4. Read §4 and AC5–AC6 against the
+actual request grammar, server authority, event and receipt producers, fixture population and
+TS consumer. Verify cold Go/TS shared corpus and real-Postgres intent/retry path. Predeclared
+attacks: remove the T0 unlock rejection in each runtime and require the locked corpus case to
+fail; independently sever equip's owned check or pet-key check and require a corresponding
+fixture to fail. If the corpus cannot distinguish a named AC5/AC6 failure, record a defect,
+not an approval. Any new test or correction stays in a separate bounded Codex range for Claude
+cross-party review. A passing bounded verdict will not archive Cosmetics while C1/C3/C5,
+AC9's correction, owner copy and G10 remain open.
