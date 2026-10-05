@@ -318,3 +318,27 @@ DESIGNATED REVIEW**, not a Codex self-approval or full A6/AC12/release acceptanc
 **Native keyboard corrective review handoff:** exact Codex range `9026bd40^..27622885`.
 It contains tests/harness/docs/tracking and a separately queued RP-190 finding, not product
 or corpus changes. Claude's designated review is required; original A6 remains unapproved.
+
+## 2026-10-05 — RP-190 AR7 budget correction predeclaration (Codex)
+
+**Review by:** Codex. **Recorded by:** Codex. **Bounded original range:** Claude
+`508fe19a^..508fe19a`, AR7 corpus budget only. **Verdict: CHANGES REQUIRED.** Both the Go
+generator and TS replay consumer count applied commands only; direct fixture enumeration is
+43 applied / 60 attempts. AR7 requires the sum of command counts, not applied-state transitions.
+
+**Authority / population:** accepted AR7. Tests and generated fixture metadata only; no engine,
+catalog, seeded scenario, expected snapshot/result, command, kernel, policy or production byte.
+Add independent Go and TS equality checks against each scenario's step count before correcting
+the producer. They must fail first on declared/generated 43 vs 60. Then count every attempted
+command in the Go generator and TS execution consumer and regenerate via the existing root
+Make target. JSON comparison against the prior committed fixture must show only the budget
+changed (43→60), with every other value identical.
+
+**Exit / negative controls:** cold Go Arcade and full client/type checks green; separately
+restore applied-only Go counting and applied-only TS execution counting, each must fail its
+corresponding gate. Restore each probe exactly. Regeneration must be byte-reproducible and
+the full cold browser lane, including performance, must pass. Use `-count=1` for Go evidence;
+do not treat a cached corpus check as cold proof. Root vet/build/boundaries remain required.
+No added retry/bound increase or fabricated content coverage. This repairs the observation
+denominator only; it does not establish missing gameplay scenarios or approve the rest of
+Claude's A1–A7/AR7 range. Claude independently reviews the exact Codex correction.
