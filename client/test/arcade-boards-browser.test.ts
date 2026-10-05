@@ -1,6 +1,6 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 
 import candidateRaw from "../../balance/testdata/arcade-v1.json?raw";
 import fixtureRaw from "../../testdata/arcade/corpus-fixture-v1.json?raw";
@@ -125,22 +125,37 @@ class SnakeServer {
   currentCalls = 0;
   failNext = false;
   block = false;
+  lastResponse: Promise<SnakeSnapshot> | undefined;
   constructor(private identity: Awaited<ReturnType<typeof snakeIdentity>>) {}
   async init(): Promise<this> { this.snapshot = await createSnake(this.identity); return this; }
   parsed(): SnakeSnapshot { return decodeSnakeSnapshot(this.snapshot); }
-  submit = async (command: SnakeCommand): Promise<SnakeSnapshot> => {
+  submit = (command: SnakeCommand): Promise<SnakeSnapshot> => {
+    this.lastResponse = this.apply(command);
+    return this.lastResponse;
+  };
+  private async apply(command: SnakeCommand): Promise<SnakeSnapshot> {
     this.submitted.push(command);
     if (this.block) return new Promise(() => {});
     if (this.failNext) { this.failNext = false; throw new Error("rejected"); }
     const output = await applySnake({ ...this.identity, revision: this.revision, snapshot: this.snapshot, command: JSON.stringify(command) });
     this.snapshot = output.snapshot; this.revision++;
     return this.parsed();
-  };
+  }
   current = async (): Promise<SnakeSnapshot> => { this.currentCalls++; return this.parsed(); };
 }
 
 function mountSnake(target: HTMLElement, server: SnakeServer, content: ReturnType<typeof parseArcadeCatalog>["snake"], extra: Record<string, unknown> = {}) {
   return mount(SnakeBoard, { target, props: { initial: server.parsed(), content, era: "era_1995", submit: server.submit, current: server.current, tickMS: 20, ...extra } });
+}
+
+function snakeHead(target: HTMLElement): number {
+  return [...target.querySelectorAll(".cell")].findIndex((cell) => cell.getAttribute("data-state") === "head");
+}
+
+async function deliverSnakeTimers(ms: number): Promise<void> {
+  await vi.advanceTimersByTimeAsync(ms);
+  await tick();
+  flushSync();
 }
 
 it.skipIf(!browser)("snake: D-pad steering flushes one exact advance at the terminal tick, validated by the engine (AR6.3)", async () => {
@@ -166,24 +181,55 @@ it.skipIf(!browser)("snake: batches every flushEvery ticks, auto-pauses on blur,
   const content = catalog.snake;
   const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
   const target = host();
+  vi.useFakeTimers({ toFake: ["Date", "setTimeout", "clearTimeout"] });
   const app = mountSnake(target, server, content, { flushEvery: 4, tickMS: 40 });
   try {
-    await settle();
+    await tick(); flushSync();
     button(target, "Play").click();
-    await settle(190);
-    expect(server.submitted[0]).toEqual({ kind: "advance", through_tick: 4, turns: [] });
+    const start = Date.now();
+    const initialHead = snakeHead(target);
+    // Elapsed wall time cannot certify callback delivery under CI load. Moving
+    // the wall clock alone leaves this real child and its real engine at tick 0.
+    vi.setSystemTime(start + 190);
+    await tick(); flushSync();
+    expect(Date.now() - start).toBe(190);
+    expect(server.submitted).toEqual([]);
+    expect(snakeHead(target)).toBe(initialHead);
+    for (let count = 1; count <= 3; count += 1) {
+      await deliverSnakeTimers(39);
+      expect(snakeHead(target)).toBe(initialHead + count - 1);
+      await deliverSnakeTimers(1);
+      expect(snakeHead(target)).toBe(initialHead + count);
+      expect(server.submitted).toEqual([]);
+    }
+    await deliverSnakeTimers(39);
+    expect(server.submitted).toEqual([]);
+    await deliverSnakeTimers(1);
+    expect(server.submitted).toEqual([{ kind: "advance", through_tick: 4, turns: [] }]);
+    await server.lastResponse;
+    await tick(); flushSync();
+    expect(server.parsed().tick).toBe(4);
+    expect(snakeHead(target)).toBe(server.parsed().body[0]);
     window.dispatchEvent(new Event("blur"));
-    await settle();
+    await tick(); flushSync();
     expect(target.textContent).toContain("Paused");
-    const beforePause = server.submitted.length;
-    await settle(200);
-    expect(server.submitted.length).toBe(beforePause);
+    await deliverSnakeTimers(200);
+    expect(server.submitted).toHaveLength(1);
+    expect(snakeHead(target)).toBe(initialHead + 4);
     server.failNext = true;
     button(target, "Resume").click();
-    await settle(180);
-    expect(server.currentCalls).toBeGreaterThan(0);
+    await deliverSnakeTimers(160);
+    await expect(server.lastResponse).rejects.toThrow("rejected");
+    await tick(); flushSync();
+    expect(server.submitted).toEqual([
+      { kind: "advance", through_tick: 4, turns: [] },
+      { kind: "advance", through_tick: 8, turns: [] },
+    ]);
+    expect(server.currentCalls).toBe(1);
+    expect(server.parsed().tick).toBe(4);
+    expect(snakeHead(target)).toBe(server.parsed().body[0]);
     expect(target.textContent).toContain("The game caught up with the server.");
-  } finally { unmount(app); target.remove(); }
+  } finally { await unmount(app); target.remove(); vi.useRealTimers(); }
 });
 
 it.skipIf(!browser)("snake: freezes at max_ticks_per_advance while a flush is unacknowledged", async () => {
@@ -191,16 +237,22 @@ it.skipIf(!browser)("snake: freezes at max_ticks_per_advance while a flush is un
   const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
   server.block = true;
   const target = host();
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
   const app = mountSnake(target, server, content, { flushEvery: 100 });
   try {
-    await settle();
+    await tick(); flushSync();
     button(target, "Play").click();
-    await settle(300);
-    const head = () => [...target.querySelectorAll(".cell")].findIndex((cell) => cell.getAttribute("data-state") === "head");
-    const first = head();
-    await settle(200);
-    expect(head()).toBe(first);
+    const initialHead = snakeHead(target);
+    await deliverSnakeTimers(80);
+    expect(snakeHead(target)).toBe(initialHead + 4);
+    expect(server.submitted).toEqual([]);
+    await deliverSnakeTimers(20);
+    const first = snakeHead(target);
+    expect(first).toBe(initialHead + 5);
+    await deliverSnakeTimers(200);
+    expect(snakeHead(target)).toBe(first);
+    expect(server.parsed().tick).toBe(0);
     // Only the one frozen flush is outstanding: at most one command in flight.
     expect(server.submitted).toEqual([{ kind: "advance", through_tick: 5, turns: [] }]);
-  } finally { unmount(app); target.remove(); }
+  } finally { await unmount(app); target.remove(); vi.useRealTimers(); }
 });

@@ -13,7 +13,8 @@ AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay pro
 (RP-145–RP-188 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
-and whole client CI remains red on kernel history, with a retained browser reliability finding).
+and whole client CI remains red on kernel history; browser corrections await cross-party
+review and hosted reliability is not established).
 Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.
@@ -82,8 +83,14 @@ batching assertion (RP-188). The retained increasing-clock case reproduced Typer
 three engines; a bounded non-reactive sampling correction passes 24/24 child cases and a
 reinstated-feedback mutation fails all three. The subsequent full cold `make test-browser-ci`
 passes 21,102 tests plus its separate performance case. The prior red result is preserved:
-Snake passed unchanged, so RP-188 remains open for diagnosis rather than being hidden by a
-green rerun. RP-185's stronger actual-preference
+Snake passed unchanged in that intermediate run. RP-188's subsequent test-only correction
+distinguishes elapsed wall time from delivered callbacks and checks exact batching, blur pause,
+server resync and the lead limit on the real child/TS engine. Four independent production
+mutations fail all three browsers and are restored; the native-timer terminal smoke remains.
+The corrected cold full browser target passes 21,102 tests plus performance. Claude review
+is still required, and neither the sole cause of the earlier failure nor hosted stability is
+claimed. The next bounded review is remaining Arcade A6 native keyboard acceptance.
+RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates
 and the full real-server composed target pass, but do not substitute for complete green CI.

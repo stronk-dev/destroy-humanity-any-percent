@@ -44,8 +44,9 @@ migration take the next free numbers at landing.
   AC15 review also found RP-185's prop-only media evidence and RP-186's actual CSS specificity
   defect. The failing-first three-engine preference case and bounded CSS correction pass all
   shelf cases and both real-server journeys, with separate firing motion/caption probes.
-  Claude must designated-review this Codex correction; current full browser CI is red on
-  RP-187/RP-188 in Typer/Snake, not a whole-C6 or release-green claim.
+  Claude must designated-review this Codex correction. The first full browser run was red on
+  RP-187/RP-188; later Typer and Arcade corrections pass the cold full browser target. The
+  historical kernel-history gate still blocks complete CI; this is not C6 or release acceptance.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
   RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's

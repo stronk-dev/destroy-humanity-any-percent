@@ -1301,3 +1301,19 @@ This is not a retry-only fix or complete CI green. The first red run remains on 
 Snake passed unchanged, so RP-188's fixed-delay/callback assumption is the next accepted-lane
 diagnosis. RP-131's historical kernel-history failure, cross-party correction reviews, public
 wire/content/AT, rights and deployment/release obligations remain open. No push or archive.
+
+## 2026-10-05 — Arcade fixed-delay oracle corrected without changing gameplay
+
+RP-188's real-child/TS-engine population demonstrates that 190 ms of wall-clock movement alone
+delivers no ticks. Controlled callbacks certify the exact fourth-tick batch, blur stopping both
+movement and dispatch, rejected tick-8 recovery to server tick 4, and the unacknowledged lead
+limit. The native-timer D-pad/terminal path remains. Batch/blur/resync/lead mutations independently
+fail all three engines; probes are restored with no production diff. No higher sleep, retry,
+weaker command, content/copy/kernel or CI change.
+
+Root type/unit/build/boundaries pass (6,953 unit tests); full cold Linux browser CI passes 252
+populations / 21,102 tests with three intentional performance skips, then its separate performance
+case. The prior red run stays on record. This establishes an invalid timing oracle and a test-only
+correction, not a sole-cause or hosted reliability verdict. Claude review is still required.
+Next: bounded review of Arcade A6's native keyboard completion/quit evidence. RP-131's draft-only
+kernel-history repair, broader review/ruling/content/rights/clean-host release gates remain open.

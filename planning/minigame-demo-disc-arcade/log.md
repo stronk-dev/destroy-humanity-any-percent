@@ -200,3 +200,48 @@ an invalid timing oracle and a test-only correction; it cannot establish that th
 sole cause of the earlier hosted/local failure or certify CI reliability from selected reruns.
 Finish with type/unit/build/boundaries and the full cold browser target, including performance.
 Hand off the exact corrective range for Claude review; no archival or full-RFC promotion.
+
+## 2026-10-05 — RP-188 instrument diagnosis and test-only correction (Codex)
+
+**Review by:** Codex. **Recorded by:** Codex. **Original bounded range:** Claude
+`fca062a1^..fca062a1`, A6 scheduling evidence only. **Verdict: CHANGES REQUIRED** on the
+fixed wall-delay instrument, not a demonstrated runtime batching defect or full A6 verdict.
+
+The retained three-engine population moves the wall clock 190 ms without delivering callbacks:
+no advance is submitted and the DOM head stays at genesis. It then delivers each scheduled
+40 ms tick as 39 + 1 ms: the head advances once per callback, nothing flushes before tick 4,
+and the complete command is exactly `{kind:"advance", through_tick:4, turns:[]}` at tick 4.
+The real engine acknowledges tick 4. Blur then prevents both movement and submission over
+further delivered time. A rejected tick-8 flush fetches current exactly once, restoring the DOM
+head and server tick 4 with the resync notice. The separate unacknowledged population observes
+ticks 0→4→5 and the exact singleton tick-5 command, then a frozen head despite further callbacks.
+Only test timeout/Date delivery is controlled; TS engine/hash work and mounted DOM are real.
+Each test unmounts before restoring timers. The D-pad/terminal smoke retains native timers.
+
+**Executed discrimination (each independent; restored):**
+
+- S1: remove only the nonterminal batch trigger → all three engines fail `[]` vs exact tick-4
+  advance (3 failed / 9 filtered out; exit 1).
+- S2: remove only the window-blur listener → all three fail the paused-state assertion
+  (3 failed / 9 filtered out; exit 1).
+- S3: remove only the local-lead freeze → all three fail head 219 vs frozen 215
+  (3 failed / 9 filtered out; exit 1).
+- S4: remove only rejected-flush resync → all three fail current calls 0 vs 1
+  (3 failed / 9 filtered out; exit 1).
+
+The initial corrected Snake population passes 9/9 (3 unrelated Mine Grid cases filtered out).
+`git diff --exit-code -- client/src/game-ui/minigame/SnakeBoard.svelte` passes after probes:
+zero residual production change. The fixed-delay oracle is invalid under delayed callback
+delivery; this does not prove the sole cause of the original WebKit failure or certify hosted
+reliability. Broad verification is recorded below when it completes. No increased delay,
+retry, runtime fix, weakened command, content, copy, kernel, CI topology or archival change.
+
+**Restored broad verification:** root `make typecheck test-client build-client
+verify-client-boundary verify-cosmetic-boundary verify-no-payment` exits 0: zero Svelte errors/
+warnings; 6,953 unit tests passed / 86 browser-only skipped; production build and all three
+boundaries green. Cold `make test-browser-ci` exits 0: 252 file populations, 21,102 tests passed /
+3 intentional performance skips in 33.22 s; then the separate Chromium performance population
+passes its one case (20 filtered out). All 12 Arcade cases pass in that full population. The
+original red run is not deleted, and complete client CI is still blocked by RP-131's pushed
+kernel history, whose repair RFC is draft. This test-only correction needs Claude's designated
+review; it does not approve the rest of A6 or the Arcade RFC.

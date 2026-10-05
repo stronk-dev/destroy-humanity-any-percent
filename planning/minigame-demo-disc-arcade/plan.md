@@ -18,6 +18,11 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
 - [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
   with the AR6.2/AR6.3/AR6.4 contract, test-only mounted (no pinned tenant row yet), axe in three
   browsers.
+  RP-188's Codex test-only correction removes fixed-delay assumptions from batching/blur/resync
+  and lead-limit witnesses. The real child and TS engine remain in the population; wall-only
+  movement and each delivered callback are observed explicitly. Batch, blur, recovery and freeze
+  mutations independently fail all three engines. Claude must review the corrective range;
+  this checkbox records implementation presence, not A6 or full-RFC acceptance.
 - [x] A7 — docs (`docs/minigame-demo-disc-arcade.md`, platform pointers).
 
 **Blocked (owner ruling pending, not built):** AR-P4 public API arms and AR-P5 tenant-registry

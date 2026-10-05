@@ -95,3 +95,10 @@ on `P`/`Esc`, starts paused, steers by arrows, WASD or a D-pad, and has no decor
 Both components pass axe in three browsers. They are not in the tenant registry: no pinned
 `minigame_api` artifact carries the arcade tenants, and the public wire is blocked (see the top of
 this page).
+
+The Snake batching/blur/resync and lead-limit browser witnesses control timeout delivery, not
+the game or engine. Wall-clock movement alone must leave the board unchanged; the exact batch
+is required on callback four, blur must stop further movement/submission, rejection must
+restore the server head/tick, and an unacknowledged command must freeze at the advance limit.
+The D-pad/terminal witness retains real browser timers. This replaces fixed wall-delay guesses
+in the two scheduling witnesses (RP-188), without changing the runtime scheduler or pace.

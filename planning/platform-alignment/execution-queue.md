@@ -1,5 +1,22 @@
 # Executable queue
 
+## Current Arcade callback-evidence correction — 2026-10-05
+
+RP-188's fixed wall-delay oracle is now corrected in tests only. Real mounted Snake/TS engine
+observations distinguish wall-clock movement from delivered callbacks and require the exact
+tick-4 batch, blur pause, rejected tick-8 resync and max-lead freeze. Four independently severed
+production behaviors fail all three browsers; all probes are restored with zero residual
+production diff. Cold full browser CI passes 21,102 tests plus its separate performance case;
+unit/type/build/boundaries pass. This is **READY FOR CLAUDE DESIGNATED REVIEW**, not an
+inferred runtime fix or hosted reliability verdict.
+
+**NEXT SAFE ACTION:** continue the bounded designated review of Claude's remaining Arcade A6
+acceptance evidence against AR6.2/AR6.3/AC12, beginning with native keyboard game completion/
+quit. Public API/tenant-registration authority, owner copy and production mint are still separate
+blockers. Do not implement those blocked contracts or promote A6 from the scheduling correction.
+RP-131's historical kernel-history failure still blocks complete green CI; its repair RFC is
+draft. The prior full-browser red run remains below as dated evidence, not the current result.
+
 ## Current Typer display-loop correction and remaining CI reliability work — 2026-10-05
 
 RP-187 is reproduced deterministically on unchanged production in all three engines. The
@@ -9,9 +26,9 @@ target now passes 21,102 tests plus the separate performance case. Exact Codex r
 `a5c3d389^..58bc34ad` is **READY FOR CLAUDE DESIGNATED REVIEW**; this is not public Typer
 playability or full B6 approval.
 
-**NEXT SAFE ACTION:** diagnose RP-188 in accepted Arcade AR6.3. Snake's unchanged fixed-delay
-case passed this follow-up but its earlier cold WebKit failure remains unexplained. Prove
-the actual callback/engine contract without raising sleeps/timeouts or adding retries.
+**Next at this dated checkpoint:** diagnose RP-188 in accepted Arcade AR6.3. The test-only
+callback-evidence correction and current next action are recorded above; the original failure
+and the unchanged intermediate passing run remain in the per-RFC log.
 Whole client CI also remains blocked by RP-131's historical kernel-version failure; its repair
 RFC is still draft. No green hosted/full-CI, content, archival or release promotion follows.
 
