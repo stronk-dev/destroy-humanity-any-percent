@@ -161,6 +161,36 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 		!strings.Contains(payload, `"order_number": 1`) {
 		t.Fatalf("cosmetic_acquired payload=%s err=%v", payload, err)
 	}
+	var eventID string
+	if err := db.QueryRowContext(ctx, `SELECT event_id FROM events WHERE stream_id=$1 AND kind='cosmetic_acquired.v1'`, founderRevision.StreamID).Scan(&eventID); err != nil {
+		t.Fatal(err)
+	}
+	// AC9 requires the database, not only the Go event decoder, to reject an
+	// extra cosmetic payload key. Roll back every probe so the real history
+	// remains byte-identical for the verification below.
+	for _, row := range []struct{ name, kind, valid, extra string }{
+		{"acquired", "cosmetic_acquired.v1", `{"cosmetic_id":"horse_armor","order_number":1}`, `{"cosmetic_id":"horse_armor","order_number":1,"price":0}`},
+		{"equipped", "cosmetic_equipped.v1", `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","replaced_cosmetic_id":null}`, `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","replaced_cosmetic_id":null,"price":0}`},
+		{"unequipped", "cosmetic_unequipped.v1", `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"}`, `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","amount":0}`},
+	} {
+		t.Run("database-payload-keys-"+row.name, func(t *testing.T) {
+			tx, err := db.BeginTx(ctx, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer tx.Rollback()
+			result, err := tx.ExecContext(ctx, `UPDATE events SET kind=$1,payload=$2::jsonb WHERE event_id=$3`, row.kind, row.valid, eventID)
+			if err != nil {
+				t.Fatalf("valid %s payload rejected by database: %v", row.name, err)
+			}
+			if affected, err := result.RowsAffected(); err != nil || affected != 1 {
+				t.Fatalf("valid %s payload updated %d events: %v", row.name, affected, err)
+			}
+			if _, err := tx.ExecContext(ctx, `UPDATE events SET kind=$1,payload=$2::jsonb WHERE event_id=$3`, row.kind, row.extra, eventID); err == nil {
+				t.Fatalf("database accepted an extra field on %s payload", row.name)
+			}
+		})
+	}
 	// AC9 failing case: the events constraint rejects an unregistered kind.
 	if _, err := db.ExecContext(ctx, `UPDATE events SET kind='cosmetic_purchased.v1' WHERE stream_id=$1 AND kind='cosmetic_acquired.v1'`, founderRevision.StreamID); err == nil {
 		t.Fatal("events constraint accepted cosmetic_purchased.v1")

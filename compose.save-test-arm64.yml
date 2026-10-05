@@ -1,0 +1,6 @@
+# Local ARM64 override for the disposable save/production Postgres witness.
+# Hosted x86 CI continues to use compose.save-test.yml alone.
+services:
+  postgres:
+    image: arm64v8/postgres:16-alpine
+    platform: linux/arm64

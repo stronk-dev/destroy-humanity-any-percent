@@ -864,3 +864,23 @@ for only those three kinds; it must leave other event kinds unchanged and prove 
 all three extras, and a temporary severing failure. Also run migration validation, focused
 Go/client replay, and the relevant existing integration population. Do not infer full C4,
 Cosmetics or release approval from this database-only boundary.
+
+## 2026-10-05 — Codex targeted C4/AC9 verdict: CHANGES REQUIRED
+
+**Review by:** Codex (cross-party designated reviewer of Claude's C4 database claim).
+**Recorded by:** Codex. **Reviewed range:** `500d944c^..500d944c`, limited to AC9's
+Postgres extra-field rejection. **Decision:** CHANGES REQUIRED. A retained test inside
+`TestCosmeticIntegrationPersistsReplayableFounderLog` uses a transaction that is rolled back
+for each cosmetic event kind. The valid acquired, equipped and unequipped payload updates all
+succeeded; each otherwise identical `price`/`amount` extra-field update also succeeded, so
+three named subtests failed cold on real Postgres. Go's `validateEventPayload` still rejects
+the same extras before insert; it cannot satisfy AC9's explicit *database* assertion.
+
+The first Compose attempt did not run the test: cached `postgres:16-alpine` was amd64 on this
+ARM64 host and exited 255 with `exec format error`. A test-only
+`compose.save-test-arm64.yml` override selects the already-local ARM64 Postgres 16 image,
+leaving the Go test image and hosted x86 Compose default unchanged. The same declared
+`docker compose ... run --rm test go test ... -count=1` population then reached Postgres and
+failed at exactly the three extra-field assertions. RP-177 records the defect. Corrective
+scope is a new post-00083 migration with exact cosmetic payload key sets and positive/negative
+database evidence; applied `00080` is immutable. This is not full C4 approval.
