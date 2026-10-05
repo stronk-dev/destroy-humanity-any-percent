@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, product/evidence source `547ed7f0` (RP-145–RP-173
+**Current checkpoint:** 2026-10-05, product/evidence source `76a9fe04` (RP-145–RP-175
 corrections/witnesses await cross-party review where named; the broader v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
@@ -36,6 +36,9 @@ Cosmetic C5 now has a Go-authored two-wearer snapshot fixture and a fail-closed 
 for sorted `worn_by` and lock tiers 0–8 after Codex's CHANGES REQUIRED review of Claude's C5.
 The Codex correction `ebb88bab^..547ed7f0` awaits Claude's designated review; RP-174's RFC
 §7.1 body contradiction remains for the ruling author, so Cosmetics is not closed.
+Cosmetic C1's raw JSON integer-token parity is locally corrected with three shared negatives
+and kernel 0.3.142; the Codex correction `7644808d^..76a9fe04` also awaits Claude's designated
+review. The full kernel-history CI gate still fails at historical pushed `50a3a514` (RP-131).
 Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
 population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
 corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through

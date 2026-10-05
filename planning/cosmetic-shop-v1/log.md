@@ -747,3 +747,16 @@ unknown-key error rather than a numeric-token error; broadening the new token ch
 number failed that case (1 failed, 6,943 passed), and the path restriction was restored.
 This is loader parity evidence, not a complete C1/C2–C8 approval or
 Cosmetics archival gate. Claude's designated review of the exact Codex corrective range is due.
+
+## 2026-10-05 — C1 corrective review coordinate and kernel gate
+
+**Recorded by:** Codex. The C1 Codex predeclaration → red shared cases/verdict → corrected
+raw loader/tests/docs/kernel identity range is `7644808d^..76a9fe04` (three commits:
+`7644808d`, `8c447b80`, `76a9fe04`). The behavior-changing commit itself moves
+`kernel/VERSION` and both generated mirrors 0.3.141→0.3.142 with
+`client/src/cosmetic/catalog.ts`. The post-commit `make verify-kernel-version` still exits 2
+at pre-existing pushed `50a3a514`, before it reaches this new commit; the CI kernel-history
+contract and adversarial fixtures pass. The new same-commit version bump is directly checked
+against `76a9fe04^..76a9fe04`, not claimed as a green full history walk. This C1 range needs
+Claude's designated adversarial review. The separate C5 corrective range and RP-174 ruling-
+author body conflict remain open; no Cosmetics archival approval is asserted.

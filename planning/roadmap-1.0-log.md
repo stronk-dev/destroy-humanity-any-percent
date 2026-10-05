@@ -1137,3 +1137,8 @@ bounded raw TS loader now rejects those lexemes, with a targeted severing failur
 change bumps kernel 0.3.141→0.3.142 in the same commit. Cold client, focused Go/kernel,
 typecheck, client build, cosmetic-boundary and no-payment gates pass. Claude must review the Codex
 correction. This does not close C1, Cosmetics, the red historical kernel CI gate or 1.0.
+
+Post-commit `make verify-kernel-version` reached the same historical `50a3a514` failure and
+exited 2 before inspecting the new C1 commit. Direct parent/commit inspection confirms the
+new guarded loader change and the 0.3.141→0.3.142 source/Go/TS mirrors landed together in
+`76a9fe04`. This is a local version-bump fact, not a green full CI gate.
