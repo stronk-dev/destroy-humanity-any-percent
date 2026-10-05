@@ -1,5 +1,6 @@
 import { substream } from "../combat/rng";
 import { arcadePreset, type ArcadeCatalog } from "./catalog";
+import { parseSnapshotJSON } from "./snapshot-json";
 import { ArcadeRejection, encodeCanonical, keysOf, parseCommandObject, requireLiteralScaling, resolveArcadeCatalog, safeInteger,
   type ArcadeApplyInput, type ArcadeCreateInput, type ArcadeResult } from "./common";
 
@@ -155,7 +156,7 @@ export function decodeMineGridCommand(source: string): MineGridCommand {
 }
 
 export function decodeMineGridSnapshot(source: string): Mutable {
-  const value = JSON.parse(source) as Mutable;
+  const value = parseSnapshotJSON(source) as Mutable;
   const keys = ["arcade_content_hash", "arcade_schema_version", "exploded_cell", "first_cell", "flags", "height", "mine_cells", "mines", "phase", "preset_id",
     "revealed", "revision", "width"];
   if (value === null || typeof value !== "object" || Object.keys(value).sort().join("\0") !== keys.join("\0") || value.arcade_schema_version !== 1 ||

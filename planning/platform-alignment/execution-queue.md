@@ -1,5 +1,22 @@
 # Executable queue
 
+## Current Arcade raw snapshot grammar correction — 2026-10-05
+
+RP-193's raw-input counterexamples reproduce bidirectional decoder drift. Go and TS now reject
+all 25 malformed cases and retain six legal spellings/boundary controls across four actual
+states. Duplicate/token/null/row/safe-integer/depth severings independently fail; probes restored.
+The TS scanner's initial stack-exhaustion failure is disclosed and fixed using the declared
+root/list/row depth, not an arbitrary budget. Watched decoder changes use kernel 0.3.145.
+Cold Go, 7,050 client tests, type/build/boundaries/vet/vectors/corpus checks pass; full cold
+Linux browser CI passes 21,399 tests plus performance. **READY FOR CLAUDE DESIGNATED REVIEW**,
+not full A2/AR7, public wire/storage or archival.
+
+**NEXT SAFE ACTION:** predeclare RP-194's AR7 per-command snapshot/result evidence audit.
+The current corpus holds only per-step command/outcome and final scenario bytes. Demonstrate
+that an intermediate-only defect is caught or survives BEFORE replacing the instrument.
+Any retained supplement is test-side and separate from this watched raw-decoder range.
+Owner wire/copy/mint, RP-131's draft-only history repair and broader release gates remain.
+
 ## Current Arcade snapshot value-grammar correction — 2026-10-05
 
 RP-192 reproduces malformed TS state acceptance: 18 decoder cases and three real quit outputs
@@ -10,7 +27,7 @@ client tests); full cold Linux browser CI passes 21,225 tests plus separate perf
 **READY FOR CLAUDE DESIGNATED REVIEW**, not wider A2/AR7 or complete CI acceptance.
 Exact Codex corrective range: `8c01a8f5^..9288d1cc`.
 
-**NEXT SAFE ACTION:** predeclare and execute raw JSON snapshot grammar parity diagnostics
+**Next at this dated checkpoint:** predeclare and execute raw JSON snapshot grammar parity diagnostics
 (duplicate keys, integer tokens, nullable/missing nested values) in accepted AR3/AR7. Do not
 infer parity from JSON.parse'd value tests or change mechanics/public wire/mint under that
 authority. Record actual counterexamples and Go/TS boundary differences before retaining a

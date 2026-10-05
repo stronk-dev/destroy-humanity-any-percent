@@ -624,3 +624,83 @@ verification. No self-approval, archival, history repair, push or public integra
 **Limits:** this is Mine Grid stored snapshot grammar, not Snake, command/catalog grammar,
 every semantically impossible state, public API/storage acceptance, migrations or clean-host
 release evidence. Those remain separately scoped obligations.
+
+**Executed RP-193 before production edits:** the shared 25-negative/six-positive raw table
+matches each actual source needle exactly once. TS admits 11 cases at BOTH decoder and direct
+Apply: seven decimal/exponent tokens and four duplicate/escaped-duplicate keys. Initial full
+client run: 22 failed / 7,027 passed / 88 browser-only skips, Make 2. Go's cold package run
+fails 12 raw subcases: null numeric fields/elements/row, missing row fields and unsafe revision.
+Seven yield actual quit outputs after implicit zero normalization. Null terminal mine passes
+decode but reaches illegal_phase (not a new result); the remaining malformed Go apply inputs
+already refuse through later guards. All six legal spelling/boundary controls pass unchanged.
+These direct-engine counterexamples establish grammar drift, not public API/storage admission.
+
+**Parser instrument refinement before depth probing:** Mine Grid's declared compound shape is
+at most root object → revealed list → revealed row (three compound levels). A raw scanner must
+not recurse arbitrarily into malformed input that the old value decoder would reject. Add an
+actual deeply nested-array negative and require SyntaxError rather than RangeError/stack
+exhaustion. A three-compound-level bound derives from AR3.4 grammar, not a convenience budget;
+legitimate fields cannot be nested deeper. Demonstrate the unbounded draft fails first, then
+sever the derived bound separately and restore before broad verification.
+
+## 2026-10-05 — RP-193 raw snapshot grammar corrected in both engines (Codex)
+
+**Review by:** Codex. **Recorded by:** Codex. **Verdict: CHANGES REQUIRED**, bounded original
+Claude A2 `508fe19a^..508fe19a` on executed raw-grammar counterexamples. Go's silent
+null/missing→zero normalization and TS's JSON.parse-erased duplicate/token distinctions are
+now refused before transition. Go checks declared raw number/list/row fields and shared safe
+integers. TS scans unique decoded keys and integer tokens before its existing value grammar.
+No rule, payout, content, owner copy, API/schema/CI byte or production epoch changes. Watched
+decoder changes advance shared kernel identity 0.3.144→0.3.145.
+
+Six valid spelling/boundary controls prove this is not reject-all or canonical-spelling-only
+validation: whitespace, escaped key, escaped phase string, negative-zero integer, flags at
+0/80, and reordered revealed-row fields still decode and execute correctly. Raw replacement
+assertions reject unmatched AND ambiguous needles. Clean direct execution remains exact.
+
+**Executed independent severings, each Make 2:**
+
+- TS duplicate detection only → four duplicated/escaped-duplicate cases fail at decoder AND
+  direct apply: 8 failed / 7,042 passed / 88 browser-only skips.
+- TS decimal/exponent-token refusal only → seven cases fail at decoder AND direct apply:
+  14 failed / 7,036 passed / 88 browser-only skips.
+- Go nonnullable-number refusal only → eight named raw subcases fail; explicit missing-row
+  shape checks still hold. Six direct quit outputs again normalize null to zero; terminal
+  mine reaches phase refusal, not a new result. Cold package run.
+- Go revealed-row raw-validation loop only → five nested null/missing subcases fail at decode,
+  two again yielding quit outputs. Other top-level/list guards remain. Cold package run.
+- Go shared safe-integer bound only → unsafe revision decoder case fails; identity checking
+  still prevents its direct apply. Cold package run.
+- TS shape-depth accounting only → malformed 10,000-array nesting produces RangeError instead
+  of SyntaxError: 1 failed / 7,049 passed. Restore. The initial unbounded draft failed the
+  same retained test BEFORE the shape-derived bound; no arbitrary depth budget was adopted.
+
+All probes restored. Two failed local patch-context attempts applied no changes; the actual
+depth severing changed recursive depth accounting, NOT the guard comparison. Restored cold Go
+`./decimal ./arcade ./kernel ./minigame ./replaycatalog` passes with `-count=1`.
+Root type/client/build/boundaries/no-payment/vet/vectors/corpus-check exits 0: 7,050 client
+tests / 88 browser-only skips, zero Svelte errors/warnings; numeric vectors and existing
+Arcade corpus remain byte-unchanged. Full browser and kernel-history outcomes are recorded
+when terminal, not substituted by a selected rerun. No full A2/AR7 or archival acceptance.
+
+**Full cold browser outcome:** root `make test-browser-ci` exits 0: 255 file populations /
+21,399 passed / 3 intentional performance skips in 57.24 s, followed by separate Chromium
+performance (1 passed / 20 filtered out). These include existing numeric/unit populations
+executed in three browsers, not 21,399 distinct player journeys. No selected retry was used.
+**READY FOR CLAUDE DESIGNATED REVIEW**; complete-history outcome remains separately recorded.
+
+**Next separately queued RP-194:** AR7 requires every snapshot/result byte comparison; corpus
+steps currently contain only command/outcome (`content_gate_test.go`), while the TS primary
+replay compares only each final scenario snapshot/result. Intermediate result values can be
+overwritten before that assertion. This is a read-derived evidence gap, not a demonstrated
+runtime fault; next, predeclare and execute an intermediate-only severing control, then a
+test-side Go per-command witness if the gap reproduces. No RP-194 correction is in this
+raw-decoder range. Existing real Mine Grid hiding and terminal/corpus evidence is preserved.
+
+**Fresh complete-history outcome:** root `make verify-kernel-version` exits 2 at unchanged
+pushed RP-131 commit `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`, parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, on its six minigame-prefix paths. CI checkout
+contract and its negative fixtures pass first. The walk stops before this new range; version
+0.3.145/local parity do not make history green. No exception, rewrite or bypass was added;
+the history repair RFC remains draft. This does not prevent the accepted decoder correction
+from being handed off honestly, but blocks any complete-green-CI or release claim.

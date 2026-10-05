@@ -1,6 +1,7 @@
 package arcade
 
 import (
+	"bytes"
 	"encoding/json"
 	"sort"
 	"strconv"
@@ -400,7 +401,7 @@ const maxSafeInteger = 9_007_199_254_740_991
 
 func decodeMineGridSnapshot(data []byte) (MineGridSnapshot, error) {
 	if !uniqueJSONKeys(data) || !hasExactJSONKeys(data, "arcade_content_hash", "arcade_schema_version", "phase", "preset_id", "width", "height",
-		"mines", "first_cell", "revealed", "flags", "exploded_cell", "mine_cells", "revision") {
+		"mines", "first_cell", "revealed", "flags", "exploded_cell", "mine_cells", "revision") || !validMineGridRawNumbers(data) {
 		return MineGridSnapshot{}, minigame.ErrInvalidTenant
 	}
 	var value MineGridSnapshot
@@ -436,6 +437,50 @@ func decodeMineGridSnapshot(data []byte) (MineGridSnapshot, error) {
 		}
 	}
 	return value, nil
+}
+
+// json.Unmarshal silently maps null/missing integer fields to zero. Require the
+// declared raw numeric/list/row grammar before decoding into Go's value types.
+func validMineGridRawNumbers(data []byte) bool {
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil {
+		return false
+	}
+	integer := func(raw json.RawMessage) bool {
+		var value int64
+		return len(raw) != 0 && !bytes.Equal(bytes.TrimSpace(raw), []byte("null")) &&
+			json.Unmarshal(raw, &value) == nil && value >= -maxSafeInteger && value <= maxSafeInteger
+	}
+	for _, key := range []string{"arcade_schema_version", "width", "height", "mines", "first_cell", "exploded_cell", "revision"} {
+		if !integer(fields[key]) {
+			return false
+		}
+	}
+	for _, key := range []string{"flags", "mine_cells"} {
+		var cells []json.RawMessage
+		if json.Unmarshal(fields[key], &cells) != nil || cells == nil {
+			return false
+		}
+		for _, cell := range cells {
+			if !integer(cell) {
+				return false
+			}
+		}
+	}
+	var revealed []json.RawMessage
+	if json.Unmarshal(fields["revealed"], &revealed) != nil || revealed == nil {
+		return false
+	}
+	for _, raw := range revealed {
+		if !hasExactJSONKeys(raw, "adjacent", "cell") {
+			return false
+		}
+		var row map[string]json.RawMessage
+		if json.Unmarshal(raw, &row) != nil || !integer(row["adjacent"]) || !integer(row["cell"]) {
+			return false
+		}
+	}
+	return true
 }
 
 // validateMineGridAgainstCatalog re-derives the hidden mines and proves the

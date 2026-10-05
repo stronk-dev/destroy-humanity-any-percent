@@ -17,6 +17,10 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   RP-192's separate watched TS decoder correction rejects malformed numeric/list/row values,
   backed by 19 shared Go/TS negatives and clean controls. Kernel 0.3.144 records the actual
   acceptance-set change. It awaits Claude review and does not establish full raw JSON parity.
+  RP-193 separately corrects raw duplicate/integer-token admission in TS and null/missing/
+  unsafe numeric admission in Go. Twenty-five shared negatives and six valid spellings/bounds
+  exercise four actual states; malformed nesting is refused at the declared shape depth.
+  Kernel 0.3.145 records the watched decoder changes. Claude review remains required.
 - [x] A3 — `snake` 1.0.0 pure engine (AR4) in Go and TS; corpus incl. mid-window terminal,
   `advance_past_terminal` without mutation, every rejection (AR7).
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),

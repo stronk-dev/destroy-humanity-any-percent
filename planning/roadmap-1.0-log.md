@@ -1384,3 +1384,18 @@ boundaries/vet and byte-identical numeric vectors pass. Full cold Linux browser 
 full A2/AR7 acceptance or complete green CI claim. Next: predeclared raw JSON and nested-null/
 missing-value snapshot parity diagnosis, separate from this value-grammar correction.
 Owner wire/copy/mint, history-guard authority and broader release obligations remain open.
+
+## 2026-10-05 — Raw Mine Grid snapshot grammar now agrees on executed malformed population
+
+RP-193 reproduces drift in BOTH runtimes: TS erases duplicate/integer-token distinctions; Go
+silently normalizes some null/missing values to zero. Decoder-only correction rejects all 25
+shared malformed inputs and retains six legal spellings/boundary controls over four actual
+engine stages. Six independent severings fire and are restored. The draft scanner's stack
+exhaustion is disclosed and fixed against the declared root/list/row shape. Kernel advances
+honestly to 0.3.145; no balance, content mint, copy, public wire, persisted schema or CI change.
+
+Cold Go, 7,050 client tests, type/build/boundaries/vet, byte-unchanged numeric vectors and
+Arcade corpus pass. Full cold Linux browser target passes 21,399 tests plus performance.
+Claude review is required; no full A2/AR7, public storage/wire or archival acceptance. Next
+is RP-194's separately predeclared intermediate snapshot/result parity instrument audit.
+Owner wire/copy/mint, historical guard authority and all wider 1.0 obligations remain.

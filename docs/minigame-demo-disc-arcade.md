@@ -54,8 +54,9 @@ independent checks reject an applied-only budget. Between
 them they cover every preset, first-reveal safety, a flood that stops at a flag, chord
 success/detonate/unsatisfied, a clear-board win, all four walls, self-collision, a legal tail
 chase, a `cleared` board, and every rejection code of both engines.
-`client/test/arcade-content-gate.test.ts` replays it byte for byte in TypeScript, and checks that
-every rejection leaves the snapshot unchanged.
+`client/test/arcade-content-gate.test.ts` replays commands in TypeScript, compares scenario-terminal
+snapshot/result bytes, and checks rejection codes and unchanged rejection state. It does not yet
+compare every per-command output against Go (RP-194); terminal equality alone is not that proof.
 The Mine Grid hidden-information witness also executes all eight Mine Grid scenarios and
 inspects raw output at genesis and after every attempted command (44 observations). Setup,
 unplaced/placed playing, and unplaced/placed terminal states must actually occur. Nonterminal
@@ -68,6 +69,15 @@ real unplaced, placed and terminal Mine Grid snapshots. Go and TS decoders and e
 refuse malformed numeric fields, cell lists and revealed rows; clean controls remain usable.
 The TS decoder validates integer values and exact revealed-row keys before transition. These
 cases are not proof of complete raw JSON token/duplicate-key or semantic-state parity.
+The separate raw-snapshot population in `testdata/arcade/snapshot-raw-negatives-v1.json`
+checks 25 malformed inputs and six legal spelling/boundary controls against actual genesis,
+unplaced, placed and terminal states. Both Mine Grid decoders reject duplicate (including
+escaped-equivalent) keys, decimal/exponent integer tokens, null numeric fields/elements and
+missing revealed-row fields. Numeric fields fit the shared safe-integer range. Valid whitespace,
+escapes, reordered fields, negative-zero integer tokens and coordinate boundaries still work.
+The TS scanner rejects compounds deeper than the declared root/list/row shape before recursing;
+the test demonstrates malformed nesting cannot cause stack exhaustion. These are decoder/direct
+engine proofs, not public-route/storage acceptance or proof of every semantic state.
 
 ## Platform chain
 

@@ -13,7 +13,7 @@ witness correction `fe49c408`,
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-192 corrections,
+(RP-145–RP-194 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -117,6 +117,15 @@ Go, 6,992 client tests, type/build/boundaries/vet, byte-identical vectors and fu
 CI (21,225 tests plus performance) pass. Two Go test-oracle error-class mistakes are disclosed
 in the per-RFC log; neither represented acceptance of the forged input. Claude review remains
 required. Full raw JSON/semantic snapshot parity and public Arcade integration are not proven.
+RP-193 now separately reproduces and corrects raw JSON admission drift: 25 shared malformed
+inputs and six valid spelling/boundary controls pass in both engines; TS duplicate/token and
+Go null/missing/unsafe-integer mistakes no longer reach transitions. A retained nesting
+negative catches stack exhaustion in the draft scanner, now bounded to the declared shape.
+Six independent severings fail and are restored. Kernel is 0.3.145; cold Go, 7,050 client
+tests, root checks, unchanged vectors/corpus and full cold browser CI (21,399 plus performance)
+pass. Claude review remains mandatory. RP-194 queues the read-derived AR7 per-command parity
+gap: terminal-only equality is not every intermediate snapshot/result comparison. Neither
+correction proves public storage/wire or every semantically valid state; release gates remain.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates
