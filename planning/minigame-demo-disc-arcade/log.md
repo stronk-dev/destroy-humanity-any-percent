@@ -1973,3 +1973,30 @@ including the added removed-prefix Founder negative, passes a fresh twenty cold 
 RP-131 remains red at its unchanged pushed hash. This is a handoff, not an approval/archive.
 Next accepted work is the original A6/A7 test-only child/copy/docs review, with public
 host/wire, D-020, owner copy and mint still blocked under their named gates.
+
+## 2026-10-05 — A6 delayed-acknowledgement review predeclaration
+
+Baseline `5b876886`, clean tree; original Claude A6/A7 range `fca062a1^..fca062a1`.
+Accepted AR6.3 explicitly requires one command in flight and an immediate terminal flush.
+Current Snake quit awaits flush(), but flush returns immediately when an advance is already
+outstanding. A local terminal step also returns from that guard; after the outstanding
+acknowledgement, nothing visibly drains that terminal suffix. These are candidate runtime
+defects, not yet executed findings. Existing RP-188/RP-189 callback/keyboard proofs are retained.
+
+Population: mounted actual SnakeBoard plus real shared TS engine, fake delivered presentation
+callbacks (never wall-time-as-progress), and a host that delays only the first acknowledgement.
+Case one reaches a genuine first nonterminal advance, issues Quit via its DOM button while
+that response is pending, and must never overlap requests; acknowledge and require actual
+terminal Quit with exact ordered commands. Case two reaches a real wall crash during that
+pending response; acknowledge and require the complete terminal advance and real server
+terminal state without another player action. Immediate-ack controls and existing freeze,
+rejection/resync, native-key quit and actual-engine controls must remain green.
+
+Run the unchanged component red-first. If confirmed, ledger each defect immediately and
+correct only owned request sequencing/terminal drain under AR6.3, not host/public API, timing,
+engine math, copy, surface registration, balance/mint or CI. No kernel bump for unguarded
+presentation code unless the actual correction crosses a watched semantic boundary.
+Include destroy/rejected-response controls and independently sever serialization and terminal
+draining. Native available browsers are partial evidence; final complete Linux target must
+execute all three engines. Update docs/tracking and require exact Claude corrective review;
+the original A6/A7 remains unapproved until the designated verdict covers its whole scope.
