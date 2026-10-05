@@ -1541,3 +1541,33 @@ production bytes after each, then run full browser CI, typecheck, client tests a
 No runtime fix, catalog/copy change, kernel bump, CI topology change or RFC-body reconciliation
 is authorized/planned. Claude must cross-party review the resulting Codex test supplement;
 this review does not approve the whole original C6 range or close G10/release acceptance.
+
+The old AC15 case survives the predeclared preference-rule severing in Chromium, Firefox and
+WebKit (3 passes, 9 other cases filtered out; exit 0). Its explicit `animate:false` arm is not
+evidence for the user's media preference. The CSS probe is restored byte-identically before
+adding the retained actual-preference test. No live defect is inferred from this survival.
+
+## 2026-10-05 — C6/AC15 failing-first actual preference verdict (RP-186)
+
+**Review by / recorded by:** Codex. **Reviewed original range:** Claude
+`1bba27ba^..1bba27ba`, bounded to AC15. **Verdict:** CHANGES REQUIRED.
+
+After exact restoration of the first temporary CSS probe, the retained actual-preference test
+fails on unchanged production in all three engines (3 failures, 9 unrelated cases filtered;
+exit 1). The preference itself matches `true`, but computed animation is
+`svelte-1o3jyqh-flick` rather than `none`. Typecheck passes with no errors/warnings. This is
+not a negative run: the baseline itself reveals a genuine component defect.
+
+The media rule's `.flick` selector cannot override the earlier more-specific
+`[data-reaction="annoyed"][data-animate="true"] .flick` selector. The pet host passes
+`animate:false` under reduce, explaining why RP-184's live workflow stayed static. That host
+defense does not waive the component's independent §7.4/AC15 requirement. Record RP-186
+separately from RP-185's evidence gap.
+
+Predeclare the bounded runtime correction: use the same selector specificity in the media
+rule, later in the stylesheet, so the actual preference wins without an `!important` override.
+Keep the ordinary animation and the explicit host-flag defense unchanged. No player prose,
+catalog, stats, kernel or workflow byte changes. Docs must describe both defenses. Then
+re-execute honest three-engine component cases, media-rule and caption probes (both must fail),
+restore exact source, and execute full browser CI/type/unit/boundary lanes. The Codex correction
+requires Claude's designated review and does not approve wider C6/Garage or release gates.

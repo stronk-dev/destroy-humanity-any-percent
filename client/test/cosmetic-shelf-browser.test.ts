@@ -142,23 +142,62 @@ it.skipIf(!browser)("shows the lock reason, the no-wearer line, and reflows at 3
   } finally { unmount(app); target.remove(); }
 });
 
-it.skipIf(!browser)("renders the overlay layer and annoyed pose with no text node, static under reduced motion (AC15)", async () => {
-  const target = host();
-  const animated = mount(CosmeticOverlay, { target, props: { renderKey: "horse_armor", reaction: "annoyed", animate: true } });
+it.skipIf(!browser)("renders the overlay layer and annoyed pose with no text node, static under actual reduced motion (AC15)", async () => {
+  const { commands } = await import("vitest/browser");
+  const motion = commands as typeof commands & {
+    setReducedMotionPreference(preference: "reduce" | "no-preference"): Promise<void>;
+  };
+  await motion.setReducedMotionPreference("no-preference");
   try {
-    await settle();
-    const overlay = target.querySelector<HTMLElement>("[data-render=horse_armor]")!;
-    expect(overlay.getAttribute("aria-hidden")).toBe("true");
-    expect(overlay.dataset.reaction).toBe("annoyed");
-    expect(overlay.textContent!.trim()).toBe("");
-    const walker = document.createTreeWalker(overlay, NodeFilter.SHOW_TEXT);
-    while (walker.nextNode()) expect(walker.currentNode.textContent!.trim(), "overlay text node").toBe("");
-    expect(getComputedStyle(overlay.querySelector(".ears-back")!).display).not.toBe("none");
-  } finally { unmount(animated); target.remove(); }
-  const still = host();
-  const staticOverlay = mount(CosmeticOverlay, { target: still, props: { renderKey: "horse_armor", reaction: "annoyed", animate: false } });
-  try {
-    await settle();
-    expect(getComputedStyle(still.querySelector(".flick")!).animationName).toBe("none");
-  } finally { unmount(staticOverlay); still.remove(); }
+    const target = host();
+    const sprite = document.createElement("div");
+    sprite.style.position = "relative";
+    sprite.style.inlineSize = "120px";
+    sprite.style.blockSize = "120px";
+    target.append(sprite);
+    const animated = mount(CosmeticOverlay, { target: sprite, props: { renderKey: "horse_armor", reaction: "annoyed", animate: true } });
+    try {
+      await settle();
+      const overlay = sprite.querySelector<HTMLElement>("[data-render=horse_armor]")!;
+      const flick = overlay.querySelector<HTMLElement>(".flick")!;
+      const assertPose = (label: string): void => {
+        expect(overlay.getAttribute("aria-hidden"), label).toBe("true");
+        expect(overlay.dataset.reaction, label).toBe("annoyed");
+        expect(overlay.textContent!.trim(), `${label} overlay caption`).toBe("");
+        const walker = document.createTreeWalker(overlay, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) expect(walker.currentNode.textContent!.trim(), `${label} overlay text node`).toBe("");
+        expect(overlay.getBoundingClientRect().width, label).toBeGreaterThan(0);
+        expect(overlay.getBoundingClientRect().height, label).toBeGreaterThan(0);
+        for (const part of [".chest", ".crest", ".ears-back", ".flick"]) {
+          expect(getComputedStyle(overlay.querySelector(part)!).display, `${label} ${part}`).not.toBe("none");
+        }
+      };
+      expect(window.matchMedia("(prefers-reduced-motion: reduce)").matches).toBe(false);
+      assertPose("ordinary motion");
+      expect(getComputedStyle(flick).animationName, "ordinary preference animates the fixture pose").not.toBe("none");
+
+      // Keep animate:true. Only the real browser preference changes, so the
+      // static arm cannot pass merely because the host disabled animation.
+      await motion.setReducedMotionPreference("reduce");
+      await settle();
+      expect(window.matchMedia("(prefers-reduced-motion: reduce)").matches).toBe(true);
+      assertPose("reduced motion");
+      expect(getComputedStyle(flick).animationName, "actual reduced-motion preference must keep the pose static").toBe("none");
+
+      await motion.setReducedMotionPreference("no-preference");
+      await settle();
+      expect(window.matchMedia("(prefers-reduced-motion: reduce)").matches).toBe(false);
+      assertPose("restored ordinary motion");
+      expect(getComputedStyle(flick).animationName, "removing the preference restores ordinary animation").not.toBe("none");
+    } finally { unmount(animated); target.remove(); }
+
+    // The explicit host flag is a separate defense, not a substitute for the
+    // browser-preference population above.
+    const still = host();
+    const staticOverlay = mount(CosmeticOverlay, { target: still, props: { renderKey: "horse_armor", reaction: "annoyed", animate: false } });
+    try {
+      await settle();
+      expect(getComputedStyle(still.querySelector(".flick")!).animationName).toBe("none");
+    } finally { unmount(staticOverlay); still.remove(); }
+  } finally { await motion.setReducedMotionPreference("no-preference"); }
 });

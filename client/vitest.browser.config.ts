@@ -31,6 +31,11 @@ export default defineConfig({
       headless: true,
       provider: playwright(),
       commands: {
+        async setReducedMotionPreference({ provider, sessionId }, preference: "reduce" | "no-preference") {
+          if (preference !== "reduce" && preference !== "no-preference") throw new Error("invalid reduced-motion preference");
+          const page = (provider as typeof provider & { getPage(id: string): Page }).getPage(sessionId);
+          await page.emulateMedia({ reducedMotion: preference });
+        },
         startRequestAudit({ provider, sessionId }) {
           if (requestAudits.has(sessionId)) throw new Error("request audit already active");
           const page = (provider as typeof provider & { getPage(id: string): Page }).getPage(sessionId);
