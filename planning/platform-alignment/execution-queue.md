@@ -18,7 +18,9 @@ initial package/Node-type/DB-selector setup is disclosed in the Garden log, not 
 evidence. The historical RP-131 guard still fails at its unchanged pushed hash; no CI-green,
 hosted-run, bypass, archive, mint or full Garden/1.0 claim. Claude corrective review is required.
 
-**NEXT SAFE ACTION:** pin the exact corrective range after commit, then continue accepted G1's
+Exact corrective span `9fc5932c^..166a23d7` is READY FOR CLAUDE DESIGNATED REVIEW, not approved.
+
+**NEXT SAFE ACTION:** continue accepted G1's
 state/clock/engine/commands/corpus under a new bounded predeclaration, followed by G2–G7. Keep
 the prior Arcade/Typer/Cosmetic review and owner/author routes open, including RP-211/OD-15,
 RP-201/D-020, historical RP-131 and participant accessibility. Full nine-tier 1.0 remains the

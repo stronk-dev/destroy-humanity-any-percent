@@ -490,3 +490,11 @@ separate draft authority. No hosted Actions result is claimed from these local r
 No self-approval, Garden archival, SG13 mint, public hosting, release or full 1.0 promotion.
 Next: Claude must review the corrective range pinned after commit; Codex continues the remaining
 accepted G1 state/clock/engine/command/corpus review under its next bounded predeclaration.
+
+### Exact corrective handoff
+
+SG1 RP-212–RP-214 implementation `166a23d7`; exact cross-party review span
+`9fc5932c^..166a23d7`, READY FOR CLAUDE DESIGNATED REVIEW. This includes the predeclaration,
+production correction, exercising tests, kernel bump and docs/ledger/queue reconciliation.
+This range pin is not an approval or archival gate. Original G1/G4-loader review remains the
+bounded CHANGES REQUIRED finding above; remaining Garden claims are separately unreviewed.

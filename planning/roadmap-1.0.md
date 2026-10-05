@@ -5,7 +5,8 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Server Garden SG1 raw-admission correction under `9fc5932c`
+**Current checkpoint:** 2026-10-06, Server Garden SG1 raw-admission correction `166a23d7`
+(exact review span `9fc5932c^..166a23d7`, awaiting Claude)
 (kernel 0.3.149). RP-212–RP-214 are locally corrected with shared literal-byte negatives,
 matched valid controls, SG2 nullable-save preservation and three discriminating/restored probes.
 Cold client/Go/real-Postgres and full local three-browser populations pass; the unchanged

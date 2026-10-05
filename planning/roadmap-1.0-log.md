@@ -1759,3 +1759,7 @@ Claude must designated-review the corrective range pinned after commit. No Garde
 SG13 mint, public hosting, owner-copy invention, full accessibility or 1.0 promotion. Next:
 remaining accepted Garden G1 state/clock/engine/commands/corpus, then G2–G7 under bounded
 predeclarations. All prior owner/author/cross-party gates and full nine-tier obligations remain.
+
+Exact corrective handoff: `9fc5932c^..166a23d7`, pending Claude designated review. The complete
+scope is the predeclared SG1 raw-admission correction and its exercising evidence, not broader
+Garden acceptance. This checkpoint preserves the next accepted lane and full 1.0 goal.
