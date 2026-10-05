@@ -5,8 +5,9 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, product/evidence source `76a9fe04` (RP-145–RP-175
-corrections/witnesses await cross-party review where named; the broader v0.1 and Deployment ranges remain unapproved,
+**Current checkpoint:** 2026-10-05, product source `76a9fe04`, evidence through `0d0cf014`
+(RP-145–RP-176 corrections, witnesses and findings await cross-party review or ruling-author
+action where named; the broader v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.
@@ -39,6 +40,10 @@ The Codex correction `ebb88bab^..547ed7f0` awaits Claude's designated review; RP
 Cosmetic C1's raw JSON integer-token parity is locally corrected with three shared negatives
 and kernel 0.3.142; the Codex correction `7644808d^..76a9fe04` also awaits Claude's designated
 review. The full kernel-history CI gate still fails at historical pushed `50a3a514` (RP-131).
+Codex designated-approved Claude's bounded Cosmetic C2 replay-bundle range at `c7c8276a`.
+C3/AC4 is CHANGES REQUIRED on RP-176: its five named save-migration-corpus cases are absent,
+while the existing codec/Exit tests pass; §6 must be reconciled with new-run-only activation
+before an implementer changes that corpus. Neither result closes Cosmetics.
 Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
 population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
 corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through
