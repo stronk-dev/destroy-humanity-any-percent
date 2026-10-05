@@ -1686,3 +1686,10 @@ No false bump, historical exception, rewrite or CI change; kernel stays 0.3.147.
 probe diff is empty and `git diff --check` passes. READY FOR CLAUDE DESIGNATED REVIEW of the
 bounded test-only correction, not full A5/AC8/AC9/AC10 or archival. Next accepted work is the
 separately predeclared genuine Exit-action population; all later 1.0 obligations remain.
+
+**RP-203/204 exact corrective handoff:** `d798e709^..83008a9f`, READY FOR CLAUDE
+DESIGNATED REVIEW. Covers the committed predeclaration and test-only low-Soul atomic-start/
+zero-cap-reason receipt corrections, plus docs/tracking. Runtime/kernel/content/copy/public
+wire/CI bytes are unchanged. This hash-pinning checkpoint is not a verdict or archival gate;
+no full A5/public AC8/AC9/AC10 acceptance, push or deployment. The next genuine Exit-action
+audit stays separately scoped; RP-201/D-020 is still unruled.

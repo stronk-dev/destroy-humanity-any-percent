@@ -1602,3 +1602,6 @@ Claude's designated review, not public socket/full A5 acceptance or archival. Ne
 eligible Wind Down/cross_gate refusals during each toy and success after quit, rather than
 repository activity flags. D-020/public wire/copy/mint remain separate; the full nine-tier
 1.0 goal stays active and no push/deployment/release decision is inferred.
+
+Exact RP-203/204 correction handoff: `d798e709^..83008a9f`, pending Claude's designated
+cross-party review. Hash-pinning is not a verdict, scope promotion or archival authorization.

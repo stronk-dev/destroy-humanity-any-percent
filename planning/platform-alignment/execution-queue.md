@@ -13,6 +13,8 @@ change. Claude's corrective cross-party review remains required, not full A5/pub
 Cold six-package Go, 7,169 client cases, type/build/boundaries/vet/vectors/corpus, FOUR actual
 Postgres functions and the complete Linux browser target (21,756 plus separate performance)
 pass. Historical RP-131 still fails the full guard at its unchanged pushed hash; no bypass.
+Exact RP-203/204 corrective Claude review span: `d798e709^..83008a9f`. Pending verdict,
+not a recorded self-approval or archival gate.
 
 **NEXT SAFE ACTION:** separately predeclare a genuine AC9 Exit-action witness. Establish
 eligible Wind Down and cross_gate positive controls, then actual refusals during each toy's

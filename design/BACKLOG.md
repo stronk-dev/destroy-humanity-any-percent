@@ -373,6 +373,9 @@ Legal rule for all: mechanics are fair game, **expression and names are ours** (
 | Desert Bus | The anti-game joke: a "mandatory compliance training" minigame that is deliberately, honestly nothing — with an achievement for finishing | `03` gag |
 | QWOP/Getting Over It | Deliberate-frustration lineage; a one-off gag control scheme, not a system | `03` gag |
 
+RP-203/204 exact corrective review span: `d798e709^..83008a9f`, pending Claude's designated
+verdict. This index line does not close the findings or promote full A5/public acceptance.
+
 ## Legal notes on lifted mechanics (house rules)
 
 - **Mechanics are not copyrightable; expression is** (*Tetris Holding v. Xio*, D.N.J. 2012 — rules unprotected, distinctive look/feel protected). So: lift mechanics freely, **never lift trade dress, names, or distinctive visual identity.**
