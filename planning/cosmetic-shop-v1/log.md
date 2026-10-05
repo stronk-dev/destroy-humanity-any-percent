@@ -1517,3 +1517,27 @@ retained actual DOM/persisted pet workflow, both restored severing proofs, truth
 docs, plan, execution queue and 1.0 checkpoint. This is not a designated verdict. The original
 Garage `7a61e4b6` range is not approved by this Codex first-filter supplement; wider original
 Garage/Cosmetics review and all release gates still apply. No product mutation remains.
+
+## 2026-10-05 — C6/AC15 actual browser-preference predeclaration (RP-185)
+
+**Review by / recorded by:** Codex. **Original range:** Claude `1bba27ba^..1bba27ba`,
+bounded to AC15's component evidence. The existing static arm mounts `animate:false`, so it
+proves the component prop rather than a user's actual reduced-motion preference in three
+engines. RP-184's real-server Chromium preference proof does not cover Firefox or WebKit.
+
+Predeclare a test-only correction under accepted §7.4/AC15. First sever only the overlay CSS
+preference rule temporarily and run the original focused overlay case; a surviving case proves
+this evidence exclusion, not a live motion defect. Restore it before editing the retained test.
+Add a test-provider command that changes the actual Playwright page preference and always
+restore no-preference in test cleanup. With `animate:true`, require a real preference match,
+static computed pose under reduce, and resumed computed animation under no-preference.
+Retain the explicit `animate:false` defense, overlay layer/reaction/no-text checks, and mount
+inside a bounded CSS fixture sprite. The component population is Chromium, Firefox and WebKit,
+using the declared cold Linux browser service; it is not a manual assistive-technology study.
+
+Then sever only the preference CSS rule: the new actual reduce arm must fail on animation.
+Independently add a temporary nonblank caption: the no-text arm must fail. Restore exact
+production bytes after each, then run full browser CI, typecheck, client tests and boundaries.
+No runtime fix, catalog/copy change, kernel bump, CI topology change or RFC-body reconciliation
+is authorized/planned. Claude must cross-party review the resulting Codex test supplement;
+this review does not approve the whole original C6 range or close G10/release acceptance.
