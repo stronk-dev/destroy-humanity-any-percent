@@ -194,7 +194,7 @@ function mountSnake(target: HTMLElement, server: SnakeServer, content: ReturnTyp
 }
 
 function snakeHead(target: HTMLElement): number {
-  return [...target.querySelectorAll(".cell")].findIndex((cell) => cell.getAttribute("data-state") === "head");
+  return [...target.querySelectorAll(".snake .cell")].findIndex((cell) => cell.getAttribute("data-state") === "head");
 }
 
 async function deliverSnakeTimers(ms: number): Promise<void> {
@@ -485,6 +485,75 @@ it.skipIf(!browser)("snake: controlled hidden event pauses; visible alone does n
     await unmount(app); target.remove(); vi.useRealTimers();
     if (original) Object.defineProperty(document, "visibilityState", original);
     else Reflect.deleteProperty(document, "visibilityState");
+  }
+});
+
+function assertZeroDecoration(target: HTMLElement, label: string): void {
+  for (const node of [target, ...target.querySelectorAll<HTMLElement>("*")]) {
+    const style = getComputedStyle(node);
+    expect(style.animationName, `${label}: decorative animation on ${node.tagName}`).toBe("none");
+    expect(style.transitionDuration.split(",").every((value) => Number.parseFloat(value) === 0),
+      `${label}: decorative transition on ${node.tagName}`).toBe(true);
+  }
+  expect(target.getAnimations({ subtree: true }), `${label}: active decorative animations`).toEqual([]);
+}
+
+it.skipIf(!browser)("arcade: real motion preference keeps 1995 decoration at zero without suppressing Snake content (AR6.4)", async () => {
+  const { commands } = await import("vitest/browser");
+  const motion = commands as typeof commands & {
+    setReducedMotionPreference(preference: "reduce" | "no-preference"): Promise<void>;
+  };
+  const game = await new MineHost(await mineIdentity()).init();
+  await game.apply({ kind: "choose_board", preset_id: "small" });
+  await game.apply({ kind: "reveal", cell: 40 });
+  await game.apply({ kind: "quit" });
+  const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+  const target = host();
+  await motion.setReducedMotionPreference("no-preference");
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  const mine = mountMine(target, game);
+  const snake = mountSnake(target, server, catalog.snake, { flushEvery: 1 });
+  try {
+    await tick(); flushSync();
+    expect(target.querySelectorAll("[data-state=mine]")).toHaveLength(10);
+    assertZeroDecoration(target, "mounted baseline");
+    const initialHead = snakeHead(target);
+    const head = target.querySelector<HTMLElement>('.snake [data-state="head"]')!;
+    const animation = document.createElement("style");
+    animation.textContent = "@keyframes arcade_motion_probe { from { opacity: 1; } to { opacity: 0.5; } }";
+    target.append(animation);
+    // Negative controls execute real browser CSS on the actual mounted cell,
+    // not a synthetic animation flag or a mocked computed-style reader.
+    try {
+      head.style.animation = "arcade_motion_probe 1s linear infinite";
+      expect(head.getAnimations()).toHaveLength(1);
+      expect(() => assertZeroDecoration(target, "injected animation")).toThrow(/decorative animation/u);
+      head.style.removeProperty("animation");
+      head.style.transitionDuration = "1s";
+      expect(() => assertZeroDecoration(target, "injected transition")).toThrow(/decorative transition/u);
+    } finally { head.removeAttribute("style"); animation.remove(); }
+    assertZeroDecoration(target, "restored baseline");
+    button(target, "Play").click();
+    let tickNumber = 0;
+    for (const preference of ["no-preference", "reduce", "no-preference"] as const) {
+      await motion.setReducedMotionPreference(preference);
+      await tick(); flushSync();
+      expect(window.matchMedia("(prefers-reduced-motion: reduce)").matches).toBe(preference === "reduce");
+      assertZeroDecoration(target, preference);
+      expect(server.parsed().tick, "changing preference must not advance gameplay").toBe(tickNumber);
+      expect(snakeHead(target)).toBe(initialHead + tickNumber);
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      tickNumber++;
+      expect(server.parsed().tick).toBe(tickNumber);
+      expect(snakeHead(target), "discrete content remains under reduced motion").toBe(initialHead + tickNumber);
+      expect(snakeHead(target)).toBe(server.parsed().body[0]);
+      assertZeroDecoration(target, `${preference} after content step`);
+    }
+    expect(server.submitted).toEqual([1, 2, 3].map((through_tick) => ({ kind: "advance", through_tick, turns: [] })));
+    expect(server.revision).toBe(4);
+  } finally {
+    await unmount(snake); await unmount(mine); target.remove(); vi.useRealTimers();
+    await motion.setReducedMotionPreference("no-preference");
   }
 });
 

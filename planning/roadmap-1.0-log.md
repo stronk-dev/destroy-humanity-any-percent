@@ -1710,3 +1710,23 @@ AT, archival, release or full nine-tier 1.0 promotion; the long-term goal remain
 Exact RP-210 corrective range: `55cd1ce0^..a9a39446`, pending Claude designated review.
 Watched-path comparison over that committed range is empty; kernel/VERSION stays 0.3.148.
 This checkpoint pins the handoff and next lane, not an approval or archival gate.
+
+## 2026-10-05 — real motion evidence; terminal accessible-name contract gap
+
+Baseline `0b1ddfda`, predeclaration `e006f5c6`: actual terminal Mine Grid mine glyph has name
+`Row 1, column 1: hidden` in Chromium/WebKit (RP-211). The diagnostic fails and is restored;
+the missing mechanical name contract routes to its RFC author, with OD-15 owner-copy adoption.
+No key/prose or accessibility completion is invented. Candidate rows resolve but remain
+unadopted; the two toy titles explicitly await owner names.
+
+The separate test-only motion witness switches actual browser preference on both children,
+keeps computed decoration at zero and retains exact real-engine steps. Real animation/transition
+negatives and a restored component-keyframe mutation discriminate. An initial combined-board
+head-offset instrument error is disclosed and corrected by a Snake-only selector, not a looser
+engine comparison. All nineteen child cases execute in Linux Chromium/Firefox/WebKit; full
+suite passes 21,798 / three performance skips, plus separate performance. Client/type/build/
+shell checks pass; previous copy/Go/DB populations retain their dates, and historical RP-131
+is neither rerun nor bypassed. No runtime, kernel, owner copy, CI or public wire changed.
+Original A6/A7 stays CHANGES REQUIRED; Claude must review the new evidence range and previous
+corrections. Full nine-tier 1.0, participant AT, public hosting/mint and clean-host release proof
+remain open, not silently reduced to a preview or promoted by these local results.

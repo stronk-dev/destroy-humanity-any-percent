@@ -1,6 +1,30 @@
 # Executable queue
 
-## Current board-focus pause correction — 2026-10-05
+## Current A6 motion evidence and terminal-name gap — 2026-10-05
+
+Under `e006f5c6`, the test-only motion supplement switches the actual browser preference on
+both mounted children. Decoration stays at zero and three real Snake steps still commit.
+Real CSS negative controls and a component-keyframe probe discriminate; all runtime bytes are
+restored. Final local Linux browser suite passes 21,798 / three performance skips, plus separate
+performance; nineteen child cases execute per engine. Client/type/build/shell boundary pass.
+This is the 1995 always-static population, not future eras, public host or whole A4.1/AC12.
+
+RP-211 is an executed unresolved DESIGN-GAP: a disclosed terminal mine is named hidden.
+The added diagnostic fails in Chromium/WebKit and is restored, not called a repair. AR6.2/6.6
+lack its mechanical cell-name key; the author must reconcile that contract, and OD-15 must
+provide/adopt its prose. Existing axe and visual-glyph tests do not establish semantic labels.
+All 44 candidate rows were read: resolving keys/lint are not owner adoption; the toy names
+remain PENDING OWNER NAME. No new copy or key is invented here.
+
+Original A6/A7 range `fca062a1^..fca062a1` remains CHANGES REQUIRED. RP-208/209/210 corrective
+ranges and this test-only supplement await Claude designated review; no self-approval/archive.
+No public host/wire/mint is authorized; unchanged RP-131 still blocks a whole-green CI claim.
+
+**NEXT SAFE ACTION:** route the RP-211 mechanical/copy gap to its author/OD-15, retain the exact
+review handoffs, and continue other accepted work while those authority gates stay open. Full
+nine-tier 1.0 and its release evidence remain active; no preview scope cut substitutes for them.
+
+## Earlier board-focus pause checkpoint — 2026-10-05
 
 RP-210 confirms original A6's whole-toy boundary violates AR6.3: native Tab and focus to the
 pace control continue five steps after leaving the board in Chromium/WebKit. Separate
@@ -16,11 +40,11 @@ CI blocker, not bypassed or falsely green. Corrective range `55cd1ce0^..a9a39446
 READY FOR CLAUDE DESIGNATED REVIEW;
 Claude's designated verdict and remaining original A6/A7 claims remain open.
 
-**NEXT SAFE ACTION:** review remaining motion, candidate-copy/accessible labels and docs under
+**Dated next action (superseded above):** review remaining motion, candidate-copy/accessible labels and docs under
 bounded predeclarations. Public wire/registration, owner copy/mint, RP-201/D-020 and RP-131
 retain their named authority gates. Continue the full nine-tier 1.0 program, not a scope cut.
 
-## Current Snake delayed-acknowledgement correction — 2026-10-05
+## Earlier Snake delayed-acknowledgement checkpoint — 2026-10-05
 
 Original A6 targeted review `fca062a1^..fca062a1` is CHANGES REQUIRED: actual Quit overlaps
 a pending advance (RP-208), and a locally buffered ending never reaches the server (RP-209).
@@ -42,7 +66,7 @@ Whole kernel history still fails unchanged pushed RP-131 after checkout/negative
 no hosted-green claim, bypass, false bump or rewrite. Exact corrective range
 `610a8c80^..4e529ee9` is READY FOR CLAUDE DESIGNATED REVIEW, not approved.
 
-**NEXT SAFE ACTION:** continue remaining original A6/A7 focus/visibility/pause, motion,
+**Dated next action (superseded above):** continue remaining original A6/A7 focus/visibility/pause, motion,
 candidate-copy/accessibility-label and documentation claims, with executed and predeclared
 bounded checks. Preserve existing proofs; do not claim a missing public host works. Public
 wire/registration, owner copy/mint, RP-201/D-020 and the RP-131 history contract retain their

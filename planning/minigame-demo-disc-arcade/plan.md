@@ -109,6 +109,10 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   native P/Escape and controlled hidden/visible handler cases preserve real engine movement
   and explicit resume controls. Independent focus/visibility/keyboard probes fail and restore;
   all eighteen component cases execute in Linux's three browsers. Claude review remains required.
+  A separate test-only AR6.4 supplement changes actual browser motion preference, observes zero
+  computed decoration and preserves real engine steps; injected/style-source negatives fire.
+  RP-211 remains DESIGN-GAP: terminal visible mines are named hidden, with no ruled mine-name
+  key. Author contract and OD-15 copy adoption are required; axe and glyphs do not close it.
 - [x] A7 — docs (`docs/minigame-demo-disc-arcade.md`, platform pointers).
 
 **Blocked (owner ruling pending, not built):** AR-P4 public API arms and AR-P5 tenant-registry

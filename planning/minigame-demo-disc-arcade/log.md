@@ -2163,3 +2163,43 @@ Only bounded test evidence/docs/tracking may land in this lane absent a separate
 runtime amendment. Run full Linux browser and relevant root checks; exact Claude corrective
 review remains required. No kernel bump, copy mint, public transport, participant AT or full
 A6/A7 approval follows from these populations.
+
+**RP-211 executed terminal-name finding / DESIGN-GAP:** the added negative assertion fails
+in Chromium and WebKit (2 failed / 34 passed). After actual choose/reveal/quit, the first of ten
+visible X mines is named exactly `Row 1, column 1: hidden`. The assertion has been removed and
+the test file is byte-unchanged from its baseline; no red suite or repair claim is retained.
+AR6.2/AR6.6 prescribe only hidden/flagged/revealed names, so the mechanical disclosed-mine
+name contract needs the RFC author, with its prose under OD-15 owner authorship/adoption.
+No new key, player-facing phrase or normative body edit is invented here. Existing axe and
+glyph assertions are insufficient evidence of semantically correct terminal names. Original
+targeted A6 range `fca062a1^..fca062a1` remains CHANGES REQUIRED; Review by: Codex, Recorded
+by: Codex. This is browser DOM accessible-name evidence, not a human screen-reader study.
+
+**Retained motion evidence:** nineteen child cases now include the real browser preference
+`no-preference → reduce → no-preference` on the same mounted Mine Grid terminal and Snake game.
+Computed animation names, transition durations and active browser animations stay at zero;
+each arm still commits exactly one delivered Snake step through the actual engine. In-test
+real CSS animation and transition negatives throw the named oracle failure, then restore.
+A separate component-CSS keyframe probe fails the mounted-baseline assertion in both native
+engines (2 failed / 36 passed); all eighteen older cases remain green. Component restore is
+byte-exact at `b0f6b28e3e65f7b7bb9a6c004cb3edb76cda6449`; no runtime byte remains changed.
+
+The first combined mount exposed an instrument bug: snakeHead counted the 81 Mine Grid cells
+before Snake's board, so DOM head 292 disagreed with actual engine cell 211. Its selector now
+scopes `.snake .cell`; the existing single-child populations are unchanged and still pass.
+This was not a new engine defect or a relaxed head/state comparison.
+
+Final root typecheck is warning/error-free; 7,170 client cases pass / 101 intentional browser-
+only skips; client build and shell boundary pass. Complete local Linux three-browser execution
+passes 21,798 / three performance skips across 267 populations, plus separate Chromium
+performance one pass / 20 filtered. All nineteen child cases execute per engine. Copy/history/
+manifest and Go/DB evidence remain their previous dated populations; no new copy/runtime/Go/
+DB/kernel/CI byte changes or fresh execution claims here. RP-131's existing history failure
+is not bypassed or called green. Candidate-copy rows were read in full: keys resolve but no
+OD-15 adoption record exists, and two titles remain explicitly PENDING OWNER NAME.
+
+Original A6/A7 range `fca062a1^..fca062a1` remains CHANGES REQUIRED with RP-208/209/210 fixes
+awaiting Claude and RP-211 unamended. Review by: Codex. Recorded by: Codex. Motion evidence is
+bounded always-static 1995 child proof, not a whole AC12/13 or media-query architecture verdict.
+This test-only supplement is READY FOR CLAUDE DESIGNATED REVIEW, exact span pinned next;
+it does not waive public host/wire, AC14 copy, AR8 mint, participant AT or full 1.0 gates.

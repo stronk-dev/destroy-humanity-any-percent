@@ -289,6 +289,22 @@ Both components pass axe in three browsers. They are not in the tenant registry:
 `minigame_api` artifact carries the arcade tenants, and the public wire is blocked (see the top of
 this page).
 
+That axe result is not semantic terminal-name acceptance. RP-211 confirms an actual disclosed
+Mine Grid mine glyph is named `Row 1, column 1: hidden` after real-engine quit. The diagnostic
+assertion fails in Chromium/WebKit. AR6.2/AR6.6 have no disclosed-mine name key; the mechanical
+contract needs author reconciliation and its copy needs OD-15 owner authorship/adoption.
+No new key/prose or player accessibility completion is claimed here.
+
+A separate motion witness mounts both actual children under the 1995 theme, changes the real
+browser reduced-motion preference in both directions and reads computed animation/transition
+styles plus active browser animations. Decoration remains zero, while three delivered Snake
+steps still commit through the real engine. Actual injected animation/transition negatives
+fail the oracle; a component-CSS animation probe also fails the mounted baseline and is restored.
+This proves the selected always-static child population, not every future era, public host,
+participant AT or the platform-wide media-query architecture. All copy remains candidate:
+`copy/catalog/arcade-candidate.json` and both PENDING OWNER NAME titles need OD-15 adoption;
+resolving keys and passing copy lint do not establish owner-adopted AC14.
+
 The Snake batching/blur/resync and lead-limit browser witnesses control timeout delivery, not
 the game or engine. Wall-clock movement alone must leave the board unchanged; the exact batch
 is required on callback four, blur must stop further movement/submission, rejection must
