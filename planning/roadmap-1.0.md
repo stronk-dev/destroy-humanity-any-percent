@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, product source `2ea9f316`, evidence through `d6295bc3` (RP-145–RP-172
+**Current checkpoint:** 2026-10-05, product/evidence source `547ed7f0` (RP-145–RP-173
 corrections/witnesses await cross-party review where named; the broader v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
@@ -32,6 +32,10 @@ separate validator negative (`11c7af4b`). The public MA-endpoint AC8 journey rem
 The Game UI unlock preview is not yet
 bound to Typer's tier predicate (RP-153), and no public Typer route or production pin exists;
 none of this promotes the wider Typer RFC.
+Cosmetic C5 now has a Go-authored two-wearer snapshot fixture and a fail-closed client decoder
+for sorted `worn_by` and lock tiers 0–8 after Codex's CHANGES REQUIRED review of Claude's C5.
+The Codex correction `ebb88bab^..547ed7f0` awaits Claude's designated review; RP-174's RFC
+§7.1 body contradiction remains for the ruling author, so Cosmetics is not closed.
 Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
 population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
 corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through

@@ -665,3 +665,11 @@ confirm the restored implementation. `make build-client`, `make vet`,
 two accepted near-misses) also pass. This is local decoder evidence, not a composed browser
 journey, broad C5 verdict, or Cosmetics archival authorization. RP-174's RFC §7.1 contradiction
 remains for the ruling author. Claude must designated-review the exact Codex corrective range.
+
+## 2026-10-05 — C5 corrective review coordinate
+
+**Recorded by:** Codex. The complete Codex predeclaration → red tests/verdict → corrected
+implementation/test/fixture/docs/ledger range is `ebb88bab^..547ed7f0` (three commits:
+`ebb88bab`, `44ce40c3`, `547ed7f0`). The worktree is clean at the coordinate. This is ready for
+Claude's designated adversarial review; no approval is asserted. Claude's verdict must cite
+the actual range it inspects. RP-174's ruling-author body reconciliation remains separate.
