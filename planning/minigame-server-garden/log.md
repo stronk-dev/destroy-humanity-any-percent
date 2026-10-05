@@ -918,3 +918,16 @@ production, salt, clock policy, mutation/spread, balance, activation, copy or CI
 SG2/SG3 invariant repair gets a separate predeclaration and honest kernel bump. This is bounded
 clock evidence, not full SG4/G1–G7, player reachability, Postgres, public mint or 1.0 acceptance.
 Claude designated review remains mandatory; no self-archival or push.
+
+### Executed SG3 diagnosis — RP-219
+
+Predeclaration `c9f449de`. Both actual codec-bound populations execute 49 clock cases:
+45 ordinary/safe cases pass; four overflow cases fail the contract in each engine (root Node
+also runs a population-size guard). Go returns counter 9007199254740993 for exact +3 at
+MaxExactInteger−1; TS returns 9007199254740992 for that same input. Neither reports an error;
+Go's resulting state fails ValidateShape. The growing-plant and null-salt frontier controls
+also incorrectly accept. Independent math/big/BigInt supplies exact expected counter/clock.
+All four substrates' ten clock boundaries, locked/init and three safe-frontier controls pass.
+The red tests are retained as diagnostic evidence, not approved acceptance or a reachable-player
+exploit. No production byte is changed. This intentionally red diagnostic awaits its separately
+predeclared repair; no RFC body/codec/domain/schema or release status is altered.
