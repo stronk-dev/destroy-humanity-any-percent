@@ -831,3 +831,44 @@ docs and tracking only. No production, kernel, balance, copy, mint, public wire 
 The v1 artifact remains byte-unchanged. The final literal outputs, negative controls, generation
 identity and cold verification above belong to this range; the draft controls are distinguished.
 RP-195 is only a queued, read-derived question here. No self-approval, archival, push or deployment.
+
+## 2026-10-05 — RP-195 Snake snapshot-grammar parity predeclaration (Codex)
+
+**Authority:** accepted A3/AR4.3–AR4.6 and AR7; original Claude `508fe19a^..508fe19a`.
+Starting tree is clean at `85c18535`. RP-194's command corpus is evidence for valid transitions,
+not malformed-input admission. No changes to movement, food, growth, outcomes, payout or clock.
+
+**Population, fixed before execution:** 45 shared raw mutations and seven legal controls.
+Actual states are driven through the existing v2 corpus: snake_rejections genesis and step 8,
+snake_cleared step 1 (grown playing) and step 5 (terminal). Each baseline must match its
+literal Go witness. Negatives: all nine integer fields null and string-valued; seven fractional
+groups (score/food-index jointly); three boolean counters; four unsafe-integer groups; null body
+and null/decimal/exponent body elements; repeated and escaped-equivalent keys; decimal/exponent
+tick tokens; trailing JSON; array-valued seed/hash; missing tick and extra root field. Legal
+controls cover whitespace, escaped key/direction, negative-zero tick, body whitespace, reordered
+root keys and the shared safe-integer tick boundary. Cases bind exact raw needles and fail if
+absent/ambiguous. No arbitrary malformed-state denominator or fixture-only clean control.
+
+**Method/criterion:** first execute unchanged production against every negative at direct decoder
+and direct tenant apply. Go must report invalid-tenant at decode and tenant-divergence at apply;
+TS must report SyntaxError before transition. Record decoder-only admission separately from
+actual quit outputs and terminal phase refusal. Re-run clean controls; legal spellings normalize
+to identical execution, while the safe tick-boundary control checks its actual certified fact.
+Do not treat an identity refusal or terminal-phase error as decoder admission being safe.
+
+**Conditional correction:** if reproduced, tighten only both Snake snapshot decoders: reuse the
+existing raw TS parser; validate actual typed safe integer fields and string identity values;
+Go rejects null/integer-token/unsafe scalar and body-element admission before typed decode.
+Keep existing body/food/phase rules, schema, descriptor and engine version. No new reachability
+rule, body-adjacency rule, pacing cap, migration, public wire, content/mint or owner copy.
+The watched acceptance-set correction requires an honest kernel bump from 0.3.145 to 0.3.146.
+
+**Exit:** all 45 negatives refused and all seven legal controls usable; independent raw-parser,
+TS numeric-type and Go null/body/safe-bound controls fire, then restore exactly. Go/TS valid
+corpus and numeric vectors remain byte-identical. Cold Go/client/type/build/boundary/vet and
+complete Linux browser verification are required, with complete-history failure reported
+separately if RP-131 persists. Exact Claude review remains mandatory; no self-approval/archive.
+
+**Separately queued RP-196:** the existing Snake fixture is 6×5, not AR7's specified 5×5; its
+cleared terminal has 30 body cells. This read-derived mismatch belongs to a separate population
+construction/research range, not a change to this grammar experiment or a claim of engine failure.
