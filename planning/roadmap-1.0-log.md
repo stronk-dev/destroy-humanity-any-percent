@@ -1495,3 +1495,27 @@ same pushed RP-131 hash; no bypass. Review remains pending, not self-approval or
 Exact RP-197 correction review span: `8ea62952^..5e82b3d3`, ready for Claude's designated
 cross-party pass. The checkpoint does not substitute for that pass. Worktree reconciliation
 continues with the remaining accepted Mine Grid rule evidence; all full 1.0 obligations remain.
+
+## 2026-10-05 — Mine Grid's rare RNG refusal is exercised with a real seed
+
+RP-198 verifies all three flood/exclusion/chord failure populations already discriminate in
+Go and TS. Mine Grid-only TS modulo shuffle survives all 7,164 old client tests, with shared
+combat RNG unchanged. The separately predeclared inverse construction derives actual seed
+`15581846558861750132`, whose first shuffle draw zero is below threshold 16 at the unchanged
+9×9 fixture's bound 72. Both actual RNGs consume it before the accepted second draw; no mock,
+synthetic snapshot, random search, content change or revised acceptance bound.
+
+Actual Go registry and independent TS placement/apply compare four attempts / five literal
+states through choose/reveal/quit and terminal refusal. Mine Grid-only modulo now changes
+the observed placement and first-reveal bytes; both added TS comparisons fail while the old
+tests still pass. Independently removed threshold and forged-artifact controls also fail.
+Probes are restored; older corpora/fixture, production RNG/engines and kernel 0.3.146 unchanged.
+Root generation/check aliases include the test-only witness. Bounded original verdict is
+CHANGES REQUIRED on the missing AC3 population, not a production bug or whole-A2 rejection.
+
+Cold selected Go, 7,167 client tests, type/build/boundaries/vet/vectors/full Arcade regeneration,
+both actual Postgres witnesses and complete Linux browser verification (21,750 plus separate
+performance) pass. Historical RP-131 still fails at the same pushed hash; no bypass. Claude
+must review the exact corrective range before any acceptance; no self-archive, push or release
+claim. Next accepted review: A1/AC1 loader negatives and A4 chain consumers. Full 1.0 remains
+the goal, with all later product/platform/release obligations intact.

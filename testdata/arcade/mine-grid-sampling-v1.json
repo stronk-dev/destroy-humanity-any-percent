@@ -1,0 +1,1052 @@
+{
+  "version": 1,
+  "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+  "seed": "15581846558861750132",
+  "run_seed": "2387092019343320515",
+  "bound": 72,
+  "threshold": 16,
+  "first_draw": "0",
+  "accepted_draw": "16294208416658607535",
+  "mines": [
+    4,
+    8,
+    11,
+    16,
+    28,
+    33,
+    45,
+    46,
+    51,
+    63
+  ],
+  "transition_budget": 4,
+  "scenario": {
+    "name": "mine_grid_rejected_first_shuffle_draw",
+    "engine": "mine_grid",
+    "seed": "15581846558861750132",
+    "expected_genesis": {
+      "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+      "arcade_schema_version": 1,
+      "exploded_cell": -1,
+      "first_cell": -1,
+      "flags": [],
+      "height": 0,
+      "mine_cells": [],
+      "mines": 0,
+      "phase": "setup",
+      "preset_id": null,
+      "revealed": [],
+      "revision": 1,
+      "width": 0
+    },
+    "genesis_bytes": "{\"arcade_content_hash\":\"sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3\",\"arcade_schema_version\":1,\"exploded_cell\":-1,\"first_cell\":-1,\"flags\":[],\"height\":0,\"mine_cells\":[],\"mines\":0,\"phase\":\"setup\",\"preset_id\":null,\"revealed\":[],\"revision\":1,\"width\":0}",
+    "steps": [
+      {
+        "command": {
+          "kind": "choose_board",
+          "preset_id": "large"
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+          "arcade_schema_version": 1,
+          "exploded_cell": -1,
+          "first_cell": -1,
+          "flags": [],
+          "height": 9,
+          "mine_cells": [],
+          "mines": 10,
+          "phase": "playing",
+          "preset_id": "large",
+          "revealed": [],
+          "revision": 2,
+          "width": 9
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3\",\"arcade_schema_version\":1,\"exploded_cell\":-1,\"first_cell\":-1,\"flags\":[],\"height\":9,\"mine_cells\":[],\"mines\":10,\"phase\":\"playing\",\"preset_id\":\"large\",\"revealed\":[],\"revision\":2,\"width\":9}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "cell": 40,
+          "kind": "reveal"
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+          "arcade_schema_version": 1,
+          "exploded_cell": -1,
+          "first_cell": 40,
+          "flags": [],
+          "height": 9,
+          "mine_cells": [],
+          "mines": 10,
+          "phase": "playing",
+          "preset_id": "large",
+          "revealed": [
+            {
+              "adjacent": 2,
+              "cell": 12
+            },
+            {
+              "adjacent": 1,
+              "cell": 13
+            },
+            {
+              "adjacent": 1,
+              "cell": 14
+            },
+            {
+              "adjacent": 2,
+              "cell": 20
+            },
+            {
+              "adjacent": 1,
+              "cell": 21
+            },
+            {
+              "adjacent": 0,
+              "cell": 22
+            },
+            {
+              "adjacent": 1,
+              "cell": 23
+            },
+            {
+              "adjacent": 2,
+              "cell": 25
+            },
+            {
+              "adjacent": 1,
+              "cell": 26
+            },
+            {
+              "adjacent": 1,
+              "cell": 29
+            },
+            {
+              "adjacent": 0,
+              "cell": 30
+            },
+            {
+              "adjacent": 0,
+              "cell": 31
+            },
+            {
+              "adjacent": 1,
+              "cell": 32
+            },
+            {
+              "adjacent": 1,
+              "cell": 34
+            },
+            {
+              "adjacent": 0,
+              "cell": 35
+            },
+            {
+              "adjacent": 2,
+              "cell": 38
+            },
+            {
+              "adjacent": 0,
+              "cell": 39
+            },
+            {
+              "adjacent": 0,
+              "cell": 40
+            },
+            {
+              "adjacent": 2,
+              "cell": 41
+            },
+            {
+              "adjacent": 2,
+              "cell": 43
+            },
+            {
+              "adjacent": 0,
+              "cell": 44
+            },
+            {
+              "adjacent": 1,
+              "cell": 47
+            },
+            {
+              "adjacent": 0,
+              "cell": 48
+            },
+            {
+              "adjacent": 0,
+              "cell": 49
+            },
+            {
+              "adjacent": 1,
+              "cell": 50
+            },
+            {
+              "adjacent": 1,
+              "cell": 52
+            },
+            {
+              "adjacent": 0,
+              "cell": 53
+            },
+            {
+              "adjacent": 3,
+              "cell": 55
+            },
+            {
+              "adjacent": 1,
+              "cell": 56
+            },
+            {
+              "adjacent": 0,
+              "cell": 57
+            },
+            {
+              "adjacent": 0,
+              "cell": 58
+            },
+            {
+              "adjacent": 1,
+              "cell": 59
+            },
+            {
+              "adjacent": 1,
+              "cell": 60
+            },
+            {
+              "adjacent": 1,
+              "cell": 61
+            },
+            {
+              "adjacent": 0,
+              "cell": 62
+            },
+            {
+              "adjacent": 1,
+              "cell": 64
+            },
+            {
+              "adjacent": 0,
+              "cell": 65
+            },
+            {
+              "adjacent": 0,
+              "cell": 66
+            },
+            {
+              "adjacent": 0,
+              "cell": 67
+            },
+            {
+              "adjacent": 0,
+              "cell": 68
+            },
+            {
+              "adjacent": 0,
+              "cell": 69
+            },
+            {
+              "adjacent": 0,
+              "cell": 70
+            },
+            {
+              "adjacent": 0,
+              "cell": 71
+            },
+            {
+              "adjacent": 1,
+              "cell": 73
+            },
+            {
+              "adjacent": 0,
+              "cell": 74
+            },
+            {
+              "adjacent": 0,
+              "cell": 75
+            },
+            {
+              "adjacent": 0,
+              "cell": 76
+            },
+            {
+              "adjacent": 0,
+              "cell": 77
+            },
+            {
+              "adjacent": 0,
+              "cell": 78
+            },
+            {
+              "adjacent": 0,
+              "cell": 79
+            },
+            {
+              "adjacent": 0,
+              "cell": 80
+            }
+          ],
+          "revision": 3,
+          "width": 9
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3\",\"arcade_schema_version\":1,\"exploded_cell\":-1,\"first_cell\":40,\"flags\":[],\"height\":9,\"mine_cells\":[],\"mines\":10,\"phase\":\"playing\",\"preset_id\":\"large\",\"revealed\":[{\"adjacent\":2,\"cell\":12},{\"adjacent\":1,\"cell\":13},{\"adjacent\":1,\"cell\":14},{\"adjacent\":2,\"cell\":20},{\"adjacent\":1,\"cell\":21},{\"adjacent\":0,\"cell\":22},{\"adjacent\":1,\"cell\":23},{\"adjacent\":2,\"cell\":25},{\"adjacent\":1,\"cell\":26},{\"adjacent\":1,\"cell\":29},{\"adjacent\":0,\"cell\":30},{\"adjacent\":0,\"cell\":31},{\"adjacent\":1,\"cell\":32},{\"adjacent\":1,\"cell\":34},{\"adjacent\":0,\"cell\":35},{\"adjacent\":2,\"cell\":38},{\"adjacent\":0,\"cell\":39},{\"adjacent\":0,\"cell\":40},{\"adjacent\":2,\"cell\":41},{\"adjacent\":2,\"cell\":43},{\"adjacent\":0,\"cell\":44},{\"adjacent\":1,\"cell\":47},{\"adjacent\":0,\"cell\":48},{\"adjacent\":0,\"cell\":49},{\"adjacent\":1,\"cell\":50},{\"adjacent\":1,\"cell\":52},{\"adjacent\":0,\"cell\":53},{\"adjacent\":3,\"cell\":55},{\"adjacent\":1,\"cell\":56},{\"adjacent\":0,\"cell\":57},{\"adjacent\":0,\"cell\":58},{\"adjacent\":1,\"cell\":59},{\"adjacent\":1,\"cell\":60},{\"adjacent\":1,\"cell\":61},{\"adjacent\":0,\"cell\":62},{\"adjacent\":1,\"cell\":64},{\"adjacent\":0,\"cell\":65},{\"adjacent\":0,\"cell\":66},{\"adjacent\":0,\"cell\":67},{\"adjacent\":0,\"cell\":68},{\"adjacent\":0,\"cell\":69},{\"adjacent\":0,\"cell\":70},{\"adjacent\":0,\"cell\":71},{\"adjacent\":1,\"cell\":73},{\"adjacent\":0,\"cell\":74},{\"adjacent\":0,\"cell\":75},{\"adjacent\":0,\"cell\":76},{\"adjacent\":0,\"cell\":77},{\"adjacent\":0,\"cell\":78},{\"adjacent\":0,\"cell\":79},{\"adjacent\":0,\"cell\":80}],\"revision\":3,\"width\":9}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "quit"
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+          "arcade_schema_version": 1,
+          "exploded_cell": -1,
+          "first_cell": 40,
+          "flags": [],
+          "height": 9,
+          "mine_cells": [
+            4,
+            8,
+            11,
+            16,
+            28,
+            33,
+            45,
+            46,
+            51,
+            63
+          ],
+          "mines": 10,
+          "phase": "terminal",
+          "preset_id": "large",
+          "revealed": [
+            {
+              "adjacent": 2,
+              "cell": 12
+            },
+            {
+              "adjacent": 1,
+              "cell": 13
+            },
+            {
+              "adjacent": 1,
+              "cell": 14
+            },
+            {
+              "adjacent": 2,
+              "cell": 20
+            },
+            {
+              "adjacent": 1,
+              "cell": 21
+            },
+            {
+              "adjacent": 0,
+              "cell": 22
+            },
+            {
+              "adjacent": 1,
+              "cell": 23
+            },
+            {
+              "adjacent": 2,
+              "cell": 25
+            },
+            {
+              "adjacent": 1,
+              "cell": 26
+            },
+            {
+              "adjacent": 1,
+              "cell": 29
+            },
+            {
+              "adjacent": 0,
+              "cell": 30
+            },
+            {
+              "adjacent": 0,
+              "cell": 31
+            },
+            {
+              "adjacent": 1,
+              "cell": 32
+            },
+            {
+              "adjacent": 1,
+              "cell": 34
+            },
+            {
+              "adjacent": 0,
+              "cell": 35
+            },
+            {
+              "adjacent": 2,
+              "cell": 38
+            },
+            {
+              "adjacent": 0,
+              "cell": 39
+            },
+            {
+              "adjacent": 0,
+              "cell": 40
+            },
+            {
+              "adjacent": 2,
+              "cell": 41
+            },
+            {
+              "adjacent": 2,
+              "cell": 43
+            },
+            {
+              "adjacent": 0,
+              "cell": 44
+            },
+            {
+              "adjacent": 1,
+              "cell": 47
+            },
+            {
+              "adjacent": 0,
+              "cell": 48
+            },
+            {
+              "adjacent": 0,
+              "cell": 49
+            },
+            {
+              "adjacent": 1,
+              "cell": 50
+            },
+            {
+              "adjacent": 1,
+              "cell": 52
+            },
+            {
+              "adjacent": 0,
+              "cell": 53
+            },
+            {
+              "adjacent": 3,
+              "cell": 55
+            },
+            {
+              "adjacent": 1,
+              "cell": 56
+            },
+            {
+              "adjacent": 0,
+              "cell": 57
+            },
+            {
+              "adjacent": 0,
+              "cell": 58
+            },
+            {
+              "adjacent": 1,
+              "cell": 59
+            },
+            {
+              "adjacent": 1,
+              "cell": 60
+            },
+            {
+              "adjacent": 1,
+              "cell": 61
+            },
+            {
+              "adjacent": 0,
+              "cell": 62
+            },
+            {
+              "adjacent": 1,
+              "cell": 64
+            },
+            {
+              "adjacent": 0,
+              "cell": 65
+            },
+            {
+              "adjacent": 0,
+              "cell": 66
+            },
+            {
+              "adjacent": 0,
+              "cell": 67
+            },
+            {
+              "adjacent": 0,
+              "cell": 68
+            },
+            {
+              "adjacent": 0,
+              "cell": 69
+            },
+            {
+              "adjacent": 0,
+              "cell": 70
+            },
+            {
+              "adjacent": 0,
+              "cell": 71
+            },
+            {
+              "adjacent": 1,
+              "cell": 73
+            },
+            {
+              "adjacent": 0,
+              "cell": 74
+            },
+            {
+              "adjacent": 0,
+              "cell": 75
+            },
+            {
+              "adjacent": 0,
+              "cell": 76
+            },
+            {
+              "adjacent": 0,
+              "cell": 77
+            },
+            {
+              "adjacent": 0,
+              "cell": 78
+            },
+            {
+              "adjacent": 0,
+              "cell": 79
+            },
+            {
+              "adjacent": 0,
+              "cell": 80
+            }
+          ],
+          "revision": 4,
+          "width": 9
+        },
+        "expected_result": {
+          "outcome": "quit",
+          "rating_delta": null,
+          "score_facts": [
+            {
+              "kind": "mine_grid.cells_revealed",
+              "value": 51
+            },
+            {
+              "kind": "mine_grid.cleared",
+              "value": 0
+            }
+          ]
+        },
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3\",\"arcade_schema_version\":1,\"exploded_cell\":-1,\"first_cell\":40,\"flags\":[],\"height\":9,\"mine_cells\":[4,8,11,16,28,33,45,46,51,63],\"mines\":10,\"phase\":\"terminal\",\"preset_id\":\"large\",\"revealed\":[{\"adjacent\":2,\"cell\":12},{\"adjacent\":1,\"cell\":13},{\"adjacent\":1,\"cell\":14},{\"adjacent\":2,\"cell\":20},{\"adjacent\":1,\"cell\":21},{\"adjacent\":0,\"cell\":22},{\"adjacent\":1,\"cell\":23},{\"adjacent\":2,\"cell\":25},{\"adjacent\":1,\"cell\":26},{\"adjacent\":1,\"cell\":29},{\"adjacent\":0,\"cell\":30},{\"adjacent\":0,\"cell\":31},{\"adjacent\":1,\"cell\":32},{\"adjacent\":1,\"cell\":34},{\"adjacent\":0,\"cell\":35},{\"adjacent\":2,\"cell\":38},{\"adjacent\":0,\"cell\":39},{\"adjacent\":0,\"cell\":40},{\"adjacent\":2,\"cell\":41},{\"adjacent\":2,\"cell\":43},{\"adjacent\":0,\"cell\":44},{\"adjacent\":1,\"cell\":47},{\"adjacent\":0,\"cell\":48},{\"adjacent\":0,\"cell\":49},{\"adjacent\":1,\"cell\":50},{\"adjacent\":1,\"cell\":52},{\"adjacent\":0,\"cell\":53},{\"adjacent\":3,\"cell\":55},{\"adjacent\":1,\"cell\":56},{\"adjacent\":0,\"cell\":57},{\"adjacent\":0,\"cell\":58},{\"adjacent\":1,\"cell\":59},{\"adjacent\":1,\"cell\":60},{\"adjacent\":1,\"cell\":61},{\"adjacent\":0,\"cell\":62},{\"adjacent\":1,\"cell\":64},{\"adjacent\":0,\"cell\":65},{\"adjacent\":0,\"cell\":66},{\"adjacent\":0,\"cell\":67},{\"adjacent\":0,\"cell\":68},{\"adjacent\":0,\"cell\":69},{\"adjacent\":0,\"cell\":70},{\"adjacent\":0,\"cell\":71},{\"adjacent\":1,\"cell\":73},{\"adjacent\":0,\"cell\":74},{\"adjacent\":0,\"cell\":75},{\"adjacent\":0,\"cell\":76},{\"adjacent\":0,\"cell\":77},{\"adjacent\":0,\"cell\":78},{\"adjacent\":0,\"cell\":79},{\"adjacent\":0,\"cell\":80}],\"revision\":4,\"width\":9}",
+        "result_bytes": "{\"outcome\":\"quit\",\"rating_delta\":null,\"score_facts\":[{\"kind\":\"mine_grid.cells_revealed\",\"value\":51},{\"kind\":\"mine_grid.cleared\",\"value\":0}]}"
+      },
+      {
+        "command": {
+          "kind": "quit"
+        },
+        "expect": "illegal_phase",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+          "arcade_schema_version": 1,
+          "exploded_cell": -1,
+          "first_cell": 40,
+          "flags": [],
+          "height": 9,
+          "mine_cells": [
+            4,
+            8,
+            11,
+            16,
+            28,
+            33,
+            45,
+            46,
+            51,
+            63
+          ],
+          "mines": 10,
+          "phase": "terminal",
+          "preset_id": "large",
+          "revealed": [
+            {
+              "adjacent": 2,
+              "cell": 12
+            },
+            {
+              "adjacent": 1,
+              "cell": 13
+            },
+            {
+              "adjacent": 1,
+              "cell": 14
+            },
+            {
+              "adjacent": 2,
+              "cell": 20
+            },
+            {
+              "adjacent": 1,
+              "cell": 21
+            },
+            {
+              "adjacent": 0,
+              "cell": 22
+            },
+            {
+              "adjacent": 1,
+              "cell": 23
+            },
+            {
+              "adjacent": 2,
+              "cell": 25
+            },
+            {
+              "adjacent": 1,
+              "cell": 26
+            },
+            {
+              "adjacent": 1,
+              "cell": 29
+            },
+            {
+              "adjacent": 0,
+              "cell": 30
+            },
+            {
+              "adjacent": 0,
+              "cell": 31
+            },
+            {
+              "adjacent": 1,
+              "cell": 32
+            },
+            {
+              "adjacent": 1,
+              "cell": 34
+            },
+            {
+              "adjacent": 0,
+              "cell": 35
+            },
+            {
+              "adjacent": 2,
+              "cell": 38
+            },
+            {
+              "adjacent": 0,
+              "cell": 39
+            },
+            {
+              "adjacent": 0,
+              "cell": 40
+            },
+            {
+              "adjacent": 2,
+              "cell": 41
+            },
+            {
+              "adjacent": 2,
+              "cell": 43
+            },
+            {
+              "adjacent": 0,
+              "cell": 44
+            },
+            {
+              "adjacent": 1,
+              "cell": 47
+            },
+            {
+              "adjacent": 0,
+              "cell": 48
+            },
+            {
+              "adjacent": 0,
+              "cell": 49
+            },
+            {
+              "adjacent": 1,
+              "cell": 50
+            },
+            {
+              "adjacent": 1,
+              "cell": 52
+            },
+            {
+              "adjacent": 0,
+              "cell": 53
+            },
+            {
+              "adjacent": 3,
+              "cell": 55
+            },
+            {
+              "adjacent": 1,
+              "cell": 56
+            },
+            {
+              "adjacent": 0,
+              "cell": 57
+            },
+            {
+              "adjacent": 0,
+              "cell": 58
+            },
+            {
+              "adjacent": 1,
+              "cell": 59
+            },
+            {
+              "adjacent": 1,
+              "cell": 60
+            },
+            {
+              "adjacent": 1,
+              "cell": 61
+            },
+            {
+              "adjacent": 0,
+              "cell": 62
+            },
+            {
+              "adjacent": 1,
+              "cell": 64
+            },
+            {
+              "adjacent": 0,
+              "cell": 65
+            },
+            {
+              "adjacent": 0,
+              "cell": 66
+            },
+            {
+              "adjacent": 0,
+              "cell": 67
+            },
+            {
+              "adjacent": 0,
+              "cell": 68
+            },
+            {
+              "adjacent": 0,
+              "cell": 69
+            },
+            {
+              "adjacent": 0,
+              "cell": 70
+            },
+            {
+              "adjacent": 0,
+              "cell": 71
+            },
+            {
+              "adjacent": 1,
+              "cell": 73
+            },
+            {
+              "adjacent": 0,
+              "cell": 74
+            },
+            {
+              "adjacent": 0,
+              "cell": 75
+            },
+            {
+              "adjacent": 0,
+              "cell": 76
+            },
+            {
+              "adjacent": 0,
+              "cell": 77
+            },
+            {
+              "adjacent": 0,
+              "cell": 78
+            },
+            {
+              "adjacent": 0,
+              "cell": 79
+            },
+            {
+              "adjacent": 0,
+              "cell": 80
+            }
+          ],
+          "revision": 4,
+          "width": 9
+        },
+        "expected_result": {
+          "outcome": "quit",
+          "rating_delta": null,
+          "score_facts": [
+            {
+              "kind": "mine_grid.cells_revealed",
+              "value": 51
+            },
+            {
+              "kind": "mine_grid.cleared",
+              "value": 0
+            }
+          ]
+        },
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3\",\"arcade_schema_version\":1,\"exploded_cell\":-1,\"first_cell\":40,\"flags\":[],\"height\":9,\"mine_cells\":[4,8,11,16,28,33,45,46,51,63],\"mines\":10,\"phase\":\"terminal\",\"preset_id\":\"large\",\"revealed\":[{\"adjacent\":2,\"cell\":12},{\"adjacent\":1,\"cell\":13},{\"adjacent\":1,\"cell\":14},{\"adjacent\":2,\"cell\":20},{\"adjacent\":1,\"cell\":21},{\"adjacent\":0,\"cell\":22},{\"adjacent\":1,\"cell\":23},{\"adjacent\":2,\"cell\":25},{\"adjacent\":1,\"cell\":26},{\"adjacent\":1,\"cell\":29},{\"adjacent\":0,\"cell\":30},{\"adjacent\":0,\"cell\":31},{\"adjacent\":1,\"cell\":32},{\"adjacent\":1,\"cell\":34},{\"adjacent\":0,\"cell\":35},{\"adjacent\":2,\"cell\":38},{\"adjacent\":0,\"cell\":39},{\"adjacent\":0,\"cell\":40},{\"adjacent\":2,\"cell\":41},{\"adjacent\":2,\"cell\":43},{\"adjacent\":0,\"cell\":44},{\"adjacent\":1,\"cell\":47},{\"adjacent\":0,\"cell\":48},{\"adjacent\":0,\"cell\":49},{\"adjacent\":1,\"cell\":50},{\"adjacent\":1,\"cell\":52},{\"adjacent\":0,\"cell\":53},{\"adjacent\":3,\"cell\":55},{\"adjacent\":1,\"cell\":56},{\"adjacent\":0,\"cell\":57},{\"adjacent\":0,\"cell\":58},{\"adjacent\":1,\"cell\":59},{\"adjacent\":1,\"cell\":60},{\"adjacent\":1,\"cell\":61},{\"adjacent\":0,\"cell\":62},{\"adjacent\":1,\"cell\":64},{\"adjacent\":0,\"cell\":65},{\"adjacent\":0,\"cell\":66},{\"adjacent\":0,\"cell\":67},{\"adjacent\":0,\"cell\":68},{\"adjacent\":0,\"cell\":69},{\"adjacent\":0,\"cell\":70},{\"adjacent\":0,\"cell\":71},{\"adjacent\":1,\"cell\":73},{\"adjacent\":0,\"cell\":74},{\"adjacent\":0,\"cell\":75},{\"adjacent\":0,\"cell\":76},{\"adjacent\":0,\"cell\":77},{\"adjacent\":0,\"cell\":78},{\"adjacent\":0,\"cell\":79},{\"adjacent\":0,\"cell\":80}],\"revision\":4,\"width\":9}",
+        "result_bytes": "{\"outcome\":\"quit\",\"rating_delta\":null,\"score_facts\":[{\"kind\":\"mine_grid.cells_revealed\",\"value\":51},{\"kind\":\"mine_grid.cleared\",\"value\":0}]}"
+      }
+    ],
+    "expected_terminal": {
+      "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
+      "arcade_schema_version": 1,
+      "exploded_cell": -1,
+      "first_cell": 40,
+      "flags": [],
+      "height": 9,
+      "mine_cells": [
+        4,
+        8,
+        11,
+        16,
+        28,
+        33,
+        45,
+        46,
+        51,
+        63
+      ],
+      "mines": 10,
+      "phase": "terminal",
+      "preset_id": "large",
+      "revealed": [
+        {
+          "adjacent": 2,
+          "cell": 12
+        },
+        {
+          "adjacent": 1,
+          "cell": 13
+        },
+        {
+          "adjacent": 1,
+          "cell": 14
+        },
+        {
+          "adjacent": 2,
+          "cell": 20
+        },
+        {
+          "adjacent": 1,
+          "cell": 21
+        },
+        {
+          "adjacent": 0,
+          "cell": 22
+        },
+        {
+          "adjacent": 1,
+          "cell": 23
+        },
+        {
+          "adjacent": 2,
+          "cell": 25
+        },
+        {
+          "adjacent": 1,
+          "cell": 26
+        },
+        {
+          "adjacent": 1,
+          "cell": 29
+        },
+        {
+          "adjacent": 0,
+          "cell": 30
+        },
+        {
+          "adjacent": 0,
+          "cell": 31
+        },
+        {
+          "adjacent": 1,
+          "cell": 32
+        },
+        {
+          "adjacent": 1,
+          "cell": 34
+        },
+        {
+          "adjacent": 0,
+          "cell": 35
+        },
+        {
+          "adjacent": 2,
+          "cell": 38
+        },
+        {
+          "adjacent": 0,
+          "cell": 39
+        },
+        {
+          "adjacent": 0,
+          "cell": 40
+        },
+        {
+          "adjacent": 2,
+          "cell": 41
+        },
+        {
+          "adjacent": 2,
+          "cell": 43
+        },
+        {
+          "adjacent": 0,
+          "cell": 44
+        },
+        {
+          "adjacent": 1,
+          "cell": 47
+        },
+        {
+          "adjacent": 0,
+          "cell": 48
+        },
+        {
+          "adjacent": 0,
+          "cell": 49
+        },
+        {
+          "adjacent": 1,
+          "cell": 50
+        },
+        {
+          "adjacent": 1,
+          "cell": 52
+        },
+        {
+          "adjacent": 0,
+          "cell": 53
+        },
+        {
+          "adjacent": 3,
+          "cell": 55
+        },
+        {
+          "adjacent": 1,
+          "cell": 56
+        },
+        {
+          "adjacent": 0,
+          "cell": 57
+        },
+        {
+          "adjacent": 0,
+          "cell": 58
+        },
+        {
+          "adjacent": 1,
+          "cell": 59
+        },
+        {
+          "adjacent": 1,
+          "cell": 60
+        },
+        {
+          "adjacent": 1,
+          "cell": 61
+        },
+        {
+          "adjacent": 0,
+          "cell": 62
+        },
+        {
+          "adjacent": 1,
+          "cell": 64
+        },
+        {
+          "adjacent": 0,
+          "cell": 65
+        },
+        {
+          "adjacent": 0,
+          "cell": 66
+        },
+        {
+          "adjacent": 0,
+          "cell": 67
+        },
+        {
+          "adjacent": 0,
+          "cell": 68
+        },
+        {
+          "adjacent": 0,
+          "cell": 69
+        },
+        {
+          "adjacent": 0,
+          "cell": 70
+        },
+        {
+          "adjacent": 0,
+          "cell": 71
+        },
+        {
+          "adjacent": 1,
+          "cell": 73
+        },
+        {
+          "adjacent": 0,
+          "cell": 74
+        },
+        {
+          "adjacent": 0,
+          "cell": 75
+        },
+        {
+          "adjacent": 0,
+          "cell": 76
+        },
+        {
+          "adjacent": 0,
+          "cell": 77
+        },
+        {
+          "adjacent": 0,
+          "cell": 78
+        },
+        {
+          "adjacent": 0,
+          "cell": 79
+        },
+        {
+          "adjacent": 0,
+          "cell": 80
+        }
+      ],
+      "revision": 4,
+      "width": 9
+    },
+    "expected_result": {
+      "outcome": "quit",
+      "rating_delta": null,
+      "score_facts": [
+        {
+          "kind": "mine_grid.cells_revealed",
+          "value": 51
+        },
+        {
+          "kind": "mine_grid.cleared",
+          "value": 0
+        }
+      ]
+    }
+  }
+}

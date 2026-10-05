@@ -1,6 +1,28 @@
 # Executable queue
 
-## Current Arcade rejection-atomicity evidence repair — 2026-10-05
+## Current Arcade real-seed rejection-sampling evidence repair — 2026-10-05
+
+RP-198 verifies the existing flood/exclusion/chord witnesses already fail their named mutants
+in BOTH engines, then closes AC3's remaining sampling population. Mine Grid-only modulo
+shuffle survived all 7,164 old client cases. A retained inverse construction supplies real
+seed `15581846558861750132`, which rejects draw zero at the existing board's bound 72,
+threshold 16. Actual Go registry and independent TS placement/apply byte-compare all four
+attempts / five states. Modulo/threshold/forged-artifact probes fail and are restored; no
+production or older-corpus change. Cold selected Go, 7,167 client tests, root checks, both
+real-DB witnesses and the full Linux browser target (21,750 plus performance) pass. Same
+pushed RP-131 history defect remains red; no bypass. Claude designated review is required
+for the separately predeclared test-only supplement; exact span is pinned by the checkpoint.
+No full A1/A2/AR7, public-wire or archival approval.
+
+**NEXT SAFE ACTION:** predeclare A1/AC1's named artifact-loader negatives and the existing A4
+catalog-chain consumers: unsorted presets, mine bounds, missing/wrong-engine toy definition,
+extra keys and nonascending stage tiers. Verify actual Go AND TS callers reject each, and
+valid candidate/fixture/chain controls still load. Inspect existing evidence first; retain
+only necessary accepted-contract repairs after executed counterexamples. Owner public wire,
+copy/mint and RP-131's draft-only historical repair remain outside this scope; full 1.0
+obligations and the cross-party review gates remain intact.
+
+## Dated Arcade rejection-atomicity evidence repair — 2026-10-05
 
 RP-197 preserves the four broad AC5 controls that already fail both runtimes, while closing
 the narrower future-turn/late-turn instrument gap. A conditional future-turn discard survived
@@ -14,7 +36,7 @@ accepted A3/A5/AC5/AC6, not a new rule or public API/receipt/socket proof. Cold 
 Claude designated review remains required. No full A3/A5/AR7 acceptance. Historical RP-131's
 same pushed commit still fails the complete history guard; no bypass or rewritten history.
 
-**NEXT SAFE ACTION:** predeclare the remaining original A2/AC3 Mine Grid rule-discrimination
+**Next at this dated checkpoint:** predeclare the remaining original A2/AC3 Mine Grid rule-discrimination
 review: 4-neighborhood flood, first-reveal exclusion, flagged chord and TS rejection sampling.
 Read the accepted contract and actual witnesses; execute each mutation independently before
 adding or changing tests. Record positive discrimination as evidence, not unnecessary repairs.

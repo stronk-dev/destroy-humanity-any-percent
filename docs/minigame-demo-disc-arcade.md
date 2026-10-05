@@ -65,6 +65,19 @@ semantic reachability invariants or a public saved-state exploit. Claude review 
 
 ## Verification
 
+`mine-grid-sampling-v1.json` supplies a real rejected-draw population on the unchanged large
+9×9 fixture. Inverting SplitMix64 and its two published substream labels constructs seed
+`15581846558861750132`; both actual RNGs verify its first draw is zero, below threshold 16
+at eligible-cell bound 72, then consume the accepted second draw. Go records actual registry
+create/choose/reveal/quit and terminal retry bytes (four attempts / five states); TS independently
+executes its placement and every apply step against those literals. A Mine Grid-only modulo
+shuffle changes the actual mine list and first-reveal bytes, and both comparisons fail.
+Threshold removal and a forged artifact also fail. Root Arcade generation/check aliases
+include this witness without changing the older corpora, fixture, mechanics or production
+content. This bounded RP-198 evidence repair awaits Claude review; it does not establish all
+A2/AR7 or public integration. The existing flood/exclusion/chord witnesses already catch their
+required gameplay mutants independently in both runtimes and are preserved.
+
 `snake-rejection-atomicity-v1.json` supplies six actual commands at both genesis and after an
 accepted move: terminal overshoot, a turn after death, late same/opposite turns, an empty window
 and nonascending turns. Go registry and independent TS apply reject the exact codes; direct

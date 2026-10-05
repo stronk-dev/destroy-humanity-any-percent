@@ -16,7 +16,7 @@ and test-only Snake/DB rejection-atomicity proof `5e82b3d3` (review span `8ea629
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-197 corrections,
+(RP-145–RP-198 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -156,6 +156,13 @@ actual transition input objects, and compares real Postgres state/revision/compl
 history/claim release. Future-turn, partial-input, rejected-persistence and stuck-claim probes
 fail the new witnesses and are restored. Successful play still works. Claude review remains
 mandatory; public wire/copy/mint and full A3/A5 acceptance are not promoted by this supplement.
+RP-198 preserves the Mine Grid flood/exclusion/chord controls that already fail both engines,
+while repairing AC3's sampling population. The Mine Grid-only modulo mutant survives all
+7,164 old client cases. A retained inverse construction produces a real seed that rejects
+draw zero at the unchanged 9×9 board's bound 72, threshold 16. Actual Go registry and TS
+placement/apply match all four attempts / five literal states. Modulo/threshold/artifact
+probes now fail and are restored. This test-only correction awaits Claude review; production
+rules, old corpus/fixture, kernel, content mint, public wire and full acceptance are unchanged.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

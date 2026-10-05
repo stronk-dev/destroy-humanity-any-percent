@@ -25,6 +25,11 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   the test-only v2 corpus. TS compares all 76 states, including every rejected attempt;
   intermediate output mutations now fail. Original v1 gameplay metadata/population is preserved.
   This closes a bounded instrument gap locally; Claude review and full AR7 acceptance remain.
+  RP-198 adds a real small-board rejected RNG draw, derived without searching or mocking.
+  Actual Go registry and independent TS placement/apply compare four attempts / five literal
+  states; modulo/threshold/forged-artifact probes fail. Existing flood/exclusion/chord controls
+  already discriminate in both engines. The test-only supplement awaits Claude review, not
+  full A2/AC3/AR7 or public-integration acceptance.
 - [x] A3 — `snake` 1.0.0 pure engine (AR4) in Go and TS; corpus incl. mid-window terminal,
   `advance_past_terminal` without mutation, every rejection (AR7).
   RP-195 separately corrects both snapshot decoders' malformed numeric/raw/identity admission,

@@ -1271,3 +1271,69 @@ Historical RP-131 remains separate, no guard bypass or CI edit. Report bounded o
 verdict and exact Codex supplement span; retain Claude cross-party review, no self-archive,
 push or deployment. If all existing instruments already discriminate, record that evidence
 instead of manufacturing a correction. All full 1.0 obligations remain.
+
+**Executed old instruments:** unchanged cold Go Arcade and all 7,164 client cases pass.
+Cardinal-only flood (with unchanged eight-neighbor counts), excluded-region placement and
+flagged-mine chord probes fail independently in BOTH runtimes. The first actual TS corpus
+differences are large-board first reveal (flood/placement) and honest chord at cell 29 (flagged
+mine 20 incorrectly detonates). Go regeneration/policy checks also fail. No extra tests are
+needed for those already-discriminating populations; collateral raw-fixture needle failures
+are not cited instead of the primary gameplay differences. Probes are restored.
+
+Mine Grid-only TS next()%bound survives the entire OLD suite: 7,164 pass / 88 intentional
+skips, Make 0. Shared combat sampling is unchanged. This is RP-198's missing rare-draw
+population, not a production RNG defect. Independent read-only inverse calculation derives
+seed `15581846558861750132`: actual run seed should be `2387092019343320515`, first shuffle
+draw zero, next `16294208416658607535`. On the existing large 9×9/10-mine preset, first cell
+40 excludes nine cells, leaving bound 72 and threshold 16. Verify these with actual engines
+before accepting the seed or its outputs. The preliminary calculation is not yet evidence
+of real placement or byte parity. All production probes remain restored.
+
+**Executed real-seed construction:** retained Go inversion derives the independent seed
+above, then actual two-substream RNG verifies run seed, zero below threshold 16 at bound 72,
+accepted draw `16294208416658607535` and consumption of both initial draws. The actual registry
+creates/chooses large/reveals cell 40/quits, then refuses a terminal retry: four attempts /
+five literal snapshot observations, all nullable result bytes retained. Its terminal mines
+are `[4,8,11,16,28,33,45,46,51,63]`. No RNG substitution, synthetic snapshot or changed board.
+
+Independent TS executes the same real RNG, its own placement and actual create/apply entries,
+byte-comparing every Go snapshot/result. Unchanged baseline is 7,167 passes / 88 intentional
+skips, zero typecheck/Svelte errors/warnings. The Mine Grid-only modulo probe now fails Go's
+fresh literal artifact comparison and TWO new TS cases: placement differs and first-reveal
+bytes differ. All 7,164 old client cases continue passing under that probe; the new real-seed
+population is exactly the missing discrimination, not unrelated collateral. Separately
+removing TS Bound's threshold fails the RNG-consumption case (actual 0 vs accepted residue 7)
+and both placement/transition comparisons. Forging only the witness version fails Go's cold
+regeneration check. All engine/RNG/artifact probes are restored exactly.
+
+Root `arcade-corpus` / `arcade-corpus-check` include this deterministic real-seed witness,
+cold, without changing a workflow or regenerating older population bytes. No balance/content
+artifact changes: the existing 9×9 fixture is unchanged. The larger uint64 seed is a string
+in the artifact and BigInt in TS, never a lossy JavaScript Number. Kernel remains 0.3.146.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Exact original Claude span `508fe19a^..508fe19a`, concerning only AC3's
+four named rule-discrimination populations. The three gameplay mutants already fail both
+runtimes and that positive evidence is preserved. The named Mine Grid-only TS sampling
+mutant demonstrably survives the OLD complete suite. RP-198 supplies its missing bounded
+population locally; it still needs Claude's designated correction review. No unchanged-
+production RNG defect or complete A1/A2/AR7/public-integration approval is inferred.
+
+**Retained cold verification:** root Go `-count=1` passes `./decimal ./arcade ./kernel
+./minigame ./replaycatalog ./production`. Whole client: 7,167 passes / 88 browser-only skips;
+typecheck/Svelte zero errors/warnings. Build, client/cosmetic/no-payment boundaries and their
+negative controls, vet, byte-identical numeric vectors and full three-artifact Arcade
+regeneration pass. Both declared real-Postgres Arcade witnesses execute verbosely PASS (the
+new rejection population 0.62 s; original composition 0.41 s), terminal Make 0. This remains
+DB/library evidence, not public wire. Complete Linux three-browser CI is terminal Make 0:
+21,750 passes across 267 file populations / three intentional performance skips, then the
+separate Chromium performance case (one pass / 20 filtered). Terminal metadata retained.
+
+The fresh history target passes checkout/adversarial fixtures, then fails Make 2 on unchanged
+pushed RP-131 hash `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`. No false bump, bypass, exception, rewrite or CI edit.
+All production probes, older corpora/fixtures, numeric vectors and kernel 0.3.146 remain
+byte-restored. `git diff --check` passes. **READY FOR CLAUDE DESIGNATED REVIEW** of the bounded
+test-only sampling supplement, not full A2/AR7, complete green CI, public integration or
+archival eligibility. Next safe accepted review is A1/AC1's named artifact-loader negatives
+and their existing A4 catalog-chain consumers; no new owner wire/copy/mint authority.
