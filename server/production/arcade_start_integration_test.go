@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"os"
 	"strconv"
 	"testing"
@@ -73,6 +74,46 @@ func TestArcadeAtomicStartIntegrationCreatesBothPinnedTenants(t *testing.T) {
 		{"20", "arcade.mine_grid", arcade.MineGridEngineRef, arcade.MineGridScalingDestination},
 		{"21", "arcade.snake", arcade.SnakeEngineRef, arcade.SnakeScalingDestination},
 	} {
+		t.Run("locked_"+row.toy, func(t *testing.T) {
+			suffix := "3" + row.suffix[1:]
+			founder := seedArcadeFounderVersion(t, ctx, db, store, bundle, now, suffix, 5, 21)
+			type observation struct {
+				state    json.RawMessage
+				revision int64
+				hash     string
+			}
+			before := map[string]observation{}
+			for _, stream := range []string{founder.founderStreamID, founder.companyStreamID} {
+				loaded, err := store.LoadLatest(ctx, stream)
+				if err != nil {
+					t.Fatal(err)
+				}
+				before[stream] = observation{mustEncodeState(t, loaded.State), loaded.Revision.Number, loaded.Revision.ConstantsHash}
+			}
+			result, err := service.StartMinigameAPISession(ctx, platform, StartMinigameAPIRequest{
+				SessionID: "01986666-a8" + suffix + "-7000-8000-000000000003",
+				IntentID:  "01986666-a9" + suffix + "-7000-8000-000000000004", FounderID: founder.founderID,
+				CompanyStreamID: founder.companyStreamID, MinigameID: row.toy, IdempotencyKey: "locked-arcade-" + suffix,
+			}, now, nil)
+			if !errors.Is(err, ErrMinigameHumanContentLocked) || len(result.Receipt) != 0 || result.Replay {
+				t.Errorf("low-Soul atomic start must refuse without a response: err=%v receipt=%s replay=%v", err, result.Receipt, result.Replay)
+			}
+			for stream, expected := range before {
+				loaded, err := store.LoadLatest(ctx, stream)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if loaded.Revision.Number != expected.revision || loaded.Revision.ConstantsHash != expected.hash || !bytes.Equal(mustEncodeState(t, loaded.State), expected.state) {
+					t.Errorf("rejected start changed persisted state/revision: stream=%s revision=%d", stream, loaded.Revision.Number)
+				}
+			}
+			var sessions, receipts int
+			if err := db.QueryRowContext(ctx, `SELECT
+				(SELECT count(*) FROM minigame_sessions WHERE founder_id=$1),
+				(SELECT count(*) FROM minigame_create_receipts WHERE founder_id=$1)`, founder.founderID).Scan(&sessions, &receipts); err != nil || sessions != 0 || receipts != 0 {
+				t.Errorf("rejected start persisted rows: sessions=%d receipts=%d err=%v", sessions, receipts, err)
+			}
+		})
 		t.Run(row.toy, func(t *testing.T) {
 			founder := seedArcadeFounderVersion(t, ctx, db, store, bundle, now, row.suffix, 50, 21)
 			request := StartMinigameAPIRequest{SessionID: "01986666-a8" + row.suffix + "-7000-8000-000000000003",

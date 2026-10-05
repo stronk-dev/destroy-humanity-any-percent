@@ -70,6 +70,12 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   Postgres. Disabling only Arcade atomic starts survives the old tests but fails both new
   subcases. Cold Go/client/root/browser and all four selected DB functions pass; historical
   RP-131 remains red. Test-only supplement awaits Claude review, not full A5/public AC8.
+  RP-203 adds BOTH toys' low-Soul atomic-start refusals, with exact error, full unchanged
+  state/revision/sequence and zero persisted session/create-receipt rows. RP-204 observes
+  explicit empty cap_reason_key in each actual zero-credit composed receipt. Independent
+  atomic Soul and per-toy receipt corruptions fail and are restored. These test-only repairs
+  await Claude review; public AC8 and actual eligible Exit actions before/after quit (AC9)
+  remain unproven. Repository activity booleans do not substitute for Exit actions.
 - [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
   with the AR6.2/AR6.3/AR6.4 contract, test-only mounted (no pinned tenant row yet), axe in three
   browsers.

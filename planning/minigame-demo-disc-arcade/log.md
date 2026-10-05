@@ -1621,3 +1621,68 @@ blocked; internal proof cannot close public AC8. RP-201/D-020 remains unruled.
 No production/kernel, fixture/content, copy, wire/mint or CI changes. Final cold root Go/
 client/type/build/boundaries/vet/vectors/corpus/browser and real-DB selectors, exact Claude
 review span and tracking closeout. Historical RP-131 remains red without bypass or rewrite.
+
+**RP-203 discovery:** cold original Go and all four actual DB functions pass. Removing ONLY
+the atomic start human_hobby check survives the same four DB functions; the selected Go
+population is still running at this discovery checkpoint. The old Mine Grid Soul negative
+calls the unaffected older method, and normal-Soul atomic starts cannot discriminate this
+refusal. Record the gap now, not a runtime defect in unchanged code. Await the same live Go
+handle before restoring or changing source; conditional both-toy low-Soul supplement follows.
+
+The same live Go Soul probe finishes green for all three complete packages (production
+34.431 s), confirming survival in both old populations. Atomic-start source is restored
+exactly before beginning the independent cap-reason probe; no combined mutant is used.
+
+**RP-204 discovery:** forcing only Arcade resolution receipt cap_reason_key to the existing
+declared cap key survives all four old real-Postgres functions, preserving zero credit/
+forfeit, grade/rating and retry. Selected complete Go is still running at discovery. The
+existing witness never inspects that field; do not call this a current runtime defect.
+Await the same live Go handle, restore, then add the predeclared receipt-field assertion.
+
+The same live old cap-reason Go probe finishes green in all three complete packages
+(production 34.481 s). The receipt producer is restored exactly before retaining tests.
+All four declared DB functions pass cold with the new tests on unchanged production.
+
+**RP-203 retained witness and discrimination:** low-Soul atomic starts now execute for BOTH
+toys on actual Founder v21/Company streams. Require the named error, empty response, unchanged
+complete encoded state and revision/hash for both streams, and zero SQL session/create-receipt
+rows. Existing normal-Soul starts, server genesis/sequence, retry and replay remain positive.
+Removing only the atomic human_hobby gate fails BOTH locked subcases: admitted receipts,
+changed Founder state/revision, and one persisted session/receipt each. Both normal starts
+still pass. The source is restored exactly before the independent receipt probes.
+
+**RP-204 retained witness and discrimination:** the existing real-play/resolution/retry
+population now requires explicit empty cap_reason_key on each actual zero-credit receipt.
+Independent Mine Grid-only and Snake-only producer corruptions each fail on that toy's named
+no-cap-reason diagnostic, with credit/forfeit and other receipt fields unchanged. Both producer
+probes are restored exactly; no production, kernel, balance/content, corpus, copy, wire or CI
+change is retained. The quality attendance timestamp remains legitimate C40 bookkeeping,
+not an economic-grade mutation or grounds for a full-map immutability assertion.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Original Claude A5 span `e1c71d7c^..e1c71d7c`: AC10 lacks the actual
+atomic low-Soul population; AR1.6/AC8's no-cap-reason field is unobserved. The executed old
+populations survive both independent corruptions. These are instrument defects, not claimed
+runtime defects in the unchanged product. The test-only corrections require Claude's exact
+cross-party review; no full A5/public AC8 promotion, archive, push or deployment follows.
+AC9 still needs genuine eligible Wind Down/cross_gate before/after-quit actions, not the
+existing repository activity booleans. RP-201/D-020 and the public-wire conflict remain open.
+
+**RP-203/204 final cold verification:** all six selected Go packages pass with `-count=1`
+(`decimal`, `arcade`, `kernel`, `minigame`, `replaycatalog`, `production`). Root typecheck
+reports zero errors/warnings; whole client has 7,169 passes / 88 intentional browser-only
+skips. Build, boundaries including negative controls, vet, unchanged vectors and all three
+Arcade regeneration comparisons pass. The declared Postgres selector executes FOUR functions
+verbosely: rejected-advance atomicity, real composed play/resolution, atomic Arcade starts
+(both low-Soul negatives and both normal starts), and atomic Pitch start. All pass, none skip.
+Full cold Linux browser target exits 0: 21,756 passes / three intentional performance skips
+across 267 populations, followed by separate Chromium performance (one pass / 20 filtered).
+Terminal statuses are observed, not inferred from partial logs.
+
+The full kernel guard exits Make 2 at the same pushed RP-131 commit
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after checkout/adversarial controls pass.
+No false bump, historical exception, rewrite or CI change; kernel stays 0.3.147. Production
+probe diff is empty and `git diff --check` passes. READY FOR CLAUDE DESIGNATED REVIEW of the
+bounded test-only correction, not full A5/AC8/AC9/AC10 or archival. Next accepted work is the
+separately predeclared genuine Exit-action population; all later 1.0 obligations remain.

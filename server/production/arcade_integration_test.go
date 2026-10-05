@@ -251,6 +251,9 @@ func TestArcadeComposedIntegrationUnlockLockPlayAndZeroCreditResolution(t *testi
 			string(receipt["configured_cap_forfeit_units"]) != "0" || string(receipt["outcome"]) != `"applied"` {
 			t.Fatalf("%s receipt must credit exactly zero: %s", start.MinigameID, result.Receipt)
 		}
+		if string(receipt["cap_reason_key"]) != `""` {
+			t.Fatalf("%s zero credit/forfeit must not report a cap reason: %s", start.MinigameID, result.Receipt)
+		}
 		after, _ := store.LoadLatest(ctx, founder.companyStreamID)
 		afterCash, _ := after.State.Ledger.Balance("company.cash")
 		if afterCash.String() != beforeCash.String() {

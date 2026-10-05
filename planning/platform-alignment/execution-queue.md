@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Arcade atomic-start witness and dependency conflict — 2026-10-05
+## Current Arcade atomic Soul and zero-reward evidence repair — 2026-10-05
+
+RP-203/204 are test-only supplements under accepted AR1.5/AR1.6 and AC8/AC10, predeclared
+at `d798e709`. Removing only the atomic Soul check and separately corrupting only Arcade
+receipt cap_reason_key survive the old complete Go/DB populations. New both-toy low-Soul
+starts require exact refusal, full unchanged state/revision/sequence and zero session/receipt
+rows. The repeated Soul probe fails both locked cases, retaining normal-Soul starts. New
+explicit empty cap_reason_key assertions fail independent Mine Grid-only and Snake-only
+receipt corruptions. All production probes restored; no runtime/kernel/content/copy/wire/CI
+change. Claude's corrective cross-party review remains required, not full A5/public AC8.
+Cold six-package Go, 7,169 client cases, type/build/boundaries/vet/vectors/corpus, FOUR actual
+Postgres functions and the complete Linux browser target (21,756 plus separate performance)
+pass. Historical RP-131 still fails the full guard at its unchanged pushed hash; no bypass.
+
+**NEXT SAFE ACTION:** separately predeclare a genuine AC9 Exit-action witness. Establish
+eligible Wind Down and cross_gate positive controls, then actual refusals during each toy's
+active session and success after quit. Do not substitute repository activity booleans,
+Tier-0-ineligible actions or a generic later-tier fixture for default first-ending proof.
+Public socket/API exposure, RP-201/D-020's dependency, owner copy/mint and RP-131's draft-only
+history repair retain their separate authority gates. Full nine-tier 1.0 remains the goal.
+
+## Dated Arcade atomic-start witness and dependency conflict — 2026-10-05
 
 RP-202 adds real-Postgres atomic coordinator starts for BOTH toys, server-derived seed and
 actual pinned genesis/state/receipt, one Founder sequence advance, verified history and
@@ -18,7 +39,7 @@ hashed otherwise complete Pitch-less catalogs. Author/owner reconciliation is re
 no dependency weakening, invalid-bundle test double or unqualified AC7 claim. The owner
 question has been presented, not answered; do not infer a ruling.
 
-**NEXT SAFE ACTION:** predeclare the remaining A5/AC8–AC10 gameplay/resolution/Exit/Soul
+**Dated next action (now superseded by the RP-203/204 checkpoint above):** predeclare the remaining A5/AC8–AC10 gameplay/resolution/Exit/Soul
 evidence audit. Separate real internal consumers from public socket requirements; preserve
 valid witnesses and repair only demonstrated accepted-contract gaps. RP-201's dependency,
 public wire/copy/mint and RP-131's draft-only history repair require their own authority.

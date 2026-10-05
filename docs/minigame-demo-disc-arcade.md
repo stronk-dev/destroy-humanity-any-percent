@@ -80,6 +80,15 @@ This RP-202 test-only supplement catches an Arcade-only atomic-start refusal tha
 the older Arcade witness, which calls the separate legacy start method. No public handler,
 socket, complete gameplay or full AC7 proof is implied; Claude review remains required.
 
+The same coordinator now has low-Soul negative controls for BOTH toys. Each requires
+`ErrMinigameHumanContentLocked`, no response, byte-identical full Founder/Company state,
+unchanged revisions/hash/sequence and zero session/create-receipt rows. Disabling only the
+atomic Soul check fails both negatives while normal-Soul starts still pass (RP-203).
+The existing real-play composed receipt witness also requires explicit empty cap_reason_key;
+independent Mine Grid-only and Snake-only receipt corruptions fail (RP-204). Both are test-only
+supplements awaiting Claude review. Neutral economic quality is distinct from C40's legitimate
+attendance timestamp update; no whole-map immutability or public-socket acceptance is claimed.
+
 RP-201 remains an explicit contract conflict: AC7 requires a Pitch-less Arcade bundle, but
 API MA-C15 rules `minigame_api → pitch`, retained by AR1.2 and enforced in both actual
 bundle loaders. Freshly hashed Pitch-less catalogs refuse; complete controls load. D-020
@@ -198,9 +207,11 @@ inert quality, neutral rating, `always`, `human_hobby`.
 `TestArcadeComposedIntegrationUnlockLockPlayAndZeroCreditResolution` witnesses on Postgres:
 - the near-zero-Soul lock;
 - Tier-0 play of both toys;
-- zero-credit applied resolutions that leave cash, rating and quality unchanged;
+- zero-credit/zero-forfeit applied resolutions with an empty cap reason and neutral
+  economic quality/rating;
 - identical-bytes retries and verified Founder history;
-- release of the Exit block.
+- repository active-session state clearing after resolution. This is not an executed
+  Wind Down/cross_gate acceptance witness; that AC9 requirement remains open.
 
 ## Client toys (test-only mount)
 

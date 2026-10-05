@@ -1584,3 +1584,21 @@ accepted A5 outcome/Exit/Soul evidence; full nine-tier 1.0 and platform scope re
 
 Exact RP-202 correction review span: `deda7e1e^..15fe1ccc`, pending Claude's designated
 verdict. RP-201/D-020 remains owner/ruling-author action, not an implicitly adopted policy.
+
+## 2026-10-05 — Arcade atomic Soul refusal and zero-reward receipt evidence
+
+RP-203/204: independently disabling only atomic Soul refusal and corrupting only Arcade
+receipt cap_reason_key survive the old complete Go and actual DB populations. Test-only
+supplements now require both toys' exact low-Soul refusal, full unchanged state/revision/
+sequence and zero session/create-receipt rows, and explicit empty cap reason in each actual
+zero-credit receipt. The repeated Soul probe fails both locked cases, retaining normal-Soul
+starts. Independent Mine Grid-only and Snake-only receipt probes fail on the named field.
+All production probes restored; kernel remains 0.3.147 and gameplay/content/wire/CI unchanged.
+
+Cold six-package Go, 7,169 client cases, type/build/boundaries/vet/vectors/corpus, four actual
+Postgres functions and full Linux browser verification (21,756 plus performance) pass.
+The historical RP-131 failure remains red and unbypassed. These bounded corrections require
+Claude's designated review, not public socket/full A5 acceptance or archival. Next: actual
+eligible Wind Down/cross_gate refusals during each toy and success after quit, rather than
+repository activity flags. D-020/public wire/copy/mint remain separate; the full nine-tier
+1.0 goal stays active and no push/deployment/release decision is inferred.

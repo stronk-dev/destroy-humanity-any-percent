@@ -22,7 +22,7 @@ RP-201/D-020 dependency conflict remains unruled),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-202 corrections,
+(RP-145–RP-204 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -185,6 +185,12 @@ Arcade starts in real Postgres, server-owned seed/genesis/sequence and idempoten
 An Arcade-only start refusal survives the old witnesses but fails both new subcases; probe
 restored. This is internal coordinator/DB evidence pending Claude review, not public socket
 integration, Pitch-less acceptance or a full A4/A5 promotion.
+RP-203/204 separately add both-toy low-Soul refusals at the actual atomic entry and empty
+cap-reason assertions on actual zero-credit receipts. The old complete Go/DB populations
+survive each corruption; the new state/revision/SQL and independent per-toy receipt probes
+fail, then are restored. These test-only corrections need Claude review. Actual eligible
+Wind Down/cross_gate actions before/after quit remain open (AC9); repository activity flags
+and Tier-0-ineligible actions cannot close that gate. Public AC8 and D-020 remain separate.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates
