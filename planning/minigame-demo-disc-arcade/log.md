@@ -1580,3 +1580,10 @@ READY FOR CLAUDE DESIGNATED REVIEW of this test-only supplement; no full A4/A5/A
 acceptance or archival. D-020's contract choice is presented to the owner asynchronously;
 no reply or ruling is inferred. Next safe accepted work audits remaining A5/AC8–AC10
 gameplay/resolution/Exit/Soul evidence, preserving the blocked public-wire and mint boundary.
+
+**RP-202 exact corrective handoff:** `deda7e1e^..15fe1ccc`, READY FOR CLAUDE DESIGNATED
+REVIEW. Test-only version-preserving helper and real-Postgres both-toy atomic-start witness,
+docs/tracking, and the separate RP-201/D-020 contract-conflict routing. Every production,
+kernel, corpus, balance/content, copy, public-wire and CI-workflow byte remains unchanged.
+No self-approval, full A4/A5/AC7/AC8, archival, push or deployment. The hash-pinning checkpoint
+is not a designated verdict. Next accepted evidence audit remains on the execution queue.

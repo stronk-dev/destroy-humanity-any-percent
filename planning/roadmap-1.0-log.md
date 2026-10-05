@@ -1581,3 +1581,6 @@ DB functions including atomic Pitch start and full three-browser verification (2
 performance) pass. Historical RP-131 remains red and unbypassed. Claude must review the new
 range; no full A4/A5/AC7/public AC8, archival, push or deployment claim. Next is remaining
 accepted A5 outcome/Exit/Soul evidence; full nine-tier 1.0 and platform scope remain active.
+
+Exact RP-202 correction review span: `deda7e1e^..15fe1ccc`, pending Claude's designated
+verdict. RP-201/D-020 remains owner/ruling-author action, not an implicitly adopted policy.

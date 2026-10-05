@@ -10,6 +10,7 @@ missing engine arm and are preserved. All production probes restored; test-only 
 kernel/content/copy/wire/CI unchanged. Cold selected Go, 7,169 client tests, root checks,
 four actual DB functions including Pitch, and full Linux browser verification (21,756 plus
 performance) pass. Same historical RP-131 remains red. Claude designated review required.
+Exact RP-202 correction review span: `deda7e1e^..15fe1ccc`.
 
 **RP-201 / D-020:** AC7's Pitch-less requirement conflicts with the explicit MA-C15
 `minigame_api → pitch` ruling retained by AR1.2. Both actual Go/TS loaders refuse freshly

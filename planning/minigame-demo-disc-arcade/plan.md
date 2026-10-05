@@ -110,3 +110,4 @@ filter. The original Claude A1–A7 work is not approved by these evidence suppl
 | RP-198: real rejected shuffle draw, literal Mine Grid placement/entry replay and regeneration | `be0c0e00^..859f5216` |
 | RP-199: matched loader negatives, boundary stages and freshly hashed wrong-engine binding | `8b00b6e8^..3b9fd0d8` |
 | RP-200: actual null-tier refusal, legal zero controls, full-chain regression, kernel 0.3.147 | `df0ed871^..6f5715dc` |
+| RP-202: both real-Postgres atomic starts, server genesis/sequence, identical retry; RP-201 routing | `deda7e1e^..15fe1ccc` |
