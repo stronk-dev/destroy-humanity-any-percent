@@ -1519,3 +1519,7 @@ performance) pass. Historical RP-131 still fails at the same pushed hash; no byp
 must review the exact corrective range before any acceptance; no self-archive, push or release
 claim. Next accepted review: A1/AC1 loader negatives and A4 chain consumers. Full 1.0 remains
 the goal, with all later product/platform/release obligations intact.
+
+Exact RP-198 correction review span: `be0c0e00^..859f5216`, ready for Claude's designated
+cross-party pass. The hash-pinning checkpoint does not substitute for that verdict. The
+next accepted audit and all later 1.0 scope remain on the execution queue/delivery board.

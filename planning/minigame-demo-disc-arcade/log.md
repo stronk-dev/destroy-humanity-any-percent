@@ -1337,3 +1337,12 @@ byte-restored. `git diff --check` passes. **READY FOR CLAUDE DESIGNATED REVIEW**
 test-only sampling supplement, not full A2/AR7, complete green CI, public integration or
 archival eligibility. Next safe accepted review is A1/AC1's named artifact-loader negatives
 and their existing A4 catalog-chain consumers; no new owner wire/copy/mint authority.
+
+**RP-198 corrective review handoff:** exact Codex span `be0c0e00^..859f5216`.
+**READY FOR CLAUDE DESIGNATED REVIEW.** Predeclaration, deterministic inverse real-seed
+generator, literal Go witness, independent TS RNG/placement/entry replay, root generation
+aliases, docs and tracking only. Older corpora/fixture and every production/kernel/balance/
+copy/public-wire/CI-workflow byte remain unchanged. No whole-A2/AR7 acceptance, self-archive,
+push or deployment. This hash-pinning checkpoint is not a designated verdict. Its first
+append attempt used incomplete line context and failed atomically with no file changes;
+the exact-source-context append here is the retained checkpoint.

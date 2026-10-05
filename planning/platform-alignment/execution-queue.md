@@ -11,7 +11,7 @@ attempts / five states. Modulo/threshold/forged-artifact probes fail and are res
 production or older-corpus change. Cold selected Go, 7,167 client tests, root checks, both
 real-DB witnesses and the full Linux browser target (21,750 plus performance) pass. Same
 pushed RP-131 history defect remains red; no bypass. Claude designated review is required
-for the separately predeclared test-only supplement; exact span is pinned by the checkpoint.
+for the separately predeclared test-only supplement: exact span `be0c0e00^..859f5216`.
 No full A1/A2/AR7, public-wire or archival approval.
 
 **NEXT SAFE ACTION:** predeclare A1/AC1's named artifact-loader negatives and the existing A4
