@@ -56,6 +56,13 @@ success/detonate/unsatisfied, a clear-board win, all four walls, self-collision,
 chase, a `cleared` board, and every rejection code of both engines.
 `client/test/arcade-content-gate.test.ts` replays it byte for byte in TypeScript, and checks that
 every rejection leaves the snapshot unchanged.
+The Mine Grid hidden-information witness also executes all eight Mine Grid scenarios and
+inspects raw output at genesis and after every attempted command (44 observations). Setup,
+unplaced/placed playing, and unplaced/placed terminal states must actually occur. Nonterminal
+outputs contain no mine positions or explosion; placed terminals disclose the derived mines.
+For each placed nonterminal state, independently forged mine lists and explosions must be
+refused by both the decoder and engine entry, while clean replay still reaches its corpus
+terminal. This is engine-level evidence, not public-route or assistive-technology acceptance.
 
 ## Platform chain
 

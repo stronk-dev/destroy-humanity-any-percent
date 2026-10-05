@@ -1349,3 +1349,21 @@ Claude cross-party review. Next is RP-191's bounded TS hidden-state witness: the
 currently reads terminal metadata only, although actual Go/browser positive controls exist.
 Complete CI's RP-131 history gate, broader reviews/rulings/rights/content and clean-host release
 proof remain open. No archival, deployment, public release claim or push.
+
+## 2026-10-05 — Mine Grid hidden-state witness now observes actual engine outputs
+
+RP-191 replaces the misleading terminal-only TS metadata loop. It executes all eight existing
+Mine Grid scenarios, observes 44 actual genesis/attempt outputs across five required
+phase/placement populations, and tests both decoder and apply refusal of two independently
+forged hidden-state fields. Clean decoder and terminal disclosure controls prevent a
+reject-everything or hide-forever test from passing. Each untouched scenario still reaches
+its exact Go-authored terminal. Existing Go/browser positive evidence remains on record.
+
+The old full client suite survives decoder guard removal. The replacement catches four
+independent severings: output leak, mine-list refusal, explosion refusal and apply-only
+decoder bypass. The output leak also fails the existing replay (defense in depth). Every
+production probe is restored. Cold Go, root type/unit/build/boundaries/vet pass (6,954 client
+tests); full cold Linux browser CI passes 21,111 tests plus separate performance. This is
+test-only, ready for Claude review, not full AC4/public integration or complete CI green.
+Next is bounded snapshot grammar parity diagnosis; RP-131 and broader reviews/rulings,
+rights/content/clean-host release proof remain open. No push, archival or deployment.

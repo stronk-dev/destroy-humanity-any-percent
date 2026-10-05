@@ -1,5 +1,20 @@
 # Executable queue
 
+## Current Arcade hidden-state witness correction — 2026-10-05
+
+RP-191 now executes all eight existing Mine Grid scenarios, observing 44 actual outputs and
+requiring five phase/placement populations. It checks raw nonterminal hiding, terminal
+disclosure, clean decoder acceptance and independent decoder/apply refusal of forged mine
+positions and explosion. The old full suite survives guard removal; four independent new
+severings fail. Probes are restored, with no production diff. Cold Go, 6,954 client tests,
+type/build/boundaries/vet and full cold browser CI (21,111 tests plus performance) pass.
+**READY FOR CLAUDE DESIGNATED REVIEW**, not full AC4, public integration or archival.
+
+**NEXT SAFE ACTION:** bounded Go/TS snapshot grammar parity diagnosis under accepted AR3/AR7.
+Reproduce malformed-input acceptance before alleging a production defect; predeclare the
+population and correction separately from this test-only range. Owner wire/copy/mint and
+RP-131's draft-only history repair remain separate blockers, not waived release obligations.
+
 ## Current Arcade AR7 exact budget correction — 2026-10-05
 
 RP-190 now counts every attempted command in Go generation and TS execution: 60 commands,
@@ -11,7 +26,7 @@ plus its separate performance case. **READY FOR CLAUDE DESIGNATED REVIEW**; no r
 content, balance, kernel, CI, wider AR7 or archival promotion.
 Exact Codex test/corpus correction range: `593ee762^..bcdee28d`.
 
-**NEXT SAFE ACTION:** predeclare and execute RP-191's bounded Arcade AR3.4/AC4 TS hidden-state
+**Next at this dated checkpoint:** predeclare and execute RP-191's bounded Arcade AR3.4/AC4 TS hidden-state
 witness. Its current named test inspects terminal fixture metadata only; it must actually
 observe intermediate states and reject a forged nonterminal mine list. Existing Go and browser
 positive controls are retained; do not overstate this as a demonstrated mine leak or complete

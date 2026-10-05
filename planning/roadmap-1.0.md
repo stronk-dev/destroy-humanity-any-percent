@@ -101,9 +101,13 @@ not prove public Arcade integration or full Tab/AT task acceptance. RP-190 separ
 first; the corrected generator/execution consumer count all attempts, and regeneration changes
 only budget metadata. Each applied-only counter probe fails independently, then is restored.
 Cold Go, 6,954 client tests, type/build/boundaries/vet and full cold browser CI (21,111 tests
-plus performance) pass. Claude review is still required. RP-191's next bounded TS AC4 audit
-must replace terminal-only metadata inspection with actual nonterminal observations/refusal;
-existing Go/browser positive controls are not erased or misrepresented as absent.
+plus performance) pass. Claude review is still required. RP-191 now replaces terminal-only
+metadata inspection with 44 actual outputs across all eight Mine Grid scenarios, five required
+phase/placement populations and independent decoder/apply refusal of forged hidden state.
+The old suite survives guard removal; four independent new severing probes fail. Restored cold
+Go, root checks and full cold browser CI (21,111 tests plus performance) pass. This test-only
+supplement awaits Claude review; existing Go/browser controls remain positive evidence, and
+neither a production leak nor full AC4/public integration is claimed.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

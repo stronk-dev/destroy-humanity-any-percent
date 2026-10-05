@@ -421,3 +421,51 @@ verification. Exit requires cold Go, client/type/build/boundary/vet checks and f
 browser CI including performance. Test-only correction unless a new real defect is separately
 reproduced and recorded. No gameplay, kernel, catalog, copy, schema, wire, deployment, archival
 or release promotion. Claude designated review is mandatory for the exact corrective range.
+
+**Instrument refinement before the additional probe:** standalone decoder refusal and engine
+entry refusal are distinct asserted consumers. In addition to the three declared mutations,
+temporarily bypass only the decoder call inside `applyMineGrid` with JSON parsing: standalone
+refusal must stay green while the engine-entry refusal fails. Restore before broad verification.
+This remains a test-only range and does not authorize retaining the source mutation.
+
+## 2026-10-05 — RP-191 actual hidden-state observations and refusal proof (Codex)
+
+**Executed old-instrument control:** removing only the decoder hidden-state guard leaves the
+entire old client population green (6,954 passed / 88 browser-only skips). The attempted
+`CLIENT_TEST_FLAGS` selector is not consumed by this Make target; this was a full run, not a
+selected-case run. The guard was restored before the replacement witness. This does not erase
+Go's real `TestMineGridNeverExposesMinesBeforeTerminal` or RP-189's browser positive control.
+
+The replacement executes all eight existing Mine Grid scenarios: 44 raw genesis/attempt
+observations, including rejections, require the five declared phase/placement populations.
+It checks nonterminal hiding and terminal disclosure, accepts every clean snapshot through
+the decoder, and separately forges actual mine positions and an actual explosion at each
+placed/nonterminal state. Both exported decoder and apply entry must reject; untouched replay
+must still reach each exact corpus terminal. No fixture, command or production bytes change.
+
+**Independent executed negatives (full client population each time):**
+
+- S1: emit the real mine list in placed/playing output → the raw observation fails on
+  `mine_grid_preset_large`, revision 3. The existing corpus replay also fails later through the
+  decoder (defense in depth, not exclusively new detection): 2 failed / 6,952 passed, Make 2.
+- S2: remove only mine-list refusal → the named decoder mine-list assertion fails:
+  1 failed / 6,953 passed, Make 2.
+- S3: remove only explosion refusal → the named decoder explosion assertion fails:
+  1 failed / 6,953 passed, Make 2.
+- S4: bypass only the decoder call inside apply with JSON parsing → standalone decoder
+  refusal remains green, but engine refusal fails because the promise resolves a real quit
+  terminal: 1 failed / 6,953 passed, Make 2.
+
+All four probes are restored exactly; `git diff --exit-code --
+client/src/arcade/mine-grid.ts` exits 0. Each negative population has 88 browser-only skips.
+Restored cold `make test-go GO_PACKAGES='./arcade' GO_TEST_FLAGS='-count=1'` passes. Root
+type/client/build/client-boundary/cosmetic-boundary/no-payment/vet passes: zero Svelte
+errors/warnings, 6,954 unit tests / 88 browser-only skips. Cold root `make test-browser-ci`
+exits 0: 252 file populations / 21,111 tests passed / 3 intentional performance skips
+(32.65 s), then the separate Chromium performance case (1 passed / 20 filtered out).
+
+**READY FOR CLAUDE DESIGNATED REVIEW**, not a self-approval, wider A2/AC4 acceptance, public
+integration or archival. RP-131 still blocks complete green kernel-history CI. Next bounded
+accepted-lane diagnostic: snapshot grammar parity between Go and TS decoders; reproduce before
+claiming a defect, predeclare before retained corrections, and keep it outside this test-only
+range. Owner wire/copy/mint and broader release gates remain independent obligations.

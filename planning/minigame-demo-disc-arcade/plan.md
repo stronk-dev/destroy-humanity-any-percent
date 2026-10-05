@@ -10,6 +10,10 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   RP-190's test/corpus budget correction counts all 60 attempts, rather than only 43 applied
   commands. Go/TS equalities fail first and their independent applied-only counter probes fire;
   the regenerated fixture differs only in budget metadata. Claude review remains required.
+  RP-191 replaces the terminal-only TS metadata loop with 44 actual genesis/attempt outputs,
+  five required phase/placement populations, clean decoder controls and forged-hidden-state
+  refusal at both decoder and apply entry. Four independent severing controls fire; production
+  probes are restored. This test-only supplement awaits Claude review, not full AC4 acceptance.
 - [x] A3 — `snake` 1.0.0 pure engine (AR4) in Go and TS; corpus incl. mid-window terminal,
   `advance_past_terminal` without mutation, every rejection (AR7).
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),
@@ -40,7 +44,7 @@ retirement and all production artifact bytes (AR8 mint).
 
 ## Codex correction review index (2026-10-05)
 
-Both ranges await **Claude's designated cross-party review**, not a recorded Codex first
+All listed ranges await **Claude's designated cross-party review**, not a recorded Codex first
 filter. The original Claude A1–A7 work is not approved by these evidence supplements.
 
 | Finding / bounded correction | Exact Codex span |

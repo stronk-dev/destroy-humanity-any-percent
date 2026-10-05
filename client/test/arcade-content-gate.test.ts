@@ -5,7 +5,7 @@ import corpusSource from "../../testdata/arcade/content-gate-v1.json";
 import { COPY_KEYS } from "../src/copy";
 import { activeArcadeStage, arcadeContentHash, parseArcadeCatalog } from "../src/arcade/catalog";
 import { ArcadeRejection, type ArcadeResult } from "../src/arcade/common";
-import { applyMineGrid, createMineGrid, MINE_GRID_SCALING_DESTINATION, mineGridMineCells, mineGridNeighbors } from "../src/arcade/mine-grid";
+import { applyMineGrid, createMineGrid, decodeMineGridSnapshot, MINE_GRID_SCALING_DESTINATION, mineGridMineCells, mineGridNeighbors, type MineGridSnapshot } from "../src/arcade/mine-grid";
 import { applySnake, createSnake, SNAKE_SCALING_DESTINATION } from "../src/arcade/snake";
 
 interface Corpus {
@@ -64,12 +64,64 @@ describe("arcade shared content gate (AR7)", () => {
     for (const code of ["advance_past_terminal", "advance_window", "illegal_phase", "invalid_turn", "turns_not_ascending"]) expect(codes.has(`snake:${code}`), code).toBe(true);
   });
 
-  it("never exposes a mine position in a non-terminal snapshot (AC4)", () => {
-    for (const scenario of corpus.scenarios.filter((row) => row.engine === "mine_grid")) {
-      const terminal = scenario.expected_terminal as { phase: string; mine_cells: number[]; mines: number; first_cell: number };
-      expect(terminal.phase).toBe("terminal");
-      if (terminal.first_cell >= 0) expect(terminal.mine_cells.length).toBe(terminal.mines);
+  it("never exposes mines in actual nonterminal outputs and refuses forged hidden state (AC4)", async () => {
+    const scenarios = corpus.scenarios.filter((row) => row.engine === "mine_grid");
+    const populations = new Set<string>();
+    let observations = 0;
+    let refusalPopulations = 0;
+    for (const scenario of scenarios) {
+      const identity = { content: fixture, content_hash: corpus.arcade_content_hash, content_schema_version: 1, seed: BigInt(scenario.seed), mode: "solo" as const,
+        scaling_inputs: { [MINE_GRID_SCALING_DESTINATION]: 1 } };
+      let snapshot = await createMineGrid(identity);
+      let revision = 1;
+      const inspect = async (): Promise<void> => {
+        // Do not ask the decoder under test to certify its own output. Observe
+        // the actual engine bytes before testing decoder/apply refusal separately.
+        const raw = JSON.parse(snapshot) as MineGridSnapshot;
+        const placed = raw.first_cell >= 0;
+        populations.add(`${raw.phase}:${placed ? "placed" : "unplaced"}`);
+        observations++;
+        if (raw.phase !== "terminal") {
+          expect(raw.mine_cells, `${scenario.name} revision ${revision}: hidden mines`).toEqual([]);
+          expect(raw.exploded_cell, `${scenario.name} revision ${revision}: hidden explosion`).toBe(-1);
+        } else {
+          const mines = placed ? mineGridMineCells(raw.width, raw.height, raw.mines, raw.first_cell, identity.seed) : [];
+          expect(raw.mine_cells, `${scenario.name}: terminal mine disclosure`).toEqual(mines);
+        }
+        expect(decodeMineGridSnapshot(snapshot), `${scenario.name}: clean decoder positive control`).toEqual(raw);
+        if (raw.phase !== "terminal" && placed) {
+          const mines = mineGridMineCells(raw.width, raw.height, raw.mines, raw.first_cell, identity.seed);
+          expect(mines).toHaveLength(raw.mines);
+          for (const [label, forged] of [
+            ["mine list", { ...raw, mine_cells: mines }],
+            ["exploded cell", { ...raw, exploded_cell: mines[0]! }],
+          ] as const) {
+            const leaked = JSON.stringify(forged);
+            expect(() => decodeMineGridSnapshot(leaked), `${scenario.name}: ${label} decoder refusal`).toThrow(SyntaxError);
+            await expect(applyMineGrid({ ...identity, revision, snapshot: leaked, command: '{"kind":"quit"}' }),
+              `${scenario.name}: ${label} engine refusal`).rejects.toThrow(SyntaxError);
+            refusalPopulations++;
+          }
+        }
+      };
+      await inspect();
+      for (const step of scenario.steps) {
+        try {
+          const output = await applyMineGrid({ ...identity, revision, snapshot, command: JSON.stringify(step.command) });
+          expect(step.expect, scenario.name).toBe("applied");
+          snapshot = output.snapshot;
+          revision++;
+        } catch (error) {
+          if (!(error instanceof ArcadeRejection)) throw error;
+          expect(error.code, scenario.name).toBe(step.expect);
+        }
+        await inspect();
+      }
+      expect(snapshot, `${scenario.name}: unchanged corpus terminal`).toBe(JSON.stringify(scenario.expected_terminal));
     }
+    expect(observations).toBe(scenarios.reduce((count, scenario) => count + 1 + scenario.steps.length, 0));
+    expect([...populations].sort()).toEqual(["playing:placed", "playing:unplaced", "setup:unplaced", "terminal:placed", "terminal:unplaced"]);
+    expect(refusalPopulations).toBeGreaterThan(0);
   });
 });
 
