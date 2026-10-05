@@ -1205,3 +1205,14 @@ first; single-wearer mutations independently fail Go and TS. The regenerated cor
 25 Founder rows plus the unchanged Exit pair. Focused cold Go, 6,950 client tests and
 typecheck pass, with both mutations restored. No product or live content change was needed.
 Claude's designated review is still required; this does not close C4, Cosmetics or 1.0.
+
+## 2026-10-05 — Cosmetic C7 package-gate bypass corrected locally
+
+RP-180's temporary actual dynamic economy import passed the old isolation gate. A bounded
+tooling correction now parses syntax, normalizes package-local paths and scans nested script
+files. Retained dynamic/path-escape negatives failed first; actual top-level and nested probes
+now fail and were restored. The gate passes 22 negatives, 6,950 client tests and typecheck
+pass locally. Existing client CI invokes the gate; no workflow changed and no fresh hosted
+result is claimed. The independent AC7 contribution-producer mutation also fails the honest
+population, but the Company comparison itself does not consume that provider and must not be
+cited as integrated proof. Claude review and the broader Cosmetic review remain open.

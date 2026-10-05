@@ -92,7 +92,9 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
 
 - **N1/N2:** the catalog and intent grammars have no price or payment field.
 - **N3/N8:** `make verify-cosmetic-boundary`. `server/cosmetic` is standard-library only, and
-  `client/src/cosmetic` imports siblings only.
+  `client/src/cosmetic` imports only within its own package. The gate parses import/re-export
+  syntax, including dynamic imports and import-equals, rejects computed specifiers and normalized
+  path escapes, and recursively checks nested script files. Literal/comment text is not code.
 - **N4:** `make verify-no-payment`. Runtime dependencies must equal
   `client/tools/runtime-dependency-allowlist.json`, and a denylist scans the lockfile and Go modules
   for payment, IAP and ads SDKs.

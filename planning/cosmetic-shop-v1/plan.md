@@ -37,6 +37,8 @@ migration take the next free numbers at landing.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
+  RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's
+  designated review; the old regex admitted a real dynamic economy import.
 - [x] AC14 composed real-server witness (Buy → reload under the N5 trap, with a severed-producer
   failing case). A test-only epoch pins `cosmetics`; no production mint. The test and checkbox
   land in the same range; Claude's designated review remains an independent archival gate.

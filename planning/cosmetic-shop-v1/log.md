@@ -1136,3 +1136,35 @@ path-escape negatives; demonstrate they fail first. After correction, recreate t
 disallowed source probe and require a nonzero gate exit, then restore. Run the gate, client
 population and typecheck cold. No runtime dependency, mechanic or kernel source changes;
 Claude designated review of this tooling correction remains mandatory.
+
+## 2026-10-05 — RP-180 syntax-aware tooling correction
+
+Two retained negatives failed separately before correction: dynamic
+`import("../economy-kernel")`, then the otherwise static `./../economy-kernel` escape
+(by reordering the fixtures so one red did not mask the other). The corrected gate uses
+the existing installed TypeScript dependency, with parse errors/computed specifiers failing
+closed. Import declarations, re-exports, dynamic/require calls, import-equals and import
+types share a normalized package-contained path check. Recursion covers nested JS/TS module
+extensions, rejects symlinks and refuses an empty source population. Nested committed fixtures
+include both an allowed package-local parent import and an escaping dynamic import.
+
+After correction the actual top-level temporary economy-import source fails the full gate;
+a second actual nested `.mts` probe also fails. Both files were removed. With probes restored,
+the gate passes 22 negatives and the real two-file package. No-payment passes its six negatives
+and two near-misses. Cold full client tests pass (6,950 plus 85 browser skips); typecheck has
+zero errors/warnings. The client Actions job already calls `make verify-client`, which invokes
+this gate; no workflow or runtime dependency change was needed. This is local evidence, not
+a hosted CI result; the separate historical kernel-history failure remains.
+
+The final restored cold verbose Go Cosmetic run passes AC7's 200-seed population and its
+existing injected Fiscal-input negative. The independent cosmetic-owned contribution mutation
+previously failed `frozen Founder contributions diverged`. Company arms still invoke the same
+Company commands with no contribution provider; their equality alone is not integrated proof
+of the frozen-channel consumer. The contribution comparison and source boundary provide the
+named narrow evidence here; do not quote the Company equality as an integrated multiplier
+witness. This entry does not approve the full C8 docs/range or supersede C7's targeted gate
+finding. The host run explicitly skips Postgres, and no new DB result is claimed.
+
+**READY FOR CLAUDE DESIGNATED REVIEW:** the RP-180 correction begins at `c09e7e9a^` and
+includes this tooling/docs/fixtures/tracking commit; the next checkpoint names its final hash.
+No runtime source, kernel source, production content, owner copy or RFC body was changed.

@@ -1,5 +1,14 @@
 # Executable queue
 
+## Current Cosmetic Shop C7/N8 import-gate correction — 2026-10-05
+
+RP-180's actual dynamic economy-import probe passed the old gate. The bounded syntax-aware
+tooling correction now rejects static/dynamic/import-equals/type imports, re-exports and computed
+or normalized escaping specifiers when they cross the package boundary. Top-level and nested
+actual source probes fail; 22 negatives and the restored local client/type gates pass. This is
+**READY FOR CLAUDE DESIGNATED REVIEW**, not full C7/C8 approval or fresh hosted CI. The client
+CI job already invokes it through `make verify-client`; no workflow change was made.
+
 ## Current Cosmetic Shop C4/AC6 second-wearer evidence — 2026-10-05
 
 RP-179 records an acceptance gap: the shared Go/TS transition corpus reaches only one pet,

@@ -6,7 +6,7 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-05, product source `646daa08`, evidence through the Cosmetic
-C4/AC6 second-wearer supplement `144f5e8e` (RP-145–RP-179 corrections,
+C4/AC6 second-wearer supplement `144f5e8e` and C7/N8 gate correction (RP-145–RP-180 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
@@ -62,6 +62,10 @@ equips both without losing either wearer. The required-row check failed first; i
 Go/TS single-wearer mutations fail the new population. The corpus has 25 Founder cases,
 and focused cold Go, 6,950 client tests and typecheck pass. The test-only range
 `4b319313^..144f5e8e` awaits Claude designated review; this does not close C4.
+RP-180's package gate admitted a real dynamic economy import. A bounded tooling correction
+now parses actual syntax and normalized paths, scans recursively and rejects top-level/nested
+probe files, with 22 negative fixtures. The existing client CI job invokes the gate. Local
+client/type checks pass, but the Codex correction still requires Claude designated review.
 Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
 population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
 corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through
