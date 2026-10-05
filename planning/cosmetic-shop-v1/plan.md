@@ -37,6 +37,10 @@ migration take the next free numbers at landing.
   This checkbox records implementation presence, not full C4 approval.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
+  Codex's bounded AC12 review found RP-183: Equip/Unequip lacked the visible curtains'
+  `aria-describedby` links. A retained all-controls assertion fails first across all three
+  engines; the link-only correction and independently firing Unequip probe pass locally.
+  Claude designated review of this correction and the broader C6 review remain required.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
   RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's

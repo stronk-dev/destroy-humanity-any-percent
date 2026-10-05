@@ -92,7 +92,7 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   - the shop binds `checkout_flow`;
   - `re_release` is reserved;
   - curtains render as persistent small print in every state and are the controls'
-    `aria-describedby`;
+    `aria-describedby`, including Buy, Equip and Unequip while pending or applied;
   - the loader rejects a missing, duplicated or unknown curtain, and exports `curtainList` for the
     honesty appendix.
 

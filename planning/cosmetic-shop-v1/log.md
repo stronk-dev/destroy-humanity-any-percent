@@ -1364,3 +1364,44 @@ Linux three-engine component population and current type/unit/boundary checks; r
 link again to demonstrate failure, then restore. No new copy, behavior rule, payments, pricing,
 catalog or schema. Record actual keyboard/browser evidence, not an AT participant study.
 The component correction requires Claude's designated cross-party review before closure.
+
+## 2026-10-05 — C6/AC12 targeted verdict and wearer-control link correction
+
+**Review by:** Codex. **Recorded by:** Codex.
+**Reviewed range:** Claude `1bba27ba^..1bba27ba`, bounded to AC12's control/disclosure binding.
+**Verdict:** CHANGES REQUIRED (RP-183), not a complete C6 acceptance or AT-study verdict.
+The retained all-controls assertion at `e5c63de5` fails against the unchanged component in
+Chromium, Firefox and WebKit: `owned Put it on Mittens curtain references: expected undefined`
+instead of the three bound curtain IDs. The visible paragraphs existed; the links did not.
+
+The bounded accepted-§8/AC12 correction adds the existing describedBy helper to Equip and
+Unequip. No copy or new disclosure is authored. The retained render population now checks
+every button's exact references alongside the rendered paragraphs' existing visibility/text
+checks, including owned-pending and equipped-pending states with disabled controls.
+
+Executed evidence:
+
+- Cold declared Linux browser composition, focused shelf file: initial 3 failures/9 passes,
+  then 12/12 pass across all three engines after the correction.
+- Remove only Unequip's link, leaving Equip correct: all three engines fail specifically at
+  `equipped Take it off Mittens curtain references: expected undefined`. The probe is restored.
+- Cold complete `make test-browser-ci` passes: 252 file populations, 21,099 tests, 3 intentional
+  performance-case skips across the three-engine non-performance run (91.09 seconds), followed
+  by the separate Chromium performance population (1 pass/20 filtered skips). These counts
+  include shared vector/unit tests; they are not counts of integrated user journeys.
+- `make typecheck test-client verify-client-boundary verify-cosmetic-boundary verify-no-payment`
+  passes: 0 type/Svelte diagnostics, 6,953 unit tests (85 browser skips), shell/UI boundaries,
+  22 cosmetic negatives and 6 no-payment negatives. The production Vite build also passes.
+
+The first attempted focused container command asked the declared Playwright image to run
+`make`; that image has no Make binary and exited 127 after installing its frozen dependencies.
+This was an invalid launcher attempt, not a product failure or a successful negative. The
+subsequent focused runs use the declared composition's Corepack/frozen-pnpm setup and its
+actual Vitest command, selected by file. The full CI composition uses its unchanged command.
+Existing orphan Postgres services are preserved, never removed as cleanup.
+
+No callback, ownership/revision semantics, style, generated copy, catalog, kernel path or CI
+workflow changed. Existing axe assertions pass but this range does not expand their severity
+selection or claim manual screen-reader/AT evidence. Copy adoption and G10 live overlay remain
+open. Codex's correction is a first filter awaiting Claude designated review; no archive/push.
+Copy-history and kernel-history command results are recorded in the following checkpoint.

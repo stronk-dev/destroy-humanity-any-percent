@@ -68,9 +68,9 @@
             {#each arm.wearers as wearer (wearer.pet_id)}
               <li>
                 {#if wearer.worn === item.cosmetic_id}
-                  <button type="button" disabled={pending || !controlsEnabled} onclick={() => onUnequip(wearer.pet_id)}>{t("shop.cosmetics.unequip", { pet: petName(wearer.pet_id) }, era)}</button>
+                  <button type="button" disabled={pending || !controlsEnabled} aria-describedby={describedBy(item.cosmetic_id)} onclick={() => onUnequip(wearer.pet_id)}>{t("shop.cosmetics.unequip", { pet: petName(wearer.pet_id) }, era)}</button>
                 {:else}
-                  <button type="button" disabled={pending || !controlsEnabled} onclick={() => onEquip(item.cosmetic_id, wearer.pet_id)}>{t("shop.cosmetics.equip", { pet: petName(wearer.pet_id) }, era)}</button>
+                  <button type="button" disabled={pending || !controlsEnabled} aria-describedby={describedBy(item.cosmetic_id)} onclick={() => onEquip(item.cosmetic_id, wearer.pet_id)}>{t("shop.cosmetics.equip", { pet: petName(wearer.pet_id) }, era)}</button>
                 {/if}
               </li>
             {/each}

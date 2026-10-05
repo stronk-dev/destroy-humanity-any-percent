@@ -81,12 +81,22 @@ it.skipIf(!browser)("buys by keyboard, never shows owned before the receipt, the
     expect(document.activeElement?.classList.contains("owned")).toBe(true);
     assertCurtainsVisible(target, "owned");
     await assertAxe(target, "owned");
+    app.update({ pending: true });
+    await settle();
+    assertCurtainsVisible(target, "owned-pending");
+    expect([...target.querySelectorAll<HTMLButtonElement>("button")].every((control) => control.disabled)).toBe(true);
+    app.update({ pending: false });
+    await settle();
     [...target.querySelectorAll<HTMLButtonElement>("button")].find((node) => node.textContent?.includes("Mittens"))!.click();
     expect(calls.at(-1)).toBe(`equip:horse_armor:${CAT}`);
     app.update({ arm: arms["owned-worn"]! });
     await settle();
     assertCurtainsVisible(target, "equipped");
     await assertAxe(target, "equipped");
+    app.update({ pending: true });
+    await settle();
+    assertCurtainsVisible(target, "equipped-pending");
+    expect([...target.querySelectorAll<HTMLButtonElement>("button")].every((control) => control.disabled)).toBe(true);
     for (const token of ["$2", "limited", "Limited", "countdown", "hurry"]) expect(target.textContent, token).not.toContain(token);
   } finally { unmount(app); target.remove(); }
 });
