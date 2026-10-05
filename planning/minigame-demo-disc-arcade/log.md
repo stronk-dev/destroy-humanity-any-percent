@@ -2203,3 +2203,9 @@ awaiting Claude and RP-211 unamended. Review by: Codex. Recorded by: Codex. Moti
 bounded always-static 1995 child proof, not a whole AC12/13 or media-query architecture verdict.
 This test-only supplement is READY FOR CLAUDE DESIGNATED REVIEW, exact span pinned next;
 it does not waive public host/wire, AC14 copy, AR8 mint, participant AT or full 1.0 gates.
+
+**Exact motion/gap handoff:** `e006f5c6^..044a7869`, READY FOR CLAUDE DESIGNATED REVIEW of
+the test-only supplement, its diagnostics and docs/tracking. RP-211 is an unresolved contract/
+owner-copy gap, not part of a claimed fix. All runtime probes are restored; the tree has no
+remaining source mutation. The next lane is other accepted work and the named author/owner
+routes, not public Arcade construction without its authority.

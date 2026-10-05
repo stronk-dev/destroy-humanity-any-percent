@@ -18,6 +18,7 @@ remain PENDING OWNER NAME. No new copy or key is invented here.
 
 Original A6/A7 range `fca062a1^..fca062a1` remains CHANGES REQUIRED. RP-208/209/210 corrective
 ranges and this test-only supplement await Claude designated review; no self-approval/archive.
+The motion/gap supplement's exact review span is `e006f5c6^..044a7869`.
 No public host/wire/mint is authorized; unchanged RP-131 still blocks a whole-green CI claim.
 
 **NEXT SAFE ACTION:** route the RP-211 mechanical/copy gap to its author/OD-15, retain the exact

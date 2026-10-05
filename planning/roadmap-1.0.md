@@ -31,7 +31,8 @@ Claude review pending),
 plus the separately predeclared board-focus pause correction RP-210 `a9a39446`
 (review span `55cd1ce0^..a9a39446`; child-only native-focus/engine evidence; Claude review pending),
 plus test-only real-preference motion evidence and unresolved terminal-name contract/copy
-gap RP-211 (no runtime/copy change or accessibility promotion),
+gap RP-211 `044a7869` (review span `e006f5c6^..044a7869`, awaiting Claude;
+no runtime/copy change or accessibility promotion),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`

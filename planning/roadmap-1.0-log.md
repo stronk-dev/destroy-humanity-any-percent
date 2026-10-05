@@ -1730,3 +1730,7 @@ is neither rerun nor bypassed. No runtime, kernel, owner copy, CI or public wire
 Original A6/A7 stays CHANGES REQUIRED; Claude must review the new evidence range and previous
 corrections. Full nine-tier 1.0, participant AT, public hosting/mint and clean-host release proof
 remain open, not silently reduced to a preview or promoted by these local results.
+
+Exact test-only motion/gap review span: `e006f5c6^..044a7869`, pending Claude designated
+review. RP-211 remains an unresolved author/owner route; all runtime mutations are restored.
+This checkpoint pins evidence, not acceptance/archival. The full 1.0 goal remains active.

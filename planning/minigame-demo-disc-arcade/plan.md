@@ -148,3 +148,4 @@ filter. The original Claude A1–A7 work is not approved by these evidence suppl
 | RP-205/207: due-cross-gate live/shared replay, kernel 0.3.148, literal output and owned Fiscal event-reader proof | `efdc2dbc^..4b8abb89` |
 | RP-208/209: serialized delayed Snake Quit, terminal drain and recovery/unmount controls | `610a8c80^..4e529ee9` |
 | RP-210: actual board-focus pause, native P/Escape and controlled visibility evidence | `55cd1ce0^..a9a39446` |
+| Test-only real-preference zero-decoration motion proof; RP-211 terminal-name gap routing | `e006f5c6^..044a7869` |
