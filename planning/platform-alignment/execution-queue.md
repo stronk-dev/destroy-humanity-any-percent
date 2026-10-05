@@ -11,6 +11,7 @@ Both wrong-output probes fail the new comparison; capture-ownership and missing 
 witness controls also fail. Probes are restored. Cold Go, 7,050 client tests, root checks and
 the complete cold Linux browser target (21,399 plus performance) pass. **READY FOR CLAUDE
 DESIGNATED REVIEW**, not full AR7, complete CI or archival acceptance. No product bytes changed.
+Exact Codex corrective range: `c48ce7f2^..92ed5e68`.
 
 **NEXT SAFE ACTION:** predeclare RP-195's bounded Snake snapshot-grammar parity audit under
 accepted A3/AR4/AR7. Read-derived coercive/null admission questions require actual decoder/apply

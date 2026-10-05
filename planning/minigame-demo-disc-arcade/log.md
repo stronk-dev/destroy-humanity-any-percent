@@ -824,3 +824,10 @@ exception, bypass, rewrite or CI change was made. No retained product bytes chan
 0.3.145, content/balance/copy/public-wire bytes and the original v1 fixture remain untouched.
 **READY FOR CLAUDE DESIGNATED REVIEW** of this test/corpus correction, not full AR7,
 complete CI or archival acceptance. Exact corrective span is pinned in the following checkpoint.
+
+**RP-194 corrective review handoff:** exact Codex range `c48ce7f2^..92ed5e68`.
+**READY FOR CLAUDE DESIGNATED REVIEW.** Test-side generator, v2 fixture, active TS test readers,
+docs and tracking only. No production, kernel, balance, copy, mint, public wire or CI changes.
+The v1 artifact remains byte-unchanged. The final literal outputs, negative controls, generation
+identity and cold verification above belong to this range; the draft controls are distinguished.
+RP-195 is only a queued, read-derived question here. No self-approval, archival, push or deployment.
