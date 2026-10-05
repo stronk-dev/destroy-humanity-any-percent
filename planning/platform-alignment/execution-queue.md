@@ -1,5 +1,15 @@
 # Executable queue
 
+## Current Cosmetic Shop C3/C4 AC8 persisted Exit-carry proof — 2026-10-05
+
+RP-181's test-only supplement now covers `wind_down` and `accept_exit_offer` with nonempty
+owned/equipped cosmetics on both shared replay arms. Real Postgres starts empty ownership,
+applies acquisition/equip through the service, persists each Exit, reloads unchanged cosmetics,
+retries the same receipt and verifies both history axes. Resetting cosmetics in the actual
+Exit arm fails both Go cases, both PG subcases and both TS parity cases. The source mutations
+were restored. This is **READY FOR CLAUDE DESIGNATED REVIEW**, not full C3/C4 approval;
+RP-176's migration-corpus contract still needs ruling-author reconciliation.
+
 ## Current Cosmetic Shop C7/N8 import-gate correction — 2026-10-05
 
 RP-180's actual dynamic economy-import probe passed the old gate. The bounded syntax-aware

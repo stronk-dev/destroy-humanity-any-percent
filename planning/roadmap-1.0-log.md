@@ -1221,3 +1221,16 @@ The fresh `make verify-client` at `ad789790` passes typecheck/build/client/shell
 then fails at historical `50a3a514` in the kernel-history gate (RP-131, exit 2). The complete
 client CI target remains red; separately executed Cosmetic/no-payment gates pass. No new
 hosted result or historical exception is claimed.
+
+## 2026-10-05 — Cosmetic AC8 proof covers actual owned/equipped Exits
+
+RP-181 found that AC8's two named nonempty carry paths had no shared or persisted witness.
+The retained required-row guard failed first. The test-only supplement adds wind-down and
+accept-offer Exit pairs, with independent Company-output and Founder-audit comparisons.
+Real Postgres creates ownership/equip through actual service commands, persists each Exit,
+reloads/retries and verifies both history axes. The first invalid composition's missing
+minigame activity resolver was disclosed and corrected with the real repository, not a
+guard bypass. Resetting cosmetics in the actual Exit breaks both Go cases, both PG subcases
+and both TS cases; all mutations are restored. Cold Postgres server-core, 6,953 client tests,
+typecheck and the package/no-payment gates pass locally. No live loss bug or product change
+was established. Claude review, RP-176 body reconciliation and broader release work remain.

@@ -6,7 +6,7 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-05, product source `646daa08`, evidence through the Cosmetic
-C4/AC6 second-wearer supplement `144f5e8e` and C7/N8 gate correction (RP-145–RP-180 corrections,
+C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction and AC8 persisted Exit proof (RP-145–RP-181 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
@@ -66,6 +66,11 @@ RP-180's package gate admitted a real dynamic economy import. A bounded tooling 
 now parses actual syntax and normalized paths, scans recursively and rejects top-level/nested
 probe files, with 22 negative fixtures. The existing client CI job invokes the gate. Local
 client/type checks pass, but the Codex correction still requires Claude designated review.
+RP-181's test-only supplement now covers both named Exit intents carrying nonempty cosmetics
+in Go/TS. A real-Postgres service acquires/equips before each Exit, reloads unchanged ownership,
+retries the same receipt and verifies both history axes. Actual Exit resets fail both Go,
+Postgres and TS populations. The cold server-core target and 6,953 client tests pass locally;
+Claude designated review remains required, and RP-176's separate RFC-body blocker is unchanged.
 Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
 population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
 corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through

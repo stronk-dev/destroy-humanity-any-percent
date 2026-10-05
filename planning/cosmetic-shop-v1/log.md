@@ -1210,3 +1210,57 @@ must fail independently in Go, TS and the persisted witness; restore every mutat
 Run focused cold Go, client/type checks and the real-Postgres population. No product,
 catalog, copy or ruling-author RFC body change is preauthorized by this evidence supplement.
 Claude designated review remains required before closure.
+
+## 2026-10-05 — C3/C4 AC8 targeted verdict and persisted proof supplement
+
+**Review by:** Codex (designated reviewer of Claude). **Recorded by:** Codex.
+**Reviewed ranges:** `581886a4^..581886a4` and `500d944c^..500d944c`, limited to AC8's
+two named Exit paths. **Verdict:** CHANGES REQUIRED on RP-181's missing acceptance evidence,
+not a proven live ownership-loss bug and not a blanket C3/C4 verdict. The retained required-row
+guard initially failed the full client population because the nonempty wind-down case was
+absent (6,950 passed, one failed, 85 browser skips). The original corpus had only the empty
+activation Exit; a supplied-state copy test and an adoption mutation did not prove AC8's paths.
+
+The test-only correction now retains `exit-wind-down-preserves-owned-equipped` and
+`exit-accept-offer-preserves-owned-equipped` in the Go-authored shared corpus. Both have a
+valid fixture pet and one owned/equipped item. The Company terminal's output and the Founder
+audit replay's saved bytes independently preserve that same nonempty input. Go has separately
+named subtests, and TS byte-matches both output arms and checks the nonempty input. The existing
+25 Founder cases and original activation Exit are unchanged; only two Exit pairs were added.
+The optional test-factory configuration keeps the existing Reputation corpus unchanged.
+
+`TestCosmeticExitCarryIntegration` proves each path through real Postgres. The Founder starts
+with a seeded adopted pet but **empty ownership**; actual service acquisition and equip create
+the input, before the named Exit advances Company run 2→3 and Founder revision 3→4. Reload
+preserves cosmetics exactly, retry returns the same receipt without extra history entries,
+and both the persisted Founder history and Company run log verify. The service uses the real
+database-backed frozen-contribution provider and minigame activity repository. Its first
+attempt lacked the activity resolver and failed `minigame activity resolver unavailable`;
+that was an invalid test composition, not a game defect, and the correction supplies production's
+actual resolver rather than loosening the guard. The clock is anchored to Postgres as in the
+earlier recovery proof. Controlled offer state and the adopted pet remain test fixtures, not
+claims about live content minting or a default-browser journey.
+
+Independent reset probes were run and restored:
+
+- Clearing cosmetics inside Go `finishExitResolved` fails **both** pure named-path subtests
+  with `Company terminal lost cosmetics`. The Founder audit arm by itself still preserved the
+  state, which is why the independent Company-output assertion matters.
+- The same production reset fails **both** persisted service subtests at the existing live
+  Founder/Exit parity guard (`parity at cosmetics`), rather than silently committing a loss.
+- Resetting the TS Company Exit carry fails **both** shared parity cases at the Founder-output
+  comparison (two failed, 6,951 passed, 85 skips).
+
+All source mutations were removed; `git diff --exit-code` confirms no residual production
+change. Final cold local checks pass: real-Postgres `make verify-server-core` (vet and every
+non-harness Go package at `-count=1`), focused Go corpus checks, 6,953 client tests plus 85
+browser skips, typecheck with zero errors/warnings, 22 Cosmetic boundary negatives and the
+no-payment gate. Formula/API generation leaves no diff. The auxiliary Pitch-specific recipe
+reported cached, but the same Pitch tests ran cold in the package population; no warm recipe
+is counted as a new independent proof. Hosted CI was not run, and RP-131's historical
+kernel-history failure remains separate.
+
+**READY FOR CLAUDE DESIGNATED REVIEW:** the test-only correction starts at `e7bc1c8b^` and
+includes this supplemental test/fixture/docs/tracking commit; the next checkpoint records the
+exact final hash. Codex's corrective checks are a first filter, not self-approval. RP-176's
+ruling-author §6/AC4 reconciliation, remaining Cosmetic reviews, copy and G10 are still open.

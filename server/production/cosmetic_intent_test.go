@@ -275,12 +275,68 @@ func buildCosmeticCorpus(t *testing.T) cosmeticCorpus {
 	cases := append(append(append([]reputationCorpusCase{}, inactive.cases...), runner.cases...), pairRunner.cases...)
 	cases = append(cases, multiRunner.cases...)
 	exitCases := []reputationExitCase{makeReputationPlanExitCase(t, "exit-activates-founder-v24", species, shop, 23, 4, nil, now)}
+	for _, kind := range []string{IntentWindDown, IntentAcceptExitOffer} {
+		exitCases = append(exitCases, makeCosmeticExitCarryCase(t, kind, shop, now))
+	}
 	return cosmeticCorpus{Version: 1, Cases: cases, ExitCases: exitCases, Bundles: map[string]reputationCorpusBundle{
 		"species": {ConstantsHash: species.ConstantsHash, Artifacts: stringArtifacts(species.Artifacts)},
 		"shop":    {ConstantsHash: shop.ConstantsHash, Artifacts: stringArtifacts(shop.Artifacts)},
 		"pair":    {ConstantsHash: pair.ConstantsHash, Artifacts: stringArtifacts(pair.Artifacts)},
 		"multi":   {ConstantsHash: multi.ConstantsHash, Artifacts: stringArtifacts(multi.Artifacts)},
 	}}
+}
+
+func makeCosmeticExitCarryCase(t *testing.T, kind string, shop CatalogBundle, now time.Time) reputationExitCase {
+	t.Helper()
+	name := "exit-wind-down-preserves-owned-equipped"
+	if kind == IntentAcceptExitOffer {
+		name = "exit-accept-offer-preserves-owned-equipped"
+	}
+	exitCase := makeReputationPlanExitCase(t, name, shop, shop, 24, 4, nil, now, func(company, founder *save.State) {
+		seedCosmeticExitWearer(t, shop, founder, now)
+		if kind == IntentAcceptExitOffer {
+			seedCosmeticExitOffer(company, now)
+		}
+	})
+	var pre, post map[string]json.RawMessage
+	if json.Unmarshal(exitCase.Founder.PreState, &pre) != nil ||
+		json.Unmarshal([]byte(exitCase.Founder.PostStateJSON), &post) != nil ||
+		canonicalFixtureJSON(t, pre["cosmetics"]) != canonicalFixtureJSON(t, post["cosmetics"]) ||
+		string(post["cosmetics"]) != `{"equipped":{"`+adoptedPetID+`":"horse_armor"},"owned":["horse_armor"]}` {
+		t.Fatalf("%s lost owned/equipped cosmetics: %s", name, exitCase.Founder.PostStateJSON)
+	}
+	companyOutput := exitCase.Company.Case.FounderOutput.(replayFounderCarry)
+	if companyOutput.FounderExtensions == nil || !companyOutput.FounderExtensions.Cosmetics.Equal(
+		&cosmetic.State{Owned: []string{"horse_armor"}, Equipped: map[string]string{adoptedPetID: "horse_armor"}}) {
+		t.Fatalf("%s Company terminal lost cosmetics: %+v", name, companyOutput)
+	}
+	return exitCase
+}
+
+func TestCosmeticExitCarryPaths(t *testing.T) {
+	shop := cosmeticsContentBundle(t)
+	now := time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
+	for _, kind := range []string{IntentWindDown, IntentAcceptExitOffer} {
+		t.Run(kind, func(t *testing.T) { makeCosmeticExitCarryCase(t, kind, shop, now) })
+	}
+}
+
+func seedCosmeticExitWearer(t *testing.T, bundle CatalogBundle, founder *save.State, now time.Time) {
+	t.Helper()
+	care, err := pet.InitialCareState(bundle.Pets, founder.AgeMS)
+	if err != nil {
+		t.Fatal(err)
+	}
+	identity := adoptedIdentity()
+	identity.AdoptedAtMS, identity.AdoptedAtAttendedMS = now.UnixMilli(), founder.AgeMS
+	founder.Pets[adoptedPetID], founder.PetIdentities[adoptedPetID] = care, identity
+	founder.Cosmetics = &cosmetic.State{Owned: []string{"horse_armor"}, Equipped: map[string]string{adoptedPetID: "horse_armor"}}
+}
+
+func seedCosmeticExitOffer(company *save.State, now time.Time) {
+	company.OfferState = &save.ExitOfferState{OfferID: "01986666-9e00-7000-8000-000000000099", ExitType: "acquisition",
+		TermsJSON: json.RawMessage(`{"market_modifier_ppm":1000000,"payout_preview":{"reputation_delta":0,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"}}`),
+		SpawnedAt: now.Add(-time.Minute), ExpiresAt: now.Add(time.Minute)}
 }
 
 // TestCosmeticCorpus is AC5/AC6: every §4 row in Go, pinned as the corpus the

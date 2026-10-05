@@ -54,7 +54,7 @@ describe("cosmetic intents cross-runtime corpus", () => {
   });
 });
 
-describe("Founder v24 activation at Exit (AC4)", () => {
+describe("Founder v24 activation and nonempty Exit carry (AC4/AC8)", () => {
   it("pins both nonempty AC8 Exit paths", () => {
     const names = corpus.exit_cases.map((row) => row.name);
     expect(names).toContain("exit-wind-down-preserves-owned-equipped");
@@ -80,6 +80,13 @@ describe("Founder v24 activation at Exit (AC4)", () => {
     expect(canonicalJSONString(founderTransition.receipt)).toBe(founderCase.receipt_json);
     const post = encodeFounderReplayState(founderTransition.state) as Record<string, unknown>;
     expect(canonicalJSONString(post)).toBe(founderCase.post_state_json);
-    expect(post.cosmetics).toEqual({ owned: [], equipped: {} });
+    if (exitCase.name === "exit-activates-founder-v24") {
+      expect(post.cosmetics).toEqual({ owned: [], equipped: {} });
+    } else {
+      const before = (founderCase.pre_state as Record<string, unknown>).cosmetics as { owned: string[]; equipped: Record<string, string> };
+      expect(before.owned).toEqual(["horse_armor"]);
+      expect(Object.values(before.equipped)).toEqual(["horse_armor"]);
+      expect(post.cosmetics).toEqual(before);
+    }
   });
 });

@@ -419,10 +419,10 @@ func replayFixtureStateFromEncoded(t *testing.T, catalogs CatalogBundle, encoded
 	return state
 }
 
-// makeReputationPlanExitCase drives one wind_down (collapse) through the
-// Company-log Exit transition and, when it applies, the matching Founder-log
-// arm built by the live audit path (buildFounderExitAudit).
-func makeReputationPlanExitCase(t *testing.T, name string, current, next CatalogBundle, founderVersion int, level int64, plan []string, now time.Time) reputationExitCase {
+// makeReputationPlanExitCase drives wind_down (or a configured stored offer)
+// through the Company-log Exit and matching Founder audit arm. Optional setup
+// changes only the test population; existing Reputation fixtures stay identical.
+func makeReputationPlanExitCase(t *testing.T, name string, current, next CatalogBundle, founderVersion int, level int64, plan []string, now time.Time, configure ...func(*save.State, *save.State)) reputationExitCase {
 	t.Helper()
 	if current.ConstantsHash != next.ConstantsHash {
 		copied := next
@@ -444,8 +444,16 @@ func makeReputationPlanExitCase(t *testing.T, name string, current, next Catalog
 	}
 	founder := reputationFounderState(t, current, founderVersion, now, level)
 	founder.ExitHistory = []save.ExitRecord{{RunID: 1, ExitType: "collapse", OccurredAt: now.Add(-time.Hour)}}
+	for _, setup := range configure {
+		setup(company, founder)
+	}
 	preState := mustEncodeState(t, company)
 	body := `{"intent_id":"01986666-8d01-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1`
+	exitType, terms := "collapse", json.RawMessage(`{}`)
+	if company.OfferState != nil {
+		body = fmt.Sprintf(`{"intent_id":"01986666-8d01-7000-8000-000000000001","kind":"accept_exit_offer","expected_revision":1,"expected_founder_revision":1,"offer_id":%q`, company.OfferState.OfferID)
+		exitType, terms = company.OfferState.ExitType, company.OfferState.TermsJSON
+	}
 	if plan != nil {
 		encodedPlan, _ := json.Marshal(plan)
 		body += `,"reputation_plan":` + string(encodedPlan)
@@ -468,7 +476,7 @@ func makeReputationPlanExitCase(t *testing.T, name string, current, next Catalog
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-8e00-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 2, RunLogSeq: 1}
 	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
-		SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash,
+		SelectedExitType: exitType, SelectedTerms: terms, NextConstantsHash: next.ConstantsHash,
 		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
 	if err != nil {
 		t.Fatal(err)

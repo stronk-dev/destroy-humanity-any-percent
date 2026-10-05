@@ -20,6 +20,8 @@ migration take the next free numbers at landing.
   C3/AC4 review found RP-176: the five mandated save-migration-corpus cases are absent and
   their specified home conflicts with new-run-only activation. This box is implementation
   presence, not C3 acceptance or archival approval; ruling-author reconciliation is required.
+  RP-181's separate AC8 test-only supplement now covers nonempty owned/equipped carry through
+  both named Exit paths in Go/TS and real Postgres; Claude designated review remains required.
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
   the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9). Codex's targeted
   C4/AC9 review found RP-177: only the Go decoder, not Postgres, rejected extra event payload

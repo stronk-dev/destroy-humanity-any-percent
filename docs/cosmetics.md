@@ -31,6 +31,9 @@ and `{}`, never `null`.
   `cosmetics`-pinning bundle, with nothing owned. It never activates mid-run.
 - **Exit:** Exit carries `cosmetics` byte-identically. The Company replay carry holds it from
   replay-inputs v11 when the Founder floor is at least 24.
+  The shared replay corpus covers owned/equipped carry through both `wind_down` and
+  `accept_exit_offer`. A real-Postgres witness acquires and equips through the service before
+  each Exit, checks reload/retry, and verifies both Company and Founder histories.
 - **Version numbering:** the RFC named "v22"; numbering is landing-order, so this landed as v24.
 
 ## Intents and events
