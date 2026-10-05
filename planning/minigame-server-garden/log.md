@@ -1025,3 +1025,37 @@ READY FOR CLAUDE DESIGNATED REVIEW, not approved: complete span `c9f449de^..8413
 repair `711153cd^..8413f112`. Both subranges must be inspected, including red baseline and
 retained positive/negative controls. No prior SG1/SG2/SG6/clock or R-010 span is consumed by
 this pin; all remain separate pending requests. Kernel 0.3.152, no archive/push/release.
+
+## 2026-10-06 — SG4 independent tick witness predeclaration
+
+Baseline `4ade679b`. Accepted SG4/AC3/AC4 authorize bounded review and test-only witnesses;
+no production correction is presumed. The Go-generated corpus remains valuable parity evidence,
+but cannot independently adjudicate a shared Go/TS error. Add a separate shared literal population
+whose expected plots, maturation and spawn records are authored from the normative transitions,
+not obtained from either production engine or the original corpus generator.
+
+Sixteen named cases: growth-before-census/diagonal, immature exclusion, dormant growth exclusion,
+dormant neighbour exclusion, three-parent minimum, two-species cross, strict draw threshold and
+its adjacent passing boundary, eligible-zero-chance draw consumption, ineligible draw omission,
+canonical recipe choice, Chaos factor/cumulative clamp, absolute-tick key, frozen mature effect,
+retune below age, and newborn next-tick growth. All inputs must pass the actual catalog/state
+admission. Full encoded state and complete summary must equal the literal expectation, including
+unchanged seed collection, salt, substrate stamp, anchor and counter. Pin exact population size.
+
+For probability-sensitive cases, record literal bounded draws for a fixed salt and absolute
+tick 1 and 2, derived by standalone unsigned-64 arithmetic/FNV/SplitMix formulas with no imports
+from game code. Check the primitive's seed-zero published arithmetic value as an internal control;
+bind production Go/TS PRNG output to the same literals. This checks these selected draws, not a
+statistical distribution or exhaustive rejection-sampling proof.
+
+Discrimination: serially sever Moore diagonals, strict threshold comparison, absolute tick key,
+and Go or TS canonical recipe order in the actual source. New witness failures are mandatory;
+restore exact bytes before any final claim. If a probe survives, report it and repair the witness
+under a separate declared boundary rather than infer discrimination. No source mutation while
+another verification is live. A new real defect gets a ledger row and separately declared repair.
+
+Gates: cold Garden/determinism Go, unchanged existing engine corpus, full root client/type/build,
+and complete native Linux three-browser/performance lane. No Postgres/coordinator claim is made
+by this pure population. No catalog/balance, runtime, schema, copy, kernel, CI, mint or lifecycle
+change is authorized; all existing review and release blockers remain. New tests await Claude's
+designated review, never self-archival.
