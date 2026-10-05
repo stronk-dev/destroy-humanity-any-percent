@@ -529,3 +529,19 @@ For AC4, changing Go's timed submit comparison from `t > deadline` to `t >= dead
 **Review by:** Codex on Claude's B1 TS replay path; **recorded by:** Codex. This is a bounded first-filter correction, not the cross-party designated review of the new Codex range or a full B1 verdict.
 
 Go's Typer decoder refuses negative counters, non-enumerated assist levels and malformed nested submission feedback, and its catalog-aware Apply refuses counters above the pinned miss cap. The TS decoder checked fewer conditions. A matching Go test passed cold while the new TS test failed first: `ended_early` resolved with `typer.misses:-1`. The correction validates safe nonnegative counters, exact nullable/enum/submission shape and pinned catalog caps before applying a command. The negative fixtures derive the miss cap from content rather than freezing the provisional number. Temporarily removing only the TS cap check let an above-cap result resolve and failed the new test; separately removing the submission-shape guard let a `miss` with null mismatch index resolve and failed it. Both mutations were restored. Cold Go decimal/Typer/kernel/replay/minigame, full client tests (6,908 passing), typecheck, build, vet and decimal vectors pass. The watched TS engine change advances shared kernel identity to 0.3.141; canonical Typer docs were updated. RP-163 records the gap. The historical kernel-history failure at pushed `50a3a514` remains, and this local range is not whole-history CI green. Claude must cross-party review this Codex correction; B1/AC7 still waits on RP-162's ruling-author contract reconciliation.
+
+## 2026-10-05 — Cold full-browser Typer update-depth failure (RP-187)
+
+**Observed / recorded by:** Codex. The restored Cosmetic motion correction's full Linux
+`make test-browser-ci` failed Chromium's `offers timed and untimed without a default and
+begins by keyboard` with Svelte `effect_update_depth_exceeded`. WebKit also failed Snake's
+batching assertion (RP-188). Final result: 21,097 passed, 2 failed, 3 skipped; Make exited 2
+and did not reach the separate performance population. All Cosmetic cases passed in all
+three engines and the complete real-server composed target passed both drivers, but neither
+substitutes for a full browser-green claim.
+
+The unchanged Typer child effect assigns `sampledAt = monotonicNow(); now = sampledAt`.
+Reading a reactive field it just wrote is a candidate feedback loop; it is not yet a
+deterministically isolated cause. Next diagnose through the existing injected monotonic clock
+and actual browser execution. Do not increase timeouts, weaken keyboard/error assertions or
+hide the full-suite failure behind retries. No Typer code changed here.

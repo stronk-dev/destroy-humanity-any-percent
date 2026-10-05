@@ -206,6 +206,10 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 
 | RP-186 | With unchanged CosmeticOverlay and `animate:true`, the retained three-engine test observes `matchMedia('(prefers-reduced-motion: reduce)').matches === true` but a non-`none` computed animation in Chromium, Firefox and WebKit. The media rule's `.flick` selector loses to the more-specific `[data-reaction="annoyed"][data-animate="true"] .flick` animation rule. The live pet host's separate `animate:false` preference defense masks this component defect. | ⚠ Codex C6/AC15 CHANGES REQUIRED on Claude `1bba27ba^..1bba27ba`, bounded to component reduced-motion behavior. Predeclared matching-specificity media-rule correction under accepted §7.4/AC15; retain the failing-first real-preference tests and separately fire media-rule/caption probes. No copy or kernel change planned. `planning/cosmetic-shop-v1/log.md`. |
 
+| RP-187 | A cold full `make test-browser-ci` on 2026-10-05 fails Chromium Typer's keyboard Begin case with Svelte `effect_update_depth_exceeded`. The original child time-sample effect writes `sampledAt` then reads it while assigning `now`; a reactive feedback dependency is a candidate cause, not yet a deterministic reproduction. | 🔬 retain the red full-suite result; diagnose with the existing injected monotonic clock before any runtime correction. No timeout increase, automatic retry or current browser-green claim. `planning/minigame-terminal-typer/log.md`. |
+
+| RP-188 | The same cold full browser lane fails WebKit Snake's batching/blur/resync case: after `settle(190)`, `server.submitted[0]` is undefined instead of the expected through-tick-4 command. The test uses four 40 ms timer callbacks plus a fixed 190 ms wall delay; this result alone does not establish a runtime batching defect. | 🔬 diagnose the actual scheduled callback/engine outcome contract under load; retain the failed run rather than raising the delay or acceptance bound. `planning/minigame-demo-disc-arcade/log.md`. |
+
 Owner choices D-001–D-017 and their evidence prerequisites live in
 `planning/platform-alignment/decision-queue.md`; agents may not answer them through code.
 

@@ -160,3 +160,18 @@ The mine glyph is `X` because the copy linter treats `*` as Markdown.
 - the AR6.1 arcade surface host and AR6.5 Desk copy, which need the public wire;
 - the OD-3 Fiscal `unlock.arcade` retirement and all production bytes (AR8 mint);
 - toy names and all prose (OD-15).
+
+## 2026-10-05 — Cold full-browser Snake timing failure (RP-188)
+
+**Observed / recorded by:** Codex. The restored Cosmetic motion correction's full Linux
+`make test-browser-ci` failed two cases: Chromium Typer's update-depth error (RP-187) and
+WebKit Snake's batching/blur/resync assertion. Snake observed no submitted command after
+the fixture's fixed `settle(190)` wait; expected `{kind:"advance", through_tick:4, turns:[]}`.
+The run exited Make 2 with 21,097 passing, 2 failed and 3 skipped; the separate performance
+case was not reached. This is current red CI-equivalent evidence, not an unrelated-case waiver.
+
+The unchanged case schedules four 40 ms callbacks but treats 190 wall milliseconds as proof
+they all ran. That is a candidate instrument assumption, not a verified runtime cause. Before
+any correction, isolate the exact scheduled callbacks and actual engine/server outcomes under
+accepted AR6.3. Do not raise sleeps/timeouts, add automatic retries, weaken expected commands,
+or claim full browser green from a selected passing rerun. No Arcade code changed here.
