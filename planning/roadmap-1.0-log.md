@@ -1127,3 +1127,13 @@ production pinning remain separate.
 changed without a real kernel/VERSION bump. The kernel-history checkout contract and its
 adversarial fixtures passed before that failure. This confirms the local Cosmetic correction
 did not make the broader CI gate green; RP-131 and the owner/accepted-RFC route remain open.
+
+## 2026-10-05 — Cosmetic C1 raw catalog number parity
+
+Codex's designated C1 review found Go/TS disagreement on JSON integer spelling: TS accepted
+catalog tier `1.0`/`1e0` and schema version `1.0` after `JSON.parse` normalized them; Go rejected
+all three. New independently named shared negatives failed first on TS and passed Go. The
+bounded raw TS loader now rejects those lexemes, with a targeted severing failure; the guarded
+change bumps kernel 0.3.141→0.3.142 in the same commit. Cold client, focused Go/kernel,
+typecheck, client build, cosmetic-boundary and no-payment gates pass. Claude must review the Codex
+correction. This does not close C1, Cosmetics, the red historical kernel CI gate or 1.0.

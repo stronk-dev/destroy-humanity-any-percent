@@ -10,6 +10,8 @@ migration take the next free numbers at landing.
 
 - [x] C1 Catalog grammar: `cosmetics` schema v1 loaders (Go `server/cosmetic`, TS
   `client/src/cosmetic`), shared reject fixtures, and the permanent-ID transition check (AC1, AC2).
+  Codex's targeted review found RP-175 raw-number parity; the corrective range awaits Claude's
+  designated review. This checkbox is implementation presence, not archival approval.
 - [x] C2 Replay-bundle wiring: `cosmetics` joins the constants bundle (OD-10) and requires
   `pet_species` on the scalar Founder chain.
 - [x] C3 Founder v24 `cosmetics` state: codec, validation, activation at the new-run boundary,

@@ -1,5 +1,16 @@
 # Executable queue
 
+## Current Cosmetic Shop C1/AC1 delta — 2026-10-05
+
+Codex's designated review of Claude C1 `afe6529b^..afe6529b` is **CHANGES REQUIRED**
+(RP-175): the TS raw catalog loader accepted `tier:1.0`, `tier:1e0`, and
+`schema_version:1.0` while Go rejected them. Three shared negatives failed TS first and
+passed Go. A bounded TS raw-token correction now rejects those exact non-integer lexemes;
+all shared cases, cold client, focused Go, typecheck, cosmetic-boundary and no-payment gates
+pass, and severing that condition makes the three cases fail again. The Codex corrective
+range is **READY FOR CLAUDE DESIGNATED REVIEW**, not approved or archival-eligible. This
+does not review C2–C8 or clear the separate C5/RP-173 and RFC-body/RP-174 findings.
+
 ## Current Cosmetic Shop C5/AC10 delta — 2026-10-05
 
 Codex's designated review of Claude's C5 `1a477d9e^..1a477d9e` is **CHANGES REQUIRED**:

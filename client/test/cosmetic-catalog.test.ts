@@ -22,6 +22,12 @@ describe("cosmetics catalog (Cosmetic Shop v1 §2, AC1)", () => {
     expect(catalog.items).toEqual([{ cosmetic_id: "horse_armor", slot: "pet", unlock: { kind: "active_company_tier_at_least", tier: 1 } }]);
   });
 
+  it("still rejects an unknown numeric field as an unknown field", () => {
+    const withUnknown = pinnedFixture.replace('"tier": 1', '"tier": 1, "price": 1.5');
+    expect(withUnknown).not.toBe(pinnedFixture);
+    expect(() => loadCosmeticCatalog(withUnknown)).toThrow(/keys are not exact/u);
+  });
+
   it("keeps ids permanent across epochs and allows an unlock retune (AC2)", () => {
     const current = loadCosmeticCatalog(pinnedFixture);
     const retuned = loadCosmeticCatalog(pinnedFixture.replace("\"tier\": 1", "\"tier\": 2"));

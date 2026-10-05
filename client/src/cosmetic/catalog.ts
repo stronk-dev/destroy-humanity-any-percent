@@ -36,9 +36,9 @@ export function parseCosmeticCatalog(source: unknown): CosmeticCatalog {
   return Object.freeze({ items: Object.freeze(items) });
 }
 
-/** Parses raw artifact bytes, rejecting duplicate keys JSON.parse would collapse. */
+/** Parses raw artifact bytes, retaining key and integer-token distinctions JSON.parse erases. */
 export function loadCosmeticCatalog(bytes: string): CosmeticCatalog {
-  if (!uniqueKeys(bytes)) throw new SyntaxError("cosmetics artifact has duplicate keys");
+  if (!strictCatalogTokens(bytes)) throw new SyntaxError("cosmetics artifact has duplicate keys or non-integer number tokens");
   return parseCosmeticCatalog(JSON.parse(bytes));
 }
 
@@ -71,10 +71,10 @@ function byteCompare(left: string, right: string): number {
   return a.length - b.length;
 }
 
-// Recursive-descent key-uniqueness check over JSON text (the Go loader
-// rejects duplicate keys; JSON.parse would silently keep the last one).
-// Structural errors return false; JSON.parse then decides validity.
-function uniqueKeys(text: string): boolean {
+// Recursive-descent check over raw JSON text. The Go loader rejects duplicate
+// keys and non-integer number tokens; JSON.parse erases both distinctions.
+// Structural errors return false; JSON.parse then decides other validity.
+function strictCatalogTokens(text: string): boolean {
   let index = 0;
   const skipSpace = () => { while (index < text.length && " \t\n\r".includes(text[index]!)) index += 1; };
   const readString = (): string | undefined => {
@@ -86,7 +86,7 @@ function uniqueKeys(text: string): boolean {
     index += 1;
     try { return JSON.parse(text.slice(start, index)) as string; } catch { return undefined; }
   };
-  const value = (): boolean => {
+  const value = (path: readonly string[]): boolean => {
     skipSpace();
     const char = text[index];
     if (char === "{") {
@@ -102,7 +102,7 @@ function uniqueKeys(text: string): boolean {
         skipSpace();
         if (text[index] !== ":") return false;
         index += 1;
-        if (!value()) return false;
+        if (!value([...path, key])) return false;
         skipSpace();
         if (text[index] === ",") { index += 1; continue; }
         if (text[index] === "}") { index += 1; return true; }
@@ -114,7 +114,7 @@ function uniqueKeys(text: string): boolean {
       skipSpace();
       if (text[index] === "]") { index += 1; return true; }
       for (;;) {
-        if (!value()) return false;
+        if (!value(path)) return false;
         skipSpace();
         if (text[index] === ",") { index += 1; continue; }
         if (text[index] === "]") { index += 1; return true; }
@@ -122,12 +122,18 @@ function uniqueKeys(text: string): boolean {
       }
     }
     if (char === "\"") return readString() !== undefined;
-    const match = /^(?:true|false|null|-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)/u.exec(text.slice(index));
-    if (!match) return false;
-    index += match[0].length;
+    const rest = text.slice(index);
+    const literal = /^(?:true|false|null)/u.exec(rest);
+    if (literal) { index += literal[0].length; return true; }
+    const number = /^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?/u.exec(rest);
+    if (!number) return false;
+    const exactIntegerField = (path.length === 1 && path[0] === "schema_version") ||
+      (path.length === 3 && path[0] === "items" && path[1] === "unlock" && path[2] === "tier");
+    if (exactIntegerField && /[.eE]/u.test(number[0])) return false;
+    index += number[0].length;
     return true;
   };
-  if (!value()) return false;
+  if (!value([])) return false;
   skipSpace();
   return index === text.length;
 }

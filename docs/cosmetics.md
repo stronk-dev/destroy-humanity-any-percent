@@ -12,7 +12,8 @@ fixture-first: no epoch pins `cosmetics` yet (`balance/testdata/cosmetics/fixtur
 - **Loading:** `server/cosmetic` and `client/src/cosmetic` load it with exact keys at every level,
   so `price`, `currency`, `sku`, `product_id` and any other key reject as unknown fields. They also
   enforce mechanical, unique, byte-sorted IDs, the closed `slot` and unlock enums, a tier in
-  `[0,8]`, and duplicate-key rejection. The shared corpus is
+  `[0,8]`, duplicate-key rejection, and canonical integer JSON tokens for `schema_version`
+  and `unlock.tier` (so `1.0` and `1e0` do not become `1` only on the client). The shared corpus is
   `testdata/cosmetic/catalog-fixtures-v1.json`.
 - **Bundle:** the artifact joins the constants bundle and requires `pet_species` on the scalar
   Founder chain.
