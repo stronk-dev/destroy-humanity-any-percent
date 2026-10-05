@@ -474,3 +474,31 @@ range. Owner wire/copy/mint and broader release gates remain independent obligat
 test/docs/tracking only. **READY FOR CLAUDE DESIGNATED REVIEW.** No runtime, fixture,
 candidate content, owner copy, kernel, schema or CI file changed. This range does not approve
 Claude's original full A2 implementation or authorize an archival move.
+
+## 2026-10-05 — Mine Grid snapshot value-grammar parity predeclaration (Codex)
+
+**Authority:** accepted AR3.2/AR3.4 snapshot coordinates, numeric fields and revealed-row
+shape; AR7 Go/TS parity. Original Claude A2 range `508fe19a^..508fe19a`. This is a separate
+range from RP-191's test-only witness. No defect is claimed before execution.
+
+**Population:** one shared mutation table applied to real Go and TS fixture-engine snapshots
+(seed 7, `large` board), unplaced after choose, placed after revealing cell 40, and terminal
+after quit. Independently modify revision type/fraction/null, dimension/mine type/fraction,
+preset type, flag/revealed/mine cell type/fraction, adjacency type/fraction and an extra
+revealed-row key. All inputs are valid JSON but violate declared value/row grammar. Each
+decoder must reject; each real apply entry must refuse without yielding a terminal/result.
+For every forged input preserve and independently apply the exact clean base as a positive
+control, comparing its output with the unmodified baseline. Go must report invalid tenant;
+TS must report SyntaxError. Record separately which existing later guards already refuse.
+
+**Exit / authorization:** if unchanged Go rejects while TS accepts, record the reproduced gap
+immediately in BACKLOG before a bounded TS type/integer/row-shape correction. No new mechanics,
+balance data, public wire, persisted schema, content epoch or owner text. A retained watched
+engine correction must honestly advance shared kernel identity and retain golden-vector parity.
+Independently remove numeric, list-element and nested-row validation: each declared population
+must fail; restore before cold Go/client/type/build/boundary/vet/vector and full Linux browser
+verification. Exact Claude corrective review remains mandatory; no archival or push.
+
+**Limits:** this population does not establish raw JSON token/duplicate-key parity, every
+semantic impossibility, Snake validation, public-route acceptance or real storage migration.
+Those are distinct follow-up diagnostics, not silently covered by a value-grammar test.
