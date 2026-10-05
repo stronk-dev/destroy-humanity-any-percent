@@ -130,3 +130,4 @@ filter. The original Claude A1–A7 work is not approved by these evidence suppl
 | RP-202: both real-Postgres atomic starts, server genesis/sequence, identical retry; RP-201 routing | `deda7e1e^..15fe1ccc` |
 | RP-203/204: both atomic low-Soul refusals and explicit empty zero-reward cap reason, test-only | `d798e709^..83008a9f` |
 | RP-206: actual current-curriculum active/claimed Exit/quit/released-Exit proof; RP-205 runtime finding | `b57b95df^..bb5c6ac1` |
+| RP-205/207: due-cross-gate live/shared replay, kernel 0.3.148, literal output and owned Fiscal event-reader proof | `efdc2dbc^..4b8abb89` |

@@ -1656,3 +1656,8 @@ reconciled; both corrections require Claude's designated review and exact range 
 No default first-hour/public AC9, full A5, mint, archive, push, deployment or 1.0 promotion.
 Next: original Arcade A6/A7 test-only child/output/accessibility/copy/docs review, without
 building owner-blocked public wire or inventing owner copy. Full nine-tier 1.0 remains active.
+
+Exact corrective handoff: `efdc2dbc^..4b8abb89`, pending Claude designated review.
+Final retained thirteen-case population, including removed-prefix Founder control, passes a
+fresh twenty cold repetitions (13.147 s). The range includes all implementation/docs/tracking;
+this checkpoint does not self-approve or archive it. The tree is reconciled, not release-ready.

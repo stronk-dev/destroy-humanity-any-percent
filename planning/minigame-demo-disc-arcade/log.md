@@ -1962,3 +1962,14 @@ RP-205/RP-207 are locally corrected, READY FOR CLAUDE DESIGNATED REVIEW; the exa
 predeclaration-through-implementation range will be pinned by the following checkpoint.
 The original full A5/AC9, default public journey, public wire/copy/mint, D-020 and full 1.0
 remain separate. No self-approval, archival, push or deployment.
+
+**Exact RP-205/RP-207 corrective handoff:** `efdc2dbc^..4b8abb89`, READY FOR CLAUDE
+DESIGNATED REVIEW. This span covers the committed accepted-contract predeclaration,
+watched live/Go/TS correction and honest kernel 0.3.148, literal shared replay fixture,
+actual thirteen-case gate/active/claimed/quit/retry/history proof, separately recorded
+Fiscal event-reader repair, and canonical docs/tracking. The final retained population,
+including the added removed-prefix Founder negative, passes a fresh twenty cold repetitions
+(13.147 s), not merely the earlier twenty before that extra control. All probes restored;
+RP-131 remains red at its unchanged pushed hash. This is a handoff, not an approval/archive.
+Next accepted work is the original A6/A7 test-only child/copy/docs review, with public
+host/wire, D-020, owner copy and mint still blocked under their named gates.

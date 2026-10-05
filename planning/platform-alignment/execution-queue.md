@@ -21,7 +21,9 @@ RP-207 is a separate test-reader repair, not a new runtime policy: the complete 
 history verifies its automatic Fiscal prefix, while Company replay consumes only its owned
 Exit events. A forced actual harvest, removed-prefix refusal and failing no-filter probe keep
 that distinction executable. Twenty cold thirteen-case DB repetitions pass.
-Both corrections require Claude's designated review; exact span is pinned after commit.
+Both corrections require Claude's designated review of exact span `efdc2dbc^..4b8abb89`.
+The final retained population, including the removed-prefix Founder negative, passes another
+twenty cold repetitions (13.147 s). This is a pending handoff, not an approval or archive gate.
 Cold six-package Go, 7,170 client cases, root checks, seven actual Postgres functions and
 complete local Linux three-browser verification (21,759 plus performance) pass. Whole
 kernel history still fails the unchanged pushed RP-131 commit after its checkout/negative
