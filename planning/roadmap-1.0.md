@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-06, Garden SG2/SG3 invariant repair under `711153cd`
-(diagnosis `c9f449de` / `155486d0`, designated review pending), kernel 0.3.152. Independent
+(implemented `8413f112`, complete span `c9f449de^..8413f112`, designated review pending),
+kernel 0.3.152. Independent
 49-case clock/frontier checks prove RP-219: codec-valid counters leave the safe domain and Go/TS
 diverge. The guard now refuses before growth/salt/clock mutation, preserving every valid clock
 and cap policy. Disabled and late guards discriminate separately in both runtimes; a missing

@@ -1017,3 +1017,11 @@ diff. Pending ticks uses only existing capped interval data; subtraction is insi
 exact domain, and the check precedes every state write. All diagnostic/probe failures remain in
 the record. This is correction self-review, not Claude's designated approval. `git diff --check`
 passes; no plan acceptance checkbox, active RFC lifecycle or release label is promoted.
+
+### Exact RP-219 handoff
+
+READY FOR CLAUDE DESIGNATED REVIEW, not approved: complete span `c9f449de^..8413f112`
+(`29444315..8413f112`), union of diagnosis `c9f449de^..155486d0` and separately predeclared
+repair `711153cd^..8413f112`. Both subranges must be inspected, including red baseline and
+retained positive/negative controls. No prior SG1/SG2/SG6/clock or R-010 span is consumed by
+this pin; all remain separate pending requests. Kernel 0.3.152, no archive/push/release.

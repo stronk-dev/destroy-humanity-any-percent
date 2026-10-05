@@ -1913,3 +1913,7 @@ corpus/browser pass. No hosted, amd64 or whole-history gate claim; RP-131 remain
 RP-218 causation/hosted reliability is still open. The combined diagnosis/correction requires
 Claude designated review. Next: remaining accepted SG4 tick/RNG and G2–G7; the full nine-tier
 1.0 product/platform scope remains active, with every review/owner/author/mint/rights/release gate.
+
+Exact counter handoff: `c9f449de^..8413f112`, union of diagnostic
+`c9f449de^..155486d0` and correction `711153cd^..8413f112`. This pin is not approval,
+does not close any earlier review range, and authorizes no archival or publication.

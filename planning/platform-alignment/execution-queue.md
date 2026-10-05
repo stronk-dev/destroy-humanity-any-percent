@@ -15,8 +15,10 @@ ten actual Postgres Garden functions, root client/type/build/vector/corpus/copy 
 Linux browser populations pass: 22,218 / six intentional skips plus separate performance each.
 No full SG4/G1/Garden, public mint, hosted/whole-CI, designated approval or archival claim.
 RP-131 remains unresolved; RP-218's original cause/reliability is not closed by local passes.
+Exact complete handoff `c9f449de^..8413f112`, union of diagnosis
+`c9f449de^..155486d0` and repair `711153cd^..8413f112`; pending Claude designated review.
 
-**NEXT SAFE ACTION:** pin the combined counter diagnosis/correction for Claude; continue remaining
+**NEXT SAFE ACTION:** continue remaining
 accepted SG4 tick/RNG, then G2–G7 replay/coordinator/read/surface review. Keep original corpus and
 all prior independent review, owner/author, accessibility, mint and full-nine-tier release gates.
 
