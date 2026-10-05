@@ -1,0 +1,8711 @@
+{
+  "version": 1,
+  "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+  "seed_population": 1024,
+  "outcomes": {
+    "cleared": 1,
+    "crashed": 0,
+    "excluded_food": 1023
+  },
+  "largest_observed_tick": 209,
+  "observations": [
+    {
+      "seed": 1,
+      "outcome": "excluded_food",
+      "tick": 73,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 2,
+      "outcome": "excluded_food",
+      "tick": 66,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 3,
+      "outcome": "excluded_food",
+      "tick": 109,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 4,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 5,
+      "outcome": "excluded_food",
+      "tick": 105,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 6,
+      "outcome": "excluded_food",
+      "tick": 96,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 7,
+      "outcome": "excluded_food",
+      "tick": 103,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 8,
+      "outcome": "excluded_food",
+      "tick": 163,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 9,
+      "outcome": "excluded_food",
+      "tick": 166,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 10,
+      "outcome": "excluded_food",
+      "tick": 158,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 11,
+      "outcome": "excluded_food",
+      "tick": 31,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 12,
+      "outcome": "excluded_food",
+      "tick": 93,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 13,
+      "outcome": "excluded_food",
+      "tick": 179,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 14,
+      "outcome": "excluded_food",
+      "tick": 164,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 15,
+      "outcome": "excluded_food",
+      "tick": 55,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 16,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 17,
+      "outcome": "excluded_food",
+      "tick": 123,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 18,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 19,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 20,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 21,
+      "outcome": "excluded_food",
+      "tick": 95,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 22,
+      "outcome": "excluded_food",
+      "tick": 22,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 23,
+      "outcome": "excluded_food",
+      "tick": 47,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 24,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 25,
+      "outcome": "excluded_food",
+      "tick": 57,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 26,
+      "outcome": "excluded_food",
+      "tick": 149,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 27,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 28,
+      "outcome": "excluded_food",
+      "tick": 34,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 29,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 30,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 31,
+      "outcome": "excluded_food",
+      "tick": 70,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 32,
+      "outcome": "excluded_food",
+      "tick": 36,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 33,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 34,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 35,
+      "outcome": "excluded_food",
+      "tick": 10,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 36,
+      "outcome": "excluded_food",
+      "tick": 107,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 37,
+      "outcome": "excluded_food",
+      "tick": 89,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 38,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 39,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 40,
+      "outcome": "excluded_food",
+      "tick": 96,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 41,
+      "outcome": "excluded_food",
+      "tick": 96,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 42,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 43,
+      "outcome": "excluded_food",
+      "tick": 10,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 44,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 45,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 46,
+      "outcome": "excluded_food",
+      "tick": 66,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 47,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 48,
+      "outcome": "excluded_food",
+      "tick": 30,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 49,
+      "outcome": "excluded_food",
+      "tick": 57,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 50,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 51,
+      "outcome": "excluded_food",
+      "tick": 82,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 52,
+      "outcome": "excluded_food",
+      "tick": 157,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 53,
+      "outcome": "excluded_food",
+      "tick": 33,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 54,
+      "outcome": "excluded_food",
+      "tick": 167,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 55,
+      "outcome": "excluded_food",
+      "tick": 6,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 56,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 57,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 58,
+      "outcome": "excluded_food",
+      "tick": 77,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 59,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 60,
+      "outcome": "excluded_food",
+      "tick": 159,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 61,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 62,
+      "outcome": "excluded_food",
+      "tick": 21,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 63,
+      "outcome": "excluded_food",
+      "tick": 155,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 64,
+      "outcome": "excluded_food",
+      "tick": 165,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 65,
+      "outcome": "excluded_food",
+      "tick": 72,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 66,
+      "outcome": "excluded_food",
+      "tick": 143,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 67,
+      "outcome": "excluded_food",
+      "tick": 56,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 68,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 69,
+      "outcome": "excluded_food",
+      "tick": 90,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 70,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 71,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 72,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 73,
+      "outcome": "excluded_food",
+      "tick": 36,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 74,
+      "outcome": "excluded_food",
+      "tick": 104,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 75,
+      "outcome": "excluded_food",
+      "tick": 99,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 76,
+      "outcome": "excluded_food",
+      "tick": 111,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 77,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 78,
+      "outcome": "excluded_food",
+      "tick": 63,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 79,
+      "outcome": "excluded_food",
+      "tick": 111,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 80,
+      "outcome": "excluded_food",
+      "tick": 44,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 81,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 82,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 83,
+      "outcome": "excluded_food",
+      "tick": 67,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 84,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 85,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 86,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 87,
+      "outcome": "excluded_food",
+      "tick": 167,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 88,
+      "outcome": "excluded_food",
+      "tick": 125,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 89,
+      "outcome": "excluded_food",
+      "tick": 121,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 90,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 91,
+      "outcome": "excluded_food",
+      "tick": 37,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 92,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 93,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 94,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 95,
+      "outcome": "excluded_food",
+      "tick": 72,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 96,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 97,
+      "outcome": "excluded_food",
+      "tick": 29,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 98,
+      "outcome": "excluded_food",
+      "tick": 47,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 99,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 100,
+      "outcome": "excluded_food",
+      "tick": 123,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 101,
+      "outcome": "excluded_food",
+      "tick": 168,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 102,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 103,
+      "outcome": "excluded_food",
+      "tick": 183,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 104,
+      "outcome": "excluded_food",
+      "tick": 67,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 105,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 106,
+      "outcome": "excluded_food",
+      "tick": 120,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 107,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 108,
+      "outcome": "excluded_food",
+      "tick": 50,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 109,
+      "outcome": "excluded_food",
+      "tick": 66,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 110,
+      "outcome": "excluded_food",
+      "tick": 60,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 111,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 112,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 113,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 114,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 115,
+      "outcome": "excluded_food",
+      "tick": 57,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 116,
+      "outcome": "excluded_food",
+      "tick": 121,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 117,
+      "outcome": "excluded_food",
+      "tick": 5,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 118,
+      "outcome": "excluded_food",
+      "tick": 109,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 119,
+      "outcome": "excluded_food",
+      "tick": 175,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 120,
+      "outcome": "excluded_food",
+      "tick": 174,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 121,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 122,
+      "outcome": "excluded_food",
+      "tick": 92,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 123,
+      "outcome": "excluded_food",
+      "tick": 169,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 124,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 125,
+      "outcome": "excluded_food",
+      "tick": 115,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 126,
+      "outcome": "excluded_food",
+      "tick": 104,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 127,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 128,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 129,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 130,
+      "outcome": "excluded_food",
+      "tick": 98,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 131,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 132,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 133,
+      "outcome": "excluded_food",
+      "tick": 170,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 134,
+      "outcome": "excluded_food",
+      "tick": 149,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 135,
+      "outcome": "excluded_food",
+      "tick": 163,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 136,
+      "outcome": "excluded_food",
+      "tick": 49,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 137,
+      "outcome": "excluded_food",
+      "tick": 175,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 138,
+      "outcome": "excluded_food",
+      "tick": 178,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 139,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 140,
+      "outcome": "excluded_food",
+      "tick": 85,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 141,
+      "outcome": "excluded_food",
+      "tick": 47,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 142,
+      "outcome": "excluded_food",
+      "tick": 61,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 143,
+      "outcome": "excluded_food",
+      "tick": 88,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 144,
+      "outcome": "excluded_food",
+      "tick": 83,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 145,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 146,
+      "outcome": "excluded_food",
+      "tick": 81,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 147,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 148,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 149,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 150,
+      "outcome": "excluded_food",
+      "tick": 172,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 151,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 152,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 153,
+      "outcome": "excluded_food",
+      "tick": 81,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 154,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 155,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 156,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 157,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 158,
+      "outcome": "excluded_food",
+      "tick": 62,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 159,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 160,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 161,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 162,
+      "outcome": "excluded_food",
+      "tick": 56,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 163,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 164,
+      "outcome": "excluded_food",
+      "tick": 170,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 165,
+      "outcome": "excluded_food",
+      "tick": 155,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 166,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 167,
+      "outcome": "excluded_food",
+      "tick": 44,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 168,
+      "outcome": "excluded_food",
+      "tick": 4,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 169,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 170,
+      "outcome": "excluded_food",
+      "tick": 125,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 171,
+      "outcome": "excluded_food",
+      "tick": 168,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 172,
+      "outcome": "excluded_food",
+      "tick": 129,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 173,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 174,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 175,
+      "outcome": "excluded_food",
+      "tick": 74,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 176,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 177,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 178,
+      "outcome": "excluded_food",
+      "tick": 123,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 179,
+      "outcome": "excluded_food",
+      "tick": 166,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 180,
+      "outcome": "excluded_food",
+      "tick": 56,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 181,
+      "outcome": "excluded_food",
+      "tick": 38,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 182,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 183,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 184,
+      "outcome": "excluded_food",
+      "tick": 26,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 185,
+      "outcome": "excluded_food",
+      "tick": 34,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 186,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 187,
+      "outcome": "excluded_food",
+      "tick": 111,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 188,
+      "outcome": "excluded_food",
+      "tick": 21,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 189,
+      "outcome": "excluded_food",
+      "tick": 22,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 190,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 191,
+      "outcome": "excluded_food",
+      "tick": 80,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 192,
+      "outcome": "excluded_food",
+      "tick": 99,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 193,
+      "outcome": "excluded_food",
+      "tick": 100,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 194,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 195,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 196,
+      "outcome": "excluded_food",
+      "tick": 78,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 197,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 198,
+      "outcome": "excluded_food",
+      "tick": 52,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 199,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 200,
+      "outcome": "excluded_food",
+      "tick": 35,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 201,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 202,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 203,
+      "outcome": "excluded_food",
+      "tick": 96,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 204,
+      "outcome": "excluded_food",
+      "tick": 87,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 205,
+      "outcome": "excluded_food",
+      "tick": 125,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 206,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 207,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 208,
+      "outcome": "excluded_food",
+      "tick": 52,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 209,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 210,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 211,
+      "outcome": "excluded_food",
+      "tick": 69,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 212,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 213,
+      "outcome": "excluded_food",
+      "tick": 62,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 214,
+      "outcome": "excluded_food",
+      "tick": 15,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 215,
+      "outcome": "excluded_food",
+      "tick": 57,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 216,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 217,
+      "outcome": "excluded_food",
+      "tick": 106,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 218,
+      "outcome": "excluded_food",
+      "tick": 14,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 219,
+      "outcome": "excluded_food",
+      "tick": 135,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 220,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 221,
+      "outcome": "excluded_food",
+      "tick": 109,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 222,
+      "outcome": "excluded_food",
+      "tick": 104,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 223,
+      "outcome": "excluded_food",
+      "tick": 101,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 224,
+      "outcome": "excluded_food",
+      "tick": 180,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 225,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 226,
+      "outcome": "excluded_food",
+      "tick": 40,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 227,
+      "outcome": "excluded_food",
+      "tick": 61,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 228,
+      "outcome": "excluded_food",
+      "tick": 70,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 229,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 230,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 231,
+      "outcome": "excluded_food",
+      "tick": 104,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 232,
+      "outcome": "excluded_food",
+      "tick": 177,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 233,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 234,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 235,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 236,
+      "outcome": "excluded_food",
+      "tick": 168,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 237,
+      "outcome": "excluded_food",
+      "tick": 45,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 238,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 239,
+      "outcome": "excluded_food",
+      "tick": 171,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 240,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 241,
+      "outcome": "excluded_food",
+      "tick": 26,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 242,
+      "outcome": "excluded_food",
+      "tick": 79,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 243,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 244,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 245,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 246,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 247,
+      "outcome": "excluded_food",
+      "tick": 36,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 248,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 249,
+      "outcome": "excluded_food",
+      "tick": 91,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 250,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 251,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 252,
+      "outcome": "excluded_food",
+      "tick": 89,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 253,
+      "outcome": "excluded_food",
+      "tick": 90,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 254,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 255,
+      "outcome": "excluded_food",
+      "tick": 12,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 256,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 257,
+      "outcome": "excluded_food",
+      "tick": 73,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 258,
+      "outcome": "excluded_food",
+      "tick": 31,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 259,
+      "outcome": "excluded_food",
+      "tick": 62,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 260,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 261,
+      "outcome": "excluded_food",
+      "tick": 104,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 262,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 263,
+      "outcome": "excluded_food",
+      "tick": 87,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 264,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 265,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 266,
+      "outcome": "excluded_food",
+      "tick": 18,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 267,
+      "outcome": "excluded_food",
+      "tick": 157,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 268,
+      "outcome": "excluded_food",
+      "tick": 28,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 269,
+      "outcome": "excluded_food",
+      "tick": 42,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 270,
+      "outcome": "excluded_food",
+      "tick": 154,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 271,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 272,
+      "outcome": "excluded_food",
+      "tick": 12,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 273,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 274,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 275,
+      "outcome": "excluded_food",
+      "tick": 123,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 276,
+      "outcome": "excluded_food",
+      "tick": 52,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 277,
+      "outcome": "excluded_food",
+      "tick": 73,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 278,
+      "outcome": "excluded_food",
+      "tick": 77,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 279,
+      "outcome": "excluded_food",
+      "tick": 130,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 280,
+      "outcome": "excluded_food",
+      "tick": 115,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 281,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 282,
+      "outcome": "excluded_food",
+      "tick": 209,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 283,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 284,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 285,
+      "outcome": "excluded_food",
+      "tick": 35,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 286,
+      "outcome": "excluded_food",
+      "tick": 100,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 287,
+      "outcome": "excluded_food",
+      "tick": 44,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 288,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 289,
+      "outcome": "excluded_food",
+      "tick": 34,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 290,
+      "outcome": "excluded_food",
+      "tick": 63,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 291,
+      "outcome": "excluded_food",
+      "tick": 115,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 292,
+      "outcome": "excluded_food",
+      "tick": 63,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 293,
+      "outcome": "excluded_food",
+      "tick": 115,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 294,
+      "outcome": "excluded_food",
+      "tick": 109,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 295,
+      "outcome": "excluded_food",
+      "tick": 70,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 296,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 297,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 298,
+      "outcome": "excluded_food",
+      "tick": 142,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 299,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 300,
+      "outcome": "excluded_food",
+      "tick": 131,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 301,
+      "outcome": "excluded_food",
+      "tick": 35,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 302,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 303,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 304,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 305,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 306,
+      "outcome": "excluded_food",
+      "tick": 95,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 307,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 308,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 309,
+      "outcome": "excluded_food",
+      "tick": 38,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 310,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 311,
+      "outcome": "excluded_food",
+      "tick": 111,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 312,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 313,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 314,
+      "outcome": "excluded_food",
+      "tick": 57,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 315,
+      "outcome": "excluded_food",
+      "tick": 123,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 316,
+      "outcome": "excluded_food",
+      "tick": 19,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 317,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 318,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 319,
+      "outcome": "excluded_food",
+      "tick": 32,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 320,
+      "outcome": "excluded_food",
+      "tick": 91,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 321,
+      "outcome": "excluded_food",
+      "tick": 53,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 322,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 323,
+      "outcome": "excluded_food",
+      "tick": 38,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 324,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 325,
+      "outcome": "excluded_food",
+      "tick": 81,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 326,
+      "outcome": "excluded_food",
+      "tick": 53,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 327,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 328,
+      "outcome": "excluded_food",
+      "tick": 165,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 329,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 330,
+      "outcome": "excluded_food",
+      "tick": 19,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 331,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 332,
+      "outcome": "excluded_food",
+      "tick": 4,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 333,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 334,
+      "outcome": "excluded_food",
+      "tick": 70,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 335,
+      "outcome": "excluded_food",
+      "tick": 166,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 336,
+      "outcome": "excluded_food",
+      "tick": 84,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 337,
+      "outcome": "excluded_food",
+      "tick": 115,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 338,
+      "outcome": "excluded_food",
+      "tick": 36,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 339,
+      "outcome": "excluded_food",
+      "tick": 5,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 340,
+      "outcome": "excluded_food",
+      "tick": 13,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 341,
+      "outcome": "excluded_food",
+      "tick": 130,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 342,
+      "outcome": "excluded_food",
+      "tick": 87,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 343,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 344,
+      "outcome": "excluded_food",
+      "tick": 21,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 345,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 346,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 347,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 348,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 349,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 350,
+      "outcome": "excluded_food",
+      "tick": 91,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 351,
+      "outcome": "excluded_food",
+      "tick": 46,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 352,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 353,
+      "outcome": "excluded_food",
+      "tick": 143,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 354,
+      "outcome": "excluded_food",
+      "tick": 40,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 355,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 356,
+      "outcome": "excluded_food",
+      "tick": 49,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 357,
+      "outcome": "excluded_food",
+      "tick": 103,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 358,
+      "outcome": "excluded_food",
+      "tick": 103,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 359,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 360,
+      "outcome": "excluded_food",
+      "tick": 176,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 361,
+      "outcome": "excluded_food",
+      "tick": 173,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 362,
+      "outcome": "excluded_food",
+      "tick": 105,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 363,
+      "outcome": "excluded_food",
+      "tick": 87,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 364,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 365,
+      "outcome": "excluded_food",
+      "tick": 38,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 366,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 367,
+      "outcome": "excluded_food",
+      "tick": 67,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 368,
+      "outcome": "excluded_food",
+      "tick": 131,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 369,
+      "outcome": "excluded_food",
+      "tick": 95,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 370,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 371,
+      "outcome": "excluded_food",
+      "tick": 154,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 372,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 373,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 374,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 375,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 376,
+      "outcome": "excluded_food",
+      "tick": 17,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 377,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 378,
+      "outcome": "excluded_food",
+      "tick": 125,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 379,
+      "outcome": "excluded_food",
+      "tick": 56,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 380,
+      "outcome": "excluded_food",
+      "tick": 101,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 381,
+      "outcome": "excluded_food",
+      "tick": 7,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 382,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 383,
+      "outcome": "excluded_food",
+      "tick": 100,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 384,
+      "outcome": "excluded_food",
+      "tick": 19,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 385,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 386,
+      "outcome": "excluded_food",
+      "tick": 57,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 387,
+      "outcome": "excluded_food",
+      "tick": 99,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 388,
+      "outcome": "excluded_food",
+      "tick": 135,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 389,
+      "outcome": "excluded_food",
+      "tick": 39,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 390,
+      "outcome": "excluded_food",
+      "tick": 131,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 391,
+      "outcome": "excluded_food",
+      "tick": 46,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 392,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 393,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 394,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 395,
+      "outcome": "excluded_food",
+      "tick": 125,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 396,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 397,
+      "outcome": "excluded_food",
+      "tick": 71,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 398,
+      "outcome": "excluded_food",
+      "tick": 40,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 399,
+      "outcome": "excluded_food",
+      "tick": 101,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 400,
+      "outcome": "excluded_food",
+      "tick": 12,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 401,
+      "outcome": "excluded_food",
+      "tick": 168,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 402,
+      "outcome": "excluded_food",
+      "tick": 176,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 403,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 404,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 405,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 406,
+      "outcome": "excluded_food",
+      "tick": 22,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 407,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 408,
+      "outcome": "excluded_food",
+      "tick": 61,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 409,
+      "outcome": "excluded_food",
+      "tick": 16,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 410,
+      "outcome": "excluded_food",
+      "tick": 31,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 411,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 412,
+      "outcome": "excluded_food",
+      "tick": 154,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 413,
+      "outcome": "excluded_food",
+      "tick": 60,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 414,
+      "outcome": "excluded_food",
+      "tick": 88,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 415,
+      "outcome": "excluded_food",
+      "tick": 39,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 416,
+      "outcome": "excluded_food",
+      "tick": 16,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 417,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 418,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 419,
+      "outcome": "excluded_food",
+      "tick": 62,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 420,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 421,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 422,
+      "outcome": "excluded_food",
+      "tick": 169,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 423,
+      "outcome": "excluded_food",
+      "tick": 18,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 424,
+      "outcome": "excluded_food",
+      "tick": 55,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 425,
+      "outcome": "excluded_food",
+      "tick": 25,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 426,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 427,
+      "outcome": "excluded_food",
+      "tick": 58,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 428,
+      "outcome": "excluded_food",
+      "tick": 101,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 429,
+      "outcome": "excluded_food",
+      "tick": 120,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 430,
+      "outcome": "excluded_food",
+      "tick": 21,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 431,
+      "outcome": "excluded_food",
+      "tick": 1,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 432,
+      "outcome": "excluded_food",
+      "tick": 88,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 433,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 434,
+      "outcome": "excluded_food",
+      "tick": 62,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 435,
+      "outcome": "excluded_food",
+      "tick": 31,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 436,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 437,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 438,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 439,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 440,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 441,
+      "outcome": "excluded_food",
+      "tick": 168,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 442,
+      "outcome": "excluded_food",
+      "tick": 107,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 443,
+      "outcome": "excluded_food",
+      "tick": 90,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 444,
+      "outcome": "excluded_food",
+      "tick": 48,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 445,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 446,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 447,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 448,
+      "outcome": "excluded_food",
+      "tick": 93,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 449,
+      "outcome": "excluded_food",
+      "tick": 68,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 450,
+      "outcome": "excluded_food",
+      "tick": 30,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 451,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 452,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 453,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 454,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 455,
+      "outcome": "cleared",
+      "tick": 134,
+      "body_length": 25,
+      "score": 24
+    },
+    {
+      "seed": 456,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 457,
+      "outcome": "excluded_food",
+      "tick": 157,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 458,
+      "outcome": "excluded_food",
+      "tick": 18,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 459,
+      "outcome": "excluded_food",
+      "tick": 156,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 460,
+      "outcome": "excluded_food",
+      "tick": 15,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 461,
+      "outcome": "excluded_food",
+      "tick": 66,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 462,
+      "outcome": "excluded_food",
+      "tick": 47,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 463,
+      "outcome": "excluded_food",
+      "tick": 154,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 464,
+      "outcome": "excluded_food",
+      "tick": 36,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 465,
+      "outcome": "excluded_food",
+      "tick": 149,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 466,
+      "outcome": "excluded_food",
+      "tick": 57,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 467,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 468,
+      "outcome": "excluded_food",
+      "tick": 28,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 469,
+      "outcome": "excluded_food",
+      "tick": 65,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 470,
+      "outcome": "excluded_food",
+      "tick": 164,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 471,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 472,
+      "outcome": "excluded_food",
+      "tick": 80,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 473,
+      "outcome": "excluded_food",
+      "tick": 69,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 474,
+      "outcome": "excluded_food",
+      "tick": 10,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 475,
+      "outcome": "excluded_food",
+      "tick": 19,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 476,
+      "outcome": "excluded_food",
+      "tick": 13,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 477,
+      "outcome": "excluded_food",
+      "tick": 159,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 478,
+      "outcome": "excluded_food",
+      "tick": 32,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 479,
+      "outcome": "excluded_food",
+      "tick": 142,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 480,
+      "outcome": "excluded_food",
+      "tick": 21,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 481,
+      "outcome": "excluded_food",
+      "tick": 100,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 482,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 483,
+      "outcome": "excluded_food",
+      "tick": 66,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 484,
+      "outcome": "excluded_food",
+      "tick": 44,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 485,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 486,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 487,
+      "outcome": "excluded_food",
+      "tick": 171,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 488,
+      "outcome": "excluded_food",
+      "tick": 90,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 489,
+      "outcome": "excluded_food",
+      "tick": 114,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 490,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 491,
+      "outcome": "excluded_food",
+      "tick": 75,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 492,
+      "outcome": "excluded_food",
+      "tick": 105,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 493,
+      "outcome": "excluded_food",
+      "tick": 158,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 494,
+      "outcome": "excluded_food",
+      "tick": 52,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 495,
+      "outcome": "excluded_food",
+      "tick": 93,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 496,
+      "outcome": "excluded_food",
+      "tick": 81,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 497,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 498,
+      "outcome": "excluded_food",
+      "tick": 66,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 499,
+      "outcome": "excluded_food",
+      "tick": 58,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 500,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 501,
+      "outcome": "excluded_food",
+      "tick": 130,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 502,
+      "outcome": "excluded_food",
+      "tick": 181,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 503,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 504,
+      "outcome": "excluded_food",
+      "tick": 98,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 505,
+      "outcome": "excluded_food",
+      "tick": 63,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 506,
+      "outcome": "excluded_food",
+      "tick": 40,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 507,
+      "outcome": "excluded_food",
+      "tick": 26,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 508,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 509,
+      "outcome": "excluded_food",
+      "tick": 38,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 510,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 511,
+      "outcome": "excluded_food",
+      "tick": 17,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 512,
+      "outcome": "excluded_food",
+      "tick": 85,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 513,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 514,
+      "outcome": "excluded_food",
+      "tick": 99,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 515,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 516,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 517,
+      "outcome": "excluded_food",
+      "tick": 163,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 518,
+      "outcome": "excluded_food",
+      "tick": 20,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 519,
+      "outcome": "excluded_food",
+      "tick": 64,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 520,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 521,
+      "outcome": "excluded_food",
+      "tick": 27,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 522,
+      "outcome": "excluded_food",
+      "tick": 91,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 523,
+      "outcome": "excluded_food",
+      "tick": 121,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 524,
+      "outcome": "excluded_food",
+      "tick": 19,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 525,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 526,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 527,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 528,
+      "outcome": "excluded_food",
+      "tick": 51,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 529,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 530,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 531,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 532,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 533,
+      "outcome": "excluded_food",
+      "tick": 86,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 534,
+      "outcome": "excluded_food",
+      "tick": 20,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 535,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 536,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 537,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 538,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 539,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 540,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 541,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 542,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 543,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 544,
+      "outcome": "excluded_food",
+      "tick": 37,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 545,
+      "outcome": "excluded_food",
+      "tick": 146,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 546,
+      "outcome": "excluded_food",
+      "tick": 78,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 547,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 548,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 549,
+      "outcome": "excluded_food",
+      "tick": 46,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 550,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 551,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 552,
+      "outcome": "excluded_food",
+      "tick": 14,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 553,
+      "outcome": "excluded_food",
+      "tick": 16,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 554,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 555,
+      "outcome": "excluded_food",
+      "tick": 80,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 556,
+      "outcome": "excluded_food",
+      "tick": 13,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 557,
+      "outcome": "excluded_food",
+      "tick": 24,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 558,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 559,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 560,
+      "outcome": "excluded_food",
+      "tick": 149,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 561,
+      "outcome": "excluded_food",
+      "tick": 25,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 562,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 563,
+      "outcome": "excluded_food",
+      "tick": 106,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 564,
+      "outcome": "excluded_food",
+      "tick": 142,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 565,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 566,
+      "outcome": "excluded_food",
+      "tick": 154,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 567,
+      "outcome": "excluded_food",
+      "tick": 167,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 568,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 569,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 570,
+      "outcome": "excluded_food",
+      "tick": 111,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 571,
+      "outcome": "excluded_food",
+      "tick": 98,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 572,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 573,
+      "outcome": "excluded_food",
+      "tick": 156,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 574,
+      "outcome": "excluded_food",
+      "tick": 143,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 575,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 576,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 577,
+      "outcome": "excluded_food",
+      "tick": 39,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 578,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 579,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 580,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 581,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 582,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 583,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 584,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 585,
+      "outcome": "excluded_food",
+      "tick": 104,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 586,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 587,
+      "outcome": "excluded_food",
+      "tick": 142,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 588,
+      "outcome": "excluded_food",
+      "tick": 72,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 589,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 590,
+      "outcome": "excluded_food",
+      "tick": 12,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 591,
+      "outcome": "excluded_food",
+      "tick": 92,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 592,
+      "outcome": "excluded_food",
+      "tick": 24,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 593,
+      "outcome": "excluded_food",
+      "tick": 26,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 594,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 595,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 596,
+      "outcome": "excluded_food",
+      "tick": 115,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 597,
+      "outcome": "excluded_food",
+      "tick": 95,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 598,
+      "outcome": "excluded_food",
+      "tick": 100,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 599,
+      "outcome": "excluded_food",
+      "tick": 105,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 600,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 601,
+      "outcome": "excluded_food",
+      "tick": 13,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 602,
+      "outcome": "excluded_food",
+      "tick": 91,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 603,
+      "outcome": "excluded_food",
+      "tick": 156,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 604,
+      "outcome": "excluded_food",
+      "tick": 52,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 605,
+      "outcome": "excluded_food",
+      "tick": 169,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 606,
+      "outcome": "excluded_food",
+      "tick": 90,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 607,
+      "outcome": "excluded_food",
+      "tick": 64,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 608,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 609,
+      "outcome": "excluded_food",
+      "tick": 164,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 610,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 611,
+      "outcome": "excluded_food",
+      "tick": 87,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 612,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 613,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 614,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 615,
+      "outcome": "excluded_food",
+      "tick": 71,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 616,
+      "outcome": "excluded_food",
+      "tick": 83,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 617,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 618,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 619,
+      "outcome": "excluded_food",
+      "tick": 80,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 620,
+      "outcome": "excluded_food",
+      "tick": 8,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 621,
+      "outcome": "excluded_food",
+      "tick": 131,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 622,
+      "outcome": "excluded_food",
+      "tick": 197,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 623,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 624,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 625,
+      "outcome": "excluded_food",
+      "tick": 77,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 626,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 627,
+      "outcome": "excluded_food",
+      "tick": 51,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 628,
+      "outcome": "excluded_food",
+      "tick": 28,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 629,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 630,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 631,
+      "outcome": "excluded_food",
+      "tick": 44,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 632,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 633,
+      "outcome": "excluded_food",
+      "tick": 157,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 634,
+      "outcome": "excluded_food",
+      "tick": 172,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 635,
+      "outcome": "excluded_food",
+      "tick": 18,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 636,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 637,
+      "outcome": "excluded_food",
+      "tick": 65,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 638,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 639,
+      "outcome": "excluded_food",
+      "tick": 51,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 640,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 641,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 642,
+      "outcome": "excluded_food",
+      "tick": 135,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 643,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 644,
+      "outcome": "excluded_food",
+      "tick": 67,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 645,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 646,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 647,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 648,
+      "outcome": "excluded_food",
+      "tick": 27,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 649,
+      "outcome": "excluded_food",
+      "tick": 88,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 650,
+      "outcome": "excluded_food",
+      "tick": 163,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 651,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 652,
+      "outcome": "excluded_food",
+      "tick": 174,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 653,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 654,
+      "outcome": "excluded_food",
+      "tick": 180,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 655,
+      "outcome": "excluded_food",
+      "tick": 40,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 656,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 657,
+      "outcome": "excluded_food",
+      "tick": 167,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 658,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 659,
+      "outcome": "excluded_food",
+      "tick": 63,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 660,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 661,
+      "outcome": "excluded_food",
+      "tick": 30,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 662,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 663,
+      "outcome": "excluded_food",
+      "tick": 19,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 664,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 665,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 666,
+      "outcome": "excluded_food",
+      "tick": 105,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 667,
+      "outcome": "excluded_food",
+      "tick": 107,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 668,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 669,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 670,
+      "outcome": "excluded_food",
+      "tick": 53,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 671,
+      "outcome": "excluded_food",
+      "tick": 62,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 672,
+      "outcome": "excluded_food",
+      "tick": 23,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 673,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 674,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 675,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 676,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 677,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 678,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 679,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 680,
+      "outcome": "excluded_food",
+      "tick": 70,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 681,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 682,
+      "outcome": "excluded_food",
+      "tick": 45,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 683,
+      "outcome": "excluded_food",
+      "tick": 87,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 684,
+      "outcome": "excluded_food",
+      "tick": 173,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 685,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 686,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 687,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 688,
+      "outcome": "excluded_food",
+      "tick": 3,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 689,
+      "outcome": "excluded_food",
+      "tick": 182,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 690,
+      "outcome": "excluded_food",
+      "tick": 64,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 691,
+      "outcome": "excluded_food",
+      "tick": 131,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 692,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 693,
+      "outcome": "excluded_food",
+      "tick": 20,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 694,
+      "outcome": "excluded_food",
+      "tick": 76,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 695,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 696,
+      "outcome": "excluded_food",
+      "tick": 46,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 697,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 698,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 699,
+      "outcome": "excluded_food",
+      "tick": 154,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 700,
+      "outcome": "excluded_food",
+      "tick": 78,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 701,
+      "outcome": "excluded_food",
+      "tick": 30,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 702,
+      "outcome": "excluded_food",
+      "tick": 111,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 703,
+      "outcome": "excluded_food",
+      "tick": 105,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 704,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 705,
+      "outcome": "excluded_food",
+      "tick": 31,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 706,
+      "outcome": "excluded_food",
+      "tick": 106,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 707,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 708,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 709,
+      "outcome": "excluded_food",
+      "tick": 10,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 710,
+      "outcome": "excluded_food",
+      "tick": 149,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 711,
+      "outcome": "excluded_food",
+      "tick": 123,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 712,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 713,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 714,
+      "outcome": "excluded_food",
+      "tick": 81,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 715,
+      "outcome": "excluded_food",
+      "tick": 142,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 716,
+      "outcome": "excluded_food",
+      "tick": 71,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 717,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 718,
+      "outcome": "excluded_food",
+      "tick": 23,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 719,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 720,
+      "outcome": "excluded_food",
+      "tick": 49,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 721,
+      "outcome": "excluded_food",
+      "tick": 88,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 722,
+      "outcome": "excluded_food",
+      "tick": 135,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 723,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 724,
+      "outcome": "excluded_food",
+      "tick": 84,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 725,
+      "outcome": "excluded_food",
+      "tick": 129,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 726,
+      "outcome": "excluded_food",
+      "tick": 31,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 727,
+      "outcome": "excluded_food",
+      "tick": 94,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 728,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 729,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 730,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 731,
+      "outcome": "excluded_food",
+      "tick": 73,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 732,
+      "outcome": "excluded_food",
+      "tick": 109,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 733,
+      "outcome": "excluded_food",
+      "tick": 155,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 734,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 735,
+      "outcome": "excluded_food",
+      "tick": 8,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 736,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 737,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 738,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 739,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 740,
+      "outcome": "excluded_food",
+      "tick": 183,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 741,
+      "outcome": "excluded_food",
+      "tick": 149,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 742,
+      "outcome": "excluded_food",
+      "tick": 56,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 743,
+      "outcome": "excluded_food",
+      "tick": 109,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 744,
+      "outcome": "excluded_food",
+      "tick": 72,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 745,
+      "outcome": "excluded_food",
+      "tick": 99,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 746,
+      "outcome": "excluded_food",
+      "tick": 159,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 747,
+      "outcome": "excluded_food",
+      "tick": 32,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 748,
+      "outcome": "excluded_food",
+      "tick": 45,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 749,
+      "outcome": "excluded_food",
+      "tick": 120,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 750,
+      "outcome": "excluded_food",
+      "tick": 58,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 751,
+      "outcome": "excluded_food",
+      "tick": 163,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 752,
+      "outcome": "excluded_food",
+      "tick": 89,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 753,
+      "outcome": "excluded_food",
+      "tick": 31,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 754,
+      "outcome": "excluded_food",
+      "tick": 3,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 755,
+      "outcome": "excluded_food",
+      "tick": 60,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 756,
+      "outcome": "excluded_food",
+      "tick": 65,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 757,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 758,
+      "outcome": "excluded_food",
+      "tick": 78,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 759,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 760,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 761,
+      "outcome": "excluded_food",
+      "tick": 51,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 762,
+      "outcome": "excluded_food",
+      "tick": 13,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 763,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 764,
+      "outcome": "excluded_food",
+      "tick": 70,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 765,
+      "outcome": "excluded_food",
+      "tick": 86,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 766,
+      "outcome": "excluded_food",
+      "tick": 106,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 767,
+      "outcome": "excluded_food",
+      "tick": 108,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 768,
+      "outcome": "excluded_food",
+      "tick": 125,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 769,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 770,
+      "outcome": "excluded_food",
+      "tick": 44,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 771,
+      "outcome": "excluded_food",
+      "tick": 27,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 772,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 773,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 774,
+      "outcome": "excluded_food",
+      "tick": 158,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 775,
+      "outcome": "excluded_food",
+      "tick": 98,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 776,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 777,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 778,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 779,
+      "outcome": "excluded_food",
+      "tick": 161,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 780,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 781,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 782,
+      "outcome": "excluded_food",
+      "tick": 20,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 783,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 784,
+      "outcome": "excluded_food",
+      "tick": 80,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 785,
+      "outcome": "excluded_food",
+      "tick": 143,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 786,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 787,
+      "outcome": "excluded_food",
+      "tick": 106,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 788,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 789,
+      "outcome": "excluded_food",
+      "tick": 32,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 790,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 791,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 792,
+      "outcome": "excluded_food",
+      "tick": 101,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 793,
+      "outcome": "excluded_food",
+      "tick": 71,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 794,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 795,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 796,
+      "outcome": "excluded_food",
+      "tick": 68,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 797,
+      "outcome": "excluded_food",
+      "tick": 173,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 798,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 799,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 800,
+      "outcome": "excluded_food",
+      "tick": 81,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 801,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 802,
+      "outcome": "excluded_food",
+      "tick": 129,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 803,
+      "outcome": "excluded_food",
+      "tick": 6,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 804,
+      "outcome": "excluded_food",
+      "tick": 136,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 805,
+      "outcome": "excluded_food",
+      "tick": 96,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 806,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 807,
+      "outcome": "excluded_food",
+      "tick": 171,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 808,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 809,
+      "outcome": "excluded_food",
+      "tick": 70,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 810,
+      "outcome": "excluded_food",
+      "tick": 65,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 811,
+      "outcome": "excluded_food",
+      "tick": 71,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 812,
+      "outcome": "excluded_food",
+      "tick": 34,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 813,
+      "outcome": "excluded_food",
+      "tick": 121,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 814,
+      "outcome": "excluded_food",
+      "tick": 75,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 815,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 816,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 817,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 818,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 819,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 820,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 821,
+      "outcome": "excluded_food",
+      "tick": 109,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 822,
+      "outcome": "excluded_food",
+      "tick": 29,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 823,
+      "outcome": "excluded_food",
+      "tick": 168,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 824,
+      "outcome": "excluded_food",
+      "tick": 130,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 825,
+      "outcome": "excluded_food",
+      "tick": 165,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 826,
+      "outcome": "excluded_food",
+      "tick": 84,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 827,
+      "outcome": "excluded_food",
+      "tick": 39,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 828,
+      "outcome": "excluded_food",
+      "tick": 138,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 829,
+      "outcome": "excluded_food",
+      "tick": 169,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 830,
+      "outcome": "excluded_food",
+      "tick": 111,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 831,
+      "outcome": "excluded_food",
+      "tick": 93,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 832,
+      "outcome": "excluded_food",
+      "tick": 104,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 833,
+      "outcome": "excluded_food",
+      "tick": 61,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 834,
+      "outcome": "excluded_food",
+      "tick": 13,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 835,
+      "outcome": "excluded_food",
+      "tick": 62,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 836,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 837,
+      "outcome": "excluded_food",
+      "tick": 162,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 838,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 839,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 840,
+      "outcome": "excluded_food",
+      "tick": 142,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 841,
+      "outcome": "excluded_food",
+      "tick": 114,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 842,
+      "outcome": "excluded_food",
+      "tick": 147,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 843,
+      "outcome": "excluded_food",
+      "tick": 9,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 844,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 845,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 846,
+      "outcome": "excluded_food",
+      "tick": 163,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 847,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 848,
+      "outcome": "excluded_food",
+      "tick": 63,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 849,
+      "outcome": "excluded_food",
+      "tick": 107,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 850,
+      "outcome": "excluded_food",
+      "tick": 103,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 851,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 852,
+      "outcome": "excluded_food",
+      "tick": 89,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 853,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 854,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 855,
+      "outcome": "excluded_food",
+      "tick": 61,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 856,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 857,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 858,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 859,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 860,
+      "outcome": "excluded_food",
+      "tick": 165,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 861,
+      "outcome": "excluded_food",
+      "tick": 87,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 862,
+      "outcome": "excluded_food",
+      "tick": 34,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 863,
+      "outcome": "excluded_food",
+      "tick": 78,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 864,
+      "outcome": "excluded_food",
+      "tick": 22,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 865,
+      "outcome": "excluded_food",
+      "tick": 135,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 866,
+      "outcome": "excluded_food",
+      "tick": 61,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 867,
+      "outcome": "excluded_food",
+      "tick": 32,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 868,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 869,
+      "outcome": "excluded_food",
+      "tick": 80,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 870,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 871,
+      "outcome": "excluded_food",
+      "tick": 96,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 872,
+      "outcome": "excluded_food",
+      "tick": 39,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 873,
+      "outcome": "excluded_food",
+      "tick": 88,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 874,
+      "outcome": "excluded_food",
+      "tick": 77,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 875,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 876,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 877,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 878,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 879,
+      "outcome": "excluded_food",
+      "tick": 6,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 880,
+      "outcome": "excluded_food",
+      "tick": 158,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 881,
+      "outcome": "excluded_food",
+      "tick": 185,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 882,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 883,
+      "outcome": "excluded_food",
+      "tick": 131,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 884,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 885,
+      "outcome": "excluded_food",
+      "tick": 89,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 886,
+      "outcome": "excluded_food",
+      "tick": 72,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 887,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 888,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 889,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 890,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 891,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 892,
+      "outcome": "excluded_food",
+      "tick": 17,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 893,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 894,
+      "outcome": "excluded_food",
+      "tick": 105,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 895,
+      "outcome": "excluded_food",
+      "tick": 99,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 896,
+      "outcome": "excluded_food",
+      "tick": 23,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 897,
+      "outcome": "excluded_food",
+      "tick": 53,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 898,
+      "outcome": "excluded_food",
+      "tick": 30,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 899,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 900,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 901,
+      "outcome": "excluded_food",
+      "tick": 77,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 902,
+      "outcome": "excluded_food",
+      "tick": 164,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 903,
+      "outcome": "excluded_food",
+      "tick": 49,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 904,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 905,
+      "outcome": "excluded_food",
+      "tick": 160,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 906,
+      "outcome": "excluded_food",
+      "tick": 16,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 907,
+      "outcome": "excluded_food",
+      "tick": 59,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 908,
+      "outcome": "excluded_food",
+      "tick": 17,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 909,
+      "outcome": "excluded_food",
+      "tick": 83,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 910,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 911,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 912,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 913,
+      "outcome": "excluded_food",
+      "tick": 85,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 914,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 915,
+      "outcome": "excluded_food",
+      "tick": 76,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 916,
+      "outcome": "excluded_food",
+      "tick": 80,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 917,
+      "outcome": "excluded_food",
+      "tick": 195,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 918,
+      "outcome": "excluded_food",
+      "tick": 18,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 919,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 920,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 921,
+      "outcome": "excluded_food",
+      "tick": 43,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 922,
+      "outcome": "excluded_food",
+      "tick": 107,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 923,
+      "outcome": "excluded_food",
+      "tick": 17,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 924,
+      "outcome": "excluded_food",
+      "tick": 154,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 925,
+      "outcome": "excluded_food",
+      "tick": 165,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 926,
+      "outcome": "excluded_food",
+      "tick": 128,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 927,
+      "outcome": "excluded_food",
+      "tick": 93,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 928,
+      "outcome": "excluded_food",
+      "tick": 54,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 929,
+      "outcome": "excluded_food",
+      "tick": 135,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 930,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 931,
+      "outcome": "excluded_food",
+      "tick": 134,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 932,
+      "outcome": "excluded_food",
+      "tick": 165,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 933,
+      "outcome": "excluded_food",
+      "tick": 86,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 934,
+      "outcome": "excluded_food",
+      "tick": 75,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 935,
+      "outcome": "excluded_food",
+      "tick": 74,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 936,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 937,
+      "outcome": "excluded_food",
+      "tick": 67,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 938,
+      "outcome": "excluded_food",
+      "tick": 102,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 939,
+      "outcome": "excluded_food",
+      "tick": 152,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 940,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 941,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 942,
+      "outcome": "excluded_food",
+      "tick": 55,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 943,
+      "outcome": "excluded_food",
+      "tick": 120,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 944,
+      "outcome": "excluded_food",
+      "tick": 125,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 945,
+      "outcome": "excluded_food",
+      "tick": 133,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 946,
+      "outcome": "excluded_food",
+      "tick": 151,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 947,
+      "outcome": "excluded_food",
+      "tick": 15,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 948,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 949,
+      "outcome": "excluded_food",
+      "tick": 140,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 950,
+      "outcome": "excluded_food",
+      "tick": 114,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 951,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 952,
+      "outcome": "excluded_food",
+      "tick": 25,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 953,
+      "outcome": "excluded_food",
+      "tick": 93,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 954,
+      "outcome": "excluded_food",
+      "tick": 129,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 955,
+      "outcome": "excluded_food",
+      "tick": 49,
+      "body_length": 11,
+      "score": 10
+    },
+    {
+      "seed": 956,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 957,
+      "outcome": "excluded_food",
+      "tick": 81,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 958,
+      "outcome": "excluded_food",
+      "tick": 158,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 959,
+      "outcome": "excluded_food",
+      "tick": 115,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 960,
+      "outcome": "excluded_food",
+      "tick": 139,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 961,
+      "outcome": "excluded_food",
+      "tick": 65,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 962,
+      "outcome": "excluded_food",
+      "tick": 93,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 963,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 964,
+      "outcome": "excluded_food",
+      "tick": 161,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 965,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 966,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 967,
+      "outcome": "excluded_food",
+      "tick": 122,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 968,
+      "outcome": "excluded_food",
+      "tick": 58,
+      "body_length": 10,
+      "score": 9
+    },
+    {
+      "seed": 969,
+      "outcome": "excluded_food",
+      "tick": 97,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 970,
+      "outcome": "excluded_food",
+      "tick": 145,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 971,
+      "outcome": "excluded_food",
+      "tick": 150,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 972,
+      "outcome": "excluded_food",
+      "tick": 61,
+      "body_length": 7,
+      "score": 6
+    },
+    {
+      "seed": 973,
+      "outcome": "excluded_food",
+      "tick": 67,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 974,
+      "outcome": "excluded_food",
+      "tick": 38,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 975,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 976,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 977,
+      "outcome": "excluded_food",
+      "tick": 103,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 978,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 979,
+      "outcome": "excluded_food",
+      "tick": 119,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 980,
+      "outcome": "excluded_food",
+      "tick": 90,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 981,
+      "outcome": "excluded_food",
+      "tick": 126,
+      "body_length": 24,
+      "score": 23
+    },
+    {
+      "seed": 982,
+      "outcome": "excluded_food",
+      "tick": 68,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 983,
+      "outcome": "excluded_food",
+      "tick": 65,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 984,
+      "outcome": "excluded_food",
+      "tick": 85,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 985,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 986,
+      "outcome": "excluded_food",
+      "tick": 127,
+      "body_length": 15,
+      "score": 14
+    },
+    {
+      "seed": 987,
+      "outcome": "excluded_food",
+      "tick": 0,
+      "body_length": 2,
+      "score": 0
+    },
+    {
+      "seed": 988,
+      "outcome": "excluded_food",
+      "tick": 74,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 989,
+      "outcome": "excluded_food",
+      "tick": 83,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 990,
+      "outcome": "excluded_food",
+      "tick": 116,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 991,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 992,
+      "outcome": "excluded_food",
+      "tick": 30,
+      "body_length": 3,
+      "score": 2
+    },
+    {
+      "seed": 993,
+      "outcome": "excluded_food",
+      "tick": 43,
+      "body_length": 5,
+      "score": 4
+    },
+    {
+      "seed": 994,
+      "outcome": "excluded_food",
+      "tick": 110,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 995,
+      "outcome": "excluded_food",
+      "tick": 100,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 996,
+      "outcome": "excluded_food",
+      "tick": 137,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 997,
+      "outcome": "excluded_food",
+      "tick": 124,
+      "body_length": 14,
+      "score": 13
+    },
+    {
+      "seed": 998,
+      "outcome": "excluded_food",
+      "tick": 170,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 999,
+      "outcome": "excluded_food",
+      "tick": 106,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 1000,
+      "outcome": "excluded_food",
+      "tick": 103,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 1001,
+      "outcome": "excluded_food",
+      "tick": 129,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 1002,
+      "outcome": "excluded_food",
+      "tick": 41,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 1003,
+      "outcome": "excluded_food",
+      "tick": 100,
+      "body_length": 12,
+      "score": 11
+    },
+    {
+      "seed": 1004,
+      "outcome": "excluded_food",
+      "tick": 148,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 1005,
+      "outcome": "excluded_food",
+      "tick": 182,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 1006,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 23,
+      "score": 22
+    },
+    {
+      "seed": 1007,
+      "outcome": "excluded_food",
+      "tick": 86,
+      "body_length": 16,
+      "score": 15
+    },
+    {
+      "seed": 1008,
+      "outcome": "excluded_food",
+      "tick": 144,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 1009,
+      "outcome": "excluded_food",
+      "tick": 67,
+      "body_length": 6,
+      "score": 5
+    },
+    {
+      "seed": 1010,
+      "outcome": "excluded_food",
+      "tick": 132,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 1011,
+      "outcome": "excluded_food",
+      "tick": 112,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 1012,
+      "outcome": "excluded_food",
+      "tick": 79,
+      "body_length": 8,
+      "score": 7
+    },
+    {
+      "seed": 1013,
+      "outcome": "excluded_food",
+      "tick": 120,
+      "body_length": 20,
+      "score": 19
+    },
+    {
+      "seed": 1014,
+      "outcome": "excluded_food",
+      "tick": 32,
+      "body_length": 4,
+      "score": 3
+    },
+    {
+      "seed": 1015,
+      "outcome": "excluded_food",
+      "tick": 164,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 1016,
+      "outcome": "excluded_food",
+      "tick": 141,
+      "body_length": 19,
+      "score": 18
+    },
+    {
+      "seed": 1017,
+      "outcome": "excluded_food",
+      "tick": 82,
+      "body_length": 9,
+      "score": 8
+    },
+    {
+      "seed": 1018,
+      "outcome": "excluded_food",
+      "tick": 12,
+      "body_length": 2,
+      "score": 1
+    },
+    {
+      "seed": 1019,
+      "outcome": "excluded_food",
+      "tick": 113,
+      "body_length": 17,
+      "score": 16
+    },
+    {
+      "seed": 1020,
+      "outcome": "excluded_food",
+      "tick": 153,
+      "body_length": 21,
+      "score": 20
+    },
+    {
+      "seed": 1021,
+      "outcome": "excluded_food",
+      "tick": 117,
+      "body_length": 18,
+      "score": 17
+    },
+    {
+      "seed": 1022,
+      "outcome": "excluded_food",
+      "tick": 82,
+      "body_length": 13,
+      "score": 12
+    },
+    {
+      "seed": 1023,
+      "outcome": "excluded_food",
+      "tick": 168,
+      "body_length": 22,
+      "score": 21
+    },
+    {
+      "seed": 1024,
+      "outcome": "excluded_food",
+      "tick": 118,
+      "body_length": 13,
+      "score": 12
+    }
+  ],
+  "transition_budget": 26,
+  "scenario": {
+    "name": "snake_5x5_cleared",
+    "engine": "snake",
+    "seed": "455",
+    "expected_genesis": {
+      "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+      "arcade_schema_version": 1,
+      "body": [
+        12,
+        11
+      ],
+      "direction": "right",
+      "food_cell": 6,
+      "food_index": 1,
+      "food_seed": "4792738661796100884",
+      "height": 5,
+      "pending_growth": 0,
+      "phase": "playing",
+      "revision": 1,
+      "score": 0,
+      "tick": 0,
+      "width": 5
+    },
+    "genesis_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[12,11],\"direction\":\"right\",\"food_cell\":6,\"food_index\":1,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":0,\"phase\":\"playing\",\"revision\":1,\"score\":0,\"tick\":0,\"width\":5}",
+    "steps": [
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 14,
+          "turns": [
+            {
+              "direction": "up",
+              "tick": 1
+            },
+            {
+              "direction": "right",
+              "tick": 2
+            },
+            {
+              "direction": "down",
+              "tick": 3
+            },
+            {
+              "direction": "right",
+              "tick": 6
+            },
+            {
+              "direction": "up",
+              "tick": 7
+            },
+            {
+              "direction": "left",
+              "tick": 11
+            },
+            {
+              "direction": "down",
+              "tick": 14
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            6,
+            1
+          ],
+          "direction": "down",
+          "food_cell": 16,
+          "food_index": 2,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 2,
+          "score": 1,
+          "tick": 14,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[6,1],\"direction\":\"down\",\"food_cell\":16,\"food_index\":2,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":2,\"score\":1,\"tick\":14,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 18,
+          "turns": [
+            {
+              "direction": "left",
+              "tick": 15
+            },
+            {
+              "direction": "down",
+              "tick": 16
+            },
+            {
+              "direction": "right",
+              "tick": 17
+            },
+            {
+              "direction": "down",
+              "tick": 18
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            16,
+            11,
+            10
+          ],
+          "direction": "down",
+          "food_cell": 21,
+          "food_index": 3,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 3,
+          "score": 2,
+          "tick": 18,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[16,11,10],\"direction\":\"down\",\"food_cell\":21,\"food_index\":3,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":3,\"score\":2,\"tick\":18,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 21,
+          "turns": [
+            {
+              "direction": "left",
+              "tick": 19
+            },
+            {
+              "direction": "down",
+              "tick": 20
+            },
+            {
+              "direction": "right",
+              "tick": 21
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            21,
+            20,
+            15,
+            16
+          ],
+          "direction": "right",
+          "food_cell": 22,
+          "food_index": 4,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 4,
+          "score": 3,
+          "tick": 21,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[21,20,15,16],\"direction\":\"right\",\"food_cell\":22,\"food_index\":4,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":4,\"score\":3,\"tick\":21,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 22,
+          "turns": []
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            22,
+            21,
+            20,
+            15,
+            16
+          ],
+          "direction": "right",
+          "food_cell": 18,
+          "food_index": 5,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 5,
+          "score": 4,
+          "tick": 22,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[22,21,20,15,16],\"direction\":\"right\",\"food_cell\":18,\"food_index\":5,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":5,\"score\":4,\"tick\":22,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 28,
+          "turns": [
+            {
+              "direction": "up",
+              "tick": 23
+            },
+            {
+              "direction": "right",
+              "tick": 26
+            },
+            {
+              "direction": "down",
+              "tick": 27
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            18,
+            13,
+            8,
+            7,
+            12,
+            17
+          ],
+          "direction": "down",
+          "food_cell": 21,
+          "food_index": 6,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 6,
+          "score": 5,
+          "tick": 28,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[18,13,8,7,12,17],\"direction\":\"down\",\"food_cell\":21,\"food_index\":6,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":6,\"score\":5,\"tick\":28,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 45,
+          "turns": [
+            {
+              "direction": "right",
+              "tick": 30
+            },
+            {
+              "direction": "up",
+              "tick": 31
+            },
+            {
+              "direction": "left",
+              "tick": 35
+            },
+            {
+              "direction": "down",
+              "tick": 38
+            },
+            {
+              "direction": "left",
+              "tick": 39
+            },
+            {
+              "direction": "down",
+              "tick": 40
+            },
+            {
+              "direction": "right",
+              "tick": 41
+            },
+            {
+              "direction": "down",
+              "tick": 42
+            },
+            {
+              "direction": "left",
+              "tick": 43
+            },
+            {
+              "direction": "down",
+              "tick": 44
+            },
+            {
+              "direction": "right",
+              "tick": 45
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5
+          ],
+          "direction": "right",
+          "food_cell": 7,
+          "food_index": 7,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 7,
+          "score": 6,
+          "tick": 45,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[21,20,15,16,11,10,5],\"direction\":\"right\",\"food_cell\":7,\"food_index\":7,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":7,\"score\":6,\"tick\":45,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 49,
+          "turns": [
+            {
+              "direction": "up",
+              "tick": 47
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16
+          ],
+          "direction": "up",
+          "food_cell": 1,
+          "food_index": 8,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 8,
+          "score": 7,
+          "tick": 49,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[7,12,17,22,21,20,15,16],\"direction\":\"up\",\"food_cell\":1,\"food_index\":8,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":8,\"score\":7,\"tick\":49,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 61,
+          "turns": [
+            {
+              "direction": "right",
+              "tick": 50
+            },
+            {
+              "direction": "down",
+              "tick": 51
+            },
+            {
+              "direction": "right",
+              "tick": 54
+            },
+            {
+              "direction": "up",
+              "tick": 55
+            },
+            {
+              "direction": "left",
+              "tick": 59
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23
+          ],
+          "direction": "left",
+          "food_cell": 13,
+          "food_index": 9,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 9,
+          "score": 8,
+          "tick": 61,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[1,2,3,4,9,14,19,24,23],\"direction\":\"left\",\"food_cell\":13,\"food_index\":9,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":9,\"score\":8,\"tick\":61,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 75,
+          "turns": [
+            {
+              "direction": "down",
+              "tick": 62
+            },
+            {
+              "direction": "left",
+              "tick": 63
+            },
+            {
+              "direction": "down",
+              "tick": 64
+            },
+            {
+              "direction": "right",
+              "tick": 65
+            },
+            {
+              "direction": "down",
+              "tick": 66
+            },
+            {
+              "direction": "left",
+              "tick": 67
+            },
+            {
+              "direction": "down",
+              "tick": 68
+            },
+            {
+              "direction": "right",
+              "tick": 69
+            },
+            {
+              "direction": "up",
+              "tick": 71
+            },
+            {
+              "direction": "right",
+              "tick": 74
+            },
+            {
+              "direction": "down",
+              "tick": 75
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16
+          ],
+          "direction": "down",
+          "food_cell": 18,
+          "food_index": 10,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 10,
+          "score": 9,
+          "tick": 75,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[13,8,7,12,17,22,21,20,15,16],\"direction\":\"down\",\"food_cell\":18,\"food_index\":10,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":10,\"score\":9,\"tick\":75,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 76,
+          "turns": []
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16
+          ],
+          "direction": "down",
+          "food_cell": 5,
+          "food_index": 11,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 11,
+          "score": 10,
+          "tick": 76,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[18,13,8,7,12,17,22,21,20,15,16],\"direction\":\"down\",\"food_cell\":5,\"food_index\":11,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":11,\"score\":10,\"tick\":76,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 87,
+          "turns": [
+            {
+              "direction": "right",
+              "tick": 78
+            },
+            {
+              "direction": "up",
+              "tick": 79
+            },
+            {
+              "direction": "left",
+              "tick": 83
+            },
+            {
+              "direction": "down",
+              "tick": 86
+            },
+            {
+              "direction": "left",
+              "tick": 87
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            5,
+            6,
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18
+          ],
+          "direction": "left",
+          "food_cell": 8,
+          "food_index": 12,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 12,
+          "score": 11,
+          "tick": 87,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[5,6,1,2,3,4,9,14,19,24,23,18],\"direction\":\"left\",\"food_cell\":8,\"food_index\":12,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":12,\"score\":11,\"tick\":87,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 98,
+          "turns": [
+            {
+              "direction": "down",
+              "tick": 88
+            },
+            {
+              "direction": "right",
+              "tick": 89
+            },
+            {
+              "direction": "down",
+              "tick": 90
+            },
+            {
+              "direction": "left",
+              "tick": 91
+            },
+            {
+              "direction": "down",
+              "tick": 92
+            },
+            {
+              "direction": "right",
+              "tick": 93
+            },
+            {
+              "direction": "up",
+              "tick": 95
+            },
+            {
+              "direction": "right",
+              "tick": 98
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6
+          ],
+          "direction": "right",
+          "food_cell": 2,
+          "food_index": 13,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 13,
+          "score": 12,
+          "tick": 98,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[8,7,12,17,22,21,20,15,16,11,10,5,6],\"direction\":\"right\",\"food_cell\":2,\"food_index\":13,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":13,\"score\":12,\"tick\":98,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 108,
+          "turns": [
+            {
+              "direction": "down",
+              "tick": 99
+            },
+            {
+              "direction": "right",
+              "tick": 102
+            },
+            {
+              "direction": "up",
+              "tick": 103
+            },
+            {
+              "direction": "left",
+              "tick": 107
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17
+          ],
+          "direction": "left",
+          "food_cell": 1,
+          "food_index": 14,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 14,
+          "score": 13,
+          "tick": 108,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[2,3,4,9,14,19,24,23,18,13,8,7,12,17],\"direction\":\"left\",\"food_cell\":1,\"food_index\":14,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":14,\"score\":13,\"tick\":108,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 109,
+          "turns": []
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17
+          ],
+          "direction": "left",
+          "food_cell": 5,
+          "food_index": 15,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 15,
+          "score": 14,
+          "tick": 109,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[1,2,3,4,9,14,19,24,23,18,13,8,7,12,17],\"direction\":\"left\",\"food_cell\":5,\"food_index\":15,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":15,\"score\":14,\"tick\":109,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 111,
+          "turns": [
+            {
+              "direction": "down",
+              "tick": 110
+            },
+            {
+              "direction": "left",
+              "tick": 111
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            5,
+            6,
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12
+          ],
+          "direction": "left",
+          "food_cell": 22,
+          "food_index": 16,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 16,
+          "score": 15,
+          "tick": 111,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[5,6,1,2,3,4,9,14,19,24,23,18,13,8,7,12],\"direction\":\"left\",\"food_cell\":22,\"food_index\":16,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":16,\"score\":15,\"tick\":111,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 118,
+          "turns": [
+            {
+              "direction": "down",
+              "tick": 112
+            },
+            {
+              "direction": "right",
+              "tick": 113
+            },
+            {
+              "direction": "down",
+              "tick": 114
+            },
+            {
+              "direction": "left",
+              "tick": 115
+            },
+            {
+              "direction": "down",
+              "tick": 116
+            },
+            {
+              "direction": "right",
+              "tick": 117
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6,
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24
+          ],
+          "direction": "right",
+          "food_cell": 12,
+          "food_index": 17,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 17,
+          "score": 16,
+          "tick": 118,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[22,21,20,15,16,11,10,5,6,1,2,3,4,9,14,19,24],\"direction\":\"right\",\"food_cell\":12,\"food_index\":17,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":17,\"score\":16,\"tick\":118,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 120,
+          "turns": [
+            {
+              "direction": "up",
+              "tick": 119
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6,
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19
+          ],
+          "direction": "up",
+          "food_cell": 7,
+          "food_index": 18,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 18,
+          "score": 17,
+          "tick": 120,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[12,17,22,21,20,15,16,11,10,5,6,1,2,3,4,9,14,19],\"direction\":\"up\",\"food_cell\":7,\"food_index\":18,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":18,\"score\":17,\"tick\":120,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 121,
+          "turns": []
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6,
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19
+          ],
+          "direction": "up",
+          "food_cell": 24,
+          "food_index": 19,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 19,
+          "score": 18,
+          "tick": 121,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[7,12,17,22,21,20,15,16,11,10,5,6,1,2,3,4,9,14,19],\"direction\":\"up\",\"food_cell\":24,\"food_index\":19,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":19,\"score\":18,\"tick\":121,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 126,
+          "turns": [
+            {
+              "direction": "right",
+              "tick": 122
+            },
+            {
+              "direction": "down",
+              "tick": 123
+            },
+            {
+              "direction": "right",
+              "tick": 126
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6,
+            1,
+            2,
+            3
+          ],
+          "direction": "right",
+          "food_cell": 14,
+          "food_index": 20,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 20,
+          "score": 19,
+          "tick": 126,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6,1,2,3],\"direction\":\"right\",\"food_cell\":14,\"food_index\":20,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":20,\"score\":19,\"tick\":126,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 128,
+          "turns": [
+            {
+              "direction": "up",
+              "tick": 127
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6,
+            1,
+            2
+          ],
+          "direction": "up",
+          "food_cell": 3,
+          "food_index": 21,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 21,
+          "score": 20,
+          "tick": 128,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[14,19,24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6,1,2],\"direction\":\"up\",\"food_cell\":3,\"food_index\":21,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":21,\"score\":20,\"tick\":128,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 131,
+          "turns": [
+            {
+              "direction": "left",
+              "tick": 131
+            }
+          ]
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6
+          ],
+          "direction": "left",
+          "food_cell": 2,
+          "food_index": 22,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 22,
+          "score": 21,
+          "tick": 131,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[3,4,9,14,19,24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6],\"direction\":\"left\",\"food_cell\":2,\"food_index\":22,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":22,\"score\":21,\"tick\":131,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 132,
+          "turns": []
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6
+          ],
+          "direction": "left",
+          "food_cell": 1,
+          "food_index": 23,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 23,
+          "score": 22,
+          "tick": 132,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[2,3,4,9,14,19,24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6],\"direction\":\"left\",\"food_cell\":1,\"food_index\":23,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":23,\"score\":22,\"tick\":132,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 133,
+          "turns": []
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6
+          ],
+          "direction": "left",
+          "food_cell": 0,
+          "food_index": 24,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 24,
+          "score": 23,
+          "tick": 133,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[1,2,3,4,9,14,19,24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6],\"direction\":\"left\",\"food_cell\":0,\"food_index\":24,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":24,\"score\":23,\"tick\":133,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 135,
+          "turns": []
+        },
+        "expect": "advance_past_terminal",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6
+          ],
+          "direction": "left",
+          "food_cell": 0,
+          "food_index": 24,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "playing",
+          "revision": 24,
+          "score": 23,
+          "tick": 133,
+          "width": 5
+        },
+        "expected_result": null,
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[1,2,3,4,9,14,19,24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6],\"direction\":\"left\",\"food_cell\":0,\"food_index\":24,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"playing\",\"revision\":24,\"score\":23,\"tick\":133,\"width\":5}",
+        "result_bytes": "null"
+      },
+      {
+        "command": {
+          "kind": "advance",
+          "through_tick": 134,
+          "turns": []
+        },
+        "expect": "applied",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6
+          ],
+          "direction": "left",
+          "food_cell": -1,
+          "food_index": 25,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "terminal",
+          "revision": 25,
+          "score": 24,
+          "tick": 134,
+          "width": 5
+        },
+        "expected_result": {
+          "outcome": "cleared",
+          "rating_delta": null,
+          "score_facts": [
+            {
+              "kind": "snake.food_eaten",
+              "value": 24
+            },
+            {
+              "kind": "snake.ticks_survived",
+              "value": 134
+            }
+          ]
+        },
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[0,1,2,3,4,9,14,19,24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6],\"direction\":\"left\",\"food_cell\":-1,\"food_index\":25,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"terminal\",\"revision\":25,\"score\":24,\"tick\":134,\"width\":5}",
+        "result_bytes": "{\"outcome\":\"cleared\",\"rating_delta\":null,\"score_facts\":[{\"kind\":\"snake.food_eaten\",\"value\":24},{\"kind\":\"snake.ticks_survived\",\"value\":134}]}"
+      },
+      {
+        "command": {
+          "kind": "quit"
+        },
+        "expect": "illegal_phase",
+        "expected_snapshot": {
+          "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+          "arcade_schema_version": 1,
+          "body": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            9,
+            14,
+            19,
+            24,
+            23,
+            18,
+            13,
+            8,
+            7,
+            12,
+            17,
+            22,
+            21,
+            20,
+            15,
+            16,
+            11,
+            10,
+            5,
+            6
+          ],
+          "direction": "left",
+          "food_cell": -1,
+          "food_index": 25,
+          "food_seed": "4792738661796100884",
+          "height": 5,
+          "pending_growth": 1,
+          "phase": "terminal",
+          "revision": 25,
+          "score": 24,
+          "tick": 134,
+          "width": 5
+        },
+        "expected_result": {
+          "outcome": "cleared",
+          "rating_delta": null,
+          "score_facts": [
+            {
+              "kind": "snake.food_eaten",
+              "value": 24
+            },
+            {
+              "kind": "snake.ticks_survived",
+              "value": 134
+            }
+          ]
+        },
+        "snapshot_bytes": "{\"arcade_content_hash\":\"sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef\",\"arcade_schema_version\":1,\"body\":[0,1,2,3,4,9,14,19,24,23,18,13,8,7,12,17,22,21,20,15,16,11,10,5,6],\"direction\":\"left\",\"food_cell\":-1,\"food_index\":25,\"food_seed\":\"4792738661796100884\",\"height\":5,\"pending_growth\":1,\"phase\":\"terminal\",\"revision\":25,\"score\":24,\"tick\":134,\"width\":5}",
+        "result_bytes": "{\"outcome\":\"cleared\",\"rating_delta\":null,\"score_facts\":[{\"kind\":\"snake.food_eaten\",\"value\":24},{\"kind\":\"snake.ticks_survived\",\"value\":134}]}"
+      }
+    ],
+    "expected_terminal": {
+      "arcade_content_hash": "sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef",
+      "arcade_schema_version": 1,
+      "body": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        9,
+        14,
+        19,
+        24,
+        23,
+        18,
+        13,
+        8,
+        7,
+        12,
+        17,
+        22,
+        21,
+        20,
+        15,
+        16,
+        11,
+        10,
+        5,
+        6
+      ],
+      "direction": "left",
+      "food_cell": -1,
+      "food_index": 25,
+      "food_seed": "4792738661796100884",
+      "height": 5,
+      "pending_growth": 1,
+      "phase": "terminal",
+      "revision": 25,
+      "score": 24,
+      "tick": 134,
+      "width": 5
+    },
+    "expected_result": {
+      "outcome": "cleared",
+      "rating_delta": null,
+      "score_facts": [
+        {
+          "kind": "snake.food_eaten",
+          "value": 24
+        },
+        {
+          "kind": "snake.ticks_survived",
+          "value": 134
+        }
+      ]
+    }
+  }
+}

@@ -1441,3 +1441,29 @@ RP-196 separately records AR7's missing exact 5×5 clearing population: the curr
 cycle proof clears 30 cells. Docs no longer infer impossibility from lack of a Hamiltonian
 cycle. Next is predeclared legal-trace construction over actual engines, not changed rules
 or relabelled population. All broader product, platform and release obligations remain.
+
+## 2026-10-05 — Exact 5×5 Snake clearing is constructed, not waived
+
+RP-196 independently verifies the original 6×5 proof does not cover AR7's named 5×5 board.
+The separately predeclared strategy executes every seed 1–1,024 through the real Go registry:
+one clears, 1,023 stop on observed excluded food (strategy failures, not unwinnable seeds),
+zero crash and largest observed tick 209. Seed 455 reaches the exact cleared state at tick
+134 with score 24, all 25 body cells and food -1. No rule, RNG, growth, clock or content mint
+changes. Original corpora/fixture, numeric vectors, production source and kernel 0.3.146 remain
+unchanged. The new separate fixture changes only Snake width 6→5.
+
+The Go-selected real trace and independent TS replay compare literal genesis and every
+attempted snapshot/result: 26 attempts / 27 states, including actual food/growth, terminal
+overshoot refusal without mutation and post-terminal phase refusal. False population/body/
+outcome/fact and route controls reject. Severed final-exit policy, intermediate TS result
+and snapshot bytes, stale artifact and premature guard exhaustion fail independently and
+are restored. The first incorrectly escaped Make selector ran no tests; it is disclosed as
+invalid evidence, then corrected and actually executed. Final cold verification and the
+exact cross-party review span are recorded in the Arcade log; no self-approval or archival.
+Selected cold Go, 7,151 client tests, type/build/boundaries/vet, unchanged vectors/corpus,
+real-Postgres composition and the full Linux browser target (21,702 plus performance)
+pass. The first browser invocation's terminal metadata was lost by my aggregator; a whole-
+target confirmation retains terminal exit 0. The unchanged pushed RP-131 history defect
+still prevents a complete green-CI claim; no bypass or rewritten history.
+Next is the remaining original A3 tail/growth/collision and rejection-atomicity review, not
+a shortcut to full AR7 or the owner-blocked public surface. Broader 1.0 obligations remain.

@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Arcade Snake snapshot grammar correction — 2026-10-05
+## Current Arcade exact 5×5 clearing witness — 2026-10-05
+
+RP-196 supplies the named population without changing any engine rule or replacing the valid
+6×5 evidence. All 1,024 Go strategy seeds are recorded: one cleared, 1,023 excluded-food
+strategy failures, no crashes; largest tick 209. Selected seed 455 clears all 25 cells at
+tick 134, score 24. Independent TS replay byte-compares Go genesis and all 26 attempts /
+27 states, with observed food/growth, atomic terminal-window refusal and phase refusal.
+Validators reject false population/body/outcome/facts. Independently severed final exit,
+intermediate TS outputs, stale artifact and exhausted guard fail; probes restored. Test-only
+fixture/corpus/generation changes, not kernel, mechanics, copy, public wire or production mint.
+Cold selected Go, 7,151 client tests, type/build/boundaries/vet, unchanged vectors/corpus,
+complete Linux browser target (21,702 plus performance) and the real-DB selector pass.
+Historical RP-131 remains red and unbypassed. Exact Claude review span follows this commit;
+**READY FOR CLAUDE DESIGNATED REVIEW**, not full A3/AR7 or archival acceptance.
+
+**NEXT SAFE ACTION:** predeclare the remaining bounded original A3 tail/growth/collision
+and rejection-atomicity review against actual tenant/TS transitions. Inventory current
+witness coverage before adding tests, execute independent severings and do not infer full
+acceptance from the new clearing proof. Owner public wire/copy/mint and RP-131's draft-only
+historical repair remain outside that scope; broader 1.0 obligations remain on the roadmap.
+
+## Dated Arcade Snake snapshot grammar correction — 2026-10-05
 
 RP-195 reproduces 32 malformed TS decoder admissions (21 actual quit outputs) and eight Go
 admissions (seven actual quit outputs). The separately authorized decoder-only correction
@@ -15,7 +36,7 @@ it is DB/library composition, not public-wire acceptance. RP-131's pushed histor
 remains unchanged and unbypassed.
 Exact Codex corrective span: `4f6173be^..45fcf3ae`.
 
-**NEXT SAFE ACTION:** predeclare RP-196's exact AR7 5×5 clearing population construction.
+**Next at this dated checkpoint:** predeclare RP-196's exact AR7 5×5 clearing population construction.
 The current fixture is 6×5 with a 30-cell cleared body; preserve that valid evidence, but do
 not relabel it as 5×5. Failure of the cycle driver is not proof that no legal trace can clear
 an odd board. Execute real engines, retain literal command/output witnesses and negative

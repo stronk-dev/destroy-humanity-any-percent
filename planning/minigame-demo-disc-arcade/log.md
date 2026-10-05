@@ -1010,3 +1010,70 @@ do not infer impossibility or silently use 6×5 instead. Cold Go, whole client, 
 root boundaries/vet/vectors/corpus and complete browser target plus the real-DB selector are
 retained checks. Historical RP-131 remains separately reported. Claude designated review
 must cite the exact new range; no self-approval, archival, push or deployment.
+
+**Research executed:** all 1,024 seeds finish with explicit observations: one cleared
+(lowest/only seed 455), zero crashed and 1,023 excluded-food strategy failures. Largest
+observed tick is 209, below the independently derived 578-tick guard. The clearing seed
+finishes at tick 134, score 24, body length 25 with all cells 0..24, food -1 and pending
+growth 1. The new separate fixture changes only Snake width, and its content hash is
+`sha256:3bae7a0744d8e2795b88a93bdef180414a6db238f9dbd68e259c8cd0ce103bef`.
+The generated artifact records every seed, all counts and the selected real registry trace:
+26 attempted commands (24 applied / two refused), 27 literal state observations. Actual
+nonterminal outputs show food consumption and growth; terminal overshoot refuses at tick
+133 without mutation, exact tick 134 clears, and subsequent quit is illegal_phase.
+TS independently replays every attempt and byte-compares actual genesis/snapshot/result.
+No property of the other 1,023 seeds is inferred beyond this strategy's recorded failure.
+
+**Discrimination/restoration:** cycle and population validators execute their retained
+duplicate/missing/nonadjacent and 6×5/incomplete-body/false-outcome/false-fact controls.
+Removing only the final-exit policy executes the full Go population, then fails Make 2:
+`bounded strategy found no clearing witness`. A prematurely exhausted probe guard fails
+Make 2 at seed 1 with `observation invalid`, not a silently excluded seed. Changing the
+artifact's version makes complete regeneration/check fail Make 2 as stale. An invented
+nonterminal TS result on only width-5 states fails the new first literal result comparison;
+reversed nonterminal JSON key order independently fails the first literal snapshot comparison
+(each focused installed Vitest exit 1). Production probes, artifact and guard are restored.
+
+One first final-exit probe used an incorrectly escaped anchored Make selector: the expanded
+command ran NO TESTS and exited 0. That invocation is invalid evidence, not a successful
+severing. I corrected the selector, reran the actual complete seed experiment and recorded
+its failure above. No production correction followed this instrumentation error.
+
+The existing root Arcade generation/check aliases now include the new test-only artifact,
+always cold; no CI job/topology change. Both existing corpora and their fixture remain
+byte-identical, as do numeric vectors, kernel 0.3.146 and every production file. Final
+retained cold verification follows; Claude review is still mandatory.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Exact original Claude span: `508fe19a^..508fe19a`. This finding concerns
+AR7's named Snake 5×5 clearing population only. The independently inspected original fixture
+is width 6 and the existing generated clearing body has 30 cells; it cannot serve as the
+named population. This is not a whole-A3 verdict or a finding that the pure rules cannot
+clear an odd board. The separate successful construction supplies the missing bounded
+evidence locally and still requires Claude's exact-range designated review.
+
+**Retained cold verification:** root Go `-count=1` passes `./decimal ./arcade ./kernel
+./minigame ./replaycatalog`; all 7,151 client tests pass (88 browser-only skips), with zero
+typecheck/Svelte errors or warnings. Build, client/cosmetic/no-payment boundaries and their
+negative controls, vet, byte-identical numeric vectors and complete Arcade regeneration
+pass. The declared real-Postgres production selector executes verbosely PASS (0.19 s),
+not skipped. It remains DB/library composition, not owner-blocked public-wire acceptance.
+
+Fresh `make verify-kernel-version` passes checkout and adversarial fixtures, then exits 2
+on unchanged pushed RP-131 commit `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`. No exception, bypass, rewritten history or CI edit.
+The complete history/CI claim remains red despite this test-only range's green behavioral
+checks and unchanged honest kernel identity.
+
+The first complete browser invocation reported 21,702 suite passes plus its separate
+Chromium performance pass. My aggregation failed to retain the terminal metadata before
+the completed session expired, so I reran the ENTIRE target for an explicitly retained
+exit status, not a selected test retry or a claim that the prior invocation was red.
+
+**Complete browser confirmation:** the full Linux target rerun is terminal Make exit 0,
+21,702 passing executions across 261 file populations in Chromium/Firefox/WebKit, three
+intentional performance skips, followed by the separately executed Chromium performance
+case (one pass / 20 filtered). The terminal metadata is retained. Probes remain restored;
+`git diff --check` and unchanged existing corpus/fixture/vector/kernel/production-byte checks
+pass. **READY FOR CLAUDE DESIGNATED REVIEW** of this exact bounded test-only population
+construction. No full A3/AR7, hosted reliability, complete green CI or archival promotion.

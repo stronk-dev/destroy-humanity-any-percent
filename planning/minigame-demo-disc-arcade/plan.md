@@ -30,8 +30,12 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   RP-195 separately corrects both snapshot decoders' malformed numeric/raw/identity admission,
   using 45 shared negatives and seven legal controls over four actual states. Kernel 0.3.146
   records the acceptance-set change; independent guard probes fail. Claude review is required.
-  RP-196 remains a separate population gap: the current 6×5 cycle witness is not AR7's named
-  5×5 clearing proof. No whole A3/AC5 or public integration approval is inferred here.
+  RP-196 adds a separate actual 5×5 clearing fixture/witness: all 1,024 strategy seeds are
+  recorded (one cleared / 1,023 excluded-food failures), selected seed 455 clears at tick 134.
+  Go registry output and independent TS literal replay cover 26 attempts / 27 observations,
+  including overlong terminal-window and phase refusals. Existing 6×5 evidence is preserved.
+  Discrimination controls fail; Claude review is still required. No whole A3/AC5 or public
+  integration approval is inferred here.
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),
   toy/definition/tenant cross-checks, resolver arms `(mine_grid|snake, 1.0.0) → arcade`, gameserver
   tenant registration, TS replay loader chain; fixture `minigames` + `minigame_api` candidates with

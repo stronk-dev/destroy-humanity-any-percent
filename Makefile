@@ -380,10 +380,10 @@ typer-corpus-check:
 	cd server && go test ./typer -run '^TestTyperContentGate$$'
 
 arcade-corpus:
-	cd server && go test ./arcade -run '^TestArcadeContentGate$$' -update-arcade-corpus
+	cd server && go test ./arcade -run '^(TestArcadeContentGate|TestSnakeOddBoardContentGate)$$' -update-arcade-corpus -update-arcade-odd-corpus -count=1
 
 arcade-corpus-check:
-	cd server && go test ./arcade -run '^TestArcadeContentGate$$'
+	cd server && go test ./arcade -run '^(TestArcadeContentGate|TestSnakeOddBoardContentGate)$$' -count=1
 
 garden-corpus:
 	cd server && go test ./garden -run '^TestGardenEngineCorpus$$' -update-garden-corpus

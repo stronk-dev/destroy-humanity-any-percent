@@ -23,8 +23,9 @@ loads through `server/arcade/catalog.go` and `client/src/arcade/catalog.ts`.
 The candidate bytes are `balance/testdata/arcade-v1.json` (the RFC's provisional v1 rows). The
 corpus fixture is `testdata/arcade/corpus-fixture-v1.json`: small boards, and a 6×5 Snake board,
 which supports the current cycle-based clearing driver. That driver does not supply AR7's
-specified 5×5 clearing population (RP-196); lacking a cycle is not proof that a different
-legal command trace cannot clear 5×5. The exact odd-board witness remains missing.
+specified 5×5 clearing population by itself; lacking a cycle is not proof that a different
+legal command trace cannot clear 5×5. RP-196 adds a separate exact 5×5 fixture and witness
+without replacing or relabelling the 6×5 corpus.
 
 ## Engines
 
@@ -63,6 +64,22 @@ usable and produces its exact certified fact. These are grammar controls, not pr
 semantic reachability invariants or a public saved-state exploit. Claude review remains required.
 
 ## Verification
+
+`testdata/arcade/snake-5x5-fixture-v1.json` differs from the original corpus fixture only in
+Snake width (6→5). `snake-5x5-gate-v1.json` records all 1,024 Go registry-driven strategy
+observations and the selected real clearing trace. The strategy follows a 24-cell cycle
+excluding cell 0, entering that cell only at the legal final growth step. It clears seed 455
+at tick 134, with score 24 and all 25 body cells. The other 1,023 observations are explicitly
+excluded-food strategy failures, not claims those seeds or the board are unwinnable. Largest
+observed tick is 209; guard exhaustion invalidates measurement instead of excluding a seed.
+
+The selected Go trace records 26 attempted commands and 27 literal snapshot observations,
+including nonterminal food/growth outputs, an overlong terminal-window refusal that preserves
+state/result, exact terminal and post-terminal phase refusal. TypeScript independently
+byte-compares actual genesis and every attempted snapshot/result. Validators refuse the
+6×5 substitute, incomplete bodies and fabricated outcome/facts; independently severed final
+exit and intermediate output probes fail. This is the named 5×5 clearing population, not
+all A3/AR7, public-wire or archival acceptance. Claude review remains mandatory.
 
 `make arcade-corpus-check` regenerates `testdata/arcade/content-gate-v2.json` from the Go engines
 and compares it byte for byte. The corpus has 16 scenarios and a fixed budget of 60 attempted

@@ -10,7 +10,8 @@ exact review span `4f6173be^..45fcf3ae`) plus the bounded Cosmetic
 wearer-control link correction `e02f6560`, AC15 CSS precedence correction `3be0e5dd` and
 Typer display-loop correction `58bc34ad`, test-only Arcade callback correction `89434711`
 native keyboard supplement `27622885`, corpus-budget correction `bcdee28d` and hidden-state
-witness correction `fe49c408` and every-command literal-byte instrument `92ed5e68`,
+witness correction `fe49c408`, every-command literal-byte instrument `92ed5e68` and separate
+exact 5×5 clearing witness (review span pinned after commit),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
@@ -138,8 +139,14 @@ disclosed. Kernel is 0.3.146; selected cold Go, 7,148 client tests, root checks 
 three-browser target (21,693 plus performance) pass. The additional real-DB regression passes
 cold after the disclosed native-image startup failure; this is not public-wire acceptance. Claude review remains
 required and RP-131's historic guard failure still prevents a complete green-CI claim.
-RP-196 next requires the exact AR7 5×5 clearing population: the existing 6×5 cycle proof is
-preserved but not substituted. Lack of a cycle alone does not prove impossibility. None of these
+RP-196 now supplies the exact AR7 5×5 clearing population without changing rules. All 1,024
+strategy seeds are recorded (one clear, 1,023 excluded-food strategy failures), with seed 455
+clearing all 25 cells at tick 134. Independent TS replay compares literal Go bytes for all
+26 attempts / 27 states, including food/growth and atomic terminal/phase refusal. Failing
+controls discriminate and are restored; Claude review remains mandatory. Existing 6×5
+evidence remains unchanged and no failed strategy is labelled global impossibility. Selected
+cold Go, 7,151 client tests, root checks, real-Postgres composition and complete browser
+verification (21,702 plus performance) pass; the historical CI failure remains. None of these
 corrections proves public storage/wire or every semantically valid state; release gates remain.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
