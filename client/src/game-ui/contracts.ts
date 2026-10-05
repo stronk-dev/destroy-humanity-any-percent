@@ -312,10 +312,17 @@ export function parseCosmeticsArm(source: unknown): void {
     if (row.lock !== null) {
       const lock = object(row.lock, "cosmetic lock");
       exact(lock, ["kind", "tier"], "cosmetic lock");
-      oneOf(lock.kind, ["active_company_tier_at_least"] as const, "cosmetic lock kind"); integer(lock.tier, 0);
+      oneOf(lock.kind, ["active_company_tier_at_least"] as const, "cosmetic lock kind");
+      const tier = lock.tier;
+      if (typeof tier !== "number" || !Number.isSafeInteger(tier) || tier < 0 || tier > 8) throw new SyntaxError("cosmetic lock tier must be 0..8");
       if (row.acquirable || row.owned) throw new SyntaxError("a locked cosmetic cannot be owned or acquirable");
     }
     if (!Array.isArray(row.worn_by) || row.worn_by.some((pet) => typeof pet !== "string" || !uuidV7.test(pet))) throw new SyntaxError("cosmetic worn_by must be pet ids");
+    let priorWorn = "";
+    for (const pet of row.worn_by as string[]) {
+      if (pet <= priorWorn) throw new SyntaxError("cosmetic worn_by must be strictly sorted");
+      priorWorn = pet;
+    }
     if (row.worn_by.length !== 0 && !row.owned) throw new SyntaxError("an unowned cosmetic cannot be worn");
     if ((row.cosmetic_id as string) <= prior) throw new SyntaxError("cosmetic items must follow catalog order");
     prior = row.cosmetic_id as string;

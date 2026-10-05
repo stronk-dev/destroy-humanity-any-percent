@@ -61,6 +61,31 @@
     }
    ]
   },
+  "owned-two-wearers": {
+   "active": true,
+   "items": [
+    {
+     "cosmetic_id": "horse_armor",
+     "owned": true,
+     "acquirable": false,
+     "lock": null,
+     "worn_by": [
+      "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa",
+      "01986666-bbbb-7bbb-8bbb-bbbbbbbbbbbb"
+     ]
+    }
+   ],
+   "wearers": [
+    {
+     "pet_id": "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa",
+     "worn": "horse_armor"
+    },
+    {
+     "pet_id": "01986666-bbbb-7bbb-8bbb-bbbbbbbbbbbb",
+     "worn": "horse_armor"
+    }
+   ]
+  },
   "owned-worn": {
    "active": true,
    "items": [

@@ -1101,3 +1101,14 @@ was restored byte-exact. The final combined Make run naturally exercised one vis
 and still passed Pitch and Cosmetics. A forced-offer negative has not run, and hosted CI has not
 run. This is a narrowed test timing defect, not evidence of a product `act`
 drop or a complete CI reliability verdict; Claude's designated review is still due.
+
+## 2026-10-05 — Cosmetic C5 producer/reader contract correction
+
+Codex's cross-party review of Claude C5 found three public-wire forms that the TypeScript
+decoder accepted despite the accepted contract: reversed and duplicate per-item `worn_by` pet
+IDs, and lock tier 9. Three new tests failed first; the bounded decoder correction, shared
+Go-projected two-wearer fixture and canonical docs now agree. Separate order and tier severing
+probes fail their targeted cases. Cold client, typecheck, focused Go and API generation/check
+plus production client build, Go vet, cosmetic-boundary and no-payment checks pass, but this
+Codex correction still needs Claude's designated review. RP-174 separately
+records the ruling-author RFC §7.1 body conflict; no full Cosmetics or 1.0 promotion follows.

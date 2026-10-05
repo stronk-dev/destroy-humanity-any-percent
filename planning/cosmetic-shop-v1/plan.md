@@ -16,7 +16,7 @@ migration take the next free numbers at landing.
   Exit carry and the replay-inputs carry, in both runtimes (AC3, AC4, AC8).
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
   the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9).
-- [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10).
+- [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).

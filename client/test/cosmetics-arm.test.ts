@@ -7,7 +7,7 @@ import { parseCosmeticsArm } from "../src/game-ui/contracts";
 // and rejects the two named contradictions plus a price-shaped field.
 describe("game UI cosmetics arm", () => {
   it("accepts every shared Go-projected case", () => {
-    expect(Object.keys(fixture.cases).sort()).toEqual(["acquirable-at-tier-1", "locked-at-tier-0", "owned-no-wearer", "owned-not-worn", "owned-worn"]);
+    expect(Object.keys(fixture.cases).sort()).toEqual(["acquirable-at-tier-1", "locked-at-tier-0", "owned-no-wearer", "owned-not-worn", "owned-two-wearers", "owned-worn"]);
     for (const [name, arm] of Object.entries(fixture.cases)) expect(() => parseCosmeticsArm(arm), name).not.toThrow();
   });
 
@@ -26,13 +26,10 @@ describe("game UI cosmetics arm", () => {
   });
 
   function twoPetArm(): { items: { worn_by: string[] }[]; wearers: { pet_id: string; worn: string | null }[] } {
-    const twoPets = structuredClone(fixture.cases["owned-worn"]) as {
+    const twoPets = structuredClone(fixture.cases["owned-two-wearers"]) as {
       items: { worn_by: string[] }[];
       wearers: { pet_id: string; worn: string | null }[];
     };
-    const secondPet = "01986666-bbbb-7bbb-8bbb-bbbbbbbbbbbb";
-    twoPets.items[0]!.worn_by.push(secondPet);
-    twoPets.wearers.push({ pet_id: secondPet, worn: "horse_armor" });
     expect(() => parseCosmeticsArm(twoPets)).not.toThrow();
     return twoPets;
   }

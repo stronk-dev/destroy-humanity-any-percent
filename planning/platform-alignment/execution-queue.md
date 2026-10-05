@@ -1,5 +1,16 @@
 # Executable queue
 
+## Current Cosmetic Shop C5/AC10 delta — 2026-10-05
+
+Codex's designated review of Claude's C5 `1a477d9e^..1a477d9e` is **CHANGES REQUIRED**:
+the snapshot decoder accepted reversed and duplicate `worn_by` pet IDs and lock tier 9 (RP-173).
+A bounded Codex correction now reads a Go-authored two-wearer fixture, rejects all three cases,
+and fails the relevant tests when either new check is severed. Cold client, TypeScript, Go and
+API gates pass locally. The corrective range is **READY FOR CLAUDE DESIGNATED REVIEW**, not
+approved or archival-eligible. Separately, the ruling author must reconcile RFC §7.1's
+required top-level v4 wording with the accepted optional `features.cosmetics` contract
+(RP-174). C1–C4 and C6–C8 are not reviewed by this C5 verdict.
+
 ## Current rights delta — 2026-10-04, product source `f9ab1037`
 
 The bounded Account AC6/RP-118 witness is retained in the composed first-hour Postgres test:

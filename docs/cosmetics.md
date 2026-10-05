@@ -60,7 +60,10 @@ blocked as `exclusive_activity`.
 
 - **Snapshot arm:** the optional arm `features.cosmetics` is
   `{active, items: [{cosmetic_id, owned, acquirable, lock, worn_by}], wearers: [{pet_id, worn}]}`,
-  plus the fact `feature.cosmetics`. The client decoder rejects internal contradictions.
+  plus the fact `feature.cosmetics`. The client decoder rejects internal contradictions,
+  including duplicate or out-of-order pet IDs in each `worn_by` list and lock tiers outside
+  the catalog's 0–8 domain. The shared Go-projected fixture includes two simultaneous wearers
+  so those reader checks are exercised against a real producer shape.
 - **Desk shelf (`client/src/game-ui/cosmetics/CosmeticShelf.svelte`):**
   - it replaces the static card when the arm is active and an item is acquirable or owned, so it is
     absent at Tier 0 until something is owned;

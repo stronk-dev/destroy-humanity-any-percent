@@ -60,12 +60,15 @@ func TestCosmeticsArmProjection(t *testing.T) {
 		return features.Cosmetics
 	}
 	const cat = "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"
+	const secondCat = "01986666-bbbb-7bbb-8bbb-bbbbbbbbbbbb"
 	pets := map[string]pet.CareState{cat: {}}
+	twoPets := map[string]pet.CareState{cat: {}, secondCat: {}}
 	cases := map[string]*cosmeticsArm{
 		"locked-at-tier-0":     project(0, cosmetic.NewState(), map[string]pet.CareState{}),
 		"acquirable-at-tier-1": project(1, cosmetic.NewState(), map[string]pet.CareState{}),
 		"owned-no-wearer":      project(0, &cosmetic.State{Owned: []string{"horse_armor"}, Equipped: map[string]string{}}, map[string]pet.CareState{}),
 		"owned-worn":           project(1, &cosmetic.State{Owned: []string{"horse_armor"}, Equipped: map[string]string{cat: "horse_armor"}}, pets),
+		"owned-two-wearers":    project(1, &cosmetic.State{Owned: []string{"horse_armor"}, Equipped: map[string]string{cat: "horse_armor", secondCat: "horse_armor"}}, twoPets),
 		"owned-not-worn":       project(1, &cosmetic.State{Owned: []string{"horse_armor"}, Equipped: map[string]string{}}, pets),
 	}
 	if arm := cases["locked-at-tier-0"]; !arm.Active || arm.Items[0].Acquirable || arm.Items[0].Lock == nil || arm.Items[0].Lock.Tier != 1 {
@@ -80,6 +83,9 @@ func TestCosmeticsArmProjection(t *testing.T) {
 	}
 	if arm := cases["owned-worn"]; len(arm.Items[0].WornBy) != 1 || arm.Wearers[0].Worn == nil || *arm.Wearers[0].Worn != "horse_armor" {
 		t.Fatalf("worn arm = %+v", arm)
+	}
+	if arm := cases["owned-two-wearers"]; len(arm.Items[0].WornBy) != 2 || arm.Items[0].WornBy[0] != cat || arm.Items[0].WornBy[1] != secondCat || len(arm.Wearers) != 2 || arm.Wearers[0].PetID != cat || arm.Wearers[1].PetID != secondCat {
+		t.Fatalf("two-wearer arm is not sorted: %+v", arm)
 	}
 	// Absent below v24 is impossible under a cosmetics bundle (floor 24); an
 	// unpinned bundle omits the arm entirely.
