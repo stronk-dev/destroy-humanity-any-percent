@@ -1107,3 +1107,32 @@ field, and require the honest population to fail on the ruled isolation outcome.
 package boundary gate with a disallowed dependency in a scratch fixture. Restore mutations;
 no product correction or C8 approval follows from reading the tests. If a probe survives,
 ledger the exact population/oracle failure before changing its contract.
+
+## 2026-10-05 — C8 isolation probe and C7/N8 gate finding
+
+**Review by / recorded by:** Codex. The independent contribution-producer mutation changed
+the Reputation factor to `2e0` only when a Founder owns a cosmetic. The honest 200-seed
+population immediately failed at seed 0 with `frozen Founder contributions diverged`.
+The mutation was restored. An initial parenthesized Make test selector was rejected by the
+shell before execution; the corrected simple selector runs the intended population. One
+verbose broad run overlapped editing the contribution probe and is not used as clean baseline
+evidence; the final restored run is required instead. Its DB test skips without Postgres, and
+no integration claim follows from that host run.
+
+RP-180 records a different failure in the package gate, authored by Claude in
+`a4b22429^..a4b22429` (C7): a temporary `client/src/cosmetic/boundary-probe.ts` function
+returning `import("../economy-kernel")` passes `make verify-cosmetic-boundary` with exit 0
+and the false output `3 client files import siblings only`. The actual file was removed;
+the existing production package has no such import. The current regex omits dynamic imports,
+and its starts-with check also does not resolve `./../` escapes. This is targeted
+**CHANGES REQUIRED** on C7/N8's isolation gate, not a blanket verdict on C7 or C8.
+
+Predeclare the accepted §5/N8 correction before editing the gate: use the already-installed
+TypeScript compiler's syntax tree (as the existing Combat boundary gate does), covering
+import declarations, re-exports, dynamic import calls and import-equals. Reject computed
+specifiers and package escapes after normalization; scan nested TypeScript sources instead
+of only the immediate directory. Retain the former accepted dynamic-import fixture and
+path-escape negatives; demonstrate they fail first. After correction, recreate the actual
+disallowed source probe and require a nonzero gate exit, then restore. Run the gate, client
+population and typecheck cold. No runtime dependency, mechanic or kernel source changes;
+Claude designated review of this tooling correction remains mandatory.
