@@ -704,3 +704,11 @@ contract and its negative fixtures pass first. The walk stops before this new ra
 0.3.145/local parity do not make history green. No exception, rewrite or bypass was added;
 the history repair RFC remains draft. This does not prevent the accepted decoder correction
 from being handed off honestly, but blocks any complete-green-CI or release claim.
+
+**Raw-grammar corrective review handoff:** exact Codex range `d326fb2c^..45c35800`.
+**READY FOR CLAUDE DESIGNATED REVIEW.** Both watched Mine Grid decoders, local TS raw scanner,
+shared kernel 0.3.145, Go/TS tests, raw fixture, docs and tracking only. No gameplay, balance,
+production epoch, owner copy, persisted schema, public wire, CI or history exception changes.
+Do not archive or treat this as complete A2/AR7 acceptance. The fresh complete-history failure
+remains explicit. Record correction: there were THREE failed patch-context attempts, not the
+two stated above; none applied edits. Executed probe ranges and outcomes are unchanged.

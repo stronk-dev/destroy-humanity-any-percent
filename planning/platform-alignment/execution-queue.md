@@ -10,6 +10,7 @@ root/list/row depth, not an arbitrary budget. Watched decoder changes use kernel
 Cold Go, 7,050 client tests, type/build/boundaries/vet/vectors/corpus checks pass; full cold
 Linux browser CI passes 21,399 tests plus performance. **READY FOR CLAUDE DESIGNATED REVIEW**,
 not full A2/AR7, public wire/storage or archival.
+Exact Codex corrective range: `d326fb2c^..45c35800`.
 
 **NEXT SAFE ACTION:** predeclare RP-194's AR7 per-command snapshot/result evidence audit.
 The current corpus holds only per-step command/outcome and final scenario bytes. Demonstrate
