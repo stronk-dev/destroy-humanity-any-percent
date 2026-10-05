@@ -175,7 +175,7 @@ func TestMineGridRejectionsMutateNothing(t *testing.T) {
 
 func TestSnakeRejectsAdvancePastTerminalWithoutMutation(t *testing.T) {
 	s := newSession(t, SnakeEngineRef, 5, fixturePath)
-	// The 5x5 head starts at x=2 facing right: it crashes into the east wall at tick 3.
+	// The 6x5 fixture head starts at x=3 facing right: it crashes east at tick 3.
 	before := string(s.snapshot)
 	if code := rejectionCode(s.apply(`{"kind":"advance","through_tick":5,"turns":[]}`)); code != "advance_past_terminal" || string(s.snapshot) != before {
 		t.Fatalf("advance past a mid-window terminal must reject without mutation, got %q", code)

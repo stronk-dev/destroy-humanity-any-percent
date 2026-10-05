@@ -1140,3 +1140,88 @@ no new mechanic or speculative production edit.
 complete three-browser target and declared real-DB selector. Report historical RP-131
 separately, with no bypass. Bounded original verdict + exact Codex supplement span; no full
 A3/AR7 promotion, self-review archival, push or deployment.
+
+**Predeclaration identity correction:** `git log -- server/production/arcade_integration_test.go`
+derives A5's actual original Claude commit as `e1c71d7c`; its bounded reviewed span is
+`e1c71d7c^..e1c71d7c`. My preceding negative "NOT assumed" sentence included an unnecessary,
+unverified placeholder hash. It is not a source/review identity and must not be cited. The
+only A5 identity used from here is the Git-derived one above. No original verdict has been
+issued yet.
+
+**Existing-instrument execution:** unchanged cold Go Arcade and all 7,151 client cases pass.
+Each of the four broad AC5 severings fails independently in Go AND TS: tail collision fires
+the actual tail-chase corpus; all-cell food changes actual genesis/outputs; reversal is
+wrongly applied instead of invalid_turn; removed terminal-window refusal admits the plain
+overshoot (including RP-196's overshoot). All production probes are restored.
+
+The narrower future-turn-only discard probe survives the OLD full Go Arcade population
+(Make 0, 19.25 s), all 7,151 OLD client cases (Make 0), and the OLD real-Postgres A5 witness
+(verbosely PASS, 0.17 s, Make 0). Its plain overshoot guard remains effective. This confirms
+RP-197's bounded instrument gap: no future turn is actually submitted. It is not evidence
+the unchanged production engine is wrong. Proceed with the predeclared test-only supplement;
+do not replace the existing controls that already discriminate their properties.
+
+**New unchanged-production controls:** twelve shared pure-engine negative populations
+(six commands × genesis/moved) pass in Go and TS; actual transition objects remain unchanged,
+and valid next advance, quit and terminal refusal remain usable. The first real-Postgres
+run passes its six genesis negatives, then fails MY accepted-move positive oracle: I used
+x-coordinate 11 where the snapshot contains row-major cell 211 on the 20×20 candidate.
+This is not an engine/admission failure. Correct only the test to compare the actual prior
+head + one cell and prior tick + one, then rerun unchanged production. A combined patch with
+stale log context failed atomically and applied no changes; the corrected patch follows.
+
+**Corrected unchanged-production DB control:** the exact declared selector now executes
+all twelve genesis/moved negatives, a real accepted advance and quit/resolution (Make 0,
+verbose PASS, 0.15 s). Only those two accepted commands enter SQL history. The test inspects
+actual repository state/genesis/result/revision, the complete ordered command-row aggregate,
+active status and cleared claim. UpdatedAt remains deliberately excluded because acquiring
+and releasing a claim legitimately updates it. This is not public API/receipt/socket proof.
+
+**New discrimination:** the same conditional future-turn-only discard now fails the new Go
+test at both genesis/moved cases (Make 2), the independent TS test at the same two cases
+(Vitest 1), and real Postgres at the submitted future turn (Make 2: unexpected certified
+terminal, followed by the legitimately retained terminal claim blocking further commands).
+Those cascading busy errors are not separate defects. Plain overshoot still refuses.
+
+Independent service probes fail the real DB witness: persisting the rejected command produces
+`revision 1→2 commands 0→1`, even though the tenant rejection is retained; suppressing error-path
+claim release fires `rejected advance did not release its actual claim` before subsequent busy
+errors. Independent direct-transition probes also fire: copying partially executed Go work
+back before invalid_turn fails all four late-turn cases; aliasing the TS caller's input instead
+of copying it fails eight overshoot/late-turn cases. These observe the actual mutable objects,
+not unchanged caller-owned encoded strings. All three production files are byte-restored.
+
+The shared six-command fixture is applied at genesis and after an accepted move in both pure
+engines and the real candidate 20×20 DB composition. The pure arm uses RP-196's actual 5×5
+fixture and seed 455; it does not relabel either board. All pure valid-next-advance, quit and
+post-terminal controls pass. A stale descriptive comment in the old crash test is corrected
+from 5×5/head x2 to its actual 6×5/head x3; no command or expectation changes.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Exact original Claude pure-rule span `508fe19a^..508fe19a`, and exact
+original composed-platform span `e1c71d7c^..e1c71d7c`. This verdict concerns only AC5/AC6's
+future/late-turn and durable rejection evidence. The old suites demonstrably admit the
+conditional future-turn discard probe; the old DB witness never submits a rejected command.
+Conversely, all four broad AC5 probes already fail independently in BOTH runtimes, and that
+positive evidence is preserved. There is no claim the unchanged engines have those defects,
+or that every other A3/A5 criterion has now received designated approval. The separately
+predeclared test-only repair still requires Claude's exact-range cross-party review.
+
+**Retained cold verification:** root `-count=1` Go passes `./decimal ./arcade ./kernel
+./minigame ./replaycatalog ./production` (the ordinary production lane is not substituted
+for DB evidence). Whole client: 7,164 pass / 88 intentional browser-only skips; typecheck and
+Svelte report zero errors/warnings. Build, client/cosmetic/no-payment boundaries and their
+negative controls, vet, byte-identical numeric vectors and full Arcade regeneration pass.
+The declared Postgres selector executes BOTH the existing composed witness and the new
+twelve-rejection witness verbosely PASS (0.15/0.16 s), terminal Make 0. Complete Linux browser
+CI is terminal Make 0: 21,741 passes across 264 three-engine file populations, three intentional
+performance skips, followed by the separate Chromium performance case (one pass / 20 filtered).
+
+Fresh `make verify-kernel-version` passes checkout/adversarial fixture checks and fails Make 2
+on unchanged pushed RP-131 hash `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`. No bypass, exception, false bump or rewritten history.
+Production probes, both older corpora, both older fixtures, clearing artifact, numeric vectors
+and kernel 0.3.146 remain byte-identical. `git diff --check` passes. This is **READY FOR CLAUDE
+DESIGNATED REVIEW**, not a claim of complete green CI, hosted reliability, full AC6/AR7,
+public wire or archival eligibility. The next safe accepted review is A2/AC3's four Mine Grid
+rule mutants; no other authority or release scope is inferred.

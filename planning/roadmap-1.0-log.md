@@ -1467,3 +1467,27 @@ target confirmation retains terminal exit 0. The unchanged pushed RP-131 history
 still prevents a complete green-CI claim; no bypass or rewritten history.
 Next is the remaining original A3 tail/growth/collision and rejection-atomicity review, not
 a shortcut to full AR7 or the owner-blocked public surface. Broader 1.0 obligations remain.
+
+## 2026-10-05 — Rejected Snake commands preserve real state and database history
+
+RP-197 verifies all four broad Snake AC5 mutants already fail both runtimes, then demonstrates
+the narrower future-turn-only discard survives the old full Go/client/real-DB populations.
+The separately predeclared test-only supplement executes six shared negatives at genesis and
+after an accepted move. Actual Go/TS caller-owned transition objects remain unchanged. Real
+Postgres preserves state/genesis/result/revision and complete ordered command rows, and releases
+claims. An accepted advance and eventual quit/resolution remain usable and commit exactly two
+rows. DB claims legitimately change UpdatedAt; that field is explicitly excluded.
+
+Future-turn discard, partial-input mutation, rejected-command persistence and stuck-claim probes
+fail independently and are restored. My initial positive oracle confused x-coordinate 11 with
+row-major cell 211; only the test is corrected, then rerun on unchanged production. No mechanic,
+kernel, balance, copy, public-wire or CI-workflow byte changes. Bounded original A3/A5 evidence
+verdicts are CHANGES REQUIRED; Claude must independently review the correction range. Full
+A3/A5/AR7 and public integration are not promoted. Final checks and exact handoff are recorded
+in the Arcade log. Next is the remaining A2/AC3 rule-discrimination review, not a release shortcut;
+the full 1.0 and historical RP-131 obligations remain.
+
+Retained cold verification passes all six selected Go packages, 7,164 client tests,
+type/build/boundaries/vet/vectors/corpus, both actual Postgres witnesses and the full Linux
+browser target (21,741 plus separate performance). The historical guard still fails at the
+same pushed RP-131 hash; no bypass. Review remains pending, not self-approval or release.

@@ -1,6 +1,26 @@
 # Executable queue
 
-## Current Arcade exact 5×5 clearing witness — 2026-10-05
+## Current Arcade rejection-atomicity evidence repair — 2026-10-05
+
+RP-197 preserves the four broad AC5 controls that already fail both runtimes, while closing
+the narrower future-turn/late-turn instrument gap. A conditional future-turn discard survived
+the old complete Go/client/DB populations; the new shared six commands × genesis/moved now
+fail that probe in Go, TS and real Postgres. Direct caller-object, rejected-persistence and
+claim-release probes fail independently and are restored. Valid play still advances and quit
+resolves; only those two commands enter SQL history. This is a test-only correction under
+accepted A3/A5/AC5/AC6, not a new rule or public API/receipt/socket proof. Cold selected Go,
+7,164 client tests, root checks, both real-DB witnesses and full three-browser verification
+(21,741 plus separate performance) pass. Exact correction review span will be pinned in the
+commit checkpoint; Claude designated review remains required. No full A3/A5/AR7 acceptance.
+
+**NEXT SAFE ACTION:** predeclare the remaining original A2/AC3 Mine Grid rule-discrimination
+review: 4-neighborhood flood, first-reveal exclusion, flagged chord and TS rejection sampling.
+Read the accepted contract and actual witnesses; execute each mutation independently before
+adding or changing tests. Record positive discrimination as evidence, not unnecessary repairs.
+Owner public wire/copy/mint, historical RP-131 and broader 1.0 obligations remain outside that
+bounded scope. Do not archive any correction on Codex's own review.
+
+## Dated Arcade exact 5×5 clearing witness — 2026-10-05
 
 RP-196 supplies the named population without changing any engine rule or replacing the valid
 6×5 evidence. All 1,024 Go strategy seeds are recorded: one cleared, 1,023 excluded-food
@@ -15,7 +35,7 @@ complete Linux browser target (21,702 plus performance) and the real-DB selector
 Historical RP-131 remains red and unbypassed. Exact Codex review span: `329fc994^..25906f01`;
 **READY FOR CLAUDE DESIGNATED REVIEW**, not full A3/AR7 or archival acceptance.
 
-**NEXT SAFE ACTION:** predeclare the remaining bounded original A3 tail/growth/collision
+**Next at this dated checkpoint:** predeclare the remaining bounded original A3 tail/growth/collision
 and rejection-atomicity review against actual tenant/TS transitions. Inventory current
 witness coverage before adding tests, execute independent severings and do not infer full
 acceptance from the new clearing proof. Owner public wire/copy/mint and RP-131's draft-only

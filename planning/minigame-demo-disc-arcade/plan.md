@@ -36,6 +36,12 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   including overlong terminal-window and phase refusals. Existing 6×5 evidence is preserved.
   Discrimination controls fail; Claude review is still required. No whole A3/AC5 or public
   integration approval is inferred here.
+  RP-197 adds six actual rejected commands at genesis/moved states, including future turns
+  after death and invalid turns after an earlier tick. Direct transition input objects remain
+  unchanged; real registry and successful advance/quit controls execute. The real Postgres
+  composition also compares full saved state/revision/command history and released claims.
+  Future-turn, partial-input, rejected-persistence and stuck-claim probes fail independently.
+  This test-only correction awaits Claude review, not full A3/A5/AC5/AC6 acceptance.
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),
   toy/definition/tenant cross-checks, resolver arms `(mine_grid|snake, 1.0.0) → arcade`, gameserver
   tenant registration, TS replay loader chain; fixture `minigames` + `minigame_api` candidates with

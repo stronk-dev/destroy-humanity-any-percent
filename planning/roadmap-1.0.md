@@ -15,7 +15,7 @@ exact 5×5 clearing witness `25906f01` (review span `329fc994^..25906f01`),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-196 corrections,
+(RP-145–RP-197 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -148,6 +148,13 @@ evidence remains unchanged and no failed strategy is labelled global impossibili
 cold Go, 7,151 client tests, root checks, real-Postgres composition and complete browser
 verification (21,702 plus performance) pass; the historical CI failure remains. None of these
 corrections proves public storage/wire or every semantically valid state; release gates remain.
+RP-197's bounded original review confirms the four broad Snake AC5 probes already discriminate
+in both runtimes, but a narrower future-turn-only discard survives the old Go/client/DB suites.
+The separately predeclared test-only repair submits six commands at genesis/moved, observes
+actual transition input objects, and compares real Postgres state/revision/complete command
+history/claim release. Future-turn, partial-input, rejected-persistence and stuck-claim probes
+fail the new witnesses and are restored. Successful play still works. Claude review remains
+mandatory; public wire/copy/mint and full A3/A5 acceptance are not promoted by this supplement.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "cases": [
+    {"name":"terminal_overshoot","through":"after_death","turns":[],"expected":"advance_past_terminal"},
+    {"name":"future_turn_after_death","through":"after_death","turns":[{"tick":"after_death","direction":"up"}],"expected":"advance_past_terminal"},
+    {"name":"late_reversal","through":"second_tick","turns":[{"tick":"second_tick","direction":"left"}],"expected":"invalid_turn"},
+    {"name":"late_same_direction","through":"second_tick","turns":[{"tick":"second_tick","direction":"right"}],"expected":"invalid_turn"},
+    {"name":"empty_window","through":"current_tick","turns":[],"expected":"advance_window"},
+    {"name":"nonascending_turns","through":"second_tick","turns":[{"tick":"second_tick","direction":"up"},{"tick":"next_tick","direction":"down"}],"expected":"turns_not_ascending"}
+  ]
+}

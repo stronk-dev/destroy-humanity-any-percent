@@ -65,6 +65,22 @@ semantic reachability invariants or a public saved-state exploit. Claude review 
 
 ## Verification
 
+`snake-rejection-atomicity-v1.json` supplies six actual commands at both genesis and after an
+accepted move: terminal overshoot, a turn after death, late same/opposite turns, an empty window
+and nonascending turns. Go registry and independent TS apply reject the exact codes; direct
+transitions preserve their actual caller-owned objects. Successful advance, quit and terminal
+refusal remain usable. The pure population uses the separate 5×5 fixture, not the original 6×5.
+Future-turn and partial-input mutation probes fail these comparisons.
+
+`TestArcadeRejectedAdvanceIntegrationPreservesPersistedSessionAndCommands` submits the same
+twelve negatives through actual Service Play against real Postgres and the 20×20 candidate.
+It compares saved state/genesis/result/revision and the complete ordered SQL command rows,
+then checks active status and released claims. UpdatedAt is excluded because legitimate claim
+acquisition/release changes it. One accepted move and quit/resolution commit exactly two rows;
+rejections commit none. Rejected-persistence and stuck-claim probes fail independently. This is
+DB/library composition, not public API receipts, sockets or full AC8 acceptance. Claude review
+remains mandatory for this bounded RP-197 test-only correction; production rules are unchanged.
+
 `testdata/arcade/snake-5x5-fixture-v1.json` differs from the original corpus fixture only in
 Snake width (6→5). `snake-5x5-gate-v1.json` records all 1,024 Go registry-driven strategy
 observations and the selected real clearing trace. The strategy follows a 24-cell cycle
