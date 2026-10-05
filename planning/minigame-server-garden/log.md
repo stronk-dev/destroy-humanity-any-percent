@@ -931,3 +931,25 @@ All four substrates' ten clock boundaries, locked/init and three safe-frontier c
 The red tests are retained as diagnostic evidence, not approved acceptance or a reachable-player
 exploit. No production byte is changed. This intentionally red diagnostic awaits its separately
 predeclared repair; no RFC body/codec/domain/schema or release status is altered.
+
+## 2026-10-06 — RP-219 invariant repair predeclaration
+
+Baseline diagnostic `155486d0`; no historical rewrite.
+Authority: accepted SG2 safe-integer domain, SG3 exact advance, fail-loud numeric/replay law.
+This is a private pure-method domain guard, not a new game cap or player mechanic.
+
+Before salt initialization or any state mutation, for unlocked anchored forward advances,
+derive the pending tick count under the **existing** catch-up cap and current substrate.
+Reject when `tick_seq > MaxExactInteger − pending_ticks` using existing Go ErrInvalidAdvance /
+TS RangeError. Preserve all locked, initializing, regressing, zero-tick and last-safe cases.
+No counter clamp, BigInt wire/schema, silent truncation, substrate/spread/PRNG, source-clock,
+attendance, faucet, replay version, activation, balance, copy or CI change. Kernel 0.3.152
+signals the real guarded semantic change; generated Go/TS constants change in the same range.
+
+**Population/gates:** the same 49 cases and independent full state/summary bytes, existing pure
+clock/partition/golden corpus and cold six-package Go plus vet, root client/type/build/vector,
+full Linux three-engine/performance lane, existing real-Postgres Garden/replay/fault/clock
+population. A disabled guard must re-expose the four failures independently in each runtime;
+a guard moved after salt or growth mutation must fail unchanged-state controls. Restore exactly
+before final gates. Preserve RP-131/RP-218 limitations and all pending designated ranges. No
+full G1/Garden/archive, public mint or 1.0 promotion. Docs/ledger/queue/board reconcile in-range.
