@@ -365,6 +365,129 @@ for (const rejected of [false, true]) {
   });
 }
 
+for (const destination of ["tab-control", "pace-control", "outside-toy"] as const) {
+  it.skipIf(!browser)(`snake: leaving the board for ${destination} pauses until explicit Resume (AR6.3)`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+    const target = host();
+    const outside = document.createElement("button");
+    outside.textContent = "Outside test control";
+    document.body.append(outside);
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const app = mountSnake(target, server, catalog.snake, { flushEvery: 1 });
+    try {
+      await tick(); flushSync();
+      const board = target.querySelector<HTMLElement>("[role=application]")!;
+      board.focus();
+      button(target, "Play").click();
+      const initialHead = snakeHead(target);
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      expect(server.parsed().tick).toBe(1);
+      expect(snakeHead(target)).toBe(initialHead + 1);
+      // Remaining on the same board must not pause: a real second step commits.
+      board.focus();
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      expect(server.parsed().tick).toBe(2);
+      expect(snakeHead(target)).toBe(initialHead + 2);
+      if (destination === "tab-control") {
+        await userEvent.keyboard("{Tab}");
+        // Native WebKit/macOS may tab to the select rather than a button. Both
+        // are outside the board and inside the toy; do not simulate that focus.
+        expect(document.activeElement).not.toBe(board);
+        expect(target.querySelector(".controls")?.contains(document.activeElement)).toBe(true);
+      } else if (destination === "pace-control") {
+        const pace = target.querySelector<HTMLSelectElement>("select")!;
+        pace.focus();
+        expect(document.activeElement).toBe(pace);
+      } else {
+        outside.focus();
+        expect(document.activeElement).toBe(outside);
+      }
+      await tick(); flushSync();
+      await deliverSnakeTimers(100);
+      expect(snakeHead(target), "focus leaving the board must stop delivered steps even inside the toy").toBe(initialHead + 2);
+      expect(server.parsed().tick).toBe(2);
+      expect(button(target, "Resume")).toBeTruthy();
+      expect(server.submitted).toEqual([
+        { kind: "advance", through_tick: 1, turns: [] }, { kind: "advance", through_tick: 2, turns: [] },
+      ]);
+      board.focus();
+      button(target, "Resume").click();
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      expect(snakeHead(target)).toBe(initialHead + 3);
+      expect(server.parsed().tick).toBe(3);
+      expect(server.revision).toBe(4);
+    } finally { await unmount(app); outside.remove(); target.remove(); vi.useRealTimers(); }
+  });
+}
+
+for (const key of ["p", "{Escape}"] as const) {
+  it.skipIf(!browser)(`snake: native ${key} pauses and resumes delivered engine steps (AR6.3)`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+    const target = host();
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const app = mountSnake(target, server, catalog.snake, { flushEvery: 1 });
+    try {
+      await tick(); flushSync();
+      const board = target.querySelector<HTMLElement>("[role=application]")!;
+      board.focus(); button(target, "Play").click();
+      const initialHead = snakeHead(target);
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      expect(server.parsed().tick).toBe(1);
+      await userEvent.keyboard(key); await tick(); flushSync();
+      expect(button(target, "Resume")).toBeTruthy();
+      await deliverSnakeTimers(100);
+      expect(snakeHead(target)).toBe(initialHead + 1);
+      expect(server.submitted).toEqual([{ kind: "advance", through_tick: 1, turns: [] }]);
+      await userEvent.keyboard(key);
+      await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+      expect(snakeHead(target)).toBe(initialHead + 2);
+      expect(server.parsed().tick).toBe(2);
+      expect(server.revision).toBe(3);
+    } finally { await unmount(app); target.remove(); vi.useRealTimers(); }
+  });
+}
+
+it.skipIf(!browser)("snake: controlled hidden event pauses; visible alone does not resume (AR6.3)", async () => {
+  const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+  const target = host();
+  const original = Object.getOwnPropertyDescriptor(document, "visibilityState");
+  let visible = true;
+  Object.defineProperty(document, "visibilityState", { configurable: true, get: () => visible ? "visible" : "hidden" });
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  const app = mountSnake(target, server, catalog.snake, { flushEvery: 1 });
+  try {
+    await tick(); flushSync();
+    button(target, "Play").click();
+    const initialHead = snakeHead(target);
+    document.dispatchEvent(new Event("visibilitychange"));
+    await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+    expect(server.parsed().tick).toBe(1);
+    expect(snakeHead(target)).toBe(initialHead + 1);
+    visible = false;
+    document.dispatchEvent(new Event("visibilitychange"));
+    await tick(); flushSync();
+    expect(button(target, "Resume")).toBeTruthy();
+    await deliverSnakeTimers(100);
+    expect(snakeHead(target)).toBe(initialHead + 1);
+    visible = true;
+    document.dispatchEvent(new Event("visibilitychange"));
+    await deliverSnakeTimers(100);
+    expect(snakeHead(target)).toBe(initialHead + 1);
+    expect(server.submitted).toEqual([{ kind: "advance", through_tick: 1, turns: [] }]);
+    button(target, "Resume").click();
+    await deliverSnakeTimers(20); await server.lastResponse; await tick(); flushSync();
+    expect(snakeHead(target)).toBe(initialHead + 2);
+    expect(server.parsed().tick).toBe(2);
+    expect(server.revision).toBe(3);
+  } finally {
+    await unmount(app); target.remove(); vi.useRealTimers();
+    if (original) Object.defineProperty(document, "visibilityState", original);
+    else Reflect.deleteProperty(document, "visibilityState");
+  }
+});
+
 it.skipIf(!browser)("snake: native keyboard quit reaches a real terminal (AR6.3, AC12)", async () => {
   const { userEvent } = await import("vitest/browser");
   const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();

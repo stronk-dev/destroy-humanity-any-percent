@@ -258,7 +258,7 @@ inert quality, neutral rating, `always`, `human_hobby`.
 `SnakeBoard.svelte` (AR6.3) runs the shared TS engine locally at `presentation_tick_ms` divided by
 the chosen pace. It flushes `advance` every 16 ticks and immediately at a terminal tick, with one
 command in flight, and freezes at `max_ticks_per_advance` while unacknowledged. A rejected or
-mismatched flush resyncs from `current()`. It auto-pauses on hidden, blur and focus loss, pauses
+mismatched flush resyncs from `current()`. It auto-pauses on hidden, blur and board-focus loss, pauses
 on `P`/`Esc`, starts paused, steers by arrows, WASD or a D-pad, and has no decorative animation.
 
 RP-208/RP-209 correct delayed-acknowledgement sequencing in this child. Flush callers share
@@ -275,6 +275,15 @@ callbacks/actual request completion: pending Quit, pending terminal suffix, repe
 a partial lead, failed recovery, and accepted/rejected responses after unmount. Independent
 serialization, terminal-drain and late-recovery probes fail the named cases and are restored.
 These remain component/callback tests, not public transport or a hosted Arcade journey.
+
+RP-210 moves focus auto-pause from the whole toy to the actual board, as AR6.3 requires.
+Tab or focus to a control inside the toy now stops delivered movement, just as leaving the
+toy does; explicit Resume restarts it. Three browser-focus cases retain the real engine and
+match still-focused movement against zero movement/submissions after departure. Native P/Escape
+pause/resume and controlled visible/hidden branches are additional controls. The visibility
+getter/event is instrumented handler evidence, not an OS-background or tab-throttling claim.
+Independent board-focus, hidden-event and keyboard-pause probes fail their named cases and
+restore exactly. This unguarded child change keeps kernel 0.3.148 and awaits Claude review.
 
 Both components pass axe in three browsers. They are not in the tenant registry: no pinned
 `minigame_api` artifact carries the arcade tenants, and the public wire is blocked (see the top of

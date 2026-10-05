@@ -2091,3 +2091,42 @@ engine/math/clock/balance/copy/CI change or watched-kernel bump. Demonstrate a s
 handler failure; retain explicit controls for visibility, keyboard pause and resume. Full
 Linux browser execution and root checks precede handoff. Any correction needs Claude's exact
 designated range review; this lane does not approve remaining A6/A7 or participant AT.
+
+**Executed RP-210:** four failures / 32 passes in Chromium and WebKit. In each engine, native
+Tab and real focus to the in-toy pace control continue five delivered steps after leaving the
+board (head 217, required 212). Same-board movement and outside-toy focus, P/Escape and
+controlled visible/hidden controls discriminate without runtime changes. Original targeted
+range `fca062a1^..fca062a1` remains CHANGES REQUIRED. Review by: Codex. Recorded by: Codex.
+This bounded finding is not a full A6/A7 verdict.
+
+An initial test wrongly assumed macOS WebKit tabs to the Pause button. Its native path reaches
+the select instead; the test now observes actual native focus inside the control group and
+outside the board, without fabricating a focus event or asserting a cross-platform button
+order. The retained red test asserts actual continued movement, not merely missing Pause copy.
+
+**RP-210 correction:** attach pause to the focusable board's focusout; remove the wider root
+containment handler. Engine, timing, copy, public host/wire and balance are unchanged. The
+existing Svelte accessibility-ignore declaration needs comma-separated codes now that board
+focusout uses that rule; the first pass warned, the corrected declaration yields zero warnings.
+The same explicit application control remains keyboard-focusable and existing axe cases pass;
+this is not a blanket suppression or participant accessibility claim.
+
+**Discrimination:** removing only the board handler fails all three focus destinations in each
+native engine (6 failed / 30 passed). Disabling only the hidden branch fails its two cases
+(2 / 34). Disabling only P/Escape pause fails those four cases (4 / 32). Restored component
+Git object `b0f6b28e3e65f7b7bb9a6c004cb3edb76cda6449` matches the saved fixed bytes exactly.
+Every earlier delayed-acknowledgement, callback/native-key and real-engine case is preserved.
+
+**Final verification:** root typecheck reports zero errors/warnings; 7,170 client cases pass /
+100 intentional browser-only skips. Build, shell/cosmetic/payment boundaries and negative
+fixtures, candidate-copy plus history guard and deployment content-manifest checks pass.
+Complete local Linux Chromium/Firefox/WebKit passes 21,795 / three intentional performance
+skips across 267 populations; all eighteen Arcade child cases execute in each engine.
+Separate Chromium performance passes once / 20 filtered. This is local CI-parity population,
+not hosted CI. No Go/DB behavior changed or fresh Go/DB execution is claimed for this child-only
+range. Whole kernel history was already confirmed red at unchanged RP-131 in the previous
+checkpoint; no watched path or version changes here, no rerun/bypass/whole-CI-green claim.
+
+READY FOR CLAUDE DESIGNATED REVIEW; exact corrective span will be pinned after this commit.
+Remaining motion, candidate copy/labels, docs and owner-gated public host stay separate;
+no A6/A7 acceptance or archival promotion.

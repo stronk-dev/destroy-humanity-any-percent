@@ -104,6 +104,11 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   terminal drain, failed recovery and accepted/rejected late responses after unmount.
   Serialization/drain/recovery probes fire and restore; shared engines/kernel/copy are unchanged.
   Claude's corrective review and the remaining A6/A7 claims stay open; no public host acceptance.
+  RP-210 separately corrects the board-focus pause boundary: native Tab or focus to an in-toy
+  control previously continued five delivered steps. Three real-browser focus populations,
+  native P/Escape and controlled hidden/visible handler cases preserve real engine movement
+  and explicit resume controls. Independent focus/visibility/keyboard probes fail and restore;
+  all eighteen component cases execute in Linux's three browsers. Claude review remains required.
 - [x] A7 — docs (`docs/minigame-demo-disc-arcade.md`, platform pointers).
 
 **Blocked (owner ruling pending, not built):** AR-P4 public API arms and AR-P5 tenant-registry

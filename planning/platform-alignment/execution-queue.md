@@ -1,5 +1,24 @@
 # Executable queue
 
+## Current board-focus pause correction — 2026-10-05
+
+RP-210 confirms original A6's whole-toy boundary violates AR6.3: native Tab and focus to the
+pace control continue five steps after leaving the board in Chromium/WebKit. Separate
+predeclaration `55cd1ce0` scopes a child-only fix. Board focusout now pauses, with six new
+real-engine/native-focus/keyboard/controlled-visibility cases and matched movement/resume
+controls. Independent focus, hidden and keyboard probes fail and restore exactly.
+
+Final local Linux three-browser suite passes 21,795 / three performance skips, plus separate
+performance; all eighteen child cases execute per engine. Client/type/build/boundary/copy/
+content-manifest checks pass. No engine/kernel/Go/DB/copy/public-wire changes; prior cold Go/DB
+proofs remain their dated populations. Historical RP-131 stays a previously confirmed overall
+CI blocker, not bypassed or falsely green. Corrective range is pinned after implementation;
+Claude's designated verdict and remaining original A6/A7 claims remain open.
+
+**NEXT SAFE ACTION:** review remaining motion, candidate-copy/accessible labels and docs under
+bounded predeclarations. Public wire/registration, owner copy/mint, RP-201/D-020 and RP-131
+retain their named authority gates. Continue the full nine-tier 1.0 program, not a scope cut.
+
 ## Current Snake delayed-acknowledgement correction — 2026-10-05
 
 Original A6 targeted review `fca062a1^..fca062a1` is CHANGES REQUIRED: actual Quit overlaps

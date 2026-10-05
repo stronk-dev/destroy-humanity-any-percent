@@ -38,7 +38,6 @@
   let announcedScore = 0;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let destroyed = false;
-  let root: HTMLElement | undefined;
 
   const cells = $derived(local.width * local.height);
   const body = $derived(new Set(local.body));
@@ -156,21 +155,16 @@
     if (event.key === "p" || event.key === "P" || event.key === "Escape") { event.preventDefault(); if (paused) resume(); else pause(); }
   }
 
-  function focusout(event: FocusEvent): void {
-    if (!root?.contains(event.relatedTarget as Node | null)) pause();
-  }
 </script>
 
-<!-- focusout here implements AR6.3 auto-pause when focus leaves the toy. -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<section class="snake" aria-labelledby="snake-heading" bind:this={root} onfocusout={focusout}>
+<section class="snake" aria-labelledby="snake-heading">
   <h2 id="snake-heading">{t("arcade.toy.snake.title", {}, era)}</h2>
   <p class="live" role="status" aria-live="polite">{announcement}</p>
   {#if notice}<p role="status">{t(notice, {}, era)}</p>{/if}
   <output>{t("arcade.snake.score_frame", { count: local.score }, era)}</output>
-  <!-- The board is a focusable real-time control surface (AR6.3); keys steer it. -->
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex a11y_no_noninteractive_element_interactions -->
-  <div class="board" role="application" tabindex="0" aria-label={t("arcade.snake.board_label", {}, era)} aria-describedby="snake-heading" onkeydown={keydown}
+  <!-- AR6.3 pauses on leaving the board, including for another control in this toy. -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+  <div class="board" role="application" tabindex="0" aria-label={t("arcade.snake.board_label", {}, era)} aria-describedby="snake-heading" onkeydown={keydown} onfocusout={pause}
     style:--snake-columns={local.width}>
     {#each { length: cells } as _, cell (cell)}
       <span class="cell" aria-hidden="true" data-state={cell === local.body[0] ? "head" : body.has(cell) ? "body" : cell === local.food_cell ? "food" : "empty"}></span>

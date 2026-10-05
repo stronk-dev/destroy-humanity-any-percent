@@ -1690,3 +1690,19 @@ Exact corrective handoff: `610a8c80^..4e529ee9`, pending Claude designated revie
 The range covers the predeclaration, child implementation, six exercising cases and canonical
 docs/tracking. This planning checkpoint is not a verdict or archival gate; remaining original
 A6/A7 claims continue separately.
+
+## 2026-10-05 — actual board-focus pause correction
+
+Baseline `24c781f7`, predeclaration `55cd1ce0`: RP-210 reproduces in Chromium/WebKit when
+native Tab or focus to the pace selector leaves Snake's board but not the toy. Five forbidden
+steps occur; still-focused, outside-toy, P/Escape and visibility controls pass. The child now
+pauses at the board boundary. Six new cases preserve real engine state and explicit resume;
+independent focus/visibility/keyboard severings fail and restore byte-exactly.
+
+Complete local Linux three-browser suite passes 21,795 / three performance skips, plus separate
+performance; all eighteen child cases execute per engine. Client/type/build/boundary/copy/
+content-manifest checks pass; zero typecheck warnings. Visibility is controlled-handler evidence,
+not OS-background evidence. No watched path, engine/Go/DB/kernel/copy/wire changes. The prior
+RP-131 whole-history failure is not bypassed, rerun or claimed green. Claude corrective review
+and remaining original motion/copy/labels/docs claims stay open. No public Arcade, participant
+AT, archival, release or full nine-tier 1.0 promotion; the long-term goal remains active.
