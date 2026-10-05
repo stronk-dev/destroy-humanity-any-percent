@@ -1422,3 +1422,29 @@ paths. RP-131 remains open; `rfc/kernel-history-guard-integrity.md` still says d
 implementation authority. No exception, fake kernel bump, history rewrite or CI bypass was
 added. This local result is not a fresh hosted run; the complete CI cannot be called green.
 The two temporary Go-test probes and Unequip link probe are all restored. No push or archive.
+
+## 2026-10-05 — RP-184 live pet overlay reconciliation and integrated proof predeclaration
+
+**Recorded by:** Codex. Current tree is clean at `6b1c5def` before this scope.
+The live consumer already exists in Claude Garage `7a61e4b6^..7a61e4b6`: PetCareSurface
+mounts CosmeticOverlay from wearers[].worn, and GameUIApp supplies that snapshot arm. Garage's
+host fixture tests a literal equipped pet. Cosmetics docs nevertheless say mounting is still
+missing. RP-184 records this contradictory capability claim, not a demonstrated live mount bug.
+
+Under accepted Cosmetic §4/§7.4, predeclare a test-only extension of the existing actual
+gameserver/Postgres/built-client/WebSocket AC14 driver. Keep its explicit test-only epoch,
+Company cash prerequisite seed and Buy/reload/N5 checks unchanged. Afterward adopt a real pet
+through its visible DOM control, equip through the shelf, navigate to the actual pet surface,
+check the CSS-only annoyed/no-text overlay, reload and check persisted wearing, exercise the
+browser's actual reduced-motion preference on a fresh mount, then unequip through the shelf
+and verify the pet overlay disappears while ownership remains. Verify exactly one intent per
+DOM action, actual Founder revisions and applied receipts/server projections. Never seed
+pet identity, ownership or equip state; no direct gameplay-intent API calls.
+
+Cold honest focused composed run, then sever only the PetCareSurface overlay consumer in a
+temporary probe and require the composed path to fail on the missing live overlay. Restore
+before checking the full composed CI target, type/unit/build and browser lanes. Reconcile docs,
+plan, live execution queue and the 1.0 board against actual results. No product, catalog, copy,
+RFC body or kernel change is planned. This is an integrated controlled-fixture witness, not a
+production mint or approval of the unresolved GS4×PA7 contract. Claude designated review of
+Codex's evidence supplement remains mandatory; no archival, status promotion or push.
