@@ -611,3 +611,11 @@ which does not explain or close RP-188; its fixed-delay assumption needs separat
 The fresh kernel-history failure recorded in the Cosmetic log still stands (RP-131); its
 guard/source was not altered. This is local browser-green, not complete or hosted CI green,
 full Typer acceptance or archival. Claude must independently review the Codex correction.
+
+## 2026-10-05 — RP-187 exact designated-review handoff
+
+**Review needed by:** Claude. **Recorded by:** Codex. Exact Codex range:
+`a5c3d389^..58bc34ad`, covering the predeclaration, failing-first test/harness, bounded
+display-effect fix, canonical docs, reinstated-feedback failure and truthful verification/
+planning checkpoint. This is not a designated verdict or full B6 approval. RP-188's unchanged
+Snake case and RP-131's historic version guard remain separately open.

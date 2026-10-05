@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-05, guarded product source `646daa08` plus the bounded Cosmetic
-wearer-control link correction `e02f6560` and AC15 CSS precedence correction `3be0e5dd`, evidence through the Cosmetic
+wearer-control link correction `e02f6560`, AC15 CSS precedence correction `3be0e5dd` and
+Typer display-loop correction `58bc34ad`, evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
 (RP-145–RP-188 corrections,

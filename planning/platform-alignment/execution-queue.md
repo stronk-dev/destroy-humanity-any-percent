@@ -5,8 +5,9 @@
 RP-187 is reproduced deterministically on unchanged production in all three engines. The
 bounded local-sample correction removes the effect's dependency on its own clock write;
 24/24 child cases pass and reinstating the read-back fails all three. The full cold browser CI
-target now passes 21,102 tests plus the separate performance case. Claude designated review of
-the correction is required; this is not public Typer playability or full B6 approval.
+target now passes 21,102 tests plus the separate performance case. Exact Codex range
+`a5c3d389^..58bc34ad` is **READY FOR CLAUDE DESIGNATED REVIEW**; this is not public Typer
+playability or full B6 approval.
 
 **NEXT SAFE ACTION:** diagnose RP-188 in accepted Arcade AR6.3. Snake's unchanged fixed-delay
 case passed this follow-up but its earlier cold WebKit failure remains unexplained. Prove
