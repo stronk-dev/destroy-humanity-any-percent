@@ -1346,3 +1346,41 @@ copy/public-wire/CI-workflow byte remain unchanged. No whole-A2/AR7 acceptance, 
 push or deployment. This hash-pinning checkpoint is not a designated verdict. Its first
 append attempt used incomplete line context and failed atomically with no file changes;
 the exact-source-context append here is the retained checkpoint.
+
+## 2026-10-05 — A1/AC1 loader and A4 chain predeclaration (Codex)
+
+Starting clean HEAD `9707d48e`. Authority: accepted AR1.2, AR3.1, AR4.1, AR-P1/P2 and AC1;
+original Claude loader span `508fe19a^..508fe19a`, chain span `e1c71d7c^..e1c71d7c`.
+Read-derived inventory: Go loader tests contain more negative categories than TS despite
+the latter's "same loader defects" title. Neither explicitly submits two stage rows with
+nonascending tiers; both original chain tests submit missing toys, not a definition bound
+to a wrong engine. These are questions about the instrument, not proven runtime defects.
+
+**Old gates first:** cold Go Arcade/replaycatalog and whole client baseline. Independently
+remove only stage-tier ascending refusal in each loader, leaving all other bounds/ID/toy/
+copy checks intact; execute OLD populations, restore and record any survival immediately.
+Then submit the named AC1 population in actual Go/TS loaders and chain consumers: unsorted
+presets, too many mines, unknown toy/missing definition, wrong-engine definition, root/nested
+extra keys, equal/descending tiers. Positive controls load unchanged candidate and fixture,
+inclusive bounds and structurally valid ascending test-only stage rows. Multi-stage test
+rows neither mint content nor authorize later-stage gameplay or owner copy.
+
+**Conditional evidence repair:** only if named failure cases are absent or a severing survives,
+add matched Go/TS actual-input tests to the existing loader/chain witnesses. Do not produce
+a second catalog authority, weaken assertions or infer a whole-A1/A4 approval. Re-run the
+same ascending mutant against the new gate; independently sever existing preset sorting,
+mine cap, exact-key and stage-to-definition checks to identify real readers and refusals.
+Binding controls must exercise complete current bundles with freshly computed hashes,
+not stale-hash rejection or a frontend-only fragment. Inspect all setup/errors.
+
+The read-derived Go integer-defaulting question (null min_tier becoming zero) is separately
+empirical within AR1.2: submit an otherwise valid actual candidate with only that value
+changed, compare TS, and retain legal zero as its control. If either admits malformed input,
+file the executed finding and predeclare its accepted-contract runtime correction separately
+before changing watched source; honest kernel identity required. Raw duplicate/token/depth
+parity beyond named cases is not silently claimed or expanded here.
+
+**Exit:** cold Go/client/type/build/boundaries/vet/vectors/corpus, complete Linux browser and
+declared Postgres Arcade selectors; report unchanged historical RP-131 separately. Bounded
+original verdicts and exact independent-review range, no self-archive/push/deployment. No
+wire/copy/mint, content-bound or mechanics changes; all full 1.0 obligations remain.
