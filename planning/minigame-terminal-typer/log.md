@@ -545,3 +545,23 @@ Reading a reactive field it just wrote is a candidate feedback loop; it is not y
 deterministically isolated cause. Next diagnose through the existing injected monotonic clock
 and actual browser execution. Do not increase timeouts, weaken keyboard/error assertions or
 hide the full-suite failure behind retries. No Typer code changed here.
+
+## 2026-10-05 — RP-187 deterministic child-clock predeclaration
+
+**Review by / recorded by:** Codex; bounded original child range `ade1083b^..ade1083b`.
+Accepted TT8.4/TT9 authorize the local monotonic display sample, not a different engine time
+or payout rule. Predeclare a test-only increasing clock through the child's existing
+`monotonicNow` prop: each read advances it, so equality from browser clock quantization cannot
+accidentally stop a feedback effect. Mount ready, then advance to a timed snapshot and a new
+server sample/revision; require no update-depth/asynchronous error, unchanged gameplay command
+list and correct remaining-time text at each authoritative sample. Keep the native-keyboard,
+composition, prompt and error-guard assertions; no deadline or test timeout is relaxed.
+
+If this unchanged-child population reproduces the loop, record that as the verified cause.
+Then only the sampling effect may change: compute one local sample and assign both reactive
+fields from that non-reactive local, never reading an effect-written state field. No engine,
+content, copy, API or kernel behavior change. Reinstating the feedback read must fail the same
+deterministic test in all three engines. Restore it and run the entire Typer child population
+and full CI-equivalent browser lane, keeping RP-188 and RP-131 independently open as needed.
+Claude must designated-review any resulting Codex correction; this does not close B6's public
+registration/content/assistive-technology gates.
