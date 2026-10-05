@@ -261,6 +261,21 @@ command in flight, and freezes at `max_ticks_per_advance` while unacknowledged. 
 mismatched flush resyncs from `current()`. It auto-pauses on hidden, blur and focus loss, pauses
 on `P`/`Esc`, starts paused, steers by arrows, WASD or a D-pad, and has no decorative animation.
 
+RP-208/RP-209 correct delayed-acknowledgement sequencing in this child. Flush callers share
+the actual outstanding promise, rather than treating an in-flight request as completed. Quit
+pauses local movement, drains any pending/partial lead and then submits exactly one Quit;
+repeated clicks cannot overlap that sequence. A local ending buffered behind an earlier
+advance is automatically flushed after its acknowledgement, without another player action.
+Failed advance/recovery stops that sequence with existing error copy; unmount prevents new
+drain or recovery requests and ignores late responses. The shared engines, tick pace, public
+wire and copy are unchanged; kernel remains 0.3.148. Claude's designated review is required.
+
+Six delayed-response browser cases retain the real shared TS engine and observe delivered
+callbacks/actual request completion: pending Quit, pending terminal suffix, repeated Quit with
+a partial lead, failed recovery, and accepted/rejected responses after unmount. Independent
+serialization, terminal-drain and late-recovery probes fail the named cases and are restored.
+These remain component/callback tests, not public transport or a hosted Arcade journey.
+
 Both components pass axe in three browsers. They are not in the tenant registry: no pinned
 `minigame_api` artifact carries the arcade tenants, and the public wire is blocked (see the top of
 this page).

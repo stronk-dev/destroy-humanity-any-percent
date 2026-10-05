@@ -98,6 +98,12 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   RP-189's separate native keyboard supplement completes the existing corpus Mine Grid game
   in one mount and quits Snake through the real engines, with independently fired handler
   probes. It still needs Claude review and is not public task/assistive-technology acceptance.
+  RP-208/RP-209 separately correct two actual delayed-acknowledgement runtime defects: Quit
+  racing an outstanding advance and a terminal suffix never reaching the server. Six new
+  actual-child/real-engine controls cover serialized pending/partial/repeated Quit, automatic
+  terminal drain, failed recovery and accepted/rejected late responses after unmount.
+  Serialization/drain/recovery probes fire and restore; shared engines/kernel/copy are unchanged.
+  Claude's corrective review and the remaining A6/A7 claims stay open; no public host acceptance.
 - [x] A7 — docs (`docs/minigame-demo-disc-arcade.md`, platform pointers).
 
 **Blocked (owner ruling pending, not built):** AR-P4 public API arms and AR-P5 tenant-registry

@@ -1661,3 +1661,27 @@ Exact corrective handoff: `efdc2dbc^..4b8abb89`, pending Claude designated revie
 Final retained thirteen-case population, including removed-prefix Founder control, passes a
 fresh twenty cold repetitions (13.147 s). The range includes all implementation/docs/tracking;
 this checkpoint does not self-approve or archive it. The tree is reconciled, not release-ready.
+
+## 2026-10-05 — actual Snake delayed-response defects and correction
+
+Baseline `5b876886`; separate predeclaration `610a8c80`; bounded original Claude A6
+review `fca062a1^..fca062a1` is CHANGES REQUIRED. Real mounted SnakeBoard/TS engine
+and controlled delivered callbacks confirm Quit overlapping an outstanding advance (RP-208)
+and a local terminal suffix never reaching the engine after acknowledgement (RP-209).
+Both fail in Chromium/WebKit while all six old child cases in each engine pass.
+
+The owned child now shares the actual pending Promise, pauses/drains before one Quit and
+automatically flushes a buffered ending after the earlier acknowledgement. Six new cases cover
+delayed/partial/repeated Quit, terminal drain, failed recovery and accepted/rejected late responses
+after unmount. Independent serialization, drain and late-recovery probes fail and restore
+byte-exactly. The old callback/native-key proofs remain intact. No shared engine, tick pace,
+public wire, owner copy/mint or watched path changed; kernel remains 0.3.148.
+
+Cold six-package Go, 7,170 client cases / 94 intentional browser-only skips, root checks including
+copy/content-manifest, seven actual Postgres functions and whole local Linux three-browser
+verification pass (21,777 plus separate performance). Whole kernel history still fails unchanged
+RP-131 after checkout/adversarial controls pass. No hosted-green claim, bypass or rewrite.
+Claude must designated-review the exact corrective range pinned after implementation commit.
+No full A6/A7, public host, participant AT, archival, deployment or 1.0 promotion. Continue the
+remaining original focus/visibility/pause/motion/candidate-copy/docs claims with bounded
+predeclarations; preserve all owner-gated public wire/copy/mint and full nine-tier obligations.

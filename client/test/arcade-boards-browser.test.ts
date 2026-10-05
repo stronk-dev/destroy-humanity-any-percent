@@ -8,7 +8,7 @@ import corpus from "../../testdata/arcade/content-gate-v2.json";
 import { arcadeContentHash, parseArcadeCatalog } from "../src/arcade/catalog";
 import { applyMineGrid, createMineGrid, decodeMineGridSnapshot, MINE_GRID_SCALING_DESTINATION, type MineGridCommand, type MineGridSnapshot } from "../src/arcade/mine-grid";
 import { applySnake, createSnake, decodeSnakeSnapshot, SNAKE_SCALING_DESTINATION, type SnakeCommand, type SnakeSnapshot } from "../src/arcade/snake";
-import { COPY_KEYS } from "../src/copy";
+import { COPY_KEYS, t } from "../src/copy";
 import MineGridBoard from "../src/game-ui/minigame/MineGridBoard.svelte";
 import SnakeBoard from "../src/game-ui/minigame/SnakeBoard.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
@@ -201,6 +201,168 @@ async function deliverSnakeTimers(ms: number): Promise<void> {
   await vi.advanceTimersByTimeAsync(ms);
   await tick();
   flushSync();
+}
+
+// Delay acknowledgement, not engine behavior: every delivered command still
+// executes through SnakeServer's real shared engine and revision boundary.
+function delayedSnakeHost(server: SnakeServer) {
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  let active = 0, peak = 0;
+  const submitted: SnakeCommand[] = [], responses: Promise<SnakeSnapshot>[] = [];
+  return {
+    submitted, responses, release,
+    get peak() { return peak; },
+    submit(command: SnakeCommand): Promise<SnakeSnapshot> {
+      const index = submitted.push(command) - 1;
+      active++; peak = Math.max(peak, active);
+      const response = (index === 0 ? gate : Promise.resolve()).then(() => server.submit(command)).finally(() => { active--; });
+      responses.push(response);
+      // Cleanup can release a deliberately broken ordering after an assertion
+      // fires; the response is still explicitly awaited by the witness.
+      void response.catch(() => {});
+      return response;
+    },
+  };
+}
+
+it.skipIf(!browser)("snake: Quit waits for the actual pending advance acknowledgement (AR6.3, MA-C8)", async () => {
+  const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+  const delayed = delayedSnakeHost(server), target = host();
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  const app = mountSnake(target, server, catalog.snake, { submit: delayed.submit, flushEvery: 4 });
+  try {
+    await tick(); flushSync();
+    button(target, "Play").click();
+    await deliverSnakeTimers(80);
+    expect(delayed.submitted).toEqual([{ kind: "advance", through_tick: 4, turns: [] }]);
+    expect(server.parsed().tick).toBe(0);
+    button(target, "Quit").click();
+    await tick(); flushSync();
+    expect(delayed.submitted, "Quit must not overlap an unacknowledged advance").toHaveLength(1);
+    expect(delayed.peak).toBe(1);
+    delayed.release();
+    await delayed.responses[0]; await tick(); flushSync();
+    // Acknowledge the engine, then observe the actual next host call; one Svelte
+    // tick alone cannot certify completion of the joined async request chain.
+    await vi.waitFor(() => expect(delayed.submitted).toEqual([{ kind: "advance", through_tick: 4, turns: [] }, { kind: "quit" }]));
+    await delayed.responses[1]; await tick(); flushSync();
+    expect(delayed.peak).toBe(1);
+    expect(server.parsed().phase).toBe("terminal");
+    expect(server.parsed().tick).toBe(4);
+    expect(server.revision).toBe(3);
+    expect(target.querySelector("[role=status]")?.textContent).toContain("Game ended.");
+  } finally { await unmount(app); delayed.release(); await Promise.allSettled(delayed.responses); target.remove(); vi.useRealTimers(); }
+});
+
+it.skipIf(!browser)("snake: a terminal suffix drains after a delayed earlier acknowledgement (AR6.3)", async () => {
+  const content = parseArcadeCatalog(JSON.parse(fixtureRaw), new Set(COPY_KEYS)).snake;
+  const server = await new SnakeServer(await snakeIdentity(fixtureRaw)).init();
+  const delayed = delayedSnakeHost(server), target = host();
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  const app = mountSnake(target, server, content, { submit: delayed.submit, flushEvery: 1 });
+  try {
+    await tick(); flushSync();
+    button(target, "Play").click();
+    await deliverSnakeTimers(20);
+    expect(delayed.submitted).toEqual([{ kind: "advance", through_tick: 1, turns: [] }]);
+    await deliverSnakeTimers(40);
+    expect(target.querySelector("[role=status]")?.textContent).toContain("Game over");
+    expect(server.parsed().phase).toBe("playing");
+    expect(server.parsed().tick).toBe(0);
+    expect(delayed.submitted).toHaveLength(1);
+    delayed.release();
+    await delayed.responses[0]; await tick(); flushSync();
+    await vi.waitFor(() => expect(delayed.submitted, "terminal suffix must reach the real engine without another player action").toEqual([
+      { kind: "advance", through_tick: 1, turns: [] }, { kind: "advance", through_tick: 3, turns: [] },
+    ]));
+    await delayed.responses[1]; await tick(); flushSync();
+    expect(delayed.peak).toBe(1);
+    expect(server.parsed().phase).toBe("terminal");
+    expect(server.parsed().tick).toBe(3);
+    expect(server.revision).toBe(3);
+  } finally { await unmount(app); delayed.release(); await Promise.allSettled(delayed.responses); target.remove(); vi.useRealTimers(); }
+});
+
+it.skipIf(!browser)("snake: repeated Quit drains a paused partial lead without overlapping commands", async () => {
+  const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+  const delayed = delayedSnakeHost(server), target = host();
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  const app = mountSnake(target, server, catalog.snake, { submit: delayed.submit, flushEvery: 4 });
+  try {
+    await tick(); flushSync();
+    button(target, "Play").click();
+    await deliverSnakeTimers(120);
+    expect(delayed.submitted).toEqual([{ kind: "advance", through_tick: 4, turns: [] }]);
+    const localHead = snakeHead(target);
+    button(target, "Quit").click(); button(target, "Quit").click();
+    await tick(); flushSync();
+    expect(delayed.submitted).toHaveLength(1);
+    await deliverSnakeTimers(200);
+    expect(snakeHead(target)).toBe(localHead);
+    delayed.release();
+    await vi.waitFor(() => expect(delayed.submitted).toEqual([
+      { kind: "advance", through_tick: 4, turns: [] }, { kind: "advance", through_tick: 6, turns: [] }, { kind: "quit" },
+    ]));
+    await delayed.responses[2]; await tick(); flushSync();
+    expect(delayed.peak).toBe(1);
+    expect(server.parsed().phase).toBe("terminal");
+    expect(server.parsed().tick).toBe(6);
+    expect(server.revision).toBe(4);
+  } finally { await unmount(app); delayed.release(); await Promise.allSettled(delayed.responses); target.remove(); vi.useRealTimers(); }
+});
+
+it.skipIf(!browser)("snake: failed advance and failed resync stop Quit without retrying blindly", async () => {
+  const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+  server.failNext = true;
+  const delayed = delayedSnakeHost(server), target = host();
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  const app = mountSnake(target, server, catalog.snake, { submit: delayed.submit, flushEvery: 4,
+    current: async () => { server.currentCalls++; throw new Error("current unavailable"); } });
+  try {
+    await tick(); flushSync();
+    button(target, "Play").click();
+    await deliverSnakeTimers(80);
+    button(target, "Quit").click();
+    delayed.release();
+    await expect(delayed.responses[0]).rejects.toThrow("rejected");
+    await vi.waitFor(() => expect(target.textContent).toContain(t("arcade.error.rejected", {}, "era_1995")));
+    expect(server.currentCalls).toBe(1);
+    await deliverSnakeTimers(400);
+    expect(delayed.submitted).toEqual([{ kind: "advance", through_tick: 4, turns: [] }]);
+    expect(delayed.peak).toBe(1);
+    expect(server.parsed().tick).toBe(0);
+    expect(server.revision).toBe(1);
+  } finally { await unmount(app); delayed.release(); await Promise.allSettled(delayed.responses); target.remove(); vi.useRealTimers(); }
+});
+
+for (const rejected of [false, true]) {
+  it.skipIf(!browser)(`snake: ${rejected ? "rejected" : "accepted"} delayed response after unmount cannot drain or resync`, async () => {
+    const content = parseArcadeCatalog(JSON.parse(fixtureRaw), new Set(COPY_KEYS)).snake;
+    const server = await new SnakeServer(await snakeIdentity(fixtureRaw)).init();
+    server.failNext = rejected;
+    const delayed = delayedSnakeHost(server), target = host();
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const app = mountSnake(target, server, content, { submit: delayed.submit, flushEvery: 1 });
+    let mounted = true;
+    try {
+      await tick(); flushSync();
+      button(target, "Play").click();
+      await deliverSnakeTimers(60);
+      expect(delayed.submitted).toEqual([{ kind: "advance", through_tick: 1, turns: [] }]);
+      expect(target.querySelector("[role=status]")?.textContent).toContain("Game over");
+      await unmount(app);
+      mounted = false;
+      delayed.release();
+      if (rejected) await expect(delayed.responses[0]).rejects.toThrow("rejected");
+      else await delayed.responses[0];
+      await tick(); flushSync(); await deliverSnakeTimers(200);
+      expect(delayed.submitted).toEqual([{ kind: "advance", through_tick: 1, turns: [] }]);
+      expect(server.currentCalls).toBe(0);
+      expect(server.parsed().phase).toBe("playing");
+      expect(server.parsed().tick).toBe(rejected ? 0 : 1);
+    } finally { if (mounted) await unmount(app); delayed.release(); await Promise.allSettled(delayed.responses); target.remove(); vi.useRealTimers(); }
+  });
 }
 
 it.skipIf(!browser)("snake: native keyboard quit reaches a real terminal (AR6.3, AC12)", async () => {

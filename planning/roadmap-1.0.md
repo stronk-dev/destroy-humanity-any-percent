@@ -25,10 +25,12 @@ and test-only current-curriculum Exit/quit proof `bb5c6ac1`
 (review span `b57b95df^..bb5c6ac1`), plus the separately predeclared RP-205 due-cross-gate
 live/shared-replay correction and RP-207 event-reader repair `4b8abb89`
 (review span `efdc2dbc^..4b8abb89`, kernel 0.3.148; Claude review pending),
+and separately predeclared Snake delayed-acknowledgement corrections RP-208/RP-209
+(actual child/engine sequencing and terminal proofs; Claude review pending),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-207 corrections,
+(RP-145–RP-209 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -112,7 +114,13 @@ Go-authored corpus terminal, and Snake quit with a real engine response. Severin
 the old suite green but fails the new case; a separate reveal-handler probe also fails all
 three browsers, then is restored. Full cold browser CI now passes 21,108 tests plus performance;
 type/unit/build/boundaries pass. These component/engine witnesses await Claude review and do
-not prove public Arcade integration or full Tab/AT task acceptance. RP-190 separately records
+not prove public Arcade integration or full Tab/AT task acceptance. RP-208/RP-209 subsequently
+confirm and correct delayed-response Quit overlap and a never-submitted terminal suffix.
+Six actual-child/real-engine cases preserve serialized/partial/repeated Quit, automatic drain,
+failed recovery and unmount behavior; independent probes discriminate. Cold whole Linux
+browser verification passes 21,777 plus performance, and Go/client/DB/root gates pass.
+The unguarded child change keeps shared engines/kernel/copy unchanged at 0.3.148; Claude
+review and wider A6/A7/public-host/accessibility acceptance remain open. RP-190 separately records
 43 declared corpus transitions vs 60 attempted commands. Independent Go/TS equalities fail
 first; the corrected generator/execution consumer count all attempts, and regeneration changes
 only budget metadata. Each applied-only counter probe fails independently, then is restored.

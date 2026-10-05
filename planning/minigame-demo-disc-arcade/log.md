@@ -2000,3 +2000,68 @@ Include destroy/rejected-response controls and independently sever serialization
 draining. Native available browsers are partial evidence; final complete Linux target must
 execute all three engines. Update docs/tracking and require exact Claude corrective review;
 the original A6/A7 remains unapproved until the designated verdict covers its whole scope.
+
+**Executed RP-208/RP-209 red baseline:** Chromium and WebKit each fail exactly the two new
+delayed-response cases while their six old child cases pass (4 failed / 12 passed total).
+DOM Quit submits two requests before the first acknowledgement, not one. The local terminal
+case submits only advance-through-1; its required automatic advance-through-3 is absent after
+acknowledgement. Both hosts execute delivered commands through the actual shared TS engine.
+The delayed host does not fabricate a terminal or relax engine validation. Native Firefox
+is not in this population; complete Linux verification is still required after correction.
+The failed browser target does not run its separate performance tail, so none is claimed here.
+
+**Bounded original A6 designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Original range `fca062a1^..fca062a1`, targeted Snake AR6.3 request/terminal
+behavior: RP-208 and RP-209 violate its explicit one-in-flight and immediate-terminal-flush
+clauses. This finding is not an approval of every A6/A7 path, accessibility or candidate-copy
+claim. Corrective implementation stays within the above committed predeclaration and requires
+Claude's exact cross-party review; no self-approval or archival.
+
+**Retained correction:** flush now returns the actual shared outstanding Promise; Quit pauses,
+joins/drains the bounded local lead, then submits once. Repeated Quit/steering/resume cannot
+start another sequence while it is pending. An acknowledged earlier advance drains a buffered
+local ending automatically. Failed recovery returns failure instead of retrying blindly;
+unmount prevents new recovery/drain requests and ignores late responses. No shared-engine,
+pace, copy, public wire or content change. This child is outside kernel/affecting-paths.json;
+kernel remains 0.3.148, without a false version signal.
+
+Six new child/real-engine cases retain exact request order, concurrency peak, terminal state,
+tick and revision. They cover pending Quit, pending terminal suffix, repeated partial-lead Quit,
+failed advance plus failed recovery, and accepted/rejected delayed responses after unmount.
+Controlled callback rejection is explicitly an instrumented host failure, not a claimed real
+public API refusal. All normal delivered commands still execute through the actual TS engine.
+All existing six cases and their RP-188/RP-189 proofs remain intact.
+
+The first corrected run exposed a test timing assumption: one Svelte tick did not certify the
+extra joined-promise continuation. The test now waits on its actual expected submission,
+under the framework's bounded wait, while the game is paused/terminal. No wall-time progress
+claim or fabricated command replaces an assertion. Duplicate unmount produced visible Svelte
+warnings in the added cleanup controls; they now track and unmount the instance exactly once.
+
+**Independent restored probes (Chromium + WebKit):** bypassing Quit's join/drain loop fails
+pending Quit, repeated partial-lead Quit and failed-recovery cases (6 failures / 18 passes).
+Disabling only automatic terminal drain fails precisely the pending-ending case in both
+engines (2 / 22). Disabling only the pre-recovery destroy guard fails the rejected late-response
+case with one forbidden current call instead of zero (2 / 22). The final component's Git
+object hash matches its saved fixed baseline exactly before complete verification.
+
+The complete kernel guard exits Make 2 at unchanged RP-131 hash
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`, parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after checkout and adversarial fixture controls
+pass. No bypass, pushed-history rewrite, false kernel bump or complete green-CI claim.
+
+**Final cold RP-208/RP-209 verification:** six Go packages pass with `-count=1`, with actual
+production completion at 45.246 s. Root typecheck has zero errors/warnings; all 7,170 client
+cases pass / 94 intentional browser-only skips. Build, boundaries/negative fixtures, copy/
+content-manifest checks, vet, unchanged 6,296 vectors and all three Arcade corpus checks pass.
+The declared real-Postgres selector executes SEVEN named functions, including the thirteen
+actual Exit cases, atomic Pitch, Typer composed and current automatic curriculum; all pass,
+none skips. Complete local ARM64 Linux Chromium/Firefox/WebKit target passes 21,777 cases /
+three intentional performance skips across 267 populations, with separate Chromium performance
+one pass / 20 filtered. Native Firefox was not substituted for the actual Linux execution.
+All delayed-response cases are executed in the full population, not counted from skipped
+Node declarations. Cleanup warnings are gone; no source probe remains.
+
+READY FOR CLAUDE DESIGNATED REVIEW of the bounded correction, with exact range pinned next.
+The original A6/A7 still needs its remaining claim review; public host/wire/copy/mint and full
+1.0 remain separate. No self-approval, archive, push or deployment.

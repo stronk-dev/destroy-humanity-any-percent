@@ -1,5 +1,32 @@
 # Executable queue
 
+## Current Snake delayed-acknowledgement correction — 2026-10-05
+
+Original A6 targeted review `fca062a1^..fca062a1` is CHANGES REQUIRED: actual Quit overlaps
+a pending advance (RP-208), and a locally buffered ending never reaches the server (RP-209).
+Both reproduce in Chromium/WebKit while existing child controls pass. Separate predeclaration
+`610a8c80` scopes the correction to the owned child, not engines/public wire/copy/CI.
+
+The corrected child joins its real pending Promise, pauses/drains before one Quit, and sends
+the terminal suffix automatically after the earlier acknowledgement. Six new real-child/shared-
+engine cases cover delayed/partial/repeated Quit, terminal drain, failed recovery and late
+accepted/rejected responses after unmount. Serialization, drain and late-recovery probes fail
+independently and restore exactly. All old callback/native-key witnesses remain intact.
+No watched path changed; kernel remains 0.3.148. Claude corrective review remains required;
+no full A6/A7, public host/transport or participant accessibility acceptance.
+
+Cold six-package Go, 7,170 client cases / 94 intentional browser-only skips, root type/build/
+copy/boundaries/vet/vectors/corpus, seven real-Postgres functions and complete local Linux
+three-browser verification pass (21,777 / three performance skips, plus separate performance).
+Whole kernel history still fails unchanged pushed RP-131 after checkout/negative controls pass;
+no hosted-green claim, bypass, false bump or rewrite. Exact corrective range is pinned next.
+
+**NEXT SAFE ACTION:** continue remaining original A6/A7 focus/visibility/pause, motion,
+candidate-copy/accessibility-label and documentation claims, with executed and predeclared
+bounded checks. Preserve existing proofs; do not claim a missing public host works. Public
+wire/registration, owner copy/mint, RP-201/D-020 and the RP-131 history contract retain their
+named authority gates. Full nine-tier 1.0 and clean-host release proof remain active.
+
 ## Current due-cross-gate correction and event-reader repair — 2026-10-05
 
 RP-205 is locally corrected under separate predeclaration `efdc2dbc` and accepted AR1.8/AC9.
@@ -29,7 +56,7 @@ complete local Linux three-browser verification (21,759 plus performance) pass. 
 kernel history still fails the unchanged pushed RP-131 commit after its checkout/negative
 controls pass. No complete green-CI claim, bypass or history rewrite.
 
-**NEXT SAFE ACTION:** complete the original Arcade A6/A7 review of the test-only client
+**Dated next action (superseded by the current checkpoint above):** complete the original Arcade A6/A7 review of the test-only client
 children, their output/accessibility claims and candidate-copy/docs boundaries. Preserve the
 already firing RP-188/RP-189 witnesses, predeclare any new bounded correction, and distinguish
 internal child proof from the missing public host. RP-201/D-020, public wire/copy/mint and

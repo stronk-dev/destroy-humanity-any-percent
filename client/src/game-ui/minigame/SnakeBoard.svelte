@@ -29,7 +29,8 @@
   let local = $state<SnakeMutable>(clone(initial));
   let turns: SnakeTurn[] = [];
   let desired: SnakeDirection | undefined;
-  let inFlight = false;
+  let inFlight: Promise<boolean> | undefined;
+  let quitting = $state(false);
   let paused = $state(true);
   let pace = $state(1);
   let notice = $state<CopyKey | null>(null);
@@ -78,50 +79,75 @@
 
   function t_outcome(outcome: "cleared" | "crashed"): string { return t(outcome === "cleared" ? "arcade.outcome.cleared" : "arcade.outcome.crashed", {}, era); }
 
-  async function flush(): Promise<void> {
-    if (inFlight || local.tick <= server.tick) return;
-    inFlight = true;
+  function flush(): Promise<boolean> {
+    if (inFlight) return inFlight;
+    if (destroyed) return Promise.resolve(false);
+    if (local.tick <= server.tick) return Promise.resolve(true);
+    inFlight = advance();
+    return inFlight;
+  }
+
+  async function advance(): Promise<boolean> {
+    let acknowledged = false;
     const through = local.tick;
     const batch = turns.filter((turn) => turn.tick > server.tick && turn.tick <= through);
     try {
       const next = await submit({ kind: "advance", through_tick: through, turns: batch });
-      if (destroyed) return;
-      if (next.tick !== through) { await resync(); return; }
+      if (destroyed) return false;
+      if (next.tick !== through) return await resync();
       server = next;
       turns = turns.filter((turn) => turn.tick > through);
       if (next.phase === "terminal" && local.tick === through) local = clone(next);
+      acknowledged = true;
+      return true;
     } catch {
-      await resync();
-    } finally { inFlight = false; }
+      return await resync();
+    } finally {
+      inFlight = undefined;
+      // A local ending can arrive while an earlier batch is outstanding. Once
+      // it is acknowledged, commit the remaining terminal ticks without a click.
+      if (acknowledged && !destroyed && local.phase === "terminal" && local.tick > server.tick) void flush();
+    }
   }
 
-  async function resync(): Promise<void> {
+  async function resync(): Promise<boolean> {
+    if (destroyed) return false;
     try {
       const truth = await current();
-      if (destroyed) return;
+      if (destroyed) return false;
       server = truth;
       local = clone(truth);
       turns = [];
       notice = "arcade.resync.notice";
-    } catch { notice = "arcade.error.rejected"; }
+      return true;
+    } catch { if (!destroyed) notice = "arcade.error.rejected"; return false; }
   }
 
   function steer(direction: SnakeDirection): void {
-    if (terminal) return;
+    if (terminal || quitting || destroyed) return;
     desired = direction;
     if (paused) resume();
   }
 
   function pause(): void { if (!paused) { paused = true; clearTimeout(timer); } }
-  function resume(): void { if (terminal) return; paused = false; notice = null; schedule(); }
+  function resume(): void { if (terminal || quitting || destroyed) return; paused = false; notice = null; schedule(); }
 
   async function quit(): Promise<void> {
+    if (quitting || terminal || destroyed) return;
+    quitting = true;
     pause();
     try {
-      await flush();
+      // Pausing fixes the local target. Join an existing batch, then commit any
+      // remaining lead before Quit; never race it against the same revision.
+      while (local.tick > server.tick) {
+        if (!await flush() || destroyed) return;
+      }
+      if (destroyed || server.phase === "terminal") return;
       const next = await submit({ kind: "quit" });
+      if (destroyed) return;
       server = next; local = clone(next); announcement = t("arcade.outcome.quit", {}, era);
     } catch { await resync(); }
+    finally { quitting = false; }
   }
 
   function keydown(event: KeyboardEvent): void {
