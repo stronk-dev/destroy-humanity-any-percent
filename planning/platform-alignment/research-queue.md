@@ -182,3 +182,31 @@ research question; they authorize only the stated downstream action.
   content epoch.
 - **Cannot authorize:** hidden DDA, per-player profiling, indefinite raw events, or a reusable
   threshold for later populations.
+
+## R-010 — RP-218 native worker witness and refresh discrimination
+
+- **Baseline:** `b299bbf5`; one full Linux WebKit failure versus one isolated pass. Neither
+  establishes the cause. Accepted CI Baseline owns test evidence; archived shell behavior is
+  not implementation authority.
+- **Question:** Can the witness lose its fast-growth authority through a real refresh while the
+  native worker remains healthy, and does the original failure instead show absent worker output,
+  a lifecycle gap, or unchanged UI despite valid prediction?
+- **Population:** the original mounted Game UI witness in all three declared Linux browser
+  engines, with observation-only native Worker input/output tracing; paired mounted controls with
+  repeated visible-return refreshes and either conflicting or consistent authority.
+- **Method:** forward every original native `postMessage` unchanged, observe real message events,
+  snapshot calls, visibility and amount text. No fake worker, clock pulse, changed worker policy,
+  assertion bound, browser concurrency or CI configuration. Controls repeat refresh at 250 ms for
+  2 seconds: conflicting authority must expose the low-rate replacement; consistent authority
+  must still produce native predictions and visible growth inside the existing 5-second bound.
+- **Controls:** both arms must observe refresh delivery, authority input and native predictions;
+  a missing worker or an unexecuted lifecycle event invalidates the experiment, not a success.
+  A later corrected witness must fail when real worker prediction is severed, then pass restored.
+- **Exit:** execute paired controls in all three engines, then two complete cold Linux lanes with
+  the original witness instrumented. Preserve every red outcome and report the observed trace
+  rather than infer causation from an isolated pass. If both lanes pass, original cause remains
+  unproven; a demonstrated fixture confounder is a separate finding.
+- **May authorize:** a separately predeclared test-only fixture/diagnostic correction under
+  accepted CI Baseline, followed by unchanged full browser/performance populations.
+- **Cannot authorize:** changing archived shell behavior, increasing timeouts, skipping tests,
+  serializing browser jobs, changing CI topology, or claiming hosted/current-head CI green.

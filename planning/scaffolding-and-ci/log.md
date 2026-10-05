@@ -226,3 +226,14 @@ range before any completion claim.
   game-ui-composed 2m08s, and schema 23s. The normative sub-five-minute blocking target is met.
 - This closes the hosted push/PR acceptance gap. The separate maintenance observation and exact
   designated review union remain archival requirements, not blockers on unrelated product work.
+
+## 2026-10-06 — R-010 / RP-218 diagnosis predeclaration
+
+- **Work by:** Codex. **Recorded by:** Codex. Baseline `b299bbf5`, clean tree. The full Linux
+  browser run's WebKit worker failure is retained in RP-218; its isolated pass is not closure.
+- Research population, controls and authorization limits are predeclared in research-queue R-010.
+  Only browser test observation/controls and research records are in this range. Native worker
+  commands and clocks, production bytes, CI configuration, five-second assertion and browser
+  population stay unchanged. No claim about the original cause until executed trace evidence.
+- Designated Claude review remains required for any retained test change. This is neither an
+  approval nor a current-head hosted CI claim.
