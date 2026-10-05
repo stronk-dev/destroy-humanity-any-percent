@@ -1128,3 +1128,12 @@ RP-131 and RP-218 causation/reliability remain open. All prior designated review
 pending. New witness range requires Claude's designated review; no self-archive, push or release.
 Next accepted review: remaining pure SG5 command atomicity, then G2/G3 bundle/activation/replay
 and G4–G7 coordinator/read/surface, retaining every full-nine-tier 1.0 obligation.
+
+### Exact SG4 witness handoff
+
+READY FOR CLAUDE DESIGNATED REVIEW, not approved: test-only complete span
+`62bbc92a^..da75a837` (`4ade679b..da75a837`), including original predeclaration `62bbc92a`,
+instrument-boundary correction `24512573` and tests/derivation/full evidence `da75a837`.
+No production diff in this span; kernel remains 0.3.152. Every initial invalid attempt and
+actual-source failing probe is disclosed. No earlier SG1/SG2/SG6/clock/R-010 request is consumed;
+all remain pending. No archive, mint, publication or release promotion.

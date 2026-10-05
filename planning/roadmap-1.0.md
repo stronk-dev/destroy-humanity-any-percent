@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-06, Garden SG4 independent tick witnesses under `62bbc92a`
-/ instrument correction `24512573` (test-only, designated review pending). Sixteen literal
+/ instrument correction `24512573` (implemented `da75a837`, exact test-only span
+`62bbc92a^..da75a837`, designated review pending). Sixteen literal
 transitions and selected PRNG values agree in Go/TS; actual-source diagonal, threshold,
 absolute-key and recipe-order mutations fail and restore exactly. RP-220 records bounded
 evidence, not a new production repair. Initial invalid fixtures and an empty-selector run are

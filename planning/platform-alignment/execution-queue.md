@@ -14,6 +14,9 @@ Linux browsers execute all seventeen new entries per engine: 22,269 / six delibe
 balance, schema, copy, CI or mint change. New test range requires Claude; no archive/full-SG4,
 G1/Garden, Postgres/hosted/whole-history or 1.0 promotion. RP-131/RP-218 limitations remain.
 
+Exact test-only handoff: `62bbc92a^..da75a837` (`4ade679b..da75a837`), including both
+predeclarations and the complete evidence change. Pending Claude, not designated-approved.
+
 **NEXT SAFE ACTION:** accepted pure SG5 command/refusal atomicity review, then G2/G3 bundle,
 activation and replay, followed by remaining G4–G7. Keep all prior independent-review ranges
 and owner/author, accessibility, rights, deployment, preservation and full-nine-tier release gates.

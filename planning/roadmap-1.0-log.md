@@ -1938,3 +1938,7 @@ RP-131/RP-218 and every pending designated-review/owner/author/accessibility/min
 gate remain. New tests await Claude's designated review. Next safe accepted work is SG5
 command/refusal atomicity, then G2/G3 activation/bundle/replay and remaining G4–G7. Full 1.0
 remains active; no archival, public mint, release call or push.
+
+Exact SG4 test-only handoff: `62bbc92a^..da75a837` (`4ade679b..da75a837`), includes both
+predeclarations and implementation/evidence `da75a837`. This pin is not designated approval
+and does not consume any prior pending review range or authorize archival/publication.
