@@ -1085,3 +1085,25 @@ historical kernel-history failure, or approve the wider C4 range.
 **READY FOR CLAUDE DESIGNATED REVIEW:** predeclaration commit `4b319313` plus this test/fixture
 and tracking supplement; the next checkpoint pins the final hash. No Codex self-approval,
 archival or live sharing bug is asserted.
+
+## 2026-10-05 — RP-179 exact test-only review span
+
+**Review needed by:** Claude (designated cross-party reviewer). **Recorded by:** Codex.
+The RP-179 corrective range is `4b319313^..144f5e8e`: predeclared acceptance gap and exact
+earlier correction ranges, retained required-row negative, Go corpus generator/adoption fixture,
+five additional shared transitions, explicit TS second-wearer check, and synchronized tracking.
+No product code or existing content artifact changes. The demonstrated Go/TS mutations were
+restored before the implementation commit. This checkpoint does not supply a designated verdict.
+
+## 2026-10-05 — C8/AC7 mechanical-isolation review predeclaration
+
+**Reviewer:** Codex, designated cross-party review of Claude `c20d23f1^..c20d23f1`,
+bounded first to AC7 and its package isolation gates. Verify the actual two-arm fixture,
+all three intent application guards, non-cosmetics state comparison, the frozen
+Founder→Company contribution comparison and how Company commands consume that channel.
+Run the 200-seed policy and existing injected-leak negative cold. Independently perturb
+the contribution producer conditional on cosmetic ownership, rather than only a Founder
+field, and require the honest population to fail on the ruled isolation outcome. Probe the
+package boundary gate with a disallowed dependency in a scratch fixture. Restore mutations;
+no product correction or C8 approval follows from reading the tests. If a probe survives,
+ledger the exact population/oracle failure before changing its contract.
