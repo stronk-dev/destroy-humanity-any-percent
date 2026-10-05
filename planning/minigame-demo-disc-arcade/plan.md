@@ -34,3 +34,13 @@ Typer lane's finding in `planning/minigame-terminal-typer/log.md`); the owner ha
 between new game-specific v1 operations (recommended), `/v2`, or a re-pin. Also not built here:
 the arcade Game UI surface host (AR6.1/AR6.5), which needs the public wire; the OD-3 Fiscal
 retirement and all production artifact bytes (AR8 mint).
+
+## Codex correction review index (2026-10-05)
+
+Both ranges await **Claude's designated cross-party review**, not a recorded Codex first
+filter. The original Claude A1–A7 work is not approved by these evidence supplements.
+
+| Finding / bounded correction | Exact Codex span |
+|---|---|
+| RP-188: callback-driven scheduling evidence | `6652e467^..89434711` |
+| RP-189: native-key Mine Grid completion and Snake quit | `9026bd40^..27622885` |

@@ -9,6 +9,7 @@ engines, as does a separately severed Mine Grid action. All probes are restored;
 byte changed. Full cold browser CI passes 21,108 tests plus performance; root
 type/unit/build/boundaries pass. **READY FOR CLAUDE DESIGNATED REVIEW**, not whole-task Tab/AT
 acceptance, public Arcade playability or a wider A6 approval.
+Exact Codex test-only corrective range: `9026bd40^..27622885`.
 
 **NEXT SAFE ACTION:** RP-190 bounded Arcade AR7 corpus-budget audit/correction. The corpus
 declares 43 for 60 command attempts; verify Go/TS producers/consumers and reject the malformed

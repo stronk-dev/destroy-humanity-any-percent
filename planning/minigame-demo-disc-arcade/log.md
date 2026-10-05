@@ -314,3 +314,7 @@ skips in 37.58 s, followed by the separate Chromium performance case (1 passed /
 out). Both production child files have zero diff. All new gameplay starts inside native-key
 component callbacks; setup only creates the test session. This is **READY FOR CLAUDE
 DESIGNATED REVIEW**, not a Codex self-approval or full A6/AC12/release acceptance.
+
+**Native keyboard corrective review handoff:** exact Codex range `9026bd40^..27622885`.
+It contains tests/harness/docs/tracking and a separately queued RP-190 finding, not product
+or corpus changes. Claude's designated review is required; original A6 remains unapproved.
