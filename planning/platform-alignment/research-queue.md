@@ -210,3 +210,9 @@ research question; they authorize only the stated downstream action.
   accepted CI Baseline, followed by unchanged full browser/performance populations.
 - **Cannot authorize:** changing archived shell behavior, increasing timeouts, skipping tests,
   serializing browser jobs, changing CI topology, or claiming hosted/current-head CI green.
+- **Executed disposition (2026-10-06):** `worker-prediction-research.md` retains the initial
+  nine-case positive controls, one full pass and one full red (zero-output WebKit control), then
+  the separately predeclared readiness/fixture correction. Nine native-publication severing cases
+  fail and restore exactly; two final full Linux lanes and separate performance pass. The fixture
+  confounder and measurement-validity question have bounded evidence; original RP-218 causation
+  remains open, designated review pending. No timeout or production/CI change.

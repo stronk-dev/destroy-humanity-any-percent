@@ -162,6 +162,13 @@ binds those six leaves, in order, to `make verify-push`; removing, adding, or su
 side fails a permanent negative fixture. Use these targets when host-platform success could mask
 scheduling, architecture, or cold-run behavior.
 
+The Game UI worker witness uses the real native Worker and consistent initial/refresh fixture
+authority. Its five-second visible-growth bound is unchanged; observation records native input,
+prediction, first-output latency, visibility and refresh count. Paired visible-return controls
+separately require bounded native readiness before their two-second measurement, so startup
+cannot silently invalidate the comparison. R-010's dossier retains the fired initial control and
+the original unresolved full-lane failure; local repeat passes are not hosted reliability proof.
+
 `make test-game-ui-composed` starts its isolated repository Postgres service. Its first driver
 starts the real composed gameserver and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
 `/api/v1/founder/state` v3 round trip, and the actual Centrifuge WebSocket subscription. The

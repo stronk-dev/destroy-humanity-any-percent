@@ -258,3 +258,28 @@ range before any completion claim.
 - Make original fixture authority consistent and require native evidence as well as visible
   change. No product source change except one temporary, exactly restored severing probe.
   No timeout, runtime, balance, CI, archive, hosted or 1.0 status promotion.
+
+## 2026-10-06 — R-010 bounded test correction, READY FOR DESIGNATED REVIEW
+
+- **Implemented/first-filter by:** Codex. **Recorded by:** Codex. No designated verdict.
+  Dossier retains both initial populations (including the red WebKit validity control), separate
+  corrective predeclaration `85ae9552`, native traces and precise limitations.
+- Consistent fixture authority removes the demonstrated confounder; original cause remains
+  unproven. Real first-output readiness is independently bounded at five seconds; unchanged
+  two-second controls count fresh prediction after readiness. No runtime, CI or assertion-budget
+  change. Suppressing actual worker publication fails all nine cases in three engines; production
+  file restores byte-exactly before gates.
+- Two complete cold Linux lanes pass 22,068 / six intentional skips and separate performance
+  each. Root Node tests pass 7,256 / 106 deliberate DOM-only skips; type/build pass. Native first
+  output ranges up to 4049 ms, explicitly visible. These are local bounded proofs, not reliability,
+  current-head hosted CI, archival or 1.0 completion. Exact reviewed range must include initial
+  diagnostic and correction, not only the final net test diff.
+- Fresh whole-history gate passes checkout/adversarial controls, then fails the unchanged RP-131
+  commit `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against
+  `0cf9f7a6aba4038fadcdf35e5b94f56986164af7`. Neither browser green nor this range closes it.
+- Codex first-filter inspects the complete net span from `b299bbf5`: exactly one browser test
+  plus canonical CI documentation and research/backlog/queue/roadmap records, no production or
+  CI configuration diff. Native method forwarding, independent message observation, fresh-output
+  controls and cleanup are inspected; executed publication severing rejects all cases. This is
+  self-review, not Claude's designated verdict. CI topology and 13 negative controls, client
+  shell/UI boundaries and `git diff --check` pass.

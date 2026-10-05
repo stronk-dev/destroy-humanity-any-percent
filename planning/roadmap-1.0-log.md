@@ -1860,3 +1860,28 @@ worker/lifecycle versus fixture/load diagnosis, then resumes remaining accepted 
 Exact pending clock review span `eb0a9e7e^..b678dd3c` consists of diagnostic
 `eb0a9e7e^..904c1d17` and corrective `14ad4287^..b678dd3c`; both require inspection.
 This pin is not a verdict, archive or release gate. The full 1.0 goal remains active.
+
+## 2026-10-06 — native worker witness and refresh evidence
+
+R-010 predeclaration `f4f62eac`, labelled diagnostic `0a30f0d0`, separate test-only correction
+predeclaration `85ae9552`. Native Worker tracing proves a fixture confounder: repeated low-rate
+refreshes retain visible `100` despite real predictions; consistent authority yields growth.
+Original failure cause remains unproven. The initial second full lane fires the new WebKit
+control's validity predicate (no output in its mixed two-second startup window); it remains
+recorded red, not promoted. The instrument now bounds first actual prediction independently
+before beginning the same two-second steady-state arm, counting only fresh output.
+
+Original witness initial/refresh authority now agrees, and native evidence accompanies the
+unchanged five-second visible-growth assertion. Suppressed actual worker publication makes
+nine selected cases fail in all three engines; production source restores byte-identically.
+Two final complete cold Linux browser lanes pass 22,068 / six deliberate skips plus separate
+performance each. Root client passes 7,256 / 106 deliberate skips (two additional DOM-only
+controls execute in browsers), type/build pass. Observed first native-output latency reaches
+4049 ms; no budget is increased or sample excluded. No product/runtime/CI/clock/version change,
+hosted reliability, whole-CI green, designated approval or archival. Research dossier retains
+both initial runs, corrected populations, exact restoration hash and limitations. Next accepted
+work: remaining pure Garden SG3/SG4 clock/tick and G2–G7 review, not a reduced preview goal.
+
+Fresh kernel-history checkout/adversarial controls pass; the full guard fails unchanged RP-131
+at `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`. That release/CI obligation is not bypassed
+or closed by these browser results.

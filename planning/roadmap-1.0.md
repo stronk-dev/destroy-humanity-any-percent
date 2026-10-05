@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden locked-clock repair under `14ad4287`
+**Current checkpoint:** 2026-10-06, R-010 browser-witness diagnosis/correction under
+`f4f62eac` / `85ae9552` (test-only, designated review pending). Actual native Worker proves
+that conflicting fixture refreshes can keep the display at `100` while prediction remains live.
+The initial zero-output WebKit control remains an invalid/red observation; readiness and
+steady-state measurement are now separately bounded. Original fixture authority agrees and
+native tracing accompanies its unchanged five-second growth assertion. Suppressing native
+publication fails nine cases in all engines; restored production bytes are unchanged. Two final
+full cold Linux browser lanes pass 22,068 / six deliberate skips plus separate performance;
+client/type/build pass. Fresh whole-history guard still fails unchanged RP-131. RP-218's
+original cause and hosted reliability remain open. No timeout,
+runtime, CI, activation, archival or whole-CI promotion. Next: remaining accepted Garden pure
+SG3/SG4 clock/tick and G2–G7, while retaining all independent review and full 1.0 obligations.
+
+**Earlier checkpoint:** 2026-10-06, Garden locked-clock repair under `14ad4287`
 (correction `b678dd3c`, combined diagnosis/correction review span `eb0a9e7e^..b678dd3c`,
 kernel 0.3.151; awaiting Claude). Actual Postgres proves RP-217: handler-clock lag refuses
 harvests, while lead persists future growth and breaks later Fiscal commands. SG3/SG6/SG-P2's
@@ -15,9 +28,9 @@ histories pass, including twenty cold repetitions and independently failing/rest
 Other minigame/attendance/payout policies remain unchanged. No public activation or release
 promotion. Exact amd64 CI cannot execute on this ARM host; the full native Linux/Postgres
 server-core target passes as separate evidence. Fresh whole-history guard still fails RP-131.
-The full browser lane fails one existing WebKit worker case (RP-218); its isolated pass does
-not replace full-lane proof. Next: bounded RP-218 diagnosis, then remaining accepted pure
-SG3/SG4 clock/tick and G2–G7 review, preserving every owner/author/cross-party gate and full 1.0.
+At this checkpoint the full browser lane fails one existing WebKit worker case (RP-218); its
+isolated pass does not replace that failed run. The subsequent R-010 checkpoint above records
+bounded diagnosis and new full-lane proof, preserving every owner/author/cross-party gate.
 
 **Earlier checkpoint:** Server Garden pure SG6 harvest boundary evidence under
 `3fbf39af` / `0db67895` (exact span `3fbf39af^..0db67895`, kernel 0.3.150 unchanged;

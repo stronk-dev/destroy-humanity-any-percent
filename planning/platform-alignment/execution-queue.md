@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Server Garden locked harvest clock correction — 2026-10-06
+## Current native worker witness evidence — 2026-10-06
+
+R-010 (`f4f62eac`, diagnostic `0a30f0d0`, corrective predeclaration `85ae9552`) proves
+RP-218's fixture confounder, not its original cause. Low-rate refreshes keep the display at
+`100` despite real worker predictions. An initial two-second WebKit control fires with no output
+and remains recorded invalid/red. Separate bounded readiness now precedes that unchanged
+measurement; original initial/refresh authority agrees and native observations accompany its
+unchanged five-second growth assertion. No production, clock, CI, concurrency or skip change.
+
+Suppressing actual worker publication fails all nine selected cases; the production file restores
+exactly. Two final complete cold Linux browser lanes pass 22,068 / six deliberate skips, plus
+separate performance each. Root client/type/build pass. Kernel remains 0.3.151. Original cause
+and hosted reliability remain open; no whole-CI/release/archival claim or designated approval.
+Fresh kernel-history gate still fails unchanged RP-131 after checkout/adversarial controls pass.
+Dossier: `worker-prediction-research.md`. Initial and corrective ranges both require Claude review.
+
+**NEXT SAFE ACTION:** pin the complete R-010 review range, then continue remaining accepted
+Garden pure SG3/SG4 clock/tick and G2–G7 review. Preserve independent review, owner/author,
+activation and full nine-tier 1.0 gates; do not wait on an unavailable reviewer when safe accepted
+work remains. Future RP-218 recurrence must retain native trace rather than increase a bound.
+
+## Earlier Server Garden locked harvest clock correction — 2026-10-06
 
 RP-217 is executed through real Service/Postgres: a ten-second handler-clock lag rejects valid
 harvests; a twenty-four-hour lead commits 288 ticks and blocks later ordinary commands with
@@ -28,10 +49,9 @@ Exact clock handoff `eb0a9e7e^..b678dd3c` (diagnosis `eb0a9e7e^..904c1d17` plus 
 `14ad4287^..b678dd3c`) is READY FOR CLAUDE DESIGNATED REVIEW, not approved. These subranges
 union to the full clock span; SG6 arithmetic and earlier SG1/SG2 remain separate review requests.
 
-**NEXT SAFE ACTION:** complete/pin the bounded corrective evidence for Claude designated
-review; separately predeclare RP-218 worker/lifecycle versus fixture/load diagnosis, then
-remaining accepted pure SG3/SG4 clock/tick and G2–G7. Retain separate SG1/SG2/SG6
-evidence ranges and all prior review, author and owner gates. Full nine-tier 1.0 remains active.
+The corrective evidence is pinned for Claude; R-010 above records the subsequently executed
+RP-218 population. Retain separate SG1/SG2/SG6 evidence ranges and all prior review, author
+and owner gates. Full nine-tier 1.0 remains active.
 
 ## Earlier Server Garden pure harvest boundary evidence — 2026-10-06
 

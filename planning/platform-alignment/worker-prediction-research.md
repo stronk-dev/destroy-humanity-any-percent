@@ -62,3 +62,61 @@ prediction publication once: original witness and both readiness controls must f
 exact production file before final verification and record its hash. Test-only implementation and
 diagnostic ranges require Claude's designated review. The original RP-218 cause remains open
 unless a later original-failure trace demonstrates it; existing RP-131 still forbids whole-CI green.
+
+## Executed correction and discrimination — 2026-10-06
+
+Predeclaration `85ae9552`. The runtime's initial/refresh authority and direct fast snapshot now
+agree in the original witness. It still requires visible change inside five seconds, additionally
+requiring native prediction and consistent rates. The observer reports browser identity, first
+native-output latency, complete inputs, total output count, last eight predictions and all
+offline-required outputs. Cleanup runs even when assertions/unmount fail.
+
+The paired controls require native output before starting their unchanged two-second measurement;
+their assertions count fresh outputs, not the startup proof. No hidden retries or configuration
+change. Selected cold Linux population passes **9 / 60 selector exclusions**. Its first-output
+latencies are 118.5–249.9 ms; selectors are not full-suite coverage.
+
+Severing `self.postMessage` in the actual worker while still executing its prediction machine
+makes **all nine selected cases fail**, exit 1, 18.19 s: original DOM remains `100`, and both
+controls fail their readiness predicate. Original arguments still reach native Worker input;
+no native output is observed. Restored SHA-256:
+`4b317e50256b4dc07c09095e8c8b69a2024ec3b6b17f7f861f9d5897dbd634d9`.
+`git diff` confirms zero residual production change before final verification.
+
+Both predeclared complete cold Linux runs pass **22,068 / six intentional skips**, all 276
+browser/file populations. Durations are 47.08 s and 44.78 s. Separate Chromium performance
+passes once each (2.39 s and 2.63 s invocation). No lane, assertion or five-second bound was
+removed, enlarged or serialized. Root client passes **7,256 / 106 intentional skips**; the two
+new DOM-only tests account for the increase from 104 Node skips and execute in every browser.
+Type checking has zero errors/warnings; production build passes. Kernel stays 0.3.151.
+
+Observed first native-output latency, measured from installing the observer before mounting
+the app, in milliseconds (not attributed solely to worker-thread startup):
+
+| Browser / arm | Full run 1 | Full run 2 |
+|---|---:|---:|
+| Chromium / original | 973.9 | 460.6 |
+| Firefox / original | 3800 | 3667 |
+| WebKit / original | 1503 | 3109 |
+| Chromium / conflicting | 364.1 | 295.3 |
+| Firefox / conflicting | 1772 | 1892 |
+| WebKit / conflicting | 2002 | 2228 |
+| Chromium / consistent | 1287.3 | 1334.6 |
+| Firefox / consistent | 1292 | 1785 |
+| WebKit / consistent | 4049 | 1151 |
+
+All original arms receive only fast authority, show native prediction and visible growth.
+Conflicting controls deliver 9–10 snapshot calls, retain visible `100` with native predictions;
+consistent controls deliver 9–10 calls and show `200`/`300`. No offline-required message is
+observed. All first-output bounds pass, including the 4049 ms arm; this remains a real bound,
+not permission to extend it on future runs.
+
+**Disposition:** local fixture confounder and diagnostic validity are corrected with discriminating
+evidence; the original RP-218 failure's cause remains unproven. Full-lane passing evidence applies
+to these runs, not all future loads or hosted Actions. Claude designated review is pending.
+No whole-CI, archival, Garden activation or 1.0 claim follows.
+
+Fresh `make verify-kernel-version` passes the checkout contract and adversarial fixtures, then
+fails unchanged RP-131: `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7` changes six client minigame paths without a real
+kernel bump. Nothing in this test-only range repairs or bypasses that historical violation.

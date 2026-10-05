@@ -77,10 +77,15 @@ interface AppExports {
 
 // Observation only: every command reaches the original native Worker unchanged.
 function observeNativePrediction() {
+  const started = performance.now();
+  let firstPredictionMS: number | undefined;
   const commands: { kind: string; rate?: string }[] = [];
   const outputs: WorkerOutput[] = [];
   const workers = new Set<Worker>();
-  const receive = (event: MessageEvent<WorkerOutput>) => { outputs.push(event.data); };
+  const receive = (event: MessageEvent<WorkerOutput>) => {
+    outputs.push(event.data);
+    if (event.data.kind === "predicted_snapshot" && firstPredictionMS === undefined) firstPredictionMS = performance.now() - started;
+  };
   const original = Worker.prototype.postMessage;
   const spy = vi.spyOn(Worker.prototype, "postMessage").mockImplementation(function (this: Worker, ...args) {
     if (!workers.has(this)) { workers.add(this); this.addEventListener("message", receive); }
@@ -92,7 +97,7 @@ function observeNativePrediction() {
     commands, outputs,
     report(runtime: FixtureRuntime, output: Element | null) {
       const predicted = outputs.filter((row) => row.kind === "predicted_snapshot");
-      return { visibility: document.visibilityState, snapshotCalls: runtime.snapshotCalls, commands,
+      return { userAgent: navigator.userAgent, visibility: document.visibilityState, firstPredictionMS, snapshotCalls: runtime.snapshotCalls, commands,
         output: output?.textContent, predictions: predicted.length,
         lastPredictions: predicted.slice(-8), gaps: outputs.filter((row) => row.kind === "offline_required") };
     },
@@ -429,17 +434,22 @@ it.skipIf(typeof document === "undefined")("submits incorporate from the Tier-2 
 it.skipIf(typeof document === "undefined")("feeds authoritative Game UI snapshots through the archived 20 Hz shell worker", async () => {
   const observation = observeNativePrediction();
   const runtime = new FixtureRuntime(true);
+  const fast = { ...snapshot, resources: [{ ...snapshot.resources[0], rate_per_second: "1e3" }] };
+  // Refresh and direct publication must describe the same authority.
+  runtime.current = fast;
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
   try {
     await new Promise((resolve) => setTimeout(resolve, 0));
-    app.fixtureSnapshot({ ...snapshot, resources: [{ ...snapshot.resources[0], rate_per_second: "1e3" }] }); app.fixtureSurface("desk"); flushSync();
+    app.fixtureSnapshot(fast); app.fixtureSurface("desk"); flushSync();
     const output = target.querySelector(".cc-amount output")!;
     const before = output.textContent;
     await expect.poll(() => output.textContent, { interval: 50, timeout: 5_000 }).not.toBe(before);
+    expect(observation.outputs.some((row) => row.kind === "predicted_snapshot")).toBe(true);
+    expect(observation.commands.filter((row) => row.rate !== undefined).every((row) => row.rate === "1e3")).toBe(true);
   } finally {
     console.info("R-010 original", JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
-    await unmount(app); target.remove(); observation.dispose();
+    try { await unmount(app); } finally { target.remove(); observation.dispose(); }
   }
 });
 
@@ -456,6 +466,8 @@ it.skipIf(typeof document === "undefined").each(["conflicting", "consistent"] as
   let refreshTimer: ReturnType<typeof setInterval> | undefined;
   try {
     await new Promise((resolve) => setTimeout(resolve, 0));
+    await expect.poll(() => observation.outputs.some((row) => row.kind === "predicted_snapshot"), { interval: 50, timeout: 5_000 }).toBe(true);
+    const measurementStart = observation.outputs.length;
     app.fixtureSnapshot(fast); app.fixtureSurface("desk"); flushSync();
     const output = target.querySelector(".cc-amount output")!;
     const before = output.textContent;
@@ -465,15 +477,17 @@ it.skipIf(typeof document === "undefined").each(["conflicting", "consistent"] as
     await new Promise((resolve) => setTimeout(resolve, 2_000)); flushSync();
     expect(runtime.snapshotCalls).toBeGreaterThan(initialCalls + 3);
     expect(observation.commands.filter((row) => row.rate === (authority === "consistent" ? "1e3" : "1e0")).length).toBeGreaterThan(3);
-    expect(observation.outputs.filter((row) => row.kind === "predicted_snapshot").length).toBeGreaterThan(0);
+    expect(observation.outputs.slice(measurementStart).filter((row) => row.kind === "predicted_snapshot").length).toBeGreaterThan(0);
     if (authority === "conflicting") expect(output.textContent).toBe(before);
     else await expect.poll(() => output.textContent, { interval: 50, timeout: 5_000 }).not.toBe(before);
   } finally {
     clearInterval(refreshTimer);
     console.info(`R-010 ${authority}`, JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
-    await unmount(app); target.remove(); observation.dispose();
-    if (previousVisibility) Object.defineProperty(document, "visibilityState", previousVisibility);
-    else Reflect.deleteProperty(document, "visibilityState");
+    try { await unmount(app); } finally {
+      target.remove(); observation.dispose();
+      if (previousVisibility) Object.defineProperty(document, "visibilityState", previousVisibility);
+      else Reflect.deleteProperty(document, "visibilityState");
+    }
   }
 });
 
