@@ -12,7 +12,8 @@ Final local Linux three-browser suite passes 21,795 / three performance skips, p
 performance; all eighteen child cases execute per engine. Client/type/build/boundary/copy/
 content-manifest checks pass. No engine/kernel/Go/DB/copy/public-wire changes; prior cold Go/DB
 proofs remain their dated populations. Historical RP-131 stays a previously confirmed overall
-CI blocker, not bypassed or falsely green. Corrective range is pinned after implementation;
+CI blocker, not bypassed or falsely green. Corrective range `55cd1ce0^..a9a39446` is
+READY FOR CLAUDE DESIGNATED REVIEW;
 Claude's designated verdict and remaining original A6/A7 claims remain open.
 
 **NEXT SAFE ACTION:** review remaining motion, candidate-copy/accessible labels and docs under

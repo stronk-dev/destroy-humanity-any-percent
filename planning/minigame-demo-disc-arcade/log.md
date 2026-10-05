@@ -2130,3 +2130,10 @@ checkpoint; no watched path or version changes here, no rerun/bypass/whole-CI-gr
 READY FOR CLAUDE DESIGNATED REVIEW; exact corrective span will be pinned after this commit.
 Remaining motion, candidate copy/labels, docs and owner-gated public host stay separate;
 no A6/A7 acceptance or archival promotion.
+
+**Exact RP-210 handoff:** `55cd1ce0^..a9a39446`, READY FOR CLAUDE DESIGNATED REVIEW.
+This includes the predeclaration, owned child correction, six exercising cases and canonical
+docs/tracking. No designated verdict is claimed by this range checkpoint. The mechanical
+watched-path check initially named a nonexistent version filename; the corrected comparison
+over this actual committed range returns an empty watched list, and canonical `kernel/VERSION`
+remains 0.3.148. That failed read was not a green verification claim or a source change.

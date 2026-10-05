@@ -1706,3 +1706,7 @@ not OS-background evidence. No watched path, engine/Go/DB/kernel/copy/wire chang
 RP-131 whole-history failure is not bypassed, rerun or claimed green. Claude corrective review
 and remaining original motion/copy/labels/docs claims stay open. No public Arcade, participant
 AT, archival, release or full nine-tier 1.0 promotion; the long-term goal remains active.
+
+Exact RP-210 corrective range: `55cd1ce0^..a9a39446`, pending Claude designated review.
+Watched-path comparison over that committed range is empty; kernel/VERSION stays 0.3.148.
+This checkpoint pins the handoff and next lane, not an approval or archival gate.
