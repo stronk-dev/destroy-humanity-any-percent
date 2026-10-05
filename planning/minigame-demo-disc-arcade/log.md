@@ -2137,3 +2137,29 @@ docs/tracking. No designated verdict is claimed by this range checkpoint. The me
 watched-path check initially named a nonexistent version filename; the corrected comparison
 over this actual committed range returns an empty watched list, and canonical `kernel/VERSION`
 remains 0.3.148. That failed read was not a green verification claim or a source change.
+
+## 2026-10-05 — A6 motion and terminal-name review predeclaration
+
+Baseline `0b1ddfda`, clean tree; original range `fca062a1^..fca062a1`. Inspect AR6.2 terminal
+cell names and AR6.4 zero-decoration motion without changing authored copy or public host.
+Terminal Mine Grid glyphs appear to disclose mines while label() has no mine branch. Execute
+the existing actual-engine quit population with an added assertion that a disclosed mine's
+accessible name is not "hidden". This is a candidate contradiction/contract gap; AR6.6 lacks
+a mine-state cell-name key, so a confirmed failure routes to OD-15/mechanical author amendment,
+not improvised prose or an unaccepted key. Restore the diagnostic assertion after retaining
+its executed failure; do not commit a red suite or claim a resolved accessibility issue.
+
+Motion population: retain actual mounted MineGridBoard/SnakeBoard and real engines, switch the
+actual browser reduced-motion preference with the existing provider command, and observe zero
+computed decorative animations/transitions on the mounted DOM in both preference arms. A real
+Snake callback still moves exactly one cell and commits through its engine in both arms;
+reduced motion must not suppress content or advance on wall time. The 1995 zero-motion theme is
+the selected population, not every future era. Existing cases remain intact. Inject a real
+decorative animation as a test-instrument negative, require the oracle to fail, and restore.
+Always-static components can satisfy zero decoration without adding a meaningless media-query
+branch; this does not promote the platform's whole A4.1 media-query architecture.
+
+Only bounded test evidence/docs/tracking may land in this lane absent a separately authorized
+runtime amendment. Run full Linux browser and relevant root checks; exact Claude corrective
+review remains required. No kernel bump, copy mint, public transport, participant AT or full
+A6/A7 approval follows from these populations.
