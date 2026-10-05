@@ -1118,3 +1118,12 @@ both standard composed drivers and Cosmetics AC14's built-client Buy→reload jo
 exercised a synthetic Cosmetics test epoch and did not run malformed-arm negatives through
 the browser. The named test-only database service was stopped after the run; review and
 production pinning remain separate.
+
+## 2026-10-05 — Current-HEAD CI gate check after Cosmetic C5 correction
+
+`make verify-ci-topology` passed its 13 negative controls at `7cc8463a`. A separate cold
+`make verify-kernel-version` rerun still exits 2 at the historical pushed commit
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`, reporting six minigame-client files
+changed without a real kernel/VERSION bump. The kernel-history checkout contract and its
+adversarial fixtures passed before that failure. This confirms the local Cosmetic correction
+did not make the broader CI gate green; RP-131 and the owner/accepted-RFC route remain open.
