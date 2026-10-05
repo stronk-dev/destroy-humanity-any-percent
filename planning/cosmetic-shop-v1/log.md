@@ -1273,3 +1273,22 @@ and retained missing-row negative, two shared Exit pairs, per-path Go assertions
 Postgres acquisition/equip/Exit/retry/history journey, docs and synchronized tracking.
 Neither production Exit source file has a residual mutation. This checkpoint only names the
 range; it is not a designated verdict and does not close C3/C4, RP-176 or Cosmetics.
+
+## 2026-10-05 — C8/AC7 receipt and consumer evidence predeclaration
+
+**Review by / recorded by:** Codex, bounded to Claude `c20d23f1^..c20d23f1` on AC7.
+RP-182 records the missing explicit production-receipt assertion and the disconnected Company
+arms (nil contributions). The final bonus-producer comparison is useful and independently
+mutation-proven; it does not turn identical nil-input Company runs into a consumer witness.
+
+Predeclare a test-only accepted-AC7 correction: a receipt-only probe changes the cosmetic arm's
+Company receipt without changing its state or Founder, and must initially make the missing
+receipt assertion visible. Retain 200 seeds × 288 five-minute steps and all three applied
+cosmetic kinds. Compare every Company receipt/outcome/state, not only final Company bytes.
+Use the pinned fixture economy and the real FrozenFounderContributions→ResolveFrozenContributions
+channel for Company math. Bonuses stay frozen within each run; after the cosmetic population,
+a fresh next-run consumer checks the resulting bonuses through actual Company math. Never
+refreeze mid-run. Retain independent negatives that change only a receipt and only a consumed
+bonus, requiring named divergence rather than any error. Keep the non-cosmetics Founder and
+producer comparisons. Cold Go/client and server-core checks, no production/catalog/RFC changes,
+Claude designated review before closure.

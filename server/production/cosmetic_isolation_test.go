@@ -21,7 +21,7 @@ import (
 // contributions (the only Founder→production multiplier channel), and every
 // non-cosmetics Founder byte must be identical. It returns the first
 // divergence so the failing case can assert that a violating arm is caught.
-func cosmeticIsolationRun(t *testing.T, seeds int64) error {
+func cosmeticIsolationRun(t *testing.T, seeds int64, receiptProbes ...func(int, *save.IntentDecision)) error {
 	t.Helper()
 	catalog := phase0Catalog(t)
 	shop := cosmeticsContentBundle(t)
@@ -63,6 +63,9 @@ func cosmeticIsolationRun(t *testing.T, seeds int64) error {
 				}
 				if err != nil {
 					t.Fatalf("seed=%d step=%d arm=%d: %v", seed, step, arm, err)
+				}
+				for _, probe := range receiptProbes {
+					probe(arm, &decision)
 				}
 				if decision.Outcome == save.IntentApplied {
 					companies[arm], revisions[arm] = candidate, revisions[arm]+1
@@ -167,5 +170,26 @@ func TestCosmeticIsolationCatchesAMultiplierLeak(t *testing.T) {
 	err := cosmeticIsolationRun(t, 3)
 	if err == nil || !strings.Contains(err.Error(), "diverged") {
 		t.Fatalf("a cosmetic arm that raises a Fiscal generator level was not caught as a divergence: %v", err)
+	}
+}
+
+// A receipt-only leak must not be hidden by unchanged Company/Founder bytes.
+func TestCosmeticIsolationCatchesAReceiptOnlyLeak(t *testing.T) {
+	err := cosmeticIsolationRun(t, 1, func(arm int, decision *save.IntentDecision) {
+		if arm == 1 {
+			var receipt map[string]json.RawMessage
+			if err := json.Unmarshal(decision.Receipt, &receipt); err != nil {
+				t.Fatal(err)
+			}
+			receipt["cosmetic_bonus"] = json.RawMessage(`"2e0"`)
+			var err error
+			decision.Receipt, err = json.Marshal(receipt)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	})
+	if err == nil || !strings.Contains(err.Error(), "production receipts diverged") {
+		t.Fatalf("receipt-only leak was not caught by its named oracle: %v", err)
 	}
 }
