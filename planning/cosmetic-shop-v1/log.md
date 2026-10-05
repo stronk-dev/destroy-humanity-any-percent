@@ -760,3 +760,20 @@ contract and adversarial fixtures pass. The new same-commit version bump is dire
 against `76a9fe04^..76a9fe04`, not claimed as a green full history walk. This C1 range needs
 Claude's designated adversarial review. The separate C5 corrective range and RP-174 ruling-
 author body conflict remain open; no Cosmetics archival approval is asserted.
+
+## 2026-10-05 — Codex designated C2 replay-bundle review predeclaration
+
+**Review by / recorded by:** Codex. **Claude range under review:** `8e315569^..8e315569`,
+limited to C2/OD-10's `cosmetics` artifact membership, constants identity, scalar Founder
+dependency on `pet_species`, and the permanent-ID settlement hook. This is not approval of C1
+or C3–C8. At current HEAD, run cold `make test-go
+GO_PACKAGES='./replaycatalog ./production' GO_TEST_FLAGS='-count=1'` and `make test-client`.
+The positive control is a full Go/TS bundle containing the pinned Horse Armor fixture; negative
+arms remove cosmetics, remove `pet_species`, add a payment-shaped field, and drop a current ID
+from the next bundle. Independently sever the Go and TS `cosmetics ⇒ pet_species` loader checks:
+each should fail its own C2 test on the missing-species arm. Independently sever the server
+permanent-ID settlement check: the dropped-artifact or dropped-ID test must fail. Restore every
+mutation and rerun cold. Inspect whether hash/byte binding witnesses can fail if cosmetics is
+omitted from identity. Any vacuous negative or cross-runtime discrepancy is CHANGES REQUIRED;
+otherwise record a bounded C2 verdict with exact range and limits. No product mechanic, epoch
+pin, body text or copy change is authorized by this review.
