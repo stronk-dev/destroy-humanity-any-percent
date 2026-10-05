@@ -1,6 +1,7 @@
 package arcade
 
 import (
+	"bytes"
 	"encoding/json"
 	"strconv"
 
@@ -326,7 +327,7 @@ func decodeSnakeCommand(data []byte) (snakeCommand, error) {
 
 func decodeSnakeSnapshot(data []byte) (SnakeSnapshot, error) {
 	if !uniqueJSONKeys(data) || !hasExactJSONKeys(data, "arcade_content_hash", "arcade_schema_version", "phase", "tick", "direction", "body",
-		"pending_growth", "food_cell", "food_index", "food_seed", "score", "width", "height", "revision") {
+		"pending_growth", "food_cell", "food_index", "food_seed", "score", "width", "height", "revision") || !validSnakeRawNumbers(data) {
 		return SnakeSnapshot{}, minigame.ErrInvalidTenant
 	}
 	var value SnakeSnapshot
@@ -356,4 +357,33 @@ func decodeSnakeSnapshot(data []byte) (SnakeSnapshot, error) {
 		return SnakeSnapshot{}, minigame.ErrInvalidTenant
 	}
 	return value, nil
+}
+
+// Inspect numeric tokens before Go's typed decode can normalize null to zero.
+// The shared safe-integer range keeps numeric values exact in both runtimes.
+func validSnakeRawNumbers(data []byte) bool {
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(data, &fields) != nil {
+		return false
+	}
+	integer := func(raw json.RawMessage) bool {
+		var value int64
+		return len(raw) != 0 && !bytes.Equal(bytes.TrimSpace(raw), []byte("null")) &&
+			json.Unmarshal(raw, &value) == nil && value >= -maxSafeInteger && value <= maxSafeInteger
+	}
+	for _, key := range []string{"arcade_schema_version", "revision", "tick", "width", "height", "pending_growth", "score", "food_cell", "food_index"} {
+		if !integer(fields[key]) {
+			return false
+		}
+	}
+	var body []json.RawMessage
+	if json.Unmarshal(fields["body"], &body) != nil || body == nil {
+		return false
+	}
+	for _, cell := range body {
+		if !integer(cell) {
+			return false
+		}
+	}
+	return true
 }

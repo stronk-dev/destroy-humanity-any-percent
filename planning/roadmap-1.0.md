@@ -5,7 +5,8 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, guarded product source `45c35800` (kernel 0.3.145) plus the bounded Cosmetic
+**Current checkpoint:** 2026-10-05, Snake snapshot correction (kernel 0.3.146; exact source span
+pinned in the Arcade review index after commit) plus the bounded Cosmetic
 wearer-control link correction `e02f6560`, AC15 CSS precedence correction `3be0e5dd` and
 Typer display-loop correction `58bc34ad`, test-only Arcade callback correction `89434711`
 native keyboard supplement `27622885`, corpus-budget correction `bcdee28d` and hidden-state
@@ -13,7 +14,7 @@ witness correction `fe49c408` and every-command literal-byte instrument `92ed5e6
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-195 corrections,
+(RP-145–RP-196 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -129,8 +130,16 @@ command's serialized nullable result. An intermediate result survives the old wh
 both wrong-output probes now fail the new comparison. Original gameplay/command metadata is
 exactly unchanged, and complete cold browser CI still passes 21,399 plus performance. The
 premature old reordered-snapshot whole-green claim is corrected on the record. Claude review
-remains mandatory. RP-195 separately queues Snake's malformed snapshot parity diagnosis;
-read-derived coercion/null concerns are not yet executed runtime findings. None of these
+remains mandatory. RP-195 now reproduces Snake's malformed-input admissions: 32 TS decoder
+cases, 21 actual quit outputs; eight Go cases, seven actual outputs. Both decoders now reject
+45 shared negatives while retaining seven legal controls over four actual states. Six guard
+severings fail independently and are restored, with the initial negative-zero oracle error
+disclosed. Kernel is 0.3.146; selected cold Go, 7,148 client tests, root checks and the complete
+three-browser target (21,693 plus performance) pass. The additional real-DB regression passes
+cold after the disclosed native-image startup failure; this is not public-wire acceptance. Claude review remains
+required and RP-131's historic guard failure still prevents a complete green-CI claim.
+RP-196 next requires the exact AR7 5×5 clearing population: the existing 6×5 cycle proof is
+preserved but not substituted. Lack of a cycle alone does not prove impossibility. None of these
 corrections proves public storage/wire or every semantically valid state; release gates remain.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with

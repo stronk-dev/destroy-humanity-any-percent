@@ -872,3 +872,85 @@ separately if RP-131 persists. Exact Claude review remains mandatory; no self-ap
 **Separately queued RP-196:** the existing Snake fixture is 6×5, not AR7's specified 5×5; its
 cleared terminal has 30 body cells. This read-derived mismatch belongs to a separate population
 construction/research range, not a change to this grammar experiment or a claim of engine failure.
+
+**Unchanged-production outcome:** full TS client Make 2, 56 failed / 7,092 passed / 88 skips:
+32 malformed decoder admissions, 23 direct-apply failures (21 actual quit outputs, two terminal
+phase refusals rather than grammar refusal), plus ONE legal-control oracle mistake of mine.
+The negative-zero output serializes identically, but object equality distinguishes -0 from 0;
+fix that oracle to compare actual snapshot and serialized result bytes as predeclared, not
+rewrite valid engine behavior. Null/string/fraction/boolean facts and oversized counters reach
+TS quit outputs. Other decoder-only admissions are refused by later identity checks.
+Cold Go Make 2: eight malformed decoder admissions, seven actual quit outputs; oversized
+revision still hits the identity check. Null tick/food/body entries normalize to zero. All
+seven Go legal controls pass. Re-run the corrected oracle on unchanged TS production before
+retaining the separately authorized decoder correction.
+
+**Corrected-oracle unchanged-production rerun:** 55 failed / 7,093 passed / 88 skips, Make 2.
+All seven legal controls now pass; malformed admissions remain exactly 32 decoder and 23 apply
+failures (21 outputs / two terminal phase refusals). The negative-zero test mistake is resolved
+in the instrument only. Proceed with the predeclared watched decoder correction; no new mechanic.
+
+**Independent correction severings, each Make 2:**
+
+- TS raw parser bypass only: 12 failed / 7,136 passed / 88 skips (six raw-key/integer-token
+  cases at decoder AND apply; terminal cases reach phase refusal, not new outputs).
+- TS numeric-type guard bypass only, raw parser retained: 23 failed / 7,125 passed / 88 skips
+  (13 decoder admissions and ten actual quit outputs). Fractional/unsafe tokens still reject.
+- TS string-identity type guards bypass only: two decoder cases fail / 7,146 pass / 88 skips;
+  direct apply still rejects array-valued identities. That later guard is defense in depth,
+  not a replacement for correct snapshot grammar.
+- Go null-token refusal bypass only: five named cases fail at decoder AND direct apply,
+  again producing normalized quit outputs; later schema/revision/food-index checks still hold.
+- Go body-element raw-validation loop bypass only: the null body element fails at decoder
+  AND direct apply; typed decode continues to reject decimal/exponent elements.
+- Go shared safe-integer bound bypass only: unsafe revision/tick/growth fail at decoder;
+  tick/growth again produce quit outputs. Revision is still refused by its identity check.
+
+An unmatched needle seeded in the shared fixture fails the cold Go instrument at
+`raw mutation must match exactly once`, not a fake grammar pass. It is restored, along with
+all six production probes, before the full retained verification. The matched/ambiguous/empty
+TS mutation controls also execute in the retained instrument. No arbitrary limit was changed.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Exact original Claude span: `508fe19a^..508fe19a`. This verdict concerns
+the Snake snapshot admission contract in A3/AR4.3–AR4.6/AR7 only, not an approval of the full
+historical A3 range or A1–A7. The original source was checked independently against the
+unchanged starting decoder; the executed baseline is at the current repository population,
+not a claim to have rebuilt every historical dependency. The actual decoder/apply outputs
+and corrected-oracle baseline above reproduce the defect. The separate 6×5/5×5 population
+mismatch is RP-196, not evidence that the rules cannot clear an odd board.
+
+**Retained cold primary verification:** root Go `-count=1` passes `./decimal ./arcade ./kernel
+./minigame ./replaycatalog`. Typecheck (zero errors/warnings), all 7,148 client tests (88 browser
+only skips), build, client/cosmetic/no-payment boundaries and their negative controls, vet,
+numeric-vector regeneration and Arcade-corpus regeneration pass. The original v1/v2 corpus
+and 6,296 numeric vectors remain byte-unchanged. The complete Linux browser target passes
+21,693 executions across the three engines (three intentional performance skips), then the
+separate Chromium performance population passes; these are execution counts, not distinct
+player workflows. No selected retry substitutes for the complete target.
+
+`make verify-kernel-version` passes checkout/negative-fixture checks but exits 2 on the SAME
+pushed historical RP-131 commit `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` (parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`). The honest new 0.3.146 identity does not repair
+that missing historical bump. No exception, bypass, rewrite or CI edit; complete CI is not green.
+
+One attempted docs patch had stale context and applied no changes; the subsequent context-
+matched patch succeeded. Canonical docs also remove the unsupported inference that absence
+of a Hamiltonian cycle proves 5×5 cannot clear. The original 6×5 evidence is preserved.
+
+**Additional real-DB regression, initial environment failure:** declared root
+`make test-save-integration SAVE_TEST_PACKAGES='./production'
+SAVE_TEST_FLAGS='-run TestArcadeComposedIntegration -v'` exits 2 BEFORE any Go test runs.
+The dedicated `cloud-clicker-postgres-1` logs `exec format error`: its cached Postgres image is
+linux/amd64 while the Docker host is linux/aarch64. A normal pull of the same declared
+`postgres:16-alpine` tag for linux/arm64 restores native local execution without changing
+Compose/CI/source, removing orphan containers or touching production data. The cold declared
+test lane is rerun below; the failed initial attempt is not a test pass.
+
+**Real-DB rerun outcome:** the exact same declared cold production selector now executes
+`TestArcadeComposedIntegrationUnlockLockPlayAndZeroCreditResolution` against real Postgres,
+verbosely PASS (0.29 s), Make exit 0. This covers actual DB/platform library composition and
+the existing 20×20 candidate Arcade states, not the owner-blocked public wire/AC8 host.
+No test assertions, Docker configuration, runner workflow or production data were changed.
+The earlier startup failure remains disclosed. RP-195 is **READY FOR CLAUDE DESIGNATED
+REVIEW**, not self-approved or archival-eligible; exact corrective span follows this commit.

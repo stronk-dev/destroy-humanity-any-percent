@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Arcade every-command byte-parity instrument correction — 2026-10-05
+## Current Arcade Snake snapshot grammar correction — 2026-10-05
+
+RP-195 reproduces 32 malformed TS decoder admissions (21 actual quit outputs) and eight Go
+admissions (seven actual quit outputs). The separately authorized decoder-only correction
+refuses all 45 shared raw negatives and retains seven legal spelling/boundary controls over
+four actual states. All six independent guard severings fail and are restored. The initial
+negative-zero object-equality oracle mistake is corrected and disclosed; engine behavior is
+unchanged. Kernel is 0.3.146. Cold selected Go, 7,148 client tests, type/build/boundaries/vet,
+unchanged vectors/corpus and the complete three-browser target (21,693 plus performance) pass.
+**READY FOR CLAUDE DESIGNATED REVIEW**, not full A3/AR7, complete CI or archival acceptance.
+The additional real-DB lane passes cold after the disclosed native-image startup failure;
+it is DB/library composition, not public-wire acceptance. RP-131's pushed history failure
+remains unchanged and unbypassed.
+Exact corrective span is pinned after the correction commit.
+
+**NEXT SAFE ACTION:** predeclare RP-196's exact AR7 5×5 clearing population construction.
+The current fixture is 6×5 with a 30-cell cleared body; preserve that valid evidence, but do
+not relabel it as 5×5. Failure of the cycle driver is not proof that no legal trace can clear
+an odd board. Execute real engines, retain literal command/output witnesses and negative
+controls without changing rules, food placement, production mint, copy or public wire.
+
+## Dated Arcade every-command byte-parity instrument correction — 2026-10-05
 
 RP-194 demonstrates a fabricated intermediate result surviving the old whole suite; reordered
 snapshot bytes survive its original final-only corpus case but fail unrelated raw fixture
@@ -13,7 +34,7 @@ the complete cold Linux browser target (21,399 plus performance) pass. **READY F
 DESIGNATED REVIEW**, not full AR7, complete CI or archival acceptance. No product bytes changed.
 Exact Codex corrective range: `c48ce7f2^..92ed5e68`.
 
-**NEXT SAFE ACTION:** predeclare RP-195's bounded Snake snapshot-grammar parity audit under
+**Next at this dated checkpoint:** predeclare RP-195's bounded Snake snapshot-grammar parity audit under
 accepted A3/AR4/AR7. Read-derived coercive/null admission questions require actual decoder/apply
 counterexamples and positive controls before any retained watched correction. No new gameplay,
 copy, production mint or public wire authority. RP-131's history RFC remains draft.

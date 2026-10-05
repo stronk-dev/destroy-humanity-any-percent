@@ -1417,3 +1417,27 @@ restored. Cold Go, root checks, 7,050 client tests and the full cold Linux brows
 new authority is invented. Claude must review the corrective span; no full AR7 or archival
 approval. Next is separately predeclared RP-195 Snake snapshot-grammar diagnosis over actual
 states, not a new mechanic. All wider 1.0 release, rights, integration and clean-host gates remain.
+
+## 2026-10-05 — Snake malformed snapshots are refused before transition
+
+RP-195 executes actual genesis, moved/grown playing and terminal populations. Unchanged TS
+admits 32 malformed decoder inputs, including 21 real quit outputs; Go admits eight, seven
+reaching output after null normalization or unsafe counters. The predeclared decoder-only
+correction rejects all 45 shared negatives and retains seven legal spellings/boundaries.
+Six independent guard severings and a broken shared-mutation needle fire, then are restored.
+The initial negative-zero object-equality oracle error was mine; the corrected serialized-byte
+oracle passes legal controls on unchanged production. No movement/food/growth/clock/schema/
+descriptor/version rules change; watched source receives the honest kernel identity 0.3.146.
+
+Cold selected Go, 7,148 client tests, type/build/boundaries/vet, byte-identical vectors/corpus
+and complete cold Linux browser verification (21,693 plus separate performance) pass.
+The additional declared real-DB test initially fails before Go execution: cached amd64
+Postgres cannot start on the aarch64 Docker host. Pulling the same declared tag's native image
+lets the exact cold lane execute and PASS against real Postgres (DB/library composition, not
+public wire). Both attempts are recorded in the Arcade log. The unchanged pushed RP-131 history defect remains red; no
+bypass, rewrite or CI edits. Claude designated review is mandatory; no archival/self-approval.
+
+RP-196 separately records AR7's missing exact 5×5 clearing population: the current 6×5
+cycle proof clears 30 cells. Docs no longer infer impossibility from lack of a Hamiltonian
+cycle. Next is predeclared legal-trace construction over actual engines, not changed rules
+or relabelled population. All broader product, platform and release obligations remain.

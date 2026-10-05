@@ -22,7 +22,9 @@ loads through `server/arcade/catalog.go` and `client/src/arcade/catalog.ts`.
 
 The candidate bytes are `balance/testdata/arcade-v1.json` (the RFC's provisional v1 rows). The
 corpus fixture is `testdata/arcade/corpus-fixture-v1.json`: small boards, and a 6×5 Snake board,
-because a 5×5 board has no Hamiltonian cycle and so cannot witness `cleared`.
+which supports the current cycle-based clearing driver. That driver does not supply AR7's
+specified 5×5 clearing population (RP-196); lacking a cycle is not proof that a different
+legal command trace cannot clear 5×5. The exact odd-board witness remains missing.
 
 ## Engines
 
@@ -44,6 +46,21 @@ carry `arcade_content_hash` and `arcade_schema_version`.
   - The only commands are `advance {through_tick, turns}` and `quit`. A command whose terminal tick
     falls before `through_tick` rejects `advance_past_terminal` without mutation.
   - Facts: `snake.food_eaten` and `snake.ticks_survived`.
+
+Snake snapshot decoding validates all nine numeric scalar fields and every body element as
+nonnullable integers in the shared safe-integer range. Content identity and `food_seed` are
+strings, not values coerced to strings. Both decoders refuse duplicate keys, decimal/exponent
+integer tokens and malformed field types before transition. Valid whitespace, escapes,
+reordered keys and integer negative-zero spelling remain usable. Movement, food placement,
+growth, clocks, descriptor and snapshot field sets are unchanged (kernel 0.3.146).
+
+`testdata/arcade/snake-snapshot-negatives-v1.json` supplies 45 shared raw negatives and seven
+legal controls over actual genesis, moved/grown playing and cleared terminal states. Go and
+TS execute their real engines to construct each source and match the literal corpus bytes;
+both direct decoders and direct apply entries refuse the mutated inputs before transition.
+Legal spellings preserve canonical snapshot/result execution; the largest safe tick remains
+usable and produces its exact certified fact. These are grammar controls, not proof of all
+semantic reachability invariants or a public saved-state exploit. Claude review remains required.
 
 ## Verification
 

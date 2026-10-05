@@ -1,5 +1,6 @@
 import { substream } from "../combat/rng";
 import type { ArcadeSnakeContent } from "./catalog";
+import { parseSnapshotJSON } from "./snapshot-json";
 import { ArcadeRejection, encodeCanonical, keysOf, parseCommandObject, requireLiteralScaling, resolveArcadeCatalog, safeInteger,
   type ArcadeApplyInput, type ArcadeCreateInput, type ArcadeResult } from "./common";
 
@@ -149,14 +150,16 @@ export function decodeSnakeCommand(source: string): SnakeCommand {
 }
 
 export function decodeSnakeSnapshot(source: string): SnakeMutable {
-  const value = JSON.parse(source) as SnakeMutable;
+  const value = parseSnapshotJSON(source) as SnakeMutable;
   const keys = ["arcade_content_hash", "arcade_schema_version", "body", "direction", "food_cell", "food_index", "food_seed", "height", "pending_growth", "phase",
     "revision", "score", "tick", "width"];
-  if (value === null || typeof value !== "object" || Object.keys(value).sort().join("\0") !== keys.join("\0") || value.arcade_schema_version !== 1 ||
+  if (value === null || typeof value !== "object" || Array.isArray(value) || Object.keys(value).sort().join("\0") !== keys.join("\0") ||
+    ![value.arcade_schema_version, value.revision, value.tick, value.width, value.height, value.pending_growth, value.score, value.food_cell, value.food_index].every(safeInteger) ||
+    value.arcade_schema_version !== 1 || typeof value.arcade_content_hash !== "string" ||
     !/^sha256:[0-9a-f]{64}$/.test(value.arcade_content_hash) || value.phase !== "playing" && value.phase !== "terminal" || value.revision < 1 || value.tick < 0 ||
     value.width < 5 || value.width > 30 || value.height < 5 || value.height > 30 || !Array.isArray(value.body) || value.body.length < 2 ||
     value.pending_growth < 0 || value.score < 0 || value.food_index < 1 || value.food_index !== value.score + 1 || !isSnakeDirection(value.direction) ||
-    !/^(0|[1-9][0-9]*)$/.test(value.food_seed) || BigInt(value.food_seed) >= 1n << 64n) throw new SyntaxError("invalid snake snapshot");
+    typeof value.food_seed !== "string" || !/^(0|[1-9][0-9]*)$/.test(value.food_seed) || BigInt(value.food_seed) >= 1n << 64n) throw new SyntaxError("invalid snake snapshot");
   const cells = value.width * value.height, seen = new Set<number>();
   for (const cell of value.body) {
     if (!Number.isSafeInteger(cell) || cell < 0 || cell >= cells || seen.has(cell)) throw new SyntaxError("invalid snake body");

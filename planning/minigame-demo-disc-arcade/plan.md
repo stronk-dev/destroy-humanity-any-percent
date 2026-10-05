@@ -27,6 +27,11 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   This closes a bounded instrument gap locally; Claude review and full AR7 acceptance remain.
 - [x] A3 — `snake` 1.0.0 pure engine (AR4) in Go and TS; corpus incl. mid-window terminal,
   `advance_past_terminal` without mutation, every rejection (AR7).
+  RP-195 separately corrects both snapshot decoders' malformed numeric/raw/identity admission,
+  using 45 shared negatives and seven legal controls over four actual states. Kernel 0.3.146
+  records the acceptance-set change; independent guard probes fail. Claude review is required.
+  RP-196 remains a separate population gap: the current 6×5 cycle witness is not AR7's named
+  5×5 clearing proof. No whole A3/AC5 or public integration approval is inferred here.
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),
   toy/definition/tenant cross-checks, resolver arms `(mine_grid|snake, 1.0.0) → arcade`, gameserver
   tenant registration, TS replay loader chain; fixture `minigames` + `minigame_api` candidates with
