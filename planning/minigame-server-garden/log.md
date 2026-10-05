@@ -601,3 +601,29 @@ RP-215 implementation `ad2980fd`; exact designated range `e8d3f2df^..ad2980fd`, 
 CLAUDE DESIGNATED REVIEW, not approved. Includes the separate predeclaration, code/test/kernel
 change and docs/ledger/queue reconciliation. The earlier SG1 range `9fc5932c^..166a23d7`
 remains independently pending; neither range substitutes for broader G1–G7 review or archival.
+
+## 2026-10-06 — SG6 pure harvest boundary review predeclaration
+
+Clean baseline `ffb338e0`. Prior SG1/SG2 corrections remain pending Claude, not approved.
+Re-read accepted SG5/SG6, Go commands and TS harvest plus original corpus. The implementation
+already uses BigInt for the TS product; no numeric defect is claimed. The existing harvest
+corpus asserts small 6+15+0 units, so it does not establish the admitted large-product floor
+or maximum 36-plot sum by itself.
+
+Question: do real pure harvests preserve exact integer floor, frozen per-plot effects, permanent
+seeds, canonical hash and post-state at the SG1 domain boundaries? Predeclare cross-product
+of harvest units {0,1,999999997,1000000000} and frozen effects {0,1,9666667,10000000}, plus
+full 36-plot maximum and mixed zero/nonstarter/dormant targets. All catalogs/states must pass
+their real loaders/binding first. Derive literal expected quotients without invoking production
+harvest; retain a math/big reference in Go and canonical expected JSON/hash/state bytes in the
+shared test artifact. Both actual runtimes consume the same inputs and compare full outputs.
+Demonstrate that a floating-product variant can fail on this declared population, rather than
+assuming it does. Separately sever real TS integer arithmetic, seed collection or hash binding
+to prove the appropriate witness fails, then restore exactly before checks.
+
+This wave is test/evidence only unless executed evidence finds a real contract violation.
+Do not change balance fixtures, payout/governor, tick/clock, save/replay grammar, copy, CI,
+public host or activation; no kernel bump for test-only work. This is the pure SG6 half only,
+not AC8's two-stream transaction, faucet or deployed player outcome. Preserve original engine
+corpus and prior evidence; cold Go/client and actual Linux browsers are the scoped gates.
+No self-approval or archival. Pin an exact Claude review range and continue clock/tick review.
