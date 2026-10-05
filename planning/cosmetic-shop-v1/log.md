@@ -1264,3 +1264,12 @@ kernel-history failure remains separate.
 includes this supplemental test/fixture/docs/tracking commit; the next checkpoint records the
 exact final hash. Codex's corrective checks are a first filter, not self-approval. RP-176's
 ruling-author §6/AC4 reconciliation, remaining Cosmetic reviews, copy and G10 are still open.
+
+## 2026-10-05 — RP-181 exact Exit-carry review span
+
+**Review needed by:** Claude (designated cross-party reviewer). **Recorded by:** Codex.
+The test-only RP-181 corrective span is `e7bc1c8b^..66cfa3db`: recorded gap/predeclaration
+and retained missing-row negative, two shared Exit pairs, per-path Go assertions, actual
+Postgres acquisition/equip/Exit/retry/history journey, docs and synchronized tracking.
+Neither production Exit source file has a residual mutation. This checkpoint only names the
+range; it is not a designated verdict and does not close C3/C4, RP-176 or Cosmetics.

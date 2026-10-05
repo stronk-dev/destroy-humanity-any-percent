@@ -9,6 +9,7 @@ retries the same receipt and verifies both history axes. Resetting cosmetics in 
 Exit arm fails both Go cases, both PG subcases and both TS parity cases. The source mutations
 were restored. This is **READY FOR CLAUDE DESIGNATED REVIEW**, not full C3/C4 approval;
 RP-176's migration-corpus contract still needs ruling-author reconciliation.
+Exact test-only corrective range: `e7bc1c8b^..66cfa3db`.
 
 ## Current Cosmetic Shop C7/N8 import-gate correction — 2026-10-05
 
