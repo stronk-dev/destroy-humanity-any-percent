@@ -19,7 +19,8 @@ Cold six-package Go, 7,170 client cases / 94 intentional browser-only skips, roo
 copy/boundaries/vet/vectors/corpus, seven real-Postgres functions and complete local Linux
 three-browser verification pass (21,777 / three performance skips, plus separate performance).
 Whole kernel history still fails unchanged pushed RP-131 after checkout/negative controls pass;
-no hosted-green claim, bypass, false bump or rewrite. Exact corrective range is pinned next.
+no hosted-green claim, bypass, false bump or rewrite. Exact corrective range
+`610a8c80^..4e529ee9` is READY FOR CLAUDE DESIGNATED REVIEW, not approved.
 
 **NEXT SAFE ACTION:** continue remaining original A6/A7 focus/visibility/pause, motion,
 candidate-copy/accessibility-label and documentation claims, with executed and predeclared

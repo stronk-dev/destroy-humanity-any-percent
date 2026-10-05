@@ -25,8 +25,9 @@ and test-only current-curriculum Exit/quit proof `bb5c6ac1`
 (review span `b57b95df^..bb5c6ac1`), plus the separately predeclared RP-205 due-cross-gate
 live/shared-replay correction and RP-207 event-reader repair `4b8abb89`
 (review span `efdc2dbc^..4b8abb89`, kernel 0.3.148; Claude review pending),
-and separately predeclared Snake delayed-acknowledgement corrections RP-208/RP-209
-(actual child/engine sequencing and terminal proofs; Claude review pending),
+and separately predeclared Snake delayed-acknowledgement corrections RP-208/RP-209 `4e529ee9`
+(review span `610a8c80^..4e529ee9`; actual child/engine sequencing and terminal proofs;
+Claude review pending),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`

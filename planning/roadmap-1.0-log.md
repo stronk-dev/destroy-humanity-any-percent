@@ -1685,3 +1685,8 @@ Claude must designated-review the exact corrective range pinned after implementa
 No full A6/A7, public host, participant AT, archival, deployment or 1.0 promotion. Continue the
 remaining original focus/visibility/pause/motion/candidate-copy/docs claims with bounded
 predeclarations; preserve all owner-gated public wire/copy/mint and full nine-tier obligations.
+
+Exact corrective handoff: `610a8c80^..4e529ee9`, pending Claude designated review.
+The range covers the predeclaration, child implementation, six exercising cases and canonical
+docs/tracking. This planning checkpoint is not a verdict or archival gate; remaining original
+A6/A7 claims continue separately.

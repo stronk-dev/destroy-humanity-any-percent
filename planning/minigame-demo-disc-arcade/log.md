@@ -2065,3 +2065,9 @@ Node declarations. Cleanup warnings are gone; no source probe remains.
 READY FOR CLAUDE DESIGNATED REVIEW of the bounded correction, with exact range pinned next.
 The original A6/A7 still needs its remaining claim review; public host/wire/copy/mint and full
 1.0 remain separate. No self-approval, archive, push or deployment.
+
+**Exact corrective handoff:** implementation `4e529ee9`, full predeclared review span
+`610a8c80^..4e529ee9`. READY FOR CLAUDE DESIGNATED REVIEW of RP-208/RP-209, including
+request sequencing, six actual-child controls, restored discriminating probes and canonical
+docs/tracking. This checkpoint records the range; it is not a reviewer verdict. Remaining
+original A6/A7 claims proceed separately, without archival or acceptance promotion.
