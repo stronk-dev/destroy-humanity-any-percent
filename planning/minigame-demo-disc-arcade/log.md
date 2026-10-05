@@ -587,3 +587,40 @@ verification above; no production Go engine, gameplay/copy/content/schema/public
 changed. The fresh historical red gate remains on record. No full A2/AR7 acceptance or
 archival; raw token/duplicate-key and nullable/missing nested-value parity is the next separately
 predeclared diagnostic, not evidence carried by this range.
+
+## 2026-10-05 — Mine Grid raw snapshot grammar predeclaration (Codex)
+
+**Authority:** accepted AR3.2/AR3.4 declared numeric/list/row shape and AR7 cross-runtime
+parity, original Claude A2 `508fe19a^..508fe19a`. Separate from RP-192's value-only correction.
+
+**Question / population:** derive genesis, chosen-unplaced, placed (seed 7, fixture `large`,
+reveal 40), and quit-terminal snapshots through the real engines. A shared raw replacement
+table preserves source distinctions that JSON.parse erases: duplicate top/nested keys
+(including escaped-equivalent keys), decimal/exponent integer tokens, null numeric scalars/
+array elements/nested rows, and missing declared revealed-row fields. Include unsafe revision
+and malformed/trailing JSON controls. Every replacement must match exactly once, with actual
+clean source validated independently; fail the instrument on an unmatched/ambiguous needle.
+Require decoder AND direct pure engine refusal for every malformed raw input, with exact
+existing error classes (Go decoder invalid tenant, direct apply divergence; TS SyntaxError).
+Do not confuse the Go registry's canonical-input boundary with direct-engine admission.
+
+**Positive controls:** every unmodified actual state decodes; nonterminal clean Apply reaches
+the same quit output on repeated pure execution, terminals retain illegal_phase. Valid raw
+whitespace/reordered fields, escaped strings/keys, integer-valued coordinate boundaries and
+empty lists remain legal. Refusing every noncanonical spelling is NOT the objective: declared
+integer token/type and unique/exact-key grammar are. Negative-zero integer tokens keep the
+existing Go decoder's behavior rather than inventing a canonical-token law.
+
+**Authorization / exit:** reproduce and register each actual admission gap before production
+edits. A bounded decoder-only correction may enforce declared nullability, exact row fields,
+unique keys and integer tokens without changing mechanics/payout/content/copy/wire/schema or
+making a production mint. Shared numeric fields must stay safely representable in TS; no
+convenience ceiling or balance cap. A retained watched change honestly advances kernel identity.
+Independently sever duplicate detection, token-integrality checking, Go nonnullable-number
+checking and Go exact revealed-row checking; each targeted population must fail. Restore
+before cold focused Go, whole client/type/build/boundary/vet/vector and complete Linux browser
+verification. No self-approval, archival, history repair, push or public integration claim.
+
+**Limits:** this is Mine Grid stored snapshot grammar, not Snake, command/catalog grammar,
+every semantically impossible state, public API/storage acceptance, migrations or clean-host
+release evidence. Those remain separately scoped obligations.
