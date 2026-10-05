@@ -9,6 +9,7 @@ gates. Regeneration changes only budget metadata and is byte-reproducible. Cold 
 client tests, type/build/boundaries/vet pass. The full cold browser target passes 21,111 tests
 plus its separate performance case. **READY FOR CLAUDE DESIGNATED REVIEW**; no runtime,
 content, balance, kernel, CI, wider AR7 or archival promotion.
+Exact Codex test/corpus correction range: `593ee762^..bcdee28d`.
 
 **NEXT SAFE ACTION:** predeclare and execute RP-191's bounded Arcade AR3.4/AC4 TS hidden-state
 witness. Its current named test inspects terminal fixture metadata only; it must actually

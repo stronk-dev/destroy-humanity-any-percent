@@ -380,3 +380,10 @@ phase; it observes no nonterminal transition or forged-state refusal. Go
 positive controls, so this is not a claim that all AC4 proof is absent or mines leak. Next,
 predeclare a bounded TS intermediate-state and leaked-state-refusal population with precise
 severing probes. No RP-191 fix is included in this budget range.
+
+**Budget corrective review handoff:** exact Codex range `593ee762^..bcdee28d`, tests/generated
+fixture budget metadata/docs/tracking only. **READY FOR CLAUDE DESIGNATED REVIEW.** No
+engine, candidate content, owner copy, kernel or production file changed in this range.
+Reference correction to the immediately preceding RP-191 note: the actual Go positive-control
+name is `TestMineGridNeverExposesMinesBeforeTerminal` in `server/arcade/engine_test.go`, not the
+shorthand `TestMineGridHiddenInformation`. It ran in the cold Arcade package population above.
