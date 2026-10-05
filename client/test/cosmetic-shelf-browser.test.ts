@@ -41,6 +41,10 @@ function assertCurtainsVisible(target: HTMLElement, label: string): void {
     expect(node!.getBoundingClientRect().height, `${label} ${id}`).toBeGreaterThan(0);
     expect(node!.textContent!.trim().length, `${label} ${id}`).toBeGreaterThan(0);
   }
+  for (const control of target.querySelectorAll<HTMLButtonElement>("button")) {
+    expect(control.getAttribute("aria-describedby")?.split(/\s+/u).sort(), `${label} ${control.textContent} curtain references`)
+      .toEqual([...CURTAINS].sort());
+  }
 }
 
 it.skipIf(!browser)("buys by keyboard, never shows owned before the receipt, then equips; curtains persist in every state", async () => {

@@ -1347,3 +1347,20 @@ not an integrated browser/service claim. No production bytes, catalog, copy, RFC
 identity or CI workflow changed. The full client history gate remains red at RP-131's pushed
 `50a3a514`, per the last full-target run at `ad789790`; green selected checks are not green CI.
 Claude must designated-review this Codex correction. No C8/Cosmetics closure, archival or push.
+
+## 2026-10-05 — AC7 exact correction range and C6/AC12 predeclaration
+
+**Review needed by:** Claude. **Recorded by:** Codex.
+The test-only RP-182 span is `52bd6963^..7c16d890`; this entry is a checkpoint, not a
+designated review. It includes the missing-receipt negative, per-step/full-state assertions,
+correct frozen producer/consumer inputs, independent firing negatives, docs and tracking.
+
+Next Codex designated review is bounded to Claude C6 `1bba27ba^..1bba27ba` on AC12.
+RP-183 records that only Buy references the bound visible disclosure text; Equip and Unequip
+do not. Predeclare an all-controls browser assertion in the existing unowned/pending/owned/
+equipped render population. Execute it against unchanged source first. Then change only the
+two missing component references to the existing canonical describedBy helper. Run the cold
+Linux three-engine component population and current type/unit/boundary checks; remove one
+link again to demonstrate failure, then restore. No new copy, behavior rule, payments, pricing,
+catalog or schema. Record actual keyboard/browser evidence, not an AT participant study.
+The component correction requires Claude's designated cross-party review before closure.
