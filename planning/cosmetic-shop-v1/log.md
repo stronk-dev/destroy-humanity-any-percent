@@ -686,3 +686,21 @@ synthetic Cosmetics test epoch a production pin or prove RP-173's reversed/dupli
 through a browser transport. The test-only `game-ui-postgres` service was stopped afterward;
 the separate existing `postgres` service was not touched. Claude's designated review and
 RP-174 body reconciliation remain open.
+
+## 2026-10-05 — Codex designated C1/AC1 raw-number parity review predeclaration
+
+**Review by / recorded by:** Codex. **Claude range under review:** `afe6529b^..afe6529b`,
+limited to C1 catalog loading, its shared corpus and AC1's exact-integer/Go–TS parity claim.
+This is not review or approval of C2–C8. The Go loader decodes `unlock.tier` into `int64` from
+raw JSON, whereas the TypeScript loader calls `JSON.parse` before checking `Number.isSafeInteger`.
+Predeclared hypothesis: TS admits alternate JSON number lexemes `1.0` and `1e0` for a tier that
+Go rejects, and may do the same for `schema_version:1.0`; the accepted §2 contract calls for
+an exact integer and both loaders to enforce the same grammar. Add these as shared negative
+corpus arms, retaining the ordinary `tier:1` and `schema_version:1` positive controls. Run cold
+`make test-go GO_PACKAGES='./cosmetic' GO_TEST_FLAGS='-count=1'` and `make test-client` before
+changing either loader. A Go-pass/TS-fail split is a C1 CHANGES REQUIRED finding. If the split
+exists, correct the raw TS loader only, preserving the object-level parser's stated limits;
+require the shared controls, client typecheck, package-boundary/no-payment gates, and a
+temporary severing that makes at least one new negative fail again. Do not invent a pricing
+mechanic, edit owner-authored text, mint a production content epoch, or treat a narrow C1
+finding as full Cosmetics acceptance.
