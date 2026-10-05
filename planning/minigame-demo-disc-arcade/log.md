@@ -1840,3 +1840,39 @@ REVIEW. Covers the committed predeclaration, actual current-curriculum test-only
 population and RP-205's separate executed runtime finding, plus docs/tracking reconciliation.
 No production/kernel/content/copy/wire/CI changes. This checkpoint is not a verdict or
 archive gate; RP-205 correction is the next separately predeclared accepted-contract task.
+
+## 2026-10-05 — RP-205 due-cross-gate correction predeclaration
+
+Baseline: `593f4b30`, clean tree. Accepted AR1.8/AC9 and the archived T0–T1
+first-failure replacement contract authorize correcting the confirmed runtime refusal;
+they do not authorize a new ending, gate rule, public API or content mint.
+
+Population: retain the actual current-curriculum no-session and both-toy active/claimed
+Exit controls. Add a genuinely eligible `gate.t2_to_t3` action with matched before-threshold
+and due attendance. Before threshold it must cross normally in run 1; when due it must
+persist scripted_first/run 2 without applying the requested gate or spending its cost.
+This later-tier diagnostic is explicitly not a substitute for the default first-hour journey.
+The stored original cross_gate payload, identical retry, both histories and terminal
+events must remain exact. Both toys must still reject this action while active AND claimed,
+then allow the replaced action after actual quit/resolution.
+
+Add a Go-produced, TS-consumed literal terminal fixture with the current complete curriculum,
+exact receipts, Founder carry, final/new Company state and all three event batches. Preserve
+the old no-curriculum cross-gate and existing manual/explicit-Exit fixtures unchanged. Red-first
+Go/live tests precede the fix; TS must fail on the new fixture before its correction. Negative
+trigger/branch controls must still fail and active-session evidence must still reject.
+
+Runtime scope: `production` live branch freezing and shared Go/TS Exit replay only. A frozen
+curriculum branch distinguishes replacement from historical no-curriculum gate execution;
+never rewrite the canonical player's intent to Wind Down or fabricate a crossed gate.
+Inspect terminal foundation hooks before changing execution. Bump all kernel identities
+honestly to 0.3.148 if these watched semantics change. No balance, owner copy, schema, public
+wire, migration, CI, history rewrite or RP-131 guard exception.
+
+Discrimination: independently restore the live CrossGate refusal, the replay's old gate
+execution path, and the TS CrossGate exclusion; each new witness must fail. Repeat actual
+active/claimed blocking with the new cross_gate population. Restore every probe exactly.
+Cold Go, client/type/build/boundaries/vet/vectors/corpus/replay fixture, declared Postgres and
+Linux browser checks are required; record RP-131 separately if the complete guard stays red.
+Update canonical docs and tracking in-range. No whole AC9/A5 promotion, self-approval or
+archival: exact corrective range goes to Claude for designated cross-party review.
