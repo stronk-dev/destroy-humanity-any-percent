@@ -16,7 +16,10 @@ migration take the next free numbers at landing.
   `pet_species` on the scalar Founder chain. Codex designated-approved this bounded C2 range
   after cold Go/TS checks and independent chain, identity and settlement severing; see `log.md`.
 - [x] C3 Founder v24 `cosmetics` state: codec, validation, activation at the new-run boundary,
-  Exit carry and the replay-inputs carry, in both runtimes (AC3, AC4, AC8).
+  Exit carry and the replay-inputs carry, in both runtimes (AC3, AC4, AC8). Codex's targeted
+  C3/AC4 review found RP-176: the five mandated save-migration-corpus cases are absent and
+  their specified home conflicts with new-run-only activation. This box is implementation
+  presence, not C3 acceptance or archival approval; ruling-author reconciliation is required.
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
   the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9).
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.

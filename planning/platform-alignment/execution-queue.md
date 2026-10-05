@@ -1,5 +1,16 @@
 # Executable queue
 
+## Current Cosmetic Shop C3/AC4 boundary — 2026-10-05
+
+Codex's targeted designated C3 review of Claude `581886a4^..581886a4` is **CHANGES
+REQUIRED** on RP-176's accepted evidence contract. The direct v24 codec and Exit-activation
+tests pass, and a later Go-authored replay corpus has `exit-activates-founder-v24`; neither
+supplies §6/AC4's five named `testdata/save-migrations.json` cases. That legacy harness has
+11 cases through v9 and no pinned bundle for a new-run activation. The ruling author must
+reconcile §6/AC4's corpus home, v24 names and new-run-only semantics before corrective test
+work. This is not evidence that the live Founder activated incorrectly, and no C3 approval or
+Cosmetics archival follows.
+
 ## Current Cosmetic Shop C2/OD-10 review — 2026-10-05
 
 Codex **designated-approved Claude's C2** `8e315569^..8e315569` after current-HEAD cold

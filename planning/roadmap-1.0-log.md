@@ -1150,3 +1150,13 @@ and client populations and restored severing of Go/TS pet-species dependency, Go
 identity, and permanent-ID settlement. The exact evidence and verdict live in the Cosmetic
 planning log. It proves C2's bundle wiring in isolation, not a production Cosmetics epoch,
 C1/C3–C8 review, archive eligibility, a green kernel-history CI gate or 1.0 readiness.
+
+## 2026-10-05 — Cosmetic C3 save-corpus contract gap
+
+Codex's targeted C3/AC4 review found RP-176: all five §6-mandated save-migration corpus
+cases are absent (under both literal v21/v22 and OD-16-adjusted v23/v24 names), while the
+11-case baseline still ends at v9. Cold Go/client tests pass because none asserts that
+population. Direct v24 codec and Exit replay witnesses exist, so this is not a demonstrated
+product activation failure. The named corpus harness lacks a pinned bundle and cannot
+represent the RFC's new-run-only activation without a contract change. C3 stays CHANGES
+REQUIRED pending ruling-author body reconciliation, then a firing current-coordinate test.

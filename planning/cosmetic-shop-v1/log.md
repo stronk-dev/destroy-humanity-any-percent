@@ -821,3 +821,28 @@ instruction is a C3 CHANGES REQUIRED finding; do not silently replace it with a 
 or invent mid-run activation. A bounded correction may proceed only if the accepted authority
 unambiguously defines the expected transition. Ruling-author body edits remain with that author;
 no product code or owner-authored content change is authorized by this audit.
+
+## 2026-10-05 — Codex targeted C3/AC4 verdict: CHANGES REQUIRED
+
+**Review by:** Codex (cross-party designated reviewer of Claude's C3).
+**Recorded by:** Codex. **Reviewed range:** `581886a4^..581886a4`, limited to the §3/§6
+codec/activation and AC4 corpus boundary. **Decision:** CHANGES REQUIRED for the accepted
+AC4 evidence contract; this is not a demonstrated live Founder activation failure and not a
+verdict on C4–C8. The actual `testdata/save-migrations.json` and its baseline contain exactly
+11 legacy cases, the newest from v9. Two independent `jq -e` exact-name checks exit 5: all
+five literal §6 v21/v22 names are absent, and all five OD-16-adjusted v23/v24 names are absent.
+Cold `make test-go GO_PACKAGES='./save ./production' GO_TEST_FLAGS='-count=1'` and
+`make test-client` pass (6,944 client tests, 85 browser skips); that green population never
+asserts the missing cases.
+
+The implementation does have current-coordinate evidence: `TestFounderV24CosmeticsRoundTripAndInvariants`
+rejects malformed v24 saves, `TestCosmeticsOwnsFounderV24Activation` activates at settlement,
+and the later `testdata/replay/cosmetic-v1.json` case `exit-activates-founder-v24` carries the
+Go/TS Exit arm. Those do not silently replace the RFC's explicit `testdata/save-migrations.json`
+deliverable. The existing save-corpus harness calls `RestoreState(data, version, economyCatalog,
+scope, baseline)` and compares a re-encoding; it has no pinned content bundle. `RestoreState`
+decodes v23 and v24 separately and rejects Cosmetics before v24, while §6 also requires
+activation **only** at a new-run boundary. Interpreting `founder-v23-to-v24-empty` as an ordinary
+read-time migration would violate that rule. The ruling author must reconcile §6/AC4's corpus
+home, version coordinates and expected transition before an implementer can honestly close it.
+RP-176 tracks this distinction. C3 is not approved or archival-eligible on this verdict.
