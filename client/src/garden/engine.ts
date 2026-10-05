@@ -90,6 +90,13 @@ export function advanceGarden(catalog: GardenCatalog, state: GardenState, input:
   if (!Number.isSafeInteger(input.serverMs) || input.serverMs < 0 || !Number.isSafeInteger(input.hostLevel) || input.hostLevel < 0) throw new RangeError("invalid garden advance");
   if ((input.salt !== "") !== gardenNeedsSalt(state, input.unlocked)) throw new RangeError("salt must be supplied exactly when it is initialized");
   if (!input.unlocked) return summary;
+  // SG2's output domain must hold before salt/growth mutation or rounded addition.
+  if (state.tick_anchor_wall_ms !== null && input.serverMs > state.tick_anchor_wall_ms) {
+    const substrate = gardenSubstrate(catalog, state.substrate_id);
+    if (!substrate) throw new RangeError("unknown substrate");
+    const pendingTicks = Math.floor(Math.min(input.serverMs - state.tick_anchor_wall_ms, catalog.catchupCapMs) / substrate.tick_ms);
+    if (state.tick_seq > Number.MAX_SAFE_INTEGER - pendingTicks) throw new RangeError("tick_seq exceeds exact state domain");
+  }
   if (state.salt_hex === null) {
     if (!saltPattern.test(input.salt)) throw new RangeError("salt grammar");
     state.salt_hex = input.salt;

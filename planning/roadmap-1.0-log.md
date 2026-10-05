@@ -1889,3 +1889,27 @@ or closed by these browser results.
 Exact pending review: full R-010 span `f4f62eac^..3c96ade8`, union of initial diagnostic
 `f4f62eac^..0a30f0d0` and correction `85ae9552^..3c96ade8`. This pin is not approval,
 does not consume prior Garden requests, and authorizes no archival or release.
+
+## 2026-10-06 — Garden exact clock counter invariant
+
+Diagnosis `c9f449de` / `155486d0` independently exercises 49 real-catalog/codec cases with
+math/big and BigInt clock references. Forty-five ordinary/safe points pass; four counter-domain
+arms fail in both engines, with Go 9007199254740993 versus TS 9007199254740992 on one exact
+sum. This is synthetic valid-domain evidence, not a reachable-player exploit. Original bounded
+Claude G1 SG3 path is CHANGES REQUIRED; no broad G1 verdict is inferred.
+
+Separate correction predeclaration `711153cd`: guard the existing SG2 output domain before
+salt/growth/clock mutation; no clamp, schema, valid-clock or PRNG policy change. Kernel 0.3.152
+signals the actual semantic change. Disabled guards re-expose four failures each; late guards
+make both unchanged-state controls fail in each engine. Omitting TS catch-up reason metadata
+fails twelve independent reference cases plus original engine/replay tests. All source restores
+exactly before final gates. No history, balance, attendance/faucet, copy, CI or activation change.
+
+Cold six-package Go/vet, ten non-skipped real Postgres Garden functions, root client/type/build/
+corpus/vector/copy/content checks pass. Copy's 610 existing orphan warnings are retained.
+Two complete same-source Linux browser populations pass 22,218 / six deliberate skips with
+separate performance; all 50 new entries execute in every engine. Final post-probe client/type/
+corpus/browser pass. No hosted, amd64 or whole-history gate claim; RP-131 remains unresolved and
+RP-218 causation/hosted reliability is still open. The combined diagnosis/correction requires
+Claude designated review. Next: remaining accepted SG4 tick/RNG and G2–G7; the full nine-tier
+1.0 product/platform scope remains active, with every review/owner/author/mint/rights/release gate.

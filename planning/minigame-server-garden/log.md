@@ -953,3 +953,67 @@ population. A disabled guard must re-expose the four failures independently in e
 a guard moved after salt or growth mutation must fail unchanged-state controls. Restore exactly
 before final gates. Preserve RP-131/RP-218 limitations and all pending designated ranges. No
 full G1/Garden/archive, public mint or 1.0 promotion. Docs/ledger/queue/board reconcile in-range.
+
+AC5 oracle-control predeclaration within this same clock population: temporarily omit only the
+TS catch-up reason key while retaining real clock/loss calculations. Independent summary-byte
+checks must fail on above-cap cases even though counter guarding is intact. Restore the exact
+TS source hash, rerun root client/type/corpus and recheck browser before final gate claims.
+
+### RP-219 repair and executed discrimination
+
+Review by: Codex (original Claude G1 reviewer; correction implementer first filter).
+Recorded by: Codex. Original G1 `02f91d10`'s
+Go/TS engine files are byte-identical through baseline `29444315`, checked directly with Git.
+The original bounded SG3 path is CHANGES REQUIRED on RP-219; this is not full G1/Garden review.
+Diagnosis `155486d0` retains four real failures in each engine; repair predeclaration `711153cd`
+preserves SG2's existing domain with a pre-mutation pending-tick check. It does not extend the
+wire domain, clamp the clock/counter or add player mechanics. All three kernel constants signal
+0.3.152. No balance, schema, migration, replay version, salt/RNG, attendance/faucet, activation,
+authored copy or CI change.
+
+**Independent evidence:** 49 named input cases bind to real catalogs/codec, with math/big and
+BigInt references for exact full state/summary. Four substrates each have ten tick/cap/regression/
+maximum-server-time points, plus locked/init and seven frontier controls. Safe counters/zero
+ticks still apply; out-of-domain next counters refuse without salt or plot mutations. This is a
+synthetic valid-domain population, not a reachable-player, PRNG, all-SG4 or public-flow claim.
+
+**Executed probes, serial and exactly restored:** disabling the Go guard and then TS guard
+re-exposes all four failures in each. Moving the guard after actual tick/salt work in Go and then
+TS makes both unchanged-state checks fail: age 0→1 and salt null→initialized. This discriminates
+refusal atomicity rather than merely testing an error. Omitting only TS's catch-up reason key
+makes twelve independent clock cases plus original engine/replay checks fail (14 total), while
+counter guarding remains intact. The loss/clock arithmetic remains correct in that probe, so
+the detector specifically observes required disclosure rather than a different numeric defect.
+All source is restored before final verification; SHA-256:
+Go `d044f9423b448edb1ea2bb2a91eccbe83a79875e9c4ab60caeea432d2ea6ac9c`,
+TS `2568cb2947207875e2298de58f7ca2bdd67de872cd65b024c8a8ee9611ae8f48`.
+
+**Completed restored gates:** cold six-package Go (production 57.820 s), full vet, root client
+7,306 / 106 deliberate skips, zero type/Svelte diagnostics, production build, unchanged engine
+corpus, 6,296-vector regeneration, shell/UI boundaries and copy/content manifest pass. Copy
+checker retains 610 existing orphan warnings; this is not whole content/rights acceptance.
+Actual native Linux/Postgres executes all ten Garden functions cold, including six handler-clock
+arms, original replay, harvest idempotency and all-or-none fault boundary proof (1.535 s).
+Full Linux Chromium/Firefox/WebKit passes 22,218 / six intentional skips, all 279 file/engine
+populations and all 50 new entries in each engine; separate performance passes. After the last
+disclosure probe, root client/type/corpus and full browser are rerun; results recorded below.
+
+No fresh whole-history/amd64/hosted/full-CI claim. RP-131's earlier executed historical miss
+remains open; a new honest version bump does not repair it. RP-218's original cause remains
+unproven despite positive full runs. All prior Claude review spans and owner/author/accessibility/
+mint/release gates remain. This range awaits Claude's designated review; no archive or push.
+
+The final restored client/type/corpus rerun finishes exit 0: 7,306 / 106 intentional skips,
+zero Svelte diagnostics, unchanged Go engine corpus. Final full Linux browser rerun also
+finishes exit 0: 22,218 / six deliberate skips, 279 file/engine populations, 34.52 s; all 50
+new entries execute in Chromium/Firefox/WebKit. Separate performance passes (1.94 s invocation).
+The earlier restored same-source full lane is 37.74 s plus performance (2.19 s). These are
+executed local populations, not future hosted reliability or the unresolved original RP-218 cause.
+
+Codex first-filter inspects the complete net span from `29444315`: two pure engine guards,
+three version constants, two independent test files, canonical Garden docs and aligned planning/
+ledger records. No shared coordinator, migration, fixture corpus, balance, player copy or CI path
+diff. Pending ticks uses only existing capped interval data; subtraction is inside the existing
+exact domain, and the check precedes every state write. All diagnostic/probe failures remain in
+the record. This is correction self-review, not Claude's designated approval. `git diff --check`
+passes; no plan acceptance checkbox, active RFC lifecycle or release label is promoted.

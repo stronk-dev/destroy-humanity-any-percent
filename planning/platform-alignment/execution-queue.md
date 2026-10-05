@@ -1,6 +1,26 @@
 # Executable queue
 
-## Current native worker witness evidence — 2026-10-06
+## Current Garden exact counter invariant — 2026-10-06
+
+RP-219 is proven under diagnosis `c9f449de` / `155486d0`: 49 codec-valid clock/frontier cases
+pass 45 ordinary/safe points and fail four out-of-domain advances in each engine, with an actual
+Go/TS odd-integer mismatch. Original bounded G1 SG3 review is CHANGES REQUIRED. Separate
+correction predeclaration `711153cd` preserves SG2's existing domain, rejecting before salt,
+growth or clock mutation; no counter clamp, schema/migration or valid clock/PRNG policy change.
+Kernel 0.3.152. These synthetic frontiers are not a demonstrated reachable-player exploit.
+
+Four disabled-guard failures and two late-guard mutation failures in each runtime, plus twelve
+missing-disclosure reference failures, discriminate and restore exactly. Cold six-package Go/vet,
+ten actual Postgres Garden functions, root client/type/build/vector/corpus/copy and two full
+Linux browser populations pass: 22,218 / six intentional skips plus separate performance each.
+No full SG4/G1/Garden, public mint, hosted/whole-CI, designated approval or archival claim.
+RP-131 remains unresolved; RP-218's original cause/reliability is not closed by local passes.
+
+**NEXT SAFE ACTION:** pin the combined counter diagnosis/correction for Claude; continue remaining
+accepted SG4 tick/RNG, then G2–G7 replay/coordinator/read/surface review. Keep original corpus and
+all prior independent review, owner/author, accessibility, mint and full-nine-tier release gates.
+
+## Earlier native worker witness evidence — 2026-10-06
 
 R-010 (`f4f62eac`, diagnostic `0a30f0d0`, corrective predeclaration `85ae9552`) proves
 RP-218's fixture confounder, not its original cause. Low-rate refreshes keep the display at
@@ -18,10 +38,9 @@ Dossier: `worker-prediction-research.md`. Initial and corrective ranges both req
 Exact full handoff `f4f62eac^..3c96ade8`, comprising diagnostic
 `f4f62eac^..0a30f0d0` and correction `85ae9552^..3c96ade8`; pending designated review.
 
-**NEXT SAFE ACTION:** continue remaining accepted
-Garden pure SG3/SG4 clock/tick and G2–G7 review. Preserve independent review, owner/author,
-activation and full nine-tier 1.0 gates; do not wait on an unavailable reviewer when safe accepted
-work remains. Future RP-218 recurrence must retain native trace rather than increase a bound.
+Subsequent accepted Garden counter work is recorded above. Preserve independent review,
+owner/author, activation and full nine-tier 1.0 gates; do not wait on an unavailable reviewer when
+safe accepted work remains. Future RP-218 recurrence must retain native trace, not increase a bound.
 
 ## Earlier Server Garden locked harvest clock correction — 2026-10-06
 

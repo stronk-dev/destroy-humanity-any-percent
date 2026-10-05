@@ -34,6 +34,13 @@ under the canonical stream locks. Six skew arms plus retries/hash conflicts/hist
 restored probes and twenty cold repetitions pass. Kernel 0.3.151; cross-party review required,
 not full-G5/SG3/SG4 or Garden acceptance. Continue remaining pure clock/tick and G2–G7 review.
 
+Separate SG3 domain diagnosis `c9f449de` / `155486d0` confirms RP-219: codec-valid safe-counter
+frontiers advance outside SG2's domain; Go/TS differ on the exact odd counter. Correction
+predeclaration `711153cd` refuses before salt/growth mutation using the existing domain, not a
+new game cap. Kernel 0.3.152; independent 49-case clock matrix and disabled/late-guard probes
+in both runtimes. Every existing checklist/review limitation remains: this is not full SG4 tick,
+original G1, G2–G7, public mint or release acceptance. Claude review is required for the new range.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

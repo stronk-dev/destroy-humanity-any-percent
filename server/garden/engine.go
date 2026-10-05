@@ -75,6 +75,18 @@ func (catalog *Catalog) Advance(state *State, input AdvanceInput) (Advance, erro
 	if !input.Unlocked {
 		return summary, nil
 	}
+	// SG2's safe counter domain is also an output invariant. Check before
+	// initializing salt or mutating any plot/clock, never after rounded arithmetic.
+	if state.TickAnchorWallMS != nil && input.ServerMS > *state.TickAnchorWallMS {
+		substrate, ok := catalog.Substrate(state.SubstrateID)
+		if !ok {
+			return Advance{}, fmt.Errorf("%w: unknown substrate", ErrInvalidAdvance)
+		}
+		pendingTicks := min(input.ServerMS-*state.TickAnchorWallMS, catalog.CatchupCapMS) / substrate.TickMS
+		if state.TickSeq > maxExactInteger-pendingTicks {
+			return Advance{}, fmt.Errorf("%w: tick_seq exceeds exact state domain", ErrInvalidAdvance)
+		}
+	}
 	if state.SaltHex == nil {
 		if !saltPattern.MatchString(input.Salt) {
 			return Advance{}, fmt.Errorf("%w: salt grammar", ErrInvalidAdvance)

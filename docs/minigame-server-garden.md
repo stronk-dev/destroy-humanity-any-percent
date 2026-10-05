@@ -56,6 +56,15 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
   - a fixed-point skip applies;
   - a visible 24-hour catch-up hardcap reports `catchup_forfeited_ms` with its reason key;
   - a clock regression is a no-op.
+- The existing SG2 safe-integer counter domain also governs advance output. An unlocked,
+  anchored forward advance computes pending ticks under the unchanged catch-up cap before
+  salt, plot or clock mutation and refuses if the exact next counter exceeds MaxExactInteger.
+  Zero-tick and last-safe advances remain valid; nothing is clamped or silently rounded.
+  `garden-clock-boundaries.test.ts` / `clock_boundaries_test.go` use independent BigInt/math/big
+  arithmetic for 49 cases across every substrate's tick/cap boundaries, maximum server stamp,
+  locked/initializing state and counter frontier. These codec-valid synthetic frontiers are
+  not evidence of reachable-player exploitation or full Garden acceptance. RP-219's scoped
+  repair awaits designated review; save/replay schemas and clock/payout policies are unchanged.
 - The hidden salt is drawn by the server when the first unlocked advance runs, frozen in that row's
   resolved inputs, and never projected.
 
@@ -124,6 +133,7 @@ All garden copy is candidate text (`copy/catalog/garden-candidate.json`): specie
 - `make garden-corpus-check`
 - `make test-go GO_PACKAGES=./garden GO_TEST_FLAGS='-count=1'`
 - `client/test/garden-harvest-boundaries.test.ts` and the shared literal boundary corpus
+- `client/test/garden-clock-boundaries.test.ts` / `garden.TestGardenAdvanceClockBoundaries`
 - `client/test/garden-engine.test.ts`, `garden-replay.test.ts` and `garden-founder-state.test.ts`,
   byte-matching the Go corpora
 - `production.TestGarden*`

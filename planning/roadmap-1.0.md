@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, R-010 browser-witness diagnosis/correction under
+**Current checkpoint:** 2026-10-06, Garden SG2/SG3 invariant repair under `711153cd`
+(diagnosis `c9f449de` / `155486d0`, designated review pending), kernel 0.3.152. Independent
+49-case clock/frontier checks prove RP-219: codec-valid counters leave the safe domain and Go/TS
+diverge. The guard now refuses before growth/salt/clock mutation, preserving every valid clock
+and cap policy. Disabled and late guards discriminate separately in both runtimes; a missing
+catch-up reason also fails independent summary bytes. All restore exactly. Cold Go/client,
+real Postgres Garden and full Linux browsers/performance pass (22,218 / six deliberate skips).
+No synthetic frontier is called a reachable-player exploit, full Garden/SG4 acceptance, public
+activation or release readiness. RP-131 and RP-218's original cause/hosted reliability remain
+open. Next: accepted SG4 tick/RNG and G2–G7 review with every prior owner/author/review gate.
+
+**Earlier checkpoint:** 2026-10-06, R-010 browser-witness diagnosis/correction under
 `f4f62eac` / `85ae9552` (implemented `3c96ade8`, full span `f4f62eac^..3c96ade8`,
 test-only, designated review pending). Actual native Worker proves
 that conflicting fixture refreshes can keep the display at `100` while prediction remains live.
@@ -95,7 +106,7 @@ no runtime/copy change or accessibility promotion),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-218 corrections,
+(RP-145–RP-219 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
