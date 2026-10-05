@@ -1693,3 +1693,41 @@ zero-cap-reason receipt corrections, plus docs/tracking. Runtime/kernel/content/
 wire/CI bytes are unchanged. This hash-pinning checkpoint is not a verdict or archival gate;
 no full A5/public AC8/AC9/AC10 acceptance, push or deployment. The next genuine Exit-action
 audit stays separately scoped; RP-201/D-020 is still unruled.
+
+## 2026-10-05 — AC9 actual Exit-action predeclaration (Codex)
+
+Starting clean HEAD `e58260ff`; previous goal turn made progress (`83008a9f` test-only repairs,
+exact review handoff pinned). Authority: accepted AR1.8/AC9, API MA-C12's reject-Exit ruling,
+and the current T0–T1 curriculum contract. Original Claude A5 span `e1c71d7c^..e1c71d7c`.
+The old Arcade witness checks repository activity without calling any Exit intent. Current
+curriculum drives the first ending after the first gate and 900,000 attended milliseconds;
+AR1.8's cross_gate reference predates that integration. Do not infer current behavior from
+the historical reference or treat ordinary progression as an Exit without executing it.
+
+First run cold complete Go Arcade/production/replaycatalog and declared real-Postgres Arcade,
+atomic Pitch start, Typer Exit and current curriculum populations. Independently sever only
+the replay Exit active-session check; execute the old population, recording existing working
+controls honestly rather than claiming a missing Arcade row means all checks are vacuous.
+Restore it before constructing tests.
+
+Build a test-only, freshly hashed complete current-epoch bundle retaining every original
+artifact/definition/tenant and adding only the two accepted Arcade candidate rows/artifact.
+No live mint, Typer substitution, curriculum deletion, changed gate/clock/economy or synthetic
+activity resolver. Use actual Postgres, repository, platform tenants and production Handle.
+Establish eligible no-session controls for Wind Down, cross_gate and the default due company
+action before asserting active-session refusals. Distinguish an ordinary gate transition from
+an Exit; record exact outcomes, error, run sequence and persisted state. Do not choose a later
+tier merely to get a green substitute for the current first ending.
+
+If the actual intended due Exit path is supported, retain both-toy active refusal, real quit
+from setup/playing, and released Exit with replayable persisted histories. If current
+cross_gate fails even without a session or conflicts with a prior explicit contract, record
+the failure immediately and route the unresolved scope instead of silently editing owner
+text or broadening runtime authority. Test-only instrumentation may be retained; any genuine
+production defect requires its own predeclared authorized correction. Repeat independent
+guard and per-toy quit severings against the added controls; restore all production probes.
+
+Final cold selected Go, client/type/build/boundaries/vet/vectors/corpus, real-DB and complete
+Linux browser targets; historical RP-131 remains separate and unbypassed. Exact corrective
+Claude range and docs/ledger/queue/roadmap closeout. No acceptance checkbox promotion, full
+A5/AC9/public AC8, archive, copy/content mint, wire/schema, CI or push/deployment changes.
