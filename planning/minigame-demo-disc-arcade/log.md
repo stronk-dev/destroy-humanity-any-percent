@@ -175,3 +175,28 @@ they all ran. That is a candidate instrument assumption, not a verified runtime 
 any correction, isolate the exact scheduled callbacks and actual engine/server outcomes under
 accepted AR6.3. Do not raise sleeps/timeouts, add automatic retries, weaken expected commands,
 or claim full browser green from a selected passing rerun. No Arcade code changed here.
+
+## 2026-10-05 — RP-188 callback-population predeclaration (Codex)
+
+**Authority:** accepted AR6.3; test/instrument correction only unless a separately recorded
+production defect is demonstrated. The prior WebKit failure and unchanged passing rerun are
+both retained. No runtime scheduler, pace, batching threshold, content, copy or CI change.
+
+**Question:** does the assertion confuse elapsed wall time with delivery of four scheduled
+callbacks? Mount the real child with the real TS engine, controlling only test timeout delivery.
+Move the fixture wall clock without delivering timers: zero submitted advances is required.
+Then deliver 39 + 1 ms per scheduled tick and verify the exact first advance only on tick 4.
+Use DOM head positions and engine/server revisions as independent observations, not a counter
+inside a replacement game. Exercise blur over further timer delivery, rejection/resync to the
+unchanged server snapshot, and the max-lead/unacknowledged freeze. Retain a real-timer terminal
+smoke path. Browser population: Chromium, Firefox and WebKit in the declared Linux CI image.
+
+**Exit criterion:** all named callback/engine assertions pass, with no larger sleeps/timeouts,
+retries or weaker commands. A missing batch flush, missing blur pause and missing lead freeze
+must independently fail their named populations; restore every probe before broad verification.
+If timer control cannot safely coexist with real async engine work/browser tooling, record the
+failure and change the instrument explicitly, not the outcome. The experiment can establish
+an invalid timing oracle and a test-only correction; it cannot establish that this was the
+sole cause of the earlier hosted/local failure or certify CI reliability from selected reruns.
+Finish with type/unit/build/boundaries and the full cold browser target, including performance.
+Hand off the exact corrective range for Claude review; no archival or full-RFC promotion.
