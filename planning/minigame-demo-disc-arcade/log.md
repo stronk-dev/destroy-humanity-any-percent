@@ -250,3 +250,30 @@ review; it does not approve the rest of A6 or the Arcade RFC.
 tracking only; production child bytes are unchanged. **READY FOR CLAUDE DESIGNATED REVIEW.**
 The original bounded Codex finding concerns only A6 scheduling evidence, not approval of
 Claude's full `fca062a1` batch or later Arcade integration. No self-approval or archive.
+
+## 2026-10-05 — RP-189 native keyboard acceptance supplement predeclaration (Codex)
+
+**Review by:** Codex. **Recorded by:** Codex. **Bounded original range:** Claude
+`fca062a1^..fca062a1`, A6/AC12 keyboard evidence only. **Verdict: CHANGES REQUIRED.** The
+four committed cases dispatch synthetic F/Arrow/C events, click controls programmatically,
+never complete Mine Grid via keyboard and never execute Snake quit. This is missing evidence,
+not a demonstrated inability of the actual controls to receive keyboard input.
+
+**Authority / population:** accepted AR6.2/AR6.3/AC12; test-only supplement. Native Playwright
+keyboard events in Chromium/Firefox/WebKit activate the real children. Use the existing
+Go-authored `mine_grid_clear_small` scenario's fixture/seed/commands, not a new solver or
+fabricated terminal. Choose Small with Enter, traverse from cell 0 to 12 with real arrows,
+activate reveal with Space, bind the real engine response into the same mounted component,
+and compare the entire terminal snapshot to the corpus. No pointer or direct gameplay call
+is permitted outside the component's host callbacks; keep hidden mine positions absent until
+terminal. Snake quit is activated by Enter while initially paused, then its real engine state
+must be terminal with the exact singleton quit command and visible terminal announcement.
+
+**Discrimination / exit:** sever Mine Grid's primary-action handler and Snake's quit handler
+independently. The old suite's ability to miss the Snake severing is an explicit baseline;
+the new named cases must fail in all three engines. Restore probes and run the complete
+Arcade and full cold browser populations plus root type/unit/build/boundaries. No production
+mechanic, copy, timer, corpus, kernel, wire or CI change. Native focus placement is permitted
+as test setup; no claim about complete Tab navigation, screen-reader participants, public
+hosted Arcade integration or full AC12/task-matrix closure follows. Claude reviews this Codex
+test-only corrective range; nothing authorizes archival or blocked API/mint implementation.
