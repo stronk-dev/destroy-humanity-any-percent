@@ -961,3 +961,52 @@ REVIEW**, not self-approved or archival-eligible; exact corrective span follows 
 The negative cases, six independent guard severings, full retained browser checks and real-
 Postgres rerun above belong to this range. RP-196 is a separately recorded population gap,
 not implemented or approved here. No self-review gate, archival, push or deployment.
+
+## 2026-10-05 — RP-196 exact 5×5 clearing population predeclaration (Codex)
+
+**Authority:** accepted A3/AR7, fixture-first AR8; original Claude `508fe19a^..508fe19a`.
+Starting clean HEAD `8bfb32d9`. This is test-side population construction, not a permission to
+change Snake, food placement, growth, engine/kernel identity, public wire or production data.
+Preserve the existing 6×5 fixture and both content-gate corpora byte-for-byte.
+
+**Question/arms:** can the real rules clear an exact 5×5 fixture using a legal deterministic
+trace? New test-only fixture is the existing corpus artifact with ONLY Snake width 6→5.
+Construct a 24-cell cycle excluding top-left cell 0: the standard cycle on columns 1–4,
+with two left-column two-cell detours. Pin all 24 cells and verify uniqueness, orthogonal
+adjacency, bounds and exact excluded cell. The actual genesis remains head 12/body [12,11].
+Follow the cycle, breaking into cell 0 only if it is the published food, the actual body
+length is 24 with pending growth and the head is adjacent. No input food/body injection.
+
+**Fixed research population:** seeds 1 through 1,024 inclusive, all executed even after the
+first success. Each probe starts via the real tenant registry and advances one actual tick.
+Observe every seed as cleared, crashed or excluded-food strategy failure. If cell 0 is food
+before the declared final exit is legal, stop that strategy and record its current actual
+tick/body/score; do not mislabel it a crash, a truncated successful run or global impossibility.
+No seed selection based on an invented terminal. A maximum 578 ticks is derived from at most
+24 food events × 24 cycle edges, plus two genesis-alignment steps; exhausting it invalidates
+the experiment and fails loudly, never expands the ceiling or drops the seed.
+
+**Witness/criteria:** select the lowest actually cleared seed only after all 1,024 probes
+finish. Record complete denominator/outcome counts and largest observed tick in a new
+test-only versioned 5×5 artifact. Replay the selected trace from real registry genesis,
+capturing literal snapshot/result bytes after every attempted command. Batch at the existing
+64-tick advance limit, flush after each food and at the exact terminal; include a deliberately
+overlong last command that must refuse without mutation, then the exact legal terminal and
+post-terminal phase refusal. TS independently replays every attempted command and matches
+the Go literal genesis/snapshot/result bytes. Actual final body must contain all 25 unique
+cells, food -1, phase terminal and outcome cleared; facts must match actual score/tick.
+Use observed intermediate length/score changes to prove eat/grow, not terminal metadata alone.
+
+**Failing controls:** the population validator must reject the existing 6×5 clearing witness,
+a 24-cell/not-full terminal and falsified terminal/fact claims; cycle validator must reject
+duplicate, missing and nonadjacent routes. Separately sever the final-exit policy (strategy
+must fail to supply a clearing witness) and mutate one actual intermediate TS result/snapshot
+to prove the new literal comparisons fail. Restore all probes before cold verification.
+Generation/check must discriminate stale artifact bytes; no rewrite of existing evidence.
+
+**Exit/routing:** success supplies the exact bounded 5×5 population, not all A3/AR7 or public
+integration acceptance. Zero successes completes the bounded strategy research negatively;
+do not infer impossibility or silently use 6×5 instead. Cold Go, whole client, type/build,
+root boundaries/vet/vectors/corpus and complete browser target plus the real-DB selector are
+retained checks. Historical RP-131 remains separately reported. Claude designated review
+must cite the exact new range; no self-approval, archival, push or deployment.
