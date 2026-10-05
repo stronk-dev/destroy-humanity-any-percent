@@ -806,3 +806,18 @@ The restored source diff is empty. This approval is not C1/AC1 or C3–C8 review
 production epoch pins Cosmetics, and not Cosmetics archival authorization. RP-175/C1 and
 RP-173/C5 Codex corrections still need Claude's designated review; RP-174 still needs its
 ruling-author RFC body reconciliation.
+
+## 2026-10-05 — Codex C3/AC3–AC4/AC8 migration-corpus review predeclaration
+
+**Review by / recorded by:** Codex. **Claude range under review:** `581886a4^..581886a4`,
+limited initially to §3/§6 Founder v24 codec, activation and the exact AC4 migration-corpus
+requirement; C4's later Exit corpus is a dependency witness, not retroactive proof that a named
+`testdata/save-migrations.json` case exists. At current HEAD, enumerate the actual corpus names
+and baseline count, execute cold `make test-go GO_PACKAGES='./save ./production'
+GO_TEST_FLAGS='-count=1'` and `make test-client`, and inspect the `RestoreState`/new-run
+activation boundary. Compare the accepted §6 names after OD-16's next-free-version substitution
+to real files and tests. A missing named acceptance population or a contradictory migration
+instruction is a C3 CHANGES REQUIRED finding; do not silently replace it with a different test
+or invent mid-run activation. A bounded correction may proceed only if the accepted authority
+unambiguously defines the expected transition. Ruling-author body edits remain with that author;
+no product code or owner-authored content change is authorized by this audit.
