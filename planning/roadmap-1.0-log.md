@@ -1272,3 +1272,19 @@ three-engine browser CI passes 21,099 tests plus the separate performance case. 
 boundaries also pass. No product, catalog, owner copy or workflow changed. The fixture epoch
 is not a production mint, Claude review is pending, GS4×PA7 remains unresolved, and G10/1.0
 release gates remain open. The historical kernel-history gate remains red (RP-131).
+
+## 2026-10-05 — Actual motion preference exposes CSS defect; full browser CI reveals two more failures
+
+RP-185's original prop-only AC15 case survives a severed media rule in all three engines.
+The retained actual-preference test fails first on unchanged component CSS (RP-186): the
+static selector loses to the animation selector. The bounded precedence correction passes
+12/12 shelf cases; media-rule and caption probes independently fail all three and are restored.
+Typecheck, 6,953 unit tests, production build and boundaries pass, as do both built-client
+real-Postgres/WebSocket composed journeys. No owner copy, catalog, kernel or CI topology change.
+
+The full cold browser target is red, not green: 21,097 passed, 2 failed, 3 skipped. Chromium
+Typer's update-depth failure and WebKit Snake's fixed-delay batching failure are separately
+tracked as RP-187/RP-188 for deterministic diagnosis in their accepted lanes. The separate
+performance case was not reached. Fresh kernel-history verification still fails at pushed
+`50a3a514` (RP-131). Claude review of the Cosmetic correction and wider product/rights/content/
+deployment gates remain; no archive, release claim or push.

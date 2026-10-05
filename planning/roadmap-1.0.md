@@ -6,13 +6,13 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-05, guarded product source `646daa08` plus the bounded Cosmetic
-wearer-control link correction `e02f6560`, evidence through the Cosmetic
+wearer-control link correction `e02f6560` and the AC15 CSS precedence correction, evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-184 corrections,
+(RP-145–RP-188 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
-and the kernel-version CI gate remains red). Other workstream rows below retain their dated
+and current browser/kernel-version CI gates are red). Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.
 **Next accepted release target:** the bounded Phase-0 Playable Preview, per D-001/D-007. The
@@ -74,8 +74,15 @@ in Go/TS. A real-Postgres service acquires/equips before each Exit, reloads unch
 retries the same receipt and verifies both history axes. Actual Exit resets fail both Go,
 Postgres and TS populations. The cold server-core target and 6,953 client tests pass locally;
 Claude designated review remains required, and RP-176's separate RFC-body blocker is unchanged.
-Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
-population (21,099 passed, 3 skipped) and the separate performance case. A local AC14/G10
+The prior cold ARM64 Linux `make test-browser-ci` passed 21,099 tests plus its separate
+performance case; the current full run is **RED** (21,097 passed, 2 failed, 3 skipped).
+Chromium Typer raises `effect_update_depth_exceeded` (RP-187); WebKit Snake misses a batching
+assertion after a fixed 190 ms wait (RP-188). Both are retained for diagnosis, not waived or
+hidden by retries; the performance case was not reached. RP-185's stronger actual-preference
+component test exposed a real CSS specificity defect (RP-186), locally corrected with
+independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates
+and the full real-server composed target pass, but do not substitute for complete green CI.
+A local AC14/G10
 witness now drives a built client through real Postgres/WebSocket transport to Buy, server-owned
 reload, DOM adoption/equip, the existing Garage pet overlay, worn reload/actual reduced motion,
 and unequip/unworn reload under a test-only Cosmetics epoch. The overlay consumer and non-static

@@ -41,6 +41,11 @@ migration take the next free numbers at landing.
   `aria-describedby` links. A retained all-controls assertion fails first across all three
   engines; the link-only correction and independently firing Unequip probe pass locally.
   Claude designated review of this correction and the broader C6 review remain required.
+  AC15 review also found RP-185's prop-only media evidence and RP-186's actual CSS specificity
+  defect. The failing-first three-engine preference case and bounded CSS correction pass all
+  shelf cases and both real-server journeys, with separate firing motion/caption probes.
+  Claude must designated-review this Codex correction; current full browser CI is red on
+  RP-187/RP-188 in Typer/Snake, not a whole-C6 or release-green claim.
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
   `Permissions-Policy`/CSP, and the browser network trap (AC13).
   RP-180's syntax-aware package-gate correction is locally tested and awaits Claude's

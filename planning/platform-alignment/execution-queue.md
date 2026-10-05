@@ -1,5 +1,20 @@
 # Executable queue
 
+## Current AC15 motion correction and newly red browser baseline — 2026-10-05
+
+RP-185's original prop-only motion case passes even with the media rule severed. The retained
+actual preference case reveals RP-186 in all three engines: a weaker CSS selector failed to
+override animation. A matching-specificity correction, real-preference on/off checks and
+independently firing caption/motion probes now pass the complete shelf population and both
+built-client real-server composed drivers. This Codex correction needs Claude designated review;
+it is not approval of wider C6/G10, content mint or owner copy.
+
+The cold full browser CI target is **RED**: 21,097 passed, 2 failed, 3 skipped; Chromium Typer
+raises an update-depth error (RP-187) and WebKit Snake misses its fixed-delay batching assertion
+(RP-188). Diagnose each exact failure in its accepted lane before any correction; do not relax
+timeouts or infer a green baseline from selected reruns. The historical kernel-history gate is
+also still red at `50a3a514` (RP-131). See their per-RFC logs and the current 1.0 board.
+
 ## Current Cosmetic Shop AC7/AC12 corrections and G10 proof — 2026-10-05
 
 RP-182's test-only isolation correction (`52bd6963^..7c16d890`) compares every production

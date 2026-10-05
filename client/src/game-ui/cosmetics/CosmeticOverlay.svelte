@@ -26,5 +26,8 @@
   [data-reaction="annoyed"] .flick { display: block; inset-block-end: 22%; inset-inline-start: 0; inline-size: 18%; block-size: 8%; background: var(--cc-color-border); border-radius: var(--cc-space-xs); }
   [data-reaction="annoyed"][data-animate="true"] .flick { animation-name: flick; animation-duration: var(--cc-motion-duration_base); animation-timing-function: var(--cc-motion-easing); animation-iteration-count: 2; animation-direction: alternate; }
   @keyframes flick { to { inset-block-end: 32%; } }
-  @media (prefers-reduced-motion: reduce) { .flick { animation-name: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    /* Match the animated rule's specificity so the user's preference wins. */
+    [data-reaction="annoyed"][data-animate="true"] .flick { animation-name: none; }
+  }
 </style>

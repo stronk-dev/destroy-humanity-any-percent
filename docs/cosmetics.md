@@ -84,7 +84,12 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   - the parody receipt is an inline `role=status` line, never a modal.
 - **Fail-closed card:** below v24 the static card renders unchanged.
 - **Overlay:** `CosmeticOverlay.svelte` is the CSS-only layer and the "annoyed" pose. It has no
-  text, is presentation-only, and is static under reduced motion. Garage's `PetCareSurface`
+  text, is presentation-only, and is static under reduced motion. Its CSS media rule matches
+  the animation selector's specificity, so the actual browser preference overrides animation
+  even with `animate:true`; the live host's `animate:false` flag is a separate defense.
+  The component browser case changes the actual preference on and off in Chromium, Firefox
+  and WebKit and checks computed animation, visible fixture layers and absence of text.
+  Garage's `PetCareSurface`
   already mounts it from the snapshot's wearer state. The built-client real-server witness now
   adopts/equips through DOM controls, checks the live pet panel and wearing after reload,
   exercises the actual browser reduced-motion preference, and unequips with ownership preserved.

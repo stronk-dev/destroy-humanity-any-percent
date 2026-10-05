@@ -1571,3 +1571,52 @@ catalog, stats, kernel or workflow byte changes. Docs must describe both defense
 re-execute honest three-engine component cases, media-rule and caption probes (both must fail),
 restore exact source, and execute full browser CI/type/unit/boundary lanes. The Codex correction
 requires Claude's designated review and does not approve wider C6/Garage or release gates.
+
+## 2026-10-05 — AC15 correction and independently discriminating component probes
+
+**Implemented / recorded by:** Codex. **Review needed by:** Claude (cross-party).
+The component CSS now uses matching selector specificity inside the later reduce media rule.
+The honest complete shelf population passes 12/12 (4 cases in each of Chromium, Firefox and
+WebKit), including native Buy keyboard acquisition, curtains, axe, focus, reflow, actual motion
+preference on/off, fixture sprite layers/no text and the separate explicit host-flag defense.
+
+Independent probes, with no concurrent source edits during each browser run:
+
+- Constrain only the reduce media rule to a zero-width viewport: the ordinary preference stays
+  animated, but all three real reduce arms fail `actual reduced-motion preference must keep
+  the pose static` with computed animation non-`none` (3 failures, exit 1).
+- Restore that rule and add only a nonblank caption: all three fail `ordinary motion overlay
+  caption`, observed `probe-caption` (3 failures, exit 1).
+- Both probes are restored; the only retained runtime delta is the declared CSS precedence fix.
+
+The caption run's cold install retried one registry tarball and completed in 71.7 seconds;
+it was never restarted or counted as a test failure before the browser assertions ran. The
+container had already exited and removed itself when a diagnostic disk query arrived. The
+actual caption assertion failures, not that diagnostic or download retry, are the evidence.
+Full restored CI-equivalent browser/composed and local client lanes are running next.
+
+## 2026-10-05 — Restored AC15 local verification and red full-CI checkpoint
+
+The only retained runtime change is the declared selector-precedence correction. Source
+inspection confirms no caption or zero-width probe remains. Local results after restoration:
+
+- `make typecheck test-client build-client verify-client-boundary verify-cosmetic-boundary
+  verify-no-payment`: PASS; zero Svelte/type diagnostics, 6,953 unit passes (85 browser skips),
+  production build, package gates (22 Cosmetic negatives) and no-payment (6 negatives).
+- `make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f
+  compose.game-ui-arm64.yml'`: PASS, both actual built-client/server drivers on real Postgres
+  and WebSocket. GS5 observes four manual clicks/active.production; Fiscal/Pitch records five
+  commands and terminal credit; Cosmetic Buy/reload/adopt/equip/pet/motion/unequip/reload
+  passes in 27.139 seconds with 64 audited requests and zero N5 violations.
+- `make test-browser-ci`: FAIL (Make 2); all Cosmetic cases pass, but Chromium Typer emits
+  `effect_update_depth_exceeded` and WebKit Snake misses the through-tick-4 command after its
+  fixed wait. Final 21,097 passed, 2 failed, 3 skipped (252 file populations, 69.27 seconds).
+  Its separate performance case is not reached. RP-187/RP-188 are immediately retained in
+  the shared ledger and their own planning logs for diagnosis, not waived as unrelated.
+- `make verify-kernel-version`: FAIL (Make 2) at historical pushed `50a3a514` against
+  `0cf9f7a6`, the same six minigame-path/version mismatch (RP-131). The CI checkout and
+  adversarial history fixtures pass before that failure; no false bump or bypass is made.
+
+These selected green lanes do not make complete CI green. The Cosmetic test/provider/CSS/docs
+correction needs Claude's designated exact-range review. RP-174/RP-176's author reconciliation,
+production content/copy and the wider Garage/Cosmetics/1.0 scope remain open. No archive or push.
