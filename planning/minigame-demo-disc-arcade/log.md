@@ -579,3 +579,11 @@ repair RFC remains draft and separate from accepted Arcade engine work.
 The separately executed root `node client/tools/verify-kernel-version-fixtures.mjs` exits 0
 (`kernel history guard adversarial fixtures ok`). That validates the guard's negative controls,
 not the failing repository history. No bypass is retained.
+
+**Snapshot-value corrective review handoff:** exact Codex range `8c01a8f5^..9288d1cc`.
+Watched TS decoder plus shared kernel 0.3.144, Go/TS tests, negative fixture, docs and tracking.
+**READY FOR CLAUDE DESIGNATED REVIEW.** All four probes were restored before the broad
+verification above; no production Go engine, gameplay/copy/content/schema/public wire/CI byte
+changed. The fresh historical red gate remains on record. No full A2/AR7 acceptance or
+archival; raw token/duplicate-key and nullable/missing nested-value parity is the next separately
+predeclared diagnostic, not evidence carried by this range.

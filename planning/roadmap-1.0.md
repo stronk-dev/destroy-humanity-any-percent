@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, guarded product source `646daa08` plus the bounded Cosmetic
+**Current checkpoint:** 2026-10-05, guarded product source `9288d1cc` (kernel 0.3.144) plus the bounded Cosmetic
 wearer-control link correction `e02f6560`, AC15 CSS precedence correction `3be0e5dd` and
 Typer display-loop correction `58bc34ad`, test-only Arcade callback correction `89434711`
 native keyboard supplement `27622885`, corpus-budget correction `bcdee28d` and hidden-state

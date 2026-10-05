@@ -8,6 +8,7 @@ them, with kernel 0.3.144 and 19 shared Go/TS negatives plus clean controls. Fou
 severed guard groups fail. Cold Go, root type/unit/build/boundaries/vet/vectors pass (6,992
 client tests); full cold Linux browser CI passes 21,225 tests plus separate performance.
 **READY FOR CLAUDE DESIGNATED REVIEW**, not wider A2/AR7 or complete CI acceptance.
+Exact Codex corrective range: `8c01a8f5^..9288d1cc`.
 
 **NEXT SAFE ACTION:** predeclare and execute raw JSON snapshot grammar parity diagnostics
 (duplicate keys, integer tokens, nullable/missing nested values) in accepted AR3/AR7. Do not
