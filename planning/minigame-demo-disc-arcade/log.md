@@ -2071,3 +2071,23 @@ The original A6/A7 still needs its remaining claim review; public host/wire/copy
 request sequencing, six actual-child controls, restored discriminating probes and canonical
 docs/tracking. This checkpoint records the range; it is not a reviewer verdict. Remaining
 original A6/A7 claims proceed separately, without archival or acceptance promotion.
+
+## 2026-10-05 — A6 focus/pause review predeclaration
+
+Baseline `24c781f7`, clean tree; original Claude range `fca062a1^..fca062a1`.
+AR6.3 requires auto-pause when focus leaves the board, not merely the whole toy. The current
+root containment check appears to allow board-to-control movement without pausing. This is a
+candidate finding, not an executed claim. Predeclare actual mounted SnakeBoard/real-engine
+populations: native Tab from board to its first control, browser focus to the pace selector,
+and focus outside the toy. Require an initial acknowledged step and a matched still-focused
+step, then zero local movement/commands through delivered callbacks after focus moves. Require
+explicit Resume to restart. Also exercise P/Escape and visible/hidden event branches with
+matched moving/paused controls; controlled visibility getter/event is handler evidence, not
+an OS/browser-background claim. Existing blur/batching and all twelve child cases remain.
+
+Run the unchanged component first. If the narrower board-focus defect is confirmed, ledger
+it immediately and correct only the AR6.3 focus boundary in this child. No public host,
+engine/math/clock/balance/copy/CI change or watched-kernel bump. Demonstrate a severed board
+handler failure; retain explicit controls for visibility, keyboard pause and resume. Full
+Linux browser execution and root checks precede handoff. Any correction needs Claude's exact
+designated range review; this lane does not approve remaining A6/A7 or participant AT.
