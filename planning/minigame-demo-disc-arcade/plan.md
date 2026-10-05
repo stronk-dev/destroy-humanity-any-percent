@@ -21,6 +21,10 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   unsafe numeric admission in Go. Twenty-five shared negatives and six valid spellings/bounds
   exercise four actual states; malformed nesting is refused at the declared shape depth.
   Kernel 0.3.145 records the watched decoder changes. Claude review remains required.
+  RP-194 adds actual Go genesis/post-attempt witnesses and literal snapshot/result bytes to
+  the test-only v2 corpus. TS compares all 76 states, including every rejected attempt;
+  intermediate output mutations now fail. Original v1 gameplay metadata/population is preserved.
+  This closes a bounded instrument gap locally; Claude review and full AR7 acceptance remain.
 - [x] A3 — `snake` 1.0.0 pure engine (AR4) in Go and TS; corpus incl. mid-window terminal,
   `advance_past_terminal` without mutation, every rejection (AR7).
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),

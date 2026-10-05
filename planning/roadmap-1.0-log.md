@@ -1399,3 +1399,21 @@ Arcade corpus pass. Full cold Linux browser target passes 21,399 tests plus perf
 Claude review is required; no full A2/AR7, public storage/wire or archival acceptance. Next
 is RP-194's separately predeclared intermediate snapshot/result parity instrument audit.
 Owner wire/copy/mint, historical guard authority and all wider 1.0 obligations remain.
+
+## 2026-10-05 — Arcade compares every attempted output, not just eventual terminals
+
+RP-194 reproduces the instrument gap: an invented nonterminal result passes the entire old
+client suite. Reordered snapshot bytes pass its old corpus comparison but fail two unrelated
+fixture needles; my premature whole-green report is corrected in the append-only RFC log.
+Test-only v2 captures literal Go genesis, post-attempt snapshot and serialized result bytes,
+including null results and unchanged rejected attempts: 16 scenarios / 60 attempts / 76 states.
+Removing only witness fields/version recovers the exact v1 gameplay and population metadata.
+Generation/regeneration is byte-identical; the v1 historical artifact is unchanged.
+
+Both wrong intermediate outputs now fail their corresponding literal comparison. Three
+mutable-capture controls and missing snapshot/result literal controls also fail; every probe is
+restored. Cold Go, root checks, 7,050 client tests and the full cold Linux browser target
+(21,399 plus performance) pass. Complete history remains red on unchanged RP-131; no bypass or
+new authority is invented. Claude must review the corrective span; no full AR7 or archival
+approval. Next is separately predeclared RP-195 Snake snapshot-grammar diagnosis over actual
+states, not a new mechanic. All wider 1.0 release, rights, integration and clean-host gates remain.

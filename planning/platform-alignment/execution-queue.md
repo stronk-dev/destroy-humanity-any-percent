@@ -1,5 +1,22 @@
 # Executable queue
 
+## Current Arcade every-command byte-parity instrument correction — 2026-10-05
+
+RP-194 demonstrates a fabricated intermediate result surviving the old whole suite; reordered
+snapshot bytes survive its original final-only corpus case but fail unrelated raw fixture
+needles. The premature whole-green claim is corrected in the append-only log. Test-only v2
+now compares literal Go genesis and every attempted snapshot/result: 16 scenarios, 60 attempts,
+76 state observations. All original gameplay/content/command/terminal metadata is unchanged.
+Both wrong-output probes fail the new comparison; capture-ownership and missing literal
+witness controls also fail. Probes are restored. Cold Go, 7,050 client tests, root checks and
+the complete cold Linux browser target (21,399 plus performance) pass. **READY FOR CLAUDE
+DESIGNATED REVIEW**, not full AR7, complete CI or archival acceptance. No product bytes changed.
+
+**NEXT SAFE ACTION:** predeclare RP-195's bounded Snake snapshot-grammar parity audit under
+accepted A3/AR4/AR7. Read-derived coercive/null admission questions require actual decoder/apply
+counterexamples and positive controls before any retained watched correction. No new gameplay,
+copy, production mint or public wire authority. RP-131's history RFC remains draft.
+
 ## Current Arcade raw snapshot grammar correction — 2026-10-05
 
 RP-193's raw-input counterexamples reproduce bidirectional decoder drift. Go and TS now reject
@@ -12,7 +29,7 @@ Linux browser CI passes 21,399 tests plus performance. **READY FOR CLAUDE DESIGN
 not full A2/AR7, public wire/storage or archival.
 Exact Codex corrective range: `d326fb2c^..45c35800`.
 
-**NEXT SAFE ACTION:** predeclare RP-194's AR7 per-command snapshot/result evidence audit.
+**Next at this dated checkpoint:** predeclare RP-194's AR7 per-command snapshot/result evidence audit.
 The current corpus holds only per-step command/outcome and final scenario bytes. Demonstrate
 that an intermediate-only defect is caught or survives BEFORE replacing the instrument.
 Any retained supplement is test-side and separate from this watched raw-decoder range.

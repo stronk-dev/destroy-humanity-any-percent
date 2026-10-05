@@ -13,7 +13,7 @@ witness correction `fe49c408`,
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-194 corrections,
+(RP-145–RP-195 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -123,9 +123,15 @@ Go null/missing/unsafe-integer mistakes no longer reach transitions. A retained 
 negative catches stack exhaustion in the draft scanner, now bounded to the declared shape.
 Six independent severings fail and are restored. Kernel is 0.3.145; cold Go, 7,050 client
 tests, root checks, unchanged vectors/corpus and full cold browser CI (21,399 plus performance)
-pass. Claude review remains mandatory. RP-194 queues the read-derived AR7 per-command parity
-gap: terminal-only equality is not every intermediate snapshot/result comparison. Neither
-correction proves public storage/wire or every semantically valid state; release gates remain.
+pass. Claude review remains mandatory. RP-194 now closes the bounded AR7 per-command instrument
+gap locally: test-only v2 compares 76 literal Go state outputs, including every attempted
+command's serialized nullable result. An intermediate result survives the old whole suite;
+both wrong-output probes now fail the new comparison. Original gameplay/command metadata is
+exactly unchanged, and complete cold browser CI still passes 21,399 plus performance. The
+premature old reordered-snapshot whole-green claim is corrected on the record. Claude review
+remains mandatory. RP-195 separately queues Snake's malformed snapshot parity diagnosis;
+read-derived coercion/null concerns are not yet executed runtime findings. None of these
+corrections proves public storage/wire or every semantically valid state; release gates remain.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

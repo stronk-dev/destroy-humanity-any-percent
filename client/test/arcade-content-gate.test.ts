@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import candidate from "../../balance/testdata/arcade-v1.json?raw";
 import fixture from "../../testdata/arcade/corpus-fixture-v1.json?raw";
-import corpusSource from "../../testdata/arcade/content-gate-v1.json";
+import corpusSource from "../../testdata/arcade/content-gate-v2.json";
 import { COPY_KEYS } from "../src/copy";
 import { activeArcadeStage, arcadeContentHash, parseArcadeCatalog } from "../src/arcade/catalog";
 import { ArcadeRejection, type ArcadeResult } from "../src/arcade/common";
@@ -13,7 +13,11 @@ interface Corpus {
   readonly arcade_content_hash: string;
   readonly transition_budget: number;
   readonly scenarios: readonly { readonly name: string; readonly engine: "mine_grid" | "snake"; readonly seed: string;
-    readonly steps: readonly { readonly command: unknown; readonly expect: string }[];
+    readonly expected_genesis: unknown;
+    readonly genesis_bytes: string;
+    readonly steps: readonly { readonly command: unknown; readonly expect: string;
+      readonly expected_snapshot: unknown; readonly expected_result: ArcadeResult | null;
+      readonly snapshot_bytes: string; readonly result_bytes: string }[];
     readonly expected_terminal: unknown; readonly expected_result: ArcadeResult }[];
 }
 
@@ -27,8 +31,10 @@ describe("arcade shared content gate (AR7)", () => {
   });
 
   it("byte-replays every Go-generated scenario, rejections included", async () => {
+    expect(corpus.version).toBe(2);
     expect(await arcadeContentHash(fixture)).toBe(corpus.arcade_content_hash);
     let transitions = 0;
+    let observations = 0;
     for (const scenario of corpus.scenarios) {
       const snake = scenario.engine === "snake";
       const identity = { content: fixture, content_hash: corpus.arcade_content_hash, content_schema_version: 1, seed: BigInt(scenario.seed), mode: "solo" as const,
@@ -36,24 +42,36 @@ describe("arcade shared content gate (AR7)", () => {
       let snapshot = snake ? await createSnake(identity) : await createMineGrid(identity);
       let result: ArcadeResult | null = null;
       let revision = 1;
+      expect(snapshot, `${scenario.name}: literal Go genesis bytes`).toBe(scenario.genesis_bytes);
+      observations++;
       for (const step of scenario.steps) {
         transitions++;
         const before = snapshot;
+        const beforeResult = JSON.stringify(result);
+        const beforeRevision = revision;
+        const label = `${scenario.name} attempt ${transitions}: ${JSON.stringify(step.command)}`;
         try {
           const input = { ...identity, revision, snapshot, command: JSON.stringify(step.command) };
           const output = snake ? await applySnake(input) : await applyMineGrid(input);
-          expect("applied", `${scenario.name} ${JSON.stringify(step.command)}`).toBe(step.expect);
+          expect("applied", label).toBe(step.expect);
           snapshot = output.snapshot; result = output.result; revision++;
         } catch (error) {
           if (!(error instanceof ArcadeRejection)) throw error;
-          expect(error.code, `${scenario.name} ${JSON.stringify(step.command)}`).toBe(step.expect);
+          expect(error.code, label).toBe(step.expect);
           expect(snapshot, "a rejection mutates nothing").toBe(before);
+          expect(JSON.stringify(result), "a rejection preserves the previous result").toBe(beforeResult);
+          expect(revision, "a rejection does not advance revision").toBe(beforeRevision);
         }
+        expect(snapshot, `${label}: literal Go snapshot bytes`).toBe(step.snapshot_bytes);
+        expect(JSON.stringify(result), `${label}: literal Go result bytes`).toBe(step.result_bytes);
+        expect(revision, `${label}: revision`).toBe((step.expected_snapshot as { revision: number }).revision);
+        observations++;
       }
       expect(snapshot, scenario.name).toBe(JSON.stringify(scenario.expected_terminal));
       expect(JSON.stringify(result), scenario.name).toBe(JSON.stringify(scenario.expected_result));
     }
     expect(transitions).toBe(corpus.transition_budget);
+    expect(observations).toBe(corpus.scenarios.length + corpus.transition_budget);
   });
 
   it("covers every outcome and rejection code of both engines", () => {

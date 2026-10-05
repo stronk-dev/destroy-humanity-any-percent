@@ -14,17 +14,23 @@ import (
 
 var updateArcadeCorpus = flag.Bool("update-arcade-corpus", false, "regenerate the checked-in arcade content corpus")
 
-const corpusPath = "../../testdata/arcade/content-gate-v1.json"
+const corpusPath = "../../testdata/arcade/content-gate-v2.json"
 
 type corpusStep struct {
-	Command json.RawMessage `json:"command"`
-	Expect  string          `json:"expect"`
+	Command          json.RawMessage  `json:"command"`
+	Expect           string           `json:"expect"`
+	ExpectedSnapshot json.RawMessage  `json:"expected_snapshot"`
+	ExpectedResult   *minigame.Result `json:"expected_result"`
+	SnapshotBytes    string           `json:"snapshot_bytes"`
+	ResultBytes      string           `json:"result_bytes"`
 }
 
 type corpusScenario struct {
 	Name             string           `json:"name"`
 	Engine           string           `json:"engine"`
 	Seed             string           `json:"seed"`
+	ExpectedGenesis  json.RawMessage  `json:"expected_genesis"`
+	GenesisBytes     string           `json:"genesis_bytes"`
 	Steps            []corpusStep     `json:"steps"`
 	ExpectedTerminal json.RawMessage  `json:"expected_terminal"`
 	ExpectedResult   *minigame.Result `json:"expected_result"`
@@ -45,7 +51,9 @@ type builder struct {
 }
 
 func newBuilder(t *testing.T, name, engine string, seed uint64) *builder {
-	return &builder{s: newSession(t, engine, seed, fixturePath), scenario: corpusScenario{Name: name, Engine: engine, Seed: strconv.FormatUint(seed, 10)}}
+	s := newSession(t, engine, seed, fixturePath)
+	return &builder{s: s, scenario: corpusScenario{Name: name, Engine: engine, Seed: strconv.FormatUint(seed, 10),
+		ExpectedGenesis: append(json.RawMessage(nil), s.snapshot...), GenesisBytes: string(s.snapshot)}}
 }
 
 func (b *builder) step(command string) string {
@@ -57,7 +65,23 @@ func (b *builder) step(command string) string {
 			b.s.t.Fatalf("%s: non-rejection error %v for %s", b.scenario.Name, err, command)
 		}
 	}
-	b.scenario.Steps = append(b.scenario.Steps, corpusStep{Command: canonical(b.s.t, command), Expect: expect})
+	var result *minigame.Result
+	if b.s.result != nil {
+		encoded, err := json.Marshal(b.s.result)
+		if err != nil {
+			b.s.t.Fatal(err)
+		}
+		if err := json.Unmarshal(encoded, &result); err != nil {
+			b.s.t.Fatal(err)
+		}
+	}
+	resultBytes, err := json.Marshal(b.s.result)
+	if err != nil {
+		b.s.t.Fatal(err)
+	}
+	b.scenario.Steps = append(b.scenario.Steps, corpusStep{Command: canonical(b.s.t, command), Expect: expect,
+		ExpectedSnapshot: append(json.RawMessage(nil), b.s.snapshot...), ExpectedResult: result,
+		SnapshotBytes: string(b.s.snapshot), ResultBytes: string(resultBytes)})
 	return expect
 }
 
@@ -400,7 +424,7 @@ func loopScenario(t *testing.T, name string, length int, expect string) (corpusS
 
 func generateCorpus(t *testing.T) contentCorpus {
 	content := readFile(t, fixturePath)
-	corpus := contentCorpus{Version: 1, ArcadeContentHash: ContentHash(content)}
+	corpus := contentCorpus{Version: 2, ArcadeContentHash: ContentHash(content)}
 	corpus.Scenarios = append(mineGridScenarios(t), snakeScenarios(t)...)
 	for _, scenario := range corpus.Scenarios {
 		corpus.TransitionBudget += len(scenario.Steps)
@@ -408,11 +432,65 @@ func generateCorpus(t *testing.T) contentCorpus {
 	return corpus
 }
 
+func TestArcadeCorpusOwnsWitnesses(t *testing.T) {
+	t.Run("genesis", func(t *testing.T) {
+		b := newBuilder(t, "mine_grid_preset_large", MineGridEngineRef, 101)
+		before := append([]byte(nil), b.scenario.ExpectedGenesis...)
+		b.s.snapshot[0] = '!'
+		if !bytes.Equal(before, b.scenario.ExpectedGenesis) {
+			t.Fatal("session mutation overwrote captured genesis")
+		}
+	})
+	t.Run("post-attempt snapshot", func(t *testing.T) {
+		b := newBuilder(t, "mine_grid_preset_large", MineGridEngineRef, 101)
+		b.must(`{"kind":"choose_board","preset_id":"large"}`)
+		before := append([]byte(nil), b.scenario.Steps[0].ExpectedSnapshot...)
+		b.s.snapshot[0] = '!'
+		if !bytes.Equal(before, b.scenario.Steps[0].ExpectedSnapshot) {
+			t.Fatal("session mutation overwrote captured step snapshot")
+		}
+	})
+	t.Run("post-attempt nested result", func(t *testing.T) {
+		b := newBuilder(t, "mine_grid_preset_large", MineGridEngineRef, 101)
+		b.must(`{"kind":"choose_board","preset_id":"large"}`)
+		state := b.s.mineGrid()
+		b.must(cellCommand("reveal", (state.Height/2)*state.Width+state.Width/2))
+		b.must(`{"kind":"quit"}`)
+		step := b.scenario.Steps[len(b.scenario.Steps)-1]
+		if step.ExpectedResult == nil || len(step.ExpectedResult.ScoreFacts) == 0 {
+			t.Fatal("real terminal step has no result facts")
+		}
+		before, err := json.Marshal(step.ExpectedResult)
+		if err != nil {
+			t.Fatal(err)
+		}
+		b.s.result.ScoreFacts[0].Value++
+		after, err := json.Marshal(step.ExpectedResult)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(before, after) {
+			t.Fatal("session mutation overwrote captured nested result")
+		}
+	})
+}
+
 func TestArcadeContentGate(t *testing.T) {
 	corpus := generateCorpus(t)
 	commands := 0
 	for _, scenario := range corpus.Scenarios {
+		if len(scenario.ExpectedGenesis) == 0 || scenario.GenesisBytes == "" {
+			t.Fatalf("%s: missing actual genesis witness", scenario.Name)
+		}
 		commands += len(scenario.Steps)
+		for index, step := range scenario.Steps {
+			if len(step.ExpectedSnapshot) == 0 || step.SnapshotBytes == "" {
+				t.Fatalf("%s step %d: missing actual snapshot witness", scenario.Name, index+1)
+			}
+			if step.ResultBytes == "" {
+				t.Fatalf("%s step %d: missing actual result witness", scenario.Name, index+1)
+			}
+		}
 	}
 	if corpus.TransitionBudget != commands {
 		t.Fatalf("budget=%d must count all %d attempted commands (AR7)", corpus.TransitionBudget, commands)

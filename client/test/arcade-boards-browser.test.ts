@@ -4,7 +4,7 @@ import { expect, it, vi } from "vitest";
 
 import candidateRaw from "../../balance/testdata/arcade-v1.json?raw";
 import fixtureRaw from "../../testdata/arcade/corpus-fixture-v1.json?raw";
-import corpus from "../../testdata/arcade/content-gate-v1.json";
+import corpus from "../../testdata/arcade/content-gate-v2.json";
 import { arcadeContentHash, parseArcadeCatalog } from "../src/arcade/catalog";
 import { applyMineGrid, createMineGrid, decodeMineGridSnapshot, MINE_GRID_SCALING_DESTINATION, type MineGridCommand, type MineGridSnapshot } from "../src/arcade/mine-grid";
 import { applySnake, createSnake, decodeSnakeSnapshot, SNAKE_SCALING_DESTINATION, type SnakeCommand, type SnakeSnapshot } from "../src/arcade/snake";

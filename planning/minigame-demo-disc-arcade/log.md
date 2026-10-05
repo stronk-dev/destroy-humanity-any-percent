@@ -741,3 +741,86 @@ Go regeneration gate. Restore all probes before cold Go/client/type/build/bounda
 complete Linux browser verification. Corpus instrument and tests only: no retained runtime,
 balance, owner copy, kernel, content epoch, schema, public wire or CI change. Exact Claude
 corrective review is required; no full AR7/designated approval or archival is inferred.
+
+**Executed old-instrument controls:** fabricated nonterminal choose_board result AND a
+separate semantically identical/noncanonical choose_board snapshot each survive the old
+whole client population: 7,050 passed / 88 browser-only skips, Make 0 each. Both are restored;
+the retained Mine Grid source has zero diff. These are direct TS output mutants, not claims
+that original production returned them or every independent browser/Go witness is blind.
+
+**Correction to the immediately preceding control record (Codex):** the fabricated result
+really passed the whole old suite (7,050 / 88 skips, Make 0). The reordered snapshot did NOT:
+its completed whole-suite run exits 2 with 2 failed / 7,048 passed / 88 skips. Both failures
+are the raw-grammar fixture's exact trailing-key needle, not the original final-only corpus
+comparison, which remained green. I recorded the second result before observing its terminal
+output; that premature claim was mine. A focused original replay is run separately below.
+The finding is about the corpus instrument, not universal invisibility to all other checks.
+
+**Focused original replay:** with only snapshot ordering severed, the original named
+Go-generated scenario replay passes (1 passed / 6 filtered skips, exit 0). The initial pnpm
+launcher produced no output and was interrupted (130); the successful command uses the
+installed repository Vitest directly with `--root client`, from the repository root. Neither
+is substituted for the disclosed whole-suite 2-failure result. The probe is restored exactly.
+
+**New instrument controls:** same fabricated choose_board result now fails the new per-step
+result equality at attempt 1 (1 failed / 7,049 passed / 88 skips, Make 2). Same noncanonical
+snapshot now ALSO fails its new per-step snapshot equality at attempt 1 (3 failed / 7,047
+passed / 88 skips, Make 2): the other two failures are the already disclosed raw fixture
+needles. Both production probes are restored. The Go v2 generator strips back to EXACT v1
+structure, with 16 scenarios / 60 attempts / 43 applied / 17 rejected and unchanged content.
+Generation followed by regeneration is byte-identical; v2 SHA-256
+`b02c433d0df123e77aec848c337b90ecef65899b59f396a97cf20ea25f23d6e7`.
+Retained copy-ownership checks use the existing first corpus scenario's seed/commands and
+mutate only test-owned session memory; no scenario or gameplay is added to the corpus.
+
+**Go instrument discrimination:** sharing captured genesis/step bytes and nested results with
+session memory fails all THREE ownership subcases in a cold package run (Make 2). Restoring
+ownership but omitting the per-step snapshot witness fails the cold generation gate at
+`mine_grid_preset_large step 1: missing actual snapshot witness` (Make 2). Both probes are
+restored; generated corpus bytes were not overwritten during these negative runs.
+
+**Literal-byte refinement before final verification:** the first v2 draft compared reconstructed
+JSON objects. Preserve those readable witnesses, but also capture actual Go genesis/snapshot
+strings and the actual `json.Marshal` result (including `null`) as literal strings. The TS
+primary comparison consumes those strings directly, so fixture parsing cannot normalize a
+token spelling or key-order difference. No population/command/runtime change. Earlier controls
+and broad green runs above concern the first draft; repeat both output controls, the omitted
+literal witness control and the complete gates on this final instrument before claiming them.
+
+**Final literal instrument controls:** fabricated result fails `literal Go result bytes`
+(1 failed / 7,049 passed / 88 skips, Make 2). Reordered snapshot fails `literal Go snapshot
+bytes` (3 failed / 7,047 passed / 88 skips, Make 2; same two independent fixture failures).
+Omitting only the literal result fails `missing actual result witness`; separately omitting
+only literal snapshot fails `missing actual snapshot witness`, cold Go Make 2 each, despite
+readable witnesses remaining present. All probes are restored exactly before final gates.
+
+**Separately queued RP-195:** read-derived Snake snapshot-grammar question: several TS numeric
+fields use coercive comparisons without integer validation, while Go's typed decoder can
+normalize nulls. The present corpus exercises valid transitions, not a shared malformed-input
+population for this second engine. Predeclare and execute direct decoder/apply counterexamples
+next; do not treat this observation as a proven runtime fault or widen RP-194's test-only range.
+
+**Bounded original review verdict — CHANGES REQUIRED (RP-194). Review by: Codex.
+Recorded by: Codex.** Original Claude range `508fe19a^..508fe19a`, bounded to AR7's
+per-command snapshot/result instrument; the original source at that hash was independently
+read. Executed controls use current HEAD with earlier recorded corrections, not an untouched
+historical build. Final-only equalities persisted until this correction. No full original-range
+acceptance or rejection is inferred for unrelated engine/platform criteria.
+
+**Final retained verification:** cold Go `./arcade ./kernel ./minigame ./replaycatalog` passes
+with `-count=1`. Root type/client/build/boundaries/no-payment/vet/vectors/corpus-check exits 0:
+7,050 client tests / 88 browser-only skips, zero Svelte errors/warnings, unchanged 6,296 numeric
+vectors. Full cold Linux browser target exits 0: 255 file populations / 21,399 passed /
+3 intentional performance skips (44.88 s), plus separate Chromium performance (1 passed /
+20 filtered). These are cross-browser test executions, not distinct player journeys.
+Final generation/regeneration is byte-identical at SHA-256
+`8a1b3ac84c93f0b5ba51cb339533266378e0c2c5ca3aed72311620ad297dbaa9`.
+Removing added fields/version reproduces the unchanged v1 structure exactly.
+
+Fresh complete-history verification still exits 2 at pushed RP-131 commit
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after checkout-contract fixtures pass. No guard
+exception, bypass, rewrite or CI change was made. No retained product bytes changed; kernel
+0.3.145, content/balance/copy/public-wire bytes and the original v1 fixture remain untouched.
+**READY FOR CLAUDE DESIGNATED REVIEW** of this test/corpus correction, not full AR7,
+complete CI or archival acceptance. Exact corrective span is pinned in the following checkpoint.
