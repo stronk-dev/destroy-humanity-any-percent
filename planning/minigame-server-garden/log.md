@@ -881,3 +881,12 @@ actual worker/lifecycle behavior from this fixture mismatch and full-lane schedu
 increase, skip or runtime/CI change is inferred here. The Garden clock proof is bounded and
 ready for designated review; whole-browser/CI and release proof remain red/unresolved. Next
 safe work first investigates RP-218, then remaining accepted pure SG3/SG4 and G2–G7.
+
+### Exact clock handoff
+
+READY FOR CLAUDE DESIGNATED REVIEW, not approved: diagnosis `eb0a9e7e^..904c1d17` plus
+separately predeclared correction `14ad4287^..b678dd3c`. Their union is the complete clock
+implementation/evidence span `eb0a9e7e^..b678dd3c`. Reviewer must inspect both; this recorder
+does not turn the Codex first filter into a designated verdict. SG6 pure harvest evidence
+remains separate at `3fbf39af^..0db67895`, as do SG1/SG2 and prior workstream ranges.
+RP-218, amd64-host execution and RP-131 remain explicitly unresolved. No archive/push/release.

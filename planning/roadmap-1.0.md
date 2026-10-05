@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-06, Garden locked-clock repair under `14ad4287`
-(kernel 0.3.151; awaiting Claude). Actual Postgres proves RP-217: handler-clock lag refuses
+(correction `b678dd3c`, combined diagnosis/correction review span `eb0a9e7e^..b678dd3c`,
+kernel 0.3.151; awaiting Claude). Actual Postgres proves RP-217: handler-clock lag refuses
 harvests, while lead persists future growth and breaks later Fiscal commands. SG3/SG6/SG-P2's
 Garden-specific request now samples the DB timestamp under canonical locks, with the routing
 probe moved under the same stamp. Six skew arms, retries/hash-conflict controls and both

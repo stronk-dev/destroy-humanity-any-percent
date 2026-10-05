@@ -24,6 +24,10 @@ hits the unchanged five-second limit; 22,061 other cases pass / six intentional 
 identical isolated Linux WebKit case passes in 367 ms, which does not replace the failed full
 lane. No threshold/skip/worker/CI edit follows. Separate performance invocation was not reached.
 
+Exact clock handoff `eb0a9e7e^..b678dd3c` (diagnosis `eb0a9e7e^..904c1d17` plus correction
+`14ad4287^..b678dd3c`) is READY FOR CLAUDE DESIGNATED REVIEW, not approved. These subranges
+union to the full clock span; SG6 arithmetic and earlier SG1/SG2 remain separate review requests.
+
 **NEXT SAFE ACTION:** complete/pin the bounded corrective evidence for Claude designated
 review; separately predeclare RP-218 worker/lifecycle versus fixture/load diagnosis, then
 remaining accepted pure SG3/SG4 clock/tick and G2–G7. Retain separate SG1/SG2/SG6

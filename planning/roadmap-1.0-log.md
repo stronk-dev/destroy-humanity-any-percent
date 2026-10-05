@@ -1856,3 +1856,7 @@ Separate performance invocation is not reached. Identical isolated cold Linux We
 passes in 367 ms; this is diagnostic context, not a repaired or substituted full-lane proof.
 No worker/fixture source, timeout or CI topology is changed. Next safe work first predeclares
 worker/lifecycle versus fixture/load diagnosis, then resumes remaining accepted Garden work.
+
+Exact pending clock review span `eb0a9e7e^..b678dd3c` consists of diagnostic
+`eb0a9e7e^..904c1d17` and corrective `14ad4287^..b678dd3c`; both require inspection.
+This pin is not a verdict, archive or release gate. The full 1.0 goal remains active.
