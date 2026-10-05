@@ -21,6 +21,8 @@ and atomic Arcade start witness `15fe1ccc` (review span `deda7e1e^..15fe1ccc`;
 RP-201/D-020 dependency conflict remains unruled),
 plus test-only atomic Soul/zero-reward receipt proof `83008a9f`
 (review span `d798e709^..83008a9f`, awaiting Claude),
+and test-only current-curriculum Exit/quit proof `bb5c6ac1`
+(review span `b57b95df^..bb5c6ac1`, with RP-205's runtime defect still open),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`

@@ -14,10 +14,11 @@ Claude designated review remains required; no public/default browser/full AC9 ac
 Cold six-package Go, 7,169 client cases, root checks, seven actual Postgres functions and full
 Linux three-browser verification (21,756 plus separate performance) pass. Historical RP-131
 still fails at its unchanged pushed hash; no bypass or complete green-CI claim.
+Exact RP-206 corrective Claude review span: `b57b95df^..bb5c6ac1`, pending verdict.
 
 **RP-205:** a genuinely eligible current-curriculum cross_gate succeeds before the first
 ending is due, but returns an engine error afterward. The diagnostic uses the same real
-gate/cash/history with only the attendance threshold changed; it does NOT close the default
+gate/cash/history in matched pre-threshold/due states; it does NOT close the default
 first-hour path with a later-tier substitute. No production fix is mixed into RP-206.
 
 **NEXT SAFE ACTION:** predeclare the accepted-contract RP-205 live/shared-replay correction.

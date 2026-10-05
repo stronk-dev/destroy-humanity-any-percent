@@ -246,6 +246,9 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 RP-203/204 exact corrective review span: `d798e709^..83008a9f`, pending Claude's designated
 verdict. This index line does not close the findings or promote full A5/public acceptance.
 
+RP-206 exact corrective review span: `b57b95df^..bb5c6ac1`, pending Claude's designated
+verdict. RP-205 is separately open for its runtime correction, not closed by the test proof.
+
 Owner choices D-001–D-020 and their evidence prerequisites live in
 `planning/platform-alignment/decision-queue.md`; agents may not answer them through code.
 

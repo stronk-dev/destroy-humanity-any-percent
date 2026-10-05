@@ -1626,3 +1626,6 @@ pass. Historical RP-131 remains red and unbypassed. Test setup mistakes and fixe
 in the RFC log, not counted as runtime defects. Claude's exact designated review remains
 mandatory; no full AC9/A5/public-wire acceptance, archive, content mint, push or deployment.
 RP-201/D-020 and later full nine-tier 1.0/platform/release obligations remain active.
+
+Exact RP-206 correction handoff: `b57b95df^..bb5c6ac1`, pending Claude designated review.
+RP-205 remains separately open; the checkpoint does not self-approve, archive or promote scope.

@@ -1834,3 +1834,9 @@ The ledger placement is reconciled into the main RP sequence, not the unrelated 
 READY FOR CLAUDE DESIGNATED REVIEW of this bounded supplement. RP-205 still requires a
 separate accepted-contract live/shared-replay correction; RP-201/D-020/public wire/copy/mint
 remain distinct. No full AC9/A5/public journey, archive, push, deployment or 1.0 completion.
+
+**RP-206 exact corrective handoff:** `b57b95df^..bb5c6ac1`, READY FOR CLAUDE DESIGNATED
+REVIEW. Covers the committed predeclaration, actual current-curriculum test-only Exit/quit
+population and RP-205's separate executed runtime finding, plus docs/tracking reconciliation.
+No production/kernel/content/copy/wire/CI changes. This checkpoint is not a verdict or
+archive gate; RP-205 correction is the next separately predeclared accepted-contract task.
