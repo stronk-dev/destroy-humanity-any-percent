@@ -182,6 +182,20 @@ describe("arcade catalog (AR1.2/AR3.1/AR4.1)", () => {
     for (const [name, change] of Object.entries(cases)) expect(() => parseArcadeCatalog(mutate(change), declared), name).toThrow(SyntaxError);
   });
 
+  it("refuses null stage tiers but preserves legal zero spellings in both real artifacts", () => {
+    for (const source of [candidate, fixture]) {
+      const compact = JSON.stringify(JSON.parse(source));
+      const field = '"min_tier":0';
+      expect(compact.split(field)).toHaveLength(2);
+      for (const token of ["0", "-0", " 0 "]) {
+        const value = parseArcadeCatalog(JSON.parse(compact.replace(field, `"min_tier":${token}`)), declared);
+        expect(value.container.stages).toHaveLength(1);
+        expect(value.container.stages[0]!.min_tier === 0, token).toBe(true);
+      }
+      expect(() => parseArcadeCatalog(JSON.parse(compact.replace(field, '"min_tier":null')), declared)).toThrow(SyntaxError);
+    }
+  });
+
   it("loads inclusive bounds and structurally valid ascending test-only stages", () => {
     const value = JSON.parse(candidate);
     value.mine_grid.presets[2].mines = 9 * 9 - 9;

@@ -1,9 +1,11 @@
 package arcade
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"os"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/copykeys"
@@ -121,5 +123,32 @@ func TestArcadeCatalogRejectsEveryLoaderDefect(t *testing.T) {
 		t.Fatalf("inclusive loader bounds must load: %v", err)
 	} else if len(loaded.Container.Stages) != 2 || loaded.Container.Stages[0].MinTier != 0 || loaded.Container.Stages[1].MinTier != 9 || loaded.Snake.StartLength != 10 {
 		t.Fatal("valid boundary/stage rows were lost or normalized")
+	}
+}
+
+func TestArcadeCatalogStageTierIsNonnullable(t *testing.T) {
+	for _, path := range []string{candidatePath, fixturePath} {
+		t.Run(path, func(t *testing.T) {
+			var compact bytes.Buffer
+			if err := json.Compact(&compact, readFile(t, path)); err != nil {
+				t.Fatal(err)
+			}
+			source := compact.String()
+			const field = `"min_tier":0`
+			if strings.Count(source, field) != 1 {
+				t.Fatal("expected exactly one legal zero-tier source")
+			}
+			for _, token := range []string{"0", "-0", " 0 "} {
+				data := []byte(strings.Replace(source, field, `"min_tier":`+token, 1))
+				catalog, err := LoadCatalog(data, declarations())
+				if err != nil || len(catalog.Container.Stages) != 1 || catalog.Container.Stages[0].MinTier != 0 {
+					t.Fatalf("legal zero spelling %q must load unchanged: %v", token, err)
+				}
+			}
+			data := []byte(strings.Replace(source, field, `"min_tier":null`, 1))
+			if _, err := LoadCatalog(data, declarations()); !errors.Is(err, ErrInvalidCatalog) {
+				t.Fatalf("null stage tier must refuse, got %v", err)
+			}
+		})
 	}
 }

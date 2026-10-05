@@ -65,6 +65,18 @@ func TestLoadArcadeChainIsAllOrNothing(t *testing.T) {
 		},
 		"artifact without minigame_api": func(a map[string][]byte) { delete(a, "minigame_api"); delete(a, "typer") },
 		"stage toy without definition":  withoutStageToy,
+		"null stage tier": func(a map[string][]byte) {
+			var value map[string]any
+			if err := json.Unmarshal(a["arcade"], &value); err != nil {
+				t.Fatal(err)
+			}
+			value["container"].(map[string]any)["stages"].([]any)[0].(map[string]any)["min_tier"] = nil
+			var err error
+			a["arcade"], err = json.Marshal(value)
+			if err != nil {
+				t.Fatal(err)
+			}
+		},
 		"stage toy with wrong engine": func(a map[string][]byte) {
 			var value map[string]any
 			if err := json.Unmarshal(a["minigames"], &value); err != nil {

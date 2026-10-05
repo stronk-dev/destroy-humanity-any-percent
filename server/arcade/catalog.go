@@ -101,6 +101,14 @@ func LoadCatalog(data []byte, declarations Declarations) (*Catalog, error) {
 		if !hasExactJSONKeys(row, "stage_id", "min_tier", "title_copy_key", "toys") {
 			return nil, ErrInvalidCatalog
 		}
+		// Decoding null into Stage.MinTier would silently leave the legal zero
+		// value. Inspect a pointer first so null cannot become a tier-0 stage.
+		var stage struct {
+			MinTier *int64 `json:"min_tier"`
+		}
+		if json.Unmarshal(row, &stage) != nil || stage.MinTier == nil {
+			return nil, ErrInvalidCatalog
+		}
 	}
 	for _, row := range rows.MineGrid.Presets {
 		if !hasExactJSONKeys(row, "preset_id", "width", "height", "mines", "copy_key") {

@@ -20,6 +20,11 @@ loads through `server/arcade/catalog.go` and `client/src/arcade/catalog.ts`.
   1–8, and `max_ticks_per_advance` is 1–256. `presentation_tick_ms` (50–1000) is presentation-only;
   the engine never reads it.
 
+Stage `min_tier` is a nonnullable integer in both loaders. Go checks a pointer-decoded raw
+row before decoding its integer field, so null cannot silently become zero. Legal zero,
+integer `-0` and surrounding whitespace remain accepted. This loader-only correction is
+kernel 0.3.147; no content, mechanics or wire fields changed.
+
 The candidate bytes are `balance/testdata/arcade-v1.json` (the RFC's provisional v1 rows). The
 corpus fixture is `testdata/arcade/corpus-fixture-v1.json`: small boards, and a 6×5 Snake board,
 which supports the current cycle-based clearing driver. That driver does not supply AR7's
@@ -53,7 +58,8 @@ nonnullable integers in the shared safe-integer range. Content identity and `foo
 strings, not values coerced to strings. Both decoders refuse duplicate keys, decimal/exponent
 integer tokens and malformed field types before transition. Valid whitespace, escapes,
 reordered keys and integer negative-zero spelling remain usable. Movement, food placement,
-growth, clocks, descriptor and snapshot field sets are unchanged (kernel 0.3.146).
+growth, clocks, descriptor and snapshot field sets are unchanged (decoder correction introduced
+in kernel 0.3.146; current kernel 0.3.147 includes the separate catalog null-tier fix).
 
 `testdata/arcade/snake-snapshot-negatives-v1.json` supplies 45 shared raw negatives and seven
 legal controls over actual genesis, moved/grown playing and cleared terminal states. Go and
@@ -72,8 +78,10 @@ tiers 8/9 on the structural control; no later-stage content or gameplay is minte
 loaders recompute full hashes and reject missing toys and wrong-engine definitions. Independent
 tier/preset/cap/key/binding policy severings fail; probes are restored. This bounded RP-199
 evidence repair awaits Claude review, not complete A1/A4 acceptance or raw JSON grammar parity.
-The separately observed Go null-stage-tier admission (RP-200) remains unresolved: null can
-normalize to zero where TS refuses it. That is not covered up by these green value-case tests.
+RP-200's separate loader correction refuses null in candidate and fixture and through actual
+freshly hashed complete Go/TS bundle loaders. Legal zero spellings still load. Tests fail
+before the fix and again when only the null guard is severed; that probe is restored.
+The correction awaits Claude's designated review, not full raw JSON parity or archival.
 
 `mine-grid-sampling-v1.json` supplies a real rejected-draw population on the unchanged large
 9×9 fixture. Inverting SplitMix64 and its two published substream labels constructs seed

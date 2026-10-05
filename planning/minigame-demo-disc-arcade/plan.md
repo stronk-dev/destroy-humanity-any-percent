@@ -7,8 +7,11 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   loader-bound rejections, candidate copy keys (AR6.6) in `copy/catalog/arcade-candidate.json`.
   RP-199 adds matched 22-case Go/TS negative populations, real valid boundary/stage controls
   and actual wrong-engine bundle refusal. Ordering/cap/key/binding probes fail and are restored;
-  the test-only correction awaits Claude review. Separate executed RP-200: Go normalizes a
-  null min_tier to zero while TS refuses it; runtime correction remains OPEN, not claimed done.
+  the test-only correction awaits Claude review. Separate RP-200 correction refuses null
+  stage tiers while preserving legal zero spellings (kernel 0.3.147); paired loader and freshly
+  hashed chain tests fail before the fix and when its guard is severed. Cold selected Go,
+  client/root/browser/DB checks pass; historical RP-131 still fails the complete guard.
+  Claude review remains required; no whole-A1 promotion.
 - [x] A2 — `mine_grid` 1.0.0 pure engine (AR3) in Go and TS; Go-generated corpus TS replays
   byte-for-byte (AR7); hidden-information invariant (AC4) with a failing case.
   RP-190's test/corpus budget correction counts all 60 attempts, rather than only 43 applied

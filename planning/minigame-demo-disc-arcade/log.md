@@ -1463,3 +1463,34 @@ whole client/type/build/vet/boundaries/vectors/corpus, declared real-DB Arcade s
 full Linux browser checks. Report historical RP-131 separately without bypass or rewrite.
 Update canonical docs and records, pin a distinct Claude review span, no self-archive.
 This bounded null correction does not claim exhaustive duplicate/token/depth parity.
+
+**Executed RP-200 red/fix/severing:** on unchanged runtime, both candidate and fixture
+subtests fail `null stage tier must refuse, got <nil>`; the freshly hashed full Go chain
+also fails its named null-tier population. Actual TS direct-loader/chain cases pass (96
+focused tests). Pointer inspection before the ordinary decode fixes both Go populations.
+Removing ONLY the nil guard then reproduces both direct failures and the full-chain
+admission, while the chain's other six refusal arms remain green. The guard is restored.
+Legal 0/-0/whitespace controls pass for both artifacts in both runtimes. This is an actual
+loader behavior correction with honest kernel 0.3.147, not a balance/schema/mint change.
+
+The first docs/plan patch failed atomically on stale plan context; no partial changes.
+The corrected-context patch is retained. No owner text or production fixture changed.
+
+**RP-200 final cold verification:** six selected Go packages pass with `-count=1`; the whole
+client passes 7,169 / 88 intentional browser-only skips. Type/Svelte check reports zero
+errors/warnings; build, boundaries/negative controls, vet, unchanged numeric vectors and
+all three Arcade regeneration checks pass. Both real-Postgres Arcade integration functions
+execute verbosely and pass, not skipped (twelve rejected advances plus valid play/resolution,
+and the original composed function). This remains DB/library, not public socket/API proof.
+Full Linux Chromium/Firefox/WebKit verification exits 0: 21,756 / three intentional performance
+skips, followed by the separate Chromium performance case (one pass / 20 filtered). All
+terminal metadata retained. The complete kernel history target again exits Make 2 at the
+same pushed RP-131 hash/parent, after checkout/adversarial controls pass. No exception, bypass,
+rewrite or workflow change; this honest current behavior bump does not erase old history.
+`git diff --check` passes. Ready for Claude's bounded designated review; no self-approval,
+archival, full A1/A4/raw grammar, mint, push or deployment claim.
+
+Next safe accepted work: predeclare the remaining A4/AC7 resolver/start composition audit.
+Execute actual tenant resolution and Pitch-less Arcade starts, retain Pitch positive controls
+and unknown-pair refusal, and sever the specific AR-P2/AR-P3 consumers before inferring
+completion. Owner-gated public wire/copy/mint and full 1.0 obligations remain unchanged.

@@ -1,6 +1,23 @@
 # Executable queue
 
-## Current Arcade loader and catalog-binding evidence repair — 2026-10-05
+## Current Arcade nonnullable stage-tier correction — 2026-10-05
+
+RP-200 fixes a real loader divergence under accepted AR1.2, separately predeclared at
+`df0ed871`. Go refuses null before integer defaulting; legal 0/-0/whitespace controls still
+load in both artifacts/runtimes. Actual Go direct and freshly hashed full-chain tests fail
+before the fix and when only its guard is severed; probe restored. Kernel is 0.3.147, with
+no fixture/content, mechanic, copy, public-wire, mint or workflow change. Cold selected Go,
+7,169 client tests, root checks, both real-Postgres Arcade functions and full Linux browser
+verification (21,756 plus performance) pass. Historical RP-131 remains red and unbypassed.
+Claude designated review is required; no full A1/A4/raw-grammar or archival promotion.
+
+**NEXT SAFE ACTION:** predeclare remaining A4/AC7 resolver/start composition review. Execute
+actual tenant resolution, unknown-pair refusal and Pitch-less Arcade starts with Pitch controls;
+sever AR-P2/AR-P3 consumers before adding evidence or claiming completion. Owner public
+wire/copy/mint and RP-131's draft-only history repair remain outside this scope. Full 1.0
+obligations and the cross-party review gates remain intact.
+
+## Dated Arcade loader and catalog-binding evidence repair — 2026-10-05
 
 RP-199 repairs the test-only evidence gap: ascending-tier refusal removal survived the old
 whole Go/client populations; the matched 22-case Go/TS loaders now catch it, with valid
@@ -12,7 +29,7 @@ Historical RP-131 remains red; no bypass. Claude's designated review is still re
 Exact RP-199 correction review span: `8b00b6e8^..3b9fd0d8`.
 No full A1/A4, raw-grammar, public-wire or archival approval.
 
-**NEXT SAFE ACTION:** separately predeclare and fix RP-200 under accepted AR1.2: Go's actual
+**Next at this dated checkpoint:** separately predeclare and fix RP-200 under accepted AR1.2: Go's actual
 catalog loader admits null min_tier as zero while TS rejects it. Retain legal zero and legal
 JSON spelling controls, demonstrate red-before/fail-on-severing witnesses, and carry an honest
 kernel identity bump for the watched runtime change. No fixture/content, mechanics, copy,

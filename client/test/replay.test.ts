@@ -588,6 +588,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			"definitions without tenants": (a) => { a.minigame_api = typerAPI; },
 			"artifact without minigame_api": (a) => { delete a.minigame_api; delete a.typer; },
 			"stage toy without definition": (a) => { const value = JSON.parse(a.arcade!); value.container.stages[0].toys = ["arcade.mine_grid", "arcade.pinball"]; a.arcade = JSON.stringify(value); },
+			"null stage tier": (a) => { const value = JSON.parse(a.arcade!); value.container.stages[0].min_tier = null; a.arcade = JSON.stringify(value); },
 			"stage toy with wrong engine": (a) => {
 				const value = JSON.parse(a.minigames!);
 				const rows = value.minigames.filter((row: { minigame_id: string }) => row.minigame_id === "arcade.mine_grid");

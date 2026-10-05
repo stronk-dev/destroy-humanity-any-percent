@@ -169,9 +169,11 @@ RP-199 closes the bounded loader/chain evidence gap locally: ascending-refusal r
 survives the old whole suites, but matched 22-case Go/TS negatives now catch it. Real inclusive
 bound/stage controls and freshly hashed wrong-engine bundles execute; independent sort/cap/
 key/binding probes fail and are restored. This test-only supplement needs Claude review.
-Separately, RP-200 confirms Go accepts null min_tier as zero while actual TS refuses it.
-That runtime defect remains OPEN for its own accepted-contract correction and honest kernel
-identity; green RP-199 tests do not resolve it or establish full A1/A4/raw-grammar acceptance.
+Separately, RP-200's actual null min_tier admission is corrected under its own accepted-contract
+predeclaration: nonnullable Go integer decoding preserves legal zero spellings, kernel 0.3.147.
+Actual paired loader and freshly hashed chain tests fail before the fix and on guard severing.
+Cold Go/client/root/browser/DB checks pass; historical RP-131 remains red. Designated review
+remains required, not full A1/A4/raw-grammar acceptance.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

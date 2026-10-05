@@ -1542,3 +1542,18 @@ not closing it with prose or mixing production changes into RP-199. Full 1.0 rem
 
 Exact RP-199 designated-review handoff: `8b00b6e8^..3b9fd0d8`, pending Claude's verdict.
 Next checkpoint predeclares RP-200's accepted AR1.2 correction; it is not approval or archival.
+
+## 2026-10-05 — Actual null stage-tier admission fixed separately
+
+RP-200's retained regression fails on unchanged Go for both candidate and fixture and
+the freshly hashed complete bundle. TS already refuses null. The bounded accepted AR1.2
+correction inspects a nonnullable integer before defaulting; legal 0/-0/whitespace still
+load. Removing only its nil guard makes both direct and full-chain gates fail again; source
+is restored. Honest watched kernel identity 0.3.147, unchanged vectors/content/mechanics.
+
+Cold selected Go, 7,169 client cases, type/build/boundaries/vet/vectors/corpus, both real
+Postgres Arcade functions and full three-browser verification (21,756 plus separate
+performance) pass. Historical RP-131 remains red, unchanged and unbypassed. Claude review
+remains mandatory; no self-approval or archival, full raw-grammar/public integration claim,
+push or deployment. Next accepted work is remaining A4/AC7 resolver/start composition review.
+Full nine-tier 1.0, platform and release obligations remain the active goal.
