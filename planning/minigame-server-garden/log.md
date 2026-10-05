@@ -1059,3 +1059,22 @@ and complete native Linux three-browser/performance lane. No Postgres/coordinato
 by this pure population. No catalog/balance, runtime, schema, copy, kernel, CI, mint or lifecycle
 change is authorized; all existing review and release blockers remain. New tests await Claude's
 designated review, never self-archival.
+
+### SG4 instrument admission failure and corrected population boundary
+
+The first Go invocation cannot compile because the new test passed a catalog to one-argument
+DecodeState; corrected the test API call. The executed invocation then rejects **all sixteen**
+scenario catalogs before tick execution: my authored `chance_ppm: 0` contradicts SG1's [1, 1M]
+domain. This is an invalid research instrument, not a production finding or a passing gate.
+
+Before re-execution: replace nominally disabled recipes with admitted `chance_ppm: 1`; chosen
+literal draws exceed those tiny cumulative bands. For the eligible-zero-effective-chance case,
+use admitted bare-metal factor 500,000: A chance 1M yields effective 500,000; B and cross chance
+1 yield effective zero by floor. The zero-effective eligible B-only cells must still consume
+draws. Readers must load this operator-authored fixture through the real loader. All sixteen
+named mechanisms and literal expected outcomes otherwise remain unchanged. Preserve this failed
+attempt, unchanged bounds and every mandatory mutation/final gate in the review range.
+
+Limit: removing the cumulative upper clamp alone is observationally equivalent for these
+nonnegative probabilities and draws <1M; the saturation case checks selected child/order under
+overlapping total probability, not discrimination of that redundant internal clamp in isolation.
