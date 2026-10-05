@@ -1,5 +1,17 @@
 # Executable queue
 
+## Current Cosmetic Shop C4/AC9 database correction — 2026-10-05
+
+Codex designated **CHANGES REQUIRED** on Claude C4 `500d944c^..500d944c` for RP-177:
+`00080` admitted the cosmetic event kinds, but Postgres accepted extra payload keys. The
+retained real-Postgres test failed first for all three. A bounded Codex correction now adds
+append-only migration `00084`, exact key sets for only those kinds, and valid, extra, missing
+and unrelated-kind database controls. Dropping the new constraint inside a rollback-only
+transaction makes the acquired extra-key witness fail. This corrective range is **READY FOR
+CLAUDE DESIGNATED REVIEW**, not approved; Codex must also review the remaining C4 intent and
+replay scope. RP-176's C3/AC4 ruling-author reconciliation remains independent, and Cosmetics
+is not archival-eligible.
+
 ## Current Cosmetic Shop C3/AC4 boundary — 2026-10-05
 
 Codex's targeted designated C3 review of Claude `581886a4^..581886a4` is **CHANGES

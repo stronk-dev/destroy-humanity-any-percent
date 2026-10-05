@@ -884,3 +884,45 @@ leaving the Go test image and hosted x86 Compose default unchanged. The same dec
 failed at exactly the three extra-field assertions. RP-177 records the defect. Corrective
 scope is a new post-00083 migration with exact cosmetic payload key sets and positive/negative
 database evidence; applied `00080` is immutable. This is not full C4 approval.
+
+## 2026-10-05 — Codex bounded C4/AC9 corrective implementation
+
+The retained AC9 database witness from the red review now runs against append-only migration
+`00084_cosmetic_event_payload_keys.sql`. The new constraint requires exactly the accepted key
+set for each of `cosmetic_acquired.v1`, `cosmetic_equipped.v1`, and `cosmetic_unequipped.v1`; it
+does not change other event kinds or validate cosmetic value semantics, which remain in Go.
+Applied `00080` was not edited. `docs/cosmetics.md` now describes both DB and Go boundaries.
+
+Cold real-Postgres evidence: all three valid payloads pass; each extra `price`/`amount` key and
+each missing required key rejects; an unrelated `generator_purchased` payload remains accepted.
+The existing Founder replay history still verifies after every rollback-only probe. A temporary
+`ALTER TABLE events DROP CONSTRAINT events_cosmetic_payload_keys_check` inside the acquired
+test's own transaction made its extra-field assertion fail with `database accepted an extra
+field on acquired payload` (exit 1); rollback restored the constraint, and the unmodified
+verbose run passes all six named extra/missing subtests. `Integration|Migration` on `./save`
+and `Integration|Cosmetic` on `./production` passed cold through the declared Postgres Compose
+service with the local ARM64 image override. Focused `./save ./production ./replaycatalog`
+passed with `-count=1`; `make test-client` passed 6,944 tests with 85 browser skips;
+`make vet`, `make typecheck`, `make api-check`, `make verify-no-payment`,
+`make verify-cosmetic-boundary`, `make verify-ci-topology`, and the replay-fixture check passed.
+The first full CI server-core run against real Postgres found another migration consumer:
+`server/releasepackage/manifest_test.go` still asserted the previous maximum `83`, so
+`TestCurrentMigrationIsContiguous` failed with `migration=84` and the target exited 2. The
+bounded correction updates that pin to `84`. A second cold full CI server-core run through the
+declared Postgres Compose service passed (exit 0): vet; every non-harness Go package at
+`-count=1`, including production, save, releasepackage and transport against real Postgres;
+pitch content, formula generation/check and API generation/check. The command used was:
+
+```sh
+docker compose -f compose.save-test.yml -f compose.save-test-arm64.yml run --rm test sh -c 'cd /workspace && make verify-server-core'
+```
+
+It reproduces the CI server job's target locally on ARM64 with only the Postgres image
+override; hosted Actions has not run on this unpushed
+correction. No green *whole-CI* claim follows.
+
+This is a **Codex implementation and self/first-filter evidence**, not the designated
+independent review of Codex's range. Claude must review its exact commits before AC9 is
+eligible for closure. Codex's bounded CHANGES REQUIRED verdict on Claude C4 remains in force
+for the original range, and the rest of C4 is still unreviewed by that verdict. C3/AC4 remains
+blocked on RP-176; no production Cosmetics pin, RFC archival, or release claim follows.

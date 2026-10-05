@@ -1160,3 +1160,16 @@ population. Direct v24 codec and Exit replay witnesses exist, so this is not a d
 product activation failure. The named corpus harness lacks a pinned bundle and cannot
 represent the RFC's new-run-only activation without a contract change. C3 stays CHANGES
 REQUIRED pending ruling-author body reconciliation, then a firing current-coordinate test.
+
+## 2026-10-05 — Cosmetic C4 AC9 database boundary correction
+
+Codex's designated targeted review found RP-177: Postgres admitted the three Cosmetic event
+kinds but allowed extra payload keys, contrary to accepted AC9. The retained rollback-only
+real-Postgres test failed first for acquired, equipped and unequipped. Append-only migration
+00084 now constrains their exact keys; all valid arms, extra/missing negatives and an unrelated
+event-kind control pass. A temporary transactional DROP of the new constraint makes the extra
+key witness fail, then rollback restores it. The first local CI server-core run found a stale
+release-package migration pin (83), corrected to 84; its second cold run passed against real
+Postgres. This is local implementation/first-filter evidence, not Claude's designated review,
+hosted CI, full C4 approval or Cosmetics archival. C3/AC4's RP-176 ruling-author blocker
+remains separate; the historical kernel-version CI gate remains red.

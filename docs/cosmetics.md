@@ -48,7 +48,9 @@ blocked as `exclusive_activity`.
 - **Events:** `cosmetic_acquired.v1 {cosmetic_id, order_number}`, where `order_number` is the owned
   count after insertion; `cosmetic_equipped.v1 {cosmetic_id, pet_id, replaced_cosmetic_id|null}`;
   `cosmetic_unequipped.v1 {cosmetic_id, pet_id}`. Payloads are strict. Migration `00080` admits the
-  three kinds.
+  three kinds; append-only migration `00084` requires exactly those keys for each cosmetic kind
+  at the Postgres boundary, leaving other event kinds unchanged. The Go decoder separately checks
+  the event payload values before persistence.
 - **Receipts:** they carry the complete `cosmetics` object and the event, and no amount, price,
   currency or payment field.
 - **Commit guard:** only the three cosmetic intents may change `cosmetics`. Any other Founder

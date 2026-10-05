@@ -221,6 +221,14 @@ database URL, and Go cache, and starts its declared Postgres dependency:
 docker compose -f compose.save-test.yml run --rm test
 ```
 
+On an ARM64 development host with the ARM64 Postgres 16 image available, use:
+
+```sh
+docker compose -f compose.save-test.yml -f compose.save-test-arm64.yml run --rm test
+```
+
+Hosted x86 CI uses the default Compose file.
+
 The CI server job supplies the same variable through a Postgres 16 service container. Normal unit
 tests skip database integration when the variable is absent; `make test-save-integration` fails
 immediately if it is absent.

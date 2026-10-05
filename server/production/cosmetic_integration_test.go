@@ -168,10 +168,10 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	// AC9 requires the database, not only the Go event decoder, to reject an
 	// extra cosmetic payload key. Roll back every probe so the real history
 	// remains byte-identical for the verification below.
-	for _, row := range []struct{ name, kind, valid, extra string }{
-		{"acquired", "cosmetic_acquired.v1", `{"cosmetic_id":"horse_armor","order_number":1}`, `{"cosmetic_id":"horse_armor","order_number":1,"price":0}`},
-		{"equipped", "cosmetic_equipped.v1", `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","replaced_cosmetic_id":null}`, `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","replaced_cosmetic_id":null,"price":0}`},
-		{"unequipped", "cosmetic_unequipped.v1", `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"}`, `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","amount":0}`},
+	for _, row := range []struct{ name, kind, valid, extra, missing string }{
+		{"acquired", "cosmetic_acquired.v1", `{"cosmetic_id":"horse_armor","order_number":1}`, `{"cosmetic_id":"horse_armor","order_number":1,"price":0}`, `{"cosmetic_id":"horse_armor"}`},
+		{"equipped", "cosmetic_equipped.v1", `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","replaced_cosmetic_id":null}`, `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","replaced_cosmetic_id":null,"price":0}`, `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"}`},
+		{"unequipped", "cosmetic_unequipped.v1", `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"}`, `{"cosmetic_id":"horse_armor","pet_id":"01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa","amount":0}`, `{"cosmetic_id":"horse_armor"}`},
 	} {
 		t.Run("database-payload-keys-"+row.name, func(t *testing.T) {
 			tx, err := db.BeginTx(ctx, nil)
@@ -190,6 +190,28 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 				t.Fatalf("database accepted an extra field on %s payload", row.name)
 			}
 		})
+		t.Run("database-payload-required-"+row.name, func(t *testing.T) {
+			tx, err := db.BeginTx(ctx, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer tx.Rollback()
+			if _, err := tx.ExecContext(ctx, `UPDATE events SET kind=$1,payload=$2::jsonb WHERE event_id=$3`, row.kind, row.missing, eventID); err == nil {
+				t.Fatalf("database accepted a missing field on %s payload", row.name)
+			}
+		})
+	}
+	// This new constraint must not narrow the payload grammar of other events.
+	tx, err = db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback()
+	if _, err := tx.ExecContext(ctx, `UPDATE events SET kind='generator_purchased',payload='{"unrelated":true}'::jsonb WHERE event_id=$1`, eventID); err != nil {
+		t.Fatalf("non-cosmetic event payload narrowed: %v", err)
+	}
+	if err := tx.Rollback(); err != nil {
+		t.Fatal(err)
 	}
 	// AC9 failing case: the events constraint rejects an unregistered kind.
 	if _, err := db.ExecContext(ctx, `UPDATE events SET kind='cosmetic_purchased.v1' WHERE stream_id=$1 AND kind='cosmetic_acquired.v1'`, founderRevision.StreamID); err == nil {

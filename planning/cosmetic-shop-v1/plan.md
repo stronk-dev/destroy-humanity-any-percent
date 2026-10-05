@@ -21,7 +21,11 @@ migration take the next free numbers at landing.
   their specified home conflicts with new-run-only activation. This box is implementation
   presence, not C3 acceptance or archival approval; ruling-author reconciliation is required.
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
-  the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9).
+  the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9). Codex's targeted
+  C4/AC9 review found RP-177: only the Go decoder, not Postgres, rejected extra event payload
+  keys. Append-only migration 00084 and retained DB negatives correct this locally, but Claude's
+  designated review of the Codex correction and Codex review of the rest of C4 remain required.
+  This checkbox records implementation presence, not full C4 approval.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).
 - [x] C7 No real money: `verify-no-payment`, the copy currency lint, the Caddy
