@@ -955,3 +955,26 @@ there, record C4 CHANGES REQUIRED on AC5/§4.5 and retain the failing-first test
 must preserve exclusivity for ordinary gameplay intents, have a severing failure, and receive
 Claude's designated review. This remains a bounded C4 review, not permission to change Soul
 recovery policy broadly.
+
+## 2026-10-05 — Codex C4/AC5–AC6 targeted verdict: CHANGES REQUIRED
+
+**Review by:** Codex (designated cross-party reviewer of Claude C4).
+**Recorded by:** Codex. **Reviewed range:** `500d944c^..500d944c`, limited to §4.5's
+exclusive-activity claim and AC5's eligible acquisition; AC9's Codex correction and the rest
+of C4 remain outside this verdict. **Decision:** CHANGES REQUIRED on RP-178. Production
+`server/gameserver/composition.go` supplies `WithSoulRecovery`, and `Service.Handle` checks
+Soul-recovery exclusivity before dispatching to `handleFounderCosmetic`. The latter's
+unguarded `ApplyFounderLogged` call cannot override the earlier rejection. The existing
+no-session Postgres C4 witness passed at `ce7688a7`; adding a real service-started active
+recovery session to that integration population makes Tier-1 Horse Armor acquisition fail cold
+with `not_eligible/exclusive_activity` (exit 1), rather than apply as §4.5 says.
+
+The other predeclared attacks are informative but not a C4 approval: removing the Go unlock
+check makes the Go corpus fail at `rejects-locked-at-tier-0`; removing the TS unlock check
+makes two TS cases fail. Removing the Go equip pet-key or owned check also fails the corpus,
+but via the saved-state validator rejecting an equipped unknown pet or unowned item, so those
+failures are defense in depth rather than proof that the named rejection oracle fired. All
+temporary production mutations were restored and `git diff --exit-code` verified that.
+One initial Go selector invocation ran **no tests** because Make consumed the `$` anchor in
+`GO_TEST_FLAGS` (the already-ledgered RP-025 class); the corrected selector without `$`
+executed and failed as stated. Do not cite the no-op invocation as evidence.

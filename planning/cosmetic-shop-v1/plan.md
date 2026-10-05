@@ -24,7 +24,10 @@ migration take the next free numbers at landing.
   the migration, with Go/TS parity and Postgres integration (AC5, AC6, AC9). Codex's targeted
   C4/AC9 review found RP-177: only the Go decoder, not Postgres, rejected extra event payload
   keys. Append-only migration 00084 and retained DB negatives correct this locally, but Claude's
-  designated review of the Codex correction and Codex review of the rest of C4 remain required.
+  designated review of the Codex correction remains required. Codex's further C4/AC5/§4.5
+  review found RP-178: active Soul recovery blocks cosmetics as `exclusive_activity` at the
+  top-level service preflight. A real-Postgres failing-first witness is retained; correction
+  and review of the remaining C4 scope are still required.
   This checkbox records implementation presence, not full C4 approval.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).

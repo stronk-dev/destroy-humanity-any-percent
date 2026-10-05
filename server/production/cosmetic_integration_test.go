@@ -13,6 +13,7 @@ import (
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 )
 
 // TestCosmeticIntegrationPersistsReplayableFounderLog covers AC9 (the three
@@ -98,10 +99,18 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	if err := tx.Commit(); err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundle.ConstantsHash),
-		WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}), WithGuildSettlements(emptyGuildSettlements{}))
+	recoveries, err := soul.NewRecoveryRepository(db)
 	if err != nil {
 		t.Fatal(err)
+	}
+	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundle.ConstantsHash),
+		WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}), WithGuildSettlements(emptyGuildSettlements{}), WithSoulRecovery(recoveries))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: "01986666-7e00-7000-8000-000000000010",
+		FounderID: founderID, CompanyStreamID: companyRevision.StreamID, ActivityID: "defrag"}, cursor); err != nil {
+		t.Fatalf("start real Soul recovery for cosmetic §4.5: %v", err)
 	}
 	companyBefore, err := store.LoadLatest(ctx, companyRevision.StreamID)
 	if err != nil {

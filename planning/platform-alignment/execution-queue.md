@@ -1,5 +1,17 @@
 # Executable queue
 
+## Current Cosmetic Shop C4/§4.5 Soul-recovery conflict — 2026-10-05
+
+Codex's current C4/AC5–AC6 review found RP-178. The accepted RFC explicitly exempts cosmetic
+intents from `exclusive_activity`, but the production `Service.Handle` Soul-recovery preflight
+runs before its cosmetic branch. A service-started active recovery session caused an eligible
+Tier-1 Horse Armor Buy to return `not_eligible/exclusive_activity` on real Postgres. The
+retained test fails at that applied-outcome assertion; C4 is **CHANGES REQUIRED** on this
+bounded §4.5 property. Correct only this dispatch exemption, preserve ordinary-intent
+exclusivity, run a firing severing probe and cold CI server-core target, then hand the Codex
+correction to Claude for designated review. The prior C4/AC9 database correction is likewise
+awaiting Claude review; neither is full C4 approval.
+
 ## Current Cosmetic Shop C4/AC9 database correction — 2026-10-05
 
 Codex designated **CHANGES REQUIRED** on Claude C4 `500d944c^..500d944c` for RP-177:
