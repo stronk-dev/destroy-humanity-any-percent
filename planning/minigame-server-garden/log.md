@@ -750,3 +750,38 @@ request owns a pre-resolved timestamp and added an unlocked handler-time routing
 can implement SG-P2's named Garden-specific boundary without changing the established other
 minigame path or inventing clock clamping. That gets its own predeclared implementation range.
 No runtime/version/schema/CI/content change or archival in this diagnostic commit.
+
+## 2026-10-06 — predeclaration: RP-217 Garden-specific locked clock repair
+
+Baseline `904c1d17`. Exact diagnostic range `eb0a9e7e^..904c1d17` awaits Claude designated
+review; it is deliberately not an acceptance verdict. Authority: accepted SG3 and SG6/SG-P2.
+Implement the already-named `save.Store.ApplyGardenHarvestTransaction` as a narrow Garden
+request without a caller timestamp. Reuse the established multi-write implementation, but
+sample the existing Founder database timestamp after Founder→Company locking for this new
+entry only. The existing MinigameResolutionRequest path retains its explicit timestamp policy.
+
+Remove Garden's handler-time pre-probe. Try the locked Garden transition once; if its pinned
+Founder transition rejects, rollback the coordinator and use the existing DB-stamped Founder-
+only rejection path. A maturity/revision race still returns the existing conflict; never commit
+Company/window state for a rejected harvest. Preserve same-intent replay and hash-conflict
+receipts, attendance policy, lock order, fault points, event/replay schemas and historical rows.
+No clamping, rewrite, migration, balance, mint, copy, UI or CI-policy change. Honest kernel bump
+0.3.150 → 0.3.151 accompanies the watched semantic correction.
+
+**Acceptance population:** replace all five broken-behavior diagnostics with actual database-
+bound acceptance; add immature +24-hour control (six arms). Mature arms must credit once, use
+one log/envelope/resolved timestamp within DB call bounds, apply zero Garden ticks and leave
+retained growing plots unchanged. Retry at the opposite skew must return identical bytes/no
+new writes. Following ordinary command must apply normally. Immature arms must refuse Founder-
+only with entire state/revisions/Company log/events/window unchanged and one Founder receipt.
+Both histories must replay. This tests injected server-clock disagreement, not client timestamps
+or normal-host skew prevalence.
+
+**Discrimination/gates:** first retain the executed red baseline above. Independently sever the
+new locked DB sample with +24-hour timestamp and reintroduce a handler-time Fiscal pre-probe;
+each must fail the six-arm population, followed by exact restoration. Cold full Garden/production/
+save/replaycatalog/kernel/Decimal suites + vet/corpus; verbose Postgres Garden/composed and
+existing minigame-resolution/fault populations, repeated six-arm clock matrix. Root client/type/
+build/boundary and vector checks retained; no assertion of whole history/hosted CI green while
+RP-131 is unresolved. Record source hashes, review range, docs/ledger/queues in-range. Cross-party
+Claude review remains required; no full Garden acceptance, archive or 1.0 promotion.
