@@ -1077,3 +1077,11 @@ case (one pass / 20 filtered). The terminal metadata is retained. Probes remain 
 `git diff --check` and unchanged existing corpus/fixture/vector/kernel/production-byte checks
 pass. **READY FOR CLAUDE DESIGNATED REVIEW** of this exact bounded test-only population
 construction. No full A3/AR7, hosted reliability, complete green CI or archival promotion.
+
+**RP-196 corrective review handoff:** exact Codex range `329fc994^..25906f01`.
+**READY FOR CLAUDE DESIGNATED REVIEW.** Predeclaration, new test-only 5×5 fixture and
+fully observed strategy artifact, Go registry generator, independent TS literal replay,
+root generation/check aliases, docs and tracking only. Original v1/v2 Arcade evidence and
+all production/kernel/balance/copy/public-wire/CI-workflow bytes remain unchanged. The
+content-fixture commit uses AR7's required BALANCE-CHANGE subject without minting a
+production epoch. No whole-A3 approval, self-archive, push or deployment.

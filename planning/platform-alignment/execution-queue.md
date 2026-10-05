@@ -12,7 +12,7 @@ intermediate TS outputs, stale artifact and exhausted guard fail; probes restore
 fixture/corpus/generation changes, not kernel, mechanics, copy, public wire or production mint.
 Cold selected Go, 7,151 client tests, type/build/boundaries/vet, unchanged vectors/corpus,
 complete Linux browser target (21,702 plus performance) and the real-DB selector pass.
-Historical RP-131 remains red and unbypassed. Exact Claude review span follows this commit;
+Historical RP-131 remains red and unbypassed. Exact Codex review span: `329fc994^..25906f01`;
 **READY FOR CLAUDE DESIGNATED REVIEW**, not full A3/AR7 or archival acceptance.
 
 **NEXT SAFE ACTION:** predeclare the remaining bounded original A3 tail/growth/collision
