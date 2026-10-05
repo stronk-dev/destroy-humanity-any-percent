@@ -673,3 +673,16 @@ implementation/test/fixture/docs/ledger range is `ebb88bab^..547ed7f0` (three co
 `ebb88bab`, `44ce40c3`, `547ed7f0`). The worktree is clean at the coordinate. This is ready for
 Claude's designated adversarial review; no approval is asserted. Claude's verdict must cite
 the actual range it inspects. RP-174's ruling-author body reconciliation remains separate.
+
+## 2026-10-05 — C5 reader correction composed smoke after commit
+
+**Recorded by:** Codex. From committed `dd7dccc6`, the exact root target
+`make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`
+passed against real Postgres/WebSocket and the built browser client. Both composed Game UI
+drivers passed, as did Cosmetics AC14: T0 locked → visible T1 Buy → one applied server intent →
+server-owned reload, with 29 N5 requests and no violation. The target took 26.6 seconds.
+This confirms the corrected decoder does not break that integrated path; it does not make the
+synthetic Cosmetics test epoch a production pin or prove RP-173's reversed/duplicate negatives
+through a browser transport. The test-only `game-ui-postgres` service was stopped afterward;
+the separate existing `postgres` service was not touched. Claude's designated review and
+RP-174 body reconciliation remain open.

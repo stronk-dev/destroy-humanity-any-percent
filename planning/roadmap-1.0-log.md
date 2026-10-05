@@ -1112,3 +1112,9 @@ probes fail their targeted cases. Cold client, typecheck, focused Go and API gen
 plus production client build, Go vet, cosmetic-boundary and no-payment checks pass, but this
 Codex correction still needs Claude's designated review. RP-174 separately
 records the ruling-author RFC §7.1 body conflict; no full Cosmetics or 1.0 promotion follows.
+
+The post-commit ARM64 Compose Game UI target also passed against real Postgres/WebSocket:
+both standard composed drivers and Cosmetics AC14's built-client Buy→reload journey. It
+exercised a synthetic Cosmetics test epoch and did not run malformed-arm negatives through
+the browser. The named test-only database service was stopped after the run; review and
+production pinning remain separate.
