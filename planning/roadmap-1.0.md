@@ -5,8 +5,8 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, product/evidence through the bounded Cosmetic C4/§4.5
-correction recorded in `planning/cosmetic-shop-v1/log.md` (RP-145–RP-178 corrections,
+**Current checkpoint:** 2026-10-05, product source `646daa08`, evidence through the Cosmetic
+C4/AC6 second-wearer predeclaration in `planning/cosmetic-shop-v1/log.md` (RP-145–RP-179 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
@@ -57,6 +57,9 @@ A bounded dispatch correction now permits all three cosmetic intents during real
 keeps ordinary intents exclusive, and resolves recovery with verified cosmetic state intact.
 Selective exemption probes fail on acquire, equip and unequip. Kernel 0.3.143 and the local
 Postgres CI server-core target pass; this Codex range still needs Claude's designated review.
+RP-179 leaves AC6's shared two-pet equip transition unproved: the current corpus reaches one
+wearer, while Go's supplied-shape test and the snapshot fixture cover different boundaries.
+A test-only shared transition supplement and firing Go/TS mutations are predeclared.
 Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
 population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
 corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through

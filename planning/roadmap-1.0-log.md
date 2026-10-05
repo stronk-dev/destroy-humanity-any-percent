@@ -1187,3 +1187,12 @@ with the guarded routing change. The cold Postgres CI server-core target and cli
 checks pass locally. Claude must independently review this Codex correction before closure;
 the original C4 range still carries its targeted CHANGES REQUIRED verdicts, and Cosmetics
 and the broader 1.0 remain unfinished.
+
+## 2026-10-05 — Cosmetic C4 exact review spans and remaining AC6 proof
+
+The RP-177 SQL correction `fca686c5^..ce7688a7` and RP-178 recovery correction
+`380d854b^..646daa08` are recorded for Claude's designated review. Both include their
+tests, code, docs and records. RP-179 adds a distinct AC6 evidence gap: the shared corpus
+contains 20 Founder cases but reaches only one pet; the two-wearer shape/projection tests
+do not exercise a second equip transition in both runtimes. A test-only Go-authored corpus
+supplement and selective Go/TS severing are predeclared. C4 and Cosmetics remain open.

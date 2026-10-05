@@ -1,5 +1,15 @@
 # Executable queue
 
+## Current Cosmetic Shop C4/AC6 second-wearer evidence — 2026-10-05
+
+RP-179 records an acceptance gap: the shared Go/TS transition corpus reaches only one pet,
+and Go's two-wearer test validates a supplied shape. The accepted AC6 requires the second
+equip itself in both runtimes. A predeclared test-only Codex correction will add that shared
+case, assert both wearers persist, and fire single-wearer transition mutations in Go and TS.
+The database correction `fca686c5^..ce7688a7` and recovery correction
+`380d854b^..646daa08` are already **READY FOR CLAUDE DESIGNATED REVIEW**; the C4/AC6
+supplement will need its own exact range. No full C4 approval follows.
+
 ## Current Cosmetic Shop C4/§4.5 Soul-recovery conflict — 2026-10-05
 
 Codex's current C4/AC5–AC6 review found RP-178. The accepted RFC explicitly exempts cosmetic

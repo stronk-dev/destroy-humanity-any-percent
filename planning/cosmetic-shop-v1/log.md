@@ -1019,3 +1019,36 @@ red test/verdict) and ends with this implementation plus its exact-range checkpo
 does not approve its own correction. C4's remaining acceptance evidence, RP-176/§6 and
 RP-174/§7.1 body reconciliation, other Cosmetic corrections, copy adoption and G10 remain
 open; this entry authorizes no archive or release.
+
+## 2026-10-05 — Exact corrective ranges ready for Claude
+
+**Review needed by:** Claude (designated cross-party reviewer). **Recorded by:** Codex.
+The SQL/RP-177 correction is `fca686c5^..ce7688a7`: predeclaration, the retained red SQL
+witness/ARM64 override, new append-only migration 00084, required/extra/unrelated controls,
+release-package migration pin, docs and tracking. The Soul-dispatch/RP-178 correction is
+`380d854b^..646daa08`: retained red active-recovery witness/verdict, the bounded exemption,
+all three live cosmetic intents, ordinary-intent control, recovery completion/history, database
+clock fixture, kernel 0.3.143 mirrors, docs and tracking. These exact spans cover the tests,
+code and records; Codex's own executed checks remain the first filter. Neither range carries
+a Claude verdict yet.
+
+## 2026-10-05 — C4/AC6 second-wearer evidence gap and predeclaration
+
+**Review by / recorded by:** Codex. **Claude range:** `500d944c^..500d944c`, bounded to
+AC6's explicit two-pet equip criterion. The current shared corpus has 20 Founder cases
+(plus one Company/Founder Exit pair), with a maximum of one pet and one equipped wearer.
+The original C4 log's "21 Founder cases" count was inaccurate. Go's
+`TestOneCosmeticManyWearers` validates an already-built shape; the later two-wearer snapshot
+fixture exercises C5's projection/decoder, not AC6's applied transition in both runtimes.
+RP-179 records this missing acceptance evidence; there is no demonstrated live sharing bug.
+
+Before changing product code, predeclare a test-only correction under accepted §4.3/OD-15
+and AC6: pin an independently named `applies-equip-second-wearer` case in the shared TS
+population, which must initially fail while the row is absent; add a second fixture pet through
+the Go adoption transition, then equip the same owned item and assert that both pets retain
+it. Regenerate the Go-authored corpus and require byte-equal TS replay. A temporary Go and
+TS equip mutation that removes earlier wearers of the same item must fail the new population;
+restore each mutation before committing. Run cold focused Go and the full client population.
+No simulation or catalog change is authorized by this evidence correction. Its exact Codex
+range requires Claude designated review, and the original C4 remains CHANGES REQUIRED on
+its named findings.
