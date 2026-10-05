@@ -1292,3 +1292,58 @@ refreeze mid-run. Retain independent negatives that change only a receipt and on
 bonus, requiring named divergence rather than any error. Keep the non-cosmetics Founder and
 producer comparisons. Cold Go/client and server-core checks, no production/catalog/RFC changes,
 Claude designated review before closure.
+
+## 2026-10-05 — C8/AC7 targeted verdict and receipt/consumer supplement
+
+**Review by:** Codex. **Recorded by:** Codex.
+**Reviewed range:** Claude `c20d23f1^..c20d23f1`, bounded to AC7's policy witness.
+**Verdict:** CHANGES REQUIRED (RP-182), not a verdict on the full C8 docs/range.
+The committed receipt-only probe in `52bd6963` changed one arm's receipt while leaving both
+states unchanged; the original property returned nil and its retained negative failed with
+`receipt-only leak was not caught by its named oracle: <nil>` (Make exit 2).
+The existing producer mutation proof remains valid, but the Company arms supplied nil bonuses.
+
+The accepted-AC7 test-only correction keeps all 200 seeds × 288 five-minute steps and all
+three applied cosmetic kinds. It compares every outcome and receipt, complete encoded Company
+state after each step, and non-cosmetics Founder bytes after each cosmetic transition. The
+previous policy clone copied only selected Company fields; the new clone uses the real save
+codec so purchase totals and the other current fields survive each step. Company state uses
+the same pinned fixture economy as the Founder and real new-run/foundation initialization.
+
+Both arms consume FrozenFounderContributions→ResolveFrozenContributions, including a seeded
+valid non-unit Fiscal generator level. Bonuses remain immutable during the simulated run.
+Afterward each Founder feeds a fresh next run; a real generator purchase and lazy accrual
+consume the resulting bonus rows. That separate consumer is not a mid-run refreeze. The
+existing multiplier-input negative is retained, alongside receipt-only and consumed-bonus
+negatives requiring their specific divergence text.
+
+**Invalid first fixtures disclosed:** the first strengthening attempt supplied a legacy prior
+Company to an active-foundation settlement and assumed Reputation level 1 alone was a non-unit
+bonus. It failed on `foundation mechanics cannot disappear between epochs` and the explicit
+non-unit population guard. These were test-fixture errors, not production defects or successful
+negatives. The prior Company now has the actual active floor, meters, achievement state and
+active-play initialization; the Founder has a declared valid Fiscal level before adoption.
+No accepted bounds, guards, runtime code or content were loosened to repair the fixture.
+
+**Executed evidence (all temporary mutations restored):**
+
+- Cold focused negative population passes all three tests; the full positive passes at
+  200 seeds, 24 hours (29.13 seconds locally).
+- Disabling only the per-step receipt comparison makes the receipt-only negative fail with
+  `<nil>` (Make exit 2). Unchanged Company bytes cannot substitute for that receipt oracle.
+- Setting only the next-run consumer contributions to nil makes the consumed-bonus negative
+  fail with `<nil>` (Make exit 2). A producer comparison alone cannot satisfy the new consumer.
+- `docker compose -f compose.save-test.yml -f compose.save-test-arm64.yml run --rm -w
+  /workspace test make verify-server-core` passes: vet, cold non-harness Go packages against
+  real Postgres (production 55.758 seconds), API/formula no-drift and boundaries. The auxiliary
+  Pitch single-gate recipe reports cached; the complete Pitch package also ran cold above.
+- `make typecheck test-client verify-cosmetic-boundary verify-no-payment` passes:
+  0 type/Svelte diagnostics, 6,953 client tests, 85 intentional browser skips in the unit lane,
+  22 package negatives and 6 no-payment negatives. This is not a browser result.
+
+No live cosmetic bonus bug was established. This controlled pure-engine population still
+uses fixture eligibility tiers and pins Founder command time to isolate Fiscal sweeps; it is
+not an integrated browser/service claim. No production bytes, catalog, copy, RFC body, kernel
+identity or CI workflow changed. The full client history gate remains red at RP-131's pushed
+`50a3a514`, per the last full-target run at `ad789790`; green selected checks are not green CI.
+Claude must designated-review this Codex correction. No C8/Cosmetics closure, archival or push.

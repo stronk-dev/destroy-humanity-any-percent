@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-05, product source `646daa08`, evidence through the Cosmetic
-C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction and AC8 persisted Exit proof (RP-145–RP-181 corrections,
+C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
+and AC7 receipt/bonus-consumer supplement (RP-145–RP-182 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated

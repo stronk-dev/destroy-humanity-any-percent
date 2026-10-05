@@ -1234,3 +1234,15 @@ guard bypass. Resetting cosmetics in the actual Exit breaks both Go cases, both 
 and both TS cases; all mutations are restored. Cold Postgres server-core, 6,953 client tests,
 typecheck and the package/no-payment gates pass locally. No live loss bug or product change
 was established. Claude review, RP-176 body reconciliation and broader release work remain.
+
+## 2026-10-05 — Cosmetic AC7 asserts receipts and consumes real frozen bonuses
+
+RP-182's receipt-only probe exposed a discarded production receipt; both Company arms also
+used nil contributions. The test-only correction retains 200 × 288 steps, compares each
+outcome/receipt/full state, freezes real non-unit bonuses once per run and exercises a separate
+next-run purchase/accrual consumer. Disabling the receipt oracle and disconnecting that consumer
+each fail their named retained negative. Two invalid first fixture assumptions are disclosed
+in the RFC log; no failing setup was counted as discrimination. Cold full-policy and real-PG
+server-core checks pass, as do 6,953 client tests and type/package/no-payment checks. No product
+or content change and no live bonus bug established. Claude's designated review and the
+broader release work remain; the historical client CI gate is still red (RP-131).

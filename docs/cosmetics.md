@@ -60,8 +60,13 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
 - **Commit guard:** only the three cosmetic intents may change `cosmetics`. Any other Founder
   transition that touches it fails the transaction.
 - **Isolation:** `TestCosmeticsAreMechanicallyIsolated` checks that cosmetic intents interleaved
-  into 200 seeded 24-hour policies leave Company bytes, frozen Founder contributions and every
-  non-cosmetics Founder byte identical.
+  into 200 seeded 24-hour policies leave every Company decision outcome/receipt, complete
+  Company state and every non-cosmetics Founder byte identical. Both arms consume the pinned
+  Founder contributions, including a non-unit fixture bonus, frozen once for that run.
+  A separate next-run purchase/accrual checks the resulting bonus consumer; it does not refreeze
+  bonuses mid-run. Retained receipt-only, multiplier-input and consumed-bonus negatives require
+  their named divergence. This is a controlled pure-engine policy, not a browser or persisted
+  service workflow; the cosmetic arm's eligibility tier and Founder Fiscal clock are fixtures.
 
 ## Snapshot and UI
 

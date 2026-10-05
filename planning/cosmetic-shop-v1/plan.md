@@ -57,6 +57,11 @@ migration take the next free numbers at landing.
 - [ ] Integrated pet-panel overlay (release manifest G10) and owner adoption of the candidate copy.
 - [ ] Designated cross-party review (Codex) and archival. Not self-approved.
 - [x] C8 Mechanical-isolation property test, package gates, docs (AC7, AC16).
+  Codex's targeted AC7 review found RP-182: receipts were discarded and the Company arms used
+  nil Founder contributions. The test-only correction retains 200 × 288 steps, compares every
+  receipt/complete state, consumes correctly frozen bonuses and checks a separate next-run
+  consumer with firing negatives. Claude's designated review is required; this box records
+  implementation presence, not C8 approval. RP-180's package-gate correction also awaits review.
 
 Box evidence: each flipped box's exercising tests landed in that batch's commit
 (`afe6529b`, `8e315569`, `581886a4`, `500d944c`, `1a477d9e`, `1bba27ba`, `a4b22429`, and this
