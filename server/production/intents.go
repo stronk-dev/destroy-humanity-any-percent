@@ -405,7 +405,8 @@ func (s *Service) Handle(
 		return HandleResult{}, err
 	}
 	if s.soulRecoveries != nil && request.Kind != IntentBuyRouteHint &&
-		request.Kind != IntentHarvestFiscalPeriod && request.Kind != IntentSpendFiscalCredit && request.Kind != IntentPurchaseReputationNode {
+		request.Kind != IntentHarvestFiscalPeriod && request.Kind != IntentSpendFiscalCredit && request.Kind != IntentPurchaseReputationNode &&
+		!isCosmeticIntent(request.Kind) {
 		loaded, loadErr := s.store.LoadLatest(ctx, streamID)
 		if loadErr != nil {
 			return HandleResult{}, loadErr

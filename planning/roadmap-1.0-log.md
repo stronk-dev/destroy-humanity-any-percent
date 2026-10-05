@@ -1173,3 +1173,17 @@ release-package migration pin (83), corrected to 84; its second cold run passed 
 Postgres. This is local implementation/first-filter evidence, not Claude's designated review,
 hosted CI, full C4 approval or Cosmetics archival. C3/AC4's RP-176 ruling-author blocker
 remains separate; the historical kernel-version CI gate remains red.
+
+## 2026-10-05 — Cosmetic C4 Soul-recovery dispatch correction
+
+Codex reproduced RP-178 through production's service option and real Postgres: active Soul
+recovery rejected a valid Tier-1 cosmetic acquisition as `exclusive_activity`, contrary to
+accepted §4.5. The retained test failed first. The bounded dispatch exemption now permits
+acquisition, equip and unequip while ordinary gameplay stays blocked; the same recovery then
+resolves and its Founder history verifies with cosmetic ownership preserved. Selectively
+removing each exemption arm makes the workflow fail. A fixed-date test-clock failure was
+disclosed and corrected by anchoring the fixture to the database clock. Kernel 0.3.143 lands
+with the guarded routing change. The cold Postgres CI server-core target and client/type
+checks pass locally. Claude must independently review this Codex correction before closure;
+the original C4 range still carries its targeted CHANGES REQUIRED verdicts, and Cosmetics
+and the broader 1.0 remain unfinished.

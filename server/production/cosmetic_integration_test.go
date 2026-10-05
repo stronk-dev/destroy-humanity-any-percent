@@ -2,6 +2,7 @@ package production
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"strings"
 	"testing"
@@ -10,6 +11,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -20,6 +22,8 @@ import (
 // event kinds admitted, atomic state/event/receipt, an unregistered kind
 // rejected by the database) and AC5's service-boundary rows (idempotent retry,
 // idempotency_conflict, owned, invalid price field), through Service.Handle.
+// All three cosmetic intents stay usable during real Soul recovery (§4.5),
+// which then resolves without changing cosmetic ownership.
 func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -46,7 +50,13 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	cursor := save.CanonicalServerTime(time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC))
+	// Founder ApplyLogged commands use the database clock. Anchor the fixture
+	// there too, so a later recovery terminal never moves Fiscal time backwards.
+	var databaseNow time.Time
+	if err := db.QueryRowContext(ctx, `SELECT clock_timestamp()`).Scan(&databaseNow); err != nil {
+		t.Fatal(err)
+	}
+	cursor := save.CanonicalServerTime(databaseNow)
 	const accountID = "01986666-7e00-4000-8000-000000000001"
 	const founderID = "01986666-7e00-7000-8000-000000000002"
 	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'test')`, accountID); err != nil {
@@ -73,6 +83,13 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 		t.Fatal(err)
 	}
 	founder := reputationFounderState(t, bundle, 24, cursor, 0)
+	care, err := pet.InitialCareState(bundle.Pets, founder.AgeMS)
+	if err != nil {
+		t.Fatal(err)
+	}
+	identity := adoptedIdentity()
+	identity.AdoptedAtMS, identity.AdoptedAtAttendedMS = cursor.UnixMilli(), founder.AgeMS
+	founder.Pets[adoptedPetID], founder.PetIdentities[adoptedPetID] = care, identity
 	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder},
 		bundle.ConstantsHash, founder, save.WriteContext{Cause: "cosmetic.integration"})
 	if err != nil {
@@ -108,9 +125,20 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: "01986666-7e00-7000-8000-000000000010",
-		FounderID: founderID, CompanyStreamID: companyRevision.StreamID, ActivityID: "defrag"}, cursor); err != nil {
+	const recoveryID = "01986666-7e00-7000-8000-000000000010"
+	started, err := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: recoveryID,
+		FounderID: founderID, CompanyStreamID: companyRevision.StreamID, ActivityID: "defrag"}, cursor)
+	if err != nil {
 		t.Fatalf("start real Soul recovery for cosmetic §4.5: %v", err)
+	}
+	var recoveryStart soulRecoveryStartReceipt
+	if err := json.Unmarshal(started.Receipt, &recoveryStart); err != nil || recoveryStart.RequiredDurationAttendedMS <= 0 || recoveryStart.ProgressToken == "" {
+		t.Fatalf("Soul recovery start receipt=%s err=%v", started.Receipt, err)
+	}
+	ordinary := []byte(`{"intent_id":"01986666-7e00-7000-8000-000000000011","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`)
+	blocked, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, cursor.Add(time.Second), ordinary)
+	if err != nil || !strings.Contains(string(blocked.Receipt), `"detail":"exclusive_activity"`) {
+		t.Fatalf("ordinary intent during Soul recovery receipt=%s err=%v", blocked.Receipt, err)
 	}
 	companyBefore, err := store.LoadLatest(ctx, companyRevision.StreamID)
 	if err != nil {
@@ -232,5 +260,52 @@ func TestCosmeticIntegrationPersistsReplayableFounderLog(t *testing.T) {
 	}
 	if verdict := VerifyFounderHistory(history, ReplayCatalogSet{bundle.ConstantsHash: bundle}); verdict != ReplayVerified {
 		t.Fatalf("Founder history verdict=%v", verdict)
+	}
+	for _, row := range []struct {
+		body, event string
+	}{
+		{`{"intent_id":"01986666-7e00-7000-8000-000000000012","kind":"equip_cosmetic","expected_revision":2,"cosmetic_id":"horse_armor","pet_id":"` + adoptedPetID + `"}`, `"kind":"cosmetic_equipped.v1"`},
+		{`{"intent_id":"01986666-7e00-7000-8000-000000000013","kind":"unequip_cosmetic","expected_revision":3,"pet_id":"` + adoptedPetID + `"}`, `"kind":"cosmetic_unequipped.v1"`},
+	} {
+		applied, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, cursor.Add(4*time.Second), []byte(row.body))
+		if err != nil || !strings.Contains(string(applied.Receipt), `"outcome":"applied"`) || !strings.Contains(string(applied.Receipt), row.event) {
+			t.Fatalf("cosmetic equip/unequip during Soul recovery receipt=%s err=%v", applied.Receipt, err)
+		}
+	}
+	// Advancing the Founder for a cosmetic intent must not strand the active
+	// recovery coordinator or erase cosmetics when recovery resolves. Each beat
+	// uses the pinned policy and server-controlled test clock, not client time.
+	recoveryNow := cursor
+	remaining := recoveryStart.RequiredDurationAttendedMS
+	for remaining > 0 {
+		step := min(remaining, bundle.Soul.Policy.RecoveryBeatCeilingMS)
+		if step <= 0 {
+			t.Fatal("Soul recovery beat ceiling must be positive")
+		}
+		recoveryNow = recoveryNow.Add(time.Duration(step) * time.Millisecond)
+		if _, err := service.ProgressSoulRecovery(ctx, ProgressSoulRecoveryRequest{SessionID: recoveryID, FounderID: founderID,
+			ProgressToken: recoveryStart.ProgressToken}, recoveryNow, nil); err != nil {
+			t.Fatalf("Soul recovery progress after cosmetic acquisition: %v", err)
+		}
+		remaining -= step
+	}
+	resolved, err := service.ResolveSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: recoveryID, FounderID: founderID}, recoveryNow, nil)
+	if err != nil || !strings.Contains(string(resolved.Receipt), `"outcome":"applied"`) {
+		t.Fatalf("Soul recovery resolution after cosmetic acquisition receipt=%s err=%v", resolved.Receipt, err)
+	}
+	terminal, err := recoveries.Load(ctx, founderID, recoveryID)
+	if err != nil || terminal.Status != soul.RecoveryResolved {
+		t.Fatalf("Soul recovery did not persist its terminal state: %v", err)
+	}
+	afterRecovery, err := store.LoadLatest(ctx, founderRevision.StreamID)
+	if err != nil || afterRecovery.Revision.Number != 5 || !loaded.State.Cosmetics.Equal(afterRecovery.State.Cosmetics) {
+		t.Fatalf("Soul recovery changed cosmetic state or failed to advance Founder: %v", err)
+	}
+	history, err = store.LoadFounderHistory(ctx, founderRevision.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if verdict := VerifyFounderHistory(history, ReplayCatalogSet{bundle.ConstantsHash: bundle}); verdict != ReplayVerified {
+		t.Fatalf("Founder history after cosmetic acquisition and Soul recovery verdict=%v", verdict)
 	}
 }

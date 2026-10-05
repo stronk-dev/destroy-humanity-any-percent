@@ -37,7 +37,8 @@ and `{}`, never `null`.
 
 `acquire_cosmetic {cosmetic_id}`, `equip_cosmetic {cosmetic_id, pet_id}` and
 `unequip_cosmetic {pet_id}` are Founder-scope intents through `ApplyFounderLogged`. They are never
-blocked as `exclusive_activity`.
+blocked as `exclusive_activity`, including while Soul recovery is active. The top-level service
+preflight exempts only these cosmetic kinds; ordinary gameplay intents remain exclusive.
 
 - **Validation order:**
   - the prefix: `not_eligible/inactive`, then `unknown_id/cosmetic_id`;

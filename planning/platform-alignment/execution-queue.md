@@ -6,10 +6,12 @@ Codex's current C4/AC5–AC6 review found RP-178. The accepted RFC explicitly ex
 intents from `exclusive_activity`, but the production `Service.Handle` Soul-recovery preflight
 runs before its cosmetic branch. A service-started active recovery session caused an eligible
 Tier-1 Horse Armor Buy to return `not_eligible/exclusive_activity` on real Postgres. The
-retained test fails at that applied-outcome assertion; C4 is **CHANGES REQUIRED** on this
-bounded §4.5 property. Correct only this dispatch exemption, preserve ordinary-intent
-exclusivity, run a firing severing probe and cold CI server-core target, then hand the Codex
-correction to Claude for designated review. The prior C4/AC9 database correction is likewise
+retained test failed first at that applied-outcome assertion; C4 is **CHANGES REQUIRED** on
+this original §4.5 claim. A bounded Codex correction now exempts all three cosmetic kinds,
+with a real-Postgres acquire/equip/unequip → recovery-resolution workflow, an ordinary-intent
+exclusivity control and three selectively fired exemption probes. Kernel 0.3.143 lands in the
+same change and the cold CI server-core target passes locally. The corrective range is
+**READY FOR CLAUDE DESIGNATED REVIEW**. The prior C4/AC9 database correction is likewise
 awaiting Claude review; neither is full C4 approval.
 
 ## Current Cosmetic Shop C4/AC9 database correction — 2026-10-05

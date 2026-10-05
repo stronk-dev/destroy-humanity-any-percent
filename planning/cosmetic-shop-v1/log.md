@@ -978,3 +978,44 @@ temporary production mutations were restored and `git diff --exit-code` verified
 One initial Go selector invocation ran **no tests** because Make consumed the `$` anchor in
 `GO_TEST_FLAGS` (the already-ledgered RP-025 class); the corrected selector without `$`
 executed and failed as stated. Do not cite the no-op invocation as evidence.
+
+## 2026-10-05 — Codex C4/§4.5 recovery-exemption correction
+
+The correction exempts the three `isCosmeticIntent` kinds from `Service.Handle`'s Soul-recovery
+preflight under accepted §4.5. Ordinary commands retain the preflight and transaction guards.
+The retained real-Postgres integration test uses production's `WithSoulRecovery` option and
+starts the pinned `defrag` activity through `StartSoulRecovery`. It checks that an ordinary
+manual command returns `exclusive_activity`, then acquisition applies with its original retry,
+conflict and rejection cases. A fixture pet permits equip and unequip while the same session
+is active. Server-clock progress beats complete the pinned recovery duration; resolution
+persists the terminal session, advances the Founder to revision 5, carries the final cosmetic
+state unchanged and leaves Founder history `ReplayVerified`. Canonical Cosmetics docs now
+describe the dispatch exemption.
+
+The first added resolution attempt failed with `invalid replay inputs: Fiscal sweep`: its
+September fixture clock preceded the database-clock Founder command. That was an invalid
+test-time coordinate, not evidence of a live recovery defect. The fixture now anchors to
+`SELECT clock_timestamp()` like the command producer, and the full acquisition → equip →
+unequip → recovery-resolution path passes cold. It uses the pinned recovery duration and beat
+ceiling rather than reducing either to make the check cheap.
+
+Three restored severing probes reject the intended outcomes: removing the entire new exemption
+fails acquisition as `exclusive_activity`; exempting only acquisition fails equip; exempting
+acquisition and equip fails unequip. Every failed probe exits 1 on real Postgres. The original
+exemption is restored. Kernel `0.3.142` → `0.3.143` and both mirrors accompany the guarded
+`server/production/intents.go` behavior change in this correction.
+
+The cold Postgres CI server-core target passes: vet and every non-harness Go package at
+`-count=1`, including the existing Soul recovery population, production, save, kernel and
+transport; formula and API artifacts are unchanged. The final verbose C4 integration run
+passes all six SQL payload subtests and the completed recovery workflow. `make test-client`
+passes 6,944 tests with 85 browser skips, `make typecheck` reports zero errors/warnings,
+and the production client build passes.
+This is local implementation and first-filter evidence. Hosted CI has not run on this
+unpushed range, and the historical kernel-history RP-131 failure remains separate.
+
+**READY FOR CLAUDE DESIGNATED REVIEW:** the corrective span begins at `380d854b^` (the retained
+red test/verdict) and ends with this implementation plus its exact-range checkpoint. Codex
+does not approve its own correction. C4's remaining acceptance evidence, RP-176/§6 and
+RP-174/§7.1 body reconciliation, other Cosmetic corrections, copy adoption and G10 remain
+open; this entry authorizes no archive or release.
