@@ -565,3 +565,18 @@ deterministic test in all three engines. Restore it and run the entire Typer chi
 and full CI-equivalent browser lane, keeping RP-188 and RP-131 independently open as needed.
 Claude must designated-review any resulting Codex correction; this does not close B6's public
 registration/content/assistive-technology gates.
+
+## 2026-10-05 — B6 deterministic sampling verdict (RP-187)
+
+**Review by / recorded by:** Codex. **Original range reviewed:** `ade1083b^..ade1083b`,
+bounded to TT8.4/TT9's local display sampling. **Verdict:** CHANGES REQUIRED.
+The retained injected increasing-clock test fails on unchanged production in all three
+engines (3 failed, 21 unrelated cases filtered; exit 1). Each reports
+`effect_update_depth_exceeded`; the timed state also fails to render after the broken effect
+prevents its update. These are assertion and browser error-guard failures, not a passing
+console warning. No higher timeout, retry or exception suppression was used.
+
+The original effect registers a dependency on its own written `sampledAt` when it evaluates
+`now = sampledAt`. Ordinary browser clock quantization can return the same value on two reads
+and mask this cycle; the increasing input prevents that accidental equality. The declared
+local-sample correction follows next, with the same test and a reinstated-read negative.

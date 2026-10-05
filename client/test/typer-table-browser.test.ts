@@ -41,6 +41,31 @@ function button(target: HTMLElement, text: string): HTMLButtonElement {
   return found;
 }
 
+it.skipIf(!browser)("samples an increasing monotonic clock without reactive feedback across server revisions", async () => {
+  const target = document.createElement("main"); document.body.append(target);
+  installTheme(target, UI_THEMES.era_2000, false);
+  const commands: TyperCommand[] = [];
+  let clock = 0;
+  const app = mount(TyperTableHarness, { target, props: {
+    initial: snapshot(), dispatch: (command: TyperCommand) => commands.push(command),
+    // Every read changes. The ordinary browser clock can accidentally mask a
+    // feedback dependency when successive reads return the same sample.
+    monotonicNow: () => ++clock,
+  } }) as unknown as { advance(next: TyperSnapshot): void };
+  try {
+    await settle();
+    expect(clock).toBeGreaterThan(0);
+    expect(button(target, "Untimed run").disabled).toBe(false);
+    flushSync(() => app.advance(typing({ assist_level: "timed", deadline_server_ms: 121_000 })));
+    await settle();
+    expect(target.querySelector(".time")?.textContent).toBe("120 seconds left");
+    flushSync(() => app.advance(typing({ assist_level: "timed", deadline_server_ms: 121_000, last_server_ms: 21_000, revision: 3 })));
+    await settle();
+    expect(target.querySelector(".time")?.textContent).toBe("100 seconds left");
+    expect(commands).toEqual([]);
+  } finally { unmount(app as never); target.remove(); }
+});
+
 it.skipIf(!browser)("offers timed and untimed without a default and begins by keyboard", async () => {
   const { userEvent } = await import("vitest/browser");
   const commands: TyperCommand[] = [];
