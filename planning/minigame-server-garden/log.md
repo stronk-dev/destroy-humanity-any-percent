@@ -627,3 +627,66 @@ public host or activation; no kernel bump for test-only work. This is the pure S
 not AC8's two-stream transaction, faucet or deployed player outcome. Preserve original engine
 corpus and prior evidence; cold Go/client and actual Linux browsers are the scoped gates.
 No self-approval or archival. Pin an exact Claude review range and continue clock/tick review.
+
+## 2026-10-06 — pure SG6 boundary evidence (no production defect)
+
+**Review by:** Codex. **Recorded by:** Codex. **Disposition:** no defect found in the bounded
+pure SG6 harvest arithmetic/seed/hash source from original G1 (`02f91d10^..02f91d10`);
+this is NOT approval of that whole commit or G1, which retains its CHANGES REQUIRED findings.
+The reviewed Go commands/TS engine files are byte-unchanged from G1 to baseline `ffb338e0`.
+The new test-only range below is implemented by Codex and needs Claude's designated review.
+
+Under `3fbf39af`, added 18 shared literal outcomes: the declared 4×4 units/effect matrix,
+all 36 maximum plots (360,000,000,000 total units), and a mixed zero/nonstarter/dormant harvest
+retaining a growing plot. Catalogs load through actual SG1; states decode/bind through actual
+SG2 before every call. Actual loaded operands are explicitly linked to the scalar reference.
+Both actual harvest functions compare complete result, canonical hash and post-state bytes,
+then validate post-state against the catalog. The nonstarter's zero-unit harvest discovers
+its seed and removes the plot; this is not a claim about the Company/faucet's zero-send path.
+
+Literal products/quotients were derived from the declared integer inputs without production
+harvest, with independent Go math/big verification. Expected hash is SHA-256 of the independently
+built canonical intent/plots/total bytes, not a production HarvestHash return copied into a
+fixture. Product 9,666,666,970,999,999 floors to 9,666,666,970 units; the actual floating variant
+in both test instruments gives 9,666,666,971. Exactly one of sixteen scalar cases differs.
+The existing int64/BigInt implementations are correct; this is RP-216 evidence, not a defect
+invented from a deliberately wrong control. No real-world balance statistic or owner copy.
+
+### Executed discrimination
+
+All probes modify the actual TS engine, not the test's reference, and each process is terminal
+before restoration/next mutation. No browser or other live verification sees the mutations.
+
+- Replace the BigInt product with Math.floor(number × number / PPM): precisely the new large-
+  product case fails, 7,255 pass. Full output differs by one unit and consequently hash too.
+  The original small harvest/replay witnesses stay green; they did not cover this boundary.
+- Disable seed collection: new mixed case plus existing engine-corpus and Founder-replay cases
+  fail (three total), 7,253 pass. Reported discoveries and persistent collection differ.
+- Hash a fixed different valid UUID instead of the actual intent: all eighteen new harvest
+  cases plus existing engine/replay witnesses fail (20 total), 7,236 pass. Units/state alone
+  cannot hide the broken binding.
+- Add `strain_c` only to post-state after computing the correct result/hash: all eighteen new
+  cases fail specifically at the post-state byte assertion, 7,238 pass. The old engine/replay
+  fixtures stay green because their actual harvest already discovers C. This demonstrates the
+  post-state oracle independently of result equality, not a failure short-circuited earlier.
+- Restored TS SHA-256 `e064d60c11360a1dc2ee973ec3f60865364b7f412e88e2326388c9a0440b56e7`;
+  untouched Go commands `90b26b2c473359f12c1599f204f9a0140ae94c508dc7ae6a47209cc3610ba320`.
+  Runtime/balance/original corpus/version diffs are empty. Kernel remains 0.3.150.
+
+### Executed final gates and limits
+
+Cold Garden/production/save/replaycatalog/kernel/Decimal packages pass (`-count=1`); Garden
+vet and original corpus check pass. Root type/client/build/shell boundary passes: 7,256 tests /
+104 intentional skips, zero Svelte errors/warnings, 213-module build and 22 Game UI component
+checks. Full local Linux Chromium/Firefox/WebKit passes 22,062 / six deliberate skips, 276
+file/engine populations; all nineteen new test entries execute per engine. Separate Chromium
+performance passes one / 20 filters. After the final post-state probe restores byte-exactly,
+the complete root client suite passes again at the same count.
+
+No fresh Postgres, hosted Actions, whole-history guard, copy/content or deployment measurement
+is claimed here: no production byte changes and the scoped claim is pure SG6 only. Prior dated
+DB/copy/guard evidence remains distinct. Historical RP-131 is not repaired/bypassed; existing
+SG1/SG2/Arcade/Typer/Cosmetic reviews and owner/author routes remain open. No balance fixture,
+payout/governor, clock/tick, schema, copy, activation, CI, public host or kernel change.
+No self-approval, archival or full Garden/1.0 promotion. Next: accepted SG3/SG4 clock/tick
+review, then remaining G2–G7, preserving the full nine-tier game and release obligations.

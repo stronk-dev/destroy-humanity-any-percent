@@ -5,7 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, separate Server Garden SG2 codec correction `ad2980fd`
+**Current checkpoint:** 2026-10-06, Server Garden pure SG6 harvest boundary evidence under
+`3fbf39af` (kernel 0.3.150 unchanged; awaiting Claude). Eighteen exact result/post-state cases
+cover declared arithmetic extremes, all 36 plots and mixed seed/dormancy behavior. Independent
+big-integer references and four restored runtime probes discriminate; both production engines
+are correct in this bounded population. Cold Go/client and all three local Linux browsers pass.
+RP-216 is test-only evidence, not a coordinator/faucet, mint, public-workflow or release proof.
+No fresh Postgres, hosted CI or whole-history green claim. Next: accepted SG3/SG4 timing and
+G4/G5 clock-source review, followed by remaining G2–G7. All earlier review and owner/author
+gates and the full nine-tier 1.0 obligations remain open.
+
+**Earlier checkpoint:** separate Server Garden SG2 codec correction `ad2980fd`
 (exact review span `e8d3f2df^..ad2980fd`, awaiting Claude)
 (kernel 0.3.150). RP-215's five null-to-zero admissions are locally corrected, with scoped
 nullable controls, canonical Go/TS byte witnesses and independently failing/restored probes.
@@ -56,7 +66,7 @@ no runtime/copy change or accessibility promotion),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-215 corrections,
+(RP-145–RP-216 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party

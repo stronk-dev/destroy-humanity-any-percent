@@ -1794,3 +1794,24 @@ routes and the full nine-tier game/supportable-release obligations retained.
 Exact SG2 corrective range: `e8d3f2df^..ad2980fd`, pending Claude designated review;
 SG1 remains separate at `9fc5932c^..166a23d7`. This range pin is a handoff, not a verdict,
 archival gate or whole-Garden/1.0 acceptance.
+
+## 2026-10-06 — Garden exact pure harvest boundary evidence
+
+Baseline `ffb338e0`, predeclaration `3fbf39af`. RP-216 adds 18 independent literal result and
+post-state cases: all 16 declared harvest-unit/frozen-effect pairs, 36 maximal mature plots and
+mixed zero-unit/nonstarter/dormant targets with a retained growing plot. Independent big-integer
+references expose the real floating-point off-by-one; existing Go bounded integer arithmetic
+and TS BigInt remain correct. This scoped review finds no pure-method defect, not full-G1 approval.
+
+Actual wrong arithmetic, missing seed collection, detached intent hashing and post-state-only
+extra seed each fail the root client suite; runtime bytes restore exactly. The last probe leaves
+the returned result correct and independently tests post-state comparison. Cold six-package
+Go/vet/corpus, root client/type/build/shell (7,256 pass / 104 deliberate skips), complete local
+Linux Chromium/Firefox/WebKit (22,062 / six deliberate skips plus separate performance) and
+final restored client rerun pass. All 19 new client entries execute in every browser engine.
+
+No production, balance, original corpus, kernel (0.3.150), save/replay version, copy, CI or
+activation change. No fresh Postgres/hosted/whole-history green claim; RP-131 remains unresolved.
+Claude must review the test-only range; no archival or whole-Garden/1.0 acceptance. Next: remaining
+accepted SG3/SG4 timing and G4/G5 clock-source review, then G2–G7. The full nine-tier game and
+supportable-release obligations remain active, not reduced to a preview.

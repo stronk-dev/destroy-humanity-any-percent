@@ -78,6 +78,15 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
   - a rejected harvest is Founder-only.
 - The six SG8 event kinds are in migrations 00082 and 00083.
 
+The pure harvest arithmetic uses bounded int64 in Go and BigInt for the product in TS, before
+converting the safe quotient to a number. `testdata/garden/harvest-boundaries-v1.json` supplies
+18 literal result/hash/post-state cases: a 4×4 operand matrix, all 36 maximum-valued plots,
+and a mixed frozen/zero-seed/dormant harvest retaining an unharvested growing plot. Expected
+quotients use independent exact arithmetic, not production harvest output. The matrix includes
+one demonstrated floating-product off-by-one. This is pure-engine evidence; it does not replace
+the Postgres transaction, faucet, public player workflow or release checks. Its new test range
+awaits designated review, with production and balance bytes unchanged.
+
 ## Read
 
 `GET /api/v1/garden/current` (`get_current_garden`) returns `inactive`, `locked` or `active`. It
@@ -101,7 +110,8 @@ All garden copy is candidate text (`copy/catalog/garden-candidate.json`): specie
 ## Verification
 
 - `make garden-corpus-check`
-- `go test ./garden`
+- `make test-go GO_PACKAGES=./garden GO_TEST_FLAGS='-count=1'`
+- `client/test/garden-harvest-boundaries.test.ts` and the shared literal boundary corpus
 - `client/test/garden-engine.test.ts`, `garden-replay.test.ts` and `garden-founder-state.test.ts`,
   byte-matching the Go corpora
 - `production.TestGarden*`

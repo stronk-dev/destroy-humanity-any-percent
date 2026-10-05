@@ -1,0 +1,649 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "units_0_effect_0",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 0
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":0}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000001",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:f9f30af315303cbb8847babea44b405018bd5c30840c773ff98c847461280782\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 0,
+      "scalar_effect_ppm": 0,
+      "expected_product": "0",
+      "expected_units": 0
+    },
+    {
+      "name": "units_0_effect_1",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 0
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":1}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000002",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:216d9bd1e660a7a8269123ea2c1246912f3416f3d64cbe2e75c339742ce9274e\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 0,
+      "scalar_effect_ppm": 1,
+      "expected_product": "0",
+      "expected_units": 0
+    },
+    {
+      "name": "units_0_effect_9666667",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 0
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":9666667}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000003",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:a3bba71a546346e02150ed22c58f13bd49295561a17c37d9bee6938115c7f1a8\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 0,
+      "scalar_effect_ppm": 9666667,
+      "expected_product": "0",
+      "expected_units": 0
+    },
+    {
+      "name": "units_0_effect_10000000",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 0
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000004",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:8f8c08200b15fee054dcf71da08a524f3b059298c92916a27220abb600d5df0d\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 0,
+      "scalar_effect_ppm": 10000000,
+      "expected_product": "0",
+      "expected_units": 0
+    },
+    {
+      "name": "units_1_effect_0",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":0}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000005",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:688974e1129e06c6b192503172cc08dbf0b840739c6d60ee6f8d82abfc6cd3ab\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1,
+      "scalar_effect_ppm": 0,
+      "expected_product": "0",
+      "expected_units": 0
+    },
+    {
+      "name": "units_1_effect_1",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":1}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000006",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:3ea360695cfa4a047f34927c4d68a811ed55e1fed8c928bd7de3ece03fe1d07b\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1,
+      "scalar_effect_ppm": 1,
+      "expected_product": "1",
+      "expected_units": 0
+    },
+    {
+      "name": "units_1_effect_9666667",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":9666667}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000007",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":9}],\"total_units\":9,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:973d02b0459097759d9a96b51351f1eacacb206f6477c2d2993256869fecaa4e\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1,
+      "scalar_effect_ppm": 9666667,
+      "expected_product": "9666667",
+      "expected_units": 9
+    },
+    {
+      "name": "units_1_effect_10000000",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000008",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":10}],\"total_units\":10,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:42d273f2a58b9d21c882bfb7b940f7f351bc876ec934812f18cd0a15a2c93113\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1,
+      "scalar_effect_ppm": 10000000,
+      "expected_product": "10000000",
+      "expected_units": 10
+    },
+    {
+      "name": "units_999999997_effect_0",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 999999997
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":0}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000009",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:fd63037470c463cb7a43f2d0e27f18a34c8db66e6fe8e8d8b2184567827eb7c8\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 999999997,
+      "scalar_effect_ppm": 0,
+      "expected_product": "0",
+      "expected_units": 0
+    },
+    {
+      "name": "units_999999997_effect_1",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 999999997
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":1}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000010",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":999}],\"total_units\":999,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:7ff23874c0bed253ad2853affe4fafc03a1c98f9de56206f29a28368fc9d317d\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 999999997,
+      "scalar_effect_ppm": 1,
+      "expected_product": "999999997",
+      "expected_units": 999
+    },
+    {
+      "name": "units_999999997_effect_9666667",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 999999997
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":9666667}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000011",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":9666666970}],\"total_units\":9666666970,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:7e3cd98c9bec8cdb74df8c8be54b6cf233402ba0c36724deafe3a6e4fbe3959b\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 999999997,
+      "scalar_effect_ppm": 9666667,
+      "expected_product": "9666666970999999",
+      "expected_units": 9666666970
+    },
+    {
+      "name": "units_999999997_effect_10000000",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 999999997
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000012",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":9999999970}],\"total_units\":9999999970,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:ea94c490984fea0d9ea26852173699c2da73cb68128e64e75e9dc14b2187837a\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 999999997,
+      "scalar_effect_ppm": 10000000,
+      "expected_product": "9999999970000000",
+      "expected_units": 9999999970
+    },
+    {
+      "name": "units_1000000000_effect_0",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1000000000
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":0}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000013",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":0}],\"total_units\":0,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:c29061acfac59df43cab42a75be327c0bd83fb04598f8f5dce5492a11d5d5339\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1000000000,
+      "scalar_effect_ppm": 0,
+      "expected_product": "0",
+      "expected_units": 0
+    },
+    {
+      "name": "units_1000000000_effect_1",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1000000000
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":1}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000014",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":1000}],\"total_units\":1000,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:f8d1cd2fde5a8d6a9edc7e15607d2bf68972d137e1b8967d0da572a104b46296\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1000000000,
+      "scalar_effect_ppm": 1,
+      "expected_product": "1000000000",
+      "expected_units": 1000
+    },
+    {
+      "name": "units_1000000000_effect_9666667",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1000000000
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":9666667}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000015",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":9666667000}],\"total_units\":9666667000,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:51927800738a7a5f8e01a94b1dac52578ed41a6514ca66f2447f386bd3aac551\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1000000000,
+      "scalar_effect_ppm": 9666667,
+      "expected_product": "9666667000000000",
+      "expected_units": 9666667000
+    },
+    {
+      "name": "units_1000000000_effect_10000000",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1000000000
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000016",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":10000000000}],\"total_units\":10000000000,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:83d6d163b22472332290e80ce8799a7585153435c089bd5c2b0114d04e6051fb\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "scalar_harvest_units": 1000000000,
+      "scalar_effect_ppm": 10000000,
+      "expected_product": "10000000000000000",
+      "expected_units": 10000000000
+    },
+    {
+      "name": "all_36_maximum",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 1000000000
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":0,\"col\":1,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":0,\"col\":2,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":0,\"col\":3,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":0,\"col\":4,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":0,\"col\":5,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":1,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":1,\"col\":1,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":1,\"col\":2,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":1,\"col\":3,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":1,\"col\":4,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":1,\"col\":5,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":2,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":2,\"col\":1,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":2,\"col\":2,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":2,\"col\":3,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":2,\"col\":4,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":2,\"col\":5,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":3,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":3,\"col\":1,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":3,\"col\":2,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":3,\"col\":3,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":3,\"col\":4,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":3,\"col\":5,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":4,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":4,\"col\":1,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":4,\"col\":2,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":4,\"col\":3,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":4,\"col\":4,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":4,\"col\":5,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":5,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":5,\"col\":1,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":5,\"col\":2,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":5,\"col\":3,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":5,\"col\":4,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000},{\"row\":5,\"col\":5,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":10000000}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000017",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        },
+        {
+          "row": 0,
+          "col": 1
+        },
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 0,
+          "col": 3
+        },
+        {
+          "row": 0,
+          "col": 4
+        },
+        {
+          "row": 0,
+          "col": 5
+        },
+        {
+          "row": 1,
+          "col": 0
+        },
+        {
+          "row": 1,
+          "col": 1
+        },
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 3
+        },
+        {
+          "row": 1,
+          "col": 4
+        },
+        {
+          "row": 1,
+          "col": 5
+        },
+        {
+          "row": 2,
+          "col": 0
+        },
+        {
+          "row": 2,
+          "col": 1
+        },
+        {
+          "row": 2,
+          "col": 2
+        },
+        {
+          "row": 2,
+          "col": 3
+        },
+        {
+          "row": 2,
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 5
+        },
+        {
+          "row": 3,
+          "col": 0
+        },
+        {
+          "row": 3,
+          "col": 1
+        },
+        {
+          "row": 3,
+          "col": 2
+        },
+        {
+          "row": 3,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 4
+        },
+        {
+          "row": 3,
+          "col": 5
+        },
+        {
+          "row": 4,
+          "col": 0
+        },
+        {
+          "row": 4,
+          "col": 1
+        },
+        {
+          "row": 4,
+          "col": 2
+        },
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 4
+        },
+        {
+          "row": 4,
+          "col": 5
+        },
+        {
+          "row": 5,
+          "col": 0
+        },
+        {
+          "row": 5,
+          "col": 1
+        },
+        {
+          "row": 5,
+          "col": 2
+        },
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 5,
+          "col": 4
+        },
+        {
+          "row": 5,
+          "col": 5
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":1,\"row\":0,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":2,\"row\":0,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":3,\"row\":0,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":4,\"row\":0,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":5,\"row\":0,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":0,\"row\":1,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":1,\"row\":1,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":2,\"row\":1,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":3,\"row\":1,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":4,\"row\":1,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":5,\"row\":1,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":0,\"row\":2,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":1,\"row\":2,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":2,\"row\":2,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":3,\"row\":2,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":4,\"row\":2,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":5,\"row\":2,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":0,\"row\":3,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":1,\"row\":3,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":2,\"row\":3,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":3,\"row\":3,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":4,\"row\":3,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":5,\"row\":3,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":0,\"row\":4,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":1,\"row\":4,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":2,\"row\":4,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":3,\"row\":4,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":4,\"row\":4,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":5,\"row\":4,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":0,\"row\":5,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":1,\"row\":5,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":2,\"row\":5,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":3,\"row\":5,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":4,\"row\":5,\"species_id\":\"strain_a\",\"units\":10000000000},{\"col\":5,\"row\":5,\"species_id\":\"strain_a\",\"units\":10000000000}],\"total_units\":360000000000,\"seeds_discovered\":[],\"harvest_hash\":\"sha256:7712de22e3458965dbf6910fb131c3ee4bbfa142ffc88a83354bd8087c5292c7\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[],\"seed_collection\":[\"strain_a\",\"strain_b\"]}"
+    },
+    {
+      "name": "mixed_frozen_zero_seed_and_dormant",
+      "catalog_ops": [
+        {
+          "op": "set",
+          "path": [
+            "species",
+            0,
+            "harvest_units"
+          ],
+          "value": 999999997
+        }
+      ],
+      "initial": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":3,\"matured_effect_ppm\":1},{\"row\":0,\"col\":1,\"species_id\":\"strain_b\",\"age_ticks\":0,\"matured_effect_ppm\":null},{\"row\":5,\"col\":4,\"species_id\":\"strain_e\",\"age_ticks\":5,\"matured_effect_ppm\":0},{\"row\":5,\"col\":5,\"species_id\":\"strain_b\",\"age_ticks\":4,\"matured_effect_ppm\":1000000}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+      "intent_id": "01986666-0000-7000-8000-000000000018",
+      "targets": [
+        {
+          "row": 0,
+          "col": 0
+        },
+        {
+          "row": 5,
+          "col": 4
+        },
+        {
+          "row": 5,
+          "col": 5
+        }
+      ],
+      "expected_result": "{\"plots\":[{\"col\":0,\"row\":0,\"species_id\":\"strain_a\",\"units\":999},{\"col\":4,\"row\":5,\"species_id\":\"strain_e\",\"units\":0},{\"col\":5,\"row\":5,\"species_id\":\"strain_b\",\"units\":8}],\"total_units\":1007,\"seeds_discovered\":[\"strain_e\"],\"harvest_hash\":\"sha256:2512291d3e5ead8c9430b71d8cbc0521e0f3589c9e083578f9647eec1a8bfda9\"}",
+      "expected_state": "{\"salt_hex\":\"0123456789abcdef\",\"tick_anchor_wall_ms\":1000000,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":1,\"species_id\":\"strain_b\",\"age_ticks\":0,\"matured_effect_ppm\":null}],\"seed_collection\":[\"strain_a\",\"strain_b\",\"strain_e\"]}"
+    }
+  ]
+}

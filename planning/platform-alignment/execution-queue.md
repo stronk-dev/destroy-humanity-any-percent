@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Server Garden state-codec correction — 2026-10-06
+## Current Server Garden pure harvest boundary evidence — 2026-10-06
+
+Predeclaration `3fbf39af` supplies 18 exact result/post-state cases: the complete 4×4
+arithmetic boundary matrix, all 36 mature plots and mixed zero-unit/nonstarter/dormant targets
+with a retained growing plot. Both existing engines are correct in this bounded population.
+Independent big-integer references expose one floating-point off-by-one; wrong arithmetic,
+missing seeds, detached intent hash and post-state-only seed mutation each fail and restore.
+RP-216 records evidence, not a production repair or full original-G1 approval.
+
+Cold six-package Go/vet/corpus and root client/type/build/shell pass (7,256 / 104 deliberate
+skips). The complete local Linux browser lane passes 22,062 / six deliberate skips plus
+separate performance; all 19 new client entries execute in each engine. Final client rerun
+after restoration passes. Runtime, balance, original corpus and kernel bytes are unchanged
+(0.3.150). No fresh Postgres, hosted Actions or whole-history green claim; RP-131 remains
+unresolved. This is pure SG6 evidence, not AC8 coordinator/faucet, SG13 mint or public proof.
+The test-only range requires Claude's designated review, alongside the separate SG1/SG2 ranges.
+
+**NEXT SAFE ACTION:** predeclare and execute remaining accepted SG3/SG4 clock/tick and G4/G5
+clock-source review, then remaining G2–G7. Retain all previous cross-party, owner and author
+gates. The full nine-tier 1.0 and supportable-release obligations remain the goal.
+
+## Earlier Server Garden state-codec correction — 2026-10-06
 
 Under separate predeclaration `e8d3f2df`, actual Go DecodeState plus pinned ValidateAgainst
 admits null tick sequence, row, col and age as zero (RP-215; five variants). The codec landed in
@@ -23,7 +44,7 @@ hosted, archival, mint or release claim. Claude must review this separate correc
 Exact SG2 corrective range `e8d3f2df^..ad2980fd` is READY FOR CLAUDE DESIGNATED REVIEW,
 separate from SG1 `9fc5932c^..166a23d7`; neither is approved.
 
-**NEXT SAFE ACTION:** continue the remaining accepted
+**Dated next action (superseded above):** continue the remaining accepted
 Garden clock/engine/commands/corpus and G2–G7 under bounded predeclarations. Retain SG1's
 exact review range, prior Arcade/Typer/Cosmetic verdict requests and all owner/author gates.
 Full nine-tier 1.0 remains active; no preview scope reduction substitutes for it.

@@ -21,6 +21,12 @@ not completed G2/G3 or whole-G1 review. Eight valid / 21 typed refusal cases run
 runtimes; two additional raw duplicate refusals are Go-only with visible TS parsing-loss
 controls. Both positive/negative probes discriminate and restore. Claude review is required.
 
+Separate test-only SG6 supplement under `3fbf39af`: real Go/TS harvests match 18 independently
+derived boundary result/hash/post-state bytes, including the large-product floor and 36-plot
+sum. Four restored TS mutations prove arithmetic, seed, hash and post-state checks can fail.
+No production/balance/kernel change; kernel stays 0.3.150. This is not AC8's coordinator or
+whole-G1/Garden acceptance, and its test range awaits Claude. Next: SG3/SG4 clock/tick review.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure
