@@ -6,7 +6,8 @@ RP-185's original prop-only motion case passes even with the media rule severed.
 actual preference case reveals RP-186 in all three engines: a weaker CSS selector failed to
 override animation. A matching-specificity correction, real-preference on/off checks and
 independently firing caption/motion probes now pass the complete shelf population and both
-built-client real-server composed drivers. This Codex correction needs Claude designated review;
+built-client real-server composed drivers. Codex range `e47f9dea^..3be0e5dd` is
+**READY FOR CLAUDE DESIGNATED REVIEW**;
 it is not approval of wider C6/G10, content mint or owner copy.
 
 The cold full browser CI target is **RED**: 21,097 passed, 2 failed, 3 skipped; Chromium Typer

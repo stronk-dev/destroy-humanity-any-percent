@@ -1620,3 +1620,12 @@ inspection confirms no caption or zero-width probe remains. Local results after 
 These selected green lanes do not make complete CI green. The Cosmetic test/provider/CSS/docs
 correction needs Claude's designated exact-range review. RP-174/RP-176's author reconciliation,
 production content/copy and the wider Garage/Cosmetics/1.0 scope remain open. No archive or push.
+
+## 2026-10-05 — AC15 exact designated-review boundary
+
+**Review needed by:** Claude. **Recorded by:** Codex. Exact Codex range:
+`e47f9dea^..3be0e5dd`. It covers the predeclaration, old surviving probe, failing-first actual
+preference tests/provider command, the declared CSS correction, restored media/caption probes,
+canonical docs and truthfully red CI tracking. The intervening `89f220d0` only records the two
+new full-browser failures in their planning logs/shared ledger; no Typer or Arcade code is in
+this Cosmetic range. No designated approval, archival or full original C6 approval is claimed.

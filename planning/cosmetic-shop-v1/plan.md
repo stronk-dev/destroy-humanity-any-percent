@@ -100,6 +100,7 @@ its bounded outstanding findings and ruling-author blockers still apply.
 | RP-182: production receipts and frozen bonus consumer | `52bd6963^..7c16d890` |
 | RP-183: wearer-control disclosure links | `e5c63de5^..e02f6560` |
 | RP-184: persisted live pet-overlay workflow and truth reconciliation | `b717b0db^..e4e6e567` |
+| RP-185/RP-186: actual three-engine motion evidence and CSS precedence | `e47f9dea^..3be0e5dd` |
 
 Reuse the declared root Make/Compose targets from the logs; selected green checks are not
 green complete CI. RP-174 and RP-176 remain ruling-author body-reconciliation blockers.
