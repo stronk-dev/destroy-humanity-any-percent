@@ -1,5 +1,14 @@
 # Executable queue
 
+## Current Cosmetic Shop C2/OD-10 review — 2026-10-05
+
+Codex **designated-approved Claude's C2** `8e315569^..8e315569` after current-HEAD cold
+Go/TS checks and five restored severing probes covering both dependency readers, both
+constants-identity paths and permanent-ID settlement. This is a bounded approval only:
+the C1/RP-175 and C5/RP-173 Codex corrections await Claude's cross-party review; C3–C8
+remain outside this verdict; RP-174 requires ruling-author body reconciliation; no
+production Cosmetics pin or archival follows.
+
 ## Current Cosmetic Shop C1/AC1 delta — 2026-10-05
 
 Codex's designated review of Claude C1 `afe6529b^..afe6529b` is **CHANGES REQUIRED**

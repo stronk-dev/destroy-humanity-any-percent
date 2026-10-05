@@ -1142,3 +1142,11 @@ Post-commit `make verify-kernel-version` reached the same historical `50a3a514` 
 exited 2 before inspecting the new C1 commit. Direct parent/commit inspection confirms the
 new guarded loader change and the 0.3.141→0.3.142 source/Go/TS mirrors landed together in
 `76a9fe04`. This is a local version-bump fact, not a green full CI gate.
+
+## 2026-10-05 — Cosmetic C2 replay-bundle designated review
+
+Codex designated-approved Claude's C2 `8e315569^..8e315569` on current HEAD after cold Go
+and client populations and restored severing of Go/TS pet-species dependency, Go/TS constants
+identity, and permanent-ID settlement. The exact evidence and verdict live in the Cosmetic
+planning log. It proves C2's bundle wiring in isolation, not a production Cosmetics epoch,
+C1/C3–C8 review, archive eligibility, a green kernel-history CI gate or 1.0 readiness.

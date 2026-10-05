@@ -777,3 +777,32 @@ mutation and rerun cold. Inspect whether hash/byte binding witnesses can fail if
 omitted from identity. Any vacuous negative or cross-runtime discrepancy is CHANGES REQUIRED;
 otherwise record a bounded C2 verdict with exact range and limits. No product mechanic, epoch
 pin, body text or copy change is authorized by this review.
+
+## 2026-10-05 — Codex designated C2/OD-10 verdict: APPROVED (bounded)
+
+**Review by:** Codex, the cross-party designated reviewer of Claude's C2.
+**Recorded by:** Codex. **Reviewed range:** `8e315569^..8e315569`.
+**Decision:** APPROVED for C2's replay-bundle wiring, identity membership, scalar dependency
+and permanent-ID settlement hook only. Source and range diff were inspected against accepted
+Cosmetic Shop §2/OD-10 and the existing generic constants-hash/`CatalogBundle.valid` contract.
+At current HEAD, cold `make test-go GO_PACKAGES='./replaycatalog ./production'
+GO_TEST_FLAGS='-count=1'` and `make test-client` pass (6,944 client tests, 85 browser skips).
+
+Independent temporary mutations were each restored before the final cold pass:
+
+- Removing Go's `cosmetics ⇒ pet_species` artifact-name check made
+  `TestLoadCosmeticsRequiresItsChain` fail, "cosmetics loaded without pet_species".
+- Removing the corresponding TS replay-artifact check made the client cosmetic-bundle negative
+  fail because the missing-species bundle loaded.
+- Removing `cosmetic.ValidateTransition` from server settlement made
+  `TestSettleRejectsCosmeticIDDrop` fail on the dropped-artifact arm with a nil error.
+- Omitting `cosmetics` from Go `ConstantsHashArtifacts` made the C2 identity test fail with
+  "cosmetics does not join constants identity". Omitting it from the TS replay hash made the
+  focused two-test client C2 population fail at the complete-bundle positive with "replay
+  artifact label mismatch" (one failed, one passed). The broader client suite also failed
+  56 dependent replay tests under that mutation; the focused result is the cited C2 oracle.
+
+The restored source diff is empty. This approval is not C1/AC1 or C3–C8 review, not proof a
+production epoch pins Cosmetics, and not Cosmetics archival authorization. RP-175/C1 and
+RP-173/C5 Codex corrections still need Claude's designated review; RP-174 still needs its
+ruling-author RFC body reconciliation.

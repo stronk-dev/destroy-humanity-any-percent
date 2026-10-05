@@ -13,7 +13,8 @@ migration take the next free numbers at landing.
   Codex's targeted review found RP-175 raw-number parity; the corrective range awaits Claude's
   designated review. This checkbox is implementation presence, not archival approval.
 - [x] C2 Replay-bundle wiring: `cosmetics` joins the constants bundle (OD-10) and requires
-  `pet_species` on the scalar Founder chain.
+  `pet_species` on the scalar Founder chain. Codex designated-approved this bounded C2 range
+  after cold Go/TS checks and independent chain, identity and settlement severing; see `log.md`.
 - [x] C3 Founder v24 `cosmetics` state: codec, validation, activation at the new-run boundary,
   Exit carry and the replay-inputs carry, in both runtimes (AC3, AC4, AC8).
 - [x] C4 Intents `acquire_cosmetic` / `equip_cosmetic` / `unequip_cosmetic`, the three events and
