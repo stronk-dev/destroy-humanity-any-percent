@@ -785,3 +785,99 @@ existing minigame-resolution/fault populations, repeated six-arm clock matrix. R
 build/boundary and vector checks retained; no assertion of whole history/hosted CI green while
 RP-131 is unresolved. Record source hashes, review range, docs/ledger/queues in-range. Cross-party
 Claude review remains required; no full Garden acceptance, archive or 1.0 promotion.
+
+### RP-217 correction and executed evidence
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Predeclaration `14ad4287`;
+diagnostic baseline `904c1d17`. G5's harvest and reused Store source are byte-identical from
+`f8d170a8` through that baseline, independently checked. The scoped original clock path is
+CHANGES REQUIRED; this is not a completed G5/G1–G7 review or designated approval of this repair.
+
+**Construction:** SG-P2's `GardenHarvestRequest` has no caller timestamp. The named Garden
+Store entry reuses the existing atomic persistence implementation and samples
+`founderServerTimestamp` after both stream locks, before the Founder transition. The existing
+MinigameResolutionRequest caller-time path calls the same implementation with DB sampling
+disabled; its signature, policy and old request validation remain intact. The handler has no
+wall-time maturity prediction. Its pure clone probe is moved into the locked callback, using
+that exact Founder command/time; applied harvests then run the credited replay arm. A refusal
+rolls back before the existing Founder-only DB-stamped path; a later maturity/revision race
+remains a conflict. Idempotency conflicts are mapped to the existing receipt, not thrown.
+Attendance sampling/validation, faucet arithmetic, replay envelopes, fault points, event/schema,
+balance, current epoch and historical rows are unchanged. Kernel and Go/TS version constants
+are 0.3.151; no invented historical bump or migration.
+
+**Initial failures disclosed:** the first implementation tried the credited arm directly on
+an immature target, correctly hitting its existing `a credited harvest cannot be rejected`
+invariant. Moving the applicability clone under the same locked timestamp preserves that
+closed union rather than weakening it. The first test reused the old ten-credit helper for a
+one-credit history; the helper now takes an explicit expected count while the old witness
+continues to require ten. An arithmetic inverse of +24 hours made the retry older than the
+Company attendance cursor and correctly failed that untouched policy; the opposite-direction
+retry now uses the declared -10-second arm, which stays inside the measured valid cursor.
+Neither failed setup is accepted evidence. No bound or invariant was loosened.
+
+**Retained six-arm proof:** actual Service.Handle, actual SQL database bounds and full encoded
+Founder/Company snapshots. All three mature offsets (matched, -10 seconds, +24 hours) credit
+20 once with zero Garden ticks/forfeiture, retain the growing starters at ages 1/0, collect C,
+bind log/envelope/resolved time inside the DB bounds, return identical bytes/no changes on
+opposite-direction retry, refuse changed-body replay without writes, permit a following
+ordinary command and verify both histories. All three immature offsets record one Founder
+rejection without changing either state/revision, Company history, events, window or quota.
+Twenty cold repetitions execute all six arms successfully (13.090 s).
+
+**Independent probes, no concurrent verification:** advancing only the new locked DB sample
+by 24 hours fails all six arms at the DB-bound assertion (exit 2). Restored Store SHA-256
+`7d8f33d0316149682abc860bf2a99d9e5a59cdcc28313df9806f3cafb38a6bda`.
+Reintroducing the old handler-time Fiscal pre-probe fails both lagged arms and the ahead
+mature arm's opposite-direction retry (three fail / three pass, exit 2); restored harvest
+source SHA-256 `c7503bb86dc06bc8e45e96fbbdc1f0470a8ac8891deb6235d586b9f4d034e2b4`.
+All probe bytes are removed; the retained population and original fault/lifecycle controls
+pass afterward.
+
+**Completed checks:** cold six-package Garden/production/save/replaycatalog/kernel/Decimal
+passes; vet/corpus and unchanged 6,296-vector regeneration pass. The first six-package run
+caught stale generated version constants; both Go/TS constants are corrected before the final
+cold rerun (production 37.004 s). Root type/client/build/shell/copy/content checks pass: 7,256
+tests / 104 intentional skips, zero Svelte diagnostics, 213-module build and 22 Game UI component
+checks. Verbose Postgres production runs ten Garden functions (including the six-arm test)
+and the existing minigame resolution/fault population. The initial combined selector selected
+no gameserver test; its exact composed pinned-tenant lifecycle function was then run separately
+and passes non-skipped (0.491 s), including the still-inactive Garden read. No active public
+Garden/mint/participant-accessibility or full acceptance proof is inferred.
+
+**CI honesty:** fresh `make verify-kernel-version` passes checkout and adversarial checkout
+controls, then fails the unchanged RP-131 hash against its unchanged parent. No bypass/rewrite
+or whole-client/hosted-green claim. `make verify-server-ci` pulls the declared amd64 image but
+cannot execute `/usr/bin/sh` on this aarch64 Docker host (exec format error). That pull also
+replaced the shared `golang:1.26` tag with amd64, so the first native fallback fails likewise.
+An explicit normal arm64 image pull restores the native development tag, without installing
+emulation or changing Compose/CI policy. The same root `verify-server-core` target is running
+in declared native Linux/Postgres; its result is recorded below, never relabelled amd64 proof.
+No test/runtime probe remains. Full CI, hosted reliability, release, review and archive gates
+remain separate. Next accepted work: remaining pure SG3/SG4 clock/tick and G2–G7.
+
+The native Linux/Postgres `verify-server-core` target finishes exit 0: cold `-count=1`
+non-harness Go suite (including production 61.387 s, gameserver 27.014 s, account, save,
+minigame and Soul populations), full vet, unchanged formula/API generation and boundary
+prerequisites. Its additional Pitch content invocation reports cached, distinct from the
+same test's cold core-package execution. This is native Linux ARM64 evidence only; the exact
+amd64 command remains unable to execute on this host. No Compose or CI file changed.
+
+**Additional browser run — RP-218 (unresolved):** after all three kernel-version constants
+agree, full local Linux three-browser lane exits 2: WebKit's existing `feeds authoritative
+Game UI snapshots through the archived 20 Hz shell worker` retains output `100` until the
+unchanged 5,000 ms poll limit. 22,061 other tests pass / six deliberate skips (275 file/engine
+populations pass, one fails); its separate performance invocation is not reached. Earlier SG6
+22,062-pass runs keep their original dates and do not erase this failure. Exact isolated cold
+Linux WebKit case passes 1 / 20 filters, 367 ms, exit 0. That is diagnostic context, not a fix
+or replacement full-lane acceptance. My commentary first called the limit two seconds; source
+shows five, corrected here and in commentary. Worker/lifecycle/fixture source bytes are
+unchanged; the mechanical client kernel-version constant is the only TS implementation change.
+
+The fixture's refresh still supplies the original rate while the manually injected snapshot
+uses 1,000× that rate; visibility/offline paths can request refresh. This is a source-derived
+candidate, not an executed cause attribution. A new bounded predeclaration must separate
+actual worker/lifecycle behavior from this fixture mismatch and full-lane scheduling. No timeout
+increase, skip or runtime/CI change is inferred here. The Garden clock proof is bounded and
+ready for designated review; whole-browser/CI and release proof remain red/unresolved. Next
+safe work first investigates RP-218, then remaining accepted pure SG3/SG4 and G2–G7.

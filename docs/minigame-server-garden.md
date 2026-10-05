@@ -69,6 +69,11 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
   trigger's receipt carries `garden_advance`, and `garden_advanced.v1` precedes the command event
   when visible.
 - **Harvest** commits through the Founder→Company coordinator:
+  - `save.Store.ApplyGardenHarvestTransaction` accepts no caller timestamp and samples the
+    existing Founder Postgres clock after locking Founder then Company;
+  - the applicability probe and applied transition use that same locked timestamp; a refusal
+    rolls back the coordinator before the ordinary DB-stamped Founder-only rejection path;
+    a later maturity/revision race returns the existing conflict rather than a partial credit;
   - the Founder intent record is the exactly-once authority;
   - the faucet window is keyed `(founder, "server_garden", attended_day)`;
   - the credit to `company.cash` saturates;
@@ -77,6 +82,13 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
   - past the daily sends, units forfeit with `cap.minigame_faucet` and seeds are still recorded;
   - a rejected harvest is Founder-only.
 - The six SG8 event kinds are in migrations 00082 and 00083.
+
+The bounded clock repair (RP-217) preserves other minigame-resolution timestamp policies and
+Founder attendance/faucet arithmetic. Six real-Postgres mature/immature cases cover matched,
+ten-second-lagged and twenty-four-hour-ahead handler clocks, stored-receipt retries, hash conflicts
+and ordinary-command continuation; those injected server-clock disagreements are not client
+time fields or a measured normal-host skew population. The repair awaits designated review;
+it neither migrates existing history nor establishes public activation or release readiness.
 
 The pure harvest arithmetic uses bounded int64 in Go and BigInt for the product in TS, before
 converting the safe quotient to a number. `testdata/garden/harvest-boundaries-v1.json` supplies
@@ -115,6 +127,7 @@ All garden copy is candidate text (`copy/catalog/garden-candidate.json`): specie
 - `client/test/garden-engine.test.ts`, `garden-replay.test.ts` and `garden-founder-state.test.ts`,
   byte-matching the Go corpora
 - `production.TestGarden*`
+- `production.TestGardenHarvestClockIntegration` (six real-Postgres clock-disagreement arms)
 - The Postgres witnesses `TestGardenIntegrationPersistsReplayableFounderLog`,
   `TestGardenHarvestIntegration` and `TestGardenHarvestFaultsAreAllOrNothing`
 - `client/test/garden-surface-browser.test.ts`, in three browsers

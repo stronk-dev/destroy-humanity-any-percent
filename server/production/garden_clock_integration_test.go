@@ -10,9 +10,8 @@ import (
 	"cloud-clicker/server/save"
 )
 
-// This is a diagnostic of the known G5 clock mismatch, NOT an acceptance
-// assertion that skew-induced errors or future commits are valid. The fix must
-// replace the broken-behavior expectations in its own reviewed range.
+// Full persistence snapshots distinguish a Founder-only refusal and replay
+// from a partially committed multi-stream harvest.
 type gardenClockSnapshot struct {
 	FounderState, CompanyState       string
 	FounderRevision, CompanyRevision int64
@@ -65,7 +64,7 @@ func (fixture gardenHarvestFixture) databaseMS(t *testing.T) int64 {
 	return now
 }
 
-func TestGardenHarvestClockIntegrationDiagnostic(t *testing.T) {
+func TestGardenHarvestClockIntegration(t *testing.T) {
 	for _, arm := range []struct {
 		name     string
 		offset   time.Duration
@@ -76,6 +75,7 @@ func TestGardenHarvestClockIntegrationDiagnostic(t *testing.T) {
 		{"mature_handler_twenty_four_hours_ahead", 24 * time.Hour, false},
 		{"immature_database_time", 0, true},
 		{"immature_handler_ten_seconds_behind", -10 * time.Second, true},
+		{"immature_handler_twenty_four_hours_ahead", 24 * time.Hour, true},
 	} {
 		t.Run(arm.name, func(t *testing.T) {
 			fixture := newGardenHarvestFixture(t)
@@ -109,13 +109,6 @@ func TestGardenHarvestClockIntegrationDiagnostic(t *testing.T) {
 			result, handleErr := fixture.service.Handle(fixture.ctx, fixture.companyStreamID, ModeOnline, time.UnixMilli(handlerMS), body)
 			upper = fixture.databaseMS(t)
 			after := fixture.clockSnapshot(t)
-			if arm.offset < 0 {
-				if handleErr == nil || !strings.Contains(handleErr.Error(), "fiscal wall clock regressed") || before != after || len(result.Receipt) != 0 {
-					t.Fatalf("lag diagnostic error=%v receipt=%s persistent snapshots equal=%v", handleErr, result.Receipt, before == after)
-				}
-				t.Logf("KNOWN DEFECT: handler=%d behind database [%d,%d], error=%v; full states/revisions/logs/events/records/window unchanged", handlerMS, lower, upper, handleErr)
-				return
-			}
 			if handleErr != nil {
 				t.Fatal(handleErr)
 			}
@@ -135,6 +128,9 @@ func TestGardenHarvestClockIntegrationDiagnostic(t *testing.T) {
 			if err := json.Unmarshal(inputs, &envelope); err != nil || stamp != envelope.EvaluatedAtMS || stamp != envelope.Command.ServerTSMS || stamp != envelope.Resolved.ServerMS {
 				t.Fatalf("log/envelope clock disagrees: stamp=%d inputs=%s error=%v", stamp, inputs, err)
 			}
+			if stamp < lower || stamp > upper {
+				t.Fatalf("harvest committed outside database time: stamp=%d bounds=[%d,%d] handler=%d", stamp, lower, upper, handlerMS)
+			}
 			if arm.immature {
 				if !strings.Contains(string(result.Receipt), `"detail":"plant_not_mature"`) || stamp < lower || stamp > upper ||
 					after.FounderState != before.FounderState || after.CompanyState != before.CompanyState ||
@@ -152,35 +148,46 @@ func TestGardenHarvestClockIntegrationDiagnostic(t *testing.T) {
 				after.FounderLogs != before.FounderLogs+1 || after.CompanyLogs != before.CompanyLogs+1 || after.IntentRecords != before.IntentRecords+1 {
 				t.Fatalf("mature arm did not commit expected credit: receipt=%s error=%v", result.Receipt, err)
 			}
-			// The contract-facing database-bound assertion was executed red
-			// before retaining this diagnostic. A future commit is a finding,
-			// not a valid wall-clock acceptance result.
-			if arm.offset > 0 {
-				if stamp <= upper || stamp != handlerMS || receipt.GardenAdvance.TicksApplied != 288 || receipt.GardenAdvance.CatchupForfeitedMS <= 0 {
-					t.Fatalf("future clock diagnostic not reproduced: stamp=%d handler=%d receipt=%s", stamp, handlerMS, result.Receipt)
-				}
-				persisted, err := fixture.store.LoadLatest(fixture.ctx, fixture.founderStreamID)
-				if err != nil {
-					t.Fatal(err)
-				}
-				for _, coordinate := range [][2]int64{{2, 2}, {3, 3}} {
-					plot, _, ok := persisted.State.ServerGarden.Plot(coordinate[0], coordinate[1])
-					if !ok || !plot.Mature() || plot.AgeTicks != 3 {
-						t.Fatalf("future clock did not mature retained starter: coordinate=%v plot=%+v", coordinate, plot)
-					}
-				}
-				followup := []byte(`{"intent_id":"01986666-7f10-7000-8000-000000001003","kind":"garden_uproot","expected_revision":3,"row":3,"col":3}`)
-				_, err = fixture.service.Handle(fixture.ctx, fixture.companyStreamID, ModeOnline, time.UnixMilli(fixture.databaseMS(t)), followup)
-				if err == nil || !strings.Contains(err.Error(), "fiscal wall clock regressed") || fixture.clockSnapshot(t) != after {
-					t.Fatalf("future-persisted cursor did not refuse next ordinary command without writes: %v", err)
-				}
-				t.Logf("KNOWN DEFECT: future stamp=%d database=[%d,%d], advance=%+v; next ordinary command error=%v without writes", stamp, lower, upper, receipt.GardenAdvance, err)
-			} else {
-				if stamp < lower || stamp > upper || stamp != handlerMS || receipt.GardenAdvance.TicksApplied != 0 {
-					t.Fatalf("matched handler-time mature control differs: stamp=%d handler=%d advance=%+v", stamp, handlerMS, receipt.GardenAdvance)
-				}
-				t.Logf("mature control credits once, stamp=%d database=[%d,%d]", stamp, lower, upper)
+			if receipt.GardenAdvance.TicksApplied != 0 || receipt.GardenAdvance.CatchupForfeitedMS != 0 {
+				t.Fatalf("handler skew advanced the garden: %+v", receipt.GardenAdvance)
 			}
+			persisted, err := fixture.store.LoadLatest(fixture.ctx, fixture.founderStreamID)
+			if err != nil || !persisted.State.ServerGarden.Collected("strain_c") {
+				t.Fatalf("harvest did not preserve discovered seed: %v", err)
+			}
+			for index, coordinate := range [][2]int64{{2, 2}, {3, 3}} {
+				plot, _, ok := persisted.State.ServerGarden.Plot(coordinate[0], coordinate[1])
+				if !ok || plot.Mature() || plot.AgeTicks != int64(1-index) {
+					t.Fatalf("handler skew grew retained plant: coordinate=%v plot=%+v", coordinate, plot)
+				}
+			}
+			// Retry with the opposite clock disagreement must return the stored
+			// receipt without resampling a transition or consuming another send.
+			retryOffset := 24 * time.Hour
+			if arm.offset > 0 {
+				retryOffset = -10 * time.Second
+			}
+			retryMS := fixture.databaseMS(t) + retryOffset.Milliseconds()
+			retry, err := fixture.service.Handle(fixture.ctx, fixture.companyStreamID, ModeOnline, time.UnixMilli(retryMS), body)
+			if err != nil || !retry.Replay || string(retry.Receipt) != string(result.Receipt) || fixture.clockSnapshot(t) != after {
+				t.Fatalf("opposite-skew retry changed committed bytes/state: receipt=%s replay=%v error=%v", retry.Receipt, retry.Replay, err)
+			}
+			conflict := []byte(`{"intent_id":"01986666-7f10-7000-8000-000000001002","kind":"garden_harvest","expected_revision":2,"plots":[{"row":0,"col":1}]}`)
+			conflicted, err := fixture.service.Handle(fixture.ctx, fixture.companyStreamID, ModeOnline, time.UnixMilli(fixture.databaseMS(t)), conflict)
+			if err != nil || !strings.Contains(string(conflicted.Receipt), `"category":"idempotency_conflict"`) || fixture.clockSnapshot(t) != after {
+				t.Fatalf("changed-request retry failed idempotency/no-write boundary: receipt=%s error=%v", conflicted.Receipt, err)
+			}
+			followup := []byte(`{"intent_id":"01986666-7f10-7000-8000-000000001003","kind":"garden_uproot","expected_revision":3,"row":3,"col":3}`)
+			continued, err := fixture.service.Handle(fixture.ctx, fixture.companyStreamID, ModeOnline, time.UnixMilli(fixture.databaseMS(t)), followup)
+			if err != nil || !strings.Contains(string(continued.Receipt), `"outcome":"applied"`) {
+				t.Fatalf("following ordinary command failed: receipt=%s error=%v", continued.Receipt, err)
+			}
+			history, err := fixture.store.LoadFounderHistory(fixture.ctx, fixture.founderStreamID)
+			if err != nil || VerifyFounderHistory(history, ReplayCatalogSet{fixture.bundle.ConstantsHash: fixture.bundle}) != ReplayVerified {
+				t.Fatalf("Founder history did not verify: %v", err)
+			}
+			replayGardenRunLogCount(t, fixture, 1)
+			t.Logf("handler offset=%s; DB stamp=%d within [%d,%d], zero ticks, once-only credit, unchanged retry and subsequent ordinary command/history verified", arm.offset, stamp, lower, upper)
 		})
 	}
 }

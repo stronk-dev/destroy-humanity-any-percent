@@ -1,6 +1,35 @@
 # Executable queue
 
-## Current Server Garden pure harvest boundary evidence — 2026-10-06
+## Current Server Garden locked harvest clock correction — 2026-10-06
+
+RP-217 is executed through real Service/Postgres: a ten-second handler-clock lag rejects valid
+harvests; a twenty-four-hour lead commits 288 ticks and blocks later ordinary commands with
+Fiscal regression. Original bounded G5 clock review is CHANGES REQUIRED, not full-G5 approval.
+Separate predeclaration `14ad4287` implements SG3/SG6/SG-P2's Garden-specific boundary without
+a caller timestamp. The DB sample and applicability probe are under Founder→Company locks;
+refusals rollback before Founder-only recording. Other minigame timestamp/attendance/faucet
+policies, existing replay schemas/history, balance and activation stay unchanged. Kernel 0.3.151.
+
+Six real-Postgres mature/immature skew arms, identical stored-receipt retries, hash conflicts,
+ordinary continuation and both histories pass; twenty cold repetitions pass. Separate DB-clock
+and handler-preprobe probes fail and restore byte-exactly. Cold six-package Go and root client/
+type/build/boundary/copy/vectors/vet/corpus checks pass. Exact amd64 CI command cannot execute
+on this ARM Docker host; it is not called green. The full native Linux/Postgres server-core
+target passes separately (cold non-harness Go, vet, generation and boundaries). Fresh
+kernel-history check fails unchanged RP-131 after checkout
+negative controls pass. No hosted or whole-green CI, cross-party approval, archive or release claim.
+
+Additional full Linux browser run is RED on RP-218: WebKit's existing worker-prediction witness
+hits the unchanged five-second limit; 22,061 other cases pass / six intentional skips. The
+identical isolated Linux WebKit case passes in 367 ms, which does not replace the failed full
+lane. No threshold/skip/worker/CI edit follows. Separate performance invocation was not reached.
+
+**NEXT SAFE ACTION:** complete/pin the bounded corrective evidence for Claude designated
+review; separately predeclare RP-218 worker/lifecycle versus fixture/load diagnosis, then
+remaining accepted pure SG3/SG4 clock/tick and G2–G7. Retain separate SG1/SG2/SG6
+evidence ranges and all prior review, author and owner gates. Full nine-tier 1.0 remains active.
+
+## Earlier Server Garden pure harvest boundary evidence — 2026-10-06
 
 Predeclaration `3fbf39af` supplies 18 exact result/post-state cases: the complete 4×4
 arithmetic boundary matrix, all 36 mature plots and mixed zero-unit/nonstarter/dormant targets
@@ -20,7 +49,7 @@ The test-only range requires Claude's designated review, alongside the separate 
 Exact SG6 evidence span `3fbf39af^..0db67895` is READY FOR CLAUDE DESIGNATED REVIEW,
 not approved; no production byte or kernel version changed in this span.
 
-**NEXT SAFE ACTION:** predeclare and execute remaining accepted SG3/SG4 clock/tick and G4/G5
+**Dated next action (superseded above):** predeclare and execute remaining accepted SG3/SG4 clock/tick and G4/G5
 clock-source review, then remaining G2–G7. Retain all previous cross-party, owner and author
 gates. The full nine-tier 1.0 and supportable-release obligations remain the goal.
 

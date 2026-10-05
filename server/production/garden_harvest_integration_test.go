@@ -255,6 +255,11 @@ func TestGardenHarvestIntegration(t *testing.T) {
 // so VerifyReplayRun's terminal requirement does not apply).
 func replayGardenRunLog(t *testing.T, fixture gardenHarvestFixture) {
 	t.Helper()
+	replayGardenRunLogCount(t, fixture, 10)
+}
+
+func replayGardenRunLogCount(t *testing.T, fixture gardenHarvestFixture, expectedCount int) {
+	t.Helper()
 	var genesis []byte
 	var version int
 	if err := fixture.db.QueryRowContext(fixture.ctx, `SELECT state,version FROM run_genesis WHERE company_stream_id=$1 AND run_seq=1`, fixture.companyStreamID).Scan(&genesis, &version); err != nil {
@@ -281,8 +286,8 @@ func replayGardenRunLog(t *testing.T, fixture gardenHarvestFixture) {
 		entries = append(entries, value)
 	}
 	rows.Close()
-	if len(entries) != 10 {
-		t.Fatalf("run log holds %d garden credits, want 10", len(entries))
+	if len(entries) != expectedCount {
+		t.Fatalf("run log holds %d garden credits, want %d", len(entries), expectedCount)
 	}
 	for _, value := range entries {
 		transition, err := ApplyLogged(state, value.payload, fixture.bundle, value.inputs)
@@ -329,7 +334,7 @@ func TestGardenHarvestFaultsAreAllOrNothing(t *testing.T) {
 		}
 		injected := errors.New("injected " + point)
 		_, err = fixture.service.creditGardenHarvest(fixture.ctx, fixture.companyStreamID, founderLoaded, fixture.bundle, request,
-			save.CanonicalServerTime(now).UnixMilli(), attendance, func(name string) error {
+			attendance, func(name string) error {
 				if name == point {
 					return injected
 				}

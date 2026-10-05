@@ -27,6 +27,13 @@ sum. Four restored TS mutations prove arithmetic, seed, hash and post-state chec
 No production/balance/kernel change; kernel stays 0.3.150. This is not AC8's coordinator or
 whole-G1/Garden acceptance, and its test range awaits Claude. Next: SG3/SG4 clock/tick review.
 
+Separate RP-217 correction under `14ad4287`: actual Postgres diagnosis shows handler-time
+harvest can reject on lag or persist future growth and block later Fiscal commands. SG-P2's
+Garden-specific request now takes no timestamp; the DB sample and applicability probe run
+under the canonical stream locks. Six skew arms plus retries/hash conflicts/history, two
+restored probes and twenty cold repetitions pass. Kernel 0.3.151; cross-party review required,
+not full-G5/SG3/SG4 or Garden acceptance. Continue remaining pure clock/tick and G2–G7 review.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

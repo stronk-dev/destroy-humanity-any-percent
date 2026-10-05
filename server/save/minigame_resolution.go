@@ -64,9 +64,36 @@ type MinigameResolutionRequest struct {
 func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request MinigameResolutionRequest,
 	mutate MinigameResolutionMutation, fault ExitFaultInjector,
 ) (IntentResult, error) {
+	return s.applyMinigameResolutionTransaction(ctx, request, mutate, fault, false)
+}
+
+// GardenHarvestRequest deliberately has no caller timestamp: SG3/SG-P2 use
+// the ordinary Founder database clock, sampled after both stream locks.
+type GardenHarvestRequest struct {
+	IntentID         string
+	FounderID        string
+	CompanyStreamID  string
+	RequestHash      string
+	CanonicalPayload json.RawMessage
+}
+
+// ApplyGardenHarvestTransaction owns Garden's Founder-idempotent SG-P2
+// boundary. Other minigame resolutions retain their pre-resolved clock policy.
+func (s *Store) ApplyGardenHarvestTransaction(ctx context.Context, request GardenHarvestRequest,
+	mutate MinigameResolutionMutation, fault ExitFaultInjector,
+) (IntentResult, error) {
+	return s.applyMinigameResolutionTransaction(ctx, MinigameResolutionRequest{
+		SessionID: request.IntentID, FounderID: request.FounderID, CompanyStreamID: request.CompanyStreamID,
+		RequestHash: request.RequestHash, CanonicalPayload: request.CanonicalPayload, FounderIdempotency: true,
+	}, mutate, fault, true)
+}
+
+func (s *Store) applyMinigameResolutionTransaction(ctx context.Context, request MinigameResolutionRequest,
+	mutate MinigameResolutionMutation, fault ExitFaultInjector, databaseClock bool,
+) (IntentResult, error) {
 	if s == nil || !uuidV7Pattern.MatchString(request.SessionID) || !uuidPattern.MatchString(request.FounderID) ||
 		!uuidPattern.MatchString(request.CompanyStreamID) || !hashPattern.MatchString(request.RequestHash) ||
-		request.ServerTSMS <= 0 || request.ServerTSMS > 9007199254740991 || mutate == nil ||
+		(!databaseClock && (request.ServerTSMS <= 0 || request.ServerTSMS > 9007199254740991)) || mutate == nil ||
 		validateCanonicalPayload(request.CanonicalPayload, request.RequestHash) != nil {
 		return IntentResult{}, fmt.Errorf("%w: invalid minigame resolution request", ErrInvalidStream)
 	}
@@ -145,8 +172,15 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err != nil {
 		return IntentResult{}, err
 	}
+	serverTSMS := request.ServerTSMS
+	if databaseClock {
+		serverTSMS, err = founderServerTimestamp(ctx, tx)
+		if err != nil {
+			return IntentResult{}, err
+		}
+	}
 	founderCommand := FounderReplayCommand{IntentID: request.SessionID, FounderStreamID: founderStreamID,
-		FounderID: request.FounderID, Revision: founderRevision.Number, FounderLogSeq: founderLogSequence, ServerTSMS: request.ServerTSMS}
+		FounderID: request.FounderID, Revision: founderRevision.Number, FounderLogSeq: founderLogSequence, ServerTSMS: serverTSMS}
 	if founderLogSequence == 1 {
 		if err := InsertFounderGenesisTx(ctx, tx, FounderGenesis{FounderStreamID: founderStreamID,
 			Revision: founderRevision.Number, State: founderStateBytes, Version: founderRevision.Version,

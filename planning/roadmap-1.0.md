@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Server Garden pure SG6 harvest boundary evidence under
+**Current checkpoint:** 2026-10-06, Garden locked-clock repair under `14ad4287`
+(kernel 0.3.151; awaiting Claude). Actual Postgres proves RP-217: handler-clock lag refuses
+harvests, while lead persists future growth and breaks later Fiscal commands. SG3/SG6/SG-P2's
+Garden-specific request now samples the DB timestamp under canonical locks, with the routing
+probe moved under the same stamp. Six skew arms, retries/hash-conflict controls and both
+histories pass, including twenty cold repetitions and independently failing/restored probes.
+Other minigame/attendance/payout policies remain unchanged. No public activation or release
+promotion. Exact amd64 CI cannot execute on this ARM host; the full native Linux/Postgres
+server-core target passes as separate evidence. Fresh whole-history guard still fails RP-131.
+The full browser lane fails one existing WebKit worker case (RP-218); its isolated pass does
+not replace full-lane proof. Next: bounded RP-218 diagnosis, then remaining accepted pure
+SG3/SG4 clock/tick and G2–G7 review, preserving every owner/author/cross-party gate and full 1.0.
+
+**Earlier checkpoint:** Server Garden pure SG6 harvest boundary evidence under
 `3fbf39af` / `0db67895` (exact span `3fbf39af^..0db67895`, kernel 0.3.150 unchanged;
 awaiting Claude). Eighteen exact result/post-state cases
 cover declared arithmetic extremes, all 36 plots and mixed seed/dormancy behavior. Independent
@@ -67,7 +80,7 @@ no runtime/copy change or accessibility promotion),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-216 corrections,
+(RP-145–RP-218 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party

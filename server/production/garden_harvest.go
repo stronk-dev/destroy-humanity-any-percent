@@ -33,7 +33,7 @@ const (
 
 var (
 	errGardenHarvestConflict = errors.New("garden harvest expected revision is stale")
-	errGardenHarvestRaced    = errors.New("garden harvest outcome changed under the lock")
+	errGardenHarvestRejected = errors.New("garden harvest rejected under the lock")
 	// errGardenHarvestMustCredit marks a Founder-only harvest arm that would
 	// apply: applied harvests commit only through the coordinator.
 	errGardenHarvestMustCredit = errors.New("an applied harvest must be credited through the coordinator")
@@ -136,20 +136,20 @@ func liveGardenHarvestResolved(bundle CatalogBundle, state *save.State, kind str
 	return founderGardenHarvestResolved{Kind: kind, ServerMS: serverMS, GardenSaltHex: base.GardenSaltHex, Advance: base.Advance, Attendance: attendance}, nil
 }
 
-// gardenHarvestWouldApply probes the Founder side on a clone to route the
-// request: an applied harvest must go through the coordinator, a rejection is
-// logged Founder-only. Both authoritative paths re-run and assert the outcome.
-func gardenHarvestWouldApply(bundle CatalogBundle, loaded save.Loaded, request IntentRequest, serverMS int64, attendance FounderAttendanceSample) (bool, error) {
-	probe, err := cloneFounderReplayState(loaded.State, bundle.Economy)
+// gardenHarvestWouldApply is a pure routing probe on a clone. Its live caller
+// runs only inside the coordinator, with the locked Founder's DB timestamp;
+// it must never predict maturity from the handler clock.
+func gardenHarvestWouldApply(bundle CatalogBundle, state *save.State, command save.FounderReplayCommand,
+	request IntentRequest, attendance FounderAttendanceSample,
+) (bool, error) {
+	probe, err := cloneFounderReplayState(state, bundle.Economy)
 	if err != nil {
 		return false, err
 	}
-	resolved, err := liveGardenHarvestResolved(bundle, probe, IntentGardenHarvest, serverMS, attendance)
+	resolved, err := liveGardenHarvestResolved(bundle, probe, IntentGardenHarvest, command.ServerTSMS, attendance)
 	if err != nil {
 		return false, err
 	}
-	command := save.FounderReplayCommand{IntentID: request.IntentID, FounderStreamID: loaded.Revision.StreamID, FounderID: loaded.Key.OwnerID,
-		Revision: loaded.Revision.Number, FounderLogSeq: 1, ServerTSMS: serverMS}
 	inputs, err := save.MarshalFounderReplayInputs(command, resolved)
 	if err != nil {
 		return false, err
@@ -174,25 +174,24 @@ func (s *Service) handleGardenHarvest(ctx context.Context, companyStreamID strin
 	if err != nil {
 		return HandleResult{}, err
 	}
-	serverMS := save.CanonicalServerTime(now).UnixMilli()
-	applies := false
-	if founder.Revision.Number == request.ExpectedRevision {
-		if applies, err = gardenHarvestWouldApply(bundle, founder, request, serverMS, attendance); err != nil {
-			return HandleResult{}, err
-		}
+	// Route using the locked, DB-stamped transition, never a handler-time
+	// prediction. A refusal rolls this coordinator back before logging its
+	// existing Founder-only rejection; a later maturity race yields a conflict.
+	result, err := s.creditGardenHarvest(ctx, companyStreamID, founder, bundle, request, attendance, nil)
+	if errors.Is(err, errGardenHarvestRejected) {
+		return s.rejectGardenHarvest(ctx, founder, request, attendance)
 	}
-	if applies {
-		result, err := s.creditGardenHarvest(ctx, companyStreamID, founder, bundle, request, serverMS, attendance, nil)
-		if errors.Is(err, errGardenHarvestConflict) || errors.Is(err, errGardenHarvestRaced) || errors.Is(err, ErrFounderAttendanceStale) {
-			current := request.ExpectedRevision
-			if loaded, loadErr := s.store.LoadLatest(ctx, founder.Revision.StreamID); loadErr == nil {
-				current = loaded.Revision.Number
-			}
-			return HandleResult{Receipt: marshalRejection(request.IntentID, current, "revision_conflict", "expected_revision")}, nil
+	if errors.Is(err, errGardenHarvestConflict) || errors.Is(err, ErrFounderAttendanceStale) {
+		current := request.ExpectedRevision
+		if loaded, loadErr := s.store.LoadLatest(ctx, founder.Revision.StreamID); loadErr == nil {
+			current = loaded.Revision.Number
 		}
-		return result, err
+		return HandleResult{Receipt: marshalRejection(request.IntentID, current, "revision_conflict", "expected_revision")}, nil
 	}
-	return s.rejectGardenHarvest(ctx, founder, request, attendance)
+	if errors.Is(err, save.ErrIdempotencyConflict) {
+		return HandleResult{Receipt: marshalRejection(request.IntentID, request.ExpectedRevision, "idempotency_conflict", request.IntentID)}, nil
+	}
+	return result, err
 }
 
 // rejectGardenHarvest logs a rejected harvest on the Founder stream only.
@@ -305,11 +304,11 @@ func gardenPolicyHash(policy garden.PayoutPolicy) string {
 // logs bound by harvest_hash, and the Founder intent record as the
 // exactly-once authority.
 func (s *Service) creditGardenHarvest(ctx context.Context, companyStreamID string, founderLoaded save.Loaded, bundle CatalogBundle,
-	request IntentRequest, serverMS int64, attendance FounderAttendanceSample, fault save.ExitFaultInjector,
+	request IntentRequest, attendance FounderAttendanceSample, fault save.ExitFaultInjector,
 ) (HandleResult, error) {
-	result, err := s.store.ApplyMinigameResolutionTransaction(ctx, save.MinigameResolutionRequest{
-		SessionID: request.IntentID, FounderID: founderLoaded.Key.OwnerID, CompanyStreamID: companyStreamID,
-		RequestHash: request.RequestHash, CanonicalPayload: request.CanonicalPayload, ServerTSMS: serverMS, FounderIdempotency: true,
+	result, err := s.store.ApplyGardenHarvestTransaction(ctx, save.GardenHarvestRequest{
+		IntentID: request.IntentID, FounderID: founderLoaded.Key.OwnerID, CompanyStreamID: companyStreamID,
+		RequestHash: request.RequestHash, CanonicalPayload: request.CanonicalPayload,
 	}, func(ctx context.Context, tx *sql.Tx, founder *save.State, founderRevision save.Revision,
 		company *save.State, companyRevision save.Revision, companyCommand save.ReplayCommand,
 		founderCommand save.FounderReplayCommand, companyNext, founderNext int64,
@@ -322,6 +321,13 @@ func (s *Service) creditGardenHarvest(ctx context.Context, companyStreamID strin
 			ValidateFounderAttendanceSample(founder, founderRevision.Number, founderRevision.Number, attendance) != nil {
 			return save.MinigameResolutionDecision{}, ErrFounderAttendanceStale
 		}
+		applies, err := gardenHarvestWouldApply(bundle, founder, founderCommand, request, attendance)
+		if err != nil {
+			return save.MinigameResolutionDecision{}, err
+		}
+		if !applies {
+			return save.MinigameResolutionDecision{}, errGardenHarvestRejected
+		}
 		resolved, err := liveGardenHarvestResolved(bundle, founder, gardenHarvestCreditedKind, founderCommand.ServerTSMS, attendance)
 		if err != nil {
 			return save.MinigameResolutionDecision{}, err
@@ -331,8 +337,11 @@ func (s *Service) creditGardenHarvest(ctx context.Context, companyStreamID strin
 			return save.MinigameResolutionDecision{}, err
 		}
 		transition, err := ApplyFounderLogged(founder, request.CanonicalPayload, bundle, founderInputs)
-		if err != nil || transition.Outcome != save.IntentApplied {
-			return save.MinigameResolutionDecision{}, errGardenHarvestRaced
+		if err != nil {
+			return save.MinigameResolutionDecision{}, err
+		}
+		if transition.Outcome != save.IntentApplied {
+			return save.MinigameResolutionDecision{}, errGardenHarvestRejected
 		}
 		var founderReceipt struct {
 			Harvest       garden.Harvest `json:"harvest"`

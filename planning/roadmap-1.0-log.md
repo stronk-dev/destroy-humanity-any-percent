@@ -1818,3 +1818,41 @@ supportable-release obligations remain active, not reduced to a preview.
 
 Exact test-only handoff: `3fbf39af^..0db67895`, pending Claude designated review. This pin
 does not approve or archive the span, and does not alter the separate SG1/SG2 review requests.
+
+## 2026-10-06 — Garden harvest's locked clock correction
+
+Diagnosis predeclaration `eb0a9e7e`, executed diagnostic `904c1d17`; separate correction
+predeclaration `14ad4287`. Actual Service/Postgres proves RP-217: a handler clock ten seconds
+behind refuses both mature and immature harvests; a twenty-four-hour lead commits 288 ticks,
+matures retained starters and makes the next ordinary command fail Fiscal regression. The
+database-bound assertion fails before the labelled diagnostic is retained. Original bounded
+G5 clock review is CHANGES REQUIRED, not completed G5/G1–G7 approval.
+
+Accepted SG3/SG6/SG-P2's named Garden Store boundary now accepts no caller timestamp and
+samples the existing DB clock after canonical stream locks. The applicability clone is under
+the same locked timestamp, preserving the credited replay arm's no-rejection invariant.
+Refusals rollback before Founder-only recording; other minigame timestamp/attendance/faucet
+policies, event/replay schemas, history, balance and activation remain unchanged. Kernel/Go/TS
+version constants are 0.3.151. Six skew arms prove bounded time, zero synthetic growth, exactly-
+once credit, identical retries, no-write hash conflicts, ordinary continuation and both histories.
+Twenty cold repetitions pass; independent DB-clock and handler-preprobe mutations fail and
+restore exactly. Initial credited-arm routing, one-versus-ten history helper, invalid retry
+clock and stale generated-version setup failures are disclosed in the Garden log, not accepted
+as evidence or hidden by weakening an invariant.
+
+Cold six-package Go, verbose original Garden/fault/minigame-resolution plus composed tenant
+Postgres populations, root client/type/build/copy/content/boundary and vector/corpus/vet checks
+pass. Full native Linux/Postgres server-core passes; exact amd64 CI command cannot execute on
+this aarch64 host. Its pull temporarily changes the shared Go image tag; explicit arm64 pull
+restores normal development without CI/Compose/emulation changes. Native proof is not amd64
+or hosted proof. Fresh full kernel-history check still fails unchanged RP-131 after checkout
+controls pass; no bypass or whole-CI green claim. Claude must review diagnosis and corrective
+ranges; no archive/mint/public/full Garden or 1.0 promotion. Next: remaining accepted pure
+SG3/SG4 clock/tick and G2–G7, preserving all prior cross-party/owner/author release obligations.
+
+Additional full browser execution is red on RP-218: one existing WebKit worker-prediction case
+times out at its unchanged five-second bound, while 22,061 cases pass / six deliberately skip.
+Separate performance invocation is not reached. Identical isolated cold Linux WebKit case
+passes in 367 ms; this is diagnostic context, not a repaired or substituted full-lane proof.
+No worker/fixture source, timeout or CI topology is changed. Next safe work first predeclares
+worker/lifecycle versus fixture/load diagnosis, then resumes remaining accepted Garden work.
