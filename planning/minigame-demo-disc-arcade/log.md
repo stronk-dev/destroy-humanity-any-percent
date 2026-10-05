@@ -387,3 +387,37 @@ engine, candidate content, owner copy, kernel or production file changed in this
 Reference correction to the immediately preceding RP-191 note: the actual Go positive-control
 name is `TestMineGridNeverExposesMinesBeforeTerminal` in `server/arcade/engine_test.go`, not the
 shorthand `TestMineGridHiddenInformation`. It ran in the cold Arcade package population above.
+
+## 2026-10-05 — RP-191 nonterminal Mine Grid witness predeclaration (Codex)
+
+**Authority:** accepted AR3.4/AC4; bounded A2 TS test correction on Claude's original
+`508fe19a^..508fe19a`. **Review by:** Codex. **Recorded by:** Codex. **Verdict: CHANGES
+REQUIRED** on the named TS hidden-information instrument, not a demonstrated production leak.
+The existing case reads terminal fixture metadata only. Go's executed
+`TestMineGridNeverExposesMinesBeforeTerminal` and RP-189's browser playing-state control remain
+positive evidence; no claim that the entire protection is missing.
+
+**Question / population:** run all eight existing Go-authored Mine Grid corpus scenarios
+through the real TS create/apply engine, observing genesis and after every attempted command,
+including rejected attempts. Inspect raw JSON output independently of the decoder being
+tested. Every nonterminal output must have empty `mine_cells` and `exploded_cell:-1`.
+Require actually observed setup, unplaced playing, placed playing, terminal-unplaced and
+terminal-placed populations, and prove the observation count covers every scenario/step.
+Terminal placed states must contain the actual derived sorted mine list; unplaced quit stays
+empty. Compare each final state to the existing corpus and preserve rejection outcomes.
+
+**Refusal controls:** for every actual placed/nonterminal state, independently forge only
+`mine_cells` (real derived positions) or `exploded_cell` (one real mine); both the exported
+decoder and engine apply entry must reject as SyntaxError. Keep the exact clean input intact
+and continue the scenario to its existing terminal. No replacement engine, invented seed,
+new corpus, public API call or fabricated terminal is allowed.
+
+**Discrimination:** first remove only the TS decoder's hidden-state guard and run the old
+named test: its terminal-only population is expected to remain green. Restore before adding
+the new witness. Then separately expose actual mine positions in a placed nonterminal engine
+output, disable only mine-list refusal, and disable only exploded-cell refusal. The new named
+population must fail each independent mutation; restore source byte-exactly before broad
+verification. Exit requires cold Go, client/type/build/boundary/vet checks and full cold Linux
+browser CI including performance. Test-only correction unless a new real defect is separately
+reproduced and recorded. No gameplay, kernel, catalog, copy, schema, wire, deployment, archival
+or release promotion. Claude designated review is mandatory for the exact corrective range.
