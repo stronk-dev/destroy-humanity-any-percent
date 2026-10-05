@@ -1,5 +1,39 @@
 # Executable queue
 
+## Current due-cross-gate correction and event-reader repair — 2026-10-05
+
+RP-205 is locally corrected under separate predeclaration `efdc2dbc` and accepted AR1.8/AC9.
+Live Go and shared Go/TS replay freeze the curriculum branch and replace the original gate
+action without executing it or spending its cost. The exact original canonical payload remains
+logged. Kernel 0.3.148 records the watched semantic correction; old replay fixtures are unchanged.
+Red-first live/Go/TS failures precede the fix. Exact literal terminal receipt/state/carry/event
+output agrees; invalid trigger/branch and active-session controls discriminate.
+
+The actual DB function now executes thirteen cases: ordinary before-threshold gate, three
+due no-session controls, then three actions across both toys/all nonterminal phases.
+All nine session cases reject while active AND claimed, preserve full state/revision/SQL history,
+then quit/resolve and Exit successfully with identical retry and both histories verified.
+Independent old live refusal, Go/TS gate-execution paths, TS exclusion, broad guard and
+claimed-only probes fail and restore. This later-tier diagnostic does not replace the default
+first-hour/public browser journey or close full AC9/A5.
+
+RP-207 is a separate test-reader repair, not a new runtime policy: the complete Founder
+history verifies its automatic Fiscal prefix, while Company replay consumes only its owned
+Exit events. A forced actual harvest, removed-prefix refusal and failing no-filter probe keep
+that distinction executable. Twenty cold thirteen-case DB repetitions pass.
+Both corrections require Claude's designated review; exact span is pinned after commit.
+Cold six-package Go, 7,170 client cases, root checks, seven actual Postgres functions and
+complete local Linux three-browser verification (21,759 plus performance) pass. Whole
+kernel history still fails the unchanged pushed RP-131 commit after its checkout/negative
+controls pass. No complete green-CI claim, bypass or history rewrite.
+
+**NEXT SAFE ACTION:** complete the original Arcade A6/A7 review of the test-only client
+children, their output/accessibility claims and candidate-copy/docs boundaries. Preserve the
+already firing RP-188/RP-189 witnesses, predeclare any new bounded correction, and distinguish
+internal child proof from the missing public host. RP-201/D-020, public wire/copy/mint and
+RP-131's draft-only history repair keep their separate authority gates. Full nine-tier 1.0,
+clean-host release proof and cross-party review are not narrowed or self-approved.
+
 ## Current Arcade actual Exit-action evidence and runtime finding — 2026-10-05
 
 RP-206 adds the missing actual Arcade Exit population, not repository activity flags.
@@ -21,7 +55,7 @@ ending is due, but returns an engine error afterward. The diagnostic uses the sa
 gate/cash/history in matched pre-threshold/due states; it does NOT close the default
 first-hour path with a later-tier substitute. No production fix is mixed into RP-206.
 
-**NEXT SAFE ACTION:** predeclare the accepted-contract RP-205 live/shared-replay correction.
+**Dated next action (superseded by the current checkpoint above):** predeclare the accepted-contract RP-205 live/shared-replay correction.
 Execute red-first due-cross-gate controls on the current curriculum, preserve unchanged
 ordinary progression and active/claimed rejection, and require exact Go/TS receipt/state/event
 replay plus honest kernel identity for any watched runtime change. Do not normalize away the

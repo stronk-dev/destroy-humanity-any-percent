@@ -1299,7 +1299,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const companyBefore = cloneReplayState(company, catalogs);
   let selectedBranch: CurriculumBranch | null = null;
   if (hasBranch) {
-    if (!next.curriculum || request.kind === "cross_gate" || resolved.selected_exit_type !== "scripted_first" || typeof resolved.selected_branch !== "string") throw new RangeError("selected branch mismatch");
+    if (!next.curriculum || resolved.selected_exit_type !== "scripted_first" || typeof resolved.selected_branch !== "string") throw new RangeError("selected branch mismatch");
   } else if (next.curriculum && resolved.selected_exit_type === "scripted_first") throw new RangeError("missing selected branch");
   const resolveSelectedBranch = (): CurriculumBranch | null => {
     if (!hasBranch) return null;
@@ -1323,7 +1323,9 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const activeValues=activeEvidence===null?[]:activeContributions(company,catalogs.opportunities!,activeEvidence.attended_now_ms);const contributions = assembleContributions(company, catalogs.economy, [...accrual.contributions,...activeValues]);
   const effectiveAccrual = { ...accrual, contributions };
 
-  if (request.kind === "cross_gate") {
+  // A frozen curriculum branch replaces the requested action. Historical exits
+  // without that branch retain their original gate-execution semantics.
+  if (request.kind === "cross_gate" && !hasBranch) {
     const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
     if (preflight !== null) return rejectState(preflight[0], preflight[1]);
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);

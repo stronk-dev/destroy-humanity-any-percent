@@ -742,7 +742,9 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	var actionDebits map[string]string
 	var exitType string
 	var terms prestigecore.Terms
-	if request.Kind == IntentCrossGate {
+	// A frozen curriculum branch replaces the original action atomically. Only
+	// historical, non-curriculum CrossGate exits execute the requested gate.
+	if request.Kind == IntentCrossGate && resolved.SelectedBranch == nil {
 		transition, transitionErr := transitionWithSimulationPolicy(request, company, catalogs.Economy, catalogs.Routes, catalogs.Doctrines, nil, nil,
 			revision, wire.EvaluationMode, now, contributions, collector, hook, nil)
 		if transitionErr != nil {
@@ -753,14 +755,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		}
 		actionDebits = transition.ActionDebits
 		attended, attendedErr := prestigecore.AttendedMS(company, save.CanonicalServerTime(now))
-		minimumAttended := int64(900_000)
-		if resolved.SelectedBranch != nil {
-			if next.Curriculum == nil || request.GateID != next.Curriculum.FirstFailure.GateID || company.RunSeq != next.Curriculum.FirstFailure.RunSeq {
-				return LoggedExitTransition{}, fmt.Errorf("%w: scripted curriculum trigger", ErrInvalidReplayInputs)
-			}
-			minimumAttended = next.Curriculum.FirstFailure.AttendedMS
-		}
-		if attendedErr != nil || attended < minimumAttended || len(founder.ExitHistory) != 0 {
+		if attendedErr != nil || attended < 900_000 || len(founder.ExitHistory) != 0 {
 			return LoggedExitTransition{}, ErrInvalidEngineState
 		}
 		exitType, prefix = "scripted_first", append(append(catchupEvents, activeEvents...), transition.Events...)
@@ -826,7 +821,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	var selectedBranch *curriculum.Branch
 	if resolved.SelectedBranch != nil {
-		if exitType != "scripted_first" || next.Curriculum == nil || request.Kind == IntentCrossGate {
+		if exitType != "scripted_first" || next.Curriculum == nil {
 			return LoggedExitTransition{}, fmt.Errorf("%w: selected branch", ErrInvalidReplayInputs)
 		}
 		branch, branchErr := next.Curriculum.SelectBranch(company, catalogs.Economy)
@@ -859,7 +854,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 // stops before the requested command mutation. The selected branch can then be
 // persisted in replay inputs without introducing a second accrual model.
 func previewCurriculumBranch(company *save.State, current, next CatalogBundle, request IntentRequest, build replayBuild) (curriculum.Branch, error) {
-	if company == nil || next.Curriculum == nil || request.Kind == IntentCrossGate {
+	if company == nil || next.Curriculum == nil {
 		return curriculum.Branch{}, ErrInvalidEngineState
 	}
 	preview, err := cloneReplayState(company, current.Economy)

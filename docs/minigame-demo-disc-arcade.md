@@ -59,7 +59,8 @@ strings, not values coerced to strings. Both decoders refuse duplicate keys, dec
 integer tokens and malformed field types before transition. Valid whitespace, escapes,
 reordered keys and integer negative-zero spelling remain usable. Movement, food placement,
 growth, clocks, descriptor and snapshot field sets are unchanged (decoder correction introduced
-in kernel 0.3.146; current kernel 0.3.147 includes the separate catalog null-tier fix).
+in kernel 0.3.146; current kernel 0.3.148 includes the separate catalog null-tier and
+due-cross-gate fixes).
 
 `testdata/arcade/snake-snapshot-negatives-v1.json` supplies 45 shared raw negatives and seven
 legal controls over actual genesis, moved/grown playing and cleared terminal states. Go and
@@ -101,11 +102,24 @@ releases the first ending/run 2; retry matches and both persisted histories veri
 the Exit guard, hiding claimed status, or removing either toy's quit fails the named cases.
 This RP-206 test-only correction requires Claude review; full AC9 stays open.
 
-RP-205 is a separate runtime defect: with the current curriculum due, a genuinely eligible
-cross_gate returns an engine error rather than a terminal response. The same real gate/cash/
-history before the threshold crosses successfully. That later-tier diagnostic proves the
-entry-path error, not default first-hour success or a reason to replace it with a green
-later-tier acceptance fixture. A separately scoped shared-replay correction is still needed.
+RP-205's separately predeclared runtime correction now replaces a genuinely eligible due
+cross_gate with the first ending rather than returning an engine error. It preserves the
+original canonical action, without executing the gate or its cost, in live Go and shared
+Go/TS replay (kernel 0.3.148). The same gate/cash/history crosses normally before the threshold.
+The actual DB population now has thirteen cases: that before-threshold control, three due
+no-session controls, and three actions across Mine Grid setup/playing and Snake playing.
+All nine session cases exercise both active and claimed refusal, then real quit/resolution,
+released Exit, identical retry and both histories. A Go-generated literal current-curriculum
+fixture checks every terminal receipt/state/Founder/event batch in TS; all old fixtures remain
+unchanged. Independent live/replay/guard probes fail. Claude review and full AC9 remain open;
+this later-tier diagnostic is not default first-hour or public-browser acceptance.
+
+RP-207 repairs only the test reader's event scope. A full Founder Exit may prepend an
+automatic Fiscal harvest, which Company replay does not own. The test verifies the complete
+Founder history separately, including a forced actual harvest and a removed-prefix negative,
+and excludes only that Founder-owned prefix from Company replay. It retains every base Exit
+and Company event. Restoring the old aggregation fails the forced-harvest control; no runtime
+policy or verifier was changed to suppress a mismatch.
 
 RP-201 remains an explicit contract conflict: AC7 requires a Pitch-less Arcade bundle, but
 API MA-C15 rules `minigame_api → pitch`, retained by AR1.2 and enforced in both actual

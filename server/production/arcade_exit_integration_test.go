@@ -115,6 +115,10 @@ func currentArcadeExitBundle(t *testing.T) CatalogBundle {
 }
 
 func seedCurrentArcadeExitFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time, index int) typerFounder {
+	return seedCurrentArcadeExitFounderForGate(t, ctx, db, store, bundle, now, index, true, false)
+}
+
+func seedCurrentArcadeExitFounderForGate(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time, index int, due, crossGate bool) typerFounder {
 	t.Helper()
 	accountID := fmt.Sprintf("01986666-aa00-4000-8000-%012d", 2*index+1)
 	founderID := fmt.Sprintf("01986666-aa00-4000-8000-%012d", 2*index+2)
@@ -131,16 +135,28 @@ func seedCurrentArcadeExitFounder(t *testing.T, ctx context.Context, db *sql.DB,
 	}
 	founder.Pets = map[string]pet.CareState{}
 	founder.FiscalPeriodOpenedWallMS, founder.FiscalGeneratorLevels, founder.FiscalUnlocks = now.UnixMilli(), map[string]int64{}, map[string]bool{}
+	if crossGate {
+		// Force a real automatic Fiscal prefix in the no-session terminal control;
+		// Company replay must not accidentally consume Founder-owned sweep events.
+		founder.FiscalPeriodOpenedWallMS -= bundle.Fiscal.Clock.AutoMS
+	}
 	for _, row := range bundle.Fiscal.GeneratorLevelRows() {
 		founder.FiscalGeneratorLevels[row.GeneratorID] = 0
 	}
 	founder.Soul, founder.SoulExhaustedSourceIDs = 80, []string{}
 	started := now.Add(-time.Duration(bundle.Curriculum.FirstFailure.AttendedMS) * time.Millisecond)
+	if !due {
+		started = now.Add(-time.Minute)
+	}
 	company := replayFixtureState(t, bundle.Economy, started)
 	company.WireVersion, company.MeterBands = 18, nil
 	company.Tier = 1
 	company.GatesCrossed[bundle.Curriculum.FirstFailure.GateID] = true
 	setCash(t, company, "1e5")
+	if crossGate {
+		company.Tier = 2
+		setCash(t, company, "1e10")
+	}
 	meterState, err := meters.NewRunState(bundle.Meters, 0)
 	if err != nil {
 		t.Fatal(err)
@@ -235,9 +251,12 @@ func TestArcadeCurrentCurriculumExitIntegration(t *testing.T) {
 	}
 	now := save.CanonicalServerTime(time.Now().UTC())
 	index, intentIndex := 0, 0
-	seed := func(t *testing.T) typerFounder {
+	seed := func(t *testing.T, kind string) typerFounder {
 		index++
-		return seedCurrentArcadeExitFounder(t, ctx, db, store, bundle, now, index)
+		if kind != IntentCrossGate {
+			return seedCurrentArcadeExitFounder(t, ctx, db, store, bundle, now, index)
+		}
+		return seedCurrentArcadeExitFounderForGate(t, ctx, db, store, bundle, now, index, true, kind == IntentCrossGate)
 	}
 	intent := func(t *testing.T, founder typerFounder, kind string) []byte {
 		t.Helper()
@@ -256,6 +275,8 @@ func TestArcadeCurrentCurriculumExitIntegration(t *testing.T) {
 			payload["expected_founder_revision"] = owner.Revision.Number
 		case IntentPerformManualBatch:
 			payload["action_id"], payload["count"], payload["window_ms"] = "manual.click", 1, 1
+		case IntentCrossGate:
+			payload["gate_id"], payload["route_id"] = "gate.t2_to_t3", nil
 		}
 		encoded, err := json.Marshal(payload)
 		if err != nil {
@@ -273,16 +294,130 @@ func TestArcadeCurrentCurriculumExitIntegration(t *testing.T) {
 		}
 		return json.Unmarshal(data, &receipt) == nil && receipt.Outcome == outcome && receipt.Rejection.Category == category && receipt.Rejection.Detail == detail
 	}
-	for _, kind := range []string{IntentWindDown, IntentPerformManualBatch} {
+	assertOriginalGateReplacement := func(t *testing.T, founder typerFounder, payload []byte) {
+		t.Helper()
+		request, err := ParseIntent(payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var storedPayload, inputs []byte
+		if err := db.QueryRowContext(ctx, `SELECT canonical_payload,replay_inputs FROM run_log
+WHERE company_stream_id=$1 AND run_seq=1 ORDER BY seq DESC LIMIT 1`, founder.companyStreamID).Scan(&storedPayload, &inputs); err != nil {
+			t.Fatal(err)
+		}
+		if canonicalFixtureJSON(t, storedPayload) != canonicalFixtureJSON(t, request.CanonicalPayload) {
+			t.Fatalf("terminal replaced original canonical intent: got=%s want=%s", storedPayload, request.CanonicalPayload)
+		}
+		wire, err := parseReplayInputs(inputs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var resolved replayExitResolved
+		if err := json.Unmarshal(wire.Resolved, &resolved); err != nil || resolved.IntentKind != IntentCrossGate || resolved.SelectedBranch == nil || resolved.SelectedExitType != "scripted_first" {
+			t.Fatalf("terminal lost cross-gate/branch evidence: inputs=%s err=%v", inputs, err)
+		}
+		var gateEvents int
+		if err := db.QueryRowContext(ctx, `SELECT COUNT(*) FROM events WHERE stream_id=$1 AND intent_id=$2
+AND kind IN ('gate_crossed','route_executed')`, founder.companyStreamID, request.IntentID).Scan(&gateEvents); err != nil || gateEvents != 0 {
+			t.Fatalf("replaced action emitted gate/route events: count=%d err=%v", gateEvents, err)
+		}
+	}
+	companyReplay := func(t *testing.T, founder typerFounder) ([]byte, int, []ReplayLogEntry) {
+		t.Helper()
+		genesis, version, entries := persistedPrestigeReplay(t, db, founder.companyStreamID, founder.founderStreamID, 1, &bundle)
+		for i := range entries {
+			wire, err := parseReplayInputs(entries[i].ReplayInputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// Company commands own Company events. Terminal Company replay also
+			// owns the base Founder Exit events, but not ApplyFounderLogged's
+			// automatic Fiscal prefix (verified by the full Founder history).
+			rows, err := db.QueryContext(ctx, `SELECT kind,schema_version,intent_id,payload FROM events
+WHERE intent_id=$3 AND (stream_id=$1 OR ($4 AND stream_id=$2 AND kind<>'fiscal_period_harvested.v1'))
+ORDER BY CASE WHEN stream_id=$1 THEN 1 ELSE 0 END,event_seq,event_id`, founder.companyStreamID, founder.founderStreamID, wire.Command.IntentID, entries[i].Terminal)
+			if err != nil {
+				t.Fatal(err)
+			}
+			events := []save.EventWrite{}
+			for rows.Next() {
+				var event save.EventWrite
+				if err := rows.Scan(&event.Kind, &event.SchemaVersion, &event.IntentID, &event.Payload); err != nil {
+					rows.Close()
+					t.Fatal(err)
+				}
+				events = append(events, event)
+			}
+			err = rows.Err()
+			rows.Close()
+			if err != nil {
+				t.Fatal(err)
+			}
+			entries[i].EventsJSON = marshalReplayEvents(events)
+		}
+		return genesis, version, entries
+	}
+	t.Run("eligible_before_threshold/cross_gate", func(t *testing.T) {
+		index++
+		founder := seedCurrentArcadeExitFounderForGate(t, ctx, db, store, bundle, now, index, false, true)
+		result, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, intent(t, founder, IntentCrossGate))
+		if err != nil || !receiptMatches(result.Receipt, "applied", "", "") {
+			t.Fatalf("genuinely eligible before-threshold gate failed: receipt=%s err=%v", result.Receipt, err)
+		}
+		company, err := store.LoadLatest(ctx, founder.companyStreamID)
+		if err != nil || company.State.RunSeq != 1 || company.State.Tier != 3 || !company.State.GatesCrossed["gate.t2_to_t3"] {
+			t.Fatalf("ordinary gate did not cross in run 1: err=%v", err)
+		}
+	})
+	for _, kind := range []string{IntentWindDown, IntentPerformManualBatch, IntentCrossGate} {
 		t.Run("eligible_no_session/"+kind, func(t *testing.T) {
-			founder := seed(t)
-			result, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, intent(t, founder, kind))
+			founder := seed(t, kind)
+			payload := intent(t, founder, kind)
+			result, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, payload)
 			if err != nil || !receiptMatches(result.Receipt, "applied", "", "") {
 				t.Fatalf("eligible no-session control failed: receipt=%s err=%v", result.Receipt, err)
 			}
 			company, err := store.LoadLatest(ctx, founder.companyStreamID)
 			if err != nil || company.State.RunSeq != 2 {
 				t.Fatalf("control did not Exit: err=%v", err)
+			}
+			if kind == IntentCrossGate {
+				assertOriginalGateReplacement(t, founder, payload)
+				var sweeps int
+				if err := db.QueryRowContext(ctx, `SELECT COUNT(*) FROM events WHERE stream_id=$1
+AND kind='fiscal_period_harvested.v1'`, founder.founderStreamID).Scan(&sweeps); err != nil || sweeps != 1 {
+					t.Fatalf("deterministic Founder sweep missing: count=%d err=%v", sweeps, err)
+				}
+				retry, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, payload)
+				if err != nil || !retry.Replay || !bytes.Equal(result.Receipt, retry.Receipt) {
+					t.Fatalf("due gate retry changed result: err=%v", err)
+				}
+				genesis, version, entries := companyReplay(t, founder)
+				if verdict := VerifyReplayRun(genesis, version, bundle, entries, bundle.ConstantsHash, false); verdict != ReplayVerified {
+					logArcadeReplayDivergence(t, genesis, version, bundle, entries)
+					t.Fatalf("due gate Company replay failed: %s", verdict)
+				}
+				history, err := store.LoadFounderHistory(ctx, founder.founderStreamID)
+				if err != nil || VerifyFounderHistory(history, set) != ReplayVerified {
+					t.Fatalf("due gate Founder replay failed: err=%v", err)
+				}
+				poisoned := history
+				poisoned.Entries = append([]save.FounderHistoryEntry(nil), history.Entries...)
+				if len(poisoned.Entries) != 1 {
+					t.Fatalf("unexpected no-session Founder commands: %d", len(poisoned.Entries))
+				}
+				poisoned.Entries[0].Events = []save.EventWrite{}
+				removed := 0
+				for _, event := range history.Entries[0].Events {
+					if event.Kind == save.EventFiscalPeriodHarvested {
+						removed++
+						continue
+					}
+					poisoned.Entries[0].Events = append(poisoned.Entries[0].Events, event)
+				}
+				if removed != 1 || VerifyFounderHistory(poisoned, set) != ReplayStateDivergence {
+					t.Fatal("full Founder verifier failed to detect the removed Fiscal prefix")
+				}
 			}
 		})
 	}
@@ -295,9 +430,9 @@ func TestArcadeCurrentCurriculumExitIntegration(t *testing.T) {
 		{"arcade.snake", "playing", false},
 	} {
 		toy := row.toy
-		for _, kind := range []string{IntentWindDown, IntentPerformManualBatch} {
+		for _, kind := range []string{IntentWindDown, IntentPerformManualBatch, IntentCrossGate} {
 			t.Run(toy+"/"+row.phase+"/"+kind, func(t *testing.T) {
-				founder := seed(t)
+				founder := seed(t, kind)
 				sessionID := fmt.Sprintf("01986666-aa02-7000-8000-%012d", index)
 				if _, err := service.StartMinigameAPISession(ctx, platform, StartMinigameAPIRequest{FounderID: founder.founderID,
 					CompanyStreamID: founder.companyStreamID, SessionID: sessionID, IntentID: fmt.Sprintf("01986666-aa03-7000-8000-%012d", index),
@@ -375,6 +510,9 @@ FROM minigame_session_commands c WHERE session_id=$1`, sessionID).Scan(&encoded)
 				if err != nil || !receiptMatches(exited.Receipt, "applied", "", "") {
 					t.Fatalf("resolved quit did not release due Exit: receipt=%s err=%v", exited.Receipt, err)
 				}
+				if kind == IntentCrossGate {
+					assertOriginalGateReplacement(t, founder, payload)
+				}
 				retry, err := service.Handle(ctx, founder.companyStreamID, ModeOnline, now, payload)
 				if err != nil || !retry.Replay || !bytes.Equal(exited.Receipt, retry.Receipt) {
 					t.Fatalf("Exit retry changed result: err=%v", err)
@@ -391,42 +529,50 @@ FROM minigame_session_commands c WHERE session_id=$1`, sessionID).Scan(&encoded)
 				if err != nil || VerifyFounderHistory(history, set) != ReplayVerified {
 					t.Fatalf("Exit Founder replay failed: err=%v", err)
 				}
-				genesis, version, entries := persistedPrestigeReplay(t, db, founder.companyStreamID, founder.founderStreamID, 1, &bundle)
-				// Exit entries own both streams' events; ordinary Company commands
-				// (including minigame resolution) own only Company-stream events.
-				for i := range entries {
-					if entries[i].Terminal {
-						continue
-					}
-					wire, err := parseReplayInputs(entries[i].ReplayInputs)
-					if err != nil {
-						t.Fatal(err)
-					}
-					rows, err := db.QueryContext(ctx, `SELECT kind,schema_version,intent_id,payload FROM events
-WHERE stream_id=$1 AND intent_id=$2 ORDER BY event_seq,event_id`, founder.companyStreamID, wire.Command.IntentID)
-					if err != nil {
-						t.Fatal(err)
-					}
-					events := []save.EventWrite{}
-					for rows.Next() {
-						var event save.EventWrite
-						if err := rows.Scan(&event.Kind, &event.SchemaVersion, &event.IntentID, &event.Payload); err != nil {
-							rows.Close()
-							t.Fatal(err)
-						}
-						events = append(events, event)
-					}
-					err = rows.Err()
-					rows.Close()
-					if err != nil {
-						t.Fatal(err)
-					}
-					entries[i].EventsJSON = marshalReplayEvents(events)
-				}
+				genesis, version, entries := companyReplay(t, founder)
 				if verdict := VerifyReplayRun(genesis, version, bundle, entries, bundle.ConstantsHash, false); verdict != ReplayVerified {
+					logArcadeReplayDivergence(t, genesis, version, bundle, entries)
 					t.Fatalf("Exit Company replay failed: %s", verdict)
 				}
 			})
+		}
+	}
+}
+
+// Preserve the actual gate and expose the first differing receipt/event batch;
+// a verdict-only diagnostic otherwise hides intermittent persistence failures.
+func logArcadeReplayDivergence(t *testing.T, genesis []byte, version int, bundle CatalogBundle, entries []ReplayLogEntry) {
+	t.Helper()
+	state, err := save.RestoreState(genesis, version, bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Logf("genesis restore: %v", err)
+		return
+	}
+	for _, entry := range entries {
+		var receipt []byte
+		var events []save.EventWrite
+		if entry.Terminal {
+			catalogs := bundle
+			catalogs.Next = entry.NextCatalog
+			transition, transitionErr := ApplyLoggedExit(state, entry.CanonicalPayload, catalogs, entry.ReplayInputs)
+			err = transitionErr
+			if err == nil {
+				receipt = transition.Decision.Receipt
+				events = append(events, transition.Decision.FounderEvents...)
+				events = append(events, transition.Decision.CompanyEndedEvents...)
+				events = append(events, transition.Decision.CompanyStartedEvents...)
+				state = transition.Company
+			}
+		} else {
+			transition, transitionErr := ApplyLogged(state, entry.CanonicalPayload, bundle, entry.ReplayInputs)
+			err = transitionErr
+			if err == nil {
+				receipt, events, state = transition.Receipt, transition.Events, transition.State
+			}
+		}
+		if err != nil || !canonicalJSONEqual(receipt, entry.ReceiptJSON) || !canonicalJSONEqual(marshalReplayEvents(events), entry.EventsJSON) {
+			t.Logf("first replay divergence: seq=%d terminal=%v err=%v\nreceipt actual=%s\nreceipt stored=%s\nevents actual=%s\nevents stored=%s\ninputs=%s", entry.Sequence, entry.Terminal, err, receipt, entry.ReceiptJSON, marshalReplayEvents(events), entry.EventsJSON, entry.ReplayInputs)
+			return
 		}
 	}
 }

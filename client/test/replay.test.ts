@@ -140,6 +140,9 @@ const fixture = fixtureJSON as {
   readonly curriculum_exit: {
     readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
   };
+  readonly curriculum_cross_gate_exit: {
+    readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
+  };
   readonly founder_constants_hash: string;
   readonly founder_artifacts: ReplayArtifacts;
   readonly founder_cases: readonly FounderFixtureCase[];
@@ -751,6 +754,44 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     beforeGate.gates_crossed = {};
     const invalid = restoreReplayState(beforeGate, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
     await expect(applyLoggedExit(invalid, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs)).rejects.toThrow(/scripted curriculum trigger/);
+  });
+
+  it("replays the due cross-gate replacement byte-identically without executing the requested gate", async () => {
+    const fixtureExit = fixture.curriculum_cross_gate_exit;
+    const bundle = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    expect(fixtureExit.next_constants_hash).toBe(fixtureExit.constants_hash);
+    const testCase = fixtureExit.case;
+    expect(testCase.canonical_payload).toEqual({ kind: "cross_gate", expected_revision: 1, gate_id: "gate.t2_to_t3", route_id: null });
+    const restore = () => restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    const transition = await applyLoggedExit(restore(), canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+    expect(transition.outcome).toBe("applied");
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    expect(canonicalJSONString(transition.founder)).toBe(testCase.founder_output_json);
+    expect(canonicalJSONString(encodeReplayState(transition.finalCompany))).toBe(testCase.final_company_json);
+    expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(testCase.new_company_json);
+    expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
+    expect(canonicalJSONString(transition.companyEndedEvents)).toBe(testCase.company_ended_events_json);
+    expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
+    expect(transition.finalCompany.tier).toBe(2);
+    expect(transition.finalCompany.gatesCrossed["gate.t2_to_t3"]).toBeUndefined();
+    expect(transition.finalCompany.balances["company.cash"]).toBe("1e10");
+    expect(transition.companyEndedEvents.filter((event) => event.kind === "gate_crossed" || event.kind === "route_executed")).toEqual([]);
+    expect(transition.newCompany!.runSeq).toBe(2);
+    for (const control of ["first_gate", "prior_exit", "branch"] as const) {
+      const state = restore();
+      const inputs = structuredClone(testCase.replay_inputs) as Record<string, any>;
+      if (control === "first_gate") state.gatesCrossed = {};
+      if (control === "prior_exit") inputs.resolved.founder_carry.exit_history_count = 1;
+      if (control === "branch") inputs.resolved.selected_branch = "burnout";
+      await expect(applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, inputs)).rejects.toThrow(control === "branch" ? /selected branch/ : /scripted curriculum trigger/);
+    }
+    const state = restore(), before = canonicalJSONString(encodeReplayState(state));
+    const blockedInputs = structuredClone(testCase.replay_inputs) as Record<string, any>;
+    blockedInputs.resolved.minigame_session_active = true;
+    const blocked = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, blockedInputs);
+    expect(blocked.outcome).toBe("rejected");
+    expect(blocked.receipt).toMatchObject({ rejection: { category: "not_eligible", detail: "minigame_session_active" } });
+    expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
   });
 
   it("keeps curriculum Reputation neutral while each branch applies its own Route Knowledge and starter", async () => {

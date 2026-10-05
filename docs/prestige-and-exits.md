@@ -87,6 +87,17 @@ until Exit history is non-empty, so the curriculum cannot be skipped. Founder Ex
 once-per-Founder, while creating a New Founder provides a genuinely fresh lifecycle. The pacing
 gate measures the first later, genuinely elective Exit.
 
+A due `cross_gate` follows that same replacement boundary. Its original canonical gate
+intent remains in the immutable command log, but the requested gate, resource debit and
+gate/route events do not occur before the ending. Live execution freezes the selected
+curriculum branch; Go and TS replay use it to execute terminal accrual instead of the gate
+action. Historical no-curriculum gate-Exit fixtures retain their original pinned behavior.
+The RP-205 correction carries kernel 0.3.148 and requires Claude's designated review.
+Its current-curriculum real-Postgres before-threshold control crosses normally; due controls
+end the run, replay both histories and retry identically. Both Arcade toys block that action
+while active or claimed and release it only after actual quit/resolution. The later-tier
+paired diagnostic does not replace default first-hour or public-browser acceptance.
+
 ## New-run assembly
 
 The next Company state is deterministic: catalog initials, carried Network items, Reputation

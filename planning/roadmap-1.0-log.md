@@ -1629,3 +1629,30 @@ RP-201/D-020 and later full nine-tier 1.0/platform/release obligations remain ac
 
 Exact RP-206 correction handoff: `b57b95df^..bb5c6ac1`, pending Claude designated review.
 RP-205 remains separately open; the checkpoint does not self-approve, archive or promote scope.
+
+## 2026-10-05 — due-cross-gate correction and Fiscal event-reader repair
+
+Baseline `593f4b30`; separately committed predeclaration `efdc2dbc`. RP-205's live Go and
+shared Go/TS correction freezes the existing curriculum branch and atomically replaces a
+due gate action, without executing/spending it or relabelling the original canonical payload.
+Kernel 0.3.148 records the watched semantic change. Exact Go-produced TS-consumed terminal
+receipt/Founder/final/new-state/event output agrees; every old shared fixture stays unchanged.
+The matched before-threshold gate still crosses normally. Both toys/all nonterminal phases
+still reject all three actions while active/claimed, then actually quit/resolve and Exit,
+retry identically and verify both histories. Live refusal, Go/TS gate path, branch exclusion,
+general guard and claimed-only severings fail and restore byte-exactly.
+
+RP-207 records an intermittent test-reader defect discovered during this wave: actual Founder
+automatic Fiscal events were attributed to Company replay. The separately predeclared test-only
+repair preserves complete Founder verification and all Company/base Exit events. Forced actual
+harvest, removed-prefix refusal and no-filter failing controls discriminate; thirteen actual
+DB subcases pass twenty cold repetitions. No runtime verifier or policy changed for RP-207.
+
+Final cold six-package Go, 7,170 client cases, root type/build/boundaries/vet, unchanged vectors,
+corpus, seven actual Postgres functions and the complete local Linux browser target pass
+(21,759 plus performance). Whole kernel history still fails unchanged RP-131; no bypass,
+historical rewrite or hosted-CI claim. Every probe is restored. Docs and current queue are
+reconciled; both corrections require Claude's designated review and exact range checkpoint.
+No default first-hour/public AC9, full A5, mint, archive, push, deployment or 1.0 promotion.
+Next: original Arcade A6/A7 test-only child/output/accessibility/copy/docs review, without
+building owner-blocked public wire or inventing owner copy. Full nine-tier 1.0 remains active.

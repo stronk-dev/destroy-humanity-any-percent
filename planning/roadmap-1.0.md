@@ -22,11 +22,12 @@ RP-201/D-020 dependency conflict remains unruled),
 plus test-only atomic Soul/zero-reward receipt proof `83008a9f`
 (review span `d798e709^..83008a9f`, awaiting Claude),
 and test-only current-curriculum Exit/quit proof `bb5c6ac1`
-(review span `b57b95df^..bb5c6ac1`, with RP-205's runtime defect still open),
+(review span `b57b95df^..bb5c6ac1`), plus the separately predeclared RP-205 due-cross-gate
+live/shared-replay correction and RP-207 event-reader repair (kernel 0.3.148; Claude review pending),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-206 corrections,
+(RP-145–RP-207 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -197,10 +198,13 @@ RP-206 now exercises actual current-curriculum Wind Down/default due company act
 both toys and every nonterminal phase, active/claimed refusal, real quit/resolution and
 released first ending/run 2, identical retry and both persisted histories. Independent
 guard/claimed/quit probes fail and are restored; Claude review remains required. Full AC9
-is still open: RP-205 finds a genuine due-cross-gate runtime error on the current curriculum,
-with a successful matched pre-threshold gate control. That diagnostic later-tier population
-is not a substitute for the default first-hour journey. No production fix is mixed into the
-test-only supplement; the accepted live/shared-replay correction is next. Public AC8 and
+is still open: RP-205's separate correction now replaces the due gate in live Go and Go/TS
+replay without gate effects, with a successful matched pre-threshold gate control, literal
+terminal bytes, original payload/retry and both histories. Kernel is 0.3.148. RP-207 repairs
+the test's Fiscal event ownership without runtime suppression; full Founder verification,
+forced-harvest/removed-prefix/no-filter controls and twenty cold DB repetitions pass.
+That diagnostic later-tier population is not a substitute for the default first-hour journey;
+both corrective ranges need Claude review. Public AC8 and
 D-020 remain separate, and full nine-tier 1.0/release obligations are not narrowed.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with

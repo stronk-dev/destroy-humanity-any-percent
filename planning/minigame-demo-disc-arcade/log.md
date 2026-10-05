@@ -1876,3 +1876,89 @@ Cold Go, client/type/build/boundaries/vet/vectors/corpus/replay fixture, declare
 Linux browser checks are required; record RP-131 separately if the complete guard stays red.
 Update canonical docs and tracking in-range. No whole AC9/A5 promotion, self-approval or
 archival: exact corrective range goes to Claude for designated cross-party review.
+
+**Executed red-first:** the new Go terminal fixture fails with scripted curriculum trigger;
+actual Postgres passes the genuinely eligible before-threshold gate and all eight old action
+cases, but fails the due no-session gate and all three active toy/phase gate cases with the
+confirmed engine error. Corrected Go/live execution passes all thirteen. Go generation adds
+only curriculum_cross_gate_exit; every old top-level fixture remains byte-identical. The new
+TS case then fails at the old selected-branch CrossGate refusal while all 7,169 old cases pass.
+
+Setup errors are not product findings: the new test initially named an internal balance field
+instead of the Ledger, and an overly broad patch matched ordinary ApplyLogged rather than
+ApplyLoggedExit. Both failed compilation, were corrected before semantic evidence, and neither
+is retained. Make consumes an unescaped final dollar in GO_TEST_FLAGS; use the named selector.
+The TS restore helper required explicit nonnullable foundation catalogs; corrected typing,
+without weakening any replay assertion.
+
+**RP-207 instrument finding / bounded test-only repair predeclaration:** an unchanged old
+Mine Grid/Wind Down case and then the new gate case intermittently fail Company replay.
+Retained first-divergence diagnostics identify an extra persisted Founder automatic Fiscal
+harvest event, not a receipt/state difference. ApplyFounderLogged decorates the Exit with
+that prefix; applyFounderExitLive explicitly validates it separately from decision.FounderEvents.
+The historical persistence helper aggregates both streams by intent and falsely attributes
+that separately owned prefix to the Company Exit. Founder history already verifies the full
+actual prefix. Repair only this test's event scoping; require deterministic automatic-harvest
+coverage, exact complete Founder verification and an independently failing no-filter control.
+Do not suppress unknown events, alter runtime/replay policy or delete the Company event gate.
+The attempted repeat flag was overridden by SAVE_TEST_COUNT=1; it was one run, not twenty.
+Use the existing SAVE_TEST_COUNT selector for the actual repeated cold population.
+
+**RP-205 retained correction:** live branch preview accepts the original CrossGate and
+freezes the existing branch selection; Go/TS shared Exit replay treats that branch as the
+replacement discriminator. It does not execute the requested gate or its debit/events.
+The historical no-curriculum CrossGate path and every old shared-fixture field remain
+unchanged. The new literal fixture uses the actual current complete curriculum and compares
+receipt, Founder carry, final/new Company and every Founder/ended/started event batch in TS.
+Matched forged first-gate, prior-Exit and branch evidence refuses; active-session evidence
+rejects without state mutation. Original player intent is never relabelled Wind Down.
+All three kernel identities advance honestly to 0.3.148.
+
+**RP-207 repair:** the test reader retains all actual Company events and terminal base
+Founder Exit events; only the separately owned automatic Founder Fiscal prefix is excluded
+from Company replay. Full actual Founder-history verification remains mandatory. The due
+no-session gate now forces exactly one actual Fiscal harvest; removing only that prefix
+from a cloned Founder history fires state_divergence. First-divergence diagnostics remain.
+All thirteen subcases pass twenty actual cold DB repetitions (15.546 s).
+
+**Executed independent severings:**
+
+- Restoring only live CrossGate refusal fails due no-session and all three active gate cases;
+  the genuine before-threshold gate and all eight old action cases remain green.
+- Restoring only Go's gate execution in terminal replay fails with Tier 3, crossed gate and
+  cash 9e9 instead of unchanged Tier 2/un-crossed gate/cash 1e10. The assertion discriminates
+  the actual requested action effects, not merely a renamed error.
+- Restoring only TS's CrossGate branch exclusion fails the new case while all 7,169 old
+  client cases pass. Independently restoring TS's gate execution fails exact receipt bytes
+  (including the missing branch starter), again with the old population green.
+- Disabling the broad Exit guard fails all nine real session/action cases, including the
+  three new gate cases; all four genuine no-session/before-threshold controls pass.
+- Hiding only claimed status in the actual repository fails all nine specifically after
+  active rejection and real quit passed. No-session/before-threshold controls stay green.
+- Removing only the test reader's Fiscal scope fails its deterministic due-gate Company
+  replay, while the other twelve cases pass. No runtime or verifier is changed by this probe.
+
+Every runtime/repository/test-reader probe is byte-restored against saved fixed-source Git
+object hashes before final verification; the minigame repository has no residual diff.
+The extra retained removed-prefix Founder control was added after those hash comparisons.
+No content, owner text, public wire, migration or CI workflow changed.
+
+**Final cold checks executed so far:** six Go packages pass with `-count=1`, including actual
+production completion at 63.082 s and regeneration of the shared fixture. Root typecheck
+has zero errors/warnings; all 7,170 client cases pass / 88 intentional browser-only skips.
+Build, boundaries/negative fixtures, vet, unchanged 6,296 vectors and all three Arcade corpus
+regeneration checks pass. Declared real Postgres executes SEVEN functions verbosely, including
+all thirteen actual Exit subcases, atomic Pitch, Typer composed and current automatic curriculum;
+all pass with no skips. Complete local ARM64 Linux three-browser verification passes 21,759
+cases / three intentional performance skips across 267 populations; separate Chromium
+performance passes (one / 20 filtered). This is local Linux evidence, not hosted CI.
+The complete kernel guard is still running; do not infer its terminal result from silence.
+
+**Terminal guard result:** Make exits 2 at the unchanged pushed RP-131 hash
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`, parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after checkout-contract and adversarial
+fixture controls pass. No bypass, false bump, history rewrite or hosted-green claim.
+RP-205/RP-207 are locally corrected, READY FOR CLAUDE DESIGNATED REVIEW; the exact
+predeclaration-through-implementation range will be pinned by the following checkpoint.
+The original full A5/AC9, default public journey, public wire/copy/mint, D-020 and full 1.0
+remain separate. No self-approval, archival, push or deployment.

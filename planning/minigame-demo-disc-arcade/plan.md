@@ -80,8 +80,13 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   setup/playing and Snake playing. Both active and claimed status preserve full stream/
   session state and SQL command history; real quit/resolution releases the first ending,
   with identical retry and both histories verified. Guard/claimed/quit probes fail and
-  restore; Claude review remains required. RP-205's genuine due-cross-gate entry error
-  remains separately open, so AC9/full A5 is not accepted or archived.
+  restore; Claude review remains required. RP-205's separately predeclared live/shared-replay
+  correction (kernel 0.3.148) adds a matched before-threshold gate and due replacement without
+  requested gate effects, original-payload/retry/both-history proof, and literal Go/TS output.
+  The full thirteen-case DB population retains active/claimed rejection and real quit/resolution.
+  RP-207 scopes the Company reader away from the separately verified Founder Fiscal prefix,
+  with forced-harvest and removed-prefix controls. Claude review and default/public AC9
+  remain required; AC9/full A5 is not accepted or archived.
 - [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
   with the AR6.2/AR6.3/AR6.4 contract, test-only mounted (no pinned tenant row yet), axe in three
   browsers.

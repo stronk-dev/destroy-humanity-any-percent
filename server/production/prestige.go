@@ -449,9 +449,6 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		build.CommonsWeightPPM = &weight
 	}
 	if selectedType == "scripted_first" && next.Curriculum != nil {
-		if request.Kind == IntentCrossGate {
-			return save.ExitDecision{}, nil, ErrInvalidEngineState
-		}
 		branch, branchErr := previewCurriculumBranch(company, current, next, request, build)
 		if branchErr != nil {
 			return save.ExitDecision{}, nil, branchErr

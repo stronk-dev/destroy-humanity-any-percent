@@ -41,6 +41,7 @@ type crossRuntimeFixture struct {
 	ActivePlayExit     crossRuntimeActiveExit        `json:"active_play_exit"`
 	FirstContentExit   crossRuntimeActiveExit        `json:"first_content_exit"`
 	CurriculumExit     crossRuntimeActiveExit        `json:"curriculum_exit"`
+	CurriculumGateExit crossRuntimeActiveExit        `json:"curriculum_cross_gate_exit"`
 	FullRun            crossRuntimeFullRun           `json:"full_run"`
 	DoctrineRun        crossRuntimeFullRun           `json:"doctrine_run"`
 	ActivePlayRun      crossRuntimeFullRun           `json:"active_play_run"`
@@ -373,6 +374,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.ActivePlayExit = makeActivePlayExitFixture(t, baseNow)
 	result.FirstContentExit = makeFirstContentExitFixture(t, baseNow)
 	result.CurriculumExit = makeCurriculumExitFixture(t, baseNow)
+	result.CurriculumGateExit = makeCurriculumExitFixtureForIntent(t, baseNow, true)
 	result.FullRun = makeFullRunFixture(t, catalogs, catalogs.ConstantsHash, baseNow)
 	result.DoctrineRun = makeDoctrineReplayRunFixture(t, baseNow)
 	result.ActivePlayRun = makeActivePlayReplayRunFixture(t, baseNow)
@@ -1523,14 +1525,82 @@ func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActive
 }
 
 func makeCurriculumExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
+	return makeCurriculumExitFixtureForIntent(t, now, false)
+}
+
+func TestCurriculumDueCrossGateReplay(t *testing.T) {
+	fixture := makeCurriculumExitFixtureForIntent(t, time.Date(2026, 8, 1, 8, 0, 0, 0, time.UTC), true)
+	bundle := activeContentBundle(t)
+	if fixture.ConstantsHash != bundle.ConstantsHash || fixture.NextConstantsHash != bundle.ConstantsHash {
+		t.Fatal("cross-gate fixture is not the current complete curriculum")
+	}
+	company := replayFixtureStateFromEncoded(t, bundle, fixture.Case.FinalCompany)
+	cash, _ := company.Ledger.Balance("company.cash")
+	if company.Tier != 2 || company.GatesCrossed["gate.t2_to_t3"] || cash.String() != "1e10" {
+		t.Fatalf("due gate action leaked into ended Company: tier=%d gate=%v cash=%s", company.Tier, company.GatesCrossed, cash.String())
+	}
+	for _, event := range fixture.Case.CompanyEndedEvents {
+		if event.Kind == "gate_crossed" || event.Kind == "route_executed" {
+			t.Fatalf("replaced action emitted %s", event.Kind)
+		}
+	}
+	for _, control := range []string{"first_gate", "prior_exit", "branch", "active_session"} {
+		t.Run(control, func(t *testing.T) {
+			state := replayFixtureStateFromEncoded(t, bundle, fixture.Case.PreState)
+			var wire map[string]json.RawMessage
+			if err := json.Unmarshal(fixture.Case.ReplayInputs, &wire); err != nil {
+				t.Fatal(err)
+			}
+			var resolved map[string]json.RawMessage
+			if err := json.Unmarshal(wire["resolved"], &resolved); err != nil {
+				t.Fatal(err)
+			}
+			switch control {
+			case "first_gate":
+				state.GatesCrossed = map[string]bool{}
+			case "prior_exit":
+				var carry map[string]json.RawMessage
+				if err := json.Unmarshal(resolved["founder_carry"], &carry); err != nil {
+					t.Fatal(err)
+				}
+				carry["exit_history_count"] = json.RawMessage(`1`)
+				resolved["founder_carry"], _ = json.Marshal(carry)
+			case "branch":
+				resolved["selected_branch"] = json.RawMessage(`"burnout"`)
+			case "active_session":
+				resolved["minigame_session_active"] = json.RawMessage(`true`)
+			}
+			wire["resolved"], _ = json.Marshal(resolved)
+			inputs, err := json.Marshal(wire)
+			if err != nil {
+				t.Fatal(err)
+			}
+			before := mustEncodeState(t, state)
+			transition, err := ApplyLoggedExit(state, fixture.Case.CanonicalPayload, bundle, inputs)
+			if control == "active_session" {
+				if err != nil || transition.Decision.Outcome != save.IntentRejected || !bytes.Equal(before, mustEncodeState(t, state)) {
+					t.Fatalf("active gate Exit not rejected atomically: err=%v", err)
+				}
+				return
+			}
+			if !errors.Is(err, ErrInvalidReplayInputs) || !bytes.Equal(before, mustEncodeState(t, state)) {
+				t.Fatalf("forged %s admitted or mutated state: err=%v", control, err)
+			}
+		})
+	}
+}
+
+func makeCurriculumExitFixtureForIntent(t *testing.T, now time.Time, crossGate bool) crossRuntimeActiveExit {
 	t.Helper()
 	current := activeContentBundle(t)
 	artifacts := cloneArtifactMap(current.Artifacts)
-	curriculumBytes, err := os.ReadFile("../../balance/testdata/t0-t1/curriculum-v2.json")
-	if err != nil {
-		t.Fatal(err)
+	if !crossGate {
+		curriculumBytes, err := os.ReadFile("../../balance/testdata/t0-t1/curriculum-v2.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		artifacts["curriculum"] = curriculumBytes
 	}
-	artifacts["curriculum"] = curriculumBytes
 	nextHash, err := save.ConstantsHashArtifacts(artifacts)
 	if err != nil {
 		t.Fatal(err)
@@ -1541,6 +1611,10 @@ func makeCurriculumExitFixture(t *testing.T, now time.Time) crossRuntimeActiveEx
 	company := replayFixtureState(t, current.Economy, now.Add(-15*time.Minute))
 	company.WireVersion, company.Tier = 18, 1
 	company.GatesCrossed["gate.t0_to_t1"] = true
+	if crossGate {
+		company.Tier = 2
+		setCash(t, company, "1e10")
+	}
 	company.MeterBands = nil
 	meterState, meterErr := meters.NewRunState(current.Meters, 0)
 	if meterErr != nil {
@@ -1566,6 +1640,9 @@ func makeCurriculumExitFixture(t *testing.T, now time.Time) crossRuntimeActiveEx
 	founder.Soul, founder.SoulExhaustedSourceIDs = 80, []string{}
 	preState := mustEncodeState(t, company)
 	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0d00-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`))
+	if crossGate {
+		request, err = ParseIntent([]byte(`{"intent_id":"01986666-0d00-7000-8000-000000000002","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1581,7 +1658,11 @@ func makeCurriculumExitFixture(t *testing.T, now time.Time) crossRuntimeActiveEx
 		t.Fatal(err)
 	}
 	branch, err := next.Curriculum.SelectBranch(company, current.Economy)
-	if err != nil || branch.Branch != "burnout" {
+	expectedBranch := "burnout"
+	if crossGate {
+		expectedBranch = "pivot"
+	}
+	if err != nil || branch.Branch != expectedBranch {
 		t.Fatalf("curriculum fixture branch=%q err=%v", branch.Branch, err)
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1d00-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
@@ -1592,7 +1673,11 @@ func makeCurriculumExitFixture(t *testing.T, now time.Time) crossRuntimeActiveEx
 	if err != nil {
 		t.Fatal(err)
 	}
-	result := executeTerminalFixture(t, "curriculum-burnout-preempts-manual", current, company, preState, request, inputs, carry)
+	name := "curriculum-burnout-preempts-manual"
+	if crossGate {
+		name = "current-curriculum-pivot-preempts-cross-gate"
+	}
+	result := executeTerminalFixture(t, name, current, company, preState, request, inputs, carry)
 	if result.CompanyEndedEvents[len(result.CompanyEndedEvents)-1].SchemaVersion != 3 {
 		t.Fatal("curriculum exit did not emit run_ended v3")
 	}
