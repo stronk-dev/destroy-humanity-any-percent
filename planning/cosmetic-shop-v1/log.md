@@ -846,3 +846,21 @@ activation **only** at a new-run boundary. Interpreting `founder-v23-to-v24-empt
 read-time migration would violate that rule. The ruling author must reconcile §6/AC4's corpus
 home, version coordinates and expected transition before an implementer can honestly close it.
 RP-176 tracks this distinction. C3 is not approved or archival-eligible on this verdict.
+
+## 2026-10-05 — Codex designated C4/AC9 database-payload review predeclaration
+
+**Review by / recorded by:** Codex. **Claude range under review:** `500d944c^..500d944c`,
+limited to §4.5/AC9's claim that Postgres rejects an extra cosmetic event payload field; the
+rest of C4's intent and replay corpus is not approved by this bounded review. The current
+`events` SQL has an object payload check and a closed kind list, while the C4 log says Go's
+strict decoder, not the database, rejects extra fields. Before a correction, add a retained
+real-Postgres test inside the existing Cosmetic integration population. For each of acquired,
+equipped and unequipped, a valid payload/kind update in a rollback-only transaction must
+succeed, and an otherwise identical payload with an extra `price` or `amount` key must fail at
+the SQL boundary. Run cold through the declared Compose Postgres service. If the valid control
+passes and the extra update succeeds, record C4 CHANGES REQUIRED. Under accepted AC9, a
+correction may add a NEW migration (never edit applied `00080`) constraining exact key sets
+for only those three kinds; it must leave other event kinds unchanged and prove valid cases,
+all three extras, and a temporary severing failure. Also run migration validation, focused
+Go/client replay, and the relevant existing integration population. Do not infer full C4,
+Cosmetics or release approval from this database-only boundary.
