@@ -24,7 +24,7 @@ plus test-only atomic Soul/zero-reward receipt proof `83008a9f`
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-204 corrections,
+(RP-145–RP-206 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -190,9 +190,16 @@ integration, Pitch-less acceptance or a full A4/A5 promotion.
 RP-203/204 separately add both-toy low-Soul refusals at the actual atomic entry and empty
 cap-reason assertions on actual zero-credit receipts. The old complete Go/DB populations
 survive each corruption; the new state/revision/SQL and independent per-toy receipt probes
-fail, then are restored. These test-only corrections need Claude review. Actual eligible
-Wind Down/cross_gate actions before/after quit remain open (AC9); repository activity flags
-and Tier-0-ineligible actions cannot close that gate. Public AC8 and D-020 remain separate.
+fail, then are restored. These test-only corrections need Claude review.
+RP-206 now exercises actual current-curriculum Wind Down/default due company actions for
+both toys and every nonterminal phase, active/claimed refusal, real quit/resolution and
+released first ending/run 2, identical retry and both persisted histories. Independent
+guard/claimed/quit probes fail and are restored; Claude review remains required. Full AC9
+is still open: RP-205 finds a genuine due-cross-gate runtime error on the current curriculum,
+with a successful matched pre-threshold gate control. That diagnostic later-tier population
+is not a substitute for the default first-hour journey. No production fix is mixed into the
+test-only supplement; the accepted live/shared-replay correction is next. Public AC8 and
+D-020 remain separate, and full nine-tier 1.0/release obligations are not narrowed.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

@@ -1605,3 +1605,24 @@ repository activity flags. D-020/public wire/copy/mint remain separate; the full
 
 Exact RP-203/204 correction handoff: `d798e709^..83008a9f`, pending Claude's designated
 cross-party review. Hash-pinning is not a verdict, scope promotion or archival authorization.
+
+## 2026-10-05 — Actual Arcade Exit/quit evidence and a due-cross-gate defect
+
+RP-206 now exercises the actual current-curriculum production path rather than repository
+activity flags: eligible no-session Exit controls, Mine Grid setup/playing and Snake playing,
+both Wind Down/default due company actions, exact active/claimed refusal with unchanged full
+stream/session state and SQL command rows, real quit/resolution, first ending/run 2, identical
+retry and both persisted histories. Four independent guard/claimed/per-toy-quit probes fail;
+all runtime changes restored. Existing Pitch/Typer/replay guard controls are preserved.
+
+RP-205 is separately confirmed: the same genuinely eligible current gate/cash/history crosses
+before the first-ending threshold but returns an engine error afterward. The later-tier
+diagnostic proves the entry error, not default first-hour success. A separate accepted-contract
+live/shared-replay correction is next; it is not hidden inside this test-only evidence repair.
+
+Cold six-package Go, 7,169 client cases, root type/build/boundaries/vet/vectors/corpus, SEVEN
+actual Postgres functions and complete Linux browser verification (21,756 plus performance)
+pass. Historical RP-131 remains red and unbypassed. Test setup mistakes and fixes are disclosed
+in the RFC log, not counted as runtime defects. Claude's exact designated review remains
+mandatory; no full AC9/A5/public-wire acceptance, archive, content mint, push or deployment.
+RP-201/D-020 and later full nine-tier 1.0/platform/release obligations remain active.

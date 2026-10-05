@@ -1731,3 +1731,106 @@ Final cold selected Go, client/type/build/boundaries/vet/vectors/corpus, real-DB
 Linux browser targets; historical RP-131 remains separate and unbypassed. Exact corrective
 Claude range and docs/ledger/queue/roadmap closeout. No acceptance checkbox promotion, full
 A5/AC9/public AC8, archive, copy/content mint, wire/schema, CI or push/deployment changes.
+
+Baseline cold selected Go and the corrected SIX-function real-Postgres selector pass.
+The first selector spelling `TestTyper.*Exit.*Integration` matched no Typer function; it
+executed five functions and is not Typer evidence. Replacing that arm with the actual
+`TestTyperComposedIntegration` executes its real Wind Down before/after end_run population
+alongside the three Arcade functions, atomic Pitch start and current automatic curriculum.
+No source change occurred between baselines. The broad guard probe now runs independently.
+
+The broad replay Exit-guard severing is caught by existing whole-Go literal replay output,
+atomic Pitch start (exact detail changes from active-session to tier), and Typer's actual
+Wind Down (it wrongly applies). All original Arcade functions and the no-session automatic
+curriculum control still pass. This is positive evidence for existing controls, not old
+whole-suite survival. Both tool handles exit Make 2; source restored exactly before new tests.
+
+**RP-205 discovery:** the first current-epoch-plus-Arcade execution passes Wind Down and
+ordinary due company-action controls and both toys' block/quit/released-Exit cases. The
+due cross_gate control returns `invalid production engine state` with no receipt. It names
+the already-crossed first gate, so this is NOT yet an eligible gate-transition positive or
+sufficient runtime-defect evidence. Record now, then execute a genuinely eligible ordinary
+gate control before/after the attendance threshold. Keep any later-tier diagnostic distinct
+from the default first-ending acceptance population. No production correction is authorized
+by this ambiguous first control alone.
+
+**RP-205 confirmed paired runtime failure:** a genuinely eligible current-artifact
+`gate.t2_to_t3` transition at Tier 2, cash `1e10`, first gate already crossed, run 1 and no
+Founder Exit succeeds before the threshold (run remains 1, Tier becomes 3). The otherwise
+matched due state refuses with `invalid production engine state` and no receipt. This is
+a diagnostic later-tier population, NOT a default first-hour acceptance replacement. With
+the actual route projector and resolver the positive still passes and due case still fails.
+The first pair lacked WithRouteCatalogs, so its route-runtime error was a setup mistake;
+the next actual-projector attempt passed the wrong resolver interface and did not compile.
+Both are disclosed and corrected, not product defects or acceptance evidence. The live
+`applyLoggedExit` explicitly refuses CrossGate before freezing the curriculum branch.
+Separate accepted-contract/runtime replay correction is required; none belongs in this
+test-only repair. Remove the temporary failing due diagnostic after recording its exact
+population; retain successful actual due Wind Down/company-action evidence without full AC9.
+
+**RP-206 discovery:** all original Arcade functions survive the broad Exit-guard severing,
+while existing Pitch/Typer/replay gates catch it. The specific Arcade population is absent,
+not the global gate. New current-curriculum tests actually block both toys' Wind Down and
+ordinary due company actions, then execute real quit/resolution and released Exit with
+identical retry and verified Founder history. Phase/claimed-state and firing controls follow.
+
+**RP-206 retained population:** eight subcases pass on unchanged production: two genuine
+no-session due-Exit controls, then Wind Down and default ordinary company action for Mine
+Grid setup/playing and Snake playing. Each actually starts through the atomic coordinator,
+requires exact rejected/not_eligible/minigame_session_active at both active and claimed status,
+compares full Founder/Company state and revisions/hash plus session state/genesis/result/token
+and complete SQL command rows, executes real quit/resolution, and then persists the first
+ending/run 2. Retry bytes match and both Founder and Company histories verify.
+
+Test setup mistakes are disclosed: an incorrectly named Status type did not compile; using
+the pre-start clock for later resolution could precede the atomic start's DB-authored Fiscal
+clock and caused Fiscal-sweep refusal. Resolution now uses an actual later server time.
+The Exit-only historical helper included Founder events in nonterminal Company replay,
+causing state_divergence; the new test reads Company events for those commands and preserves
+both-stream event order for actual Exit entries. No production policy or replay verifier
+was changed to make these setup errors green. Two cold executions of all eight now pass.
+
+The same broad Exit-guard severing now fails all SIX actual Arcade action/phase cases at
+the active-session refusal, while both eligible no-session Exit controls pass. Repeated
+probe source restored exactly before isolating claimed-status visibility in the actual
+repository resolver. This next probe excludes only claimed, never active, in its read-only
+SQL predicate; it must reach and fail the later claimed-state observation.
+
+The claimed-only visibility probe fails all SIX cases specifically at the claimed-session
+rejection, after active-session checks and real quits passed. No-session controls remain
+green. Repository source restored exactly; independent per-toy quit probes follow.
+
+Independent Mine Grid-only quit removal fails all FOUR setup/playing action cases at the
+actual terminal requirement; Snake and no-session controls pass. Restored it before removing
+only Snake's quit: both Snake cases fail at the actual terminal requirement while all four
+Mine Grid and no-session controls pass. All engine probes now restored exactly. Every retained
+acceptance assertion remains; no permissive fake terminal, content or public route was added.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Original Claude A5 span `e1c71d7c^..e1c71d7c`: repository booleans do
+not exercise AC9's actual Exit/quit/released-Exit behavior. RP-206 supplies the missing
+current-curriculum internal action population, not public wire/default UI or full AC9.
+RP-205's separately confirmed due-cross-gate runtime error remains open for its own
+predeclared accepted-contract/replay correction. Existing broad guard witnesses are credited,
+not invalidated. Claude must review the exact Codex supplement; no self-approval or archival.
+
+**RP-206 final cold verification:** six selected Go packages pass with `-count=1`; production
+finishes at 61.889 s, not a guessed completion from its earlier package output. Root typecheck
+has zero errors/warnings; whole client 7,169 passes / 88 intentional browser-only skips.
+Build, boundaries with negative controls, vet, unchanged vectors and all three Arcade
+regeneration comparisons pass. Declared real Postgres executes SEVEN functions verbosely:
+four Arcade functions (including the new eight-subcase Exit population), atomic Pitch start,
+Typer composed Exit and current automatic curriculum. All pass; none skips. Complete cold
+Linux browser target exits 0 with 21,756 passes / three intentional performance skips across
+267 populations; separate Chromium performance passes (one / 20 filtered).
+
+The complete kernel guard still exits Make 2 at pushed RP-131 hash
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after checkout/adversarial controls pass.
+Kernel remains 0.3.147; no historical exception, false bump, rewrite or CI edit. All temporary
+runtime/repository/engine probes are byte-restored; `git diff --check` passes. Fixture preparation
+is test-only, retains every current row/artifact and does not mint or alter default player data.
+The ledger placement is reconciled into the main RP sequence, not the unrelated feature sweep.
+READY FOR CLAUDE DESIGNATED REVIEW of this bounded supplement. RP-205 still requires a
+separate accepted-contract live/shared-replay correction; RP-201/D-020/public wire/copy/mint
+remain distinct. No full AC9/A5/public journey, archive, push, deployment or 1.0 completion.

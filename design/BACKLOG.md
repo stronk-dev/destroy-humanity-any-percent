@@ -239,7 +239,14 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 
 | RP-204 | Arcade AR1.6/AC8 require zero credit/forfeit without a cap reason, but the composed witness never inspects cap_reason_key. Forcing only Arcade receipts to report the declared cap key survives the old complete Go and four-function real-Postgres population while all credit/forfeit/state/retry assertions stay green. | 📜 Test-only repair predeclared at `d798e709` asserts explicit empty cap_reason_key in each actual composed receipt, preserving real play/resolution/retry. Independent Mine Grid-only and Snake-only corruptions fail on their named receipt diagnostic; both sources restored exactly. Claude review required; no unchanged runtime defect alleged. C40 attendance bookkeeping is not economic-grade change. Public socket/automatic receipt exposure and full AC8 remain distinct gates; actual AC9 Exit actions remain open. `planning/minigame-demo-disc-arcade/log.md`. |
 
-Owner choices D-001–D-017 and their evidence prerequisites live in
+| RP-205 | A genuinely eligible current-curriculum `cross_gate` succeeds before the first-ending threshold (Tier 2→3, same gate/cash/first-gate history), but returns `invalid production engine state` after that ending becomes due. Wind Down and ordinary due company actions succeed. Live applyLoggedExit explicitly refuses a CrossGate request whenever the current curriculum selects scripted_first. | 📜 Confirmed runtime defect under `b57b95df`, not a passing substitute for the default first-ending journey. Actual Postgres with current pinned curriculum, real route projector and fresh complete Arcade test bundle supplies the paired evidence. The initial already-crossed-gate control was insufficient; a missing route option and resolver-interface compile error were test setup errors and are disclosed. Separate accepted-contract correction and exact Go/TS replay/identity proof required; no production changes in this test-only range. `planning/minigame-demo-disc-arcade/log.md`. |
+
+| RP-206 | Original A5's Arcade witness only reads repository active-session booleans, without issuing Wind Down or any due company command. The general Exit-guard severing fails existing Pitch/Typer and literal replay witnesses, but every original Arcade function still passes. | 📜 Test-only supplement under `b57b95df`: actual current-curriculum Wind Down/default company action at Mine Grid setup/playing and Snake playing, exact active/claimed refusals, unchanged full state/session/SQL history, real quit/resolution, released first Exit/run 2, identical retry and both histories verified. General guard, claimed-only and independent per-toy quit probes fail and are restored; no-session controls remain positive. Exact corrective Claude review and full AC9/public integration remain required. RP-205 is separate; `planning/minigame-demo-disc-arcade/log.md`. |
+
+RP-203/204 exact corrective review span: `d798e709^..83008a9f`, pending Claude's designated
+verdict. This index line does not close the findings or promote full A5/public acceptance.
+
+Owner choices D-001–D-020 and their evidence prerequisites live in
 `planning/platform-alignment/decision-queue.md`; agents may not answer them through code.
 
 ## Core systems (designed + researched, awaiting RFCs in roadmap order)
@@ -372,9 +379,6 @@ Legal rule for all: mechanics are fair game, **expression and names are ours** (
 | Subway-Surfers split-screen | Not a minigame — a **satirical UI event** at the brain-rot tier (Stimulation Clicker lineage, already in `08`) | `08` |
 | Desert Bus | The anti-game joke: a "mandatory compliance training" minigame that is deliberately, honestly nothing — with an achievement for finishing | `03` gag |
 | QWOP/Getting Over It | Deliberate-frustration lineage; a one-off gag control scheme, not a system | `03` gag |
-
-RP-203/204 exact corrective review span: `d798e709^..83008a9f`, pending Claude's designated
-verdict. This index line does not close the findings or promote full A5/public acceptance.
 
 ## Legal notes on lifted mechanics (house rules)
 

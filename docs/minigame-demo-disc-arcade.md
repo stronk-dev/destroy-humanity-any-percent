@@ -89,6 +89,24 @@ independent Mine Grid-only and Snake-only receipt corruptions fail (RP-204). Bot
 supplements awaiting Claude review. Neutral economic quality is distinct from C40's legitimate
 attendance timestamp update; no whole-map immutability or public-socket acceptance is claimed.
 
+`TestArcadeCurrentCurriculumExitIntegration` supplies real Postgres/production Handle
+evidence for Wind Down and an ordinary due company action. Its freshly hashed test bundle
+retains the current epoch's curriculum/economy and every original row, adding only the two
+accepted Arcade definitions/tenants and candidate artifact. It seeds a reached first-gate/
+attendance boundary; this is not a default browser journey or a production content mint.
+No-session controls Exit successfully. For Mine Grid setup/playing and Snake playing,
+actual active and claimed sessions reject with exact minigame_session_active and preserve
+full stream/session state, revisions and SQL command history. Real quit plus resolution
+releases the first ending/run 2; retry matches and both persisted histories verify. Removing
+the Exit guard, hiding claimed status, or removing either toy's quit fails the named cases.
+This RP-206 test-only correction requires Claude review; full AC9 stays open.
+
+RP-205 is a separate runtime defect: with the current curriculum due, a genuinely eligible
+cross_gate returns an engine error rather than a terminal response. The same real gate/cash/
+history before the threshold crosses successfully. That later-tier diagnostic proves the
+entry-path error, not default first-hour success or a reason to replace it with a green
+later-tier acceptance fixture. A separately scoped shared-replay correction is still needed.
+
 RP-201 remains an explicit contract conflict: AC7 requires a Pitch-less Arcade bundle, but
 API MA-C15 rules `minigame_api → pitch`, retained by AR1.2 and enforced in both actual
 bundle loaders. Freshly hashed Pitch-less catalogs refuse; complete controls load. D-020

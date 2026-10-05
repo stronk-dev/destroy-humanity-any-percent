@@ -76,6 +76,12 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   atomic Soul and per-toy receipt corruptions fail and are restored. These test-only repairs
   await Claude review; public AC8 and actual eligible Exit actions before/after quit (AC9)
   remain unproven. Repository activity booleans do not substitute for Exit actions.
+  RP-206 adds actual current-curriculum Wind Down/default company actions for Mine Grid
+  setup/playing and Snake playing. Both active and claimed status preserve full stream/
+  session state and SQL command history; real quit/resolution releases the first ending,
+  with identical retry and both histories verified. Guard/claimed/quit probes fail and
+  restore; Claude review remains required. RP-205's genuine due-cross-gate entry error
+  remains separately open, so AC9/full A5 is not accepted or archived.
 - [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
   with the AR6.2/AR6.3/AR6.4 contract, test-only mounted (no pinned tenant row yet), axe in three
   browsers.

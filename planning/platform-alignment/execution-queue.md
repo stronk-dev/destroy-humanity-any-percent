@@ -1,6 +1,33 @@
 # Executable queue
 
-## Current Arcade atomic Soul and zero-reward evidence repair — 2026-10-05
+## Current Arcade actual Exit-action evidence and runtime finding — 2026-10-05
+
+RP-206 adds the missing actual Arcade Exit population, not repository activity flags.
+The test-only current-epoch bundle retains the entire curriculum/economy and original rows.
+Two no-session due-Exit controls succeed. Both Wind Down and the default ordinary company
+action reject during actual Mine Grid setup/playing and Snake playing, at active AND claimed
+status; full stream/session state/revisions and complete SQL command rows are unchanged.
+Real quit/resolution releases the first ending/run 2; retry matches and both histories verify.
+General guard, claimed-only and independent per-toy quit probes fail and are restored.
+Existing Pitch/Typer/replay controls already catch broad guard removal and are preserved.
+Claude designated review remains required; no public/default browser/full AC9 acceptance.
+Cold six-package Go, 7,169 client cases, root checks, seven actual Postgres functions and full
+Linux three-browser verification (21,756 plus separate performance) pass. Historical RP-131
+still fails at its unchanged pushed hash; no bypass or complete green-CI claim.
+
+**RP-205:** a genuinely eligible current-curriculum cross_gate succeeds before the first
+ending is due, but returns an engine error afterward. The diagnostic uses the same real
+gate/cash/history with only the attendance threshold changed; it does NOT close the default
+first-hour path with a later-tier substitute. No production fix is mixed into RP-206.
+
+**NEXT SAFE ACTION:** predeclare the accepted-contract RP-205 live/shared-replay correction.
+Execute red-first due-cross-gate controls on the current curriculum, preserve unchanged
+ordinary progression and active/claimed rejection, and require exact Go/TS receipt/state/event
+replay plus honest kernel identity for any watched runtime change. Do not normalize away the
+original intent or accept a fake terminal. Keep RP-201/D-020, public wire/copy/mint and the
+draft-only RP-131 history repair separate; full nine-tier 1.0 and review gates remain intact.
+
+## Dated Arcade atomic Soul and zero-reward evidence repair — 2026-10-05
 
 RP-203/204 are test-only supplements under accepted AR1.5/AR1.6 and AC8/AC10, predeclared
 at `d798e709`. Removing only the atomic Soul check and separately corrupting only Arcade
@@ -16,7 +43,7 @@ pass. Historical RP-131 still fails the full guard at its unchanged pushed hash;
 Exact RP-203/204 corrective Claude review span: `d798e709^..83008a9f`. Pending verdict,
 not a recorded self-approval or archival gate.
 
-**NEXT SAFE ACTION:** separately predeclare a genuine AC9 Exit-action witness. Establish
+**Dated next action (superseded by the current checkpoint above):** separately predeclare a genuine AC9 Exit-action witness. Establish
 eligible Wind Down and cross_gate positive controls, then actual refusals during each toy's
 active session and success after quit. Do not substitute repository activity booleans,
 Tier-0-ineligible actions or a generic later-tier fixture for default first-ending proof.
