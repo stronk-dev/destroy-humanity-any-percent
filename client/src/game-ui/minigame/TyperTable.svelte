@@ -34,7 +34,12 @@
   onDestroy(() => { if (timer !== undefined) clearInterval(timer); });
 
   // A new server sample restarts local elapsed time (the Game UI RTA pattern).
-  $effect(() => { void serverTimeSample; void snapshot.revision; sampledAt = monotonicNow(); now = sampledAt; });
+  $effect(() => {
+    void serverTimeSample; void snapshot.revision;
+    // Reading sampledAt here would make the effect depend on its own write.
+    const sample = monotonicNow();
+    sampledAt = sample; now = sample;
+  });
 
   // Clear the field when the prompt advances; keep it on a miss so the player
   // can correct it. Focus stays in the input (TT8.3).

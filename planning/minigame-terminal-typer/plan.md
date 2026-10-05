@@ -23,6 +23,18 @@ Fixture-first (OD-11): no production epoch is minted by this plan.
   receipt; neutrality timed/untimed. ACs 8, 11.
 - [ ] Canonical docs (`docs/minigame-terminal-typer.md`), designated Codex review, archival (Codex).
 
+### B6 local display-clock correction (2026-10-05)
+
+RP-187's cold CI update-depth error is reproduced by an increasing injected monotonic clock
+in all three engines. The bounded display-only correction samples into one non-reactive local
+before assigning both state fields. Ready/timed/new-server-revision states and all existing
+native keyboard, composition, prompt, reflow/axe cases pass (24/24). Reinstating the reactive
+read-back independently fails the retained clock case in all three. The full cold browser
+CI lane passes 21,102 tests plus its separate performance case, with unit/type/build/boundaries
+green. Claude's designated review of the exact correction span in `log.md` remains required.
+This does not close public registration, owner content, manual AT, or B6 as a whole; RP-188's
+earlier Snake failure and RP-131's historical kernel guard remain independent open findings.
+
 Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bumps
 `kernel/VERSION` (+ Go/TS constants) in the same commit; new engine dirs are registered in the
 commit that creates them.

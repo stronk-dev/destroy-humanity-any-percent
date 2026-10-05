@@ -1,5 +1,22 @@
 # Executable queue
 
+## Current Typer display-loop correction and remaining CI reliability work — 2026-10-05
+
+RP-187 is reproduced deterministically on unchanged production in all three engines. The
+bounded local-sample correction removes the effect's dependency on its own clock write;
+24/24 child cases pass and reinstating the read-back fails all three. The full cold browser CI
+target now passes 21,102 tests plus the separate performance case. Claude designated review of
+the correction is required; this is not public Typer playability or full B6 approval.
+
+**NEXT SAFE ACTION:** diagnose RP-188 in accepted Arcade AR6.3. Snake's unchanged fixed-delay
+case passed this follow-up but its earlier cold WebKit failure remains unexplained. Prove
+the actual callback/engine contract without raising sleeps/timeouts or adding retries.
+Whole client CI also remains blocked by RP-131's historical kernel-version failure; its repair
+RFC is still draft. No green hosted/full-CI, content, archival or release promotion follows.
+
+The dated red result immediately below is preserved as the prior run, not the current browser
+result. It remains evidence for RP-187/RP-188 and is not erased by the subsequent passing run.
+
 ## Current AC15 motion correction and newly red browser baseline — 2026-10-05
 
 RP-185's original prop-only motion case passes even with the media rule severed. The retained

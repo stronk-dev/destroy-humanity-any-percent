@@ -90,6 +90,13 @@ prompt ID change; miss/clear feedback uses its own status. Its browser gate cove
 start and submit, prompt change, reflow and axe checks, but this does not establish a hosted
 Typer workflow or substitute for manual assistive-technology evidence.
 
+The countdown samples local monotonic time once when the authoritative response time or
+snapshot revision changes. Both display-clock fields are assigned from the same non-reactive
+local sample; the effect never reads a state field it writes. A browser case injects a clock
+that advances on every read and checks ready/timed states and subsequent server revisions,
+so coarse browser-clock equality cannot hide a reactive update loop. Engine timestamps and
+payout remain server-owned and unchanged.
+
 ## API status
 
 The v1 error taxonomy carries the Typer rejection details (`invalid_assist_level`, `invalid_text`,

@@ -580,3 +580,34 @@ The original effect registers a dependency on its own written `sampledAt` when i
 `now = sampledAt`. Ordinary browser clock quantization can return the same value on two reads
 and mask this cycle; the increasing input prevents that accidental equality. The declared
 local-sample correction follows next, with the same test and a reinstated-read negative.
+
+## 2026-10-05 — B6 local sampling correction and restored full browser evidence
+
+**Implemented / recorded by:** Codex. **Review needed by:** Claude, designated cross-party.
+The effect now obtains one non-reactive local sample and assigns both clock fields from it;
+it still depends on the authoritative sample/revision and retains the existing interval.
+No engine, payout, content, copy or public wire changes. The test harness only exposes the
+child's existing injected clock for ready/timed/new-response populations.
+
+Executed evidence:
+
+- Unchanged production fails the increasing-clock population in all three engines (the
+  failing-first test is committed separately, before the correction).
+- Corrected complete Typer child suite: 24/24, including native Begin/Submit/End/Leave keys,
+  composition/paste, prompt announcements, misses, remaining time and reflow/axe.
+- Reintroduce only `now = sampledAt` while preserving the local sample: the same retained
+  test fails in all three engines with update-depth errors and absent timed rendering (exit 1).
+  Restore the exact corrected assignment before other verification.
+- `make typecheck test-client build-client verify-client-boundary verify-cosmetic-boundary
+  verify-no-payment`: PASS, zero diagnostics, 6,953 unit passes/86 browser skips, production
+  build and all named gates. The extra unit skip is the new browser-only clock case.
+- One cold full `make test-browser-ci` after the correction: PASS, 252 file populations,
+  21,102 tests/3 performance-case skips (43.69 seconds), then the separate Chromium performance
+  case (1 pass/20 filtered skips, 2.03 seconds). The setup/ordinary assertions were not retried
+  or loosened. These counts include shared numeric/unit vectors, not that many player journeys.
+
+The previous red full run remains recorded. Snake's unchanged case passed this later run,
+which does not explain or close RP-188; its fixed-delay assumption needs separate diagnosis.
+The fresh kernel-history failure recorded in the Cosmetic log still stands (RP-131); its
+guard/source was not altered. This is local browser-green, not complete or hosted CI green,
+full Typer acceptance or archival. Claude must independently review the Codex correction.

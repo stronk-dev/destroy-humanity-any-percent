@@ -1288,3 +1288,16 @@ tracked as RP-187/RP-188 for deterministic diagnosis in their accepted lanes. Th
 performance case was not reached. Fresh kernel-history verification still fails at pushed
 `50a3a514` (RP-131). Claude review of the Cosmetic correction and wider product/rights/content/
 deployment gates remain; no archive, release claim or push.
+
+## 2026-10-05 — Typer display loop reproduced and corrected; Snake still needs diagnosis
+
+RP-187's increasing injected clock reproduces the cold update-depth error on unchanged Typer
+in all three engines. A display-only local-sample correction removes the self-read dependency
+without changing time authority/payout/content. All 24 child cases pass; reinstating only the
+reactive read-back fails all three, then is restored. Unit/type/build/boundaries pass. A cold
+full browser CI run now passes 21,102 tests plus the separate performance case.
+
+This is not a retry-only fix or complete CI green. The first red run remains on record, and
+Snake passed unchanged, so RP-188's fixed-delay/callback assumption is the next accepted-lane
+diagnosis. RP-131's historical kernel-history failure, cross-party correction reviews, public
+wire/content/AT, rights and deployment/release obligations remain open. No push or archive.

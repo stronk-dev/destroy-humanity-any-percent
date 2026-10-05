@@ -12,7 +12,8 @@ AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay pro
 (RP-145–RP-188 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
-and current browser/kernel-version CI gates are red). Other workstream rows below retain their dated
+and whole client CI remains red on kernel history, with a retained browser reliability finding).
+Other workstream rows below retain their dated
 2026-09-30 audit population unless a later checkpoint explicitly updates them; see
 [`roadmap-1.0-log.md`](roadmap-1.0-log.md). **Current public claim:** development snapshot.
 **Next accepted release target:** the bounded Phase-0 Playable Preview, per D-001/D-007. The
@@ -74,11 +75,14 @@ in Go/TS. A real-Postgres service acquires/equips before each Exit, reloads unch
 retries the same receipt and verifies both history axes. Actual Exit resets fail both Go,
 Postgres and TS populations. The cold server-core target and 6,953 client tests pass locally;
 Claude designated review remains required, and RP-176's separate RFC-body blocker is unchanged.
-The prior cold ARM64 Linux `make test-browser-ci` passed 21,099 tests plus its separate
-performance case; the current full run is **RED** (21,097 passed, 2 failed, 3 skipped).
-Chromium Typer raises `effect_update_depth_exceeded` (RP-187); WebKit Snake misses a batching
-assertion after a fixed 190 ms wait (RP-188). Both are retained for diagnosis, not waived or
-hidden by retries; the performance case was not reached. RP-185's stronger actual-preference
+One cold full ARM64 Linux browser run failed (21,097 passed, 2 failed, 3 skipped): Chromium
+Typer raised `effect_update_depth_exceeded` (RP-187) and WebKit Snake missed its fixed-delay
+batching assertion (RP-188). The retained increasing-clock case reproduced Typer's loop in all
+three engines; a bounded non-reactive sampling correction passes 24/24 child cases and a
+reinstated-feedback mutation fails all three. The subsequent full cold `make test-browser-ci`
+passes 21,102 tests plus its separate performance case. The prior red result is preserved:
+Snake passed unchanged, so RP-188 remains open for diagnosis rather than being hidden by a
+green rerun. RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates
 and the full real-server composed target pass, but do not substitute for complete green CI.
