@@ -72,3 +72,4 @@ filter. The original Claude A1–A7 work is not approved by these evidence suppl
 | RP-192: watched TS snapshot value grammar, shared Go/TS negatives, kernel 0.3.144 | `8c01a8f5^..9288d1cc` |
 | RP-193: raw Go/TS snapshot grammar, legal controls and kernel 0.3.145 | `d326fb2c^..45c35800` |
 | RP-194: literal Go genesis/every-attempt snapshot/result byte witnesses, test-only v2 corpus | `c48ce7f2^..92ed5e68` |
+| RP-195: both Snake raw/numeric/identity snapshot decoders, shared 45/7 controls, kernel 0.3.146 | `4f6173be^..45fcf3ae` |

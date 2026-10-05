@@ -5,8 +5,8 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, Snake snapshot correction (kernel 0.3.146; exact source span
-pinned in the Arcade review index after commit) plus the bounded Cosmetic
+**Current checkpoint:** 2026-10-05, guarded Snake snapshot source `45fcf3ae` (kernel 0.3.146;
+exact review span `4f6173be^..45fcf3ae`) plus the bounded Cosmetic
 wearer-control link correction `e02f6560`, AC15 CSS precedence correction `3be0e5dd` and
 Typer display-loop correction `58bc34ad`, test-only Arcade callback correction `89434711`
 native keyboard supplement `27622885`, corpus-budget correction `bcdee28d` and hidden-state

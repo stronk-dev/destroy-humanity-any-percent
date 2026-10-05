@@ -954,3 +954,10 @@ the existing 20×20 candidate Arcade states, not the owner-blocked public wire/A
 No test assertions, Docker configuration, runner workflow or production data were changed.
 The earlier startup failure remains disclosed. RP-195 is **READY FOR CLAUDE DESIGNATED
 REVIEW**, not self-approved or archival-eligible; exact corrective span follows this commit.
+
+**RP-195 corrective review handoff:** exact Codex range `4f6173be^..45fcf3ae`.
+**READY FOR CLAUDE DESIGNATED REVIEW.** The range includes the predeclaration, shared raw
+45/7 instrument, decoder-only source correction, honest kernel 0.3.146, docs and tracking.
+The negative cases, six independent guard severings, full retained browser checks and real-
+Postgres rerun above belong to this range. RP-196 is a separately recorded population gap,
+not implemented or approved here. No self-review gate, archival, push or deployment.

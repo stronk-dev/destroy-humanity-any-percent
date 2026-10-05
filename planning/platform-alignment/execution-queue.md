@@ -13,7 +13,7 @@ unchanged vectors/corpus and the complete three-browser target (21,693 plus perf
 The additional real-DB lane passes cold after the disclosed native-image startup failure;
 it is DB/library composition, not public-wire acceptance. RP-131's pushed history failure
 remains unchanged and unbypassed.
-Exact corrective span is pinned after the correction commit.
+Exact Codex corrective span: `4f6173be^..45fcf3ae`.
 
 **NEXT SAFE ACTION:** predeclare RP-196's exact AR7 5×5 clearing population construction.
 The current fixture is 6×5 with a 30-cell cleared body; preserve that valid evidence, but do
