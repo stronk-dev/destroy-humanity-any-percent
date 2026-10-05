@@ -890,3 +890,31 @@ implementation/evidence span `eb0a9e7e^..b678dd3c`. Reviewer must inspect both; 
 does not turn the Codex first filter into a designated verdict. SG6 pure harvest evidence
 remains separate at `3fbf39af^..0db67895`, as do SG1/SG2 and prior workstream ranges.
 RP-218, amd64-host execution and RP-131 remain explicitly unresolved. No archive/push/release.
+
+## 2026-10-06 — SG3 exact clock/domain diagnosis predeclaration
+
+Baseline `29444315`, clean tree; previous R-010 checkpoint made concrete evidence/implementation
+progress. Its complete review span is pending, not a reason to stop accepted Garden work.
+Re-read accepted Garden, SG2/SG3 and AC3/AC5, design clock/absence laws, both engines and codecs.
+Original pure engines increment `tick_seq` without checking SG2's MaxExactInteger. This is a
+source-derived hypothesis, not a proven reachable-player exploit or a correction yet.
+
+**Question/population:** do both real engines preserve exact SG3 clock/summary and SG2 state
+domain at every substrate's below/at/above tick and catch-up boundaries, regression/equality,
+locked/initializing state, maximum safe server timestamp and safe-counter frontier? Use empty
+active gardens to isolate clock arithmetic/fixed-point sequencing, plus a growing plant and
+uninitialized-salt frontier control so a refused overflow cannot mutate growth or draw state.
+Load real fixture catalogs and codec-valid input. Independent `math/big` / BigInt arithmetic
+models expected clock, catch-up loss and counter; do not generate expectations from either engine.
+
+**Threshold:** every accepted advance matches complete canonical state and summary and remains
+codec-valid. An advance whose exact next counter exceeds the existing SG2 domain must fail loudly
+and leave its input unchanged, not silently round, clamp, persist invalid state or invent a new
+counter schema. Safe frontier and zero-tick controls must still succeed. Demonstrate existing red
+counter cases before any repair; record failures rather than retrospectively weakening the domain.
+
+**Scope:** new pure Go/TS test and planning records only for diagnosis. No codec/version, schema,
+production, salt, clock policy, mutation/spread, balance, activation, copy or CI change. Any warranted
+SG2/SG3 invariant repair gets a separate predeclaration and honest kernel bump. This is bounded
+clock evidence, not full SG4/G1–G7, player reachability, Postgres, public mint or 1.0 acceptance.
+Claude designated review remains mandatory; no self-archival or push.
