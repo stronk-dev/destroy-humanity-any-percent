@@ -60,8 +60,16 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   the two AR2 rows and tenant rows.
   RP-199's freshly hashed wrong-engine population fires on independently severed binding in
   both loaders. This does not constitute full A4 approval or authorize public API arms.
+  The existing resolver gate catches independent removal of either toy's content arm.
+  RP-201/D-020: AC7's Pitch-less bundle conflicts with owner-ruled API MA-C15; actual Go/TS
+  composition refuses it. Author/owner reconciliation is required, not a resolver bypass.
 - [x] A5 — composed platform witness (Postgres): `always` unlock, `human_hobby` lock at near-zero
   Soul, start → play → terminal → zero-credit applied resolution, `quit` releases the session.
+  RP-202 separately exercises the actual atomic start coordinator for both toys, with pinned
+  genesis/state, server sequence/seed, identical retry and verified Founder history in real
+  Postgres. Disabling only Arcade atomic starts survives the old tests but fails both new
+  subcases. Cold Go/client/root/browser and all four selected DB functions pass; historical
+  RP-131 remains red. Test-only supplement awaits Claude review, not full A5/public AC8.
 - [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`
   with the AR6.2/AR6.3/AR6.4 contract, test-only mounted (no pinned tenant row yet), axe in three
   browsers.

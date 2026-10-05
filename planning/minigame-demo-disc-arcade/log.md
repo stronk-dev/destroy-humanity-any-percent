@@ -1526,3 +1526,57 @@ No runtime, kernel, corpus, balance/content, copy, public-wire/mint or CI change
 an internal coordinator/DB seam, not public socket/API exposure, Pitch-less acceptance or
 all AC7. Route any executed contract conflict to the ruling authors/owner. Final cold root
 checks and exact Claude review handoff; historical RP-131 remains separately red/unbypassed.
+
+**RP-201 executed contract conflict:** otherwise complete candidate catalogs load in both
+actual runtimes. Removing only Pitch and recomputing the complete hash refuses in Go
+(`invalid replay inputs`) and TS (SyntaxError). Temporary diagnostics
+are removed after execution. This verifies the MA-C15 dependency and disproves an unqualified
+AC7 Pitch-less claim; it is not authority to change either owner-authored contract. Route to
+the ruling authors/owner for a named dependency amendment or AC7 body reconciliation.
+No synthetic resolver or manually invalid bundle may substitute for the missing population.
+
+**RP-202 old-gate finding:** cold Go Arcade/production/replaycatalog and the three declared
+real-Postgres functions pass. Removing Mine Grid's or Snake's resolver arm independently
+makes the existing chain test fail, so those witnesses are preserved. Temporarily rejecting
+only Arcade definitions in StartMinigameAPISession survives the same entire Go population
+and all three DB functions (both old Arcade functions and atomic Pitch start). The Arcade
+population never calls that method. Probe restored exactly. Proceed with the predeclared
+test-only internal-start supplement, not a public route or RP-201 dependency change.
+
+**RP-202 retained supplement:** both Mine Grid and Snake start through the actual atomic
+coordinator using real Postgres, Founder v21 and the unchanged complete candidate bundle.
+The old helper continues to seed v20 by default; an explicit version helper supplies v21
+without rewriting old setup semantics. Stored seed must match the server sequence/run
+derivation; canonical persisted genesis/state and create receipt must match actual pinned
+tenant creation. Retry supplies a different proposed session ID but returns identical bytes;
+SQL retains one session/receipt, Founder advances once to revision 2/sequence 1, Company
+revision stays 1 and actual Founder replay verifies. Both cold subcases pass.
+
+Repeating precisely the old Arcade-only atomic-start rejection now fails BOTH named subcases
+with `invalid production intent`. Source restored exactly; no production/kernel/content/
+schema/copy/wire/CI bytes retained. The resolver's original both-arm controls also fail
+independently and remain unchanged. RP-201 is still an unruled dependency conflict.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Original A4/A5 span `e1c71d7c^..e1c71d7c`: the original DB witness does
+not exercise AR-P3's named atomic start entry for either Arcade toy. This does not allege
+a runtime failure in unchanged code, invalidate the older method's actual gameplay proof,
+or overrule MA-C15; RP-201 is routed separately. RP-202 requires Claude's exact corrective
+review before acceptance; neither full A4/A5 nor public AC8 is promoted.
+
+**RP-202 final cold verification:** all six selected Go packages pass with `-count=1`.
+Whole client: 7,169 passes / 88 intentional browser-only skips; zero TS/Svelte errors or
+warnings. Build, boundaries/negative controls, vet, unchanged numeric vectors and all three
+Arcade regeneration checks pass. The declared real-Postgres selector executes FOUR functions
+verbosely: both old Arcade witnesses, both new atomic-start subcases and atomic Pitch start;
+all pass, none skipped. Full Linux browser target exits 0 with 21,756 passes / three
+intentional performance skips across 267 populations, then separate Chromium performance
+passes (one / 20 filtered). Terminal metadata retained. Kernel history again exits Make 2
+at unchanged pushed RP-131 hash `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after checkout/adversarial controls pass.
+No exception, false bump, bypass, rewrite or CI edit; kernel remains 0.3.147.
+`git diff --check` passes; all production probes and temporary diagnostics are restored/removed.
+READY FOR CLAUDE DESIGNATED REVIEW of this test-only supplement; no full A4/A5/AC7/AC8
+acceptance or archival. D-020's contract choice is presented to the owner asynchronously;
+no reply or ruling is inferred. Next safe accepted work audits remaining A5/AC8–AC10
+gameplay/resolution/Exit/Soul evidence, preserving the blocked public-wire and mint boundary.

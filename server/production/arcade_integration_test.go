@@ -68,6 +68,11 @@ func arcadeFeatureBundle(t *testing.T) CatalogBundle {
 
 func seedArcadeFounder(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time, suffix string, soul int64) typerFounder {
 	t.Helper()
+	return seedArcadeFounderVersion(t, ctx, db, store, bundle, now, suffix, soul, 20)
+}
+
+func seedArcadeFounderVersion(t *testing.T, ctx context.Context, db *sql.DB, store *save.Store, bundle CatalogBundle, now time.Time, suffix string, soul int64, version int) typerFounder {
+	t.Helper()
 	accountID := "01986666-a7" + suffix + "-4000-8000-000000000001"
 	founderID := "01986666-a7" + suffix + "-4000-8000-000000000002"
 	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'test')`, accountID); err != nil {
@@ -90,7 +95,7 @@ func seedArcadeFounder(t *testing.T, ctx context.Context, db *sql.DB, store *sav
 		t.Fatal(err)
 	}
 	founder := replayFounderFixtureState(t, bundle, now)
-	founder.WireVersion = 20
+	founder.WireVersion = version
 	founder.MinigameRatings = map[string]save.MinigameRatingState{}
 	founder.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{}
 	for _, id := range []string{"arcade.mine_grid", "arcade.snake", "pitch", "typer"} {

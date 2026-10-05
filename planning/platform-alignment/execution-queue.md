@@ -1,6 +1,29 @@
 # Executable queue
 
-## Current Arcade nonnullable stage-tier correction — 2026-10-05
+## Current Arcade atomic-start witness and dependency conflict — 2026-10-05
+
+RP-202 adds real-Postgres atomic coordinator starts for BOTH toys, server-derived seed and
+actual pinned genesis/state/receipt, one Founder sequence advance, verified history and
+byte-identical retry. Rejecting only Arcade in that method survives the old full Go/DB
+populations but fails both new subcases. Existing resolver witnesses already catch either
+missing engine arm and are preserved. All production probes restored; test-only change,
+kernel/content/copy/wire/CI unchanged. Cold selected Go, 7,169 client tests, root checks,
+four actual DB functions including Pitch, and full Linux browser verification (21,756 plus
+performance) pass. Same historical RP-131 remains red. Claude designated review required.
+
+**RP-201 / D-020:** AC7's Pitch-less requirement conflicts with the explicit MA-C15
+`minigame_api → pitch` ruling retained by AR1.2. Both actual Go/TS loaders refuse freshly
+hashed otherwise complete Pitch-less catalogs. Author/owner reconciliation is required;
+no dependency weakening, invalid-bundle test double or unqualified AC7 claim. The owner
+question has been presented, not answered; do not infer a ruling.
+
+**NEXT SAFE ACTION:** predeclare the remaining A5/AC8–AC10 gameplay/resolution/Exit/Soul
+evidence audit. Separate real internal consumers from public socket requirements; preserve
+valid witnesses and repair only demonstrated accepted-contract gaps. RP-201's dependency,
+public wire/copy/mint and RP-131's draft-only history repair require their own authority.
+All full 1.0 obligations and cross-party review gates remain intact.
+
+## Dated Arcade nonnullable stage-tier correction — 2026-10-05
 
 RP-200 fixes a real loader divergence under accepted AR1.2, separately predeclared at
 `df0ed871`. Go refuses null before integer defaulting; legal 0/-0/whitespace controls still
@@ -12,7 +35,7 @@ verification (21,756 plus performance) pass. Historical RP-131 remains red and u
 Claude designated review is required; no full A1/A4/raw-grammar or archival promotion.
 Exact RP-200 correction review span: `df0ed871^..6f5715dc`.
 
-**NEXT SAFE ACTION:** predeclare remaining A4/AC7 resolver/start composition review. Execute
+**Next at this dated checkpoint:** predeclare remaining A4/AC7 resolver/start composition review. Execute
 actual tenant resolution, unknown-pair refusal and Pitch-less Arcade starts with Pitch controls;
 sever AR-P2/AR-P3 consumers before adding evidence or claiming completion. Owner public
 wire/copy/mint and RP-131's draft-only history repair remain outside this scope. Full 1.0

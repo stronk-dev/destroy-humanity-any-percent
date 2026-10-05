@@ -20,7 +20,7 @@ review span `df0ed871^..6f5715dc`),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-200 corrections,
+(RP-145–RP-202 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -176,6 +176,13 @@ predeclaration: nonnullable Go integer decoding preserves legal zero spellings, 
 Actual paired loader and freshly hashed chain tests fail before the fix and on guard severing.
 Cold Go/client/root/browser/DB checks pass; historical RP-131 remains red. Designated review
 remains required, not full A1/A4/raw-grammar acceptance.
+RP-201/D-020 records AC7's unresolved Pitch-less requirement versus API MA-C15's ruled
+Pitch dependency; actual Go/TS composition refuses freshly hashed Pitch-less catalogs.
+No dependency or authored criterion is silently changed. RP-202 adds both actual atomic
+Arcade starts in real Postgres, server-owned seed/genesis/sequence and idempotent retry.
+An Arcade-only start refusal survives the old witnesses but fails both new subcases; probe
+restored. This is internal coordinator/DB evidence pending Claude review, not public socket
+integration, Pitch-less acceptance or a full A4/A5 promotion.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

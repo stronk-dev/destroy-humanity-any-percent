@@ -71,6 +71,20 @@ semantic reachability invariants or a public saved-state exploit. Claude review 
 
 ## Verification
 
+`TestArcadeAtomicStartIntegrationCreatesBothPinnedTenants` executes the actual atomic
+`StartMinigameAPISession` coordinator for Mine Grid and Snake against real Postgres, using
+Founder v21 streams. The stored seed is server-derived; genesis/state and the create receipt
+match the real pinned tenant genesis. A retry returns identical receipt bytes, leaves exactly
+one session/create receipt and one sequence advance, and the Founder history verifies.
+This RP-202 test-only supplement catches an Arcade-only atomic-start refusal that survives
+the older Arcade witness, which calls the separate legacy start method. No public handler,
+socket, complete gameplay or full AC7 proof is implied; Claude review remains required.
+
+RP-201 remains an explicit contract conflict: AC7 requires a Pitch-less Arcade bundle, but
+API MA-C15 rules `minigame_api → pitch`, retained by AR1.2 and enforced in both actual
+bundle loaders. Freshly hashed Pitch-less catalogs refuse; complete controls load. D-020
+requires owner/ruling-author reconciliation. No runtime dependency is weakened to hide it.
+
 The actual Go/TS loaders execute matched 22-case negative populations, including extra keys,
 unsorted presets, mine bounds and equal/descending stage tiers, with valid candidate/fixture,
 inclusive bounds and ascending test-only-stage controls. The real TS stage selector observes

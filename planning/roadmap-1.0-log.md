@@ -1561,3 +1561,23 @@ Full nine-tier 1.0, platform and release obligations remain the active goal.
 Exact RP-200 designated-review handoff: `df0ed871^..6f5715dc`. RP-199 is separately
 `8b00b6e8^..3b9fd0d8`. Neither is self-approved; all progress and remaining review/ruling
 gates are preserved in the per-RFC log and execution queue.
+
+## 2026-10-05 — Arcade atomic start measured, catalog dependency conflict exposed
+
+RP-201/D-020: actual freshly hashed Pitch-less catalogs refuse in both runtimes, as the
+explicit API MA-C15 dependency requires. Arcade AC7 requires the opposite population and
+AR1.2 retains the old full chain; route the conflict to the owner/ruling authors, not a
+silent runtime weakening. The owner choice is presented asynchronously and remains unruled.
+
+RP-202: rejecting only Arcade in the atomic start method survives the old full Go and
+real-Postgres witnesses, which call the older start. A test-only supplement now starts BOTH
+toys through the actual atomic coordinator on v21 streams, observes server-derived seed,
+pinned actual genesis/state/receipt, SQL cardinality, single sequence advance, identical retry
+and verified Founder history. The repeated probe fails both new subcases; source restored.
+Both existing resolver-arm severings already fail, so those working gates are preserved.
+
+Cold six-package Go, 7,169 client cases, type/build/boundaries/vet/vectors/corpus, four actual
+DB functions including atomic Pitch start and full three-browser verification (21,756 plus
+performance) pass. Historical RP-131 remains red and unbypassed. Claude must review the new
+range; no full A4/A5/AC7/public AC8, archival, push or deployment claim. Next is remaining
+accepted A5 outcome/Exit/Soul evidence; full nine-tier 1.0 and platform scope remain active.
