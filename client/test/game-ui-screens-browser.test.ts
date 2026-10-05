@@ -1,6 +1,6 @@
 import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import RunEndSurface from "../src/game-ui/RunEndSurface.svelte";
@@ -12,6 +12,7 @@ import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { canonicalString } from "../src/numeric";
 import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../src/game-ui/performance";
 import { amountRenderScheduler } from "../src/ui/render-scheduler";
+import type { WorkerCommand, WorkerOutput } from "../src/shell/worker-protocol";
 
 const snapshot: GameUISnapshot = {
   constants_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -72,6 +73,31 @@ interface AppExports {
   fixtureRunEnd(value: RunEndedEvent): void;
   fixtureSystem(value: "drain" | "resync"): void;
   fixtureMonotonicElapsed(value: number): void;
+}
+
+// Observation only: every command reaches the original native Worker unchanged.
+function observeNativePrediction() {
+  const commands: { kind: string; rate?: string }[] = [];
+  const outputs: WorkerOutput[] = [];
+  const workers = new Set<Worker>();
+  const receive = (event: MessageEvent<WorkerOutput>) => { outputs.push(event.data); };
+  const original = Worker.prototype.postMessage;
+  const spy = vi.spyOn(Worker.prototype, "postMessage").mockImplementation(function (this: Worker, ...args) {
+    if (!workers.has(this)) { workers.add(this); this.addEventListener("message", receive); }
+    const command = args[0] as WorkerCommand;
+    commands.push({ kind: command.kind, rate: "snapshot" in command ? command.snapshot.resources["company.cash"]?.ratePerSecond : undefined });
+    return original.apply(this, args);
+  });
+  return {
+    commands, outputs,
+    report(runtime: FixtureRuntime, output: Element | null) {
+      const predicted = outputs.filter((row) => row.kind === "predicted_snapshot");
+      return { visibility: document.visibilityState, snapshotCalls: runtime.snapshotCalls, commands,
+        output: output?.textContent, predictions: predicted.length,
+        lastPredictions: predicted.slice(-8), gaps: outputs.filter((row) => row.kind === "offline_required") };
+    },
+    dispose() { for (const worker of workers) worker.removeEventListener("message", receive); spy.mockRestore(); },
+  };
 }
 
 async function assertAxe(target: HTMLElement, label: string): Promise<void> {
@@ -401,14 +427,54 @@ it.skipIf(typeof document === "undefined")("submits incorporate from the Tier-2 
 });
 
 it.skipIf(typeof document === "undefined")("feeds authoritative Game UI snapshots through the archived 20 Hz shell worker", async () => {
+  const observation = observeNativePrediction();
+  const runtime = new FixtureRuntime(true);
   const target = document.createElement("div"); document.body.append(target);
-  const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  app.fixtureSnapshot({ ...snapshot, resources: [{ ...snapshot.resources[0], rate_per_second: "1e3" }] }); app.fixtureSurface("desk"); flushSync();
-  const output = target.querySelector(".cc-amount output")!;
-  const before = output.textContent;
-  await expect.poll(() => output.textContent, { interval: 50, timeout: 5_000 }).not.toBe(before);
-  await unmount(app); target.remove();
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    app.fixtureSnapshot({ ...snapshot, resources: [{ ...snapshot.resources[0], rate_per_second: "1e3" }] }); app.fixtureSurface("desk"); flushSync();
+    const output = target.querySelector(".cc-amount output")!;
+    const before = output.textContent;
+    await expect.poll(() => output.textContent, { interval: 50, timeout: 5_000 }).not.toBe(before);
+  } finally {
+    console.info("R-010 original", JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
+    await unmount(app); target.remove(); observation.dispose();
+  }
+});
+
+it.skipIf(typeof document === "undefined").each(["conflicting", "consistent"] as const)("observes native worker predictions with %s visible-return authority", async (authority) => {
+  const fast = { ...snapshot, resources: [{ ...snapshot.resources[0], rate_per_second: "1e3" }] };
+  const runtime = new FixtureRuntime(true);
+  runtime.current = authority === "consistent" ? fast : snapshot;
+  const observation = observeNativePrediction();
+  const previousVisibility = Object.getOwnPropertyDescriptor(document, "visibilityState");
+  // Controlled visible-return event, not a clock or worker replacement.
+  Object.defineProperty(document, "visibilityState", { configurable: true, get: () => "visible" });
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  let refreshTimer: ReturnType<typeof setInterval> | undefined;
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    app.fixtureSnapshot(fast); app.fixtureSurface("desk"); flushSync();
+    const output = target.querySelector(".cc-amount output")!;
+    const before = output.textContent;
+    const initialCalls = runtime.snapshotCalls;
+    const visibleReturn = () => { document.dispatchEvent(new Event("visibilitychange")); };
+    visibleReturn(); refreshTimer = setInterval(visibleReturn, 250);
+    await new Promise((resolve) => setTimeout(resolve, 2_000)); flushSync();
+    expect(runtime.snapshotCalls).toBeGreaterThan(initialCalls + 3);
+    expect(observation.commands.filter((row) => row.rate === (authority === "consistent" ? "1e3" : "1e0")).length).toBeGreaterThan(3);
+    expect(observation.outputs.filter((row) => row.kind === "predicted_snapshot").length).toBeGreaterThan(0);
+    if (authority === "conflicting") expect(output.textContent).toBe(before);
+    else await expect.poll(() => output.textContent, { interval: 50, timeout: 5_000 }).not.toBe(before);
+  } finally {
+    clearInterval(refreshTimer);
+    console.info(`R-010 ${authority}`, JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
+    await unmount(app); target.remove(); observation.dispose();
+    if (previousVisibility) Object.defineProperty(document, "visibilityState", previousVisibility);
+    else Reflect.deleteProperty(document, "visibilityState");
+  }
 });
 
 const chromiumPerformanceLane = typeof navigator !== "undefined" && /Chrome/u.test(navigator.userAgent);

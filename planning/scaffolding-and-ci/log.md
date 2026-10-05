@@ -237,3 +237,15 @@ range before any completion claim.
   population stay unchanged. No claim about the original cause until executed trace evidence.
 - Designated Claude review remains required for any retained test change. This is neither an
   approval nor a current-head hosted CI claim.
+
+## 2026-10-06 — R-010 initial experiment, control fired
+
+- **Work by:** Codex. **Recorded by:** Codex. Native Worker observation, cleanup on witness failure
+  and paired visible-return controls are test-only. Executed results and limitations are retained
+  in `planning/platform-alignment/worker-prediction-research.md`.
+- All nine isolated browser cases pass. First complete cold lane passes 22,068 / six intentional
+  skips plus separate performance. Second is red: new WebKit conflicting-control observes nine
+  refresh calls but zero native predictions in its two-second window. Original witnesses pass
+  across both lanes. Do not call the control valid or claim the original failure fixed.
+- This commit intentionally retains a labelled fired diagnostic pending instrument correction;
+  no archived production byte or CI policy changed. No designated approval or archival.
