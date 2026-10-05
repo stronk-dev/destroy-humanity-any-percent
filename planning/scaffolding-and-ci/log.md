@@ -249,3 +249,12 @@ range before any completion claim.
   across both lanes. Do not call the control valid or claim the original failure fixed.
 - This commit intentionally retains a labelled fired diagnostic pending instrument correction;
   no archived production byte or CI policy changed. No designated approval or archival.
+
+## 2026-10-06 — R-010 instrument/fixture correction predeclaration
+
+- Baseline `0a30f0d0`; scope and complete final population are predeclared in the R-010 dossier.
+  Keep actual startup bounded at five seconds, then begin the existing two-second refresh arm.
+  Native first-output latency remains visible, not absorbed into the measurement or excluded.
+- Make original fixture authority consistent and require native evidence as well as visible
+  change. No product source change except one temporary, exactly restored severing probe.
+  No timeout, runtime, balance, CI, archive, hosted or 1.0 status promotion.

@@ -41,3 +41,24 @@ The two-second control window mixed Worker startup with steady refresh observati
 prediction arm fired the intended validity gate. Fix the instrument before remeasuring; do not
 count that arm or retrospectively extend its window. A subsequent study must record startup and
 bound readiness separately, then retain the same two-second steady-state population.
+
+## Follow-up predeclaration — test-only correction
+
+Baseline initial diagnostic `0a30f0d0`. Keep all commands native and all three browser engines.
+The original witness will give the runtime and injected UI the **same** fast-growth snapshot;
+assert actual native prediction as well as changed text within its unchanged five-second poll.
+Record user agent, native first-prediction latency and low/high-rate input to make later failures
+actionable. This removes the demonstrated confounder, not a claimed root cause.
+
+Before each controlled two-second refresh arm, require the first actual native prediction within
+five seconds; retain that startup latency explicitly. Then inject the fast snapshot, begin
+visible-return refreshes and count **only new** native outputs during the original two-second
+measurement. A startup timeout or absent steady-state output is invalid/red, never excluded.
+Do not increase an assertion budget, retry until green, serialize/exclude jobs, or alter runtime.
+
+Population: the three selected cases in all three Linux engines, two complete cold browser lanes
+and separate performance invocations, root client/type/build checks. Deliberately suppress native
+prediction publication once: original witness and both readiness controls must fail. Restore the
+exact production file before final verification and record its hash. Test-only implementation and
+diagnostic ranges require Claude's designated review. The original RP-218 cause remains open
+unless a later original-failure trace demonstrates it; existing RP-131 still forbids whole-CI green.
