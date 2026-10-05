@@ -498,3 +498,28 @@ SG1 RP-212–RP-214 implementation `166a23d7`; exact cross-party review span
 production correction, exercising tests, kernel bump and docs/ledger/queue reconciliation.
 This range pin is not an approval or archival gate. Original G1/G4-loader review remains the
 bounded CHANGES REQUIRED finding above; remaining Garden claims are separately unreviewed.
+
+## 2026-10-06 — SG2 state null-admission review predeclaration
+
+Clean baseline `0ac4d1fe`. SG1 correction is committed and pending Claude; this is a separate
+G1 state-codec lane, not scope expansion of that range. Re-read SG2 and both actual codecs.
+The accepted contract explicitly permits null salt/anchor/stamp and plot maturation effect,
+but requires integer tick sequence, coordinates and age. Candidate Go defect: exactKeys checks
+presence and safe number tokens but may allow null through typed integer decode as zero.
+No claim of execution yet. TS's typed-value validator is the matched other-runtime control.
+
+Predeclare a shared state population with four null-integer replacements, matched real-zero
+and optional-null/non-null controls, missing/unknown/duplicate keys, arrays and numeric-domain
+refusals. Run the actual Go DecodeState plus pinned ValidateAgainst and actual TS parseGardenState;
+valid states must canonicalize byte-identically. Preserve original save/engine/replay corpora.
+No migration, wire version, nullable contract, new relational state law, tick arithmetic,
+balance, copy, production activation, CI or dependency change. No raw-token SG2 policy is
+invented from SG1's stricter artifact contract.
+
+If confirmed, ledger immediately and fix only nonnullable state-field admission under SG2.
+Nullable keys must be explicit per root/plot scope, not globally allowed by spelling. A real
+watched-codec behavior change takes one honest kernel bump. Independently bypass the null
+guard and over-tighten nullable admission; each must fail its corresponding negative/positive
+population, then restore exactly before final checks. Cold Go/client, real Postgres Garden
+and Linux browser evidence remain required. No self-approval/archival; pin a separate Claude
+review range and continue remaining G1 engine/clock review afterward.
