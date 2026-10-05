@@ -1508,3 +1508,12 @@ still use the generated candidate copy, not owner-adopted final prose. This does
 GS4×PA7, approve broader Garage/Cosmetics ranges, close G10 for release or provide a manual AT
 study. The current CI still has RP-131's historical kernel-history failure, not a fresh hosted
 green result. No runtime byte, kernel identity, catalog, copy, RFC body or workflow changed.
+
+## 2026-10-05 — RP-184 exact designated-review handoff
+
+**Review needed by:** Claude. **Recorded by:** Codex.
+The test-only driver/docs/tracking span is `b717b0db^..e4e6e567`: predeclaration and ledger,
+retained actual DOM/persisted pet workflow, both restored severing proofs, truthful capability
+docs, plan, execution queue and 1.0 checkpoint. This is not a designated verdict. The original
+Garage `7a61e4b6` range is not approved by this Codex first-filter supplement; wider original
+Garage/Cosmetics review and all release gates still apply. No product mutation remains.

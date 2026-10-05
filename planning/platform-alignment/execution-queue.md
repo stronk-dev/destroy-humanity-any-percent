@@ -14,7 +14,7 @@ The new controlled real-server driver now adopts/equips through DOM controls, ch
 annoyed/no-text pet overlay, reloads wearing, exercises actual reduced motion and unequips with
 ownership preserved. A missing consumer and non-static reduced-motion pose each fail; all
 temporary product mutations are restored. The full composed target passes locally. Its
-test-only supplement awaits Claude's designated review at the exact span in the Cosmetic log.
+test-only supplement `b717b0db^..e4e6e567` is **READY FOR CLAUDE DESIGNATED REVIEW**.
 No production mint, owner copy adoption, GS4×PA7 reconciliation, release closure or push follows.
 RP-174/RP-176 still require ruling-author action, and the actual kernel-history CI gate remains
 red on pushed `50a3a514` (RP-131), whose repair RFC is draft. Use the Cosmetic plan's current

@@ -8,7 +8,8 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 **Current checkpoint:** 2026-10-05, guarded product source `646daa08` plus the bounded Cosmetic
 wearer-control link correction `e02f6560`, evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
-AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof (RP-145–RP-184 corrections,
+AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
+(RP-145–RP-184 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
