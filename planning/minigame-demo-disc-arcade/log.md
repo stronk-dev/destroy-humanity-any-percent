@@ -1232,3 +1232,42 @@ Go/TS transition and real-Postgres atomicity witnesses, docs and tracking only. 
 crash-test comment is reconciled to its actual unchanged 6×5 fixture. All production/kernel/
 balance/copy/public-wire/CI-workflow bytes remain unchanged. No full A3/A5 acceptance,
 self-archive, push or deployment. This checkpoint records the span; it is not a review verdict.
+
+## 2026-10-05 — A2/AC3 rule-discrimination predeclaration (Codex)
+
+Starting clean HEAD `5176f978`. Authority: accepted A2, AR3.2/AR3.3/AR3.5, AR7 and AC3;
+original Claude range `508fe19a^..508fe19a`. This is the four named failure populations,
+not a whole-A2 or public-wire review. Existing v2 literal Go outputs and independent TS
+replay remain the instrument. No production, rule, RNG, content, copy, mint or wire changes
+are authorized by this declaration. The first attempted append used stale context and
+failed atomically without changing any file; this is the actual predeclaration.
+
+**Before adding tests:** cold whole Go Arcade and client baselines. Independently mutate
+Go/TS flood expansion to cardinal neighbors only (retain eight-neighbor adjacent counts),
+allow mines in the excluded first-reveal region, and let chords detonate on flagged mines
+instead of excluding them. Restore after each actual execution and identify the first
+existing witness that fails. Do not add redundant tests when the existing gate discriminates.
+
+Separately replace only Mine Grid's TS Fisher–Yates draw with next()%bound, leaving shared
+SplitMix64.bound and unrelated combat tests intact. Execute the OLD whole client suite before
+changing the instrument. Rejection sampling may have no rejecting draw in the existing small
+board seeds; passing ordinary seeds is not proof that the loop rejects an inadmissible draw.
+If this survives, file the bounded instrument finding immediately, not a runtime defect.
+
+**Conditional supplement fixed before execution:** derive a real uint64 seed by inverting
+SplitMix64 and the two published Mine Grid substream labels so the first actual shuffle draw
+is zero at a non-power-of-two eligible-cell bound. Use a legal board/preset from the existing
+fixture, not changed production bounds. Independently verify inversion by executing actual
+Go/TS RNG: zero is below the computed threshold, the second draw is accepted, and both normal
+engines produce the same exact mine list and real create/choose/reveal/quit outputs. Record
+literal Go bytes, not a test-generated self-oracle. Require the complete real entry path,
+not just a mocked RNG or a high-bound combat-only test. A test-only scripted-draw control may
+explain rejection consumption, but may not substitute for the real-seed population.
+
+The Mine Grid-only modulo mutant must fail the added witness; any supplemental observation
+validator also needs a failing case. Restore all probes, run cold Go/client/type/build/root
+boundaries/vet/vectors/corpus, full three-browser and existing real-Postgres Arcade tests.
+Historical RP-131 remains separate, no guard bypass or CI edit. Report bounded original
+verdict and exact Codex supplement span; retain Claude cross-party review, no self-archive,
+push or deployment. If all existing instruments already discriminate, record that evidence
+instead of manufacturing a correction. All full 1.0 obligations remain.
