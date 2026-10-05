@@ -7,13 +7,14 @@ import { loadCosmeticCatalog, validateCosmeticTransition } from "../src/cosmetic
 const fixture = fixtureJSON as { schema_version: number; cases: { name: string; valid: boolean; artifact: string }[] };
 
 describe("cosmetics catalog (Cosmetic Shop v1 §2, AC1)", () => {
-  it("decides every shared Go-authored case identically", () => {
+  it("pins the shared Go-authored corpus version and population", () => {
     expect(fixture.schema_version).toBe(1);
     expect(fixture.cases.length).toBeGreaterThan(20);
-    for (const testCase of fixture.cases) {
-      if (testCase.valid) expect(() => loadCosmeticCatalog(testCase.artifact), testCase.name).not.toThrow();
-      else expect(() => loadCosmeticCatalog(testCase.artifact), testCase.name).toThrow();
-    }
+  });
+
+  it.each(fixture.cases)("decides $name like the Go loader", (testCase) => {
+    if (testCase.valid) expect(() => loadCosmeticCatalog(testCase.artifact)).not.toThrow();
+    else expect(() => loadCosmeticCatalog(testCase.artifact)).toThrow();
   });
 
   it("loads the pinned fixture artifact with exactly Horse Armor at tier 1", () => {

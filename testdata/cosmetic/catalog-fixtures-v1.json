@@ -77,6 +77,16 @@
    "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1.5}}]}"
   },
   {
+   "name": "reject_tier_decimal_lexeme",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1.0}}]}"
+  },
+  {
+   "name": "reject_tier_exponent_lexeme",
+   "valid": false,
+   "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1e0}}]}"
+  },
+  {
    "name": "reject_duplicate_id",
    "valid": false,
    "artifact": "{\"schema_version\":1,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}},{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
@@ -100,6 +110,11 @@
    "name": "reject_schema_2",
    "valid": false,
    "artifact": "{\"schema_version\":2,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
+  },
+  {
+   "name": "reject_schema_decimal_lexeme",
+   "valid": false,
+   "artifact": "{\"schema_version\":1.0,\"items\":[{\"cosmetic_id\":\"horse_armor\",\"slot\":\"pet\",\"unlock\":{\"kind\":\"active_company_tier_at_least\",\"tier\":1}}]}"
   },
   {
    "name": "reject_empty_items",

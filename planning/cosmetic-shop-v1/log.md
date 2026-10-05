@@ -704,3 +704,19 @@ require the shared controls, client typecheck, package-boundary/no-payment gates
 temporary severing that makes at least one new negative fail again. Do not invent a pricing
 mechanic, edit owner-authored text, mint a production content epoch, or treat a narrow C1
 finding as full Cosmetics acceptance.
+
+## 2026-10-05 — Codex targeted C1/AC1 verdict: CHANGES REQUIRED
+
+**Review by:** Codex (designated cross-party reviewer of Claude's C1).
+**Recorded by:** Codex. **Reviewed range:** `afe6529b^..afe6529b`.
+**Decision:** CHANGES REQUIRED for C1/AC1 only. A positive integer-token catalog remains
+valid. The shared corpus gained three raw-number negative arms: tier `1.0`, tier `1e0`, and
+schema `1.0`. Cold `make test-go GO_PACKAGES='./cosmetic' GO_TEST_FLAGS='-count=1'` passes all
+cases. Cold `make test-client` initially stopped at the first TS acceptance. Changing the
+corpus runner to independent per-case tests exposed all three: 3 failed, 6,940 passed,
+85 browser tests skipped. The TS `JSON.parse` normalizes all three lexemes to numeric 1 before
+`Number.isSafeInteger`, so this is loader-parity and exact-grammar failure, not a payment or
+mechanics path. A bounded correction may validate integer lexemes in the raw TS loader;
+`parseCosmeticCatalog(unknown)` cannot reconstruct lost lexical form and should not claim to.
+The correction requires its own cross-party designated review by Claude; this verdict does not
+approve C2–C8 or archive Cosmetics. RP-175 tracks the defect.
