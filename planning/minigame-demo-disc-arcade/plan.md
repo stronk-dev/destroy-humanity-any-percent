@@ -97,3 +97,4 @@ filter. The original Claude A1–A7 work is not approved by these evidence suppl
 | RP-196: test-only exact 5×5 clearing, complete strategy population and literal Go/TS replay | `329fc994^..25906f01` |
 | RP-197: future/late-turn rejection, direct-input atomicity and real Postgres state/history/claim proof | `8ea62952^..5e82b3d3` |
 | RP-198: real rejected shuffle draw, literal Mine Grid placement/entry replay and regeneration | `be0c0e00^..859f5216` |
+| RP-199: matched loader negatives, boundary stages and freshly hashed wrong-engine binding | `8b00b6e8^..3b9fd0d8` |

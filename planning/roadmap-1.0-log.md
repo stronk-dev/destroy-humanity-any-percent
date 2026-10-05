@@ -1539,3 +1539,6 @@ Separate RP-200 is a confirmed runtime defect, not another test-gap claim: actua
 accepts null min_tier as zero while actual TS refuses it. Legal zero loads in both.
 Next is its separately predeclared accepted-contract correction with honest kernel identity,
 not closing it with prose or mixing production changes into RP-199. Full 1.0 remains active.
+
+Exact RP-199 designated-review handoff: `8b00b6e8^..3b9fd0d8`, pending Claude's verdict.
+Next checkpoint predeclares RP-200's accepted AR1.2 correction; it is not approval or archival.

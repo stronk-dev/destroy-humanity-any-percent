@@ -1441,3 +1441,25 @@ pushed RP-131 `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` versus parent
 No exception, false bump, history rewrite or workflow edit. Production probes are restored,
 kernel stays 0.3.146 and `git diff --check` passes. Ready for Claude's bounded designated
 review, not full A1/A4 acceptance or archival. Next is separately predeclared RP-200.
+
+**RP-199 exact corrective handoff:** `8b00b6e8^..3b9fd0d8`, READY FOR CLAUDE DESIGNATED
+REVIEW. This checkpoint is not that verdict and does not archive the work.
+
+## 2026-10-05 — RP-200 nonnullable catalog stage tier correction predeclaration (Codex)
+
+Starting committed test-evidence source `3b9fd0d8`. Authority: accepted AR1.2/AR-P1/AC1's
+typed integer stage tier and both-runtime artifact chain, not a new mechanic. Prior executed
+diagnostic proves actual Go admits null as zero while TS refuses it; retain an acceptance
+test that fails on unchanged Go before fixing the loader. Test actual candidate AND fixture,
+and complete freshly hashed composition, not hash drift. Keep legal zero, whitespace and
+negative-zero spelling controls. No fixture, content, copy, public wire or mint changes.
+
+Repair only Go's raw stage tier admission using a nonnullable integer decode before the
+ordinary typed catalog decode. Do not reuse canonical-only exactInteger, which would newly
+reject legal JSON -0. The watched runtime behavior change requires kernel 0.3.146 → 0.3.147
+in all three identity files; numeric vectors remain byte-identical. Demonstrate removing
+this guard admits null and fails the new tests, then restore exactly. Run cold selected Go,
+whole client/type/build/vet/boundaries/vectors/corpus, declared real-DB Arcade selector and
+full Linux browser checks. Report historical RP-131 separately without bypass or rewrite.
+Update canonical docs and records, pin a distinct Claude review span, no self-archive.
+This bounded null correction does not claim exhaustive duplicate/token/depth parity.

@@ -9,6 +9,7 @@ wrong-engine toy definitions; independent ordering, cap, exact-key and binding p
 and are restored. Cold selected Go, 7,168 client tests, root checks, both real-Postgres
 Arcade functions and full Linux browser verification (21,753 plus performance) pass.
 Historical RP-131 remains red; no bypass. Claude's designated review is still required.
+Exact RP-199 correction review span: `8b00b6e8^..3b9fd0d8`.
 No full A1/A4, raw-grammar, public-wire or archival approval.
 
 **NEXT SAFE ACTION:** separately predeclare and fix RP-200 under accepted AR1.2: Go's actual
