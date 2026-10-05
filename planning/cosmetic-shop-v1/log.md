@@ -1189,3 +1189,24 @@ reconfirms RP-131 at the current checkpoint rather than inheriting a past summar
 there, so later prerequisites are not claimed as executed through this target; the new
 Cosmetic boundary and no-payment gates were separately executed and passed. No history
 rewrite, silent gate exception, push or hosted-run claim follows.
+
+## 2026-10-05 — C3/C4 AC8 Exit-carry evidence predeclaration
+
+**Review by / recorded by:** Codex, bounded designated review of Claude C3
+`581886a4^..581886a4` and C4 `500d944c^..500d944c` on AC8. RP-181 records missing
+named-path evidence: the shared corpus only exits with empty pre-activation cosmetics;
+the nonempty test invokes an output-copy helper directly, and C4's reported failing
+case mutates adoption rather than an Exit arm. This is not a proven live persistence bug.
+
+Predeclare a test-only correction under accepted §4.5/AC8, independent of RP-176's
+unreconciled migration-corpus home: pin independently named `exit-wind-down-preserves-owned-equipped`
+and `exit-accept-offer-preserves-owned-equipped` cases, requiring both names before generation.
+Each uses a v24 Founder with a valid adopted pet and nonempty owned/equipped cosmetics;
+the Company terminal and Founder audit arm must both retain exactly the input cosmetics.
+Keep the original activation Exit unchanged. Generate via Go and replay byte-equal in TS.
+Add real-Postgres Service.Handle coverage for the two accepted intent kinds, persistence,
+idempotent retry and verified Founder history. Mutating an Exit arm to reset cosmetics
+must fail independently in Go, TS and the persisted witness; restore every mutation.
+Run focused cold Go, client/type checks and the real-Postgres population. No product,
+catalog, copy or ruling-author RFC body change is preauthorized by this evidence supplement.
+Claude designated review remains required before closure.

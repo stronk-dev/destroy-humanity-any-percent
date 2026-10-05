@@ -55,6 +55,12 @@ describe("cosmetic intents cross-runtime corpus", () => {
 });
 
 describe("Founder v24 activation at Exit (AC4)", () => {
+  it("pins both nonempty AC8 Exit paths", () => {
+    const names = corpus.exit_cases.map((row) => row.name);
+    expect(names).toContain("exit-wind-down-preserves-owned-equipped");
+    expect(names).toContain("exit-accept-offer-preserves-owned-equipped");
+  });
+
   it.each(corpus.exit_cases)("replays $name on the Company log and its Founder arm", async (exitCase) => {
     const company = exitCase.company;
     const current = await loadReplayCatalogBundle(company.constants_hash, company.artifacts as unknown as ReplayArtifacts);
