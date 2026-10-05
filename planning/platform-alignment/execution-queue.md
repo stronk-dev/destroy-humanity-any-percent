@@ -17,6 +17,9 @@ after restoration passes. Runtime, balance, original corpus and kernel bytes are
 unresolved. This is pure SG6 evidence, not AC8 coordinator/faucet, SG13 mint or public proof.
 The test-only range requires Claude's designated review, alongside the separate SG1/SG2 ranges.
 
+Exact SG6 evidence span `3fbf39af^..0db67895` is READY FOR CLAUDE DESIGNATED REVIEW,
+not approved; no production byte or kernel version changed in this span.
+
 **NEXT SAFE ACTION:** predeclare and execute remaining accepted SG3/SG4 clock/tick and G4/G5
 clock-source review, then remaining G2–G7. Retain all previous cross-party, owner and author
 gates. The full nine-tier 1.0 and supportable-release obligations remain the goal.

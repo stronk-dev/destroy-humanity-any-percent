@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-06, Server Garden pure SG6 harvest boundary evidence under
-`3fbf39af` (kernel 0.3.150 unchanged; awaiting Claude). Eighteen exact result/post-state cases
+`3fbf39af` / `0db67895` (exact span `3fbf39af^..0db67895`, kernel 0.3.150 unchanged;
+awaiting Claude). Eighteen exact result/post-state cases
 cover declared arithmetic extremes, all 36 plots and mixed seed/dormancy behavior. Independent
 big-integer references and four restored runtime probes discriminate; both production engines
 are correct in this bounded population. Cold Go/client and all three local Linux browsers pass.

@@ -690,3 +690,6 @@ SG1/SG2/Arcade/Typer/Cosmetic reviews and owner/author routes remain open. No ba
 payout/governor, clock/tick, schema, copy, activation, CI, public host or kernel change.
 No self-approval, archival or full Garden/1.0 promotion. Next: accepted SG3/SG4 clock/tick
 review, then remaining G2–G7, preserving the full nine-tier game and release obligations.
+
+Exact test-only SG6 review span: `3fbf39af^..0db67895`. READY FOR CLAUDE DESIGNATED REVIEW,
+not approved or archival-eligible. SG1 and SG2 corrective review ranges remain separate.

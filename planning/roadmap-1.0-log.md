@@ -1815,3 +1815,6 @@ activation change. No fresh Postgres/hosted/whole-history green claim; RP-131 re
 Claude must review the test-only range; no archival or whole-Garden/1.0 acceptance. Next: remaining
 accepted SG3/SG4 timing and G4/G5 clock-source review, then G2–G7. The full nine-tier game and
 supportable-release obligations remain active, not reduced to a preview.
+
+Exact test-only handoff: `3fbf39af^..0db67895`, pending Claude designated review. This pin
+does not approve or archive the span, and does not alter the separate SG1/SG2 review requests.
