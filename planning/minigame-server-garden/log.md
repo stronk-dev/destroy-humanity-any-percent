@@ -594,3 +594,10 @@ CI-green or hosted Actions result is claimed at kernel 0.3.150. No bypass/rewrit
 Next: pin this separate corrective range for Claude, then continue remaining accepted G1
 clock/engine/commands/corpus and G2–G7. No self-approval, archival, owner-copy invention, SG13
 mint, deployment, reduced 1.0 scope or release promotion.
+
+### Exact SG2 corrective handoff
+
+RP-215 implementation `ad2980fd`; exact designated range `e8d3f2df^..ad2980fd`, READY FOR
+CLAUDE DESIGNATED REVIEW, not approved. Includes the separate predeclaration, code/test/kernel
+change and docs/ledger/queue reconciliation. The earlier SG1 range `9fc5932c^..166a23d7`
+remains independently pending; neither range substitutes for broader G1–G7 review or archival.

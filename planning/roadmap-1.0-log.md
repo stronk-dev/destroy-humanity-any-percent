@@ -1790,3 +1790,7 @@ Claude designated review is required for this separate range. No Garden archival
 public hosting, owner-copy invention, preview shortcut or full 1.0 promotion. Next: remaining
 accepted Garden clock/engine/commands/corpus and G2–G7, with all prior review/author/owner
 routes and the full nine-tier game/supportable-release obligations retained.
+
+Exact SG2 corrective range: `e8d3f2df^..ad2980fd`, pending Claude designated review;
+SG1 remains separate at `9fc5932c^..166a23d7`. This range pin is a handoff, not a verdict,
+archival gate or whole-Garden/1.0 acceptance.

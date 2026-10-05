@@ -20,7 +20,10 @@ copy/content/boundary evidence remains dated, not re-labelled as a new SG2 execu
 whole kernel-history run remains the failed unchanged RP-131 at the SG1 phase; no CI-green,
 hosted, archival, mint or release claim. Claude must review this separate corrective range.
 
-**NEXT SAFE ACTION:** pin the SG2 range after commit, then continue the remaining accepted
+Exact SG2 corrective range `e8d3f2df^..ad2980fd` is READY FOR CLAUDE DESIGNATED REVIEW,
+separate from SG1 `9fc5932c^..166a23d7`; neither is approved.
+
+**NEXT SAFE ACTION:** continue the remaining accepted
 Garden clock/engine/commands/corpus and G2–G7 under bounded predeclarations. Retain SG1's
 exact review range, prior Arcade/Typer/Cosmetic verdict requests and all owner/author gates.
 Full nine-tier 1.0 remains active; no preview scope reduction substitutes for it.

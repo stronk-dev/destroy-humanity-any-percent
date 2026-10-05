@@ -5,7 +5,8 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, separate Server Garden SG2 codec correction under `e8d3f2df`
+**Current checkpoint:** 2026-10-06, separate Server Garden SG2 codec correction `ad2980fd`
+(exact review span `e8d3f2df^..ad2980fd`, awaiting Claude)
 (kernel 0.3.150). RP-215's five null-to-zero admissions are locally corrected, with scoped
 nullable controls, canonical Go/TS byte witnesses and independently failing/restored probes.
 Cold client/Go/Decimal/real-Postgres and full local three-browser populations pass; two raw
