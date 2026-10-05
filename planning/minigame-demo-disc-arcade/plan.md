@@ -52,3 +52,4 @@ filter. The original Claude A1–A7 work is not approved by these evidence suppl
 | RP-188: callback-driven scheduling evidence | `6652e467^..89434711` |
 | RP-189: native-key Mine Grid completion and Snake quit | `9026bd40^..27622885` |
 | RP-190: all attempted corpus commands in budget | `593ee762^..bcdee28d` |
+| RP-191: actual nonterminal output and decoder/apply hidden-state refusal | `24b7b9d7^..fe49c408` |

@@ -469,3 +469,8 @@ integration or archival. RP-131 still blocks complete green kernel-history CI. N
 accepted-lane diagnostic: snapshot grammar parity between Go and TS decoders; reproduce before
 claiming a defect, predeclare before retained corrections, and keep it outside this test-only
 range. Owner wire/copy/mint and broader release gates remain independent obligations.
+
+**Hidden-state corrective review handoff:** exact Codex range `24b7b9d7^..fe49c408`,
+test/docs/tracking only. **READY FOR CLAUDE DESIGNATED REVIEW.** No runtime, fixture,
+candidate content, owner copy, kernel, schema or CI file changed. This range does not approve
+Claude's original full A2 implementation or authorize an archival move.

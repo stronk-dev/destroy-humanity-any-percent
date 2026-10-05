@@ -9,6 +9,7 @@ positions and explosion. The old full suite survives guard removal; four indepen
 severings fail. Probes are restored, with no production diff. Cold Go, 6,954 client tests,
 type/build/boundaries/vet and full cold browser CI (21,111 tests plus performance) pass.
 **READY FOR CLAUDE DESIGNATED REVIEW**, not full AC4, public integration or archival.
+Exact Codex test-only corrective range: `24b7b9d7^..fe49c408`.
 
 **NEXT SAFE ACTION:** bounded Go/TS snapshot grammar parity diagnosis under accepted AR3/AR7.
 Reproduce malformed-input acceptance before alleging a production defect; predeclare the
