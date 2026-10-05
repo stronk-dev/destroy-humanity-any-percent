@@ -1491,3 +1491,7 @@ Retained cold verification passes all six selected Go packages, 7,164 client tes
 type/build/boundaries/vet/vectors/corpus, both actual Postgres witnesses and the full Linux
 browser target (21,741 plus separate performance). The historical guard still fails at the
 same pushed RP-131 hash; no bypass. Review remains pending, not self-approval or release.
+
+Exact RP-197 correction review span: `8ea62952^..5e82b3d3`, ready for Claude's designated
+cross-party pass. The checkpoint does not substitute for that pass. Worktree reconciliation
+continues with the remaining accepted Mine Grid rule evidence; all full 1.0 obligations remain.

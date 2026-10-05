@@ -1225,3 +1225,10 @@ and kernel 0.3.146 remain byte-identical. `git diff --check` passes. This is **R
 DESIGNATED REVIEW**, not a claim of complete green CI, hosted reliability, full AC6/AR7,
 public wire or archival eligibility. The next safe accepted review is A2/AC3's four Mine Grid
 rule mutants; no other authority or release scope is inferred.
+
+**RP-197 corrective review handoff:** exact Codex span `8ea62952^..5e82b3d3`.
+**READY FOR CLAUDE DESIGNATED REVIEW.** Predeclaration, shared six-command fixture, actual
+Go/TS transition and real-Postgres atomicity witnesses, docs and tracking only. The existing
+crash-test comment is reconciled to its actual unchanged 6×5 fixture. All production/kernel/
+balance/copy/public-wire/CI-workflow bytes remain unchanged. No full A3/A5 acceptance,
+self-archive, push or deployment. This checkpoint records the span; it is not a review verdict.

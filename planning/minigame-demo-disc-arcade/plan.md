@@ -84,3 +84,4 @@ filter. The original Claude A1–A7 work is not approved by these evidence suppl
 | RP-194: literal Go genesis/every-attempt snapshot/result byte witnesses, test-only v2 corpus | `c48ce7f2^..92ed5e68` |
 | RP-195: both Snake raw/numeric/identity snapshot decoders, shared 45/7 controls, kernel 0.3.146 | `4f6173be^..45fcf3ae` |
 | RP-196: test-only exact 5×5 clearing, complete strategy population and literal Go/TS replay | `329fc994^..25906f01` |
+| RP-197: future/late-turn rejection, direct-input atomicity and real Postgres state/history/claim proof | `8ea62952^..5e82b3d3` |

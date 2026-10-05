@@ -12,6 +12,7 @@ Typer display-loop correction `58bc34ad`, test-only Arcade callback correction `
 native keyboard supplement `27622885`, corpus-budget correction `bcdee28d` and hidden-state
 witness correction `fe49c408`, every-command literal-byte instrument `92ed5e68` and separate
 exact 5×5 clearing witness `25906f01` (review span `329fc994^..25906f01`),
+and test-only Snake/DB rejection-atomicity proof `5e82b3d3` (review span `8ea62952^..5e82b3d3`),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`

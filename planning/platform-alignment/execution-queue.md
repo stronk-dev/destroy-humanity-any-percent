@@ -10,8 +10,9 @@ claim-release probes fail independently and are restored. Valid play still advan
 resolves; only those two commands enter SQL history. This is a test-only correction under
 accepted A3/A5/AC5/AC6, not a new rule or public API/receipt/socket proof. Cold selected Go,
 7,164 client tests, root checks, both real-DB witnesses and full three-browser verification
-(21,741 plus separate performance) pass. Exact correction review span will be pinned in the
-commit checkpoint; Claude designated review remains required. No full A3/A5/AR7 acceptance.
+(21,741 plus separate performance) pass. Exact correction review span: `8ea62952^..5e82b3d3`;
+Claude designated review remains required. No full A3/A5/AR7 acceptance. Historical RP-131's
+same pushed commit still fails the complete history guard; no bypass or rewritten history.
 
 **NEXT SAFE ACTION:** predeclare the remaining original A2/AC3 Mine Grid rule-discrimination
 review: 4-neighborhood flood, first-reveal exclusion, flagged chord and TS rejection sampling.
