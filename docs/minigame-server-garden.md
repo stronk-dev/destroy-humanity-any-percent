@@ -68,6 +68,24 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
 - The hidden salt is drawn by the server when the first unlocked advance runs, frozen in that row's
   resolved inputs, and never projected.
 
+## Independent tick witnesses
+
+`testdata/garden/tick-witnesses-v1.json` is a separate, hand-derived sixteen-case SG4
+population, not output of the Go engine/corpus generator. Go and TS enter through actual
+catalog/state admission, execute the real advance and compare complete post-state/summary
+bytes against literals. Cases cover growth before the diagonal census, dormant/immature
+exclusion, parent minima and crossbreeding, recipe/plot order, effective-zero eligible draw
+consumption, strict threshold and adjacent success, absolute tick keys, Chaos selection,
+frozen effect, lowered maturation threshold and next-tick newborn growth. Literal founder
+base and eight bounded draws at each of ticks 1/2 bind both production PRNG implementations.
+
+Actual source mutations of diagonals, threshold, tick key and recipe ordering fail the new
+population and are restored exactly. This is bounded pure-transition evidence, pending
+designated review, not a statistical RNG, exhaustive rejection-sampling, full SG4/Garden,
+coordinator, public-flow or mint claim. Cumulative saturation is exercised, but removal of
+that upper clamp alone is observationally equivalent for nonnegative probabilities and
+draws below one million; it is not claimed to be separately discriminated.
+
 ## Commands
 
 - `garden_plant`, `garden_uproot`, `garden_set_substrate` and `garden_harvest` are Founder intents

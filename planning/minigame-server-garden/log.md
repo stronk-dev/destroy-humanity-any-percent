@@ -1078,3 +1078,53 @@ attempt, unchanged bounds and every mandatory mutation/final gate in the review 
 Limit: removing the cumulative upper clamp alone is observationally equivalent for these
 nonnegative probabilities and draws <1M; the saturation case checks selected child/order under
 overlapping total probability, not discrimination of that redundant internal clamp in isolation.
+
+### SG4 executed independent population and bounded review
+
+Review by: Codex (original Claude tick reviewer; new test implementer first filter).
+Recorded by: Codex. Scope: original G1 `02f91d10` SG4 tick/census/eligibility paths, unchanged
+at `4ade679b`; Git directly confirms that the only intervening engine changes are RP-219's
+early SG3 guard, not the tick mechanism. No full G1/Garden or original implementation-span
+approval is inferred. No additional production defect is found in this selected population.
+
+Sixteen literal cases plus PRNG-binding entry execute in each runtime. Standalone arithmetic
+uses unsigned-64 FNV/SplitMix, seed-zero `0xe220a8397b1dcdaf`, base `7474842082278028174`, and
+tick-1 draws `[21447,266542,710139,814499,415932,924102,5437,92395]`; tick-2
+`[400727,763831,9588,848727,578789,319982,6270,223675]`. No game import/generator supplied these
+expectations. The shared companion records derivation/reproduction and finite-population limits.
+Actual raw loader and state codec admit every corrected case, including the effective-zero
+floor control. Full summary and state bytes check growth, selection, metadata and unchanged seeds.
+RP-220 records bounded test evidence, not a production defect.
+
+**Serial executed mutations, then exact restoration:**
+
+- Go Moore→four-neighbour census fails eight new cases, including diagonal cross and minimum.
+- TS `u < cumulative`→`u <= cumulative` fails only the new equality-refusal case; 7,322 other
+  client tests pass. The old corpus alone did not discriminate this off-by-one boundary.
+- TS absolute tick→per-invocation step fails the two new tick-2 cases plus existing partition
+  and replay checks (four failures total), proving complementary evidence, not replacing parity.
+- Go reversed eligible recipe walk fails the canonical-choice case, selecting B instead of A.
+
+An earlier Go probe selector accidentally expanded `$` through Make's shell into an unmatched
+expression and reported `[no tests to run]`. That exit 0 is **not evidence**; re-execution with
+the named selector explicitly ran all seventeen entries and produced the eight failures above.
+Initial compile/admission instrument failures remain recorded. No acceptance bound was weakened.
+
+Both engine SHA-256 values exactly match the baseline after all probes:
+Go `d044f9423b448edb1ea2bb2a91eccbe83a79875e9c4ab60caeea432d2ea6ac9c`,
+TS `2568cb2947207875e2298de58f7ca2bdd67de872cd65b024c8a8ee9611ae8f48`.
+Final cold Garden Go passes (0.155 s); determinism has no own test files, so no independent
+package test population is invented. The new Garden test executes its literal PRNG binding.
+Existing generated engine corpus remains byte-unchanged (0.075 s). Full root client passes
+7,323 / 106 existing intentional skips; TS/Svelte zero diagnostics, 213-module build and
+shell/UI boundary checks pass. Complete native Linux Chromium/Firefox/WebKit passes
+22,269 / six existing intentional skips, 282 file/engine populations (38.63 s), including
+all seventeen new entries in every engine. Separate fresh Chromium performance passes
+(2.17 s invocation, 472 ms measured test). No source or test changed while these gates ran.
+
+Test-only scope, kernel 0.3.152 unchanged. No balance, schema, migration, save/replay version,
+authored copy, CI, activation or mint change. No new Postgres/amd64/hosted/whole-history claim;
+RP-131 and RP-218 causation/reliability remain open. All prior designated review ranges stay
+pending. New witness range requires Claude's designated review; no self-archive, push or release.
+Next accepted review: remaining pure SG5 command atomicity, then G2/G3 bundle/activation/replay
+and G4–G7 coordinator/read/surface, retaining every full-nine-tier 1.0 obligation.

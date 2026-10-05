@@ -1917,3 +1917,24 @@ Claude designated review. Next: remaining accepted SG4 tick/RNG and G2–G7; the
 Exact counter handoff: `c9f449de^..8413f112`, union of diagnostic
 `c9f449de^..155486d0` and correction `711153cd^..8413f112`. This pin is not approval,
 does not close any earlier review range, and authorizes no archival or publication.
+
+## 2026-10-06 — Garden independent SG4 tick evidence
+
+Predeclaration `62bbc92a` / instrument correction `24512573`, RP-220: sixteen shared literal
+expected transitions supplement, rather than redefine, the Go-generated parity corpus. Actual
+catalog/state admission and complete state/summary bytes bind growth, maturity, dormancy, Moore
+census, parent minima/cross, draw/recipe order, strict threshold, tick key, factor/effect, retune
+and newborn growth. Independently calculated selected PRNG literals bind both runtimes.
+Initial invalid zero chances, compile typo and empty-selector probe are explicitly retained
+as invalid attempts, not product failures or passing evidence. No production defect found in
+this selected population. Four actual-source mutation classes fail, all restored byte-exactly.
+
+Cold Garden Go/corpus and root client/type/build/boundaries pass (7,323 / 106 intentional Node
+skips). Complete local native Linux Chromium/Firefox/WebKit passes 22,269 / six existing
+intentional skips, all seventeen new entries per engine and 282 file/engine populations;
+separate performance passes. Test-only, unchanged kernel 0.3.152; no runtime, balance, copy,
+schema, CI or activation change. No new Postgres/hosted/amd64/whole-history claim. Existing
+RP-131/RP-218 and every pending designated-review/owner/author/accessibility/mint/rights/release
+gate remain. New tests await Claude's designated review. Next safe accepted work is SG5
+command/refusal atomicity, then G2/G3 activation/bundle/replay and remaining G4–G7. Full 1.0
+remains active; no archival, public mint, release call or push.

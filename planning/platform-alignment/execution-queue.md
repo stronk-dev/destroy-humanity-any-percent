@@ -1,5 +1,23 @@
 # Executable queue
 
+## Current Garden independent tick evidence — 2026-10-06
+
+SG4 predeclaration `62bbc92a` / instrument correction `24512573` supplies sixteen independent
+literal transitions and selected PRNG draws in the real Go/TS paths, not only Go-generated
+outcomes. RP-220 is evidence, not a new production defect. Initial invalid zero raw chances,
+test compile mistake and empty-selector probe are disclosed and never counted as passing proof.
+Actual-source mutations fail: Go four-neighbour eight cases, TS inclusive threshold one,
+TS partition-relative key two new plus two existing, Go reversed recipe order one. All restore
+byte-exactly. Cold Garden Go/corpus and root client/type/build/boundaries pass. Complete native
+Linux browsers execute all seventeen new entries per engine: 22,269 / six deliberate skips,
+282 file/engine populations, plus separate performance. Kernel stays 0.3.152; no runtime,
+balance, schema, copy, CI or mint change. New test range requires Claude; no archive/full-SG4,
+G1/Garden, Postgres/hosted/whole-history or 1.0 promotion. RP-131/RP-218 limitations remain.
+
+**NEXT SAFE ACTION:** accepted pure SG5 command/refusal atomicity review, then G2/G3 bundle,
+activation and replay, followed by remaining G4–G7. Keep all prior independent-review ranges
+and owner/author, accessibility, rights, deployment, preservation and full-nine-tier release gates.
+
 ## Current Garden exact counter invariant — 2026-10-06
 
 RP-219 is proven under diagnosis `c9f449de` / `155486d0`: 49 codec-valid clock/frontier cases
@@ -18,7 +36,7 @@ RP-131 remains unresolved; RP-218's original cause/reliability is not closed by 
 Exact complete handoff `c9f449de^..8413f112`, union of diagnosis
 `c9f449de^..155486d0` and repair `711153cd^..8413f112`; pending Claude designated review.
 
-**NEXT SAFE ACTION:** continue remaining
+**Earlier next action (superseded above):** continue remaining
 accepted SG4 tick/RNG, then G2–G7 replay/coordinator/read/surface review. Keep original corpus and
 all prior independent review, owner/author, accessibility, mint and full-nine-tier release gates.
 

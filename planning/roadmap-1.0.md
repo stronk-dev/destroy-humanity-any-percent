@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG2/SG3 invariant repair under `711153cd`
+**Current checkpoint:** 2026-10-06, Garden SG4 independent tick witnesses under `62bbc92a`
+/ instrument correction `24512573` (test-only, designated review pending). Sixteen literal
+transitions and selected PRNG values agree in Go/TS; actual-source diagonal, threshold,
+absolute-key and recipe-order mutations fail and restore exactly. RP-220 records bounded
+evidence, not a new production repair. Initial invalid fixtures and an empty-selector run are
+disclosed, not credited. Cold Garden Go/corpus, root client/type/build/boundaries and complete
+Linux browsers/performance pass: 22,269 / six deliberate skips, all seventeen new entries
+in every engine. No runtime/kernel/balance/CI/mint change; kernel 0.3.152. No full SG4/G1/Garden,
+public-flow, hosted/whole-history or release promotion; RP-131/RP-218 limitations and all earlier
+cross-party/owner/author gates remain. Next: accepted SG5 refusal/command atomicity, then
+G2/G3 bundle/activation/replay and G4–G7. The full nine-tier game and platform floor remain the goal.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG2/SG3 invariant repair under `711153cd`
 (implemented `8413f112`, complete span `c9f449de^..8413f112`, designated review pending),
 kernel 0.3.152. Independent
 49-case clock/frontier checks prove RP-219: codec-valid counters leave the safe domain and Go/TS

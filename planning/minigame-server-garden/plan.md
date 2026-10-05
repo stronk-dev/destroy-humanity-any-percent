@@ -41,6 +41,13 @@ new game cap. Kernel 0.3.152; independent 49-case clock matrix and disabled/late
 in both runtimes. Every existing checklist/review limitation remains: this is not full SG4 tick,
 original G1, G2–G7, public mint or release acceptance. Claude review is required for the new range.
 
+Separate SG4 test-only supplement under `62bbc92a` / instrument correction `24512573`:
+sixteen admitted literal transitions and selected PRNG draws agree in Go/TS. Actual-source
+diagonal, threshold, absolute-key and recipe-order mutations fail the new witnesses and
+restore exactly. RP-220 is evidence, not a production defect or full SG4/G1 acceptance.
+The initial inadmissible zero-chance fixtures and empty-selector invocation are disclosed
+in the log, never credited as evidence. No runtime/kernel/CI/mint change; Claude review required.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure
