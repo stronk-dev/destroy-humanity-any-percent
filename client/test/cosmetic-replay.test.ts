@@ -16,7 +16,7 @@ describe("cosmetic intents cross-runtime corpus", () => {
   it("pins every §4 row", () => {
     const names = corpus.cases.map((row) => row.name);
     for (const required of ["rejects-inactive-below-v24", "rejects-price-field", "rejects-locked-at-tier-0", "applies-acquire-at-tier-1", "rejects-second-acquire",
-      "rejects-equip-unknown-pet", "applies-equip", "rejects-already-equipped", "applies-unequip", "rejects-unequip-nothing-equipped", "pair-rejects-equip-not-owned", "pair-replaces"]) {
+      "rejects-equip-unknown-pet", "applies-equip", "applies-equip-second-wearer", "rejects-already-equipped", "applies-unequip", "rejects-unequip-nothing-equipped", "pair-rejects-equip-not-owned", "pair-replaces"]) {
       expect(names, required).toContain(required);
     }
   });
@@ -29,6 +29,18 @@ describe("cosmetic intents cross-runtime corpus", () => {
     expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
     expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
     expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(testCase.post_state_json);
+  });
+
+  it("preserves both wearers after equipping one owned item twice", async () => {
+    const testCase = corpus.cases.find((row) => row.name === "applies-equip-second-wearer")!;
+    const catalogs = await bundle(testCase.bundle);
+    const state = restoreFounderReplayState(testCase.pre_state, testCase.state_version, catalogs);
+    expect(Object.keys(state.cosmetics.equipped)).toHaveLength(1);
+    const transition = await applyFounderLogged(state, canonicalJSONString(testCase.canonical_payload), catalogs, testCase.replay_inputs);
+    expect(transition.outcome).toBe("applied");
+    expect(transition.state.cosmetics.owned).toEqual(["horse_armor"]);
+    expect(Object.keys(transition.state.cosmetics.equipped)).toHaveLength(2);
+    expect(Object.values(transition.state.cosmetics.equipped)).toEqual(["horse_armor", "horse_armor"]);
   });
 
   it("refuses a recorded acquisition whose frozen tier was lowered", async () => {

@@ -29,8 +29,9 @@ migration take the next free numbers at landing.
   top-level service preflight. The bounded exemption and a real-Postgres acquire/equip/unequip
   → recovery-resolution witness now pass, with ordinary gameplay still exclusive and fired
   exemption probes. Claude's designated review of this correction and Codex's review of the
-  remaining C4 scope are still required. RP-179 also records AC6's missing shared two-pet equip
-  transition; its test-only evidence correction is predeclared in the log.
+  remaining C4 scope are still required. RP-179's shared two-pet equip transition is now
+  supplied by a test-only corpus supplement, with independently fired Go/TS single-wearer
+  mutations. Claude designated review of this evidence correction remains required.
   This checkbox records implementation presence, not full C4 approval.
 - [x] C5 Snapshot v4 optional `features.cosmetics` arm and its decoder (AC10); Codex's targeted review found RP-173, whose corrective range awaits Claude's designated review, and RP-174 still requires ruling-author body reconciliation. This checkbox is implementation presence, not archival approval.
 - [x] C6 Desk shelf, parody receipt, `CosmeticOverlay` and the curtain contract (AC11, AC12, AC15).

@@ -1196,3 +1196,12 @@ tests, code, docs and records. RP-179 adds a distinct AC6 evidence gap: the shar
 contains 20 Founder cases but reaches only one pet; the two-wearer shape/projection tests
 do not exercise a second equip transition in both runtimes. A test-only Go-authored corpus
 supplement and selective Go/TS severing are predeclared. C4 and Cosmetics remain open.
+
+## 2026-10-05 — Cosmetic C4 AC6 proof now reaches two wearers
+
+RP-179's test-only correction adds a shared five-transition population: one acquisition,
+two actual adoptions and two equips preserving both wearers. The missing required row failed
+first; single-wearer mutations independently fail Go and TS. The regenerated corpus has
+25 Founder rows plus the unchanged Exit pair. Focused cold Go, 6,950 client tests and
+typecheck pass, with both mutations restored. No product or live content change was needed.
+Claude's designated review is still required; this does not close C4, Cosmetics or 1.0.

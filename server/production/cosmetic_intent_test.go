@@ -9,8 +9,10 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/cosmetic"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/pet"
 	"cloud-clicker/server/save"
 )
 
@@ -47,13 +49,54 @@ func twoItemCosmeticsBundle(t *testing.T) CatalogBundle {
 	return bundle
 }
 
+// twoWearerCosmeticsBundle expands only this test population's adoption cap.
+// Its rehashed artifact is consumed by the ordinary Go and TS catalog loaders.
+func twoWearerCosmeticsBundle(t *testing.T) CatalogBundle {
+	t.Helper()
+	bundle := cosmeticsContentBundle(t)
+	artifacts := map[string][]byte{}
+	for name, data := range bundle.Artifacts {
+		artifacts[name] = data
+	}
+	var species map[string]json.RawMessage
+	if err := json.Unmarshal(artifacts["pet_species"], &species); err != nil {
+		t.Fatal(err)
+	}
+	species["max_pets_per_founder"] = json.RawMessage(`2`)
+	var err error
+	artifacts["pet_species"], err = json.Marshal(species)
+	if err != nil {
+		t.Fatal(err)
+	}
+	declarations := pet.SpeciesDeclarations{CopyKeys: map[string]struct{}{}, CompanionKeys: map[string]struct{}{}}
+	for _, key := range copykeys.All() {
+		declarations.CopyKeys[key] = struct{}{}
+	}
+	for _, key := range copykeys.CompanionKeys() {
+		declarations.CompanionKeys[key] = struct{}{}
+	}
+	if bundle.PetSpecies, err = pet.LoadSpeciesCatalog(artifacts["pet_species"], declarations); err != nil {
+		t.Fatal(err)
+	}
+	bundle.ConstantsHash, err = save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle.Artifacts = artifacts
+	if !bundle.valid(bundle.ConstantsHash) {
+		t.Fatal("two-wearer cosmetics bundle is not valid")
+	}
+	return bundle
+}
+
 type cosmeticRunner struct {
-	t        *testing.T
-	catalogs CatalogBundle
-	bundle   string
-	state    *save.State
-	revision int64
-	cases    []reputationCorpusCase
+	t             *testing.T
+	catalogs      CatalogBundle
+	bundle        string
+	state         *save.State
+	revision      int64
+	cases         []reputationCorpusCase
+	adoptionNonce string
 }
 
 // command appends one Founder-log case. tier is the frozen active-Company tier
@@ -73,10 +116,14 @@ func (runner *cosmeticRunner) command(name, kind, body string, tier int64, now t
 	if request.InvalidDetail == "" {
 		switch {
 		case kind == IntentAdoptPet:
+			nonce := runner.adoptionNonce
+			if nonce == "" {
+				nonce = nonceA
+			}
 			attendance := FounderAttendanceSample{CompanyStreamID: "01986666-1900-7000-8000-000000000901", RunSeq: 1, CompanyRevision: 1,
 				CompanyConstantsHash: runner.catalogs.ConstantsHash, CompletedAttendedMS: runner.state.AgeMS, CurrentRunPartialAttendedMS: 400_000,
 				EffectiveFounderAttendedMS: runner.state.AgeMS + 400_000}
-			resolved = founderAdoptionResolved{Kind: IntentAdoptPet, Attendance: attendance, AdoptionNonce: nonceA}
+			resolved = founderAdoptionResolved{Kind: IntentAdoptPet, Attendance: attendance, AdoptionNonce: nonce}
 		case kind == IntentAcquireCosmetic:
 			resolved = founderCosmeticResolved{Kind: kind, ActiveCompany: &founderCosmeticActiveCompany{
 				CompanyStreamID: "01986666-1900-7000-8000-000000000901", CompanyRevision: 7, RunSeq: 2, Tier: tier}}
@@ -128,6 +175,7 @@ func buildCosmeticCorpus(t *testing.T) cosmeticCorpus {
 	species := petSpeciesContentBundle(t)
 	shop := cosmeticsContentBundle(t)
 	pair := twoItemCosmeticsBundle(t)
+	multi := twoWearerCosmeticsBundle(t)
 	now := time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC)
 	acquire := func(id string) string { return fmt.Sprintf(`"cosmetic_id":%q`, id) }
 	equip := func(id, petID string) string { return fmt.Sprintf(`"cosmetic_id":%q,"pet_id":%q`, id, petID) }
@@ -194,12 +242,44 @@ func buildCosmeticCorpus(t *testing.T) cosmeticCorpus {
 		t.Fatalf("replace payload %s", replaced.Events[0].Payload)
 	}
 
+	// AC6/OD-15: create both identities through adoption, acquire once, then
+	// actually equip the same owned item twice. No prebuilt equipped shape.
+	multiState := reputationFounderState(t, multi, 24, now, 1)
+	multiState.AgeMS = 5_000_000
+	multiRunner := &cosmeticRunner{t: t, catalogs: multi, bundle: "multi", state: multiState, revision: 1}
+	multiRunner.expectApplied("multi-acquires-item", IntentAcquireCosmetic, acquire("horse_armor"), 1, now, save.EventCosmeticAcquired)
+	adoptWearer := func(name, nonce string) string {
+		multiRunner.adoptionNonce = nonce
+		transition := multiRunner.command(name, IntentAdoptPet, `"species_id":"pet_species.server_room_cat","name_key":"pet.name.server_room_cat.n07"`, 0, now)
+		var receipt founderAdoptionReceipt
+		if transition.Outcome != save.IntentApplied || json.Unmarshal(transition.Receipt, &receipt) != nil {
+			t.Fatalf("%s: %s", name, transition.Receipt)
+		}
+		return receipt.PetID
+	}
+	firstPet := adoptWearer("multi-adopts-first-wearer", nonceA)
+	secondPet := adoptWearer("multi-adopts-second-wearer", nonceB)
+	if firstPet == secondPet {
+		t.Fatal("second adoption reused the first identity")
+	}
+	multiRunner.expectApplied("multi-equips-first-wearer", IntentEquipCosmetic, equip("horse_armor", firstPet), 0, now, save.EventCosmeticEquipped)
+	secondEquip := multiRunner.expectApplied("applies-equip-second-wearer", IntentEquipCosmetic, equip("horse_armor", secondPet), 0, now, save.EventCosmeticEquipped)
+	if len(multiRunner.state.Cosmetics.Owned) != 1 || len(multiRunner.state.Cosmetics.Equipped) != 2 ||
+		multiRunner.state.Cosmetics.Equipped[firstPet] != "horse_armor" || multiRunner.state.Cosmetics.Equipped[secondPet] != "horse_armor" {
+		t.Fatal("second equip did not preserve both wearers of the single owned item")
+	}
+	if string(secondEquip.Events[0].Payload) != `{"cosmetic_id":"horse_armor","pet_id":"`+secondPet+`","replaced_cosmetic_id":null}` {
+		t.Fatalf("second-wearer payload %s", secondEquip.Events[0].Payload)
+	}
+
 	cases := append(append(append([]reputationCorpusCase{}, inactive.cases...), runner.cases...), pairRunner.cases...)
+	cases = append(cases, multiRunner.cases...)
 	exitCases := []reputationExitCase{makeReputationPlanExitCase(t, "exit-activates-founder-v24", species, shop, 23, 4, nil, now)}
 	return cosmeticCorpus{Version: 1, Cases: cases, ExitCases: exitCases, Bundles: map[string]reputationCorpusBundle{
 		"species": {ConstantsHash: species.ConstantsHash, Artifacts: stringArtifacts(species.Artifacts)},
 		"shop":    {ConstantsHash: shop.ConstantsHash, Artifacts: stringArtifacts(shop.Artifacts)},
 		"pair":    {ConstantsHash: pair.ConstantsHash, Artifacts: stringArtifacts(pair.Artifacts)},
+		"multi":   {ConstantsHash: multi.ConstantsHash, Artifacts: stringArtifacts(multi.Artifacts)},
 	}}
 }
 

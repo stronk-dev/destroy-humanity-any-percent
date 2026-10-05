@@ -4,11 +4,13 @@
 
 RP-179 records an acceptance gap: the shared Go/TS transition corpus reaches only one pet,
 and Go's two-wearer test validates a supplied shape. The accepted AC6 requires the second
-equip itself in both runtimes. A predeclared test-only Codex correction will add that shared
-case, assert both wearers persist, and fire single-wearer transition mutations in Go and TS.
+equip itself in both runtimes. The predeclared test-only Codex correction now adds five shared
+transitions, asserts both wearers persist, and fires single-wearer mutations in Go and TS.
+Cold focused Go, 6,950 client tests and typecheck pass. The evidence supplement is
+**READY FOR CLAUDE DESIGNATED REVIEW**, not a self-approval or product behavior change.
 The database correction `fca686c5^..ce7688a7` and recovery correction
 `380d854b^..646daa08` are already **READY FOR CLAUDE DESIGNATED REVIEW**; the C4/AC6
-supplement will need its own exact range. No full C4 approval follows.
+supplement has its own exact range recorded in the Cosmetic log. No full C4 approval follows.
 
 ## Current Cosmetic Shop C4/§4.5 Soul-recovery conflict — 2026-10-05
 

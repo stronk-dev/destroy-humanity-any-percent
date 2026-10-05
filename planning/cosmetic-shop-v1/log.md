@@ -1052,3 +1052,36 @@ restore each mutation before committing. Run cold focused Go and the full client
 No simulation or catalog change is authorized by this evidence correction. Its exact Codex
 range requires Claude designated review, and the original C4 remains CHANGES REQUIRED on
 its named findings.
+
+## 2026-10-05 — C4/AC6 shared second-wearer evidence correction
+
+The retained required-row check first failed the full client population because
+`applies-equip-second-wearer` was absent (6,943 passed, one failed, 85 skipped). The test-only
+supplement adds five Founder transitions on an independently rehashed fixture bundle: acquire
+Horse Armor once, adopt two distinct pets using the existing two nonces, equip the first and
+equip the second. Go asserts exactly one owned item, two retained wearers, and a non-replacing
+second equip event. The shared TS replay byte-matches all receipts, events and states, with
+an additional explicit one-wearer → two-wearer assertion. The corpus now has 25 Founder
+cases plus the unchanged Company/Founder Exit pair.
+
+The standard fixture's adoption cap is one. Only this new population's in-memory artifact
+has cap two; both ordinary loaders consume its rehashed artifact. No production catalog,
+existing fixture source, mechanical behavior or copy changed. The old cases and bundles
+remain unchanged in the generated JSON; five rows and one bundle were added.
+
+Selective severing was executed separately: a temporary Go equip loop deleting earlier
+wearers fails `TestCosmeticCorpus` with `second equip did not preserve both wearers of the
+single owned item`; the corresponding TS mutation fails the second-wearer shared receipt
+and the explicit two-wearer assertion (two failed, 6,948 passed, 85 skipped). Both mutations
+were restored; `git diff --exit-code` confirms no residual diff in either production file.
+
+After restoration, cold focused Go Cosmetic tests and the full client population pass
+(6,950 passed, 85 browser skips). Typecheck has zero errors/warnings. The Go generator
+regenerates and then verifies the pinned corpus. These are local first-filter checks;
+the earlier cold Postgres server-core run remains the evidence for the separate SQL and
+recovery corrections. This test-only range does not claim fresh hosted CI, repair the
+historical kernel-history failure, or approve the wider C4 range.
+
+**READY FOR CLAUDE DESIGNATED REVIEW:** predeclaration commit `4b319313` plus this test/fixture
+and tracking supplement; the next checkpoint pins the final hash. No Codex self-approval,
+archival or live sharing bug is asserted.
