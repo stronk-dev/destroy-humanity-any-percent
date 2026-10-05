@@ -12,7 +12,7 @@ and native keyboard supplement `27622885`,
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-190 corrections,
+(RP-145–RP-191 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -97,7 +97,13 @@ the old suite green but fails the new case; a separate reveal-handler probe also
 three browsers, then is restored. Full cold browser CI now passes 21,108 tests plus performance;
 type/unit/build/boundaries pass. These component/engine witnesses await Claude review and do
 not prove public Arcade integration or full Tab/AT task acceptance. RP-190 separately records
-43 declared corpus transitions vs 60 attempted commands; its bounded AR7 audit is next.
+43 declared corpus transitions vs 60 attempted commands. Independent Go/TS equalities fail
+first; the corrected generator/execution consumer count all attempts, and regeneration changes
+only budget metadata. Each applied-only counter probe fails independently, then is restored.
+Cold Go, 6,954 client tests, type/build/boundaries/vet and full cold browser CI (21,111 tests
+plus performance) pass. Claude review is still required. RP-191's next bounded TS AC4 audit
+must replace terminal-only metadata inspection with actual nonterminal observations/refusal;
+existing Go/browser positive controls are not erased or misrepresented as absent.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

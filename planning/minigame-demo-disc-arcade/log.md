@@ -342,3 +342,41 @@ do not treat a cached corpus check as cold proof. Root vet/build/boundaries rema
 No added retry/bound increase or fabricated content coverage. This repairs the observation
 denominator only; it does not establish missing gameplay scenarios or approve the rest of
 Claude's A1–A7/AR7 range. Claude independently reviews the exact Codex correction.
+
+## 2026-10-05 — RP-190 exact attempted-command budget correction (Codex)
+
+The new Go equality fails first on the unchanged generator: `budget=43 must count all 60
+attempted commands (AR7)`; cold focused Make exits 2. The new TS metadata equality also fails
+first on the unchanged fixture: `expected 43 to be 60`; full client Make exits 2 with one
+failed / 6,953 passed / 88 browser-only skips. These are executed failures, not read assertions.
+
+The generator now counts each scenario's complete step list, and TS increments before every
+attempt, rejected or applied. Root `make arcade-corpus` regenerates metadata 43→60. Structural
+comparison to committed HEAD confirms every other value—including scenarios, commands,
+expected terminal/results and the content hash—is identical. Regenerating a second time is
+byte-identical (SHA-256 `61994942904ab0cc03f608ed8e60471f825f49b3a554cf43a4f7f344af54af28`).
+
+**Independent restored negatives:** reinstate only Go's applied-only producer → the cold
+Go gate fails at 43 vs 60 (Make 2); restore. Reinstate only TS's applied-only execution counter
+→ its metadata check stays green but actual replay count fails 43 vs 60 (Make 2; one failed /
+6,953 passed / 88 browser-only skips); restore. This tests distinct producer and execution
+consumers, not two copies of the same assertion.
+
+Restored cold `make test-go GO_PACKAGES='./arcade' GO_TEST_FLAGS='-count=1'` passes, as does
+root type/client/build/boundaries/vet (6,954 unit tests / 88 browser-only skips; zero Svelte
+errors/warnings). The full cold browser result is recorded below when complete. No runtime,
+scenario, content, balance, copy, kernel, wire or CI bytes change, and no archive is authorized.
+
+**Broad browser evidence:** restored cold root `make test-browser-ci` exits 0: 252 file
+populations / 21,111 tests passed / 3 intentional performance skips in 38.01 s, followed by
+the separate Chromium performance case (1 passed / 20 filtered out). This correction is
+**READY FOR CLAUDE DESIGNATED REVIEW**, not a Codex self-approval or wider AR7 acceptance.
+The full kernel-history CI gate remains red on RP-131; its repair RFC remains draft.
+
+**Separately queued RP-191:** the TS AC4 case named "never exposes a mine position in a
+non-terminal snapshot" reads only corpus `expected_terminal` metadata and asserts terminal
+phase; it observes no nonterminal transition or forged-state refusal. Go
+`TestMineGridHiddenInformation` and the new RP-189 browser playing-state check supply actual
+positive controls, so this is not a claim that all AC4 proof is absent or mines leak. Next,
+predeclare a bounded TS intermediate-state and leaked-state-refusal population with precise
+severing probes. No RP-191 fix is included in this budget range.

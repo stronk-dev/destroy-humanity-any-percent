@@ -7,6 +7,9 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   loader-bound rejections, candidate copy keys (AR6.6) in `copy/catalog/arcade-candidate.json`.
 - [x] A2 — `mine_grid` 1.0.0 pure engine (AR3) in Go and TS; Go-generated corpus TS replays
   byte-for-byte (AR7); hidden-information invariant (AC4) with a failing case.
+  RP-190's test/corpus budget correction counts all 60 attempts, rather than only 43 applied
+  commands. Go/TS equalities fail first and their independent applied-only counter probes fire;
+  the regenerated fixture differs only in budget metadata. Claude review remains required.
 - [x] A3 — `snake` 1.0.0 pure engine (AR4) in Go and TS; corpus incl. mid-window terminal,
   `advance_past_terminal` without mutation, every rejection (AR7).
 - [x] A4 — AR-P1/P2/P3: `CatalogBundle.Arcade`, loader chain (`arcade` requires `minigame_api`),

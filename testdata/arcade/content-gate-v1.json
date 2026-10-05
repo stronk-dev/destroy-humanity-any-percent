@@ -1,7 +1,7 @@
 {
   "version": 1,
   "arcade_content_hash": "sha256:054e4da826f11bae0302efb5868584391cdefe083a7680edf254364fdce189c3",
-  "transition_budget": 43,
+  "transition_budget": 60,
   "scenarios": [
     {
       "name": "mine_grid_preset_large",

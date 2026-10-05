@@ -21,6 +21,11 @@ const corpus = corpusSource as unknown as Corpus;
 const declared = new Set<string>(COPY_KEYS);
 
 describe("arcade shared content gate (AR7)", () => {
+  it("budgets every attempted command, including rejected attempts", () => {
+    const attempts = corpus.scenarios.reduce((count, scenario) => count + scenario.steps.length, 0);
+    expect(corpus.transition_budget).toBe(attempts);
+  });
+
   it("byte-replays every Go-generated scenario, rejections included", async () => {
     expect(await arcadeContentHash(fixture)).toBe(corpus.arcade_content_hash);
     let transitions = 0;
@@ -32,12 +37,13 @@ describe("arcade shared content gate (AR7)", () => {
       let result: ArcadeResult | null = null;
       let revision = 1;
       for (const step of scenario.steps) {
+        transitions++;
         const before = snapshot;
         try {
           const input = { ...identity, revision, snapshot, command: JSON.stringify(step.command) };
           const output = snake ? await applySnake(input) : await applyMineGrid(input);
           expect("applied", `${scenario.name} ${JSON.stringify(step.command)}`).toBe(step.expect);
-          snapshot = output.snapshot; result = output.result; revision++; transitions++;
+          snapshot = output.snapshot; result = output.result; revision++;
         } catch (error) {
           if (!(error instanceof ArcadeRejection)) throw error;
           expect(error.code, `${scenario.name} ${JSON.stringify(step.command)}`).toBe(step.expect);

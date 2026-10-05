@@ -403,17 +403,20 @@ func generateCorpus(t *testing.T) contentCorpus {
 	corpus := contentCorpus{Version: 1, ArcadeContentHash: ContentHash(content)}
 	corpus.Scenarios = append(mineGridScenarios(t), snakeScenarios(t)...)
 	for _, scenario := range corpus.Scenarios {
-		for _, step := range scenario.Steps {
-			if step.Expect == "applied" {
-				corpus.TransitionBudget++
-			}
-		}
+		corpus.TransitionBudget += len(scenario.Steps)
 	}
 	return corpus
 }
 
 func TestArcadeContentGate(t *testing.T) {
 	corpus := generateCorpus(t)
+	commands := 0
+	for _, scenario := range corpus.Scenarios {
+		commands += len(scenario.Steps)
+	}
+	if corpus.TransitionBudget != commands {
+		t.Fatalf("budget=%d must count all %d attempted commands (AR7)", corpus.TransitionBudget, commands)
+	}
 	encoded, err := json.MarshalIndent(corpus, "", "  ")
 	if err != nil {
 		t.Fatal(err)

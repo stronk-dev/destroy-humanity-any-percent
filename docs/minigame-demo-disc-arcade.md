@@ -48,7 +48,9 @@ carry `arcade_content_hash` and `arcade_schema_version`.
 ## Verification
 
 `make arcade-corpus-check` regenerates `testdata/arcade/content-gate-v1.json` from the Go engines
-and compares it byte for byte. The corpus has 16 scenarios and 43 applied transitions. Between
+and compares it byte for byte. The corpus has 16 scenarios and a fixed budget of 60 attempted
+commands: 43 applied and 17 rejected. Go generation and TS replay both count every attempt;
+independent checks reject an applied-only budget. Between
 them they cover every preset, first-reveal safety, a flood that stops at a flag, chord
 success/detonate/unsatisfied, a clear-board win, all four walls, self-collision, a legal tail
 chase, a `cleared` board, and every rejection code of both engines.

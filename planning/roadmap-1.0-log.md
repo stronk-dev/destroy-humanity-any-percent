@@ -1333,3 +1333,19 @@ remains required, and this is controlled-focus component/engine evidence, not fu
 public Arcade acceptance. RP-190 is newly recorded: 43 declared transitions vs 60 attempted
 commands; Go/TS bounded AR7 budget audit/correction is next. Complete CI remains blocked on
 RP-131; no blocked wire/mint/content, archival, public claim or push is authorized.
+
+## 2026-10-05 — Arcade attempted-command denominator corrected and reproducible
+
+RP-190's independent Go/TS checks fail first on the 43-applied-only budget. The generator and
+execution consumer now count all 60 attempts, including 17 rejections. Regeneration changes
+only `transition_budget`; structural comparison keeps all scenarios/commands/results/content
+identical and a second generation is byte-identical. Go's old producer and TS's old execution
+counter independently fail their respective gates; both probes are restored.
+
+Cold Go Arcade (`-count=1`), root type/unit/build/boundaries/vet pass (6,954 client tests). Full
+cold Linux browser CI passes 252 populations / 21,111 tests, then its separate performance case.
+This is test/fixture metadata, not gameplay/content/balance/kernel change, and still requires
+Claude cross-party review. Next is RP-191's bounded TS hidden-state witness: the named AC4 test
+currently reads terminal metadata only, although actual Go/browser positive controls exist.
+Complete CI's RP-131 history gate, broader reviews/rulings/rights/content and clean-host release
+proof remain open. No archival, deployment, public release claim or push.

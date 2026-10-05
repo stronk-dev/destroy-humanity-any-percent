@@ -1,5 +1,22 @@
 # Executable queue
 
+## Current Arcade AR7 exact budget correction — 2026-10-05
+
+RP-190 now counts every attempted command in Go generation and TS execution: 60 commands,
+including 17 rejections, not only the 43 applied transitions. Independent Go/TS equalities fail
+first; independently restored applied-only producer/consumer counters fail their corresponding
+gates. Regeneration changes only budget metadata and is byte-reproducible. Cold Go, 6,954
+client tests, type/build/boundaries/vet pass. The full cold browser target passes 21,111 tests
+plus its separate performance case. **READY FOR CLAUDE DESIGNATED REVIEW**; no runtime,
+content, balance, kernel, CI, wider AR7 or archival promotion.
+
+**NEXT SAFE ACTION:** predeclare and execute RP-191's bounded Arcade AR3.4/AC4 TS hidden-state
+witness. Its current named test inspects terminal fixture metadata only; it must actually
+observe intermediate states and reject a forged nonterminal mine list. Existing Go and browser
+positive controls are retained; do not overstate this as a demonstrated mine leak or complete
+absence of AC4 evidence. Owner wire/copy/mint and RP-131's draft-only history repair remain
+separate blockers, not reasons to waive release obligations.
+
 ## Current Arcade native keyboard proof — 2026-10-05
 
 RP-189 now has real Enter/Space/arrow completion of the existing seed-202 Mine Grid corpus
@@ -11,7 +28,7 @@ type/unit/build/boundaries pass. **READY FOR CLAUDE DESIGNATED REVIEW**, not who
 acceptance, public Arcade playability or a wider A6 approval.
 Exact Codex test-only corrective range: `9026bd40^..27622885`.
 
-**NEXT SAFE ACTION:** RP-190 bounded Arcade AR7 corpus-budget audit/correction. The corpus
+**Next at this dated checkpoint:** RP-190 bounded Arcade AR7 corpus-budget audit/correction. The corpus
 declares 43 for 60 command attempts; verify Go/TS producers/consumers and reject the malformed
 budget before a separate test/corpus correction. Never alter engines, content or kernel just
 to repair this evidence count. RP-131's draft-only history repair and owner wire/copy/mint
