@@ -11,7 +11,7 @@ Typer display-loop correction `58bc34ad`, test-only Arcade callback correction `
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-188 corrections,
+(RP-145–RP-190 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -90,7 +90,13 @@ server resync and the lead limit on the real child/TS engine. Four independent p
 mutations fail all three browsers and are restored; the native-timer terminal smoke remains.
 The corrected cold full browser target passes 21,102 tests plus performance. Claude review
 is still required, and neither the sole cause of the earlier failure nor hosted stability is
-claimed. The next bounded review is remaining Arcade A6 native keyboard acceptance.
+claimed. RP-189 now adds native-key Mine Grid completion in one mount, matched to the existing
+Go-authored corpus terminal, and Snake quit with a real engine response. Severing Quit leaves
+the old suite green but fails the new case; a separate reveal-handler probe also fails all
+three browsers, then is restored. Full cold browser CI now passes 21,108 tests plus performance;
+type/unit/build/boundaries pass. These component/engine witnesses await Claude review and do
+not prove public Arcade integration or full Tab/AT task acceptance. RP-190 separately records
+43 declared corpus transitions vs 60 attempted commands; its bounded AR7 audit is next.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

@@ -277,3 +277,40 @@ mechanic, copy, timer, corpus, kernel, wire or CI change. Native focus placement
 as test setup; no claim about complete Tab navigation, screen-reader participants, public
 hosted Arcade integration or full AC12/task-matrix closure follows. Claude reviews this Codex
 test-only corrective range; nothing authorizes archival or blocked API/mint implementation.
+
+**Separately discovered RP-190 (queued, not corrected in RP-189):** direct Node enumeration
+of `testdata/arcade/content-gate-v1.json` prints `{declared:43, attempts:60, applied:43}`.
+The TS AR7 gate increments only after applied commands; AR7 says the budget equals the sum
+of corpus command counts, including attempted rejections. Verify the Go producer and consumer
+and predeclare a separate test/corpus correction. Do not fold this into native keyboard scope.
+
+## 2026-10-05 — RP-189 executed native keyboard supplement (Codex)
+
+With only Snake's Quit callback severed, the old complete Arcade population still passes
+12/12. Adding the native keyboard cases under that same probe makes Snake fail in every
+engine (`[]` vs `[{kind:"quit"}]`); Mine Grid's new case passes in all three (3 passed /
+3 failed / 12 filtered out, exit 1). Restore Snake, sever only Mine Grid's cell primary-action
+handler: the named native keyboard completion fails in all three because the cell-12 reveal
+is missing (3 failed / 15 filtered out, exit 1). Both child files are restored exactly.
+
+Mine Grid's retained witness activates Small with native Enter, moves focus through real
+arrows to cell 12, and activates with native Space. Both commands enter solely through the
+real child's callback and are applied by the actual engine; its response updates the same
+mounted component. The full terminal snapshot must equal the existing Go-authored seed-202
+`mine_grid_clear_small` scenario, with all 24 safe cells and the terminal mine shown. No mines
+appear in the initial playing response. Snake's retained Enter-on-Quit case requires its
+actual engine terminal at tick 0/revision 2, exact singleton quit command, terminal text and
+removed controls. Terminal axe checks run for both. Focus placement is fixture setup, not
+proof of whole-task Tab navigation. No production bug is alleged from this evidence gap.
+
+Root type/unit/build/boundaries pass: 6,953 unit tests / 88 browser-only skips; zero Svelte
+errors/warnings, production build and shell/Cosmetic/no-payment boundaries green. Full cold
+browser verification follows when complete. RP-190 remains separately queued, not repaired
+in this native keyboard range. No runtime/copy/content/engine/kernel/wire/CI change or archive.
+
+**Restored broad browser evidence:** cold root `make test-browser-ci` exits 0 with all 18
+Arcade cases green, 252 file populations / 21,108 tests passed / 3 intentional performance
+skips in 37.58 s, followed by the separate Chromium performance case (1 passed / 20 filtered
+out). Both production child files have zero diff. All new gameplay starts inside native-key
+component callbacks; setup only creates the test session. This is **READY FOR CLAUDE
+DESIGNATED REVIEW**, not a Codex self-approval or full A6/AC12/release acceptance.

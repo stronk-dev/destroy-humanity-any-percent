@@ -1317,3 +1317,19 @@ case. The prior red run stays on record. This establishes an invalid timing orac
 correction, not a sole-cause or hosted reliability verdict. Claude review is still required.
 Next: bounded review of Arcade A6's native keyboard completion/quit evidence. RP-131's draft-only
 kernel-history repair, broader review/ruling/content/rights/clean-host release gates remain open.
+
+## 2026-10-05 — Native-key Arcade completion and quit now execute against real engines
+
+RP-189 supplements the missing A6 keyboard proof without changing product bytes. Native Enter,
+arrows and Space choose and clear the existing seed-202 Mine Grid scenario in one mounted
+component; the full terminal equals the Go corpus and hidden mine positions remain absent until
+terminal. Native Enter on Snake Quit yields its real engine terminal, revision and status.
+The old 12-case suite survives a severed Quit; the new case fails all three engines. Separately
+disconnecting Mine Grid's primary action fails its named case in all three. Probes restored.
+
+Root type/unit/build/boundaries pass (6,953 unit tests, 88 browser-only skips); full cold Linux
+browser target passes 21,108 tests plus the separate performance case. Claude designated review
+remains required, and this is controlled-focus component/engine evidence, not full Tab/AT or
+public Arcade acceptance. RP-190 is newly recorded: 43 declared transitions vs 60 attempted
+commands; Go/TS bounded AR7 budget audit/correction is next. Complete CI remains blocked on
+RP-131; no blocked wire/mint/content, archival, public claim or push is authorized.

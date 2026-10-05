@@ -4,6 +4,7 @@ import { expect, it, vi } from "vitest";
 
 import candidateRaw from "../../balance/testdata/arcade-v1.json?raw";
 import fixtureRaw from "../../testdata/arcade/corpus-fixture-v1.json?raw";
+import corpus from "../../testdata/arcade/content-gate-v1.json";
 import { arcadeContentHash, parseArcadeCatalog } from "../src/arcade/catalog";
 import { applyMineGrid, createMineGrid, decodeMineGridSnapshot, MINE_GRID_SCALING_DESTINATION, type MineGridCommand, type MineGridSnapshot } from "../src/arcade/mine-grid";
 import { applySnake, createSnake, decodeSnakeSnapshot, SNAKE_SCALING_DESTINATION, type SnakeCommand, type SnakeSnapshot } from "../src/arcade/snake";
@@ -11,6 +12,7 @@ import { COPY_KEYS } from "../src/copy";
 import MineGridBoard from "../src/game-ui/minigame/MineGridBoard.svelte";
 import SnakeBoard from "../src/game-ui/minigame/SnakeBoard.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
+import MineGridBoardHarness from "./MineGridBoardHarness.svelte";
 
 const browser = typeof document !== "undefined";
 const catalog = parseArcadeCatalog(JSON.parse(candidateRaw), new Set(COPY_KEYS));
@@ -32,8 +34,8 @@ function host(): HTMLElement {
   return target;
 }
 
-async function mineIdentity(content = candidateRaw) {
-  return { content, content_hash: await arcadeContentHash(content), content_schema_version: 1, seed: 7n, mode: "solo" as const,
+async function mineIdentity(content = candidateRaw, seed = 7n) {
+  return { content, content_hash: await arcadeContentHash(content), content_schema_version: 1, seed, mode: "solo" as const,
     scaling_inputs: { [MINE_GRID_SCALING_DESTINATION]: 1 } };
 }
 
@@ -118,6 +120,49 @@ async function snakeIdentity(content: string) {
     scaling_inputs: { [SNAKE_SCALING_DESTINATION]: 1 } };
 }
 
+it.skipIf(!browser)("mine_grid: native keyboard completes the corpus game in one mount (AR6.2, AC12)", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const scenario = corpus.scenarios.find((row) => row.name === "mine_grid_clear_small")!;
+  expect(scenario.engine).toBe("mine_grid");
+  expect(scenario.steps.map((row) => row.command)).toEqual([
+    { kind: "choose_board", preset_id: "small" }, { kind: "reveal", cell: 12 },
+  ]);
+  const fixture = parseArcadeCatalog(JSON.parse(fixtureRaw), new Set(COPY_KEYS));
+  const game = await new MineHost(await mineIdentity(fixtureRaw, BigInt(scenario.seed))).init();
+  const target = host();
+  let response: Promise<void> | undefined;
+  const app = mount(MineGridBoardHarness, { target, props: {
+    initial: game.parsed(), presets: fixture.mine_grid.presets,
+    onCommand: (command: MineGridCommand) => {
+      // This is the only gameplay entry: the mounted child's host callback.
+      response = game.apply(command).then(() => flushSync(() => app.advance(game.parsed())));
+    },
+  } }) as unknown as { advance(next: MineGridSnapshot): void };
+  try {
+    await settle();
+    button(target, "Small board").focus();
+    await userEvent.keyboard("{Enter}");
+    expect(game.commands).toEqual([{ kind: "choose_board", preset_id: "small" }]);
+    await response; await settle();
+    expect(game.parsed().mine_cells).toEqual([]);
+    expect(target.querySelectorAll("[data-state=mine]")).toHaveLength(0);
+    const cells = [...target.querySelectorAll<HTMLButtonElement>("[role=gridcell]")];
+    expect(cells).toHaveLength(25);
+    cells[0]!.focus();
+    await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowDown}{ArrowDown}");
+    expect(document.activeElement).toBe(cells[12]);
+    expect(cells.filter((cell) => cell.tabIndex === 0)).toEqual([cells[12]]);
+    await userEvent.keyboard(" ");
+    expect(game.commands).toEqual(scenario.steps.map((row) => row.command));
+    await response; await settle();
+    expect(game.parsed()).toEqual(scenario.expected_terminal);
+    expect(target.querySelector("[role=status]")?.textContent).toContain("Board cleared.");
+    expect(target.querySelectorAll("[data-state=revealed]")).toHaveLength(24);
+    expect(target.querySelectorAll("[data-state=mine]")).toHaveLength(1);
+    await assertAxe(target, "native keyboard cleared");
+  } finally { await unmount(app as never); target.remove(); }
+});
+
 class SnakeServer {
   snapshot = "";
   revision = 1;
@@ -157,6 +202,27 @@ async function deliverSnakeTimers(ms: number): Promise<void> {
   await tick();
   flushSync();
 }
+
+it.skipIf(!browser)("snake: native keyboard quit reaches a real terminal (AR6.3, AC12)", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const server = await new SnakeServer(await snakeIdentity(candidateRaw)).init();
+  const target = host();
+  const app = mountSnake(target, server, catalog.snake);
+  try {
+    await settle();
+    expect(target.textContent).toContain("Paused");
+    button(target, "Quit").focus();
+    await userEvent.keyboard("{Enter}");
+    expect(server.submitted).toEqual([{ kind: "quit" }]);
+    await server.lastResponse; await settle();
+    expect(server.parsed().phase).toBe("terminal");
+    expect(server.parsed().tick).toBe(0);
+    expect(server.revision).toBe(2);
+    expect(target.querySelector("[role=status]")?.textContent).toContain("Game ended.");
+    expect(target.querySelectorAll("button")).toHaveLength(0);
+    await assertAxe(target, "native keyboard quit");
+  } finally { await unmount(app); target.remove(); }
+});
 
 it.skipIf(!browser)("snake: D-pad steering flushes one exact advance at the terminal tick, validated by the engine (AR6.3)", async () => {
   const content = parseArcadeCatalog(JSON.parse(fixtureRaw), new Set(COPY_KEYS)).snake;

@@ -102,3 +102,10 @@ is required on callback four, blur must stop further movement/submission, reject
 restore the server head/tick, and an unacknowledged command must freeze at the advance limit.
 The D-pad/terminal witness retains real browser timers. This replaces fixed wall-delay guesses
 in the two scheduling witnesses (RP-188), without changing the runtime scheduler or pace.
+
+Native keyboard witnesses additionally choose Small with Enter, traverse the Mine Grid with
+arrows and clear the existing seed-202 corpus board with Space, updating the same mounted
+child from the engine response. Snake's Quit is activated by Enter and must reach the real
+engine terminal. Each witness fails independently when its action handler is severed (RP-189).
+These are component/engine checks with controlled initial focus, not public Arcade integration,
+whole-task Tab navigation or participant assistive-technology evidence.

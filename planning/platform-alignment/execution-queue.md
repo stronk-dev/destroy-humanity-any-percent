@@ -1,5 +1,21 @@
 # Executable queue
 
+## Current Arcade native keyboard proof — 2026-10-05
+
+RP-189 now has real Enter/Space/arrow completion of the existing seed-202 Mine Grid corpus
+game in one mounted child and native Enter Snake quit, with actual engine responses and
+terminal axe checks. The old suite survives a severed Snake Quit; the new case fails all three
+engines, as does a separately severed Mine Grid action. All probes are restored; no production
+byte changed. Full cold browser CI passes 21,108 tests plus performance; root
+type/unit/build/boundaries pass. **READY FOR CLAUDE DESIGNATED REVIEW**, not whole-task Tab/AT
+acceptance, public Arcade playability or a wider A6 approval.
+
+**NEXT SAFE ACTION:** RP-190 bounded Arcade AR7 corpus-budget audit/correction. The corpus
+declares 43 for 60 command attempts; verify Go/TS producers/consumers and reject the malformed
+budget before a separate test/corpus correction. Never alter engines, content or kernel just
+to repair this evidence count. RP-131's draft-only history repair and owner wire/copy/mint
+blockers remain; no complete CI/release/archival promotion.
+
 ## Current Arcade callback-evidence correction — 2026-10-05
 
 RP-188's fixed wall-delay oracle is now corrected in tests only. Real mounted Snake/TS engine
@@ -11,7 +27,7 @@ unit/type/build/boundaries pass. This is **READY FOR CLAUDE DESIGNATED REVIEW**,
 inferred runtime fix or hosted reliability verdict.
 Exact Codex corrective range: `6652e467^..89434711`.
 
-**NEXT SAFE ACTION:** continue the bounded designated review of Claude's remaining Arcade A6
+**Next at this dated checkpoint:** continue the bounded designated review of Claude's remaining Arcade A6
 acceptance evidence against AR6.2/AR6.3/AC12, beginning with native keyboard game completion/
 quit. Public API/tenant-registration authority, owner copy and production mint are still separate
 blockers. Do not implement those blocked contracts or promote A6 from the scheduling correction.
