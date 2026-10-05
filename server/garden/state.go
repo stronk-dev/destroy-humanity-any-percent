@@ -1,6 +1,7 @@
 package garden
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -193,7 +194,7 @@ var plotKeys = []string{"row", "col", "species_id", "age_ticks", "matured_effect
 // DecodeState is the strict SG2 codec: exact keys at both levels (a missing
 // key is never a zero value), safe integers, and the shape rules.
 func DecodeState(data []byte) (*State, error) {
-	if err := exactKeys(data, stateKeys); err != nil {
+	if err := exactKeys(data, stateKeys, "salt_hex", "tick_anchor_wall_ms", "substrate_set_wall_ms"); err != nil {
 		return nil, err
 	}
 	var raw struct {
@@ -203,7 +204,7 @@ func DecodeState(data []byte) (*State, error) {
 		return nil, fmt.Errorf("%w: plots", ErrInvalidState)
 	}
 	for _, plot := range raw.Plots {
-		if err := exactKeys(plot, plotKeys); err != nil {
+		if err := exactKeys(plot, plotKeys, "matured_effect_ppm"); err != nil {
 			return nil, err
 		}
 	}
@@ -225,7 +226,7 @@ func EncodeState(state *State) (json.RawMessage, error) {
 	return json.Marshal(state)
 }
 
-func exactKeys(data []byte, keys []string) error {
+func exactKeys(data []byte, keys []string, nullableKeys ...string) error {
 	var fields map[string]json.RawMessage
 	if err := json.Unmarshal(data, &fields); err != nil || fields == nil || len(fields) != len(keys) || !uniqueKeys(data) {
 		return fmt.Errorf("%w: object keys are not exact", ErrInvalidState)
@@ -234,6 +235,17 @@ func exactKeys(data []byte, keys []string) error {
 		value, ok := fields[key]
 		if !ok || !safeNumbers(value) {
 			return fmt.Errorf("%w: key %q missing or not a safe integer", ErrInvalidState, key)
+		}
+		// Null is not integer zero. Only SG2's explicit nullable fields may
+		// reach encoding/json's pointer decoder; keep root/plot scopes separate.
+		if bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+			nullable := false
+			for _, candidate := range nullableKeys {
+				nullable = nullable || key == candidate
+			}
+			if !nullable {
+				return fmt.Errorf("%w: key %q is not nullable", ErrInvalidState, key)
+			}
 		}
 	}
 	return nil

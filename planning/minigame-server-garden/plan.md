@@ -13,6 +13,14 @@ repair of historical RP-131. No Garden archive, SG13 mint or whole-G1/Garden app
 Next review lane: the remaining G1 state/clock/engine/commands/corpus, then G2–G7 under bounded
 predeclarations. Retain SG2 nullable fields and all original engine/replay/activation evidence.
 
+The separate SG2 codec review under `e8d3f2df` confirms RP-215 (null integer fields default to
+zero). Its local correction uses scoped nullable-key lists and kernel 0.3.150, with original
+save/replay versions unchanged. Actual codec provenance is G3 `415bea4d`, not G1: the shared
+state shape was G1, but its Go strict decoder landed in G3. This is a bounded codec finding,
+not completed G2/G3 or whole-G1 review. Eight valid / 21 typed refusal cases run in both
+runtimes; two additional raw duplicate refusals are Go-only with visible TS parsing-loss
+controls. Both positive/negative probes discriminate and restore. Claude review is required.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

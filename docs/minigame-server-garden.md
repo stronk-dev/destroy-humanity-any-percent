@@ -40,6 +40,13 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
   substrate, the lockout stamp, the plots and the seed collection. The stage is derived: mature
   means `matured_effect_ppm != null`. It decodes strictly, with exact keys and no zero-value
   defaults.
+- Null is accepted only for the root salt/anchor/lockout stamp and the plot's maturation effect;
+  tick sequence, coordinates and age must be actual integers. The Go codec checks nullability
+  before typed decoding rather than defaulting null to zero. `state-admission-v1.json` has
+  eight valid controls, 21 shared typed refusals and two Go-only raw duplicate-key refusals.
+  The TS parser receives objects, so its duplicate rows explicitly demonstrate JSON.parse's
+  loss of raw-key evidence; they are not credited as TS raw-ingress rejection. This bounded
+  SG2 correction awaits designated review and changes neither Founder v25 nor replay versions.
 - The garden activates at the new-run boundary or at New-Founder initialization, with every starter
   collected. Every later Exit carries it byte-identically. Replay-inputs v12 carries it in the
   Founder extensions.

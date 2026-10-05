@@ -1763,3 +1763,30 @@ predeclarations. All prior owner/author/cross-party gates and full nine-tier obl
 Exact corrective handoff: `9fc5932c^..166a23d7`, pending Claude designated review. The complete
 scope is the predeclared SG1 raw-admission correction and its exercising evidence, not broader
 Garden acceptance. This checkpoint preserves the next accepted lane and full 1.0 goal.
+
+## 2026-10-06 — Server Garden SG2 null-integer state correction
+
+Baseline `0ac4d1fe`, predeclaration `e8d3f2df`: cold actual Go DecodeState plus ValidateAgainst
+admits null tick sequence/row/col/age and a whitespace-null variant (RP-215). Codec provenance
+is G3 `415bea4d`, not G1's state-shape commit; the bounded original codec review is CHANGES
+REQUIRED. Scoped nullable lists preserve root salt/anchor/stamp and plot matured effect, while
+refusing nonnullable null before typed decode. Honest kernel 0.3.149 → 0.3.150; no migration,
+save/replay version, new state relation, activation, engine/balance/copy/API/CI change.
+
+Eight canonical valid controls / 21 typed refusals are shared. Two additional raw duplicate
+refusals are Go-only; TS's object-valued API cannot see the keys JSON.parse erased. The initial
+bad TS instrument is disclosed and replaced with named parsing-loss controls, not false raw
+rejection evidence. Null bypass fires all five bad variants; over-tightening fires all eight
+valid states; source restored exactly and complete Garden package passes cold afterward.
+
+Cold six-package Go/vet plus Decimal, root client/type/build/shell (7,237 passes / 104 deliberate
+skips), eleven verbose real-Postgres Garden/composed functions, original engine corpus and
+6,296 vectors pass. Full local Linux browsers: 22,005 passes / six deliberate skips, plus
+separate performance. Earlier unchanged copy/content/boundary checks retain their dated SG1
+population. The latest whole-history run still failed unchanged RP-131 in the SG1 phase;
+not re-run/promoted as current kernel 0.3.150 green. No hosted Actions or full CI-green claim.
+
+Claude designated review is required for this separate range. No Garden archival, SG13 mint,
+public hosting, owner-copy invention, preview shortcut or full 1.0 promotion. Next: remaining
+accepted Garden clock/engine/commands/corpus and G2–G7, with all prior review/author/owner
+routes and the full nine-tier game/supportable-release obligations retained.

@@ -5,7 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Server Garden SG1 raw-admission correction `166a23d7`
+**Current checkpoint:** 2026-10-06, separate Server Garden SG2 codec correction under `e8d3f2df`
+(kernel 0.3.150). RP-215's five null-to-zero admissions are locally corrected, with scoped
+nullable controls, canonical Go/TS byte witnesses and independently failing/restored probes.
+Cold client/Go/Decimal/real-Postgres and full local three-browser populations pass; two raw
+duplicate cases are explicitly Go-only, with TS parsing loss disclosed. Claude review is
+pending. No save/replay migration, engine change or Garden/public/release promotion.
+Next: remaining accepted Garden clock/engine/commands/corpus and G2–G7 review. Historical
+RP-131, cross-party verdicts, owner/author decisions and the full nine-tier 1.0 floor stay open.
+
+**Earlier checkpoint:** Server Garden SG1 raw-admission correction `166a23d7`
 (exact review span `9fc5932c^..166a23d7`, awaiting Claude)
 (kernel 0.3.149). RP-212–RP-214 are locally corrected with shared literal-byte negatives,
 matched valid controls, SG2 nullable-save preservation and three discriminating/restored probes.
@@ -46,7 +55,7 @@ no runtime/copy change or accessibility promotion),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-214 corrections,
+(RP-145–RP-215 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party

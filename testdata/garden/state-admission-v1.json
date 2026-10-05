@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "valid": "{\"salt_hex\":null,\"tick_anchor_wall_ms\":null,\"tick_seq\":0,\"substrate_id\":\"bare_metal\",\"substrate_set_wall_ms\":null,\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":0,\"matured_effect_ppm\":null}],\"seed_collection\":[\"strain_a\",\"strain_b\"]}",
+  "cases": [
+    {
+      "name": "nullable-growing-state",
+      "reject": false
+    },
+    {
+      "name": "real-zero-tick-sequence",
+      "reject": false,
+      "from": "\"tick_seq\":0",
+      "to": "\"tick_seq\":-0",
+      "occurrences": 1
+    },
+    {
+      "name": "nonnull-salt",
+      "reject": false,
+      "from": "\"salt_hex\":null",
+      "to": "\"salt_hex\":\"0123456789abcdef\"",
+      "occurrences": 1
+    },
+    {
+      "name": "nonnull-anchor",
+      "reject": false,
+      "from": "\"tick_anchor_wall_ms\":null",
+      "to": "\"tick_anchor_wall_ms\":0",
+      "occurrences": 1
+    },
+    {
+      "name": "nonnull-stamp",
+      "reject": false,
+      "from": "\"substrate_set_wall_ms\":null",
+      "to": "\"substrate_set_wall_ms\":0",
+      "occurrences": 1
+    },
+    {
+      "name": "zero-mature-effect",
+      "reject": false,
+      "from": "\"matured_effect_ppm\":null",
+      "to": "\"matured_effect_ppm\":0",
+      "occurrences": 1
+    },
+    {
+      "name": "nonnull-mature-effect",
+      "reject": false,
+      "from": "\"matured_effect_ppm\":null",
+      "to": "\"matured_effect_ppm\":1000000",
+      "occurrences": 1
+    },
+    {
+      "name": "empty-plots",
+      "reject": false,
+      "from": "\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":0,\"matured_effect_ppm\":null}]",
+      "to": "\"plots\":[]",
+      "occurrences": 1
+    },
+    {
+      "name": "null-tick_seq",
+      "reject": true,
+      "from": "\"tick_seq\":0",
+      "to": "\"tick_seq\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "null-row",
+      "reject": true,
+      "from": "\"row\":0",
+      "to": "\"row\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "null-col",
+      "reject": true,
+      "from": "\"col\":0",
+      "to": "\"col\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "null-age_ticks",
+      "reject": true,
+      "from": "\"age_ticks\":0",
+      "to": "\"age_ticks\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "whitespace-null-tick",
+      "reject": true,
+      "from": "\"tick_seq\":0",
+      "to": "\"tick_seq\": \n null",
+      "occurrences": 1
+    },
+    {
+      "name": "missing-tick",
+      "reject": true,
+      "from": "\"tick_seq\":0,",
+      "to": "",
+      "occurrences": 1
+    },
+    {
+      "name": "unknown-root-key",
+      "reject": true,
+      "from": "\"tick_seq\":0",
+      "to": "\"tick_seq\":0,\"unexpected\":0",
+      "occurrences": 1
+    },
+    {
+      "name": "unknown-plot-key",
+      "reject": true,
+      "from": "\"row\":0",
+      "to": "\"row\":0,\"unexpected\":0",
+      "occurrences": 1
+    },
+    {
+      "name": "duplicate-root-key",
+      "reject": true,
+      "go_only_raw": true,
+      "from": "\"tick_seq\":0",
+      "to": "\"tick_seq\":0,\"tick_seq\":0",
+      "occurrences": 1
+    },
+    {
+      "name": "duplicate-escaped-plot-key",
+      "reject": true,
+      "go_only_raw": true,
+      "from": "\"row\":0",
+      "to": "\"row\":0,\"\\u0072ow\":0",
+      "occurrences": 1
+    },
+    {
+      "name": "null-plots",
+      "reject": true,
+      "from": "\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":0,\"matured_effect_ppm\":null}]",
+      "to": "\"plots\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "null-seeds",
+      "reject": true,
+      "from": "\"seed_collection\":[\"strain_a\",\"strain_b\"]",
+      "to": "\"seed_collection\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "missing-starter",
+      "reject": true,
+      "from": "\"seed_collection\":[\"strain_a\",\"strain_b\"]",
+      "to": "\"seed_collection\":[\"strain_a\"]",
+      "occurrences": 1
+    },
+    {
+      "name": "fractional-age",
+      "reject": true,
+      "from": "\"age_ticks\":0",
+      "to": "\"age_ticks\":0.5",
+      "occurrences": 1
+    },
+    {
+      "name": "unsafe-tick",
+      "reject": true,
+      "from": "\"tick_seq\":0",
+      "to": "\"tick_seq\":9007199254740992",
+      "occurrences": 1
+    },
+    {
+      "name": "negative-row",
+      "reject": true,
+      "from": "\"row\":0",
+      "to": "\"row\":-1",
+      "occurrences": 1
+    },
+    {
+      "name": "out-of-grid-col",
+      "reject": true,
+      "from": "\"col\":0",
+      "to": "\"col\":6",
+      "occurrences": 1
+    },
+    {
+      "name": "null-plot",
+      "reject": true,
+      "from": "\"plots\":[{\"row\":0,\"col\":0,\"species_id\":\"strain_a\",\"age_ticks\":0,\"matured_effect_ppm\":null}]",
+      "to": "\"plots\":[null]",
+      "occurrences": 1
+    },
+    {
+      "name": "null-species",
+      "reject": true,
+      "from": "\"species_id\":\"strain_a\"",
+      "to": "\"species_id\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "null-substrate",
+      "reject": true,
+      "from": "\"substrate_id\":\"bare_metal\"",
+      "to": "\"substrate_id\":null",
+      "occurrences": 1
+    },
+    {
+      "name": "uppercase-salt",
+      "reject": true,
+      "from": "\"salt_hex\":null",
+      "to": "\"salt_hex\":\"0123456789ABCDEF\"",
+      "occurrences": 1
+    },
+    {
+      "name": "boolean-anchor",
+      "reject": true,
+      "from": "\"tick_anchor_wall_ms\":null",
+      "to": "\"tick_anchor_wall_ms\":false",
+      "occurrences": 1
+    },
+    {
+      "name": "negative-mature-effect",
+      "reject": true,
+      "from": "\"matured_effect_ppm\":null",
+      "to": "\"matured_effect_ppm\":-1",
+      "occurrences": 1
+    }
+  ]
+}

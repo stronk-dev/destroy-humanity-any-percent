@@ -1,6 +1,31 @@
 # Executable queue
 
-## Current Server Garden raw-admission correction — 2026-10-06
+## Current Server Garden state-codec correction — 2026-10-06
+
+Under separate predeclaration `e8d3f2df`, actual Go DecodeState plus pinned ValidateAgainst
+admits null tick sequence, row, col and age as zero (RP-215; five variants). The codec landed in
+G3 `415bea4d`, not the G1 state-shape commit; this provenance correction is recorded. Scoped
+root/plot nullable lists now reject the bad nulls without changing SG2's four nullable fields,
+save/replay versions, migrations, engine rules or activation. Kernel 0.3.150 covers the real
+codec behavior change. The original bounded codec review is CHANGES REQUIRED, not full G3.
+
+Shared state population: eight canonical valid controls and 21 typed refusals in both runtimes,
+plus two raw duplicate refusals in Go. TS cannot see duplicate bytes after JSON.parse; its two
+named parsing-loss controls are visible limitations, not invented rejection evidence. Both
+guard bypass and over-tightening fail and restore exactly. Cold six-package Go/Decimal/vet,
+root client/type/build/shell (7,237 / 104 intentional skips), eleven verbose Garden/composed
+Postgres functions, original engine corpus and 6,296 vectors pass. Full local Linux browser
+lane passes 22,005 / six deliberate skips, plus separate performance. Earlier same-turn
+copy/content/boundary evidence remains dated, not re-labelled as a new SG2 execution. Latest
+whole kernel-history run remains the failed unchanged RP-131 at the SG1 phase; no CI-green,
+hosted, archival, mint or release claim. Claude must review this separate corrective range.
+
+**NEXT SAFE ACTION:** pin the SG2 range after commit, then continue the remaining accepted
+Garden clock/engine/commands/corpus and G2–G7 under bounded predeclarations. Retain SG1's
+exact review range, prior Arcade/Typer/Cosmetic verdict requests and all owner/author gates.
+Full nine-tier 1.0 remains active; no preview scope reduction substitutes for it.
+
+## Earlier Server Garden raw-admission correction — 2026-10-06
 
 Accepted Garden SG1 review under `9fc5932c` executes three actual defects: TS malformed-string
 nontermination (RP-212), TS decimal/exponent admission (RP-213) and eight Go null-to-zero/false
@@ -20,7 +45,7 @@ hosted-run, bypass, archive, mint or full Garden/1.0 claim. Claude corrective re
 
 Exact corrective span `9fc5932c^..166a23d7` is READY FOR CLAUDE DESIGNATED REVIEW, not approved.
 
-**NEXT SAFE ACTION:** continue accepted G1's
+**Dated next action (superseded above):** continue accepted G1's
 state/clock/engine/commands/corpus under a new bounded predeclaration, followed by G2–G7. Keep
 the prior Arcade/Typer/Cosmetic review and owner/author routes open, including RP-211/OD-15,
 RP-201/D-020, historical RP-131 and participant accessibility. Full nine-tier 1.0 remains the

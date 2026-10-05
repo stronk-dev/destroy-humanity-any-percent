@@ -523,3 +523,74 @@ guard and over-tighten nullable admission; each must fail its corresponding nega
 population, then restore exactly before final checks. Cold Go/client, real Postgres Garden
 and Linux browser evidence remain required. No self-approval/archival; pin a separate Claude
 review range and continue remaining G1 engine/clock review afterward.
+
+### SG2 executed baseline: RP-215
+
+Shared 31-state population added (eight valid / 23 invalid). Cold actual DecodeState plus
+ValidateAgainst fails five new assertions: null tick sequence, row, column, age, and whitespace-
+null tick are admitted with `state=true error=<nil>`. All other Go cases pass, including the
+intentionally nullable base and all eight valid controls. Recorded RP-215 immediately; no
+production state-codec byte changed. The initial TS typecheck could not narrow an optional
+fixture replacement field and exits 2; corrected the test guard before re-running the other-
+runtime control. This setup failure is not a TS admission result.
+
+The next actual TS run has 7,235 passes / 104 skips and two failed duplicate-key assertions.
+This is an instrument flaw: parseGardenState receives an already parsed object, so the harness's
+JSON.parse has already erased both duplicate keys. It correctly rejects all five null-integer
+variants and passes every nullable/value control. Do NOT record a new production defect or
+silently count raw duplicate refusal in that typed API. The two corpus rows are explicitly
+`go_only_raw`: Go runs real raw rejection; TS demonstrates the parsing loss and canonical
+typed acceptance of the collapsed object. The shared typed population is eight valid / 21
+invalid cases; Go additionally executes two raw duplicate refusals. No raw-ingress policy or
+API is added in this bounded SG2 correction.
+
+## 2026-10-06 — SG2 codec finding and corrective implementation
+
+**Review by:** Codex. **Recorded by:** Codex. **Decision:** CHANGES REQUIRED for the SG2 codec
+in original G3 (`415bea4d^..415bea4d`), not a completed review of the whole G2/G3 batch.
+Provenance correction: the predeclaration grouped this under G1 state review, but Git shows
+DecodeState/EncodeState/exactKeys were actually introduced in G3. The codec source is unchanged
+from that commit to baseline `0ac4d1fe`; the SG1 change preserves safeNumbers' nullable behavior.
+RP-215 was executed at the reconciled baseline, not claimed as a historical checkout run.
+
+**Implemented by:** Codex, under separate `e8d3f2df`; pending Claude designated review. Null
+admission is explicit per scope: root salt/anchor/stamp, plot matured effect. Nonnullable null
+rejects before encoding/json can create integer zero. No schema/replay version, applied
+migration, new state relation, tick/harvest rule, balance, copy, API, activation or CI change.
+Kernel 0.3.149 → 0.3.150 is the real watched-codec behavior change. Original state shape,
+engine/replay/fixture corpora and the preceding SG1 correction remain byte-unchanged.
+
+### Executed final evidence
+
+- Cold six-package Garden/kernel/production/replaycatalog/save/transport tests exit 0; vet
+  for those plus gameserver exits 0. Cold Go Decimal also passes; all 6,296 regenerated vectors
+  have no drift, and the original Garden engine corpus check passes.
+- Root type/client/build/shell checks exit 0: 7,237 passes / 104 intentional skips, zero
+  Svelte errors/warnings, 213-module build and 22 Game UI component checks.
+- Corrected TS baseline already rejects all five null-integer variants; every nullable/value
+  control passes. Eight valid states have identical canonical bytes in Go and TS. Go's
+  two raw duplicate-key cases are NOT promoted as rejection by TS's object-valued parser;
+  two named TS controls expose the JSON.parse erasure instead. No silent population exclusion.
+- Real Postgres verbose cold selector on production/gameserver passes ten Garden-named
+  functions (including three storage/harvest/fault integration functions), plus the composed
+  pinned-tenant API lifecycle witness. The composed garden view remains inactive/fixture-first,
+  not a claimed public active mint.
+- Full local Linux Chromium/Firefox/WebKit exits 0: 22,005 passes / six deliberate skips,
+  273 file/engine populations; separate Chromium performance one pass / 20 filters. The
+  new 32-case TS file executes in every engine with the raw-provenance limits visible.
+- Null-guard bypass fails precisely the five bad null-integer variants; nullable controls stay
+  green. Independent over-tightening rejects all eight valid states and fails each positive
+  control. Each probe is terminal before restoration/next mutation; no concurrent check sees it.
+- Restored codec SHA-256 `435f6badc0d1540fb8d7f9c3b73ed16266b0fcecc34217442031d3956d909669`;
+  complete Garden package runs cold and passes again after restoration.
+
+The initial TS narrowing failure and two vacuous raw-duplicate assertions are disclosed above
+as instrument errors, not softened product results. Earlier same-turn SG1 copy/history/content
+and no-payment/cosmetic boundary evidence retains its dated population; those unchanged lanes
+were not re-run or relabelled as new SG2 evidence. The latest full kernel-history run was the
+SG1 phase and failed unchanged RP-131 after its checkout/negative controls passed; no whole
+CI-green or hosted Actions result is claimed at kernel 0.3.150. No bypass/rewrite/history repair.
+
+Next: pin this separate corrective range for Claude, then continue remaining accepted G1
+clock/engine/commands/corpus and G2–G7. No self-approval, archival, owner-copy invention, SG13
+mint, deployment, reduced 1.0 scope or release promotion.
