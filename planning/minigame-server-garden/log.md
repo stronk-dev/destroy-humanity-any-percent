@@ -363,3 +363,33 @@ is unguarded (`client/src/game-ui/garden/`, `GameUIApp.svelte`, `runtime.ts`, ge
 **AC13's status:** the RFC gates it on the Accessibility RFC's acceptance plus the A5 evidence
 record. The structural floor is implemented and tested here. The A5 record is not produced; it is
 blocked on D-018.
+
+## 2026-10-05 — G1 raw-catalog review predeclaration (Codex)
+
+Baseline `9c412f38`, clean tree. Accepted RFC read completely, with its design refs and all
+G1–G7 planning records. Original G1 implementation `02f91d10^..02f91d10`; predeclaration
+`9f61fa45` is included in the broader unapproved Garden handoff, not an approval.
+
+SG1 rule 1 requires exact safe integer tokens and exact typed fields. Candidate source gaps:
+the TS duplicate scanner can walk past input end before JSON.parse; TS JSON.parse can erase
+decimal/exponent integer spelling; Go null-to-zero/false decoding may admit nonnullable zero-
+valued fields. These are not executed findings yet. Predeclare malformed string/key/escape and
+raw numeric populations, matched null/real-zero/real-boolean/array controls, duplicate/escaped-
+duplicate keys and valid whitespace/escaped strings. Retain the existing 47-case corpus and
+all engine/replay/activation evidence. SG2's explicitly nullable save fields are NOT this scope.
+
+Execute suspect TS syntax cases in an isolated child process with an entered-loader marker,
+normal-input controls and a one-second termination guard. That guard is instrument containment,
+not a measured performance floor; a guard termination is a failing/invalid run, never rejection
+evidence. Node-only containment cases must not import Node APIs during browser collection;
+the corrected raw grammar also runs directly in the full browser population. No workflow/CI
+exclusions or dependency changes are authorized. Go claims run cold through root Make selectors.
+
+If confirmed, ledger each actual defect immediately. Correct only SG1 raw catalog admission
+and scanner termination under the accepted rule, with shared negative/positive bytes, preserving
+every valid fixture and nullable SG2 state. Do not change tick rules, payout, state/version
+grammar, copy, production pin or public endpoints. Watched loader changes require one honest
+kernel bump in the implementation commit. Independently sever termination/raw-number/null
+guards and restore exactly; verify relevant cold Go, client/root, generated corpus/vectors,
+real-Postgres Garden composition and complete Linux browsers before exact Claude review.
+No self-approval, archival, mint, deployment or full Garden/1.0 acceptance.
