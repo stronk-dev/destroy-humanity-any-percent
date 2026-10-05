@@ -941,3 +941,17 @@ fixture to fail. If the corpus cannot distinguish a named AC5/AC6 failure, recor
 not an approval. Any new test or correction stays in a separate bounded Codex range for Claude
 cross-party review. A passing bounded verdict will not archive Cosmetics while C1/C3/C5,
 AC9's correction, owner copy and G10 remain open.
+
+## 2026-10-05 — C4/§4.5 active-recovery probe addendum
+
+The C4 source claims cosmetic intents never receive `exclusive_activity`, but
+`Service.Handle` runs `soulRecoveryExclusivity` before the cosmetic branch, and production
+composition supplies `WithSoulRecovery`. Predeclare a real-Postgres diagnostic before editing
+that router: use the existing C4 integration fixture as the no-session control; on the same
+service with a real active Soul recovery session started through `StartSoulRecovery`, submit
+the otherwise eligible Tier-1 Horse Armor `acquire_cosmetic`. §4.5 predicts an applied
+cosmetic intent and one event, not `exclusive_activity`. If the active-session arm fails
+there, record C4 CHANGES REQUIRED on AC5/§4.5 and retain the failing-first test. Any fix
+must preserve exclusivity for ordinary gameplay intents, have a severing failure, and receive
+Claude's designated review. This remains a bounded C4 review, not permission to change Soul
+recovery policy broadly.
