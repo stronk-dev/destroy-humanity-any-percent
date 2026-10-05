@@ -65,13 +65,37 @@ func TestLoadArcadeChainIsAllOrNothing(t *testing.T) {
 		},
 		"artifact without minigame_api": func(a map[string][]byte) { delete(a, "minigame_api"); delete(a, "typer") },
 		"stage toy without definition":  withoutStageToy,
+		"stage toy with wrong engine": func(a map[string][]byte) {
+			var value map[string]any
+			if err := json.Unmarshal(a["minigames"], &value); err != nil {
+				t.Fatal(err)
+			}
+			changed := 0
+			for _, item := range value["minigames"].([]any) {
+				row := item.(map[string]any)
+				if row["minigame_id"] == "arcade.mine_grid" {
+					row["engine_ref"] = "pitch"
+					changed++
+				}
+			}
+			if changed != 1 {
+				t.Fatal("wrong-engine probe did not alter exactly one real definition")
+			}
+			var err error
+			a["minigames"], err = json.Marshal(value)
+			if err != nil {
+				t.Fatal(err)
+			}
+		},
 	}
 	for name, mutate := range cases {
-		artifacts := complete()
-		mutate(artifacts)
-		if _, _, err := load(artifacts); err == nil {
-			t.Fatalf("%s: incomplete arcade chain loaded", name)
-		}
+		t.Run(name, func(t *testing.T) {
+			artifacts := complete()
+			mutate(artifacts)
+			if _, _, err := load(artifacts); err == nil {
+				t.Fatalf("%s: incomplete arcade chain loaded", name)
+			}
+		})
 	}
 	// A bundle without the arcade still resolves Typer and nothing arcade.
 	typerOnly := complete()

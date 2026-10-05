@@ -588,12 +588,24 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			"definitions without tenants": (a) => { a.minigame_api = typerAPI; },
 			"artifact without minigame_api": (a) => { delete a.minigame_api; delete a.typer; },
 			"stage toy without definition": (a) => { const value = JSON.parse(a.arcade!); value.container.stages[0].toys = ["arcade.mine_grid", "arcade.pinball"]; a.arcade = JSON.stringify(value); },
+			"stage toy with wrong engine": (a) => {
+				const value = JSON.parse(a.minigames!);
+				const rows = value.minigames.filter((row: { minigame_id: string }) => row.minigame_id === "arcade.mine_grid");
+				expect(rows).toHaveLength(1);
+				rows[0].engine_ref = "pitch";
+				a.minigames = JSON.stringify(value);
+			},
 		};
+		const admitted: string[] = [];
 		for (const [name, mutate] of Object.entries(mutations)) {
 			const artifacts = await complete();
 			mutate(artifacts);
-			await expect(load(artifacts), name).rejects.toThrow();
+			let rejection: unknown;
+			try { await load(artifacts); } catch (error) { rejection = error; }
+			if (rejection === undefined) admitted.push(name);
+			else expect(rejection, name).toBeInstanceOf(SyntaxError);
 		}
+		expect(admitted, "every malformed Arcade bundle must refuse after fresh hashing").toEqual([]);
 	});
 
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {

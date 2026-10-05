@@ -65,6 +65,16 @@ semantic reachability invariants or a public saved-state exploit. Claude review 
 
 ## Verification
 
+The actual Go/TS loaders execute matched 22-case negative populations, including extra keys,
+unsorted presets, mine bounds and equal/descending stage tiers, with valid candidate/fixture,
+inclusive bounds and ascending test-only-stage controls. The real TS stage selector observes
+tiers 8/9 on the structural control; no later-stage content or gameplay is minted. Both bundle
+loaders recompute full hashes and reject missing toys and wrong-engine definitions. Independent
+tier/preset/cap/key/binding policy severings fail; probes are restored. This bounded RP-199
+evidence repair awaits Claude review, not complete A1/A4 acceptance or raw JSON grammar parity.
+The separately observed Go null-stage-tier admission (RP-200) remains unresolved: null can
+normalize to zero where TS refuses it. That is not covered up by these green value-case tests.
+
 `mine-grid-sampling-v1.json` supplies a real rejected-draw population on the unchanged large
 9×9 fixture. Inverting SplitMix64 and its two published substream labels constructs seed
 `15581846558861750132`; both actual RNGs verify its first draw is zero, below threshold 16

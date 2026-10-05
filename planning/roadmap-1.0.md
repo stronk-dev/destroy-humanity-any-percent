@@ -17,7 +17,7 @@ plus real-seed Mine Grid sampling evidence `859f5216` (review span `be0c0e00^..8
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-198 corrections,
+(RP-145–RP-200 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -164,6 +164,13 @@ draw zero at the unchanged 9×9 board's bound 72, threshold 16. Actual Go regist
 placement/apply match all four attempts / five literal states. Modulo/threshold/artifact
 probes now fail and are restored. This test-only correction awaits Claude review; production
 rules, old corpus/fixture, kernel, content mint, public wire and full acceptance are unchanged.
+RP-199 closes the bounded loader/chain evidence gap locally: ascending-refusal removal
+survives the old whole suites, but matched 22-case Go/TS negatives now catch it. Real inclusive
+bound/stage controls and freshly hashed wrong-engine bundles execute; independent sort/cap/
+key/binding probes fail and are restored. This test-only supplement needs Claude review.
+Separately, RP-200 confirms Go accepts null min_tier as zero while actual TS refuses it.
+That runtime defect remains OPEN for its own accepted-contract correction and honest kernel
+identity; green RP-199 tests do not resolve it or establish full A1/A4/raw-grammar acceptance.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

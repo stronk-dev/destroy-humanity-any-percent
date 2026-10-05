@@ -1523,3 +1523,19 @@ the goal, with all later product/platform/release obligations intact.
 Exact RP-198 correction review span: `be0c0e00^..859f5216`, ready for Claude's designated
 cross-party pass. The hash-pinning checkpoint does not substitute for that verdict. The
 next accepted audit and all later 1.0 scope remain on the execution queue/delivery board.
+
+## 2026-10-05 — Matched Arcade loader and real catalog-binding evidence
+
+RP-199 records ascending-refusal removal surviving the old Go/client populations. The
+test-only repair supplies matched 22-case negatives, valid boundary/stage controls and
+freshly hashed missing/wrong-engine definition bundles. Independent sort, mine-cap, key
+and binding severings fail and are restored. Selected cold Go, 7,168 client cases,
+type/build/boundaries/vet/vectors/corpus, both actual Postgres Arcade functions and full
+Linux three-browser verification (21,753 plus separate performance) pass. Historical
+RP-131 remains red, unchanged and unbypassed. Correction requires Claude's exact-range
+designated review; no full A1/A4 or archival promotion.
+
+Separate RP-200 is a confirmed runtime defect, not another test-gap claim: actual Go
+accepts null min_tier as zero while actual TS refuses it. Legal zero loads in both.
+Next is its separately predeclared accepted-contract correction with honest kernel identity,
+not closing it with prose or mixing production changes into RP-199. Full 1.0 remains active.

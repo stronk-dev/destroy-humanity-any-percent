@@ -76,7 +76,16 @@ func TestArcadeCatalogRejectsEveryLoaderDefect(t *testing.T) {
 		"unsorted toys":         func(v map[string]any) { stage(v)["toys"] = []any{"arcade.snake", "arcade.mine_grid"} },
 		"unknown title key":     func(v map[string]any) { stage(v)["title_copy_key"] = "arcade.stage.missing.title" },
 		"stage tier above max":  func(v map[string]any) { stage(v)["min_tier"] = 10 },
-		"unknown preset key":    func(v map[string]any) { preset(v, 0)["extra"] = 1 },
+		"equal stage tiers": func(v map[string]any) {
+			first := stage(v)
+			v["container"].(map[string]any)["stages"] = []any{first, map[string]any{"stage_id": "fixture_next", "min_tier": 0, "title_copy_key": first["title_copy_key"], "toys": first["toys"]}}
+		},
+		"descending stage tiers": func(v map[string]any) {
+			first := stage(v)
+			first["min_tier"] = 1
+			v["container"].(map[string]any)["stages"] = []any{first, map[string]any{"stage_id": "fixture_next", "min_tier": 0, "title_copy_key": first["title_copy_key"], "toys": first["toys"]}}
+		},
+		"unknown preset key": func(v map[string]any) { preset(v, 0)["extra"] = 1 },
 		"unsorted presets": func(v map[string]any) {
 			p := v["mine_grid"].(map[string]any)["presets"].([]any)
 			p[0], p[1] = p[1], p[0]
@@ -97,13 +106,20 @@ func TestArcadeCatalogRejectsEveryLoaderDefect(t *testing.T) {
 			t.Fatalf("%s: expected rejection, got %v", name, err)
 		}
 	}
+	if len(cases) != 22 {
+		t.Fatal("matched Go/TS loader population changed")
+	}
 	// The boundaries themselves are legal.
 	boundary := mutate(t, candidatePath, func(v map[string]any) {
 		preset(v, 2)["mines"] = 9*9 - 9
 		snake(v)["start_length"] = 10
 		snake(v)["presentation_tick_ms"] = 50
+		first := stage(v)
+		v["container"].(map[string]any)["stages"] = []any{first, map[string]any{"stage_id": "fixture_next", "min_tier": 9, "title_copy_key": first["title_copy_key"], "toys": first["toys"]}}
 	})
-	if _, err := LoadCatalog(boundary, declarations()); err != nil {
+	if loaded, err := LoadCatalog(boundary, declarations()); err != nil {
 		t.Fatalf("inclusive loader bounds must load: %v", err)
+	} else if len(loaded.Container.Stages) != 2 || loaded.Container.Stages[0].MinTier != 0 || loaded.Container.Stages[1].MinTier != 9 || loaded.Snake.StartLength != 10 {
+		t.Fatal("valid boundary/stage rows were lost or normalized")
 	}
 }

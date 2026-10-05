@@ -5,6 +5,10 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
 
 - [x] A1 — `arcade` artifact grammar (AR1.2/AR3.1/AR4.1): Go + TS loaders, one shared fixture,
   loader-bound rejections, candidate copy keys (AR6.6) in `copy/catalog/arcade-candidate.json`.
+  RP-199 adds matched 22-case Go/TS negative populations, real valid boundary/stage controls
+  and actual wrong-engine bundle refusal. Ordering/cap/key/binding probes fail and are restored;
+  the test-only correction awaits Claude review. Separate executed RP-200: Go normalizes a
+  null min_tier to zero while TS refuses it; runtime correction remains OPEN, not claimed done.
 - [x] A2 — `mine_grid` 1.0.0 pure engine (AR3) in Go and TS; Go-generated corpus TS replays
   byte-for-byte (AR7); hidden-information invariant (AC4) with a failing case.
   RP-190's test/corpus budget correction counts all 60 attempts, rather than only 43 applied
@@ -51,6 +55,8 @@ no production mint (AR8). Implemented by Claude; every range awaits Codex design
   toy/definition/tenant cross-checks, resolver arms `(mine_grid|snake, 1.0.0) → arcade`, gameserver
   tenant registration, TS replay loader chain; fixture `minigames` + `minigame_api` candidates with
   the two AR2 rows and tenant rows.
+  RP-199's freshly hashed wrong-engine population fires on independently severed binding in
+  both loaders. This does not constitute full A4 approval or authorize public API arms.
 - [x] A5 — composed platform witness (Postgres): `always` unlock, `human_hobby` lock at near-zero
   Soul, start → play → terminal → zero-credit applied resolution, `quit` releases the session.
 - [x] A6 — client children `MineGridBoard` / `SnakeBoard` under `client/src/game-ui/minigame/`

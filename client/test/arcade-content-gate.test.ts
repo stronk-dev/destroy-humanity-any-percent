@@ -156,13 +156,44 @@ describe("arcade catalog (AR1.2/AR3.1/AR4.1)", () => {
     const mutate = (change: (value: Record<string, any>) => void) => { const value = JSON.parse(candidate); change(value); return value; };
     const cases: Record<string, (value: Record<string, any>) => void> = {
       "unknown root key": (v) => { v.extra = 1; },
+      "wrong schema": (v) => { v.schema_version = 2; },
+      "unknown container key": (v) => { v.container.extra = 1; },
+      "unknown stage key": (v) => { v.container.stages[0].extra = 1; },
+      "empty stages": (v) => { v.container.stages = []; },
       "unsorted toys": (v) => { v.container.stages[0].toys = ["arcade.snake", "arcade.mine_grid"]; },
+      "unknown title key": (v) => { v.container.stages[0].title_copy_key = "arcade.stage.missing.title"; },
+      "stage tier above max": (v) => { v.container.stages[0].min_tier = 10; },
+      "equal stage tiers": (v) => { v.container.stages.push({ ...v.container.stages[0], stage_id: "fixture_next" }); },
+      "descending stage tiers": (v) => { v.container.stages.push({ ...v.container.stages[0], stage_id: "fixture_next" }); v.container.stages[0].min_tier = 1; },
+      "unknown preset key": (v) => { v.mine_grid.presets[0].extra = 1; },
+      "unsorted presets": (v) => { [v.mine_grid.presets[0], v.mine_grid.presets[1]] = [v.mine_grid.presets[1], v.mine_grid.presets[0]]; },
+      "narrow board": (v) => { v.mine_grid.presets[2].width = 4; },
+      "tall board": (v) => { v.mine_grid.presets[2].height = 31; },
       "too many mines": (v) => { v.mine_grid.presets[2].mines = 9 * 9 - 8; },
+      "no mines": (v) => { v.mine_grid.presets[2].mines = 0; },
       "preset copy drift": (v) => { v.mine_grid.presets[2].copy_key = "arcade.mine_grid.preset.large"; },
+      "unknown snake key": (v) => { v.snake.extra = 1; },
       "snake start too long": (v) => { v.snake.start_length = 11; },
+      "snake growth zero": (v) => { v.snake.growth_per_food = 0; },
+      "snake advance too large": (v) => { v.snake.max_ticks_per_advance = 257; },
       "snake tick too fast": (v) => { v.snake.presentation_tick_ms = 49; },
     };
+    expect(Object.keys(cases)).toHaveLength(22);
     for (const [name, change] of Object.entries(cases)) expect(() => parseArcadeCatalog(mutate(change), declared), name).toThrow(SyntaxError);
+  });
+
+  it("loads inclusive bounds and structurally valid ascending test-only stages", () => {
+    const value = JSON.parse(candidate);
+    value.mine_grid.presets[2].mines = 9 * 9 - 9;
+    value.snake.start_length = 10;
+    value.snake.presentation_tick_ms = 50;
+    value.container.stages.push({ ...value.container.stages[0], stage_id: "fixture_next", min_tier: 9 });
+    const catalog = parseArcadeCatalog(value, declared);
+    expect(catalog.container.stages.map((stage) => stage.min_tier)).toEqual([0, 9]);
+    expect(catalog.snake.start_length).toBe(10);
+    expect(catalog.mine_grid.presets[2]?.mines).toBe(72);
+    expect(activeArcadeStage(catalog, 8)?.stage_id).toBe("cover_disc");
+    expect(activeArcadeStage(catalog, 9)?.stage_id).toBe("fixture_next");
   });
 
   it("matches Go's mine placement shape: first-reveal exclusion and sorted output", () => {

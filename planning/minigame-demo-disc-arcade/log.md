@@ -1384,3 +1384,60 @@ parity beyond named cases is not silently claimed or expanded here.
 declared Postgres Arcade selectors; report unchanged historical RP-131 separately. Bounded
 original verdicts and exact independent-review range, no self-archive/push/deployment. No
 wire/copy/mint, content-bound or mechanics changes; all full 1.0 obligations remain.
+
+**Executed old-gate finding:** unchanged cold Go Arcade/replaycatalog and all 7,167 client
+cases pass. Removing only ascending stage-tier refusal independently from both loaders
+survives those same entire populations (Go 18.24 s / Make 0; client 7,167 / Make 0).
+RP-199 records the missing multiple-stage instrument. All production probes are restored;
+no unchanged-runtime ordering failure has been alleged. Continue the conditional test-only
+supplement, preserving existing sorting/cap/key and binding controls.
+
+**Separate executed runtime finding RP-200:** a temporary diagnostic submits the actual Go
+candidate with only min_tier=null. It logs `MALFORMED INPUT ADMITTED: null min_tier normalized
+to 0`; the legal-zero control loads. Native Node executes the actual TS loader with the
+generated canonical COPY_KEYS: zero loads, null throws SyntaxError. The diagnostic's Go exit
+0 is not negative acceptance proof; it explicitly reports an admission. The temporary test
+is removed after execution. No production change retained here. RP-200's separately
+predeclared watched correction is next, not silently mixed into RP-199's test-only repair;
+do not use exactInteger in a way that newly rejects Go's legal negative-zero spelling.
+
+**RP-199 retained instrument:** both actual loaders now execute the same 22 negative
+categories, including equal/descending stage tiers and every original Go category missing
+from TS. Both keep valid candidate/fixture and inclusive-bound controls. Structurally valid
+test-only tiers 0/9 load; the real TS stage selector chooses the proper row at tiers 8/9.
+These rows do not ship content, new gameplay, copy or an unlock policy. Freshly hashed Go/TS
+bundles also reject exactly one actual definition rebound to pitch, not a corrupted hash.
+
+**Discrimination/restoration:** removing ascending refusal now fails both new tier cases;
+independent preset-sort, mine-cap and exact-key policy probes each fail the actual matching
+negative in Go and TS. Go's exact-key probe disables BOTH its key-count and strict-decoder
+barriers, disclosed as a two-barrier policy severing rather than pretending one layer owns
+the whole refusal. Binding removal makes both missing-definition AND wrong-engine bundles
+load; both tests fail. The first TS probe stops on the existing missing-toy assertion and
+dumps its whole resolved bundle; the test now executes all negative arms and reports only
+admitted case names. The rerun identifies both cases explicitly. Go uses individual
+subtests, also demonstrating both failures. No runtime correction is retained; all four
+production source files are byte-restored. This evidence is not a full raw JSON/depth audit.
+
+**Bounded original designated review — CHANGES REQUIRED.** Review by: Codex.
+Recorded by: Codex. Original loader span `508fe19a^..508fe19a`; original chain span
+`e1c71d7c^..e1c71d7c`. Verdict concerns AC1's missing tier-order/wrong-engine populations
+and misleading matched-loader coverage claim. It does not reject the valid existing sorting,
+cap/key or missing-toy controls, nor infer that production accepts wrong bindings unchanged.
+RP-199's test-only repair needs Claude's exact-range review. The separate actual null-tier
+admission RP-200 remains OPEN pending its own watched correction; do not close it via prose.
+
+**RP-199 final cold verification:** all six selected Go packages pass with `-count=1`;
+the whole client passes 7,168 cases / 88 intentional browser-only skips. Typecheck/build,
+client/cosmetic/no-payment boundaries and their controls, vet, unchanged numeric vectors and
+all three Arcade artifact regeneration checks pass. The declared real-Postgres production
+selector executes BOTH Arcade integration functions verbosely, not skipped (rejected-advance
+and original composed witnesses); this is DB/library proof, not socket/API acceptance.
+The complete Linux Chromium/Firefox/WebKit target exits 0 with 21,753 passes / three
+intentional performance skips, then its separate Chromium performance case passes (20
+filtered). Terminal metadata retained. The cold history guard exits Make 2 at unchanged
+pushed RP-131 `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` versus parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after checkout/adversarial controls pass.
+No exception, false bump, history rewrite or workflow edit. Production probes are restored,
+kernel stays 0.3.146 and `git diff --check` passes. Ready for Claude's bounded designated
+review, not full A1/A4 acceptance or archival. Next is separately predeclared RP-200.

@@ -1,6 +1,23 @@
 # Executable queue
 
-## Current Arcade real-seed rejection-sampling evidence repair — 2026-10-05
+## Current Arcade loader and catalog-binding evidence repair — 2026-10-05
+
+RP-199 repairs the test-only evidence gap: ascending-tier refusal removal survived the old
+whole Go/client populations; the matched 22-case Go/TS loaders now catch it, with valid
+inclusive-bound and stage-selection controls. Freshly hashed bundles exercise missing and
+wrong-engine toy definitions; independent ordering, cap, exact-key and binding probes fail
+and are restored. Cold selected Go, 7,168 client tests, root checks, both real-Postgres
+Arcade functions and full Linux browser verification (21,753 plus performance) pass.
+Historical RP-131 remains red; no bypass. Claude's designated review is still required.
+No full A1/A4, raw-grammar, public-wire or archival approval.
+
+**NEXT SAFE ACTION:** separately predeclare and fix RP-200 under accepted AR1.2: Go's actual
+catalog loader admits null min_tier as zero while TS rejects it. Retain legal zero and legal
+JSON spelling controls, demonstrate red-before/fail-on-severing witnesses, and carry an honest
+kernel identity bump for the watched runtime change. No fixture/content, mechanics, copy,
+public wire, mint or CI change; all full 1.0 obligations and cross-party gates remain intact.
+
+## Dated Arcade real-seed rejection-sampling evidence repair — 2026-10-05
 
 RP-198 verifies the existing flood/exclusion/chord witnesses already fail their named mutants
 in BOTH engines, then closes AC3's remaining sampling population. Mine Grid-only modulo
@@ -14,7 +31,7 @@ pushed RP-131 history defect remains red; no bypass. Claude designated review is
 for the separately predeclared test-only supplement: exact span `be0c0e00^..859f5216`.
 No full A1/A2/AR7, public-wire or archival approval.
 
-**NEXT SAFE ACTION:** predeclare A1/AC1's named artifact-loader negatives and the existing A4
+**Next at this dated checkpoint:** predeclare A1/AC1's named artifact-loader negatives and the existing A4
 catalog-chain consumers: unsorted presets, mine bounds, missing/wrong-engine toy definition,
 extra keys and nonascending stage tiers. Verify actual Go AND TS callers reject each, and
 valid candidate/fixture/chain controls still load. Inspect existing evidence first; retain
