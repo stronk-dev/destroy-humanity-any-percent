@@ -393,3 +393,100 @@ kernel bump in the implementation commit. Independently sever termination/raw-nu
 guards and restore exactly; verify relevant cold Go, client/root, generated corpus/vectors,
 real-Postgres Garden composition and complete Linux browsers before exact Claude review.
 No self-approval, archival, mint, deployment or full Garden/1.0 acceptance.
+
+### Executed baseline: RP-212
+
+Actual exported `loadGardenCatalog`, not a copied scanner, was executed in Node children with
+the fixture's Fiscal/resource authorities and the generated copy catalog. The valid SG12
+fixture prints `entered-loader`, then `accepted`, and exits 0. Unfinished key (`{"unfinished`),
+unfinished value (`{"x":"unfinished`) and trailing escape each print `entered-loader`, then
+terminate only on the one-second parent guard: status null, SIGTERM, `ETIMEDOUT`, no stderr.
+The earlier direct-scanner diagnostic gives the same result for key/value truncation. Recorded
+as RP-212 immediately. The parent diagnostic's exit 0 means containment completed, NOT that
+the malformed loader calls rejected. No runtime or fixture byte has changed yet.
+
+### Executed baseline: RP-213/RP-214
+
+Added a shared literal-byte corpus: 36 cases, 14 valid controls / 22 invalid cases. The old
+47-case corpus is untouched. Both implementations apply the same first literal replacement
+with an exact occurrence-count guard, avoiding JSON.parse/re-marshalling token erasure.
+
+Cold `make test-go GO_PACKAGES=./garden GO_TEST_FLAGS='-count=1 -run TestGardenRawCatalogAdmission'`
+exits 2 with eight explicit null admissions (`catalog=true error=<nil>`): dimension minimum,
+substrate lockout/effect/chance factor, harvest units, nonstarter, payout sends/conversion.
+Every other Go raw case, including all 14 valid controls, passes. Recorded as RP-214.
+
+`make test-client` exits 2: five decimal/exponent cases are admitted, and the protected
+unfinished-value case hits ETIMEDOUT after the valid subprocess control passes. Other tests:
+7,199 pass / 104 deliberately skipped. Recorded lexical divergence as RP-213, retained RP-212
+as a containment failure. No direct malformed-string browser execution was attempted on the
+known hanging baseline. No production byte changed before these executed failures.
+
+## 2026-10-06 — bounded SG1 original review and corrective implementation
+
+**Review by:** Codex. **Recorded by:** Codex. **Decision:** CHANGES REQUIRED for the SG1 loader
+in original G1 (`02f91d10^..02f91d10`), plus its loader-only G4 injection bridge
+(`0759fcaf^..0759fcaf`). This is not a completed review of the rest of G1 or G4–G7. Execution
+was at reconciled baseline `9c412f38`, not a historical scratch checkout. The TS loader is
+byte-identical to G1; the Go bridge changes platform payout injection, not its original raw
+key/number scanning. RP-212/213/214 are executed violations of SG1, not new product choices.
+
+**Implemented by:** Codex, under predeclaration `9fc5932c`. Awaiting Claude's designated review.
+The TS parser checks duplicate decoded keys and integer tokens before JSON.parse, and bounds
+its string walk by input length. Go rejects null throughout the catalog without changing
+SG2's shared nullable-number behavior. No new platform payout authority, save migration,
+engine arithmetic, balance/content, copy, public wire, CI workflow or dependency. Kernel
+0.3.148 → 0.3.149 is the real watched-loader admission change, not an RP-131 history repair.
+
+Retained every original fixture/corpus byte. Added the 36-case raw corpus (14 valid / 22
+invalid) and explicit empty/growing SG2 nullable-state round trips. Both runtimes use literal
+replacements with match-count guards; none erase token spelling by parsing/re-marshalling.
+Browser collection still includes the new test file; only its Node subprocess body is skipped
+there, with three actual malformed-string calls executed in each browser instead.
+
+### Executed verification and discrimination
+
+- Cold Go: `make test-go GO_PACKAGES='./garden ./kernel ./production ./replaycatalog ./save ./transport'
+  GO_TEST_FLAGS='-count=1'` exits 0 for all six packages. Vet for those plus gameserver exits 0.
+- Root client/type/build/shell boundary exits 0: 7,205 pass / 104 intentional skips, zero Svelte
+  errors/warnings, build 213 modules, 22 Game UI component boundary checks. The Node guard runs
+  valid + all three malformed inputs to explicit acceptance/rejection, not guard termination.
+- Real Postgres, verbose cold selector on `./production ./gameserver`: ten Garden-named
+  production functions pass, including harvest/fault/log integration, and the composed
+  `TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration` explicitly passes.
+  This remains the declared fixture/inactive composed population, not a minted active epoch.
+- Full local Linux browser lane exits 0: 21,909 pass / six deliberate skips (three performance
+  filters + three Node-only subprocess bodies), 270 file/engine populations. All 36 raw inputs
+  run in Chromium, Firefox and WebKit. Separate Chromium performance: one pass / 20 filters.
+- Garden engine corpus, 6,296 regenerated numeric vectors (no drift), copy/history and deployed
+  content manifest, cosmetic and no-payment boundaries all exit 0.
+- Independent termination probe removes only the string-loop bound: root client fails one
+  protected assertion with `ETIMEDOUT`, while 7,204 pass. No browser is run with that mutation.
+- Independent spelling probe retains safe-number validation but removes the raw integer regex:
+  root client fails precisely five forbidden decimal/exponent cases, while 7,200 pass.
+- Independent null probe allows catalog null again: cold raw Go test fails exactly eight
+  admissions. SG2 nullable control is retained and remains green. Every probe is restored
+  before the next run; no live verification overlaps source mutations.
+- Restored SHA-256: TS `2449743c472e9751b93a9c6dc496c2f33eca5e82996d4507955045a5c1b1626b`;
+  Go `4a2979809e992122ddef074af0be0282ecbed93c05cfa196dda6a10ca317fcb1`.
+  Final restored raw/nullable Go test and complete root client suite pass again.
+
+### Failed setup and remaining gates (not concealed)
+
+The first broad Go command used nonexistent `./replay`: it exits 2 even though five real
+packages pass. Corrected to the actual `./replaycatalog`, then rerun cold. The first client
+typecheck used unavailable Node type imports: exit 2; corrected with a narrow dynamic-import
+signature and Node-global shape inside the Node-only body, with no new types/dependencies.
+The first DB selector named `./transport`, which reports no tests; it does NOT prove the
+gameserver composition. The corrected verbose `./gameserver` execution above does. An attempted
+read-only `ps` diagnostic was denied by the sandbox; no escalation or claim was based on it.
+
+`make verify-kernel-version` still exits 2 at unchanged pushed RP-131 commit
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` / parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, after both checkout/adversarial history fixtures
+pass. No bypass, rewrite, false bump or whole CI-green claim. The history repair remains its
+separate draft authority. No hosted Actions result is claimed from these local runs.
+
+No self-approval, Garden archival, SG13 mint, public hosting, release or full 1.0 promotion.
+Next: Claude must review the corrective range pinned after commit; Codex continues the remaining
+accepted G1 state/clock/engine/command/corpus review under its next bounded predeclaration.

@@ -32,8 +32,7 @@ const idPattern = /^[a-z][a-z0-9_]{0,47}$/u;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/u;
 
 export function loadGardenCatalog(bytes: string, declarations: GardenDeclarations): GardenCatalog {
-  if (hasDuplicateKeys(bytes)) throw new SyntaxError("server_garden has duplicate keys");
-  const root = exactObject(JSON.parse(bytes), ["schema_version", "unlock_id", "host_generator_id", "soul_gate", "grid", "clock", "default_substrate_id", "substrates", "species", "recipes", "payout"], "server_garden");
+  const root = exactObject(parseCatalogJSON(bytes), ["schema_version", "unlock_id", "host_generator_id", "soul_gate", "grid", "clock", "default_substrate_id", "substrates", "species", "recipes", "payout"], "server_garden");
   if (root.schema_version !== GARDEN_SCHEMA_VERSION) throw new SyntaxError("server_garden schema_version");
   const unlockId = mechanicalString(root.unlock_id, "unlock_id"), hostGeneratorId = mechanicalString(root.host_generator_id, "host_generator_id");
   if (!declarations.fiscalUnlockIds.has(unlockId)) throw new SyntaxError("unlock_id is not a Fiscal unlock row");
@@ -181,26 +180,35 @@ function exactObject(source: unknown, keys: readonly string[], label: string): R
   return source as Record<string, unknown>;
 }
 
-/** Duplicate keys at any depth, which JSON.parse would silently collapse. */
-export function hasDuplicateKeys(text: string): boolean {
+/** Check the raw SG1 grammar before JSON.parse collapses duplicate keys or
+ * erases number spelling. Every scanner loop is bounded by the input length. */
+function parseCatalogJSON(text: string): unknown {
   const scopes: { kind: "{" | "["; keys: Set<string>; expectKey: boolean }[] = [];
   for (let index = 0; index < text.length; index += 1) {
     const char = text[index]!, top = scopes.at(-1);
     if (char === "\"") {
       let end = index + 1;
-      while (text[end] !== "\"") end += text[end] === "\\" ? 2 : 1;
+      while (end < text.length && text[end] !== "\"") end += text[end] === "\\" ? 2 : 1;
+      if (end >= text.length) throw new SyntaxError("server_garden has an unfinished string");
       if (top?.kind === "{" && top.expectKey) {
         const key = JSON.parse(text.slice(index, end + 1)) as string;
-        if (top.keys.has(key)) return true;
+        if (top.keys.has(key)) throw new SyntaxError("server_garden has duplicate keys");
         top.keys.add(key); top.expectKey = false;
       }
       index = end; continue;
+    }
+    if (char === "-" || char >= "0" && char <= "9") {
+      let end = index + 1;
+      while (end < text.length && /[0-9.eE+-]/u.test(text[end]!)) end += 1;
+      const token = text.slice(index, end);
+      if (!/^-?(?:0|[1-9][0-9]*)$/u.test(token) || !Number.isSafeInteger(Number(token))) throw new SyntaxError("server_garden requires exact safe integer tokens");
+      index = end - 1; continue;
     }
     if (char === "{" || char === "[") scopes.push({ kind: char, keys: new Set(), expectKey: char === "{" });
     else if (char === "}" || char === "]") scopes.pop();
     else if (char === "," && top?.kind === "{") top.expectKey = true;
   }
-  return false;
+  return JSON.parse(text);
 }
 
 export function byteCompare(left: string, right: string): number {

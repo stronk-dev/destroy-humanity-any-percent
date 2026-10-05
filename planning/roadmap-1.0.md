@@ -5,7 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-05, guarded Snake snapshot source `45fcf3ae` (kernel 0.3.146;
+**Current checkpoint:** 2026-10-06, Server Garden SG1 raw-admission correction under `9fc5932c`
+(kernel 0.3.149). RP-212–RP-214 are locally corrected with shared literal-byte negatives,
+matched valid controls, SG2 nullable-save preservation and three discriminating/restored probes.
+Cold client/Go/real-Postgres and full local three-browser populations pass; the unchanged
+historical RP-131 guard still fails. Claude's exact corrective review is pending, not an
+archival or release approval. Next accepted work: remaining Garden G1 state/engine and G2–G7
+review. The full nine-tier game, designed endings and supportable release floor remain the
+objective; these fixture-first repairs do not replace them with a preview.
+
+**Earlier checkpoint provenance (2026-10-05):** guarded Snake snapshot source `45fcf3ae` (kernel 0.3.146;
 exact review span `4f6173be^..45fcf3ae`) plus the bounded Cosmetic
 wearer-control link correction `e02f6560`, AC15 CSS precedence correction `3be0e5dd` and
 Typer display-loop correction `58bc34ad`, test-only Arcade callback correction `89434711`
@@ -36,7 +45,7 @@ no runtime/copy change or accessibility promotion),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-211 corrections,
+(RP-145–RP-214 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party

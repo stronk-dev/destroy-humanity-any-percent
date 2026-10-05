@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "valid": "balance/testdata/server-garden/fixture-v1.json",
+  "cases": [
+    {
+      "name": "valid-fixture",
+      "reject": false
+    },
+    {
+      "name": "whitespace",
+      "reject": false,
+      "prefix": " \t\r\n",
+      "suffix": " \t\r\n"
+    },
+    {
+      "name": "escaped-root-key",
+      "reject": false,
+      "from": "\"schema_version\": 1",
+      "to": "\"\\u0073chema_version\": 1",
+      "occurrences": 1
+    },
+    {
+      "name": "escaped-string-value",
+      "reject": false,
+      "from": "\"soul_gate\": \"unrelated\"",
+      "to": "\"soul_gate\": \"\\u0075nrelated\"",
+      "occurrences": 1
+    },
+    {
+      "name": "negative-zero",
+      "reject": false,
+      "from": "\"min_level\": 0",
+      "to": "\"min_level\": -0",
+      "occurrences": 1
+    },
+    {
+      "name": "max-safe-integer",
+      "reject": false,
+      "from": "\"min_level\": 8",
+      "to": "\"min_level\": 9007199254740991",
+      "occurrences": 1
+    },
+    {
+      "name": "real-dimension-minimum",
+      "reject": false,
+      "from": "\"min_level\": 0",
+      "to": "\"min_level\": 0",
+      "occurrences": 1
+    },
+    {
+      "name": "null-dimension-minimum",
+      "reject": true,
+      "from": "\"min_level\": 0",
+      "to": "\"min_level\": null",
+      "occurrences": 1
+    },
+    {
+      "name": "real-substrate-lockout",
+      "reject": false,
+      "from": "\"substrate_lockout_ms\": 600000",
+      "to": "\"substrate_lockout_ms\": 0",
+      "occurrences": 1
+    },
+    {
+      "name": "null-substrate-lockout",
+      "reject": true,
+      "from": "\"substrate_lockout_ms\": 600000",
+      "to": "\"substrate_lockout_ms\": null",
+      "occurrences": 1
+    },
+    {
+      "name": "real-substrate-effect",
+      "reject": false,
+      "from": "\"effect_ppm\": 1000000",
+      "to": "\"effect_ppm\": 0",
+      "occurrences": 1
+    },
+    {
+      "name": "null-substrate-effect",
+      "reject": true,
+      "from": "\"effect_ppm\": 1000000",
+      "to": "\"effect_ppm\": null",
+      "occurrences": 1
+    },
+    {
+      "name": "real-substrate-chance-factor",
+      "reject": false,
+      "from": "\"chance_factor_ppm\": 1000000",
+      "to": "\"chance_factor_ppm\": 0",
+      "occurrences": 3
+    },
+    {
+      "name": "null-substrate-chance-factor",
+      "reject": true,
+      "from": "\"chance_factor_ppm\": 1000000",
+      "to": "\"chance_factor_ppm\": null",
+      "occurrences": 3
+    },
+    {
+      "name": "real-harvest-units",
+      "reject": false,
+      "from": "\"harvest_units\": 5",
+      "to": "\"harvest_units\": 0",
+      "occurrences": 1
+    },
+    {
+      "name": "null-harvest-units",
+      "reject": true,
+      "from": "\"harvest_units\": 5",
+      "to": "\"harvest_units\": null",
+      "occurrences": 1
+    },
+    {
+      "name": "real-nonstarter",
+      "reject": false,
+      "from": "\"starter\": false",
+      "to": "\"starter\": false",
+      "occurrences": 3
+    },
+    {
+      "name": "null-nonstarter",
+      "reject": true,
+      "from": "\"starter\": false",
+      "to": "\"starter\": null",
+      "occurrences": 3
+    },
+    {
+      "name": "real-payout-sends",
+      "reject": false,
+      "from": "\"sends_per_day\": 8",
+      "to": "\"sends_per_day\": 0",
+      "occurrences": 1
+    },
+    {
+      "name": "null-payout-sends",
+      "reject": true,
+      "from": "\"sends_per_day\": 8",
+      "to": "\"sends_per_day\": null",
+      "occurrences": 1
+    },
+    {
+      "name": "real-payout-conversion",
+      "reject": false,
+      "from": "\"conversion_ppm\": 1000000",
+      "to": "\"conversion_ppm\": 0",
+      "occurrences": 1
+    },
+    {
+      "name": "null-payout-conversion",
+      "reject": true,
+      "from": "\"conversion_ppm\": 1000000",
+      "to": "\"conversion_ppm\": null",
+      "occurrences": 1
+    },
+    {
+      "name": "decimal-schema",
+      "reject": true,
+      "from": "\"schema_version\": 1",
+      "to": "\"schema_version\": 1.0",
+      "occurrences": 1
+    },
+    {
+      "name": "exponent-schema",
+      "reject": true,
+      "from": "\"schema_version\": 1",
+      "to": "\"schema_version\": 1e0",
+      "occurrences": 1
+    },
+    {
+      "name": "decimal-zero",
+      "reject": true,
+      "from": "\"min_level\": 0",
+      "to": "\"min_level\": 0.0",
+      "occurrences": 1
+    },
+    {
+      "name": "exponent-tick",
+      "reject": true,
+      "from": "\"tick_ms\": 300000",
+      "to": "\"tick_ms\": 3e5",
+      "occurrences": 2
+    },
+    {
+      "name": "decimal-harvest",
+      "reject": true,
+      "from": "\"harvest_units\": 5",
+      "to": "\"harvest_units\": 5.0",
+      "occurrences": 1
+    },
+    {
+      "name": "unsafe-integer",
+      "reject": true,
+      "from": "\"min_level\": 8",
+      "to": "\"min_level\": 9007199254740992",
+      "occurrences": 1
+    },
+    {
+      "name": "duplicate-root",
+      "reject": true,
+      "from": "\"schema_version\": 1",
+      "to": "\"schema_version\": 1, \"schema_version\": 1",
+      "occurrences": 1
+    },
+    {
+      "name": "duplicate-nested",
+      "reject": true,
+      "from": "\"min_level\": 0",
+      "to": "\"min_level\": 0, \"min_level\": 0",
+      "occurrences": 1
+    },
+    {
+      "name": "duplicate-escaped-key",
+      "reject": true,
+      "from": "\"schema_version\": 1",
+      "to": "\"schema_version\": 1, \"\\u0073chema_version\": 1",
+      "occurrences": 1
+    },
+    {
+      "name": "unfinished-value",
+      "reject": true,
+      "contained": true,
+      "raw": "{\"x\":\"unfinished"
+    },
+    {
+      "name": "unfinished-key",
+      "reject": true,
+      "contained": true,
+      "raw": "{\"unfinished"
+    },
+    {
+      "name": "trailing-escape",
+      "reject": true,
+      "contained": true,
+      "raw": "{\"x\":\"unfinished\\"
+    },
+    {
+      "name": "missing-delimiter",
+      "reject": true,
+      "raw": "{\"schema_version\":1"
+    },
+    {
+      "name": "trailing-json",
+      "reject": true,
+      "suffix": " {}"
+    }
+  ]
+}

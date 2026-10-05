@@ -1,6 +1,30 @@
 # Executable queue
 
-## Current A6 motion evidence and terminal-name gap — 2026-10-05
+## Current Server Garden raw-admission correction — 2026-10-06
+
+Accepted Garden SG1 review under `9fc5932c` executes three actual defects: TS malformed-string
+nontermination (RP-212), TS decimal/exponent admission (RP-213) and eight Go null-to-zero/false
+admissions (RP-214). Original G1 loader and its G4-only injection bridge are CHANGES REQUIRED;
+this is not a completed review of the rest of G1/G4 or G2–G7. Catalog-only corrections preserve
+the existing engine/corpus/fixture bytes and SG2 nullable save behavior. Kernel 0.3.149 is the
+actual watched-loader behavior change. A shared literal-byte corpus supplies 14 valid controls
+and 22 invalid inputs, with retained subprocess containment and real browser execution.
+
+Cold six-package Go/vet, root client/type/build/shell (7,205 pass / 104 intentional skips),
+eleven verbose Garden/composed Postgres functions, corpus/vectors/copy/content/boundaries and
+the complete local Linux browser lane (21,909 pass / six deliberate skips, separate performance)
+pass. Three independent guard severings fail precisely and restore byte-exactly. Incorrect
+initial package/Node-type/DB-selector setup is disclosed in the Garden log, not counted as
+evidence. The historical RP-131 guard still fails at its unchanged pushed hash; no CI-green,
+hosted-run, bypass, archive, mint or full Garden/1.0 claim. Claude corrective review is required.
+
+**NEXT SAFE ACTION:** pin the exact corrective range after commit, then continue accepted G1's
+state/clock/engine/commands/corpus under a new bounded predeclaration, followed by G2–G7. Keep
+the prior Arcade/Typer/Cosmetic review and owner/author routes open, including RP-211/OD-15,
+RP-201/D-020, historical RP-131 and participant accessibility. Full nine-tier 1.0 remains the
+active goal; no preview scope reduction or self-approval substitutes for any gate.
+
+## Earlier A6 motion evidence and terminal-name gap — 2026-10-05
 
 Under `e006f5c6`, the test-only motion supplement switches the actual browser preference on
 both mounted children. Decoration stays at zero and three real Snake steps still commit.
@@ -21,7 +45,7 @@ ranges and this test-only supplement await Claude designated review; no self-app
 The motion/gap supplement's exact review span is `e006f5c6^..044a7869`.
 No public host/wire/mint is authorized; unchanged RP-131 still blocks a whole-green CI claim.
 
-**NEXT SAFE ACTION:** route the RP-211 mechanical/copy gap to its author/OD-15, retain the exact
+**Dated next action (superseded above):** route the RP-211 mechanical/copy gap to its author/OD-15, retain the exact
 review handoffs, and continue other accepted work while those authority gates stay open. Full
 nine-tier 1.0 and its release evidence remain active; no preview scope cut substitutes for them.
 

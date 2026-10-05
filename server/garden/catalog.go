@@ -224,6 +224,12 @@ func LoadCatalog(data []byte, declarations Declarations) (*Catalog, error) {
 	if !uniqueKeys(data) {
 		return nil, fmt.Errorf("%w: duplicate or malformed keys", ErrInvalidCatalog)
 	}
+	// SG1 has no nullable fields. encoding/json otherwise admits null into
+	// zero-valued integers/booleans. SG2 intentionally permits null, so retain
+	// its existing shared safeNumbers behavior rather than tightening saves.
+	if !safeScalars(data, false) {
+		return nil, fmt.Errorf("%w: catalog needs nonnull exact safe integer tokens", ErrInvalidCatalog)
+	}
 	var wire wireCatalog
 	if err := exactDecode(data, &wire, "schema_version", "unlock_id", "host_generator_id", "soul_gate", "grid", "clock", "default_substrate_id", "substrates", "species", "recipes", "payout"); err != nil {
 		return nil, err
@@ -582,6 +588,10 @@ func exactDecode(data []byte, target any, keys ...string) error {
 // safeNumbers rejects any JSON number token that is not an exact integer in
 // [-(2^53-1), 2^53-1] anywhere inside value.
 func safeNumbers(value json.RawMessage) bool {
+	return safeScalars(value, true)
+}
+
+func safeScalars(value json.RawMessage, allowNull bool) bool {
 	decoder := json.NewDecoder(bytes.NewReader(value))
 	decoder.UseNumber()
 	for {
@@ -590,6 +600,9 @@ func safeNumbers(value json.RawMessage) bool {
 			return true
 		}
 		if err != nil {
+			return false
+		}
+		if token == nil && !allowNull {
 			return false
 		}
 		number, ok := token.(json.Number)

@@ -1734,3 +1734,28 @@ remain open, not silently reduced to a preview or promoted by these local result
 Exact test-only motion/gap review span: `e006f5c6^..044a7869`, pending Claude designated
 review. RP-211 remains an unresolved author/owner route; all runtime mutations are restored.
 This checkpoint pins evidence, not acceptance/archival. The full 1.0 goal remains active.
+
+## 2026-10-06 — Server Garden SG1 raw-catalog reconciliation
+
+Baseline `9c412f38`, predeclaration `9fc5932c`. Re-derived Claude's G1 loader and subsequent
+G4 injection bridge; current execution proves a TS unfinished-string hang (RP-212), five
+TS raw integer-spelling admissions (RP-213), and eight Go null-to-zero/false admissions
+(RP-214). Original bounded loader review is CHANGES REQUIRED, not a full G1–G7 review.
+
+Corrected catalog admission only: bounded TS scanner, raw safe-integer grammar and Go nonnull
+catalog tokens. Shared 36-case literal-byte corpus (14 valid / 22 invalid), preserved SG2
+nullable save round trips, all original engine/fixture/corpus bytes unchanged. Honest kernel
+0.3.148 → 0.3.149. Independent termination/spelling/null probes each fail and restore exactly.
+
+Cold six-package Go/vet, 7,205 client cases / 104 intentional skips, root type/build/shell,
+eleven verbose Garden/composed Postgres functions, corpus/6,296 vectors/copy/content and
+boundaries pass. Local Linux Chromium/Firefox/WebKit passes 21,909 / six deliberate skips,
+plus separate performance; all 36 raw inputs execute per engine. Initial mistaken package,
+Node-type and DB selectors are disclosed, not treated as green. Kernel-history guard still
+fails the unchanged pushed RP-131 after its checkout/negative controls pass. No hosted-green
+claim, bypass, false historical bump or rewrite.
+
+Claude must designated-review the corrective range pinned after commit. No Garden archival,
+SG13 mint, public hosting, owner-copy invention, full accessibility or 1.0 promotion. Next:
+remaining accepted Garden G1 state/clock/engine/commands/corpus, then G2–G7 under bounded
+predeclarations. All prior owner/author/cross-party gates and full nine-tier obligations remain.

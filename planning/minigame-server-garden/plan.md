@@ -5,6 +5,14 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
+**Review checkpoint, 2026-10-06:** the checked G1–G7 rows below record implementation presence,
+not designated acceptance. Codex's bounded SG1 review found RP-212–RP-214 in the original loader;
+the separately predeclared catalog correction and 36-case raw-byte population are locally green
+and await Claude's designated review. Kernel 0.3.149 covers this actual admission change, not a
+repair of historical RP-131. No Garden archive, SG13 mint or whole-G1/Garden approval is claimed.
+Next review lane: the remaining G1 state/clock/engine/commands/corpus, then G2–G7 under bounded
+predeclarations. Retain SG2 nullable fields and all original engine/replay/activation evidence.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

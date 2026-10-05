@@ -11,7 +11,8 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
 - `server_garden` (schema v1) is an optional artifact on the scalar Founder chain. It requires
   `cosmetics` and a pinned Fiscal artifact, and it pins **Founder v25**.
 - `server/garden` (loader) and `client/src/garden/catalog.ts` enforce every SG1 rule:
-  - exact keys and safe integers;
+  - exact keys, nonnullable catalog fields and exact safe integer tokens (decimal/exponent
+    spelling is refused even when it would parse to an integer);
   - ID grammar and raw-byte sort;
   - the domains;
   - reachability of every species from the starters;
@@ -25,6 +26,13 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
 - The fixture is `balance/testdata/server-garden/fixture-v1.json`. It pairs with
   `fiscal-fixture-v1.json`, the production Fiscal artifact plus
   `minigame.server_garden` (cost 3).
+- The shared raw admission corpus is `testdata/garden/catalog-raw-fixtures-v1.json`:
+  14 valid controls and 22 invalid inputs applied as identical literal replacements in Go/TS.
+  The TS scanner rejects unfinished strings without walking past the input; the Node test
+  contains regressions in a child process, while all three native browser engines execute
+  the corrected malformed inputs directly. Catalog null rejection does not change the
+  intentionally nullable SG2 save fields. This correction awaits designated review; it does
+  not establish production minting, full Garden acceptance or release readiness.
 
 ## State and clock
 
