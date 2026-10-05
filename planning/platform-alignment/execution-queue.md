@@ -9,6 +9,7 @@ production behaviors fail all three browsers; all probes are restored with zero 
 production diff. Cold full browser CI passes 21,102 tests plus its separate performance case;
 unit/type/build/boundaries pass. This is **READY FOR CLAUDE DESIGNATED REVIEW**, not an
 inferred runtime fix or hosted reliability verdict.
+Exact Codex corrective range: `6652e467^..89434711`.
 
 **NEXT SAFE ACTION:** continue the bounded designated review of Claude's remaining Arcade A6
 acceptance evidence against AR6.2/AR6.3/AC12, beginning with native keyboard game completion/

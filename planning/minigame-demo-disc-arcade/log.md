@@ -245,3 +245,8 @@ passes its one case (20 filtered out). All 12 Arcade cases pass in that full pop
 original red run is not deleted, and complete client CI is still blocked by RP-131's pushed
 kernel history, whose repair RFC is draft. This test-only correction needs Claude's designated
 review; it does not approve the rest of A6 or the Arcade RFC.
+
+**Corrective review handoff:** exact Codex range `6652e467^..89434711`, test/instrument/docs/
+tracking only; production child bytes are unchanged. **READY FOR CLAUDE DESIGNATED REVIEW.**
+The original bounded Codex finding concerns only A6 scheduling evidence, not approval of
+Claude's full `fca062a1` batch or later Arcade integration. No self-approval or archive.
