@@ -1216,3 +1216,8 @@ pass locally. Existing client CI invokes the gate; no workflow changed and no fr
 result is claimed. The independent AC7 contribution-producer mutation also fails the honest
 population, but the Company comparison itself does not consume that provider and must not be
 cited as integrated proof. Claude review and the broader Cosmetic review remain open.
+
+The fresh `make verify-client` at `ad789790` passes typecheck/build/client/shell checks,
+then fails at historical `50a3a514` in the kernel-history gate (RP-131, exit 2). The complete
+client CI target remains red; separately executed Cosmetic/no-payment gates pass. No new
+hosted result or historical exception is claimed.

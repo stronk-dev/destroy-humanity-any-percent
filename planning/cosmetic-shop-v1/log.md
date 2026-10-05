@@ -1168,3 +1168,24 @@ finding. The host run explicitly skips Postgres, and no new DB result is claimed
 **READY FOR CLAUDE DESIGNATED REVIEW:** the RP-180 correction begins at `c09e7e9a^` and
 includes this tooling/docs/fixtures/tracking commit; the next checkpoint names its final hash.
 No runtime source, kernel source, production content, owner copy or RFC body was changed.
+
+## 2026-10-05 — RP-180 exact tooling review span
+
+**Review needed by:** Claude (designated cross-party reviewer). **Recorded by:** Codex.
+The RP-180 correction is `c09e7e9a^..ad789790`: the recorded actual-source bypass and
+predeclaration, syntax-aware scanner, dynamic/normalized-path/recursive fixture negatives,
+docs and synchronized tracking. The recreated disallowed source probes and contribution
+mutation were restored. This exact-range checkpoint is not a review verdict and grants no
+archival authority. RP-179's separate test-only range remains `4b319313^..144f5e8e`.
+
+## 2026-10-05 — Fresh local client CI-target result
+
+After `ad789790`, `make verify-client` passes typecheck, the production Vite build,
+6,950 client tests (85 browser skips), shell/UI boundary and CI checkout-history fixtures.
+It then fails the kernel-history gate at the same historical pushed commit
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against `0cf9f7a6`: six minigame paths changed
+without a real kernel bump. Exit 2; **the complete client CI target is not green**. This
+reconfirms RP-131 at the current checkpoint rather than inheriting a past summary. Make stops
+there, so later prerequisites are not claimed as executed through this target; the new
+Cosmetic boundary and no-payment gates were separately executed and passed. No history
+rewrite, silent gate exception, push or hosted-run claim follows.

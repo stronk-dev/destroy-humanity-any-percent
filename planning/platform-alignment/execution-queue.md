@@ -8,6 +8,7 @@ or normalized escaping specifiers when they cross the package boundary. Top-leve
 actual source probes fail; 22 negatives and the restored local client/type gates pass. This is
 **READY FOR CLAUDE DESIGNATED REVIEW**, not full C7/C8 approval or fresh hosted CI. The client
 CI job already invokes it through `make verify-client`; no workflow change was made.
+Exact corrective range: `c09e7e9a^..ad789790`.
 
 ## Current Cosmetic Shop C4/AC6 second-wearer evidence — 2026-10-05
 
