@@ -712,3 +712,32 @@ production epoch, owner copy, persisted schema, public wire, CI or history excep
 Do not archive or treat this as complete A2/AR7 acceptance. The fresh complete-history failure
 remains explicit. Record correction: there were THREE failed patch-context attempts, not the
 two stated above; none applied edits. Executed probe ranges and outcomes are unchanged.
+
+## 2026-10-05 — RP-194 every-command byte-parity witness predeclaration (Codex)
+
+**Authority:** accepted AR7, original Claude A2/A3 content-gate range
+`508fe19a^..508fe19a`. Prior raw/value corrections do not prove this criterion.
+
+**Population:** every existing scenario and every attempted command in the current 16-scenario,
+60-attempt Go corpus (43 applied, 17 rejected), plus all 16 actual genesis snapshots. No new
+scenario/seed/command/content/result is authorized. First temporarily return a fabricated
+nonterminal result from TS choose_board, then separately return semantically identical but
+noncanonical snapshot bytes for that command. Run the old whole client population and record
+whether its final-only comparison survives each. Restore before retaining any instrumentation.
+Existing browser/Go oracles may discriminate other properties; do not claim universal invisibility.
+
+**Correction if reproduced:** promote the TEST corpus to v2 with actual Go-generated genesis
+and every post-attempt snapshot/result witnesses. Preserve v1 as the historical comparison
+artifact, with only v2 active generation/replay. TS compares exact bytes at genesis and after
+every attempt; rejected attempts compare unchanged snapshot, result and revision. Applied
+attempts compare actual nullable output results, not a result inferred from phase. Go generation
+clones captured bytes/results so later steps cannot overwrite witnesses.
+
+**Exit:** removing only added v2 witness fields and version from the generated data must recover
+the exact v1 structure (metadata/budget/scenarios/commands/terminal/results/content identity).
+Regeneration is byte-identical. Independently repeat both TS output mutations against the new
+case; each must fail. Tampering or omitting a generated post-attempt witness must fail the cold
+Go regeneration gate. Restore all probes before cold Go/client/type/build/boundary/vet and
+complete Linux browser verification. Corpus instrument and tests only: no retained runtime,
+balance, owner copy, kernel, content epoch, schema, public wire or CI change. Exact Claude
+corrective review is required; no full AR7/designated approval or archival is inferred.
