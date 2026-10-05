@@ -1587,3 +1587,37 @@ docs/tracking, and the separate RP-201/D-020 contract-conflict routing. Every pr
 kernel, corpus, balance/content, copy, public-wire and CI-workflow byte remains unchanged.
 No self-approval, full A4/A5/AC7/AC8, archival, push or deployment. The hash-pinning checkpoint
 is not a designated verdict. Next accepted evidence audit remains on the execution queue.
+
+## 2026-10-05 — A5 zero-reward and atomic Soul-gate predeclaration (Codex)
+
+Starting clean HEAD `2ead3a1d`. Authority: accepted AR1.5/AR1.6 and AC8/AC10;
+original Claude A5 range `e1c71d7c^..e1c71d7c`. Current new atomic-start witness is
+`15fe1ccc`; it supplies normal-Soul starts, not atomic low-Soul refusals. The older
+low-Soul Arcade population calls a different method and covers only Mine Grid. The older
+zero-credit assertions omit cap_reason_key even though AR1.6/AC8 name its absence.
+These are instrument questions, not claimed runtime defects.
+
+Cold old Go Arcade/production/replaycatalog and declared real-Postgres Arcade plus atomic
+Pitch start population first. Independently (never combined) disable ONLY the atomic start
+Soul check, then force ONLY Arcade resolution receipt cap_reason_key to the declared cap key
+while keeping zero credit/forfeit, neutral grades/rating and replay input unchanged. Execute
+old populations and restore. Record survival/fired controls before any test repair.
+
+If absent populations survive, retain test-only both-toy low-Soul atomic starts over real
+Founder v21/Company streams, exact named error, empty response, unchanged full state/revision/
+sequence and zero session/create-receipt rows, with normal-Soul positive controls. Add the
+explicit no-cap-reason receipt assertion to the existing zero-credit composed witness; do
+not replace its real engine commands, certified resolution or retry. Repeat each independent
+probe against the respective new witnesses, restore all runtime bytes. A quality attendance
+stamp is bookkeeping, not evidence that the neutral economic grade changed; do not assert
+whole quality-map immutability where platform C40 explicitly updates that stamp.
+
+AC9's direct before/after Wind Down and cross_gate population is absent in the current
+Arcade witness, which observes only repository activity. Keep that full requirement open
+for the next separately declared genuine Exit-action witness, not a repository-boolean or
+Tier-0-ineligible substitute. Public socket/receipt exposure and the C2 wire conflict remain
+blocked; internal proof cannot close public AC8. RP-201/D-020 remains unruled.
+
+No production/kernel, fixture/content, copy, wire/mint or CI changes. Final cold root Go/
+client/type/build/boundaries/vet/vectors/corpus/browser and real-DB selectors, exact Claude
+review span and tracking closeout. Historical RP-131 remains red without bypass or rewrite.
