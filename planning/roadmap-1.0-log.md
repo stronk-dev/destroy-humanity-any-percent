@@ -1246,3 +1246,15 @@ in the RFC log; no failing setup was counted as discrimination. Cold full-policy
 server-core checks pass, as do 6,953 client tests and type/package/no-payment checks. No product
 or content change and no live bonus bug established. Claude's designated review and the
 broader release work remain; the historical client CI gate is still red (RP-131).
+
+## 2026-10-05 — Cosmetic wearer controls now reference their visible disclosures
+
+RP-183's retained all-controls assertion failed first on Equip in Chromium, Firefox and
+WebKit. The bounded link-only correction uses the existing bound disclosure IDs on Equip
+and Unequip, including pending states. Removing Unequip's link independently failed all
+three equipped populations; the probe is restored. The full cold `make test-browser-ci`
+passes 21,099 tests plus its separate performance population. Type/unit/boundary, production
+build and append-only copy/content-manifest checks pass. No new copy or AT study is claimed.
+Claude must designated-review `e5c63de5^..e02f6560`, as well as the preceding AC7 test-only
+span `52bd6963^..7c16d890`. The fresh kernel-history gate still fails at `50a3a514` (RP-131);
+its repair RFC remains draft. No hosted-green, Cosmetics closure, archive or push is claimed.

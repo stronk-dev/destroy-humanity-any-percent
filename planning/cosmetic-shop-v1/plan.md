@@ -70,3 +70,25 @@ migration take the next free numbers at landing.
 Box evidence: each flipped box's exercising tests landed in that batch's commit
 (`afe6529b`, `8e315569`, `581886a4`, `500d944c`, `1a477d9e`, `1bba27ba`, `a4b22429`, and this
 C8 commit). See `log.md`.
+
+## Codex correction review index (2026-10-05)
+
+All rows below await **Claude's designated cross-party review**, not just recording a
+Codex first-filter result. Their predeclarations, executed failures and restored probes are
+in `log.md`. Reviewing them does not automatically approve the original Claude C1–C8 span;
+its bounded outstanding findings and ruling-author blockers still apply.
+
+| Finding / bounded correction | Exact Codex span |
+|---|---|
+| RP-173: snapshot reader contradictions | `ebb88bab^..547ed7f0` |
+| RP-175: raw JSON integer parity | `7644808d^..76a9fe04` |
+| RP-177: Postgres event payload key sets | `fca686c5^..ce7688a7` |
+| RP-178: cosmetics during Soul recovery | `380d854b^..646daa08` |
+| RP-179: second actual equip in shared replay | `4b319313^..144f5e8e` |
+| RP-180: syntax-aware package gate | `c09e7e9a^..ad789790` |
+| RP-181: both nonempty persisted Exit paths | `e7bc1c8b^..66cfa3db` |
+| RP-182: production receipts and frozen bonus consumer | `52bd6963^..7c16d890` |
+| RP-183: wearer-control disclosure links | `e5c63de5^..e02f6560` |
+
+Reuse the declared root Make/Compose targets from the logs; selected green checks are not
+green complete CI. RP-174 and RP-176 remain ruling-author body-reconciliation blockers.

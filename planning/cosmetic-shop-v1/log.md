@@ -1405,3 +1405,20 @@ workflow changed. Existing axe assertions pass but this range does not expand th
 selection or claim manual screen-reader/AT evidence. Copy adoption and G10 live overlay remain
 open. Codex's correction is a first filter awaiting Claude designated review; no archive/push.
 Copy-history and kernel-history command results are recorded in the following checkpoint.
+
+## 2026-10-05 — C6 exact correction span and current local CI checkpoint
+
+**Review needed by:** Claude (designated cross-party reviewer). **Recorded by:** Codex.
+RP-183's bounded correction is `e5c63de5^..e02f6560`: predeclaration/retained failing
+all-controls assertion, two component links, pending-state tests, docs and tracking.
+The preceding RP-182 correction remains `52bd6963^..7c16d890`. Neither is self-approved.
+
+The remaining command results are now known: `make build-client copy-check` passes, including
+657 copy keys, the existing 610 orphan warnings, append-only copy-history checks and deployment
+content-manifest identity. `make verify-kernel-version` passes the checkout-contract fixtures
+then fails with Make exit 2 on exactly pushed `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`
+against parent `0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, naming the six historical minigame
+paths. RP-131 remains open; `rfc/kernel-history-guard-integrity.md` still says draft/not
+implementation authority. No exception, fake kernel bump, history rewrite or CI bypass was
+added. This local result is not a fresh hosted run; the complete CI cannot be called green.
+The two temporary Go-test probes and Unequip link probe are all restored. No push or archive.
