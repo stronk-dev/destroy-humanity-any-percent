@@ -1180,3 +1180,23 @@ populations plus twenty cold repeats of the new six arms, full native Linux brow
 Every initial invalid instrument or unexpected miss remains visible. No production/schema,
 balance, copy, replay/save version, kernel, CI, activation or mint change is authorized. New
 tests await Claude designated review; every prior range and full 1.0 release obligation remains.
+
+Pre-execution instrument clarification: the fifth persistence refusal uses **unknown substrate**,
+not unknown species. During 25 hours the empty target of a plant request can itself become
+occupied, changing which ordered predicate fires. Substrate's unknown-ID predicate is independent
+of growth and still exercises salt initialization/cap truncation rollback. No product rule or
+population size changes; all six arms otherwise retain their declared controls.
+
+### SG5 initial persistence instrument result and correction
+
+Pure fifteen commands and eight gates pass in Go/TS; root client 7,348 / 106 intentional skips,
+zero type/Svelte diagnostics. First actual Postgres six-arm invocation is red at its final
+Company-history helper in every arm: `run log holds 0 garden credits, want 1`. Earlier due-growth,
+direct replay, full saved-state, outbox, retry/conflict, continuation and Founder-history checks
+passed before that assertion. This is not a completed passing population.
+
+The reused helper expects the number of Company **credit entries**, not genesis records. The
+declared arms never credit Company: refusals are Founder-only and plant/uproot are Founder-only.
+Correct the instrument before rerunning: explicitly require zero Company log entries both before
+and after, then replay the unchanged genesis with expectedCount 0. This follows the original
+no-Company-write contract rather than relaxing it; retain the initial red invocation in-range.
