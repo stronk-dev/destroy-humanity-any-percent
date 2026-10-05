@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-06, R-010 browser-witness diagnosis/correction under
-`f4f62eac` / `85ae9552` (test-only, designated review pending). Actual native Worker proves
+`f4f62eac` / `85ae9552` (implemented `3c96ade8`, full span `f4f62eac^..3c96ade8`,
+test-only, designated review pending). Actual native Worker proves
 that conflicting fixture refreshes can keep the display at `100` while prediction remains live.
 The initial zero-output WebKit control remains an invalid/red observation; readiness and
 steady-state measurement are now separately bounded. Original fixture authority agrees and

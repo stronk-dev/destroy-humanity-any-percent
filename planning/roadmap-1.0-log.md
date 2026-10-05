@@ -1885,3 +1885,7 @@ work: remaining pure Garden SG3/SG4 clock/tick and G2–G7 review, not a reduced
 Fresh kernel-history checkout/adversarial controls pass; the full guard fails unchanged RP-131
 at `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`. That release/CI obligation is not bypassed
 or closed by these browser results.
+
+Exact pending review: full R-010 span `f4f62eac^..3c96ade8`, union of initial diagnostic
+`f4f62eac^..0a30f0d0` and correction `85ae9552^..3c96ade8`. This pin is not approval,
+does not consume prior Garden requests, and authorizes no archival or release.

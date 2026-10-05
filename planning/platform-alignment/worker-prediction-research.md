@@ -120,3 +120,7 @@ Fresh `make verify-kernel-version` passes the checkout contract and adversarial 
 fails unchanged RP-131: `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
 `0cf9f7a6aba4038fadcdf35e5b94f56986164af7` changes six client minigame paths without a real
 kernel bump. Nothing in this test-only range repairs or bypasses that historical violation.
+
+Exact pending designated review: `f4f62eac^..3c96ade8` (`b299bbf5..3c96ade8`), union of
+initial diagnosis `f4f62eac^..0a30f0d0` and correction `85ae9552^..3c96ade8`.
+This names the complete implemented/evidence span; no approval or archival is recorded.

@@ -15,8 +15,10 @@ separate performance each. Root client/type/build pass. Kernel remains 0.3.151. 
 and hosted reliability remain open; no whole-CI/release/archival claim or designated approval.
 Fresh kernel-history gate still fails unchanged RP-131 after checkout/adversarial controls pass.
 Dossier: `worker-prediction-research.md`. Initial and corrective ranges both require Claude review.
+Exact full handoff `f4f62eac^..3c96ade8`, comprising diagnostic
+`f4f62eac^..0a30f0d0` and correction `85ae9552^..3c96ade8`; pending designated review.
 
-**NEXT SAFE ACTION:** pin the complete R-010 review range, then continue remaining accepted
+**NEXT SAFE ACTION:** continue remaining accepted
 Garden pure SG3/SG4 clock/tick and G2–G7 review. Preserve independent review, owner/author,
 activation and full nine-tier 1.0 gates; do not wait on an unavailable reviewer when safe accepted
 work remains. Future RP-218 recurrence must retain native trace rather than increase a bound.

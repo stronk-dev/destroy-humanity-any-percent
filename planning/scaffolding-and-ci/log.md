@@ -283,3 +283,12 @@ range before any completion claim.
   controls and cleanup are inspected; executed publication severing rejects all cases. This is
   self-review, not Claude's designated verdict. CI topology and 13 negative controls, client
   shell/UI boundaries and `git diff --check` pass.
+
+## 2026-10-06 — exact R-010 handoff pin
+
+- **Ready for Claude designated review, not approved:** complete span
+  `f4f62eac^..3c96ade8` (`b299bbf5..3c96ade8`). Initial diagnosis
+  `f4f62eac^..0a30f0d0` and separately predeclared correction `85ae9552^..3c96ade8`
+  union to that complete span. Inspect both the initial invalid/red control and final correction.
+- This pin records implementation `3c96ade8`; it is not a verdict or archival action. Earlier
+  Garden SG1/SG2/SG6/clock requests remain separate and pending. Nothing pushed.
