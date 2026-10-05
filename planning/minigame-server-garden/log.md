@@ -693,3 +693,34 @@ review, then remaining G2–G7, preserving the full nine-tier game and release o
 
 Exact test-only SG6 review span: `3fbf39af^..0db67895`. READY FOR CLAUDE DESIGNATED REVIEW,
 not approved or archival-eligible. SG1 and SG2 corrective review ranges remain separate.
+
+## 2026-10-06 — predeclaration: Garden harvest clock-source diagnosis
+
+Baseline `64d9ccab`. Review by: Codex. Recorded by: Codex. Authority: accepted SG3's Founder-log
+wall timestamp, SG6/SG-P2's under-lock timestamp freeze, Fiscal F8's no-state-change regression
+refusal. Original G5 already reports handler-time versus database-time drift; this is an
+executed diagnostic follow-up, not permission to change a shared clock policy.
+
+**Question/population:** through actual Service.Handle on declared Postgres, does harvest use
+the same database clock as ordinary Garden commands, or can the handler clock reject a valid
+harvest / advance persistent Fiscal and Garden state into the future? Each fresh existing G5
+fixture first applies an ordinary plant command to establish a real database-stamped Founder
+head. Matrix: mature-target harvest at database time, ten seconds behind, twenty-four hours
+ahead; immature-target harvest at database time and ten seconds behind. The lagged time must
+remain newer than the Company's evaluated cursor, excluding attendance-preflight rejection.
+No balance fixture rewrite, synthetic save-revision edit, browser/client time field or mock DB.
+
+**Observation/oracle:** record SQL database bounds, actual error/receipt, full encoded Founder
+and Company states, revisions, log/event/intent/faucet counts, persisted log/envelope timestamp,
+advance summary, seed/plant state and following ordinary command. Ordinary command is the
+positive database-clock control. A thrown error must leave all persisted snapshots unchanged;
+a valid immature refusal must be Founder-only. An ahead-of-database committed timestamp and
+following Fiscal regression are findings, never called acceptable behavior or release proof.
+
+**Exit:** execute all five arms cold with verbose non-skipped output; show the contract-facing
+database-bound expectation fail on any skewed committed arm, then retain explicitly labelled
+diagnostic observations of current behavior rather than a false acceptance assertion. Repeat
+the retained matrix cold. If a source correction is warranted, it gets a separate predeclared
+range; any shared-lane authority conflict routes to the author before changing runtime. This
+range is test/planning-only: no clock clamping, receipt/schema, attendance, payout, migration,
+balance, activation, copy, CI or kernel-version change. It does not close full G4/G5 or 1.0.
