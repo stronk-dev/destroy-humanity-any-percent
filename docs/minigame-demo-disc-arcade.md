@@ -63,6 +63,11 @@ outputs contain no mine positions or explosion; placed terminals disclose the de
 For each placed nonterminal state, independently forged mine lists and explosions must be
 refused by both the decoder and engine entry, while clean replay still reaches its corpus
 terminal. This is engine-level evidence, not public-route or assistive-technology acceptance.
+`testdata/arcade/snapshot-value-negatives-v1.json` supplies 19 shared value/row mutations of
+real unplaced, placed and terminal Mine Grid snapshots. Go and TS decoders and engine entries
+refuse malformed numeric fields, cell lists and revealed rows; clean controls remain usable.
+The TS decoder validates integer values and exact revealed-row keys before transition. These
+cases are not proof of complete raw JSON token/duplicate-key or semantic-state parity.
 
 ## Platform chain
 

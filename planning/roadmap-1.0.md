@@ -13,7 +13,7 @@ witness correction `fe49c408`,
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`
-(RP-145–RP-191 corrections,
+(RP-145–RP-192 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and whole client CI remains red on kernel history; browser corrections await cross-party
@@ -109,6 +109,14 @@ The old suite survives guard removal; four independent new severing probes fail.
 Go, root checks and full cold browser CI (21,111 tests plus performance) pass. This test-only
 supplement awaits Claude review; existing Go/browser controls remain positive evidence, and
 neither a production leak nor full AC4/public integration is claimed.
+RP-192 separately reproduces a real TS snapshot-grammar defect: malformed flags and an extra
+revealed-row field survive to quit results. The bounded decoder correction requires exact
+typed integer/list/row values, with 19 shared Go/TS negatives and clean controls. Four
+independent guard severings fail, then are restored; kernel identity is now 0.3.144. Cold
+Go, 6,992 client tests, type/build/boundaries/vet, byte-identical vectors and full cold browser
+CI (21,225 tests plus performance) pass. Two Go test-oracle error-class mistakes are disclosed
+in the per-RFC log; neither represented acceptance of the forged input. Claude review remains
+required. Full raw JSON/semantic snapshot parity and public Arcade integration are not proven.
 RP-185's stronger actual-preference
 component test exposed a real CSS specificity defect (RP-186), locally corrected with
 independent three-engine motion/caption failures. All Cosmetic cases, type/unit/build/gates

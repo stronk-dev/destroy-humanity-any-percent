@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "seed": "7",
+  "preset_id": "large",
+  "first_cell": 40,
+  "cases": [
+    {"name":"revision_fraction","stage":"unplaced","path":["revision"],"value":2.5},
+    {"name":"revision_string","stage":"unplaced","path":["revision"],"value":"2"},
+    {"name":"revision_null","stage":"unplaced","path":["revision"],"value":null},
+    {"name":"width_fraction","stage":"unplaced","path":["width"],"value":9.5},
+    {"name":"width_string","stage":"unplaced","path":["width"],"value":"9"},
+    {"name":"height_fraction","stage":"unplaced","path":["height"],"value":9.5},
+    {"name":"height_string","stage":"unplaced","path":["height"],"value":"9"},
+    {"name":"mines_fraction","stage":"unplaced","path":["mines"],"value":10.5},
+    {"name":"mines_string","stage":"unplaced","path":["mines"],"value":"10"},
+    {"name":"preset_number","stage":"unplaced","path":["preset_id"],"value":7},
+    {"name":"flag_fraction","stage":"unplaced","path":["flags"],"value":[1.5]},
+    {"name":"flag_string","stage":"unplaced","path":["flags"],"value":["1"]},
+    {"name":"revealed_cell_fraction","stage":"placed","path":["revealed",0,"cell"],"value":0.5},
+    {"name":"revealed_cell_string","stage":"placed","path":["revealed",0,"cell"],"value":"0"},
+    {"name":"adjacent_fraction","stage":"placed","path":["revealed",0,"adjacent"],"value":0.5},
+    {"name":"adjacent_string","stage":"placed","path":["revealed",0,"adjacent"],"value":"0"},
+    {"name":"revealed_extra_key","stage":"placed","path":["revealed",0,"extra"],"value":true},
+    {"name":"mine_cell_fraction","stage":"terminal","path":["mine_cells"],"value":[1.5]},
+    {"name":"mine_cell_string","stage":"terminal","path":["mine_cells"],"value":["1"]}
+  ]
+}

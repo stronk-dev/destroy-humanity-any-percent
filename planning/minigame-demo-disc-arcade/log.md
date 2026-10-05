@@ -502,3 +502,80 @@ verification. Exact Claude corrective review remains mandatory; no archival or p
 **Limits:** this population does not establish raw JSON token/duplicate-key parity, every
 semantic impossibility, Snake validation, public-route acceptance or real storage migration.
 Those are distinct follow-up diagnostics, not silently covered by a value-grammar test.
+
+**Executed finding RP-192 (before production edits):** 19 shared negatives produce 18 TS
+decoder failures and three apply failures: fractional flags, string flags and an extra
+revealed-row key survive to real quit outputs. Full client run: 21 failed / 6,971 passed /
+88 browser-only skips, Make 2. The remaining apply cases already refuse through identity,
+catalog or phase guards; do not claim they all yielded corrupt results.
+
+**Go instrument correction:** all 19 decoder negatives reject, but the first Go test wrongly
+requires `ErrInvalidTenant` from the registry too. The registry canonical/input/tenant-error
+boundary returns `ErrTenantDivergence` for 11 malformed shapes instead; it does not accept them.
+Record the initial cold Make 2 as an oracle error, not a runtime defect. Refine the population
+to separately require direct tenant Apply's `ErrInvalidTenant`, registry refusal as one of its
+two fail-closed classes, and unchanged clean controls. This names the exact boundary without
+accepting arbitrary errors or modifying production. No TS defect is inferred from that Go
+oracle failure; the TS resolved quit outputs independently reproduce the defect.
+
+**Further Go oracle correction:** the direct tenant also deliberately maps invalid stored
+snapshots to `ErrTenantDivergence` (`mine_grid.go` Apply's decoder/identity/catalog boundary).
+The second cold run refuses every input but fails all 19 on my still-wrong expected error
+identity. Refine direct Apply to that exact error; keep decoder `ErrInvalidTenant` and
+registry's two precise classes. This is recorded as my instrument error, not a product fix.
+Clean direct-vs-registry outputs must match exactly, including the real terminal result.
+
+## 2026-10-05 — RP-192 Mine Grid snapshot value grammar corrected (Codex)
+
+**Review by:** Codex. **Recorded by:** Codex. **Verdict: CHANGES REQUIRED**, bounded A2
+snapshot-value grammar on original Claude `508fe19a^..508fe19a`. The unchanged TS decoder
+accepted 18 of 19 shared malformed snapshots, and real apply carried fractional/string flags
+and an extra revealed-row key into quit results. Other apply cases already failed via later
+guards. Go refuses all 19 at decoder, direct-tenant and registry boundaries after the two
+disclosed test-oracle error-class corrections above; cold package run exits 0. No public
+route exploit or missing server protection is alleged.
+
+The bounded TS correction requires numeric integer types for revision/dimensions/mines,
+string-or-null preset identity, integer list cells, and exact typed `adjacent`/`cell` rows.
+The shared 19-row fixture mutates actual fixture-engine states, not hand-invented snapshots.
+Clean decoder and direct/registry apply controls retain their existing terminals or exact
+terminal-phase refusal. The watched runtime correction honestly advances shared kernel
+identity 0.3.143→0.3.144 in all three version files; no balance, content epoch, copy, schema,
+public API or CI file changes.
+
+**Independent executed severings (full client runs, each Make 2 / 88 browser-only skips):**
+
+- Remove only the new top-level revision/dimension/mine/preset guards → 9 named decoder
+  failures / 6,983 passed. Existing later apply guards still refuse those inputs.
+- Remove only integer validation from sorted lists → 6 failures / 6,986 passed: four decoder
+  cases and the two flag apply cases that again resolve real quit terminals.
+- Remove only exact revealed-row keys → decoder AND apply extra-key cases fail:
+  2 failed / 6,990 passed.
+- Remove only adjacency integer validation → both adjacency decoder cases fail:
+  2 failed / 6,990 passed. Catalog-aware apply remains defense in depth here.
+
+All probes are restored; retained production diff is only the stated validation and version
+change. Restored cold Go `./decimal ./arcade ./kernel ./minigame ./replaycatalog` passes with
+`-count=1`. Root type/client/build/boundaries/no-payment/vet/vectors-check exits 0: 6,992 client
+tests / 88 browser-only skips, zero Svelte errors/warnings, 6,296 numeric vectors regenerated
+byte-identically. Broad browser and fresh kernel-history outcomes follow when terminal; no
+selected rerun or guard bypass substitutes for them. **READY FOR CLAUDE DESIGNATED REVIEW**
+only after those outcomes are recorded; no full A2/AR7 approval or archival follows.
+
+**Broad browser outcome:** restored cold root `make test-browser-ci` exits 0: 255 file
+populations / 21,225 tests passed / 3 intentional performance skips in 35.37 s; separate
+Chromium performance case passes (1 / 20 filtered out). This is local, declared Linux CI-lane
+evidence, not hosted reliability. The population grows by the new 38 unit cases run in each
+browser; it is not 114 new player journeys. **READY FOR CLAUDE DESIGNATED REVIEW**.
+
+**Fresh complete-history outcome:** root `make verify-kernel-version` exits 2 at the unchanged
+pushed RP-131 commit `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444`, parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, on its six minigame-prefix files. The CI checkout
+contract and its negative fixtures pass first. The walk stops before judging this new range;
+do not call it green because version 0.3.144 and local kernel parity tests pass. No history
+rewrite, exception, artificial version signal or guard bypass was introduced. The history
+repair RFC remains draft and separate from accepted Arcade engine work.
+
+The separately executed root `node client/tools/verify-kernel-version-fixtures.mjs` exits 0
+(`kernel history guard adversarial fixtures ok`). That validates the guard's negative controls,
+not the failing repository history. No bypass is retained.

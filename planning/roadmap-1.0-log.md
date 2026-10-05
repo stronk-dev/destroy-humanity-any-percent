@@ -1367,3 +1367,20 @@ tests); full cold Linux browser CI passes 21,111 tests plus separate performance
 test-only, ready for Claude review, not full AC4/public integration or complete CI green.
 Next is bounded snapshot grammar parity diagnosis; RP-131 and broader reviews/rulings,
 rights/content/clean-host release proof remain open. No push, archival or deployment.
+
+## 2026-10-05 — Malformed Mine Grid snapshot values reproduced and rejected
+
+RP-192's shared 19-input population finds 18 TS decoder acceptances and three real apply
+outputs preserving malformed flags or an extra revealed-row field. The watched TS decoder
+correction now rejects those values; kernel advances honestly to 0.3.144. Go rejects all 19,
+with distinct decoder/direct-tenant/registry error identities. My first two Go oracle
+mistakes are disclosed rather than reclassified as production defects. Clean direct/registry
+and TS controls retain their existing behavior.
+
+Independent top-level, list-element, extra-row and adjacency guard probes each fail and are
+restored. Cold Go decimal/Arcade/kernel/minigame/replay, 6,992 client tests, type/build/
+boundaries/vet and byte-identical numeric vectors pass. Full cold Linux browser CI passes
+21,225 tests plus separate performance. Claude review remains mandatory; no public exploit,
+full A2/AR7 acceptance or complete green CI claim. Next: predeclared raw JSON and nested-null/
+missing-value snapshot parity diagnosis, separate from this value-grammar correction.
+Owner wire/copy/mint, history-guard authority and broader release obligations remain open.

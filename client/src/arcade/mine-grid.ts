@@ -159,7 +159,10 @@ export function decodeMineGridSnapshot(source: string): Mutable {
   const keys = ["arcade_content_hash", "arcade_schema_version", "exploded_cell", "first_cell", "flags", "height", "mine_cells", "mines", "phase", "preset_id",
     "revealed", "revision", "width"];
   if (value === null || typeof value !== "object" || Object.keys(value).sort().join("\0") !== keys.join("\0") || value.arcade_schema_version !== 1 ||
-    !/^sha256:[0-9a-f]{64}$/.test(value.arcade_content_hash) || !["setup", "playing", "terminal"].includes(value.phase) || value.revision < 1 ||
+    typeof value.arcade_content_hash !== "string" || !/^sha256:[0-9a-f]{64}$/.test(value.arcade_content_hash) ||
+    !["setup", "playing", "terminal"].includes(value.phase) || !safeInteger(value.revision) || value.revision < 1 ||
+    value.preset_id !== null && typeof value.preset_id !== "string" ||
+    !safeInteger(value.width) || !safeInteger(value.height) || !safeInteger(value.mines) ||
     !Number.isSafeInteger(value.first_cell) || value.first_cell < -1 || !Number.isSafeInteger(value.exploded_cell) || value.exploded_cell < -1 ||
     !Array.isArray(value.revealed) || !Array.isArray(value.flags) || !Array.isArray(value.mine_cells)) throw new SyntaxError("invalid mine_grid snapshot");
   const cells = value.width * value.height;
@@ -169,8 +172,12 @@ export function decodeMineGridSnapshot(source: string): Mutable {
       value.first_cell >= cells || value.exploded_cell >= cells) throw new SyntaxError("invalid mine_grid snapshot board");
   // The hidden-information invariant: no mine position before terminal.
   if (value.phase !== "terminal" && (value.mine_cells.length !== 0 || value.exploded_cell !== -1)) throw new SyntaxError("mine_grid snapshot leaks mines");
-  const sortedWithin = (list: readonly number[]) => list.every((cell, index) => cell >= 0 && cell < cells && (index === 0 || list[index - 1]! < cell));
-  if (!sortedWithin(value.revealed.map((row) => row.cell)) || value.revealed.some((row) => row.adjacent < 0 || row.adjacent > 8) ||
+  const sortedWithin = (list: readonly number[]) => list.every((cell, index) => safeInteger(cell) && cell >= 0 && cell < cells && (index === 0 || list[index - 1]! < cell));
+  const validRevealed = (row: unknown): row is MineGridRevealed => row !== null && typeof row === "object" && !Array.isArray(row) &&
+    keysOf(row as Record<string, unknown>) === "adjacent\0cell" &&
+    safeInteger((row as MineGridRevealed).cell) && safeInteger((row as MineGridRevealed).adjacent) &&
+    (row as MineGridRevealed).adjacent >= 0 && (row as MineGridRevealed).adjacent <= 8;
+  if (value.revealed.some((row) => !validRevealed(row)) || !sortedWithin(value.revealed.map((row) => row.cell)) ||
     !sortedWithin(value.flags) || !sortedWithin(value.mine_cells)) throw new SyntaxError("invalid mine_grid snapshot cells");
   return value;
 }

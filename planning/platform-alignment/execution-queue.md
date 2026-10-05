@@ -1,5 +1,20 @@
 # Executable queue
 
+## Current Arcade snapshot value-grammar correction — 2026-10-05
+
+RP-192 reproduces malformed TS state acceptance: 18 decoder cases and three real quit outputs
+carrying malformed flags/extra row keys. The bounded watched TS decoder correction now rejects
+them, with kernel 0.3.144 and 19 shared Go/TS negatives plus clean controls. Four independently
+severed guard groups fail. Cold Go, root type/unit/build/boundaries/vet/vectors pass (6,992
+client tests); full cold Linux browser CI passes 21,225 tests plus separate performance.
+**READY FOR CLAUDE DESIGNATED REVIEW**, not wider A2/AR7 or complete CI acceptance.
+
+**NEXT SAFE ACTION:** predeclare and execute raw JSON snapshot grammar parity diagnostics
+(duplicate keys, integer tokens, nullable/missing nested values) in accepted AR3/AR7. Do not
+infer parity from JSON.parse'd value tests or change mechanics/public wire/mint under that
+authority. Record actual counterexamples and Go/TS boundary differences before retaining a
+correction. RP-131's history RFC is still draft; owner wire/copy/mint and release gates remain.
+
 ## Current Arcade hidden-state witness correction — 2026-10-05
 
 RP-191 now executes all eight existing Mine Grid scenarios, observing 44 actual outputs and
@@ -11,7 +26,7 @@ type/build/boundaries/vet and full cold browser CI (21,111 tests plus performanc
 **READY FOR CLAUDE DESIGNATED REVIEW**, not full AC4, public integration or archival.
 Exact Codex test-only corrective range: `24b7b9d7^..fe49c408`.
 
-**NEXT SAFE ACTION:** bounded Go/TS snapshot grammar parity diagnosis under accepted AR3/AR7.
+**Next at this dated checkpoint:** bounded Go/TS snapshot grammar parity diagnosis under accepted AR3/AR7.
 Reproduce malformed-input acceptance before alleging a production defect; predeclare the
 population and correction separately from this test-only range. Owner wire/copy/mint and
 RP-131's draft-only history repair remain separate blockers, not waived release obligations.
