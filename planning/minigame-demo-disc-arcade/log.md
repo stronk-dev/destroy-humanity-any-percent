@@ -1500,3 +1500,29 @@ REVIEW. Includes separate predeclaration, red/fix/severing loader and complete-c
 the eight-line runtime refusal, honest kernel 0.3.147 and canonical/tracking reconciliation.
 The original RP-199 review remains separately `8b00b6e8^..3b9fd0d8`. Neither checkpoint
 substitutes for Claude's verdict or authorizes archival. Work proceeds on accepted A4/AC7.
+
+## 2026-10-05 — A4/AC7 resolver and atomic-start predeclaration (Codex)
+
+Starting clean HEAD `13cfe371`. Authority: accepted AR-P1/P2/P3 and AC7; original Claude
+A4/A5 range `e1c71d7c^..e1c71d7c`. Inspect actual bundle resolution and both start methods.
+Read-derived question: AC7's Pitch-less bundle conflicts with MA-C15's explicit owner-ruled
+`minigame_api → pitch` dependency, enforced in Go/TS composition and replay validity.
+Submit otherwise complete freshly hashed bundles with only Pitch removed in both runtimes;
+keep unchanged complete-bundle positive controls. A refusal is a routed contract conflict,
+not permission to weaken the earlier ruling or relabel a bypassed test as integrated proof.
+
+Cold old Go Arcade/production/replaycatalog and declared Postgres Arcade plus atomic Pitch
+start populations first. Independently sever each Arcade content-resolver pair and execute
+the existing chain gate; preserve working witnesses. Then temporarily reject only Arcade
+definitions in StartMinigameAPISession and run the old populations to check whether they
+exercise that actual atomic start entry (the original Arcade witness uses the older start).
+Restore all probes. If the new-entry population is absent, retain test-only real-Postgres
+starts for BOTH toys from actual Founder v21 streams, server-owned seed/sequence, persisted
+genesis/state and idempotent retries; preserve existing v20 helper behavior and Pitch proof.
+Re-run the same Arcade-only start severing against the supplement; no acceptance based on
+test names, skipped DB cases or handcrafted expected genesis.
+
+No runtime, kernel, corpus, balance/content, copy, public-wire/mint or CI changes. This proves
+an internal coordinator/DB seam, not public socket/API exposure, Pitch-less acceptance or
+all AC7. Route any executed contract conflict to the ruling authors/owner. Final cold root
+checks and exact Claude review handoff; historical RP-131 remains separately red/unbypassed.
