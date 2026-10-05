@@ -1137,3 +1137,46 @@ instrument-boundary correction `24512573` and tests/derivation/full evidence `da
 No production diff in this span; kernel remains 0.3.152. Every initial invalid attempt and
 actual-source failing probe is disclosed. No earlier SG1/SG2/SG6/clock/R-010 request is consumed;
 all remain pending. No archive, mint, publication or release promotion.
+
+## 2026-10-06 — SG5 command order and rollback witness predeclaration
+
+Baseline `1dbeafbd`; accepted SG5/AC7 and SG-P3. Scope is test-only review of original G1/G4
+command validation and refusal atomicity, not new command semantics or full G1/G4 approval.
+
+Pure population: fifteen shared command cases, with actual catalog/state admission and literal
+expected rejection category/detail or result plus complete state bytes. Plant compounds dormant,
+occupied and unknown predicates to verify ordered validation; unknown and uncollected seeds each
+have their own case and a free boundary-cell planting control. Uproot covers empty and dormant
+nonstarter removal without collecting a seed. Harvest covers missing-first/immature-last,
+immature-first/missing-last, and mature-first/immature-last without partial removals. Substrate
+covers unknown/unchanged during lockout, one millisecond before/equal/after expiry, with exact
+partial-tick disclosure and re-anchor/stamp. Eight gate combinations (two Soul modes × unlock ×
+human-lock booleans) verify unlock precedence and the inert unrelated gate. This does not claim
+raw HTTP decoding or transaction proof from pure methods.
+
+Persistence population: six real-Service/Postgres arms using admitted fixture genesis, no waits
+or product-clock changes. Anchor four ordinary refusal cases 2.5 ticks in the past so the resolved
+pre-step must report ≥2 ticks and mature the retained A plant: occupied plant, empty uproot,
+unchanged substrate, mixed mature/empty harvest. Fifth refusal initializes null salt and reports
+above-cap truncation on a 25-hour-old anchor before unknown-species rejection. Sixth matched
+applied plant must really persist advancement. Use the existing fixture with an optional test-only
+genesis configurator before CreateStream; never edit committed save rows or production artifacts.
+
+Refusals must preserve full Founder/Company state and both revisions, events, Company logs and
+faucet windows/quota. Only Founder rejection log, intent record and receipt outbox may be added.
+Identical retry adds nothing, changed-request same-ID fails idempotency, and a subsequent applied
+command remains possible. Reapply the actual recorded row to the original saved state and verify
+full in-memory rollback too: Store's rejection branch is a second boundary, not evidence that the
+transition itself restores. Verify stored Founder history and unchanged Company history.
+
+Discrimination: separately reverse pure harvest missing/immature precedence, mutate seed
+collection only before a pure refusal, and disable the actual Founder transition's refusal
+restoration. Each must fail its corresponding new population, then restore exactly. Store may
+still preserve persisted state when in-memory restoration is severed; report that defense rather
+than claim the mutation commits a save. No source/test mutation while another gate runs.
+
+Gates: cold Garden/production/save, complete root client/type/build/corpus, real Postgres Garden
+populations plus twenty cold repeats of the new six arms, full native Linux browser/performance.
+Every initial invalid instrument or unexpected miss remains visible. No production/schema,
+balance, copy, replay/save version, kernel, CI, activation or mint change is authorized. New
+tests await Claude designated review; every prior range and full 1.0 release obligation remains.
