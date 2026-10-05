@@ -196,6 +196,78 @@ async function snapshot(page) {
   });
 }
 
+function plainFixtureCopy(key) {
+  const artifact = JSON.parse(readFileSync(path.join(clientRoot, "src/copy/generated/catalog.json"), "utf8"));
+  const row = artifact.entries.find((entry) => entry.key === key);
+  if (!row || row.params.length !== 0 || row.era_variants !== null) {
+    throw new Error(`cosmetic G10 fixture requires an unparameterized, era-independent copy key: ${key}`);
+  }
+  return row.text;
+}
+
+async function founderDOMIntent(page, requests, control, kind, expectedFields) {
+  const before = await snapshot(page);
+  const matching = () => requests.filter((request) => request.method() === "POST" &&
+    new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === kind);
+  const priorCount = matching().length;
+  await control.click({ trial: true, timeout: 30_000 });
+  const responseTask = page.waitForResponse((response) => response.request().method() === "POST" &&
+    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === kind, { timeout: 30_000 });
+  await control.click();
+  const response = await responseTask;
+  const receipt = await response.json();
+  const emitted = matching();
+  const body = emitted.at(-1)?.postDataJSON();
+  const requiredKeys = ["intent_id", "kind", "expected_revision", ...Object.keys(expectedFields)].sort();
+  if (emitted.length !== priorCount + 1 || !body || Object.keys(body).sort().join("\0") !== requiredKeys.join("\0") ||
+      body.expected_revision !== before.founder_revision || Object.entries(expectedFields).some(([key, value]) => body[key] !== value) ||
+      response.status() !== 200 || receipt.outcome !== "applied" || receipt.founder_revision !== before.founder_revision + 1) {
+    throw new Error(`cosmetic G10 ${kind} did not emit one exact Founder-scoped applied intent: ${JSON.stringify({ body, receipt, emitted: emitted.length - priorCount })}`);
+  }
+  return receipt;
+}
+
+function assertPersistedWearer(view, petID, worn) {
+  const pets = view.features?.pet_adoption?.pets;
+  const arm = view.features?.cosmetics;
+  const item = arm?.items?.find((row) => row.cosmetic_id === "horse_armor");
+  const expectedWearers = worn ? [petID] : [];
+  if (pets?.length !== 1 || pets[0].pet_id !== petID || arm?.active !== true || item?.owned !== true ||
+      JSON.stringify(item.worn_by) !== JSON.stringify(expectedWearers) || arm.wearers?.length !== 1 ||
+      arm.wearers[0].pet_id !== petID || arm.wearers[0].worn !== worn) {
+    throw new Error(`cosmetic G10 persisted pet/wearer projection diverged: ${JSON.stringify({ pets, arm, petID, worn })}`);
+  }
+}
+
+async function openPetSurface(page) {
+  await page.getByRole("button", { name: plainFixtureCopy("pet.care.panel.title"), exact: true }).click();
+  await page.locator('main[data-surface="pet"]').waitFor({ state: "visible", timeout: 30_000 });
+}
+
+async function assertLivePetOverlay(page, { present, reducedMotion = false }) {
+  const surface = page.locator(".pet-care");
+  const overlay = surface.locator('.portrait .overlay[data-render="horse_armor"]');
+  if (!present) {
+    if (await surface.locator(".overlay").count() !== 0) throw new Error("cosmetic G10 live overlay remained after unequip");
+    return;
+  }
+  if (await overlay.count() !== 1 || !await overlay.isVisible()) throw new Error("cosmetic G10 live pet overlay missing after equip");
+  const details = await overlay.evaluate((node) => {
+    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+    const text = [];
+    while (walker.nextNode()) if (walker.currentNode.textContent.trim()) text.push(walker.currentNode.textContent);
+    return { reaction: node.dataset.reaction, animate: node.dataset.animate, hidden: node.getAttribute("aria-hidden"), text,
+      earsVisible: getComputedStyle(node.querySelector(".ears-back")).display !== "none",
+      animation: getComputedStyle(node.querySelector(".flick")).animationName,
+      reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches };
+  });
+  if (details.reaction !== "annoyed" || details.hidden !== "true" || details.text.length !== 0 || !details.earsVisible ||
+      details.reducedMotion !== reducedMotion ||
+      (reducedMotion ? details.animation !== "none" : details.animation === "none")) {
+    throw new Error(`cosmetic G10 live pet reaction/presentation invalid: ${JSON.stringify(details)}`);
+  }
+}
+
 try {
   const hash = buildFixtureRoot();
   resetTestDatabase();
@@ -329,11 +401,62 @@ try {
   if (afterReload.features?.cosmetics?.items?.[0]?.owned !== true || await shelf.locator("p.receipt[role=status]").count() !== 0) {
     throw new Error(`cosmetic AC14 reload did not recover server-owned state: ${JSON.stringify(afterReload.features?.cosmetics)}`);
   }
+
+  // G10: real adoption and wearing, not an injected pet or a literal equipped
+  // snapshot. All gameplay writes originate from the built client's DOM.
+  const availability = afterReload.features?.pet_adoption?.pet_adoption;
+  if (!availability || availability.count !== 0) throw new Error("cosmetic G10 bootstrap lacks the empty real adoption producer");
+  const nameKey = await page.locator('input[name="pet-name"]:checked').inputValue();
+  const adoption = await founderDOMIntent(page, requests,
+    page.getByRole("button", { name: plainFixtureCopy("pet.adoption.action.adopt"), exact: true }), "adopt_pet",
+    { species_id: availability.starter_species_id, name_key: nameKey });
+  const petID = adoption.pet_id;
+  if (typeof petID !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(petID)) {
+    throw new Error("cosmetic G10 adoption returned no real pet identity");
+  }
+  assertPersistedWearer(await snapshot(page), petID, null);
+  const equip = await founderDOMIntent(page, requests, shelf.getByRole("button"), "equip_cosmetic",
+    { cosmetic_id: "horse_armor", pet_id: petID });
+  if (equip.event?.kind !== "cosmetic_equipped.v1" || equip.event.payload?.pet_id !== petID ||
+      equip.event.payload?.cosmetic_id !== "horse_armor" || equip.event.payload?.replaced_cosmetic_id !== null) {
+    throw new Error(`cosmetic G10 equip returned no exact wearing event: ${JSON.stringify(equip)}`);
+  }
+  assertPersistedWearer(await snapshot(page), petID, "horse_armor");
+  await openPetSurface(page);
+  await assertLivePetOverlay(page, { present: true });
+  directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
+  await page.reload({ waitUntil: "networkidle" });
+  assertPersistedWearer(await snapshot(page), petID, "horse_armor");
+  await openPetSurface(page);
+  await assertLivePetOverlay(page, { present: true });
+
+  // Exercise the browser preference and the fresh mounted host's propagation,
+  // not merely a fixture prop named reducedMotion on the isolated component.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
+  await page.reload({ waitUntil: "networkidle" });
+  assertPersistedWearer(await snapshot(page), petID, "horse_armor");
+  await openPetSurface(page);
+  await assertLivePetOverlay(page, { present: true, reducedMotion: true });
+  await page.locator("nav button").first().click();
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  const unequip = await founderDOMIntent(page, requests, shelf.getByRole("button"), "unequip_cosmetic", { pet_id: petID });
+  if (unequip.event?.kind !== "cosmetic_unequipped.v1" || unequip.event.payload?.pet_id !== petID || unequip.event.payload?.cosmetic_id !== "horse_armor") {
+    throw new Error(`cosmetic G10 unequip returned no exact wearing event: ${JSON.stringify(unequip)}`);
+  }
+  assertPersistedWearer(await snapshot(page), petID, null);
+  await openPetSurface(page);
+  await assertLivePetOverlay(page, { present: false });
+  directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
+  await page.reload({ waitUntil: "networkidle" });
+  assertPersistedWearer(await snapshot(page), petID, null);
+  await openPetSurface(page);
+  await assertLivePetOverlay(page, { present: false });
   directViolations.push(...await page.evaluate(() => globalThis.__cosmeticN5Failures));
   if (violations.length || directViolations.length || pageErrors.length) {
     throw new Error(`cosmetic AC14 network/page violations: ${JSON.stringify({ violations, directViolations, pageErrors: pageErrors.map(String) })}`);
   }
-  console.log(`composed Cosmetic AC14: T0 locked → visible T1 Buy → one applied intent → server-owned reload; N5 requests ${requests.length}, no violation; ${(Date.now() - startedAt) / 1000}s: PASS`);
+  console.log(`composed Cosmetic AC14/G10: T0 locked → T1 Buy → owned reload → DOM adopt/equip → live annoyed overlay → worn reload/reduced motion → DOM unequip → unworn reload; N5 requests ${requests.length}, no violation; ${(Date.now() - startedAt) / 1000}s: PASS`);
 } finally {
   await browser?.close();
   for (const socket of proxySockets) socket.destroy();

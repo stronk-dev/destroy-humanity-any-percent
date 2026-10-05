@@ -1448,3 +1448,63 @@ plan, live execution queue and the 1.0 board against actual results. No product,
 RFC body or kernel change is planned. This is an integrated controlled-fixture witness, not a
 production mint or approval of the unresolved GS4×PA7 contract. Claude designated review of
 Codex's evidence supplement remains mandatory; no archival, status promotion or push.
+
+## 2026-10-05 — G10 honest path and additional motion-proof predeclaration
+
+The first cold real-server extended driver passed in 11.849 seconds, with 67 observed requests.
+It adopted a server-created identity through the DOM, equipped the persisted item, mounted the
+live annoyed/no-text overlay, reloaded wearing, selected the actual browser reduced-motion
+preference on a fresh mount and unequipped with ownership preserved. Disabling only the
+PetCareSurface overlay mount then failed specifically with `cosmetic G10 live pet overlay
+missing after equip` (exit 1); that source mutation is restored.
+
+The motion assertion now asks for the ruled computed static outcome, not a particular internal
+animate prop: the CSS preference and the host prop are independent defenses, so either alone
+may lawfully keep the pose static. Predeclare a combined temporary probe that defeats both
+those defenses and require the actual reduced-motion population to fail on its computed
+animation, then restore both files. A surviving single-defense probe would not be a defect.
+The initial default-sandbox Docker start failed before running; the same named disposable
+service was started under narrow approved local-test escalation. No operator database is used.
+
+## 2026-10-05 — RP-184 persisted pet workflow evidence and truthful capability reconciliation
+
+**Implemented / recorded by:** Codex. **Review needed by:** Claude (designated cross-party).
+This is a test-only supplement and docs correction, not a production mount fix. The mount
+already landed in Garage `7a61e4b6`; the stale absence claim is removed from Cosmetics docs.
+G10 release acceptance remains open, distinct from implementation presence and fixture evidence.
+
+The retained existing composed driver now keeps its Buy/reload checks and continues through
+DOM adoption, equip, the actual pet nav/sprite, worn reload, the browser's real reduced-motion
+preference on a fresh mount, unequip and unworn reload. Each new gameplay action must emit
+exactly one exact-key POST with the current Founder revision and applied incremented receipt.
+Pet identity comes from the server adoption receipt, never a seed. Equip/unequip events and
+persisted projections must match it; the item stays owned after removing the overlay. Every
+gameplay write originates in the DOM. Read-only authenticated snapshots inspect results.
+
+Executed discrimination (all production mutations restored):
+
+- Honest first actual composed path passes (11.849 seconds, 67 requests).
+- Disable only the PetCareSurface consumer: fails `cosmetic G10 live pet overlay missing after
+  equip` (exit 1), despite successful persisted acquisition/adoption/equip.
+- Defeat both independent reduced-motion defenses (host animate prop and overlay CSS media
+  rule): fails after actual browser preference/reload with `reducedMotion:true` and non-static
+  computed `animation:"svelte-5vo3xf-flick"` (exit 1). The assertion checks the ruled static
+  outcome, not a specific internal implementation flag.
+- Restored complete `make test-game-ui-composed GAME_UI_COMPOSE_FILES='-f
+  compose.game-ui-test.yml -f compose.game-ui-arm64.yml'` passes both drivers. The original driver
+  observes 19 actual manual clicks/claimed active.production, a Fiscal→Pitch terminal with 5
+  UI commands, both terminal states, continuation and WebSocket recovery. The extended Cosmetic
+  driver then passes in 6.408 seconds with 66 requests. Both drivers build and run the actual
+  client/server, and the declared temporary Postgres database is reset by the existing setup.
+- Cold full `make test-browser-ci` passes 252 file populations/21,099 tests (3 intentional
+  performance-case skips), then the separate Chromium performance case (1 pass/20 filtered
+  skips). These include shared unit/vector cases, not 21,099 distinct integrated journeys.
+- Typecheck, 6,953 client unit tests (85 browser skips), shell/UI, cosmetic-package and
+  no-payment boundaries pass. `node --check` and `git diff --check` pass.
+
+The synthetic epoch and Company cash prerequisite seed remain explicit controlled test setup;
+no content was minted and no pet/ownership/equip state was injected. The pet/adoption labels
+still use the generated candidate copy, not owner-adopted final prose. This does not reconcile
+GS4×PA7, approve broader Garage/Cosmetics ranges, close G10 for release or provide a manual AT
+study. The current CI still has RP-131's historical kernel-history failure, not a fresh hosted
+green result. No runtime byte, kernel identity, catalog, copy, RFC body or workflow changed.

@@ -58,7 +58,12 @@ migration take the next free numbers at landing.
   attempts blocked before a request remain unproved; the real-server AC14 flow is now locally
   witnessed but awaits Claude's cross-party review. Claude's
   review of both Codex test ranges is required.
-- [ ] Integrated pet-panel overlay (release manifest G10) and owner adoption of the candidate copy.
+- [x] Controlled real-server G10 pet-overlay witness: the existing Garage mount now has actual
+  DOM adoption/equip, pet-panel/reload, browser reduced-motion preference and unequip proof.
+  The test-only driver supplement and restored consumer/motion probes land in this range.
+  Claude designated review is required; this is not production content or release acceptance.
+- [ ] G10 release acceptance and owner adoption of the candidate copy; the live mount itself
+  already exists in Garage `7a61e4b6`, rather than being an unimplemented consumer.
 - [ ] Designated cross-party review (Codex) and archival. Not self-approved.
 - [x] C8 Mechanical-isolation property test, package gates, docs (AC7, AC16).
   Codex's targeted AC7 review found RP-182: receipts were discarded and the Company arms used

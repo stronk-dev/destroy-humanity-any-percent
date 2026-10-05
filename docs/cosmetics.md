@@ -84,8 +84,11 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   - the parody receipt is an inline `role=status` line, never a modal.
 - **Fail-closed card:** below v24 the static card renders unchanged.
 - **Overlay:** `CosmeticOverlay.svelte` is the CSS-only layer and the "annoyed" pose. It has no
-  text, is presentation-only, and is static under reduced motion. Mounting it into the live pet
-  panel is still open.
+  text, is presentation-only, and is static under reduced motion. Garage's `PetCareSurface`
+  already mounts it from the snapshot's wearer state. The built-client real-server witness now
+  adopts/equips through DOM controls, checks the live pet panel and wearing after reload,
+  exercises the actual browser reduced-motion preference, and unequips with ownership preserved.
+  This uses a test-only epoch; production content and release acceptance remain open.
 - **Curtain contract:** `client/src/game-ui/cosmetics/presentation.{json,ts}`:
   - every item binds `paid_cosmetic_dlc`;
   - an anchor binds `reference_price_anchor`;
@@ -120,4 +123,6 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   transport. It observes T0 locked → visible T1 Buy → applied intent → server-owned state after
   reload under the request/payment trap; severing the server Cosmetics projector fails the run.
   This fixture is not a production content mint, and its Codex range awaits cross-party review.
-- **Integrated pet-panel overlay:** release-manifest row G10.
+- **G10 release acceptance:** the live pet-panel overlay is implemented and its controlled
+  real-server path is witnessed. Production content, owner copy adoption and designated reviews
+  remain required; a fixture pass is not release closure.

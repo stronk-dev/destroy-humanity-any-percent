@@ -1258,3 +1258,17 @@ build and append-only copy/content-manifest checks pass. No new copy or AT study
 Claude must designated-review `e5c63de5^..e02f6560`, as well as the preceding AC7 test-only
 span `52bd6963^..7c16d890`. The fresh kernel-history gate still fails at `50a3a514` (RP-131);
 its repair RFC remains draft. No hosted-green, Cosmetics closure, archive or push is claimed.
+
+## 2026-10-05 — Existing live pet overlay gains persisted player-workflow proof
+
+RP-184 reconciles a false absence claim: Garage already mounts the armor on the live pet,
+but Cosmetics docs described that consumer as missing. The retained real-server driver now
+continues Buy/reload through actual DOM adoption/equip, the live annoyed/no-text pet panel,
+worn reload, actual browser reduced-motion preference and unequip/unworn reload. Every new
+intent is one exact Founder-scoped POST and pet identity comes from real adoption, not a seed.
+The consumer-severing and combined motion-defense probes each fail their named outcome and
+are restored. Full composed CI passes both drivers, including Fiscal/Pitch; full cold
+three-engine browser CI passes 21,099 tests plus the separate performance case. Unit/type/
+boundaries also pass. No product, catalog, owner copy or workflow changed. The fixture epoch
+is not a production mint, Claude review is pending, GS4×PA7 remains unresolved, and G10/1.0
+release gates remain open. The historical kernel-history gate remains red (RP-131).

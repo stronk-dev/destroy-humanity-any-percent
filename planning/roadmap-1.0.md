@@ -8,7 +8,7 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 **Current checkpoint:** 2026-10-05, guarded product source `646daa08` plus the bounded Cosmetic
 wearer-control link correction `e02f6560`, evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
-and AC7 receipt/bonus-consumer supplement (RP-145–RP-183 corrections,
+AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof (RP-145–RP-184 corrections,
 witnesses and findings await cross-party review or ruling-author action where named; the broader
 v0.1 and Deployment ranges remain unapproved,
 and the kernel-version CI gate remains red). Other workstream rows below retain their dated
@@ -74,10 +74,13 @@ retries the same receipt and verifies both history axes. Actual Exit resets fail
 Postgres and TS populations. The cold server-core target and 6,953 client tests pass locally;
 Claude designated review remains required, and RP-176's separate RFC-body blocker is unchanged.
 Cold ARM64 Linux `make test-browser-ci` now passes the full Chromium/Firefox/WebKit browser
-population (20,976 passed, 3 skipped) and the separate performance case after two test-runner
-corrections at `c3311dbd`. A separate local AC14 witness now drives a built client through
-real Postgres/WebSocket transport to Buy and server-owned reload on a test-only Cosmetics epoch;
-its severed producer fails, but designated review and production content remain open. RP-172's
+population (21,099 passed, 3 skipped) and the separate performance case. A local AC14/G10
+witness now drives a built client through real Postgres/WebSocket transport to Buy, server-owned
+reload, DOM adoption/equip, the existing Garage pet overlay, worn reload/actual reduced motion,
+and unequip/unworn reload under a test-only Cosmetics epoch. The overlay consumer and non-static
+motion probes fail independently; product mutations are restored. The full composed target
+passes locally, but designated review, production content and owner copy adoption remain open.
+This corrects the stale claim that the live overlay mount itself is missing. RP-172's
 intermittent composed Pitch no-request timeouts were narrowed to a disabled/busy pointer sequence
 and legitimate Exit-offer preemption; a test-only single-click correction passes locally and
 fails with the Unlock handler severed, but lacks a forced-offer witness and hosted result. This is

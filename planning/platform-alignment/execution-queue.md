@@ -1,5 +1,25 @@
 # Executable queue
 
+## Current Cosmetic Shop AC7/AC12 corrections and G10 proof — 2026-10-05
+
+RP-182's test-only isolation correction (`52bd6963^..7c16d890`) compares every production
+receipt/full state and consumes correctly frozen Founder bonuses, with a separate next-run
+consumer and independently firing receipt/consumer negatives. RP-183's link-only UI correction
+(`e5c63de5^..e02f6560`) binds Equip/Unequip to the existing visible disclosures, with owned/
+equipped/pending browser evidence and a selectively fired Unequip-link probe. Both are
+**READY FOR CLAUDE DESIGNATED REVIEW**, not full C6/C8 approval.
+
+RP-184 also reconciles a false absence claim: Garage `7a61e4b6` already mounts the pet overlay.
+The new controlled real-server driver now adopts/equips through DOM controls, checks the live
+annoyed/no-text pet overlay, reloads wearing, exercises actual reduced motion and unequips with
+ownership preserved. A missing consumer and non-static reduced-motion pose each fail; all
+temporary product mutations are restored. The full composed target passes locally. Its
+test-only supplement awaits Claude's designated review at the exact span in the Cosmetic log.
+No production mint, owner copy adoption, GS4×PA7 reconciliation, release closure or push follows.
+RP-174/RP-176 still require ruling-author action, and the actual kernel-history CI gate remains
+red on pushed `50a3a514` (RP-131), whose repair RFC is draft. Use the Cosmetic plan's current
+correction review index instead of treating these green selected lanes as complete green CI.
+
 ## Current Cosmetic Shop C3/C4 AC8 persisted Exit-carry proof — 2026-10-05
 
 RP-181's test-only supplement now covers `wind_down` and `accept_exit_offer` with nonempty

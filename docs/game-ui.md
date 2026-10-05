@@ -82,6 +82,10 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   pet's sprite (cosmetic-shop G10). GS4's raw stats, mood, behaviour and cooldowns are not projected:
   PA7 forbids them, and the conflict is recorded as a DESIGN-GAP in
   `planning/garage-player-surfaces/log.md`.
+  The controlled real-server Cosmetics driver adopts a pet, equips through the shelf, checks
+  the live annoyed/no-text overlay and reload, exercises the browser's reduced-motion preference,
+  and verifies Unequip removes the overlay without losing ownership. It uses a test-only epoch,
+  not a production content pin; the GS4×PA7 contract and G10 release gates are not closed by it.
 - **Fiscal badge and buff announcements (GS0.3 remainder):**
   - A `fiscal_period_harvested.v1` event badges the Fiscal nav `(harvested)` while the player is
     elsewhere, and visiting Fiscal clears it (OD-3: no modal).
