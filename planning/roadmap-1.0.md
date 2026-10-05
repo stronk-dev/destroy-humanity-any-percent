@@ -15,6 +15,8 @@ exact 5×5 clearing witness `25906f01` (review span `329fc994^..25906f01`),
 and test-only Snake/DB rejection-atomicity proof `5e82b3d3` (review span `8ea62952^..5e82b3d3`),
 plus real-seed Mine Grid sampling evidence `859f5216` (review span `be0c0e00^..859f5216`),
 and matched loader/binding witnesses `3b9fd0d8` (review span `8b00b6e8^..3b9fd0d8`),
+plus actual catalog null-tier correction `6f5715dc` (kernel 0.3.147;
+review span `df0ed871^..6f5715dc`),
 evidence through the Cosmetic
 C4/AC6 second-wearer supplement `144f5e8e`, C7/N8 gate correction, AC8 persisted Exit proof
 AC7 receipt/bonus-consumer supplement and controlled real-server pet-overlay proof `e4e6e567`

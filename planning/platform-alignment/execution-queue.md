@@ -10,6 +10,7 @@ no fixture/content, mechanic, copy, public-wire, mint or workflow change. Cold s
 7,169 client tests, root checks, both real-Postgres Arcade functions and full Linux browser
 verification (21,756 plus performance) pass. Historical RP-131 remains red and unbypassed.
 Claude designated review is required; no full A1/A4/raw-grammar or archival promotion.
+Exact RP-200 correction review span: `df0ed871^..6f5715dc`.
 
 **NEXT SAFE ACTION:** predeclare remaining A4/AC7 resolver/start composition review. Execute
 actual tenant resolution, unknown-pair refusal and Pitch-less Arcade starts with Pitch controls;

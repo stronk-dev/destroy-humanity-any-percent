@@ -1494,3 +1494,9 @@ Next safe accepted work: predeclare the remaining A4/AC7 resolver/start composit
 Execute actual tenant resolution and Pitch-less Arcade starts, retain Pitch positive controls
 and unknown-pair refusal, and sever the specific AR-P2/AR-P3 consumers before inferring
 completion. Owner-gated public wire/copy/mint and full 1.0 obligations remain unchanged.
+
+**RP-200 exact corrective handoff:** `df0ed871^..6f5715dc`, READY FOR CLAUDE DESIGNATED
+REVIEW. Includes separate predeclaration, red/fix/severing loader and complete-chain evidence,
+the eight-line runtime refusal, honest kernel 0.3.147 and canonical/tracking reconciliation.
+The original RP-199 review remains separately `8b00b6e8^..3b9fd0d8`. Neither checkpoint
+substitutes for Claude's verdict or authorizes archival. Work proceeds on accepted A4/AC7.

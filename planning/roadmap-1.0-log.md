@@ -1557,3 +1557,7 @@ performance) pass. Historical RP-131 remains red, unchanged and unbypassed. Clau
 remains mandatory; no self-approval or archival, full raw-grammar/public integration claim,
 push or deployment. Next accepted work is remaining A4/AC7 resolver/start composition review.
 Full nine-tier 1.0, platform and release obligations remain the active goal.
+
+Exact RP-200 designated-review handoff: `df0ed871^..6f5715dc`. RP-199 is separately
+`8b00b6e8^..3b9fd0d8`. Neither is self-approved; all progress and remaining review/ruling
+gates are preserved in the per-RFC log and execution queue.
