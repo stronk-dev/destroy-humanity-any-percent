@@ -724,3 +724,29 @@ the retained matrix cold. If a source correction is warranted, it gets a separat
 range; any shared-lane authority conflict routes to the author before changing runtime. This
 range is test/planning-only: no clock clamping, receipt/schema, attendance, payout, migration,
 balance, activation, copy, CI or kernel-version change. It does not close full G4/G5 or 1.0.
+
+### Executed clock diagnosis — RP-217
+
+Predeclaration `eb0a9e7e`; actual root Docker/Postgres verbose run executes all five arms.
+The database-bound assertion exits 2 on the future arm: stamp `1791326295766`, database
+bounds `[1791239895766,1791239895783]`. Four other arms pass. The retained, explicitly labelled
+diagnostic then executes all five observations: both lagged calls throw Fiscal regression and
+leave full state/revision/log/event/intent/window snapshots unchanged; attendance's Company
+cursor is older, so this is not a preflight artefact. Normal mature credits 20 once; normal
+immature records only a Founder rejection. The future arm applies exactly 288 ticks, reports
+60,020 ms forfeited, matures both retained starters and makes the following ordinary command
+throw Fiscal regression without writing. Log stamp, envelope command/evaluated/resolved times
+are all equal to the future handler input. This is a real server-clock injection diagnostic,
+not an available client time field or a measured deployment skew population.
+
+The retained diagnostic is not acceptance of this behavior. Its positive-time bound begins
+before sampling the handler input, avoiding an artificial sub-millisecond boundary flake;
+the executed future failure remains unambiguous. Review by: Codex. Recorded by: Codex.
+Original G5 `f8d170a8` clock path: CHANGES REQUIRED on RP-217, not full-G5 review/approval.
+
+Authority re-derived: SG3 names the existing Founder-log timestamp/Fiscal precedent; SG6/SG-P2
+requires freezing it under Founder→Company locks. G5 instead reused a coordinator whose explicit
+request owns a pre-resolved timestamp and added an unlocked handler-time routing probe. Repair
+can implement SG-P2's named Garden-specific boundary without changing the established other
+minigame path or inventing clock clamping. That gets its own predeclared implementation range.
+No runtime/version/schema/CI/content change or archival in this diagnostic commit.
