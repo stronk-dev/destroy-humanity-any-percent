@@ -2063,3 +2063,61 @@ retirement fixtures prove mechanical fallback only, not removal authority.
 Next predeclare actual removal/identity/append tests under OD-7, then remaining
 pinned readers/writers and full B4. No full R1/OD-7/AC11/RFC/DB/CI/release,
 checkbox flip, archive, push, cleanup consent or new DB workload. Full goal active.
+
+## 2026-10-06 — predeclare append-only Reputation epoch admission
+
+Previous goal turn made concrete progress at cf458b2b (RP-250/251 mirror fixes).
+Grounding now confirms clean main, ahead64, no new designated verdict or live
+verification handle. AGENTS/process/index and accepted OD-7 rechecked; scope is
+the existing append-only-node contract, not a new refund or product decision.
+
+Negative population: independently remove each of the nine fixture node IDs,
+strictly reload the next artifact and derive its actual hash. Repair only fixture
+prerequisite links and the terminal unlock ladder so each candidate is valid
+in isolation; this must test a forbidden transition, not invalid tree syntax.
+Founder owns only a retired unknown ID with historical spent4/earned11/mirror0,
+so refusal cannot be vacuously supplied by an owned unlock mirror mismatch.
+Go: linked CatalogBundle validity/resolver, direct live activation, public Founder
+Exit replay, nine cases per arm. TS: linked bundle loader, and public Company/
+Founder Exit on deliberately direct-linked bundles bypassing the convenience
+loader, nine per arm. All reject without a receipt/event or state mutation.
+Whole-artifact withdrawal is a separate linked-loader negative in both runtimes;
+do not claim every runtime arm newly lacks a floor/withdrawal guard.
+
+Positive linked controls: unchanged tree, legal same-ID effect/price retune,
+append one valid starter node, initial tree activation, and both epochs inactive.
+Existing epoch-retune/earlier-source/current corpus and retired-unknown fallback
+populations must keep passing. No global chronology assumption: a standalone
+historical artifact remains loadable; only a supplied previous→next pair can
+enforce OD-7. Shared semantic census names all nine IDs and five controls;
+it is not a full shared canonical byte corpus or a real Postgres/epoch mint.
+
+If baseline confirms admission, add pure previous/next tree validators in Go/TS,
+require them at Go linked bundle validity and direct live boundary, TS linked
+loader plus both direct replay boundaries. Public Go replay already uses linked
+bundle validity; it must not need an independently maintained second ID table.
+The TS Founder verifier's existing catch must contain paired-loader refusal;
+retain its current failure taxonomy, no unhandled rejection. Kernel bump in all
+three identities accompanies this real acceptance change. No immutable migration,
+save schema, owned-node refund, live balance/copy/epoch or CI-policy edit.
+
+Existing RP-247 retirement positive contradicts OD-7. Preserve its two removed
+IDs as a separately consumed forbidden-transition population in the shared
+boundary table; keep the three idempotency/exact-cap positives byte-for-byte.
+Update both consumers to assert refusal and no mutation, not silently drop the
+row or weaken the guard. Pure unknown-ID fallback remains independently tested
+by the earlier three starter-effect cases; it is not transition permission.
+
+Controls after correction: independently remove Go linked guard (only loader/
+public Founder negatives should lose admission), Go direct-live guard (only its
+live negatives), TS linked guard (only loader negatives), TS Company guard and
+TS Founder guard (only the corresponding deliberately direct-linked arm).
+All compile, wait terminal, restore exact SHA before next run. Also omit one
+semantic census ID: both consumers must reject that incomplete population,
+then restore exact table bytes. Any surviving or setup-failing arm is retained.
+Cold full server-core/vet and client/type/build/boundaries/topology, unchanged
+canonical corpora, full client composite and remaining guards follow. No fresh
+Docker workload or unapproved cleanup on the existing capacity hold. New range
+after cf458b2b awaits Claude independently of all prior spans; no full R1/OD-7/
+B4/AC11/RFC/CI/DB/player/release or checkbox/archive/push promotion. Next full
+original B4 review and remaining pinned consumers stay on the queue.
