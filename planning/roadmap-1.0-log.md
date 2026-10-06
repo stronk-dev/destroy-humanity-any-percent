@@ -3099,3 +3099,20 @@ RP-274 attribution, H3, RP-268/271, H5 epsilon/run4/censoring and owner adoption
 remain author routes; actual SQL/browser/deployment capacity and full review
 union remain. No retune, imputation, epoch mint, acceptance box, archive, cleanup,
 CI/publication/deployment/push or shortcut to the full nine-tier/platform1.0.
+
+## 2026-10-06 — Raw career observations retained and recomposed
+
+RP-275 under1f6a09ca/d96bfaf1 prepares trustworthy dated observation: ordinary
+and future measurement paths share H4/H5 composition, with retained/copy-safe
+raw H5 sources/clocks/purchases. Ten malformed populations/eight retained
+corruptions/one zero-effect control refuse; twelve compiling omissions fire.
+Full97-pair/970-arm run completes641.626s, retaining/recomposing970 H5 arms
+with unchanged populations/medians. H4 still has the same six ties and both
+old comparisons stay RED. Cold fast/vet pass. [Exact evidence](reputation-tree-v1/log.md).
+
+This is preparation, not a new dated artifact or policy/provenance acceptance.
+Whole span after5e083766 needs designated review, separately from every earlier
+span. Next separately predeclare dated H4/H5 exact-source/full-cohort lineage
+and complete replay. Author/capacity/SQL/browser/deployment/review routes and
+the complete nine-tier/platform1.0 remain; no shortcuts, retune, new epoch,
+acceptance box, archive, cleanup, publication/deployment or push.

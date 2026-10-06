@@ -1,5 +1,28 @@
 # Executable queue
 
+## Raw career report evidence prepared — 2026-10-06
+
+RP-275 under1f6a09ca/d96bfaf1 retains H5 raw source/gate/purchase observations,
+copying mutable inputs, and shares H4/H5 composition with ordinary checks.
+Ten malformed groups/eight retained corruptions/one zero-effect control refuse;
+twelve compiling omissions fire with exact restoration. Full97-pair/970-arm
+study finishes641.626s:970 raw observations retained/recomposed, unchanged
+medians/populations, the same six H4 ties and both old comparisons RED.
+Cold fast harness/vet pass. No new dated report or producer-provenance claim.
+
+**READY FOR CLAUDE:** full span after5e083766, predeclaration/baseline/source/
+docs/evidence/final record edges; independently of all preceding spans.
+**NEXT SAFE ACCEPTED WORK:** separately predeclare dated H4/H5 observation
+artifacts/lineage on the exact committed producer. Use these shared builders,
+validate the exact declared full cohort and input tuple, preserve fired H4
+results and old files, then execute complete replay before calling it current.
+Internal recomposition is not source authenticity or policy ratification.
+**HELD:** RP-268/271 career intent/data, RP-274 attribution, H3 tiny criterion,
+H5 epsilon/run4/censoring and owner adoption. Actual SQL/browser/deployment
+capacity, review union and the complete nine-tier/platform1.0 remain. No
+kernel/live math/balance/CI/corpus change, cleanup, acceptance, mint, archive,
+deployment, publication or push. [Evidence](../reputation-tree-v1/log.md).
+
 ## Career report populations observed — 2026-10-06
 
 RP-272/273 under69c79d28/b22ce51e add test-side population observations,

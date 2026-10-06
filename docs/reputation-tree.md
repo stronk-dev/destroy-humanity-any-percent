@@ -774,6 +774,11 @@ arms and compares the whole report, including sources and header fields. A
 bought starter with no qualifying effect or exclusion still fails the existing
 H5 rule, even if its report is internally consistent. Synthetic controls and
 twelve compiling omissions exercise these boundaries. Full current caller
-coverage must be executed next. Recomposition is internal consistency, not
+coverage at `d96bfaf1` completes 97 H4 pairs and 970 H5 arms in 641.626 seconds;
+all 970 raw observations are retained and successfully recomposed. Observed
+medians and populations match the preceding study, including the unchanged
+six H4 ties. Cold fast harness and vet pass; both historical comparisons remain
+RED. No new dated artifact is generated in this preparation stage.
+Recomposition is internal consistency, not
 proof that a synthetic cohort was earned or that a producer is authentic;
 exact committed software/input identity and full replay remain separate.

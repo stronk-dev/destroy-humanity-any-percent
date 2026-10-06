@@ -4,7 +4,17 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest observation: RP-272/273 expose the career reports' actual statistical
+Latest preparation: RP-275 now retains raw H5 observations and shares report
+composition with the ordinary checks. Ten malformed groups/eight retained
+corruptions/one zero-effect control refuse; twelve compiling omissions fire.
+Full97-pair/970-arm study atd96bfaf1 finishes641.626s, retaining/recomposing970
+raw observations with unchanged medians/populations. Cold fast/vet pass; H4's
+six ties and both historical comparisons stay RED. Whole span after5e083766
+needs Claude. Next separately predeclare dated career provenance/full replay;
+no new dated artifact, policy adoption, acceptance or release claim here.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous observation: RP-272/273 expose the career reports' actual statistical
 populations without changing the game or acceptance rules. Full97-pair/970-arm
 run atb22ce51e finishes547.497s: Casual H4 has28 finite pairs/six ties,
 one treated-only and three both-unreached; H5 cash/tower medians use28/32 and20/23 bought pairs. All27

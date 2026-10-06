@@ -5504,3 +5504,41 @@ FAIL (now also refused during recomposition before ordinary diagnostic output).
 No runtime/balance/kernel161/CI/policy/corpus/old-report byte change. Cold
 fast/vet and full97-pair/970-arm caller run next; no dated artifact generated,
 acceptance, author adoption, archive, cleanup, SQL/browser/deployment or push.
+
+## 2026-10-06 — RP-275 full current caller and recomposition evidence
+
+Committed producerd96bfaf1, server tree560c4976d35e361043a10a12d08350d34170120e;
+balance treecd982b7c58a53cac0ab4c91a773705033930414d/kernel0.3.161 unchanged.
+Final source SHA: H40c3f47954867cd4aa1c13948ec29b38ae0b5bd8e6f86cfba1df25344616793d8,
+H5b8aadfa5e54499c27c3352878b226ac83d3b6e4227a8d068842f826597ab4c68,
+diagnostic345787ca288430e29de07b3bc4932892fbc5b0013f23af6b6da29510b0476b34.
+Final restored focusedbb8d03/9bc6b4,session78083,terminal exit0,0.271s.
+
+Root `make reputation-harness-check`,222aab..d73e16,session56244,terminal exit2,
+641.626s. H4 completes130.03s;3c1729 reproduces all97 rows/194sources,
+93 timing comparisons/3exclusions, identical savings and the same six Casual
+ties. Original career comparison RED. H5 completes511.44s;d73e16 explicitly
+logs970 raw observations retained/recomposed and970 admitted/retained sources.
+All27node/persona population groups and conditional medians match the preceding
+table (b22ce51e); no source/group/recomposition/node-classification error emitted.
+The original relevance comparison remains RED. Full run not cancelled/restarted;
+no update flags, edits or record changes while either check handle lived.
+
+Root `make verify-harness-fast`,20306d..d819b6,session3681,terminal exit0:
+harness73.940s/role0.266s/Commons0.401s/guard. Root `make vet`,df0047,terminal
+exit0. Both are cold/local and fast ran alongside the exhaustive measurement;
+wall times are not a performance comparison. A read-only ps diagnostic2fc0b0
+was sandbox-denied, not a missing/terminal test handle; continued polling the
+same PTY through its actual exit. No workaround or restart.
+
+Source/status/hash checksff782e/9ebe37 remain clean; original H4/H5 SHA648f36d6/
+4ed79054 and dated H1/H2 SHA3ce87b08/d5979c93 unchanged (3da497). All test
+handles now terminal before these tracking edits. RP-275 raw recomposition is
+locally exercised; it proves internal consistency, not authentic earned
+synthetic populations or a new dated producer artifact. No raw report written
+at this preparation stage. Next separately predeclare exact-cohort/source-
+bound dated H4/H5 artifacts and complete replay under RP-263. H3/H4/H5 author
+criteria/policy routes, RP-268/271, RP-274 and SQL/browser/deployment/capacity/
+review union remain. Full new span after5e083766 needs Claude, independently
+of every prior span. No kernel/live math/balance/CI/corpus/owner-copy change,
+new dated report, box, acceptance, mint, archive, cleanup, publication or push.

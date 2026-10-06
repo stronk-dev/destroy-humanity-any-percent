@@ -178,6 +178,13 @@ threshold retune is measured and reported, then ratified by owner SHA).
   medians28/32 and20/23 bought pairs. Cold fast/vet pass; gates stay RED.
   Full new span aftera3e36f94 needs Claude. Dated H4/H5 provenance remains next,
   separately predeclared, not adoption of censoring or unresolved author intent.
+  RP-275 under1f6a09ca/d96bfaf1 subsequently retains raw observations and shares
+  composition with ordinary H4/H5 checks. Nineteen corrupt/invalid controls and
+  twelve compiling omissions discriminate. Full97-pair/970-arm study641.626s
+  retains/recomposes970 raw H5 observations, medians/populations unchanged;
+  strict ties and both old comparisons stay RED. Cold fast/vet pass. Whole
+  span after5e083766 needs Claude. Dated producer identity/full replay remains
+  separately predeclared next; no new dated artifact or acceptance here.
   No AC13/box/mint promotion. At the earlier checkpoint below,
   fresh H1/H2/report provenance/reproduction remained separate; no retuning or
   report-regeneration authority here. No checkbox flipped.
