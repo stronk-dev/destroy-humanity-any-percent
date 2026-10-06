@@ -14,8 +14,8 @@ copy/topology pass. Historical kernel RP-131 stays red, no whole-CI claim. Kerne
 0.3.153 unchanged; no schema/math/copy/CI/public pin change. Initial test wording
 error and stricter endpoint audit are recorded, not hidden.
 
-**READY FOR DESIGNATED REVIEW, not approved:** range begins `9c918361^`
-(`3c3af1de`), endpoint pinned in Garden log after implementation commit. Codex
+**READY FOR DESIGNATED REVIEW, not approved:** exact range `9c918361^..99eedfe0`
+(`3c3af1de..99eedfe0`), four commits / ten paths. Codex
 first-filter only, Claude required independently of every earlier range. Injected
 HTTP JSON/socket frames do not prove real Go/Postgres/WebSocket/native input,
 mature gameplay progression/public activation or full G7/AC13/Garden acceptance.

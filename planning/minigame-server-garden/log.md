@@ -2433,3 +2433,10 @@ integration still leaves real Go/Postgres/WebSocket/mature progression to the
 fixture-only composed witness under SG13. No public mint, owner text, AC13/full
 Garden/1.0/archival or external publication claimed. RP-229/RP-222 author and
 RP-131/RP-218 CI/worker routes remain open; full nine-tier goal continues.
+
+Implementation committed `99eedfe0`. Exact designated-review range
+`9c918361^..99eedfe0` (`3c3af1de..99eedfe0`), four commits / ten paths,
+pending Claude. This metadata pin is not approval and consumes no earlier pending
+range. All verification/probe handles terminal, exact product restore confirmed,
+clean tree after implementation. No archive, public mint, external message/push or
+release promotion; continue fixture-only composed host/server integration under SG13.

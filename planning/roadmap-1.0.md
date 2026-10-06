@@ -15,8 +15,8 @@ receipt-key mutations fail and restore exactly. Full local browser/performance a
 client/type/build/boundary/copy/topology pass; historical kernel RP-131 stays red.
 Kernel 0.3.153 unchanged, no schema/copy/CI/mint change. Controlled JSON/socket
 frames are not real Go/Postgres/WebSocket/native input/mature progression/public
-activation or full G7/AC13/Garden proof. Exact new range begins `9c918361^`
-(`3c3af1de`), endpoint pinned after implementation; Claude required independently
+activation or full G7/AC13/Garden proof. Exact new range `9c918361^..99eedfe0`
+(`3c3af1de..99eedfe0`), four commits / ten paths; Claude required independently
 of every earlier range. Next accepted work: fixture-only composed host/server
 integration under SG13. Author/owner/CI and full nine-tier 1.0 obligations remain.
 

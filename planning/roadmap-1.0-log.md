@@ -2222,3 +2222,9 @@ pass, six existing deliberate skips, 47.36 s; separate performance passes 481 ms
 bytes match restored SHA; other root gates passed unchanged bytes. All processes
 terminal before commit; historical RP-131 guard remains red. No tests/bounds or
 skips removed to pass. Claude's independent verdict remains required.
+
+Implementation committed `99eedfe0`; exact designated-review range
+`9c918361^..99eedfe0` (`3c3af1de..99eedfe0`), four commits / ten paths,
+pending Claude. Metadata pin only, no verdict or earlier range consumed. All
+handles terminal, product mutations restored, clean implementation tree, no
+archive/public pin/push/release promotion. Full nine-tier 1.0 remains active.
