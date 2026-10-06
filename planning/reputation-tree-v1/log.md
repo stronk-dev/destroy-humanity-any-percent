@@ -7440,3 +7440,30 @@ of earlier ranges. No checkbox, acceptance, archival, cleanup, mint, report
 restamp, publication/deployment/push or full nine-tier/platform1.0 promotion.
 Next ground R9 host inactive/offline/in-flight/refreshing purchase controls,
 retaining the actual runtime/parser/DOM boundary and existing deadlines.
+
+## 2026-10-06 — R9 plan supplement self-first-filter
+
+**Review by:** Codex (implementer self-first-filter, NOT designated review).
+**Recorded by:** Codex.
+**Reviewed range:** `e312b4d7..82ac87b0`, all three commits/ten paths:
+d44d209c predeclaration,6dff42fc test-first,82ac87b0 source/docs/tracking.
+**Verdict:** first-filter passes; complete span through this record edge needs
+Claude independently of every earlier range. No acceptance or archival verdict.
+
+Complete source/test/docs/tracker diffs and appended log inspected. Production
+diff is two explicit Tab0 attributes only; eligibility, selected-state/callback,
+ordering, budget and cascading algorithms remain byte-identical. New fixture
+uses the actual nine-row test declaration, explicit controlled balances/preview,
+both eras and real native events; only the sequential path claims Tab reach and
+it focuses solely its sentinel. Axe removes test-only sentinels, not a product
+element or violation. Original host/surface/cost tests, assertion deadlines,
+browser security/preferences/error handling and CI configuration are unchanged.
+Five compiling faults catch the declared properties; every restored arm is
+terminal before edits. Interrupted copy stall and mistaken CLI syntax remain
+disclosed. Final browser run uses default capture, not negative-probe diagnostics.
+
+Append-only comparison frome312b4d7 passes both logs; whole-range whitespace
+check passes. Kernel161/copy658/manifest/Go/wire/epoch are unchanged. Records
+retain RP-289 tooling, RP-283/RP-284 author contracts and all full1.0/SQL/mint/
+Firefox/review holds rather than promoting component proof to acceptance.
+Next separately ground accepted R9 host state controls; full goal remains active.
