@@ -9219,3 +9219,32 @@ records needs Claude; all earlier independent spans/holds remain. Full proper
 nine-tier/platform1.0 goal active/progress. Next reconcile remaining accepted
 gates across Reputation and other unblocked implementation lanes; avoid duplicate
 evidence additions where current evidence already proves the requirement.
+
+## 2026-10-06 — Persisted public projection self-first-filter
+
+Review by: Codex (implementer self-first-filter, NOT designated independent).
+Recorded by: Codex. Exact reviewed range:c70861c1..ae259a87, allthree commits
+9fcea8c9/f2b8bca8/ae259a87;9paths563insertions/9deletions. Verdict: local
+first-filter approved, designated cross-party verdict pending. Full test diff
+5a3c09 and records5c9101/469bf3 inspected;867be1 whitespace/scope/hash invariance.
+
+Accepted AC7/R2/R5/R7/R9 authorize public current/next source binding, not new
+mechanics. Test uses the original hashed replay source plus explicit initial
+diagnostic budget/history/inventory and consistent owner-specific spawn; no later
+state reseeding. Both public snapshots use identical time/full current rows,
+canonical Company encoder/full frozen rows, actual purchase/plan-funded Exit,
+nonzero independent rates5/5.015 and factor1/1.003, real current→next frozen rows.
+Top-level receipt outcomes decoded, not substring membership. Normal route/
+minigame/provider interfaces present; guild/Commons fixture inputs explicit.
+Actual reads/retries preserve12complete table values and Founder history verifies.
+Separate compiling rate/header faults reach named oracles; first broad fault's
+earlier-header stop and every fixture failure remain disclosed. Source hashes
+restore exactly; cold final SQL/Go/vet and unchanged client/topology evidence
+above covers final test bytes. Existing server CI discovers test with real DB.
+
+One new test plus canonical docs/shared ledger/planning only; no prior assertion/
+fixture/source/migration/RFC/kernel/copy/balance/CI/owner body/status/checkbox
+changed. Logs append at EOF; no live handle/fault/archive/push/deploy/cleanup,
+fullAC7/RFC/hostedCI/release/1.0 promotion. This review record is a new uncovered
+edge: Claude must cover the ENTIRE afterc70861c1 span INCLUDING this record
+before any closeout/archival use; previous independent spans remain live.
