@@ -3402,3 +3402,32 @@ production/balance/report/corpus/schema/migration/CI policy/owner-copy changes.
 No fresh SQL/browser or AC13/archival/mint/release promotion. Docker/actual
 career and all prior reviews remain held. Complete new span after7da200f0
 needs Claude; the original B8 range is not designated-approved by this work.
+
+## 2026-10-06 — Career input checkpoint first filter
+
+Review by: Codex (implementer self-review, FIRST FILTER ONLY).
+Recorded by: Codex.
+Reviewed range: 7da200f0..3f5cc158, both commits and all ten changed paths.
+Verdict: PASSED first filter; NOT designated independent approval.
+
+Reviewed the two upfront admission guards, all ten retained controls and the
+complete predeclaration/docs/tracking/log changes. Guards precede simulation;
+the existing late purchase defense remains. Policy and known-node omissions
+independently discriminate at the expected populations, without changing
+legal-arm predicates. Retained report reproduction is separately executed,
+not inferred from those predicates. Report/threshold/kernel/balance/CI bytes
+are unchanged (a1f53f); scoped diff5c93cd is whitespace-clean. Append-only
+log additions5aa880 are at EOF. Next source leads are clearly unexecuted and
+do not authorize a retune, report rewrite or owner-choice substitution.
+
+Committed-HEAD focused5d0739..09439f (session60848, terminal exit0) passes
+all ten controls cold, harness7.517s. Fast/core/vet/topology and full report
+reproduction remain as recorded above; no new SQL/browser/whole-CI proof.
+Follow-up broader H3 string searchfaf407 finds only the RFC clause in server,
+client/src and the Reputation planning scope; first attemp ta611a6 includes
+a nonexistent client/tests directory and is not exhaustive evidence itself.
+
+No unresolved first-filter defect in this bounded admission range. All prior
+reviews, actual persisted career/capacity, H4/H5 and original B8 remain open.
+Claude must review the complete new span after7da200f0 through this record
+commit before any archival eligibility. No source probe or live handle remains.
