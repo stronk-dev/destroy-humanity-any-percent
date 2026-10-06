@@ -53,8 +53,9 @@ class ControlledSocket extends EventTarget {
   }
   close(): void { this.closed = true; this.dispatchEvent(new CloseEvent("close", { code: 1000 })); }
 }
-function controlledBoundary(tier: number) {
+function controlledBoundary(tier: number, windDownEligible = false) {
   const initial = wireSnapshot(tier);
+  initial.transitions.wind_down.eligible = windDownEligible;
   const storage = new MemoryStorage();
   storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "controlled-access", refreshToken: "controlled-refresh", accountID: "controlled-account", recoveryCode: "controlled-recovery" }));
   const requests: Record<string, unknown>[] = [];
@@ -88,11 +89,110 @@ function controlledBoundary(tier: number) {
     get snapshotCalls() { return snapshotCalls; },
     deliverIntent(value: unknown, status = 200) { expect(heldIntents).toHaveLength(1); heldIntents.shift()!(Response.json(value, { status })); },
     deliverSnapshot(value: GameUISnapshot) { expect(heldSnapshots).toHaveLength(1); heldSnapshots.shift()!(Response.json(value)); },
+    publishOffer() {
+      expect(sockets).toHaveLength(1);
+      const channel = `player:${initial.run.founder_id}`;
+      sockets[0]!.dispatchEvent(new MessageEvent("message", { data: JSON.stringify({ push: { channel, pub: { offset: 1, data: {
+        v: 2, ch: channel, kind: "event", rev: 14, constants_hash: initial.constants_hash,
+        ts: new Date(initial.server_now_ms).toISOString(),
+        payload: { event_id: "controlled-offer-14", kind: "exit_offer_spawned", scope: "company", rev: 14, cursor_effect: "advance",
+          payload: { exit_type: "collapse", expires_at_ms: initial.server_now_ms + 60_000,
+            offer_id: "01985555-3333-7333-8333-333333333333",
+            payout_preview: { clout_reach_note: "clout.reach.preserved", network_slot_unlocks: [], reputation_delta: 2, route_knowledge: 25 } } },
+      } } } }) }));
+      sockets[0]!.dispatchEvent(new MessageEvent("message", { data: JSON.stringify({ push: { channel, pub: { offset: 2, data: {
+        v: 2, ch: channel, kind: "receipt", rev: 14, constants_hash: initial.constants_hash,
+        ts: new Date(initial.server_now_ms).toISOString(),
+        payload: { outcome: "applied", new_revision: 14, intent_id: "01985555-4444-7444-8444-444444444444" },
+      } } } }) }));
+    },
     cleanup() {
-      for (const finish of heldIntents.splice(0)) finish(Response.json(rejection(requests.at(-1)?.intent_id, "invalid")));
+      for (const finish of heldIntents.splice(0)) finish(Response.json(rejection(requests.at(-1)?.intent_id, "invalid", rawDetail, Number(requests.at(-1)?.expected_revision ?? 7))));
       for (const finish of heldSnapshots.splice(0)) finish(Response.json(initial));
     },
   };
+}
+
+// R6/R9 consistency diagnostic, not a new plan-persistence policy: the
+// existing remounted panel starts empty, so its outgoing Exit must be empty.
+for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
+  for (const key of ["{Enter}", " "]) {
+    for (const flow of ["desk-empty", "desk-selected", "desk-remount", "offer-replaced", "offer-selected"] as const) {
+      it.skipIf(!browser)(`R9 host plan matches visible selection: ${era}, ${key === " " ? "Space" : "Enter"}, ${flow}`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const boundary = controlledBoundary(tier, true);
+        const target = document.createElement("main"); document.body.append(target);
+        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        const namedButton = (selector: string, text: string): HTMLButtonElement => {
+          const button = [...target.querySelectorAll<HTMLButtonElement>(selector)].find((row) => row.textContent === text);
+          expect(button, `native control ${text} is mounted`).toBeTruthy(); return button!;
+        };
+        const boxes = () => [...target.querySelectorAll<HTMLInputElement>(".plan input[type=checkbox]")];
+        const planState = (checked: boolean, projected: number) => {
+          expect(boxes()).toHaveLength(2);
+          expect(boxes().map((box) => box.checked)).toEqual([checked, checked]);
+          expect(target.querySelector(".plan [role=status]")?.textContent).toBe(t("reputation_tree.plan.projected", { amount: projected }, era));
+        };
+        const openPlan = async () => {
+          const details = target.querySelector<HTMLDetailsElement>("details.plan")!;
+          expect(details).toBeTruthy(); expect(details.open).toBe(false);
+          const summary = details.querySelector<HTMLElement>("summary")!;
+          summary.focus(); await userEvent.keyboard(key); await settle(); expect(details.open).toBe(true);
+        };
+        const selectBoth = async () => {
+          expect(boxes().map((box) => box.disabled)).toEqual([false, false]);
+          // Select in reverse order; the emitted plan must still use tree order.
+          boxes()[1]!.focus(); await userEvent.keyboard(" "); await settle();
+          boxes()[0]!.focus(); await userEvent.keyboard(" "); await settle();
+          expect(boundary.requests).toEqual([]);
+        };
+        try {
+          await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
+          await expect.poll(() => target.querySelector("details.plan")).toBeTruthy();
+          await settle(); planState(false, 4);
+          await openPlan();
+          if (flow !== "desk-empty" && flow !== "offer-selected") { await selectBoth(); planState(true, 1); }
+          if (flow === "desk-remount") {
+            const settings = namedButton("nav button", t("surface.settings.title", {}, era));
+            settings.focus(); await userEvent.keyboard(key); await settle();
+            expect(target.querySelector("details.plan")).toBeNull();
+            const desk = namedButton("nav button", t("surface.desk.title", {}, era));
+            desk.focus(); await userEvent.keyboard(key); await settle();
+            await openPlan(); planState(false, 4);
+          }
+          const offerFlow = flow.startsWith("offer-");
+          if (offerFlow) {
+            boundary.publishOffer();
+            await expect.poll(() => boundary.snapshotCalls).toBe(2);
+            const next = wireSnapshot(tier);
+            next.revision = 14; next.transitions.wind_down.eligible = true;
+            boundary.deliverSnapshot(next);
+            await expect.poll(() => target.querySelector("#offer-heading")).toBeTruthy();
+            await settle(); await openPlan(); planState(false, 6);
+            if (flow === "offer-selected") { await selectBoth(); planState(true, 3); }
+          }
+          const selected = flow === "desk-selected" || flow === "offer-selected";
+          expect(boundary.requests).toEqual([]);
+          const exit = namedButton("button", t(offerFlow ? "screen.offer_sheet.accept" : "desk.wind_down", {}, era));
+          expect(exit.disabled).toBe(false); exit.focus(); await userEvent.keyboard(key); await settle();
+          expect(boundary.requests).toHaveLength(1);
+          const request = boundary.requests[0]!;
+          expect(request).toMatchObject({ kind: offerFlow ? "accept_exit_offer" : "wind_down", expected_revision: offerFlow ? 14 : 13, expected_founder_revision: 7 });
+          expect(request.intent_id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
+          if (offerFlow) expect(request.offer_id).toBe("01985555-3333-7333-8333-333333333333");
+          if (selected) expect(request.reputation_plan).toEqual(ids);
+          else expect(Object.hasOwn(request, "reputation_plan"), "empty visible plan must not submit hidden spending").toBe(false);
+          expect(exit.disabled).toBe(true);
+          boundary.deliverIntent(rejection(request.intent_id, "invalid", rawDetail, offerFlow ? 14 : 13));
+          await expect.poll(() => exit.disabled).toBe(false);
+          expect(boundary.snapshotCalls).toBe(offerFlow ? 2 : 1); expect(boundary.unexpected).toEqual([]);
+          expect(boundary.headers.every((header) => header === "Bearer controlled-access")).toBe(true);
+          expect(target.textContent).not.toContain(rawDetail);
+          for (const id of ids) expect(target.textContent).not.toContain(id);
+        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+      });
+    }
+  }
 }
 async function settle(): Promise<void> { for (let index = 0; index < 4; index += 1) { await tick(); flushSync(); } }
 async function enterTree(target: HTMLElement, era: CopyEra, boundary: ReturnType<typeof controlledBoundary>): Promise<void> {

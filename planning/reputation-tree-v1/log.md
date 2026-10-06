@@ -6485,3 +6485,53 @@ RP-284 event consumer, RP-281 generator, copy/prices/kernel161/CI/security/
 schema/balance/reports, acceptance box/mint/owner adoption/archive/push change.
 All handles terminal before edits. Full new span aftereb258a7a needs Claude,
 independently of prior ranges. Full nine-tier/platform1.0 goal remains active.
+
+## 2026-10-06 — RP-282 first diagnostic / Offer fixture refinement
+
+0e6f64/4ddf9a,session23344 terminal exit2:24 fail/16 pass/56 old cases
+selector-skipped. Eight Desk remounts genuinely reach the outgoing intent and
+fail hidden reputation_plan while checkboxes are empty. Sixteen Offer cases
+instead stop at expected_revision14 vs actual13:the injected live event advances
+runtime's stream cursor, not the host's snapshot coordinate. That expectation
+was unsupported without an authoritative refreshed snapshot. Do not call those
+plan failures or a product revision defect. Types966845/ea0d1c exits0.
+
+Refine controlled Offer population before further measurement:deliver the
+normal trailing receipt, let actual runtime/host request its snapshot, then
+deliver declared v4 revision14/Founder7 with unchanged reputation arm and
+eligible Wind Down. Existing receipt→refresh behavior4176bb/94ddd1 remains
+source-unchanged. Assert two snapshots only in Offer populations, otherwise one.
+This completes the controlled protocol population instead of relaxing revision
+or plan assertions; Company14/Founder7 then becomes coherent. All40 cases stay,
+same native keys/eras/flows/plan oracles. No gameplay API shortcut/source edits.
+Baseline must be rerun before choosing any plan correction. All handles terminal.
+
+## 2026-10-06 — RP-282 confirmed hidden plan / synchronization predeclaration
+
+Refined unchanged-production d07a7c/224459,session11003 terminal exit2:
+16 remount/Offer-replacement cases fail hidden spending;24 empty/selected
+controls pass;56 old selected-out cases remain skips, not failures/green proof.
+Both eras/native keys deliver actual wrong POST after visible reset, now with
+coherent Company13/14 and Founder7. All handles terminal. This is controlled
+network/native host evidence, not real server/SQL/mint execution or acceptance.
+
+Minimum correction consumes the existing child's current selected state on
+mount through its existing onChange callback. Child selection starts empty and
+still reports all user changes; parent must not retain an invisible previous
+mount's plan. No persistence policy change, selection caching, payout math,
+feature/event/parser/schema/transport code or copy/pricing change. Add Svelte
+onMount plumbing in ReputationPlanPanel only; GameUIApp and withPlan unchanged.
+Canonical docs updated in same source change. Also fix diagnostic-only cleanup
+to use the captured request's actual expected_revision, not Founder7 for every
+Company request. It changes no assertion/population or gameplay source.
+
+Require40 plan/56 old host/58 child/40 cost native cases green =194 total.
+Before local closeout demonstrate two compiling mutations on same40 plan cases:
+omit mount notification (expected16 fail with24 control pass), and notify a
+nonempty first-node plan on otherwise empty mount (expected24 empty-flow fail,
+16 explicit-selection controls pass). Restore exact source SHA after terminal
+each, then full final194. Cold root types/build/unit/boundaries/copy/manifest,
+separate inherited RP-131 guard remain; no full CI/Firefox/AC12/SQL/mint claim.
+No numeric/kernel161/balance/reports/copy/CI-policy change, owner/author ruling,
+checkbox flip, archive, cleanup, push/deployment or goal completion. Whole new
+span aftereb258a7a needs Claude, incl fixture refinement and final record edges.
