@@ -5,6 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest request checkpoint (2026-10-06):** RP-297 test-only supplement after
+6dc16a58 proves paired R6 request size/type/uniqueness/ID/order/hash boundaries.
+Three tests/59 reported subcases pass; six compiling probes fail2/2/12/40/6/2
+with exact restoration. Cold focused/vet and restored whole production SQL
+Integration pass34 top-level/117 subcases/no skips. No runtime policy change.
+Full range and earlier independent spans need Claude. Next predeclare missing
+offer-with-plan SQL/replay population; parser controls do not substitute for
+that journey or fullAC9/CI/release proof. No copy/epoch/CI/cleanup/push/status
+promotion. Proper full nine-tier/platform1.0 and all prior holds remain active.
+[Evidence](reputation-tree-v1/log.md).
+
 **Latest SQL checkpoint (2026-10-06):** test-only range after `82830dcb`
 proves all14 applied Reputation-plan write faults with exact sentinels/full
 persisted row and head rollback. Retention deletes actual old revisions in
@@ -14,8 +25,8 @@ Whole production Integration passes cold (34 top-level/117 subcases/no skips),
 corrected focused Reputation/Exit/Bonus and vet pass. Not a new HTTP/actor/UI
 population, natural pacing, full AC9/RFC/CI or release acceptance. Full range
 needs Claude including record edges; earlier spans remain independent. Next
-accepted work: R6 request-validation/offer-path census and predeclared missing
-populations. No production/copy/epoch/CI/cleanup/push/status promotion. Full
+accepted request census/population now executes above; offer-with-plan SQL
+remains next. No production/copy/epoch/CI/cleanup/push/status promotion. Full
 nine-tier/platform goal and author/environment/release holds remain active.
 [Evidence](reputation-tree-v1/log.md).
 

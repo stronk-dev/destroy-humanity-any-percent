@@ -4,6 +4,17 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+**Latest request checkpoint:** RP-297 test-only work after `6dc16a58` adds
+paired R6 Wind Down/Accept Offer size/type/ID/order/identity boundaries.
+Three tests/59 reported subcases pass; six compiling probes fail2/2/12/40/6/2
+and source is restored exactly. Focused cold tests/vet and full production
+SQL Integration pass (34 top-level/117 subcases/no skips). No production rule
+needed correction. Full range needs Claude including records; earlier spans
+remain independent. Next accepted scope: predeclare the missing offer-with-
+plan SQL/replay population. Parser proof is not that journey, a64-node live
+tree, full AC9/CI or release acceptance. All prior author/environment/full1.0
+holds remain. [Evidence](reputation-tree-v1/log.md).
+
 **Latest SQL checkpoint:** test-only range after `82830dcb` now executes all14
 R6/AC9 applied-plan write faults on declared Postgres. Exact injected errors,
 complete persisted rows and both stream heads prove rollback; retention has
@@ -12,8 +23,8 @@ despite retention failure changes11 tables and fails the oracle; source is
 restored exactly. Restored production Integration population passes cold
 (34 top-level/117 subcases, no skips); focused Reputation/Exit/Bonus tests and
 vet pass. This full range needs Claude including final records, independently
-of earlier spans. Next accepted work: R6 request-validation/offer-path coverage
-census, then predeclare only missing populations. No product/CI/epoch/copy
+of earlier spans. Its request-validation census/population is now executed
+above; offer-with-plan SQL remains next. No product/CI/epoch/copy
 change, cleanup, archival, push or release promotion. All author/environment/
 nine-tier/platform holds remain. [Evidence](reputation-tree-v1/log.md).
 

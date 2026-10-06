@@ -3,6 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation R6 request boundary — 2026-10-06
+
+RP-297 test-only range after6dc16a58: three tests/59 reported subcases pass,
+literal canonical bytes/independent hash expectations. Six compiling source
+probes fail2/2/12/40/6/2; exact restoration. Cold focused Reputation/Exit/Bonus/
+ParseIntent and vet pass; restored whole production SQL Integration passes
+34 top-level/117 subcases/no skips. Parser population, not SQL offer-plan,
+default-player,64 registered nodes or fullAC9/CI/release proof.
+
+**DESIGNATED REVIEW PENDING:** full span after6dc16a58 through record edge;
+earlier rollback/SQL/header and other ranges remain independent.
+**NEXT SAFE ACCEPTED WORK:** predeclare missing Accept Offer with ordered plan
+on real SQL and both replay consumers; do not substitute the parser control.
+All earlier author/owner/environment/release holds remain. No production/
+copy/epoch/CI/cleanup/status/archive/publish/deploy/push change.
+
 ## Reputation applied-plan SQL rollback — 2026-10-06
 
 Test-only range after `82830dcb`: all14 logged-Exit write faults fire exact
@@ -16,8 +32,8 @@ selector ran no reputation-package tests and is not cited for that coverage.
 
 **DESIGNATED REVIEW PENDING:** full span after `82830dcb`, including records.
 Earlier SQL/header/other spans remain independent.
-**NEXT SAFE ACCEPTED WORK:** census R6 request-validation and Accept Offer
-coverage, then predeclare missing populations before test implementation.
+**THEN-NEXT WORK:** request census/population now executes above; Accept Offer
+with plan remains separately next under its own predeclaration.
 Persistence evidence is not HTTP/socket/actor/guard/default-player proof.
 Existing author/owner/Firefox/history/capacity/manual AT/clean-host/full1.0
 holds remain; cache-only permission unanswered. No cleanup/status/archive/

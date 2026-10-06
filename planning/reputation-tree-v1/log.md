@@ -8240,3 +8240,37 @@ ID equivalence are explicit controls. Forbidden commands and unrelated closed-
 field/Founder revision checks retain exact refusal detail.64 syntactic IDs
 are deliberately not an admitted/registered64-node tree. Test-only commit
 before compiling source probes; no acceptance checkbox or production change.
+
+All six compiling source probes use unchanged complete request population:
+bound eb2627/3778c4 session87751 terminal2 fails two65 cases/57 controls;
+duplicate8236f3/1a04cb session56825 terminal2 fails2/57 controls;
+syntax f3526d/291b9c session83337 terminal2 fails12/47 controls (including
+JSON null element decoding as invalid empty ID, not a silently accepted node);
+canonical-plan omission8a7e3c/229211 session97629 terminal2 fails40 reported
+subcases/12 controls; identity parent failures prevent its seven nested field
+controls in that negative, disclosed rather than counted as passes;
+parsed reversal2030bb/1bfa82 session92285 terminal2 fails6 shapes/53 controls;
+IPO admission29e8fe/a8a148 session79724 terminal2 fails2/57 controls.
+Every negative is a real runtime assertion failure, not compilation or skip.
+Direct order vectors catch reversal while the separate inequality identity
+control survives (both orderings reversed are still different); it is not
+cited as the reversal oracle. Exact SHA restored and empty source diff after
+each terminal arm:35fe7a/df9ea8,14742d/0ec7c6,26fd84/425e7a,ee49f5/b2cd85,
+291b74/0517dc,179e1f/fe4b96. SHA remains
+a0c5fb975771c6f4c4b5c50ea8ee67ebaedb85348bcfdc9561808fd9546ae955.
+
+Final restored cold04add8/1e30a6 session64713 terminal0: production1.072s,
+save0.325s/reputation0.201s/gameui0.264s, focused vet passes. Selected
+Reputation/Exit/Bonus/ParseIntent; host SQL skips are preparation only.
+Declared SQL2fb5a2/c3b496/a73f96 session30756 terminal0 passes production
+Integration7.132s,34 top-level/117 subcases/no skips/failures. Compose reports
+an existing game-ui-postgres orphan; no cleanup/ownership inference or
+--remove-orphans. All handles terminal before records. Source and product
+diff empty; no migration/kernel/balance/copy/epoch/RFC/CI or checkbox change.
+
+Docs/ledger/live board/queue reconcile request proof versus actual offer-plan
+SQL absence. RP-297 locally supplemented, not designated-approved; syntax64
+IDs do not imply registered/affordable64 nodes. Full new span after6dc16a58
+needs Claude through records; earlier independent spans pending. All prior
+author/owner/Firefox/history/capacity/harness/mint/manual AT/clean-host/release
+holds remain. No cleanup/archive/publish/deploy/push; proper1.0 goal active.

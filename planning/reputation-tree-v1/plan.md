@@ -266,6 +266,15 @@ restoration. No production/schema/migration/balance/copy/kernel/epoch/CI policy,
 acceptance checkbox or archive change; full span needs Claude. Offer-with-plan
 SQL/replay population remains separately next after this bounded parser wave.
 
+Locally executed `aad95cee`/`dd03be11`: three tests/59 reported subcases pass.
+Six compiling size/duplicate/syntax/hash/order/IPO faults fail2/2/12/40/6/2;
+exact source SHA restored after each. Cold focused tests/vet and whole
+production SQL Integration34 top-level/117 subcases/no skips pass. No runtime
+correction needed. Full new range after6dc16a58 needs Claude, including final
+records; prior ranges independent. Next separately predeclare real SQL Accept
+Offer with plan, state/accounting/receipt and both replay consumers. No full
+AC9/checkbox/archival/CI/release acceptance; all author/environment holds remain.
+
 ### Real-Postgres grounding / RP-294 — 2026-10-06
 
 Applied-plan wave, start82830dcb: R6/AC9 plan-specific applied-transaction

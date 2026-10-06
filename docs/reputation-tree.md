@@ -400,6 +400,26 @@ population, natural pacing, designated approval or full AC9/RFC acceptance.
 make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationExitPlanWriteFaultsIntegration'
 ```
 
+`TestReputationPlanRequest*` separately checks the incoming request boundary
+for both Wind Down and Accept Offer. It accepts absent/empty/ordered plans and
+64 syntactically valid IDs; rejects65, duplicates, malformed IDs and non-string
+arrays; and refuses plans on IPO, Decline Offer and a `scripted_first` request.
+Literal canonical bytes and independent SHA-256 expectations preserve plan
+order, presence, revisions and Offer ID. Omitted versus `[]` both parse to an
+empty plan but have different request identity; whitespace/key order and intent
+ID do not alter that identity. Other unknown fields and invalid Founder
+revisions still reject.
+
+Six compiling source probes separately break size, uniqueness, ID syntax,
+canonical plan inclusion, parsed order and IPO exclusion; unchanged tests
+reject each. Source is restored exactly and cold focused/SQL tests pass. This
+is parser evidence:64 syntactic IDs are not64 registered/affordable nodes,
+and Accept Offer parsing is not an offer-with-plan SQL or browser journey.
+
+```sh
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestReputationPlanRequest'
+```
+
 ## Portable Founder-history evidence
 
 `server/production/reputation_history_test.go` drives the public
