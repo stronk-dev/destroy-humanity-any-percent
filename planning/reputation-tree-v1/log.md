@@ -4559,3 +4559,24 @@ and implementation/records, needs Claude independently of all prior ranges.
 Next accepted diagnosis RP-269 source/Exit admission and RP-268 artifact-authority
 grounding. Fresh H1/H2/lineage, H3 author reconciliation, H4/H5, actual SQL/capacity
 and full1.0 remain. Goal active; no waiver, retune, mint, archive, cleanup or push.
+
+## 2026-10-06 — RP-264 committed-HEAD first filter
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range:db8398a3..97d916eb, all four commits/all10 changed paths:
+three predeclarations, two test files, canonical docs, shared ledger and
+current-state/queue/board/per-RFC plan/log reconciliation. Verdict: bounded
+instrument repair passes first filter, NOT a designated independent verdict.
+No implementation path or old report changed; kernel161 unchanged. Admission
+precedes eligibility, saving subtraction follows nonnegative-clock admission,
+and counters reset per call. No plan checkbox was flipped or bound weakened.
+
+Committed-HEAD cold3024e2..b0d7cd (session22294,terminal exit0,0.207s) passes28
+diagnostic profiles and the legacy gate. Earlier nine compiling probes, exact
+probe-phase restoration and later stdout-only hash supplement are separately
+recorded; they are not a second committed-HEAD mutation/full-study claim.
+274734 rechecks final test hashes and all three retained reports unchanged.
+Full source census remains93/3 with six real failures; H4/H5 drift remains RED.
+Whole db8398a3..97d916eb requires Claude, independently of all prior ranges.
+No mint/archive/push or full1.0 promotion. Goal active; next RP-269 diagnosis.
