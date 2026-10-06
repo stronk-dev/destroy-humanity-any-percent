@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import corpus from "../../testdata/replay/reputation-tree-v1.json";
+import starterEffects from "../../testdata/reputation/starter-effects-v1.json";
 import { applyFounderLogged, applyLoggedExit, canonicalJSONString, encodeFounderReplayState, encodeReplayState, loadReplayCatalogBundle, restoreFounderReplayState, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
 
 // AC4: the TS Founder replay byte-matches the Go-authored purchase corpus
@@ -42,14 +43,49 @@ describe("Reputation purchase cross-runtime corpus", () => {
 });
 
 describe("Reputation starters at new-run assembly", () => {
-  it("replays the burnout Exit with owned starters and run_started v2 byte-identically (AC8)", async () => {
+  it("pins the three independent starter effect populations", () => {
+    expect(starterEffects.version).toBe(1);
+    expect(starterEffects.cases.map((row) => row.name)).toEqual(["all-known-nodes-and-retired-id", "retired-id-only", "no-owned-nodes"]);
+  });
+
+  it.each(starterEffects.cases)("applies the accepted starter effects for $name", async (row) => {
+    const exit = corpus.exit;
+    const current = await loadReplayCatalogBundle(exit.constants_hash, exit.artifacts as unknown as ReplayArtifacts);
+    const next = await loadReplayCatalogBundle(exit.next_constants_hash, exit.next_artifacts as unknown as ReplayArtifacts);
+    const bundle = withNextReplayCatalogBundle(current, next);
+    const testCase = exit.case;
+    const inputs = structuredClone(testCase.replay_inputs);
+    const carry = inputs.resolved.founder_carry;
+    carry.reputation_level = row.level;
+    carry.founder_extensions.reputation_spent = row.spent;
+    carry.founder_extensions.reputation_unlock_ppm = row.unlock_ppm;
+    carry.founder_extensions.reputation_nodes_owned = [...row.owned];
+    const state = restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, inputs);
+    expect(transition.outcome).toBe("applied");
+    expect(transition.newCompany!.balances["company.cash"]).toBe(row.cash);
+    expect(transition.newCompany!.generatorsProvisioned["generator.beige_tower"]).toBe(row.provisioned);
+    expect(transition.newCompany!.generators["generator.beige_tower"]).toBe(0);
+    expect(transition.newCompany!.generatorPurchasedTotal).toBe(0);
+    expect([...transition.newCompany!.upgradesOwned]).toEqual(row.upgrades);
+    expect(transition.companyStartedEvents[0]).toMatchObject({ kind: "run_started", schema_version: 2, payload: {
+      reputation_tree: { bonus_factor: row.bonus_factor, applied_starter_node_ids: row.applied_starter_node_ids },
+    } });
+    expect(transition.founder.reputation_level).toBe(row.level);
+    expect(transition.founder.founder_extensions!.reputation_spent).toBe(row.spent);
+    expect(transition.founder.founder_extensions!.reputation_nodes_owned).toEqual(row.owned);
+  });
+
+  it.each([9, corpus.exit.case.replay_inputs.v])("replays the burnout Exit at envelope v%i with run_started v2 byte-identically (AC8)", async (version) => {
     const exit = corpus.exit;
     const current = await loadReplayCatalogBundle(exit.constants_hash, exit.artifacts as unknown as ReplayArtifacts);
     const next = await loadReplayCatalogBundle(exit.next_constants_hash, exit.next_artifacts as unknown as ReplayArtifacts);
     const bundle = withNextReplayCatalogBundle(current, next);
     const testCase = exit.case;
     const state = restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
-    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+    const inputs = structuredClone(testCase.replay_inputs);
+    inputs.v = version;
+    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, inputs);
     expect(transition.outcome).toBe("applied");
     expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
     expect(canonicalJSONString(transition.founder)).toBe(testCase.founder_output_json);

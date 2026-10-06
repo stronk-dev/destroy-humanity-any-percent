@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "all-known-nodes-and-retired-id",
+      "level": 552,
+      "spent": 552,
+      "unlock_ppm": 1000000,
+      "owned": [
+        "reputation.retired.unknown",
+        "reputation.starter.cash_large",
+        "reputation.starter.cash_small",
+        "reputation.starter.generated_beige_tower",
+        "reputation.starter.upgrade_continuous_feed_paper",
+        "reputation.unlock.p05",
+        "reputation.unlock.p100",
+        "reputation.unlock.p25",
+        "reputation.unlock.p50",
+        "reputation.unlock.p75"
+      ],
+      "cash": "1.01e5",
+      "provisioned": 15,
+      "upgrades": ["upgrade.continuous_feed_paper"],
+      "bonus_factor": "6.52e0",
+      "applied_starter_node_ids": [
+        "reputation.starter.cash_small",
+        "reputation.starter.generated_beige_tower",
+        "reputation.starter.upgrade_continuous_feed_paper",
+        "reputation.starter.cash_large"
+      ]
+    },
+    {
+      "name": "retired-id-only",
+      "level": 552,
+      "spent": 0,
+      "unlock_ppm": 0,
+      "owned": ["reputation.retired.unknown"],
+      "cash": "0",
+      "provisioned": 10,
+      "upgrades": [],
+      "bonus_factor": "1e0",
+      "applied_starter_node_ids": []
+    },
+    {
+      "name": "no-owned-nodes",
+      "level": 552,
+      "spent": 0,
+      "unlock_ppm": 0,
+      "owned": [],
+      "cash": "0",
+      "provisioned": 10,
+      "upgrades": [],
+      "bonus_factor": "1e0",
+      "applied_starter_node_ids": []
+    }
+  ]
+}

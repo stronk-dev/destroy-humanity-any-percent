@@ -2474,3 +2474,29 @@ independently; tip pinned after commit. No owner/rule/balance/mint/CI/schema/
 copy/checkbox/archive/push change. No fresh full-CI/real-DB/browser proof,
 pending capacity/history/review/measurement gates remain. Full nine-tier 1.0
 and complete platform obligations stay active, not traded for sampled success.
+
+## 2026-10-06 — Reputation starters reach independent Exit witnesses
+
+Original Claude four-path 7d130b89^..7d130b89 witness addition is designated-
+approved by Codex, not full earlier B5/runtime or later carry/Exit-plan scope.
+Original case independently fails on assignment in both runtimes (15→5).
+RP-245 adds three shared semantic Exit cases: all known nodes plus retired ID,
+retired-only, empty-owned. Full case covers all four starters and emitted tree
+order; upgrade no-op and emitted-id sort mutations each fail Go and TS. Six
+actual probes fire and restore exact runtime hashes; initial new-Go test compile
+mistakes are disclosed as instrument failures, not product evidence.
+
+The original corpus differs only by later v9→v12 envelope version. Explicit Go
+v9 replay matches seven pinned output fields; TS original case passes v9/v12.
+No fixture regeneration or assertion reduction. Full cold server-core/vet and
+root client/type/build/boundaries/topology pass; after compatibility test final
+client 7374 tests/134 existing skips. Host dependency skips are not real DB,
+and historical CI/environment defects remain. Canonical Reputation floor,
+latest-version and carry staging contradictions reconciled from code, without
+new runtime/kernel/balance/mint/copy or owner ruling.
+
+New Codex tests/docs/records after e365e0da include all three predeclarations,
+final evidence and pin, independently pending Claude. Remaining codec/mirror,
+R4 cap/idempotency/next-tree, persisted rows/career/default-player, H4/author/mint,
+capacity/CI and prior review work stay open. No checkbox/archival/push or cache
+deletion. Full nine-tier 1.0 and complete platform floor remain the active goal.

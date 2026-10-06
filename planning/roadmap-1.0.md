@@ -24,6 +24,17 @@ original Available/BonusFactor only, not full B1/codec/frozen transactions,
 mint/DB/browser/CI or release. New Codex test/doc span after 5467f575 needs
 Claude independently of RP-243; no 1.0 scope or owner-gate reduction.
 
+**Subsequent starter-proof checkpoint:** Reputation R4/AC8 under dd887626 /
+7ff39c12 / 8e89164c. Original four-path Claude witness range 7d130b89 is
+independently approved only for that addition. Three shared semantic Exit cases
+cover all four starters, retired IDs and ordered emitted IDs; six Go/TS controls
+fire and restore. Explicit legacy-v9/current-v12 consumers pass. Full cold
+server-core/vet and client/type/build/boundaries pass (final client 7374/134),
+not full CI/real DB/default-player/mint/Reputation closure. Canonical version/carry
+staging corrected; runtime/kernel/balance unchanged. New Codex span after
+e365e0da independently needs Claude. [Exact limits](reputation-tree-v1/log.md),
+RP-245. All nine-tier and platform obligations remain, no release-path shortcut.
+
 **Current checkpoint:** 2026-10-06, cold CI observation under `c8ff3139` /
 `6b119e76` / `e6ea05bf`: passive HTTP/native-worker traces and two intentional
 404 controls discriminate without product/fixture/assertion changes. Full 93957

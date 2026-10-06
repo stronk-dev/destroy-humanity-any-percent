@@ -1,5 +1,25 @@
 # Executable queue
 
+## Reputation R4/AC8 starter witness review — 2026-10-06
+
+Codex independently APPROVES the complete original four-path Claude range
+`7d130b89^..7d130b89` for its witness addition, not earlier B5 producers,
+later carry/Exit-plan changes or full RFC/archival union. Three new shared
+semantic Exit cases exercise all four starters, retired-id filtering, unchanged
+Founder ownership/accounting and tree-ordered event ids. Six independent
+assignment/upgrade/order controls fail; sources restore byte-exact. Explicit
+original-v9/current-v12 replay consumers pass. Cold full server-core/vet and
+client/type/build/boundaries/topology pass; final client 7374/134. Kernel stays
+0.3.154, no runtime or balance change. [Exact verdict](../reputation-tree-v1/log.md).
+
+**READY FOR CLAUDE REVIEW:** new Codex tests/docs/records after e365e0da,
+including all three predeclarations and final pin. Prior ranges remain separate.
+**NEXT ACCEPTED LOCAL WORK:** remaining R1/R7 codec/mirror admission and R4
+cap/idempotency/next-tree-change evidence; separately real persisted frozen-row/
+career/default-browser populations after capacity resolution. Do not promote
+fixture evidence into mint, H4 measurement, full Reputation or reliable CI.
+RP-131/218/235/236, author/owner choices and full nine-tier 1.0 obligations remain.
+
 ## Reputation R1/R3 sampled accounting proof — 2026-10-06
 
 Under ce6a9d6b, shared 147 parameter triples/462 legal spends/eight invalid

@@ -69,8 +69,9 @@ minted-career, browser or whole-RFC acceptance; see the implementation log.
 `reputation_tree` is an optional epoch artifact, loaded by `server/replaycatalog` and
 `client/src/replay.ts` into `CatalogBundle.ReputationTree` / `reputationTree`.
 
-- **Chain.** It requires `minigame_api`, the artifact that owns Founder v21. Its own Founder save
-  version lands in B3, so no version floor is raised yet.
+- **Chain.** It requires `minigame_api`, the artifact that owns Founder v21.
+  A tree raises the bundle's Founder floor to at least v22; later Pet Adoption,
+  Cosmetic Shop and Server Garden artifacts raise it to v23, v24 and v25.
 - **Pairing (R2).** The artifact is present exactly when the economy declares a multiplier source
   with provider `reputation_tree`. If either is present without the other, the bundle is rejected.
   Go checks this again in `CatalogBundle.valid`.
@@ -79,7 +80,8 @@ minted-career, browser or whole-RFC acceptance; see the implementation log.
 
 ## Founder save v22
 
-`save.LatestFounderVersion` is 22. Founder v22 adds the required fields `reputation_spent` and
+`save.LatestFounderVersion` is 25, including later Founder features. Reputation
+activates at Founder v22, which adds the required fields `reputation_spent` and
 `reputation_nodes_owned` (byte-sorted and unique). The pinned bundle owns v22 when it carries
 `reputation_tree`, so its `versionFloors` founder floor is 22.
 
@@ -99,9 +101,9 @@ over in full.
 The TypeScript `restoreFounderReplayState` / `encodeFounderReplayState` enforce the same rules and
 now carry the unlock mirror; before v22 the mirror is always 0.
 
-**Temporarily fail-closed:** the Company-side Founder carry in replay inputs has no tree fields
-yet. Reconstructing a v22 Founder from a carry therefore fails closed, in Go and in TS, until the
-next replay-inputs version (R6) adds them.
+The Company-side Founder carry includes tree fields for pinned Founder floors
+of v22 or higher. Both runtimes reconstruct them; the former pre-R6 carry gap
+is no longer the current behavior. See the replay-input contract below.
 
 ## `purchase_reputation_node` (R5)
 
@@ -158,8 +160,10 @@ run's contributions byte-identical and changes only the next run's frozen factor
 
 ## Starters, run_started v2, and the v9 carry (R4, R6 carry half, R7)
 
-**Replay inputs v9.** Replay-inputs moves to v9 (`save.ReplayInputsVersion`), and v2–v8 remain
-readable. The Founder carry extension adds `reputation_spent`, `reputation_unlock_ppm` and
+**Replay inputs.** Reputation introduced the v9 carry; the current
+`save.ReplayInputsVersion` is 12 for later features. Legacy v9 remains readable,
+with an explicit Go replay and TS AC8 consumer at both v9 and v12. The Founder
+carry extension adds `reputation_spent`, `reputation_unlock_ppm` and
 `reputation_nodes_owned`. These fields are present exactly when the pinned bundle's Founder floor is
 22 or higher. They are rejected before v9 and absent below floor 22. A v22 Founder therefore now
 reconstructs from a carry in both runtimes, replacing the earlier fail-closed behavior.
@@ -174,6 +178,20 @@ bundle's tree is applied additively, in tree array order:
 **run_started v2.** When the new run's bundle has a tree, `run_started` is emitted at schema 2 with
 `reputation_tree: {bonus_factor, applied_starter_node_ids}`; otherwise v1 stays byte-identical.
 `save.validateEvent` checks the arm, and migration 00077 admits schema 2.
+
+**Executed fixture evidence.** The original AC8 corpus proves ten curriculum
+units plus five Reputation units, with zero purchased units and canonical
+receipt/state/event comparisons. Assignment-instead-of-addition fails in Go and
+TS. `testdata/reputation/starter-effects-v1.json` adds three shared semantic
+expectations on the real Exit replay: all known nodes plus a retired unknown id,
+retired id only, and no owned nodes. The full case exercises all four starter
+nodes, cumulative cash grants, the preowned upgrade and tree-ordered applied ids;
+unknown ids remain owned but contribute nothing. Independently dropping upgrade
+ownership or sorting emitted ids bytewise fails each runtime's new test.
+These three semantic cases are not new all-case canonical byte corpora. Cap
+refusal, already-owned upgrade idempotency and next-tree-removal cases remain
+separate evidence debt. No minted tree, real DB/default player journey or full
+Reputation acceptance follows; see RP-245 and the implementation log.
 
 ## Exit-attached purchase plan (R6)
 

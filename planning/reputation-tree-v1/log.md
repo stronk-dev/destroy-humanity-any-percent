@@ -1027,3 +1027,81 @@ Founder v22 floor/carry no longer await B3/R6; latest supported Founder version
 is 25 and Company replay inputs 12, while legacy v9 remains accepted. Source
 coordinates are save/state.go, save/runlog.go and production/replay.go version
 floors; this edits technical status only, not an owner ruling or design body.
+
+## 2026-10-06 — R4/AC8 witness verdict and full starter-effect first filter
+
+**Review by:** Codex (designated other party for Claude's original witness;
+self/first-filter only for this wave's Codex supplements and records).
+**Recorded by:** Codex.
+**Exact original range:** `7d130b89^..7d130b89`, all four paths inspected:
+Go corpus producer, TS consumer, JSON corpus addition and planning log.
+**Verdict:** APPROVED for that witness addition. Not the earlier B5 producer
+implementation, later carry-version/Exit-plan commits, full B5/R4/RFC acceptance
+or an archival range union. Source execution depends on e365e0da plus this
+wave's supplemental tests; no intervening implementation is implicitly approved.
+
+The original JSON adds only exit: prior version/bundles/cases unchanged. All
+forty embedded artifact strings duplicate the prior bundle; seven canonical
+output strings agree with their structured representations. Current original
+Exit differs only in envelope v9→v12 (later carry versions), not reward/event
+expectations. Existing Go producer and original TS assertion body were unchanged
+before this wave. Explicit new Go legacy-v9 replay compares seven output fields;
+TS original AC8 case now compares receipt/Founder/new-Company/started-event bytes
+at both v9 and v12. All pass without corpus regeneration. Do not cite these
+checks as current historical commit execution or approval of later dependencies.
+
+RP-245's three shared semantic cases now execute real ApplyLoggedExit in both
+runtimes. Full ownership includes all nine accepted fixture nodes plus a retired
+id: the four known starters emit in tree order, credit 1e3+1e5 cash to 1.01e5,
+produce fifteen free/zero purchased Towers, own Continuous Feed Paper and record
+the run_started summary factor at 6.52e0. Unknown-only/empty-owned cases keep
+the curriculum's ten units, zero cash, no upgrade, empty applied ids, unit bonus.
+Founder level/spent and retired ownership stay unchanged. The supplement is a
+shared semantic expectation table, not new full-byte Go-authored output corpus.
+
+Actual controls/checks, every handle terminal before source edit/restore:
+
+- 49641 original selected Go cold passes (0.431 s), 21057 original full client
+  passes 7369/134. Existing assignment regression: Go 3002 fails generated=5
+  versus required fifteen; TS 16762 fails exact receipt (one failure, 7368 pass).
+- Initial augmented Go c8ee40 is a test-instrument compilation failure: wrong
+  outcome constant, Ledger Balance bool treated as error, and pluralized State
+  field. Corrected to actual APIs; not a product defect or fired mutation.
+  34945 then passes selected production tests cold (0.421 s); augmented client
+  52370 passes 7373/134.
+- Go upgrade no-op 28795 fails the new full case: empty ownership versus the
+  expected upgrade. Restore, then Go emitted-id sort 52394 fails with cash_large
+  first rather than last. Neither is a compilation-only failure.
+- TS upgrade no-op 28545 fails the same new case; original AC8 still passes.
+  Restore, then TS emitted-id sort 21668 fails the full case's ordered event
+  array; original two-node case again passes. Both have one failing test,
+  7372 passing/134 existing skips. All six declared controls fire; none hidden.
+- Final selected full packages/vet 40518 pass cold: production 36.163 s,
+  reputation 0.247, save 0.253, kernel 0.174. Host DB-dependent skips are not
+  a real-Postgres population. Root client/type/build/boundary/topology 33816
+  passes 7373/134, zero type/Svelte errors/warnings, thirteen topology negatives.
+- Full root verify-server-core 42344 passes vet/all non-harness Go cold,
+  formulas/API generation with no tracked drift and import boundaries. Its
+  Pitch sub-target reports cached, but the preceding whole cold Pitch package
+  executes (0.319 s); not a cold claim for that cached sub-target alone.
+- After explicit legacy-v9 tests: 38789 selected production/reputation pass
+  cold (0.368/0.085 s) and selected vet passes. Its name-filtered kernel reports
+  no tests to run, not new kernel evidence (full kernel already executed above).
+  26759 typecheck/full client passes 7374/134, 84 passing/17 skipped files.
+
+Exact restored source SHA: prestige.go
+6d07581c74822e57d63c09b0ed139d98b0b1f44aba566f8d654ad2f4213cb691;
+replay.ts ebe2e60186f8abbd28828a4a2bdfee13d216b2d4f00b125fdf663b52da16dc94.
+Existing corpus f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782
+unchanged; new semantic table
+bde253bdc99d4430b8ec45f968bbe94742e8cb3a58bf9bf6fafddce94a19000d.
+No runtime/kernel/balance/epoch/save/API/CI/copy or owner-choice change persists.
+
+Canonical docs reconcile the actual Founder floor/latest version and implemented
+carry instead of retaining obsolete B3/R6 gaps. New Codex test/docs/record span
+begins e365e0da exclusive, includes dd887626, 7ff39c12, 8e89164c and final
+evidence/pin; Claude pending, independent of this original-witness verdict.
+No checkbox flip, archival or push. Cap refusal, idempotent existing ownership,
+next-tree-removal cases, frozen persisted rows, real career/default player,
+mint/H4/author measurements, full prior range review and platform/CI/capacity
+obligations remain. The complete nine-tier 1.0 goal remains active, not narrowed.

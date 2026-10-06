@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"slices"
 	"testing"
 	"time"
 
@@ -265,6 +266,146 @@ func TestReputationPurchaseCorpus(t *testing.T) {
 	}
 	if !bytes.Equal(pinned, encoded) {
 		t.Fatal("reputation replay corpus drifted from the Go transition; regenerate with REPUTATION_UPDATE_FIXTURE=1 and review")
+	}
+}
+
+// TestReputationStarterLegacyReplay verifies the original witness's v9
+// envelope explicitly; the current Go corpus generator emits v12.
+func TestReputationStarterLegacyReplay(t *testing.T) {
+	fixture := makeReputationExitFixture(t, time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC))
+	current := reputationContentBundle(t)
+	if current.ConstantsHash != fixture.ConstantsHash || fixture.NextConstantsHash != fixture.ConstantsHash {
+		t.Fatal("legacy starter replay requires the AC8 same-bundle fixture")
+	}
+	next := current
+	current.Next = &next
+	wire, err := parseReplayInputs(fixture.Case.ReplayInputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wire.Version = 9
+	inputs, err := json.Marshal(wire)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var resolved replayExitResolved
+	if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+		t.Fatal(err)
+	}
+	company := replayFixtureStateFromEncoded(t, current, fixture.Case.PreState)
+	actual := executeTerminalFixture(t, fixture.Case.Name, current, company, fixture.Case.PreState, IntentRequest{CanonicalPayload: fixture.Case.CanonicalPayload}, inputs, resolved.FounderCarry)
+	for _, pair := range [][2]string{
+		{actual.ReceiptJSON, fixture.Case.ReceiptJSON},
+		{actual.FounderOutputJSON, fixture.Case.FounderOutputJSON},
+		{actual.FinalCompanyJSON, fixture.Case.FinalCompanyJSON},
+		{actual.NewCompanyJSON, fixture.Case.NewCompanyJSON},
+		{actual.FounderEventsJSON, fixture.Case.FounderEventsJSON},
+		{actual.CompanyEndedJSON, fixture.Case.CompanyEndedJSON},
+		{actual.CompanyStartedJSON, fixture.Case.CompanyStartedJSON},
+	} {
+		if pair[0] != pair[1] {
+			t.Fatal("legacy-v9 starter replay output differs from current corpus")
+		}
+	}
+}
+
+// TestReputationStarterEffects uses the same actual Exit as AC8 with an
+// independent shared expectation table. In particular all four starter ids
+// have a different tree order from the byte-sorted Founder owned set.
+func TestReputationStarterEffects(t *testing.T) {
+	var cases struct {
+		Version int `json:"version"`
+		Cases   []struct {
+			Name                  string   `json:"name"`
+			Level                 int64    `json:"level"`
+			Spent                 int64    `json:"spent"`
+			UnlockPPM             int64    `json:"unlock_ppm"`
+			Owned                 []string `json:"owned"`
+			Cash                  string   `json:"cash"`
+			Provisioned           int64    `json:"provisioned"`
+			Upgrades              []string `json:"upgrades"`
+			BonusFactor           string   `json:"bonus_factor"`
+			AppliedStarterNodeIDs []string `json:"applied_starter_node_ids"`
+		} `json:"cases"`
+	}
+	data, err := os.ReadFile("../../testdata/reputation/starter-effects-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(data, &cases); err != nil {
+		t.Fatal(err)
+	}
+	if cases.Version != 1 || len(cases.Cases) != 3 {
+		t.Fatal("starter effect population changed")
+	}
+	fixture := makeReputationExitFixture(t, time.Date(2026, 9, 25, 12, 0, 0, 0, time.UTC))
+	current := reputationContentBundle(t)
+	if current.ConstantsHash != fixture.ConstantsHash || fixture.NextConstantsHash != fixture.ConstantsHash {
+		t.Fatal("starter supplement requires the AC8 same-bundle fixture")
+	}
+	next := current
+	current.Next = &next
+	for _, row := range cases.Cases {
+		t.Run(row.Name, func(t *testing.T) {
+			wire, err := parseReplayInputs(fixture.Case.ReplayInputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var resolved replayExitResolved
+			if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+				t.Fatal(err)
+			}
+			resolved.FounderCarry.ReputationLevel = row.Level
+			extensions := resolved.FounderCarry.FounderExtensions
+			extensions.ReputationSpent = &row.Spent
+			extensions.ReputationUnlockPPM = &row.UnlockPPM
+			extensions.ReputationNodesOwned = &row.Owned
+			wire.Resolved, err = json.Marshal(resolved)
+			if err != nil {
+				t.Fatal(err)
+			}
+			inputs, err := json.Marshal(wire)
+			if err != nil {
+				t.Fatal(err)
+			}
+			company := replayFixtureStateFromEncoded(t, current, fixture.Case.PreState)
+			transition, err := ApplyLoggedExit(company, fixture.Case.CanonicalPayload, current, inputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if transition.Decision.Outcome != save.IntentApplied {
+				t.Fatalf("outcome=%s", transition.Decision.Outcome)
+			}
+			newCompany := transition.Decision.NewCompanyState
+			cash, ok := newCompany.Ledger.Balance("company.cash")
+			if !ok || cash.String() != row.Cash {
+				t.Fatalf("cash=%s want=%s present=%v", cash, row.Cash, ok)
+			}
+			if newCompany.GeneratorProvisioned["generator.beige_tower"] != row.Provisioned || newCompany.GeneratorCounts["generator.beige_tower"] != 0 || newCompany.GeneratorPurchasedTotal != 0 {
+				t.Fatalf("provisioned=%d want=%d purchased=%d total=%d", newCompany.GeneratorProvisioned["generator.beige_tower"], row.Provisioned, newCompany.GeneratorCounts["generator.beige_tower"], newCompany.GeneratorPurchasedTotal)
+			}
+			if len(newCompany.UpgradesOwned) != len(row.Upgrades) {
+				t.Fatalf("upgrades=%v want=%v", newCompany.UpgradesOwned, row.Upgrades)
+			}
+			for _, id := range row.Upgrades {
+				if !newCompany.UpgradesOwned[id] {
+					t.Fatalf("missing starter upgrade %s", id)
+				}
+			}
+			started := transition.Decision.CompanyStartedEvents[0]
+			var payload struct {
+				ReputationTree reputationRunStarted `json:"reputation_tree"`
+			}
+			if err := json.Unmarshal(started.Payload, &payload); err != nil {
+				t.Fatal(err)
+			}
+			if started.SchemaVersion != 2 || payload.ReputationTree.BonusFactor != row.BonusFactor || !slices.Equal(payload.ReputationTree.AppliedStarterNodeIDs, row.AppliedStarterNodeIDs) {
+				t.Fatalf("run_started schema=%d summary=%+v expected bonus=%s ids=%v", started.SchemaVersion, payload.ReputationTree, row.BonusFactor, row.AppliedStarterNodeIDs)
+			}
+			if transition.Founder.ReputationLevel != row.Level || transition.Founder.ReputationSpent != row.Spent || !slices.Equal(transition.Founder.ReputationNodesOwned, row.Owned) {
+				t.Fatal("starter application changed Founder accounting or retired ownership")
+			}
+		})
 	}
 }
 

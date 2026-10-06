@@ -93,6 +93,18 @@ properties, not full B1/R1 codec/R3 frozen rows/Reputation. New test/doc/record
 span after 5467f575 needs Claude separately; no real DB/browser/whole-CI or
 mint proof. RP-244/[log](reputation-tree-v1/log.md) retains exact limits.
 
+Reputation R4/AC8 now has an independent full four-path verdict on Claude's
+original `7d130b89^..7d130b89` witness addition only. New shared Exit cases cover
+all four starter nodes, cumulative cash/upgrade, retired IDs and tree-ordered
+emitted IDs. Six assignment/upgrade/order mutations fail in Go/TS, sources restore
+exact, and original-v9/current-v12 consumers pass. Cold full server-core/vet and
+client/type/build/boundaries/topology pass; final client 7374/134. RP-245 and the
+[log](reputation-tree-v1/log.md) retain remaining cap/idempotency/next-tree and
+full producer/persisted-row/mint/default-player debt. Canonical staging/version
+contradictions are reconciled, not new behavior. New Codex span after e365e0da
+still needs Claude, distinct from the original witness verdict. No runtime/kernel,
+owner/CI policy, archive/push or full Reputation/1.0 promotion.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot
