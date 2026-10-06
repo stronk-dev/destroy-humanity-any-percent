@@ -28,6 +28,17 @@ export interface ReputationDeclarations {
   readonly copyKeys: ReadonlySet<string>;
 }
 
+// OD-7 applies to an actual epoch pair, not isolated historical artifacts.
+// Prices/effects may change; defined IDs cannot disappear without a refund RFC.
+export function validateReputationTransition(previous: ReputationTree | undefined, next: ReputationTree | undefined): void {
+  if (!previous) return;
+  if (!next) throw new RangeError("Reputation tree removed between epochs");
+  const ids = new Set(next.nodes.map((node) => node.node_id));
+  for (const node of previous.nodes) {
+    if (!ids.has(node.node_id)) throw new RangeError(`Reputation node removed between epochs: ${node.node_id}`);
+  }
+}
+
 function reject(rule: number, message: string): never { throw new SyntaxError(`invalid reputation tree: rule ${rule}: ${message}`); }
 
 export function loadReputationTree(source: unknown, declarations: ReputationDeclarations): ReputationTree {

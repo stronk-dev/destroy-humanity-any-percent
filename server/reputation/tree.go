@@ -71,6 +71,24 @@ type Declarations struct {
 	CopyKeys   map[string]struct{}
 }
 
+// ValidateTransition enforces OD-7 on a supplied previous->next artifact pair.
+// Single historical artifacts remain loadable; effects/prices may be retuned,
+// but removing a defined ID needs a successor RFC with an explicit refund.
+func ValidateTransition(previous, next *Tree) error {
+	if previous == nil {
+		return nil
+	}
+	if next == nil {
+		return fmt.Errorf("%w: Reputation tree removed between epochs", ErrInvalidTree)
+	}
+	for _, node := range previous.nodes {
+		if _, exists := next.byID[node.NodeID]; !exists {
+			return fmt.Errorf("%w: Reputation node removed between epochs: %s", ErrInvalidTree, node.NodeID)
+		}
+	}
+	return nil
+}
+
 type rawTree struct {
 	SchemaVersion *int              `json:"schema_version"`
 	Bonus         *rawBonus         `json:"bonus"`

@@ -2121,3 +2121,87 @@ Docker workload or unapproved cleanup on the existing capacity hold. New range
 after cf458b2b awaits Claude independently of all prior spans; no full R1/OD-7/
 B4/AC11/RFC/CI/DB/player/release or checkbox/archive/push promotion. Next full
 original B4 review and remaining pinned consumers stay on the queue.
+
+Baseline5ad78b..53269a compiles and fires all28 Go negative cases (nine IDs ×
+three arms plus whole-tree linked withdrawal); all five legal linked controls
+pass. 11e392..7b934b typecheck is clean, then all28 TS negatives fail because
+linking throws nothing or replay actually resolves applied. Six new positives
+(census plus five linked controls) and all earlier tests pass:7428pass/28fail/
+134existing skips. The tool truncates7937 tokens of repetitive applied-object
+diagnostics; every failed population title and the final denominator are retained.
+This is admission evidence, not a setup/compiler failure or real DB exploit.
+
+Instrument refinement before controls: replace TS rejects.toThrow's enormous
+resolved-object diagnostic with a small explicit caught-error assertion, keeping
+the same refusal property and additionally requiring RangeError. No assertion
+is removed; before fixing, all nine admissions in each replay arm must still
+fail on missing error. Set next price3 in the TS positive retune too, matching
+the predeclared legal effect/price population. Retain the first baseline above.
+
+Compact baseline a48cec..d07c39 reproduces the same28 TS failures without
+truncation: undefined is not RangeError in both replay arms, linking throws
+nothing;7428pass/28fail/134skips. Initial corrected runs:
+26720/759f0b passes selected Go Reputation cold (production
+0.443s),53622/613270 passes clean types and7456tests/134existing skips.
+
+Instrument repair before omission controls: the new Go retirement refusal was
+initially passed the old fixture next hash. Supply the actual removed-tree hash
+in resolved inputs instead, so a mismatched hash cannot supply a vacuous refusal.
+No threshold/assertion weakened; full final cold population below covers the
+repair. One combined apply_patch was rejected for duplicate operations on the
+same file before writing; merged hunks succeeded. Read-only path misses for
+CURRENT-STATE and migration corpora were corrected via rg --files; no false
+unchanged-file claim rests on the missing paths.
+
+Five independent compiled omission controls, every handle terminal before edits:
+- Go linked admission removed: ef3fb7..7ec466 fires19 new cases (nine linked,
+  nine public Founder, one withdrawal). Starter retirement also fires on the
+  public error class: live still refuses with ErrInvalidEngineState instead of
+  ErrInvalidReplayInputs. This twentieth failure is defense-in-depth/taxonomy,
+  not a twentieth admitted transition. d35aff confirms exact source restoration.
+- Go live admission removed: cb4bd1..fb2a29 fires all9 direct-live negatives;
+  linking/Founder and all legal controls remain green. 7d5e17 exact restore.
+- TS linked admission removed: df2379..fd16f0 fires10 new linked/withdrawal
+  cases plus the retained retirement row:7445pass/11fail/134skip, types clean.
+  The first transition to the Company omission restored the line but omitted
+  the SHA check before that next probe. This bookkeeping miss is retained:
+  after all other probes, repeat from exact8a55d0/d61224 restoration as
+  8586d6..b96ce9, same11fail, then42d13a confirms exact SHA again.
+- TS Company admission removed:3b320e..f6a493 fires9 direct Company cases plus
+  retirement's actual applied result:7446pass/10fail/134skip. Typecheck clean;
+  tool truncates5128tokens of the retirement applied-object diagnostic, while
+  all failed titles/counts and the applied refusal failure are visible. 8a55d0
+  confirms exact restore; no unseen raw diagnostic is credited as evidence.
+- TS Founder admission removed:84a8f4..3faeb4 fires all9 direct Founder cases,
+  7447pass/9fail/134skip; other arms and legal controls green. d61224 exact restore.
+
+Census control removes p05 only:934d58..8d8342 Go rejects incomplete population;
+799040..b265bd TS fails8-versus9,7452pass/1fail/134skip. Its denominator shrinks
+three because each removed ID generates three cases:7587 rather than7590.
+This invalid population is not a full-run pass. 646e77 restores exact source/
+census SHA: replayGo a2bf1bf6...,foundations e701fb66...,replayTS1790fb96...,
+table3db3a6da.... No mutation survives into the final gates.
+
+Final cold d8ad19..a4b78e server-core/vet passes (production34.448s,save0.270s,
+transport13.274s; full Pitch0.296s cold, separate content alias cached). Formulas
+and generated API unchanged. b008e7..c88146 full verify-client passes types,
+build213modules,7456tests/134existing skips and14/8/22shell/UI boundaries, then
+fails historical pushed50a3a514 under RP-131. It is RED, not replaced by separate
+greens. 473483..af84b2 separately passes topology13negative fixtures, remaining
+combat/meter/achievement/cosmetic boundaries (22cosmetic negatives), payment
+6negatives/2near misses,657copykeys/610existing orphan warnings,content-manifest.
+Canonical migration baseline and both Go-authored Reputation corpus hashes are
+unchanged (12c1f6,d4b9ff); generated contract diff b908fe is empty. 879e35 confirms
+three legal starter expectation rows unchanged. Every verification handle terminal.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Source/diff,
+population, executed baselines and controls reviewed; NOT designated approval.
+Complete new span starts after cf458b2b, includes155f6c17 and the implementation/
+records checkpoint, and needs Claude against its literal committed tip. Kernel
+0.3.157→0.3.158 in all three identities accompanies real admission narrowing.
+No immutable migration, schema, actual balance/epoch/copy or CI-policy change.
+The former retirement positive is corrected under existing OD-7, not a refund
+ruling; three legal rows and independent unknown-owned fallback remain.
+No global chronology, real Postgres/browser/harness/CI, full R1/OD-7/B4/AC11,
+checkbox flip, mint, archival, push or Docker cleanup. Next full original17-path
+B4 review and remaining pinned consumers. Full nine-tier/platform goal active.

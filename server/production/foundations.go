@@ -291,6 +291,9 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	if founder == nil || company == nil || newCompany == nil {
 		return ErrInvalidEngineState
 	}
+	if err := reputation.ValidateTransition(current.ReputationTree, next.ReputationTree); err != nil {
+		return fmt.Errorf("%w: %v", ErrInvalidEngineState, err)
+	}
 	// Cosmetic Shop v1 §2: ids are permanent and slots never change across
 	// epochs; the artifact cannot disappear once pinned.
 	if err := garden.ValidateTransition(current.Garden, next.Garden); err != nil {

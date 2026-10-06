@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "removed_node_ids": [
+    "reputation.unlock.p05",
+    "reputation.starter.cash_small",
+    "reputation.starter.generated_beige_tower",
+    "reputation.unlock.p25",
+    "reputation.starter.upgrade_continuous_feed_paper",
+    "reputation.starter.cash_large",
+    "reputation.unlock.p50",
+    "reputation.unlock.p75",
+    "reputation.unlock.p100"
+  ],
+  "valid_profiles": ["unchanged", "retune", "append", "activation", "inactive"]
+}

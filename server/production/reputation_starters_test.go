@@ -1,6 +1,7 @@
 package production
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"os"
@@ -29,23 +30,38 @@ type reputationStarterBoundary struct {
 	Applied     []string `json:"applied"`
 }
 
-func reputationStarterBoundaryCases(t *testing.T) []reputationStarterBoundary {
+type reputationStarterBoundaryTable struct {
+	Version   int                         `json:"version"`
+	Cases     []reputationStarterBoundary `json:"cases"`
+	Forbidden []struct {
+		Profile string   `json:"profile"`
+		Removed []string `json:"removed_node_ids"`
+	} `json:"forbidden_transitions"`
+}
+
+func reputationStarterBoundaries(t *testing.T) reputationStarterBoundaryTable {
 	t.Helper()
 	data, err := os.ReadFile("../../testdata/reputation/starter-boundaries-v1.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var table struct {
-		Version int                         `json:"version"`
-		Cases   []reputationStarterBoundary `json:"cases"`
-	}
+	var table reputationStarterBoundaryTable
 	if err := json.Unmarshal(data, &table); err != nil {
 		t.Fatal(err)
 	}
-	if table.Version != 1 || len(table.Cases) != 4 {
+	profiles := []string{}
+	for _, row := range table.Cases {
+		profiles = append(profiles, row.Profile)
+	}
+	if table.Version != 2 || !slices.Equal(profiles, []string{"idempotent", "generated_cap", "resource_cap"}) || len(table.Forbidden) != 1 ||
+		table.Forbidden[0].Profile != "retire" || !slices.Equal(table.Forbidden[0].Removed, []string{"reputation.starter.generated_beige_tower", "reputation.starter.upgrade_continuous_feed_paper"}) {
 		t.Fatal("starter boundary population changed")
 	}
-	return table.Cases
+	return table
+}
+
+func reputationStarterBoundaryCases(t *testing.T) []reputationStarterBoundary {
+	return reputationStarterBoundaries(t).Cases
 }
 
 // Change only fixture artifacts, then strictly reload the changed catalogs and
@@ -205,6 +221,45 @@ func TestReputationStarterNextBundles(t *testing.T) {
 				t.Fatal("next tree rewrote Founder ownership/accounting")
 			}
 		})
+	}
+}
+
+func TestReputationStarterRetirementRefused(t *testing.T) {
+	now := time.Date(2026, 10, 6, 12, 0, 0, 0, time.UTC)
+	fixture := makeReputationExitFixture(t, now)
+	current := reputationContentBundle(t)
+	row := reputationStarterBoundaries(t).Forbidden[0]
+	next := reputationStarterNextBundle(t, current, row.Profile)
+	for _, id := range row.Removed {
+		if _, exists := current.ReputationTree.Node(id); !exists {
+			t.Fatal("forbidden node was not defined previously")
+		}
+		if _, exists := next.ReputationTree.Node(id); exists {
+			t.Fatal("forbidden fixture did not remove its declared node")
+		}
+	}
+	if len(current.ReputationTree.Nodes())-len(next.ReputationTree.Nodes()) != len(row.Removed) {
+		t.Fatal("forbidden fixture removed another node")
+	}
+	current.Next = &next
+	company := replayFixtureStateFromEncoded(t, current, fixture.Case.PreState)
+	before := mustEncodeState(t, company)
+	wire, err := parseReplayInputs(fixture.Case.ReplayInputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var resolved replayExitResolved
+	if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+		t.Fatal(err)
+	}
+	resolved.NextConstantsHash = next.ConstantsHash
+	wire.Resolved = reputationStarterJSON(t, resolved)
+	result, err := ApplyLoggedExit(company, fixture.Case.CanonicalPayload, current, reputationStarterJSON(t, wire))
+	if !errors.Is(err, ErrInvalidReplayInputs) || len(result.Decision.Receipt) != 0 || len(result.Decision.CompanyStartedEvents) != 0 || result.Founder != nil {
+		t.Fatalf("retirement admitted: %v/%s", err, result.Decision.Outcome)
+	}
+	if !bytes.Equal(before, mustEncodeState(t, company)) {
+		t.Fatal("refused retirement mutated Company")
 	}
 }
 

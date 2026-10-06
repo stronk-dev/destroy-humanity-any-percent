@@ -168,6 +168,9 @@ func (bundle CatalogBundle) TenantContent(engineRef, engineVersion string) (mini
 }
 
 func (bundle CatalogBundle) valid(constantsHash string) bool {
+	if bundle.Next != nil && reputation.ValidateTransition(bundle.ReputationTree, bundle.Next.ReputationTree) != nil {
+		return false
+	}
 	withFoundations := bundle.Meters != nil || bundle.Achievements != nil
 	withDoctrines := bundle.Doctrines != nil
 	withMinigames := bundle.Minigames != nil

@@ -112,8 +112,17 @@ same-ID unlock-effect retune therefore updates the next mirror without changing
 earned Reputation, historical spend or owned IDs. It does not repair invalid
 input or mutate the just-ended run's frozen contribution. Higher/lower fixture
 retunes and unchanged controls exercise these paths; each rebinding removal
-fails its affected retunes. Append-only-ID transition admission is a separate
-OD-7 obligation, not proved by these mirror tests (RP-251).
+fails its affected retunes. Separately, OD-7 transition admission compares an
+actual previous/next tree pair: every previously defined ID must remain, and an
+active tree cannot disappear. Go linked-bundle admission and the direct live
+boundary enforce this; TS linking and both direct Exit replay entries enforce
+the same rule. A standalone historical artifact remains loadable, and initial
+activation, legal effect/price retunes and appended IDs remain valid. Removing
+defined IDs needs a successor RFC with an explicit refund, not unknown-ID
+fallback. Nine independently removed IDs in three arms per runtime and a
+whole-tree linked withdrawal each refuse; five guard omissions and an incomplete
+shared census fail. This is fixture evidence, not global epoch-history or real
+database admission proof (RP-251).
 
 **Activation.** At a new-run boundary, and on the Founder-log Exit replay arm, a Founder moving
 onto a tree bundle starts with `spent = 0` and `owned = []`. Earned `reputation_level` carries
@@ -253,15 +262,16 @@ unknown ids remain owned but contribute nothing. Independently dropping upgrade
 ownership or sorting emitted ids bytewise fails each runtime's new test.
 These three semantic cases are not new all-case canonical byte corpora.
 
-`testdata/reputation/starter-boundaries-v1.json` additionally supplies four
-fixture-only next-bundle cases: retiring the generated/upgrade nodes; granting
-the same preowned upgrade from curriculum and the tree; landing exactly on the
-provisioned cap; and landing exactly on the permit cap. Changed catalogs are
-loaded strictly under hashes derived from their actual bytes. The retirement
-fixture mechanically leaves removed ids owned but ineffective; this is NOT
-permission to remove defined IDs from a legitimate next epoch. Accepted OD-7
-requires append-only IDs and a successor refund RFC for removal; that paired-
-epoch admission guard still needs its own executed proof under RP-251. Both loaders refuse
+`testdata/reputation/starter-boundaries-v1.json` (table version 2) supplies three
+legal fixture-only next-bundle cases: granting the same preowned upgrade from
+curriculum and the tree; landing exactly on the provisioned cap; and landing
+exactly on the permit cap. Their expectation rows are unchanged. The former
+retirement positive is now a separately consumed forbidden transition removing
+the generated/upgrade IDs: both runtime consumers assert refusal without state
+mutation. Changed catalogs load independently under hashes derived from their
+actual bytes, but the previous/next pair must obey OD-7. The earlier unknown-ID
+fallback cases remain independent and do not authorize defined-ID removal.
+Both loaders refuse
 over-cap raw variants. Go's served helper rejects bad headroom with
 `ErrInvalidEngineState`; TS checks the defensive guards through explicitly
 fault-injected copies of parsed bundles, which are NOT admitted artifacts or

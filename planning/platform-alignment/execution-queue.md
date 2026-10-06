@@ -1,5 +1,22 @@
 # Executable queue
 
+## Append-only Reputation epoch admission corrected — 2026-10-06
+
+Under155f6c17, all56 removal negatives first admit and now refuse: nine defined
+IDs × three arms plus whole-tree linked withdrawal per runtime. Five compiling
+guard omissions fail their affected paths; an incomplete census fails both
+lanes. Five legal linked profiles remain valid. The former starter-retirement
+positive is a separately consumed refusal; three legal expectation rows remain
+unchanged. Kernel0.3.158; cold server-core/vet passes, client/type/build and
+separate boundaries/topology pass7456/134. Full verify-client remains RED at
+historical RP-131/50a3a514, not waived; previous corpora/generated contracts unchanged.
+
+**READY FOR CLAUDE:** complete new range aftercf458b2b, including155f6c17 and
+its implementation/checkpoint, independently of prior spans. **NEXT ACCEPTED
+WORK:** full original seventeen-path B4 purchase review and remaining pinned
+readers/writers. No complete R1/OD-7/AC11/B4, real DB/player, whole CI, archival,
+mint/refund, push, Docker cleanup or 1.0 claim. [Exact controls](../reputation-tree-v1/log.md).
+
 ## Owned-effect epoch mirror corrected — 2026-10-06
 
 RP-251 under4e11f890 fires eight legal-retune negatives across Go live/Founder
@@ -11,10 +28,10 @@ build/boundaries/topology pass7422/134; kernel0.3.157, prior corpora unchanged.
 Full verify-client was rerun: RED at historical RP-131/50a3a514, not waived.
 
 **READY FOR CLAUDE:** new correction span after8ab5a2c4 through its checkpoint,
-independent of RP-250 and every prior range. **NEXT ACCEPTED WORK:** execute
-paired-epoch append-only-ID counterfacts under OD-7; prior positive retirement
-fixtures demonstrate fallback, not permission to remove defined nodes. Then
-remaining pinned reader/writer and complete original seventeen-path B4 review.
+independent of RP-250 and every prior range. Its then-next append-only-ID
+counterfacts are now boundedly corrected above; prior retirement positives
+were not permission. Remaining pinned reader/writer and complete original
+seventeen-path B4 review still require work.
 No full R1/OD-7/B4/AC11/DB/player/CI/1.0 or archival/push/cleanup promotion.
 
 ## Pinned Reputation command admission repaired — 2026-10-06
@@ -29,9 +46,9 @@ Cold server-core/vet and client/type/build/boundaries/topology pass7416/134;
 kernel0.3.156, existing corpora/API/formula bytes unchanged.
 
 **READY FOR CLAUDE:** correction range after501000ea through its checkpoint,
-separate from all earlier ranges. **NEXT ACCEPTED WORK:** predeclare and execute
-RP-251 cross-epoch mirror/effect/append-only transition counterfacts under R1/OD-7,
-then remaining pinned readers/writers and full original B4 range review. R4
+separate from all earlier ranges. Its then-next RP-251 cross-epoch counterfacts
+are now boundedly corrected above; remaining pinned readers/writers and full
+original B4 range review remain. R4
 unknown-owned fallback does not waive OD-7's prohibition on removing nodes
 without a successor refund RFC. No full R1/B4/DB/default-player/CI/1.0 promotion,
 checkbox/archival/push or Docker cleanup consent; other named holds persist.

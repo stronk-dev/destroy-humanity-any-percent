@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import corpus from "../../testdata/replay/reputation-tree-v1.json";
 import effects from "../../testdata/reputation/starter-effects-v1.json";
 import boundaries from "../../testdata/reputation/starter-boundaries-v1.json";
-import { applyLoggedExit, canonicalJSONString, loadReplayCatalogBundle, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
+import { applyLoggedExit, canonicalJSONString, encodeReplayState, loadReplayCatalogBundle, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
 import { constantsHashArtifacts } from "./pet-fixture-bundle";
 
 type Boundary = typeof boundaries.cases[number];
@@ -41,9 +41,24 @@ async function setup(row: Boundary) {
 }
 
 describe("Reputation starter next-bundle boundaries", () => {
-  it("pins all four admitted profiles", () => {
-    expect(boundaries.version).toBe(1);
-    expect(boundaries.cases.map((row) => row.profile)).toEqual(["retire", "idempotent", "generated_cap", "resource_cap"]);
+  it("pins three legal profiles and the separately forbidden retirement", () => {
+    expect(boundaries.version).toBe(2);
+    expect(boundaries.cases.map((row) => row.profile)).toEqual(["idempotent", "generated_cap", "resource_cap"]);
+    expect(boundaries.forbidden_transitions).toEqual([{ profile: "retire", removed_node_ids: ["reputation.starter.generated_beige_tower", "reputation.starter.upgrade_continuous_feed_paper"] }]);
+  });
+
+  it.each(boundaries.forbidden_transitions)("refuses $profile instead of erasing its population", async (row) => {
+    const current = await loadReplayCatalogBundle(corpus.exit.constants_hash, corpus.exit.artifacts as unknown as ReplayArtifacts);
+    const artifacts = artifactsFor(row.profile);
+    const next = await loadReplayCatalogBundle(await constantsHashArtifacts(artifacts), artifacts);
+    expect(current.reputationTree!.nodes.filter((node) => !next.reputationTree!.nodes.some((candidate) => candidate.node_id === node.node_id)).map((node) => node.node_id)).toEqual(row.removed_node_ids);
+    expect(() => withNextReplayCatalogBundle(current, next)).toThrow(/Reputation node removed/u);
+    const state = restoreReplayState(corpus.exit.case.pre_state, 18, current.economy, { meters: current.meters!, achievements: current.achievements!, doctrines: current.doctrines, opportunities: current.opportunities });
+    const before = canonicalJSONString(encodeReplayState(state));
+    const inputs = structuredClone(corpus.exit.case.replay_inputs);
+    inputs.resolved.next_constants_hash = next.constantsHash;
+    await expect(applyLoggedExit(state, canonicalJSONString(corpus.exit.case.canonical_payload), { ...current, next }, inputs)).rejects.toThrow(/Reputation node removed/u);
+    expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
   });
 
   it.each(boundaries.cases)("applies $profile on the actual next bundle", async (row) => {

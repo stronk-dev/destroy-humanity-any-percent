@@ -2669,3 +2669,28 @@ retirement fallback from OD-7's required lawful transition. Original full B4
 review, remaining R1/AC11/player/DB/mint/H4/CI/owner/author and all nine-tier/
 platform obligations persist. Goal active; no checkbox flip, archive, push,
 Docker cleanup consent or new DB workload.
+
+## 2026-10-06 — defined Reputation IDs cannot silently retire between epochs
+
+RP-251 under155f6c17 confirms all56 forbidden removal fixtures initially admit,
+then enforces accepted OD-7 at linked/live/public replay boundaries. Nine IDs
+per arm, plus linked whole-tree withdrawal, now refuse; five legal controls
+preserve same-ID retunes, append, activation and historical/inactive loading.
+Five independent compiling guard omissions fail, plus an incomplete shared
+census in both lanes. The old two-ID starter retirement is retained as a consumed
+forbidden transition, not dropped; three legal expectation rows are unchanged.
+Kernel0.3.158 marks real acceptance narrowing, not a new refund or live epoch.
+
+Cold server-core/vet passes (production34.448s,save0.270s); client/type/build and
+separate topology/boundary checks pass7456tests/134existing skips. Full
+verify-client still fails pushed50a3a514 (RP-131); copy retains610existing orphan
+warnings. Old migration/Reputation corpora and generated contracts unchanged.
+All control restores exact, all handles terminal. First missed intermediate
+TS restore hash check, repeated linked probe, truncated diagnostic and fixture
+next-hash repair are disclosed in the Reputation log, not hidden as clean execution.
+
+Complete new range aftercf458b2b includes155f6c17 and its implementation/records;
+Claude designated review pending independently of all older spans. No full
+R1/OD-7/B4/AC11/DB/player/CI/RFC or release promotion. Next full original B4
+review and remaining pinned consumers; all nine-tier/platform/owner/author/
+mint/H4 and capacity holds persist. Goal active; no archival, push or cleanup.

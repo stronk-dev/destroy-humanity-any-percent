@@ -29,8 +29,12 @@ threshold retune is measured and reported, then ratified by owner SHA).
   four positive controls, three fired guard removals), kernel0.3.156; Claude
   pending. RP-251's mirror retunes now execute and are locally corrected in Go
   live/Founder and TS Company/Founder (twelve cases, four fired removals),
-  kernel0.3.157, designated review pending. Complete pinned R1/R7/AC11 remains;
-  append-only-ID admission is still unexecuted, never a removal/refund permission.
+  kernel0.3.157, designated review pending. Subsequent OD-7 admission rejects
+  all 56 fixture removal cases; five independent guard omissions and the shared
+  census corruption in both runtimes fail. Three legal starter boundary rows
+  remain unchanged; retirement is separately refused. Kernel0.3.158 and the new
+  complete span aftercf458b2b need Claude. Complete pinned R1/R7/AC11 remains;
+  no removal/refund permission, real DB or full B4 verdict follows.
 - [x] B4 (`541da96e`) — R5 `purchase_reputation_node` Founder intent (Go + TS replay parity, corpus). ACs 3, 4.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),

@@ -16,7 +16,7 @@ import { advanceMeters, contributionKey as meterContributionKey, newRunMeterStat
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseRelevancePolicy, type RelevancePolicy } from "./relevance";
-import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationBonusFactor, reputationPurchase, reputationUnlockPpm as reputationUnlockPpmFor, type ReputationTree } from "./reputation";
+import { loadReputationTree, REPUTATION_PROVIDER, reputationAvailable, reputationBonusFactor, reputationPurchase, reputationUnlockPpm as reputationUnlockPpmFor, validateReputationTransition, type ReputationTree } from "./reputation";
 import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
@@ -359,6 +359,7 @@ function sortedUniqueCategoryMechanical(source: unknown[]): string[] { let last 
 function sortedFactSet(source: unknown, allowPrefixes: boolean): string[] { let last = ""; return array(source, "fact set").map((item) => { const value = string(item); const prefix = value.endsWith("."); const exact = prefix ? value.slice(0, -1) : value; const namespace = exact.split(".")[0]; if (byteCompare(value, last) <= 0 || prefix && !allowPrefixes || !mechanical.test(exact) || !["darkpattern", "exit", "externality"].includes(namespace ?? "")) throw new SyntaxError("invalid fact set"); last = value; return value; }); }
 
 export function withNextReplayCatalogBundle(current: ReplayCatalogBundle, next: ReplayCatalogBundle): ReplayCatalogBundle {
+  validateReputationTransition(current.reputationTree, next.reputationTree);
   return Object.freeze({ ...current, next });
 }
 
@@ -1299,6 +1300,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const nextHash = string(resolved.next_constants_hash);
   const next = nextHash === catalogs.constantsHash ? catalogs : catalogs.next;
   if (!next || next.constantsHash !== nextHash) throw new RangeError("next catalog bundle mismatch");
+  validateReputationTransition(catalogs.reputationTree, next.reputationTree);
   const activeEvidence=hasActive?parseActiveSchedule(resolved.active_play):null,nextActive=hasNextActive?parseActiveSpawn(resolved.next_active_play):null;if((company.wireVersion===18)!==(activeEvidence!==null)||company.wireVersion===18&&wire.v<5||(next.opportunities!==undefined)!==(nextActive!==null)||activeEvidence?.claim!==null&&activeEvidence!==null)throw new RangeError("terminal active-play evidence mismatch");
   if ((catalogs.minigameAPI !== undefined) !== hasMinigameActivity) throw new RangeError("terminal minigame activity evidence mismatch");
   const minigameSessionActive = hasMinigameActivity ? boolean(resolved.minigame_session_active) : false;
@@ -2080,6 +2082,7 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
   state.exitHistory.push(exit);
   const resultCatalogs = resultHash === inputHash ? catalogs : catalogs.next;
   if (!resultCatalogs || resultCatalogs.constantsHash !== resultHash || resultVersion < state.wireVersion) throw new RangeError("missing Founder result catalogs");
+  validateReputationTransition(catalogs.reputationTree, resultCatalogs.reputationTree);
   if (resultVersion >= 17 && state.wireVersion < 17) {
 		if (!resultCatalogs.minigames) throw new RangeError("missing minigame activation artifact");
 		state.minigameRatings = Object.fromEntries(resultCatalogs.minigames.minigames.map((definition) => [definition.minigame_id, {

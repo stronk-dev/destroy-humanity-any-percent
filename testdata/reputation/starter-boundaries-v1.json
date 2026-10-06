@@ -1,16 +1,12 @@
 {
-  "version": 1,
-  "cases": [
+  "version": 2,
+  "forbidden_transitions": [
     {
       "profile": "retire",
-      "branch": "burnout",
-      "pre_cash": "0",
-      "cash": "1.01e5",
-      "permits": "0",
-      "provisioned": 10,
-      "upgrades": [],
-      "applied": ["reputation.starter.cash_small", "reputation.starter.cash_large"]
-    },
+      "removed_node_ids": ["reputation.starter.generated_beige_tower", "reputation.starter.upgrade_continuous_feed_paper"]
+    }
+  ],
+  "cases": [
     {
       "profile": "idempotent",
       "branch": "pivot",

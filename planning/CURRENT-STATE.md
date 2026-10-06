@@ -4,14 +4,27 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime correction: RP-251's valid higher/lower next-epoch unlock effects
+Latest runtime correction: OD-7 append-only-ID admission now rejects removing
+any of nine defined Reputation IDs at the linked/live/replay fixture boundaries
+(28 negatives per runtime, 56 total). Five independent guard omissions fail;
+both runtimes reject an incomplete shared population. Legal retunes, append,
+initial activation and inactive history remain valid. The former retirement
+positive is retained as a forbidden transition, with three legal boundary
+expectation rows unchanged. Cold server-core/vet passes; client/type/build and
+separate boundaries/topology pass7456/134, kernel **0.3.158**. Full verify-client
+remains RED at historical RP-131/50a3a514. Complete new range after `cf458b2b`
+needs Claude; no full R1/OD-7/B4, actual DB/player, CI or release promotion.
+[Exact evidence and next work](reputation-tree-v1/log.md).
+
+Previous runtime correction: RP-251's valid higher/lower next-epoch unlock effects
 no longer fail on a stale mirror. Go live/Founder and TS Company/Founder rebind
 only the mirror, preserving historical spend/ownership. Twelve cases pass;
 four independent omissions fail their affected retunes and restore exactly.
 Cold server-core/vet and client/type/build/boundaries/topology pass 7422/134;
 kernel **0.3.157**. The new span after `8ab5a2c4` needs Claude. Full verify-client
-was rerun and is RED at historical RP-131/50a3a514. Append-only-ID admission,
-original full B4, actual DB/player, whole CI and release obligations remain;
+was rerun and is RED at historical RP-131/50a3a514. At this earlier checkpoint
+append-only-ID admission was still unexecuted; the correction above supplies
+its bounded fixture evidence. Original full B4, actual DB/player, whole CI and release obligations remain;
 retirement fixtures do not authorize removing nodes. [Exact evidence](reputation-tree-v1/log.md).
 
 Previous command-admission correction: RP-250 now rejects pinned-invalid Reputation input
@@ -22,8 +35,9 @@ independent guard removals fail and restore exactly. Cold server-core/vet and
 client/type/build/boundaries/topology pass (7416/134); kernel **0.3.156**.
 The complete new span after501000ea needs Claude; full CI, actual DB admission,
 complete R1/B4/AC11 and release acceptance remain unproved. RP-251's cross-epoch
-append-only-ID observation remains static, not an owner ruling. RP-251's mirror
-part is corrected in the subsequent checkpoint above. [Exact evidence and next work](reputation-tree-v1/log.md).
+append-only-ID observation was static at that checkpoint, not an owner ruling.
+The subsequent corrections above implement existing R1/OD-7, not new refund
+policy. [Exact evidence and next work](reputation-tree-v1/log.md).
 
 Current strategic status lives in [the 1.0 board](roadmap-1.0.md) and its
 [append-only checkpoints](roadmap-1.0-log.md). Current implementation authority lives in
