@@ -6650,3 +6650,47 @@ remain; no checkbox flip/self-archive/push/cleanup/report restamp/owner copy or
 goal completion. Kernel161/price/copy/balance/CI unchanged. Next safe accepted
 work:predeclared native R9 header/row Tab diagnosis RP-285. Proper full nine-tier/
 platform1.0 goal is active, not complete/paused/blocked or reduced to a preview.
+
+## 2026-10-06 — RP-285 sequential Tab diagnostic predeclaration
+
+Resume8a3bfb70 clean main, no inherited live tool/test handles. Previous goal
+turn is progress:RP-279/RP-282 runtime corrections, executed negative/native
+evidence and synchronized records. AGENTS/process fully reread1fc519/3c942e;
+active indexf269dd still accepts Reputation. Exact RFC/design refs unchanged
+since020a25c6 (6bbc50; use actual02-economy-balancing/11-ux-writing filenames).
+R9 fully re-grounded2dab8a, componentc34f8b/old native tests7db2cf read fully.
+Kernel watched pathsb2431c exclude Game UI renderer; no numeric/kernel bump.
+
+R9 explicitly requires Tab to reach header, then each row's single control in
+artifact order. Current h1 tabindex=-1 and no host heading-focus path are source
+findings only (RP-285), not native proof. Extend existing component diagnostic,
+not host fixture setters/SQL/minted/default-player or human AT evidence.
+
+Population:two eras × three coherent arms × three control states =18 cases per
+engine/36 total. Arms:mixed four states/one available control; adequate budget
+with two available rows; no available rows with zero budget. Use exact declared
+arm shape (do not propagate old fixture-only tree_active extra field). Control
+states:ready,pending,unrecovered controls false; these are controlled props,
+not actual transport-state producers. Costs/level/spend/bonus and prerequisite
+states remain coherent; diagnostic values do not adopt balance content.
+
+Mount actual component/theme between two test-only sentinel buttons. Only the
+preceding sentinel gets programmatic focus. Native Tab must visit header→each
+enabled Buy in artifact order→following sentinel; native Shift+Tab must reverse
+exactly, including disabled/no-buy cases. Never focus the header or row controls
+directly to hide the defect. Assert four-state/title census, no row Tab stops,
+no accidental purchase/confirm. Independent expected order comes from input,
+not discovered current browser focus order. Existing58 child/96 host/40 cost
+cases are later regression controls. No new player prose/labels or mechanics.
+
+Run unchanged production baseline first; if the setup/browser key fails, do not
+call it a product failure. If confirmed, separately predeclare minimum heading
+Tab-stop correction and compiling probes before source changes. Final target
+230 Chromium/WebKit cases; Firefox remains RP-256 unexecuted, not waived.
+Root cold types/build/client/boundaries/copy/manifest and separate RP-131 history
+guard, all existing skips/limits visible. No file edit while any handle live;
+terminal followed by exact SHA restoration before next mutation. Whole new
+span after8a3bfb70 needs Claude, every earlier range independent. No full AC12/
+AT/SQL/mint/1.0 closure, checkbox, owner-copy/price/balance/CI-policy change,
+archive, cleanup, deployment/publication/push or goal completion. RP-281 tooling,
+RP-283 author bridge and RP-284 producer/consumer remain separate lanes.
