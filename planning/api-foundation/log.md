@@ -650,4 +650,30 @@ there. Neither involves my files. The same releasepackage test passed at `731bb3
   - the catalogs reader (C18 descriptors, gap 5);
   - the thin generated-client transport and the AC4 raw-fetch lint;
   - the conformance test's 304 enumeration (gap 3).
+
+## 2026-10-06 — predeclare refresh generated-contract evidence, not renewal code
+
+Accepted A2/A4/A5, C1/C7/C9 authorize inspecting the existing registry/generated
+contract. Current source has fourteen generated operations, no refresh path;
+APIError lacks refresh_reused/session_family_revoked and unauthorized/refresh_token.
+Actual Account parser census already emits the latter. RP-240 records this seam,
+not a new policy or chosen future operation ID. Renewal RFC remains draft.
+
+Bounded manual compiler probe outside CI/verify: use repository TypeScript against
+actual generated types and virtual callers (no files written by compiler). Positive
+registered-bootstrap path and invalid/body error controls must compile; exact
+refresh path and both existing refresh error pairs must be rejected with semantic
+diagnostics on the virtual caller, never incidental module/import errors. In-memory
+counterfactual path/error widening must remove only the corresponding refusals;
+counterfactual bytes are synthetic, never written or adopted as a contract.
+Run actual api-check drift/compat generation and cold publicapi tests. Census
+operation counts/paths and AST-confirm actual fetcher call sites; no claim of
+runtime HTTP, successful rotation, browser coordination, generated dispatch or
+complete request/status schema. Source hashes and limits retained explicitly.
+Instrument goes in *.fixtures.mjs, not Vitest-discovered *.test.mjs (RP-239 lesson).
+All handles drain before edits; no production/generated/schema/pin/auth/copy/
+kernel/CI membership or checkbox changes. Review by: Codex (predeclaration only).
+Recorded by: Codex. New range starts 29e1ff02 exclusive, Claude independently
+required. Docker capacity approval, prepared DB populations and all prior spans
+remain separate, no shortcut/archival/push or 1.0 promotion.
 - Gaps 6 to 10 are in the entries above.
