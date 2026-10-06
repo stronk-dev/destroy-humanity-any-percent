@@ -14,6 +14,16 @@ retains all limits. New Codex span after 6947ebe3 needs Claude; no complete
 Reputation review, balance ratchet, mint, DB/browser/CI or release promotion.
 The following reliability checkpoint and all full-nine-tier obligations stay open.
 
+**Subsequent sampled-proof checkpoint:** Reputation R1/R3 under ce6a9d6b,
+147 parameter triples/462 spends/eight invalid tuples in each pure runtime and
+ten shared canonical vectors. Four independent mutations fire, including TS
+fixture consumers, then exact restoration and cold selected Go/vet/client/
+type/build/boundary/topology pass (7369 tests/134 skips). No runtime/kernel
+change; 0.3.154 remains. [Bounded verdict](reputation-tree-v1/log.md) covers
+original Available/BonusFactor only, not full B1/codec/frozen transactions,
+mint/DB/browser/CI or release. New Codex test/doc span after 5467f575 needs
+Claude independently of RP-243; no 1.0 scope or owner-gate reduction.
+
 **Current checkpoint:** 2026-10-06, cold CI observation under `c8ff3139` /
 `6b119e76` / `e6ea05bf`: passive HTTP/native-worker traces and two intentional
 404 controls discriminate without product/fixture/assertion changes. Full 93957

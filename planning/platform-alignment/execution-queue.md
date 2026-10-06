@@ -1,5 +1,23 @@
 # Executable queue
 
+## Reputation R1/R3 sampled accounting proof — 2026-10-06
+
+Under ce6a9d6b, shared 147 parameter triples/462 legal spends/eight invalid
+tuples plus ten canonical vectors execute in Go/TS. Four earned-base/overspend
+probes fail; TS also trips three existing run_started replay consumers and
+Founder restoration. Exact restores, final cold selected Go/vet and full client/
+type/build/boundary/topology pass (7369 tests/134 existing skips). Kernel stays
+0.3.154. [Log](../reputation-tree-v1/log.md) approves only original a522fdf1
+Available/BonusFactor properties; not full B1/R1 codec/R3 frozen-row or archival
+range union. No real DB/browser/mint/whole-CI or exhaustive integer proof.
+
+**READY FOR CLAUDE REVIEW:** new Codex test/doc/record span after 5467f575,
+predeclaration through final pin. Prior RP-243 and every earlier range stay
+independent. Continue original accepted loader/bundle/codec/frozen-row review
+where safely executable; retain H4 and owner measurement/mint/author gates.
+No approximate attainment, silent balance ratchet, schema/CI change or shortened
+1.0 floor. Fresh Docker populations still await scoped capacity authority.
+
 ## Reputation R2 nested starter parity correction — 2026-10-06
 
 RP-243 executed under dc9e6fc6/8379f96d: Go admitted twenty cross-arm

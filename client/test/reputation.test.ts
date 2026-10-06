@@ -4,6 +4,7 @@ import fixtureTree from "../../balance/testdata/reputation-tree/fixture-v1.json"
 import corpus from "../../testdata/reputation/tree-fixtures-v1.json";
 import vectors from "../../testdata/reputation/bonus-vectors-v1.json";
 import starterKeyRejections from "../../testdata/reputation/starter-key-rejections-v1.json";
+import bonusDomain from "../../testdata/reputation/bonus-domain-v1.json";
 import { describe, expect, it } from "vitest";
 
 import { COPY_KEYS } from "../src/copy/generated/types";
@@ -56,6 +57,43 @@ describe("reputation tree loader", () => {
 });
 
 describe("reputation accounting and bonus", () => {
+  it("keeps the earned-level bonus unchanged across 462 legal spend cases", () => {
+    expect(bonusDomain.schema_version).toBe(1);
+    let triples = 0;
+    let spends = 0;
+    for (const level of bonusDomain.levels) {
+      for (const perLevel of bonusDomain.per_level_ppm) {
+        for (const unlock of bonusDomain.unlock_ppm) {
+          const baseline = reputationBonusFactor(level, 0, perLevel, unlock);
+          if (level === 0 || unlock === 0) expect(baseline).toBe("1e0");
+          triples += 1;
+          const candidates = new Set([0, 1, Math.floor(level / 2), level]);
+          for (const spent of candidates) {
+            if (spent > level) continue;
+            expect(reputationAvailable(level, spent)).toBe(level - spent);
+            expect(reputationBonusFactor(level, spent, perLevel, unlock), JSON.stringify({ level, spent, perLevel, unlock })).toBe(baseline);
+            spends += 1;
+          }
+        }
+      }
+    }
+    expect(triples).toBe(147);
+    expect(spends).toBe(462);
+  });
+
+  it("rejects the eight shared invalid bonus-domain tuples", () => {
+    expect(bonusDomain.schema_version).toBe(1);
+    expect(bonusDomain.invalid).toHaveLength(8);
+    for (const row of bonusDomain.invalid) {
+      expect(() => reputationBonusFactor(row.level, row.spent, row.per_level_ppm, row.unlock_ppm), row.name).toThrow(RangeError);
+      if (row.level < 0 || !Number.isSafeInteger(row.level) || row.spent < 0 || row.spent > row.level) {
+        expect(() => reputationAvailable(row.level, row.spent), row.name).toThrow(RangeError);
+      } else {
+        expect(reputationAvailable(row.level, row.spent), row.name).toBe(row.level - row.spent);
+      }
+    }
+  });
+
   it("derives available and unlock ppm", () => {
     const tree = loadReputationTree(fixtureTree, declarations);
     expect(reputationAvailable(10, 4)).toBe(6);

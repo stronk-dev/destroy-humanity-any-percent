@@ -2452,3 +2452,25 @@ kernel/docs/records/pin, pending Claude independently of original B1 and every
 prior range. No checkbox, archival, push or owner-choice change. Full nine-tier
 1.0/platform scope remains active. Continue accepted accounting/bonus proof
 while preserving owner measurement/mint holds and pending capacity choice.
+
+## 2026-10-06 — earned Reputation bonus proof reaches fixture consumers
+
+Accepted R1/R3/AC5 lane ce6a9d6b supplements existing ten canonical Go/TS
+vectors with shared 147 parameter triples, 462 distinct legal spends and eight
+invalid bonus-domain tuples in each pure runtime. New sampled spending-invariance
+and invalid-domain tests pass. Independently substituting remaining balance for
+earned level fails Go vectors/new test and five TS tests, including three existing
+new-run/Exit replay consumers. Removing the overspend guard fails three Go tests
+and four TS tests, including Founder restoration. All four probes fire with
+actual assertion failures, then byte-exact restores. Final cold selected Go/
+vet and full root client/type/build/boundary/topology pass, 7369 tests/134 existing
+skips; kernel remains 0.3.154. RP-244 records property evidence, not a new latent
+runtime defect or exhaustive/all-matrix Go/TS rounding proof.
+
+Codex's designated verdict approves only original Claude a522fdf1 Available/
+BonusFactor properties, not its twenty-one-path B1 or R1 codec/R3 transaction/
+full Reputation scope. New Codex tests/docs/records after 5467f575 require Claude
+independently; tip pinned after commit. No owner/rule/balance/mint/CI/schema/
+copy/checkbox/archive/push change. No fresh full-CI/real-DB/browser proof,
+pending capacity/history/review/measurement gates remain. Full nine-tier 1.0
+and complete platform obligations stay active, not traded for sampled success.

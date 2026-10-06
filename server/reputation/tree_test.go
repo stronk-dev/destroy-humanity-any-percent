@@ -249,6 +249,82 @@ var bonusInputs = []bonusVector{
 	{Level: decimal.MaxExactInteger, Spent: 0, PerLevelPPM: 10_000, UnlockPPM: 250_000},
 }
 
+type bonusDomainCorpus struct {
+	SchemaVersion int     `json:"schema_version"`
+	Levels        []int64 `json:"levels"`
+	PerLevelPPM   []int64 `json:"per_level_ppm"`
+	UnlockPPM     []int64 `json:"unlock_ppm"`
+	Invalid       []struct {
+		Name string `json:"name"`
+		bonusVector
+	} `json:"invalid"`
+}
+
+func readBonusDomain(t *testing.T) bonusDomainCorpus {
+	t.Helper()
+	var corpus bonusDomainCorpus
+	if err := json.Unmarshal(readRepository(t, "testdata/reputation/bonus-domain-v1.json"), &corpus); err != nil || corpus.SchemaVersion != 1 || len(corpus.Levels) != 7 || len(corpus.PerLevelPPM) != 3 || len(corpus.UnlockPPM) != 7 || len(corpus.Invalid) != 8 {
+		t.Fatalf("bonus-domain corpus: %v", err)
+	}
+	return corpus
+}
+
+func TestBonusDoesNotDebitEarnedLevel(t *testing.T) {
+	corpus := readBonusDomain(t)
+	triples, spends := 0, 0
+	for _, level := range corpus.Levels {
+		for _, perLevel := range corpus.PerLevelPPM {
+			for _, unlock := range corpus.UnlockPPM {
+				baseline, err := BonusFactor(level, 0, perLevel, unlock)
+				if err != nil {
+					t.Fatalf("legal baseline (%d,%d,%d): %v", level, perLevel, unlock, err)
+				}
+				if (level == 0 || unlock == 0) && baseline.String() != "1e0" {
+					t.Fatalf("non-neutral zero input: %s", baseline.String())
+				}
+				triples++
+				seen := map[int64]bool{}
+				for _, spent := range []int64{0, 1, level / 2, level} {
+					if spent > level || seen[spent] {
+						continue
+					}
+					seen[spent] = true
+					available, err := Available(level, spent)
+					if err != nil || available != level-spent {
+						t.Fatalf("available(%d,%d) = %d: %v", level, spent, available, err)
+					}
+					factor, err := BonusFactor(level, spent, perLevel, unlock)
+					if err != nil || factor.String() != baseline.String() {
+						t.Fatalf("spending changed bonus (%d,%d,%d,%d): got %s want %s: %v", level, spent, perLevel, unlock, factor.String(), baseline.String(), err)
+					}
+					spends++
+				}
+			}
+		}
+	}
+	if triples != 147 || spends != 462 {
+		t.Fatalf("incomplete matrix: %d triples/%d spends", triples, spends)
+	}
+}
+
+func TestBonusDomainRejections(t *testing.T) {
+	for _, row := range readBonusDomain(t).Invalid {
+		t.Run(row.Name, func(t *testing.T) {
+			if _, err := BonusFactor(row.Level, row.Spent, row.PerLevelPPM, row.UnlockPPM); !errors.Is(err, ErrInvalidState) {
+				t.Fatalf("invalid bonus input admitted: %+v: %v", row.bonusVector, err)
+			}
+			available, err := Available(row.Level, row.Spent)
+			if row.Level < 0 || row.Level > decimal.MaxExactInteger || row.Spent < 0 || row.Spent > row.Level {
+				if !errors.Is(err, ErrInvalidState) {
+					t.Fatalf("invalid accounting admitted: %d: %v", available, err)
+				}
+			} else if err != nil || available != row.Level-row.Spent {
+				t.Fatalf("valid accounting rejected by bonus-only domain: %d: %v", available, err)
+			}
+		})
+	}
+}
+
 // TestBonusVectors pins the Go-authored AC5 vectors both runtimes consume.
 // REPUTATION_UPDATE_VECTORS=1 regenerates the file from the Go arithmetic.
 func TestBonusVectors(t *testing.T) {

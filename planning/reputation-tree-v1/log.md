@@ -867,3 +867,73 @@ review may assess only original Claude a522fdf1 R1/R3 primitive arithmetic, not
 its full twenty-one-path B1/loader/copy or later codec/transaction/UI/mint scope.
 Our new tests/records remain Codex first-filter and require Claude's exact-span
 review. Full Reputation and full nine-tier 1.0/platform floor stay unchanged.
+
+## 2026-10-06 — R1/R3 sampled proof and bounded original-property verdict
+
+**Review by:** Codex (designated other party for the original Claude primitive;
+self/first-filter only for the new Codex tests/records).
+**Recorded by:** Codex.
+**Original coordinate:** `a522fdf1^..a522fdf1`, limited to Go Available/BonusFactor,
+TS reputationAvailable/reputationBonusFactor and their accounting/ten-vector
+tests plus bonus-vectors-v1.json. Current-source comparison confirms those
+helpers and the ten vectors are byte-unchanged from that commit. The intervening
+raw starter repair and later Purchase/OwnedStarters additions are not reviewed
+or approved by this verdict.
+**Verdict:** APPROVED for those bounded primitive properties only. **Not** a
+full commit/path-union archival verdict, full B1, R1 codec/owned-id/mirror
+acceptance, R3 frozen-row/next-run transaction proof or full Reputation approval.
+Original twenty-one-path B1 and RP-243/new-test review requests remain open.
+
+Population under ce6a9d6b: the existing ten canonical cross-runtime vectors
+plus shared bonus-domain-v1.json. Its sampled 147 parameter triples execute
+462 distinct legal spend cases in each pure runtime, with neutral zero inputs.
+Eight invalid bonus tuples reject; the four accounting-invalid rows also
+reject Available while bonus-only-invalid rows leave valid Available usable.
+This is not exhaustive safe-integer coverage or a byte comparison of all 147
+baseline factors across runtimes; those cross-runtime bytes are checked by the
+existing ten-vector corpus. No alternate rounding oracle or acceptance bound
+was invented. No fixture/vector regeneration or experimental balance adoption.
+
+Actual executed sequence, every handle terminal before mutation/restore:
+
+- 50783 baseline accounting/vectors pass cold, package 0.141 s; full original
+  client 44641 passes 7367 tests/134 existing skips.
+- 17427 augmented whole reputation package passes cold, 0.249 s, including
+  all twenty retained RP-243 cases and eight named new invalid-domain subcases.
+  Client 75094 passes 7369/134, 84 passing files/17 existing skipped files.
+- Go earned→available numerator 84675: Make 2, new spending test fails at
+  (level1,spent1,per_level1,unlock50000), expected 1.00000005e0 versus 1e0;
+  four existing canonical vectors independently fail (indices 3–6). Restore.
+- Go spent>level guard removed (865b94 result): Make 2; existing accounting,
+  new spent_over_level and existing invalid bonus vector assertions fail.
+  Restore exact original current source before starting TS probes.
+- TS earned→available 29742: Make 2, five tests fail. New spending and existing
+  vector tests fail, plus three existing new-run/Exit-plan replay event checks
+  report changed run_started bonus factors. These are actual fixture consumers,
+  not real DB/default player/production-mint evidence. Restore.
+- TS spent>level guard removed 39844: Make 2, four tests fail, including the
+  new invalid-domain test, both existing pure assertions and the existing
+  Founder-state restore rejection. Restore; no codec implementation changed.
+- Final 39481 cold reputation/kernel and selected vet pass (0.143/0.062 s).
+  Final root typecheck/build/client/boundary/topology 64285 passes: zero TS/
+  Svelte errors/warnings; 7369 tests, 134 existing skips, 84/17 files; thirteen
+  topology negatives reject. No fresh composite/historical guard/whole-CI or
+  exhaustive harness/real Postgres/browser claim in this wave.
+
+Restored unchanged runtime SHA:
+Go tree.go 78f908fb1fbdf0da05e0bb2a5d9e5a705919ce17d405a24c1f3bafd52eda4b30;
+TS reputation.ts cb36e5e69ba9addea25f639f858c8840f3ae81238ff660a1d6219b402a636922.
+New shared domain fixture SHA:
+0bf5cca86888354eaec0eff6986c374bef5509c9c46eab89967493e52f698b17.
+All four probes fired; none omitted, no compilation-only failure or surviving
+probe reclassified. Existing strict-loader defect is not silently promoted by
+these arithmetic successes. Current kernel remains 0.3.154: new tests only,
+Go _test.go explicitly excluded by the existing guard; no false version signal.
+
+RP-244 and canonical/current/execution/roadmap records retain the evidence.
+New Codex test/doc/record span begins 5467f575 exclusive, including this wave's
+predeclaration ce6a9d6b; exact tip follows. Claude independently reviews this
+span, not substituted by Codex's limited original-property verdict. No runtime,
+balance/copy/save/schema/API/CI/mint/owner-choice/checkbox/archive/push change.
+The full nine-tier 1.0/platform objective and H4/measurement/mint/capacity,
+real DB/browser/previous review blockers all remain unconsumed.

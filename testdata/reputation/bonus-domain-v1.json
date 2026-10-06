@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "levels": [0, 1, 2, 4, 552, 1000, 9007199254740991],
+  "per_level_ppm": [1, 10000, 1000000],
+  "unlock_ppm": [0, 1, 50000, 250000, 500000, 750000, 1000000],
+  "invalid": [
+    { "name": "negative_level", "level": -1, "spent": 0, "per_level_ppm": 10000, "unlock_ppm": 50000 },
+    { "name": "unsafe_level", "level": 9007199254740992, "spent": 0, "per_level_ppm": 10000, "unlock_ppm": 50000 },
+    { "name": "negative_spent", "level": 4, "spent": -1, "per_level_ppm": 10000, "unlock_ppm": 50000 },
+    { "name": "spent_over_level", "level": 4, "spent": 5, "per_level_ppm": 10000, "unlock_ppm": 50000 },
+    { "name": "zero_per_level", "level": 4, "spent": 0, "per_level_ppm": 0, "unlock_ppm": 50000 },
+    { "name": "over_per_level", "level": 4, "spent": 0, "per_level_ppm": 1000001, "unlock_ppm": 50000 },
+    { "name": "negative_unlock", "level": 4, "spent": 0, "per_level_ppm": 10000, "unlock_ppm": -1 },
+    { "name": "over_unlock", "level": 4, "spent": 0, "per_level_ppm": 10000, "unlock_ppm": 1000001 }
+  ]
+}

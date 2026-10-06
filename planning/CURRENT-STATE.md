@@ -82,6 +82,17 @@ the new Codex span after 6947ebe3, independently pending Claude. Original B1/B9
 and prior ranges stay open; no copy, balance, migration, API, CI or owner choice
 was changed. Docker remains 100%/39,784 KiB available; cleanup answer pending.
 
+Reputation R1/R3 test-only wave under ce6a9d6b now executes sampled 147
+parameter triples/462 spend cases/eight invalid tuples in both pure runtimes,
+plus the ten canonical Go/TS vectors. Four independent earned-base/overspend
+probes fail, also firing existing TS new-run replay and Founder restoration
+assertions; exact source restore and final cold Go/vet/client/type/build/
+boundary/topology pass (7369 client tests/134 existing skips). Kernel stays
+0.3.154. Codex approves only the original a522fdf1 Available/BonusFactor
+properties, not full B1/R1 codec/R3 frozen rows/Reputation. New test/doc/record
+span after 5467f575 needs Claude separately; no real DB/browser/whole-CI or
+mint proof. RP-244/[log](reputation-tree-v1/log.md) retains exact limits.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

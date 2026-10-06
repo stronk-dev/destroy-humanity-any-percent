@@ -54,6 +54,16 @@ loaders to twenty cross-arm zero/empty/null refusals with a legal three-kind
 control. RP-243 records the original Go admission, correction and exact review
 scope; these loader tests do not prove a minted player career or full RFC acceptance.
 
+`testdata/reputation/bonus-domain-v1.json` supplies a sampled R1/R3 matrix:
+147 level/ppm/unlock triples, 462 distinct legal spend cases and eight invalid
+bonus-domain tuples. Both pure implementations check that spending reduces
+available Reputation but leaves the earned-level bonus unchanged; the existing
+ten shared vectors retain canonical Go/TS byte comparisons. The matrix is not
+an exhaustive integer-domain or all-case cross-runtime rounding proof. Independent
+earned-to-available and overspend-guard removals fail in each runtime, including
+existing TS replay consumers. These fixtures do not close codec, transaction,
+minted-career, browser or whole-RFC acceptance; see the implementation log.
+
 ## Bundle wiring
 
 `reputation_tree` is an optional epoch artifact, loaded by `server/replaycatalog` and
