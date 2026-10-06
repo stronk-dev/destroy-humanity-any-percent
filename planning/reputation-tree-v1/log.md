@@ -7492,3 +7492,26 @@ edits with live test/probe handle; no acceptance checkbox, author/body/copy
 adoption, schema/balance/kernel/CI/mint, cleanup, push/deploy or archival change.
 Entire new span afterb5ca3e7d needs Claude, earlier ranges independently pending.
 Full nine-tier/platform1.0 active; old author/data/SQL/browser/release holds remain.
+
+Test fixture extension keeps the original boundary's default automatic replies
+and every old assertion. New40 native cases explicitly hold individual channel
+acks and exercise actual one-second recovery, not fake timers/host fixture
+mutators. Typecheck06e769/e5f614 session22339 terminal0,0 errors/warnings.
+Predeclare diagnostic baseline and compiling negative arms with actual CLI
+--no-browser.screenshotFailures because RP-289 already verified a native
+failure-attachment copy stall. This omits post-failure diagnostics only, not
+assertions/native events/deadlines/security/error detection or test populations.
+Retain the option/result on record; final restored full positives use DEFAULT
+capture. No Make/Vitest/CI configuration is edited and no tooling fix is claimed.
+
+Unchanged-source7d1e6f/d4463a session3813 terminal2:64 failures/16 controls
+pass,96 old cases selector-excluded (not skipped defects). Each browser has
+startup4/drain4/post-full-sync8/ordinary1006 drop4 readiness failures and
+terminal4001/4002 eight/failed-refresh four missing-offline-notice failures.
+Both-era Enter/Space controls execute. Inactive initial/arm-loss and successful
+in-flight/authoritative-refresh controls pass. Worker80/80 finished, zero
+pending; no attachment-copy stall/cancellation or incomplete population.
+RP-290/RP-291 are now executed findings, not source hypotheses. No test fixture
+or oracle refinement is required by this baseline. Commit test-first before
+adding scoped Reputation readiness/offline binding and a distinct nonterminal
+runtime notification (terminal auth/replaced disposal remains unchanged).

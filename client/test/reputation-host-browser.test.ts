@@ -43,21 +43,33 @@ class MemoryStorage implements RuntimeStorage {
 class ControlledSocket extends EventTarget {
   readonly commands: Record<string, unknown>[] = [];
   closed = false;
-  constructor() { super(); queueMicrotask(() => { if (!this.closed) this.dispatchEvent(new Event("open")); }); }
+  constructor(readonly autoSubscribe = true) { super(); queueMicrotask(() => { if (!this.closed) this.dispatchEvent(new Event("open")); }); }
   send(raw: string): void {
     const command = JSON.parse(raw) as Record<string, unknown>;
     this.commands.push(command);
-    const reply = command.id === 1 ? { id: 1, connect: { client: "controlled" } } :
-      { id: command.id, subscribe: { recoverable: true, positioned: true, epoch: "controlled", offset: 0, publications: [] } };
-    queueMicrotask(() => { if (!this.closed) this.dispatchEvent(new MessageEvent("message", { data: JSON.stringify(reply) })); });
+    if (command.id === 1) queueMicrotask(() => { if (!this.closed) this.reply({ id: 1, connect: { client: "controlled" } }); });
+    else if (this.autoSubscribe) queueMicrotask(() => { if (!this.closed) this.acknowledge(command.id as 2 | 3); });
   }
+  reply(value: unknown): void { this.dispatchEvent(new MessageEvent("message", { data: JSON.stringify(value) })); }
+  acknowledge(id: 2 | 3): void {
+    expect(this.closed).toBe(false);
+    const command = this.commands.find((value) => value.id === id)!;
+    expect(command).toBeTruthy();
+    const request = command.subscribe as Record<string, unknown>;
+    this.reply({ id, subscribe: { recoverable: true, positioned: true, recovered: request.recover === true, epoch: "controlled", offset: 0, publications: [] } });
+  }
+  networkClose(code: number): void { this.closed = true; this.dispatchEvent(new CloseEvent("close", { code })); }
   close(): void { this.closed = true; this.dispatchEvent(new CloseEvent("close", { code: 1000 })); }
 }
-function controlledBoundary(tier: number, windDownEligible = false) {
+function controlledBoundary(tier: number, windDownEligible = false, options: { holdSubscriptions?: boolean; inactive?: boolean } = {}) {
   const initial = wireSnapshot(tier);
   // Opt-in diagnostic projection, not a production-eligibility proof: the
   // server only offers Wind Down at tier >= 1. Tier 0 true exercises copy era.
   initial.transitions.wind_down.eligible = windDownEligible;
+  if (options.inactive) {
+    initial.features.reputation = null;
+    initial.facts[1]!.value = false;
+  }
   const storage = new MemoryStorage();
   storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "controlled-access", refreshToken: "controlled-refresh", accountID: "controlled-account", recoveryCode: "controlled-recovery" }));
   const requests: Record<string, unknown>[] = [];
@@ -84,13 +96,20 @@ function controlledBoundary(tier: number, windDownEligible = false) {
   };
   const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, (url) => {
     expect(url).toBe("ws://controlled.invalid/connection/websocket");
-    const socket = new ControlledSocket(); sockets.push(socket); return socket as unknown as WebSocket;
+    const socket = new ControlledSocket(!options.holdSubscriptions); sockets.push(socket); return socket as unknown as WebSocket;
   }, { protocol: "http:", host: "controlled.invalid" });
   return {
     runtime, storage, requests, sockets, headers, unexpected,
     get snapshotCalls() { return snapshotCalls; },
     deliverIntent(value: unknown, status = 200) { expect(heldIntents).toHaveLength(1); heldIntents.shift()!(Response.json(value, { status })); },
-    deliverSnapshot(value: GameUISnapshot) { expect(heldSnapshots).toHaveLength(1); heldSnapshots.shift()!(Response.json(value)); },
+    deliverSnapshot(value: unknown, status = 200) { expect(heldSnapshots).toHaveLength(1); heldSnapshots.shift()!(Response.json(value, { status })); },
+    publishDrain() {
+      expect(sockets).toHaveLength(1);
+      sockets[0]!.reply({ push: { channel: "world", pub: { offset: 0, data: {
+        v: 2, ch: "world", kind: "system", rev: 0, constants_hash: initial.constants_hash,
+        ts: new Date(initial.server_now_ms).toISOString(), payload: { code: "server_restarting", resume_after_ms: 0 },
+      } } } });
+    },
     publishOffer() {
       expect(sockets).toHaveLength(1);
       const channel = `player:${initial.run.founder_id}`;
@@ -300,6 +319,188 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
         await settle(); expect(row.hasAttribute("aria-busy")).toBe(false);
         expect(document.activeElement).toBe(row); silent(row);
         expect(boundary.snapshotCalls).toBe(2); expect(boundary.requests).toHaveLength(1);
+        expect(boundary.unexpected).toEqual([]);
+      } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+    });
+  }
+}
+
+// Hold actual runtime subscription replies, not a fabricated host state.
+// Snapshot freshness alone must never imply recovered transport (R9).
+async function enterHeldTree(target: HTMLElement, era: CopyEra, boundary: ReturnType<typeof controlledBoundary>): Promise<void> {
+  await enterTree(target, era, boundary);
+  expect(boundary.requests).toEqual([]);
+}
+function offlineNotice(target: HTMLElement, era: CopyEra, present: boolean): void {
+  const notice = [...target.querySelectorAll(".reputation [role=alert]")].find((value) => value.textContent === t("settings.save_status.offline", {}, era));
+  if (present) expect(notice, "unrecovered Reputation must explain its disabled controls").toBeTruthy();
+  else expect(notice).toBeUndefined();
+}
+function readyRows(target: HTMLElement): HTMLLIElement[] {
+  const rows = [...target.querySelectorAll<HTMLLIElement>(".reputation li")];
+  expect(rows.map((row) => row.dataset.state)).toEqual(["available", "available"]);
+  expect(rows.every((row) => !row.hasAttribute("aria-busy"))).toBe(true);
+  return rows;
+}
+async function rejectNativePurchase(target: HTMLElement, era: CopyEra, key: string, boundary: ReturnType<typeof controlledBoundary>, revision = 7): Promise<void> {
+  const rows = readyRows(target);
+  controls(target, false); offlineNotice(target, era, false);
+  await submit(rows[0]!, key);
+  expect(boundary.requests).toHaveLength(1);
+  expect(boundary.requests[0]).toMatchObject({ kind: "purchase_reputation_node", node_id: ids[0], expected_revision: revision });
+  controls(target, true);
+  boundary.deliverIntent(rejection(boundary.requests[0]!.intent_id, "invalid", rawDetail, revision));
+  await expect.poll(() => rows[0]!.hasAttribute("aria-busy")).toBe(false);
+  await settle(); controls(target, false); errorText(rows[0]!, "invalid", era);
+  expect(document.activeElement).toBe(rows[0]);
+  expect(target.textContent).not.toContain(rawDetail);
+  for (const id of ids) expect(target.textContent).not.toContain(id);
+  expect(boundary.unexpected).toEqual([]);
+}
+
+for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
+  for (const key of ["{Enter}", " "]) {
+    for (const phase of ["startup", "drain", "overflow", "invalid-frame", "network-drop"] as const) {
+      it.skipIf(!browser)(`R9 host waits for both recovered channels: ${era}, ${key === " " ? "Space" : "Enter"}, ${phase}`, async () => {
+        const boundary = controlledBoundary(tier, false, { holdSubscriptions: true });
+        const target = document.createElement("main"); document.body.append(target);
+        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        try {
+          await enterHeldTree(target, era, boundary);
+          let socket = boundary.sockets[0]!;
+          if (phase !== "startup") {
+            socket.acknowledge(2); socket.acknowledge(3); await settle(); controls(target, false);
+            if (phase === "drain") {
+              boundary.publishDrain(); await settle();
+              controls(target, true); readyRows(target);
+              expect(target.querySelector(".notice")?.textContent).toContain(t("system.drain_notice.title", {}, era));
+              socket.networkClose(4003);
+            } else socket.networkClose(phase === "overflow" ? 4000 : phase === "invalid-frame" ? 4004 : 1006);
+            await settle(); controls(target, true); expect(boundary.requests).toEqual([]);
+            if (phase === "overflow" || phase === "invalid-frame") {
+              await expect.poll(() => boundary.snapshotCalls).toBe(2);
+              const fresh = wireSnapshot(tier, 8);
+              boundary.deliverSnapshot(fresh);
+              await expect.poll(() => boundary.sockets.length, { timeout: 5000 }).toBe(2);
+              // Full sync is complete, but neither live channel has replied.
+              await settle(); controls(target, true); readyRows(target);
+            } else await expect.poll(() => boundary.sockets.length, { timeout: 5000 }).toBe(2);
+            socket = boundary.sockets[1]!;
+            await expect.poll(() => socket.commands.length).toBe(3);
+            expect(boundary.sockets[0]!.closed).toBe(true);
+          }
+          await settle(); controls(target, true); readyRows(target); offlineNotice(target, era, true);
+          expect(boundary.requests).toEqual([]);
+          socket.acknowledge(2); await settle(); controls(target, true); offlineNotice(target, era, true);
+          socket.acknowledge(3); await settle(); controls(target, false); offlineNotice(target, era, false);
+          const synced = phase === "overflow" || phase === "invalid-frame";
+          expect(boundary.snapshotCalls).toBe(synced ? 2 : 1);
+          const player = socket.commands[1]!.subscribe as Record<string, unknown>;
+          if (phase === "network-drop" || phase === "drain") expect(player).toMatchObject({ recover: true, epoch: "controlled", offset: 0 });
+          else expect(Object.hasOwn(player, "recover")).toBe(false);
+          await rejectNativePurchase(target, era, key, boundary, synced ? 8 : 7);
+          expect(boundary.snapshotCalls).toBe(synced ? 2 : 1);
+        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+      });
+    }
+
+    for (const code of [4001, 4002]) {
+      it.skipIf(!browser)(`R9 host explains terminal socket closure without reauthentication: ${era}, ${key === " " ? "Space" : "Enter"}, ${code}`, async () => {
+        const boundary = controlledBoundary(tier);
+        const target = document.createElement("main"); document.body.append(target);
+        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        try {
+          await enterTree(target, era, boundary);
+          const row = readyRows(target)[0]!;
+          row.querySelector<HTMLButtonElement>("button")!.focus();
+          const { userEvent } = await import("vitest/browser");
+          await userEvent.keyboard(key); await settle();
+          const confirm = row.querySelector<HTMLButtonElement>("button")!;
+          expect(confirm.textContent).toBe(t("reputation_tree.action.confirm", {}, era));
+          boundary.sockets[0]!.networkClose(code); await settle();
+          expect(confirm.disabled).toBe(true); expect(readyRows(target)).toContain(row);
+          offlineNotice(target, era, true);
+          // Native activation of the now disabled confirmation cannot spend.
+          confirm.focus(); await userEvent.keyboard(key); await settle();
+          expect(boundary.requests).toEqual([]); expect(boundary.snapshotCalls).toBe(1);
+          expect(boundary.sockets).toHaveLength(1); expect(boundary.unexpected).toEqual([]);
+          expect(boundary.storage.getItem("cloud-clicker.credentials.v1")).toContain("controlled-access");
+        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+      });
+    }
+
+    for (const refresh of ["success", "failure"] as const) {
+      it.skipIf(!browser)(`R9 host pending purchase and ${refresh} refresh remain authoritative: ${era}, ${key === " " ? "Space" : "Enter"}`, async () => {
+        const boundary = controlledBoundary(tier);
+        const target = document.createElement("main"); document.body.append(target);
+        const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+        try {
+          await enterTree(target, era, boundary);
+          const rows = readyRows(target);
+          await submit(rows[0]!, key); controls(target, true);
+          expect(rows.map((row) => row.getAttribute("aria-busy"))).toEqual(["true", null]);
+          const { userEvent } = await import("vitest/browser");
+          rows[1]!.querySelector<HTMLButtonElement>("button")!.focus(); await userEvent.keyboard(key); await settle();
+          expect(boundary.requests).toHaveLength(1);
+          boundary.deliverIntent({ outcome: "applied", intent_id: boundary.requests[0]!.intent_id });
+          await expect.poll(() => boundary.snapshotCalls).toBe(2);
+          await settle(); controls(target, true);
+          expect(rows.map((row) => row.dataset.state)).toEqual(["available", "available"]);
+          expect(target.textContent).toContain(t("reputation_tree.balance.available", { amount: 4 }, era));
+          expect(rows[0]!.getAttribute("aria-busy")).toBe("true");
+          rows[1]!.querySelector<HTMLButtonElement>("button")!.focus(); await userEvent.keyboard(key); await settle();
+          expect(boundary.requests).toHaveLength(1);
+          if (refresh === "failure") boundary.deliverSnapshot({ error: "controlled_read_failure" }, 500);
+          else {
+            const next = wireSnapshot(tier, 8);
+            next.features.reputation!.nodes[0]!.state = "owned";
+            next.features.reputation!.spent = 1; next.features.reputation!.available = 3;
+            next.features.reputation!.unlock_ppm = 50_000; next.features.reputation!.bonus_factor_next_run = "1.002e0";
+            boundary.deliverSnapshot(next);
+          }
+          await expect.poll(() => rows[0]!.hasAttribute("aria-busy")).toBe(false);
+          await settle();
+          if (refresh === "failure") {
+            controls(target, true); readyRows(target); offlineNotice(target, era, true);
+            expect(target.textContent).toContain(t("reputation_tree.balance.available", { amount: 4 }, era));
+          } else {
+            expect(rows[0]!.dataset.state).toBe("owned"); expect(rows[0]!.querySelector("button")).toBeNull();
+            expect(rows[1]!.querySelector<HTMLButtonElement>("button")!.disabled).toBe(false);
+            offlineNotice(target, era, false);
+            expect(target.textContent).toContain(t("reputation_tree.balance.available", { amount: 3 }, era));
+            await submit(rows[1]!, key);
+            expect(boundary.requests).toHaveLength(2);
+            expect(boundary.requests[1]).toMatchObject({ kind: "purchase_reputation_node", node_id: ids[1], expected_revision: 8 });
+            boundary.deliverIntent(rejection(boundary.requests[1]!.intent_id, "invalid", rawDetail, 8));
+            await expect.poll(() => rows[1]!.hasAttribute("aria-busy")).toBe(false);
+            await settle(); errorText(rows[1]!, "invalid", era); expect(document.activeElement).toBe(rows[1]);
+          }
+          expect(boundary.snapshotCalls).toBe(2); expect(boundary.unexpected).toEqual([]);
+          for (const id of ids) expect(target.textContent).not.toContain(id);
+        } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
+      });
+    }
+  }
+
+  for (const inactive of ["initial", "after-refresh"] as const) {
+    it.skipIf(!browser)(`R9 host inactive tree is never mounted: ${era}, ${inactive}`, async () => {
+      const boundary = controlledBoundary(tier, false, { inactive: inactive === "initial" });
+      const target = document.createElement("main"); document.body.append(target);
+      const app = mount(GameUIApp, { target, props: { runtime: boundary.runtime, timingStorage: boundary.storage } });
+      try {
+        await expect.poll(() => boundary.sockets[0]?.commands.length).toBe(3);
+        if (inactive === "after-refresh") {
+          await enterTree(target, era, boundary);
+          await submit(readyRows(target)[0]!, "{Enter}");
+          boundary.deliverIntent(rejection(boundary.requests[0]!.intent_id, "revision_conflict", rawDetail, 8));
+          await expect.poll(() => boundary.snapshotCalls).toBe(2);
+          const next = wireSnapshot(tier, 8); next.features.reputation = null; next.facts[1]!.value = false;
+          boundary.deliverSnapshot(next);
+        }
+        await expect.poll(() => target.querySelector(".game-ui")?.getAttribute("data-surface")).toBe("desk");
+        await settle(); expect(target.querySelector(".reputation")).toBeNull();
+        expect([...target.querySelectorAll("nav button")].some((button) => button.textContent === t("reputation_tree.title", {}, era))).toBe(false);
+        expect(boundary.requests).toHaveLength(inactive === "initial" ? 0 : 1);
         expect(boundary.unexpected).toEqual([]);
       } finally { boundary.cleanup(); await settle(); await unmount(app); target.remove(); }
     });
