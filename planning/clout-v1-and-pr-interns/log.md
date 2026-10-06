@@ -1092,3 +1092,33 @@ Observation/limits/next contracts in policy-boundary-research.md. All handles
 terminal, no temporary probe. No runtime/kernel/balance/copy/save/body/CI/status/
 checkbox/archive/mint/push/deploy change. Entire new span afterd61a5248 needs
 Claude; prior spans and unanswered owner/author questions remain independent.
+
+### R-012 policy local range review — research only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `d61a5248..a08eec2d`, all twelve changed paths, including
+predeclaration, new Go observer/corpus and every synchronized record. Source,
+population/phase/restore/integer-policy/writer dispatch and record diffs reviewed.
+19,426 artifact lines are validated by complete cold reconstruction, not claimed
+individually read. Actual source/full-state bindings and four policy/missing-row
+negative failures inspected; exact restoration verified.
+
+The observer reports eighteen differences, not eighteen equivalent defects.
+Offline histories obey legitimate per-call policy; RP-308 requests author scope
+reconciliation. Ten other cash differences remain numerical findings. All integer
+provision/burst/bank/clock controls and220full-state restores hold. Separate
+Go-only engine evidence is not relabelled TS, SQL Service/Store, player history,
+mixed-boundary coverage, accepted anchor, migration or release proof.
+
+Whole inspected span changes no runtime/numeric/save/kernel/balance/copy/RFC
+body/CI/Make bytes. Old corpora stay byte-identical. Tracking agrees, no checkbox
+or acceptance promotion. Local record review caught a draft count error and
+misplaced new decision paragraph before commit; prior decision bodies remain
+byte-unchanged. No owner reply or designated verdict was fabricated.
+
+Decision: locally validated characterization, NOT a repair or designated
+approval. RP-308 delegation remains unanswered. Paired actual logged Go/TS,
+action/buff/mode/nonzero-resource and persistence/replay/activation remain
+required. Claude must review the ENTIRE span afterd61a5248 INCLUDING this
+following record edge; all prior independent spans/holds remain. Proper full
+nine-tier/platform1.0 active; no archive/mint/push/deploy or release call.
