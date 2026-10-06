@@ -3153,3 +3153,28 @@ and focused tests after restoration; local listener permission if required,
 not substituted no-op checks. Full new span after721c0ee1 needs Claude.
 Actual LoadFounderHistory, stored two-Exit career/AC15, browser/RP-131/RP-256,
 capacity, H4/H5 and remaining harness/full-nine-tier/platform work stay open.
+
+## 2026-10-06 — R8 generation setup and arithmetic-oracle correction
+
+4d4846f2 generation setup fb9a82/180d48 executes no tests: the custom Go test
+flag must follow the package selector and `-args`; the initial `$` regex also
+passes through Make expansion. Correct root invocation places the custom flag
+after `./production -args` via GO_PACKAGES, with the ordinary selector/count
+in GO_TEST_FLAGS. 224434 then compiles and finds a test-only nonexistent
+decimal.FromInt64 symbol; FromFloat64 is the actual existing exact constructor
+for these small integer constants. No product defect follows from those errors.
+
+1ff47a..c183a5 executes setup and the first action but rejects the independent
+arithmetic oracle before writing any fixture: got cash1.06316e5, want1.06316003e5.
+Grounding3749dd/92f4c1: the manual action matches only its explicit target in
+contributionFactorForTarget; the all-target prestige row contributes to generator
+production, not that base manual action. R3 specifies production. The erroneous
+oracle multiplied the one-action grant by the bonus. This is an oracle error,
+not authority to change production or accept an unexplained difference.
+
+Before the next measurement, correct the independent formula to:
+source1e3 + source15 * base1 * elapsed7000 * declaredFrozenFactor + baseAction1.
+Both populations, commands, timings, refusal counts and public/full-state gates
+remain exactly as predeclared. No fixture exists yet, no expectation is rewritten
+to hide drift, no acceptance bound is loosened. All handles terminal before this
+record; no retained runtime edit. Subsequent output must still be byte-retained.
