@@ -1,5 +1,23 @@
 # Executable queue
 
+## Reference frozen inputs corrected locally — 2026-10-06
+
+RP-265/266 underaa4c241b: all16Reference observations,20producer profiles and
+six boundary controls pass; nine independent compiling omissions fail and
+restore exact bytes. Cold core/vet, fast harness and client8106/134/types/build
+plus separate boundaries pass. Composite client still RP-131 RED. Kernel161;
+no live formula, balance, original corpus, report or CI policy change.
+
+**READY FOR CLAUDE:** complete span afterd18d4e09, including both predeclarations.
+**NEXT SAFE ACCEPTED WORK:** RP-262's actual H3 multiplier witness, then RP-264's
+false-exclusion/accounting oracle. No criterion weakening or retuning authority.
+**RESEARCH RECORD STILL OPEN:** Reference seed0 treated gate355000→357000ms,
+control357000ms. Full H4/H5 reject retained report drift in786.459s; H4 retains
+the same six Casual ties. v1 reports stay unchanged. Report provenance/refresh
+requires its own bounded work, not enabling the regeneration flags here.
+SQL/AC15/capacity, all earlier reviews and full1.0 remain; no checkbox,
+archival, mint, push, cleanup or release promotion. [Evidence](../reputation-tree-v1/log.md).
+
 ## Career fixture identity corrected locally — 2026-10-06
 
 RP-263 under26e97e4b: the helper retains complete paired tree/economy bytes and
@@ -9,7 +27,7 @@ Cold fast/core/vet/topology pass. Exhaustive H4/H5 reproduce unchanged in
 840.123s; H4 still FAIL. Report-envelope provenance is not closed.
 
 **READY FOR CLAUDE:** complete new span after6963692b, including predeclaration.
-**NEXT SAFE ACCEPTED WORK:** predeclare and execute RP-265's Reference planner
+**ORIGINAL NEXT QUEUE:** predeclare and execute RP-265's Reference planner
 frozen-input lead before RP-262's honest H3 multiplier witness; separately
 execute RP-264's exclusion oracle. No numerical planner verdict inferred yet.
 No report rewrite, retune, budget waiver, mint, archival or 1.0 promotion.

@@ -67,6 +67,15 @@ production arithmetic. Its hash-pinned `relevance_policy` artifact owns windows,
 trap exemptions, and tier/category/declared groups without adding harness metadata to the economy
 catalog.
 
+The simulation-only `SimulateResourceRateWithContributions` seam accepts frozen
+external contributions and uses the canonical validated, masked assembly;
+`SimulateResourceRate` retains its original nil-input contract by delegation.
+Both names are covered by the harness-only caller guard, including aliases.
+A composed Reference career copies its resolved frozen input into the ranker
+and uses it consistently for candidate transitions, waiting, rate projections
+and actual bank advances. Standalone relevance suites retain nil inputs.
+This is simulation wiring, not a new multiplier formula or live-game policy.
+
 For every declared run it records an unmasked baseline, per-item effect ablations, and group effect
 ablations. Reference runs additionally record action-removal diagnostics and one declared-width beam
 oracle. The reference policy compares banking with every affordable one-unit generator or unowned

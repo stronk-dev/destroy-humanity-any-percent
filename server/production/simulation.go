@@ -62,6 +62,13 @@ type AdvanceSimulationResult struct {
 // contribution and generator-rate assembly used by SimulateAdvance; callers
 // must not reconstruct production arithmetic from catalog rows.
 func SimulateResourceRate(state *save.State, catalog *economy.Catalog, resourceID string, mask AblationMask) (decimal.Decimal, error) {
+	return SimulateResourceRateWithContributions(state, catalog, resourceID, nil, mask)
+}
+
+// SimulateResourceRateWithContributions is the simulation-only projection for
+// a run carrying frozen external contributions. It uses the same validated
+// masked assembly as SimulateAdvance, without changing state or live formulas.
+func SimulateResourceRateWithContributions(state *save.State, catalog *economy.Catalog, resourceID string, external []multiplier.Contribution, mask AblationMask) (decimal.Decimal, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || catalog == nil {
 		return decimal.NaN, ErrInvalidEngineState
 	}
@@ -73,7 +80,7 @@ func SimulateResourceRate(state *save.State, catalog *economy.Catalog, resourceI
 	if err != nil {
 		return decimal.NaN, err
 	}
-	contributions, err := assembleContributionsWithPolicy(state, catalog, nil, policy)
+	contributions, err := assembleContributionsWithPolicy(state, catalog, external, policy)
 	if err != nil {
 		return decimal.NaN, err
 	}

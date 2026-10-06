@@ -532,7 +532,7 @@ func (runtime *firstHourRuntime) legalCommands(now time.Time) ([]firstHourLegalC
 			result = append(result, firstHourLegalCommand{id: upgrade.ID, request: request, cost: upgrade.Cost.Amount})
 		}
 	}
-	rate, err := production.SimulateResourceRate(runtime.company, runtime.suite.Bundle.Economy, "company.cash", production.AblationMask{})
+	rate, err := production.SimulateResourceRateWithContributions(runtime.company, runtime.suite.Bundle.Economy, "company.cash", runtime.external(), production.AblationMask{})
 	if err != nil {
 		return nil, err
 	}
@@ -591,7 +591,7 @@ func (runtime *firstHourRuntime) applyReferenceChoice(nowMS int64) error {
 	if bank && bankAtMS > nowMS {
 		advanced, advanceErr := production.SimulateAdvance(runtime.company, runtime.suite.Bundle.Economy,
 			production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes}, runtime.companyRevision(), production.ModeOnline,
-			relevanceNow(bankAtMS), nil, production.AblationMask{})
+			relevanceNow(bankAtMS), runtime.external(), production.AblationMask{})
 		if advanceErr != nil {
 			return advanceErr
 		}
@@ -626,7 +626,8 @@ func (runtime *firstHourRuntime) referenceRanker() (*RelevanceSuite, error) {
 	})
 	return &RelevanceSuite{Scenario: RelevanceScenario{HorizonMS: runtime.spec.HorizonMS,
 		Milestone: RelevanceMilestone{ID: "milestone.garage_gate", Kind: "resource_at_least", ResourceID: gate.Requirement[0].ResourceID, Amount: gate.Requirement[0].Amount.String()}},
-		Catalog: runtime.suite.Bundle.Economy, Routes: runtime.suite.Bundle.Routes, Policy: policy, ConstantsHash: runtime.suite.ConstantsHash}, nil
+		Catalog: runtime.suite.Bundle.Economy, Routes: runtime.suite.Bundle.Routes, Policy: policy, ConstantsHash: runtime.suite.ConstantsHash,
+		external: append([]multiplier.Contribution(nil), runtime.external()...)}, nil
 }
 
 func (runtime *firstHourRuntime) observeReferencePurchase(atMS int64, id string) {

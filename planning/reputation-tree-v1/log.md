@@ -3699,3 +3699,132 @@ No H3 milestone (RP-262), AC13/AC15, epoch/literal/copy ratification, SQL or
 cleanup, box, archival, push or release promotion. Diagnose/repair only these
 input seams and preserve all previous verdicts. New complete span after
 d18d4e09 still needs Claude; implementer review remains a first filter.
+
+## 2026-10-06 — Reference frozen inputs corrected and measured
+
+Resume eb215d/a6cf49 confirms main ahead7 ataa4c241b with only this unfinished
+correction dirty; no intervening local Claude commit/verdict is present. No
+live handle remains from the saved checkpoint. Required authority is unchanged.
+The complete corrective predeclaration is aa4c241b; diagnosis is3fb50327.
+
+Pre-correction actual Reference career b52bd1..c2c45e (session48716, exit0)
+reproduces the retained seed0 row: treated355000ms, control357000ms, factor1.001,
+only unlock.p05 purchased and no applied starter. Both careers complete with
+two Exits. The complete paired catalog hash is
+sha256:3625eddb73da494574a2031fd483e93af236aa9b1f14482e5b51ad6ea3d0f7b0;
+scenario hash18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba,
+policy hashe5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3.
+Threshold1e5 and the original experiment (purchased minimum200, burnout2,
+route50, seed capital1e4, generated10) remain unchanged. Full outputs and
+coordinates are in that executed observation, not reconstructed from memory.
+RP-266 baseline b47ea2..b751df (session60256, exit2) misses exactly the old
+rate name's direct and alias references; its quoted decoy passes.
+
+The correction copies runtime.external into an internal RelevanceSuite slice,
+binds all four existing solver transition sites plus action-free advance and
+projection, and binds actual bank waiting and legal-command rate projection.
+The new simulation-only SimulateResourceRateWithContributions shares canonical
+validated/masked assembly; the old method delegates with nil and retains its
+contract. Both names join the existing caller detector; permitted callers are
+unchanged. No copied arithmetic, public report/wire field or live formula change.
+The watched simulation/boundary changes carry kernel160→161 in all three sources.
+
+New producer tests initially had setup failures, excluded from defect evidence:
+b51180..cd006a (session22025) used a nonexistent Decimal constructor;
+c44e5e..6af733 (session50696) used an incomplete encode fixture lacking its
+cursor; 5dcf64..84a629 (session62674) caught the now-unused import. These are
+my test-authoring errors, not product failures or successful severing probes.
+The fixture now uses actual prestige.NewRunState rather than patching a
+partial state into an assumed-valid one. All handles were terminal before edits.
+
+Normal cold 4f9d3a..bd77ab (session77023, exit0) executes16Reference
+observations, nine valid producer profiles, eleven invalid-input refusals,
+six boundary controls and the actual repository caller scan. This preserves
+nil/unit/non-unit, ordinary/masked/zero production, full encoded state equality,
+pure rate projection and fail-closed contribution/mask/resource admission.
+
+Independent compiling omissions, each followed by SHA-exact restoration before
+the next probe (all commands use root make test-go and -count=1):
+
+| Removed binding/guard | Executed output / handle | Fired observations |
+| --- | --- | --- |
+| Factory frozen-input copy | e9ecb4..07fe24 /30809 | Three non-unit comparisons: projection, advance, purchase; actual bank remains independently bound |
+| Candidate advance input | 4fcd2e..799710 /42946 | One non-unit advance comparison |
+| Candidate purchase input | bf75de..809384 /83757 | One non-unit purchase-state comparison |
+| Projected-milestone input | 159165..f60c87 /88244 | Projection and independently reached candidate-projection assertion; candidate state still matches |
+| Actual bank input | d11d32..999d86 /50800 | One non-unit bank-state comparison |
+| New producer assembly input | 325983..185d48 /71092 | Two Reference projections, one non-unit producer profile and seven malformed-contribution refusals |
+| Old rate name in detector | f86d26..202ad5 /38197 | Exactly old direct/alias; decoy and new-name controls pass |
+| New rate name in detector | 74e65f..e1c67c /88922 | Exactly new direct/alias; decoy and old-name controls pass |
+| Producer mask input | 95885c..92b7ad /52266 | All three masked-rate profiles and the invalid-mask refusal |
+
+Every probe exits2 on actual assertions, not a compile failure. The transition
+probe isolates rankCandidate; it is not independent severing evidence for each
+of the other three transition sites. Candidate projection fires independently
+when projection alone is severed:6.006 vs6.024018 after a correctly applied
+purchase. A candidate-state failure is not cited as proof of that assertion.
+Restoration hashes d6a026:
+runner250b46f34c3b8b1920b25d030f96fd13b7054f41f302869c0cf1c9c232de6090,
+solver3cc00ebf6e723951845cd28d78995cf6dbf8c6908001e49913d0ccb1182df39e,
+simulationb02a8bd012793efb7be8ea4eba2313106969bb7ac0daa550f0b6f3c0c943abf1,
+boundary450816c0aeb7e8817708bc27c30b145f10a2bbbd3b56a197e59243fba5ea89a1.
+
+Corrected actual Reference observation b8f8f5..7b05b8 (session79577, exit0,
+harness2.419s) retains the same source coordinates/experiment, both completed
+careers and both Exits. Treated gate357000ms versus old355000; control stays
+357000. Treated transition count16962 versus baseline16965; control16991.
+The actual1.001 factor and ownership/starters are unchanged. This is an observed
+changed policy trajectory, not proof that bonuses universally slow players or
+that H4's starter-specific gate applies to this no-starter Reference row.
+Observation mode current reports drift without writing or approving reports.
+Mode baseline asserts the retained row; it does not execute old source.
+
+Cold broader checks after all exact restores:
+- Fast290086..c18249 (session39797, exit0): harness61.872s; role0.158s;
+  Commons0.409s and harness guard pass. Exhaustive tests and the new opt-in
+  observation explicitly skip here; the dedicated runs are separately recorded.
+- Core4de7a2..af8dd7 (session56679, exit0): full core -count=1 and vet pass;
+  production40.789s, save0.274s, transport13.255s. Narrow approved listener
+  escalation only. Decimal golden vectors and version-source test execute in
+  this core population. Separate legacy Pitch corpus alias is cached; its
+  same test already executes cold in the full Pitch package. Formulas/API bytes
+  regenerate unchanged; route/Commons boundaries pass. No fresh SQL claim.
+- Composite14e741..56b36a (session98309, exit2): typecheck zero errors/warnings,
+  build,8106client tests/134existing skips and shell boundary pass; TS decimal
+  vectors execute. Kernel source parity/history-check setup reaches unchanged
+  historical RP-131/50a3a514 and fails. No whole-client/CI green claim.
+- Remaining1d168f..c7e977 (session74340, exit0): topology plus13negative
+  controls, combat/meters/achievements/cosmetic/payment boundaries and copy pass;
+  copy has657keys and610existing orphan warnings. Deployment manifest unchanged.
+
+Complete exhaustive43361e..f8ba37 (session48713, terminal exit2), not cancelled:
+H4's97treated/control pairs finish in145.25s; the same six Casual seeds
+1/6/8/11/24/25 still fail strict-sooner. The report-byte comparison also fails
+because the corrected instrument's Reference row differs. All970H5baseline/
+leave-one-node-out arms finish; H5 then rejects retained report drift in641.10s.
+Total786.459s. No node-classification error is emitted, but this is NOT H5
+completion: epsilon/run4/provenance obligations remain. No regeneration flag
+is enabled. Failed strict reproduction does not authorize retuning or updating
+expected bytes. Separate report-provenance/refresh work must be predeclared.
+
+ed8fd2 confirms unchanged H4/H5/threshold/original-corpus SHA256 respectively:
+648f36d685c07471830692bf4c55810fc6c95ed4dcd00306d75a36697c2a9aa8,
+4ed79054baa69389fff34cf850327c07b882b6b4aa507c25dc4d3d13808ab63c,
+46a8fea612ff7e777a38c54166e542dff33e92ec18380fdf09ff4bdd1df72808,
+f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782.
+No source/record edit occurs while any handle is live; all are terminal before
+canonical docs, ledger, board, queue and plan reconciliation. No box is flipped.
+Legacy v14/isolated generated-starter fixtures are not modern played/SQL careers.
+
+RP-265 and RP-266 are corrected locally, not designated-approved. Complete span
+afterd18d4e09, both predeclarations included, requires Claude. All earlier review
+obligations and CHANGES REQUIRED findings remain. Next safe accepted work:
+RP-262's actual H3 multiplier witness, then RP-264's false-exclusion oracle.
+Report provenance/refresh is a distinct range; no AC13/15, literal/epoch mint,
+owner copy, schema/migration/CI policy change, SQL/cleanup, archival, push or
+full nine-tier/platform/release promotion. Goal active.
+
+Final restored-source cold102cfb..d30649 (session53885, terminal exit0) again
+executes all16Reference/20producer/six boundary controls and actual caller scan:
+harness0.356s, production0.387s. Whitespace/gofmt checks ac364d/7d6be3 pass.
+All subsequent record edits are after that handle ends; source bytes unchanged.

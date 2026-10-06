@@ -445,6 +445,43 @@ fixture identity, omitting the run-key assignment or mutating the base artifact
 map makes the test fail. This corrects RP-263's helper/run-key portion; retained
 H4/H5 report envelopes still lack complete source/configuration provenance.
 
+The composed Reference planner now carries the run's frozen contributions
+through candidate transitions, action-free advances and masked rate projection.
+Actual Reference waiting uses the same input. It previously omitted that bonus
+in these consumers (RP-265); this correction does not change live production
+arithmetic, tree literals, purchase policies or thresholds.
+
+`TestReputationReferenceFrozenInputDiagnostic` compares no-row, synthetic unit
+and actual tree-derived `1.003e0` inputs against canonical production. Its legal
+isolated run3 starts with two served starters, cash1e3 and five generated/zero
+purchased Beige Towers. Projection must be5/5.015; full encoded advance,
+purchase and bank states must match their canonical counterparts. Effect masks
+and zero production remain controls. The bank branch explicitly uses a zero-cash
+counterfactual; this is not a naturally earned or persisted career.
+The instrument uses legacy v14 Company states without modern active-play
+simulation. Its rate oracle uses the same economy-only projection contract.
+
+The producer tests retain nine valid rate profiles and eleven invalid-input
+refusals, including malformed or duplicate contributions and invalid masks.
+Direct/alias/quoted-decoy controls cover both rate entrypoints (RP-266).
+Independent compiling input and mask omissions make the named tests fail;
+the candidate's projection is checked independently of candidate-state equality.
+
+An explicit Reference seed0 career observation at threshold1e5 now reaches
+the run3 gate at357000ms in both treated and control arms. Before correction,
+the treated arm was355000ms and control357000ms. Its actual tree-derived factor
+is1.001 with no starter purchase. This is instrument drift, not a balance ruling
+or the missing H3 `1.000001e0` milestone proof. Run the observation from root:
+
+```sh
+make test-go GO_PACKAGES='./harness -args -reputation-reference-observe=current' GO_TEST_FLAGS='-run ^TestReputationReferenceCareerObservation -count=1 -v'
+```
+
+The observation logs complete source coordinates and both outcomes without
+writing reports. Its default is an explicit skip. `baseline` mode asserts the
+retained row; it does not switch to old code and is expected to reject that
+stale row after the correction.
+
 The R10 headless career runner accepts exactly `cheapest`, `seeded_uniform`
 and `none`. An optional leave-one-out exclusion must name a node in the loaded
 fixture tree. Both are checked before simulation: a misspelled policy must not
@@ -456,6 +493,9 @@ Invalid inputs return `ErrReputationCareer`.
 unknown exclusions at both fixture and live thresholds. Four legal controls
 exercise all three policies and a real-node exclusion. Independent guard
 removals make the tests fail. These unconditional tests run in the fast harness.
-The exhaustive report reproduction remains in `make reputation-harness-check`;
-its successful reproduction does not mean H4 passed. The retained report still
-records six Casual ties, and H5's epsilon/run-4 questions remain unresolved.
+The exhaustive report reproduction remains in `make reputation-harness-check`.
+After the Reference correction, strict H4 and H5 reproduction both reject
+report drift; their v1 bytes remain historical snapshots, not current-instrument
+acceptance. The full H4 run still records the same six Casual ties. H5's
+epsilon/run-4 questions, report provenance and the separate H3/exclusion-oracle
+work remain unresolved. No report refresh, retune or release claim follows.

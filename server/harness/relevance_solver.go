@@ -856,7 +856,7 @@ func (suite *RelevanceSuite) runPersonaWithOpportunity(spec RelevanceRunSpec, se
 		}
 		simulation, simulationErr := production.SimulateTransition(request, candidate, suite.Catalog,
 			production.SimulationDependencies{Routes: suite.Routes}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
-			mode, now, nil, nil, mask)
+			mode, now, suite.external, nil, mask)
 		if simulationErr != nil {
 			return relevanceRunResult{}, simulationErr
 		}
@@ -1179,7 +1179,7 @@ func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, h
 	}
 	simulation, err := production.SimulateTransition(request, candidateAtBuy, suite.Catalog,
 		production.SimulationDependencies{Routes: suite.Routes}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
-		production.ModeOnline, relevanceNow(earliest), nil, nil, mask)
+		production.ModeOnline, relevanceNow(earliest), suite.external, nil, mask)
 	if err != nil || simulation.Decision.Outcome != save.IntentApplied {
 		return relevanceCandidate{}, false, err
 	}
@@ -1215,7 +1215,7 @@ func (suite *RelevanceSuite) projectedMilestone(state *save.State, mask producti
 	if balance.Gte(target) {
 		return relevanceProjection{Numerator: decimal.Zero, Denominator: decimal.One}, true, nil
 	}
-	rate, err := production.SimulateResourceRate(state, suite.Catalog, suite.Scenario.Milestone.ResourceID, mask)
+	rate, err := production.SimulateResourceRateWithContributions(state, suite.Catalog, suite.Scenario.Milestone.ResourceID, suite.external, mask)
 	if err != nil {
 		return relevanceProjection{}, false, err
 	}
@@ -1271,7 +1271,7 @@ func (suite *RelevanceSuite) advanceMode(state *save.State, revision, atMS int64
 		return production.AdvanceSimulationResult{}, err
 	}
 	return production.SimulateAdvance(state, suite.Catalog, production.SimulationDependencies{Routes: suite.Routes},
-		save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash}, mode, relevanceNow(atMS), nil, mask)
+		save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash}, mode, relevanceNow(atMS), suite.external, mask)
 }
 
 // progressSegmentGates materializes every non-terminal segment boundary that
@@ -1347,7 +1347,7 @@ func (suite *RelevanceSuite) progressSegmentGates(state *save.State, revision *i
 		}
 		simulation, err := production.SimulateTransition(request, state, suite.Catalog,
 			production.SimulationDependencies{Routes: suite.Routes}, relevanceRevision(*revision, suite.ConstantsHash),
-			mode, relevanceNow(crossAt), nil, nil, mask)
+			mode, relevanceNow(crossAt), suite.external, nil, mask)
 		if err != nil {
 			return currentMS, nil, progressed, fmt.Errorf("relevance segment gate %q transition: %w", gateID, err)
 		}
@@ -1471,7 +1471,7 @@ func (suite *RelevanceSuite) applyReferenceManual(state *save.State, revision, n
 	}
 	simulation, err := production.SimulateTransition(request, state, suite.Catalog,
 		production.SimulationDependencies{Routes: suite.Routes}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
-		production.ModeOnline, relevanceNow(nowMS), nil, nil, mask)
+		production.ModeOnline, relevanceNow(nowMS), suite.external, nil, mask)
 	if err != nil {
 		return relevanceManualResult{}, err
 	}

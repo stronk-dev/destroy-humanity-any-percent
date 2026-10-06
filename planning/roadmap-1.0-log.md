@@ -2920,3 +2920,23 @@ RP-265's Reference frozen-input consumer diagnosis before RP-262's H3 witness,
 then RP-264's exclusion oracle. Actual SQL/AC15/capacity, RP-131/RP-256 and the
 full nine-tier/platform/release goal remain. Goal active; no checkbox, archive,
 mint, push, deployment, cleanup or release promotion.
+
+## 2026-10-06 — Reference frozen-input consumer correction
+
+RP-265/266 underaa4c241b correct frozen input binding and the simulation rate
+caller boundary. Four diagnosed non-unit mismatches are corrected; all16
+Reference observations,20producer profiles and six boundary controls pass.
+Nine independent compiling omissions discriminate with byte-exact restoration.
+Cold core/vet, fast harness and client8106/134/types/build plus separate
+boundaries/topology pass. Composite client remains RED at historical RP-131.
+Kernel0.3.161; no live formula, balance, original corpus or CI-policy change.
+[Exact evidence, source coordinates and limitations](reputation-tree-v1/log.md).
+
+Actual Reference seed0 treated gate moves355000→357000ms, control stays357000ms.
+Complete H4/H5 finish in786.459s and reject retained report drift; H4 retains
+the same six Casual ties. v1 reports and threshold are byte-unchanged, not
+rewritten into passing acceptance. Report provenance/refresh remains separate.
+Complete new span afterd18d4e09 needs Claude, not archival on an implementer
+first filter. RP-262 H3 and RP-264 exclusion oracle are the next safe accepted
+work. Actual SQL/capacity, all prior reviews and the full nine-tier/platform/
+release goal remain. Goal active; no checkbox, mint, push, cleanup or promotion.

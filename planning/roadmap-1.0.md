@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness correction (2026-10-06):** RP-263's fixture helper and career
+**Latest harness correction (2026-10-06):** RP-265/266's frozen-input and rate
+boundary correction passes16Reference observations,20producer profiles and six
+boundary controls; nine compiling omissions discriminate. Cold core/vet,
+fast harness and client8106/134/types/build plus separate boundaries pass.
+Composite client remains RP-131 RED. Kernel0.3.161, not a live formula/balance
+change. Reference treated seed0 gate moves355000→357000ms; control stays357000ms.
+Exhaustive H4/H5 reject retained report drift in786.459s; the six Casual ties
+and untouched v1 snapshots remain visible. Complete span afterd18d4e09 needs
+Claude. Next RP-262 H3 and RP-264 exclusion oracle, not retuning. SQL, report
+provenance/refresh, all prior reviews and the full nine-tier/platform goal remain.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous harness correction (2026-10-06):** RP-263's fixture helper and career
 run key now identify the complete tree/economy sources. Four baseline failures
 are corrected; seven controls and three omission probes discriminate. Cold
 fast/core/vet/topology pass; exhaustive H4/H5 reproduce unchanged in840.123s.

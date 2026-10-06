@@ -4,7 +4,20 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest harness correction: RP-263's helper/run-key portion now names the complete
+Latest harness correction: RP-265 now threads frozen Founder inputs through the
+Reference planner and actual waiting; RP-266 covers both simulation rate seams.
+All16Reference observations,20producer profiles and six boundary controls pass;
+nine compiling omissions discriminate and restore byte-exact. Cold core/vet,
+fast harness and client8106/134/types/build plus separate boundaries pass.
+Composite client remains RED at RP-131. Kernel0.3.161; no live formula or balance
+change. Reference seed0 treated gate moves355000→357000ms, control stays357000ms.
+Full H4/H5 reject unchanged v1 report drift in786.459s; H4 still fires the same
+six Casual ties. Complete new span afterd18d4e09 needs Claude. Next: RP-262 H3
+and RP-264 exclusion oracle; report provenance/refresh, actual SQL, all earlier
+reviews and the full nine-tier/platform/release floor remain open.
+[Executed evidence](reputation-tree-v1/log.md).
+
+Previous harness correction: RP-263's helper/run-key portion now names the complete
 paired tree/economy fixture rather than the base epoch. Four baseline failures
 are corrected; seven controls pass and three omission probes fail as expected,
 then restore byte-exact. Cold fast harness/core/vet/topology pass. Full H4/H5

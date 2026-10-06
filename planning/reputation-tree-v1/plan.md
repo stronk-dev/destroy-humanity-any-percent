@@ -106,8 +106,16 @@ threshold retune is measured and reported, then ratified by owner SHA).
   seven controls and three compiling omission probes discriminate; cold
   fast/core/vet/topology pass and full H4/H5 reproduce unchanged in840.123s.
   Report-envelope provenance remains open. New span after6963692b needs Claude.
-  Execute RP-265's Reference planner frozen-input lead before RP-262's H3
-  witness, then RP-264's separate exclusion oracle; none is retuning authority.
+  RP-265/266's subsequent frozen-input/boundary correction underaa4c241b passes
+  all16Reference observations,20producer profiles and six boundary controls;
+  nine independent compiling omissions discriminate with exact restoration.
+  Cold core/vet, fast harness and client8106/134/types/build plus separate
+  boundaries pass; composite stays RP-131 RED. Kernel0.3.161, no balance/live
+  formula change. Seed0 treated gate moves355000→357000ms; control stays357000ms.
+  Full H4/H5 now reject untouched retained report drift in786.459s; the same
+  six Casual ties remain. Complete new span afterd18d4e09 needs Claude.
+  Next RP-262 H3, then RP-264's separate exclusion oracle. Report provenance/
+  refresh remains separate; no retuning or report-regeneration authority here.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.
 - [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
 - [ ] Canonical docs, designated Codex review, archival (Codex).

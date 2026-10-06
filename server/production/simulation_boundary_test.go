@@ -18,12 +18,14 @@ func hasSimulationCall(data []byte, filename string) (bool, error) {
 	}
 	found := false
 	simulationEntrypoints := map[string]bool{
-		"SimulateTransition":                true,
-		"SimulateAdvance":                   true,
-		"SimulateContentDynamicsActivePlay": true,
-		"SimulateContentDynamicsFiscal":     true,
-		"SimulateContentDynamicsPitch":      true,
-		"SimulateContentDynamicsPermits":    true,
+		"SimulateTransition":                    true,
+		"SimulateAdvance":                       true,
+		"SimulateResourceRate":                  true,
+		"SimulateResourceRateWithContributions": true,
+		"SimulateContentDynamicsActivePlay":     true,
+		"SimulateContentDynamicsFiscal":         true,
+		"SimulateContentDynamicsPitch":          true,
+		"SimulateContentDynamicsPermits":        true,
 	}
 	ast.Inspect(file, func(node ast.Node) bool {
 		switch value := node.(type) {
@@ -90,5 +92,25 @@ func TestSimulationEntrypointCallersAreHarnessOrTests(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestSimulationRateReferenceBoundary(t *testing.T) {
+	for _, entrypoint := range []string{"SimulateResourceRate", "SimulateResourceRateWithContributions"} {
+		for _, shape := range []struct {
+			name, source string
+			want         bool
+		}{
+			{"direct", "package seeded\nfunc invalid() { production." + entrypoint + "() }\n", true},
+			{"alias", "package seeded\nvar rate = production." + entrypoint + "\nfunc invalid() { rate() }\n", true},
+			{"decoy", "package seeded\nconst text = `production." + entrypoint + "()`\n", false},
+		} {
+			t.Run(entrypoint+"/"+shape.name, func(t *testing.T) {
+				got, err := hasSimulationCall([]byte(shape.source), "seeded.go")
+				if err != nil || got != shape.want {
+					t.Fatalf("simulation rate reference boundary: got=%v want=%v err=%v", got, shape.want, err)
+				}
+			})
+		}
 	}
 }
