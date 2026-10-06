@@ -6729,3 +6729,41 @@ browser preferences. If row focus fails, record a distinct accepted R9 defect
 and extend diagnosis before a product correction. After terminal, restore exact
 original renderer SHA1b8917a122bc275ad55ffde751e44ba1835a9848d443190dc30d2a5363cd1ef7.
 No test edit/record while the observation handle lives. No acceptance promotion.
+
+## 2026-10-06 — RP-286 confirmation diagnostic / correction predeclaration
+
+Heading-only observation abdfb9/d2ac5c session75555 terminal exit2:4 WebKit
+ready mixed/two-buyable row failures,34 controls pass,58 older selector skips.
+Header now reached; WebKit goes to explicit trailing sentinel instead of Buy.
+Both standalone native sentinel controls pass. Original source restored exactly
+SHA1b8917a122bc275ad55ffde751e44ba1835a9848d443190dc30d2a5363cd1ef7
+(c470c6). Record RP-286 separately from RP-285. AGENTS/process and R9 reread
+1424ba/173be5/295935. No live handles during edits.
+
+Extend diagnosis with both eras × mixed/two-buyable × Enter/Space =8 cases per
+engine/16 total. Direct Buy focus is branch setup only, not sequential-header
+proof: native key opens Confirm; Tab reaches Cancel then next Buy or sentinel;
+Shift+Tab reverses Cancel→Confirm; Escape returns Buy without submission;
+reopen then native Tab/key activates Cancel and returns Buy. No pointer or
+synthetic DOM key dispatch. Existing sequential tests never directly focus
+heading/rows. Combined new54 baseline first on restored original production;
+old194 controls retained. Final selected Chromium/WebKit target248.
+
+If baseline confirms, minimum correction under accepted R9: header tabindex0,
+Buy/Confirm/Cancel explicit tabindex0. Disabled controls remain skipped; keyed
+rows remain tabindex-1 for programmatic post-receipt focus. Document header's
+intentional noninteractive Tab stop mandated by R9 with a narrowly scoped
+Svelte accessibility annotation, not an altered role or blanket lint suppression.
+No formula/state/transport/copy/price/schema/balance/numeric/kernel/CI change.
+
+Predeclared compiling probes after corrected native pass: (1) header back to-1
+must fail sequential tests, (2) rows tabindex0 must fail no-extra-stop census,
+(3) remove explicit tabindex from three buttons must fail WebKit row/confirmation
+order with Chromium/sentinel controls retained. Run new54 each; restore exact
+corrected SHA after every terminal result before next edit. Finally all248
+plus root types/build/client/boundaries/copy/manifest and inherited history guard.
+No edits with live test handles. Negative results remain visible; no acceptance
+bound/flag/preference/skip relaxation. This is controlled native component
+evidence, not host/SQL/mint/default-player/manual AT or whole AC12. Whole range
+after8a3bfb70 still needs Claude; earlier ranges remain independent. No checkbox
+flip/archive/owner copy/cleanup/push or reduction of full1.0 goal.
