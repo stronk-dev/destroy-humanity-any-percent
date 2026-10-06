@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime correction (2026-10-06):** RP-251's append-only-ID admission,
+**Latest runtime correction (2026-10-06):** RP-252, underef37e83c, fixes
+Reputation purchase-event admission: all55malformed decision fixtures now
+reject, including22previous admissions; six valid controls and eleven original
+producer events remain green. Three independent omissions fail20/7/2 and
+restore exactly. Kernel **0.3.159**; cold server-core/vet and client/type/build
+plus separate boundaries/topology pass7456/134. Full verify-client stays RED
+at RP-131/50a3a514. Complete new span after822774df needs Claude. Original
+17-path B4 designated review is CHANGES REQUIRED for RP-252/253/254: persisted
+direct rejection taxonomy and explicit purchase result-hash proof remain.
+Docker capacity is rechecked100%/39784KiB free, no cleanup or fresh DB run.
+No whole R1/R5/R8/B4/CI/player/RFC/1.0 claim. [Exact evidence](reputation-tree-v1/log.md).
+
+**Previous runtime correction (2026-10-06):** RP-251's append-only-ID admission,
 predeclared at155f6c17, rejects all56 removal negatives across linked/live/replay
 fixture arms. Five independent guard omissions and incomplete census controls
 in both runtimes fail. Legal retunes, append, initial activation and standalone
@@ -13,7 +25,8 @@ history remain valid. The old retirement positive is now a consumed forbidden
 transition; three legal starter expectation rows stay unchanged. Kernel
 **0.3.158**; cold server-core/vet passes, client/type/build and separate boundary/
 topology checks pass7456/134. Full verify-client remains RED at RP-131/50a3a514.
-Complete span aftercf458b2b needs Claude. Next full original B4 and remaining
+Complete span aftercf458b2b needs Claude. Its then-next original B4 review is
+now CHANGES REQUIRED above; remaining
 pinned readers/writers; no full R1/OD-7/DB/player/CI/RFC or 1.0 promotion.
 [Exact evidence and limits](reputation-tree-v1/log.md).
 

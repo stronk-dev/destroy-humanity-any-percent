@@ -2257,3 +2257,98 @@ capacity/cleanup hold persists. This event repair cannot close RP-253, AC3/4/8,
 full B4 or the career. Record the original designated review only for its exact
 range; any new Codex correction requires Claude independently. No boxes/archive/
 mint/push/owner-copy changes. Full nine-tier/platform goal remains active.
+
+## 2026-10-06 — designated original B4 review: CHANGES REQUIRED
+
+Review by: Codex (designated cross-party reviewer of Claude's original batch).
+Recorded by: Codex. Exact reviewed range:541da96e^..541da96e, all17paths,
+3323insertions/7deletions. Verdict: CHANGES REQUIRED, not full B4/AC3/4 approval.
+This verdict cannot approve any subsequent Codex correction or uncovered range.
+
+Diff inspection covered purchase evaluator/resolver/dispatch, shared replay arm,
+TS parser/evaluator/replay, payload validation/enum, immutable00075 Up/Down,
+all unit/DB/TS tests, docs/log and the three consistent kernel identities111.
+Every original corpus row was compactly inspected after the first long projection
+truncated:20rows/two bundles unchanged at current HEAD321060. Actual cold Go
+reproduction71e74e..f0e7f5 passes the generated corpus and tamper tests; both
+Reputation integration tests explicitly SKIP without TEST_DATABASE_URL. Clean
+TS/types b2274e..5b1f88 passes7456/134, preserving the original20-row comparisons.
+These executions are at current HEAD with later dependencies, not falsely
+labelled a checkout/reproduction of the original111 kernel.
+
+Finding A / RP-252: the original event validator (still unchanged in that arm at
+baseline) admits22of55malformed decisions. c4f1df..c073ea reports actual nil
+errors for all eight case aliases/eight duplicate fields, missing/null spent-
+before/unlock (four), and two signed-overflow cases. Other33negatives refuse;
+six valid controls and eleven original direct producer events pass. This is a
+real strict-event admission defect at validateIntentDecision, not a demonstrated
+malformed-player-request exploit or fresh SQL commit.
+
+Finding B / RP-253: original real-Postgres witness records applied and owned
+only, while AC3 demands every R5 rejection row. Later test additions do not
+supply that direct taxonomy census. Claude's historical DB/retry/history pass
+remains bounded evidence; its migration severing probe was invalid because the
+shared database already applied75. No current all-row DB verdict is invented.
+
+Finding C / RP-254: original Go case type/runner and TS consumer compare
+state/receipt/events but never explicitly assert purchase result constants hash
+against the shared Go-authored bundle pin, as R8 requires. This is an observed
+oracle-scope gap, not yet an executed wrong-hash mutation. Next bounded evidence
+can use the existing corpus pin without inventing a new schema or epoch.
+
+Historical R7 nuance: B4's N/A-constraint statement is false, as Claude already
+corrected in its later B6 log (b767dc):57/62/69 have founder_log_multistream_source_shape,
+and78 extends it. Do not repeat the false N/A as a current claim or rewrite its
+historical entry. Later constraint/Exit implementations and their review remain
+outside this original B4 verdict. R1 pinned-command repair RP-250 and other
+subsequent Codex work likewise remain separately pending Claude, not absorbed.
+
+## 2026-10-06 — RP-252 event repair evidence and implementer first filter
+
+Review by: Codex (implementer first filter, NOT designated review of this fix).
+Recorded by: Codex. New complete span starts after822774df, includesef37e83c and
+this implementation/records checkpoint; Claude must review its literal committed
+tip independently of the original verdict and every previous correction.
+
+The Reputation-only token check requires eight non-null/exact-case/duplicate-free
+fields, then existing typed decode/closed enums and bounded accounting. Every
+integer's exact-safe domain is checked before adding cost to spent, preventing
+signed wrap from satisfying equality. No general decoder or other event arm,
+producer payload, schema or applied migration is changed. Three kernel identities
+158→159 mark this real admission narrowing. Initial patch's temporary final
+false disjunct was removed before any verification; no result depends on it.
+
+064342..7e1acb passes all55negatives, six legal controls and eleven producer
+events (save0.298s), plus full selected Reputation production0.461s. The six
+controls prove schema/accounting admission, not catalog-bound node effect/price
+consistency; the eleven actual producer fixtures are a separate population. Independent
+compiling omissions, every handle terminal before edits:
+- exact fields: a60cd2..dbfc73 fires20key ambiguity/default cases; six/eleven
+  positives remain passing.93a5c1 exact source restoration.
+- numeric domains:85c04c..b4056e fires7cases (cost0, excessive level, negative
+  spent-before, both unlock bounds and two overflows). Other domains remain
+  protected by arithmetic; no claim every redundant bound independently fires.
+  d0e2b4 exact restoration.
+- sum/earned relationship:7aad27..b580be fires2cases.2e5b11 exact restoration:
+  intent.go292d60335fe1575090beb2f50e7dc67abd6ecaf9ee7aeee74883f04efc97ab3f;
+  new helper801a6959ffd4b8be96631e850f5c6f91674110fb2d92bb24ae50d88b7dd14308.
+
+Final99f24b..700c67 server-core/vet passes cold (production34.041s,save0.204s,
+transport13.320s; full Pitch0.298s cold, separate content alias cached). Generated
+formulas/API diffs stay empty.69e77c..d4ee2d full client composite passes clean
+types, build213modules,7456tests/134existing skips,14/8/22shell/UI boundaries,
+then is RED at historical pushed50a3a514 (RP-131).0415bd..049747 separately
+passes topology13negatives, remaining package boundaries22cosmetic negatives,
+payment6negatives/2near misses,657copykeys/610existing orphan warnings and
+content-manifest. Original Reputation/migration corpora and all applied migration
+files unchanged (65488d,2c0eb8); no replay production bytes change in TS.
+
+Capacity revalidated read-only:e8cd8c lists both healthy owned Postgres services
+and the existing tabiya builder; afdb0d shows100%/39784KiB free.9c46bc reports
+143volumes/39.36GB total,36.78GB reclaimable; that broad pool is NOT the earlier
+narrow cleanup request, not deletion authority. No cleanup, SQL mutation,
+service restart or new Docker/DB workload. Every gate/probe handle terminal
+before records. Next RP-254 hash evidence/remaining pinned readers/closed replay
+inputs, with RP-253 actual Postgres taxonomy still required. Full B4/AC3/4/R8/
+career, mint/H4/owner/author/privacy/accessibility/deployment/CI and nine-tier
+1.0 obligations stay open. No checkbox flip, archival, push or goal completion.

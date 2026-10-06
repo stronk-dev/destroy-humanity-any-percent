@@ -4,7 +4,20 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime correction: OD-7 append-only-ID admission now rejects removing
+Latest runtime correction: RP-252's Reputation purchase-event validator now
+refuses all55malformed decision fixtures, including22previous admissions from
+missing/null/ambiguous keys and signed overflow. Six legal controls and eleven
+original producer events pass; three independent omissions fail20/7/2 and
+restore exactly. Kernel **0.3.159**; cold server-core/vet and client/type/build
+plus separate boundary/topology checks pass7456/134. Full verify-client remains
+RED at RP-131/50a3a514. New complete range after822774df needs Claude.
+Codex's full original B4 review (`541da96e^..541da96e`,17paths) is CHANGES
+REQUIRED for RP-252/253/254, not approval of its own fixes: complete persisted
+rejection taxonomy and explicit purchase result-hash proof remain. Docker
+capacity rechecked100%/39784KiB free; no cleanup or fresh DB workload. No full
+R1/R5/R8/B4/CI/player/RFC/release promotion. [Exact evidence](reputation-tree-v1/log.md).
+
+Previous runtime correction: OD-7 append-only-ID admission now rejects removing
 any of nine defined Reputation IDs at the linked/live/replay fixture boundaries
 (28 negatives per runtime, 56 total). Five independent guard omissions fail;
 both runtimes reject an incomplete shared population. Legal retunes, append,

@@ -863,6 +863,9 @@ func validateEventPayload(event EventWrite) error {
 			return fmt.Errorf("%w: invalid cosmetic_unequipped.v1 payload", ErrInvalidStream)
 		}
 	case EventReputationNodePurchased:
+		if !validReputationPurchaseEventFields(event.Payload) {
+			return fmt.Errorf("%w: invalid reputation_node_purchased.v1 fields", ErrInvalidStream)
+		}
 		var payload struct {
 			NodeID                string `json:"node_id"`
 			NodeKind              string `json:"node_kind"`
@@ -875,9 +878,12 @@ func validateEventPayload(event EventWrite) error {
 		}
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.NodeID) ||
 			payload.NodeKind != "bonus_unlock" && payload.NodeKind != "starter" || payload.Source != "direct" && payload.Source != "exit_plan" ||
-			payload.Cost < 1 || payload.ReputationSpentBefore < 0 || payload.ReputationSpentBefore > decimal.MaxExactInteger || payload.ReputationLevel > decimal.MaxExactInteger ||
-			payload.ReputationSpentAfter != payload.ReputationSpentBefore+payload.Cost || payload.ReputationSpentAfter > payload.ReputationLevel ||
-			payload.UnlockPPMAfter < 0 || payload.UnlockPPMAfter > 1_000_000 {
+			payload.Cost < 1 || payload.Cost > decimal.MaxExactInteger ||
+			payload.ReputationLevel < 0 || payload.ReputationLevel > decimal.MaxExactInteger ||
+			payload.ReputationSpentBefore < 0 || payload.ReputationSpentBefore > decimal.MaxExactInteger ||
+			payload.ReputationSpentAfter < 0 || payload.ReputationSpentAfter > decimal.MaxExactInteger ||
+			payload.UnlockPPMAfter < 0 || payload.UnlockPPMAfter > 1_000_000 ||
+			payload.ReputationSpentAfter != payload.ReputationSpentBefore+payload.Cost || payload.ReputationSpentAfter > payload.ReputationLevel {
 			return fmt.Errorf("%w: invalid reputation_node_purchased.v1 payload", ErrInvalidStream)
 		}
 	case EventFiscalCreditSpent:

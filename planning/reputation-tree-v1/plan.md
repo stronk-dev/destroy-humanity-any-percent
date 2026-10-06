@@ -36,6 +36,13 @@ threshold retune is measured and reported, then ratified by owner SHA).
   complete span aftercf458b2b need Claude. Complete pinned R1/R7/AC11 remains;
   no removal/refund permission, real DB or full B4 verdict follows.
 - [x] B4 (`541da96e`) — R5 `purchase_reputation_node` Founder intent (Go + TS replay parity, corpus). ACs 3, 4.
+  **Not accepted closeout:** Codex's full original17-path designated review is
+  CHANGES REQUIRED (RP-252 strict event admission, RP-253 persisted rejection
+  population, RP-254 explicit result-hash evidence). The separate event repair
+  underef37e83c rejects55malformed decisions, preserves six valid controls and
+  eleven producer events, and fires three independent omissions; kernel0.3.159.
+  Its new complete span after822774df needs Claude. Existing20purchase corpus
+  rows/bundles are unchanged; no fresh DB or full AC3/4/R8/B4 closure follows.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.

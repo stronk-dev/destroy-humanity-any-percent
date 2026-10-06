@@ -2694,3 +2694,32 @@ Claude designated review pending independently of all older spans. No full
 R1/OD-7/B4/AC11/DB/player/CI/RFC or release promotion. Next full original B4
 review and remaining pinned consumers; all nine-tier/platform/owner/author/
 mint/H4 and capacity holds persist. Goal active; no archival, push or cleanup.
+
+## 2026-10-06 — original purchase review and strict event repair
+
+Codex's designated review covers all17original Claude B4 paths at
+541da96e^..541da96e: CHANGES REQUIRED for RP-252 event admission, RP-253 missing
+full persisted direct-rejection taxonomy and RP-254 result-hash oracle scope.
+The twenty original purchase rows/two bundle objects stay unchanged. Cold
+current-HEAD Go/TS reproduction passes; both Go integration tests explicitly
+skip without Postgres, not evidence of actual persistence. Historical N/A-
+constraint mistake was already corrected by later B6; no stale claim revived.
+
+Underef37e83c,22of55malformed events are admitted by the unchanged validator;
+the Reputation-only fix now refuses all55 and preserves six legal boundaries
+and eleven producer events. Three independent compiling omissions fire20/7/2
+and restore exact SHA. Kernel0.3.159 marks admission narrowing without changing
+payload producers, schemas, applied migrations, balance/epoch/copy or CI policy.
+
+Cold server-core/vet passes production34.041s/save0.204s; client/type/build and
+separate topology/boundaries pass7456/134. Full verify-client remains RED at
+historical50a3a514 (RP-131); copy retains610existing orphan warnings. Corpora
+and generated contracts remain unchanged. Docker capacity is rechecked100%/
+39784KiB free with both owned databases healthy; no cleanup or new DB workload.
+
+The complete new correction span after822774df requires Claude independently;
+original designated CHANGES REQUIRED is not self-approval. Next bounded R8
+result-hash proof and remaining pinned readers/closed inputs; actual full direct
+Postgres taxonomy remains mandatory, not waived by the event repair. All nine-
+tier/platform/owner/author/mint/H4/release obligations persist. Full goal active;
+no checkbox flip, archival, publication, push or deletion authorization inferred.

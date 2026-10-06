@@ -1,5 +1,26 @@
 # Executable queue
 
+## Reputation event admission corrected; original B4 review — 2026-10-06
+
+Underef37e83c, the actual pre-write decision validator admits22of55malformed
+fixtures before correction. Localized R5 fields/domain admission now refuses
+all55, preserves six legal controls and eleven producer events, and catches
+three independent omissions20/7/2. Kernel0.3.159; cold server-core/vet passes,
+client/type/build plus separate boundaries/topology pass7456/134. Full
+verify-client remains RED at RP-131/50a3a514; old corpora/contracts unchanged.
+
+**READY FOR CLAUDE:** complete new correction span after822774df, including
+ef37e83c and its implementation/checkpoint, independent of previous ranges.
+**ORIGINAL DESIGNATED VERDICT:**541da96e^..541da96e, all17paths, CHANGES REQUIRED
+for RP-252 event strictness, RP-253 complete persisted rejection taxonomy and
+RP-254 explicit result-hash evidence. This does not approve Codex's later fixes.
+**NEXT ACCEPTED WORK:** bounded R8 purchase result-hash evidence and remaining
+pinned reader/writer/closed replay inputs. RP-253 requires retained full direct
+taxonomy and actual Postgres execution once the capacity/cleanup hold clears;
+current Docker filesystem still100%/39784KiB free. No full B4/AC3/4/8/RFC,
+actual DB/player/CI/1.0, archival, mint, push or cleanup authorization.
+[Exact limits](../reputation-tree-v1/log.md).
+
 ## Append-only Reputation epoch admission corrected — 2026-10-06
 
 Under155f6c17, all56 removal negatives first admit and now refuse: nine defined

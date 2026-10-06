@@ -204,7 +204,22 @@ refuses tampered inputs.
 An applied purchase adds the cost to `reputation_spent`, inserts the id in sorted order, and updates
 the unlock mirror. It returns a receipt with `effective_from: "next_run"` (a Fiscal sweep, if any,
 decorates it) and emits `reputation_node_purchased.v1` with `source: "direct"`. The event is
-validated strictly in `save.validateEvent` and admitted to the database by migration 00075.
+validated by `save.validateEventPayload` through `validateIntentDecision`, before ordinary or
+Exit event writes, and admitted to the database by migration 00075.
+
+The eight event fields are required, non-null and exact-case; duplicate/extra
+keys and trailing JSON reject. Cost is in `1..MaxExactInteger`; earned level and
+both spend totals are in `0..MaxExactInteger`; unlock is in `0..1_000_000`.
+These bounds are checked before addition, so a signed overflow cannot satisfy
+`spent_after == spent_before + cost <= level`. Kind and source stay closed enums.
+An isolated R5 supplement exercises 55 malformed decisions, six valid boundaries
+and all eleven original direct-purchase producer events. Independently omitting
+shape, domain or relationship admission fails 20, seven or two assertions.
+It does not change producer bytes or the applied migration, and is not a fresh
+Postgres run or proof that every direct rejection has a persisted log row
+(RP-252/RP-253). The original purchase corpus also lacks an explicit result-hash
+assertion; shared state/receipt/event matches alone do not prove that R8 part
+(RP-254).
 
 `testdata/replay/reputation-tree-v1.json` is the Go-authored cross-runtime corpus: the inactive,
 invalid, unknown, requires, owned and unaffordable rows (including the `cost == available + 1`
