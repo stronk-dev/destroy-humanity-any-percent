@@ -216,3 +216,41 @@ research question; they authorize only the stated downstream action.
   fail and restore exactly; two final full Linux lanes and separate performance pass. The fixture
   confounder and measurement-validity question have bounded evidence; original RP-218 causation
   remains open, designated review pending. No timeout or production/CI change.
+
+## R-011 — browser single-use renewal coordination (RP-048 / RP-234)
+
+- **Question:** Can the declared browsers coordinate one credential owner across
+  contexts, release ownership when a context disappears, and expose unsupported
+  storage/ownership honestly? Separately, what evidence bounds refresh/ownership
+  waits and detects a committed rotation whose reply is lost?
+- **Authority:** bounded observation of Account D2/D3 and Transport T1/T4/T5;
+  `rfc/browser-session-renewal.md` remains draft, not implementation authority.
+  No new product coordinator, local marker policy or error UI is authorized.
+- **First-wave population:** declared Playwright Chromium/Firefox/WebKit on the
+  existing Linux test runtime; two same-origin pages in one browser context,
+  separate browser contexts, shared and deliberately distinct lock names,
+  storage visibility and a held-owner page closure. Ten repetitions per
+  exclusion arm; print actual engine/version/profile, completed counts and traces.
+- **Method:** run native Web Locks against a test-owned local origin and synthetic
+  values only. Record overlapping entry/exit intervals, ownership cardinality,
+  same-origin storage visibility and successor entry after owner-page closure.
+  This is primitive observation, not a replacement production runtime, token
+  protocol, suspended OS, full process crash, mobile browser or session proof.
+- **Controls:** exclusive same-name lock must admit at most one holder; bypassing
+  that lock or using different names must demonstrably admit overlapping holders.
+  Isolated contexts must not falsely appear to share credential storage. Missing
+  APIs, absent control overlap or incomplete populations invalidate the result.
+  Use observed completion, not sleep alone, to establish exclusion or release.
+- **Later arms (predeclare separately before execution):** real Account single-use
+  rotation with two client contexts, response loss before/after server commit,
+  storage failure and background/native lifecycle. Pin exact registered statuses
+  and existing request identity; never retry a real consumed refresh just to green
+  the instrument. Keep DB populations serial and credentials out of output.
+- **Exit:** first wave reports every population/control or a precise invalidity;
+  later arms must bound actual requests/ownership and ambiguity. A primitive pass
+  cannot close the full R-011 session question by itself.
+- **May authorize:** evidence-backed choice of coordination primitive and a
+  proposed bounded implementation plan after independent review/owner adoption.
+- **Cannot authorize:** automatic renewal code, unadopted storage/recovery policy,
+  arbitrary timeout increases, unsafe cross-tab fallback, revocation weakening,
+  whole-CI or natural fifteen-minute Garden/release claims.

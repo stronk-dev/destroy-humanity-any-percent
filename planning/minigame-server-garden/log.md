@@ -2638,3 +2638,19 @@ range and does not promote the failed manual maturity objective. All handles
 terminal, product controls restored, Node driver syntax check passes, tree clean
 after implementation. No push, archive, public mint or release claim. Continue
 the separately scoped Account/Transport session consumer under the full goal.
+
+## 2026-10-06 — separate Account diagnostic, not Garden completion
+
+Account predeclaration `25fb5e67` executes the real built-client/server/Postgres/
+WebSocket fixture in an explicit `--session-diagnostic` arm before planting.
+One exact early access-row expiry produces actual runtime Garden 401 and socket
+closure; no runtime refresh call occurs. One test-operated HTTP rotation/reload
+restores the same Founder/Garden with gameplay heads unchanged. Keeping the token
+valid makes the 401 assertion fail; restore passes. Detailed runs/limits live in
+`planning/account-and-session-bootstrap/log.md`. This leaves the normal natural
+fifteen-minute objective unchanged and red/unproven, not rerun in this batch.
+It does not retroactively establish 67349's omitted status or fix RP-233.
+The separate successor `rfc/browser-session-renewal.md` remains draft; R-011
+research/API/owner boundaries must resolve before auth implementation. Garden
+`b58277cb..bff05b5e` and all earlier exact review ranges stay independent; no
+new Garden approval, checkbox, launch content, public pin or archival claim.

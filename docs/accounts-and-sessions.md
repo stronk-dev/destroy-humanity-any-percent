@@ -67,6 +67,16 @@ families with no remaining token rows; an unexpired rotation chain is never coll
 
 ## HTTP boundary
 
+The current browser persists its access and refresh pair, but does not consume
+the refresh token automatically. Authenticated reads fail after access expiry;
+the transport stops on auth-expired rather than renewing. Server refresh works,
+but is not a completed player session lifecycle. `make diagnose-browser-session`
+observes that gap against the built client, real server/Postgres/WebSocket using
+one exact early access-row expiry, then an explicitly test-operated rotation and
+reload of the same Founder/Garden. It does not implement automatic renewal or
+prove natural fifteen-minute growth. The proposed consumer contract is
+`rfc/browser-session-renewal.md` (draft, not authority).
+
 The chi router owns the versioned `/api/v1` surface:
 
 - `POST /account`, `POST /session`, and `POST /session/refresh` are IP-rate-limited;

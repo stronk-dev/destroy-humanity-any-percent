@@ -12,10 +12,13 @@ import { chromium } from "playwright";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const uiURL = "http://localhost:5173";
 const serverURL = "http://127.0.0.1:18083";
+assert(process.argv.length === 2 || process.argv.length === 3 && process.argv[2] === "--session-diagnostic", "unknown Garden driver argument");
+const sessionDiagnostic = process.argv[2] === "--session-diagnostic";
 const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "cloud-clicker-garden-composed-"));
 const started = Date.now();
 const sockets = new Set();
 const errors = [];
+const apiBoundaries = [];
 let server, assets, browser, heartbeat;
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const copy = JSON.parse(readFileSync(path.join(root, "client/src/copy/generated/catalog.json"), "utf8"));
@@ -136,7 +139,8 @@ try {
   server.on("error", (error) => errors.push(error)); server.stdout.on("data", (data) => process.stdout.write(data)); server.stderr.on("data", (data) => process.stderr.write(data));
   await ready(); assets = await serve(); browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-  const requests = [], views = [], publicData = [], responses = [], transport = { sent: 0, received: 0 };
+  const requests = [], views = [], publicData = [], responses = [], transport = { sent: 0, received: 0, closed: 0 };
+  let expectExpiredGarden = false;
   page.on("pageerror", (error) => errors.push(error));
   page.on("requestfailed", (request) => errors.push(new Error(`request failed ${new URL(request.url()).pathname}: ${request.failure()?.errorText}`)));
   page.on("request", (request) => {
@@ -145,11 +149,20 @@ try {
     requests.push(request);
   });
   page.on("response", (response) => {
-    if (!new URL(response.url()).pathname.startsWith("/api/")) return;
+    const pathname = new URL(response.url()).pathname;
+    if (!pathname.startsWith("/api/")) return;
+    apiBoundaries.push({ path: pathname, status: response.status() });
     responses.push((async () => {
       if (response.status() === 204) return;
       const data = await response.json(); publicData.push(data);
-      if (new URL(response.url()).pathname === "/api/v1/garden/current") { assert.equal(response.status(), 200); views.push({ data, at: Date.now() }); }
+      if (pathname === "/api/v1/garden/current") {
+        if (expectExpiredGarden && response.status() === 401) {
+          assert.deepEqual(data, { category: "unauthorized", detail: "access_token" });
+        } else {
+          assert.equal(response.status(), 200, `Garden GET returned ${response.status()}`);
+          views.push({ data, at: Date.now() });
+        }
+      }
     })().catch((error) => errors.push(error)));
   });
   page.on("websocket", (socket) => {
@@ -157,6 +170,7 @@ try {
     socket.on("framesent", () => transport.sent++);
     socket.on("framereceived", ({ payload }) => { transport.received++; for (const line of String(payload).split("\n").filter(Boolean)) { try { publicData.push(JSON.parse(line)); } catch (error) { errors.push(error); } } });
     socket.on("socketerror", (error) => errors.push(new Error(String(error))));
+    socket.on("close", () => transport.closed++);
   });
   const control = (key, params) => page.getByRole("button", { name: text(key, params), exact: true });
   const cell = (row, col) => page.locator(".garden button.cell").nth(row * 6 + col);
@@ -201,6 +215,66 @@ try {
   await domIntent(page.locator(".fiscal").getByRole("button", { name: text("fiscal.harvest"), exact: true }), "harvest_fiscal_period", {});
   await domIntent(unlockRow.getByRole("button"), "spend_fiscal_credit", { target: { kind: "unlock", unlock_id: bundle.garden.unlock_id } });
   await control("garden.title").click(); await cell(0, 0).waitFor({ timeout: 30_000 });
+  if (sessionDiagnostic) {
+    // Explicit controlled access-row expiry, NOT a production clock/TTL change,
+    // natural JWT expiry, or an automatically renewing runtime. No token output.
+    const before = head(founderID), beforeWrites = writes().length;
+    const tokenID = await page.evaluate(() => {
+      const value = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
+      return JSON.parse(atob(value.accessToken.split(".")[1].replace(/-/gu, "+").replace(/_/gu, "/"))).jti;
+    });
+    assert.match(tokenID, /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
+    const familyCounts = () => JSON.parse(sql(`SELECT jsonb_build_object(
+      'sessions',(SELECT count(*) FROM sessions WHERE family_id=issued.family_id),
+      'consumed',(SELECT count(*) FROM sessions WHERE family_id=issued.family_id AND consumed_at IS NOT NULL),
+      'revoked',(SELECT count(*) FROM session_families WHERE family_id=issued.family_id AND revoked_at IS NOT NULL),
+      'access',(SELECT count(*) FROM access_tokens WHERE family_id=issued.family_id))
+      FROM access_tokens issued WHERE issued.jti='${tokenID}';`));
+    assert.deepEqual(familyCounts(), { sessions: 1, consumed: 0, revoked: 0, access: 1 });
+    await control("surface.desk.title").click();
+    expectExpiredGarden = true;
+    assert.equal(sql(`WITH expired AS (UPDATE access_tokens SET expires_at=clock_timestamp()-interval '1 millisecond'
+      WHERE jti='${tokenID}' AND founder_id='${founderID}' AND revoked_at IS NULL RETURNING jti)
+      SELECT count(*) FROM expired;`), "1", "expire only exact diagnostic access row");
+    const expired = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/garden/current", { timeout: 30_000 });
+    await control("garden.title").click();
+    const expiredResponse = await expired;
+    assert.equal(expiredResponse.status(), 401, "actual runtime Garden read must observe controlled expiry");
+    assert.deepEqual(await expiredResponse.json(), { category: "unauthorized", detail: "access_token" });
+    const socketDeadline = Date.now() + 35_000;
+    while (transport.closed === 0 && Date.now() < socketDeadline) await pause(100);
+    assert.equal(transport.closed, 1, "original subscribed socket did not close in the existing alive window");
+    assert.equal(requests.filter((request) => new URL(request.url()).pathname === "/api/v1/session/refresh").length, 0, "runtime unexpectedly supplied a renewal consumer");
+    assert.deepEqual(familyCounts(), { sessions: 1, consumed: 0, revoked: 0, access: 1 });
+    assert.deepEqual(head(founderID), before, "expiry changed gameplay heads");
+    console.log("Session diagnostic: actual runtime Garden GET 401; subscribed socket closed; stored refresh unconsumed; no automatic renewal: CONFIRMED GAP");
+    // Positive control operated by the test, explicitly not the client workflow.
+    const rotation = await page.evaluate(async () => {
+      const key = "cloud-clicker.credentials.v1", previous = JSON.parse(localStorage.getItem(key));
+      const response = await fetch("/api/v1/session/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refresh_token: previous.refreshToken }) });
+      const pair = await response.json(), keys = Object.keys(pair).sort();
+      if (response.status !== 200 || keys.join("\0") !== "access_token\0refresh_token" ||
+          typeof pair.access_token !== "string" || typeof pair.refresh_token !== "string" ||
+          pair.access_token === previous.accessToken || pair.refresh_token === previous.refreshToken) {
+        return { status: response.status, validPair: false };
+      }
+      localStorage.setItem(key, JSON.stringify({ ...previous, accessToken: pair.access_token, refreshToken: pair.refresh_token }));
+      return { status: response.status, validPair: true };
+    });
+    assert.deepEqual(rotation, { status: 200, validPair: true });
+    assert.deepEqual(familyCounts(), { sessions: 2, consumed: 1, revoked: 0, access: 2 });
+    expectExpiredGarden = false;
+    await page.reload({ waitUntil: "networkidle" });
+    await page.getByText(/You are visitor #\d+/u).waitFor({ state: "visible", timeout: 30_000 });
+    await control("garden.title").click(); await cell(0, 0).waitFor({ timeout: 30_000 });
+    assert.equal((await snapshot(page)).run.founder_id, founderID, "manual rotation replaced the Founder");
+    assert.deepEqual(head(founderID), before, "rotation/reload changed gameplay heads");
+    assert.equal(writes().length, beforeWrites, "diagnostic/reload emitted gameplay intents");
+    assert.equal(requests.filter((request) => new URL(request.url()).pathname === "/api/v1/bootstrap").length, 1, "diagnostic/reload created a replacement account");
+    assert.equal(requests.filter((request) => new URL(request.url()).pathname === "/api/v1/session/refresh").length, 1, "more than the test's one rotation was submitted");
+    await Promise.all(responses); assert.equal(errors.length, 0, errors.map(String).join("\n"));
+    console.log(`Session diagnostic: one test-operated HTTP rotation; same Founder/Garden restored by actual reload; gameplay heads unchanged; ${(Date.now() - started) / 1000}s: OBSERVATION COMPLETE, NOT AUTOMATIC-RENEWAL ACCEPTANCE`);
+  } else {
   async function plant(row, col, species) {
     try {
       assert.equal(await cell(row, col).getAttribute("data-stage"), "empty", `plant target ${row},${col}`);
@@ -274,8 +348,9 @@ try {
   assert.deepEqual(head(founderID).founder, final.founder, "reload changed persisted Garden");
   await Promise.all(responses); publicData.forEach((data) => noSalt(data, salt)); assert.equal(errors.length, 0, errors.map(String).join("\n"));
   console.log(`Garden composed real wall-clock: DOM bootstrap/unlock/plant/uproot → native three-tick maturation → single/all harvest → substrate/reload; two real cash sends, bound hashes, hidden salt; ${(Date.now() - started) / 1000}s: PASS`);
+  }
 } catch (error) {
-  throw new Error(`Garden composed objective failed; boundary errors: ${JSON.stringify(errors.map(String))}`, { cause: error });
+  throw new Error(`Garden composed objective failed; boundary errors: ${JSON.stringify(errors.map(String))}; HTTP statuses: ${JSON.stringify(apiBoundaries)}`, { cause: error });
 } finally {
   if (heartbeat) clearInterval(heartbeat); await browser?.close(); for (const socket of sockets) socket.destroy();
   if (assets) await new Promise((resolve, reject) => assets.close((error) => error ? reject(error) : resolve()));

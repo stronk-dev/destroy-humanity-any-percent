@@ -12,6 +12,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Kernel History Guard Integrity](kernel-history-guard-integrity.md) | draft — RP-131, owner choice pending; not implementation authority | Run Genesis & Replay KV-1 / CI Baseline |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
+| [Browser Session Renewal & Recovery](browser-session-renewal.md) | draft — RP-048/RP-234 consumer diagnosed; policy/API/browser gates unaccepted | Account / Transport / API Foundation / archived Game UI |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Leaderboard Readers & Player Surface](leaderboard-readers-and-player-surface.md) | draft — not implementation authority | Leaderboards / API Foundation / Game UI / Route Registry |

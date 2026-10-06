@@ -312,3 +312,91 @@ No production auth/TTL/schema/kernel/copy/CI/epoch/checkbox/archive/push changes
 Missing browser concurrency, ambiguity, recovery and generated-operation authority
 must be proposed in an explicit draft follow-up before implementation. Codex is
 not its accepting owner or designated reviewer.
+
+## 2026-10-06 — executed session boundary, controlled expiry and counterfactual
+
+Authority predeclaration: `25fb5e67`; this is a new diagnosis/draft range, not
+Garden's pending repair or a reopened Q-001/Q-003 approval. The retained manual
+`make diagnose-browser-session` runs the existing built-client/Go/real-WebSocket
+fixture through actual DOM bootstrap/Fiscal harvest/purchase. It then expires
+only the validated token jti row in the declared disposable DB, not the JWT/server
+clock. Runtime Garden GET returns exact 401 unauthorized/access_token; its actual
+subscribed socket closes inside the existing alive window. No browser refresh
+request occurs; the original refresh remains unconsumed and its family unrevoked.
+One explicit test-operated POST session/refresh returns a distinct pair: two
+session/access rows, exactly one consumed refresh and zero revoked families.
+Actual reload restores the same Founder/Garden, with full gameplay heads unchanged,
+no added gameplay intent, one original bootstrap and exactly one control refresh.
+
+Terminal runs (all through the root Make target):
+
+- 31533 fails before expiry: the Fiscal nav label includes its harvest badge, so
+  the exact bare-title selector is no longer valid. Use the unchanged Desk control.
+- 58141 expires the correct row but fails instrumentation: psql UPDATE RETURNING
+  also emits `UPDATE 1`. A CTE SELECT count gives the exact affected-row oracle.
+- 69863 completes the declared observation in 17.759 s, including real socket loss.
+- 73000 keeps that exact diagnostic token valid (+15 minutes) instead of expiring
+  it; the affected-row count still passes, but actual runtime HTTP 200 fails the
+  required 401 assertion. This proves discrimination, not an assertion-only failure.
+- Restored driver SHA256
+  `e194c17d46737b4a5489c09fe1ffeb2c55153864edb8479e67baf3a6df6e3739`
+  byte-exactly; 49226 completes the observation in 17.583 s. No production source
+  was mutated. All driver-owned children/listeners terminate in finally.
+
+The normal three-tick Garden objective remains intact in the other driver arm.
+Its full maturity/harvest remains unproven. This controlled DB-expiry result does
+not retroactively manufacture the omitted original 67349 HTTP status or measure
+natural JWT expiry. It proves a missing default-client consumer and functioning
+server refresh/reload control. CLI rejects unknown arguments; no target joins CI.
+
+Draft `rfc/browser-session-renewal.md` separates the missing authority: exact
+registered refresh DTO/errors, shared/cross-tab single-use coordination, ambiguous
+completion, original request identity, normal history reconnect and honest
+recovery dependencies. Web Locks source checked at its primary specification,
+not inferred supported-browser proof. All choices/questions remain explicitly
+unaccepted. No automatic auth behavior, server TTL/locks/security, copy, kernel,
+public content, checkbox, review or archival status changed.
+
+## 2026-10-06 — final diagnostic/CI evidence and first-filter scope
+
+After terminal restoration/control runs, instrument-only reporting now retains
+HTTP path/status pairs in failures, without request headers or credential bodies.
+Final actual native diagnostic 85508 completes the same controlled population in
+17.829 seconds. The original three-tick objective has no changed clock, bound or
+acceptance assertion; it was NOT rerun or promoted in this range.
+Final driver SHA256 is
+`ca4958a07ae7a092839562b857da694498752590b1296b104f158761be5a6676`;
+the difference from the restored counterfactual digest is failure-only status
+reporting, not expiry/control/gameplay behavior.
+
+Root client/type/boundary/topology 23925: 7366 pass / 134 browser-only skips,
+zero TS/Svelte errors/warnings, 14/8/22 boundary counts and 13 rejected topology
+negative controls. Complete declared Linux browser lane 28282: 300 populations,
+22482 pass / six existing skips, 48.61 seconds, no uncaught worker/runtime errors;
+the separate unchanged performance selector passes at 507 ms / 2.23 seconds,
+with its 22 unrelated selector exclusions. Three real client builds execute 213
+modules; final native build 374 ms. Node syntax and diff checks pass. These are
+named local populations, not hosted/full verify-push or historical kernel green;
+unchanged RP-131 and native Firefox/hosted reliability caveats remain open.
+
+**Review by:** Codex (implementer first filter). **Recorded by:** Codex.
+**Verdict:** APPROVED for the bounded diagnosis/draft scope only, not designated
+review, owner adoption or production renewal.
+Scope first-filter only: manual driver/Make alias, draft successor and truthful
+canonical/planning records. No authentication/gameplay production source, token
+TTL, family locking, migration, schemas, copy, epoch, kernel identity, CI
+workflow/verification dependencies or completion boxes change. Initial invalid
+instruments and valid-token counterfactual are disclosed; final objective is
+diagnosis, not automatic renewal. Draft Founder-change guard prevents proposing
+blind reissue of an old action into a different identity; API/policy/research
+questions remain unaccepted. The complete new review span begins `b68190f9`
+exclusive and includes `25fb5e67` plus this diagnostic/draft/record commit;
+its literal endpoint is pinned after commit. Claude's designated cross-party
+verdict is required; this is neither it nor acceptance/archival authority.
+
+R-011's first wave is predeclared in the shared research queue. Next safe work
+is actual supported-browser primitive observation and an exact refresh contract
+census; pending policy does not authorize production renewal. RP-233's accepted
+SG10 native interaction diagnosis remains independently available. All earlier
+review ranges, owner rights/retention/accessibility/deployment obligations and
+proper nine-tier 1.0 remain active. No push/publication/deployment/archive occurs.

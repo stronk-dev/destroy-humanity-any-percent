@@ -1,5 +1,33 @@
 # Executable queue
 
+## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
+
+Separate predeclaration `25fb5e67` binds RP-048/RP-234 to existing Account D2/D3
+and Transport T1/T4/T5 without importing new policy into the Garden range.
+`make diagnose-browser-session`: real built client/server/Postgres/WebSocket,
+exact early access-row expiry → actual Garden 401/socket loss/no refresh request;
+one explicitly test-operated HTTP rotation/reload restores the same Founder/Garden,
+full gameplay heads unchanged, one consumed refresh and zero revoked families.
+The valid-token counterfactual fails exactly on HTTP 200 versus expected 401.
+Restored observed runs complete in 17.759/17.583 seconds. Two initial instrument
+errors are retained, not counted as product failures. No automatic renewal claim.
+Root client/type/build/boundary/topology and complete Linux browser/performance
+pass; historical RP-131 and native/hosted reliability remain independently open.
+
+**REVIEW:** new diagnosis/draft range begins `b68190f9` (exclusive), including
+predeclaration, driver and records; endpoint is pinned after commit. Codex first
+filter only, Claude required. Garden `b58277cb..bff05b5e` and all earlier ranges
+remain separate. No owner acceptance, checkbox, archival, push or release claim.
+
+**NEXT SAFE WORK:** R-011's predeclared actual-browser exclusion/storage/context
+termination populations; exact existing refresh API descriptor/status census;
+RP-233 native interaction diagnosis under accepted SG10. No product coordinator
+until `rfc/browser-session-renewal.md` receives resolved evidence/API/recovery
+boundaries and owner acceptance. Then retain exact original intent identity,
+single-use/revocation semantics and ordinary history/full-sync recovery, and
+complete the unchanged natural fifteen-minute Garden journey. The full nine-tier
+1.0 and complete platform floor remain the objective, not a shorter preview.
+
 ## Current Garden purchase correction and real-time failure — 2026-10-06
 
 Under `e02fbfc1` / `d24b40f6` / separate authority `6ba1252c`, RP-232's missing

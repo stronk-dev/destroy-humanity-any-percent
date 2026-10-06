@@ -5,7 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden purchase correction RP-232 under
+**Current checkpoint:** 2026-10-06, separate RP-048/RP-234 browser lifetime
+diagnosis under `25fb5e67`: actual client/server/Postgres/WebSocket confirms
+Garden HTTP 401/socket loss/no runtime rotation under one controlled access-row
+expiry. One explicitly test-operated refresh/reload restores the same Founder
+and Garden with gameplay heads unchanged. Valid-token counterfactual fails;
+restored observation completes. This is not automatic renewal or natural
+fifteen-minute Garden success. `rfc/browser-session-renewal.md` is draft, with
+R-011 browser/ambiguity evidence and explicit API/owner/recovery boundaries before
+production code. Root client/type/build/boundary/topology and complete Linux
+browser/performance pass: 22482 tests/six existing skips. Historical RP-131,
+native-host/hosted reliability and all earlier pending review ranges stay open.
+New range starts after `b68190f9`; endpoint pinned after commit, pending Claude.
+No token TTL/revocation, kernel/copy/schema/epoch/CI/checkbox/archive change.
+Next safe work: predeclared R-011 primitives, exact refresh contract census and
+RP-233 native menu diagnosis. Proper nine-tier 1.0 remains unchanged.
+
+**Earlier checkpoint:** 2026-10-06, Garden purchase correction RP-232 under
 `e02fbfc1` / `d24b40f6` / separate authority `6ba1252c`. Actual Fiscal DOM now
 consumes the offered Garden ID using existing copy. Row-removal fails the new
 fast regression in all engines; restored full Linux browser/performance passes

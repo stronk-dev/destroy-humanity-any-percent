@@ -2260,3 +2260,29 @@ Implementation/diagnosis committed `bff05b5e`; exact new review range
 pending Claude. Metadata only, not approval or a passing mature workflow. All
 verification handles terminal and controls restored before commit. Full 1.0
 remains active; next separate work is the Account/Transport session consumer.
+
+## 2026-10-06 — browser session consumer confirmed, successor remains draft
+
+New predeclaration `25fb5e67` starts after `b68190f9`, independent of pending
+Garden `b58277cb..bff05b5e` and closed Q-001/Q-003. Real built client, Go,
+Postgres and WebSocket: exact access-row early expiry produces runtime Garden
+401 and socket loss without consuming refresh. One test-operated HTTP rotation
+and real reload restore the same Founder/Garden with full gameplay heads unchanged,
+no new gameplay intent/bootstrap, exactly one consumed token and no family revoke.
+Keeping the exact test token valid fails the actual 401 assertion; byte-exact
+restoration passes. Initial navigation/psql instrument mistakes remain in the
+Account log. This is not natural JWT expiry, the original omitted timed status,
+automatic renewal, mature Garden harvest or full session acceptance.
+
+Draft `rfc/browser-session-renewal.md` declares the separate generated-operation,
+cross-context single-use, ambiguity, unchanged request identity and ordinary
+transport recovery requirements. Choices/research/API/recovery dependencies remain
+unaccepted; R-011 predeclares safe primitive observation, not production code.
+Local client/type/build/boundary/topology pass, full Linux browsers 22482 pass /
+six existing skips, separate existing performance 507 ms / 2.23 s. Historical
+kernel/hosted/native-host caveats unchanged; no whole-CI claim. All live handles
+terminal before records. No authentication production/TTL/security/kernel/copy/
+schema/epoch/checkbox/archive/push change. Codex first-filter only, new exact range
+begins `b68190f9`; endpoint pinned after commit, Claude required. Proper nine-tier
+1.0 and its complete platform floor remain active; continue R-011/contract census
+and accepted SG10's RP-233 diagnosis while the new policy awaits adoption.

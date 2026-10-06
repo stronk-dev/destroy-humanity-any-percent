@@ -22,6 +22,17 @@ performance and root client/type/build/topology pass; native Mac Firefox launch
 fails with sandbox/framebuffer diagnostics. Historical kernel RP-131 remains red.
 This Garden range needs Claude review and does not include any authentication fix.
 Next safe work is separately scoped Account D2 / Transport consumer integration.
+That separate diagnosis now executes: `make diagnose-browser-session` observes
+actual runtime Garden HTTP 401/socket closure under exact early access-row expiry,
+zero automatic refresh, then one test-operated rotation/reload restoring the same
+Founder/Garden without gameplay mutation. A valid-token counterfactual fails the
+401 oracle. This does not retroactively establish the original timed HTTP status
+or implement renewal. `rfc/browser-session-renewal.md` is explicitly draft; R-011
+predeclares browser coordination/ambiguity research before policy adoption/code.
+Current local client/type/boundary/topology and full Linux browser/performance
+pass (22482/six existing skips); historical CI and native-host caveats remain.
+New range starts after `b68190f9`, independently pending Claude; all earlier review
+ranges and the failed mature Garden objective remain unconsumed.
 Current SG10 host correction (RP-231) invalidates mounted Garden on nonterminal streamed
 receipts, not only the main snapshot; terminal-screen protection remains unchanged.
 Nine actual host/browser-runtime cases per engine cover five DOM commands, Founder revision
