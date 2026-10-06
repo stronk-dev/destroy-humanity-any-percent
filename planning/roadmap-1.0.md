@@ -5,14 +5,24 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest Company-run proof (2026-10-06):** RP-260 retains two full pinned runs
+with starter assets and frozen non-unit/unit bonuses. Both verify with exact
+terminal states; 18 input corruptions, four population controls and two false
+heads reject. Six compiling omissions fire; cold core/vet pass after exact
+restoration. Test-only, kernel160 unchanged. Full new span after721c0ee1 needs
+Claude. Actual SQL/two-Exit/AC15, H4/H5, RP-131/RP-256 and the whole nine-tier/
+platform floor remain. Next: remaining Reputation harness consumer audit.
+[Evidence](reputation-tree-v1/log.md).
+
 **Latest portable proof (2026-10-06):** RP-259 verifies 24 source-derived Founder
 histories and refuses 144 corruptions plus four population controls. Compiling
 omissions discriminate, with surviving redundant defenses disclosed. The
 c7c7a0fb missing-paired-Exit refinement is included; paired-count omission
 fires one control and whole-validator omission all four. Historical runs stay.
 Cold core/vet pass; runtime/kernel/corpus unchanged. New span after b6c7ebca needs
-Claude. SQL/two-Exit career, Company-run verifier and full R8 remain; no 1.0
-promotion. Next: Company-run and remaining harness consumers. [Evidence](reputation-tree-v1/log.md).
+Claude. SQL/two-Exit career and full R8 remain; Company-run proof is the separate
+RP-260 supplement above, not AC15. Next: remaining harness consumers.
+No 1.0 promotion. [Evidence](reputation-tree-v1/log.md).
 
 **Latest reader correction (2026-10-06):** RP-257/RP-258 now refuse inconsistent
 pinned ownership/mirrors and invalid client bonus-factor strings. Red-first tests

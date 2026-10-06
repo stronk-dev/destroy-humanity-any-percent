@@ -4,6 +4,17 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+Latest Company replay proof: RP-260 under4d4846f2/f7822250/d23da963 retains
+two complete source-bound Company runs: actual starter genesis/frozen1.003 and
+a synthetic unit control. Both public verdicts and full terminal states pass;
+18 corrupted inputs, four population controls and two false heads reject.
+Six compiling omissions discriminate, with exact restoration; cold core/vet
+pass. Test-only, runtime/kernel160/original corpus/schema/CI policy unchanged.
+Full new span after721c0ee1 needs Claude. No SQL/AC15/browser/whole-CI claim;
+Docker rechecked100%/39784KiB free. Next safe work: remaining Reputation harness
+consumer audit, without changing measurement policy or loosening H4/H5.
+[Executed evidence](reputation-tree-v1/log.md).
+
 Latest portable proof: RP-259 under e3378e96 verifies 24 source-derived Founder
 histories and rejects 144 corruptions plus four population controls. Compiling
 comparison omissions discriminate; independent sequence defenses survive alone.
@@ -11,8 +22,9 @@ The c7c7a0fb first-filter refinement adds the previously missing paired-Exit
 control: omitting its count check fails that control; omitting the whole
 population validator fails all four. Historical three-control runs are retained.
 Cold core/vet pass; runtime/kernel/corpus unchanged. New span after b6c7ebca
-needs Claude. No SQL reader, two-Exit career, Company-run verifier or full R8
-claim; Docker remains 100%/39784KiB free. Next: Company-run and remaining harness
+needs Claude. No SQL reader, two-Exit career or full R8 claim; the separate
+Company-run supplement is RP-260 above. Docker remains100%/39784KiB free.
+Next: remaining harness
 consumers. [Exact evidence](reputation-tree-v1/log.md).
 
 Latest reader correction: RP-257/RP-258 under336503b3 refuses inconsistent

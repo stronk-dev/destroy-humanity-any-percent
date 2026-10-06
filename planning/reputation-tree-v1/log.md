@@ -3198,3 +3198,74 @@ No change to the retained fixture or public-input mutation population, and no
 claim the public verdict accepts a stored-head parameter. Restore exact test
 SHA and rerun cold focused/core. This additive test-only refinement remains
 inside accepted R8 and the complete span after721c0ee1 needs Claude.
+
+## 2026-10-06 — R8 portable Company-run proof executed
+
+Authority4d4846f2, oracle correctionf7822250, head-control refinementd23da963;
+RP-260. d16f97..a0c3ac rejects the test's missing required cross_gate.route_id
+before generation, not a product defect. Adding explicitnull satisfies the
+existing request contract. 671a3b..956a73 then writes the additive Company-run
+fixture once. Original corpus SHA f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782
+stays unchanged. 8ba2ba's first retained-reader run refuses both honest profiles
+because fixture indentation was passed as canonical command bytes. Fix944482
+normalizes presentation whitespace only, as other committed replay readers do;
+9a5076..408601 then passes honest2/corrupt18/population4 plus fixture equality.
+No public production defect is asserted from either setup error.
+
+The generator first byte-checks the original source Exit receipt, ordered
+events, final Company and new Company, then uses its actual post-Exit Founder
+and three frozen rows (Fiscal generator/hoard plus Reputation). Exact source
+genesis is run2/tier0/cash1e3/generated15/purchased0. Both profiles issue manual
+at7000s, ordinary Garage gate at7001s and Wind Down at7002s, with no direct
+cash/tier/gate edit. Unit factor is an explicitly synthetic frozen control,
+not stored provenance. Independent first-action formula is recorded inf7822250.
+Normal verifier tests read retained bytes; generation is a separate equality
+gate and was NOT run during any omission. Ended-run cash: source6.34609e3,
+unit6.031e3; lifetime source1.0534509e5/unit1.0503e5. Full states, not these
+summaries alone, are compared by the retained-reader test.
+
+Executed omissions (the reader-only selector excludes fixture generation):
+
+| Probe | Handles | Executed discrimination |
+|---|---|---|
+| Force Reputation replay factor to1 | d45b56..ddc321 | Source-bonus honest run fails; unit honest run passes. Unit first/terminal-factor corruptions become verified. Source missing-terminal/log-gap are stopped earlier by state divergence, recorded rather than called a sequence defect. |
+| Ordinary receipt comparison | 69c28e..7ecc8f | Four corrupt runs become verified: two forged receipts and two missing starter-cash cases. Honest controls pass. |
+| Ordinary event comparison | b7d3ce..f3a162 | Both extra-event cases become verified; honest controls pass. |
+| Terminal requirement | b0908d..cdf8ad | Both missing-terminal cases become verified; honest controls pass. |
+| Fixture population validator | 1342bf..30b26c | All four population controls fail with corrupt-population-admitted; honest2/corrupt18 pass. |
+| Detailed final-head comparison | aa402b..94595e | Both retained false-head controls fail; honest2/corrupt18/population4 pass. |
+
+Probe plumbing failure disclosed: reversing the removed terminal block with
+an empty context misplaced it at file start (aa3430 SHA mismatch); the next
+fixture-validator attemptab6c47 fails compilation and executes NO tests. This
+is excluded from discrimination evidence. 1bb246 inspection catches it;
+cd347d restores verifier byte-exact, then1342bf..30b26c is the genuine compiling
+validator omission above. All handles terminal before each repair/record.
+Other restoration checks6328de/5f9058/6c5030/222048 and final223bf6 match:
+replaya2bf1bf6a6338b0548587d067dc96569a8355363cc50f1b2905782a7edc2b6ca;
+verifier0d6a643abdac495ba0e115fe7cbd9e0ab41202a3794998eeab82ea70523510cd;
+final test518641286a8d152abe568471705c52a4d1cc6153cd5c8b0dbdc971a2aa98f4db;
+new fixturee48187d7afd153a950c3e1cbc369c5da206020e2aefdc64e3f24b50e1a505aea.
+No assertion omission, probe rewrite of expected fixtures or runtime omission
+is retained.
+
+New final-head controls c71947..e45136 pass: 26subtests (honest2, false-head2,
+public-corrupt18, population4), plus the fixture-equality parent. Initial
+24-subtest evidence stays historical. Final5c07ba..d209ff cold
+`make verify-server-core CORE_TEST_COUNT=1` passes: vet/core, production35.060s,
+save0.174s/transport13.175s, Pitch0.269s cold in core (separate alias cached),
+formulas/API regeneration byte-unchanged. No fresh TS/browser/whole-CI or SQL
+proof. _test.go and additive testdata/reputation are outside kernel semantics;
+kernel0.3.160 unchanged. No balance/schema/migration/CI/copy/old-corpus changes.
+
+Docker read revalidation: sandbox denies socketd55283, scoped read4c07ba
+confirms the same two healthy Postgres containers; read-only04fe31 capacity
+still100%/39784KiB free. No DB workload, restart or cleanup. These portable
+proofs do NOT replace actual LoadFounderHistory, persisted two-Exit purchase
+career or real-Postgres AC15. Original review objections, all prior designated
+review obligations, H4/H5, RP-131/RP-256 and full nine-tier/platform scope remain.
+The first tracking patch misses a CURRENT-STATE context and fails atomically;
+e00e5d confirms no partial diff, then corrected7175d7 updates the actual lines.
+Next safe accepted work: remaining R10 harness consumer audit, no optimization
+or policy/threshold/bound waiver. Full new span after721c0ee1 needs Claude;
+no checkbox, archive, mint, push, deployment, cleanup or release promotion.

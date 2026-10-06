@@ -389,3 +389,40 @@ comparison omissions discriminate; either sequence defense alone still rejects
 bad ordering. This is portable replay evidence, not execution of SQL
 `LoadFounderHistory`, a two-Exit purchase career, the Company-run verifier or
 the real-Postgres composed acceptance gate (RP-259).
+
+## Portable Company-run evidence
+
+`testdata/reputation/company-run-v1.json` retains two complete runs consumed by
+`VerifyReplayRun`: the original corpus's exact run-2 genesis (cash1e3, fifteen
+generated towers, zero purchased) with its frozen bonus1.003, and a synthetic
+unit-factor control with identical starter state. Both accrue, cross the Garage
+gate through the ordinary command, then Wind Down. No direct cash/tier/gate
+setup replaces those commands. The source Exit's receipt, ordered events and
+full Company outputs are checked before fixture generation.
+
+`server/production/reputation_run_verifier_test.go` normally reads retained
+commands, inputs, receipts, events and terminal states; it does not generate
+its own expected verifier answers. A separate byte-regeneration check detects
+drift and writes only under an explicit test-generation flag. Fixture presentation
+whitespace is normalized only for canonical command bytes. Independent first-
+action arithmetic distinguishes the frozen bonus's generator production from
+the manual action's unmodified base grant.
+
+Eighteen corrupted runs refuse, including removed starter assets, changed
+first/terminal factors, broken logs/pins and forged receipts/events. Four
+population controls and two false expected-head controls reject. Omitting the
+bonus consumer breaks the non-unit run while preserving the unit control;
+receipt/event/terminal/head/population omissions also discriminate. This is
+portable pinned replay proof (RP-260), not SQL provenance, a stored two-Exit
+purchase career, the default browser workflow or AC15's real-Postgres gate.
+
+Run from the repository root:
+
+```sh
+make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run TestReputationCompanyRun -count=1'
+```
+
+Explicit regeneration uses the same root target with
+`GO_PACKAGES='./production -args -update-reputation-company-run-fixture'` and
+`GO_TEST_FLAGS='-run TestReputationCompanyRunFixture -count=1'`. Its changed
+expected bytes require review; normal verification never enables that flag.

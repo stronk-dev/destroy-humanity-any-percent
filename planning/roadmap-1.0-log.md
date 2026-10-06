@@ -2863,3 +2863,24 @@ Runtime/kernel160/corpus/schema/CI policy unchanged. Full new span after
 b6c7ebca still needs Claude; implementer review cannot close it. Company-run,
 actual SQL/two-Exit career, capacity/RP-131/RP-256 and all full nine-tier/platform
 obligations remain. Goal active; no checkbox, archive, mint, push or promotion.
+
+## 2026-10-06 — Portable Reputation Company-run consumer
+
+RP-260 under4d4846f2/f7822250/d23da963 retains two complete source-bound runs:
+the original run2 starter genesis with its1.003 frozen bonus, and an identical
+genesis/unit-factor control. Actual commands accrue, cross the Garage gate and
+Wind Down; both public verdicts and full terminal states pass. Eighteen input
+corruptions, four population controls and two false expected heads reject.
+Six compiling omissions discriminate, then restore byte-exact. The generator
+uses its own separate retained-byte equality gate; reader probes never regenerate
+expected answers. Setup errors, the corrected manual-output arithmetic oracle,
+and a failed scripted restoration are disclosed, not counted as product defects.
+[Exact executed evidence](reputation-tree-v1/log.md).
+
+Final cold core/vet passes with formulas/API byte-unchanged, kernel160/runtime/
+original corpus/schema/CI policy unchanged. This is not full CI or SQL/browser
+proof. Read-only Docker recheck still100%/39784KiB free; no workload/cleanup.
+Actual SQL reader/two-Exit/AC15, H4/H5, RP-131/RP-256, all review obligations and
+the whole nine-tier/platform goal remain. Complete new span after721c0ee1 needs
+Claude; next safe work is the remaining Reputation harness consumer audit.
+Goal active. No checkbox, archive, mint, push, deployment or release promotion.

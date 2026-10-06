@@ -75,8 +75,15 @@ threshold retune is measured and reported, then ratified by owner SHA).
   fires on paired-count omission; whole-validator omission fires all four.
   Historical three-control runs stay recorded. Exact sources restore; cold
   core/vet pass. Test-only, kernel160
-  unchanged; new span after b6c7ebca needs Claude. Actual SQL/two-Exit career,
-  Company-run verifier and whole R8 remain; no box flipped here.
+  unchanged; new span after b6c7ebca needs Claude. Actual SQL/two-Exit career
+  and whole R8 remain; the separate Company-run supplement is RP-260 below.
+  RP-260 under4d4846f2/f7822250/d23da963 retains two full Company runs from
+  the exact source starter genesis, with frozen1.003 and synthetic unit control.
+  Public verdict/full states pass; 18 corruptions, four population controls and
+  two false heads reject. Six compiling omissions fire; all exact sources
+  restore, cold core/vet pass. No runtime/kernel/old-corpus/schema/CI change.
+  New span after721c0ee1 needs Claude. Actual SQL/two-Exit/AC15 and remaining
+  harness consumers still mandatory; no box flipped here.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.

@@ -1,5 +1,22 @@
 # Executable queue
 
+## Portable Reputation Company-run consumer proved — 2026-10-06
+
+RP-260 under4d4846f2/f7822250/d23da963: two retained Company runs start from
+the source's exact run2 starter genesis, cross the gate through a command and
+Wind Down; public verdicts and terminal states pass. Eighteen input corruptions,
+four population controls and two false heads reject. Six compiling omissions
+discriminate, restored byte-exact; cold core/vet pass. Setup/oracle errors and
+one failed restoration are disclosed, not promoted to runtime findings.
+
+**READY FOR CLAUDE:** full new span after721c0ee1, including predeclarations.
+**NEXT SAFE ACCEPTED WORK:** remaining Reputation harness consumer audit under
+R10, not H4/H5 optimization, threshold minting or report-bound changes.
+**HELD, not replaced:** SQL reader/persistence/two-Exit career/AC15, Docker
+100%/39784KiB free; RP-131/RP-256 and all release obligations. Runtime/kernel160/
+old corpus/schema/CI policy unchanged. No checkbox, archive, mint, push, cleanup
+or release promotion. [Exact evidence](../reputation-tree-v1/log.md).
+
 ## Portable Reputation history consumer proved — 2026-10-06
 
 RP-259 under e3378e96: all 24 source-derived histories verify and all 144
@@ -11,7 +28,7 @@ Exact source restoration and cold core/vet pass. Test-only: kernel160, original
 corpus, runtime, schema and CI policy unchanged.
 
 **READY FOR CLAUDE:** complete new span after b6c7ebca, including predeclaration.
-**NEXT SAFE ACCEPTED WORK:** Company-run verifier and remaining harness consumers.
+**NEXT SAFE ACCEPTED WORK:** remaining harness consumers (Company proof above).
 **HELD, not replaced:** actual SQL reader/persistence/two-Exit career; Docker
 still 100%/39784KiB free. RP-131/RP-256 and all release obligations remain. No
 whole R8/AC15, browser/CI/player, box, archive, mint, push, deployment or cleanup
