@@ -2533,3 +2533,15 @@ fresh Postgres commit. RP-253 actual persisted taxonomy and the Docker capacity/
 cleanup hold remain. New complete span after4d690f29 needs Claude independently;
 no checkbox, archive, mint, push, cleanup, full B4/R8/career/RFC/CI/player/release
 or nine-tier-goal promotion. Remaining pinned reader/writer audit still required.
+
+Population refinement before any experiment or fixture authoring: a renamed
+key may remain defended by TS's independent typed-field checks even without
+exactKeys. Add alias_extra as a fifth mutation: retain the canonical field and
+also supply its uppercase alias with the identical value. This specifically
+exercises exact-key admission without relying on a different error class.
+Final population supersedes the four-mutation counts above:19×6×5=570Go
+raw negatives;456TS missing/null/alias/alias_extra negatives,114parsed-duplicate
+positive controls and19unmodified controls. No error-class-only TS rejection
+claim: gate omission should admit the114extra aliases; other rows can stay
+defended and must be disclosed. The added fields change neither expected state
+nor receipt/event/hash. All other scope, controls and held obligations unchanged.
