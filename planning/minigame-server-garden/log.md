@@ -1443,3 +1443,28 @@ invalid-instrument disclosure/contract finding `1aa23496`, RP-207 reader predecl
 `16b44c74` and complete implementation/evidence `cc69925a`. No production byte changed.
 RP-222 remains with author/owner; all earlier corrective/witness ranges are separate pending
 requests. This pin is navigation only, not approval, archival authority or release acceptance.
+
+## 2026-10-06 — G6 SG9/AC15 real read-clock diagnosis predeclaration
+
+Baseline `5746952d`, clean main. Review by: Codex. Recorded by: Codex. Selected original
+Claude G6 source `e4ac04f8`; accepted SG9 requires a discarded-clone projection at database
+now, not an independent handler clock. Existing pure equal-time tests do not exercise that
+read seam. Previous turn is progress (committed G2/G3 witnesses and reconciled tracking).
+
+Before execution: real declared Postgres Store/Service, one admitted Garden fixture per arm.
+Call `Service.GardenView` with normal handler time, 24-hour lag and 24-hour lead. Bracket the
+call with actual database millisecond samples; the returned active server_ms must lie inside
+that interval and carry the real Founder revision. Compare the entire persisted-state/revision/
+log/event/intent/window/quota/outbox snapshot before/after. A read may not initialize the
+persisted salt or grow/save anything. Use a safely old anchor and retain both ordinary salted
+and unsalted/unanchored controls; endpoint schema/hidden-field checks remain separate gates.
+
+Expected failures: handler clock used as authority fails the skewed time brackets. Matched
+ordinary-clock control must pass. Any red due to invalid genesis/clock arithmetic, a missing
+DB skip, compile error or no-tests selector is invalid evidence. Exact same-time pure projection
+versus a successful non-destructive command may strengthen AC15, but real skew diagnosis is
+not automatically an HTTP/account or full UI witness. No sleep-dependent boundary is required.
+
+If confirmed, log the finding immediately and separately predeclare SG9 repair. No product
+byte, clock policy, save/replay shape, balance, CI, mint or checkbox change in this diagnosis.
+Existing owner/author RP-222, earlier pending cross-party ranges and full 1.0 obligations remain.
