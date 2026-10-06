@@ -1238,3 +1238,23 @@ Next accepted local lane: R1/R7 Founder codec/mirror admission and activation.
 Persisted frozen rows/career/default browser, H4/mint/author decisions, historical
 CI/capacity and full B1/B5/RFC range review remain open. No checkbox, archive,
 push, Docker deletion, source/kernel/copy/owner change or full1.0 scope reduction.
+
+## 2026-10-06 — starter-boundary review-range pin (Codex)
+
+**Review by:** Codex (self/first-filter only).
+**Recorded by:** Codex.
+**Designated reviewer:** Claude, pending; no archival authority claimed.
+
+Complete new range: `70f8c8c8..HEAD`, where HEAD is the commit containing this
+pin, not a future moving endpoint. It comprises predeclaration `e5a8f7f3`,
+tests/shared expectations/docs/evidence `4ca549e6`, and this record-only pin:
+three commits, ten paths. The predeclaration is not the test implementation.
+These ranges do not absorb previous Codex batches or earlier Claude producers.
+
+Committed-source cold check 338549 passes the production Reputation population
+in 0.469s. Its filtered reputation package reports no tests to run and is NOT
+counted as coverage. Separate unfiltered check 9f30b6 passes the entire
+reputation and kernel packages cold (0.099s/0.162s). Earlier full server/client
+checks and all eight fired controls retain their recorded scopes and limits.
+No test/runtime content changed after those full gates. Pending designated
+review does not authorize a status promotion, archival or push.
