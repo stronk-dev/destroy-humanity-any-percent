@@ -3550,3 +3550,33 @@ is corrected locally only. Next: predeclare/execute RP-265 Reference planner
 frozen-input lead, then RP-262 H3 and RP-264 exclusion oracle. No numerical
 planner finding, box flip, archival, mint, push, cleanup or release promotion.
 Whole new span after6963692b requires Claude; all earlier reviews remain open.
+
+## 2026-10-06 — Fixture identity first filter
+
+Review by: Codex (implementer self-review / first filter).
+Recorded by: Codex.
+Reviewed range: 6963692b..2a21fe20, both commits and all eleven changed paths.
+Verdict: PASSED first filter; NOT designated independent approval.
+
+Reviewed predeclaration26e97e4b, complete helper composition, run-key assignment,
+all seven controls, canonical docs, partial RP-263 disposition and the current
+queue/board/plan/append-only records. The expected sources are reconstructed
+independently of the helper's parsed objects. Public loader refusal does not
+claim that RunReputationCareer validates arbitrary caller-constructed catalogs.
+The full-hash field is catalog identity, not a hash of threshold/policy/exclusion.
+Compiling fixture-identity, run-key and base-copy omissions each fail the named
+assertions; restoration aborts on mismatch. Historical report provenance stays
+open, H4's fired criterion remains explicit and RP-265 remains source-only.
+
+Committed-HEAD focused47320e..5a62f2 (session85907, terminal exit0) passes
+all seven controls cold, harness2.014s. Broader cold fast/core/vet/topology and
+full report reproduction are the executed runs above, not a new whole-CI or
+SQL/browser verdict. bcfb33 confirms clean main ahead4, whitespace-clean range
+and EOF-only log additions. Kernel160, balance, reports, original corpus,
+live runtime, generated contracts, CI and owner copy remain unchanged.
+
+No unresolved first-filter defect in this bounded helper/run-key range.
+Complete new span after6963692b through this record commit still needs Claude;
+all prior reviews and actual persistence/career/AC13/AC15 obligations remain.
+Next accepted work is RP-265 before RP-262, with RP-264 separately bounded.
+No live handle, source mutant, checkbox, archival, mint, push or release claim.
