@@ -2502,3 +2502,18 @@ every harvest cap/fault/Exit case, clean-host deployment or full G7/Garden/1.0.
 No CI topology/job change, kernel bump, acceptance checkbox or archival promotion
 is preauthorized. Claude designated review required for the full new range;
 all earlier ranges, RP-222/RP-229 author routes and RP-131/RP-218 CI remain open.
+
+Composed diagnosis, all handles terminal before instrument edits: 24103 stopped
+at sandbox Docker socket denial, not a gameplay result. Narrow root target
+escalation allowed 26227 to execute; it timed out awaiting live presence because
+the new driver used localhost:5174 while the unchanged transport policy permits
+localhost:5173. Instrument corrected to the existing allowed origin (no policy
+edit), schema version read from save_revisions.version, and preflight SQL uses
+actual quota_used/revision columns. Corrected 87330 reaches real bootstrap,
+presence/WebSocket, Founder v25 and locked Garden, then fails exactly RP-232:
+`Garden unlock producer has no Fiscal DOM consumer`, actual count 0 versus 1.
+No product byte changed in either diagnosis; initial instrument errors retained.
+End-of-journey oracle now binds persisted cash 0→10, Company revision +2,
+both event/receipt/log axes, shared harvest hashes, multistream source coordinates
+and quota sum exactly two. SQL columns compile before the unchanged real wait;
+two-cell/two-plot checks refuse vacuous empty-array maturity success.

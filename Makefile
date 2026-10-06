@@ -191,6 +191,12 @@ test-browser-ci:
 # visible visitor counter: runtime.ts completed its actual Centrifuge
 # WebSocket handshake, not a mocked socket exchange.
 GAME_UI_COMPOSE_FILES ?= -f compose.game-ui-test.yml
+.PHONY: test-garden-composed
+# Fixture-only wall-clock journey; manual, deliberately not a push-CI dependency.
+test-garden-composed: build-gameserver build-client
+	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
+	node client/tools/test-garden-composed.mjs
+
 test-game-ui-composed:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-game-ui-composed.mjs
