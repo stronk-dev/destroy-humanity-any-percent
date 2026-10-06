@@ -1258,3 +1258,50 @@ reputation and kernel packages cold (0.099s/0.162s). Earlier full server/client
 checks and all eight fired controls retain their recorded scopes and limits.
 No test/runtime content changed after those full gates. Pending designated
 review does not authorize a status promotion, archival or push.
+
+## 2026-10-06 — R1/R7 encoder counterfact and correction predeclaration
+
+Baseline `6a8ccaf1`, clean. Previous goal turn made concrete progress: committed
+R4 tests, eight fired controls and synchronized records. This is a new accepted
+R1/R7 lane, not a repeated capacity wait or an expansion of that review span.
+
+Static observation RP-248: `encodeFounderReplayState` copies level/spent/unlock/
+owned fields without the Go structural codec checks. Existing TS tests exercise
+load rejection, not encode rejection. Three actual production call sites wrap
+encoding with catalog-bound restoration/history comparison; this investigation
+does not assume corrupted TS bytes were admitted by the authoritative server.
+
+Question: does the encoder refuse the accepted structural accounting domain,
+including legacy state leakage, without rewriting valid owned sets or bytes?
+Before correction execute 13 active negative cases: over/negative/fractional/
+unsafe spent; negative/fractional/unsafe level; negative/fractional/over-one-
+million unlock; unsorted/duplicate/nonmechanical owned ids. Execute three v21
+negative cases independently carrying nonzero spent, owned ids or unlock.
+Positive cases: empty owned, fully spent, unknown retired owned id, exact maximum
+earned/spent and legacy clean v21; retain every existing canonical replay corpus.
+All must encode unchanged; load remains independently tested against the tree.
+
+Arms: unmodified HEAD vs the same cases after the minimal R1/R7 TS encoder
+correction; no output permissiveness/normalization, new schema or new mechanics.
+Baseline is defective if any invalid case emits a value rather than throwing.
+Each positive retains its exact Reputation values/order and round-trips under a
+compatible strictly loaded bundle when its mirror is consistent. Unknown ids
+remain permanent facts, not reasons to debit/refund or delete ownership.
+
+Conditional correction authority: accepted R1 load AND encode accounting, R7
+pre-v22 corruption rejection. Only add encoder structural validation, tests,
+docs, mandatory kernel identity bump and records. No tree lookup without a
+pinned bundle: structural codec and catalog-derived mirror are separate layers
+in Go; document TS encoding/restoration similarly rather than claim a bare
+encoder checks an unavailable artifact. Mirror checks and activation will be
+reviewed separately; do not call this whole AC2/AC10/AC11 acceptance.
+
+Controls after a confirmed correction: independently bypass active structural
+validation and legacy leakage guard, expecting their encode negatives to fail.
+Restore byte-exact before another probe/check. Run current Go structural codec
+tests cold, pinned-mirror/activation tests cold, full client/type/build/boundary/
+topology and server-core/vet. Retain existing DB skips, RP-131 historical CI red,
+Docker capacity and review limits. No source edits while verification handles
+live. No new DB workload, cleanup, mint, owner copy, balance, migration mutation,
+checkpoint completion, archival or push. Claude designated review pending for
+the entire new span after `6a8ccaf1`, independent of earlier ranges.
