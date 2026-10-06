@@ -1026,3 +1026,16 @@ future change, without erasing the counterexamples or weakening AC6. Claude must
 cover the ENTIRE span after9050fe4d, INCLUDING this following record edge; all
 older independent spans/owner/author holds remain. Full nine-tier/platform1.0
 active; no archival, mint, push, deployment or release call.
+
+## 2026-10-07 — R-012 policy-boundary predeclaration
+
+Previous goal turn:progress (64actual producers and1215actual SQL snapshots
+committed; unsafe transplant assumptions rejected). Baseline d61a5248 clean,
+no live handles or new designated verdict. Re-read full current instructions,
+process/accepted Clout body and relevant canonical engine policy/source/helpers.
+Fourth-wave plan declares44actual Go full-state paired observations with strict
+existing save restoration, independent integer clock/bank/burst/provision bindings
+and four negative probes, separate artifact. No TS engine export or copied engine
+is invented. Offline cap-per-call is distinguished from one absence episode;
+observations cannot change intended offline policy or rule the author's AC6 text.
+No owner answer inferred from automatic continuation; full nine-tier1.0 active.

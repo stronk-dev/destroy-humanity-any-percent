@@ -298,3 +298,47 @@ checks remain exact. Local AMD64 lane fails before Go (exec format), not passed.
 Restored9499client pass/340skip/types/vet/topology clean;128production partitions
 still27fail/101pass. No acceptance flip. Results and next questions:
 `rate-and-sql-research.md`; full commands/provenance in log.
+
+## R-012 fourth wave — actual evaluation policy boundaries
+
+Predeclared atd61a5248,2026-10-07 before measurement. Test-only Go observer;
+no runtime/numeric/save/balance/kernel/body/CI/old-corpus edits. Actual Evaluate
+and existing full Company Encode/Restore/Validate at every boundary, admitted
+x6/owned-PR1 diagnostic state, rehashed cash cap1e100. No naturally reached or
+TS/private-engine/SQL/Service/Store proof inferred. Separate source-pinned
+artifact and explicit UPDATE_POLICY_RESEARCH writer, only after complete census.
+
+Forty-four paired cases, each original cursor/end and one split at end/2:
+
+- Offline12:durations cap-1/cap/cap+1/cap+2/2cap/4cap ×initial Compute Credit
+  0 or bank-cap-1; burst0, purchased beige1. Actual per-call elapsed/production/
+  bank/remaining burst/cursor must match independent exact integer policy.
+- Burst16:modes online/offline ×remaining0/1/1500/catalog burst maximum
+  ×elapsed3114 or burst maximum+1. Credits0, purchased beige1. Same integer
+  bounds and complete persisted state/restore compare, not cash alone.
+- Provision12:modes online/offline ×purchased beige-v2 count1/10 ×elapsed
+  59999/60000/120001ms. Purchased total consistent, beige1; credits/burst0.
+  At run-relative60000ms boundaries, independent integer carry predicts actual
+  beige provision count/remainder. Do not assume generated counts feed the
+  purchased-only multiplier or mutate caps/roles to make setup admissible.
+- Clock4:each mode ×same-time or1ms rollback. State unchanged, zero work.
+
+All44one/split profiles must be admitted and all phases restored exactly.
+Record full initial/final JSON and actual receipts/policy totals, field-level
+differing top-level keys, cash/credit/burst/provision summaries. No expected
+positive divergence count:observations may agree or differ. Every phase has
+its own actual producer bindings; refusal is invalid measurement, not skipped
+population. Independent counts/identities must complete before writer.
+
+Distinguish fixed-mode cap-per-call histories from mere computational partition
+of one catch-up episode. The player does not choose mode/server time. Do not
+label primitive policy differences an exploit, silently narrow AC6, invent
+offline episode state, change banking or declare a production-compatible anchor.
+Any normative ambiguity is an author finding, not an implementer ruling.
+
+Negative probes on the new observer:ignore bank saturation; drop burst wall-time
+consumption; omit provision materialization; zero-work case advancing time.
+Each must fire a semantic binding without relying solely on source hashes and
+prevent artifact overwrite. Restore exact bytes before final cold runs. Keep
+old red AC6 regression/default execution. Full range afterd61a5248 needs Claude
+independently; no checkbox/status/accepted body/archive/mint/push/deploy change.
