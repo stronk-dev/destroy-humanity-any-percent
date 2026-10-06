@@ -2661,3 +2661,33 @@ without calling a host skip persistence evidence; native launch diagnosis is a
 separate open environment obligation. Full nine tiers/platform/mint/H4/rights/
 privacy/accessibility/operations/release remain, no boxes/archive/push or goal
 completion. New correction and every preceding Codex span need Claude separately.
+
+## 2026-10-06 — RP-253 persisted purchase taxonomy predeclaration
+
+Scope: accepted R5/R8/AC3/AC4, test-only supplement after86c96035. Retain all
+twenty pinned direct-purchase profiles (eleven applied/nine recorded rejections),
+plus a tree-present unactivated v21 Founder and an overdue-Fiscal rejection.
+The original corpus bytes/hash remain fixed. Each of the22 independent persisted
+profiles must run through Service.Handle, then assert exact outcome/category/
+detail, full rejected-state preservation, ordered committed events, one Founder
+log/intent record/outbox entry, immutable Company state, identical retry, and
+Founder-history verification. Applied accounting/ownership/unlock must match
+the pinned post-state independently of the live resolver. Database-generated
+timestamps are retained and replayed, never replaced by a fabricated wall clock.
+Each profile also attempts stale CAS and changed-body idempotency conflicts:
+44 unrecorded refusals must add no revision, event, log, intent or outbox row.
+
+Preparation may execute the source SHA/name/outcome census and construct valid
+profiles locally, including fired source-hash, missing-row and changed-outcome
+controls. These do not prove persistence. Actual declared-compose Postgres
+execution and compiling severing controls (requires gate, rejection log write,
+rejection rollback, idempotency lookup) remain mandatory and pending until the
+Docker capacity hold clears. Rechecked28d8db/199cbb/9c87ea: clean main ahead73,
+two healthy Postgres services, Docker filesystem100%/39784KiB free. No deletion,
+prune, restart, new workload or SQL mutation is authorized by this plan.
+
+No runtime/balance/schema/migration/kernel/CI policy or player copy changes,
+no expectation regeneration, box flip, verdict/archival/mint/push/release
+promotion. Invalid instrumentation is corrected and disclosed, not counted as
+a product failure. Host database skips stay explicit. No edits while a check
+handle lives; independent Claude review must cover the complete new span.
