@@ -1515,3 +1515,24 @@ capacity and complete nine-tier/platform1.0 remain. New review span begins
 after39912364 through its final pin, independently pending Claude. No persistent
 runtime, balance, save schema, migration body, owner copy or CI edits; no new DB
 workload, Docker deletion/consent, archival, status promotion or push.
+
+## 2026-10-06 — shared migration corpus range pin (Codex)
+
+**Review by:** Codex (self/first-filter only).
+**Recorded by:** Codex.
+**Designated reviewer:** Claude, pending.
+
+New complete range: `39912364..HEAD`, with HEAD meaning the commit containing
+this pin, not later history: predeclaration `a499a5b9`, test/corpus/docs/evidence
+`c3274c6f`, this pin (three commits, fourteen paths). Independent of RP-248 and
+all earlier ranges; no approval/archival union inferred. No runtime file is in
+the persistent diff, kernel identity remains0.3.155. Eleven legacy row bytes
+and the referenced source are unchanged; baseline total is now15.
+
+After implementation committed, cold full save/kernel98af9d passes0.756s/0.059s;
+full clientc6b590 passes7408/134. No source/test changes after final full gates.
+Historical RP-131 composite failure, full earlier-version activation/pinned
+admission/B3 producer review, real DB/career/default-player, H4/mint/author/
+owner/capacity and complete nine-tier/platform1.0 remain open. Next original
+B3 range audit, then remaining admitted R1/R7 evidence; not self archival,
+push or an implied Docker-cleanup permission.
