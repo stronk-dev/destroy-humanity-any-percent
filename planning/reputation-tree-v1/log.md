@@ -6418,3 +6418,29 @@ RP-284 needs event/snapshot ownership grounding. Neither new source finding
 expands this cost correction or authorizes a wire/payout-policy change.
 Next safe accepted lane: bounded native actual-host RP-282 reproduction,
 after this checkpoint/self-first-filter; RP-281 tooling stays separate.
+
+## 2026-10-06 — RP-279 range self-first-filter (not designated review)
+
+Review by: Codex (implementer/self-first-filter).
+Recorded by: Codex.
+Inspected range:22e03946..d1a247a6 (four commits). This record edge must join
+the later Claude range; no designated verdict or archival eligibility claimed.
+
+Full source/docs diffa8513e:exactly two imports/one persistent Amount mount,
+outside row controls. New diagnostic fully read39ba6b:independent literal cost
+oracles, visible/cardinality/order assertions, both eras/native keys, all four
+states and held task/authoritative replacement; actual Amount/formatter used,
+controlled props not host/SQL/mint. Tests were not weakened to fit source.
+Seven compiling probes independently discriminate, restore exact SHA; final154
+native and8106 cold unit/type/build/boundary/copy/manifest pass with explicit
+skips. RP-131 guard RED/Firefox zero execution remain, not whole CI acceptance.
+Full records8beaf3/tail073014 inspected, whitespace passes4b8b73/this range.
+Scope10 paths; canonical docs/tracker/ledger/log agree. Initial indentation-only
+restore slip disclosed/corrected before next execution; no residual probe.
+
+No numeric/Amount/scheduler/copy/kernel161/CI/server/balance/report/policy
+bytes moved. RP-282/283/284 are explicitly source findings with separate routes,
+not executed claims or scope extensions. No inherited B7/full AC12/1.0 closure,
+checkbox flip, self-archive, owner adoption, mint, cleanup, deployment/push or
+goal completion. Next bounded actual-host plan reproduction is safe accepted
+work while every independent prior designated-review obligation remains live.
