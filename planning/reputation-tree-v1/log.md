@@ -8960,3 +8960,28 @@ earlier independent review ranges remain live. No archival/release authority,
 natural/default-browser/AT/minted-release/fullR8/AC9/hostedCI/1.0 claim. Next
 accepted safe work census verification consumers/cross-Exit histories before
 new predeclaration; full proper1.0 goal active/progress and prior holds intact.
+
+## 2026-10-06 — Public verification census / cross-pin career predeclaration
+
+Previous goal turn progress through16da5904, clean authoritative main74ffa6/
+32b419, no handles. Accepted R8/AC15/current indexe65b9c revalidated; strategic
+whole-product floor0bb9ac intact. Actual public consumers2870ed/7c048c bind
+history genesis/current/result/head/source and per-entry Company next catalogs.
+Existing history24single/chain profilese883a7 and full Company-run2profiles
+cd80bd use historical source; generic per-entry next-catalog proof already
+exists (f2a3f6), so do not invent a missing generic verifier or TS history API.
+Existing SQL career5d7886/341975 is same tree; boundary24profiles45c3a4 only
+one applied cross-pin Exit. RP-301 records this actual continuation gap.
+
+Predeclare three added activate-plan continuations in current24-case matrix,
+all original checks stay before them. Owned-purchase refusal/retry, actual
+7000s frozen starter accrual/Garage/second no-plan WindDown/run4, both completed
+Company verifiers/full four-entry cross-pin Founder history, immutable pins/
+genesis/repeat non-cumulative starters and complete retry comparisons. Normal
+route projector test setup, not reseeding later state or loosening constructor.
+Three new head/source/generated-carry fault families with exact restores and
+prior controls defended; all handles terminal before source/test/record edits.
+No new corpus/skills/delegation/owner rules/copy/epoch/CI/acceptance promotion.
+Diagnostic initial earned6/stored offers/prior historical Exit, not natural/
+browser/minted release/fullAC15/CI/1.0 proof. Full new span after16da5904 needs
+Claude including final records, previous independent ranges/holds remain live.

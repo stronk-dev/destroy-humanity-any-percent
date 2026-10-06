@@ -765,3 +765,33 @@ exact restoration and no generator overwrite. Final full relevant Go/vet/types/
 client8241pass/339skip/local topology and actual SQL36/143/no skips pass. No
 checkbox/status promotion; aftera21da467 full span including records needs Claude.
 Next census R8 verification consumers/cross-Exit history before new predeclaration.
+
+## R8 actual cross-pin second-Exit continuation — predeclared 2026-10-06
+
+Start16da5904, RP-301. Extend ONLY the three activate-plan profiles in the
+existing24-case SQL matrix after all prior assertions and exact-retry checks.
+Retain24/9/15 plus three original no-plan fallbacks, add completed career count3.
+Existing same-tree scripted career and portable corpora remain untouched.
+Add normal route catalogs/projector test setup for actual Garage crossing,
+not a runtime constructor relaxation. Initial earned6/run2/tier3/stored promises
+diagnostic; no naturally earned/window/default-browser/completeAC15 claim.
+
+After old21→tree22 plan6 Exit: actual purchase of owned p05 must refuse,
+preserving both heads; exact retry preserves12tables. Actual manual accrual
+at7000s requires independent5×1.003×7000+1000+1 cash. Cross Garage normally,
+then WindDown WITHOUT plan into run4. Founder earned6/spent6/owned/unlock50000
+remain; run4 repeats cash1e3/generated5/purchased0/frozen1.003/start summary,
+never cumulative10. Both completed Company runs verify, old/new pins/genesis
+stay correct, full four-entry Founder history crosses the old pin and records
+both applied Exit sources. Third initial historical Exit remains diagnostic.
+Second Exit exact retry compares complete12tables, no post-genesis reseeding.
+
+Copied final head spent5 and last Exit source RunSeq+1 must independently
+return state_divergence. Predeclare compiling source faults: carry previous
+Company generated inventory into a same-tree new run (first cross-pin Exit
+unaffected); omit final Founder full-head comparison; omit source RunSeq
+binding. Unchanged tests must fail the new continuations, prior controls stay
+defended. Restore exact sources after terminal handles, broad cold Go/vet/types/
+client/declared SQL before closeout. Test/record/docs only, no product/schema/
+migration/balance/copy/epoch/CI/checkbox/status/archive/push authority. Full new
+span including records needs Claude, earlier reviews/holds/full1.0 remain.
