@@ -568,3 +568,52 @@ the Account range too; final relay supplies its literal endpoint. No reviewer
 verdict consumed either span. Review by: Codex (first-filter only). Recorded by:
 Codex. Source tree clean after substantive commit, twenty ahead of observed
 origin/main; no fetch/push/publication, deletion or acceptance performed.
+
+## 2026-10-06 — predeclare real refresh response/persistence census
+
+Previous goal turn made progress (CI evidence/instrument and executed parser
+census); no claim it completed the full session question. Baseline c2843089,
+clean main twenty-one ahead of observed remote, no live handles/new Claude
+verdict. Docker capacity choice still pending; no deletion/prune or new Docker
+measurement authorized by this record. This turn may prepare/compile real-DB
+witnesses but must label them UNEXECUTED until the declared DB actually runs.
+
+Authority: accepted Account D1/D2/D3/AC2/AC7, API Foundation C1/A4/A5 existing
+handler/status census. Test-only scope: no production/schema/router binding,
+generated client, auth TTL/revocation/locking, owner copy/retention, browser
+policy, CI topology, acceptance checkbox/archive/push change.
+
+Populations, serial in declared Postgres 16 through root test-save-integration:
+(1) live-access and exactly access-expired refresh rotations; exact two string
+success fields, valid token shapes, persisted old consumption/new descendant,
+account/Founder identity and TTLs; exact consumed-token reuse error and subsequent
+revoked-family refusal, all descendants revoked. (2) real NewFounder setup then
+refresh binds the new active Founder without revoking the family. (3) unknown
+canonical opaque token with no writes, exact 30-day expired refresh with family
+revocation/no new credential, and actual closed database handle mapping through
+current generic handler error (observed current 401, not endorsed outage policy).
+(4) successful rotation, exact rate-limited valid descendant refusal with unchanged
+full credential/gameplay rows, refill allowing that same still-unconsumed token.
+
+Use existing bootstrapRepository fixture, real NewAPI/chi/Repository and net/http
+over testhttp net.Pipe (not OS socket/native browser). Constructor-only unrelated
+intent fixture fails if called; no new game engine stub claimed as composition.
+Read exact status/content-type/full error bytes; success exactly access_token and
+refresh_token, both strings, no duplicate/extra/null/trailing fields. Keep tokens,
+unexpected bodies, recovery hashes and full SQL snapshots out of failure output.
+Snapshot the named account/Founder/save/history/outbox rows, and separately all
+session-family/refresh/access rows; prove real token consumption/revocation/expiry
+by SQL and authentication, not response-only assertions. No full-table or release
+coverage claim beyond the actual named population.
+
+After capacity is safely resolved, execute two cold complete new-test populations
+then existing Account/publicapi population through the declared service. Four
+independent temporary severings scheduled: consumed_at update no-op, family
+revocation no-op, reuse error literal change, expired-refresh guard bypass. Each
+must fail its new scoped witness, restore actual API/store SHA before next/final
+execution. Until then they are NOT demonstrated failures and no gate may promote.
+Record exact flags/denominators/source hash/limitations and pending probes in a
+dossier; local compile/test discovery/vet are not DB acceptance. Any unexpected
+real result is a finding, never an edited expectation to turn red green.
+Only new test/record checkpoint may commit while DB evidence remains unavailable;
+plan boxes, contract/RFC states and all prior independent reviews stay unchanged.
