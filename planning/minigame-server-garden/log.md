@@ -1972,3 +1972,12 @@ Restore byte-exact source, then cold Go/vet and the related serial Postgres popu
 the oracle or runtime fails, retain the finding before any separately authorized correction.
 No bounds/skips/CI/schema/kernel/mechanics/copy/public activation or lifecycle changes.
 Designated Claude exact-range review remains required; no earlier pending gate is consumed.
+
+Baseline declared Postgres run 20987 exits 0, non-skipped, 0.249 s. Before test edits,
+refine the retention population: the initial revision-1 fixture cannot exercise a deletion.
+For the retention arm only, make six ordinary successful Service harvests first (existing
+mature plants, unique intents). Require the Company's oldest retained revision to be 3,
+then snapshot and inject the next harvest's retention fault. Its clean successor must move
+that frontier to 4. This proves the snapshot population contains a real would-be deletion;
+no direct state/log/revision seeding, retune, time acceleration or new behavior. The genesis
+arm retains fresh fixture state so its one-time write is actually reached.
