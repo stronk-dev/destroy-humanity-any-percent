@@ -2569,3 +2569,23 @@ Next full B3 producer review and earlier-version/pinned-admission evidence;
 complete R1/R7/DB/default-player/RFC and whole nine-tier/platform release remain
 unproven. No checkbox/archive/push or capacity consent. Historical RP-131 client
 composite RED remains, no fresh full-CI/browser/DB/harness claim.
+
+## 2026-10-06 — original B3 reviewed; seven-source Go activation supplement
+
+Codex's full cross-party review of original `fb0ab3b1^..fb0ab3b1` covers all
+thirteen paths and records CHANGES REQUIRED for RP-248/249, not self-approval of
+the later Codex corrections. Under ef54bb45/2811ae65, v14 and v16–v21 now load
+without automatic activation, then reach v22 via the live new-run kernel and
+public Founder Exit replay with earned11 fully available, complete encoded-state
+equality and pinned next-bundle admission. Four independent compiling runtime
+corruptions fail; exact restores are checked. A first probe driver's indentation
+restore slip was corrected and all four controls rerun from byte-exact sources;
+both sets are disclosed, only the exact-restored reruns supply the final gate.
+
+Cold full server-core/vet passes, production33.605s/save0.272s; client/type/build
+passes7408/134 with zero diagnostics. No runtime, kernel, epoch, save schema,
+migration body, balance/copy or CI change. New test/docs/record range after80519365
+needs Claude independently of earlier ranges. Next shared TS earlier-source and
+remaining catalog-bound load/encode evidence; no whole AC11/B3/DB/default-player
+or release approval. RP-131 composite RED and other CI/capacity/owner/author/H4/
+mint/whole nine-tier/platform holds persist. Goal active, no archive/push/cleanup.

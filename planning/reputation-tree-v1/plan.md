@@ -17,7 +17,11 @@ threshold retune is measured and reported, then ratified by owner SHA).
   RP-248's TS encoder correction needs designated review. RP-249's four required
   R7 shared corpus cases and baseline15 now execute locally with fired controls;
   their new Codex range also needs Claude. The original RT-DG-B unit substitution
-  was not corpus completion; full earlier-version activation/producer review remains.
+  was not corpus completion. Codex's full original thirteen-path B3 review records
+  CHANGES REQUIRED for those two gaps, not approval of its own later fixes.
+  Seven earlier Go sources now pass both live-boundary and public Founder Exit
+  activation with full encoded-state equality and four fired controls. New tests
+  need Claude; shared TS earlier sources and complete R1/R7/AC11 remain.
 - [x] B4 (`541da96e`) — R5 `purchase_reputation_node` Founder intent (Go + TS replay parity, corpus). ACs 3, 4.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),

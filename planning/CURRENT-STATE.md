@@ -133,7 +133,13 @@ the three corrupt inputs reject at their declared boundaries. Nine runtime
 controls and three corpus corruptions (both lanes) fail and restore. Cold
 server-core/vet and client/type/build/boundaries pass (7408/134); no runtime,
 kernel, save schema or migration-body change. New span after39912364 needs
-Claude. Earlier-version chains, full B3 review and platform/CI/owner holds remain.
+Claude. The subsequent full original B3 review records CHANGES REQUIRED for
+RP-248/249 without approving Codex's later corrections. Seven older writable Go
+sources (14,16–21) now activate via live new-run and public Founder Exit replay,
+agree in full encoded Founder bytes and preserve earned Reputation. Four controls
+fail; restored-source server-core/vet and client/type/build pass7408/134. The new
+test-only range after80519365 needs Claude. Shared TS older sources, complete
+pinned codec/AC11 and platform/CI/owner holds remain; no runtime/kernel change.
 
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,

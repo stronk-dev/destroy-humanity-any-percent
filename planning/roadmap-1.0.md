@@ -5,6 +5,15 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest evidence checkpoint (2026-10-06):** original B3's full thirteen-path
+review records CHANGES REQUIRED for RP-248/249; their Codex corrections still
+need Claude. Seven older writable Go Founder sources now execute both activation
+arms, pass complete-state byte equality/pinned admission and discriminate four
+runtime corruptions. Cold server-core/vet and client/type/build pass7408/134;
+no runtime/kernel/epoch change. New test-only range after80519365 needs Claude.
+Next shared TS older-source and remaining pinned load/encode evidence; this is
+not complete R1/R7/AC11, real DB/default-player or release acceptance.
+
 **Latest runtime correction (2026-10-06):** RP-248, predeclared at 8094e914,
 rejects TS Founder encode corruption under accepted R1/R7. All 16 previously
 admitted inputs now reject; two removals independently fail 13/3 tests. Valid

@@ -120,6 +120,18 @@ missing-case, source-SHA and closed-row-shape controls also fail. This fulfils
 the previously absent corpus/ratchet locally (RP-249), not all earlier-version
 activation chains, real database/default-player or whole B3/RFC acceptance.
 
+**Earlier Founder activation (Go).** `TestReputationEarlierFounderActivationChain`
+executes seven legal writable sources (v14, v16–v21). Loading under each matching
+bundle retains its version; the live new-run kernel and public Founder Exit
+replay both produce v22 with earned11, spent0, owned[] and unlock0. Both outputs
+encode/restore under the next bundle, pass pinned validation and agree in full
+encoded Founder bytes after the expected Exit history append. Existing age and
+route knowledge survive. Four independent runtime corruptions make this test
+fail. Older fixture targets keep minigame/Fiscal keys stable and use the existing
+unlock chain without starters; v21 uses epoch8 and the full tree fixture. This
+is not a newly minted epoch, historical v15 writable path, TS older-source
+corpus, Company-log/DB commit proof or complete AC11.
+
 The Company-side Founder carry includes tree fields for pinned Founder floors
 of v22 or higher. Both runtimes reconstruct them; the former pre-R6 carry gap
 is no longer the current behavior. See the replay-input contract below.

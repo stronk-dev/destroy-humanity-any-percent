@@ -1,5 +1,22 @@
 # Executable queue
 
+## Earlier Founder activation and original B3 review — 2026-10-06
+
+Codex reviewed all thirteen original B3 paths (`fb0ab3b1^..fb0ab3b1`):
+CHANGES REQUIRED for RP-248/249, whose later correction ranges still need Claude.
+Under ef54bb45/2811ae65, seven Go sources (14,16–21) now execute live new-run
+and public Founder Exit activation with complete encoded-state equality,
+next-catalog admission and preserved earned Reputation. Four compiling controls
+fail their affected sources; exact restores and cold server-core/vet plus
+client/type/build pass (7408/134). No persistent runtime/kernel change.
+
+**READY FOR CLAUDE:** new range after80519365 through its checkpoint commit,
+separate from all prior spans. **NEXT ACCEPTED WORK:** shared earlier-source TS
+Founder replay evidence and remaining pinned load/encode producer-consumer audit
+under R1/R7. No complete B3/AC2/AC11/DB/default-player/RFC acceptance inferred.
+Historical CI/capacity, H4/mint/owner/author and full nine-tier/platform scope
+remain. No archival, push or Docker cleanup consent.
+
 ## Reputation R7 required corpus supplied — 2026-10-06
 
 Under a499a5b9, RP-249 now has the actual four named modern rows and baseline15;
@@ -10,8 +27,8 @@ corruptions in both lanes fail and restore. Cold server-core/vet and client/
 type/build/boundaries pass (7408/134); kernel0.3.155, no runtime/migration changes.
 
 **READY FOR CLAUDE:** test-only span after39912364 through final pin, separate
-from RP-248/earlier ranges. **NEXT:** full original B3 producer review and remaining
-earlier-version activation/pinned admission evidence. The four named corpus
+from RP-248/earlier ranges. Subsequent original B3 review and seven-source Go
+activation are recorded above; shared TS earlier-source/pinned evidence remains. The four named corpus
 cases are locally supplied, not whole R1/R7/RFC/DB/default-player/1.0 acceptance.
 Historical CI/capacity, persisted-row/career/mint/H4/owner/author and every
 nine-tier/platform gate remain. No checkbox/archive/push or cleanup consent.

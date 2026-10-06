@@ -1617,3 +1617,67 @@ fixture economy; this is an instrument incompatibility, not a product defect.
 After limiting that old-economy target to the unchanged unlock chain,0b1491
 passes all seven sources and both arms cold0.547s. No runtime change or
 acceptance-bound relaxation. Source and next-floor census added before probes.
+
+## 2026-10-06 — earlier activation evidence and review range checkpoint
+
+**Review by:** Codex (self/first-filter on new tests/docs/records; NOT their
+designated reviewer).
+**Recorded by:** Codex.
+**Designated reviewer:** Claude, pending.
+**Complete new range:** `80519365..HEAD`, where HEAD is the commit containing
+this checkpoint, not later history. Includes original B3 review/predeclaration
+ef54bb45, compatible-population refinement2811ae65 and this test/evidence commit.
+The original Claude B3 verdict inside the range is separately bounded to
+`fb0ab3b1^..fb0ab3b1`; no retrospective approval union with my new work.
+
+Seven sources v14,16,17,18,19,20,21 pass the live new-run foundation kernel and
+public ApplyFounderLogged Exit arm. Sources encode/restore without automatic
+activation; outputs encode/restore under the next economy, pass its pinned
+validation and match in complete Founder bytes after the independently expected
+Exit-history append. Earned11/available11, spent0, owned[]/unlock0, age12345 and
+route-knowledge9 are checked, not inferred from a version number. Positive final
+census runc5511d passes all seven cold0.358s. v15 remains historical decode-only;
+pre-v14 upgrades remain the legacy corpus. Six old minimal fixture bundles
+target a stable-key v22 unlock-only fixture; the v21 source targets the original
+full tree fixture. This is not all immutable historical artifact populations or
+real Company-log/DB/default-player evidence. No TS older-source corpus yet.
+
+Four independent final controls all compile, fail and restore both runtime
+SHA values exactly before any next run:
+
+- live spent=earned2620a1 fails all seven sources (expected0, actual11);
+- Founder replay spent=earnedc07513 fails all seven sources;
+- skipped v17 initialization3c8c58 fails v14/v16 pinned minigame key-set admission,
+  while the five already-active minigame sources pass;
+- skipped v20 initialization9f2ebf fails v14/v16/v17/v18/v19 valid Exit replay,
+  while the two already-active Soul sources pass.
+
+Driver mistake disclosed: the first four runs001be0/7144a6/81d7f8/8cfe36 also
+failed, but the first two restore patches reduced indentation on their default
+assignment lines. Printed SHA results were not enforced by that driver before
+the subsequent probes, violating the declared exact-restore sequence. Diff
+inspectiona0c206 showed whitespace only. Immediate patch andf008ab/8b3c6a
+restore exact hashes/no runtime diff; then all four probes were rerun with
+mandatory hash comparisons before and after each mutation. The first set is
+disclosed exploratory evidence, not the final controlled gate. No concurrent
+edit, leftover mutation, survivor or compile-failure-as-control.
+
+Restored hashes: foundations.go
+7bdeb4e5db7dd180645f3b0d5971a45b7ba9e0d392369c894f16856f520520e6;
+founder_replay.go
+ecbb5da078af284bafac96ca2929a32e8362a7df0f8157fb90b7ccdb8af17f63.
+Complete verify-server-core8f77c6..85dff0 passes vet/all non-harness Go packages
+cold: production33.605s,save0.272s,reputation0.202s,kernel0.264s. The separate
+Pitch subtarget is cached, while the complete preceding Pitch package ran
+cold0.340s. Formulas/API generation is byte-unchanged. db3548..57ff99 passes
+typecheck with zero errors/warnings,213-module client build and7408/134 client
+tests. Host DB skips are not real Postgres. Full verify-client's historical
+RP-131 RED remains unresolved; no fresh browser/harness/full-CI claim.
+
+No persistent runtime, kernel(0.3.155), migration, save-schema, copy/balance or
+CI edit; no checkbox completion. Original B3 review is now recorded, its two
+corrections and this supplement await their own Claude ranges. Next shared
+earlier-source TS replay evidence and remaining pinned load/encode reader/writer
+audit under R1/R7. Complete AC2/AC11, transaction/career/default-player, H4/mint/
+owner/author/CI/capacity and full nine-tier/platform goal stay open. No archival,
+push or Docker cleanup/DB workload; all verification/probe handles are terminal.
