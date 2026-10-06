@@ -6,8 +6,8 @@ privacy, accessibility, rights, operations and preservation. A Phase-0 preview d
 
 Latest observation: RP-272/273 expose the career reports' actual statistical
 populations without changing the game or acceptance rules. Full97-pair/970-arm
-run atb22ce51e finishes547.497s: Casual H4 has28 finite pairs/six ties and four
-unreached pairs; H5 cash/tower medians use28/32 and20/23 bought pairs. All27
+run atb22ce51e finishes547.497s: Casual H4 has28 finite pairs/six ties,
+one treated-only and three both-unreached; H5 cash/tower medians use28/32 and20/23 bought pairs. All27
 node/persona groups visible. Cold fast/vet pass; H4 and historical comparisons
 stay RED. Full new span aftera3e36f94 needs Claude. Next separately predeclare
 dated H4/H5 observation provenance, not censoring or balance adoption. RP-274

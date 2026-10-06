@@ -5392,3 +5392,31 @@ routes held. Next separately predeclare dated H4/H5 artifact provenance under
 RP-263; do not silently refresh old reports or adopt the unratified career
 fixture. Full new span aftera3e36f94 needs designated Claude review, independently
 of every earlier span. No checkbox, mint, archive, cleanup, publication or push.
+
+## 2026-10-06 — Population observation self-first-filter
+
+Review by: Codex (implementer; self-first-filter, not designated).
+Recorded by: Codex.
+Reviewed range: `a3e36f94..a768864b` — all three commits and all11 paths,
+including predeclaration, observation implementation and full evidence records.
+Verdict: ready for designated review; no H4/H5 acceptance or author ruling.
+
+Inspected all source changes: only test-side reporting changes; old strict H4
+gate and H5 classifier/delta conditions are unchanged. H4 validates rows and
+distinguishes no-starter/unreached observations from all-finite descriptive
+package savings. H5 retains the original bought/finite estimator, with explicit
+baseline/not-bought and all clock-state counts. Tests check exact synthetic
+values, old gate/classifier outcomes and serialized observations. Eleven
+compiling omissions fire with exact restores; full current census has no source
+admission failure, but preserved comparisons and the six ties remain RED.
+All counts/table arithmetic and zero-purchase groups cross-checked against
+terminal4a8f73/f315af, including873 repeated node exposures, not independent
+careers. This record clarifies a short board sentence to distinguish one
+treated-only pair from three both-unreached; no statistic or rule changes.
+
+Committed-HEAD cold focused check ata768864b, root `make test-go`, harness,
+population/source/gate/classifier/static-artifact selectors, `-count=1`:
+a622fc/e9f26e,session10374,terminal exit0,0.323s. All handles terminal before
+this edit; source unchanged from full b22ce51e run. Range checkddbbed clean.
+This wording/record edge must also join Claude's complete designated span.
+Prior spans remain independent; no self-archival, checkbox, mint or push.

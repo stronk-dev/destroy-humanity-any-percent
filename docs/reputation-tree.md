@@ -716,7 +716,8 @@ These observed counts do not turn the focused corruption cases into naturally
 earned populations or make the acceptance gates green. H4's strict-sooner failure,
 H5's unruled epsilon/run4, missing career-data authority and the each-Exit intent
 ambiguity remain. H5 originally omitted its finite-pair denominator (RP-272);
-the population observations below expose it but do not supply a censoring rule or certify the median as a
+the population observations below expose it but do not supply a censoring rule
+or certify the median as a
 full-persona result. The earlier dated H1/H2 evidence remains pinned to its recorded
 producer tree, not silently promoted to this changed server tree.
 
