@@ -782,3 +782,27 @@ active, no mint/owner-body/API ruling/archival/push/deployment or release claim.
 Final record-bound replaye73760 /94126, terminal77f2cd exit0,0.412s reproduces
 the original artifact exactly; vet7940b4 exit0 on production/economy/decimal.
 All verification handles are terminal. No temporary artifact/source fault remains.
+
+### R-012 local range review — bounded research, no implementation acceptance
+
+Review by: Codex (implementer; self first-filter). Recorded by: Codex.
+Exact inspected range: `b6a3c48d..d73fd408`, all twelve changed paths, including
+predeclaration and evidence records. Generator loops implement the declared
+population; artifact rows are audited by cold Go byte reconstruction and actual
+TS independent arithmetic/source/population checks, not manual inspection of
+15,049 JSON lines. Selected hashes are explicitly not full transitive provenance.
+Original data/goldens/runtime/save/kernel/CI/specification bytes remain unchanged.
+Full-state Go versus scalar TS scope, experimental debit reset and bounded
+enormous-range/restore/cap exclusions are explicit rather than implied away.
+
+The implemented negative arms and executed false-promotion failure discriminate
+within this population. Source-selected artifact updates require explicit valid
+re-observation; they cannot close AC6, which remains literally red in ordinary
+tests. All record homes agree on counts and holds; no checkbox/status promotion.
+
+Decision: locally validated bounded observation; no production repair or Clout
+acceptance. This is not Claude's designated verdict. Claude must cover the full
+span afterb6a3c48d, including this following record edge, independently of all
+earlier pending ranges. Next predeclared representation/restore research is
+allowed; a persistence implementation still requires a buildable accepted
+contract. Full nine-tier1.0 active; no archive/mint/push/deploy/release action.
