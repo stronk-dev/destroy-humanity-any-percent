@@ -2342,3 +2342,25 @@ Review by: Codex; Recorded by: Codex. Bounded original G7 host receipt seam at
 `725d8662^..725d8662`: CHANGES REQUIRED for SG10's post-receipt reread, not a
 verdict on all G7. This Codex-side review of Claude's seam is distinct from any
 future Codex correction's first-filter. No other pending range consumed.
+
+## 2026-10-06 — SG10 host receipt repair authority
+
+Diagnostic commit `9af68399` is test/record only. Accepted Garden SG10 explicitly
+requires a reread after every command receipt; no new product/owner decision is
+needed to repair this omitted host wiring. Narrow production scope: forward a
+nonterminal streamed receipt to the existing Garden refresh key as well as the
+existing main-state refresh. Preserve the `!ended` terminal protection and all
+snapshot/intent/revision/transport semantics. No simulated growth or receipt-driven
+state patch: Garden must fetch its authoritative advisory DTO again.
+
+Same controlled host witness must turn green in all three native engines. Actual
+plant callback severing and Garden receipt-key severing must fail independently;
+restore exact product bytes between probes and before final gates. Existing host
+terminal tests plus full browser/performance and root client/type/build/boundary/
+copy/topology are the final population. No timeout/oracle/skip weakening. Renderer
+and host-only binding are outside the numeric kernel contract; verify that registry
+before deciding version, preserve 0.3.153 if no watched product path changes. Full
+historical RP-131 remains independently open, no whole-CI claim. Docs and all status
+records will synchronize in the implementing range, without acceptance checkbox,
+public pin, owner text, archival or release promotion. Exact range starts `9c918361^`
+(`3c3af1de`); Claude designated review required, endpoint pinned after final commit.
