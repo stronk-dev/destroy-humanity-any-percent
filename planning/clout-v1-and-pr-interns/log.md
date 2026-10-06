@@ -480,3 +480,33 @@ Result: local first filter passes. **Claude's designated review remains required
 for the entire new span afterb2b2d5a5, including this following review-record
 commit.** No existing Claude range is retrospectively approved here, no other
 pending Codex span consumed, no checkbox/status/archival promotion. Goal active.
+
+## 2026-10-06 — RP-304 predeclare bounded P1 role review and correction
+
+Review by: Codex. Recorded by: Codex. Original range: ace4e67e^..ace4e67e,
+bounded to CV1 item5's Go/TS upgrade-role cardinality and fixture proposals,
+not a full seventeen-path P1 designated verdict. Baseline b30808e5 is clean;
+no verification handles live. Previous turn was progress (RP-303 fixed).
+
+Static finding: Go rejects nil roles but accepts [], TS checks Array.isArray
+then maps it without a nonempty test. Neither branch subsequently validates
+upgrade-role cardinality. Accepted CV1 item5 requires ≥1 typed role on axis
+upgrades; execution will test this inference rather than trusting the read.
+
+Population: a separate shared role corpus based on the original SHA-locked v5
+fixture, empty roles on intern1/intern2/both, and positive unchanged/one-role/
+static-empty controls. Each selected id must exist exactly once; actual loaders
+execute every case and refusal checks must identify the axis-role floor. Original
+loader corpus/fixture remains untouched. After confirmed failure, the narrow
+loader guard rejects only roleless axis upgrades. Kernel161→162 is required
+because the acceptance set genuinely changes; no spurious balance/schema bump.
+Independent compiling Go/TS guard omissions must fail the three roleless cases,
+all controls retained; restore exact sources before cold final gates. No manual
+edits during any live test handle. Applicable root verification, full client,
+types/build and historical kernel-guard outcome must be recorded honestly.
+
+Does not authorize a new role vocabulary or invent a synergy pool/rate. CV1's
+truthful executed pool-binding question is separate and cannot be resolved by
+adding a nonempty label. No owner text, mint, archive, push, deployment, CI change,
+full P1/AC1 or 1.0 approval. New Codex range needs Claude, separately from the
+original bounded finding and every previously pending correction.

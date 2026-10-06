@@ -50,3 +50,18 @@ Executed: unchanged-production failure and both compiling label controls
 discriminate; restored Chromium/WebKit six cases plus the independent performance
 lane pass. Types/build/client/boundary/copy/topology pass; Firefox zero executed
 after session timeout, not waived. Full evidence and review range are in log.md.
+
+## RP-304 — mandatory roles on axis upgrades
+
+Predeclared at b30808e5, 2026-10-06. Review Claude ace4e67e^..ace4e67e's
+Go/TS axis-role branches against CV1 item5. Existing branch loops check role
+identity/duplicates but not cardinality. New separate shared cases must reproduce
+empty roles on either/both PR rows; unchanged fixture, one declared role, and
+legacy static-empty-role cases are controls. Original corpus stays unchanged.
+If confirmed, reject empty roles only for axis effects, preserving static catalog
+semantics. Watched loader changes require honest kernel161→162 in the same commit.
+Independent compiling guard omissions in both runtimes must fail, then restore.
+Run cold relevant packages/vet, full client/types/build and applicable root checks.
+No schema/balance/copy/mint/role-vocabulary/pool retune or whole-P1 approval.
+Role names alone do not prove executed pool binding; that question stays separate.
+Every new Codex implementation/record edge requires Claude independently.
