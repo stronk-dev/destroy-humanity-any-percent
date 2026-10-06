@@ -842,3 +842,16 @@ topology plus production AND gameui SQL Integration before closeout; host skips
 not SQL/native/hostedCI proof. Tests/docs/records only, no product/schema/epoch/
 balance/copy/CI/RFC/checkbox/status/archive/push. Full new span afterc70861c1
 including records needs Claude; all earlier independent reviews/holds remain.
+
+### Executed public consumer / local status (not acceptance)
+
+f2b8bca8 connects actual purchase/Exit to public stored projection. Complete
+current rows/head/frozen rows remain factor1/rate5, next becomes1.003; actual
+run3cash1e3/generated5/frozen/current next1.003/rates5.015. Public reads/retries
+preserve12tables and actual Founder history verifies. Three compiling source
+fault families fail; broader live fault stops at header, refined rate-only fault
+independently fires cash-rate oracle. Sources restore exactly. Fixture mistakes
+retained; broad cold Go/vet/types8241client units/339skip/topology and actual
+production/gameui SQL38/143/no skips pass. Full afterc70861c1 span including
+records needs Claude; no checkbox/status/fullAC7/RFC/CI/1.0 promotion. Next
+reconcile remaining accepted gates and unblocked implementation lanes.

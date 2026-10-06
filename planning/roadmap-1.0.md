@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest SQL checkpoint (2026-10-06):** RP-301 test-only supplement after16da5904
+**Latest public-projection checkpoint (2026-10-06):** RP-302 supplement afterc70861c1
+connects actual purchase/Exit to stored GameUISnapshot: current factor1/rate5
+stays fixed, next1.003 updates, actual next run freezes1.003 and projects5.015.
+Complete current rows/head/frozen rows,12-table reads/retries and actual Founder
+history pass. Three compiling source-fault families discriminate, exact restore.
+Cold relevant Go/vet/types8241units/339skip/local topology and production/gameui
+SQL38top-level/143subcases/no skips pass. Full span including records needs
+Claude; earlier independent ranges/holds remain. Initial earned6/generated5/
+seeded history diagnostic, not natural/default browser/fullAC7/hostedCI/minted
+release/1.0. Next reconcile remaining accepted gates and choose unblocked
+implementation, not duplicate proven evidence. Full nine-tier/platform goal
+unchanged. [Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint (2026-10-06):** RP-301 test-only supplement after16da5904
 continues three actual old-pin→tree activations through owned-purchase refusal,
 real frozen production/Garage, second no-plan WindDown and run4 without later
 state seeding. Original24/9/15/3fallback remains. Repeated non-cumulative starters,
@@ -17,8 +30,8 @@ unchanged. Cold relevant Go/vet/types/client8241pass/339skip/local topology and
 whole production SQL Integration14.852s pass. Entire span including records
 needs Claude, earlier spans independent. Diagnostic initial earned6/stored offers/
 seeded history, not natural/default browser/fullAC15/hostedCI/release acceptance.
-Next census accepted AC7 current-rate versus next-run public projection against
-existing evidence, not invented consumer authority. Full nine-tier/platform goal
+Its then-next AC7 census/public projection supplement now executes above.
+Full nine-tier/platform goal
 and previous holds remain; no product/copy/epoch/CI workflow/cleanup/push/status
 promotion. [Evidence](reputation-tree-v1/log.md).
 

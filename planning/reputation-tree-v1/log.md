@@ -9161,3 +9161,61 @@ spent6available0/current next1.003/rate5.015; recorded two-entry Founder history
 verifies. Public read and both exact retry controls preserve complete12tables.
 Initial diagnostic states/history are not natural/default browser/AC15/release
 evidence. No later reseeding/runtime correction; fault probes follow.
+
+650f29/session59777→8b98c5 terminal2,0.083s: public persisted contribution
+replaced from live Founder causes post-purchase current header to change and
+the header oracle fails BEFORE cash-rate assertions. This catches the broken
+source, but do not claim the later rate oracle fired. Restore projector exactly.
+Before next probe refine same live-Founder fault family to replace only the
+ProjectRates input copy, keeping frozen contribution/header untouched, so
+the current cash-rate oracle must independently fire. No expected test changes.
+
+Compiling focused SQL faults, each handle terminal before next source edit:
+- 727c4c/session86742→723834 exit2,0.104s: refined rate-input-only live Founder
+  fault keeps header frozen but public cash-rate assertion fails5.015want5.
+  Exact projector restore8e846a. The earlier header-first probe remains distinct.
+- 5ab922/session97975→b788b5 exit2,0.092s: current header uses next live factor;
+  post-purchase header assertion fails before rate checks. Exact restorec7f4b0.
+- 9542af/session82548→8c313f exit2,0.087s: next header uses frozen current factor;
+  post-purchase next1instead of1.003 fails. Later Exit assertions not executed
+  under these faults; healthy baseline executes them. No source fault committed.
+
+Restored projector SHA5a5ae96836f8ca2370e201e663a69bc2df0236692e4f9c6d84bd5957d8993b44;
+reputation SHA92edef8bb8e92687e3d98f9f823951bc1480969f029430b2921af035c0451e17.
+Both source diffs empty. Broad cold Go/vet/types/client and production/gameui
+real SQL gates follow; no live handle remains before starting them.
+
+First restored broad gates terminal: c2da5a/session43373→4a693a exit0, cold
+production37.031s/save0.350s/reputation0.206s/gameui0.326s plus vet.1b1ec7/
+session80770→877ff1 exit0, strict types/Svelte0errors0warnings,8241units/339skip,
+local topology positive/13negatives. e9b793/session40631→68f0ee exit0: complete
+production11.728s/gameui0.187s Integration,38top-level143subcase passes,0skip0fail
+counted from full untruncated retained output. Existing gameui v18 test also runs.
+
+Before closeout own diff inspection found two new receipt checks used substring
+membership instead of decoded top-level outcome. They pass in the valid baseline
+but are unnecessarily permissive; strengthen only new checks to decoded outcome
+equality, preserving all fields/oracles and rerun restored gates. No production
+defect inferred.755969/6131d5/864911 verify the existing server CI all-non-harness
+package target includes gameui with Postgres configured; no opt-in CI change or
+hosted-run green claim. Test remains in ordinary discovery, not a standalone
+measurement lane. Full goal/owner/author/environment/review holds remain.
+
+Final strengthened-test gates:947ed6/session34071→11c1df terminal0, cold
+production35.912s/save0.212s/reputation0.105s/gameui0.336s and vet.39f708/
+session91649→a41244 terminal0: whole production9.568s/gameui0.186s SQL Integration,
+38top-level143subcase passes,0skip0fail, counted from full retained output.
+Unchanged client/type/topology evidence877ff1 remains current; no client change.
+All handles terminal before closeout; no source fault remains.5a3c09 full new
+test diff inspected; no original test/assertion changed.6131d5 source/balance/
+copy/RFC/kernel/CI/historical corpus diff empty;8bae36 exact restored hashes.
+
+Docs/shared ledger/live boards/queue/plan reconcile RP-302 without turning
+diagnostic earned6/generated5/prior seeded history into a natural player journey
+or fullAC7/AC15/minted release/hostedCI/1.0 acceptance. Both earlier SQL/isolated
+proofs remain valid, not recast absent. No boxes/status/archive/push/deploy/
+cleanup or author/owner body edits. Entire span afterc70861c1 INCLUDING final
+records needs Claude; all earlier independent spans/holds remain. Full proper
+nine-tier/platform1.0 goal active/progress. Next reconcile remaining accepted
+gates across Reputation and other unblocked implementation lanes; avoid duplicate
+evidence additions where current evidence already proves the requirement.

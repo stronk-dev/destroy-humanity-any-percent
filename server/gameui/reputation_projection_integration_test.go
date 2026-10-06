@@ -135,6 +135,12 @@ func TestReputationCurrentAndNextPublicProjectionIntegration(t *testing.T) {
 		}
 		return data
 	}
+	appliedOutcome := func(result production.HandleResult) bool {
+		var receipt struct {
+			Outcome string `json:"outcome"`
+		}
+		return json.Unmarshal(result.Receipt, &receipt) == nil && receipt.Outcome == "applied"
+	}
 	genesis, err := save.EncodeState(company)
 	if err != nil {
 		t.Fatal(err)
@@ -246,7 +252,7 @@ func TestReputationCurrentAndNextPublicProjectionIntegration(t *testing.T) {
 	}
 	purchase := encode(map[string]any{"intent_id": "01986666-e401-7000-8000-000000000001", "kind": production.IntentPurchaseReputationNode, "expected_revision": owner.Number, "node_id": "reputation.unlock.p05"})
 	applied, err := service.Handle(ctx, player.StreamID, production.ModeOnline, now, purchase)
-	if err != nil || applied.Replay || !bytes.Contains(applied.Receipt, []byte(`"outcome":"applied"`)) {
+	if err != nil || applied.Replay || !appliedOutcome(applied) {
 		t.Fatalf("actual purchase: %s %v", applied.Receipt, err)
 	}
 	after := read(now)
@@ -262,7 +268,7 @@ func TestReputationCurrentAndNextPublicProjectionIntegration(t *testing.T) {
 	retry(now.Add(time.Second), purchase, applied)
 	exit := encode(map[string]any{"intent_id": "01986666-e401-7000-8000-000000000002", "kind": production.IntentWindDown, "expected_revision": player.Number, "expected_founder_revision": owner.Number + 1, "reputation_plan": []string{"reputation.starter.cash_small", "reputation.starter.generated_beige_tower"}})
 	ended, err := service.Handle(ctx, player.StreamID, production.ModeOnline, now.Add(2*time.Second), exit)
-	if err != nil || ended.Replay || !bytes.Contains(ended.Receipt, []byte(`"outcome":"applied"`)) {
+	if err != nil || ended.Replay || !appliedOutcome(ended) {
 		t.Fatalf("actual Exit: %s %v", ended.Receipt, err)
 	}
 	next := read(now.Add(2 * time.Second))

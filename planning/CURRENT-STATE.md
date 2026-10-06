@@ -4,7 +4,20 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest SQL checkpoint:** RP-301 test-only supplement after`16da5904` continues
+**Latest public-projection checkpoint:** RP-302 test-only supplement after`c70861c1`
+connects actual purchase/Exit to stored GameUISnapshot: current factor1/rate5
+stays fixed after purchase; next1.003 updates, then actual run3 freezes1.003 and
+projects5.015. Complete current rows/head/frozen rows,12-table reads/retries and
+recorded Founder history pass; three source-fault families discriminate, exact
+restoration. Cold relevant Go/vet/types8241client units/339skip/local topology
+and actual production/gameui SQL38top-level/143subcases/no skips pass. Entire
+new range including records needs Claude, earlier spans independent. Diagnostic
+initial earned6/generated5/seeded history, not natural/default browser/fullAC7/
+hostedCI/minted release/1.0. Next reconcile remaining accepted gates across
+Reputation and other unblocked implementation lanes, not add duplicate evidence.
+All full-goal/author/environment/release holds remain. [Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint:** RP-301 test-only supplement after`16da5904` continues
 three actual old-pin→tree activations through owned-purchase refusal, real frozen
 production/Garage, second no-plan WindDown and run4 without later state seeding.
 Original24/9applied/15refused/3fallback remains. Repeated non-cumulative starters,
@@ -16,8 +29,7 @@ unchanged. Cold relevant Go/vet/types/client8241pass/339skip/local topology and
 whole production SQL Integration14.852s pass. Full span including final records
 needs Claude; earlier spans independent. Diagnostic initial earned6/stored offers/
 seeded history, not natural/default browser/fullAC15/hostedCI/1.0 proof.
-Next census accepted AC7 frozen current-rate versus next-run projection against
-existing SQL/public consumer evidence before predeclaring any missing population.
+Its then-next AC7 census/public projection supplement now executes above.
 Full goal and prior holds remain; no production/copy/epoch/CI workflow/cleanup/
 status/archive/push. [Evidence](reputation-tree-v1/log.md).
 

@@ -3599,3 +3599,27 @@ archive/cleanup/push/publish/deploy; full nine-tier/platform goal active/progres
 all prior holds unchanged. Next accepted evidence census AC7 frozen current-rate
 versus next-run public projections before a separate missing-proof declaration.
 [Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Persisted public current/next Reputation projection
+
+RP-302 afterc70861c1:9fcea8c9 predeclares,f2b8bca8 adds one actual gameui SQL
+journey. Public current factor1/rate5 stays unchanged after p05 purchase while
+next1.003 changes; actual WindDown with plan2+3 creates run3cash1e3/generated5/
+frozen1.003/current next1.003/rate5.015 without later reseeding. Complete current
+rows/Company head/frozen rows,12-table reads/retries and actual Founder history
+verify. Initial earned6/generated5/prior history are diagnostic, not natural.
+Rate-only live-Founder/current-header/next-header faults independently fail;
+first broad fault stops at header, not claimed rate proof. Exact source restores.
+Fixture changelog/history/owner-specific schedule mistakes and their failed
+attempts remain recorded; no production defect or constraint relaxation inferred.
+
+Final cold relevant Go/vet/types8241client units/339skip/local topology pass.
+Whole production/gameui SQL38top-level143subcase/0skip0fail passes after decoded
+top-level receipt-outcome strengthening. Existing server CI discovers gameui with
+Postgres; no hosted-green assertion or workflow change. Docs/shared ledger/
+boards/queue/plan/log reconcile, full span including final records needs Claude;
+all earlier independent spans/holds remain. Full nine-tier/platform1.0 goal
+active/progress; no fullAC7/RFC/CI/release promotion, boxes/archive/epoch/copy/
+product/CI workflow/cleanup/push/deploy. Next reconcile remaining accepted gates
+and select unblocked implementation, not duplicate proven evidence.
+[Executed evidence](reputation-tree-v1/log.md).

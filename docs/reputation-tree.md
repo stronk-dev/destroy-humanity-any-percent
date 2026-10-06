@@ -526,6 +526,25 @@ default browser/AT behavior, minted release data, full AC9/RFC/CI or1.0 readines
 make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationExitBoundaryIntegration'
 ```
 
+### Persisted public current/next bonus projection (AC7/R9)
+
+`TestReputationCurrentAndNextPublicProjectionIntegration` exercises the public
+stored `GameUISnapshot` around an actual p05 purchase and subsequent Wind Down.
+Complete current resource/generator rows stay byte-identical: factor1/rate5,
+while the next factor changes to1.003. Company head/frozen rows stay unchanged.
+The real Exit with a five-point starter plan creates run3cash1e3/generated5 and
+frozen1.003; both headers show1.003 and public cash/generator rates show5.015.
+No later state is reseeded. All public reads and exact purchase/Exit retries
+preserve twelve diagnostic tables; the actual two-entry Founder history verifies.
+Compiling rate-only live-Founder and both swapped-header faults fail the test;
+sources restore exactly. Initial earned6/generated5/prior history are diagnostic,
+not natural progression/default browser/minted release/fullAC7/CI/1.0 proof.
+Independent designated review is pending.
+
+```sh
+make test-save-integration SAVE_TEST_PACKAGES='./gameui' SAVE_TEST_FLAGS='-v -run TestReputationCurrentAndNextPublicProjectionIntegration'
+```
+
 ### Actual activated Founder continuation (R8)
 
 The three `activate-plan` profiles in `TestReputationExitBoundaryIntegration`

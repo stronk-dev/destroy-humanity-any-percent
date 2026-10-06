@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation persisted public current/next projection — 2026-10-06
+
+RP-302 afterc70861c1:9fcea8c9 predeclares,f2b8bca8 adds one gameui SQL test.
+Actual p05 purchase keeps complete current rate rows/head/frozen rows unchanged
+at factor1/rate5; next header1.003 changes. Actual WindDown plan2+3 produces
+run3cash1e3/generated5/frozen1.003/public rates5.015, no later state seeding.
+Twelve-table read/retry invariance and actual two-entry Founder history pass.
+Three compiling rate-only/current-header/next-header faults independently fail;
+first broader fault stops at header, not claimed rate proof. Exact restores;
+all fixture constraint/history/schedule mistakes disclosed. Cold relevant Go/
+vet/types8241units/339skip/topology and actual production/gameui SQL38/143/no skips
+pass. Diagnostic initial earned6/generated5/seeded history, not natural/default
+browser/fullAC7/hostedCI/minted release/1.0 proof.
+**DESIGNATED REVIEW PENDING:** full afterc70861c1 range including final records;
+all earlier independent spans live. No acceptance/archive/push authority.
+**NEXT SAFE ACCEPTED WORK:** reconcile remaining accepted gates across Reputation
+and other unblocked implementation lanes; do not manufacture another gap where
+current evidence already proves the requirement. All full-goal/author/environment/
+owner/release holds remain, no product/copy/balance/epoch/CI/status/cleanup change.
+
 ## Reputation actual cross-pin second-Exit continuation — 2026-10-06
 
 RP-301, range after16da5904:10631984 predeclares,a8ebbbaf extends only three
@@ -20,9 +40,8 @@ Restored cold relevant Go/vet/types/client8241pass/339skip/local topology and
 complete production SQL Integration14.852s pass.
 **DESIGNATED REVIEW PENDING:** full span after16da5904 including final records,
 not a substitute for earlier independently pending ranges.
-**NEXT SAFE ACCEPTED WORK:** census AC7 frozen current-rate versus next-run
-public projection against existing SQL/consumer tests; predeclare any actual
-missing population. Diagnostic initial earned6/stored offers/seeded history,
+**THEN-NEXT WORK:** AC7 census/persisted public projection now supplemented above.
+Diagnostic initial earned6/stored offers/seeded history,
 not natural/default browser/fullAC15/hostedCI/release/1.0 promotion. All previous
 holds/full goal remain; no product/copy/balance/epoch/CI workflow/cleanup/status/
 archive/publish/deploy/push authority.
