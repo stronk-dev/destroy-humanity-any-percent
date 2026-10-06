@@ -760,3 +760,20 @@ including zero-purchase groups; the exact census is in the implementation log.
 Cold fast harness and vet pass. Both historical comparisons and H4's six-tie
 criterion remain RED. This is no censoring adoption, H4/H5 acceptance,
 current-artifact software-provenance closure or RP-274 attribution resolution.
+
+For RP-275, H5 now retains `arm_observations`: each admitted source, observed
+run-3 gate (including null/unreached), and purchased-node list. Mutable clocks
+and lists are copied at retention. The ordinary H4/H5 checks use shared test-
+side measurement/report builders; later dated evidence must use those same
+builders, not a second estimator. No new dated artifact is generated here.
+
+H5 recomposition refuses missing/duplicated baseline or mask groups, unknown
+masks/nodes, masked-node purchases, negative clocks and mismatched paired
+sources. It rebuilds medians, populations and classifications from retained
+arms and compares the whole report, including sources and header fields. A
+bought starter with no qualifying effect or exclusion still fails the existing
+H5 rule, even if its report is internally consistent. Synthetic controls and
+twelve compiling omissions exercise these boundaries. Full current caller
+coverage must be executed next. Recomposition is internal consistency, not
+proof that a synthetic cohort was earned or that a producer is authentic;
+exact committed software/input identity and full replay remain separate.

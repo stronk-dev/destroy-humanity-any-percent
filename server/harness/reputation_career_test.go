@@ -111,6 +111,24 @@ type reputationCareerReport struct {
 // REPUTATION_UPDATE_CAREER=1 regenerates the pinned report.
 func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 	requireReputationExhaustive(t)
+	report := measureReputationCareerReport(t)
+	encoded, _ := json.MarshalIndent(report, "", " ")
+	encoded = append(encoded, '\n')
+	path := filepath.Join(repositoryRootForReputation, reputationCareerReportPath)
+	if os.Getenv("REPUTATION_UPDATE_CAREER") == "1" {
+		if err := os.WriteFile(path, encoded, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	pinned, err := os.ReadFile(path)
+	if err != nil || !bytes.Equal(pinned, encoded) {
+		t.Fatalf("career report drifted (regenerate with REPUTATION_UPDATE_CAREER=1): %v", err)
+	}
+}
+
+// Shared producer for ordinary checks and the future dated observation lane.
+func measureReputationCareerReport(t *testing.T) reputationCareerReport {
+	t.Helper()
 	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
 	if err != nil {
 		t.Fatal(err)
@@ -175,9 +193,6 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 	}
 	t.Logf("H4 current pair populations: %s", populationJSON)
 	t.Logf("H4 all-finite starter-pair savings (not per-node effects): %v", report.FiniteSavedMS)
-	violations, saved := evaluateReputationCareerGate(results, &report)
-	report.Violations = violations
-	report.GatePassed = len(report.Violations) == 0
 	t.Logf("H4 source admission complete: treated=%d control=%d", len(results), len(results))
 	t.Logf("H4 observed population: rows=%d gated=%d excluded=%d", len(results), report.GatedSeeds, report.ExcludedSeeds)
 	for _, row := range results {
@@ -189,25 +204,10 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 	for _, violation := range report.Violations {
 		t.Logf("H4 violation (recorded, not loosened): %s", violation)
 	}
-	for id, values := range saved {
-		sort.Slice(values, func(left, right int) bool { return values[left] < values[right] })
-		report.SavedMS[id] = [3]int64{values[0], values[len(values)/2], values[len(values)-1]}
-	}
 	if report.GatedSeeds == 0 {
 		t.Fatal("no seed started run 3 with a starter node: the H4 gate would be vacuous")
 	}
-	encoded, _ := json.MarshalIndent(report, "", " ")
-	encoded = append(encoded, '\n')
-	path := filepath.Join(repositoryRootForReputation, reputationCareerReportPath)
-	if os.Getenv("REPUTATION_UPDATE_CAREER") == "1" {
-		if err := os.WriteFile(path, encoded, 0o644); err != nil {
-			t.Fatal(err)
-		}
-	}
-	pinned, err := os.ReadFile(path)
-	if err != nil || !bytes.Equal(pinned, encoded) {
-		t.Fatalf("career report drifted (regenerate with REPUTATION_UPDATE_CAREER=1): %v", err)
-	}
+	return report
 }
 
 func newReputationCareerReport(rows []reputationCareerSeed) (reputationCareerReport, error) {
@@ -215,6 +215,15 @@ func newReputationCareerReport(rows []reputationCareerSeed) (reputationCareerRep
 		Note: "fixture-first H4: fixture threshold from the OD-2 measurement's satisfying set; nothing is ratified or minted; saved_ms_min_p50_max_by_policy covers strictly-faster finite starter pairs only; finite_starter_pair_saved_ms_min_p50_max_by_policy covers all finite starter pairs; unreached clocks are not imputed"}
 	var err error
 	report.Population, report.FiniteSavedMS, err = observeReputationCareerPopulation(rows)
+	if err != nil {
+		return report, err
+	}
+	violations, saved := evaluateReputationCareerGate(rows, &report)
+	report.Violations, report.GatePassed = violations, len(violations) == 0
+	for id, values := range saved {
+		sort.Slice(values, func(left, right int) bool { return values[left] < values[right] })
+		report.SavedMS[id] = [3]int64{values[0], values[len(values)/2], values[len(values)-1]}
+	}
 	return report, err
 }
 

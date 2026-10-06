@@ -3,8 +3,10 @@ package harness
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strconv"
 	"sync"
@@ -26,12 +28,19 @@ type reputationNodeRelevance struct {
 }
 
 type reputationRelevanceReport struct {
+	Arms          []reputationRelevanceArm            `json:"arm_observations"`
 	Sources       []ReputationCareerMeasurementSource `json:"measurement_sources"`
 	SchemaVersion int                                 `json:"schema_version"`
 	Threshold     string                              `json:"fixture_threshold"`
 	EpsilonMS     int64                               `json:"epsilon_ms"`
 	Nodes         []reputationNodeRelevance           `json:"nodes"`
 	Note          string                              `json:"note"`
+}
+
+type reputationRelevanceArm struct {
+	Source    ReputationCareerMeasurementSource `json:"measurement_source"`
+	Gate      *int64                            `json:"run_three_gate_ms"`
+	Purchased []string                          `json:"purchased_node_ids"`
 }
 
 type reputationRelevanceOutcome struct {
@@ -53,6 +62,12 @@ func newReputationRelevanceReport(results []reputationRelevanceOutcome) reputati
 		Note: "fixture-first H5: leave-one-out on the following run's Garage gate; delta_ms_p50_by_policy is conditional on the node being bought and both gate clocks being finite, not all purchased careers; unreached clocks are not imputed; the elective-Exit dimension needs a run-4 horizon (DESIGN-GAP RT-DG-F)"}
 	for _, result := range results {
 		report.Sources = append(report.Sources, result.source)
+		arm := reputationRelevanceArm{Source: result.source, Purchased: slices.Clone(result.purchased)}
+		if result.gate != nil {
+			gate := *result.gate
+			arm.Gate = &gate
+		}
+		report.Arms = append(report.Arms, arm)
 	}
 	return report
 }
@@ -95,6 +110,23 @@ func classifyReputationRelevance(row *reputationNodeRelevance) {
 // yet moves nothing fails. REPUTATION_UPDATE_RELEVANCE=1 regenerates.
 func TestReputationTreeRelevance(t *testing.T) {
 	requireReputationExhaustive(t)
+	report := measureReputationRelevanceReport(t)
+	encoded, _ := json.MarshalIndent(report, "", " ")
+	encoded = append(encoded, '\n')
+	path := filepath.Join(repositoryRootForReputation, reputationRelevancePath)
+	if os.Getenv("REPUTATION_UPDATE_RELEVANCE") == "1" {
+		if err := os.WriteFile(path, encoded, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	pinned, err := os.ReadFile(path)
+	if err != nil || !bytes.Equal(pinned, encoded) {
+		t.Fatalf("relevance report drifted (regenerate with REPUTATION_UPDATE_RELEVANCE=1): %v", err)
+	}
+}
+
+func measureReputationRelevanceReport(t *testing.T) reputationRelevanceReport {
+	t.Helper()
 	suite, err := LoadFirstHourSuite(repositoryRootForReputation, "balance/testdata/t0-t1/harness-scenario-v1.json", "balance/testdata/t0-t1/first-hour-policy-v1.json")
 	if err != nil {
 		t.Fatal(err)
@@ -149,56 +181,120 @@ func TestReputationTreeRelevance(t *testing.T) {
 			t.Fatalf("seed %d exclude %q: %v", jobs[index].seed, jobs[index].exclude, err)
 		}
 	}
-	baseline := map[string]reputationRelevanceOutcome{}
-	for index, current := range jobs {
-		if current.exclude == "" {
-			baseline[current.spec.PolicyID+"/"+strconv.FormatUint(current.seed, 10)] = results[index]
+	report, err := composeReputationRelevanceReport(nodes, results)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := validateReputationRelevanceRecomposition(nodes, report); err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("H5 raw observations retained and recomposed: %d", len(report.Arms))
+	t.Logf("H5 source admission complete: arms=%d retained_sources=%d", len(results), len(report.Sources))
+	for _, row := range report.Nodes {
+		populationJSON, err := json.Marshal(row.Population)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("H5 current bought/not-bought/finite populations: node=%s population=%s conditional_p50=%v", row.NodeID, populationJSON, row.DeltaMSP50)
+		if !row.Relevant && row.Excluded == "" {
+			t.Errorf("node %s is bought but moves nothing and has no exclusion reason: %+v", row.NodeID, row)
+		}
+	}
+	return report
+}
+
+// Recomposition checks internal evidence consistency, not earned-player or
+// producer authenticity. A dated artifact additionally needs exact cohort and
+// committed software/input identity plus executed full replay.
+func composeReputationRelevanceReport(nodes []reputation.Node, results []reputationRelevanceOutcome) (reputationRelevanceReport, error) {
+	known := map[string]bool{}
+	for _, node := range nodes {
+		if node.NodeID == "" || known[node.NodeID] {
+			return reputationRelevanceReport{}, fmt.Errorf("invalid H5 node inventory")
+		}
+		known[node.NodeID] = true
+	}
+	baseline := map[RunKey]reputationRelevanceOutcome{}
+	type armKey struct {
+		key  RunKey
+		mask string
+	}
+	seen := map[armKey]bool{}
+	for _, result := range results {
+		key := armKey{result.source.RunKey, result.source.ExcludedNodeID}
+		if seen[key] || len(nodes) == 0 || key.key.PolicyID == "" || key.key.Seed == "" ||
+			key.mask != "" && !known[key.mask] || result.gate != nil && *result.gate < 0 {
+			return reputationRelevanceReport{}, fmt.Errorf("invalid or duplicate H5 arm")
+		}
+		seen[key] = true
+		purchased := map[string]bool{}
+		for _, id := range result.purchased {
+			if !known[id] || purchased[id] || id == key.mask {
+				return reputationRelevanceReport{}, fmt.Errorf("invalid H5 purchased-node observation")
+			}
+			purchased[id] = true
+		}
+		if key.mask == "" {
+			baseline[key.key] = result
+		}
+	}
+	if len(baseline) == 0 || len(results) != len(baseline)*(len(nodes)+1) {
+		return reputationRelevanceReport{}, fmt.Errorf("incomplete H5 baseline/mask population")
+	}
+	for _, result := range results {
+		base, ok := baseline[result.source.RunKey]
+		expectedSource := base.source
+		expectedSource.ExcludedNodeID = result.source.ExcludedNodeID
+		if !ok || expectedSource != result.source {
+			return reputationRelevanceReport{}, fmt.Errorf("H5 masked arm lacks its matching baseline source")
 		}
 	}
 	report := newReputationRelevanceReport(results)
-	t.Logf("H5 source admission complete: arms=%d retained_sources=%d", len(results), len(report.Sources))
 	for _, node := range nodes {
 		row := reputationNodeRelevance{NodeID: node.NodeID, Kind: node.Kind, DeltaMSP50: map[string]int64{}, PurchasedRuns: map[string]int{},
 			Population: map[string]reputationRelevancePopulation{}}
 		deltas := map[string][]int64{}
-		for index, current := range jobs {
-			if current.exclude != node.NodeID {
+		for _, result := range results {
+			if result.source.ExcludedNodeID != node.NodeID {
 				continue
 			}
-			base := baseline[current.spec.PolicyID+"/"+strconv.FormatUint(current.seed, 10)]
-			bought := false
-			for _, id := range base.purchased {
-				bought = bought || id == node.NodeID
-			}
-			observeReputationRelevancePair(&row, deltas, current.spec.PolicyID, bought, base, results[index])
+			base := baseline[result.source.RunKey]
+			bought := slices.Contains(base.purchased, node.NodeID)
+			observeReputationRelevancePair(&row, deltas, result.source.RunKey.PolicyID, bought, base, result)
 		}
 		for id, values := range deltas {
 			sort.Slice(values, func(left, right int) bool { return values[left] < values[right] })
 			row.DeltaMSP50[id] = values[len(values)/2]
 		}
 		classifyReputationRelevance(&row)
-		populationJSON, err := json.Marshal(row.Population)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("H5 current bought/not-bought/finite populations: node=%s population=%s conditional_p50=%v", node.NodeID, populationJSON, row.DeltaMSP50)
-		if !row.Relevant && row.Excluded == "" {
-			t.Errorf("node %s is bought but moves nothing and has no exclusion reason: %+v", node.NodeID, row)
-		}
 		report.Nodes = append(report.Nodes, row)
 	}
-	encoded, _ := json.MarshalIndent(report, "", " ")
-	encoded = append(encoded, '\n')
-	path := filepath.Join(repositoryRootForReputation, reputationRelevancePath)
-	if os.Getenv("REPUTATION_UPDATE_RELEVANCE") == "1" {
-		if err := os.WriteFile(path, encoded, 0o644); err != nil {
-			t.Fatal(err)
+	return report, nil
+}
+
+func validateReputationRelevanceRecomposition(nodes []reputation.Node, report reputationRelevanceReport) error {
+	results := make([]reputationRelevanceOutcome, len(report.Arms))
+	for index, arm := range report.Arms {
+		results[index] = reputationRelevanceOutcome{source: arm.Source, gate: arm.Gate, purchased: arm.Purchased}
+	}
+	rebuilt, err := composeReputationRelevanceReport(nodes, results)
+	if err != nil {
+		return err
+	}
+	for _, node := range rebuilt.Nodes {
+		if !node.Relevant && node.Excluded == "" {
+			return fmt.Errorf("H5 bought node %s has no qualifying effect or exclusion reason", node.NodeID)
 		}
 	}
-	pinned, err := os.ReadFile(path)
-	if err != nil || !bytes.Equal(pinned, encoded) {
-		t.Fatalf("relevance report drifted (regenerate with REPUTATION_UPDATE_RELEVANCE=1): %v", err)
+	expected, err := CanonicalJSON(rebuilt)
+	if err != nil {
+		return err
 	}
+	actual, err := CanonicalJSON(report)
+	if err != nil || !bytes.Equal(expected, actual) {
+		return fmt.Errorf("H5 retained report differs from raw-arm recomposition: %v", err)
+	}
+	return nil
 }
 
 func TestReputationRelevanceClassification(t *testing.T) {

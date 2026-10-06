@@ -5467,3 +5467,40 @@ censoring decision, per-node causal attribution (RP-274), H3/H5 author ruling,
 career artifact/policy ratification (RP-268/271), epoch/acceptance/archive/SQL/
 browser/deployment/cleanup/push. Full new span after5e083766 needs Claude,
 independently of all earlier ranges; no delegated/self archival.
+
+## 2026-10-06 — RP-275 shared report composition preparation
+
+Baseline at1f6a09ca,bb2a72/e60598,session70948,terminal exit2,0.319s: independent
+JSON-side check compiles and fails absent raw arms (0 versus2). Corrected raw
+retention and existing source/population controls3c22aa/323360,session71380,
+terminal exit0,0.319s. Refined composition controls416ffc/ab3ec5,session82209,
+terminal exit0,0.343s: coherent synthetic20-arm/two-seed groups, ten malformed
+groups and eight retained-report corruptions; H4 positive/tie/exclusion fixture
+keeps strict FAIL and both savings populations. None is a naturally earned or
+full ratified cohort. An added internally consistent zero-effect bought starter
+fires existing H5 report admission; a6aabe/c899db,session93977,terminal exit0,
+0.338s after restoration. Final focused raw/composition/source/population check
+bb8d03 follows the one logging-line addition, not a new full-population claim.
+
+Eleven separate compiling omissions all fail semantically: raw retention18c0a3,
+clock copyf38592, purchase copyd805d2, group census5ded9c, paired source51b347,
+negative clock2040c3, purchased-node admission7e7d30, mediancd98bf,
+retained equality5f5ea2, H4 gate status9a19d8 and H4 passing summaryf0a930.
+Each same handle terminates, then exact source restores: H40c3f4795,
+H5b99323a7, diagnostic28d2899f. No compilation or panic failure counted.
+Subsequent H5 criterion admission82d96926/diagnostic345787ca gets its own
+compiling guard omission911cb9: the internally consistent invalid report is
+wrongly admitted and the test fails. Restores exactly82d96926. One final
+observational log line yields H5b8aadfa5; unchanged H40c3f4795 and diagnostic
+345787ca. No live-run edit or undocumented restoration delta.
+
+H4 measurement/gate/statistics now share a test-side constructor; its original
+criteria and default v1 comparison remain. H5 shares composition across raw
+arms and retained-report recomposition. It still uses purchased baselines and
+finite-only deltas, the same median index/epsilon/classifier. Full measurement
+calls the raw recomposition check before reporting; invalid source/group data
+cannot silently become an aggregate. Existing invalid H5 node criterion remains
+FAIL (now also refused during recomposition before ordinary diagnostic output).
+No runtime/balance/kernel161/CI/policy/corpus/old-report byte change. Cold
+fast/vet and full97-pair/970-arm caller run next; no dated artifact generated,
+acceptance, author adoption, archive, cleanup, SQL/browser/deployment or push.
