@@ -90,6 +90,32 @@ func buildReputationOfferReplayCorpus(t *testing.T) reputationOfferReplayCorpus 
 					ReplayInputs: result.ReplayInputs, Outcome: result.Outcome, Receipt: transition.Decision.Receipt,
 					FounderOutput: replayFounderOutput(transition.Founder, resolved.FounderCarry), FinalCompany: mustEncodeState(t, state), NewCompany: json.RawMessage(`null`),
 					FounderEvents: fixtureEvents(transition.Decision.FounderEvents), CompanyEndedEvents: fixtureEvents(transition.Decision.CompanyEndedEvents), CompanyStartedEvents: fixtureEvents(transition.Decision.CompanyStartedEvents)})
+				founder := reputationFounderState(t, bundle, 22, now, 0)
+				founder.ExitHistory = []save.ExitRecord{{RunID: 1, ExitType: "collapse", OccurredAt: now.Add(-time.Hour)}}
+				pre := mustEncodeState(t, founder)
+				audit, _, err := buildFounderExitAudit(wire.Command, save.Revision{OwnerID: wire.Command.FounderID, Number: 1, ConstantsHash: bundle.ConstantsHash}, founder, transition.Founder, transition.Decision, bundle)
+				if err != nil {
+					t.Fatal(err)
+				}
+				founderInputs, err := save.MarshalFounderReplayInputs(save.FounderReplayCommand{IntentID: wire.Command.IntentID,
+					FounderStreamID: "01986666-8c00-4000-8000-000000000001", FounderID: wire.Command.FounderID,
+					Revision: 1, FounderLogSeq: 1, ServerTSMS: now.UnixMilli()}, json.RawMessage(audit))
+				if err != nil {
+					t.Fatal(err)
+				}
+				founderResult, err := ApplyFounderLogged(founder, result.CanonicalPayload, bundle, founderInputs)
+				if err != nil {
+					t.Fatal(err)
+				}
+				category, detail = rejectionOf(t, founderResult.Receipt)
+				if category != "unaffordable" || detail != "reputation_plan.reputation" || founderResult.Outcome != save.IntentRejected ||
+					founderResult.ResultConstantsHash != bundle.ConstantsHash || !bytes.Equal(mustEncodeState(t, founder), pre) || len(founderResult.Events) != 0 {
+					t.Fatalf("%s: Founder rejection changed full state/events/pin", name)
+				}
+				row.Founder = &reputationCorpusCase{Name: name + "-founder", Bundle: "tree", StateVersion: 22, PreState: pre,
+					CanonicalPayload: result.CanonicalPayload, ReplayInputs: founderInputs, Outcome: string(founderResult.Outcome),
+					ReceiptJSON: canonicalFixtureJSON(t, founderResult.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(founderResult.Events)),
+					PostStateJSON: canonicalFixtureJSON(t, mustEncodeState(t, founder))}
 			} else {
 				if result.Outcome != "applied" || row.Founder == nil {
 					t.Fatalf("%s: valid Exit did not apply", name)
@@ -182,8 +208,8 @@ func TestReputationOfferReplayCorpus(t *testing.T) {
 			founderArms++
 		}
 	}
-	if len(corpus.Cases) != 10 || applied != 8 || founderArms != 8 {
-		t.Fatal("offered-plan population must remain10/8/8")
+	if len(corpus.Cases) != 10 || applied != 8 || founderArms != 10 {
+		t.Fatal("offered-plan population must remain10/8/10")
 	}
 	for _, offset := range []int{0, 5} {
 		absent, empty := corpus.Cases[offset+2].Company, corpus.Cases[offset+3].Company
@@ -223,6 +249,27 @@ func TestReputationOfferReplayRefusesCopiedEvidence(t *testing.T) {
 	corpus := buildReputationOfferReplayCorpus(t)
 	bundle := reputationContentBundle(t)
 	for _, row := range corpus.Cases {
+		if row.Company.Outcome == "rejected" {
+			t.Run(row.Name+"-founder-delta", func(t *testing.T) {
+				var inputs map[string]any
+				if err := json.Unmarshal(row.Founder.ReplayInputs, &inputs); err != nil {
+					t.Fatal(err)
+				}
+				inputs["resolved"].(map[string]any)["reputation_delta"] = float64(1)
+				tampered, err := json.Marshal(inputs)
+				if err != nil {
+					t.Fatal(err)
+				}
+				founder, err := save.RestoreState(row.Founder.PreState, 22, bundle.Economy, economy.ScopeFounder, time.Time{})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := ApplyFounderLogged(founder, row.Founder.CanonicalPayload, bundle, tampered); err == nil {
+					t.Fatal("rejected Founder arm with credited delta replayed")
+				}
+			})
+			continue
+		}
 		if row.Founder == nil || !bytes.Contains(row.Company.CanonicalPayload, []byte(`"reputation.unlock.p05"`)) {
 			continue
 		}

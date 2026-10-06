@@ -19,14 +19,14 @@ function restoreCompany(state: unknown, bundle: ReplayCatalogBundle) {
 }
 
 describe("offered Reputation-plan Go/TS replay parity", () => {
-  it("pins both kinds and all ten Company/eight Founder arms", () => {
+  it("pins both kinds and all ten Company/ten Founder arms", () => {
     expect(corpus.version).toBe(1);
     expect(corpus.cases.map((row) => row.name)).toEqual([
       "acquihire-payout-funded", "acquihire-last-unaffordable", "acquihire-absent", "acquihire-empty", "acquihire-promise-floor",
       "acquisition-payout-funded", "acquisition-last-unaffordable", "acquisition-absent", "acquisition-empty", "acquisition-promise-floor",
     ]);
     expect(corpus.cases.filter((row) => row.company.outcome === "applied")).toHaveLength(8);
-    expect(corpus.cases.filter((row) => row.founder !== null)).toHaveLength(8);
+    expect(corpus.cases.filter((row) => row.founder !== null)).toHaveLength(10);
     expect(planCases).toHaveLength(4);
   });
 
@@ -43,6 +43,16 @@ describe("offered Reputation-plan Go/TS replay parity", () => {
     expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
     expect(canonicalJSONString(transition.companyEndedEvents)).toBe(testCase.company_ended_events_json);
     expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
+    const founderCase = row.founder!;
+    const founder = restoreFounderReplayState(founderCase.pre_state, founderCase.state_version, bundle);
+    expect(founder.reputationLevel).toBe(0);
+    expect(founder.reputationSpent).toBe(0);
+    const result = await applyFounderLogged(founder, canonicalJSONString(founderCase.canonical_payload), bundle, founderCase.replay_inputs);
+    expect(result.outcome).toBe(founderCase.outcome);
+    expect(result.resultConstantsHash).toBe(corpus.bundle.constants_hash);
+    expect(canonicalJSONString(result.receipt)).toBe(founderCase.receipt_json);
+    expect(canonicalJSONString(result.events)).toBe(founderCase.events_json);
+    expect(canonicalJSONString(encodeFounderReplayState(result.state))).toBe(founderCase.post_state_json);
     if (testCase.outcome === "rejected") {
       expect(transition.receipt).toMatchObject({ outcome: "rejected", rejection: { category: "unaffordable", detail: "reputation_plan.reputation" } });
       expect(canonicalJSONString(encodeReplayState(state))).toBe(canonicalJSONString(testCase.pre_state));
@@ -50,7 +60,9 @@ describe("offered Reputation-plan Go/TS replay parity", () => {
       expect(transition.founderEvents).toEqual([]);
       expect(transition.companyEndedEvents).toEqual([]);
       expect(transition.companyStartedEvents).toEqual([]);
-      expect(row.founder).toBeNull();
+      expect(result.outcome).toBe("rejected");
+      expect(result.events).toEqual([]);
+      expect(canonicalJSONString(encodeFounderReplayState(result.state))).toBe(canonicalJSONString(founderCase.pre_state));
       return;
     }
     expect(transition.founder.reputation_level).toBe(row.kind === "acquihire" ? 18 : 20);
@@ -84,16 +96,7 @@ describe("offered Reputation-plan Go/TS replay parity", () => {
     expect(resolvedIndex).toBeGreaterThanOrEqual(0);
     expect(endedIndex).toBeGreaterThan(resolvedIndex);
     expect(transition.companyEndedEvents[resolvedIndex]!.payload).toEqual({ offer_id: "01986666-d001-7000-8000-000000000001", resolution: "accepted" });
-    const founderCase = row.founder!;
-    const founder = restoreFounderReplayState(founderCase.pre_state, founderCase.state_version, bundle);
-    expect(founder.reputationLevel).toBe(0);
-    expect(founder.reputationSpent).toBe(0);
-    const result = await applyFounderLogged(founder, canonicalJSONString(founderCase.canonical_payload), bundle, founderCase.replay_inputs);
     expect(result.outcome).toBe("applied");
-    expect(result.resultConstantsHash).toBe(corpus.bundle.constants_hash);
-    expect(canonicalJSONString(result.receipt)).toBe(founderCase.receipt_json);
-    expect(canonicalJSONString(result.events)).toBe(founderCase.events_json);
-    expect(canonicalJSONString(encodeFounderReplayState(result.state))).toBe(founderCase.post_state_json);
   });
 
   it.each(["acquihire", "acquisition"])("keeps absent/empty %s plan outputs equal but requests distinct", (kind) => {
@@ -126,5 +129,14 @@ describe("offered Reputation-plan Go/TS replay parity", () => {
     expect(reordered.companyEndedEvents).toEqual([]);
     expect(reordered.companyStartedEvents).toEqual([]);
     expect(reordered.newCompany).toBeNull();
+  });
+
+  it.each(corpus.cases.filter((row) => row.company.outcome === "rejected"))("refuses copied credited delta on rejected Founder arm for $name", async (row) => {
+    const bundle = await catalogs;
+    const founderCase = row.founder!;
+    const inputs = structuredClone(founderCase.replay_inputs) as { resolved: { reputation_delta: number } };
+    inputs.resolved.reputation_delta = 1;
+    const founder = restoreFounderReplayState(founderCase.pre_state, 22, bundle);
+    await expect(applyFounderLogged(founder, canonicalJSONString(founderCase.canonical_payload), bundle, inputs)).rejects.toThrow();
   });
 });

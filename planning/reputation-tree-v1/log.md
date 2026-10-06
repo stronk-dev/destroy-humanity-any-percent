@@ -8557,3 +8557,16 @@ Population becomes ten Company/ten Founder, eight applied/two rejected on each.
 Generate only the NEW supplement after independent rejection controls; preserve
 original corpus. Add copied rejected Reputation-delta1 refusal for both runtimes.
 This is accepted R8 evidence extension, no rejection policy/runtime change.
+
+Refinement generator856b21/b43652 session14921 terminal0 emits ten Company/
+ten Founder arms0.379s. a65ee4 terminal0 runs normal compare and allsix copied
+negative groups0.231s: four planned arms plus both rejected delta arms. Full
+type/client384f5e/2dc715 session20028 terminal0, TS/Svelte0errors0warnings,
+8186 pass/339skip4.15s (19 new tests). SupplementSHA d062a758c917aafc45ac9d149722dc7bd4ea6ee906f5f536df071298cc30e50e.
+Original corpus preserved. Commit extension before final source faults.
+Predeclare additional exact Go rejected-Founder delta-zero guard omission:
+both copied delta1 negatives must fail, unmodified positive rejected records
+remain accepted. This is input refusal discrimination, not a SQL mutation.
+Re-run prospective-credit/generator and TS cost faults against final tests,
+restore every source exactly before final complete relevant packages/vet/
+type/client baselines. No expectation regenerated on a fault, no sourcecommit.
