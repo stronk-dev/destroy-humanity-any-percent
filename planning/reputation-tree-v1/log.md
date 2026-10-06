@@ -6059,3 +6059,42 @@ No source edits while any handle is live. No whole AC12/AC15/SQL/CI proof, mint,
 retune, kernel bump, checklist flip, archive, cleanup, push or publication.
 Correction scope and compiling omission probes will be declared after baseline.
 Full new range after b8ee639f needs Claude's designated pass including record edges.
+
+## 2026-10-06 — RP-278 baseline and bounded correction predeclaration
+
+Canonical copy census51e972 exits1: four keys present, revision_conflict absent
+(RP-280). New native host diagnostic3d9906/3193fa,session65189 terminal exit2:
+48 rejection cases fail absent inline row status, eight applied controls pass.
+Both conflict HTTP200 and typed409 execute one held authoritative refresh with
+disabled controls before failing the inline assertion. Actual runtime parsers,
+native Worker/host/keyboard run over controlled Response/socket protocol input;
+no live network/SQL/mint claim. Types1bcca0/78b614,session95572 terminal exit0,
+zero errors/warnings. All handles now terminal before correction.
+
+Correction scope under accepted R9: one optional act result/error observer with
+closed typed inputs, called inside its existing task, so feedback is bound to the
+submitted node rather than inferred from mutable global notice after settlement.
+Reputation-only wrapper clears old feedback at submission; four existing mapped
+rejections and revision conflict map to declared Reputation keys. Preserve shared
+notice/effect and refresh ordering exactly, including HTTP409 handling; do not
+add a conflict entry to SurfaceRejections. Render a stable polite row status
+matching only that submitted node. Applied result/global status remains existing.
+No authoritative state computation, schema/security/session/transport change.
+
+Separate key scope: declare ONLY missing revision_conflict with standard explicit
+PENDING OWNER COPY placeholder; all other prose unchanged. Root copy generation
+updates required six copy outputs and content manifest. Generated Go All() list
+changes server producer tree; retained dated career artifacts remain valid for
+their recorded historical tree, NOT current-tip proof. Do not restamp or overwrite
+reports, mint/ratify content, or assert harness/epoch acceptance. Kernel affecting
+paths exclude these UI/copy bytes; no behavior-identical false numeric bump.
+
+Require56 new native host cases plus58 existing child cases green, and shared
+GS0.2 host rejection control. Demonstrate compiling omissions of row feedback
+rendering, host outcome observation, conflict refresh and row ID matching; latter
+must fail attribution without changing response behavior. Restore exact production
+bytes after EACH terminal probe, rerun; no edits under any live handle. Cold
+types/build/client/boundaries/copy, focused Go copy registry via root -count=1,
+and separate kernel-history guard. No full native Firefox/CI/SQL/AC12/AC15 claim.
+No checklist flips, authored prose adoption, archive, cleanup, publication or push.
+Full range after b8ee639f needs designated cross-party verdict including records.
