@@ -4,7 +4,22 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime checkpoint: RP-282 hidden Exit plans are locally corrected
+Latest runtime checkpoint: RP-285/RP-286 native Reputation Tab traversal is
+locally corrected under2b2536a9. Unchanged-source baseline44 fails/10 controls
+pass; corrected54 pass. Three compiling regressions fail36/52/12 as declared,
+each exactly restored; final248 selected Chromium/WebKit cases pass. Header,
+enabled rows, Confirm/Cancel and reverse traversal execute without browser
+preference changes. Types/build8106 units/boundaries/copy/manifest pass;
+255 Node skips remain visible. Historical RP-131 guard still RED, Firefox
+unexecuted: not whole CI/AC12/manual AT/SQL/mint proof. Whole span after8a3bfb70
+through final record edge needs Claude; all earlier ranges remain independent.
+Next safe lanes: RP-281 paired generator/output repair, RP-284 producer/consumer
+grounding. RP-283 authoritative Wind Down preview remains an author contract gap.
+No numeric/kernel/copy/CI policy change, owner adoption, release promotion or
+archive. [Evidence](reputation-tree-v1/log.md). Older checkpoint next-step notes
+below are historical, not the current queue.
+
+Previous runtime checkpoint: RP-282 hidden Exit plans are locally corrected
 underc12e985f. Completed-protocol baseline fails16 remount/Offer cases while24
 empty/selected controls pass; initial incomplete Offer fixture is disclosed.
 Two compiling mutations independently fail16/24 with controls green, exact

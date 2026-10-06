@@ -89,6 +89,14 @@ threshold retune is measured and reported, then ratified by owner SHA).
   `run_started` v2. ACs 6, 7, 8, 11.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+  RP-285/RP-286 under2b2536a9 adds explicit native header/button Tab stops.
+  Original44 failures/10 controls pass; three compiling probes fail36/52/12;
+  final248 selected Chromium/WebKit pass after exact restoration. Types/build/
+  units8106/boundaries/copy/manifest pass;255 Node skips/RP-131 RED/Firefox
+  unexecuted remain. Controlled native component evidence, not manual AT/
+  SQL/mint/full AC12. Whole span after8a3bfb70 needs Claude. Next RP-281
+  tooling or RP-284 producer ground; RP-283 author gap remains. No checkbox
+  flip, inherited B7 closure or new purchase/browser policy.
   RP-282 under673c09a6/916abc50/c12e985f now synchronizes existing fresh
   panel selection with host, preventing invisible old-plan submission. Refined
   baseline16 fail/24 controls green; two compiling mutations fail16/24 with

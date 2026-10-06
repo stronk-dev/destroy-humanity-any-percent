@@ -3243,3 +3243,19 @@ Full nine-tier/platform1.0 active, all owner/author/data/mint/SQL/capacity/
 deployment/review holds unchanged. No numeric/kernel161/price/copy/balance/CI
 policy change, box flip, archive/acceptance, cleanup, report restamp, deployment/
 publication/push, shortcut or goal completion. Concrete runtime progress made.
+
+## 2026-10-06 — Reputation native Tab traversal corrected locally
+
+RP-285/RP-286 under2b2536a9: native original54-case diagnostic fails44 with10
+controls green. Header and Buy/Confirm/Cancel explicit Tab stops pass54. Three
+compiling regressions fail36/52/12, sources exactly restored; final248 selected
+Chromium/WebKit pass. Types/build8106 units/boundaries/copy/manifest pass;
+255 Node skips visible, historical RP-131 RED and Firefox unexecuted remain.
+Controlled native component/host evidence, not whole AC12/manual AT/SQL/mint/
+default-player/CI proof. Full span after8a3bfb70 through final record edge needs
+Claude; earlier ranges independent. Next RP-281 paired tooling repair or RP-284
+producer grounding; RP-283 author contract gap remains. Full nine-tier/platform
+1.0 goal active, all owner/data/author/operations/review holds unchanged. No
+copy/price/balance/kernel161/CI/browser policy change, checkbox, archive,
+publication/deployment/push, report restamp, cleanup, shortcut or goal completion.
+[Evidence](reputation-tree-v1/log.md).

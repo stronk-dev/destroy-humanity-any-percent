@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation native Tab traversal corrected locally — 2026-10-06
+
+RP-285/RP-286 underbfc47315/13355948/14232b2c/31af453f/2b2536a9:
+original54-case diagnostic fails44 with10 controls passing. Minimum explicit
+header/button Tab stops pass54; three compiling omissions/extra-row stops fail
+36/52/12, each exactly restored. Final248 selected Chromium/WebKit pass.
+Types/build8106 units/boundaries/copy/manifest pass;255 Node skips visible.
+RP-131 remains RED, Firefox unexecuted; not whole CI or AC12/AT/SQL/mint proof.
+
+**READY FOR CLAUDE:** full span after8a3bfb70 through final record edge;
+all earlier spans remain independent. No self-approval/archival.
+**NEXT SAFE ACCEPTED WORK:** RP-281 paired generator/output canonicalization
+with discriminating fixtures, or RP-284 producer/consumer grounding. RP-283
+authoritative preview remains a contract gap, not client-formula authority.
+**HELD:** full AC12/AC15, author/data/H3/H4/H5/R11, owner copy/adoption,
+capacity/deployment, all reviews and proper nine-tier1.0. No numeric/kernel161/
+balance/copy/browser/CI policy change, checkbox, acceptance/archive, cleanup,
+report restamp, publication/deployment/push or goal completion.
+[Exact evidence](../reputation-tree-v1/log.md).
+
 ## Reputation hidden Exit plans corrected locally — 2026-10-06
 
 RP-282 under673c09a6/916abc50/c12e985f: completed controlled protocol

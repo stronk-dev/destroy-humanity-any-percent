@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime checkpoint (2026-10-06):** RP-282 hidden Exit-plan correction
+**Latest runtime checkpoint (2026-10-06):** RP-285/RP-286 native Reputation
+Tab correction under2b2536a9. Original44 failures/10 controls pass; corrected54
+pass. Three compiling probes fail36/52/12 with exact restoration; final248
+selected Chromium/WebKit pass. Types/build8106 units/boundaries/copy/manifest
+pass;255 Node skips visible. RP-131 guard remains RED, Firefox unexecuted;
+not whole CI/AC12/manual AT/SQL/mint proof. Whole span after8a3bfb70 needs
+Claude, independently of earlier ranges. Next RP-281 paired tooling repair or
+RP-284 producer grounding; RP-283 author bridge remains. Full nine-tier/platform
+1.0 active, no numeric/kernel/copy/CI policy or release promotion.
+[Evidence](reputation-tree-v1/log.md). Older next-step notes are historical.
+
+**Previous runtime checkpoint (2026-10-06):** RP-282 hidden Exit-plan correction
 underc12e985f first fails16 completed-protocol remount/Offer cases with24
 controls green; the initial incomplete Offer fixture is disclosed. Two compiling
 mutations independently fail16/24 and restore exact source. Final194 selected
