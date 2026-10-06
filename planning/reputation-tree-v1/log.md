@@ -5876,3 +5876,41 @@ must also be included in Claude's full span after020a25c6, separate from every
 earlier range. All handles terminal before edits/record. No archival, cleanup,
 publication, deployment, push or full1.0 completion. Goal turn is concrete
 progress; full nine-tier/platform objective remains active.
+
+## 2026-10-06 — R9 purchasing-row diagnostic predeclaration
+
+Baseline5bf6017f, clean main; previous goal turn was progress (RP-276 focus
+reproduced/corrected/discriminated, records reconciled). Re-read root process/
+AGENTS and active accepted index; RFC/design authority unchanged since020a25c6.
+Current surface898d69 has no aria-busy. Host4f3251 returns an existing act
+Promise which can await a preceding refresh before setting global pending;
+pending can also outlive a conflict receipt during refresh. Thus "every row
+busy whenever global pending" or retaining a last node indefinitely is wrong.
+RP-277 remains a source finding until executed; no host-proof inference.
+
+Test-only native diagnostic: two eras × Enter/Space × synchronous/delayed
+host-pending start × controlled owned/available arm =16 cases per executed
+engine. Use a legal-shaped two-available-row fixture and controlled returned
+task; no receipt/transport implementation. Non-vacuous assertions require only
+the submitted row busy, all Buy controls disabled during its returned task and
+parent pending, retained focus, no extra submission, and no stale busy marking
+under unrelated global pending after task/snapshot settlement. A subsequent
+purchase must mark its own row, not the previous one. Keep all prior13 cases
+and axe controls unchanged except callback braces if stronger return typing
+later requires them. No production change before baseline execution.
+
+Use root exact-file chromium/webkit selection explicitly: Firefox remains zero
+after both normal/outside-sandbox attempts last turn; no new installation,
+security flag or deadline workaround, no three-engine/full AC12 claim.
+If red, separately record/predeclare bounded correction before production:
+typed existing callback may return void or the host's existing Promise<void>;
+track the submitted row while that task OR parent pending remains and clear
+after both finish. Preserve global pending/transport/revision/refresh semantics,
+server-derived eligibility, owner copy and RP-276 focus. Only local presentation
+controls enforce R9's existing one-in-flight rule. Execute baseline/restored
+suite, compiling busy-attribute and stale-attribution negative probes with exact
+restoration, cold types/build/client/boundaries/copy. No live-handle edits.
+RP-278/279, host/SQL/mint/full AC12, author/data/H3/H4/H5/R11, Firefox/capacity,
+historical RP-131 and cross-party reviews remain separate. Full new span after
+5bf6017f needs Claude, including final record edges; no box, acceptance, archive,
+cleanup, publication, deployment or push. Full nine-tier/platform1.0 active.
