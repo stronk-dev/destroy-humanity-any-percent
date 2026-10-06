@@ -1178,3 +1178,27 @@ checkbox/status/archive/mint/push/deploy. RP-308 delegation unanswered. ENTIRE
 new span after7effff9a needs Claude including records; prior spans independent.
 Proper nine-tier/platform1.0 active; this turn adds a concrete integrated defect,
 not a reason to proclaim paired numeric research complete or abandon the goal.
+
+### R-012 logged-policy range review — local first filter only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `7effff9a..b55f2131`, all twelve changed paths, including
+6141af35 predeclaration and all implementation/record changes. New observer
+source and full record diffs inspected;12,866artifact lines validated through
+complete Go reconstruction and declared-population census, not claimed read
+individually. Actual TS attempts expose RP-309, not paired payout success.
+
+Explicit check of source scope: only test files/artifact/dossier/planning/backlog
+and canonical limitation documentation changed; no runtime/old corpus/kernel/
+balance/save schema/copy/CI/RFC-body byte moved. No checkbox or acceptance flips.
+24Go purchases/57restores/9refusals hold; final client30failures remain exact
+upstream v19 refusal and six masked negatives, not relabelled successes. Wrong
+zero spelling/property typo corrected and re-observed, not hidden as product
+findings. Initial comparison fault is not claimed to prove final comparison.
+
+Decision: scoped reproducible research and an actionable accepted-CV4 defect,
+NOT runtime repair, AC6 pass, independent approval or archival authority. Entire
+span after7effff9a INCLUDING this following record edge requires Claude's
+designated pass; all prior independent spans/holds remain. Next bounded RP-309
+repair requires its own predeclaration/kernel protocol/re-observation. Goal
+active; RP-308 unanswered; no mint/archive/push/deploy/release call.
