@@ -7913,3 +7913,25 @@ After the existing SQL baseline, predeclare and add the missing composed career
 under accepted R8/AC15 if the declared environment executes. No production,
 balance/mint/owner-copy or other-author body change; independent review stays
 mandatory and all prior holds remain.
+
+SQL baseline: first command b50c08 terminal2 before execution (Make consumes
+the regex's dollar anchor and leaves an unmatched quote); no tests ran.
+Corrected selector without that anchor04e34e/5a5ce3 session45351 terminal2:
+purchase0.51s and Exit-plan0.14s PASS, taxonomy0.13s FAIL at fixture setup,
+`epochs_one_current_idx` duplicate current epoch. No taxonomy subcase executed.
+The cached declared environment DOES execute SQL despite root-capacity hold;
+do not cite capacity as a blanket SQL blocker. Compose's unrelated-service
+warning is not cleanup authority. A glob search also failed before reading;
+subsequent `rg` against existing paths supplies the actual source census.
+
+RP-294 predeclaration: test-only repair within R5/AC3. The source population
+requires both tree and inactive bundles; register their immutable catalogs
+and artifacts under ONE disposable fixture epoch's accepted hash set, rather
+than creating a second current epoch. Assert exactly one epoch/current epoch
+and the complete unique source-hash population. Preserve all21 taxonomy
+profiles, eleven applied source controls, all rejection, replay, no-write,
+event/outbox/state checks, the real DB constraint and production bytes.
+Rerun unchanged three-test population cold; remove the second-bundle binding
+temporarily as a compiling negative and require the fixture population oracle
+to fail before restoring exactly. No broad shared-helper change. Full new
+range afterffd1b673 needs Claude; career and full CI remain separate/unproven.

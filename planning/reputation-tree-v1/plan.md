@@ -245,6 +245,17 @@ population if runnable; do not substitute these components for SQL evidence.
 
 ## Batches
 
+### Real-Postgres grounding / RP-294 — 2026-10-06
+
+Existing three-test population executes on cached declared Compose: purchase
+and Exit-plan pass; taxonomy fails before its21 profiles because setup creates
+two current epochs. Test-only R5/AC3 repair registers both pinned bundles under
+one fixture epoch, with exact epoch/hash population checks; production/index/
+migrations/oracles remain untouched. Baseline failure is retained in log.
+Rerun all three cold and demonstrate omission of the second hash binding.
+The full scripted-first → elective-with-plan → run3 AC15 career is not present
+in these tests and requires a separate predeclared composed population.
+
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1
   accounting helpers, R3 bonus arithmetic; shared rejection-fixture corpus and bonus vectors.
   ACs 1 (loader half), 5.
