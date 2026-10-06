@@ -3,6 +3,33 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation persisted activation / first-failure proof — 2026-10-06
+
+RP-299, range aftere5a69731: bbf8d236 predeclares,43999875 adds the24-case
+Postgres matrix,b36f2777 adds three sequential plan-free fallback controls.
+WindDown/Acquihire/Acquisition each exercise old-pin activation plan/absent/
+empty plus inactive/unknown/owned/requires/unaffordable whole-Exit refusals.
+Mid-run inactive purchases preserve both heads even under a newer available
+tree. Full persisted heads/old and new pins/frozen bonus/starters/ordered events/
+receipts and both applicable history consumers verify. Refused incomplete runs
+are compared directly, not called completed replay proof. All24 exact retries
+and three fallback retries preserve complete twelve-table values.
+
+Compiling current-vs-next and detail faults fire; skipped application is caught
+by earlier live parity, while shared-helper spent reset independently fails the
+new accounting oracle. Empty-plan omission wrongly closes allthree fallback
+doors. All source restored exactly. Complete four relevant Go packages/vet,
+strict types/Svelte and8186 client units/339 skips pass; restored SQL production
+Integration36 top-level/143 subcases/no skips passes12.814s.
+**DESIGNATED REVIEW PENDING:** entire span aftere5a69731 including final records,
+separate from all earlier offered-parity/SQL/request/rollback/career spans.
+**NEXT SAFE ACCEPTED WORK:** census separate R8 Go/TS cross-pin activation and
+plan first-failure coverage; predeclare missing evidence before edits. SQL
+proof does not supply that portable corpus or natural/default browser/minted
+release/fullAC9/CI/1.0 proof. All previous author/environment/owner/release
+holds/full goal remain; no product/copy/balance/epoch/CI/cleanup/status/archive/
+publish/deploy/push.
+
 ## Reputation offered-plan Go/TS parity — 2026-10-06
 
 RP-298, range afterc3ab42d0: new Go-authored supplement, original corpus
@@ -19,9 +46,9 @@ Cold complete production/save/reputation/gameui/vet, strict TS/Svelte and8186
 units/339 skips pass; actual production SQL35/119/no skips passes10.269s.
 **DESIGNATED REVIEW PENDING:** full span afterc3ab42d0 including final records,
 separate from all earlier SQL/request/rollback/career and implementation spans.
-**NEXT SAFE ACCEPTED WORK:** census remaining R6 plan rejection and next-bundle
-activation populations at real Go/TS boundaries; predeclare missing evidence
-before changes. Not browser/default-player/natural pacing/fullR8/AC9/CI/release.
+**THEN-NEXT WORK:** persisted R6 activation/refusal matrix now executes above;
+separate Go/TS cross-pin parity census remains next. Not browser/default-player/
+natural pacing/fullR8/AC9/CI/release.
 All previous holds/full1.0 goal remain. No production/copy/balance/epoch/CI/
 cleanup/status/archive/publish/deploy/push.
 

@@ -4,7 +4,23 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest replay checkpoint:** RP-298 test-only/generation supplement after
+**Latest SQL checkpoint:** RP-299 test-only range after `e5a69731` executes24
+WindDown/both-offer profiles: nine actual old-pin→new-tree activations and
+fifteen first-failure whole-Exit refusals. Mid-run purchase cannot activate the
+latest tree; full heads/pins/frozen/events/receipts/history and exact retries
+verify. Three sequential plan-free fallbacks complete the refused inactive-tree
+runs without reseeding. Four source-fault families discriminate; skipped plan
+application hits the earlier parity guard, shared spent reset the new persisted
+oracle. All production bytes restore exactly. Complete relevant Go/vet, strict
+TS/Svelte and8186 client units/339 skips pass; actual production SQL36 top-level/
+143 subcases/no skips passes. Full span needs Claude including final records;
+earlier ranges independent. Next census separate R8 Go/TS cross-pin activation/
+first-failure coverage, predeclare missing evidence before changes. Diagnostic
+initial earned6/stored offers, not natural/default browser/minted release/full
+AC9/CI/1.0 proof. Full goal and prior holds remain; no production/copy/epoch/CI/
+cleanup/status/archive/push. [Evidence](reputation-tree-v1/log.md).
+
+**Previous replay checkpoint:** RP-298 test-only/generation supplement after
 `c3ab42d0` now byte-compares ten offered-plan Company and ten Founder arms
 in Go/TS (eight applied/two rejected each). Both offer kinds, payout-funded
 plan6/refusal23/absent/empty/promise floor; complete state/receipt/events/pin,
@@ -14,9 +30,9 @@ sources restore exactly, faulted generation cannot overwrite the fixture.
 Old corpus byte-unchanged. Cold complete relevant Go packages/vet, strict
 TS/Svelte,8186 client units/339 skips and actual SQL35/119/no skips pass.
 Not default player/browser/natural pacing/fullR8/AC9/CI/1.0. Full new span
-needs Claude, earlier ranges independent. Next accepted scope: census remaining
-R6 plan refusals/next-bundle activation against actual Go/TS coverage, predeclare
-missing populations before implementation. All full-goal/author/environment/
+needs Claude, earlier ranges independent. Its then-next persisted R6 activation/
+refusal matrix now executes above; separate cross-pin Go/TS parity census is
+still next. All full-goal/author/environment/
 release holds remain. [Evidence](reputation-tree-v1/log.md).
 
 **Previous SQL checkpoint:** test-only range after `8ee45af3` proves both live

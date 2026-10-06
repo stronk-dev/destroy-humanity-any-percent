@@ -5,7 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest replay checkpoint (2026-10-06):** RP-298 supplement afterc3ab42d0
+**Latest SQL checkpoint (2026-10-06):** RP-299 test-only range aftere5a69731
+proves24 WindDown/both-offer profiles: nine persisted old-pin→new-tree
+activations, fifteen whole-Exit first-failure refusals and three subsequent
+plan-free fallback controls. Full heads/pins/frozen/starters/ordered events/
+receipts/replay histories and full-table retries verify; mid-run purchase cannot
+activate the latest tree. Compiling current/next, detail, shared spent and
+empty-plan faults fire; skipped application fails earlier parity guard, not
+the new saved-state oracle. Exact source restoration; complete relevant Go/vet,
+strict types and8186 client units/339 skips pass; actual SQL36/143/no skips
+passes. Full span including records needs Claude; previous spans independent.
+Next audit separate R8 Go/TS cross-pin/first-failure coverage before predeclaring
+missing cases. Diagnostic earned6/stored offers, not natural/default browser/
+minted release/fullAC9/CI/1.0. Full nine-tier/platform goal and all prior holds
+remain; no production/copy/epoch/CI/cleanup/push/status promotion.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous replay checkpoint (2026-10-06):** RP-298 supplement afterc3ab42d0
 proves ten offered-plan Company/ten Founder replay arms in Go/TS, eight
 applied/two rejected each. Both offer kinds, payout-funded plan/refusal/absent/
 empty/promise floor; exact full state/receipt/events/result-pin and independent
@@ -13,8 +29,9 @@ accounting/starter/bonus/order controls. Copied inputs refuse; three source
 fault families discriminate, faulted generation refuses overwrite and sources
 restore exactly. Historical corpus byte-unchanged. Complete relevant Go/vet,
 strict TS/Svelte and8186 client units/339 skips pass; actual SQL35/119/no skips
-passes. Full new span needs Claude; prior ranges separate. Next census remaining
-R6 plan refusal/next-bundle activation parity before predeclaring missing work.
+passes. Full new span needs Claude; prior ranges separate. Its then-next
+persisted R6 activation/refusal matrix now executes above; separate Go/TS
+cross-pin/first-failure parity census remains next.
 Diagnostic stored offers, not default-player/browser/natural pacing/fullR8/AC9/
 CI/release proof. Full nine-tier/platform1.0 and all previous holds remain;
 no production/copy/epoch/CI/cleanup/push/status promotion.

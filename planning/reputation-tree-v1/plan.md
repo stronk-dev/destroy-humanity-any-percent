@@ -717,3 +717,11 @@ new matrix profiles; completed fallback count must be3. Compiling omission of
 the empty-plan early return must fail these controls. Shared post-application
 spent reset is the separately predeclared accounting refinement; do not cite
 the earlier live-parity failure as the new persisted oracle's discrimination.
+
+Executed at43999875/b36f2777:24 original profiles (nine first requests applied,
+fifteen refused) plus three same-head plan-free fallbacks. Exact source faults
+and restores recorded separately; skipped application is earlier parity defense,
+shared spent reset fires the new persisted accounting oracle. Complete relevant
+Go/vet/type/client and restored production SQL36/143/no skips pass. No acceptance
+checkbox/status promotion; full span aftere5a69731 including records needs Claude.
+Next census distinct R8 Go/TS cross-pin/first-failure population before edits.

@@ -3517,3 +3517,31 @@ No browser/default-player/natural pacing/fullR8/AC9/CI/release promotion,
 production/copy/balance/epoch/CI/checkbox/cleanup/archive/push/publication/
 deployment. Full nine-tier/platform1.0 goal active/progress; prior holds intact.
 [Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Persisted Reputation activation and first-failure proof
+
+RP-299, test-only range aftere5a69731: bbf8d236 predeclares,43999875 adds
+24 actual Postgres profiles,b36f2777 adds three sequential no-plan fallbacks.
+Nine old-pin→tree activations across WindDown/both offers and plan/absent/empty;
+fifteen explicit inactive/unknown/owned/requires/unaffordable whole-Exit refusals.
+Mid-run purchase remains inactive under latest tree; persisted full heads/pins/
+frozen/starters/ordered events/receipts and applicable Founder/Company histories
+verify. Refused unfinished runs remain incomplete, directly compared. All24
+exact retries and three fallback retries preserve full twelve-table values.
+
+Compiling current/next, detail, shared spent accounting and empty-plan-door
+faults fail unchanged tests. Skipped application hits earlier live parity;
+shared spent reset reaches and fires the new oracle. Sources restore exactly.
+Initial unused-import and raw-json formatting oracle mistakes retained; complete
+exact-number replay comparison plus copied-tier negatives preserves all fields.
+Cold full relevant Go packages/vet/type checks pass;8186 client tests pass/339
+skip; declared production SQL36 top-level/143 subcases/no skips12.814s passes.
+
+Docs/ledger/live board/queue/plan/log reconcile; full new span including records
+needs Claude, previous independent spans pending. Next census separate R8
+Go/TS cross-pin/first-failure parity before predeclaring missing work. Diagnostic
+initial earned6/stored offers, not naturally earned/default browser/AT/minted
+release/fullAC9/CI/1.0 proof. No production/copy/balance/epoch/CI/checkbox/cleanup/
+status/archive/publish/deploy/push; full nine-tier/platform goal active/progress,
+all prior author/environment/owner/release holds unchanged.
+[Executed evidence](reputation-tree-v1/log.md).

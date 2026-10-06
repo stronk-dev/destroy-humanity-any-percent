@@ -479,6 +479,52 @@ make test-client
 make reputation-offer-corpus
 ```
 
+### Persisted activation and first-failure supplement (R6/R7)
+
+`TestReputationExitBoundaryIntegration` executes24 profiles against declared
+Postgres: WindDown, Acquihire and Acquisition each have three old-pin activation
+controls and five whole-Exit refusal controls. Activation starts with the live
+v21 Founder/tree absent and moves to a distinct diagnostic tree bundle only at
+Exit. A direct purchase before Exit still refuses without changing either head,
+even though the latest available bundle has the tree. Disposable epochs close
+and append normally; no same-epoch tree-artifact addition or repository mint.
+
+The nine activation cases check plan/absent/empty inputs, exact committed
+receipt revisions, Founder v22, old run pin preservation and the next run pin,
+spent6 or0, ordered purchase events, sorted ownership, starters, frozen1.003 or
+unit factor, and the start summary. The completed old-pin Company run and whole
+Founder history both verify; substituting the wrong hash refuses. Full replayed
+next Company state matches its saved head.
+
+The fifteen refusal cases independently name inactive/unknown/owned/missing-
+prerequisite/unaffordable first failures after valid prefixes. Full heads,
+pending offer and game/evidence rows stay unchanged; required rejection logs,
+receipt and outbox are recorded. The refusal is replayed directly, not called
+a completed verified run. Exact-number canonicalization compares every replayed
+state value despite PostgreSQL jsonb key/spacing differences; copied tier changes
+fail this comparison. Raw persisted before/after comparisons remain byte-exact.
+All24 exact retries preserve twelve complete tables.
+
+Three inactive-tree cases then take an actual plan-free WindDown on those same
+heads, with no reseeding. Both two-entry histories verify and exact retries
+preserve complete rows. No Reputation purchases or frozen bonus row appear.
+These are three sequential fallback controls, not three extra matrix profiles.
+
+Compiling source probes discriminate current-versus-next validation, exact
+refusal detail, independent persisted spent accounting and the plan-free door.
+Skipping plan application is caught earlier by the existing live/replay parity
+guard; the separate shared-helper spent reset reaches and fails the new oracle.
+Every production source is restored byte-identically before broader cold tests.
+
+This is diagnostic initial earned6/run2/tier3/stored-offer SQL evidence, pending
+designated review. It does not establish naturally earned progression, live
+offer generation (proved separately above), Go/TS cross-pin corpus parity,
+default browser/AT behavior, minted release data, full AC9/RFC/CI or1.0 readiness.
+
+```sh
+make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationExitBoundaryIntegration'
+```
+
 ## Portable Founder-history evidence
 
 `server/production/reputation_history_test.go` drives the public

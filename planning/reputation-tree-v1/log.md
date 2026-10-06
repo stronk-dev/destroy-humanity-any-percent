@@ -8751,3 +8751,39 @@ fallbacks,2.826s. Each fallback completes the previously refused run without
 reseeding, keeps the absent-tree version/pin/no purchases, verifies both
 two-entry histories and preserves12tables on exact retry. Commit positive
 test before the predeclared empty-plan omission; no production fault active.
+
+Empty-plan omission againstb36f2777 a336b8/ecd5cb session2860 terminal2:
+all24 profiles execute; exactlythree next-inactive follow-up requests wrongly
+refuse reputation_plan.tree_inactive at the new no-plan-door oracle. Other21
+controls pass, completed counters9/12/0 instead9/15/3. Source compiles;
+no assertion/corpus/threshold changed during the live handle. Restore exact
+reputation_intent.go before broader baselines. Prior fault evidence remains
+bounded to43999875, this additive fallback span still needs Claude.
+
+Exact source restorec0fe39/c1482f: prestige.go SHA256
+6d07581c74822e57d63c09b0ed139d98b0b1f44aba566f8d654ad2f4213cb691;
+reputation_intent.go SHA256
+11fe1b6a202f45b142acbf6de1375522dd21011fa108a04db79cb72a4fba8189.
+Both match pristine source, empty production diff. Broad handles all terminal:
+d1fb2b/f6c66a/60d37b/391b07 session92863 exit0, full production38.091s,
+save0.327s/reputation0.188s/gameui0.295s with-count=1 and scoped vet. Host SQL
+skips are not persisted proof. e5f3ce/e41aa7 session73640 exit0, strict TS and
+Svelte0errors0warnings;93 client files pass/22skip,8186 tests pass/339skip4.94s.
+716f64/21539c session90418 exit0, declared production Integration12.814s,
+36 top-level/143 subcases/no skips independently counted from PASS lines.
+New24 matrix passes3.19s including allthree follow-up fallbacks. Docker orphan
+warning not cleanup authority; no files edited while any broad handle live.
+
+Reconcile RP-299 ledger/canonical evidence docs/current board/executable queue/
+per-RFC plan/append-only roadmap log. New test428lines, no existing test removed
+or weakened, production/artifact/corpus/CI/epochs unchanged. Initial compile/
+raw-json formatting oracle mistakes preserved above; full replay-state canonical
+comparison retains every exact-number field and copied tier negative, while
+actual persisted head/row comparisons remain raw byte-exact. Initial earned6/
+stored zero-promise offers are diagnostic, not natural progression/live producer/
+default browser/AT/minted-release/fullAC9/CI/1.0 proof. No checkbox/status/archive/
+push/cleanup/owner-body edit. Full new range aftere5a69731 including final
+records needs designated Claude review, earlier independent spans still pending.
+Next accepted safe work: census separate R8 cross-pin/first-failure Go/TS evidence,
+predeclare missing cases; this SQL test is not that portable corpus. Full
+nine-tier/platform goal remains active/progress; all previous holds intact.
