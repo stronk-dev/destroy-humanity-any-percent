@@ -7895,3 +7895,21 @@ Next preflight is read-only: declared profiled Go image/cache availability and
 the exact existing R8/AC15 SQL population. Cache-prune question has no user
 answer and grants no deletion authority. Neither Docker fullness nor healthy
 Postgres alone establishes whether this narrow cached population can execute.
+
+### R8/AC15 SQL grounding — predeclared 2026-10-06
+
+Start `ffd1b673`, clean tree. The declared profiled `golang:1.26` image exists
+locally (arm64), Compose owns the existing `cloud-clicker_go-cache`, and its
+disposable Postgres service is healthy. No pull, cache deletion or host URL.
+Run the existing exact three-test production population through the root
+`test-save-integration` target with `-count=1 -v`: purchase persistence/retry/
+frozen completeness, Exit-plan atomicity, and complete persisted R5 taxonomy.
+Every named test must execute without skip; failures remain evidence and no
+timeout, oracle or capacity policy is loosened. This is NOT full CI or AC15.
+Source census finds no composed real-SQL scripted-first → elective-with-plan →
+run-3 career: existing Exit-plan test seeds run 2 and prior Exit history. R8
+corpus/history and Company-run verifier controls are separate populations.
+After the existing SQL baseline, predeclare and add the missing composed career
+under accepted R8/AC15 if the declared environment executes. No production,
+balance/mint/owner-copy or other-author body change; independent review stays
+mandatory and all prior holds remain.
