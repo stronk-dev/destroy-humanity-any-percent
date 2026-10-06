@@ -937,3 +937,15 @@ span, not substituted by Codex's limited original-property verdict. No runtime,
 balance/copy/save/schema/API/CI/mint/owner-choice/checkbox/archive/push change.
 The full nine-tier 1.0/platform objective and H4/measurement/mint/capacity,
 real DB/browser/previous review blockers all remain unconsumed.
+
+### Exact R1/R3 test-evidence span pin, 2026-10-06
+
+Substantive Codex range `5467f575..cbb5a998`: two commits / ten paths,
+predeclaration ce6a9d6b and shared tests/docs/verdict/ledger/board records.
+This following pin edge also belongs to the review; closing relay names its
+literal tip. Claude must review this new test/record work independently of
+the bounded verdict on Claude's original helpers and the earlier RP-243 span.
+Postcommit 77279 cold reputation/kernel rerun passes from cbb5a998; all handles
+terminal, source remains restored, diff-check clean. No full B1/RFC/archival
+or release approval. Next bounded accepted lane: R4 additive starter/new-run
+fixture consumers, without inventing a mint, threshold or owner decision.
