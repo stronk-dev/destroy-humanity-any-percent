@@ -1946,3 +1946,29 @@ Committed implementation `4793effa`. Exact new test-only designated-review range
 `3e518f21^..4793effa` (`20ea7b9c..4793effa`), two commits / nine paths. This pin is metadata,
 not a Claude verdict. No earlier pending review, owner ruling or lifecycle gate is consumed;
 no self-approval, archive, push or release claim. All verification processes are terminal.
+
+## 2026-10-06 — SG6/AC8 full-row rollback predeclaration
+
+Clean baseline `f736e73b`; previous HTTP range committed and independently pending Claude.
+Inspected the accepted SG6/AC8 contract, actual Store coordinator and existing Service test.
+RP-227 records a test-population gap: `founder_genesis` is a tenth actual fault boundary,
+omitted by the existing nine-point test. Selected revision/count checks also do not directly
+compare Founder genesis/log, receipt/event outbox payloads or deleted retained revisions.
+No runtime failure is inferred from this missing evidence.
+
+Test-only scope: strengthen the existing AC8 fault test with ten independent, serial real-
+Postgres fixtures, including founder_genesis. Compare canonical complete rows before/after
+each fault for streams, revisions, Founder genesis/log, Company run genesis/log, events,
+faucet window, intent records and transport outbox. No live dispatcher exists in this Service
+fixture, so delivery metadata is included here. Require the intended injected error, all
+row populations unchanged, and an applied clean harvest after each fault with one send.
+No direct persisted mutation or artifact retune; existing mature pre-CreateStream fixture
+remains visibly preseeded, not ordinary HTTP account/player progression.
+
+Execute baseline and corrected tests cold through declared Compose. Probe actual transaction
+atomicity by temporarily committing on fault exit in the Garden database-clock coordinator;
+each independent fault arm must detect changed rows. A compiler error is not discrimination.
+Restore byte-exact source, then cold Go/vet and the related serial Postgres population. If
+the oracle or runtime fails, retain the finding before any separately authorized correction.
+No bounds/skips/CI/schema/kernel/mechanics/copy/public activation or lifecycle changes.
+Designated Claude exact-range review remains required; no earlier pending gate is consumed.
