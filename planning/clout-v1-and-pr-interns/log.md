@@ -806,3 +806,16 @@ span afterb6a3c48d, including this following record edge, independently of all
 earlier pending ranges. Next predeclared representation/restore research is
 allowed; a persistence implementation still requires a buildable accepted
 contract. Full nine-tier1.0 active; no archive/mint/push/deploy/release action.
+
+## 2026-10-07 — R-012 second-wave predeclaration
+
+Previous goal turn: progress (first bounded paired research completed/committed).
+Currentb54fc7ef clean; no live verification handle or source/artifact fault.
+AGENTS/process/current accepted Clout body and unchanged accrual primitives/goldens
+re-read. The next wave is predeclared in plan.md:615 paired primary cases,
+16 restore refusals each, three Go-only carry-codec diagnostics, unchanged-
+primitive anchor versus per-evaluation rebase, enormous exponent/max-time edges
+and explicit observed settlement/cap limits. No new persistence contract inferred.
+Original first-wave artifacts/instruments and acceptance redtest remain untouched.
+New range needs Claude; no prior human question is answered by this automatic
+goal continuation. Full proper nine-tier/platform1.0 active.

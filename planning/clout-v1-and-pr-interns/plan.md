@@ -148,3 +148,70 @@ existing27/128 AC6 cases; no box or acceptance promotion. Results, exact command
 false-promotion probe and unmeasured representation/restore/settlement domains
 are in partition-research.md. Further research must be predeclared; no new
 persistence contract or full-domain implementation follows from this prototype.
+
+## R-012 second wave — frozen-anchor and reconstruction comparison
+
+Predeclared atb54fc7ef,2026-10-07, before new instrument or measurement.
+Research only, using unchanged Go AccrueConstant / TS accrueConstant and
+canonical numeric boundaries; no production/save/kernel/CI/old-artifact edits.
+First-wave artifacts/instruments stay frozen, and AC6's red regression remains.
+
+The experimental anchor stores canonical initial balance, source rates,
+efficiency/cap, elapsed integer milliseconds and its recomputed visible balance.
+Mere evaluations preserve the initial anchor; real experimental debit or rate
+change settles current visible state and starts a new anchor. Each split
+serializes/restores before proceeding. This is an empirical settlement arm,
+not an adopted save field or authority to change player mechanics.
+
+Population:615 primary cases per runtime, plus16 restore refusals each:
+
+- All520 first-wave frozen rows, unchanged. Compare final anchor one/split
+  snapshots to existing current one-shot cash, not an idealized rounding law.
+  Rebase-on-every-evaluation negative arm must disagree on at least the45 known
+  cases; record every disagreement, including any additional ones.
+- 64 numeric-domain cases:8 exponents(-MAX,-1000000,-33,0,33,1000000,MAX-14,
+  MAX-1),2 source sets([1.15115eE],[1.15115eE,2eE]),2 efficiencies(1,.9),2
+  intervals(2000/cut1000; MAX_EXACT_INTEGER/cut floor(MAX_EXACT_INTEGER/2)).
+  Initial1eE/cap1eMAX. Expected four upper-domain large-interval refusals;
+  neither cap nor split may hide an invalid intermediate. Exactly60 accepted
+  plus4 rejected arms per runtime, no omitted cells. This samples domain edges,
+  not all exponents nor actual engine/server-clock execution at enormous times.
+- All16 existing production-accrual goldens unchanged, initial0/cap1eMAX.
+  Split at floor(elapsed/2), including zero/single-ms controls as applicable.
+  Exactly11 accepted/five refused; valid delta must match each literal golden.
+- All12 first-wave rate/debit and cap/debit rows. Record agreement/difference
+  versus that earlier rational settlement branch, rather than insisting two
+  distinct rounding paths are universally equivalent. Rate-change negative
+  prices the prior interval using the future rate; all8 eligible controls fire.
+  Cap/debit resets must not expose retained pre-cap overflow.
+- Three near-cap cases:initial9.99999999999e3,cap1e4,efficiency1; rates4e-9,
+  5e-9,6e-9; end2000/cut1000. Report one/split and post-debit11.3 followed by
+  1000ms. Do not infer an unruled visible-cap absorption policy from the result.
+
+Restore is a test-only canonical JSON codec. Exact allowed fields/order/version,
+canonical nonnegative numeric strings, source count<=3, exact nonnegative elapsed,
+recomputed visible wire and full byte re-encoding must agree. Its512-byte limit
+is a conservative schema bound:seven at-most31-byte canonical strings plus fixed
+field syntax/three source elements and the16-digit elapsed integer, not a
+performance ceiling chosen from a truncated run. Report actual maximum size;
+reject unsupported source counts rather than truncate them.
+
+Sixteen explicit restore negatives:missing version,version2,missing initial,
+missing rates,negative initial,noncanonical initial,negative efficiency,wrong
+valid visible wire,wrong valid rate,unknown field,trailing JSON,duplicate wire,
+noncanonical field order,unsafe elapsed,input length513,four source rates.
+Use a valid end3114/rate1.15115/cash1e4 base; each must fail independently.
+
+Three additional Go-only diagnostics exercise the unchanged first-wave carry
+codec:inconsistent wire0/residue1,valid snapshot followed by another JSON value,
+and below-cap exact quantity whose visible projection is the cap. Record actual
+admission/refusal rather than retroactively hardening or rewriting that model.
+These are prototype limitations, not discovered production save bugs.
+
+Write a new complete source-pinned observation only after every cell and
+declared control completes; old corpus bytes cannot change. Declare missing,
+unexpected refusal or disagreement explicitly, never skip or add a tolerance.
+Result may narrow a follow-up contract proposal, not authorize implementation,
+whole Clout/CI acceptance, SQL/migration/offline/provision/default-player proof,
+owner-body reconciliation, archival/mint/push/deploy or release. New full span
+afterb54fc7ef needs Claude independently; earlier review obligations remain.
