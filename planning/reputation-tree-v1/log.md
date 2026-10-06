@@ -8491,3 +8491,44 @@ final full relevant packages/vet/client/type gates and tracking reconciliation.
 No SQL/default player/browser/pacing/mint proof inferred; earlier holds remain.
 No delegation/new skill or source mechanic change authorized. Full new span
 afterc3ab42d0 including records requires Claude's designated pass; no archival.
+
+Initial generator4e464d terminal2 fails compilation: my new test called a
+nonexistent decimal.FromInt64 helper. Replace with existing exact Decimal.New
+(8,3), preserving independent8000 population. No fixture generated, no runtime
+execution, product defect or discrimination claim from this construction error.
+
+Next ebfd10/98e632 session26281 terminal2 executes but my independent event
+kind literal omitted the established `.v1` suffix. Correct to exact existing
+EventReputationNodePurchased and separately assert schema1. No fixture written;
+no production defect claim or relaxation of ordered id/cost/source controls.
+
+Adding copied plan-order control exposed another test-only helper assumption:
+e61b15 terminal2, nonexistent mustMarshal. Use explicit checked json.Marshal;
+generator again did not execute or write. All construction failures retained.
+
+Generator79af50/4467ac session60153 terminal0 emits ten-case supplement0.287s
+after independent controls. First replay52b5a0/ac2bf8 session71432 terminal2:
+Go byte regeneration passes, copied cost/promise refusals pass, but copied
+request order calls external ParseIntent with stored canonical bytes (which
+omit transport intent_id), so all four order arms fail before replay. Add the
+recorded command identity to copied external request, then ParseIntent strips
+it as usual; no original canonical fixture or runtime changed. Client baseline
+9c494b/c330e3 session43027 terminal0:8184 pass/339 skips, including all17 new
+offered replay tests. Browser skips remain unexecuted, not acceptance proof.
+
+Corrected Go037271/eef8a6 session53733 terminal0: corpus and allfour copied-
+negative arms pass0.316s. Typecheck91a97e/c6aec5 session60711 terminal2 catches
+my new test passing optional ReplayCatalogBundle fields where concrete meter/
+achievement catalogs are required. Add explicit missing-catalog refusal and
+typed restore helper, no cast-away or runtime source change. Existing historical
+Reputation corpus diff da6e7b empty; new fixtureSHA0cc495bf7170d391fbd763719b1782c183097d689220655035db0101f35787bc.
+
+Restored test helper positive1f99cb/6beed1 session70090 terminal0: strict TS
+and Svelte0errors/0warnings. Full client b6b63c/1a472e session61643 terminal0
+8184 pass/339 skip5.14s, including17 new parity tests. Go baseline above stays
+green; no live handles before commit/source faults. Generation compares exact
+ten-case bytes, eight paired applied Founder arms, independent refused state/
+events and payout/starter/bonus/order controls. Both runtime copied cost/promise/
+prerequisite-order negatives run for allfour planned applied cases. Existing
+corpus preserved. Commit tests/generation lane before unchanged-test source
+probes; initial scaffold/type errors remain explicitly retained, not sourcebugs.
