@@ -2064,3 +2064,7 @@ timer/Page Visibility/default-host, public activation, whole-CI/amd64, archive o
 RP-131's committed historical guard defect and RP-222's owner/author contract stay open.
 Continue remaining accepted G4–G7 integration review; the full nine-tier 1.0 objective and
 recovery/rights/accessibility/privacy/operations/preservation floor remain active.
+
+Exact new corrective range: `37f76223^..53945682` (`f5d2c323..53945682`), seven commits /
+eleven paths, pending Claude. No earlier range or owner/author gate is consumed; no self-
+approval, archive or push. Implementation tree is clean; all verification handles terminal.

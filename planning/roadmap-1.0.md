@@ -14,8 +14,8 @@ arrows fails all twelve native cases. Final local client/type/build/boundaries/t
 complete Linux browser lane pass (22,416 / six intentional skips), plus separate performance.
 Two earlier full-browser deadline failures remain recorded, including RP-218's recurrence;
 no timeout/skip/workflow/concurrency change or general hosted reliability claim. Kernel stays
-0.3.153 because this renderer is not kernel-watched. Exact new range starts `37f76223^`
-(`f5d2c323`); implementation end is pinned after commit, pending Claude. All earlier ranges,
+0.3.153 because this renderer is not kernel-watched. Exact new range `37f76223^..53945682`
+(`f5d2c323..53945682`), pending Claude. All earlier ranges,
 RP-222 and RP-131 remain open. No full G7/AC13/Garden, default-host, timer/visibility, mint,
 whole-CI, archival or release claim. Continue accepted G4–G7 integration review; the proper
 nine-tier 1.0 and complete platform floor remain active, not shortened to a preview.

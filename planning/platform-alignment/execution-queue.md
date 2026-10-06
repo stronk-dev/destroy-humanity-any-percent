@@ -17,8 +17,8 @@ real Postgres Garden, corpus/vectors/copy/vet checks in this range pass. No time
 CI/concurrency or gameplay policy changed. RP-218's recurrence and general hosted reliability
 are not closed by this local green result; RP-131 history guard remains open separately.
 
-**READY FOR DESIGNATED REVIEW, not approved:** new Codex range begins `37f76223^`
-(`f5d2c323`); exact implementation end is pinned after commit. Original Claude G7's bounded
+**READY FOR DESIGNATED REVIEW, not approved:** new Codex range `37f76223^..53945682`
+(`f5d2c323..53945682`). Original Claude G7's bounded
 refresh-order seam is CHANGES REQUIRED, not a full G7 verdict. Every previous range remains
 pending independently. No real HTTP/default-host/timer/Page Visibility/full G7/AC13/Garden,
 public activation, whole-CI/amd64, archival or release claim.

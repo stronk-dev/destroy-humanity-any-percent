@@ -1826,3 +1826,10 @@ owner-copy, AC13/full G7/Garden, historical whole-CI, hosted amd64 or 1.0 promot
 Next accepted work: remaining G4–G7 coordinator/event/read/surface integration review under
 new bounded predeclarations, retaining RP-222's authored contract and all prior independent
 reviews. Full nine-tier 1.0 and its platform floor remain active.
+
+Exact RP-224 / RP-225 corrective handoff: `37f76223^..53945682`
+(`f5d2c323..53945682`), seven commits / eleven paths, including the runtime surface repair,
+new harness/native tests, diagnosis/method predeclarations and synchronized records/docs.
+Claude designated review is pending. This metadata pin is not a verdict or archival authority;
+no previous pending range is consumed. All sessions terminal, tree clean after implementation
+commit, no mutation/push remains.
