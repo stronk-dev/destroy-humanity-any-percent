@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## R-012 frozen-anchor research result — 2026-10-07
+
+Predeclaredcadd7111 afterb54fc7ef:615 paired primary cases complete(606accept/
+9refuse),16 reconstruction refusals each. Original520/edge64/golden16/action12/
+near-cap3 populations preserved. Anchor wire/state agrees across serialized cuts;
+rebase45 original plus one near-cap difference, zero earlier boundary cash
+differences. Sample maximum223bytes; enormous exponent cases use unchanged
+numeric primitives. Both decoder faults fire semantic negatives, artifact/source
+bytes restore exactly. Client9434pass/340skip/types/vet clean; production still
+fails27/128 AC6 cases. This is a test-only candidate, not a production repair.
+**READY RESEARCH:** actual raw-rate producer serialization and SQL jsonb framing
+before a buildable contract; full offline/provision/migration/state/receipt gates
+remain. **DESIGNATED REVIEW PENDING:** full new span afterb54fc7ef; previous
+independent spans/owner/content/author/environment/release holds stay live.
+No product/save/kernel/CI/owner-body/acceptance/archive/mint/push/deploy change;
+full nine-tier/platform1.0 intact. [Evidence](../clout-v1-and-pr-interns/anchor-research.md).
+
 ## R-012 bounded research result — 2026-10-07
 
 Predeclared61f01349 afterb6a3c48d: Go and TS complete542 primary cases/eight

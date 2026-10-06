@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest numeric research checkpoint (2026-10-07):** R-012 completes542
+**Latest representation checkpoint (2026-10-07):** R-012's frozen-anchor
+comparison completes615 paired primary cases/16 restore refusals;606accepted/
+nine refused. Sampled enormous exponents/max-time use existing primitives;
+maximum JSON223bytes. Rebase45plus one near-cap difference; both decoder faults
+fire semantic negatives, exact restoration. Client9434pass/340skip/types/vet
+clean; production still fails27/128 AC6 cases. Test-only anchor/restart passes
+its declared population, not full producer/SQL/offline/provision/migration/state
+integration. Next measure real rate serialization and jsonb round-trip before
+building a new persistence contract. New full span afterb54fc7ef needs Claude;
+earlier obligations/holds and full nine-tier/platform1.0 remain active.
+[Evidence](clout-v1-and-pr-interns/anchor-research.md).
+
+**Previous numeric research checkpoint (2026-10-07):** R-012 completes542
 primary cases/eight refusals per runtime under predeclaration61f01349. Current
 45/520 partitions differ; test-only conserved models match bounded references.
 Dropped carry45/retroactive8/cap4 controls fire; false artifact promotion fails

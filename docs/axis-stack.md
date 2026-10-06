@@ -98,6 +98,10 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   Go/TS research wave finds45/520 current differences; conserved test-only models
   match in that population, not across the full numeric domain or real saves.
   [Limits and next contract questions](../planning/clout-v1-and-pr-interns/partition-research.md).
+  A separate frozen-anchor experiment extends that sampled range and tests
+  reconstruction, not the production implementation. Its
+  [producer/persistence limits](../planning/clout-v1-and-pr-interns/anchor-research.md)
+  remain prerequisites for a buildable repair.
   The retained
   regression is intentionally red, so the current Go/CI tree is not green.
 - Served-epoch activation and the default composed PR purchase/rendering journey

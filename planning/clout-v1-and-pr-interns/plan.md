@@ -215,3 +215,13 @@ Result may narrow a follow-up contract proposal, not authorize implementation,
 whole Clout/CI acceptance, SQL/migration/offline/provision/default-player proof,
 owner-body reconciliation, archival/mint/push/deploy or release. New full span
 afterb54fc7ef needs Claude independently; earlier review obligations remain.
+
+Second wave executed2026-10-07 aftercadd7111:615 primary cases per runtime,
+606accepted/nine refused,16 restore refusals each. Rebase45 plus one near-cap
+disagreement; domain60/4 and unchanged primitive goldens11/5; zero prior-boundary
+cash differences. Largest of1215 valid serialized snapshots223bytes. Go-only
+carry diagnostics show two admissions/one refusal; both new reconstruction
+faults fire semantic negatives, source/artifacts restored exactly. Client9434
+pass/340skip/types/vet clean; production retains27/128 red acceptance cases.
+No checkbox or production contract promotion. anchor-research.md records scope,
+negative evidence and next live-producer/SQL/offline/provision/migration seams.

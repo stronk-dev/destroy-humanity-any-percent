@@ -288,8 +288,13 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   Current45/520 partition differences; conserved models match within that
   population; discarded carry45, retroactive8 and cap4 controls discriminate.
   [Observation and limits](../clout-v1-and-pr-interns/partition-research.md).
-  Next wave must predeclare canonical restore/near-cap rounding, full-domain
-  bounded representation and actual settlement boundaries before measurement.
+  Second wave predeclaredcadd7111 completes615 paired primary cases/16 restore
+  refusals, including sampled exponent extremes/max-time and near-cap cases.
+  Anchor/restart agrees within that population;223-byte maximum. Both actual
+  decoder faults fire. [Second-wave evidence/limits](../clout-v1-and-pr-interns/anchor-research.md).
+  Next predeclare LIVE producer-rate serialization and real SQL jsonb round-trip;
+  canonical rate lists/byte-framed JSON are not presumed production-compatible.
+  Full mode/offline/provision/migration/state/receipt integration remains unproved.
 - **Question:** Can an explicit conserved accumulation/settlement representation
   preserve K3's12-digit authoritative wire boundary and Clout AC6's exact equality
   across evaluations, without repricing a triggering interval? What persistence,

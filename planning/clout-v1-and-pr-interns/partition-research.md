@@ -100,6 +100,12 @@ research cases, not silently accepted production behaviors. The experiments
 also do not establish provision/decay integration, multi-resource settlement,
 offline-cap banking, real SQL restart, old-save migration or browser workflows.
 
+The separately predeclared [second wave](anchor-research.md) now executes those
+prototype framing/projection and near-cap diagnostics without modifying this
+first-wave instrument or artifact. It observes two invalid admissions and one
+valid near-cap refusal in the old Go carry model; its separate frozen-anchor
+comparison extends the sampled numeric range, not production/save acceptance.
+
 A future buildable contract must specify, with executed evidence:
 
 1. A bounded representation compatible with the whole admitted numeric domain;

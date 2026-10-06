@@ -362,6 +362,15 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-306 | Deployment plan/handoff still present Claude's corrections as one pending/closed-finding range with historical green aggregates, despite later bounded approvals, CHANGES REQUIRED findings and current red kernel history. | 📝 Record-only reconciliation at baseline2a785598: plan tracks partial dispositions and dated handoff explicitly defers to current log/queue. No new implementation verdict, test run, checkbox flip or range absorption; existing Codex repairs need Claude and composed/clean-host gates remain open. Deployment log. |
 | RP-307 | Clout P3 lists AC6, but its original tests omit that property; the real engine's per-evaluation saved-balance quantization violates exact interval-partition equality. | 🔴 Test-only checkpoint after6a654f5d: actual ApplyLogged timing64 arms pass; a compiling future-input fault fails the timing oracle and is restored exactly. All128 admitted seeded millisecond partitions execute:27 full-state divergences/101 equal controls. A representative3114ms/cut1553 gives1.00035846811e4 vs1.00035846812e4 (one1e-7 rounding unit). Retained regression intentionally red, not skipped/tolerated; Numeric Core K3 still binding. R-012 first bounded Go/TS wave completes542 cases/eight refusals each, finding45/520 current differences and exact conserved-model agreement. Dropped carry45/retroactive8/cap4 controls fire; false artifact promotion fails both consumers. This is not a whole-domain/save solution: canonical restore/near-cap/enormous-range representation research precedes any persistence contract. All new independent Codex spans need Claude; not full P3/AC6/CI approval. Clout plan/log/partition-research.md. |
 
+RP-307 R-012 second wave, predeclaredcadd7111:615 paired primary/16 restore
+refusals each; bounded anchor agrees across serialized cuts/primitive exponent
+edges. Rebase45 original plus one near-cap discrepancy;223-byte maximum, both
+decoder faults fire, exact restoration. Three old Go carry diagnostics expose
+prototype limitations, not production defects. Actual raw-rate serialization
+and SQL jsonb compatibility remain empirical seams before any repair contract;
+production27/128 still red. New span afterb54fc7ef needs Claude; earlier spans
+remain independent. `planning/clout-v1-and-pr-interns/anchor-research.md`.
+
 RP-203/204 exact corrective review span: `d798e709^..83008a9f`, pending Claude's designated
 verdict. This index line does not close the findings or promote full A5/public acceptance.
 

@@ -819,3 +819,70 @@ and explicit observed settlement/cap limits. No new persistence contract inferre
 Original first-wave artifacts/instruments and acceptance redtest remain untouched.
 New range needs Claude; no prior human question is answered by this automatic
 goal continuation. Full proper nine-tier/platform1.0 active.
+
+First instrumentb46a8d exit2 is a test-authoring compile error: the prior
+research struct names EndBefore/CutBefore, not BeforeEnd/BeforeCut (and likewise
+after). Correct those references before measuring. No artifact was written or
+product failure inferred; population/oracle/predeclared expectations unchanged.
+
+Correcteda8639a /84353, terminal2f8a57 exit0,0.291s:615 primary cases/16
+restore refusals complete, rebase45/domain4/golden5 refused/prior-boundary0diff/
+max223bytes. Go-only carry diagnostics admit inconsistent projection and trailing
+JSON, refuse below-cap quantity projecting to cap (residue-1/500000000). Those
+are experimental model limits, not a production save defect. Client4be18b
+/97110, terminalfa3128 exit0:9434pass/340skip/types zero errors/warnings.
+An initial combined-run invocation9909bb fails in the shell before Go executes
+(unquoted regex/Make dollar expansion); corrected5251bc /15694, terminalfebac9
+exit0 runs BOTH new anchor and unchanged first-wave tests cold,0.341s.
+
+After every handle is terminal, strengthen selected provenance to pin the actual
+old Go carry helper directly, and size census to include all1215 valid snapshot
+instances, not only frozen/golden/domain rows. This changes instrumentation
+identities, so explicitly re-observe rather than silently restamp the source hash.
+No case/policy/golden/production/first-wave-byte change or population narrowing.
+
+Re-observationc096ca /51849, terminal866a50 exit0,0.359s preserves all counts
+and223-byte maximum. Next predeclared test-only instrument fault: override the
+recomputed visible wire with the serialized wire before validating reconstruction,
+in Go and TS separately. The valid-but-wrong wire/rate negatives must actually
+fire (not only the self-source SHA). Faulted Go generation must leave artifact
+SHA68984669c75a530330b1112e7c951ac8d51cb0c5b86d576c44c40784febc0548 untouched.
+Original instruments Go86dd7588b35393eb947ba977125787177f85f42754b0d19534677da0141900d2;
+TS1bcb9a1b1415b59b40b24020ffa9ab80354c99c5bef013a061355e6166e3702d.
+Both handles must become terminal before exact-byte source restoration and
+restored cold verification. No production mutation or designated review implied.
+
+Go instrument fault71f7d6 /83567, terminal04836a exit2 fails before generation
+at named wrong-valid-rate admission,0.363s. Map order selects the first failure;
+do not claim all16 Go negatives completed under the fault. Clientbf5db4 /35773,
+terminal3c2c27 exit2:three failures (source SHA plus BOTH wrong-valid-rate and
+wrong-valid-wire refusal assertions),9431pass/340skip. Thus the semantic checks,
+not merely artifact identity, discriminate. 05ffeb confirms both artifacts'
+original hashes unchanged. Both handles terminal before exact source restoration.
+
+Restorationb61217 matches BOTH original instrument hashes and BOTH artifact
+hashes exactly. Final950f6a /98871, terminalc0ac98 exit2:production37.245s
+fails only existing27/128 AC6 cases; economy6.367s/decimal0.236s pass. Separate
+d9b3a2 /37445, terminala9cbd8 exit2,0.183s independently executes the same
+128 acceptance arms and counts27 failures. New research stays ordinary/default,
+and the production regression is neither bypassed nor diluted.
+Client179d1d /46932, terminal4600c4 exit0:9434passes/340visible skips,5.18s;
+types/Svelte zero errors/warnings. Vet3489e0 exit0 on all three packages. Every
+verification handle terminal before record edits; no source fault retained.
+
+New anchor-research.md names actual results and restricted schema/domain,
+carry-codec diagnostics and real semantic fault failures. First-wave dossier
+links the new evidence without changing its old code/artifact. Shared ledger,
+queue/docs/plan and full1.0 board stay synchronized, no acceptance/status/checkbox
+promotion. Next empirical seams are live raw-rate serialization and real jsonb
+round-trip; canonical source lists/byte-framed self-serialization are NOT
+presumed full producer or Postgres compatibility. Offline/provision/migration/
+whole-state/receipt/replay and owner/author/API/content/environment/release gates
+remain. Full new Codex span afterb54fc7ef needs Claude independently; older
+ranges remain live. No runtime/save/kernel/CI/golden/balance/copy/owner-body
+changes, archival/mint/push/deploy or full nine-tier/platform1.0 completion claim.
+
+Final record-bound cold8e4a11 /73430, terminal92151a exit0,0.518s executes
+BOTH original first-wave and new anchor observers, reproducing each artifact
+exactly. All verification handles terminal. First-wave code/corpus remain
+byte-unchanged; no temporary probe or runtime change retained.

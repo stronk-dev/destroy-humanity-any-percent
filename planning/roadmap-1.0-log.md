@@ -3715,3 +3715,29 @@ independent review obligations and owner/author/environment/content/release
 holds remain. Previous goal turn was progress; this turn adds reproducible
 numeric evidence. Full nine-tier/platform1.0 active, no archival/push/deploy.
 [Observation](clout-v1-and-pr-interns/partition-research.md).
+
+## 2026-10-07 — Frozen-anchor and reconstruction comparison
+
+Predeclaredcadd7111 afterb54fc7ef:615 paired primary cases complete,606accepted/
+nine refused;16 restore refusals each. Original520,domain64,golden16,action12
+and near-cap3 remain intact. Anchor preserves canonical initial inputs across
+serialized cuts; unchanged primitive semantics and existing goldens are the
+authority. Rebase45 original differences plus one near-cap discrepancy; prior
+boundary cash0 differences. Largest of1215 valid JSON snapshots223bytes.
+Both faulty decoders fire semantic refusal failures, faulted writer cannot
+overwrite and instruments/artifacts restore byte-exactly. Go-only old carry
+diagnostics expose two invalid admissions/one valid near-cap refusal; prototypes
+are not production save formats. Test-authoring errors disclosed separately.
+
+Restored client9434pass/340visible skips/types clean, relevant vet clean.
+Cold production/economy/decimal fails only existing27/128 AC6 cases; separate
+focused128-case run also fails27. No acceptance/complete-or-hosted CI promotion.
+Next measure live raw-rate serialization and real Postgres jsonb round-trip:
+rounding sources early or assuming canonical JSON survives SQL would invalidate
+a production transplant. Full offline/provision/migration/state/receipt/replay
+and all existing owner/author/review/content/environment/release holds remain.
+New full range afterb54fc7ef needs Claude independently, older ranges separate.
+Previous goal turn progress; this turn adds executed representation evidence.
+Proper full nine-tier/platform1.0 stays active, no runtime/kernel/CI/owner-body/
+old-golden/balance/copy change, archival/mint/push/deploy or release call.
+[Observation](clout-v1-and-pr-interns/anchor-research.md).
