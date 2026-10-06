@@ -3294,3 +3294,34 @@ fcd458 has no unrelated dirty work. No unresolved first-filter finding in
 this bounded test/fixture range. Actual persisted career and all separate
 review obligations remain open. Claude must review the complete span after
 721c0ee1 through this record commit before any archival eligibility.
+
+## 2026-10-06 — R10 career input admission predeclaration
+
+Clean source7da200f0; accepted R10 H4 declares exactly cheapest, seeded_uniform
+and none, while H5's leave-one-out mask is a tree node. Evidence rule3 requires
+invalid measurement inputs to fail loudly. Source lead a95197/482b3d: policy
+admission occurs inside the affordable-node loop; an unknown Exclude is never
+matched and may silently behave like the baseline. This is not yet an executed
+defect or a designated review of B8.
+
+Bounded population: actual loaded first-hour suite and existing tree fixture,
+Chaos seed0 under the ratified two-hour horizon, unchanged experiment. Six
+negative inputs: empty policy, unknown policy, and unknown exclusion, each at
+fixture threshold1e5 and live threshold1e12. Require ErrReputationCareer; no
+report regeneration, output expectations generated from the tested result,
+instrumented budget, horizon extension or change to purchase choice. Four
+positive inputs at1e5: the three declared policies, plus cheapest excluding
+the actual reputation.starter.cash_small node. Require completed two-Exit
+career/run3 gate; no-purchase arm buys/applies nothing and freezes unit bonus;
+purchasing arms buy nodes; excluded node is absent from purchases and starters.
+
+If baseline admits a malformed input, retain the red test and enforce only
+closed policy/known exclusion admission before simulation. Demonstrate each
+new guard's removal independently with the same tests, restore exact source
+SHA before the next probe, and abort sequencing on a restoration mismatch.
+Cold focused harness tests, root vet/fast harness and core must then pass;
+existing exhaustive H4/H5 reports stay byte-untouched and their recorded FAIL/
+epsilon/horizon questions remain. Harness-only source is outside kernel watched
+paths. No balance/runtime/schema/CI policy/owner copy/old corpus or threshold
+literal change, mint, archival or full AC13 claim. Complete new span after
+7da200f0 needs Claude. Actual DB/capacity and all other release blockers remain.
