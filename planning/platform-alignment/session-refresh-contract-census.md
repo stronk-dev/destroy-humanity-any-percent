@@ -1,0 +1,68 @@
+# Existing session-refresh contract census — 2026-10-06
+
+Authority: accepted Account D2/D3/AC7, API Foundation C1/A4/A5;
+predeclared `d3e7196f`. Test-only observation, not renewal acceptance.
+
+## Stage one: executed parser/router population
+
+`server/account/refresh_wire_census_test.go` uses actual NewAPI/chi routing,
+refresh handler, production decoder/token-shape guard and limiter. `httptest`
+uses an in-memory recorder, **not a socket**. Repository deliberately has no DB:
+all supplied tokens are malformed and return before SQL. Constructor-only
+unrelated intent fixture fails if called. No successful rotation proof.
+
+Twenty-two parser cases plus limiter/method/path controls issue 27 requests:
+
+| Population | Exact current outcome |
+| --- | --- |
+| Empty, whitespace, unfinished object, unknown member, second JSON value, trailing non-JSON, array/boolean/number/string roots, number/object/array token, configured 1024-byte limit exceeded | 400 `{"category":"invalid","detail":"body"}` |
+| Missing/null/empty/malformed/short token, null root, duplicate malformed fields, uppercase REFRESH_TOKEN | 401 `{"category":"unauthorized","detail":"refresh_token"}` |
+| Second malformed request after exhausting fixed-clock one-token IP bucket | 429 `{"category":"rate_limited","detail":"ip"}`; limiter precedes parser |
+| Same malformed request after one-minute fixture refill | 400 exact invalid/body |
+| GET refresh path | 405 `{"category":"invalid","detail":"method"}` |
+| POST absent path | 404 `{"category":"unknown_id","detail":"route"}` |
+
+Every oracle compares complete JSON bytes **including encoder newline**, exact
+Content-Type application/json and status. Never echo unexpected response bodies;
+a broken handler could expose tokens. Request strings are synthetic only.
+Null/duplicate/case-insensitive fields are observed current parsing, not adopted
+future policy. A new stricter request descriptor cannot silently change this
+acceptance/error set or create a second API authority.
+
+## Discrimination and exact restoration
+
+- Cold initial 38743: all three top-level tests / 22 parser subcases pass.
+- Invalid-body detail → census_probe: 33000 fails fourteen body arms and first
+  limiter response, exact error-byte mismatch.
+- Unauthorized-token detail → census_probe: cold command fails eight 401 arms;
+  other cases green.
+- Remove refresh limiter mount: cold command fails `status=400 want=429`;
+  parser/method/path green.
+- Before each next probe/final run, API restored exact SHA-256
+  `36dc2876a0404b68de9e92e41cb950ea6d67e42e97014c201abacdccfa80cda5`;
+  store unchanged `cff18305f908e5f59975fd8a14466b5c9b776536d53b26d2eccd071097c5a308`.
+- Final 19985 root Account/publicapi tests use explicit -count=1 and pass;
+  selected root vet/diff pass. Existing DB-conditional tests do not execute
+  without TEST_DATABASE_URL: **not an integration gate**.
+
+No edit while handles live; no production mutation survives. No plan checkbox,
+schema/TTL/family/copy/kernel/CI policy change, archive or push.
+
+## Still unexecuted
+
+Predeclare real declared-Postgres canonical valid/unknown/expired/reused-token
+populations, successful pair persistence/Founder identity, family-wide revocation,
+limiter no-mutation, repository faults and committed-reply loss separately.
+Existing tests/source are inputs, not new executed evidence. Generated consumer,
+owner recovery policy and full browser renewal remain unaccepted boundaries.
+
+RP-236 prevents further Docker populations pending safe capacity resolution.
+Read-only inventory finds unused, explicitly project-labelled development caches:
+cloud-clicker_go-cache 2.523 GB, cloud-clicker_browser-node-modules 123 MB,
+cloud-clicker_browser-pnpm-store 0 B; zero container references. No deletion;
+owner answer pending. Other projects' images/unattributed volumes excluded.
+
+Review by: Codex (first-filter only). Recorded by: Codex. New range begins
+`ee8b2356` exclusive and includes `d3e7196f`, test, dossier, reconciliation and
+following pin. Claude required independently of previous spans. R-011, natural
+fifteen-minute Garden and proper nine-tier 1.0 remain open; renewal RFC draft.

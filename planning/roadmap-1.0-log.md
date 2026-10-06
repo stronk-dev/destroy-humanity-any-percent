@@ -2334,3 +2334,19 @@ Dossier/artifact and current board reconciled; no production/runtime/CI policy
 or bounds change. Claude required for full range, no acceptance/archive/push.
 Continue actual Account/API census without implementing draft renewal policy;
 proper nine-tier 1.0 remains active, not a preview or shortened release floor.
+
+## 2026-10-06 — existing refresh parser/router census, not a mock rotation
+
+Predeclared d3e7196f; actual NewAPI/chi decoder/token guard/limiter executes 22
+malformed parser cases and method/path/refill controls, 27 exact in-memory
+requests. Three independently failing byte/limiter probes restore API SHA
+exactly; cold Account/publicapi and vet pass. No DB/socket/valid/reused-token
+population: real-Postgres stage still requires separate predeclaration and safe
+Docker capacity. Full-byte/error secrecy oracles, limits and source retained
+in session-refresh-contract-census.md. Null/duplicate/case-insensitive admission
+is observed current parsing, not owner-adopted future schema/policy.
+New span starts ee8b2356 exclusive, includes predeclaration/tests/records/pin;
+Claude pending independently of CI span 6ed42d45..d3e7196f and earlier requests.
+No product/TTL/family/kernel/schema/copy/CI/checkbox/archive/push change. Three
+unused labelled project development caches identified, about 2.6 GB; no deletion,
+owner capacity choice pending. Proper full nine-tier 1.0 remains unchanged.

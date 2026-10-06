@@ -529,3 +529,33 @@ these focused passes cannot waive it. Retain errors/probes and literal range for
 Claude independently; no plan checkbox, docs production behavior promotion,
 archival, push or owner policy adoption. Next real-Postgres stage waits for a
 safe capacity resolution, not a replacement mock success.
+
+## 2026-10-06 — parser census green; real rotation still unmeasured
+
+Predeclared `d3e7196f`: test-only actual NewAPI/chi/refresh decoder/token-shape/
+limiter, 22 parser subcases plus two auxiliary tests, 27 exact requests. Fourteen
+body arms 400; eight null/missing/duplicate/uppercase/malformed-token arms 401;
+limiter precedes parsing/refills; method/path 405/404. Exact Content-Type/status/
+full JSON bytes, no unexpected credential-bearing response output. Intentionally
+absent DB/unrelated fail-if-called fixture disclosed; no valid/reused-token proof.
+
+38743 cold selected population green. Invalid-body byte probe 33000 fails
+fourteen arms and first limiter response; unauthorized-token byte probe fails
+eight arms; limiter removal fails status=400 want=429. All terminal before edits.
+Each restores API SHA 36dc2876a0404b68de9e92e41cb950ea6d67e42e97014c201abacdccfa80cda5;
+store unchanged cff18305f908e5f59975fd8a14466b5c9b776536d53b26d2eccd071097c5a308.
+Final 19985 cold Account/publicapi passes, selected root vet/diff passes. DB
+conditionals not counted as integration. Dossier at
+platform-alignment/session-refresh-contract-census.md retains exact limits.
+
+Read-only Docker inventory identifies unused Cloud Clicker labelled caches,
+zero references: go-cache 2.523 GB, browser-node-modules 123 MB, pnpm-store zero.
+Owner cleanup/capacity answer pending; nothing deleted. Initial verbose df preview
+truncated before volumes; complete larger retrieval supplies sizes. A failed
+multi-file record patch changed nothing (wrong append context); corrected below.
+
+Review by: Codex (implementer first-filter). Recorded by: Codex. New span begins
+ee8b2356 exclusive, including d3e7196f; implementation/records/pin all belong in
+designated review. CI observation span 6ed42d45..d3e7196f stays independent.
+No production source, accepted schema/body/policy, plan checkbox/archive/push
+change; proper 1.0 unchanged. Continue real-DB stage after safe capacity resolution.

@@ -26,6 +26,14 @@ and worker HTTP 404 controls discriminate; no production fix. See the
 Root client/type/boundaries/topology passes and historical green runs are not
 whole-CI/reliability closure. RP-131 remains separate. No unrelated Docker cleanup.
 
+Accepted Account/API groundwork continues without Docker: the
+[refresh parser/router census](platform-alignment/session-refresh-contract-census.md)
+pins 27 actual in-memory requests and three restored failing controls. Cold
+Account/publicapi tests/vet pass; deliberately no database or successful/reused/
+expired-token rotation proof. Null/duplicate/case-insensitive parsing is observed,
+not approved policy. New test-only span includes `d3e7196f`, pending Claude
+independently; renewal draft, full R-011/Garden/1.0 obligations remain open.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

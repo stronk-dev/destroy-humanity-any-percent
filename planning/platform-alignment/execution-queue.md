@@ -23,6 +23,14 @@ refresh-contract census while that environmental gate is unresolved. Production
 renewal needs draft policy/API/recovery acceptance; natural Garden and full
 nine-tier 1.0 remain unproved, not shortened.
 
+First accepted Account/API census stage locally passes: 22 malformed parser
+cases plus limiter/refill/method/path (27 in-memory requests), exact oracles and
+three restored severings. [Dossier](session-refresh-contract-census.md). No DB/
+socket/successful/reused-token rotation or new schema/coordinator. New span
+includes `d3e7196f`, tip pinned after commit, Claude pending. Unused project-labelled
+development caches total about 2.6 GB, zero references; owner capacity/cleanup
+answer pending, no deletion. Resolve capacity then predeclare real-Postgres stage.
+
 ## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
 
 Separate predeclaration `25fb5e67` binds RP-048/RP-234 to existing Account D2/D3

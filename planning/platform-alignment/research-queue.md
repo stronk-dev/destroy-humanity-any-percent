@@ -225,6 +225,12 @@ research question; they authorize only the stated downstream action.
   retains exact traces/source/instrument identity and limits. Real Account
   ambiguity, storage denial, background/process crash and policy remain open.
   Local complete browser CI discovered RP-235; that lane is red, not waived.
+- **Contract groundwork:** predeclared `d3e7196f`
+  [parser/router census](session-refresh-contract-census.md) executes 22 malformed
+  parser cases plus limiter/refill/method/path (27 requests), full-byte oracles,
+  three independent restored severings. No DB/socket/successful/reused-token
+  rotation; real-DB stage awaits RP-236 capacity resolution. Current null/
+  duplicate/case-insensitive parsing is observed, not stricter policy adopted.
 - **Question:** Can the declared browsers coordinate one credential owner across
   contexts, release ownership when a context disappears, and expose unsupported
   storage/ownership honestly? Separately, what evidence bounds refresh/ownership

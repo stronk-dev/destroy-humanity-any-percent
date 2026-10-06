@@ -18,6 +18,14 @@ red, truncated retrieval exclusion and source boundary. New span starts after
 Next: exact scoped Docker capacity resolution, accepted Account/API census;
 renewal remains draft. Full nine-tier game and complete platform floor unchanged.
 
+Accepted Account/API groundwork under `d3e7196f` additionally pins 27 actual
+in-memory requests, 22 malformed parser cases and exact limiter/method/path
+refusals. Three temporary byte/mount severings fail; restored cold Account/
+publicapi and vet pass. [Census](platform-alignment/session-refresh-contract-census.md)
+has no DB/socket/valid-token population and cannot prove renewal/ambiguity;
+real-DB stage awaits capacity. New test-only span pending Claude. No production/
+schema/auth/copy/kernel/checkbox/archive/push change or 1.0 scope reduction.
+
 **Earlier checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
 actual page closures complete in the three declared Linux engines; bypass and
 watchdog fail, final restoration passes. [Dossier](platform-alignment/browser-session-coordination.md)
