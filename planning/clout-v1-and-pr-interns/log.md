@@ -510,3 +510,20 @@ truthful executed pool-binding question is separate and cannot be resolved by
 adding a nonempty label. No owner text, mint, archive, push, deployment, CI change,
 full P1/AC1 or 1.0 approval. New Codex range needs Claude, separately from the
 original bounded finding and every previously pending correction.
+
+### RP-304 role-branch designated finding: CHANGES REQUIRED
+
+Review by: Codex. Recorded by: Codex. Original Claude range
+`ace4e67e^..ace4e67e`, limited to CV1 item5's role-cardinality branch; no
+full-P1 verdict. The static hypothesis is independently reproduced at current
+013eb7b1 plus new tests: actual Go loader accepts all three roleless mutations
+unchanged (fe6913 exit2, 0.226s; three valid controls pass), and actual TS loader
+accepts the same three (e9ab00 /94844, terminal668509 exit2). Complete client
+run: three new failures/8245pass/340skip, no other failures,4.14s. Both tests
+pin the unchanged original fixture and check selected ids actually exist.
+
+This test-only checkpoint precedes the correction. Remedy is the accepted
+nonempty-axis-role rule only; static [] remains legal. It does not establish
+whether the proposed synergy_feed labels have real pool bindings. Neither
+normative owner text nor the original corpus is rewritten; later Codex runtime
+repair and record edges need Claude, never covered by this original finding.

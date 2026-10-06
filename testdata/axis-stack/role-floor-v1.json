@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "fixture_sha256": "f8c67aed784ceaae1335bb40c0e0487cc0d9b78a50b9e63a73569270df7511d7",
+  "cases": [
+    { "name": "unchanged_axis_fixture", "ids": [], "roles": [], "expect": "accept" },
+    { "name": "first_intern_roleless", "ids": ["upgrade.pr_intern_1"], "roles": [], "expect": "reject" },
+    { "name": "second_intern_roleless", "ids": ["upgrade.pr_intern_2"], "roles": [], "expect": "reject" },
+    { "name": "both_interns_roleless", "ids": ["upgrade.pr_intern_1", "upgrade.pr_intern_2"], "roles": [], "expect": "reject" },
+    { "name": "one_declared_role", "ids": ["upgrade.pr_intern_1"], "roles": ["synergy_feed"], "expect": "accept" },
+    { "name": "static_empty_roles_unchanged", "ids": ["upgrade.beige_tower_cache"], "roles": [], "expect": "accept" }
+  ]
+}
