@@ -44,6 +44,31 @@ record inherited history/Firefox/SQL/mint holds separately. Full range after
 
 ## Batches
 
+### R7 disconnect/recovery supplement — predeclared 2026-10-06
+
+Start61d6c8eb. Keep the45 reader tests intact. Extend controlled real runtime
+coverage through persisted channel-position recovery and actual reconnect:
+v1 absent/v2 null/object, old/new channel offsets, HTTP-ahead duplicate delivery,
+wrong Founder/run/start time, recovered batch ordering, reconnect after1006,
+failed recovery/new epoch/malformed summary/revision gap and fresh live resubscribe.
+Wait for actual snapshot/socket callbacks, not an arbitrary microtask budget;
+use existing reconnect/test deadlines unchanged. Assert full delivered payloads,
+recovered commands/positions, read counts, dedup, closure and no stale callback.
+
+RP-287 source risk: after run3's start has been delivered, an older run2 snapshot
+can still match a republished run2 event; one last-event-ID memory no longer
+remembers that old ID. Predeclare live and recovered-batch diagnostics before
+changing source. If confirmed, preserve monotonic delivered Company start
+revision in bounded memory; no generic cursor/auth/reconnect policy change,
+snapshot-derived payout/balance, UI input or new wire. No accepted UI/SQL/mint
+proof is replaced with these controlled populations.
+
+Demonstrate compiling source faults for start-reader/race delivery, recovery
+identity retention and (if introduced) superseded-start protection. Run restored
+unit/types/build/boundaries/copy and selected Chromium/WebKit with the existing
+isolated performance lane. Whole new range after61d6c8eb needs Claude; RP-284
+display/RP-283 author gaps and RP-131/Firefox/full1.0 holds remain. No box flip.
+
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1
   accounting helpers, R3 bonus arithmetic; shared rejection-fixture corpus and bonus vectors.
   ACs 1 (loader half), 5.

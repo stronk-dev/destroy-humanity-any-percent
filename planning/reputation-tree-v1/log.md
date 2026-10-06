@@ -7145,3 +7145,29 @@ ff608a verifies both logs append-only from0ae1fa11; full whitespace check passes
 No Go/copy/kernel artifact changes, stale report restamp, checkbox or RFC body
 edit. Precise display gap is routed to its author, not silently closed by the
 reader. Next accepted supplement: recovered-publication R7 identity checks.
+
+## 2026-10-06 — R7 disconnect/recovery predeclaration
+
+Previous goal turn was progress:47ccc003/61d6c8eb committed the reader/delivery
+supplement, actual browser proof, corrected fixtures and synchronized tracking.
+Fresh52b134 is clean61d6c8eb; no inherited live handles. AGENTS164eea/process
+2acc51 and entire accepted RFC2309b0/aa25fd/93dfec reread. Bound design refs
+remain unchanged from020a25c6. Actual runtime dd69b8 and existing recovery tests
+058748 ground persisted-offset request, replay loop, fresh-state fallback and
+the per-subscription last start-event identity. R7/R9 remain accepted; no new
+authority for Run End display/available bridge or RP-283 payout.
+
+Plan above predeclares a controlled real-runtime recovery population, preserving
+all45 existing tests and all deadlines. Exact callback promises replace timing
+guesses. Source risk RP-287 enters shared backlog immediately: delivering a new
+start replaces the only remembered ID while an old snapshot can still authorize
+reviving an older start at a new offset. Test live/recovered-batch order before
+correction; if confirmed, bound monotonic Company start revision in existing
+memory, not a growing set. No generic cursor semantics, auth/session refresh,
+transport reconnect/drain/epoch policy, component/copy/wire/balance/epoch/CI/
+kernel161 changes. Failure outcomes and competing controls must be recorded.
+Source-only compiling probes after positive run, exact restoration after every
+terminal handle; root unit/types/build/boundaries/copy and selected browser/
+isolated performance. Full span after61d6c8eb needs Claude independently of
+earlier ranges. Full nine-tier/platform1.0 objective remains active; no shortcut,
+acceptance/archival/publication/deployment/push or owner content adoption.
