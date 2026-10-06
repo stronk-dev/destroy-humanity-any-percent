@@ -975,3 +975,32 @@ accepted-contract correction predeclaration before implementation.
 Codex can independently review Claude's four-path witness range; this new Codex
 predeclaration/evidence/record span remains first-filter only and awaits Claude.
 No archive, push, cache deletion or weakening of the complete 1.0 objective.
+
+### R4 review extension predeclared after the two terminal probes
+
+49641 original selected Go passes cold; 21057 original full client passes
+7369/134. Go assignment control 3002 fails with generated=5, purchased=0,
+cash=1e3; TS assignment 16762 fails the exact receipt's 15-versus-5 difference
+(one failing test, 7368 passing, 134 existing skips). Both source hashes restored.
+
+The existing required AC8 case owns cash_small/generated only. Its two starter
+ids happen to be both tree-sorted and byte-sorted, so this case cannot distinguish
+those orders and does not exercise preowned_upgrade or cumulative resource grants.
+Extend this test-only wave with three shared expected cases on the same committed
+bundle/Exit setup: all nine fixture nodes plus one unknown retired id (four known
+starters in tree order, cash 1.01e5, fifteen provisioned/zero purchased, owned
+Continuous Feed Paper, factor 6.52e0); unknown id only; empty owned set. Last two
+retain only curriculum's ten units, cash zero, no upgrade/starter ids, factor 1e0.
+Level 552 and known costs/spends use the accepted R2 table; no new balance adopted.
+Each runtime drives its real ApplyLoggedExit on frozen inputs, not a test-side
+starter implementation. These shared expectations add semantic assertions, not
+new all-case canonical Go/TS bytes or DB/default-player evidence.
+
+Additional independent controls in each runtime: suppress preowned upgrade;
+sort the emitted applied starter ids bytewise instead of retaining tree order.
+Require new cases to fail, restore exact hashes, rerun cold selected Go/vet and
+root client/type/build/boundaries/topology. Resource-grant additive semantics are
+asserted by the two known cash grants, but not separately mutation-probed in
+this declared wave. Cap refusal, already-owned idempotency and next-tree-removal
+cases remain separate coverage debt. Tests/shared expectations/docs/records only
+persist. Original four-path witness verdict cannot approve these Codex additions.
