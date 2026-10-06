@@ -5102,3 +5102,29 @@ designated reviews remain open. No kernel bump, product/schema/copy/balance/CI/
 corpus change, box, mint, archive, cleanup, deployment, message or push. No manual
 source/tracking edits while any handle lives. Full span afterdfc2fb8c requires
 Claude's separate designated review; all prior ranges stay independent.
+
+## 2026-10-06 — RP-263 actual source-collision baseline
+
+JSON-side diagnostic3c1486..87d87f,session99978,terminal exit2,8.648s:
+all four actual Chaos seed0 careers complete, share the identical paired catalog
+RunKey, and fail the missing-source assertion. Cheapest/none/live1e12/excluded-
+cash differ in purchases/payout/gate. No synthetic or compiler-error baseline.
+Refined logging e3b003..0b22ea,session67564,terminal exit2,7.910s reruns the same
+four failures and captures whole semantic result SHA (excluding metadata),
+not four additional distinct defects:
+base fc02332820547f0bc437fa0c342e361673cf66be53363e9c3b97edacf6c5125c,
+none d0ce1b7ee0a102dc1a5258d775e04d9d3e707835a3f7c39601b9735d0fdd9d1f,
+live225832823eab3e83fc9eb2595660e113c14645a51605aa66b14d442ea72bcd65,
+excluded8be070f54cb5ee12f1e32cafe6b83dca9d0856b7eaf6fc113f0fb6878b56cc7a.
+Gates respectively320000/442000/442000/440000ms; cheapest earned5/5 and buys
+p05/cash_small/generated_beige_tower/upgrade_continuous_feed_paper; none buys
+nothing with the same earned payouts; live pays0/0 and buys nothing; exclusion
+buys p05/p25. Effective Prestige policy hash at1e5 isab4edf83, at1e12caa0dd54.
+These full-result fingerprints are the metadata-only non-regression controls.
+
+Also register RP-272 immediately: read-only H5 loop increments purchased counts
+but drops nil-clock pairs from its median without recording finite/unreached
+denominators. Controlled reproduction and explicit censoring authority remain
+separate; this range does not impute censored clocks or silently bless1ms.
+No source/tracking edits while either baseline handle lived. Next the declared
+observation/caller binding, negative controls/probes, cold gates and records.
