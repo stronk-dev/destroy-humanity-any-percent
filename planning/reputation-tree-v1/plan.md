@@ -162,6 +162,15 @@ threshold retune is measured and reported, then ratified by owner SHA).
   Old v1 files/kernel161/live math/balance/CI/corpus unchanged; whole span after
   c352370a needs Claude. H4/H5 report-envelope provenance remains separate,
   alongside fired H3/H4, H5 gaps, author boundaries and all prior reviews.
+  Subsequent RP-263 underec71a33c now records effective career inputs and binds
+  both report consumers, retaining both H4 sources and all H5 arm sources.
+  Four real careers preserve whole gameplay fingerprints;36 refusals/nine
+  compiling omissions discriminate. Full97-pair/970-arm study636.768s passes
+  194/970 source admissions, retaining970 H5 sources; H4 six ties and both
+  historical comparisons remain RED. Cold local fast/core pass. Whole span
+  afterdfc2fb8c needs Claude. RP-272/273 denominator diagnosis and RP-274 per-node
+  attribution remain separate; no software-provenance artifact refresh or
+  author-policy/epsilon adoption. Docker still100%/39784KiB free; no cleanup.
   No AC13/box/mint promotion. At the earlier checkpoint below,
   fresh H1/H2/report provenance/reproduction remained separate; no retuning or
   report-regeneration authority here. No checkbox flipped.

@@ -708,10 +708,22 @@ caller-admission and source-retention omissions make the corresponding tests fai
 
 The historical H4/H5 v1 files are not rewritten: the corrected producer must
 reject their old projection shape as well as previously observed clock drift.
-Whole-population source admission needs its own executed record; these focused
-controls are not a 97-pair/970-arm population claim. H4's strict-sooner failure,
+The complete local study now finishes all 97 treated/control pairs and 970 H5
+arms: source admission passes for 194/970 arms, with all 970 H5 sources retained.
+It takes 636.768 seconds and exits red on both preserved historical comparisons;
+H4 still observes 93 timing comparisons, three valid exclusions and six ties.
+These observed counts do not turn the focused corruption cases into naturally
+earned populations or make the acceptance gates green. H4's strict-sooner failure,
 H5's unruled epsilon/run4, missing career-data authority and the each-Exit intent
 ambiguity remain. RP-272 separately tracks H5's unreported finite-pair denominator;
 this change does not supply a censoring rule or certify its current median as a
 full-persona result. The earlier dated H1/H2 evidence remains pinned to its recorded
 producer tree, not silently promoted to this changed server tree.
+
+Additional report-coverage findings remain explicit. H4's savings map currently
+includes only strictly-faster finite pairs: historical Casual data have 28 finite
+eligible pairs (six ties), but its published min/p50/max use 22 strictly-faster
+pairs. All-finite minimum is 0 ms; the published minimum is 15,000 ms. That map
+is a pass-only summary, not the full finite distribution (RP-273). H4 also lacks
+the per-node aggregate required by R10 (RP-274); shared package savings must not
+be labelled isolated node effects. Neither gap is repaired by source metadata.

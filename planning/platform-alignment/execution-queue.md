@@ -1,5 +1,30 @@
 # Executable queue
 
+## Career/report sources bound locally — 2026-10-06
+
+RP-263 underec71a33c adds actual measurement sources beyond catalog keys and
+binds both report consumers before projection. Four actual careers preserve
+whole gameplay fingerprints;36 refusals/nine compiling omissions discriminate.
+Full97-pair/970-arm study finishes636.768s: all194/970 source admissions pass,
+970 H5 sources retained; H4 still93 comparisons/3 exclusions/six ties. Both
+historical comparisons remain RED, old files untouched. Cold local fast/core pass.
+
+**READY FOR CLAUDE:** full span afterdfc2fb8c, declaration/baseline/source changes/
+docs/records; all prior ranges remain separate. Self-filter is not designated.
+**NEXT SAFE ACCEPTED WORK:** predeclare controlled RP-272/273 report-denominator
+diagnosis under R10: finite/unreached H5 pairs and pass-only H4 summaries. Preserve
+strict criteria and historical files; no unruled censoring/imputation method.
+**AUTHOR ROUTES:** RP-274 per-node attribution/report coverage; RP-268/271 career
+data/policy intent, H3 tiny criterion, H5 epsilon/run4 and literal adoption.
+Software provenance/dating of complete H4/H5 artifacts remains separate from
+these observed input coordinates; no report refresh or mint authority inferred.
+**CAPACITY:** Docker rechecked100%/39784KiB free. Restricted cleanup approval
+requested, not granted; no matching Cloud Clicker image candidate identified by
+tag/source-label filters. Do not delete other projects, volumes or release artifacts.
+**STILL OPEN:** full review union, actual SQL/browser/deployment/hosted proof and
+complete1.0. Kernel161/live math/balance/CI/corpus/reports unchanged; no checkbox,
+waiver, archive, deployment, publication or push. [Evidence](../reputation-tree-v1/log.md).
+
 ## Fresh H1/H2 evidence reproduced locally — 2026-10-06
 
 RP-263 underc095e2b5 records new dated H1/H2/lineage artifacts from committed

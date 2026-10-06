@@ -3061,3 +3061,23 @@ envelope provenance audit is next; H3 criterion, H4 ties, H5 epsilon/run4 and
 RP-268/RP-271 author boundaries remain. No live math/balance/kernel161/CI/corpus
 change, no AC13 acceptance or box/mint/archive/push. Actual SQL/capacity and
 complete nine-tier/platform/release objective remain; goal active, no shortcuts.
+
+## 2026-10-06 — Career/report source coordinates bound and fully exercised
+
+RP-263 underec71a33c/831fa9b3 now distinguishes effective career inputs beyond
+catalog keys and binds/retains both report consumers. Four actual careers keep
+complete gameplay fingerprints;36 refusals/nine compiling omissions discriminate.
+Full97-pair/970-arm run completes636.768s:194/970 source admissions pass,970
+H5 sources retained; H4 remains93 timing comparisons/3 exclusions/six ties and
+both historical comparisons RED. Cold local fast/core pass. Dated H1/H2 verify
+correctly refuses this changed producer tree; old evidence is not silently current.
+[Exact execution, hashes, limits](reputation-tree-v1/log.md).
+
+New full span afterdfc2fb8c and all prior review spans need separate designated
+passes. Next RP-272/273 denominator diagnosis; RP-274 per-node attribution joins
+H3/RP-268/271/H5 author routes. Docker root rechecked100%/39784KiB free despite
+room in the DB tmpfs; restricted cleanup approval requested, not granted, no
+matching Cloud Clicker candidate identified. No cleanup, new Docker workload,
+owner adoption, kernel/live math/balance/CI/corpus/retained-report change,
+checkbox, mint, archive, deployment, publication or push. The complete nine-tier/
+platform/release objective remains; goal active, no shortcut or release claim.

@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest evidence (2026-10-06):** RP-263 fresh dated H1/H2 measurement/lineage
+**Latest correction (2026-10-06):** RP-263 career/report source observations
+distinguish overridden policy, experiment/horizon, purchase policy and mask
+without changing the catalog key or gameplay. Four real careers preserve whole
+result fingerprints;36 refusals/nine compiling omissions discriminate. Full
+97-pair/970-arm study finishes636.768s, all194/970 source admissions pass, but
+H4's six ties and both historical comparisons remain RED. Cold local fast/core
+pass; kernel161/live math/balance/CI/corpus/reports unchanged. Whole span after
+dfc2fb8c needs Claude. Next RP-272/273 denominator diagnosis; RP-274 per-node
+attribution joins author routes. Docker remains100%/39784KiB free; no cleanup/
+fresh SQL/browser claim. The full nine-tier/platform goal remains intact.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous evidence (2026-10-06):** RP-263 fresh dated H1/H2 measurement/lineage
 completes97 runs/679 clocks twice, byte-identical on full replay. All30 candidate
 thresholds measured with pinned Prestige; satisfying proposals unchanged, three
 Reference rows differ, none adopted. Twenty-four refusals/four compiling omissions

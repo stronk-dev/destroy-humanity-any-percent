@@ -5164,3 +5164,69 @@ RED. No new reports or full-population claim at this checkpoint. RP-272 source
 finding remains unexecuted. All current and earlier designated-review spans
 remain independent. Kernel161/live math/balance/copy/corpus/CI unchanged; no box,
 mint, archive, owner ruling, cleanup, deployment, message or push. Goal active.
+
+## 2026-10-06 — RP-263 full source admission and remaining report findings
+
+Implementation committed831fa9b3 afterec71a33c/8f51c0a5. Exact restored sources
+then plus two admitted logging lines: .go3b691d40, H4 test1d79b174,
+H5 test0c0b4148, diagnostic806c69a1. No probe/checkpoint edits during live runs.
+
+Complete97-pair H4/970-arm H5 run8ff774..6a52a7,session70877,terminal exit2,
+636.768s, not cancelled or restarted. H4 logs194 admitted sources,97 rows,
+93 timing comparisons/3 valid exclusions, Casual4/14/21. Its six ties remain
+at Casual1/6/8/11/24/25 and275000/425000/405000/265000/360000/430000ms.
+ce4476 records those and the preserved report comparison RED after129.55s.
+H5 completes506.93s,970 admitted arms/970 retained sources; only its old-report
+byte comparison fires, no source or node-classification error emitted. This is
+not H5 acceptance: unruled epsilon/run4, denominators, policy/data authority,
+software-provenance artifacts and actual SQL still remain. No v1 file updated.
+
+Cold fastc4a989..cf7daa,session34615,terminal exit0:harness77.901s,
+role0.161s,Commons0.408s and guard. Cold core4729d7..702695,session90827,
+terminal exit0:full vet/cold non-harness tests, production41.781s,
+transport13.273s,save0.282s,numeric vectors and unchanged API/formula generation.
+Pitch alias cached only after its whole package ran cold0.327s. This is local
+gate evidence, not hosted CI/client/browser/SQL/full verify-push evidence.
+
+Full H1 verifydf6d21..a8ecf4,session76735,terminal exit2,0.280s intentionally
+refuses changed server tree61f1370e before production. Its dated producer
+da512cd3/tree7db46f7e remains immutable historical evidence. Static artifact
+validation stayed green in cold fast; no relabelling or overwrite. Old H1/H4/
+H5/H2 SHA1f7c774d/648f36d6/4ed79054/46a8fea6 and dated H1/H2 SHA3ce87b08/
+d5979c93 remain unchanged.
+
+Read-only resource checks: docker system df8658e2..233c6a,session35296,
+terminal exit0,342 images/78.3GB,143 volumes/39.36GB, build cache2.634GB.
+Resolve game-ui postgres9402b6ad7eb7 and verify compose projectcloud-clicker/
+servicegame-ui-postgres. Its data tmpfs has8108540KiB free, but actual root/tmp
+overlay still100%/39784KiB free. Do NOT confuse tmpfs with usable build capacity.
+No fresh Docker tests started. Narrow cleanup approval requested asynchronously,
+not granted, preserving all volumes/running containers/release/rollback artifacts.
+Tag/source-label filters identify no Cloud Clicker image candidate; do not
+delete another project's images or infer authority from reclaimable sizes.
+One compounded listing invocation is sandbox-denied; standalone retry succeeds.
+No secret env read, cleanup, new container or deployment. Capacity hold remains.
+
+Read-only report audit while the full run lived (no edits): historical H4 nil
+baseline Casual4/14/21 owncash_small/generated_beige_tower. Historical H5
+publishes Casual bought32/23 and medians70000/15000ms without finite/unreached
+counts. This is not a current mask-arm census or shared-software provenance proof
+(RP-272). Current H4 again observes those nil baselines; proper census research
+still precedes any censoring or median policy.
+
+Register RP-273/274 immediately after handles terminate: source shows H4 appends
+savings only for strictly-faster finite pairs; independent historical arithmetic
+has28 finite eligible Casual pairs/six ties, all-finite min/p50/max0/80000/350000,
+versus22 faster pairs/published15000/80000/350000ms. No current full-summary
+value claim beyond observed ties. R10 also requires per-node min/p50/max, whereas
+the schema/writer exposes only per-policy aggregates plus compound starter rows;
+no reconciled per-node attribution found. Need controlled denominator diagnosis
+and author clarification before calling package savings isolated node effects.
+No new statistic, epsilon, horizon, mechanic or owner ruling was adopted.
+
+Docs/ledger/board/queue/plan now reflect observed source completion and next
+RP-272/273 diagnosis, with RP-274/RP-268/271/H3/H5 author routes held. Full new
+span afterdfc2fb8c, declaration/baseline/code/docs/records, requires Claude's
+designated review independently of every prior range. Kernel161/live math/
+balance/CI/corpus/retained reports/owner copy unchanged. No checkbox, acceptance,
+mint, archive, publication, cleanup, message to Claude or push. Goal active.

@@ -4,7 +4,18 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest evidence: RP-263 now has fresh dated H1/H2 reports and committed-producer
+Latest correction: RP-263 now distinguishes actual career inputs from catalog
+RunKeys and binds/retains sources at both report consumers. Four real careers
+preserve complete gameplay fingerprints;36 refusals/nine compiling omissions
+discriminate. Full97-pair/970-arm study finishes636.768s:194/970 source admissions
+pass; H4 remains93 comparisons/3 exclusions/six ties, both historical comparisons
+RED. Cold local fast/core pass. Kernel161/live math/balance/CI/corpus/reports unchanged;
+full span afterdfc2fb8c needs Claude. Next RP-272/273 denominator diagnosis;
+RP-274 per-node attribution, H3 and RP-268/271 remain author routes. Docker
+rechecked100%/39784KiB free; no cleanup or fresh DB/browser claim. Full1.0 remains
+open, no box/mint/archive/push. [Evidence](reputation-tree-v1/log.md).
+
+Previous evidence: RP-263 now has fresh dated H1/H2 reports and committed-producer
 lineage. Full97-run/679-clock record and byte-identical replay pass; all30
 thresholds are measured with exact pinned Prestige. Proposal set unchanged,
 three Reference rows differ; none adopted. Twenty-four refusals/four compiling
