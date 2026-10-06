@@ -19,6 +19,7 @@ import (
 
 const reputationCareerFixtureThreshold = "1e5"
 const reputationCareerReportPath = "planning/reputation-tree-v1/career-h4.v1.json"
+const reputationBothArmsBeyondHorizon = "run3_gate_beyond_ratified_horizon_in_both_arms"
 
 func reputationCareerBundle(t *testing.T, suite *FirstHourSuite) production.CatalogBundle {
 	t.Helper()
@@ -134,7 +135,7 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 				value := *row.ControlGateMS - *row.TreatedGateMS
 				row.SavedMS = &value
 			} else if row.TreatedGateMS == nil && row.ControlGateMS == nil {
-				row.Excluded = "run3_gate_beyond_ratified_horizon_in_both_arms"
+				row.Excluded = reputationBothArmsBeyondHorizon
 			}
 			results[index] = row
 		}(index, current)
@@ -150,6 +151,13 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 	violations, saved := evaluateReputationCareerGate(results, &report)
 	report.Violations = violations
 	report.GatePassed = len(report.Violations) == 0
+	t.Logf("H4 observed population: rows=%d gated=%d excluded=%d", len(results), report.GatedSeeds, report.ExcludedSeeds)
+	for _, row := range results {
+		if row.Excluded != "" {
+			t.Logf("H4 observed exclusion: %s/%d reason=%s treated=%v control=%v saved=%v", row.PolicyID, row.Seed,
+				row.Excluded, row.TreatedGateMS, row.ControlGateMS, row.SavedMS)
+		}
+	}
 	for _, violation := range report.Violations {
 		t.Logf("H4 violation (recorded, not loosened): %s", violation)
 	}
@@ -180,7 +188,12 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 func evaluateReputationCareerGate(results []reputationCareerSeed, report *reputationCareerReport) ([]string, map[string][]int64) {
 	violations := []string{}
 	saved := map[string][]int64{}
+	report.GatedSeeds, report.ExcludedSeeds = 0, 0
 	for _, row := range results {
+		if err := validateReputationCareerGateRow(row); err != nil {
+			violations = append(violations, fmt.Sprintf("%s seed %d: %v", row.PolicyID, row.Seed, err))
+			continue
+		}
 		if len(row.AppliedStarterIDs) == 0 {
 			continue
 		}
@@ -201,6 +214,36 @@ func evaluateReputationCareerGate(results []reputationCareerSeed, report *reputa
 		}
 	}
 	return violations, saved
+}
+
+// Validate report evidence before deciding whether this row has a starter.
+// Ineligible timing rows do not gain permission to publish false exclusions
+// or savings. An unreached clock has no finite saving, not a zero saving.
+func validateReputationCareerGateRow(row reputationCareerSeed) error {
+	if row.TreatedGateMS != nil && *row.TreatedGateMS < 0 || row.ControlGateMS != nil && *row.ControlGateMS < 0 {
+		return fmt.Errorf("invalid negative H4 gate clock")
+	}
+	if row.Excluded != "" {
+		if row.Excluded != reputationBothArmsBeyondHorizon {
+			return fmt.Errorf("invalid H4 exclusion reason %q", row.Excluded)
+		}
+		if row.TreatedGateMS != nil || row.ControlGateMS != nil {
+			return fmt.Errorf("H4 exclusion contradicts an observed gate clock")
+		}
+	} else if row.TreatedGateMS == nil && row.ControlGateMS == nil {
+		return fmt.Errorf("H4 both-unreached row lacks its horizon exclusion reason")
+	}
+	if row.TreatedGateMS != nil && row.ControlGateMS != nil {
+		if row.SavedMS == nil {
+			return fmt.Errorf("H4 finite gate pair lacks its saving")
+		}
+		if *row.SavedMS != *row.ControlGateMS-*row.TreatedGateMS {
+			return fmt.Errorf("H4 saving disagrees with observed gate clocks")
+		}
+	} else if row.SavedMS != nil {
+		return fmt.Errorf("H4 unreached gate cannot have a finite saving")
+	}
+	return nil
 }
 
 func TestReputationCareerGateRejectsTiesAndMissingTreatment(t *testing.T) {

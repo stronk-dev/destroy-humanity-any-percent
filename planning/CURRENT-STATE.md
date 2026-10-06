@@ -4,14 +4,28 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest harness study: RP-262 now executes the current first-hour producer.
+Latest harness correction: RP-264's H4 report gate now refuses false exclusions,
+invalid clocks and inconsistent/missing savings; each census is fresh. All28
+synthetic profiles and the legacy gate pass cold. Nine compiling omissions
+discriminate; two expose caught panics rather than semantic refusal. Cold fast
+harness/core/vet pass. Complete97-pair H4 and970-arm H5 finish in787.881s but
+remain RED (six Casual ties and retained-report drift). A separate current
+97-pair census confirms93 counted comparisons/3 valid exclusions, Casual4/14/21.
+Harness-test-only; kernel161/live math/balance/reports/corpus/CI policy unchanged.
+Whole new span afterdb8398a3 needs Claude. Next diagnose RP-269's threshold
+source/Exit admission and ground RP-268's named artifact authority; fresh
+H1/H2/report lineage, H3 author reconciliation, H4/H5, SQL/capacity and all prior
+reviews remain. No box, waiver, retune, mint, archival, push or 1.0 promotion.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous harness study: RP-262 now executes the current first-hour producer.
 All485 runs/3395 clocks complete; epoch8/no-row/unit neutrality passes, but
 the tiny factor changes0/679 clocks and strong control changes289. The tiny
 input changes lifetime production, not milestones; exact H3 criterion RED.
 Four actual Reference controls and27 oracle/refusal children pass; five
 compiling omissions discriminate. Cold core/vet/fast pass. Harness-only;
 kernel161, live math/balance/reports/corpus unchanged. Full span afteree1064a0
-needs Claude. H3 author reconciliation, RP-264 exclusion oracle, report lineage/
+needs Claude. H3 author reconciliation, report lineage/
 fresh H1/H2, H4/H5, SQL/capacity and all prior reviews remain open. No waiver,
 retune, mint or full1.0 promotion. [Evidence](reputation-tree-v1/log.md).
 

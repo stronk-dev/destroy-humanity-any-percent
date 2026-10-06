@@ -576,6 +576,27 @@ The exhaustive report reproduction remains in `make reputation-harness-check`.
 After the Reference correction, strict H4 and H5 reproduction both reject
 report drift; their v1 bytes remain historical snapshots, not current-instrument
 acceptance. The full H4 run still records the same six Casual ties. H5's
-epsilon/run-4 questions, report provenance, H3's fired tiny-factor criterion and
-the separate exclusion-oracle work remain unresolved. No report refresh,
-retune or release claim follows.
+epsilon/run-4 questions, report provenance and H3's fired tiny-factor criterion
+remain unresolved. No report refresh, retune or release claim follows.
+
+The test-side H4 report gate validates each row before starter eligibility.
+Only `run3_gate_beyond_ratified_horizon_in_both_arms` with both clocks absent
+is an exclusion; observed clocks must be nonnegative. A finite pair must carry
+exactly control minus treated as its saving. Any unreached clock forbids a
+finite saving. No-starter rows remain outside timing comparisons, but cannot
+publish malformed evidence. Derived gated/excluded counts reset on each call.
+Strictly sooner remains the requirement: ties and missing treatment fail.
+
+`TestReputationCareerGateExclusionDiagnostic` exercises 28 synthetic profiles,
+including false exclusions, missing/wrong savings and repeated census calls.
+These prove report admission, not naturally earned careers or SQL integration.
+Nine independent compiling guard/caller/counter/strict-comparison probes fail;
+the missing-saving guard and ignored-admission probes expose caught panics,
+not semantic refusals. The current complete 97-pair producer independently
+logs 93 counted comparisons and three valid both-unreached exclusions
+(Casual seeds 4, 14 and 21). The same six genuine Casual ties remain failures.
+The separate full 970-arm H5 reproduction still rejects retained report drift.
+Old report bytes, horizon, policy, balance and kernel161 remain unchanged.
+This is locally verified instrument repair, pending designated review, not
+H4/H5 or AC13 acceptance. The RFC's absent named career-data artifact and fresh
+H1/H2 source admission/lineage remain separate work.

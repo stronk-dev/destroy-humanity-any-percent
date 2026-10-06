@@ -5,14 +5,27 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness study (2026-10-06):** RP-262 executes485 runs/3395 clocks.
+**Latest harness correction (2026-10-06):** RP-264 repairs H4 report admission
+without changing its strict-sooner criterion. All28 synthetic profiles and the
+legacy gate pass; nine compiling omissions fail with exact restoration (two
+are caught panic faults, not semantic refusals). Cold fast/core/vet pass.
+Complete97-pair H4/970-arm H5 finish787.881s, still six-tie/report-drift RED.
+Separate current97-pair census measures93 counted comparisons/3 valid exclusions.
+Test-only, kernel161/live math/balance/reports/corpus/CI policy unchanged. Whole
+new span afterdb8398a3 needs Claude, independently of all prior spans. Next
+RP-269 source/Exit admission diagnosis and RP-268 artifact-authority grounding;
+fresh H1/H2/lineage, fired H3, H4/H5, SQL/capacity and the full nine-tier/platform
+goal remain. No waiver, retune, mint, archive, push or release claim.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous harness study (2026-10-06):** RP-262 executes485 runs/3395 clocks.
 Epoch8/no-row/unit neutrality passes; tiny factor changes0/679 clocks while
 strong control changes289. Tiny input changes lifetime production, but the
 exact milestone criterion is RED. Four actual Reference controls,27 oracle/
 refusal children and five compiling omission probes discriminate; cold
 core/vet/fast pass. Harness-only, kernel161/live math/balance/reports/corpus
 unchanged. Full new span afteree1064a0 needs Claude. H3 author reconciliation,
-RP-264, report lineage/fresh H1/H2, H4/H5, SQL/capacity, prior reviews and the
+report lineage/fresh H1/H2, H4/H5, SQL/capacity, prior reviews and the
 full nine-tier/platform goal remain; no waiver, retune, mint or release claim.
 [Evidence](reputation-tree-v1/log.md).
 

@@ -2989,3 +2989,21 @@ Full new span afteree1064a0 needs Claude; previous RP-267 and all earlier
 spans remain independent. Next accepted RP-264, not retuning or report refresh.
 H1/H2/report lineage, H4/H5, SQL/capacity and the full nine-tier/platform/release
 objective remain. Goal active; no box, mint, archive, cleanup, push or release.
+
+## 2026-10-06 — H4 report admission repaired without hiding failed careers
+
+RP-264 predeclareda0aab5a6/5e3064fb/8ef50ccb repairs false-exclusion, missing/
+wrong-saving and stale-census admission. All28 synthetic profiles and original
+gate pass cold; nine compiling omissions discriminate with exact restoration,
+two as caught panic faults rather than semantic refusals. Cold fast/core/vet
+pass. Test-only, kernel161/live math/balance/reports/corpus/CI policy unchanged.
+[Exact evidence, hashes and scope](reputation-tree-v1/log.md).
+
+Complete97-pair H4/970-arm H5 finish787.881s, still six-Casual-tie/report-drift
+RED. Separate complete current97-pair census measures93 comparisons and3valid
+exclusions, Casual4/14/21. Old report bytes unchanged, no tolerance/horizon
+changes. Whole new span afterdb8398a3 requires Claude; prior spans remain
+independent. Next RP-269 threshold source/Exit diagnosis and RP-268 artifact
+authority grounding; fresh H1/H2/lineage, fired H3, H4/H5, actual SQL/capacity
+and full nine-tier/platform/release objective remain open. Goal active; no
+checkbox, waiver, retune, mint, archive, cleanup, push or release promotion.

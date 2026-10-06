@@ -4495,3 +4495,67 @@ the first matching kinds without sequence/order/duplicate admission. No bad
 input has been executed; record RP-269 as a source lead, not a confirmed
 measurement defect, and predeclare diagnosis separately before changing it.
 No source/record edits while any handle lived; previous goal progress remains.
+
+## 2026-10-06 — RP-264 exclusion admission repaired; measured failures retained
+
+All handles terminal before this record. Predeclarations a0aab5a6 (diagnosis),
+5e3064fb (bounded repair) and8ef50ccb (direct census observation) precede their
+changes. No product byte moved: only two harness test files, docs and records.
+Private row admission validates nonnegative clocks, exact both-unreached reason,
+finite-pair saving presence/equality and absent saving when either clock is
+unreached, before starter eligibility. Counters reset every invocation. Existing
+strict-sooner, treated-only and no-starter semantics remain; no new exemption,
+policy, horizon or report schema. All28 synthetic profiles and the legacy gate
+pass after stdout-only observation:2e55e4..5b70f7, session2113,exit0,0.295s.
+
+Baseline7b0046..89bb3a had8healthy passes,18 malformed and2accounting failures:
+12 malformed admissions,5already-timing-violating but invalid census/savings
+rows,1missing-saving panic. Nine independent compiling probes, each cold and
+terminal before restoration/next edit:
+
+| Omission | Output range | Demonstrated fault |
+|---|---|---|
+| exact reason | a734ff..dbe3c9 | two unknown-reason refusals lost |
+| both-clock exclusion requirement |32f2e4..061d69| five false labels plus mixed population |
+| saving presence |e8cb09..636681| missing-saving panic caught, not semantic refusal |
+| saving equality |c2b0b7..1c8b24| three inconsistent-saving profiles |
+| finite saving on unreached clock |a95627..d1bdb4| three nil-clock profiles |
+| negative clock refusal |7eb9df..ff7762| two negative-clock profiles |
+| caller honors admission error |b50f14..4de345| eighteen bad profiles plus mixed; includes caught panic |
+| census reset |58b2e3..43c9ff| repeated invocation counts |
+| strict >= comparison |35ad92..74e9c2| tie, census and original gate test |
+
+All nine exit2, no compiler failure. No separate omission of the unlabelled
+both-unreached branch was executed; do not claim every guard was severed.
+Probe-phase source SHA256 e49c252c1fa56cb14f68faf8c2812878254917bf5694422cdc583bc189ce943f
+and diagnostic03bda3a3bece2b701ef3f72761d1fdc9a94c1a146d99c465d2cb1cadab0f4227
+restore exactly (0ded61/481d66). The subsequent predeclared logging-only addition
+changes the career-test SHA to502d0a344a8485b3318442641f711ea60dd8e9aa53a5238fd34db9eafa0bbcb9
+(c88617); guards and diagnostic are unchanged. Do not relabel probe restoration
+as the later source hash.
+
+Full8f5352..e9c740, session88822,terminal exit2,787.881s:97 H4 pairs131.03s,
+970 H5 arms656.69s. Same Casual ties:1=275000,6=425000,8=405000,11=265000,
+24=360000,25=430000ms. No new admission violation/classification error emitted;
+both strict retained-byte comparisons remain RED. Absence of an H5 error is not
+full H5 proof. No update flags or old-report changes.
+
+Actual census after observation supplement7719c1..369a03, session50842,
+terminal exit2,146.952s (test146.72s): all97 current pairs,93 counted comparisons,
+3valid exclusions:Casual4/14/21, each exact known reason and both clocks/saving
+nil. Same six ties and retained-report drift remain RED. This is the current
+producer, not the historical471517 census, and not another970-arm H5 run.
+
+Cold core59dee6..e083d6 exits0 including vet, production38.528s,transport13.262s,
+save0.273s, numeric vectors and unchanged generated API/formulas. Final fast
+after logging5c19d2..d569ec exits0:harness72.051s,role0.264s,Commons0.416s and
+guard. Final narrow vet174b98 exits0. No fresh SQL/client/browser/hosted claim;
+historical composite RP-131 remains RED. Failed read-only ps0d8b84 was not
+process evidence; the same live full-study handle was polled to terminal.
+
+Kernel161/live math/balance/schema/migrations/CI policy/owner copy/reports/corpus
+unchanged. No checkbox flips. Whole span afterdb8398a3, all three predeclarations
+and implementation/records, needs Claude independently of all prior ranges.
+Next accepted diagnosis RP-269 source/Exit admission and RP-268 artifact-authority
+grounding. Fresh H1/H2/lineage, H3 author reconciliation, H4/H5, actual SQL/capacity
+and full1.0 remain. Goal active; no waiver, retune, mint, archive, cleanup or push.

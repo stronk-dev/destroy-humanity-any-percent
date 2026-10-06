@@ -129,7 +129,15 @@ threshold retune is measured and reported, then ratified by owner SHA).
   children pass; five compiling probes discriminate with exact restoration.
   Cold core/vet/fast pass. Harness-only, kernel161 and old reports unchanged;
   complete new span afteree1064a0 needs Claude. H3 author reconciliation is
-  required before closeout. Next RP-264's separate exclusion oracle.
+  required before closeout. RP-264 undera0aab5a6/5e3064fb/8ef50ccb now repairs
+  false-exclusion/saving admission and stale census accounting. All28 synthetic
+  profiles plus the legacy gate pass; nine compiling omissions discriminate
+  with exact restoration, two as caught panic faults. Cold fast/core/vet pass.
+  Complete97-pair H4/970-arm H5 finish787.881s, still six-tie/report-drift RED;
+  separate current97-pair census confirms93 counted/3 valid excluded rows.
+  Test-only, kernel161/old reports unchanged; complete span afterdb8398a3 needs
+  Claude. Next RP-269 source/Exit admission diagnosis and RP-268 artifact
+  authority grounding, not threshold minting or criterion changes.
   Fresh H1/H2/report provenance/reproduction remains separate; no retuning or
   report-regeneration authority here. No checkbox flipped.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.

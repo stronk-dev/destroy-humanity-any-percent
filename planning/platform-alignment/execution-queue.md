@@ -1,5 +1,26 @@
 # Executable queue
 
+## H4 exclusion oracle corrected locally — 2026-10-06
+
+RP-264 undera0aab5a6/5e3064fb/8ef50ccb validates row evidence before starter
+eligibility and resets derived counts. All28 synthetic profiles plus the legacy
+gate pass cold; nine compiling omissions discriminate and restore exactly.
+Two omissions expose caught missing-saving panics, not semantic refusals.
+Cold fast/core/vet pass. Complete97-pair H4/970-arm H5 finish787.881s, still
+six-Casual-tie/report-drift RED. A separate complete97-pair producer census
+measures93 comparisons/3 valid exclusions (Casual4/14/21).
+
+**READY FOR CLAUDE:** full new span afterdb8398a3, including all three
+predeclarations and implementation/records. Earlier ranges remain independent.
+**NEXT SAFE ACCEPTED WORK:** predeclare RP-269 threshold source/Exit admission
+diagnosis, distinguishing generic calculation from complete-study authority;
+ground RP-268's absent named career-data artifact against existing rulings.
+**STILL OPEN:** fresh H1/H2/report lineage, H3 author reconciliation, H4's
+six ties, H5 epsilon/run4/drift, actual SQL/capacity and the full1.0 floor.
+Test-only; kernel161/live math/balance/reports/corpus/CI policy unchanged.
+No box, waiver, retune, mint, archive, cleanup or push.
+[Evidence](../reputation-tree-v1/log.md).
+
 ## H3 sensitivity study completed RED — 2026-10-06
 
 RP-262 under64badd7b/3d7c93ff executes all485 runs/3395 clocks. Epoch8/no-row/
@@ -16,7 +37,7 @@ earlier range remain independent obligations.
 **AUTHOR RECONCILIATION REQUIRED:** accepted R10 H3's tiny-factor criterion
 fired in the declared population. Only its author can reconcile that intent;
 the implementer may not weaken it or promote H3/AC13.
-**NEXT SAFE ACCEPTED WORK:** predeclare/execute RP-264's false-exclusion and
+**ORIGINAL NEXT QUEUE:** predeclare/execute RP-264's false-exclusion and
 accounting oracle without altering horizon or H4's strict-sooner criterion.
 **STILL OPEN:** report provenance and fresh H1/H2, H4's six Casual ties and
 H5 epsilon/run4/drift; actual SQL/capacity, earlier reviews and full1.0 floor.
