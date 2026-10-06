@@ -3623,3 +3623,15 @@ active/progress; no fullAC7/RFC/CI/release promotion, boxes/archive/epoch/copy/
 product/CI workflow/cleanup/push/deploy. Next reconcile remaining accepted gates
 and select unblocked implementation, not duplicate proven evidence.
 [Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — PR Intern native progress association
+
+RP-303 afterb2b2d5a5, predeclared c3606a96: native progress bars had no
+accessible names, while old counting/axe tests passed. Existing translated titles
+and numeric descriptions now bind each bar to its row. Chromium/WebKit baseline
+and both compiling source controls fail; restored six cases and performance pass.
+Types/8241units/340skips/build/boundary/copy/topology pass. Firefox session timeout
+executes zero tests; only owned stalled process interrupted. New Codex range needs
+Claude; no full P5/AC11, human AT, hosted CI, mint or release promotion.
+Goal remains active; full nine-tier/platform1.0 and earlier independent holds
+unchanged. [Evidence](clout-v1-and-pr-interns/log.md).

@@ -68,6 +68,15 @@ accrual.
 `CloutLifetime`; under Option A the allowed writer set is empty. No economy resource is a Clout
 resource.
 
+## Fixture panel accessibility
+
+The Desk panel's native PR Intern progress bars reference their existing
+translated intern titles as accessible names and their numeric progress sentences
+as descriptions. The controlled browser witness checks distinct row associations
+and a refresh that makes one intern owned. This is fixture-panel evidence, not
+the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
+[implementation log](../planning/clout-v1-and-pr-interns/log.md).
+
 ## Not yet delivered
 
 - Served-epoch activation and the default composed PR purchase/rendering journey

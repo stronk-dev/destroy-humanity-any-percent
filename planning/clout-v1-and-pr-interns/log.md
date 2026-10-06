@@ -408,3 +408,57 @@ mint, cleanup, archive or push. This is not a full designated P5 review, default
 served-epoch journey, manual assistive-user study, or full accessibility proof.
 All earlier Codex spans remain independently review-pending. Cold local browser,
 types/client/build/copy/boundary checks are not hosted CI success.
+
+### RP-303 unchanged-production baseline
+
+After c3606a96 predeclaration, the new native role/name case fails in Chromium
+and WebKit: `native progressbar named PR Intern: expected null not to be null`.
+Run bc5cb7 / session76051, terminal e6a861, exit2: 2 failed / 4 original cases
+passed, 2.32s. Failure is the new association oracle, not a launch or compile
+failure; the later refresh assertions were not reached. Make's dependent
+performance lane did not execute on this failed invocation. No handle remains.
+Local correction binds each bar to its existing translated title and links its
+numeric progress sentence as a description. No prose or math is changed.
+
+### RP-303 executed correction and discrimination
+
+Initial corrected run f1a31b /56983, terminal c4be0d: six Chromium/WebKit
+cases pass (1.31s); dependent performance lane one pass/22 filtered skips.
+Corrected panel SHA256:
+`2e3c38c8713f031b3a3bc7d1f7899ee640260ee9c95a66e4e542e45953afc0a7`.
+
+- Missing-label compiling source control: ffa805 /18761, a0391c terminal
+  exit2, two new failures/four originals pass (1.36s), exact source restored
+  f33259. Later refresh assertions were not reached.
+- Wrong-row label compiling control: 2ababf /1901, 68914c terminal exit2,
+  two new failures/four originals pass (1.33s). Native strict role/name lookup
+  reports two different bars named PR Intern. This fails before the later
+  Senior lookup, not a claim of executed later assertions. Exact restore d98c11.
+- Final restored run381f77 /52502, b0d480 terminal exit0: six cases pass
+  (1.86s), including two named rows, exact value/max, contextual descriptions,
+  owned-row removal after refresh and no intents. Performance separately one
+  pass/22 filtered skips (1.21s).
+- Cold root types/client/build/boundary/copy/topology run3cf837 /82253,
+  terminal283091 exit0: Svelte0errors/0warnings, 8241unit pass/340visible
+  Node skips, production build213modules, UI boundary22GameUI files, copy658
+  keys/hash unchanged plus five generation goldens/six corruptions; content
+  manifest unchanged, topology positive/13negative controls. The new browser
+  case is a Node skip, never counted there as executed accessibility evidence.
+- Firefox0f6012 /13232 emits session-connect timeout after60.03s, no tests,
+  1unhandled error (570594). Its process then remains live; only that owned
+  handle is gracefully interrupted via Ctrl-C, terminal e6afce exit130. No
+  Firefox success, skipped-case substitute, launch workaround or full CI claim.
+  Diagnostic `ps` attempt946d9a was denied; no escalation/cleanup inferred.
+
+Existing Actions browser job calls `make test-browser` and its default config
+discovers this file in all three projects. No workflow/discovery flag changed;
+local selected-engine checks do not prove the hosted Linux run. Previous
+RP-131/historical CI red and other independent holds remain unchanged.
+
+Only three production markup lines change, outside watched kernel paths; no
+math, eligibility, copy bytes, generated API, balance or epoch moves. The native
+role query proves DOM accessibility-name association, not a human screen-reader
+study. Full CV9 hints/codex/notices, served-epoch purchase/rendering, P6 authority,
+mint and wider release proof remain open. P5 checkbox is unchanged and its text
+now explicitly describes presence, not full acceptance. New work afterb2b2d5a5
+including these record edges independently requires Claude; no archive/push.

@@ -123,3 +123,39 @@ it.skipIf(!browser)("renders no axis panel when the pinned economy has no axis s
   const { target, dispose } = await mounted(runtime);
   try { expect(target.querySelector("section.axis")).toBeNull(); } finally { await dispose(); }
 });
+
+// RP-303: count/axe alone do not prove native progressbar names. Use the
+// browser's role/name lookup, rather than assuming a particular labeling attr.
+it.skipIf(!browser)("associates native PR progress with the correct intern before and after refresh", async () => {
+  const { page } = await import("vitest/browser");
+  const unowned = structuredClone(axisArm) as GameUIAxisStackArm;
+  unowned.interns.forEach((intern) => { intern.owned = false; });
+  unowned.contributions = [];
+  unowned.product = "1e0";
+  const runtime = new Runtime();
+  runtime.current = withAxis(unowned);
+  const { target, app, dispose } = await mounted(runtime);
+  try {
+    const assertProgress = (name: string, id: string, value: number, maximum: number) => {
+      const found = page.getByRole("progressbar", { name, exact: true }).query();
+      expect(found, `native progressbar named ${name}`).not.toBeNull();
+      const bar = found as HTMLProgressElement;
+      expect(bar.closest("li")?.getAttribute("data-upgrade")).toBe(id);
+      expect({ value: bar.value, maximum: bar.max }).toEqual({ value, maximum });
+      const descriptionIDs = (bar.getAttribute("aria-describedby") ?? "").split(/\s+/u).filter(Boolean);
+      const descriptions = descriptionIDs.map((ref) => document.getElementById(ref));
+      expect(descriptions.every((node) => node !== null)).toBe(true);
+      expect(descriptions.some((node) => node?.textContent === "Unlocks at attainment " + maximum + " (now 8)")).toBe(true);
+      expect(descriptions.some((node) => node?.id === "axis-why")).toBe(true);
+    };
+    expect(target.querySelectorAll("section.axis progress")).toHaveLength(2);
+    assertProgress("PR Intern", "upgrade.pr_intern_1", 6, 6);
+    assertProgress("Senior PR Intern", "upgrade.pr_intern_2", 8, 10);
+    app.fixtureSnapshot(withAxis(axisArm as GameUIAxisStackArm));
+    await settle();
+    expect(target.querySelectorAll("section.axis progress")).toHaveLength(1);
+    expect(page.getByRole("progressbar", { name: "PR Intern", exact: true }).query()).toBeNull();
+    assertProgress("Senior PR Intern", "upgrade.pr_intern_2", 8, 10);
+    expect(runtime.requests).toEqual([]);
+  } finally { await dispose(); }
+});

@@ -23,7 +23,7 @@ lands, with the allowed writer set empty.
   pass (Go + TS), `achievement_reattained.v1` event + migration, new-run activation, Exit discard,
   migration corpus. ACs 3, 5, 6, 7, 8.
 - [x] P4 (`4c089f00`) — AC4 Gaia-law structural test (empty writer set under A; seeded writer fails).
-- [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress. AC11.
+- [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress: implementation presence, not full AC11/default composed journey acceptance. RP-303 locally corrects native progress associations; its Codex span independently needs Claude.
 - [ ] P6 — PARTIAL (see log P6; blocked on harness attainment evaluation) — CV10 harness: scenario bundle rejection without achievements, relevance mask, dead-row
   fixture, observation + `axis_input_within_cap` invariant. AC9.
 - [ ] P7 — Canon docs (AC12). Partial: `docs/axis-stack.md` and pointers landed; RFC index/manifest G09 rows and the final range are owed at completion.
@@ -45,3 +45,8 @@ Use existing copy keys only. No server/schema/arithmetic/kernel/epoch/CI changes
 Run cold Chromium/WebKit cases via root Make, type/client/build/boundary/copy
 checks; report any Firefox launch failure separately, never as a passed case.
 No checkboxes or full P5/AC11 promotion. New Codex implementation needs Claude.
+
+Executed: unchanged-production failure and both compiling label controls
+discriminate; restored Chromium/WebKit six cases plus the independent performance
+lane pass. Types/build/client/boundary/copy/topology pass; Firefox zero executed
+after session timeout, not waived. Full evidence and review range are in log.md.

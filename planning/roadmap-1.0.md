@@ -5,7 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest public-projection checkpoint (2026-10-06):** RP-302 supplement afterc70861c1
+**Latest player-surface checkpoint (2026-10-06):** RP-303 fixes unnamed native
+PR Intern progress bars using existing titles and numeric descriptions. New
+Chromium/WebKit regression fails before the fix and on both label faults, then
+passes across owned-state refresh. Types/unit/build/copy/boundary/topology pass;
+Firefox session timeout executes zero cases. New Codex span needs Claude; no
+full Clout/accessibility/hosted-CI/mint/release approval. Remaining accepted-gate
+census distinguishes owner/author holds from build authority; full nine-tier
+1.0 scope unchanged. [Evidence](clout-v1-and-pr-interns/log.md).
+
+**Previous public-projection checkpoint (2026-10-06):** RP-302 supplement afterc70861c1
 connects actual purchase/Exit to stored GameUISnapshot: current factor1/rate5
 stays fixed, next1.003 updates, actual next run freezes1.003 and projects5.015.
 Complete current rows/head/frozen rows,12-table reads/retries and actual Founder

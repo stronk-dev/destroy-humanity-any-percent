@@ -20,9 +20,9 @@
   <ul class="interns">
     {#each arm.interns as intern (intern.upgrade_id)}
       <li data-upgrade={intern.upgrade_id}>
-        <strong>{t(upgradePresentation(intern.upgrade_id).title_key, {}, era)}</strong>
-        {#if !intern.owned}<span>{t("axis_stack.progress_frame", { minimum: intern.minimum, value: Math.min(arm.input_value, arm.input_cap) }, era)}</span>
-          <progress max={intern.minimum} value={Math.min(arm.input_value, intern.minimum)} aria-describedby="axis-why"></progress>{/if}
+        <strong id={`axis-title-${intern.upgrade_id}`}>{t(upgradePresentation(intern.upgrade_id).title_key, {}, era)}</strong>
+        {#if !intern.owned}<span id={`axis-progress-${intern.upgrade_id}`}>{t("axis_stack.progress_frame", { minimum: intern.minimum, value: Math.min(arm.input_value, arm.input_cap) }, era)}</span>
+          <progress max={intern.minimum} value={Math.min(arm.input_value, intern.minimum)} aria-labelledby={`axis-title-${intern.upgrade_id}`} aria-describedby={`axis-progress-${intern.upgrade_id} axis-why`}></progress>{/if}
         <span>{t("axis_stack.factor_label", {}, era)} <Amount value={intern.factor} {era} /></span>
         {#if intern.owned}<span>{t("desk.upgrade.owned", {}, era)}</span>{/if}
       </li>
