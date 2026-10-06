@@ -9,10 +9,14 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 review records CHANGES REQUIRED for RP-248/249; their Codex corrections still
 need Claude. Seven older writable Go Founder sources now execute both activation
 arms, pass complete-state byte equality/pinned admission and discriminate four
-runtime corruptions. Cold server-core/vet and client/type/build pass7408/134;
-no runtime/kernel/epoch change. New test-only range after80519365 needs Claude.
-Next shared TS older-source and remaining pinned load/encode evidence; this is
-not complete R1/R7/AC11, real DB/default-player or release acceptance.
+runtime corruptions. The subsequent seven-row/nine-bundle Go-authored corpus
+now binds strict TS loading/public Founder replay to full state/receipt/event/
+hash equality. Three TS runtime controls and three corpus corruptions in both
+lanes fail and restore exactly. Cold server-core/vet and client/type/build/
+boundaries/topology pass7416/134; no runtime/kernel/epoch change. Separate
+ranges `80519365..29ed56e8` and the supplement after29ed56e8 need Claude.
+Next remaining pinned load/encode and full B4 purchase range audit; this is not
+complete R1/R7/AC11, multi-event/real DB/default-player or release acceptance.
 
 **Latest runtime correction (2026-10-06):** RP-248, predeclared at 8094e914,
 rejects TS Founder encode corruption under accepted R1/R7. All 16 previously

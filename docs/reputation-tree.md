@@ -120,17 +120,29 @@ missing-case, source-SHA and closed-row-shape controls also fail. This fulfils
 the previously absent corpus/ratchet locally (RP-249), not all earlier-version
 activation chains, real database/default-player or whole B3/RFC acceptance.
 
-**Earlier Founder activation (Go).** `TestReputationEarlierFounderActivationChain`
+**Earlier Founder activation (shared Go/TS).** `TestReputationEarlierFounderActivationChain`
 executes seven legal writable sources (v14, v16–v21). Loading under each matching
 bundle retains its version; the live new-run kernel and public Founder Exit
 replay both produce v22 with earned11, spent0, owned[] and unlock0. Both outputs
 encode/restore under the next bundle, pass pinned validation and agree in full
 encoded Founder bytes after the expected Exit history append. Existing age and
-route knowledge survive. Four independent runtime corruptions make this test
+route knowledge survive. Four independent Go runtime corruptions make this test
 fail. Older fixture targets keep minigame/Fiscal keys stable and use the existing
 unlock chain without starters; v21 uses epoch8 and the full tree fixture. This
-is not a newly minted epoch, historical v15 writable path, TS older-source
-corpus, Company-log/DB commit proof or complete AC11.
+is not a newly minted epoch, historical v15 writable path, Company-log/DB commit
+proof or complete AC11.
+
+`testdata/replay/reputation-earlier-activation-v1.json` stores the exact seven
+Go-authored source/command/result rows with nine deduplicated artifact bundles.
+Normal Go runs require byte-exact regeneration equality; authoring is explicit
+via `make reputation-activation-corpus` after all transition assertions pass.
+TS loads each source/target through the actual strict artifact loader and its
+public Founder replay must match Go's complete state, receipt, events and result
+hash. The pre-state also encode-roundtrips without activation. TS spent/default,
+minigame and Soul initialization removals fail the affected rows. Removing a
+case, forging a receipt or deleting an expected event fails both lanes. Each
+row contains one event: this is not multi-event permutation/transaction proof.
+Existing migration and Reputation replay corpora are unchanged.
 
 The Company-side Founder carry includes tree fields for pinned Founder floors
 of v22 or higher. Both runtimes reconstruct them; the former pre-R6 carry gap

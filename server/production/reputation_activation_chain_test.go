@@ -16,6 +16,24 @@ import (
 	"cloud-clicker/server/save"
 )
 
+type reputationEarlierCorpusBundle struct {
+	ConstantsHash string            `json:"constants_hash"`
+	Artifacts     map[string]string `json:"artifacts"`
+}
+
+type reputationEarlierCorpusCase struct {
+	SourceBundle string                  `json:"source_bundle"`
+	NextBundle   string                  `json:"next_bundle"`
+	Case         crossRuntimeFounderCase `json:"case"`
+}
+
+type reputationEarlierCorpus struct {
+	Version        int                                      `json:"schema_version"`
+	SourceVersions []int                                    `json:"source_versions"`
+	Bundles        map[string]reputationEarlierCorpusBundle `json:"bundles"`
+	Cases          []reputationEarlierCorpusCase            `json:"cases"`
+}
+
 // These are fixture epochs, not new production epochs. Keep the minigame IDs
 // and Fiscal rows stable across the boundary: this measures save activation,
 // not an unrelated content-key migration.
@@ -108,6 +126,8 @@ func TestReputationEarlierFounderActivationChain(t *testing.T) {
 	if len(sources) != len(wantVersions) {
 		t.Fatal("incomplete earlier-Founder population")
 	}
+	corpus := reputationEarlierCorpus{Version: 1, SourceVersions: wantVersions,
+		Bundles: map[string]reputationEarlierCorpusBundle{}, Cases: []reputationEarlierCorpusCase{}}
 	now := time.Date(2026, 10, 6, 12, 0, 0, 0, time.UTC)
 	for index, source := range sources {
 		version, companyVersion := source.versionFloors()
@@ -230,6 +250,45 @@ func TestReputationEarlierFounderActivationChain(t *testing.T) {
 			if !bytes.Equal(mustEncodeState(t, live), mustEncodeState(t, replayed.State)) {
 				t.Fatal("live boundary and Founder replay differ in complete encoded state")
 			}
+			sourceID, nextID := fmt.Sprintf("source-v%d", version), "target-v22-legacy"
+			if version == 21 {
+				nextID = "target-v22-epoch8"
+			}
+			corpus.Bundles[sourceID] = reputationEarlierCorpusBundle{source.ConstantsHash, artifactStrings(source.Artifacts)}
+			corpus.Bundles[nextID] = reputationEarlierCorpusBundle{next.ConstantsHash, artifactStrings(next.Artifacts)}
+			post, events := mustEncodeState(t, replayed.State), fixtureEvents(replayed.Events)
+			corpus.Cases = append(corpus.Cases, reputationEarlierCorpusCase{sourceID, nextID, crossRuntimeFounderCase{
+				Name: fmt.Sprintf("founder-v%d-to-v22", version), StateVersion: version, PreState: input,
+				CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, Outcome: string(replayed.Outcome),
+				Receipt: replayed.Receipt, Events: events, PostState: post, ResultConstantsHash: replayed.ResultConstantsHash,
+				ReceiptJSON: canonicalFixtureJSON(t, replayed.Receipt), EventsJSON: canonicalFixtureValue(t, events),
+				PostStateJSON: canonicalFixtureJSON(t, post),
+			}})
 		})
+	}
+	if t.Failed() {
+		return // A failing transition must never rewrite its own expectation.
+	}
+	if len(corpus.Cases) != 7 || len(corpus.Bundles) != 9 {
+		t.Fatal("incomplete shared activation corpus")
+	}
+	encoded, err := json.MarshalIndent(corpus, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	encoded = append(encoded, '\n')
+	path := "../../testdata/replay/reputation-earlier-activation-v1.json"
+	if *updateReplayFixture {
+		if err := os.WriteFile(path, encoded, 0o644); err != nil {
+			t.Fatal(err)
+		}
+		return
+	}
+	committed, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(committed, encoded) {
+		t.Fatal("shared earlier-Founder activation corpus differs from executed Go transitions")
 	}
 }

@@ -2589,3 +2589,27 @@ needs Claude independently of earlier ranges. Next shared TS earlier-source and
 remaining catalog-bound load/encode evidence; no whole AC11/B3/DB/default-player
 or release approval. RP-131 composite RED and other CI/capacity/owner/author/H4/
 mint/whole nine-tier/platform holds persist. Goal active, no archive/push/cleanup.
+
+## 2026-10-06 — shared earlier-source Go/TS replay proof
+
+Under f1ca58db, the registered seven Go activation populations now author one
+328345-byte corpus with nine deduplicated source/target artifact bundles. Normal
+Go runs require exact regeneration equality; the narrow new root authoring
+target fixes custom-flag package ordering, not CI topology. Strict TS artifact
+loads and public Founder Exit replay match the Go full pre/post state, receipt,
+event and result-hash bytes for all seven rows. Each row has one event; no
+general multi-event permutation, Company-log/DB or default-player claim.
+
+Three independent TS runtime controls fail their affected rows. Missing row,
+forged receipt and deleted expected event each fail Go regeneration and TS;
+all restores are byte-exact. Old migration and Reputation replay corpora and
+runtime files remain unchanged. Final server-core/vet passes cold, production
+34.398s/save0.274s; client/type/build/boundaries/topology passes7416/134, zero
+diagnostics and13 topology negatives. No new runtime/kernel/schema/epoch/CI
+change. Full CI is not promoted: historical RP-131 RED and capacity/other holds
+remain. Initial custom-flag command failure is disclosed in the Reputation log.
+
+New range after29ed56e8 needs Claude independently of earlier spans. Next full
+R1/R7 pinned reader/writer and B4 purchase-range audit; complete nine-tier scope,
+real DB/career/player/release-artifact, mint/H4/owner/author and designated review
+remain. No checkbox flip, archive, push or cleanup consent. Goal stays active.

@@ -1724,3 +1724,89 @@ remaining R1 catalog-bound encode consumers/AC2/AC11 and mint/H4/author/owner/CI
 capacity require their own evidence. No checkbox flip, archival, push or Docker
 cleanup authority. New range after29ed56e8 needs Claude independently of all
 earlier Codex spans; self/first-filter only, no self designated approval.
+
+Generation command refinement before corpus creation:5c6c60 is a command-order
+setup failure, not a test/control result. Root test-go places custom flags before
+the package selector, so Go's custom update flag made it select server's empty
+root. Add a narrow root `reputation-activation-corpus` authoring target beside
+the existing replay-fixture precedent, with package before custom flag. This is
+generation tooling only, not a CI lane/workflow/count/exclusion change. Normal
+root test-go runs stay unflagged and validate byte equality. Makefile is not a
+kernel-affecting prefix; no artificial version bump. This extra scoped path also
+belongs to Claude's review range. No fixture was written by the failed command.
+
+Instrument refinement before an additional corpus control: the generated rows
+each contain exactly one FounderAdvanced event. R8's full ordered-event byte
+comparison is exercised, but this population cannot discriminate a multi-event
+permutation; no such broader ordering claim is authorized. Independently erase
+v14's expected events_json list in a scratch corpus mutation. Go regeneration
+and the TS actual-event comparison must fail; restore exact corpus SHA before
+subsequent checks. This supplements the predeclared missing-row/receipt controls
+without changing runtime, the seven populations or their expected behavior.
+
+## 2026-10-06 — shared earlier-source replay evidence and complete range
+
+**Review by:** Codex (self/first-filter on new corpus/tests/generation/docs/records).
+**Recorded by:** Codex.
+**Designated reviewer:** Claude, pending.
+**Complete new range:** `29ed56e8..HEAD`, where HEAD is the commit containing
+this checkpoint, not later history: f1ca58db predeclaration and this implementation/
+evidence/checkpoint commit. This range does not approve prior Codex corrections
+or the original Claude B3 producer. No archival range union inferred.
+
+Corpus schema1 contains exactly seven registered rows and nine deduplicated
+bundles,328345 bytes, SHA
+61e5f8f8354e9945088b4dca5023ced850617a486e57268722ae7155bc395e53.
+874f0d executes Go assertions and generates it via the narrow root authoring
+target. Subsequent unflagged a44487 executes all seven cold0.243s and requires
+byte-exact equality with the generated expectations. TS86e972 runs all eight
+new tests: exact census plus the seven rows,7416pass/134existing skips, zero
+type errors/warnings. All actual strict artifact loads and public Founder Exit
+replay pass, including complete pre-state roundtrip without activation and
+result state, receipt, event-array and constants-hash equality. The target
+restoration checks accounting and age/knowledge. All seven rows have one event,
+so this does not newly discriminate a multi-event permutation.
+
+Three independent TS runtime controls compile and fail, then restore exact
+client/src/replay.ts SHA834dc5b265da8a119e24ea686f6063f1ac4251ff5ee485f77e913dec22a0c9a0:
+
+- spent=earned66ad4a fails all seven new rows and three existing activation
+  cases,10fail/7406pass/134skip;
+- bypassed v17 initialization5d9304 fails new v14/v16 and the old minigame
+  activation case,3fail/7413pass/134skip; five already-active new rows pass;
+- bypassed v20 initialization46e6ea fails new v14/v16/v17/v18/v19,
+  5fail/7411pass/134skip; two already-active new rows pass.
+
+Three corpus corruptions fail BOTH lanes (normal Go runs, never update flag):
+
+- missing v14 rowbb3d6b fails exact Go regeneration; TSb2efb4 fails its seven-row
+  census,1fail/7414pass/134skip. Denominator7549 reflects the deliberately removed
+  row, not a passing full population;
+- forged v14 receipt7b7dc2 fails Go; TS7195c2 fails the actual receipt comparator,
+  1fail/7415pass/134skip;
+- erased v14 expected eventfcb314 fails Go; TS409071 fails the actual event
+  comparator with the same1fail/7415pass/134skip.
+
+Three runtime controls plus three corruptions in two lanes = nine negative
+lane runs. All mandatory before/after SHA comparisons pass; corpus restored
+byte-exact before any next run. No survivor, concurrent edit or hidden failed
+population. Initial5c6c60 is the documented command-order setup failure, not
+research or a runtime defect. The new Make target only authors this corpus after
+the existing assertions pass; normal Go/CI tests compare and never regenerate.
+
+Final58bf0d..4835df verify-server-core passes vet/all non-harness Go packages
+cold (production34.398s,save0.274s,reputation0.193s,kernel0.171s,transport13.269s).
+Pitch subtarget is cached; full preceding Pitch package ran cold0.316s. Formula/
+API generation has no byte drift.83b585..22df5a passes typecheck with zero
+errors/warnings,213-module build,7416pass/134skips, shell14/8/22 and13 CI-topology
+negative controls. No fresh real Postgres/browser/harness/full CI claim; the
+historical RP-131 composite RED remains. All verification/probe handles terminal.
+
+Old migration corpus/baseline and reputation-tree-v1 replay source retain their
+previous hashes (2c4206), no persistent runtime, kernel0.3.155, migration-body,
+schema, epoch, balance/copy or CI edit. This supplies earlier-source shared TS
+replay, not full R1 catalog-bound encode admission, full B3/AC2/AC11/DB/career/
+default-player or release acceptance. Next remaining R1/R7 pinned reader/writer
+audit and full B4 purchase-contract range review. New range awaits Claude;
+whole nine-tier/platform goal stays active. No checkbox completion, archival,
+push, Docker cleanup consent or new DB workload.

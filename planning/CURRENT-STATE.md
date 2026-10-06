@@ -138,8 +138,13 @@ RP-248/249 without approving Codex's later corrections. Seven older writable Go
 sources (14,16–21) now activate via live new-run and public Founder Exit replay,
 agree in full encoded Founder bytes and preserve earned Reputation. Four controls
 fail; restored-source server-core/vet and client/type/build pass7408/134. The new
-test-only range after80519365 needs Claude. Shared TS older sources, complete
-pinned codec/AC11 and platform/CI/owner holds remain; no runtime/kernel change.
+test-only range `80519365..29ed56e8` needs Claude. The subsequent Go-authored
+seven-row/nine-bundle corpus now executes strict TS artifact loading/public
+Founder replay with full state/receipt/event/hash equality. Three TS runtime
+controls and three corpus corruptions in both lanes fail and restore exactly.
+Cold server-core/vet and client/type/build/boundaries/topology pass7416/134;
+supplement after29ed56e8 needs Claude. Complete pinned codec/AC11 and platform/
+CI/owner holds remain; no runtime/kernel change or multi-event/DB claim.
 
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,

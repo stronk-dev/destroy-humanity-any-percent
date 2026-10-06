@@ -7,13 +7,17 @@ CHANGES REQUIRED for RP-248/249, whose later correction ranges still need Claude
 Under ef54bb45/2811ae65, seven Go sources (14,16–21) now execute live new-run
 and public Founder Exit activation with complete encoded-state equality,
 next-catalog admission and preserved earned Reputation. Four compiling controls
-fail their affected sources; exact restores and cold server-core/vet plus
-client/type/build pass (7408/134). No persistent runtime/kernel change.
+fail their affected sources. Subsequent f1ca58db work supplies one Go-authored
+seven-row/nine-bundle corpus and strict TS loading/public Founder replay with
+full state/receipt/event/hash equality. Three TS runtime controls and three
+corpus corruptions in both lanes fail with exact restores. Cold server-core/vet
+and client/type/build/boundaries/topology pass7416/134. No runtime/kernel change.
 
-**READY FOR CLAUDE:** new range after80519365 through its checkpoint commit,
-separate from all prior spans. **NEXT ACCEPTED WORK:** shared earlier-source TS
-Founder replay evidence and remaining pinned load/encode producer-consumer audit
-under R1/R7. No complete B3/AC2/AC11/DB/default-player/RFC acceptance inferred.
+**READY FOR CLAUDE:** separate ranges `80519365..29ed56e8` and the shared-corpus
+supplement after29ed56e8 through its checkpoint commit, independently of prior
+spans. **NEXT ACCEPTED WORK:** remaining pinned load/encode producer-consumer
+audit under R1/R7 and full B4 purchase-contract range review. No complete
+B3/AC2/AC11/DB/default-player/RFC acceptance inferred.
 Historical CI/capacity, H4/mint/owner/author and full nine-tier/platform scope
 remain. No archival, push or Docker cleanup consent.
 
@@ -28,7 +32,8 @@ type/build/boundaries pass (7408/134); kernel0.3.155, no runtime/migration chang
 
 **READY FOR CLAUDE:** test-only span after39912364 through final pin, separate
 from RP-248/earlier ranges. Subsequent original B3 review and seven-source Go
-activation are recorded above; shared TS earlier-source/pinned evidence remains. The four named corpus
+activation/shared TS earlier-source proof are recorded above; complete pinned
+admission evidence remains. The four named corpus
 cases are locally supplied, not whole R1/R7/RFC/DB/default-player/1.0 acceptance.
 Historical CI/capacity, persisted-row/career/mint/H4/owner/author and every
 nine-tier/platform gate remain. No checkbox/archive/push or cleanup consent.
