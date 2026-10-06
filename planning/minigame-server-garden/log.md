@@ -1283,3 +1283,46 @@ instrument corrections/initial red evidence `9405d75a`, and tests plus all final
 `ca94668c`. The repeated rollback probe's observation-order clarification is included too.
 Kernel stays 0.3.152; no production diff. Every earlier SG1/SG2/SG4/SG6/clock/R-010 handoff
 remains a separate pending request. No archival, mint, publication or release promotion.
+
+## 2026-10-06 — G2/G3 activation, epoch and actual Exit review predeclaration
+
+Baseline: `ea160ac9`, clean main. Review by: Codex. Recorded by: Codex. Original selected
+implementation authority is G2/G3 `415bea4d`, accepted SG1 rule 11, SG2 and AC2/AC11;
+the selected Exit/carry paths also cross G4 `0759fcaf`. This is a bounded review, not approval
+of either full original span. New witnesses are test-only and require Claude's designated pass.
+
+Question: do the actual bundle loader, New-Founder initializer and both real Service Exit intents
+honor Garden presence, fresh initialization and exact permanent state, rather than only the
+existing foundation-helper and empty activation corpus? Before execution:
+
+- Population: complete fixture chain and each required transitive chain artifact removed;
+  matched Garden-absent complete chain; Fiscal unlock mismatch; hash mismatch. Exercise real
+  Go/TS bundle loaders. No live epoch or SG13 mint.
+- New Founder: call `FounderInitializer.InitializeNewFounder`, compare all eight Garden fields
+  with the literal empty/default/two-starter/null-clock shape, verify floor 25 and Company floor
+  unchanged. Missing pin must not create Garden; pre-existing Garden must refuse activation.
+- Exit: both `wind_down` and `accept_exit_offer` through Service/Postgres, not helper alone.
+  Seed admitted genesis before persistence with nonempty Garden, mature and immature plants,
+  dormant coordinates, retained seeds, salt, anchor, tick count and substrate lockout stamp.
+  Compare exact complete Garden bytes before/after, require the applied receipt and next run,
+  unchanged bytes after identical retry, and both persisted history verifiers. Existing
+  activation corpus remains a separate test, not substituted for this retained-state proof.
+- Retune diagnostic: ordinary numeric retune with unchanged IDs/starters must preserve Garden;
+  separately inspect/execute the apparent SG1-retune/SG2-starter-superset tension when a formerly
+  uncollected species becomes a starter. Do not guess a seed-grant policy or forbid retunes.
+  If the accepted clauses cannot determine a coherent outcome, record DESIGN-GAP and route it
+  to the author/owner; this range cannot fix mechanics or silently close that question.
+- Controls/discrimination: valid chain and applied Exit required, no dependency skips credited.
+  Serial temporary actual-source mutations sever one bundle-chain check and reset Garden at
+  a run boundary; each new witness must fail. Restore exact bytes before final gates.
+- Threshold: every selected positive must pass, every specified negative must reject, every
+  retained Garden byte must match. A compile error, no-tests selector, helper-only pass or
+  fixture admitted under the wrong catalog is invalid evidence, not a production defect.
+- Final gates: cold root focused Go/client/type/build/corpus, declared real Postgres, full
+  native Linux three-browser population and separate performance. No source/test edits while
+  any verification process lives. ARM/local evidence is not hosted/amd64 or whole-CI proof.
+
+No runtime/balance/schema/kernel/CI/copy/mint changes are authorized by this test predeclaration.
+New defects go immediately to BACKLOG, then separately predeclared repair under accepted scope
+or an explicit DESIGN-GAP route. Prior verdict requests, RP-131/RP-218, owner/author gates and
+full-nine-tier 1.0 remain open. No checkbox, lifecycle, archive or release promotion.
