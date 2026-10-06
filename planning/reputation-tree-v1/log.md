@@ -1925,3 +1925,51 @@ bounded tests must execute same-ID effect retune and prohibited removal under
 accepted R1/OD7 before any defect/ruling or runtime change is claimed. No new
 refund, balance/copy, schema, CI policy, checkbox completion, archive, push or
 Docker cleanup authority. Full nine-tier/platform goal remains active.
+
+## 2026-10-06 — predeclare owned-effect cross-epoch mirror counterfacts
+
+RP-250 is committed at8ab5a2c4; tree clean, all verification handles terminal.
+Its complete range501000ea..8ab5a2c4 awaits Claude, not promoted by this wave.
+This next bounded wave takes only RP-251's current-epoch owned-effect mirror
+observation under accepted R1/OD-7. Append-only-ID admission remains a separate
+next population; do not silently permit node removal or invent a refund.
+
+Fixture-only next artifacts keep every ID but retune p05 unlock from50000 to
+60000 and40000, strictly inside the existing increasing ladder. Its new cost3
+must NOT rewrite historical spent4. Owned known p05 plus a retired unknown ID
+remain unchanged; earned11 stays11. A same-artifact control keeps50000.
+Strict loading and actual hash derivation are mandatory; no parsed fault copy,
+production balance/copy/epoch edit or public content mint.
+
+Go population: three targets × actual live settleAndActivateFoundations and
+public ApplyFounderLogged Exit arms = six cases. Each uses a valid old pinned
+Founder and Company, checks next mirror, unchanged level/spent/owned/metadata,
+next pinned admission, available7 and the next frozen bonus factor. Full encoded
+Founder results from both arms must match after the separately expected Exit
+history append. Baseline must demonstrate which retunes fail; an unrelated
+fixture/setup/compiler failure cannot establish the candidate defect.
+
+TS population: the same three targets through strict artifact loading and
+actual public Founder Exit replay, using the previously Go-authored v21 target
+Founder as a source fixture, not pretending the new effects are already a new
+shared full-byte corpus. Check unchanged ownership/historical spent/accounting
+and next mirror/pinned full encode→restore. A future Company replay/DB/default-
+player population stays separately named, not inferred from Founder replay.
+
+If the retunes fail, minimally re-derive the persisted mirror from next-tree
+owned nodes at the new-run boundary, in Go live, Go Founder replay and TS
+Company/Founder epoch-advance paths. Do not recompute spend from current costs,
+change a current run's frozen row, repair bad input or bypass RP-250 admission.
+Successful same-pin and existing canonical replay bytes must remain identical.
+Kernel bump in all three identities belongs to this real behavior correction.
+
+Controls: independently omit live Go rebinding, Go Founder rebinding and TS
+Founder rebinding; the two affected retunes must fail and identity control pass.
+All controls must compile, become terminal and restore exact source SHA before
+the next run. The TS Company path needs its own executed population/control
+before any Company coverage claim; include it only with a further predeclaration.
+Final cold server-core/vet and client/type/build/boundaries/topology; existing
+corpora byte-unchanged. No full CI, DB, R1/OD-7/B4/AC11/RFC/release claim or
+checkbox/archive/push/cleanup authority. New complete span after8ab5a2c4 needs
+Claude independently. Earlier path/glob scan misses were read-only setup errors,
+not experimental results; required files are now located via rg.
