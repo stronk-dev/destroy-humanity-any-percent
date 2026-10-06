@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Deployment R18 producer witness supplement — 2026-10-07
+
+RP-141 after`fbbf0150`, predeclared`07d0c392`: actual `RunProbe` now has cold
+tests for both migration and missing-input rows using newly assembled, validated
+synthetic bundles. Six invalid-input/two non-forward controls cannot count as
+successful negatives. Five independent compiling dispatch/migration/backup/image
+faults fire; source bytes restore exactly. Full Go core, declared rehearsal,
+relevant vet and topology pass; initial loopback denial and successful narrow
+rerun recorded. Full historical kernel guard remains RED at`50a3a514`.
+**DESIGNATED REVIEW PENDING:** all new Codex tests/records after`fbbf0150` need
+Claude; no original R18 or other independent span is approved by this supplement.
+**STILL REQUIRED:** reviewed production bytes, fresh real candidate/previous
+bundles, DP-F identity/operator/rotation decisions and actual clean-host R-006.
+These synthetic ELF/image/dump fixtures do not execute Docker or logical restore.
+Public API decision remains unanswered; no ruling inferred. Full nine-tier1.0
+goal unchanged; no checkbox, archival, mint, CI change, push or deployment.
+
 ## Clout role-floor correction and remaining contract holds — 2026-10-07
 
 RP-304 afterb30808e5: paired roleless admission reproduced in both loaders,
@@ -2229,7 +2246,7 @@ accepted implementation RFCs.
 | **READY FOR DESIGNATED REVIEW — R9 drain-origin correction** | Codex's targeted review found RP-138 in Claude's R9 `8ff555f0`: a generic unmarked 503 from Caddy-facing `/readyz` satisfied the claimed gameserver drain witness. The accepted-DP5 correction `c474e0c3^..c9c9dde7` adds a drain-only marker and requires it at the observer; the negative failed first and both producer/consumer severing probes fire. Cold Go/vet pass. Claude must review that exact range, and the real amd64 Caddy/Postgres lane must run before R9 closes. |
 | **CHANGES REQUIRED — R10 restore-authority claim** | Codex's targeted review found RP-139 in Claude's R10 `1f376ccc`: the host envelope re-read is real and mutation-proven, but it does not establish age-key decryptability or database restore. The R10 positive test succeeds with an invalid identity fixture. Codex narrowed canonical docs and queued D-019 for an owner choice on per-release recoverability proof; Claude must review `c576f8f4^..93ec2c10`. R10/full Deployment and clean-host R-006 remain open. |
 | **CHANGES REQUIRED — R12 rehearsal producer identity** | Codex's targeted review found RP-140 in Claude's R12 `4a6c8f27`: the cold plan-executor test passes every row with a same-basename shell-script fake, because plan validation checks only `deployment-rehearsal` basename/subcommand and records no executable bytes. The exit-3 rule remains useful but does not make the producer genuine. DP-F DESIGN-GAP 8 needs the RFC author to specify candidate-bundle/manifest/executable binding before a corrective RFC-body route and fake-binary negative; no R-006 plan result is accepted. |
-| **CHANGES REQUIRED — R18 negative producers** | Codex's targeted review found RP-141 in Claude's R18 `82a78b53`: the new migration and missing-rollback-input producers have no executing test. Both dispatch arms were temporarily changed to unconditional `ProbeRejected, nil`, and the entire cold rehearsal/CLI Go population stayed green. The prior diagnostic CLI runs used non-retained bundles. Add reproducible, exact-input positive/negative fixtures that fail when each producer is severed before these rows count for DP-F/R-006. |
+| **READY FOR DESIGNATED REVIEW — R18 witness supplement; original finding open** | RP-141's new Codex tests after`fbbf0150` execute both actual RunProbe producers with assembled/validated synthetic bundles. Invalid input and non-forward controls plus five independently fired faults discriminate; cold core/rehearsal/vet/topology pass. Claude must review the entire new span including records. Original R18 `82a78b53` CHANGES REQUIRED is not promoted here; retained real bundles and clean-host R-006 remain absent. |
 | **READY FOR DESIGNATED REVIEW — R20 refusal-provenance correction** | Codex's targeted review of Claude R20 `680b7bb1` found RP-142: an unrelated error echoing the non-clean class was counted as the dirty-database refusal. Codex's `5f394f2a^..d3fde4c0` correction keeps typed executable/exit/stderr provenance and parses the exact backup restore log; the negative failed first and fails if substring acceptance is restored. Cold Go/vet pass. Claude must review that exact range; the real Postgres lane and composed host probe still need an amd64 runner because the pinned container exited 255 on this arm64 host. |
 | **CHANGES REQUIRED — R22 admitted-work restart** | Codex's targeted review of Claude R22 `b706e4df` found RP-143: `restart-admitted-work` kills and restarts the service but never creates or observes admitted work. Codex's accepted-DP-F fail-closed correction `95d1bb60^..81a970ce` removes that command from the R-006 producer map, leaving the named row on an unsupported exit-2 probe. A failing-first plan test and reinserted-map severing discriminate; cold Go/vet pass. Claude must designated-review the correction. DP-F still needs an exact in-flight intent and post-restart result contract before this row can count. |
 | **READY FOR DESIGNATED REVIEW — R14/R15 witness corrections** | Codex approved Claude's R14/R15 mechanisms only in bounded unit scope after adding missing discriminators. Claude must cross-party review the R14 previous-record test and record range `460cbfd8^..6302d0ac`, and the R15 manifest-rebind test and record range `cad999f4^..4a1a6577`. The diagnostic bundle run is not retained release evidence; these approvals do not close DP-F/R-006. |

@@ -5,7 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest contract checkpoint (2026-10-07):** RP-304 corrects both loaders'
+**Latest Deployment evidence checkpoint (2026-10-07):** RP-141 now exercises
+both actual R18 negative producers through assembler-validated synthetic bundle
+fixtures, invalid-input/version controls and five firing source faults. Exact
+restoration; full cold Go core, rehearsal/vet/topology pass. Historical kernel
+guard remains RED at`50a3a514`; no hosted or clean-host acceptance. All new
+Codex tests/records after`fbbf0150` need Claude; previous ranges remain separate.
+No production or kernel changes. Public API choice and other owner/author holds
+remain. Full nine-tier1.0 unchanged. [Evidence](deployment-foundation/log.md).
+
+**Previous contract checkpoint (2026-10-07):** RP-304 corrects both loaders'
 roleless-axis-upgrade admission under CV1, with paired failures/controls and
 kernel162. Cold relevant Go/vet/client/types/build/formulas/local topology,
 80 Chromium/WebKit cases and real-Postgres packages pass. Complete kernel

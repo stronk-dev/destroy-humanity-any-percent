@@ -4460,3 +4460,69 @@ No behavior/kernel/balance/schema/migration/copy/CI or normative author edit is
 planned. No R18/DP-F/full-range approval, checkbox, archival, push, deploy or
 R-006 claim. If production changes prove necessary, predeclare them separately;
 this supplement's new Codex span requires Claude's designated review.
+
+## 2026-10-07 — RP-141/R18 actual producer execution and discrimination
+
+The new 203-line test file builds synthetic candidate/previous bundles through
+`AssembleBundle` and loads them through the actual production validator. No
+always-successful validator injection or old diagnostic bundle is used. Both
+registered `RunProbe` rows reject. Six missing-manifest/tampered-client cases
+remain errors, and two equal/reversed-version controls cannot satisfy the
+migration negative. Intact manifests remain byte-identical; full bundle
+validation and empty probe-work directories check retained fixture integrity.
+The production migration producer's positive pair reaches its guard runtime;
+the missing-input producer first accepts its real age envelope/manifest and
+scripted image identities, then removes the named inputs. These are deliberately
+synthetic ELF/image/client/dump inputs, not actual Docker/pg_restore or R-006.
+
+Baseline `7ebfed` /41025, terminal `18157a`: both tests and all ten nested
+reported cases pass, package0.780s. Five independent compiling source faults:
+
+- Constant migration rejection: `6cef56` /63696, terminal `03810b`, exit2;
+  four invalid-bundle plus two non-forward controls fail (six), other row passes.
+- Constant missing-input rejection: `b2207d` /89593, terminal `7743ec`, exit2;
+  its two invalid-bundle controls fail, migration controls pass.
+- Actual migration comparison omitted: `583887` /40040, terminal `0b7cd0`,
+  exit2; valid migration producer fails with outcome0/nil, other controls pass.
+- Actual backup gate bypassed: `219186` /65711, terminal `93dad0`, exit2;
+  missing-input producer fails with outcome0/nil, migration controls pass.
+- Actual image-preparation gate bypassed: `8996af` /9397, terminal `aeab2c`,
+  exit2; same intended missing-input producer fails, migration controls pass.
+
+Each fault is restored before the next. `8e9887` and `64702e` prove exact source
+restoration; no production delta remains. Source SHAs:
+probe.go595a659cc73846eb94146eb77ced22a244010b7b5b93535febfab24714ccafc0;
+probe_release.go4790d84a11c83ccc5f7c8711e089026cd98847b6750c25aac910f26438ce3f91;
+controller.go36bdb0a42fd1bc8327cb7145fbfed326b38bb87e11b1a8cd18d0f84faf2a62df;
+docker.goefd9ea6f2f505ef10ecdff9a5436f5d3d2853861b0222e03a5915bc5d271d35f.
+New test SHA0c8c69b94d75db1843e4db707ce375a1bf0aff8d30a13ca9c7dc30112ccaab92.
+
+Final restored checks, all terminal:
+
+- `11ff78` /33407, terminal `6ff64a`, exit0: focused TestR18 population passes,
+  package0.647s, no cases skipped.
+- Initial declared rehearsal `69baf5` /94131, terminal `35ac86`, exit2:
+  rehearsal/CLI tests passed, but an existing release httptest listener was
+  denied by sandbox loopback policy before assertions. Exact same root target
+  reran with narrowly scoped local-listener permission: `918b6f` /24732,
+  terminal `1cd4a1`, exit0; all four packages pass cold, including release2.353s
+  and rehearsal2.057s. Both retained build-record validators pass structurally;
+  this does not validate/rebuild those historical bundles.
+- `b8cfb8` /23590, terminal `40c024`, exit0: cold backup0.535s and
+  releasepackage1.240s pass; same-package vet passes. `fd4e65` exits0 for the
+  other four-package vet and CI topology's positive/13negative controls.
+- Cold normal core lane `575227` /70537, terminal `4f2a77`, exit0: all packages
+  selected by `test-go-core` pass (harness explicitly excluded), including
+  rehearsal2.026s, release2.533s, production35.238s, transport13.306s. Ordinary
+  host SQL skips are not fresh database execution or a hosted Actions verdict.
+- `479858` /49028, terminal `a46e49`, exit2: kernel-history checkout and fixture
+  gates pass, but full actual history still rejects `50a3a514` against
+  `0cf9f7a6` for the six watched minigame paths. RP-131 remains red; no bypass or
+  cosmetic bump. A later process-list diagnostic was unavailable (sysmond),
+  but the exact test handle already returned terminal exit2; nothing restarted.
+
+All handles are terminal; no temporary fault remains. This test/record supplement
+does not approve original R18 or consume any prior independent span. The entire
+new range after `fbbf0150` needs Claude, including record edges. No checkbox,
+normative owner-body edit, schema/balance/mint/CI/deploy/push/archive or release
+promotion. Full nine-tier/platform1.0 goal remains active and this turn progress.

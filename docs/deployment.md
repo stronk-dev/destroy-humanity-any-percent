@@ -237,6 +237,14 @@ rotation,
 alert-delivery, journal-budget and provider-off runtime positives, still have no producer and exit
 `2`.
 
+The cold Go core and rehearsal populations exercise both the migration and
+missing-input probes through `RunProbe`, using the actual bundle assembler and
+loader. Missing manifests, tampered assets and non-forward version controls
+cannot masquerade as successful named negatives. Independent dispatch, migration,
+backup-gate and image-gate faults make these tests fail. Their ELF/image/client
+inputs are synthetic fixtures: they do not execute Docker, prove logical
+Postgres restoration, validate retained release builds or constitute R-006.
+
 `lifecycle-release` (`make deployment-rehearsal-lifecycle-release`) requires the exact single
 candidate install row in the install operator state and an empty lifecycle operator state. It
 removes the installed candidate stack, installs the exact previous bundle into the lifecycle state,

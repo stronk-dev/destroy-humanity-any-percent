@@ -3650,3 +3650,23 @@ pool sources. New Codex span needs Claude; original bounded finding not fullP1.
 Public Typer/Arcade versioning and body-reconciliation delegation asked, not
 assumed. Full nine-tier/platform1.0 goal active, no mint/release/archive/push.
 [Evidence](clout-v1-and-pr-interns/log.md).
+
+## 2026-10-07 — Deployment R18 producer witness supplement
+
+After`fbbf0150`, predeclared`07d0c392`, RP-141 supplements the two unwitnessed
+negative producers through actual RunProbe and assembler/loader-validated
+synthetic bundle fixtures. Both rows reject; six invalid-bundle and two
+non-forward controls remain errors. Five independent compiling faults each
+fire as predicted; production source bytes restore exactly. No runtime or
+kernel change. Full cold Go core, declared rehearsal and relevant vet/topology
+pass; initial sandbox listener denial and exact narrow rerun are disclosed.
+Full kernel history remains RED at`50a3a514`; no full/hosted CI claim.
+
+Entire new Codex test/record span after`fbbf0150` requires Claude; original
+R18 CHANGES REQUIRED and older independent ranges remain. Synthetic ELF/image/
+dump artifacts are not a real release, logical restore or clean-host R-006.
+Fresh reviewed bundles and DP-F/owner/author/operator gates still required.
+Public Typer/Arcade API decision unanswered, not adopted. Previous goal turn
+was progress, this one adds executed evidence; full nine-tier/platform1.0
+active, no checkbox/archival/CI/balance/mint/push/deployment or release promotion.
+[Evidence](deployment-foundation/log.md).

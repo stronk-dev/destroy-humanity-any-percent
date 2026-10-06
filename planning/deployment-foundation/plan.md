@@ -104,3 +104,13 @@ is live. No runtime change is planned; discoveries requiring one get a separate
 predeclaration. Synthetic ELF/image/client fixtures are not executable release
 artifacts or clean-host R-006 evidence. Existing history/author/operator holds
 and all independent review ranges remain. New Codex tests/records need Claude.
+
+Executed locally: both registered probe rows reject, six invalid-bundle controls
+remain errors, and equal/reversed version controls cannot count. Five compiling
+faults fire independently (constant migration/missing-input dispatch, migration
+comparison, backup gate, image gate); exact source restoration verified. Cold
+focused, full Go core, declared rehearsal, relevant vet and topology lanes pass.
+The initial rehearsal run lacked loopback permission; the exact target passes
+with narrowly scoped local-listener access. Full kernel history stays red at
+`50a3a514`. No production/kernel byte changes or full R18/DP-F approval. The
+entire new span after `fbbf0150`, including records, needs Claude independently.
