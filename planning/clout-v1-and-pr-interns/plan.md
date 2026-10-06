@@ -97,3 +97,45 @@ Do not change runtime/save/kernel/balance/copy/CI or owner-authored specificatio
 in this range. If proof requires a new persistence/numeric contract, route it to
 the author/owner rather than inventing one. All new Codex test/record edges require
 Claude; no checkbox flip, full P3/AC6, mint or archival approval follows.
+
+## R-012 first wave — conserved-state feasibility, not a runtime repair
+
+Predeclared atb6a3c48d,2026-10-07. Test-only Go/Rat and TS/BigInt models;
+no production arbitrary-precision dependency or accepted save representation.
+Exact domain: exponent-32..32, terminating decimal scale<=48, intervals<=60000ms.
+Projection uses the existing Decimal quantizer, not a newly invented rational
+half-even rule: the shipped midpoint goldens are the authority.
+
+Population is542 primary cases per runtime:
+
+- 512 ordinary frozen-rate cases:2 admitted axis states/rates(1.15115,2.4048),
+  4 initial balances(0,1e0,1e4,1e8),2 efficiencies(1,.9),32 intervals/cuts.
+  LCG uint32 seed120307, multiplier1664525/increment1013904223. Fixed policies:
+  end2000/cut1000, end3114/cut1553, end60000/cut1; remaining29 draw end
+  2+next%59999,cut1+next%(end-1). Record actual Go Evaluate full-state and cash
+  one-shot/split results; TS compares the same scalar frozen-rate primitive, not
+  a claim of served TS Company transition parity.
+- 8 cap cases:2 rates*2 efficiencies*2 initial balances(at1e4 and one rounding
+  unit below). Only test-local catalog cap bytes change, rehashed and validated.
+- 8 rate/debit boundaries:2 efficiencies*2 first-phase cuts(1,1553 of3114ms)*
+  2 second-phase cuts(1,2000 of4000ms), start1e4, debit11.3, then new rate2.4048.
+  Experimental action settlement resets residue after the ordinary quantized
+  debit; this is a measured branch, not the adopted persistence policy.
+- 4 cap→debit→accrue boundaries:2 rates*2 efficiencies; cap overflow must not
+  become deferred income after spending11.3. Two1000ms accrual phases.
+- 10 projection controls:9 bounded existing canonical numeric goldens (zero,
+  +/-1,20-digit integer,four signed midpoints,exponent carry), plus the same
+  carry coefficient at exponent-4. Never restamp existing expected outputs.
+
+Eight invalid-input/restore controls cover out-of-domain exponents, nonterminating
+rationals, excessive decimal scale, missing residue, negative reconstructed
+balance, noncanonical wire, and unsupported elapsed interval. Whole-second
+controls at1e4 must match. Discarded-residue/restart, retroactive repricing and
+retained-cap-overflow models must demonstrably disagree on eligible rows.
+
+Report every actual baseline/reference/prototype difference, both wire and
+residue, counts, source SHA identities and explicit excluded domains in a new
+shared research artifact. Generation must refuse invalid/incomplete evidence;
+committed artifact must replay exactly in Go and TS. No production/save/kernel/
+balance/old-golden/CI change; no full-domain, AC6/CI green or release acceptance.
+Entire new Codex test/artifact/record span needs Claude independently.

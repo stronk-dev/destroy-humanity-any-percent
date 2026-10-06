@@ -720,3 +720,20 @@ The structural/evidence first-filter is not Claude's mandatory designated pass.
 Claude must inspect the complete new span after07bb3d9d, including this following
 record edge; no original28-path or older independent span is absorbed. R-012
 remains research-before-contract, and no tolerance/persistence change is adopted.
+
+## 2026-10-07 — R-012 conserved-state first-wave predeclaration
+
+Previous goal turn: progress (committed actual timing proof and partition failure).
+Current baselineb6a3c48d is clean; no live verification handle or source fault.
+Exact542-case Go/TS population, seed, arms, eight refusals, controls, authority
+and excluded domain are predeclared in plan.md before measurement. The existing
+RP-307 literal regression and historical kernel guard remain RED, not removed.
+
+Static golden inspection changes the instrument design: existing midpoint
+1.234567890135e0 is canonically1.23456789013e0 in the shipped float runtime,
+not the ideal rational-half-even result1.23456789014e0. This is recorded numeric
+authority, not a new defect or license to restamp it. Exact rational accumulation
+must project through the existing quantizer and pass the pinned controls; an
+unbounded arbitrary-precision production rewrite is neither needed nor authorized
+by the bounded prototype. Full1.0 goal remains intact; no new owner decision or
+public API delegation is inferred from this automatic continuation.
