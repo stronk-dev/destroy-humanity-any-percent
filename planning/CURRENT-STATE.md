@@ -5,8 +5,11 @@ release-ready 1.0. The objective is the full nine-tier game through Transcendenc
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
 Latest portable proof: RP-259 under e3378e96 verifies 24 source-derived Founder
-histories and rejects 144 corruptions plus three population controls. Compiling
+histories and rejects 144 corruptions plus four population controls. Compiling
 comparison omissions discriminate; independent sequence defenses survive alone.
+The c7c7a0fb first-filter refinement adds the previously missing paired-Exit
+control: omitting its count check fails that control; omitting the whole
+population validator fails all four. Historical three-control runs are retained.
 Cold core/vet pass; runtime/kernel/corpus unchanged. New span after b6c7ebca
 needs Claude. No SQL reader, two-Exit career, Company-run verifier or full R8
 claim; Docker remains 100%/39784KiB free. Next: Company-run and remaining harness

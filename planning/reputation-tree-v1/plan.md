@@ -69,10 +69,12 @@ threshold retune is measured and reported, then ratified by owner SHA).
   Claude; no AC3 closeout or reversal of the original CHANGES REQUIRED verdict.
   RP-259 under e3378e96 adds portable public history verification for 24
   source-derived profiles, including the complete nine-node chain and three
-  paired Exits. All 144 corruptions and three population controls reject.
+  paired Exits. All 144 corruptions and four population controls reject.
   Six compiling runtime omissions fire; two single sequence omissions survive
-  through the other defense, and population-validator omission fires three
-  controls. Exact sources restore; cold core/vet pass. Test-only, kernel160
+  through the other defense. Under c7c7a0fb, the missing-paired-Exit control
+  fires on paired-count omission; whole-validator omission fires all four.
+  Historical three-control runs stay recorded. Exact sources restore; cold
+  core/vet pass. Test-only, kernel160
   unchanged; new span after b6c7ebca needs Claude. Actual SQL/two-Exit career,
   Company-run verifier and whole R8 remain; no box flipped here.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),

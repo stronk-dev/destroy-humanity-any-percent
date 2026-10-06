@@ -6,9 +6,11 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Latest portable proof (2026-10-06):** RP-259 verifies 24 source-derived Founder
-histories and refuses 144 corruptions plus three population controls. Compiling
-omissions discriminate, with surviving redundant defenses disclosed. Cold
-core/vet pass; runtime/kernel/corpus unchanged. New span after b6c7ebca needs
+histories and refuses 144 corruptions plus four population controls. Compiling
+omissions discriminate, with surviving redundant defenses disclosed. The
+c7c7a0fb missing-paired-Exit refinement is included; paired-count omission
+fires one control and whole-validator omission all four. Historical runs stay.
+Cold core/vet pass; runtime/kernel/corpus unchanged. New span after b6c7ebca needs
 Claude. SQL/two-Exit career, Company-run verifier and full R8 remain; no 1.0
 promotion. Next: Company-run and remaining harness consumers. [Evidence](reputation-tree-v1/log.md).
 

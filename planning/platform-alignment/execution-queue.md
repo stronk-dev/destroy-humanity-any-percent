@@ -3,9 +3,10 @@
 ## Portable Reputation history consumer proved — 2026-10-06
 
 RP-259 under e3378e96: all 24 source-derived histories verify and all 144
-corruptions plus three population controls reject. Six compiling runtime
+corruptions plus four population controls reject. Six compiling runtime
 omissions admit the relevant bad evidence; two individual sequence omissions
-remain defended, and the population-validator omission fires three controls.
+remain defended. The c7c7a0fb first-filter refinement proves the missing-paired-
+Exit control: paired-count omission fires one, whole-validator omission four.
 Exact source restoration and cold core/vet pass. Test-only: kernel160, original
 corpus, runtime, schema and CI policy unchanged.
 

@@ -2846,3 +2846,20 @@ two-Exit career and Company-run verifier remain separate mandatory obligations;
 next safe accepted work is the Company-run and remaining harness consumers.
 The full nine-tier game through Transcendence and platform release floor remain
 the goal. No checkbox, archival, mint, push, deployment or release promotion.
+
+## 2026-10-06 — Portable history proof's missing control closed locally
+
+Codex's first filter over b6c7ebca..8d816b9c found that the paired-Exit census
+had no corresponding removal control. Under the recorded c7c7a0fb refinement,
+the new fourth control passes normally and fails when only that count check
+is omitted; bypassing the whole validator fails all four. Honest24/corrupt144
+remain green. Exact restoration and final focused172-subtest run pass. Earlier
+three-control evidence remains append-only. [Executed refinement](reputation-tree-v1/log.md).
+
+The first final cold core run fails on sandbox local test-server port binds;
+the narrowly permitted unchanged rerun passes complete core/vet with generated
+formulas/API byte-unchanged. This is not whole CI or SQL/browser proof.
+Runtime/kernel160/corpus/schema/CI policy unchanged. Full new span after
+b6c7ebca still needs Claude; implementer review cannot close it. Company-run,
+actual SQL/two-Exit career, capacity/RP-131/RP-256 and all full nine-tier/platform
+obligations remain. Goal active; no checkbox, archive, mint, push or promotion.

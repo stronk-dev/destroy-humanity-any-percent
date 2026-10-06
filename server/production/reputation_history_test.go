@@ -235,10 +235,11 @@ func TestReputationHistoryRefusesCorruptedEvidence(t *testing.T) {
 
 func TestReputationHistorySourceRefusesMissingPopulation(t *testing.T) {
 	source, raw := reputationInputShapeSource(t)
-	for _, mutation := range []string{"source-hash", "missing-case", "missing-chain"} {
+	for _, mutation := range []string{"source-hash", "missing-case", "missing-chain", "missing-paired-exit"} {
 		t.Run(mutation, func(t *testing.T) {
 			copy := source
 			copy.Cases = slices.Clone(source.Cases)
+			copy.ExitCases = slices.Clone(source.ExitCases)
 			data := bytes.Clone(raw)
 			switch mutation {
 			case "source-hash":
@@ -248,6 +249,9 @@ func TestReputationHistorySourceRefusesMissingPopulation(t *testing.T) {
 			case "missing-chain":
 				index := slices.IndexFunc(copy.Cases, func(row reputationCorpusCase) bool { return strings.HasPrefix(row.Name, "chain-") })
 				copy.Cases[index].Name = "not-a-chain-row"
+			case "missing-paired-exit":
+				index := slices.IndexFunc(copy.ExitCases, func(row reputationExitCase) bool { return row.Founder != nil })
+				copy.ExitCases[index].Founder = nil
 			}
 			if err := validateReputationHistorySource(copy, data); err == nil {
 				t.Fatal("corrupt history population admitted")

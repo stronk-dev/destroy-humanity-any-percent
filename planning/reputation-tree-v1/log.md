@@ -3032,3 +3032,42 @@ and corrupt144 histories stay unchanged and green. Restore exact test/runtime
 SHAs; cold focused/core runs, no new data or product behavior. Earlier three-
 control runs remain historical evidence, not a claim the fourth ran then.
 Same accepted R8/test-only authority; full new span still needs Claude.
+
+## 2026-10-06 — R8 missing paired-history control executed
+
+Authority: c7c7a0fb first-filter finding/refinement, accepted RFC R8. Only the
+test population and records change. The fourth control clones ExitCases and
+removes one paired Founder arm without changing raw bytes or purchase rows.
+acfebe..e1a6be passes the refined 172 subtests: 24 honest histories, 144 corrupt
+histories and four population controls; no SKIP. The earlier 171-subtest runs
+remain historical evidence, not retroactively relabelled four-control runs.
+
+5f9661..fd201a omits ONLY the paired-count check. Both honest/corrupt-history
+parents pass; missing-paired-exit alone fails with `corrupt history population
+admitted`, exit2. Restore493a0b matches the refined test SHA. b8335e..eefcb1
+then bypasses the whole population validator: all four population controls
+fail with that diagnostic, while honest24/corrupt144 stay green, exit2. Each
+handle reaches terminal before restoration or another edit; no assertion changed.
+Final restoration e2a25e:
+test01f060e4a3e637ccc583aae9ffefaad8f26320b8c680527db79fee96a7fbb9a9;
+runtime2ffb54e186655740776ed891c69718d3d3c9b73fb8e41302482548bdde679fbc.
+
+The first final core attempt e2a25e..1b8f83 exits2: existing httptest listeners
+cannot bind `[::1]:0` under the execution sandbox, in deployment-operations,
+deploymentrelease and operations. Production itself passes35.327s, but this
+does NOT make the aggregate green. A scoped `make verify-server-core` escalation
+permits the unchanged tests' local ports. 636886..a65ce5 then passes the complete
+`make verify-server-core CORE_TEST_COUNT=1`: vet/cold core, production35.085s,
+save0.178s/transport13.110s; those three listener populations pass. Pitch0.185s
+cold inside core; the separate alias is cached, not another cold claim.
+Formulas/API regeneration has no diff. Final a88e57..6084c2 focused run confirms
+exactly172 passing subtests, zero failures, production0.292s, after restoration.
+All handles terminal before these records; whitespace clean.
+
+Read-only path/glob lookups with missing guessed paths produced no evidence;
+actual tracked paths were then located and inspected. No retained source
+omission, runtime/kernel/balance/corpus/schema/migration/CI policy change or
+new SQL/browser/whole-CI evidence. RP-131/RP-256/capacity holds and actual SQL
+reader/two-Exit career/Company-run/full R8 obligations remain. No checkbox,
+archive, release, mint, push, deployment or cleanup. Full new span after
+b6c7ebca, including predeclarations, refinement and records, still needs Claude.
