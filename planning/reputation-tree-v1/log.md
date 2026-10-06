@@ -5914,3 +5914,34 @@ RP-278/279, host/SQL/mint/full AC12, author/data/H3/H4/H5/R11, Firefox/capacity,
 historical RP-131 and cross-party reviews remain separate. Full new span after
 5bf6017f needs Claude, including final record edges; no box, acceptance, archive,
 cleanup, publication, deployment or push. Full nine-tier/platform1.0 active.
+
+## 2026-10-06 — R9 busy baseline fails; presentation correction predeclared
+
+Unchanged5bf6017f renderer, root native exact-file chromium/webkit baseline
+6d3ccc/567d1a,session1237 terminal exit2:32 new busy failures/26 existing passes
+(16/13 per engine). Each new case fails empty busyRows vs exact submitted row;
+delayed-start screenshot also shows enabled Buy controls while its returned task
+is held. This is controlled props/task evidence, not executed host/SQL proof.
+Typecheck555c4a/f9444e,session25841 terminal exit0,zero errors/warnings.
+Refine the second submission to hold parent pending after task settlement, so
+the same population covers both settling orders; baseline first failure unchanged.
+
+Correction, now before production: explicit callback void|Promise<void> (host
+already returns4f3251 act); local submitted-node and task flag; await that existing
+task without moving transport or awaiting before RP-276's focus handoff. While
+local task or shared parent pending is true, disable Buy/Confirm and mark only
+the submitted row aria-busy. Clear attribution only after both settle; guard a
+duplicate Confirm against the same existing one-in-flight/disabled policy.
+Sync legacy callbacks remain valid; test push callbacks get braces solely for
+void typing. No new receipt/error/revision/refresh/eligibility policy, copy or
+host transport change. Update canonical UI docs with this exact local behavior.
+
+Require58 native cases green. Demonstrate independently compiling busy-attribute
+removal, stale-attribution-clear removal, task-await removal and row-equality
+removal; each must produce the declared native assertion failure, not a build
+failure. Restore exact bytes only after each handle is terminal and rerun. Cold
+types/build/client/independent boundaries/copy; kernel history remains separate
+RP-131, renderer outside watched prefixes. No new Firefox launch workaround or
+whole client/CI/AC12/minted-player claim. Full span after5bf6017f needs Claude;
+all prior review/policy/mint/capacity/full1.0 holds remain. No checkbox, archival,
+cleanup, publication, deployment or push.

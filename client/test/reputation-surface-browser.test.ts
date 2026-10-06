@@ -90,6 +90,91 @@ for (const era of ["era_1995", "era_2000"] as const) {
 
 async function settle(): Promise<void> { for (let index = 0; index < 4; index += 1) { await tick(); flushSync(); } }
 
+for (const era of ["era_1995", "era_2000"] as const) {
+  for (const key of ["{Enter}", " "]) {
+    for (const pendingStart of ["synchronous", "delayed"] as const) {
+      for (const outcome of ["owned", "available"] as const) {
+        it.skipIf(!browser)(`attributes busy to only the submitted Reputation row: ${era}, ${key === " " ? "Space" : "Enter"}, ${pendingStart}, ${outcome}`, async () => {
+          const { userEvent } = await import("vitest/browser");
+          const initial = structuredClone(arm);
+          initial.level = 9; initial.available = 8; initial.bonus_factor_next_run = "1.0045e0";
+          initial.nodes[3]!.state = "available";
+          const target = document.createElement("main"); document.body.append(target);
+          installTheme(target, UI_THEMES[era], false);
+          const purchases: string[] = [];
+          let finish: (() => void) | undefined;
+          const app = mount(ReputationFocusHarness, { target, props: {
+            initialArm: initial, era,
+            onPurchase: (id: string) => {
+              purchases.push(id);
+              if (pendingStart === "synchronous") app.setPending(true);
+              return new Promise<void>((resolve) => { finish = resolve; });
+            },
+          } });
+          const busyRows = () => [...target.querySelectorAll("li[aria-busy=true]")];
+          const buttons = () => [...target.querySelectorAll<HTMLButtonElement>("li button")];
+          try {
+            await settle();
+            expect(buttons()).toHaveLength(2);
+            expect(busyRows()).toEqual([]);
+            // An unrelated host refresh disables controls but owns no purchase row.
+            app.setPending(true); await settle();
+            expect(busyRows()).toEqual([]);
+            expect(buttons().every((button) => button.disabled)).toBe(true);
+            app.setPending(false); await settle();
+            const row = target.querySelectorAll<HTMLLIElement>("li")[1]!;
+            row.querySelector<HTMLButtonElement>("button")!.focus();
+            await userEvent.keyboard(key); await settle();
+            expect(busyRows()).toEqual([]);
+            expect(purchases).toEqual([]);
+            await userEvent.keyboard(key); await settle();
+            expect(purchases).toEqual(["reputation.starter.cash_small"]);
+            expect(busyRows(), "the submitted row owns the held purchase task").toEqual([row]);
+            expect(buttons()).toHaveLength(2);
+            expect(buttons().every((button) => button.disabled)).toBe(true);
+            expect(document.activeElement).toBe(row);
+            if (pendingStart === "delayed") { app.setPending(true); await settle(); }
+            expect(busyRows()).toEqual([row]);
+            const next = structuredClone(initial);
+            next.nodes[1]!.state = outcome;
+            if (outcome === "owned") {
+              next.spent += 2; next.available -= 2; next.nodes[2]!.state = "available";
+            }
+            app.deliverArm(next); await settle();
+            // Even if parent pending clears first, the returned task is still held.
+            expect(busyRows()).toEqual([row]);
+            expect(buttons()).toHaveLength(2);
+            expect(buttons().every((button) => button.disabled)).toBe(true);
+            expect(typeof finish).toBe("function"); finish!(); await settle();
+            expect(busyRows()).toEqual([]);
+            expect(buttons().every((button) => !button.disabled)).toBe(true);
+            expect(document.activeElement).toBe(row);
+            app.setPending(true); await settle();
+            expect(busyRows(), "unrelated pending must not revive the completed row").toEqual([]);
+            app.setPending(false); await settle();
+            // A later purchase must attribute to its own row, not the previous one.
+            const second = target.querySelectorAll<HTMLLIElement>("li")[3]!;
+            second.querySelector<HTMLButtonElement>("button")!.focus();
+            await userEvent.keyboard(key); await settle();
+            await userEvent.keyboard(key); await settle();
+            expect(purchases).toEqual(["reputation.starter.cash_small", "reputation.unlock.p25"]);
+            expect(busyRows()).toEqual([second]);
+            expect(document.activeElement).toBe(second);
+            app.setPending(true); finish!(); await settle();
+            // Conversely, a settled task cannot clear the parent's held refresh.
+            expect(busyRows()).toEqual([second]);
+            expect(buttons()).toHaveLength(2);
+            expect(buttons().every((button) => button.disabled)).toBe(true);
+            app.deliverArm(structuredClone(next)); await settle();
+            expect(busyRows()).toEqual([]);
+            expect(purchases).toHaveLength(2);
+          } finally { finish?.(); await unmount(app); target.remove(); }
+        });
+      }
+    }
+  }
+}
+
 it.skipIf(!browser)("renders server-derived states and buys only through an explicit confirm", async () => {
   const target = document.createElement("main");
   document.body.append(target);
