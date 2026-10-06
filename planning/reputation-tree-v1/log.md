@@ -8095,3 +8095,40 @@ this record edge. This first filter cannot archive, close all AC3/AC15 or
 approve itself as cross-party evidence. Header `2db69792..ffd1b673` and all
 earlier pending ranges remain independent. Next accepted work: predeclare
 plan-specific R6/AC9 actual SQL write-boundary rollback; goal remains active.
+
+### R6/AC9 plan write-boundary proof — predeclared 2026-10-06
+
+Previous goal turn: progress (RP-294–296 SQL repair and composed career,
+committed through82830dcb). Fresh tree clean, no live inherited handles.
+AGENTS/process reread; active index still accepts Reputation. Accepted R6/AC9
+and full Store write/fault path inspected; prior full RFC/design readings
+remain applicable, no authority file changed. Existing plan test only checks
+unaffordable rejection, not faults at applied-plan write boundaries.
+
+Test-only scope after82830dcb: share the existing plan fixture through a
+test helper without changing its original population/oracles; add a separate
+declared-Postgres test for all14 applied logged-Exit fault stages. Use existing
+Store fault injection and the EXACT live service.applyLoggedExit callback.
+No new production hook/options. This is persistence-boundary proof, not a new
+HTTP/socket/UI/guard/actor population; normal Service.Handle success remains
+the end-to-end control. Valid plan includes in-plan cash/tower prerequisite.
+
+Before any logged command, append byte-identical valid diagnostic revisions
+2..8 for each initial fixture stream. They are fixture setup, not gameplay
+history. Founder genesis begins at the actual revision8; no fake earlier log.
+This gives retention actual old revisions to delete, rather than observing a
+no-op pruning stage. Full table-row snapshots and decoded latest states must
+be unchanged after EACH fired fault, including revisions, events, both logs/
+genesis, pins, frozen rows, intent receipts, outbox and verification queue.
+Require exact injected sentinel and actual hook firing; an unrelated early
+failure cannot count. All14 stages must run in the positive population.
+
+Final normal Handle using the same request must commit exactly once, apply
+all plan purchases, freeze non-unit next bonus, prune eligible old revisions,
+verify Founder/Company replay and return identical retry with zero new rows.
+No immutable evidence update. Predeclare compiling negative: at retention's
+injected error, commit before returning it; target only retention subcase and
+require full-row rollback oracle failure (not merely wrong error). Restore
+exact source SHA after terminal. Final cold whole production SQL Integration,
+focused tests/vet and scope/append-only checks. No checkbox/RFC archival or
+full AC9 acceptance before designated review; earlier ranges independent.

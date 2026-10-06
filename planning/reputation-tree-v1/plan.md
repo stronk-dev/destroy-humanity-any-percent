@@ -247,6 +247,16 @@ population if runnable; do not substitute these components for SQL evidence.
 
 ### Real-Postgres grounding / RP-294 — 2026-10-06
 
+Current next wave, start82830dcb: R6/AC9 plan-specific applied-transaction
+faults on all14 existing Store stages. Share the existing test fixture; use
+live applyLoggedExit callback and normal Handle success/retry control. Seed
+eight valid byte-identical revisions before Founder genesis so retention
+actually deletes rows. Every fault requires exact sentinel/hook and complete
+persisted row/head equality. Demonstrate commit-on-retention-error falsification,
+restore exactly, then cold SQL/focused/vet gates. Persistence-boundary proof,
+not new HTTP/UI/guard or natural-pacing evidence. Full range needs Claude;
+no production/migration/balance/copy/CI/epoch or acceptance checkbox change.
+
 Existing three-test population executes on cached declared Compose: purchase
 and Exit-plan pass; taxonomy fails before its21 profiles because setup creates
 two current epochs. Test-only R5/AC3 repair registers both pinned bundles under
