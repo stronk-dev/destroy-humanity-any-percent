@@ -97,6 +97,13 @@ threshold retune is measured and reported, then ratified by owner SHA).
   span after4030c895 needs Claude. Original B7, author body reconciliation,
   minted purchase-through-UI and whole AC12 remain; no box flipped here.
 - [x] B8 (`b522c577`, `293c3ac7`, `6d821bab`; H4 verdict FAIL recorded as owner input, not loosened) — R10 harness H1–H5 and the OD-2 threshold measurement report. AC13.
+  RP-261's bounded input correction under9337f4b8 now refuses six malformed
+  career configurations after four baseline admissions. Four legal careers
+  pass; two guard omissions discriminate and restore exactly. Cold fast/core/
+  vet/topology pass; exhaustive H4/H5 reports reproduce unchanged. This does
+  not close AC13: H4 still fails, H5's epsilon/run-4 questions remain, and
+  RP-262/263/264 are distinct unexecuted witness/provenance/oracle routes.
+  Complete new span after7da200f0 needs Claude. No checkbox flipped here.
 - [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
 - [ ] Canonical docs, designated Codex review, archival (Codex).
 

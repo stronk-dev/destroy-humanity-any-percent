@@ -426,3 +426,20 @@ Explicit regeneration uses the same root target with
 `GO_PACKAGES='./production -args -update-reputation-company-run-fixture'` and
 `GO_TEST_FLAGS='-run TestReputationCompanyRunFixture -count=1'`. Its changed
 expected bytes require review; normal verification never enables that flag.
+
+## Career measurement inputs
+
+The R10 headless career runner accepts exactly `cheapest`, `seeded_uniform`
+and `none`. An optional leave-one-out exclusion must name a node in the loaded
+fixture tree. Both are checked before simulation: a misspelled policy must not
+silently become a no-purchase control when the seed earns no spendable Reputation,
+and a misspelled exclusion must not silently reproduce the baseline arm.
+Invalid inputs return `ErrReputationCareer`.
+
+`TestReputationCareerRefusesInvalidInputs` covers empty/unknown policies and
+unknown exclusions at both fixture and live thresholds. Four legal controls
+exercise all three policies and a real-node exclusion. Independent guard
+removals make the tests fail. These unconditional tests run in the fast harness.
+The exhaustive report reproduction remains in `make reputation-harness-check`;
+its successful reproduction does not mean H4 passed. The retained report still
+records six Casual ties, and H5's epsilon/run-4 questions remain unresolved.

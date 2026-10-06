@@ -3325,3 +3325,80 @@ epsilon/horizon questions remain. Harness-only source is outside kernel watched
 paths. No balance/runtime/schema/CI policy/owner copy/old corpus or threshold
 literal change, mint, archival or full AC13 claim. Complete new span after
 7da200f0 needs Claude. Actual DB/capacity and all other release blockers remain.
+
+## 2026-10-06 — R10 career input admission executed
+
+RP-261, authority9337f4b8, source7da200f0. Baseline f6bc98..855771
+(session40584, terminal exit2) executes six malformed cases and four legal
+careers. Four malformed cases return nil error: empty/unknown policy at1e12,
+unknown exclusion at both1e5/1e12. The two malformed policies already fail
+after entering the affordable-node loop at1e5; that defense is preserved.
+All four legal controls complete. This is an instrument-input defect, not
+a live player path, report corruption or authority to change balance.
+
+The twelve-line harness repair admits only the three declared policies and
+known nonempty node exclusions before simulation. Patched e28e17..2097e1
+(session81036) passes all ten subtests cold; all four legal result predicates
+pass, package7.773s. No claim these structural
+controls alone prove full byte equality of every valid career.
+
+Independent compiling omissions, same full ten-case selector:
+
+- Policy admission333499..e4845c (session8885, exit2): only the two1e12 policy
+  refusals fail. The late1e5 policy defense and all four legal controls survive.
+- Known-node admission2fc6af..8250f4 (session41987, exit2): only the two unknown
+  exclusions fail. All policy refusals and all four legal controls survive.
+
+000417 and b44800 verify exact restoration before proceeding; mismatch aborts
+the orchestration rather than allowing another probe. No compiling/restore
+failure in this wave. Final780bff source/test SHA:
+career c1fef55d7a38ac761020e37d5a727e365060f56299eeccdce7f87ab605784bc1;
+test4ce61cf3f301219fce2cc97275c57268a91eb1ac26ce06af43dc3cb6d6d89fcb.
+All handles terminal before source or record edits.
+
+Cold gates (fast/core ran concurrently, no edits while either lived):
+
+- `make verify-harness-fast HARNESS_TEST_COUNT=1`, ab4425..76546f
+  (session11053), exit0: full fast harness98.786s, role activation0.208s,
+  Commons invariance0.472s and guard mode. The new ten-case tests are
+  unconditional; exhaustive H4/H5 are still explicitly separate.
+- `make verify-server-core CORE_TEST_COUNT=1`, b4d700..fa50f8
+  (session45078), exit0 under the existing narrow local-listener permission:
+  vet/core, production44.782s, save0.270s, transport13.314s. Pitch0.376s
+  cold in core; separate alias cached. Formulas/API regeneration byte-unchanged.
+- CI topology b8755e: declared fast/maintenance lanes pass, all13 negative
+  controls reject. No workflow change or fresh hosted/whole-CI claim.
+
+Full `make reputation-harness-check`, 98b545..c06ec1 (session2471,
+terminal exit0), actually runs both exhaustive populations: H4's97treated/
+control pairs165.53s; H5's97seeds × (baseline+nine masks)757.23s;
+package922.866s. Both retained reports byte-reproduce, with no update flag.
+H4 still records exactly the same six Casual ties (seeds1/6/8/11/24/25),
+not a passing balance gate. H5's epsilon/run-4 questions remain. Final report
+SHA780bff matches pre-runfc80b7/470c26:
+H4 648f36d685c07471830692bf4c55810fc6c95ed4dcd00306d75a36697c2a9aa8;
+H5 4ed79054baa69389fff34cf850327c07b882b6b4aa507c25dc4d3d13808ab63c;
+threshold46a8fea612ff7e777a38c54166e542dff33e92ec18380fdf09ff4bdd1df72808.
+
+Read-only leads found during the exhaustive handle are recorded now that it
+is terminal, not hidden by the edit freeze: RP-262's mandatory H3 multiplier
+control was not found (af79b4/8c38ac); RP-263's fixture identity divergence
+is a source lead (482b3d/20704b/f4c914/5ddf74), not an executed pin finding;
+RP-264's exclusion-oracle lead needs a malformed-row experiment (482b3d).
+None has new measurement or fix authority beyond a bounded R10 predeclaration.
+Next safe work: RP-262, without guaranteeing an unmeasured tiny multiplier
+can move discrete milestones or weakening the criterion if it cannot.
+
+External Git bookkeeping changed during the long check: 9cb045 confirms
+HEAD and origin/main both9337f4b8; remote reflog05ebbe says update by push.
+Codex performed no push/fetch, and local HEAD did not change. The new guard
+and test remained uncommitted at80cd5e; no unrelated source changes appeared.
+The narrowed ps readb3d789 was sandbox-denied, contributes no liveness proof
+and was not escalated. Missing guessed source path098c56/glob2b1868 yielded
+no facts; actual catalogf4c914 and seedf71804 were read instead.
+
+Harness-only, outside kernel watched paths; kernel0.3.160 unchanged. No
+production/balance/report/corpus/schema/migration/CI policy/owner-copy changes.
+No fresh SQL/browser or AC13/archival/mint/release promotion. Docker/actual
+career and all prior reviews remain held. Complete new span after7da200f0
+needs Claude; the original B8 range is not designated-approved by this work.

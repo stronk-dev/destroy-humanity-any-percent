@@ -66,6 +66,18 @@ func (suite *FirstHourSuite) RunReputationCareer(spec RunSpec, seed uint64, expe
 	if config.Bundle.ReputationTree == nil || config.Bundle.Economy == nil || suite.Bundle.Prestige == nil {
 		return ReputationCareerResult{}, ErrReputationCareer
 	}
+	// Invalid experiment inputs must fail even when this seed earns too little
+	// to enter the purchase loop. Otherwise a typo can look like a control arm.
+	switch config.Policy {
+	case CareerCheapest, CareerSeededUniform, CareerNone:
+	default:
+		return ReputationCareerResult{}, fmt.Errorf("%w: unknown career policy %q", ErrReputationCareer, config.Policy)
+	}
+	if config.Exclude != "" {
+		if _, ok := config.Bundle.ReputationTree.Node(config.Exclude); !ok {
+			return ReputationCareerResult{}, fmt.Errorf("%w: unknown excluded node %q", ErrReputationCareer, config.Exclude)
+		}
+	}
 	raw, err := json.Marshal(suite.Bundle.Prestige)
 	if err != nil {
 		return ReputationCareerResult{}, err

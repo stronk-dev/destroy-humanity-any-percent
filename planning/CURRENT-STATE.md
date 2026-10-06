@@ -4,6 +4,16 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+Latest harness correction: RP-261 now refuses malformed career policies and
+unknown node exclusions before simulation. Six refusals/four legal controls
+pass after four baseline admissions; both guard omissions discriminate.
+Cold fast harness/core/vet/topology pass. Exhaustive H4/H5 reproduce unchanged
+in922.866s; H4 remains FAIL, not release evidence. Harness-only, kernel160 and
+balance/runtime/reports/CI policy unchanged. Full new span after7da200f0 needs
+Claude. Next bounded R10 routes: RP-262 H3 witness, RP-263 source identity and
+RP-264 exclusion oracle. SQL/capacity, independent reviews and 1.0 remain open.
+[Executed evidence](reputation-tree-v1/log.md).
+
 Latest Company replay proof: RP-260 under4d4846f2/f7822250/d23da963 retains
 two complete source-bound Company runs: actual starter genesis/frozen1.003 and
 a synthetic unit control. Both public verdicts and full terminal states pass;

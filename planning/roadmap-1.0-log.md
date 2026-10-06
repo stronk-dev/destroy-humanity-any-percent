@@ -2884,3 +2884,21 @@ Actual SQL reader/two-Exit/AC15, H4/H5, RP-131/RP-256, all review obligations an
 the whole nine-tier/platform goal remain. Complete new span after721c0ee1 needs
 Claude; next safe work is the remaining Reputation harness consumer audit.
 Goal active. No checkbox, archive, mint, push, deployment or release promotion.
+
+## 2026-10-06 — Reputation career input admission
+
+RP-261 under9337f4b8: four of six malformed measurement inputs were silently
+admitted; closed policy/known exclusion checks now refuse all six. Four legal
+careers pass, and independently removing each guard fires two failures while
+legal controls survive. Exact restoration precedes cold fast harness/core/
+vet/topology passes. Full H4/H5 runs reproduce retained reports unchanged in
+922.866s; H4 still fails at the same six Casual ties, H5's stated gaps remain.
+[Executed evidence](reputation-tree-v1/log.md).
+
+Harness-only, kernel160/balance/reports/runtime/schema/CI policy unchanged.
+No AC13/archival/mint or full1.0 promotion. SQL/capacity, all prior independent
+reviews and the whole nine-tier/platform objective remain. New span after
+7da200f0 needs Claude. Next bounded R10 routes RP-262 (H3 witness), RP-263
+(fixture provenance) and RP-264 (exclusion oracle) are distinct, not retuning
+authority. An external push advanced origin/main to unchanged HEAD9337f4b8
+during the long check; Codex did not push. Goal active; no checkbox flipped.

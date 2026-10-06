@@ -1,5 +1,20 @@
 # Executable queue
 
+## Reputation career input admission corrected — 2026-10-06
+
+RP-261 under9337f4b8: four malformed configurations were silently measured;
+all six now refuse, preserving four legal controls. Both guard omissions fire
+and restore exactly. Cold fast harness/core/vet/topology pass; full H4/H5
+reproduce unchanged in922.866s, with H4 still FAIL. No balance, report, kernel,
+runtime, schema or CI policy change.
+
+**READY FOR CLAUDE:** complete new span after7da200f0, including predeclaration.
+**NEXT SAFE ACCEPTED WORK:** predeclare R10's missing H3 multiplier witness
+(RP-262); distinct source-identity/exclusion-oracle leads RP-263/264 need bounded
+execution before findings or fixes. No retune, bound waiver, report rewrite or
+mint inferred. SQL/AC15/capacity, all earlier reviews and full 1.0 remain open.
+[Exact evidence](../reputation-tree-v1/log.md).
+
 ## Portable Reputation Company-run consumer proved — 2026-10-06
 
 RP-260 under4d4846f2/f7822250/d23da963: two retained Company runs start from

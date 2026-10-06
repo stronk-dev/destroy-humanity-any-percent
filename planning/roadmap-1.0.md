@@ -5,6 +5,15 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest harness correction (2026-10-06):** RP-261 closes silent admission of
+malformed measurement inputs locally: six refusals/four legal controls and two
+fired guard omissions. Cold fast/core/vet/topology pass; exhaustive H4/H5
+reproduce unchanged. H4 remains FAIL and AC13 remains open. New span after
+7da200f0 needs Claude; kernel160/balance/reports/CI policy unchanged. Next R10
+routes RP-262/263/264 are separately bounded, not retuning authority. Actual SQL,
+reviews and the whole nine-tier/platform/release scope remain.
+[Evidence](reputation-tree-v1/log.md).
+
 **Latest Company-run proof (2026-10-06):** RP-260 retains two full pinned runs
 with starter assets and frozen non-unit/unit bonuses. Both verify with exact
 terminal states; 18 input corruptions, four population controls and two false
