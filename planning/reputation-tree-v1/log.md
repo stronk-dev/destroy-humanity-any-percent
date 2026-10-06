@@ -5255,3 +5255,50 @@ record edit. Full exhaustive/fast/core evidence above used the identical
 committed831fa9b3 source; subsequent changes were tracking only, not a new full
 run. This record edge must also be included in Claude's designated range; it
 does not self-approve archival or cover any earlier independent review span.
+
+## 2026-10-06 — RP-272/273 controlled population observation predeclaration
+
+Authority: accepted R10 H4/H5 reporting and evidence discipline. Question:
+which gate pairs actually contribute to the existing reported statistics, and
+which purchased/eligible careers are omitted because one or both clocks are
+unreached? This is observation, not a censoring-policy decision.
+
+Scope: existing H4/H5 test report producers, one new test-side population helper
+and diagnostic file, canonical docs and tracking. Keep gameplay/threshold/
+horizon/policies/masks/epsilon/classifier/strict-sooner gate unchanged. Preserve
+historical JSON and update flags off; do not mint a new report or epoch. Keep
+the existing H4 faster-only statistic, explicitly describe its population, and
+add a separately named all-finite descriptive statistic including ties/slower
+pairs. Neither statistic assigns a value to an unreached clock or attributes a
+package effect to an isolated node (RP-274 remains an author route).
+
+Predeclared populations: H4 every admitted row, partitioned into starter/no-
+starter rows and, for starter rows, finite pairs (faster/tied/slower), treated-
+only, control-only and both-unreached. H5 every persona/node baseline career,
+partitioned bought/not-bought, and bought pairs partitioned into the same clock
+states. Publish counts even for zero bought or zero finite pairs. Finite H5
+median remains conditional on bought AND both clocks finite; name that fact.
+
+Controls: deterministic synthetic pairs spanning all clock states, including
+one finite positive effect amidst three censored bought pairs and one not-
+bought career; H4 includes positive, zero and negative savings plus a non-
+starter. Assert exact population counts, conservation and finite statistics,
+and that existing gate/classifier outcomes remain unchanged. Also retain the
+current source-admission and malformed-H4 controls. These are deliberately
+synthetic statistical controls, not real career prevalence measurements.
+
+Before each separate compiling omission, pin/restore exact files and await
+the same test handle to terminal. Demonstrate that dropping finite, tie,
+unreached, bought/not-bought or all-finite observations makes controls fail;
+restored tests pass. No tracking/probe edits during any live test handle.
+Then cold focused/fast tests and the complete existing97-pair/970-arm lane,
+logging current counts from the real producer. Finish one full run; no restart
+or horizon/threshold adjustment. Expected old-report comparisons remain RED
+and H4's strict criterion remains RED unless the unchanged producer contradicts
+that expectation. A RED criterion is a result, not permission to loosen it.
+
+Exit: accountable current denominators and exercised observations, with exact
+source/commands/limits recorded. No H5 epsilon/run4/censoring adoption, H4 gate
+waiver, per-node causal conclusion, fresh artifact provenance, acceptance box,
+SQL/browser claim, CI edit, archive or push. All work aftera3e36f94 needs its
+own full designated range, independently of the preceding source-binding work.
