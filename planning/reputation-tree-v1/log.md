@@ -9098,3 +9098,28 @@ No live handle/source fault, archive/push/publish/deploy/cleanup. No full1.0
 acceptance inferred. This self-review record is a new uncovered edge commit:
 Claude must cover the ENTIRE span after16da5904 INCLUDING this record before
 any closeout/archival use; all prior independent spans remain independently live.
+
+## 2026-10-06 — AC7 persisted public projection census/predeclaration
+
+Previous goal turn progress throughc70861c1.398d80 clean tree/authority process;
+no live handles/source fault. Existing SQL AC7 provider158–166 and career171–224
+already prove frozen-row preservation/new run factor; public projection unit
+proves synthetic current1/next1.002, admission controls use equal factors.
+Actual gameui SQL has only stored v18 rate projection, not Reputation purchase/
+Exit. ef01cd/c61cc5/d087cd/ccb43e source census: public GameUISnapshot loads
+Company/Founder plus immutable contribution provider and emits both factors;
+production tests cannot import gameui (package cycle), so add test in gameui.
+No generic API absence inferred. Accepted AC7/R2/R5/R7/R9/active index unchanged.
+
+RP-302 and plan predeclare one actual stored public projection population:
+diagnostic earned6/empty ownership/generated5/run2/tier1, old original hashed
+fixture bundle; p05 actual purchase keeps all current resource/generator rows/
+Company head/frozen rows, next header1.003. Actual WindDown plan2+3 produces
+run3cash1e3/generated5/frozen1.003/current next1.003/cashrate5.015; no reseeding.
+Read/retry complete table invariance and recorded Founder history required.
+Three compiling live/current-header/next-header faults must fire named focused
+SQL checks, exact restores before broad cold gates and record edits. No product/
+schema/balance/copy/mint/CI/owner policy/acceptance/archive/push authority; full
+new span afterc70861c1 including records needs Claude, prior reviews/holds live.
+One attempted ledger patch had no matching anchor and changed no bytes; retry
+uses exact existing footnote anchor and keeps the new row inside the shared table.

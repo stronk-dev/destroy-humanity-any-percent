@@ -813,3 +813,31 @@ types/client8241pass/339skip/local topology and production SQL Integration14.852
 pass. No boxes flipped, no fullAC15/R8/RFC/CI/1.0 or review promotion. Entire
 new span after16da5904 including final records needs Claude; prior ranges remain
 independent. Next evidence census AC7 current-rate/next-run public consumers.
+
+## AC7 persisted public current/next projection — predeclared2026-10-06
+
+Startc70861c1/RP-302. Existing SQL proves frozen-row preservation and the real
+career changes next frozen bonus; isolated unit headers differ. Do not call
+either absent. Add ONE gameui SQL test using the already source-hashed original
+replay bundle/states, initial diagnostic earned6/empty ownership/five generated
+towers/run2/tier1. Register disposable epoch/pin/genesis/frozen rows normally;
+use actual service/route projector/minigame and public GameUISnapshot.
+
+Compare complete resource/generator JSON at identical time before/after actual
+p05 purchase: current rate5 and factor1 stay unchanged; next factor becomes1.003,
+earned6/spent1/available5. Complete Company head/frozen rows stay unchanged.
+Actual WindDown plan cash2/generated3 consumes remaining5; new run3 has earned6/
+spent6/available0/generated5/cash1e3/frozen1.003/current and next headers1.003,
+cash rate5.015. No later state seeding. Public reads/exact purchase and Exit
+retries must leave complete diagnostic tables unchanged; recorded Founder
+history verifies. Scope does not invent WindDown payout preview or invalid-plan
+policy, nor bless owner-held formulas/mint/copy. No natural/default-browser claim.
+
+Predeclare compiling gameui source faults: public current contribution overwritten
+from live Founder, current header replaced by next factor, next header replaced
+by frozen current factor. Each must fail unchanged focused SQL, exact source
+restore after terminal handles. Broad cold relevant Go/vet/type/client/local
+topology plus production AND gameui SQL Integration before closeout; host skips
+not SQL/native/hostedCI proof. Tests/docs/records only, no product/schema/epoch/
+balance/copy/CI/RFC/checkbox/status/archive/push. Full new span afterc70861c1
+including records needs Claude; all earlier independent reviews/holds remain.
