@@ -6694,3 +6694,38 @@ span after8a3bfb70 needs Claude, every earlier range independent. No full AC12/
 AT/SQL/mint/1.0 closure, checkbox, owner-copy/price/balance/CI-policy change,
 archive, cleanup, deployment/publication/push or goal completion. RP-281 tooling,
 RP-283 author bridge and RP-284 producer/consumer remain separate lanes.
+
+## 2026-10-06 — RP-285 first baseline / native harness control refinement
+
+e72c63/3c3f5a,session80438 terminal exit2:36 fail/58 prior cases selector-
+skipped. Chromium18 reach Buy or trailing sentinel instead of heading, a direct
+sequential omission. WebKit18 instead reach body; this is not yet isolated
+heading evidence because implicit sentinel/button Tab reachability was assumed.
+Typescffd0d/9e7aee,session15257 terminal exit0,zero errors/warnings. All handles
+terminal; no production correction yet.
+
+Before relying on WebKit baseline, add a standalone native sentinel control:
+two explicitly tabindex0 sentinel buttons, Tab forward and Shift+Tab reverse,
+no component. Make component sentinels explicit0 too, without focusing heading/
+rows or changing any product/browser flags/criteria. Original36 cases remain,
+two engine control cases add38 total; final regression target232. If the control
+fails, that engine's instrumentation is invalid, not product acceptance/failure.
+If it passes, rerun unchanged production to separate heading/implicit-control
+focus from the browser boundary. Also simplify unnecessary empty concat/type
+cast syntax without changing oracle or input. No hidden workaround/waiver.
+
+## 2026-10-06 — RP-285 controlled baseline / heading-only observation
+
+b3039e/0b4b14,session27352 terminal exit2:36 heading failures/two standalone
+native sentinel controls pass/58 old cases selector-skipped. Both engines now
+reach an explicit trailing sentinel rather than header; native Tab boundary
+control discriminates setup from product. Chromium ready cases reach Buy;
+WebKit skips implicit buttons. No production change yet, all handles terminal.
+
+Predeclare temporary heading-only observation, not a committed finished fix:
+change only h1 tabindex -1→0, run same38 targeted native cases to determine
+whether enabled row controls are reached next. Do not change flags/security/
+browser preferences. If row focus fails, record a distinct accepted R9 defect
+and extend diagnosis before a product correction. After terminal, restore exact
+original renderer SHA1b8917a122bc275ad55ffde751e44ba1835a9848d443190dc30d2a5363cd1ef7.
+No test edit/record while the observation handle lives. No acceptance promotion.

@@ -3,6 +3,7 @@ import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it } from "vitest";
 
 import type { GameUIReputationArm } from "../src/api/generated/types";
+import { t, type CopyKey } from "../src/copy";
 import ReputationTreeSurface from "../src/game-ui/ReputationTreeSurface.svelte";
 import ReputationFocusHarness from "./fixtures/ReputationFocusHarness.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
@@ -89,6 +90,93 @@ for (const era of ["era_1995", "era_2000"] as const) {
 }
 
 async function settle(): Promise<void> { for (let index = 0; index < 4; index += 1) { await tick(); flushSync(); } }
+
+it.skipIf(!browser)("R9 native Tab diagnostic sentinel control", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const wrapper = document.createElement("main"); document.body.append(wrapper);
+  const before = document.createElement("button"); before.textContent = "Before diagnostic"; before.tabIndex = 0;
+  const after = document.createElement("button"); after.textContent = "After diagnostic"; after.tabIndex = 0;
+  wrapper.append(before, after);
+  try {
+    before.focus(); expect(document.activeElement).toBe(before);
+    await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(after);
+    await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(before);
+  } finally { wrapper.remove(); }
+});
+
+function keyboardArm(population: "mixed" | "two-buyable" | "none-buyable"): GameUIReputationArm {
+  // Exact declared arm fields: the legacy fixture's tree_active metadata is
+  // not part of this component diagnostic's wire-shaped population.
+  const value: GameUIReputationArm = {
+    available: arm.available, bonus_factor_next_run: arm.bonus_factor_next_run,
+    bonus_factor_this_run: arm.bonus_factor_this_run, level: arm.level,
+    per_level_ppm: arm.per_level_ppm, spent: arm.spent, unlock_ppm: arm.unlock_ppm,
+    nodes: structuredClone(arm.nodes),
+  };
+  if (population === "two-buyable") {
+    value.available = 8; value.level = 9; value.bonus_factor_next_run = "1.0045e0";
+    value.nodes[3]!.state = "available";
+  } else if (population === "none-buyable") {
+    value.available = 0; value.level = 1; value.bonus_factor_next_run = "1e0";
+    value.nodes[1]!.state = "unaffordable";
+  }
+  return value;
+}
+
+for (const era of ["era_1995", "era_2000"] as const) {
+  for (const population of ["mixed", "two-buyable", "none-buyable"] as const) {
+    for (const controls of ["ready", "pending", "offline"] as const) {
+      it.skipIf(!browser)(`R9 native Tab visits header and enabled rows in order: ${era}, ${population}, ${controls}`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const profile = keyboardArm(population);
+        const wrapper = document.createElement("main"); document.body.append(wrapper);
+        const before = document.createElement("button"); before.textContent = "Before diagnostic"; before.tabIndex = 0;
+        const target = document.createElement("div");
+        const after = document.createElement("button"); after.textContent = "After diagnostic"; after.tabIndex = 0;
+        wrapper.append(before, target, after); installTheme(wrapper, UI_THEMES[era], false);
+        const purchases: string[] = [];
+        const app = mount(ReputationTreeSurface, { target, props: {
+          arm: profile, era, pending: controls === "pending", controlsEnabled: controls !== "offline",
+          onPurchase: (id: string) => { purchases.push(id); },
+        } });
+        try {
+          await settle();
+          const heading = target.querySelector<HTMLHeadingElement>("#reputation-heading")!;
+          expect(heading).toBeTruthy();
+          const rows = [...target.querySelectorAll<HTMLLIElement>(".reputation li")];
+          expect(rows.map((row) => row.querySelector("h2")!.textContent)).toEqual(profile.nodes.map((node) => t(node.title_key as CopyKey, {}, era)));
+          expect(rows.map((row) => row.dataset.state)).toEqual(profile.nodes.map((node) => node.state));
+          expect(rows.every((row) => row.tabIndex === -1)).toBe(true);
+          const enabled: HTMLButtonElement[] = [];
+          for (const [index, node] of profile.nodes.entries()) {
+            const buttons = [...rows[index]!.querySelectorAll<HTMLButtonElement>("button")];
+            expect(buttons).toHaveLength(node.state === "available" ? 1 : 0);
+            if (node.state === "available") {
+              expect(buttons[0]!.disabled).toBe(controls !== "ready");
+              if (controls === "ready") enabled.push(buttons[0]!);
+            }
+          }
+          // The browser decides focus. Never programmatically focus the
+          // header or row controls, which would mask a missing Tab stop.
+          before.focus(); expect(document.activeElement).toBe(before);
+          for (const expected of [heading, ...enabled, after]) {
+            await userEvent.keyboard("{Tab}"); await settle();
+            expect(document.activeElement, "R9 forward native Tab order").toBe(expected);
+          }
+          for (const expected of [...enabled].reverse()) {
+            await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle();
+            expect(document.activeElement, "R9 reverse native row order").toBe(expected);
+          }
+          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle();
+          expect(document.activeElement, "R9 reverse Tab must reach header").toBe(heading);
+          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle();
+          expect(document.activeElement).toBe(before);
+          expect(purchases).toEqual([]); expect(target.querySelector("[role=group]")).toBeNull();
+        } finally { await unmount(app); wrapper.remove(); }
+      });
+    }
+  }
+}
 
 for (const era of ["era_1995", "era_2000"] as const) {
   for (const key of ["{Enter}", " "]) {
