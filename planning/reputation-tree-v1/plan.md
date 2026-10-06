@@ -42,9 +42,7 @@ after each terminal result. Root client types/build/unit/boundary/copy gates;
 record inherited history/Firefox/SQL/mint holds separately. Full range after
 `0ae1fa11` requires Claude; no archival or whole AC12 claim.
 
-## Batches
-
-### R7 disconnect/recovery supplement — predeclared 2026-10-06
+## R7 disconnect/recovery supplement — predeclared 2026-10-06
 
 Start61d6c8eb. Keep the45 reader tests intact. Extend controlled real runtime
 coverage through persisted channel-position recovery and actual reconnect:
@@ -68,6 +66,8 @@ identity retention and (if introduced) superseded-start protection. Run restored
 unit/types/build/boundaries/copy and selected Chromium/WebKit with the existing
 isolated performance lane. Whole new range after61d6c8eb needs Claude; RP-284
 display/RP-283 author gaps and RP-131/Firefox/full1.0 holds remain. No box flip.
+
+## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1
   accounting helpers, R3 bonus arithmetic; shared rejection-fixture corpus and bonus vectors.

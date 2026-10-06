@@ -7171,3 +7171,24 @@ terminal handle; root unit/types/build/boundaries/copy and selected browser/
 isolated performance. Full span after61d6c8eb needs Claude independently of
 earlier ranges. Full nine-tier/platform1.0 objective remains active; no shortcut,
 acceptance/archival/publication/deployment/push or owner content adoption.
+
+## 2026-10-06 — R7 recovery unchanged-source diagnostic
+
+Helper extension alone preserves old45/ec7fd8 terminal0 total8151/255 skips.
+New55-case population749b56/c35ea5 session88688 terminal2: two stale-start
+cases fail with a real extra run2 delivery after run3 (live/recovered batch).
+Four fresh-state controls time out because their diagnostic snapshot incorrectly
+put the new run's start after server_now_ms; parser correctly rejects it and
+runtime closes instead of delivering a snapshot callback. Those four failures
+are INVALID FIXTURE evidence, not product-recovery defects. Correct the sampled
+server/evaluated time to the new start and validate the fresh fixture through
+the actual parser before injection. Keep all recovery/close/read/event oracles
+and5-second test deadlines unchanged. Production bytes are still untouched.
+Move the new plan subsection before the original Batches heading so old B1–B10
+do not appear owned by this supplement; no checkbox or task authority changed.
+
+Refined ae6f0b terminal2 executes55 cases:two RP-287 live/recovered failures,
+53 controls passing; total8159 pass/255 skips. Fresh-state four arms now execute
+their intended snapshot/reconnect/refusal assertions and finish, rather than
+timing out on invalid data. The old45 assertions remain unchanged; actual1006
+reconnect retains its original1-second delay. Commit diagnostic before source.

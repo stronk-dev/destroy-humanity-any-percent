@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { decodeGameUIEvent } from "../src/game-ui/events";
+import { parseGameUISnapshot } from "../src/game-ui/contracts";
 import { createBrowserGameUIRuntime, type RuntimeStorage } from "../src/game-ui/runtime";
 import { decodeTransportEnvelope } from "../src/transport";
 
@@ -109,14 +110,24 @@ function snapshot(revision: number, runSeq: number) {
     schema_version: 4, features: { achievements: null, active_play: null, fiscal: null, meters: null, minigames: null, pets: null },
     transitions: { cross_gate: { eligible: false, gate_id: "gate.t0_to_t1", route_id: null }, wind_down: { eligible: false } }, upgrades: [] };
 }
-async function boundary() {
+type Publication = Readonly<{ offset: number; data: unknown }>;
+type Handshake = Readonly<{ publications?: readonly Publication[]; offset?: number; recovered?: boolean; epoch?: string }>;
+async function boundary(options: Readonly<{ saved?: boolean; initial?: ReturnType<typeof snapshot>; handshake?: Handshake; deferHandshake?: boolean }> = {}) {
   const storage = new MemoryStorage();
   storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recovery" }));
-  const socket = new ControlledSocket();
-  let response = snapshot(1, 1);
+  if (options.saved) storage.setItem(`cloud-clicker.transport.v1.${founderID}`, JSON.stringify({
+    [`player:${founderID}`]: { epoch: "player", offset: 1 }, world: { epoch: "world", offset: 0 },
+  }));
+  const sockets: ControlledSocket[] = [];
+  const socketWaiters: ((socket: ControlledSocket) => void)[] = [];
+  const recoveryWaiters: (() => void)[] = [];
+  let response = options.initial ?? snapshot(1, 1);
   let reads = 0;
   const runtime = createBrowserGameUIRuntime(storage, async () => { reads += 1; return Response.json(response); }, crypto,
-    () => socket as unknown as WebSocket, { protocol: "http:", host: "controlled.invalid" });
+    () => {
+      const socket = new ControlledSocket(); sockets.push(socket); socketWaiters.shift()?.(socket);
+      return socket as unknown as WebSocket;
+    }, { protocol: "http:", host: "controlled.invalid" });
   await runtime.snapshot();
   const received: unknown[] = [];
   let resolveSnapshot!: (value: unknown) => void;
@@ -124,13 +135,25 @@ async function boundary() {
   const stop = runtime.subscribe(founderID, (message) => {
     received.push(message);
     if (message.kind === "snapshot") resolveSnapshot(message);
+    if (message.kind === "transport_recovered") recoveryWaiters.shift()?.();
   });
-  socket.emit("open"); socket.reply({ id: 1, connect: {} });
-  socket.reply({ id: 2, subscribe: { recoverable: true, positioned: true, recovered: false, epoch: "player", offset: 0, publications: [] } });
-  socket.reply({ id: 3, subscribe: { recoverable: true, positioned: true, recovered: false, epoch: "world", offset: 0, publications: [] } });
-  return { runtime, socket, received, nextSnapshot, stop, get reads() { return reads; },
+  const socket = sockets[0]!;
+  const connect = (connection: ControlledSocket, handshake: Handshake = {}) => {
+    connection.emit("open"); connection.reply({ id: 1, connect: {} });
+    const publications = handshake.publications ?? [];
+    connection.reply({ id: 2, subscribe: { recoverable: true, positioned: true, recovered: handshake.recovered ?? false,
+      epoch: handshake.epoch ?? "player", offset: handshake.offset ?? publications.at(-1)?.offset ?? 0, publications } });
+    connection.reply({ id: 3, subscribe: { recoverable: true, positioned: true, recovered: handshake.recovered ?? false,
+      epoch: "world", offset: 0, publications: [] } });
+  };
+  if (!options.deferHandshake) connect(socket, options.handshake ?? (options.saved ? { recovered: true, offset: 1 } : {}));
+  return { runtime, socket, sockets, storage, received, nextSnapshot, stop, connect, get reads() { return reads; },
+    nextSocket() { return new Promise<ControlledSocket>((resolve) => socketWaiters.push(resolve)); },
+    nextRecovery() { return new Promise<void>((resolve) => recoveryWaiters.push(resolve)); },
     setSnapshot(value: ReturnType<typeof snapshot>) { response = value; },
-    publish(value: Record<string, unknown>, offset = 1, revision = 2) { socket.reply({ push: { channel: `player:${founderID}`, pub: { offset, data: wire(value, revision) } } }); } };
+    publish(value: Record<string, unknown>, offset = 1, revision = 2, connection = socket) {
+      connection.reply({ push: { channel: `player:${founderID}`, pub: { offset, data: wire(value, revision) } } });
+    } };
 }
 const delivered = { kind: "event", revision: 2, scope: "company",
   value: { cursor: 2, kind: "run_started", occurred_at_ms: now, payload: payload() } };
@@ -190,6 +213,131 @@ describe("R7 real runtime over controlled HTTP/socket bytes", () => {
         schema_version: 4, revision: 1, run: { founder_id: founderID, run_seq: 1 },
       } });
       expect(b.received.filter((value) => (value as { kind: string }).kind === "event")).toEqual([]);
+    } finally { b.stop(); }
+  });
+});
+
+// Company revisions reflect an actual Exit pair: run2 can have current revision4,
+// ends at5, and run3 starts at6. These are controlled bytes, not a SQL career.
+const run2 = payload();
+const run3 = { ...payload(), run_id: { company_stream_id: companyID, run_seq: 3 }, started_at_ms: now + 1000 };
+const endedRun2 = {
+  assisted: { advisor: false, commons: false }, attended_ms: 500, ended_at_ms: now + 1000,
+  executed_routes: [], exit_type: "collapse", faction: null, founder_id: founderID,
+  gates_crossed: ["gate.t0_to_t1"], generators_purchased_total: 1, ledger_fact_kinds: [], lifetime_value: "1e3",
+  payout: { clout_reach_note: "clout.reach.preserved", network_slot_unlocks: [], reputation_delta: 2, route_knowledge: 25 },
+  pre_timer: false, rta_ms: 1000, run_id: { company_stream_id: companyID, run_seq: 2 },
+  started_at_ms: now, terminal_seq: 5, tier: 1,
+};
+function endWire(): Record<string, unknown> {
+  const envelope = wire({}, 5);
+  return { ...envelope, payload: { ...(envelope.payload as Record<string, unknown>), kind: "run_ended", payload: endedRun2 } };
+}
+function startMessage(value: Record<string, unknown>, revision: number) {
+  return { kind: "event", revision, scope: "company", value: { cursor: revision, kind: "run_started", occurred_at_ms: now, payload: value } };
+}
+const endMessage = { kind: "event", revision: 5, scope: "company",
+  value: { cursor: 5, kind: "run_ended", occurred_at_ms: now, payload: endedRun2 } };
+function positions(storage: RuntimeStorage) {
+  return JSON.parse(storage.getItem(`cloud-clicker.transport.v1.${founderID}`)!);
+}
+
+describe("R7 replay/reconnect boundary (controlled bytes, not real server)", () => {
+  it.each(["absent", "null", "object"])("recovers the %s tree arm at the sampled run, before reporting recovery", async (arm) => {
+    const value = payload(arm === "null" ? null : summary);
+    if (arm === "absent") delete value.reputation_tree;
+    const b = await boundary({ saved: true, initial: snapshot(4, 2), handshake: {
+      recovered: true, offset: 2, publications: [{ offset: 2, data: wire(value, 3) }],
+    } });
+    try {
+      expect(b.received).toEqual([startMessage(value, 3), { kind: "transport_recovered" }]);
+      expect(b.socket.sent.map((command) => JSON.parse(command))).toEqual([
+        { id: 1, connect: { token: "access" } },
+        { id: 2, subscribe: { channel: `player:${founderID}`, recover: true, epoch: "player", offset: 1 } },
+        { id: 3, subscribe: { channel: "world", recover: true, epoch: "world", offset: 0 } },
+      ]);
+      expect(positions(b.storage)).toEqual({ [`player:${founderID}`]: { epoch: "player", offset: 2 }, world: { epoch: "world", offset: 0 } });
+      b.publish(value, 3, 3);
+      expect(b.received).toEqual([startMessage(value, 3), { kind: "transport_recovered" }]);
+      expect(b.reads).toBe(1); expect(b.socket.closes).toBe(0);
+    } finally { b.stop(); }
+  });
+
+  it.each(["live", "recovered-batch"])("never revives an older start after a newer start, %s", async (mode) => {
+    const prefix: Publication[] = [{ offset: 2, data: wire(run2, 3) }, { offset: 3, data: endWire() }, { offset: 4, data: wire(run3, 6) }];
+    const b = await boundary({ saved: true, initial: snapshot(4, 2), handshake: mode === "live"
+      ? { recovered: true, offset: 1 }
+      : { recovered: true, offset: 5, publications: [...prefix, { offset: 5, data: wire(run2, 3) }] } });
+    try {
+      const expectedPrefix = [startMessage(run2, 3), endMessage, startMessage(run3, 6)];
+      if (mode === "live") {
+        for (const publication of prefix) b.socket.reply({ push: { channel: `player:${founderID}`, pub: publication } });
+        expect(b.received).toEqual([{ kind: "transport_recovered" }, ...expectedPrefix]);
+        b.publish(run2, 5, 3);
+        expect(b.received).toEqual([{ kind: "transport_recovered" }, ...expectedPrefix]);
+      } else expect(b.received).toEqual([...expectedPrefix, { kind: "transport_recovered" }]);
+      expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 5 });
+      expect(b.reads).toBe(1); expect(b.socket.closes).toBe(0);
+    } finally { b.stop(); }
+  });
+
+  it("retains delivery identity across an actual1006 reconnect and ignores the old socket", async () => {
+    const b = await boundary({ initial: snapshot(4, 2) });
+    try {
+      b.publish(run2, 1, 3);
+      const newSocket = b.nextSocket(); const recovered = b.nextRecovery();
+      b.socket.emit("close", { code: 1006 });
+      const connection = await newSocket;
+      expect(b.sockets).toHaveLength(2);
+      b.connect(connection, { recovered: true, offset: 2, publications: [
+        { offset: 1, data: wire(run2, 3) }, { offset: 2, data: wire(run2, 3) },
+      ] });
+      await recovered;
+      expect(connection.sent.map((command) => JSON.parse(command))).toEqual([
+        { id: 1, connect: { token: "access" } },
+        { id: 2, subscribe: { channel: `player:${founderID}`, recover: true, epoch: "player", offset: 1 } },
+        { id: 3, subscribe: { channel: "world", recover: true, epoch: "world", offset: 0 } },
+      ]);
+      expect(b.received).toEqual([{ kind: "transport_recovered" }, startMessage(run2, 3), { kind: "transport_recovered" }]);
+      b.socket.reply({ push: { channel: `player:${founderID}`, pub: { offset: 3, data: endWire() } } });
+      b.publish(run3, 4, 6); // Old connection cannot deliver or induce resync.
+      expect(b.reads).toBe(1);
+      expect(b.received).toHaveLength(3);
+      connection.reply({ push: { channel: `player:${founderID}`, pub: { offset: 3, data: endWire() } } });
+      b.publish(run3, 4, 6, connection);
+      expect(b.received).toEqual([{ kind: "transport_recovered" }, startMessage(run2, 3),
+        { kind: "transport_recovered" }, endMessage, startMessage(run3, 6)]);
+      expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 4 });
+      expect(b.reads).toBe(1); expect(connection.closes).toBe(0);
+    } finally { b.stop(); }
+  });
+
+  it.each(["unrecovered", "changed-epoch", "malformed-summary", "revision-gap"])("fetches fresh state then resubscribes without accepting %s history", async (fault) => {
+    const b = await boundary({ saved: true, initial: snapshot(4, 2), deferHandshake: true });
+    try {
+      const fresh = { ...snapshot(6, 3), evaluated_through_ms: now + 1000, server_now_ms: now + 1000,
+        run: { ...snapshot(6, 3).run, run_started_at_ms: now + 1000 } };
+      expect(parseGameUISnapshot(fresh)).toMatchObject(fresh);
+      b.setSnapshot(fresh);
+      const newSocket = b.nextSocket();
+      b.connect(b.socket, { recovered: fault !== "unrecovered", epoch: fault === "changed-epoch" ? "new-player" : "player",
+        offset: 2, publications: [{ offset: 2, data: wire(fault === "malformed-summary"
+          ? { ...run2, reputation_tree: { ...summary, bonus_factor: "9e-1" } }
+          : fault === "revision-gap" ? run3 : run2, fault === "revision-gap" ? 6 : 3) }] });
+      expect(b.received).toEqual([{ kind: "system", value: { kind: "resync_required" } }]);
+      expect(b.socket.closes).toBe(1); expect(b.reads).toBe(2);
+      expect(await b.nextSnapshot).toMatchObject({ kind: "snapshot", value: fresh });
+      const connection = await newSocket;
+      b.connect(connection);
+      expect(connection.sent.map((command) => JSON.parse(command)).slice(1)).toEqual([
+        { id: 2, subscribe: { channel: `player:${founderID}` } }, { id: 3, subscribe: { channel: "world" } },
+      ]);
+      expect(b.received.filter((message) => (message as { kind: string }).kind === "event")).toEqual([]);
+      b.publish(run2, 1, 3, connection); // Fresh run3 state cannot revive old run2.
+      b.publish(run3, 2, 6, connection);
+      expect(b.received.filter((message) => (message as { kind: string }).kind === "event")).toEqual([startMessage(run3, 6)]);
+      expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 2 });
+      expect(b.reads).toBe(2); expect(connection.closes).toBe(0);
     } finally { b.stop(); }
   });
 });
