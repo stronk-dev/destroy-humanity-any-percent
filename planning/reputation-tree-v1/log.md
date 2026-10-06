@@ -3269,3 +3269,28 @@ e00e5d confirms no partial diff, then corrected7175d7 updates the actual lines.
 Next safe accepted work: remaining R10 harness consumer audit, no optimization
 or policy/threshold/bound waiver. Full new span after721c0ee1 needs Claude;
 no checkbox, archive, mint, push, deployment, cleanup or release promotion.
+
+## 2026-10-06 — Company-run checkpoint first filter
+
+Review by: Codex (implementer, self-review FIRST FILTER ONLY).
+Recorded by: Codex.
+Reviewed range: 721c0ee1..d2247d67, all four commits and all ten changed paths.
+Verdict: PASSED first filter; NOT designated independent approval.
+
+Checked the source-bound generator, retained-input public verifier, detailed
+full-head predicate, every input/population control, generated fixture and the
+complete docs/tracking diff. The source profile preserves the actual starter
+genesis and non-unit bonus; the unit control is expressly synthetic. Expected
+bytes are retained independently of normal reader execution. Six compiling
+omissions discriminate as recorded above; the invalid compilation attempt and
+oracle/setup mistakes remain disclosed, not counted as evidence.
+
+Final committed-HEAD run1a4b43..8b2135 (session85727, terminal exit0) passes
+26 subtests plus fixture equality with -count=1, production0.499s. Final cold
+core5c07ba..d209ff remains the broader server proof; no SQL/browser/whole-CI
+claim is added. No production omission or old corpus edit survives. Range
+stat7e48c3 is ten paths1552 insertions/7 deletions; clean starting checkpoint
+fcd458 has no unrelated dirty work. No unresolved first-filter finding in
+this bounded test/fixture range. Actual persisted career and all separate
+review obligations remain open. Claude must review the complete span after
+721c0ee1 through this record commit before any archival eligibility.
