@@ -834,3 +834,36 @@ Postcommit 96739 reruns reputation/kernel from 4f1e6839 cold, both pass (0.196 /
 0.167 s); all handles terminal, diff-check clean. Claude pending, no self-verdict,
 checkbox, archival or push. Next accepted CPU scope: R1/R3 bonus/accounting
 discrimination, preserving all current owner, DB/browser and CI blockers.
+
+## 2026-10-06 — R1/R3 earned-level bonus evidence predeclaration (Codex)
+
+Source coordinate 5467f575, clean main. Previous turn made progress: RP-243
+runtime correction/shared failing fixtures, whole server-core and client checks,
+two restored runtime probes, truthful kernel 0.3.154 and reconciled records.
+This next accepted R1/R3/AC5 lane must not consume that pending Claude review.
+
+Population: existing ten Go-authored canonical bonus vectors plus a new shared
+parameter matrix: levels 0,1,2,4,552,1000,MaxExactInteger; per-level ppm
+1,10000,1000000; unlock ppm 0,1,50000,250000,500000,750000,1000000. This is
+147 parameter triples, not exhaustive safe-integer proof. For each, distinct
+legal spends among 0,1,floor(level/2),level give 462 cases: available must equal
+level-spent while bonus equals the zero-spend bonus. Zero-level/zero-unlock
+must be neutral. Preserve independently hand-checked anchors already pinned.
+Eight shared invalid integer-domain tuples must reject in both pure helpers'
+applicable validation, without DB/save/API or caller-coercion claims.
+
+Controls: independently replace the earned-level numerator with available
+(level-spent) in Go and TS, one at a time; require actual existing/new tests to
+fail. Independently remove each runtime's spent>level admission guard and require
+the invalid tuple test to fail. Restore exact source SHA after each terminal
+handle; no editing under a live check. Only tests/shared fixture/docs/records
+persist: no runtime, kernel, copy, balance, save, schema, CI, mint or checkbox
+change. If another runtime defect fires, record it and separately predeclare
+any accepted-contract fix; do not smooth it into the evidence batch.
+
+Run cold root selected Go/vet and root full client/type/build/boundary/topology.
+No fresh Docker workload while capacity approval is pending. Designated Codex
+review may assess only original Claude a522fdf1 R1/R3 primitive arithmetic, not
+its full twenty-one-path B1/loader/copy or later codec/transaction/UI/mint scope.
+Our new tests/records remain Codex first-filter and require Claude's exact-span
+review. Full Reputation and full nine-tier 1.0/platform floor stay unchanged.
