@@ -700,3 +700,23 @@ research, not already executed or permission to relax AC6. Updated shared
 ledger/docs/queue/roadmap keep the failed gate and next research visible. The
 new failing regression intentionally affects ordinary core/CI execution; no
 green current/hosted CI, full Clout, archival or1.0 claim. No push or deployment.
+
+### RP-307 local diff review — failing-proof checkpoint, not acceptance
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `07bb3d9d..2d492926`, all nine changed paths,
+including predeclaration and final evidence records. Test fixture admission and
+actual ApplyLogged purchase precede the independent old/new interval arithmetic;
+the partition oracle compares complete encoded states, never only helper factors.
+The32 timing draws and64 partition draws each run both modes with seed307;
+no source faults, skipped new cases or conditionally disabled gate remain.
+Historical artifact/balance/owner/production/CI bytes stay unchanged. Plan
+presence is explicitly distinguished from acceptance, with no checkbox flip;
+append-only logs and boards match the executed red/green populations.
+
+Decision: CHANGES REQUIRED for AC6 acceptance; timing supplement is locally
+validated and the exact partition counterexample is preserved, not fixed.
+The structural/evidence first-filter is not Claude's mandatory designated pass.
+Claude must inspect the complete new span after07bb3d9d, including this following
+record edge; no original28-path or older independent span is absorbed. R-012
+remains research-before-contract, and no tolerance/persistence change is adopted.
