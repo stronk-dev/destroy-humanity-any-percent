@@ -4391,3 +4391,63 @@ only after every handle terminates. Harness test files stay outside kernel
 watch; kernel161 remains. Whole span afterdb8398a3 needs Claude. H3 author
 reconciliation, RP-268, report lineage/fresh H1/H2, H5epsilon/run4, SQL/capacity,
 all prior reviews and full1.0 remain. No box, mint, archive, cleanup or push.
+
+## 2026-10-06 — RP-264 reproduced; test-side oracle repair predeclared
+
+Diagnosis7b0046..89bb3a (session65357, terminal exit2,0.295s) executes all28
+profiles on the original evaluateReputationCareerGate undera0aab5a6. Eight
+healthy controls pass. Eighteen malformed rows and both mixed/repeated census
+controls fail. Twelve malformed rows return no violation (five falsely
+excluded finite/one-arm cases, unknown both-nil and no-starter exclusions,
+wrong finite saving, invented saving with unreached control, saving on a
+both-unreached exclusion, negative treatment and no-starter wrong saving).
+Five already have timing violations but carry invalid gated counts/diagnostics:
+unlabelled both-unreached, wrong tie saving, invented saving with missing
+treatment or both missing, negative control. Missing saving on a sooner row
+panics at the dereference; disclosed separately, not discarded as setup.
+
+Mixed false exclusion hides the tie alongside a healthy sooner row: zero
+violations, gated1/excluded2 instead of violation1/gated1/excluded1. A report
+seeded with counters99/77 grows to101/78 instead of deriving2/1 from the four
+current rows. The eight controls distinguish a dormant oracle from these gaps.
+No production/balance conclusion follows from deliberately corrupt test rows.
+
+Corrective predeclaration before editing the old helper; accepted R10 H4 and
+the existing visible both-arms horizon exclusion are the bounded authority:
+
+1. Test-only private row-admission helper runs before eligibility. Reject
+   negative observed clocks. A nonempty reason must equal the existing exact
+   horizon literal and both observed clocks must be nil. Both-nil with no
+   reason is invalid, not an invented observation that control reached it.
+2. With both finite clocks, SavedMS must be present and exactly control minus
+   treatment, even for a tie/slower/outside-starter-eligibility row. With any
+   absent clock it must be nil: no manufactured saving for an unknown gate.
+   Violations are visible and do not enter accepted/excluded/savings counts.
+   Integer differences are safe after nonnegative int64 clock admission.
+3. After admission, preserve starter eligibility and exact strict-sooner rule.
+   A treated reached/control unreached remains sooner with no finite saving;
+   a valid both-unreached starter row remains excluded and visible. No-starter
+   rows remain outside H4 timing counts, not outside artifact honesty checks.
+4. Reset the two derived report counters on every invocation, then count only
+   admitted eligible rows. Preserve savings aggregation, report schema,
+   original wording, policies,7200000ms horizon and non-vacuity caller guard.
+   Centralize the existing reason constant in test-side producer and consumer
+   without changing bytes; diagnostic oracle retains an independent literal.
+5. Retain every diagnostic expectation. Independently omit reason guard,
+   both-clock guard, saving presence/equality, nil-clock saving refusal,
+   negative-clock guard, caller admission, counter reset and strict-sooner
+   comparison as applicable. Require compiling failures; nil dereference is
+   separately labelled if it occurs, never called a semantic refusal. Exact
+   two-test-file SHA restores before each next probe, cold normal after.
+6. Cold focused/fast/core/vet and full97-pair H4/970-arm H5 strict reproduction.
+   Do not regenerate retained reports; record existing drift/six Casual ties
+   RED, with unchanged exclusions and census if the producer still meets row
+   admission. No H4 balance promotion follows from repairing the gate.
+
+Only two harness test files plus docs/records. No product source, watched
+kernel prefix, formula, balance, schema, migration, CI policy, owner copy,
+report or corpus changes; kernel161 remains. No edits while any handle lives.
+RP-268 author/artifact reconciliation and H3's fired tiny criterion are separate
+requirements. Whole span afterdb8398a3 needs Claude; all prior reviews remain.
+Report lineage/fresh H1/H2, H5epsilon/run4, actual SQL/capacity/browser and
+full1.0 stay open. No box, mint, archive, cleanup, push or goal completion.
