@@ -4197,3 +4197,45 @@ CI RP-131 remains RED; no waiver. Reports/corpus/balance/policy/owner copy stay
 byte-identical. RP-264, report lineage/H1/H2 fresh calibration, H5epsilon/run4,
 SQL/browser and prior Claude reviews remain separate. No box/mint/AC13/15,
 archive, push or 1.0 claim; complete new span afteree1064a0 needs Claude.
+
+## 2026-10-06 — RP-262 full study RED; bounded probe control predeclared
+
+All handles ended before this record. The complete opt-in study680609..8f803f
+(session64870, terminal exit2,341.867s) executes all485 runs /3395 clocks.
+Epoch8, paired/nil and explicit unit reproduce the seven per-seed clocks and
+ending samples; unit also matches Exit observations and transition counts.
+No comparison error was emitted. Every arm has97 valid completed runs,
+679 clocks, two observed Exits per run and zero paid Reputation at threshold1e12.
+Tiny factor1.000001 moves0/679 clocks and no distribution; strong factor2
+moves289/679. The exact H3 tiny criterion fires; no stronger substitute or
+clock/cadence/tolerance change is adopted.
+
+The tiny input was consumed: Reference seed0 scripted/elective lifetime moves
+1.4605083614e6/3.54431965065e6 →1.46050991148e6/3.54432330408e6, with clocks
+0/10000/66992/356000/900000/346000/2700000 unchanged. Its transition count
+11916→11915 is not called a milestone. Strong Reference clocks are
+0/10000/44072/182000/900000/177000/2700000, lifetime
+3.5053281185e6/7.66194816889e6 and8947 transitions. These are synthetic
+counterfactual observations, not naturally earned bonuses or SQL acceptance.
+
+Additional small control declared before editing: execute these four paired
+Reference seed0 inputs (none/unit/tiny/strong) under the same full2hour ratified
+policy, comparing all seven clocks, both lifetime samples and transition counts
+with the just-completed observation. This is a fast input-consumption regression
+control, explicitly NOT the485-run study or an H3 passing verdict. It leaves
+the full opt-in selector/full-population criterion untouched. Its small row
+is for inexpensive independent compiling probes: omit runtime input-copy,
+omit runtime.external's diagnostic consumer, replace only the control's strong
+input with unit. Each must fail tiny/strong observations rather than rely on
+the already-fired full tiny criterion. Separately omit the oracle's expected
+row deletion and admit unchanged sensitivity; malformed-duplicate and unchanged
+negative controls must respectively fail. Exact SHA restores before each next
+probe and cold normal run afterward; no edits while handles live.
+
+Baseline focused3168f1..c2d674 passes in3.233s:27 oracle/refusal children,
+the existing live Reference first-hour control, live Chaos Exit observer and
+18 lifetime profiles. Fasta39ae2..7e1c11 exit0: harness63.896s, role0.153s,
+Commons0.383s and guard; opt-in study is explicitly skipped there. Core3e515b
+..c77ce1 exit0: vet/full cold core (production47.108s, transport13.334s,
+save0.293s), numeric vectors, generated API/formulas byte-identical. No SQL.
+Original predeclaration64badd7b remains; only this narrow new test supplement.
