@@ -8231,3 +8231,12 @@ production diff before next. Then cold focused parser/Reputation/Exit/Bonus/
 vet and whole production SQL Integration. No edits while test handles live.
 No tests-skipped/compile-error as discriminating runtime success. Full range
 after6dc16a58 needs Claude including record edges; all earlier spans independent.
+
+Initial request populationd61ab0/07527d session27465 terminal0: three top-level
+tests and59 reported subcases pass cold0.356s. Both plan-bearing commands run
+all20 shape cases. Literal canonical bytes and independent SHA-256 bind exact
+key presence/order/revisions/Offer ID; JSON key order and whitespace and intent
+ID equivalence are explicit controls. Forbidden commands and unrelated closed-
+field/Founder revision checks retain exact refusal detail.64 syntactic IDs
+are deliberately not an admitted/registered64-node tree. Test-only commit
+before compiling source probes; no acceptance checkbox or production change.
