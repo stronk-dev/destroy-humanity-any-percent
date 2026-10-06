@@ -2902,3 +2902,21 @@ reviews and the whole nine-tier/platform objective remain. New span after
 (fixture provenance) and RP-264 (exclusion oracle) are distinct, not retuning
 authority. An external push advanced origin/main to unchanged HEAD9337f4b8
 during the long check; Codex did not push. Goal active; no checkbox flipped.
+
+## 2026-10-06 — Reputation career fixture identity
+
+RP-263 under26e97e4b corrects the fixture helper's artifacts/hash and the actual
+career run-key coordinate. Four cold baseline failures, seven passing controls
+and three independent compiling omissions prove source identity, actual output
+identity and untouched-base preservation, with byte-exact restoration. Cold
+fast harness/core/vet/topology pass. Full H4/H5 reports reproduce unchanged in
+840.123s; H4 retains the same six Casual ties and H5's stated gaps remain.
+[Executed evidence](reputation-tree-v1/log.md).
+
+Harness-only, kernel160/balance/live runtime/reports/CI policy unchanged.
+Report-envelope provenance remains open, as do all prior independent reviews.
+Complete new span after6963692b needs Claude. Next safe accepted work is
+RP-265's Reference frozen-input consumer diagnosis before RP-262's H3 witness,
+then RP-264's exclusion oracle. Actual SQL/AC15/capacity, RP-131/RP-256 and the
+full nine-tier/platform/release goal remain. Goal active; no checkbox, archive,
+mint, push, deployment, cleanup or release promotion.

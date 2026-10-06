@@ -429,6 +429,22 @@ expected bytes require review; normal verification never enables that flag.
 
 ## Career measurement inputs
 
+The headless fixture composer copies the complete base artifact set, retains
+the exact `fixture-v1.json` tree bytes and pairs them with the economy's
+`reputation.founder_bonus` declaration. It computes the complete catalog hash
+and loads the result through `replaycatalog.Load`; it no longer changes parsed
+catalogs while retaining the tree-less epoch's artifacts and hash. The career's
+run key uses the supplied fixture bundle's hash. Threshold, purchase policy and
+exclusion remain separate experiment inputs, not part of that catalog hash.
+
+`TestReputationCareerFixtureIdentity` checks retained tree/economy sources,
+public-loader roundtrip and a completed Chaos seed0 no-purchase career, while
+requiring the original suite to remain untouched. Removed-tree, undeclared-source
+and false-hash copies refuse at the public loader. Independently reverting the
+fixture identity, omitting the run-key assignment or mutating the base artifact
+map makes the test fail. This corrects RP-263's helper/run-key portion; retained
+H4/H5 report envelopes still lack complete source/configuration provenance.
+
 The R10 headless career runner accepts exactly `cheapest`, `seeded_uniform`
 and `none`. An optional leave-one-out exclusion must name a node in the loaded
 fixture tree. Both are checked before simulation: a misspelled policy must not

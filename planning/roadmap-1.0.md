@@ -5,7 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness correction (2026-10-06):** RP-261 closes silent admission of
+**Latest harness correction (2026-10-06):** RP-263's fixture helper and career
+run key now identify the complete tree/economy sources. Four baseline failures
+are corrected; seven controls and three omission probes discriminate. Cold
+fast/core/vet/topology pass; exhaustive H4/H5 reproduce unchanged in840.123s.
+H4 remains FAIL and report-envelope provenance stays open. New span after
+6963692b needs Claude. No balance, kernel160, live runtime, report or CI change.
+Next: RP-265 Reference planner diagnosis before RP-262 H3, then RP-264; actual
+SQL/reviews and the complete nine-tier/platform/release goal remain.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous harness correction (2026-10-06):** RP-261 closes silent admission of
 malformed measurement inputs locally: six refusals/four legal controls and two
 fired guard omissions. Cold fast/core/vet/topology pass; exhaustive H4/H5
 reproduce unchanged. H4 remains FAIL and AC13 remains open. New span after

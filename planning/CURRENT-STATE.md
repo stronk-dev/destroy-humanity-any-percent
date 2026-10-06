@@ -4,14 +4,25 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest harness correction: RP-261 now refuses malformed career policies and
+Latest harness correction: RP-263's helper/run-key portion now names the complete
+paired tree/economy fixture rather than the base epoch. Four baseline failures
+are corrected; seven controls pass and three omission probes fail as expected,
+then restore byte-exact. Cold fast harness/core/vet/topology pass. Full H4/H5
+reproduce unchanged in840.123s; H4 remains FAIL. Kernel160, balance, reports and
+live runtime are unchanged. Complete new span after6963692b needs Claude.
+Report-envelope provenance remains open. Next: execute RP-265's Reference
+planner frozen-input lead before RP-262's H3 witness, then RP-264's exclusion
+oracle. Actual SQL/capacity, independent reviews and the full 1.0 scope remain.
+[Executed evidence](reputation-tree-v1/log.md).
+
+Previous harness correction: RP-261 now refuses malformed career policies and
 unknown node exclusions before simulation. Six refusals/four legal controls
 pass after four baseline admissions; both guard omissions discriminate.
 Cold fast harness/core/vet/topology pass. Exhaustive H4/H5 reproduce unchanged
 in922.866s; H4 remains FAIL, not release evidence. Harness-only, kernel160 and
 balance/runtime/reports/CI policy unchanged. Full new span after7da200f0 needs
-Claude. Next bounded R10 routes: RP-262 H3 witness, RP-263 source identity and
-RP-264 exclusion oracle. SQL/capacity, independent reviews and 1.0 remain open.
+Claude. Its original next queue is refined by the fixture/planner dependencies
+above; SQL/capacity, independent reviews and 1.0 remain open.
 [Executed evidence](reputation-tree-v1/log.md).
 
 Latest Company replay proof: RP-260 under4d4846f2/f7822250/d23da963 retains

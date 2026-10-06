@@ -93,10 +93,11 @@ func (suite *FirstHourSuite) RunReputationCareer(spec RunSpec, seed uint64, expe
 		return ReputationCareerResult{}, fmt.Errorf("%w: fixture threshold %q: %v", ErrReputationCareer, config.Threshold, err)
 	}
 	career := &careerRuntime{config: config, policy: policy, purchased: []string{}, applied: []string{}}
-	// The whole career runs on the tree bundle: identical to the suite bundle
-	// except for the reputation.founder_bonus declaration row R2 adds.
+	// The whole career runs on the paired tree/economy fixture. Its run key
+	// identifies that complete bundle, not the tree-less first-hour base epoch.
 	careerSuite := *suite
 	careerSuite.Bundle = config.Bundle
+	careerSuite.ConstantsHash = config.Bundle.ConstantsHash
 	result, _, career := careerSuite.runWithCareer(spec, seed, experiment, false, career)
 	if result.Outcome != "completed" {
 		return ReputationCareerResult{}, fmt.Errorf("%w: seed %d outcome %s %v", ErrReputationCareer, seed, result.Outcome, result.InvariantFailures)

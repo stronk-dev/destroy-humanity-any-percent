@@ -3471,3 +3471,82 @@ epoch, report regeneration, policy change, kernel bump, threshold retune, budget
 horizon waiver, SQL workload/cleanup, checkbox, archival or release promotion.
 Next dependency is RP-265 before the full RP-262 measurement. Complete new span
 after6963692b needs Claude; independent review is not supplied by this work.
+
+## 2026-10-06 — Career fixture identity corrected and reproduced
+
+Executed26e97e4b's RP-263 wave, source6963692b. The initial focused command
+21bdc3..9bc4b1 (session23829) executes zero tests: Make consumed the trailing
+selector dollar. It is not evidence. Corrected selector e3ccf1..424a41
+(session51861, terminal exit2) executes all four predeclared checks and fails
+all four. The helper retains neither the tree nor paired economy artifact,
+and both its hash and the actual completed Chaos seed0 career's run key name
+the base epoch instead of the independently reconstructed fixture.
+
+Base catalog identity:
+`sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
+Complete paired tree/economy fixture identity:
+`sha256:3625eddb73da494574a2031fd483e93af236aa9b1f14482e5b51ad6ea3d0f7b0`.
+Threshold1e5, Chaos seed0, CareerNone and the existing experiment remain exact;
+these are separate inputs, not extra fields hidden inside that catalog hash.
+
+Correction copies every base artifact, retains exact existing tree bytes and
+the already-proposed economy declaration, computes ConstantsHashArtifacts and
+uses strict replaycatalog.Load. RunReputationCareer copies that bundle hash
+into the career suite's RunKey coordinate. No arithmetic, purchase policy or
+natural gameplay transition changed. The retained test compares sources and
+the full public-loader roundtrip, executes a completed two-Exit/unit-factor
+no-purchase career, and checks that the base suite remains untouched. Three
+copied-input controls (missing tree, undeclared source, false hash) refuse at
+the public loader, not a new second-authority validator.
+
+Normal0e4a87..f4e3e4 (session62184) passes all seven controls cold. Compiling
+omissions, with no source/record edit while any test handle lives:
+- 675437..f5238b (session29530, exit2): restore old artifacts/hash on the
+  composed helper; all four identity checks fail, three refusals stay green.
+  a9f855 confirms exact restoration before the next probe.
+- 397ddc..0776f4 (session62061, exit2): omit only careerSuite.ConstantsHash;
+  actual-career identity fails and all six other controls stay green.
+  d8520f confirms exact restoration before broader tests.
+- 097251..11900b (session45303, exit2), only after the full study terminates:
+  omit helper artifact copying and mutate the original base map. All seven
+  children pass, but the base-preservation cleanup correctly fails the test.
+  This independently exercises the predeclared untouched-base assertion.
+  e6de93 confirms exact restoration;84a6e1..f37a9b (session39063, exit0)
+  passes all seven normally, harness2.172s.
+
+Restored SHA256s: career.go
+`b3a815a4009416f0b8e67f8818fda59b9d27e135da1dcb4f44acacee5df9dca4`;
+career_test.go
+`b43b2ab9b6468bcb4e97aac3673bec0735df77c8f21ee8fa92b747f003912917`;
+career_identity_test.go
+`6bcfa145619d11d278039559b675a15b13f5f928ace7ea7dd904a06aaf73e625`.
+Restoration checks abort before another probe on mismatch.
+
+Cold make verify-harness-fast0ba097..8769b2 (session16414, exit0):
+harness56.089s, role population0.251s, Commons0.544s and guard mode pass.
+Cold make verify-server-core a47117..40c418 (session34331, exit0) uses the
+existing narrow local-listener permission; complete core/vet pass, including
+production49.279s, save0.297s and transport13.379s. Formula/API regeneration
+is byte-unchanged. Its separate Pitch alias is cached; the main cold core
+Pitch population passes0.362s. Topology afdee3 passes all13 negative controls.
+
+Full make reputation-harness-check21abec..39b4db (session76332, terminal
+exit0): H4's97 treated/control pairs reproduce in179.03s, H5's970 arms in
+660.93s; total840.123s. No update flags. H4 remains FAIL on Casual seeds
+1/6/8/11/24/25 (6cfdf4); a successful reproduction is not a passing criterion.
+H5's epsilon and run-4 dimensions remain unresolved. Report hashes7e0bea
+remain H4 `648f36d685c07471830692bf4c55810fc6c95ed4dcd00306d75a36697c2a9aa8`,
+H5 `4ed79054baa69389fff34cf850327c07b882b6b4aa507c25dc4d3d13808ab63c`,
+threshold `46a8fea612ff7e777a38c54166e542dff33e92ec18380fdf09ff4bdd1df72808`.
+
+All handles terminal before these docs/ledger/board/log edits. Initial combined
+record patch rejected an incorrect roadmap-log anchor; e8690b confirms zero
+partial edits, then the exact patch succeeds. Exploratory missing-path searches
+are not executable evidence; actual paths resolve through029655/539c4a.
+No kernel160, live runtime, balance, original corpus, schema, CI, owner copy,
+budget, horizon, report rewrite or epoch change. No fresh SQL/browser/whole-CI
+claim. RP-263's report-envelope provenance remains open; its helper/key portion
+is corrected locally only. Next: predeclare/execute RP-265 Reference planner
+frozen-input lead, then RP-262 H3 and RP-264 exclusion oracle. No numerical
+planner finding, box flip, archival, mint, push, cleanup or release promotion.
+Whole new span after6963692b requires Claude; all earlier reviews remain open.

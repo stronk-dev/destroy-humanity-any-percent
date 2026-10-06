@@ -11,10 +11,10 @@ import (
 	"sync"
 	"testing"
 
-	"cloud-clicker/server/copykeys"
-	"cloud-clicker/server/economy"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/reputation"
+	"cloud-clicker/server/save"
 )
 
 const reputationCareerFixtureThreshold = "1e5"
@@ -27,22 +27,25 @@ func reputationCareerBundle(t *testing.T, suite *FirstHourSuite) production.Cata
 		t.Fatal(err)
 	}
 	root["multiplier_sources"] = append(root["multiplier_sources"].([]any), map[string]any{"id": "reputation.founder_bonus", "slot": "prestige", "target": "all", "provider": reputation.Provider})
-	data, _ := json.Marshal(root)
-	catalog, err := economy.LoadCatalog(data)
+	data, err := json.Marshal(root)
 	if err != nil {
 		t.Fatal(err)
-	}
-	keys := map[string]struct{}{}
-	for _, key := range copykeys.All() {
-		keys[key] = struct{}{}
 	}
 	treeBytes, err := os.ReadFile(filepath.Join(repositoryRootForReputation, "balance/testdata/reputation-tree/fixture-v1.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	bundle := suite.Bundle
-	bundle.Economy = catalog
-	if bundle.ReputationTree, err = reputation.LoadTree(treeBytes, reputation.Declarations{Economy: catalog, Curriculum: bundle.Curriculum, CopyKeys: keys}); err != nil {
+	artifacts := make(map[string][]byte, len(suite.Bundle.Artifacts)+1)
+	for name, source := range suite.Bundle.Artifacts {
+		artifacts[name] = bytes.Clone(source)
+	}
+	artifacts["economy"], artifacts["reputation_tree"] = data, treeBytes
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle, err := replaycatalog.Load(hash, artifacts)
+	if err != nil {
 		t.Fatal(err)
 	}
 	return bundle

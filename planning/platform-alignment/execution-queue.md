@@ -1,5 +1,20 @@
 # Executable queue
 
+## Career fixture identity corrected locally — 2026-10-06
+
+RP-263 under26e97e4b: the helper retains complete paired tree/economy bytes and
+the actual career run key names that fixture hash. Four baseline failures,
+seven passing controls and three fired omission probes; exact restoration.
+Cold fast/core/vet/topology pass. Exhaustive H4/H5 reproduce unchanged in
+840.123s; H4 still FAIL. Report-envelope provenance is not closed.
+
+**READY FOR CLAUDE:** complete new span after6963692b, including predeclaration.
+**NEXT SAFE ACCEPTED WORK:** predeclare and execute RP-265's Reference planner
+frozen-input lead before RP-262's honest H3 multiplier witness; separately
+execute RP-264's exclusion oracle. No numerical planner verdict inferred yet.
+No report rewrite, retune, budget waiver, mint, archival or 1.0 promotion.
+SQL/AC15/capacity and every earlier review remain. [Evidence](../reputation-tree-v1/log.md).
+
 ## Reputation career input admission corrected — 2026-10-06
 
 RP-261 under9337f4b8: four malformed configurations were silently measured;
@@ -9,9 +24,9 @@ reproduce unchanged in922.866s, with H4 still FAIL. No balance, report, kernel,
 runtime, schema or CI policy change.
 
 **READY FOR CLAUDE:** complete new span after7da200f0, including predeclaration.
-**NEXT SAFE ACCEPTED WORK:** predeclare R10's missing H3 multiplier witness
-(RP-262); distinct source-identity/exclusion-oracle leads RP-263/264 need bounded
-execution before findings or fixes. No retune, bound waiver, report rewrite or
+**ORIGINAL NEXT QUEUE:** R10's missing H3 multiplier witness (RP-262), refined
+by the fixture/planner prerequisites above; RP-264 remains a separate oracle
+route. No retune, bound waiver, report rewrite or
 mint inferred. SQL/AC15/capacity, all earlier reviews and full 1.0 remain open.
 [Exact evidence](../reputation-tree-v1/log.md).
 

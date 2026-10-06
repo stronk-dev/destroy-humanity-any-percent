@@ -102,7 +102,12 @@ threshold retune is measured and reported, then ratified by owner SHA).
   pass; two guard omissions discriminate and restore exactly. Cold fast/core/
   vet/topology pass; exhaustive H4/H5 reports reproduce unchanged. This does
   not close AC13: H4 still fails, H5's epsilon/run-4 questions remain, and
-  RP-262/263/264 are distinct unexecuted witness/provenance/oracle routes.
+  RP-263's helper/run-key portion is now locally corrected under26e97e4b:
+  seven controls and three compiling omission probes discriminate; cold
+  fast/core/vet/topology pass and full H4/H5 reproduce unchanged in840.123s.
+  Report-envelope provenance remains open. New span after6963692b needs Claude.
+  Execute RP-265's Reference planner frozen-input lead before RP-262's H3
+  witness, then RP-264's separate exclusion oracle; none is retuning authority.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.
 - [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
 - [ ] Canonical docs, designated Codex review, archival (Codex).
