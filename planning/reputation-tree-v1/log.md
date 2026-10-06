@@ -6444,3 +6444,44 @@ not executed claims or scope extensions. No inherited B7/full AC12/1.0 closure,
 checkbox flip, self-archive, owner adoption, mint, cleanup, deployment/push or
 goal completion. Next bounded actual-host plan reproduction is safe accepted
 work while every independent prior designated-review obligation remains live.
+
+## 2026-10-06 — RP-282 actual-host plan consistency diagnostic predeclaration
+
+Start eb258a7a clean main, prior cost range closed locally only. Accepted R6/R9
+requires advisory selected plan, default empty/unchanged one-action Exit, and
+exact server re-validation. Ground2cf2cd/6c93a4/94ddd1/496db3/4176bb/4bebf6:
+panel local selected starts empty; parent remembers exitPlan through navigation
+and Offer replacement; withPlan forwards it. Reuse existing controlled actual
+runtime/parser/host fixture, not test-only host setters or direct gameplay API.
+This is a consistency diagnostic, not new persistence semantics/owner ruling.
+
+Extend only existing host diagnostic helper with opt-in eligible Wind Down
+(default false preserves old population), and controlled valid company Offer
+publication at revision14 after initial13/Founder7. Offer uses collapsed type
+with preview delta2, eligible Desk has current available4, nodes costs1/2.
+Fixture wire remains declared v4; no new preview field/schema/parser/source.
+Existing actual native Worker and controlled HTTP/socket boundary execute.
+
+Population:both eras × native Enter/Space × five flows,20 per engine/40 total:
+untouched Desk default empty; selected Desk forwards both nodes in artifact
+order; Desk→Settings→Desk remount resets visible empty selection; selected Desk
+replaced by authoritative Offer resets visible empty panel; selected Offer
+forwards both visible selections using preview delta2. Select second then first
+to independently check ordered serialization, project4→1 or6→3. Default flows
+must omit the reputation_plan field, not send[]; selected flows match actual
+checked rows exactly. All gameplay intents originate native controls and one
+held POST, unique UUID, Company expected_revision13/14 and Founder7. Reject
+known invalid with coherent Company revision; no need to change/save/mint game.
+Assert one initial snapshot/no unexpected requests, transport readiness and
+visible collapsed/open disclosure. No broad AC12/server/SQL/default-player claim.
+
+Run unchanged production first. Classify baseline as fixture invalid if event
+parser/resync or prior-step control fails; only a proper enabled native action
+reaching a wrong captured payload proves hidden spend. Existing empty-remount
+UI is the bounded reference behavior, not permission to invent persistence.
+If confirmed, separately predeclare minimum synchronization and compiling
+negative/control probes before product edits. No RP-283 preview math/wire,
+RP-284 event consumer, RP-281 generator, copy/prices/kernel161/CI/security/
+schema/balance/reports, acceptance box/mint/owner adoption/archive/push change.
+All handles terminal before edits. Full new span aftereb258a7a needs Claude,
+independently of prior ranges. Full nine-tier/platform1.0 goal remains active.
