@@ -3828,3 +3828,44 @@ Final restored-source cold102cfb..d30649 (session53885, terminal exit0) again
 executes all16Reference/20producer/six boundary controls and actual caller scan:
 harness0.356s, production0.387s. Whitespace/gofmt checks ac364d/7d6be3 pass.
 All subsequent record edits are after that handle ends; source bytes unchanged.
+
+## 2026-10-06 — Reference correction checkpoint first filter
+
+Review by: Codex (implementer self-review / first filter).
+Recorded by: Codex.
+Reviewed range: d18d4e09..6794a6b4, all three commits and all nineteen paths,
+including both predeclarations, implementation, kernel sources and records.
+Verdict: PASSED bounded first filter; NOT designated independent approval.
+
+Reviewed the canonical masked producer's validation and nil-wrapper contract,
+all four solver transition sites/advance/projection, copied factory input,
+actual waiting/legal-command rate, all42new observations and opt-in career
+observation. No balance/literal/report/schema/CI-policy/owner-copy changes;
+watched files carry the real kernel161 simulation-input capability in the same
+commit. No box flips, archived moves or existing verdict rewrites. Source/rate
+scope does not prove modern active-play, SQL, natural careers, H3 or full R10.
+Recorded report drift and historical RP-131 remain failing, not redefined gates.
+
+Committed-HEAD cold544ae8..43e023 (session63797, terminal exit0) executes all
+16Reference/20producer/six boundary controls and actual caller scan again,
+harness0.190s, production0.247s. The broader cold and complete exhaustive
+populations are the executed runs above, not a new whole-CI verdict. 77c18b
+confirms clean main ahead8, whitespace-clean range;4976d3 confirms EOF-only log
+addition. 3e544e reconfirms retained report/threshold/original-corpus hashes.
+
+One separate source lead is registered, not silently corrected: RP-267.
+1b4408/8bde66 show Reference adopts ranker candidate states and performs actual
+bank advances with Routes-only dependencies. Ordinary runtime advances/intents
+use runtime.lifetimeHook, whose AfterAccrual calls the canonical
+prestigecore.AccumulateLifetimeValue. Missing paid-production accounting here
+could change H1/payout/threshold/career evidence. No new numerical mismatch is
+inferred. RP-265's independent rate/state calls intentionally match the same
+Routes-only contract; they cannot be cited as a lifetime-accounting witness.
+The next safe accepted R10 work therefore predeclares and measures this lead
+before RP-262 H3, then RP-264. No extra implementation in this record.
+
+No unresolved first-filter defect inside the bounded frozen-input correction;
+whole new span afterd18d4e09 through this record still needs Claude. All earlier
+reviews, report provenance/refresh and actual persistence/AC13/15/release gates
+remain. No live handle, mutant, checkbox, mint, archival, cleanup, push or
+release promotion. Goal active.

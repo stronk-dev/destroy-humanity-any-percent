@@ -2940,3 +2940,10 @@ Complete new span afterd18d4e09 needs Claude, not archival on an implementer
 first filter. RP-262 H3 and RP-264 exclusion oracle are the next safe accepted
 work. Actual SQL/capacity, all prior reviews and the full nine-tier/platform/
 release goal remain. Goal active; no checkbox, mint, push, cleanup or promotion.
+
+The committed-head first filter registers source-only RP-267: Reference adopts
+candidate states and banks with Routes-only dependencies, while ordinary runner
+advances/intents supply the lifetime-value hook. RP-265's rate/state proof does
+not prove that accounting. The next queue therefore measures this separate R10
+lead before RP-262, rather than silently widening the frozen-input correction.
+No numeric finding or product change is inferred from source alone.

@@ -12,8 +12,9 @@ fast harness and client8106/134/types/build plus separate boundaries pass.
 Composite client remains RED at RP-131. Kernel0.3.161; no live formula or balance
 change. Reference seed0 treated gate moves355000→357000ms, control stays357000ms.
 Full H4/H5 reject unchanged v1 report drift in786.459s; H4 still fires the same
-six Casual ties. Complete new span afterd18d4e09 needs Claude. Next: RP-262 H3
-and RP-264 exclusion oracle; report provenance/refresh, actual SQL, all earlier
+six Casual ties. Complete new span afterd18d4e09 needs Claude. Next: measure
+RP-267's Reference lifetime-hook lead before RP-262 H3, then RP-264 exclusion
+oracle; report provenance/refresh, actual SQL, all earlier
 reviews and the full nine-tier/platform/release floor remain open.
 [Executed evidence](reputation-tree-v1/log.md).
 

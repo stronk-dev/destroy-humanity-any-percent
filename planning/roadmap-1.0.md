@@ -13,7 +13,8 @@ Composite client remains RP-131 RED. Kernel0.3.161, not a live formula/balance
 change. Reference treated seed0 gate moves355000→357000ms; control stays357000ms.
 Exhaustive H4/H5 reject retained report drift in786.459s; the six Casual ties
 and untouched v1 snapshots remain visible. Complete span afterd18d4e09 needs
-Claude. Next RP-262 H3 and RP-264 exclusion oracle, not retuning. SQL, report
+Claude. Next measure RP-267's lifetime-hook lead before RP-262 H3, then RP-264
+exclusion oracle, not retuning. SQL, report
 provenance/refresh, all prior reviews and the full nine-tier/platform goal remain.
 [Evidence](reputation-tree-v1/log.md).
 

@@ -114,7 +114,8 @@ threshold retune is measured and reported, then ratified by owner SHA).
   formula change. Seed0 treated gate moves355000→357000ms; control stays357000ms.
   Full H4/H5 now reject untouched retained report drift in786.459s; the same
   six Casual ties remain. Complete new span afterd18d4e09 needs Claude.
-  Next RP-262 H3, then RP-264's separate exclusion oracle. Report provenance/
+  Next predeclare/measure RP-267's Reference lifetime-hook lead before RP-262 H3,
+  then RP-264's separate exclusion oracle. Report provenance/
   refresh remains separate; no retuning or report-regeneration authority here.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.
 - [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.

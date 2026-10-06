@@ -9,8 +9,9 @@ plus separate boundaries pass. Composite client still RP-131 RED. Kernel161;
 no live formula, balance, original corpus, report or CI policy change.
 
 **READY FOR CLAUDE:** complete span afterd18d4e09, including both predeclarations.
-**NEXT SAFE ACCEPTED WORK:** RP-262's actual H3 multiplier witness, then RP-264's
-false-exclusion/accounting oracle. No criterion weakening or retuning authority.
+**NEXT SAFE ACCEPTED WORK:** predeclare and measure RP-267's Reference lifetime-
+hook lead, then RP-262's actual H3 multiplier witness and RP-264's false-
+exclusion/accounting oracle. No criterion weakening or retuning authority.
 **RESEARCH RECORD STILL OPEN:** Reference seed0 treated gate355000→357000ms,
 control357000ms. Full H4/H5 reject retained report drift in786.459s; H4 retains
 the same six Casual ties. v1 reports stay unchanged. Report provenance/refresh
