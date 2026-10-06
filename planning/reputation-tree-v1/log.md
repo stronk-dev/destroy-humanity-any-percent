@@ -5649,3 +5649,62 @@ author-policy adoption, RP-268/271/274 resolution, mint, archive, SQL/browser/
 deployment/cleanup/publication/message to Claude or push. Complete span after
 5c93ff6f plus later record edges still needs designated Claude review, separately
 from all earlier ranges. Goal remains active.
+
+## 2026-10-06 — RP-263 dated career reports recorded and fully reproduced
+
+Committed producer6bd24e8d9e211b68aa0bb04dd18f4f02653616a8,
+server treec3d6616e9b33ff94e71ea452e0c1d5ffddebbef5,
+balance treecd982b7c58a53cac0ab4c91a773705033930414d/kernel0.3.161 unchanged;
+native Go1.27.1/darwin/arm64. Root `make test-go`, harness with `-args
+-reputation-career-measurement=record`, exact CurrentMeasurement selector,
+`-count=1 -timeout 60m -v`,1b50f4..c6d633,session5519,terminal exit0,
+676.102s. Complete97 pairs/194 sources/970 baseline-mask arms are admitted,
+retained and recomposed; H4/H5 baseline observations agree. GatePassedfalse,
+six existing Casual ties,93 comparisons/3 valid exclusions, all27 H5 groups
+and medians unchanged. This is completed negative research, not H4/H5 success.
+
+Root same complete selector with verify,c5328d..9e1da4,session81662,terminal
+exit0,469.043s. Fresh97 paired careers and970 node-study arms reproduce both
+whole report files byte-identically; all same input guards pass before/after.
+No cancelled/restarted run, update flags, manual edits or record/source changes
+while any test handle lived. Timings are not a performance comparison/budget;
+fast check ran concurrently with replay. Companion records exact producer/runtime.
+
+Raw SHA H4:
+29d0e6d2758502db3e82578db349cc1e080535afb74be0ae77d5df0e0ca2f3f7
+Raw SHA H5:
+8044667158f80ccd920cce5861bd029fa3d46339c77fdb4a7230b6d3e9b404fe
+Companion SHA:
+ba9fcc7b458e3d4bc2e5038e893d72731af52d040571609d1c18ae7612676ad7
+H4/H5 sizes263025/2257335 bytes (3a0d60); no output truncation/reduced cohort.
+Actual overwrite8a8d7d/44ba75,session30606,terminal exit2, refuses existing H4
+before production. Retained-artifact validation now executes rather than skips:
+2e85ff/88a91a,session6158,terminal exit0,9.102s, including51 refusal children,
+full declaration and the four unchanged real source fingerprints. Source/datum
+SHAs603ab8 and committed trees07b2ec unchanged after all runs.
+
+Root post-artifact `make verify-harness-fast`,cc553d..289ccb,session32025,
+terminal exit0: harness98.632s, role0.375s, Commons0.501s and guard. Earlier
+vet471264 remains the unchanged-source cold pass, not relabelled as another run.
+Read actual CI harness checkout/entrypoint0d21b2/d965c1: full Git history and
+same fast target, not hosted execution or full CI proof. Existing report SHAs
+dfbdb7 stay648f36d6/4ed79054 and dated H1/H2 stay3ce87b08/d5979c93. They
+remain earlier producer evidence, not freshness at this changed server tree.
+
+Read-only Docker recheck8ad30e/0f562c/40e8a0 still reports100% root,39784KiB
+free, DB tmpfs8108540KiB free;342 images78.3GB/143 volumes39.36GB/cache2.634GB.
+Reclaimable is not deletion authority. No resources removed, no Docker tests
+or browser/deployment attempts. All handles terminal before tracking edits.
+Failed multi-file patch context verification left the tree untouched (853c63)
+before the corrected patch; no hidden partial edit.
+
+RP-263's local dated career observation gap is now reproduced, not whole R10
+acceptance. RP-268/271 author/data intent, RP-274 attribution, H3 tiny criterion,
+H4 strict failures, H5 epsilon/run4/censoring, owner SHA adoption/mint and real
+SQL/default-player proof remain. Next safe work grounds remaining accepted
+R9/AC12 client-consumer coverage from B7 and HEAD before any bounded probe;
+do not silently resolve these author holds or absent Firefox/DB populations.
+Full range after5c93ff6f, including these artifacts/records and final edge,
+needs designated Claude review; every earlier range is separate. No production
+math/balance/kernel/CI/corpus/owner-copy change, checkbox, acceptance, archive,
+cleanup, deployment, publication, message to Claude or push. Full1.0 goal active.

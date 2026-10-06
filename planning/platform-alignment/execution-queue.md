@@ -1,5 +1,34 @@
 # Executable queue
 
+The first checkpoint is current. Older next-step notes below are historical;
+their independent review obligations remain live.
+
+## Dated career evidence reproduced — 2026-10-06
+
+RP-263 under80cc4015/6bd24e8d records new H4/H5 reports and committed-producer
+lineage without overwriting historical files. Two full executions each cover
+97 treated/control pairs and970 baseline/mask arms;676.102/469.043s, both
+reports byte-identical. All populations/medians and six strict H4 failures stay
+unchanged. Fifty-one synthetic refusal children/eight compiling omissions,
+independent declarations and actual overwrite/dirty/selector refusals discriminate.
+Retained-artifact validation and post-artifact cold fast harness pass; vet
+passes on unchanged source. No whole-CI or real-player integration claim.
+
+**READY FOR CLAUDE:** full new span after5c93ff6f, predeclaration/instrument/
+artifacts/docs/records/final edge; every preceding review span remains separate.
+**NEXT SAFE ACCEPTED WORK:** ground remaining R9/AC12 client-consumer coverage
+from Reputation B7 and HEAD, then predeclare the bounded probe. Do not call
+fixture/client proof a minted/default-player/real-Postgres journey or count
+absent native Firefox as passing. No new data/literal/epoch authority inferred.
+**HELD:** H3 criterion, H4 six ties, H5 epsilon/run4/censoring, RP-268/271 career
+intent/data, RP-274 attribution, owner threshold/SHA adoption and R11 mint.
+H1/H2 retain their earlier producer, not freshness at this changed server tree.
+Docker root rechecked100%/39784KiB free; DB/browser/deployment/cleanup authority
+holds remain. Full nine-tier/platform1.0 and designated review union remain
+open. No game math/balance/kernel161/CI/corpus/owner-copy change, checkbox,
+acceptance, archive, cleanup, publication, deployment or push.
+[Exact evidence and hashes](../reputation-tree-v1/log.md).
+
 ## Raw career report evidence prepared — 2026-10-06
 
 RP-275 under1f6a09ca/d96bfaf1 retains H5 raw source/gate/purchase observations,

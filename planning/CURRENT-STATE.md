@@ -4,7 +4,21 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest preparation: RP-275 now retains raw H5 observations and shares report
+Latest evidence: RP-263's dated H4/H5 reports are recorded and fully reproduced
+from committed6bd24e8d. Each execution covers97 paired careers and970 node-study
+arms;676.102/469.043s, reports byte-identical. Complete declarations,51 synthetic
+refusals/eight compiling omissions and real overwrite/dirty/selector refusals
+discriminate. Retained-artifact and post-artifact cold fast harness pass; vet
+passes on unchanged source. Six strict H4 failures and all statistics remain
+unchanged: this is reliable negative evidence, not H4/H5 or release acceptance.
+Whole new span after5c93ff6f needs Claude, independently of every prior span.
+Next ground remaining R9/AC12 client-consumer coverage, preserving author/data/
+mint holds. Docker remains100%/39784KiB free; no cleanup or fresh DB/browser/
+deployment proof. Earlier H1/H2 keep their earlier producer, not freshness at
+this changed tree. Full nine-tier/platform1.0 remains open.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous preparation: RP-275 now retains raw H5 observations and shares report
 composition with the ordinary checks. Ten malformed groups/eight retained
 corruptions/one zero-effect control refuse; twelve compiling omissions fire.
 Full97-pair/970-arm study atd96bfaf1 finishes641.626s, retaining/recomposing970

@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest preparation (2026-10-06):** RP-275 retains raw career observations and
+**Latest evidence (2026-10-06):** RP-263's dated career reports are recorded and
+fully replayed from6bd24e8d:97 pairs/970 node-study arms each,676.102/469.043s,
+byte-identical reports. Fifty-one refusal children/eight compiling omissions
+and actual overwrite/dirty/selector refusals discriminate. Retained-artifact
+and post-artifact cold fast harness pass; vet passes on unchanged source.
+Six H4 failures and all populations/medians remain unchanged. This completes
+local reproducible negative observation, not acceptance, retuning or release.
+Whole new span after5c93ff6f needs Claude. Next ground remaining R9/AC12
+client-consumer coverage; all author/data/mint/SQL/browser/deployment holds
+and complete nine-tier/platform goal remain. Earlier H1/H2 keep their earlier
+producer; Docker root rechecked100%/39784KiB free, no cleanup authorized.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous preparation (2026-10-06):** RP-275 retains raw career observations and
 shares report composition. Nineteen corrupt/invalid controls and twelve
 compiling omissions discriminate; full97-pair/970-arm study atd96bfaf1 finishes
 641.626s, retaining/recomposing970 H5 observations with unchanged statistics.

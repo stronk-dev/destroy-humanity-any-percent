@@ -188,8 +188,16 @@ threshold retune is measured and reported, then ratified by owner SHA).
   RP-263 dated career observation instrument is subsequently predeclared at
   80cc4015: exact97-pair/970-arm source/cohort admission, raw recomposition,
   H4/H5 baseline binding and committed provenance. Synthetic controls/eight
-  compiling omissions and cold fast/vet pass. Complete record/replay remains
-  next, not yet claimed; original files and fired acceptance criteria preserved.
+  compiling omissions and cold fast/vet pass. Subsequent dated record/replay at
+  6bd24e8d completes676.102/469.043s:97 pairs/194 sources and970 H5 arms each,
+  byte-identical reports, six H4 failures unchanged. Actual overwrite refuses
+  before production; retained-artifact admission and post-artifact fast pass.
+  Whole new span after5c93ff6f needs Claude. This resolves local dated career
+  observation/reproduction, not AC13 or author policy/attribution/epsilon/
+  career-data/mint questions. Original files preserved; H1/H2 keep their earlier
+  producer, not freshness at this changed server tree. Next ground remaining
+  R9/AC12 client-consumer coverage under B7 without claiming minted/real-DB
+  integration, changing ruled copy or treating absent native Firefox as a pass.
   No AC13/box/mint promotion. At the earlier checkpoint below,
   fresh H1/H2/report provenance/reproduction remained separate; no retuning or
   report-regeneration authority here. No checkbox flipped.

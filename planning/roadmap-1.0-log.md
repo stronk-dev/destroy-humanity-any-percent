@@ -3116,3 +3116,25 @@ span. Next separately predeclare dated H4/H5 exact-source/full-cohort lineage
 and complete replay. Author/capacity/SQL/browser/deployment/review routes and
 the complete nine-tier/platform1.0 remain; no shortcuts, retune, new epoch,
 acceptance box, archive, cleanup, publication/deployment or push.
+
+## 2026-10-06 — Dated career reports completely reproduced
+
+RP-263 under80cc4015/6bd24e8d adds exact-source/full-cohort admission and
+committed software/runtime provenance for dated H4/H5 observations. Each full
+execution covers97 treated/control pairs and970 baseline/mask arms. Record
+676.102s and replay469.043s produce byte-identical reports, retaining every
+population/median and six strict H4 failures. Fifty-one refusal children/eight
+compiling omissions discriminate, as do real selector/dirty/overwrite refusals.
+Retained-artifact validation and post-artifact cold fast harness pass; earlier
+vet remains the unchanged-source pass. [Exact records](reputation-tree-v1/log.md).
+
+This closes local dated career observation/reproduction, not AC13 or release.
+Full new span after5c93ff6f and all earlier spans need separate designated
+review. Next ground remaining accepted R9/AC12 client-consumer coverage under
+B7 before choosing a bounded probe. H3/H4/H5 author criteria, RP-268/271/274,
+owner adoption/mint and actual SQL/default-player integration remain. Earlier
+H1/H2 are not restamped for the changed producer. Docker root rechecked100%/
+39784KiB free; no cleanup, new DB/browser/deployment proof or authority inferred.
+No production math/balance/kernel161/CI/corpus/owner-copy change, checkbox,
+acceptance, archive, deployment/publication/push or shortcut to full nine-tier1.0.
+Goal active.

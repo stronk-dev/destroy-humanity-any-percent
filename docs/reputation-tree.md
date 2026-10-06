@@ -797,6 +797,25 @@ before the recording commit it explicitly reports absence, never evidence.
 Synthetic complete-cohort controls include internally consistent forgeries;
 eight compiling guard omissions discriminate. They test admission, not earned
 player progress or payout mechanics. A truthful H4 FAIL remains a valid negative
-observation, not acceptance. At this instrumentation checkpoint no dated career
-artifact has yet been recorded or reproduced. Original reports, gameplay,
+observation, not acceptance. At the instrumentation checkpoint no dated career
+artifact had yet been recorded or reproduced. Original reports, gameplay,
 statistics, threshold, horizon, epsilon, classifier and strict gates are unchanged.
+
+Subsequently the dated career reports were recorded and completely replayed
+from `6bd24e8d9e211b68aa0bb04dd18f4f02653616a8` (server tree
+`c3d6616e9b33ff94e71ea452e0c1d5ffddebbef5`, unchanged balance tree/kernel
+0.3.161, Go 1.27.1/darwin/arm64). Each execution covers 97 treated/control
+career pairs and all 970 baseline/mask arms. Record completes in 676.102 seconds;
+verify completes in 469.043 seconds with byte-identical H4/H5 reports. These
+are execution durations, not a performance comparison or acceptance budget.
+
+The dated H4 SHA is `29d0e6d2758502db3e82578db349cc1e080535afb74be0ae77d5df0e0ca2f3f7`;
+H5 is `8044667158f80ccd920cce5861bd029fa3d46339c77fdb4a7230b6d3e9b404fe`.
+All populations/medians and the six strict H4 failures remain unchanged. A real
+overwrite attempt refuses before production. Retained-artifact validation and
+the cold fast harness lane pass with these files present. The companion binds
+both files to the producer; replay authenticates this declared observation,
+not player/default-host/SQL integration, H5's missing elective-Exit dimension,
+an unruled epsilon/censoring policy, literal adoption or release readiness.
+Earlier dated H1/H2 retain their earlier producer; they are not restamped as
+fresh at this changed server tree. All ranges still need designated review.

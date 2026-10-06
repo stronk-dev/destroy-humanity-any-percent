@@ -3,6 +3,19 @@
 No measurement may begin until its row is complete. Passing and failing outcomes both close the
 research question; they authorize only the stated downstream action.
 
+**R10 career evidence checkpoint, 2026-10-06:** RP-263's separately predeclared
+dated H4/H5 observation at6bd24e8d completes97 pairs/970 arms twice, with exact
+committed source/runtime lineage and byte-identical full replay. All six H4
+failures and observed populations/medians remain unchanged. Fifty-one synthetic
+refusals/eight compiling omissions and real overwrite/dirty/selector refusals
+discriminate. Cold local fast/retained-artifact checks pass; vet on unchanged
+source passes. This closes local reproducible observation, not H4/H5 success,
+author intent/censoring/epsilon/threshold adoption, RP-268/271/274, mint or real
+SQL/default-player integration. Earlier dated H1/H2 retain their earlier
+producer, not freshness at this changed source. New full span after5c93ff6f
+needs Claude; no other queue or full1.0 gate closes by implication.
+[Evidence and limitations](../reputation-tree-v1/log.md).
+
 ## R-001 — current-head harness non-termination / CI timeout
 
 - **Question:** Why does `balance-harness -mode=check` fail to finish inside the 30-minute hosted

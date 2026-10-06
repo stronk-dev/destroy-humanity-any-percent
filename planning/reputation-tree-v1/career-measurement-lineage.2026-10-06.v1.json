@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "producer": {
+    "commit": "6bd24e8d9e211b68aa0bb04dd18f4f02653616a8",
+    "server_tree": "c3d6616e9b33ff94e71ea452e0c1d5ffddebbef5",
+    "balance_tree": "cd982b7c58a53cac0ab4c91a773705033930414d",
+    "kernel_version": "0.3.161"
+  },
+  "go_version": "go1.27.1",
+  "goos": "darwin",
+  "goarch": "arm64",
+  "h4_sha256": "29d0e6d2758502db3e82578db349cc1e080535afb74be0ae77d5df0e0ca2f3f7",
+  "h5_sha256": "8044667158f80ccd920cce5861bd029fa3d46339c77fdb4a7230b6d3e9b404fe",
+  "h4_pairs": 97,
+  "h4_sources": 194,
+  "h5_arms": 970
+}
