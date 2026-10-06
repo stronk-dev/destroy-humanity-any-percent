@@ -487,3 +487,8 @@ and records; literal tip pinned after commit. Claude required independently of
 credential/TTL/revocation/kernel/catalog/schema/copy/CI workflow/checkbox/archive/
 push change. Next separately predeclare RP-235 request/import diagnosis, then
 real refresh contract/ambiguity; proper nine-tier 1.0 and full platform floor active.
+
+R-011 substantive range pinned: `39f95329..ff2e9f19`, two commits / thirteen
+paths including `d023dc26`. Designated review must include this following pin
+record edge as well; its literal endpoint is supplied in the handoff. This is a
+coordinate, not a verdict, R-011 completion, policy adoption or a green CI claim.

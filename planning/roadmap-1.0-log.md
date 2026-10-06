@@ -2312,3 +2312,8 @@ its predeclaration; tip pinned after commit, Codex first-filter only, Claude sti
 required. No production auth/kernel/copy/schema/CI workflow/checkbox/archive/push.
 Continue scoped CI diagnosis then real Account contract/ambiguity; full nine-tier
 1.0 and its full platform obligations remain active, not reduced to a preview.
+
+Substantive R-011 range `39f95329..ff2e9f19`, two commits / thirteen paths,
+pending Claude. The following pin-record edge also belongs in designated review;
+closing relay supplies its literal tip. Research success does not consume RP-235's
+red browser lane or any prior independent review, auth/policy or release gate.
