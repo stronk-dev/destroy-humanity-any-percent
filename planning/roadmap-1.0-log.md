@@ -3043,3 +3043,21 @@ now also routes RP-271's each-Exit vs scripted-first-no-plan ambiguity to the
 RFC author; no invented mechanic or owner ruling. Fired H3/H4, H5, actual SQL/
 capacity and full nine-tier/platform/release objective remain. Goal active;
 no checkbox, retune, mint, archive, cleanup, push or release promotion.
+
+## 2026-10-06 — Fresh Reputation H1/H2 evidence and lineage
+
+RP-263 underc095e2b5 adds new dated reports/companion from committed producer
+da512cd3, retaining original v1 files. Full97-run/679-clock record and replay
+complete68.91/62.30s, H1/H2 byte-identical. All30 thresholds use pinned exact
+Prestige; the same four thresholds remain proposals, not adoption. Three
+Reference rows genuinely change; Casual/Chaos statistics and all clocks stay
+unchanged. Twenty-four refusals/four compiling guard omissions discriminate;
+actual overwrite attempt refuses before production. Cold local fast/core gates
+pass. [Scope, commands, outputs and limitations](reputation-tree-v1/log.md).
+
+New span afterc352370a including declaration/instrument/artifacts/docs/records
+needs designated Claude review independently of all prior ranges. H4/H5 report-
+envelope provenance audit is next; H3 criterion, H4 ties, H5 epsilon/run4 and
+RP-268/RP-271 author boundaries remain. No live math/balance/kernel161/CI/corpus
+change, no AC13 acceptance or box/mint/archive/push. Actual SQL/capacity and
+complete nine-tier/platform/release objective remain; goal active, no shortcuts.

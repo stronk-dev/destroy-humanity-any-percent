@@ -1,5 +1,25 @@
 # Executable queue
 
+## Fresh H1/H2 evidence reproduced locally — 2026-10-06
+
+RP-263 underc095e2b5 records new dated H1/H2/lineage artifacts from committed
+producerda512cd3, preserving original v1 bytes. Full97 runs/679 clocks complete
+twice; H1/H2 reproduce byte-identically. All30 thresholds use exact suite Prestige;
+proposal set unchanged, three Reference statistics differ, none adopted. Twenty-
+four refusal children and four compiling guard omissions discriminate. Real
+overwrite attempt refuses before production. Cold local fast/core gates pass.
+
+**READY FOR CLAUDE:** full new span afterc352370a, declaration/instrument/reports/
+docs/records, independently of all prior ranges. No designated approval implied.
+**NEXT SAFE ACCEPTED WORK:** H4/H5 report-envelope provenance audit under RP-263,
+keeping diagnostic measurements separate from policy acceptance. Do not mint,
+loosen failed gates, overwrite historical reports or freeze the missing scenario.
+**AUTHOR RECONCILIATION:** H3 tiny criterion; RP-268/RP-271 declared career-data/
+each-Exit wording; H5 epsilon/run4. Existing six H4 ties remain real findings.
+**STILL OPEN:** designated review union, actual SQL/capacity, browser/hosted/full
+CI and complete1.0. Kernel161/live math/balance/corpus/CI unchanged; no box, waiver,
+retune, archive, cleanup, publication or push. [Evidence](../reputation-tree-v1/log.md).
+
 ## Shared H3 aggregate admission corrected locally — 2026-10-06
 
 RP-270 under3d117b39/9ced05cf now refuses aggregate schema/id/hash/constants

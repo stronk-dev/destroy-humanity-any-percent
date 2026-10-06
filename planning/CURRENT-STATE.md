@@ -4,7 +4,18 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest harness correction: RP-270's shared H3 oracle now rejects aggregate
+Latest evidence: RP-263 now has fresh dated H1/H2 reports and committed-producer
+lineage. Full97-run/679-clock record and byte-identical replay pass; all30
+thresholds are measured with exact pinned Prestige. Proposal set unchanged,
+three Reference rows differ; none adopted. Twenty-four refusals/four compiling
+omissions discriminate; cold local fast/core gates pass. Historical files,
+kernel161/live math/balance/CI/corpus unchanged. Full span afterc352370a needs
+Claude. Next H4/H5 report-envelope provenance audit, preserving fired criteria
+and RP-268/RP-271 author boundaries. H3/H4 failures, H5 gaps, SQL/capacity,
+all prior reviews and full1.0 remain. No box, mint, archive, push or release claim.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous harness correction: RP-270's shared H3 oracle now rejects aggregate
 source-coordinate mismatches. Valid-fixture baseline and compiling omission
 discriminate all four fields; H2 retains independent defense. Cold31 H3/45 H2/
 28 H4 diagnostic children plus legacy checks, fast/core/vet pass. Full five-arm

@@ -4981,3 +4981,59 @@ from this committed code, then full byte-identical replay, focused/fast/core/vet
 canonical docs/board/ledger reconciliation. No old report overwrite, candidate
 adoption, kernel bump, mint, box, archive, message to Claude or push. Full range
 afterc352370a including declarations/code/reports/records needs designated review.
+
+## 2026-10-06 — RP-263 fresh reports executed and reproduced
+
+Producer instrument committedda512cd39b1e49e5fc734cd0e05be6a11a73fb2e under
+c095e2b5 predeclaration. Server tree7db46f7ed63ab07402fc40ab66e7d710fb56d144,
+balance treecd982b7c58a53cac0ab4c91a773705033930414d, kernel0.3.161;
+runtimego1.27.1/darwin/arm64 (not hosted runner evidence). Record953c02..5cc430,
+session74897, terminal exit0,69.118s (test68.91); full verifyd99f93..a6ee7b,
+session77792, terminal exit0,62.416s (test62.30). Each executes all97 seeds and
+679 clocks at the original horizon/tuple. Strong source/census, recomputed
+aggregate including failures, pinned exact Prestige and all30 H2 rows pass;
+full H1/H2 bytes match on independent replay. Metadata alone is not freshness.
+
+New H1 SHA3ce87b08dcebebcc55f19bff73e93473c61fcb052825ec01179bfea9332d02ac;
+H2 d5979c934b64d867834580a24e96d6b643336704507db50687b898b4edd773f4;
+companion2377a2d4e0a862be93b9cc61dc69c9b99dc345960704e53bb63f5436dca88421.
+Outputs are exactly the three absent paths declared, never old v1 replacements.
+Actual second record289595..376dd4,session39877, exits2 before production at
+the first existing path. Hashes remain identical. Partial writes would not
+constitute a valid three-file measurement; no partial write occurred here.
+
+Independent JSON comparison: only Reference's reputation_exits differ in H1;
+its lifetime1.26604673417e6/3.34889972124e6 becomes1.4605083614e6/
+3.54431965065e6. All other96 rows and the complete aggregate are semantically
+identical; Reference's clocks/ending/transition fields are unchanged. H2 has
+three real Reference changes:1e4 paid0→1,2e4/5e4 paid1→0. Not merely formatting
+drift. Casual/Chaos statistics and satisfying proposals2e4/5e4/1e5/2e5 remain
+unchanged. Live1e12 remains zero for every persona and fails the envelope.
+No candidate is adopted, minted or substituted for the live balance contract.
+
+Cold fast48d74f..94bb9d,session42381,terminal exit0:harness66.395s,
+role0.170s,Commons0.365s, guard. Cold core4a9fb5..56ada1,session60403,
+terminal exit0:full vet/non-harness core, production35.115s,transport13.260s,
+save0.275s, numeric vectors and unchanged generated formulas/API. The extra
+Pitch alias was cached after its whole package ran cold0.327s. No fresh SQL,
+browser, hosted CI or full verify-push claim. Local harness CI uses full Git
+history by existing workflow declaration; no workflow bytes moved.
+
+Focused713145..a4eca2,session94340,terminal exit0,0.311s validates retained
+artifacts and all24 refusal children; the fresh test explicitly SKIPS by default.
+This is static artifact validation, never a third full run. All four compiling
+omissions and the invalid first command remain disclosed above. Final source
+SHA947a9577 unchanged. Old H1/H4/H5/H2 hashes match1f7c774d/648f36d6/4ed79054/
+46a8fea6. One guessed career-report path was absent; actual career-h4.v1.json
+was resolved with rg and checked, not silently counted as the failed read.
+
+Canonical docs reconcile stale live H1/H2 pending statements, not just append;
+board/queue/ledger now name this bounded evidence and H4/H5 provenance next.
+Historical logs remain append-only. No source/tracking edits while any handle
+lived (only the predeclared generated outputs). Kernel/live math/balance/copy/
+schema/corpus/CI unchanged. Full new span afterc352370a includes predeclaration,
+instrument, all outputs and all records and needs Claude's designated pass.
+Prior review ranges stay independent. H3 tiny criterion, H4 six ties, H5
+epsilon/run4, RP-268/RP-271 author boundaries, SQL/capacity and whole1.0 remain.
+Goal active; no checkbox, criterion waiver, retune, mint, archive, cleanup,
+publication, message to Claude or push.

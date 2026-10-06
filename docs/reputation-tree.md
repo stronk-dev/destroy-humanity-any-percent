@@ -511,9 +511,10 @@ retained snapshots; the same six Casual ties remain.
 
 The threshold reproduction test reads retained first-hour H1 samples rather
 than rerunning the corrected producer. Its green result is historical-source
-recalculation, not fresh calibration. Complete H1/H2/report provenance and
-current-producer reproduction remain separate work; no report refresh or
-threshold ratification follows from the local observer correction.
+recalculation, not fresh calibration. The separately declared dated companion
+below now supplies fresh H1/H2 provenance and reproduction; H4/H5 provenance
+remains open. Neither the local observer correction nor the new measurement
+ratifies a threshold or replaces a historical report.
 
 ### H3 current-producer sensitivity study
 
@@ -557,9 +558,10 @@ sensitivity rejects, and career/Tier2 input overrides reject. Compiling input,
 wrong-factor, census and sensitivity omissions make these controls fail. That
 fast control is not the full study and does not make H3 green.
 
-Historical H1/H2 recalculation, source/report provenance and full fresh
-calibration remain separate. Existing H4 ties, H5 epsilon/run4 and report drift
-remain; no report refresh, threshold/policy change or epoch mint follows.
+Historical H1/H2 recalculation is distinct from the fresh dated H1/H2 companion
+below. That measurement does not accept this fired H3 criterion. Existing H4
+ties, H5 epsilon/run4 and report drift remain; no historical-report replacement,
+threshold/policy change or epoch mint follows.
 
 The R10 headless career runner accepts exactly `cheapest`, `seeded_uniform`
 and `none`. An optional leave-one-out exclusion must name a node in the loaded
@@ -598,8 +600,8 @@ logs 93 counted comparisons and three valid both-unreached exclusions
 The separate full 970-arm H5 reproduction still rejects retained report drift.
 Old report bytes, horizon, policy, balance and kernel161 remain unchanged.
 This is locally verified instrument repair, pending designated review, not
-H4/H5 or AC13 acceptance. The RFC's absent named career-data artifact and fresh
-H1/H2 source admission/lineage remain separate work.
+H4/H5 or AC13 acceptance. The RFC's absent named career-data artifact and H4/H5
+report-envelope provenance remain open; fresh H1/H2 evidence is separate below.
 
 The H2 payout reader now requires exactly two ordered first-hour Exit samples:
 run1 `scripted_first`, then run2 `collapse`. It does not search through duplicate,
@@ -621,8 +623,9 @@ two-row generic subset. Six independent compiling omissions fail, including
 dropping the previous Founder level, then restore exactly. The retained 30-point
 measurement reproduces byte-identically. This is historical-source recalculation,
 not fresh H1 production, current threshold calibration or owner ratification.
-Full-source lineage remains open; the H3 aggregate-coordinate gap is locally
-corrected as described below. The original six omission probes were executed
+H4/H5 lineage remains open; dated H1/H2 lineage is separately declared below.
+The H3 aggregate-coordinate gap is locally corrected as described below.
+The original six omission probes were executed
 at the H2 repair checkpoint, before adding the shared H3 coordinate guard;
 the H2 guard is now an independent defense, not proof the shared one is present.
 No old report regeneration or H2/AC13 completion follows from this local repair.
@@ -642,3 +645,45 @@ test policy: R10 says purchases at each Exit, whereas R6 forbids a plan on the
 scripted first Exit. The harness currently purchases after run2's collapse.
 That coverage/intent ambiguity needs RFC-author body reconciliation; no new
 scripted-first behavior or owner choice is inferred by the implementer.
+
+## Fresh first-hour and threshold evidence (2026-10-06)
+
+The dated [H1 report](../planning/reputation-tree-v1/first-hour-reputation.2026-10-06.v1.json),
+[H2 report](../planning/reputation-tree-v1/threshold-measurement.2026-10-06.v1.json)
+and [lineage companion](../planning/reputation-tree-v1/measurement-lineage.2026-10-06.v1.json)
+are a new, fully executed measurement, not replacements for the historical v1 files.
+Both record and independent full replay complete all 97 ratified seeds and 679
+milestone clocks, using the unchanged epoch-8 catalog and experiment. The entire
+first-hour aggregate is recomputed and must have no fired criteria before recording.
+H2 derives all 30 thresholds using that suite's exact Prestige catalog; raw H1/H2
+SHA-256, committed server/balance trees, kernel and runtime identity are retained.
+These are provenance/reproduction facts, not a cryptographic authenticity claim.
+
+Only Reference's two lifetime observations differ from historical H1; its clocks,
+ending and all other runs/aggregate are unchanged. Reference H2 payout changes
+at thresholds `1e4` (0→1), `2e4` and `5e4` (1→0). Casual/Chaos statistics and the
+satisfying proposal set `2e4`, `5e4`, `1e5`, `2e5` are unchanged. The live `1e12`
+row remains zero for every persona and fails the envelope. **No threshold is adopted.**
+
+The fast artifact test resolves recorded Git identities, checks hashes/census,
+recomputes aggregate and H2, and explicitly does not claim a fresh producer run.
+The fresh test is opt-in (`off`, `record`, `verify`; unknown values fail). Record
+requires committed clean inputs and exclusively creates the declared paths; an
+attempt to repeat it fails before production, rather than overwriting evidence.
+Verify requires the same committed server/balance trees and kernel, reruns the
+whole population and demands byte-identical H1/H2. A future source-tree change
+requires a separately declared new measurement, not relabelling this one as current.
+
+Reproduce this recorded producer while those trees still match:
+
+```sh
+make test-go GO_PACKAGES='./harness -args -reputation-current-measurement=verify' \
+  GO_TEST_FLAGS='-run "^TestReputationCurrentMeasurement\z" -count=1 -v -timeout 5m'
+```
+
+Twenty-four refusal cases and four compiling guard omissions discriminate raw
+binding, semantic aggregate/result/grid corruption and source-tree drift. The
+recorded producer is `da512cd39b1e49e5fc734cd0e05be6a11a73fb2e`; its local full
+record/replay take 68.91/62.30 seconds. Cold local fast harness and core gates pass.
+This does not claim hosted CI, SQL, browser, H3/H4/H5 or AC13 acceptance. RP-263's
+H4/H5 report-envelope provenance and all designated review ranges remain open.

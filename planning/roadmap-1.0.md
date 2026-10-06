@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness correction (2026-10-06):** RP-270 repairs shared H3 aggregate
+**Latest evidence (2026-10-06):** RP-263 fresh dated H1/H2 measurement/lineage
+completes97 runs/679 clocks twice, byte-identical on full replay. All30 candidate
+thresholds measured with pinned Prestige; satisfying proposals unchanged, three
+Reference rows differ, none adopted. Twenty-four refusals/four compiling omissions
+discriminate. Cold local fast/core gates pass; historical reports, kernel161/live
+math/balance/corpus/CI unchanged. Whole span afterc352370a needs Claude. Next
+H4/H5 report-envelope provenance audit; RP-268/RP-271 policy wording stays with
+the author. Fired H3/H4, H5 gaps, SQL/capacity and prior reviews remain. This is
+measurement progress, not AC13 acceptance or a reduction of the full nine-tier
+platform/release goal. [Evidence](reputation-tree-v1/log.md).
+
+**Previous harness correction (2026-10-06):** RP-270 repairs shared H3 aggregate
 coordinate admission; four independent corruptions and a compiling omission
 discriminate, H2's independent guard stays green. Cold31 H3/45 H2/28 H4
 diagnostic children, legacy checks and fast/core/vet pass. Complete five-arm

@@ -154,7 +154,16 @@ threshold retune is measured and reported, then ratified by owner SHA).
   Claude. Next fresh H1/H2/lineage. RP-271 requires author reconciliation of
   each-Exit purchase wording vs scripted-first plan prohibition before RP-268's
   missing data artifact can fix policy authority. No criterion/box promotion.
-  Fresh H1/H2/report provenance/reproduction remains separate; no retuning or
+  RP-263 underc095e2b5 now records fresh dated H1/H2/lineage artifacts from
+  committed producerda512cd3. Full97 runs/679 clocks complete twice with exact
+  byte-identical reproduction; all30 candidates use pinned suite Prestige.
+  Proposal set unchanged; three Reference rows differ, no adoption. Twenty-four
+  refusals/four compiling omissions discriminate; cold local fast/core pass.
+  Old v1 files/kernel161/live math/balance/CI/corpus unchanged; whole span after
+  c352370a needs Claude. H4/H5 report-envelope provenance remains separate,
+  alongside fired H3/H4, H5 gaps, author boundaries and all prior reviews.
+  No AC13/box/mint promotion. At the earlier checkpoint below,
+  fresh H1/H2/report provenance/reproduction remained separate; no retuning or
   report-regeneration authority here. No checkbox flipped.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.
 - [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
