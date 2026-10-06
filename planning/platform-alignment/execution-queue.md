@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Garden independent tick evidence — 2026-10-06
+## Current Garden command order and due-growth refusal evidence — 2026-10-06
+
+SG5/AC7 predeclaration `0c125bec` / instrument correction `9405d75a`: fifteen shared literal
+direct commands, eight gate combinations and six real-Service/Postgres arms with due growth.
+Five refusals preserve full saved state/revisions/events/Company/faucet; only Founder rejection
+log/intent/receipt outbox is added. Null-salt/above-cap refusal also restores initialization and
+truncation. Applied planting persists growth; actual stored-row replay independently checks
+transition rollback. Twenty cold six-arm repetitions pass (120 cases). Initial incorrect
+Company credit-count expectation remains an invalid/red instrument, not product evidence.
+
+Actual-source precedence and seed-only mutations fail; disabling transition restoration fails
+five replay checks while Store still protects persisted state and applied control remains green.
+All restore exactly. Cold Garden/production/save, full client/type/build/corpus/boundaries and
+complete Linux browsers/performance pass: 22,344 / six intentional skips, all 25 new client
+entries in every engine. Test-only, unchanged kernel 0.3.152. Claude review pending, no G1/G4/
+Garden/public/mint/lifecycle/hosted/whole-CI or release promotion. Prior ranges remain pending.
+
+**NEXT SAFE ACTION:** accepted G2/G3 Garden bundle/floor/activation and replay review, then
+remaining G4–G7. Preserve every independent-review, owner/author, accessibility, rights,
+deployment, preservation and full-nine-tier release gate; RP-131/RP-218 limitations remain.
+
+## Earlier Garden independent tick evidence — 2026-10-06
 
 SG4 predeclaration `62bbc92a` / instrument correction `24512573` supplies sixteen independent
 literal transitions and selected PRNG draws in the real Go/TS paths, not only Go-generated
@@ -17,11 +38,11 @@ G1/Garden, Postgres/hosted/whole-history or 1.0 promotion. RP-131/RP-218 limitat
 Exact test-only handoff: `62bbc92a^..da75a837` (`4ade679b..da75a837`), including both
 predeclarations and the complete evidence change. Pending Claude, not designated-approved.
 
-**NEXT SAFE ACTION:** accepted pure SG5 command/refusal atomicity review, then G2/G3 bundle,
+**Earlier next action (superseded above):** accepted pure SG5 command/refusal atomicity review, then G2/G3 bundle,
 activation and replay, followed by remaining G4–G7. Keep all prior independent-review ranges
 and owner/author, accessibility, rights, deployment, preservation and full-nine-tier release gates.
 
-## Current Garden exact counter invariant — 2026-10-06
+## Earlier Garden exact counter invariant — 2026-10-06
 
 RP-219 is proven under diagnosis `c9f449de` / `155486d0`: 49 codec-valid clock/frontier cases
 pass 45 ordinary/safe points and fail four out-of-domain advances in each engine, with an actual

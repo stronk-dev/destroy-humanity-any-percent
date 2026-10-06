@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "cases": [
+    {"name":"plant_dormant_before_occupied_unknown","initial":[[3,3,"strain_a",0,null]],"step":{"op":"plant","host_level":0,"row":3,"col":3,"species_id":"strain_zz"},"error":"not_eligible/plot_dormant","result":null,"post":[[3,3,"strain_a",0,null]]},
+    {"name":"plant_occupied_before_unknown","initial":[[0,0,"strain_a",0,null]],"step":{"op":"plant","host_level":0,"row":0,"col":0,"species_id":"strain_zz"},"error":"not_eligible/plot_occupied","result":null,"post":[[0,0,"strain_a",0,null]]},
+    {"name":"plant_unknown_before_uncollected","initial":[],"step":{"op":"plant","host_level":0,"row":0,"col":1,"species_id":"strain_zz"},"error":"unknown_id/garden_species","result":null,"post":[]},
+    {"name":"plant_uncollected_seed","initial":[],"step":{"op":"plant","host_level":0,"row":0,"col":1,"species_id":"strain_c"},"error":"not_eligible/seed_not_collected","result":null,"post":[]},
+    {"name":"plant_free_active_boundary","initial":[],"step":{"op":"plant","host_level":1,"row":1,"col":2,"species_id":"strain_b"},"error":null,"result":{"row":1,"col":2,"species_id":"strain_b"},"post":[[1,2,"strain_b",0,null]]},
+    {"name":"uproot_empty","initial":[],"step":{"op":"uproot","row":5,"col":5},"error":"unknown_id/garden_plot","result":null,"post":[]},
+    {"name":"uproot_dormant_nonstarter_no_seed","initial":[[5,5,"strain_c",6,1000000]],"step":{"op":"uproot","row":5,"col":5},"error":null,"result":{"row":5,"col":5,"species_id":"strain_c","was_mature":true},"post":[]},
+    {"name":"harvest_immature_first_missing_last","initial":[[0,0,"strain_a",0,null]],"step":{"op":"harvest","intent_id":"01986666-0000-7000-8000-000000000001","plots":[{"row":0,"col":0},{"row":5,"col":5}]},"error":"unknown_id/garden_plot","result":null,"post":[[0,0,"strain_a",0,null]]},
+    {"name":"harvest_missing_first_immature_last","initial":[[5,5,"strain_a",0,null]],"step":{"op":"harvest","intent_id":"01986666-0000-7000-8000-000000000001","plots":[{"row":0,"col":0},{"row":5,"col":5}]},"error":"unknown_id/garden_plot","result":null,"post":[[5,5,"strain_a",0,null]]},
+    {"name":"harvest_mature_first_immature_last","initial":[[0,0,"strain_c",6,1000000],[5,5,"strain_a",0,null]],"step":{"op":"harvest","intent_id":"01986666-0000-7000-8000-000000000001","plots":[{"row":0,"col":0},{"row":5,"col":5}]},"error":"not_eligible/plant_not_mature","result":null,"post":[[0,0,"strain_c",6,1000000],[5,5,"strain_a",0,null]]},
+    {"name":"substrate_unknown_before_lockout","anchor":1599900,"stamp":1000000,"initial":[],"step":{"op":"set_substrate","server_ms":1599999,"substrate_id":"quantum"},"error":"unknown_id/garden_substrate","result":null,"post":[]},
+    {"name":"substrate_unchanged_before_lockout","anchor":1599900,"stamp":1000000,"initial":[],"step":{"op":"set_substrate","server_ms":1599999,"substrate_id":"bare_metal"},"error":"not_eligible/substrate_unchanged","result":null,"post":[]},
+    {"name":"substrate_lockout_one_ms_before","anchor":1599900,"stamp":1000000,"initial":[],"step":{"op":"set_substrate","server_ms":1599999,"substrate_id":"mainframe"},"error":"not_eligible/substrate_lockout","result":null,"post":[]},
+    {"name":"substrate_lockout_exact_expiry","anchor":1599900,"stamp":1000000,"initial":[],"step":{"op":"set_substrate","server_ms":1600000,"substrate_id":"mainframe"},"error":null,"result":{"from_substrate_id":"bare_metal","to_substrate_id":"mainframe","partial_tick_forfeited_ms":100},"post":[]},
+    {"name":"substrate_lockout_one_ms_after","anchor":1599900,"stamp":1000000,"initial":[],"step":{"op":"set_substrate","server_ms":1600001,"substrate_id":"mainframe"},"error":null,"result":{"from_substrate_id":"bare_metal","to_substrate_id":"mainframe","partial_tick_forfeited_ms":101},"post":[]}
+  ]
+}

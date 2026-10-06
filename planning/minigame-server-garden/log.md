@@ -1200,3 +1200,77 @@ declared arms never credit Company: refusals are Founder-only and plant/uproot a
 Correct the instrument before rerunning: explicitly require zero Company log entries both before
 and after, then replay the unchanged genesis with expectedCount 0. This follows the original
 no-Company-write contract rather than relaxing it; retain the initial red invocation in-range.
+
+Probe observation-order clarification: disabling transition restoration fails all five refusal
+arms at direct recorded-row replay; the applied control stays green. Full persistence snapshots
+were collected but the first invocation aborts **before** their equality assertion. Do not claim
+Store's independent protection from that invocation. Before repeating the same mutant, order the
+already-declared persistence equality check before the replay rollback assertion, and log it
+explicitly. Bounds, populations, expected bytes and production mutation remain unchanged.
+
+### SG5 executed bounded command/rollback review
+
+Review by: Codex (original Claude command reviewer; new test implementer first filter).
+Recorded by: Codex. Scope: original G1 `02f91d10` pure command paths and G4 `0759fcaf`
+pre-step/refusal integration. Git directly confirms Go commands are unchanged through
+baseline `1dbeafbd`; no full G1/G4 implementation-span approval is claimed. No production
+defect is found in this selected population. RP-221 records evidence, not a runtime repair.
+
+Fifteen shared command cases enter real loader/codec and call the actual pure method directly;
+no clone-and-discard can hide rejection mutation. They compare exact category/detail or result
+plus every state byte. Eight admitted Soul-mode/unlock/human-lock combinations check gate order.
+The lockout boundary distinguishes 599,999 ms refusal from 600,000/600,001 ms application and
+reports exactly 100/101 ms forfeited partial tick. Dormant nonstarter uproot does not collect seeds.
+Mixed missing/immature harvests must refuse before removing any mature listed plant.
+
+Six real-Service/Postgres arms start from admitted configured genesis before CreateStream.
+Four ordinary refusals and matched applied planting each actually process two due ticks and
+mature the retained plant; the null-salt/25-hour unknown-substrate refusal processes 288 ticks,
+initializes a real server-drawn salt and reports nonzero catch-up loss. Refusals preserve both
+complete saved states/revisions, events, Company logs, windows/quota and event outbox. Exactly
+one Founder rejection log, intent record and receipt outbox row is added. Identical retries add
+nothing and return identical bytes; changed-request same-ID conflicts without writes. Ordinary
+uproot continuation works. Actual stored payload/inputs are directly replayed from the original
+saved state, proving in-memory rollback independently of Store's refusal branch. Founder history
+verifies and Company genesis/history has zero credits. Applied control persists growth and
+replays to the same complete committed state. Initial wrong credit-count expectation remains
+recorded invalid/red, with its correction predeclared under `9405d75a`.
+
+**Executed serial discrimination, all restored:** Go premature immature check fails both mixed
+missing/immature cases (two failures), proving ordered error semantics. TS seed collection
+mutation only before occupied refusal preserves the error pair but fails the new full-state
+check (one failure; 7,347 other tests pass). Removing actual Founder transition refusal restore
+fails all five recorded-row replay checks; applied control remains green. The first probe aborts
+before saved-state comparison and is not credited for Store protection. The repeated same-source
+probe explicitly checks and logs persisted isolation **before** every replay failure: Store
+independently prevents saved-state changes even with transition rollback broken. These are
+different properties, not a claim that this mutant commits a partial save.
+
+Exact restored source SHA-256:
+Go commands `90b26b2c473359f12c1599f204f9a0140ae94c508dc7ae6a47209cc3610ba320`;
+TS engine `2568cb2947207875e2298de58f7ca2bdd67de872cd65b024c8a8ee9611ae8f48`;
+Founder transition `ecbb5da078af284bafac96ca2929a32e8362a7df0f8157fb90b7ccdb8af17f63`.
+
+**Restored gates:** twenty cold six-arm Postgres repetitions pass, 120 cases (29.332 s).
+The full native Linux/Postgres Garden selector executes all eleven functions, including six
+clock-skew arms, harvest/fault populations, original corpus, activation/view and new due-growth
+arms, all non-skipped (5.637 s). Cold root Go Garden/production/save passes (0.174/50.516/0.321 s),
+full vet passes. Root client 7,348 / 106 existing intentional skips, zero TS/Svelte diagnostics,
+213-module build, unchanged existing engine corpus (0.093 s) and shell/UI boundaries pass.
+Complete cold native Linux Chromium/Firefox/WebKit passes 22,344 / six existing intentional skips,
+285 file/engine populations (41.52 s), all 25 new entries per engine. Separate fresh Chromium
+performance passes (2.37 s invocation, ~504 ms test). No source/test edited during gate execution.
+
+Only tests, a test-fixture configurator, shared expected data and docs/tracking change. No runtime,
+kernel (still 0.3.152), balance, copy, schema, save/replay version, CI, activation or mint change.
+`git diff --check` passes. All earlier review/owner/author/accessibility/right/deployment gates
+remain. No new amd64/hosted/whole-history/whole-CI, full Garden/public or 1.0 claim; RP-131 and
+RP-218 limitations stay open. This range awaits Claude's designated review, not self-approval
+or archival. Next accepted work: G2/G3 bundle/floor/activation and replay, then remaining G4–G7.
+
+Codex first filter inspected the full net span from `1dbeafbd`: three new test files, fifteen
+shared expected-command cases, nine test-fixture helper lines and reconciled docs/ledger/queue/
+roadmap records. No production byte or acceptance checkbox changed. Existing fixture callers
+retain identical nil-configurator setup; the new callback runs only before CreateStream. All
+wrong instrument expectations and actual probe failures are retained. This is the new tests'
+implementer first filter, not Claude's designated verdict. No prior range is silently approved.

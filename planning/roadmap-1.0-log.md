@@ -1942,3 +1942,27 @@ remains active; no archival, public mint, release call or push.
 Exact SG4 test-only handoff: `62bbc92a^..da75a837` (`4ade679b..da75a837`), includes both
 predeclarations and implementation/evidence `da75a837`. This pin is not designated approval
 and does not consume any prior pending review range or authorize archival/publication.
+
+## 2026-10-06 — Garden SG5 command order and genuinely due-growth rollback
+
+Predeclaration `0c125bec` / instrument correction `9405d75a`, RP-221: fifteen admitted direct
+commands and eight gate combinations compare literal result/rejection and full state bytes.
+Six real-Service/Postgres arms force actual pre-step growth before five refusals and matched
+applied planting. Ordinary arms process two ticks and mature a retained plant; null-salt/
+25-hour arm processes 288 ticks with explicit forfeiture and initialization, all rolled back
+on refusal. Full saved states/revisions, logs/events/outbox/faucet, unchanged retries, changed-
+request conflicts, ordinary continuation and recorded-row replay check separate boundaries.
+Initial Company credit-count expectation was wrong and remains recorded red; corrected to
+explicitly require zero Company logs under the original Founder-only contract.
+
+Actual-source probes fail: reversed harvest precedence two cases, seed-only refusal mutation
+one case, disabled transition restoration all five replay-refusal arms. A repeated disabled-
+restoration invocation explicitly verifies persisted isolation before replay failure, while
+matched applied control remains green. All sources restore byte-exactly. Twenty cold six-arm
+Postgres repeats pass (120 cases); cold Garden/production/save and full client/type/build/
+corpus/boundaries pass. Complete native Linux browsers pass 22,344 / six deliberate skips,
+285 file/engine populations, all 25 new client entries per engine, and separate performance.
+Test-only, kernel 0.3.152 unchanged. No full G1/G4/Garden/public/mint, hosted/whole-CI, archive
+or release claim; all earlier independent-review/owner/author and RP-131/RP-218 gates remain.
+Next: accepted G2/G3 bundle/activation/replay, then remaining G4–G7. Proper nine-tier 1.0
+remains active, with rights/privacy/accessibility/deployment/preservation obligations intact.

@@ -48,6 +48,14 @@ restore exactly. RP-220 is evidence, not a production defect or full SG4/G1 acce
 The initial inadmissible zero-chance fixtures and empty-selector invocation are disclosed
 in the log, never credited as evidence. No runtime/kernel/CI/mint change; Claude review required.
 
+Separate SG5/AC7 test-only supplement under `0c125bec` / instrument correction `9405d75a`:
+fifteen direct command outcomes, eight gates and six real-Service/Postgres due-growth arms.
+Twenty cold repetitions pass; actual-source precedence, seed-only mutation and transition-
+rollback probes fail and restore. Store's persistence guard independently holds when transition
+restoration is severed. RP-221 is bounded evidence, not a runtime repair or full G1/G4/Garden
+acceptance. Initial wrong Company credit-count expectation is disclosed. Claude review required.
+Next: accepted G2/G3 bundle/activation/replay, then remaining G4–G7; no checkbox/lifecycle promotion.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

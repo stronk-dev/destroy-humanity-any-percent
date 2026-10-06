@@ -37,6 +37,12 @@ type gardenHarvestFixture struct {
 // cannot be grown in real time inside a test).
 func newGardenHarvestFixture(t *testing.T) gardenHarvestFixture {
 	t.Helper()
+	return newGardenHarvestFixtureWithState(t, nil)
+}
+
+// configure only edits admitted test genesis before CreateStream, never persisted history.
+func newGardenHarvestFixtureWithState(t *testing.T, configure func(*save.State)) gardenHarvestFixture {
+	t.Helper()
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -101,6 +107,9 @@ func newGardenHarvestFixture(t *testing.T) gardenHarvestFixture {
 		garden.Plot{Row: 2, Col: 1, SpeciesID: "strain_e", AgeTicks: 5, MaturedEffectPPM: &effect},
 		garden.Plot{Row: 2, Col: 2, SpeciesID: "strain_a", AgeTicks: 1})
 	founder.ServerGarden.Plots = plots
+	if configure != nil {
+		configure(founder)
+	}
 	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder},
 		bundle.ConstantsHash, founder, save.WriteContext{Cause: "garden.harvest.integration"})
 	if err != nil {

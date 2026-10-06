@@ -110,6 +110,22 @@ draws below one million; it is not claimed to be separately discriminated.
   - a rejected harvest is Founder-only.
 - The six SG8 event kinds are in migrations 00082 and 00083.
 
+`command-witnesses-v1.json` supplies fifteen separately declared direct command outcomes,
+including overlapping invalid predicates, missing/immature harvest precedence, dormant
+nonstarter uproot without seed collection, and lockout expiry at ±1 ms with exact partial-tick
+disclosure. Both engines compare full state bytes without clone-and-discard hiding mutations.
+Eight gate combinations check unlock precedence and the inert `unrelated` Soul mode.
+
+`TestGardenDueGrowthRefusalIntegration` adds six real-Service/Postgres arms with admitted
+old-anchor genesis: four ordinary refusals after ≥2 due ticks, a null-salt/25-hour catch-up
+refusal and matched applied planting. It checks full persisted state/revisions, rejection-only
+Founder log/intent/receipt outbox, no events/Company-log/faucet writes, unchanged retries,
+hash conflicts and continuation. Replaying the actual stored row separately checks in-memory
+rollback; Store's persisted refusal boundary does not substitute for it. Disabling transition
+restoration fails all five replay-refusal checks while persisted state remains protected and
+the applied control still works. These bounded tests await designated review; they do not
+establish full Garden/public activation or exhaustively prove all transaction fault boundaries.
+
 The bounded clock repair (RP-217) preserves other minigame-resolution timestamp policies and
 Founder attendance/faucet arithmetic. Six real-Postgres mature/immature cases cover matched,
 ten-second-lagged and twenty-four-hour-ahead handler clocks, stored-receipt retries, hash conflicts

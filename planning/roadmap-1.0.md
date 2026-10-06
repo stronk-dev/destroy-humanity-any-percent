@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG4 independent tick witnesses under `62bbc92a`
+**Current checkpoint:** 2026-10-06, Garden SG5/AC7 command and refusal witnesses under
+`0c125bec` / instrument correction `9405d75a` (test-only, designated review pending).
+Fifteen direct commands and eight gates agree in Go/TS. Six real-Service/Postgres arms prove
+refusal after genuinely due growth, including salt initialization and cap truncation, with
+full saved-state/revision/log/event/outbox/faucet/retry checks and ordinary continuation.
+Recorded-row replay separately proves transition restoration; twenty cold repetitions pass.
+Actual-source mutations fail and restore exactly, with Store's independent persistence guard
+remaining effective when in-memory rollback is severed. Initial invalid Company credit-count
+expectation remains disclosed. Cold Go/client/type/build/corpus/boundaries and complete Linux
+browsers/performance pass (22,344 / six intentional skips, all 25 new entries per engine).
+No runtime/kernel/balance/schema/CI/mint change; kernel 0.3.152. No broad G1/G4/Garden, hosted/
+whole-history or 1.0 promotion. Previous cross-party/owner/author gates and RP-131/RP-218 stay
+open. Next: accepted G2/G3 bundle/floor/activation/replay, then remaining G4–G7; full-nine-tier
+game and platform floor remain the objective.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG4 independent tick witnesses under `62bbc92a`
 / instrument correction `24512573` (implemented `da75a837`, exact test-only span
 `62bbc92a^..da75a837`, designated review pending). Sixteen literal
 transitions and selected PRNG values agree in Go/TS; actual-source diagonal, threshold,
