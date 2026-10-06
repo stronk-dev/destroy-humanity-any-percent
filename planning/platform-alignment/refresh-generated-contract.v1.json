@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-10-06T04:26:51.652Z",
+  "elapsed_ms": 3815,
+  "node": "v26.10.0",
+  "typescript": "5.9.2",
+  "observation_valid": true,
+  "capability_complete": false,
+  "source_before": {
+    "head": "6b279ef65665e6f3e513d71369198b76f67ed11c",
+    "sha256": {
+      "client/src/api/generated/types.ts": "1cb50394cb1cf2a2b10203efee7b77db12528087d37f61d35146049dcf894513",
+      "docs/generated/api.json": "2d1714e295e008ea95b732cee5bcf2e40acb2f8b57cc1d721ef8ea21ab6a10c1",
+      "docs/generated/api-compat-v1.json": "694d02385cd5e27b2a5a3abd181a53e71894a6898c7d9298f3704b66dd6863af",
+      "server/account/api.go": "36dc2876a0404b68de9e92e41cb950ea6d67e42e97014c201abacdccfa80cda5",
+      "server/publicapi/generate.go": "e39eab101b0548120a7ab741df88fee050be90cf9c431cef9f93690e9ad8bdb2",
+      "client/src/game-ui/runtime.ts": "f9f10520802e053846529d2e9f7ac43ceaaca89b6030344a9e25147a8483f7f7",
+      "client/src/game-ui/minigame/session-port.ts": "22a5950494dcdd0cc797471084a89775684cbeea1d3a3aba31e9d8ccdc7b3907",
+      "client/package.json": "2477fc9bc12b1b62fb49a267de793a50bbec6b020961634440ec74a178d56810",
+      "client/pnpm-lock.yaml": "8825a9d8815bbf8aa91a87c71734cb7360f0f60c206c86312d69ef645ab094e3",
+      "client/tools/refresh-generated-contract.fixtures.mjs": "77419375dcb68a454cce20e32496d45256df9c4f9a0c50a1a1cc132daa61d393"
+    }
+  },
+  "source_after": {
+    "head": "6b279ef65665e6f3e513d71369198b76f67ed11c",
+    "sha256": {
+      "client/src/api/generated/types.ts": "1cb50394cb1cf2a2b10203efee7b77db12528087d37f61d35146049dcf894513",
+      "docs/generated/api.json": "2d1714e295e008ea95b732cee5bcf2e40acb2f8b57cc1d721ef8ea21ab6a10c1",
+      "docs/generated/api-compat-v1.json": "694d02385cd5e27b2a5a3abd181a53e71894a6898c7d9298f3704b66dd6863af",
+      "server/account/api.go": "36dc2876a0404b68de9e92e41cb950ea6d67e42e97014c201abacdccfa80cda5",
+      "server/publicapi/generate.go": "e39eab101b0548120a7ab741df88fee050be90cf9c431cef9f93690e9ad8bdb2",
+      "client/src/game-ui/runtime.ts": "f9f10520802e053846529d2e9f7ac43ceaaca89b6030344a9e25147a8483f7f7",
+      "client/src/game-ui/minigame/session-port.ts": "22a5950494dcdd0cc797471084a89775684cbeea1d3a3aba31e9d8ccdc7b3907",
+      "client/package.json": "2477fc9bc12b1b62fb49a267de793a50bbec6b020961634440ec74a178d56810",
+      "client/pnpm-lock.yaml": "8825a9d8815bbf8aa91a87c71734cb7360f0f60c206c86312d69ef645ab094e3",
+      "client/tools/refresh-generated-contract.fixtures.mjs": "77419375dcb68a454cce20e32496d45256df9c4f9a0c50a1a1cc132daa61d393"
+    }
+  },
+  "operations": [
+    {
+      "id": "cancel_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/cancel",
+      "auth": "access_token"
+    },
+    {
+      "id": "create_bootstrap",
+      "method": "POST",
+      "path": "/api/v1/bootstrap",
+      "auth": "none"
+    },
+    {
+      "id": "create_minigame_session",
+      "method": "POST",
+      "path": "/api/v1/minigames/{minigame_id}/sessions",
+      "auth": "access_token"
+    },
+    {
+      "id": "get_current_garden",
+      "method": "GET",
+      "path": "/api/v1/garden/current",
+      "auth": "access_token"
+    },
+    {
+      "id": "get_current_minigame_session",
+      "method": "GET",
+      "path": "/api/v1/minigames/sessions/current",
+      "auth": "access_token"
+    },
+    {
+      "id": "get_game_ui_snapshot",
+      "method": "GET",
+      "path": "/api/v1/founder/state",
+      "auth": "access_token"
+    },
+    {
+      "id": "list_public_board",
+      "method": "GET",
+      "path": "/api/public/v1/boards/{category}",
+      "auth": "none"
+    },
+    {
+      "id": "list_public_epochs",
+      "method": "GET",
+      "path": "/api/public/v1/epochs",
+      "auth": "none"
+    },
+    {
+      "id": "list_public_routes",
+      "method": "GET",
+      "path": "/api/public/v1/registry/routes",
+      "auth": "none"
+    },
+    {
+      "id": "play_minigame_command",
+      "method": "POST",
+      "path": "/api/v1/minigames/sessions/{session_id}/commands",
+      "auth": "access_token"
+    },
+    {
+      "id": "progress_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/progress",
+      "auth": "access_token"
+    },
+    {
+      "id": "resolve_minigame_session",
+      "method": "POST",
+      "path": "/api/v1/minigames/sessions/{session_id}/resolve",
+      "auth": "access_token"
+    },
+    {
+      "id": "resolve_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/resolve",
+      "auth": "access_token"
+    },
+    {
+      "id": "start_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/start",
+      "auth": "access_token"
+    }
+  ],
+  "compiler_baseline": {
+    "registered_path": [],
+    "registered_error": [],
+    "bootstrap_pair_shape": [],
+    "refresh_path": [
+      {
+        "code": 2322,
+        "caller": true,
+        "message": "Type '\"/api/v1/session/refresh\"' is not assignable to type '\"/api/v1/soul-recovery/cancel\" | \"/api/v1/bootstrap\" | \"/api/v1/minigames/{minigame_id}/sessions\" | \"/api/v1/garden/current\" | \"/api/v1/minigames/sessions/current\" | ... 8 more ... | \"/api/v1/soul-recovery/start\"'."
+      }
+    ],
+    "refresh_token_error": [
+      {
+        "code": 2322,
+        "caller": true,
+        "message": "Type '\"refresh_token\"' is not assignable to type '\"cursor\" | \"body\" | \"access_token\" | \"account\" | \"bootstrap\" | \"bootstrap_expired\" | \"category\" | \"curriculum_exit_required\" | \"duplicate_card\" | \"epoch\" | \"exclusive_activity\" | ... 35 more ... | \"variables\"'."
+      }
+    ],
+    "refresh_reuse_error": [
+      {
+        "code": 2322,
+        "caller": true,
+        "message": "Type '\"refresh_reused\"' is not assignable to type '\"invalid\" | \"conflict\" | \"idempotency_conflict\" | \"internal_invariant\" | \"not_configured\" | \"not_eligible\" | \"rate_limited\" | \"unauthorized\" | \"unknown_id\"'."
+      },
+      {
+        "code": 2322,
+        "caller": true,
+        "message": "Type '\"session_family_revoked\"' is not assignable to type '\"cursor\" | \"body\" | \"access_token\" | \"account\" | \"bootstrap\" | \"bootstrap_expired\" | \"category\" | \"curriculum_exit_required\" | \"duplicate_card\" | \"epoch\" | \"exclusive_activity\" | ... 35 more ... | \"variables\"'."
+      }
+    ]
+  },
+  "synthetic_counterfactuals": {
+    "synthetic_path_only": {
+      "refresh_path": [],
+      "refresh_token_error": [
+        {
+          "code": 2322,
+          "caller": true,
+          "message": "Type '\"refresh_token\"' is not assignable to type '\"cursor\" | \"body\" | \"access_token\" | \"account\" | \"bootstrap\" | \"bootstrap_expired\" | \"category\" | \"curriculum_exit_required\" | \"duplicate_card\" | \"epoch\" | \"exclusive_activity\" | ... 35 more ... | \"variables\"'."
+        }
+      ],
+      "refresh_reuse_error": [
+        {
+          "code": 2322,
+          "caller": true,
+          "message": "Type '\"refresh_reused\"' is not assignable to type '\"invalid\" | \"conflict\" | \"idempotency_conflict\" | \"internal_invariant\" | \"not_configured\" | \"not_eligible\" | \"rate_limited\" | \"unauthorized\" | \"unknown_id\"'."
+        },
+        {
+          "code": 2322,
+          "caller": true,
+          "message": "Type '\"session_family_revoked\"' is not assignable to type '\"cursor\" | \"body\" | \"access_token\" | \"account\" | \"bootstrap\" | \"bootstrap_expired\" | \"category\" | \"curriculum_exit_required\" | \"duplicate_card\" | \"epoch\" | \"exclusive_activity\" | ... 35 more ... | \"variables\"'."
+        }
+      ]
+    },
+    "synthetic_error_only": {
+      "refresh_path": [
+        {
+          "code": 2322,
+          "caller": true,
+          "message": "Type '\"/api/v1/session/refresh\"' is not assignable to type '\"/api/v1/soul-recovery/cancel\" | \"/api/v1/bootstrap\" | \"/api/v1/minigames/{minigame_id}/sessions\" | \"/api/v1/garden/current\" | \"/api/v1/minigames/sessions/current\" | ... 8 more ... | \"/api/v1/soul-recovery/start\"'."
+        }
+      ],
+      "refresh_token_error": [],
+      "refresh_reuse_error": []
+    }
+  },
+  "scoped_fetcher_call_sites": [
+    {
+      "path": "client/src/game-ui/runtime.ts",
+      "line": 122,
+      "callee": "fetcher",
+      "first_argument": "\"/api/v1/founder/state\""
+    },
+    {
+      "path": "client/src/game-ui/runtime.ts",
+      "line": 142,
+      "callee": "fetcher",
+      "first_argument": "\"/api/v1/bootstrap\""
+    },
+    {
+      "path": "client/src/game-ui/runtime.ts",
+      "line": 150,
+      "callee": "fetcher",
+      "first_argument": "\"/api/v1/intents\""
+    },
+    {
+      "path": "client/src/game-ui/minigame/session-port.ts",
+      "line": 45,
+      "callee": "fetcher",
+      "first_argument": "path"
+    }
+  ],
+  "limits": [
+    "No HTTP, database, successful rotation or browser run.",
+    "Counterfactual strings exist in compiler memory only, not accepted operation/schema bytes.",
+    "Call-site census covers only the two named TS files; not a complete AC4 lint.",
+    "Source identity covers listed files/HEAD, not environment or arbitrary ignored files."
+  ]
+}

@@ -676,4 +676,34 @@ kernel/CI membership or checkbox changes. Review by: Codex (predeclaration only)
 Recorded by: Codex. New range starts 29e1ff02 exclusive, Claude independently
 required. Docker capacity approval, prepared DB populations and all prior spans
 remain separate, no shortcut/archival/push or 1.0 promotion.
+
+## 2026-10-06 — compiler executes existing refresh representation gap
+
+Under 6b279ef6 predeclaration, api-check 60224 passes generation/drift/compat,
+no artifact/pin diff. Actual TypeScript 5.9.2 probe 19884: three positive callers
+compile; refresh path and both error pairs fail exactly TS2322 on virtual callers.
+Path-only/error-only synthetic compiler-memory counterfactuals remove only the
+corresponding refusals, twelve total compiler arms, 3815 ms. No contract bytes
+written/adopted, incidental import/type errors refused. Fourteen OpenAPI/TS
+metadata rows match ID/method/path, but actual mounted refresh path is absent.
+AST finds three literal runtime fetcher calls plus one dynamic minigame-port
+call outside generated; only those two files censused, not a full AC4 lint.
+
+Retained refresh-generated-contract.v1.json and dossier pin actual counts/limits,
+source hashes/HEAD and diagnostics. No private tokens/data, HTTP/DB/browser or
+rotation evidence. Cold publicapi/vet 75783 passes. Root type/client/topology
+52260 passes zero errors/warnings, 7366 tests/134 existing skips, 84/17 files,
+thirteen topology negatives. RP-239 fixture-name lesson holds, no extra Vitest
+population. Full composite remains prior RP-131 RED, not rerun or relabelled.
+All handles terminal before records; no Docker workload/deletion, fresh database
+or renewal-policy implementation. No generated/pin/production/auth/kernel/copy/
+CI membership/checkbox/archival/push bytes changed.
+
+RP-240 supplies draft S-A1 evidence and accepted C1/C7/C9 remaining work. Next
+real DB outcomes/descriptor binding still awaits capacity; do not silently tighten
+parser or turn the synthetic global error widening into an exact production
+descriptor. Review by: Codex (first-filter only). Recorded by: Codex. New span
+29e1ff02 exclusive includes predeclaration/instrument/Make/report/dossier/docs/
+ledger/reconciliation and following pin; Claude required independently of prior
+Account/CI/browser ranges. Proper full nine-tier 1.0 unchanged, not completed.
 - Gaps 6 to 10 are in the entries above.

@@ -87,6 +87,12 @@ test-refresh-observer:
 	node --check client/tools/observe-refresh-population.mjs
 	node --test client/tools/observe-refresh-population.fixtures.mjs
 
+# Manual API C1/C7/C9 evidence; refusal observations are not a completed contract.
+.PHONY: research-refresh-generated-contract
+research-refresh-generated-contract:
+	node --check client/tools/refresh-generated-contract.fixtures.mjs
+	node client/tools/refresh-generated-contract.fixtures.mjs
+
 # Real Postgres 16 custom-format dump/restore witnesses run in a package-owned
 # image that contains the exact pg_dump/pg_restore major used by production.
 test-deployment-backup:

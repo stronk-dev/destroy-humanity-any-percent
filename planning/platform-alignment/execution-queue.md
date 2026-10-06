@@ -42,6 +42,14 @@ New standalone fixture collision RP-239 is locally repaired by naming only,
 not config/CI exclusion. Root client tests/type/build pass; composite remains
 RED at unchanged RP-131. Remaining gates pass separately, no whole-CI claim.
 
+Accepted API generated-contract census under 6b279ef6 now executes: fourteen
+OpenAPI/TS operations agree but exclude refresh; compiler rejects its path/two
+errors, twelve baseline/counterfactual arms discriminate (RP-240). Four scoped
+fetcher sites outside generated, not full AC4 lint. api-check/cold publicapi/
+client/type/topology pass for registered subset only. [Dossier](refresh-generated-contract.md).
+Next real-DB status census before descriptor/dispatcher adoption; no new schema,
+renewal policy or product change while that authority/evidence is missing.
+
 ## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
 
 Separate predeclaration `25fb5e67` binds RP-048/RP-234 to existing Account D2/D3

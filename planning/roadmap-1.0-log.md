@@ -2391,3 +2391,17 @@ Docker still 100%/39,784 KiB available, candidates unused, cleanup answer pendin
 Observer span begins 3121a376 exclusive including predeclaration, initial defect,
 repair, artifacts/records/pin; Claude pending independently. Full proper nine-tier
 1.0 remains active, no archival/acceptance/push or scope reduction.
+
+## 2026-10-06 — measured incomplete generated auth contract, not fake coverage
+
+Accepted API C1/C7/C9 census under 6b279ef6: current api-check passes, fourteen
+OpenAPI/TS rows match, but existing refresh path/two errors fail actual TypeScript
+assignability. Three positive and three refusal baseline arms; two independently
+targeted in-memory counterfactuals (six arms) remove only corresponding refusals.
+Four scoped AST fetcher sites outside generated confirm remaining C9 seam, not
+a complete lint. RP-240/report/dossier retain identities and no HTTP/DB/browser
+claim. Cold publicapi/vet/client/type/topology pass; full prior composite remains
+RP-131 RED. No production/generated/pin/auth/kernel/copy/CI membership/checkbox
+changes. Real outcomes/renewal policy and RP-236 capacity approval stay open.
+New span after 29e1ff02 including predeclaration/instrument/artifacts/records/pin,
+Claude pending independently; proper full nine-tier 1.0 unchanged, no archive/push.

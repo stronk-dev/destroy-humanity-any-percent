@@ -50,6 +50,14 @@ passes 7366 tests/134 existing skips; type/build/boundaries and remaining gates
 pass separately. `verify-client` remains RED at unchanged pushed RP-131, not
 green CI. Actual repaired-source missing-DB control still rejects skipped pass.
 
+Separate accepted API C1/C7/C9 compiler census now proves RP-240: fourteen
+OpenAPI/TS rows match but exclude the existing refresh route; actual compiler
+rejects its path/two errors. In-memory path/error counterfactuals discriminate,
+twelve arms. Four scoped fetcher sites remain outside generated. api-check and
+cold publicapi/client/type/topology pass for the subset, not complete contract,
+dispatcher, DB/renewal or CI. [Dossier](platform-alignment/refresh-generated-contract.md),
+new span after 29e1ff02, Claude pending. Capacity/policy/prior ranges remain open.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

@@ -43,6 +43,16 @@ shape, while a retained historical shape uses an explicit `V<n>` suffix. A compa
 refresh must cite its authorizing ruling and be recorded in the owning planning log in the same
 change; an otherwise valid widening is not permission for a silent re-baseline.
 
+The generated contract is not yet the complete runtime API or a generated HTTP
+dispatcher. Current metadata covers fourteen operations and omits the existing
+session refresh route and its refresh-specific error alternatives. Actual TypeScript
+callers cannot represent that path or those errors; Game UI runtime and minigame
+transport still call `fetcher` outside the generated directory. `api-check` passes
+for the registered subset, not AC4 completion. Manual
+`make research-refresh-generated-contract` retains compiler/counterfactual evidence
+outside CI/verify; it does not implement or authorize browser renewal. See the
+[bounded census](../planning/platform-alignment/refresh-generated-contract.md).
+
 GU-C26 authorized the Game UI schema v3 compatibility-pin baseline. Accepted Garage Player
 Surfaces GS0.1 (2026-09-25) authorizes the v4 re-baseline. The unversioned `GameUISnapshot` is the
 current v4 shape. `GameUISnapshotV1`, `GameUISnapshotV2` and `GameUISnapshotV3` retain exact

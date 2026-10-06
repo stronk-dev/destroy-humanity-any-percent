@@ -35,6 +35,11 @@ normal Postgres mode is not executed or validated as integration evidence.
 Root client gate catches new fixture naming RP-239; bounded naming repair
 restores 7366 passing client tests/134 existing skips. Composite still RED at
 historical RP-131; other gates run separately pass. No whole-CI promotion.
+Accepted API groundwork additionally measures RP-240: generated path/error types
+cannot represent existing refresh (twelve compiler/control arms); fourteen
+registered operations agree across artifacts, not all runtime routes. Four scoped
+fetcher sites remain outside generated. [Census](platform-alignment/refresh-generated-contract.md)
+is evidence for C1/C7/C9/S-A1, not schema/renewal/DB/CI or release promotion.
 
 **Earlier checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
 actual page closures complete in the three declared Linux engines; bypass and
