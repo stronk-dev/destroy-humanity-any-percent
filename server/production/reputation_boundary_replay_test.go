@@ -276,6 +276,24 @@ func TestReputationBoundaryReplayRefusesCopiedEvidence(t *testing.T) {
 				t.Fatal("copied delta/result hash replayed")
 			}
 			controls++
+			if row.Current != row.Next {
+				if err := json.Unmarshal(row.Founder.ReplayInputs, &inputs); err != nil {
+					t.Fatal(err)
+				}
+				inputs["resolved"].(map[string]any)["result_constants_hash"] = current.ConstantsHash
+				encoded, err = json.Marshal(inputs)
+				if err != nil {
+					t.Fatal(err)
+				}
+				founder, err = save.RestoreState(row.Founder.PreState, row.Founder.StateVersion, current.Economy, economy.ScopeFounder, time.Time{})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := ApplyFounderLogged(founder, row.Founder.CanonicalPayload, current, encoded); err == nil {
+					t.Fatal("known valid old pin substituted for activation result")
+				}
+				controls++
+			}
 			if row.Profile == "activate-plan" {
 				if err := json.Unmarshal(row.Founder.ReplayInputs, &inputs); err != nil {
 					t.Fatal(err)
@@ -296,7 +314,7 @@ func TestReputationBoundaryReplayRefusesCopiedEvidence(t *testing.T) {
 			}
 		})
 	}
-	if controls != 27 {
-		t.Fatalf("copied evidence controls=%d want27", controls)
+	if controls != 36 {
+		t.Fatalf("copied evidence controls=%d want36", controls)
 	}
 }

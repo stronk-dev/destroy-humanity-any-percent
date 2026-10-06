@@ -8864,3 +8864,54 @@ pass/339skip4.15s,55 new cases including full27 paired arms. New20036-line
 fixture SHA256f9158eff0bdb130867509ce20173d607fecfaaddef56b9de5e82c5e3eeb0d50f;
 302-line Go/135-line TS tests. Commit positive before source probes; ordinary
 tests compare executed transitions and pinned bytes, never regenerate fixtures.
+
+Source faults against08d2c4cd: Go wrong-bundle36e41c/6e9a80 session14966
+terminal2 fails independent activation-plan outcome at the first serial row
+(wind_down). Remaining rows unexecuted, not claimed failed. Fixturea7dfa5 hash
+unchanged despite explicit authoring flag; generation firewall holds. Restore
+Go selector before TS fault. TS wrong selector2d0bba/1a8527 session73044 exit2:
+three new planned-activation comparisons and one historical case fail,8237
+other units pass/339skip. New52controls stay green; failure precedes their
+paired Founder byte comparisons, not invented later assertion failures.
+
+Restore selector, isolate detail suffix34c36b/006517 session13968 exit2:
+twelve new whole-receipt comparisons fail (four prefix refusals × three Exits),
+seven historical assertions fail,8222other units pass/339skip. An attempted
+out-of-order multi-hunk patch then fails verification without changing bytes;
+563419 confirms only the known detail fault remains, no mixed selector.
+Apply the new omission as one function hunk, reverting suffix: remove empty-plan
+early return and use plan??[] only to keep undefined input iteration compiling.
+d72162/1b9541 session9142 exit2 passes strict types/Svelte0/0, then fails three
+new absent-tree no-plan outcomes and eleven historical checks;8227other units
+pass/339skip. Restore both early return and original iteration exactly before
+broader baseline. All handles terminal before edits, no mutated test or corpus.
+
+Broader restored baseline handles now terminal: aeb24c/44e5a5 session5894 exit0
+(production37.559s/save0.358s/reputation0.234s/gameui0.302s and vet); b11932/
+8595d7 session9857 exit0, types/Svelte0/0,8241 units pass/339skip4.75s,
+CI topology positive/13 negative controls pass;202ef9 session48589 terminal0
+actual SQL36top-level/143subcases/no skips11.825s. Sources74a7b0 exactly match
+pristine SHA, fixture unchanged. This is local topology, not hosted CI proof.
+
+Self-filter refinement: the original all-zero result hash is malformed for TS
+(missing sha256: prefix); its refusal is syntax defense, not valid pin-binding
+proof. Keep that original negative and predeclare ADDITIONAL known-valid input-
+pin substitution in allnine activation Founder arms, leaving recordedv22 and
+all other inputs unchanged. Both loaders already know that live bundle, so
+syntax/missing-source refusal cannot satisfy this added control. Add nine
+controls, total36 Go mutations across24 subcases; TS retains55 cases with nine
+additional assertions. No fixture/output/source/acceptance bound change. Run
+refined tests and broader baselines after strengthening, not cite prior run as
+executing the new assertion. Earlier source probes remain scoped to08d2c4cd.
+
+Refined final baseline: c38faa/8d3653 session5530 terminal0, complete four
+relevant Go packages-count=1 (production38.797s/save0.227s/reputation0.104s/
+gameui0.204s) plus vet. 6e42b7/4ec1a1 session13556 terminal0, strict TS/Svelte
+0errors0warnings;8241 client units pass/339skip4.72s, topology positive and13
+negative controls pass. bf0d69/27007e session39660 terminal0, actual SQL
+production36top-level/143subcases/no skips11.197s independently counted.
+All36 copied-evidence controls, including nine known-valid pin substitutions,
+execute in both runtimes (24 Go subcases,55 TS cases including27 full pairs).
+98444c/193154 whitespace and production/client/balance/copy/CI/RFC/kernel/
+historical corpus invariance pass. New tests320Go/141TS, fixture unchanged.
+No remaining live handle/fault or accepted-status claim; commit refinement.

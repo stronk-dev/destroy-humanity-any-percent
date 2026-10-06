@@ -125,6 +125,12 @@ describe("Reputation Exit boundary Go/TS corpus", () => {
     else inputs.resolved.result_constants_hash = "0".repeat(64);
     const founder = restoreFounderReplayState(source.pre_state, source.state_version, current);
     await expect(applyFounderLogged(founder, canonicalJSONString(source.canonical_payload), linked, inputs)).rejects.toThrow();
+    if (row.current !== row.next) {
+      const pinInputs = structuredClone(source.replay_inputs) as typeof inputs;
+      pinInputs.resolved.result_constants_hash = current.constantsHash;
+      const fresh = restoreFounderReplayState(source.pre_state, source.state_version, current);
+      await expect(applyFounderLogged(fresh, canonicalJSONString(source.canonical_payload), linked, pinInputs)).rejects.toThrow();
+    }
     if (row.profile === "activate-plan") {
       const costInputs = structuredClone(source.replay_inputs) as typeof inputs;
       costInputs.resolved.reputation_purchases![0]!.resolved_cost = 2;
