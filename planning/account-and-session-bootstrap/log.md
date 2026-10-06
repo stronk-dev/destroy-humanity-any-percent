@@ -714,3 +714,23 @@ range starts 3121a376 exclusive, includes shared 08a11814 predeclaration, script
 fixtures, Make target, artifact/docs/ledger/records and following pin. Claude
 required independently; prepared range c2843089..08a11814 remains preparation,
 not executed acceptance. No self-designated verdict, archive, push or release.
+
+## 2026-10-06 — broader client gate fires; predeclare fixture-name repair
+
+Cold root Account/publicapi tests and selected vet pass (2693), DB populations
+not executed. Root verify-client (4122) passes typecheck (zero errors/warnings)
+and build, then fails: Vitest discovers tools/observe-refresh-population.test.mjs,
+which imports node:test and registers no Vitest suite. 84 client files/7366 tests
+pass, 17 files/134 existing tests skip, one extra file fails; remainder of root
+verify-client does not execute. Standalone twenty Node controls passing does not
+make this composite green. New tooling caused this failure, not a product bug.
+
+Repair within observer scope: rename standalone Node fixture to established
+*.fixtures.mjs convention and update its explicit Make invocation. Do not change
+Vitest config/include/exclude, CI membership, old tests or assertions. Retain red
+and RP-239; rerun standalone controls, complete verify-client and actual missing-DB
+control on changed Make source before recording any green. Previous negative
+report remains historical evidence with its actual old Make hash; retain a second
+actual report for repaired source rather than pretending hashes are unchanged.
+All handles terminal before this predeclaration; no Docker/new DB/production
+policy, checkbox, acceptance, archive or push change. Claude remains designated.
