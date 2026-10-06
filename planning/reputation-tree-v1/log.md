@@ -8307,3 +8307,36 @@ after6dc16a58 INCLUDING this edge and record correction; earlier independent
 spans remain pending. This first-filter cannot archive or approve itself as
 cross-party review. Next accepted scope: separately predeclare real SQL
 Accept Offer with plan/replay population. Proper1.0 goal remains active/progress.
+
+### R6 Accept Offer with payout-funded plan — predeclared 2026-10-06
+
+Previous goal turn progress (all14 applied-plan faults, RP-297 request proof),
+clean8ee45af3 and no live inherited handles. AGENTS/process fully reread,
+active index still accepts Reputation; unchanged full RFC/design readings
+remain applicable and R6/R8/AC9 specific clauses reread. Actual offer producer,
+plan dry-run/apply, logged-Exit refusal and both replay consumers inspected.
+No new skill/delegation required. Current tracking correctly marks missing
+offer-plan SQL as next; parser proof and configured-but-unused portable helper
+do not substitute. Earlier SQL faults only used already-earned diagnostic6.
+
+Test-only population per plan above: two deterministic offer kinds, initial
+zero Reputation, live gate-generated offer, payout-funded plan6, unaffordable
+last-entry refusal preserving heads/offer/game tables and logged exact retry.
+Initial tier2/run2/cash1e9/lifetime8000×threshold/prior-history is explicitly
+diagnostic, not natural progression or OD-2 pacing. Offer kind fixture selection
+uses existing bounded deterministic setup search; both kinds must execute,
+none silently omitted. All later commands use Handle, no later head/offer
+injection or direct immutable evidence edits. Pinned payout modifiers must
+match independent18/20 controls, not derive expectations from ComputeTerms.
+Full current-run/verifier history, ordered events, run3 state/pin/summary,
+exact retries and changed-plan same-ID conflict are required.
+
+Predeclare source negatives: disable actual offer generation; validate plan
+before including credited payout; change accepted-resolution payload; skip
+recorded-hash conflict check. Copied Founder purchase cost and Company canonical
+plan entry/order must independently return state_divergence without changing
+SQL evidence. Restore exact source hash and empty product diff after each
+terminal; then cold full production SQL Integration/focused/vet and docs/live
+tracking/append-only reconciliation. No production hooks/rules/epochs/copy/
+balance/kernel/CI or acceptance checkbox change. Full new span after8ee45af3
+needs Claude including records; earlier designated review gates independent.

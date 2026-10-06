@@ -245,6 +245,36 @@ population if runnable; do not substitute these components for SQL evidence.
 
 ## Batches
 
+### R6 Accept Offer SQL population — predeclared 2026-10-06
+
+Start8ee45af3; previous turn progress (all14 plan faults and RP-297 request
+population). Test-only R6/AC9/R8 supplement, not a minted/default-player study.
+Initial diagnostic Company run2/tier2/cash1e9 and lifetime8000×pinned threshold,
+Founder level/spent0 with prior Exit history; no stored offer seeded. Find
+diagnostic Founder IDs for both policy offer kinds using existing deterministic
+draws and bounded fixture search; no statistical/player-population inference.
+Real Handle CrossGate t2→t3 must produce the offer. Pinned modifier controls
+give independent payout18/20, enough to fund plan6 only after this Exit credit.
+
+For each kind, unaffordable last plan node must reject, preserve both full
+decoded heads/revisions/offer and all game/evidence tables except required
+rejection logs/genesis/receipt/outbox. Exact rejection retry changes no row.
+Then valid prerequisite plan applies atomically; check earned/spent/owned,
+event order/cost/source, accepted offer identity/resolution before run_ended,
+cash/generated starters, frozen bonus and run_started v2 summary. Completed
+Company replay includes producer/rejection/terminal; full Founder history
+includes rejected and applied arms. Exact applied retry and changed-plan same
+ID conflict must leave complete persisted row snapshot unchanged.
+
+Predeclare compiling live faults: sever offer production, remove prospective
+Exit credit from plan validation, alter accepted offer-resolution payload,
+and bypass recorded-hash conflict. Copied replay-only negatives alter a plan
+purchase cost and one existing plan entry/order; require state_divergence.
+No immutable DB evidence update, source hook or production behavior change.
+Restore exact source after terminal; cold SQL production Integration/focused
+tests/vet. No checkbox/fullAC9/archival/CI/release promotion; full range needs
+Claude, earlier spans independent; all author/environment/1.0 holds retained.
+
 ### R6 request boundary / RP-297 — predeclared 2026-10-06
 
 Start6dc16a58, test-only. Actual parser/test census has no dedicated R6 plan
