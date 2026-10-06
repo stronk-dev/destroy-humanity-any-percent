@@ -5738,3 +5738,34 @@ This record edge also belongs in Claude's full designated span, independently
 of every earlier pending range. Next accepted R9/AC12 consumer grounding stays
 queued; no owner-copy change, checkbox, acceptance, archive, cleanup, deployment,
 publication, message to Claude, push or goal completion. Full1.0 goal active.
+
+## 2026-10-06 — R9 purchase focus diagnostic predeclaration
+
+Baseline020a25c6, clean. Previous goal turn is progress (dated career artifacts
+recorded/reproduced, not release acceptance). Re-ground accepted R9/AC12 B7 at
+HEAD. cb95dc shows confirm clears the inline pair, calls onPurchase, then tries
+to focus an unmounted Buy button; existing a081af test asserts submission but
+never checks post-submit focus. RP-276 records the suspected loss, not a runtime
+verdict yet. This bounded diagnostic is actual Svelte/native browser keyboard,
+not real server/receipt/SQL/epoch/player integration.
+
+Test-only reactive Svelte5 harness passes existing props to the real component;
+its exposed setters supply controlled pending and authoritative-arm replacements.
+No internal Svelte runtime mocks or production fixture seam. Native Enter/Space
+Buy→Confirm cases in both supported eras; held pending disables all buy controls;
+injected applied/owned and rejected/available arms retain the exact row and
+focus. Native Escape cancels to Buy with no purchase callback. Preserve original
+three tests and their axe checks. Attempt declared Chromium/Firefox/WebKit via
+root make test-browser on the installed native runtime. Any non-launch/missing
+population is invalid for that engine; never weaken deadlines or substitute
+another engine, Docker cleanup, browser flags or a passing node-only skip.
+
+First execute baseline unchanged production. If actual focus loss reproduces,
+separately predeclare the accepted R9 correction before changing production:
+stable row focus after DOM settlement, no new copy, eligibility, API, receipt,
+balance/kernel, schema or transport policy. Demonstrate a restored compiling
+severing, retain Enter/Space/Escape and owned/no-enabled-button controls, then
+cold client/type/build and independent boundaries. Host/public/mint/whole AC12,
+other row feedback/presentation requirements, native Firefox/RP-256, SQL/capacity,
+H3/H4/H5/author/review holds and full nine-tier1.0 remain separate. All new range
+after020a25c6 requires Claude; no box, archive, cleanup, publication or push.
