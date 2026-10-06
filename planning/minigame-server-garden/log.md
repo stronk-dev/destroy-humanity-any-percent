@@ -1589,3 +1589,40 @@ The final kernel-fixture step is not reached inside this target; its separate ea
 was green. No retry, waiver, history rewrite or fake version correction. The new honest bump
 does not cure old history; no whole-CI claim. Every process is terminal and the committed
 implementation tree was clean before this handoff record.
+
+## 2026-10-06 — G7 native keyboard and refresh ordering predeclaration
+
+Baseline `f5d2c323`, original G7 `725d8662` provenance re-derived from Git.
+Question: does the mounted accepted SG10 surface honor native input and a newer receipt
+refresh when older reads finish late? Existing browser tests mostly dispatch DOM click/key
+handlers synchronously; green handlers alone are not native workflow or async-order evidence.
+
+Scope: test-only Svelte prop-update harness and eight native-browser cases, executing the
+actual GardenSurface in Chromium/Firefox/WebKit, against generated DTO fixtures via a
+controlled GardenPort. No runtime/balance/copy/API/CI/save/replay/mint change during diagnosis.
+Accepted SG10 and server-authority/receipt precedence are the behavior homes; AC13's
+Accessibility successor remains unaccepted, so this is not AC13 closure or full G7 review.
+
+Population: two native Enter/Space arms navigate all four arrows/clamped edges, open a menu,
+reach a command by Tab/native activation, assert exactly one callback and return focus,
+then verify pending controls cannot dispatch. No synthetic key dispatch/click as native proof.
+Six read-order/lifetime cases: sequential active control; older active after newer active;
+older active after newer locked; older active after newer error; older error after newer
+active; late completion after destroy. Receipt refresh is a real refreshKey prop update on
+one mounted component. A queued port binds every started read to a named deferred promise;
+completion order is explicit, never inferred from network timing or arbitrary sleep.
+
+Distinct old/new views carry different substrate/revision/server stamp. Check visible state,
+aria-pressed substrate, stale/locked status and command callbacks—not merely read counts.
+Use next_tick_wall_ms=null only in these ordering fixtures to isolate scheduler traffic;
+this is not next-tick/real Page Visibility, network, Account/default-host or real-DB evidence.
+No hidden mock of the component's state/handler; initial requests and all deferred requests
+must start, settle and clean up. Browser guard errors fail, not retry/skip. No new bounds.
+
+Exit: every declared population runs non-skipped in all three engines. Any failure is first
+recorded immediately in BACKLOG with actual output and bounded original verdict. No repair
+is inferred from this test-only predeclaration: separately route accepted SG10 correction,
+or DESIGN-GAP if ordering cannot be derived without a new policy. If all pass, demonstrate
+actual native-key/ordering severing before crediting proof. Never loosen oracle to keep green.
+Retain existing tests and separate new pending range from every earlier review. No source/test
+edit while verification is live; sessions reach terminal status before changes/probes.
