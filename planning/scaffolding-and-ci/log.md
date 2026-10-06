@@ -356,3 +356,29 @@ requiring HTTP observer evidence AND failed Route suites. Restore exact instrume
 bytes before populations. A failure that cannot be reproduced remains open;
 do not infer a common cause from two different symptoms or grow bounds to hide it.
 Further correction only after attributable evidence and separate authority.
+
+## 2026-10-06 — module control discriminates; trace retrieval refined
+
+Passive config/helper typecheck 11850 passes. Temporary targeted fixture 404
+82623 logs exact 404/text-plain in each engine and fails all three Route imports,
+no Route tests executed, 4.88 s. Observer counts 18 started / 18 finished / zero
+premature/pending; runner API server has a separate truthful zero-count summary.
+Config restored exact SHA `ada11b645b62ab03ebb539ec4bd49b05ff2625435f18a19f00461f6d310481a0`;
+test helper SHA `a585474a5e441ed4030776b08ba686b2ee26100b1d30cc0739376b77cf5f6466`.
+Full 88496 passes 300 populations / 22482 tests / six existing skips, 43.26 s,
+separate performance 487 ms / 2.71 s. Observed summary 135/135 and 1/1 requests,
+but tool retrieval accumulated 56,774 tokens and truncated its middle at 20,000.
+That is a valid executed CI pass, NOT a retained complete per-worker/HTTP dataset.
+Do not silently label the lost traces complete or use it to prove root cause.
+
+Before further measurement, refine capture only: continuously drain the same live
+handle in bounded chunks, retain all chunks, reject any indicated truncation,
+then materialize only structured module/worker records plus denominators/source
+hashes into a bounded research artifact. No test source or budget change for this.
+Two full cold restored populations with complete captured traces are required;
+88496 is a disclosed earlier execution, not a substitute for either dataset.
+Additional failing control: temporary 404 of the native prediction-worker module,
+selected original worker case in each engine. Require actual HTTP 404, native
+Worker error lifecycle while not terminated, zero predictions, unchanged output,
+and the original assertion/async guard red. Restore exact config SHA before the
+two complete populations. No fixture/product/clock/assertion/engine/policy changes.
