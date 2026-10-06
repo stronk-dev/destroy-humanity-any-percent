@@ -8470,3 +8470,24 @@ including this record edge; earlier pending ranges remain independent. This
 self-first-filter cannot archive or relabel itself cross-party. Next accepted
 work is separately predeclared R8 shared Go/TS offered-plan parity, preserving
 existing historical corpus bytes. Proper1.0 goal remains active/progress.
+
+### R8 offered-plan parity — predeclared 2026-10-06
+
+Previous goal turn progress: offer-plan SQL supplement committed through
+c3ab42d0, clean tree/no live handles. AGENTS/process reread; accepted index,
+R6/R8/AC4/AC9 and design vision/tech revalidated. Existing historical shared
+corpus is20 purchases/5 WindDown-or-activation Exits/3 Founder arms. Actual
+Go helper supports stored offers and TypeScript replay contains promise and
+prospective-credit paths, but declarations alone prove no parity population.
+
+Implement the ten-case supplement above, no existing corpus rewrite. Use one
+diagnostic pinned bundle and explicit stored promises18/20, initial earned0,
+plan6/refusal23/absent/empty/promise-floor for each offer kind. Add explicit
+generation-only root target, independent fixed state/event/receipt controls,
+both runtime byte comparisons and copied-input negatives before source faults.
+Compiling runtime mutations must fail unchanged tests; generation must not
+replace expectations on failing controls. Restore exact source bytes before
+final full relevant packages/vet/client/type gates and tracking reconciliation.
+No SQL/default player/browser/pacing/mint proof inferred; earlier holds remain.
+No delegation/new skill or source mechanic change authorized. Full new span
+afterc3ab42d0 including records requires Claude's designated pass; no archival.

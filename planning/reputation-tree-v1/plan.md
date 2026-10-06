@@ -618,3 +618,35 @@ Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bu
 `kernel/VERSION` (+ Go/TS constants) in the same commit; `server/reputation/` and
 `client/src/reputation.ts` are registered in the commit that creates them. Save/snapshot versions
 are assigned in landing order (the RFC's "v22" means next-free).
+
+## R8 offered-plan replay supplement — predeclared 2026-10-06
+
+Start c3ab42d0. Preserve the existing twenty-purchase/five-Exit corpus byte-for-
+byte. Add a separate Go-authored `reputation-offer-plan-v1.json` supplement,
+consumed by both runtimes, under R6/R8/AC4/AC9. One pinned diagnostic tree
+bundle; both acquihire/acquisition × payout-funded ordered plan6, unaffordable
+last entry23, absent plan, explicit empty plan, and promised-payout floor:
+ten Company cases, eight applied paired Founder arms, two refused cases.
+Initial Founder earned/spent0. Lifetime8000×pinned threshold pays18/20 under
+the pinned900000/1000000 modifiers; fixed preview18/20. The promise-floor arm
+uses lifetime0 with the same valid stored promise. Stored offers are diagnostic
+replay inputs, NOT a second live producer or naturally earned progression.
+
+Compare complete canonical receipts, final/new Company state, Founder carry/
+state, ordered events and Founder result pin. Independently assert spend6,
+sorted ownership versus plan order, generated5/purchased0/cash1e3, non-unit
+factor1.009/1.01 and matching accepted offer identity before run-ended. Refused
+cases require exact category/detail, unchanged Company and no events/new run.
+Absent/empty keys differ in canonical request while yielding equal semantic
+outputs for the fixed intent. Copied Founder-cost and selected-terms/order
+corruptions must fail replay; no persisted SQL evidence edits. Existing SQL
+retry/rollback proof remains separate, not inferred from fixture replay.
+
+Generation uses the existing explicit update-replay-fixture flag and a narrow
+root Make lane; normal runs only compare. Generation must refuse to write if
+any independent oracle fails. Demonstrate compiling Go/TS payout-credit or
+purchase-cost source faults against unchanged expected bytes, exact restore
+after each terminal result, then cold whole relevant Go packages/vet, full
+client tests/types and old corpus byte-preservation. No old assertion weakened,
+production/epoch/balance/copy/schema/CI change, acceptance checkbox, archival,
+push or release promotion. Full new span needs Claude; prior ranges separate.
