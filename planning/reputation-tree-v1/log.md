@@ -7871,3 +7871,27 @@ No checkbox/Go/schema/kernel161/balance/copy/epoch/mint/report restamp/archive/
 publication/deploy/push. Next safe accepted action is exact cached declared-
 Postgres preflight and existing R8/AC15 career population if runnable; preserve
 any capacity failure and never promote a narrower run to complete SQL proof.
+
+### Header proof first-filter — 2026-10-06
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range: `2db69792..acfdba0f` (predeclaration, tests/instrument and records).
+Verdict: approved as a local test/instrument/record first filter ONLY; not the
+designated independent review, R9 formula acceptance or archival authority.
+Inspected all eleven changed paths, including the actual census and native
+test declarations. Executed evidence and five compiling faults are recorded
+above. The unchanged-source positive population passes; RP-293's actual
+metadata census remains RED. Synthetic census controls cannot substitute for
+the actual catalog, and current raw-ppm placeholder rendering cannot substitute
+for published percentage arithmetic or adopted prose. No production, schema,
+balance, copy, epoch, CI or RFC-body bytes changed. The independent Go factors
+and actual loader's fractional-percent admission remain visible. Both logs
+preserve the prior committed prefix; whitespace check passes. Claude must
+review the full span after `2db69792`, including this final record edge; earlier
+pending ranges remain independent and are not swept into this approval.
+
+Next preflight is read-only: declared profiled Go image/cache availability and
+the exact existing R8/AC15 SQL population. Cache-prune question has no user
+answer and grants no deletion authority. Neither Docker fullness nor healthy
+Postgres alone establishes whether this narrow cached population can execute.
