@@ -5,7 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest SQL checkpoint (2026-10-06):** RP-299 test-only range aftere5a69731
+**Latest replay checkpoint (2026-10-06):** RP-300 supplement aftera21da467
+proves27 paired Company/Founder Go/TS profiles,12 applied/15 refused each.
+Three Exit types cover nine old-pin activations,15 plan first-failure refusals
+and three absent-tree no-plan controls. Full state/receipt/events/result-pin,
+independent accounting/starters/taxonomy and36 copied-evidence controls per
+runtime pass. Nine known-valid old-pin substitutions are separate from malformed
+hash defense. Go faulted authoring refuses overwrite; TS selector/detail/no-plan
+faults fail3/12/3 new cases, sources restore exactly. Historical corpora unchanged.
+Complete relevant Go/vet/types/client8241 pass/339skip/topology and actual SQL
+36/143/no skips pass. Full new span including records needs Claude; previous
+reviews independent. Next census R8 verification consumers/cross-Exit history
+before separate predeclaration. Diagnostic earned6/stored offers, not natural/
+default browser/SQL/fullAC9/hostedCI/1.0 acceptance. Full nine-tier/platform goal
+and all prior holds remain; no production/copy/epoch/CI workflow/cleanup/push/
+status promotion. [Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint (2026-10-06):** RP-299 test-only range aftere5a69731
 proves24 WindDown/both-offer profiles: nine persisted old-pin→new-tree
 activations, fifteen whole-Exit first-failure refusals and three subsequent
 plan-free fallback controls. Full heads/pins/frozen/starters/ordered events/
@@ -15,8 +31,8 @@ empty-plan faults fire; skipped application fails earlier parity guard, not
 the new saved-state oracle. Exact source restoration; complete relevant Go/vet,
 strict types and8186 client units/339 skips pass; actual SQL36/143/no skips
 passes. Full span including records needs Claude; previous spans independent.
-Next audit separate R8 Go/TS cross-pin/first-failure coverage before predeclaring
-missing cases. Diagnostic earned6/stored offers, not natural/default browser/
+Its then-next separate R8 Go/TS cross-pin/first-failure supplement now executes
+above. Diagnostic earned6/stored offers, not natural/default browser/
 minted release/fullAC9/CI/1.0. Full nine-tier/platform goal and all prior holds
 remain; no production/copy/epoch/CI/cleanup/push/status promotion.
 [Evidence](reputation-tree-v1/log.md).

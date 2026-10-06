@@ -8915,3 +8915,19 @@ execute in both runtimes (24 Go subcases,55 TS cases including27 full pairs).
 98444c/193154 whitespace and production/client/balance/copy/CI/RFC/kernel/
 historical corpus invariance pass. New tests320Go/141TS, fixture unchanged.
 No remaining live handle/fault or accepted-status claim; commit refinement.
+
+Refinement committed93fabec5. Reconcile RP-300 ledger (including table continuity),
+canonical docs/current board/executable queue/plan/append-only roadmap log.
+Source/corpus hashes74a7b0 remain exact; only new fixture and generation-only
+Make target supplement historical inputs. This is27 diagnostic complete replay
+pairs, not natural pacing, live offer production, SQL sequential/retry proof,
+browser/AT/minted release, full R8/AC9/hosted CI/1.0. Topology controls local only;
+host SQL skips not persistence evidence,339 client skips not browser passes.
+Initial TS typing error, failed patch, original syntax-only hash negative and
+source-probe populations/unreached later assertions remain disclosed above.
+No runtime/schema/migration/balance/copy/epoch/CI workflow/checkbox/status/
+cleanup/archive/publish/deploy/push. Full span aftera21da467 including record
+edges needs Claude; previous independent review ranges/holds remain. Next safe
+accepted work census R8 verification consumers and cross-Exit history against
+current committed evidence, predeclare missing proof before edits. Full proper
+nine-tier/platform1.0 goal remains active/progress; no review/release promotion.

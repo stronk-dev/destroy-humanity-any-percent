@@ -3,6 +3,31 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation cross-pin / first-failure Go/TS parity — 2026-10-06
+
+RP-300, range aftera21da467: e4e0ae4e predeclares;08d2c4cd adds separate
+Go-authored27-pair corpus/consumers/generation-only Make lane; additive valid
+old-pin controls retain earlier syntax defense.12 applied/15 refused each,
+WindDown/both offers × activation-plan/absent/empty, five first failures,
+absent-tree no-plan. Full state/receipt/events/result-pin plus independent
+earned6/spent6/starters/1.003 summary/order/taxonomy.36 copied-evidence controls
+per runtime pass, including nine known-valid pin substitutions. These are
+standalone diagnostic replay profiles, not SQL sequential continuations.
+
+Go source fault fails first serial activation outcome and cannot overwrite;
+TS wrong selector/detail/empty-plan faults fail3/12/3 new comparisons plus
+1/7/11 historical checks. Later Founder assertions after those failures are
+not claimed fired. Exact production/historical fixture restoration; complete
+relevant Go/vet/types/client8241pass/339skip/local topology controls and actual
+production SQL36/143/no skips pass11.197s.
+**DESIGNATED REVIEW PENDING:** entire span aftera21da467 including final records;
+earlier SQL/parity/request/rollback/career and implementation spans independent.
+**NEXT SAFE ACCEPTED WORK:** census R8 verification consumers and cross-Exit
+history coverage against current committed evidence; predeclare missing
+populations before edits. No natural/default browser/AT/SQL/fullR8/AC9/hosted
+CI/1.0 promotion. All full-goal/author/environment/owner/release holds remain;
+no product/copy/balance/epoch/CI workflow/cleanup/status/archive/publish/deploy/push.
+
 ## Reputation persisted activation / first-failure proof — 2026-10-06
 
 RP-299, range aftere5a69731: bbf8d236 predeclares,43999875 adds the24-case
@@ -23,8 +48,8 @@ strict types/Svelte and8186 client units/339 skips pass; restored SQL production
 Integration36 top-level/143 subcases/no skips passes12.814s.
 **DESIGNATED REVIEW PENDING:** entire span aftere5a69731 including final records,
 separate from all earlier offered-parity/SQL/request/rollback/career spans.
-**NEXT SAFE ACCEPTED WORK:** census separate R8 Go/TS cross-pin activation and
-plan first-failure coverage; predeclare missing evidence before edits. SQL
+**THEN-NEXT WORK:** separate R8 Go/TS cross-pin/first-failure supplement now
+executes above. SQL
 proof does not supply that portable corpus or natural/default browser/minted
 release/fullAC9/CI/1.0 proof. All previous author/environment/owner/release
 holds/full goal remain; no product/copy/balance/epoch/CI/cleanup/status/archive/

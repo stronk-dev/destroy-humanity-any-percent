@@ -526,6 +526,47 @@ default browser/AT behavior, minted release data, full AC9/RFC/CI or1.0 readines
 make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationExitBoundaryIntegration'
 ```
 
+### Cross-pin and first-failure shared replay supplement (R8)
+
+`testdata/replay/reputation-exit-boundary-v1.json` is separately authored from
+executed Go transitions; both preceding historical corpora remain byte-identical.
+It contains27 paired Company/Founder profiles: WindDown, Acquihire and
+Acquisition each exercise activation with a six-point plan, absent or empty
+plan; inactive/unknown/owned/prerequisite/unaffordable whole-Exit refusals;
+and an absent-tree plan-free exit. Each stream has12 applied and15 refused arms.
+Nine activations cross from the old live bundle to the diagnostic tree bundle.
+The three plan-free rows are standalone replay controls, not the SQL test's
+sequential follow-ups on previously refused heads.
+
+Both runtimes compare complete final/new Company state, Founder carry/full
+state, receipts, all ordered events and the Founder result hash. Independent
+controls bind unchanged earned6, activation21→22, spent6, sorted ownership,
+purchase order/costs, starters and the1.003 or unit start summary. Every refusal
+checks exact first-failure taxonomy, full unchanged states, zero events and no
+new Company. Absent and empty plans keep distinct request bytes but identical
+semantic results. The offered promises are stored diagnostic inputs, not a
+second live offer producer.
+
+Thirty-six copied-evidence controls in each runtime refuse credited delta on
+15 rejected Founder arms, altered purchase cost on three planned activations,
+and both malformed and known-valid old result hashes on nine activations.
+The malformed-hash check is syntax/missing-source defense; it is not cited as
+the valid old-pin binding proof. Compiling source probes discriminate wrong
+ruleset selection, exact refusal bytes and the plan-free exit path. A faulted
+Go authoring run fails its independent outcome check before any fixture write.
+All production bytes restore exactly before broader local checks.
+
+These are diagnostic initial earned6/run2/tier3 replay cases pending designated
+review, not SQL persistence/retries, naturally earned progression, browser/AT,
+minted release data, complete R8/AC9/CI or1.0 acceptance.
+
+```sh
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestReputationBoundaryReplay'
+make test-client
+# Explicit Go authoring only; ordinary tests never regenerate:
+make reputation-boundary-corpus
+```
+
 ## Portable Founder-history evidence
 
 `server/production/reputation_history_test.go` drives the public

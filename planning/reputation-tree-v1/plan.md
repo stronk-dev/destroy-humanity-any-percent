@@ -756,3 +756,12 @@ Restore exact bytes and check complete relevant Go/vet/type/client/SQL baseline.
 No product/migration/balance/copy/epoch/CI workflow/old corpus/acceptance boxes.
 Full new span including records needs Claude; previous ranges/holds/full goal
 remain independent. This is R8 replay evidence, not fullAC9/CI/browser/release.
+
+Executed at08d2c4cd plus additive valid-pin refinement: full27 pairs pass both
+runtimes,12 applied/15 refused. Original malformed-hash negative retained as
+syntax/missing-source defense; nine additional known-valid old-pin substitutions
+refuse (36 copied controls each runtime). Four source probes discriminate with
+exact restoration and no generator overwrite. Final full relevant Go/vet/types/
+client8241pass/339skip/local topology and actual SQL36/143/no skips pass. No
+checkbox/status promotion; aftera21da467 full span including records needs Claude.
+Next census R8 verification consumers/cross-Exit history before new predeclaration.

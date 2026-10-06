@@ -4,7 +4,23 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest SQL checkpoint:** RP-299 test-only range after `e5a69731` executes24
+**Latest replay checkpoint:** RP-300 test/generation-only supplement after
+`a21da467` compares27 complete Company/Founder pairs in Go/TS,12 applied/15
+refused per stream. All three exit types cover old-pin activation, five plan
+first failures and absent-tree no-plan controls. Independent accounting/
+starters/taxonomy, full state/receipt/events/result-pin and36 copied-evidence
+controls pass; valid old-pin substitution is separate from malformed-hash
+defense. Go faulted generation refuses overwrite; TS selector/detail/no-plan
+faults fail3/12/3 new cases. All source and historical corpora restore exactly.
+Complete relevant Go/vet/type/client8241 pass/339skip, local topology controls
+and actual SQL36/143/no skips pass. Full new span including records needs Claude;
+prior spans independent. Next census R8 verification consumers and cross-Exit
+history coverage before separately predeclaring missing evidence. Diagnostic
+initial earned6/stored offers, not natural/default browser/SQL/fullAC9/hosted
+CI/1.0 proof. Full goal and all prior holds remain; no product/copy/epoch/CI
+workflow/cleanup/status/archive/push. [Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint:** RP-299 test-only range after `e5a69731` executes24
 WindDown/both-offer profiles: nine actual old-pin→new-tree activations and
 fifteen first-failure whole-Exit refusals. Mid-run purchase cannot activate the
 latest tree; full heads/pins/frozen/events/receipts/history and exact retries
@@ -14,8 +30,8 @@ application hits the earlier parity guard, shared spent reset the new persisted
 oracle. All production bytes restore exactly. Complete relevant Go/vet, strict
 TS/Svelte and8186 client units/339 skips pass; actual production SQL36 top-level/
 143 subcases/no skips passes. Full span needs Claude including final records;
-earlier ranges independent. Next census separate R8 Go/TS cross-pin activation/
-first-failure coverage, predeclare missing evidence before changes. Diagnostic
+earlier ranges independent. Its then-next separate R8 Go/TS cross-pin activation/
+first-failure supplement now executes above. Diagnostic
 initial earned6/stored offers, not natural/default browser/minted release/full
 AC9/CI/1.0 proof. Full goal and prior holds remain; no production/copy/epoch/CI/
 cleanup/status/archive/push. [Evidence](reputation-tree-v1/log.md).

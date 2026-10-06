@@ -3545,3 +3545,31 @@ release/fullAC9/CI/1.0 proof. No production/copy/balance/epoch/CI/checkbox/clean
 status/archive/publish/deploy/push; full nine-tier/platform goal active/progress,
 all prior author/environment/owner/release holds unchanged.
 [Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Cross-pin Reputation Exit Go/TS parity
+
+RP-300, range aftera21da467: e4e0ae4e predeclares,08d2c4cd adds27 paired
+Company/Founder diagnostic profiles plus explicit Go-authoring Make lane;
+93fabec5 strengthens copied valid-pin refusal without removing syntax defense.
+Three Exit types × activation-plan/absent/empty, five first-failure refusals,
+absent-tree no-plan;12 applied/15 refused each stream. Complete state/receipt/
+ordered events/result-pin with independent accounting/starters/taxonomy.
+36 copied-evidence controls per runtime, including nine known-valid old-pin
+substitutions; original malformed hash is not claimed valid binding proof.
+
+Compiling Go wrong-bundle authoring fails first serial case before overwrite;
+remaining serial rows unexecuted. TS selector/detail/empty-plan faults fail
+3/12/3 new comparisons plus1/7/11 historical checks; later assertions after
+the failure not claimed fired. All source/historical corpus bytes restore.
+Initial TS typing error and failed out-of-order patch retained. Final full
+relevant Go/vet/types pass cold;8241 client units pass/339skip; local topology
+positive/13 negatives and actual SQL36/143/no skips11.197s pass.
+
+Docs/ledger/current board/queue/plan/log reconcile. Full aftera21da467 span
+including final records needs Claude; previous independent review ranges live.
+Next census R8 verification consumers/cross-Exit history before separate
+predeclaration. No natural/default browser/AT/SQL/fullR8/AC9/hostedCI/release
+claim; no runtime/migration/copy/balance/epoch/CI workflow/checkbox/status/cleanup/
+archive/push/publish/deploy. Full proper nine-tier/platform1.0 goal active/progress
+and all prior author/environment/owner/release holds unchanged.
+[Executed evidence](reputation-tree-v1/log.md).
