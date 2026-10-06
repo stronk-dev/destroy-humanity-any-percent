@@ -4,6 +4,15 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+Current tooling checkpoint: RP-281 paired template/generated Go repair under
+da7cfa56 passes five generation goldens/collision/six corruptions, fired template
+severings and actual drift; output equals gofmt(old Go). Other artifacts/copy658/
+hash/manifest unchanged. Cold client/vet/core package union pass with initial
+sandbox socket failure and narrow rerun disclosed. New Go producer tree
+1c54c2c3d0139b50e97937bfe88c65f339cab6b5; dated career reports not restamped.
+Full span after3df3ff32 needs Claude; no acceptance checkbox changes. Next ground
+RP-284 consumers, RP-283 author contract gap; all full1.0 holds remain.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

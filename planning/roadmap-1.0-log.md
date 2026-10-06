@@ -3259,3 +3259,20 @@ producer grounding; RP-283 author contract gap remains. Full nine-tier/platform
 copy/price/balance/kernel161/CI/browser policy change, checkbox, archive,
 publication/deployment/push, report restamp, cleanup, shortcut or goal completion.
 [Evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Copy generator formatting repaired at source
+
+RP-281 underda7cfa56 pairs template and generated Go. Independent whole-output
+golden fails baseline; corrected five goldens/collision/six corruption controls
+pass. Three compiling template faults and actual generated drift reject;
+sources restore exactly. Go output equals gofmt(old committed output), other
+artifacts/copy658/hash/manifest unchanged. Cold client/vet pass; core package
+union passes after narrowly rerunning three local HTTP packages outside sandbox,
+whose original failures remain disclosed. RP-131 stays RED/Firefox unexecuted.
+New Go producer tree1c54c2c3d0139b50e97937bfe88c65f339cab6b5 changes identity,
+not behavior; dated career artifacts stay historical. Full span after3df3ff32
+needs Claude; all prior spans independent. Next RP-284 producer/consumer
+grounding; RP-283 author contract gap and proper full nine-tier/platform1.0
+holds remain. No numeric/kernel161/English/balance/price/CI/security or owner
+policy change, checkbox, archive, report restamp, cleanup, push/deploy/release
+or goal completion. [Evidence](reputation-tree-v1/log.md).

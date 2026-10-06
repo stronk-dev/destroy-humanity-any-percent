@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Copy generator formatting corrected locally — 2026-10-06
+
+RP-281 under5e455061/2ea7d853/da7cfa56 pairs template and generated output.
+New Go equals gofmt(old output); other artifacts/copy658/hash/manifest unchanged.
+Five goldens/collision/six corruption controls pass; three compiling template
+severings and actual output drift reject. Cold client/vet/core package union
+pass after narrow local-socket rerun; original sandbox failure disclosed.
+Go producer tree1c54c2c3d0139b50e97937bfe88c65f339cab6b5 is new despite
+format-only behavior; dated careers are not restamped. No new Go/formatter
+dependency or CI workflow/lane/policy change.
+
+**READY FOR CLAUDE:** entire new span after3df3ff32 through final record edge;
+all prior spans remain independent. No self-archive/acceptance.
+**NEXT SAFE ACCEPTED WORK:** RP-284 Run End/new-route producer/consumer grounding;
+RP-283's missing authoritative Wind Down preview still needs author contract.
+**HELD:** RP-131/Firefox/full AC12/AC15/AT/SQL/mint, owner/author/data/H3/H4/H5/
+R11, operations/deployment/reviews and proper nine-tier1.0. No balance/kernel161/
+English/schema/security change, box flip, publication/deployment/push, cleanup,
+report restamp or goal completion. [Evidence](../reputation-tree-v1/log.md).
+
 ## Reputation native Tab traversal corrected locally — 2026-10-06
 
 RP-285/RP-286 underbfc47315/13355948/14232b2c/31af453f/2b2536a9:

@@ -4,6 +4,19 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+Latest tooling checkpoint: RP-281 is locally corrected underda7cfa56. Generator
+and regenerated Go are paired; output equals gofmt(old output), with other
+artifacts/copy658/hash/manifest byte-unchanged. Five goldens, collision refusal,
+six corruption controls, three template severings and actual output drift
+discriminate. Cold client checks/vet pass; core package union passes after three
+sandbox loopback failures rerun narrowly (original core command stays failed).
+New Go producer tree1c54c2c3d0139b50e97937bfe88c65f339cab6b5; old dated
+career reports are not fresh evidence at this tree. Whole span after3df3ff32
+needs Claude. No numeric/kernel/English/CI policy change or release promotion.
+Next ground RP-284 Run End/new-route consumers; RP-283 authoritative preview
+still needs an author contract. RP-131/Firefox/SQL/mint/full1.0 holds remain.
+[Evidence](reputation-tree-v1/log.md).
+
 Latest runtime checkpoint: RP-285/RP-286 native Reputation Tab traversal is
 locally corrected under2b2536a9. Unchanged-source baseline44 fails/10 controls
 pass; corrected54 pass. Three compiling regressions fail36/52/12 as declared,
@@ -13,8 +26,8 @@ preference changes. Types/build8106 units/boundaries/copy/manifest pass;
 255 Node skips remain visible. Historical RP-131 guard still RED, Firefox
 unexecuted: not whole CI/AC12/manual AT/SQL/mint proof. Whole span after8a3bfb70
 through final record edge needs Claude; all earlier ranges remain independent.
-Next safe lanes: RP-281 paired generator/output repair, RP-284 producer/consumer
-grounding. RP-283 authoritative Wind Down preview remains an author contract gap.
+Its next-step note is historical: RP-281 is now corrected as above; RP-284
+producer/consumer grounding remains. RP-283 remains an author contract gap.
 No numeric/kernel/copy/CI policy change, owner adoption, release promotion or
 archive. [Evidence](reputation-tree-v1/log.md). Older checkpoint next-step notes
 below are historical, not the current queue.

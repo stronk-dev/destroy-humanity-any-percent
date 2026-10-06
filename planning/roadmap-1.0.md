@@ -5,6 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest tooling checkpoint (2026-10-06):** RP-281 paired generator/output
+repair underda7cfa56. New Go equals gofmt(old Go); other artifacts/copy658/hash/
+manifest unchanged. Five goldens/collision/six corruption controls and three
+template severings plus actual drift reject. Cold client/vet/core package union
+pass; original core sandbox failure and narrow successful rerun disclosed.
+Current Go producer tree1c54c2c3d0139b50e97937bfe88c65f339cab6b5 changes;
+old dated careers stay historical. Full span after3df3ff32 needs Claude.
+Next RP-284 producer/consumer grounding; RP-283 author preview bridge remains.
+Full nine-tier/platform1.0 active, RP-131/Firefox/SQL/mint/operations/reviews
+still open. [Evidence](reputation-tree-v1/log.md).
+
 **Latest runtime checkpoint (2026-10-06):** RP-285/RP-286 native Reputation
 Tab correction under2b2536a9. Original44 failures/10 controls pass; corrected54
 pass. Three compiling probes fail36/52/12 with exact restoration; final248
