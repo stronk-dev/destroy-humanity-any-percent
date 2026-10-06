@@ -69,7 +69,9 @@
     if (timer !== undefined) clearTimeout(timer);
     const next = view.garden.next_tick_wall_ms;
     if (next === null) return;
-    const wait = Math.max(1_000, next - view.server_ms);
+    // A read can arrive just before the tick. Honor its server-relative
+    // interval rather than postponing every sub-second boundary to one second.
+    const wait = Math.max(1, next - view.server_ms);
     timer = setTimeout(() => { timer = undefined; if (visible()) void load(); }, wait);
   }
 

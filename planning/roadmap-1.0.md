@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG6/SG8/AC9 test-only saved-head/hash supplement
+**Current checkpoint:** 2026-10-06, Garden SG10 timing/visibility correction under
+`dd4d96f3` / instrument refinement `891dee0d` / repair authority `32304628`, RP-230.
+Actual mounted browser component postponed a valid 137 ms deadline to one second in all
+three engines; renderer now honors the server-relative remainder. Seven browser-adapter
+cases per engine pass; timer/hidden-guard severing fails and restores. Full native-Linux
+browser/performance and root client/type/build/boundary/copy/topology pass. Full historical
+kernel guard still fails at `50a3a514` (RP-131); no whole-CI claim. Kernel 0.3.153 unchanged.
+Controlled timers/emulated visibility/injected DTO/receipt props do not establish actual
+idle/OS hiding, real server/default-host receipts, AC13 or full Garden. New range starts
+`dd4d96f3^` (`adb55210`), endpoint pinned after commit, Claude required independently of
+all earlier ranges. RP-229/RP-222 author and RP-131/RP-218 CI/worker routes remain open.
+Next accepted work: default-host player/receipt integration, not public mint or lifecycle
+promotion. Proper nine-tier 1.0 and its complete platform floor remain active.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG6/SG8/AC9 test-only saved-head/hash supplement
 under `f980f4d6`, RP-228. Company replay matches complete actual saved heads; four pinned
 Company shapes have exact Go/TS nonterminal/hash verdicts, and actual Founder hash poisoning
 diverges without modifying DB/original history. Unrecorded replay cash and both hash-guard

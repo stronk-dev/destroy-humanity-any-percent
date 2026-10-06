@@ -10,6 +10,12 @@ the [active RFC index](../rfc/README.md), each RFC's plan/log and the
 [executable queue](platform-alignment/execution-queue.md).
 
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
+Current SG10 timing correction (RP-230) removes an arbitrary one-second minimum that delayed
+near-tick views. Seven mounted-component/browser-adapter cases per engine and actual timer/
+visibility mutations discriminate; full local browser/performance and client/type/build/
+boundary/copy/topology pass. Historical kernel guard remains RP-131 red. This is controlled
+timer/visibility/JSON evidence, not real-server/default-host receipt or full AC13/Garden proof;
+Claude's exact-range review and every earlier range remain pending. Kernel stays 0.3.153.
 Bounded catalog/codec/clock/tick/harvest/command reviews have supplied corrections and
 discriminating witnesses; their exact Codex ranges still require Claude's cross-party verdicts.
 The current G2/G3 review covers transitive bundle admission, the actual New-Founder initializer,

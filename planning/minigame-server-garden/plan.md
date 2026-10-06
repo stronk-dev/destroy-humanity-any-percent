@@ -127,6 +127,15 @@ Initial selector and canonical-reader failures remain recorded. No product/kerne
 change (0.3.153), full AC9/G5 or checklist promotion; Claude review required. RP-229's
 unnamed extra resource-event premise needs author reconciliation, not an invented kind.
 
+Separate SG10 timing/visibility diagnosis under `dd4d96f3`, instrument correction
+`891dee0d`, then repair authority `32304628` confirms RP-230's one-second minimum
+delays a valid 137 ms deadline. Renderer now honors the server-relative remainder.
+Seven mounted-component/actual-browser-port controls run in each native engine;
+timer-dispatch and hidden-guard mutations discriminate and restore exactly. Virtual
+timers, emulated visibility, injected JSON and receipt props are not default-host/real
+server/actual idle-wait proof. No kernel/math/schema/copy/mint or checklist promotion;
+Claude review required independently of all earlier ranges. Final gates in the log.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

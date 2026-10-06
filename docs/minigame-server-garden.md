@@ -225,6 +225,9 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
 - Growth announcements go to a polite live region once per refresh.
 - It re-reads at `next_tick_wall_ms` while visible and after every receipt, with no client
   simulation.
+  The delay is the positive difference from the response's `server_ms`, including a
+  sub-second remainder; there is no one-second polling floor or client epoch conversion.
+  Nonpositive advisory differences yield to a one-millisecond timer turn.
 - Only the latest-started read may replace the view/status/announcement or schedule the
   next read. Older success and failure completions are ignored, including a response that
   arrives after a newer receipt refresh. Unmount still discards late completions.
@@ -248,6 +251,16 @@ the long duplicated test traversal after recorded deadline failures (RP-225), wi
 test limits or production keyboard behavior. The final local full browser/performance lane
 passes; earlier failures remain evidence, not a claim of general hosted reliability.
 
+RP-230's separate timing correction is exercised by seven mounted-component/browser-port
+cases per engine: exact 60,000/137 ms server-relative boundaries, hidden due/visible resume,
+receipt-prop deadline replacement, null deadline, unmount, and stale-read recovery. Calls
+pass through the actual generated authenticated GET adapter with no body; growth appears
+only after injected DTO JSON, and no command callback fires. Tests join actual adapter
+completion, not just fetch invocation. Timer-dispatch and visibility-guard severing each
+fail their own populations. Virtual timers/emulated visibility and an injected fetcher
+are explicitly not native wall-clock/OS-hide, real HTTP/Postgres or default-host receipt
+proof. No AC13/Garden/public activation claim; the correction awaits Claude review.
+
 ## Verification
 
 - `make garden-corpus-check`
@@ -261,6 +274,7 @@ passes; earlier failures remain evidence, not a claim of general hosted reliabil
 - `production.TestGardenReadDatabaseClockIntegration` and `TestGardenReadDatabaseFailureIntegration`
 - `gameserver.TestComposedGardenAuthenticatedCommandsAndReadIntegration` (fixture-only live HTTP/Account/DB path)
 - `client/test/garden-surface-witnesses-browser.test.ts` (native input and controlled read ordering)
+- `client/test/garden-refresh-browser.test.ts` (controlled due/visibility and actual browser-port binding)
 - The Postgres witnesses `TestGardenIntegrationPersistsReplayableFounderLog`,
   `TestGardenHarvestIntegration` and `TestGardenHarvestFaultsAreAllOrNothing`
 - `client/test/garden-surface-browser.test.ts`, in three browsers

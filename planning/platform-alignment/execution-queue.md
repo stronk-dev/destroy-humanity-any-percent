@@ -1,6 +1,30 @@
 # Executable queue
 
-## Current Garden saved-head and hash-verdict evidence — 2026-10-06
+## Current Garden refresh timing/visibility correction — 2026-10-06
+
+SG10 diagnosis `dd4d96f3` / instrument refinement `891dee0d` confirms RP-230:
+the one-second floor delays a valid 137 ms server-relative deadline in all three engines.
+Separately predeclared `32304628` correction removes that floor in the renderer only.
+Seven actual mounted-component/browser-adapter cases per engine cover due boundaries,
+hidden due/resume, receipt-prop rescheduling, no deadline, unmount and stale recovery.
+Exact authenticated GET/no-body binding and no command/client-growth controls hold.
+Timer dispatch and hidden gating mutations fail twelve and three cases; all restore exactly.
+Full native-Linux browsers pass 22,449 tests / six existing skips; separate performance and
+root client/type/build/boundary/copy/topology pass. Initial JSON-completion instrument errors
+are retained. Historical kernel guard remains red at `50a3a514` (RP-131), not waived.
+Kernel 0.3.153 unchanged; no schema/math/copy/CI/mint change.
+
+**READY FOR DESIGNATED REVIEW, not approved:** new range begins `dd4d96f3^`
+(`adb55210`), endpoint pinned after implementing commit. Codex first-filter only; Claude
+required. Every earlier range remains independent. Virtual timers, emulated visibility,
+injected JSON and receipt props do not prove actual idle/OS hiding, real HTTP/Postgres,
+default host or full AC13/G7/Garden. No checklist/lifecycle/archival promotion.
+
+**NEXT SAFE ACTION:** accepted Garden default-host/receipt-to-read integration; retain
+RP-229/RP-222 author routes and RP-131/RP-218 CI/worker routes independently, without
+narrowing the full nine-tier 1.0 or complete platform floor.
+
+## Earlier Garden saved-head and hash-verdict evidence — 2026-10-06
 
 Test-only SG6/SG8/AC9 supplement under `f980f4d6` addresses RP-228. Existing real-Postgres
 Company replay now compares the complete final state with its saved head for zero/one/ten

@@ -16,6 +16,9 @@ let reads: Promise<GardenCurrentResponse>[] = [];
 function growing(wait: number | null): Active {
   const view = structuredClone(views.fresh) as Active;
   view.garden.next_tick_wall_ms = wait === null ? null : view.server_ms + wait;
+  // The later DTO matures this four-tick strain after one additional tick.
+  view.garden.plots = view.garden.plots.map((plot) => plot.row === 1 && plot.col === 1
+    ? { ...plot, age_ticks: 3 } : plot);
   return view;
 }
 

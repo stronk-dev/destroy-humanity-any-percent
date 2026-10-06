@@ -2157,3 +2157,25 @@ Committed implementation `56fc2a9d` plus corrected C21 citation `fe178721`; exac
 review range `f980f4d6^..fe178721` (`3f3bb03c..fe178721`), three commits / twelve paths,
 pending Claude. Every earlier range and RP-229 author route remains independent. All
 verification handles terminal; clean implementation scope, no self-approval/archive/push.
+
+## 2026-10-06 — Garden SG10 near-tick correction and visibility evidence
+
+Previous goal turn: progress (saved-head/hash proof committed). Clean start `adb55210`.
+Diagnosed RP-230 under `dd4d96f3`, refined native-JSON completion under `891dee0d`;
+first instrument's eight failures retained, corrected diagnosis fails exactly the
+137 ms deadline in all three engines. Accepted SG10 repair separately predeclared at
+`32304628`: remove renderer's arbitrary one-second minimum, no client epoch/poll/growth
+policy or kernel/math/schema/copy/mint/CI edit. Seven mounted/browser-adapter cases per
+engine exercise due/visibility/receipt-prop replacement/null/unmount/stale recovery.
+Actual timer and hidden guard severing fail twelve and three arms; restore SHA exact.
+Full local native-Linux browser lane passes 22,449 / six existing skips, separate
+performance passes; root client/type/build/boundary/copy/manifest/topology passes.
+Historical kernel guard still fails the unchanged RP-131 commit, so whole CI is not green.
+
+Codex first-filter only; new exact range begins `dd4d96f3^` (`adb55210`), endpoint pinned
+after commit. Claude required independently of every earlier range. Virtual timers,
+emulated visibility, injected JSON and receipt props are not real-server/default-host
+integration or actual idle/OS-hide proof; no full AC13/G7/Garden or public/archival/release
+promotion. All processes terminal; RP-229/RP-222 author and RP-131/RP-218 routes stay open.
+Next accepted work: default-host/receipt-to-read integration; full nine-tier game through
+Transcendence and its complete platform floor remain the objective.

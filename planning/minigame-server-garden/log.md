@@ -2217,3 +2217,69 @@ record every arm and restore the corrected renderer byte-exactly before final ga
 Final full native-Linux browser/performance lane and root client/type/build/boundary/copy
 checks; do not waive RP-131 or RP-218 or relabel ARM/container results hosted amd64/whole-CI.
 No AC13/lifecycle/archival/whole-Garden promotion. Codex first-filter only, Claude required.
+
+Original bounded G7 timer seam `725d8662^..725d8662`: **CHANGES REQUIRED**, RP-230.
+Review by: Codex; Recorded by: Codex. Original commit re-derived from Git and confirms
+the same one-second floor. This verdict is not full G7 review or approval of Codex's
+new repair. Registry `kernel/affecting-paths.json` excludes game-ui renderer; unchanged
+kernel 0.3.153 is honest, not a bypass of the historical guard.
+
+Corrected positive 19808 exits 0: all 21 entries (seven per native Linux engine) pass.
+Actual-source timer-dispatch severing 4686 exits 1: twelve failures (both due boundaries,
+replacement receipt deadline and failed-read arm in each engine), nine controls pass.
+Restore dispatch, separately remove only hidden due guard. 62305 exits 1: exactly three
+hidden-read failures, eighteen pass. Neither mutation touched any fixture/assertion/bound.
+Both are terminal; restore corrected renderer. SHA256
+`4426c27ff05999812015d5c527c1a9901faac182129455d8cb8e7aaae6a086f5` must match before final gates.
+
+Restored renderer SHA256 matches exactly. Final declared `make test-browser-ci` 66808
+is terminal exit 0: all 294 native-Linux browser files / 22,449 tests pass, six existing
+deliberate skips, 51.19 s. All seven new entries pass in all three engines. Separate
+Chromium performance selector passes its one objective (493 ms test / 2.50 s run);
+22 unrelated entries excluded by that unchanged selector, not from the full lane.
+No worker/deadline/uncaught error in this run; RP-218's general reliability/attribution
+remains open. Results are local container engine evidence, not hosted release proof.
+
+Historical `make verify-kernel-version` 21952 is terminal exit 2: checkout contract and
+adversarial checkout fixtures pass, then actual full history still rejects commit
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, the unchanged six Minigame paths lacking a real
+bump (RP-131). No bypass/rewrite/correction fiction. Root 98511 has passed client/type/
+build/boundary and is still executing the copy history validator; await its same handle
+before committing final tracking. A read-only ps check was sandbox-denied and unnecessary;
+the tool confirms the verification session still live, so it is not restarted.
+
+Root 98511 now terminal exit 0: 7,366 client tests pass / 123 existing-plus-seven-new
+Node DOM skips, zero TS/Svelte errors/warnings, 213-module production build (415 ms),
+shell/UI boundary scan (22 Game UI components), copy pipeline 657 keys / unchanged
+`sha256:3a890004e2c9ecdbdc14d9d688f29efddfb8d7174bd6060427e1614144146860` /
+610 existing orphan warnings, deployment content manifest check and CI topology with
+thirteen negative controls. It completed on its original handle without restart/retry.
+All processes terminal. No Go/DB/default-host run claimed in this renderer-only repair.
+`git diff --check` clean; only product edit is the SG10 timer floor plus explanation.
+Docs/plan/backlog/current state/queue/1.0 board/log reconciled without checkbox flips.
+
+Review by: Codex (implementer first-filter); Recorded by: Codex. Complete new diff,
+registry scope, original G7 provenance and all executed controls/probes inspected.
+This is not designated approval. Exact new range begins `dd4d96f3^` (`adb55210`),
+endpoint pinned after committing, including the diagnostic/refinement/repair-authority
+commits and exercising test. Claude required; every earlier range remains pending.
+RP-229/RP-222 author routes and RP-131/RP-218 CI/worker routes remain independent.
+No public mint, owner text, full AC13/G7/Garden, release or archival status changed.
+Continue accepted default-host/receipt integration toward the intact nine-tier 1.0.
+
+Final first-filter fixture refinement: the injected positive growing DTO originally used
+strain_b age zero while the later DTO advanced one tick to age four. This is not claimed
+real-server growth, but that unrelated temporal inconsistency is unnecessary. Set initial
+age to three so the one-tick maturity pair is coherent. All deadline/stage/call-count/error
+oracles and bounds remain identical; production remains the exact restored SHA. Re-run
+full browser/performance and root client/type/build on the refined instrument before the
+implementing commit. Earlier successful run remains its own evidence, not a substitute.
+
+Refined final gates terminal: 19253 root client/type/build exits 0 (7,366 / 123 Node
+DOM skips, zero diagnostics, 213-module build 680 ms). 20854 full declared native-Linux
+browser/performance exits 0 (294 files, 22,449 / six existing deliberate skips, 36.01 s;
+all seven new cases in every engine; separate performance 380 ms / 1.80 s with unchanged
+selector). Boundary/copy/topology already passed on identical product bytes in 98511;
+historical guard's RP-131 rejection in 21952 remains red. All processes terminal and
+production SHA exact. No retry-to-green, oracle/bound/skip change or unrecorded probe.
