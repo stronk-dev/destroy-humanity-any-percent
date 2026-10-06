@@ -8842,3 +8842,25 @@ exact restore before broad baselines. No tests/files edited while handles live.
 No skills/delegation/new owner policy/balance/copy/mint/CI/checkbox/archive/push.
 Full aftera21da467 span including final records needs Claude; prior independent
 review obligations and all full1.0 author/environment/owner holds remain.
+
+Initial Go authoringed8c8b/7781f4 session18388 terminal0,0.375s. All27
+independent profile controls execute before explicit new fixture write; existing
+helpers reused without edits, including full rejected-Founder audit reconstruction
+from captured initial encoded state. Historical sources a621ec unchanged.
+Add TS consumers only after authoring handle terminal; no production edits.
+
+Initial focused Gof1137d/699c04 session79808 terminal0: corpus and24 copied-
+evidence subcases pass (27 actual mutations including three extra cost controls),
+0.338s. Client3387bf/93d23e session50311 terminal2 fails typecheck at my direct
+property access on unknown event payload; no client cases execute. Cast only
+that payload to Record<string,unknown>, not runtime/default relaxation. Before
+the first full positive strengthen independent purchase schemaVersion1 control;
+fixture bytes stay identical. No product defect inferred from my typing error.
+
+Corrected focusedGo30714e/c9a648 session67647 terminal0,0.455s: both tests,
+24 copied-evidence subcases/27 mutations pass. Clientd3e1d5/3e6691 session66998
+terminal0: strict TS/Svelte0errors0warnings;94files pass/22skip,8241 units
+pass/339skip4.15s,55 new cases including full27 paired arms. New20036-line
+fixture SHA256f9158eff0bdb130867509ce20173d607fecfaaddef56b9de5e82c5e3eeb0d50f;
+302-line Go/135-line TS tests. Commit positive before source probes; ordinary
+tests compare executed transitions and pinned bytes, never regenerate fixtures.
