@@ -297,3 +297,25 @@ exhaustive flag is needed.
 **Not done:** PR-row relevance, the dead-row fixture, the time-to-first-PR observation, the pacing
 envelopes on a minted bundle, and ratcheting the invariant into the scenario `required_invariants`
 registry. All wait on DG-D; the registry ratchet would change the ratified scenario bytes.
+
+## 2026-10-06 — predeclare bounded cross-party P6 guard review
+
+Review scope: Claude 527246f1^..527246f1, all six paths inspected, not the full
+Clout span/P6/AC9. Current source b76980a7 is the dependency coordinate for cold
+execution; guard/test files are unchanged from the reviewed commit. Read full
+accepted RFC, CV10/AC9, exact diff and current call sites/production AxisInput.
+DG-D still requires author/owner choice, no harness architecture inferred.
+
+Run cold existing two-test population plus relevant harness suite. Predeclare
+independent actual-source probes: sever first-hour refusal only, Phase-0 refusal
+only, and the cap-invariant function (return nil). Each scoped test must fail;
+restore exact source hashes before next/final run. Separately remove only the
+negative-score guard: expected defense-in-depth survival through AxisInput is
+recorded honestly, not a new discrimination claim. No live verification handle
+at edit time; only one temporary source probe at a time, no mutation persists.
+Do not label fixture scalar states/default non-axis control as real PR purchases,
+attainment hook, pacing/relevance/time-to-first-PR or integrated release proof.
+No constants/balance/epochs/scenario/production policy/CI/checkbox/archival/push
+changes. Review by: Codex (designated other party for exact Claude scope).
+Recorded by: Codex. The new review/predeclaration/record range is separate from
+all earlier Codex scopes, which still await Claude; no self-approval of those.
