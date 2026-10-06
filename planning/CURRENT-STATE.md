@@ -20,6 +20,13 @@ saved head for read-only growth projection, ignoring handler time. Its real-Post
 non-mutation and error populations and restored clock/clone probes pass, along with cold
 Go/client/three-engine/performance gates. Claude's designated review remains pending;
 this does not claim full G6, default player flow or Garden acceptance.
+The latest SG10 surface correction (RP-224) ignores older success/failure completions after
+a newer receipt refresh. Four ordering arms and actual guard mutations discriminate. Native
+navigation/action cases retain all direction/edge/focus checks after a separately measured
+test-method decomposition; final local three-engine/performance and client gates pass.
+Two earlier full browser deadline failures remain recorded as RP-225, including a recurrence
+of RP-218. No timeout/skip/CI change, general reliability closure or full G7/AC13 claim;
+the new Codex correction also requires Claude. Kernel stays 0.3.153.
 
 Remaining work includes Garden's broader integration/public-flow/copy/activation gates, other
 active RFC/review lanes, later tiers/endings/MMO consumers, account rights/retention, task-level

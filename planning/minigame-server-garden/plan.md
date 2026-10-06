@@ -79,6 +79,21 @@ This Codex implementation is ready for Claude's exact-range review, not full G6/
 archival acceptance. RP-222, RP-131, RP-218 and every earlier pending range remain separate.
 Next: remaining accepted coordinator/event/read/player-surface review; no checkbox promotion.
 
+Separate G7/SG10 diagnostic `37f76223` / corrected instrument `1bffaab2` confirms RP-224:
+all four older-completion arms overwrite newer receipt-refresh state in every native engine.
+Separately authorized `0b7a49f9` repair admits only the latest-started request on success and
+failure; kernel remains 0.3.153 because the renderer is outside the kernel-watched registry.
+Both response-guard mutations fail independently; native arrow severing fails all twelve
+refined native cases. Initial type/inherited-disabled/text instrument errors and two full-run
+deadline failures (RP-225, with RP-218 recurrence) remain disclosed. Observation and separately
+predeclared decomposition preserve all directional/edge/focus and Enter/Space action checks,
+without changing limits, skips, runtime navigation or CI. Final local client/type/build/
+boundaries/topology and full Linux browsers/performance pass. Earlier cold Go/real Postgres/
+corpus/vector/copy gates in this range pass; they are not rerun or relabelled as hosted proof.
+New correction requires Claude's exact-range review; no full G7/AC13/default-host/timer/
+visibility/Garden acceptance or checklist promotion. Continue accepted G4–G7 integration
+review while RP-222 and every earlier designated-review range remain separate.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

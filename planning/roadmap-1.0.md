@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG9 diagnosis `9928a54e` / separately authorized
+**Current checkpoint:** 2026-10-06, Garden SG10 diagnostic `37f76223` / corrected instrument
+`1bffaab2` / separate repair authority `0b7a49f9`. RP-224's four older-completion races now
+have latest-started read admission on success and failure, with independently failing guard
+probes. Native navigation/action checks preserve every direction/edge/focus/tabstop and both
+Enter/Space command paths after separately measured test decomposition (RP-225); disabling
+arrows fails all twelve native cases. Final local client/type/build/boundaries/topology and
+complete Linux browser lane pass (22,416 / six intentional skips), plus separate performance.
+Two earlier full-browser deadline failures remain recorded, including RP-218's recurrence;
+no timeout/skip/workflow/concurrency change or general hosted reliability claim. Kernel stays
+0.3.153 because this renderer is not kernel-watched. Exact new range starts `37f76223^`
+(`f5d2c323`); implementation end is pinned after commit, pending Claude. All earlier ranges,
+RP-222 and RP-131 remain open. No full G7/AC13/Garden, default-host, timer/visibility, mint,
+whole-CI, archival or release claim. Continue accepted G4–G7 integration review; the proper
+nine-tier 1.0 and complete platform floor remain active, not shortened to a preview.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG9 diagnosis `9928a54e` / separately authorized
 RP-223 correction `307b2539`, kernel 0.3.153. Actual same-Founder saved head and database
 time now come from one read-only statement, not Account's handler clock. Twenty repetitions
 cover 120 skew/normal salted/unsalted DB arms, with exact head/non-mutation and fail-honest

@@ -59,30 +59,88 @@ function pressed(target: HTMLElement): string | null {
   return target.querySelector(".substrates button[aria-pressed=true]")?.textContent?.trim() ?? null;
 }
 
-for (const key of ["{Enter}", " "]) {
-  it.skipIf(!browser)(`Garden native ${JSON.stringify(key)} navigates and dispatches once, with pending refusal`, async () => {
-    const { userEvent } = await import("vitest/browser");
+const mixedKeys = ["{ArrowUp}", "{ArrowLeft}", "{ArrowRight}", "{ArrowDown}", "{ArrowLeft}", "{ArrowUp}"];
+
+async function nativeWalk(target: HTMLElement, keys: readonly string[], expectedFocus: readonly number[]): Promise<HTMLButtonElement[]> {
+  const { userEvent } = await import("vitest/browser");
+  const cells = [...target.querySelectorAll<HTMLButtonElement>("button.cell")];
+  expect(cells).toHaveLength(36);
+  cells[0]!.focus();
+  const focus: { cell: number; tabStops: number[] }[] = [];
+  const recordFocus = (event: FocusEvent) => {
+    const index = cells.indexOf(event.target as HTMLButtonElement);
+    if (index >= 0) focus.push({ cell: index, tabStops: cells.flatMap((cell, at) => cell.tabIndex === 0 ? [at] : []) });
+  };
+  target.addEventListener("focusin", recordFocus);
+  try {
+    // Native key-down/up, with every intermediate focus and roving tabstop
+    // observed; edge clamps must not introduce an extra focus transition.
+    await userEvent.keyboard(keys.join(""));
+    await settle();
+  } finally { target.removeEventListener("focusin", recordFocus); }
+  expect(focus).toEqual(expectedFocus.map((cell) => ({ cell, tabStops: [cell] })));
+  const last = cells[expectedFocus[expectedFocus.length - 1]!]!;
+  expect(document.activeElement).toBe(last);
+  expect(cells.filter((cell) => cell.tabIndex === 0)).toEqual([last]);
+  return cells;
+}
+
+for (const path of [
+  {
+    name: "mixed directions and outbound bottom/right edges",
+    keys: [...mixedKeys, "{ArrowDown}", "{ArrowDown}", "{ArrowDown}", "{ArrowDown}", "{ArrowDown}",
+      "{ArrowRight}", "{ArrowRight}", "{ArrowRight}", "{ArrowRight}", "{ArrowRight}", "{ArrowRight}", "{ArrowDown}"],
+    focus: [1, 7, 6, 0, 6, 12, 18, 24, 30, 31, 32, 33, 34, 35],
+  },
+  {
+    name: "native arrival and complete left/up return",
+    keys: ["{ArrowRight}", "{ArrowRight}", "{ArrowRight}", "{ArrowRight}", "{ArrowRight}",
+      "{ArrowDown}", "{ArrowDown}", "{ArrowDown}", "{ArrowDown}", "{ArrowDown}",
+      "{ArrowLeft}", "{ArrowLeft}", "{ArrowLeft}", "{ArrowLeft}", "{ArrowLeft}",
+      "{ArrowUp}", "{ArrowUp}", "{ArrowUp}", "{ArrowUp}", "{ArrowUp}"],
+    focus: [1, 2, 3, 4, 5, 11, 17, 23, 29, 35, 34, 33, 32, 31, 30, 24, 18, 12, 6, 0],
+  },
+]) {
+  it.skipIf(!browser)(`Garden native navigation: ${path.name}`, async () => {
+    const started = performance.now();
     const { target, app, calls } = mounted({ current: async () => active() });
     try {
       await settle();
-      const cells = [...target.querySelectorAll<HTMLButtonElement>("button.cell")];
-      expect(cells).toHaveLength(36);
-      cells[0]!.focus();
-      for (const [arrow, index] of [["{ArrowUp}", 0], ["{ArrowLeft}", 0], ["{ArrowRight}", 1],
-        ["{ArrowDown}", 7], ["{ArrowLeft}", 6], ["{ArrowUp}", 0]] as const) {
-        await userEvent.keyboard(arrow);
-        await settle();
-        expect(document.activeElement, arrow).toBe(cells[index]);
-        expect(cells.filter((cell) => cell.tabIndex === 0), arrow).toEqual([cells[index]]);
-      }
+      await nativeWalk(target, path.keys, path.focus);
+      expect(calls).toEqual([]);
+      expect(target.querySelector(".menu")).toBeNull();
+    } finally {
+      await unmount(app);
+      target.remove();
+      console.info("garden-native-navigation", JSON.stringify({ path: path.name, user_agent: navigator.userAgent, elapsed_ms: performance.now() - started }));
+    }
+  });
+}
+
+for (const key of ["{Enter}", " "]) {
+  it.skipIf(!browser)(`Garden native ${JSON.stringify(key)} navigates and dispatches once, with pending refusal`, async () => {
+    const started = performance.now();
+    const observed = (stage: string) => console.info("garden-native-stage", JSON.stringify({ key, stage, user_agent: navigator.userAgent, elapsed_ms: performance.now() - started }));
+    observed("entry");
+    const { userEvent } = await import("vitest/browser");
+    observed("helper-import");
+    const { target, app, calls } = mounted({ current: async () => active() });
+    try {
+      await settle();
+      observed("initial-mount");
+      const cells = await nativeWalk(target, mixedKeys, [1, 7, 6, 0]);
+      observed("navigation");
       await userEvent.keyboard(key);
       await settle();
+      observed("menu-open");
       expect(target.querySelector(".menu")).not.toBeNull();
       expect(calls).toEqual([]);
       await userEvent.keyboard("{Tab}");
+      observed("tab");
       expect(document.activeElement?.textContent?.trim()).toBe("Harvest");
       await userEvent.keyboard(key);
       await settle();
+      observed("command");
       expect(calls).toEqual(["harvest 0,0"]);
       expect(target.querySelector(".menu")).toBeNull();
       expect(document.activeElement).toBe(cells[0]);
@@ -93,7 +151,8 @@ for (const key of ["{Enter}", " "]) {
       await userEvent.keyboard(key);
       await settle();
       expect(calls).toEqual(["harvest 0,0"]);
-    } finally { await unmount(app); target.remove(); }
+      observed("pending-refusal");
+    } finally { await unmount(app); target.remove(); observed("cleanup"); }
   });
 }
 
@@ -155,12 +214,18 @@ for (const outcome of ["active", "locked", "error", "old-error"] as const) {
 it.skipIf(!browser)("Garden ignores late read completion after unmount", async () => {
   const port = new OrderedPort();
   const { target, app, calls } = mounted(port);
-  await settle();
-  expect(port.requests).toHaveLength(1);
-  await unmount(app);
-  port.requests[0]!.resolve(active());
-  await settle();
-  expect(target.childElementCount).toBe(0);
-  expect(calls).toEqual([]);
-  target.remove();
+  let destroyed = false;
+  try {
+    await settle();
+    expect(port.requests).toHaveLength(1);
+    await unmount(app);
+    destroyed = true;
+    port.requests[0]!.resolve(active());
+    await settle();
+    expect(target.childElementCount).toBe(0);
+    expect(calls).toEqual([]);
+  } finally {
+    if (!destroyed) await unmount(app);
+    target.remove();
+  }
 });

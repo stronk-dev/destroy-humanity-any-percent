@@ -30,6 +30,7 @@
   let menu = $state<{ row: number; col: number } | null>(null);
   let timer: ReturnType<typeof setTimeout> | undefined;
   let destroyed = false;
+  let readGeneration = 0;
   const cells = new Map<string, HTMLButtonElement>();
 
   // Substrates resolve from the copy registry (no second hardcoded catalog):
@@ -48,10 +49,11 @@
   $effect(() => { void refreshKey; untrack(() => { void load(); }); });
 
   async function load(): Promise<void> {
+    const generation = ++readGeneration;
     if (viewState.kind === "active") viewState = { kind: "stale", view: viewState.view };
     try {
       const next = await port.current();
-      if (destroyed) return;
+      if (destroyed || generation !== readGeneration) return;
       if (next.kind === "inactive") { viewState = { kind: "error" }; return; }
       if (next.kind === "locked") { viewState = { kind: "locked" }; return; }
       const delta = tickDelta(viewState, next);
@@ -59,7 +61,7 @@
       viewState = { kind: "active", view: next };
       schedule(next);
     } catch {
-      if (!destroyed) viewState = active ? { kind: "stale", view: active } : { kind: "error" };
+      if (!destroyed && generation === readGeneration) viewState = active ? { kind: "stale", view: active } : { kind: "error" };
     }
   }
 

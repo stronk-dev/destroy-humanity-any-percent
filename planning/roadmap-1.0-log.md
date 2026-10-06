@@ -2029,3 +2029,38 @@ Committed whole history target again fails on the unchanged `50a3a514` six-file 
 bump (RP-131), after its CI checkout contract/fixtures pass. Separate kernel adversarial
 fixtures pass; target's final fixture step was not reached. No guard bypass, archival,
 push or release claim. All verification processes reached terminal status.
+
+## 2026-10-06 — Garden latest-read admission and measured native witness repair
+
+Bounded G7/SG10 diagnosis `37f76223` / corrected instruments `1bffaab2` demonstrates RP-224:
+all four old success/error completions replace or mark stale a newer receipt refresh in the
+mounted actual surface. Original Claude `725d8662` bounded seam is CHANGES REQUIRED, not a
+full G7 verdict. Separate authority `0b7a49f9` adds latest-started read-generation admission
+to success and failure; both guard removals fail their respective browser populations and
+restore exactly. The renderer is outside the kernel-watched registry, so kernel remains
+0.3.153, without changing replay/math/wire/clock/copy or making a fake version signal.
+
+Two full local browser failures remain recorded: RP-225's expanded keyboard instrument fires
+the original 15-second limit, first with an RP-218 worker recurrence, then alone/batched in
+Firefox. Observation-only timing locates the long native traversal, not helper import/mount;
+it does not establish player keyboard latency or CPU causality. Separately predeclared native
+case decomposition preserves every directional/edge/intermediate-focus/tabstop observation
+and both Enter/Space/Tab/Harvest/once-only/focus-return/pending paths, not just endpoints.
+All twelve native cases fail actual arrow severing, while six read/lifetime cases per engine
+pass. No timeout/skip/CI/concurrency or production-navigation change. General hosted reliability
+and RP-218 remain open, not erased by subsequent green runs.
+
+All processes terminal and exact source restored. Final root client/type/build/boundaries/
+topology pass (7,362 / 116 deliberate Node DOM skips, zero diagnostics). Complete native Linux
+browser lane passes 22,416 / six existing skips across 291 populations, 38.98 s; separate fresh
+performance passes (540-ms case / 2.52 s). Earlier range gates cold Go, sixteen non-skipped
+real-Postgres Garden declarations, corpus/vectors/copy/vet/manifest pass; no relabelling host
+skips or earlier evidence as hosted CI. Instrument typing/inherited-disabled/text errors and
+both full-run reds remain in the per-RFC log. `git diff --check` is clean.
+
+New correction begins `37f76223^` (`f5d2c323`); pin the implementation end after commit for
+Claude. It does not consume any earlier pending range or self-approve. No full G7/AC13/Garden,
+timer/Page Visibility/default-host, public activation, whole-CI/amd64, archive or release claim.
+RP-131's committed historical guard defect and RP-222's owner/author contract stay open.
+Continue remaining accepted G4–G7 integration review; the full nine-tier 1.0 objective and
+recovery/rights/accessibility/privacy/operations/preservation floor remain active.

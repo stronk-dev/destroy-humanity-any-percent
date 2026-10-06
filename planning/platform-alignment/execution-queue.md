@@ -1,6 +1,33 @@
 # Executable queue
 
-## Current Garden database-stamped read correction — 2026-10-06
+## Current Garden latest-read admission / native surface evidence — 2026-10-06
+
+SG10 diagnostic `37f76223`, corrected instrument `1bffaab2`, separate repair authority
+`0b7a49f9`: RP-224 confirms all four older success/error completion races in the actual
+mounted surface. Request-generation admission now guards success and failure, preserving
+destroy protection, callback/wire/copy/timing policy. Both guard mutations fail independently.
+Kernel remains 0.3.153; renderer is outside the kernel-watched registry, not a guard bypass.
+
+RP-225 retains two full-browser deadline failures and separately predeclared phase observation/
+native-case decomposition. All directional/edge/focus/tabstop and Enter/Space/Tab/Harvest/
+once-only/focus-return/pending checks remain; disabling arrows fails all twelve native cases.
+Final local root client/type/build/boundaries/topology and complete Linux three-engine browser
+lane pass (22,416 / six deliberate skips), with separate performance. Earlier cold Go,
+real Postgres Garden, corpus/vectors/copy/vet checks in this range pass. No timeouts, skips,
+CI/concurrency or gameplay policy changed. RP-218's recurrence and general hosted reliability
+are not closed by this local green result; RP-131 history guard remains open separately.
+
+**READY FOR DESIGNATED REVIEW, not approved:** new Codex range begins `37f76223^`
+(`f5d2c323`); exact implementation end is pinned after commit. Original Claude G7's bounded
+refresh-order seam is CHANGES REQUIRED, not a full G7 verdict. Every previous range remains
+pending independently. No real HTTP/default-host/timer/Page Visibility/full G7/AC13/Garden,
+public activation, whole-CI/amd64, archival or release claim.
+
+**NEXT SAFE ACTION:** continue remaining accepted Garden G4–G7 coordinator/event/read/surface
+integration review under bounded predeclarations; keep RP-222's author/owner reconciliation
+and earlier cross-party gates separate. Full nine-tier 1.0 remains the objective.
+
+## Earlier Garden database-stamped read correction — 2026-10-06
 
 SG9 diagnostic `9928a54e`, red finding/separate repair authority `307b2539`: RP-223 proves
 the original G6 read used handler time. Corrected Store binds actual active same-Founder

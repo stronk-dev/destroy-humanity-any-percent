@@ -183,11 +183,28 @@ Designated review remains pending; this does not establish full G6/Garden or pub
 - Growth announcements go to a polite live region once per refresh.
 - It re-reads at `next_tick_wall_ms` while visible and after every receipt, with no client
   simulation.
+- Only the latest-started read may replace the view/status/announcement or schedule the
+  next read. Older success and failure completions are ignored, including a response that
+  arrives after a newer receipt refresh. Unmount still discards late completions.
 - The grid fits 320 CSS px with at least 24 px targets.
 - Commands go through the Game UI's Founder-scoped `act()`.
 
 All garden copy is candidate text (`copy/catalog/garden-candidate.json`): species names read
 `PENDING OWNER NAME`.
+
+RP-224's bounded surface correction has a controlled deferred-port/receipt-prop harness
+around the real mounted component: active/locked/error/late-error ordering, sequential and
+unmount controls, plus native Enter/Space, all four arrow directions/edge clamps, Tab to
+Harvest, exactly-once callback and focus return, and pending-control refusal. Removing
+either response guard or arrow navigation breaks its corresponding witness. This is
+component-level native-browser evidence, not real HTTP/Postgres/default-host command
+integration, timer/Page Visibility proof or full accessibility acceptance. AC13 remains
+blocked on its successor; designated review of the new correction is pending.
+The native input witnesses separate independently observed navigation walks from Enter/Space
+action paths, retaining every intermediate focus and roving-tabstop assertion. This replaces
+the long duplicated test traversal after recorded deadline failures (RP-225), without changing
+test limits or production keyboard behavior. The final local full browser/performance lane
+passes; earlier failures remain evidence, not a claim of general hosted reliability.
 
 ## Verification
 
@@ -200,6 +217,7 @@ All garden copy is candidate text (`copy/catalog/garden-candidate.json`): specie
 - `production.TestGarden*`
 - `production.TestGardenHarvestClockIntegration` (six real-Postgres clock-disagreement arms)
 - `production.TestGardenReadDatabaseClockIntegration` and `TestGardenReadDatabaseFailureIntegration`
+- `client/test/garden-surface-witnesses-browser.test.ts` (native input and controlled read ordering)
 - The Postgres witnesses `TestGardenIntegrationPersistsReplayableFounderLog`,
   `TestGardenHarvestIntegration` and `TestGardenHarvestFaultsAreAllOrNothing`
 - `client/test/garden-surface-browser.test.ts`, in three browsers

@@ -1766,3 +1766,63 @@ before root typecheck and one complete cold Linux browser/performance run alone.
 concurrency, product clock/copy or game mechanism change. RP-225 remains a disclosed reliability
 finding until results/review warrant a bounded disposition; a single green run cannot establish
 general hosted reliability or repair RP-218. Claude still owns the designated corrective review.
+
+### RP-224 implementation, actual probes and final bounded checkpoint
+
+GardenSurface increments a local read generation at load entry. Only that generation may
+admit success, announce/schedule, or admit failure; existing destruction guard and all
+command/copy/wire/timer policies remain unchanged. `kernel/affecting-paths.json` includes
+`client/src/garden/` engines, not `client/src/game-ui/` renderers. No replay/math/wire change
+or registry edit: kernel remains 0.3.153, not a false bump or historical guard repair.
+
+Actual production severings, executed one at a time with terminal sessions before restoration:
+
+- Remove success-generation guard: 46851, exit 1, nine failures / fifteen passes, 3.99 s;
+  older success overwrites new active/locked/error in each engine.
+- Remove failure-generation guard: 20235, exit 1, three failures / twenty-one passes, 5.70 s;
+  older error marks newer active stale in each engine.
+- Initial arrow severing: 80806, exit 1, six failures / eighteen passes, 3.24 s.
+  Batched instrument repeats this independently (9860, already recorded above).
+- Final decomposed instrument, refuse native arrow movement: 84538, exit 1, twelve failures /
+  eighteen passes, 4.07 s. Both independent walks and both mixed-walk/action cases fail
+  their complete literal intermediate focus/tabstop oracle in all three engines; read cases pass.
+
+Every mutation restores exact GardenSurface SHA256
+`f46a67f65bd0a52c0329099bf2567db783641fdcc818654335cf66e04188b714` before final verification.
+The original unmount control passes but is only late-completion external non-effect: it does
+not separately establish destroy-guard or timer-disposal discrimination. No timer/real Page
+Visibility, real HTTP/Postgres command chain, default host or AC13 acceptance is inferred.
+
+All four initial local commands reached terminal status: 36059 root client/type/build/corpus/
+vet/boundaries/vectors/copy/manifest/topology exit 0 (7,362 pass / 114 deliberate Node DOM skips,
+zero TS/Svelte diagnostics, 6,296 shared vectors, thirteen rejected topology corruptions);
+63959 cold Go exit 0 (Garden/production/save/replaycatalog/account/kernel/decimal, `-count=1`);
+20883 declared Compose/Postgres exit 0 (all sixteen `TestGarden*` declarations non-skipped,
+11.245 s). Host DB skips are not counted. Their parallel full browser red 43437 and isolated
+red 82672 remain recorded above; performance did not run in either red target. Neither a
+phase-observation pass nor this final pass cancels those failures or establishes CPU causality.
+
+After the final test-only decomposition, root typecheck 70702 exits 0 with zero diagnostics.
+Final restored root `make test-client typecheck build-client verify-client-boundary
+verify-ci-topology` (63329) exits 0: 7,362 pass / 116 intentional Node DOM skips, 98 files,
+zero TS/Svelte warnings/errors, 213-module build, boundary pass, thirteen negative topology
+fixtures rejected. The two extra Node skips correspond to the two extra actual browser cases;
+they are not lost browser coverage. No Go source, contracts, fixtures or prior gates changed.
+
+Then `make test-browser-ci` runs alone (45750, terminal exit 0): **22,416 pass / six existing
+intentional skips**, all 291 file/engine populations, 38.98 s. All ten new component cases
+execute in each engine; no browser skip. Native navigation walks take Chromium 4.036/4.732 s,
+WebKit 3.139/4.293 s, Firefox 8.161/6.521 s; Firefox action cases finish 3.158/1.625 s.
+These are whole native-driver test observations, not product latency bounds. Separate fresh
+performance population runs, not merely inferred: one pass / twenty-two selector skips,
+540-ms case, 2.52 s. Existing worker readiness passes here; RP-218's recurrence stays open.
+`git diff --check` is clean, no live verification process or mutation remains.
+
+**Ready for Claude's designated bounded corrective review, not approved.** New range starts
+`37f76223^` (`f5d2c323`), spanning predeclarations, diagnostic tests, recorded reds, method
+refinements and this runtime/docs/tracking change. Pin the exact implementation end after
+commit; prior pending ranges are not consumed. No checkbox, lifecycle, archive, public epoch,
+owner-copy, AC13/full G7/Garden, historical whole-CI, hosted amd64 or 1.0 promotion.
+Next accepted work: remaining G4–G7 coordinator/event/read/surface integration review under
+new bounded predeclarations, retaining RP-222's authored contract and all prior independent
+reviews. Full nine-tier 1.0 and its platform floor remain active.
