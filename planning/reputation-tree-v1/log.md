@@ -3919,3 +3919,67 @@ Historical first-hour/H4/H5/threshold reports and formulas stay untouched.
 No H3 verdict, threshold/purchase-policy/balance change, report regeneration,
 epoch mint, owner copy, SQL/cleanup, checkbox, archival, push or release
 promotion. New complete span after973d983c still requires Claude. Goal active.
+
+## 2026-10-06 — RP-267 accounting omission reproduced; repair predeclared
+
+Cold353e97..5d7320 (session37907, exit2) executes all nine initial observations:
+six actual adoption/bank comparisons fail, three zero-elapsed controls pass.
+The complete control population e49818..d6f5a1 (session65431, exit2) executes
+twelve observations: the same six failures, plus all three ordinary-intent and
+three zero-elapsed controls passing. No setup error or skipped comparison.
+No-row/unit actual Reference credit0 instead of5; tree credit0 instead of5.015.
+Full encoded states disagree, while the known-value canonical hook and actual
+ordinary intent controls agree. Candidate selection is only a chosen legal
+coordinate; no optimality claim. All handles end before this record.
+
+Pre-repair actual Reference observation223458..7ce8a3 (session66184, exit0,
+2.438s) records original experiment/threshold1e5 and complete fixture hash
+sha256:3625eddb73da494574a2031fd483e93af236aa9b1f14482e5b51ad6ea3d0f7b0.
+Both careers complete with two Exits. In both, scripted lifetime1.26604673417e6
+credits2; elective lifetime3.34889972124e6 credits0. Treated owns onlyunlock.p05,
+factor1.001, no starters and gate357000ms; control factor1 and gate357000ms.
+Transitions16962/16991. All seven preceding milestones are recorded in the
+full output, not reduced to the run3 gate. Existing v1 comparison is already
+false after RP-265; this baseline does not recover report authority.
+
+Corrective authority is accepted R10 H1/H2/H4's actual paid-Reputation observation
+through the existing canonical lifetime accrual, not a new payout formula.
+Separate bounded implementation range, predeclared before source changes:
+1. Add an internal optional production.AccrualHook to RelevanceSuite. The
+   composed Reference factory supplies runtime.lifetimeHook. Standalone suites
+   retain nil, with no new wire/report or configuration artifact.
+2. Bind this hook at all four solver transition sites and action-free advance;
+   actual bank advances supply runtime.lifetimeHook directly. Reuse the existing
+   simulation wrapper and ablation policy; do not rebuild lifetime arithmetic,
+   served offline bookkeeping, receipts, quotes or policy selection.
+3. Reconcile exactly the three independent full-state production calls in
+   RP-265's tests to the same now-required hook. Keep complete state equality,
+   frozen-rate assertions, masks and zero controls; do not suppress LifetimeValue
+   differences. The earlier Routes-only proof remains honestly limited.
+4. Retain all twelve diagnosis observations. Add per-arm direct ranker advance
+   and effect-masked advance controls (three each), comparing canonical state
+   with explicit5/5.015 and0 lifetime credit. No elapsed-time or starter credit
+   fabrication. Ordinary intents remain healthy controls.
+5. Independently omit factory hook, candidate-purchase hook, advance hook and
+   actual-bank hook. Require compiling failures and exact SHA restoration
+   before the next probe. Also sever the shared first-hour hook to a no-op:
+   explicit known-value assertions must fail despite the shared oracle path.
+   Omit advance's mask in a separate probe to show the masked controls fire.
+   Run normal focused checks afterward; no editing while any handle lives.
+
+Before/after the repair, execute the existing actual Reference seed0 career
+observation with complete outcomes/coordinates, Exits/lifetime/deltas,
+ownership/starters/bonus and all seven recorded milestones. Report drift even
+if gate clocks do not move. Then run cold fast/core/vet, client/type/build and
+boundaries, and the full97pairedH4/970armH5 strict reproduction. Existing reports
+are expected to be potentially stale; no regeneration flag or expected-byte
+edit is authorized. A red full run is not a balance verdict or permission to
+weaken its criteria. No claim that a Reference observation proves all H3
+distributions, unit/non-unit milestone sensitivity or all persona accounting.
+
+Only harness code/tests and docs/records are intended. They are outside the
+current watched kernel prefixes, so kernel161 stays; no false bump. If actual
+scope needs a watched runtime edit, stop and predeclare it instead. Historic
+RP-131 stays red; no CI-policy waiver, SQL/capacity/cleanup, owner copy,
+threshold/policy/literal change, report refresh, box, mint, archival, push or
+release promotion. Full span after973d983c needs Claude. Goal active.
