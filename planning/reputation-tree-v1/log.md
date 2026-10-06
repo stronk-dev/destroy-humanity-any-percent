@@ -4328,3 +4328,66 @@ criterion honestly. Changed lifetime or transition count is not a milestone.
 R10 H3 author reconciliation, H4/H5, report provenance/fresh H1/H2, SQL/capacity,
 RP-131 and all previous reviews remain. Completeee1064a0..fab074a1 needs Claude;
 earlier973d983c..9743dcb7 remains separate. Next RP-264; goal remains active.
+
+## 2026-10-06 — RP-264 false-exclusion/accounting diagnosis predeclared
+
+Previous goal turn made progress: observer correction9743dcb7 and full H3
+studyfab074a1; H3's exact tiny criterion remains RED. Resume clean db8398a3
+(50b1ee/ba0215); no live handle. Accepted R10 H4 requires strictly sooner
+at every eligible starter seed. Current evaluateReputationCareerGate skips
+any nonempty Excluded before inspecting clocks/reason, then dereferences
+SavedMS in a successful two-clock row. RP-264 is still source-only.
+
+Additional source finding RP-268 (bfdcb1/b7dc5e/901ebe): the accepted named
+career-scenario-v1.json path is absent, and the only authored tree testdata
+is fixture-v1.json. Existing tests compose the ratified first-hour population.
+Recorded in the ledger immediately; the author must reconcile this artifact
+authority separately. No new scenario/policy or author-body rewrite here.
+
+Test-only diagnosis, before changing the existing oracle:
+
+- Synthetic rows exercise the exact current helper, never called production
+  measurements. Legal controls: earlier two-clock treatment with exact saving,
+  earlier treatment/control unreached with no finite saving, documented
+  both-unreached exclusion, tie and slower treatment (both must violate),
+  missing treatment/control reached (must violate), and a no-starter row
+  outside H4 timing eligibility. Unknown/no/false exclusion reasons never
+  become owner exemptions.
+- Corrupt exclusions: documented reason with tie/slower/earlier finite clocks,
+  either one-arm-missing clock, unknown reason with both clocks absent, missing
+  reason with both absent, and unknown reason on a no-starter row. Exclusion
+  admission applies to every row; no-starter is not permission for a false
+  label. The existing valid no-starter row still stays outside timing counts.
+- Corrupt accounting: missing or wrong SavedMS for finite clocks (including a
+  claimed exclusion), finite SavedMS on a one-arm-unreached or both-unreached
+  row, and negative observed clocks. Require a visible violation rather than
+  panic or silently admitted/suppressed values. Panic is a separately disclosed
+  baseline failure, not discarded as fixture setup.
+- Mixed/repeated census: accepted earlier finite row, valid both-unreached
+  exclusion, tie and no-starter; counters/saving populations must derive from
+  this invocation. Seed stale counters and call twice to detect accumulation.
+  Invalid rows must produce violations and no successful saving distribution;
+  no stale counters, fake exclusions or invented zero saving may hide them.
+
+Predeclare exact matrix in the new diagnostic test; run cold against the
+existing helper, record which corruptions were admitted/panicked and which
+healthy controls passed. Do not interpret intentionally malformed rows as
+numerical balance findings. If confirmed, record it and separately predeclare
+the bounded test-side oracle repair before editing the old helper.
+
+The only current exclusion route is the existing documented literal
+run3_gate_beyond_ratified_horizon_in_both_arms with both clocks nil and no
+finite saving. Preserve that report wording and the ratified7200000ms horizon.
+Clock nil means the completed producer did not reach the gate in that horizon,
+not a manufactured future timestamp. Do not compare a run-attended clock to
+the global wall horizon or extend it. No statistical weakening, retune,
+report regeneration, new public schema/resource/balance or live runtime change.
+
+After a lawful repair: compiling exclusion/reason/clock/accounting/counter
+omission probes with byte-exact restores, cold fast/core/vet and the complete
+existing97-pair H4 and970-arm H5 strict study; retained reports remain untouched
+and expected drift/real H4 ties must be recorded RED. Source/test/record edits
+only after every handle terminates. Harness test files stay outside kernel
+watch; kernel161 remains. Whole span afterdb8398a3 needs Claude. H3 author
+reconciliation, RP-268, report lineage/fresh H1/H2, H5epsilon/run4, SQL/capacity,
+all prior reviews and full1.0 remain. No box, mint, archive, cleanup or push.
