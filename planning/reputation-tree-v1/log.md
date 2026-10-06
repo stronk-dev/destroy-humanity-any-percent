@@ -7119,3 +7119,29 @@ checks, while RP-283/RP-284 display wait for author reconciliation. Full new
 span after0ae1fa11 needs Claude independently of previous ranges. No boxes/
 numerics/kernel161/balance/price/prose/epoch/CI/security/owner/RFC/archive/
 cleanup/publication/deployment/push/report producer change; full1.0 stays active.
+
+## 2026-10-06 — RP-284 reader supplement self-first-filter
+
+**Review by:** Codex (implementer self-first-filter, NOT designated review).
+**Recorded by:** Codex.
+**Reviewed range:** `0ae1fa11..47ccc003`, all three commits/twelve paths:
+predeclaration004f1c27, test-firstdf327d81, paired source/docs/tracking47ccc003.
+**Verdict:** first-filter passes; Claude must independently cover the full range
+including this record edge. No acceptance/archival; earlier ranges independent.
+
+Complete test613717/source+docs bf216d/tracker12df9b inspected. Reader mirrors
+the existing R7 producer validator, preserves absent/null/object and artifact
+order, and does not touch payout/available math or the terminal component's
+compile-time boundary. Runtime exception is Company-only and exact current
+Founder/run/start time; one last event identity prevents its own repeat without
+unbounded memory. Existing generic cursor/recovery/auth policy is unchanged.
+Controls cover ordinary/equal/advanced HTTP order, same/new offsets, later reset,
+other cohorts, next distinct run and malformed recovery. Four compiling faults
+discriminate; final callback-based fixture still catches below-one omission.
+Node/browser results, original invalid numeric fixture and Chromium async miss
+remain separate and disclosed. No fixture skip/deadline change or evidence
+promotion; native, SQL/mint/full AC12/Firefox and historical RP-131 holds stay.
+ff608a verifies both logs append-only from0ae1fa11; full whitespace check passes.
+No Go/copy/kernel artifact changes, stale report restamp, checkbox or RFC body
+edit. Precise display gap is routed to its author, not silently closed by the
+reader. Next accepted supplement: recovered-publication R7 identity checks.
