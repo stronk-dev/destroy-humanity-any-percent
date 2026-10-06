@@ -1004,3 +1004,26 @@ asserted by the two known cash grants, but not separately mutation-probed in
 this declared wave. Cap refusal, already-owned idempotency and next-tree-removal
 cases remain separate coverage debt. Tests/shared expectations/docs/records only
 persist. Original four-path witness verdict cannot approve these Codex additions.
+
+### Original envelope compatibility refinement, before final record
+
+Full cold server-core 42344 is terminal and passes, as do selected Go/vet
+40518 and client/type/build/boundaries/topology 33816. The original four-path
+diff is completely inspected: prior version/bundles/purchase cases unchanged,
+all forty duplicated artifact strings identical to the prior tree bundle, and
+all seven canonical output-string fields agree with their structured fields.
+The current original AC8 fixture differs from 7d130b89 in exactly one leaf:
+replay_inputs.v rose from 9 to 12 under later carry-version commits; its Go
+producer and TS AC8 assertion body otherwise remained unchanged before this
+wave. Do not call that historical corpus byte-unchanged.
+
+Add an explicit Go legacy-v9 replay against the same pinned receipt/state/events,
+and run the original TS AC8 assertion at both v9 and current v12. This refines
+the original-coordinate review to demonstrated legacy consumption, without
+approving the later carry-version implementation spans. The three new semantic
+effect cases remain current-v12 cases. No fixture regeneration/runtime change.
+Also reconcile this system's canonical stale staging statements: implemented
+Founder v22 floor/carry no longer await B3/R6; latest supported Founder version
+is 25 and Company replay inputs 12, while legacy v9 remains accepted. Source
+coordinates are save/state.go, save/runlog.go and production/replay.go version
+floors; this edits technical status only, not an owner ruling or design body.
