@@ -1120,3 +1120,49 @@ names the exact literal tip including this edge; Claude pending, no self-approva
 checkbox/archive/push. Next accepted local work: remaining R1/R7 codec/mirror
 and R4 cap/idempotency/next-tree evidence, retaining every CI/capacity/owner and
 full-player/1.0 obligation.
+
+## 2026-10-06 — remaining R4 boundaries predeclared (Codex)
+
+Source coordinate 70f8c8c8, clean main. Previous goal turn was progress: original
+Claude AC8 witness reviewed, shared effect/legacy tests and six fired controls,
+full server-core/client gates, canonical staging reconciliation. No live handles.
+This wave supplements accepted R2/R4/OD-7 only; no production or policy change.
+
+Four shared fixture-only next-bundle cases, all with the accepted all-owned
+Founder (earned/spent552, unlock1e6) and actual Exit replay:
+1. Remove generated and its dependent upgrade node from the next tree: ten
+   curriculum units, no upgrade, both cash grants, only two applied starter ids.
+2. Pivot curriculum grants the same Continuous Feed Paper already granted by
+   the tree: pre-run cash1e3 selects pivot; one upgrade remains owned, five free
+   Towers, both cash grants. Existing union/upgrade, no authored copy changed.
+3. Generated grant MaxExactInteger-10: curriculum ten plus tree reaches exactly
+   MaxExactInteger without purchases. Strict loader must admit the boundary.
+4. Small-resource starter grants 24 company.permits: exact current permit cap;
+   cash_large still grants1e5. Strict loader and actual transition must admit.
+Every variant derives a new hash from its actual changed artifact bytes and
+loads the changed catalogs strictly; no epoch/mint or fixture regeneration.
+
+Negative artifact controls: increase each exact-cap grant by one; strict Go/TS
+loaders must reject rule7. Go served starter helper additionally receives an
+already valid Company at one beyond remaining headroom (generated Max-4 plus5,
+or permit1 plus a valid24 grant): require typed ErrInvalidEngineState, no clamp.
+TS private helper is exercised through real Exit replay with an explicitly
+fault-injected COPY of the fully parsed next bundle, grant increased by one.
+That copy intentionally no longer matches its artifact semantics, is not loader-
+accepted/persistable/minted evidence, and must fail specifically at the runtime
+guard (provisioned-hardcap / above_hardcap). Original parsed objects stay frozen.
+
+Eight independent source controls, all compiled and restored before continuing:
+Go and TS provision guard bypass; strict resource grant switched to saturation;
+starter caller switched from next to current tree; preowned grant toggled instead
+of idempotently set. Each must fail the relevant new assertion, not a build error.
+Existing declared-catalog negatives remain independent of runtime guard tests.
+Do not require helper-level whole-batch rollback: the served transaction applies
+starters to a private new Company. Only failed target credit/count is checked.
+
+Run cold selected production/reputation/kernel/vet and root client/type/build/
+boundaries/topology. No source/test/record editing under live verification handles.
+Only tests/shared expectations/docs/records persist; kernel remains0.3.154.
+No checkbox, archival, push, Docker deletion/workload, balance/copy/CI/schema or
+owner-ruling change. New Codex span starts after70f8c8c8, Claude independently
+required; previous spans and full 1.0/platform/CI/capacity obligations remain.
