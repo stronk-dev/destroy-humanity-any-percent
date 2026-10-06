@@ -2691,3 +2691,11 @@ no expectation regeneration, box flip, verdict/archival/mint/push/release
 promotion. Invalid instrumentation is corrected and disclosed, not counted as
 a product failure. Host database skips stay explicit. No edits while a check
 handle lives; independent Claude review must cover the complete new span.
+
+Pre-authoring precision: the single outbox entry above means one receipt row;
+applied event rows have their own outbox deliveries and remain required. Profile
+Fiscal opened time is rebased to the measured preparation clock (the overdue
+negative moves it back one AutoMS); actual database command timestamps govern
+any sweep. Purchase state/receipt/event expectations still come from the pinned
+source, with only intent/revision coordinates and independently calculated
+Fiscal sweep fields adapted. No timing-dependent sweep is silently discarded.
