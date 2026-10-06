@@ -2205,3 +2205,55 @@ ruling; three legal rows and independent unknown-owned fallback remain.
 No global chronology, real Postgres/browser/harness/CI, full R1/OD-7/B4/AC11,
 checkbox flip, mint, archival, push or Docker cleanup. Next full original17-path
 B4 review and remaining pinned consumers. Full nine-tier/platform goal active.
+
+## 2026-10-06 — original B4 review and event-admission predeclaration
+
+Previous goal turn made concrete progress at822774df (OD-7 admission). Current
+main is clean, ahead66, no live handle/new Claude verdict. AGENTS/process,
+accepted Reputation RFC and binding vision/tech rechecked. Review scope is the
+original Claude range541da96e^..541da96e:17paths, including all code/test/docs/
+record/migration/kernel changes and the Go-authored purchase corpus. Its20
+purchase rows and two bundle objects are unchanged at current HEAD (321060),
+while later Exit supplements and Codex corrections are separate authority.
+Initial long corpus projection and combined read output truncated; re-read
+authority/code and compactly project every original row instead of claiming
+unseen output reviewed. A read-only Exit projection assumed nullable Founder
+rows non-null and threw; it is not runtime evidence or a census claim.
+
+R5 strict event validation appears weaker than its claim (RP-252): plain struct
+decoding defaults absent/null numbers, admits case aliases/duplicates, and adds
+unbounded cost to spent. First prove/refute at validateIntentDecision, the entry
+called before event writes by ordinary and Exit persistence paths. Do not infer
+that a malformed player request can manufacture such an event.
+
+Predeclared negative population: all eight required payload fields independently
+omitted, null, case-aliased and duplicated (32); lower/upper numeric domains for
+cost, level, spent-before, spent-after and unlock (10); wrong sum and sum-over-
+earned relationships (2); signed-int64 wrap with valid earned level and negative
+earned level (2); unknown kind/source, invalid mechanical ID and extra key (4);
+null/array/empty-object/trailing-object/trailing-garbage shapes (5). Total55,
+through the actual decision validator with a valid applied receipt/envelope.
+Six valid controls cross both kind/source enums and exact-safe arithmetic ends;
+all eleven original direct-purchase corpus events must remain admitted as well.
+Use exact typed ErrInvalidStream on every refusal; no test SQL/DB evidence claim.
+
+Run unmodified existing Go purchase/replay and client populations cold, then the
+new55case population against unchanged production. If confirmed, implement a
+Reputation-only exact/non-null/duplicate-free payload decoder and checked exact-
+safe domains/relationship. Do not change general JSON decoding or other event
+arms, payload schema/enums, producer bytes, immutable migration00075, any real
+balance/epoch/copy or CI policy. Kernel bump all identities for admission change.
+Demonstrate compiling independent omissions of exact-shape, numeric-domain and
+relationship guards; assert affected refusals fail and valid controls still pass,
+then restore exact SHA before each next run. Cold server-core/vet, full client
+composite and remaining separate guards follow. No edits with live checks.
+
+Separate verified review finding RP-253: original AC3 Postgres witness records
+only applied and owned decisions, not every R5 rejection row. Current additions
+cover frozen rows/Exit plans, not the missing direct taxonomy census. Preserve
+Claude's historical Postgres evidence and invalid migration probe; no fresh DB
+or all-row persistence verdict without an actual declared Postgres run. Existing
+capacity/cleanup hold persists. This event repair cannot close RP-253, AC3/4/8,
+full B4 or the career. Record the original designated review only for its exact
+range; any new Codex correction requires Claude independently. No boxes/archive/
+mint/push/owner-copy changes. Full nine-tier/platform goal remains active.
