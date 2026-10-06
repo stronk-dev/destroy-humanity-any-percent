@@ -5420,3 +5420,50 @@ a622fc/e9f26e,session10374,terminal exit0,0.323s. All handles terminal before
 this edit; source unchanged from full b22ce51e run. Range checkddbbed clean.
 This wording/record edge must also join Claude's complete designated span.
 Prior spans remain independent; no self-archival, checkbox, mint or push.
+
+## 2026-10-06 — Dated career evidence preparation predeclaration
+
+Previous goal turn made concrete progress: RP-272/273 source/report population
+observations, full current census and tracking are committed through5e083766.
+Revalidated clean HEAD and accepted R10. No new Claude verdict, cleanup approval
+or release authority inferred. One unsuccessful read guessed types.go; rg
+resolved RunKey to harness.go before use. No live test/probe handles at start.
+
+RP-275 is registered immediately: H5 discards raw clocks/purchases, so its
+retained aggregates cannot be recomputed from the report alone. This turn is
+the bounded preparation stage for RP-263's dated career evidence: add raw H5
+observations and shared test-side report composition; do NOT generate the new
+dated artifacts yet. Later recording/replay must be separately predeclared on
+the exact committed producer, preserving all old reports and author boundaries.
+
+Authority: accepted R10 H4/H5 observation and evidence discipline. Scope:
+existing H4/H5 test report producers, one diagnostic file and canonical docs/
+tracking. No runtime/kernel/balance/CI/data/policy/horizon/epsilon change.
+Retain existing strict H4 and finite-only H5 statistic/classification. Preserve
+historical JSON, with update flags off. Share report composition rather than
+creating a second report algorithm for a later opt-in instrument.
+
+Before correction, an independent JSON-side diagnostic must compile against
+the current producer and fail for absent raw H5 observations. Then retain each
+admitted arm's source/gate/purchase list, copying mutable data so an input edit
+cannot silently revise retained evidence. Recompose H4's full gate/population/
+savings and H5's nodes/populations/medians from declared complete arm groups;
+the measured source tuple is not policy adoption. Test synthetic coherent
+baseline/mask groups, finite and unreached observations, unchanged summaries,
+serialization and independent retained recomposition. Refuse incomplete,
+duplicate, unknown-mask, mismatched-source and inconsistent purchase/clock
+populations. These are statistical fixtures, not naturally earned careers.
+
+Show separate compiling omissions for raw retention/copying, group admission
+and aggregate composition, awaiting each same handle to terminal and restoring
+exact bytes. Cold focused/fast/vet checks and one complete existing97-pair/
+970-arm invocation; finish without restart/retune. Expected H4 six ties and
+both historical comparisons remain RED. Full results change that expectation
+only through observed evidence, never a loosened criterion.
+
+Exit: report data can be recomposed with executed controls and full current
+caller coverage. No fresh dated provenance claim at this preparation stage,
+censoring decision, per-node causal attribution (RP-274), H3/H5 author ruling,
+career artifact/policy ratification (RP-268/271), epoch/acceptance/archive/SQL/
+browser/deployment/cleanup/push. Full new span after5e083766 needs Claude,
+independently of all earlier ranges; no delegated/self archival.
