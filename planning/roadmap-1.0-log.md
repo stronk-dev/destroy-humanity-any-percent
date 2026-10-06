@@ -2500,3 +2500,26 @@ final evidence and pin, independently pending Claude. Remaining codec/mirror,
 R4 cap/idempotency/next-tree, persisted rows/career/default-player, H4/author/mint,
 capacity/CI and prior review work stay open. No checkbox/archival/push or cache
 deletion. Full nine-tier 1.0 and complete platform floor remain the active goal.
+
+## 2026-10-06 — starter cap/idempotency/next-tree outcomes discriminated
+
+R4 wave e5a8f7f3 adds four shared semantic next-bundle profiles with actual
+hashes/strict changed-catalog loading: retiring generated/upgrade nodes preserves
+old ownership but grants neither; pivot + tree grant the same upgrade once;
+generated and permit grants land exactly on their caps. Two over-cap raw variants
+reject in each loader; two typed Go helper/explicitly fault-injected TS parsed-copy
+guard cases reject. The TS copies are defensive tests, deliberately not admitted
+or persistable catalog evidence. Shared semantics, not new canonical byte pairs.
+
+All eight independently compiled guard/saturation/current-tree/toggle mutations
+fail then restore exact source. Wrong-current-tree also breaks two old TS replay
+cases. First probe tool's whitespace restore/patch-match error is disclosed and
+corrected before another probe, not a product defect or hidden survivor. Cold
+full server-core/vet and root client/type/build/boundaries/topology pass,7383/134.
+No runtime/kernel/balance/copy/epoch/CI change. RP-247 records evidence; RP-246
+separately routes an unexecuted static curriculum branch-grammar question.
+
+Codex first-filter only, new span after70f8c8c8 through final pin needs Claude
+independently of previous spans. Next accepted R1/R7 codec/mirror/activation
+work, retaining persisted-row/career/browser/mint/H4/author/owner/CI/capacity and
+complete nine-tier1.0 requirements. No checkbox/archive/push or Docker deletion.

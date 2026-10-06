@@ -1166,3 +1166,75 @@ Only tests/shared expectations/docs/records persist; kernel remains0.3.154.
 No checkbox, archival, push, Docker deletion/workload, balance/copy/CI/schema or
 owner-ruling change. New Codex span starts after70f8c8c8, Claude independently
 required; previous spans and full 1.0/platform/CI/capacity obligations remain.
+
+## 2026-10-06 — R4 caps, idempotency and next-tree evidence (Codex)
+
+**Review by:** Codex (self/first-filter on new tests/docs/records only).
+**Recorded by:** Codex.
+**Verdict:** first-filter PASS, ready for Claude's designated review. No new
+designated verdict on the earlier B5 producers or on this Codex work; no archive.
+
+Under e5a8f7f3, four shared starter-boundaries-v1.json profiles execute Go/TS
+actual Exit replay against separately hash-derived, strictly loaded next
+fixtures. Retired generator/upgrade nodes no longer grant, while their ids and
+earned/spent Founder values carry unchanged. Pivot + tree granting the same
+upgrade stays one owned upgrade. Generated Max-10 + curriculum10 lands exactly
+at MaxExactInteger, unpurchased. The retargeted small grant of24 permits lands
+exactly on the existing permit cap, with cash_large's1e5 unchanged. These are
+fixture transformations, not balance adoption, copy rewrites or a mint; Go/TS
+serialize their changed artifacts independently, so this is shared semantic
+expectation evidence, not four shared canonical artifact/output byte pairs.
+
+Each runtime rejects two raw over-cap variants at rule7. Two Go served-helper
+inputs violate remaining headroom and reject typed ErrInvalidEngineState, leaving
+the failed count/credit target unchanged, not asserting whole helper rollback.
+Two TS parsed-bundle COPIES increase a grant beyond cap and reject specifically
+at the actual runtime provision guard / above_hardcap. Those copies intentionally
+do not match their admitted artifact semantics: defensive fault injection only,
+never an admitted pin/DB/default-player claim. Original parsed trees stay frozen.
+
+Baselines:34474 cold selected production passes0.326s;26159 full type/client
+passes7383 tests/134 existing skips,85 passing/17 skipped files. Eight probes
+all compile, fail assertions and restore before any following check:
+
+- Go generated guard bypass acb412: EngineGuards/generated_cap wrongly returns
+  ids with nil error; test fails. Initial orchestration then restores correct
+  predicate without indentation (SHA mismatch) and cannot match the next patch's
+  substring. Instrument stops before a second probe; exact indentation/hash
+  restored at e4e317. Not a product defect, extra mutation or hidden survivor.
+- Go resource saturation e5aaf5: invalid permit credit clamps and returns nil;
+  EngineGuards/resource_cap fails. Wrong-current-tree7b7467 fails three real next
+  profiles (retire/generated_cap/resource_cap). Upgrade toggle76f24a fails
+  idempotent's missing upgrade. Each restore verifies exact SHA.
+- TS generated guard35cc1b fulfills instead of rejecting, emitting unsafe
+  9007199254740992 provisioned units. Resource saturation282687 fulfills with
+  permits clamped24 instead of rejecting. Each has one failure/7382 pass/134 skips.
+- TS wrong-current-tree5b5e99 fails seven tests: three next profiles, two parsed
+  faults and two existing v22 activation/Exit-plan replay cases.7383 total gives
+  7376 pass/134 skips, not seven new tests. Upgrade toggle6f7a82 fails only
+  idempotent (one failure/7382 pass/134 skips). All source restores byte-exact.
+  Verbose mutation output retrieval is truncated in aggregate; stored result
+  summaries retain all named failures/totals. No claim of complete diagnostic
+  text for the truncated wrong-current-tree output.
+
+Final55929 passes typecheck/build/full client (7383/134), shell boundaries and
+all thirteen topology negatives. Full root verify-server-core50811 passes
+vet/all non-harness packages cold (production35.794s, reputation0.191s,
+kernel0.168s), formulas/API generation without drift and import boundaries.
+Pitch sub-target is cached but its complete preceding package executes cold;
+host DB skips do not prove integration. No fresh browser/harness/full CI claim.
+
+Restored prestige.go SHA6d07581c74822e57d63c09b0ed139d98b0b1f44aba566f8d654ad2f4213cb691;
+replay.ts ebe2e60186f8abbd28828a4a2bdfee13d216b2d4f00b125fdf663b52da16dc94.
+Original corpus f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782
+unchanged; new boundary table5d438535f04dfeea74a946d587e6f26e4f97a7055236143b8b8701d7950255c1.
+Only tests/shared expectations/docs/records persist; kernel remains0.3.154.
+RP-247 records this narrowed evidence improvement. RP-246 remains a static
+curriculum branch-grammar question, not a proven defect or in-scope correction.
+
+New Codex range starts70f8c8c8 exclusive and includes e5a8f7f3 plus final
+tests/docs/evidence/pin; Claude pending. Previous spans remain separate.
+Next accepted local lane: R1/R7 Founder codec/mirror admission and activation.
+Persisted frozen rows/career/default browser, H4/mint/author decisions, historical
+CI/capacity and full B1/B5/RFC range review remain open. No checkbox, archive,
+push, Docker deletion, source/kernel/copy/owner change or full1.0 scope reduction.

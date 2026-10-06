@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "profile": "retire",
+      "branch": "burnout",
+      "pre_cash": "0",
+      "cash": "1.01e5",
+      "permits": "0",
+      "provisioned": 10,
+      "upgrades": [],
+      "applied": ["reputation.starter.cash_small", "reputation.starter.cash_large"]
+    },
+    {
+      "profile": "idempotent",
+      "branch": "pivot",
+      "pre_cash": "1e3",
+      "cash": "1.01e5",
+      "permits": "0",
+      "provisioned": 5,
+      "upgrades": ["upgrade.continuous_feed_paper"],
+      "applied": ["reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.starter.upgrade_continuous_feed_paper", "reputation.starter.cash_large"]
+    },
+    {
+      "profile": "generated_cap",
+      "branch": "burnout",
+      "pre_cash": "0",
+      "cash": "1.01e5",
+      "permits": "0",
+      "provisioned": 9007199254740991,
+      "upgrades": ["upgrade.continuous_feed_paper"],
+      "applied": ["reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.starter.upgrade_continuous_feed_paper", "reputation.starter.cash_large"]
+    },
+    {
+      "profile": "resource_cap",
+      "branch": "burnout",
+      "pre_cash": "0",
+      "cash": "1e5",
+      "permits": "2.4e1",
+      "provisioned": 15,
+      "upgrades": ["upgrade.continuous_feed_paper"],
+      "applied": ["reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.starter.upgrade_continuous_feed_paper", "reputation.starter.cash_large"]
+    }
+  ]
+}

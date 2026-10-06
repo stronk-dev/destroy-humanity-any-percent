@@ -35,6 +35,16 @@ staging corrected; runtime/kernel/balance unchanged. New Codex span after
 e365e0da independently needs Claude. [Exact limits](reputation-tree-v1/log.md),
 RP-245. All nine-tier and platform obligations remain, no release-path shortcut.
 
+**Subsequent boundary-proof checkpoint:** Reputation R4 under e5a8f7f3,
+four hash-derived next fixtures, exact cap/idempotency/retirement outcomes and
+separate raw loader/defensive runtime refusals. Eight source controls fail and
+restore; final full cold server-core/vet and client/type/build/boundaries pass,
+7383 tests/134 skips. No production/kernel/copy/balance/CI or mint change.
+TS parsed fault copies are NOT admitted pins or persistence evidence. New Codex
+span after70f8c8c8 needs Claude; [exact limits](reputation-tree-v1/log.md), RP-247.
+R1/R7, full prior producer/range review, real player/career and all platform/
+capacity/CI/owner obligations stay open. RP-246 grammar research separate.
+
 **Current checkpoint:** 2026-10-06, cold CI observation under `c8ff3139` /
 `6b119e76` / `e6ea05bf`: passive HTTP/native-worker traces and two intentional
 404 controls discriminate without product/fixture/assertion changes. Full 93957

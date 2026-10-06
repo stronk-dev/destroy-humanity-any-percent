@@ -189,10 +189,21 @@ retired id only, and no owned nodes. The full case exercises all four starter
 nodes, cumulative cash grants, the preowned upgrade and tree-ordered applied ids;
 unknown ids remain owned but contribute nothing. Independently dropping upgrade
 ownership or sorting emitted ids bytewise fails each runtime's new test.
-These three semantic cases are not new all-case canonical byte corpora. Cap
-refusal, already-owned upgrade idempotency and next-tree-removal cases remain
-separate evidence debt. No minted tree, real DB/default player journey or full
-Reputation acceptance follows; see RP-245 and the implementation log.
+These three semantic cases are not new all-case canonical byte corpora.
+
+`testdata/reputation/starter-boundaries-v1.json` additionally supplies four
+fixture-only next-bundle cases: retiring the generated/upgrade nodes; granting
+the same preowned upgrade from curriculum and the tree; landing exactly on the
+provisioned cap; and landing exactly on the permit cap. Changed catalogs are
+loaded strictly under hashes derived from their actual bytes. Removed ids stay
+in Founder ownership but grant nothing in the next run. Both loaders refuse
+over-cap raw variants. Go's served helper rejects bad headroom with
+`ErrInvalidEngineState`; TS checks the defensive guards through explicitly
+fault-injected copies of parsed bundles, which are NOT admitted artifacts or
+persistence evidence. Independent cap-guard, saturation, wrong-current-tree
+and upgrade-toggle mutations fail in each runtime. No minted tree, real DB/
+default player journey or full Reputation acceptance follows; RP-245/RP-247
+and the implementation log retain the precise boundaries.
 
 ## Exit-attached purchase plan (R6)
 

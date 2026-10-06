@@ -105,6 +105,18 @@ contradictions are reconciled, not new behavior. New Codex span after e365e0da
 still needs Claude, distinct from the original witness verdict. No runtime/kernel,
 owner/CI policy, archive/push or full Reputation/1.0 promotion.
 
+Remaining R4 boundaries now execute under e5a8f7f3: four hash-derived fixture
+next bundles cover retirement, already-owned upgrade and exact generated/permit
+caps. Raw over-cap loaders and runtime guards reject; all eight source controls
+fire and restore. TS defensive inputs are intentionally fault-injected parsed
+copies, not admitted/persisted pins. Full cold server-core/vet and client/type/
+build/boundaries/topology pass (7383/134); kernel/runtime/balance unchanged.
+RP-247/[log](reputation-tree-v1/log.md) retains exact scope and first-filter-only
+provenance; new Codex span after70f8c8c8 needs Claude separately. R1/R7 and
+persisted rows/career/default-player/mint/full-RFC acceptance remain open.
+RP-246's curriculum grammar observation is static/unexecuted and out of this
+runtime scope. No full CI/1.0/archival or Docker cleanup authority inferred.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot
