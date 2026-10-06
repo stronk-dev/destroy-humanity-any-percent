@@ -2450,3 +2450,55 @@ on the observed remote ref; implementation `99eedfe0` and its metadata pin remai
 local at observation. HEAD/source did not move under any gate. "No push" above
 describes Codex actions, not a claim that nobody else published. This does not
 supply review/acceptance authority or alter the exact pending implementation range.
+
+## 2026-10-06 — SG7/SG10/SG13 composed player workflow predeclaration
+
+Previous goal turn: progress (RP-231 correction/tests/tracking committed). Clean
+start `b58277cb`, no live verification/probe handles. AGENTS/process and complete
+accepted Garden RFC reread, active index confirmed, vision/tech and relevant
+minigame/Fiscal/UX/voice refs inspected. No skill or subagent applies. Root and
+remote status remain authoritative; no push/publication authorized.
+
+RP-232 is a source-level missing consumer: real Fiscal unlock rows include Garden,
+but the presentation map filters it out. Add a fixture-only composed driver and
+manual root Make target outside existing CI. Reuse the exact `grown` replay bundle
+bytes/hash (`sha256:3d07eeb43b91ac6c8b4b0217627bffb10c453c74f658de7c63f3ea0355965d3a`)
+in a fresh temporary fixture root; never change production epoch or fixture clocks,
+rates, maturities, quota, starter grants, copy or IDs. Build real client/server via
+root Make targets; serve built assets and proxy actual HTTP/WebSocket. Declared
+Compose's disposable `cloud_clicker_game_ui_test` DB only, exclusively/serially:
+preflight existing composed ports before resetting that explicitly named test
+schema. No production DB, secret access or unrelated container cleanup.
+
+Population starts via BEGIN ATTEMPT: actual account/Founder v25 empty starter Garden,
+zero persisted Fiscal credit, real transport/presence, locked Garden. Require the
+actual Fiscal DOM purchase (no direct POST/setup grant). Diagnose its missing row
+before any product repair. After separately recorded accepted-SG7 authority if
+needed, the intended full journey plants two strain_a plus a temporary strain_b
+through DOM, uproots the temporary plant, waits the real 300,000 ms × three tick
+cycle using the existing Garden timer and server DTO, then single-harvests and
+harvests-all the remaining mature plant(s), switches substrate and reloads. All
+gameplay writes originate from DOM, real UUIDv7/Founder revision/exact fields;
+GETs and scoped SQL are observation only. Native timed reads must reach growing
+ages then mature at the unchanged clock, with no action/forced read supplying UI
+growth. Catch arbitrary salt-dependent spawned seedlings without requiring a
+particular draw; only the two deliberately planted strains must mature.
+
+Real receipt/event/log/window/state persistence and reload must bind both axes,
+cash credit and once-only send/hash fields, with server-drawn hidden salt excluded
+from served response/publication JSON. Readiness/control waits use the existing
+composed 30/60-second limits; maturity wait derives from the pinned three real
+ticks plus the existing 30-second control/read allowance, not a convenient faster
+clock or relaxed budget. Objective phases emit progress; a timeout/guard fails,
+not a partial green. Actual-source DOM callback and backend Garden projection
+severing must fail promptly in setup, then restore byte-exactly; final restored
+composed journey must run to its actual harvest objective. No assertions edited
+while any test/probe process is live. Preserve instrument/runtime reds; confirmed
+additional defects get their own authority boundaries.
+
+This is fixture-only built-client/real server/Postgres/WebSocket/wall-time evidence,
+not public Tier-2 activation, launch catalog, AT/AC13, arbitrary salt discovery,
+every harvest cap/fault/Exit case, clean-host deployment or full G7/Garden/1.0.
+No CI topology/job change, kernel bump, acceptance checkbox or archival promotion
+is preauthorized. Claude designated review required for the full new range;
+all earlier ranges, RP-222/RP-229 author routes and RP-131/RP-218 CI remain open.
