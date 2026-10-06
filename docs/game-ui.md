@@ -55,7 +55,9 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
 - Reputation tree: a nav tab shown when the `feature.reputation_tree` fact is true. It hosts
   `client/src/game-ui/ReputationTreeSurface.svelte` over the optional v4 `features.reputation` arm,
   and every node state comes from the server. Buy opens an inline Confirm/Cancel pair and moves
-  focus to Confirm; Escape cancels and returns focus to Buy. Owned, locked and unaffordable nodes
+  focus to Confirm; Escape cancels and returns focus to Buy. Submission moves focus to the
+  stable node row after the DOM updates, retaining it during pending and subsequent node-state
+  replacement. Rows accept programmatic focus but add no Tab stop. Owned, locked and unaffordable nodes
   show their state as text and have no control. Purchases send `purchase_reputation_node` at the
   Founder revision; an applied receipt refreshes the snapshot.
   For an active tree, the server rejects a null, malformed or unordered owned-node set and

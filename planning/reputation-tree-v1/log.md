@@ -5801,3 +5801,49 @@ boundaries. Full Firefox, real host/SQL/purchase receipt/minted epoch, other R9
 requirements and whole AC12 remain separate. Full span after020a25c6 requires
 Claude's designated review, including these tests and record edges. No checkbox,
 acceptance, archival, cleanup, publication or push.
+
+## 2026-10-06 — R9 row-focus correction and executed discrimination
+
+Under770a97bb/930b69d9, confirm now awaits DOM settlement then focuses the
+stable keyed row. Generic typed attachment registration supports the row's
+tabindex=-1 without adding a Tab stop. No callback/eligibility/copy/pending/
+receipt/schema/balance/kernel/CI change. docs/game-ui.md describes this behavior.
+
+Root native exact-file chromium/webkit run eafdf9/d3a434,session38824 terminal
+exit0:26/26 (13 per engine). Mandatory root-target follow-on performance lane
+also passes its one selected Chromium case with22 explicitly skipped; this is
+not complete performance/Worker/default-player acceptance. Typecheck6e070a/
+69ebb1,session58899 terminal exit0,zero errors/warnings.
+
+Compiling severing removes only rows.get(id)?.focus():1af790/3e58a9,
+session24246 terminal exit2,16 purchase failures/10 passes, matching baseline
+body-focus failure. Restore9654d1 byte-exact SHA256
+442d53a68c6224c8487edc0d5c9f4714c9aa20e75a6d6672a70c17673c857f10
+equals564b35. Restored native486a1d/3f6fe1,session72116 terminal exit0:
+26/26 plus the same selected performance case. No edits under a live handle.
+
+Cold root build-client/test-client and client/topology/combat/meters/achievements/
+cosmetic/no-payment boundaries/copy-check: a61878/1966b9/88c5a5,
+session60079 terminal exit0. Build succeeds;8106 unit tests pass,144 visibly
+skip across91 passed/17 skipped files. Those native-only skips are not counted
+as browser executions. Copy657 keys and deployment content manifest pass.
+Kernel-history899256/af34b2,session34953 terminal exit2: CI checkout/negative
+fixtures pass, historical50a3a514 against0cf9f7a6 still fails RP-131. Thus NOT
+whole verify-client/verify/CI green; current renderer is outside watched kernel
+prefixes and kernel161 remains unchanged, no false retrospective bump.
+
+One authorized outside-sandbox Firefox-only retry8bc575/06507b/ad6501,
+session76800 terminal exit2,zero tests: same sandbox-extension/SWGL diagnostics
+and180s launch timeout. No browser flags/deadlines/config changed. This rules
+out claiming the execution-tool sandbox escape as a working workaround, not
+the underlying host cause. RP-256 remains; no third-engine AC12 claim.
+
+Read-only R9 reconciliation finds separate gaps (c5ccee vs actual247e63/
+9cc54c/04fab8/5946c1/923d0c): pending row has no aria-busy (RP-277);
+rejection is host-global, no row input, revision conflict uses shared notice
+(RP-278); cost only appears in available Buy text, not every row via Amount
+(RP-279). These are source-contract findings, not newly executed host proofs.
+Next predeclare RP-277's bounded pending-row baseline first; do not silently
+extend this focus correction to other requirements. Full new span after020a25c6
+needs Claude, separately from all earlier ranges; no checkbox, acceptance,
+archive, cleanup, publication, deployment, push or full1.0 promotion.

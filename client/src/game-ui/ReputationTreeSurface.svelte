@@ -18,6 +18,7 @@
   let confirming = $state<string | null>(null);
   const confirmButtons = new Map<string, HTMLButtonElement>();
   const buyButtons = new Map<string, HTMLButtonElement>();
+  const rows = new Map<string, HTMLLIElement>();
 
   const titles = $derived(new Map(arm.nodes.map((node) => [node.node_id, t(node.title_key as CopyKey, {}, era)])));
   const STATE_KEYS: Readonly<Record<string, CopyKey>> = {
@@ -25,8 +26,8 @@
     owned: "reputation_tree.state.owned", unaffordable: "reputation_tree.state.unaffordable",
   };
 
-  function register(map: Map<string, HTMLButtonElement>, id: string) {
-    return (element: HTMLButtonElement) => { map.set(id, element); return () => { map.delete(id); }; };
+  function register<Element extends HTMLElement>(map: Map<string, Element>, id: string) {
+    return (element: Element) => { map.set(id, element); return () => { map.delete(id); }; };
   }
   async function openConfirm(id: string): Promise<void> {
     confirming = id;
@@ -38,10 +39,11 @@
     await tick();
     buyButtons.get(id)?.focus();
   }
-  function confirm(id: string): void {
+  async function confirm(id: string): Promise<void> {
     confirming = null;
     onPurchase(id);
-    buyButtons.get(id)?.focus();
+    await tick();
+    rows.get(id)?.focus();
   }
   function keydown(event: KeyboardEvent, id: string): void {
     if (event.key === "Escape" && confirming === id) { event.preventDefault(); void cancel(id); }
@@ -62,7 +64,7 @@
   </section>
   <ol class="nodes">
     {#each arm.nodes as node (node.node_id)}
-      <li class="card" data-state={node.state}>
+      <li class="card" data-state={node.state} tabindex="-1" {@attach register(rows, node.node_id)}>
         <h2>{titles.get(node.node_id)}</h2>
         <p>{t(node.body_key as CopyKey, {}, era)}</p>
         {#if node.requires.length}<p>{t("reputation_tree.requires", { list: node.requires.map((id) => titles.get(id) ?? "").join(", ") }, era)}</p>{/if}
@@ -71,7 +73,7 @@
           {#if confirming === node.node_id}
             <span class="confirm" role="group" aria-label={titles.get(node.node_id)}>
               <button type="button" {@attach register(confirmButtons, node.node_id)} disabled={pending || !controlsEnabled}
-                onclick={() => confirm(node.node_id)} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.confirm", {}, era)}</button>
+                onclick={() => { void confirm(node.node_id); }} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.confirm", {}, era)}</button>
               <button type="button" onclick={() => cancel(node.node_id)} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.cancel", {}, era)}</button>
             </span>
           {:else}
