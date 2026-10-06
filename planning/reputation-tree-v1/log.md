@@ -4674,3 +4674,61 @@ H3/H4/H5 acceptance remains RED/open; no need to relabel a costly career repeat
 as required evidence for this H1/H2-only boundary. Fresh H1/H2/lineage, RP-268,
 actual SQL/capacity and prior reviews remain. Complete new span after9f5b81a0
 needs Claude. No checkbox, mint, archive, push or full1.0 promotion.
+
+## 2026-10-06 — RP-269 admission corrected; historical arithmetic preserved
+
+All handles terminal before this record. New test-side study wrapper binds the
+actual pinned measurement caller to the existing full-source population oracle
+and aggregate schema/scenario/hash/constants admission. Generic calculator
+population contract stays unchanged; a legal two-row subset remains calculable.
+Payout helper requires exactly ordered run1/scripted_first then run2/collapse;
+canonical parsing and existing prestige arithmetic remain. No report refresh.
+
+Focused9a2e23..513a3b,session80222,terminal exit0,2.063s:45 diagnostic children
+(18 Exit,27 study), legacy threshold/payout/H1/H3 tests and unrelated matched
+integer-drift test pass. Actual one-Seed Chaos H1 takes1.68s, not a full97-run
+fresh H1 report. The retained30-point measurement reproduces byte-identically.
+Three additional aggregate schema/id/hash corruptions refine the declared
+aggregate-coordinate cases, after the original21-source baseline. All four
+are still admitted by the separate H3 oracle; RP-270 records that honestly.
+
+Six independent compiling probes, cold and terminal before restoration:
+
+| Omission | Output range | Demonstrated failure |
+|---|---|---|
+| exact two-Exit count weakened to at least two |c443ea..40e38c| duplicate each kind and unknown extra |
+| ordered run sequences |59fa1f..12e746| four wrong sequence profiles |
+| required Exit kinds |449a2e..389650| two unknown-kind profiles |
+| study honors population oracle |1d8503..618651| eighteen malformed source profiles |
+| aggregate coordinates |76306f..cc0874| all four aggregate corruptions |
+| prior Founder level ignored |8b9d53..3d04c2| hand paid2 control and pinned report fail |
+
+All exit2, no compiler failure or panic. The extra arithmetic probe confirms
+the preserved formula/level dependency, not authority to change it. All three
+source hashes restore exactly before each next probe: threshold.go
+020593de605da8d7bdb372633b12d17c00fc78e2917111939e7fa7d2fde4f3be;
+threshold_test.go633b676a8becf7363c53d47b3787fcbe16a0a90e99e3d76c915f51297ae20bd0;
+admission_test.go272cf54f050e73c0258b5882df99a70d1a8d92aba962716966ad3a688afd4671.
+Normal restored focused855e6b..14b798,session47498,terminal exit0,1.739s.
+07e525/d17362 independently confirm exact restoration; report SHA46a8fea6
+and retained H1 SHA1f7c774d unchanged.
+
+Cold fast590f6d..039c63..3e1c11,session36474,terminal exit0:
+harness57.543s, role0.159s, Commons0.374s and guard. Cold core732b24..37e269,
+session65975,terminal exit0 includes full vet/cold core, production36.517s,
+transport13.240s,save0.281s, numeric vectors/source version and unchanged
+generated API/formulas. The redundant Pitch alias is cached; its full package
+already ran cold. Narrow vet03845f exits0. No fresh SQL/client/browser/hosted
+check, full CI pass or complete-career repeat claimed; RP-131 remains historical
+RED and prior97/970 career study remains six-tie/report-drift RED.
+
+The first corrective apply_patch failed atomic context verification (cabcbc/
+5e7d7f confirm no partial source changes); exact current context was reread and
+the patch reapplied before any test. No source/record edit during live handles.
+Harness-only; afe1d9 confirms no kernel-watched prefix moved, kernel161 remains.
+No live formula/balance/schema/migration/CI policy/owner copy/report/corpus change.
+Whole span after9f5b81a0, both predeclarations and implementation/records, needs
+Claude independently of all prior spans. No box, waiver, retune, mint, archive,
+cleanup or push. Next RP-270 shared H3 aggregate admission, then fresh H1/H2/
+lineage and RP-268 artifact authority. H3/H4 failures, H5 gaps, SQL/capacity and
+the proper full1.0 goal remain. Goal active; this turn made concrete progress.

@@ -600,3 +600,26 @@ Old report bytes, horizon, policy, balance and kernel161 remain unchanged.
 This is locally verified instrument repair, pending designated review, not
 H4/H5 or AC13 acceptance. The RFC's absent named career-data artifact and fresh
 H1/H2 source admission/lineage remain separate work.
+
+The H2 payout reader now requires exactly two ordered first-hour Exit samples:
+run1 `scripted_first`, then run2 `collapse`. It does not search through duplicate,
+misordered or later-run samples. Canonical lifetime parsing and the existing
+prestige arithmetic still determine the payout; valid zero lifetimes remain
+zero. This is a first-hour measurement helper, not a general career-history API.
+
+The pinned threshold study additionally admits its complete source against the
+loaded ratified scenario, policy, constants, experiment and run coordinates,
+including required observations/outcomes and aggregate source/count coordinates.
+It uses the existing full-population oracle plus a threshold-only aggregate
+coordinate check. The generic `MeasureReputationThresholds` calculator remains
+usable with legal smaller populations; it does not itself certify a full study.
+Aggregate value arrays are not re-derived by this admission wrapper.
+
+Forty-five diagnostic children cover arithmetic controls, malformed Exit pairs,
+24 malformed study sources, full/reordered historical sources and a legitimate
+two-row generic subset. Six independent compiling omissions fail, including
+dropping the previous Founder level, then restore exactly. The retained 30-point
+measurement reproduces byte-identically. This is historical-source recalculation,
+not fresh H1 production, current threshold calibration or owner ratification.
+Full-source lineage and the separate H3 aggregate-coordinate gap remain open;
+no old report regeneration or H2/AC13 completion follows from this local repair.

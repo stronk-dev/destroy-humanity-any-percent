@@ -1,5 +1,25 @@
 # Executable queue
 
+## H2 threshold source/Exit admission corrected locally — 2026-10-06
+
+RP-269 under87d526ed/e3620cda requires the ordered two-Exit first-hour pair
+and binds the pinned study caller to the existing full-source population
+oracle plus aggregate-coordinate admission. Generic legal subsets remain valid.
+All45 diagnostic children plus legacy threshold/H1/H3 tests pass cold. Six
+compiling omissions discriminate with exact restoration. Retained30-point
+report is byte-identical; cold fast/core/vet pass. Historical arithmetic is not
+fresh H1 production, current calibration or owner threshold ratification.
+
+**READY FOR CLAUDE:** complete new span after9f5b81a0, both predeclarations,
+implementation/records and subsequent self-first-filter; previous RP-264 range
+db8398a3..97d916eb and every earlier range remain independent.
+**NEXT SAFE ACCEPTED WORK:** predeclare/repair RP-270's shared H3 aggregate-source
+gap, then fresh H1/H2/source-lineage work and RP-268 artifact-authority grounding.
+**STILL OPEN:** fired H3/H4, H5 epsilon/run4/drift, actual SQL/capacity, prior
+reviews and full1.0 floor. Harness-only, kernel161/live math/balance/reports/
+corpus/CI policy unchanged. No box, waiver, retune, mint, archive, cleanup or push.
+[Evidence](../reputation-tree-v1/log.md).
+
 ## H4 exclusion oracle corrected locally — 2026-10-06
 
 RP-264 undera0aab5a6/5e3064fb/8ef50ccb validates row evidence before starter
@@ -12,7 +32,7 @@ measures93 comparisons/3 valid exclusions (Casual4/14/21).
 
 **READY FOR CLAUDE:** full new span afterdb8398a3, including all three
 predeclarations and implementation/records. Earlier ranges remain independent.
-**NEXT SAFE ACCEPTED WORK:** predeclare RP-269 threshold source/Exit admission
+**ORIGINAL NEXT QUEUE:** predeclare RP-269 threshold source/Exit admission
 diagnosis, distinguishing generic calculation from complete-study authority;
 ground RP-268's absent named career-data artifact against existing rulings.
 **STILL OPEN:** fresh H1/H2/report lineage, H3 author reconciliation, H4's

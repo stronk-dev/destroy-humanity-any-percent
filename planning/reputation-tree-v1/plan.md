@@ -137,7 +137,14 @@ threshold retune is measured and reported, then ratified by owner SHA).
   separate current97-pair census confirms93 counted/3 valid excluded rows.
   Test-only, kernel161/old reports unchanged; complete span afterdb8398a3 needs
   Claude. Next RP-269 source/Exit admission diagnosis and RP-268 artifact
-  authority grounding, not threshold minting or criterion changes.
+  authority grounding, not threshold minting or criterion changes. Subsequent
+  RP-269 under87d526ed/e3620cda admits the ordered first-hour Exit pair and
+  full H2 study source/aggregate coordinates, retaining generic subsets.
+  Forty-five diagnostic children plus legacy threshold/H1/H3 tests pass;
+  six compiling omissions discriminate with exact restoration. Cold fast/core/
+  vet pass and retained30-point measurement remains byte-identical. Harness-
+  only, kernel161 unchanged; whole span after9f5b81a0 needs Claude. Next RP-270's
+  shared H3 aggregate-source gap, then fresh H1/H2/lineage and RP-268 grounding.
   Fresh H1/H2/report provenance/reproduction remains separate; no retuning or
   report-regeneration authority here. No checkbox flipped.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.

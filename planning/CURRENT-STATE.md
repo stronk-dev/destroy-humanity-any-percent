@@ -4,7 +4,20 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest harness correction: RP-264's H4 report gate now refuses false exclusions,
+Latest harness correction: RP-269 admits exactly the ordered first-hour Exit
+pair and binds the pinned H2 caller to declared full-study source/population
+and aggregate coordinates. Forty-five diagnostic children, legacy threshold/
+H1/H3 tests and six compiling omission probes pass/discriminate; exact source
+restoration and unchanged retained30-point report verified. Cold fast/core/vet
+pass. Generic legal subsets still calculate. Harness-only, kernel161/live math/
+balance/reports/corpus/CI policy unchanged; full span after9f5b81a0 needs Claude.
+Next RP-270's separately observed H3 aggregate-source gap, then fresh H1/H2/
+report lineage and RP-268 artifact-authority grounding. Historical recalculation
+is not fresh production or calibration; H3/H4 failures, H5 gaps, SQL/capacity,
+all prior reviews and full1.0 remain. No box, waiver, retune, mint, archive,
+cleanup or push. [Evidence](reputation-tree-v1/log.md).
+
+Previous harness correction: RP-264's H4 report gate now refuses false exclusions,
 invalid clocks and inconsistent/missing savings; each census is fresh. All28
 synthetic profiles and the legacy gate pass cold. Nine compiling omissions
 discriminate; two expose caught panics rather than semantic refusal. Cold fast
@@ -12,7 +25,7 @@ harness/core/vet pass. Complete97-pair H4 and970-arm H5 finish in787.881s but
 remain RED (six Casual ties and retained-report drift). A separate current
 97-pair census confirms93 counted comparisons/3 valid exclusions, Casual4/14/21.
 Harness-test-only; kernel161/live math/balance/reports/corpus/CI policy unchanged.
-Whole new span afterdb8398a3 needs Claude. Next diagnose RP-269's threshold
+Whole new span afterdb8398a3 needs Claude. Its original next queue diagnoses RP-269's threshold
 source/Exit admission and ground RP-268's named artifact authority; fresh
 H1/H2/report lineage, H3 author reconciliation, H4/H5, SQL/capacity and all prior
 reviews remain. No box, waiver, retune, mint, archival, push or 1.0 promotion.

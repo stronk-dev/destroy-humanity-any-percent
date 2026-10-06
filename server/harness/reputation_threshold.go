@@ -54,19 +54,16 @@ var ErrReputationMeasurement = errors.New("invalid reputation threshold measurem
 // payout: run 1's scripted_first credit sets the Founder level, and run 2's
 // collapse pays against it.
 func PaidReputationAtFirstElectiveExit(run FirstHourRunResult, policy *prestigecore.Policy, threshold decimal.Decimal) (int64, error) {
-	var scripted, elective *FirstHourReputationSample
-	for index := range run.ReputationExits {
-		sample := &run.ReputationExits[index]
-		switch {
-		case sample.ExitType == "scripted_first" && scripted == nil:
-			scripted = sample
-		case sample.ExitType == "collapse" && elective == nil:
-			elective = sample
-		}
+	if policy == nil || len(run.ReputationExits) != 2 {
+		return 0, fmt.Errorf("%w: run %s requires exactly two first-hour Exits and a policy", ErrReputationMeasurement, run.Key.PolicyID)
 	}
-	if scripted == nil || elective == nil || policy == nil {
-		return 0, fmt.Errorf("%w: run %s lacks recorded scripted and elective Exits", ErrReputationMeasurement, run.Key.PolicyID)
+	if run.ReputationExits[0].RunSeq != 1 || run.ReputationExits[1].RunSeq != 2 {
+		return 0, fmt.Errorf("%w: run %s has unordered first-hour Exit sequences", ErrReputationMeasurement, run.Key.PolicyID)
 	}
+	if run.ReputationExits[0].ExitType != "scripted_first" || run.ReputationExits[1].ExitType != "collapse" {
+		return 0, fmt.Errorf("%w: run %s has invalid first-hour Exit kinds", ErrReputationMeasurement, run.Key.PolicyID)
+	}
+	scripted, elective := &run.ReputationExits[0], &run.ReputationExits[1]
 	firstLifetime, err := decimal.ParseCanonical(scripted.LifetimeValue)
 	if err != nil {
 		return 0, err

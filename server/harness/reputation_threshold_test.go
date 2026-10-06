@@ -48,8 +48,8 @@ func reputationThresholdGrid() []string {
 // REPUTATION_UPDATE_MEASUREMENT=1 regenerates the pinned report.
 func TestReputationThresholdMeasurement(t *testing.T) {
 	report, policy := reputationMeasurementInputs(t)
-	measured, err := MeasureReputationThresholds(report, policy, reputationThresholdGrid(), ReputationThresholdEnvelope{Minimum: 3, Maximum: 10},
-		[]string{"casual.t0_t1", "chaos.t0_t1"})
+	suite, _, experiment, _ := reputationCareerAdmissionInputs(t)
+	measured, err := measureReputationThresholdStudy(suite, experiment, report, policy, reputationThresholdGrid())
 	if err != nil {
 		t.Fatal(err)
 	}

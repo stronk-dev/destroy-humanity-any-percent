@@ -3007,3 +3007,20 @@ independent. Next RP-269 threshold source/Exit diagnosis and RP-268 artifact
 authority grounding; fresh H1/H2/lineage, fired H3, H4/H5, actual SQL/capacity
 and full nine-tier/platform/release objective remain open. Goal active; no
 checkbox, waiver, retune, mint, archive, cleanup, push or release promotion.
+
+## 2026-10-06 — Threshold Exit/source admission repaired
+
+RP-269 under87d526ed/e3620cda rejects misordered/duplicate first-hour Exit
+samples and guards the pinned H2 caller's complete source/population/aggregate
+coordinates. Generic legal subsets remain calculable. All45 diagnostic children
+plus legacy threshold/H1/H3 tests pass; six compiling omissions discriminate
+and restore exactly. Retained30-point report remains byte-identical. Cold
+fast/core/vet pass. [Exact evidence/scope](reputation-tree-v1/log.md).
+
+Harness-only, kernel161/live math/balance/reports/corpus/CI policy unchanged.
+Historical recalculation and the single Chaos H1 witness are not fresh full
+H1/H2 calibration. Whole new span after9f5b81a0 needs Claude; RP-264
+db8398a3..97d916eb and prior spans remain independent. Next RP-270's shared
+H3 aggregate-source gap, then fresh H1/H2/lineage and RP-268 grounding. Fired
+H3/H4, H5, actual SQL/capacity and the full nine-tier/platform/release objective
+remain. Goal active; no box, waiver, retune, mint, archive, cleanup or push.

@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness correction (2026-10-06):** RP-264 repairs H4 report admission
+**Latest harness correction (2026-10-06):** RP-269 repairs first-hour Exit
+admission and the pinned H2 study boundary, retaining legal generic subsets.
+Forty-five diagnostic children plus legacy threshold/H1/H3 tests pass; six
+compiling omissions discriminate and restore exactly. Retained30-point report
+unchanged. Cold fast/core/vet pass. Harness-only, kernel161/live math/balance/
+reports/corpus/CI policy unchanged. Whole span after9f5b81a0 needs Claude.
+Next RP-270 shared H3 aggregate-source admission, fresh H1/H2/report lineage
+and RP-268 artifact grounding. Historical recalculation is not calibration;
+fired H3/H4, H5, SQL/capacity, prior reviews and the full nine-tier/platform
+goal remain. No waiver, retune, mint, archive, push or release claim.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous harness correction (2026-10-06):** RP-264 repairs H4 report admission
 without changing its strict-sooner criterion. All28 synthetic profiles and the
 legacy gate pass; nine compiling omissions fail with exact restoration (two
 are caught panic faults, not semantic refusals). Cold fast/core/vet pass.
