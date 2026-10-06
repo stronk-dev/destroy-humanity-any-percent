@@ -706,4 +706,16 @@ descriptor. Review by: Codex (first-filter only). Recorded by: Codex. New span
 29e1ff02 exclusive includes predeclaration/instrument/Make/report/dossier/docs/
 ledger/reconciliation and following pin; Claude required independently of prior
 Account/CI/browser ranges. Proper full nine-tier 1.0 unchanged, not completed.
+
+## 2026-10-06 — pin generated-contract census separately
+
+Substantive 29e1ff02..79960054, two commits/eleven paths: predeclaration, manual
+compiler census, evidence and reconciliation only. This following record edge
+also belongs in the complete designated range; closing relay names literal tip.
+No generated/compatibility pin/production/auth/schema/copy/kernel/workflow changes.
+Twelve compiler arms/four scoped calls/fourteen matching operations are bounded
+evidence of incompleteness, not accepted dispatch/rotation/policy. All handles
+terminal, clean checkpoint sought, no Docker deletion or push. Review by: Codex
+(first-filter only). Recorded by: Codex. Claude independently pending, prior
+Account observer 3121a376..29e1ff02 and all earlier ranges remain separate.
 - Gaps 6 to 10 are in the entries above.
