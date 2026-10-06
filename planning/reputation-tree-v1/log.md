@@ -5333,3 +5333,62 @@ Restored focused source/gate/classifier/population check769339,terminal exit0,
 0.118s. Full cold fast and97-pair/970-arm current census are next, not yet
 claimed. Kernel161/live math/balance/CI/reports/corpus unchanged; no box,
 acceptance, mint, author adoption, archive, cleanup, SQL/browser claim or push.
+
+## 2026-10-06 — RP-272/273 complete current population evidence
+
+Committed producerb22ce51e, server tree71f436514376317b7b5675dc15105f54b10c56d4,
+balance treecd982b7c58a53cac0ab4c91a773705033930414d, kernel0.3.161 unchanged.
+Source hashes exactly match the three pinned/restored files above. All test
+handles are terminal before this tracking edit; the working tree stayed clean
+throughout both checks. No update flags or source changes during measurement.
+
+Root `make reputation-harness-check`,84be52..f315af,session46547,terminal exit2,
+547.497s. H4 completes119.83s and H5 completes427.55s; no cancellation/restart.
+H4 current census4a8f73: Casual32 starter pairs,28 finite (22 faster/six tied),
+one treated-only/three both-unreached. Chaos64 starter pairs,all64 finite/faster.
+Reference1 row/no starter. All-finite min/p50/max Casual0/80000/350000ms and
+Chaos38000/118000/212000ms.194 sources admitted. Strict H4 still fires its six
+ties and original v1 comparison is RED, not new acceptance.
+
+H5 terminalf315af admits/retains970 sources and logs all9nodes ×3personas.
+The following table retains every nonzero purchased group; fields faster/tied/
+slower refer to finite unmasked-baseline versus masked comparisons, NOT causal
+per-node effects. Baseline careers are32Casual/64Chaos/1Reference for every node.
+
+| Node suffix | Persona | Bought | Finite | Faster/tied/slower | Unmasked-only/masked-only/both-unreached | Conditional p50 ms |
+|---|---|---:|---:|---|---|---:|
+| unlock.p05 | Casual | 32 | 29 | 1/23/5 | 0/0/3 | 0 |
+| unlock.p05 | Chaos | 64 | 64 | 6/8/50 | 0/0/0 | -24000 |
+| unlock.p05 | Reference | 1 | 1 | 0/0/1 | 0/0/0 | -109000 |
+| starter.cash_small | Casual | 32 | 28 | 22/6/0 | 1/0/3 | 70000 |
+| starter.cash_small | Chaos | 64 | 64 | 64/0/0 | 0/0/0 | 102000 |
+| starter.generated_beige_tower | Casual | 23 | 20 | 17/3/0 | 0/0/3 | 15000 |
+| starter.generated_beige_tower | Chaos | 53 | 53 | 44/6/3 | 0/0/0 | 30000 |
+| unlock.p25 | Chaos | 42 | 42 | 0/0/42 | 0/0/0 | -46000 |
+| starter.upgrade_continuous_feed_paper | Chaos | 22 | 22 | 21/0/1 | 0/0/0 | 40000 |
+
+The other18 node/persona groups have zero purchases/finite pairs and no median.
+Specifically cash_large/unlock.p50/unlock.p75/unlock.p100 are never bought by
+any persona; Casual buys none ofp25/continuous_feed_paper, Reference buys only
+p05. Not-purchased careers equal each group's baseline count minus bought,
+not an exclusion from the declared cohort. Descriptive arithmetic over the27
+logged groups:873 node-pair exposures,333 bought/540 not bought;323 finite bought
+pairs (175 faster/46 ties/102 slower), one unmasked-only and nine both-unreached.
+These are repeated node comparisons, NOT873 independent careers. H5 emits no
+node-classification error; preserved report comparison stays RED. No epsilon,
+run4, censoring decision or whole H5 acceptance follows.
+
+Root `make verify-harness-fast`,8f820b..ad4b37,session29123,terminal exit0:
+harness72.287s/role0.329s/Commons0.406s/guard; runs alongside exhaustive study,
+so wall times are local observations, not performance baselines. Root `make vet`,
+67432c,terminal exit0. Read-only historical H4 census08676b separately agrees
+on Casual28 finite/six ties; it is not current masked-arm evidence.
+
+Source/status/hash rechecks521a5f/6541ca remain clean; original H4/H5 SHA
+648f36d6/4ed79054 and dated H1/H2 SHA3ce87b08/d5979c93 unchanged. No other runtime/
+balance/corpus/CI/kernel edit or fresh hosted/SQL/browser/deployment claim.
+RP-272/273 now have measured denominators, with censoring and per-node author
+routes held. Next separately predeclare dated H4/H5 artifact provenance under
+RP-263; do not silently refresh old reports or adopt the unratified career
+fixture. Full new span aftera3e36f94 needs designated Claude review, independently
+of every earlier span. No checkbox, mint, archive, cleanup, publication or push.

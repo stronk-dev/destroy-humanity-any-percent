@@ -1,5 +1,29 @@
 # Executable queue
 
+## Career report populations observed — 2026-10-06
+
+RP-272/273 under69c79d28/b22ce51e add test-side population observations,
+retaining every gameplay/statistic/classifier/strict-gate input. Synthetic
+controls and eleven compiling omissions discriminate, including serialized
+retention. Complete97-pair/970-arm run finishes547.497s: Casual H4 includes
+28 finite pairs/six ties, one treated-only and three both-unreached; H5 cash/
+tower medians use28/32 and20/23 bought pairs. All27 node/persona groups visible.
+Cold fast/vet pass; the strict gate and both historical comparisons stay RED.
+
+**READY FOR CLAUDE:** full new span aftera3e36f94, predeclaration through final
+source/docs/evidence/record edges, separately fromdfc2fb8c..a3e36f94 and every
+earlier range. No self-filter substitutes for the designated pass.
+**NEXT SAFE ACCEPTED WORK:** separately predeclare RP-263 dated H4/H5 observation
+artifacts with exact committed producer/input identity and complete replay;
+preserve old v1 files. Current fixture observations must remain explicitly
+distinct from author ratification of career data/policies or a minted epoch.
+**AUTHOR ROUTES:** RP-274 per-node attribution, RP-268/271 career-data/all-Exit
+intent, H3 tiny criterion, H5 epsilon/run4 and censoring/threshold/literal adoption.
+**STILL OPEN:** complete reviews, actual SQL/browser/deployment/hosted proof and
+the full nine-tier1.0. Docker capacity hold remains; no cleanup, CI/epoch/live
+math/balance change, acceptance box, archive, publication or push.
+[Exact census and execution](../reputation-tree-v1/log.md).
+
 ## Career/report sources bound locally — 2026-10-06
 
 RP-263 underec71a33c adds actual measurement sources beyond catalog keys and

@@ -171,6 +171,13 @@ threshold retune is measured and reported, then ratified by owner SHA).
   afterdfc2fb8c needs Claude. RP-272/273 denominator diagnosis and RP-274 per-node
   attribution remain separate; no software-provenance artifact refresh or
   author-policy/epsilon adoption. Docker still100%/39784KiB free; no cleanup.
+  RP-272/273 under69c79d28/b22ce51e subsequently expose report populations and
+  all-finite H4 descriptive savings. Synthetic controls/eleven compiling omissions
+  discriminate; complete97-pair/970-arm census finishes547.497s: Casual H4
+  28 finite/six ties/one treated-only/three both-unreached, H5 cash/tower finite
+  medians28/32 and20/23 bought pairs. Cold fast/vet pass; gates stay RED.
+  Full new span aftera3e36f94 needs Claude. Dated H4/H5 provenance remains next,
+  separately predeclared, not adoption of censoring or unresolved author intent.
   No AC13/box/mint promotion. At the earlier checkpoint below,
   fresh H1/H2/report provenance/reproduction remained separate; no retuning or
   report-regeneration authority here. No checkbox flipped.

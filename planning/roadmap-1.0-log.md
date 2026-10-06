@@ -3081,3 +3081,21 @@ matching Cloud Clicker candidate identified. No cleanup, new Docker workload,
 owner adoption, kernel/live math/balance/CI/corpus/retained-report change,
 checkbox, mint, archive, deployment, publication or push. The complete nine-tier/
 platform/release objective remains; goal active, no shortcut or release claim.
+
+## 2026-10-06 — Full career report population census
+
+RP-272/273 under69c79d28/b22ce51e add observation-only population partitions,
+retaining strict H4 and conditional H5 estimation. Synthetic controls/eleven
+compiling omissions discriminate, including JSON retention. Full97-pair/970-arm
+run finishes547.497s: Casual H4 has28 finite pairs/six ties/one treated-only/
+three both-unreached, all-finite savings0/80000/350000ms. H5 cash/tower medians
+use28/32 and20/23 bought pairs. All27node/persona groups recorded, including zero
+bought. Cold fast/vet pass; the strict gate and both old comparisons remain RED.
+[Exact census/source/run limits](reputation-tree-v1/log.md).
+
+Full new span aftera3e36f94 needs designated review, separately from prior work.
+Next separately predeclare RP-263 dated H4/H5 source/provenance observations.
+RP-274 attribution, H3, RP-268/271, H5 epsilon/run4/censoring and owner adoption
+remain author routes; actual SQL/browser/deployment capacity and full review
+union remain. No retune, imputation, epoch mint, acceptance box, archive, cleanup,
+CI/publication/deployment/push or shortcut to the full nine-tier/platform1.0.

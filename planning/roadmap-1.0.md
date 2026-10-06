@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest correction (2026-10-06):** RP-263 career/report source observations
+**Latest observation (2026-10-06):** RP-272/273 make statistical populations
+visible without retuning gameplay or weakening acceptance. Full97-pair/970-arm
+study atb22ce51e finishes547.497s: Casual H4's28 finite pairs include six ties;
+one treated-only/three both-unreached pairs are separate. H5 cash/tower medians
+use28/32 and20/23 bought pairs, not all purchases. All27 node/persona groups
+visible; synthetic controls/eleven compiling omissions discriminate. Cold fast/
+vet pass, H4 and historical comparisons stay RED. Whole span aftera3e36f94 needs
+Claude. Next separately predeclare dated H4/H5 source/provenance observations;
+author/capacity/review routes and the full nine-tier/platform goal remain.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous correction (2026-10-06):** RP-263 career/report source observations
 distinguish overridden policy, experiment/horizon, purchase policy and mask
 without changing the catalog key or gameplay. Four real careers preserve whole
 result fingerprints;36 refusals/nine compiling omissions discriminate. Full

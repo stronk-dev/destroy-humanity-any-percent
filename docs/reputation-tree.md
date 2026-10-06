@@ -715,8 +715,8 @@ H4 still observes 93 timing comparisons, three valid exclusions and six ties.
 These observed counts do not turn the focused corruption cases into naturally
 earned populations or make the acceptance gates green. H4's strict-sooner failure,
 H5's unruled epsilon/run4, missing career-data authority and the each-Exit intent
-ambiguity remain. RP-272 separately tracks H5's unreported finite-pair denominator;
-this change does not supply a censoring rule or certify its current median as a
+ambiguity remain. H5 originally omitted its finite-pair denominator (RP-272);
+the population observations below expose it but do not supply a censoring rule or certify the median as a
 full-persona result. The earlier dated H1/H2 evidence remains pinned to its recorded
 producer tree, not silently promoted to this changed server tree.
 
@@ -744,6 +744,18 @@ and both clocks finite**, not all bought careers. The estimator, epsilon,
 classifier, horizon and purchase policy are unchanged; the absence of a median
 still does not mean a zero effect. Historical report files remain untouched.
 Synthetic controls and eleven compiling omissions verify counts, conservation,
-finite statistics and JSON retention. A full current population must still be
-executed before citing its observed denominator; this is no censoring adoption,
-H4/H5 acceptance or RP-274 attribution resolution.
+finite statistics and JSON retention. The full current study at `b22ce51e`
+finishes 97 H4 pairs and 970 H5 arms in 547.497 seconds. Casual H4 has 32 starter
+pairs: 28 finite (22 faster, six tied), one treated-only and three both-unreached.
+Its all-finite savings are `[0, 80000, 350000]` ms; Chaos has 64 finite faster
+pairs with `[38000, 118000, 212000]` ms. Reference has no starter, not a zero
+starter effect.
+
+For Casual H5, cash-small's 70,000 ms median uses **28/32** bought pairs; one
+is treated-only and three both-unreached. The tower's 15,000 ms median uses
+**20/23** bought pairs, with three both-unreached and nine other careers that
+never bought it. All nine nodes and all three persona groups are observed,
+including zero-purchase groups; the exact census is in the implementation log.
+Cold fast harness and vet pass. Both historical comparisons and H4's six-tie
+criterion remain RED. This is no censoring adoption, H4/H5 acceptance,
+current-artifact software-provenance closure or RP-274 attribution resolution.
