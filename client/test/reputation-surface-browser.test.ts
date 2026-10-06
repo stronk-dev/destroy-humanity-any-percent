@@ -4,12 +4,14 @@ import { expect, it } from "vitest";
 
 import type { GameUIReputationArm } from "../src/api/generated/types";
 import ReputationTreeSurface from "../src/game-ui/ReputationTreeSurface.svelte";
+import ReputationFocusHarness from "./fixtures/ReputationFocusHarness.svelte";
 import { installTheme, UI_THEMES } from "../src/ui/themes";
 
 const browser = typeof document !== "undefined";
 const node = (id: string, suffix: string, kind: "bonus_unlock" | "starter", cost: number, requires: string[], state: string) =>
   ({ body_key: `reputation_tree.node.${suffix}.body`, cost, kind, node_id: id, requires, state, title_key: `reputation_tree.node.${suffix}.title` });
 const arm = {
+  tree_active: true,
   available: 3, bonus_factor_next_run: "1.002e0", bonus_factor_this_run: "1e0", level: 4, per_level_ppm: 10_000, spent: 1, unlock_ppm: 50_000,
   nodes: [
     node("reputation.unlock.p05", "unlock_p05", "bonus_unlock", 1, [], "owned"),
@@ -18,6 +20,73 @@ const arm = {
     node("reputation.unlock.p25", "unlock_p25", "bonus_unlock", 5, ["reputation.unlock.p05"], "unaffordable"),
   ],
 } as GameUIReputationArm;
+
+for (const era of ["era_1995", "era_2000"] as const) {
+  for (const key of ["{Enter}", " "]) {
+    for (const outcome of ["owned", "available"] as const) {
+      it.skipIf(!browser)(`retains Reputation purchase row focus after native ${key === " " ? "Space" : "Enter"} and ${outcome} in ${era}`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const target = document.createElement("main");
+        document.body.append(target);
+        installTheme(target, UI_THEMES[era], false);
+        const purchases: string[] = [];
+        const app = mount(ReputationFocusHarness, { target, props: {
+          initialArm: structuredClone(arm), era,
+          onPurchase: (id: string) => { purchases.push(id); app.setPending(true); },
+        } });
+        try {
+          await settle();
+          const row = target.querySelector<HTMLLIElement>("li[data-state=available]")!;
+          const buy = row.querySelector<HTMLButtonElement>("button")!;
+          buy.focus();
+          await userEvent.keyboard(key);
+          await settle();
+          expect(purchases).toEqual([]);
+          expect(document.activeElement).toBe(row.querySelector("button"));
+          await userEvent.keyboard(key);
+          await settle();
+          expect(purchases).toEqual(["reputation.starter.cash_small"]);
+          const heldButtons = [...target.querySelectorAll<HTMLButtonElement>("li button")];
+          expect(heldButtons).toHaveLength(1);
+          expect(heldButtons.every((button) => button.disabled)).toBe(true);
+          expect(document.activeElement, "confirmed control must not strand focus on body while pending").toBe(row);
+          const authoritative = structuredClone(arm);
+          authoritative.nodes[1]!.state = outcome;
+          if (outcome === "owned") {
+            authoritative.spent += 2; authoritative.available -= 2;
+            authoritative.nodes[2]!.state = "unaffordable";
+          }
+          app.deliverArm(authoritative);
+          await settle();
+          expect(target.querySelectorAll("li")[1]).toBe(row);
+          expect(row.dataset.state).toBe(outcome);
+          expect(row.querySelectorAll("button")).toHaveLength(outcome === "owned" ? 0 : 1);
+          expect(document.activeElement, "focus remains on the exact row after authoritative replacement").toBe(row);
+          expect(purchases).toHaveLength(1);
+          for (const id of arm.nodes.map((node) => node.node_id)) expect(target.textContent).not.toContain(id);
+        } finally { unmount(app); target.remove(); }
+      });
+    }
+  }
+  it.skipIf(!browser)(`cancels Reputation confirmation through native Escape in ${era}`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const target = document.createElement("main"); document.body.append(target);
+    const purchases: string[] = [];
+    const app = mount(ReputationTreeSurface, { target, props: { arm: structuredClone(arm), era, pending: false, controlsEnabled: true, onPurchase: (id: string) => purchases.push(id) } });
+    try {
+      await settle();
+      const row = target.querySelector("li[data-state=available]")!;
+      const buy = row.querySelector<HTMLButtonElement>("button")!;
+      buy.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(document.activeElement).toBe(row.querySelector("button"));
+      await userEvent.keyboard("{Escape}"); await settle();
+      expect(row.querySelectorAll("button")).toHaveLength(1);
+      expect(row.querySelector("[role=group]")).toBeNull();
+      expect(document.activeElement).toBe(row.querySelector("button"));
+      expect(purchases).toEqual([]);
+    } finally { unmount(app); target.remove(); }
+  });
+}
 
 async function settle(): Promise<void> { for (let index = 0; index < 4; index += 1) { await tick(); flushSync(); } }
 

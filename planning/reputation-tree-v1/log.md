@@ -5769,3 +5769,35 @@ cold client/type/build and independent boundaries. Host/public/mint/whole AC12,
 other row feedback/presentation requirements, native Firefox/RP-256, SQL/capacity,
 H3/H4/H5/author/review holds and full nine-tier1.0 remain separate. All new range
 after020a25c6 requires Claude; no box, archive, cleanup, publication or push.
+
+## 2026-10-06 — R9 focus failure reproduced; correction predeclared
+
+Unchanged production, native all-engine run9ca0fc/73f15a/36bef9/a1ac62,
+session85290 terminal exit2: Chromium and WebKit each execute13 cases,
+eight purchase-focus failures and five passes. Firefox executes zero: native
+launch fails sandbox extension/SWGL, times out180s (RP-256), never counted green.
+Both engines show actual activeElement body while the submitted row's sole Buy
+control is disabled. Escape and existing rendering/axe/plan cases pass.
+
+Test refinement explicitly captures initialArm via public untrack (avoids the
+Svelte initial-capture warning), requires exactly one pending control before
+the disabled census, and keeps the injected owned arm's dependent tower state
+consistent with the lower budget. Repeated unchanged-production diagnostic:
+root make test-browser with exact file and explicitly selected chromium/webkit,
+ed0be4/296615,session39864 terminal exit2; same16 failures/10 passes. Selection
+is a bounded two-engine diagnostic, not full AC12. No source edits under live
+handles; original three-engine failure remains on record.
+
+Correction authority is accepted RFC R9's post-purchase row focus. Predeclare
+only a stable keyed row attachment, programmatic tabindex=-1 (no added Tab stop),
+and focus of that row after Svelte DOM settlement when confirming. Keep callback,
+server-derived eligibility, pending policy, owned/no-control rendering and
+Escape-to-Buy unchanged. No transport/receipt promise seam, copy, balance, save,
+kernel, schema or CI changes. Canonical UI docs follow this bounded behavior.
+Execute the same26 two-engine cases; then temporarily sever only the row-focus
+call in compiling source, require the eight cases per engine to fail, restore
+exact source bytes and rerun. Run cold types/build/client and declared independent
+boundaries. Full Firefox, real host/SQL/purchase receipt/minted epoch, other R9
+requirements and whole AC12 remain separate. Full span after020a25c6 requires
+Claude's designated review, including these tests and record edges. No checkbox,
+acceptance, archival, cleanup, publication or push.
