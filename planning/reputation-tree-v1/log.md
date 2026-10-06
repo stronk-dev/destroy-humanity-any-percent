@@ -1536,3 +1536,72 @@ admission/B3 producer review, real DB/career/default-player, H4/mint/author/
 owner/capacity and complete nine-tier/platform1.0 remain open. Next original
 B3 range audit, then remaining admitted R1/R7 evidence; not self archival,
 push or an implied Docker-cleanup permission.
+
+## 2026-10-06 — full original B3 range review (Codex)
+
+**Review by:** Codex (cross-party review of Claude's original change).
+**Recorded by:** Codex.
+**Reviewed range:** `fb0ab3b1^..fb0ab3b1` (all thirteen paths, 597 insertions,
+35 deletions, including the three kernel identities, docs and planning claims).
+**Verdict:** CHANGES REQUIRED for original B3 completion; no archival approval.
+
+The Go structural/accounting and pinned-mirror boundaries are present and the
+new-run default preserves earned Reputation. The original TS encoder did not
+validate accounting before emission: RP-248's executed sixteen failing inputs
+demonstrate that defect, not an inference from a green decoder test. The original
+doc's load/encode rejection claim was therefore false. R7/AC10's four shared
+migration rows and baseline ratchet were absent; RT-DG-B disclosed substituting
+unit tests, not an owner waiver. This is RP-249, not a second ledger defect.
+Original Founder-carry refusal and deferred TS Exit witness are disclosed
+incremental dependencies, not evidence of full R6/AC11 acceptance.
+
+Later Codex ranges `6a8ccaf1..39912364` and `39912364..80519365` locally repair
+RP-248 and RP-249. Their separate Claude review is pending: this verdict does
+not approve my corrections by folding them into Claude's thirteen-path range.
+Fresh current-tree cold execution 0f56b8 passes the four migration subcases and
+three activation/accounting parents (save0.277s, production0.307s). It is not an
+execution of historical fb0ab3b1 or real Postgres. Prior mutation evidence is
+explicitly the later ranges' executed record, not a new historical probe.
+
+Earlier-version direct activation remains narrower than R7's stated chain:
+the original full-state live test crosses v14 to v21, then v22; its separate
+replay helper starts at v21. No full seven-source or catalog-bound encode
+verdict is inferred. Full R1 mirror encode authority, all B3/AC2/AC11 consumers,
+DB/career/default-player and release remain open. Main is clean; original
+history stays append-only. Two unsuccessful lookup commands this session used
+nonexistent guessed filenames/unmatched glob; no file was changed by them.
+
+## 2026-10-06 — predeclare earlier Founder activation matrix (Codex)
+
+Authority: accepted R7's every-earlier-chain-step accounting preservation and
+new-run-only activation. Test-only supplement, no save-version/mechanic change.
+
+Population: seven legal writable Founder sources v14,16,17,18,19,20,21, each
+encoded/restored under its matching internally valid artifact bundle. v15 is
+historical decode-only, not an invented writable intermediate; pre-v14 legacy
+upgrades remain the existing migration corpus, not this population. Six older
+fixture bundles plus current epoch8's v21 bundle target the fixture-only v22
+tree. No epoch is minted and no claim of production/default-player integration.
+
+Arms: actual `settleAndActivateFoundations` run-boundary kernel with an old and
+new Company, and public `ApplyFounderLogged` with valid exit.v1 audit evidence.
+Loading alone must retain its source version/accounting. Both result arms must
+encode/restore under the next economy and pass its pinned validation; earned11
+remains available11 with spent0, non-null empty owned and unlock0. Whole encoded
+Founder result bytes must agree between the two arms after the expected Exit
+history append. Existing age/knowledge fields must survive, and prerequisite
+feature state must be populated sufficiently for the full v22 codec.
+
+Controls: independently default spent to earned in live and Founder replay,
+then independently bypass the v17 and v20 replay activation steps. Each mutation
+must compile and fail this new population at its affected earlier sources;
+restore exact source SHA before any subsequent run. A surviving control is a
+finding, not permission to broaden assertions after observing it. No edits
+while any verification/probe is running. Initial setup errors will be recorded.
+
+Exit: seven sources pass both arms cold and all four controls discriminate;
+full server-core/vet plus client/type checks cover unchanged consumers. This
+does not supply shared TS older-source cases, Company-log/DB write atomicity,
+all legacy migrations, full R1 mirror encode authority or whole AC11. New test/
+docs/records require Claude designated review. No checkbox flip, balance/copy/
+schema/migration/CI edit, archival, push or Docker cleanup/DB workload.
