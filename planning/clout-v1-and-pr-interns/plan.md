@@ -404,3 +404,38 @@ failure;three parser refusals/census pass. Keep this red finding rather than
 weakening the comparison. Separately predeclare accepted-CV4 dispatch repair and
 kernel-version protocol, then re-observe exact output parity. This wave changes
 no runtime, prior corpora or RFC body. Details in logged-policy-research.md.
+
+## RP-309 — bounded accepted-CV4 runtime correction
+
+Predeclared at clean974c1a45. Authority: accepted Clout CV4 ordinary v19 writes
+and Go/TS replay, with v19 extending existing active-play state. Repair ONLY
+TypeScript applyLogged's two v18-only presence/version predicates to >=18.
+This is a real semantic correction, so kernel0.3.162→0.3.163 in source of truth
+and both generated mirrors, in the runtime commit. No history correction/bypass.
+No save/economy/balance/copy/RFC-body/CI change or accumulated-state repair.
+
+Retain the24Go-authored logged purchases,9catchup faults and exact expected
+receipts/events/poststates; do NOT regenerate outputs to fit TypeScript. The
+source-pinned Go report requires complete explicit re-observation after source
+changes. Compare the prior corpus: only selected source identities may change;
+every original bundle/profile/payload/input/output/negative count must remain
+byte/logically exact. Historical red source/artifact are preserved atb55f2131.
+
+Five new TS companions: exact first v18 active-play receipt/events; missing
+active-play evidence atv18 andv19; unexpected active-play evidence on actualv16;
+v18 with replay version4. Refusals must name active-play presence and leave full
+encoded initial state unchanged. Use real old pinned bundles/corpus, not
+demoting a v19 state while keeping an incompatible axis catalog.
+
+Run both original v18-only and permissive-no-guard mutations against the new
+checks; inspect actual failure diagnostics. Every handle must terminate before
+edits, then restore exact code/source/artifact bytes. The complete39-test new
+TS population must report all failures honestly, including any newly exposed
+numeric/receipt/state mismatch. Such mismatches require their own diagnosis,
+not a tolerance, fallback or expansion of this runtime repair.
+
+Cold root Go production/economy/decimal/kernel, full client/types/vet, declared
+native research population and kernel/topology validators. Original27AC6 and
+RP-131 history/AMD64/hosted blockers stay explicit. Self first-filter then Claude
+designated review over the entire new span including record edges; no checkbox,
+full-Clout approval, archival/mint/push/deploy/release status promotion.

@@ -1202,3 +1202,13 @@ span after7effff9a INCLUDING this following record edge requires Claude's
 designated pass; all prior independent spans/holds remain. Next bounded RP-309
 repair requires its own predeclaration/kernel protocol/re-observation. Goal
 active; RP-308 unanswered; no mint/archive/push/deploy/release call.
+
+### RP-309 correction start — accepted CV4, separate from R-012 research
+
+At clean974c1a45, preceding goal turn was progress: actual logged checks expose
+v19 active-play refusal, with failing evidence committed. Existing accepted CV4
+is authority to repair the dispatch, not an unanswered product choice. Predeclare
+the one-line two-predicate correction, honest kernel162→163, unchanged24/9
+outputs with explicit source re-observation, five companion controls and two
+actual guard mutants in plan.md BEFORE implementation. Nothing absorbs or
+approves the preceding research spans; RP-308 wording question remains unanswered.
