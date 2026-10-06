@@ -2289,3 +2289,34 @@ Committed implementation `537b1f50`. Exact designated-review range
 This metadata pin is not a verdict; all earlier pending review/author/owner/CI gates
 remain independent. Clean tree after implementation, all processes terminal, no archive
 or external publication. Next accepted work remains default-host/receipt integration.
+
+## 2026-10-06 — SG10 actual host/runtime receipt diagnosis predeclaration
+
+Clean start `3c3af1de`; previous goal turn progress (RP-230 correction/tests/tracking),
+all handles terminal. AGENTS/process reread; accepted Garden active index confirmed;
+continuing fully read Garden SG5/SG9/SG10, same vision/tech and referenced clock/UI laws.
+Read actual GameUIApp, browser runtime, generated Garden port, transport decoder and
+existing host/runtime fixtures. No skill/subagent/external message/publication.
+
+RP-231 is initially an evidence gap. Add separate browser file mounting GameUIApp and
+createBrowserGameUIRuntime with injected fetcher and controlled socket boundary, not a
+replacement runtime. Navigate only DOM controls; use no fixtureSnapshot/fixtureSurface.
+Five callback populations: plant, uproot, single harvest, harvest-all, substrate. Bind
+Founder revision 7 distinct from Company 41, exact command fields and UUIDv7; hold POST
+response to prove pending/no optimistic view, then deliver applied receipt and authoritative
+v4 snapshot at Founder 8 and the matching next advisory view. Next command must bind 8.
+Refusal population must display existing Garden detail without treating it as network loss.
+Inactive/locked visibility controls and streamed receipt population use real parser paths.
+Streamed receipt should re-read mounted Garden under SG10 without direct refresh-prop edits.
+
+Injected DTO/HTTP JSON and socket handshake/publication frames are controlled client
+integration, not actual Go/Postgres/network or native-input/AT/maturity/mint proof. No
+synthetic engine/server state machine added; terminal receipts remain under the archived
+Game UI protection, never overridden here. All new unexpected/empty calls fail loud.
+Run root client/type and declared native-Linux three-engine diagnosis cold. Preserve reds
+and instrument errors; no product repair during this diagnostic range. Confirmed defects
+get a separate SG10 authority boundary. Later actual-source callback/receipt mutations
+must fail and restore exactly before final full browser/performance/root gates. No bounds,
+skips, schema/math/copy/CI or public content changed, no acceptance/archival promotion.
+Codex first-filter only, Claude required for exact new range independently of every prior
+range. RP-229/RP-222 author, RP-131/RP-218 CI/worker and full nine-tier 1.0 remain open.
