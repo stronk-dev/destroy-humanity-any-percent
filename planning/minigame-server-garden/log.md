@@ -1274,3 +1274,12 @@ roadmap records. No production byte or acceptance checkbox changed. Existing fix
 retain identical nil-configurator setup; the new callback runs only before CreateStream. All
 wrong instrument expectations and actual probe failures are retained. This is the new tests'
 implementer first filter, not Claude's designated verdict. No prior range is silently approved.
+
+### Exact SG5/AC7 witness handoff
+
+READY FOR CLAUDE DESIGNATED REVIEW, not approved: full test-only span
+`0c125bec^..ca94668c` (`1dbeafbd..ca94668c`), including original predeclaration `0c125bec`,
+instrument corrections/initial red evidence `9405d75a`, and tests plus all final evidence
+`ca94668c`. The repeated rollback probe's observation-order clarification is included too.
+Kernel stays 0.3.152; no production diff. Every earlier SG1/SG2/SG4/SG6/clock/R-010 handoff
+remains a separate pending request. No archival, mint, publication or release promotion.

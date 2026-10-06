@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-06, Garden SG5/AC7 command and refusal witnesses under
-`0c125bec` / instrument correction `9405d75a` (test-only, designated review pending).
+`0c125bec` / instrument correction `9405d75a` (implemented `ca94668c`, exact test-only span
+`0c125bec^..ca94668c`, designated review pending).
 Fifteen direct commands and eight gates agree in Go/TS. Six real-Service/Postgres arms prove
 refusal after genuinely due growth, including salt initialization and cap truncation, with
 full saved-state/revision/log/event/outbox/faucet/retry checks and ordinary continuation.

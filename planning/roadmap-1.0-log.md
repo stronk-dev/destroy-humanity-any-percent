@@ -1966,3 +1966,7 @@ Test-only, kernel 0.3.152 unchanged. No full G1/G4/Garden/public/mint, hosted/wh
 or release claim; all earlier independent-review/owner/author and RP-131/RP-218 gates remain.
 Next: accepted G2/G3 bundle/activation/replay, then remaining G4–G7. Proper nine-tier 1.0
 remains active, with rights/privacy/accessibility/deployment/preservation obligations intact.
+
+Exact SG5/AC7 test-only handoff: `0c125bec^..ca94668c` (`1dbeafbd..ca94668c`), original
+predeclaration, instrument corrections/red result and complete new evidence all included.
+Pending Claude, not designated-approved; no earlier pending range, lifecycle or release gate closes.

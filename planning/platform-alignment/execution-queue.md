@@ -17,6 +17,9 @@ complete Linux browsers/performance pass: 22,344 / six intentional skips, all 25
 entries in every engine. Test-only, unchanged kernel 0.3.152. Claude review pending, no G1/G4/
 Garden/public/mint/lifecycle/hosted/whole-CI or release promotion. Prior ranges remain pending.
 
+Exact test-only handoff: `0c125bec^..ca94668c` (`1dbeafbd..ca94668c`), includes both
+predeclarations/corrections and the complete test/evidence change. Pending Claude, not approved.
+
 **NEXT SAFE ACTION:** accepted G2/G3 Garden bundle/floor/activation and replay review, then
 remaining G4–G7. Preserve every independent-review, owner/author, accessibility, rights,
 deployment, preservation and full-nine-tier release gate; RP-131/RP-218 limitations remain.
