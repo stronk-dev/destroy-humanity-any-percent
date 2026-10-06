@@ -820,7 +820,8 @@ Startc70861c1/RP-302. Existing SQL proves frozen-row preservation and the real
 career changes next frozen bonus; isolated unit headers differ. Do not call
 either absent. Add ONE gameui SQL test using the already source-hashed original
 replay bundle/states, initial diagnostic earned6/empty ownership/five generated
-towers/run2/tier1. Register disposable epoch/pin/genesis/frozen rows normally;
+towers/run2/tier1 with an explicitly seeded diagnostic prior scripted Exit.
+Register disposable epoch/pin/genesis/frozen rows normally;
 use actual service/route projector/minigame and public GameUISnapshot.
 
 Compare complete resource/generator JSON at identical time before/after actual

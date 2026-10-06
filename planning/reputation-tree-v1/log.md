@@ -9123,3 +9123,41 @@ schema/balance/copy/mint/CI/owner policy/acceptance/archive/push authority; full
 new span afterc70861c1 including records needs Claude, prior reviews/holds live.
 One attempted ledger patch had no matching anchor and changed no bytes; retry
 uses exact existing footnote anchor and keeps the new row inside the shared table.
+
+09a9d1/session10793→55c818 terminal2,0.078s: first actual gameui SQL attempt
+stops at epoch changelog_ref constraint, no purchase/Exit/projection assertions
+executed. My test inserted `diagnostic` instead of valid changelog/*.md. Correct
+only fixture reference; do not relax the DB constraint. Before rerun full Company
+state equality uses save.EncodeState rather than ordinary struct JSON (the
+state's wire encoder owns ledger fields); no preceding claimed result lost.
+
+424034/session76988→94159d terminal2,0.077s: my first correction still failed
+the unchanged exact pattern (fb8baa): `^changelog/epoch-[0-9]+\.md$`, not arbitrary
+changelog/*.md as I wrote above. No gameplay assertions executed. Now use the
+existing disposable epoch-1.md pattern from068a84's seed helper; no DB edits.
+
+2559c5/session60515→5cd05b terminal2,0.141s: all current/next purchase/read/
+head/frozen/retry assertions execute successfully, actual Exit returns invalid
+replay inputs.7a9606 identifies my run2 fixture still had no previous Exit, so
+live service selects scripted_first (not elective collapse); this is inconsistent
+with the seeded run2. Before rerun add ONE initial diagnostic scripted_first
+history record (run1,delta0,now-2min), documented in plan. Never claim that record
+was played or reseed anything after CreateStream. No production fix inferred;
+actual purchase and subsequent Exit history remain independently recorded rows.
+
+b58b4d/session61275→0e01d4 terminal2,0.138s: same current/purchase/read/retry
+checks pass, terminal active-play schedule refuses.978e3d finds the reused
+Company had source-owner deterministic next opportunity4891ms while this test
+uses a different owner. Before stream creation sample initial schedule through
+the pinned public Opportunities.Spawn(new owner,run2,0,0); set run start/evaluation
+to now so attendance starts0, not source's earlier minute. This follows existing
+initializer60–75; no post-genesis changes, relaxed replay guard or source edit.
+
+3d684a/session10225→5c2409 terminal0,0.127s: actual persisted public projection
+passes. Initial current5/factor1/next1, actual purchase current5/factor1/next1.003/
+earned6spent1available5 with complete unchanged resource/generator rows/Company
+head/frozen rows. Actual plan-funded WindDown produces run3cash1e3/generated5/
+spent6available0/current next1.003/rate5.015; recorded two-entry Founder history
+verifies. Public read and both exact retry controls preserve complete12tables.
+Initial diagnostic states/history are not natural/default browser/AC15/release
+evidence. No later reseeding/runtime correction; fault probes follow.
