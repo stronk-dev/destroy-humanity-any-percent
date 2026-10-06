@@ -5,7 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime checkpoint (2026-10-06):** RP-279 persistent Amount costs
+**Latest runtime checkpoint (2026-10-06):** RP-282 hidden Exit-plan correction
+underc12e985f first fails16 completed-protocol remount/Offer cases with24
+controls green; the initial incomplete Offer fixture is disclosed. Two compiling
+mutations independently fail16/24 and restore exact source. Final194 selected
+Chromium/WebKit pass; fresh panels synchronize existing empty state while
+explicit visible selections still forward in artifact order. Actual native
+host/runtime over controlled HTTP/socket inputs, not live server/SQL/mint/full
+AC12. Types/build8106 units/boundaries/copy/manifest pass;228 Node skips visible.
+Tier0 opt-in eligibility is manufactured for copy-era coverage, not reachable
+production Wind Down; the Tier1 subset independently catches the same defect.
+Historical RP-131 guard executes RED; Firefox unexecuted. Whole span after
+eb258a7a needs Claude. Next ground R9 Tab header/row path RP-285. RP-283 preview
+bridge/RP-284 Run End consumer and all owner/author/data/operations holds remain.
+No numeric/kernel/copy/CI policy change or acceptance promotion; full nine-tier/
+platform1.0 stays active. [Evidence](reputation-tree-v1/log.md).
+
+**Previous runtime checkpoint (2026-10-06):** RP-279 persistent Amount costs
 under285a247e first fail40 native cases, then seven compiling omissions
 discriminate with exact restoration. Restored Chromium/WebKit pass154 selected
 cases:40 cost/58 child/56 host. Costs remain visible across all four states,

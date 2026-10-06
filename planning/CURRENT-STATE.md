@@ -4,7 +4,23 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime checkpoint: RP-279 persistent Amount costs are locally corrected
+Latest runtime checkpoint: RP-282 hidden Exit plans are locally corrected
+underc12e985f. Completed-protocol baseline fails16 remount/Offer cases while24
+empty/selected controls pass; initial incomplete Offer fixture is disclosed.
+Two compiling mutations independently fail16/24 with controls green, exact
+restoration passes194 selected Chromium/WebKit cases. Fresh panel selection now
+synchronizes through its existing callback; current selected plans still send
+in artifact order. Actual native host/runtime over controlled HTTP/socket input,
+not live server/SQL/mint/full AC12. Types/build8106 units/boundaries/copy/manifest
+pass;228 Node skips visible. RP-131 guard executes RED, Firefox unexecuted.
+Tier0's opt-in eligibility is manufactured for the copy-era diagnostic, not a
+reachable production Wind Down; the Tier1 subset proves the same host defect.
+Whole span aftereb258a7a needs Claude. Next ground/predeclare RP-285's R9 Tab
+header/row path; RP-283's missing authoritative preview bridge and RP-284's Run
+End/new-route consumer remain separate. No copy/numeric/kernel/CI change,
+owner adoption, mint or release promotion. [Evidence](reputation-tree-v1/log.md).
+
+Previous runtime checkpoint: RP-279 persistent Amount costs are locally corrected
 under285a247e. Native unchanged-source baseline fails40; seven compiling cost/
 visibility/order/binding omissions discriminate, then exact restoration passes
 154 Chromium/WebKit cases (40 cost/58 child/56 host). All four row states, both

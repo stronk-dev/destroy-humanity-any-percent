@@ -55,6 +55,8 @@ class ControlledSocket extends EventTarget {
 }
 function controlledBoundary(tier: number, windDownEligible = false) {
   const initial = wireSnapshot(tier);
+  // Opt-in diagnostic projection, not a production-eligibility proof: the
+  // server only offers Wind Down at tier >= 1. Tier 0 true exercises copy era.
   initial.transitions.wind_down.eligible = windDownEligible;
   const storage = new MemoryStorage();
   storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "controlled-access", refreshToken: "controlled-refresh", accountID: "controlled-account", recoveryCode: "controlled-recovery" }));

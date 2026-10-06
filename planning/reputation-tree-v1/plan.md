@@ -89,6 +89,16 @@ threshold retune is measured and reported, then ratified by owner SHA).
   `run_started` v2. ACs 6, 7, 8, 11.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+  RP-282 under673c09a6/916abc50/c12e985f now synchronizes existing fresh
+  panel selection with host, preventing invisible old-plan submission. Refined
+  baseline16 fail/24 controls green; two compiling mutations fail16/24 with
+  exact restoration; final194 native Chromium/WebKit pass. Initial incomplete
+  Offer fixture is disclosed, not product revision evidence. Types/build8106
+  units/boundaries/copy/manifest pass;228 Node skips/RP-131 RED/Firefox remain.
+  Actual host/runtime over controlled HTTP/socket, not server/SQL/mint/full AC12.
+  Whole span aftereb258a7a needs Claude. Next RP-285 Tab header/row diagnostic;
+  RP-283 authoritative preview DESIGN-GAP/RP-284 Run End consumer stay separate.
+  No checkbox flipped, full B7 closure or new persistence semantics.
   RP-279 underd12fdcff/20c44899/285a247e now persists actual Amount cost
   outside all row-control conditions. Baseline40 fail; seven compiling mutations
   discriminate and restore exact source; final154 native Chromium/WebKit pass.

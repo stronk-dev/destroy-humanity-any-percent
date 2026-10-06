@@ -6546,3 +6546,71 @@ docs inspected0d039d; callback consumes current child selected state, user
 toggle serialization/eligibility/preview computation unchanged. All handles
 terminal before probes. No GameUIApp/runtime/parser/server/copy/prices/kernel
 bytes change, no invisible persistence semantics or promotion to full AC12.
+
+## 2026-10-06 — RP-282 executed negatives / final restored gates
+
+Same40 plan cases (both eras/native keys/five flows), assertions fixed:
+
+| Probe | Terminal execution | Actual outcome |
+|---|---|---|
+| Drop mount callback | 81b253/940577,session7806 exit2 | 16 remount/Offer empty-plan failures,24 controls pass |
+| Notify first-node selection on empty mount | d46444/59168f,session77973 exit2 | 24 empty-flow hidden-plan failures,16 explicit-selection controls pass |
+
+Both compile and reach the wrong outgoing POST; no compiler exception as
+discrimination. Old56 host cases are selector-skipped during probes only.
+Source restored after each terminal to exact committed plan SHA
+251343ff0583a62a2b3ca5faa5332f8d80c8de6a3c8e7b3e161f52c1ed7de861
+(54f97c/88d697/5eeb9d). No criteria/fixture/flags changes between probes.
+Final456872/5076e9,session28947 terminal exit0:194 selected native passes,
+40 plan/56 old host/58 child/40 cost. Root automatic perf one selected
+Chromium pass/22 skips, not full performance. Cold0c4c4a/bfdd5e/0f9ed3,
+session10449 terminal exit0:zero type errors/warnings,213 build modules,
+8106 unit passes/228 skips,91 files pass/19 skip. Boundaries/13 topology/
+22 cosmetic/six payment negatives pass; copy658/hash unchanged,611 orphan
+warnings; Go manifest passes. Node skips are not native execution evidence.
+Separated8f536/e2cd53,session23827 terminal exit2 at the unchanged RP-131
+50a3a514/0cf9f7a6; checkout contract/history fixtures pass. Firefox unexecuted,
+not whole client/CI green. All handles terminal before tracking edits.
+
+Correction changes only plan mount synchronization, canonical UI docs, the
+existing host diagnostic and tracking. Existing helper defaults preserve old
+host population; cleanup now uses captured scope revision. No host/runtime/
+event decoder/transport/server/SQL/schema/kernel161/numeric/price/copy/balance/
+report/CI policy bytes moved. Full range aftereb258a7a requires Claude including
+fixture refinement/record edges, independently of all earlier ranges. New
+native evidence is actual runtime/host/Worker over controlled network inputs,
+not server/SQL/mint/full AC12 or human assistive proof. No new persistence
+policy:an existing empty panel cannot carry another mount's invisible selection.
+No checkbox flip, self-archive, owner adoption, mint, cleanup, report restamp,
+publication/deployment/push, goal completion or narrower1.0 objective.
+
+Remaining source grounding (read-only during gates): RP-2832df91c/2e4f65/
+9e67ef/a0138e confirms projector, registered API schema and exact client parser
+all expose eligible only. DESIGN-GAP: R9 demands payout-aware Wind Down plan
+but does not define the authoritative preview bridge. Proposed draft/amendment
+topic:Reputation UI evidence bridge, covering server-authored payout preview,
+closed versioned API ownership and producer→consumer/refusal proof. Author must
+reconcile before implementation; do not use client math or silently add fields.
+RP-284595c22/abfee9/6da5b4 confirms run_started v2 already produces factor/
+applied starter IDs, but examined UI event union ignores it and RunEnd lacks
+available-balance input. Producer/consumer ownership still needs grounding,
+not inferred balances from payout or eager next-run lifecycle suppression.
+RP-2859ded02/e55c08 identifies header tabindex=-1 despite R9 sequential Tab
+requirement and no host heading-focus path. Source finding only, needs native
+unchanged-source diagnostic before correction. Next safe accepted lane is that
+bounded header/row path; RP-281 generator repair remains separately available.
+
+## 2026-10-06 — RP-282 first-filter population limitation
+
+Read-only producer census153165 finds server/gameui/transition_preview.go
+offers Wind Down only at tier>=1. The helper's opt-in eligible Tier0 projection
+is deliberately manufactured to exercise both copy eras through the host;
+it is wire/accounting/coordinate-valid, not a reachable production terminal
+population. Tier1 independently reproduces the same remount/Offer hidden-plan
+failure (eight of baseline16), while Tier0 supplies additional renderer behavior
+only. No producer/default-workflow/eligibility claim may cite the full194.
+Existing default-false helper/old host population is unchanged. Add a fixture
+comment and current-board disclosure; no fixture/assertion/source change or
+rerun relabeling. This limitation does not negate the Tier1 defect or permit
+shipping manufactured eligibility. Real SQL/mint/default-player AC12 remains
+held independently; no policy change to make Tier0 eligible.

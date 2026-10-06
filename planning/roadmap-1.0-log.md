@@ -3220,3 +3220,26 @@ generator formatter debt remains separate. Full nine-tier/platform1.0 goal
 active; owner/author/data/mint/SQL/capacity/deployment/review holds unchanged.
 No numeric/kernel161/copy/balance/CI-policy change, box flip, acceptance/archive,
 cleanup, report restamp, publication/deployment/push, shortcut or goal completion.
+
+## 2026-10-06 — Reputation hidden Exit plan corrected locally
+
+RP-282 under673c09a6/916abc50/c12e985f first reaches hidden plan submission
+in16 native remount/Offer cases,24 controls green. The initial incomplete Offer
+fixture's coordinate failures are disclosed, not a product defect claim.
+Fresh panel mount now synchronizes current selection through existing callback,
+preserving explicit selected plans/artifact order and empty omitted field.
+Two compiling mutations independently fail16/24; exact sources restore; final
+194 selected Chromium/WebKit pass. Actual native host/runtime/Worker over
+controlled HTTP/socket, not live server/SQL/mint/full AC12. Types/build8106
+units/boundaries/copy/manifest pass;228 Node skips visible. Historical RP-131
+guard RED; Firefox unexecuted. [Evidence](reputation-tree-v1/log.md).
+
+Whole span aftereb258a7a needs designated review through final edge, all earlier
+spans independent. RP-283 traces missing authoritative preview bridge across
+projector/registry/parser and routes to author reconciliation/draft amendment;
+RP-284 producer/consumer ground and RP-281 tooling remain separate. Next native
+R9 header/row Tab diagnosis RP-285, not a premature keyboard/AT acceptance.
+Full nine-tier/platform1.0 active, all owner/author/data/mint/SQL/capacity/
+deployment/review holds unchanged. No numeric/kernel161/price/copy/balance/CI
+policy change, box flip, archive/acceptance, cleanup, report restamp, deployment/
+publication/push, shortcut or goal completion. Concrete runtime progress made.

@@ -3,6 +3,36 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation hidden Exit plans corrected locally — 2026-10-06
+
+RP-282 under673c09a6/916abc50/c12e985f: completed controlled protocol
+baseline fails16 remount/Offer-replacement cases with24 controls green. Initial
+Offer fixture omitted authoritative snapshot refresh; its wrong-coordinate
+failures are disclosed, not claimed as product evidence. Two compiling mutations
+independently fail16/24 with the other controls passing; exact source restored.
+Final194 selected Chromium/WebKit pass (40 plan/56 old host/58 child/40 cost).
+Fresh panel reports current empty selection through existing callback, preserving
+current user selection/tree order/preview math. Real native host/runtime/parser/
+Worker over controlled HTTP/socket input; not live server/SQL/mint/full AC12.
+Types/build8106 units/boundaries/copy/manifest pass;228 Node skips visible.
+Tier0's opt-in eligible projection is a copy-era diagnostic, not production
+Wind Down reachability; Tier1 independently reproduces the same hidden plan.
+Historical RP-131 guard RED; Firefox unexecuted, not whole client/CI green.
+
+**READY FOR CLAUDE:** whole new span aftereb258a7a through final record edge;
+all earlier spans independent. Self-first-filter cannot archive/approve.
+**NEXT SAFE ACCEPTED WORK:** ground/predeclare bounded native R9 Tab header/
+row contract RP-285; no source fix until unchanged-source diagnosis. RP-283
+now traces eligibility-only projector/registry/parser and hardcoded zero: a
+DESIGN-GAP for the authoritative payout bridge, not permission to calculate
+client payouts or add an unspecified wire. RP-284 run_started consumer/Run End
+available-balance bridge requires separate grounding. RP-281 remains tooling.
+**HELD:** complete native/minted-player AC12/SQL/AC15, author/data/H3/H4/H5/R11,
+owner prose/adoption, capacity/deployment, all reviews and full nine-tier1.0.
+No numeric/kernel161/balance/transport/security/copy/CI-policy change, checkbox,
+acceptance/archive, cleanup, report restamp, publication/deployment or push.
+[Exact evidence](../reputation-tree-v1/log.md).
+
 ## Reputation persistent row costs corrected locally — 2026-10-06
 
 RP-279 underd12fdcff/20c44899/285a247e: unchanged-source native baseline
