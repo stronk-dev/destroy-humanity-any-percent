@@ -1675,3 +1675,38 @@ arrow navigation and require native input to fail. Restore exact source before f
 Cold client/type/build/boundaries, relevant Go/corpus/DB, full native Linux three-engine and
 separate performance checks; every process terminal before source/test changes. New Codex
 range requires Claude; no archival/public activation/full G7/AC13/CI/release claim.
+
+### Full-run red — RP-225 / retained RP-218 recurrence
+
+After exact mutation restoration, four independent local check commands were started together
+on one host (not a workflow/CI change). Cold Go/DB/client/type/build/corpus/vet/boundaries/
+vectors/copy/manifest/topology pass. Full browser session 43437 reaches terminal make exit 2:
+22,406 pass / four fail / six intentional skips, 291 file/engine populations, 87.14 s.
+Three expanded native Garden cases hit the unchanged 15,000-ms test deadline; WebKit's
+existing consistent-authority worker observer fires its unchanged 5,000-ms readiness test
+at game-ui-screens-browser.test.ts:469. Separate performance is **not reached** by this target.
+Do not claim it passed, reduce coverage, raise bounds or rerun the identical population to green.
+
+The keyboard expansion's 28 separate driver RPCs and drains are a method-cost candidate,
+not a measured product defect or established load cause. Root production takes 91.325 s
+versus previous wave's 47.463 s; full browser 87.14 s versus 46.19 s, observations not causal
+proof. RP-225 is the new instrument/runner finding; RP-218 remains the worker finding and
+is not cured by a new Garden test or a later locally green run.
+
+### Separate instrument/runner correction predeclaration
+
+No source/runtime, bound, fixture, skip or workflow change. Send the same literal 28 native
+arrow keys as **one provider keyboard call**, recording every actual focusin event and its
+roving-tabstop set. Compare against the complete literal 24 focus changes (edge clamps cause
+no extra focus), then final focus and one tabstop. This preserves intermediate navigation
+observations, not just endpoint equality, while removing per-key host/runner round trips.
+Retain Enter/Space menu/Tab/Harvest/once-only/focus-return/pending checks. Native arrow
+severing must still fail the revised instrument. All other six read/lifetime cases unchanged.
+
+Execute the complete declared cold browser lane **alone**, after the other commands reach
+terminal status: Makefile default verify/verify-push use serial prerequisites unless invoked
+with -j, while hosted CI jobs use different runners. This does not change browser internal
+concurrency, timeouts, CI jobs, acceptance or skip populations. Label this execution condition
+explicitly; it does not prove overload causality or hosted reliability. Retain the combined
+red population. On another failure diagnose it, do not repeatedly rerun for green. No full
+G7/AC13/Garden/whole-CI promotion; all prior pending ranges and owner/author gates remain.
