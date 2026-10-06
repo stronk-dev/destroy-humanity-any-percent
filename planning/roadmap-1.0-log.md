@@ -2286,3 +2286,8 @@ schema/epoch/checkbox/archive/push change. Codex first-filter only, new exact ra
 begins `b68190f9`; endpoint pinned after commit, Claude required. Proper nine-tier
 1.0 and its complete platform floor remain active; continue R-011/contract census
 and accepted SG10's RP-233 diagnosis while the new policy awaits adoption.
+
+Substantive span committed `b68190f9..98ab59d8`, two commits / sixteen paths.
+Review also includes this subsequent pin-record edge; closing relay provides
+its literal endpoint. Pending Claude, not approval/owner adoption or a passing
+automatic-renewal/mature Garden workflow. No earlier range is consumed.

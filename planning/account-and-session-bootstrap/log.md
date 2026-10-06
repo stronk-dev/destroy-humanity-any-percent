@@ -400,3 +400,11 @@ census; pending policy does not authorize production renewal. RP-233's accepted
 SG10 native interaction diagnosis remains independently available. All earlier
 review ranges, owner rights/retention/accessibility/deployment obligations and
 proper nine-tier 1.0 remain active. No push/publication/deployment/archive occurs.
+
+Implementation/draft tip: `98ab59d8`. The new substantive span is
+`b68190f9..98ab59d8`, two commits / sixteen paths, including its `25fb5e67`
+predeclaration. This pin is a subsequent record edge: the requested designated
+review must include this record commit too; the closing relay names that full
+literal endpoint. No independent verdict is transcribed or implied, and no
+earlier Garden/Account/Transport range is consumed. Final tree clean after the
+record; all checks/diagnostics terminal, production controls unchanged.

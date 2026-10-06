@@ -18,6 +18,9 @@ pass; historical RP-131 and native/hosted reliability remain independently open.
 predeclaration, driver and records; endpoint is pinned after commit. Codex first
 filter only, Claude required. Garden `b58277cb..bff05b5e` and all earlier ranges
 remain separate. No owner acceptance, checkbox, archival, push or release claim.
+Substantive tip is now `98ab59d8`: `b68190f9..98ab59d8`, two commits / sixteen
+paths. Designated review must also include the following pin-record edge;
+the closing relay names the complete literal tip, not just the implementation.
 
 **NEXT SAFE WORK:** R-011's predeclared actual-browser exclusion/storage/context
 termination populations; exact existing refresh API descriptor/status census;
