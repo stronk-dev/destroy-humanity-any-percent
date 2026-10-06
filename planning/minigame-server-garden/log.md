@@ -1833,3 +1833,51 @@ new harness/native tests, diagnosis/method predeclarations and synchronized reco
 Claude designated review is pending. This metadata pin is not a verdict or archival authority;
 no previous pending range is consumed. All sessions terminal, tree clean after implementation
 commit, no mutation/push remains.
+
+## 2026-10-06 — G4/G6 authenticated HTTP integration predeclaration
+
+Previous goal turn is progress: committed RP-224 correction/native evidence `53945682`,
+exact-range pin `20ea7b9c`, all verification terminal and clean. Re-read current AGENTS,
+RFC-0000, full accepted Garden RFC and its relevant design sections at clean `20ea7b9c`.
+Existing composed minigame test reaches only `get_current_garden`'s inactive response; the
+active read has schema fixtures and real-Service/Postgres tests, not a composed authenticated
+active HTTP command/read witness. RP-226 records the bounded evidence gap, not a runtime bug.
+
+**Test-only scope** under accepted SG5/SG8/SG9, AC10/AC12: use actual Gameserver.Compose,
+registry, Account/token authentication, Production.Service and declared real Postgres.
+Build an isolated temporary repository/epoch from the committed `garden-v1` grown replay
+fixture and its exact constants identity; consume it through actual epoch/replay loaders.
+No public epoch/mint, production artifact, catalog retune, direct stream-state grant or
+mock account/Garden handler. Copy/moderation/transport fixture files reuse existing helpers.
+The fixture's short Fiscal periods are declared data already in that fixture, not production
+pacing. Clock injection only establishes the new accounts before a Fiscal period; ordinary
+Founder commands still use database time, and reads must bracket it with actual DB samples.
+
+Population: two real HTTP-created accounts and sessions, both initially exactly locked;
+unauthenticated read is 401, nonempty GET body refuses; first account buys unlock via public
+spend_fiscal_credit funded by actual auto-reporting (no test state mutation). Public plant
+then current read shows actual revision and one growing plot; byte-identical retry changes
+no Garden state/revision/log/event/window/intent rows. An immature harvest, forged client
+tick/time/salt/identity fields, and foreign-account planting are refused without changing
+either account's Garden or giving Company credit. Public substrate change and uproot show
+their actual newer views; second account stays locked, including query identity hints that
+may either be rejected by the registry or cannot override token ownership. Compare precise
+receipt outcomes/details, persisted rows and served views, not HTTP-200 alone. Every served
+Garden view validates against the actual registered response schema.
+
+Enumerate served JSON/receipts, persisted public event payloads and any associated outbox
+payloads for forbidden salt/base/draw keys and the actual stored salt value; Founder replay
+resolved inputs are intentionally private and excluded visibly. Read-only DB snapshots must
+prove non-mutation, and full Founder histories should replay with the actual pinned bundle.
+No successful mature harvest/cross-stream payout, default DOM/browser workflow, real idle
+tick elapsed, timer/visibility, public T2 host, full G4/G6/Garden or 1.0 acceptance follows.
+
+Execute corrected tests cold with `-count=1` through declared Compose, serial DB populations;
+ordinary host missing-DB skips are not evidence. Any fired criterion is logged immediately
+in BACKLOG before separate runtime repair authority; do not widen tests into product changes.
+For a pass, actually sever Compose's Garden attachment and require the HTTP witness to fail;
+plant a read-projection leak and require schema/hidden-information validation to fail. Record
+whether failure is schema firewall rather than enumeration. Restore byte-exact source before
+final cold Go/vet and Postgres gates. New test range requires designated Claude review; no
+existing pending range, checkbox or lifecycle promotion is consumed. Every process terminal
+before source/test changes, no bound/skip/retry-to-green or CI change.
