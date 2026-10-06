@@ -1733,3 +1733,36 @@ Use stage completion as well as entry so a fired limit cannot silently omit the 
 Do not split/drop coverage, change timeout or rerun identical tests for green. The result
 may locate instrument cost and authorize a separately predeclared test-method correction;
 it cannot authorize gameplay, CI, concurrency, release or owner-policy changes.
+
+### Phase observations and bounded native-case decomposition
+
+Observation run 49186 reaches terminal exit 0: all 22,410 / six intentional full-population
+skips, 291 file/engine populations, 41.24 s; separate performance 432 ms / 2.04 s.
+This green observation does not cancel either retained red run. Across Enter arms helper
+import takes 1–16 ms and mounted-ready is reached at 66–82 ms, while navigation completes
+at 2,968 / 8,029.3 / 11,693 ms. Slowest arm then finishes at 13,901 ms, close to the existing
+15,000-ms test limit. Stage timings include native-provider operations/scheduling, not a
+measurement of player key latency. Installed provider source confirms a batched keyboard
+command still awaits individual native key-down/up operations for each key; no dependency
+patch or causal CPU claim follows.
+
+Separately predeclare **test-method decomposition**, not a timeout increase or green retry.
+Preserve the complete independent literal focus/tabstop oracles and every directional/edge
+transition, using two fresh native-only walks from cell zero: (A) the original outbound
+mixed-direction and bottom/right-clamp prefix (18 keys); (B) right/down to the bottom-right,
+then the entire original left/up return (20 keys, native navigation sets the actual roving
+state—never direct-focus a cell whose internal roving state differs). Retain both Enter and
+Space receipt/action cases, each preceded by the original six-key mixed-direction/upper-edge
+walk. Both still verify menu, native Tab/Harvest, exactly-once dispatch, returned focus and
+pending refusal. Four native cases replace two duplicated long omnibus cases; six read/
+lifetime cases are unchanged. This tests all former transitions, not merely endpoints, but
+does not claim one uninterrupted 28-key walk followed by each command. No RFC criterion
+depends on that artificial duplicated walk. There is no shared mutable state between cases,
+synthetic keyboard dispatch, private component mutation or narrowed engine population.
+
+Keep stage diagnostics with engine identity, original 15-second test limits, error guard and
+all four actual native populations. Arrow severing must fail all four in each engine; restore
+before root typecheck and one complete cold Linux browser/performance run alone. No workflow,
+concurrency, product clock/copy or game mechanism change. RP-225 remains a disclosed reliability
+finding until results/review warrant a bounded disposition; a single green run cannot establish
+general hosted reliability or repair RP-218. Claude still owns the designated corrective review.
