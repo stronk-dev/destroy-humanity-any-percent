@@ -25,6 +25,21 @@ Implementation agents may gather evidence and frame options; they may not infer 
 | **D-020** | Reconcile Arcade AC7's required Pitch-less start with API MA-C15's owner-ruled `minigame_api → pitch` dependency: explicitly amend to tenant-independent catalog activation, or retain the dependency and have the ruling author reconcile AC7. | RP-201: freshly hashed complete catalogs with only Pitch removed refuse in both actual Go/TS loaders; unchanged complete controls load. Arcade AR1.2 retains the earlier full chain and names no amendment to MA-C15. | `rfc/minigame-api-and-surface.md` MA-C15 and `rfc/minigame-demo-disc-arcade.md` AR1.2/AR-P3/AC7, authored body reconciliation. | Full Arcade AC7/A4 acceptance; internal starts in complete Pitch-containing bundles remain safe to verify. No independent permission to change public schema, mint or copy. |
 | **D-021** | Resolve existing Clout DG-D: have the harness execute shared served foundation hooks, or accept an explicitly specified attainment observer with complete proof/transition parity. No branch selected; agents may not substitute approximate attainment for the actual rule. | Independent current-source probe on Claude 527246f1 removes only first-hour refusal and the unsupported fixture completes neutrally; restored guards/default harness suite pass. Scalar cap tests are not active PR scenarios. Accountable evaluation semantics, provenance/burn/Founder independence, pacing impacts and exact downstream measurement population must precede construction/ratchets. | Clout CV10/AC9 and accepted harness amendment as needed; `planning/clout-v1-and-pr-interns/log.md`, RP-241. | Remaining P6/AC9 PR relevance/dead-row/purchase observations/invariant scenario ratchet and honest Clout/T2 balance; not the approved bounded refusal primitive. |
 
+## Clout executed role binding — D-022 / RP-305
+
+CV1 item5 makes truthful executed roles an explicit pre-mint condition. The two
+proposed PR upgrades declare synergy_feed, but the read-only fixture census
+c99da6 finds no synergy-pool source for either. Existing upgrade-role validation
+checks names/duplicates, not execution binding. A nonempty label is not proof.
+
+Owner/RFC author must either provide a real declared pool binding, with its
+values measured/ratified under CV8/OD-5, or reconcile the role contract/vocabulary
+under OD-3 with an explicit executable meaning. Canonical intent/spec homes:
+Clout CV1 item5/OD-3 and, if changed, the purchasable-content role law. No choice
+made here; no pool/rate/role restriction or owner ruling fabricated. Blocks
+truthful CV8 content and full CV1/P1 approval, not RP-304's independently defined
+nonempty-axis-role correction. D-021 harness authority remains separately open.
+
 ## Garden unnamed resource event — RP-229 (author reconciliation pending)
 
 Accepted Garden SG8 calls for `garden_harvest_credited.v1` "plus the ordinary resource event";

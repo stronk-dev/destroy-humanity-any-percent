@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Clout role-floor correction and remaining contract holds — 2026-10-07
+
+RP-304 afterb30808e5: paired roleless admission reproduced in both loaders,
+then corrected narrowly with kernel162. Valid PR/static-empty controls and
+independent compiling omissions discriminate; sources restore exactly. Cold
+Go/vet/types8248units/build/formulas/topology,80Chromium/WebKit cases/performance
+and actual production/gameui Postgres packages pass. Full kernel-history guard
+remains RED at50a3a514 (RP-131), no full/hosted CI claim.
+**DESIGNATED REVIEW PENDING:** entire new Codex range afterb30808e5 including
+records; prior independent spans remain live. Original Claude role branch has
+only a bounded CHANGES REQUIRED finding, not full-P1 approval.
+**OWNER/AUTHOR HOLD:** RP-305/D-022 requires truthful executed role binding or
+reconciled semantics; nonempty labels do not close it. D-021 harness authority,
+copy/OD-5 mint and other existing holds remain separate. Public Typer/Arcade
+API versioning/body-reconciliation delegation question is awaiting an actual
+answer; no policy choice assumed. Continue other accepted work within its
+authority. Full proper nine-tier1.0 scope unchanged; no archival/push/deploy.
+
 ## Reputation persisted public current/next projection — 2026-10-06
 
 RP-302 afterc70861c1:9fcea8c9 predeclares,f2b8bca8 adds one gameui SQL test.

@@ -527,3 +527,62 @@ nonempty-axis-role rule only; static [] remains legal. It does not establish
 whether the proposed synergy_feed labels have real pool bindings. Neither
 normative owner text nor the original corpus is rewritten; later Codex runtime
 repair and record edges need Claude, never covered by this original finding.
+
+## 2026-10-07 — RP-304 narrow correction and restored evidence
+
+Test-only failing checkpoint ec080fcf precedes the runtime change. The Go guard
+and TS guard reject empty roles only when axis effects exist. Existing enum and
+duplicate rules stay unchanged; legacy static[] still loads. Kernel161→162 in
+the same implementing change records a genuine catalog acceptance-set change,
+not a balance retune. Canonical axis docs update alongside behavior.
+
+Independent compiling omission controls:
+
+- Go guard removed:58526a exit2,0.072s, three new roleless failures/three legal
+  controls pass. Go restored before the TS fault, SHA verified in4d167e.
+- TS guard removed:4d167e /49145, terminal6c9a27 exit2; same three new failures,
+  8245other passes/340skips,5.04s. Restore76ff53 verifies both exact source SHAs:
+  Go d6c376b31bd7a0c33d4e6698bd780331e5760e9f550222460a8b0ab6e26c4667;
+  TS 338f0c47c9b4a0aee26e2318b07caf7ac7ce0f391404a208162894c2ba64cf86.
+
+Final cold checks, after all production faults restored:
+
+- 4ad5af /30717, terminal1c7ba5 exit0: complete economy/achievements/multiplier/
+  replaycatalog/kernel/production/gameui packages pass, production37.112s,
+  gameui0.294s; vet for the same seven packages passes. Ordinary host SQL skips
+  are not counted as database execution.
+- ac280f /85834, terminal5ba866 exit0: types/Svelte0errorswarnings,
+  8248unit passes/340visible skips, build213modules, formulas byte-unchanged,
+  component boundaries and topology with13negative controls pass.
+- 52e031 /90270, terminalaee96b exit0: actual declared Postgres production
+  Integration package12.969s and gameui0.187s pass; visible public-projection
+  test executes. Output is truncated, so no fresh exact population/skip census
+  is claimed from this capture. Orphan warning is not cleanup authority.
+- 5778b9 /67719, terminal1f5e8f exit0: original loader corpus, seven new role
+  tests and three panel cases all execute in Chromium/WebKit,80pass; dependent
+  performance1pass/22filtered skips. Firefox is not rerun or claimed covered;
+  prior RP-303 session timeout remains unexecuted evidence.
+- 32f3fa /72299, terminal1f2736 exit2: CI kernel-history checkout and adversarial
+  fixtures pass, but actual complete history guard again rejects50a3a514
+  against0cf9f7a6 for six watched minigame files without a bump. RP-131 remains
+  RED. Our three kernel constants agree at162; this is NOT a green complete CI
+  claim, and no history correction or guard exception is invented.
+
+The old fixture and loader corpus retain their exact SHAs:
+f8c67aed784ceaae1335bb40c0e0487cc0d9b78a50b9e63a73569270df7511d7;
+2a05d90054144599351d06f42d2b08e93147214fccd5da57f4cc569bc8015ee2.
+No golden/report restamping, copy, production epoch, formula, schema or CI edit.
+Every verification handle is terminal; no source fault remains.
+
+RP-305/D-022 is a separate observed content-contract hold: c99da6's read-only
+fixture census returns no synergy-pool source for either named PR upgrade,
+although both declare synergy_feed. CV1 item5 explicitly requires truthful
+execution binding; the role-floor fix alone does not deliver it. Owner/RFC
+author must reconcile real binding/ratified values versus vocabulary semantics.
+No normative body or balance value is changed here.
+
+All new implementation/records afterb30808e5 require Claude independently; the
+bounded original role finding is not a full seventeen-path P1 verdict or a
+review of Codex's repair. No boxes/status/archival or fullAC1/mint/release claim.
+The public Typer/Arcade API-versioning decision was asked non-blockingly; no
+answer is assumed or recorded as authority. Full nine-tier/platform goal active.

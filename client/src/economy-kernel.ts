@@ -702,6 +702,7 @@ function parseUpgrade(source: unknown, index: number, resources: ReadonlyMap<str
   });
   const axisArms = effects.filter((effect) => effect.slot === "axis_stack").length;
   if (axisArms !== 0 && axisArms !== effects.length) throw new SyntaxError(`${path} may not mix static and axis effect arms`);
+  if (axisArms > 0 && value.roles.length === 0) throw new SyntaxError(`${path}: axis upgrade requires at least one role`);
   const roleSet = new Set<string>();
   const roles = value.roles.map((role, roleIndex) => {
     if (typeof role !== "string" || !["provision", "synergy_feed", "manual_output", "stock_rate"].includes(role) || roleSet.has(role)) throw new SyntaxError(`${path}.roles[${roleIndex}] is invalid or duplicate`);

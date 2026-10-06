@@ -68,6 +68,14 @@ accrual.
 `CloutLifetime`; under Option A the allowed writer set is empty. No economy resource is a Clout
 resource.
 
+## Axis upgrade roles
+
+Each axis-scaled upgrade must declare at least one role from the existing closed
+vocabulary; empty roles reject in Go and TypeScript. This additional floor does
+not change legacy static-upgrade admission. A declared role name alone is not
+evidence of an executed pool binding: CV1's separate truthful-role requirement
+and content review still apply.
+
 ## Fixture panel accessibility
 
 The Desk panel's native PR Intern progress bars reference their existing

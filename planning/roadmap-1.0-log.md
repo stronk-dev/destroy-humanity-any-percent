@@ -3635,3 +3635,18 @@ executes zero tests; only owned stalled process interrupted. New Codex range nee
 Claude; no full P5/AC11, human AT, hosted CI, mint or release promotion.
 Goal remains active; full nine-tier/platform1.0 and earlier independent holds
 unchanged. [Evidence](clout-v1-and-pr-interns/log.md).
+
+## 2026-10-07 — Paired PR Intern role-floor correction
+
+RP-304 afterb30808e5:013eb7b1 predeclares,ec080fcf records paired failing-first
+tests. Both loaders admitted roleless axis upgrades; narrow guards reject them
+without changing static-empty admission. Six shared cases, independent omissions
+and exact restores distinguish the boundary; kernel162 is the honest bump.
+Cold relevant Go/vet/types8248units/340skips/build/formulas/boundaries/topology,
+80 Chromium/WebKit cases/performance and actual Postgres packages pass.
+Historical kernel guard remains RED at50a3a514, no full/hosted CI promotion.
+RP-305/D-022 separately routes both proposed synergy_feed labels lacking actual
+pool sources. New Codex span needs Claude; original bounded finding not fullP1.
+Public Typer/Arcade versioning and body-reconciliation delegation asked, not
+assumed. Full nine-tier/platform1.0 goal active, no mint/release/archive/push.
+[Evidence](clout-v1-and-pr-interns/log.md).

@@ -5,7 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest player-surface checkpoint (2026-10-06):** RP-303 fixes unnamed native
+**Latest contract checkpoint (2026-10-07):** RP-304 corrects both loaders'
+roleless-axis-upgrade admission under CV1, with paired failures/controls and
+kernel162. Cold relevant Go/vet/client/types/build/formulas/local topology,
+80 Chromium/WebKit cases and real-Postgres packages pass. Complete kernel
+history remains RED at50a3a514; no hosted/full CI claim. Original bounded
+Claude role branch is CHANGES REQUIRED; Codex repair needs Claude. RP-305/D-022
+keeps truthful pool binding separate from nonempty labels. Public Typer/Arcade
+versioning/delegated-body choice has been asked, not inferred. Full nine-tier
+1.0 unchanged. [Evidence](clout-v1-and-pr-interns/log.md).
+
+**Previous player-surface checkpoint (2026-10-06):** RP-303 fixes unnamed native
 PR Intern progress bars using existing titles and numeric descriptions. New
 Chromium/WebKit regression fails before the fix and on both label faults, then
 passes across owned-state refresh. Types/unit/build/copy/boundary/topology pass;

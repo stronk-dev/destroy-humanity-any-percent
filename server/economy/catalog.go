@@ -1118,6 +1118,9 @@ func parseUpgrade(source rawUpgrade, resources map[string]ResourceDefinition, sc
 	if axisArms != 0 && axisArms != len(definition.Effects) {
 		return UpgradeDefinition{}, errors.New("an upgrade may not mix static and axis effect arms")
 	}
+	if axisArms > 0 && len(source.Roles) == 0 {
+		return UpgradeDefinition{}, errors.New("axis upgrade requires at least one role")
+	}
 	seenRoles := map[string]bool{}
 	for index, role := range source.Roles {
 		kind := GeneratorRoleKind(role)

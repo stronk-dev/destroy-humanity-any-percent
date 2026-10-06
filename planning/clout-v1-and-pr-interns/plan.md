@@ -65,3 +65,12 @@ Run cold relevant packages/vet, full client/types/build and applicable root chec
 No schema/balance/copy/mint/role-vocabulary/pool retune or whole-P1 approval.
 Role names alone do not prove executed pool binding; that question stays separate.
 Every new Codex implementation/record edge requires Claude independently.
+
+Executed: six-case paired corpus reproduces three illegal admissions per
+runtime; both narrow guards fix them and independent omissions fail again.
+Kernel162 accompanies the real acceptance-set change. Final cold relevant Go/
+vet,8248units/types/build/formulas/boundaries/topology,80 native Chromium/WebKit
+cases and real-Postgres production/gameui packages pass. Full historical kernel
+guard is still red at50a3a514 (RP-131), not bypassed. Full new span afterb30808e5
+including records requires Claude. Truthful pool binding remains D-022/RP-305;
+no full P1/AC1, hosted CI or mint acceptance follows.
