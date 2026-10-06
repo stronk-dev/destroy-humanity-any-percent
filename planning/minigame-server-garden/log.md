@@ -1710,3 +1710,26 @@ concurrency, timeouts, CI jobs, acceptance or skip populations. Label this execu
 explicitly; it does not prove overload causality or hosted reliability. Retain the combined
 red population. On another failure diagnose it, do not repeatedly rerun for green. No full
 G7/AC13/Garden/whole-CI promotion; all prior pending ranges and owner/author gates remain.
+
+### Batched instrument still red — phase-measurement predeclaration
+
+The batched instrument retains native failure discrimination: disabling arrow navigation
+fails both key arms in all three engines (9860, exit 1, six fail / eighteen pass, 5.39 s),
+then production restores SHA256 f46a67f65bd0a52c0329099bf2567db783641fdcc818654335cf66e04188b714.
+Root TS/Svelte remains zero errors/warnings (94673, exit 0). The isolated complete browser
+run 82672 also finishes red: 22,409 pass / one fail / six intentional skips, 291 populations,
+53.67 s, make exit 2. Firefox's native Enter witness hits the unchanged 15-second test
+deadline (reported 18.721 s); Chromium Enter/Space take 9.706/6.422 s, Firefox Space 6.824 s.
+RP-218's existing worker case passes this run; that does not resolve its recorded recurrence.
+Separate performance is again not reached. Isolation and batching are not sufficient proof
+of reliable completion, and neither establishes overload causality.
+
+Next experiment is observation-only: log elapsed time at entry, browser-helper import,
+mount/initial settle, complete native navigation, menu open, Tab, command, pending refusal,
+and cleanup in the existing two native cases. Retain every key, assertion, fixture, limit,
+engine and full population, run alone once. Timing is diagnostic, not an acceptance bound
+or product latency measurement: provider IPC, browser scheduling and test work are included.
+Use stage completion as well as entry so a fired limit cannot silently omit the slow stage.
+Do not split/drop coverage, change timeout or rerun identical tests for green. The result
+may locate instrument cost and authorize a separately predeclared test-method correction;
+it cannot authorize gameplay, CI, concurrency, release or owner-policy changes.
