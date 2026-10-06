@@ -8793,3 +8793,29 @@ cannot have a valid purchase prefix. Clarify the canonical evidence paragraph:
 the four unknown/owned/requires/unaffordable arms exercise valid prefixes; the
 inactive arm fails before any purchase. Test expectations/counts/source/gates
 unchanged. Forward record correction, no hash rewrite or acceptance promotion.
+
+### Codex self-first-filter — persisted activation/refusal supplement
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed exact range: e5a69731..db53edfd (five commits/nine paths,
+781 insertions/11 deletions). Local first-filter approved; NOT designated
+cross-party approval. Read complete new428-line test and full scope/record diff.
+Evidence: restored full SQL36/143/no skips, cold four relevant Go packages/vet,
+strict types/Svelte and8186 client passes/339 explicit skips; five compiling
+fault executions across four families, including earlier-defense versus new
+accounting-oracle distinction. Mid-run no-activation, actual cross-pin Exit,
+first-failure rollback, full-state replay, receipts, exact retries and three
+same-head plan-free continuations are exercised, not inferred from declarations.
+
+0a2bb4/2e48e0 pass whitespace and exact production/client/balance/copy/CI/RFC/
+kernel/testdata invariance. Both existing corpora unchanged; no other test
+edited, acceptance box flipped or gate softened. Both logs append at EOF;
+initial test mistakes and source-probe misses/earlier defenses remain visible.
+Canonical prose overclaim corrected forward indb53edfd before this verdict.
+No live handle, active source fault or cleanup/publication action remains.
+Full span aftere5a69731 INCLUDING this final review-record edge still requires
+Claude's designated review; all earlier ranges remain independently pending.
+Not archival-eligible, full AC9/1.0/CI proof or release approval. Next accepted
+work remains separate R8 Go/TS cross-pin/first-failure census/predeclaration.
+Goal remains active/progress, all author/environment/owner/release holds intact.
