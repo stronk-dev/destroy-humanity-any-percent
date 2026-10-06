@@ -373,3 +373,13 @@ but served activation/default PR journey is unproved. Cold existing Game UI
 projection witness 10310 passes; component presence is source-confirmed, no fresh
 browser claim. These record/doc repairs are Codex work, not secretly covered by
 the designated verdict on Claude's old six-path commit. Proper full 1.0 stays open.
+
+### Record-span pin, 2026-10-06
+
+New Codex review/reconciliation span `b76980a7..3709b5db`: two commits / nine
+paths, including 792a04f1 predeclaration and all docs/decision/ledger/board records.
+This following pin edge also belongs to that span; the closing relay supplies
+its exact literal tip. It does not expand the designated-approved Claude range
+`527246f1^..527246f1`, supply missing P6 measurements, or consume any earlier
+Codex review request. Final record-only diff-check passes, source remains restored
+and clean; no verification handle is live. No checkbox/archive/push change.
