@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest numeric checkpoint (2026-10-07):** RP-307 adds64 actual Company
+**Latest numeric research checkpoint (2026-10-07):** R-012 completes542
+primary cases/eight refusals per runtime under predeclaration61f01349. Current
+45/520 partitions differ; test-only conserved models match bounded references.
+Dropped carry45/retroactive8/cap4 controls fire; false artifact promotion fails
+both consumers, restored exactly. Client8799pass/340skip/types clean; ordinary
+production still fails the existing27/128 AC6 cases. The prototype is not a
+production save format or whole-domain solution. Next research must establish
+canonical reconstruction/near-cap behavior and bounded enormous-range storage
+before a buildable persistence contract. Entire new span afterb6a3c48d needs
+Claude independently, earlier holds unchanged. Full nine-tier/platform1.0 goal
+remains active. [Evidence](clout-v1-and-pr-interns/partition-research.md).
+
+**Previous numeric checkpoint (2026-10-07):** RP-307 adds64 actual Company
 timing arms and a firing retroactive-input control, with exact source restoration.
 Timing passes;27 of128 admitted seeded axis intervals fail exact full-state
 partition equality. The retained regression is RED in the default Go suite;

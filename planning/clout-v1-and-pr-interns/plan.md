@@ -139,3 +139,12 @@ shared research artifact. Generation must refuse invalid/incomplete evidence;
 committed artifact must replay exactly in Go and TS. No production/save/kernel/
 balance/old-golden/CI change; no full-domain, AC6/CI green or release acceptance.
 Entire new Codex test/artifact/record span needs Claude independently.
+
+First wave executed2026-10-07 after61f01349: all542 primary cases/eight
+refusals per runtime complete. Current45 partition differences; bounded conserved
+models match their references, dropped carry45/retroactive8/cap4 controls fire.
+Full client8799pass/340skip/types clean. Current production still fails the
+existing27/128 AC6 cases; no box or acceptance promotion. Results, exact commands,
+false-promotion probe and unmeasured representation/restore/settlement domains
+are in partition-research.md. Further research must be predeclared; no new
+persistence contract or full-domain implementation follows from this prototype.

@@ -3,6 +3,21 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## R-012 bounded research result — 2026-10-07
+
+Predeclared61f01349 afterb6a3c48d: Go and TS complete542 primary cases/eight
+refusals each. Current45/520 partitions differ; conserved test-only models match
+their references, dropped carry45/retroactive8/cap4 controls discriminate.
+False PROVEN artifact promotion fails both consumers; exact artifact restored.
+8799 client tests pass/340 visible skips/types clean; cold production/economy/
+decimal remains RED only at the existing27/128 partition failures.
+**READY RESEARCH:** predeclare canonical restore/near-cap rounding and a bounded
+whole-domain representation comparison before an implementation contract.
+**DESIGNATED REVIEW PENDING:** entire new Codex span afterb6a3c48d; older spans
+remain independent. No production/save/kernel/CI/owner-body change, AC6 waiver,
+mint/archival/push/deploy or full1.0 promotion. Full nine-tier goal intact.
+[Observation, commands and limits](../clout-v1-and-pr-interns/partition-research.md).
+
 ## Clout AC6 timing and numeric failure — 2026-10-07
 
 RP-307 after07bb3d9d, predeclared6a654f5d:64 actual Go Company timing

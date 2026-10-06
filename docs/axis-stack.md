@@ -94,7 +94,11 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   (1e-7 at the sampled1e4 balance). This is a failed acceptance criterion, not
   permission to restrict cuts or introduce a tolerance. Numeric Core's existing
   per-commit12-digit quantization still applies; research R-012 must establish a
-  compatible repair contract before persistence/replay changes. The retained
+  compatible repair contract before persistence/replay changes. Its first bounded
+  Go/TS research wave finds45/520 current differences; conserved test-only models
+  match in that population, not across the full numeric domain or real saves.
+  [Limits and next contract questions](../planning/clout-v1-and-pr-interns/partition-research.md).
+  The retained
   regression is intentionally red, so the current Go/CI tree is not green.
 - Served-epoch activation and the default composed PR purchase/rendering journey
   (CV9 / AC11). Fixture-only snapshot producer and Desk panel code exist;

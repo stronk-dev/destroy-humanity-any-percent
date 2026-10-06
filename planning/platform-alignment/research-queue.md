@@ -282,10 +282,14 @@ needs Claude; no other queue or full1.0 gate closes by implication.
 
 ## R-012 — exact accrual partitioning versus state quantization (RP-307)
 
-- **Status:** READY for bounded test-only numeric research; production repair
-  and any normative body reconciliation are not authorized by this row.
-  First wave predeclared atb6a3c48d:542 primary cases per runtime/eight refusals,
-  seed120307 and exact domains/negative models in the Clout plan. Not yet measured.
+- **Status:** First bounded wave executed, designated review pending; further
+  representation research READY, production repair/body reconciliation not
+  authorized. Predeclared61f01349:542 primary cases/eight refusals per runtime.
+  Current45/520 partition differences; conserved models match within that
+  population; discarded carry45, retroactive8 and cap4 controls discriminate.
+  [Observation and limits](../clout-v1-and-pr-interns/partition-research.md).
+  Next wave must predeclare canonical restore/near-cap rounding, full-domain
+  bounded representation and actual settlement boundaries before measurement.
 - **Question:** Can an explicit conserved accumulation/settlement representation
   preserve K3's12-digit authoritative wire boundary and Clout AC6's exact equality
   across evaluations, without repricing a triggering interval? What persistence,

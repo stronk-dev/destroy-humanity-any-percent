@@ -737,3 +737,48 @@ must project through the existing quantizer and pass the pinned controls; an
 unbounded arbitrary-precision production rewrite is neither needed nor authorized
 by the bounded prototype. Full1.0 goal remains intact; no new owner decision or
 public API delegation is inferred from this automatic continuation.
+
+## 2026-10-07 — R-012 bounded conserved-state observation
+
+Review by: Codex (implementer; no designated verdict). Recorded by: Codex.
+Predeclared61f01349 afterb6a3c48d. New test-only Go/Rat and independent
+TS/BigInt models, actual unchanged Go Evaluate baseline, actual TS scalar
+accrual/projection, selected source identities and new complete artifact.
+No existing balance/golden/runtime/kernel/CI/copy/save representation changes.
+
+Generation2448f8 /15127, terminal4b3366 exit0,0.393s:542 primary cases/eight
+refusals complete. Current45/520 full-state differences; one-shot/reference
+cash0 differences, discarded carry45 hits, retroactive8 hits, cap4 controls.
+Conserved final wire+residue agrees exactly with the reference throughout the
+declared population. Whole-second controls pass; reference residue97 negative/
+99 positive/324 zero. This is a signed correction, not merely hidden positive
+currency. No SQL/served TS/browser/full-domain proof is inferred.
+
+Cold nongenerationd1c1d3 /52561, terminald41791 exit0,0.297s: byte-identical
+artifact reproduction. Full client/type7a3190 /45281, terminald770ee exit0:
+8799pass/340visible skips,4.59s; types/Svelte zero errors/warnings.
+
+False-promotion discrimination changes only new artifact acceptance_status to
+PROVEN. Go a0df70 /16958, terminalba705f exit2 rejects artifact drift; client
+81b510 /14517, terminal0d33eb exit2 fails exact NOT_PROVEN metadata (one failed,
+8798pass/340skip; other550 research cases pass). Both handles terminal before
+exact patch restoration. No source mutation or faulted generation.
+
+Final restored cold252086 /49242, outputsfd9fb6 and terminal3f99c3 exit2:
+production36.956s fails only existing27/128 RP-307 partition arms; economy6.131s
+and decimal0.220s pass. New research passes but acceptance stays RED. Final
+bc8157 /56284, terminal0fff69 exit0:8799client passes/340skips,4.57s; types/
+Svelte zero errors/warnings. All handles terminal before record edits. Earlier
+RP-131 historical guard remains separately red; full/hosted CI not claimed.
+
+partition-research.md records exact population, observed arms, reproduction,
+discrimination and explicit restore/cap/full-domain/settlement limits. Queue,
+ledger, docs and long-term board reconcile to the same bounded result without
+checkbox or status promotion. Next is predeclared representation/restore research,
+not speculative production fields or a tolerance. Entire new span afterb6a3c48d
+needs Claude; older independent spans remain live. Full nine-tier/platform1.0
+active, no mint/owner-body/API ruling/archival/push/deployment or release claim.
+
+Final record-bound replaye73760 /94126, terminal77f2cd exit0,0.412s reproduces
+the original artifact exactly; vet7940b4 exit0 on production/economy/decimal.
+All verification handles are terminal. No temporary artifact/source fault remains.

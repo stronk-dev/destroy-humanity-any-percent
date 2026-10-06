@@ -3694,3 +3694,24 @@ needs Claude; original bounded AC6 evidence finding is not a full28-path
 P2/P3 verdict. All earlier holds/independent ranges remain. Full nine-tier/
 platform1.0 active; no runtime/kernel/mint/CI/owner-body rewrite, checkbox,
 archive/push/deployment or release promotion. [Evidence](clout-v1-and-pr-interns/log.md).
+
+## 2026-10-07 — Conserved accrual feasibility, not an AC6 repair
+
+Predeclared61f01349 afterb6a3c48d: Go and TS complete542 primary cases/eight
+refusals each. Actual current Go states differ45/520; scalar TS cash agrees.
+Bounded conserved final wire/residue matches the once-settled references;
+dropped carry45/retroactive8/cap4 controls discriminate. Artifact false-promotion
+fails both consumers, restored exactly. Cold client8799pass/340visible skips/
+types clean. Production/economy/decimal cold run fails only the existing27/128
+partition property; no AC6/complete-CI promotion. Runtime/kernel/save/old-golden/
+balance/copy/CI bytes unchanged.
+
+Explicit limitations prevent a research pass becoming a production claim:
+enormous admitted exponents, canonical restore/near-cap rounding, actual action/
+mode/offline/multi-resource settlement, migration/replay and SQL/default-player
+workflow remain to establish. Next bounded research precedes a buildable
+persistence contract. New complete span afterb6a3c48d requires Claude; earlier
+independent review obligations and owner/author/environment/content/release
+holds remain. Previous goal turn was progress; this turn adds reproducible
+numeric evidence. Full nine-tier/platform1.0 active, no archival/push/deploy.
+[Observation](clout-v1-and-pr-interns/partition-research.md).
