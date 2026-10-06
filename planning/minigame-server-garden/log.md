@@ -1345,3 +1345,20 @@ question immediately as RP-222. Add its actual foundation-boundary and TS loader
 controls before inferring broader impact; no epoch publication or seed policy is authorized.
 Correction to the predeclaration's field count: the exact Garden object has seven fields,
 not eight; compare all seven, with no changed domain or expected bytes.
+
+### G2/G3 Company event-reader correction predeclaration (RP-207 recurrence)
+
+The corrected live fixtures apply both Exits, retain literal Garden bytes, advance run 2→3,
+preserve retries and pass complete Founder history. The all-stream test helper nevertheless
+reports Company `state_divergence`. Direct replay succeeds and receipts are identical; only
+the stored automatic `fiscal_period_harvested.v1` Founder prefix is extra. This is the existing
+RP-207 reader defect, not a new Garden engine failure. The accelerated fixture has auto_ms=300
+and the Founder cursor is one minute old, so this is a deterministic due-Fiscal population.
+
+Before correcting the new reader, retain that due prefix deliberately. Read Company-owned
+events plus base Founder Exit events, excluding only the Founder-owned automatic Fiscal
+prefix exactly as the recorded RP-207 scope. The full unfiltered Founder history must verify,
+the unscoped Company aggregate must fail, and deleting that prefix from a cloned Founder
+history must fail. No unknown events may be suppressed, and no verifier/runtime is edited.
+The historical helper and unrelated callers stay unchanged. These controls prevent improving
+the fixture's timing or filtering away the failure to hide the independent Founder obligation.
