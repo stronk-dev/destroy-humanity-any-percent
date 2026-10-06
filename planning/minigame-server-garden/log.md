@@ -2185,3 +2185,13 @@ copy, balance, kernel/schema, mint or CI changes; no full AC13/default-host/Gard
 Run root client/typecheck and declared native-Linux browser lane. Codex is first-filter
 only; Claude must review the exact new range independently, with every earlier range
 and RP-229/RP-222/RP-131/RP-218 still open. Full nine-tier 1.0 remains active.
+
+Initial diagnostic execution: root client/typecheck 23893 passes (7,366 / 123 Node
+DOM skips; seven new browser cases are intentionally Node-skipped; zero diagnostics).
+Native Linux three-engine 68477 exits 1: 13 pass / eight failures. Instrument error:
+one virtual microtask delivery is not a completion witness for native Response.json;
+some initial DOM assertions run during loading. WebKit reaches the 137 ms due assertion
+and sees only one read rather than two. Retain all eight failures, do not count that
+partially synchronized population as a whole-runtime verdict. Refine the instrument to
+join the actual browser adapter's recorded promises and then flush Svelte, without
+advancing virtual time, increasing a timeout, or changing any expected DTO/due boundary.
