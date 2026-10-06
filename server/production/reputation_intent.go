@@ -1,10 +1,12 @@
 package production
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"slices"
 
 	"cloud-clicker/server/economy"
@@ -21,6 +23,38 @@ type founderReputationPurchaseResolved struct {
 	ReputationLevel       int64    `json:"reputation_level"`
 	ReputationSpentBefore int64    `json:"reputation_spent_before"`
 	OwnedBefore           []string `json:"owned_before"`
+}
+
+// R5's frozen inputs form a closed six-field object. Struct decoding alone
+// accepts case aliases, duplicates and missing/null numbers as zero; inspect
+// the original tokens before decoding or recomputing any resolved value.
+func validReputationPurchaseResolvedFields(data json.RawMessage) bool {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	first, err := decoder.Token()
+	if err != nil || first != json.Delim('{') {
+		return false
+	}
+	seen := map[string]bool{}
+	for decoder.More() {
+		token, err := decoder.Token()
+		key, ok := token.(string)
+		if err != nil || !ok || seen[key] {
+			return false
+		}
+		switch key {
+		case "kind", "node_id", "resolved_cost", "reputation_level", "reputation_spent_before", "owned_before":
+		default:
+			return false
+		}
+		var raw json.RawMessage
+		if decoder.Decode(&raw) != nil || bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+			return false
+		}
+		seen[key] = true
+	}
+	last, err := decoder.Token()
+	var trailing any
+	return err == nil && last == json.Delim('}') && len(seen) == 6 && errors.Is(decoder.Decode(&trailing), io.EOF)
 }
 
 // reputationTreeActive is R5 step 3: the pinned Founder bundle carries the
@@ -116,6 +150,9 @@ func applyFounderReputationPurchaseResolved(state *save.State, request IntentReq
 		return FounderLoggedTransition{}, fmt.Errorf("%w: Reputation purchase command", ErrInvalidReplayInputs)
 	}
 	var resolved founderReputationPurchaseResolved
+	if !validReputationPurchaseResolvedFields(resolvedJSON) {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Reputation purchase fields", ErrInvalidReplayInputs)
+	}
 	if err := decodeReplayStrict(resolvedJSON, &resolved); err != nil || resolved.OwnedBefore == nil {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: Reputation purchase inputs", ErrInvalidReplayInputs)
 	}

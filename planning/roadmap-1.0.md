@@ -5,15 +5,28 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest verification supplement (2026-10-06):** RP-254 undereddddc61 explicitly
+**Latest runtime correction (2026-10-06):** RP-255 under761462fc/4ca6dc7d
+rejects all570malformed frozen purchase inputs after376baseline admissions.
+Nineteen valid results stay unchanged; TS already refuses456objects and has114
+honestly normalized duplicate controls. Both gate omissions and six fixture
+corruption checks fire, restoring exact SHAs. Kernel **0.3.160**; cold core/vet
+and client/types/build plus separate boundaries/topology pass8047/134. Full
+verify-client stays RP-131 RED. Native Chromium/WebKit590each pass; Firefox
+executes0tests even with a narrowly approved escalation (RP-256), not a browser/
+CI green claim. Complete new span after4d690f29 needs Claude. Next retained
+RP-253 persisted taxonomy and remaining pinned readers; actual SQL still held
+at100%/39784KiB free. No old corpus/schema/migration/mint/push/cleanup or full
+B4/R8/RFC/player/1.0 promotion. [Exact scope](reputation-tree-v1/log.md).
+
+**Previous verification supplement (2026-10-06):** RP-254 undereddddc61 explicitly
 checks20direct purchase and3paired Founder Exit result pins per runtime against
 the unchanged Go-authored fixture. Four hash faults and four missing-observation
 controls fail; old direct comparisons alone pass their wrong-hash faults.
 Go Exit injection is oracle evidence, not a runtime defect. Cold server-core/vet
 and client/type/build plus separate boundaries/topology pass7457/134; full
 verify-client remains RED at RP-131/50a3a514. Runtime, corpus and kernel0.3.159
-unchanged. Complete new span afterc355fb7d needs Claude. Next RP-255 frozen-input
-shape parity and remaining pinned readers; actual RP-253 persistence, history/
+unchanged. Complete new span afterc355fb7d needs Claude. Its RP-255 follow-up is
+recorded above; remaining pinned readers, actual RP-253 persistence, history/
 verifier, capacity and all nine-tier/platform/release obligations remain.
 [Exact scope](reputation-tree-v1/log.md).
 

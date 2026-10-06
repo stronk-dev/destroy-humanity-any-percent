@@ -48,6 +48,16 @@ threshold retune is measured and reported, then ratified by owner SHA).
   comparisons alone survive their wrong-hash faults. Test-only, kernel159 and
   corpus unchanged; complete new span afterc355fb7d needs Claude. No fresh DB,
   full AC3/4/R8/B4 or approval of Codex's own fixes follows.
+  RP-255's subsequent frozen-input supplement under761462fc/4ca6dc7d refuses
+  all570raw malformed fields after376baseline admissions, preserving19valid
+  controls. TS already refuses456objects;114parsed duplicates are honest
+  positive controls, not wire refusals. Two runtime omissions and six fixture
+  corruptions fire, restoring exact SHAs; kernel0.3.160. Cold core/vet and
+  client/type/build plus separate boundaries pass8047/134. Full client remains
+  RP-131 RED; native Chromium/WebKit590each pass but Firefox executes no tests,
+  including a narrowly escalated run (RP-256). Complete span after4d690f29
+  needs Claude. RP-253 actual persisted taxonomy, history/verifier and remaining
+  pinned readers still required; no new closeout or checkbox follows.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.

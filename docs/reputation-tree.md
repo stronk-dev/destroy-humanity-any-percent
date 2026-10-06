@@ -201,6 +201,27 @@ The resolved inputs are `{kind, node_id, resolved_cost, reputation_level, reputa
 owned_before}`. `resolved_cost` is 0 unless the purchase applies. Replay recomputes every field and
 refuses tampered inputs.
 
+The Go purchase arm checks the original resolved JSON for exactly those six
+required, non-null, case-exact fields and rejects duplicate keys before struct
+decoding. Invalid frozen inputs return `ErrInvalidReplayInputs` with no receipt
+or events and restore the complete pre-command state, including any lazy Fiscal
+sweep. This does not alter the envelope decoder, other intent arms or valid bytes.
+TS checks the exact parsed object and typed values; its public replay API does
+not receive raw JSON and cannot recover duplicate keys erased during parsing.
+
+`testdata/reputation/purchase-input-shape-v1.json` binds nineteen valid controls
+to the existing purchase corpus SHA: eighteen purchase-arm cases plus a zero-
+earned unaffordable case. It records six fields × five single-field mutations
+per control. Go refuses all 570 raw mutations; TS refuses 456 malformed objects
+and reproduces 114 honestly normalized duplicate controls. All nineteen valid
+results byte-match state, receipt, ordered events and result pin. Removing each
+runtime's key gate fails its affected population; source-hash, missing-row and
+altered-row controls fail both consumers. Authoring is explicit through
+`make reputation-input-shape-corpus`; ordinary tests never regenerate it.
+This RP-255 supplement needs designated review and actual database coverage
+remains separate. Native Chromium/WebKit execute all 590 new TS tests, but
+Firefox launch is blocked on this Mac (RP-256); no three-engine/CI pass is claimed.
+
 An applied purchase adds the cost to `reputation_spent`, inserts the id in sorted order, and updates
 the unlock mirror. It returns a receipt with `effective_from: "next_run"` (a Fiscal sweep, if any,
 decorates it) and emits `reputation_node_purchased.v1` with `source: "direct"`. The event is

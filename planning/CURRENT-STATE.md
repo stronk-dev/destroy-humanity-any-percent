@@ -4,7 +4,21 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest verification supplement: RP-254 undereddddc61 adds explicit result-pin
+Latest runtime correction: RP-255 under761462fc/4ca6dc7d enforces the existing
+six frozen purchase-input fields before Go struct decoding. All570raw malformed
+cases now refuse after376baseline admissions;19valid results remain unchanged.
+TS already refuses456malformed objects and preserves114parsed-duplicate controls.
+Go/TS gate omissions and source-hash/population/row corruptions fail independently,
+with exact restoration. Kernel **0.3.160**; cold core/vet and client/types/build
+plus separate boundaries/topology pass8047/134. Full verify-client remains RED
+at RP-131/50a3a514. Native Chromium/WebKit pass590each; Firefox never executes
+tests, including an approved narrow escalation (RP-256). No whole browser/CI pass.
+Complete new range after4d690f29 needs Claude. Next RP-253 retained real-Postgres
+taxonomy and remaining pinned readers; actual DB execution still held at100%/
+39784KiB free. No cleanup, restart, old-corpus/schema/migration edit, mint/push or full
+B4/R8/RFC/player/1.0 promotion. [Exact evidence](reputation-tree-v1/log.md).
+
+Previous verification supplement: RP-254 undereddddc61 adds explicit result-pin
 comparisons for20direct purchases and3paired Founder Exits in both runtimes,
 using unchanged Go-authored fixture pins. Four hash faults and four missing-
 observation controls fail; the older direct state/receipt/event comparisons
@@ -12,8 +26,8 @@ alone survive their wrong-hash fault. The Go Exit fault is a test-boundary
 oracle probe, not a runtime defect. Cold server-core/vet passes; client/types/
 build and separate boundaries/topology pass7457/134. Full verify-client remains
 RED at historical RP-131/50a3a514. Runtime, corpus and kernel0.3.159 unchanged;
-complete new span afterc355fb7d needs Claude. Next is RP-255 frozen-input shape
-parity and remaining pinned readers. RP-253 actual persisted rejection taxonomy,
+complete new span afterc355fb7d needs Claude. Its RP-255 follow-up is recorded
+above; remaining pinned readers and RP-253 actual persisted rejection taxonomy,
 the capacity hold and full R8/B4/CI/player/1.0 obligations remain.
 [Exact evidence](reputation-tree-v1/log.md).
 

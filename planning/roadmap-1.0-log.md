@@ -2750,3 +2750,36 @@ promote whole B4/RFC/CI/release. Next RP-255 predeclared frozen-input shape
 parity and remaining pinned readers. All nine tiers through Transcendence and
 platform/privacy/accessibility/rights/operations obligations remain. Goal
 active; no checkbox flip, archival, mint, push or deletion authorization.
+
+## 2026-10-06 — closed frozen purchase-input fields
+
+Under761462fc/4ca6dc7d, a complete raw-wire population finds376admissions out
+of570malformed frozen Reputation inputs: case aliases, extra aliases, duplicates
+and missing/null zero defaults. Nineteen legitimate controls pass, including
+zero earned and an automatic Fiscal sweep. The localized Go six-field token
+check now refuses all570 with exact rollback/no output; kernel0.3.160 marks
+the actual narrowing. TS already refuses456malformed objects and reproduces114
+normalized-duplicate controls; its runtime is unchanged. Duplicate parsing loss
+is disclosed, not labelled a refusal. Old corpora/schema/migrations stay intact.
+
+Two independent compiling gate omissions fire: Go admits376again, TS admits114
+extra aliases with342other malformed objects still defended. Source-hash,
+missing-case and altered-row corruptions fail both fixture consumers (six
+negative lanes), and exact hashes restore. Shared source/row/census checks make
+the new Go-authored fixture evidence, not a hidden population shortcut.
+
+Cold core/vet passes production34.319s/save0.272s. Types/build/client and separate
+boundaries/topology pass8047/134; full verify-client remains RED at pushed
+50a3a514/RP-131. Native Chromium/WebKit execute590new tests each. Firefox
+executes0even with approved narrow outside-sandbox execution; connection60s/
+launch180s failures and extension/framebuffer diagnostics are retained as
+RP-256. Their sole cause is not isolated; no browser/CI green claim or bound/
+security/config weakening. All handles terminal before records.
+
+Docker still100%/39784KiB free, databases healthy; no cleanup, restart, new
+workload or SQL mutation. Complete new span after4d690f29 needs Claude, not
+covered by old verdicts or implementer first filter. Next accepted retained
+RP-253 persisted taxonomy and remaining pinned readers; actual SQL evidence and
+R8 history/verifier remain required. All nine tiers through Transcendence plus
+privacy/rights/accessibility/operations/deployment obligations persist. Goal
+active, no checkbox/archival/mint/push/deletion or release promotion.

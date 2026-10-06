@@ -2545,3 +2545,119 @@ positive controls and19unmodified controls. No error-class-only TS rejection
 claim: gate omission should admit the114extra aliases; other rows can stay
 defended and must be disclosed. The added fields change neither expected state
 nor receipt/event/hash. All other scope, controls and held obligations unchanged.
+
+## 2026-10-06 — RP-255 correction, controls and implementer first filter
+
+Review by: Codex (implementer first filter, not designated review).
+Recorded by: Codex. Reviewed4d690f29..4ca6dc7d and the complete current
+implementation/test/fixture/docs/ledger/queue/board checkpoint diff. Claude must
+review the full literal span after4d690f29 through this checkpoint, including
+761462fc and4ca6dc7d. No previous designated verdict or self review covers it.
+
+The original token stream is now checked for the six R5 keys, all required,
+non-null, exact-case and duplicate-free, before its existing strict typed decode
+and recomputation. This is a localized Go purchase-arm admission narrowing;
+generic replay/envelope decoding, producers, other arms, schemas and applied
+migrations are untouched. Existing input shapes and state/receipt/event/pin
+bytes stay identical. Three kernel identities159→160 record the real narrowing.
+The TS runtime remains byte-identical; its parsed-object checks already refuse.
+
+The shared fixture uses19controls:18original purchase-arm cases and one valid
+zero-earned unaffordable profile. Two original invalid-request arms are outside
+this union and explicitly excluded. Each control has six fields × five mutations:
+570raw Go negatives,456TS malformed-object negatives and114TS normalized-
+duplicate positives. Nineteen unmodified controls compare full canonical state,
+receipt, ordered events and result pin, including the automatic Fiscal sweep.
+The Go constructor authors raw JSON strings without erasing duplicates. The TS
+census independently reconstructs every raw row and verifies actual source bytes
+with browser-compatible WebCrypto. Ordinary tests compare, never regenerate;
+only the named root authoring target uses the existing explicit update flag.
+
+Instrument construction failure disclosed:2479d9..5054cb failed all19positive
+controls at Founder canonical-command admission because the test supplied
+indented fixture presentation bytes. The constructor correctly refused to write
+the expectation. Canonical command normalization was corrected in the test
+only (3b12c5); cad878..8d094f then authoritatively passes all19before authoring.
+That initial setup failure is not replay-defect or negative-population evidence.
+Earlier misspelled read-only fixture paths and truncated broad source projections
+were corrected with rg discovery and targeted actual-file reads, not treated as
+evidence that the missing files or projected claims existed.
+
+Baseline e99fc2..134127 executes all570 on unchanged runtime and reports:
+376admitted,194refused; admissions are114aliases,114extra aliases,114duplicates,
+17missing and17null. All19positive controls pass. 94f566..bd694f executes590TS
+tests successfully:456refusals,114duplicate normalization controls,19original
+results and the census. JSON.parse has already erased duplicate keys before the
+public TS API: those114 are never called TS raw-wire rejections. Neither result
+is a malformed-player-request exploit or an actual corrupt SQL write.
+
+Correction2156bf..9d1fc6 rejects all570 with ErrInvalidReplayInputs, no receipt/
+events and exact complete pre-state rollback. All19controls still byte-match.
+8dc904..2138c5 types pass0errors/0warnings. Independent compiling controls,
+every handle terminal before source or record edits:
+
+- Go omits only the new gate:2869bf..02b139 admits the same376/570 again with
+  the original group counts;194remain defended. The unmodified controls pass.
+- TS omits only existing R5 exactKeys:49738f..d2c5bb fails114extra-alias rows
+  because the replay promise resolves instead of refusing;476other tests pass.
+  The342other malformed objects stay defended by field/type/dispatch checks.
+  Detailed repeated diagnostics were tool-output-truncated; final114/476count
+  and actual resolved-promise diagnostic were visible, not a claimed full text
+  dump. No TS product change is retained.206b48 verifies both runtime SHAs.
+- Forge source hash:ad153f..93cea6 Go detects drift;244ce9..48827d TS compares
+  zero hash with the actual f9b129e3 source digest and fails. de3e7f exact restore.
+- Remove one case:4e6388..739fde Go detects drift;5a776a..08fe83 TS requires570
+  and finds569. This has588selection skips, not missing runtime coverage.
+  f42561 exact restore before the next distinct probe.
+- Alter a raw row from p05 to p25 without changing its metadata:7e0b6c..b2230d
+  Go detects drift; e77fd4 TS's independent expected raw row fails.1f8648 exact
+  restore. No control regenerates the fixture around the fault.
+
+Exact restored SHAs (b97290/206b48/1f8648/d04c4c/0092cf):
+
+- corrected Go reputation_intent.go:
+  11fe1b6a202f45b142acbf6de1375522dd21011fa108a04db79cb72a4fba8189;
+- unchanged TS replay.ts:
+  1790fb96006b721372a3cb5a596225708754e271ab972bb7631851652cb54ee7;
+- new Go test:d46b218318b86a94c53e47b344f9c840efa4b5415cb3d68eb2ec9657c790eeaa;
+- new TS test:ed0373a13d4ce5d8e2b4fa5868d5888b8ae194e4d1992b5acb5aa4a6b7337b4e;
+- new shape fixture:e860f214a4df64c152d06ebdb2e1178c3a16e885ef15ff5153ba2b13c8675686;
+- unchanged source corpus:
+  f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782.
+
+Final f5070c..1b3426 cold make verify-server-core CORE_TEST_COUNT=1 exits0:
+vet/core pass, production34.319s/save0.272s/transport13.288s, formulas/API no
+diff. Main Pitch0.292s is cold; separate content alias is cached and is not a
+second cold observation.4790c8..c9587c full verify-client passes clean types,
+build213modules,8047tests/134existing skips and14/8/22shell/UI boundaries, then
+exits2 at historical pushed50a3a514 (RP-131). No full CI green claim.008f1e..
+5fa203 separately passes topology13negatives, remaining boundaries (cosmetic22),
+payment6negatives/2near misses, copy657keys/610existing orphan warnings and
+deployment content-manifest. d5efa4/81abf3/0092cf and final diff confirm old
+replay/migration corpora, applied migrations, generated contracts and TS runtime
+unchanged. New authoring target changes no CI workflow or test selection policy.
+
+Supplemental native browser execution / RP-256:7fb609..d25885 runs the new file
+on Darwin arm64 (df7f4c). Chromium/WebKit each pass590tests (1180total). Firefox
+never executes: connection timeout60s, launch timeout180s, with plugin-container
+sandbox-extension Operation not permitted AND SWGL framebuffer diagnostics.
+The initial suggestion that Codex's execution sandbox alone explains it is not
+established. After that exact handle exits2, an approved narrowly escalated root
+make test-browser command selects only Firefox; b2191c..77b30d again executes
+0tests and fails with the same two diagnostics. This is a verified changed-
+environment check, not a blind retry on an observation timeout. No timeout,
+browser config, assertions, security bypass or skipped engine is changed.
+Both red attempts remain evidence; no native three-engine or Linux/hosted CI
+promotion. Every handle is terminal before these records; no live probe remains.
+
+Capacity rechecked read-only:c1b7d2 lists both healthy owned Postgres services
+and the existing tabiya builder;906fe0 shows100%/39784KiB free. No prune, volume
+delete, restart, new Docker workload or SQL mutation. Narrow unused-volume
+cleanup request remains unanswered, not inferred from the goal. RP-253 still
+requires retained complete direct taxonomy plus actual declared Postgres and
+fired persistence controls; R8 history/verifier/career and remaining pinned
+reader/writer audit stay required. Next prepare that accepted test population
+without calling a host skip persistence evidence; native launch diagnosis is a
+separate open environment obligation. Full nine tiers/platform/mint/H4/rights/
+privacy/accessibility/operations/release remain, no boxes/archive/push or goal
+completion. New correction and every preceding Codex span need Claude separately.

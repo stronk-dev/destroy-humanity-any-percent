@@ -1,5 +1,28 @@
 # Executable queue
 
+## Frozen Reputation purchase inputs corrected — 2026-10-06
+
+Under761462fc/4ca6dc7d, Go now rejects all570raw malformed resolved inputs
+after376baseline admissions and preserves19valid complete results. TS's existing
+gate rejects456objects;114duplicate JSON controls normalize before its public
+object API and reproduce the original result. Go gate omission fires376;
+TS omission fires114extra aliases, with other342refusals still defended. Three
+fixture corruptions fail both consumers. Corpus/runtime probe SHAs restore;
+old corpora/migrations/schema/TS replay bytes stay unchanged. Kernel0.3.160.
+Cold core/vet and client/types/build plus separate boundaries/topology pass
+8047/134; full verify-client remains RP-131 RED. Native Chromium/WebKit590each
+pass, but Firefox runs0tests both inside and outside the execution sandbox;
+RP-256 stays open, no broad browser/CI claim.
+
+**READY FOR CLAUDE:** entire new span after4d690f29, including both predeclarations
+and the implementation/records checkpoint. **NEXT ACCEPTED WORK:** retain the
+complete RP-253 direct-purchase Postgres taxonomy and audit remaining pinned
+readers/writers. Do not call host skips SQL proof; actual DB execution awaits
+capacity/cleanup authority (100%/39784KiB free). Separately diagnose native
+Firefox launch without changing security/timeout/gate policy. R8 history/verifier,
+career and all nine-tier/platform obligations remain; no archival, checkbox,
+mint, push, cleanup or release promotion. [Evidence](../reputation-tree-v1/log.md).
+
 ## Reputation replay result-pin proof added — 2026-10-06
 
 Undereddddc61, both runtimes explicitly compare20direct result pins (11applied,
@@ -12,7 +35,7 @@ plus separate topology/boundaries pass7457/134. Full verify-client is still RED
 at RP-131/50a3a514, not waived.
 
 **READY FOR CLAUDE:** complete new span afterc355fb7d, includingeddddc61 and its
-test/evidence checkpoint; no prior verdict covers it. **NEXT ACCEPTED WORK:**
+test/evidence checkpoint; no prior verdict covers it. **THEN-NEXT WORK (above):**
 predeclared R5 frozen resolved-input shape parity (RP-255), followed by remaining
 pinned readers/writers. Actual RP-253 Postgres taxonomy, R8 history/verifier and
 full B4/career remain required. Capacity/cleanup hold unchanged; no Docker
