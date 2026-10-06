@@ -10,10 +10,17 @@ severings and actual drift; output equals gofmt(old Go). Other artifacts/copy658
 hash/manifest unchanged. Cold client/vet/core package union pass with initial
 sandbox socket failure and narrow rerun disclosed. New Go producer tree
 1c54c2c3d0139b50e97937bfe88c65f339cab6b5; dated career reports not restamped.
-Full span after3df3ff32 needs Claude; no acceptance checkbox changes. Next ground
-RP-284 consumers, RP-283 author contract gap; all full1.0 holds remain.
+Full span after3df3ff32 needs Claude; no acceptance checkbox changes. RP-284
+reader/delivery is supplemented below; its display/RP-283 author gaps remain.
 
 ## RP-284 bounded event-reader supplement — 2026-10-06
+
+Local checkpoint:45 new reader/runtime cases pass, including both HTTP orderings,
+later cursor reset, duplicate/out-of-cohort controls and next distinct run.
+Four compiling omissions fire41/2/1/3 and exactly restore. Final8151 units,
+134 selected Chromium/WebKit functional cases and isolated performance pass;
+255 Node skips/RP-131 RED/Firefox unexecuted remain. Display is still an author
+contract gap, not a completed B7/AC12 claim. Full span after0ae1fa11 needs Claude.
 
 Implement only accepted R7's existing `run_started` v1/v2 payload reader and
 its runtime delivery, including the HTTP-snapshot-first race. No new wire,

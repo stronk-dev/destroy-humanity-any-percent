@@ -35,7 +35,16 @@ export type RunEndedEvent = Readonly<{ cursor: number; kind: "run_ended"; occurr
   starter_package?: Readonly<{ kind: "resource_grant"; resource_id: string; amount: string }> | Readonly<{ kind: "generated_generators"; generator_id: string; count: number }> | Readonly<{ kind: "preowned_upgrade"; upgrade_id: string }>;
 }> }>;
 export type RunEndSurfaceProps = Readonly<{ ended: RunEndedEvent }>;
-export type GameUILifecycleEvent = GateCrossedEvent | ExitOfferSpawnedEvent | ExitOfferResolvedEvent | RunEndedEvent;
+export type RunStartedEvent = Readonly<{ cursor: number; kind: "run_started"; occurred_at_ms: number; payload: Readonly<{
+  assisted: Readonly<{ advisor: boolean; commons: boolean }>;
+  founder_id: string;
+  run_id: RunID;
+  started_at_ms: number;
+  // R7: absent in retained v1; explicit null/object in v2. Never derive this
+  // frozen carry-over summary from a later mutable Founder snapshot.
+  reputation_tree?: Readonly<{ bonus_factor: string; applied_starter_node_ids: readonly string[] }> | null;
+}> }>;
+export type GameUILifecycleEvent = GateCrossedEvent | ExitOfferSpawnedEvent | ExitOfferResolvedEvent | RunEndedEvent | RunStartedEvent;
 export type GameUISystemEvent = Readonly<{ kind: "resync_required" }> | Readonly<{ kind: "server_restarting"; resume_after_ms: number }>;
 
 const mechanicalID = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
@@ -106,6 +115,33 @@ export function decodeGameUIEvent(envelope: TransportEnvelope): GameUILifecycleE
     exact(payload, ["offer_id", "resolution"], kind);
     if (payload.resolution !== "accepted") throw new SyntaxError("invalid accepted offer resolution");
     return { cursor: envelope.rev, kind, occurred_at_ms: occurredAtMS, payload: { offer_id: uuidString(payload.offer_id), resolution: payload.resolution, run_seq: null } };
+  }
+  if (kind === "run_started") {
+    const hasTree = "reputation_tree" in payload;
+    exact(payload, ["assisted", "founder_id", "run_id", "started_at_ms", ...(hasTree ? ["reputation_tree"] : [])], kind);
+    const assisted = object(payload.assisted, "run_started.assisted");
+    exact(assisted, ["advisor", "commons"], "run_started.assisted");
+    if (typeof assisted.advisor !== "boolean" || typeof assisted.commons !== "boolean") throw new SyntaxError("invalid run-started flags");
+    let treeFields: Pick<RunStartedEvent["payload"], "reputation_tree"> = {};
+    if (hasTree) {
+      if (payload.reputation_tree === null) treeFields = { reputation_tree: null };
+      else {
+        const tree = object(payload.reputation_tree, "run_started.reputation_tree");
+        exact(tree, ["bonus_factor", "applied_starter_node_ids"], "run_started.reputation_tree");
+        if (typeof tree.bonus_factor !== "string") throw new SyntaxError("invalid next-run bonus factor");
+        const factor = parseCanonical(tree.bonus_factor);
+        if (!isStateValue(factor) || factor.lt(1)) throw new SyntaxError("invalid next-run bonus factor");
+        if (!Array.isArray(tree.applied_starter_node_ids)) throw new SyntaxError("invalid applied starter IDs");
+        // Production emits artifact order, which is not necessarily lexical.
+        const starterIDs = tree.applied_starter_node_ids.map(id);
+        if (new Set(starterIDs).size !== starterIDs.length) throw new SyntaxError("duplicate applied starter ID");
+        treeFields = { reputation_tree: { bonus_factor: tree.bonus_factor, applied_starter_node_ids: starterIDs } };
+      }
+    }
+    return { cursor: envelope.rev, kind, occurred_at_ms: occurredAtMS, payload: {
+      assisted: { advisor: assisted.advisor, commons: assisted.commons }, founder_id: uuidString(payload.founder_id),
+      run_id: runID(payload.run_id), started_at_ms: safe(payload.started_at_ms, 1), ...treeFields,
+    } };
   }
   if (kind !== "run_ended") return undefined;
   const branched = "branch" in payload || "starter_package" in payload;

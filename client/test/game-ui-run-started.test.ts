@@ -43,6 +43,10 @@ describe("R7 next-run event reader (not Run End UI acceptance)", () => {
     const value = { ...payload(), assisted: { advisor: true, commons: true } };
     expect(decode(value)?.payload).toEqual(value);
   });
+  it("does not confuse resource hardcaps with the Decimal state limit", () => {
+    const value = payload({ ...summary, bonus_factor: "1e1001" });
+    expect(decode(value)?.payload).toEqual(value);
+  });
 
   const invalid: readonly [string, Record<string, unknown>][] = [
     ["extra base field", { ...payload(), extra: true }],
@@ -68,7 +72,7 @@ describe("R7 next-run event reader (not Run End UI acceptance)", () => {
     ["numeric factor", payload({ ...summary, bonus_factor: 1 })],
     ["noncanonical factor", payload({ ...summary, bonus_factor: "1.0" })],
     ["below-one factor", payload({ ...summary, bonus_factor: "9e-1" })],
-    ["out-of-state factor", payload({ ...summary, bonus_factor: "1e1001" })],
+    ["out-of-state factor", payload({ ...summary, bonus_factor: "1e9000000000000000" })],
     ["NaN factor", payload({ ...summary, bonus_factor: "NaN" })],
     ["null starters", payload({ ...summary, applied_starter_node_ids: null })],
     ["scalar starters", payload({ ...summary, applied_starter_node_ids: "reputation.starter.a" })],
@@ -115,13 +119,18 @@ async function boundary() {
     () => socket as unknown as WebSocket, { protocol: "http:", host: "controlled.invalid" });
   await runtime.snapshot();
   const received: unknown[] = [];
-  const stop = runtime.subscribe(founderID, (message) => received.push(message));
+  let resolveSnapshot!: (value: unknown) => void;
+  const nextSnapshot = new Promise<unknown>((resolve) => { resolveSnapshot = resolve; });
+  const stop = runtime.subscribe(founderID, (message) => {
+    received.push(message);
+    if (message.kind === "snapshot") resolveSnapshot(message);
+  });
   socket.emit("open"); socket.reply({ id: 1, connect: {} });
   socket.reply({ id: 2, subscribe: { recoverable: true, positioned: true, recovered: false, epoch: "player", offset: 0, publications: [] } });
   socket.reply({ id: 3, subscribe: { recoverable: true, positioned: true, recovered: false, epoch: "world", offset: 0, publications: [] } });
-  return { runtime, socket, received, stop, get reads() { return reads; },
+  return { runtime, socket, received, nextSnapshot, stop, get reads() { return reads; },
     setSnapshot(value: ReturnType<typeof snapshot>) { response = value; },
-    publish(value: Record<string, unknown>, offset = 1) { socket.reply({ push: { channel: `player:${founderID}`, pub: { offset, data: wire(value) } } }); } };
+    publish(value: Record<string, unknown>, offset = 1, revision = 2) { socket.reply({ push: { channel: `player:${founderID}`, pub: { offset, data: wire(value, revision) } } }); } };
 }
 const delivered = { kind: "event", revision: 2, scope: "company",
   value: { cursor: 2, kind: "run_started", occurred_at_ms: now, payload: payload() } };
@@ -138,15 +147,32 @@ describe("R7 real runtime over controlled HTTP/socket bytes", () => {
       expect(b.received).toEqual([{ kind: "transport_recovered" }, delivered]);
       b.publish(payload()); // Same channel offset is still at-most-once.
       expect(b.received).toEqual([{ kind: "transport_recovered" }, delivered]);
+      b.publish(payload(), 2); // Same event at a new outbox offset is still a duplicate.
+      expect(b.received).toEqual([{ kind: "transport_recovered" }, delivered]);
+      b.setSnapshot(snapshot(3, 2)); await b.runtime.snapshot();
+      b.publish(payload(), 3); // A later cursor reset must not erase delivery identity.
+      expect(b.received).toEqual([{ kind: "transport_recovered" }, delivered]);
       expect(b.socket.closes).toBe(0);
     } finally { b.stop(); }
   });
-  it.each(["wrong-founder", "old-run", "future-run"])("does not revive a duplicate from %s", async (kind) => {
+  it("does not suppress the next distinct run's summary", async () => {
+    const b = await boundary();
+    try {
+      b.publish(payload());
+      const next = { ...payload(), run_id: { company_stream_id: companyID, run_seq: 3 }, started_at_ms: now + 1 };
+      b.publish(next, 2, 3);
+      expect(b.received).toEqual([{ kind: "transport_recovered" }, delivered,
+        { kind: "event", revision: 3, scope: "company", value: { cursor: 3, kind: "run_started", occurred_at_ms: now, payload: next } }]);
+      expect(b.socket.closes).toBe(0);
+    } finally { b.stop(); }
+  });
+  it.each(["wrong-founder", "old-run", "future-run", "wrong-start-time"])("does not revive a duplicate from %s", async (kind) => {
     const b = await boundary();
     try {
       b.setSnapshot(snapshot(3, 2)); await b.runtime.snapshot();
       const value = payload();
       if (kind === "wrong-founder") value.founder_id = "01985555-3333-7333-8333-333333333333";
+      else if (kind === "wrong-start-time") value.started_at_ms = now - 1;
       else value.run_id = { company_stream_id: companyID, run_seq: kind === "old-run" ? 1 : 3 };
       b.publish(value);
       expect(b.received).toEqual([{ kind: "transport_recovered" }]);
@@ -160,8 +186,9 @@ describe("R7 real runtime over controlled HTTP/socket bytes", () => {
       expect(b.received).toEqual([{ kind: "transport_recovered" }, { kind: "system", value: { kind: "resync_required" } }]);
       expect(b.socket.closes).toBe(1);
       expect(b.reads).toBe(2);
-      for (let index = 0; index < 10; index += 1) await Promise.resolve();
-      expect(b.received).toContainEqual(expect.objectContaining({ kind: "snapshot" }));
+      expect(await b.nextSnapshot).toMatchObject({ kind: "snapshot", value: {
+        schema_version: 4, revision: 1, run: { founder_id: founderID, run_seq: 1 },
+      } });
       expect(b.received.filter((value) => (value as { kind: string }).kind === "event")).toEqual([]);
     } finally { b.stop(); }
   });

@@ -3276,3 +3276,19 @@ grounding; RP-283 author contract gap and proper full nine-tier/platform1.0
 holds remain. No numeric/kernel161/English/balance/price/CI/security or owner
 policy change, checkbox, archive, report restamp, cleanup, push/deploy/release
 or goal completion. [Evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Reputation next-run reader/delivery supplement
+
+RP-284 range after0ae1fa11 adds the accepted R7 reader without opening GU-C3's
+payload-only Run End boundary. Baseline39 failures; final45 new cases/8151
+units pass/255 skips. Four compiling probes fire41/2/1/3, exact restoration.
+Selected Chromium/WebKit134 functional and isolated performance pass; one
+initial Chromium fixture failure is disclosed and corrected by awaiting the
+actual recovery callback, not increasing a deadline. Types/build/boundaries/
+copy/manifest pass; RP-131 still RED/Firefox unexecuted. Controlled runtime,
+not live Exit/SQL/mint/manual AT/full AC12. Author display/balance reconciliation
+is explicit in decision queue; RP-283 remains separate. Full range needs Claude,
+earlier reviews independent; next accepted work is recovered-publication R7
+identity/delivery checks. Proper full nine-tier/platform1.0 goal remains active;
+no numeric/kernel/copy/schema/CI/owner change, checkbox/archival/publication/
+deployment/push, report restamp or release promotion.

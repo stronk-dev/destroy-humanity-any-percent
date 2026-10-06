@@ -16,6 +16,11 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   Company-only decline, and Founder-CAS-guarded acceptance.
 - Run End: a payload-isolated component that accepts only the decoded `run_ended` event; its parent
   owns the exact-next-Company continuation control.
+  Reputation R9's available-balance and next-route display is **not implemented**:
+  its post-Exit balance source must be reconciled with GU-C3's payload-only boundary.
+  The runtime now decodes the existing `run_started` v1/v2 payload, preserving
+  absent/null/object tree arms, canonical factor and applied-starter array order.
+  This reader is plumbing, not a rendered carry-over summary or AC12 acceptance.
 - Settings/System: save status, drain notice, and explicit resync action.
 - **Trophy Case (`achievements`):** read-only, unlocked by `feature.achievements`. It shows the run
   and career score, an earned/total count, and each row's scope, text state (earned this run,
@@ -222,9 +227,19 @@ the next player intent cannot reuse the revision consumed by the decline. Termin
 rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`: Wind Down and
 offer acceptance remain disabled until the player subscription reports `transport_recovered`, and
 disable again on close, drain, or resync. Once `run_ended` arrives, the trailing command receipt
-does not refresh into the server-created next run; that snapshot is bound only when the player
-chooses **Start the Next Company**. A concurrently generated offer delivered after `run_ended`
-also cannot replace the terminal screen.
+does not itself refresh into the server-created next run. The HTTP applied-action
+path and transport recovery can nevertheless sample that next run while Run End
+stays selected. Only **Start the Next Company** clears the terminal state, after
+a fresh exact-successor snapshot check. A concurrently generated offer delivered
+after `run_ended` also cannot replace the terminal screen.
+
+If an HTTP sample has already advanced beyond `run_started`, the runtime still
+delivers its immutable summary only for the sampled Founder, exact run sequence
+and start time, on the Company scope. Old/future-run or other-Founder duplicates
+remain suppressed; channel-offset dedup and revision-gap recovery stay unchanged.
+One last-delivered start-event ID prevents that exception from reviving the same
+summary at a new outbox offset; it is not an unbounded history set. Delivery does
+not navigate or derive a balance from the event's factor/starter IDs.
 
 ## Boundaries and verification
 

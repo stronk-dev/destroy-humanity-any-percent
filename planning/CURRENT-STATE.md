@@ -13,11 +13,23 @@ sandbox loopback failures rerun narrowly (original core command stays failed).
 New Go producer tree1c54c2c3d0139b50e97937bfe88c65f339cab6b5; old dated
 career reports are not fresh evidence at this tree. Whole span after3df3ff32
 needs Claude. No numeric/kernel/English/CI policy change or release promotion.
-Next ground RP-284 Run End/new-route consumers; RP-283 authoritative preview
-still needs an author contract. RP-131/Firefox/SQL/mint/full1.0 holds remain.
+RP-284 reader/delivery grounding has now executed below; its display boundary
+and RP-283 authoritative preview still need author contracts. Full1.0 holds remain.
 [Evidence](reputation-tree-v1/log.md).
 
-Latest runtime checkpoint: RP-285/RP-286 native Reputation Tab traversal is
+Latest runtime checkpoint: RP-284's existing next-run event reader/delivery is
+locally corrected in the range after0ae1fa11. Forty-five new cases discriminate;
+four compiling omissions fail41/2/1/3. Restored8151 units/255 skips, types/build,
+boundaries/copy/manifest pass; Chromium/WebKit134 functional plus one isolated
+performance case pass. This is controlled-runtime plumbing, NOT Run End display,
+real network/SQL/mint/full AC12. The post-Exit balance and payload-only GU-C3
+boundary need author reconciliation, now named in the decision queue. RP-131
+executes RED; Firefox remains unexecuted. Full new range needs Claude; earlier
+ranges remain independent. Next accepted work: recovered-publication R7
+identity/delivery checks, without crossing the unresolved display boundary.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous runtime checkpoint: RP-285/RP-286 native Reputation Tab traversal is
 locally corrected under2b2536a9. Unchanged-source baseline44 fails/10 controls
 pass; corrected54 pass. Three compiling regressions fail36/52/12 as declared,
 each exactly restored; final248 selected Chromium/WebKit cases pass. Header,

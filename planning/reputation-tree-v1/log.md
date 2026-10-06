@@ -7017,3 +7017,105 @@ that the first run demonstrated the advanced-revision defect.
 Refined baseline a18d24/4a637f (session76902 terminal2):42 new cases,39 failures
 and three controls pass; existing8106/255 skips unchanged. Both sampled-revision
 arms now execute separately. Commit test-only diagnostic before correction.
+
+Reader-only correction bc85d3/54ad6a (session20349 terminal2) reduces failures
+to two. The advanced-revision race now fails independently while equal-revision
+and ordinary delivery pass. The other failure was a bad diagnostic assumption:
+1e1001 exceeds a resource hardcap, NOT Decimal's state exponent limit. Replace
+that refusal input with literal1e9000000000000000 and retain1e1001 as a positive
+control; do not tighten numeric behavior to satisfy a false fixture. Add exact
+start-time duplicate cohort control before bounded runtime correction.
+
+Corrected reader-only diagnostic80c60f/36963b (session14390 terminal2):44 new
+cases, only advanced-revision delivery fails;43 new controls and existing8106
+pass/255 skips. Apply a Company-only duplicate exception for exact sampled
+Founder/run sequence/start time, alongside unchanged preceding-run terminal
+exception. No cursor reset/offset/gap/reconnect/auth policy change, UI navigation
+or snapshot prop. Canonical docs accompany reader/runtime behavior and correct
+the stale snapshot-only-on-Continue claim without changing the old RFC body.
+
+Initial correction954cb0/fce803/727bfd (session67806 terminal0):44 new cases
+pass, total8150/255 skips; types0 errors/warnings, build213 modules; shell,
+CI topology13/cosmetic22/no-payment6 controls, copy658/hash unchanged and
+manifest pass. No native browser/SQL/CI-run proof. Self-inspection finds the
+new duplicate exception could re-deliver the same summary at a new channel
+offset, unlike the ordinary cursor's event-ID dedup. Extend all three delivery
+arms with that assertion before touching production again. Add only bounded
+single-current-summary identity memory if diagnosed; do not grow an unbounded
+event-ID set or change other events' policy. This is a supplement-specific
+regression check, not authority to repair unrelated existing terminal replay.
+
+Extended duplicate diagnostic dc1807/d562ef (session41907 terminal2):both
+snapshot-first arms fail duplicate delivery at a new offset; event-first and
+all other controls pass. Add one last-delivered run_started event ID, scoped
+to the subscription; only this event is deduplicated by the new memory.
+No growing set or other lifecycle replay policy change. Test/probe this guard
+as a fourth compiling omission, in addition to the original three probes.
+
+## 2026-10-06 — RP-284 discriminating reader/runtime probes
+
+Final population adds the next distinct run and later snapshot-reset duplicate
+controls:45 new cases;66461f terminal0 total8151/255 skips. Four source-only
+compiling severings execute the unchanged root unit population:
+reader disabled at nonnegative event revisions b3a927 terminal2 fires41;
+below-one factor bound removed9bbc96 terminal2 fires2 (reader and runtime
+resync); current-run race exception removeddeda8f terminal2 fires1 (advanced
+snapshot only); repeated-event guard removedff4442/4de7fd session28228 terminal2
+fires3 (all delivery orders). No syntax/compiler failure used as a gate result.
+Events source restores after each to SHA256
+93d0ae593d3ec388cf899ec17876db3c65ffde30d7d56f5326865e09494375b7;
+runtime restores to f8f9bae2348f103cb57b98a9bee6f64d7057dbcde732f142229be5706ab95dba
+(c7922f/ffe13f/e4023f and final restoration). No test assertion removed.
+
+All probe handles terminal before restoration. Execute final types/build/units/
+boundaries and the inherited historical kernel guard separately. Add browser
+execution of this exact controlled-runtime population plus existing Game UI
+screen regressions on Chromium/WebKit through the existing root Make lane;
+its existing isolated performance gate remains enabled. This is browser-side
+reader/regression evidence, NOT native Exit action/real network/Postgres/mint/
+manual AT/whole AC12. Firefox's existing unexecuted hold is not waived. No
+flags/preferences/timeouts/security or CI policy changes.
+
+Final local e36c7f/c576a4 session71419 terminal0:types0/build213/units8151,
+255 Node skips and boundaries/control populations pass. Separate history
+0974f8/f82cd0 session77327 terminal2:checkout/fixtures pass, unchanged RP-131
+50a3a514 vs0cf9f7a6 fails; not whole client/CI green. Browser4fee09/dabe0f
+session62008 terminal2 runs134 functional cases:133 pass, one Chromium recovery
+assertion fails; two performance-selector skips visible. WebKit's samecase
+passes. All36 observed Worker requests complete, zero pending. The isolated
+performance target was NOT reached because the functional target failed.
+Failure is the diagnostic's arbitrary10-microtask wait for Response.json, not
+a recovery-semantic finding: resync notification/second fetch/close all fire,
+but browser parsing has not finished. Replace counting microtasks with awaiting
+the actual runtime snapshot callback and assert its schema/revision/Founder/run
+as well as zero event delivery. Existing test deadline remains unchanged; no
+delay/timeout increase, production edit, reduced oracle or hidden browser miss.
+All handles terminal before this test-only correction.
+
+## 2026-10-06 — RP-284 final reader proof and remaining display route
+
+Callback-bound final fixture13f2f4/ae2058 session68480 terminal0:types0 errors/
+warnings, units8151 pass/255 Node skips. Browser ee6cec/01c341 session65020
+terminal0:134 functional Chromium/WebKit cases pass, two performance-selector
+skips; isolated unchanged performance gate1 pass/22 selector skips. All36
+functional Worker requests and the one isolated request complete, zero pending.
+New45 cases execute in both browsers (90); the other44 functional cases are
+existing screen regressions. This is controlled HTTP/socket reader execution,
+not a real server/socket/SQL, user-driven Exit or whole AC12 claim. Earlier
+133-pass/one-failure arm remains recorded. Post-fixture below-one omission
+8bc74f terminal2 still fires reader/resync cases; exact restorationf20851
+passes total8151 again23ce27. Events/runtime SHAs above remain exact; no edit
+while any test handle live. Build/boundaries/copy/manifest from the unchanged
+production source are the separately recorded passing arms, not one whole
+verify-client/CI verdict. Historical guard remains RP-131 RED.
+
+Reconcile backlog/plan/current-state/roadmap/execution and append-only checkpoint
+logs in the source+docs range. Add precise author finding in decision queue:
+current-vs-Exit-bound available balance is unspecified across R9 and GU-C3;
+no snapshot prop, latest-balance interpretation or event/schema addition is
+self-authorized. The accepted reader is a mechanical fragment, not a rendered
+feature. Next safe accepted work is recovered-publication R7 identity/delivery
+checks, while RP-283/RP-284 display wait for author reconciliation. Full new
+span after0ae1fa11 needs Claude independently of previous ranges. No boxes/
+numerics/kernel161/balance/price/prose/epoch/CI/security/owner/RFC/archive/
+cleanup/publication/deployment/push/report producer change; full1.0 stays active.

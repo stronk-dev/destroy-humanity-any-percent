@@ -12,11 +12,20 @@ template severings plus actual drift reject. Cold client/vet/core package union
 pass; original core sandbox failure and narrow successful rerun disclosed.
 Current Go producer tree1c54c2c3d0139b50e97937bfe88c65f339cab6b5 changes;
 old dated careers stay historical. Full span after3df3ff32 needs Claude.
-Next RP-284 producer/consumer grounding; RP-283 author preview bridge remains.
+RP-284 reader/delivery is supplemented below; its display/RP-283 author gaps remain.
 Full nine-tier/platform1.0 active, RP-131/Firefox/SQL/mint/operations/reviews
 still open. [Evidence](reputation-tree-v1/log.md).
 
-**Latest runtime checkpoint (2026-10-06):** RP-285/RP-286 native Reputation
+**Latest runtime checkpoint (2026-10-06):** RP-284 next-run reader/delivery
+supplement after0ae1fa11 passes45 new cases/8151 units,134 selected browser
+cases and isolated performance. Four compiling omissions discriminate and
+restore exactly. The Run End display is still absent; post-Exit balance source
+and GU-C3's payload-only boundary require author reconciliation. Controlled
+runtime, not live Exit/SQL/mint/full AC12;255 Node skips/RP-131 RED/Firefox
+unexecuted and all nine-tier/platform1.0 holds remain. Full range needs Claude.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous runtime checkpoint (2026-10-06):** RP-285/RP-286 native Reputation
 Tab correction under2b2536a9. Original44 failures/10 controls pass; corrected54
 pass. Three compiling probes fail36/52/12 with exact restoration; final248
 selected Chromium/WebKit pass. Types/build8106 units/boundaries/copy/manifest

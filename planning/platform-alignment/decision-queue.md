@@ -63,3 +63,32 @@ Resolved input, not an owner question: `design/11 §1b` adopted silent server-an
 default and local-only play as the labeled outage fallback. `design/06` and Account D4 still use a
 broader “may run fully offline” formulation. Their authors must reconcile the bodies and specify
 the fallback contract; an implementation agent may not re-open the already chosen default.
+
+## Reputation Run End data boundary — RP-284 (author reconciliation pending)
+
+Accepted Reputation R9 requires available Reputation after Exit and R7's
+run_started v2 carry-over summary. Archived Game UI GU-C3 instead requires
+RunEndSurface to accept only decoded run_ended; its compile-time negative
+explicitly forbids a snapshot prop. The current ended payload has payout delta,
+not level/spent/available. Founder-advanced has delta too; the receipt's Company
+state is not the Founder feature. A latest v4 snapshot supplies current available
+balance, but is not an immutable balance captured by that particular Exit.
+
+Required author action: reconcile the normative display/data boundary and name
+the authoritative balance read, its timing/identity, permitted component inputs,
+and the run_started/retained-v1/null handling without auto-dismissing Run End.
+Either explicitly permit a guarded current-balance companion read, or specify
+an Exit-bound event/receipt addition under accepted schema/version authority;
+neither contract is inferred by the implementer. Clarify whether the displayed
+balance is current or captured-at-Exit rather than silently choosing between them.
+Canonical home: Reputation R9 and its explicit GU-C3 amendment/reference, with
+the ruling author's body reconciliation. This is not a reopened product choice
+to have Reputation or permission to edit another author's ruled text.
+
+Safe reader supplement in the range after0ae1fa11 does not resolve this gap:
+it decodes/delivers the existing immutable summary only, with executed positive,
+malformed, race and duplicate controls. Next recovered-publication reader checks
+may proceed independently. No UI, payout formula, balance math, new wire or
+whole AC12 is authorized by this finding. Evidence: Reputation implementation
+log and design/BACKLOG.md RP-284. RP-283's eligibility-only Wind Down preview
+bridge is a separate author question, not cured by this event reader.

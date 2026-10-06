@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation next-run reader/delivery supplement — 2026-10-06
+
+RP-284 range after0ae1fa11:45 new cases/8151 units,134 selected Chromium/WebKit
+functional cases and isolated performance pass. Four compiling probes fire
+41/2/1/3 and restore exact bytes. Absent/null/object compatibility, canonical
+factor, starter order and bounded identity/dedup are checked. Initial browser
+recovery fixture failure is disclosed, not hidden or used to alter deadlines.
+
+**READY FOR CLAUDE:** whole new span after0ae1fa11 through final record edge;
+earlier ranges remain independent. **NEXT SAFE ACCEPTED WORK:** R7 recovered-
+publication identity/delivery checks. **AUTHOR ACTION:** reconcile R9's post-
+Exit balance/display source with archived GU-C3; exact finding in decision queue.
+RP-283's authoritative Wind Down preview gap remains separate. Reader plumbing
+does not close RP-284 display/AC12. RP-131 RED/Firefox/SQL/mint/AT/owner/data/
+operations and proper nine-tier1.0 holds remain; no acceptance/archive/push.
+[Evidence](../reputation-tree-v1/log.md).
+
 ## Copy generator formatting corrected locally — 2026-10-06
 
 RP-281 under5e455061/2ea7d853/da7cfa56 pairs template and generated output.

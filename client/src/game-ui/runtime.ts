@@ -170,6 +170,9 @@ export function createBrowserGameUIRuntime(
       let drainUntilMS = 0;
       let fullSync: Promise<void> | undefined;
       let active: { socket: WebSocket; intentional: boolean } | undefined;
+      // One immutable summary per run; keep bounded identity memory so the
+      // snapshot-race exception cannot revive its own already-delivered event.
+      let lastRunStartedEventID: string | undefined;
 
       const persistPositions = (): void => storage.setItem(positionKey, JSON.stringify(positions));
       const clearPositions = (): void => { positions = {}; storage.removeItem(positionKey); };
@@ -228,12 +231,22 @@ export function createBrowserGameUIRuntime(
           const announcement = decodeGameUIAnnouncement(envelope);
           const successorTerminal = disposition === "duplicate" && event?.kind === "run_ended" && latestSnapshot !== undefined &&
             latestSnapshot.run.founder_id === event.payload.founder_id && latestSnapshot.run.run_seq === event.payload.run_id.run_seq + 1;
-          if (disposition === "deliver" || successorTerminal) {
+          // R7's immutable carry-over summary is not present in a snapshot.
+          // A newer HTTP sample may advance the cursor before the event arrives;
+          // retain only the exact currently sampled run, without navigating.
+          const currentRunStarted = disposition === "duplicate" && envelope.payload.scope === "company" && event?.kind === "run_started" && latestSnapshot !== undefined &&
+            latestSnapshot.run.founder_id === event.payload.founder_id && latestSnapshot.run.run_seq === event.payload.run_id.run_seq &&
+            latestSnapshot.run.run_started_at_ms === event.payload.started_at_ms;
+          const repeatedRunStarted = event?.kind === "run_started" && envelope.payload.event_id === lastRunStartedEventID;
+          if ((disposition === "deliver" || successorTerminal || currentRunStarted) && !repeatedRunStarted) {
             const scope = envelope.payload.scope as "company" | "founder";
             if (envelope.payload.cursor_effect === "historical") {
               listener({ kind: "historical_event", revision: envelope.rev, scope, eventID: envelope.payload.event_id as string,
                 eventKind: envelope.payload.kind as string, value: envelope.payload.payload as Readonly<Record<string, unknown>> });
-            } else if (event) listener({ kind: "event", revision: envelope.rev, scope, value: event });
+            } else if (event) {
+              if (event.kind === "run_started") lastRunStartedEventID = envelope.payload.event_id as string;
+              listener({ kind: "event", revision: envelope.rev, scope, value: event });
+            }
             else if (announcement) listener({ kind: "announcement", scope, value: announcement });
           }
         } else if (envelope.kind === "receipt") {
