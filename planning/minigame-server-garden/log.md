@@ -1981,3 +1981,50 @@ then snapshot and inject the next harvest's retention fault. Its clean successor
 that frontier to 4. This proves the snapshot population contains a real would-be deletion;
 no direct state/log/revision seeding, retune, time acceleration or new behavior. The genesis
 arm retains fresh fixture state so its one-time write is actually reached.
+
+Initial expanded run 23117 exits 1, 0.766 s: all ten arms fail before injection because my
+snapshot window query casts its UUID parameter to text (`uuid = text`). Instrument defect,
+not atomicity evidence. Remove the unnecessary cast; retain the identical population and
+full-row assertions. Also guard the aggregate success diagnostic on `!t.Failed()` so it
+cannot claim all ten preserved rows after failed subtests. No gate or runtime change.
+
+Corrected run 56690 exits 0, non-skipped, 0.947 s: ten independent checkpoints and ten
+clean-success controls pass, with the actual retention frontier 3→4. Scope limitation from
+the source read: these are ten **exposed grouped checkpoints**, not distinct hooks after
+every individual SQL statement (intent/outbox and paired pruning are grouped). Do not infer
+full AC8 from this supplement. Diagnostics name changed row populations without dumping
+private full states/salts. Proceed with the declared actual early-commit discrimination.
+
+### Executed discrimination, restoration and final gates
+
+60861 actual runtime mutation: replace rollback-on-exit with commit-on-exit only for the
+Garden database-clock coordinator when a fault injector is present. Test exits 1 in 0.903 s;
+**all ten independent checkpoints fail on changed persisted rows**, not compiler errors.
+The newly added genesis case isolates its formerly unobserved partial row; later cases
+also detect faucet, revisions, events/outbox, both logs and intent changes. Retention's
+would-be pruning population is actually populated. No clean-success diagnostic is emitted
+for the failing population. Restore immediately after the process reaches terminal status.
+
+Restored Store SHA256 `7d8f33d0316149682abc860bf2a99d9e5a59cdcc28313df9806f3cafb38a6bda`;
+production Store diff is empty, matching the pre-probe bytes. All final gates use restored code:
+
+- 69926, declared Compose serial production/gameserver Garden/minigame population
+  `-count=1 -v`: exit 0. Sixteen production declarations, including ten fault subtests,
+  pass non-skipped (3.501 s); both composed HTTP declarations pass non-skipped (0.909 s).
+- 5854, root `make test-go GO_PACKAGES='./production ./save ./gameserver'
+  GO_TEST_FLAGS='-count=1' vet`: exit 0, production 34.943 s, save 0.249 s,
+  gameserver 0.374 s; vet for these three packages passes. Host DB skips are not proof.
+- 48489, declared Compose rollback population `-count=20`: exit 0, 23.973 s.
+  Twenty complete repetitions / 200 independent fault cases with clean-success controls;
+  no retries, skips, timeout change or silently removed population.
+
+Every handle is terminal; no source/test edits during these final gates. Test/tracking
+scope only, product/schema/migration/artifact/kernel/CI bytes unchanged (0.3.153).
+`git diff --check` passes. No whole-CI/browser/hosted or full AC8/G5/Garden assertion.
+
+Review by: Codex (implementer first-filter); Recorded by: Codex. Complete test/tracking
+diff inspected and real fault mutation executed; this is not designated approval.
+New range begins `d59960af^` (`f736e73b`), implementation end pinned after commit;
+Claude must independently review its full span. No earlier range is consumed, no
+checkbox/lifecycle/public activation promotion. Remaining accepted coordinator/replay/
+surface integration stays next; RP-222/RP-131/RP-218 and proper nine-tier 1.0 remain open.

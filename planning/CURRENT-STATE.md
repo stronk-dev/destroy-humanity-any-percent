@@ -33,6 +33,11 @@ both account isolation and real automatic Fiscal funding. Actual producer detach
 schema-valid secret leak fail; twenty final repetitions and related Go/Postgres gates pass.
 This consumes the exact fixture-only bundle, not public launch content or a mature HTTP
 payout/default DOM/real idle-time workflow. New range awaits Claude independently.
+The subsequent SG6 rollback supplement (RP-227) checks all ten exposed transaction fault
+checkpoints against complete affected rows, including Founder genesis/outbox and real
+retention deletion. Actual early commit fails all ten; restored code passes 200 fault cases
+and related DB/Go/vet checks. It is test-only, independently pending Claude, and not full
+AC8/G5 or separate fault coverage after every individual SQL statement.
 
 Remaining work includes Garden's broader integration/public-flow/copy/activation gates, other
 active RFC/review lanes, later tiers/endings/MMO consumers, account rights/retention, task-level

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -323,53 +324,123 @@ func replayGardenRunLogCount(t *testing.T, fixture gardenHarvestFixture, expecte
 	}
 }
 
-// TestGardenHarvestFaultsAreAllOrNothing is AC8's fault half: a fault injected
-// after every write of the coordinator leaves no trace on either stream, the
-// window, the logs, the events, or the intent record.
+// TestGardenHarvestFaultsAreAllOrNothing checks all ten exposed coordinator
+// fault checkpoints against complete affected rows, including genesis/outbox
+// and a genuinely pruned retention population. Grouped checkpoints are not
+// a claim of separate injection after every individual SQL statement.
 func TestGardenHarvestFaultsAreAllOrNothing(t *testing.T) {
-	fixture := newGardenHarvestFixture(t)
-	points := []string{"faucet_window", "company_revision", "company_events", "run_log", "founder_revision", "founder_events", "founder_log", "intent_record", "retention"}
-	founderLoaded, err := fixture.store.LoadLatest(fixture.ctx, fixture.founderStreamID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	count := func(query string, args ...any) int {
-		var value int
-		if err := fixture.db.QueryRowContext(fixture.ctx, query, args...).Scan(&value); err != nil {
-			t.Fatal(err)
-		}
-		return value
-	}
+	points := []string{"founder_genesis", "faucet_window", "company_revision", "company_events", "run_log", "founder_revision", "founder_events", "founder_log", "intent_record", "retention"}
 	for index, point := range points {
-		request, err := ParseIntent([]byte(fmt.Sprintf(`{"intent_id":"01986666-7f11-7000-8000-%012d","kind":"garden_harvest","expected_revision":1,"plots":[{"row":0,"col":0}]}`, index+1)))
-		if err != nil {
-			t.Fatal(err)
-		}
-		now := time.Now()
-		attendance, err := fixture.service.ResolveFounderAttendance(fixture.ctx, fixture.founderStreamID, fixture.companyStreamID, now)
-		if err != nil {
-			t.Fatal(err)
-		}
-		injected := errors.New("injected " + point)
-		_, err = fixture.service.creditGardenHarvest(fixture.ctx, fixture.companyStreamID, founderLoaded, fixture.bundle, request,
-			attendance, func(name string) error {
-				if name == point {
-					return injected
+		t.Run(point, func(t *testing.T) {
+			// Each arm starts independently: a deliberately split transaction
+			// must not contaminate or prevent later fault-boundary observations.
+			fixture := newGardenHarvestFixture(t)
+			expected, sends := 1, int64(0)
+			plots := `{"row":0,"col":0}`
+			oldestCompanyRevision := func() int64 {
+				t.Helper()
+				var oldest int64
+				if err := fixture.db.QueryRowContext(fixture.ctx, `SELECT min(revision) FROM save_revisions WHERE stream_id=$1`, fixture.companyStreamID).Scan(&oldest); err != nil {
+					t.Fatal(err)
 				}
-				return nil
-			})
-		if !errors.Is(err, injected) {
-			t.Fatalf("%s: fault not raised: %v", point, err)
-		}
-		founder, company := fixture.revisions(t)
-		if founder != 1 || company != 1 || fixture.quota(t) != 0 ||
-			count(`SELECT count(*) FROM run_log WHERE company_stream_id=$1`, fixture.companyStreamID) != 0 ||
-			count(`SELECT count(*) FROM events WHERE intent_id=$1`, request.IntentID) != 0 ||
-			count(`SELECT count(*) FROM intent_records WHERE intent_id=$1`, request.IntentID) != 0 {
-			t.Fatalf("%s left partial rows: revisions=%d/%d quota=%d", point, founder, company, fixture.quota(t))
-		}
+				return oldest
+			}
+			if point == "retention" {
+				// Advance by real Service commands, not SQL grants. Revision 3
+				// must be present and actually pruned by the next clean harvest.
+				for prior := 0; prior < 6; prior++ {
+					result := fixture.harvest(t, 100+prior, expected, fmt.Sprintf(`{"row":%d,"col":%d}`, prior%2, prior/2))
+					var receipt gardenHarvestAPIReceipt
+					if err := json.Unmarshal(result.Receipt, &receipt); err != nil || receipt.Outcome != "applied" || receipt.Credited != "2e1" {
+						t.Fatalf("retention prefix did not credit: %s err=%v", result.Receipt, err)
+					}
+					expected++
+					sends++
+				}
+				plots = `{"row":0,"col":3}`
+				if oldest := oldestCompanyRevision(); oldest != 3 {
+					t.Fatalf("retention prefix oldest Company revision=%d, want 3", oldest)
+				}
+			}
+			founderLoaded, err := fixture.store.LoadLatest(fixture.ctx, fixture.founderStreamID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			before := gardenHarvestPersistedRows(t, fixture)
+			request, err := ParseIntent([]byte(fmt.Sprintf(`{"intent_id":"01986666-7f11-7000-8000-%012d","kind":"garden_harvest","expected_revision":%d,"plots":[%s]}`, index+1, expected, plots)))
+			if err != nil {
+				t.Fatal(err)
+			}
+			attendance, err := fixture.service.ResolveFounderAttendance(fixture.ctx, fixture.founderStreamID, fixture.companyStreamID, time.Now())
+			if err != nil {
+				t.Fatal(err)
+			}
+			injected := errors.New("injected " + point)
+			_, err = fixture.service.creditGardenHarvest(fixture.ctx, fixture.companyStreamID, founderLoaded, fixture.bundle, request,
+				attendance, func(name string) error {
+					if name == point {
+						return injected
+					}
+					return nil
+				})
+			if !errors.Is(err, injected) {
+				t.Fatalf("fault not raised: %v", err)
+			}
+			if after := gardenHarvestPersistedRows(t, fixture); !reflect.DeepEqual(before, after) {
+				for table, rows := range before {
+					if after[table] != rows {
+						t.Errorf("%s persisted rows changed after %s fault", table, point)
+					}
+				}
+				t.FailNow()
+			}
+			result := fixture.harvest(t, 999, expected, plots)
+			var receipt gardenHarvestAPIReceipt
+			if err := json.Unmarshal(result.Receipt, &receipt); err != nil || receipt.Outcome != "applied" || receipt.Credited != "2e1" {
+				t.Fatalf("clean harvest after fault: %s err=%v", result.Receipt, err)
+			}
+			founder, company := fixture.revisions(t)
+			if founder != int64(expected+1) || company != int64(expected+1) || fixture.quota(t) != sends+1 {
+				t.Fatalf("clean harvest revisions=%d/%d sends=%d", founder, company, fixture.quota(t))
+			}
+			if point == "retention" && oldestCompanyRevision() != 4 {
+				t.Fatal("clean harvest did not exercise actual retention pruning")
+			}
+		})
 	}
-	if result := fixture.harvest(t, 99, 1, `{"row":0,"col":0}`); !strings.Contains(string(result.Receipt), `"outcome":"applied"`) {
-		t.Fatalf("clean harvest after faults: %s", result.Receipt)
+	if !t.Failed() {
+		t.Log("all ten coordinator fault boundaries preserve complete persisted rows, including actual retention deletion")
 	}
+}
+
+// The Service fixture has no live outbox dispatcher. Compare every column,
+// including delivery metadata, rather than excluding a live worker population.
+func gardenHarvestPersistedRows(t *testing.T, fixture gardenHarvestFixture) map[string]string {
+	t.Helper()
+	queries := map[string]string{
+		"streams":         `SELECT * FROM save_streams WHERE id IN($1,$2)`,
+		"revisions":       `SELECT * FROM save_revisions WHERE stream_id IN($1,$2)`,
+		"founder_genesis": `SELECT * FROM founder_genesis WHERE founder_stream_id IN($1,$2)`,
+		"founder_log":     `SELECT * FROM founder_log WHERE founder_stream_id IN($1,$2)`,
+		"run_genesis":     `SELECT * FROM run_genesis WHERE company_stream_id IN($1,$2)`,
+		"run_log":         `SELECT * FROM run_log WHERE company_stream_id IN($1,$2)`,
+		"events":          `SELECT * FROM events WHERE stream_id IN($1,$2)`,
+		"intents":         `SELECT * FROM intent_records WHERE stream_id IN($1,$2)`,
+		"outbox":          `SELECT * FROM transport_player_outbox WHERE stream_id IN($1,$2)`,
+		"window":          `SELECT * FROM minigame_faucet_window WHERE founder_id=$1 AND minigame_id=$2`,
+	}
+	result := map[string]string{}
+	for table, query := range queries {
+		args := []any{fixture.founderStreamID, fixture.companyStreamID}
+		if table == "window" {
+			args = []any{fixture.founderID, "server_garden"}
+		}
+		statement := `SELECT COALESCE(jsonb_agg(to_jsonb(r) ORDER BY to_jsonb(r)::text),'[]'::jsonb)::text FROM (` + query + `) r`
+		var rows string
+		if err := fixture.db.QueryRowContext(fixture.ctx, statement, args...).Scan(&rows); err != nil {
+			t.Fatalf("snapshot %s: %v", table, err)
+		}
+		result[table] = rows
+	}
+	return result
 }

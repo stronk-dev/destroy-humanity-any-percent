@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Garden composed authenticated HTTP evidence — 2026-10-06
+## Current Garden full-row transaction rollback evidence — 2026-10-06
+
+Test-only SG6/AC8 supplement under `d59960af` / `5ca2cf0a` addresses RP-227. Ten
+independent exposed fault checkpoints compare ten complete persistence populations,
+including the previously omitted Founder genesis, both logs and receipt/event outbox.
+Six real Service harvests make the retention arm contain an actual would-be deletion;
+the clean successor advances the oldest Company revision 3→4. Early-commit mutation
+fails all ten arms, then restores byte-exactly. Twenty final repetitions / 200 fault cases,
+related Garden/minigame Postgres and selected cold Go/vet pass. Initial snapshot SQL type
+error remains disclosed. No product/schema/kernel/artifact/CI change, kernel 0.3.153.
+
+**READY FOR DESIGNATED REVIEW, not approved:** new range begins `d59960af^`
+(`f736e73b`); end pinned after commit, Claude required. Earlier HTTP/SG10/all other ranges
+remain independent. Grouped fault hooks are not separate injection after every individual
+SQL statement; no full AC8/G5, mature HTTP/default DOM progression, public activation,
+whole-CI, archival or release claim.
+
+**NEXT SAFE ACTION:** remaining accepted coordinator/event/replay/surface integration review;
+retain RP-222 owner/author reconciliation, RP-131 historical CI guard and RP-218 worker
+reliability as separate open routes, without shrinking the full nine-tier 1.0 floor.
+
+## Earlier Garden composed authenticated HTTP evidence — 2026-10-06
 
 Test-only predeclaration `3e518f21` addresses RP-226's previously missing active composed
 HTTP evidence. Actual Compose/Account/token/registry/Production/Postgres consumes the exact

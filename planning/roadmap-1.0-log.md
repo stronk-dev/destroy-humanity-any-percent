@@ -2099,3 +2099,26 @@ work without shrinking the full nine-tier 1.0 or its complete platform floor.
 Exact committed HTTP supplement: `3e518f21^..4793effa` (`20ea7b9c..4793effa`), two commits /
 nine paths, pending designated Claude review. This metadata pin grants no lifecycle/public
 acceptance; every earlier pending range remains independent. All handles terminal.
+
+## 2026-10-06 — Garden full-row transaction rollback supplement
+
+RP-227 is a missing-evidence route, not an observed runtime atomicity defect. Test-only
+predeclaration `d59960af`, real-retention refinement `5ca2cf0a`: ten independent exposed
+coordinator checkpoints compare ten complete persisted populations, adding Founder
+genesis/log/outbox and actual would-be pruning. Six ordinary Service harvests reach
+retention; a failed next harvest preserves all rows, and its clean successor advances
+the oldest retained Company revision 3→4. Mature plants remain pre-CreateStream fixtures,
+not proof of HTTP/default-player progression. Grouped hooks are not fault injection
+after every individual SQL statement; do not claim full AC8/G5.
+
+Initial UUID/text snapshot-reader failure remains disclosed and corrected without changing
+the population. Actual early commit fails all ten independent arms; Store restores
+byte-exactly. Final 200 fault cases / twenty complete repetitions pass, as do the broader
+non-skipped Garden/minigame Postgres and selected cold production/save/gameserver Go/vet.
+All handles terminal, diff checks clean, no product/schema/migration/artifact/kernel/CI
+change (0.3.153), bounds/skips/retries or mint/lifecycle/public-release promotion.
+
+Codex first-filter only. New range starts `d59960af^` (`f736e73b`), end pinned after commit,
+pending designated Claude review independently of every earlier range. Continue accepted
+integration work; owner-authored RP-222 and CI guard/worker RP-131/RP-218 remain separate.
+The full nine-tier 1.0 and complete platform obligations stay active, not a shortened preview.

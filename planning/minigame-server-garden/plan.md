@@ -108,6 +108,15 @@ unchanged, no product/schema/artifact/CI/mint change. Claude designated review r
 no successful mature HTTP payout/default DOM/real idle wait/full G4/G6/Garden claim or checkbox
 promotion. Continue remaining accepted coordinator/event/replay/surface integration review.
 
+Separate SG6/AC8 test-only rollback supplement under `d59960af` / `5ca2cf0a` addresses
+RP-227: ten independent exposed checkpoints compare ten complete persisted row populations.
+Founder genesis is included, and ordinary Service harvests make retention deletion real.
+Actual early-commit mutation fails all ten cases; byte-exact restoration, twenty repetitions
+/ 200 fault cases, broader related Postgres and selected cold Go/vet pass. Initial snapshot
+SQL type error remains recorded. No product/kernel/CI change or checkbox promotion;
+kernel 0.3.153. Claude review required. Grouped hooks are not every individual SQL write,
+and the preseeded mature fixture does not establish public/HTTP progression or full AC8/G5.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

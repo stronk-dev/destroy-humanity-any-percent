@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden G4/G6 authenticated HTTP supplement under `3e518f21`.
+**Current checkpoint:** 2026-10-06, Garden SG6/AC8 test-only full-row rollback supplement
+under `d59960af` / `5ca2cf0a`, RP-227. Ten independent exposed checkpoints compare ten
+complete persisted populations; actual retention deletion is reached through ordinary
+Service commands. Early commit fails all ten arms; restored code passes 200 fault cases,
+related Postgres and selected Go/vet. New range begins `d59960af^` (`f736e73b`), end pinned
+after commit, Claude required. Product/kernel/schema/artifact/CI unchanged (0.3.153).
+Grouped checkpoints are not every individual SQL write; preseeded mature fixtures are not
+public/HTTP progression or full AC8/G5/Garden. All earlier pending ranges and
+RP-222/RP-131/RP-218 remain separate; full nine-tier 1.0 and the complete platform floor
+stay active. Continue remaining accepted integration review.
+
+**Earlier checkpoint:** 2026-10-06, Garden G4/G6 authenticated HTTP supplement under `3e518f21`.
 RP-226's missing active composed path now has actual Compose/Account/token/registry/Production/
 Postgres evidence from the exact fixture bundle: two empty v25/zero-credit HTTP Genesis,
 automatic Fiscal funding, public unlock/plant/read/retry/substrate/uproot and precise immature/

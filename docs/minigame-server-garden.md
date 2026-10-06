@@ -158,6 +158,18 @@ one demonstrated floating-product off-by-one. This is pure-engine evidence; it d
 the Postgres transaction, faucet, public player workflow or release checks. Its new test range
 awaits designated review, with production and balance bytes unchanged.
 
+The RP-227 rollback supplement compares complete rows across ten affected persistence
+populations at all ten exposed coordinator fault checkpoints, including Founder genesis,
+both logs, receipt/event outbox and actual revision pruning. The retention case first uses
+six ordinary Service harvests, so a saved Company revision genuinely would be deleted;
+after rollback it remains, and a clean harvest advances the oldest retained revision 3→4.
+Each checkpoint uses an independent fixture and a clean-success control. Temporarily
+committing on fault exit makes all ten cases fail; restored code passes twenty repetitions
+(200 fault cases). The mature plants are seeded only before fixture stream creation, not
+public player progression. The Service fixture has no live dispatcher, so every outbox
+column is compared. Designated review remains pending. These grouped checkpoints are not
+separate hooks after every individual SQL statement and do not establish full AC8/G5.
+
 ## Read
 
 `GET /api/v1/garden/current` (`get_current_garden`) returns `inactive`, `locked` or `active`. It
