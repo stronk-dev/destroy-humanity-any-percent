@@ -13,7 +13,7 @@ RP-131/50a3a514; remaining boundary/copy/content checks pass separately.
 independent of earlier spans, not full B3/RFC approval. **NEXT ACCEPTED WORK:**
 R7's actual shared migration corpus and baseline ratchet (RP-249/RT-DG-B), with
 proper activation and pinned-mirror consumers, not a waiver by unit-test
-substitution. No pre-v22 automatic activation, schema invention, current-cost
+substitution. No pre-v22 automatic activation, save-schema invention, current-cost
 refund, mint or owner-copy edits. Persisted-row/career/browser/H4/author/owner/
 CI/capacity and every full nine-tier 1.0 gate remain.
 

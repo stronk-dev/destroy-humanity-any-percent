@@ -1368,3 +1368,24 @@ docs/records, and the final range pin. Prior ranges remain independent. Owner/
 author/mint/H4, persisted rows/career/default browser, RT-DG-B, historical CI,
 Docker capacity and full nine-tier1.0 obligations remain. No Docker deletion,
 new DB workload, archival, checkbox completion, push or release promotion.
+
+## 2026-10-06 — Founder encode correction range pin (Codex)
+
+**Review by:** Codex (self/first-filter only).
+**Recorded by:** Codex.
+**Designated reviewer:** Claude, pending.
+
+Complete new span: `6a8ccaf1..HEAD`, HEAD meaning the commit containing this
+pin, not any later endpoint: predeclaration `8094e914`, implementation/tests/
+docs/evidence `e06762fd`, this pin (three commits, thirteen paths). Original
+Claude B3 and all earlier Codex spans remain independent; no union promotion.
+After implementation committed, 759398 runs save/reputation/kernel completely
+cold and passes (0.207s/0.099s/0.061s). a5558d passes full client7403/134.
+No source/test edits after final gates, identities agree at0.3.155 and both
+mutations remain restored. Historical RP-131 composite failure is still open.
+
+Next accepted action is R7's actual four-case corpus/activation and pinned-mirror
+evidence plus baseline ratchet, not rewriting the save schema or activating on
+load. RP-249 records the missing gate rather than treating prior unit tests as
+its substitute. Whole B3/AC2/AC10/AC11 and full1.0 are NOT claimed complete;
+no archive/push, capacity consent, mint or owner-ruling substitution.
