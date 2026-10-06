@@ -4128,3 +4128,72 @@ ties and H5 epsilon/run4/provenance remain. Composite client remains RP-131 RED.
 Full973d983c..9743dcb7 needs Claude; prior ranges remain separate obligations.
 No archive, mint, release promotion or push. Continue accepted RP-262, then
 RP-264; goal remains active.
+
+## 2026-10-06 — RP-262 H3 current-producer sensitivity study predeclared
+
+Resume from clean ee1064a0 after the RP-267 correction and bounded first
+filter. Authority is accepted Reputation Tree v1 R10 H3, not permission to
+retune the tree or relax the tiny-factor criterion. Source: the existing H3
+test reads two retained reports; normal first-hour runtime.external returns
+nil outside career run3. There is no executed explicit unit/tiny population.
+
+Question: do fresh empty-plan/no-purchase first-hour milestone distributions
+match epoch8, does an explicit prestige factor1 remain a no-op, and does the
+required factor1.000001 move an actual milestone? This is a synthetic input
+sensitivity experiment, not a naturally earned Founder bonus or SQL career.
+
+Population and controls declared before source changes:
+
+1. Use the owner-ratified first-hour scenario/policies unchanged: all32 Casual,
+   64 Chaos and1 Reference seeds, horizon7200000ms, all seven must-reach clocks.
+   Reuse the retained epoch8 experiment: purchased minimum200, burnout2,
+   route bonus50, seed capital1e4 and10 generated towers. Live threshold1e12;
+   no reputation purchases, no career or Tier2 mode.
+2. Five complete arms (485 seeded runs,3395 milestone observations): fresh
+   epoch8 base/nil, complete paired Reputation fixture/nil, paired explicit
+   prestige factor1, paired factor1.000001, paired factor2. The last is a
+   separate strong positive control, never a substitute for tiny sensitivity.
+   Resolve the three explicit inputs through the fixture's declared frozen
+   Founder source, preserving all other catalog bytes and threshold1e12.
+3. All runs must complete, carry exactly seven named/non-nil clocks and two
+   valid Exit samples with zero paid Reputation at this threshold. Enumerate
+   every declared policy/seed exactly once; reject empty/duplicate/missing
+   rows, null clocks, source/experiment mismatch, failed or truncated runs.
+   Report full row coordinates and clocks, not just selected successes.
+4. Fresh base and paired/nil must match retained epoch8 clocks and ending
+   samples; unit must match paired/nil clocks, ending, exits and transition
+   counts. Compare all per-seed clocks and sorted per-policy distributions,
+   not only the seven existing aggregate envelope entries.
+5. Factor1.000001 must change at least one actual clock and its associated
+   per-policy distribution; factor2 must independently do so. If the tiny
+   criterion fires because discrete clocks do not move, complete and record
+   the RED study. No lowering tolerance, larger substitute, hidden changed
+   clock, finer invented clock or silent population/horizon expansion.
+
+Bounded harness-only input seam: an unexported optional FirstHourSuite
+contribution slice, copied once into each ordinary runtime; runtime.external
+returns it only for that diagnostic mode. Nil preserves every current caller.
+Reject a non-nil diagnostic input combined with career or Tier2 before running
+so it cannot overwrite a real frozen career bonus. No exported API, artifact
+identity/schema/wire field or new live multiplier authority. Validation still
+uses canonical production admission. The study logs source/factor coordinates
+separately; existing RunKey is not falsely claimed to encode this extra input.
+
+Opt-in observation selector analogous to the existing Reference observation,
+outside the push fast lane; no CI change. A selector other than the declared
+full study fails; default explicitly skips. A fast helper population exercises
+coverage/clock/sensitivity refusal using non-production synthetic rows.
+Demonstrate compiling failures for diagnostic-input omission, wrong factor,
+and census/oracle severing as applicable; exact restore each before the next.
+Run actual no-row/unit/strong controls to distinguish dormant wiring from a
+tiny-factor criterion failure. No edit while any handle lives.
+
+Only harness sources/tests and canonical docs/records; watched kernel prefixes
+stay unchanged, so161 remains. Cold focused checks, fast harness/core/vet and
+the full opt-in study are required. Existing full H4/H5 RED evidence remains
+separate; no need to rerun970 arms solely for a default-nil first-hour seam
+after its ordinary/career controls and fast population pass. Existing client/
+CI RP-131 remains RED; no waiver. Reports/corpus/balance/policy/owner copy stay
+byte-identical. RP-264, report lineage/H1/H2 fresh calibration, H5epsilon/run4,
+SQL/browser and prior Claude reviews remain separate. No box/mint/AC13/15,
+archive, push or 1.0 claim; complete new span afteree1064a0 needs Claude.
