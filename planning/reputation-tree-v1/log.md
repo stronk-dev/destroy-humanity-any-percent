@@ -5061,3 +5061,44 @@ c352370a..422892c0 span, cite its actual complete reviewed HEAD, and independent
 cover prior ranges. This self-filter cannot authorize archive/mint/adoption.
 Next accepted work H4/H5 report-envelope provenance audit; author boundaries
 and actual H3/H4/H5 failures remain. Goal active; no push or message sent.
+
+## 2026-10-06 — RP-263 career/report source-binding predeclaration
+
+Previous turn is progress: dated H1/H2 artifact/replay and local gates completed.
+Baseline dfc2fb8c, clean main. Accepted R10 H4/H5 measurement authority and
+RP-263's open report-envelope source route, NOT a career-policy/epsilon ruling.
+Read-only audit shows RunReputationCareer overrides Prestige threshold after
+loading the complete paired bundle. Its catalog RunKey omits this effective
+policy, experiment tuple, purchase policy, exclusion and effective horizon;
+H4/H5 projections also discard these inputs. Reproduce that identity collision.
+
+Allowed code: server/harness/reputation_career.go (observation metadata only),
+existing career/relevance test report producers and one private diagnostic test;
+canonical docs/tracking otherwise. Add actual career measurement_source:
+complete paired RunKey, first-hour policy hash, SHA-256 of canonical serialized
+effective loaded Prestige policy, experiment tuple, horizon, purchase policy,
+excluded node. It is a measurement identity, NOT an epoch/hash rewrite or live
+game contract. Bind both report callers to expected source before projection;
+retain both H4 arm sources and all H5 arm sources in the in-memory report.
+No historical file writes/update env flags; the old report comparison remains
+RED after drift rather than relabelling a new shape as historical completion.
+
+Before producer edits, add a JSON-side diagnostic that compiles against the
+existing result and runs actual Chaos seed0 under base/none/live-threshold/
+excluded-node configurations. Record missing source and same catalog keys,
+actual earned purchases/observations. Then add source metadata/checks without
+changing policy execution, balances, choices, clocks, lifetimes or math.
+Healthy no-exclusion and actual excluded-node sources must bind separately;
+malformed fields must reject through both caller paths. Demonstrate compiling
+policy-hash/tuple/mask omissions and caller-admission severing, restoring exact
+hashes only after terminal handles. Cold focused/fast/core/vet gates follow.
+Full H4/H5 observation, if run, preserves failed criteria and stale-file RED;
+no new reports or asserted full-population reproduction without an executed run.
+
+This cannot resolve RP-268's missing declared career data or RP-271's each-Exit
+wording; it observes today's instrument, not adoption of that policy. H3 tiny
+criterion, H4 six ties, H5 epsilon/run4, source-code companion provenance and
+designated reviews remain open. No kernel bump, product/schema/copy/balance/CI/
+corpus change, box, mint, archive, cleanup, deployment, message or push. No manual
+source/tracking edits while any handle lives. Full span afterdfc2fb8c requires
+Claude's separate designated review; all prior ranges stay independent.
