@@ -325,3 +325,34 @@ suite. Do not edit while handles live, and do not replace full population with a
 selector. A later correction requires its own evidence/authority predeclaration,
 demonstrated failing control and full restored gates. Precise limits, designated
 Claude review and historical RP-131 remain mandatory. Proper full 1.0 stays active.
+
+## 2026-10-06 — two cold observations; next passive instrument predeclared
+
+Both original diagnostic handles terminal. 74841 completes 300/300 populations,
+22482 tests / six existing skips, 53.02 s; separate performance 525 ms / 2.49 s.
+2773 is red: 299/300 populations, 22481 pass / one failed / six existing skips,
+43.40 s; performance not reached. Firefox original worker witness reports
+initialize/authoritative_snapshot at the same 1e3 rate, zero predictions, unchanged
+output 100, five-second assertion failure and native `prediction worker failed`.
+Existing provider also reports canceled worker/dependency requests. Their browser/
+worker identity and timing are not sufficient to attribute those to the active
+failure: passing populations also produce canceled requests during teardown.
+Route's original import failure does not recur in either run; RP-235 stays open,
+and this new RP-218 recurrence invalidates any local reliability closure.
+
+Next bounded instrument, still CI D2 observation only: retain passive Vite HTTP
+start/finish/premature-close observations for Route JSON fixtures and prediction
+worker modules, exact UA/path/status/content-type and completed/incomplete counts,
+without interception, retry or body/header secrets. Extend the existing R-010
+test helper to record per-native-Worker command/output/error/termination ordering,
+forwarding original methods byte-for-byte and never suppressing errors. Record
+before and after cleanup; unchanged assertions, five-second bound and complete
+matrix remain. No production worker/UI/fixture bytes or dependency/CI policy change.
+
+Predeclared populations: two additional complete cold instrumented Linux lanes,
+all 300 populations and separate performance on success. First demonstrate a real
+test-owned module-request failure (temporary 404 for the already-named fixture),
+requiring HTTP observer evidence AND failed Route suites. Restore exact instrument
+bytes before populations. A failure that cannot be reproduced remains open;
+do not infer a common cause from two different symptoms or grow bounds to hide it.
+Further correction only after attributable evidence and separate authority.
