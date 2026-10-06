@@ -8132,3 +8132,15 @@ require full-row rollback oracle failure (not merely wrong error). Restore
 exact source SHA after terminal. Final cold whole production SQL Integration,
 focused tests/vet and scope/append-only checks. No checkbox/RFC archival or
 full AC9 acceptance before designated review; earlier ranges independent.
+
+Initial declared SQL328a6a/5bcde6 session12432 terminal0: original plan control
+passes0.10s; new population passes all14 named applied-plan stages0.37s, each
+exact sentinel/hook, complete table rows and both decoded heads unchanged.
+Normal Handle positive applies all three nodes, freezes1.003, prunes genuinely
+eligible old revisions, verifies both replay consumers and retries exactly
+without row changes. Revision/genesis anchoring is explicit (first Founder
+genesis at8), not a fabricated earlier gameplay log. Twelve tables cover the
+Exit path's row writes; SQL sequences are not claimed transactional row state.
+Read retry snapshot once rather than twelve times before final gates. Commit
+test+records before predeclared retention commit-on-error probe; no product
+or acceptance checkbox change and full new span after82830dcb needs Claude.

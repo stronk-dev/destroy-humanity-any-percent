@@ -184,6 +184,10 @@ func TestReputationPurchaseIntegrationRecordsReplayableFounderLog(t *testing.T) 
 // prerequisite) commits atomically, writes exit.v2, emits exit_plan events,
 // freezes the post-plan bonus, and the Founder history verifies.
 func TestReputationExitPlanIntegration(t *testing.T) {
+	reputationExitPlanIntegration(t, false)
+}
+
+func reputationExitPlanIntegration(t *testing.T, writeFaults bool) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -277,6 +281,11 @@ func TestReputationExitPlanIntegration(t *testing.T) {
 		WithCompactPolicies(commonsCatalogs), WithCommonsWeightResolver(integrationWeight(1_000_000)))
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if writeFaults {
+		reputationPlanWriteFaults(t, ctx, db, store, service, bundle, founderRevision.StreamID, companyRevision.StreamID, now)
+		return
 	}
 
 	unaffordable := []byte(`{"intent_id":"01986666-7f01-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1,` +
