@@ -1326,3 +1326,22 @@ No runtime/balance/schema/kernel/CI/copy/mint changes are authorized by this tes
 New defects go immediately to BACKLOG, then separately predeclared repair under accepted scope
 or an explicit DESIGN-GAP route. Prior verdict requests, RP-131/RP-218, owner/author gates and
 full-nine-tier 1.0 remain open. No checkbox, lifecycle, archive or release promotion.
+
+### G2/G3 first execution: invalid fixtures, not product findings
+
+The initial native Go initializer arms fail because the Company fixture has RunSeq zero;
+the actual initializer also initializes active-play scheduling and correctly refuses it.
+The first declared DB Exit invocation rejects both fixtures before any Exit: noncanonical
+nanosecond Exit-history/offer timestamps violate the saved-state codec. The TS behavior
+population passes (7,361 / 106 deliberate skips), but typecheck refuses three optional
+foundation-field arguments. None is acceptance or evidence of a Garden runtime defect.
+With every process terminal, correct the fixture before repeating: admitted run-bearing
+Company state, canonical millisecond times, and explicitly nonnull foundation arguments.
+Expected Garden bytes, live entry points, bounds and scope remain unchanged.
+
+The separate Go retune diagnostic does execute: both catalogs/transition are admitted;
+ordinary numeric retune binds untouched state, new starter does not. Record the contract
+question immediately as RP-222. Add its actual foundation-boundary and TS loader/codec
+controls before inferring broader impact; no epoch publication or seed policy is authorized.
+Correction to the predeclaration's field count: the exact Garden object has seven fields,
+not eight; compare all seven, with no changed domain or expected bytes.
