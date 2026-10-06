@@ -8931,3 +8931,32 @@ edges needs Claude; previous independent review ranges/holds remain. Next safe
 accepted work census R8 verification consumers and cross-Exit history against
 current committed evidence, predeclare missing proof before edits. Full proper
 nine-tier/platform1.0 goal remains active/progress; no review/release promotion.
+
+### Codex self-first-filter — cross-pin replay supplement
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed exact range: a21da467..0b9fbc5d (four commits/twelve paths,
+20789 insertions/10 deletions). Local first-filter approved, NOT designated
+cross-party approval. Generator/consumers/Make scope and canonical/ledger/board
+diff inspected; complete20036-line generated artifact compared byte-for-byte
+to fresh Go execution, not a claimed manual reading of every duplicated field.
+27 complete paired arms,12 applied/15 refused,36 copied-evidence controls per
+runtime (including nine known-valid pin substitutions) execute. Four compiling
+source-fault runs catch wrong next/current selection, byte-exact refusal detail
+and plan-free compatibility. Faulted authoring cannot overwrite expectations;
+serial stops and earlier syntax defense are disclosed, not relabelled stronger.
+
+Final restored relevant Go/vet/types/client8241pass/339skip, local topology with
+13 negatives and actual SQL36/143/no skips pass.9b4ea2/40e99a whitespace/full
+production/client/balance/copy/CI workflow/RFC/kernel/historical fixture invariance
+pass.5cd298 Make change is only explicit authoring selector/PHONY, no ordinary
+CI regeneration or gate weakening. No existing test/assertion edited, prior
+logs rewritten or acceptance boxes/status promoted. Source/corpus hashes exact,
+both logs append at EOF, no live handle/fault. No runtime defect inferred from
+my initial typing/patch mistake; malformed hash negative retained separately.
+Entire span aftera21da467 INCLUDING this final record edge needs Claude;
+earlier independent review ranges remain live. No archival/release authority,
+natural/default-browser/AT/minted-release/fullR8/AC9/hostedCI/1.0 claim. Next
+accepted safe work census verification consumers/cross-Exit histories before
+new predeclaration; full proper1.0 goal active/progress and prior holds intact.
