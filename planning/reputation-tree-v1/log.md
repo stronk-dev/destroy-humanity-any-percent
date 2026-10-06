@@ -5945,3 +5945,51 @@ RP-131, renderer outside watched prefixes. No new Firefox launch workaround or
 whole client/CI/AC12/minted-player claim. Full span after5bf6017f needs Claude;
 all prior review/policy/mint/capacity/full1.0 holds remain. No checkbox, archival,
 cleanup, publication, deployment or push.
+
+## 2026-10-06 — R9 purchasing row correction and executed evidence
+
+Under367fe467/27ff4cd5, explicit void|Promise<void> callback typing reflects
+the host's existing returned act task (host/runtime bytes unchanged). Local
+submitted-row/task state plus shared pending disable Buy/Confirm, mark only
+the submitted row busy, and clear attribution after both settle. Confirm guards
+the existing one-in-flight/controls floor. Awaiting the task comes AFTER tick/
+row focus, preserving RP-276. Canonical docs updated; two prior test callbacks
+use void braces, fixture typing follows the public prop, no new transport seam.
+
+Root native exact-file chromium/webkit00ce66/937c5a,session46360 terminal
+exit0:58/58 (29 per engine). Typed78b446/1ffc18,session23076 terminal exit0,
+zero errors/warnings. Every new case covers both task-first and parent-first
+settlement, unrelated pending before/after purchase, and second-row attribution;
+old13 native cases/axe/focus/Escape remain. These are controlled tasks/arms,
+not executed receipt/host/SQL/mint/whole AC12 evidence.
+
+Four independently compiling source probes, same root exact-file population,
+each terminal exit2 with32 new failures/26 prior passes:
+- e2e37e: omit aria-busy attribute, exact submitted-row assertion fires.
+- 80efc8: omit attribution clearing, unrelated pending revives completed row.
+- 093e1d: omit task await, busy/disabled lifetime ends before held task.
+- c02796: omit row equality, unrelated parent pending marks all four rows.
+After EACH terminal probe, source restored to934cc5 SHA256
+6db914d640d65abeb504bf82445e207f82b0c3be71b63cc188dcb95fb4855314
+(146853/e6ff19/43522f/44fca8). Final restored020938/55a5b6,
+session81884 terminal exit0:58/58. Both green root runs' automatic performance
+follow-on passes one selected Chromium case/22 skipped, not full Worker/perf
+acceptance. No edits under live handles, no restored-by-syntax-error probe.
+
+Cold root types/build/unitclient and client/topology/combat/meters/achievements/
+cosmetic/no-payment/copy checks2cba33/98d195/9706ef,session14516 terminal
+exit0:zero type errors/warnings, successful build,8106 unit passes/160 visible
+native skips across91 passed/17 skipped files; boundaries/negative fixtures,
+657-key copy pipeline and deployment content manifest pass. Native-only Node
+skips are not browser successes. Kernel historyd8a73b/19887c,session68838
+terminal exit2: CI checkout/negative fixtures pass; historical50a3a514 vs
+0cf9f7a6 remains RP-131 RED. Renderer outside affecting paths324558; kernel161
+unchanged. NOT whole verify-client/verify/CI green. Prior Firefox zero-execution
+is not retried or counted green this turn; no security/deadline/config workaround.
+
+RP-277 corrected locally, not full R9/AC12. Next ground RP-278's actual host
+outcome/resync/row path before predeclaring correction; RP-279 remains separate.
+Prior H3/H4/H5 author/data/SHA/mint, SQL/capacity/Firefox, full nine-tier/platform
+and all designated-review holds remain. Full new span after5bf6017f needs Claude
+including record edges, independently of every earlier range. No checkbox,
+acceptance, archive, cleanup, publication, deployment, push or goal completion.

@@ -7,7 +7,7 @@
   let { initialArm, era, onPurchase }: {
     initialArm: GameUIReputationArm;
     era: CopyEra;
-    onPurchase(id: string): void;
+    onPurchase(id: string): void | Promise<void>;
   } = $props();
   let arm = $state(untrack(() => initialArm));
   let pending = $state(false);

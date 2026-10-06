@@ -72,7 +72,7 @@ for (const era of ["era_1995", "era_2000"] as const) {
     const { userEvent } = await import("vitest/browser");
     const target = document.createElement("main"); document.body.append(target);
     const purchases: string[] = [];
-    const app = mount(ReputationTreeSurface, { target, props: { arm: structuredClone(arm), era, pending: false, controlsEnabled: true, onPurchase: (id: string) => purchases.push(id) } });
+    const app = mount(ReputationTreeSurface, { target, props: { arm: structuredClone(arm), era, pending: false, controlsEnabled: true, onPurchase: (id: string) => { purchases.push(id); } } });
     try {
       await settle();
       const row = target.querySelector("li[data-state=available]")!;
@@ -180,7 +180,7 @@ it.skipIf(!browser)("renders server-derived states and buys only through an expl
   document.body.append(target);
   installTheme(target, UI_THEMES.era_1995, false);
   const purchases: string[] = [];
-  const app = mount(ReputationTreeSurface, { target, props: { arm, era: "era_1995", pending: false, controlsEnabled: true, onPurchase: (id: string) => purchases.push(id) } });
+  const app = mount(ReputationTreeSurface, { target, props: { arm, era: "era_1995", pending: false, controlsEnabled: true, onPurchase: (id: string) => { purchases.push(id); } } });
   try {
     await settle();
     const axeResult = await axe.run(target, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } });

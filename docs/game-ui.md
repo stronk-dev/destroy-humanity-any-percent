@@ -60,6 +60,9 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   replacement. Rows accept programmatic focus but add no Tab stop. Owned, locked and unaffordable nodes
   show their state as text and have no control. Purchases send `purchase_reputation_node` at the
   Founder revision; an applied receipt refreshes the snapshot.
+  The submitted row exposes `aria-busy="true"` while its existing host purchase task or the
+  shared pending state remains outstanding; all Buy/Confirm controls stay disabled. Attribution
+  clears after both settle, so a later unrelated refresh does not mark a completed row busy.
   For an active tree, the server rejects a null, malformed or unordered owned-node set and
   any unlock mirror that differs from the pinned tree's derivation. The client accepts only
   canonical bonus-factor strings of at least one; the current-run factor may remain null.

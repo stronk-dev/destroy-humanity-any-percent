@@ -12,10 +12,16 @@
     era: CopyEra;
     pending: boolean;
     controlsEnabled: boolean;
-    onPurchase(nodeID: string): void;
+    onPurchase(nodeID: string): void | Promise<void>;
   } = $props();
 
   let confirming = $state<string | null>(null);
+  let purchasing = $state<string | null>(null);
+  let submissionPending = $state(false);
+  const purchasePending = $derived(pending || submissionPending);
+  $effect(() => {
+    if (purchasing !== null && !purchasePending) purchasing = null;
+  });
   const confirmButtons = new Map<string, HTMLButtonElement>();
   const buyButtons = new Map<string, HTMLButtonElement>();
   const rows = new Map<string, HTMLLIElement>();
@@ -40,10 +46,16 @@
     buyButtons.get(id)?.focus();
   }
   async function confirm(id: string): Promise<void> {
+    if (purchasePending || !controlsEnabled) return;
     confirming = null;
-    onPurchase(id);
-    await tick();
-    rows.get(id)?.focus();
+    purchasing = id;
+    submissionPending = true;
+    try {
+      const task = onPurchase(id);
+      await tick();
+      rows.get(id)?.focus();
+      await task;
+    } finally { submissionPending = false; }
   }
   function keydown(event: KeyboardEvent, id: string): void {
     if (event.key === "Escape" && confirming === id) { event.preventDefault(); void cancel(id); }
@@ -64,7 +76,7 @@
   </section>
   <ol class="nodes">
     {#each arm.nodes as node (node.node_id)}
-      <li class="card" data-state={node.state} tabindex="-1" {@attach register(rows, node.node_id)}>
+      <li class="card" data-state={node.state} tabindex="-1" aria-busy={purchasePending && purchasing === node.node_id ? "true" : undefined} {@attach register(rows, node.node_id)}>
         <h2>{titles.get(node.node_id)}</h2>
         <p>{t(node.body_key as CopyKey, {}, era)}</p>
         {#if node.requires.length}<p>{t("reputation_tree.requires", { list: node.requires.map((id) => titles.get(id) ?? "").join(", ") }, era)}</p>{/if}
@@ -72,12 +84,12 @@
         {#if node.state === "available"}
           {#if confirming === node.node_id}
             <span class="confirm" role="group" aria-label={titles.get(node.node_id)}>
-              <button type="button" {@attach register(confirmButtons, node.node_id)} disabled={pending || !controlsEnabled}
+              <button type="button" {@attach register(confirmButtons, node.node_id)} disabled={purchasePending || !controlsEnabled}
                 onclick={() => { void confirm(node.node_id); }} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.confirm", {}, era)}</button>
               <button type="button" onclick={() => cancel(node.node_id)} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.cancel", {}, era)}</button>
             </span>
           {:else}
-            <button type="button" {@attach register(buyButtons, node.node_id)} disabled={pending || !controlsEnabled}
+            <button type="button" {@attach register(buyButtons, node.node_id)} disabled={purchasePending || !controlsEnabled}
               onclick={() => openConfirm(node.node_id)}>{t("reputation_tree.action.buy", { cost: node.cost }, era)}</button>
           {/if}
         {/if}
