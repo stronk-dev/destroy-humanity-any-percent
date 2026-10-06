@@ -7792,3 +7792,23 @@ not UI-computed expected values. Controlled component evidence, never live
 Founder/Company transaction, server/SQL/mint/manual AT/full AC12/CI approval.
 Full new span after2db69792 needs Claude, prior ranges independent. All9-tier/
 platform1.0 holds remain; no box/kernel161/balance/copy658/epoch/archive/push.
+
+Actual metadata census ba2e8f terminal1: five balance/factor controls pass,
+formula fails with required per_level_percent/unlock_percent versus actual
+perlevel/unlock. Added narrowly scoped reproducible
+`node planning/reputation-tree-v1/header-copy-contract-check.mjs`:13b4fd
+terminal1 reproduces the same five/one. It reads current R9 definitions and
+current candidate catalog; no saved green interpretation or alternate catalog.
+`--self-test` f0d762 terminal0 is explicitly SYNTHETIC ONLY: six aligned
+metadata rows and four individually rejected name/type/missing/duplicate-key
+faults. Neither path assesses prose, actual UI parameter units or owner adoption.
+
+Default native header2e4268/dc0258 session86690 terminal0:32 cases pass across
+both eras and Chromium/WebKit; separate performance1/22 selector exclusions.
+Worker0/0 and1/1, zero pending. Typecheck5754b9/490a79 session80994 terminal0,
+zero errors/warnings. Actual TS loader admits the diagnostic1ppm tree; native
+formatter rejects0.0001 as an integer parameter. Census stays RED and formula
+text is only current raw-placeholder characterization, never R9 formula proof.
+All source is unchanged; next commit tests/instrument before compiling faults.
+The predeclaration's new ledger-row blank separator is repaired forward to
+retain one table, without rewriting committed history. No acceptance change.
