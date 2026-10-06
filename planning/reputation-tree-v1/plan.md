@@ -200,6 +200,35 @@ types/build/boundaries/copy/manifest pass. Full new range after00335488 needs
 Claude; RP-292 author action and prior release holds remain. Next safe R9
 header accounting/frozen-next bonus/formula checks. No acceptance box change.
 
+## R9 header accounting and factor bindings — predeclared 2026-10-06
+
+Start2db69792, clean tree. Test-only native component population, both eras;
+all nine declared rows, actual TS R2 loader admission for supplied tree props.
+Cover no frozen row, unit row, first unlock, additional spend at unchanged
+earned level, fully purchased tree, MaxExactInteger and fractional-percent
+ppm input. Independent Go-authored bonus vectors supply non-unit expectations.
+Assert exact ordered available/level/spent, distinct frozen/next factors, null
+label and next-company note. Hold pending and replace public props across
+direct-purchase-shaped and new-run-shaped inputs without claiming live actions,
+server transaction, mint or SQL. No owner prose or numeric/balance change.
+
+RP-293 source-contract gap: R9 names integer per_level_percent/unlock_percent;
+current copy metadata uses integer perlevel/unlock and receives raw ppm. R2
+admits1ppm (=0.0001 percent), which cannot fit the declared integer percentage
+domain. Predeclare exact metadata census against R9 as a RED criterion, with
+other header keys as controls. Native tests may characterize existing raw-copy
+binding, but MUST NOT call that published-formula acceptance. Author must
+reconcile representation/units/names and owner-copy requirements before repair.
+
+Predeclare compiling source faults: conflate balances, replace frozen with
+next, replace next with frozen, erase the null label and omit the formula line.
+Unchanged oracles; restore exact bytes after every terminal arm. Diagnostic
+negative arms only may disable failure screenshot capture under RP-289;
+positive gates use default capture and unchanged deadlines/security. Root
+client/types/build/boundaries/copy/manifest and whole Reputation native scope.
+No acceptance checkbox, new epoch, report restamp, policy or archive/push/deploy.
+Full range needs Claude independently of earlier pending ranges.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

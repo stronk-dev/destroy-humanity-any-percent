@@ -7768,3 +7768,27 @@ Append-only71399a and whitespace4a6023/27abd6 pass; net production-scope check
 cb814a is empty. All live handles resolved before record edits; no mutation
 remains. No box/status/archival/release promotion. Full goal stays active;
 next R9 accounting/frozen-next-factor/formula checks are safe and independent.
+
+## 2026-10-06 — R9 header predeclaration
+
+Previous goal turn is progress: actual recovery correction and executed public-
+prop plan observation are committed through2db69792. Fresh clean b7d728 and
+de413c, no inherited live handle. AGENTS/process/index and full accepted RFC
+reread; bound design sources fully read earlier and unchanged since020a25c6
+on their ACTUAL paths (ee2e7b). Initial guessed economy/playstyle/UX and source
+filenames were wrong; empty comparisons/search errors on them are NOT evidence.
+File discovery resolves actual references and gameui/reputation.go, client
+contracts and copy source/generation. Header component/projector/parser,
+original producer tests, Go-authored vectors and copy parameter checks inspected.
+
+RP-293 source-contract gap: R9 requires percentage names with integer types;
+catalog/generator/component instead pass raw ppm under perlevel/unlock. R2
+admits1ppm, fraction0.0001 percent. No unit conversion, parameter rename/type
+change or owner prose invented; author reconciliation required. Header formula
+placeholder is NOT a published formula. Plan predeclares exact census, native
+accounting/factor/null/replacement scope and five compiling faults. Supplied
+trees pass actual TS loader; Go-authored factors are independent expectations,
+not UI-computed expected values. Controlled component evidence, never live
+Founder/Company transaction, server/SQL/mint/manual AT/full AC12/CI approval.
+Full new span after2db69792 needs Claude, prior ranges independent. All9-tier/
+platform1.0 holds remain; no box/kernel161/balance/copy658/epoch/archive/push.
