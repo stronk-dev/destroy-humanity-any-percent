@@ -3431,3 +3431,43 @@ No unresolved first-filter defect in this bounded admission range. All prior
 reviews, actual persisted career/capacity, H4/H5 and original B8 remain open.
 Claude must review the complete new span after7da200f0 through this record
 commit before any archival eligibility. No source probe or live handle remains.
+
+## 2026-10-06 — H3 prerequisite: complete career fixture identity
+
+Previous turn is progress, not a waiting loop: RP-261 is corrected and full
+H4/H5 reproduce. Source6963692b is clean (d7405c/aa94e3); no live handles.
+Typographical clarification to the preceding entry: "first attemp ta611a6"
+means the first attempt a611a6; faf407 is the successful broader search.
+
+Grounding the RP-262 multiplier experiment finds two dependencies. RP-263's
+fixture helper changes parsed catalogs but retains the base artifact map/hash
+(482b3d/20704b/f4c914). RP-265's Reference planner omits external frozen rows
+from ranker advances/transitions/projections (bef2ed/e732ea/acd43d/8fdeb7).
+A three-persona multiplier experiment must not hide either omission behind a
+milestone result. No numerical failure or full B8 verdict is inferred here.
+
+First bounded wave is RP-263, under accepted R10's fixture-first measurements
+and R2's complete paired tree/economy artifact contract. Before measurement:
+load the existing ratified first-hour suite and its current fixture helper;
+require retained artifact bytes for the exact existing tree and its paired
+economy declaration, a freshly computed complete constants hash distinct from
+the base epoch, and agreement with a public replaycatalog.Load roundtrip.
+The untouched base suite/artifacts/hash must remain exact. Public career output
+must identify the actual supplied fixture hash, not the old base hash.
+No fixture threshold/value or tree/economy disk bytes change.
+
+Retain three source-bound checks (tree bytes, economy declaration, composed
+hash/loader) and one actual Chaos seed0 no-purchase career identity check;
+normal cold execution must fail on the current helper/coordinate if inconsistent.
+If confirmed, fix only helper composition through existing strict loaders and
+the measurement's run-key coordinate. Add copied-input negatives for removed
+tree, undeclared source and false hash; each must refuse rather than relabel.
+Prove helper/coordinate omissions independently, exact restoration before the
+next probe, then cold fast/core/vet. Full H4/H5 numeric reports must reproduce
+without update flags; their historical bytes and FAIL/gaps remain intact.
+
+No assertion that this makes H3 or RP-265 complete, no source-pinning of a live
+epoch, report regeneration, policy change, kernel bump, threshold retune, budget/
+horizon waiver, SQL workload/cleanup, checkbox, archival or release promotion.
+Next dependency is RP-265 before the full RP-262 measurement. Complete new span
+after6963692b needs Claude; independent review is not supplied by this work.
