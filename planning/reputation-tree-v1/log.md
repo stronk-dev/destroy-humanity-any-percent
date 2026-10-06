@@ -8067,3 +8067,31 @@ checkbox/archive/publish/deploy/push. Cached SQL is runnable despite the
 capacity hold; unused-cache question still has no approval. Next accepted
 scope is R6/AC9 plan-specific rollback at actual write boundaries, not just
 unaffordable prefix refusal. Full1.0 goal remains active with genuine progress.
+
+### Real-SQL supplement first-filter — 2026-10-06
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range: `ffd1b673..b7f68beb` (six commits; all ten changed paths).
+Verdict: approved as local test/fixture/docs/planning first filter ONLY.
+Inspected both complete Go test files and the range's predeclarations, retained
+failures, canonical docs, ledger and live tracking. The test repair keeps
+source-bound canonical/state/receipt/hash oracles; only incoming envelopes and
+disposable fixture setup change. The new career seeds once, uses Handle for
+later gameplay, reads actual immutable SQL evidence and compares independent
+inventory/accounting/factor/production outcomes. Full Founder replay retains
+its Fiscal prefixes; Company terminal replay retains plan events and excludes
+only those Founder-owned automatic prefixes, per existing replay ownership.
+No later-state injection, synthesized receipt/event expectations, selected
+failure waiver, copied-evidence database mutation or hidden completed-run claim.
+The diagnostic earned6 and unfinished run3 limitations remain explicit.
+
+Executed SQL positives and prerequisite/bonus/hash/factor/head negatives are
+recorded above. Exact source restore and empty product diff verified; both
+logs preserve their committed prefixes and whitespace check passes. No
+production/migration/balance/copy/kernel/epoch/CI or accepted body changed.
+Designated Claude review must cover the full span after `ffd1b673`, INCLUDING
+this record edge. This first filter cannot archive, close all AC3/AC15 or
+approve itself as cross-party evidence. Header `2db69792..ffd1b673` and all
+earlier pending ranges remain independent. Next accepted work: predeclare
+plan-specific R6/AC9 actual SQL write-boundary rollback; goal remains active.
