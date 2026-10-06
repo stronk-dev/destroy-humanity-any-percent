@@ -1,6 +1,31 @@
 # Executable queue
 
-## Current Garden full-row transaction rollback evidence — 2026-10-06
+## Current Garden saved-head and hash-verdict evidence — 2026-10-06
+
+Test-only SG6/SG8/AC9 supplement under `f980f4d6` addresses RP-228. Existing real-Postgres
+Company replay now compares the complete final state with its saved head for zero/one/ten
+credits. All four pinned Company shapes have Go/TS exact verifier controls: honest
+nonterminal `log_gap`, altered command/resolved hashes `state_divergence`. Actual persisted
+Founder receipt/event hashes diverge in copied evidence without changing DB/original history.
+Unrecorded replay cash fails the new head oracle while output checks survive; removing Go/TS
+hash equality fails different verdict arms, with independent defenses reported. Restored
+related Postgres, twenty harvest/history repetitions, selected Go/vet and full client/type/
+build/corpus pass. Initial empty selector/canonical reader failures are retained. No product,
+kernel/schema/artifact/copy/CI change, kernel 0.3.153.
+
+**READY FOR DESIGNATED REVIEW, not approved:** new range begins `f980f4d6^`
+(`3f3bb03c`); end pinned after commit, Claude required. No earlier range consumed, full
+AC9/G5/Garden/default-player/mature HTTP/whole-CI/public-activation/archival claim.
+
+**AUTHOR ACTION:** RP-229, accepted SG8's unnamed "ordinary resource event", needs body
+reconciliation by the specification author; no existing generic event kind is identified.
+Do not invent an event or use this bounded replay proof to satisfy that extra requirement.
+
+**NEXT SAFE ACTION:** remaining accepted event/coordinator/player-surface integration review;
+retain RP-229/RP-222 author routes and RP-131/RP-218 CI/worker routes independently.
+The full nine-tier 1.0 and complete platform floor remain active.
+
+## Earlier Garden full-row transaction rollback evidence — 2026-10-06
 
 Test-only SG6/AC8 supplement under `d59960af` / `5ca2cf0a` addresses RP-227. Ten
 independent exposed fault checkpoints compare ten complete persistence populations,

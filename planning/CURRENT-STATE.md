@@ -38,6 +38,11 @@ checkpoints against complete affected rows, including Founder genesis/outbox and
 retention deletion. Actual early commit fails all ten; restored code passes 200 fault cases
 and related DB/Go/vet checks. It is test-only, independently pending Claude, and not full
 AC8/G5 or separate fault coverage after every individual SQL statement.
+The latest SG6/SG8 replay supplement (RP-228) compares Company replay to its complete saved
+head and checks exact Go/TS hash-verdict outcomes plus actual Founder-history corruption.
+Unrecorded replay cash and both hash-guard removals fail; restored related DB/Go/client gates
+pass. It is independently pending review, not full AC9/G5. RP-229 separately requires the
+specification author to reconcile the unnamed additional "ordinary resource event".
 
 Remaining work includes Garden's broader integration/public-flow/copy/activation gates, other
 active RFC/review lanes, later tiers/endings/MMO consumers, account rights/retention, task-level

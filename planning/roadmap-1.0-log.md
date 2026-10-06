@@ -2127,3 +2127,28 @@ Exact committed rollback supplement: `d59960af^..11f182cd` (`f736e73b..11f182cd`
 commits / nine paths, pending designated Claude review. The separate HTTP supplement
 remains `3e518f21^..4793effa` (`20ea7b9c..4793effa`). Neither is self-approved or consumes
 any earlier pending range. All processes terminal; no archive, push or release claim.
+
+## 2026-10-06 — Garden saved-head and hash-verdict supplement
+
+RP-228: test-only predeclaration `f980f4d6` adds the previously absent complete saved-head
+comparison to actual Company replay, with zero/one/ten-entry controls. Go/TS consume all
+four exact committed Company shapes: honest nonterminal `log_gap`, eight mismatched-hash
+`state_divergence` arms per runtime. Actual Founder receipt/event hash corruption occurs
+only in copied persisted evidence, preserving the DB and original verified history.
+No fake terminal or generated expected bytes. RP-229 separately records SG8's unnamed
+additional resource event and routes author reconciliation; no event/schema invented.
+
+Initial Make empty selector and fixture canonicalization errors are disclosed and corrected
+without oracle relaxation. Actual replay-only extra cash passes output checks but fails the
+new complete-head comparison. Removing actual Go/TS hash equality fails different verdict
+arms while independent output comparisons survive; all outcomes are recorded. Both product
+files restore byte-exactly. Final related Postgres, twenty harvest/history repetitions /
+200 Company entries / forty Founder corruptions, selected cold Go/vet, full client/type/
+build and unchanged corpus pass. All processes terminal; no runtime/kernel/copy/artifact/
+CI change (0.3.153), skips/bounds/retries or public mint/lifecycle promotion.
+
+Codex first-filter only; new range begins `f980f4d6^` (`3f3bb03c`), end pinned after commit,
+pending designated Claude review independently of every earlier range. No terminal TS
+whole-history, mature HTTP/default-player, full AC9/G5/Garden/whole-CI/archival or release
+claim. Continue accepted integration work; RP-229/RP-222 author and RP-131/RP-218 CI/worker
+routes remain open without narrowing the full nine-tier 1.0 or complete platform floor.

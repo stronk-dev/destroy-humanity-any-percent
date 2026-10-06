@@ -2065,3 +2065,81 @@ gates plus complete client suite; every handle terminal before source/test mutat
 Any runtime criterion failure is recorded before separate repair authority. No full AC9/G5/
 Garden, default player, mature HTTP flow, whole-CI/browser/hosted or archival claim. Claude's
 designated exact-range review remains mandatory and independent of every earlier range.
+
+### Initial executed population
+
+78008 host invocation is invalid evidence: Make expands a lone regex `$` in GO_TEST_FLAGS,
+joining it to `-count=1`; Go warns "no tests to run" and exits 0 (0.292 s). No verdict proof
+or cold run is claimed from that selector. Correct the invocation by omitting the redundant
+end anchor, keeping `-count=1 -v`, then require named RUN/PASS output.
+
+94170 actual declared Postgres exits 0, non-skipped, 1.814 s: the existing ten-harvest run,
+six harvest-clock arms, six refusal arms and new actual Founder receipt/event hash poisoning
+pass. All Company helper users now also compare complete saved-head bytes, including the
+zero-entry and one-entry controls. 21923 full client/typecheck exits 0: 7,366 passed / 116
+intentional Node DOM skips; zero errors/warnings. No browser/AT or actual-network TS claim.
+All initial handles terminal before source mutation. Continue the declared discrimination.
+
+Corrected selector 31080 executes all four named Go Company shapes but exits 2 / underlying
+Go exit 1, 0.189 s: each honest transition rejects `invalid replay inputs`. This is retained
+before diagnosis. The new reader passed the pretty-printed JSON object's RawMessage bytes as
+canonical command bytes; TS canonicalizes that fixture object, and production requires exact
+canonical request bytes. Normalize the committed payload through the existing replay JSON
+normalizer before ApplyLogged/verifier. This corrects the reader representation, not hash or
+acceptance criteria, and the exact pinned expectations stay unchanged. No runtime defect
+is inferred before the corrected canonical population executes.
+
+Corrected canonical Go reader 37414 exits 0, 0.290 s: all four named positive shapes,
+four honest nonterminal `log_gap` verdicts and eight payload/resolved-hash `state_divergence`
+arms execute. Pinned expected bytes were neither regenerated nor softened.
+
+### Actual-source discrimination
+
+28142 adds one unrecorded Company cash unit in actual Go replay after forming unchanged
+receipt/event bytes. Actual Postgres ten-harvest population exits 1 in 0.252 s **at the new
+final-head comparison**; every earlier receipt/event check survives. This is the concrete
+defect class the formerly absent state oracle could not detect. Restore immediately.
+
+47821 removes only actual Go payload/resolved hash equality: root cold Go exits 2 / Go
+exit 1, 0.269 s. All four payload arms incorrectly return `log_gap` and fail; all four
+resolved arms remain `state_divergence` because the independent receipt/event comparison
+still catches them. Surviving defense is reported, not credited as a disabled guard firing.
+
+14122 removes only the TS twin equality: full client exits 2 / Vitest exit 1. Five failures:
+the prior direct-transition check and all four new resolved-hash verdict checks. Payload
+verdict checks still diverge via receipt/event comparison, the mirror of the Go output home.
+7,361 other tests pass / 116 existing Node DOM skips; no unrelated failure. Restore exactly.
+
+Restored SHA256: Go harvest `c7503bb86dc06bc8e45e96fbbdc1f0470a8ac8891deb6235d586b9f4d034e2b4`;
+TS replay `ebe2e60186f8abbd28828a4a2bdfee13d216b2d4f00b125fdf663b52da16dc94`. Both production
+diffs are empty. All handles terminal before final gates, no persistent mutation or retune.
+
+### Final terminal gates and bounded handoff
+
+- 94728 declared Compose serial production/gameserver Garden/minigame population
+  `-count=1 -v`: exit 0. All eighteen production Garden declarations pass (7.342 s),
+  including non-skipped actual DB witnesses and both new hash tests; both composed HTTP
+  declarations pass non-skipped (1.213 s). No DB population run concurrently with another.
+- 99660 root `make test-go GO_PACKAGES='./production ./save' GO_TEST_FLAGS='-count=1' vet`:
+  exit 0; production 40.596 s, save 0.243 s, selected two-package vet clean. Host integration
+  skips are not real-Postgres evidence; this is not full-repository vet.
+- 71713 full root client/type/build/engine-corpus: exit 0; 7,366 passed / 116 existing
+  intentional Node DOM skips, zero type/Svelte errors or warnings; 213-module production
+  build and `garden-corpus-check` pass. The replay corpus also passes `TestGardenCorpus`
+  in 94728 and remains byte-unchanged; no generated expectation ratchet.
+- 63442 declared Compose harvest/history `-count=20`: exit 0, 7.948 s. Twenty ten-entry
+  Company runs / 200 replayed credits compare complete saved heads; twenty actual Founder
+  histories exercise forty copied receipt/event hash corruptions, preserving DB rows and
+  original verified histories. Both mature populations are visibly preseeded fixtures,
+  not actual HTTP/player growth or terminal TS history.
+
+All processes terminal, production probe bytes restored exactly; test/tracking-only scope,
+kernel 0.3.153 unchanged. `git diff --check` clean. No browser/hosted/whole-CI, full AC9/G5/
+Garden, public mint, owner copy, checkbox/lifecycle/archival or release claim. RP-229's extra
+resource-event premise is routed to the author queue independently of this proof.
+
+Review by: Codex (implementer first-filter); Recorded by: Codex. Complete new test/tracking
+diff and restored gates inspected, actual-source mutations executed. This is not designated
+approval. New range begins `f980f4d6^` (`3f3bb03c`), end pinned after commit, Claude required.
+Every earlier range remains pending independently. Continue accepted integration work while
+RP-229/RP-222 author and RP-131/RP-218 CI/worker gates and the full nine-tier 1.0 stay open.

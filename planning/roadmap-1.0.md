@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG6/AC8 test-only full-row rollback supplement
+**Current checkpoint:** 2026-10-06, Garden SG6/SG8/AC9 test-only saved-head/hash supplement
+under `f980f4d6`, RP-228. Company replay matches complete actual saved heads; four pinned
+Company shapes have exact Go/TS nonterminal/hash verdicts, and actual Founder hash poisoning
+diverges without modifying DB/original history. Unrecorded replay cash and both hash-guard
+removals fail; restored related DB, twenty harvest/history repetitions, selected Go/vet and
+full client/type/build/corpus pass. Initial instrument failures remain disclosed. Product/
+kernel/schema/artifact/copy/CI unchanged (0.3.153). New range begins `f980f4d6^`
+(`3f3bb03c`), end pinned after commit, pending Claude. RP-229 separately requires author
+reconciliation of SG8's unnamed extra resource event. All earlier ranges and RP-222/RP-131/
+RP-218 remain independent. No full AC9/G5/Garden/default-player/public activation/whole-CI/
+archival promotion; proper nine-tier 1.0 and the complete platform floor remain active.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG6/AC8 test-only full-row rollback supplement
 under `d59960af` / `5ca2cf0a`, RP-227. Ten independent exposed checkpoints compare ten
 complete persisted populations; actual retention deletion is reached through ordinary
 Service commands. Early commit fails all ten arms; restored code passes 200 fault cases,

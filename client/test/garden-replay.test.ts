@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import corpus from "../../testdata/replay/garden-v1.json";
-import { applyFounderLogged, applyLogged, applyLoggedExit, canonicalJSONString, encodeFounderReplayState, encodeReplayState, loadReplayCatalogBundle, restoreFounderReplayState, restoreReplayState, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle } from "../src/replay";
+import { applyFounderLogged, applyLogged, applyLoggedExit, canonicalJSONString, encodeFounderReplayState, encodeReplayState, loadReplayCatalogBundle, restoreFounderReplayState, restoreReplayState, verifyReplayRun, withNextReplayCatalogBundle, type ReplayArtifacts, type ReplayCatalogBundle, type ReplayLogEntry } from "../src/replay";
 
 // Server Garden AC7/AC9 (Founder half) and the v25 Exit-activation witness:
 // the TS Founder replay byte-matches the Go-authored testdata/replay/garden-v1.json.
@@ -64,6 +64,25 @@ describe("garden Company credit arm (SG6, AC9 Company half)", () => {
     const state = restoreReplayState(credit.pre_state, credit.state_version, catalogs.economy, { meters: catalogs.meters!, achievements: catalogs.achievements!, doctrines: catalogs.doctrines, opportunities: catalogs.opportunities });
     const payload = { ...(credit.canonical_payload as Record<string, unknown>), harvest_hash: `sha256:${"0".repeat(64)}` };
     await expect(applyLogged(state, canonicalJSONString(payload), catalogs, credit.replay_inputs)).rejects.toThrow();
+  });
+
+  it.each(corpus.company_cases)("classifies honest nonterminal and tampered hashes for $name", async (row) => {
+    const catalogs = await bundle(row.bundle);
+    const entry: ReplayLogEntry = { seq: 1, canonicalPayload: canonicalJSONString(row.canonical_payload), replayInputs: row.replay_inputs,
+      receiptJSON: row.receipt_json, eventsJSON: row.events_json, terminal: false };
+    const identity = { constantsHash: catalogs.constantsHash, genesisVersion: row.state_version };
+    const verify = (value: ReplayLogEntry) => verifyReplayRun(row.pre_state, catalogs, [value], identity);
+    await expect(verify(entry)).resolves.toBe("log_gap"); // No fabricated Exit or verified run.
+    const falseHash = `sha256:${"0".repeat(64)}`;
+    const payload = structuredClone(row.canonical_payload);
+    expect(payload.harvest_hash).not.toBe(falseHash);
+    payload.harvest_hash = falseHash;
+    await expect(verify({ ...entry, canonicalPayload: canonicalJSONString(payload) })).resolves.toBe("state_divergence");
+    const inputs = structuredClone(row.replay_inputs);
+    expect(inputs.resolved.harvest_hash).not.toBe(falseHash);
+    inputs.resolved.harvest_hash = falseHash;
+    await expect(verify({ ...entry, replayInputs: inputs })).resolves.toBe("state_divergence");
+    await expect(verify(entry)).resolves.toBe("log_gap");
   });
 });
 

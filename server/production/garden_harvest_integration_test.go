@@ -322,6 +322,86 @@ func replayGardenRunLogCount(t *testing.T, fixture gardenHarvestFixture, expecte
 		}
 		state = transition.State
 	}
+	latest, err := fixture.store.LoadLatest(fixture.ctx, fixture.companyStreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !canonicalJSONEqual(mustEncodeState(t, state), mustEncodeState(t, latest.State)) {
+		t.Fatal("Company replay final state differs from persisted Company head")
+	}
+}
+
+// SG8/AC9: poison copied evidence from a real committed harvest, not the DB.
+// The honest full Founder history must continue to verify after each probe.
+func TestGardenHarvestFounderHashVerdictsIntegration(t *testing.T) {
+	fixture := newGardenHarvestFixture(t)
+	result := fixture.harvest(t, 1, 1, `{"row":0,"col":0}`)
+	var receipt gardenHarvestAPIReceipt
+	if err := json.Unmarshal(result.Receipt, &receipt); err != nil || receipt.Outcome != "applied" || receipt.Harvest.HarvestHash == "" {
+		t.Fatalf("missing actual committed harvest: %s err=%v", result.Receipt, err)
+	}
+	history, err := fixture.store.LoadFounderHistory(fixture.ctx, fixture.founderStreamID)
+	if err != nil || len(history.Entries) != 1 {
+		t.Fatalf("load actual Founder history: entries=%d err=%v", len(history.Entries), err)
+	}
+	catalogs := ReplayCatalogSet{fixture.bundle.ConstantsHash: fixture.bundle}
+	if verdict := VerifyFounderHistory(history, catalogs); verdict != ReplayVerified {
+		t.Fatalf("honest Founder history verdict=%s", verdict)
+	}
+	before := gardenHarvestPersistedRows(t, fixture)
+	const falseHash = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+	for _, target := range []string{"receipt", "event"} {
+		t.Run(target, func(t *testing.T) {
+			poisoned := history
+			poisoned.Entries = append([]save.FounderHistoryEntry{}, history.Entries...)
+			entry := &poisoned.Entries[0]
+			if target == "receipt" {
+				var row map[string]any
+				if err := json.Unmarshal(entry.Receipt, &row); err != nil {
+					t.Fatal(err)
+				}
+				harvest, ok := row["harvest"].(map[string]any)
+				if !ok || harvest["harvest_hash"] != receipt.Harvest.HarvestHash {
+					t.Fatal("Founder receipt hash does not bind the actual harvest")
+				}
+				harvest["harvest_hash"] = falseHash
+				entry.Receipt, err = json.Marshal(row)
+				if err != nil {
+					t.Fatal(err)
+				}
+			} else {
+				entry.Events = append([]save.EventWrite{}, entry.Events...)
+				changed := 0
+				for index := range entry.Events {
+					if entry.Events[index].Kind != save.EventGardenHarvested {
+						continue
+					}
+					var row garden.Harvest
+					if err := json.Unmarshal(entry.Events[index].Payload, &row); err != nil || row.HarvestHash != receipt.Harvest.HarvestHash {
+						t.Fatalf("Founder event hash does not bind the actual harvest: %v", err)
+					}
+					row.HarvestHash = falseHash
+					entry.Events[index].Payload, err = json.Marshal(row)
+					if err != nil {
+						t.Fatal(err)
+					}
+					changed++
+				}
+				if changed != 1 {
+					t.Fatalf("poisoned %d harvest events, want exactly one", changed)
+				}
+			}
+			if verdict := VerifyFounderHistory(poisoned, catalogs); verdict != ReplayStateDivergence {
+				t.Fatalf("tampered %s hash verdict=%s, want state_divergence", target, verdict)
+			}
+			if verdict := VerifyFounderHistory(history, catalogs); verdict != ReplayVerified {
+				t.Fatalf("probe mutated original evidence: %s", verdict)
+			}
+		})
+	}
+	if !reflect.DeepEqual(before, gardenHarvestPersistedRows(t, fixture)) {
+		t.Fatal("hash verification changed persisted rows")
+	}
 }
 
 // TestGardenHarvestFaultsAreAllOrNothing checks all ten exposed coordinator

@@ -24,6 +24,21 @@ Implementation agents may gather evidence and frame options; they may not infer 
 | **D-019** | Choose the proof required before each release to claim its new pre-upgrade backup is restorable: an isolated restore/decrypt with the off-host age identity before drain, a governed key-recipient attestation plus recurring clean-host restore drills, or another explicit contract. The present host-byte checksum and header check cannot establish decryptability; agents may not infer that it does. | RP-139's R10 source/test trace (positive backup creation with an invalid identity fixture), DP6's off-host-key constraint, measured backup size/restore time against the four-hour RTO, and R-006 empty/populated recovery evidence on the exact release manifest. | Deployment RFC DP5/DP6 and canonical operator runbook. | A truthful “working rollback before drain” claim and supported self-host/1.0 release floor; does not block the existing bounded host-byte validation. |
 | **D-020** | Reconcile Arcade AC7's required Pitch-less start with API MA-C15's owner-ruled `minigame_api → pitch` dependency: explicitly amend to tenant-independent catalog activation, or retain the dependency and have the ruling author reconcile AC7. | RP-201: freshly hashed complete catalogs with only Pitch removed refuse in both actual Go/TS loaders; unchanged complete controls load. Arcade AR1.2 retains the earlier full chain and names no amendment to MA-C15. | `rfc/minigame-api-and-surface.md` MA-C15 and `rfc/minigame-demo-disc-arcade.md` AR1.2/AR-P3/AC7, authored body reconciliation. | Full Arcade AC7/A4 acceptance; internal starts in complete Pitch-containing bundles remain safe to verify. No independent permission to change public schema, mint or copy. |
 
+## Garden unnamed resource event — RP-229 (author reconciliation pending)
+
+Accepted Garden SG8 calls for `garden_harvest_credited.v1` "plus the ordinary resource event";
+Minigame Platform MP14 uses the same unnamed premise. The closed save event registry has no
+generic resource-credit event kind, and actual Garden live/replay emits its named credited
+event only. This is a specification-author clarification route, not an owner decision
+silently delegated to the implementer or a request to invent a new resource event.
+
+Required action: identify the existing event/consumer contract that the phrase intends and
+reconcile its body, or explicitly route genuinely new event/schema behavior through its own
+accepted authority. Canonical home: `rfc/minigame-server-garden.md` SG8 and any parent clause
+it relies on; source/diagnostic evidence in `planning/minigame-server-garden/log.md`, RP-229.
+No new event, migration, replay version or ordinary player-mechanics choice is authorized.
+The bounded RP-228 saved-head/hash proof does not resolve or bypass this question.
+
 ## Garden starter-set evolution — RP-222 (unruled)
 
 The 2026-10-06 G2/G3 diagnostic under `d6c2b6a2` / `1aa23496` admits an epoch retune

@@ -117,6 +117,16 @@ SQL type error remains recorded. No product/kernel/CI change or checkbox promoti
 kernel 0.3.153. Claude review required. Grouped hooks are not every individual SQL write,
 and the preseeded mature fixture does not establish public/HTTP progression or full AC8/G5.
 
+Separate SG6/SG8/AC9 test-only supplement under `f980f4d6` addresses RP-228: Company
+replayed final bytes equal actual saved heads for the zero/one/ten-entry helpers, all four
+pinned Company shapes have exact Go/TS verifier verdict controls, and actual Founder hash
+poisoning diverges in copied history. Actual unrecorded-cash/hash-guard probes fail and
+restore, with surviving independent defenses disclosed. Related Postgres, twenty actual
+harvest/history repetitions, selected Go/vet and full client/type/build/corpus pass.
+Initial selector and canonical-reader failures remain recorded. No product/kernel/CI/mint
+change (0.3.153), full AC9/G5 or checklist promotion; Claude review required. RP-229's
+unnamed extra resource-event premise needs author reconciliation, not an invented kind.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

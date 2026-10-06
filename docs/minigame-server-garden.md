@@ -170,6 +170,22 @@ public player progression. The Service fixture has no live dispatcher, so every 
 column is compared. Designated review remains pending. These grouped checkpoints are not
 separate hooks after every individual SQL statement and do not establish full AC8/G5.
 
+RP-228 strengthens the real-Postgres Company replay helper: its complete replayed state
+must equal the actual saved Company head after zero, one or ten recorded credits, not just
+match receipts/events. Adding unrecorded replay cash after forming unchanged output bytes
+fails only the new head check. Go/TS verdict tests consume all four exact committed credit
+shapes; honest nonterminal histories report `log_gap`, and individually altered command or
+resolved hashes report `state_divergence`. Actual persisted Founder harvest receipt/event
+hashes are also poisoned in copied evidence, without changing DB rows or the verified
+original history. Independent receipt/event checks survive different disabled hash guards
+in Go and TS; both guard removals still fail the new population. Twenty repeated actual
+harvest/history populations pass. Designated review remains pending; this is not complete
+terminal cross-runtime history, mature HTTP/default-player progression or full AC9/G5.
+
+SG8's separate "ordinary resource event" has no named existing kind in the closed registry
+(RP-229). Current live/replay emits `garden_harvest_credited.v1`; specification-author
+reconciliation is required before treating that unnamed additional event as implemented.
+
 ## Read
 
 `GET /api/v1/garden/current` (`get_current_garden`) returns `inactive`, `locked` or `active`. It
