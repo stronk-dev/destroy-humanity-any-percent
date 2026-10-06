@@ -2152,3 +2152,8 @@ pending designated Claude review independently of every earlier range. No termin
 whole-history, mature HTTP/default-player, full AC9/G5/Garden/whole-CI/archival or release
 claim. Continue accepted integration work; RP-229/RP-222 author and RP-131/RP-218 CI/worker
 routes remain open without narrowing the full nine-tier 1.0 or complete platform floor.
+
+Committed implementation `56fc2a9d` plus corrected C21 citation `fe178721`; exact designated-
+review range `f980f4d6^..fe178721` (`3f3bb03c..fe178721`), three commits / twelve paths,
+pending Claude. Every earlier range and RP-229 author route remains independent. All
+verification handles terminal; clean implementation scope, no self-approval/archive/push.

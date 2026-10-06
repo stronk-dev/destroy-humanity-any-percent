@@ -11,8 +11,8 @@ Company shapes have exact Go/TS nonterminal/hash verdicts, and actual Founder ha
 diverges without modifying DB/original history. Unrecorded replay cash and both hash-guard
 removals fail; restored related DB, twenty harvest/history repetitions, selected Go/vet and
 full client/type/build/corpus pass. Initial instrument failures remain disclosed. Product/
-kernel/schema/artifact/copy/CI unchanged (0.3.153). New range begins `f980f4d6^`
-(`3f3bb03c`), end pinned after commit, pending Claude. RP-229 separately requires author
+kernel/schema/artifact/copy/CI unchanged (0.3.153). Exact range `f980f4d6^..fe178721`
+(`3f3bb03c..fe178721`), three commits / twelve paths, pending Claude. RP-229 separately requires author
 reconciliation of SG8's unnamed extra resource event. All earlier ranges and RP-222/RP-131/
 RP-218 remain independent. No full AC9/G5/Garden/default-player/public activation/whole-CI/
 archival promotion; proper nine-tier 1.0 and the complete platform floor remain active.

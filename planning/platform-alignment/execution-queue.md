@@ -13,8 +13,8 @@ related Postgres, twenty harvest/history repetitions, selected Go/vet and full c
 build/corpus pass. Initial empty selector/canonical reader failures are retained. No product,
 kernel/schema/artifact/copy/CI change, kernel 0.3.153.
 
-**READY FOR DESIGNATED REVIEW, not approved:** new range begins `f980f4d6^`
-(`3f3bb03c`); end pinned after commit, Claude required. No earlier range consumed, full
+**READY FOR DESIGNATED REVIEW, not approved:** exact range `f980f4d6^..fe178721`
+(`3f3bb03c..fe178721`), three commits / twelve paths, Claude required. No earlier range consumed, full
 AC9/G5/Garden/default-player/mature HTTP/whole-CI/public-activation/archival claim.
 
 **AUTHOR ACTION:** RP-229, accepted SG8's unnamed "ordinary resource event", needs body

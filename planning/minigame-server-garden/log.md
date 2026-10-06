@@ -2148,3 +2148,8 @@ Post-commit citation check: RP-229's parent clause is Minigame Platform **C21**,
 MP14 label I entered in the decision queue. Correct that queue citation forward; the
 observed unnamed-event premise and predeclaration remain unchanged. Include the correction
 in the exact review range before pinning it. No RFC body or owner ruling is edited.
+
+Committed implementation `56fc2a9d`, citation correction `fe178721`. Exact new designated-
+review range `f980f4d6^..fe178721` (`3f3bb03c..fe178721`), three commits / twelve paths,
+pending Claude. The pin is metadata, not a verdict; no earlier review, author/owner or
+lifecycle gate consumed. All processes terminal, no probe bytes left, no archive or push.
