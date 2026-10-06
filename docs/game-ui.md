@@ -97,6 +97,12 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   empty by default. It orders selections in tree order and gates them on prerequisites and a
   projected budget. Deselecting a node also drops the selections that depended on it. A non-empty
   plan is sent as `reputation_plan`; the server re-validates the whole plan.
+  Native Tab reaches the disclosure summary, then enabled checkboxes in tree order
+  and Clear when a selection exists; Shift+Tab reverses that sequence. Checkboxes
+  and Clear have explicit zero Tab indices for WebKit traversal. Disabled controls
+  remain outside the sequence. Space toggles a checkbox; Enter/Space opens the
+  disclosure or activates Clear. This does not change the advisory budget,
+  prerequisite rules, outgoing plan or authoritative preview source.
 - **Desk opportunity region (GS5):** always present, directly after the manual action. It sits in a
   fixed DOM position and never moves focus, so an opportunity spawning never shifts the page. It
   renders the optional `features.opportunity` arm:

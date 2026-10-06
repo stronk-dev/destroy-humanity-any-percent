@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation full-tree plan keyboard correction — 2026-10-06
+
+RP-288 aftere312b4d7: d44d209c predeclares/6dff42fc test-first. Two explicit
+Tab0 attributes correct independently reproduced checkbox and Clear omissions.
+All36 new full-tree cases pass; five compiling source faults fail20/28/12/8/4,
+exact restoration. Final328 Chromium/WebKit functional plus isolated performance,
+types/build8167 units/273 skips/boundaries/copy/manifest pass. Initial invalid
+axe sentinels, incomplete native-copy probe and mistaken capture syntax remain
+disclosed; RP-289 native screenshot-copy stall is OPEN, no permanent config fix.
+Final restored positive uses default capture. Controlled component/host evidence,
+not real SQL/server/mint/manual AT/Firefox/full AC12 or complete green CI.
+
+**READY FOR CLAUDE:** complete span aftere312b4d7 through final record edge;
+earlier spans independently pending. **NEXT SAFE ACCEPTED WORK:** ground R9 host
+inactive/offline/in-flight/refreshing purchase controls. **AUTHOR ACTION:**
+RP-283 authoritative Wind Down preview and RP-284 post-Exit balance/display.
+RP-131/Firefox/SQL/capacity/H3/H4/H5/owner/data/operations/reviews and proper
+nine-tier/platform1.0 remain open. No checkbox/acceptance/archival/cleanup/mint/
+publication/deployment/push. [Evidence](../reputation-tree-v1/log.md).
+
 ## Reputation recovered next-run delivery corrected locally — 2026-10-06
 
 RP-287 range after61d6c8eb:bb9edc41 predeclaration,f91e9b0e test-first

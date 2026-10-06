@@ -53,13 +53,13 @@
     <legend>{t("reputation_tree.plan.heading", {}, era)}</legend>
     {#each arm.nodes.filter((node) => !owned.has(node.node_id)) as node (node.node_id)}
       <label>
-        <input type="checkbox" checked={selected.includes(node.node_id)} disabled={!selectable(node.node_id)}
+        <input type="checkbox" tabindex="0" checked={selected.includes(node.node_id)} disabled={!selectable(node.node_id)}
           onchange={(event) => toggle(node.node_id, event.currentTarget.checked)} />
         {t(node.title_key as CopyKey, {}, era)} {t("reputation_tree.action.buy", { cost: node.cost }, era)}
       </label>
     {/each}
   </fieldset>
-  <button type="button" disabled={selected.length === 0} onclick={() => { selected = []; onChange(selected); }}>{t("reputation_tree.plan.clear", {}, era)}</button>
+  <button type="button" tabindex="0" disabled={selected.length === 0} onclick={() => { selected = []; onChange(selected); }}>{t("reputation_tree.plan.clear", {}, era)}</button>
 </details>
 
 <style>

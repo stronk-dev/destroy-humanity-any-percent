@@ -3312,3 +3312,23 @@ holds remain. No numeric/kernel161/copy/schema/CI/transport/auth policy change,
 checkbox, mint, acceptance/archive, publication/deployment/push or full1.0
 promotion. Full nine-tier/platform goal active; concrete runtime progress made.
 [Evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Reputation full-tree advisory-plan keyboard correction
+
+Range aftere312b4d7: d44d209c predeclaration/6dff42fc test-first reproduce four
+WebKit checkbox omissions; checkbox-only correction independently exposes
+Clear. Two explicit Tab0 attributes fix both, Summary/advisory algorithms unchanged.
+36 new full-tree cases pass; five compiling faults fail20/28/12/8/4 and restore
+exact bytes. Restored328 selected Chromium/WebKit functional plus isolated
+performance, types/build8167 units/273 skips/boundaries/copy/manifest pass.
+Invalid test-only axe sentinels, incomplete native screenshot-copy probe and
+mistaken '=false' capture syntax remain disclosed. RP-289 tooling remains open;
+completed negative probes use actual CLI negation, final positive default capture.
+Controlled component/host proof, not server/SQL/mint/manual AT/Firefox/full
+AC12/whole CI. Whole new span through final record edge needs Claude; earlier
+ranges independent. RP-283/RP-284 author contracts and full nine-tier/platform
+holds remain. Next ground accepted R9 host inactive/offline/in-flight/refreshing
+purchase controls; no owner copy/Go/schema/kernel161/balance/CI policy change,
+box flip, cleanup, mint, report restamp, acceptance/archival/publication/deploy/
+push or full1.0 promotion. Goal active, real minimal product correction made.
+[Evidence](reputation-tree-v1/log.md).

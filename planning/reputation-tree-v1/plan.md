@@ -104,6 +104,18 @@ selected browser/existing isolated performance follow. Firefox, SQL/mint/full
 AC12, RP-283 preview/RP-284 display, RP-131/H3/H4/H5 and reviews remain open.
 Full span aftere312b4d7 needs Claude; no checkbox flip/acceptance/archive/push.
 
+Local checkpoint: d44d209c predeclares;6dff42fc records the test-first four
+WebKit failures with32 controls passing. Checkbox-only refinement then exposes
+Clear independently; explicit Tab0 on those two controls corrects both. All36
+new full-tree cases pass, and five compiling faults fail20/28/12/8/4 with exact
+restoration. Final328 selected native Chromium/WebKit plus isolated performance,
+types/build8167 units/273 skips/boundaries/copy/manifest pass. Invalid sentinel
+axe fixture, interrupted native screenshot-copy probe and mistaken CLI capture
+syntax are retained in the log. RP-289 tooling stall remains open; final browser
+positive uses default capture. No algorithms, copy, server or wire change.
+Not SQL/mint/manual AT/Firefox/full AC12; Claude full-range review still required.
+Next ground R9 host inactive/offline/in-flight/refreshing purchase controls.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

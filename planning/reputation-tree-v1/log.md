@@ -7332,3 +7332,111 @@ Refined unchanged-source4a5eff/ae4952 session23883 terminal2:all32 non-WebKit-
 keyboard controls pass including both-era zero-violation component axe. Exactly
 four native WebKit checkbox paths fail; no sentinel failure remains. Commit
 this diagnostic before the source correction; old surface/host tests untouched.
+
+Checkbox-only refinement cc6f5e/311636 session92300 terminal2:the same four
+WebKit paths now reach and operate both enabled boxes, then skip enabled Clear.
+All32 other cases still pass. This independently establishes both missing
+control stops; Summary already works, so leave it unchanged. Add explicit
+zero Tab indices only on checkbox and Clear. No algorithm, outgoing plan,
+component input, copy, browser preference or test changes.
+
+Corrected b3627e/3db8fe session53352 terminal0:36 native Chromium/WebKit cases
+pass and unchanged isolated perf1/22 selector skips pass. Component SHA now
+77a4b842f989b29d748195e405e29fefb3fc2a3f0a3a650f23db969b99fd3d6f.
+Before final gates, predeclare five compiling source-only faults with unchanged
+36-case oracles: remove selectable prerequisite requirement; remove selectable
+budget condition; keep click order instead of artifact order; treat each
+deselection prerequisite as satisfied; remove both new native stops. Each root
+selected-browser run must reach terminal before exact source restoration, then
+SHA check. These test the component's declared advisory contract, not server
+atomicity/payout or adopted data. No editing with a live handle, deadline/skip/
+budget/rule relaxation or browser preference change.
+
+## 2026-10-06 — Plan probes and native screenshot-copy stall
+
+Prerequisite omission7a9fae/1a1fff session25584 terminal2:20 failures/16 controls
+pass across Chromium/WebKit. Source restored SHA77a4b842...fd3d6f before next
+probe. Budget omission9747d6 session92636 prints14 Chromium assertion failures,
+then stalls: no completed WebKit/whole-population verdict. Do not count it as a
+normal36-case result. Same handle repeatedly polled; no restart due to timeout.
+Read-only ps confirms owned Make18744→shell18757→Node18761 and live browser
+children, Node98–100% CPU. Two one-second samples231c61/e2b325 and1000ed
+(full result retained in tool store planBudgetSample) show main loop idle and
+one fs worker in pread/sendfile. lsof identifies a4,254-byte screenshot source
+and .vitest-attachments destination, distinct inodes; both offsets4,254.
+Host filesystem has160,000,000 KiB free; this is not the Docker-capacity hold.
+
+This is a verified native copy stall, RP-289, not just an elapsed observation.
+Narrow graceful termination999834 closes browser/server (zero pending modules)
+but same Node remains100% CPU; fresh ps confirms it. Targeted kill8f5983 then
+c43176 session92636 terminal2/Error137. No unrelated process stopped, file
+deleted or dependency/CI config changed. Only after terminal restore exact
+component SHA77a4b842f989b29d748195e405e29fefb3fc2a3f0a3a650f23db969b99fd3d6f.
+Sample handles95591/12531 both terminal0; no handle remains live.
+
+Predeclare diagnostic-only adjustment for remaining negative probes: root
+test-browser selects the same36 cases with --browser.screenshotFailures=false,
+whose installed Vitest CLI declares that option. It omits automatic failure
+image/attachment generation AFTER an assertion fails; it does not alter DOM,
+browser security/preferences, native keyboard, oracles, deadline, skips or
+error guard. Stdout must still show semantic failures and terminal counts.
+The previous incomplete arm stays on record; repeat the budget fault as a
+new declared capture arm, not a replacement success. No permanent option,
+workflow/Make change or green CI claim. Final restored positive browsers run
+DEFAULT screenshot behavior and existing perf lane. Native copy cause remains
+unassigned; no spec or owner ruling is inferred from this instrumentation.
+
+Capture-syntax correction:bd996e/03c577 session7055 terminal2 completes28
+budget failures/8 controls, BUT --browser.screenshotFailures=false did not
+disable capture: output still names screenshots and actual screenshot mtime
+advances21:00:23/17,787 bytes. Do not credit that run as a no-capture mechanism.
+Installed tester checks option truthiness. Correct CLI negation is
+--no-browser.screenshotFailures; a8b338/eb5407 session6742 terminal2 produces
+12 click-order failures/24 controls, no failure-image artifact output. Semantic
+DOM/plan oracles unchanged. Repeat budget under the correct negation, then
+remaining cascade/keyboard probes. Final positives remain DEFAULT capture.
+
+## 2026-10-06 — Full-tree plan correction verified locally
+
+Correct CLI-negation budget repeat0bd765/session23428 terminal2:28 failures/
+8 controls pass, no failure-image artifact output. Cascade omission86b3ef/
+session66529 terminal2:8 failures/28 controls. Native-stop omissionbed6b5/
+b1d76c session55997 terminal2:4 WebKit failures/32 controls. Together with the
+earlier prerequisite20 and artifact-order12 failures, all five compiling
+source faults discriminate their declared properties. Every arm reached
+terminal before source restoration; final component SHA is exactly
+77a4b842f989b29d748195e405e29fefb3fc2a3f0a3a650f23db969b99fd3d6f.
+No oracle, deadline, browser preference, security, skip or assertion relaxed.
+The incomplete native-copy arm, invalid axe fixture and mistaken '=false'
+capture syntax remain recorded above, not replaced by the successful reruns.
+
+Restored DEFAULT-capture browser44171b/session55816 terminal0:328 functional
+Chromium/WebKit passes across new plan and existing surface/host/cost/screen
+populations, two performance-selector skips; Worker131/131 requests finished,
+zero pending. Unchanged isolated performance1 pass/22 selector skips, Worker1/1
+finished, zero pending.36 new full-tree cases cover both eras, budgets,
+prerequisites, exact nine-node cost552, canonical order, cascading deselection,
+native forward/reverse Tab and Enter/Space, and component axe zero violations.
+This controlled component/host proof is not live SQL/server/mint/default-player
+Exit, Firefox, manual assistive technology or whole AC12 acceptance.
+
+Root gate9a6337/session50431 terminal0 at a93a3c: types0 errors/warnings,
+213-module build,8167 unit passes/273 skips (18 new native cases are Node-
+inapplicable), shell/UI boundary, CI topology13, cosmetic22 and no-payment6
+negative controls pass. Copy658 and its SHA remain unchanged; five generator
+goldens/collision/six corruptions, append-only copy history and content manifest
+check pass. Existing611 orphan warnings remain visible, not newly resolved.
+No Go runtime, schema, kernel161, authored copy, balance/epoch or CI policy
+changed; this is not a complete green CI claim (RP-131/Firefox remain separate).
+
+RP-288 is locally corrected with only explicit Tab0 on checkbox and Clear;
+Summary and all advisory algorithms are unchanged. RP-289 native screenshot
+copy stall remains OPEN: diagnostic-only no-capture syntax enabled completed
+negative arms, while restored positives used normal capture. No dependency or
+permanent screenshot-policy fix is claimed. RP-283 authoritative Wind Down
+preview and RP-284 post-Exit balance/display still require author contracts.
+Whole span aftere312b4d7 through final record edge needs Claude independently
+of earlier ranges. No checkbox, acceptance, archival, cleanup, mint, report
+restamp, publication/deployment/push or full nine-tier/platform1.0 promotion.
+Next ground R9 host inactive/offline/in-flight/refreshing purchase controls,
+retaining the actual runtime/parser/DOM boundary and existing deadlines.

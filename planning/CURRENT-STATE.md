@@ -17,7 +17,21 @@ RP-284 reader/delivery grounding has now executed below; its display boundary
 and RP-283 authoritative preview still need author contracts. Full1.0 holds remain.
 [Evidence](reputation-tree-v1/log.md).
 
-Latest runtime checkpoint: RP-287 is locally corrected in the range after
+Latest runtime checkpoint: RP-288 advisory-plan keyboard navigation is locally
+corrected aftere312b4d7. Test-first four WebKit failures; checkbox-only refinement
+separately exposes Clear. Two explicit Tab0 attributes fix both;36 full-tree
+cases and five compiling faults (20/28/12/8/4 failures) discriminate budgets,
+prerequisites, order, cascade and keyboard traversal. Exact restoration;
+328 selected Chromium/WebKit functional plus isolated performance, types/build,
+8167 units/273 skips/boundaries/copy/manifest pass. Invalid axe fixture and
+incomplete screenshot-copy probe are disclosed; RP-289 tooling remains open,
+not fixed by default-capture positive success. Controlled component/host proof,
+not SQL/mint/manual AT/Firefox/full AC12 or whole CI. Claude must review the
+entire new span; earlier ranges independent. RP-283/RP-284 author contracts and
+full nine-tier/platform1.0 holds remain. Next ground R9 host inactive/offline/
+in-flight/refreshing controls. [Evidence](reputation-tree-v1/log.md).
+
+Previous runtime checkpoint: RP-287 is locally corrected in the range after
 61d6c8eb. Recovered/live older-start defects were reproduced before correction;
 bounded Company start revision prevents them across reconnect/full-sync.
 All61 reader cases pass, three compiling probes fire7/3/3 and restore exactly;
