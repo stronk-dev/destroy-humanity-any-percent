@@ -667,3 +667,15 @@ cross-party verdict pending.
 
 **Verdict: APPROVED.** Q-001/Q-002/Q-003 are all closed. No archival, promotion, or push is
 authorized by this verdict.
+
+## 2026-10-06 — browser lifetime boundary, diagnosis only (RP-048 / RP-234)
+
+Separate from the closed Q-003 range and pending Garden implementation. Its
+predeclaration lives in Account's current plan/log. T1 consumes Account tokens;
+existing T4 owns reconnect/history/full-sync. Live `Node.OnRefresh` rejects,
+while `OnAlive` checks the original access token against Account. The browser
+has neither HTTP refresh nor rotation/reconnect binding. Observe the built client
+under one exact disposable-test access-row expiry and an explicit manual HTTP
+rotation control; do not change production callbacks, timing, origin, close
+codes, stream positions or revocation. A new draft, not Q-003, must specify any
+automatic browser renewal policy. No designated approval/archival is claimed.

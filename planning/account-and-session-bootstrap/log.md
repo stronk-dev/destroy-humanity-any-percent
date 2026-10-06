@@ -282,3 +282,33 @@ fails at the source census; the full local ARM64 backup integration lane passes 
 restoration. This observes a cross-RFC rights risk, not an Account AC6 policy change or a public
 workflow. `planning/platform-alignment/data-rights-restore-resurrection.md` states the limits;
 D-009/D-015 and Claude's designated review remain open.
+
+## 2026-10-06 — RP-048 / RP-234 session-consumer diagnostic predeclaration
+
+Resumed at `b68190f9`, clean main eight commits ahead of the observed remote.
+Account D2/D3 remain accepted; Q-001 is closed, not account/player completion.
+Transport Q-003 explicitly excludes rotation authority. Source confirms that
+browser runtime stores refreshToken without consuming it, and production
+`Node.OnRefresh` deliberately rejects with auth_expired. Thus writing an
+in-place WS refresh or silently retrying a single-use refresh would be invention.
+
+This new range is test-only diagnosis / draft / records, distinct from Garden
+`b58277cb..bff05b5e`. Predeclare the real built-client / actual server / disposable
+Postgres test: healthy bootstrap and Garden purchase, then expiry of only the
+exact issued access row (identified by validated JWT jti, not broad account SQL),
+actual Garden HTTP 401 and closed subscribed socket within its existing alive
+window, zero runtime refresh calls; an explicit test-operated POST session/refresh
+must rotate exactly once and real reload must resume the same Founder/Garden.
+Gameplay saved heads must remain unchanged across expiry/control/reload; original
+refresh is unconsumed before the control, consumed afterward, and family unrevoked.
+No raw credential/token/hidden Garden data may be printed. Bound socket observation
+at 35 seconds, unchanged server security timing. Healthy/expired/rotated arms and
+a severed test-expiry counterfactual must discriminate before the final claim.
+
+This early database-expiry fault does NOT establish the precise original 67349
+HTTP status, natural fifteen-minute JWT expiry, automatic renewal or completed
+Garden maturation/harvest/reload. Its normal composed-driver objective stays intact.
+No production auth/TTL/schema/kernel/copy/CI/epoch/checkbox/archive/push changes.
+Missing browser concurrency, ambiguity, recovery and generated-operation authority
+must be proposed in an explicit draft follow-up before implementation. Codex is
+not its accepting owner or designated reviewer.

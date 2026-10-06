@@ -36,3 +36,28 @@ state.
 
 Q-001 received the designated cross-party approval at `34d04a5`. This closes the bounded witness
 batch only; item 7 and the broader Account player/rights/retention/archive work remain open.
+
+## RP-048 / RP-234 — browser session-consumer diagnosis (2026-10-06)
+
+Separate from Garden's pending `b58277cb..bff05b5e` range. Account D2/D3 and
+Transport T1/T4/T5 authorize observing the existing credential/refresh/recovery
+boundaries, not inventing browser renewal policy. Q-003 explicitly excluded it.
+The next batch is test instrumentation, a draft follow-up and honest records only.
+No production authentication, TTL, family locking, replay/revocation, kernel,
+copy, catalog, CI topology, lifecycle or completion-checkbox change is authorized.
+
+Use the real built client, gameserver, WebSocket and declared disposable Postgres
+service. After actual bootstrap/Fiscal purchase, expire only that account's exact
+access-token row; do not revoke or consume its refresh token. Observe actual
+Garden HTTP 401 and socket closure, with no browser refresh request. Then perform
+one explicitly test-operated HTTP refresh, store its pair and reload the real
+client: the same Founder/Garden must recover with unchanged gameplay heads.
+Predeclare healthy-before / expired / healthy-after populations, exact row counts,
+no automatic-account replacement and no token/copy/hidden-state output. This is
+controlled early database expiry, NOT natural JWT expiry or full timed Garden proof.
+
+Retain a bounded manual diagnostic mode in the existing composed driver, without
+changing its normal three-tick objective. Execute the counterfactual with expiry
+severed, restore instrumentation byte-exact and rerun. Missing client policy goes
+to a draft RFC linked to Account, Transport, API Foundation and archived Game UI;
+the draft must not masquerade as accepted implementation authority.
