@@ -1,5 +1,21 @@
 # Executable queue
 
+## Reputation R7 required corpus supplied — 2026-10-06
+
+Under a499a5b9, RP-249 now has the actual four named modern rows and baseline15;
+all eleven legacy row bytes stay unchanged. Go/TS execute the SHA-referenced
+source through public Company Exit/Founder replay and structural/pinned-mirror
+admission, not activation on load. Nine runtime controls and three corpus
+corruptions in both lanes fail and restore. Cold server-core/vet and client/
+type/build/boundaries pass (7408/134); kernel0.3.155, no runtime/migration changes.
+
+**READY FOR CLAUDE:** test-only span after39912364 through final pin, separate
+from RP-248/earlier ranges. **NEXT:** full original B3 producer review and remaining
+earlier-version activation/pinned admission evidence. The four named corpus
+cases are locally supplied, not whole R1/R7/RFC/DB/default-player/1.0 acceptance.
+Historical CI/capacity, persisted-row/career/mint/H4/owner/author and every
+nine-tier/platform gate remain. No checkbox/archive/push or cleanup consent.
+
 ## Reputation R1/R7 encode correction and remaining corpus — 2026-10-06
 
 RP-248 is reproduced and corrected under 8094e914: 13 invalid active states and

@@ -32,7 +32,8 @@ Existing generic latest/sibling reads and transaction clocks are unchanged.
 
 **Company v19** (`LatestCompanyVersion = 19`) extends v18 with `achievements_attained_run` and
 `attainment_score_run`. Both are required at v19 and rejected before v19 and in Founder scope; see
-[Axis stack](axis-stack.md). The migration corpus has no v15+ arm, so v19 is witnessed by
+[Axis stack](axis-stack.md). The migration corpus's modern arm covers Founder
+v21/v22, not Company v19; that schema remains witnessed by
 `TestCompanyV19AttainmentRoundTripAndRejections`.
 
 The base Company schema is strict v14 JSON, with separately activated v15-v17 overlays. It contains
@@ -156,6 +157,21 @@ boundary, route-default, lying-v4, founder-v6, and company-v6 pre-timer cases; m
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate
 baseline manifest makes required case names and the exact case count a server-test gate, so an
 addition or removal requires an explicit reviewed baseline ratchet.
+
+Corpus v9 retains all eleven legacy case objects byte-unchanged and adds four
+`founder_cases` for Reputation: v21→v22 new-run activation, v22 overspending,
+v22 unlock-mirror mismatch, and corrupt pre-v22 unlock. The baseline now requires
+all fifteen names. These modern rows reference the existing Go-authored
+Reputation replay corpus by path, source SHA and exact case name; they declare
+input patches and expected Reputation fields, rather than duplicate embedded
+catalogs. Go's external-package `TestFounderReputationMigrationCorpus` strictly
+loads those catalogs and exercises public save/Company Exit/Founder replay
+boundaries. The TS consumer executes the same rows. Merely loading the v21 input
+must leave it at v21: only the recorded new-run transition activates v22.
+Structural corruption and the catalog-derived mirror have separate rejection
+boundaries. Missing rows, a false source SHA and unknown modern-row keys fail
+the corpus checks. These are fixture-level proofs, not database migration or
+all-version activation-chain coverage.
 
 Founder and Company save versions are independent axes. Exit validates the terminal Company state
 against the current Company revision, then checks the resulting Founder and next-run Company

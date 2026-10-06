@@ -14,6 +14,15 @@ RP-131. [Exact limits](reputation-tree-v1/log.md). New span after6a8ccaf1 needs
 Claude; no archival or release promotion. RP-249 identifies the still-missing
 four-case R7 migration corpus/ratchet as next accepted work, not waived by units.
 
+**Subsequent corpus checkpoint:** RP-249 under a499a5b9 supplies those four named
+R7 rows and baseline15, preserving all eleven legacy row bytes. Both runtimes
+execute activation through actual Exit functions and reject all three corruption
+cases. Nine runtime controls plus three corpus corruptions in both lanes fail
+and restore. Cold server-core/vet and client/type/build/boundaries pass7408/134.
+No runtime/migration/kernel change; independent Claude review of the new span
+after39912364 remains mandatory. Earlier-version chains, complete B3 review and
+all nine-tier/platform/owner/CI/capacity obligations remain open.
+
 **Latest runtime checkpoint (2026-10-06):** Reputation RP-243, dc9e6fc6 /
 8379f96d. Actual Go/TS disagreement on twenty malformed nested starter keys is
 corrected under accepted R2/AC1, kernel 0.3.154; both witnessed severings fail

@@ -2546,3 +2546,26 @@ pinned-mirror evidence; the current fix is not whole AC2/AC10/AC11 acceptance.
 New span after6a8ccaf1 needs Claude independently of previous spans. The full
 nine-tier/platform objective stays active; no archive, push, cleanup or hold
 reinterpretation. Capacity permission remains ungranted, not automatic consent.
+
+## 2026-10-06 — required Founder migration corpus actually supplied
+
+RP-249 under a499a5b9 now has the four named R7 rows and baseline15. All eleven
+legacy row bytes remain unchanged. Modern inputs reference the existing
+Go-authored replay corpus by source SHA plus exact case name, with shared
+patches/expected accounting; not four independent new full-save byte fixtures.
+Go external save_test adapter and TS execute both actual Exit functions,
+preserve earned4/spent0/owned[]/unlock0 and original canonical result bytes.
+Loading alone stays21; three corrupt inputs reject at structural/pinned layers.
+
+Nine compiling runtime controls fail at the expected cases. Three additional
+corpus corruptions (missing row, wrong SHA, unknown row key) fail in both lanes;
+all restore byte-exact. Final cold server-core/vet and client/type/build/
+boundaries/topology pass7408/134. No runtime, migration body, kernel/save schema,
+balance, copy or CI change. Earlier instrument compile/message typos are
+disclosed in the Reputation log, not product failures.
+
+New span after39912364 requires Claude independently of RP-248/earlier work.
+Next full B3 producer review and earlier-version/pinned-admission evidence;
+complete R1/R7/DB/default-player/RFC and whole nine-tier/platform release remain
+unproven. No checkbox/archive/push or capacity consent. Historical RP-131 client
+composite RED remains, no fresh full-CI/browser/DB/harness claim.

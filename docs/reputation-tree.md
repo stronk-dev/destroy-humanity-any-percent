@@ -108,6 +108,18 @@ artifact and cannot establish that derived mirror by itself. Catalog-bound
 restoration/validation is mandatory for that half of admission. Before v22 the
 mirror is always 0. These rejection checks do not change valid replay bytes.
 
+**Shared migration corpus.** `testdata/save-migrations.json` corpus v9 now
+contains R7's four named Founder cases alongside eleven unchanged legacy cases;
+the baseline requires all fifteen names. Its modern arm references the existing
+Reputation replay fixture by source SHA, with shared patches/expectations.
+Go and TS execute the actual Company Exit and Founder replay for v21→v22,
+preserving earned4 with zero spent/owned/unlock and original canonical Founder
+state, Company genesis and receipt bytes. Loading alone stays v21. The three corrupt inputs reject at structural
+or pinned-mirror admission. Each runtime guard/default removal fails its case;
+missing-case, source-SHA and closed-row-shape controls also fail. This fulfils
+the previously absent corpus/ratchet locally (RP-249), not all earlier-version
+activation chains, real database/default-player or whole B3/RFC acceptance.
+
 The Company-side Founder carry includes tree fields for pinned Founder floors
 of v22 or higher. Both runtimes reconstruct them; the former pre-R6 carry gap
 is no longer the current behavior. See the replay-input contract below.

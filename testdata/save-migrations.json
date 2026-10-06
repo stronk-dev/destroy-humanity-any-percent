@@ -1,5 +1,5 @@
 {
-  "corpus_version": 8,
+  "corpus_version": 9,
   "cases": [
     {
       "name": "company v1 balances to v5 canonical route envelope",
@@ -288,6 +288,56 @@
         "offline_spans": [], "reputation_level": 4, "reputation_unlock_ppm": 0, "network_slots": [],
         "clout_lifetime": 0, "soul": 0, "age_ms": 0, "notoriety": 0, "advisor_mode": false, "exit_history": []
       }
+    }
+  ],
+  "founder_source": {
+    "path": "replay/reputation-tree-v1.json",
+    "sha256": "f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782"
+  },
+  "founder_cases": [
+    {
+      "name": "founder-v21-to-v22",
+      "source_case": "exit-activates-founder-v22",
+      "from_version": 21,
+      "scope": "founder",
+      "operation": "new_run_activation",
+      "input_patch": {},
+      "error_stage": "none",
+      "expected_version": 22,
+      "expected_reputation": { "level": 4, "spent": 0, "owned": [], "unlock_ppm": 0 }
+    },
+    {
+      "name": "founder-v22-spent-over-level",
+      "source_case": "exit-activates-founder-v22",
+      "from_version": 22,
+      "scope": "founder",
+      "operation": "decode",
+      "input_patch": { "reputation_spent": 5, "reputation_nodes_owned": [] },
+      "error_stage": "structural",
+      "expected_version": 22,
+      "expected_reputation": null
+    },
+    {
+      "name": "founder-v22-unlock-mismatch",
+      "source_case": "exit-activates-founder-v22",
+      "from_version": 22,
+      "scope": "founder",
+      "operation": "decode",
+      "input_patch": { "reputation_spent": 0, "reputation_nodes_owned": [], "reputation_unlock_ppm": 50000 },
+      "error_stage": "pinned_mirror",
+      "expected_version": 22,
+      "expected_reputation": null
+    },
+    {
+      "name": "founder-v21-nonzero-unlock",
+      "source_case": "exit-activates-founder-v22",
+      "from_version": 21,
+      "scope": "founder",
+      "operation": "decode",
+      "input_patch": { "reputation_unlock_ppm": 50000 },
+      "error_stage": "structural",
+      "expected_version": 21,
+      "expected_reputation": null
     }
   ]
 }

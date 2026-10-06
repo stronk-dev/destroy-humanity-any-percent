@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "minimum_case_count": 11,
+  "minimum_case_count": 15,
   "required_case_names": [
     "company v1 balances to v5 canonical route envelope",
     "company v2 production state to v5 route defaults",
@@ -12,6 +12,10 @@
     "company v6 backfills pre-timer run start",
     "founder v6 gains closed prestige defaults",
     "company v9 gains faction defaults",
-    "founder v9 excludes faction state"
+    "founder v9 excludes faction state",
+    "founder-v21-to-v22",
+    "founder-v22-spent-over-level",
+    "founder-v22-unlock-mismatch",
+    "founder-v21-nonzero-unlock"
   ]
 }

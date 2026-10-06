@@ -126,6 +126,15 @@ verify-client remains RED at RP-131/50a3a514. Kernel is 0.3.155. New span after
 and baseline ratchet: existing unit tests are not that gate. Full 1.0 scope stays
 unchanged; no archival, push, live DB or release-readiness promotion.
 
+RP-249's actual four-case shared corpus and baseline15 now execute in Go/TS,
+alongside eleven byte-unchanged legacy rows. The modern arm binds its referenced
+source by SHA; both Exit paths preserve earned Reputation on activation and
+the three corrupt inputs reject at their declared boundaries. Nine runtime
+controls and three corpus corruptions (both lanes) fail and restore. Cold
+server-core/vet and client/type/build/boundaries pass (7408/134); no runtime,
+kernel, save schema or migration-body change. New span after39912364 needs
+Claude. Earlier-version chains, full B3 review and platform/CI/owner holds remain.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

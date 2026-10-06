@@ -1435,3 +1435,83 @@ RFC status, archival, push or policy amendment. All new files/tests/docs/records
 after39912364 need Claude's designated range-union review, independent of prior
 spans. Full R1 mirror authority, B3/AC2/AC11 and the whole nine-tier/platform
 goal still require their own evidence; this wave claims only actual R7 corpus.
+
+Instrument refinement before its negative probes: explicitly remove one required
+modern row (census must fail), falsify the source SHA (pin must fail), and add an
+unknown modern-row key (closed shape must fail). Each runs both Go consumers and
+the TS lane, then restores corpus bytes exactly. Runtime controls are already
+terminal/restored; no simultaneous source/test edits or deferred restore.
+
+## 2026-10-06 — actual R7 corpus/ratchet supplied (Codex)
+
+**Review by:** Codex (self/first-filter on the new tests/corpus/docs/records).
+**Recorded by:** Codex.
+**Verdict:** first-filter PASS; Claude designated review pending. Not full B3,
+earlier-version activation-chain, R1/R7/RFC or archival approval.
+
+Under a499a5b9, corpus9 adds exactly four named Founder rows in a modern arm;
+baseline15 requires them together with the eleven legacy rows. Old row bytes
+are unchanged (278c8d, exact textual comparison against39912364), not just their
+decoded values. The modern arm uses source path/SHA/case reference to the full
+existing Go-authored input/catalog/Exit contexts, plus shared input patches and
+exact Reputation expectations. It is NOT four independent new full-save byte
+fixtures. Source SHA remainsf9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782;
+corpus SHA f6cc5be4aa0c7af330b0c52023245e24da673872d49e5d56a8d0f574651af389;
+baseline SHA2b4913637114b46b55e8084f402434f437abf77be064136b760004c4a80fc4c7.
+
+The save package's legacy runner validates the combined census but executes
+only its eleven old rows. The external save_test adapter strictly loads real
+catalogs via replaycatalog and executes all four modern rows using public
+save/production APIs; no test-only production exports/import cycle. TS executes
+the identical modern rows. v21 load remainsv21; Company Exit/live-settlement
+and Founder-log replay both activatev22 with earned4/spent0/owned[]/unlock0.
+Original canonical Founder post-state, Company genesis and receipt bytes match;
+this wave does not newly assert every ordered event or DB transaction boundary.
+Overspend/pre-v22 corruption reject typed Go ErrInvalidState; mirror corruption
+is structurally legal but rejects at CatalogBundle.ValidateFoundationState with
+ErrInvalidEngineState. TS catalog-bound restoration rejects corresponding inputs.
+
+Initial instrument defects, not product findings: 9c8060 is a new adapter compile
+failure (used exit.Outcome/Receipt instead of exit.Decision); fixed before
+4486ab, which runs both parents/all fifteen subcases cold and passes0.332s.
+34620e is one TS test's wrong error regexp ('accounting' vs actual 'invalid
+reputation state'); fixed without runtime edits. Then87505a passes7408/134.
+
+Nine runtime controls all compile and fail the expected new corpus row:
+
+- Go live default spent=level31244f and Founder replay default2fe00b independently
+  report spent4 rather than0 on founder-v21-to-v22.
+- Go spent guard23acfc admits over-level input; mirror guard24d618 admits the
+  false pinned mirror; pre-v22 guardc3ffb4 admits nonzero unlock. Each isolates
+  its targeted modern row and exits2.
+- TS spentd90bea, mirror86092a and legacy9a42de each fail two tests: the targeted
+  new corpus row AND an existing codec test (7406 pass/134 skips).
+- TS Founder default3b591c fails the new activation row and two existing Exit
+  replay cases (7405 pass/134 skips). No survivor or compile-failure-as-severing.
+
+Three corpus corruptions also fail in both lanes: removed row179c33/87dd7e
+reports14of15 and3modern, TS1fail/7406pass/134skip (denominator7541);
+wrong SHA7a68e5/8fb30e fails source pin (TS1fail/7407pass/134skip);
+unknown modern key722d58/d9390f fails closed shape (same TS totals). Nine source
+mutations plus three distinct corpus corruptions across two lanes = fifteen
+executed negative lane runs. Every restore verifies exact SHA before any next
+run; all runtime files match the baseline hashes, kernel remains0.3.155.
+
+Final root client/type/build/boundaries/topology5669c5 passes7408/134, zero
+typecheck errors/warnings,213module build, shell14/8/22 and13topology negatives.
+Final full verify-server-corebc63c3 passes vet/all non-harness Go packages cold
+(production34.343s,save0.171s,reputation0.197s,kernel0.171s), formulas/API
+generation without drift and import boundaries. Pitch subtarget is cached;
+complete preceding Pitch package ran cold0.313s. Host DB skips are not PG
+integration. No fresh browser/harness/completeCI run; RP-131 client composite
+RED from the prior turn remains unresolved, not relabelled by this subset.
+
+RP-249's actual four-case corpus/ratchet is locally supplied, unlike RT-DG-B's
+prior substitution. Plan text says so without flipping any checkbox. This is
+not all earlier-version activation-chain or complete codec/pinned admission
+coverage. Next full original B3 producer review and remaining R1/R7 evidence;
+full B3/AC2/AC11, career/frozen-row/DB/default-player, H4/mint/owner/author/CI/
+capacity and complete nine-tier/platform1.0 remain. New review span begins
+after39912364 through its final pin, independently pending Claude. No persistent
+runtime, balance, save schema, migration body, owner copy or CI edits; no new DB
+workload, Docker deletion/consent, archival, status promotion or push.
