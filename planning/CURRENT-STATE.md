@@ -4,6 +4,22 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+**Latest SQL checkpoint:** the cached declared Postgres lane executes despite
+Docker's capacity hold. Test-only work after `ffd1b673` repairs three dormant
+taxonomy setup defects (RP-294–296) and adds the missing composed two-Exit
+Reputation career. All21 taxonomy profiles execute. Both completed Company
+runs and the three-entry Founder history verify; run3 continuation matches
+its full stored head. Corrupted factor/head evidence is refused, prerequisite
+omission fails two profiles, and available-instead-of-earned bonus fails the
+career. Sources are restored exactly. Whole production Integration population
+passes cold; selected Reputation/Bonus tests and vet pass. This is diagnostic
+SQL proof, not natural pacing, minted/browser/full CI or 1.0 approval.
+Full span after `ffd1b673` needs Claude, including final records; header span
+`2db69792..ffd1b673` and earlier ranges remain independently pending. No cleanup
+or push. Next accepted work: R6/AC9 plan-specific SQL write-boundary faults.
+Formula, invalidated-plan, preview/display, Firefox, harness and release holds
+remain. Earlier checkpoint-specific next actions below are historical.
+
 Latest tooling checkpoint: RP-281 is locally corrected underda7cfa56. Generator
 and regenerated Go are paired; output equals gofmt(old output), with other
 artifacts/copy658/hash/manifest byte-unchanged. Five goldens, collision refusal,
@@ -17,7 +33,7 @@ RP-284 reader/delivery grounding has now executed below; its display boundary
 and RP-283 authoritative preview still need author contracts. Full1.0 holds remain.
 [Evidence](reputation-tree-v1/log.md).
 
-Latest runtime checkpoint: RP-290/RP-291 host purchase readiness locally
+Previous recovery checkpoint: RP-290/RP-291 host purchase readiness locally
 corrected afterb5ca3e7d. Test-first64 failures/16 controls; scoped readiness/
 existing offline notice and internal nonterminal recovering status.80 new
 native cases pass; compiling host faults fail32/8/64/16, exact restoration.

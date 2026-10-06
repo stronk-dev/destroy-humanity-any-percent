@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation real-SQL grounding — 2026-10-06
+
+Test-only work after `ffd1b673`: RP-294–296 fixture repairs execute all21
+taxonomy profiles. The added composed career drives real scripted first Exit,
+direct purchase, accrued gate, elective plan and run3; both completed Company
+runs/full Founder history verify. Copied factor/head corruptions refuse,
+prerequisite omission fails two profiles/19 controls, and wrong bonus base
+fails the run3 frozen factor. Exact source restoration; entire production
+Integration population passes cold, selected Reputation/Bonus and vet pass.
+Diagnostic earned6 budget, not naturally earned pacing or minted/browser/CI
+acceptance. Cached SQL executes; capacity is not a blanket SQL blocker.
+
+**DESIGNATED REVIEW PENDING:** complete span after `ffd1b673` through final
+record edge. Header `2db69792..ffd1b673` and earlier spans remain independent.
+**NEXT SAFE ACCEPTED WORK:** predeclare R6/AC9 plan-specific real-SQL rollback
+at every applicable write boundary, not just unaffordable-plan refusal.
+**AUTHOR/OWNER HOLDS:** RP-283/284/292/293 and harness/mint/copy rulings.
+Firefox/history/capacity/manual AT/clean-host/full nine-tier holds remain.
+Cache-only permission unanswered; no cleanup, archival, publish/deploy/push.
+
 ## Reputation host purchase readiness correction — 2026-10-06
 
 **Header checkpoint:** test/instrument range after2db69792 adds32 native cases,

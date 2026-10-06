@@ -8021,3 +8021,49 @@ before final gates. No SQL evidence mutated and no state seeded after genesis.
 Initial earned6 is diagnostic, not reachability/H1/pacing/minted UI proof.
 Next root vet, persisted production integration population and cold Reputation
 unit/history/Company-replay population; acceptance boxes remain unchanged.
+
+Restored whole production Integration population27e395/ede0cd session26105
+terminal0 in5.921s, verbose output includes the strengthened career and all21
+taxonomy subcases, no SQL skip. Root vet75b7ee terminal0. Cold host selected
+Reputation/Bonus population5c9664/27020f session3468 terminal0 across production,
+reputation and gameui; verbose output was truncated by display, so no exact
+host population count is claimed. Host SQL skips are not evidence; actual SQL
+population above supplies persistence proof separately. No full CI/history
+guard/Linux-amd64/browser/package-union claim.
+
+Additional first-filter probes, predeclared before touching source: temporarily
+omit Tree.Purchase's prerequisite rejection and run the exact persisted21-case
+taxonomy; then restore source SHA. Separately compute BonusFactor from level-
+spent instead of earned level and run the composed career; require failure of
+the independent run3 frozen-factor/output criterion, then restore exactly.
+Run no source edits while handles live; no committed product mutant, kernel
+bump or altered oracle. Final restored root/SQL gates follow both terminals.
+
+Live prerequisite omission4eecdf/073269 session60930 terminal2: two persisted
+taxonomy cases fail (wrong applied revision and wrong refusal precedence),
+19 controls pass. Exact tree.go SHA restored38e265. Wrong bonus base08476f/
+b1a0a6 session87182 terminal2: career fails independently at run3 frozen
+factor1e0 instead of1.003e0. Exact tree.go SHA restored748e69:
+8c2a4788154768668eb159455a000367228dfc368b75f3ae382b10a7f9d2d291;
+5c145d confirms empty source diff. Both compiling source faults used unchanged
+test oracles; no mutant committed or live-handle edit.
+
+Final restored SQL44277c/6cae6b session54595 terminal0: whole production
+Integration population passes cold in7.872s. Final host265905/2f86e8
+session16258 terminal0: production1.098s, reputation0.089s, gameui0.157s;
+focused vet passes. Earlier full root vet75b7ee passes. Host SQL skips are
+preparation only; verbose actual SQL27e395/ede0cd includes the complete
+executed taxonomy and career with no skip. All handles terminal before
+records. No full CI/history/Linux/browser/mint/harness or release claim.
+
+Docs and live trackers now distinguish portable corpus from the newly
+executed composed SQL career. They remove the stale never-executed taxonomy
+claim and name the diagnostic earned6 limit. Initial fixture is seeded once;
+all subsequent gameplay comes through Handle. Run3 continuation is explicitly
+not a completed Company-verifier population. RP-294–296 are locally corrected,
+not designated-approved; previous reviews remain independently pending.
+No cleanup/production/kernel161/balance/copy658/epoch/CI/owner-prose/ruling/
+checkbox/archive/publish/deploy/push. Cached SQL is runnable despite the
+capacity hold; unused-cache question still has no approval. Next accepted
+scope is R6/AC9 plan-specific rollback at actual write boundaries, not just
+unaffordable prefix refusal. Full1.0 goal remains active with genuine progress.

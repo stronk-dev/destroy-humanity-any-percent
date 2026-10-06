@@ -256,6 +256,18 @@ Rerun all three cold and demonstrate omission of the second hash binding.
 The full scripted-first → elective-with-plan → run3 AC15 career is not present
 in these tests and requires a separate predeclared composed population.
 
+Current supplement: `baa3bf90` repairs RP-294–296 test fixture/configuration/
+wire envelopes; all21 taxonomy subcases now execute on declared Postgres.
+`4053c3b7` adds the composed career, real two Exits/direct purchase/plan/run3,
+completed Company and full Founder replay, independent production and copied
+factor/head negatives. Initial level6 is diagnostic, not naturally earned
+pacing. Whole production Integration population passes cold; prerequisite
+omission fails two profiles and bonus-from-available fails the career, exact
+source restoration. No production/kernel/balance/copy/epoch/CI change or box
+flip. Full span after `ffd1b673` needs Claude independently of header/earlier
+ranges. Remaining R6/AC9 plan-specific write-boundary faults are next; other
+author/harness/browser/mint/release holds remain, no full RFC closure.
+
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1
   accounting helpers, R3 bonus arithmetic; shared rejection-fixture corpus and bonus vectors.
   ACs 1 (loader half), 5.

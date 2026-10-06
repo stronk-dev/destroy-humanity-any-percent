@@ -5,6 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest SQL checkpoint (2026-10-06):** test-only range after `ffd1b673`
+repairs RP-294–296 fixture setup and executes all21 persisted Reputation
+taxonomy profiles. The missing composed two-Exit career now verifies both
+completed Company runs and full Founder history, plus run3's ongoing logged
+production/full head. Factor/head corruption, prerequisite omission and wrong
+bonus base discriminate. Whole production Integration suite passes cold on
+declared Postgres; selected Reputation/Bonus and vet pass. Initial earned6
+is diagnostic, not natural progression/pacing or minted/default UI proof.
+Designated review of this full span and earlier independent spans is pending.
+No production/balance/copy/epoch/CI change, cleanup, push or release promotion.
+Next accepted work is R6/AC9 plan-specific transaction fault coverage. The full
+nine-tier/platform goal and other author/environment/release holds remain.
+[Evidence](reputation-tree-v1/log.md).
+
 **Latest tooling checkpoint (2026-10-06):** RP-281 paired generator/output
 repair underda7cfa56. New Go equals gofmt(old Go); other artifacts/copy658/hash/
 manifest unchanged. Five goldens/collision/six corruption controls and three
@@ -16,7 +30,7 @@ RP-284 reader/delivery is supplemented below; its display/RP-283 author gaps rem
 Full nine-tier/platform1.0 active, RP-131/Firefox/SQL/mint/operations/reviews
 still open. [Evidence](reputation-tree-v1/log.md).
 
-**Latest runtime checkpoint (2026-10-06):** RP-290/RP-291 purchase readiness
+**Previous recovery checkpoint (2026-10-06):** RP-290/RP-291 purchase readiness
 locally corrected afterb5ca3e7d. Test-first64 failures/16 controls; scoped
 readiness/existing offline copy/internal nonterminal status.80 new native
 cases pass; four host faults fail32/8/64/16 and restore exactly; added strict

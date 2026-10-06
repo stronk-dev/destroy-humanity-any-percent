@@ -235,12 +235,18 @@ This RP-255 supplement needs designated review and actual database coverage
 remains separate. Native Chromium/WebKit execute all 590 new TS tests, but
 Firefox launch is blocked on this Mac (RP-256); no three-engine/CI pass is claimed.
 
-RP-253's additional `TestReputationPurchaseTaxonomyIntegration` is retained but
-has not yet executed on Postgres. It covers all twenty pinned purchase cases
+RP-253's additional `TestReputationPurchaseTaxonomyIntegration` now executes on
+the declared disposable Postgres service. It covers all twenty pinned purchase cases
 plus an overdue-Fiscal rejection, exact retry, and forty-two unrecorded
-revision/idempotency conflicts. Its local profile preparation and population
-controls pass; they are not persistence proof. Actual SQL execution and fired
-persistence controls remain required before AC3 closeout.
+revision/idempotency conflicts. The first actual SQL execution exposed three
+test-setup defects (RP-294–296): duplicate current epochs, an omitted service
+current hash, and canonical replay payloads sent as wire requests without
+`intent_id`. The fixture registers both source bundles under one epoch and
+retains complete request envelopes separately; stored canonical-byte oracles
+and production constraints are unchanged. All21 persisted profiles pass.
+Omitting prerequisite refusal fails two profiles while19 controls pass;
+omitting a source hash binding fails the fixture population check. This local
+evidence needs designated review; it does not close all AC3 obligations.
 
 An applied purchase adds the cost to `reputation_spent`, inserts the id in sorted order, and updates
 the unlock mirror. It returns a receipt with `effective_from: "next_run"` (a Fiscal sweep, if any,
@@ -389,6 +395,37 @@ comparison omissions discriminate; either sequence defense alone still rejects
 bad ordering. This is portable replay evidence, not execution of SQL
 `LoadFounderHistory`, a two-Exit purchase career, the Company-run verifier or
 the real-Postgres composed acceptance gate (RP-259).
+
+## Composed real-Postgres career evidence
+
+`TestReputationCareerTwoExitsIntegration` supplies the separate R8/AC15 SQL
+population: one scripted burnout Exit, a direct unlock purchase with exact
+retry, ordinary accrual and Garage gate, an elective Exit with the cash/tower
+prerequisite plan, then run3 production. After the initial fixture genesis,
+all gameplay transitions go through `Service.Handle`; later runs, Exits and
+frozen rows are not independently seeded. The initial earned level6 is an
+explicit diagnostic budget, not naturally earned pacing or OD-2 acceptance.
+
+Both completed Company runs replay from their stored genesis/log/events, and
+the complete three-entry Founder history verifies. Current-run frozen bonus
+stays unit after the direct purchase; run3 freezes1.003 and consumes cash1e3
+plus five generated towers with zero purchased. Its first command's replay
+matches the full stored head and independently expected production. Run3 is
+unfinished, not labelled a completed Company-verifier population. Company
+replay excludes automatic Founder Fiscal prefixes, which the full Founder
+history verifies separately; terminal plan events remain in its population.
+
+Changing one existing copied frozen-factor byte returns `state_divergence`;
+so does a copied Founder-head corruption. A live bonus calculation from
+available instead of earned Reputation fails the run3 factor assertion.
+No immutable database evidence is edited. The whole production Integration
+population passes cold on declared Postgres after exact source restoration.
+This is locally executed diagnostic evidence pending designated review, not
+minted/default-browser gameplay, complete RFC/CI or release acceptance.
+
+```sh
+make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationCareerTwoExitsIntegration'
+```
 
 ## Portable Company-run evidence
 

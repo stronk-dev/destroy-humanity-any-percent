@@ -3392,3 +3392,31 @@ inferred, no cleanup/images/volumes/containers/data touched. Next exact cached
 declared-Postgres career preflight/population; Firefox/capacity/SQL/mint/manual
 AT/full nine-tier/platform1.0 holds retained. No source math/Go/kernel/copy/CI/
 epoch or checkbox/status/archive/publish/deploy/push promotion. Goal active.
+
+## 2026-10-06 — Reputation real-SQL career, not component-only proof
+
+Test-only range after `ffd1b673`: cached declared Postgres executes despite
+Docker fullness. The first baseline exposes RP-294–296 fixture/configuration/
+wire-envelope defects, retained before correction in `baa3bf90`. All21
+taxonomy profiles then execute. Missing hash binding fails the fixture oracle;
+live prerequisite omission fails two cases with19 controls. Production and
+database constraints remain unchanged.
+
+`4053c3b7` adds actual scripted burnout Exit → direct unlock/retry → accrued
+Garage gate → elective prerequisite plan → run3. Both completed Company runs
+and whole Founder history verify; run3 continuation matches its full stored
+head and independent non-unit starter production. Copied existing factor byte
+and Founder head return state_divergence; live wrong bonus base fails the
+run3 frozen factor. Initial level6 is diagnostic, not measured/default-user
+progression or a threshold/epoch retune. My initial compile/branch-path/plan-
+ordering test-construction errors are disclosed, not called product defects.
+
+Exact source restoration, whole production Integration population cold PASS
+(7.872s), selected Reputation/Bonus cold PASS and vet PASS. Not full CI/history
+guard/Linux-amd64/browser/manual AT/minted gameplay/harness/release approval.
+Docs/ledgers/board reconcile actual SQL proof and remaining limits. Full new
+span needs Claude including final records, header/earlier spans independently
+pending. Cache-prune permission unanswered; no cleanup or production/balance/
+copy/epoch/CI/checkbox/archive/publish/deploy/push changes. Next accepted scope:
+R6/AC9 plan-specific write-boundary rollback. Full nine-tier/platform goal active.
+[Evidence](reputation-tree-v1/log.md).
