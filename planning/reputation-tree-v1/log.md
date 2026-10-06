@@ -7935,3 +7935,31 @@ Rerun unchanged three-test population cold; remove the second-bundle binding
 temporarily as a compiling negative and require the fixture population oracle
 to fail before restoring exactly. No broad shared-helper change. Full new
 range afterffd1b673 needs Claude; career and full CI remain separate/unproven.
+
+First repair d33287/be6898 session12191 terminal2 passes the epoch population
+check but exposes RP-295: taxonomy service omits mandatory current constants
+hash. Purchase and Exit-plan controls pass0.11/0.10s; taxonomy constructor
+refuses before subcases. NewService's explicit current/policy preconditions
+are correct and stay unchanged. Predeclare fixture-only current tree-bundle
+selection from the already admitted profile set, passed via existing option;
+inactive profiles retain their original pins and both registered hashes.
+No fallback/default/resolver/domain change. Test setup, not player behavior.
+
+277c0f/3059e2 session4663 terminal2 executes all21 subcases, all refuse at
+ParseIntent; both other controls pass. RP-296: ParseIntent's canonicalRequest
+intentionally removes intent_id for stored/hash identity. The test mistakenly
+resubmits that canonical object as incoming wire. Preserve complete parsed
+request bytes separately and use them for initial/retry Handle; conflict
+envelopes must explicitly restore original intent_id before their own mutation.
+Stored canonical payload, hash, full-state/receipt/replay/count oracles stay
+byte-unchanged. Predeclare this fixture-envelope correction only; do not
+change parser/storage identity or accept missing intent ids. No source body
+or balance/migration/epoch release change. All three original REDs stay visible.
+
+Restored fixture baseline beba41/571a96 session4297 terminal0: all three
+declared tests PASS, taxonomy executes all21 named subcases with no skips.
+Purchase/Exit controls0.11/0.09s, taxonomy0.26s. Source fixture hash, receipts,
+canonical-storage/state/event/outbox/no-write/retry/conflict/history oracles
+unchanged; incoming wire retained separately. This repairs dormant SQL test
+setup, not runtime behavior. Commit test+records before the predeclared missing-
+hash-binding fault; no acceptance box/full AC15 or CI claim.

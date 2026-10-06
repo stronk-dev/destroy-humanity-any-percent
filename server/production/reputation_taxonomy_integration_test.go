@@ -79,12 +79,13 @@ func validateReputationTaxonomySource(source reputationCorpus, raw []byte) error
 }
 
 type reputationTaxonomyProfile struct {
-	name    string
-	row     reputationCorpusCase
-	bundle  CatalogBundle
-	before  *save.State
-	company *save.State
-	request IntentRequest
+	name        string
+	row         reputationCorpusCase
+	bundle      CatalogBundle
+	before      *save.State
+	company     *save.State
+	request     IntentRequest
+	wireRequest []byte
 }
 
 func reputationTaxonomyProfiles(t *testing.T, now time.Time) []reputationTaxonomyProfile {
@@ -112,7 +113,8 @@ func reputationTaxonomyProfiles(t *testing.T, now time.Time) []reputationTaxonom
 		payload := reputationShapeObject(t, row.CanonicalPayload)
 		payload["intent_id"] = reputationShapeJSON(t, fmt.Sprintf("01986666-9f01-7000-8000-%012d", index+1))
 		payload["expected_revision"] = json.RawMessage("1")
-		request, err := ParseIntent(reputationShapeJSON(t, payload))
+		wireRequest := reputationShapeJSON(t, payload)
+		request, err := ParseIntent(wireRequest)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -124,7 +126,7 @@ func reputationTaxonomyProfiles(t *testing.T, now time.Time) []reputationTaxonom
 		if err := bundle.ValidateFoundationState(company); err != nil {
 			t.Fatal(err)
 		}
-		profiles = append(profiles, reputationTaxonomyProfile{row.Name, row, bundle, before, company, request})
+		profiles = append(profiles, reputationTaxonomyProfile{row.Name, row, bundle, before, company, request, wireRequest})
 	}
 	return profiles
 }
@@ -315,22 +317,61 @@ func TestReputationPurchaseTaxonomyIntegration(t *testing.T) {
 	profiles := reputationTaxonomyProfiles(t, time.UnixMilli(preparationMS).UTC())
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{}, routes: map[string]*routes.Catalog{}, prestige: map[string]*prestigecore.Policy{}, factions: map[string]*faction.Catalog{}}
 	set := ReplayCatalogSet{}
+	var fixtureEpoch int64
+	var currentHash string
 	for _, profile := range profiles {
 		bundle := profile.bundle
 		if _, exists := set[bundle.ConstantsHash]; exists {
 			continue
 		}
 		set[bundle.ConstantsHash] = bundle
+		if bundle.ReputationTree != nil {
+			currentHash = bundle.ConstantsHash
+		}
 		resolver.economy[bundle.ConstantsHash], resolver.routes[bundle.ConstantsHash] = bundle.Economy, bundle.Routes
 		resolver.prestige[bundle.ConstantsHash], resolver.factions[bundle.ConstantsHash] = bundle.Prestige, bundle.Faction
-		seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
+		if fixtureEpoch == 0 {
+			seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
+			if err := db.QueryRowContext(ctx, `SELECT epoch_id FROM epochs WHERE ended_at IS NULL`).Scan(&fixtureEpoch); err != nil {
+				t.Fatal(err)
+			}
+		} else {
+			// Both source-pinned bundles belong to this disposable fixture
+			// epoch. Do not create a second current epoch or weaken its index.
+			if _, err := db.ExecContext(ctx, `INSERT INTO catalog_sets(constants_hash) VALUES($1)`, bundle.ConstantsHash); err != nil {
+				t.Fatal(err)
+			}
+			for name, data := range bundle.Artifacts {
+				if _, err := db.ExecContext(ctx, `INSERT INTO catalog_artifacts(constants_hash,artifact_name,bytes) VALUES($1,$2,$3)`, bundle.ConstantsHash, name, data); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if _, err := db.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, fixtureEpoch, bundle.ConstantsHash); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	var epochCount, currentCount, hashCount int
+	if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM epochs),
+		(SELECT count(*) FROM epochs WHERE ended_at IS NULL),
+		(SELECT count(*) FROM epoch_hashes WHERE epoch_id=$1)`, fixtureEpoch).Scan(&epochCount, &currentCount, &hashCount); err != nil {
+		t.Fatal(err)
+	}
+	if len(set) != 2 || epochCount != 1 || currentCount != 1 || hashCount != len(set) {
+		t.Fatalf("taxonomy fixture epoch population: bundles=%d epochs=%d current=%d hashes=%d", len(set), epochCount, currentCount, hashCount)
+	}
+	for hash := range set {
+		var accepted bool
+		if err := db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM epoch_hashes WHERE epoch_id=$1 AND constants_hash=$2)`, fixtureEpoch, hash).Scan(&accepted); err != nil || !accepted {
+			t.Fatalf("taxonomy fixture missing accepted source hash %s: %v", hash, err)
+		}
 	}
 	policyResolver := reputationTaxonomyCatalogs{resolver, set}
 	store, err := save.NewStore(db, policyResolver, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}))
+	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash), WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -354,7 +395,7 @@ func TestReputationPurchaseTaxonomyIntegration(t *testing.T) {
 				t.Fatal(err)
 			}
 			beforeCounts := reputationTaxonomyDBCounts(t, db, founderRev.StreamID)
-			result, err := service.Handle(ctx, companyRev.StreamID, ModeOnline, time.Now().UTC(), profile.request.CanonicalPayload)
+			result, err := service.Handle(ctx, companyRev.StreamID, ModeOnline, time.Now().UTC(), profile.wireRequest)
 			if err != nil || result.Replay {
 				t.Fatalf("initial Handle replay=%v err=%v", result.Replay, err)
 			}
@@ -402,12 +443,13 @@ func TestReputationPurchaseTaxonomyIntegration(t *testing.T) {
 			if err := db.QueryRowContext(ctx, `SELECT payload::text FROM transport_player_outbox WHERE stream_id=$1 AND source_id=$2 AND message_kind='receipt'`, founderRev.StreamID, profile.request.IntentID).Scan(&outboxReceipt); err != nil || canonicalFixtureJSON(t, outboxReceipt) != canonicalFixtureJSON(t, result.Receipt) {
 				t.Fatalf("outbox receipt differs err=%v", err)
 			}
-			retry, err := service.Handle(ctx, companyRev.StreamID, ModeOnline, time.Now().UTC(), profile.request.CanonicalPayload)
+			retry, err := service.Handle(ctx, companyRev.StreamID, ModeOnline, time.Now().UTC(), profile.wireRequest)
 			if err != nil || !retry.Replay || !bytes.Equal(retry.Receipt, result.Receipt) {
 				t.Fatalf("identical retry replay=%v err=%v", retry.Replay, err)
 			}
 			for _, category := range []string{"revision_conflict", "idempotency_conflict"} {
 				payload := reputationShapeObject(t, profile.request.CanonicalPayload)
+				payload["intent_id"] = reputationShapeJSON(t, profile.request.IntentID)
 				detail := profile.request.IntentID
 				if category == "revision_conflict" {
 					payload["intent_id"] = reputationShapeJSON(t, fmt.Sprintf("01986666-9f02-7000-8000-%012d", index+1))
