@@ -993,3 +993,36 @@ ALL five research tests execute on real Postgres16.15/linux-arm64, none skip;
 542/615/64 arithmetic and1215/16SQL populations reproduce unchanged. Native
 image restoration is NOT an AMD64 CI bypass or passing AMD64 observation.
 All handles terminal; no probe remains. Old artifacts retain their pinned hashes.
+
+### R-012 producer/SQL local range review — research only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `9050fe4d..8d0d9ce4`, all fifteen changed paths, including
+predeclaration, three new test instruments, separate corpora, manual generation
+lane and every synchronized record. Instruments, population/decoder/writer
+dispatch and record diffs inspected;8,667 artifact lines verified by complete
+actual cold reconstruction and independent TS checks, not individually read.
+
+The raw producer/canonical-rate arms genuinely differ; existing saved-context
+proof is limited to admitted diagnostic Go profiles. SQL uses the actual
+declared database and no persistent table; logical equality covers every field.
+Representation-only normalization is not corrupt-field admission. Typed syntax
+failure and missing-DB generation cannot masquerade as successful measurement.
+Environment comparison preserves exact semantic/source evidence and explicitly
+records actual provenance; its local fixtures are not AMD64 execution proof.
+
+Both original research artifacts remain byte-unchanged; diff verifies no runtime,
+save/kernel/balance/copy/RFC body/CI configuration change. The new manual Make
+target has no verify/CI dependency. Mutation failures are semantic, not solely
+source-pin mismatches; exact restoration and final actual SQL replay verified.
+No checkbox/acceptance/status promotion. Production AC6 and local AMD64 execution
+remain red/unexecuted respectively; those failures are explicit in the records.
+
+Decision: locally validated bounded research, NOT a production repair or
+designated approval. Offline/banking/boost/provision, full-state/action/replay,
+activation/migration and Service/Store proofs remain prerequisites for a repair
+contract. Historical research gates must be explicitly reconciled in any accepted
+future change, without erasing the counterexamples or weakening AC6. Claude must
+cover the ENTIRE span after9050fe4d, INCLUDING this following record edge; all
+older independent spans/owner/author holds remain. Full nine-tier/platform1.0
+active; no archival, mint, push, deployment or release call.
