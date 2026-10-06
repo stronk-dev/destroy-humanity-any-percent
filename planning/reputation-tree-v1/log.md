@@ -4580,3 +4580,46 @@ recorded; they are not a second committed-HEAD mutation/full-study claim.
 Full source census remains93/3 with six real failures; H4/H5 drift remains RED.
 Whole db8398a3..97d916eb requires Claude, independently of all prior ranges.
 No mint/archive/push or full1.0 promotion. Goal active; next RP-269 diagnosis.
+
+## 2026-10-06 — RP-269 threshold-source/Exit admission diagnosis predeclared
+
+Resume clean9f5b81a0, no live handles. Accepted R10 H1/H2 and existing
+fail-loud measurement rule authorize instrument admission, not a new balance
+decision. Source f9863f/a6d45b: the payout reader selects first matching kinds
+without sequence/order/duplicate checks; the pinned H2 test calls the generic
+calculator without admitting its report against the declared study population.
+3f9649/9086c9 supplies the existing H3 full-source oracle and ratified scenario.
+Do not require97 rows from every generic calculation or assume new seed values.
+
+Predeclared test-only diagnosis, before changing either implementation:
+
+1. Exercise PaidReputationAtFirstElectiveExit using a clearly synthetic ordered
+   pair: run1 scripted_first lifetime1e6, run2 collapse lifetime1e8, candidate
+   threshold1e6. Compute the hand expectation from published square-root level
+   and policy modifiers. Legal controls additionally use zero lifetimes and
+   the retained complete report (historical, not a fresh producer). Corrupt
+   sequence/order, duplicate scripted/collapse samples, an extra/unknown sample,
+   missing either sample and malformed lifetime values. The first-hour report
+   stops at exactly these two Exits; this is not a general multi-run career API.
+   Record typed refusal vs raw error vs panic, and the value from any admission.
+2. Exercise the exact generic calculation used by the pinned H2 caller on
+   independently deep-cloned retained inputs. Corrupt report/run source
+   coordinates, aggregate source/count, missing/extra/duplicate runs, unknown
+   seed/persona, noncompleted/invariant-failed runs, missing ending/transitions
+   or required clocks, and empty report. No updates/regeneration. The admission
+   failures describe a missing complete-study boundary, NOT a requirement to
+   narrow the generic calculator to a hardcoded97-row population. Legal generic
+   subset and reordered-population controls remain calculable.
+3. Cross-check every study-source corruption against the already executed H3
+   population oracle; disclose any gap it does not catch rather than claiming
+   it validates more than its assertions. Any corrective scope follows measured
+   outcomes in a separate record before code changes. Bind admitted source to
+   the actual pinned caller, not a diagnostic-only unused helper.
+
+Run focused cold root Make tests (-count=1); all handles terminal before any
+edit. Diagnosis alters only a new test file plus records. No source/catalog/
+kernel/formula/balance/schema/migration/CI/owner-copy/report/corpus changes.
+No H2 pass or fresh H1 report inferred from historical arithmetic. RP-263
+lineage, RP-268 artifact authority, fired H3/H4/H5, actual SQL/capacity and
+prior reviews remain. Whole new span after9f5b81a0 needs Claude. No box, mint,
+archive, push, cleanup or release claim; proper1.0 goal stays active.
