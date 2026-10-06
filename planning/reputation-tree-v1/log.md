@@ -5993,3 +5993,33 @@ Prior H3/H4/H5 author/data/SHA/mint, SQL/capacity/Firefox, full nine-tier/platfo
 and all designated-review holds remain. Full new span after5bf6017f needs Claude
 including record edges, independently of every earlier range. No checkbox,
 acceptance, archive, cleanup, publication, deployment, push or goal completion.
+
+## 2026-10-06 — R9 purchasing row self-first-filter
+
+Review by: Codex (implementer; self-first-filter, not designated).
+Recorded by: Codex.
+Reviewed range:5bf6017f..e7b68f84 — all four commits/all11 paths,
+including predeclaration, red baseline, renderer/docs and tracking edges.
+Verdict: ready for designated review, not RFC acceptance or archival approval.
+
+Complete source/fixture/docs diffdf4dbb, test diff016bb1, log0384a8 and
+tracking e3352f inspected; full-range whitespace977d01 passes. Host callback
+already returns4f3251 task; no host/runtime/receipt/refresh bytes changed.
+Void-compatible callbacks and both settling orders pass; local attribution
+clears only after task/shared pending, not by interpreting outcomes or deriving
+server state. Submitted-row cardinality, non-vacuous disabled-control census,
+unrelated refresh and second purchase assertions discriminate through four
+compiling negative probes; restoration exact, previous focus/Escape/axe intact.
+Native58 pass and types/build/unit/boundaries/copy are genuine executions;
+Node native skips, selected performance case, Firefox absence and historical
+kernel guard RED are not relabelled whole AC12/CI/host/SQL/mint proof.
+
+Scope e1c245/c92dc8 remains one UI renderer plus tests/docs/tracking; server
+c3d6616e and balance cd982b7c unchanged, kernel161 outside watched UI path,
+owner copy/artifacts/research reports/CI untouched. No checkbox flips. RP-278
+actual host outcome/resync/row diagnosis is next, not replaced by a child-only
+error stub. Prior owner/author/mint/capacity/all-review/full1.0 holds remain.
+This final self-record edge must join Claude's full span after5bf6017f, separately
+from earlier spans. All handles terminal; no self-archive, cleanup, publication,
+deployment, push or goal completion. Current goal turn is concrete progress;
+complete nine-tier/platform objective stays active.
