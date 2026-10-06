@@ -4,7 +4,22 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest SQL checkpoint:** test-only range after `8ee45af3` proves both live
+**Latest replay checkpoint:** RP-298 test-only/generation supplement after
+`c3ab42d0` now byte-compares ten offered-plan Company and ten Founder arms
+in Go/TS (eight applied/two rejected each). Both offer kinds, payout-funded
+plan6/refusal23/absent/empty/promise floor; complete state/receipt/events/pin,
+independent payout18/20/starters/bonus/order and copied-input refusals.
+Prospective-credit, TS event-cost and rejected-Founder delta faults fire;
+sources restore exactly, faulted generation cannot overwrite the fixture.
+Old corpus byte-unchanged. Cold complete relevant Go packages/vet, strict
+TS/Svelte,8186 client units/339 skips and actual SQL35/119/no skips pass.
+Not default player/browser/natural pacing/fullR8/AC9/CI/1.0. Full new span
+needs Claude, earlier ranges independent. Next accepted scope: census remaining
+R6 plan refusals/next-bundle activation against actual Go/TS coverage, predeclare
+missing populations before implementation. All full-goal/author/environment/
+release holds remain. [Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint:** test-only range after `8ee45af3` proves both live
 gate-produced offer kinds with zero initial Reputation and Exit-funded plan6.
 Unaffordable last entry preserves both heads/offer/game rows; applied Exit
 verifies ordered events/receipt revisions/starters/frozen bonus/summary and
@@ -13,9 +28,9 @@ offer-ID/hash-conflict probes discriminate; exact source restored. Cold whole
 production/save/reputation/gameui plus vet pass; real production Integration
 35 top-level/119 subcases/no skips passes; client units8167 pass/339 skip.
 No new TS offer corpus/browser/natural pacing/full AC9/CI/1.0 claim. Full span
-needs Claude including records; earlier spans independent. Next accepted R8
-scope: predeclare missing shared Go/TS offered-plan parity, preserving existing
-corpus/authority. All author/environment/release holds and full goal remain.
+needs Claude including records; earlier spans independent. Its then-next R8
+offered-plan parity is locally supplemented above, preserving existing corpus/
+authority. All author/environment/release holds and full goal remain.
 [Evidence](reputation-tree-v1/log.md).
 
 **Latest request checkpoint:** RP-297 test-only work after `6dc16a58` adds

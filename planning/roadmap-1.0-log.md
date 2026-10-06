@@ -3490,3 +3490,30 @@ full span needs Claude including final records, earlier independent spans
 pending. No production/migration/copy/epoch/CI/checkbox/cleanup/archive/push/
 publication/deployment; proper full1.0 goal active with all prior holds intact.
 [Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Offered Reputation-plan Go/TS replay parity
+
+RP-298, range afterc3ab42d0: b273e23a predeclares, abc019c4 lands initial
+eight applied paired arms, 1b34e44e predeclares rejected-Founder extension,
+b03ca9d4 adds it. Ten Company/ten Founder cases, eight applied/two rejected
+each. Both offer kinds × payout-funded plan6/refusal23/absent/empty/promise
+floor; complete canonical state/carry/receipt/events/result-pin and independent
+18/20 payout, sorted ownership/order, starters/non-unit bonus/offer identity.
+Both runtimes reject copied cost/promise/order/rejected-delta evidence.
+
+Source probes discriminate prospective credit, exact TS event-cost bytes and
+rejected-Founder delta-zero guard. Faulted generator refuses overwrite; exact
+sources restore. First malformed Make selector ran no tests, initial scaffold/
+typing mistakes retained; serial generator fault stops at first applied case,
+not every case. TS four new/two historical comparisons fail before later
+paired-Founder checks; no invented later oracle failure. Original corpus bytes
+preserved. Complete relevant Go/vet pass cold; strict TS/Svelte0errors0warnings,
+8186 client units pass/339skip, declared SQL35/119/no skips passes10.269s.
+
+Docs/ledger/live queue/plan/board reconcile. Full new span including records
+needs Claude, earlier independent reviews remain. Next census remaining R6
+refusal/next-bundle activation parity before predeclaring missing evidence.
+No browser/default-player/natural pacing/fullR8/AC9/CI/release promotion,
+production/copy/balance/epoch/CI/checkbox/cleanup/archive/push/publication/
+deployment. Full nine-tier/platform1.0 goal active/progress; prior holds intact.
+[Executed evidence](reputation-tree-v1/log.md).

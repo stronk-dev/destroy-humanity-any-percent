@@ -440,10 +440,43 @@ new event oracle. Source is restored exactly before broader cold tests.
 This is locally executed diagnostic SQL evidence pending designated review,
 not natural later-tier progression, browser/AT/minted content, full AC9/RFC/CI
 or release acceptance. The existing shared Go/TS five-Exit corpus does not
-yet carry this offered-plan population; parser and SQL proof do not replace it.
+carry this offered-plan population; the separate supplement below supplies
+replay parity without rewriting that historical corpus.
 
 ```sh
 make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationOfferPlanPayoutIntegration'
+```
+
+### Offered-plan shared replay supplement (R8)
+
+`testdata/replay/reputation-offer-plan-v1.json` is authored only by executed Go
+transitions. Both runtimes compare ten Company and ten paired Founder arms:
+Acquihire/Acquisition × payout-funded plan, last-entry unaffordable refusal,
+absent plan, explicit empty plan, and preserved promised payout. Each stream's
+population is eight applied/two rejected. Initial earned/spent Reputation is0;
+fixed expected payouts18/20 fund the ordered six-point prerequisite plan.
+
+Comparisons bind complete canonical receipts, final/new Company state,
+Founder carry/state, ordered events and Founder result pin. Independent controls
+check byte-sorted ownership versus purchase order, cash1e3/generated5/purchased0,
+bonus1.009/1.01, accepted offer identity before run-end, and unchanged refused
+state/no events. Absent/empty retain different canonical requests but equal
+semantic outputs. Both runtimes refuse copied cost, promise and prerequisite-
+order corruption, plus a rejected Founder arm falsely claiming credited delta.
+
+Compiling source faults demonstrate the independent prospective-payout check,
+exact TS purchase-event byte comparison and rejected-Founder delta refusal.
+Generation refuses to replace expectations when independent controls fail.
+The earlier twenty-purchase/five-Exit corpus remains byte-unchanged. These are
+diagnostic stored-offer replay cases, not a second live producer, SQL retries,
+natural progression, browser/AT, full R8/AC9/RFC/CI or release acceptance.
+Designated review is pending.
+
+```sh
+make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestReputationOfferReplay'
+make test-client
+# Explicit fixture authoring only; ordinary tests never regenerate:
+make reputation-offer-corpus
 ```
 
 ## Portable Founder-history evidence

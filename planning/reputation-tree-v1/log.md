@@ -8570,3 +8570,41 @@ remain accepted. This is input refusal discrimination, not a SQL mutation.
 Re-run prospective-credit/generator and TS cost faults against final tests,
 restore every source exactly before final complete relevant packages/vet/
 type/client baselines. No expectation regenerated on a fault, no sourcecommit.
+
+Final faults against b03ca9d4: generator7c3e1b/0311cc session67328 terminal2
+catches prospective-credit omission at first serial acquihire applied arm;
+later arms unexecuted in this negative, not silently claimed. d8e001 confirms
+supplementSHA d062a758c917aafc45ac9d149722dc7bd4ea6ee906f5f536df071298cc30e50e
+unchanged. Go rejected-delta omission0bb8c4/a2715b session51300 terminal2:
+both new rejected-Founder delta controls fail, four other copied groups pass.
+Exact Go restores38ca44/675b80: Prestige6d07581c74822e57d63c09b0ed139d98b0b1f44aba566f8d654ad2f4213cb691;
+Founder replaybcf482e3fab2bd4b8d154ad6c8eb214ceb465da299b03582829fd44e8827e7f5.
+Final TS cost+1 b5ffcc/069574 session47046 terminal2: four new exact byte
+comparisons fail at ordered Company-log Founder events, plus two older plan
+comparisons;8180 pass/339 skip. These tests stop before later paired Founder
+comparisons in the four failed cases; no later comparison failure inferred.
+Exact TS restorea9e838/db0ccc SHA1790fb96006b721372a3cb5a596225708754e271ab972bb7631851652cb54ee7.
+No production diff, mutant commit or fixture write under source faults.
+
+Final restored complete host package union b4c6aa/23604d/12d293/c29bf2
+session69922 terminal0: production37.045s/save0.374s/reputation0.195s/gameui
+0.296s and focused vet pass. Host integration skips are preparation, not SQL
+proof. Declared SQL0378fb/37b9f7 session88557 terminal0,10.269s: entire
+production Integration selector35 top-level/119 subcases/no skips. Existing
+Compose orphan warning retained; no cleanup or ownership inference. Strict
+TS/Svelte plus full client353112/a5671c session57762 terminal0:0errors0warnings,
+8186 pass/339 skips4.72s. No native browser or fullCI/kernel-history/1.0 claim.
+All handles terminal before docs/tracker edits; full339-line Go test inspected,
+142-line TS test and deterministic fixture producer/consumer controls reviewed.
+
+RP-298 ledger, canonical docs, current state, executable queue, per-RFC plan
+and full1.0 board/log reconcile the actual offered replay proof. Preserve all
+historical corpus bytes and previous live SQL/request/rollback obligations.
+Next safe accepted step: census remaining R6 refusal and next-bundle activation
+populations before predeclaring gaps. Full new span afterc3ab42d0 including
+records requires Claude; original implementation and earlier supplements remain
+independently pending. No production/schema/migration/balance/copy/epoch/mint/
+kernel/CI/checkbox/owner-body/cleanup/archive/publish/deploy/push change.
+Previous goal turn progress; this turn progress, proper full1.0 goal active.
+All prior owner/author/environment/release holds and unanswered cache request
+remain; a running cached SQL service does not erase the capacity problem.

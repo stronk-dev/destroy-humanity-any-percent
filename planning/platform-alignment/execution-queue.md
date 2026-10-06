@@ -3,6 +3,28 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation offered-plan Go/TS parity — 2026-10-06
+
+RP-298, range afterc3ab42d0: new Go-authored supplement, original corpus
+byte-unchanged. Ten Company/ten Founder arms, eight applied/two rejected each,
+both offer kinds × payout-funded plan6/refusal23/absent/empty/promise floor.
+Complete state/carry/receipt/events/result-pin and independent18/20 accounting,
+starter/factor/order/offer controls; copied cost/promise/order/rejected-delta
+refusals. Prospective-credit source omission catches first serial applied arm;
+faulted generator refuses overwrite. TS cost+1 fails four new exact comparisons
+and two old ones; rejected-Founder guard omission fails both new delta controls.
+All sources restore exactly. No remaining handle/fixture mutation.
+
+Cold complete production/save/reputation/gameui/vet, strict TS/Svelte and8186
+units/339 skips pass; actual production SQL35/119/no skips passes10.269s.
+**DESIGNATED REVIEW PENDING:** full span afterc3ab42d0 including final records,
+separate from all earlier SQL/request/rollback/career and implementation spans.
+**NEXT SAFE ACCEPTED WORK:** census remaining R6 plan rejection and next-bundle
+activation populations at real Go/TS boundaries; predeclare missing evidence
+before changes. Not browser/default-player/natural pacing/fullR8/AC9/CI/release.
+All previous holds/full1.0 goal remain. No production/copy/balance/epoch/CI/
+cleanup/status/archive/publish/deploy/push.
+
 ## Reputation live offer + payout-funded plan — 2026-10-06
 
 Test-only range after8ee45af3: both gate-generated offer kinds, initial

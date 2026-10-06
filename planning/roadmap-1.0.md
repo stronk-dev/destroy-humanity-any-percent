@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest SQL checkpoint (2026-10-06):** test-only range after8ee45af3 drives
+**Latest replay checkpoint (2026-10-06):** RP-298 supplement afterc3ab42d0
+proves ten offered-plan Company/ten Founder replay arms in Go/TS, eight
+applied/two rejected each. Both offer kinds, payout-funded plan/refusal/absent/
+empty/promise floor; exact full state/receipt/events/result-pin and independent
+accounting/starter/bonus/order controls. Copied inputs refuse; three source
+fault families discriminate, faulted generation refuses overwrite and sources
+restore exactly. Historical corpus byte-unchanged. Complete relevant Go/vet,
+strict TS/Svelte and8186 client units/339 skips pass; actual SQL35/119/no skips
+passes. Full new span needs Claude; prior ranges separate. Next census remaining
+R6 plan refusal/next-bundle activation parity before predeclaring missing work.
+Diagnostic stored offers, not default-player/browser/natural pacing/fullR8/AC9/
+CI/release proof. Full nine-tier/platform1.0 and all previous holds remain;
+no production/copy/epoch/CI/cleanup/push/status promotion.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint (2026-10-06):** test-only range after8ee45af3 drives
 both real gate-generated offer kinds from initial Reputation0 to payout18/20
 and ordered plan6. Rejection preserves full heads/offer/game rows; applied
 receipt/events/starters/frozen1.009or1.01/summary and both replay consumers
@@ -14,7 +29,7 @@ exact source restored. Complete four relevant Go packages/vet pass cold;
 production SQL Integration35 top-level/119 subcases/no skips; client8167 units
 pass/339 skip. No natural progression/new TS offer corpus/browser/fullAC9/CI/
 release claim. Full new span and earlier independent ranges need Claude.
-Next R8 shared Go/TS offer-plan parity under separate predeclaration, preserving
+Then-next R8 shared offered-plan parity now executes above, preserving the
 historical corpus. Full nine-tier/platform1.0 and all author/environment/owner
 holds remain; no production/copy/epoch/CI/cleanup/push/status promotion.
 [Evidence](reputation-tree-v1/log.md).

@@ -657,3 +657,17 @@ builder/replayer before claiming full paired population: ten Company and ten
 Founder cases, eight applied/two rejected each. Exact rejected receipt/state/
 zero events/same input pin, plus copied rejected delta1 refusal. Earlier eight-
 applied declaration remains history, not silently rewritten to claim execution.
+
+Executed supplement abc019c4/b03ca9d4: ten Company/ten Founder arms, eight
+applied/two rejected each;19 TS parity/copy-negative tests, Go corpus plus six
+copied-negative groups. Independent accounting/starter/factor/order/refusal
+controls and exact bytes pass. Payout-credit omission fails first serial applied
+arm and generator refuses overwrite; TS cost+1 fails four new/two historical
+byte comparisons; rejected-Founder delta guard omission fails both new rejected
+controls. Exact sources restored. Complete four relevant Go packages/vet,
+type/Svelte0errors0warnings,8186 client pass/339skip and actual SQL35/119/no
+skips pass. No production change or checkbox. Full span afterc3ab42d0 requires
+Claude; old corpus untouched and prior spans independent. RP-298 records this
+bounded evidence, not full R8/AC9/browser/default-player/CI/release closure.
+Next audit actual remaining R6 refusal/next-bundle activation parity before
+predeclaring missing populations. Full1.0 goal and previous holds remain.
