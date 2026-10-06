@@ -13,8 +13,8 @@ cases per engine pass; timer/hidden-guard severing fails and restores. Full nati
 browser/performance and root client/type/build/boundary/copy/topology pass. Full historical
 kernel guard still fails at `50a3a514` (RP-131); no whole-CI claim. Kernel 0.3.153 unchanged.
 Controlled timers/emulated visibility/injected DTO/receipt props do not establish actual
-idle/OS hiding, real server/default-host receipts, AC13 or full Garden. New range starts
-`dd4d96f3^` (`adb55210`), endpoint pinned after commit, Claude required independently of
+idle/OS hiding, real server/default-host receipts, AC13 or full Garden. Exact new range
+`dd4d96f3^..537b1f50` (`adb55210..537b1f50`), four commits / ten paths, Claude required independently of
 all earlier ranges. RP-229/RP-222 author and RP-131/RP-218 CI/worker routes remain open.
 Next accepted work: default-host player/receipt integration, not public mint or lifecycle
 promotion. Proper nine-tier 1.0 and its complete platform floor remain active.

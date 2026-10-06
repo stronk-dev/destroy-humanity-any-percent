@@ -14,8 +14,8 @@ root client/type/build/boundary/copy/topology pass. Initial JSON-completion inst
 are retained. Historical kernel guard remains red at `50a3a514` (RP-131), not waived.
 Kernel 0.3.153 unchanged; no schema/math/copy/CI/mint change.
 
-**READY FOR DESIGNATED REVIEW, not approved:** new range begins `dd4d96f3^`
-(`adb55210`), endpoint pinned after implementing commit. Codex first-filter only; Claude
+**READY FOR DESIGNATED REVIEW, not approved:** exact range `dd4d96f3^..537b1f50`
+(`adb55210..537b1f50`), four commits / ten paths. Codex first-filter only; Claude
 required. Every earlier range remains independent. Virtual timers, emulated visibility,
 injected JSON and receipt props do not prove actual idle/OS hiding, real HTTP/Postgres,
 default host or full AC13/G7/Garden. No checklist/lifecycle/archival promotion.

@@ -2179,3 +2179,10 @@ integration or actual idle/OS-hide proof; no full AC13/G7/Garden or public/archi
 promotion. All processes terminal; RP-229/RP-222 author and RP-131/RP-218 routes stay open.
 Next accepted work: default-host/receipt-to-read integration; full nine-tier game through
 Transcendence and its complete platform floor remain the objective.
+
+Implementation committed `537b1f50`; exact designated-review range
+`dd4d96f3^..537b1f50` (`adb55210..537b1f50`), four commits / ten paths, pending Claude.
+Metadata pin only, no verdict or earlier range consumed; all processes terminal, product
+probes restored, clean tree. Refined final native browser population passes unchanged
+22,449 / six deliberate skips plus performance; root client/type/build passes. Historical
+RP-131 guard still red. Full nine-tier 1.0 active, no release/archival/push promotion.

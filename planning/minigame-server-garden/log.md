@@ -2283,3 +2283,9 @@ all seven new cases in every engine; separate performance 380 ms / 1.80 s with u
 selector). Boundary/copy/topology already passed on identical product bytes in 98511;
 historical guard's RP-131 rejection in 21952 remains red. All processes terminal and
 production SHA exact. No retry-to-green, oracle/bound/skip change or unrecorded probe.
+
+Committed implementation `537b1f50`. Exact designated-review range
+`dd4d96f3^..537b1f50` (`adb55210..537b1f50`), four commits / ten paths, pending Claude.
+This metadata pin is not a verdict; all earlier pending review/author/owner/CI gates
+remain independent. Clean tree after implementation, all processes terminal, no archive
+or external publication. Next accepted work remains default-host/receipt integration.
