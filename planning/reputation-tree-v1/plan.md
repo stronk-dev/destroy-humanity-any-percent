@@ -709,3 +709,11 @@ terminal result, then full production Integration selector, relevant complete
 Go/vet, existing corpus/client/type baselines. Test/docs/records only, no runtime,
 schema/migration/balance/copy/kernel/CI/checkbox/archive/push authority. Full
 new span including records needs Claude, earlier ranges remain separate.
+
+Additive controls predeclared in the append-only log: three next-inactive
+profiles subsequently perform actual plan-free WindDown on the same heads,
+verify both two-entry histories and full-table exact retry. No reseeding or
+new matrix profiles; completed fallback count must be3. Compiling omission of
+the empty-plan early return must fail these controls. Shared post-application
+spent reset is the separately predeclared accounting refinement; do not cite
+the earlier live-parity failure as the new persisted oracle's discrimination.

@@ -53,7 +53,7 @@ func TestReputationExitBoundaryIntegration(t *testing.T) {
 		{"requires-prefix", "not_eligible", "reputation_plan.requires", []string{good[0], good[2]}},
 		{"unaffordable-prefix", "unaffordable", "reputation_plan.reputation", append(slices.Clone(good), "reputation.unlock.p25")},
 	}
-	appliedCases, refusedCases, executed := 0, 0, 0
+	appliedCases, refusedCases, executed, fallbackCases := 0, 0, 0, 0
 	for _, command := range []string{"wind_down", "acquihire", "acquisition"} {
 		for _, profile := range profiles {
 			t.Run(command+"-"+profile.name, func(t *testing.T) {
@@ -374,6 +374,46 @@ func TestReputationExitBoundaryIntegration(t *testing.T) {
 						t.Fatalf("retry rewrote %s", table)
 					}
 				}
+				if profile.name == "next-inactive" {
+					fallbackRequest := []byte(`{"intent_id":"01986666-e104-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`)
+					fallback, err := service.Handle(ctx, player.StreamID, ModeOnline, now.Add(time.Second), fallbackRequest)
+					if err != nil {
+						t.Fatal(err)
+					}
+					var receipt struct {
+						Outcome string `json:"outcome"`
+					}
+					if err := json.Unmarshal(fallback.Receipt, &receipt); err != nil || receipt.Outcome != "applied" || fallback.Replay {
+						t.Fatalf("no-plan WindDown door closed: %s/%v", fallback.Receipt, err)
+					}
+					ownerHead, companyHead := load(owner.StreamID), load(player.StreamID)
+					if ownerHead.Revision.Number != 2 || ownerHead.Revision.Version != 21 || ownerHead.Revision.ConstantsHash != current.ConstantsHash || ownerHead.State.ReputationLevel != 6 || ownerHead.State.ReputationSpent != 0 || len(ownerHead.State.ReputationNodesOwned) != 0 || companyHead.Revision.Number != 3 || companyHead.State.RunSeq != 3 || companyHead.Revision.ConstantsHash != current.ConstantsHash || companyHead.State.OfferState != nil {
+						t.Fatal("absent-tree fallback changed progression/pin contract")
+					}
+					var purchases, reputationRows int
+					if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM events WHERE kind='reputation_node_purchased.v1'),(SELECT count(*) FROM run_frozen_contributions WHERE company_stream_id=$1 AND run_seq=3 AND source_id='reputation.founder_bonus')`, player.StreamID).Scan(&purchases, &reputationRows); err != nil || purchases != 0 || reputationRows != 0 {
+						t.Fatalf("fallback activated absent Reputation tree: purchases=%d rows=%d err=%v", purchases, reputationRows, err)
+					}
+					fallbackHistory, err := store.LoadFounderHistory(ctx, owner.StreamID)
+					if err != nil || len(fallbackHistory.Entries) != 2 || VerifyFounderHistory(fallbackHistory, set) != ReplayVerified {
+						t.Fatal("fallback Founder history does not verify")
+					}
+					genesis, oldVersion, entries := reputationCareerReplay(t, db, player.StreamID, owner.StreamID, 2, &next)
+					if len(entries) != 2 || VerifyReplayRun(genesis, oldVersion, current, entries, current.ConstantsHash, false) != ReplayVerified {
+						t.Fatal("refused then no-plan completed run does not verify")
+					}
+					committedFallback := reputationPlanDBSnapshot(t, ctx, db)
+					fallbackRetry, err := service.Handle(ctx, player.StreamID, ModeOnline, now.Add(2*time.Second), fallbackRequest)
+					if err != nil || !fallbackRetry.Replay || !bytes.Equal(fallbackRetry.Receipt, fallback.Receipt) {
+						t.Fatal("fallback exact retry differs")
+					}
+					for table, rows := range reputationPlanDBSnapshot(t, ctx, db) {
+						if rows != committedFallback[table] {
+							t.Fatalf("fallback retry rewrote %s", table)
+						}
+					}
+					fallbackCases++
+				}
 				if activation {
 					appliedCases++
 				} else {
@@ -382,7 +422,7 @@ func TestReputationExitBoundaryIntegration(t *testing.T) {
 			})
 		}
 	}
-	if executed != 24 || appliedCases != 9 || refusedCases != 15 {
-		t.Errorf("full boundary population executed=%d applied=%d refused=%d want24/9/15", executed, appliedCases, refusedCases)
+	if executed != 24 || appliedCases != 9 || refusedCases != 15 || fallbackCases != 3 {
+		t.Errorf("full boundary population executed=%d applied=%d refused=%d fallback=%d want24/9/15/3", executed, appliedCases, refusedCases, fallbackCases)
 	}
 }

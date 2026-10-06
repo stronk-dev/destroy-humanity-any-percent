@@ -8706,3 +8706,48 @@ refusal replay/full canonical head and copied-tier negatives pass. All24 exact
 retries preserve twelve full tables. Diagnostic initial earned6/stored offers,
 not naturally earned progression/default browser/minted-release proof.
 Commit test before the predeclared unchanged-test production source probes.
+
+Source probes against43999875, full24-case matrix each, all compiling:
+current-bundle instead of next e0626d/9603ce session12809 terminal2 rejects
+allthree activation-plan cases with tree_inactive; six other activation and
+fifteen refusals pass, population guard9→6. Restore selector, isolate subsequent
+skip-application diff7b0016 (no residual first fault). 5d6dc7/0a5726 session31171
+terminal2 fails allthree planned activations at EXISTING live Founder Exit
+parity guard before new saved-accounting oracle. Earlier defense-in-depth, not
+new-oracle discrimination. Prestige exact restore162c44/2811b6.
+Wrapped refusal-detail suffix713d2a/6b736f session78987 terminal2 fails all12
+unknown/owned/requires/unaffordable exact details; nine positives/three inactive
+refusals pass, population guard15→3. Restore exact originals before refinement.
+
+Predeclare same post-plan accounting family refinement: keep application/events/
+purchase audit valid but reset Spent to0 after shared applyReputationPlan finishes.
+Both live and Founder replay consume that shared helper, so the existing live-
+parity guard may agree with the wrong state. New independent persisted spent6
+oracle must fail the three activation-plan cases; other21 controls should pass.
+This is test-evidence faulting only, not a product accounting change. No tests,
+data, bounds or prior bad-result record modified. Restore exact source before
+broader cold baseline and closeout; full span still needs Claude.
+
+Refined shared-helper spent reset275b89/55bdbc session83421 terminal2 reaches
+saved state and fails allthree independent spent6 accounting oracles; other21
+controls pass, final completed counter6/15. Earlier live parity agrees with
+the shared corrupted state, so this is the new oracle's discrimination, unlike
+the prior skipped-application probe. Restore exact source before next work.
+
+R6's always-open door also deserves the actual follow-up, not inference from
+a plan rejection. Predeclare three added sequential controls in existing
+next-inactive profiles: after full refused/retry proof, actual WindDown without
+plan must complete the same run into run3 under the absent-tree pin, retain
+Founder v21/earned6/no purchases/no Reputation frozen row, and verify both
+two-entry histories. Exact fallback retry must preserve all twelve table rows.
+No reseeded later heads. Add explicit completed fallback count3 to whole matrix.
+Demonstrate compiling omission of empty-plan early return: these three fallback
+requests must wrongly reject while other controls stay defended. No new plan
+policy/epochs/owner decision or meaning-change to the initial24-case population.
+
+Fallback-positive146d0d/5fd999 session5762 terminal0: all24 original profiles
+pass,9 initial applications/15 initial refusals and3 sequential plan-free
+fallbacks,2.826s. Each fallback completes the previously refused run without
+reseeding, keeps the absent-tree version/pin/no purchases, verifies both
+two-entry histories and preserves12tables on exact retry. Commit positive
+test before the predeclared empty-plan omission; no production fault active.
