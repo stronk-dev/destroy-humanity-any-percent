@@ -2826,3 +2826,23 @@ minted player career or release promotion. RP-253 persistence, R8 history/run
 verification, remaining pinned/harness readers, capacity/RP-256 and full
 nine-tier/platform scope remain. [Executed evidence](reputation-tree-v1/log.md).
 Goal active; no checkbox, archival, mint, push, deployment or cleanup.
+
+## 2026-10-06 — Portable Reputation history consumer
+
+RP-259 under e3378e96 now executes the public Founder-history verifier against
+24 immutable-source profiles (20 individual commands, three paired Exits and
+the complete nine-purchase chain), with 144 corrupt-history refusals and three
+population controls. A test-only event-kind conversion error precedes the valid
+run; it is disclosed as setup, not a product defect. Six compiling runtime
+comparison omissions discriminate; either sequence defense alone survives and
+two activation cases retain downstream defense on source omission. Population
+validator omission fires all three controls. Exact files restore; cold core/vet
+pass. [Exact evidence and surviving probes](reputation-tree-v1/log.md).
+
+Runtime/kernel160/canonical corpus/schema/CI policy unchanged. No fresh SQL,
+TS/browser/whole-CI proof. Docker still 100%/39784KiB free, no cleanup or new
+workload. Full new span after b6c7ebca needs Claude. SQL reader/persistence,
+two-Exit career and Company-run verifier remain separate mandatory obligations;
+next safe accepted work is the Company-run and remaining harness consumers.
+The full nine-tier game through Transcendence and platform release floor remain
+the goal. No checkbox, archival, mint, push, deployment or release promotion.

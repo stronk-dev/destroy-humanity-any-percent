@@ -4,6 +4,14 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+Latest portable proof: RP-259 under e3378e96 verifies 24 source-derived Founder
+histories and rejects 144 corruptions plus three population controls. Compiling
+comparison omissions discriminate; independent sequence defenses survive alone.
+Cold core/vet pass; runtime/kernel/corpus unchanged. New span after b6c7ebca
+needs Claude. No SQL reader, two-Exit career, Company-run verifier or full R8
+claim; Docker remains 100%/39784KiB free. Next: Company-run and remaining harness
+consumers. [Exact evidence](reputation-tree-v1/log.md).
+
 Latest reader correction: RP-257/RP-258 under336503b3 refuses inconsistent
 pinned ownership/mirrors in server snapshots and noncanonical/below-one client
 factors. Red-first populations and three compiling guard omissions discriminate;

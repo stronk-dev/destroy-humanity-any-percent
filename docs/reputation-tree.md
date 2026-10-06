@@ -372,3 +372,20 @@ arm.
 
 When the live Exit is checked against its replay (parity), the expected Founder state now copies
 the v22 tree fields. Without that, a live Exit with a plan, or one activating v22, diverged.
+
+## Portable Founder-history evidence
+
+`server/production/reputation_history_test.go` drives the public
+`VerifyFounderHistory` consumer with the unchanged purchase corpus: twenty
+individual commands, three paired plan/activation Exits and the complete
+nine-purchase chain. Single-command wrappers start at their original revision
+and rebase only the local log sequence; the chain preserves its original
+coordinates and requires adjacent full states and pins to match. Expected
+heads, receipts and events come from the source, not from the replay under test.
+
+The population includes 144 corrupt-history refusals: head mirror, head pin,
+receipt outcome, extra event, sequence and linked-source presence. Independent
+comparison omissions discriminate; either sequence defense alone still rejects
+bad ordering. This is portable replay evidence, not execution of SQL
+`LoadFounderHistory`, a two-Exit purchase career, the Company-run verifier or
+the real-Postgres composed acceptance gate (RP-259).

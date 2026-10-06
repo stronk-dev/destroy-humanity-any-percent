@@ -5,6 +5,13 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest portable proof (2026-10-06):** RP-259 verifies 24 source-derived Founder
+histories and refuses 144 corruptions plus three population controls. Compiling
+omissions discriminate, with surviving redundant defenses disclosed. Cold
+core/vet pass; runtime/kernel/corpus unchanged. New span after b6c7ebca needs
+Claude. SQL/two-Exit career, Company-run verifier and full R8 remain; no 1.0
+promotion. Next: Company-run and remaining harness consumers. [Evidence](reputation-tree-v1/log.md).
+
 **Latest reader correction (2026-10-06):** RP-257/RP-258 now refuse inconsistent
 pinned ownership/mirrors and invalid client bonus-factor strings. Red-first tests
 and three compiling omissions discriminate. Cold core/vet and client8106/134/

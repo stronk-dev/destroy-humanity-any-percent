@@ -2952,3 +2952,60 @@ verification; no fresh SQL, browser, full CI, LoadFounderHistory execution,
 two-Exit career, Company-run verification, AC3/AC15 or whole R8/RFC/1.0 promotion.
 Original B4 CHANGES REQUIRED and capacity/RP-131/RP-256 remain. Full new span
 after b6c7ebca needs Claude; no box, archive, mint, push, cleanup or status change.
+
+## 2026-10-06 — R8 portable history consumer executed
+
+Authority e3378e96, RP-259 test-only. The first attempt (1df092) does not compile:
+the new test assigned a fixture string to save.EventKind. Corrected only that
+conversion; no tests ran and no product defect follows from the setup error.
+565f4c..1fff7f then passes all 171 subtests: 24 honest histories, 144 corrupt
+histories and three source/population controls. Verbose tool display truncates
+some lines, not test execution; exit0 and the closed source-derived loop/census
+cover the declared population. No SKIP path exists in the new tests.
+
+Expected full states, receipts, ordered events and pins come from unchanged
+source bytes. Single-case wrappers rebase ONLY log sequence to1, preserving
+original revision/command semantics; the complete nine-purchase history checks
+adjacent full-state/revision/pin equality and uses its original coordinates.
+All three paired Exits load their original current/next bundles, including both
+v21-to-v22 activations. No live output is used as the expected replay head.
+
+Independent compiling comparison omissions, assertions unchanged:
+
+| Probe | Executed handles | Result |
+|---|---|---|
+| Head-state comparison | f78ee7..6c8b4b | 24 forged mirrors become verified; all 24 honest histories stay green. |
+| Head-pin comparison | 636c47..32890f | 24 forged pins become verified; honest histories green. |
+| Receipt comparison | 1331d7..ac3ba5 | 24 altered outcomes become verified; honest histories green. |
+| Event comparison | b51c45..01d71c | 24 extra-event histories become verified; honest histories green. |
+| Source-presence comparison | cb1bd3..f8af67 | 22 bad source arms become verified; both activation cases still refuse through missing next-bundle resolution. Honest histories green. |
+| Entry-order check alone | e0b3ad..776613 | Survives: wire-to-entry log sequence still refuses all 24 corrupt sequences. All 171 subtests green. |
+| Wire-to-entry sequence check alone | dd455e..7e48a7 | Survives: expected entry order still refuses all 24 corrupt sequences. All 171 subtests green. |
+| Both sequence checks | 6151c0..d159b7 | 24 corrupt sequences become verified; honest histories green. |
+| Population validator | fa75c0..ca2c4e | All three source-hash/missing-case/missing-chain controls fail; honest histories and other corruption controls remain green. |
+
+Each probe finishes before restoration or the next edit. Temporary source
+plumbing for the omitted source-presence block retains `_ = linked` so it
+compiles. Exact runtime/test SHAs restore after every probe; final818102:
+runtime2ffb54e186655740776ed891c69718d3d3c9b73fb8e41302482548bdde679fbc;
+testb0b564a498abe88a77abb6ce72582ae6c9004c8218aa65a2c07ed80d9e8d7c33;
+original corpusf9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782.
+b468b3/78d355 confirm no runtime diff, only the new test before records. No
+source omission or expectation regeneration is retained.
+
+Final d12d87..a64390 `make verify-server-core CORE_TEST_COUNT=1` exits0:
+vet/core cold, production35.097s/save0.276s/transport13.290s; Pitch0.305s cold
+in core, separate alias cached. Formulas/API regenerate with no diff. Every
+handle terminal before these records. No TS/browser/full CI/SQL rerun; prior
+RP-131/RP-256 failures remain, not greened by a Go test-only wave. Go `_test.go`
+files are explicitly exempt from kernel-affecting semantics (6190a0); version
+0.3.160 unchanged. Schema/migrations/balance/owner copy/CI policy also unchanged.
+
+Docker read-only bab33b/a79aa4: same two healthy Postgres containers, same
+100%/39784KiB free. No new DB workload, restart or cleanup. RP-259 supplies
+portable public consumer proof, NOT SQL LoadFounderHistory, a two-Exit purchase
+career, the Company-run verifier, stored transaction provenance or AC15/full
+R8/B4 acceptance. Original CHANGES REQUIRED and cross-party obligations remain.
+Full new span after b6c7ebca needs Claude, including predeclaration and records.
+Next safe accepted work: Company-run verifier and remaining harness consumers;
+no checkbox, archive, mint, push, deployment, cleanup or 1.0 promotion.

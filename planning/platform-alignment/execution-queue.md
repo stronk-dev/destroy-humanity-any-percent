@@ -1,5 +1,21 @@
 # Executable queue
 
+## Portable Reputation history consumer proved — 2026-10-06
+
+RP-259 under e3378e96: all 24 source-derived histories verify and all 144
+corruptions plus three population controls reject. Six compiling runtime
+omissions admit the relevant bad evidence; two individual sequence omissions
+remain defended, and the population-validator omission fires three controls.
+Exact source restoration and cold core/vet pass. Test-only: kernel160, original
+corpus, runtime, schema and CI policy unchanged.
+
+**READY FOR CLAUDE:** complete new span after b6c7ebca, including predeclaration.
+**NEXT SAFE ACCEPTED WORK:** Company-run verifier and remaining harness consumers.
+**HELD, not replaced:** actual SQL reader/persistence/two-Exit career; Docker
+still 100%/39784KiB free. RP-131/RP-256 and all release obligations remain. No
+whole R8/AC15, browser/CI/player, box, archive, mint, push, deployment or cleanup
+claim. [Executed evidence and surviving defenses](../reputation-tree-v1/log.md).
+
 ## Reputation snapshot readers corrected — 2026-10-06
 
 RP-257/RP-258 under336503b3: baseline admits14corrupt Go projections and48bad
