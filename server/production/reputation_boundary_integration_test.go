@@ -18,6 +18,7 @@ import (
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
 	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
@@ -53,7 +54,7 @@ func TestReputationExitBoundaryIntegration(t *testing.T) {
 		{"requires-prefix", "not_eligible", "reputation_plan.requires", []string{good[0], good[2]}},
 		{"unaffordable-prefix", "unaffordable", "reputation_plan.reputation", append(slices.Clone(good), "reputation.unlock.p25")},
 	}
-	appliedCases, refusedCases, executed, fallbackCases := 0, 0, 0, 0
+	appliedCases, refusedCases, executed, fallbackCases, careerCases := 0, 0, 0, 0, 0
 	for _, command := range []string{"wind_down", "acquihire", "acquisition"} {
 		for _, profile := range profiles {
 			t.Run(command+"-"+profile.name, func(t *testing.T) {
@@ -152,7 +153,12 @@ func TestReputationExitBoundaryIntegration(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
+				projector, err := routeprojection.New(db, resolver)
+				if err != nil {
+					t.Fatal(err)
+				}
 				service, err := NewService(store, resolver, FrozenContributionProvider{DB: db}, nil, nil, WithProgressionRuntime(resolver),
+					WithRouteCatalogs(resolver), WithRouteProjector(projector),
 					WithCurrentConstantsHash(next.ConstantsHash), WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}),
 					WithMinigameActivity(repository), WithCompactPolicies(commons.CatalogSet{current.ConstantsHash: current.Commons.(commonsbinding.ReplayPolicy).Catalog, next.ConstantsHash: next.Commons.(commonsbinding.ReplayPolicy).Catalog}), WithCommonsWeightResolver(integrationWeight(1000000)))
 				if err != nil {
@@ -414,6 +420,10 @@ func TestReputationExitBoundaryIntegration(t *testing.T) {
 					}
 					fallbackCases++
 				}
+				if profile.name == "activate-plan" {
+					testReputationActivatedCareer(t, ctx, db, store, service, player.StreamID, owner.StreamID, current, next, now, command)
+					careerCases++
+				}
 				if activation {
 					appliedCases++
 				} else {
@@ -422,7 +432,7 @@ func TestReputationExitBoundaryIntegration(t *testing.T) {
 			})
 		}
 	}
-	if executed != 24 || appliedCases != 9 || refusedCases != 15 || fallbackCases != 3 {
-		t.Errorf("full boundary population executed=%d applied=%d refused=%d fallback=%d want24/9/15/3", executed, appliedCases, refusedCases, fallbackCases)
+	if executed != 24 || appliedCases != 9 || refusedCases != 15 || fallbackCases != 3 || careerCases != 3 {
+		t.Errorf("full boundary population executed=%d applied=%d refused=%d fallback=%d career=%d want24/9/15/3/3", executed, appliedCases, refusedCases, fallbackCases, careerCases)
 	}
 }

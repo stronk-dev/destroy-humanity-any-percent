@@ -8985,3 +8985,29 @@ No new corpus/skills/delegation/owner rules/copy/epoch/CI/acceptance promotion.
 Diagnostic initial earned6/stored offers/prior historical Exit, not natural/
 browser/minted release/fullAC15/CI/1.0 proof. Full new span after16da5904 needs
 Claude including final records, previous independent ranges/holds remain live.
+
+Before implementation add bounded ongoing run4 control: actual manual command
+at1000s after the second Exit must credit5×1.003×1000+1000+1 and replay to its
+full saved head. It stays an unfinished run, not a third completed verifier.
+All initial/old proof and two completed runs remain required, no new mechanics.
+
+### First actual baseline and test-clock correction
+
+dacb6f/session37606 terminal2,1.729s: all24 matrix arms executed; three new
+career continuations fail at the actual Garage requirement, other21 pass.
+The new test's7000s cash36106 is below the unchanged balance/routes/phase0.json
+cash1e5 requirement (95017e). This is my fixture-clock mistake, not a product
+defect or authority to soften the gate. Before rerun replace only that clock
+with20000s, independent expectedcash101301; gate20001s, Exit20002s/retry20003s,
+run4 observation21002s retains1000s elapsed. No state seeding/balance change,
+prior predeclared7000s attempt preserved above, thresholds/oracles unchanged.
+
+29503b/session6191,054f0c terminal0,1.787s: all24original boundary arms pass
+with9applied/15refused/3fallback, all three new career continuations complete.
+Actual old21→tree22 first Exit, owned purchase rejection, ordinary production/
+Garage, second no-plan WindDown, repeated non-cumulative starters/frozen1.003,
+immutable old rows, both complete Company verifiers, four-entry full Founder
+history, copied spent/source negatives,12-table exact retries and ongoing run4
+full transition replay are executed against declared real Postgres. Diagnostic
+initial heads remain bounded; run4 explicitly not a completed verifier. No
+native/default browser/natural-pacing/fullAC15/CI/release/1.0 inference.

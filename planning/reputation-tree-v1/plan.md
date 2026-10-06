@@ -778,13 +778,16 @@ diagnostic; no naturally earned/window/default-browser/completeAC15 claim.
 
 After old21→tree22 plan6 Exit: actual purchase of owned p05 must refuse,
 preserving both heads; exact retry preserves12tables. Actual manual accrual
-at7000s requires independent5×1.003×7000+1000+1 cash. Cross Garage normally,
+at20000s requires independent5×1.003×20000+1000+1 cash. Cross Garage normally,
 then WindDown WITHOUT plan into run4. Founder earned6/spent6/owned/unlock50000
 remain; run4 repeats cash1e3/generated5/purchased0/frozen1.003/start summary,
 never cumulative10. Both completed Company runs verify, old/new pins/genesis
 stay correct, full four-entry Founder history crosses the old pin and records
 both applied Exit sources. Third initial historical Exit remains diagnostic.
 Second Exit exact retry compares complete12tables, no post-genesis reseeding.
+Then measure actual run4 production at1000s with the repeated frozen starter
+bonus; compare its recorded ordinary transition directly to the complete head,
+never claim the ongoing run is completed verification evidence.
 
 Copied final head spent5 and last Exit source RunSeq+1 must independently
 return state_divergence. Predeclare compiling source faults: carry previous
