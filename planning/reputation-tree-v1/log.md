@@ -5542,3 +5542,33 @@ criteria/policy routes, RP-268/271, RP-274 and SQL/browser/deployment/capacity/
 review union remain. Full new span after5e083766 needs Claude, independently
 of every prior span. No kernel/live math/balance/CI/corpus/owner-copy change,
 new dated report, box, acceptance, mint, archive, cleanup, publication or push.
+
+## 2026-10-06 — Raw report evidence preparation self-first-filter
+
+Review by: Codex (implementer; self-first-filter, not designated).
+Recorded by: Codex.
+Reviewed range: `5e083766..e6067ae1` — all three commits and all11 paths,
+including predeclaration/baseline, shared builders and full evidence records.
+Verdict: ready for designated review; preparation only, no acceptance or archive.
+
+Inspected the complete source/test/tracking diff. Raw H5 fields preserve the
+admitted source/clock/purchases and copy mutable values. Ordinary checks now
+share H4 gate/statistics and H5 composition with retained-data recomposition;
+old comparisons and update flags remain, unchanged/off in executed runs.
+Finite-only estimation, strict ties and classifier are not loosened. New group
+admission validates complete baseline/mask structure and matched sources;
+internal consistency explicitly does not authenticate the cohort or producer.
+Nineteen corrupt/invalid controls and twelve compiling omissions are recorded
+with honest synthetic limits and exact restoration; the subsequent H5 criterion
+guard/log-line deltas are separately disclosed. Full current caller execution
+retains/recomposes970 arms and reproduces the prior census/medians, still RED.
+No private observation field is claimed as a public schema or live epoch.
+
+Committed-HEAD focused check ate6067ae1, root `make test-go`, harness,
+raw/composition/static-artifact selectors, `-count=1`:160322/f447e9,
+session82333,terminal exit0,0.279s. Source identical to full d96bfaf1 run;
+later changes are records/docs, not a new full measurement. Range whitespace
+check6267ba and status eb8c35 clean. No live handle remains before this edit.
+This record edge also belongs in Claude's full designated span; every earlier
+span remains independent. Goal active; no box, author ruling, new dated report,
+mint, archive, cleanup, publication, deployment, message to Claude or push.
