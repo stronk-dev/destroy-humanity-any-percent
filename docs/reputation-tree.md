@@ -82,8 +82,9 @@ minted-career, browser or whole-RFC acceptance; see the implementation log.
 
 `save.LatestFounderVersion` is 25, including later Founder features. Reputation
 activates at Founder v22, which adds the required fields `reputation_spent` and
-`reputation_nodes_owned` (byte-sorted and unique). The pinned bundle owns v22 when it carries
-`reputation_tree`, so its `versionFloors` founder floor is 22.
+`reputation_nodes_owned` (byte-sorted and unique). A pinned bundle with
+`reputation_tree` requires at least v22; later active feature artifacts can
+raise its `versionFloors` Founder floor further.
 
 **Codec (`server/save`):**
 - v22 rejects `spent > level` and any unsorted or duplicate owned set, on encode and on load.

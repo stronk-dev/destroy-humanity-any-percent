@@ -1105,3 +1105,18 @@ No checkbox flip, archival or push. Cap refusal, idempotent existing ownership,
 next-tree-removal cases, frozen persisted rows, real career/default player,
 mint/H4/author measurements, full prior range review and platform/CI/capacity
 obligations remain. The complete nine-tier 1.0 goal remains active, not narrowed.
+
+### Exact R4/AC8 supplemental span pin, 2026-10-06
+
+Substantive Codex range `e365e0da..97c558b2`: four commits / ten paths,
+dd887626 and 7ff39c12 scope declarations, 8e89164c legacy/doc refinement, and
+97c558b2 tests/shared expectations/docs/evidence/boards. This final pin edge
+also belongs to the review, including the canonical paragraph's clarification
+that a tree means at least v22, not always exactly v22 with later features.
+Postcommit 19027 reruns the complete reputation/kernel packages cold from
+97c558b2, both pass (0.244/0.166 s), unlike the earlier filtered no-kernel run.
+All handles terminal, no source mutation or dirty fixture remains. Closing relay
+names the exact literal tip including this edge; Claude pending, no self-approval,
+checkbox/archive/push. Next accepted local work: remaining R1/R7 codec/mirror
+and R4 cap/idempotency/next-tree evidence, retaining every CI/capacity/owner and
+full-player/1.0 obligation.
