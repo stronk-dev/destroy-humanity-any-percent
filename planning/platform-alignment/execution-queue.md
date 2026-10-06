@@ -1,5 +1,22 @@
 # Executable queue
 
+## Owned-effect epoch mirror corrected — 2026-10-06
+
+RP-251 under4e11f890 fires eight legal-retune negatives across Go live/Founder
+and TS Founder/Company, while four unchanged controls pass. The existing R1/OD-7
+mirror now follows the next tree without repricing historical spend or changing
+ownership. All twelve cases pass; four independent omissions fail exactly two
+retunes each, then restore exact SHA. Cold server-core/vet and client/type/
+build/boundaries/topology pass7422/134; kernel0.3.157, prior corpora unchanged.
+Full verify-client was rerun: RED at historical RP-131/50a3a514, not waived.
+
+**READY FOR CLAUDE:** new correction span after8ab5a2c4 through its checkpoint,
+independent of RP-250 and every prior range. **NEXT ACCEPTED WORK:** execute
+paired-epoch append-only-ID counterfacts under OD-7; prior positive retirement
+fixtures demonstrate fallback, not permission to remove defined nodes. Then
+remaining pinned reader/writer and complete original seventeen-path B4 review.
+No full R1/OD-7/B4/AC11/DB/player/CI/1.0 or archival/push/cleanup promotion.
+
 ## Pinned Reputation command admission repaired — 2026-10-06
 
 RP-250 under9a5dd7c2 reproduces six input admissions and one escaping bad output.

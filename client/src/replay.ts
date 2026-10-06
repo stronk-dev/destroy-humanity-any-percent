@@ -1861,6 +1861,11 @@ function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogB
   }
   if (nextFloor >= 21) extensions.minigame_session_seq = 0;
   if (nextFloor >= 22 && currentFloor < 22) { extensions.reputation_spent = 0; extensions.reputation_unlock_ppm = 0; extensions.reputation_nodes_owned = []; }
+  if (next.reputationTree) {
+    // R1/OD-7: historical spend and owned IDs carry; effects use the new pin.
+    if (!extensions.reputation_nodes_owned) throw new RangeError("missing Reputation ownership at epoch advance");
+    extensions.reputation_unlock_ppm = reputationUnlockPpmFor(next.reputationTree, extensions.reputation_nodes_owned);
+  }
   if (nextFloor >= 23 && currentFloor < 23) {
     // PA6.2: legal only with no pet; identity is never synthesized.
     if (Object.keys(extensions.pets).length !== 0 || extensions.pet_identities !== undefined) throw new RangeError("pet state cannot activate pet identities");
@@ -2122,6 +2127,10 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
 		state.serverGarden = newGardenState(resultCatalogs.garden);
 	}
 	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25;
+  if (resultCatalogs.reputationTree) {
+    // R1/OD-7: rebind the mirror, not purchase-time costs, on the Exit pin.
+    state.reputationUnlockPpm = reputationUnlockPpmFor(resultCatalogs.reputationTree, state.reputationNodesOwned);
+  }
   let planEvents: ReplayEvent[] = [];
   if (planned) {
     const plan = request.reputation_plan as string[];

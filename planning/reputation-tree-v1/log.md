@@ -1973,3 +1973,93 @@ corpora byte-unchanged. No full CI, DB, R1/OD-7/B4/AC11/RFC/release claim or
 checkbox/archive/push/cleanup authority. New complete span after8ab5a2c4 needs
 Claude independently. Earlier path/glob scan misses were read-only setup errors,
 not experimental results; required files are now located via rg.
+
+Baseline1ffcf0..b4fb21 compiles and fails all four Go retune arms; both unchanged
+arms pass. f8b706..307e19 typecheck is clean, then the two TS Founder retunes
+fail specifically at the result-pinned mirror restore. Unchanged Founder and
+all previous tests pass:7417pass/2fail/134existing skips. RP-251's mirror defect
+is now executed, not static; no source mutation/fix has yet occurred.
+
+Further predeclaration before touching TS Company advance: use the existing
+Go-authored scripted-first Company Exit fixture with the same three target
+mirrors, strictly loaded actual next artifacts, unchanged IDs and historical
+spent4/earned11/known p05 plus retired unknown ownership. Execute the real TS
+public Company Exit and require next Founder accounting plus run_started's
+factor1.0055/1.0066/1.0044. This is three more cases, not a new shared full-byte
+cross-runtime corpus or DB commit. Independently omit only TS Company mirror
+rebinding after the fix; both retunes must fail and unchanged pass, then exact
+restore. No current-run frozen-contribution mutation is authorized or claimed.
+
+Company baseline3ed799..6789f5 also compiles/typechecks cleanly and fails both
+retunes specifically in next-pinned Founder carry parsing. Both unchanged new
+cases and all previous tests pass:7418pass/4fail/134skips. Alongside the four
+Go failures, all eight retuned arm counterfacts fire, four identity arms pass.
+Only the existing R1/OD-7 mirror behavior is corrected below; no ID-removal
+guard, refund policy, fixture epoch mint or spent-cost reinterpretation.
+
+## 2026-10-06 — owned-effect mirror correction and complete range
+
+**Review by:** Codex (self/first-filter on new runtime/tests/docs/records).
+**Recorded by:** Codex.
+**Designated reviewer:** Claude, pending.
+**Complete new range:** `8ab5a2c4..HEAD`, where HEAD is the commit containing
+this checkpoint, not future history:4e11f890 predeclaration plus this runtime/
+test/docs/evidence checkpoint. RP-250 and previous spans remain independently
+pending; this is not the complete original B4 review or an archival verdict.
+
+Executed baselineb4fb21 fails four Go retunes,307e19 the two TS Founder
+retunes,6789f5 additionally both TS Company retunes. Unchanged controls pass;
+all failures are specific next-pinned mirror errors, no fixture/compiler failure.
+After minimal correction,a8b934 passes cold selected Reputation0.454s and
+312505 all7422 client tests/134existing skips with clean typecheck.
+
+New population: higher60000/lower40000 versus unchanged50000 unlock, known
+p05 plus retired unknown ownership, historical spent4 (next price3), earned11
+and available7. Go live and public Founder replay each pass all three targets,
+next-pinned full encode→restore and frozen factors1.0055/1.0066/1.0044; full
+encoded Founder bytes agree after the separately expected history append.
+TS Founder uses an earlier Go-authored state fixture and verifies next-pinned
+full encode→restore/accounting/history. TS Company uses the existing actual
+scripted-first Exit fixture and verifies carry/accounting and run_started's
+new bonus factor. This is twelve semantic cases, not a new shared all-retune
+canonical byte corpus or a real DB/service commit/default-player witness.
+
+Four independent corrections omitted, each compiling and discriminating only
+its own two retunes while unchanged and other-arm controls pass:
+
+- Go live28527c..173bac: two live failures, both replay retunes pass;
+- Go Founder89a451..c5430a: two replay failures, both live retunes pass;
+- TS Founder863b30..769312: two Founder failures,7420pass/134skip;
+- TS Company870844..a4a9ae: two Company failures,7420pass/134skip.
+
+Mandatory SHA comparison after every restore passes (a2720d,5f585f,e1f427,
+0f23a6). Final exact sources:
+
+- foundations.go: `6c36f9cc3dba979e92baf8ea1556bae646cf9a3cffa299dd64fecb6be675c575`;
+- founder_replay.go: `bcf482e3fab2bd4b8d154ad6c8eb214ceb465da299b03582829fd44e8827e7f5`;
+- TS replay: `def54f36d6aa4b0da93bd45ea0354198e83db73bd08fc9014eb5da3705fa44a0`.
+
+No survivor, leftover mutation, concurrent edit or acceptance loosening.
+
+Final597627..6d95ee verify-server-core passes vet/all non-harness packages
+cold: production35.321s,save0.265s,reputation0.202s,kernel0.169s,transport13.326s.
+Full Pitch ran cold0.309s; later separate subtarget is cached. Generated formula/
+API bytes remain unchanged. ff5a27..f88fb4 passes zero-error/warning typecheck,
+213-module build,7422tests/134existing skips, shell14/8/22 and13 topology controls.
+Full cb985f..6ea9e8 verify-client re-executes these first checks then fails
+historical RP-131/50a3a514 kernel-history enforcement; no green CI claim.
+Separatee4d880..b2efbf passes remaining combat/meter/achievement/cosmetic,
+payment/copy/content-manifest checks (22cosmetic negatives,6payment negatives,
+2near misses;657copy keys/610existing orphan warnings).7d81e9 confirms all
+previous corpora and generated contracts unchanged. A redundant poll of already
+completed39915 returned Unknown process id after its recorded exit0; that is a
+tool bookkeeping miss, not a server failure. Every handle terminal before edits.
+
+Kernel0.3.156→0.3.157 in all three identity files, no applied migration body,
+schema, actual balance/epoch/copy, current-run frozen-row or CI policy changes.
+RP-251 mirror part is locally corrected, designated review pending. Paired-
+epoch append-only-ID admission remains static/unexecuted; previous positive
+retirement fixtures prove mechanical fallback only, not removal authority.
+Next predeclare actual removal/identity/append tests under OD-7, then remaining
+pinned readers/writers and full B4. No full R1/OD-7/AC11/RFC/DB/CI/release,
+checkbox flip, archive, push, cleanup consent or new DB workload. Full goal active.

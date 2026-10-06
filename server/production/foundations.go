@@ -374,6 +374,15 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 		}
 		founder.ReputationSpent, founder.ReputationNodesOwned = 0, []string{}
 	}
+	if next.ReputationTree != nil {
+		// R1/OD-7: ownership and historical spend carry unchanged; the checked
+		// mirror follows the next epoch's effect, not the purchase-time effect.
+		unlock, err := next.ReputationTree.UnlockPPM(founder.ReputationNodesOwned)
+		if err != nil {
+			return fmt.Errorf("%w: next Reputation mirror: %v", ErrInvalidEngineState, err)
+		}
+		founder.ReputationUnlockPPM = unlock
+	}
 	if next.PetSpecies != nil && current.PetSpecies == nil {
 		// PA6.2 v22→v23: legal only with no pet; identity is never synthesized.
 		if founder.PetIdentities != nil || len(founder.Pets) != 0 {

@@ -753,6 +753,15 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		state.MinigameSessionSeq = 0
 	}
 	state.WireVersion = resolved.ResultFounderWireVersion
+	if resultCatalogs.ReputationTree != nil {
+		// R1/OD-7: Exit changes the pin; rebind only its derived mirror, never
+		// historical purchase costs or the persisted owned-node set.
+		unlock, err := resultCatalogs.ReputationTree.UnlockPPM(state.ReputationNodesOwned)
+		if err != nil {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: next Reputation mirror: %v", ErrInvalidEngineState, err)
+		}
+		state.ReputationUnlockPPM = unlock
+	}
 	var planEvents []save.EventWrite
 	if planned {
 		if category, detail, ok := reputationPlanRejection(resultCatalogs, state, state.ReputationLevel, request.ReputationPlan); !ok {

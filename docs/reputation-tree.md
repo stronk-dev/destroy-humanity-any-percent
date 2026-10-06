@@ -105,6 +105,16 @@ or event. Legacy inactive purchases retain their ordinary R5 rejection.
 Bare codecs remain artifact-free structural checks; this does not claim that
 every repository reader/writer or real database commit has been audited.
 
+At each new-run boundary, the mirror is re-derived from owned IDs against the
+next epoch's tree before next-pinned admission and frozen bonus assembly. This
+applies in the Go live/Founder paths and TS Company/Founder replay. A legal
+same-ID unlock-effect retune therefore updates the next mirror without changing
+earned Reputation, historical spend or owned IDs. It does not repair invalid
+input or mutate the just-ended run's frozen contribution. Higher/lower fixture
+retunes and unchanged controls exercise these paths; each rebinding removal
+fails its affected retunes. Append-only-ID transition admission is a separate
+OD-7 obligation, not proved by these mirror tests (RP-251).
+
 **Activation.** At a new-run boundary, and on the Founder-log Exit replay arm, a Founder moving
 onto a tree bundle starts with `spent = 0` and `owned = []`. Earned `reputation_level` carries
 over in full.
@@ -247,8 +257,11 @@ These three semantic cases are not new all-case canonical byte corpora.
 fixture-only next-bundle cases: retiring the generated/upgrade nodes; granting
 the same preowned upgrade from curriculum and the tree; landing exactly on the
 provisioned cap; and landing exactly on the permit cap. Changed catalogs are
-loaded strictly under hashes derived from their actual bytes. Removed ids stay
-in Founder ownership but grant nothing in the next run. Both loaders refuse
+loaded strictly under hashes derived from their actual bytes. The retirement
+fixture mechanically leaves removed ids owned but ineffective; this is NOT
+permission to remove defined IDs from a legitimate next epoch. Accepted OD-7
+requires append-only IDs and a successor refund RFC for removal; that paired-
+epoch admission guard still needs its own executed proof under RP-251. Both loaders refuse
 over-cap raw variants. Go's served helper rejects bad headroom with
 `ErrInvalidEngineState`; TS checks the defensive guards through explicitly
 fault-injected copies of parsed bundles, which are NOT admitted artifacts or

@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime correction (2026-10-06):** RP-250, predeclared at9a5dd7c2,
+**Latest runtime correction (2026-10-06):** RP-251, predeclared at4e11f890,
+reproduces and corrects stale mirrors on legal next-epoch effect retunes.
+Twelve Go live/Founder and TS Company/Founder cases pass; four independent
+omissions fail their affected retunes and restore exactly. Historical spend,
+owned IDs and earned balance stay unchanged; kernel **0.3.157**. Cold server-
+core/vet and client/type/build/boundaries/topology pass7422/134, but rerun full
+verify-client remains RED at RP-131/50a3a514. New span after8ab5a2c4 needs
+Claude. Append-only-ID admission is next and unexecuted; retirement fixtures
+prove fallback, not lawful removal. Full R1/B4/OD-7/DB/default-player, CI and
+nine-tier/platform release scope stay open. [Exact evidence](reputation-tree-v1/log.md).
+
+**Previous admission correction (2026-10-06):** RP-250, predeclared at9a5dd7c2,
 closes a reproduced pinned-state command admission gap. Six corrupt input arms
 and one post-state fault now reject without receipt/events or silent repair;
 four valid/retired/inactive controls pass. Three independent guard removals

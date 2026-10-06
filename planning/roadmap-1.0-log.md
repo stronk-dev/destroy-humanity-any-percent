@@ -2642,3 +2642,30 @@ and append-only-ID observations for predeclared counterfacts under R1/OD7,
 not confirmed defects, new refund policy or author-body verdicts. All nine-tier/
 platform/owner/author/mint/H4 obligations remain. Goal active; no push, Docker
 cleanup consent or new DB workload.
+
+## 2026-10-06 — valid owned-effect retunes no longer reject Exit
+
+RP-251 under `4e11f890` proves a second real R1 boundary defect: valid higher and
+lower p05 effects fail Go live and public Founder replay, then TS Founder and
+Company replay, because the persisted mirror retains the old effect. All eight
+retuned arms fail; four unchanged controls pass. Minimal next-tree rebinding
+now passes all twelve, preserves historical spend 4 despite next cost 3, owned
+known/unknown IDs, earned 11 and available 7. It neither repairs bad input nor
+changes the prior run's frozen row. Kernel 0.3.157 marks this real behavior change.
+
+Four independent compiling omissions fail exactly two affected retunes each;
+all source restores are SHA-exact. Cold full server-core/vet passes (production
+35.321 s, save 0.265 s); client/type/build/boundaries/topology passes 7422/134, zero
+diagnostics. Full verify-client rerun catches historical `50a3a514` again (RP-131);
+it is RED, not substituted by separate green checks. Remaining package/payment/
+copy/content-manifest checks pass; copy retains 610 existing orphan warnings.
+Prior migration and Reputation corpora/generated contracts stay byte-unchanged.
+No real Postgres/browser/harness/hosted CI or full cross-runtime-retune byte corpus.
+
+New complete range after `8ab5a2c4` needs Claude independently of all prior spans.
+RP-251's append-only-ID admission remains an unexecuted next population, not a
+refund choice or author-body ruling. Canonical docs now distinguish mechanical
+retirement fallback from OD-7's required lawful transition. Original full B4
+review, remaining R1/AC11/player/DB/mint/H4/CI/owner/author and all nine-tier/
+platform obligations persist. Goal active; no checkbox flip, archive, push,
+Docker cleanup consent or new DB workload.
