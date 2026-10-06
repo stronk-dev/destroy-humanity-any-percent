@@ -3155,3 +3155,22 @@ Next bounded R9 row-busy diagnosis RP-277; RP-278 inline errors and RP-279
 persistent costs are source-contract findings, not yet executed. Full nine-tier
 game/platform1.0 remains active; no copy/math/kernel/CI change, acceptance box,
 archive, cleanup, publication/deployment/push or shortcut.
+
+## 2026-10-06 — Reputation purchasing row corrected locally
+
+RP-277 under367fe467/27ff4cd5/294a1b08 first fails32 new native cases.
+Local row/task state now consumes the host's existing returned task and shared
+pending without changing host/transport policy. Both settling orders, unrelated
+refresh and second-row attribution execute; restored Chromium/WebKit pass58.
+Four independent compiling omissions each fail32 and restore exact bytes.
+Types/build8106 unit tests/boundaries/copy pass; RP-131 historical kernel guard
+is executed RED, Firefox remains unexecuted rather than counted green.
+[Evidence](reputation-tree-v1/log.md).
+
+This is controlled component task/arm evidence, not real host/receipt/SQL/mint
+or whole AC12. Whole new span after5bf6017f requires designated review; every
+earlier span remains separate. Next ground RP-278's actual host outcome/resync
+and row feedback before a bounded predeclaration; RP-279 costs follow. Full
+nine-tier/platform1.0 stays active. No owner-copy/kernel/balance/transport/CI
+policy change, acceptance box, archive, cleanup, publication/deployment/push or
+shortcut. Goal turn made concrete runtime/evidence progress.

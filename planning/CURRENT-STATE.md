@@ -4,7 +4,17 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime checkpoint: RP-276's Reputation purchase focus is locally corrected
+Latest runtime checkpoint: RP-277's Reputation purchasing-row busy state is
+locally corrected under294a1b08. Native baseline and four compiling omissions
+fail32 new cases each; restored Chromium/WebKit pass58. Both task/parent settling
+orders, unrelated refresh and second-row attribution execute. Types/build8106
+unit tests/boundaries/copy pass; RP-131 history remains RED, Firefox unexecuted.
+Controlled component tasks/arms, not real host/SQL/mint or whole AC12. Full new
+span after5bf6017f needs Claude. Next ground RP-278's host rejection/resync/row
+path, then RP-279 costs. No copy/kernel/transport/CI policy or release promotion.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous runtime checkpoint: RP-276's Reputation purchase focus is locally corrected
 under31795a1e. Native baseline and compiling focus-call removal fail16 cases;
 restored Chromium/WebKit pass26. Types/build8106 unit tests/boundaries/copy pass.
 Firefox executes zero even outside sandbox; historical RP-131 remains RED, so

@@ -3,6 +3,27 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation purchasing row corrected locally — 2026-10-06
+
+RP-277 under367fe467/27ff4cd5/294a1b08: native baseline and four compiling
+attribute/attribution/task/equality removals each fail32 new cases; exact
+restoration passes58 Chromium/WebKit cases. Both task/parent settling orders,
+unrelated global pending and second-row attribution execute. Types/build8106
+unit tests/boundaries/copy pass. RP-131 remains RED, Firefox unexecuted; not
+whole client/CI or real host/receipt/SQL/mint/full AC12 proof.
+
+**READY FOR CLAUDE:** full new span after5bf6017f through final record edge;
+all earlier spans remain separately pending. No self-approval/archival.
+**NEXT SAFE ACCEPTED WORK:** ground RP-278's actual host outcome/resync and
+row feedback before predeclaring its bounded diagnosis/correction. RP-279 cost
+presentation follows separately; do not substitute a child-only error fixture
+for the host consumer. Preserve server policy and owner copy.
+**HELD:** full native/host/minted-player AC12/SQL, author/data/H3/H4/H5/R11,
+capacity/deployment and all designated reviews; full nine-tier/platform1.0.
+No copy/kernel161/balance/transport/CI policy change, checkbox, acceptance,
+archive, cleanup, publication, deployment or push.
+[Exact evidence](../reputation-tree-v1/log.md).
+
 ## Reputation purchase row focus corrected locally — 2026-10-06
 
 RP-276 under770a97bb/930b69d9/31795a1e: unchanged-production native focus

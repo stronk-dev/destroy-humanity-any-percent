@@ -5,7 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime checkpoint (2026-10-06):** RP-276 purchase focus is locally
+**Latest runtime checkpoint (2026-10-06):** RP-277 row-busy correction under
+294a1b08 fails32 native cases first and under four compiling omissions; exact
+restoration passes58 Chromium/WebKit cases. Existing host task/shared pending
+clear only after both settle; unrelated refresh and second row discriminate.
+Types/build8106 unit tests/boundaries/copy pass; RP-131/Firefox holds remain,
+not whole client/CI or host/SQL/mint/AC12 proof. Full new span after5bf6017f
+needs Claude. Next RP-278 actual host outcome/resync/row grounding, then RP-279
+costs; complete nine-tier/platform1.0 stays active. [Evidence](reputation-tree-v1/log.md).
+
+**Previous runtime checkpoint (2026-10-06):** RP-276 purchase focus is locally
 corrected under31795a1e: native baseline and compiling focus-call removal fail16,
 restored Chromium/WebKit pass26. Types/build8106 unit tests/boundaries/copy pass.
 Firefox remains unexecuted even outside sandbox; RP-131 history remains RED,
