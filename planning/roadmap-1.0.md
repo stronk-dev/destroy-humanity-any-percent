@@ -41,6 +41,14 @@ registered operations agree across artifacts, not all runtime routes. Four scope
 fetcher sites remain outside generated. [Census](platform-alignment/refresh-generated-contract.md)
 is evidence for C1/C7/C9/S-A1, not schema/renewal/DB/CI or release promotion.
 
+Codex designated review now approves Claude `527246f1^..527246f1` for bounded
+Clout guard/scalar scope only. Actual refusal/no-op probes discriminate; one
+negative-only probe survives independent defense, disclosed. Restored cold
+default harness/vet pass (40.486 s). RP-241/D-021 routes existing DG-D before
+full P6/AC9 measurements; RP-242 corrects canonical fixture/served status.
+[Verdict](clout-v1-and-pr-interns/log.md) does not approve full Clout or archival,
+adopt evaluation semantics, mint content, resolve CI/capacity or shorten 1.0.
+
 **Earlier checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
 actual page closures complete in the three declared Linux engines; bypass and
 watchdog fail, final restoration passes. [Dossier](platform-alignment/browser-session-coordination.md)

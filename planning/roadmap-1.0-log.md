@@ -2405,3 +2405,27 @@ RP-131 RED. No production/generated/pin/auth/kernel/copy/CI membership/checkbox
 changes. Real outcomes/renewal policy and RP-236 capacity approval stay open.
 New span after 29e1ff02 including predeclaration/instrument/artifacts/records/pin,
 Claude pending independently; proper full nine-tier 1.0 unchanged, no archive/push.
+
+## 2026-10-06 — independent Clout guard approval, incomplete evaluation stays open
+
+Under predeclaration 792a04f1, Codex designated other-party review inspects all
+six paths of Claude 527246f1^..527246f1. APPROVED for that refusal/scalar addition
+only, not P1–P5/full P6/AC9 or archival. Actual current-source first-hour guard
+removal completes unsupported axis fixture neutrally and fires the witness.
+Phase-0 guard removal fires on wrong error, not proved valid neutral admission;
+scalar no-op fires on synthetic negative input. Negative-only guard removal
+survives independent AxisInput defense, recorded. All source restores byte-exact.
+Cold final default harness/vet passes, 40.486 s; existing Game UI projection
+test passes, not fresh browser/served PR acceptance. Initial shell-selector
+error was an instrument failure, not an observed product/mutation result.
+
+Existing DG-D is centrally routed RP-241/D-021: accepted harness evaluation
+semantics precede PR relevance/purchase/scenario measurement. No branch selected,
+approximate attainment, scenario/pacing ratchet or balance retune. RP-242 repairs
+canonical docs' stale absence claim and pairing/runtime-refusal conflation.
+Codex's new predeclaration/records/docs span starts after b76980a7, separate
+from the designated verdict on Claude's old commit; exact tip pinned after
+commit. Prior Codex implementations still require Claude; no self-approval.
+No Docker deletion, new workload, production/kernel/copy/CI/checkbox/archive/
+push change. Existing capacity approval pending. Proper full nine-tier 1.0
+remains active with all platform obligations, no shortened release substitute.

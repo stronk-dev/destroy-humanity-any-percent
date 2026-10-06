@@ -50,6 +50,26 @@ client/type/topology pass for registered subset only. [Dossier](refresh-generate
 Next real-DB status census before descriptor/dispatcher adoption; no new schema,
 renewal policy or product change while that authority/evidence is missing.
 
+## Clout bounded cross-party guard review — 2026-10-06
+
+Codex designated review APPROVES Claude `527246f1^..527246f1`, all six paths,
+for refusal/scalar-invariant scope only. First-hour guard removal actually
+completes the unsupported axis fixture neutrally and fires the witness;
+Phase-0 typed-refusal and scalar no-op probes fire too. Negative-guard-only
+removal survives independent AxisInput defense, explicitly recorded. Every
+probe restores source exactly; cold default harness/selected vet pass (40.486 s).
+No P1–P5/full P6/AC9 or archival approval, no new production/balance/CI changes.
+[Verdict](../clout-v1-and-pr-interns/log.md) records exact limitations.
+
+**NEXT:** D-021 resolves existing DG-D's harness evaluation contract before
+attainment/relevance/purchase measurements or scenario ratchets. No approximate
+observer or foundation-hook branch is adopted. RP-242's canonical corrections
+separate fixture producer/panel presence from unproved served PR journey and
+artifact pairing from runtime refusal. Existing projection test passes, no fresh
+browser proof. The Codex predeclaration/record span after b76980a7 remains
+separate from this verdict; prior Codex ranges still require Claude. RP-236
+capacity approval and all full nine-tier 1.0 obligations remain open.
+
 ## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
 
 Separate predeclaration `25fb5e67` binds RP-048/RP-234 to existing Account D2/D3

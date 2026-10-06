@@ -58,6 +58,19 @@ cold publicapi/client/type/topology pass for the subset, not complete contract,
 dispatcher, DB/renewal or CI. [Dossier](platform-alignment/refresh-generated-contract.md),
 new span after 29e1ff02, Claude pending. Capacity/policy/prior ranges remain open.
 
+Codex's designated cross-party review now approves Claude's exact
+`527246f1^..527246f1` Clout guard addition only, not full P6/AC9 or archival.
+Independent first-hour guard removal produces unsupported neutral completion;
+the witness fails. Phase-0 typed-refusal and scalar no-op probes also fail;
+negative-guard-only removal survives the independent AxisInput rejection.
+Restored cold default harness/selected vet pass (40.486 s). RP-241/D-021 routes
+the existing DG-D evaluation-contract choice; no substitute attainment is adopted.
+RP-242 corrects fixture-presence versus served-journey claims and distinguishes
+artifact-pairing rejection from runtime's all-axis refusal. Existing server
+projection test passes, not fresh browser or minted PR evidence. See the
+[exact verdict and remaining work](clout-v1-and-pr-interns/log.md).
+No production change, Docker deletion, balance/CI/Clout or release promotion.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

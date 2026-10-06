@@ -319,3 +319,57 @@ No constants/balance/epochs/scenario/production policy/CI/checkbox/archival/push
 changes. Review by: Codex (designated other party for exact Claude scope).
 Recorded by: Codex. The new review/predeclaration/record range is separate from
 all earlier Codex scopes, which still await Claude; no self-approval of those.
+
+## 2026-10-06 — designated P6 guard review: APPROVED, partial scope only
+
+**Review by:** Codex (designated other party; Claude implemented the reviewed commit).
+**Recorded by:** Codex.
+**Reviewed range:** `527246f1^..527246f1` — all six changed paths, no exclusions.
+**Decision:** APPROVED for the bounded refusal/scalar-invariant addition only.
+
+Not an approval of P1–P5, full P6/AC9, rendered player journey or Clout archival.
+Execution dependency coordinate 792a04f1; guard/test files byte-identical to the
+reviewed commit. Current caller files include later changes; no verdict on those
+later ranges inferred from this review. P5 plan edit names its already-landed
+proof commit, not a new checkbox flip. P6 stays unchecked and explicitly partial.
+
+Executed existing population 64440 cold: both named tests pass, supported
+epoch-8 first-hour control completes. Initial selector command failed at the
+shell before Go due quoting/Make dollar expansion; not a baseline or mutation
+result. Correctly quoted selector runs both observed tests, -count=1.
+
+Independent probes, one at a time, every handle terminal before restore:
+
+- First-hour refusal removed (51883): witness fails, actual unsupported axis
+  scenario returns `outcome=completed failures=[]`. This directly corroborates
+  the misleading neutral completion DG-D warned about, not a source-only claim.
+- Phase-0 refusal removed (95041): witness fails on `invalid commons catalog:
+  decode: EOF` instead of ErrAxisStackUnevaluated. Its incomplete constructor
+  fixture discriminates the typed early refusal only; **not** proof of a valid
+  Phase-0 neutral run. The diagnostic says "accepted" but the actual result is
+  this different error, disclosed rather than relabelled as successful admission.
+- Scalar invariant replaced with no-op (56228): test fails `negative attainment
+  accepted`. This is a synthetic scalar fixture, not a valid derived save/run.
+- Only explicit negative-score guard removed (16592): witness survives through
+  production.AxisInput's independent negative rejection. Expected redundancy,
+  not a claimed firing probe or omission from the adversarial record.
+
+Every source restores exact SHA before next/final gate:
+first_hour_runner.go 12c48b5bf506ef9b499c66c915e0faabfc712da25c46ce3e71c65dcc3fd55769;
+harness.go 139c3ee8410744323e05dd6adff961b12b2f77a8f18a07db92f9fcbfa4a8c78a;
+axis_stack.go 613fef3d16fabbdb03f5b0d425a8b6688e31a03b0d579301db2703694ce90ef2;
+axis_stack_test.go 37de652ab634d3b48bfda7418f85351cba8603f4898d94c1008e5e0a52a59a5d.
+Final root test-harness/selected vet 9433 passes, -count=1, 40.486 s; default
+command, not exhaustive maintenance/pacing population or minted PR relevance.
+No persistent source/test/balance/kernel/CI mutation, DB/browser/deployment or
+release evidence. No cache deletion, archival or push.
+
+RP-241/D-021 now routes existing DG-D centrally: shared foundation hook versus
+explicit observer semantics requires author/owner acceptance; neither is chosen
+by this verdict. Relevance/dead-row/purchase observation/scenario ratchet remain
+unimplemented. RP-242 reconciles canonical docs: replaycatalog pairing rejection
+is distinct from runtime's all-axis refusal; fixture snapshot/panel code exists,
+but served activation/default PR journey is unproved. Cold existing Game UI
+projection witness 10310 passes; component presence is source-confirmed, no fresh
+browser claim. These record/doc repairs are Codex work, not secretly covered by
+the designated verdict on Claude's old six-path commit. Proper full 1.0 stays open.

@@ -8,8 +8,14 @@ intents and never mutate state directly.
 ## Phase-0 scenario
 
 Economy schema v5 bundles must pin `achievements`. A v5 economy whose `axis_stack` reads an
-achievement input fails bundle loading (`ValidateAxisInputs`) rather than running with a silently
-neutral stack. Relevance and observation rows for PR Interns (RFC CV10) are not yet delivered.
+achievement input without that artifact fails bundle loading (`ValidateAxisInputs`).
+Separately, both the Phase-0 constructor and first-hour runner refuse every declared
+axis stack with `ErrAxisStackUnevaluated`, even when paired artifacts exist: these
+harness runtimes do not execute the attainment hook. Shared core math is not proof
+of complete foundation-hook parity. Removing the first-hour guard lets the fixture
+complete with a silently neutral stack. PR relevance, purchase observations and
+scenario invariant ratchet (RFC CV10) remain blocked on the DG-D/D-021 contract;
+the scalar cap helper is tested directly, not active in axis-enabled scenarios.
 
 `testdata/harness/scenarios/phase0-production.json` is scenario version 4 (the economy + Routes + Commons
 balance bundle) and runs two versioned policies:

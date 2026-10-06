@@ -70,7 +70,16 @@ resource.
 
 ## Not yet delivered
 
-- The Desk and snapshot rendering (CV9 / AC11).
+- Served-epoch activation and the default composed PR purchase/rendering journey
+  (CV9 / AC11). Fixture-only snapshot producer and Desk panel code exist;
+  their presence does not complete that criterion.
 - Harness relevance and observation rows (CV10 / AC9).
 - A production mint.
 - All copy: the keys named in RFC CV8 are owner-authored and still pending.
+
+The current harness deliberately refuses declared axis stacks rather than
+simulating attainment incorrectly. Its cap helper has direct scalar tests, not
+an active axis-enabled scenario. DG-D/D-021 requires an accepted evaluation
+contract before PR relevance, dead-row and purchase-time measurements can run.
+The bounded `527246f1^..527246f1` guard commit is independently reviewed; no
+full Clout or archival approval follows. See the [review and pending work](../planning/clout-v1-and-pr-interns/log.md).
