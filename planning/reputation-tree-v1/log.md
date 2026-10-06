@@ -2699,3 +2699,14 @@ negative moves it back one AutoMS); actual database command timestamps govern
 any sweep. Purchase state/receipt/event expectations still come from the pinned
 source, with only intent/revision coordinates and independently calculated
 Fiscal sweep fields adapted. No timing-dependent sweep is silently discarded.
+
+Preparation finding before any SQL run:6e1ea3..a26acf compiles but profile
+construction rejects the added tree-present/v21 pair at the pinned version
+floor. This is an invalid instrument, not a product defect. All twenty original
+profiles remain mandatory; the extra valid overdue-Fiscal rejection yields21
+recorded profiles and42 unrecorded CAS/idempotency controls. The invalid v21/tree
+pair is retained separately as a pinned-foundation refusal, never inserted by
+bypassing policy. Strengthen the test store resolver to apply the actual bundle
+foundation policy and use a pinned valid Company fixture, not the old thin
+integration resolver's faction-only state policy. This corrects the predeclared
+population's invalid premise; it waives no R5 row or SQL/negative-control gate.
