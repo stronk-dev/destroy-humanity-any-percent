@@ -6023,3 +6023,39 @@ This final self-record edge must join Claude's full span after5bf6017f, separate
 from earlier spans. All handles terminal; no self-archive, cleanup, publication,
 deployment, push or goal completion. Current goal turn is concrete progress;
 complete nine-tier/platform objective stays active.
+
+## 2026-10-06 — RP-278 host/runtime diagnostic predeclaration
+
+Resume at b8ee639f, clean main, all preceding handles terminal. R9 row rejection
+feedback is next; RP-279 cost remains separate. Grounding reads actual act,
+noticeForOutcome/noticeForError, runtime HTTP parsers and subscription protocol.
+Do not put revision_conflict into SurfaceRejections: its early return would
+silently remove the shared refresh effect. The documented B7a optional eight-key
+arm / feature.reputation_tree convention stays unchanged, not a new wire edit.
+
+First use canonical buildCopyArtifact to census the five R9 rejection keys.
+Source inspection finds four; the required revision_conflict key is absent.
+Record that separately as RP-280 if executed census confirms. No owner prose
+invention: the accepted owner block expressly permits clearly marked placeholders;
+any eventual declaration must use the existing PENDING OWNER COPY convention.
+
+Add a native host diagnostic using GameUIApp and the real browser runtime with
+controlled HTTP Responses and Centrifuge protocol messages (NOT a live server,
+WebSocket, database or minted tree). Wire-valid arm, distinct Company/Founder
+revisions, two available rows, both supported eras, native Enter/Space. Hold the
+POST to observe busy/disabled/no optimistic ownership, then deliver each of five
+HTTP-200 rejection categories plus typed HTTP409 conflict. Assert exact inline
+copy on submitted row only, no raw detail/ID, correct Founder revision/unique
+intent ID. Hold conflict refresh to prove one additional GET and disabled controls;
+deliver new Founder revision, retry a different row and prove revision/attribution
+and old feedback clearance. Applied-control test holds authoritative refresh;
+no optimistic state and existing global polite result remain required.
+
+Run unchanged-production baseline before correction. Missing conflict declaration
+is an explicit failing prerequisite, not generic intent.conflict acceptance.
+Native chromium/webkit only; Firefox prior zero-execution remains RP-256. Include
+existing child focus/busy and shared GS0.2 host rejection as separate controls.
+No source edits while any handle is live. No whole AC12/AC15/SQL/CI proof, mint,
+retune, kernel bump, checklist flip, archive, cleanup, push or publication.
+Correction scope and compiling omission probes will be declared after baseline.
+Full new range after b8ee639f needs Claude's designated pass including record edges.
