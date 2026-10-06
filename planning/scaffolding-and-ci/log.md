@@ -434,3 +434,10 @@ passes. Initial read-only guessed Account test filenames were absent; rg --files
 supplies the real names for next work. No further Docker test attempted with full
 disk, and neither these fast passes nor the unchanged historical kernel guard
 is reported as a green full CI.
+
+Exact substantive new observation span: `6ed42d45..ee8b2356`, four commits /
+eleven paths. This following pin-record edge also belongs to designated review;
+the final handoff supplies its literal endpoint. Review by: Codex (first-filter
+only). Recorded by: Codex. No Claude verdict, source correction, completed second
+population or acceptance is implied. Earlier R-011/session/Garden ranges remain
+independent. Docker capacity inquiry is nonblocking for non-Docker scoped work.

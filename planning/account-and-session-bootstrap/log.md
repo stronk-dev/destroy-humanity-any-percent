@@ -492,3 +492,40 @@ R-011 substantive range pinned: `39f95329..ff2e9f19`, two commits / thirteen
 paths including `d023dc26`. Designated review must include this following pin
 record edge as well; its literal endpoint is supplied in the handoff. This is a
 coordinate, not a verdict, R-011 completion, policy adoption or a green CI claim.
+
+## 2026-10-06 — predeclare existing refresh parser/router census
+
+Baseline `ee8b2356`, no live verification/probe handles. CI observation pin closes
+separately; Docker disk is full and no new Postgres/browser run may be represented
+as complete. Ask owner for precisely scoped unused project-cache cleanup or disk
+expansion; no broad prune or user-data deletion. Continue work not requiring Docker.
+
+Authority: accepted Account D2/D3/AC7 and API Foundation C1/A4/A5 observation of
+existing response bytes. New batch is **test-only parser/router census**, not
+registry/handler semantics, TTL/revocation, coordinator or draft acceptance.
+Use actual NewAPI/chi routing and refresh handler, an intentionally DB-less
+Repository, controlled clock and constructor-only unrelated intent stub that
+fails if called. Every supplied token is malformed and must return before DB.
+This explicitly does NOT exercise valid/unknown opaque tokens, successful refresh,
+single-use/replay/expiry/transaction faults, real HTTP socket or real Postgres.
+Those are a separately retained second census stage, not silently skipped here.
+
+Population: empty/whitespace/malformed JSON, unknown/trailing members or values,
+array/boolean/number/string roots, wrong-type refresh fields, over-limit body;
+missing/null/empty/malformed/short token, duplicate and case-insensitive field
+spelling; method/path refusals; actual unauthenticated limiter before parser,
+one fixed-clock exhausted refusal and subsequent clock-refill control. Pin exact
+current status/category/detail and Content-Type with full byte equality, never
+prefix/substring; do not canonize permissive parsing as approved future policy.
+No credential/body secrets in failure output (all request bodies synthetic).
+
+Predeclare three independent temporary severings: refresh invalid-body error byte,
+refresh unauthorized-token error byte, and refresh's limiter mounting. Each must
+fail the new cold root Account population, then restore API SHA byte-exact before
+the next probe/final pass. No edits while handles live. Root make test-go with
+GO_PACKAGES=./account and explicit -count=1, followed by root vet selector and
+diff/scope checks. Full Docker/CI remains invalid under RP-236 and RP-131;
+these focused passes cannot waive it. Retain errors/probes and literal range for
+Claude independently; no plan checkbox, docs production behavior promotion,
+archival, push or owner policy adoption. Next real-Postgres stage waits for a
+safe capacity resolution, not a replacement mock success.
