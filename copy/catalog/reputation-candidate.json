@@ -145,6 +145,14 @@
    "tone": "corporate"
   },
   {
+   "key": "reputation_tree.error.revision_conflict",
+   "text": "PENDING OWNER COPY: error revision conflict",
+   "params": [],
+   "era_variants": null,
+   "provenance": [],
+   "tone": "corporate"
+  },
+  {
    "key": "reputation_tree.error.unaffordable",
    "text": "PENDING OWNER COPY: error unaffordable",
    "params": [],

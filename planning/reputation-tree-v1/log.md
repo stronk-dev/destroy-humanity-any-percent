@@ -6098,3 +6098,36 @@ types/build/client/boundaries/copy, focused Go copy registry via root -count=1,
 and separate kernel-history guard. No full native Firefox/CI/SQL/AC12/AC15 claim.
 No checklist flips, authored prose adoption, archive, cleanup, publication or push.
 Full range after b8ee639f needs designated cross-party verdict including records.
+
+Presentation refinement before source: when a known Reputation rejection has
+its inline polite status, suppress only the duplicate global status text while
+that surface is mounted. Shared intentNotice/effect remains intact, unknown and
+transport failures retain shared presentation, and applied global result remains.
+Add an exact empty-global assertion for known rejection to avoid double speech.
+
+## 2026-10-06 — R9 host correction initial green and probe extension
+
+Root host+child native0ab5fd/c5b717,session70392 terminal exit0:114/114
+(56 new host/58 child). Root shared GS0.2 rejection control15d693/9771ec,
+session67142 terminal exit0:two selected passes/44 other cases visibly skipped.
+Both root runs' automatic performance follow-on passes one selected Chromium
+case/22 skips; not full Worker/perf/native acceptance. Types2b59f7/10bbc9,
+session31584 terminal exit0, zero errors/warnings. New full run reached row
+attribution/retry/new-Founder-revision checks; baseline failed before those.
+
+Cold build/client/boundaries/topology/copy ff5f76/1b63b8/6803f1,
+session12842 terminal exit0:8106 Node passes/188 native skips (91 pass/18 skip
+files); boundaries/negative controls and658-key copy/manifest pass. Key explicitly
+pending owner copy. Copy hash now a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e;
+constants hash unchanged. Go copykeys649a17 exits0 but has NO test files (compile,
+not test evidence); actual gen-content-manifest/releasepackage a718bb/aa5785,
+session81201 terminal exit0, -count=1. Kernel6a04bc/68c495,session26630 exit2:
+checkout/adversarial fixtures pass; historical50a3a514 vs0cf9f7a6 still RP-131 RED.
+Read-only ps was sandbox denied; no escalation/termination/claim inferred.
+
+All handles terminal. Extend predeclared compiling probes to also omit feedback
+clearance and duplicate-global suppression, exercising those two new safeguards
+explicitly rather than accepting green tests alone. Six probes total, individually
+terminal then exact restoration. No assert/population/deadline/engine-policy edit.
+The act option type formatting is mechanical, not a new behavior. No checkbox,
+archival, retune, mint, owner-prose adoption, report restamp, CI green or push.

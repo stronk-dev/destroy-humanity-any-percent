@@ -157,6 +157,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
             expect(boundary.snapshotCalls).toBe(category === "revision_conflict" ? 2 : 1);
             expect(document.activeElement).toBe(rows[0]);
             errorText(rows[0]!, category, era); silent(rows[1]!);
+            expect(target.querySelector(".intent-notice")!.textContent, "known inline rejection must not be spoken twice").toBe("");
             expect(target.textContent).not.toContain(rawDetail);
             for (const id of ids) expect(target.textContent).not.toContain(id);
             // A second native submission must clear the first row, use the new

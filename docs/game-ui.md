@@ -63,6 +63,13 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   The submitted row exposes `aria-busy="true"` while its existing host purchase task or the
   shared pending state remains outstanding; all Buy/Confirm controls stay disabled. Attribution
   clears after both settle, so a later unrelated refresh does not mark a completed row busy.
+  Known purchase rejections appear in a polite status on the submitted row only;
+  another submission clears previous row feedback. Revision-conflict receipts and
+  typed HTTP409 errors use the declared Reputation key while retaining the shared
+  authoritative refresh and its disabled-control boundary. The inline status replaces
+  duplicate global rejection text on this surface; applied results still use the
+  existing global status. The newly declared conflict text is explicitly pending owner
+  copy, not adopted player prose. Unknown/network errors retain shared handling.
   For an active tree, the server rejects a null, malformed or unordered owned-node set and
   any unlock mirror that differs from the pinned tree's derivation. The client accepts only
   canonical bonus-factor strings of at least one; the current-run factor may remain null.

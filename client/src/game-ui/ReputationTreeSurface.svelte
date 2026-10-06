@@ -7,11 +7,12 @@
   // Reputation Tree v1 R9. Every state is server-derived (arm.nodes[].state);
   // the client never recomputes eligibility and the receipt is the authority.
   // Buying is irreversible, so Buy only reveals an inline Confirm/Cancel pair.
-  let { arm, era, pending, controlsEnabled, onPurchase }: {
+  let { arm, era, pending, controlsEnabled, feedback = null, onPurchase }: {
     arm: GameUIReputationArm;
     era: CopyEra;
     pending: boolean;
     controlsEnabled: boolean;
+    feedback?: { nodeID: string; key: CopyKey } | null;
     onPurchase(nodeID: string): void | Promise<void>;
   } = $props();
 
@@ -81,6 +82,7 @@
         <p>{t(node.body_key as CopyKey, {}, era)}</p>
         {#if node.requires.length}<p>{t("reputation_tree.requires", { list: node.requires.map((id) => titles.get(id) ?? "").join(", ") }, era)}</p>{/if}
         <p class="state">{t(STATE_KEYS[node.state]!, {}, era)}</p>
+        <p role="status" aria-live="polite">{feedback?.nodeID === node.node_id ? t(feedback.key, {}, era) : ""}</p>
         {#if node.state === "available"}
           {#if confirming === node.node_id}
             <span class="confirm" role="group" aria-label={titles.get(node.node_id)}>

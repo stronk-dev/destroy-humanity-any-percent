@@ -31,7 +31,7 @@
   import GardenSurface from "./garden/GardenSurface.svelte";
   import { loadSoulRecoveryContent } from "./soul/recovery-surface";
   import { GameUIShell } from "./shell-bridge";
-  import { noticeForError, noticeForOutcome, type SurfaceRejections } from "./intent-outcome";
+  import { GameUIRequestError, noticeForError, noticeForOutcome, type IntentOutcome, type SurfaceRejections } from "./intent-outcome";
   import { FEATURES_PRESENTATION } from "./features-presentation";
   import { upgradePresentation } from "./axis-presentation";
   import AxisStackPanel from "./AxisStackPanel.svelte";
@@ -157,7 +157,13 @@
 
   // GS0.2: `scope` binds expected_revision to the Company or Founder stream;
   // a rejected outcome renders its reason instead of looking like offline.
-  async function act(body: Record<string, unknown>, options: Readonly<{ scope?: "company" | "founder"; rejections?: SurfaceRejections; applied?: (receipt: Readonly<Record<string, unknown>>) => CopyKey | null }> = {}): Promise<void> {
+  async function act(body: Record<string, unknown>, options: Readonly<{
+    scope?: "company" | "founder";
+    rejections?: SurfaceRejections;
+    applied?: (receipt: Readonly<Record<string, unknown>>) => CopyKey | null;
+    observed?: (outcome: IntentOutcome) => void;
+    failed?: (error: unknown) => void;
+  }> = {}): Promise<void> {
     if (!snapshot) return;
     if (options.scope === "founder" && founderRevision === undefined) return;
     const kind = typeof body.kind === "string" ? body.kind : "";
@@ -178,6 +184,7 @@
         const outcome = await runtime.intent({ intent_id: newIntentID(), expected_revision: expected, ...body });
         const notice = noticeForOutcome(outcome, options.rejections);
         intentNotice = outcome.outcome === "applied" && options.applied ? options.applied(outcome.receipt) : notice.notice;
+        options.observed?.(outcome);
         if (notice.effect === "refresh") void refresh();
         else if (outcome.outcome === "applied" && (kind === "cross_gate" || kind === "decline_exit_offer")) {
           bindSnapshot(await runtime.snapshot());
@@ -189,6 +196,7 @@
       } catch (error) {
         const notice = noticeForError(error);
         intentNotice = notice.notice;
+        options.failed?.(error);
         if (notice.effect === "offline") offline = true;
         else if (notice.effect === "refresh") void refresh();
       }
@@ -369,6 +377,26 @@
     ["invalid/*", "reputation_tree.error.invalid"],
   ]);
   function reputationApplied(): CopyKey { void refresh(); return "reputation_tree.result.applied"; }
+  let reputationFeedback = $state<{ nodeID: string; key: CopyKey } | null>(null);
+  function purchaseReputation(nodeID: string): Promise<void> {
+    reputationFeedback = null;
+    return act({ kind: "purchase_reputation_node", node_id: nodeID }, {
+      scope: "founder", rejections: REPUTATION_REJECTIONS, applied: reputationApplied,
+      observed: (outcome) => {
+        if (outcome.outcome !== "rejected") return;
+        // Presentation only: do not put conflicts in SurfaceRejections, whose
+        // early match would remove the shared authoritative refresh effect.
+        const key = outcome.category === "revision_conflict" ? "reputation_tree.error.revision_conflict" :
+          REPUTATION_REJECTIONS.get(`${outcome.category}/${outcome.detail}`) ?? REPUTATION_REJECTIONS.get(`${outcome.category}/*`);
+        if (key) reputationFeedback = { nodeID, key };
+      },
+      failed: (error) => {
+        if (error instanceof GameUIRequestError && error.status === 409) {
+          reputationFeedback = { nodeID, key: "reputation_tree.error.revision_conflict" };
+        }
+      },
+    });
+  }
   // Pet Adoption v1 PA8: adoption rejections render inline on the card.
   // GS4: exact care rejection pairs (server/pet grammar + founder_replay).
   const CARE_REJECTIONS: SurfaceRejections = new Map([
@@ -490,7 +518,7 @@
   {/if}
 
   {#if snapshot}<p class="announcement" role="status">{announcement}</p>{/if}
-  {#if snapshot}<p class="intent-notice" role="status">{intentNotice ? t(intentNotice, {}, era) : ""}</p>{/if}
+  {#if snapshot}<p class="intent-notice" role="status">{intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>{/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>
   {/if}
@@ -653,7 +681,7 @@
     <MetersSurface arm={liveFeatures.meters} {era} />
   {:else if surface === "reputation_tree" && liveFeatures?.reputation}
     <ReputationTreeSurface arm={liveFeatures.reputation} {era} {pending} controlsEnabled={founderControls}
-      onPurchase={(nodeID) => act({ kind: "purchase_reputation_node", node_id: nodeID }, { scope: "founder", rejections: REPUTATION_REJECTIONS, applied: reputationApplied })} />
+      feedback={reputationFeedback} onPurchase={purchaseReputation} />
   {:else if surface === "fiscal" && liveFeatures?.fiscal}
     <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls}
       onHarvest={() => act({ kind: "harvest_fiscal_period" }, { scope: "founder", rejections: FISCAL_REJECTIONS, applied: harvestNotice })}

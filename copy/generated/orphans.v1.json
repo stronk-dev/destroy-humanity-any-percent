@@ -428,6 +428,7 @@
     "reputation_tree.bonus.this_run_none",
     "reputation_tree.error.invalid",
     "reputation_tree.error.not_eligible",
+    "reputation_tree.error.revision_conflict",
     "reputation_tree.error.unaffordable",
     "reputation_tree.error.unknown_id",
     "reputation_tree.intro",
