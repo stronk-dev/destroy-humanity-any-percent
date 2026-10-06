@@ -7257,3 +7257,31 @@ Whole span after61d6c8eb through its final record edge needs Claude independentl
 of earlier ranges. Next safe accepted work is remaining R9 component/host states
 and advisory-plan consumer grounding, not bypassing the author/data/SQL holds.
 Full nine-tier/platform1.0 remains active; this turn made concrete runtime progress.
+
+## 2026-10-06 — R7 recovery supplement self-first-filter
+
+**Review by:** Codex (implementer self-first-filter, NOT designated review).
+**Recorded by:** Codex.
+**Reviewed range:** `61d6c8eb..8eb10d98`, all three commits/ten paths:
+bb9edc41 predeclaration,f91e9b0e diagnostic,8eb10d98 source/docs/tracking.
+**Verdict:** first-filter passes; Claude must independently review the complete
+span through this record edge. No acceptance/archival; earlier spans independent.
+
+Complete range source/tests/docs and all tracker/log diffs inspected. Runtime
+change is one per-subscription Company-start high-water plus its delivery guard;
+generic revision cursor, offset persistence, replay loop, reconnection/drain,
+auth and full-sync behavior are unchanged. Stored memory remains bounded and
+survives those paths. Original45 assertions are intact; helper defaults preserve
+their original behavior. New16 cases execute replay compatibility/cohorts,
+superseded ordering, actual1006/full-sync retention and four fresh-state refusals.
+Snapshot fixtures use the actual parser before fault injection. No arbitrary
+microtask budget, skipped failure or increased deadline. Three compiling source
+faults discriminate the named properties; restored Node/browser evidence and
+original invalid fixture outcomes remain individually recorded.
+
+Append-only comparison from61d6c8eb passes both logs; whole-range whitespace
+check and clean tree pass. Records distinguish local RP-287 correction from
+unresolved RP-283/RP-284 contracts and actual SQL/mint/full AC12. No checkbox,
+Go/copy/kernel/epoch/CI/ruling/owner prose or release status changed. Fresh
+capacity observation is not a SQL success or cleanup permission. Next separately
+ground remaining accepted R9 component/host/advisory-plan behavior; full1.0 active.
