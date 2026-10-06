@@ -12,8 +12,8 @@ automatic Fiscal funding, public unlock/plant/read/retry/substrate/uproot and pr
 forged-field/foreign refusals, preserved heads/rows and both Founder histories. Producer
 detachment and a schema-valid actual-salt leak fail. Twenty final real-DB repetitions and
 broader Garden/minigame DB plus cold Go/vet pass; no production/kernel/schema/artifact/CI
-change, kernel 0.3.153. Exact new test range starts `3e518f21^` (`20ea7b9c`), end pinned after
-commit, awaiting Claude. Earlier SG10/all other ranges and RP-222/RP-131/RP-218 remain open.
+change, kernel 0.3.153. Exact new test range `3e518f21^..4793effa` (`20ea7b9c..4793effa`),
+two commits / nine paths, awaiting Claude. Earlier SG10/all other ranges and RP-222/RP-131/RP-218 remain open.
 No mature HTTP payout/default DOM/real idle wait/public T2/full Garden/whole-CI/archival/release
 promotion. Continue remaining accepted integration review without shrinking the nine-tier
 1.0 and complete platform-floor objective.

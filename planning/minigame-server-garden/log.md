@@ -1941,3 +1941,8 @@ the restored gates above. This is **not designated approval**. New exact-range h
 that entire range independently. No checkboxes, lifecycle state or public acceptance promoted.
 Continue accepted Garden coordinator/event/replay/surface integration review; successful
 mature HTTP payout, default DOM and real-idle/public-T2 populations remain outside this proof.
+
+Committed implementation `4793effa`. Exact new test-only designated-review range:
+`3e518f21^..4793effa` (`20ea7b9c..4793effa`), two commits / nine paths. This pin is metadata,
+not a Claude verdict. No earlier pending review, owner ruling or lifecycle gate is consumed;
+no self-approval, archive, push or release claim. All verification processes are terminal.

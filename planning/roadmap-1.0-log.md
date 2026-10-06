@@ -2095,3 +2095,7 @@ No successful mature HTTP payout/default DOM/real idle tick/public T2/full G4/G6
 checkbox/lifecycle/archival/release promotion. RP-222's owner/author reconciliation, RP-131
 historical guard and RP-218 worker reliability remain separate. Continue accepted integration
 work without shrinking the full nine-tier 1.0 or its complete platform floor.
+
+Exact committed HTTP supplement: `3e518f21^..4793effa` (`20ea7b9c..4793effa`), two commits /
+nine paths, pending designated Claude review. This metadata pin grants no lifecycle/public
+acceptance; every earlier pending range remains independent. All handles terminal.

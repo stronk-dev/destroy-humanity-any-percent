@@ -14,8 +14,8 @@ outside public/immutable comparisons. Producer detachment fails; a schema-valid 
 fails the enumerator itself. Twenty final real-Postgres repetitions, broader Garden/minigame
 DB population and cold Go/vet pass. No runtime, schema, kernel, balance, copy, CI or mint change.
 
-**READY FOR DESIGNATED REVIEW, not approved:** new Codex range begins `3e518f21^`
-(`20ea7b9c`); implementation end pinned after commit, Claude required. No earlier pending
+**READY FOR DESIGNATED REVIEW, not approved:** exact new Codex range `3e518f21^..4793effa`
+(`20ea7b9c..4793effa`), two commits / nine paths, Claude required. No earlier pending
 range is consumed; SG10 correction, RP-222's authored contract, RP-131 and RP-218 remain
 separate. No successful mature HTTP payout, default DOM, real idle tick, public T2 host,
 full G4/G6/Garden, whole-CI/amd64, archival or release claim.
