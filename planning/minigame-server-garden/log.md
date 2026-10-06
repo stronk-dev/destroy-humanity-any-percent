@@ -1648,3 +1648,30 @@ RP-224 is filed immediately. Original bounded G7 `725d8662^..725d8662` response-
 **CHANGES REQUIRED**. Review by: Codex. Recorded by: Codex. Not a full G7/AC13/default-host
 or public-network verdict. Correct instruments and repeat unchanged production before
 predeclaring any repair; test-only diagnostic still controls this range.
+
+### Corrected diagnostic and separate RP-224 repair predeclaration
+
+Corrected instruments at `1bffaab2`: root TS/Svelte zero errors/warnings (69576, exit 0).
+Unchanged runtime re-run (66339, exit 1, 6.07 s): twelve passing native/sequential/unmount
+controls and twelve failing order cases, all four order arms in all three engines. The
+latest-error arm now reaches and fails its actual byte-equality oracle too. No guards/skips/
+retry-to-green. The next report changes full DOM equality's error display to a boolean
+comparison, retaining the exact same byte oracle (avoids dumping 57,041 tokens of HTML).
+
+Authority: accepted SG10's read after each command receipt and SG9's advisory read/receipt
+authority. Mechanism is request-generation admission, not new gameplay or timestamp policy:
+on every load increment a local generation; only the most recently started load may change
+view/status/announcement or schedule the next read. Guard both success and failure, retaining
+destroy guard, existing locked/error/stale behavior, callback/wire shapes and no client sim.
+Do not add retries, make stale views authoritative, alter copy, infer AC13 acceptance, or
+change timing/visibility policy. A small local counter is not a second game resource.
+
+Implement only after this separate predeclaration. Determine kernel-path authority from
+the committed registry before deciding any version change; no guard bypass or fake bump.
+Carry all eight native/lifetime/order cases and existing browser witnesses. Discrimination:
+remove the success generation guard and require the active/locked/error order cases to fail;
+remove the failure guard and require late-error-after-new-active to fail. Separately sever
+arrow navigation and require native input to fail. Restore exact source before final gates.
+Cold client/type/build/boundaries, relevant Go/corpus/DB, full native Linux three-engine and
+separate performance checks; every process terminal before source/test changes. New Codex
+range requires Claude; no archival/public activation/full G7/AC13/CI/release claim.

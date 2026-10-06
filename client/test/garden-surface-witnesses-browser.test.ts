@@ -146,7 +146,7 @@ for (const outcome of ["active", "locked", "error", "old-error"] as const) {
       if (outcome === "old-error") port.requests[1]!.reject(new Error("older read failed"));
       else port.requests[1]!.resolve(active("bare_metal", 4));
       await settle();
-      expect(target.innerHTML, "an older request must not replace the newer receipt refresh").toBe(newestDOM);
+      expect(target.innerHTML === newestDOM, "an older request must not replace the newer receipt refresh").toBe(true);
       expect(calls).toEqual([]);
     } finally { await unmount(app); target.remove(); }
   });
