@@ -3869,3 +3869,53 @@ whole new span afterd18d4e09 through this record still needs Claude. All earlier
 reviews, report provenance/refresh and actual persistence/AC13/15/release gates
 remain. No live handle, mutant, checkbox, mint, archival, cleanup, push or
 release promotion. Goal active.
+
+## 2026-10-06 — RP-267 Reference lifetime-accounting diagnosis predeclared
+
+Previous turn is progress: RP-265/266's correction and report drift are committed
+through973d983c. 37e121/349844 confirms clean main ahead9, no intervening change
+or live handle. RP-267 remains a source lead, not an executed finding.
+48d31a/e10cbc confirms accepted R10 H1's observable paid Reputation depends on
+canonical prestige lifetime accrual; the existing simulation dependencies already
+support the exact firstHourLifetimeHook used by the ordinary runner.
+
+Diagnosis/test-only population before measurement: reuse the complete-source
+RP-265 isolated legal v14 run3 fixture (actual tree/starters, cash1e3, five
+generated/zero purchased Beige Towers). Three explicit frozen-input arms are
+no row, synthetic unit and actual tree-derived1.003. For each, exercise actual
+Reference candidate adoption after one second of lazy production and actual
+bank dispatch under the declared zero-cash counterfactual. Determine the
+Reference's chosen legal candidate with its existing policy, then construct
+the independent intent through catalog class/upgrade lookup (not a copied
+prefix rule). The oracle is canonical SimulateTransition/SimulateAdvance with
+runtime.lifetimeHook and identical frozen input, cursor, revision and selected
+intent. Compare complete encoded Company states; explicitly require accrued
+LifetimeValue5/5.015, not merely disagreement with the consumer. Candidate
+selection/optimality is not tested by taking its chosen ID as the coordinate.
+The Reference consumes that candidate state; the observation is not just a
+hypothetical candidate left unadopted. Ordinary advances/intents are controls.
+
+Retain three direct zero-elapsed candidate controls, one per frozen-input arm:
+canonical hook and no-hook outputs must agree when no production elapsed.
+Starter grants remain uncredited to lifetime production; do not fabricate a
+paid starting balance. No naturally earned, SQL or modern active-play claim.
+Any fixture/admission error is setup, not an accounting defect. Cold baseline
+must execute the six actual-branch comparisons and three zero-elapsed controls.
+Before a repair, separately observe the current actual Reference seed0 treated/
+control career with the original threshold1e5, experiment, source coordinates,
+both Exits and complete outcomes; the existing opt-in current mode writes no
+reports. It does not imply H4 or full first-hour distributions passed.
+
+First range is diagnosis only: no source correction based on this start entry.
+If the numerical omission is confirmed, record it and predeclare the exact
+corrective range under accepted R10 before wiring hooks. In particular RP-265's
+existing independent full-state oracles deliberately had Routes-only dependencies;
+if actual Reference begins carrying the ordinary hook, those calls must be
+reconciled to that same canonical dependency, without dropping state assertions
+or claiming the earlier range proved lifetime accounting. Hook changes must
+preserve simulation ablation semantics and remain absent from standalone suites.
+Historical first-hour/H4/H5/threshold reports and formulas stay untouched.
+
+No H3 verdict, threshold/purchase-policy/balance change, report regeneration,
+epoch mint, owner copy, SQL/cleanup, checkbox, archival, push or release
+promotion. New complete span after973d983c still requires Claude. Goal active.
