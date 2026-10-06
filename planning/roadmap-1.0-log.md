@@ -1970,3 +1970,27 @@ remains active, with rights/privacy/accessibility/deployment/preservation obliga
 Exact SG5/AC7 test-only handoff: `0c125bec^..ca94668c` (`1dbeafbd..ca94668c`), original
 predeclaration, instrument corrections/red result and complete new evidence all included.
 Pending Claude, not designated-approved; no earlier pending range, lifecycle or release gate closes.
+
+## 2026-10-06 — Garden actual activation and retained Exit checkpoint
+
+Predeclaration `d6c2b6a2`, initial instrument correction `1aa23496`, separate due-Fiscal
+reader predeclaration `16b44c74`. New test-only work proves transitive bundle admission,
+actual New-Founder initializer and literal populated Garden across both real Service/Postgres
+Exit commands, unchanged retries, next run and both owned history axes. Forty repeated DB
+cases pass, including the deliberately due Founder Fiscal prefix and its independently
+failing removal. TS carries nonempty state on both replay axes and rejects invalid carries.
+Actual dependency and Go/TS reset probes fail, then restore exact production hashes.
+
+RP-222 is newly verified: an admitted starter promotion makes untouched carried state invalid;
+ordinary value retune succeeds. This remains an authored SG1/SG2/AC11 contract question,
+not an authorized seed-grant repair or claimed public-player failure. Initial invalid RunSeq,
+nanosecond timestamps/typecheck and the RP-207 all-stream-reader red remain disclosed.
+
+Cold Go, full client/type/build/corpus/vet/vectors/copy/boundaries/topology and full native Linux
+browsers/performance pass (22,386 / six deliberate skips, 288 file/engine populations).
+Kernel stays 0.3.152, with no runtime/balance/schema/CI/mint change. CURRENT-STATE no longer
+presents its August readiness/hosted/no-implementation statements as current HEAD.
+All new tests/records require Claude's designated pass, and previous verdict requests remain
+separate. No full G2/G3/Garden, public activation, whole-CI/hosted/amd64, archival or release
+promotion. Next: remaining accepted Garden G4–G7 review; owner/author RP-222 reconciliation
+runs separately. Full nine-tier 1.0 and the complete platform floor remain active, not preview.

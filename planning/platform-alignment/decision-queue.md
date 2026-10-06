@@ -24,6 +24,22 @@ Implementation agents may gather evidence and frame options; they may not infer 
 | **D-019** | Choose the proof required before each release to claim its new pre-upgrade backup is restorable: an isolated restore/decrypt with the off-host age identity before drain, a governed key-recipient attestation plus recurring clean-host restore drills, or another explicit contract. The present host-byte checksum and header check cannot establish decryptability; agents may not infer that it does. | RP-139's R10 source/test trace (positive backup creation with an invalid identity fixture), DP6's off-host-key constraint, measured backup size/restore time against the four-hour RTO, and R-006 empty/populated recovery evidence on the exact release manifest. | Deployment RFC DP5/DP6 and canonical operator runbook. | A truthful “working rollback before drain” claim and supported self-host/1.0 release floor; does not block the existing bounded host-byte validation. |
 | **D-020** | Reconcile Arcade AC7's required Pitch-less start with API MA-C15's owner-ruled `minigame_api → pitch` dependency: explicitly amend to tenant-independent catalog activation, or retain the dependency and have the ruling author reconcile AC7. | RP-201: freshly hashed complete catalogs with only Pitch removed refuse in both actual Go/TS loaders; unchanged complete controls load. Arcade AR1.2 retains the earlier full chain and names no amendment to MA-C15. | `rfc/minigame-api-and-surface.md` MA-C15 and `rfc/minigame-demo-disc-arcade.md` AR1.2/AR-P3/AC7, authored body reconciliation. | Full Arcade AC7/A4 acceptance; internal starts in complete Pitch-containing bundles remain safe to verify. No independent permission to change public schema, mint or copy. |
 
+## Garden starter-set evolution — RP-222 (unruled)
+
+The 2026-10-06 G2/G3 diagnostic under `d6c2b6a2` / `1aa23496` admits an epoch retune
+that promotes uncollected `strain_c` to starter. Both Go/TS loaders and transition validation
+admit it, but unchanged SG2 state fails the next catalog's starter-superset invariant; the
+actual Go foundation boundary rejects it. The ordinary harvest-value retune succeeds.
+
+The author/owner must reconcile SG1 rule 11's value retunes with SG2/AC11's byte-identical
+permanent carry and starter-superset rule. Options require an explicit ruling: make starter
+membership an epoch invariant, or define/version a specific carried-state grant/migration
+exception. Neither is inferred here. Changing ordinary balance values remains safe to verify;
+publishing a starter-changing Garden epoch and full G2/G3 acceptance remain blocked on this
+named contract question. Garden is not publicly minted; no current-player failure is claimed.
+Canonical home: `rfc/minigame-server-garden.md` SG1/SG2/AC11, reconciled by its author;
+evidence in `planning/minigame-server-garden/log.md` and `design/BACKLOG.md` RP-222.
+
 The formerly blocked GU-C25–GU-C28 authored action is complete; Game UI is archived and its
 archival transaction is designated-approved at `f199f9a`.
 

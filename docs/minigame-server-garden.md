@@ -36,6 +36,22 @@ the faucet governor and payout kernel. Everything below is fixture-first: no epo
 
 ## State and clock
 
+The actual New-Founder initializer is tested with and without a Garden pin. Both real Service
+Exit commands (`wind_down`, `accept_exit_offer`) retain literal nonempty Garden bytes on
+Postgres, including dormant/mature/immature plots and all clock/lockout metadata, and advance
+to the next run. Their retries are unchanged; both history axes verify against their own
+event ownership. The deliberately due automatic Fiscal prefix is verified on Founder history,
+not incorrectly aggregated into Company history (RP-207). TS also carries the same literal
+state through Company and Founder replay, with missing/pre-v12 carry refusals.
+
+**Unresolved epoch constraint (RP-222):** promoting an uncollected species to starter is
+currently admitted by catalog/transition validation but invalidates unchanged carried state
+under the next catalog. Ordinary numeric retunes pass. The author/owner must reconcile
+starter-set evolution with SG2's starter-superset and byte-identical carry rules before such
+an epoch can ship. No grant/migration exception or starter-set restriction is implied here.
+These bounded G2/G3 witnesses await designated review; they are not public mint, full Garden
+acceptance, a complete epoch-migration proof or release readiness.
+
 - `save.State.ServerGarden` (Founder v25) holds the hidden salt, the tick anchor and sequence, the
   substrate, the lockout stamp, the plots and the seed collection. The stage is derived: mature
   means `matured_effect_ppm != null`. It decodes strictly, with exact keys and no zero-value

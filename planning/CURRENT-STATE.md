@@ -1,13 +1,42 @@
 # Current repository state
 
-Last reconciled: 2026-08-21 through hosted CI and the designated Prestige, Leaderboards and Fiscal
-repair verdict at `440dbba`.
+Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a released or
+release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
+privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
+
+Current strategic status lives in [the 1.0 board](roadmap-1.0.md) and its
+[append-only checkpoints](roadmap-1.0-log.md). Current implementation authority lives in
+the [active RFC index](../rfc/README.md), each RFC's plan/log and the
+[executable queue](platform-alignment/execution-queue.md).
+
+Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
+Bounded catalog/codec/clock/tick/harvest/command reviews have supplied corrections and
+discriminating witnesses; their exact Codex ranges still require Claude's cross-party verdicts.
+The current G2/G3 review covers transitive bundle admission, the actual New-Founder initializer,
+both real Service/Postgres Exits carrying nonempty permanent Garden, and Go/TS replay.
+RP-222 records an unruled starter-retune/unchanged-carry conflict; no grant policy is invented.
+
+Remaining work includes Garden's broader integration/public-flow/copy/activation gates, other
+active RFC/review lanes, later tiers/endings/MMO consumers, account rights/retention, task-level
+accessibility, packaging/content rights and exact-artifact clean-host Deployment rehearsal.
+Historical kernel-guard RP-131 remains open. Local/native ARM Linux checks do not prove hosted
+amd64 or whole-CI success; RP-218's original cause/hosted reliability remains separate.
+
+Nothing here authorizes archival, push, publication, deployment or release. The initial
+capability audit is a dated baseline, not a fresh measurement of all subsequent implementation.
+
+## Historical August checkpoint — not current HEAD
+
+The remainder preserves the 2026-08-21 navigation snapshot and verdict references at `440dbba`.
+Its READY, missing-implementation and hosted-green statements describe that checkpoint only;
+use the current links above. In particular, Game UI has since closed and Deployment has moved
+past draft/no-implementation state; neither change establishes full 1.0 or clean-host acceptance.
 
 This is a navigation brief, not a second execution queue. Current authorization lives in
 [`platform-alignment/execution-queue.md`](platform-alignment/execution-queue.md), active RFC state
 in [`../rfc/README.md`](../rfc/README.md), and implemented behavior in [`../docs/`](../docs/).
 
-## Product status
+### Historical product status
 
 Cloud Clicker is a development snapshot, not a 1.0 release. The owner-selected next milestone is a
 bounded **Phase-0 Playable Preview** covering the audited T0–T1 vertical slice; its exact release
@@ -29,7 +58,7 @@ The evidence trace is in
 [`platform-alignment/capability-map.md`](platform-alignment/capability-map.md) and
 [`platform-alignment/capability-reality-audit.md`](platform-alignment/capability-reality-audit.md).
 
-## Recently closed evidence work
+### Historical closed evidence work
 
 - Q-001 Account witnesses are designated-approved at `34d04a5`.
 - Q-002 Minigame API witnesses and the separate API registry tightening are designated-approved at
@@ -62,7 +91,7 @@ The evidence trace is in
 These closures do not make their broader parent RFCs archival-eligible; the exact remaining body,
 consumer, lifecycle and range-union blockers are in the execution queue.
 
-## Release blockers
+### Historical release blockers
 
 The repository still lacks a coherent release floor:
 
@@ -78,7 +107,7 @@ The complete defect and decision populations are
 [`platform-alignment/backlog.md`](platform-alignment/backlog.md) and
 [`platform-alignment/decision-queue.md`](platform-alignment/decision-queue.md).
 
-## Current execution posture
+### Historical execution posture
 
 Prestige, Leaderboards and Fiscal audit-remediation ranges are designated-approved at `440dbba`.
 That verdict does not manufacture broader historical archival coverage or accept deferred player

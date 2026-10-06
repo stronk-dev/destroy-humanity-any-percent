@@ -1,6 +1,34 @@
 # Executable queue
 
-## Current Garden command order and due-growth refusal evidence — 2026-10-06
+## Current Garden activation and retained Exit evidence — 2026-10-06
+
+G2/G3 predeclaration `d6c2b6a2`, invalid-instrument correction `1aa23496`, separately
+predeclared Company event-reader scope `16b44c74`. Eleven transitive predecessor removals
+reject in Go/TS; complete/no-Garden/hash controls bind identity. Actual New-Founder initializer
+sets the proper floor and literal empty Garden only when pinned; pre-existing state refuses.
+Both real Service/Postgres Exits preserve populated Garden bytes, proceed run 2→3 and retry
+unchanged. Forty cold cases pass. Full Founder history includes the due automatic Fiscal
+prefix; unscoped Company aggregate and prefix-removed Founder history fail, while correctly
+scoped Company history passes (existing RP-207). TS carries the literal state on both replay
+axes and refuses missing/old-version carry. Actual dependency and Go/TS reset probes fail
+and restore exactly. No runtime/kernel/CI/mint change, kernel 0.3.152.
+
+RP-222 is an **unruled contract conflict**, not fixed by these green witnesses: both loaders
+admit a new starter that unchanged carry lacks; actual Go new-run foundation validation
+refuses it. Ordinary numeric retune succeeds. Author/owner reconciliation of SG1/SG2/AC11
+is required before starter-changing epochs or full G2/G3 acceptance. No grant policy invented.
+
+Cold Go, full client/type/build/corpus/vet/boundaries/copy/topology and native Linux browsers
+plus separate performance pass: 22,386 / six deliberate skips. Initial invalid fixtures and
+typecheck are retained in the log. This new test-only range awaits Claude; every prior
+designated-review request and RP-131/RP-218/owner/author gate stays open. CURRENT-STATE now
+explicitly distinguishes October HEAD from its preserved historical August snapshot.
+
+**NEXT SAFE ACTION:** accepted remaining G4–G7 Garden event/coordinator/view/player-surface
+review; record RP-222 author/owner ruling separately, and preserve full-nine-tier 1.0 plus
+privacy/rights/accessibility/deployment/preservation. No archive/public/whole-CI promotion.
+
+## Earlier Garden command order and due-growth refusal evidence — 2026-10-06
 
 SG5/AC7 predeclaration `0c125bec` / instrument correction `9405d75a`: fifteen shared literal
 direct commands, eight gate combinations and six real-Service/Postgres arms with due growth.
@@ -20,7 +48,7 @@ Garden/public/mint/lifecycle/hosted/whole-CI or release promotion. Prior ranges 
 Exact test-only handoff: `0c125bec^..ca94668c` (`1dbeafbd..ca94668c`), includes both
 predeclarations/corrections and the complete test/evidence change. Pending Claude, not approved.
 
-**NEXT SAFE ACTION:** accepted G2/G3 Garden bundle/floor/activation and replay review, then
+**Earlier next action (superseded above):** accepted G2/G3 Garden bundle/floor/activation and replay review, then
 remaining G4–G7. Preserve every independent-review, owner/author, accessibility, rights,
 deployment, preservation and full-nine-tier release gate; RP-131/RP-218 limitations remain.
 

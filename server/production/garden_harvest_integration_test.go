@@ -43,6 +43,12 @@ func newGardenHarvestFixture(t *testing.T) gardenHarvestFixture {
 // configure only edits admitted test genesis before CreateStream, never persisted history.
 func newGardenHarvestFixtureWithState(t *testing.T, configure func(*save.State)) gardenHarvestFixture {
 	t.Helper()
+	return newGardenHarvestFixtureWithGenesis(t, configure, nil)
+}
+
+// Both callbacks run only before CreateStream; ordinary callers retain their original genesis.
+func newGardenHarvestFixtureWithGenesis(t *testing.T, configure, configureCompany func(*save.State)) gardenHarvestFixture {
+	t.Helper()
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -86,6 +92,9 @@ func newGardenHarvestFixtureWithState(t *testing.T, configure func(*save.State))
 	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
 	company.AchievementsEarnedRun = map[string]bool{}
 	company.RunStartedAt = cursor
+	if configureCompany != nil {
+		configureCompany(company)
+	}
 	companyRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeCompany},
 		bundle.ConstantsHash, company, save.WriteContext{Cause: "garden.harvest.integration"})
 	if err != nil {
@@ -127,10 +136,10 @@ func newGardenHarvestFixtureWithState(t *testing.T, configure func(*save.State))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := save.PinRunWithGenesisTx(ctx, tx, companyRevision.StreamID, founderID, 1, bundle.ConstantsHash, save.VersionForState(company), genesis); err != nil {
+	if _, err := save.PinRunWithGenesisTx(ctx, tx, companyRevision.StreamID, founderID, company.RunSeq, bundle.ConstantsHash, save.VersionForState(company), genesis); err != nil {
 		t.Fatal(err)
 	}
-	if err := save.InsertRunFrozenContributionsTx(ctx, tx, companyRevision.StreamID, 1, frozen); err != nil {
+	if err := save.InsertRunFrozenContributionsTx(ctx, tx, companyRevision.StreamID, company.RunSeq, frozen); err != nil {
 		t.Fatal(err)
 	}
 	if err := tx.Commit(); err != nil {

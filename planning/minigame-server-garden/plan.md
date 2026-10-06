@@ -56,6 +56,18 @@ restoration is severed. RP-221 is bounded evidence, not a runtime repair or full
 acceptance. Initial wrong Company credit-count expectation is disclosed. Claude review required.
 Next: accepted G2/G3 bundle/activation/replay, then remaining G4–G7; no checkbox/lifecycle promotion.
 
+Separate G2/G3 test-only supplement under `d6c2b6a2`, instrument correction `1aa23496` and
+reader predeclaration `16b44c74`: eleven transitive bundle removals, admitted no-Garden/hash
+controls, actual New-Founder initialization and both real-Service retained-state Exits.
+Forty cold DB cases, exact permanent bytes/retries and both correctly scoped histories pass.
+TS carries nonempty Garden on both replay axes; actual loader and Go/TS reset mutations fail
+and restore exactly. The due Founder Fiscal prefix is required and independently verified,
+not suppressed. RP-222's admitted starter-retune/unchanged-carry conflict remains an authored
+contract question. Invalid initial fixtures/typecheck remain disclosed. No full G2/G3/Garden
+verdict, checkbox promotion, runtime/kernel/CI/mint change; Claude review required.
+Next: remaining G4–G7 event/coordinator/projection/player-surface review, without inventing
+starter evolution or consuming any earlier unreviewed range.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

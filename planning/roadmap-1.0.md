@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG5/AC7 command and refusal witnesses under
+**Current checkpoint:** 2026-10-06, Garden G2/G3 activation/retained-Exit witnesses under
+`d6c2b6a2` / `1aa23496` / `16b44c74`, test-only, designated review pending. Actual Go/TS
+bundle admission, New-Founder initializer, populated permanent Garden across both real
+Postgres Exit intents, unchanged retries and both owned histories pass. Twenty repeats of
+both DB arms pass (40 cases); TS covers both replay axes and invalid carries. Actual dependency
+and Go/TS reset mutations fail and restore. RP-222 is a newly verified, unresolved authored
+starter-retune/carry contract conflict, not a runtime fix or a shipped-player failure.
+Initial invalid instruments and the known RP-207 event-reader recurrence are retained.
+Cold Go/client/type/build/corpus/vet/copy/topology and full native Linux browsers/performance
+pass (22,386 / six deliberate skips). Kernel stays 0.3.152; no runtime/CI/mint change.
+CURRENT-STATE's August snapshot is now explicitly historical, not HEAD. Next: remaining
+Garden G4–G7 accepted review while all previous cross-party/owner/author gates remain.
+Proper nine-tier 1.0 and its complete platform floor stay active; no preview shortcut or
+full-Garden, hosted/amd64/whole-CI, archival or release claim.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG5/AC7 command and refusal witnesses under
 `0c125bec` / instrument correction `9405d75a` (implemented `ca94668c`, exact test-only span
 `0c125bec^..ca94668c`, designated review pending).
 Fifteen direct commands and eight gates agree in Go/TS. Six real-Service/Postgres arms prove

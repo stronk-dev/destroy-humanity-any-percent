@@ -1362,3 +1362,75 @@ the unscoped Company aggregate must fail, and deleting that prefix from a cloned
 history must fail. No unknown events may be suppressed, and no verifier/runtime is edited.
 The historical helper and unrelated callers stay unchanged. These controls prevent improving
 the fixture's timing or filtering away the failure to hide the independent Founder obligation.
+
+### G2/G3 executed bounded review and final gates
+
+Review by: Codex (reviewer of original Claude G2/G3; new witness implementer first filter).
+Recorded by: Codex. Selected source provenance: G2/G3 `415bea4d`, with the existing
+G4 `0759fcaf` carry/Exit integration. This is not full-span approval of either commit or
+full Garden acceptance. Valid-state paths in this population pass; RP-222 remains an
+author/owner DESIGN-GAP preventing unrestricted starter-changing epoch acceptance.
+
+Eleven transitive scalar-chain removals reject through both real Go/TS bundle loaders.
+Matched complete and Garden-absent chains load; label mismatch and a pointer without bytes
+reject. Existing Fiscal cross-artifact refusal and original activation/replay corpus remain.
+The actual `FounderInitializer.InitializeNewFounder` (not foundation helper alone) compares
+all seven fields against literal empty/default/two-starter/null-clock state, sets Founder
+25 only when pinned, retains the same Company floor, and refuses pre-existing Garden.
+This is method-level initialization proof, not a whole account/player onboarding workflow.
+
+Both `wind_down` and `accept_exit_offer` go through real Service/Postgres with admitted
+genesis: nondefault substrate, salt/anchor/tick/lockout metadata, retained nonstarter seed,
+immature/mature and deliberately dormant-coordinate plots. Garden bytes match the independent
+literal before and after; run 2→3 and Founder/Company revisions 2/3 are real. Identical retry
+leaves complete permanent state unchanged. Every Fixture callback runs before CreateStream;
+old callers still take the nil Company callback and their original run-1 pin.
+
+The one-minute-old Founder produces exactly one real due Fiscal prefix and nonzero credit.
+Full unfiltered Founder history verifies; deleting that prefix from its cloned events returns
+state_divergence. The historical all-stream Company aggregate deterministically diverges;
+the newly predeclared reader excludes only the Founder Fiscal prefix and its Company history
+verifies. Unknown/base Founder/Company events are retained. Existing helper and runtime
+verifiers are byte-unchanged. Initial invalid fixtures/typecheck and the red reader invocation
+remain recorded above, not rewritten into green evidence.
+
+TS independently chosen populated Garden bytes survive Company and Founder replay, with a
+real next run and applied outcomes; missing Garden and pre-v12 carry refuse. Existing empty
+activation corpus is a separate retained population. Numeric retune passes Go's actual
+foundation boundary and both runtime state validators; the admitted starter promotion fails
+untouched carry and Go's actual boundary without changing Garden. No live epoch was published.
+RP-222 routes to authored SG1/SG2/AC11 reconciliation; no seed grant or new restriction is chosen.
+
+**Executed serial discrimination:** severing the actual Go Garden→Cosmetics admission check
+fails the new removal arm (ten others still pass). Injecting Garden reset into the real Go
+new-run foundation transition fails both Service Exit arms with live Founder state parity at
+server_garden; the existing live guard refuses the reset before persistence. This is pipeline
+discrimination, not a claim of observed committed corruption. Injecting the reset into TS
+Company carry fails the new exact literal byte oracle (one failure, 7,361 other passes).
+All probes compile/run and each is restored before final gates.
+
+Restored SHA-256: Go foundations
+`7bdeb4e5db7dd180645f3b0d5971a45b7ba9e0d392369c894f16856f520520e6`;
+Go replay catalog `f5e6dbd8e160e21a9c7a420d2c233ee3d412d4f91eb3f90aad4ff541229bab45`;
+TS replay `ebe2e60186f8abbd28828a4a2bdfee13d216b2d4f00b125fdf663b52da16dc94`.
+No residual runtime diff.
+
+**Restored gates:** twenty cold two-arm DB repetitions pass (40 cases, 7.204 s).
+Full declared Postgres Garden selector runs fourteen functions, every DB arm non-skipped,
+2.627 s. Cold root Go Garden/production/save/replaycatalog passes
+0.263/51.591/0.348/0.502 s. Root client 7,362 / 106 existing deliberate Node skips; zero TS/
+Svelte diagnostics, 213-module build. Existing engine corpus byte-unchanged (0.087 s), full
+vet, client boundary, vectors/copy/content manifest and CI topology/13 negatives pass.
+Full cold native Linux Chromium/Firefox/WebKit passes 22,386 / six deliberate skips,
+288 file/engine populations (52.98 s); separate fresh Chromium performance passes
+2.73 s invocation, 499 ms test. No source/test edited during final verification.
+
+First filter covers the complete new net test/fixture/docs/tracking range from `ea160ac9`.
+No production/kernel/balance/copy/schema/replay-version/CI/mint byte changed; kernel stays
+0.3.152. No existing acceptance checkbox or review verdict consumed. CURRENT-STATE's stale
+August assertions are explicitly historical beneath current October navigation, not falsely
+promoted. RP-222 is in the shared backlog/decision queue; board and executable queue agree.
+No fresh hosted/amd64/whole-history/whole-CI, full G2/G3/Garden/public, archive or release claim.
+All previous pending cross-party/owner/author/rights/accessibility/deployment gates remain.
+Ready for Claude's exact-range designated review, not implementer approval or archival.
+Next accepted work: remaining Garden G4–G7 event/coordinator/view/player-surface review.
