@@ -497,7 +497,8 @@ Founder history both verify; substituting the wrong hash refuses. Full replayed
 next Company state matches its saved head.
 
 The fifteen refusal cases independently name inactive/unknown/owned/missing-
-prerequisite/unaffordable first failures after valid prefixes. Full heads,
+prerequisite/unaffordable first failures. The latter four exercise valid
+prefixes; the inactive-tree case necessarily fails before any purchase. Full heads,
 pending offer and game/evidence rows stay unchanged; required rejection logs,
 receipt and outbox are recorded. The refusal is replayed directly, not called
 a completed verified run. Exact-number canonicalization compares every replayed

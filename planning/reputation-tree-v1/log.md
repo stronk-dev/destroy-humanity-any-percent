@@ -8787,3 +8787,9 @@ records needs designated Claude review, earlier independent spans still pending.
 Next accepted safe work: census separate R8 cross-pin/first-failure Go/TS evidence,
 predeclare missing cases; this SQL test is not that portable corpus. Full
 nine-tier/platform goal remains active/progress; all previous holds intact.
+
+Self-filter catches one prose overstatement in92340ad7: inactive-tree refusal
+cannot have a valid purchase prefix. Clarify the canonical evidence paragraph:
+the four unknown/owned/requires/unaffordable arms exercise valid prefixes; the
+inactive arm fails before any purchase. Test expectations/counts/source/gates
+unchanged. Forward record correction, no hash rewrite or acceptance promotion.
