@@ -408,3 +408,40 @@ review must include this record commit too; the closing relay names that full
 literal endpoint. No independent verdict is transcribed or implied, and no
 earlier Garden/Account/Transport range is consumed. Final tree clean after the
 record; all checks/diagnostics terminal, production controls unchanged.
+
+## 2026-10-06 — R-011 primitive wave start, no renewal implementation
+
+Revalidated `39f95329`, clean main eleven commits ahead of the observed remote;
+no new Claude verdict or owner adoption appears. Previous turn is progress: real
+controlled-expiry evidence plus the explicit draft. Full prior designated-review
+request is `b68190f9..39f95329`, not just its substantive tip; it stays independent.
+
+R-011's shared predeclaration is now refined before any measurement: use the
+unchanged declared Playwright/Linux Compose runtime, three actual browser engines,
+four arms × ten repetitions per engine (same-name exclusive lock; no-lock control;
+different-name control; same-name isolated-browser-context control). Each arm
+records actual central-observer entry/exit order and maximum concurrent holders.
+Exclusive must peak at one; each deliberately independent/unlocked control must
+peak at two while both holders remain blocked on explicit test release. Query
+native pending/held locks to prove real contention, not absence inferred from a
+short sleep. Ten additional owner-page-close repetitions per engine require a
+queued successor, observed close start, then actual successor acquisition and
+completion. This is page termination, NOT full browser/OS process crash.
+
+Per-engine synthetic localStorage write/read must be shared between same-context
+pages, absent in an isolated context, then visible after replacement-owner reload.
+No production credentials, API, runtime coordinator, marker policy or player copy
+exists in this primitive instrument. Record engine/version/UA, OS/arch, secure
+context/API availability, exact 120 arm + 30 termination completions, all traces,
+guard/exclusion/error fields and instrument SHA. A watchdog firing invalidates
+the observation; its ceiling is not a proposed production timing budget.
+
+Retain a root manual research target outside CI/verify and a generated observation
+artifact. The script must fail if exclusive ownership is deliberately bypassed,
+if any overlap control cannot overlap, or if a holder/successor/population never
+completes. Restore its bytes before the final full research population. Retain
+initial failures honestly; only completed populations authorize primitive selection
+research, not session safety, unsupported/mobile/storage-denial behavior, natural
+Garden maturity or implementation/owner adoption. Do not edit while handles live.
+No accepted-body/production/auth/TTL/revocation/kernel/catalog/schema/CI/checkbox/
+archival/push change; mandatory cross-party review remains pending.
