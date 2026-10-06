@@ -913,3 +913,15 @@ negative-control evidence, never quietly remove AC6 or tolerate its failures.
 Claude must cover the entire new span afterb54fc7ef, INCLUDING this following
 record edge; older independent spans remain live. Full nine-tier/platform1.0
 active, no owner/body ruling, archive/mint/push/deploy or release action.
+
+## 2026-10-07 — R-012 producer/SQL third-wave predeclaration
+
+Previous goal turn: progress (paired anchor/codec comparison committed).
+Baseline9050fe4d clean; no live verification handle or probe. Actual rate
+assembly retains intermediate precision; existing save storage is jsonb. Both
+seams are declared before measurement:64 actual producer profiles,1215 temporary
+SQL round-trips/16 SQL negatives, separate artifacts/writers, exact validation
+and typed refusal provenance, scope/limits in plan.md. Read process/current
+index/instructions and relevant unchanged producers/save/database/Compose code.
+No owner question answered by automatic continuation; full1.0 active. No
+production or old-corpus edit/acceptance/kernel/balance/body/CI change authorized.

@@ -225,3 +225,63 @@ faults fire semantic negatives, source/artifacts restored exactly. Client9434
 pass/340skip/types/vet clean; production retains27/128 red acceptance cases.
 No checkbox or production contract promotion. anchor-research.md records scope,
 negative evidence and next live-producer/SQL/offline/provision/migration seams.
+
+## R-012 third wave — actual rate producers and jsonb fidelity
+
+Predeclared at9050fe4d,2026-10-07, before measurement. Test-only, no production,
+numeric/save/kernel/old artifact/balance/CI/body changes. A new generation-only
+root Make lane may pass the SQL writer switch into the existing declared Docker
+test service; it must have no automatic CI/verify dependencies or budget changes.
+
+CPU population:64 actual admitted Company producer profiles,8 generator counts
+(1,2,9,99,12345,123456789,1234567890123,MaxExactInteger) ×2 efficiencies(1,.9)
+×4 elapsed milliseconds(2000,3114,2045,60000). Use the admitted x6/owned-PR1
+diagnostic state, set purchased-total consistently to count, initial cash0 and a
+test-local cash cap1e100(rehash/admit). Freeze all original fixture/golden bytes.
+
+For each profile:actual assembly/Rates; actual Evaluate cash; primitive accrual
+of original raw rates; the same operation after each rate is serialized to its
+twelve-digit canonical string; original existing Company Encode/Restore plus
+re-derived rates. The restored existing context must preserve each raw rate and
+actual delta exactly. Report all raw/rounded/context/engine outcomes and raw
+mantissa round-trip diagnostic strings/IEEE bits, not newly permitted save wire.
+TS independently consumes diagnostics through pinned Decimal and compares raw
+primitive arithmetic and canonical-rate accrual. This is scalar diagnostic
+parity, not served TS producer or naturally reachable gameplay evidence.
+
+Every64 cell must be reported; admission errors are explicit instrument failures,
+not skipped counts or permission to weaken validation. Do not demand a positive
+rounding-difference count merely to validate the hypothesis:zero is a valid
+research result. The actual-engine/primitive/context bindings still must agree.
+Go/TS source pin and complete census require exact reproduction; generation
+refuses failed bindings. Save the result in a separate new corpus.
+
+SQL population:all1215 valid serialized snapshot instances from the frozen
+second-wave artifact plus all16 existing malformed/framing payloads. Run ONLY
+against the declared Postgres16 service; missing DB under generation is invalid,
+ordinary host skip is explicitly NOT EXECUTED. Record actual server version,
+runtime platform and selected source identities. Never print credentials.
+
+Write the1215 objects into a new transaction-local temporary jsonb table and
+read every row back in declared ordinal order. No migration, live save/table
+write, truncate or cleanup authority. Rollback owns the temporary table. Compare
+the existing strict byte-framed decoder with a TEST-ONLY logical reader:
+strict known-field/type/EOF decode, canonical re-encoding, then the existing
+recomputed-state validation. Logical reader must preserve the complete original
+snapshot exactly, not only visible cash. Strict-vs-SQL results are observations,
+not a new adopted wire policy. Record normalized JSON and all statuses.
+
+Each of16 negative payloads traverses an actual SQL jsonb cast under a savepoint.
+Record typed SQLSTATE22P02 for syntactically invalid JSON; unrelated errors are
+invalid measurement, never successful refusals. Record every post-SQL decoder
+admission/refusal, distinguishing logically unchanged ordering/duplicate-equal/
+whitespace normalization from corrupt fields. This comparison cannot authorize
+accepting unvalidated transport bytes or assume SQL preserves duplicate history.
+
+Both reports are separate source-pinned artifacts; no host-only CPU writer can
+create SQL evidence. All populations/controls and provenance must complete before
+their writer can run. Next decisions/contracts follow results; no retrospective
+expected-output change, old-schema field, tolerance, acceptance/status/checkbox,
+whole-CI, SQL Service/Store/replay, offline/provision/1.0, archive/mint/push/deploy
+claim. Entire new range after9050fe4d needs Claude independently; prior holds
+and pending reviews remain. Full nine-tier/platform1.0 goal unchanged.
