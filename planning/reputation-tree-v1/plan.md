@@ -13,6 +13,28 @@ sandbox socket failure and narrow rerun disclosed. New Go producer tree
 Full span after3df3ff32 needs Claude; no acceptance checkbox changes. Next ground
 RP-284 consumers, RP-283 author contract gap; all full1.0 holds remain.
 
+## RP-284 bounded event-reader supplement — 2026-10-06
+
+Implement only accepted R7's existing `run_started` v1/v2 payload reader and
+its runtime delivery, including the HTTP-snapshot-first race. No new wire,
+RunEndSurface prop, snapshot-derived terminal rendering, automatic navigation,
+copy, payout calculation, balance mutation, cursor policy widening for other
+events, or acceptance checkbox. The older Game UI GU-C3 payload-only boundary
+and Reputation R9's post-Exit balance requirement need author reconciliation
+before the display bridge changes. This supplement is not the RP-284 UI fix.
+
+Predeclared population: absent/null/object tree arms; canonical >=1 factor;
+unique starter IDs in producer array order (not lexical order); exact base,
+assisted, run-ID and tree fields. Refuse malformed fields/types/coordinates,
+noncanonical/below-one/out-of-state-range factors and duplicate/invalid IDs.
+Runtime controls cover event-first, snapshot-first, wrong Founder, old/future
+run, duplicate channel offset, and malformed summary taking existing resync.
+Demonstrate baseline failures, then compiling reader omission, summary
+validation omission, and snapshot-first delivery omission. Restore exact bytes
+after each terminal result. Root client types/build/unit/boundary/copy gates;
+record inherited history/Firefox/SQL/mint holds separately. Full range after
+`0ae1fa11` requires Claude; no archival or whole AC12 claim.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

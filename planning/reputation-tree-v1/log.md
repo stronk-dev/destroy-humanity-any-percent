@@ -6965,3 +6965,38 @@ diff before commit, moved to EOF, and39de4e byte-prefix check proves both logs
 append-only. Whitespace f20b75 passes; current tree otherwise clean. No checkbox
 flip or full game/platform acceptance. Next separate RP-284 consumer/author
 bridge grounding; full1.0 goal stays active.
+
+## 2026-10-06 — RP-284 producer ground and bounded reader predeclaration
+
+Clean start `0ae1fa11`. Accepted R7 already emits run_started v1 (tree absent)
+or v2 (null/object). Production prestige.go writes the post-plan frozen factor
+and applied starters in artifact order. save/intent.go validates exact fields,
+canonical state-valued factor >=1 and unique mechanical IDs. Outbox migration42
+marks ordinary events advance, not historical. Client events.ts ignores
+run_started entirely; runtime additionally suppresses an event whose Company
+revision was already sampled by HTTP. Existing run_ended has a bounded
+same-Founder/exact-successor exception. No summary consumer currently exists.
+
+R9's balance display is a separate DESIGN-GAP: ended has payout delta, not
+available balance; founder_advanced has delta too; receipt state is Company
+wire, not the v4 Founder feature. Existing authoritative v4 snapshot reads
+latest Company then sibling Founder, not an Exit-bound balance row. The older
+Game UI archived GU-C3 explicitly forbids a snapshot parameter on RunEndSurface
+and a compile-time negative enforces it. R9 requires available after Exit but
+does not reconcile that boundary. Do not relabel an arbitrary later Founder
+balance or old balance plus advisory plan as the exact Exit balance; route
+bridge/body reconciliation to the author. Also docs/game-ui.md's claim that
+next-run snapshot binds only on Continue is stale: act already refreshes every
+applied Exit; bindSnapshot leaves the terminal surface intact. Source finding,
+not a reproduced navigation failure. RP-283 remains an independent payout gap.
+
+Proceed with only the R7 reader/delivery supplement predeclared in plan.md.
+Tests first: absent/null/object positives with intentionally non-lexical
+starter order; exact-shape/type/identity/canonical-factor/duplicate-ID refusals.
+Controlled real runtime covers both HTTP/event orders, wrong-Founder/old/future
+duplicate controls, channel-offset dedup and malformed summary resync. Baseline
+must fail; compiling reader/validation/race omissions must fail independently.
+No UI fixture or whole browser/SQL/mint claim. Root client checks after exact
+restoration; inherited RP-131/Firefox and all owner/data/platform/review holds
+remain. Full span after0ae1fa11 needs Claude; no checkbox/copy/kernel/numeric/
+schema/CI/security/archival/publication/deployment/push or goal promotion.
