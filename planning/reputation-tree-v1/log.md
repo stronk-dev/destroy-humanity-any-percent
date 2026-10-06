@@ -4595,7 +4595,7 @@ Predeclared test-only diagnosis, before changing either implementation:
 
 1. Exercise PaidReputationAtFirstElectiveExit using a clearly synthetic ordered
    pair: run1 scripted_first lifetime1e6, run2 collapse lifetime1e8, candidate
-   threshold1e6. Compute the hand expectation from published square-root level
+   threshold1e6. Compute the hand expectation from published cube-root level
    and policy modifiers. Legal controls additionally use zero lifetimes and
    the retained complete report (historical, not a fresh producer). Corrupt
    sequence/order, duplicate scripted/collapse samples, an extra/unknown sample,
@@ -4623,3 +4623,54 @@ No H2 pass or fresh H1 report inferred from historical arithmetic. RP-263
 lineage, RP-268 artifact authority, fired H3/H4/H5, actual SQL/capacity and
 prior reviews remain. Whole new span after9f5b81a0 needs Claude. No box, mint,
 archive, push, cleanup or release claim; proper1.0 goal stays active.
+
+Predeclaration correction before any diagnosis:7b03fa reads the actual prestige
+math, which uses floor cube-root, not square-root. The original wording was
+my recall error and is reconciled above, not an owner formula change. At the
+declared synthetic1e6/1e8 pair and threshold1e6, levels1/4 yield elective
+floor((4-1)*0.75)=2. Policy bytes d0fab4 give scripted1.0/collapse0.75.
+
+## 2026-10-06 — RP-269 baseline and bounded correction scope
+
+All handles terminal before this record. 3f0118..ad0dcb,session97278,
+terminal exit2,0.365s:42 named children. Synthetic known-paid2 and zero
+controls pass. Eight of16 corrupt Exit profiles still pay2: reversed, wrong
+scripted0/2 sequence, wrong elective1/3 sequence, duplicate each kind and
+unknown extra. Eight missing/kind/lifetime cases already refuse: four typed
+ErrReputationMeasurement, two raw canonical-decimal errors and two raw prestige
+arithmetic errors; no panic. No runtime/product outcome was measured.
+
+Study-side generic invocation admits19 of21 corrupted sources; only failed
+and empty reject. Existing full-source H3 oracle rejects20 but admits aggregate
+source corruption, now RP-270. Three legal controls pass: retained full input,
+generic two-persona/two-row subset and reordered full input. Historical report
+arithmetic is not fresh H1 production or threshold ratification.
+
+Bounded correction, declared before source edits:
+
+- Payout reader admits exactly the ordered first-hour pair: index0/run1/
+  scripted_first, index1/run2/collapse. No duplicates/extras/searching for a
+  later collapse. Preserve canonical parsing, nonnegative arithmetic, zero
+  lifetime legal control, formula/modifier/threshold and returned payout.
+- A test-side study wrapper admits source through the existing full-population
+  oracle, additionally matching aggregate schema/scenario/hash/constants
+  coordinates to the declared suite. Bind the actual pinned measurement caller
+  and source-corruption tests to it. The generic calculator retains arbitrary
+  legal populations; subset control continues to use it directly. Do not alter
+  the shared H3 oracle in this range: RP-270 stays a separate instrument route.
+- Existing retained report and30-point calculation must remain byte-identical.
+  No report regeneration/source refresh flags. No claim aggregate value arrays
+  are re-derived or the historical producer freshly ran. No new public schema.
+- Cold focused diagnostics/legacy threshold/H1/H3 tests, fast harness/core/vet.
+  Independently compiling Exit cardinality/sequence/kind, full-source and
+  aggregate-coordinate omissions must fail and restore exactly; if a guard
+  survives, disclose and repair its fixture before claiming discrimination.
+  No source or record edit while any handle lives.
+
+Only reputation_threshold.go and test-side measurement/admission files plus
+canonical docs/shared tracking. Harness-only, kernel161 unchanged; no actual
+product source, balance/math/migration/schema/CI/owner copy/corpus/report edits.
+H3/H4/H5 acceptance remains RED/open; no need to relabel a costly career repeat
+as required evidence for this H1/H2-only boundary. Fresh H1/H2/lineage, RP-268,
+actual SQL/capacity and prior reviews remain. Complete new span after9f5b81a0
+needs Claude. No checkbox, mint, archive, push or full1.0 promotion.
