@@ -8641,3 +8641,28 @@ this record edge; earlier independent implementation/supplement spans remain
 pending. This first-filter never archives or labels itself cross-party. Next
 accepted work: remaining R6 refusal/next-bundle activation census, then
 predeclare missing evidence. Proper full1.0 goal remains active/progress.
+
+### R6/R7 persisted activation/refusals — predeclared 2026-10-06
+
+Previous goal turn progress (offered parity through e5a69731), clean/no live
+handles. Accepted R6/R7/R8/AC9/AC11 revalidated against actual next-bundle
+resolver, dry-run/apply, seed/pin/epoch integrity and both history consumers.
+Pure/shared WindDown activation exists, and diagnostic same-tree SQL offer/
+career/rollback evidence exists. No dedicated Reputation persisted old v21
+pin→new tree boundary or full plan-prefix refusal matrix found in actual
+production populations. RP-299 registered immediately, not a claimed defect.
+
+Use24 profiles above, three commands × eight arms. Nine activation positives
+with mid-run inactive purchase control, fifteen explicit whole-Exit refusals,
+all exact retries. Old epoch closes normally and next fixture epoch appends
+only in disposable DB; no same-epoch artifact addition/minted source edits.
+Initial earned6/stored promises0/run2/tier3 are diagnostic, not naturally earned
+progression. Actual saved heads/pins/frozen/events/logs and public Founder/
+completed Company verifiers are mandatory; refused current run remains
+nonterminal, compared directly instead of promoted to completed verification.
+Compiling current-vs-next, skipped application and refusal-detail source faults
+must fire unchanged tests; exact restores and broad cold gates before closeout.
+No new skill/delegation, product rules/copy/epochs/CI or acceptance boxes.
+Full span aftere5a69731 including final records needs Claude; earlier holds
+and full proper1.0 goal remain active. Next pure cross-pin Go/TS refusal census
+stays separate from this real-Postgres proof, not silently claimed by it.

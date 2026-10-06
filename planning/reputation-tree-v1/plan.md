@@ -671,3 +671,41 @@ Claude; old corpus untouched and prior spans independent. RP-298 records this
 bounded evidence, not full R8/AC9/browser/default-player/CI/release closure.
 Next audit actual remaining R6 refusal/next-bundle activation parity before
 predeclaring missing populations. Full1.0 goal and previous holds remain.
+
+## R6/R7 real-SQL activation/refusal matrix — predeclared 2026-10-06
+
+Start e5a69731; RP-299. Three commands (WindDown/Acquihire/Acquisition) ×
+eight profiles: activate-plan/activate-absent/activate-empty, next-inactive,
+unknown-after-valid-prefix, owned-after-valid-prefix, requires-after-valid-
+prefix, unaffordable-after-valid-prefix. Exactly24 cases, nine applied/fifteen
+refused. Diagnostic run2 tier3, initially earned6, no natural pacing claim;
+stored offers with zero payout promise are diagnostic, not live generation.
+
+Activation starts with current live v21/tree absent, next fixture tree v22,
+distinct hashes and separate disposable epochs (close old normally, append new;
+no same-epoch artifact addition, no repository mint). Before Exit, direct
+purchase must refuse inactive while latest bundle has tree: full head unchanged,
+recorded Founder rejection, no mid-run activation. Exit plan6 or absent/empty
+activates only at new-run boundary. Applied cases require exact head revisions/
+versions/hashes, old completed run pin unchanged/new run3 next pin, ordered
+purchase events and exit.v2 only when planned, starters/frozen1.003 or unit/
+run_started summary, full Founder history and completed old-run verification.
+Copied current-hash substitution must refuse cross-pin history/run evidence.
+
+Inactive profile uses absent-tree next bundle, no invented retirement. Other
+refusals use current/next tree with explicit independent first-failure category/
+detail. Valid prefix must never persist: both full heads, old pending offer and
+game/evidence table values unchanged; rejection logs/receipt/outbox must exist.
+Exact retry compares full twelve-table snapshot for every case. Rejected current
+run is incomplete: compare its recorded decision directly, not a fabricated
+ReplayVerified completion. Use real Service.Handle and declared Postgres; seed
+only initial diagnostic streams, never later heads or immutable evidence.
+
+Predeclare compiling faults: use current rather than next bundle for plan
+validation; skip post-activation plan application; corrupt wrapped rejection
+detail. Require unchanged tests to discriminate; record earlier defenses and
+unreached populations honestly. Restore exact production bytes after each
+terminal result, then full production Integration selector, relevant complete
+Go/vet, existing corpus/client/type baselines. Test/docs/records only, no runtime,
+schema/migration/balance/copy/kernel/CI/checkbox/archive/push authority. Full
+new span including records needs Claude, earlier ranges remain separate.
