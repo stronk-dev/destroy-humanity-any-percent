@@ -6277,3 +6277,44 @@ edge must join Claude's full range afterb8ee639f; all earlier spans independent.
 Next safe accepted work: ground/predeclare RP-279 all-state Amount costs, with
 RP-281 tooling repair separately queued. No cleanup, publication/deployment,
 push, goal completion or reduced nine-tier/platform1.0 promise.
+
+## 2026-10-06 — RP-279 persistent row cost diagnostic predeclaration
+
+Resume at22e03946 clean main. Previous goal turn is progress: RP-278/280 host
+feedback/key correction, executed native/negative evidence and tracking commits.
+AGENTS/process fully reread; active index still accepts Reputation. RFC/design
+refs unchanged since020a25c6. R9 explicitly requires title/body/Amount cost/
+requirements/state/control in that order. Existing renderer has cost only inside
+available Buy copy, no Amount; Confirm removes that only cost. RP-281 formatter
+debt is a separate tooling lane, not permission to broaden this UI range.
+
+Ground actual Amount, canonicalString, Standard notation goldens and shared100ms
+render scheduler. Follow the existing Desk's standalone Amount pattern: no
+invented cost caption, reused Buy-as-label on owned nodes, new prose/key or
+formatting rule. Owner copy remains pending. Numeric/Amount/scheduler themselves
+must stay byte-unchanged; consume their published boundary rather than String(cost).
+
+Add controlled component native diagnostic (NOT host/HTTP/SQL/minted content).
+Two coherent arm populations: small costs1/2/3/5, and notation-boundary
+999/1000/12345/999950 with independent literal expected output999/1.00 K/12.3 K/
+1.00 M. Each includes owned/available/locked/unaffordable rows, valid prerequisite
+order, adequate available budget for its available node and a truly unaffordable
+last node. Diagnostic large costs are not candidate data/adoption. Both eras.
+
+Static cases require exactly one Amount output per row in artifact order,
+visible/non-hidden, correct independent literal text, before requirements/state/
+controls; only available row has a Buy control. Lifecycle population adds native
+Enter/Space × owned/available authoritative outcomes in both eras/populations.
+Verify cost persists through Confirm, Escape, resubmission, held purchase/refresh,
+authoritative replacement and task settlement; row/focus/state remain server-prop
+derived and published formatting remains unmodified.20 cases/engine,40 new total.
+Run unchanged-source baseline first; existing58 child/56 host are later controls.
+
+No source/manual file edits while any test/probe/tool handle is live. Native
+chromium/webkit only; unexecuted Firefox remains RP-256, not waived/skip-added.
+Then separately predeclare correction and compiling negatives before source.
+Root cold types/build/client/boundaries/copy and separate historical kernel guard;
+no full CI/AC12/AC15/mint/SQL or assistive-user-study claim. Full new span after
+22e03946 needs Claude including final record edges; all prior ranges independent.
+No numeric/kernel bump, balance/report/copy/transport/CI/schema/auth change,
+checklist flip, archive, cleanup, publication/deployment/push or goal completion.
