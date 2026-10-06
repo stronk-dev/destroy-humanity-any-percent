@@ -5708,3 +5708,33 @@ Full range after5c93ff6f, including these artifacts/records and final edge,
 needs designated Claude review; every earlier range is separate. No production
 math/balance/kernel/CI/corpus/owner-copy change, checkbox, acceptance, archive,
 cleanup, deployment, publication, message to Claude or push. Full1.0 goal active.
+
+## 2026-10-06 — Dated career observation self-first-filter
+
+Review by: Codex (implementer; self-first-filter, not designated).
+Recorded by: Codex.
+Reviewed range: `5c93ff6f..5e9b9c6a` — all three commits/all14 paths,
+including predeclaration, both test files, three generated reports and records.
+Verdict: ready for designated review; no acceptance or archival approval.
+
+Read full source/tracking diff (c5cbbf/b09c12/c1868e), confirmed scope fe8972/
+153e5a and whitespace3389ae/bfefc0. Only new Go test files; shared producers,
+strict gates/estimators and all old report/data/runtime/kernel/CI bytes remain.
+Exact-declaration admission, whole recomposition and cross-report baseline
+binding discriminate independently through compiling omissions. Synthetic
+controls are never labelled earned. Both complete native executions and exact
+raw-byte equality authenticate this declared observation; they do not create
+the missing named career artifact, owner policy, public epoch, run4/SQL/player
+workflow, independent review or whole-platform readiness. H4 FAIL is retained,
+not disguised by the green measurement test. Earlier H1/H2 remain historical
+producer evidence; no freshness restamp. Exclusive outputs and dirty/unknown
+selectors were actually exercised. No mutation/edit under a live handle.
+
+Committed-HEAD retained-artifact check at5e9b9c6a,root `make test-go`, harness,
+exact Artifacts selector,`-count=1 -v`:5c4916/84cdc1,session74634,terminal
+exit0,0.651s (validation, not another full producer execution). Server/balance
+trees de848f remain c3d6616e/cd982b7c. All handles terminal before this record.
+This record edge also belongs in Claude's full designated span, independently
+of every earlier pending range. Next accepted R9/AC12 consumer grounding stays
+queued; no owner-copy change, checkbox, acceptance, archive, cleanup, deployment,
+publication, message to Claude, push or goal completion. Full1.0 goal active.
