@@ -174,6 +174,20 @@ Restoring handler-time projection fails the skewed-clock cases; removing the dis
 fails the full-Founder non-mutation oracle. Kernel 0.3.153 records this runtime correction.
 Designated review remains pending; this does not establish full G6/Garden or public activation.
 
+RP-226 adds a fixture-only composed HTTP witness, rather than treating the inactive response
+as proof of active integration. Two actual HTTP-created accounts use the real token/registry/
+Production/Postgres path. Empty v25 starter Genesis has zero Fiscal credit; real automatic
+Fiscal reporting funds the public unlock, then plant/read/retry/substrate/uproot and immature/
+forged-field/foreign refusals exercise the live route. Reads bracket database time and leave
+both accounts' eight persisted row populations unchanged (outbox delivery metadata is explicitly
+excluded); refused commands preserve all four Founder/Company heads. Complete Founder
+histories replay, and served views/receipts plus scoped event/outbox payloads exclude hidden
+keys and the actual salt. A schema-valid planted salt leak fires the enumerator, not just the
+schema firewall; detaching the composed producer also fails. Private Founder replay inputs
+are intentionally excluded from public enumeration. Twenty final repetitions pass against
+real Postgres; new test range requires Claude. No runtime/epoch/content change, mature HTTP
+payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release claim follows.
+
 ## Client surface
 
 `client/src/game-ui/garden/GardenSurface.svelte` is the SG10 surface:
@@ -217,6 +231,7 @@ passes; earlier failures remain evidence, not a claim of general hosted reliabil
 - `production.TestGarden*`
 - `production.TestGardenHarvestClockIntegration` (six real-Postgres clock-disagreement arms)
 - `production.TestGardenReadDatabaseClockIntegration` and `TestGardenReadDatabaseFailureIntegration`
+- `gameserver.TestComposedGardenAuthenticatedCommandsAndReadIntegration` (fixture-only live HTTP/Account/DB path)
 - `client/test/garden-surface-witnesses-browser.test.ts` (native input and controlled read ordering)
 - The Postgres witnesses `TestGardenIntegrationPersistsReplayableFounderLog`,
   `TestGardenHarvestIntegration` and `TestGardenHarvestFaultsAreAllOrNothing`

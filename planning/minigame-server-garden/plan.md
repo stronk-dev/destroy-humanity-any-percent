@@ -94,6 +94,20 @@ New correction requires Claude's exact-range review; no full G7/AC13/default-hos
 visibility/Garden acceptance or checklist promotion. Continue accepted G4–G7 integration
 review while RP-222 and every earlier designated-review range remain separate.
 
+Separate G4/G6 test-only HTTP supplement under `3e518f21` closes RP-226's bounded missing
+evidence route, not Garden acceptance. Actual Compose, Account/authentication, registry,
+Production and Postgres consume the exact grown replay fixture. Two HTTP-created accounts
+start empty v25/zero-credit; an actual automatic Fiscal event funds unlock. Public plant,
+read, identical retry, substrate/uproot, immature/forged-field/foreign refusals, both accounts'
+four persisted heads, read-only eight row populations, DB stamps and full Founder replay
+pass. Private replay inputs and outbox delivery metadata are explicitly excluded from the
+corresponding public/immutable comparisons. Producer detachment fails the test; a schema-
+valid actual-salt leak fires its enumerator. Twenty final non-skipped repetitions and the
+broader declared Garden/minigame Postgres plus cold Go/vet gates pass. Kernel 0.3.153 stays
+unchanged, no product/schema/artifact/CI/mint change. Claude designated review remains required;
+no successful mature HTTP payout/default DOM/real idle wait/full G4/G6/Garden claim or checkbox
+promotion. Continue remaining accepted coordinator/event/replay/surface integration review.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

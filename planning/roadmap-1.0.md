@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG10 diagnostic `37f76223` / corrected instrument
+**Current checkpoint:** 2026-10-06, Garden G4/G6 authenticated HTTP supplement under `3e518f21`.
+RP-226's missing active composed path now has actual Compose/Account/token/registry/Production/
+Postgres evidence from the exact fixture bundle: two empty v25/zero-credit HTTP Genesis,
+automatic Fiscal funding, public unlock/plant/read/retry/substrate/uproot and precise immature/
+forged-field/foreign refusals, preserved heads/rows and both Founder histories. Producer
+detachment and a schema-valid actual-salt leak fail. Twenty final real-DB repetitions and
+broader Garden/minigame DB plus cold Go/vet pass; no production/kernel/schema/artifact/CI
+change, kernel 0.3.153. Exact new test range starts `3e518f21^` (`20ea7b9c`), end pinned after
+commit, awaiting Claude. Earlier SG10/all other ranges and RP-222/RP-131/RP-218 remain open.
+No mature HTTP payout/default DOM/real idle wait/public T2/full Garden/whole-CI/archival/release
+promotion. Continue remaining accepted integration review without shrinking the nine-tier
+1.0 and complete platform-floor objective.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG10 diagnostic `37f76223` / corrected instrument
 `1bffaab2` / separate repair authority `0b7a49f9`. RP-224's four older-completion races now
 have latest-started read admission on success and failure, with independently failing guard
 probes. Native navigation/action checks preserve every direction/edge/focus/tabstop and both

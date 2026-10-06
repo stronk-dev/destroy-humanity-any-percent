@@ -1881,3 +1881,63 @@ whether failure is schema firewall rather than enumeration. Restore byte-exact s
 final cold Go/vet and Postgres gates. New test range requires designated Claude review; no
 existing pending range, checkbox or lifecycle promotion is consumed. Every process terminal
 before source/test changes, no bound/skip/retry-to-green or CI change.
+
+### Executed HTTP diagnostic and discrimination
+
+Host compile preflight 91202 exits 0 but explicitly skips the new DB test; it is not composed
+evidence. Real declared Postgres run 36984 passes non-skipped in 0.624 s: two real HTTP accounts,
+public unlock/plant/read/retry/substrate/uproot, exact immature/forged-field/foreign refusals,
+41 served/persisted public payloads salt-free, both complete Founder histories verified.
+Strengthen the same predeclared oracle before final gates: enumerate both accounts' actual
+Founder/Company persisted heads on refusals, check empty v25 starter Genesis with zero Fiscal
+credit, and require the actual automatic Fiscal credit event funding unlock. This observes
+the existing authority chain; no direct state grant or new mechanics/fixture retune.
+
+Actual composed producer severing 38661 exits 1 in 0.429 s: removing only Compose's Garden
+attachment makes the first locked read return 503 not 200. Restore the attachment exactly.
+Read-projection leak probe 13854 exits 1 in 0.355 s: append the actual hidden salt to the
+existing mechanically valid substrate ID. The **production response schema accepts this
+shape**, but the public-JSON actual-salt enumerator fires; this is not merely an unknown-key
+schema-firewall refusal. Previously served responses are also checked once the true private
+salt is known; subsequent reads/receipts check immediately. No leak or mutation persists.
+
+Restored SHA256: Compose `9d640bb0c35e6c2fbd99ea397eb2a9179e77b0dead0172fa62ce5ed5f8999691`;
+GardenView `d397932c14cb7719e8869d140d24eb997699c9fc107a464cc59c3ddbefe521b8`. Git diff of both
+production files is empty. Twenty complete non-skipped HTTP repetitions (68246, exit 0,
+10.211 s) pass, public payload counts 41 or 43 because actual short Fiscal periods can add
+an automatic prefix; no denominator is silently dropped. Cold root Go gameserver/account/
+save/replaycatalog (82809, exit 0) passes; missing-DB skips are excluded from proof.
+All handles terminal before final Genesis/funding assertion refinement. Final gates run next;
+no runtime defect, full G4/G6/Garden, public mint, archived RFC or CI claim is inferred.
+
+### Final terminal gates and bounded handoff
+
+Chronology clarification: the four-head refusal reader was already present in the initial
+36984 DB pass; the immediate salt checks preceded both discrimination probes. The final
+refinement added the explicit zero-credit/empty-v25 Genesis and automatic-funding assertions.
+All production probe changes were restored byte-exactly before final gates.
+
+- 83179: declared Compose, serial `go test -p 1 ./production ./gameserver -run
+  '^(TestGarden|TestComposedGarden|TestComposedMinigameAPI)' -count=1 -v`, exit 0. All sixteen
+  production Garden declarations pass non-skipped (3.035 s), including clock/refusal/fault
+  arms. Both composed HTTP declarations pass non-skipped (1.017 s); the new Garden case
+  takes 0.61 s and enumerates 43 public payloads, with both Founder histories verified.
+- 83298: root `make test-go GO_PACKAGES='./gameserver ./account ./save ./replaycatalog'
+  GO_TEST_FLAGS='-count=1' vet`, exit 0. Cold Go and vet for these four selected packages pass;
+  host missing-DB skips are not integration evidence and this is not full-repository vet.
+- 81415: final declared Compose HTTP population `-count=20 -v`, exit 0 in 9.275 s. Twenty
+  non-skipped complete workflows create forty real HTTP accounts; 41 or 43 public payloads
+  per workflow are enumerated and both histories verify on every repetition.
+
+Every handle is terminal. No production/schema/migration/catalog/copy/CI/kernel byte changed;
+kernel remains 0.3.153. No browser, whole-CI or hosted measurement is claimed for this range.
+No timeout increase, skip, retry-to-green or fixture retune. Earlier observed red results and
+all independent pending review ranges remain intact.
+
+Review by: Codex (implementer first-filter); Recorded by: Codex. Inspected the complete new
+test and tracking diff, exercised the real producer and schema-valid salt-leak mutations and
+the restored gates above. This is **not designated approval**. New exact-range handoff starts
+`3e518f21^` (`20ea7b9c`); implementation end will be pinned after commit. Claude must review
+that entire range independently. No checkboxes, lifecycle state or public acceptance promoted.
+Continue accepted Garden coordinator/event/replay/surface integration review; successful
+mature HTTP payout, default DOM and real-idle/public-T2 populations remain outside this proof.

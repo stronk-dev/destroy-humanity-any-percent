@@ -27,6 +27,12 @@ test-method decomposition; final local three-engine/performance and client gates
 Two earlier full browser deadline failures remain recorded as RP-225, including a recurrence
 of RP-218. No timeout/skip/CI change, general reliability closure or full G7/AC13 claim;
 the new Codex correction also requires Claude. Kernel stays 0.3.153.
+The latest G4/G6 test-only supplement (RP-226) now exercises the active Garden read/ordinary
+commands through actual Compose, HTTP Account/token binding, registry and Postgres, with
+both account isolation and real automatic Fiscal funding. Actual producer detachment and a
+schema-valid secret leak fail; twenty final repetitions and related Go/Postgres gates pass.
+This consumes the exact fixture-only bundle, not public launch content or a mature HTTP
+payout/default DOM/real idle-time workflow. New range awaits Claude independently.
 
 Remaining work includes Garden's broader integration/public-flow/copy/activation gates, other
 active RFC/review lanes, later tiers/endings/MMO consumers, account rights/retention, task-level

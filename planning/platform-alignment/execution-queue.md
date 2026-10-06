@@ -1,6 +1,29 @@
 # Executable queue
 
-## Current Garden latest-read admission / native surface evidence — 2026-10-06
+## Current Garden composed authenticated HTTP evidence — 2026-10-06
+
+Test-only predeclaration `3e518f21` addresses RP-226's previously missing active composed
+HTTP evidence. Actual Compose/Account/token/registry/Production/Postgres consumes the exact
+committed grown replay fixture, not a public epoch. Two HTTP-created accounts have empty
+v25 starter Genesis and zero Fiscal credit; actual automatic reporting funds public unlock.
+Plant/read/identical retry/substrate/uproot and immature/forged-field/foreign refusals preserve
+ownership, both accounts' heads and read-only row populations. Database time is bracketed;
+served views/receipts and scoped events/outbox payloads are salt-free; complete Founder
+histories replay. Private replay inputs and mutable outbox delivery metadata remain explicitly
+outside public/immutable comparisons. Producer detachment fails; a schema-valid secret leak
+fails the enumerator itself. Twenty final real-Postgres repetitions, broader Garden/minigame
+DB population and cold Go/vet pass. No runtime, schema, kernel, balance, copy, CI or mint change.
+
+**READY FOR DESIGNATED REVIEW, not approved:** new Codex range begins `3e518f21^`
+(`20ea7b9c`); implementation end pinned after commit, Claude required. No earlier pending
+range is consumed; SG10 correction, RP-222's authored contract, RP-131 and RP-218 remain
+separate. No successful mature HTTP payout, default DOM, real idle tick, public T2 host,
+full G4/G6/Garden, whole-CI/amd64, archival or release claim.
+
+**NEXT SAFE ACTION:** remaining accepted Garden coordinator/event/replay/surface integration
+review under bounded predeclarations; the proper full nine-tier 1.0 objective stays active.
+
+## Earlier Garden latest-read admission / native surface evidence — 2026-10-06
 
 SG10 diagnostic `37f76223`, corrected instrument `1bffaab2`, separate repair authority
 `0b7a49f9`: RP-224 confirms all four older success/error completion races in the actual

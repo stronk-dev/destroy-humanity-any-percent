@@ -2068,3 +2068,30 @@ recovery/rights/accessibility/privacy/operations/preservation floor remain activ
 Exact new corrective range: `37f76223^..53945682` (`f5d2c323..53945682`), seven commits /
 eleven paths, pending Claude. No earlier range or owner/author gate is consumed; no self-
 approval, archive or push. Implementation tree is clean; all verification handles terminal.
+
+## 2026-10-06 — Garden composed authenticated HTTP supplement
+
+RP-226 records an evidence gap, not a runtime defect: the previous composed API witness
+reached only inactive Garden. Test-only predeclaration `3e518f21` adds actual Compose,
+Account/token, registry, Production and real Postgres proof using the exact existing grown
+fixture bundle. Two HTTP-created accounts start empty v25 with zero Fiscal credit; actual
+automatic Fiscal reporting funds public unlock. Public plant/read/retry/substrate/uproot,
+immature/forged-field/foreign refusals, ownership, database timestamps, persisted non-mutation
+and both complete Founder histories are exercised. Public JSON, actual scoped event/outbox
+payloads and the true salt are enumerated. Private replay inputs and outbox delivery metadata
+are explicitly outside public/immutable comparisons, not silently omitted.
+
+Actual producer detachment fails on a 503 read; a schema-valid salt leak fails the enumerator
+itself. Both mutations restore byte-exactly. Final real-Postgres Garden/minigame population
+passes non-skipped; final HTTP population repeats twenty complete workflows / forty actual
+HTTP accounts in 9.275 s. Cold Go and vet pass for gameserver/account/save/replaycatalog.
+All handles terminal, scope checked, no runtime/schema/migration/artifact/CI/copy/kernel
+change (0.3.153), timeout/skip alteration or public mint. This range does not rerun or claim
+whole-CI/browser/hosted evidence.
+
+Codex implementer first-filter only; designated Claude review required. New range begins
+`3e518f21^` (`20ea7b9c`), end pinned after commit; earlier independent ranges remain pending.
+No successful mature HTTP payout/default DOM/real idle tick/public T2/full G4/G6/Garden,
+checkbox/lifecycle/archival/release promotion. RP-222's owner/author reconciliation, RP-131
+historical guard and RP-218 worker reliability remain separate. Continue accepted integration
+work without shrinking the full nine-tier 1.0 or its complete platform floor.
