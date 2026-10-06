@@ -3138,3 +3138,20 @@ H1/H2 are not restamped for the changed producer. Docker root rechecked100%/
 No production math/balance/kernel161/CI/corpus/owner-copy change, checkbox,
 acceptance, archive, deployment/publication/push or shortcut to full nine-tier1.0.
 Goal active.
+
+## 2026-10-06 — Reputation purchase focus corrected locally
+
+RP-276 under770a97bb/930b69d9/31795a1e reproduces body focus after native
+Enter/Space first, then keeps focus on the stable row across controlled pending
+and owned/available replacements. Baseline and compiling focus-call removal
+each fail16; restored Chromium/WebKit pass26. Typecheck clean, build8106 unit
+tests/boundaries/copy pass. Historical RP-131 and Firefox zero-execution remain
+visible; outside-sandbox retry fails without changing flags/deadlines.
+[Evidence](reputation-tree-v1/log.md).
+
+This is local component behavior, not real host/SQL/mint/full AC12. Whole new
+span after020a25c6 requires designated review, separate from every prior range.
+Next bounded R9 row-busy diagnosis RP-277; RP-278 inline errors and RP-279
+persistent costs are source-contract findings, not yet executed. Full nine-tier
+game/platform1.0 remains active; no copy/math/kernel/CI change, acceptance box,
+archive, cleanup, publication/deployment/push or shortcut.

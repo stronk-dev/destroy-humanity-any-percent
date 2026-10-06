@@ -4,7 +4,17 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest evidence: RP-263's dated H4/H5 reports are recorded and fully reproduced
+Latest runtime checkpoint: RP-276's Reputation purchase focus is locally corrected
+under31795a1e. Native baseline and compiling focus-call removal fail16 cases;
+restored Chromium/WebKit pass26. Types/build8106 unit tests/boundaries/copy pass.
+Firefox executes zero even outside sandbox; historical RP-131 remains RED, so
+whole client/CI is not green. This is controlled component proof, not minted
+host/SQL/full AC12 acceptance. Full span after020a25c6 needs Claude. Next
+separately diagnose RP-277 pending row aria-busy; RP-278 row rejection and
+RP-279 persistent costs remain. No balance/kernel/copy/CI change or release
+promotion. [Evidence](reputation-tree-v1/log.md).
+
+Previous evidence: RP-263's dated H4/H5 reports are recorded and fully reproduced
 from committed6bd24e8d. Each execution covers97 paired careers and970 node-study
 arms;676.102/469.043s, reports byte-identical. Complete declarations,51 synthetic
 refusals/eight compiling omissions and real overwrite/dirty/selector refusals

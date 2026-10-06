@@ -5,7 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest evidence (2026-10-06):** RP-263's dated career reports are recorded and
+**Latest runtime checkpoint (2026-10-06):** RP-276 purchase focus is locally
+corrected under31795a1e: native baseline and compiling focus-call removal fail16,
+restored Chromium/WebKit pass26. Types/build8106 unit tests/boundaries/copy pass.
+Firefox remains unexecuted even outside sandbox; RP-131 history remains RED,
+not whole client/CI green. Controlled component proof, not host/SQL/mint/AC12.
+Full new span after020a25c6 needs Claude. Next RP-277 row-busy diagnostic, then
+RP-278 inline errors/RP-279 persistent costs. No checkbox, release promotion or
+narrowing of the complete nine-tier/platform1.0 goal. [Evidence](reputation-tree-v1/log.md).
+
+**Previous evidence (2026-10-06):** RP-263's dated career reports are recorded and
 fully replayed from6bd24e8d:97 pairs/970 node-study arms each,676.102/469.043s,
 byte-identical reports. Fifty-one refusal children/eight compiling omissions
 and actual overwrite/dirty/selector refusals discriminate. Retained-artifact

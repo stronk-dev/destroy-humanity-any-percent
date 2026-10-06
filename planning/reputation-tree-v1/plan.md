@@ -89,6 +89,13 @@ threshold retune is measured and reported, then ratified by owner SHA).
   `run_started` v2. ACs 6, 7, 8, 11.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+  RP-276 focus correction under770a97bb/930b69d9/31795a1e reproduces native
+  loss first and after compiling focus-call removal; restored Chromium/WebKit
+  pass26 cases. Types/build8106 unit tests/boundaries/copy pass; RP-131 history
+  stays RED, Firefox executes zero even outside sandbox. Component prop injection,
+  not host/SQL/mint or whole AC12. Full new span after020a25c6 needs Claude.
+  Next separately diagnose RP-277 row aria-busy; RP-278 row rejection and RP-279
+  persistent cost remain source-contract findings. No checkbox flipped.
   RP-257/RP-258 reader corrections under336503b3 now refuse14corrupt Go
   projections and48invalid TS factors, preserving valid controls. Three compiling
   guard omissions fire2/12/48 failures and restore exact sources. Cold core/vet,

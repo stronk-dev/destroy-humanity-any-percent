@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation purchase row focus corrected locally — 2026-10-06
+
+RP-276 under770a97bb/930b69d9/31795a1e: unchanged-production native focus
+loss and compiling row-focus removal each fail16 cases; exact restoration
+passes26 Chromium/WebKit cases. Types/build8106 unit tests/boundaries/copy pass.
+Firefox executes zero, including one outside-sandbox retry; RP-131 history
+remains RED. No whole client/CI or real host/receipt/SQL/minted-player claim.
+
+**READY FOR CLAUDE:** full new span after020a25c6 through final record edge;
+all earlier ranges remain independently pending. No self-approval/archive.
+**NEXT SAFE ACCEPTED WORK:** separately predeclare RP-277's pending-row busy
+diagnostic under R9; no automatic extension of this focus-only range. RP-278
+row-specific rejected receipts and RP-279 all-state costs need their own
+consumer populations. Preserve copy and transport/server policy.
+**HELD:** native Firefox/full AC12, real SQL/default-player/mint, owner/author
+H3/H4/H5/RP-268/271/274 decisions, capacity/deployment, all review obligations
+and full nine-tier/platform1.0. No kernel161/balance/copy/CI policy change,
+checkbox, acceptance, archive, cleanup, publication, deployment or push.
+[Exact evidence](../reputation-tree-v1/log.md).
+
 ## Dated career evidence reproduced — 2026-10-06
 
 RP-263 under80cc4015/6bd24e8d records new H4/H5 reports and committed-producer
