@@ -886,3 +886,30 @@ Final record-bound cold8e4a11 /73430, terminal92151a exit0,0.518s executes
 BOTH original first-wave and new anchor observers, reproducing each artifact
 exactly. All verification handles terminal. First-wave code/corpus remain
 byte-unchanged; no temporary probe or runtime change retained.
+
+### R-012 anchor local range review — research only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `b54fc7ef..ba4d3d70`, all thirteen changed paths, including
+predeclaration, two new test instruments, generated artifact and every record.
+Generator/population/codec/negative dispatch reviewed;22,069 artifact lines are
+verified by actual cold reconstruction, source census and independent TS
+execution, not claimed individually read. Original instrument/golden/corpus,
+runtime/save/kernel/balance/copy/CI/RFC bodies remain byte-unchanged.
+
+The primary/refusal/diagnostic populations are distinguished; Go-only carry
+findings are not represented as client/production findings. Scalar candidate
+state is not full Company state. Restricted source count/size and sampled
+numeric domain are explicit. Actual reconstructed-wire faults fire semantic
+assertions before successful measurement/promotion; source/artifacts restore
+exactly. Records agree and no acceptance checkbox/status flips.
+
+Decision: locally validated bounded comparison, not a production repair or
+designated approval. Live rate/context fidelity, jsonb, offline/provision,
+migration/receipts/full state/replay remain required. Historical research gates
+are tied to the measured baseline; a future accepted repair must explicitly
+reconcile them to changed implementation while preserving counterexample and
+negative-control evidence, never quietly remove AC6 or tolerate its failures.
+Claude must cover the entire new span afterb54fc7ef, INCLUDING this following
+record edge; older independent spans remain live. Full nine-tier/platform1.0
+active, no owner/body ruling, archive/mint/push/deploy or release action.
