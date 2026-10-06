@@ -60,6 +60,12 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   replacement. Rows accept programmatic focus but add no Tab stop. Owned, locked and unaffordable nodes
   show their state as text and have no control. Purchases send `purchase_reputation_node` at the
   Founder revision; an applied receipt refreshes the snapshot.
+  Every node displays its cost through the shared Amount component, after its body
+  and before requirements/state. The cost remains visible for owned, locked and
+  unaffordable nodes, and throughout confirmation, pending and authoritative
+  replacement; it is not dependent on the Buy control. Integer costs use the
+  existing canonical-number conversion and Standard notation, without changing
+  purchase prices or Buy copy.
   The submitted row exposes `aria-busy="true"` while its existing host purchase task or the
   shared pending state remains outstanding; all Buy/Confirm controls stay disabled. Attribution
   clears after both settle, so a later unrelated refresh does not mark a completed row busy.

@@ -6347,3 +6347,15 @@ or whole AC12/SQL/mint proof. Cold root types/build/client/boundaries/copy,
 separate RP-131 history; no Firefox/CI green, report restamp/epoch adoption,
 checklist flip, archive, cleanup, deployment/publication/push or goal completion.
 Whole new span after22e03946 needs Claude; prior ranges remain independent.
+
+## 2026-10-06 — RP-279 initial restored green / visibility probe refinement
+
+Initial corrected native c94f0e/7bfbcf,session74638 terminal exit0:154/154
+(40 cost/58 prior child/56 host). Native lifecycle now reaches every phase;
+notation literals/order/geometry all pass. Root automatic performance follow-on
+one selected Chromium pass/22 skips, not full Worker/perf acceptance.
+Types1645fc/0b94a9,session86942 exits0, zero errors/warnings.
+All handles terminal. Before probes add one hidden-wrapper omission/control
+to explicitly discriminate visible cost, not merely DOM presence: seven probes
+total. No fixture/assertion/bound/engine/security changes. Component-only new
+cost evidence; prior host controls still controlled-network, not SQL/mint/AC12.

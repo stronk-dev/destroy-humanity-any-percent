@@ -3,6 +3,8 @@
 
   import type { GameUIReputationArm } from "../api/generated/types";
   import { t, type CopyEra, type CopyKey } from "../copy";
+  import { canonicalString } from "../numeric";
+  import Amount from "../ui/Amount.svelte";
 
   // Reputation Tree v1 R9. Every state is server-derived (arm.nodes[].state);
   // the client never recomputes eligibility and the receipt is the authority.
@@ -80,6 +82,7 @@
       <li class="card" data-state={node.state} tabindex="-1" aria-busy={purchasePending && purchasing === node.node_id ? "true" : undefined} {@attach register(rows, node.node_id)}>
         <h2>{titles.get(node.node_id)}</h2>
         <p>{t(node.body_key as CopyKey, {}, era)}</p>
+        <Amount value={canonicalString(node.cost)} {era} />
         {#if node.requires.length}<p>{t("reputation_tree.requires", { list: node.requires.map((id) => titles.get(id) ?? "").join(", ") }, era)}</p>{/if}
         <p class="state">{t(STATE_KEYS[node.state]!, {}, era)}</p>
         <p role="status" aria-live="polite">{feedback?.nodeID === node.node_id ? t(feedback.key, {}, era) : ""}</p>
