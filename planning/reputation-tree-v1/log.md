@@ -2901,3 +2901,54 @@ Claude must review the full new span after4030c895, including this record commit
 no batch or RFC archive is authorized. Actual SQL, browser/default-player and
 whole B7/R9/AC12 remain unproved. Next safe accepted lane remains the other
 pinned/history/harness consumers; no goal completion or authority expansion.
+
+## 2026-10-06 — R8 portable history consumer predeclaration
+
+Previous turn is progress: RP-257/RP-258 runtime corrections, fired regressions
+and synchronized records, committed through b6c7ebca; tree now clean, ahead80.
+Read AGENTS/process and the accepted Reputation RFC. Broad reference output
+truncated and an unmatched shell glob aborted one search; targeted actual
+history, verifier, storage reader and harness sources were subsequently read.
+No execution or conclusion comes from those incomplete searches.
+
+VerifyFounderHistory resolves pinned bundles, invokes ApplyFounderLogged, checks
+receipt/events/source coordinates and compares the head. Existing Reputation
+integration tests verify purchase/rejection and plan/activation histories on
+Postgres; they do not supply currently executed evidence while capacity is held.
+The R8 two-Exit purchase career and non-unit Company run verifier remain separate
+mandatory populations. The harness performs policy purchases manually through
+Tree.Purchase and starter assembly; its comment's "served transitions" is not
+evidence of a served transaction or stored Founder history. No harness change or
+whole-harness verdict is authorized by this observation.
+
+Bounded RP-259 supplement, test-only, under accepted R8:
+
+- Consume unchanged source SHA f9b129e3... via the existing source validator and
+  pinned bundle helpers. Build exactly24 histories: all20 direct cases, all
+  three paired Founder Exit cases and the contiguous nine-node purchase chain.
+  Each single-case wrapper rebases ONLY FounderLogSeq to1 (a new local history
+  beginning at that row's existing revision). Canonical command whitespace is
+  normalized; resolved values, timestamps, receipt, events, full states and
+  expected pins remain source-derived. The nine-row chain preserves original
+  log coordinates and adjacent full-state equality. No replay-generated oracle.
+- Public VerifyFounderHistory must return verified for every honest history.
+  Six one-field/one-record corruptions per history (144 refusals): wrong head
+  mirror, wrong head pin, altered receipt outcome, extra event, first log
+  sequence2, and toggled linked-source presence. Expect state_divergence except
+  the sequence corruption's log_gap. Honest controls must pass first.
+- Independently compile omissions of head-state, head-pin, receipt, event and
+  source-presence comparisons; respective controls must fail, while honest
+  populations remain green. Sequence has two defenses: probe them separately
+  and together; record surviving defense honestly. Restore exact source SHA
+  after every terminal probe. No assertion edits or expected-byte regeneration.
+- Population closure must reject source-hash, missing-case and missing-chain
+  corruptions, with a demonstrated validator omission. No new shared corpus,
+  schema, applied migration, runtime, numeric kernel, balance, CI or owner-copy
+  change. If the honest histories cannot verify, report setup vs product failure
+  before expanding authority or changing expectations.
+
+No record/source edit while a check/probe lives. Cold focused and full server-core
+verification; no fresh SQL, browser, full CI, LoadFounderHistory execution,
+two-Exit career, Company-run verification, AC3/AC15 or whole R8/RFC/1.0 promotion.
+Original B4 CHANGES REQUIRED and capacity/RP-131/RP-256 remain. Full new span
+after b6c7ebca needs Claude; no box, archive, mint, push, cleanup or status change.
