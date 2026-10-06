@@ -8001,3 +8001,23 @@ immutable SQL evidence. Exact population assertions prevent a missing run or
 log from passing vacuously. If a runtime defect fires, record it before repair
 and retain all oracles. No full AC15 checkbox until designated review, other
 criteria/platform gates unchanged. No production/balance/mint/copy/CI change.
+
+Career instrument repairs before success:631adc/a3dd2b session59248 terminal2
+is a compile failure, not runtime evidence (nonexistent guessed State branch
+field). Replaced with actual stored resolved branch;1a5ef1/1efa0c session60158
+terminal2 reveals selected_branch is a string, not object. Corrected actual
+wire path. f68e5d/2ebabe session86999 terminal2 correctly refuses the test's
+dependent-before-prerequisite plan. Reordered the test request to the accepted
+topological plan contract, no runtime relaxation or hidden rejection. These
+are my test-construction errors, not product defects or accepted evidence.
+
+162c87/991724 session93465 terminal0: composed SQL career passes0.19s,
+scripted burnout → direct unlock/exact retry → accrued gate → elective plan →
+run3. Both completed Company verifiers and whole three-entry Founder history
+verify; copied existing factor byte and copied Founder head independently
+return state_divergence. Run3 independent non-unit starter production and full
+head/log replay match. Added explicit unit-row/nonempty and exact pin controls
+before final gates. No SQL evidence mutated and no state seeded after genesis.
+Initial earned6 is diagnostic, not reachability/H1/pacing/minted UI proof.
+Next root vet, persisted production integration population and cold Reputation
+unit/history/Company-replay population; acceptance boxes remain unchanged.
