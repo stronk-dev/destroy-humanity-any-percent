@@ -8340,3 +8340,47 @@ terminal; then cold full production SQL Integration/focused/vet and docs/live
 tracking/append-only reconciliation. No production hooks/rules/epochs/copy/
 balance/kernel/CI or acceptance checkbox change. Full new span after8ee45af3
 needs Claude including records; earlier designated review gates independent.
+
+Initial declared SQL931334/807ff6 session22010 terminal2 does not execute:
+my new test compared plain string to typed save.EventKind, a compile error.
+Correct test scan/vector to the actual EventKind type; no production defect
+or failing-case evidence inferred. Temporary retry helper was completed before
+this compile; no placeholder lands. Whole test is new, old tests untouched.
+
+Next178919/669ea8 session77256 terminal2 executes both real offer producers
+and returns the exact expected unaffordable rejection, but my new receipt
+helper expected flat category/detail rather than the established nested
+`rejection` object. Correct helper to actual wire shape, retain exact outcome/
+category/detail and require absent rejection for applied. This is test
+construction, not a wire or product correction. No weaker substring oracle.
+
+Nextdb3904/5c2f5e session49211 terminal2 reaches applied state in both kinds,
+but my owned-ID assertion conflates request purchase order with R1's byte-
+sorted owned set. Added diagnostics only,3b904e/84d4d6 session67555 terminal2:
+all revisions/earned18or20/spent6/unlock50000/Exitkind/run3/offer cleared/
+generated5/purchased0 match; owned set is correctly cash,tower,unlock, not
+unlock,cash,tower. Correct independent sorted literal; keep purchase/event
+order assertion unchanged. These initial construction failures stay recorded,
+not labelled production defects or demonstrated severings.
+
+Initial complete positive0d58ac/8b3036 session16802 terminal0 passes both
+offer kinds0.317s: real gate producer, zero initial Reputation, independent
+payout18/20, last-entry rejection with full heads preserved, valid plan6,
+cash1e3/generated5/purchased0/non-unit frozen1.009or1.01, ordered Founder
+purchases, accepted offer resolved before ended, run_started v2 summary,
+three-entry completed Company replay and rejected+applied Founder history.
+Both copied cost/order corruptions return state_divergence, both exact retries
+and same-ID changed-plan conflict preserve complete table values. No SQL skip.
+
+Before source probes, strengthen independent applied receipt head-revision/
+count oracle and explicitly compare complete SQL rows before/after copied
+evidence negatives. No old assertion removed, production hook added or budget
+changed. Re-run complete positive before test commit. Bounded fixture search
+uses existing offerFixtureFounder ceiling1,000,000; no subset quietly excluded
+and no gameplay population/pacing/statistical inference from selected IDs.
+
+Strengthened positivefece30/b307eb session76533 terminal0 passes both kinds
+0.316s, including receipt committed-head revisions/count and explicit SQL
+immutability around copied negatives. Commit test+records before predeclared
+source probes. No production change or acceptance checkbox; full new span
+after8ee45af3 needs Claude independently of earlier request/rollback spans.
