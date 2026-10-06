@@ -4792,3 +4792,20 @@ No product/math/balance/kernel/schema/migration/CI/owner-copy/report/corpus edit
 kernel161 stays. Whole new span after0a486d79 needs Claude. Previous ranges,
 fresh H1/H2/lineage, RP-268, H3 author reconciliation, H4/H5, actual SQL/capacity
 and full1.0 remain. No checkbox, mint, archive, cleanup or push; goal active.
+
+## 2026-10-06 — RP-270 baseline fixture refinement, before guard changes
+
+All handles terminal.4a8098..6e35c8,session16198,exit2,0.346s prints four new
+aggregate refusals lost, while the existing27 controls pass. Source inspection
+then notices the synthetic positive fixture set only Aggregate.RunCount; its
+schema/id/hash/constants were zero/empty. In particular the schema mutation was
+0→1, not a clean valid→invalid single-field mutation. This first attempt is not
+claimed as the four isolated clean corruptions or evidence a new guard passes.
+
+Before touching the oracle, refine only the synthetic fixture: initialize its
+aggregate schema1/scenario id/hash/constants from the same loaded suite as its
+report, plus actual generated RunCount. No aggregate values/milestone/population
+change, report source regeneration or new authority. Then rerun the unchanged
+oracle: legal fixture must still pass and all four isolated coordinates must
+fail refusal. Only after that terminal evidence add the predeclared guard and
+execute its omission/full study. Kernel161 and all live/report bytes unchanged.
