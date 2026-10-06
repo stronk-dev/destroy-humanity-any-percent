@@ -2480,3 +2480,56 @@ objects, so duplicate JSON keys already lost during parsing are not a TS wire
 rejection claim. No generic decoder or other intent fix is authorized by this
 observation. Remaining pinned-reader/writer, owner/author/mint/H4/rights/privacy/
 accessibility/deployment/CI and full Transcendence obligations persist.
+
+## 2026-10-06 — predeclaration: RP-255 frozen purchase-input admission
+
+Previous goal turn made concrete progress at4d690f29. Grounding923934 confirms
+clean main ahead70, no new Claude verdict or live verification/probe handle.
+Accepted R5 freezes six resolved fields and R8 requires parity; save/founderlog.go
+explicitly leaves the exact closed resolved union to feature packages. This
+authorizes a bounded Reputation-only replay admission check, not a generic
+decoder policy change or a new public request/API contract.
+
+Population, before measuring: all18 original corpus cases whose resolved kind
+is purchase_reputation_node (11applied/7ordinary rejections). The two invalid-
+request cases use the separate invalid arm and are explicitly excluded, not
+counted as purchase-arm observations. Add one zero-earned control derived from
+the existing cost-one-over case by setting earned level to0 in the valid pre/post
+Founder state and frozen inputs; its unchanged ordinary unaffordable receipt,
+empty events and resulting input pin must match. This supplies a real zero-level
+default counterexample, not a population chosen to avoid it.
+
+19controls ×6fields ×4single-field mutations =456Go raw-wire negatives:
+missing, null, upper-case alias and duplicate-identical key. All must fail with
+ErrInvalidReplayInputs, no receipt/events and exact pre-state restoration. TS
+receives parsed objects:342missing/null/alias mutations must refuse;114duplicate
+raw JSON mutations normalize during JSON.parse and must reproduce the original
+full state/receipt/ordered events/result pin. These114 are parsing-limit controls,
+NOT TS duplicate-wire refusals. All19 unmodified controls byte-match separately.
+
+Author a shared fixture from Go using the existing corpus's source SHA and
+explicit control IDs/raw resolved strings. Existing replay/migration corpora
+remain unchanged. A root authoring target may use the existing explicit
+-update-replay-fixture flag; ordinary checks compare, never regenerate. Source
+SHA, exact population/cartesian census and generated row equality are required;
+no hidden duplicate-key collapse in the stored raw strings. Before admission
+claims, cold Go and TS execute the controls and negatives on unchanged runtime.
+
+If baseline admits malformed frozen inputs, minimally enforce the existing six
+fields only in the Go Reputation resolved arm. No other arm/envelope/decoder,
+schema, migration, balance, epoch, provider or player copy change; a real runtime
+admission narrowing bumps all three kernel identities159→160. TS need not change
+if its object-level refusal already matches. Success requires all declared
+negatives and controls, full existing corpus parity, exact rollback, independent
+compiling Go gate omission with its formerly admitted negatives firing, and a
+TS object-key gate omission demonstrating its alias fixtures fail. Census/source
+SHA/row-corruption negatives must fail both fixture consumers. Restore exact
+SHAs after each probe, and terminate all handles before editing any source or
+record. Cold full server-core/vet, types/client/build and independent boundary/
+topology checks follow; historical RP-131 remains honestly RED.
+
+This is replay admission evidence, not an executed malformed player request or
+fresh Postgres commit. RP-253 actual persisted taxonomy and the Docker capacity/
+cleanup hold remain. New complete span after4d690f29 needs Claude independently;
+no checkbox, archive, mint, push, cleanup, full B4/R8/career/RFC/CI/player/release
+or nine-tier-goal promotion. Remaining pinned reader/writer audit still required.
