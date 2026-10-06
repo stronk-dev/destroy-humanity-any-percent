@@ -2879,3 +2879,25 @@ Original B7/R9 body reconciliation, minted purchase-through-UI/AC12, actual
 RP-253 SQL/persistence controls, R8 history/career and remaining pinned/harness
 consumers remain. Docker capacity and RP-256 persist; no cleanup, box, archive,
 mint, push or release promotion. Full nine-tier/platform goal remains active.
+
+## 2026-10-06 — Projection reader range first filter
+
+Review by: Codex (implementer self-review, FIRST FILTER ONLY).
+Recorded by: Codex.
+Reviewed range: `4030c895..b364b75f`, all thirteen paths, including the
+`336503b3` predeclaration and the implementation, tests, docs and tracking.
+Verdict: first filter passed; NOT the designated cross-party approval.
+
+I inspected the reader/test diffs, then the committed documentation and full
+planning span (764299/7d62d5). The ten runtime lines stay in the declared
+presentation lane and reuse pinned derivation/canonical parsing. Tests prove
+baseline admissions, corrected refusals and three independent compiling
+omissions while preserving positive controls. Corrected files restore exact
+SHAs; kernel/schema/corpus/migrations/CI/owner copy are unchanged. The records
+carry the actual composite failure rather than substituting unit green.
+Whitespace checks pass and the committed tree is clean (4878e6/f10a42).
+
+Claude must review the full new span after4030c895, including this record commit;
+no batch or RFC archive is authorized. Actual SQL, browser/default-player and
+whole B7/R9/AC12 remain unproved. Next safe accepted lane remains the other
+pinned/history/harness consumers; no goal completion or authority expansion.
