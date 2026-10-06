@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest representation checkpoint (2026-10-07):** R-012's frozen-anchor
+**Latest producer/SQL checkpoint (2026-10-07):** R-012 completes64 actual
+producer profiles:early rate rounding changes five payouts; existing saved
+contexts preserve all raw rates/deltas. TS agrees. Actual Postgres16.15/
+linux-arm64:1215logical exact snapshots/1215strict-byte refusals;16SQL negatives
+complete. Faults fire and source/artifacts restore exactly. Client9499pass/
+340skip/types/vet/topology clean; production128partitions still27fail/101pass.
+The local AMD64 CI attempt fails before Go (exec format), not passed. Next
+predeclare offline/banking/boost/provision/full-state/replay research before
+adopting a repair contract. Separate context CPU/scalar SQL proofs are not full
+integration. Entire new span after9050fe4d needs Claude; older obligations and
+full nine-tier1.0 stay active. [Evidence](clout-v1-and-pr-interns/rate-and-sql-research.md).
+
+**Previous representation checkpoint (2026-10-07):** R-012's frozen-anchor
 comparison completes615 paired primary cases/16 restore refusals;606accepted/
 nine refused. Sampled enormous exponents/max-time use existing primitives;
 maximum JSON223bytes. Rebase45plus one near-cap difference; both decoder faults

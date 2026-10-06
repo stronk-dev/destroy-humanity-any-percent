@@ -371,6 +371,15 @@ and SQL jsonb compatibility remain empirical seams before any repair contract;
 production27/128 still red. New span afterb54fc7ef needs Claude; earlier spans
 remain independent. `planning/clout-v1-and-pr-interns/anchor-research.md`.
 
+RP-307 R-012 third wave, predeclared9a35aa78:64actual producer profiles,
+five early-rounding payout differences; existing Company contexts preserve all
+raw rates/deltas, TS agrees. Actual SQL16.15/linux-arm64:1215logical exact/
+1215strict-byte refusals,16SQL negatives complete. Both instruments discriminate,
+exact restoration;128production partitions remain27fail/101pass. Context CPU
+and scalar SQL are separate proofs, not an adopted persistence contract. Next
+offline/provision/full-state/replay research; entire new span after9050fe4d needs
+Claude, older holds unchanged. `planning/clout-v1-and-pr-interns/rate-and-sql-research.md`.
+
 RP-203/204 exact corrective review span: `d798e709^..83008a9f`, pending Claude's designated
 verdict. This index line does not close the findings or promote full A5/public acceptance.
 

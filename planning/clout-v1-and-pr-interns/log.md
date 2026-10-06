@@ -925,3 +925,71 @@ and typed refusal provenance, scope/limits in plan.md. Read process/current
 index/instructions and relevant unchanged producers/save/database/Compose code.
 No owner question answered by automatic continuation; full1.0 active. No
 production or old-corpus edit/acceptance/kernel/balance/body/CI change authorized.
+
+Third-wave instrument finding before landing: the first SQL replay compares its
+entire artifact byte-exactly, including observed linux/arm64 and Postgres16.15.
+That would manufacture a failure on a valid linux/amd64/other16.x runner despite
+identical semantic observations. Reconcile the instrument (not CI): keep actual
+writer environment provenance, require Postgres16/Linux supported architecture,
+and explicitly exclude ONLY version/architecture from replay equality. Sources,
+complete populations and all normalized JSON/statuses remain exact. Add local
+metadata/refusal fixtures; these are comparator proof, not executed AMD64 CI.
+
+### R-012 third-wave executed observation and fault probes
+
+CPU writer e2e43a/30197 terminal36cfc5 exit0:64 profiles complete; raw bits
+change64, early-rounded accrual differs5, existing Encode/Restore context exact64,
+actual Evaluate equals raw primitive. Artifact has fourteen selected source pins.
+Client fbe314/59753 terminal0263ab exit0:9499pass/340visible skips, types/Svelte
+zero errors/warnings. No natural progression/served TS producer claim.
+
+SQL first attempt eab446 exit2: sandbox socket denial before connection, NOT
+executed. Narrow declared-test retry0f516d/45348 terminal9d734c exit0:real
+Postgres16.15/linux-arm64, all1215valid and16negative payloads complete. Strict
+refuses1215, logical full state preserves1215;12semantic/domain refusals,
+one typed22P02, three representation-only normalized inputs. Ten selected source
+pins; separate writer/artifact. Only transaction-local TEMP table/savepoints,
+rollback; no live save/migration/cleanup/write authority.
+
+Fault probes ran only after all handles terminal, on NEW TEST instruments:
+5e24a1/92108 terminal7b9414 exit2 substitutes rounded accrual for raw and
+fails context equality before CPU writer. TS755d69/93689 terminalf15ab5 exit2:
+five exact semantic payout failures plus one source check, not merely source
+identity rejection. SQL1364a3/9780 terminal6545bf exit2 silently reconstructs
+wire and fails wrong-valid-rate admission after actual SQL casts, before writer.
+All three faulty sources restored byte-exactly (a30318); both artifacts retain
+their pre-probe hashes. No temporary production mutation or changed acceptance.
+
+After restoration: declared SQL9a6b5c/92742 terminal28ffae exit0, exact artifact
+replay; client19afca/32814 terminal7a5084 exit0,9499/340/types clean; relevant
+vet14cc5d exit0. Cold production/economy/decimal29d91d/34957 terminalce42e0
+exit2:production37.802s fails ONLY original AC6; economy6.141s/decimal.232s pass.
+Focused cold456d91/67726 terminale97602 executes128cases,27fail/101pass,.347s.
+No complete CI-green claim. Duplicate verbose invocation876445 also red; it
+was truncated in displayed output and is not the census source.
+
+Metadata fix is instrument reconciliation before landing, not new CI authority.
+Final SQL writerf8c7bf/8601 terminal2f5fc8 exit0,real16.15/arm64,1215/16complete;
+new source pin/artifact after this explicit re-observation. Missing-DB generation
+eecdef/29481 terminala26e2d fails loud before writer. Host cold185aea/20596
+terminal087345 passes all three arithmetic observers plus environment comparator;
+SQL visibly NOT EXECUTED there. Earlier research corpora reproduce unchanged.
+Topologydc9da0 exit0,13negative controls. Local declared AMD64 CI03e3d3/86550
+terminale619cd exit2:pull succeeds, Go fails before execution (exec format error).
+No AMD64/hosted pass, emulation bypass, CI edit or Docker cleanup inferred.
+
+Results/next empirical questions in rate-and-sql-research.md. No new save format,
+raw diagnostic wire, runtime/K3/balance/copy/body change, status/checkbox, archive/
+mint/push/deployment or full1.0 acceptance. CPU context and SQL scalar prototypes
+remain separate populations. All new after9050fe4d need Claude independently,
+including later record edges; earlier spans and owner/author questions remain.
+
+Final verification/environment closeout:vet9d09c6 exit0. SQL replayb8f0b9
+fails before Go after the AMD64 pull changed the shared golang:1.26 tag;
+image inspectionf105a0 confirmsamd64/3343c365. Native declared-service pull
+6d0c52/59215 terminal37f41c succeeds, no deletion or Compose edit;8c3278
+confirmsarm64/b6081f19. Final cold336006/4038 terminal00c828 exit0,.458s:
+ALL five research tests execute on real Postgres16.15/linux-arm64, none skip;
+542/615/64 arithmetic and1215/16SQL populations reproduce unchanged. Native
+image restoration is NOT an AMD64 CI bypass or passing AMD64 observation.
+All handles terminal; no probe remains. Old artifacts retain their pinned hashes.

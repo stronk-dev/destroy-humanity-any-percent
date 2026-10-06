@@ -78,6 +78,11 @@ test-go-ci:
 test-save-integration:
 	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=$(SAVE_TEST_COUNT)
 
+# Manual R-012 measurement writer; deliberately outside verify and CI.
+.PHONY: research-axis-anchor-sql
+research-axis-anchor-sql:
+	docker compose -f compose.save-test.yml run --rm -e UPDATE_ANCHOR_SQL_RESEARCH=1 test go test -p 1 -run TestAxisAnchorSQLIntegrationResearch -v ./production -count=1
+
 # Manual Account census: a green package with skipped/missing populations is invalid.
 # Deliberately outside verify/CI; fixed real-Postgres population, no retry/timeout change.
 .PHONY: test-refresh-census test-refresh-observer

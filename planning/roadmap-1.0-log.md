@@ -3741,3 +3741,29 @@ Previous goal turn progress; this turn adds executed representation evidence.
 Proper full nine-tier/platform1.0 stays active, no runtime/kernel/CI/owner-body/
 old-golden/balance/copy change, archival/mint/push/deploy or release call.
 [Observation](clout-v1-and-pr-interns/anchor-research.md).
+
+## 2026-10-07 — Live rate precision and actual Postgres fidelity
+
+Predeclared9a35aa78 after9050fe4d:64actual producer profiles complete. Early
+rate rounding changes five payouts; existing Company Encode/Restore preserves
+all raw rates/deltas, actual Evaluate agrees; paired diagnostic TS agrees.
+Real16.15/linux-arm64 SQL preserves all1215 prototype snapshots logically but
+rejects all under strict byte framing. Sixteen SQL negatives complete:12logical
+refusals/one22P02/three representation-only normalizations. Mutated raw accrual
+and silent stored-wire repair fail before writers; exact source/artifact restore.
+
+The instrument's environment-only comparison defect was caught before landing
+and reconciled without changing semantic/source equality or CI configuration.
+Its explicit metadata fixtures pass; actual AMD64 local CI fails before Go
+(exec format), not a passed population. Restored client9499pass/340skip/types/
+vet/topology clean; cold production remains RED only at original AC6, focused
+128cases confirms27fail/101pass. No green CI or production repair claim.
+
+CPU restored producer context and SQL scalar prototype are separate, not a
+combined live save proof. Next predeclare offline/banking/boost/provision,
+full-state/action/replay boundaries before a buildable persistence contract.
+Entire new span after9050fe4d needs Claude, older spans/owner/author/content/
+environment/release holds unchanged. Proper nine-tier/platform1.0 active;
+previous goal turn progress, this turn adds executed producer/storage evidence.
+No runtime/kernel/balance/copy/CI/body/status/archival/mint/push/deploy change.
+[Observation](clout-v1-and-pr-interns/rate-and-sql-research.md).

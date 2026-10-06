@@ -285,3 +285,16 @@ expected-output change, old-schema field, tolerance, acceptance/status/checkbox,
 whole-CI, SQL Service/Store/replay, offline/provision/1.0, archive/mint/push/deploy
 claim. Entire new range after9050fe4d needs Claude independently; prior holds
 and pending reviews remain. Full nine-tier/platform1.0 goal unchanged.
+
+Executed third wave:all64 actual producer profiles complete; raw bits change64,
+early rounding changes five deltas, existing restored contexts preserve all raw
+rates/deltas and actual engine cash. TS independently agrees. Actual SQL16.15/
+linux-arm64 preserves all1215 snapshots logically; old strict bytes refuse all.
+Sixteen SQL negatives complete:12semantic/domain refusals, one22P02, three
+representation-only normalizations. Both writers reject instrument faults before
+overwriting; exact source restoration. Host writer without DB fails. Recorded
+environment is explicitly separate from replay equality; semantic/source/object
+checks remain exact. Local AMD64 lane fails before Go (exec format), not passed.
+Restored9499client pass/340skip/types/vet/topology clean;128production partitions
+still27fail/101pass. No acceptance flip. Results and next questions:
+`rate-and-sql-research.md`; full commands/provenance in log.

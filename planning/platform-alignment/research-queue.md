@@ -292,8 +292,14 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   refusals, including sampled exponent extremes/max-time and near-cap cases.
   Anchor/restart agrees within that population;223-byte maximum. Both actual
   decoder faults fire. [Second-wave evidence/limits](../clout-v1-and-pr-interns/anchor-research.md).
-  Next predeclare LIVE producer-rate serialization and real SQL jsonb round-trip;
-  canonical rate lists/byte-framed JSON are not presumed production-compatible.
+  Third wave predeclared9a35aa78 completes64 live producer profiles:early rate
+  serialization changes five payouts; existing Company restore preserves raw
+  rates/deltas64. TS agrees. Actual Postgres16.15/linux-arm64:1215strict refusals/
+  1215logical exact snapshots and16SQL negatives complete. Rate/context CPU and
+  scalar prototype SQL are separate, not Service/Store integration proof.
+  [Third-wave evidence/limits](../clout-v1-and-pr-interns/rate-and-sql-research.md).
+  Next predeclare actual offline/banking/boost/provision/full-state/replay seams;
+  canonical rate lists and byte-framed JSON cannot be transplanted literally.
   Full mode/offline/provision/migration/state/receipt integration remains unproved.
 - **Question:** Can an explicit conserved accumulation/settlement representation
   preserve K3's12-digit authoritative wire boundary and Clout AC6's exact equality

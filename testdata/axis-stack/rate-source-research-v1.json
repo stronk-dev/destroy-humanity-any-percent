@@ -1,0 +1,1241 @@
+{
+  "version": 1,
+  "acceptance_status": "NOT_PROVEN: production AC6 remains red",
+  "fixture_bundle_hash": "sha256:f7513be14b39a940835050563fd737e96b515e8011645d5ad8b76331bacd514c",
+  "source_sha256": {
+    "balance/testdata/axis-stack/economy-v5-fixture.json": "f8c67aed784ceaae1335bb40c0e0487cc0d9b78a50b9e63a73569270df7511d7",
+    "client/src/numeric.ts": "40c33bd394b71e2c436f90fc5c995cbe595a8feaed3d298d9a2533aa35055ead",
+    "client/src/production.ts": "3e892bdcf8b3ebdea12720d4dffb347d5f6e085e65007051ca2acc755dfbaad3",
+    "client/test/rate-source-research.test.ts": "2673e6469ea22332a06cb8251973068a344ee0efd69b8183217dba6eb3a0550f",
+    "server/decimal/canonical.go": "8fe0f4ab3c635b0f2d2072b2862c0725d94240af6b382e399ac97738ba91c687",
+    "server/decimal/decimal.go": "8bd0c1f032b293984d776fb7c0f3bee667369133a06a1d4d5b4eedaec1165eca",
+    "server/production/accrual.go": "a64e59595febe489722de584dd9692b73dd0825b6cc3cca7244246047b2337c7",
+    "server/production/axis_partition_research_test.go": "675e73ad6b1fb0df4742b98f28616f125633e0f54c27b10f104a99e89aca66a3",
+    "server/production/axis_rate_source_research_test.go": "9b638835ce9aad92d656203e49d8db1038a7fd57af1761946329127ed6a1cce0",
+    "server/production/axis_stack_test.go": "a014c6046ce356a2927c1d3d58ad3eaa518252b78724543ec19176588be26e0c",
+    "server/production/axis_timing_test.go": "0fa4ffc7eff37646c77edc0bfee12165bd32067bf5c9198391dfd7d875ed9435",
+    "server/production/content.go": "08114e4957506f53fefd1c574c37c45df3a34f93e7b1d2246f9150f940788181",
+    "server/production/engine.go": "b872d4746779a097f68f88475cef66214a2a7f8970817298f788ffad515ae875",
+    "server/save/state.go": "2e847bb6c2d23a1323bb950f70d400946d3d0fde3eed97924738f7df7b06d635"
+  },
+  "rows": [
+    {
+      "id": "producer/1/1e0/2000",
+      "count": 1,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.3023e0",
+      "rounded_delta": "2.3023e0",
+      "restored_context_delta": "2.3023e0",
+      "actual_engine_cash": "2.3023e0"
+    },
+    {
+      "id": "producer/1/1e0/3114",
+      "count": 1,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.5846811e0",
+      "rounded_delta": "3.5846811e0",
+      "restored_context_delta": "3.5846811e0",
+      "actual_engine_cash": "3.5846811e0"
+    },
+    {
+      "id": "producer/1/1e0/2045",
+      "count": 1,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.35410175e0",
+      "rounded_delta": "2.35410175e0",
+      "restored_context_delta": "2.35410175e0",
+      "actual_engine_cash": "2.35410175e0"
+    },
+    {
+      "id": "producer/1/1e0/60000",
+      "count": 1,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "6.9069e1",
+      "rounded_delta": "6.9069e1",
+      "restored_context_delta": "6.9069e1",
+      "actual_engine_cash": "6.9069e1"
+    },
+    {
+      "id": "producer/1/9e-1/2000",
+      "count": 1,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.07207e0",
+      "rounded_delta": "2.07207e0",
+      "restored_context_delta": "2.07207e0",
+      "actual_engine_cash": "2.07207e0"
+    },
+    {
+      "id": "producer/1/9e-1/3114",
+      "count": 1,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.22621299e0",
+      "rounded_delta": "3.22621299e0",
+      "restored_context_delta": "3.22621299e0",
+      "actual_engine_cash": "3.22621299e0"
+    },
+    {
+      "id": "producer/1/9e-1/2045",
+      "count": 1,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.118691575e0",
+      "rounded_delta": "2.118691575e0",
+      "restored_context_delta": "2.118691575e0",
+      "actual_engine_cash": "2.118691575e0"
+    },
+    {
+      "id": "producer/1/9e-1/60000",
+      "count": 1,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.1511499999999997",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "3ff26b1c432ca579",
+          "canonical": "1.15115e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "6.21621e1",
+      "rounded_delta": "6.21621e1",
+      "restored_context_delta": "6.21621e1",
+      "actual_engine_cash": "6.21621e1"
+    },
+    {
+      "id": "producer/2/1e0/2000",
+      "count": 2,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.6092e0",
+      "rounded_delta": "4.6092e0",
+      "restored_context_delta": "4.6092e0",
+      "actual_engine_cash": "4.6092e0"
+    },
+    {
+      "id": "producer/2/1e0/3114",
+      "count": 2,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "7.1765244e0",
+      "rounded_delta": "7.1765244e0",
+      "restored_context_delta": "7.1765244e0",
+      "actual_engine_cash": "7.1765244e0"
+    },
+    {
+      "id": "producer/2/1e0/2045",
+      "count": 2,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.712907e0",
+      "rounded_delta": "4.712907e0",
+      "restored_context_delta": "4.712907e0",
+      "actual_engine_cash": "4.712907e0"
+    },
+    {
+      "id": "producer/2/1e0/60000",
+      "count": 2,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.38276e2",
+      "rounded_delta": "1.38276e2",
+      "restored_context_delta": "1.38276e2",
+      "actual_engine_cash": "1.38276e2"
+    },
+    {
+      "id": "producer/2/9e-1/2000",
+      "count": 2,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.14828e0",
+      "rounded_delta": "4.14828e0",
+      "restored_context_delta": "4.14828e0",
+      "actual_engine_cash": "4.14828e0"
+    },
+    {
+      "id": "producer/2/9e-1/3114",
+      "count": 2,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "6.45887196e0",
+      "rounded_delta": "6.45887196e0",
+      "restored_context_delta": "6.45887196e0",
+      "actual_engine_cash": "6.45887196e0"
+    },
+    {
+      "id": "producer/2/9e-1/2045",
+      "count": 2,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.2416163e0",
+      "rounded_delta": "4.2416163e0",
+      "restored_context_delta": "4.2416163e0",
+      "actual_engine_cash": "4.2416163e0"
+    },
+    {
+      "id": "producer/2/9e-1/60000",
+      "count": 2,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "2.3045999999999998",
+          "exponent_diagnostic": "0",
+          "mantissa_ieee_hex": "40026fd21ff2e48e",
+          "canonical": "2.3046e0"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.244484e2",
+      "rounded_delta": "1.244484e2",
+      "restored_context_delta": "1.244484e2",
+      "actual_engine_cash": "1.244484e2"
+    },
+    {
+      "id": "producer/9/1e0/2000",
+      "count": 9,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.08863e1",
+      "rounded_delta": "2.08863e1",
+      "restored_context_delta": "2.08863e1",
+      "actual_engine_cash": "2.08863e1"
+    },
+    {
+      "id": "producer/9/1e0/3114",
+      "count": 9,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.25199691e1",
+      "rounded_delta": "3.25199691e1",
+      "restored_context_delta": "3.25199691e1",
+      "actual_engine_cash": "3.25199691e1"
+    },
+    {
+      "id": "producer/9/1e0/2045",
+      "count": 9,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.135624175e1",
+      "rounded_delta": "2.135624175e1",
+      "restored_context_delta": "2.135624175e1",
+      "actual_engine_cash": "2.135624175e1"
+    },
+    {
+      "id": "producer/9/1e0/60000",
+      "count": 9,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "6.26589e2",
+      "rounded_delta": "6.26589e2",
+      "restored_context_delta": "6.26589e2",
+      "actual_engine_cash": "6.26589e2"
+    },
+    {
+      "id": "producer/9/9e-1/2000",
+      "count": 9,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.879767e1",
+      "rounded_delta": "1.879767e1",
+      "restored_context_delta": "1.879767e1",
+      "actual_engine_cash": "1.879767e1"
+    },
+    {
+      "id": "producer/9/9e-1/3114",
+      "count": 9,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.926797219e1",
+      "rounded_delta": "2.926797219e1",
+      "restored_context_delta": "2.926797219e1",
+      "actual_engine_cash": "2.926797219e1"
+    },
+    {
+      "id": "producer/9/9e-1/2045",
+      "count": 9,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.9220617575e1",
+      "rounded_delta": "1.9220617575e1",
+      "restored_context_delta": "1.9220617575e1",
+      "actual_engine_cash": "1.9220617575e1"
+    },
+    {
+      "id": "producer/9/9e-1/60000",
+      "count": 9,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.0443149999999999",
+          "exponent_diagnostic": "1",
+          "mantissa_ieee_hex": "3ff0b583a53b8e4b",
+          "canonical": "1.044315e1"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "5.639301e2",
+      "rounded_delta": "5.639301e2",
+      "restored_context_delta": "5.639301e2",
+      "actual_engine_cash": "5.639301e2"
+    },
+    {
+      "id": "producer/99/1e0/2000",
+      "count": 99,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.0009692e3",
+      "rounded_delta": "1.0009692e3",
+      "restored_context_delta": "1.0009692e3",
+      "actual_engine_cash": "1.0009692e3"
+    },
+    {
+      "id": "producer/99/1e0/3114",
+      "count": 99,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.5585090444e3",
+      "rounded_delta": "1.5585090444e3",
+      "restored_context_delta": "1.5585090444e3",
+      "actual_engine_cash": "1.5585090444e3"
+    },
+    {
+      "id": "producer/99/1e0/2045",
+      "count": 99,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.023491007e3",
+      "rounded_delta": "1.023491007e3",
+      "restored_context_delta": "1.023491007e3",
+      "actual_engine_cash": "1.023491007e3"
+    },
+    {
+      "id": "producer/99/1e0/60000",
+      "count": 99,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.0029076e4",
+      "rounded_delta": "3.0029076e4",
+      "restored_context_delta": "3.0029076e4",
+      "actual_engine_cash": "3.0029076e4"
+    },
+    {
+      "id": "producer/99/9e-1/2000",
+      "count": 99,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "9.0087228e2",
+      "rounded_delta": "9.0087228e2",
+      "restored_context_delta": "9.0087228e2",
+      "actual_engine_cash": "9.0087228e2"
+    },
+    {
+      "id": "producer/99/9e-1/3114",
+      "count": 99,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.40265813996e3",
+      "rounded_delta": "1.40265813996e3",
+      "restored_context_delta": "1.40265813996e3",
+      "actual_engine_cash": "1.40265813996e3"
+    },
+    {
+      "id": "producer/99/9e-1/2045",
+      "count": 99,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "9.211419063e2",
+      "rounded_delta": "9.211419063e2",
+      "restored_context_delta": "9.211419063e2",
+      "actual_engine_cash": "9.211419063e2"
+    },
+    {
+      "id": "producer/99/9e-1/60000",
+      "count": 99,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "5.0048460000000006",
+          "exponent_diagnostic": "2",
+          "mantissa_ieee_hex": "401404f6598e10d0",
+          "canonical": "5.004846e2"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.70261684e4",
+      "rounded_delta": "2.70261684e4",
+      "restored_context_delta": "2.70261684e4",
+      "actual_engine_cash": "2.70261684e4"
+    },
+    {
+      "id": "producer/12345/1e0/2000",
+      "count": 12345,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.03129006e6",
+      "rounded_delta": "3.03129006e6",
+      "restored_context_delta": "3.03129006e6",
+      "actual_engine_cash": "3.03129006e6"
+    },
+    {
+      "id": "producer/12345/1e0/3114",
+      "count": 12345,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.71971862342e6",
+      "rounded_delta": "4.71971862342e6",
+      "restored_context_delta": "4.71971862342e6",
+      "actual_engine_cash": "4.71971862342e6"
+    },
+    {
+      "id": "producer/12345/1e0/2045",
+      "count": 12345,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.09949408635e6",
+      "rounded_delta": "3.09949408635e6",
+      "restored_context_delta": "3.09949408635e6",
+      "actual_engine_cash": "3.09949408635e6"
+    },
+    {
+      "id": "producer/12345/1e0/60000",
+      "count": 12345,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "9.09387018e7",
+      "rounded_delta": "9.09387018e7",
+      "restored_context_delta": "9.09387018e7",
+      "actual_engine_cash": "9.09387018e7"
+    },
+    {
+      "id": "producer/12345/9e-1/2000",
+      "count": 12345,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.728161054e6",
+      "rounded_delta": "2.728161054e6",
+      "restored_context_delta": "2.728161054e6",
+      "actual_engine_cash": "2.728161054e6"
+    },
+    {
+      "id": "producer/12345/9e-1/3114",
+      "count": 12345,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.24774676108e6",
+      "rounded_delta": "4.24774676108e6",
+      "restored_context_delta": "4.24774676108e6",
+      "actual_engine_cash": "4.24774676108e6"
+    },
+    {
+      "id": "producer/12345/9e-1/2045",
+      "count": 12345,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.78954467771e6",
+      "rounded_delta": "2.78954467771e6",
+      "restored_context_delta": "2.78954467771e6",
+      "actual_engine_cash": "2.78954467771e6"
+    },
+    {
+      "id": "producer/12345/9e-1/60000",
+      "count": 12345,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.5156450299999997",
+          "exponent_diagnostic": "6",
+          "mantissa_ieee_hex": "3ff8401500c31e77",
+          "canonical": "1.51564503e6"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "8.184483162e7",
+      "rounded_delta": "8.184483162e7",
+      "restored_context_delta": "8.184483162e7",
+      "actual_engine_cash": "8.184483162e7"
+    },
+    {
+      "id": "producer/123456789/1e0/2000",
+      "count": 123456789,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.80447320608e14",
+      "rounded_delta": "2.80447320608e14",
+      "restored_context_delta": "2.80447320608e14",
+      "actual_engine_cash": "2.80447320608e14"
+    },
+    {
+      "id": "producer/123456789/1e0/3114",
+      "count": 123456789,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.36656478187e14",
+      "rounded_delta": "4.36656478187e14",
+      "restored_context_delta": "4.36656478187e14",
+      "actual_engine_cash": "4.36656478187e14"
+    },
+    {
+      "id": "producer/123456789/1e0/2045",
+      "count": 123456789,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.86757385322e14",
+      "rounded_delta": "2.86757385322e14",
+      "restored_context_delta": "2.86757385322e14",
+      "actual_engine_cash": "2.86757385322e14"
+    },
+    {
+      "id": "producer/123456789/1e0/60000",
+      "count": 123456789,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "8.41341961825e15",
+      "rounded_delta": "8.41341961824e15",
+      "restored_context_delta": "8.41341961825e15",
+      "actual_engine_cash": "8.41341961825e15"
+    },
+    {
+      "id": "producer/123456789/9e-1/2000",
+      "count": 123456789,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.52402588548e14",
+      "rounded_delta": "2.52402588547e14",
+      "restored_context_delta": "2.52402588548e14",
+      "actual_engine_cash": "2.52402588548e14"
+    },
+    {
+      "id": "producer/123456789/9e-1/3114",
+      "count": 123456789,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.92990830369e14",
+      "rounded_delta": "3.92990830368e14",
+      "restored_context_delta": "3.92990830369e14",
+      "actual_engine_cash": "3.92990830369e14"
+    },
+    {
+      "id": "producer/123456789/9e-1/2045",
+      "count": 123456789,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.5808164679e14",
+      "rounded_delta": "2.5808164679e14",
+      "restored_context_delta": "2.5808164679e14",
+      "actual_engine_cash": "2.5808164679e14"
+    },
+    {
+      "id": "producer/123456789/9e-1/60000",
+      "count": 123456789,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022366030421156",
+          "exponent_diagnostic": "14",
+          "mantissa_ieee_hex": "3ff66f8fa5f51ece",
+          "canonical": "1.40223660304e14"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "7.57207765643e15",
+      "rounded_delta": "7.57207765642e15",
+      "restored_context_delta": "7.57207765643e15",
+      "actual_engine_cash": "7.57207765643e15"
+    },
+    {
+      "id": "producer/1234567890123/1e0/2000",
+      "count": 1234567890123,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.80445049286e22",
+      "rounded_delta": "2.80445049286e22",
+      "restored_context_delta": "2.80445049286e22",
+      "actual_engine_cash": "2.80445049286e22"
+    },
+    {
+      "id": "producer/1234567890123/1e0/3114",
+      "count": 1234567890123,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.36652941738e22",
+      "rounded_delta": "4.36652941738e22",
+      "restored_context_delta": "4.36652941738e22",
+      "actual_engine_cash": "4.36652941738e22"
+    },
+    {
+      "id": "producer/1234567890123/1e0/2045",
+      "count": 1234567890123,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.86755062895e22",
+      "rounded_delta": "2.86755062895e22",
+      "restored_context_delta": "2.86755062895e22",
+      "actual_engine_cash": "2.86755062895e22"
+    },
+    {
+      "id": "producer/1234567890123/1e0/60000",
+      "count": 1234567890123,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "8.41335147858e23",
+      "rounded_delta": "8.41335147858e23",
+      "restored_context_delta": "8.41335147858e23",
+      "actual_engine_cash": "8.41335147858e23"
+    },
+    {
+      "id": "producer/1234567890123/9e-1/2000",
+      "count": 1234567890123,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.52400544357e22",
+      "rounded_delta": "2.52400544357e22",
+      "restored_context_delta": "2.52400544357e22",
+      "actual_engine_cash": "2.52400544357e22"
+    },
+    {
+      "id": "producer/1234567890123/9e-1/3114",
+      "count": 1234567890123,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "3.92987647564e22",
+      "rounded_delta": "3.92987647564e22",
+      "restored_context_delta": "3.92987647564e22",
+      "actual_engine_cash": "3.92987647564e22"
+    },
+    {
+      "id": "producer/1234567890123/9e-1/2045",
+      "count": 1234567890123,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.58079556605e22",
+      "rounded_delta": "2.58079556605e22",
+      "restored_context_delta": "2.58079556605e22",
+      "actual_engine_cash": "2.58079556605e22"
+    },
+    {
+      "id": "producer/1234567890123/9e-1/60000",
+      "count": 1234567890123,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "1.4022252464293301",
+          "exponent_diagnostic": "22",
+          "mantissa_ieee_hex": "3ff66f83bd70a1d9",
+          "canonical": "1.40222524643e22"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "7.57201633072e23",
+      "rounded_delta": "7.57201633072e23",
+      "restored_context_delta": "7.57201633072e23",
+      "actual_engine_cash": "7.57201633072e23"
+    },
+    {
+      "id": "producer/9007199254740991/1e0/2000",
+      "count": 9007199254740991,
+      "elapsed_ms": 2000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.49278534683e30",
+      "rounded_delta": "1.49278534683e30",
+      "restored_context_delta": "1.49278534683e30",
+      "actual_engine_cash": "1.49278534683e30"
+    },
+    {
+      "id": "producer/9007199254740991/1e0/3114",
+      "count": 9007199254740991,
+      "elapsed_ms": 3114,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.32426678501e30",
+      "rounded_delta": "2.32426678501e30",
+      "restored_context_delta": "2.32426678501e30",
+      "actual_engine_cash": "2.32426678501e30"
+    },
+    {
+      "id": "producer/9007199254740991/1e0/2045",
+      "count": 9007199254740991,
+      "elapsed_ms": 2045,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.52637301713e30",
+      "rounded_delta": "1.52637301713e30",
+      "restored_context_delta": "1.52637301713e30",
+      "actual_engine_cash": "1.52637301713e30"
+    },
+    {
+      "id": "producer/9007199254740991/1e0/60000",
+      "count": 9007199254740991,
+      "elapsed_ms": 60000,
+      "efficiency": "1e0",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.47835604049e31",
+      "rounded_delta": "4.47835604048e31",
+      "restored_context_delta": "4.47835604049e31",
+      "actual_engine_cash": "4.47835604049e31"
+    },
+    {
+      "id": "producer/9007199254740991/9e-1/2000",
+      "count": 9007199254740991,
+      "elapsed_ms": 2000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.34350681215e30",
+      "rounded_delta": "1.34350681215e30",
+      "restored_context_delta": "1.34350681215e30",
+      "actual_engine_cash": "1.34350681215e30"
+    },
+    {
+      "id": "producer/9007199254740991/9e-1/3114",
+      "count": 9007199254740991,
+      "elapsed_ms": 3114,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "2.09184010651e30",
+      "rounded_delta": "2.09184010651e30",
+      "restored_context_delta": "2.09184010651e30",
+      "actual_engine_cash": "2.09184010651e30"
+    },
+    {
+      "id": "producer/9007199254740991/9e-1/2045",
+      "count": 9007199254740991,
+      "elapsed_ms": 2045,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "1.37373571542e30",
+      "rounded_delta": "1.37373571542e30",
+      "restored_context_delta": "1.37373571542e30",
+      "actual_engine_cash": "1.37373571542e30"
+    },
+    {
+      "id": "producer/9007199254740991/9e-1/60000",
+      "count": 9007199254740991,
+      "elapsed_ms": 60000,
+      "efficiency": "9e-1",
+      "rates": [
+        {
+          "mantissa_diagnostic": "7.4639267341429916",
+          "exponent_diagnostic": "29",
+          "mantissa_ieee_hex": "401ddb0f9c1b8975",
+          "canonical": "7.46392673414e29"
+        }
+      ],
+      "raw_wire_equal": false,
+      "raw_delta": "4.03052043644e31",
+      "rounded_delta": "4.03052043644e31",
+      "restored_context_delta": "4.03052043644e31",
+      "actual_engine_cash": "4.03052043644e31"
+    }
+  ],
+  "raw_bits_changed_profiles": 64,
+  "delta_changed_profiles": 5
+}

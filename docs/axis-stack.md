@@ -102,6 +102,11 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   reconstruction, not the production implementation. Its
   [producer/persistence limits](../planning/clout-v1-and-pr-interns/anchor-research.md)
   remain prerequisites for a buildable repair.
+  Subsequent [actual producer/SQL research](../planning/clout-v1-and-pr-interns/rate-and-sql-research.md)
+  shows that early rate serialization changes five sampled payouts and jsonb
+  invalidates strict byte framing. Existing context restore and a test-only
+  logical reader pass separate declared populations; neither is a production
+  repair, adopted save format or complete integrated persistence proof.
   The retained
   regression is intentionally red, so the current Go/CI tree is not green.
 - Served-epoch activation and the default composed PR purchase/rendering journey

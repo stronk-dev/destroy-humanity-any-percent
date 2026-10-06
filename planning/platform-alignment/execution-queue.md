@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## R-012 producer and SQL result — 2026-10-07
+
+Predeclared9a35aa78 after9050fe4d:64 actual producer profiles complete; early
+rate rounding changes five payouts, existing saved contexts preserve all raw
+rates/deltas. TS agrees. Real Postgres16.15/linux-arm64:1215complete, strict-byte
+decoder refuses all, logical reader preserves every field;16SQL negatives
+complete(12logical refusals/one22P02/three representation-only normalizations).
+Source faults discriminate; exact restoration. Client9499pass/340skip/types/
+vet/topology clean; existing128-case AC6 remains27fail/101pass. AMD64 local CI
+attempt fails before Go (exec format), not a passing architecture/hosted claim.
+**READY RESEARCH:** predeclare actual offline/banking/boost/provision/full-state
+and replay boundaries before adopting a persistence contract. CPU context and
+SQL prototype are separate proofs, not combined Service/Store integration.
+**DESIGNATED REVIEW PENDING:** full new span after9050fe4d; older spans remain
+independent. No production/save/kernel/CI/body/acceptance/archive/mint/push/deploy
+authority. Full nine-tier1.0 intact. [Evidence](../clout-v1-and-pr-interns/rate-and-sql-research.md).
+
 ## R-012 frozen-anchor research result — 2026-10-07
 
 Predeclaredcadd7111 afterb54fc7ef:615 paired primary cases complete(606accept/
