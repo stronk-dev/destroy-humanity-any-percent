@@ -4950,3 +4950,34 @@ cold core/vet and focused cold committed-HEAD tests follow; full CI/SQL/browser
 remain unclaimed. Generated artifacts are the explicitly authorized measurement
 outputs while tests run; no manual source/tracking/probe edits while any handle
 lives. Designated Claude full-span review remains separate. No box flip.
+
+## 2026-10-06 — RP-263 instrument checkpoint before recording
+
+New private test file only; no existing producer/math/catalog changed. The
+instrument uses the exact suite Prestige, recomputes full aggregate and H2,
+strictly decodes H1/lineage and binds raw report bytes. Record/verify check clean
+inputs before/after, and source/data trees again after production. Verify also
+validates retained lineage against its recorded Git objects before running.
+The existing CI harness checkout fetch-depth0 supplies those objects; no CI
+change. Full replay requires unchanged trees; artifact-only checks do not.
+
+First command d9c8cc..1314ac selected no tests: Make consumed trailing dollar
+and space, forming Admission-count=1. It is invalid evidence, explicitly not a
+green gate. Corrected27cd79..bbd474 executes all24 refusal children plus healthy
+historical-source/commit-advance controls, exit0,0.185s. No fresh producer yet.
+
+Four independent compiling omissions, each terminal exit2 before restoration:
+raw binding d4f5e8..d50f94 fails h1-hash/h2-hash/raw-h1 (raw-h2 remains defended
+by exact H2 bytes); aggregate f8f652..be207d fails aggregate while explicit
+failure arrays remain defended; H2 6c9612..089ad9 fails result/envelope/grid;
+producer-tree 6ddee2..d25e2c fails changed server/balance/kernel. No compiler
+errors/panics. Each exact restored SHA947a957736fd346d11ccdeab29c65d5fcffb790ec3acb12747eef5b81dbfc0bc.
+Restored0e0e05..803f17 exit0,0.284s. Unknown selector396284 exits2 immediately;
+quoted Go end-of-text anchor correctly selects the one fresh-measurement test.
+
+This is an intermediate committed instrument, not completion: the new artifact
+gate intentionally requires the still-absent three outputs. Next record once
+from this committed code, then full byte-identical replay, focused/fast/core/vet,
+canonical docs/board/ledger reconciliation. No old report overwrite, candidate
+adoption, kernel bump, mint, box, archive, message to Claude or push. Full range
+afterc352370a including declarations/code/reports/records needs designated review.
