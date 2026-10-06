@@ -7308,3 +7308,27 @@ handle discipline; root/client/browser gates and unchanged perf lane follow.
 All old45/61 reader, host/surface/cost controls and deadlines preserved. Complete
 new span aftere312b4d7 needs Claude independently of previous spans; full nine-
 tier/platform1.0 active, no shortcuts, box flip, acceptance/archive/cleanup/push.
+
+## 2026-10-06 — Full-tree plan unchanged-source diagnosis
+
+Declaration path is balance/testdata/reputation-tree/fixture-v1.json, not the
+RFC's future balance/reputation-tree/phase1.json (which does not exist before
+ratification/mint). No fixture/data adoption or source rewrite. Type/unit
+2a5018/11e400 session33584 terminal0:0 errors/warnings,8167 passes/273 skips
+(18 new native tests are correctly Node-inapplicable).
+
+Native b2c3ff/3a5794 session45875 terminal2:28 controls pass, four WebKit native
+paths skip the first checkbox and land on the after-sentinel; both eras and
+Enter/Space reproduce RP-288. Four additional axe failures name the test-only
+unstyled before-sentinel's target size, not a panel element. Those are INVALID
+FIXTURE evidence, not a product-accessibility defect. Remove only external
+sentinels from the component axe profile; leave its zero-violation oracle/tag
+set, every panel control and keyboard population/deadlines unchanged. Re-run
+baseline before source. Production SHA251343ff0583a62a2b3ca5faa5332f8d80c8de6a3c8e7b3e161f52c1ed7de861
+unchanged. Refine minimally with explicit checkbox stops first; if Clear then
+fails independently, add its explicit stop too. Summary already natively works.
+
+Refined unchanged-source4a5eff/ae4952 session23883 terminal2:all32 non-WebKit-
+keyboard controls pass including both-era zero-violation component axe. Exactly
+four native WebKit checkbox paths fail; no sentinel failure remains. Commit
+this diagnostic before the source correction; old surface/host tests untouched.
