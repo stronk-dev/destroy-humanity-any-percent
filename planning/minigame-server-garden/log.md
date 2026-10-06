@@ -1468,3 +1468,40 @@ not automatically an HTTP/account or full UI witness. No sleep-dependent boundar
 If confirmed, log the finding immediately and separately predeclare SG9 repair. No product
 byte, clock policy, save/replay shape, balance, CI, mint or checkbox change in this diagnosis.
 Existing owner/author RP-222, earlier pending cross-party ranges and full 1.0 obligations remain.
+
+### SG9 actual diagnosis — RP-223
+
+Review by: Codex. Recorded by: Codex. Original bounded G6 `e4ac04f8` read seam:
+CHANGES REQUIRED. All six actual reads are non-writing and carry the saved revision.
+The normal salted arm projects two ticks inside the DB bracket. Both ±24-hour unsalted arms
+report shifted server_ms; the salted lead reports 288 ticks. The salted lag returns zero and
+aborts at the growth assertion before timestamp logging. The nominal unsalted control is also
+one millisecond below the DB bracket: caller/Account time is truncated, not the DB clock sample.
+This control is red and is not silently called green or dismissed as instrument noise.
+
+The next run moves timestamp logging/bracket validation before the already-declared growth
+check so lag provenance is explicit; no population, bound or expected behavior changes.
+No claim of committed growth or reachable public-player exploitation: this is the actual
+Store/Service advisory read with admitted fixture data, not a default browser/account workflow.
+RP-223 is filed immediately; no runtime change has happened in the diagnostic range.
+
+### RP-223 separate SG9 repair predeclaration
+
+Authority: accepted SG9 and AC15. Add a narrowly named Store sibling-read operation that
+selects the active same-Founder sibling's actual head and Postgres millisecond timestamp in
+one read-only SQL statement; restore under that head's pinned catalog. No write, row lock,
+salt draw, revision or new table. Existing generic sibling/latest reads remain unchanged.
+GardenView consumes that returned timestamp rather than its compatibility handler-time
+argument. Keep the interface and all HTTP/save/replay shapes unchanged, and keep the pure
+projection's explicit timestamp for deterministic replay/witness work. No attendance/Fiscal/
+minigame clock change. This real production correction requires kernel 0.3.153 in the same
+implementation commit (all three version sources); it does not repair historical RP-131.
+
+Carry the six salted/unsalted normal/lag/lead database arms, every full persisted snapshot,
+real revision, and actual loaded-head check. Repeat cold. Demonstrate red by restoring caller
+time in the real read consumer; separately sever the discarded clone and require the pure
+full-state non-mutation oracle to fail. Existing schema/salt/no-write/activation/corpus gates
+stay intact. Cold Go, declared Postgres and full client/native Linux browsers/performance
+follow exact restoration. No source/test edits while any verification is live. Failure to
+query or restore must fail honestly, not fall back to handler time. No new mechanic, UI/copy,
+CI, mint, migration, schema, archive or release promotion. Claude reviews the full new range.
