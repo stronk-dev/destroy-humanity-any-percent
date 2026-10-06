@@ -4297,3 +4297,34 @@ R10 H3 author reconciliation is required before closeout; no weakened criterion
 is inferred. Next safe accepted work RP-264 false-exclusion/accounting oracle;
 H1/H2 fresh calibration/report lineage, H4's six Casual ties, H5 epsilon/run4,
 SQL/browser/reviews and full1.0 remain. Goal active; no archive or push.
+
+## 2026-10-06 — RP-262 bounded implementer first filter
+
+Review by: Codex (implementer, self-first-filter).
+Recorded by: Codex.
+Reviewed range:ee1064a0..fab074a1, all three commits and all13 changed paths:
+both predeclarations, four harness source/test files, canonical docs and
+ledger/queue/board/plan/log reconciliation. Verdict: bounded instrument and
+record first filter passes; exact R10 H3 acceptance criterion remains RED.
+This is NOT the designated independent cross-party verdict.
+
+Committed-HEAD cold5e3c3a..84fd14 (session70251, terminal exit0,4.866s)
+executes65 named children:27 new oracle/refusals, four actual Reference
+consumer controls and34 prior lifetime/frozen-input observations. The five
+earlier compiling probes and exact restores cover input-copy/consumer,
+wrong-factor, duplicate-census and unchanged-sensitivity refusal. They do not
+pretend to rerun the485-run study. That complete study was executed on the
+same three instrument source files before the small control was added; it
+is not relabelled as a new committed-HEAD full-study run.
+
+The diagnostic input is unexported, copied per ordinary runtime, and rejected
+with career/Tier2. Nil preserves existing callers. Canonical frozen admission
+and production math remain; no report-key authority is fabricated. Historical
+reports/corpus and kernel161 stay unchanged. Source/record editing occurred
+only after all handles ended. No checkbox, retune, refresh, mint or archive.
+
+Unit/no-row neutrality passes; tiny0/679 versus strong289/679 records the fired
+criterion honestly. Changed lifetime or transition count is not a milestone.
+R10 H3 author reconciliation, H4/H5, report provenance/fresh H1/H2, SQL/capacity,
+RP-131 and all previous reviews remain. Completeee1064a0..fab074a1 needs Claude;
+earlier973d983c..9743dcb7 remains separate. Next RP-264; goal remains active.
