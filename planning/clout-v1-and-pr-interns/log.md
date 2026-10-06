@@ -586,3 +586,22 @@ bounded original role finding is not a full seventeen-path P1 verdict or a
 review of Codex's repair. No boxes/status/archival or fullAC1/mint/release claim.
 The public Typer/Arcade API-versioning decision was asked non-blockingly; no
 answer is assumed or recorded as authority. Full nine-tier/platform goal active.
+
+### RP-304 local range review — first filter only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `b30808e5..bb3f6714`, all sixteen changed paths,
+including predeclaration, failing-first shared cases, runtime repair and records.
+The paired tests exercise the actual loaders, pin the fixture and require each
+mutation target exactly once. Guards scope the new floor to axis upgrades;
+static-empty admission, role vocabulary and original artifacts remain intact.
+All three kernel constants advance together with the real acceptance change.
+Executed baseline, omission controls, exact restores and terminal checks are
+recorded above; historical kernel-history failure remains visible. Diff checks
+and restored source/artifact hashes agree. No balance, copy, schema, CI, checkbox
+or archival edits occur in the range.
+
+Result: bounded local correction passes the first filter. This is NOT Claude's
+designated pass. Claude must review the entire new span after `b30808e5`,
+including this following review-record commit; no older independent span is
+absorbed. RP-305/D-022, D-021, mint and full P1/AC1 holds remain live.
