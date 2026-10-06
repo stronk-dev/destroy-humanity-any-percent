@@ -855,7 +855,7 @@ func (suite *RelevanceSuite) runPersonaWithOpportunity(spec RelevanceRunSpec, se
 			return relevanceRunResult{}, err
 		}
 		simulation, simulationErr := production.SimulateTransition(request, candidate, suite.Catalog,
-			production.SimulationDependencies{Routes: suite.Routes}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
+			production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
 			mode, now, suite.external, nil, mask)
 		if simulationErr != nil {
 			return relevanceRunResult{}, simulationErr
@@ -1178,7 +1178,7 @@ func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, h
 		return relevanceCandidate{}, false, err
 	}
 	simulation, err := production.SimulateTransition(request, candidateAtBuy, suite.Catalog,
-		production.SimulationDependencies{Routes: suite.Routes}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
+		production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
 		production.ModeOnline, relevanceNow(earliest), suite.external, nil, mask)
 	if err != nil || simulation.Decision.Outcome != save.IntentApplied {
 		return relevanceCandidate{}, false, err
@@ -1270,7 +1270,7 @@ func (suite *RelevanceSuite) advanceMode(state *save.State, revision, atMS int64
 	if err := counter.add(); err != nil {
 		return production.AdvanceSimulationResult{}, err
 	}
-	return production.SimulateAdvance(state, suite.Catalog, production.SimulationDependencies{Routes: suite.Routes},
+	return production.SimulateAdvance(state, suite.Catalog, production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook},
 		save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash}, mode, relevanceNow(atMS), suite.external, mask)
 }
 
@@ -1346,7 +1346,7 @@ func (suite *RelevanceSuite) progressSegmentGates(state *save.State, revision *i
 			return currentMS, nil, progressed, err
 		}
 		simulation, err := production.SimulateTransition(request, state, suite.Catalog,
-			production.SimulationDependencies{Routes: suite.Routes}, relevanceRevision(*revision, suite.ConstantsHash),
+			production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, relevanceRevision(*revision, suite.ConstantsHash),
 			mode, relevanceNow(crossAt), suite.external, nil, mask)
 		if err != nil {
 			return currentMS, nil, progressed, fmt.Errorf("relevance segment gate %q transition: %w", gateID, err)
@@ -1470,7 +1470,7 @@ func (suite *RelevanceSuite) applyReferenceManual(state *save.State, revision, n
 		return relevanceManualResult{}, err
 	}
 	simulation, err := production.SimulateTransition(request, state, suite.Catalog,
-		production.SimulationDependencies{Routes: suite.Routes}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
+		production.SimulationDependencies{Routes: suite.Routes, Hook: suite.hook}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
 		production.ModeOnline, relevanceNow(nowMS), suite.external, nil, mask)
 	if err != nil {
 		return relevanceManualResult{}, err

@@ -17,6 +17,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
@@ -202,6 +203,9 @@ type RelevanceSuite struct {
 	// Frozen simulation inputs copied by a composed caller. Standalone
 	// relevance suites retain nil; these are not a report or wire authority.
 	external []multiplier.Contribution
+	// Composed callers carry their existing accrual observer into candidate
+	// states. Standalone relevance has no observer or new event authority.
+	hook production.AccrualHook
 }
 
 type relevanceRunResult struct {

@@ -3983,3 +3983,120 @@ scope needs a watched runtime edit, stop and predeclare it instead. Historic
 RP-131 stays red; no CI-policy waiver, SQL/capacity/cleanup, owner copy,
 threshold/policy/literal change, report refresh, box, mint, archival, push or
 release promotion. Full span after973d983c needs Claude. Goal active.
+
+## 2026-10-06 — RP-267 observer correction executed
+
+Corrective predeclaration821b867b follows the executed diagnosis underb15d8eef.
+The internal optional RelevanceSuite hook receives runtime.lifetimeHook from
+the composed factory. All four existing solver transition sites and action-free
+advance bind it; actual bank advance binds the same observer directly. Standalone
+suites keep nil. The exact existing simulation wrapper and canonical
+prestigecore.AccumulateLifetimeValue are reused; no new arithmetic, served
+offline bookkeeping, quote/policy or public report/wire field. This is harness-
+only; no watched kernel prefix changes, so161 remains unchanged.
+
+The three RP-265 full-state oracle calls now explicitly carry the same observer
+as the corrected consumer. They still compare complete encoded states; no
+LifetimeValue suppression or looser rate assertion. The earlier Routes-only
+proof is not retroactively represented as accounting evidence. Three direct
+ranker advance and three effect-masked advance controls complete the new
+18observation population. All zero/ordinary/frozen-input controls remain.
+Normal cold ae7784..a3e568 (session52309, exit0) executes all18lifetime and
+16frozen-input observations, harness0.576s. No setup, compile or skip failure.
+
+Six independent compiling probes, each root make test-go with -count=1 and
+exact SHA restoration before the next probe. Every handle ends with exit2:
+
+| Omission | Executed output / handle | Fired lifetime observations / RP-265 comparisons |
+| --- | --- | --- |
+| Factory hook | b46bb2..3235c2 /98595 | Six adopted/advance observations and six prior advance/purchase comparisons |
+| Candidate purchase hook | 45add2..e38ba6 /74814 | Three adopted-candidate observations and three prior purchase comparisons |
+| Candidate advance hook | 731442..086280 /35929 | Three direct advance observations and three prior advance comparisons |
+| Actual bank hook | 55c19c..d7f0f7 /26295 | Three actual bank observations and three prior bank comparisons |
+| Shared hook → no-op | 9f94db..c07cca /42397 | All twelve explicit nonzero known-value assertions fail; the old16comparison tests still pass |
+| Advance mask | ebfff3..196b8f /26161 | Exactly three masked-advance observations; all prior16comparisons pass |
+
+The shared-hook probe demonstrates why comparing two calls to the same broken
+observer alone is insufficient. New known5/5.015 values fail in the oracle
+before consumer equality, while zero-elapsed/masked controls survive. It does
+not claim an independently broken served hook; that source is unmodified.
+The candidate transition probe isolates rankCandidate; it is not severing
+evidence for the other three transition sites. Prior diagnostics report equal cash when LifetimeValue
+alone differs; the new lifetime diagnostics explicitly print the affected field.
+Exact restoration hashes3d4463:
+runner9ec0e95f593eb0f237f7e2a3b00f14dae256bc9def2e404b5cf8f709d623a39a,
+solverfbed47e2f8b14358e4bbe846e9ae46562d96edee3dcd4e026a4c6c39d71ee994,
+suite655f989892f13f4505766b9b7e9242233af2bc7b94bc03019ec63cc6bd368865,
+old-diagnostic2c1e1300ccf592adcbe1392f1e452f3eeb4241d6de64871b19169a9605b5e329,
+new-test98f0e9cb9802017b9bf5f3650ef92bcf8e0bf9b9c5e7fede08d85aa9512dffbb.
+
+After-repair actual Reference observation2b188b..22639a (session97228, exit0,
+3.802s) has exactly the same source coordinates/experiment as the pre-repair
+223458..7ce8a3. Both treated/control careers complete with two Exits. Scripted
+lifetime1.26604673417e6→1.4605083614e6; elective3.34889972124e6→3.54431965065e6.
+Paid deltas remain2/0 and Founder level2. Treated keeps unlock.p05, no starters,
+factor1.001 and available1; control keeps no nodes/starters, factor1 and
+available2. Run3 gates both357000ms, transition counts16962/16991. All seven
+preceding clocks remain identical for this seed:0/10000/66992/356000/900000/
+346000/4500000. Ending/ownership observation is unchanged. These are not all
+H3distributions, natural SQL careers or a tiny-factor sensitivity verdict.
+
+Broader executed checks, after all exact restores:
+- Fastcee5eb..e60645 (session22338, terminal exit0): harness92.066s,
+  role0.174s, Commons0.504s and guard pass. Exhaustive tests and explicit career
+  observation skip here; their actual dedicated runs are separately recorded.
+- Core3883b4..c55b78 (session31201, terminal exit0): full core -count=1 and
+  vet pass; production47.445s, save0.299s, transport13.400s. Narrow approved
+  HTTP-listener escalation only. Go numeric vectors/source version execute;
+  the separate legacy Pitch alias is cached but its full package was cold.
+  Formulas/API regenerate byte-identical; route/Commons boundaries pass.
+- Composite15cc0c..3a3ab8 (session69208, terminal exit2): typecheck zero
+  errors/warnings, build and8106client tests/134existing skips plus shell pass.
+  TS numeric vectors execute. Historical RP-131/50a3a514 still fires; no
+  whole-client/CI green verdict and no guard/budget waiver.
+- Remaininga78fd5..393c0b (session60510, terminal exit0): topology and13
+  negatives; combat/meters/achievements/cosmetic/payment/copy pass. Copy has
+  657keys and610existing orphan warnings. Deployment manifest unchanged.
+
+Complete exhaustive811f69..c66bd3 (session36620, terminal exit2), not cancelled:
+all97treated/control H4pairs finish in212.58s. The same six Casual seeds
+1/6/8/11/24/25 still violate strict-sooner at275000/425000/405000/265000/
+360000/430000ms. Retained H4byte comparison remains red at report drift.
+All970H5baseline/leave-one-out arms finish in623.44s; its retained byte comparison
+also remains red. No node-classification error is emitted, not full H5 proof.
+Total836.130s; no report regeneration or expected-byte update. These fired
+comparisons do not authorize retuning. H4's genuine criterion and H5's epsilon/
+run4/provenance remain open.
+
+5dee84/692bde additionally shows the retained first-hour Reference H1 fields
+contain pre-correction lifetime values. The threshold test reads this retained
+source and recalculates; it does not rerun the corrected producer. Its green
+test is historical-source consistency, not fresh H1/H2/calibration proof.
+The observed career uses threshold1e5/paired tree; the retained first-hour
+report uses the live1e12/base bundle, so this is not a byte-reproduction claim
+for that distinct first-hour experiment. Fresh source/report lineage and full
+current-producer reproduction stay in the separate RP-263 route. No claim
+that Casual/Chaos paid distributions or threshold recommendations changed.
+
+13a877 confirms unchanged first-hour/H4/H5/threshold/original-corpus SHA256:
+1f7c774d40e0e6b88dc23c37fa6e734c8a0c9d5e8e05416eb29c6f342180b7a6,
+648f36d685c07471830692bf4c55810fc6c95ed4dcd00306d75a36697c2a9aa8,
+4ed79054baa69389fff34cf850327c07b882b6b4aa507c25dc4d3d13808ab63c,
+46a8fea612ff7e777a38c54166e542dff33e92ec18380fdf09ff4bdd1df72808,
+f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782.
+No source/record edit while any handle is live; all end before canonical docs,
+ledger, queue, board and per-RFC plan reconciliation. No checkbox changes.
+
+RP-267 is corrected locally, not designated-approved; whole span after973d983c
+includes both predeclarations and requires Claude. Previous range afterd18d4e09
+and all earlier reviews remain separate obligations. Next safe accepted work
+is RP-262's honest H3 unit/no-row/tiny-factor population, then RP-264's false-
+exclusion oracle. No source scope drift, kernel/live formula/balance/schema/
+migration/CI policy/owner-copy change, SQL or capacity cleanup, report refresh,
+literal/epoch mint, AC13/15, archival, push or full1.0 promotion. Goal active.
+
+Final restored-source cold rerun9cf13a..d48ec1 (session94035, terminal exit0)
+executes all18 lifetime-accounting and16 frozen-input observations in0.393s.
+All six compiling mutations were restored before this run. No source or record
+edit occurred during the live handle. This is a pre-commit check, not a
+designated verdict or a committed-HEAD claim.

@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness correction (2026-10-06):** RP-265/266's frozen-input and rate
+**Latest harness correction (2026-10-06):** RP-267's lifetime observer now binds
+Reference candidates and waiting. Six reproduced omissions are corrected;
+18lifetime/16frozen-input observations and six compiling omission probes
+discriminate. Actual Reference seed0 lifetime rises at both Exits, but paid2/0,
+purchases and observed clocks stay unchanged. Cold core/vet, fast harness and
+client8106/134/types/build plus separate boundaries pass; composite still
+RP-131 RED. Full H4/H5 remain report-drift RED in836.130s with the same six
+Casual ties. Harness-only, kernel161/live math/balance/reports/corpus unchanged.
+Complete span after973d983c needs Claude. Next RP-262 H3, then RP-264; fresh
+H1/H2/report provenance/reproduction, SQL, earlier reviews and full1.0 remain.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous harness correction (2026-10-06):** RP-265/266's frozen-input and rate
 boundary correction passes16Reference observations,20producer profiles and six
 boundary controls; nine compiling omissions discriminate. Cold core/vet,
 fast harness and client8106/134/types/build plus separate boundaries pass.

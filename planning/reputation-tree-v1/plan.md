@@ -114,9 +114,17 @@ threshold retune is measured and reported, then ratified by owner SHA).
   formula change. Seed0 treated gate moves355000→357000ms; control stays357000ms.
   Full H4/H5 now reject untouched retained report drift in786.459s; the same
   six Casual ties remain. Complete new span afterd18d4e09 needs Claude.
-  Next predeclare/measure RP-267's Reference lifetime-hook lead before RP-262 H3,
-  then RP-264's separate exclusion oracle. Report provenance/
-  refresh remains separate; no retuning or report-regeneration authority here.
+  RP-267's subsequent observer correction under821b867b now binds Reference
+  candidates and waiting. Six reproduced omissions are corrected;18lifetime/
+  16frozen-input observations and six compiling hook/mask omissions discriminate.
+  Actual seed0 lifetime rises at both Exits; paid2/0, purchases and clocks stay
+  unchanged. Cold core/vet, fast harness and client8106/134/types/build plus
+  separate boundaries pass; composite remains RP-131 RED. Full H4/H5 remain
+  report-drift RED in836.130s, retaining the same six Casual ties. Harness-only,
+  kernel161/live math/balance/reports/corpus unchanged; span after973d983c
+  needs Claude. Next RP-262 H3, then RP-264's separate exclusion oracle.
+  Fresh H1/H2/report provenance/reproduction remains separate; no retuning or
+  report-regeneration authority here. No checkbox flipped.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.
 - [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
 - [ ] Canonical docs, designated Codex review, archival (Codex).

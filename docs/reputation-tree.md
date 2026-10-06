@@ -482,6 +482,39 @@ writing reports. Its default is an explicit skip. `baseline` mode asserts the
 retained row; it does not switch to old code and is expected to reject that
 stale row after the correction.
 
+Reference's candidate adoption and actual waiting now also bind the same
+`firstHourLifetimeHook` as ordinary first-hour intents and advances (RP-267).
+That observer delegates to `prestigecore.AccumulateLifetimeValue` with the
+canonical accrual receipt. The candidate/advance simulation carries it as an
+internal optional dependency; standalone relevance suites remain observer-free.
+No payout formula, offline-session accounting or live-game behavior changes.
+
+`TestReputationReferenceLifetimeAccounting` has18observations: for each no-row,
+unit and tree input, actual candidate adoption, actual bank dispatch and direct
+ranker advance must credit5/5.015 and match complete canonical states. Ordinary
+intents are healthy controls. Zero elapsed time and effect-masked production
+credit0; starter grants are not fabricated as paid production. Hook-binding,
+shared-hook-no-op and advance-mask omissions make the tests fail. Known-value
+assertions catch a broken shared observer even when consumer and oracle agree.
+The existing16frozen-input tests retain complete state equality, with their
+three canonical state-producing calls reconciled to the now-required observer.
+Their earlier Routes-only scope did not prove lifetime accounting.
+
+At the same actual Reference seed0 career/threshold1e5, corrected scripted
+Exit lifetime is`1.4605083614e6` instead of`1.26604673417e6`, and elective lifetime
+is`3.54431965065e6` instead of`3.34889972124e6`. Both treated/control careers
+complete with two Exits. Paid deltas remain2/0, ownership/starters/factors stay
+unchanged and both run3 gates remain357000ms. All seven preceding milestone
+clocks are unchanged for this seed; this is not the full H3 population or its
+tiny non-unit sensitivity proof. Full H4/H5 reproduction still rejects the
+retained snapshots; the same six Casual ties remain.
+
+The threshold reproduction test reads retained first-hour H1 samples rather
+than rerunning the corrected producer. Its green result is historical-source
+recalculation, not fresh calibration. Complete H1/H2/report provenance and
+current-producer reproduction remain separate work; no report refresh or
+threshold ratification follows from the local observer correction.
+
 The R10 headless career runner accepts exactly `cheapest`, `seeded_uniform`
 and `none`. An optional leave-one-out exclusion must name a node in the loaded
 fixture tree. Both are checked before simulation: a misspelled policy must not

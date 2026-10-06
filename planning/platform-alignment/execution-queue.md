@@ -1,5 +1,27 @@
 # Executable queue
 
+## Reference lifetime observer corrected locally — 2026-10-06
+
+RP-267 under821b867b fixes six executed candidate-adoption/bank omissions.
+All18lifetime/16frozen-input observations pass. Six independent compiling
+hook/mask omissions discriminate with exact restoration; known5/5.015 values
+catch a shared observer fault even when both consumer and oracle lose it.
+Cold core/vet, fast harness and client8106/134/types/build plus separate
+boundaries pass. Composite remains historical RP-131 RED.
+
+**READY FOR CLAUDE:** complete new span after973d983c, both predeclarations.
+**NEXT SAFE ACCEPTED WORK:** predeclare/execute RP-262's actual H3 unit/no-row
+and tiny non-unit milestone population, then RP-264's false-exclusion oracle.
+Do not promise that a tiny factor moves a discrete clock before measuring it.
+**STILL OPEN:** actual Reference seed0 lifetime rises at both Exits; paid2/0,
+purchases and observed clocks remain unchanged. Full H4/H5 remain report-drift
+RED in836.130s; the six Casual ties remain. H1/H2/report provenance and fresh
+reproduction are separate work; retained-source recalculation is not a fresh
+calibration. Harness-only; kernel161/live math/balance/reports/corpus/CI policy
+unchanged. SQL/capacity, all prior reviews and the full1.0 floor remain.
+No checkbox, mint, archival, push, cleanup or release promotion.
+[Evidence](../reputation-tree-v1/log.md).
+
 ## Reference frozen inputs corrected locally — 2026-10-06
 
 RP-265/266 underaa4c241b: all16Reference observations,20producer profiles and
@@ -9,7 +31,7 @@ plus separate boundaries pass. Composite client still RP-131 RED. Kernel161;
 no live formula, balance, original corpus, report or CI policy change.
 
 **READY FOR CLAUDE:** complete span afterd18d4e09, including both predeclarations.
-**NEXT SAFE ACCEPTED WORK:** predeclare and measure RP-267's Reference lifetime-
+**ORIGINAL NEXT QUEUE:** predeclare and measure RP-267's Reference lifetime-
 hook lead, then RP-262's actual H3 multiplier witness and RP-264's false-
 exclusion/accounting oracle. No criterion weakening or retuning authority.
 **RESEARCH RECORD STILL OPEN:** Reference seed0 treated gate355000→357000ms,

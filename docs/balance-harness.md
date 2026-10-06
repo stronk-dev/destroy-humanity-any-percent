@@ -76,6 +76,14 @@ and uses it consistently for candidate transitions, waiting, rate projections
 and actual bank advances. Standalone relevance suites retain nil inputs.
 This is simulation wiring, not a new multiplier formula or live-game policy.
 
+Composed Reference also carries the ordinary first-hour lifetime-value observer
+into candidate transitions and advances, including actual bank waiting. Adopted
+candidate states must retain the canonical paid-production credit, rather than
+only their cash balance. The observer delegates to prestige's existing lifetime
+accrual; simulation masks still apply. Standalone suites retain no observer.
+The first-hour observer does not add served offline-span bookkeeping because
+the instrument already records its own session gaps.
+
 For every declared run it records an unmasked baseline, per-item effect ablations, and group effect
 ablations. Reference runs additionally record action-removal diagnostics and one declared-width beam
 oracle. The reference policy compares banking with every affordable one-unit generator or unowned

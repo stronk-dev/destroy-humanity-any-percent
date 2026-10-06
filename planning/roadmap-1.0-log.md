@@ -2947,3 +2947,24 @@ advances/intents supply the lifetime-value hook. RP-265's rate/state proof does
 not prove that accounting. The next queue therefore measures this separate R10
 lead before RP-262, rather than silently widening the frozen-input correction.
 No numeric finding or product change is inferred from source alone.
+
+## 2026-10-06 — Reference lifetime-accounting correction
+
+RP-267 underb15d8eef/821b867b reproduces six omissions in actual candidate
+adoption/waiting while six controls pass. The ordinary lifetime observer now
+binds Reference candidates and waits;18lifetime and16frozen-input observations
+pass. Six independent compiling omissions discriminate and restore exactly,
+including twelve known-value failures under a shared observer fault that the
+old comparisons alone cannot detect. Kernel161/live formulas/balance/reports/
+corpus unchanged. [Exact evidence and limitations](reputation-tree-v1/log.md).
+
+Actual Reference seed0 lifetime rises at both Exits, while paid2/0, ownership,
+starters, factors and all seven observed clocks stay unchanged. Cold core/vet,
+fast harness and client8106/134/types/build plus separate boundaries pass;
+composite remains historical RP-131 RED. Complete H4/H5 run836.130s remains
+report-drift RED with the same six Casual ties. No generated expected bytes.
+The threshold test's retained-H1 recalculation is not fresh calibration;
+H1/H2/report lineage/reproduction remains separate. Full span after973d983c
+needs Claude, as do all prior spans. Next RP-262 H3 then RP-264, not retuning.
+Actual SQL/capacity and the full nine-tier/platform/release goal remain open.
+Goal active; no checkbox, mint, archival, push, cleanup or release promotion.

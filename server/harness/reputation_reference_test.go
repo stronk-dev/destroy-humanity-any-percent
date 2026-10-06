@@ -147,7 +147,7 @@ func TestReputationReferenceFrozenInputDiagnostic(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if _, err := production.SimulateAdvance(want, ranker.Catalog, production.SimulationDependencies{Routes: ranker.Routes},
+				if _, err := production.SimulateAdvance(want, ranker.Catalog, production.SimulationDependencies{Routes: ranker.Routes, Hook: runtime.lifetimeHook()},
 					runtime.companyRevision(), production.ModeOnline, relevanceNow(1000), runtime.external(), production.AblationMask{}); err != nil {
 					t.Fatal(err)
 				}
@@ -164,7 +164,7 @@ func TestReputationReferenceFrozenInputDiagnostic(t *testing.T) {
 				}
 				request := production.IntentRequest{IntentID: relevanceIntentID(1), Kind: production.IntentBuyGenerator,
 					ExpectedRevision: 1, GeneratorID: "generator.beige_tower", CountMode: "exact", Count: 1}
-				transition, err := production.SimulateTransition(request, want, ranker.Catalog, production.SimulationDependencies{Routes: ranker.Routes},
+				transition, err := production.SimulateTransition(request, want, ranker.Catalog, production.SimulationDependencies{Routes: ranker.Routes, Hook: runtime.lifetimeHook()},
 					runtime.companyRevision(), production.ModeOnline, relevanceNow(1000), runtime.external(), nil, production.AblationMask{})
 				if err != nil || transition.Decision.Outcome != save.IntentApplied {
 					t.Fatalf("independent candidate purchase: %v", err)
@@ -197,7 +197,7 @@ func TestReputationReferenceFrozenInputDiagnostic(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if _, err := production.SimulateAdvance(want, ranker.Catalog, production.SimulationDependencies{Routes: ranker.Routes},
+				if _, err := production.SimulateAdvance(want, ranker.Catalog, production.SimulationDependencies{Routes: ranker.Routes, Hook: runtime.lifetimeHook()},
 					runtime.companyRevision(), production.ModeOnline, relevanceNow(at), runtime.external(), production.AblationMask{}); err != nil {
 					t.Fatal(err)
 				}
