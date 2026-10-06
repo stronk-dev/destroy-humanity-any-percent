@@ -292,3 +292,36 @@ range before any completion claim.
   union to that complete span. Inspect both the initial invalid/red control and final correction.
 - This pin records implementation `3c96ade8`; it is not a verdict or archival action. Earlier
   Garden SG1/SG2/SG6/clock requests remain separate and pending. Nothing pushed.
+
+## 2026-10-06 — RP-235 module-import diagnosis predeclaration
+
+Baseline `6ed42d45`, clean main fourteen ahead of observed remote. R-011 full
+research/pin range `39f95329..6ed42d45` remains pending Claude independently;
+its 150-case primitive pass does not waive full-browser CI 54700's red result.
+Firefox Route suite failed before execution, naming the dangling-resource JSON
+module. 299/300 populations, 22466 pass / six existing skips, sixteen Route tests
+never imported; performance not reached. Original HTTP/network cause unmeasured.
+
+**Authority:** accepted CI Baseline D2/AC1/AC2, observation of existing declared
+browser population. This new range is diagnosis/test observation and records;
+no product/fixture/test assertion, dependency, browser removal, retries, timeout,
+parallelism, workflow, balance/kernel, owner copy or archival change authorized.
+
+Predeclare two complete cold Compose populations with the installed Playwright
+provider's existing `VITEST_PW_DEBUG=1` request-failure observation enabled. Source
+inspection of pinned `@vitest/browser-playwright` confirms it only attaches a
+`requestfailed` listener before navigation; it does not intercept/retry requests.
+Run unchanged default service command, all three engines and existing separate
+performance command. Capture exact failing URL/resource type/error, suite/test
+denominators, uncaught errors and terminal status. No production service/credentials
+in this population. Logging a network cancellation is not by itself its cause.
+
+If full cold observations cannot reproduce the import failure, retain that result
+without calling the defect fixed; predeclare further targeted request/status
+instrumentation rather than a configuration guess. If it recurs, inspect the named
+request/provider/Vite path and add only passive HTTP/module observation as needed,
+with an intentional fixture-request failure proving the observer sees a real red
+suite. Do not edit while handles live, and do not replace full population with a
+selector. A later correction requires its own evidence/authority predeclaration,
+demonstrated failing control and full restored gates. Precise limits, designated
+Claude review and historical RP-131 remain mandatory. Proper full 1.0 stays active.
