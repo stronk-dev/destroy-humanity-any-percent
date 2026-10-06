@@ -5,6 +5,17 @@ their independent review obligations remain live.
 
 ## Reputation host purchase readiness correction — 2026-10-06
 
+**Latest supplement:** range after00335488 is test/planning only.20 native
+public-prop replacement checks, three compiling faults8/20/8, exact restoration;
+428 selected Chromium/WebKit plus isolated performance,8167 units/323 skips and
+root types/build/boundaries/copy/manifest pass. RP-292 is an executed limitation:
+hidden owned selections and over-budget retained plan. Its CHARACTERIZATION
+tests are not acceptance; R9 author must rule reset/pruning/refusal behavior.
+New span needs Claude separately from b5ca3e7d..00335488 and all earlier ranges.
+Next safe accepted work is R9 header accounting/frozen-next bonus/formula;
+author question does not authorize a guessed plan policy or block that work.
+Firefox/SQL/capacity/whole1.0 holds remain; no archive/status/push/deploy.
+
 RP-290/RP-291 afterb5ca3e7d:120b8cb6 predeclaration/9a13aebf test-first64
 failures/16 controls. Scoped readiness/existing offline copy/internal nonterminal
 recovering status correct them.80 new native cases; host faults fail32/8/64/16,

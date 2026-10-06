@@ -110,6 +110,13 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   remain outside the sequence. Space toggles a checkbox; Enter/Space opens the
   disclosure or activates Clear. This does not change the advisory budget,
   prerequisite rules, outgoing plan or authoritative preview source.
+  Public arm/preview replacements update the displayed budget and unselected
+  prerequisite/ownership controls. Known limitation (RP-292): an already selected
+  node that becomes owned disappears but remains in the callback and cost sum;
+  a reduced budget can leave a checked over-budget plan and negative projection.
+  Clear resets both visible selection and outgoing plan. No automatic reset or
+  pruning rule is implemented; R9 author reconciliation is pending. The server's
+  atomic plan revalidation remains the authority, not this advisory display.
 - **Desk opportunity region (GS5):** always present, directly after the manual action. It sits in a
   fixed DOM position and never moves focus, so an opportunity spawning never shifts the page. It
   renders the optional `features.opportunity` arm:

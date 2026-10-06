@@ -33,6 +33,17 @@ RP-289 tooling/RP-283/RP-284 author contracts and full nine-tier/platform holds
 remain. Next ground authoritative plan input replacement without inventing
 reselection policy. [Evidence](reputation-tree-v1/log.md).
 
+Plan-update supplement after00335488 is test-only:20 new native cases and
+three compiling faults (8/20/8 failures, exact restoration). Restored428
+selected Chromium/WebKit plus isolated performance,8167 units/323 skips and
+types/build/boundaries/copy/manifest pass. RP-292 reproduces hidden owned ids
+remaining in a plan and negative over-budget projection; characterization
+tests explicitly do not approve that UX. Reset/pruning/refusal contract awaits
+the R9 author. Full new range needs Claude; recovery range b5ca3e7d..00335488
+and earlier ranges remain independently pending. Next safe accepted work:
+R9 header accounting, frozen/next bonus and published-formula rendering.
+Firefox/SQL/capacity/author/owner/release holds and full1.0 scope are unchanged.
+
 Previous runtime checkpoint: RP-287 is locally corrected in the range after
 61d6c8eb. Recovered/live older-start defects were reproduced before correction;
 bounded Company start revision prevents them across reconnect/full-sync.

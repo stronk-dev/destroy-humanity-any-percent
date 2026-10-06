@@ -190,6 +190,16 @@ Root types/client/native checks plus unchanged copy/boundary verification.
 No product behavior, prose/schema/epoch/kernel/balance or acceptance box change.
 Full test/planning range needs Claude separately; earlier ranges stay pending.
 
+Local observation:036fc924 predeclares/6d72aa17 registers20 native cases,
+including four descriptive invalidated-plan declarations. Public replacements
+react correctly for formula/unselected ownership; RP-292 captures hidden owned
+ids/over-budget retained selection and native Clear escape. No automatic policy
+adopted. Three compiling faults fail8/20/8, source exactly restored. Final428
+selected Chromium/WebKit plus isolated performance,8167 units/323 skips,
+types/build/boundaries/copy/manifest pass. Full new range after00335488 needs
+Claude; RP-292 author action and prior release holds remain. Next safe R9
+header accounting/frozen-next bonus/formula checks. No acceptance box change.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

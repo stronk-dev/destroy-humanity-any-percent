@@ -31,6 +31,16 @@ RP-289 tooling, RP-283/RP-284 author contracts and whole nine-tier/platform
 goal remain. Next ground authoritative plan input replacement before choosing
 any unspecified reselection policy. [Evidence](reputation-tree-v1/log.md).
 
+**Plan-update supplement:** test-only range after00335488 adds20 native public-
+prop replacement cases; compiling faults fail8/20/8, exact source restoration.
+Final428 selected Chromium/WebKit plus isolated performance,8167 units/323
+skips and root types/build/boundary/copy/manifest checks pass. RP-292 retains
+hidden owned selections/over-budget negative projection; explicitly measured
+limitation, not approved UX. Reconciliation policy awaits R9's author; no
+product rule invented. Full new span and earlier recovery/review spans require
+Claude independently. Next safe R9 header/accounting/frozen-next formula checks;
+whole nine-tier/platform1.0, Firefox/SQL/operations and other holds unchanged.
+
 **Previous runtime checkpoint (2026-10-06):** RP-287 superseded-start delivery
 is locally corrected after61d6c8eb. Test-first two live/recovered failures,
 bounded start revision retained through reconnect/full-sync;61 cases pass.

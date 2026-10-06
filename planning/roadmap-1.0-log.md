@@ -3355,3 +3355,21 @@ reselection policy. No Go/schema/kernel161/copy658/balance/epoch/CI/owner ruling
 checkbox/acceptance/archive/cleanup/mint/restamp/publish/deploy/push change.
 Full goal active; this turn commits actual player-control/offline correction.
 [Evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Reputation authoritative plan-update observation
+
+Test-only range after00335488:036fc924 predeclares,6d72aa17 records20 native
+component cases. Formula/ownership replacement works; RP-292 retains hidden
+owned selections and negative over-budget projection until native Clear.
+Explicit characterization, not desired-UX acceptance. Author must reconcile
+reset/pruning/refusal; no implementer policy invented. Three compiling faults
+fail8/20/8, exact original component restored. Final428 selected Chromium/WebKit
+plus isolated performance,8167 units/323 reported skips (ten new native-only
+cases) and root types/build/
+boundaries/copy658/manifest pass. Full new span through record edge needs Claude,
+previous recovery b5ca3e7d..00335488 and earlier reviews remain independent.
+Firefox/copy-tooling/capacity/SQL/mint/manual AT and whole nine-tier/platform
+holds unchanged. Next safe accepted R9 header accounting/frozen-next factors/
+published formula. No product math/behavior/copy/epoch/kernel/CI/owner/ruling,
+checkbox/archive/cleanup/mint/restamp/publication/deployment/push promotion.
+Full1.0 goal active. [Evidence](reputation-tree-v1/log.md).

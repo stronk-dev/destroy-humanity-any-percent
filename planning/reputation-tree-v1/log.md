@@ -7702,3 +7702,41 @@ The new ledger row's accidental blank table separator in036fc924 is removed
 forward in this range; no committed history rewrite. Next run the predeclared
 compiling dependency severings against unchanged tests, restore exact bytes,
 and final root/client/native gates. No product correction or policy adoption.
+
+Three predeclared compiling faults, unchanged20-case oracles, all terminal2:
+preview omission5328d8/b9cabd session59458:8 fail/12 pass;
+available omissionbfab4d/4eba12 session25012:20 fail;
+ownership dependency omissionfeb163/f94427 session25653:8 fail/12 pass.
+Every component worker0/0, zero pending; no screenshot-copy stall or cancelled
+handle. Preview fires after replacement, available also fires initial budget
+controls, ownership fires after replacing the public arm. The observations
+are not claimed to prove all server or host behavior. Restore exact original
+SHA after EACH terminal arm (4afa55,7c2e52 and final check); tests unchanged.
+No product diff remains. Proceed to restored default-capture whole Reputation
+native population plus original Game UI screen/performance and root gates.
+
+Final restored root7b2760/a79f97/2695fe/17a5d5 session83872 terminal0:
+types zero errors/warnings,213-module build,8167 units/323 skips, boundary/
+CI-topology13/cosmetic22/no-payment6 negatives, copy658 unchanged SHA and
+generation/history checks, deployment manifest pass. Ten new Node skips are
+the ten native-only declarations, not disabled browser failures.611 existing
+copy orphan warnings remain visible. Read-only ps diagnostic80b39b was sandbox-
+denied; no escalation needed or command cancelled, same verification handle
+continued to terminal success. No source/test/record edit while a gate was live.
+
+Default-capture restored57127a/3bff1e/898558 session40349 terminal0:
+428 Chromium/WebKit functional passes/two isolated-performance selector
+exclusions, worker212/212 zero pending; separate performance1 pass/22
+exclusions, worker1/1 zero pending. Exact component SHA92c8d0 matches00335488;
+f02589 confirms no source diff. All probes and gates terminal, no mutation or
+handle remains. Firefox still unproved/earlier all-engine arm RED, RP-289 native
+copy and Docker capacity unresolved. No SQL/mint/manual AT/whole AC12/CI claim.
+
+Canonical docs now disclose the measured plan limitation; decision queue names
+the author action rather than editing the accepted body or choosing mechanics.
+Full new span after00335488 needs Claude through final record edge; prior
+b5ca3e7d..00335488 and earlier spans independent. Test-only progress, no product
+behavior or owner-copy change, checkbox/epoch/kernel161/balance/migration/
+archive/publication/push/deploy/cleanup/restamp. Full nine-tier/platform goal
+active; next safe R9 header accounting/frozen-next bonus/published-formula
+checks remain independent of RP-292 policy, RP-283 preview and RP-284 display.
