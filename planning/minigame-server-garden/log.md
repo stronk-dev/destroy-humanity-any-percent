@@ -1626,3 +1626,25 @@ or DESIGN-GAP if ordering cannot be derived without a new policy. If all pass, d
 actual native-key/ordering severing before crediting proof. Never loosen oracle to keep green.
 Retain existing tests and separate new pending range from every earlier review. No source/test
 edit while verification is live; sessions reach terminal status before changes/probes.
+
+### G7 initial diagnostic and instrument correction
+
+Root typecheck (17852, make exit 2) reports nine missing callback parameter annotations
+plus one fixture `kind` widening; these are test errors, not runtime findings. Native-browser
+diagnostic (31879, exit 1, 4.80 s) runs all eight cases in each engine: eighteen failures /
+six passes. Sequential and unmount controls pass in every engine.
+
+Native input reaches the command once and restores focus, but aborts at a **wrong instrument**:
+HTMLButtonElement.disabled excludes inherited disabled fieldset state. Change to native
+`:disabled` matching, not component behavior. Latest-error arm also aborts at an invented
+literal `stale`, whereas the ruled candidate reads `This view may be out of date. Refreshing.`;
+use that existing text, without editing copy. Retain both initial failures, never call them
+product defects or completed native/latest-error evidence. Add explicit callback annotations
+and generated locked-shape cast, not weaker TS configuration or any runtime change.
+
+The independent active/locked/old-error ordering arms reach their actual comparison and fail
+in all three engines: older completion changes the DOM after the latest receipt refresh.
+RP-224 is filed immediately. Original bounded G7 `725d8662^..725d8662` response-order seam:
+**CHANGES REQUIRED**. Review by: Codex. Recorded by: Codex. Not a full G7/AC13/default-host
+or public-network verdict. Correct instruments and repeat unchanged production before
+predeclaring any repair; test-only diagnostic still controls this range.
