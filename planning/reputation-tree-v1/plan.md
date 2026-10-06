@@ -42,7 +42,12 @@ threshold retune is measured and reported, then ratified by owner SHA).
   underef37e83c rejects55malformed decisions, preserves six valid controls and
   eleven producer events, and fires three independent omissions; kernel0.3.159.
   Its new complete span after822774df needs Claude. Existing20purchase corpus
-  rows/bundles are unchanged; no fresh DB or full AC3/4/R8/B4 closure follows.
+  rows/bundles are unchanged. Subsequent R8 tests undereddddc61 explicitly compare
+  all20 purchase result pins and3 paired Founder Exit result pins in Go and TS.
+  Four hash faults and four missing-observation controls fail; old direct
+  comparisons alone survive their wrong-hash faults. Test-only, kernel159 and
+  corpus unchanged; complete new span afterc355fb7d needs Claude. No fresh DB,
+  full AC3/4/R8/B4 or approval of Codex's own fixes follows.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.

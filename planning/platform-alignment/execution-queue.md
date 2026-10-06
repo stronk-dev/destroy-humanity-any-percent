@@ -1,5 +1,24 @@
 # Executable queue
 
+## Reputation replay result-pin proof added — 2026-10-06
+
+Undereddddc61, both runtimes explicitly compare20direct result pins (11applied,
+9rejected) and3paired Founder Exit pins against the existing Go-authored fixture.
+Four wrong-hash controls and four missing-observation controls fail. Omitting
+the new direct assertion lets the same hash fault pass the original comparisons.
+Go's Exit fault is injected at the test boundary, not a runtime-defect claim.
+Runtime/corpus/kernel159 unchanged; cold server-core/vet and client/type/build
+plus separate topology/boundaries pass7457/134. Full verify-client is still RED
+at RP-131/50a3a514, not waived.
+
+**READY FOR CLAUDE:** complete new span afterc355fb7d, includingeddddc61 and its
+test/evidence checkpoint; no prior verdict covers it. **NEXT ACCEPTED WORK:**
+predeclared R5 frozen resolved-input shape parity (RP-255), followed by remaining
+pinned readers/writers. Actual RP-253 Postgres taxonomy, R8 history/verifier and
+full B4/career remain required. Capacity/cleanup hold unchanged; no Docker
+workload, archival, checkbox flip, mint, push, whole CI or 1.0 promotion.
+[Controls and scope](../reputation-tree-v1/log.md).
+
 ## Reputation event admission corrected; original B4 review — 2026-10-06
 
 Underef37e83c, the actual pre-write decision validator admits22of55malformed
@@ -14,7 +33,7 @@ ef37e83c and its implementation/checkpoint, independent of previous ranges.
 **ORIGINAL DESIGNATED VERDICT:**541da96e^..541da96e, all17paths, CHANGES REQUIRED
 for RP-252 event strictness, RP-253 complete persisted rejection taxonomy and
 RP-254 explicit result-hash evidence. This does not approve Codex's later fixes.
-**NEXT ACCEPTED WORK:** bounded R8 purchase result-hash evidence and remaining
+**THEN-NEXT WORK (hash supplement above):** bounded R8 purchase result-hash evidence and remaining
 pinned reader/writer/closed replay inputs. RP-253 requires retained full direct
 taxonomy and actual Postgres execution once the capacity/cleanup hold clears;
 current Docker filesystem still100%/39784KiB free. No full B4/AC3/4/8/RFC,

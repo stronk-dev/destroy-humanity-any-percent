@@ -2723,3 +2723,30 @@ result-hash proof and remaining pinned readers/closed inputs; actual full direct
 Postgres taxonomy remains mandatory, not waived by the event repair. All nine-
 tier/platform/owner/author/mint/H4/release obligations persist. Full goal active;
 no checkbox flip, archival, publication, push or deletion authorization inferred.
+
+## 2026-10-06 — explicit Reputation replay result pins
+
+Undereddddc61, the existing Go-authored corpus now has explicit result-pin
+comparisons in both consumers:20direct purchases (11applied/9rejected) and3
+paired Founder Exits. The two rejected Company Exits have no Founder result,
+not counted observations. No runtime, fixture schema, corpus byte, balance,
+epoch or kernel0.3.159 change.
+
+Four declared wrong-hash controls fail. The old direct state/receipt/event
+comparisons alone survive the same wrong-hash fault, independently proving
+this oracle gap. Go Exit injection is test-boundary evidence, not a production
+defect. Four independently missing direct/Founder-observation census controls
+fail, and all production/test/corpus probe bytes restore exactly.
+
+Cold server-core/vet passes production40.217s/save0.263s. Client/types/build
+and separate boundaries/topology pass7457/134; full verify-client remains RED
+at historical pushed50a3a514 (RP-131). Existing610copy orphan warnings remain.
+No actual Postgres run, Docker cleanup or workload under the capacity hold.
+
+Complete new range afterc355fb7d, includingeddddc61 and its test/evidence
+checkpoint, requires Claude independently. This does not reverse the original
+B4 CHANGES REQUIRED verdict, close RP-253 persistence, R8 history/verifier or
+promote whole B4/RFC/CI/release. Next RP-255 predeclared frozen-input shape
+parity and remaining pinned readers. All nine tiers through Transcendence and
+platform/privacy/accessibility/rights/operations obligations remain. Goal
+active; no checkbox flip, archival, mint, push or deletion authorization.

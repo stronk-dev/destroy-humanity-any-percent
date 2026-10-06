@@ -2386,3 +2386,97 @@ Postgres workload under the capacity hold; RP-253 remains required. First-filter
 only for this new Codex span afterc355fb7d; Claude designated review required.
 No whole R8/B4/AC3/4, reader/writer census, career/player/release, archival,
 checkbox, push, cleanup or goal-completion claim follows.
+
+Supplemental population controls, before execution: independently remove one
+direct row and one paired Founder observation from the in-memory test census
+in each runtime. Each must fail its population check; these are test-boundary
+denominator probes, not corrupt artifact/runtime claims. Original bytes restored.
+
+## 2026-10-06 — RP-254 result-pin proof and implementer first filter
+
+Review by: Codex (implementer first filter, not designated review).
+Recorded by: Codex. Reviewed prefix c355fb7d..eddddc61 plus the complete working
+test/docs/ledger/board/queue/checkpoint diff committed with this entry. Claude
+must independently cite the full literal c355fb7d..new-checkpoint range; no
+original Claude-batch verdict or prior correction approval covers this work.
+
+The two consumers now compare direct purchase result hashes with the existing
+Go-authored bundle pin and paired Founder Exit result hashes with the recorded
+next pin. The census is20direct (11applied/9rejected),5Company Exit rows and3
+paired Founder results:23 hash observations per runtime. The two rejected
+Company Exits have no Founder result and are not counted as hash observations.
+No new hash authority, fixture field, runtime semantics or epoch is invented.
+
+Honest selected baseline: TS00c8ad..636469 passes35tests. Initial Go2cb86f/352359
+selected no tests because Make consumed the single-dollar regex suffix; it is
+invalid evidence. Corrected d1f3ad..d5e883 runs TestReputationPurchaseCorpus
+verbosely and passes cold. No gate claim relies on the empty selection.
+
+Declared wrong-hash controls, each handle terminal before edits:
+
+- Go inactive purchase return:025997..29df02 fails at the new result-pin
+  comparison with the deliberately all-zero hash. Omitting only that assertion
+  while retaining the same runtime fault (7de712..5773c4) passes the generated
+  corpus byte comparison. The existing state/receipt/events cannot see this fault.
+- TS applied purchase return:bf4782..a3be94 fails all11applied rows at result-pin
+  equality; nine rejections and two selected metadata/tamper tests pass. Omitting
+  only the new assertion (f9286a) passes22selected tests/13selection skips with
+  the same bad return hash. These are selection skips, not missing populations.
+- Go paired Exit: inject the old pin after the actual runtime result. Initial
+  b7e87e..e0e9cf stops at the first activation case. Replacing only the hash
+  assertions' fail-fast diagnostic with Errorf allows the whole population to
+  execute:47eb33..80c7cc fails both activation rows, not the same-pin Exit.
+  This final diagnostic is retained. The injection proves the test oracle,
+  not a runtime defect or a bypass of the existing Go output-state guard.
+- TS paired Exit runtime return:08376a..078e8c fails exactly the two activation
+  rows at hash equality; the other five selected tests pass. Input/result pins
+  coincide for the ordinary plan Exit, so that positive remains green.
+
+Supplemental denominator controls: remove the last direct row only:
+ffffa6..93b142 Go reports19/10/9/5/3;0f6d9a..fd66ce TS reports19instead of20.
+Remove the last Founder pairing only:44e09c..99c5a4 Go reports20/11/9/5/2;
+ba1428..21feb5 TS reports2instead of3. Both consumers fail each independently.
+These are in-memory test-boundary probes, not corrupt corpus artifacts.
+
+Exact final restoration d14077:
+
+- Go runtime reputation_intent.go:
+  dd5d94db42daa17d936d05c6ec916684e6b48e60d2dc4bfc77f62b6a64312c99.
+- TS runtime replay.ts:
+  1790fb96006b721372a3cb5a596225708754e271ab972bb7631851652cb54ee7.
+- Final Go test:
+  4950c995d0305ba7c70d06114f1acd9d89ef524e510b1f5405141ae05cb63616.
+- Final TS test:
+  159ce3a23aa70e186c46fc900936c687439cd24208624b49d593e4100959cba7.
+- Unchanged Reputation corpus:
+  f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782.
+
+Final cold fb709f..fd7ff3 make verify-server-core CORE_TEST_COUNT=1 exits0:
+vet and core pass (production40.217s,save0.263s,transport13.303s), formulas/API
+regeneration has no diff. The main Pitch package was cold0.293s; its separate
+content alias is cached and is not called another cold population. 2c7c51..fddfb2
+full verify-client passes types0errors/0warnings, build213modules,7457tests/
+134existing skips and14/8/22shell/UI boundaries, then exits2 at historical
+pushed50a3a514 (RP-131). Full CI is RED, not waived or called green.
+99a6d1..bc4541 separately passes topology13negatives, remaining boundaries
+(cosmetic22negatives), payment6negatives/2near misses, copy657keys/610existing
+orphan warnings, and deployment content-manifest. All handles are terminal
+before records. An unnecessary read-only ps diagnostic was sandbox-refused;
+no escalation or claim depends on it. a2a08f and final diff inspection confirm
+runtime/kernel/corpora/applied migrations/generated contracts remain unchanged.
+
+RP-254 is locally covered, awaiting Claude. RP-253 still needs the complete
+persisted rejection taxonomy and an actual declared Postgres run; capacity/
+cleanup hold unchanged, no Docker workload or deletion attempted. R8 history/
+verifier and full B4/career/player/RFC acceptance remain open. No boxes, archive,
+mint, push, owner-copy or release promotion. Full nine-tier/platform goal active.
+
+Next bounded accepted work is RP-255: static inspection cd27fb/3f77e7 finds
+the R5 Go resolved arm uses a struct decoder with unknown-key refusal but no
+explicit exact/non-null/duplicate-key census, while TS uses exactKeys plus
+typed fields. Do not infer actual admission from inspection. Predeclare raw-
+wire and corresponding parsed-object populations before execution; TS receives
+objects, so duplicate JSON keys already lost during parsing are not a TS wire
+rejection claim. No generic decoder or other intent fix is authorized by this
+observation. Remaining pinned-reader/writer, owner/author/mint/H4/rights/privacy/
+accessibility/deployment/CI and full Transcendence obligations persist.

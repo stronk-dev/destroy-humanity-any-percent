@@ -16,15 +16,19 @@ function bundle(name: string): Promise<ReplayCatalogBundle> {
 describe("Reputation purchase cross-runtime corpus", () => {
   it("pins every R5 rejection row and the full chain", () => {
     expect(corpus.version).toBe(1);
+    expect(corpus.cases).toHaveLength(20);
+    expect(corpus.cases.filter((row) => row.outcome === "applied")).toHaveLength(11);
+    expect(corpus.cases.filter((row) => row.outcome === "rejected")).toHaveLength(9);
     expect(corpus.cases.map((row) => row.name)).toContain("rejects-inactive-tree");
     expect(corpus.cases.filter((row) => row.name.startsWith("chain-"))).toHaveLength(9);
   });
 
-  it.each(corpus.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
+  it.each(corpus.cases)("replays $name to the Go receipt, events, state, and result pin", async (testCase) => {
     const catalogs = await bundle(testCase.bundle);
     const state = restoreFounderReplayState(testCase.pre_state, testCase.state_version, catalogs);
     const transition = await applyFounderLogged(state, canonicalJSONString(testCase.canonical_payload), catalogs, testCase.replay_inputs);
     expect(transition.outcome).toBe(testCase.outcome);
+    expect(transition.resultConstantsHash).toBe(corpus.bundles[testCase.bundle as keyof typeof corpus.bundles].constants_hash);
     expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
     expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
     expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(testCase.post_state_json);
@@ -98,6 +102,11 @@ describe("Reputation starters at new-run assembly", () => {
 });
 
 describe("Reputation Exit plan and v22 activation (R6, B3)", () => {
+  it("pins all five Exit cases and the three paired Founder result observations", () => {
+    expect(corpus.exit_cases).toHaveLength(5);
+    expect(corpus.exit_cases.filter((row) => row.founder !== null)).toHaveLength(3);
+  });
+
   it.each(corpus.exit_cases)("replays $name on the Company log and its Founder arm", async (exitCase) => {
     const company = exitCase.company;
     const current = await loadReplayCatalogBundle(company.constants_hash, company.artifacts as unknown as ReplayArtifacts);
@@ -119,6 +128,7 @@ describe("Reputation Exit plan and v22 activation (R6, B3)", () => {
     const founderState = restoreFounderReplayState(founderCase.pre_state, founderCase.state_version, bundle);
     const founderTransition = await applyFounderLogged(founderState, canonicalJSONString(founderCase.canonical_payload), bundle, founderCase.replay_inputs);
     expect(founderTransition.outcome).toBe(founderCase.outcome);
+    expect(founderTransition.resultConstantsHash).toBe(company.next_constants_hash);
     expect(canonicalJSONString(founderTransition.receipt)).toBe(founderCase.receipt_json);
     expect(canonicalJSONString(founderTransition.events)).toBe(founderCase.events_json);
     expect(canonicalJSONString(encodeFounderReplayState(founderTransition.state))).toBe(founderCase.post_state_json);

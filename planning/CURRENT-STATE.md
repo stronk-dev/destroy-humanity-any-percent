@@ -4,7 +4,20 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime correction: RP-252's Reputation purchase-event validator now
+Latest verification supplement: RP-254 undereddddc61 adds explicit result-pin
+comparisons for20direct purchases and3paired Founder Exits in both runtimes,
+using unchanged Go-authored fixture pins. Four hash faults and four missing-
+observation controls fail; the older direct state/receipt/event comparisons
+alone survive their wrong-hash fault. The Go Exit fault is a test-boundary
+oracle probe, not a runtime defect. Cold server-core/vet passes; client/types/
+build and separate boundaries/topology pass7457/134. Full verify-client remains
+RED at historical RP-131/50a3a514. Runtime, corpus and kernel0.3.159 unchanged;
+complete new span afterc355fb7d needs Claude. Next is RP-255 frozen-input shape
+parity and remaining pinned readers. RP-253 actual persisted rejection taxonomy,
+the capacity hold and full R8/B4/CI/player/1.0 obligations remain.
+[Exact evidence](reputation-tree-v1/log.md).
+
+Previous runtime correction: RP-252's Reputation purchase-event validator now
 refuses all55malformed decision fixtures, including22previous admissions from
 missing/null/ambiguous keys and signed overflow. Six legal controls and eleven
 original producer events pass; three independent omissions fail20/7/2 and
@@ -13,7 +26,7 @@ plus separate boundary/topology checks pass7456/134. Full verify-client remains
 RED at RP-131/50a3a514. New complete range after822774df needs Claude.
 Codex's full original B4 review (`541da96e^..541da96e`,17paths) is CHANGES
 REQUIRED for RP-252/253/254, not approval of its own fixes: complete persisted
-rejection taxonomy and explicit purchase result-hash proof remain. Docker
+rejection taxonomy remains; the hash supplement above needs independent review. Docker
 capacity rechecked100%/39784KiB free; no cleanup or fresh DB workload. No full
 R1/R5/R8/B4/CI/player/RFC/release promotion. [Exact evidence](reputation-tree-v1/log.md).
 

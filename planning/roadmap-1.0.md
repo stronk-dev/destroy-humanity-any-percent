@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime correction (2026-10-06):** RP-252, underef37e83c, fixes
+**Latest verification supplement (2026-10-06):** RP-254 undereddddc61 explicitly
+checks20direct purchase and3paired Founder Exit result pins per runtime against
+the unchanged Go-authored fixture. Four hash faults and four missing-observation
+controls fail; old direct comparisons alone pass their wrong-hash faults.
+Go Exit injection is oracle evidence, not a runtime defect. Cold server-core/vet
+and client/type/build plus separate boundaries/topology pass7457/134; full
+verify-client remains RED at RP-131/50a3a514. Runtime, corpus and kernel0.3.159
+unchanged. Complete new span afterc355fb7d needs Claude. Next RP-255 frozen-input
+shape parity and remaining pinned readers; actual RP-253 persistence, history/
+verifier, capacity and all nine-tier/platform/release obligations remain.
+[Exact scope](reputation-tree-v1/log.md).
+
+**Previous runtime correction (2026-10-06):** RP-252, underef37e83c, fixes
 Reputation purchase-event admission: all55malformed decision fixtures now
 reject, including22previous admissions; six valid controls and eleven original
 producer events remain green. Three independent omissions fail20/7/2 and
@@ -13,7 +25,7 @@ restore exactly. Kernel **0.3.159**; cold server-core/vet and client/type/build
 plus separate boundaries/topology pass7456/134. Full verify-client stays RED
 at RP-131/50a3a514. Complete new span after822774df needs Claude. Original
 17-path B4 designated review is CHANGES REQUIRED for RP-252/253/254: persisted
-direct rejection taxonomy and explicit purchase result-hash proof remain.
+direct rejection taxonomy remains, and the hash supplement above needs review.
 Docker capacity is rechecked100%/39784KiB free, no cleanup or fresh DB run.
 No whole R1/R5/R8/B4/CI/player/RFC/1.0 claim. [Exact evidence](reputation-tree-v1/log.md).
 

@@ -129,6 +129,10 @@ func (runner *reputationRunner) purchase(name, body string, serverTS time.Time) 
 	if err != nil {
 		t.Fatalf("%s: %v", name, err)
 	}
+	// R8: a purchase (including rejection) cannot change the ruleset pin.
+	if transition.ResultConstantsHash != runner.catalogs.ConstantsHash {
+		t.Errorf("%s: result constants hash %q != purchase bundle %q", name, transition.ResultConstantsHash, runner.catalogs.ConstantsHash)
+	}
 	if transition.Outcome == save.IntentApplied {
 		runner.revision++
 	}
@@ -250,6 +254,26 @@ func buildReputationCorpus(t *testing.T) reputationCorpus {
 // REPUTATION_UPDATE_FIXTURE=1 regenerates it.
 func TestReputationPurchaseCorpus(t *testing.T) {
 	corpus := buildReputationCorpus(t)
+	applied, rejected, founderExits := 0, 0, 0
+	for _, row := range corpus.Cases {
+		switch row.Outcome {
+		case string(save.IntentApplied):
+			applied++
+		case string(save.IntentRejected):
+			rejected++
+		default:
+			t.Fatalf("%s: unexpected corpus outcome %q", row.Name, row.Outcome)
+		}
+	}
+	for _, row := range corpus.ExitCases {
+		if row.Founder != nil {
+			founderExits++
+		}
+	}
+	if len(corpus.Cases) != 20 || applied != 11 || rejected != 9 || len(corpus.ExitCases) != 5 || founderExits != 3 {
+		t.Fatalf("result-pin population: purchases=%d applied=%d rejected=%d exits=%d Founder arms=%d; want 20/11/9/5/3",
+			len(corpus.Cases), applied, rejected, len(corpus.ExitCases), founderExits)
+	}
 	encoded, err := json.MarshalIndent(corpus, "", " ")
 	if err != nil {
 		t.Fatal(err)
@@ -656,6 +680,10 @@ func makeReputationPlanExitCase(t *testing.T, name string, current, next Catalog
 	founderTransition, err := ApplyFounderLogged(founder, request.CanonicalPayload, current, founderInputs)
 	if err != nil || founderTransition.Outcome != save.IntentApplied {
 		t.Fatalf("%s Founder arm outcome=%s err=%v", name, founderTransition.Outcome, err)
+	}
+	// R8: Exit adopts the recorded next bundle, not necessarily the input pin.
+	if founderTransition.ResultConstantsHash != next.ConstantsHash {
+		t.Errorf("%s: result constants hash %q != Exit next bundle %q", name, founderTransition.ResultConstantsHash, next.ConstantsHash)
 	}
 	events := fixtureEvents(founderTransition.Events)
 	out.Founder = &reputationCorpusCase{Name: name + "-founder", Bundle: name, StateVersion: founderVersion, PreState: founderPre,

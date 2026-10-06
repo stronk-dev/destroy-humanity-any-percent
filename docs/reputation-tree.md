@@ -217,14 +217,24 @@ and all eleven original direct-purchase producer events. Independently omitting
 shape, domain or relationship admission fails 20, seven or two assertions.
 It does not change producer bytes or the applied migration, and is not a fresh
 Postgres run or proof that every direct rejection has a persisted log row
-(RP-252/RP-253). The original purchase corpus also lacks an explicit result-hash
-assertion; shared state/receipt/event matches alone do not prove that R8 part
-(RP-254).
+(RP-252/RP-253).
 
 `testdata/replay/reputation-tree-v1.json` is the Go-authored cross-runtime corpus: the inactive,
 invalid, unknown, requires, owned and unaffordable rows (including the `cost == available + 1`
 boundary), plus a nine-node chain with an automatic Fiscal sweep. Set
 `REPUTATION_UPDATE_FIXTURE=1` to regenerate it from Go.
+
+The Go generator and TS consumer now explicitly compare the result constants
+hash for all twenty direct purchases (eleven applied, nine rejected) against
+the shared bundle pin. They also compare the three paired Founder Exit results
+against their recorded next pin; two rejected Company Exit cases have no Founder
+result. Population assertions prevent silently dropping these observations.
+Wrong direct-result hashes fail both consumers while the older state/receipt/
+event comparisons alone still pass. Wrong old-pin Exit results and missing-row
+controls fail too. The Go Exit fault is injected after the runtime call: it proves
+the assertion, not a production defect. Corpus and runtime bytes are unchanged.
+This RP-254 supplement needs Claude's designated review and does not close the
+remaining R8 history/verifier work or RP-253's actual Postgres population.
 
 ## Frozen Founder bonus (R3)
 
