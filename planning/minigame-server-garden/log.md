@@ -2033,3 +2033,35 @@ Committed rollback supplement `11f182cd`. Exact new designated-review range:
 `d59960af^..11f182cd` (`f736e73b..11f182cd`), three commits / nine paths, pending Claude.
 This pin records the span, not a verdict. No earlier review/owner/lifecycle gate consumed,
 no self-approval, archive, push or release claim. All verification handles terminal.
+
+## 2026-10-06 — SG6/SG8 saved-head and hash-verdict predeclaration
+
+Previous goal turn is progress: HTTP supplement `4793effa` / rollback supplement `11f182cd`
+and exact-range pins committed, clean `3f3bb03c`, all processes terminal. Re-read AGENTS,
+RFC-0000, full accepted Garden RFC, design vision/tech and actual replay/readers at HEAD.
+Existing G5 record includes TS hash severing; do not pretend that prior proof is absent.
+RP-228 identifies the narrower remaining gap: real Company replay checks every receipt/event
+but discards its final state without comparing the actual saved head; direct TS tamper rejection
+also does not assert the verifier verdict across every credit shape. RP-229 separately records
+SG8's unnamed "ordinary resource event" premise, also in the platform parent. Registry has no
+such generic kind. Author must reconcile; this test scope cannot invent a new event/schema.
+
+**Test-only SG6/SG8/AC9 scope:** add final encoded Company-state equality to the existing real-
+Postgres run-log replay helper, including its zero-entry and one-entry users. Add actual
+persisted Founder-history harvest event/receipt hash poisoning in copied evidence only;
+require `state_divergence` and original history remains verified, with no DB mutation.
+Add Go/TS verifier controls over the four exact committed Company cases: honest nonterminal
+single-entry histories return `log_gap`, not fake `verified`; individually tampered canonical-
+payload or resolved hash must return `state_divergence`, without manufacturing a terminal.
+Keep byte-identical positive transition receipt/event/state comparisons and existing schemas.
+No artifact generation/retune, runtime/kernel/copy/CI/public mint or other pending gate change.
+
+Execute cold host Go and actual declared serial Postgres, root client/typecheck. Discrimination:
+temporarily add one unrecorded Company cash unit in actual replay after receipt/event formation;
+the persisted final-head oracle must fail while receipt/event oracles remain unchanged. Restore
+byte-exactly. Remove actual Go and TS payload/resolved hash equality checks separately: the new
+verdict tests must fail (surviving downstream defenses are reported, not hidden). Final restored
+gates plus complete client suite; every handle terminal before source/test mutation.
+Any runtime criterion failure is recorded before separate repair authority. No full AC9/G5/
+Garden, default player, mature HTTP flow, whole-CI/browser/hosted or archival claim. Claude's
+designated exact-range review remains mandatory and independent of every earlier range.
