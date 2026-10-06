@@ -1857,3 +1857,71 @@ or command/setup error is disclosed. Cold full server-core/vet and client/type/
 build/boundaries/topology plus unchanged-corpus byte checks follow. No new DB
 workload, cleanup consent, checkbox flip, archive, push, full R1/B4/RFC/CI/1.0
 claim. New range after501000ea needs Claude independently of prior work.
+
+Baseline d21b4b confirms all seven negatives fail (six input arms plus the
+post-state hook), while all four valid/retired/inactive controls pass. After
+the minimal checks, f21383 passes all eleven cases.4ea870 passes the seven
+earlier activation sources and exact shared corpus regeneration, so output
+admission uses the result epoch correctly rather than rejecting legal activation.
+
+Control detail before the remaining output probe: live-guard removal1ef64f
+fails exactly the two live negatives; all replay/output/positive controls pass.
+Shared input-guard removala37745 fails four assertions, not the driver's expected
+two: both recorded-invalid arms actually admit corruption, while both purchase
+arms remain defended by the live-resolver check but report ErrInvalidReplayInputs
+instead of the required ErrInvalidEngineState. Those two are error-class
+discrimination, not accepted purchases. The driver stopped on the unexpected
+count after restoring exact SHA; no survivor or source residue. Preserve this
+observation rather than rewriting the oracle/count. Next independent output
+removal, with the same mandatory before/after hashes; no test/behavior edits.
+
+## 2026-10-06 — pinned command admission evidence and complete range
+
+**Review by:** Codex (self/first-filter on new runtime/tests/docs/records).
+**Recorded by:** Codex.
+**Designated reviewer:** Claude, pending.
+**Complete new range:** `501000ea..HEAD`, where HEAD is the commit containing
+this checkpoint, not later history:9a5dd7c2 predeclaration plus this runtime/
+test/docs/evidence checkpoint. This does not approve previous Codex corrections
+or Claude's original B4. No archival range union inferred.
+
+Baseline d21b4b fails all six pinned-invalid input arms and the injected output
+fault while the four positive controls pass. f21383 passes all eleven after the
+minimal live/shared input/output checks.4ea870 passes all seven earlier-source
+activation cases and exact Go corpus regeneration; output checks the new result
+pin when Exit changes epochs. No valid replay byte, price, owned-node refund,
+save schema, applied migration body or fixture epoch changes.
+
+Independent controls all compile and fail: live admission1ef64f fails only the
+two live negative cases; shared inputa37745 fails four assertions as disclosed
+above (two actual recorded-invalid admissions, two wrong typed errors on
+purchases still defended); outputd767da fails only the injected post-state
+fault. Each restores exact SHA before any next run;00b14a confirms final
+sources dd5d94db42daa17d936d05c6ec916684e6b48e60d2dc4bfc77f62b6a64312c99
+(reputation_intent.go) and
+c54e596ef71226e37199d8d62ff974ec26e3e8339f49be50cbef538165bfa249
+(founder_replay.go). No surviving guard removal or hidden compiler/control error.
+The input driver stopped on its unexpected failure count after restoring;
+neither oracle nor runtime was loosened to fit that prediction.
+
+Final b11ee2..65ec56 verify-server-core passes vet and all non-harness packages
+cold: production33.558s,save0.310s,reputation0.196s,kernel0.190s,transport13.434s.
+Full Pitch package ran cold0.330s; its later separate subtarget is cached.
+Formula/API generation is byte-unchanged, import boundaries pass.
+2a6589..3489ae passes zero-error/warning typecheck,213-module build,
+7416 client tests/134 existing skips, shell14/8/22 and13 CI-topology negatives.
+These are not real Postgres, browser, harness, full verify-client or hosted CI;
+historical RP-131/50a3a514 RED is not promoted. All handles terminal before
+checkpoint edits. a7e020/a2a2ee confirm migration/baseline, original and earlier
+Reputation corpora, TS replay and generated contracts remain unchanged.
+
+Kernel0.3.155→0.3.156 in all three identity files accompanies the real invalid
+state acceptance change. Bare artifact-free codecs remain structural; this
+fix covers the command boundaries named here, not every repository reader/
+writer or a real DB transaction. RP-250 is locally corrected with designated
+review pending; full R1/R7/AC11 and original B4's seventeen-path review remain.
+RP-251 records only static next-epoch mirror/append-only-ID observations; next
+bounded tests must execute same-ID effect retune and prohibited removal under
+accepted R1/OD7 before any defect/ruling or runtime change is claimed. No new
+refund, balance/copy, schema, CI policy, checkbox completion, archive, push or
+Docker cleanup authority. Full nine-tier/platform goal remains active.

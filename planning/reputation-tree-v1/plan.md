@@ -24,7 +24,11 @@ threshold retune is measured and reported, then ratified by owner SHA).
   need Claude. A subsequent shared Go-authored corpus now supplies matching TS
   earlier-source replay, complete state/receipt/event/hash equality and three
   fired runtime controls; three corpus corruptions fail both lanes. This separate
-  range also needs Claude; complete pinned R1/R7/AC11 remains.
+  range also needs Claude. RP-250 subsequently closes a reproduced Go command
+  admission gap locally (six corrupt-input cases and one output rollback fault,
+  four positive controls, three fired guard removals), kernel0.3.156; Claude
+  pending. Complete pinned R1/R7/AC11 remains; RP-251 cross-epoch transition
+  conformity is static/unexecuted, not an authorization to remove/refund nodes.
 - [x] B4 (`541da96e`) — R5 `purchase_reputation_node` Founder intent (Go + TS replay parity, corpus). ACs 3, 4.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),

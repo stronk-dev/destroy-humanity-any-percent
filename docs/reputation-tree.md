@@ -95,6 +95,16 @@ raise its `versionFloors` Founder floor further.
 exactly the persisted `reputation_unlock_ppm`, and the available balance must be derivable.
 Without a tree, all tree state must be empty.
 
+The live purchase resolver checks this pinned invariant before resolving cost.
+For activated v22+ state, the shared Go `ApplyFounderLogged` boundary also
+checks it before any command, including a recorded-invalid arm, and before
+returning successful output. Corrupt mirrors are errors, never repaired by a
+purchase. Output validation uses the resulting epoch's bundle when Exit changes
+the pin; failure restores the complete pre-command state and emits no receipt
+or event. Legacy inactive purchases retain their ordinary R5 rejection.
+Bare codecs remain artifact-free structural checks; this does not claim that
+every repository reader/writer or real database commit has been audited.
+
 **Activation.** At a new-run boundary, and on the Founder-log Exit replay arm, a Founder moving
 onto a tree bundle starts with `spent = 0` and `owned = []`. Earned `reputation_level` carries
 over in full.

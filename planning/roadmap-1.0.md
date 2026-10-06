@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest evidence checkpoint (2026-10-06):** original B3's full thirteen-path
+**Latest runtime correction (2026-10-06):** RP-250, predeclared at9a5dd7c2,
+closes a reproduced pinned-state command admission gap. Six corrupt input arms
+and one post-state fault now reject without receipt/events or silent repair;
+four valid/retired/inactive controls pass. Three independent guard removals
+fail and restore exactly. Output admission uses the result epoch, preserving
+all seven earlier-source replays and existing corpus bytes. Kernel **0.3.156**;
+cold server-core/vet and client/type/build/boundaries/topology pass7416/134.
+The new span after501000ea needs Claude, not self-approval. RP-251's cross-epoch
+mirror/append-only-ID observations are next bounded counterfacts, still static.
+Full R1/B4/AC11, real DB/player, CI and nine-tier/platform acceptance stay open.
+
+**Earlier evidence checkpoint (2026-10-06):** original B3's full thirteen-path
 review records CHANGES REQUIRED for RP-248/249; their Codex corrections still
 need Claude. Seven older writable Go Founder sources now execute both activation
 arms, pass complete-state byte equality/pinned admission and discriminate four

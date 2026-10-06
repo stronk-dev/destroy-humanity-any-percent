@@ -4,6 +4,17 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+Latest runtime correction: RP-250 now rejects pinned-invalid Reputation input
+at the live purchase resolver and shared Founder command boundary, and rolls
+back invalid successful output against the resulting epoch. Seven formerly
+admitted corruptions reject; four valid/retired/inactive controls pass. Three
+independent guard removals fail and restore exactly. Cold server-core/vet and
+client/type/build/boundaries/topology pass (7416/134); kernel **0.3.156**.
+The complete new span after501000ea needs Claude; full CI, actual DB admission,
+complete R1/B4/AC11 and release acceptance remain unproved. RP-251's cross-epoch
+effect/mirror and append-only-ID observations are static, not yet defects or
+owner rulings. [Exact evidence and next work](reputation-tree-v1/log.md).
+
 Current strategic status lives in [the 1.0 board](roadmap-1.0.md) and its
 [append-only checkpoints](roadmap-1.0-log.md). Current implementation authority lives in
 the [active RFC index](../rfc/README.md), each RFC's plan/log and the

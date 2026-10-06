@@ -2613,3 +2613,32 @@ New range after29ed56e8 needs Claude independently of earlier spans. Next full
 R1/R7 pinned reader/writer and B4 purchase-range audit; complete nine-tier scope,
 real DB/career/player/release-artifact, mint/H4/owner/author and designated review
 remain. No checkbox flip, archive, push or cleanup consent. Goal stays active.
+
+## 2026-10-06 — pinned Founder admission corruption corrected
+
+Under9a5dd7c2, RP-250 executes six structurally legal but pinned-invalid input
+arms and a successful-output fault. The red baseline admitted all seven;
+four valid/retired/inactive controls passed. The live resolver and shared
+Founder input/output checks now reject corruption, preserve the full pre-state
+and emit no receipt/events. Output uses the result epoch, so the seven earlier
+activation replays and exact shared corpus continue to pass. Kernel0.3.156
+signals a real invalid-input/output acceptance change, not a migration or
+valid replay byte change.
+
+All three independent guard removals compile and fail, then restore exact
+hashes: live2 failures, shared input4, output1. The shared-input control had
+two genuine recorded-invalid admissions and two error-class failures on
+purchases still defended by the live resolver; no inflated admission claim.
+Cold full server-core/vet passes, production33.558s/save0.310s; client/type/
+build/boundaries/topology passes7416/134, zero diagnostics and13 topology
+negatives. Migration/replay corpora, TS replay and generated contracts stay
+byte-unchanged. Real Postgres/browser/harness/full CI were not executed; the
+historical RP-131 RED and capacity/other holds remain.
+
+Complete range after501000ea requires Claude independently of prior spans;
+self/first-filter only, no checkbox flip or archival. Original B4's full
+seventeen-path review is unfinished. RP-251 records static cross-epoch mirror
+and append-only-ID observations for predeclared counterfacts under R1/OD7,
+not confirmed defects, new refund policy or author-body verdicts. All nine-tier/
+platform/owner/author/mint/H4 obligations remain. Goal active; no push, Docker
+cleanup consent or new DB workload.

@@ -32,6 +32,11 @@ func reputationTreeActive(catalogs CatalogBundle, state *save.State) bool {
 // resolveReputationPurchase derives the resolved inputs for a Founder state.
 // resolved_cost is the node cost only when the purchase would apply, else 0.
 func resolveReputationPurchase(catalogs CatalogBundle, state *save.State, nodeID string) (founderReputationPurchaseResolved, error) {
+	if reputationTreeActive(catalogs, state) {
+		if err := validateFounderReputationState(catalogs.ReputationTree, state); err != nil {
+			return founderReputationPurchaseResolved{}, err
+		}
+	}
 	owned := append([]string{}, state.ReputationNodesOwned...)
 	resolved := founderReputationPurchaseResolved{Kind: IntentPurchaseReputationNode, NodeID: nodeID,
 		ReputationLevel: state.ReputationLevel, ReputationSpentBefore: state.ReputationSpent, OwnedBefore: owned}

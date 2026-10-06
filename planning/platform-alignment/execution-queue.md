@@ -1,5 +1,24 @@
 # Executable queue
 
+## Pinned Reputation command admission repaired — 2026-10-06
+
+RP-250 under9a5dd7c2 reproduces six input admissions and one escaping bad output.
+The live resolver and shared public Founder input/output boundaries now enforce
+the existing pinned mirror, preserving inactive/retired accounting and exact
+rollback. Output uses the result epoch, so all seven older activation sources
+and shared Go corpus still pass. Three compiling removals discriminate2/4/1
+assertions (two are defended-purchase error-class differences, not admissions).
+Cold server-core/vet and client/type/build/boundaries/topology pass7416/134;
+kernel0.3.156, existing corpora/API/formula bytes unchanged.
+
+**READY FOR CLAUDE:** correction range after501000ea through its checkpoint,
+separate from all earlier ranges. **NEXT ACCEPTED WORK:** predeclare and execute
+RP-251 cross-epoch mirror/effect/append-only transition counterfacts under R1/OD-7,
+then remaining pinned readers/writers and full original B4 range review. R4
+unknown-owned fallback does not waive OD-7's prohibition on removing nodes
+without a successor refund RFC. No full R1/B4/DB/default-player/CI/1.0 promotion,
+checkbox/archival/push or Docker cleanup consent; other named holds persist.
+
 ## Earlier Founder activation and original B3 review — 2026-10-06
 
 Codex reviewed all thirteen original B3 paths (`fb0ab3b1^..fb0ab3b1`):

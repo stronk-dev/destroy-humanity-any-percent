@@ -44,6 +44,13 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	if state == nil || !catalogs.valid(catalogs.ConstantsHash) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: Founder catalog bundle", ErrInvalidReplayInputs)
 	}
+	// R1: the structural codec cannot derive the pinned unlock mirror. Never
+	// let a command repair or operate on corrupt activated Reputation state.
+	if save.VersionForState(state) >= 22 {
+		if err := validateFounderReputationState(catalogs.ReputationTree, state); err != nil {
+			return FounderLoggedTransition{}, err
+		}
+	}
 	wire, err := parseFounderReplayInputs(replayInputs)
 	if err != nil {
 		return FounderLoggedTransition{}, err
@@ -87,6 +94,26 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		// leaves pet_identities byte-identical; adopt_pet adds exactly one key.
 		if founderTransitionTestArm != nil {
 			founderTransitionTestArm(state)
+		}
+		// Exit can change the pin while activating v22. Validate the output
+		// against that result bundle, not the just-ended run's old artifact.
+		if save.VersionForState(state) >= 22 {
+			resultCatalogs := catalogs
+			if result.ResultConstantsHash != catalogs.ConstantsHash {
+				if catalogs.Next == nil || !catalogs.Next.valid(result.ResultConstantsHash) {
+					*state = *stateBefore
+					result = FounderLoggedTransition{}
+					resultErr = ErrInvalidReplayInputs
+					return
+				}
+				resultCatalogs = *catalogs.Next
+			}
+			if err := validateFounderReputationState(resultCatalogs.ReputationTree, state); err != nil {
+				*state = *stateBefore
+				result = FounderLoggedTransition{}
+				resultErr = err
+				return
+			}
 		}
 		if err := checkPetIdentityTransition(stateBefore.PetIdentities, state.PetIdentities, resolvedKind.Kind == IntentAdoptPet); err != nil {
 			*state = *stateBefore
