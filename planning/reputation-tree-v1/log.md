@@ -7740,3 +7740,31 @@ behavior or owner-copy change, checkbox/epoch/kernel161/balance/migration/
 archive/publication/push/deploy/cleanup/restamp. Full nine-tier/platform goal
 active; next safe R9 header accounting/frozen-next bonus/published-formula
 checks remain independent of RP-292 policy, RP-283 preview and RP-284 display.
+
+## 2026-10-06 — R9 plan-update implementer first filter
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range:00335488..407f35a7 (036fc924,6d72aa17,407f35a7).
+Verdict: locally approved test/record first filter ONLY; not designated review.
+This final record edge and the complete range require Claude. The recovery
+range b5ca3e7d..00335488 and earlier ranges retain separate obligations.
+
+Inspected all eleven paths. No production/Go/balance/copy/epoch/CI/RFC body
+diff; old tests unchanged. New wrapper replaces only public arm/preview props,
+not internal selection. Real browser keyboard owns select/Clear. The six
+functional declarations check registered formula/ownership updates; four
+explicit CHARACTERIZATION ONLY declarations measure the invalidated-plan
+limitation, not a desired-policy or release gate. Their later reconciliation
+must follow an authored R9 rule; green characterization cannot close RP-292.
+No host/concurrent-player/SQL claim follows from supplied component props.
+
+Executed source faults fail8/20/8 with unchanged oracles and terminal exact
+restoration. Default restored native428 includes eight RP-292 characterization
+executions; isolated performance passes separately. Full client8167/323, root
+type/build/boundary/copy/history/manifest evidence recorded above. Original
+copy orphan warnings, Firefox/SQL/capacity/tooling and full1.0 holds retained.
+Append-only71399a and whitespace4a6023/27abd6 pass; net production-scope check
+cb814a is empty. All live handles resolved before record edits; no mutation
+remains. No box/status/archival/release promotion. Full goal stays active;
+next R9 accounting/frozen-next-factor/formula checks are safe and independent.
