@@ -2320,3 +2320,25 @@ must fail and restore exactly before final full browser/performance/root gates. 
 skips, schema/math/copy/CI or public content changed, no acceptance/archival promotion.
 Codex first-filter only, Claude required for exact new range independently of every prior
 range. RP-229/RP-222 author, RP-131/RP-218 CI/worker and full nine-tier 1.0 remain open.
+
+First diagnostic handles terminal: root 65203 exits 0 (7,366 tests, 132 Node DOM
+skips, zero TS/Svelte diagnostics); native-Linux three-engine 96387 exits 1 (21
+pass / six fail). Three refusal failures are an instrument wording error: the
+canonical copy is "That plant is not mature yet.", not the test's "The plant...".
+Correct only that oracle; leave owner copy untouched. The three streamed-receipt
+failures are real: main snapshot reads advance to two, Garden reads stay at two
+instead of three. All five held-command populations and visibility controls pass.
+Re-run the corrected diagnosis before production authority or edits. No process
+remains live, no test deadline, skip, runtime or product byte changed here.
+
+Corrected diagnosis 14742 terminal exit 1: 24 controls pass and exactly the
+streamed-receipt case fails in Chromium, Firefox and WebKit. Refusal now renders
+the catalog's exact unchanged wording. HTTP Founder state advances on that frame,
+so the socket/runtime/host path is demonstrably consumed; only Garden remains at
+the prior advisory DTO. This confirms RP-231, not an undelivered frame or skipped
+browser test. Commit the test and finding separately before production repair.
+
+Review by: Codex; Recorded by: Codex. Bounded original G7 host receipt seam at
+`725d8662^..725d8662`: CHANGES REQUIRED for SG10's post-receipt reread, not a
+verdict on all G7. This Codex-side review of Claude's seam is distinct from any
+future Codex correction's first-filter. No other pending range consumed.
