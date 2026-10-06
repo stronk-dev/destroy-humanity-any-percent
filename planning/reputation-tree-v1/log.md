@@ -699,3 +699,29 @@ Evidence, all cold:
 - `make verify-ci-topology` passes, and its negative controls reject 13/13.
 - **Severing:** deleting the `make reputation-harness-check` line from `maintenance.yml` fails with
   "maintenance must run the exhaustive Reputation harness evidence". It was restored afterwards.
+
+## 2026-10-06 — bounded R2 starter-wire parity diagnosis predeclaration (Codex)
+
+Source coordinate 6947ebe3, clean tree. Previous goal turn completed the Clout
+cross-party guard verdict and authoritative record reconciliation: progress,
+not a waiting loop. This separate accepted Reputation R2/AC1 lane targets only
+the nested starter closed-key grammar from Claude's original a522fdf1; not a
+designated verdict on its entire twenty-one-path B1 commit or later B2–B9.
+
+Source lead: Go decodes the shared curriculum struct then tests nonzero values;
+TypeScript checks the starter arm's exact keys. Predeclare actual fixture-based
+controls for all three starter kinds: untouched legal arms must load; add each
+other arm's field with its zero/empty and null representations, and require
+ErrInvalidTree/TS rule-7 refusal. Source inspection is not yet an executed finding.
+No caller bypass, invented economy/copy literals or live player exploit claim.
+
+If these populations confirm the discrepancy, accepted R2's closed union
+authorizes a narrowly scoped Go raw-key check, shared test evidence and canonical
+docs. Predeclare that correction separately after observing failure. Preserve
+curriculum's archived behavior, starter effects/values/order/headroom, threshold,
+save/migration/API/auth/CI/workflow/mint/copy bytes and all plan checkboxes. Any
+kernel-watched runtime change must honestly advance all three kernel identities.
+Final selected/full root client and Go checks must execute; restore a single
+raw-key-check severing to prove discrimination, with all handles terminal before
+each mutation/restore. Docker remains full; no new workload or cache deletion.
+Claude reviews the complete resulting Codex span; no self archival/acceptance.
