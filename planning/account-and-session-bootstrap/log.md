@@ -648,3 +648,39 @@ starts c2843089 exclusive, includes d33b5d56/test/records/pin. Claude required
 independently; no real-DB evidence, completed API contract, browser policy,
 checkbox/acceptance/archive/push claim. Next separately predeclare a test-output
 observer that rejects dependency/empty transcripts before calling them proof.
+
+## 2026-10-06 — pin prepared span; predeclare completeness observer separately
+
+Prepared substantive span c2843089..3121a376 (two commits/eight paths), not
+executed/approved; following record edge belongs in its designated range too.
+New observation scope begins after 3121a376 and includes this shared pin/
+predeclaration. Authority Account AC2/AC7 evidence instrumentation only, not
+production renewal, schema generation or CI workflow authority.
+
+Add a manual root test-refresh-census observer outside CI/verify. It invokes the
+existing root test-save-integration leaf with fixed ./account selector, anchored
+four-test regex, -json/-count=1. Parse streaming Go events, require account package
+start/pass, exact run→pass for all four parents/seven leaves, zero skip/fail,
+no duplicated/missing/unexpected execution. Child exit zero is necessary but
+insufficient. Retain complete count, skip/missing/error/capture fields, actual
+source/test/instrument hashes and before/after source identity. No raw token/
+private-row/test Output values in the report. Do not infer DB success from a
+package pass, fixture transcript, source read or host compilation.
+
+Predeclare fixture controls: honest full event stream is accepted only as a
+synthetic validator control; empty stream, package-only pass, parent-only pass,
+one missing leaf, skip disguised by parent/package pass, fail, duplicate/unknown
+case, malformed JSON/event, wrong package/order, nonzero child exit all reject.
+For an actual negative, dedicated clearly labelled host missing-DB mode invokes
+root test-go on the same anchored names without TEST_DATABASE_URL; actual command
+may exit zero, observer MUST return invalid/incomplete/nonzero. This never claims
+to exercise rotation. Its report mode/command cannot masquerade as real-DB mode.
+Normal mode launches no workload until Docker capacity safely resolved. Script
+must not retry, rewrite expectations, skip a required case or change bounds.
+
+Root Node fixture/syntax target and actual host negative may execute now; only
+they and compilation count as current evidence. Live handles drain to terminal
+before any source/record edit. New instrument/Make/docs/records in its own commit;
+no CI membership/dependency/kernel/copy/production/checkbox/archival/push change.
+Real normal-mode populations/four prepared DB source probes stay explicitly
+pending. Claude required independently for both spans; no self-designated verdict.
