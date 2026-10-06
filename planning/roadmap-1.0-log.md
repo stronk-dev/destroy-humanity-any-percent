@@ -2363,3 +2363,17 @@ populations/four severings pending safe capacity resolution. Span begins c284308
 exclusive, includes predeclaration/tests/records; Claude required independently.
 No product/auth/schema/copy/kernel/CI policy, checkbox/acceptance/archive/push
 change, integrated-witness claim or 1.0 scope reduction.
+
+## 2026-10-06 — actual skipped green rejected, DB evidence still pending
+
+Manual completeness observer under 08a11814 requires all four parents/seven
+refresh cases, exact package/order and unchanged listed inputs. Twenty synthetic
+controls pass; actual host missing-DB child exits 0/package PASS with four SKIPs,
+zero/seven cases. Observer exits 1 invalid/incomplete, RP-238. Retained report
+contains mode/source/counts, no private Output. Initial quote-expansion mistakes
+are instrument failures, not dependency evidence. Existing topology/thirteen
+negative controls pass, no CI membership change. Normal Postgres mode/two full
+populations/four severings remain unexecuted pending RP-236 safe capacity.
+New range starts 3121a376 exclusive, includes shared predeclaration/instrument/
+records/pin; Claude pending independently of prepared/parser/CI ranges. No
+policy, checkbox, archive, push or shortening of proper full nine-tier 1.0.

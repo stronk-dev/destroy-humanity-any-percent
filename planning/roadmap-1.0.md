@@ -29,6 +29,9 @@ schema/auth/copy/kernel/checkbox/archive/push change or 1.0 scope reduction.
 Real refresh persistence under d33b5d56 is prepared (four tests/seven populations),
 explicitly unexecuted: compile/vet, host dependency SKIPs only. Real DB outcomes/
 four severings await RP-236 capacity. No policy, RFC or release promotion.
+Separate manual observer now rejects an actual exit-zero Go run with all four
+dependency skips (zero/seven cases), RP-238. Twenty synthetic controls pass;
+normal Postgres mode is not executed or validated as integration evidence.
 
 **Earlier checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
 actual page closures complete in the three declared Linux engines; bypass and

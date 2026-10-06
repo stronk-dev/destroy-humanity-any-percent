@@ -77,6 +77,16 @@ test-go-ci:
 test-save-integration:
 	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=$(SAVE_TEST_COUNT)
 
+# Manual Account census: a green package with skipped/missing populations is invalid.
+# Deliberately outside verify/CI; fixed real-Postgres population, no retry/timeout change.
+.PHONY: test-refresh-census test-refresh-observer
+test-refresh-census:
+	node client/tools/observe-refresh-population.mjs
+
+test-refresh-observer:
+	node --check client/tools/observe-refresh-population.mjs
+	node --test client/tools/observe-refresh-population.test.mjs
+
 # Real Postgres 16 custom-format dump/restore witnesses run in a package-owned
 # image that contains the exact pg_dump/pg_restore major used by production.
 test-deployment-backup:

@@ -181,6 +181,17 @@ Latest local repetition is incomplete: Firefox reports no device space and Docke
 filesystem is full, despite free shared memory and host space. Passing individual repetitions
 do not establish reliable CI. Broad Docker pruning is not a repository verification command.
 
+`make test-refresh-census` is a manual Account refresh population observer, outside
+CI and `verify`. It runs the declared Postgres integration service cold and requires
+all four named tests/seven cases to execute and pass. A package pass with missing,
+skipped, failed or duplicated cases exits nonzero. It retains counts and listed
+source hashes, never private test output. `make test-refresh-observer` checks its
+synthetic controls; these are not database evidence. The actual host control
+`node client/tools/observe-refresh-population.mjs --missing-db-control` rejects
+Go exit zero with four dependency skips (zero/seven cases). Normal Postgres mode
+is still unexecuted pending Docker capacity; see the
+[census and retained negative](../planning/platform-alignment/session-refresh-contract-census.md).
+
 `make test-game-ui-composed` starts its isolated repository Postgres service. Its first driver
 starts the real composed gameserver and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
 `/api/v1/founder/state` v3 round trip, and the actual Centrifuge WebSocket subscription. The

@@ -86,3 +86,27 @@ fefd7326b0792ecdd9e30d14e615f9e2b9dc028fd2b5cbdeb5318f7a3468ebf3.
 Docker still 100%, 39,784 KiB free; no fresh workload/deletion. Two complete DB
 populations and four predeclared severings remain pending capacity/review;
 prepared tests are not integrated witnesses or readiness promotion.
+
+## Completeness observer — actual negative, not rotation evidence
+
+Under separate 08a11814 predeclaration, `make test-refresh-census` wraps the existing
+declared Postgres root leaf, fixed four-test selector, -json/-count=1. Manual only,
+outside CI/verify. Requires package start/pass and all four parents/seven leaves
+to run/pass; rejects missing/skipped/failed/duplicate/order/source/capture failures.
+`make test-refresh-observer` passes twenty synthetic controls, not DB populations.
+Existing topology/thirteen negative controls pass without CI membership changes.
+
+Actual host missing-DB control 79284: child exit 0/package pass, four top-level
+SKIPs, zero/seven leaves; observer rejects with exit 1, invalid/incomplete. Capture
+24 events/one Make line, source stable, no truncation/error, 2061 ms. Two earlier
+quote-expansion instrument errors execute no Go tests and are not this control.
+[Retained actual report](refresh-population-negative.v1.json) excludes private
+test Output and states mode explicitly. Source check covers fourteen listed
+inputs plus HEAD, not arbitrary ignored files/environment. RP-238 records why
+exit-zero alone cannot certify integration.
+
+Normal mode is unexecuted, not a successful Postgres gate. Two complete real
+populations/four severings await capacity; draft renewal/whole 1.0 remain open.
+Review by: Codex (first-filter). Recorded by: Codex. Separate range begins
+3121a376 exclusive, includes 08a11814 and all instrument/record/pin edges;
+designated Claude review pending, no archival/status/push authorization.

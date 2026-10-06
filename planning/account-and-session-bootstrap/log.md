@@ -684,3 +684,33 @@ before any source/record edit. New instrument/Make/docs/records in its own commi
 no CI membership/dependency/kernel/copy/production/checkbox/archival/push change.
 Real normal-mode populations/four prepared DB source probes stay explicitly
 pending. Claude required independently for both spans; no self-designated verdict.
+
+## 2026-10-06 — completeness observer rejects actual skipped green command
+
+Manual test-refresh-census/observer implemented under 08a11814 predeclaration,
+outside CI/verify. Four parents/seven leaves, exact package/order/terminal census,
+no private Output retention; listed input hashes and HEAD checked before/after.
+Twenty synthetic controls pass; they are validator fixtures, not DB success.
+Root verify-ci-topology and its thirteen negative controls remain green.
+
+Two initial host-control invocations fail before Go executes: Make consumes the
+regex dollar/closing quote; the attempted JS replacement also preserves a single
+dollar. Both are instrument errors, not demonstrated dependency controls. Callback
+replacement preserves doubled dollar through Make. Final actual 79284 completes:
+child Go/Make exit 0, package pass, four dependency SKIPs, zero/seven leaves,
+24 JSON events/one Make line; observer exit 1, invalid/incomplete, source stable,
+no truncation/capture error, 2061 ms. Retained refresh-population-negative.v1.json
+pins mode, command, source and limits. RP-238 records the evidence hazard. No
+test body/token/private snapshot emitted into the retained report.
+
+Normal declared-Postgres mode remains unexecuted pending RP-236 capacity. This
+does not prove real rotation or any of four prepared source severings. No Docker
+workload/deletion, policy/CI/dependency/kernel/copy change or checkbox promotion.
+Source stability means the fourteen listed inputs plus HEAD, not environment or
+all ignored files. All execution handles terminal before records/diff inspection.
+
+Review by: Codex (instrument first-filter only). Recorded by: Codex. Observer
+range starts 3121a376 exclusive, includes shared 08a11814 predeclaration, script,
+fixtures, Make target, artifact/docs/ledger/records and following pin. Claude
+required independently; prepared range c2843089..08a11814 remains preparation,
+not executed acceptance. No self-designated verdict, archive, push or release.

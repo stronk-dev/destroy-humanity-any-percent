@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "mode": "host_missing_database_control",
+  "started_at": "2026-10-06T04:10:47.488Z",
+  "elapsed_ms": 2061,
+  "observer_node": "v26.10.0",
+  "test_pattern": "^(TestRefreshWireRotationAndReuseIntegration|TestRefreshWireNewFounderBindingIntegration|TestRefreshWireUnknownExpiredAndFaultIntegration|TestRefreshWireLimiterNonMutationIntegration)$",
+  "command": [
+    "make",
+    "test-go",
+    "GO_PACKAGES=./account",
+    "GO_TEST_FLAGS=-count=1 -json -run '^(TestRefreshWireRotationAndReuseIntegration|TestRefreshWireNewFounderBindingIntegration|TestRefreshWireUnknownExpiredAndFaultIntegration|TestRefreshWireLimiterNonMutationIntegration)$$'"
+  ],
+  "source_before": {
+    "head": "08a1181412e9f3d0d453b9bdc9fa044c23c11db1",
+    "sha256": {
+      "server/account/refresh_wire_integration_test.go": "fefd7326b0792ecdd9e30d14e615f9e2b9dc028fd2b5cbdeb5318f7a3468ebf3",
+      "server/account/refresh_wire_census_test.go": "09d28281d3fc882b17d067c805ed62170aa9f4d77155905fdf3a9e0fa7417b8f",
+      "server/account/bootstrap_integration_test.go": "4d6392a29f151ca8fc1ce8760c10983933ffb83dee4b02c1eb1e48cb565e5139",
+      "server/account/account_integration_test.go": "812ec6cbcf19ebb61b68e1f039a05a885b5635ed7d5a035b83b40a8ae54e81bc",
+      "server/account/api.go": "36dc2876a0404b68de9e92e41cb950ea6d67e42e97014c201abacdccfa80cda5",
+      "server/account/store.go": "cff18305f908e5f59975fd8a14466b5c9b776536d53b26d2eccd071097c5a308",
+      "server/account/token.go": "b7ad7254f15851882480ea58fb719c8516214840c09a7b9724fbd3212fc16bf8",
+      "server/account/credential.go": "b3ddcfa175d4e56af13e1cebedb87f45cdb435cf329ff938fbc127b731af07b9",
+      "server/account/bootstrap.go": "94b7a507b503123c2939ba7c4a6078f4d1275110b0ffd00af7124e43b63d8ba1",
+      "server/go.mod": "534727bf6da5c318e2f1e5de047b5bca56289a0f579724c2482c2da543fb87a7",
+      "server/go.sum": "53d105bc6f2e17cf38ceb8bb837fea5ffd8793a5401d395b4416657ff83f828a",
+      "compose.save-test.yml": "0e7187a00f97a16c3c20ad0ca1111819c5c5a370f634031545cabfada8cfa82f",
+      "Makefile": "2731bd049b1faa042594cd636747f27e588bf978d36fc289120c38e8d2b580b7",
+      "client/tools/observe-refresh-population.mjs": "23b63355d9676187d39d503493f5e64b9351d0aaf03734818b830e06eced334a"
+    }
+  },
+  "source_after": {
+    "head": "08a1181412e9f3d0d453b9bdc9fa044c23c11db1",
+    "sha256": {
+      "server/account/refresh_wire_integration_test.go": "fefd7326b0792ecdd9e30d14e615f9e2b9dc028fd2b5cbdeb5318f7a3468ebf3",
+      "server/account/refresh_wire_census_test.go": "09d28281d3fc882b17d067c805ed62170aa9f4d77155905fdf3a9e0fa7417b8f",
+      "server/account/bootstrap_integration_test.go": "4d6392a29f151ca8fc1ce8760c10983933ffb83dee4b02c1eb1e48cb565e5139",
+      "server/account/account_integration_test.go": "812ec6cbcf19ebb61b68e1f039a05a885b5635ed7d5a035b83b40a8ae54e81bc",
+      "server/account/api.go": "36dc2876a0404b68de9e92e41cb950ea6d67e42e97014c201abacdccfa80cda5",
+      "server/account/store.go": "cff18305f908e5f59975fd8a14466b5c9b776536d53b26d2eccd071097c5a308",
+      "server/account/token.go": "b7ad7254f15851882480ea58fb719c8516214840c09a7b9724fbd3212fc16bf8",
+      "server/account/credential.go": "b3ddcfa175d4e56af13e1cebedb87f45cdb435cf329ff938fbc127b731af07b9",
+      "server/account/bootstrap.go": "94b7a507b503123c2939ba7c4a6078f4d1275110b0ffd00af7124e43b63d8ba1",
+      "server/go.mod": "534727bf6da5c318e2f1e5de047b5bca56289a0f579724c2482c2da543fb87a7",
+      "server/go.sum": "53d105bc6f2e17cf38ceb8bb837fea5ffd8793a5401d395b4416657ff83f828a",
+      "compose.save-test.yml": "0e7187a00f97a16c3c20ad0ca1111819c5c5a370f634031545cabfada8cfa82f",
+      "Makefile": "2731bd049b1faa042594cd636747f27e588bf978d36fc289120c38e8d2b580b7",
+      "client/tools/observe-refresh-population.mjs": "23b63355d9676187d39d503493f5e64b9351d0aaf03734818b830e06eced334a"
+    }
+  },
+  "valid": false,
+  "population_complete": false,
+  "expected_leaves": 7,
+  "completed_leaves": 0,
+  "expected_parents": 4,
+  "completed_parents": 0,
+  "missing": [
+    "TestRefreshWireRotationAndReuseIntegration",
+    "TestRefreshWireNewFounderBindingIntegration",
+    "TestRefreshWireUnknownExpiredAndFaultIntegration",
+    "TestRefreshWireLimiterNonMutationIntegration",
+    "TestRefreshWireRotationAndReuseIntegration/access-expired=false",
+    "TestRefreshWireRotationAndReuseIntegration/access-expired=true",
+    "TestRefreshWireUnknownExpiredAndFaultIntegration/unknown-canonical",
+    "TestRefreshWireUnknownExpiredAndFaultIntegration/expired-refresh",
+    "TestRefreshWireUnknownExpiredAndFaultIntegration/closed-database"
+  ],
+  "skipped": [
+    "TestRefreshWireRotationAndReuseIntegration",
+    "TestRefreshWireNewFounderBindingIntegration",
+    "TestRefreshWireUnknownExpiredAndFaultIntegration",
+    "TestRefreshWireLimiterNonMutationIntegration"
+  ],
+  "failed": [],
+  "errors": [
+    "test_skip",
+    "test_skip",
+    "test_skip",
+    "test_skip",
+    "package_terminal_without_population",
+    "incomplete_population"
+  ],
+  "event_count": 24,
+  "non_json_lines": 1,
+  "child_exit_code": 0,
+  "package_terminal": "pass",
+  "capture_truncated": false,
+  "source_stable": true,
+  "child_signal": null,
+  "capture_error": false,
+  "observer_exit_code": 1,
+  "evidence_kind": "executed_host_missing_database_negative_control",
+  "limits": [
+    "This is not Postgres execution or session rotation evidence.",
+    "Synthetic validator fixtures are separate from this actual command.",
+    "Source stability covers listed input hashes and HEAD only, not every ignored file or host environment."
+  ]
+}

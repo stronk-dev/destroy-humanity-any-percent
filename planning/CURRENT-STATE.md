@@ -40,6 +40,11 @@ No fresh Docker workload on full disk, no successful rotation/replay/expiry gate
 Actual populations/four severings/designated review remain pending; see census
 dossier and Account plan/log. No contract or release promotion.
 
+The separate manual completeness observer now rejects an actual Go exit-zero
+run with four dependency skips and zero/seven cases (RP-238). Twenty synthetic
+controls pass, not DB evidence. Its normal Postgres mode and the prepared
+rotation/replay/expiry/severing populations remain unexecuted pending capacity.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

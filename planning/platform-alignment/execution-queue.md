@@ -34,7 +34,10 @@ answer pending, no deletion. Resolve capacity then predeclare real-Postgres stag
 Real-Postgres stage now predeclared d33b5d56 and prepared: four tests/seven
 populations, compile/vet only, explicit host dependency SKIPs. Two complete
 DB populations/four severings still pending capacity. No rotation/contract proof.
-Next separately scoped observer must reject dependency/empty test transcripts.
+Separate completeness observer now rejects actual Go exit zero with four
+dependency skips, zero/seven cases (RP-238); twenty synthetic controls pass.
+Next: capacity resolution, then two actual cold populations/four severings via
+the manual observer. Normal Postgres mode is unexecuted; no policy promotion.
 
 ## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
 
