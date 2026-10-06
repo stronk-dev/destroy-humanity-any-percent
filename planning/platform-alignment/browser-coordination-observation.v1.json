@@ -1,0 +1,4686 @@
+{
+  "schema_version": 1,
+  "question": "R-011 primitive wave, not session acceptance",
+  "observed_at": "2026-10-06T03:17:12.907Z",
+  "source_head": "d023dc265fda75549b47b13027eff55f4776f898",
+  "instrument_sha256": "9dbad4855302ab7cefee97b79c51a0753b5fb4515987eb1094dbff363034a583",
+  "platform": {
+    "os": "linux",
+    "arch": "arm64",
+    "release": "6.10.14-linuxkit"
+  },
+  "expected": {
+    "engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "arms": [
+      "exclusive",
+      "bypass",
+      "distinct",
+      "isolated"
+    ],
+    "repetitions": 10,
+    "arm_cases": 120,
+    "termination_cases": 30
+  },
+  "completed": {
+    "engines": 3,
+    "arm_cases": 120,
+    "termination_cases": 30
+  },
+  "status": "complete",
+  "exclusions": [],
+  "guard_exhausted": false,
+  "runtime_errors": [],
+  "observations": [
+    {
+      "engine": "chromium",
+      "version": "151.0.7922.34",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+      "capabilities": {
+        "secure_context": true,
+        "request": true,
+        "query": true
+      },
+      "storage": {
+        "same_context": "generation-1",
+        "isolated_context": null,
+        "replacement_reload": "generation-2"
+      },
+      "cases": [
+        {
+          "id": "chromium:exclusive:0",
+          "arm": "exclusive",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              6.014
+            ],
+            [
+              "a",
+              "exit",
+              17.722
+            ],
+            [
+              "b",
+              "enter",
+              19.8
+            ],
+            [
+              "b",
+              "exit",
+              30.574
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 31.669
+        },
+        {
+          "id": "chromium:exclusive:1",
+          "arm": "exclusive",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.246
+            ],
+            [
+              "a",
+              "exit",
+              15.563
+            ],
+            [
+              "b",
+              "enter",
+              16.938
+            ],
+            [
+              "b",
+              "exit",
+              28.213
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 28.856
+        },
+        {
+          "id": "chromium:exclusive:2",
+          "arm": "exclusive",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.956
+            ],
+            [
+              "a",
+              "exit",
+              14.264
+            ],
+            [
+              "b",
+              "enter",
+              15.106
+            ],
+            [
+              "b",
+              "exit",
+              30.599
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 31.372
+        },
+        {
+          "id": "chromium:exclusive:3",
+          "arm": "exclusive",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.924
+            ],
+            [
+              "a",
+              "exit",
+              17.529
+            ],
+            [
+              "b",
+              "enter",
+              18.334
+            ],
+            [
+              "b",
+              "exit",
+              30.127
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 31.009
+        },
+        {
+          "id": "chromium:exclusive:4",
+          "arm": "exclusive",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.164
+            ],
+            [
+              "a",
+              "exit",
+              14.447
+            ],
+            [
+              "b",
+              "enter",
+              15.283
+            ],
+            [
+              "b",
+              "exit",
+              27.528
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 28.327
+        },
+        {
+          "id": "chromium:exclusive:5",
+          "arm": "exclusive",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.885
+            ],
+            [
+              "a",
+              "exit",
+              14.141
+            ],
+            [
+              "b",
+              "enter",
+              15.179
+            ],
+            [
+              "b",
+              "exit",
+              28.148
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.15
+        },
+        {
+          "id": "chromium:exclusive:6",
+          "arm": "exclusive",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.055
+            ],
+            [
+              "a",
+              "exit",
+              16.238
+            ],
+            [
+              "b",
+              "enter",
+              17.487
+            ],
+            [
+              "b",
+              "exit",
+              28.624
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.622
+        },
+        {
+          "id": "chromium:exclusive:7",
+          "arm": "exclusive",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.134
+            ],
+            [
+              "a",
+              "exit",
+              12.454
+            ],
+            [
+              "b",
+              "enter",
+              13.448
+            ],
+            [
+              "b",
+              "exit",
+              25.691
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 26.874
+        },
+        {
+          "id": "chromium:exclusive:8",
+          "arm": "exclusive",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.32
+            ],
+            [
+              "a",
+              "exit",
+              14.219
+            ],
+            [
+              "b",
+              "enter",
+              15.061
+            ],
+            [
+              "b",
+              "exit",
+              28.658
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.419
+        },
+        {
+          "id": "chromium:exclusive:9",
+          "arm": "exclusive",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.985
+            ],
+            [
+              "a",
+              "exit",
+              14.138
+            ],
+            [
+              "b",
+              "enter",
+              15.4
+            ],
+            [
+              "b",
+              "exit",
+              29.808
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 30.666
+        },
+        {
+          "id": "chromium:bypass:0",
+          "arm": "bypass",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.954
+            ],
+            [
+              "b",
+              "enter",
+              14.339
+            ],
+            [
+              "a",
+              "exit",
+              25.329
+            ],
+            [
+              "b",
+              "exit",
+              25.585
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.217
+        },
+        {
+          "id": "chromium:bypass:1",
+          "arm": "bypass",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.621
+            ],
+            [
+              "b",
+              "enter",
+              14.213
+            ],
+            [
+              "b",
+              "exit",
+              26.52
+            ],
+            [
+              "a",
+              "exit",
+              26.704
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.985
+        },
+        {
+          "id": "chromium:bypass:2",
+          "arm": "bypass",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.697
+            ],
+            [
+              "b",
+              "enter",
+              15.425
+            ],
+            [
+              "b",
+              "exit",
+              30.699
+            ],
+            [
+              "a",
+              "exit",
+              30.797
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.429
+        },
+        {
+          "id": "chromium:bypass:3",
+          "arm": "bypass",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.659
+            ],
+            [
+              "b",
+              "enter",
+              12.102
+            ],
+            [
+              "b",
+              "exit",
+              25.446
+            ],
+            [
+              "a",
+              "exit",
+              25.713
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.233
+        },
+        {
+          "id": "chromium:bypass:4",
+          "arm": "bypass",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.596
+            ],
+            [
+              "b",
+              "enter",
+              12.647
+            ],
+            [
+              "a",
+              "exit",
+              25.301
+            ],
+            [
+              "b",
+              "exit",
+              25.566
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.713
+        },
+        {
+          "id": "chromium:bypass:5",
+          "arm": "bypass",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.001
+            ],
+            [
+              "b",
+              "enter",
+              13.039
+            ],
+            [
+              "a",
+              "exit",
+              29.899
+            ],
+            [
+              "b",
+              "exit",
+              30.386
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.559
+        },
+        {
+          "id": "chromium:bypass:6",
+          "arm": "bypass",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              3.528
+            ],
+            [
+              "b",
+              "enter",
+              15.586
+            ],
+            [
+              "a",
+              "exit",
+              25.855
+            ],
+            [
+              "b",
+              "exit",
+              26.397
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.253
+        },
+        {
+          "id": "chromium:bypass:7",
+          "arm": "bypass",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.796
+            ],
+            [
+              "b",
+              "enter",
+              12.831
+            ],
+            [
+              "b",
+              "exit",
+              29.727
+            ],
+            [
+              "a",
+              "exit",
+              29.882
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.108
+        },
+        {
+          "id": "chromium:bypass:8",
+          "arm": "bypass",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.445
+            ],
+            [
+              "b",
+              "enter",
+              17.516
+            ],
+            [
+              "a",
+              "exit",
+              33.745
+            ],
+            [
+              "b",
+              "exit",
+              33.849
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 35.117
+        },
+        {
+          "id": "chromium:bypass:9",
+          "arm": "bypass",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.446
+            ],
+            [
+              "b",
+              "enter",
+              13.085
+            ],
+            [
+              "a",
+              "exit",
+              26.114
+            ],
+            [
+              "b",
+              "exit",
+              26.28
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.508
+        },
+        {
+          "id": "chromium:distinct:0",
+          "arm": "distinct",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.324
+            ],
+            [
+              "b",
+              "enter",
+              16.739
+            ],
+            [
+              "a",
+              "exit",
+              31.245
+            ],
+            [
+              "b",
+              "exit",
+              31.361
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 32.111
+        },
+        {
+          "id": "chromium:distinct:1",
+          "arm": "distinct",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.863
+            ],
+            [
+              "b",
+              "enter",
+              13.85
+            ],
+            [
+              "b",
+              "exit",
+              27.935
+            ],
+            [
+              "a",
+              "exit",
+              28.135
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 29.163
+        },
+        {
+          "id": "chromium:distinct:2",
+          "arm": "distinct",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.871
+            ],
+            [
+              "b",
+              "enter",
+              14.836
+            ],
+            [
+              "a",
+              "exit",
+              26.33
+            ],
+            [
+              "b",
+              "exit",
+              26.691
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.221
+        },
+        {
+          "id": "chromium:distinct:3",
+          "arm": "distinct",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.691
+            ],
+            [
+              "b",
+              "enter",
+              18.643
+            ],
+            [
+              "a",
+              "exit",
+              31.269
+            ],
+            [
+              "b",
+              "exit",
+              31.518
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 32.732
+        },
+        {
+          "id": "chromium:distinct:4",
+          "arm": "distinct",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.912
+            ],
+            [
+              "b",
+              "enter",
+              12.29
+            ],
+            [
+              "a",
+              "exit",
+              26.507
+            ],
+            [
+              "b",
+              "exit",
+              26.626
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.485
+        },
+        {
+          "id": "chromium:distinct:5",
+          "arm": "distinct",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.919
+            ],
+            [
+              "b",
+              "enter",
+              18.305
+            ],
+            [
+              "a",
+              "exit",
+              30.112
+            ],
+            [
+              "b",
+              "exit",
+              31.199
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 32.617
+        },
+        {
+          "id": "chromium:distinct:6",
+          "arm": "distinct",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.482
+            ],
+            [
+              "b",
+              "enter",
+              15.529
+            ],
+            [
+              "a",
+              "exit",
+              29.714
+            ],
+            [
+              "b",
+              "exit",
+              30.385
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.189
+        },
+        {
+          "id": "chromium:distinct:7",
+          "arm": "distinct",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.736
+            ],
+            [
+              "b",
+              "enter",
+              12.471
+            ],
+            [
+              "a",
+              "exit",
+              27.092
+            ],
+            [
+              "b",
+              "exit",
+              27.856
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 29.046
+        },
+        {
+          "id": "chromium:distinct:8",
+          "arm": "distinct",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.14
+            ],
+            [
+              "b",
+              "enter",
+              12.839
+            ],
+            [
+              "a",
+              "exit",
+              28.275
+            ],
+            [
+              "b",
+              "exit",
+              29.065
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 29.858
+        },
+        {
+          "id": "chromium:distinct:9",
+          "arm": "distinct",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.857
+            ],
+            [
+              "b",
+              "enter",
+              14.669
+            ],
+            [
+              "a",
+              "exit",
+              28.298
+            ],
+            [
+              "b",
+              "exit",
+              28.46
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 29.678
+        },
+        {
+          "id": "chromium:isolated:0",
+          "arm": "isolated",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.119
+            ],
+            [
+              "c",
+              "enter",
+              15.811
+            ],
+            [
+              "a",
+              "exit",
+              24.94
+            ],
+            [
+              "c",
+              "exit",
+              25.501
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.315
+        },
+        {
+          "id": "chromium:isolated:1",
+          "arm": "isolated",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.159
+            ],
+            [
+              "c",
+              "enter",
+              14.116
+            ],
+            [
+              "a",
+              "exit",
+              27.9
+            ],
+            [
+              "c",
+              "exit",
+              28.06
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 28.896
+        },
+        {
+          "id": "chromium:isolated:2",
+          "arm": "isolated",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.921
+            ],
+            [
+              "c",
+              "enter",
+              12.985
+            ],
+            [
+              "a",
+              "exit",
+              26.313
+            ],
+            [
+              "c",
+              "exit",
+              26.634
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.328
+        },
+        {
+          "id": "chromium:isolated:3",
+          "arm": "isolated",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.04
+            ],
+            [
+              "c",
+              "enter",
+              15.194
+            ],
+            [
+              "c",
+              "exit",
+              27
+            ],
+            [
+              "a",
+              "exit",
+              27.271
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.875
+        },
+        {
+          "id": "chromium:isolated:4",
+          "arm": "isolated",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.063
+            ],
+            [
+              "c",
+              "enter",
+              16.855
+            ],
+            [
+              "a",
+              "exit",
+              29.848
+            ],
+            [
+              "c",
+              "exit",
+              29.996
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 30.999
+        },
+        {
+          "id": "chromium:isolated:5",
+          "arm": "isolated",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.979
+            ],
+            [
+              "c",
+              "enter",
+              17.198
+            ],
+            [
+              "c",
+              "exit",
+              29.986
+            ],
+            [
+              "a",
+              "exit",
+              30.154
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.037
+        },
+        {
+          "id": "chromium:isolated:6",
+          "arm": "isolated",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.906
+            ],
+            [
+              "c",
+              "enter",
+              12.144
+            ],
+            [
+              "a",
+              "exit",
+              23.308
+            ],
+            [
+              "c",
+              "exit",
+              23.611
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.272
+        },
+        {
+          "id": "chromium:isolated:7",
+          "arm": "isolated",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.883
+            ],
+            [
+              "c",
+              "enter",
+              12.05
+            ],
+            [
+              "a",
+              "exit",
+              23.811
+            ],
+            [
+              "c",
+              "exit",
+              23.965
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.649
+        },
+        {
+          "id": "chromium:isolated:8",
+          "arm": "isolated",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.741
+            ],
+            [
+              "c",
+              "enter",
+              13.268
+            ],
+            [
+              "c",
+              "exit",
+              29.671
+            ],
+            [
+              "a",
+              "exit",
+              30.005
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.122
+        },
+        {
+          "id": "chromium:isolated:9",
+          "arm": "isolated",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.783
+            ],
+            [
+              "c",
+              "enter",
+              16.495
+            ],
+            [
+              "c",
+              "exit",
+              29.315
+            ],
+            [
+              "a",
+              "exit",
+              29.568
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 30.876
+        }
+      ],
+      "termination": [
+        {
+          "id": "chromium:termination:0",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.394
+            ],
+            [
+              "driver",
+              "close_started",
+              13.16
+            ],
+            [
+              "driver",
+              "close_completed",
+              17.969
+            ],
+            [
+              "b",
+              "enter",
+              26.949
+            ],
+            [
+              "b",
+              "exit",
+              28.567
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 29.211
+        },
+        {
+          "id": "chromium:termination:1",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              4.005
+            ],
+            [
+              "driver",
+              "close_started",
+              12.43
+            ],
+            [
+              "driver",
+              "close_completed",
+              13.613
+            ],
+            [
+              "b",
+              "enter",
+              16.52
+            ],
+            [
+              "b",
+              "exit",
+              27.5
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 30.807
+        },
+        {
+          "id": "chromium:termination:2",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              5.652
+            ],
+            [
+              "driver",
+              "close_started",
+              12.495
+            ],
+            [
+              "driver",
+              "close_completed",
+              13.687
+            ],
+            [
+              "b",
+              "enter",
+              16.618
+            ],
+            [
+              "b",
+              "exit",
+              25.242
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 25.911
+        },
+        {
+          "id": "chromium:termination:3",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.256
+            ],
+            [
+              "driver",
+              "close_started",
+              15.749
+            ],
+            [
+              "driver",
+              "close_completed",
+              17.183
+            ],
+            [
+              "b",
+              "enter",
+              19.89
+            ],
+            [
+              "b",
+              "exit",
+              29.408
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 30.317
+        },
+        {
+          "id": "chromium:termination:4",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.144
+            ],
+            [
+              "driver",
+              "close_started",
+              13.422
+            ],
+            [
+              "driver",
+              "close_completed",
+              15.46
+            ],
+            [
+              "b",
+              "enter",
+              19.32
+            ],
+            [
+              "b",
+              "exit",
+              27.509
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 28.485
+        },
+        {
+          "id": "chromium:termination:5",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.875
+            ],
+            [
+              "driver",
+              "close_started",
+              13.015
+            ],
+            [
+              "driver",
+              "close_completed",
+              14.235
+            ],
+            [
+              "b",
+              "enter",
+              18.289
+            ],
+            [
+              "b",
+              "exit",
+              27.587
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 28.224
+        },
+        {
+          "id": "chromium:termination:6",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.605
+            ],
+            [
+              "driver",
+              "close_started",
+              12.422
+            ],
+            [
+              "driver",
+              "close_completed",
+              13.615
+            ],
+            [
+              "b",
+              "enter",
+              16.688
+            ],
+            [
+              "b",
+              "exit",
+              26.544
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 27.219
+        },
+        {
+          "id": "chromium:termination:7",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.65
+            ],
+            [
+              "driver",
+              "close_started",
+              13.989
+            ],
+            [
+              "driver",
+              "close_completed",
+              15.102
+            ],
+            [
+              "b",
+              "enter",
+              18.563
+            ],
+            [
+              "b",
+              "exit",
+              27.605
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 28.526
+        },
+        {
+          "id": "chromium:termination:8",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.348
+            ],
+            [
+              "driver",
+              "close_started",
+              13.252
+            ],
+            [
+              "driver",
+              "close_completed",
+              14.632
+            ],
+            [
+              "b",
+              "enter",
+              16.975
+            ],
+            [
+              "b",
+              "exit",
+              28.718
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 29.428
+        },
+        {
+          "id": "chromium:termination:9",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.445
+            ],
+            [
+              "driver",
+              "close_started",
+              14.137
+            ],
+            [
+              "driver",
+              "close_completed",
+              15.746
+            ],
+            [
+              "b",
+              "enter",
+              19.178
+            ],
+            [
+              "b",
+              "exit",
+              27.299
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 27.956
+        }
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0",
+      "capabilities": {
+        "secure_context": true,
+        "request": true,
+        "query": true
+      },
+      "storage": {
+        "same_context": "generation-1",
+        "isolated_context": null,
+        "replacement_reload": "generation-2"
+      },
+      "cases": [
+        {
+          "id": "firefox:exclusive:0",
+          "arm": "exclusive",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              5.735
+            ],
+            [
+              "a",
+              "exit",
+              18.204
+            ],
+            [
+              "b",
+              "enter",
+              21.978
+            ],
+            [
+              "b",
+              "exit",
+              35.233
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 37.102
+        },
+        {
+          "id": "firefox:exclusive:1",
+          "arm": "exclusive",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.569
+            ],
+            [
+              "a",
+              "exit",
+              19.872
+            ],
+            [
+              "b",
+              "enter",
+              22.282
+            ],
+            [
+              "b",
+              "exit",
+              38.527
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 40.514
+        },
+        {
+          "id": "firefox:exclusive:2",
+          "arm": "exclusive",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.999
+            ],
+            [
+              "a",
+              "exit",
+              14.613
+            ],
+            [
+              "b",
+              "enter",
+              16.288
+            ],
+            [
+              "b",
+              "exit",
+              28.112
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.65
+        },
+        {
+          "id": "firefox:exclusive:3",
+          "arm": "exclusive",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.71
+            ],
+            [
+              "a",
+              "exit",
+              14.509
+            ],
+            [
+              "b",
+              "enter",
+              15.649
+            ],
+            [
+              "b",
+              "exit",
+              28.154
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 30.547
+        },
+        {
+          "id": "firefox:exclusive:4",
+          "arm": "exclusive",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              3.091
+            ],
+            [
+              "a",
+              "exit",
+              16.923
+            ],
+            [
+              "b",
+              "enter",
+              18.441
+            ],
+            [
+              "b",
+              "exit",
+              29.624
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 31.148
+        },
+        {
+          "id": "firefox:exclusive:5",
+          "arm": "exclusive",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.402
+            ],
+            [
+              "a",
+              "exit",
+              17.603
+            ],
+            [
+              "b",
+              "enter",
+              19.539
+            ],
+            [
+              "b",
+              "exit",
+              31.727
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 32.877
+        },
+        {
+          "id": "firefox:exclusive:6",
+          "arm": "exclusive",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.916
+            ],
+            [
+              "a",
+              "exit",
+              17.157
+            ],
+            [
+              "b",
+              "enter",
+              18.65
+            ],
+            [
+              "b",
+              "exit",
+              30.036
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 31.874
+        },
+        {
+          "id": "firefox:exclusive:7",
+          "arm": "exclusive",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              4.23
+            ],
+            [
+              "a",
+              "exit",
+              14.229
+            ],
+            [
+              "b",
+              "enter",
+              15.518
+            ],
+            [
+              "b",
+              "exit",
+              26.522
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 28.944
+        },
+        {
+          "id": "firefox:exclusive:8",
+          "arm": "exclusive",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              3.422
+            ],
+            [
+              "a",
+              "exit",
+              15.985
+            ],
+            [
+              "b",
+              "enter",
+              17.336
+            ],
+            [
+              "b",
+              "exit",
+              28.715
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.873
+        },
+        {
+          "id": "firefox:exclusive:9",
+          "arm": "exclusive",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.233
+            ],
+            [
+              "a",
+              "exit",
+              15.466
+            ],
+            [
+              "b",
+              "enter",
+              17.169
+            ],
+            [
+              "b",
+              "exit",
+              31.673
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 33.332
+        },
+        {
+          "id": "firefox:bypass:0",
+          "arm": "bypass",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.919
+            ],
+            [
+              "b",
+              "enter",
+              13.275
+            ],
+            [
+              "b",
+              "exit",
+              24.787
+            ],
+            [
+              "a",
+              "exit",
+              25.385
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.537
+        },
+        {
+          "id": "firefox:bypass:1",
+          "arm": "bypass",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.516
+            ],
+            [
+              "b",
+              "enter",
+              12.957
+            ],
+            [
+              "b",
+              "exit",
+              23.881
+            ],
+            [
+              "a",
+              "exit",
+              24.404
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.433
+        },
+        {
+          "id": "firefox:bypass:2",
+          "arm": "bypass",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.98
+            ],
+            [
+              "b",
+              "enter",
+              13.28
+            ],
+            [
+              "a",
+              "exit",
+              24.09
+            ],
+            [
+              "b",
+              "exit",
+              24.462
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.266
+        },
+        {
+          "id": "firefox:bypass:3",
+          "arm": "bypass",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.119
+            ],
+            [
+              "b",
+              "enter",
+              15.856
+            ],
+            [
+              "a",
+              "exit",
+              31.459
+            ],
+            [
+              "b",
+              "exit",
+              31.88
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 33.117
+        },
+        {
+          "id": "firefox:bypass:4",
+          "arm": "bypass",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.343
+            ],
+            [
+              "b",
+              "enter",
+              14.62
+            ],
+            [
+              "b",
+              "exit",
+              27.207
+            ],
+            [
+              "a",
+              "exit",
+              27.749
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 28.61
+        },
+        {
+          "id": "firefox:bypass:5",
+          "arm": "bypass",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.15
+            ],
+            [
+              "b",
+              "enter",
+              12.235
+            ],
+            [
+              "a",
+              "exit",
+              24.061
+            ],
+            [
+              "b",
+              "exit",
+              24.693
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.715
+        },
+        {
+          "id": "firefox:bypass:6",
+          "arm": "bypass",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.066
+            ],
+            [
+              "b",
+              "enter",
+              17.196
+            ],
+            [
+              "a",
+              "exit",
+              28.49
+            ],
+            [
+              "b",
+              "exit",
+              28.941
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 29.627
+        },
+        {
+          "id": "firefox:bypass:7",
+          "arm": "bypass",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.133
+            ],
+            [
+              "b",
+              "enter",
+              12.918
+            ],
+            [
+              "a",
+              "exit",
+              25.636
+            ],
+            [
+              "b",
+              "exit",
+              26.328
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.915
+        },
+        {
+          "id": "firefox:bypass:8",
+          "arm": "bypass",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.918
+            ],
+            [
+              "b",
+              "enter",
+              13.182
+            ],
+            [
+              "b",
+              "exit",
+              29.652
+            ],
+            [
+              "a",
+              "exit",
+              30.633
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 33.764
+        },
+        {
+          "id": "firefox:bypass:9",
+          "arm": "bypass",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.925
+            ],
+            [
+              "b",
+              "enter",
+              14.787
+            ],
+            [
+              "b",
+              "exit",
+              26.575
+            ],
+            [
+              "a",
+              "exit",
+              27.048
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 28.128
+        },
+        {
+          "id": "firefox:distinct:0",
+          "arm": "distinct",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.58
+            ],
+            [
+              "b",
+              "enter",
+              15.517
+            ],
+            [
+              "a",
+              "exit",
+              30.38
+            ],
+            [
+              "b",
+              "exit",
+              30.969
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 32.186
+        },
+        {
+          "id": "firefox:distinct:1",
+          "arm": "distinct",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.723
+            ],
+            [
+              "b",
+              "enter",
+              15.192
+            ],
+            [
+              "b",
+              "exit",
+              27.401
+            ],
+            [
+              "a",
+              "exit",
+              27.783
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 29.058
+        },
+        {
+          "id": "firefox:distinct:2",
+          "arm": "distinct",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.505
+            ],
+            [
+              "b",
+              "enter",
+              12.994
+            ],
+            [
+              "a",
+              "exit",
+              26.228
+            ],
+            [
+              "b",
+              "exit",
+              26.748
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.579
+        },
+        {
+          "id": "firefox:distinct:3",
+          "arm": "distinct",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.203
+            ],
+            [
+              "b",
+              "enter",
+              12.89
+            ],
+            [
+              "a",
+              "exit",
+              27.147
+            ],
+            [
+              "b",
+              "exit",
+              27.501
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 28.33
+        },
+        {
+          "id": "firefox:distinct:4",
+          "arm": "distinct",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.265
+            ],
+            [
+              "b",
+              "enter",
+              15.877
+            ],
+            [
+              "b",
+              "exit",
+              25.922
+            ],
+            [
+              "a",
+              "exit",
+              26.855
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 28.867
+        },
+        {
+          "id": "firefox:distinct:5",
+          "arm": "distinct",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              3.812
+            ],
+            [
+              "b",
+              "enter",
+              14.53
+            ],
+            [
+              "a",
+              "exit",
+              26.669
+            ],
+            [
+              "b",
+              "exit",
+              28.055
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.201
+        },
+        {
+          "id": "firefox:distinct:6",
+          "arm": "distinct",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.411
+            ],
+            [
+              "b",
+              "enter",
+              13.765
+            ],
+            [
+              "a",
+              "exit",
+              24.428
+            ],
+            [
+              "b",
+              "exit",
+              24.878
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.127
+        },
+        {
+          "id": "firefox:distinct:7",
+          "arm": "distinct",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.393
+            ],
+            [
+              "b",
+              "enter",
+              12.763
+            ],
+            [
+              "a",
+              "exit",
+              26.168
+            ],
+            [
+              "b",
+              "exit",
+              26.552
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.561
+        },
+        {
+          "id": "firefox:distinct:8",
+          "arm": "distinct",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.147
+            ],
+            [
+              "b",
+              "enter",
+              14.156
+            ],
+            [
+              "a",
+              "exit",
+              26.055
+            ],
+            [
+              "b",
+              "exit",
+              30.615
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 34.158
+        },
+        {
+          "id": "firefox:distinct:9",
+          "arm": "distinct",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              3.163
+            ],
+            [
+              "b",
+              "enter",
+              22.9
+            ],
+            [
+              "b",
+              "exit",
+              35.695
+            ],
+            [
+              "a",
+              "exit",
+              36.243
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 37.369
+        },
+        {
+          "id": "firefox:isolated:0",
+          "arm": "isolated",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.926
+            ],
+            [
+              "c",
+              "enter",
+              14.835
+            ],
+            [
+              "a",
+              "exit",
+              23.286
+            ],
+            [
+              "c",
+              "exit",
+              23.684
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.72
+        },
+        {
+          "id": "firefox:isolated:1",
+          "arm": "isolated",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.376
+            ],
+            [
+              "c",
+              "enter",
+              14.398
+            ],
+            [
+              "a",
+              "exit",
+              25.39
+            ],
+            [
+              "c",
+              "exit",
+              25.808
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.069
+        },
+        {
+          "id": "firefox:isolated:2",
+          "arm": "isolated",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.308
+            ],
+            [
+              "c",
+              "enter",
+              13.155
+            ],
+            [
+              "a",
+              "exit",
+              25.329
+            ],
+            [
+              "c",
+              "exit",
+              25.739
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.756
+        },
+        {
+          "id": "firefox:isolated:3",
+          "arm": "isolated",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.182
+            ],
+            [
+              "c",
+              "enter",
+              14.051
+            ],
+            [
+              "a",
+              "exit",
+              26.664
+            ],
+            [
+              "c",
+              "exit",
+              27.255
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 28.286
+        },
+        {
+          "id": "firefox:isolated:4",
+          "arm": "isolated",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.034
+            ],
+            [
+              "c",
+              "enter",
+              12.944
+            ],
+            [
+              "a",
+              "exit",
+              24.05
+            ],
+            [
+              "c",
+              "exit",
+              24.522
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.969
+        },
+        {
+          "id": "firefox:isolated:5",
+          "arm": "isolated",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.247
+            ],
+            [
+              "c",
+              "enter",
+              12.969
+            ],
+            [
+              "a",
+              "exit",
+              24.486
+            ],
+            [
+              "c",
+              "exit",
+              24.897
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.629
+        },
+        {
+          "id": "firefox:isolated:6",
+          "arm": "isolated",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.087
+            ],
+            [
+              "c",
+              "enter",
+              12.883
+            ],
+            [
+              "a",
+              "exit",
+              24.857
+            ],
+            [
+              "c",
+              "exit",
+              25.315
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.292
+        },
+        {
+          "id": "firefox:isolated:7",
+          "arm": "isolated",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.3
+            ],
+            [
+              "c",
+              "enter",
+              12.613
+            ],
+            [
+              "a",
+              "exit",
+              23.184
+            ],
+            [
+              "c",
+              "exit",
+              23.504
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.296
+        },
+        {
+          "id": "firefox:isolated:8",
+          "arm": "isolated",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.84
+            ],
+            [
+              "c",
+              "enter",
+              12.536
+            ],
+            [
+              "c",
+              "exit",
+              25.498
+            ],
+            [
+              "a",
+              "exit",
+              25.891
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.835
+        },
+        {
+          "id": "firefox:isolated:9",
+          "arm": "isolated",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.18
+            ],
+            [
+              "c",
+              "enter",
+              13.476
+            ],
+            [
+              "a",
+              "exit",
+              25.082
+            ],
+            [
+              "c",
+              "exit",
+              25.574
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.4
+        }
+      ],
+      "termination": [
+        {
+          "id": "firefox:termination:0",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.455
+            ],
+            [
+              "driver",
+              "close_started",
+              17.715
+            ],
+            [
+              "driver",
+              "close_completed",
+              24.785
+            ],
+            [
+              "b",
+              "enter",
+              41.479
+            ],
+            [
+              "b",
+              "exit",
+              48.047
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 50.092
+        },
+        {
+          "id": "firefox:termination:1",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              8.524
+            ],
+            [
+              "driver",
+              "close_started",
+              11.408
+            ],
+            [
+              "driver",
+              "close_completed",
+              14.165
+            ],
+            [
+              "b",
+              "enter",
+              25.27
+            ],
+            [
+              "b",
+              "exit",
+              37.728
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 38.743
+        },
+        {
+          "id": "firefox:termination:2",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              4.672
+            ],
+            [
+              "driver",
+              "close_started",
+              15.209
+            ],
+            [
+              "driver",
+              "close_completed",
+              23.797
+            ],
+            [
+              "b",
+              "enter",
+              41.515
+            ],
+            [
+              "b",
+              "exit",
+              48.044
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 49.166
+        },
+        {
+          "id": "firefox:termination:3",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              6.099
+            ],
+            [
+              "driver",
+              "close_started",
+              14.831
+            ],
+            [
+              "driver",
+              "close_completed",
+              18.788
+            ],
+            [
+              "b",
+              "enter",
+              29.392
+            ],
+            [
+              "b",
+              "exit",
+              42.656
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 45.12
+        },
+        {
+          "id": "firefox:termination:4",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              7.617
+            ],
+            [
+              "driver",
+              "close_started",
+              13.916
+            ],
+            [
+              "driver",
+              "close_completed",
+              19.495
+            ],
+            [
+              "b",
+              "enter",
+              38.94
+            ],
+            [
+              "b",
+              "exit",
+              42.745
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 44.084
+        },
+        {
+          "id": "firefox:termination:5",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              10.415
+            ],
+            [
+              "driver",
+              "close_started",
+              23.769
+            ],
+            [
+              "driver",
+              "close_completed",
+              29.886
+            ],
+            [
+              "b",
+              "enter",
+              41.486
+            ],
+            [
+              "b",
+              "exit",
+              55.579
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 56.627
+        },
+        {
+          "id": "firefox:termination:6",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              8.773
+            ],
+            [
+              "driver",
+              "close_started",
+              11.938
+            ],
+            [
+              "driver",
+              "close_completed",
+              14.809
+            ],
+            [
+              "b",
+              "enter",
+              34.271
+            ],
+            [
+              "b",
+              "exit",
+              39.016
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 40.188
+        },
+        {
+          "id": "firefox:termination:7",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              5.396
+            ],
+            [
+              "driver",
+              "close_started",
+              15.727
+            ],
+            [
+              "driver",
+              "close_completed",
+              18.359
+            ],
+            [
+              "b",
+              "enter",
+              28.269
+            ],
+            [
+              "b",
+              "exit",
+              41.807
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 44.028
+        },
+        {
+          "id": "firefox:termination:8",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              4.813
+            ],
+            [
+              "driver",
+              "close_started",
+              15.559
+            ],
+            [
+              "driver",
+              "close_completed",
+              17.932
+            ],
+            [
+              "b",
+              "enter",
+              27.453
+            ],
+            [
+              "b",
+              "exit",
+              30.012
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 30.952
+        },
+        {
+          "id": "firefox:termination:9",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              10.465
+            ],
+            [
+              "driver",
+              "close_started",
+              27.351
+            ],
+            [
+              "driver",
+              "close_completed",
+              32.592
+            ],
+            [
+              "b",
+              "enter",
+              44.043
+            ],
+            [
+              "b",
+              "exit",
+              57.583
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 61.809
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+      "capabilities": {
+        "secure_context": true,
+        "request": true,
+        "query": true
+      },
+      "storage": {
+        "same_context": "generation-1",
+        "isolated_context": null,
+        "replacement_reload": "generation-2"
+      },
+      "cases": [
+        {
+          "id": "webkit:exclusive:0",
+          "arm": "exclusive",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.372
+            ],
+            [
+              "a",
+              "exit",
+              15.046
+            ],
+            [
+              "b",
+              "enter",
+              16.53
+            ],
+            [
+              "b",
+              "exit",
+              27.033
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 27.863
+        },
+        {
+          "id": "webkit:exclusive:1",
+          "arm": "exclusive",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.408
+            ],
+            [
+              "a",
+              "exit",
+              12.936
+            ],
+            [
+              "b",
+              "enter",
+              14.092
+            ],
+            [
+              "b",
+              "exit",
+              26.784
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 27.619
+        },
+        {
+          "id": "webkit:exclusive:2",
+          "arm": "exclusive",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.441
+            ],
+            [
+              "a",
+              "exit",
+              15.217
+            ],
+            [
+              "b",
+              "enter",
+              16.28
+            ],
+            [
+              "b",
+              "exit",
+              29.75
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 30.992
+        },
+        {
+          "id": "webkit:exclusive:3",
+          "arm": "exclusive",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.286
+            ],
+            [
+              "a",
+              "exit",
+              14.319
+            ],
+            [
+              "b",
+              "enter",
+              15.278
+            ],
+            [
+              "b",
+              "exit",
+              26.155
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 26.882
+        },
+        {
+          "id": "webkit:exclusive:4",
+          "arm": "exclusive",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.121
+            ],
+            [
+              "a",
+              "exit",
+              17.082
+            ],
+            [
+              "b",
+              "enter",
+              18.448
+            ],
+            [
+              "b",
+              "exit",
+              28.603
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.257
+        },
+        {
+          "id": "webkit:exclusive:5",
+          "arm": "exclusive",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.325
+            ],
+            [
+              "a",
+              "exit",
+              16.394
+            ],
+            [
+              "b",
+              "enter",
+              17.6
+            ],
+            [
+              "b",
+              "exit",
+              28.664
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.261
+        },
+        {
+          "id": "webkit:exclusive:6",
+          "arm": "exclusive",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1
+            ],
+            [
+              "a",
+              "exit",
+              12.208
+            ],
+            [
+              "b",
+              "enter",
+              12.961
+            ],
+            [
+              "b",
+              "exit",
+              22.533
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 22.984
+        },
+        {
+          "id": "webkit:exclusive:7",
+          "arm": "exclusive",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.128
+            ],
+            [
+              "a",
+              "exit",
+              13.525
+            ],
+            [
+              "b",
+              "enter",
+              14.48
+            ],
+            [
+              "b",
+              "exit",
+              25.529
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 26.327
+        },
+        {
+          "id": "webkit:exclusive:8",
+          "arm": "exclusive",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.375
+            ],
+            [
+              "a",
+              "exit",
+              14.259
+            ],
+            [
+              "b",
+              "enter",
+              15.403
+            ],
+            [
+              "b",
+              "exit",
+              26.275
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 27.129
+        },
+        {
+          "id": "webkit:exclusive:9",
+          "arm": "exclusive",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.454
+            ],
+            [
+              "a",
+              "exit",
+              13.751
+            ],
+            [
+              "b",
+              "enter",
+              14.569
+            ],
+            [
+              "b",
+              "exit",
+              27.431
+            ]
+          ],
+          "peak_holders": 1,
+          "pending_observed": true,
+          "elapsed_ms": 29.396
+        },
+        {
+          "id": "webkit:bypass:0",
+          "arm": "bypass",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.581
+            ],
+            [
+              "b",
+              "enter",
+              13.727
+            ],
+            [
+              "a",
+              "exit",
+              25.057
+            ],
+            [
+              "b",
+              "exit",
+              25.331
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.181
+        },
+        {
+          "id": "webkit:bypass:1",
+          "arm": "bypass",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.761
+            ],
+            [
+              "b",
+              "enter",
+              12.809
+            ],
+            [
+              "a",
+              "exit",
+              22.815
+            ],
+            [
+              "b",
+              "exit",
+              23.076
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 23.642
+        },
+        {
+          "id": "webkit:bypass:2",
+          "arm": "bypass",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.803
+            ],
+            [
+              "b",
+              "enter",
+              11.778
+            ],
+            [
+              "a",
+              "exit",
+              23.445
+            ],
+            [
+              "b",
+              "exit",
+              23.844
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.9
+        },
+        {
+          "id": "webkit:bypass:3",
+          "arm": "bypass",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.983
+            ],
+            [
+              "b",
+              "enter",
+              12.523
+            ],
+            [
+              "a",
+              "exit",
+              22.925
+            ],
+            [
+              "b",
+              "exit",
+              23.101
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.274
+        },
+        {
+          "id": "webkit:bypass:4",
+          "arm": "bypass",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.858
+            ],
+            [
+              "b",
+              "enter",
+              12.947
+            ],
+            [
+              "a",
+              "exit",
+              24.372
+            ],
+            [
+              "b",
+              "exit",
+              24.693
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.234
+        },
+        {
+          "id": "webkit:bypass:5",
+          "arm": "bypass",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.656
+            ],
+            [
+              "b",
+              "enter",
+              12.412
+            ],
+            [
+              "a",
+              "exit",
+              24.682
+            ],
+            [
+              "b",
+              "exit",
+              24.909
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.372
+        },
+        {
+          "id": "webkit:bypass:6",
+          "arm": "bypass",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.577
+            ],
+            [
+              "b",
+              "enter",
+              13.706
+            ],
+            [
+              "a",
+              "exit",
+              25.798
+            ],
+            [
+              "b",
+              "exit",
+              25.913
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.172
+        },
+        {
+          "id": "webkit:bypass:7",
+          "arm": "bypass",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.933
+            ],
+            [
+              "b",
+              "enter",
+              12.657
+            ],
+            [
+              "a",
+              "exit",
+              26.414
+            ],
+            [
+              "b",
+              "exit",
+              26.559
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.851
+        },
+        {
+          "id": "webkit:bypass:8",
+          "arm": "bypass",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.127
+            ],
+            [
+              "b",
+              "enter",
+              11.338
+            ],
+            [
+              "a",
+              "exit",
+              25.301
+            ],
+            [
+              "b",
+              "exit",
+              25.768
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.714
+        },
+        {
+          "id": "webkit:bypass:9",
+          "arm": "bypass",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.879
+            ],
+            [
+              "b",
+              "enter",
+              14.253
+            ],
+            [
+              "b",
+              "exit",
+              26.733
+            ],
+            [
+              "a",
+              "exit",
+              26.853
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.807
+        },
+        {
+          "id": "webkit:distinct:0",
+          "arm": "distinct",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.133
+            ],
+            [
+              "b",
+              "enter",
+              14.01
+            ],
+            [
+              "a",
+              "exit",
+              25.766
+            ],
+            [
+              "b",
+              "exit",
+              26.095
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.562
+        },
+        {
+          "id": "webkit:distinct:1",
+          "arm": "distinct",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.83
+            ],
+            [
+              "b",
+              "enter",
+              12.757
+            ],
+            [
+              "a",
+              "exit",
+              26.814
+            ],
+            [
+              "b",
+              "exit",
+              27.26
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.858
+        },
+        {
+          "id": "webkit:distinct:2",
+          "arm": "distinct",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.004
+            ],
+            [
+              "b",
+              "enter",
+              13.455
+            ],
+            [
+              "a",
+              "exit",
+              25.413
+            ],
+            [
+              "b",
+              "exit",
+              25.53
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.12
+        },
+        {
+          "id": "webkit:distinct:3",
+          "arm": "distinct",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.854
+            ],
+            [
+              "b",
+              "enter",
+              12.852
+            ],
+            [
+              "a",
+              "exit",
+              25.228
+            ],
+            [
+              "b",
+              "exit",
+              25.554
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.229
+        },
+        {
+          "id": "webkit:distinct:4",
+          "arm": "distinct",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.145
+            ],
+            [
+              "b",
+              "enter",
+              14.998
+            ],
+            [
+              "a",
+              "exit",
+              29.487
+            ],
+            [
+              "b",
+              "exit",
+              30.313
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.227
+        },
+        {
+          "id": "webkit:distinct:5",
+          "arm": "distinct",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.249
+            ],
+            [
+              "b",
+              "enter",
+              16.353
+            ],
+            [
+              "a",
+              "exit",
+              28.008
+            ],
+            [
+              "b",
+              "exit",
+              29.334
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 30.261
+        },
+        {
+          "id": "webkit:distinct:6",
+          "arm": "distinct",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.824
+            ],
+            [
+              "b",
+              "enter",
+              17.373
+            ],
+            [
+              "a",
+              "exit",
+              29.493
+            ],
+            [
+              "b",
+              "exit",
+              30.249
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 31.3
+        },
+        {
+          "id": "webkit:distinct:7",
+          "arm": "distinct",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.213
+            ],
+            [
+              "b",
+              "enter",
+              11.712
+            ],
+            [
+              "a",
+              "exit",
+              23.32
+            ],
+            [
+              "b",
+              "exit",
+              27.345
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 28.316
+        },
+        {
+          "id": "webkit:distinct:8",
+          "arm": "distinct",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.116
+            ],
+            [
+              "b",
+              "enter",
+              12.593
+            ],
+            [
+              "a",
+              "exit",
+              23.985
+            ],
+            [
+              "b",
+              "exit",
+              24.436
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.241
+        },
+        {
+          "id": "webkit:distinct:9",
+          "arm": "distinct",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.077
+            ],
+            [
+              "b",
+              "enter",
+              18.001
+            ],
+            [
+              "a",
+              "exit",
+              31.952
+            ],
+            [
+              "b",
+              "exit",
+              32.834
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 33.799
+        },
+        {
+          "id": "webkit:isolated:0",
+          "arm": "isolated",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.009
+            ],
+            [
+              "c",
+              "enter",
+              16.97
+            ],
+            [
+              "a",
+              "exit",
+              25.655
+            ],
+            [
+              "c",
+              "exit",
+              26.083
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.761
+        },
+        {
+          "id": "webkit:isolated:1",
+          "arm": "isolated",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.888
+            ],
+            [
+              "c",
+              "enter",
+              17.407
+            ],
+            [
+              "a",
+              "exit",
+              33.046
+            ],
+            [
+              "c",
+              "exit",
+              34.212
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 36.261
+        },
+        {
+          "id": "webkit:isolated:2",
+          "arm": "isolated",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.442
+            ],
+            [
+              "c",
+              "enter",
+              14.058
+            ],
+            [
+              "a",
+              "exit",
+              25.154
+            ],
+            [
+              "c",
+              "exit",
+              26.828
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.974
+        },
+        {
+          "id": "webkit:isolated:3",
+          "arm": "isolated",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.646
+            ],
+            [
+              "c",
+              "enter",
+              15.428
+            ],
+            [
+              "c",
+              "exit",
+              22.467
+            ],
+            [
+              "a",
+              "exit",
+              22.591
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 23.505
+        },
+        {
+          "id": "webkit:isolated:4",
+          "arm": "isolated",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.07
+            ],
+            [
+              "c",
+              "enter",
+              11.684
+            ],
+            [
+              "c",
+              "exit",
+              23.813
+            ],
+            [
+              "a",
+              "exit",
+              23.92
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.726
+        },
+        {
+          "id": "webkit:isolated:5",
+          "arm": "isolated",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.917
+            ],
+            [
+              "c",
+              "enter",
+              15.062
+            ],
+            [
+              "a",
+              "exit",
+              26.324
+            ],
+            [
+              "c",
+              "exit",
+              26.479
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 27.395
+        },
+        {
+          "id": "webkit:isolated:6",
+          "arm": "isolated",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              1.242
+            ],
+            [
+              "c",
+              "enter",
+              12.074
+            ],
+            [
+              "a",
+              "exit",
+              22.986
+            ],
+            [
+              "c",
+              "exit",
+              23.145
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 24.117
+        },
+        {
+          "id": "webkit:isolated:7",
+          "arm": "isolated",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.872
+            ],
+            [
+              "c",
+              "enter",
+              13.969
+            ],
+            [
+              "a",
+              "exit",
+              24.359
+            ],
+            [
+              "c",
+              "exit",
+              24.884
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 25.546
+        },
+        {
+          "id": "webkit:isolated:8",
+          "arm": "isolated",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.755
+            ],
+            [
+              "c",
+              "enter",
+              13.991
+            ],
+            [
+              "a",
+              "exit",
+              28.713
+            ],
+            [
+              "c",
+              "exit",
+              28.802
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 29.551
+        },
+        {
+          "id": "webkit:isolated:9",
+          "arm": "isolated",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.961
+            ],
+            [
+              "c",
+              "enter",
+              14.339
+            ],
+            [
+              "a",
+              "exit",
+              25.721
+            ],
+            [
+              "c",
+              "exit",
+              25.879
+            ]
+          ],
+          "peak_holders": 2,
+          "pending_observed": false,
+          "elapsed_ms": 26.624
+        }
+      ],
+      "termination": [
+        {
+          "id": "webkit:termination:0",
+          "repetition": 0,
+          "trace": [
+            [
+              "a",
+              "enter",
+              0.92
+            ],
+            [
+              "driver",
+              "close_started",
+              12.149
+            ],
+            [
+              "driver",
+              "close_completed",
+              13.623
+            ],
+            [
+              "b",
+              "enter",
+              22.882
+            ],
+            [
+              "b",
+              "exit",
+              23.991
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 24.781
+        },
+        {
+          "id": "webkit:termination:1",
+          "repetition": 1,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.91
+            ],
+            [
+              "driver",
+              "close_started",
+              12.06
+            ],
+            [
+              "driver",
+              "close_completed",
+              12.859
+            ],
+            [
+              "b",
+              "enter",
+              16.786
+            ],
+            [
+              "b",
+              "exit",
+              26.048
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 26.853
+        },
+        {
+          "id": "webkit:termination:2",
+          "repetition": 2,
+          "trace": [
+            [
+              "a",
+              "enter",
+              7.768
+            ],
+            [
+              "driver",
+              "close_started",
+              12.475
+            ],
+            [
+              "driver",
+              "close_completed",
+              13.488
+            ],
+            [
+              "b",
+              "enter",
+              18.218
+            ],
+            [
+              "b",
+              "exit",
+              25.774
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 26.59
+        },
+        {
+          "id": "webkit:termination:3",
+          "repetition": 3,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.65
+            ],
+            [
+              "driver",
+              "close_started",
+              11.764
+            ],
+            [
+              "driver",
+              "close_completed",
+              12.295
+            ],
+            [
+              "b",
+              "enter",
+              15.827
+            ],
+            [
+              "b",
+              "exit",
+              24.699
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 25.314
+        },
+        {
+          "id": "webkit:termination:4",
+          "repetition": 4,
+          "trace": [
+            [
+              "a",
+              "enter",
+              5.105
+            ],
+            [
+              "driver",
+              "close_started",
+              13.768
+            ],
+            [
+              "driver",
+              "close_completed",
+              14.534
+            ],
+            [
+              "b",
+              "enter",
+              19.862
+            ],
+            [
+              "b",
+              "exit",
+              26.537
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 27.438
+        },
+        {
+          "id": "webkit:termination:5",
+          "repetition": 5,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.381
+            ],
+            [
+              "driver",
+              "close_started",
+              12.963
+            ],
+            [
+              "driver",
+              "close_completed",
+              13.875
+            ],
+            [
+              "b",
+              "enter",
+              18.093
+            ],
+            [
+              "b",
+              "exit",
+              25.907
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 26.488
+        },
+        {
+          "id": "webkit:termination:6",
+          "repetition": 6,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.261
+            ],
+            [
+              "driver",
+              "close_started",
+              13.2
+            ],
+            [
+              "driver",
+              "close_completed",
+              14.118
+            ],
+            [
+              "b",
+              "enter",
+              19.334
+            ],
+            [
+              "b",
+              "exit",
+              28.79
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 29.514
+        },
+        {
+          "id": "webkit:termination:7",
+          "repetition": 7,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.681
+            ],
+            [
+              "driver",
+              "close_started",
+              11.637
+            ],
+            [
+              "driver",
+              "close_completed",
+              12.236
+            ],
+            [
+              "b",
+              "enter",
+              15.716
+            ],
+            [
+              "b",
+              "exit",
+              25.196
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 25.818
+        },
+        {
+          "id": "webkit:termination:8",
+          "repetition": 8,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.604
+            ],
+            [
+              "driver",
+              "close_started",
+              13.629
+            ],
+            [
+              "driver",
+              "close_completed",
+              14.376
+            ],
+            [
+              "b",
+              "enter",
+              17.993
+            ],
+            [
+              "b",
+              "exit",
+              26.877
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 27.749
+        },
+        {
+          "id": "webkit:termination:9",
+          "repetition": 9,
+          "trace": [
+            [
+              "a",
+              "enter",
+              2.405
+            ],
+            [
+              "driver",
+              "close_started",
+              12.501
+            ],
+            [
+              "driver",
+              "close_completed",
+              13.137
+            ],
+            [
+              "b",
+              "enter",
+              16.537
+            ],
+            [
+              "b",
+              "exit",
+              24.807
+            ]
+          ],
+          "pending_observed": true,
+          "elapsed_ms": 25.373
+        }
+      ]
+    }
+  ]
+}

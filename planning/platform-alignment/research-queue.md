@@ -219,6 +219,12 @@ research question; they authorize only the stated downstream action.
 
 ## R-011 — browser single-use renewal coordination (RP-048 / RP-234)
 
+- **Current evidence:** first primitive wave under `d023dc26` completes 120
+  intervals / 30 page closures in the three declared Linux engines, with
+  discriminating bypass/watchdog controls. [Dossier](browser-session-coordination.md)
+  retains exact traces/source/instrument identity and limits. Real Account
+  ambiguity, storage denial, background/process crash and policy remain open.
+  Local complete browser CI discovered RP-235; that lane is red, not waived.
 - **Question:** Can the declared browsers coordinate one credential owner across
   contexts, release ownership when a context disappears, and expose unsupported
   storage/ownership honestly? Separately, what evidence bounds refresh/ownership

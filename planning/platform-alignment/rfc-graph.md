@@ -91,7 +91,7 @@ and D-017's UGC/moderation posture; a transport channel is not a feed feature.
 |---|---|---|
 | CI Baseline | release evidence root | D-014 body/topology implemented; current-head push/PR and maintenance observation, then exact review union |
 | Account & Session | backend producer with Q-001 witnesses designated-approved | broader player capability needs D-005/D-008/D-009 successor; body/range closeout separate |
-| Browser Session Renewal | draft consumer edge: Account pair → one HTTP coordinator → existing transport recovery → all authenticated ports | RP-048/RP-234 real controlled-expiry diagnosis complete; R-011 coordination/ambiguity evidence, API descriptor boundary and owner adoption remain; no implementation authority |
+| Browser Session Renewal | draft consumer edge: Account pair → one HTTP coordinator → existing transport recovery → all authenticated ports | RP-048/RP-234 controlled-expiry diagnosis and R-011 Linux primitive wave observed (120 intervals / 30 page closures); real rotation/commit ambiguity, native lifecycle/storage denial, API and owner/recovery adoption remain. RP-235 local browser CI is red; no implementation authority. |
 | WebSocket Transport | server, production recovery consumer and ruled AC3 witness designated-approved | body/range closeout separate |
 | Leaderboards & Epochs | backend producer for public evidence | ruling-author body repair, exact witnesses, reader/UI successor, current review union |
 | Prestige & Exits | backend transition producer | ruling-author body repair and D-012 Advisor choice before witness closeout |

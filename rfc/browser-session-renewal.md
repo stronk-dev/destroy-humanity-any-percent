@@ -159,6 +159,10 @@ into another identity. No second history store or client-authored receipt exists
   backgrounding and crash/commit ambiguity on supported browser/OS profiles.
   Predeclare populations and failure controls; choose bounded network/ownership
   observation budgets from evidence, never convenient arbitrary ceilings.
+  R-011's [first primitive wave](../planning/platform-alignment/browser-session-coordination.md)
+  now completes 120 intervals / 30 page closures in the declared Linux engines
+  and rejects bypass/guard controls. This is bounded candidate evidence only;
+  real rotation/commit ambiguity, storage denial and native lifecycle remain open.
 - **API author boundary S-A1:** pin the complete existing refresh error/status
   schema and exact generated dispatcher changes needed for C9. The current
   handwritten runtime calls are not permission for another raw API client or an

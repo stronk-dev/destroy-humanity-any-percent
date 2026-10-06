@@ -9,6 +9,18 @@ Current strategic status lives in [the 1.0 board](roadmap-1.0.md) and its
 the [active RFC index](../rfc/README.md), each RFC's plan/log and the
 [executable queue](platform-alignment/execution-queue.md).
 
+Latest R-011 primitive wave completes 120 intervals / 30 actual page closures
+in the three declared Linux engines; exclusive-bypass and watchdog controls fail,
+restored script passes. [Dossier](platform-alignment/browser-session-coordination.md)
+does not claim real refresh/commit ambiguity, storage policy, native lifecycle,
+automatic renewal or mature Garden. New span begins after `39f95329`, includes
+`d023dc26`; Claude review pending independently of previous spans.
+**Latest full local browser CI is RED:** Firefox Route fixture import fails
+(RP-235), 299/300 populations / 22466 passing tests / six existing skips;
+sixteen Route tests never imported and performance not reached. Root client/type/
+boundaries/topology pass. Earlier green runs below are historical, not current
+lane status. Historical RP-131 and prior worker/native caveats remain separate.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

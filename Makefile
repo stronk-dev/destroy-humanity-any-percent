@@ -202,6 +202,11 @@ diagnose-browser-session: build-gameserver build-client
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-garden-composed.mjs --session-diagnostic
 
+.PHONY: research-browser-coordination
+# R-011 primitive observation only; no default CI/release dependency or product auth.
+research-browser-coordination:
+	docker compose -f compose.browser-test.yml run --rm browser bash -lc 'corepack enable && corepack prepare pnpm@11.15.1 --activate && pnpm --dir client install --frozen-lockfile && node client/tools/research-browser-coordination.mjs $(shell git rev-parse HEAD)'
+
 test-game-ui-composed:
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
 	node client/tools/test-game-ui-composed.mjs

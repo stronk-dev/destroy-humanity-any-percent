@@ -445,3 +445,45 @@ research, not session safety, unsupported/mobile/storage-denial behavior, natura
 Garden maturity or implementation/owner adoption. Do not edit while handles live.
 No accepted-body/production/auth/TTL/revocation/kernel/catalog/schema/CI/checkbox/
 archival/push change; mandatory cross-party review remains pending.
+
+## 2026-10-06 — R-011 primitive wave observed; local browser CI is red
+
+Predeclaration `d023dc26`, separate new range after `39f95329`. Manual root
+research target/script and generated artifact only; bounded dossier lives at
+`planning/platform-alignment/browser-session-coordination.md`. Existing three
+Linux engines complete 120 exclusion/control intervals and 30 actual page-close
+successions, exact storage sharing/isolation/replacement visibility. This is no
+real token rotation, process crash, native suspension/storage-denial, marker or
+automatic-renewal proof. Source HEAD and actual dirty-instrument SHA are explicit.
+
+Handles terminal in sequence: 48229 initial full population; 6764 exclusive
+bypass red; original SHA `23b9fe248f42c46945a92401a3b5e65f72bc8521f14b54f0f0ac1bb997b499f8`
+restored. Failure time/source/hash and poll-stop refinement; 35833 full population;
+20140 bypass red (`exclusive lock admitted overlapping holders`); 1306 forced
+one-ms guard red (`guard_exhausted:true`, zero completions). Two failed patch
+context attempts changed no file. Permission-denied Docker invocation was a
+terminal environment failure, not a measurement; declared narrow escalation used.
+Final restored SHA `9dbad4855302ab7cefee97b79c51a0753b5fb4515987eb1094dbff363034a583`;
+23130 all 150 cases pass. Independent Node read recomputes every holder peak,
+repetition count and closure ordering and matches report hash. No edits while live.
+Normal observation guard is not a production budget; failures retain explicit
+invalidity, never count a partial population or a stale file as a new pass.
+
+9136 client/type/boundary/topology: 7366 pass / 134 Node DOM skips, zero TS/Svelte
+diagnostics, boundary 14/8/22, 13 rejected topology controls. Node syntax green.
+Complete unchanged browser CI 54700 **FAILS** Firefox Route JSON import; 299/300
+populations / 22466 tests / six existing skips, 51.98 s. Sixteen Route tests never
+import; performance not reached. RP-235 filed immediately, precise failed request
+status/cause not yet observed. No retry-to-green, browser removal or raised bound.
+Historical RP-131, earlier worker/native-host and hosted caveats remain separate.
+
+**Review by:** Codex (implementer first filter). **Recorded by:** Codex.
+**Verdict:** bounded research scope inspected; evidence controls discriminate,
+but complete local browser CI is red. NOT designated approval, owner adoption,
+production renewal, completed R-011 or archive authority. New full span starts
+`39f95329` exclusive, including `d023dc26`, this instrument/report/draft-evidence
+and records; literal tip pinned after commit. Claude required independently of
+`b68190f9..39f95329`, Garden and all earlier spans. No accepted body, production,
+credential/TTL/revocation/kernel/catalog/schema/copy/CI workflow/checkbox/archive/
+push change. Next separately predeclare RP-235 request/import diagnosis, then
+real refresh contract/ambiguity; proper nine-tier 1.0 and full platform floor active.

@@ -1,5 +1,24 @@
 # Executable queue
 
+## R-011 primitive evidence and current local CI failure — 2026-10-06
+
+Predeclaration `d023dc26`: 120 intervals / 30 actual page closures complete in
+the three declared Linux engines. Exclusive bypass and watchdog both fail;
+restored instrument rerun. [Dossier](browser-session-coordination.md) retains
+exact limits, not production rotation/process crash/renewal authority. New span
+starts after `39f95329`, includes predeclaration and records; tip pinned after
+commit, Codex first-filter only, Claude required independently of prior spans.
+
+**CURRENT CI IS RED (RP-235):** unchanged complete browser CI 54700 passes
+299/300 populations but Firefox cannot import a Route JSON fixture. 22466 tests /
+six existing skips; sixteen Route tests never imported, performance not reached.
+No retry-to-green or full CI claim. Root client/type/boundaries/topology pass;
+historical RP-131 and earlier reliability remain open.
+**NEXT:** separately predeclare actual failed module/request diagnosis under
+Scaffolding/CI authority, then real refresh-contract/ambiguity work. Production
+renewal needs draft policy/API/recovery acceptance; natural Garden and full
+nine-tier 1.0 remain unproved, not shortened.
+
 ## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
 
 Separate predeclaration `25fb5e67` binds RP-048/RP-234 to existing Account D2/D3

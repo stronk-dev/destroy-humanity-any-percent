@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, separate RP-048/RP-234 browser lifetime
+**Current checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
+actual page closures complete in the three declared Linux engines; bypass and
+watchdog fail, final restoration passes. [Dossier](platform-alignment/browser-session-coordination.md)
+retains exact source/instrument/populations and limits. Real Account ambiguity,
+unsupported storage/native lifecycle and owner/API/recovery remain open; renewal
+draft, mature Garden unproved. Latest full local browser CI RED (RP-235): Firefox
+fixture import fails, 299/300 populations / 22466 tests / six existing skips,
+sixteen Route tests absent, performance not reached. Root client/type/boundary/
+topology pass. New span starts after `39f95329`, pending Claude independently of
+previous ranges; historical RP-131 still open. Next is scoped CI import diagnosis,
+then real refresh-contract/ambiguity. No production auth/copy/kernel/schema/CI
+workflow/checkbox/archive/push change. Proper nine-tier 1.0 unchanged.
+
+**Earlier checkpoint:** 2026-10-06, separate RP-048/RP-234 browser lifetime
 diagnosis under `25fb5e67`: actual client/server/Postgres/WebSocket confirms
 Garden HTTP 401/socket loss/no runtime rotation under one controlled access-row
 expiry. One explicitly test-operated refresh/reload restores the same Founder

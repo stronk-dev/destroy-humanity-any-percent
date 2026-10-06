@@ -2291,3 +2291,24 @@ Substantive span committed `b68190f9..98ab59d8`, two commits / sixteen paths.
 Review also includes this subsequent pin-record edge; closing relay provides
 its literal endpoint. Pending Claude, not approval/owner adoption or a passing
 automatic-renewal/mature Garden workflow. No earlier range is consumed.
+
+## 2026-10-06 — browser primitive evidence and failed local CI retained
+
+Predeclared `d023dc26` first R-011 wave completes 120 actual ownership intervals
+and 30 holder page closures in Linux Chromium/Firefox/WebKit. Same-name exclusive
+locks exclude, unlocked/different-name/isolated controls overlap, storage
+sharing/isolation/replacement visibility observed. Bypass fails; forced guard
+fails incomplete; final bytes restored and full 150-case population completes.
+Dossier and exact source/instrument/traces retained. No real token/commit-ambiguity,
+native lifecycle, marker/policy, renewal or mature Garden acceptance claimed.
+
+Local root client/type/boundary/topology passes, but complete unchanged browser CI
+54700 is **red**: Firefox Route fixture import fails, 299/300 populations,
+22466 tests / six existing skips, sixteen tests never imported, performance not
+reached. RP-235 owns precise module/request diagnosis; not retry-to-green, a skip,
+proved cause or hosted success. Historical RP-131 and prior reliability stay open.
+All handles terminal before records. New span starts after `39f95329`, including
+its predeclaration; tip pinned after commit, Codex first-filter only, Claude still
+required. No production auth/kernel/copy/schema/CI workflow/checkbox/archive/push.
+Continue scoped CI diagnosis then real Account contract/ambiguity; full nine-tier
+1.0 and its full platform obligations remain active, not reduced to a preview.
