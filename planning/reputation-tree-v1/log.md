@@ -2710,3 +2710,70 @@ bypassing policy. Strengthen the test store resolver to apply the actual bundle
 foundation policy and use a pinned valid Company fixture, not the old thin
 integration resolver's faction-only state policy. This corrects the predeclared
 population's invalid premise; it waives no R5 row or SQL/negative-control gate.
+
+## 2026-10-06 — RP-253 retained taxonomy and preparation first filter
+
+Review by: Codex (implementer first filter, not designated review).
+Recorded by: Codex. Reviewed `86c96035..2e9cc4c4` and the complete current
+test/docs/ledger/plan/queue/board checkpoint diff. Claude must independently
+review the literal full span after86c96035 through this checkpoint; it includes
+5425e684, 373a6e1a and2e9cc4c4. No prior verdict covers the new work.
+
+Retained `reputation_taxonomy_integration_test.go`: all twenty original source
+cases (eleven applied/nine rejected), plus an overdue-Fiscal unknown-node
+rejection. The original source SHA is fixed; its purchase state, complete
+receipt and purchase-event expectations are not regenerated. Independent
+intent/revision coordinates are adapted to each new stream. Fiscal opened
+time is rebased, and the actual DB command timestamp governs sweeps; expected
+Fiscal effects use the existing catalog sweep/wire helper, not an independent
+new arithmetic proof. Rejection expectations are the complete pre-state,
+including Fiscal, with no event. The full nine-node chain and exact-budget
+controls remain in the population, not sampled away.
+
+The prepared SQL population checks each actual Service.Handle result against
+those expectations; one immutable Founder log/intent/receipt-outbox row;
+applied revision and ordered event/outbox delivery counts; history verification;
+identical receipt retry; no Company mutation; and42 unrecorded CAS/idempotency
+conflicts with no further writes. The test store applies the pinned foundation
+policy, not the thin integration resolver's faction-only validation. The Company
+fixture is restored from the matching pinned Exit case and passes that policy.
+Its presence does not claim an executed Company run or composed player career.
+
+Initial instrument failure6e1ea3..a26acf: the extra v21/tree state violated the
+pinned floor, preventing profile construction; three source controls passed,
+but the purchase population did not run. Not a product rejection/result. The
+predeclaration correction2e9cc4c4 retains the mismatch as a separate foundation
+refusal;21 valid purchase profiles remain, no R5 row removed. Subsequent
+db4e93..dfe7ba passes all21 locally plus that refusal and three census controls.
+
+Compiling population-validator omission ef4a88..7dc1bb fails all three forged
+source-hash/missing-row/changed-outcome controls with "forged taxonomy population
+accepted"; all21 honest profiles and the floor refusal remain green. No runtime
+mutation or expectation regeneration.104b98 confirms exact new-test SHA restored:
+`cea42f5e7b7427f9e23c4d30323aa3838f7afccf9be06dd08b15ed4a3459b0d0`.
+These are instrument controls, not the deferred SQL severing cases.
+
+Final2ed3a1..358b82 `make verify-server-core CORE_TEST_COUNT=1` exits0:
+vet/core cold; production34.609s, save0.297s, transport13.339s. Pitch0.316s is
+cold in the core; the separate content alias is cached, not a second cold claim.
+Formulas/API regeneration has no diff. Final9b2ef8..6b9747 focused cold verbose
+run passes all25 preparation subtests (21 profiles,3 corruptions,1 invalid
+pair refusal), and explicitly SKIPs the SQL test: "persisted taxonomy NOT
+EXECUTED". Every handle is terminal before these records. No TS/browser/full
+CI rerun or fresh SQL evidence; prior RP-131/RP-256 red limitations persist.
+
+e18b92/836929 verify original purchase corpus SHA f9b129e3..., corrected Go
+runtime11fe1b6a..., unchanged TS1790fb96..., kernel/schema/applied migrations
+and CI workflows unchanged. Only the new test and documentation/tracking are
+retained. The first combined tracking patch missed a full-line context and
+failed atomically;451d4c/7c01c1 confirm no partial edits before the corrected
+patch. No false completion was committed.
+
+RP-253 remains OPEN for actual declared Postgres execution and four compiling
+persistence severings (requires, rejection log, rollback, idempotency). Capacity
+remains100%/39784KiB free with two healthy databases, read-only checked; no
+cleanup or new workload. Test preparation may be independently reviewed, but
+cannot close AC3/B4 or replace R8 career/run verifier/AC15, mint/H4 or any
+nine-tier/platform/release obligation. Next safe accepted work: remaining
+pinned reader/writer audit. No checkbox, archive, push, deletion or goal status
+promotion.

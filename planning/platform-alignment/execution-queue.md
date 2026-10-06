@@ -1,5 +1,24 @@
 # Executable queue
 
+## Persisted purchase taxonomy retained, SQL still held — 2026-10-06
+
+Under5425e684/373a6e1a/2e9cc4c4, all20pinned direct-purchase profiles plus one
+overdue-Fiscal rejection are retained. The21local profiles byte-match purchase
+expectations; three census corruptions reject and fire when the validator is
+omitted. An initially invalid v21/tree fixture is retained as a foundation
+refusal instead of bypassing policy. Cold core/vet pass; actual SQL explicitly
+skips. The DB lane prepares42unrecorded conflicts, exact retry, complete state,
+ordered events and stored log/intent/outbox checks. None is fresh SQL evidence.
+
+**READY FOR CLAUDE (test preparation only):** full new span after86c96035,
+including all three predeclaration/refinement commits. **HELD:** actual declared
+Postgres population and four persistence severings; Docker100%/39784KiB free,
+no cleanup/workload authority inferred. **NEXT SAFE ACCEPTED WORK:** remaining
+pinned reader/writer audit; R8 history/run verifier/career remains required.
+RP-131 CI history and RP-256 Firefox launch remain separate open obligations.
+No runtime/kernel/corpus/schema/CI policy change, box flip, full AC3/B4, archival,
+mint/push or release promotion. [Evidence](../reputation-tree-v1/log.md).
+
 ## Frozen Reputation purchase inputs corrected — 2026-10-06
 
 Under761462fc/4ca6dc7d, Go now rejects all570raw malformed resolved inputs
@@ -15,7 +34,7 @@ pass, but Firefox runs0tests both inside and outside the execution sandbox;
 RP-256 stays open, no broad browser/CI claim.
 
 **READY FOR CLAUDE:** entire new span after4d690f29, including both predeclarations
-and the implementation/records checkpoint. **NEXT ACCEPTED WORK:** retain the
+and the implementation/records checkpoint. **THEN-NEXT WORK (prepared above):** retain the
 complete RP-253 direct-purchase Postgres taxonomy and audit remaining pinned
 readers/writers. Do not call host skips SQL proof; actual DB execution awaits
 capacity/cleanup authority (100%/39784KiB free). Separately diagnose native

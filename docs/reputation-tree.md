@@ -222,6 +222,13 @@ This RP-255 supplement needs designated review and actual database coverage
 remains separate. Native Chromium/WebKit execute all 590 new TS tests, but
 Firefox launch is blocked on this Mac (RP-256); no three-engine/CI pass is claimed.
 
+RP-253's additional `TestReputationPurchaseTaxonomyIntegration` is retained but
+has not yet executed on Postgres. It covers all twenty pinned purchase cases
+plus an overdue-Fiscal rejection, exact retry, and forty-two unrecorded
+revision/idempotency conflicts. Its local profile preparation and population
+controls pass; they are not persistence proof. Actual SQL execution and fired
+persistence controls remain required before AC3 closeout.
+
 An applied purchase adds the cost to `reputation_spent`, inserts the id in sorted order, and updates
 the unlock mirror. It returns a receipt with `effective_from: "next_run"` (a Fiscal sweep, if any,
 decorates it) and emits `reputation_node_purchased.v1` with `source: "direct"`. The event is

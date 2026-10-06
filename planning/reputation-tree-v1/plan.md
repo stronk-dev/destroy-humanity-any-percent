@@ -58,6 +58,15 @@ threshold retune is measured and reported, then ratified by owner SHA).
   including a narrowly escalated run (RP-256). Complete span after4d690f29
   needs Claude. RP-253 actual persisted taxonomy, history/verifier and remaining
   pinned readers still required; no new closeout or checkbox follows.
+  RP-253's test-only preparation under5425e684/373a6e1a/2e9cc4c4 now retains
+  all20source cases plus overdue-Fiscal rejection. All21local profiles pass;
+  three source/population corruptions reject and fire on validator omission.
+  The SQL lane prepares42unrecorded conflicts, exact retry and complete stored
+  state/log/event/outbox assertions, but explicitly skips without Postgres.
+  Cold core/vet pass; actual DB and four persistence controls remain mandatory.
+  The invalid v21/tree fixture is a separate pinned-state refusal, not an
+  invented valid persisted profile. Complete new span after86c96035 needs
+  Claude; no AC3 closeout or reversal of the original CHANGES REQUIRED verdict.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),
   `run_started` v2. ACs 6, 7, 8, 11.

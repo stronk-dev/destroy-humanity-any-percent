@@ -5,6 +5,15 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest test preparation (2026-10-06):** RP-253 retains all20pinned purchase
+profiles plus an overdue-Fiscal rejection; all21local profiles pass and three
+population corruptions fail when their validator is omitted. The SQL lane
+prepares42unrecorded conflicts and exact retry/storage verification but still
+explicitly skips. Cold core/vet pass; actual Postgres and persistence controls
+remain held at100%/39784KiB free. Runtime/kernel/corpus unchanged; full new
+span after86c96035 needs Claude. Next safe accepted work: pinned reader/writer
+audit. No AC3/B4/CI/player/RFC/release promotion. [Evidence](reputation-tree-v1/log.md).
+
 **Latest runtime correction (2026-10-06):** RP-255 under761462fc/4ca6dc7d
 rejects all570malformed frozen purchase inputs after376baseline admissions.
 Nineteen valid results stay unchanged; TS already refuses456objects and has114
@@ -13,8 +22,8 @@ corruption checks fire, restoring exact SHAs. Kernel **0.3.160**; cold core/vet
 and client/types/build plus separate boundaries/topology pass8047/134. Full
 verify-client stays RP-131 RED. Native Chromium/WebKit590each pass; Firefox
 executes0tests even with a narrowly approved escalation (RP-256), not a browser/
-CI green claim. Complete new span after4d690f29 needs Claude. Next retained
-RP-253 persisted taxonomy and remaining pinned readers; actual SQL still held
+CI green claim. Complete new span after4d690f29 needs Claude. Subsequent RP-253
+preparation is above; remaining pinned readers are next, and actual SQL stays held
 at100%/39784KiB free. No old corpus/schema/migration/mint/push/cleanup or full
 B4/R8/RFC/player/1.0 promotion. [Exact scope](reputation-tree-v1/log.md).
 

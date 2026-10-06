@@ -4,6 +4,17 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+Latest test preparation: RP-253 under5425e684/373a6e1a/2e9cc4c4 retains the
+complete twenty-case direct-purchase source plus an overdue-Fiscal rejection.
+All21local profiles pass; three population corruptions reject and fail when
+their validator is omitted. The SQL lane also prepares42unrecorded conflicts,
+exact retries and stored-state/log/event/outbox verification, but explicitly
+skips without Postgres. Cold core/vet pass. Docker remains100%/39784KiB free;
+no new workload or cleanup. Actual SQL and persistence controls stay mandatory.
+Runtime/kernel/corpus/CI policy unchanged; complete new span after86c96035
+needs Claude. Next safe work is remaining pinned reader/writer audit, not
+archival or release promotion. [Evidence](reputation-tree-v1/log.md).
+
 Latest runtime correction: RP-255 under761462fc/4ca6dc7d enforces the existing
 six frozen purchase-input fields before Go struct decoding. All570raw malformed
 cases now refuse after376baseline admissions;19valid results remain unchanged.
@@ -13,8 +24,8 @@ with exact restoration. Kernel **0.3.160**; cold core/vet and client/types/build
 plus separate boundaries/topology pass8047/134. Full verify-client remains RED
 at RP-131/50a3a514. Native Chromium/WebKit pass590each; Firefox never executes
 tests, including an approved narrow escalation (RP-256). No whole browser/CI pass.
-Complete new range after4d690f29 needs Claude. Next RP-253 retained real-Postgres
-taxonomy and remaining pinned readers; actual DB execution still held at100%/
+Complete new range after4d690f29 needs Claude. RP-253 preparation is above;
+remaining pinned readers are next; actual DB execution is still held at100%/
 39784KiB free. No cleanup, restart, old-corpus/schema/migration edit, mint/push or full
 B4/R8/RFC/player/1.0 promotion. [Exact evidence](reputation-tree-v1/log.md).
 

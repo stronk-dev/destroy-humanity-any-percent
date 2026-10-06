@@ -2783,3 +2783,29 @@ RP-253 persisted taxonomy and remaining pinned readers; actual SQL evidence and
 R8 history/verifier remain required. All nine tiers through Transcendence plus
 privacy/rights/accessibility/operations/deployment obligations persist. Goal
 active, no checkbox/archival/mint/push/deletion or release promotion.
+
+## 2026-10-06 — RP-253 persisted taxonomy retained, execution still held
+
+Progress after86c96035 under5425e684/373a6e1a/2e9cc4c4: retained all20pinned
+purchase profiles plus an overdue-Fiscal rejection. All21 local profiles compare
+full state, receipt and ordered events; source hash/missing row/changed outcome
+controls reject and fail when their validator is omitted. An initially invalid
+v21/tree pairing is corrected to a separate foundation refusal, not made valid
+by bypassing policy. The SQL store applies pinned foundation validation and
+uses a matching valid Company fixture.
+
+The prepared DB lane covers42 unrecorded conflicts, identical receipt retry,
+stored revisions/log/intent/events/outbox and Founder-history verification.
+It explicitly skips without Postgres: these assertions are NOT fresh executed
+SQL proof. Cold core/vet pass (production34.609s/save0.297s/transport13.339s),
+then the focused25-subtest preparation population passes; all handles terminal.
+Runtime/kernel/old corpus/migrations/CI policy unchanged. No TS/browser/whole
+CI rerun; prior RP-131 and RP-256 limitations remain. [Detailed evidence](reputation-tree-v1/log.md).
+
+Docker still100%/39784KiB free; no cleanup, restart or new workload. RP-253 stays
+open for actual SQL and four persistence controls. Full new span after86c96035
+needs Claude independently; no old verdict or implementer filter closes it.
+Next safe accepted work: remaining pinned reader/writer audit; R8 career/run
+verification remains. The full nine-tier game through Transcendence and all
+privacy/rights/accessibility/operations/deployment/release obligations remain.
+Goal active; no checkbox, archival, mint, push or release promotion.
