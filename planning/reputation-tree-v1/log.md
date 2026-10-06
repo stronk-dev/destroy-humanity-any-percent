@@ -1605,3 +1605,15 @@ does not supply shared TS older-source cases, Company-log/DB write atomicity,
 all legacy migrations, full R1 mirror encode authority or whole AC11. New test/
 docs/records require Claude designated review. No checkbox flip, balance/copy/
 schema/migration/CI edit, archival, push or Docker cleanup/DB workload.
+
+Instrument refinement before controls: the six older bundles retain identical
+pitch IDs/rating season across the boundary, so an unrelated added-minigame
+migration cannot mask the save-version subject. Their target is a minimal v22
+fixture retaining the existing unlock-chain nodes with unchanged values; no
+starter is owned or applied. The v21 arm retains epoch8 and the original full
+tree fixture. Neither target is a production epoch. Setup run3ead8a rejected
+the original full tree because its starter upgrade is absent from the legacy
+fixture economy; this is an instrument incompatibility, not a product defect.
+After limiting that old-economy target to the unchanged unlock chain,0b1491
+passes all seven sources and both arms cold0.547s. No runtime change or
+acceptance-bound relaxation. Source and next-floor census added before probes.
