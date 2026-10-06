@@ -1810,3 +1810,50 @@ default-player or release acceptance. Next remaining R1/R7 pinned reader/writer
 audit and full B4 purchase-contract range review. New range awaits Claude;
 whole nine-tier/platform goal stays active. No checkbox completion, archival,
 push, Docker cleanup consent or new DB workload.
+
+## 2026-10-06 — predeclare pinned Reputation admission counterfacts
+
+Previous goal turn made concrete progress at501000ea; tree clean, no live check
+handles or new Claude verdict. Original B4 has seventeen paths, not yet fully
+reviewed: this session inspected its current purchase/resolved/dispatch and
+save callback paths, not the whole original corpus/range. No B4 approval claimed.
+
+Candidate R1 defect: structural Go restoration/encoding cannot check a tree
+mirror. The live purchase resolver and public ApplyFounderLogged currently lack
+pinned Reputation input admission, so a purchase may silently recompute a false
+mirror instead of refusing it; a non-purchase arm may record against it. Output
+admission also appears absent from the shared successful Founder boundary.
+This is an unexecuted inference until the following cases run. Authority is
+accepted R1's checked mirror/load-and-encode invariants, not a new policy.
+
+Population: full structurally legal v22 states under the existing tree fixture:
+empty owned/spent0 with false mirror50000, and owned p05/spent1 with false mirror0.
+Both must already fail pinned validation but pass the bare structural codec.
+Each runs the live resolver, public purchase replay with independently frozen
+legitimate cost/ownership evidence, and public recorded-invalid-command arm.
+Every entry must return a typed invalid-state error, no receipt/event and exact
+pre-state preservation, not an ordinary user rejection or silent repair.
+
+An existing deliberate Founder transition test hook injects a false mirror after
+a valid starter purchase. Successful output admission must fail and restore the
+complete pre-command state without receipt/events. Positive controls cover
+empty, known unlock and retired unknown ownership; valid purchase expectations
+and existing Go/TS canonical corpora must remain identical. A tree-inactive
+pre-v22 control retains R5's ordinary recorded rejection and no mutation.
+
+If baseline fires, record RP-250 and minimally enforce existing pinned checks
+at the live resolver and shared public Founder input/output boundaries, only for
+activated v22+ state; do not force inactive legacy state through a v22 validator.
+Kernel bump in the same runtime change is mandatory. No new category, purchase
+price, refund/repaired save, schema, migration body or provider/content changes.
+Bare artifact-free codecs remain structural, not falsely labelled pinned.
+
+Controls after the fix: remove live admission (only live negatives should fail
+while replay remains defended), remove shared input admission (the recorded-
+invalid-command negatives must fail even if purchase remains defended), remove
+shared successful-output admission (the deliberate post-state fault must fail).
+All must compile, wait terminal, restore exact SHA before next run. Any survivor
+or command/setup error is disclosed. Cold full server-core/vet and client/type/
+build/boundaries/topology plus unchanged-corpus byte checks follow. No new DB
+workload, cleanup consent, checkbox flip, archive, push, full R1/B4/RFC/CI/1.0
+claim. New range after501000ea needs Claude independently of prior work.
