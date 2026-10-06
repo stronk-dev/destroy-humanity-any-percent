@@ -85,3 +85,22 @@ For every batch:
 | DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | two byte-matched local candidate bundles at source `7e8aa70`; build records, scan and full local supply-chain check pass; 25/43 populations have real probes, no run claim or designated verdict |
 | DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | exact candidate/previous inputs prepared locally; blocked on explicit clean-host target authority and required designated review boundaries |
 | DP-F4 | R-006 dossier, canonical runbook/limitations, backlog/queue/RFC closeout and full-range first-filter | blocked on DP-F3 and designated approvals for DP-A–DP-E |
+
+## RP-141 — R18 producer witness supplement
+
+At baseline `fbbf0150`, add test-only current-repository bundle fixtures through
+the production assembler and validator, and call both registered `RunProbe`
+branches. Migration probe must reject a genuinely lower schema only after the
+intact release pair passes compatibility; reversed/equal versions and invalid
+bundles must remain setup/control failures. Missing-input probe must verify a
+real age envelope and the actual image-preparation gate before removed inputs
+can count. Both bundles must remain byte-bound and work directories empty.
+
+Compiling constant-rejection dispatch faults must fail invalid-input controls;
+separately sever the real migration comparison, backup gate and image gate to
+make the valid producer tests fail. Restore exact source bytes before cold
+focused/full Go and vet checks. No source/test/record edits while a test handle
+is live. No runtime change is planned; discoveries requiring one get a separate
+predeclaration. Synthetic ELF/image/client fixtures are not executable release
+artifacts or clean-host R-006 evidence. Existing history/author/operator holds
+and all independent review ranges remain. New Codex tests/records need Claude.

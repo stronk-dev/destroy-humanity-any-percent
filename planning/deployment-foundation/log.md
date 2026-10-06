@@ -4430,3 +4430,33 @@ Recorded by: Codex. Reviewed the record-only diff against the individual verdict
 entries and current queue; no product behavior or acceptance status changes.
 The following record commit is another Codex edge requiring Claude where a
 closeout range consumes it. No archival, publication or deployment performed.
+
+## 2026-10-07 — RP-141/R18 witness supplement predeclaration
+
+Baseline `fbbf0150` is clean; previous goal turn made progress with RP-304 and
+Deployment record reconciliation. No verification handles are live. Re-read
+accepted Deployment AC3/AC5/AC10, original R18 CHANGES REQUIRED finding and
+current producer/dispatch/bundle validation. No existing test calls the two
+functions; the older diagnostic bundles are not retained acceptance inputs.
+
+Scope: new `server/deploymentrehearsal/probe_release_test.go`, per-RFC plan/log,
+the existing RP-141 ledger/queue/roadmap routes, and bounded canonical evidence
+notes if useful. Use `releasepackage.AssembleBundle` plus actual `LoadBundle`
+and `RunProbe`, not an injected always-successful bundle validator. Build
+synthetic, hash-bound candidate/previous fixture trees from current tracked
+templates/content. They do not become retained real release builds.
+
+Population: both named valid probe outcomes; missing/tampered manifest-bound
+previous input for both branches; missing/tampered candidate and equal/reversed
+versions for migration; work-directory cleanup and unchanged bundle identities.
+Intact pair must reach the production compatibility/runtime boundary before the
+migration negative counts. Both missing-input gates must accept intact inputs
+first. Each constant-rejection dispatch replacement must fail setup controls;
+severing migration, backup refusal and image refusal independently must fail
+the valid row. Restore all exact source bytes before cold relevant Go/vet and
+the root rehearsal lane. No manual edits while any verification handle lives.
+
+No behavior/kernel/balance/schema/migration/copy/CI or normative author edit is
+planned. No R18/DP-F/full-range approval, checkbox, archival, push, deploy or
+R-006 claim. If production changes prove necessary, predeclare them separately;
+this supplement's new Codex span requires Claude's designated review.
