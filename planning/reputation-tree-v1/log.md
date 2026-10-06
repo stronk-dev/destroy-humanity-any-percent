@@ -8819,3 +8819,26 @@ Claude's designated review; all earlier ranges remain independently pending.
 Not archival-eligible, full AC9/1.0/CI proof or release approval. Next accepted
 work remains separate R8 Go/TS cross-pin/first-failure census/predeclaration.
 Goal remains active/progress, all author/environment/owner/release holds intact.
+
+## 2026-10-06 — R8 cross-pin / first-failure census and predeclaration
+
+Previous goal turn progress througha21da467, authoritative clean main
+1bed9d, no live handles. Re-read AGENTS/process/full accepted RFC/vision/tech
+and current long-term board. Census2947b4/719a43/8edded/19a187: five historical
+Exit rows are WindDown-only; activation has absent/one-node plan, paired
+Founder absent in two refused rows. Offered supplement has both offers but
+same tree pin and only unaffordable refusal. SQL RP-299 proves real persistence,
+not TS replay parity. RP-300 registered immediately as evidence gap, not an
+observed runtime defect or authorization to change owner rules/copy/epochs.
+
+Predeclare distinct27 paired replay profiles as plan above. Two bundled hashes,
+three Exit types × nine arms;12 applied/15 refused. Nine activations, three
+standalone absent-tree no-plan controls, not SQL sequential continuation proof.
+Independent whole-state/events/receipt/result-pin/accounting/taxonomy before
+fixture authoring; historic corpora untouched. Copied rejected Founder delta,
+planned cost and activation result hash refusals in both runtimes. Compiling
+Go wrong-bundle generation, TS selector/detail/empty-plan source faults with
+exact restore before broad baselines. No tests/files edited while handles live.
+No skills/delegation/new owner policy/balance/copy/mint/CI/checkbox/archive/push.
+Full aftera21da467 span including final records needs Claude; prior independent
+review obligations and all full1.0 author/environment/owner holds remain.

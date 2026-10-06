@@ -725,3 +725,34 @@ shared spent reset fires the new persisted accounting oracle. Complete relevant
 Go/vet/type/client and restored production SQL36/143/no skips pass. No acceptance
 checkbox/status promotion; full span aftere5a69731 including records needs Claude.
 Next census distinct R8 Go/TS cross-pin/first-failure population before edits.
+
+## R8 cross-pin/first-failure replay supplement — predeclared 2026-10-06
+
+Starta21da467,RP-300. Census: historical five Exit rows include only WindDown
+cross-pin no-plan/one-node plan, with no paired Founder arm for its two refusals;
+offered supplement stays same-pin and refuses only unaffordable. Build separate
+Go-authored reputation-exit-boundary-v1.json with two bundle records and27 paired
+Company/Founder rows: WindDown/Acquihire/Acquisition × activation-plan6/absent/
+empty, inactive/unknown/owned/requires/unaffordable first failure, absent-tree
+no-plan. Twelve applied/fifteen refused; nine activation, three no-plan controls.
+Initial diagnostic earned6/run2/tier3/stored promises0, not natural pacing.
+The three portable no-plan rows are standalone replay controls, not RP-299's
+SQL same-head sequential follow-ups. Both historical corpora byte-unchanged.
+
+Compare entire Company final/new state, Founder carry/full state, complete
+receipts, every ordered event and Founder result hash in both Go and TS. Bind
+independent taxonomy, old21→next22 activation, spent6/unlock50000/sorted owned,
+cash1e3/generated5/purchased0/start-summary factor1.003 or unit; absent/empty
+different canonical requests/equal semantic outputs. Refusals preserve complete
+states/no events/no new Company; original input pin survives. Add wrong Founder
+delta on all15 refused arms, copied cost on three planned activations and wrong
+result hash on nine activation arms. Pin names/population, no hidden filters.
+
+Generation-only root Make lane, ordinary tests compare not write. Source faults
+must compile: Go current-versus-next dry-run selector must invalidate generation
+without overwriting fixture; TS wrong selector, wrapped detail and omitted
+empty-plan early return must fail unchanged comparisons/independent controls.
+Restore exact bytes and check complete relevant Go/vet/type/client/SQL baseline.
+No product/migration/balance/copy/epoch/CI workflow/old corpus/acceptance boxes.
+Full new span including records needs Claude; previous ranges/holds/full goal
+remain independent. This is R8 replay evidence, not fullAC9/CI/browser/release.
