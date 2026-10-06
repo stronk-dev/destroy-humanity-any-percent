@@ -2364,3 +2364,72 @@ historical RP-131 remains independently open, no whole-CI claim. Docs and all st
 records will synchronize in the implementing range, without acceptance checkbox,
 public pin, owner text, archival or release promotion. Exact range starts `9c918361^`
 (`3c3af1de`); Claude designated review required, endpoint pinned after final commit.
+
+Repaired host run 97448 terminal exit 0: all nine cases in each native engine
+(27 pass). Only production edit forwards the existing Garden invalidation key
+inside unchanged terminal guard. Kernel registry inspected completely: GameUIApp
+is not watched; no formula/state/replay/codec/schema path changed (0.3.153 stays).
+Original terminal-receipt screen witness is present in the full browser population.
+Next actual-source plant callback severing is diagnostic only, no commit; after its
+terminal failure restore exact host SHA before the separate receipt-key probe.
+
+Plant callback severing 30370 terminal exit 1: fifteen failures / twelve controls
+pass. Each engine catches the initial missing plant request; the four other
+command journeys catch their missing revision-8 follow-up plant. Refusal/streamed
+receipt/visibility controls survive as intended. Restore the callback, verify
+repaired SHA `8e5fb08725c6af38b6b979766840306efd326a49b22322863a7a5d68abc98ab0`,
+then remove only the newly added receipt-key increment (retain main refresh).
+The streamed population must fail on missing Garden read, not on transport/build.
+
+Receipt-key severing 5566 terminal exit 1: exactly three streamed-receipt failures,
+24 controls pass; main snapshot still refreshes. Restore that single line and
+verify the same repaired SHA before final gates. Neither probe modified tests,
+timeouts, skip lists, real server data or committed history. Run full declared
+native-Linux browser/performance population, root client/type/build/boundary/copy/
+topology and historical kernel guard on restored source. No edit to source/tests
+while these verification handles are live; no commit until all are terminal.
+
+First full restored final gates terminal: 43180 exits 0 (297 browser files,
+22,476 pass / six existing deliberate skips, 49.93 s; separate Chromium
+performance objective passes 620 ms / 2.88 s, unchanged selector excludes 22
+unrelated entries only there). All new host cases and existing terminal-screen
+protections pass. Root 14082 exits 0: 7,366 pass / 132 Node DOM skips, zero
+diagnostics, 213-module build 431 ms, 22 Game UI boundary components, 657 copy
+keys / unchanged hash `sha256:3a890004e2c9ecdbdc14d9d688f29efddfb8d7174bd6060427e1614144146860`
+and 610 existing orphan warnings, content manifest and thirteen CI topology
+negative controls. No browser worker/deadline failure in this run; RP-218 remains
+open. Historical kernel 70388 exits 2, rejecting the unchanged RP-131 commit
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against parent
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`. No bypass/rewrite or whole-CI claim.
+
+Final instrument first-filter: unexpected fetch already throws, but the host
+can turn that into an offline notice. Explicitly assert every recorded path is
+one of the three declared endpoints so an extra failed/background call cannot
+pass unnoticed. Strengthening only, no product/oracle/bound/skip relaxation.
+All previous handles terminal before edit. Re-run full native browser/performance
+and client/type on this final instrument before commit. Other product gates just
+passed on identical restored bytes, no Go/DB or live-network proof claimed.
+
+Final stricter instrument gates terminal: 94718 root client/type exits 0 (7,366
+pass / 132 Node DOM skips, zero errors/warnings). 3529 declared native-Linux full
+browser/performance exits 0 (297 engine-file populations, 22,476 pass / six
+existing deliberate skips, 47.36 s; separate performance 481 ms / 2.50 s with
+unchanged selector). Nine host cases execute in each engine, not skipped. No
+worker/deadline/uncaught error in this run, no bound/skip/CI change or retry after
+a red final baseline. Earlier instrument wording and severing reds remain visible.
+Build/boundary/copy/content-manifest/topology already passed on identical product
+bytes in 14082; full historical guard remains RP-131 red in 70388. All processes
+terminal before final commit; product SHA restores exactly to
+`8e5fb08725c6af38b6b979766840306efd326a49b22322863a7a5d68abc98ab0`.
+
+Review by: Codex (implementer first-filter); Recorded by: Codex. Full new diff,
+accepted SG10 scope, callback/transport/receipt/revision binding and unchanged
+terminal protection inspected with executed controls and actual-source probes.
+This is not designated approval. Docs/plan/backlog/current state/execution queue/
+1.0 board/checkpoints reconcile locally without checkbox or lifecycle promotion.
+Exact new range starts `9c918361^` (`3c3af1de`), endpoint pinned after committing;
+Claude required, every earlier pending range independent. Controlled actual-host
+integration still leaves real Go/Postgres/WebSocket/mature progression to the
+fixture-only composed witness under SG13. No public mint, owner text, AC13/full
+Garden/1.0/archival or external publication claimed. RP-229/RP-222 author and
+RP-131/RP-218 CI/worker routes remain open; full nine-tier goal continues.

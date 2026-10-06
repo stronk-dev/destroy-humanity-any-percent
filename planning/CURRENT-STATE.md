@@ -10,7 +10,16 @@ the [active RFC index](../rfc/README.md), each RFC's plan/log and the
 [executable queue](platform-alignment/execution-queue.md).
 
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
-Current SG10 timing correction (RP-230) removes an arbitrary one-second minimum that delayed
+Current SG10 host correction (RP-231) invalidates mounted Garden on nonterminal streamed
+receipts, not only the main snapshot; terminal-screen protection remains unchanged.
+Nine actual host/browser-runtime cases per engine cover five DOM commands, Founder revision
+and exact payload binding, pending/nonoptimistic state, refreshed next revision, refusal,
+visibility and streamed reread. Actual callback and receipt-key severing fail and restore.
+Full local browser/performance and client/type/build/boundary/copy/topology pass; historical
+kernel guard still fails RP-131. HTTP JSON/socket frames are injected, not real Go/Postgres/
+WebSocket/native input/mature progression/public activation proof. Claude review and all
+earlier exact ranges remain pending; full G7/AC13/Garden/1.0 acceptance is not claimed.
+Prior SG10 timing correction (RP-230) removes an arbitrary one-second minimum that delayed
 near-tick views. Seven mounted-component/browser-adapter cases per engine and actual timer/
 visibility mutations discriminate; full local browser/performance and client/type/build/
 boundary/copy/topology pass. Historical kernel guard remains RP-131 red. This is controlled

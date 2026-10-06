@@ -136,6 +136,19 @@ timers, emulated visibility, injected JSON and receipt props are not default-hos
 server/actual idle-wait proof. No kernel/math/schema/copy/mint or checklist promotion;
 Claude review required independently of all earlier ranges. Final gates in the log.
 
+Separate SG10 actual-host diagnosis under `9c918361` / `9af68399`, repair authority
+`86249481`, confirms RP-231: streamed receipts refresh main state but not mounted Garden.
+The host now forwards its existing advisory refresh key inside the unchanged terminal
+guard. Nine actual mounted-host/browser-runtime cases per engine cover five DOM commands,
+Founder-vs-Company revision/UUID/fields, held receipt/pending/nonoptimistic state, next
+revision, refusal, visibility and streamed reread. Actual callback and receipt-key
+severing fail and restore exactly. Injected JSON/socket frames are controlled client
+integration, not real Go/Postgres/WebSocket/native input/mature progression/public mint.
+No schema/kernel/copy/CI change (0.3.153), checkbox or full G7/AC13/Garden promotion.
+Exact new range begins `9c918361^` (`3c3af1de`), endpoint pinned in the log; Claude
+required independently of earlier ranges. Continue fixture-only composed host/server
+integration under SG13, retaining author/owner/CI and complete nine-tier 1.0 obligations.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

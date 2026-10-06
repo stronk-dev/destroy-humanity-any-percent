@@ -1,6 +1,30 @@
 # Executable queue
 
-## Current Garden refresh timing/visibility correction — 2026-10-06
+## Current Garden host and streamed-receipt correction — 2026-10-06
+
+SG10 actual-host diagnosis `9c918361` / `9af68399` confirms RP-231: the streamed
+receipt updates main state but never rereads mounted Garden. Separately recorded
+`86249481` authority forwards the existing Garden key inside unchanged terminal guard.
+Nine actual host/browser-runtime cases in each engine cover five DOM command paths,
+exact fields/UUIDv7/Founder-vs-Company revision, held receipts/pending/nonoptimistic view,
+next authoritative revision, refusal, visibility and streamed advisory reread. Actual
+plant-callback severing fails fifteen cases; receipt-key severing fails three; both
+restore byte-exactly. Full local browser/performance and client/type/build/boundary/
+copy/topology pass. Historical kernel RP-131 stays red, no whole-CI claim. Kernel
+0.3.153 unchanged; no schema/math/copy/CI/public pin change. Initial test wording
+error and stricter endpoint audit are recorded, not hidden.
+
+**READY FOR DESIGNATED REVIEW, not approved:** range begins `9c918361^`
+(`3c3af1de`), endpoint pinned in Garden log after implementation commit. Codex
+first-filter only, Claude required independently of every earlier range. Injected
+HTTP JSON/socket frames do not prove real Go/Postgres/WebSocket/native input,
+mature gameplay progression/public activation or full G7/AC13/Garden acceptance.
+
+**NEXT SAFE ACTION:** accepted Garden fixture-only composed host/server integration
+under SG13; retain RP-229/RP-222 author routes, RP-131/RP-218 CI/worker routes and
+all owner/rights/accessibility/deployment gates. Full nine-tier 1.0 stays intact.
+
+## Earlier Garden refresh timing/visibility correction — 2026-10-06
 
 SG10 diagnosis `dd4d96f3` / instrument refinement `891dee0d` confirms RP-230:
 the one-second floor delays a valid 137 ms server-relative deadline in all three engines.
@@ -20,7 +44,7 @@ required. Every earlier range remains independent. Virtual timers, emulated visi
 injected JSON and receipt props do not prove actual idle/OS hiding, real HTTP/Postgres,
 default host or full AC13/G7/Garden. No checklist/lifecycle/archival promotion.
 
-**NEXT SAFE ACTION:** accepted Garden default-host/receipt-to-read integration; retain
+**Next action at that checkpoint:** accepted Garden default-host/receipt-to-read integration; retain
 RP-229/RP-222 author routes and RP-131/RP-218 CI/worker routes independently, without
 narrowing the full nine-tier 1.0 or complete platform floor.
 

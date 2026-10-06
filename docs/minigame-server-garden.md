@@ -233,6 +233,9 @@ payout, default DOM flow, real idle wait, full G4/G6/Garden or public-release cl
   arrives after a newer receipt refresh. Unmount still discards late completions.
 - The grid fits 320 CSS px with at least 24 px targets.
 - Commands go through the Game UI's Founder-scoped `act()`.
+- Nonterminal streamed receipts invalidate the Garden read as well as refreshing the
+  main snapshot. The existing terminal guard still preserves the run-end screen;
+  receipt bytes never patch or simulate Garden state locally.
 
 All garden copy is candidate text (`copy/catalog/garden-candidate.json`): species names read
 `PENDING OWNER NAME`.
@@ -261,6 +264,19 @@ fail their own populations. Virtual timers/emulated visibility and an injected f
 are explicitly not native wall-clock/OS-hide, real HTTP/Postgres or default-host receipt
 proof. No AC13/Garden/public activation claim; the correction awaits Claude review.
 
+RP-231's host supplement mounts the actual GameUIApp with the actual browser runtime,
+generated authenticated Garden adapter, JSON response parsing and socket frame decoder.
+Five DOM command journeys cover plant/uproot/single harvest/harvest-all/substrate, exact
+UUIDv7/Founder-not-Company revision/fields, held-response pending and nonoptimistic state,
+receipt-triggered reads and the next command's refreshed revision. Refusal and inactive/
+locked visibility controls also run. A streamed receipt now rereads the mounted Garden;
+before the repair, that arm failed in all three native engines despite the main snapshot
+refreshing. Actual plant-callback and receipt-key severing each break their populations.
+Responses and socket frames remain injected boundary fixtures, not real Go/Postgres/
+WebSocket, native input, mature gameplay progression or default public activation proof.
+No fixture exports or replacement runtime are used. This separate correction still
+requires Claude's designated review; no full G7/AC13/Garden acceptance follows.
+
 ## Verification
 
 - `make garden-corpus-check`
@@ -275,6 +291,7 @@ proof. No AC13/Garden/public activation claim; the correction awaits Claude revi
 - `gameserver.TestComposedGardenAuthenticatedCommandsAndReadIntegration` (fixture-only live HTTP/Account/DB path)
 - `client/test/garden-surface-witnesses-browser.test.ts` (native input and controlled read ordering)
 - `client/test/garden-refresh-browser.test.ts` (controlled due/visibility and actual browser-port binding)
+- `client/test/garden-host-browser.test.ts` (actual host/runtime with controlled HTTP/socket boundaries)
 - The Postgres witnesses `TestGardenIntegrationPersistsReplayableFounderLog`,
   `TestGardenHarvestIntegration` and `TestGardenHarvestFaultsAreAllOrNothing`
 - `client/test/garden-surface-browser.test.ts`, in three browsers

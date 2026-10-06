@@ -2186,3 +2186,39 @@ Metadata pin only, no verdict or earlier range consumed; all processes terminal,
 probes restored, clean tree. Refined final native browser population passes unchanged
 22,449 / six deliberate skips plus performance; root client/type/build passes. Historical
 RP-131 guard still red. Full nine-tier 1.0 active, no release/archival/push promotion.
+
+## 2026-10-06 — Garden actual host and streamed-receipt correction
+
+Previous goal turn: progress (RP-230 repaired with executed controls and tracking).
+Clean start `3c3af1de`. Actual-host diagnosis predeclared `9c918361`, diagnostic
+test/record `9af68399`: corrected instrument fails exactly the streamed-receipt arm
+in all three native engines, 24 command/refusal/visibility controls pass. Original
+wording error retained and corrected against unchanged catalog. Accepted SG10
+repair authority `86249481` forwards the existing Garden key inside unchanged
+terminal guard. No client growth/state patch, kernel/schema/copy/CI/mint change.
+
+Nine actual mounted GameUIApp/browser-runtime cases per engine use DOM controls
+and generated authenticated GET/actual JSON/socket decoder paths, never fixture
+exports or replacement runtime. Exact five command payloads bind Founder 7, not
+Company 41; held responses prove pending/no optimistic Garden/read, applied
+response refreshes authority for next command at Founder 8; refusal and visibility
+controls hold. Streamed receipt now fetches current Garden. Actual plant-callback
+and receipt-key severing fail fifteen and three cases, restore exact SHA. Full
+local native-Linux browser/performance and root client/type/build/boundary/copy/
+topology pass; final stricter endpoint audit is rerun before committing. Historical
+kernel guard again rejects unchanged RP-131; no whole-CI/release-ready claim.
+
+Injected HTTP JSON/socket frames are not real Go/Postgres/WebSocket, native input,
+mature progression or public activation evidence. Kernel remains 0.3.153. Codex
+first-filter only; exact new range starts `9c918361^` (`3c3af1de`), endpoint pinned
+after implementation, Claude required independently of every earlier range. No
+checkbox/AC13/G7/Garden/archival promotion. RP-229/RP-222 author and RP-131/RP-218
+CI/worker routes remain open; continue accepted fixture-only composed host/server
+integration under SG13 toward the full nine-tier 1.0 and complete platform floor.
+
+Final stricter-instrument gates: 297 native engine-file populations / 22,476 tests
+pass, six existing deliberate skips, 47.36 s; separate performance passes 481 ms
+/ 2.50 s. Client/type passes 7,366 / 132 Node DOM skips, zero diagnostics. Product
+bytes match restored SHA; other root gates passed unchanged bytes. All processes
+terminal before commit; historical RP-131 guard remains red. No tests/bounds or
+skips removed to pass. Claude's independent verdict remains required.

@@ -238,7 +238,15 @@
     // transaction. Refreshing its trailing receipt would bind the already
     // created next run and let its lifecycle preempt the run-end screen before
     // the player explicitly continues.
-    if (message.kind === "receipt") { if (!ended) void refresh(); return; }
+    if (message.kind === "receipt") {
+      if (!ended) {
+        void refresh();
+        // SG10: the main snapshot does not carry Garden's advisory DTO.
+        // Receipt publications must invalidate the mounted Garden read too.
+        gardenRefresh += 1;
+      }
+      return;
+    }
     if (message.kind === "presence") { visitorCount = message.count; return; }
     if (message.kind === "announcement") { announce(message.scope, message.value); return; }
     if (message.kind === "system") {

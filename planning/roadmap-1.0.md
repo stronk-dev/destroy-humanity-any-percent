@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG10 timing/visibility correction under
+**Current checkpoint:** 2026-10-06, Garden SG10 actual-host receipt correction under
+diagnosis `9c918361` / `9af68399`, repair authority `86249481`, RP-231. Streamed
+receipts now invalidate mounted Garden as well as refreshing main state, preserving
+the terminal-screen guard. Nine actual host/browser-runtime cases per engine cover
+five DOM commands, exact Founder-scoped payloads, held receipt/pending/nonoptimistic
+state, next revision, refusal, visibility and streamed reread. Actual callback and
+receipt-key mutations fail and restore exactly. Full local browser/performance and
+client/type/build/boundary/copy/topology pass; historical kernel RP-131 stays red.
+Kernel 0.3.153 unchanged, no schema/copy/CI/mint change. Controlled JSON/socket
+frames are not real Go/Postgres/WebSocket/native input/mature progression/public
+activation or full G7/AC13/Garden proof. Exact new range begins `9c918361^`
+(`3c3af1de`), endpoint pinned after implementation; Claude required independently
+of every earlier range. Next accepted work: fixture-only composed host/server
+integration under SG13. Author/owner/CI and full nine-tier 1.0 obligations remain.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG10 timing/visibility correction under
 `dd4d96f3` / instrument refinement `891dee0d` / repair authority `32304628`, RP-230.
 Actual mounted browser component postponed a valid 137 ms deadline to one second in all
 three engines; renderer now honors the server-relative remainder. Seven browser-adapter

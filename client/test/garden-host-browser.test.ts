@@ -107,6 +107,7 @@ async function mounted(initial: GardenCurrentResponse = active()) {
     intents() { return requests.filter((row) => row.path === "/api/v1/intents").map((row) => row.body as Record<string, unknown>); },
     assertHTTP() {
       for (const request of requests) {
+        expect(["/api/v1/founder/state", "/api/v1/garden/current", "/api/v1/intents"]).toContain(request.path);
         expect(request.auth).toBe("Bearer garden-host-token");
         if (request.path !== "/api/v1/intents") { expect(request.method).toBe("GET"); expect(request.body).toBeUndefined(); }
         else expect(request.method).toBe("POST");
