@@ -6237,3 +6237,43 @@ output canonicalization and generation negatives in its tooling lane. This R9
 range changes only All() membership, verified666cf4; not gofmt/all-CI green.
 All handles terminal. Next accepted UI work remains RP-279 costs, with RP-281
 explicitly queued rather than hidden. Cross-party/full1.0 holds remain.
+
+## 2026-10-06 — R9 host rejection self-first-filter
+
+Review by: Codex (implementer; self-first-filter, NOT designated).
+Recorded by: Codex.
+Reviewed range: b8ee639f..3b1e620b — all five commits/all18 paths, including
+predeclaration, diagnostic/correction, generated artifacts, teardown/coordinate
+repairs, docs and ledger/board/queue edges. Verdict: ready for designated review,
+not RFC acceptance/archival approval or full CI/formatter-green verdict.
+
+Source/test/docs/candidate full diff3ec1d9, tracking/log diffcfd90d, generated
+small diff18b0ef and generated Go/types coordinate check666cf4 inspected.
+Follow-up fixture/debt diffb80567 inspected; no new source/assertion or gate
+relaxation. Full-range whitespace passes. Initial fixture revision finding is
+corrected and rerun114; original failures/probes retain their actual fixture
+version/provenance, not retroactively relabeled server-coordinate proofs.
+Inherited generator formatter debtRP-281 is recorded, not hidden or unscopingly
+repaired. All sources restored exactly, all test/probe/tool handles terminal.
+
+The optional observers bind the particular node to its parsed result inside
+act's task; no reading global mutable notice after completion. Shared effect/
+refresh branches are byte-unchanged; no conflict entry removes resync. HTTP200/
+409, both eras/native keys, held POST/refresh, row cardinality, retry/Founder
+revision and applied controls execute. Seven compiling negatives discriminate
+independently; final native114/sharedtwo and types/unit8106 pass. Runtime/parsers
+and Worker are actual; HTTP/socket input is controlled, not real network/SQL/
+mint/whole AC12. Native Node skips and selected performance are not full proof.
+Unknown/network policy remains shared; only known inline double speech is hidden.
+
+The accepted owner placeholder exception authorizes exactly one missing key,
+not prose adoption; all previous entries unchanged. Copy658 and manifest match;
+Go All() adds only that key. Generated-Go tree changes4882868d and older dated
+career records stay historical, not restamped/current. Balance/constants/kernel161
+and all runtime math/transport/security/schema/CI/report files stay untouched.
+Historical RP-131 RED, Firefox/capacity/owner/author/mint/full1.0 and every prior
+designated-review hold remain. No checklist flip or self-archive. Final self-record
+edge must join Claude's full range afterb8ee639f; all earlier spans independent.
+Next safe accepted work: ground/predeclare RP-279 all-state Amount costs, with
+RP-281 tooling repair separately queued. No cleanup, publication/deployment,
+push, goal completion or reduced nine-tier/platform1.0 promise.
