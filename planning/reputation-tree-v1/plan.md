@@ -67,6 +67,18 @@ unit/types/build/boundaries/copy and selected Chromium/WebKit with the existing
 isolated performance lane. Whole new range after61d6c8eb needs Claude; RP-284
 display/RP-283 author gaps and RP-131/Firefox/full1.0 holds remain. No box flip.
 
+Local checkpoint after61d6c8eb:bb9edc41 predeclares;f91e9b0e reproduces two
+RP-287 live/recovered superseded-start failures. Bounded Company start revision
+corrects them;61 cases retain all old45 assertions, add recovered cohorts and
+actual1006/full-sync/fresh-state paths. Three compiling source probes fire7/3/3,
+exact restoration. Restored8167 units/255 skips, types/build/boundaries/copy/
+manifest and166 Chromium/WebKit functional plus isolated performance pass.
+Four initial invalid fresh-state fixture timestamps are disclosed/corrected,
+not product-recovery findings or deadline authority. Not real SQL/server/mint/
+user Exit/display/full AC12. Whole new range needs Claude; no checkbox flipped.
+Next ground remaining R9 component/host states and advisory-plan consumers.
+RP-283/RP-284 author contracts, RP-131/Firefox/SQL/capacity/full1.0 remain open.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

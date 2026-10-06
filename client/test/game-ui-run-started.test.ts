@@ -263,6 +263,21 @@ describe("R7 replay/reconnect boundary (controlled bytes, not real server)", () 
     } finally { b.stop(); }
   });
 
+  it.each(["wrong-founder", "old-run", "future-run", "wrong-start-time"])("advances recovery position without reviving %s", async (cohort) => {
+    const value = payload();
+    if (cohort === "wrong-founder") value.founder_id = "01985555-3333-7333-8333-333333333333";
+    else if (cohort === "wrong-start-time") value.started_at_ms = now - 1;
+    else value.run_id = { company_stream_id: companyID, run_seq: cohort === "old-run" ? 1 : 3 };
+    const b = await boundary({ saved: true, initial: snapshot(4, 2), handshake: {
+      recovered: true, offset: 2, publications: [{ offset: 2, data: wire(value, 3) }],
+    } });
+    try {
+      expect(b.received).toEqual([{ kind: "transport_recovered" }]);
+      expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 2 });
+      expect(b.reads).toBe(1); expect(b.socket.closes).toBe(0);
+    } finally { b.stop(); }
+  });
+
   it.each(["live", "recovered-batch"])("never revives an older start after a newer start, %s", async (mode) => {
     const prefix: Publication[] = [{ offset: 2, data: wire(run2, 3) }, { offset: 3, data: endWire() }, { offset: 4, data: wire(run3, 6) }];
     const b = await boundary({ saved: true, initial: snapshot(4, 2), handshake: mode === "live"
@@ -309,6 +324,44 @@ describe("R7 replay/reconnect boundary (controlled bytes, not real server)", () 
         { kind: "transport_recovered" }, endMessage, startMessage(run3, 6)]);
       expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 4 });
       expect(b.reads).toBe(1); expect(connection.closes).toBe(0);
+    } finally { b.stop(); }
+  });
+
+  it("retains the newer-start high-water across reconnect while HTTP still describes the older run", async () => {
+    const b = await boundary({ initial: snapshot(4, 2) });
+    try {
+      b.publish(run2, 1, 3);
+      b.socket.reply({ push: { channel: `player:${founderID}`, pub: { offset: 2, data: endWire() } } });
+      b.publish(run3, 3, 6);
+      const before = [...b.received];
+      const newSocket = b.nextSocket(); const recovered = b.nextRecovery();
+      b.socket.emit("close", { code: 1006 });
+      const connection = await newSocket;
+      b.connect(connection, { recovered: true, offset: 5, publications: [
+        { offset: 4, data: wire(run2, 3) }, { offset: 5, data: wire(run3, 6) },
+      ] });
+      await recovered;
+      expect(b.received).toEqual([...before, { kind: "transport_recovered" }]);
+      expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 5 });
+      expect(b.reads).toBe(1); expect(connection.closes).toBe(0);
+    } finally { b.stop(); }
+  });
+
+  it("retains already-delivered identity through full-sync and fresh live resubscription", async () => {
+    const b = await boundary({ initial: snapshot(4, 2) });
+    try {
+      b.publish(run2, 1, 3);
+      const before = [...b.received];
+      const newSocket = b.nextSocket();
+      b.socket.emit("close", { code: 4000 });
+      expect(await b.nextSnapshot).toMatchObject({ kind: "snapshot", value: { revision: 4, run: { run_seq: 2 } } });
+      const connection = await newSocket;
+      b.connect(connection);
+      expect(b.received).toEqual([...before, { kind: "system", value: { kind: "resync_required" } },
+        expect.objectContaining({ kind: "snapshot" }), { kind: "transport_recovered" }]);
+      b.publish(run2, 1, 3, connection);
+      expect(b.received.filter((message) => (message as { kind: string }).kind === "event")).toEqual([startMessage(run2, 3)]);
+      expect(b.reads).toBe(2); expect(connection.closes).toBe(0);
     } finally { b.stop(); }
   });
 

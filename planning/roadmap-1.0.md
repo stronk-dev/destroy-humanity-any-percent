@@ -16,7 +16,20 @@ RP-284 reader/delivery is supplemented below; its display/RP-283 author gaps rem
 Full nine-tier/platform1.0 active, RP-131/Firefox/SQL/mint/operations/reviews
 still open. [Evidence](reputation-tree-v1/log.md).
 
-**Latest runtime checkpoint (2026-10-06):** RP-284 next-run reader/delivery
+**Latest runtime checkpoint (2026-10-06):** RP-287 superseded-start delivery
+is locally corrected after61d6c8eb. Test-first two live/recovered failures,
+bounded start revision retained through reconnect/full-sync;61 cases pass.
+Three compiling probes fire7/3/3 and restore exactly;8167 units/255 skips,
+types/build/boundaries/copy/manifest,166 Chromium/WebKit functional plus isolated
+performance pass. Invalid early fresh-state fixtures remain disclosed.
+Controlled runtime, not SQL/mint/live Exit/display/full AC12. Whole span needs
+Claude independently of earlier ranges; RP-283/RP-284 author contracts remain.
+Fresh Postgres healthy/tmpfs1%, Docker root100%/39,784KiB free, no cleanup/SQL
+proof. RP-131/Firefox/all nine-tier/platform1.0 holds unchanged. Next ground
+remaining R9 component/host states and advisory-plan consumers.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous runtime checkpoint (2026-10-06):** RP-284 next-run reader/delivery
 supplement after0ae1fa11 passes45 new cases/8151 units,134 selected browser
 cases and isolated performance. Four compiling omissions discriminate and
 restore exactly. The Run End display is still absent; post-Exit balance source

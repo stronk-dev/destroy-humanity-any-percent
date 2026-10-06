@@ -17,7 +17,22 @@ RP-284 reader/delivery grounding has now executed below; its display boundary
 and RP-283 authoritative preview still need author contracts. Full1.0 holds remain.
 [Evidence](reputation-tree-v1/log.md).
 
-Latest runtime checkpoint: RP-284's existing next-run event reader/delivery is
+Latest runtime checkpoint: RP-287 is locally corrected in the range after
+61d6c8eb. Recovered/live older-start defects were reproduced before correction;
+bounded Company start revision prevents them across reconnect/full-sync.
+All61 reader cases pass, three compiling probes fire7/3/3 and restore exactly;
+8167 units/255 skips, types/build/boundaries/copy/manifest and166 Chromium/WebKit
+functional plus isolated performance pass. Four initially invalid fresh-state
+fixtures are disclosed, not hidden or blamed on production. Controlled browser
+runtime, not live server/SQL/mint/user Exit/display/full AC12. Whole new span
+needs Claude, earlier spans independent. RP-283/RP-284 display/preview author
+contracts remain; RP-131/Firefox and full1.0 holds remain. Fresh Postgres is
+healthy, DB tmpfs1%, but Docker root still100%/39,784KiB free: no cleanup or fresh
+SQL proof. Next safe accepted work: remaining R9 component/host states and
+advisory-plan consumer grounding, without crossing those boundaries.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous runtime checkpoint: RP-284's existing next-run event reader/delivery is
 locally corrected in the range after0ae1fa11. Forty-five new cases discriminate;
 four compiling omissions fail41/2/1/3. Restored8151 units/255 skips, types/build,
 boundaries/copy/manifest pass; Chromium/WebKit134 functional plus one isolated

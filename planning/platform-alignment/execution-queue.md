@@ -3,6 +3,27 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation recovered next-run delivery corrected locally — 2026-10-06
+
+RP-287 range after61d6c8eb:bb9edc41 predeclaration,f91e9b0e test-first
+reproduction, then bounded Company start-revision memory. All61 cases pass;
+three compiling probes fire7/3/3 with exact restoration. Restored8167 units/
+255 unchanged skips, types/build/boundaries/copy/manifest,166 Chromium/WebKit
+functional plus isolated performance pass. Four original invalid fresh-state
+fixture timestamps are disclosed, not production failures or deadline changes.
+Current-run compatibility, supersession, recovery position, actual1006/full-sync
+memory and fresh-state refusal execute; no generic transport/cursor/auth change.
+
+**READY FOR CLAUDE:** whole span after61d6c8eb through final record edge;
+all earlier ranges remain independent. **NEXT SAFE ACCEPTED WORK:** remaining
+R9 component/host states and advisory-plan consumer grounding. **AUTHOR ACTION:**
+RP-283 authoritative Wind Down preview and RP-284 post-Exit balance/Run End
+input reconciliation. Controlled runtime proof is not live server/SQL/mint/user
+Exit/display/full AC12. Fresh Postgres healthy/DB tmpfs1%, Docker root100%/
+39,784KiB free; no cleanup or fresh SQL proof. RP-131/Firefox/AT/H3/H4/H5/owner/
+data/deployment/reviews and proper nine-tier1.0 remain. No acceptance/archive/
+publication/deployment/push. [Evidence](../reputation-tree-v1/log.md).
+
 ## Reputation next-run reader/delivery supplement — 2026-10-06
 
 RP-284 range after0ae1fa11:45 new cases/8151 units,134 selected Chromium/WebKit

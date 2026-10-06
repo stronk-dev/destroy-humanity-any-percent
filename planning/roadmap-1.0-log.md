@@ -3292,3 +3292,23 @@ earlier reviews independent; next accepted work is recovered-publication R7
 identity/delivery checks. Proper full nine-tier/platform1.0 goal remains active;
 no numeric/kernel/copy/schema/CI/owner change, checkbox/archival/publication/
 deployment/push, report restamp or release promotion.
+
+## 2026-10-06 — Reputation recovery and superseded-start correction
+
+RP-287 in range after61d6c8eb:bb9edc41 predeclares,f91e9b0e reproduces two
+live/recovered extra old-start deliveries. Bounded Company start-revision memory
+corrects them;61 cases cover compatibility, cohorts, reconnect/full-sync and
+fresh-state refusal with old45 assertions intact. Three compiling probes fire
+7/3/3, exact source restoration. Restored8167 units/255 unchanged skips,
+types/build/boundaries/copy/manifest and166 Chromium/WebKit functional plus
+isolated performance pass. Four initial invalid fresh-state diagnostic timestamps
+remain disclosed and corrected, without deadline/skip changes. Controlled runtime,
+not real server/SQL/mint/user Exit/display/full AC12. Full new span needs Claude
+through final record edge, earlier spans independent. Fresh Postgres healthy/
+DB tmpfs1%, root100%/39,784KiB free; no cleanup or SQL claim. Next accepted work:
+remaining R9 component/host states and advisory-plan consumer grounding; RP-283/
+RP-284 author contracts and RP-131/Firefox/H3/H4/H5/owner/data/operations/review
+holds remain. No numeric/kernel161/copy/schema/CI/transport/auth policy change,
+checkbox, mint, acceptance/archive, publication/deployment/push or full1.0
+promotion. Full nine-tier/platform goal active; concrete runtime progress made.
+[Evidence](reputation-tree-v1/log.md).

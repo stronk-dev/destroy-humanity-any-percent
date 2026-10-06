@@ -173,6 +173,7 @@ export function createBrowserGameUIRuntime(
       // One immutable summary per run; keep bounded identity memory so the
       // snapshot-race exception cannot revive its own already-delivered event.
       let lastRunStartedEventID: string | undefined;
+      let lastCompanyStartRevision = 0;
 
       const persistPositions = (): void => storage.setItem(positionKey, JSON.stringify(positions));
       const clearPositions = (): void => { positions = {}; storage.removeItem(positionKey); };
@@ -237,14 +238,20 @@ export function createBrowserGameUIRuntime(
           const currentRunStarted = disposition === "duplicate" && envelope.payload.scope === "company" && event?.kind === "run_started" && latestSnapshot !== undefined &&
             latestSnapshot.run.founder_id === event.payload.founder_id && latestSnapshot.run.run_seq === event.payload.run_id.run_seq &&
             latestSnapshot.run.run_started_at_ms === event.payload.started_at_ms;
-          const repeatedRunStarted = event?.kind === "run_started" && envelope.payload.event_id === lastRunStartedEventID;
+          const repeatedRunStarted = event?.kind === "run_started" && (envelope.payload.event_id === lastRunStartedEventID ||
+            envelope.payload.scope === "company" && envelope.rev <= lastCompanyStartRevision);
           if ((disposition === "deliver" || successorTerminal || currentRunStarted) && !repeatedRunStarted) {
             const scope = envelope.payload.scope as "company" | "founder";
             if (envelope.payload.cursor_effect === "historical") {
               listener({ kind: "historical_event", revision: envelope.rev, scope, eventID: envelope.payload.event_id as string,
                 eventKind: envelope.payload.kind as string, value: envelope.payload.payload as Readonly<Record<string, unknown>> });
             } else if (event) {
-              if (event.kind === "run_started") lastRunStartedEventID = envelope.payload.event_id as string;
+              if (event.kind === "run_started") {
+                lastRunStartedEventID = envelope.payload.event_id as string;
+                // HTTP may still describe run N after N+1's start has arrived.
+                // A late republish must not replace that newer immutable summary.
+                if (scope === "company") lastCompanyStartRevision = envelope.rev;
+              }
               listener({ kind: "event", revision: envelope.rev, scope, value: event });
             }
             else if (announcement) listener({ kind: "announcement", scope, value: announcement });

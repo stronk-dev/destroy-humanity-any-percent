@@ -7192,3 +7192,68 @@ Refined ae6f0b terminal2 executes55 cases:two RP-287 live/recovered failures,
 their intended snapshot/reconnect/refusal assertions and finish, rather than
 timing out on invalid data. The old45 assertions remain unchanged; actual1006
 reconnect retains its original1-second delay. Commit diagnostic before source.
+
+## 2026-10-06 — R7 recovery correction and probe declaration
+
+Test-first f91e9b0e retains the reproduced defect. Bounded Company start-revision
+memory corrects RP-287 without changing the generic cursor, offsets, reconnect,
+drain, auth or epoch policy. Corrected55-case cf25e8 terminal0:8161 unit passes/
+255 unchanged skips. Four recovered wrong-cohort controls plus actual1006
+high-water retention and full-sync identity retention extend the population to61.
+2d58c3/33dbf7/c9d098 session95543 terminal0: types0 errors/warnings, build213
+modules,8167 unit passes/255 unchanged skips; client boundary, CI topology,
+cosmetic/payment controls, copy pipeline and Go content-manifest check pass.
+The copy history scan completed; no timeout, restart or truncation. This is not
+whole verify-client/CI: inherited RP-131 history and Firefox remain separately
+red/unavailable. No SQL, live server/native Exit, display or whole AC12 claim.
+
+Corrected runtime SHA256 before probes:
+9aef7b48ad2b72becee3ef1f874e6672d304bcf20aec16e8afbbe5c64db26c2e.
+Predeclare three serial compiling source-only faults: omit recovered-publication
+iteration; reset both start-memory fields when connect begins; remove the
+Company-start revision high-water predicate. Each runs the unchanged root unit
+lane, records fired cases and controls, waits for its terminal handle and then
+restores exact bytes. No source/test/record edits with any handle live. Restored
+selected Chromium/WebKit functional cases and unchanged isolated performance
+lane follow. These faults test replay delivery, reconnect memory and RP-287
+supersession respectively, not the producer or real transport/server behavior.
+
+Fresh Docker observations861222/1c948f:both declared Postgres containers healthy;
+database tmpfs136ad0 has8,091,276 KiB available (1% used). Root capacity3e88af
+still100%,39,784 KiB free. Earlier compound-command socket denial5f3893 was a
+permission result, not capacity evidence; the standalone read succeeds. No
+cleanup authorized/performed. Real SQL/mint proofs remain blocked by writable
+Docker capacity, not by the controlled-client successes.
+
+## 2026-10-06 — R7 recovery discrimination and restored browser proof
+
+Recovered-publication omission ac804f/cc5d3c session27872 terminal2: six new
+recovery cases plus one existing generic history case fail,8160 units/255 skips
+remain. Identity reset at connect7ba7a7/2ea725 session9115 terminal2: all three
+actual1006/full-sync retention controls fail with extra delivered starts;8164
+units/255 skips remain. High-water predicate omission ac28e5/268215 session4116
+terminal2:live, recovered-batch and lagging-HTTP reconnect supersession fail,
+8164 units/255 skips remain. All failures are semantic assertions, not compiler
+errors. SHA checks f72498/400044/f6ea28 verify exact corrected runtime after
+each terminal probe; no handle cancelled/restarted and no tests/oracles relaxed.
+
+Restored db1d4b/540e87 session83109 terminal0: types0 errors/warnings,213-module
+build,8167 unit passes/255 unchanged skips, shell/UI boundary, CI topology13,
+cosmetic22 and no-payment6 negative controls pass. Copy/manifest passed on these
+same source bytes in session95543 above; not rerun or claimed as a whole CI gate.
+Browser6f240c/43c7a8 session78119 terminal0:166 functional Chromium/WebKit
+passes, two performance-selector skips;122 are all61 next-run cases in both
+browsers,44 existing screen cases. Unchanged isolated performance1 pass/22
+selector skips. Functional Worker36/36 and isolated1/1 requests finish, zero
+pending. Real browser runtime execution over controlled socket/HTTP inputs,
+not a real server, SQL career, minted tree, native user Exit or whole AC12.
+
+RP-287 is locally corrected and its former baseline/probe failures stay recorded.
+RP-284 remains an unresolved Run End/post-Exit balance input contract; RP-283
+remains the Wind Down authoritative preview gap. No checkbox, authored copy,
+wire/schema, balance/kernel161, transport/auth/CI policy, owner/author ruling,
+report restamp, mint, cleanup, publication/deployment/push or archival changed.
+Whole span after61d6c8eb through its final record edge needs Claude independently
+of earlier ranges. Next safe accepted work is remaining R9 component/host states
+and advisory-plan consumer grounding, not bypassing the author/data/SQL holds.
+Full nine-tier/platform1.0 remains active; this turn made concrete runtime progress.

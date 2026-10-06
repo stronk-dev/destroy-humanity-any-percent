@@ -238,8 +238,13 @@ delivers its immutable summary only for the sampled Founder, exact run sequence
 and start time, on the Company scope. Old/future-run or other-Founder duplicates
 remain suppressed; channel-offset dedup and revision-gap recovery stay unchanged.
 One last-delivered start-event ID prevents that exception from reviving the same
-summary at a new outbox offset; it is not an unbounded history set. Delivery does
-not navigate or derive a balance from the event's factor/starter IDs.
+summary at a new outbox offset. A delivered Company-start revision high-water
+also suppresses a superseded start after a newer start has arrived, even when
+the last HTTP snapshot still describes the older run. Both values survive
+socket reconnect/full-sync within the subscription; this is bounded memory,
+not an unbounded history set. It does not alter the generic revision cursor,
+offset persistence or recovery policy. Delivery does not navigate or derive a
+balance from the event's factor/starter IDs.
 
 ## Boundaries and verification
 
