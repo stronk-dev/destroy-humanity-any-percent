@@ -8181,3 +8181,27 @@ No production/migration/kernel/balance/copy/epoch/CI/owner-body/checkbox/status/
 cleanup/archive/publish/deploy/push change. Cache-only permission still has no
 answer; cached SQL works despite fullness. Full new span after82830dcb needs
 Claude including final edge; earlier reviews independent. Proper1.0 goal active.
+
+### Applied-plan SQL supplement first-filter — 2026-10-06
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range: `82830dcb..8531832a` (three commits; all nine changed paths).
+Verdict: approved as local test/docs/planning first filter ONLY.
+Inspected full new test, original fixture wrapper diff, predeclaration and
+record/doc changes. Original population is retained; separate fault mode uses
+exact live callback/existing Store hook, not a test substitute. Every error
+requires hook and exact sentinel, full rows/head comparisons and all14 count.
+Diagnostic old revisions precede Founder genesis; retention success proves
+real pruning. Normal Handle control/replay/retry binds live persistence, not
+an assumed receipt. Source commit-on-error negative fires row oracles, with
+its narrow-selector guard separately disclosed; exact restore verified.
+Complete cold SQL and corrected host/vet evidence retained; original narrower
+selector is not misrepresented. Product diff empty, whitespace clean, both
+logs append-only relative82830dcb. No new actor/guard/route/default-player/
+pacing/fullAC9/CI/release claim or stale authority promotion.
+
+Designated Claude review must cover full span after `82830dcb`, INCLUDING
+this first-filter edge. Earlier SQL/header/browser/runtime and other spans
+remain independent. This record cannot approve its own cross-party gate or
+archive. Next accepted R6 request/offer census; goal remains active/progress.
