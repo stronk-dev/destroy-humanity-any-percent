@@ -4100,3 +4100,31 @@ executes all18 lifetime-accounting and16 frozen-input observations in0.393s.
 All six compiling mutations were restored before this run. No source or record
 edit occurred during the live handle. This is a pre-commit check, not a
 designated verdict or a committed-HEAD claim.
+
+## 2026-10-06 — RP-267 bounded implementer first filter
+
+Review by: Codex (implementer, self-first-filter).
+Recorded by: Codex.
+Reviewed range:973d983c..9743dcb7, all three commits and all14 changed paths,
+including both predeclarations, five harness source/test files, canonical docs
+and synchronized ledger/queue/board/plan records. Verdict: bounded first filter
+passes; this is NOT the designated independent cross-party verdict.
+
+The committed-HEAD cold focused run53f483..307cb5 (session19657, terminal exit0,
+harness0.329s) executes all18 lifetime-accounting and16 frozen-input cases.
+All six prior compiling negative probes and exact restores are recorded above.
+Known-value assertions catch the shared observer fault even when all16 earlier
+comparison tests survive. Candidate-purchase severing covers rankCandidate,
+not all four transition sites. The optional hook stays internal; standalone
+nil behavior, frozen inputs and effect masks remain. No served runtime, watched
+kernel prefix, formula, balance, schema, migration, CI policy or report bytes
+changed. Kernel161 remains honest. No checkbox was promoted.
+
+Actual Reference lifetime increases, while this observed seed's paid deltas,
+ownership, ending and clocks remain unchanged. That is not SQL/player proof,
+fresh H1/H2 population calibration or H3 tiny-factor proof. Full97-pair/970-arm
+study remains RED on retained report drift; six genuine Casual strict-sooner
+ties and H5 epsilon/run4/provenance remain. Composite client remains RP-131 RED.
+Full973d983c..9743dcb7 needs Claude; prior ranges remain separate obligations.
+No archive, mint, release promotion or push. Continue accepted RP-262, then
+RP-264; goal remains active.
