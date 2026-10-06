@@ -179,6 +179,54 @@ for (const era of ["era_1995", "era_2000"] as const) {
 }
 
 for (const era of ["era_1995", "era_2000"] as const) {
+  for (const population of ["mixed", "two-buyable"] as const) {
+    for (const key of ["{Enter}", " "]) {
+      it.skipIf(!browser)(`R9 native Tab confirmation and cancellation: ${era}, ${population}, ${key === " " ? "Space" : "Enter"}`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const wrapper = document.createElement("main"); document.body.append(wrapper);
+        const target = document.createElement("div");
+        const after = document.createElement("button"); after.textContent = "After diagnostic"; after.tabIndex = 0;
+        wrapper.append(target, after); installTheme(wrapper, UI_THEMES[era], false);
+        const purchases: string[] = [];
+        const app = mount(ReputationTreeSurface, { target, props: {
+          arm: keyboardArm(population), era, pending: false, controlsEnabled: true,
+          onPurchase: (id: string) => { purchases.push(id); },
+        } });
+        try {
+          await settle();
+          const rows = [...target.querySelectorAll<HTMLLIElement>("li")];
+          const row = rows[1]!;
+          // Direct focus isolates confirmation traversal; header/Buy sequential
+          // reachability is independently tested above without direct focus.
+          row.querySelector<HTMLButtonElement>("button")!.focus();
+          await userEvent.keyboard(key); await settle();
+          const [confirm, cancel] = [...row.querySelectorAll<HTMLButtonElement>("button")];
+          expect(confirm).toBeTruthy(); expect(cancel).toBeTruthy();
+          expect(document.activeElement).toBe(confirm);
+          expect(purchases).toEqual([]);
+          await userEvent.keyboard("{Tab}"); await settle();
+          expect(document.activeElement, "R9 native Tab reaches Cancel").toBe(cancel);
+          await userEvent.keyboard("{Tab}"); await settle();
+          expect(document.activeElement, "R9 confirmation exits to next available row or boundary").toBe(population === "two-buyable" ? rows[3]!.querySelector("button") : after);
+          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(cancel);
+          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); await settle(); expect(document.activeElement).toBe(confirm);
+          await userEvent.keyboard("{Escape}"); await settle();
+          expect(row.querySelector("[role=group]")).toBeNull(); expect(purchases).toEqual([]);
+          expect(document.activeElement).toBe(row.querySelector("button"));
+          await userEvent.keyboard(key); await settle();
+          expect(document.activeElement).toBe(row.querySelector("button"));
+          await userEvent.keyboard("{Tab}"); await settle();
+          expect(document.activeElement).toBe(row.querySelectorAll("button")[1]);
+          await userEvent.keyboard(key); await settle();
+          expect(row.querySelector("[role=group]")).toBeNull(); expect(purchases).toEqual([]);
+          expect(document.activeElement).toBe(row.querySelector("button"));
+        } finally { await unmount(app); wrapper.remove(); }
+      });
+    }
+  }
+}
+
+for (const era of ["era_1995", "era_2000"] as const) {
   for (const key of ["{Enter}", " "]) {
     for (const pendingStart of ["synchronous", "delayed"] as const) {
       for (const outcome of ["owned", "available"] as const) {

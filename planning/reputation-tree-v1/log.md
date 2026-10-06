@@ -6767,3 +6767,12 @@ bound/flag/preference/skip relaxation. This is controlled native component
 evidence, not host/SQL/mint/default-player/manual AT or whole AC12. Whole range
 after8a3bfb70 still needs Claude; earlier ranges remain independent. No checkbox
 flip/archive/owner copy/cleanup/push or reduction of full1.0 goal.
+
+## 2026-10-06 — RP-285/RP-286 combined baseline
+
+a82043/341a5c session88542 terminal exit2:44 fail/10 pass/58 old selector skips.
+Original heading fails all36 sequential cases. WebKit's8 confirmation cases
+skip Cancel; Chromium's8 pass; standalone sentinel controls2 pass. Actual native
+keys isolate the two omissions with controls green. Source remains original
+SHA1b8917a122bc275ad55ffde751e44ba1835a9848d443190dc30d2a5363cd1ef7.
+No live handle. Diagnostic commit precedes minimum predeclared correction.
