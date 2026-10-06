@@ -8205,3 +8205,29 @@ Designated Claude review must cover full span after `82830dcb`, INCLUDING
 this first-filter edge. Earlier SQL/header/browser/runtime and other spans
 remain independent. This record cannot approve its own cross-party gate or
 archive. Next accepted R6 request/offer census; goal remains active/progress.
+
+### R6 request boundary — predeclared 2026-10-06
+
+Fresh clean6dc16a58, no live handles. Accepted R6 and AC9 reread; actual
+intents.go canonical/parser path inspected. Server-wide test census confirms
+RP-297: no dedicated size/type/uniqueness/syntax/order/hash identity population.
+Portable helper can configure an offer, but none of its Reputation cases does
+so; actual SQL plan/career/write-fault populations use Wind Down. Those are
+distinct gaps, not evidence that production is wrong. Log/ledger immediately.
+
+Test-only paired Wind Down/Accept Offer shape cases and literal canonical/hash
+oracles; absent versus empty semantics/identity, ordered/reversed plans,
+64 accepted/65 refused, non-arrays/null/mixed elements/invalid IDs/duplicates.
+Extra field and invalid Founder revision refuse without confusing plan syntax.
+IPO/decline/scripted-first cannot carry plan. Canonical identity retains both
+revisions/Offer ID/order/key presence, excludes intent ID, ignores JSON key
+order/whitespace. Syntactic node IDs are not live-tree membership/affordability.
+No fixtures/golden/copy/epoch/RFC rule rewritten.
+
+Predeclare compiling negatives: bound64→65; remove duplicate; remove ID regex;
+drop reputation_plan in canonicalRequest; reverse parsed plan; permit IPO plan
+parsing. Run unchanged tests cold after each, restore exact SHA and empty
+production diff before next. Then cold focused parser/Reputation/Exit/Bonus/
+vet and whole production SQL Integration. No edits while test handles live.
+No tests-skipped/compile-error as discriminating runtime success. Full range
+after6dc16a58 needs Claude including record edges; all earlier spans independent.

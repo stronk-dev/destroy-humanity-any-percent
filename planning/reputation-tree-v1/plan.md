@@ -245,6 +245,27 @@ population if runnable; do not substitute these components for SQL evidence.
 
 ## Batches
 
+### R6 request boundary / RP-297 — predeclared 2026-10-06
+
+Start6dc16a58, test-only. Actual parser/test census has no dedicated R6 plan
+boundary/hash population. Add paired Wind Down/Accept Offer controls for absent,
+empty, ordered/reversed/single and64 syntactic IDs; reject65/duplicate/null/
+non-array/non-string/invalid IDs exactly. Compare independent literal canonical
+bytes and SHA-256, not production's canonical helper. Absent/empty have equal
+empty plan semantics but distinct canonical hash; preserve order in parsed
+plan and canonical bytes. Whitespace/key order/intent ID do not change identity;
+each revision and Offer ID remain bound. Plans forbidden on IPO/decline/
+scripted-first request; extra keys and malformed Founder revision still reject.
+Syntactic64 ID acceptance is NOT membership/admission of a64-node live tree.
+
+Compiling source negatives: relax64 bound, omit duplicate guard, omit ID guard,
+omit plan from canonical bytes, reverse parsed purchase order, and admit plans
+on IPO. Each must fail its unchanged oracle; restore exact source before next
+arm. Root cold selected tests/vet and broader SQL production Integration after
+restoration. No production/schema/migration/balance/copy/kernel/epoch/CI policy,
+acceptance checkbox or archive change; full span needs Claude. Offer-with-plan
+SQL/replay population remains separately next after this bounded parser wave.
+
 ### Real-Postgres grounding / RP-294 — 2026-10-06
 
 Applied-plan wave, start82830dcb: R6/AC9 plan-specific applied-transaction
