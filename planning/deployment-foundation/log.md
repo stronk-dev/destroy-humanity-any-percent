@@ -4409,3 +4409,24 @@ pre-existing pushed kernel-history failure still prevents calling aggregate
 
 - **Review by:** Codex (implementer first filter). **Recorded by:** Codex. A test-only current-HEAD supplement runs encrypted B_pre and B_post around real Account repository deletion, then restores both into clean Postgres targets. Only B_pre re-creates the deleted account and active Founder/streams. The entire five-test deploymentbackup integration population passes cold on isolated ARM64 Postgres; an account-row-deletion severing fails the new test at source census and production bytes were restored. Method and limits: `planning/platform-alignment/data-rights-restore-resurrection.md`.
 - DP6 deliberately excludes account-retention semantics. This is observation of the cross-RFC boundary, not a retention decision or repair. No R-006 supported-host/amd64, credential-revival, full rights, Deployment archival or release claim follows. The exact Codex range awaits Claude's designated cross-party review.
+
+## 2026-10-07 — Current plan/handoff truth reconciliation (RP-306)
+
+At clean `2a785598`, the plan still described Claude R1–R17 as one ready range
+with green deployment/aggregate gates, and the dated handoff presented all
+findings as closed. Later exact-range verdicts above and the current execution
+queue contradict treating those claims as current. The plan row and a clearly
+dated handoff correction now point to the actual partial dispositions. Original
+submission details and append-only verdicts remain intact.
+
+This is record reconciliation only: no new review of original implementation,
+no new test execution, no R11 verdict, no checkbox flip and no range absorption.
+The existing bounded approvals remain bounded; Codex correction spans need
+Claude, composed amd64 execution is unverified here, and RP-131 is still red.
+Fresh exact bundles, DP-F contract/operator authority and R-006 remain open.
+
+Review by: Codex (recorder's local first filter, not designated approval).
+Recorded by: Codex. Reviewed the record-only diff against the individual verdict
+entries and current queue; no product behavior or acceptance status changes.
+The following record commit is another Codex edge requiring Claude where a
+closeout range consumes it. No archival, publication or deployment performed.

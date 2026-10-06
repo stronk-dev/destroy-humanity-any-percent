@@ -4,6 +4,16 @@
 implementation under AGENTS.md (c)). This is not a verdict, and it does not make any archival or
 release claim. **Prepared:** 2026-09-24.
 
+**Current-status correction (2026-10-07):** this dated handoff's claimed closures
+and cold gates below describe the original submission, not current acceptance.
+Subsequent targeted Codex reviews found defects and recorded bounded verdicts
+in `log.md`; several Codex corrective ranges separately await Claude. The
+current plan and platform execution queue route those individual boundaries.
+Do not treat `67fd415..b706e4df` as a wholly approved range, rerun already
+approved batches merely because this old handoff says pending, or cite its
+historical `verify-push` result as current CI: RP-131 remains red. No full
+Deployment or clean-host R-006 approval follows from this correction.
+
 On 2026-09-24 the owner directed Claude to implement the accepted-RFC corrections itself. Claude
 recorded the designated verdicts on DP-A–DP-E and then implemented the fixes. Claude has not
 reviewed and must not approve its own corrective work; only Codex's verdict counts.
