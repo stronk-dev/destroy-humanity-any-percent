@@ -5037,3 +5037,27 @@ Prior review ranges stay independent. H3 tiny criterion, H4 six ties, H5
 epsilon/run4, RP-268/RP-271 author boundaries, SQL/capacity and whole1.0 remain.
 Goal active; no checkbox, criterion waiver, retune, mint, archive, cleanup,
 publication, message to Claude or push.
+
+## 2026-10-06 — RP-263 fresh-measurement committed-range first filter
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range: c352370a..422892c0, all three commits/all12 changed paths:
+predeclaration, sole new private test file, all three dated outputs, canonical
+docs and all ledger/queue/plan/board/checkpoint records. Verdict: bounded local
+first filter passes, NOT designated cross-party approval, AC13 or archival.
+
+Committed-HEAD coldce6e9f..3c7139,session67347,terminal exit0,0.430s runs retained
+artifact validation and all24 refusals; fresh test explicitly skips by default.
+Full record/replay were run before the evidence-record commit on identical
+server tree7db46f7e/balance treecd982b7c; no claim of a third full replay at the
+new HEAD. Current trees match the recorded producer. Scope contains no live
+math/balance/kernel/schema/CI/copy/corpus or old-report edit. No checkboxes flipped.
+Invalid initial command, compiling failures and real overwrite refusal are
+preserved on record, not absorbed into green evidence.
+
+The designated handoff must include this record edge along with the entire
+c352370a..422892c0 span, cite its actual complete reviewed HEAD, and independently
+cover prior ranges. This self-filter cannot authorize archive/mint/adoption.
+Next accepted work H4/H5 report-envelope provenance audit; author boundaries
+and actual H3/H4/H5 failures remain. Goal active; no push or message sent.
