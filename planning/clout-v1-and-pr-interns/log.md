@@ -1122,3 +1122,12 @@ action/buff/mode/nonzero-resource and persistence/replay/activation remain
 required. Claude must review the ENTIRE span afterd61a5248 INCLUDING this
 following record edge; all prior independent spans/holds remain. Proper full
 nine-tier/platform1.0 active; no archive/mint/push/deploy or release call.
+### R-012 fifth-wave start — actual logged policy replay
+
+At clean HEAD7effff9a, predeclare24 actual logged Company cases and9 copied
+catch-up refusals per runtime, plus missing-row/forged-state controls, in plan.md.
+No measurement has run for this population. Go and TypeScript real ApplyLogged
+producers are the subject, not an arithmetic proxy. Synthetic combined inventory
+must admit unchanged; observed refusals/mismatches invalidate a claim of parity.
+All previous red AC6 findings and independent designated-review spans remain;
+owner/author RP-308/API/cleanup questions are unanswered. No product/body change.

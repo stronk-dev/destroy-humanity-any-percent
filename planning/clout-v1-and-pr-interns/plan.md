@@ -353,3 +353,46 @@ AC6 failures; relevant vet/client9499/340skip/types pass. All six research tests
 execute in the declared native service, no skip; old corpora unchanged. Go-only
 policy observer is not TS/private-engine/SQL save or accepted-anchor proof.
 Results/next contracts in policy-boundary-research.md; exact commands in log.
+## R-012 fifth wave — actual logged Go/TypeScript policy replay
+
+Predeclared at clean baseline `7effff9a`, before execution. Research/test-only;
+no accepted accumulation format, production repair, policy change or AC6 waiver.
+
+Population: 24 independent v19 Company cases: three profiles (quiet: burst0,
+provider0, legal0; boosted: burst1500, provider0, legal0; combined: burst1500,
+purchased beige-v2=10, purchased legal-dept=1), four elapsed values
+3114/59999/120001/90000000ms, online/offline. Existing axis diagnostic initial
+input6, owned PR1, beige1, cash1e4; test-only rehashed cash cap1e100. Combined
+inventory is synthetic, not proof that a player acquired Tier3 units at Tier1.
+Every initial/final state must pass existing foundation validation and actual
+Company Encode/Restore v19. A refusal invalidates the instrument/population;
+do not loosen admission to force it. No full-domain or natural workflow claim.
+
+Run the actual canonical buy-one-beige intent through Go buildReplayInputs /
+buildOfflineCatchup / active-play schedule / ApplyLogged, using an awarded
+veteran Founder carry. Assert applied purchase, purchased totals, burst exhaustion,
+nonzero permits in combined profiles, and catch-up presence only for online25h.
+Record complete initial/poststate, receipt, events, payload, replay evidence and
+exact rehashed bundle artifacts. TypeScript must load that actual bundle, restore
+v19, and run its real applyLogged; compare complete canonical outputs, not copied
+engine formulas. Do not use the arithmetic-only TypeScript helpers as a producer.
+
+Nine copied-evidence refusals PER runtime: each of three online25h cases with
+catch-up removed, from_ms shifted +1, or to_ms shifted -1. Require explicit
+invalid replay refusal; record whether full initial state remains unchanged.
+Census must reject a removed profile. Demonstrate a new TS comparison failing
+on a forged expected state; restore exact bytes before final gates. These are
+instrument/evidence faults, not claims of a production mutation.
+
+Success: all24 declarations and9 negative cases complete, exact output parity
+or explicitly recorded mismatches. A mismatch is a finding, never an updated
+expectation or a tolerance. The Go-authored corpus says NOT_PROVEN and its
+source pins include both observers and selected actual producers. Existing
+corpora, runtime, balance, numeric kernel, save schemas, CI and RFC bodies stay
+unchanged. Cold root gates must disclose the original27 red AC6 cases and any
+new failure; native Postgres execution is not SQL persistence for these cases.
+AMD64 remains unexecuted. RP-308 wording delegation remains unanswered.
+
+Exit: bounded evidence dossier and synchronized queue/ledger/log, self first-filter
+over exact changed range, then Claude designated review INCLUDING record edges.
+No acceptance/checkbox/status promotion, archival, push or release authority.
