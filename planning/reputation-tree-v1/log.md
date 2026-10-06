@@ -6614,3 +6614,39 @@ comment and current-board disclosure; no fixture/assertion/source change or
 rerun relabeling. This limitation does not negate the Tier1 defect or permit
 shipping manufactured eligibility. Real SQL/mint/default-player AC12 remains
 held independently; no policy change to make Tier0 eligible.
+
+## 2026-10-06 — RP-282 range self-first-filter (not designated review)
+
+Review by: Codex (implementer/self-first-filter).
+Recorded by: Codex.
+Inspected range:eb258a7a..0d8029e4 (four commits). This record edge must join
+the later Claude range; no designated approval or archival eligibility claimed.
+
+Full source/docs083e73:four plan lifecycle lines and canonical empty-panel
+description, no GameUIApp/runtime/parser/server or payout/selection-policy
+rewrite. Complete test diffaeeb0e inspected:helper defaults preserve old
+population, controlled v2 Offer→receipt→v4 snapshot coordinates are explicit,
+both eras/native keys/five flows capture exactly one DOM-originated POST.
+Hidden-spend field absence and explicit selected artifact order discriminate;
+24 positive controls prevent an always-empty wire from passing the full lane.
+Native baseline16/two compiling probes16/24/full restored194 are executed;
+source restoration SHA exact. Cold unit8106/type/build/boundary/copy/manifest
+pass; Node228 skips, selected perf22 skips and inherited RP-131 RED/Firefox
+unexecuted are visible. No whole CI/AC12 claim. Every handle terminal before
+record edits; whitespace6c2090/bc0e6b passes, ten-path scope4f5126.
+
+Records7d9e26/63fbd6 and append-only log inspected. First-filter caught the
+manufactured Tier0 eligible projection, confirmed by full producer read899fcf,
+and disclosed it in fixture/comment/current boards plus the log. It exercises
+copy-era host rendering only, not reachable production Wind Down; the Tier1
+subset independently reproduces the defect. Initial Offer coordinate omission
+is disclosed and corrected by completing the protocol, not loosening assertions.
+No true backend eligibility/default-player/mint/SQL coverage claimed.
+
+RP-283 preview DESIGN-GAP/author route, RP-284 unexamined next-route/available
+bridge and RP-285 unexecuted Tab source finding are not quietly implemented or
+promoted. Existing owner/author/data/mint/capacity/deployment/all-range reviews
+remain; no checkbox flip/self-archive/push/cleanup/report restamp/owner copy or
+goal completion. Kernel161/price/copy/balance/CI unchanged. Next safe accepted
+work:predeclared native R9 header/row Tab diagnosis RP-285. Proper full nine-tier/
+platform1.0 goal is active, not complete/paused/blocked or reduced to a preview.
