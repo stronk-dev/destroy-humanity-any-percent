@@ -782,3 +782,21 @@ RED. No new dated artifact is generated in this preparation stage.
 Recomposition is internal consistency, not
 proof that a synthetic cohort was earned or that a producer is authentic;
 exact committed software/input identity and full replay remain separate.
+
+The private opt-in `TestReputationCareerCurrentMeasurement` lane now uses those
+same builders. `-reputation-career-measurement=record` refuses existing outputs
+and uncommitted inputs; `verify` requires the recorded source/data/kernel trees
+and native runtime before executing the entire population again. Both modes
+admit the ordered 97 H4 pairs and 970 H5 baseline/mask arms against the pinned
+declaration, recompose complete reports, and cross-bind H4 treatment to H5's
+baseline. Raw hashes, committed producer identity, runtime and census live in
+`career-measurement-lineage.2026-10-06.v1.json`. Reproduction requires identical
+H4/H5 bytes. The retained-artifact check is explicitly not fresh execution;
+before the recording commit it explicitly reports absence, never evidence.
+
+Synthetic complete-cohort controls include internally consistent forgeries;
+eight compiling guard omissions discriminate. They test admission, not earned
+player progress or payout mechanics. A truthful H4 FAIL remains a valid negative
+observation, not acceptance. At this instrumentation checkpoint no dated career
+artifact has yet been recorded or reproduced. Original reports, gameplay,
+statistics, threshold, horizon, epsilon, classifier and strict gates are unchanged.

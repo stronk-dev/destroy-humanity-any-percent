@@ -5611,3 +5611,41 @@ RP-268/271 author reconciliation, balance/kernel/runtime/corpus/CI/owner-copy
 change, acceptance box, mint, archive, SQL/browser/deployment/cleanup or push.
 New full range after5c93ff6f and its record edges need designated Claude review;
 every earlier range remains independently pending. Goal stays active.
+
+## 2026-10-06 — RP-263 dated career instrument and admission evidence
+
+Only two new harness test files; shared gameplay/builders unchanged. Complete
+synthetic97/970 cohort is independently declared from pinned inputs, not earned.
+Thirteen lineage corruptions,36 report corruptions (including six rebuilt,
+internally consistent forgeries), two strict JSON controls, positive admission
+and truthful one-tie negative admission pass. An independent JSON-side
+descriptor checks every declared arm. Initial admission f79d76/6174f2,
+session14571,exit0,0.971s. Refined selector d1b93d/ec7dd8,session66716,exit0
+ran NO tests because escaped alternation matched literally; not counted as proof.
+Corrected prefix3b50ec/96470d,session37690,exit0,9.007s explicitly executes
+admission/declaration and all four real source fingerprint controls. Artifact
+check explicitly skips before the recording commit; no artifact claim here.
+
+Eight separately compiling guard omissions fire semantic failures: identity
+655e64, raw hash9794e9, census bca955, H4 coordinates2f8726, H5 mask order
+5978f9, H4/H5 baseline809a3b, H4 recomposition3d6ff6, applied-starter admission
+f6584b. Rebound hashes/rebuilt reports are wrongly admitted under their respective
+omissions, proving independent discrimination rather than incidental checks.
+Every same PTY terminates exit2 before exact restoration; no build/panic failure
+counted. Restored sources1d9c5f2bb4ec5ecb88a117aae0a3096fb67a62ded222d634545c03c455886495 /
+3d3ba067f9bc88b5b9313db52874846857004f5987688d6b90566b27d62953d4.
+
+Actual unknown selector42c2d6/f93029 exits2 before production. Actual dirty
+record3008f4 exits2 before production, listing only the two new uncommitted test
+files. Restored cold focused0ab644/03509f,session50802,exit0,8.964s.
+Root `make verify-harness-fast`,346fe9..5141ae,session3535,terminal exit0:
+harness66.711s, role0.324s, Commons0.351s and guard. `make vet`,471264,exit0.
+All handles terminal before these edits. Whitespace81ad2a clean. No body/literal/
+runtime/math/balance/kernel161/CI/corpus/old-report change or checkbox flip.
+
+Next commit this instrument, then record and replay the complete real population
+with exact source identity. No current dated career evidence, acceptance,
+author-policy adoption, RP-268/271/274 resolution, mint, archive, SQL/browser/
+deployment/cleanup/publication/message to Claude or push. Complete span after
+5c93ff6f plus later record edges still needs designated Claude review, separately
+from all earlier ranges. Goal remains active.
