@@ -11,8 +11,8 @@ fails all ten arms, then restores byte-exactly. Twenty final repetitions / 200 f
 related Garden/minigame Postgres and selected cold Go/vet pass. Initial snapshot SQL type
 error remains disclosed. No product/schema/kernel/artifact/CI change, kernel 0.3.153.
 
-**READY FOR DESIGNATED REVIEW, not approved:** new range begins `d59960af^`
-(`f736e73b`); end pinned after commit, Claude required. Earlier HTTP/SG10/all other ranges
+**READY FOR DESIGNATED REVIEW, not approved:** exact range `d59960af^..11f182cd`
+(`f736e73b..11f182cd`), three commits / nine paths, Claude required. Earlier HTTP/SG10/all other ranges
 remain independent. Grouped fault hooks are not separate injection after every individual
 SQL statement; no full AC8/G5, mature HTTP/default DOM progression, public activation,
 whole-CI, archival or release claim.

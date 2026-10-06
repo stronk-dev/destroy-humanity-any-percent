@@ -9,8 +9,9 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 under `d59960af` / `5ca2cf0a`, RP-227. Ten independent exposed checkpoints compare ten
 complete persisted populations; actual retention deletion is reached through ordinary
 Service commands. Early commit fails all ten arms; restored code passes 200 fault cases,
-related Postgres and selected Go/vet. New range begins `d59960af^` (`f736e73b`), end pinned
-after commit, Claude required. Product/kernel/schema/artifact/CI unchanged (0.3.153).
+related Postgres and selected Go/vet. Exact new range `d59960af^..11f182cd`
+(`f736e73b..11f182cd`), three commits / nine paths, Claude required.
+Product/kernel/schema/artifact/CI unchanged (0.3.153).
 Grouped checkpoints are not every individual SQL write; preseeded mature fixtures are not
 public/HTTP progression or full AC8/G5/Garden. All earlier pending ranges and
 RP-222/RP-131/RP-218 remain separate; full nine-tier 1.0 and the complete platform floor

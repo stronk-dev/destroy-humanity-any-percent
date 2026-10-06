@@ -2028,3 +2028,8 @@ New range begins `d59960af^` (`f736e73b`), implementation end pinned after commi
 Claude must independently review its full span. No earlier range is consumed, no
 checkbox/lifecycle/public activation promotion. Remaining accepted coordinator/replay/
 surface integration stays next; RP-222/RP-131/RP-218 and proper nine-tier 1.0 remain open.
+
+Committed rollback supplement `11f182cd`. Exact new designated-review range:
+`d59960af^..11f182cd` (`f736e73b..11f182cd`), three commits / nine paths, pending Claude.
+This pin records the span, not a verdict. No earlier review/owner/lifecycle gate consumed,
+no self-approval, archive, push or release claim. All verification handles terminal.

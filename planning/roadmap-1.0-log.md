@@ -2122,3 +2122,8 @@ Codex first-filter only. New range starts `d59960af^` (`f736e73b`), end pinned a
 pending designated Claude review independently of every earlier range. Continue accepted
 integration work; owner-authored RP-222 and CI guard/worker RP-131/RP-218 remain separate.
 The full nine-tier 1.0 and complete platform obligations stay active, not a shortened preview.
+
+Exact committed rollback supplement: `d59960af^..11f182cd` (`f736e73b..11f182cd`), three
+commits / nine paths, pending designated Claude review. The separate HTTP supplement
+remains `3e518f21^..4793effa` (`20ea7b9c..4793effa`). Neither is self-approved or consumes
+any earlier pending range. All processes terminal; no archive, push or release claim.
