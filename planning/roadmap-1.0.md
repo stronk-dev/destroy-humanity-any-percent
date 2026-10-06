@@ -5,6 +5,15 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest runtime correction (2026-10-06):** RP-248, predeclared at 8094e914,
+rejects TS Founder encode corruption under accepted R1/R7. All 16 previously
+admitted inputs now reject; two removals independently fail 13/3 tests. Valid
+replay bytes stay unchanged; kernel 0.3.155. Server-core/vet passes, client
+type/build/tests pass (7403/134); full client composite remains RED at historical
+RP-131. [Exact limits](reputation-tree-v1/log.md). New span after6a8ccaf1 needs
+Claude; no archival or release promotion. RP-249 identifies the still-missing
+four-case R7 migration corpus/ratchet as next accepted work, not waived by units.
+
 **Latest runtime checkpoint (2026-10-06):** Reputation RP-243, dc9e6fc6 /
 8379f96d. Actual Go/TS disagreement on twenty malformed nested starter keys is
 corrected under accepted R2/AC1, kernel 0.3.154; both witnessed severings fail

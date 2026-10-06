@@ -12,8 +12,10 @@ threshold retune is measured and reported, then ratified by owner SHA).
 - [x] B2 (`c62afe47`) — Bundle wiring: `reputation_tree` optional artifact in the Go/TS bundle loaders, economy
   declaration pairing rule (tree ⇔ `reputation.founder_bonus` row), frozen-contribution resolver
   accepts provider `reputation_tree`. AC1 (bundle half).
-- [x] B3 (`fb0ab3b1`; TS activation witness in `cf57e956`) — Founder save v22 (R1/R7): fields, codec invariants, v21→v22 migration, migration corpus
-  cases + baseline ratchet. ACs 2, 10.
+- [x] B3 (`fb0ab3b1`; TS activation witness in `cf57e956`) — Founder save v22 fields,
+  boundary activation and codec/activation unit tests. **Not complete AC2/AC10:**
+  RP-248's TS encoder correction needs designated review; the four required R7
+  shared corpus cases and baseline ratchet remain unimplemented (RP-249/RT-DG-B).
 - [x] B4 (`541da96e`) — R5 `purchase_reputation_node` Founder intent (Go + TS replay parity, corpus). ACs 3, 4.
 - [x] B5 (`7ea6b942`, `078b205e`, `7d130b89`) — R3/R4 new-run assembly: frozen `reputation.founder_bonus` row (all run-creation paths),
   starter application, DB migrations (completeness function, event kinds, founder_log arms),

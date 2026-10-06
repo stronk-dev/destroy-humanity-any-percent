@@ -2523,3 +2523,26 @@ Codex first-filter only, new span after70f8c8c8 through final pin needs Claude
 independently of previous spans. Next accepted R1/R7 codec/mirror/activation
 work, retaining persisted-row/career/browser/mint/H4/author/owner/CI/capacity and
 complete nine-tier1.0 requirements. No checkbox/archive/push or Docker deletion.
+
+## 2026-10-06 — Founder encoding corruption rejected; corpus debt exposed
+
+RP-248 counterfact under 8094e914 executes all 13 active accounting and three
+legacy-state negatives: each originally emits rather than rejects. The minimal
+R1/R7 TS correction rejects them before serialization, without repairing valid
+ids or changing canonical replay bytes. Four new valid boundaries and existing
+legacy control pass; active/legacy check removals independently fail exactly
+13/3 tests, then restore byte-exact. Kernel identity is 0.3.155.
+
+Full server-core/vet passes cold; client type/build/tests pass (7403/134).
+Full verify-client fails at the existing RP-131/50a3a514 history violation.
+Remaining boundaries/topology/copy/content checks pass separately (copy retains
+610 existing orphan warnings). No new browser/DB/harness/CI or release claim.
+
+RP-249 re-derives R7/AC10's missing four-case shared corpus and baseline ratchet:
+the current legacy corpus has 11 cases; original RT-DG-B disclosed substituting
+unit tests, not an owner waiver. B3's plan description is corrected without a
+checkbox change. Next accepted work supplies the actual corpus/activation and
+pinned-mirror evidence; the current fix is not whole AC2/AC10/AC11 acceptance.
+New span after6a8ccaf1 needs Claude independently of previous spans. The full
+nine-tier/platform objective stays active; no archive, push, cleanup or hold
+reinterpretation. Capacity permission remains ungranted, not automatic consent.

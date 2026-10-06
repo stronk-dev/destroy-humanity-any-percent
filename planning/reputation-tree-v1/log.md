@@ -1305,3 +1305,66 @@ Docker capacity and review limits. No source edits while verification handles
 live. No new DB workload, cleanup, mint, owner copy, balance, migration mutation,
 checkpoint completion, archival or push. Claude designated review pending for
 the entire new span after `6a8ccaf1`, independent of earlier ranges.
+
+## 2026-10-06 — R1/R7 TS encode defect reproduced and corrected (Codex)
+
+**Review by:** Codex (self/first-filter on this correction only).
+**Recorded by:** Codex.
+**Verdict:** first-filter PASS for RP-248's bounded structural correction;
+Claude designated review pending. No full B3 or RFC approval/archival claimed.
+
+Predeclaration 8094e914, before new tests or runtime changes. Baseline 470bda
+exits2: all 13 active negative cases and all three independent legacy leaks
+emit instead of throwing (16 failures/7387 passes/134 existing skips). All four
+new valid cases and the existing clean v21 control pass. Cold Go baseline
+3fe84c passes save's original v22 encode/load structural tests and production's
+pinned-mirror/activation tests (0.336s/0.184s), not a DB run.
+
+Minimal TS correction validates available from exact earned/spent, unlock
+integer domain and sorted unique mechanical ids before serialization. Before
+v22 it requires zero spent, empty internal owned ids and zero unlock. No valid
+id sorting/repair, refund, purchase-cost rederivation, save-schema change or
+automatic activation. Pinned-tree derivation remains the catalog-bound
+restoration/validation layer, not a guessed value in a context-free encoder.
+Docs now distinguish those layers explicitly rather than imply a bare codec
+has artifact authority. Kernel0.3.154→0.3.155 in all three identity files.
+
+7403 tests/134 skips pass after correction (ebdc3a), typecheck zero errors and
+warnings. Two compiling mutants, each restored before the next check:
+
+- Active encode check removal 808dbb exits2 with exactly the 13 active negatives
+  failing and 7390 passing; all legacy/positive tests remain green.
+- Legacy leakage guard bypass d5e52b exits2 with exactly the three legacy
+  negatives failing and 7400 passing; all active/positive tests remain green.
+
+Both restores verify corrected replay.ts SHA
+834dc5b265da8a119e24ea686f6063f1ac4251ff5ee485f77e913dec22a0c9a0.
+New test SHA93b5e35a8658a9e7a7625f8737e49fc255d2eceb0bde5e7a6a9021d712646f29.
+No other runtime source, production balance, owner copy or DB migration changes.
+
+Final full verify-client reaches type/build/tests (7403/134) and shell boundaries
+green, then fails849de2 at the unchanged pushed50a3a514 against0cf9f7a6 history
+violation (RP-131). Not a green composite; no rewrite, exemption or bypass.
+Its later gates execute separately and pass7e1181: topology13 negatives,
+combat/meters/achievements/cosmetic boundaries, no-payment6 negatives/2 near
+misses, copy657keys with610 orphan warnings and deployment content manifest.
+Full verify-server-core832782 passes vet/all non-harness packages cold
+(production34.014s,save0.277s,reputation0.224s,kernel0.168s), formulas/API
+generation without drift and import boundaries. Pitch subtarget is cached,
+but the preceding complete Pitch package ran cold0.278s. Host DB skips are
+not integration; no fresh harness/browser/real PG/complete CI claim.
+
+RP-249 independently verifies R7/AC10's absent corpus work: the shared corpus
+baseline is still11 legacy v1–v9 cases, not the four named Founder cases.
+Original RT-DG-B openly substituted codec/activation unit tests; it did not
+record an owner waiver. B3's plan text wrongly included the corpus and ratchet,
+now corrected without flipping its box. Next accepted R7 work must satisfy
+the actual corpus and baseline, with activation/pinned-mirror consumers and
+fired controls, rather than relabel existing units. No automatic pre-v22
+migration on mere load. This correction does not close full AC2/AC10/AC11.
+
+The new review span after6a8ccaf1 includes predeclaration, correction/tests/
+docs/records, and the final range pin. Prior ranges remain independent. Owner/
+author/mint/H4, persisted rows/career/default browser, RT-DG-B, historical CI,
+Docker capacity and full nine-tier1.0 obligations remain. No Docker deletion,
+new DB workload, archival, checkbox completion, push or release promotion.

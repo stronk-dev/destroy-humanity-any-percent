@@ -1,5 +1,22 @@
 # Executable queue
 
+## Reputation R1/R7 encode correction and remaining corpus — 2026-10-06
+
+RP-248 is reproduced and corrected under 8094e914: 13 invalid active states and
+three legacy leaks previously encoded; all reject after the minimal TS check.
+Both independent guard removals fail (13/3 tests), restores are byte-exact,
+valid corpus bytes unchanged. Kernel 0.3.155; full server-core/vet PASS,
+client type/build/tests PASS (7403/134). Full verify-client RED on unchanged
+RP-131/50a3a514; remaining boundary/copy/content checks pass separately.
+
+**READY FOR CLAUDE:** new correction span after6a8ccaf1 through final pin;
+independent of earlier spans, not full B3/RFC approval. **NEXT ACCEPTED WORK:**
+R7's actual shared migration corpus and baseline ratchet (RP-249/RT-DG-B), with
+proper activation and pinned-mirror consumers, not a waiver by unit-test
+substitution. No pre-v22 automatic activation, schema invention, current-cost
+refund, mint or owner-copy edits. Persisted-row/career/browser/H4/author/owner/
+CI/capacity and every full nine-tier 1.0 gate remain.
+
 ## Reputation R4 boundary evidence — 2026-10-06
 
 e5a8f7f3 completes four shared fixture-only next-bundle cases: node retirement,

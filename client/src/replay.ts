@@ -748,6 +748,18 @@ export function restoreFounderReplayState(source: unknown, version: number, cata
 }
 
 export function encodeFounderReplayState(state: FounderReplayState): unknown {
+  // R1/R7: reject structural Reputation corruption before serializing. The
+  // artifact-derived unlock mirror is checked by catalog-bound restoration,
+  // not inferred from ids or repaired by this context-free encoder.
+  if (state.wireVersion >= 22) {
+    reputationAvailable(state.reputationLevel, state.reputationSpent);
+    safeInteger(state.reputationUnlockPpm, 0, 1_000_000);
+    sortedUniqueMechanical(array(state.reputationNodesOwned, "reputation nodes owned"));
+  } else {
+    safeInteger(state.reputationLevel, 0, MAX_EXACT_INTEGER);
+    safeInteger(state.reputationUnlockPpm, 0, 1_000_000);
+    if (state.reputationSpent !== 0 || array(state.reputationNodesOwned, "reputation nodes owned").length !== 0 || state.reputationUnlockPpm !== 0) throw new SyntaxError("Reputation tree state present before Founder v22");
+  }
   const base: Record<string, unknown> = {
     balances: sortedRecord(state.balances), generators: sortedRecord(state.generators), generators_purchased_total: state.generatorPurchasedTotal,
     upgrades_owned: [...state.upgradesOwned].sort(byteCompare), generators_provisioned: sortedRecord(state.generatorsProvisioned), provision_remainders_ppm: sortedRecord(state.provisionRemaindersPpm), stock_rate_remainder_ppm: state.stockRateRemainderPpm,

@@ -99,8 +99,14 @@ Without a tree, all tree state must be empty.
 onto a tree bundle starts with `spent = 0` and `owned = []`. Earned `reputation_level` carries
 over in full.
 
-The TypeScript `restoreFounderReplayState` / `encodeFounderReplayState` enforce the same rules and
-now carry the unlock mirror; before v22 the mirror is always 0.
+The TypeScript `encodeFounderReplayState` rejects invalid earned/spent/unlock
+domains, unsorted/duplicate/nonmechanical owned ids and pre-v22 tree-state
+leakage before serializing; it preserves valid ids and order rather than repairing
+them. `restoreFounderReplayState` also checks the unlock mirror against the
+pinned tree. Like the Go structural codec, the bare TS encoder has no tree
+artifact and cannot establish that derived mirror by itself. Catalog-bound
+restoration/validation is mandatory for that half of admission. Before v22 the
+mirror is always 0. These rejection checks do not change valid replay bytes.
 
 The Company-side Founder carry includes tree fields for pinned Founder floors
 of v22 or higher. Both runtimes reconstruct them; the former pre-R6 carry gap

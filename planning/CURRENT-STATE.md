@@ -117,6 +117,15 @@ persisted rows/career/default-player/mint/full-RFC acceptance remain open.
 RP-246's curriculum grammar observation is static/unexecuted and out of this
 runtime scope. No full CI/1.0/archival or Docker cleanup authority inferred.
 
+R1/R7 inspection reproduced RP-248: TS encoding admitted all 16 invalid
+accounting/legacy-state inputs. The bounded correction rejects them, preserves
+valid replay bytes, and catches both independent removals (13/3 failures).
+Server-core/vet passes; client type/build/tests pass (7403/134), while full
+verify-client remains RED at RP-131/50a3a514. Kernel is 0.3.155. New span after
+6a8ccaf1 needs Claude. RP-249 reopens the required four-case R7 migration corpus
+and baseline ratchet: existing unit tests are not that gate. Full 1.0 scope stays
+unchanged; no archival, push, live DB or release-readiness promotion.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

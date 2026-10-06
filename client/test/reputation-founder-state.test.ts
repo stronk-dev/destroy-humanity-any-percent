@@ -60,6 +60,53 @@ function founderState(bundle: ReplayCatalogBundle, overrides: Partial<FounderRep
 }
 
 describe("Founder v22 Reputation tree state", () => {
+  const invalidAccounting: [string, Partial<FounderReplayState>][] = [
+    ["overspent", { reputationSpent: 10 }],
+    ["negative spent", { reputationSpent: -1 }],
+    ["fractional spent", { reputationSpent: 1.5 }],
+    ["unsafe spent", { reputationSpent: Number.MAX_SAFE_INTEGER + 1 }],
+    ["negative level", { reputationLevel: -1 }],
+    ["fractional level", { reputationLevel: 9.5 }],
+    ["unsafe level", { reputationLevel: Number.MAX_SAFE_INTEGER + 1 }],
+    ["negative unlock", { reputationUnlockPpm: -1 }],
+    ["fractional unlock", { reputationUnlockPpm: 250_000.5 }],
+    ["over-one-million unlock", { reputationUnlockPpm: 1_000_001 }],
+    ["unsorted owned", { reputationNodesOwned: ["reputation.unlock.p25", "reputation.unlock.p05"] }],
+    ["duplicate owned", { reputationNodesOwned: ["reputation.unlock.p05", "reputation.unlock.p05"] }],
+    ["nonmechanical owned", { reputationNodesOwned: ["Not Mechanical"] }],
+  ];
+
+  it.each(invalidAccounting)("rejects %s on encode rather than emitting corrupt accounting", async (_name, patch) => {
+    const bundle = await treeBundle();
+    expect(() => encodeFounderReplayState(founderState(bundle, patch))).toThrow();
+  });
+
+  it.each([
+    ["spent", { reputationSpent: 1 }],
+    ["owned", { reputationNodesOwned: ["reputation.retired.unknown"] }],
+    ["unlock", { reputationUnlockPpm: 50_000 }],
+  ] satisfies [string, Partial<FounderReplayState>][])("rejects legacy %s state instead of discarding it on encode", async (_name, patch) => {
+    const plain = await loadReplayCatalogBundle(await constantsHashArtifacts(live), live);
+    const state = founderState(plain, { wireVersion: 21, reputationUnlockPpm: 0, reputationSpent: 0, reputationNodesOwned: [], ...patch });
+    expect(() => encodeFounderReplayState(state)).toThrow();
+  });
+
+  it.each([
+    ["empty owned", { reputationSpent: 0, reputationUnlockPpm: 0, reputationNodesOwned: [] }],
+    ["fully spent", { reputationSpent: 9 }],
+    ["unknown retired", { reputationSpent: 0, reputationUnlockPpm: 0, reputationNodesOwned: ["reputation.retired.unknown"] }],
+    ["exact maximum", { reputationLevel: Number.MAX_SAFE_INTEGER, reputationSpent: Number.MAX_SAFE_INTEGER }],
+  ] satisfies [string, Partial<FounderReplayState>][])("preserves valid %s accounting and bytes", async (_name, patch) => {
+    const bundle = await treeBundle();
+    const state = founderState(bundle, patch);
+    const encoded = encodeFounderReplayState(state) as Record<string, unknown>;
+    expect(encoded.reputation_level).toBe(state.reputationLevel);
+    expect(encoded.reputation_spent).toBe(state.reputationSpent);
+    expect(encoded.reputation_unlock_ppm).toBe(state.reputationUnlockPpm);
+    expect(encoded.reputation_nodes_owned).toEqual(state.reputationNodesOwned);
+    expect(encodeFounderReplayState(restoreFounderReplayState(encoded, 22, bundle))).toEqual(encoded);
+  });
+
   it("round-trips and enforces accounting and the unlock mirror against the pinned tree", async () => {
     const bundle = await treeBundle();
     const state = founderState(bundle, {});
