@@ -5302,3 +5302,34 @@ source/commands/limits recorded. No H5 epsilon/run4/censoring adoption, H4 gate
 waiver, per-node causal conclusion, fresh artifact provenance, acceptance box,
 SQL/browser claim, CI edit, archive or push. All work aftera3e36f94 needs its
 own full designated range, independently of the preceding source-binding work.
+
+## 2026-10-06 — RP-272/273 controlled census observation implementation
+
+Under69c79d28, only test-side report producers/helpers change. H4 retains its
+original strict gate/faster-only savings and adds all-finite descriptive package
+savings plus a complete row/clock-state partition. H5 retains bought counts,
+finite-only deltas and classifier, adding all-career/bought/clock-state counts.
+The JSON field names and notes state the conditional populations. No imputation,
+per-node causal attribution, policy/horizon/epsilon or old-report change.
+
+Synthetic H4 seven-row control covers positive/zero/negative savings, all three
+unreached states and no starter; the strict gate still emits3 violations.
+H5 includes one positive finite pair among4 bought pairs, one not bought,
+an all-not-bought persona, and a separate finite faster/tied/slower population.
+Exact counts/savings/deltas, conservation and both serialized populations pass.
+Also reject inconsistent H4 clocks/savings. Initial focused runb19675..5bacc3,
+session67094,terminal exit0,0.403s; refined report-retention/finite controlse519b2..
+9bf899,session95046,terminal exit0,0.341s. Neither is a real career prevalence.
+
+Eleven separate compiling omissions all exit2 semantically: pair-total60fd85,
+finite9c6428, tief23b58, both-unreached22df89, treated-onlyc64a55,
+control-onlyb506f6, not-bought66f868, bought9d8c1c, all-finitec2841d,
+H4 JSON98c5ef and H5 JSON290740. Each same handle terminates before restoration.
+After each restore, exact source SHA verifies: population helper
+e756486f61e1889a1575923ae3cf68a26413c5affe7e5243583ee195024cbe80,
+H4d3c898faef782e5355676c944950ba1739f835aac048d68e38929673be4b37bf,
+H502b4f12264b658f6dd3d62224ce452acc1b0a449a41ba4a5f495e2295e3daa59.
+Restored focused source/gate/classifier/population check769339,terminal exit0,
+0.118s. Full cold fast and97-pair/970-arm current census are next, not yet
+claimed. Kernel161/live math/balance/CI/reports/corpus unchanged; no box,
+acceptance, mint, author adoption, archive, cleanup, SQL/browser claim or push.

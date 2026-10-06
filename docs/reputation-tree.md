@@ -727,3 +727,23 @@ pairs. All-finite minimum is 0 ms; the published minimum is 15,000 ms. That map
 is a pass-only summary, not the full finite distribution (RP-273). H4 also lacks
 the per-node aggregate required by R10 (RP-274); shared package savings must not
 be labelled isolated node effects. Neither gap is repaired by source metadata.
+
+The test-side report producers now expose population counts (RP-272/273).
+H4's `population_by_policy` covers every admitted row, distinguishes rows
+without starters, and partitions starter pairs into finite faster/tied/slower,
+treated-only, control-only and both-unreached observations. The existing
+`saved_ms_min_p50_max_by_policy` remains **strictly-faster finite pairs only**;
+`finite_starter_pair_saved_ms_min_p50_max_by_policy` separately describes all
+finite starter pairs, including zero and negative savings. Neither assigns a
+saving to an unreached clock or attributes a compound package effect per node.
+
+H5's node-level `population_by_policy` exposes baseline careers, not-purchased
+careers and the same clock-state partition for bought pairs, including zero-
+bought/zero-finite populations. Its existing median is conditional on **bought
+and both clocks finite**, not all bought careers. The estimator, epsilon,
+classifier, horizon and purchase policy are unchanged; the absence of a median
+still does not mean a zero effect. Historical report files remain untouched.
+Synthetic controls and eleven compiling omissions verify counts, conservation,
+finite statistics and JSON retention. A full current population must still be
+executed before citing its observed denominator; this is no censoring adoption,
+H4/H5 acceptance or RP-274 attribution resolution.

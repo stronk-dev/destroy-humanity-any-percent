@@ -91,15 +91,17 @@ func projectReputationCareerPair(suite *FirstHourSuite, spec RunSpec, seed uint6
 }
 
 type reputationCareerReport struct {
-	SchemaVersion int                    `json:"schema_version"`
-	Threshold     string                 `json:"fixture_threshold"`
-	Seeds         []reputationCareerSeed `json:"seeds"`
-	GatedSeeds    int                    `json:"gated_seeds"`
-	ExcludedSeeds int                    `json:"excluded_seeds"`
-	GatePassed    bool                   `json:"h4_gate_passed"`
-	Violations    []string               `json:"h4_violations"`
-	SavedMS       map[string][3]int64    `json:"saved_ms_min_p50_max_by_policy"`
-	Note          string                 `json:"note"`
+	Population    map[string]reputationCareerPopulation `json:"population_by_policy"`
+	FiniteSavedMS map[string][3]int64                   `json:"finite_starter_pair_saved_ms_min_p50_max_by_policy"`
+	SchemaVersion int                                   `json:"schema_version"`
+	Threshold     string                                `json:"fixture_threshold"`
+	Seeds         []reputationCareerSeed                `json:"seeds"`
+	GatedSeeds    int                                   `json:"gated_seeds"`
+	ExcludedSeeds int                                   `json:"excluded_seeds"`
+	GatePassed    bool                                  `json:"h4_gate_passed"`
+	Violations    []string                              `json:"h4_violations"`
+	SavedMS       map[string][3]int64                   `json:"saved_ms_min_p50_max_by_policy"`
+	Note          string                                `json:"note"`
 }
 
 // TestReputationCareerStartersShortenRunThree is H4: at every seed where run
@@ -163,8 +165,16 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 			t.Fatalf("seed %d: %v", jobs[index].seed, err)
 		}
 	}
-	report := reputationCareerReport{SchemaVersion: 1, Threshold: reputationCareerFixtureThreshold, Seeds: results, SavedMS: map[string][3]int64{},
-		Note: "fixture-first H4: fixture threshold from the OD-2 measurement's satisfying set; nothing is ratified or minted"}
+	report, err := newReputationCareerReport(results)
+	if err != nil {
+		t.Fatal(err)
+	}
+	populationJSON, err := json.Marshal(report.Population)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("H4 current pair populations: %s", populationJSON)
+	t.Logf("H4 all-finite starter-pair savings (not per-node effects): %v", report.FiniteSavedMS)
 	violations, saved := evaluateReputationCareerGate(results, &report)
 	report.Violations = violations
 	report.GatePassed = len(report.Violations) == 0
@@ -198,6 +208,14 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 	if err != nil || !bytes.Equal(pinned, encoded) {
 		t.Fatalf("career report drifted (regenerate with REPUTATION_UPDATE_CAREER=1): %v", err)
 	}
+}
+
+func newReputationCareerReport(rows []reputationCareerSeed) (reputationCareerReport, error) {
+	report := reputationCareerReport{SchemaVersion: 1, Threshold: reputationCareerFixtureThreshold, Seeds: rows, SavedMS: map[string][3]int64{},
+		Note: "fixture-first H4: fixture threshold from the OD-2 measurement's satisfying set; nothing is ratified or minted; saved_ms_min_p50_max_by_policy covers strictly-faster finite starter pairs only; finite_starter_pair_saved_ms_min_p50_max_by_policy covers all finite starter pairs; unreached clocks are not imputed"}
+	var err error
+	report.Population, report.FiniteSavedMS, err = observeReputationCareerPopulation(rows)
+	return report, err
 }
 
 // evaluateReputationCareerGate is the H4 gate: every seed whose run 3 starts

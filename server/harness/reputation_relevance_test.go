@@ -16,12 +16,13 @@ import (
 const reputationRelevancePath = "planning/reputation-tree-v1/relevance-h5.v1.json"
 
 type reputationNodeRelevance struct {
-	NodeID        string           `json:"node_id"`
-	Kind          string           `json:"kind"`
-	DeltaMSP50    map[string]int64 `json:"delta_ms_p50_by_policy"`
-	PurchasedRuns map[string]int   `json:"purchased_runs_by_policy"`
-	Relevant      bool             `json:"relevant"`
-	Excluded      string           `json:"excluded"`
+	Population    map[string]reputationRelevancePopulation `json:"population_by_policy"`
+	NodeID        string                                   `json:"node_id"`
+	Kind          string                                   `json:"kind"`
+	DeltaMSP50    map[string]int64                         `json:"delta_ms_p50_by_policy"`
+	PurchasedRuns map[string]int                           `json:"purchased_runs_by_policy"`
+	Relevant      bool                                     `json:"relevant"`
+	Excluded      string                                   `json:"excluded"`
 }
 
 type reputationRelevanceReport struct {
@@ -49,7 +50,7 @@ func projectReputationRelevanceOutcome(suite *FirstHourSuite, spec RunSpec, seed
 
 func newReputationRelevanceReport(results []reputationRelevanceOutcome) reputationRelevanceReport {
 	report := reputationRelevanceReport{SchemaVersion: 1, Threshold: reputationCareerFixtureThreshold, EpsilonMS: reputationRelevanceEpsilonMS,
-		Note: "fixture-first H5: leave-one-out on the following run's Garage gate; the elective-Exit dimension needs a run-4 horizon (DESIGN-GAP RT-DG-F)"}
+		Note: "fixture-first H5: leave-one-out on the following run's Garage gate; delta_ms_p50_by_policy is conditional on the node being bought and both gate clocks being finite, not all purchased careers; unreached clocks are not imputed; the elective-Exit dimension needs a run-4 horizon (DESIGN-GAP RT-DG-F)"}
 	for _, result := range results {
 		report.Sources = append(report.Sources, result.source)
 	}
@@ -157,7 +158,8 @@ func TestReputationTreeRelevance(t *testing.T) {
 	report := newReputationRelevanceReport(results)
 	t.Logf("H5 source admission complete: arms=%d retained_sources=%d", len(results), len(report.Sources))
 	for _, node := range nodes {
-		row := reputationNodeRelevance{NodeID: node.NodeID, Kind: node.Kind, DeltaMSP50: map[string]int64{}, PurchasedRuns: map[string]int{}}
+		row := reputationNodeRelevance{NodeID: node.NodeID, Kind: node.Kind, DeltaMSP50: map[string]int64{}, PurchasedRuns: map[string]int{},
+			Population: map[string]reputationRelevancePopulation{}}
 		deltas := map[string][]int64{}
 		for index, current := range jobs {
 			if current.exclude != node.NodeID {
@@ -168,19 +170,18 @@ func TestReputationTreeRelevance(t *testing.T) {
 			for _, id := range base.purchased {
 				bought = bought || id == node.NodeID
 			}
-			if !bought {
-				continue
-			}
-			row.PurchasedRuns[current.spec.PolicyID]++
-			if base.gate != nil && results[index].gate != nil {
-				deltas[current.spec.PolicyID] = append(deltas[current.spec.PolicyID], *results[index].gate-*base.gate)
-			}
+			observeReputationRelevancePair(&row, deltas, current.spec.PolicyID, bought, base, results[index])
 		}
 		for id, values := range deltas {
 			sort.Slice(values, func(left, right int) bool { return values[left] < values[right] })
 			row.DeltaMSP50[id] = values[len(values)/2]
 		}
 		classifyReputationRelevance(&row)
+		populationJSON, err := json.Marshal(row.Population)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("H5 current bought/not-bought/finite populations: node=%s population=%s conditional_p50=%v", node.NodeID, populationJSON, row.DeltaMSP50)
 		if !row.Relevant && row.Excluded == "" {
 			t.Errorf("node %s is bought but moves nothing and has no exclusion reason: %+v", node.NodeID, row)
 		}
