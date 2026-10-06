@@ -1389,3 +1389,49 @@ evidence plus baseline ratchet, not rewriting the save schema or activating on
 load. RP-249 records the missing gate rather than treating prior unit tests as
 its substitute. Whole B3/AC2/AC10/AC11 and full1.0 are NOT claimed complete;
 no archive/push, capacity consent, mint or owner-ruling substitution.
+
+## 2026-10-06 — R7 shared corpus completion predeclaration (Codex)
+
+Clean baseline39912364. Previous turn made concrete progress: RP-248 actual
+encoder defect corrected,16 baseline failures/two fired controls and records
+committed. RP-249 is accepted R7/AC10 work, not an owner question disguised as
+implementation. Existing RT-DG-B's substitute is not completion authority.
+
+Extend testdata/save-migrations.json to corpus9 with a distinct founder_cases
+arm. Keep the eleven legacy case objects byte-unchanged. Add exactly the four
+accepted names: founder-v21-to-v22; founder-v22-spent-over-level;
+founder-v22-unlock-mismatch; founder-v21-nonzero-unlock. Ratchet baseline total
+11→15 and required names together. The current Go-authored Reputation replay
+corpus supplies the full encoded input and compatible artifact/Exit contexts;
+bind it by explicit source path, SHA and case name rather than copying its
+large embedded artifacts. Modern patches and exact expected Reputation fields
+are declared in the shared migration corpus, not independently in each runtime.
+This is a referenced corpus, not four newly independent full-save byte fixtures.
+
+Consumers: old save corpus runner checks the combined census and still executes
+all eleven legacy cases; a save_test external-package adapter exercises public
+Go save/production/replaycatalog APIs (no production exports/import cycle).
+TS consumer strictly loads the same artifacts and exercises both actual Company
+Exit and Founder-log replay for the positive activation; rejects the three
+negative loads at their actual structural/pinned boundaries. No silent skip or
+empty modern population is a pass; version/count/names/source pin must fail
+on malformed/absent rows. Both replay paths must retain earned4, spent0, owned[],
+unlock0 at v22 and preserve the original complete canonical result bytes.
+Loading the v21 source must leave it at v21; activation is a recorded Exit.
+
+Controls predeclared: independently default spent to level in Go live settlement
+and Go Founder replay activation; suppress Go spent guard, pinned mirror and
+pre-v22 leakage checks; suppress TS spent/load mirror/pre-v22 guards and alter
+TS Founder activation default. Each compiling control must fail the targeted
+case, or be recorded as surviving defense-in-depth, never hidden. Removing a
+required modern case must fail the census. Restore exactly before any next run.
+No runtime mutation persists in this test-only wave; kernel remains0.3.155.
+
+Run new Go population and old migration corpus cold, full server-core/vet and
+client/type/build/boundaries/topology. Historical RP-131 client composite RED
+stays open; no new DB workload/cleanup permission, minted tree or default-player
+claim. No migration body, save schema, owner copy/balance, checkbox completion,
+RFC status, archival, push or policy amendment. All new files/tests/docs/records
+after39912364 need Claude's designated range-union review, independent of prior
+spans. Full R1 mirror authority, B3/AC2/AC11 and the whole nine-tier/platform
+goal still require their own evidence; this wave claims only actual R7 corpus.
