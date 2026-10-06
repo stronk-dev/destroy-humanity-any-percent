@@ -2352,3 +2352,37 @@ before records. Next RP-254 hash evidence/remaining pinned readers/closed replay
 inputs, with RP-253 actual Postgres taxonomy still required. Full B4/AC3/4/R8/
 career, mint/H4/owner/author/privacy/accessibility/deployment/CI and nine-tier
 1.0 obligations stay open. No checkbox flip, archival, push or goal completion.
+
+## 2026-10-06 — predeclaration: RP-254 purchase replay result pins
+
+Authority: accepted R8 and the original B4 Finding C. Scope is test-only:
+assert the direct purchase result hash against the existing Go-authored bundle
+pin, plus the three existing paired Founder Exit results against their recorded
+next bundle. No fixture/schema, runtime, kernel, balance, epoch or copy change.
+
+Population: all20 direct rows (11applied,9rejected), including the automatic
+Fiscal sweep in the chain, and all3 paired Founder arms among5 R6 Exit rows.
+Go generation and TS consumption must census these populations and compare
+hash strings exactly, in addition to unchanged state/receipt/ordered events.
+The two rejected Company Exit rows have no Founder result; they are not silently
+counted as hash observations. Existing corpus bytes must remain identical.
+
+Controls, declared before execution: corrupt the actual Go inactive purchase
+return pin and TS applied-purchase return pin, retaining state/receipt/events;
+the selected consumers must fail specifically on hash mismatch. With the new
+purchase assertion temporarily omitted, those unchanged old comparisons must
+pass the same fault (otherwise disclose defense-in-depth, not oracle proof).
+For R6, inject the old pin into Go's returned Founder transition at the test
+boundary, and replace TS Exit's result pin with its input pin; the two activation
+rows must fail while the same-pin Exit remains valid. The Go injection proves
+the oracle, not a production defect or a bypass of its output-state guard.
+Each probe runs cold, terminates before any edit, and restores exact source SHA.
+
+Success: all23 assertions per runtime pass honestly, the declared faults fail,
+old direct comparison controls survive their hash-only fault, corpus bytes and
+production sources restore unchanged, cold server-core/vet and full client
+checks executed. Historical RP-131 is reported RED, never waived. No actual
+Postgres workload under the capacity hold; RP-253 remains required. First-filter
+only for this new Codex span afterc355fb7d; Claude designated review required.
+No whole R8/B4/AC3/4, reader/writer census, career/player/release, archival,
+checkbox, push, cleanup or goal-completion claim follows.
