@@ -3767,3 +3767,27 @@ environment/release holds unchanged. Proper nine-tier/platform1.0 active;
 previous goal turn progress, this turn adds executed producer/storage evidence.
 No runtime/kernel/balance/copy/CI/body/status/archival/mint/push/deploy change.
 [Observation](clout-v1-and-pr-interns/rate-and-sql-research.md).
+
+## 2026-10-07 — Actual production policy boundaries
+
+Predeclareda25c6d5e afterd61a5248:44actual Go paired full-state observations,
+132phases/220exact existing-save restores. Eighteen differences:offline8/burst6/
+provision4/clock0. Independent integer clock/bank/burst/provision bindings hold;
+five separate observer faults (including missing population) fail before writer,
+exact source/artifact restoration. No runtime or old corpus changed.
+
+RP-308 separates offline-episode meaning from RP-307 rounding. One48h catch-up
+and two24h calls obey different legitimate per-call allowances; author body
+reconciliation is required, not a reward change or rounding tolerance. Owner
+delegation question unanswered; nothing inferred from automated continuation.
+Next actual paired logged Go/TS/action/buff/mode/nonzero-resource research before
+an accepted repair contract; policy observer itself is Go-only, not SQL/TS proof.
+
+Cold relevant Go remains red only at original27AC6 cases; vet/client9499pass/
+340visible skips/types clean. All six research tests execute in declared native
+service, no skips; old actual SQL1215/16 and earlier corpora reproduce exactly.
+Entire new span afterd61a5248 needs Claude, older spans independent; existing
+owner/author/content/environment/release holds remain. Previous goal turn was
+progress; this turn adds complete executed policy evidence and an author route.
+Full nine-tier/platform1.0 stays active; no status/checkbox/archive/mint/push/
+deployment or release call. [Evidence](clout-v1-and-pr-interns/policy-boundary-research.md).

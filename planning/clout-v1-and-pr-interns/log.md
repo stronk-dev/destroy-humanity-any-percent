@@ -1039,3 +1039,56 @@ and four negative probes, separate artifact. No TS engine export or copied engin
 is invented. Offline cap-per-call is distinguished from one absence episode;
 observations cannot change intended offline policy or rule the author's AC6 text.
 No owner answer inferred from automatic continuation; full nine-tier1.0 active.
+
+### R-012 fourth-wave execution and separate author question
+
+Cold writer908ec1/50662 terminal4c50ca exit0,.666s:44paired profiles complete,
+18different final states. Full corpus132actual phases and220exact restore
+points;11selected source identities. Offline12/8different, burst16/6different,
+provision12/4different, clock4/0different; all integer bindings hold. All
+eighteen differ in cash; five offline cases also differ in credit. Full-state
+not scalar comparison. Provider counts/carry agree in both branches.
+
+RP-308 added immediately after executed observation/first live probe terminal:
+offline cap-per-call histories cannot be conflated with internal partitioning
+of one catch-up episode. Asked owner to delegate wording-only reconciliation
+while preserving all current offline rewards, banking and reconnect behavior;
+no answer received/preselected option not authority. No CV3/AC6 body edit,
+new episode field, tolerance or player exploit inferred. Decision/research queue
+route the author question. RP-307's numeric failure remains independently red.
+
+Five separate NEW-OBSERVER faults, each cold writer expected to fail:
+
+- Bank2a1143/7012 terminal9eb2e2 exit2:uncapped reported bank/state at48h with
+  credit259199999 fails integer binding before restore/writer.
+- Burstf5b3e8/57032 terminal9ddd09 exit2:retain old remaining burst1 at3114ms
+  fails integer binding.
+- Provisionb58257/94751 terminalc36103 exit2:omit generated count/carry fails
+  provider1/minute60000 integer binding.
+- Clock201205/9799 terminal802969 exit2:advance zero-work cursor fails complete
+  state check atonline/end0.
+- Census460aad/62147 terminal0a52ae exit2:remove oneprofile, incomplete44guard
+  fails before any observation/writer.
+
+These are mutations of reported observer state/census, not production mutations.
+Each handle terminal before the next edit. Final367ed5 confirms exact source
+71c0f5a1/artifactb4262aa2 match pre-probe hashes; no old artifact modified.
+
+Restored cold default692c1b/26058 terminaldfb2d0 exit2:production38.605s fails
+ONLY original27AC6cases; economy6.095s/decimal.228s pass. Relevant vet864cce
+exit0. Client4afb8a/79606 terminala8161d exit0:unchanged9499pass/340visible
+skips/types/Svelte clean. Declared native3e0150/20077 terminal302b47 exit0,
+1.078s:all SIX research tests execute, no skips; old SQL1215/16 and every
+previous corpus reproduce exactly. New policy observer is still Go-only, not
+SQL-backed policy persistence or actual TS evaluation merely because it runs
+inside that Docker service. AMD64/history/hosted holds remain unchanged.
+
+Record preparation caught an erroneous six-credit-differences sentence; actual
+artifact census770dcb verifies five and the uncommitted text is corrected.
+A multi-file patch had a mistyped final context; it failed atomically, then
+the records were applied with verified context. Neither is a product finding.
+
+Observation/limits/next contracts in policy-boundary-research.md. All handles
+terminal, no temporary probe. No runtime/kernel/balance/copy/save/body/CI/status/
+checkbox/archive/mint/push/deploy change. Entire new span afterd61a5248 needs
+Claude; prior spans and unanswered owner/author questions remain independent.

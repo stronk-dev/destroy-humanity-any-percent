@@ -342,3 +342,14 @@ Each must fire a semantic binding without relying solely on source hashes and
 prevent artifact overwrite. Restore exact bytes before final cold runs. Keep
 old red AC6 regression/default execution. Full range afterd61a5248 needs Claude
 independently; no checkbox/status/accepted body/archive/mint/push/deploy change.
+
+Executed:44 complete paired profiles/220exact save restores/132actual phases;
+18final differences (offline8/burst6/provision4/clock0). Integer policies bind
+every phase; generated count/carry agree. RP-308 records the separate offline
+episode/history question; owner delegation request unanswered, body untouched.
+Five observer faults (four policy plus missing census) fire before writer;
+source/artifact exact restore. Cold default production remains red only at27
+AC6 failures; relevant vet/client9499/340skip/types pass. All six research tests
+execute in the declared native service, no skip; old corpora unchanged. Go-only
+policy observer is not TS/private-engine/SQL save or accepted-anchor proof.
+Results/next contracts in policy-boundary-research.md; exact commands in log.

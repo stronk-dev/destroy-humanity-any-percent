@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## R-012 actual policy boundaries — 2026-10-07
+
+Predeclareda25c6d5e afterd61a5248:44 actual Go paired full-state observations,
+220exact restores/132phases complete. Differences18:offline8/burst6/provision4/
+clock0. All independent integer clock/bank/burst/provision bindings hold; five
+observer faults fail before writer, exact restoration. Client9499pass/340skip/
+types/vet clean; default production still red only at original27AC6 failures.
+All six research tests execute in declared native service, old SQL1215/16exact;
+policy observer itself is Go-only, not SQL/TS integration. **AUTHOR HOLD RP-308:**
+one catch-up episode versus separate capped calls needs body reconciliation;
+owner delegation unanswered, no reward/policy/tolerance change inferred.
+**READY RESEARCH:** actual paired logged Go/TS replay, action/buff/mode and
+nonzero multi-resource boundaries before adopting a persistence repair contract.
+**DESIGNATED REVIEW PENDING:** full new span afterd61a5248; older spans stay
+independent. Full nine-tier1.0 intact; no runtime/body/CI/acceptance/archive/mint/
+push/deploy authority. [Evidence](../clout-v1-and-pr-interns/policy-boundary-research.md).
+
 ## R-012 producer and SQL result — 2026-10-07
 
 Predeclared9a35aa78 after9050fe4d:64 actual producer profiles complete; early

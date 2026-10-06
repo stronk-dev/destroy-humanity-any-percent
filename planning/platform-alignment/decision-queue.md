@@ -158,3 +158,24 @@ body; any generated metadata/component repair follows that accepted contract.
 No global integer-validation weakening, new numeric kernel, retune/epoch mint,
 report restamp or implementer-authored player text is authorized. RP-283 preview,
 RP-284 balance/display and RP-292 plan policy remain separate questions.
+
+## Clout offline-episode meaning — RP-308
+
+Actual R-012 policy research predeclareda25c6d5e executes44paired full-state
+profiles with independent integer policy bindings. One48h offline Evaluate
+produces24h and banks43,200,000ms; two24h calls produce48h and bank0. The
+current per-call cap/floor/bank saturation is canonical behavior, not a defect
+this evidence authorizes changing. A pure computational split of one absence
+and multiple capped catch-up histories are distinct questions; clients never
+select server time or evaluation mode.
+
+Required author action: reconcile CV3/AC6's unqualified "any interval" with
+the intended catch-up episode boundary while preserving the existing24h cap,
+90% efficiency, banking and separate-reconnect behavior. The owner was asked
+whether to delegate that wording reconciliation; no response or authority is
+inferred from preselection/automatic goal continuation. If the owner chooses
+different behavior, it requires its own explicit design/contract change, not
+an implementer convenience. Canonical home:Clout CV3/AC6 and its author-reconciled
+body, with linkage to any later accumulation/persistence RFC. This cannot waive
+RP-307's numeric failures, invent episode state, restamp evidence or retune data.
+Evidence:planning/clout-v1-and-pr-interns/policy-boundary-research.md and log.

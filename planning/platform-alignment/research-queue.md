@@ -298,8 +298,14 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   1215logical exact snapshots and16SQL negatives complete. Rate/context CPU and
   scalar prototype SQL are separate, not Service/Store integration proof.
   [Third-wave evidence/limits](../clout-v1-and-pr-interns/rate-and-sql-research.md).
-  Next predeclare actual offline/banking/boost/provision/full-state/replay seams;
-  canonical rate lists and byte-framed JSON cannot be transplanted literally.
+  Fourth wave predeclareda25c6d5e completes44actual Go full-state paired profiles/
+  220exact restores/132phases. Offline8/burst6/provision4 differ; clock4unchanged,
+  all integer policy bindings hold. Five observer faults fire and restore exactly.
+  [Policy evidence/limits](../clout-v1-and-pr-interns/policy-boundary-research.md).
+  RP-308 holds unqualified AC6 offline-episode meaning for author reconciliation,
+  without changing existing absence rewards or waiving numeric equality.
+  Next predeclare actual paired logged Go/TS/action/buff/mode/multi-resource seams;
+  canonical rate lists/byte-framed JSON/scalar anchors are not whole-engine proof.
   Full mode/offline/provision/migration/state/receipt integration remains unproved.
 - **Question:** Can an explicit conserved accumulation/settlement representation
   preserve K3's12-digit authoritative wire boundary and Clout AC6's exact equality

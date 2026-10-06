@@ -107,6 +107,12 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   invalidates strict byte framing. Existing context restore and a test-only
   logical reader pass separate declared populations; neither is a production
   repair, adopted save format or complete integrated persistence proof.
+  [Actual policy-boundary characterization](../planning/clout-v1-and-pr-interns/policy-boundary-research.md)
+  preserves full Company state and integer clock/bank/burst/provision rules.
+  It finds eighteen differences in44paired Go profiles, including a separate
+  offline-episode scope question(RP-308). No offline reward policy or accepted
+  invariant is changed by that research; actual logged TS/persistence remains
+  outside this observer's proof.
   The retained
   regression is intentionally red, so the current Go/CI tree is not green.
 - Served-epoch activation and the default composed PR purchase/rendering journey

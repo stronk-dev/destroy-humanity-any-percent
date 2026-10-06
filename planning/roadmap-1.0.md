@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest producer/SQL checkpoint (2026-10-07):** R-012 completes64 actual
+**Latest policy checkpoint (2026-10-07):** R-012 completes44actual Go full-state
+pairs/220exact restores/132phases;18differences split offline8/burst6/provision4,
+clock0. Integer policies hold, five observer faults discriminate, exact restore.
+RP-308 routes one-absence versus multiple capped calls to author reconciliation;
+delegation unanswered, no reward change or rounding tolerance. Default production
+still fails original27AC6cases; client9499pass/340skip/types/vet clean. All six
+research tests execute in native service, old corpora unchanged; new policy
+observer itself is Go-only. Next paired logged Go/TS/action/buff/mode/resource
+research before a buildable repair. Full new span afterd61a5248 needs Claude,
+older holds independent; proper nine-tier1.0 stays active.
+[Evidence](clout-v1-and-pr-interns/policy-boundary-research.md).
+
+**Previous producer/SQL checkpoint (2026-10-07):** R-012 completes64 actual
 producer profiles:early rate rounding changes five payouts; existing saved
 contexts preserve all raw rates/deltas. TS agrees. Actual Postgres16.15/
 linux-arm64:1215logical exact snapshots/1215strict-byte refusals;16SQL negatives
