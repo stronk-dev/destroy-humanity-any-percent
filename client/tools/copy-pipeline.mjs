@@ -560,11 +560,15 @@ export function generatedGoKeys(keys, allKeys = keys, companionKeys = []) {
     "package copykeys",
     "",
     ...keys.map((key, index) => `const ${names[index]} = ${JSON.stringify(key)}`),
-    "",
-    `func All() []string { return []string{${allKeys.map((key) => JSON.stringify(key)).join(", ")}} }`,
+    ...(keys.length > 0 ? [""] : []),
+    "func All() []string {",
+    `\treturn []string{${allKeys.map((key) => JSON.stringify(key)).join(", ")}}`,
+    "}",
     "",
     "// CompanionKeys lists the keys whose tone is companion (Pet Adoption v1 PA8.6).",
-    `func CompanionKeys() []string { return []string{${companionKeys.map((key) => JSON.stringify(key)).join(", ")}} }`,
+    "func CompanionKeys() []string {",
+    `\treturn []string{${companionKeys.map((key) => JSON.stringify(key)).join(", ")}}`,
+    "}",
     "",
   ].join("\n");
 }

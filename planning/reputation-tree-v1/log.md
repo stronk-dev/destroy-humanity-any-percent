@@ -6891,3 +6891,52 @@ function bodies and the extra blank before All. The baseline is fail-fast;
 remaining four goldens/collision/corruptions do not execute yet, not claimed
 passed. No Go dependency, generator/output correction or live handle. Commit
 fixture and existing-verifier import before changing the template.
+
+## 2026-10-06 — RP-281 paired correction and executed proof
+
+Template emits multiline All/CompanionKeys directly and one blank after package
+when there are no constants. Root9992e1 generation writes all declared outputs;
+only generated.go changes. Five goldens/collision/six corruption controls pass
+2d2b33/2ee1ae. Local independent formatter check5da1fe proves actual generated
+file equals gofmt(3df3ff32's committed file) byte-for-byte and all five synthetic
+populations are gofmt-stable. Current gofmt-d74d6e1/b16966 emits nothing/exit0.
+Other five generated copy artifacts and deployment manifest byte-identical to
+baseline0e4f46. No English/key/constant/list/order/companion identity changed.
+
+Three compiling template severings fire, never a syntax/build failure:
+fb21e2 All one-line → empty golden failure;0be59e Companion one-line → empty
+golden failure;ed5e0a Companion bound to allKeys → single/default failure.
+Restore exact template SHA0e48a169dfbc29568ba602c3608b27ae3ce26ae4b91615577c806e6b4faf9cfc
+after each terminal result98bdc4/5229cb/b284d1. Output-only wrong constant
+cb77f2 is rejected by actual existing verifier as generated artifact drift,
+after five golden controls pass; exact output restoreda76c73 to
+a461181e70f79a436e1ebf0fdb71e33e6b1d8faeaa7c1c7fbb0577bf8eb82604.
+Node-only fixture/template import adds no Go/formatter invocation/dependency.
+No test assertions/history guards removed or policy/deadlines/skips altered.
+
+Cold02219d/763d7a/3295d1 session45090 terminal0: types0 errors/warnings,
+build213 modules;units8106 pass/255 Node skips,91 files pass/19 skip. Shell/
+topology13/cosmetic22/no-payment6 controls pass. Actual copy check runs new
+fixture import, copy658/hash a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e
+unchanged/611 orphan warnings;manifest passes. No native/SQL/host/harness career
+rerun is claimed for this formatting-only range.
+
+Cold coreeebdbb/801a88/1dfe4f/813c75/48bb01 session29154 terminal2:
+three deployment/operations packages fail httptest loopback binding denied by
+sandbox; all other listed non-harness packages pass, with usual Postgres tests
+not exercised without DB. Original make target DID NOT pass; chained vet was
+not reached. Separate root vetebec66 terminal0. After original handle terminal,
+narrowly escalated root make test-go347cfc/d8c1a7 session61567 terminal0 reruns
+all three failed packages cold:5.313/2.390/0.876s,all pass. This gives successful
+core package coverage by union, not an exit0 claim for the original command,
+and no DB/deploy proof. Local permission repaired execution, not test semantics.
+
+Separate history572061/1dc21a session12596 terminal2: checkout contract/fixtures
+pass then same historical RP-13150a3a514 vs0cf9f7a6 fails. Not whole client/CI
+green. All handles terminal before any record/commit. Generated Go producer
+tree changes despite formatter-equivalent behavior; old dated career artifacts
+remain historical at their producers. No numeric/kernel161/epoch/copy/balance/
+formula/price/CI/security or owner-authority change, box flip, archival/push/
+cleanup/release claim. Full span after3df3ff32 needs Claude independently of
+earlier ranges. Next ground RP-284 Run End/new-route consumer and author bridge;
+proper nine-tier/platform1.0 remains active.

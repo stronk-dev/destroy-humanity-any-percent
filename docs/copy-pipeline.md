@@ -31,6 +31,10 @@ than English text.
   an adjacent legal-section reference into the tracked extracts file (same A1 rule).
 - `make copy-generate` writes the byte-sorted client catalog, generated key/param types, the
   independent `copy_hash`, the code-reference manifest, and the deterministic orphan report.
+  Its Go template emits gofmt-canonical multiline function bodies directly; generation
+  and Node verification do not invoke a Go formatter. Empty lists, input ordering,
+  constant identities and distinct all/companion sets have whole-output golden fixtures
+  in `client/tools/verify-copy-generation-fixtures.mjs`, run by the existing copy check.
 
 The `copy_hash` identifies English copy independently from the simulation `constants_hash`.
 Changing punctuation does not segment a leaderboard. The generated
