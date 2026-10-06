@@ -949,3 +949,29 @@ Postcommit 77279 cold reputation/kernel rerun passes from cbb5a998; all handles
 terminal, source remains restored, diff-check clean. No full B1/RFC/archival
 or release approval. Next bounded accepted lane: R4 additive starter/new-run
 fixture consumers, without inventing a mint, threshold or owner decision.
+
+## 2026-10-06 — R4/AC8 additive starter witness review predeclaration (Codex)
+
+Clean source coordinate e365e0da. Inspect the complete four-path Claude witness
+range `7d130b89^..7d130b89`, not the earlier B5 producer implementation or later
+Exit-plan changes. Execute its current Go corpus producer and TS replay consumer
+with committed artifacts, without fixture regeneration. Required existing case:
+scripted-first burnout curriculum assigns ten provisioned Beige Towers, then
+the owned Reputation starter adds five; purchased remains zero; canonical
+receipt/state/run_started-v2 bytes and ordered applied ids agree.
+
+Controls: independently replace the Reputation generated starter's addition
+with assignment in Go and TS. Each existing witness must fail on the actual
+15-to-5 regression, not a compilation error. Restore exact source hashes after
+each terminal check; no edits while any check handle lives. Run selected cold
+production tests/vet and the full root client population before and after probes.
+No database, browser, minted-content or full-RFC claim follows from these local
+transition/replay fixtures. No runtime change persists, and no new balance,
+copy, kernel, CI, schema, owner choice or checkbox change is authorized. Any
+unexercised starter arm/order/cap property is recorded as coverage debt, not
+inferred from the required additive case. A real runtime defect needs a separate
+accepted-contract correction predeclaration before implementation.
+
+Codex can independently review Claude's four-path witness range; this new Codex
+predeclaration/evidence/record span remains first-filter only and awaits Claude.
+No archive, push, cache deletion or weakening of the complete 1.0 objective.
