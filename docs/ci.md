@@ -191,6 +191,11 @@ synthetic controls; these are not database evidence. The actual host control
 Go exit zero with four dependency skips (zero/seven cases). Normal Postgres mode
 is still unexecuted pending Docker capacity; see the
 [census and retained negative](../planning/platform-alignment/session-refresh-contract-census.md).
+Node controls use `observe-refresh-population.fixtures.mjs`, explicitly invoked
+by Make, so they are not misclassified as Vitest client tests. The initial
+filename collision (RP-239) was caught by `verify-client` and corrected. That
+composite still fails the existing RP-131 history guard; passing its client
+population and separately run remaining gates is not whole-CI success.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service. Its first driver
 starts the real composed gameserver and Vite, then drives Chromium through anonymous bootstrap, an authenticated live

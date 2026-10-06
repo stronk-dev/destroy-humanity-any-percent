@@ -110,3 +110,17 @@ populations/four severings await capacity; draft renewal/whole 1.0 remain open.
 Review by: Codex (first-filter). Recorded by: Codex. Separate range begins
 3121a376 exclusive, includes 08a11814 and all instrument/record/pin edges;
 designated Claude review pending, no archival/status/push authorization.
+
+### Composite collision caught and repaired, not whole-CI green
+
+Root verify-client 4122 fails on new Node-only *.test.mjs fixture, zero Vitest
+tests. Repair predeclared dbcce391 renames only to *.fixtures.mjs, updates explicit
+Make invocation; no config/test exclusions. 68948 passes twenty controls,
+type/build, 7366 client tests/134 existing skips and shell/UI boundaries, then
+fails unchanged pushed RP-131 history guard. Remaining gates separately pass
+40302; copy retains 610 orphan warnings. Composite remains RED.
+Repaired actual missing-DB control 62186 again rejects child exit 0/four skips/
+zero-seven cases, observer exit 1, 24 events, 2374 ms, source stable and capture
+complete. [Second report](refresh-population-negative-repaired.v1.json) pins
+the changed Make source; original report remains historical. RP-239 is locally
+corrected, Claude review pending. No new Docker/rotation/release proof.

@@ -734,3 +734,35 @@ report remains historical evidence with its actual old Make hash; retain a secon
 actual report for repaired source rather than pretending hashes are unchanged.
 All handles terminal before this predeclaration; no Docker/new DB/production
 policy, checkbox, acceptance, archive or push change. Claude remains designated.
+
+## 2026-10-06 — fixture-name repair executes; composite stays honestly red
+
+Under dbcce391 predeclaration, moved Node controls to *.fixtures.mjs, updated
+explicit Make invocation. No changed Vitest/workflow config, old test assertions
+or exclusions. 68948: twenty standalone controls pass; root typecheck zero
+errors/warnings, build, unchanged client population 84 files/7366 tests passes,
+17 files/134 existing skips; shell/UI boundaries and kernel checkout/adversarial
+fixtures pass. verify-client then fails unchanged RP-131 at pushed 50a3a514:
+historical guarded paths lack the same-commit signal. Composite exit 2, NOT green.
+No cosmetic bump/waiver/rewrite or draft kernel-history RFC implementation.
+
+Remaining root gates execute separately (40302), exit 0: topology/thirteen
+controls, combat/meters/achievements, cosmetic boundaries/22 negatives,
+no-payment/six negatives plus two near-misses, copy/content manifest. Copy keeps
+610 orphan warnings, not silently clean. Earlier cold Account/publicapi/vet
+2693 pass without DB populations. No hosted Actions or browser run claimed.
+
+Actual repaired-source host control 62186: child 0/package pass/four skips,
+zero/seven cases, observer exit 1 invalid/incomplete; 24 events/one Make line,
+2374 ms, unchanged fourteen listed inputs+HEAD, no capture error/truncation.
+Second retained refresh-population-negative-repaired.v1.json pins changed Make
+SHA e3e02c01b35ae8a197dfe02aaa6eaa1feebc97ac715498bcad48e145046786c3.
+Original negative artifact remains historical, not overwritten/relabelled.
+No live verification handles before edits. Current read-only Docker overlay
+still 100%, 39,784 KiB available; three candidate cache volumes remain unused,
+no deletion/new workload. Normal Postgres/two populations/four severings pending.
+
+Review by: Codex (first-filter only). Recorded by: Codex. RP-239 locally repaired,
+designated Claude review pending. Observer range starts after 3121a376 and must
+include 08a11814, 035e5549, dbcce391, repair/artifact/records and following pin.
+No acceptance/checkbox/archive/push or proper full nine-tier 1.0 scope reduction.

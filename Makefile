@@ -85,7 +85,7 @@ test-refresh-census:
 
 test-refresh-observer:
 	node --check client/tools/observe-refresh-population.mjs
-	node --test client/tools/observe-refresh-population.test.mjs
+	node --test client/tools/observe-refresh-population.fixtures.mjs
 
 # Real Postgres 16 custom-format dump/restore witnesses run in a package-owned
 # image that contains the exact pg_dump/pg_restore major used by production.

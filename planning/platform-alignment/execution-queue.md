@@ -38,6 +38,9 @@ Separate completeness observer now rejects actual Go exit zero with four
 dependency skips, zero/seven cases (RP-238); twenty synthetic controls pass.
 Next: capacity resolution, then two actual cold populations/four severings via
 the manual observer. Normal Postgres mode is unexecuted; no policy promotion.
+New standalone fixture collision RP-239 is locally repaired by naming only,
+not config/CI exclusion. Root client tests/type/build pass; composite remains
+RED at unchanged RP-131. Remaining gates pass separately, no whole-CI claim.
 
 ## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
 

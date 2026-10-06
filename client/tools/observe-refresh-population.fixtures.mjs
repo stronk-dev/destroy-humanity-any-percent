@@ -1,3 +1,4 @@
+// Standalone Node controls, not a Vitest-discovered client test suite.
 import assert from "node:assert/strict";
 import test from "node:test";
 import { leaves, parents, refreshPopulationObserver } from "./observe-refresh-population.mjs";

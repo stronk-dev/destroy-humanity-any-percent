@@ -44,6 +44,11 @@ The separate manual completeness observer now rejects an actual Go exit-zero
 run with four dependency skips and zero/seven cases (RP-238). Twenty synthetic
 controls pass, not DB evidence. Its normal Postgres mode and the prepared
 rotation/replay/expiry/severing populations remain unexecuted pending capacity.
+Broader client verification caught/fixed the new Node/Vitest fixture filename
+collision (RP-239), without config/test exclusions. Restored client population
+passes 7366 tests/134 existing skips; type/build/boundaries and remaining gates
+pass separately. `verify-client` remains RED at unchanged pushed RP-131, not
+green CI. Actual repaired-source missing-DB control still rejects skipped pass.
 
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,

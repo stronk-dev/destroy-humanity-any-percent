@@ -2377,3 +2377,17 @@ populations/four severings remain unexecuted pending RP-236 safe capacity.
 New range starts 3121a376 exclusive, includes shared predeclaration/instrument/
 records/pin; Claude pending independently of prepared/parser/CI ranges. No
 policy, checkbox, archive, push or shortening of proper full nine-tier 1.0.
+
+## 2026-10-06 — composite checks catch our fixture defect, repair stays bounded
+
+Root verify-client fails new Node-only fixture discovery (RP-239); dbcce391
+predeclares naming repair, no CI/config exclusion or old assertion edits.
+Restored twenty standalone controls, type/build, 7366 client tests/134 existing
+skips and shell boundaries pass. Composite still RED on unchanged RP-131 history
+guard; remaining gates separately pass, copy retains 610 orphan warnings. Actual
+repaired-source skip control rejects child exit zero/four skips/zero-seven cases.
+Both negative artifacts retained with honest source identities; no DB success.
+Docker still 100%/39,784 KiB available, candidates unused, cleanup answer pending.
+Observer span begins 3121a376 exclusive including predeclaration, initial defect,
+repair, artifacts/records/pin; Claude pending independently. Full proper nine-tier
+1.0 remains active, no archival/acceptance/push or scope reduction.

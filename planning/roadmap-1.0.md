@@ -32,6 +32,9 @@ four severings await RP-236 capacity. No policy, RFC or release promotion.
 Separate manual observer now rejects an actual exit-zero Go run with all four
 dependency skips (zero/seven cases), RP-238. Twenty synthetic controls pass;
 normal Postgres mode is not executed or validated as integration evidence.
+Root client gate catches new fixture naming RP-239; bounded naming repair
+restores 7366 passing client tests/134 existing skips. Composite still RED at
+historical RP-131; other gates run separately pass. No whole-CI promotion.
 
 **Earlier checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
 actual page closures complete in the three declared Linux engines; bypass and
