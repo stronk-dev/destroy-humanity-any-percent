@@ -2777,3 +2777,48 @@ cannot close AC3/B4 or replace R8 career/run verifier/AC15, mint/H4 or any
 nine-tier/platform/release obligation. Next safe accepted work: remaining
 pinned reader/writer audit. No checkbox, archive, push, deletion or goal status
 promotion.
+
+## 2026-10-06 — R1/R3/R9 projection readers predeclaration
+
+Clean HEAD4030c895, ahead77. Previous turn is progress: RP-253 tests retained,
+not SQL completion. Read-only search traces writers/encoders/epoch paths,
+run-frozen producers, server UI projection and TS snapshot consumer. Broad
+output truncated; targeted actual sources were read. Store.LoadLatest performs
+structural RestoreState but does not invoke StatePolicyValidator; production
+writes do apply runtimeCatalogs.ValidateState. The UI preview checks Company
+transition eligibility, not the Founder's checked Reputation mirror. These
+observations do not authorize a generic Store policy change or prove a SQL
+corruption. R3 frozen and starter producers already call the pinned validator;
+current Company rate remains run-frozen. Harness and remaining replay/history
+consumers still need their own complete audits.
+
+Scope: RP-257 and RP-258 only, accepted R1/R3/R9. Before measuring, declare:
+
+- Go7 corrupt active profiles: nil owned collection, duplicate, unsorted and
+  nonmechanical owned IDs, empty ownership with a nonzero mirror, p05 ownership
+  with zero mirror, and p05 ownership with a different nonzero mirror. Execute
+  both the isolated arm and public transaction-local InitialGameUISnapshot:
+  14 refusals, no output. Three consistent profiles (empty, p05, unknown historical
+  id plus p05) remain legal in both paths; no node removal is authorized.
+  Complete pinned source states/artifacts come from the unchanged R8 fixture;
+  valid controls must reach the public projection before negatives are evidence.
+- TS12 invalid string values per factor field and per public reader
+  (parseFeatures and parseGameUISnapshot):48 refusals. Values are empty, NaN,
+  Infinity, -Infinity,1,1e+0,01e0,1.0e0,0,0e0,-1e0,5e-1. Two numeric rather
+  than string fields per reader supply4 already-defended controls. Three legal
+  unit/nonunit/null-current profiles per reader supply6 positives. R3's factor
+  is canonical and >=1; null current factor stays legal. Legacy optional arm,
+  null/inactive behavior, schema/pins and owner copy are untouched.
+- If reproduced, use existing pinned UnlockPPM derivation to refuse inconsistent
+  ownership/mirrors locally; use the existing canonical Decimal parser plus
+  >=1 factor domain in the TS Reputation arm. Independent compiling guard
+  omissions must fire affected negatives; unchanged valid controls and exact
+  source SHAs must remain. No silently normalized invalid input.
+
+These presentation-only paths are outside kernel/affecting-paths.json; do not
+bump the numeric kernel for a non-kernel change. No balance, applied migration,
+API schema/pin, canonical corpus, generic save/decoder, CI policy or authored
+copy edits. No source/record writes while any check/probe lives. No fresh DB or
+browser/full native proof, whole R9/B7/AC12/career/1.0, box/archival/mint/push
+claim. Capacity, RP-131 and RP-256 remain. Claude must independently review the
+complete new span after4030c895; self filter cannot replace that gate.
