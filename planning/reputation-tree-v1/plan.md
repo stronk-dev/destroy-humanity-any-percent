@@ -650,3 +650,10 @@ after each terminal result, then cold whole relevant Go packages/vet, full
 client tests/types and old corpus byte-preservation. No old assertion weakened,
 production/epoch/balance/copy/schema/CI change, acceptance checkbox, archival,
 push or release promotion. Full new span needs Claude; prior ranges separate.
+
+R8 supplement refinement after abc019c4: actual Founder audit inspection shows
+the two rejected offers also have exit.v1 arms. Add both via the real audit
+builder/replayer before claiming full paired population: ten Company and ten
+Founder cases, eight applied/two rejected each. Exact rejected receipt/state/
+zero events/same input pin, plus copied rejected delta1 refusal. Earlier eight-
+applied declaration remains history, not silently rewritten to claim execution.

@@ -8532,3 +8532,28 @@ events and payout/starter/bonus/order controls. Both runtime copied cost/promise
 prerequisite-order negatives run for allfour planned applied cases. Existing
 corpus preserved. Commit tests/generation lane before unchanged-test source
 probes; initial scaffold/type errors remain explicitly retained, not sourcebugs.
+
+Executed source faults against committed abc019c4: first7cd880/62d7d0
+session80698 terminal0 ran NO tests because a single `$` anchor was consumed
+by Make expansion. This is invalid evidence, not a pass. Correct selector
+d2adc7 terminal2 executes and catches omitted prospective payout at the first
+acquihire applied oracle. Serial builder stops there; remaining kinds/arms
+were not executed in this negative. Actual generator cf8d1e terminal2 fails
+the same independent control BEFORE writing; f514c7 fixture SHA unchanged.
+Exact Go restore6b6d2a/f06c2f. TS cost+1 in actual plan event producer:
+63c08b/7998a5 session16638 terminal2, four new exact ordered-event byte
+comparisons fail, plus two existing historical plan comparisons;8178 pass/
+339 skip. This proves new byte oracle discrimination, not just earlier guards.
+Exact TS restore e7df24/8e97ee; no source mutation committed/live handle left.
+
+Further actual Founder audit census4c2b87/df8a42 finds a small coverage gap
+in my initial supplement: rejected offers also have an exit.v1 Founder audit
+arm, while the reused fixture helper intentionally stops before emitting it.
+Do not call eight applied arms full paired parity. Predeclare additive extension
+now: keep same ten Company cases, add both rejected Founder arms via actual
+buildFounderExitAudit/ApplyFounderLogged, compare exact rejection receipt,
+unchanged full Founder state, zero events and same input result pin in Go/TS.
+Population becomes ten Company/ten Founder, eight applied/two rejected on each.
+Generate only the NEW supplement after independent rejection controls; preserve
+original corpus. Add copied rejected Reputation-delta1 refusal for both runtimes.
+This is accepted R8 evidence extension, no rejection policy/runtime change.
