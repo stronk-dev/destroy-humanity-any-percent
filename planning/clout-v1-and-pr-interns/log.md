@@ -1131,3 +1131,50 @@ producers are the subject, not an arithmetic proxy. Synthetic combined inventory
 must admit unchanged; observed refusals/mismatches invalidate a claim of parity.
 All previous red AC6 findings and independent designated-review spans remain;
 owner/author RP-308/API/cleanup questions are unanswered. No product/body change.
+
+### R-012 fifth-wave result — actual logged Go/TS seam fails
+
+Predeclaration6141af35 at7effff9a. New Go/TS observers and separate source-pinned
+logged-policy-research-v1 corpus; every old corpus/source unchanged. Go actual
+ApplyLogged24purchases/57full v19 restores/9explicit catchup refusals pass.
+All24TS initial restoration comparisons pass; all actual logged calls then fail
+before accrual at active-play presence. RP-309 immediately ledgered: TS recognizes
+onlyv18 there, Go and the actual restore codec recognize the v19 extension.
+Six TS missing/from catchup negatives are MASKED, not target refusals; three
+to-coordinate negatives refuse in parser unchanged; census passes. Thirty new
+red tests retained. No output-parity, repair, policy or AC6 claim is made.
+
+Writer259032/41578 terminal3b3c59 exit0; typo correction re-observation7621c6/
+73159 terminal216d84 exit0. Missing-row writer probeeb7fc6/36300 terminal3ac966
+exit2 at incomplete24guard BEFORE writer. TS forged initial-state expectation
+434912/95055 terminal6792ed exit2:24positive failures move to exact initial
+assertion rather than active-play dispatch. That proves initial comparator,
+not unreachable final comparator. Both probe edits restore exact pre-probe
+hashes at2e4515; no production mutation or final-output proof inferred.
+
+Self-check then caught a nonzero-permits string oracle comparing against0e0
+instead of emitted0. Corrected to actual Decimal positivity with zero-resource
+controls, plus corrected TS Ms spelling, then complete re-observation75d933/
+99195 terminalcba3e3 exit0. Final3df7c6 hashes: Go4a82177d, TS1b6372f4,
+artifactb400abe4. This is a corrected instrument lineage, not unchanged probe
+hashes falsely claimed across the later correction; no expected output changed.
+
+Final cold4fb470/50050 terminald9fc30 exit2: production41.833s fails ONLY
+original27AC6cases; economy6.094s/decimal.114s pass. Final client98efcf/78550
+terminal7180d6 exit2:9503pass/30newfail/340visible skips (newfile4pass/30fail).
+Earlier make test-client typecheck vet stopped at client red, so NOT types/vet
+proof. Independent final046f5e/96513 terminalef7377 exit0:types/Svelte clean,
+full go vet pass. Native3d58b7/66014 terminald08639 exit0,1.437s:all SEVEN
+research tests execute, no skips; old SQL1215/16 and other corpora unchanged.
+New logged observer remains in-memory Go even inside declared Postgres service.
+All verification handles terminal before edits; orphan warning did not authorize
+cleanup. AMD64/history/hosted holds unchanged, no restart/tolerance/skip.
+
+Full observation/limits and actual Go samples in logged-policy-research.md.
+Separately predeclare accepted-CV4 RP-309 runtime repair (kernel protocol,
+old-v18 compatibility,missing/unexpected evidence refusal,exact outputs).
+Nothing in this research range changes runtime/kernel/save/balance/copy/CI/body/
+checkbox/status/archive/mint/push/deploy. RP-308 delegation unanswered. ENTIRE
+new span after7effff9a needs Claude including records; prior spans independent.
+Proper nine-tier/platform1.0 active; this turn adds a concrete integrated defect,
+not a reason to proclaim paired numeric research complete or abandon the goal.

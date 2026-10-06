@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest policy checkpoint (2026-10-07):** R-012 completes44actual Go full-state
+**Latest logged-replay checkpoint (2026-10-07):** R-012 completes24actual Go
+logged purchases/57restores and9catchup refusals. Actual TS v19 initial restore
+passes, but all24 logged calls fail a v18-only active-play presence check(RP-309).
+Six target negative cases are masked, not passed; three parser refusals/census
+pass. Client9503pass/30newfail/340skip, types/vet clean; original27GoAC6failures
+remain. All seven research tests run native, old artifacts/SQL unchanged. Next
+separately scoped accepted-CV4 repair with kernel protocol and old-version/refusal
+proof, then actual paired outputs; no runtime repair in this test-only range.
+Entire span after7effff9a needs Claude, previous spans/owner questions independent.
+Full nine-tier/platform1.0 active, no acceptance/status/mint/archive/push/deploy.
+[Evidence](clout-v1-and-pr-interns/logged-policy-research.md).
+
+**Previous policy checkpoint (2026-10-07):** R-012 completes44actual Go full-state
 pairs/220exact restores/132phases;18differences split offline8/burst6/provision4,
 clock0. Integer policies hold, five observer faults discriminate, exact restore.
 RP-308 routes one-absence versus multiple capped calls to author reconciliation;

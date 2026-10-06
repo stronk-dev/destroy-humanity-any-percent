@@ -87,6 +87,12 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
 
 ## Not yet delivered
 
+- Actual v19 logged TypeScript replay (RP-309). A separately predeclared
+  [24-case producer observation](../planning/clout-v1-and-pr-interns/logged-policy-research.md)
+  succeeds in Go, but every TypeScript positive call refuses valid active-play
+  evidence because applyLogged recognizes only v18 at that check. Six catch-up
+  negatives are masked by the earlier failure. Exact initial restoration is not
+  receipt/event/poststate parity, and this test-only range does not repair it.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

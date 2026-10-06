@@ -3791,3 +3791,27 @@ owner/author/content/environment/release holds remain. Previous goal turn was
 progress; this turn adds complete executed policy evidence and an author route.
 Full nine-tier/platform1.0 stays active; no status/checkbox/archive/mint/push/
 deployment or release call. [Evidence](clout-v1-and-pr-interns/policy-boundary-research.md).
+
+## 2026-10-07 — Actual v19 logged producer seam / RP-309
+
+Predeclared6141af35 after7effff9a:24actual Go logged purchases/57full restores,
+9explicit unchanged-state catchup refusals. TypeScript restores all24initial
+states but rejects valid active-play evidence in every logged call because its
+presence guard recognizes onlyv18. Six catchup negative cases masked, not target
+refusals;three parser refusals/census pass. Original outputs are not restamped,
+all30new failures retained. Separate missing-row/forged-initial-state faults
+discriminate; instrument property/zero-oracle issues corrected and re-observed.
+
+Cold Go original27AC6 failures remain; client9503pass/30newfail/340skip; types/
+vet clean. All seven research tests run in native service, old SQL1215/16exact,
+old corpora unchanged. No claim of new logged SQL transactions, final-output
+parity, AMD64/hosted CI or release proof. Next bounded accepted-CV4 dispatch
+repair under kernel protocol, then actual paired replay comparisons.
+
+New entire span after7effff9a needs Claude including record edges; older spans,
+author/owner/copy/environment/release questions independent. RP-308 wording
+delegation unanswered. Previous goal turns progress; this turn adds a concrete
+integrated defect and executable red witness rather than spending the gate on
+another scalar comparison. Proper nine-tier/platform1.0 remains active; no
+runtime/body/acceptance/checkbox/mint/archive/push/deploy/release change.
+[Evidence](clout-v1-and-pr-interns/logged-policy-research.md).

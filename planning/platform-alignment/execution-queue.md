@@ -3,6 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## R-012 logged replay / RP-309 — 2026-10-07
+
+Predeclared6141af35 after7effff9a:24actual Go purchases/57full restores and9
+unchanged-state catchup refusals complete. Actual TS24initial restores pass,
+but every positive logged call fails active-play presence:the check recognizes
+onlyv18, notv19. Six catchup negatives masked; three parser refusals and census
+pass. Client9503pass/30newfail/340skip; types/vet clean. Cold Go retains original
+27AC6failures; native runs all seven research tests, old corpora/SQL1215/16exact.
+**READY accepted-CV4 repair:** separately predeclare RP-309 dispatch correction,
+kernel-version protocol and old-version/refusal discrimination before re-observing
+actual Go/TS outputs. No runtime fix mixed into this research range.
+RP-308 delegation remains unanswered; no absence policy change inferred.
+Entire span after7effff9a needs Claude including record edges; older obligations
+independent. Full nine-tier1.0 remains active, no acceptance/status promotion.
+[Evidence and limits](../clout-v1-and-pr-interns/logged-policy-research.md).
+
 ## R-012 actual policy boundaries — 2026-10-07
 
 Predeclareda25c6d5e afterd61a5248:44 actual Go paired full-state observations,

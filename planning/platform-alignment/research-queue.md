@@ -304,7 +304,13 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   [Policy evidence/limits](../clout-v1-and-pr-interns/policy-boundary-research.md).
   RP-308 holds unqualified AC6 offline-episode meaning for author reconciliation,
   without changing existing absence rewards or waiving numeric equality.
-  Next predeclare actual paired logged Go/TS/action/buff/mode/multi-resource seams;
+  Fifth wave predeclared6141af35:24actual Go logged purchases/57full restores,
+  nine unchanged-state catchup refusals complete. Actual TS all24positive calls
+  fail earlier at v19 active-play presence(RP-309);six catchup negatives masked,
+  not successful target refusals. Three parser refusals/census pass. Separately
+  predeclare accepted-CV4 runtime repair before claiming actual payout parity.
+  [Logged producer finding/limits](../clout-v1-and-pr-interns/logged-policy-research.md).
+  Later predeclare actual paired action/buff/mode/multi-resource seams;
   canonical rate lists/byte-framed JSON/scalar anchors are not whole-engine proof.
   Full mode/offline/provision/migration/state/receipt integration remains unproved.
 - **Question:** Can an explicit conserved accumulation/settlement representation

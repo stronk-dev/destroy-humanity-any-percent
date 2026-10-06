@@ -396,3 +396,11 @@ AMD64 remains unexecuted. RP-308 wording delegation remains unanswered.
 Exit: bounded evidence dossier and synchronized queue/ledger/log, self first-filter
 over exact changed range, then Claude designated review INCLUDING record edges.
 No acceptance/checkbox/status promotion, archival, push or release authority.
+
+Fifth-wave execution: all24Go purchases/57restores and9catchup refusals complete.
+Actual TS all24 initial restores pass, but actual logged replay fails before
+accrual at v19 active-play presence(RP-309). Six negatives masked by earlier
+failure;three parser refusals/census pass. Keep this red finding rather than
+weakening the comparison. Separately predeclare accepted-CV4 dispatch repair and
+kernel-version protocol, then re-observe exact output parity. This wave changes
+no runtime, prior corpora or RFC body. Details in logged-policy-research.md.
