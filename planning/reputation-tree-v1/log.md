@@ -8438,3 +8438,35 @@ earlier spans independent; no fullAC9/RFC/CI/browser/pacing/mint/release claim.
 No production/migration/kernel/balance/copy/epoch/owner-body/CI/checkbox/status/
 cleanup/archive/publish/deploy/push. Proper1.0 goal active/progress, all earlier
 author/environment/release holds retained and cache-only approval unanswered.
+
+### Offer-plan SQL supplement — local first-filter 2026-10-06
+
+Review by: Codex (implementer self-first-filter)
+Recorded by: Codex
+Reviewed range: 8ee45af3..71029ba2 (three commits, nine paths).
+Verdict: locally approved; NOT designated cross-party approval.
+
+Full new357-line test, predeclaration, canonical docs, ledger and live tracking
+reviewed. Actual gate producer rather than seeded offer; initial earned0 versus
+independent credited18/20; ordered plan versus byte-sorted ownership; exact
+receipt fields against persisted heads; saved resolution/purchases/run summary;
+both complete replay histories; refusal/exact retries/changed-plan conflict;
+copied negative evidence with unchanged SQL all remain independently asserted.
+Initial compile/wire-shape/owned-order construction mistakes remain disclosed,
+not production defect claims. Invalid resolution fault hits the earlier save
+validator; valid wrong-ID refinement reaches the new persisted identity oracle.
+Producer, prospective-payout and hash-conflict source probes discriminate as
+recorded. All source restores exact, no mutant committed, all handles terminal.
+
+Final relevant complete host packages/vet, declared SQL35/119/no skips and
+client8167 pass baseline retain their stated limits. No offered-plan TypeScript,
+browser/default progression, full CI or release proof inferred. Fresh checks:
+8be514 range statistics agree; 41f8a5 whitespace clean; 5b1b3e production/
+migration/balance/copy/epoch/CI/RFC/testdata diff empty. Both append-only logs
+retain original prefixes (44b60c/11d1a5). No acceptance checkbox/status changed.
+
+Claude's designated review must cover the entire new span after8ee45af3,
+including this record edge; earlier pending ranges remain independent. This
+self-first-filter cannot archive or relabel itself cross-party. Next accepted
+work is separately predeclared R8 shared Go/TS offered-plan parity, preserving
+existing historical corpus bytes. Proper1.0 goal remains active/progress.
