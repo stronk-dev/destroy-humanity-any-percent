@@ -2153,3 +2153,35 @@ Committed implementation `56fc2a9d`, citation correction `fe178721`. Exact new d
 review range `f980f4d6^..fe178721` (`3f3bb03c..fe178721`), three commits / twelve paths,
 pending Claude. The pin is metadata, not a verdict; no earlier review, author/owner or
 lifecycle gate consumed. All processes terminal, no probe bytes left, no archive or push.
+
+## 2026-10-06 — SG10 timing/visibility diagnosis predeclaration
+
+Start clean `adb55210`. Previous goal turn was progress: committed saved-head/hash
+witnesses and exact review boundary; all processes terminal. Resume accepted SG10, not
+a smaller release objective. AGENTS/process/index and complete Garden RFC reread;
+vision/tech and relevant design clocks/UI references inspected. No subagents.
+
+RP-230 records missing executable evidence, not yet a proven runtime defect. Existing
+ordering tests deliberately null the deadline; existing visibility test substitutes true.
+Add a separate browser test file mounting actual GardenSurface through its test-only
+props harness and actual createBrowserGardenPort/generated operation call. Injected
+fetcher returns literal DTO JSON and records method/path/token/body; it is not network
+or Postgres evidence. Virtual setTimeout/clearTimeout and emulated document.visibilityState
+plus actual visibilitychange event expose boundaries deterministically in three engines.
+
+Population: due intervals 60,000 ms and 137 ms (a lawful read near a tick, not a changed
+catalog interval); no read at deadline minus one, exactly one at deadline; server-authored
+stage changes only after JSON response. Hidden due produces no read and visibility return
+produces one; receipt refresh replaces old deadline; null deadline and unmount schedule
+no subsequent reads; a failed due read retains stale content and visible resume recovers.
+Every call is exactly authenticated GET with no body, every command callback remains empty.
+No Date.now client epoch enters the oracle. Literal expected states must not derive from
+component internals. Initial reds/invalid instruments are retained. No production repair
+is authorized in this diagnostic range; record any actual defect then predeclare its
+SG10-derived correction separately. Discrimination later severs timer dispatch and visibility
+guard independently, with exact restoration before final gates. No scheduling bounds/skips,
+copy, balance, kernel/schema, mint or CI changes; no full AC13/default-host/Garden claim.
+
+Run root client/typecheck and declared native-Linux browser lane. Codex is first-filter
+only; Claude must review the exact new range independently, with every earlier range
+and RP-229/RP-222/RP-131/RP-218 still open. Full nine-tier 1.0 remains active.
