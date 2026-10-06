@@ -4902,3 +4902,51 @@ as well as0a486d79..bc315ecf; the designated verdict must cite its actual full
 reviewed HEAD/range, not discard uncovered edge records. Prior ranges/records
 remain independent, and no self-review substitutes for Claude. Next safe work
 fresh H1/H2/report lineage under RP-263. Goal active; no box/mint/archive/push.
+
+## 2026-10-06 — RP-263 fresh H1/H2 and lineage predeclaration
+
+Authority: accepted Reputation R10 H1/H2, existing ratified first-hour scenario/
+policy and OD-2 measurement-only threshold study. Baseline c352370a, clean main.
+This is research instrumentation/evidence, NOT balance adoption, H3/H4/H5 closure,
+minting, archival or a new product contract. Preserve all historical v1 reports.
+
+Population: all97 ratified seeds (64 Chaos,32 Casual,1 Reference), unchanged
+7200000ms horizon; experiment (minimum200, factor2e0, route50, seed1e4,
+towers10), workers8. Load the unmodified epoch-8 suite; derive H2 using its
+exact Prestige catalog, all30 existing 1/2/5e3..12 candidates, p50 envelope3..10
+for Casual and Chaos. The live1e12 row must exist, fail the envelope and pay
+zero for every persona. Candidates remain proposals, even if any satisfy.
+
+Allowed new paths: server/harness/reputation_current_measurement_test.go and
+planning/reputation-tree-v1/{first-hour-reputation,threshold-measurement,
+measurement-lineage}.2026-10-06.v1.json; canonical docs/tracking only otherwise.
+No production, balance, kernel, scenario, policy, old-report, CI or copy edits.
+The three output paths are absent before this declaration. Existing generic
+Harness Observability is for live objective instrumentation, not immutable H1/
+H2 provenance; keep this small companion private/test-side, no shared schema.
+
+Closed opt-in test selector: off (explicit fresh-run skip), record or verify;
+unknown values fail. Commit the instrument before record so its producer commit
+and complete server/balance Git tree identities name actual committed code/data.
+Record requires clean tracked server/balance inputs and no untracked inputs in
+those trees. Record runs the real full producer before H2, validates complete
+population and recomputed aggregate including failure arrays, then exclusively
+creates all three declared outputs (never overwrite). A partial write is invalid,
+not completion. The companion binds raw H1/H2 SHA-256, producer commit/tree ids,
+kernel version, runtime identity and census. Metadata alone is not freshness.
+
+Static verification resolves recorded Git objects and rederives aggregate/H2
+from the admitted report; clearly labelled historical-artifact validation, not
+a fresh run. Full verify requires the same clean source/data trees, reruns all97
+and byte-compares both outputs. Different producer trees must fail, not silently
+refresh provenance. No timing thresholds or limited populations substitute.
+
+Negative controls: altered raw bytes/hashes, schema/count/source metadata,
+changed aggregate values, missing/duplicate runs, changed H2 result/envelope/
+grid and producer identity must refuse. Demonstrate compiling guard omissions
+for report binding, aggregate/H2 recomputation and producer-tree admission;
+restore exact source hashes only after the same handles terminate. Fast harness,
+cold core/vet and focused cold committed-HEAD tests follow; full CI/SQL/browser
+remain unclaimed. Generated artifacts are the explicitly authorized measurement
+outputs while tests run; no manual source/tracking/probe edits while any handle
+lives. Designated Claude full-span review remains separate. No box flip.
