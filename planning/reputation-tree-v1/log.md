@@ -8608,3 +8608,36 @@ kernel/CI/checkbox/owner-body/cleanup/archive/publish/deploy/push change.
 Previous goal turn progress; this turn progress, proper full1.0 goal active.
 All prior owner/author/environment/release holds and unanswered cache request
 remain; a running cached SQL service does not erase the capacity problem.
+
+### Offered-plan replay supplement — local first-filter 2026-10-06
+
+Review by: Codex (implementer self-first-filter)
+Recorded by: Codex
+Reviewed range: c3ab42d0..a7ce3f7a (five commits, twelve paths).
+Verdict: locally approved; NOT designated cross-party approval.
+
+Read full339-line Go producer/negative test and142-line TS consumer, all scope
+declarations/refinement, Make generation-only lane and docs/ledger/live records.
+Normal Go compares the entire generated9020-line fixture byte-for-byte; TS
+compares ten Company and ten Founder arms, eight applied/two rejected each,
+complete receipts/state/events/pins. Independent fixed payout/starter/bonus/
+ownership/offer/refusal controls survive source restoration. Initial scaffold,
+canonical-vs-external-request and strict typing errors remain disclosed. Initial
+no-tests selector is rejected as evidence. Rejected-Founder arms were genuinely
+added after census/predeclaration, not retroactively claimed by eight-arm work.
+
+Prospective-credit/generation, TS cost and rejected-Founder delta source faults
+discriminate as recorded; exact hashes restore. Serial first-case stopping and
+later Founder comparisons not reached by TS fault are explicitly bounded.
+Full relevant cold Go/vet, strict TS/Svelte,8186 client pass/339 skips and real
+SQL35/119/no skips retain their scope; browser/fullCI/release remain unproved.
+Original shared corpus unchanged9cd79e; production/migration/balance/copy/epoch/
+kernel/CI/RFC diff empty7522b4; whitespace clean88a503. Append-only Reputation
+and roadmap logs preserve committed prefixes (ee4cf9/c26048). Clean7f3592.
+No acceptance checkbox/status/owner copy change or source defect claim.
+
+Claude's designated pass must cover full new span afterc3ab42d0 INCLUDING
+this record edge; earlier independent implementation/supplement spans remain
+pending. This first-filter never archives or labels itself cross-party. Next
+accepted work: remaining R6 refusal/next-bundle activation census, then
+predeclare missing evidence. Proper full1.0 goal remains active/progress.
