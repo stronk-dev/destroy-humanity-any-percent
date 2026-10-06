@@ -6208,3 +6208,32 @@ and era. Full range after b8ee639f requires Claude's designated pass through
 final tracking/self-record edge; earlier spans remain independent. No checkbox,
 RFC acceptance/archive, cleanup, retune, mint, publication/deployment/push or
 goal completion. Concrete host behavior and discriminating evidence progressed.
+
+## 2026-10-06 — Self-first-filter fixture coordinate finding
+
+Full code/test diff3ec1d9 inspection finds controlled rejection metadata always
+uses current_revision7: that is wire-valid but incoherent for a first conflict
+whose subsequent snapshot is8, and for the second rejected intent sent at8.
+Before editing, bound repair to adding a fixture revision argument: conflict
+receipt current_revision8, retry invalid receipt at its request's exact expected
+revision. No assertion/source/effect/copy change. Earlier baseline/probe failures
+remain evidence of their named UI defects, not server-coordinate validation.
+Rerun host+child114, shared control, types and unitclient before final self-filter.
+
+Coordinate-corrected native d5439f/94a261,session4183 terminal exit0:114/114;
+shared040f72/8e79fe,session30505 exits0:two selected/44 skips. Both automatic
+performance follow-ons one selected pass/22 skips. Cold types/client fa7ce2/
+7baf90,session51086 exits0:zero errors/warnings,8106 passes/188 native skips,
+91 passed/18 skipped files. Earlier probe metadata limitation remains disclosed;
+assertions/source unchanged, no retrospective server-coordinate proof claimed.
+Whole-root vet f4e10c/54b4cb,session99210 terminal exit0.
+
+Read-only formatter check e6c70b lists server/copykeys/generated.go. Baseline
+b8ee639f streamed through gofmt -d f2d80f also exits1 with All/CompanionKeys body
+formatting differences. This is inherited generator-output debt RP-281; do not
+format only generated output and break canonical generation, or quietly add a
+Go executable dependency to client CI. Separately predeclare paired template/
+output canonicalization and generation negatives in its tooling lane. This R9
+range changes only All() membership, verified666cf4; not gofmt/all-CI green.
+All handles terminal. Next accepted UI work remains RP-279 costs, with RP-281
+explicitly queued rather than hidden. Cross-party/full1.0 holds remain.

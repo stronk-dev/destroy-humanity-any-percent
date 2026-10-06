@@ -24,6 +24,9 @@ all prior spans remain independent. Self-first-filter cannot archive/approve.
 node state and both eras, including confirmation/pending/replacement; retain
 published amount formatting and owner-copy boundaries. No cost-only Buy text
 substituted for persistent row cost. No new numeric mechanics or mint.
+RP-281 inherited generator-output formatting debt is queued separately: paired
+template/output canonicalization and generation negatives, never hand-formatting
+the generated output alone or adding a Go dependency to client CI silently.
 **HELD:** complete native/minted-player AC12/SQL/AC15, author/data/H3/H4/H5/R11,
 owner prose/adoption, capacity/deployment, all reviews and full nine-tier1.0.
 No numeric kernel161/balance/transport/security/CI policy change, checkbox,

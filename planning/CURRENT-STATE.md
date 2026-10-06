@@ -16,6 +16,8 @@ remain historical. Types/build8106 units/boundaries/copy/manifest pass; RP-131
 history stays RED, Firefox unexecuted. Full span afterb8ee639f needs Claude.
 Next RP-279 persistent Amount costs. No owner-prose/epoch/kernel/CI-policy or
 release promotion. [Evidence](reputation-tree-v1/log.md).
+Go vet passes; RP-281 records inherited generated-copy formatting debt, not
+formatter-green evidence. A paired generator/output repair needs its own range.
 
 Previous runtime checkpoint: RP-277's Reputation purchasing-row busy state is
 locally corrected under294a1b08. Native baseline and four compiling omissions

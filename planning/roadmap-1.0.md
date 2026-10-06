@@ -16,6 +16,8 @@ artifacts historical. Types/build8106 units/boundaries/copy/manifest pass; RP-13
 Firefox remain. Whole span afterb8ee639f needs Claude. Next RP-279 all-state
 Amount cost diagnosis; full nine-tier/platform1.0 stays active.
 [Evidence](reputation-tree-v1/log.md).
+Go vet passes; inherited generated-copy formatting debt RP-281 is separately
+queued, with no formatter-green claim or unscoped generator change.
 
 **Previous runtime checkpoint (2026-10-06):** RP-277 row-busy correction under
 294a1b08 fails32 native cases first and under four compiling omissions; exact

@@ -111,8 +111,8 @@ async function submit(row: HTMLLIElement, key: string): Promise<void> {
   expect(document.activeElement).toBe(row.querySelector("button"));
   await userEvent.keyboard(key); await settle();
 }
-function rejection(intentID: unknown, category: Category, detail = rawDetail) {
-  return { current_revision: 7, intent_id: intentID, outcome: "rejected", rejection: { category, detail } };
+function rejection(intentID: unknown, category: Category, detail = rawDetail, currentRevision = 7) {
+  return { current_revision: currentRevision, intent_id: intentID, outcome: "rejected", rejection: { category, detail } };
 }
 function errorText(row: Element, category: Category, era: CopyEra): void {
   const status = row.querySelector("[role=status]");
@@ -146,7 +146,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
             expect(rows.filter((row) => row.getAttribute("aria-busy") === "true")).toEqual([rows[0]]);
             controls(target, true);
             const detail = category === "unaffordable" ? "reputation" : rawDetail;
-            boundary.deliverIntent(status === 409 ? { category, detail } : rejection(boundary.requests[0]!.intent_id, category, detail), status);
+            boundary.deliverIntent(status === 409 ? { category, detail } : rejection(boundary.requests[0]!.intent_id, category, detail, category === "revision_conflict" ? 8 : 7), status);
             if (category === "revision_conflict") {
               await expect.poll(() => boundary.snapshotCalls).toBe(2);
               await settle(); controls(target, true);
@@ -167,7 +167,7 @@ for (const [tier, era] of [[0, "era_1995"], [1, "era_2000"]] as const) {
             expect(boundary.requests).toHaveLength(2);
             expect(boundary.requests[1]).toMatchObject({ kind: "purchase_reputation_node", node_id: ids[1], expected_revision: category === "revision_conflict" ? 8 : 7 });
             expect(boundary.requests[1]!.intent_id).not.toBe(boundary.requests[0]!.intent_id);
-            boundary.deliverIntent(rejection(boundary.requests[1]!.intent_id, "invalid"));
+            boundary.deliverIntent(rejection(boundary.requests[1]!.intent_id, "invalid", rawDetail, category === "revision_conflict" ? 8 : 7));
             await expect.poll(() => rows[1]!.hasAttribute("aria-busy")).toBe(false);
             await settle(); errorText(rows[1]!, "invalid", era); silent(rows[0]!);
             expect(document.activeElement).toBe(rows[1]);
