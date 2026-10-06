@@ -8282,3 +8282,28 @@ log bytes are restored as the exact prefix relative6dc16a58. No historical
 entry rewritten, no hash amendment. This is a process slip caught by inspection,
 not an assertion that the original commit was append-only. Exact final range
 must include the correction and final first-filter edge.
+
+### R6 request supplement first-filter — 2026-10-06
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range: `6dc16a58..2d97c7ec` (four commits; all nine changed paths).
+Verdict: approved as local test/docs/planning first filter ONLY.
+Inspected full208-line test and all ledger/docs/plan/live records. Independent
+literal canonical bytes bind field order/presence; independent SHA expectation
+does not call the production helper. Pairing covers both live plan commands,
+and closed arms reject. Runtime lookup/affordability is deliberately outside
+syntax population. Reversal vectors, not merely inequality, catch wrong parsed
+order. All six compiling negatives fire with controls retained and exact source
+restoration. Nested controls absent from hash negative are not green-labelled.
+Focused cold and declared SQL populations run; no fullCI or browser claim.
+
+Actual diff caught and forward-corrected d51a95e4's misplaced new roadmap
+entry. Final both logs retain exact committed prefixes relative6dc16a58;
+whitespace and empty production/migration/balance/copy/epoch/CI/RFC diff checks
+pass. No acceptance checkbox/status promotion. No authority or policy was
+invented to make green tests. Designated Claude review must cover full span
+after6dc16a58 INCLUDING this edge and record correction; earlier independent
+spans remain pending. This first-filter cannot archive or approve itself as
+cross-party review. Next accepted scope: separately predeclare real SQL
+Accept Offer with plan/replay population. Proper1.0 goal remains active/progress.
