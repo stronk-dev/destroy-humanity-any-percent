@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
+import "./verify-copy-generation-fixtures.mjs";
+
 import {
   assertDenylistExtension,
   assertDenylistRecordsStable,

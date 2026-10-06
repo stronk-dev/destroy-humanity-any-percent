@@ -6883,3 +6883,11 @@ not restamped or claimed fresh. Full new span after3df3ff32 needs Claude;
 all earlier ranges remain independent. No checkbox/full AC12/AT/SQL/mint/owner
 copy/epoch/RFC/archive/push/cleanup/balance/formula/price/CI/kernel promotion.
 Full proper nine-tier/platform1.0 goal remains active.
+
+## 2026-10-06 — RP-281 unchanged-generator diagnostic
+
+1fa064 terminal1: independent empty whole-output golden fails on both one-line
+function bodies and the extra blank before All. The baseline is fail-fast;
+remaining four goldens/collision/corruptions do not execute yet, not claimed
+passed. No Go dependency, generator/output correction or live handle. Commit
+fixture and existing-verifier import before changing the template.
