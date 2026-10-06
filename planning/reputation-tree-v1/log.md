@@ -6940,3 +6940,28 @@ formula/price/CI/security or owner-authority change, box flip, archival/push/
 cleanup/release claim. Full span after3df3ff32 needs Claude independently of
 earlier ranges. Next ground RP-284 Run End/new-route consumer and author bridge;
 proper nine-tier/platform1.0 remains active.
+
+## 2026-10-06 — Copy generation range self-first-filter
+
+**Review by:** Codex (implementer self-first-filter, NOT designated review).
+**Recorded by:** Codex.
+**Reviewed range:** `3df3ff32..903c901d`, four commits/twelve paths, including
+predeclaration, test/verifier wiring, paired template/output/docs and all trackers.
+**Verdict:** first-filter passes; requires Claude's independent exact full span
+including this record edge. Earlier ranges remain independent; no archive.
+
+Complete non-generated diff2856f8 and scopea46154 inspected. All generated Go
+bytes inspected by independent exact gofmt(baseline)-equivalence, not a visual
+sample of the giant list. Full check also confirms all other generated artifacts
+unchanged. Goldens independently hardcode output; input order/subset separation/
+empty/default/collision are covered; imported fixture runs before ordinary
+generation/history guard and adds no formatter process. Actual template and
+output faults fire, not merely corruptions of the fixture itself. No prior
+assertion removed, history/owner-prose/CI/numeric policy modified, or report
+producer restamped. Baseline/core sandbox failure and narrower successful
+reexecution retain distinct results; usual SQL skips and RP-131/Firefox remain.
+Tracker append initially matched an older repeated Evidence line; detected by
+diff before commit, moved to EOF, and39de4e byte-prefix check proves both logs
+append-only. Whitespace f20b75 passes; current tree otherwise clean. No checkbox
+flip or full game/platform acceptance. Next separate RP-284 consumer/author
+bridge grounding; full1.0 goal stays active.
