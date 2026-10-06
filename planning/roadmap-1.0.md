@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness correction (2026-10-06):** RP-269 repairs first-hour Exit
+**Latest harness correction (2026-10-06):** RP-270 repairs shared H3 aggregate
+coordinate admission; four independent corruptions and a compiling omission
+discriminate, H2's independent guard stays green. Cold31 H3/45 H2/28 H4
+diagnostic children, legacy checks and fast/core/vet pass. Complete five-arm
+485-run/3395-clock study finishes313.732s: neutrality passes, tiny0/679 versus
+strong289; the exact H3 criterion stays RED. Test-only, kernel161/live math/
+balance/reports/corpus/CI policy unchanged. Whole span after0a486d79 needs
+Claude. Next fresh H1/H2/lineage; RP-268/RP-271 career-data/purchase wording
+requires author reconciliation. Fired H3/H4, H5, SQL/capacity, prior reviews
+and the full nine-tier/platform goal remain. No release promotion or shortcuts.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous harness correction (2026-10-06):** RP-269 repairs first-hour Exit
 admission and the pinned H2 study boundary, retaining legal generic subsets.
 Forty-five diagnostic children plus legacy threshold/H1/H3 tests pass; six
 compiling omissions discriminate and restore exactly. Retained30-point report

@@ -3024,3 +3024,22 @@ db8398a3..97d916eb and prior spans remain independent. Next RP-270's shared
 H3 aggregate-source gap, then fresh H1/H2/lineage and RP-268 grounding. Fired
 H3/H4, H5, actual SQL/capacity and the full nine-tier/platform/release objective
 remain. Goal active; no box, waiver, retune, mint, archive, cleanup or push.
+
+## 2026-10-06 — Shared sensitivity-source admission repaired and remeasured
+
+RP-270 under3d117b39/9ced05cf adds four source-coordinate refusals to shared
+H3 admission. Initial blank-header fixture attempt is disclosed and refined
+before the valid-source baseline. Compiling omission fires all four cases;
+H2 remains defended independently. Cold31 H3/45 H2/28 H4 diagnostic children,
+legacy gates and fast/core/vet pass. [Exact evidence](reputation-tree-v1/log.md).
+
+Complete current five-arm study finishes313.732s:485 runs/3395 clocks, source
+admission and neutrality pass, tiny0/679 versus strong289. Exact H3 criterion
+remains RED, no larger substitute/waiver. Test-only, kernel161/live math/balance/
+reports/corpus/CI policy unchanged. Full span after0a486d79 needs Claude;
+all prior ranges remain independent. Next fresh H1/H2/current-producer lineage
+under RP-263, retaining old v1 bytes. RP-268's missing scenario/policy artifact
+now also routes RP-271's each-Exit vs scripted-first-no-plan ambiguity to the
+RFC author; no invented mechanic or owner ruling. Fired H3/H4, H5, actual SQL/
+capacity and full nine-tier/platform/release objective remain. Goal active;
+no checkbox, retune, mint, archive, cleanup, push or release promotion.

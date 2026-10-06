@@ -24,6 +24,10 @@ func validateReputationFirstHourPopulation(suite *FirstHourSuite, experiment Fir
 		report.PolicyHash != suite.PolicyHash || report.ConstantsHash != suite.ConstantsHash || report.Experiment != experiment {
 		return fmt.Errorf("H3 population source or experiment mismatch")
 	}
+	if report.Aggregate.SchemaVersion != 1 || report.Aggregate.ScenarioID != suite.Scenario.ID ||
+		report.Aggregate.ScenarioHash != suite.ScenarioHash || report.Aggregate.ConstantsHash != suite.ConstantsHash {
+		return fmt.Errorf("H3 aggregate source mismatch")
+	}
 	expected := map[RunKey]bool{}
 	for _, spec := range suite.Scenario.Runs {
 		start, err := strconv.ParseUint(spec.SeedStart, 10, 64)
@@ -133,7 +137,8 @@ func TestReputationFirstHourSensitivityOracle(t *testing.T) {
 			report.Runs = append(report.Runs, run)
 		}
 	}
-	report.Aggregate.RunCount = len(report.Runs)
+	report.Aggregate = AggregateReport{SchemaVersion: 1, ScenarioID: suite.Scenario.ID, ScenarioHash: suite.ScenarioHash,
+		ConstantsHash: suite.ConstantsHash, RunCount: len(report.Runs)}
 	clone := func() FirstHourExperimentReport {
 		data, err := json.Marshal(report)
 		if err != nil {
@@ -149,29 +154,33 @@ func TestReputationFirstHourSensitivityOracle(t *testing.T) {
 		t.Fatal(err)
 	}
 	mutations := map[string]func(*FirstHourExperimentReport){
-		"empty":             func(r *FirstHourExperimentReport) { r.Runs = nil },
-		"missing":           func(r *FirstHourExperimentReport) { r.Runs = r.Runs[1:] },
-		"duplicate":         func(r *FirstHourExperimentReport) { r.Runs[0] = r.Runs[1] },
-		"extra":             func(r *FirstHourExperimentReport) { r.Runs = append(r.Runs, r.Runs[0]) },
-		"aggregate":         func(r *FirstHourExperimentReport) { r.Aggregate.RunCount-- },
-		"source":            func(r *FirstHourExperimentReport) { r.ConstantsHash = "wrong" },
-		"run-source":        func(r *FirstHourExperimentReport) { r.Runs[0].Key.ConstantsHash = "wrong" },
-		"policy":            func(r *FirstHourExperimentReport) { r.Runs[0].PolicyHash = "wrong" },
-		"experiment":        func(r *FirstHourExperimentReport) { r.Experiment.GeneratedBeigeTowers++ },
-		"failed":            func(r *FirstHourExperimentReport) { r.Runs[0].Outcome = "failed" },
-		"truncated":         func(r *FirstHourExperimentReport) { r.Runs[0].InvariantFailures = []string{"guard exhausted"} },
-		"no-transitions":    func(r *FirstHourExperimentReport) { r.Runs[0].TransitionCount = 0 },
-		"no-ending":         func(r *FirstHourExperimentReport) { r.Runs[0].Ending = nil },
-		"null-clock":        func(r *FirstHourExperimentReport) { r.Runs[0].Milestones[0].FirstMS = nil },
-		"negative-clock":    func(r *FirstHourExperimentReport) { *r.Runs[0].Milestones[0].FirstMS = -1 },
-		"missing-clock":     func(r *FirstHourExperimentReport) { r.Runs[0].Milestones = r.Runs[0].Milestones[1:] },
-		"marker":            func(r *FirstHourExperimentReport) { r.Runs[0].Milestones[0].ID = "wrong" },
-		"missing-exits":     func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits = nil },
-		"lifetime":          func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].LifetimeValue = "NaN" },
-		"paid":              func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].ReputationDelta = 1 },
-		"run-sequence":      func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].RunSeq = 2 },
-		"exit-kind":         func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].ExitType = "collapse" },
-		"founder-ownership": func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].AvailableAfter = 1 },
+		"empty":               func(r *FirstHourExperimentReport) { r.Runs = nil },
+		"missing":             func(r *FirstHourExperimentReport) { r.Runs = r.Runs[1:] },
+		"duplicate":           func(r *FirstHourExperimentReport) { r.Runs[0] = r.Runs[1] },
+		"extra":               func(r *FirstHourExperimentReport) { r.Runs = append(r.Runs, r.Runs[0]) },
+		"aggregate":           func(r *FirstHourExperimentReport) { r.Aggregate.RunCount-- },
+		"aggregate-schema":    func(r *FirstHourExperimentReport) { r.Aggregate.SchemaVersion++ },
+		"aggregate-id":        func(r *FirstHourExperimentReport) { r.Aggregate.ScenarioID = "invented" },
+		"aggregate-scenario":  func(r *FirstHourExperimentReport) { r.Aggregate.ScenarioHash = "invented" },
+		"aggregate-constants": func(r *FirstHourExperimentReport) { r.Aggregate.ConstantsHash = "invented" },
+		"source":              func(r *FirstHourExperimentReport) { r.ConstantsHash = "wrong" },
+		"run-source":          func(r *FirstHourExperimentReport) { r.Runs[0].Key.ConstantsHash = "wrong" },
+		"policy":              func(r *FirstHourExperimentReport) { r.Runs[0].PolicyHash = "wrong" },
+		"experiment":          func(r *FirstHourExperimentReport) { r.Experiment.GeneratedBeigeTowers++ },
+		"failed":              func(r *FirstHourExperimentReport) { r.Runs[0].Outcome = "failed" },
+		"truncated":           func(r *FirstHourExperimentReport) { r.Runs[0].InvariantFailures = []string{"guard exhausted"} },
+		"no-transitions":      func(r *FirstHourExperimentReport) { r.Runs[0].TransitionCount = 0 },
+		"no-ending":           func(r *FirstHourExperimentReport) { r.Runs[0].Ending = nil },
+		"null-clock":          func(r *FirstHourExperimentReport) { r.Runs[0].Milestones[0].FirstMS = nil },
+		"negative-clock":      func(r *FirstHourExperimentReport) { *r.Runs[0].Milestones[0].FirstMS = -1 },
+		"missing-clock":       func(r *FirstHourExperimentReport) { r.Runs[0].Milestones = r.Runs[0].Milestones[1:] },
+		"marker":              func(r *FirstHourExperimentReport) { r.Runs[0].Milestones[0].ID = "wrong" },
+		"missing-exits":       func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits = nil },
+		"lifetime":            func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].LifetimeValue = "NaN" },
+		"paid":                func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].ReputationDelta = 1 },
+		"run-sequence":        func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].RunSeq = 2 },
+		"exit-kind":           func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].ExitType = "collapse" },
+		"founder-ownership":   func(r *FirstHourExperimentReport) { r.Runs[0].ReputationExits[0].AvailableAfter = 1 },
 	}
 	for name, mutate := range mutations {
 		t.Run(name, func(t *testing.T) {

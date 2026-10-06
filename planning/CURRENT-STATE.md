@@ -4,14 +4,27 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest harness correction: RP-269 admits exactly the ordered first-hour Exit
+Latest harness correction: RP-270's shared H3 oracle now rejects aggregate
+source-coordinate mismatches. Valid-fixture baseline and compiling omission
+discriminate all four fields; H2 retains independent defense. Cold31 H3/45 H2/
+28 H4 diagnostic children plus legacy checks, fast/core/vet pass. Full five-arm
+485-run/3395-clock study completes313.732s: neutrality passes, tiny changes0/679,
+strong289; exact H3 criterion remains RED. Test-only, kernel161/live math/balance/
+reports/corpus/CI policy unchanged; full span after0a486d79 needs Claude. Next
+fresh H1/H2/report-lineage work. RP-268's missing artifact now also routes to
+RP-271's each-Exit vs scripted-first-no-plan wording, requiring author body
+reconciliation before policy changes. H3 author criterion reconciliation,
+H4/H5, SQL/capacity, all prior reviews and full1.0 remain. No waiver, retune,
+box, mint, archive, cleanup or push. [Evidence](reputation-tree-v1/log.md).
+
+Previous harness correction: RP-269 admits exactly the ordered first-hour Exit
 pair and binds the pinned H2 caller to declared full-study source/population
 and aggregate coordinates. Forty-five diagnostic children, legacy threshold/
 H1/H3 tests and six compiling omission probes pass/discriminate; exact source
 restoration and unchanged retained30-point report verified. Cold fast/core/vet
 pass. Generic legal subsets still calculate. Harness-only, kernel161/live math/
 balance/reports/corpus/CI policy unchanged; full span after9f5b81a0 needs Claude.
-Next RP-270's separately observed H3 aggregate-source gap, then fresh H1/H2/
+Its original next queue is RP-270's separately observed H3 aggregate-source gap, then fresh H1/H2/
 report lineage and RP-268 artifact-authority grounding. Historical recalculation
 is not fresh production or calibration; H3/H4 failures, H5 gaps, SQL/capacity,
 all prior reviews and full1.0 remain. No box, waiver, retune, mint, archive,

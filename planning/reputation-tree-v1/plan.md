@@ -145,6 +145,15 @@ threshold retune is measured and reported, then ratified by owner SHA).
   vet pass and retained30-point measurement remains byte-identical. Harness-
   only, kernel161 unchanged; whole span after9f5b81a0 needs Claude. Next RP-270's
   shared H3 aggregate-source gap, then fresh H1/H2/lineage and RP-268 grounding.
+  RP-270 under3d117b39/9ced05cf now corrects that coordinate admission:31 H3/
+  45 H2/28 H4 diagnostic children and legacy checks pass; compiling omission
+  fires four H3 corruptions while H2 remains defended. Exact source restoration,
+  cold fast/core/vet pass. Full485-run/3395-clock study completes313.732s:
+  neutrality passes, tiny0/679 versus strong289; H3 criterion remains RED.
+  Test-only, kernel161/old reports unchanged; whole span after0a486d79 needs
+  Claude. Next fresh H1/H2/lineage. RP-271 requires author reconciliation of
+  each-Exit purchase wording vs scripted-first plan prohibition before RP-268's
+  missing data artifact can fix policy authority. No criterion/box promotion.
   Fresh H1/H2/report provenance/reproduction remains separate; no retuning or
   report-regeneration authority here. No checkbox flipped.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.

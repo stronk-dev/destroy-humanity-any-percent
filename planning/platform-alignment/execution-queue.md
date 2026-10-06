@@ -1,5 +1,29 @@
 # Executable queue
 
+## Shared H3 aggregate admission corrected locally — 2026-10-06
+
+RP-270 under3d117b39/9ced05cf now refuses aggregate schema/id/hash/constants
+mismatches. Initial zero-header fixture attempt is disclosed; the refined valid
+fixture reproduces four clean lost refusals before the fix. Compiling guard
+omission fires all four H3 cases; H2 remains green through independent defense.
+Cold31 H3/45 H2/28 H4 diagnostic children and legacy checks pass, as do fast/
+core/vet. Complete485-run/3395-clock study finishes313.732s: source admission
+and neutrality pass, tiny0/679 versus strong289; exact H3 criterion stays RED.
+
+**READY FOR CLAUDE:** full new span after0a486d79, both predeclarations and
+implementation/records. RP-2699f5b81a0..677deb07, RP-264db8398a3..97d916eb and
+earlier ranges remain independent. No archival on a self-first-filter.
+**NEXT SAFE ACCEPTED WORK:** fresh H1/H2/current-producer report lineage under
+RP-263, retaining historical v1 bytes and separating proposed thresholds from
+owner adoption. Predeclare the experiment/artifact authority before generating.
+**AUTHOR RECONCILIATION:** RP-271 pairs R10 each-Exit purchase wording with R6's
+scripted-first plan prohibition; resolve that intent before changing/fixing the
+RP-268 career-data artifact or its policy. H3's tiny criterion also remains RED.
+**STILL OPEN:** H4's six ties, H5 epsilon/run4/drift, actual SQL/capacity, prior
+reviews and full1.0. Test-only, kernel161/balance/reports/corpus/CI policy unchanged.
+No box, waiver, retune, mint, archive, cleanup or push.
+[Evidence](../reputation-tree-v1/log.md).
+
 ## H2 threshold source/Exit admission corrected locally — 2026-10-06
 
 RP-269 under87d526ed/e3620cda requires the ordered two-Exit first-hour pair
@@ -13,7 +37,7 @@ fresh H1 production, current calibration or owner threshold ratification.
 **READY FOR CLAUDE:** complete new span after9f5b81a0, both predeclarations,
 implementation/records and subsequent self-first-filter; previous RP-264 range
 db8398a3..97d916eb and every earlier range remain independent.
-**NEXT SAFE ACCEPTED WORK:** predeclare/repair RP-270's shared H3 aggregate-source
+**ORIGINAL NEXT QUEUE:** predeclare/repair RP-270's shared H3 aggregate-source
 gap, then fresh H1/H2/source-lineage work and RP-268 artifact-authority grounding.
 **STILL OPEN:** fired H3/H4, H5 epsilon/run4/drift, actual SQL/capacity, prior
 reviews and full1.0 floor. Harness-only, kernel161/live math/balance/reports/

@@ -4809,3 +4809,70 @@ change, report source regeneration or new authority. Then rerun the unchanged
 oracle: legal fixture must still pass and all four isolated coordinates must
 fail refusal. Only after that terminal evidence add the predeclared guard and
 execute its omission/full study. Kernel161 and all live/report bytes unchanged.
+
+Clean diagnostic74bcfc..954115,session16589,terminal exit2,0.353s confirms
+all four isolated coordinate refusals lost from the now-valid synthetic source;
+existing27 controls pass. Add only the predeclared shared aggregate-coordinate
+guard. This is source admission, not aggregate-value recomputation or a change
+to the exact tiny sensitivity criterion. H2 retains its independent guard.
+
+## 2026-10-06 — RP-270 shared admission repaired; full study criterion still RED
+
+All handles terminal before this record. Four new H3 coordinate cases plus
+properly initialized positive aggregate fixture and shared coordinate guard
+are the only source edits. Producer/math/selection/horizon/copy/CI unchanged.
+Focused380b18..168c24,session48036,terminal exit0,0.436s passes31 H3,45 H2,
+28 H4 diagnostic children and the three direct legacy gates. Guard omission
+f507bb..e75fa9 compiles and exits2,0.576s; exactly four H3 corruptions lose
+refusal, all27 prior controls pass. Source1c6c17e45356fc0d52368ce71a17924b0ae5fa3d56cf726b4a465ca44e1f3ade
+restores exactly (533367); normal1cb2a0 exits0,0.217s.
+
+After the full study, repeat that same omission with H2 controls included:
+d11d0a..accfc1 exits2 with exactly four H3 failures while all45 H2 diagnostic
+children and both legacy threshold tests stay green. This is the same probe
+repeated for defense-in-depth, not two independent omissions. H2's independent
+aggregate guard survives the missing shared H3 guard; it does not establish
+that shared H3 admission is present. f9b208 restores identical source hash;
+normal42ccd2 exits0,0.299s. No compiler failures/panics or hidden source drift.
+
+Cold fast0204ec..2a8c53..2ba373,session55230,terminal exit0:harness67.552s,
+role0.175s,Commons0.453s and guard. Core76b91b..17ad03,session52391,terminal
+exit0:vet/full cold core, production43.989s,transport13.222s,save0.287s,
+numeric vectors and unchanged generated API/formulas. Redundant Pitch alias
+cached after its full package ran cold. Narrow veta25dd2 exits0.
+
+Full current-producer study56adee..96dfcc,session19726,terminal exit2,
+313.732s (test313.61s), not cancelled. All five arms complete and pass strengthened
+source/aggregate admission: each97 runs/679 clocks, total485/3395. Retained-
+epoch8/paired-none/unit neutrality passes; tiny changes0 clocks, strong289.
+Only exact tiny-factor sensitivity criterion fires. No larger-factor substitute.
+Independent full-log parser confirms each arm97/679 and epoch8/unit/tiny0
+clock changes vs none, strong289. Raw outputs retained during the turn; logged
+chunk coordinates support replay, not a newly generated JSON lineage artifact.
+
+Source headers unchanged: base epoch8baa89050, paired fixture3625eddb,
+scenario18a6f16a,policye5e5de70,threshold1e12. Actual Reference none/unit
+lifetime1.4605083614e6/3.54431965065e6; tiny1.46050991148e6/3.54432330408e6;
+strong3.5053281185e6/7.66194816889e6. All paid0/0. Tiny clocks remain
+[0,10000,66992,356000,900000,346000,2700000], strong
+[0,10000,44072,182000,900000,177000,2700000]. H3 author reconciliation remains
+required; lifetime/transition changes are not a substitute milestone.
+
+3bc738 verifies source hash and retained H1/H4/H5/H2 report SHA values unchanged.
+No fresh SQL/client/browser/hosted or full CI claim; RP-131 remains historical
+RED, prior H4 six ties/H5 drift remain. Kernel161/live product/math/balance/
+schema/migration/CI/owner-copy/corpus unchanged. No edits while any handle lived.
+Whole span after0a486d79, both predeclarations and implementation/records, needs
+Claude independently of all previous spans. No checkbox/mint/archive/push.
+
+Read-only authority sweep during live measurement (no edits):3d47c7/bc5bef/
+d81848/482566 shows career purchases occur only at run2 collapse, not applyEnding's
+scripted-first credit/reset. R10 H4 says at each Exit, but85cb09 explicitly rules
+command-replaced scripted_first never carries a plan (R6);482208 also preserves
+next-run-only effects. Record RP-271 immediately after handles terminate as
+normative coverage ambiguity, NOT a confirmed runtime defect. Do not invent a
+scripted plan or freeze the current assumption into RP-268's absent career data.
+The RFC author must reconcile plan-bearing-vs-all-Exit intent. No owner ruling
+was inferred and no message sent to Claude. Other accepted work remains: predeclare
+fresh H1/H2/report lineage under RP-263 with old v1 bytes preserved. Goal active;
+this turn made three bounded repairs and fully measured their remaining failures.

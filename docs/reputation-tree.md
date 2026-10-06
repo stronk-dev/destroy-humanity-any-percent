@@ -552,7 +552,7 @@ make test-go GO_PACKAGES='./harness -args -reputation-first-hour-observe=all' GO
 Default execution explicitly skips this full study; an unknown selector fails.
 It never updates retained reports. The ordinary fast lane instead executes a
 small, explicitly single-Reference-row consumer control and an oracle population:
-23 malformed populations reject, a valid changed clock is accepted, unchanged
+27 malformed populations reject, a valid changed clock is accepted, unchanged
 sensitivity rejects, and career/Tier2 input overrides reject. Compiling input,
 wrong-factor, census and sensitivity omissions make these controls fail. That
 fast control is not the full study and does not make H3 green.
@@ -621,5 +621,24 @@ two-row generic subset. Six independent compiling omissions fail, including
 dropping the previous Founder level, then restore exactly. The retained 30-point
 measurement reproduces byte-identically. This is historical-source recalculation,
 not fresh H1 production, current threshold calibration or owner ratification.
-Full-source lineage and the separate H3 aggregate-coordinate gap remain open;
+Full-source lineage remains open; the H3 aggregate-coordinate gap is locally
+corrected as described below. The original six omission probes were executed
+at the H2 repair checkpoint, before adding the shared H3 coordinate guard;
+the H2 guard is now an independent defense, not proof the shared one is present.
 no old report regeneration or H2/AC13 completion follows from this local repair.
+
+The shared H3 population oracle now also checks aggregate schema, scenario id,
+scenario hash and constants hash against its declared suite. Its synthetic
+positive fixture carries valid aggregate coordinates before each field is
+corrupted independently; a blank-header fixture is not a valid positive source.
+The compiling guard omission fails all four H3 cases while the H2 boundary stays
+green through its separate admission. Aggregate value arrays are not re-derived.
+The complete current five-arm study rerun observes 485 runs/3,395 clocks and
+passes source admission and neutrality, but tiny sensitivity remains 0/679
+against strong 289/679. This does not make H3 or AC13 green.
+
+The separate missing H4 career-data artifact cannot silently freeze the current
+test policy: R10 says purchases at each Exit, whereas R6 forbids a plan on the
+scripted first Exit. The harness currently purchases after run2's collapse.
+That coverage/intent ambiguity needs RFC-author body reconciliation; no new
+scripted-first behavior or owner choice is inferred by the implementer.
