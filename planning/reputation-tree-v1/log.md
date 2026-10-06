@@ -3094,3 +3094,62 @@ Claude's designated review must cover the COMPLETE span after b6c7ebca through
 the commit recording this entry; the implementer's filter cannot substitute.
 Actual SQL reader, two-Exit purchase career, Company-run verification, remaining
 harness consumers and full R8/AC15 remain. No archive, mint, push or release.
+
+## 2026-10-06 — R8 Company-run consumer predeclaration
+
+Previous goal turn: progress (695da194/721c0ee1, fourth history control and
+executed cold verification). Current tree761128 clean at721c0ee1; no live
+check handle. Accepted R8 is authority, not the long-term board by itself.
+Grounding: existing source f9b129e36af5b536f67c7eddb8d6088c76ce5cb0b170cfeec6a5172e8a009782
+contains the terminal `reputation-starters-after-burnout`, not a subsequent
+full Company run. Its source new Company is run2/tier0/cash1e3/generated15/
+purchased0; its run_started v2 bonus is1.003. Existing plan Company rows begin
+at tier1 with no starters or frozen bonus. R8 explicitly requires this consumer;
+RP-260 is a proof gap, not a reproduced runtime/SQL defect.
+
+Test-only bounded implementation, predeclared before generation or measurement:
+
+- Start from the original source Exit's exact new-Company bytes and complete
+  pinned tree bundle. Re-execute that source Exit only as a byte-checked setup,
+  comparing receipt, ordered events and full Company output to the immutable
+  source. Use its actual post-Exit Founder and complete frozen rows.
+- Two profiles: source bonus1.003, and a unit1e0 frozen-row counterfactual with
+  identical genesis. The unit control is synthetic, not a claimed stored career.
+  Freeze contributions for the whole current run; later Founder/next-run facts
+  must not re-materialize it.
+- Exactly three applied commands per profile: one manual action after7000s,
+  cross gate.t0_to_t1 one second later, then Wind Down one second later. These
+  are explicit test clocks inside the existing24h horizon, not changed pacing,
+  bounds, active-play policy or a claim of a served player workflow. Actual
+  public command/transition boundaries execute; no direct tier/cash/gate edits.
+- Retain a separate versioned Go-authored Company-run fixture with source SHA,
+  exact genesis/pin, both profiles' canonical commands/frozen inputs, receipts,
+  ordered events and terminal full states. Normal verifier tests READ retained
+  expected bytes; they may not generate their own expected answers. An explicit
+  root Make test-selector generation flag creates it once, and a separate
+  regeneration-byte-equality test detects drift without rewriting normally.
+- Independent first-action cash check uses the source's15 units/base1 rate,
+  source1e3 grant, elapsed7000s, one base1 action and the declared frozen factor.
+  This arithmetic oracle is not another invocation of the replay transition.
+- Both honest profiles must return public verified and exact terminal state.
+  Nine corruptions per profile must refuse: removed starter cash, removed five
+  generated units, altered first factor, altered terminal factor, missing
+  terminal, log gap, wrong constants pin, altered ordinary receipt, extra event.
+  Expected verdicts: log_gap for missing terminal/sequence; constants_mismatch
+  for wrong pin; state_divergence for the others.
+- Four fixture controls: bad source SHA, missing profile, missing command,
+  altered genesis. They must reject and fire when the fixture validator is
+  bypassed. Independently compiling runtime omissions: force Reputation replay
+  factor to1; omit ordinary receipt comparison; omit ordinary event comparison;
+  omit terminal requirement. Honest controls must discriminate, including the
+  unit arm staying green under the bonus omission. Restore exact SHAs after
+  EACH terminal probe; no assertion/fixture regeneration during omissions.
+
+Scope: one new production _test.go, one additive testdata/reputation fixture,
+canonical docs and tracking. No retained runtime/kernel/balance/original-corpus/
+schema/migration/CI/copy change, epoch mint or acceptance-bound relaxation.
+Every check/probe handle terminal before source OR record edits. Full cold core
+and focused tests after restoration; local listener permission if required,
+not substituted no-op checks. Full new span after721c0ee1 needs Claude.
+Actual LoadFounderHistory, stored two-Exit career/AC15, browser/RP-131/RP-256,
+capacity, H4/H5 and remaining harness/full-nine-tier/platform work stay open.
