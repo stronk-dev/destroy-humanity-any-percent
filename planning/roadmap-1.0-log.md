@@ -2895,26 +2895,6 @@ vet/topology passes. Full H4/H5 runs reproduce retained reports unchanged in
 922.866s; H4 still fails at the same six Casual ties, H5's stated gaps remain.
 [Executed evidence](reputation-tree-v1/log.md).
 
-## 2026-10-06 — R6 request-plan boundary proof
-
-RP-297 coverage gap registered/predeclared `aad95cee`, tests `dd03be11` after
-6dc16a58. Paired Wind Down/Accept Offer size/type/ID/uniqueness/order cases,
-independent literal canonical bytes/hash, absent-versus-empty distinct identity,
-revisions/Offer ID binding and forbidden command controls. Three tests/59
-reported subcases pass; six compiling faults fail2/2/12/40/6/2, exact source
-restored after each. Hash negative prevents seven nested identity controls;
-surviving reversal inequality is not claimed as the reversal oracle.
-
-Cold focused/vet and restored whole production SQL Integration7.132s pass
-34 top-level/117 subcases/no skips. Not fullCI/history/browser/default-player
-or offer-with-plan SQL/release proof. No production correction needed; syntax64
-IDs are not64 registered/affordable nodes. Docs/ledger/live trackers reconcile;
-full range needs Claude, earlier independent spans still pending. Next separately
-predeclare missing offer-with-plan SQL/replay population. No production/copy/
-epoch/CI/checkbox/cleanup/archive/publish/deploy/push; full nine-tier/platform
-goal active and all author/environment/release holds unchanged.
-[Executed evidence](reputation-tree-v1/log.md).
-
 Harness-only, kernel160/balance/reports/runtime/schema/CI policy unchanged.
 No AC13/archival/mint or full1.0 promotion. SQL/capacity, all prior independent
 reviews and the whole nine-tier/platform objective remain. New span after
@@ -3464,4 +3444,24 @@ archival. Next accepted scope: R6 request-validation/offer-path census and
 predeclared missing populations. Cache-only approval unanswered; no cleanup/
 production/migration/balance/copy/epoch/CI/owner-body/publish/deploy/push. All
 author/environment/full nine-tier/platform holds remain; proper1.0 goal active.
+[Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — R6 request-plan boundary proof
+
+RP-297 coverage gap registered/predeclared `aad95cee`, tests `dd03be11` after
+6dc16a58. Paired Wind Down/Accept Offer size/type/ID/uniqueness/order cases,
+independent literal canonical bytes/hash, absent-versus-empty distinct identity,
+revisions/Offer ID binding and forbidden command controls. Three tests/59
+reported subcases pass; six compiling faults fail2/2/12/40/6/2, exact source
+restored after each. Hash negative prevents seven nested identity controls;
+surviving reversal inequality is not claimed as the reversal oracle.
+
+Cold focused/vet and restored whole production SQL Integration7.132s pass
+34 top-level/117 subcases/no skips. Not fullCI/history/browser/default-player
+or offer-with-plan SQL/release proof. No production correction needed; syntax64
+IDs are not64 registered/affordable nodes. Docs/ledger/live trackers reconcile;
+full range needs Claude, earlier independent spans still pending. Next separately
+predeclare missing offer-with-plan SQL/replay population. No production/copy/
+epoch/CI/checkbox/cleanup/archive/publish/deploy/push; full nine-tier/platform
+goal active and all author/environment/release holds unchanged.
 [Executed evidence](reputation-tree-v1/log.md).

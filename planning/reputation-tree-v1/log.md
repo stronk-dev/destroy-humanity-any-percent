@@ -8274,3 +8274,11 @@ IDs do not imply registered/affordable64 nodes. Full new span after6dc16a58
 needs Claude through records; earlier independent spans pending. All prior
 author/owner/Firefox/history/capacity/harness/mint/manual AT/clean-host/release
 holds remain. No cleanup/archive/publish/deploy/push; proper1.0 goal active.
+
+Record-placement correction: first-filter's actual zero-context diff shows
+d51a95e4 inserted the new roadmap checkpoint after an older identical evidence
+link, not EOF. Own new entry relocated in a forward correction; preexisting
+log bytes are restored as the exact prefix relative6dc16a58. No historical
+entry rewritten, no hash amendment. This is a process slip caught by inspection,
+not an assertion that the original commit was append-only. Exact final range
+must include the correction and final first-filter edge.
