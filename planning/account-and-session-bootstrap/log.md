@@ -559,3 +559,12 @@ ee8b2356 exclusive, including d3e7196f; implementation/records/pin all belong in
 designated review. CI observation span 6ed42d45..d3e7196f stays independent.
 No production source, accepted schema/body/policy, plan checkbox/archive/push
 change; proper 1.0 unchanged. Continue real-DB stage after safe capacity resolution.
+
+Exact substantive census span `ee8b2356..9c638cd0`, two commits / ten paths:
+shared d3e7196f CI pin/Account predeclaration edge plus 9c638cd0 test/records.
+The CI-only observation handoff is `6ed42d45..d3e7196f`, five commits / twelve
+paths, including that disclosed shared record edge. This census pin belongs to
+the Account range too; final relay supplies its literal endpoint. No reviewer
+verdict consumed either span. Review by: Codex (first-filter only). Recorded by:
+Codex. Source tree clean after substantive commit, twenty ahead of observed
+origin/main; no fetch/push/publication, deletion or acceptance performed.
