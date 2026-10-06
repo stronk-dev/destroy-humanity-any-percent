@@ -11,11 +11,13 @@ full persisted non-mutation and DB error/no-fallback controls. Actual caller-clo
 discarded-clone mutations fail and restore. Cold Go/DB/client/three-engine/performance,
 copy/manifest/topology and history-guard adversarial fixtures pass.
 
-**READY FOR DESIGNATED REVIEW, not approved:** new Codex range starts `9928a54e^`
-(`5746952d`), with exact end pinned after commit. Original Claude G6's bounded clock seam
+**READY FOR DESIGNATED REVIEW, not approved:** new Codex range `9928a54e^..6effbffb`
+(`5746952d..6effbffb`). Original Claude G6's bounded clock seam
 is CHANGES REQUIRED, not a full G6 verdict; new correction requires Claude. Previous ranges,
 RP-222's owner/author contract, RP-131 history guard and RP-218 hosted reliability stay open.
 No full Garden, public activation, whole-CI/amd64, archival or release claim.
+The committed full history guard still fails at unchanged `50a3a514` (RP-131); its CI
+checkout contract/fixtures and the separately invoked kernel adversarial fixtures pass.
 
 **NEXT SAFE ACTION:** remaining accepted Garden G4–G7 coordinator/event/read/player-surface
 review. Full nine-tier 1.0 and privacy/rights/accessibility/deployment/preservation remain

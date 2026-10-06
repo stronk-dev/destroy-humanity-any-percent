@@ -1573,3 +1573,19 @@ Account/browser user-flow, public activation, hosted amd64/whole-CI or release p
 Prior pending ranges, RP-222's starter evolution ruling, RP-131 and RP-218 remain open.
 Continue accepted remaining G4–G7 coordinator/event/read/player-surface review. No checkbox,
 RFC lifecycle, archival or release promotion; full nine-tier 1.0 stays the objective.
+
+### Exact RP-223 handoff and committed historical gate
+
+Completed new implementation/evidence range: **`9928a54e^..6effbffb` =
+`5746952d..6effbffb`** (diagnostic predeclaration, executed red/separate repair authority,
+runtime/tests/docs/tracking and honest 0.3.153 bump). Claude designated review pending;
+this coordinate-only append does not supply a verdict or close prior ranges.
+
+`make verify-kernel-version` executed against committed `6effbffb`, session 45001, terminal
+make exit 2. CI checkout contract and its adversarial fixtures pass; full history walk fails
+at unchanged RP-131 commit `50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` against
+`0cf9f7a6aba4038fadcdf35e5b94f56986164af7`, six unversioned client Minigame files.
+The final kernel-fixture step is not reached inside this target; its separate earlier run
+was green. No retry, waiver, history rewrite or fake version correction. The new honest bump
+does not cure old history; no whole-CI claim. Every process is terminal and the committed
+implementation tree was clean before this handoff record.

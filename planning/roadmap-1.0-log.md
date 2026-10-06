@@ -2023,3 +2023,9 @@ pinned after commit. No full-G6/Garden/default-player workflow, public activatio
 CI/hosted amd64, archival or release claim. RP-222, RP-131, RP-218 and all earlier requests
 remain separate. Continue the accepted Garden coordinator/event/read/player-surface review
 while the full nine-tier 1.0 and complete platform floor stay active.
+
+Exact RP-223 handoff: `9928a54e^..6effbffb` (`5746952d..6effbffb`), pending Claude.
+Committed whole history target again fails on the unchanged `50a3a514` six-file missing
+bump (RP-131), after its CI checkout contract/fixtures pass. Separate kernel adversarial
+fixtures pass; target's final fixture step was not reached. No guard bypass, archival,
+push or release claim. All verification processes reached terminal status.

@@ -18,6 +18,10 @@ reconciliation. Continue remaining accepted Garden coordinator/event/read/player
 review. No public mint, full-Garden, archival or release promotion; proper nine-tier 1.0
 and its complete platform floor remain active.
 
+Exact new review range: `9928a54e^..6effbffb` (`5746952d..6effbffb`), pending Claude.
+Committed full history guard remains red at unchanged `50a3a514` (RP-131); this is not
+waived by the behavioral checks or the new runtime version.
+
 **Earlier checkpoint:** 2026-10-06, Garden G2/G3 activation/retained-Exit witnesses under
 `d6c2b6a2` / `1aa23496` / `16b44c74`, implemented `cc69925a`, exact test-only range
 `d6c2b6a2^..cc69925a`, designated review pending. Actual Go/TS
