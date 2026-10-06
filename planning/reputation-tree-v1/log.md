@@ -4451,3 +4451,47 @@ RP-268 author/artifact reconciliation and H3's fired tiny criterion are separate
 requirements. Whole span afterdb8398a3 needs Claude; all prior reviews remain.
 Report lineage/fresh H1/H2, H5epsilon/run4, actual SQL/capacity/browser and
 full1.0 stay open. No box, mint, archive, cleanup, push or goal completion.
+
+## 2026-10-06 — RP-264 full study ends; direct census logging predeclared
+
+All handles terminal before this record. Restored focused646055..3cc565
+(session20726, exit0,0.162s) passes all28 profiles plus the original gate test.
+Nine compiling probes discriminate, exact e49c252c/03bda3a3 hashes restored;
+saving-presence and ignored-admission probes cause a caught missing-saving
+panic, explicitly not a semantic refusal. Other omissions fire semantic/
+count comparisons; no compiler failure. Cold fast ef9ebe..09a725 exit0:
+harness64.918s, role0.157s, Commons0.396s and guard. Cold core/vet59dee6
+..e083d6 exit0: production38.528s, transport13.262s, save0.273s, numeric
+vectors and generated API/formulas byte-identical. No fresh SQL/client/browser.
+
+Complete8f5352..e9c740 (session88822, terminal exit2,787.881s): all97 H4
+pairs finish131.03s, with the same six Casual ties and no new row-admission
+violation. H4 retained byte comparison remains report-drift RED. All970 H5
+arms finish656.69s, retained byte comparison remains RED; no classification
+error emitted, not full H5 proof. No report update flags. Source/old reports
+restore/match481d66. The denied read-only ps check0d8b84 yields no process
+evidence; same confirmed live handle was polled to terminal, not restarted.
+
+Observation gap: the current producer did not print GatedSeeds/ExcludedSeeds.
+471517 independently inspects the historical97-row report (93gated/3excluded,
+Casual4/14/21 valid both-nil exclusions) but is not a current-producer census.
+Do not silently substitute that historical result for the required current
+accounting observation.
+
+Bounded additional test-side observation, declared before source changes:
+after the existing gate computes its report, log total produced rows, derived
+gated/excluded counts and each excluded row's actual reason/clocks/saving.
+Observation only: no new gate, schema, population, policy, horizon, arithmetic,
+selection or regeneration. Execute only the complete97-pair H4 test with the
+existing explicit exhaustive flag through root make test-go, not a shortcut
+or fake970-arm repeat. Rerun cold focused/fast/vet after adding these logs.
+The existing full H5 result remains separately dated; no need to repeat970
+arms for stdout-only logging. Report drift/six real ties remain RED.
+
+Read-only14531b/d540c8/80731d additionally finds a threshold-source admission
+lead: MeasureReputationThresholds checks outcomes but not the complete seed
+population/source coordinates, and PaidReputationAtFirstElectiveExit takes
+the first matching kinds without sequence/order/duplicate admission. No bad
+input has been executed; record RP-269 as a source lead, not a confirmed
+measurement defect, and predeclare diagnosis separately before changing it.
+No source/record edits while any handle lived; previous goal progress remains.
