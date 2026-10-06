@@ -2195,3 +2195,25 @@ and sees only one read rather than two. Retain all eight failures, do not count 
 partially synchronized population as a whole-runtime verdict. Refine the instrument to
 join the actual browser adapter's recorded promises and then flush Svelte, without
 advancing virtual time, increasing a timeout, or changing any expected DTO/due boundary.
+
+Corrected diagnosis 55858 is terminal exit 1: all three engines fail exactly the 137 ms
+boundary (one read rather than two), while all eighteen other controls pass. Actual
+component imposes Math.max(1_000, server-relative delay); a valid near-tick read is delayed
+863 ms beyond the declared SG10 deadline. This is an advisory-refresh defect, not altered
+server growth or lost cash. Browser adapter authenticates exact generated GET, no body;
+all command callbacks remain empty. The two initial DOM-loading mistakes are instrument
+errors, not product defects. No receipt/default-host evidence is inferred from props delivery.
+
+### Separately predeclared RP-230 correction authority
+
+Accepted SG10 authorizes removing the arbitrary one-second floor in the renderer only.
+Use the strictly positive server-relative interval (retain a 1 ms safety turn for nonpositive
+advisory inputs, no immediate-loop growth simulation). Do not introduce client-clock epoch
+arithmetic, retry/poll cadence, alternate clock/catalog, server timer, transport/schema,
+Copy or balance changes. The renderer is outside kernel-watched math/replay files; verify
+the registry before claiming no bump. Existing seven test expectations remain unchanged.
+Run positive tests in all engines, sever timer dispatch and hidden gating independently,
+record every arm and restore the corrected renderer byte-exactly before final gates.
+Final full native-Linux browser/performance lane and root client/type/build/boundary/copy
+checks; do not waive RP-131 or RP-218 or relabel ARM/container results hosted amd64/whole-CI.
+No AC13/lifecycle/archival/whole-Garden promotion. Codex first-filter only, Claude required.
