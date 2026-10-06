@@ -18,8 +18,8 @@ precise HTTP status/causality at that timeout still needs evidence. RP-233 keeps
 an intermittent next-plot failure. No authentication code/policy was changed
 inside this Garden lane; next work is separately predeclared Account/Transport
 consumer integration. Kernel 0.3.153 unchanged, no public mint/checkbox/AC13/
-Garden/archival promotion. Exact new range starts `e02fbfc1^` (`b58277cb`),
-endpoint pinned in the log; Claude required independently of all earlier ranges.
+Garden/archival promotion. Exact new range `e02fbfc1^..bff05b5e`
+(`b58277cb..bff05b5e`), four commits / twelve paths; Claude required independently of all earlier ranges.
 Proper nine-tier 1.0 and complete platform obligations remain active.
 
 **Earlier checkpoint:** 2026-10-06, Garden SG10 actual-host receipt correction under

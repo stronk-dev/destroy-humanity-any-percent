@@ -2630,3 +2630,11 @@ promotion. Kernel 0.3.153, copy/schema/epochs/CI topology unchanged. No auth
 production change, public activation, owner text edit, archival/push/release claim.
 Next safe scope is the Account/Transport session consumer, not pretending fifteen
 minutes of partial Garden behavior completed the full nine-tier 1.0 goal.
+
+Implementation/diagnosis committed `bff05b5e`. Exact designated-review range
+`e02fbfc1^..bff05b5e` (`b58277cb..bff05b5e`), four commits / twelve paths,
+pending Claude. This metadata pin is not approval; it consumes no previous
+range and does not promote the failed manual maturity objective. All handles
+terminal, product controls restored, Node driver syntax check passes, tree clean
+after implementation. No push, archive, public mint or release claim. Continue
+the separately scoped Account/Transport session consumer under the full goal.

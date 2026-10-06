@@ -2254,3 +2254,9 @@ Next safe work: separate Account D2 / Transport consumer integration, then the
 same complete Garden journey. Full nine-tier 1.0 and complete platform floor
 remain active. Codex first-filter only; exact new range begins `e02fbfc1^`
 (`b58277cb`), endpoint pinned after commit; all earlier Claude ranges independent.
+
+Implementation/diagnosis committed `bff05b5e`; exact new review range
+`e02fbfc1^..bff05b5e` (`b58277cb..bff05b5e`), four commits / twelve paths,
+pending Claude. Metadata only, not approval or a passing mature workflow. All
+verification handles terminal and controls restored before commit. Full 1.0
+remains active; next separate work is the Account/Transport session consumer.

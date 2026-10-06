@@ -23,7 +23,7 @@ RP-233 separately retains an intermittent second-menu failure. No acceptance,
 public activation, kernel/copy/schema or authentication-production change.
 
 **READY FOR DESIGNATED REVIEW — bounded correction/diagnosis only:** new range
-begins `e02fbfc1^` (`b58277cb`), endpoint pinned after commit. Claude required;
+is `e02fbfc1^..bff05b5e` (`b58277cb..bff05b5e`), four commits / twelve paths. Claude required;
 the red real-time objective is not a completed Garden workflow. All earlier
 ranges and owner/author/CI obligations remain independent.
 
