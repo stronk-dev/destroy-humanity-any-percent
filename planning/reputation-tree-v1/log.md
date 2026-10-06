@@ -6318,3 +6318,32 @@ no full CI/AC12/AC15/mint/SQL or assistive-user-study claim. Full new span after
 22e03946 needs Claude including final record edges; all prior ranges independent.
 No numeric/kernel bump, balance/report/copy/transport/CI/schema/auth change,
 checklist flip, archive, cleanup, publication/deployment/push or goal completion.
+
+## 2026-10-06 — RP-279 baseline / bounded renderer correction predeclaration
+
+New diagnostic b7e064/cddb53,session36994 terminal exit2:all40 cases fail
+missing first row Amount output. This baseline confirms missing rendering,
+not yet lifecycle/order/notation acceptance (assertion stops before those).
+Types e64a2e/3bddeb,session51863 terminal exit0, zero errors/warnings.
+All handles terminal before correction. Remove one unused test type import only.
+
+Correction scope: import existing Amount and canonicalString; mount one Amount
+immediately after body and before requirements/state, outside all available/
+confirm/pending conditions. Its value comes from that exact server-prop node.cost
+converted through the existing canonical boundary. Existing Buy text unchanged;
+no new cost caption/prose/key, tooltip, pricing, state, eligibility, task/focus,
+host/runtime, numeric formatting or scheduler contract. Canonical UI docs updated
+in same source change. No core/kernel change; renderer outside watched paths.
+
+Require40 cost +58 old child +56 host native cases green. Five independently
+compiling negatives before closing local claim: omit cost; render available-only;
+hide while Confirm/pending; bind another row's cost; duplicate the amount.
+Additionally move cost after state to demonstrate reading-order discrimination.
+Six total. Hold source bytes fixed under every live handle; after each terminal
+result restore exact bytes and verify SHA, then final full restored population.
+The small/notation literal oracles are independent of formatter implementation.
+Visibility/cardinality/lifecycle are bounded native DOM evidence, not human AT
+or whole AC12/SQL/mint proof. Cold root types/build/client/boundaries/copy,
+separate RP-131 history; no Firefox/CI green, report restamp/epoch adoption,
+checklist flip, archive, cleanup, deployment/publication/push or goal completion.
+Whole new span after22e03946 needs Claude; prior ranges remain independent.
