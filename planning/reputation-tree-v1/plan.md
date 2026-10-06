@@ -163,6 +163,33 @@ all-engine arm stays RED. No wire/policy/content/Go change or whole AC12 claim.
 Whole range afterb5ca3e7d needs Claude. Next ground authoritative plan input
 replacement; unspecified reselection policy and RP-283/RP-284 remain with author.
 
+## R9 authoritative plan-input replacement — predeclared 2026-10-06
+
+Start00335488. Test-only controlled component props, declared nine-node fixture,
+both eras and real native keyboard; no server payout/SQL/default-player claim.
+A diagnostic Svelte wrapper may replace public arm/preview props, not selected
+state. Keep original static/full-tree/host tests unchanged. Verify separate
+available/preview replacement changes projected balance and affordability;
+authoritative ownership of an unselected prerequisite changes visible rows and
+unlocks its dependent; unchanged valid selections stay visibly reflected in
+the existing callback and formula. Use existing deadlines and default capture.
+
+RP-292 source risk: selected ids survive a prop update even when one becomes
+owned or the budget no longer covers the plan. R9 specifies the formula and
+advisory server revalidation, but no automatic selection-reset/pruning policy.
+Measure retained callback, checkbox visibility/enabled state and projected
+balance explicitly as CHARACTERIZATION, not a gate approving that behavior.
+Native Clear must remain a user-controlled escape. Do not automatically clear,
+prune or reorder in production without the author's reconciled contract.
+
+Predeclare compiling source probes for dynamic formula preview, available and
+ownership dependencies against unchanged oracles. Negative arms only may use
+the already disclosed no-capture diagnostic option for RP-289; positive gates
+use default capture. Restore exact component bytes after each terminal arm.
+Root types/client/native checks plus unchanged copy/boundary verification.
+No product behavior, prose/schema/epoch/kernel/balance or acceptance box change.
+Full test/planning range needs Claude separately; earlier ranges stay pending.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

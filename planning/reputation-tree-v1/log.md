@@ -7657,3 +7657,26 @@ and Docker capacity holds unresolved. No full AC12, SQL/mint/manual AT, whole
 CI or release approval inferred. No acceptance box/status/archive, kernel,
 balance, schema, epoch or copy-content change. Next separately ground accepted
 R9 authoritative plan input replacement; full nine-tier/platform goal active.
+
+## 2026-10-06 — R9 authoritative plan-input replacement predeclaration
+
+Fresh clean00335488, previous recovery range b5ca3e7d..00335488 remains ready
+for designated Claude review, not archived. R9 plan paragraph, full component,
+existing full-tree browser population, actual host snapshot/plan bindings and
+existing controlled-prop fixture inspected. Guessed standalone plan/Desk/Offer
+filenames do not exist; file discovery resolves actual GameUIApp ownership,
+no missing-file claim inferred from that search error. Current selected array
+does not reconcile on arm/preview replacement; unknown reselection policy
+registered RP-292 as source risk, not executed defect or implementation license.
+
+Predeclare test-only reactive public-prop wrapper and both-era native component
+population in plan.md. Separate valid formula/affordability/ownership replacement
+from descriptive observations of invalidated selections. Measure stale hidden
+owned ids and negative budget, preserve native Clear escape; never encode an
+unruled automatic clear/prune policy as acceptance. Three compiling source
+faults must falsify the registered formula/ownership dependencies with exact
+restoration after terminal results. Original tests/deadlines/security remain;
+positive default capture, negative diagnostic no-capture only for RP-289.
+No Go/copy/balance/epoch/kernel161/wire/CI/owner-text/checkbox/archive/push or
+SQL/mint/full AC12 claim. Full new span after00335488 needs Claude, prior ranges
+independent; full nine-tier/platform goal and existing release holds remain.
