@@ -617,3 +617,34 @@ dossier; local compile/test discovery/vet are not DB acceptance. Any unexpected
 real result is a finding, never an edited expectation to turn red green.
 Only new test/record checkpoint may commit while DB evidence remains unavailable;
 plan boxes, contract/RFC states and all prior independent reviews stay unchanged.
+
+## 2026-10-06 — real refresh witnesses prepared, explicitly unexecuted
+
+Predeclared d33b5d56. Four top-level tests/seven real-DB populations prepared:
+real Repository/chi/net.Pipe HTTP, existing epoch-5 Postgres fixture, exact
+success/error bytes and literal fifteen-minute/thirty-day boundaries. Old-token
+consumption, descendant revocation, Founder binding and full named ten-table
+gameplay/three-table credential oracles. Closed fault uses actually closed
+secondary sql.DB; primary fixture/cleanup stays open. No private snapshot/token
+output. API/store SHA unchanged. Test SHA after refinement:
+fefd7326b0792ecdd9e30d14e615f9e2b9dc028fd2b5cbdeb5318f7a3468ebf3.
+
+32238 host compile: all seven DB populations SKIP without TEST_DATABASE_URL;
+two grouped parents misleadingly display PASS with every child SKIP. Parent-level
+dependency skips added; 86768 explicitly shows four top-level SKIPs. Existing
+22 parser cases/two controls execute green, selected vet/diff pass. No DB gate
+or new severing executed. SQL alias changed to unambiguous r on static inspection,
+not after an actual DB red. Records patch twice missed exact append context;
+failed atomically, no partial file changes; actual lines re-read before repair.
+
+Read-only existing declared Postgres capacity: overlay 100%, 39,784 KiB available,
+DB tmpfs >8 GB free. Two healthy existing project DB services are not verification
+handles, not stopped/restarted. Owner cleanup answer pending; no new Docker
+workload or deletion. One absent guessed save/postgres.go lookup corrected with
+rg --files/read of database.go. All verification handles terminal before edits.
+
+Review by: Codex (preparation first-filter only). Recorded by: Codex. New span
+starts c2843089 exclusive, includes d33b5d56/test/records/pin. Claude required
+independently; no real-DB evidence, completed API contract, browser policy,
+checkbox/acceptance/archive/push claim. Next separately predeclare a test-output
+observer that rejects dependency/empty transcripts before calling them proof.

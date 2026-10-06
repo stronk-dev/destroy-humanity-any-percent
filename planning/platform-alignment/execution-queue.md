@@ -31,6 +31,11 @@ includes `d3e7196f`, tip pinned after commit, Claude pending. Unused project-lab
 development caches total about 2.6 GB, zero references; owner capacity/cleanup
 answer pending, no deletion. Resolve capacity then predeclare real-Postgres stage.
 
+Real-Postgres stage now predeclared d33b5d56 and prepared: four tests/seven
+populations, compile/vet only, explicit host dependency SKIPs. Two complete
+DB populations/four severings still pending capacity. No rotation/contract proof.
+Next separately scoped observer must reject dependency/empty test transcripts.
+
 ## Browser session-consumer diagnosis and unaccepted successor — 2026-10-06
 
 Separate predeclaration `25fb5e67` binds RP-048/RP-234 to existing Account D2/D3

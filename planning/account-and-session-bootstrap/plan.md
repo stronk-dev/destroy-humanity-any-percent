@@ -61,3 +61,18 @@ changing its normal three-tick objective. Execute the counterfactual with expiry
 severed, restore instrumentation byte-exact and rerun. Missing client policy goes
 to a draft RFC linked to Account, Transport, API Foundation and archived Game UI;
 the draft must not masquerade as accepted implementation authority.
+
+## Existing refresh contract census — real-Postgres stage (2026-10-06)
+
+Predeclared d33b5d56 after parser span ee8b2356..c2843089. Test-only preparation,
+**UNEXECUTED on Postgres**; no completion box may flip. Seven populations:
+live/access-expired rotation plus reuse, New Founder binding, unknown canonical
+token, exact refresh expiry, actual closed-DB error, limiter non-mutation/refill.
+Actual repository/API/Postgres fixture with HTTP over net.Pipe, not browser/OS
+socket/production-engine proof. Ten named gameplay/account tables and three
+credential tables snapshotted privately, tokens/data never logged.
+
+Pending: resolve RP-236 capacity safely; two cold complete populations; four
+predeclared severings/restorations; existing Account/publicapi real-DB population;
+vet, exact response census and designated review. Compile/dependency skips are
+not proof. Generated consumer, browser policy, Garden and 1.0 stay separate.

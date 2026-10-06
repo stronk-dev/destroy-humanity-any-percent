@@ -34,6 +34,12 @@ expired-token rotation proof. Null/duplicate/case-insensitive parsing is observe
 not approved policy. New test-only span includes `d3e7196f`, pending Claude
 independently; renewal draft, full R-011/Garden/1.0 obligations remain open.
 
+Real refresh persistence stage under d33b5d56 is **prepared, not executed**:
+four tests/seven DB populations compile, host explicitly shows dependency SKIPs.
+No fresh Docker workload on full disk, no successful rotation/replay/expiry gate.
+Actual populations/four severings/designated review remain pending; see census
+dossier and Account plan/log. No contract or release promotion.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot

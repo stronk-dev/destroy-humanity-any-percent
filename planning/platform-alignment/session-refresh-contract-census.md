@@ -66,3 +66,23 @@ Review by: Codex (first-filter only). Recorded by: Codex. New range begins
 `ee8b2356` exclusive and includes `d3e7196f`, test, dossier, reconciliation and
 following pin. Claude required independently of previous spans. R-011, natural
 fifteen-minute Garden and proper nine-tier 1.0 remain open; renewal RFC draft.
+
+## Real-Postgres preparation — NOT executed evidence
+
+Predeclared d33b5d56; refresh_wire_integration_test.go declares seven populations
+in four tests: live/access-expired rotation/reuse, New Founder binding, unknown
+canonical token, exact refresh expiry, closed-DB mapping, limiter non-mutation/
+refill. Existing epoch-5 repository/DB fixture, HTTP over net.Pipe (no browser/
+OS socket). Exact bytes/literal 15-minute/30-day bounds and persisted outcomes
+are asserted, **not yet verified against actual Postgres**.
+
+Private snapshots cover accounts, account_emails, account_founders, save_streams,
+save_revisions, events, intent_records, run_genesis, founder_genesis,
+transport_player_outbox, and separately session_families/sessions/access_tokens.
+Host 32238/86768 compiles; all DB cases skip. Grouped parent PASS with all child
+SKIPs corrected to explicit parent SKIP, not a failed/passing rotation. Existing
+parser/vet/diff green; no new failing severing demonstrated. Source SHA
+fefd7326b0792ecdd9e30d14e615f9e2b9dc028fd2b5cbdeb5318f7a3468ebf3.
+Docker still 100%, 39,784 KiB free; no fresh workload/deletion. Two complete DB
+populations and four predeclared severings remain pending capacity/review;
+prepared tests are not integrated witnesses or readiness promotion.

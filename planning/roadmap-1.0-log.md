@@ -2350,3 +2350,16 @@ Claude pending independently of CI span 6ed42d45..d3e7196f and earlier requests.
 No product/TTL/family/kernel/schema/copy/CI/checkbox/archive/push change. Three
 unused labelled project development caches identified, about 2.6 GB; no deletion,
 owner capacity choice pending. Proper full nine-tier 1.0 remains unchanged.
+
+## 2026-10-06 — real refresh tests prepared, not called completed evidence
+
+Predeclared d33b5d56: actual repository/API plus epoch-5 Postgres fixture and
+HTTP over net.Pipe, four tests/seven populations. Exact success/error bytes,
+literal TTLs, persisted consumption/revocation/binding and named-row oracles.
+Host compile/vet pass, integration dependency SKIPs; misleading parent PASS
+with all child SKIPs corrected to parent SKIP. No real DB gate/severing run.
+Docker still 100%, 39,784 KiB available; no new workload/deletion. Two complete
+populations/four severings pending safe capacity resolution. Span begins c2843089
+exclusive, includes predeclaration/tests/records; Claude required independently.
+No product/auth/schema/copy/kernel/CI policy, checkbox/acceptance/archive/push
+change, integrated-witness claim or 1.0 scope reduction.
