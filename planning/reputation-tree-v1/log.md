@@ -6816,3 +6816,26 @@ handles terminal before record/commit. Whole span after8a3bfb70 requires Claude,
 independently of earlier ranges. No checkbox/full AC12/RFC/archive/push/cleanup/
 owner copy/mint/1.0 promotion. Next safe lane is RP-281 paired tooling diagnosis
 or RP-284 producer/consumer grounding; RP-283 remains author contract gap.
+
+## 2026-10-06 — Native Tab range self-first-filter
+
+**Review by:** Codex (implementer self-first-filter, NOT designated review).
+**Recorded by:** Codex.
+**Reviewed range:** `8a3bfb70..5d9211da`, all six commits/ten paths including
+predeclarations, diagnostic refinements, production+docs and tracker edge.
+**Verdict:** first-filter passes; ready for Claude's designated full-range pass,
+including this record edge. No acceptance/archive/independent approval.
+
+Full source/test/docs/tracker diff442d8c and log diff inspected; whitespace
+passes. Runtime change is four focus attributes plus one contract-specific
+annotation; no role deception, focus trap, global lint suppression, state/math/
+copy/browser policy change. Disabled buttons still excluded and keyed rows
+stay programmatic-only. Native54 diagnosis/248 regression/three compiling
+severings run, not merely read; exact restoration held. Standalone control
+prevented attributing initial WebKit setup failure to the product. Row-stop
+probe also fails confirmation16; actual52 failures disclosed rather than
+pretending only the anticipated36 fired. Types/build/unit/boundary/copy gates
+pass at unchanged copy658; inherited RP-131/Firefox/Node skips explicit.
+No test assertions removed/checkbox flip/AT/default-player/SQL/mint/full AC12
+claim. Prior independent ranges remain open. Goal active; RP-281 tooling and
+RP-284 producer grounding are safe next work; RP-283 needs author contract.
