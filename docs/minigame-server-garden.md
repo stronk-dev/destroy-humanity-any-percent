@@ -162,6 +162,17 @@ awaits designated review, with production and balance bytes unchanged.
 
 `GET /api/v1/garden/current` (`get_current_garden`) returns `inactive`, `locked` or `active`. It
 runs the advance on a discarded clone, and it never returns the salt, a draw or a future tick.
+The real Service read obtains the active same-Founder saved head and Postgres millisecond
+clock in one read-only statement, restoring against that head's pinned catalog. Account's
+handler clock is not projection authority. Query/load failures return errors, never a
+handler-time fallback; reads write no saves, events, logs, intents, outbox rows or faucet state.
+The pure projection retains an explicit timestamp for deterministic tests/replay.
+
+RP-223's bounded correction has six real-Postgres salted/unsalted normal/±24-hour handler-clock
+arms, full persisted non-mutation and loaded-head checks, and cancelled/missing-source refusals.
+Restoring handler-time projection fails the skewed-clock cases; removing the discarded clone
+fails the full-Founder non-mutation oracle. Kernel 0.3.153 records this runtime correction.
+Designated review remains pending; this does not establish full G6/Garden or public activation.
 
 ## Client surface
 
@@ -188,6 +199,7 @@ All garden copy is candidate text (`copy/catalog/garden-candidate.json`): specie
   byte-matching the Go corpora
 - `production.TestGarden*`
 - `production.TestGardenHarvestClockIntegration` (six real-Postgres clock-disagreement arms)
+- `production.TestGardenReadDatabaseClockIntegration` and `TestGardenReadDatabaseFailureIntegration`
 - The Postgres witnesses `TestGardenIntegrationPersistsReplayableFounderLog`,
   `TestGardenHarvestIntegration` and `TestGardenHarvestFaultsAreAllOrNothing`
 - `client/test/garden-surface-browser.test.ts`, in three browsers

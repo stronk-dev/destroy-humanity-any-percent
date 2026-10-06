@@ -1998,3 +1998,28 @@ runs separately. Full nine-tier 1.0 and the complete platform floor remain activ
 Exact G2/G3 designated-review handoff: `d6c2b6a2^..cc69925a` (`ea160ac9..cc69925a`),
 predeclarations, red instruments/reader disclosure, contract question and complete tests/evidence
 included. Pending Claude, not approved; previous range requests and RP-222 remain separate.
+
+## 2026-10-06 — Garden actual database read clock
+
+SG9 diagnostic `9928a54e` confirms RP-223: the original Service projection used Account's
+handler clock, not DB time. Actual ±24-hour arms show zero/288 ticks versus ordinary two,
+without persisting growth. Initial nominal one-millisecond refusal and lag observation-order
+failure remain disclosed; a separately authorized repair is recorded in `307b2539`.
+
+The runtime now reads the active same-Founder head and DB timestamp in one read-only query,
+restores under the pinned catalog and projects on a discarded clone. Handler-time compatibility
+does not confer authority. Generic reads/other clock policies, API/save/replay shapes and
+balance/copy/UI/CI/mint remain unchanged. Kernel 0.3.153 accompanies the actual runtime change.
+
+Twenty cold repeats cover 120 DB clock arms plus error/no-fallback populations; loaded-head
+identity and full persisted non-mutation are checked. Actual caller-clock and clone mutations
+fail, then restore exactly. Cold Go/actual Postgres/client/type/build/corpus/vet/vectors/copy/
+manifest/topology and full native Linux three-engine/performance checks pass (22,386 / six
+deliberate browser skips). Kernel guard adversarial fixtures pass, not the historical guard.
+
+Original bounded Claude G6 clock seam is CHANGES REQUIRED; Codex correction is first-filter
+ready for Claude, not self-approved. New range starts `9928a54e^` (`5746952d`); exact end is
+pinned after commit. No full-G6/Garden/default-player workflow, public activation, historical
+CI/hosted amd64, archival or release claim. RP-222, RP-131, RP-218 and all earlier requests
+remain separate. Continue the accepted Garden coordinator/event/read/player-surface review
+while the full nine-tier 1.0 and complete platform floor stay active.

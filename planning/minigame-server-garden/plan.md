@@ -68,6 +68,17 @@ verdict, checkbox promotion, runtime/kernel/CI/mint change; Claude review requir
 Next: remaining G4–G7 event/coordinator/projection/player-surface review, without inventing
 starter evolution or consuming any earlier unreviewed range.
 
+Separate SG9 diagnostic `9928a54e` / correction authority `307b2539` confirms RP-223:
+the real read consumed handler time rather than Postgres time. Original bounded G6 seam is
+CHANGES REQUIRED. The new read-only Store operation binds actual same-Founder latest head
+and DB timestamp; GardenView ignores handler time and retains discarded-clone/no-write
+semantics. Kernel 0.3.153, unchanged API/save/replay shapes and other clock policies.
+Twenty repeats of six DB arms, loaded-head/full persistence/error controls and both restored
+clock/clone mutations pass, followed by cold Go/client/DB/three-engine/performance gates.
+This Codex implementation is ready for Claude's exact-range review, not full G6/Garden or
+archival acceptance. RP-222, RP-131, RP-218 and every earlier pending range remain separate.
+Next: remaining accepted coordinator/event/read/player-surface review; no checkbox promotion.
+
 - [x] G1 — `server/garden` + `client/src/garden`: SG1 loader (every rule, rejecting fixtures),
   SG2 state shape, SG3 advance, SG4 tick, SG5 pure commands, SG6 Founder-side harvest math and
   `harvest_hash`. Go-generated golden corpus replayed byte-for-byte by TS. AC1, AC3, AC4, AC5; pure

@@ -92,12 +92,13 @@ func ProjectGardenView(bundle CatalogBundle, founder *save.State, founderRevisio
 	return json.Marshal(map[string]any{"kind": "active", "founder_revision": founderRevision, "server_ms": serverMS, "garden": view})
 }
 
-// GardenView is the SG9 read for the Founder owning companyStreamID.
-func (s *Service) GardenView(ctx context.Context, companyStreamID string, now time.Time) (json.RawMessage, error) {
+// GardenView is the SG9 database-stamped read for the Founder owning companyStreamID.
+// The handler-time argument remains for interface compatibility, not clock authority.
+func (s *Service) GardenView(ctx context.Context, companyStreamID string, _ time.Time) (json.RawMessage, error) {
 	if s == nil || s.replayCatalogs == nil {
 		return nil, fmt.Errorf("%w: Founder replay runtime unavailable", ErrInvalidIntent)
 	}
-	founder, err := s.store.LoadSiblingLatest(ctx, companyStreamID, economy.ScopeFounder)
+	founder, serverMS, err := s.store.LoadSiblingLatestAtDatabaseTime(ctx, companyStreamID, economy.ScopeFounder)
 	if err != nil {
 		return nil, err
 	}
@@ -105,5 +106,5 @@ func (s *Service) GardenView(ctx context.Context, companyStreamID string, now ti
 	if !ok {
 		return nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
 	}
-	return ProjectGardenView(bundle, founder.State, founder.Revision.Number, save.CanonicalServerTime(now).UnixMilli())
+	return ProjectGardenView(bundle, founder.State, founder.Revision.Number, serverMS)
 }

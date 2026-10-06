@@ -1,6 +1,27 @@
 # Executable queue
 
-## Current Garden activation and retained Exit evidence — 2026-10-06
+## Current Garden database-stamped read correction — 2026-10-06
+
+SG9 diagnostic `9928a54e`, red finding/separate repair authority `307b2539`: RP-223 proves
+the original G6 read used handler time. Corrected Store binds actual active same-Founder
+head and DB time in one read-only query; GardenView ignores handler time, with no write,
+salt draw, schema/migration, other clock, balance/copy/UI/CI/mint change. Kernel 0.3.153.
+Twenty repeats cover 120 normal/±24-hour salted/unsalted clock arms, exact loaded head,
+full persisted non-mutation and DB error/no-fallback controls. Actual caller-clock and
+discarded-clone mutations fail and restore. Cold Go/DB/client/three-engine/performance,
+copy/manifest/topology and history-guard adversarial fixtures pass.
+
+**READY FOR DESIGNATED REVIEW, not approved:** new Codex range starts `9928a54e^`
+(`5746952d`), with exact end pinned after commit. Original Claude G6's bounded clock seam
+is CHANGES REQUIRED, not a full G6 verdict; new correction requires Claude. Previous ranges,
+RP-222's owner/author contract, RP-131 history guard and RP-218 hosted reliability stay open.
+No full Garden, public activation, whole-CI/amd64, archival or release claim.
+
+**NEXT SAFE ACTION:** remaining accepted Garden G4–G7 coordinator/event/read/player-surface
+review. Full nine-tier 1.0 and privacy/rights/accessibility/deployment/preservation remain
+the goal, not a preview shortcut; no agent-side stall is implied by pending cross-party gates.
+
+## Earlier Garden activation and retained Exit evidence — 2026-10-06
 
 G2/G3 predeclaration `d6c2b6a2`, invalid-instrument correction `1aa23496`, separately
 predeclared Company event-reader scope `16b44c74`. Eleven transitive predecessor removals

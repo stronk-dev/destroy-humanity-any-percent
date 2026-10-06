@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden G2/G3 activation/retained-Exit witnesses under
+**Current checkpoint:** 2026-10-06, Garden SG9 diagnosis `9928a54e` / separately authorized
+RP-223 correction `307b2539`, kernel 0.3.153. Actual same-Founder saved head and database
+time now come from one read-only statement, not Account's handler clock. Twenty repetitions
+cover 120 skew/normal salted/unsalted DB arms, with exact head/non-mutation and fail-honest
+query controls. Caller-clock and clone mutations fail and restore; cold Go/Postgres/client/
+three-engine/performance/copy/manifest/topology checks pass. Full historical CI remains
+unproven because RP-131 is still open; ARM/native browser evidence is not hosted amd64.
+Original bounded Claude G6 clock seam is CHANGES REQUIRED; Codex correction awaits Claude,
+with every earlier pending range retained. RP-222 still needs authored starter evolution
+reconciliation. Continue remaining accepted Garden coordinator/event/read/player-surface
+review. No public mint, full-Garden, archival or release promotion; proper nine-tier 1.0
+and its complete platform floor remain active.
+
+**Earlier checkpoint:** 2026-10-06, Garden G2/G3 activation/retained-Exit witnesses under
 `d6c2b6a2` / `1aa23496` / `16b44c74`, implemented `cc69925a`, exact test-only range
 `d6c2b6a2^..cc69925a`, designated review pending. Actual Go/TS
 bundle admission, New-Founder initializer, populated permanent Garden across both real

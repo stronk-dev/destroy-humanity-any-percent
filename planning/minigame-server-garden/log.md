@@ -1505,3 +1505,71 @@ stay intact. Cold Go, declared Postgres and full client/native Linux browsers/pe
 follow exact restoration. No source/test edits while any verification is live. Failure to
 query or restore must fail honestly, not fall back to handler time. No new mechanic, UI/copy,
 CI, mint, migration, schema, archive or release promotion. Claude reviews the full new range.
+
+## 2026-10-06 — RP-223 database-stamped advisory read correction
+
+Diagnostic authority `9928a54e`, recorded red/predeclared repair `307b2539`; baseline
+`5746952d`. Original G6 `e4ac04f8` receives **CHANGES REQUIRED on the bounded SG9 clock seam**,
+not a verdict on all G6. Review by: Codex. Recorded by: Codex. This is Codex's cross-party
+inspection of Claude's original seam; the following Codex correction still requires Claude.
+
+After the declared observation-order correction, the unchanged runtime again failed all
+four ±24-hour arms (session 96773, exit 1, 0.449 s). Salted lag projected zero ticks at
+1791159791052 against DB [1791246191052,1791246191053]; lead projected 288 at
+1791332591121 against [1791246191121,1791246191123]. Both nominal controls passed in that
+run, with salted two ticks / unsalted zero; the first run's one-millisecond nominal refusal
+remains recorded above, not erased. Every read retained persisted state.
+
+### Implemented correction and scope
+
+`save.LoadSiblingLatestAtDatabaseTime` uses one read-only statement for the active
+same-Founder sibling's actual latest head and `clock_timestamp()` milliseconds, with the
+same DB rounding as existing Founder commands. Restore uses the head's pinned catalog.
+No write/lock/salt draw/revision. GardenView consumes the stamp; its compatibility time
+argument is ignored. Generic Store reads and all other clocks are unchanged. Pure projection
+still has explicit time and a discarded clone. Kernel 0.3.153 lands with the runtime change
+in all three sources; no migration/API/save/replay shape, balance, copy, UI, CI or mint change.
+
+The six salted/unsalted normal/lag/lead arms compare complete loaded head with generic
+LoadLatest, bracket both DB-stamped reads, pin actual revision and compare full persisted
+snapshot (both states/revisions, logs/events/intents/windows/quotas and receipt/event outbox).
+Cancelled query, malformed and missing source return no view and change no persistence.
+Four non-DB input controls cover nil Store/DB and invalid source/scope.
+
+### Executed discrimination and restored gates
+
+- First corrected six-arm cold DB run: 0.395 s, all pass, non-skipped.
+- Twenty cold repetitions of both new DB tests: 120 clock arms plus twenty failure populations,
+  9.774 s, exit 0. Every salted arm has two ticks; every unsalted arm zero.
+- Actual caller-time consumer mutation, with correct Store still present: four skew arms fail
+  the bracket (0.548 s, exit 1), nominal controls pass. Lead reproduces 288 ticks / lag zero.
+- Actual removal of discarded clone: `TestGardenViewMatchesTheNextCommit` fails with
+  `the read projection mutated the Founder state` (0.300 s, make exit 2).
+- Both mutations restore exactly. Final GardenView SHA-256:
+  `d397932c14cb7719e8869d140d24eb997699c9fc107a464cc59c3ddbefe521b8`.
+- Cold root Go: Garden 0.376 s, production 47.463 s, save 0.340 s, replaycatalog 0.518 s,
+  Account 0.503 s, kernel 0.163 s, Decimal 0.228 s, exit 0. Host non-DB integration skips
+  are not credited as DB proof. Separate actual Postgres runs all sixteen `TestGarden*`
+  declarations non-skipped, 6.597 s, exit 0.
+- Root client: 7,362 pass / 106 deliberate Node-DOM skips; TS/Svelte zero diagnostics;
+  213-module build; unchanged Garden corpus 0.082 s; full vet, shell boundaries and
+  unchanged 6,296 decimal vectors pass.
+- Full cold native Linux Chromium/Firefox/WebKit: 22,386 pass / six deliberate skips,
+  288 file/engine populations, 46.19 s. Fresh Chromium performance invocation: 2.23 s,
+  required screen-budget test 468 ms; its 22 selector exclusions are deliberate.
+- Copy guard: 657 keys, 610 orphan warnings (not suppressed); deployment manifest and CI
+  topology pass, thirteen topology negative controls rejected. Kernel history guard's
+  adversarial fixtures pass. Whole historical guard/CI remains separate RP-131.
+
+All verification/mutation sessions reached terminal status before source/test edits; no
+orphan verification was restarted or declared passed on an observation timeout.
+
+### Review and continuation
+
+Review by: Codex. Recorded by: Codex. **FIRST FILTER / ready for Claude's designated pass**,
+not self-approval. New range begins `9928a54e^` (`5746952d`); pin its exact end after commit.
+RP-223 is locally corrected, pending designated review. This is not full G6/Garden, an
+Account/browser user-flow, public activation, hosted amd64/whole-CI or release proof.
+Prior pending ranges, RP-222's starter evolution ruling, RP-131 and RP-218 remain open.
+Continue accepted remaining G4–G7 coordinator/event/read/player-surface review. No checkbox,
+RFC lifecycle, archival or release promotion; full nine-tier 1.0 stays the objective.

@@ -20,6 +20,14 @@ latest revision, then marks the stream archived. If a concurrent write advances 
 archive returns a conflict; if archive wins, the writer returns archived. It never relies on a
 stale scalar subquery under PostgreSQL READ COMMITTED.
 
+`LoadSiblingLatestAtDatabaseTime` supplies advisory read context: one read-only statement
+selects an active same-Founder sibling's latest revision and Postgres millisecond timestamp,
+then restores the state under the revision's pinned catalog. Server Garden uses it for its
+discarded-clone projection, not for committing growth. It performs no row lock or write;
+mutations must still re-read state/time under their owning transaction locks. Invalid/missing
+streams and query/restore errors return no projection context, with no handler-clock fallback.
+Existing generic latest/sibling reads and transaction clocks are unchanged.
+
 ## State format
 
 **Company v19** (`LatestCompanyVersion = 19`) extends v18 with `achievements_attained_run` and

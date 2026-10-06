@@ -15,6 +15,11 @@ discriminating witnesses; their exact Codex ranges still require Claude's cross-
 The current G2/G3 review covers transitive bundle admission, the actual New-Founder initializer,
 both real Service/Postgres Exits carrying nonempty permanent Garden, and Go/TS replay.
 RP-222 records an unruled starter-retune/unchanged-carry conflict; no grant policy is invented.
+The latest bounded SG9 correction (RP-223, kernel 0.3.153) uses a database-stamped actual
+saved head for read-only growth projection, ignoring handler time. Its real-Postgres clock,
+non-mutation and error populations and restored clock/clone probes pass, along with cold
+Go/client/three-engine/performance gates. Claude's designated review remains pending;
+this does not claim full G6, default player flow or Garden acceptance.
 
 Remaining work includes Garden's broader integration/public-flow/copy/activation gates, other
 active RFC/review lanes, later tiers/endings/MMO consumers, account rights/retention, task-level
