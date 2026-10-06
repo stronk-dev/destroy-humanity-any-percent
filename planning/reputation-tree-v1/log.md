@@ -822,3 +822,15 @@ assumed cleanup approval. RP-236 remains independent of this successful CPU lane
 Full Reputation still needs its complete range review, ruled measurement/mint,
 real career/replay/default player surfaces and platform obligations; no archive,
 push, threshold retune or shrinkage of full nine-tier 1.0 follows from this fix.
+
+### Exact corrective span pin, 2026-10-06
+
+Substantive Codex span `6947ebe3..4f1e6839`: three commits / fourteen paths,
+including dc9e6fc6 predeclaration, 8379f96d fired original baseline/shared tests,
+and 4f1e6839 runtime/kernel/docs/ledger/board reconciliation. This following
+pin edge also belongs to the requested designated review; closing relay names
+its exact literal tip. Not the original a522fdf1 B1 union or any earlier scope.
+Postcommit 96739 reruns reputation/kernel from 4f1e6839 cold, both pass (0.196 /
+0.167 s); all handles terminal, diff-check clean. Claude pending, no self-verdict,
+checkbox, archival or push. Next accepted CPU scope: R1/R3 bonus/accounting
+discrimination, preserving all current owner, DB/browser and CI blockers.
