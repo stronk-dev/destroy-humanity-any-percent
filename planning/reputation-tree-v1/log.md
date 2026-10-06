@@ -4732,3 +4732,29 @@ Claude independently of all prior spans. No box, waiver, retune, mint, archive,
 cleanup or push. Next RP-270 shared H3 aggregate admission, then fresh H1/H2/
 lineage and RP-268 artifact authority. H3/H4 failures, H5 gaps, SQL/capacity and
 the proper full1.0 goal remain. Goal active; this turn made concrete progress.
+
+## 2026-10-06 — RP-269 committed-HEAD first filter
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range:9f5b81a0..677deb07, all three commits/all11 changed paths:
+both predeclarations, three harness source/test files, canonical docs and
+ledger/current-state/queue/board/plan/log reconciliation. Verdict: bounded
+first filter passes, NOT designated cross-party approval or H2/AC13 closeout.
+
+Committed-HEAD coldeaea38..e33bcf,session75202,terminal exit0,1.980s passes45
+diagnostic children and legacy threshold/H1/H3 checks. Source inspection shows
+the actual pinned caller consumes the guarded wrapper, not a diagnostic-only
+unused helper. No separate caller-bypass mutation was executed or claimed.
+Generic subset control stays on MeasureReputationThresholds; complete/reordered
+controls and all source corruptions use the same wrapper as the pinned caller.
+All six earlier compiling probes restored exact source hashes; retained H1/
+threshold reports remain unchanged. No source/record edit while a handle lived.
+
+H3 helper reuse proves only its actual assertions. The four aggregate-coordinate
+gaps remain registered RP-270 on the separate H3 path. Stored-historical source
+admission is not fresh production, semantic authenticity of every aggregate
+value, full report lineage or owner balance adoption. Kernel161/live product/
+balance/schema/CI unchanged; no checkbox or epoch mint. Whole9f5b81a0..677deb07
+needs Claude independently of RP-264 db8398a3..97d916eb and prior ranges. Goal
+active; next accepted RP-270, then fresh H1/H2/lineage and RP-268 grounding.
