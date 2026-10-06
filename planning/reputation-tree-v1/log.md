@@ -9066,3 +9066,35 @@ owner/environment/release holds remain and full proper1.0 goal stays active/
 progress. Next safe accepted work is evidence census AC7 current-rate freeze
 versus next-run public projections before predeclaring any missing population;
 an existing unit/SQL proof must not be recast absent to justify extra work.
+
+## 2026-10-06 — Actual cross-pin continuation self-first-filter
+
+Review by: Codex (implementer self-first-filter, NOT designated independent).
+Recorded by: Codex. Exact reviewed range:16da5904..1e0d0cee; allthree commits
+10631984/a8ebbbaf/1e0d0cee,10paths482insertions/13deletions. Verdict: local
+first-filter approved, designated cross-party verdict pending.244496/ec39f6/
+4ea4ae full range diff/whitespace inspection; repeat the truncated documentation
+subset rather than infer its omitted text.0667aa exact source/old-fixture hashes.
+
+Accepted R8/AC15 authority and10631984 predeclaration bound test-only work.
+No original24matrix case or assertion removed; success guard strengthens with
+three completed continuations. Normal route projector setup does not relax
+runtime requirements. New helper starts from actual first-Exit heads, never
+reseeds later saves/pins/genesis; independently calculates production, requires
+five not cumulativeten generated towers, checks full history and actual source
+coordinates, verifies both completed runs with their own pins. Ongoing run4
+compares full recorded state/receipt/events but is explicitly not completed.
+Copied wrong final spending/source negatives and all three executed compiling
+faults reach their named oracles.12-table retries use existing complete capture.
+Initial clock failure recorded, corrected by waiting long enough for the
+unchanged real gate, not by changing requirements or acceptance tolerances.
+
+Final cold Go/vet/types/client/SQL/topology evidence above covers unchanged
+test bytes; host skips not SQL/native/hosted-CI proof. Full changed paths confined
+to two test files and docs/ledger/plan/log/boards, both append-only logs add at
+EOF. Shared ledger row repaired, no new mechanics/copy/RFC/body/epoch/CI/schema/
+migration/kernel/old-corpus diff, acceptance checkbox or status promotion.
+No live handle/source fault, archive/push/publish/deploy/cleanup. No full1.0
+acceptance inferred. This self-review record is a new uncovered edge commit:
+Claude must cover the ENTIRE span after16da5904 INCLUDING this record before
+any closeout/archival use; all prior independent spans remain independently live.
