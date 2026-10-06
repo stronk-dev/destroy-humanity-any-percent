@@ -2429,3 +2429,26 @@ commit. Prior Codex implementations still require Claude; no self-approval.
 No Docker deletion, new workload, production/kernel/copy/CI/checkbox/archive/
 push change. Existing capacity approval pending. Proper full nine-tier 1.0
 remains active with all platform obligations, no shortened release substitute.
+
+## 2026-10-06 — actual Reputation loader disagreement corrected, no scope shortcut
+
+Accepted R2/AC1 diagnosis dc9e6fc6 and failing-first 8379f96d expose twenty
+cross-arm zero/empty/null nested starter keys admitted by Go and rejected by
+TS. Legal fixture contains all three starter arms and loads in both. Go now
+checks raw arm keys before shared struct decode; no shared curriculum or TS
+runtime/effect/balance/threshold/copy/mint changes. Kernel moves honestly to
+0.3.154 in all three identities. Exact Go call removal refails twenty cases;
+TS rule-7 exact-check bypass fails the new test on the first row, not twenty
+independent TS failures. Both restore source hashes exactly; full final client
+passes 7367 tests/134 existing skips, type/build/boundaries pass.
+
+Full root verify-server-core/vet passes cold Go non-harness packages and artifact/
+boundary checks. Root verify-client still fails unchanged RP-131 history guard;
+remaining gates run separately pass, copy retains 610 orphan warnings. No hosted
+CI, DB/browser/exhaustive pacing or complete Reputation acceptance claim. Docker
+capacity rechecked 100%/39,784 KiB available, no assumed deletion approval.
+New Codex span after 6947ebe3 includes predeclaration/failing-first correction/
+kernel/docs/records/pin, pending Claude independently of original B1 and every
+prior range. No checkbox, archival, push or owner-choice change. Full nine-tier
+1.0/platform scope remains active. Continue accepted accounting/bonus proof
+while preserving owner measurement/mint holds and pending capacity choice.

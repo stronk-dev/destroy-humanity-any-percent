@@ -747,3 +747,78 @@ exactly, then cold related Go/vet and full root client/type/build/boundaries.
 Run root composite too: prior RP-131 is expected to remain a separately reported
 historical refusal, never bypassed or described as complete CI success. No plan
 checkbox or B1/whole-RFC approval. Claude's designated review is mandatory.
+
+### TypeScript oracle control predeclaration, 2026-10-06
+
+All Go/composite/copy handles are now terminal. Also exercise the new TS
+assertion's discriminator: temporarily let only rule-7 exact-key calls return
+their unchanged input, retaining semantic validators and all other exact-key
+checks. Full root test-client must fail the new cross-arm refusal test; restore
+client/src/reputation.ts SHA cb36e5e69ba9addea25f639f858c8840f3ae81238ff660a1d6219b402a636922
+exactly and rerun full client tests. No persistent TypeScript runtime change,
+admission-policy weakening, skip, oracle relaxation or CI change authorized.
+
+## 2026-10-06 — RP-243 correction and executed first filter (Codex)
+
+**Review by:** Codex (self/first-filter of this correction, not designated approval).
+**Recorded by:** Codex.
+**New scope:** after 6947ebe3 exclusive, including dc9e6fc6 predeclaration,
+8379f96d failing-first shared fixtures/tests and correction predeclaration, the
+runtime/docs/kernel/records change and following exact pin. Literal tip follows.
+
+Targeted original B1 finding concerns R2/AC1 on `a522fdf1^..a522fdf1` only:
+Go and TS starter parsing and their tests were inspected, with shared curriculum
+semantics as dependency. Blame confirms the challenged decode block originated
+in a522fdf1. This is **not** a verdict on all twenty-one paths or the original
+B1/full R2/AC1 acceptance. Original scope remains unapproved; this Codex repair
+needs Claude independently, not a recorder-relabelled cross-party verdict.
+
+The Go loader now validates the chosen nested arm's exact raw key set before
+decoding the shared curriculum struct. Zero, empty or null values cannot erase
+other arms' key presence. Existing semantic/headroom checks remain unchanged.
+Only Reputation admission changes; shared curriculum and TypeScript runtime
+remain byte-unchanged. All three kernel identities honestly move to 0.3.154.
+No balance/copy/epoch/mint/scenario/threshold/save/migration/API/auth/CI bytes,
+plan checkboxes, owner choices or player-facing prose changed.
+
+Executed evidence, all terminal before any source/record edit:
+
+- 11207 original Go baseline: legal fixture's three kinds load, twenty malformed
+  cases incorrectly load; package FAIL/Make 2. TS root 62669 passes the same
+  twenty refusals inside the new test, total 7367 pass/134 existing skips.
+- 99537 corrected whole reputation package: all old tests and twenty new
+  negative subcases pass cold, package 0.230 s.
+- Single Go call severing (1ed8c1 tool chunk): twenty new cases refail with nil
+  admission error; Make 2. Restore SHA
+  78f908fb1fbdf0da05e0bb2a5d9e5a705919ce17d405a24c1f3bafd52eda4b30.
+- 70103 related reputation/curriculum/replaycatalog/production/save/kernel tests
+  and selected vet pass, -count=1 (production 37.326 s). Host mode includes
+  dependency-skipped DB tests; not executed Postgres evidence.
+- 71532 root verify-client: typecheck/strict TS/Svelte zero errors/warnings,
+  built client, 84 files/7367 tests pass (17 files/134 existing skips), shell
+  boundaries and checkout controls pass; composite **FAILS** unchanged historical
+  kernel guard at 50a3a514 / RP-131. No whole-CI green claim or guard bypass.
+- 34617 separately executes all remaining root client gates: topology/thirteen
+  negative controls, combat/meters/achievements/cosmetic/no-payment boundaries,
+  copy and content-manifest check pass. Copy retains 610 orphan warnings,
+  657 keys; no copy regeneration or warning suppression. Standalone kernel
+  guard adversarial fixture population 16255 also passes, not history closure.
+- 74883 full root verify-server-core passes: vet ./..., all non-harness Go
+  packages cold (-count=1), Pitch content, formula and API generation drift,
+  Routes and Commons boundaries. No generated artifact diff. Its host-mode
+  dependency skips are not real-DB acceptance; exhaustive harness is not run.
+- 95141 TS rule-7-only exact-check bypass: full root client fails precisely the
+  new cross-arm test, first row resource_grant generator_id empty, while 7366
+  old tests pass. The loop stops at that first counterexample: not twenty
+  independently fired TS mutations. Restore runtime SHA
+  cb36e5e69ba9addea25f639f858c8840f3ae81238ff660a1d6219b402a636922.
+- 73164 final restored root client: 84 files/7367 tests pass, 17 files/134
+  existing skips; no pending handle or persistent mutant. Go source hash still
+  matches corrected 78f908fb; final diff-check passes.
+
+Read-only Docker capacity recheck: writable overlay 100%, 39,784 KiB available,
+while DB tmpfs/shared memory have headroom. No workload/restart/deletion or
+assumed cleanup approval. RP-236 remains independent of this successful CPU lane.
+Full Reputation still needs its complete range review, ruled measurement/mint,
+real career/replay/default player surfaces and platform obligations; no archive,
+push, threshold retune or shrinkage of full nine-tier 1.0 follows from this fix.

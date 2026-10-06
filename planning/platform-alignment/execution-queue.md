@@ -1,5 +1,24 @@
 # Executable queue
 
+## Reputation R2 nested starter parity correction — 2026-10-06
+
+RP-243 executed under dc9e6fc6/8379f96d: Go admitted twenty cross-arm
+zero/empty/null keys, TS rejected them. Accepted R2/AC1 correction validates raw
+nested arm keys before Go shared-struct decoding; curriculum semantics unchanged,
+kernel 0.3.154. Same fixtures now reject; Go raw-call removal refails twenty
+cases and TS exact-check bypass fails the new test. Sources restore exactly.
+Full root server-core/vet, client/type/build and remaining boundaries pass;
+verify-client composite remains RED at RP-131. Real DB/browser/mint/full
+Reputation are unproved. [Exact evidence](../reputation-tree-v1/log.md).
+
+**READY FOR CLAUDE REVIEW:** new Codex span after 6947ebe3 includes predeclaration,
+failing-first tests, correction/kernel/docs/records and final pin, not original
+twenty-one-path B1 or full R2/AC1 approval. No checkbox/archive/push or balance/
+threshold/copy/API/CI change. Next safe Reputation lane is bounded R1/R3
+accounting/earned-level bonus evidence; retain the existing H4 failure,
+measurement-author choices and owner mint instead of silently ratcheting them.
+RP-236 still blocks fresh Docker populations; previous review requests remain.
+
 ## R-011 primitive evidence and current local CI failure — 2026-10-06
 
 Predeclaration `d023dc26`: 120 intervals / 30 actual page closures complete in

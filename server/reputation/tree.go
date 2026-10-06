@@ -194,6 +194,11 @@ func decodeNode(source json.RawMessage) (Node, error) {
 			return Node{}, errors.New("keys")
 		}
 	}
+	if kind == KindStarter {
+		if err := validateStarterKeys(keys["starter"]); err != nil {
+			return Node{}, fmt.Errorf("rule 7: starter keys: %w", err)
+		}
+	}
 	var raw rawNode
 	if err := decodeStrict(source, &raw); err != nil {
 		return Node{}, err
@@ -206,6 +211,39 @@ func decodeNode(source json.RawMessage) (Node, error) {
 		node.UnlockPPM = *raw.UnlockPPM
 	}
 	return node, nil
+}
+
+// The curriculum struct spans every arm. Reject another arm's keys before
+// decoding, including zero/empty/null values that struct validation cannot see.
+func validateStarterKeys(source json.RawMessage) error {
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(source, &fields); err != nil {
+		return err
+	}
+	var kind string
+	if err := json.Unmarshal(fields["kind"], &kind); err != nil {
+		return err
+	}
+	var expected []string
+	switch kind {
+	case "resource_grant":
+		expected = []string{"kind", "resource_id", "amount"}
+	case "generated_generators":
+		expected = []string{"kind", "generator_id", "count"}
+	case "preowned_upgrade":
+		expected = []string{"kind", "upgrade_id"}
+	default:
+		return errors.New("kind")
+	}
+	if len(fields) != len(expected) {
+		return errors.New("fields are not exact")
+	}
+	for _, key := range expected {
+		if _, present := fields[key]; !present {
+			return errors.New("fields are not exact")
+		}
+	}
+	return nil
 }
 
 // validateHeadroom is R2 rule 7's aggregate: applying every starter (the

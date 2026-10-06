@@ -5,6 +5,15 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest runtime checkpoint (2026-10-06):** Reputation RP-243, dc9e6fc6 /
+8379f96d. Actual Go/TS disagreement on twenty malformed nested starter keys is
+corrected under accepted R2/AC1, kernel 0.3.154; both witnessed severings fail
+and restore. Full root server-core/vet and client/type/build/boundaries pass,
+but client composite remains RED at historical RP-131. [Exact log](reputation-tree-v1/log.md)
+retains all limits. New Codex span after 6947ebe3 needs Claude; no complete
+Reputation review, balance ratchet, mint, DB/browser/CI or release promotion.
+The following reliability checkpoint and all full-nine-tier obligations stay open.
+
 **Current checkpoint:** 2026-10-06, cold CI observation under `c8ff3139` /
 `6b119e76` / `e6ea05bf`: passive HTTP/native-worker traces and two intentional
 404 controls discriminate without product/fixture/assertion changes. Full 93957

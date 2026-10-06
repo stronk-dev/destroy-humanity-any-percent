@@ -18,7 +18,10 @@ artifact and enforce R2 rules 1–8. Every rejection names its rule.
    topological order and the display order.
 6. The `bonus_unlock` ladder strictly increases, each rung requires the previous one, and the
    final rung is `1_000_000`.
-7. `starter` rows use the curriculum starter union, validated by `curriculum.ValidateStarter`.
+7. `starter` rows use the curriculum starter union. Each nested arm's key set is
+   checked before decoding: keys belonging to another arm reject even when zero,
+   empty or null. Semantic validation still uses `curriculum.ValidateStarter`;
+   this Reputation-only check does not change the shared curriculum loader.
    They also pass an aggregate-headroom check: resource initial + the largest curriculum grant +
    every tree grant stays within the hardcap, and generated counts stay within the provisioned
    hardcap. A `preowned_upgrade` may appear only once.
@@ -41,10 +44,15 @@ declaration row. Its node copy lives in `copy/catalog/reputation-candidate.json`
   `1 + level × per_level_ppm × unlock_ppm / 1e12`, quantized once. It is computed from the earned
   **level**, never from the available balance.
 
-Both runtimes are bound by two shared corpora:
+Both runtimes consume the shared loader and bonus corpora:
 - `testdata/reputation/tree-fixtures-v1.json`: one or more rejection fixtures per rule.
 - `testdata/reputation/bonus-vectors-v1.json`: Go-authored vectors. Setting
   `REPUTATION_UPDATE_VECTORS=1` regenerates them from Go.
+
+`testdata/reputation/starter-key-rejections-v1.json` additionally binds both
+loaders to twenty cross-arm zero/empty/null refusals with a legal three-kind
+control. RP-243 records the original Go admission, correction and exact review
+scope; these loader tests do not prove a minted player career or full RFC acceptance.
 
 ## Bundle wiring
 

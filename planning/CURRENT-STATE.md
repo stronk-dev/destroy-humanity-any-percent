@@ -71,6 +71,17 @@ projection test passes, not fresh browser or minted PR evidence. See the
 [exact verdict and remaining work](clout-v1-and-pr-interns/log.md).
 No production change, Docker deletion, balance/CI/Clout or release promotion.
 
+Latest independent runtime correction is Reputation RP-243 under dc9e6fc6 /
+8379f96d: Go accepted twenty cross-arm zero/empty/null starter fields that TS
+rejects. Go now checks the exact raw arm before shared struct decoding; all
+three kernel identities move to **0.3.154**. Original failure and restored Go/TS
+severings are retained. Full root server-core/vet and client/type/build/boundaries
+pass; root client composite remains RED at RP-131. No real DB/browser/full
+Reputation or minted player-career claim. [Log](reputation-tree-v1/log.md) binds
+the new Codex span after 6947ebe3, independently pending Claude. Original B1/B9
+and prior ranges stay open; no copy, balance, migration, API, CI or owner choice
+was changed. Docker remains 100%/39,784 KiB available; cleanup answer pending.
+
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
 using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot
