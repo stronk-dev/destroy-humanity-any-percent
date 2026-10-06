@@ -2517,3 +2517,16 @@ End-of-journey oracle now binds persisted cash 0→10, Company revision +2,
 both event/receipt/log axes, shared harvest hashes, multistream source coordinates
 and quota sum exactly two. SQL columns compile before the unchanged real wait;
 two-cell/two-plot checks refuse vacuous empty-array maturity success.
+
+RP-232 repair authority (before production edit): executed `87330` establishes
+the missing Fiscal DOM consumer. Accepted SG7 explicitly names the Fiscal unlock
+target and SG10 requires the actual player surface; the existing Fiscal surface
+already dispatches this generic target. Add only a presentation-map row for
+`minigame.server_garden`, using existing `garden.title` and `garden.why` keys.
+No new copy, unlock cost, host eligibility, epoch/artifact byte, timer/rate,
+public activation or kernel-watched behavior changes. The composed driver must
+purchase through that row, then reach its original real growth/harvest objective.
+Separate source severing of this row's callback and the actual server Garden
+projection must fail, followed by byte-exact restore and final gates. This is
+accepted-contract repair, not a new owner ruling; designated Claude review
+remains mandatory over the full new range beginning `e02fbfc1^` (`b58277cb`).
