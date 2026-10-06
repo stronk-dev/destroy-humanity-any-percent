@@ -8666,3 +8666,43 @@ No new skill/delegation, product rules/copy/epochs/CI or acceptance boxes.
 Full span aftere5a69731 including final records needs Claude; earlier holds
 and full proper1.0 goal remain active. Next pure cross-pin Go/TS refusal census
 stays separate from this real-Postgres proof, not silently claimed by it.
+
+Initial declared SQL8bf826/e5e18e session62868 terminal2 fails compilation:
+unused fmt import in my new test. No cases execute and no source/SQL defect
+inferred. Remove it; before first executed baseline, strengthen exact applied
+receipt revisions, both-head mid-run invariance, full next-Company replay/head
+equality, v2 starter summary and independently ordered Founder purchase events.
+No production edit or weakened expectation/acceptance bound.
+
+First executed fa841f/964eda session84538 terminal2 reaches all24 cases:
+nine activation and all five WindDown refusal cases pass; ten offer refusals
+fail the final recorded Company replay compound oracle with nil error. Earlier
+exact taxonomy/persisted heads/game rows/public Founder history pass in those
+cases; final completed counters truthfully9applied/5refused, not24green.
+Add component diagnostics only to isolate outcome/receipt/events/full-state
+difference before deciding test-format issue versus product defect. No weakened
+oracle, silent omission or runtime edit authorized by this red observation.
+
+Diagnostics59aa04/780e6f session9118 and f0796c/14f4fb session19394 terminal2
+each run only the selected offer refusal;24-case population guard also fires
+(executed1), not a complete run. Outcome/rejection receipt/zero events all
+match. Raw TermsJSON differs only PostgreSQL jsonb spaces/key order versus
+typed codec order; exact-number full JSON canonicalization is equal. This is
+my replay-state formatting oracle, not a confirmed product defect. Change only
+this replay comparison to complete canonical state values (UseNumber), retain
+raw full persisted head/row before-after comparisons, and add copied tier+1
+negative in every refusal. No field omitted/rounded/defaulted, runtime change,
+weak substring comparison or acceptance threshold waiver.
+
+Corrected full SQLfd811c/9dfc81 session78784 terminal0: all24 execute/pass,
+nine applied/fifteen refused,1.620s. Nine mid-run inactive purchase controls
+preserve both full heads under the newer available tree. Actual two-epoch
+activation preserves old run pin, installs new22/18 heads/new run3 next pin,
+unit or1.003 frozen factor, starters, ordered Founder events and summary;
+completed old-pin Company run/full Founder history verify. Wrong current-hash
+substitution refuses both consumers. Fifteen first-failure prefixes preserve
+full heads/game rows/offer and record both logs/receipt/outbox; direct Company
+refusal replay/full canonical head and copied-tier negatives pass. All24 exact
+retries preserve twelve full tables. Diagnostic initial earned6/stored offers,
+not naturally earned progression/default browser/minted-release proof.
+Commit test before the predeclared unchanged-test production source probes.
