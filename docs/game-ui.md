@@ -77,6 +77,14 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   ownership or available Reputation; pending lasts through the authoritative
   refresh. Inactive arms hide the tab/surface; a mounted arm becoming null
   returns to Desk.
+  The header binds available, earned level and spent separately; current-run
+  bonus uses the supplied frozen factor (with a distinct no-row label), while
+  next-run bonus uses the supplied current-Founder projection. Pending alone
+  does not rewrite either factor. Known formula limitation (RP-293): pending
+  copy receives raw ppm as `perlevel`/`unlock`, not R9's declared percentage
+  parameters. This placeholder is not a published formula. R2 admits fractional
+  percentages that cannot fit R9's integer types; author/copy reconciliation
+  remains required, with no rounding or data-domain narrowing implemented.
   Every node displays its cost through the shared Amount component, after its body
   and before requirements/state. The cost remains visible for owned, locked and
   unaffordable nodes, and throughout confirmation, pending and authoritative

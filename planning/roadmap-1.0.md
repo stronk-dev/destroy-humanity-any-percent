@@ -41,6 +41,17 @@ product rule invented. Full new span and earlier recovery/review spans require
 Claude independently. Next safe R9 header/accounting/frozen-next formula checks;
 whole nine-tier/platform1.0, Firefox/SQL/operations and other holds unchanged.
 
+**Header supplement:** test/instrument range after2db69792 proves accounting/
+frozen-next bindings with32 native cases; five faults32/20/20/8/32 discriminate.
+Cold six Go producer/bonus tests and final460 selected Chromium/WebKit plus
+isolated performance,8167 units/339 skips/types/build/boundaries/copy/manifest
+pass. RP-293 formula metadata remains RED five/one; fractional percentages
+cannot fit the declared integer contract. Owner/authored representation/copy
+reconciliation required, no rounded or invented formula. Full span and earlier
+ranges need Claude independently. Docker root still100%; unused cache-only
+pruning permission requested, no cleanup executed. Next cached declared-
+Postgres career preflight/population; full nine-tier/platform scope unchanged.
+
 **Previous runtime checkpoint (2026-10-06):** RP-287 superseded-start delivery
 is locally corrected after61d6c8eb. Test-first two live/recovered failures,
 bounded start revision retained through reconnect/full-sync;61 cases pass.

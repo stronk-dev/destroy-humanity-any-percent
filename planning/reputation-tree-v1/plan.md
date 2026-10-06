@@ -229,6 +229,20 @@ client/types/build/boundaries/copy/manifest and whole Reputation native scope.
 No acceptance checkbox, new epoch, report restamp, policy or archive/push/deploy.
 Full range needs Claude independently of earlier pending ranges.
 
+Local checkpoint:174047c0 predeclares/2edbf681 registers32 native header cases
+and reproducible metadata census. Headers/loader controls pass; census remains
+RED five/one, integer percentage conflict is executed. Five compiling faults
+fail32/20/20/8/32, exact source restoration. Cold six existing Go producer/
+bonus tests pass -count=1 after disclosed shell-quoting failure. Restored460
+selected Chromium/WebKit plus isolated performance,8167 units/339 skips and
+root type/build/boundary/copy/manifest pass. Raw formula line is characterization
+only; author must reconcile RP-293. No product/copy/math change or whole AC12.
+Whole range after2db69792 needs Claude. Fresh Docker root100%/39,784KiB free;
+desktop-linux816 cache records reclaimable,113 unshared, none in use; owner
+approval requested for cache-only pruning, no deletion. Next safe accepted
+work: exact cached declared-Postgres preflight and existing Reputation career
+population if runnable; do not substitute these components for SQL evidence.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

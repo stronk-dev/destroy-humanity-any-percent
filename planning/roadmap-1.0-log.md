@@ -3373,3 +3373,22 @@ holds unchanged. Next safe accepted R9 header accounting/frozen-next factors/
 published formula. No product math/behavior/copy/epoch/kernel/CI/owner/ruling,
 checkbox/archive/cleanup/mint/restamp/publication/deployment/push promotion.
 Full1.0 goal active. [Evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Reputation header accounting proof and formula gap
+
+Test/instrument range after2db69792:174047c0 predeclares/2edbf681 registers32
+native cases with actual loader-admitted diagnostic trees/Go-authored factors.
+Five compiling faults fail32/20/20/8/32; exact restoration. Existing six Go
+producer/bonus tests pass cold after disclosed recipe-shell quoting failure.
+Restored460 selected Chromium/WebKit plus isolated performance,8167 units/339
+skips/types/build/boundaries/copy/manifest pass. RP-293 metadata census remains
+RED five controls/one formula mismatch; actual1ppm tree exposes fractional-
+percentage type conflict. Placeholder presence is not published-formula proof.
+Author must reconcile units/names/types/domain; prose remains owner-authored.
+Full new span and earlier spans independently need Claude. Fresh Docker
+root100%/39,784KiB; desktop-linux816 cache records reclaimable/none in use,
+113 unshared. Requested permission for unused build cache ONLY; no approval
+inferred, no cleanup/images/volumes/containers/data touched. Next exact cached
+declared-Postgres career preflight/population; Firefox/capacity/SQL/mint/manual
+AT/full nine-tier/platform1.0 holds retained. No source math/Go/kernel/copy/CI/
+epoch or checkbox/status/archive/publish/deploy/push promotion. Goal active.

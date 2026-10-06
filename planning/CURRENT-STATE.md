@@ -44,6 +44,17 @@ and earlier ranges remain independently pending. Next safe accepted work:
 R9 header accounting, frozen/next bonus and published-formula rendering.
 Firefox/SQL/capacity/author/owner/release holds and full1.0 scope are unchanged.
 
+Header supplement after2db69792 is test/instrument only:32 new native cases,
+five compiling faults32/20/20/8/32 and exact restoration. Six existing Go
+projection/bonus tests pass cold. Final460 selected Chromium/WebKit, isolated
+performance,8167 units/339 skips and root types/build/boundaries/copy/manifest
+pass. Published-formula criterion RP-293 stays RED: five metadata controls
+match but percentage names/types conflict with raw-ppm binding and admitted
+fractional percentages. Author action is explicit, not solved by green DOM
+characterization. New full range needs Claude, earlier spans independently
+pending. Docker cache-only cleanup permission requested, NOT granted/executed;
+root still100%. Next exact cached declared-Postgres career preflight/population.
+
 Previous runtime checkpoint: RP-287 is locally corrected in the range after
 61d6c8eb. Recovered/live older-start defects were reproduced before correction;
 bounded Company start revision prevents them across reconnect/full-sync.

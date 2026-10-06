@@ -5,6 +5,17 @@ their independent review obligations remain live.
 
 ## Reputation host purchase readiness correction — 2026-10-06
 
+**Header checkpoint:** test/instrument range after2db69792 adds32 native cases,
+faults32/20/20/8/32, exact restoration and cold six Go producer/bonus tests.
+Final460 selected Chromium/WebKit plus isolated performance,8167 units/339
+skips/root type/build/boundary/copy/manifest checks pass. RP-293 published formula
+criterion remains RED (five metadata controls/one mismatch); author must
+reconcile percentage names/type/domain/copy. No product policy or prose change.
+Complete new range and all earlier spans need Claude independently. Storage
+root still100%; unused desktop-linux cache-only pruning permission requested,
+NOT granted/executed. Next exact cached declared-Postgres Reputation career
+preflight/population if runnable; broader capacity/browser/release holds remain.
+
 **Latest supplement:** range after00335488 is test/planning only.20 native
 public-prop replacement checks, three compiling faults8/20/8, exact restoration;
 428 selected Chromium/WebKit plus isolated performance,8167 units/323 skips and

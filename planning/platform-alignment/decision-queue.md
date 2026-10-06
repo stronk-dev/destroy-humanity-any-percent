@@ -116,3 +116,30 @@ epoch/price, or RP-283's separate authoritative-preview bridge is inferred.
 Tests named CHARACTERIZATION ONLY record the current limitation; their green
 result is not AC12 or approval of this UX. Evidence: Reputation implementation
 plan/log and design/BACKLOG.md RP-292. Other accepted work remains available.
+
+## Reputation published formula units and parameter domain — RP-293
+
+The accepted R9 copy contract names integer `per_level_percent` and
+`unlock_percent`; actual candidate/generated metadata uses integer `perlevel`
+and `unlock`, and the component supplies raw ppm. The reproducible
+`node planning/reputation-tree-v1/header-copy-contract-check.mjs` exits1:
+five balance/factor controls match, formula metadata does not. Its self-test
+uses synthetic metadata only and rejects four corruptions; not prose approval.
+
+R2 permits all integer ppm values1..1,000,000. An actual TS-loader-admitted
+1ppm/1ppm tree reproduces the type conflict: each percentage is0.0001, and
+the existing integer formatter rejects it. Other header accounting/frozen-next
+bindings pass native tests; current raw-placeholder rendering is specifically
+not proof of the required published arithmetic. Owner prose remains pending.
+
+Required author action: reconcile R9's representation, parameter names/types,
+units and null/current-run handling with R2's existing exact input domain and
+R3's `1 + level × per_level_ppm × unlock_ppm / 1e12` arithmetic. Specify an
+exact percentage representation or an explicitly unit-labelled ppm formula;
+do not quietly round percentages or narrow admitted R2 data to convenient
+multiples. The resulting prose still follows OD-11's owner-adoption mechanism.
+Canonical home: Reputation R9 copy/header contract and its author-reconciled
+body; any generated metadata/component repair follows that accepted contract.
+No global integer-validation weakening, new numeric kernel, retune/epoch mint,
+report restamp or implementer-authored player text is authorized. RP-283 preview,
+RP-284 balance/display and RP-292 plan policy remain separate questions.

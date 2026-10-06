@@ -7812,3 +7812,62 @@ text is only current raw-placeholder characterization, never R9 formula proof.
 All source is unchanged; next commit tests/instrument before compiling faults.
 The predeclaration's new ledger-row blank separator is repaired forward to
 retain one table, without rewriting committed history. No acceptance change.
+
+Cold existing Go producer/arithmetic population: first command a92818 failed
+before Go execution because the Make-expanded regex was not recipe-shell-quoted.
+No tests ran in that arm. Correctly quoted b58645/658ea9 session15944 terminal0
+uses -count=1 -v, executes exactly three gameui Reputation projection tests
+(including admission/refusal subcases) and three reputation bonus tests.
+No skip, warm-cache claim or SQL/integration substitution. Go bytes unchanged.
+
+Five compiling unchanged-oracle header faults, each terminal2 before restoration:
+balances conflated0232ed/d238f5 session98364:32 fail;
+frozen replaced by next4a9d64/42fca9 session3922:20 fail/12 controls;
+next replaced by frozen057e35/482f6f session87037:20 fail/12 controls;
+null replaced by unit1d75f2/7d4742 session57449:8 fail/24 controls;
+formula line omitted9d4f25/03dc9e session39494:32 fail.
+Worker0/0, zero pending in every arm; no cancelled handle or copy stall.
+Restore original component SHA e97971c1a4b00eb3416bcd7933808e94bd68135dc9df7638be76a9bbc14d3125
+after EACH terminal (8abcc1,1ee39d,b53986,41966e and final check).
+Formula-line probe proves current placeholder presence ONLY; census remains
+RED and does not become percentage/prose acceptance through a passing DOM test.
+All sources restored, no product diff; final root/native gates use DEFAULT
+capture. Next inspect actual Docker capacity read-only while gates run; do not
+silently substitute component proof for blocked real-Postgres verification.
+
+Final restored8055b5/cc2c82/c0fae6 session85818 terminal0: typecheck zero
+errors/warnings,213-module build,8167 units/339 reported skips, boundaries/
+topology13/cosmetic22/no-payment6 negatives, copy658 unchanged SHA
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+generation/history and deployment manifest pass. Sixteen additional Node skips
+are the native-only header declarations; no browser failure was disabled.
+611 existing copy orphan warnings remain. Restored default native32db48/4f769c
+session11249 terminal0:460 selected Chromium/WebKit checks (including eight
+RP-292 descriptive executions), two performance-selector exclusions, workers
+212/212 zero pending; isolated performance1/22 exclusions, worker1/1 zero
+pending. RP-293 actual census still RED; full AC12/Firefox/manual AT/SQL/CI or
+owner-prose adoption cannot be inferred. Source1b119c exactly restored and
+e4be80 confirms no product diff; all handles terminal before record edits.
+
+Read-only storage550d83: Docker reports2.634GB reclaimable build cache; large
+reclaimable images/volumes also exist but ownership/data is not established
+and deletion NOT authorized. Fresh postgres dfe0d0c1:root100%/39,784KiB free,
+DB tmpfs1%. Builder listdb5f7d distinguishes unrelated tabiya and inactive
+release builder; default desktop-linux is the selected cache target only.
+Actual du JSONb348b5/9f8cf8:816 reclaimable records,113 unshared, zero in use.
+No host-level cleanup, image/container/volume/database deletion or build-policy
+change. User asked asynchronously for permission to prune UNUSED BUILD CACHE
+ONLY on desktop-linux; accepted question is not an answer/approval. No prune
+performed. Existing declared Compose services7e6936 healthy; default image
+listing83f3c0 excludes profiled test, not proof its Go image is missing. Actual
+Compose file and root test-save-integration alias read before the next scope.
+
+Canonical docs now distinguish valid accounting/factor rendering from the
+unimplemented published percentage formula. RP-293 author queue names exact
+representation/domain/copy reconciliation without changing another author's
+body or choosing prose. All earlier review and nine-tier/platform1.0 holds
+remain; full new span after2db69792 needs Claude including final record edge.
+No checkbox/Go/schema/kernel161/balance/copy/epoch/mint/report restamp/archive/
+publication/deploy/push. Next safe accepted action is exact cached declared-
+Postgres preflight and existing R8/AC15 career population if runnable; preserve
+any capacity failure and never promote a narrower run to complete SQL proof.
