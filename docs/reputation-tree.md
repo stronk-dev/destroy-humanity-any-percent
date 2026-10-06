@@ -379,6 +379,27 @@ arm.
 When the live Exit is checked against its replay (parity), the expected Founder state now copies
 the v22 tree fields. Without that, a live Exit with a plan, or one activating v22, diverged.
 
+`TestReputationExitPlanWriteFaultsIntegration` executes all14 logged-Exit write
+fault stages against declared Postgres, using the live Exit callback and an
+affordable prerequisite plan. Every stage must fire its exact injected error
+and leave full persisted rows and both decoded stream heads unchanged. This
+includes revision/event history, genesis/logs, run pins/frozen contributions,
+receipts, player outbox and verification queue; sequence counters are not
+claimed transactional state. Eight byte-identical diagnostic initial revisions
+make retention delete real eligible rows in the final successful control.
+
+Normal `Service.Handle` then commits all three purchases exactly once, freezes
+the next bonus at1.003, prunes old revisions, passes Founder/Company replay and
+returns an identical retry without new rows. A compiling source probe that
+commits despite the injected retention error fails the full-row rollback
+oracle in11 tables. Production source was restored exactly before final cold
+tests. This is persistence-boundary evidence, not a new HTTP/socket/actor/guard
+population, natural pacing, designated approval or full AC9/RFC acceptance.
+
+```sh
+make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationExitPlanWriteFaultsIntegration'
+```
+
 ## Portable Founder-history evidence
 
 `server/production/reputation_history_test.go` drives the public

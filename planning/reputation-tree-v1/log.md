@@ -8144,3 +8144,40 @@ Exit path's row writes; SQL sequences are not claimed transactional row state.
 Read retry snapshot once rather than twelve times before final gates. Commit
 test+records before predeclared retention commit-on-error probe; no product
 or acceptance checkbox change and full new span after82830dcb needs Claude.
+
+Compiling retention negative5c1271/54e719 session98179 terminal2: existing
+fault branch commits its SQL transaction before returning the exact injected
+sentinel. The unchanged full-row oracle rejects changed values in11 tables
+(all except save_streams), then decoded Founder head differs. This is actual
+rollback discrimination, not a compile error or merely wrong error text.
+The narrow `/retention` selector additionally fires the complete-population
+guard (1 versus14); that is disclosed, not used as the rollback evidence.
+Founder Fatal stops the later Company decoded comparison in this negative;
+full table rows already include Company changes. Positive all14 checks both.
+No positive control runs after a failed population. Source restored after
+terminal: ab6a98 SHA87159fc54645cbb25c2de1286bc7207547c6153ed806a504f22a3a444414b15f,
+62f59a empty server/save/exit.go diff. No mutant committed.
+
+Final declared SQLd7c57b/5c9e19 session40207 terminal0: whole production
+Integration selector passes cold11.915s,34 top-level and117 subcases, zero
+skips/failures, including all14 new stages and previous taxonomy/career.
+This is not all packages/fullCI/Linux-amd64/browser/harness/release proof.
+Host00fee5/5e8d86 session49652 terminal0 passes production/save/gameui/vet,
+but `Reputation|Exit` selects NO reputation-package tests. Corrected0bf514/
+efb77a session68646 terminal0 adds `|Bonus`: production1.459s/save0.179s/
+reputation0.115s/gameui0.151s and focused vet pass. Host SQL skips remain
+preparation only. All handles terminal before docs/record edits.
+
+Full new test and original wrapper diff inspected; old plan oracles unchanged.
+Exit insert path inspected: twelve-table snapshot covers writes including
+player receipt outbox/queue; no world outbox write in this callback. Docs and
+live trackers now record this persistence proof and its limits, not fullAC9.
+R6/AC9 source/spec census identifies next accepted scope as request-validation
+and Accept Offer coverage, with missing populations to be predeclared first.
+One exploratory glob failed without running rg; corrected bounded recursive
+search follows. Two guessed source filenames did not exist; actual source
+intents.go/prestige.go identified. Neither is evidence of a product failure.
+No production/migration/kernel/balance/copy/epoch/CI/owner-body/checkbox/status/
+cleanup/archive/publish/deploy/push change. Cache-only permission still has no
+answer; cached SQL works despite fullness. Full new span after82830dcb needs
+Claude including final edge; earlier reviews independent. Proper1.0 goal active.

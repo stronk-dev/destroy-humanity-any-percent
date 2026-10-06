@@ -247,7 +247,7 @@ population if runnable; do not substitute these components for SQL evidence.
 
 ### Real-Postgres grounding / RP-294 — 2026-10-06
 
-Current next wave, start82830dcb: R6/AC9 plan-specific applied-transaction
+Applied-plan wave, start82830dcb: R6/AC9 plan-specific applied-transaction
 faults on all14 existing Store stages. Share the existing test fixture; use
 live applyLoggedExit callback and normal Handle success/retry control. Seed
 eight valid byte-identical revisions before Founder genesis so retention
@@ -256,6 +256,17 @@ persisted row/head equality. Demonstrate commit-on-retention-error falsification
 restore exactly, then cold SQL/focused/vet gates. Persistence-boundary proof,
 not new HTTP/UI/guard or natural-pacing evidence. Full range needs Claude;
 no production/migration/balance/copy/CI/epoch or acceptance checkbox change.
+
+Locally executed supplement `00ebee50`/`ea75d517`: all14 exact faults preserve
+full rows and decoded heads. Normal Handle applies all3 nodes, freezes1.003,
+actually prunes old revisions, verifies both replay consumers and retries
+without row changes. Commit-on-retention-error fails11 tables; exact source
+restore. Whole production Integration cold34 top-level/117 subcases/no skips,
+corrected focused Reputation/Exit/Bonus and vet pass. Initial narrower host
+selector ran no reputation-package tests; retained in log. Full span after
+82830dcb needs Claude; no full AC9/checkbox/archival claim. Next accepted work:
+census R6 request-validation and Accept Offer coverage, then predeclare any
+missing population; preserve all author/environment/release holds.
 
 Existing three-test population executes on cached declared Compose: purchase
 and Exit-plan pass; taxonomy fails before its21 profiles because setup creates
@@ -275,7 +286,7 @@ pacing. Whole production Integration population passes cold; prerequisite
 omission fails two profiles and bonus-from-available fails the career, exact
 source restoration. No production/kernel/balance/copy/epoch/CI change or box
 flip. Full span after `ffd1b673` needs Claude independently of header/earlier
-ranges. Remaining R6/AC9 plan-specific write-boundary faults are next; other
+ranges. R6/AC9 write-boundary supplement now executes as above; other
 author/harness/browser/mint/release holds remain, no full RFC closure.
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

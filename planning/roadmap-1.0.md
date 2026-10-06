@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest SQL checkpoint (2026-10-06):** test-only range after `ffd1b673`
+**Latest SQL checkpoint (2026-10-06):** test-only range after `82830dcb`
+proves all14 applied Reputation-plan write faults with exact sentinels/full
+persisted row and head rollback. Retention deletes actual old revisions in
+the normal Handle control, which also verifies replay/frozen bonus/exact retry.
+Committing despite retention failure fails11 table oracles; exact restoration.
+Whole production Integration passes cold (34 top-level/117 subcases/no skips),
+corrected focused Reputation/Exit/Bonus and vet pass. Not a new HTTP/actor/UI
+population, natural pacing, full AC9/RFC/CI or release acceptance. Full range
+needs Claude including record edges; earlier spans remain independent. Next
+accepted work: R6 request-validation/offer-path census and predeclared missing
+populations. No production/copy/epoch/CI/cleanup/push/status promotion. Full
+nine-tier/platform goal and author/environment/release holds remain active.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint (2026-10-06):** test-only range after `ffd1b673`
 repairs RP-294–296 fixture setup and executes all21 persisted Reputation
 taxonomy profiles. The missing composed two-Exit career now verifies both
 completed Company runs and full Founder history, plus run3's ongoing logged
@@ -15,7 +29,7 @@ declared Postgres; selected Reputation/Bonus and vet pass. Initial earned6
 is diagnostic, not natural progression/pacing or minted/default UI proof.
 Designated review of this full span and earlier independent spans is pending.
 No production/balance/copy/epoch/CI change, cleanup, push or release promotion.
-Next accepted work is R6/AC9 plan-specific transaction fault coverage. The full
+Its then-next R6/AC9 transaction fault coverage is now executed above. The full
 nine-tier/platform goal and other author/environment/release holds remain.
 [Evidence](reputation-tree-v1/log.md).
 

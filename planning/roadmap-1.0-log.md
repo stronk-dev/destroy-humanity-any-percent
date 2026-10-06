@@ -3420,3 +3420,28 @@ pending. Cache-prune permission unanswered; no cleanup or production/balance/
 copy/epoch/CI/checkbox/archive/publish/deploy/push changes. Next accepted scope:
 R6/AC9 plan-specific write-boundary rollback. Full nine-tier/platform goal active.
 [Evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Applied Reputation-plan transaction rollback
+
+Test-only range after82830dcb (`00ebee50` predeclaration, `ea75d517` tests)
+executes all14 existing logged-Exit faults on real declared Postgres with the
+live service callback. Each exact sentinel preserves complete persisted rows
+and both decoded heads. Diagnostic byte-identical revisions2..8 make retention
+prune real old rows in the final normal Handle success. All3 purchases commit,
+next factor1.003 freezes, Founder/Company replay verifies and exact retry adds
+no rows. Not a new route/actor/guard/default-player or natural-pacing claim.
+
+Compiling source probe commits despite injected retention error;11 complete
+table oracles fail, plus Founder head. Narrow selector's1/14 guard failure is
+separately disclosed. Exact source restoration before final whole production
+Integration coldPASS11.915s,34 top-level/117 subcases/no skips. Corrected
+focused Reputation/Exit/Bonus and vet pass; first selector ran no reputation-
+package tests. No fullCI/history/browser/harness/release promotion.
+
+Canonical docs/live board/queue/plan reconcile actual proof. Full span needs
+Claude, prior independent ranges still pending; no acceptance checkbox or
+archival. Next accepted scope: R6 request-validation/offer-path census and
+predeclared missing populations. Cache-only approval unanswered; no cleanup/
+production/migration/balance/copy/epoch/CI/owner-body/publish/deploy/push. All
+author/environment/full nine-tier/platform holds remain; proper1.0 goal active.
+[Executed evidence](reputation-tree-v1/log.md).

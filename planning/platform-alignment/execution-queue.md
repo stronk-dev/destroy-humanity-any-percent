@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation applied-plan SQL rollback — 2026-10-06
+
+Test-only range after `82830dcb`: all14 logged-Exit write faults fire exact
+sentinels and preserve complete persisted rows/both heads. Diagnostic old
+revisions make retention meaningful. Normal Handle applies the ordered plan,
+freezes1.003, prunes, verifies replay and retries without row changes. Commit-
+on-retention-error source probe changes11 tables and fails; restored whole
+production Integration passes cold (34 top-level/117 subcases/no skips).
+Corrected focused Reputation/Exit/Bonus and vet pass; initial narrower host
+selector ran no reputation-package tests and is not cited for that coverage.
+
+**DESIGNATED REVIEW PENDING:** full span after `82830dcb`, including records.
+Earlier SQL/header/other spans remain independent.
+**NEXT SAFE ACCEPTED WORK:** census R6 request-validation and Accept Offer
+coverage, then predeclare missing populations before test implementation.
+Persistence evidence is not HTTP/socket/actor/guard/default-player proof.
+Existing author/owner/Firefox/history/capacity/manual AT/clean-host/full1.0
+holds remain; cache-only permission unanswered. No cleanup/status/archive/
+publish/deploy/push.
+
 ## Reputation real-SQL grounding — 2026-10-06
 
 Test-only work after `ffd1b673`: RP-294–296 fixture repairs execute all21
@@ -17,8 +37,8 @@ acceptance. Cached SQL executes; capacity is not a blanket SQL blocker.
 
 **DESIGNATED REVIEW PENDING:** complete span after `ffd1b673` through final
 record edge. Header `2db69792..ffd1b673` and earlier spans remain independent.
-**NEXT SAFE ACCEPTED WORK:** predeclare R6/AC9 plan-specific real-SQL rollback
-at every applicable write boundary, not just unaffordable-plan refusal.
+**THEN-NEXT WORK:** R6/AC9 plan write-boundary rollback now executed above;
+the scope limits and designated review obligations remain.
 **AUTHOR/OWNER HOLDS:** RP-283/284/292/293 and harness/mint/copy rulings.
 Firefox/history/capacity/manual AT/clean-host/full nine-tier holds remain.
 Cache-only permission unanswered; no cleanup, archival, publish/deploy/push.

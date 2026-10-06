@@ -4,7 +4,20 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest SQL checkpoint:** the cached declared Postgres lane executes despite
+**Latest SQL checkpoint:** test-only range after `82830dcb` now executes all14
+R6/AC9 applied-plan write faults on declared Postgres. Exact injected errors,
+complete persisted rows and both stream heads prove rollback; retention has
+real old rows to prune. Normal Handle commits/replays/retries once. Committing
+despite retention failure changes11 tables and fails the oracle; source is
+restored exactly. Restored production Integration population passes cold
+(34 top-level/117 subcases, no skips); focused Reputation/Exit/Bonus tests and
+vet pass. This full range needs Claude including final records, independently
+of earlier spans. Next accepted work: R6 request-validation/offer-path coverage
+census, then predeclare only missing populations. No product/CI/epoch/copy
+change, cleanup, archival, push or release promotion. All author/environment/
+nine-tier/platform holds remain. [Evidence](reputation-tree-v1/log.md).
+
+**Previous SQL checkpoint:** the cached declared Postgres lane executes despite
 Docker's capacity hold. Test-only work after `ffd1b673` repairs three dormant
 taxonomy setup defects (RP-294–296) and adds the missing composed two-Exit
 Reputation career. All21 taxonomy profiles execute. Both completed Company
@@ -16,7 +29,7 @@ passes cold; selected Reputation/Bonus tests and vet pass. This is diagnostic
 SQL proof, not natural pacing, minted/browser/full CI or 1.0 approval.
 Full span after `ffd1b673` needs Claude, including final records; header span
 `2db69792..ffd1b673` and earlier ranges remain independently pending. No cleanup
-or push. Next accepted work: R6/AC9 plan-specific SQL write-boundary faults.
+or push. Its then-next R6/AC9 write-boundary population is now executed above.
 Formula, invalidated-plan, preview/display, Firefox, harness and release holds
 remain. Earlier checkpoint-specific next actions below are historical.
 
