@@ -6839,3 +6839,47 @@ pass at unchanged copy658; inherited RP-131/Firefox/Node skips explicit.
 No test assertions removed/checkbox flip/AT/default-player/SQL/mint/full AC12
 claim. Prior independent ranges remain open. Goal active; RP-281 tooling and
 RP-284 producer grounding are safe next work; RP-283 needs author contract.
+
+## 2026-10-06 — RP-281 generator formatting predeclaration
+
+Resume3df3ff32 clean main/no inherited live handles (d54f7c/3c5aa1). Previous
+goal turn is progress: RP-285/286 source/test/docs/tracker committed, full native
+248 and fired probes; independent review still pending. AGENTS/process fully
+read3281af/db4106; active indexcc1c38. Existing generator/function/verifier
+f4a042/2fe4ca/16790b, canonical docs4d40cf and archived CP1-C10/frozen amendment
+f4cbcf read. This is existing-tool formatting repair under AGENTS gofmt law,
+not new copy behavior or a rewrite of archived authority. Kernel registry01088f
+does not watch copykeys/template; kernel161 remains unchanged.
+
+Baseline2bb330 lists generated.go; e622c4 gofmt-d exits1:only All/CompanionKeys
+one-line bodies split by formatter. Existing server producer tree787441 remains
+4882868df62e81847347a791f84c474d62d6794b until regenerated file changes.
+No hand-format-only repair. Extend existing copy verifier with a standalone
+Node-only generation fixture import: exact independent whole-output goldens for
+empty, single/default, ordered multi, independent all/companion sets, and
+companion-only input. Keep collision refusal. Six corrupted golden-output
+controls must reject (one-line body, indent, order, omission, companion binding,
+constant identity). Run unchanged generator first; expected formatting failure,
+not weakened golden. Then minimum multiline function template and avoid extra
+blank line for zero constants; regenerate through root make copy-generate.
+
+Acceptance: generated Go equals gofmt(old committed Go) byte-for-byte, all
+other generated outputs and copy658/hash/manifest unchanged; fixture goldens
+pass, current Go gofmt-d emits zero; Go cold core tests/vet, root types/build/
+units/boundaries/copy plus inherited history guard recorded separately. No new
+Go executable dependency in Node generation/verifier/client CI, no workflow/
+Make lane/timeout/skip changes. Fixture import extends existing generation
+verification, not content or CI topology authority.
+
+Three compiling template severings predeclared: All body back to one-line,
+Companion body back to one-line, or Companion binds allKeys. Each must fail
+standalone fixture before history walk; restore exact template SHA each after
+terminal result, never edit while any handle live. Also test current generated
+drift rejects a temporary output-only corruption before restoring exact file.
+Finish regenerated output+docs in same source change and reconcile all trackers.
+Changing Go bytes makes current producer tree different even though behavior is
+formatter-identical: dated career artifacts remain their original producers,
+not restamped or claimed fresh. Full new span after3df3ff32 needs Claude;
+all earlier ranges remain independent. No checkbox/full AC12/AT/SQL/mint/owner
+copy/epoch/RFC/archive/push/cleanup/balance/formula/price/CI/kernel promotion.
+Full proper nine-tier/platform1.0 goal remains active.
