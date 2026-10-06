@@ -5847,3 +5847,32 @@ Next predeclare RP-277's bounded pending-row baseline first; do not silently
 extend this focus correction to other requirements. Full new span after020a25c6
 needs Claude, separately from all earlier ranges; no checkbox, acceptance,
 archive, cleanup, publication, deployment, push or full1.0 promotion.
+
+## 2026-10-06 — R9 focus self-first-filter checkpoint
+
+Review by: Codex (implementer, self-first-filter; not designated).
+Recorded by: Codex.
+Reviewed range:020a25c6..055cc70f — all four commits/all11 paths,
+including predeclaration, test-only baseline, renderer/docs and tracking edges.
+Verdict: ready for designated review, not RFC acceptance or archival approval.
+
+Full code/test/docs/log diff524790 and tracking diff3e1182 read. Whitespace
+e66bae/8b1efa and full-range check pass. Tests require exactly one disabled
+pending control, exact retained keyed row, native submission, both era/outcome
+arms and callback cardinality; original tests/axe remain. Baseline and single
+compiling focus-call removal independently fail at the intended focus assertion;
+restoration is byte-exact. Typed attachments and tick change only the focus
+target/timing, with no extra Tab stop or new transport/API/copy/eligibility seam.
+Server/balance trees88e82f remain c3d6616e/cd982b7c. Owner copy, kernel161,
+CI, corpus and research reports unchanged; no checkbox flips. Typecheck/build/
+units/boundaries/copy pass but historical RP-131 and zero-executed Firefox remain
+RED, as records consistently say. Controlled prop injection is not a real
+receipt/revision/database/default-player proof or whole AC12.
+
+RP-277/278/279 are explicitly source-contract findings, not fixed by this range.
+Next bounded RP-277 diagnostic is safe accepted R9 work, not blocked on policy;
+all prior author/mint/capacity/review obligations remain. This self-record edge
+must also be included in Claude's full span after020a25c6, separate from every
+earlier range. All handles terminal before edits/record. No archival, cleanup,
+publication, deployment, push or full1.0 completion. Goal turn is concrete
+progress; full nine-tier/platform objective remains active.
