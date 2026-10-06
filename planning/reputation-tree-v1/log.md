@@ -4758,3 +4758,37 @@ value, full report lineage or owner balance adoption. Kernel161/live product/
 balance/schema/CI unchanged; no checkbox or epoch mint. Whole9f5b81a0..677deb07
 needs Claude independently of RP-264 db8398a3..97d916eb and prior ranges. Goal
 active; next accepted RP-270, then fresh H1/H2/lineage and RP-268 grounding.
+
+## 2026-10-06 — RP-270 shared H3 aggregate admission predeclared
+
+Previous work made concrete progress:97d916eb repairs H4 evidence admission
+and677deb07 repairs first-hour Exit/H2 study admission, with cold checks and
+negative controls. Resume clean0a486d79; no live handles. Accepted R10 H3 and
+fail-loud instrument rules authorize admission, not changing the fired criterion.
+
+RP-269 directly demonstrates four aggregate schema/id/hash/constants corruptions
+accepted by the existing shared H3 population oracle while H2's local guard
+refuses them. Add those same four fields as independent mutations to H3's own
+synthetic population test, execute the unchanged oracle cold, and record the
+four baseline failures rather than inferring them from the H2 path alone.
+
+Then, only if reproduced, add aggregate coordinate admission to the shared H3
+helper. Existing full-source/count/seed/outcome/clock/Exit checks stay unchanged;
+do not rederive aggregate value arrays or require altered milestone distributions.
+The H2 local guard remains an independent defense, not proof its shared H3
+dependency is correct. One compiling omission of the new combined coordinate
+guard must fire these four H3 mutations, exact restoration required.
+
+Cold focused H3/H2/H4 admission tests and fast/core/vet; execute all five current
+producer arms/all97 seeds (485 runs/3395 clocks) with the existing explicit
+observation selector. Same factor1.000001 and strong2 control, same ratified
+scenario/policies/horizon. No selector shortcuts, thresholds, waivers, update
+flags or old report changes. A still-failing tiny criterion stays RED; neither
+changed lifetime nor the strong control substitutes for it. No edits while any
+handle lives; poll to terminal before records/probes/restoration.
+
+Scope one existing harness test file plus canonical docs/shared tracking.
+No product/math/balance/kernel/schema/migration/CI/owner-copy/report/corpus edits;
+kernel161 stays. Whole new span after0a486d79 needs Claude. Previous ranges,
+fresh H1/H2/lineage, RP-268, H3 author reconciliation, H4/H5, actual SQL/capacity
+and full1.0 remain. No checkbox, mint, archive, cleanup or push; goal active.
