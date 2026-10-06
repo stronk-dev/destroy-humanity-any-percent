@@ -89,7 +89,7 @@ function controlledBoundary(tier: number) {
     deliverIntent(value: unknown, status = 200) { expect(heldIntents).toHaveLength(1); heldIntents.shift()!(Response.json(value, { status })); },
     deliverSnapshot(value: GameUISnapshot) { expect(heldSnapshots).toHaveLength(1); heldSnapshots.shift()!(Response.json(value)); },
     cleanup() {
-      for (const finish of heldIntents.splice(0)) finish(Response.json({ outcome: "applied" }));
+      for (const finish of heldIntents.splice(0)) finish(Response.json(rejection(requests.at(-1)?.intent_id, "invalid")));
       for (const finish of heldSnapshots.splice(0)) finish(Response.json(initial));
     },
   };

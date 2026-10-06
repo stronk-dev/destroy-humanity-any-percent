@@ -3174,3 +3174,26 @@ and row feedback before a bounded predeclaration; RP-279 costs follow. Full
 nine-tier/platform1.0 stays active. No owner-copy/kernel/balance/transport/CI
 policy change, acceptance box, archive, cleanup, publication/deployment/push or
 shortcut. Goal turn made concrete runtime/evidence progress.
+
+## 2026-10-06 — Reputation host row rejection feedback corrected locally
+
+RP-278 underaf744e65/defa9679/441013a5 first fails48 native rejection cases
+with eight applied controls green; restored host+child114 and shared GS0.2 two
+selected cases pass. Seven compiling removals discriminate and restore exact
+sources. Actual browser runtime/parser/host/native keyboard execute over
+controlled HTTP Responses/socket protocol input, not a live server/SQL/minted
+tree or full AC12. Conflict refresh/new Founder revision/row attribution and
+clearance are observed; authoritative ownership remains snapshot-derived.
+RP-280 adds only the missing declared key, explicitly pending owner prose.
+Copy658/new generated-Go producer tree means prior dated career reports stay
+historical for their recorded source, not current-tip measurements. No restamp.
+Types/build8106 units/boundaries/copy/manifest pass; RP-131 history is executed
+RED, Firefox remains unexecuted. [Evidence](reputation-tree-v1/log.md).
+
+Full span afterb8ee639f needs designated review through final edge, independently
+of prior spans. Next ground/predeclare RP-279 persistent Amount costs. Full
+nine-tier/platform1.0 remains active; H3/H4/H5 author/data/owner/mint/SQL/capacity/
+deployment and all review holds remain. No numeric math/kernel/balance/CI-policy
+change, box flip, acceptance/archive, cleanup, publication/deployment/push,
+shortcut or goal completion. This turn made concrete host behavior/evidence
+progress rather than stopping on unrelated holds.

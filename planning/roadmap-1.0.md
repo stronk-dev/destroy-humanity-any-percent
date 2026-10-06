@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime checkpoint (2026-10-06):** RP-277 row-busy correction under
+**Latest runtime checkpoint (2026-10-06):** RP-278 row rejection correction
+under441013a5 fails48 native cases first, preserving eight applied controls;
+restored host+child114 and shared GS0.2 two selected cases pass. Seven compiling
+omissions discriminate/exactly restore. Actual client host/runtime over controlled
+HTTP/socket inputs, not live server/SQL/mint/full AC12. Both conflict refreshes,
+row attribution/clearance/Founder revision execute. RP-280 adds required key
+with pending-owner placeholder; copy658/new generated-Go producer, prior career
+artifacts historical. Types/build8106 units/boundaries/copy/manifest pass; RP-131/
+Firefox remain. Whole span afterb8ee639f needs Claude. Next RP-279 all-state
+Amount cost diagnosis; full nine-tier/platform1.0 stays active.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous runtime checkpoint (2026-10-06):** RP-277 row-busy correction under
 294a1b08 fails32 native cases first and under four compiling omissions; exact
 restoration passes58 Chromium/WebKit cases. Existing host task/shared pending
 clear only after both settle; unrelated refresh and second row discriminate.

@@ -4,7 +4,20 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime checkpoint: RP-277's Reputation purchasing-row busy state is
+Latest runtime checkpoint: RP-278 host row rejection feedback is locally
+corrected under441013a5: unchanged-production native baseline fails48 rejected
+purchases/eight applied controls pass; restored host+child114 and shared GS0.2
+two selected cases pass. Seven compiling omissions discriminate with exact
+restoration. Actual client host/runtime over controlled HTTP/socket inputs,
+not live server/SQL/mint/full AC12. Both conflicts refresh; attribution/clearance/
+Founder revision execute. RP-280 declares only missing key with pending-owner
+placeholder. Copy658/new generated-Go producer tree; prior career artifacts
+remain historical. Types/build8106 units/boundaries/copy/manifest pass; RP-131
+history stays RED, Firefox unexecuted. Full span afterb8ee639f needs Claude.
+Next RP-279 persistent Amount costs. No owner-prose/epoch/kernel/CI-policy or
+release promotion. [Evidence](reputation-tree-v1/log.md).
+
+Previous runtime checkpoint: RP-277's Reputation purchasing-row busy state is
 locally corrected under294a1b08. Native baseline and four compiling omissions
 fail32 new cases each; restored Chromium/WebKit pass58. Both task/parent settling
 orders, unrelated refresh and second-row attribution execute. Types/build8106

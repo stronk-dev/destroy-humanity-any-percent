@@ -6131,3 +6131,80 @@ explicitly rather than accepting green tests alone. Six probes total, individual
 terminal then exact restoration. No assert/population/deadline/engine-policy edit.
 The act option type formatting is mechanical, not a new behavior. No checkbox,
 archival, retune, mint, owner-prose adoption, report restamp, CI green or push.
+
+After the six terminal probes/restorations, predeclare one independent omission
+of options.failed observation, isolating the typed409 connection from HTTP200
+observation. Same56 native cases; no fixtures/assertions/bounds changed. Require
+only409 inline failures with applied/ordinary rejection controls preserved.
+
+All seven probes now terminal/restored. Test-teardown inspection finds that an
+early assertion failure with a held POST can make cleanup's applied receipt start
+a new refresh after the held-snapshot drain. Before editing, scope its correction
+to resolving held POSTs with the same valid invalid-rejection body already used
+by the diagnostic; no new production behavior or assertion/population change.
+Rerun restored host+child and shared control, cold types/client. This is teardown
+robustness, not a passed gameplay or receipt-acceptance criterion.
+
+## 2026-10-06 — R9 host rejection correction / executed discrimination
+
+RP-278 locally corrected under af744e65/defa9679/441013a5: act's optional
+outcome/error observers bind feedback to the submitted node inside the existing
+task. Four existing keys plus conflict presentation are inline on only that
+row, with a stable polite status. Next submission clears previous feedback;
+known inline text suppresses duplicate global speech only on this surface.
+Applied global result/shared unknown/network handling are unchanged. Conflict
+is NOT added to SurfaceRejections; HTTP200 and typed409 preserve the existing
+authoritative refresh, held controls and next Founder revision. Server-derived
+state remains authoritative, no optimistic purchase or transport/schema change.
+
+Seven independently compiling source omissions, same56 host cases, all terminal
+exit2 with assertion failures (not type/build failure):
+
+| Omission | Run / terminal output | Failed / passed | Fired observation |
+|---|---|---|---|
+| Row text rendering | 54db28 / 1abdae, session29756 | 48 / 8 | Exact inline text empty |
+| HTTP200 outcome observer | e119cc / f05f06, session17665 | 48 / 8 | Ordinary first rejection empty; typed409 first works but retry's invalid rejection empty |
+| Conflict refresh in both shared branches | 9d4d16 / 851c87, session30270 | 16 / 40 | Snapshot calls remain1, required2 |
+| Row ID equality | 0f1baa / b96dba, session15915 | 48 / 8 | Unrelated row incorrectly receives text |
+| Previous feedback clearance | b3d6fe / 9d7970, session18366 | 48 / 8 | Old row still speaks during second submission |
+| Duplicate-global suppression | 03b49e / 89795e, session44797 | 48 / 8 | Global status nonempty beside inline status |
+| Typed409 error observer | 63c843 / ee437c, session74228 | 8 / 48 | Only HTTP409 inline text empty |
+
+After EACH terminal probe, exact production restoration is verified by
+b15afa/45a721/4ca52d/57a434/ace9d6/76f60f/543231. Both sources match441013a5:
+GameUIApp SHA256 ea9609226388b0ca1abfb1db2020557684a9132a3b10e630a6a8a75fda0557a7;
+ReputationTreeSurface SHA256 059bfaf66960be8347b0d6f8edd3c90c5a8d95d22b603779dd9b62552279743d.
+No edits under live handles; no assertion/population/launch/security/deadline loosening.
+
+Final restored host+child f2af8a/ac53d4,session61050 terminal exit0:114/114
+(56 host/58 child). Teardown-only repair resolves held requests with existing
+invalid rejection instead of opening a new applied refresh after drain; gameplay
+assertions/population untouched. Final shared GS0.2 control042a69/67d999,
+session46428 terminal exit0:two selected cases/44 skips. Automatic performance
+follow-ons each pass one selected Chromium case/22 skips, NOT full Worker/perf
+acceptance. Final cold types/client36ea00/dd0401,session4965 exit0:zero errors/
+warnings,8106 unit passes/188 visible native skips,91 pass/18 skip files.
+Earlier build/boundaries/topology/copy/Go-manifest executions remain unchanged-
+production passes above; kernel-history RP-131 is explicitly RED, not waived.
+
+RP-280 declaration corrected separately in441013a5: required key plus explicit
+PENDING OWNER COPY placeholder, six generated-output computation and dependent
+manifest. Only five generated files changed; code-reference output was already
+byte-identical (registry is Go-only). Census0f158d confirms all five keys and
+all prior source entries byte-unchanged. Copy658, hash a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e;
+611 orphan warnings visible, not exhaustive mounted-client discovery. No owner
+prose adoption. Generated Go All() changes server tree to4882868df62e81847347a791f84c474d62d6794b;
+balance cd982b7c58a53cac0ab4c91a773705033930414d / constants hash unchanged.
+Prior career artifacts remain historical evidence for their recorded producer,
+not current-tree runs. Files untouched, no restamp or fresh H1/H2/H4/H5 claim.
+Kernel161 unchanged, these paths outside kernel-affecting list e3e720.
+
+Actual client host/runtime/parsers/native keyboard/Worker execute against
+controlled HTTP Responses/socket protocol messages; NO live server/WebSocket/
+Postgres/minted-tree or full AC12/AC15 claim. Firefox remains zero-execution
+RP-256; capacity and all owner/author/statistical/review/full1.0 holds remain.
+Next ground/predeclare RP-279 persistent Amount costs across every row state
+and era. Full range after b8ee639f requires Claude's designated pass through
+final tracking/self-record edge; earlier spans remain independent. No checkbox,
+RFC acceptance/archive, cleanup, retune, mint, publication/deployment/push or
+goal completion. Concrete host behavior and discriminating evidence progressed.

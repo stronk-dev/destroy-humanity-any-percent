@@ -89,6 +89,16 @@ threshold retune is measured and reported, then ratified by owner SHA).
   `run_started` v2. ACs 6, 7, 8, 11.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+  RP-278 host correction underaf744e65/defa9679/441013a5 first fails48
+  rejection cases while eight applied controls pass. Restored host+child114
+  and shared GS0.2 two cases pass; seven compiling omissions discriminate and
+  restore exactly. Actual runtime/parser/host over controlled HTTP/socket input,
+  not live network/SQL/mint/full AC12. Both conflicts retain ordered refresh;
+  correct row/clearance/Founder revision/native keyboard execute. RP-280 adds
+  required conflict key with marked placeholder only; copy658/new producer,
+  prior career reports historical. Types/build8106 units/boundaries/copy/manifest
+  pass; RP-131/Firefox remain. Whole span afterb8ee639f needs Claude. Next RP-279
+  all-state Amount cost diagnosis. No box flipped or full B7/AC12 closure.
   RP-277 row-busy correction under367fe467/27ff4cd5/294a1b08 first fails32
   native cases, then restored Chromium/WebKit pass58. Four compiling omissions
   discriminate and restore exactly. Existing returned host task/shared pending

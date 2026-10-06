@@ -3,6 +3,33 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation host row rejections corrected locally — 2026-10-06
+
+RP-278 underaf744e65/defa9679/441013a5: native baseline fails48 rejection
+cases/eight applied controls green. Restored host+child114 and two selected
+shared GS0.2 cases pass. Seven compiling omissions discriminate and restore
+exact sources. Real client host/runtime/parser/native keyboard over controlled
+HTTP Responses/socket protocol inputs; not live network/SQL/mint/full AC12.
+Both conflict paths retain authoritative refresh/disabled controls/new Founder
+revision; feedback stays on submitted row and clears before the next intent.
+RP-280 adds only required conflict key with marked pending-owner placeholder;
+copy658/manifest regenerated, prior source entries unchanged. Generated Go
+producer tree changes; old dated career artifacts remain historical, not fresh
+current-source measurements. Types/build8106 units/boundaries/copy/Go manifest
+pass; RP-131 stays RED, Firefox unexecuted; not whole client/CI proof.
+
+**READY FOR CLAUDE:** whole new span afterb8ee639f through final record edge;
+all prior spans remain independent. Self-first-filter cannot archive/approve.
+**NEXT SAFE ACCEPTED WORK:** ground/predeclare RP-279 Amount costs on every
+node state and both eras, including confirmation/pending/replacement; retain
+published amount formatting and owner-copy boundaries. No cost-only Buy text
+substituted for persistent row cost. No new numeric mechanics or mint.
+**HELD:** complete native/minted-player AC12/SQL/AC15, author/data/H3/H4/H5/R11,
+owner prose/adoption, capacity/deployment, all reviews and full nine-tier1.0.
+No numeric kernel161/balance/transport/security/CI policy change, checkbox,
+acceptance/archive, cleanup, report restamp, publication/deployment or push.
+[Exact evidence](../reputation-tree-v1/log.md).
+
 ## Reputation purchasing row corrected locally — 2026-10-06
 
 RP-277 under367fe467/27ff4cd5/294a1b08: native baseline and four compiling
