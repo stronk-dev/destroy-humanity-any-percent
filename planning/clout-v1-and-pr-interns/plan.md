@@ -32,3 +32,16 @@ lands, with the allowed writer set empty.
 Kernel protocol: every commit touching a `kernel/affecting-paths.json` prefix bumps
 `kernel/VERSION` (+ Go/TS constants) in the same commit. Save/snapshot/migration numbers are
 assigned in landing order (the RFC's "v19" means next-free Company version).
+
+## RP-303 — accessible PR progress, bounded consumer correction
+
+Predeclared at b2b2d5a5, 2026-10-06. First reproduce the unnamed native progress
+bar through a browser role/name query, without changing the production panel.
+Test both unowned interns together, then a snapshot replacement with one owned:
+exact name-to-row association, numeric value/maximum, description and remaining
+bar must hold; no gameplay intent may be emitted. Negative controls remove the
+label association and point it at the wrong row; both must fail after the fix.
+Use existing copy keys only. No server/schema/arithmetic/kernel/epoch/CI changes.
+Run cold Chromium/WebKit cases via root Make, type/client/build/boundary/copy
+checks; report any Firefox launch failure separately, never as a passed case.
+No checkboxes or full P5/AC11 promotion. New Codex implementation needs Claude.

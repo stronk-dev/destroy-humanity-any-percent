@@ -383,3 +383,28 @@ its exact literal tip. It does not expand the designated-approved Claude range
 `527246f1^..527246f1`, supply missing P6 measurements, or consume any earlier
 Codex review request. Final record-only diff-check passes, source remains restored
 and clean; no verification handle is live. No checkbox/archive/push change.
+
+## 2026-10-06 — RP-303 predeclaration: accessible PR progress association
+
+Implementer: Codex. Baseline b2b2d5a5; clean tree, no live test handles.
+Accepted Clout CV9 accessibility and its server-derived progress contract own
+this bounded consumer correction. Static census finds native progress bars
+without a label; the existing axe rule aria-progressbar-name selects explicit
+role attributes, not these native progress elements. Its green result does not
+establish a native accessible name. Native reproduction is still pending.
+
+Population: existing Go-authored diagnostic arm mounted through GameUIApp,
+both PR rows unowned, then replacement with one owned. Query actual native
+progressbar by exact existing translated intern name; assert exact row binding,
+value/maximum and contextual description. Refresh must preserve the remaining
+association, with no fabricated intents. Existing original tests remain intact.
+Failing controls: remove the label binding; bind the second bar to the first
+intern. Each must fail the new oracle; restore exact source before final gates.
+No source/test/record edits while a verification handle is live.
+
+Only panel/test/docs/ledger/planning changes allowed. No owner text authored or
+adopted, producer/arithmetic/generated contract/balance/epoch/kernel/CI change,
+mint, cleanup, archive or push. This is not a full designated P5 review, default
+served-epoch journey, manual assistive-user study, or full accessibility proof.
+All earlier Codex spans remain independently review-pending. Cold local browser,
+types/client/build/copy/boundary checks are not hosted CI success.
