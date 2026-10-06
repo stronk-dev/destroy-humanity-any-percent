@@ -1681,3 +1681,46 @@ earlier-source TS replay evidence and remaining pinned load/encode reader/writer
 audit under R1/R7. Complete AC2/AC11, transaction/career/default-player, H4/mint/
 owner/author/CI/capacity and full nine-tier/platform goal stay open. No archival,
 push or Docker cleanup/DB workload; all verification/probe handles are terminal.
+
+## 2026-10-06 — predeclare shared earlier-source Founder replay proof
+
+Previous goal turn made concrete progress: original B3 range reviewed and the
+seven-source Go supplement committed at29ed56e8. Main is clean, no running
+verification/probe or new external review/push observed. This is the next
+accepted R7/R8 task, not a smaller replacement for the full nine-tier goal.
+
+Population: the exact seven previously registered writable sources v14,16–21,
+same input states, artifact hashes and two fixture targets. Go authors one new
+deduplicated corpus under testdata/replay (nine source/target bundles, seven
+rows), including complete pre/post state, canonical command/inputs, receipt,
+ordered events and result hash. Existing eleven-case legacy and four-case R7
+corpora remain byte-unchanged. Production epochs, balances, owner copy, schema,
+runtime and kernel identity are not changed by this test wave.
+
+The existing root Go test flag `-update-replay-fixture`, narrowly selected to
+the new activation test, generates the new artifact only after every source's
+live/replay/codec assertions pass. Subsequent unflagged runs require byte-exact
+regeneration equality; this is a Go-authored expectation, not a hand-maintained
+second TS byte table. TS loads the corpus artifacts through its actual strict
+loadReplayCatalogBundle, loads without activation, then invokes public
+applyFounderLogged and requires complete Go result state, receipt, ordered
+events and result hash equality. TS output must restore under the next pinned
+bundle and retain earned11/available11/spent0/owned[]/unlock0 and age/knowledge.
+
+Controls, independently with terminal wait and mandatory exact source restore:
+TS activation spent=earned; bypass v17 minigame initialization; bypass v20 Soul
+initialization. Each must compile and fail the affected registered rows, not
+pass via fixture adaptation. Corpus controls: remove one registered row, then
+tamper one expected receipt; both Go regeneration and TS consumers must fail.
+Restore artifact SHA before the next run. Normal runs never regenerate; a
+negative run never uses the update flag. Any setup/compiler mismatch or survivor
+is disclosed and routed, not hidden behind a generic green count.
+
+Exit: all seven rows execute in both runtimes, exact regeneration is stable,
+three runtime and two cross-lane instrument controls fire, then cold Go source
+population/full server-core/vet and full client/type/build pass. No real DB,
+Company-log/transaction, career/default-player or all historical artifact claim;
+remaining R1 catalog-bound encode consumers/AC2/AC11 and mint/H4/author/owner/CI/
+capacity require their own evidence. No checkbox flip, archival, push or Docker
+cleanup authority. New range after29ed56e8 needs Claude independently of all
+earlier Codex spans; self/first-filter only, no self designated approval.
