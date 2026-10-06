@@ -89,6 +89,15 @@ threshold retune is measured and reported, then ratified by owner SHA).
   `run_started` v2. ACs 6, 7, 8, 11.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+  RP-279 underd12fdcff/20c44899/285a247e now persists actual Amount cost
+  outside all row-control conditions. Baseline40 fail; seven compiling mutations
+  discriminate and restore exact source; final154 native Chromium/WebKit pass.
+  Four states/both eras/notation/native confirmation and held task/replacement
+  execute. Types/build8106 units/boundaries/copy/manifest pass;208 Node skips,
+  RP-131 RED/Firefox unexecuted remain. New diagnostic is component-only, not
+  host/SQL/mint/full AC12. Whole span after22e03946 needs Claude. Next ground
+  R9 plan-panel/host lifecycle RP-282; RP-283 preview and RP-284 Run End producer
+  gaps remain separately routed. No checkbox flipped or inherited B7 closure.
   RP-278 host correction underaf744e65/defa9679/441013a5 first fails48
   rejection cases while eight applied controls pass. Restored host+child114
   and shared GS0.2 two cases pass; seven compiling omissions discriminate and

@@ -4,7 +4,21 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest runtime checkpoint: RP-278 host row rejection feedback is locally
+Latest runtime checkpoint: RP-279 persistent Amount costs are locally corrected
+under285a247e. Native unchanged-source baseline fails40; seven compiling cost/
+visibility/order/binding omissions discriminate, then exact restoration passes
+154 Chromium/WebKit cases (40 cost/58 child/56 host). All four row states, both
+eras, published notation and native confirmation/pending/replacement execute.
+New cost evidence uses controlled component props, not host/SQL/mint/full AC12.
+Types/build8106 units/boundaries/copy/manifest pass;208 Node skips visible.
+Historical RP-131 guard is executed RED; Firefox remains unexecuted. Full span
+after22e03946 needs Claude. Next ground bounded R9 plan-panel/host lifecycle
+coverage: RP-282 stale advisory selection is a source finding, not yet a native
+defect proof; RP-283 preview and RP-284 Run End producer gaps remain separate.
+No copy/numeric/kernel/CI change, owner adoption, mint or release promotion.
+[Evidence](reputation-tree-v1/log.md).
+
+Previous runtime checkpoint: RP-278 host row rejection feedback is locally
 corrected under441013a5: unchanged-production native baseline fails48 rejected
 purchases/eight applied controls pass; restored host+child114 and shared GS0.2
 two selected cases pass. Seven compiling omissions discriminate with exact

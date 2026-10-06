@@ -6359,3 +6359,62 @@ All handles terminal. Before probes add one hidden-wrapper omission/control
 to explicitly discriminate visible cost, not merely DOM presence: seven probes
 total. No fixture/assertion/bound/engine/security changes. Component-only new
 cost evidence; prior host controls still controlled-network, not SQL/mint/AC12.
+
+## 2026-10-06 — RP-279 executed negatives / final restored gates
+
+Seven independent compiling mutations on the same40 cost cases, both engines:
+
+| Probe | Terminal execution | Actual outcome |
+|---|---|---|
+| Omit standalone Amount | 3b17e4/ca89df,session43696 exit2 | 40 fail, row0 Amount cardinality0 |
+| Available-only Amount | b7d01b/df3ba1,session54035 exit2 | 40 fail, owned row0 cardinality0 |
+| Hide during Confirm/pending | 61cf2f/81c52f,session3082 exit2 | 32 lifecycle fail at Confirm,8 static pass |
+| Bind row0 cost on every row | 336452/430b4d,session69760 exit2 | 40 fail wrong row1 literal:1 vs2 or999 vs1.00 K |
+| Duplicate Amount | 241f99/87605b,session80947 exit2 | 40 fail cardinality2 |
+| Move Amount after state | 204137/04375b,session62034 exit2 | 40 fail document reading order |
+| Hidden wrapper | 522167/0902fa,session91142 exit2 | 40 fail hidden ancestor, despite DOM amount presence |
+
+Every case exits by assertion rather than compile error. No test fixtures,
+assertions, deadlines, browser flags or criteria change between probes. Each
+terminal result is followed by explicit source restoration and SHA check before
+the next mutation. The first restoration initially used wrong indentation
+(SHA3d16e43b); diff241fc9 corrected it immediately before any new test/probe.
+Every subsequent pre-probe/final check matches committed renderer exactly:
+1b8917a122bc275ad55ffde751e44ba1835a9848d443190dc30d2a5363cd1ef7.
+
+Final restored native0c3094/970bb1/2d9847,session14751 terminal exit0:
+154/154 across six engine/files,40 new cost/58 child/56 host. Root automatic
+performance follow-on one selected Chromium pass/22 skips, not complete perf.
+Root cold type/build/unit/boundary/topology/no-payment/copy/manifest command
+9b3ead/d9a6ac/31c89f/b657da/770a4b,session57097 terminal exit0. Types zero errors/
+warnings,213 modules build,8106 unit passes/208 skips,91 files pass/19 skip.
+Browser-only Node skips are visible, not native evidence. Shell boundaries,
+13 topology/22 cosmetic/six payment negatives pass. Copy658/hash unchanged,
+611 orphan warnings visible; Go-only discovery remains partial. Manifest passes.
+Separate kernel3a64d5/ad9cf0/803075,session84161 terminal exit2 at the unchanged
+RP-131 commit50a3a514 vs0cf9f7a6; history-checkout contract and fixtures pass.
+Not full verify-client/CI green. A read-only process listing28ef81 was sandbox
+denied; no escalation/termination attempted. All handles terminal before records.
+
+Correction is exactly three renderer lines plus same-range canonical UI docs,
+new diagnostic and tracking. Numeric/Amount/scheduler/copy/catalog/hash/Go/
+kernel161/live math/balance/schema/auth/transport/CI/corpus/reports unchanged.
+No new authored labels or reinterpretation of Buy text. R9's four states,
+notation and held tasks execute on coherent synthetic props; not a host/SQL/
+minted player/whole AC12 or manual assistive proof. Full span after22e03946,
+including these record edges, requires Claude; all earlier ranges independent.
+No checkbox flipped, self-archive, report restamp, owner adoption, cleanup,
+publication/deployment/push, goal completion or reduced full1.0 objective.
+
+Remaining R9 grounding while gates ran (read-only): e55c08 is exact R9.
+2cf2cd/6c93a4/94ddd1/496db3 show child selected starts empty, parent exitPlan
+persists until continueRun; navigation/remount can disagree. File RP-282 as a
+source finding, not executed failure or invented persistence policy. 496db3/
+4d607d show Wind Down previewDelta0 versus eligibility-only transition DTO,
+while Offer has authoritative preview; RP-283 requires producer/contract
+grounding, not client math. 142c97/496db3/94ddd1 show RunEnd receives only
+ended and renders payout without examined available/next-route consumer;
+RP-284 needs event/snapshot ownership grounding. Neither new source finding
+expands this cost correction or authorizes a wire/payout-policy change.
+Next safe accepted lane: bounded native actual-host RP-282 reproduction,
+after this checkpoint/self-first-filter; RP-281 tooling stays separate.

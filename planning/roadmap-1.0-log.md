@@ -3197,3 +3197,26 @@ deployment and all review holds remain. No numeric math/kernel/balance/CI-policy
 change, box flip, acceptance/archive, cleanup, publication/deployment/push,
 shortcut or goal completion. This turn made concrete host behavior/evidence
 progress rather than stopping on unrelated holds.
+
+## 2026-10-06 — Reputation persistent Amount costs corrected locally
+
+RP-279 underd12fdcff/20c44899/285a247e first fails40 native cases. The
+renderer now consumes existing Amount/canonical conversion outside control
+conditions. Seven compiling negatives discriminate omission, conditional
+disappearance, wrong binding, duplication, reading order and hidden cost;
+each source restores exactly. Final154 selected Chromium/WebKit pass,40 new
+cost/58 child/56 host. Four states/both eras/notation/native keys and held
+task/authoritative prop replacement execute; new diagnostic is component-only,
+not real host/server/SQL/mint/full AC12 or assistive-user evidence.
+Types/build8106 units/boundaries/copy/manifest pass;208 Node skips visible.
+Historical RP-131 guard is executed RED; Firefox remains unexecuted.
+[Evidence](reputation-tree-v1/log.md).
+
+Whole span after22e03946 needs designated review through final edge; all earlier
+spans independent. Remaining R9 source findings RP-282/283/284 route plan-state
+consistency, authoritative Wind Down preview and Run End/new-route consumers,
+not invented mechanics. Next bounded actual-host RP-282 reproduction; RP-281
+generator formatter debt remains separate. Full nine-tier/platform1.0 goal
+active; owner/author/data/mint/SQL/capacity/deployment/review holds unchanged.
+No numeric/kernel161/copy/balance/CI-policy change, box flip, acceptance/archive,
+cleanup, report restamp, publication/deployment/push, shortcut or goal completion.

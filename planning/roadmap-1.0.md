@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime checkpoint (2026-10-06):** RP-278 row rejection correction
+**Latest runtime checkpoint (2026-10-06):** RP-279 persistent Amount costs
+under285a247e first fail40 native cases, then seven compiling omissions
+discriminate with exact restoration. Restored Chromium/WebKit pass154 selected
+cases:40 cost/58 child/56 host. Costs remain visible across all four states,
+native confirmation/pending/replacement, both eras and published notation.
+The new cost diagnostic is controlled component evidence, not host/SQL/mint/
+full AC12. Types/build8106 units/boundaries/copy/manifest pass;208 Node skips
+remain visible. Historical RP-131 guard executes RED; Firefox unexecuted.
+Full span after22e03946 needs Claude. Next ground R9's plan-panel/host lifecycle,
+starting with RP-282's stale selection source finding; preview/Run End producer
+gaps RP-283/284 remain separate. No numeric/kernel/copy/CI policy change or
+acceptance promotion; full nine-tier/platform1.0 stays active.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous runtime checkpoint (2026-10-06):** RP-278 row rejection correction
 under441013a5 fails48 native cases first, preserving eight applied controls;
 restored host+child114 and shared GS0.2 two selected cases pass. Seven compiling
 omissions discriminate/exactly restore. Actual client host/runtime over controlled

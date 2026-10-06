@@ -3,6 +3,33 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation persistent row costs corrected locally — 2026-10-06
+
+RP-279 underd12fdcff/20c44899/285a247e: unchanged-source native baseline
+fails40. Seven compiling mutations independently omit/conditionally hide/misbind/
+duplicate/misorder/hide costs; each fires the declared assertion, not a build
+failure. Exact restoration passes154 Chromium/WebKit cases (40 cost/58 child/
+56 host). Existing Amount/canonical conversion/notation remain byte-unchanged;
+only the row consumes them. All four states/both eras/native keys and held
+task/authoritative prop replacement execute. New cost evidence is component-only,
+not real host/server/SQL/mint/full AC12 or assistive-user acceptance.
+Types/build8106 units/boundaries/copy/manifest pass;208 Node skips visible.
+Historical RP-131 guard executes RED; Firefox remains unexecuted.
+
+**READY FOR CLAUDE:** whole new span after22e03946 through final record edge;
+all earlier spans remain independent. Self-first-filter cannot archive/approve.
+**NEXT SAFE ACCEPTED WORK:** ground/predeclare bounded R9 plan-panel/actual
+host lifecycle coverage. RP-282 records mismatched parent versus remounted
+selection; reproduce before correction. RP-283 missing Wind Down preview
+producer and RP-284 Run End/new-route consumer gaps require separate grounding,
+not invented client math or silently widened scope. RP-281 generator debt stays
+a separate tooling lane.
+**HELD:** complete native/minted-player AC12/SQL/AC15, author/data/H3/H4/H5/R11,
+owner prose/adoption, capacity/deployment, all reviews and full nine-tier1.0.
+No numeric/kernel161/balance/transport/security/copy/CI-policy change, checkbox,
+acceptance/archive, cleanup, report restamp, publication/deployment or push.
+[Exact evidence](../reputation-tree-v1/log.md).
+
 ## Reputation host row rejections corrected locally — 2026-10-06
 
 RP-278 underaf744e65/defa9679/441013a5: native baseline fails48 rejection
