@@ -4876,3 +4876,29 @@ The RFC author must reconcile plan-bearing-vs-all-Exit intent. No owner ruling
 was inferred and no message sent to Claude. Other accepted work remains: predeclare
 fresh H1/H2/report lineage under RP-263 with old v1 bytes preserved. Goal active;
 this turn made three bounded repairs and fully measured their remaining failures.
+
+## 2026-10-06 — RP-270 committed-HEAD first filter
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range:0a486d79..bc315ecf, all three commits/all9 changed paths: both
+predeclarations, the one test-side helper/fixture file, canonical docs and all
+ledger/current-state/queue/board/plan/log updates. Verdict: bounded first filter
+passes, NOT designated cross-party approval, H3/AC13 acceptance or archival.
+The criterion remains RED. No kernel/runtime/math/balance/old-report byte moved.
+
+Committed-HEAD cold3e628b..a14ab5 (session40660,terminal exit0,0.306s) covers31 H3,
+45 H2 and28 H4 diagnostic children plus direct legacy gates. Earlier compiling
+guard omission and its H2 defense-in-depth repeat each restore the same exact
+1c6c17e4 source hash. The completed485-run study was executed on that identical
+source before docs/records; it is not relabelled as a new committed-HEAD rerun.
+The initially invalid synthetic fixture is disclosed and refined before the
+clean baseline; no green guard proof derives from the invalid first attempt.
+
+No aggregate value-array recomputation/producer authenticity claim. RP-271 is
+an unexecuted normative ambiguity, not permission for a scripted-first plan.
+Whole new designated-review handoff must include this self-first-filter record
+as well as0a486d79..bc315ecf; the designated verdict must cite its actual full
+reviewed HEAD/range, not discard uncovered edge records. Prior ranges/records
+remain independent, and no self-review substitutes for Claude. Next safe work
+fresh H1/H2/report lineage under RP-263. Goal active; no box/mint/archive/push.

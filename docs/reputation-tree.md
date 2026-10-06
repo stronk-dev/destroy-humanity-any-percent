@@ -625,7 +625,7 @@ Full-source lineage remains open; the H3 aggregate-coordinate gap is locally
 corrected as described below. The original six omission probes were executed
 at the H2 repair checkpoint, before adding the shared H3 coordinate guard;
 the H2 guard is now an independent defense, not proof the shared one is present.
-no old report regeneration or H2/AC13 completion follows from this local repair.
+No old report regeneration or H2/AC13 completion follows from this local repair.
 
 The shared H3 population oracle now also checks aggregate schema, scenario id,
 scenario hash and constants hash against its declared suite. Its synthetic
