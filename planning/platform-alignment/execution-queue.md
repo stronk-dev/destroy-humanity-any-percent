@@ -3,6 +3,27 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation live offer + payout-funded plan — 2026-10-06
+
+Test-only range after8ee45af3: both gate-generated offer kinds, initial
+Reputation0, independent payout18/20, plan6 only after Exit credit. Unaffordable
+last entry preserves heads/offer/game rows; exact rejected/applied retries
+and changed-plan same-ID conflict preserve complete persisted rows. Ordered
+events, receipt revisions, starters/frozen factor/run_started summary and
+completed Company/full Founder replay verify. Copied cost/order and compiling
+live producer/credit/valid offer-ID/hash faults fail; exact source restoration.
+Invalid resolution literal is a separate earlier save-validator defense.
+
+Cold complete production/save/reputation/gameui and vet pass; declared SQL
+production Integration35 top-level/119 subcases/no skips passes. Client units
+8167 pass/339 skip; not browser, new TS offer parity, natural pacing/fullCI.
+**DESIGNATED REVIEW PENDING:** full span after8ee45af3 including final records;
+earlier request/rollback/career and other spans independent.
+**NEXT SAFE ACCEPTED WORK:** R8 separate shared Go-authored offer-plan population
+and TS parity, predeclared first; keep existing historical corpus untouched.
+All owner/author/environment/full1.0 holds remain; no cleanup/status/archive/
+publish/deploy/push or product/migration/balance/copy/epoch/CI change.
+
 ## Reputation R6 request boundary — 2026-10-06
 
 RP-297 test-only range after6dc16a58: three tests/59 reported subcases pass,
@@ -14,8 +35,8 @@ default-player,64 registered nodes or fullAC9/CI/release proof.
 
 **DESIGNATED REVIEW PENDING:** full span after6dc16a58 through record edge;
 earlier rollback/SQL/header and other ranges remain independent.
-**NEXT SAFE ACCEPTED WORK:** predeclare missing Accept Offer with ordered plan
-on real SQL and both replay consumers; do not substitute the parser control.
+**THEN-NEXT WORK:** real SQL offered-plan population now executes above;
+the parser remains distinct proof, not a substitute.
 All earlier author/owner/environment/release holds remain. No production/
 copy/epoch/CI/cleanup/status/archive/publish/deploy/push change.
 

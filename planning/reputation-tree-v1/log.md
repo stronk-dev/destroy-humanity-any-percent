@@ -8384,3 +8384,57 @@ Strengthened positivefece30/b307eb session76533 terminal0 passes both kinds
 immutability around copied negatives. Commit test+records before predeclared
 source probes. No production change or acceptance checkbox; full new span
 after8ee45af3 needs Claude independently of earlier request/rollback spans.
+
+First altered-resolution probe da2088/6955fb session84092 terminal2:
+`resolution:declined` compiles but the existing save payload validator refuses
+it before applied/event assertions, both kinds. Defense-in-depth failure,
+not evidence that the new event oracle itself fired. Exact source restored
+(recorded with forthcoming complete probe evidence). Refine the same declared
+altered-resolution family to a different VALID UUIDv7 offer_id while retaining
+resolution:accepted; require the new stored identity oracle to fail. No
+expectation/control/production acceptance set change, new fixture or waiver.
+
+Executed live source faults, all compiling against unchanged test8a4b0784:
+producer c24b3f/a1d454 session61774 terminal2 fails both cases at actual gate-
+offer presence; exact prestige restore6bd3fa/8c22a1.
+prospective-credit omission4995d4/7f78b6 session98604 terminal2 keeps initial
+unaffordable refusal/retry controls but rejects valid plan because it ignores
+new payout, both kinds; restoref09e05/dfd910.
+invalid resolution literal da2088/6955fb session84092 terminal2 fails earlier
+save validator, not new stored-event oracle; restore2eba03/64e2dd.
+valid wrong offer-ID refinement ca4c50/835078 session47240 terminal2 reaches
+the committed valid event and fails both exact identity assertions: expected
+offer-ID query has no matching value, NULL scan is the oracle's missing-row
+failure, not connection/schema failure; restore43f843/33e8af.
+recorded-hash bypass9e7bf7/d15df0 session83173 terminal2 reaches final changed-
+plan same-ID attempt; old applied receipt/replay=true violates required
+idempotency_conflict, both kinds. Final source restoreb6ca3c/b22493.
+Prestige SHA6d07581c74822e57d63c09b0ed139d98b0b1f44aba566f8d654ad2f4213cb691;
+Store SHA87159fc54645cbb25c2de1286bc7207547c6153ed806a504f22a3a444414b15f.
+All restores exact/empty diff, no mutant committed or edit while handle live.
+
+Final cold9f6859/fd1485/f8d5aa session53729 terminal0 runs COMPLETE relevant
+host packages (no selector): production35.080s/save0.461s/reputation0.263s/
+gameui0.403s; focused vet passes. Host integration skips are preparation, not
+SQL evidence. Declared SQL6883f2/831325 session32275 terminal0 executes entire
+production Integration selector8.245s,35 top-level/119 subcases/no skips or
+failures. Compose orphan notice retained, no --remove-orphans or cleanup.
+Client baseline ef8a5a/88cf2c session13669 terminal0:92 files/8167 tests pass,
+22files/339 cases skip,4.91s. Node browser skips are not browser proof. No
+new offered-plan TS fixture is claimed by those existing units; source/test
+census4ce165/8d10d0/950ff9 shows current shared fiveExit/threeFounder corpus
+has WindDown/activation, not this offer population. R8 separate shared Go/TS
+offered-plan parity is the next safe accepted scope, predeclare first and
+preserve existing historical bytes/authority. No generation or fixture edit
+made during this census.
+
+All handles terminal before record edits. New357-line test inspected in full;
+no old test weakened. Independent fixed payout18/20 and factor1.009/1.01,
+byte-sorted owned set versus ordered plan, exact applied receipt revisions,
+rejection and full persisted/replay outcomes remain bound. No blind approve
+of test-construction failures. Docs/ledger/live trackers reconcile actual SQL
+proof and missing cross-runtime boundary. Full span after8ee45af3 needs Claude,
+earlier spans independent; no fullAC9/RFC/CI/browser/pacing/mint/release claim.
+No production/migration/kernel/balance/copy/epoch/owner-body/CI/checkbox/status/
+cleanup/archive/publish/deploy/push. Proper1.0 goal active/progress, all earlier
+author/environment/release holds retained and cache-only approval unanswered.

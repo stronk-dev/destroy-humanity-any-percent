@@ -3465,3 +3465,28 @@ predeclare missing offer-with-plan SQL/replay population. No production/copy/
 epoch/CI/checkbox/cleanup/archive/publish/deploy/push; full nine-tier/platform
 goal active and all author/environment/release holds unchanged.
 [Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Live offer payout funds Reputation plan
+
+Test-only range after8ee45af3 (`ad7e84b3` predeclares, `8a4b0784` tests)
+drives both real gate-generated offer kinds from diagnostic run2/initial0
+Reputation to payout18/20 and prerequisite plan6. Last-entry unaffordable
+refusal preserves full heads/offer/game rows; exact retry persists no new row.
+Valid receipt revisions, ordered purchases, accepted offer identity/order,
+starters/frozen1.009or1.01/summary and both replay consumers verify. Copied
+cost/order negatives refuse without SQL mutation, applied retry/changed-plan
+same-ID conflict preserve complete rows. Initial type/receipt/sorted-order
+test mistakes retained and corrected, not labelled production defects.
+
+Four live source families fail both cases with exact restoration. Invalid
+resolution fails earlier save validator; valid wrong ID independently fires
+the new saved-event oracle. Complete four relevant Go packages and vet cold
+pass; actual SQL35 top-level/119 subcases/no skips passes8.245s; client units
+8167 pass/339 skips4.91s. Not browser, new TS offered-plan parity, naturally
+earned progression, fullAC9/CI or release acceptance. Existing shared five-Exit
+corpus lacks offered plans; next separately predeclare R8 Go/TS population,
+preserving historical corpus. Docs/ledger/live board/queue/plan synchronized;
+full span needs Claude including final records, earlier independent spans
+pending. No production/migration/copy/epoch/CI/checkbox/cleanup/archive/push/
+publication/deployment; proper full1.0 goal active with all prior holds intact.
+[Executed evidence](reputation-tree-v1/log.md).

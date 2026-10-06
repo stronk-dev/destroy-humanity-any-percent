@@ -5,18 +5,32 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest SQL checkpoint (2026-10-06):** test-only range after8ee45af3 drives
+both real gate-generated offer kinds from initial Reputation0 to payout18/20
+and ordered plan6. Rejection preserves full heads/offer/game rows; applied
+receipt/events/starters/frozen1.009or1.01/summary and both replay consumers
+verify. Copied cost/order and live producer/credit/valid-ID/hash probes fail,
+exact source restored. Complete four relevant Go packages/vet pass cold;
+production SQL Integration35 top-level/119 subcases/no skips; client8167 units
+pass/339 skip. No natural progression/new TS offer corpus/browser/fullAC9/CI/
+release claim. Full new span and earlier independent ranges need Claude.
+Next R8 shared Go/TS offer-plan parity under separate predeclaration, preserving
+historical corpus. Full nine-tier/platform1.0 and all author/environment/owner
+holds remain; no production/copy/epoch/CI/cleanup/push/status promotion.
+[Evidence](reputation-tree-v1/log.md).
+
 **Latest request checkpoint (2026-10-06):** RP-297 test-only supplement after
 6dc16a58 proves paired R6 request size/type/uniqueness/ID/order/hash boundaries.
 Three tests/59 reported subcases pass; six compiling probes fail2/2/12/40/6/2
 with exact restoration. Cold focused/vet and restored whole production SQL
 Integration pass34 top-level/117 subcases/no skips. No runtime policy change.
-Full range and earlier independent spans need Claude. Next predeclare missing
-offer-with-plan SQL/replay population; parser controls do not substitute for
+Full range and earlier independent spans need Claude. Its then-next offer-plan
+SQL population now executes above; parser controls do not substitute for
 that journey or fullAC9/CI/release proof. No copy/epoch/CI/cleanup/push/status
 promotion. Proper full nine-tier/platform1.0 and all prior holds remain active.
 [Evidence](reputation-tree-v1/log.md).
 
-**Latest SQL checkpoint (2026-10-06):** test-only range after `82830dcb`
+**Previous SQL checkpoint (2026-10-06):** test-only range after `82830dcb`
 proves all14 applied Reputation-plan write faults with exact sentinels/full
 persisted row and head rollback. Retention deletes actual old revisions in
 the normal Handle control, which also verifies replay/frozen bonus/exact retry.

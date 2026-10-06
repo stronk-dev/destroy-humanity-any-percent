@@ -4,18 +4,32 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+**Latest SQL checkpoint:** test-only range after `8ee45af3` proves both live
+gate-produced offer kinds with zero initial Reputation and Exit-funded plan6.
+Unaffordable last entry preserves both heads/offer/game rows; applied Exit
+verifies ordered events/receipt revisions/starters/frozen bonus/summary and
+both Company/Founder histories. Copied cost/order, live producer/credit/valid
+offer-ID/hash-conflict probes discriminate; exact source restored. Cold whole
+production/save/reputation/gameui plus vet pass; real production Integration
+35 top-level/119 subcases/no skips passes; client units8167 pass/339 skip.
+No new TS offer corpus/browser/natural pacing/full AC9/CI/1.0 claim. Full span
+needs Claude including records; earlier spans independent. Next accepted R8
+scope: predeclare missing shared Go/TS offered-plan parity, preserving existing
+corpus/authority. All author/environment/release holds and full goal remain.
+[Evidence](reputation-tree-v1/log.md).
+
 **Latest request checkpoint:** RP-297 test-only work after `6dc16a58` adds
 paired R6 Wind Down/Accept Offer size/type/ID/order/identity boundaries.
 Three tests/59 reported subcases pass; six compiling probes fail2/2/12/40/6/2
 and source is restored exactly. Focused cold tests/vet and full production
 SQL Integration pass (34 top-level/117 subcases/no skips). No production rule
 needed correction. Full range needs Claude including records; earlier spans
-remain independent. Next accepted scope: predeclare the missing offer-with-
-plan SQL/replay population. Parser proof is not that journey, a64-node live
+remain independent. Its then-next offer-with-plan SQL population now executes
+above. Parser proof is not that journey, a64-node live
 tree, full AC9/CI or release acceptance. All prior author/environment/full1.0
 holds remain. [Evidence](reputation-tree-v1/log.md).
 
-**Latest SQL checkpoint:** test-only range after `82830dcb` now executes all14
+**Previous SQL checkpoint:** test-only range after `82830dcb` now executes all14
 R6/AC9 applied-plan write faults on declared Postgres. Exact injected errors,
 complete persisted rows and both stream heads prove rollback; retention has
 real old rows to prune. Normal Handle commits/replays/retries once. Committing

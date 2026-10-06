@@ -420,6 +420,32 @@ and Accept Offer parsing is not an offer-with-plan SQL or browser journey.
 make test-go GO_PACKAGES='./production' GO_TEST_FLAGS='-count=1 -run TestReputationPlanRequest'
 ```
 
+`TestReputationOfferPlanPayoutIntegration` separately drives a real gate-produced
+Acquihire or Acquisition offer through `Service.Handle`. Its diagnostic run2
+starts with zero Reputation. Independently expected payouts18/20 fund the
+six-point prerequisite plan after Exit credit; an unaffordable last entry
+instead preserves both full save heads, the pending offer and game/evidence
+rows, while recording the rejection. Ordered purchase events, accepted offer
+identity/resolution, committed receipt revisions, generated/cash starters,
+next frozen1.009/1.01 and `run_started` v2 are checked against persistence.
+
+The completed Company run (producer, rejection, applied Exit) and the complete
+Founder history both verify. Copied plan-order/cost corruptions refuse without
+SQL writes; exact rejected/applied retries and changed-plan same-ID conflict
+also preserve complete table values. Compiling producer, payout-validation,
+valid offer-ID and idempotency faults fail unchanged tests. An invalid
+resolution literal is separately refused by the save validator before the
+new event oracle. Source is restored exactly before broader cold tests.
+
+This is locally executed diagnostic SQL evidence pending designated review,
+not natural later-tier progression, browser/AT/minted content, full AC9/RFC/CI
+or release acceptance. The existing shared Go/TS five-Exit corpus does not
+yet carry this offered-plan population; parser and SQL proof do not replace it.
+
+```sh
+make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationOfferPlanPayoutIntegration'
+```
+
 ## Portable Founder-history evidence
 
 `server/production/reputation_history_test.go` drives the public

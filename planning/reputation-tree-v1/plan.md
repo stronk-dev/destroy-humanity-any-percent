@@ -275,6 +275,19 @@ Restore exact source after terminal; cold SQL production Integration/focused
 tests/vet. No checkbox/fullAC9/archival/CI/release promotion; full range needs
 Claude, earlier spans independent; all author/environment/1.0 holds retained.
 
+Locally executed `ad7e84b3`/`8a4b0784`: both offer kinds pass, initial0 →
+payout18/20 → spent6; full refusal/head/offer preservation, ordered events/
+receipt/starters/frozen/summary, three-entry completed Company and two-entry
+Founder history. Copied cost/order return state_divergence with no SQL writes;
+exact retries/conflict preserve all12 table snapshots. Four live source
+families fail both cases, with invalid-resolution earlier validator refusal
+separately disclosed; exact source restored. Complete relevant Go packages/
+vet cold, SQL35 top-level/119 subcases/no skips and client8167 units/339 skips
+pass. Initial test type/receipt-shape/sorted-set mistakes retained in log.
+No runtime correction/fullAC9/checkbox/archival/CI/release claim. Full new span
+after8ee45af3 needs Claude through final records. Next R8 separate Go-authored
+offered-plan parity population for TS; existing historical corpus unchanged.
+
 ### R6 request boundary / RP-297 — predeclared 2026-10-06
 
 Start6dc16a58, test-only. Actual parser/test census has no dedicated R6 plan
