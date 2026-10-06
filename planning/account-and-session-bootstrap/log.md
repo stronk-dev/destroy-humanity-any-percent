@@ -766,3 +766,16 @@ Review by: Codex (first-filter only). Recorded by: Codex. RP-239 locally repaire
 designated Claude review pending. Observer range starts after 3121a376 and must
 include 08a11814, 035e5549, dbcce391, repair/artifact/records and following pin.
 No acceptance/checkbox/archive/push or proper full nine-tier 1.0 scope reduction.
+
+## 2026-10-06 — pin observer including its caught and repaired defect
+
+Substantive observer range 3121a376..474e9e9d, four commits/thirteen paths,
+includes predeclaration, initial tooling, fired composite red and naming repair.
+This following pin-record edge is part of the complete designated range too;
+closing relay names the final literal tip. No production/auth/workflow/test
+exclusion bytes changed. Actual skip negative runs and historical artifacts are
+distinct; normal Postgres/two populations/four severings remain unexecuted.
+Standalone fixtures/current client population and remaining separately executed
+gates pass; verify-client composite is still RP-131 RED. All handles terminal,
+no cleanup/deletion or push. Review by: Codex (first-filter only). Recorded by:
+Codex. Claude mandatory independently, no archival eligibility inferred.
