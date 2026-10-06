@@ -122,7 +122,14 @@ threshold retune is measured and reported, then ratified by owner SHA).
   separate boundaries pass; composite remains RP-131 RED. Full H4/H5 remain
   report-drift RED in836.130s, retaining the same six Casual ties. Harness-only,
   kernel161/live math/balance/reports/corpus unchanged; span after973d983c
-  needs Claude. Next RP-262 H3, then RP-264's separate exclusion oracle.
+  needs Claude. Subsequent RP-262 under64badd7b/3d7c93ff executes all485 H3
+  runs/3395 clocks: epoch8/no-row/unit neutrality passes, tiny factor changes
+  0/679 clocks, strong control289. Tiny input changes lifetime, not milestones;
+  exact H3 criterion fires. Four actual Reference controls and27 oracle/refusal
+  children pass; five compiling probes discriminate with exact restoration.
+  Cold core/vet/fast pass. Harness-only, kernel161 and old reports unchanged;
+  complete new span afteree1064a0 needs Claude. H3 author reconciliation is
+  required before closeout. Next RP-264's separate exclusion oracle.
   Fresh H1/H2/report provenance/reproduction remains separate; no retuning or
   report-regeneration authority here. No checkbox flipped.
   Complete new span after7da200f0 needs Claude. No checkbox flipped here.

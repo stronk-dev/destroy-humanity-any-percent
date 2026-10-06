@@ -2968,3 +2968,24 @@ H1/H2/report lineage/reproduction remains separate. Full span after973d983c
 needs Claude, as do all prior spans. Next RP-262 H3 then RP-264, not retuning.
 Actual SQL/capacity and the full nine-tier/platform/release goal remain open.
 Goal active; no checkbox, mint, archival, push, cleanup or release promotion.
+
+## 2026-10-06 — RP-262 full first-hour sensitivity study fires H3 criterion
+
+Predeclared64badd7b/3d7c93ff before the harness input seam/control supplement.
+Full current-producer study executes485 runs/3395 clocks in341.867s, exit2,
+not cancelled: epoch8/no-row/unit neutrality passes; tiny factor1.000001
+changes0/679 clocks while the separate strong control changes289. Tiny input
+changes actual Reference lifetime production, not milestones. The accepted
+H3 tiny-factor criterion is RED, not weakened or replaced. Ruling/RFC author
+reconciliation is required before H3/AC13 closeout.
+
+Four actual Reference controls,23 malformed-population refusals and sensitivity/
+mode controls pass. Five compiling input/factor/census/oracle probes fail and
+restore byte-exact. Cold focused65 named children, core/vet and fast harness
+pass; the full opt-in study remains separate. No fresh SQL/browser/hosted claim.
+Default selector explicitly skips; unknown selector fails before execution.
+Harness-only, kernel161/live math/balance/reports/corpus/CI policy unchanged.
+Full new span afteree1064a0 needs Claude; previous RP-267 and all earlier
+spans remain independent. Next accepted RP-264, not retuning or report refresh.
+H1/H2/report lineage, H4/H5, SQL/capacity and the full nine-tier/platform/release
+objective remain. Goal active; no box, mint, archive, cleanup, push or release.

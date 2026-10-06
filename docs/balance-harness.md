@@ -84,6 +84,14 @@ accrual; simulation masks still apply. Standalone suites retain no observer.
 The first-hour observer does not add served offline-span bookkeeping because
 the instrument already records its own session gaps.
 
+The first-hour H3 sensitivity instrument has a separate internal synthetic
+input, copied once per ordinary runtime. Nil preserves ordinary runs; combining
+it with career or Tier2 mode refuses before execution. It does not mint an
+earned Founder effect or change existing RunKey authority. The opt-in full
+five-arm/all-seed study logs the factor separately and never overwrites retained
+reports. Its exact tiny-factor criterion currently fails; the strong control
+does not replace it. See `docs/reputation-tree.md` for invocation and limits.
+
 For every declared run it records an unmasked baseline, per-item effect ablations, and group effect
 ablations. Reference runs additionally record action-removal diagnostics and one declared-width beam
 oracle. The reference policy compares banking with every affordable one-unit generator or unowned

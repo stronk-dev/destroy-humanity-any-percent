@@ -4239,3 +4239,61 @@ Commons0.383s and guard; opt-in study is explicitly skipped there. Core3e515b
 ..c77ce1 exit0: vet/full cold core (production47.108s, transport13.334s,
 save0.293s), numeric vectors, generated API/formulas byte-identical. No SQL.
 Original predeclaration64badd7b remains; only this narrow new test supplement.
+
+## 2026-10-06 — RP-262 discrimination and checkpoint
+
+Supplement3d7c93ff's four actual Reference input-consumption controls pass
+ea1807..5be0d9 (session51958, terminal exit0,4.770s). The27 oracle/refusal
+children include23 malformed-population refusals, unchanged sensitivity,
+one valid changed-clock control and two career/Tier2 override refusals.
+The ordinary healthy synthetic population also passes admission. These
+synthetic oracle rows are not production evidence; four Reference rows are
+actual headless runs, not SQL/player workflows or the all-seed study.
+
+Five independent compiling omissions, each with exact four-file SHA restoration
+before the next. All root -count=1 runs terminate exit2, no build errors:
+
+| Probe | Executed chunks | Fired controls |
+| --- | --- | --- |
+| Runtime diagnostic-input copy omitted | ff09b4..196fe9 | Actual tiny and strong lose their observed production/clock behavior |
+| runtime.external diagnostic input omitted | 0d881b..b0fa6e | Actual tiny and strong lose their observed production/clock behavior |
+| Strong control factor changed2→1 | 282c85..07d2a7 | Only actual strong row fails; a test-input corruption, not a production mutation |
+| Expected census row consumption omitted |121579..caf4d5 | Duplicate-row negative control is silently admitted and fails |
+| Unchanged sensitivity admitted |e059ae..7b1087 | Unchanged-population negative control fails with fabricated sensitivity |
+
+The small probes do not rerun485 observations or pretend to be that study.
+The full sensitivity criterion remains RED as recorded above. No threshold,
+clock, policy or data retune makes the probes succeed. All source hashes after
+restoration68c030 match6f744e: first-hour suite
+7fc67a7926e183575e08529500dff79b5d5ae2d84295e6031df70e30b7bf07f8,
+runner a68584945d354eaa1f9bf963b0224a647f87d09984a8d377f4b821601d7fbd95,
+career6fdbd87b2a0954057533516f931ca5e2c6cdfd6e355cafe0c3f4991af9739edf,
+new-test11c225df64a0a30d7d5c7cbccde7d53443a8c4c7e301c7fe7d8a7077d5259b1a.
+
+Restored cold527bb1..aa9698 (session48978, terminal exit0,4.863s) executes
+all31 new named children plus34 previous lifetime/frozen-input observations.
+Final fast0f1a37..a3d421 (session92037, terminal exit0): harness59.220s,
+role0.339s, Commons0.362s and guard pass. Full opt-in study explicitly skips,
+not green evidence. Final narrow vet e6eba5 exit0 covers the added test.
+Earlier full core/vet result remains on the same restored harness sources;
+only this small test was added afterward. No new client/SQL/hosted/browser
+claim: earlier composite client remains RP-131 RED and SQL/capacity is held.
+
+Default selector973ba9..d8d729 (session91047) explicitly SKIPS then exits0;
+unknown single selector dc99b2 rejects exit2 before any seed execution. Neither
+can masquerade as the full study. No CI configuration, budget or lane change.
+68c030 also confirms first-hour/H4/H5/threshold/original-corpus bytes unchanged;
+their hashes match the RP-267 checkpoint. No report refresh or epoch mint.
+
+Reconciled canonical docs, backlog RP-262, current-state/long-term board,
+execution queue and per-RFC plan with the fired criterion, not H3 approval.
+All handles ended before these source/record edits; no checkbox changes.
+No served runtime, watched kernel prefix, live math/balance/schema/migration/
+CI policy or owner-copy change. Kernel161 remains unchanged. Complete new span
+afteree1064a0 includes both predeclarations and needs Claude. Previous RP-267
+973d983c..9743dcb7 and all prior spans remain separate review obligations.
+
+R10 H3 author reconciliation is required before closeout; no weakened criterion
+is inferred. Next safe accepted work RP-264 false-exclusion/accounting oracle;
+H1/H2 fresh calibration/report lineage, H4's six Casual ties, H5 epsilon/run4,
+SQL/browser/reviews and full1.0 remain. Goal active; no archive or push.

@@ -1,5 +1,28 @@
 # Executable queue
 
+## H3 sensitivity study completed RED — 2026-10-06
+
+RP-262 under64badd7b/3d7c93ff executes all485 runs/3395 clocks. Epoch8/no-row/
+unit neutrality passes. Tiny factor changes0/679 clocks, strong control289;
+the tiny input is consumed and changes lifetime production, not milestones.
+The exact H3 criterion fires. No larger substitute or cadence/clock waiver.
+Four actual Reference controls and27 oracle/refusal children pass; five
+compiling input/factor/census/sensitivity probes fail and restore exact bytes.
+Cold core/vet/fast pass. Default-nil harness-only seam; kernel161 unchanged.
+
+**READY FOR CLAUDE:** complete new span afteree1064a0, both predeclarations and
+the implementation/records. Previous RP-267 range973d983c..9743dcb7 and every
+earlier range remain independent obligations.
+**AUTHOR RECONCILIATION REQUIRED:** accepted R10 H3's tiny-factor criterion
+fired in the declared population. Only its author can reconcile that intent;
+the implementer may not weaken it or promote H3/AC13.
+**NEXT SAFE ACCEPTED WORK:** predeclare/execute RP-264's false-exclusion and
+accounting oracle without altering horizon or H4's strict-sooner criterion.
+**STILL OPEN:** report provenance and fresh H1/H2, H4's six Casual ties and
+H5 epsilon/run4/drift; actual SQL/capacity, earlier reviews and full1.0 floor.
+No old report refresh, retune, box, mint, archive, cleanup or push.
+[Evidence](../reputation-tree-v1/log.md).
+
 ## Reference lifetime observer corrected locally — 2026-10-06
 
 RP-267 under821b867b fixes six executed candidate-adoption/bank omissions.
@@ -10,7 +33,7 @@ Cold core/vet, fast harness and client8106/134/types/build plus separate
 boundaries pass. Composite remains historical RP-131 RED.
 
 **READY FOR CLAUDE:** complete new span after973d983c, both predeclarations.
-**NEXT SAFE ACCEPTED WORK:** predeclare/execute RP-262's actual H3 unit/no-row
+**ORIGINAL NEXT QUEUE:** predeclare/execute RP-262's actual H3 unit/no-row
 and tiny non-unit milestone population, then RP-264's false-exclusion oracle.
 Do not promise that a tiny factor moves a discrete clock before measuring it.
 **STILL OPEN:** actual Reference seed0 lifetime rises at both Exits; paid2/0,

@@ -124,8 +124,12 @@ func (runtime *firstHourRuntime) prestigePolicy() *prestigecore.Policy {
 }
 
 // external is the run's frozen Founder contribution set as production reads
-// it; outside a career run 3 it is empty (the first-hour suite is tree-less).
+// it. Ordinary first-hour runs are tree-less; the opt-in H3 instrument supplies
+// a synthetic input separately, never in combination with a career runtime.
 func (runtime *firstHourRuntime) external() []multiplier.Contribution {
+	if runtime.diagnosticExternal != nil {
+		return runtime.diagnosticExternal
+	}
 	if runtime.career == nil || runtime.company.RunSeq != 3 {
 		return nil
 	}

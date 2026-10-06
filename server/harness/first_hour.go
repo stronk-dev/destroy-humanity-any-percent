@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
 )
@@ -67,6 +68,9 @@ type FirstHourSuite struct {
 	PolicyHash    string
 	ConstantsHash string
 	Bundle        production.CatalogBundle
+	// Optional synthetic input for the H3 sensitivity instrument. Ordinary
+	// callers keep nil; this is not an earned bonus or report-key authority.
+	diagnosticExternal []multiplier.Contribution
 }
 
 func LoadFirstHourSuite(repositoryRoot, scenarioPath, policyPath string) (*FirstHourSuite, error) {

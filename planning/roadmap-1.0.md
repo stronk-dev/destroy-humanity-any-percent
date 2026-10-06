@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest harness correction (2026-10-06):** RP-267's lifetime observer now binds
+**Latest harness study (2026-10-06):** RP-262 executes485 runs/3395 clocks.
+Epoch8/no-row/unit neutrality passes; tiny factor changes0/679 clocks while
+strong control changes289. Tiny input changes lifetime production, but the
+exact milestone criterion is RED. Four actual Reference controls,27 oracle/
+refusal children and five compiling omission probes discriminate; cold
+core/vet/fast pass. Harness-only, kernel161/live math/balance/reports/corpus
+unchanged. Full new span afteree1064a0 needs Claude. H3 author reconciliation,
+RP-264, report lineage/fresh H1/H2, H4/H5, SQL/capacity, prior reviews and the
+full nine-tier/platform goal remain; no waiver, retune, mint or release claim.
+[Evidence](reputation-tree-v1/log.md).
+
+**Previous harness correction (2026-10-06):** RP-267's lifetime observer now binds
 Reference candidates and waiting. Six reproduced omissions are corrected;
 18lifetime/16frozen-input observations and six compiling omission probes
 discriminate. Actual Reference seed0 lifetime rises at both Exits, but paid2/0,

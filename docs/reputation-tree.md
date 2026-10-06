@@ -515,6 +515,52 @@ recalculation, not fresh calibration. Complete H1/H2/report provenance and
 current-producer reproduction remain separate work; no report refresh or
 threshold ratification follows from the local observer correction.
 
+### H3 current-producer sensitivity study
+
+The full H3 instrument runs all 97 ratified first-hour seeds in five arms:
+fresh epoch-8, complete paired Reputation fixture with no contribution,
+explicit prestige factor `1e0`, factor `1.000001e0`, and a separate strong
+control of `2e0`. All use the original two-hour horizon, empty purchase plans,
+live `1e12` threshold and unchanged first-hour policy/experiment. These are
+synthetic input counterfactuals, not earned Founder bonuses or SQL careers.
+
+An internal optional input is copied into the ordinary runtime. Nil preserves
+existing callers; a diagnostic input combined with career or Tier2 mode is
+refused before execution. Frozen contributions still pass canonical production
+admission. No live multiplier authority or report-key/schema field is added.
+The diagnostic logs its factor separately: the existing RunKey alone does not
+identify this synthetic extra input.
+
+The 2026-10-06 run completed all 485 runs and 3,395 milestone observations.
+Every run completed with seven clocks, two Exit samples and zero paid
+Reputation. Fresh epoch-8 and paired/no-row reproduce the retained milestone
+clocks and ending samples. Explicit unit matches no-row clocks, endings,
+Exit samples and transition counts. All per-policy distributions are compared.
+The tiny factor moves **zero of 679 clocks**; the strong control moves **289**.
+The tiny factor does reach the consumer: Reference lifetime production changes
+even though its milestone clocks do not. A transition-count change is not
+relabelled as a milestone. The exact RFC H3 tiny-factor criterion is therefore
+**RED**, not waived or replaced by the strong control. Its author must reconcile
+the fired criterion before H3/AC13 closeout.
+
+Run the full observation from the repository root:
+
+```sh
+make test-go GO_PACKAGES='./harness -args -reputation-first-hour-observe=all' GO_TEST_FLAGS='-run ^TestReputationFirstHourSensitivityObservation -count=1 -v -timeout 10m'
+```
+
+Default execution explicitly skips this full study; an unknown selector fails.
+It never updates retained reports. The ordinary fast lane instead executes a
+small, explicitly single-Reference-row consumer control and an oracle population:
+23 malformed populations reject, a valid changed clock is accepted, unchanged
+sensitivity rejects, and career/Tier2 input overrides reject. Compiling input,
+wrong-factor, census and sensitivity omissions make these controls fail. That
+fast control is not the full study and does not make H3 green.
+
+Historical H1/H2 recalculation, source/report provenance and full fresh
+calibration remain separate. Existing H4 ties, H5 epsilon/run4 and report drift
+remain; no report refresh, threshold/policy change or epoch mint follows.
+
 The R10 headless career runner accepts exactly `cheapest`, `seeded_uniform`
 and `none`. An optional leave-one-out exclusion must name a node in the loaded
 fixture tree. Both are checked before simulation: a misspelled policy must not
@@ -530,5 +576,6 @@ The exhaustive report reproduction remains in `make reputation-harness-check`.
 After the Reference correction, strict H4 and H5 reproduction both reject
 report drift; their v1 bytes remain historical snapshots, not current-instrument
 acceptance. The full H4 run still records the same six Casual ties. H5's
-epsilon/run-4 questions, report provenance and the separate H3/exclusion-oracle
-work remain unresolved. No report refresh, retune or release claim follows.
+epsilon/run-4 questions, report provenance, H3's fired tiny-factor criterion and
+the separate exclusion-oracle work remain unresolved. No report refresh,
+retune or release claim follows.

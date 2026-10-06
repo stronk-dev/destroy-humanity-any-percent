@@ -4,7 +4,18 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-Latest harness correction: RP-267 now carries canonical lifetime accrual through
+Latest harness study: RP-262 now executes the current first-hour producer.
+All485 runs/3395 clocks complete; epoch8/no-row/unit neutrality passes, but
+the tiny factor changes0/679 clocks and strong control changes289. The tiny
+input changes lifetime production, not milestones; exact H3 criterion RED.
+Four actual Reference controls and27 oracle/refusal children pass; five
+compiling omissions discriminate. Cold core/vet/fast pass. Harness-only;
+kernel161, live math/balance/reports/corpus unchanged. Full span afteree1064a0
+needs Claude. H3 author reconciliation, RP-264 exclusion oracle, report lineage/
+fresh H1/H2, H4/H5, SQL/capacity and all prior reviews remain open. No waiver,
+retune, mint or full1.0 promotion. [Evidence](reputation-tree-v1/log.md).
+
+Previous harness correction: RP-267 now carries canonical lifetime accrual through
 Reference candidates and waiting. Six reproduced actual-branch omissions are
 corrected;18lifetime/16frozen-input observations and six compiling omission
 probes discriminate. Actual Reference seed0 lifetime rises to1.4605083614e6/

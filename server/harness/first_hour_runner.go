@@ -89,24 +89,25 @@ type firstHourBoundary struct {
 }
 
 type firstHourRuntime struct {
-	suite             *FirstHourSuite
-	spec              RunSpec
-	policy            FirstHourPolicy
-	seed              uint64
-	experiment        FirstHourExperiment
-	company           *save.State
-	founder           *save.State
-	revision          int64
-	decisionOrdinal   int64
-	transitions       int64
-	founderAttendedMS int64
-	milestones        map[string]*int64
-	ending            *FirstHourEndingSample
-	lastSession       int64
-	commands          *[]FirstHourScriptCommand
-	reputationExits   []FirstHourReputationSample
-	career            *careerRuntime
-	tier2             *tier2Runtime
+	suite              *FirstHourSuite
+	spec               RunSpec
+	policy             FirstHourPolicy
+	seed               uint64
+	experiment         FirstHourExperiment
+	company            *save.State
+	founder            *save.State
+	revision           int64
+	decisionOrdinal    int64
+	transitions        int64
+	founderAttendedMS  int64
+	milestones         map[string]*int64
+	ending             *FirstHourEndingSample
+	lastSession        int64
+	commands           *[]FirstHourScriptCommand
+	reputationExits    []FirstHourReputationSample
+	career             *careerRuntime
+	tier2              *tier2Runtime
+	diagnosticExternal []multiplier.Contribution
 }
 
 func (suite *FirstHourSuite) RunExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment) FirstHourRunResult {
@@ -137,6 +138,9 @@ func (suite *FirstHourSuite) runWithModes(spec RunSpec, seed uint64, experiment 
 	result := FirstHourRunResult{Key: suite.RunKey(spec, seed), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{},
 		ReputationExits: []FirstHourReputationSample{}}
 	commands := []FirstHourScriptCommand{}
+	if suite.diagnosticExternal != nil && (career != nil || tier2 != nil) {
+		return failFirstHour(result, errors.New("first-hour diagnostic input cannot override career or Tier2 inputs")), commands, career, tier2
+	}
 	if err := validateFirstHourExperiment(experiment); err != nil {
 		return failFirstHour(result, err), commands, career, tier2
 	}
@@ -153,7 +157,8 @@ func (suite *FirstHourSuite) runWithModes(spec RunSpec, seed uint64, experiment 
 	}
 	founder := &save.State{ReputationLevel: 0, RouteKnowledgeBalance: 0, LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
 	runtime := firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: seed, experiment: experiment,
-		company: company, founder: founder, revision: 1, milestones: map[string]*int64{}, lastSession: -1, career: career, tier2: tier2}
+		company: company, founder: founder, revision: 1, milestones: map[string]*int64{}, lastSession: -1, career: career, tier2: tier2,
+		diagnosticExternal: append([]multiplier.Contribution(nil), suite.diagnosticExternal...)}
 	if capture {
 		runtime.commands = &commands
 	}
