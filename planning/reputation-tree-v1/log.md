@@ -7000,3 +7000,20 @@ No UI fixture or whole browser/SQL/mint claim. Root client checks after exact
 restoration; inherited RP-131/Firefox and all owner/data/platform/review holds
 remain. Full span after0ae1fa11 needs Claude; no checkbox/copy/kernel/numeric/
 schema/CI/security/archival/publication/deployment/push or goal promotion.
+
+## 2026-10-06 — RP-284 reader baseline
+
+Root make test-client (48c7a4/30897d, session25261 terminal2) executes41 new
+cases:38 fail, three duplicate-cohort controls pass; existing8106 pass and255
+Node browser skips remain. Reader returns undefined for all three payload
+versions and admits malformed ignored events without resync. No production
+change yet. The initial snapshot-first fixture sampled the event's exact
+revision: PlayerRevisionCursor reset has an empty seen set, so that arm alone
+does NOT prove duplicate suppression. Refine the population before production
+edits to cover both equal and advanced sampled revisions; negative duplicate
+cohort controls use the advanced revision. No assertion relaxed, and no claim
+that the first run demonstrated the advanced-revision defect.
+
+Refined baseline a18d24/4a637f (session76902 terminal2):42 new cases,39 failures
+and three controls pass; existing8106/255 skips unchanged. Both sampled-revision
+arms now execute separately. Commit test-only diagnostic before correction.
