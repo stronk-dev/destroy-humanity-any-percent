@@ -3071,3 +3071,26 @@ new SQL/browser/whole-CI evidence. RP-131/RP-256/capacity holds and actual SQL
 reader/two-Exit career/Company-run/full R8 obligations remain. No checkbox,
 archive, release, mint, push, deployment or cleanup. Full new span after
 b6c7ebca, including predeclarations, refinement and records, still needs Claude.
+
+## 2026-10-06 — R8 portable-history first filter after refinement
+
+Review by: Codex (implementer self-review, FIRST FILTER ONLY).
+Recorded by: Codex.
+Reviewed range: `b6c7ebca..695da194`, all nine paths and all four commits
+e3378e96, 8d816b9c, c7c7a0fb and 695da194.
+Verdict: FIRST FILTER PASSED; c7c7a0fb's missing-control finding is locally
+addressed by 695da194. This is NOT designated approval or RFC acceptance.
+
+Earlier full test/docs diff inspection fcdef8/5e0a46 and the final refinement
+inspection b1ee48/593ff3/ba5180 cover the whole range: source-derived heads,
+unchanged original corpus, copied ExitCases removal, independently executed
+omissions and exact restoration. Final focused172 and cold core/vet pass;
+the sandbox-denied aggregate and scoped permitted rerun are both disclosed.
+Logs append at EOF, live census is four, historical three-control runs are
+unchanged. Net scope contains no runtime/kernel/data/schema/CI change or new
+checkbox. No surviving probe or missing SQL/browser proof is relabelled green.
+
+Claude's designated review must cover the COMPLETE span after b6c7ebca through
+the commit recording this entry; the implementer's filter cannot substitute.
+Actual SQL reader, two-Exit purchase career, Company-run verification, remaining
+harness consumers and full R8/AC15 remain. No archive, mint, push or release.
