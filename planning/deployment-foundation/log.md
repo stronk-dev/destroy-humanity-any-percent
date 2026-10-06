@@ -4526,3 +4526,21 @@ does not approve original R18 or consume any prior independent span. The entire
 new range after `fbbf0150` needs Claude, including record edges. No checkbox,
 normative owner-body edit, schema/balance/mint/CI/deploy/push/archive or release
 promotion. Full nine-tier/platform1.0 goal remains active and this turn progress.
+
+### RP-141 local range review — first filter only
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `fbbf0150..050304de`, all eight changed paths,
+including predeclaration, new tests, canonical evidence notes and planning.
+Production sources, kernel, CI, balance and migrations have zero delta. Fixtures
+use the actual assembler/loader/dispatch, not a substituted validator; invalid
+input controls distinguish preparation failures from the named negative.
+Five compiling faults fail independently, and exact source hashes restore.
+The full cold core/rehearsal results and historical red kernel guard are kept
+separate. Diff checks pass; no checkbox or lifecycle state is promoted.
+
+Result: local witness supplement passes the first filter, not designated review.
+Claude must cover the entire new span after `fbbf0150`, including this following
+record commit. Original R18 CHANGES REQUIRED and all older independent ranges
+remain live; this does not approve full DP-F/R-006 or a release. No archival,
+deployment or external publication. Full 1.0 goal remains active.
