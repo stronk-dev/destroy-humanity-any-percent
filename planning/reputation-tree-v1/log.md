@@ -7285,3 +7285,26 @@ unresolved RP-283/RP-284 contracts and actual SQL/mint/full AC12. No checkbox,
 Go/copy/kernel/epoch/CI/ruling/owner prose or release status changed. Fresh
 capacity observation is not a SQL success or cleanup permission. Next separately
 ground remaining accepted R9 component/host/advisory-plan behavior; full1.0 active.
+
+## 2026-10-06 — Full-tree advisory-plan predeclaration
+
+Previous goal turn is progress:8eb10d98/e312b4d7 commit the actual R7 correction
+with executed discrimination/browser proof and synchronized tracking. Fresh
+clean e312b4d7, no inherited live handles. AGENTS/process and entire accepted
+Reputation RFC reread; bound design refs unchanged since020a25c6. Actual plan/
+tree components and host controls inspected; existing host plan tests use two
+independent nodes, not the full declared DAG or sequential disclosure/checkbox/
+Clear path. Earlier native WebKit tree-control findings make implicit plan
+stops a source risk, RP-288, not a claimed new browser failure.
+
+Plan predeclares both-era full nine-row advisory state/order/budget/cascade and
+native keyboard/axe populations. Use the actual declaration in controlled
+component props, not a minted epoch or live server. Keep RP-283 authoritative
+Wind Down payout and RP-284 available-balance/display contracts separate.
+Baseline before source; if native stop failure occurs, minimal R9 accessibility
+correction only. Existing algorithms/content/owner prose/server/wire policies
+remain. Demonstrated compiling source faults, exact restoration and terminal
+handle discipline; root/client/browser gates and unchanged perf lane follow.
+All old45/61 reader, host/surface/cost controls and deadlines preserved. Complete
+new span aftere312b4d7 needs Claude independently of previous spans; full nine-
+tier/platform1.0 active, no shortcuts, box flip, acceptance/archive/cleanup/push.

@@ -79,6 +79,31 @@ user Exit/display/full AC12. Whole new range needs Claude; no checkbox flipped.
 Next ground remaining R9 component/host states and advisory-plan consumers.
 RP-283/RP-284 author contracts, RP-131/Firefox/SQL/capacity/full1.0 remain open.
 
+## R9 full-tree advisory-plan supplement — predeclared 2026-10-06
+
+Start e312b4d7. Test the actual nine-row declaration at the existing component
+boundary, not a minted/default-player or SQL career. Preserve existing host/
+surface/cost assertions and deadlines. Both supported copy eras, native
+Chromium/WebKit: collapsed empty default; supplied preview budget; prerequisite
+eligibility; exact-cost last selection; artifact-order callbacks after reverse
+selection; full nine-node plan; transitive deselection; native disclosure,
+checkbox and Clear traversal/activation; no mechanical IDs; axe WCAG2.2AA.
+Assert each rendered checked/disabled state, exact projected value and callback
+plan; test zero/preview-funded controls. Native sequential tests focus only a
+sentinel, never the component controls they claim Tab reaches. Diagnostic
+available/preview are explicit props, not a new authoritative payout source.
+
+Source risk RP-288: implicit plan controls have no explicit Tab stops, while
+the earlier native tree diagnosis confirmed WebKit skips implicit buttons.
+Measure current plan first; if confirmed, add only required native Tab stops
+under R9/AC12. No budget/selection/transport/persistence/server/wire/copy rules
+change. Compiling checkbox-prerequisite, budget, artifact-order, deselection
+and (if introduced) keyboard faults must fire unchanged oracles; restore exact
+bytes after every terminal handle. Root types/build/unit/boundaries/copy and
+selected browser/existing isolated performance follow. Firefox, SQL/mint/full
+AC12, RP-283 preview/RP-284 display, RP-131/H3/H4/H5 and reviews remain open.
+Full span aftere312b4d7 needs Claude; no checkbox flip/acceptance/archive/push.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1
