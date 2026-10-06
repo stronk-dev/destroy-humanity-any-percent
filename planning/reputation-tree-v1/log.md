@@ -5128,3 +5128,39 @@ denominators. Controlled reproduction and explicit censoring authority remain
 separate; this range does not impute censored clocks or silently bless1ms.
 No source/tracking edits while either baseline handle lived. Next the declared
 observation/caller binding, negative controls/probes, cold gates and records.
+
+## 2026-10-06 — RP-263 source/caller instrumentation checkpoint
+
+Observed inputs now return with actual careers; catalog RunKey/epoch authority
+unchanged. Effective policy hash names the loaded overridden policy, not base
+catalog Prestige. H4 projections bind/retain both arm sources, H5 projections
+bind each baseline/mask source and retain all sources in the report header.
+These are private measurement report fields, not a live/save/wire schema change.
+Four real careers preserve the baseline complete semantic fingerprints;36
+synthetic corruption children cover both H4 arms and H5. Healthy projections
+retain distinct baseline/mask sources. Normal1e831f..15f170 exit0,8.438s;
+after header extraction efafd0..eceab4 exit0,8.388s (returned output truncated,
+not a truncated measurement; the full preceding36-case run is recorded).
+
+Nine independent compiling omissions, terminal exit2 before exact restoration:
+effective policyc57b66..a20968 fails base/none/mask; live policy stays healthy;
+experiment83b18e..84d68e fails all4; mask227644..5c5f28 fails excluded only.
+All four semantic fingerprints stay unchanged even on those metadata failures.
+H4 treated56ca66..63f46e, control2ade19, H5ecf825 each admit all12 malformed
+profiles for that arm when its admission result is ignored. H4 retentionddbc15..
+99e4ca, H5 outcome retentiondb1929 and H5 report retentionfbd3b8..c65a58 fail
+their healthy known-source assertions, not compiler errors/panics. Exact
+restored .go SHA3b691d40; consumer hashes5355742f/bc16ab13 and diagnostic806c69a1.
+Final restored focused5b3dae..db335b exits0,7.796s, includes4 actual/36 source/
+28 H4 profiles and legacy H4 gate. Source-binding completeness is not H4 timing
+acceptance or full H5 relevance proof.
+
+After all handles ended, add one observation-only census line to each full
+report producer so a subsequent run reports its admitted arm count. No guard,
+formula or metadata behavior changes; probe hashes above precede those two
+logging lines. Next cold fast/core and declared full H4/H5 observation. Old
+report update flags remain off; stale shape/timing and fired criteria must stay
+RED. No new reports or full-population claim at this checkpoint. RP-272 source
+finding remains unexecuted. All current and earlier designated-review spans
+remain independent. Kernel161/live math/balance/copy/corpus/CI unchanged; no box,
+mint, archive, owner ruling, cleanup, deployment, message or push. Goal active.

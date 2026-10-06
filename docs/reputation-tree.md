@@ -687,3 +687,31 @@ recorded producer is `da512cd39b1e49e5fc734cd0e05be6a11a73fb2e`; its local full
 record/replay take 68.91/62.30 seconds. Cold local fast harness and core gates pass.
 This does not claim hosted CI, SQL, browser, H3/H4/H5 or AC13 acceptance. RP-263's
 H4/H5 report-envelope provenance and all designated review ranges remain open.
+
+### Career experiment-source observations
+
+`RunReputationCareer` now returns `measurement_source` in addition to the unchanged
+catalog RunKey. It records that complete paired key, first-hour policy hash, hash
+of the canonical serialized **effective loaded Prestige policy**, experiment tuple,
+effective horizon, purchase policy and excluded node. In particular, a fixture
+threshold override is not hidden behind a catalog hash containing the live policy.
+This identifies observed inputs, not software provenance or policy adoption.
+
+Both report consumers admit the result against their declared experiment before
+projection, including its actual run key/policy and completed outcome. H4 retains
+treated and no-purchase control sources on every row; H5 retains every baseline
+and leave-one-out arm's source in its report header. Four actual Chaos seed0
+controls prove the catalog-key collision while their complete gameplay-result
+fingerprints remain unchanged after adding metadata. Thirty-six corrupt-source
+profiles reject through H4 treated/control and H5 projection. Independent input,
+caller-admission and source-retention omissions make the corresponding tests fail.
+
+The historical H4/H5 v1 files are not rewritten: the corrected producer must
+reject their old projection shape as well as previously observed clock drift.
+Whole-population source admission needs its own executed record; these focused
+controls are not a 97-pair/970-arm population claim. H4's strict-sooner failure,
+H5's unruled epsilon/run4, missing career-data authority and the each-Exit intent
+ambiguity remain. RP-272 separately tracks H5's unreported finite-pair denominator;
+this change does not supply a censoring rule or certify its current median as a
+full-persona result. The earlier dated H1/H2 evidence remains pinned to its recorded
+producer tree, not silently promoted to this changed server tree.

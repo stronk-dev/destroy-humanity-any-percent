@@ -53,16 +53,41 @@ func reputationCareerBundle(t *testing.T, suite *FirstHourSuite) production.Cata
 }
 
 type reputationCareerSeed struct {
-	PolicyID          string   `json:"policy_id"`
-	Seed              uint64   `json:"seed"`
-	CareerPolicy      string   `json:"career_policy"`
-	PurchasedNodeIDs  []string `json:"purchased_node_ids"`
-	AppliedStarterIDs []string `json:"applied_starter_node_ids"`
-	BonusFactor       string   `json:"bonus_factor"`
-	TreatedGateMS     *int64   `json:"run_three_gate_ms"`
-	ControlGateMS     *int64   `json:"control_run_three_gate_ms"`
-	SavedMS           *int64   `json:"saved_ms"`
-	Excluded          string   `json:"excluded"`
+	TreatedSource     ReputationCareerMeasurementSource `json:"treated_source"`
+	ControlSource     ReputationCareerMeasurementSource `json:"control_source"`
+	PolicyID          string                            `json:"policy_id"`
+	Seed              uint64                            `json:"seed"`
+	CareerPolicy      string                            `json:"career_policy"`
+	PurchasedNodeIDs  []string                          `json:"purchased_node_ids"`
+	AppliedStarterIDs []string                          `json:"applied_starter_node_ids"`
+	BonusFactor       string                            `json:"bonus_factor"`
+	TreatedGateMS     *int64                            `json:"run_three_gate_ms"`
+	ControlGateMS     *int64                            `json:"control_run_three_gate_ms"`
+	SavedMS           *int64                            `json:"saved_ms"`
+	Excluded          string                            `json:"excluded"`
+}
+
+func projectReputationCareerPair(suite *FirstHourSuite, spec RunSpec, seed uint64, experiment FirstHourExperiment,
+	config ReputationCareerConfig, treated, control ReputationCareerResult) (reputationCareerSeed, error) {
+	if err := validateReputationCareerResultSource(suite, spec, seed, experiment, config, treated); err != nil {
+		return reputationCareerSeed{}, err
+	}
+	controlConfig := config
+	controlConfig.Policy, controlConfig.Exclude = CareerNone, ""
+	if err := validateReputationCareerResultSource(suite, spec, seed, experiment, controlConfig, control); err != nil {
+		return reputationCareerSeed{}, err
+	}
+	row := reputationCareerSeed{TreatedSource: treated.MeasurementSource, ControlSource: control.MeasurementSource,
+		PolicyID: spec.PolicyID, Seed: seed, CareerPolicy: string(config.Policy),
+		PurchasedNodeIDs: treated.PurchasedNodeIDs, AppliedStarterIDs: treated.AppliedStarterIDs, BonusFactor: treated.BonusFactor,
+		TreatedGateMS: treated.RunThreeGateMS, ControlGateMS: control.RunThreeGateMS}
+	if row.TreatedGateMS != nil && row.ControlGateMS != nil {
+		value := *row.ControlGateMS - *row.TreatedGateMS
+		row.SavedMS = &value
+	} else if row.TreatedGateMS == nil && row.ControlGateMS == nil {
+		row.Excluded = reputationBothArmsBeyondHorizon
+	}
+	return row, nil
 }
 
 type reputationCareerReport struct {
@@ -118,7 +143,8 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 			if current.spec.PolicyID == "chaos.t0_t1" {
 				policy = CareerSeededUniform
 			}
-			treated, err := suite.RunReputationCareer(current.spec, current.seed, experiment, ReputationCareerConfig{Bundle: bundle, Threshold: reputationCareerFixtureThreshold, Policy: policy})
+			config := ReputationCareerConfig{Bundle: bundle, Threshold: reputationCareerFixtureThreshold, Policy: policy}
+			treated, err := suite.RunReputationCareer(current.spec, current.seed, experiment, config)
 			if err != nil {
 				errs[index] = err
 				return
@@ -128,16 +154,7 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 				errs[index] = err
 				return
 			}
-			row := reputationCareerSeed{PolicyID: current.spec.PolicyID, Seed: current.seed, CareerPolicy: string(policy),
-				PurchasedNodeIDs: treated.PurchasedNodeIDs, AppliedStarterIDs: treated.AppliedStarterIDs, BonusFactor: treated.BonusFactor,
-				TreatedGateMS: treated.RunThreeGateMS, ControlGateMS: control.RunThreeGateMS}
-			if row.TreatedGateMS != nil && row.ControlGateMS != nil {
-				value := *row.ControlGateMS - *row.TreatedGateMS
-				row.SavedMS = &value
-			} else if row.TreatedGateMS == nil && row.ControlGateMS == nil {
-				row.Excluded = reputationBothArmsBeyondHorizon
-			}
-			results[index] = row
+			results[index], errs[index] = projectReputationCareerPair(suite, current.spec, current.seed, experiment, config, treated, control)
 		}(index, current)
 	}
 	group.Wait()
@@ -151,6 +168,7 @@ func TestReputationCareerStartersShortenRunThree(t *testing.T) {
 	violations, saved := evaluateReputationCareerGate(results, &report)
 	report.Violations = violations
 	report.GatePassed = len(report.Violations) == 0
+	t.Logf("H4 source admission complete: treated=%d control=%d", len(results), len(results))
 	t.Logf("H4 observed population: rows=%d gated=%d excluded=%d", len(results), report.GatedSeeds, report.ExcludedSeeds)
 	for _, row := range results {
 		if row.Excluded != "" {

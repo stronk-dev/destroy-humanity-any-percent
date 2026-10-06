@@ -1,6 +1,8 @@
 package harness
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -39,12 +41,40 @@ type ReputationCareerConfig struct {
 }
 
 type ReputationCareerResult struct {
-	Run                 FirstHourRunResult `json:"run"`
-	PurchasedNodeIDs    []string           `json:"purchased_node_ids"`
-	AppliedStarterIDs   []string           `json:"applied_starter_node_ids"`
-	BonusFactor         string             `json:"bonus_factor"`
-	RunThreeGateMS      *int64             `json:"run_three_gate_ms"`
-	ReputationAvailable int64              `json:"reputation_available_after_purchases"`
+	MeasurementSource   ReputationCareerMeasurementSource `json:"measurement_source"`
+	Run                 FirstHourRunResult                `json:"run"`
+	PurchasedNodeIDs    []string                          `json:"purchased_node_ids"`
+	AppliedStarterIDs   []string                          `json:"applied_starter_node_ids"`
+	BonusFactor         string                            `json:"bonus_factor"`
+	RunThreeGateMS      *int64                            `json:"run_three_gate_ms"`
+	ReputationAvailable int64                             `json:"reputation_available_after_purchases"`
+}
+
+// Catalog RunKey remains epoch authority. These additional inputs distinguish
+// actual headless experiments that share that catalog; they are not a minted
+// epoch, software provenance, or adoption of the measured purchase policy.
+type ReputationCareerMeasurementSource struct {
+	RunKey                      RunKey                 `json:"run_key"`
+	FirstHourPolicyHash         string                 `json:"first_hour_policy_hash"`
+	EffectivePrestigePolicyHash string                 `json:"effective_prestige_policy_hash"`
+	Experiment                  FirstHourExperiment    `json:"experiment"`
+	HorizonMS                   int64                  `json:"horizon_ms"`
+	PurchasePolicy              ReputationCareerPolicy `json:"purchase_policy"`
+	ExcludedNodeID              string                 `json:"excluded_node_id"`
+}
+
+func describeReputationCareerSource(suite *FirstHourSuite, spec RunSpec, seed uint64, experiment FirstHourExperiment,
+	config ReputationCareerConfig, policy *prestigecore.Policy) (ReputationCareerMeasurementSource, error) {
+	data, err := json.Marshal(policy)
+	if err != nil {
+		return ReputationCareerMeasurementSource{}, err
+	}
+	digest := sha256.Sum256(data)
+	key := suite.RunKey(spec, seed)
+	key.ConstantsHash = config.Bundle.ConstantsHash
+	return ReputationCareerMeasurementSource{RunKey: key, FirstHourPolicyHash: suite.PolicyHash,
+		EffectivePrestigePolicyHash: "sha256:" + hex.EncodeToString(digest[:]), Experiment: experiment,
+		HorizonMS: spec.HorizonMS, PurchasePolicy: config.Policy, ExcludedNodeID: config.Exclude}, nil
 }
 
 type careerRuntime struct {
@@ -92,6 +122,10 @@ func (suite *FirstHourSuite) RunReputationCareer(spec RunSpec, seed uint64, expe
 	if err != nil {
 		return ReputationCareerResult{}, fmt.Errorf("%w: fixture threshold %q: %v", ErrReputationCareer, config.Threshold, err)
 	}
+	source, err := describeReputationCareerSource(suite, spec, seed, experiment, config, policy)
+	if err != nil {
+		return ReputationCareerResult{}, err
+	}
 	career := &careerRuntime{config: config, policy: policy, purchased: []string{}, applied: []string{}}
 	// The whole career runs on the paired tree/economy fixture. Its run key
 	// identifies that complete bundle, not the tree-less first-hour base epoch.
@@ -112,7 +146,7 @@ func (suite *FirstHourSuite) RunReputationCareer(spec RunSpec, seed uint64, expe
 		node, _ := config.Bundle.ReputationTree.Node(id)
 		available -= node.Cost
 	}
-	return ReputationCareerResult{Run: result, PurchasedNodeIDs: career.purchased, AppliedStarterIDs: career.applied,
+	return ReputationCareerResult{MeasurementSource: source, Run: result, PurchasedNodeIDs: career.purchased, AppliedStarterIDs: career.applied,
 		BonusFactor: career.factor, RunThreeGateMS: career.gateMS, ReputationAvailable: available}, nil
 }
 

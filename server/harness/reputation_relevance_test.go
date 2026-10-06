@@ -25,11 +25,35 @@ type reputationNodeRelevance struct {
 }
 
 type reputationRelevanceReport struct {
-	SchemaVersion int                       `json:"schema_version"`
-	Threshold     string                    `json:"fixture_threshold"`
-	EpsilonMS     int64                     `json:"epsilon_ms"`
-	Nodes         []reputationNodeRelevance `json:"nodes"`
-	Note          string                    `json:"note"`
+	Sources       []ReputationCareerMeasurementSource `json:"measurement_sources"`
+	SchemaVersion int                                 `json:"schema_version"`
+	Threshold     string                              `json:"fixture_threshold"`
+	EpsilonMS     int64                               `json:"epsilon_ms"`
+	Nodes         []reputationNodeRelevance           `json:"nodes"`
+	Note          string                              `json:"note"`
+}
+
+type reputationRelevanceOutcome struct {
+	gate      *int64
+	purchased []string
+	source    ReputationCareerMeasurementSource
+}
+
+func projectReputationRelevanceOutcome(suite *FirstHourSuite, spec RunSpec, seed uint64, experiment FirstHourExperiment,
+	config ReputationCareerConfig, result ReputationCareerResult) (reputationRelevanceOutcome, error) {
+	if err := validateReputationCareerResultSource(suite, spec, seed, experiment, config, result); err != nil {
+		return reputationRelevanceOutcome{}, err
+	}
+	return reputationRelevanceOutcome{gate: result.RunThreeGateMS, purchased: result.PurchasedNodeIDs, source: result.MeasurementSource}, nil
+}
+
+func newReputationRelevanceReport(results []reputationRelevanceOutcome) reputationRelevanceReport {
+	report := reputationRelevanceReport{SchemaVersion: 1, Threshold: reputationCareerFixtureThreshold, EpsilonMS: reputationRelevanceEpsilonMS,
+		Note: "fixture-first H5: leave-one-out on the following run's Garage gate; the elective-Exit dimension needs a run-4 horizon (DESIGN-GAP RT-DG-F)"}
+	for _, result := range results {
+		report.Sources = append(report.Sources, result.source)
+	}
+	return report
 }
 
 // reputationRelevanceEpsilonMS is H5's per-node epsilon on the following
@@ -95,11 +119,7 @@ func TestReputationTreeRelevance(t *testing.T) {
 			}
 		}
 	}
-	type outcome struct {
-		gate      *int64
-		purchased []string
-	}
-	results := make([]outcome, len(jobs))
+	results := make([]reputationRelevanceOutcome, len(jobs))
 	errs := make([]error, len(jobs))
 	var group sync.WaitGroup
 	limit := make(chan struct{}, 8)
@@ -113,9 +133,13 @@ func TestReputationTreeRelevance(t *testing.T) {
 			if current.spec.PolicyID == "chaos.t0_t1" {
 				policy = CareerSeededUniform
 			}
-			result, err := suite.RunReputationCareer(current.spec, current.seed, experiment, ReputationCareerConfig{Bundle: bundle,
-				Threshold: reputationCareerFixtureThreshold, Policy: policy, Exclude: current.exclude})
-			results[index], errs[index] = outcome{result.RunThreeGateMS, result.PurchasedNodeIDs}, err
+			config := ReputationCareerConfig{Bundle: bundle, Threshold: reputationCareerFixtureThreshold, Policy: policy, Exclude: current.exclude}
+			result, err := suite.RunReputationCareer(current.spec, current.seed, experiment, config)
+			if err != nil {
+				errs[index] = err
+				return
+			}
+			results[index], errs[index] = projectReputationRelevanceOutcome(suite, current.spec, current.seed, experiment, config, result)
 		}(index, current)
 	}
 	group.Wait()
@@ -124,14 +148,14 @@ func TestReputationTreeRelevance(t *testing.T) {
 			t.Fatalf("seed %d exclude %q: %v", jobs[index].seed, jobs[index].exclude, err)
 		}
 	}
-	baseline := map[string]outcome{}
+	baseline := map[string]reputationRelevanceOutcome{}
 	for index, current := range jobs {
 		if current.exclude == "" {
 			baseline[current.spec.PolicyID+"/"+strconv.FormatUint(current.seed, 10)] = results[index]
 		}
 	}
-	report := reputationRelevanceReport{SchemaVersion: 1, Threshold: reputationCareerFixtureThreshold, EpsilonMS: reputationRelevanceEpsilonMS,
-		Note: "fixture-first H5: leave-one-out on the following run's Garage gate; the elective-Exit dimension needs a run-4 horizon (DESIGN-GAP RT-DG-F)"}
+	report := newReputationRelevanceReport(results)
+	t.Logf("H5 source admission complete: arms=%d retained_sources=%d", len(results), len(report.Sources))
 	for _, node := range nodes {
 		row := reputationNodeRelevance{NodeID: node.NodeID, Kind: node.Kind, DeltaMSP50: map[string]int64{}, PurchasedRuns: map[string]int{}}
 		deltas := map[string][]int64{}
