@@ -119,6 +119,90 @@ func TestTreeRejectsBundleWithoutTheDeclarationRow(t *testing.T) {
 	}
 }
 
+func TestTreeStarterClosedWire(t *testing.T) {
+	var corpus struct {
+		SchemaVersion int `json:"schema_version"`
+		Cases         []struct {
+			Kind  string          `json:"kind"`
+			Key   string          `json:"key"`
+			Value json.RawMessage `json:"value"`
+		} `json:"cases"`
+	}
+	if err := json.Unmarshal(readRepository(t, "testdata/reputation/starter-key-rejections-v1.json"), &corpus); err != nil || corpus.SchemaVersion != 1 || len(corpus.Cases) != 20 {
+		t.Fatalf("starter-key corpus: %v", err)
+	}
+	declarations := fixtureDeclarations(t)
+	fixture := readRepository(t, "balance/testdata/reputation-tree/fixture-v1.json")
+	legal, err := LoadTree(fixture, declarations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	kinds := map[string]bool{}
+	for _, node := range legal.Nodes() {
+		if node.Starter != nil {
+			kinds[node.Starter.Kind] = true
+		}
+	}
+	for _, kind := range []string{"resource_grant", "generated_generators", "preowned_upgrade"} {
+		if !kinds[kind] {
+			t.Fatalf("positive fixture lacks %s", kind)
+		}
+	}
+	for _, row := range corpus.Cases {
+		t.Run(row.Kind+"/"+row.Key+"/"+string(row.Value), func(t *testing.T) {
+			var root map[string]json.RawMessage
+			if err := json.Unmarshal(fixture, &root); err != nil {
+				t.Fatal(err)
+			}
+			var nodes []map[string]json.RawMessage
+			if err := json.Unmarshal(root["nodes"], &nodes); err != nil {
+				t.Fatal(err)
+			}
+			matched := false
+			for _, node := range nodes {
+				if node["starter"] == nil {
+					continue
+				}
+				var starter map[string]json.RawMessage
+				if err := json.Unmarshal(node["starter"], &starter); err != nil {
+					t.Fatal(err)
+				}
+				var kind string
+				if err := json.Unmarshal(starter["kind"], &kind); err != nil {
+					t.Fatal(err)
+				}
+				if kind != row.Kind {
+					continue
+				}
+				if _, present := starter[row.Key]; present {
+					t.Fatalf("test key already legal: %s", row.Key)
+				}
+				starter[row.Key] = row.Value
+				node["starter"], err = json.Marshal(starter)
+				if err != nil {
+					t.Fatal(err)
+				}
+				matched = true
+				break
+			}
+			if !matched {
+				t.Fatalf("fixture lacks starter %s", row.Kind)
+			}
+			root["nodes"], err = json.Marshal(nodes)
+			if err != nil {
+				t.Fatal(err)
+			}
+			data, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := LoadTree(data, declarations); !errors.Is(err, ErrInvalidTree) {
+				t.Fatalf("cross-arm starter key admitted: %s %s=%s: %v", row.Kind, row.Key, row.Value, err)
+			}
+		})
+	}
+}
+
 func TestAccountingDerivations(t *testing.T) {
 	tree, err := LoadTree(readRepository(t, "balance/testdata/reputation-tree/fixture-v1.json"), fixtureDeclarations(t))
 	if err != nil {

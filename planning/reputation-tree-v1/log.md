@@ -725,3 +725,25 @@ Final selected/full root client and Go checks must execute; restore a single
 raw-key-check severing to prove discrimination, with all handles terminal before
 each mutation/restore. Docker remains full; no new workload or cache deletion.
 Claude reviews the complete resulting Codex span; no self archival/acceptance.
+
+### 2026-10-06 — RP-243 confirmed; correction predeclared
+
+Actual Go 11207 exits Make 2/package FAIL (-count=1): all twenty malformed
+starters load with nil error, each reported as `cross-arm starter key admitted`.
+The untouched fixture loads all three legal kinds first. Root client 62669
+passes 84 files/7367 tests, with 17 files/134 existing skips; the new shared
+twenty-case TypeScript population rejects all malformed rows at rule 7.
+No DB/browser/served-game evidence, no whole-CI claim. Both handles terminal.
+RP-243 entered immediately; no reinterpretation of these failures as green.
+
+Correction authority: accepted Reputation R2's exact nested closed union/AC1.
+Allowed scope: server/reputation raw starter-key validator before shared struct
+decode, same twenty-case corpus and Go/TS tests, docs, all three kernel version
+identities 0.3.153→0.3.154, records. Do not change shared curriculum loader,
+legal starter arithmetic, ordering, economy/balance/copy/mint/API/save/CI bytes.
+Require the Go negatives to pass without changing their inputs/oracle; temporarily
+remove only the new raw-key call and require the same twenty failures, restore
+exactly, then cold related Go/vet and full root client/type/build/boundaries.
+Run root composite too: prior RP-131 is expected to remain a separately reported
+historical refusal, never bypassed or described as complete CI success. No plan
+checkbox or B1/whole-RFC approval. Claude's designated review is mandatory.

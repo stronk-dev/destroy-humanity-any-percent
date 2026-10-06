@@ -3,6 +3,7 @@ import curriculumJSON from "../../balance/curriculum/t0-t1.json";
 import fixtureTree from "../../balance/testdata/reputation-tree/fixture-v1.json";
 import corpus from "../../testdata/reputation/tree-fixtures-v1.json";
 import vectors from "../../testdata/reputation/bonus-vectors-v1.json";
+import starterKeyRejections from "../../testdata/reputation/starter-key-rejections-v1.json";
 import { describe, expect, it } from "vitest";
 
 import { COPY_KEYS } from "../src/copy/generated/types";
@@ -21,6 +22,22 @@ const copyKeys = new Set<string>(COPY_KEYS);
 const declarations: ReputationDeclarations = { economy, copyKeys, curriculum: parseCurriculumCatalog(curriculumJSON, economy, copyKeys, ["gate.t0_to_t1"]) };
 
 describe("reputation tree loader", () => {
+  it("rejects every shared cross-arm starter key even when zero, empty or null", () => {
+    expect(starterKeyRejections.schema_version).toBe(1);
+    expect(starterKeyRejections.cases).toHaveLength(20);
+    const legal = loadReputationTree(fixtureTree, declarations);
+    expect(new Set(legal.nodes.flatMap((node) => node.kind === "starter" ? [node.starter.kind] : []))).toEqual(new Set(["resource_grant", "generated_generators", "preowned_upgrade"]));
+    for (const row of starterKeyRejections.cases) {
+      const source = structuredClone(fixtureTree);
+      const node = source.nodes.find((entry) => entry.starter?.kind === row.kind);
+      expect(node?.starter, row.kind).toBeDefined();
+      const starter = node!.starter as Record<string, unknown>;
+      expect(Object.hasOwn(starter, row.key), row.key).toBe(false);
+      starter[row.key] = row.value;
+      expect(() => loadReputationTree(source, declarations), JSON.stringify(row)).toThrow(/rule 7:/u);
+    }
+  });
+
   it("loads the fixture and rejects every shared corpus fixture", () => {
     expect(corpus.schema_version).toBe(1);
     const tree = loadReputationTree(fixtureTree, declarations);
