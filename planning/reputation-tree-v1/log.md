@@ -3009,3 +3009,26 @@ R8/B4 acceptance. Original CHANGES REQUIRED and cross-party obligations remain.
 Full new span after b6c7ebca needs Claude, including predeclaration and records.
 Next safe accepted work: Company-run verifier and remaining harness consumers;
 no checkbox, archive, mint, push, deployment, cleanup or 1.0 promotion.
+
+## 2026-10-06 — R8 first-filter finding and bounded refinement
+
+Review by: Codex (implementer self-review, FIRST FILTER ONLY).
+Recorded by: Codex.
+Reviewed range: `b6c7ebca..8d816b9c`, all nine paths, including e3378e96.
+Verdict: CHANGES REQUIRED in this first filter; not a designated review.
+
+Committed diffs fcdef8/5e0a46 and append-only log check915d64 agree with executed
+scope; runtime unchanged and whitespace clean. One instrument gap remains:
+validateReputationHistorySource requires exactly three paired Exits, but the
+three declared corruption controls never remove one. The full population
+validator omission fires the other controls; that is not a missing-pair case.
+
+Before measuring this refinement: retain a fourth population control which
+removes one paired Founder arm from a copied parsed source without changing
+the raw SHA or purchase rows. Normal validator must refuse it; omitting only
+the paired-count check must admit it and turn that control red. Then omit the
+whole validator and require all four population controls to fail. Honest24
+and corrupt144 histories stay unchanged and green. Restore exact test/runtime
+SHAs; cold focused/core runs, no new data or product behavior. Earlier three-
+control runs remain historical evidence, not a claim the fourth ran then.
+Same accepted R8/test-only authority; full new span still needs Claude.
