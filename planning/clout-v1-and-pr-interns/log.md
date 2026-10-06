@@ -605,3 +605,20 @@ Result: bounded local correction passes the first filter. This is NOT Claude's
 designated pass. Claude must review the entire new span after `b30808e5`,
 including this following review-record commit; no older independent span is
 absorbed. RP-305/D-022, D-021, mint and full P1/AC1 holds remain live.
+
+## 2026-10-07 — RP-307 timing/partition predeclaration
+
+Baseline07bb3d9d, clean tree, no live verification handle. The P3 row names
+AC6 but original axis tests provide isolated formula/attainment vectors and one
+SQL purchase, not a seeded interval-partition or retroactive-factor witness.
+Bounded original f256b235^..f256b235 AC6 evidence finding: CHANGES REQUIRED;
+this is not a verdict on all28 changed paths or the other P2/P3 criteria.
+Review by: Codex. Recorded by: Codex. Static inventory only so far.
+
+Population/method/controls/limits are predeclared in plan.md's RP-307 section.
+Exact full-state comparison and independent purchase-interval arithmetic must
+not be softened to produce green. New tests first run against unchanged source;
+any numeric contract gap is routed without improvising persistence or balance.
+No product/kernel/CI/copy/mint/owner body change or checkbox flip authorized by
+this test-only range. New Codex span needs Claude separately; earlier pending
+review spans and author/owner holds remain. Full nine-tier/platform1.0 active.

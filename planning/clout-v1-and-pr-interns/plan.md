@@ -19,9 +19,11 @@ lands, with the allowed writer set empty.
 - [x] P2 (`f256b235`, formulas `63aa0b62`) — CV3 formula: axis contributions from Company state, the clamp, `saturated`; shared
   Go-authored vectors reproduced by TS. AC2. Formulas artifact regenerated in its own commit
   (AC10).
-- [x] P3 (`f256b235`) — CV2/CV4/CV5: Company save v19 (next free) attainment set + derived score, second hook
+- [x] P3 (`f256b235`) — implementation presence, not full acceptance: CV2/CV4/CV5 Company save v19 (next free) attainment set + derived score, second hook
   pass (Go + TS), `achievement_reattained.v1` event + migration, new-run activation, Exit discard,
   migration corpus. ACs 3, 5, 6, 7, 8.
+  RP-307: AC6's seeded timing/partition property and retroactive-factor failing case
+  are absent from the original population; formula/helper parity is not that proof.
 - [x] P4 (`4c089f00`) — AC4 Gaia-law structural test (empty writer set under A; seeded writer fails).
 - [x] P5 (`2f2c5a04`) — CV9 snapshot producer (optional v4 field) + Desk PR row progress: implementation presence, not full AC11/default composed journey acceptance. RP-303 locally corrects native progress associations; its Codex span independently needs Claude.
 - [ ] P6 — PARTIAL (see log P6; blocked on harness attainment evaluation) — CV10 harness: scenario bundle rejection without achievements, relevance mask, dead-row
@@ -74,3 +76,24 @@ cases and real-Postgres production/gameui packages pass. Full historical kernel
 guard is still red at50a3a514 (RP-131), not bypassed. Full new span afterb30808e5
 including records requires Claude. Truthful pool binding remains D-022/RP-305;
 no full P1/AC1, hosted CI or mint acceptance follows.
+
+## RP-307 — actual timing and partition audit
+
+Predeclared at07bb3d9d, 2026-10-07. Test-only first: actual ApplyLogged
+generator-purchase transition on an admitted v19 fixture, with an owned PR Intern
+and derivation-valid x=6. Check the interval preceding re-attainment uses x=6;
+the purchase raises x to8 and only the subsequent interval uses x=8. Assert
+actual ledger/debit, ordered achievement events and unchanged independent pins.
+Use seeded nonzero intervals and online/offline accrual arms. Separately compare
+full encoded Company states after one-shot versus seeded millisecond partitions
+of the same axis-enabled interval, using actual Evaluate and pinned contributions.
+Do not claim extra evaluations are extra player intents or full composed/SQL proof.
+
+The oracle is exact, not a tolerance. Include whole-second and tiny-cut controls;
+any numeric divergence is a finding, never justification to narrow AC6. Before
+runtime faults, the unchanged source must execute; a retroactive-factor fault is
+allowed only as a temporary compiling observation, with exact-byte restoration.
+Do not change runtime/save/kernel/balance/copy/CI or owner-authored specifications
+in this range. If proof requires a new persistence/numeric contract, route it to
+the author/owner rather than inventing one. All new Codex test/record edges require
+Claude; no checkbox flip, full P3/AC6, mint or archival approval follows.
