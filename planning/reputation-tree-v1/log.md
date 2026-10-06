@@ -7680,3 +7680,25 @@ positive default capture, negative diagnostic no-capture only for RP-289.
 No Go/copy/balance/epoch/kernel161/wire/CI/owner-text/checkbox/archive/push or
 SQL/mint/full AC12 claim. Full new span after00335488 needs Claude, prior ranges
 independent; full nine-tier/platform goal and existing release holds remain.
+
+Controlled wrapper/test added without production changes or old-test edits.
+Typecheck afc569/2f3535 session86012 terminal0: zero errors/warnings.
+Default-capture7076ef/9a1aab session24318 terminal0: all20 native cases pass
+(ten declarations, two eras across Chromium/WebKit); isolated performance1
+pass/22 selector exclusions. Component worker0/0, performance1/1, zero pending.
+Six functional declarations cover independent formula/ownership replacement
+and valid selections; four are explicitly RP-292 CHARACTERIZATION ONLY.
+Both eras reproduce hidden owned id retained in callback with double-subtracted
+cost, and retained over-budget enabled checkboxes with negative projection.
+Native Clear restores empty callback/current projected budget in both cases.
+These passing descriptive observations are not desirable-UX acceptance.
+
+RP-292 now executed and routed in the author queue: reset, deterministic pruning
+or explicit invalid/refusal state requires reconciled R9 behavior, not guessed
+mechanics or new prose. Wrapper exports only public arm/preview replacement;
+native events own selection. Controlled component, not actual concurrent host/
+SQL/player proof. Source SHA2a856f is unchanged77a4b842f989b29d748195e405e29fefb3fc2a3f0a3a650f23db969b99fd3d6f.
+The new ledger row's accidental blank table separator in036fc924 is removed
+forward in this range; no committed history rewrite. Next run the predeclared
+compiling dependency severings against unchanged tests, restore exact bytes,
+and final root/client/native gates. No product correction or policy adoption.

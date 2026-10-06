@@ -92,3 +92,27 @@ may proceed independently. No UI, payout formula, balance math, new wire or
 whole AC12 is authorized by this finding. Evidence: Reputation implementation
 log and design/BACKLOG.md RP-284. RP-283's eligibility-only Wind Down preview
 bridge is a separate author question, not cured by this event reader.
+
+## Reputation plan reconciliation on authoritative update — RP-292
+
+R9 specifies advisory selections, projected available and server revalidation,
+but not what happens to an already selected plan when authoritative props change.
+Both-era native component observation7076ef/9a1aab shows a selected node becoming
+owned: its checkbox disappears, yet the callback still retains the id and the
+formula subtracts its cost again. A budget reduction retains enabled checked
+selections with projected balance below zero. Native Clear restores a coherent
+empty plan; valid formula/ownership update controls pass. This is controlled
+public-prop evidence, not proof of a real concurrent player/host/SQL occurrence.
+
+Required author action: specify what invalidates a plan and reconcile the R9
+body with the chosen callback/visible-selection behavior. Choose and specify
+reset-to-empty, deterministic pruning, or an explicit invalid-plan/refusal state,
+including how users learn of the change and whether valid selections survive.
+An implementer cannot silently choose a pruning order or discard user intent.
+Any new player-facing text requires the existing owner-copy mechanism. Canonical
+home: Reputation R9's plan panel contract, with the author's body reconciliation.
+No change to R6's atomic server revalidation, Wind Down's open door, payout math,
+epoch/price, or RP-283's separate authoritative-preview bridge is inferred.
+Tests named CHARACTERIZATION ONLY record the current limitation; their green
+result is not AC12 or approval of this UX. Evidence: Reputation implementation
+plan/log and design/BACKLOG.md RP-292. Other accepted work remains available.
