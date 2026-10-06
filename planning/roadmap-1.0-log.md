@@ -2228,3 +2228,29 @@ Implementation committed `99eedfe0`; exact designated-review range
 pending Claude. Metadata pin only, no verdict or earlier range consumed. All
 handles terminal, product mutations restored, clean implementation tree, no
 archive/public pin/push/release promotion. Full nine-tier 1.0 remains active.
+
+## 2026-10-06 — Garden purchase consumer and real-time session finding
+
+RP-232 diagnosis `d24b40f6` follows predeclaration `e02fbfc1`, with separate
+accepted SG7/SG10 repair authority `6ba1252c`. The actual server offers Garden
+but the Fiscal DOM has no row. Existing title/explanation now map the mechanical
+unlock ID; real Fiscal Harvest/purchase/plant/uproot applies through DOM. Actual
+purchase callback/server-view severing fails, then exact source restoration.
+New fast browser CI cases discriminate row removal in all three engines; restored
+full Linux lane passes 22482 / six existing skips and the unchanged performance
+selector. Root client/type/build/boundary/copy/content-manifest/topology pass.
+Native Mac Firefox fails launch with sandbox/framebuffer diagnostics; its identified
+runner is stopped after failure, cleanup confirmed. Not three-engine native success.
+Historical kernel RP-131 still fails, no whole-CI/hosted acceptance claim.
+
+Same real composed process reaches two scheduled five-minute ticks without gameplay
+writes, then times out at its unchanged fifteen-minute maturity objective. No
+harvest/cash/quota/log/reload proof. RP-234 source confirms stored refreshToken
+has no client consumer; actual timed HTTP status was omitted by the first instrument,
+so precise causal attribution remains open and failure reporting is corrected.
+RP-233 retains the earlier intermittent second-menu failure. No retry-to-green,
+clock/rate/bound relaxation or authentication implementation hidden in this range.
+Next safe work: separate Account D2 / Transport consumer integration, then the
+same complete Garden journey. Full nine-tier 1.0 and complete platform floor
+remain active. Codex first-filter only; exact new range begins `e02fbfc1^`
+(`b58277cb`), endpoint pinned after commit; all earlier Claude ranges independent.

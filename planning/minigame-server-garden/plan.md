@@ -169,3 +169,19 @@ integration under SG13, retaining author/owner/CI and complete nine-tier 1.0 obl
 - [x] G7 — Garden surface under `client/src/game-ui/` (grid, roving tabindex, non-colour stage,
   reduced motion, 320 px). AC13 stays blocked on the Accessibility RFC's acceptance; AC14 copy.
 - [ ] Docs, then hand off for Codex's designated review. Never self-archive.
+
+Separate SG7/SG10 purchase correction under `e02fbfc1` / diagnosis `d24b40f6`,
+authority `6ba1252c`, confirms RP-232: actual producer offered Garden but Fiscal
+DOM had no row. Existing title/explanation now map to the offered ID. Fast actual
+FiscalSurface cases run in all three CI browsers and fail on row removal; no
+optimistic ownership or absent/owned/unaffordable purchase. Callback/server-view
+severing also breaks the real composed setup, then restores exactly.
+The new manual built-client/real server/Postgres/WebSocket journey keeps the
+existing real three five-minute ticks. It reaches ticks one/two but times out
+at maturity, so harvest/cash/log/reload criteria remain unproven (RP-234).
+The runtime never consumes its stored refresh token; route that separate
+Account/Transport consumer before the complete journey. Retain RP-233's earlier
+next-menu failure and native Mac Firefox launch failure; later setup/CI success
+is not a reliability ruling. No checkbox/public pin/AC13/Garden promotion.
+Exact new range begins `e02fbfc1^` (`b58277cb`), endpoint pinned in the log;
+Claude required independently of all earlier ranges. Final gates are in the log.

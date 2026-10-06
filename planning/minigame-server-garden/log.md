@@ -2530,3 +2530,103 @@ Separate source severing of this row's callback and the actual server Garden
 projection must fail, followed by byte-exact restore and final gates. This is
 accepted-contract repair, not a new owner ruling; designated Claude review
 remains mandatory over the full new range beginning `e02fbfc1^` (`b58277cb`).
+
+Actual-source controls: 28363 with Fiscal purchase callback disconnected fails
+its real intent-response objective; 98818 with actual server projection inactive
+fails the absent Garden navigation. Both terminal, both source files restored
+byte-identically (FiscalSurface `f2cf0e29ebad06dfb961ce191267858a1249e33011001b5effcc81fc8e4f8615`,
+garden_view.go `d397932c14cb7719e8869d140d24eb997699c9fc107a464cc59c3ddbefe521b8`).
+Restored 97300 reveals an instrument setup assumption: a fast initial host
+snapshot still displays zero Fiscal preview, so the new row remains disabled.
+Refine the unchanged player population by waiting for its actual guaranteed
+Fiscal phase and pressing its existing Harvest button before purchase. This
+collects actual automatic/guaranteed confidence through ordinary gameplay, not
+a DB grant, direct POST, host-state injection or rate/clock edit. The initial
+zero-credit assertion and all Garden time/harvest objectives remain. Retain the
+red rather than retrying a timing-sensitive bootstrap. Re-run the callback control
+with this deterministic user step, then the full restored journey.
+
+Refined callback control 82347 collects Fiscal confidence (Founder revision 2)
+then fails the absent purchase response, confirming the intended severing target.
+Exact restoration confirmed again. Restored 97204 successfully purchases Garden
+(Founder revision 3), then catches another instrument error: generated copy
+parameters are `{name,type}` descriptors, not string names. Correct the reader to
+compare descriptor names; leave actual catalog/text unchanged. No mature outcome
+claimed from these incomplete runs.
+
+73590 passes Fiscal harvest/purchase and first real planting (Founder revision 4),
+then times out finding the second Plant control. Grid dimensions are verified as
+six maximum columns/two currently active; add stage precondition and salt-free
+last-DTO/visible-Garden diagnostics to locate the failure. No clocks/product edits
+or maturity claim; all handles terminal before this instrument change.
+
+Native run 67349: actual Fiscal harvest/purchase, three plantings and uproot
+all apply through DOM (Founder revisions 2–7). Same process waits the unchanged
+300000ms × three objective, due 02:36:50.241 UTC. Real scheduled reads show ticks
+one and two at ~300/600s, no gameplay write during the wait. At 901s the last view
+is still tick two; the 929516ms maturity guard fires and Make exits 2. No mature
+harvest, quota/cash/log/reload claim. Actual source confirms runtime.ts stores but
+never consumes refreshToken, has no session-refresh call and terminates expired
+WebSocket authentication. Account accessTTL is fifteen minutes. This is RP-234,
+a concrete missing consumer and plausible deadline cause, NOT a measured HTTP
+401: the instrument collected boundary errors but omitted them on this throw.
+Correct failure reporting after the handle is terminal; no second fifteen-minute
+retry or gameplay clock/bound adjustment. Account D2 and Transport T1–T5 are read
+fully to establish separate implementation authority; do not mix authentication
+production changes into this Garden repair range.
+
+RP-233 retains 73590's missing second menu action. Empty-stage diagnostics added
+before 67349; its setup success does not prove the earlier failure's cause or
+general native interaction reliability. Both routes remain open. Continue the
+Account/session consumer integration before trying to close the full Garden
+journey; full nine-tier 1.0 remains active and no Garden checklist is promoted.
+
+Root gate 23990 exits 0: 7366 client tests / 132 existing Node DOM skips,
+zero type/Svelte diagnostics, built client, component boundary, exact copy hash
+`sha256:3a890004e2c9ecdbdc14d9d688f29efddfb8d7174bd6060427e1614144146860`
+(610 existing orphan warnings), deployment content-manifest and CI topology with
+13 negative controls. No source/test edited while that handle was live.
+Add a fast FiscalSurface browser regression in the existing CI browser population:
+exact existing Garden title/explanation, one callback with the offered unlock ID,
+no optimistic ownership, and absent/owned/unaffordable controls. This is deliberately
+a component fixture, not replacement evidence for the red real workflow. Demonstrate
+actual presentation-row removal fails it, restore exactly, then run final browser
+and root gates. No CI dependency or test-budget edit.
+
+Fast browser evidence: native 41237 runs four Chromium/WebKit cases, but Firefox
+cannot connect within its existing 60s startup deadline. Runner hangs in cleanup;
+scoped process lookup identifies Vitest 73321 / Firefox 73329. SIGTERM only that
+failed runner; its own Playwright cleanup kills Firefox and exits Make 2. Logs
+show macOS sandbox_extension_issue_file_to_process permission denial and SWGL
+framebuffer mapping failure. Exact profile process lookup confirms no survivor.
+No deadline/browser/config change; this is not the cause of all RP-218 failures.
+
+Actual row-removal control 81668 in the declared Linux CI environment exits 2:
+exactly six new cases fail across all three engines, 22476 old tests pass, six
+existing skips; 300 file populations, 41.23s. Restore presentation SHA
+`8b75f766fb251fa75382ed506292ce2ebb32dd35e68169c2a49bba3026357702`;
+FiscalSurface and Go projection still match their original SHA. Restored full
+90040 exits 0: 22482 tests / six existing skips, 300 file populations, 32.35s,
+performance 475ms / 2.08s with unchanged selector (22 exclusions only in its
+separate single-objective population). No uncaught/worker/deadline errors in this
+Linux run; not a hosted or native-Mac Firefox reliability claim.
+
+Final root 54713 exits 0: 7366 pass / 134 Node DOM skips (two new cases execute
+in every CI browser), zero diagnostics, 213-module build 366ms, topology plus 13
+negative controls. Earlier 23990 covers identical product bytes for boundary/copy/
+content manifest. 99140 actual complete history guard exits 2 at unchanged
+`50a3a5141d5c4c1cd25cbf3c9c39d9e3cf8e2444` versus `0cf9f7a6aba4038fadcdf35e5b94f56986164af7`;
+checkout/negative fixtures pass but do not waive RP-131. All handles terminal
+before closeout edits/commit, every temporary product mutation restored.
+
+Review by: Codex (implementer first-filter); Recorded by: Codex. New mapping,
+fixture preservation, actual DOM payloads/time/authority guards, SQL/log/receipt
+oracles and fail-reporting inspected. Downstream mature-harvest oracles did NOT
+execute: manual objective remains red, not accepted. Root/browser green applies
+only to its named populations. Exact new range begins `e02fbfc1^` (`b58277cb`),
+endpoint pinned after commit, pending Claude. Every prior range stays independent.
+Docs/backlog/plan/current state/queue/1.0 board/log agree, no checkbox/lifecycle
+promotion. Kernel 0.3.153, copy/schema/epochs/CI topology unchanged. No auth
+production change, public activation, owner text edit, archival/push/release claim.
+Next safe scope is the Account/Transport session consumer, not pretending fifteen
+minutes of partial Garden behavior completed the full nine-tier 1.0 goal.

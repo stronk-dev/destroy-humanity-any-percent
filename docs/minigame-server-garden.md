@@ -279,6 +279,29 @@ requires Claude's designated review; no full G7/AC13/Garden acceptance follows.
 
 ## Verification
 
+The Fiscal presentation map includes `minigame.server_garden`, using the existing
+Garden title and explanation keys. A pinned catalog that offers this unlock now
+has a real Fiscal purchase control; this does not add the Garden to production
+epochs or override the SG13 activation requirements.
+The normal browser CI population includes `garden-fiscal-browser.test.ts`:
+purchase callback/ID, unchanged copy, no optimistic ownership, and absent/owned/
+unaffordable controls. Removing the actual presentation row fails both cases in
+all three engines. These component fixtures do not establish real maturation.
+
+`make test-garden-composed` is a manual fixture-only built-client/real
+server/Postgres/WebSocket journey, outside push CI. It uses the exact existing
+grown replay bundle and its unchanged three five-minute ticks; every gameplay
+intent comes from a DOM control. Execution evidence and limitations are recorded
+in the Garden planning log; adding the driver is not by itself a passing claim.
+The first native fifteen-minute run reached actual ticks one and two but missed
+the maturity objective. Full harvest/reload proof remains open. The browser
+runtime currently has no session-renewal path despite the account's fifteen-minute
+access-token lifetime; RP-234 routes that separate Account/Transport consumer gap.
+The run did not emit its collected boundary errors, so its precise failing HTTP
+status is not established. The instrument now emits those errors on failure.
+RP-233 separately retains an intermittent next-plot interaction failure; a later
+setup success is not a reliability verdict.
+
 - `make garden-corpus-check`
 - `make test-go GO_PACKAGES=./garden GO_TEST_FLAGS='-count=1'`
 - `client/test/garden-harvest-boundaries.test.ts` and the shared literal boundary corpus

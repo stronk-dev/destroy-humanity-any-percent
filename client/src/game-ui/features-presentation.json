@@ -9,6 +9,11 @@
    "description_key": "fiscal.unlock.minigame_pitch.description",
    "title_key": "fiscal.unlock.minigame_pitch.title",
    "unlock_id": "minigame.pitch"
+  },
+  {
+   "description_key": "garden.why",
+   "title_key": "garden.title",
+   "unlock_id": "minigame.server_garden"
   }
  ],
  "meter_bands": [

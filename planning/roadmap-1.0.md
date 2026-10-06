@@ -5,7 +5,24 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, Garden SG10 actual-host receipt correction under
+**Current checkpoint:** 2026-10-06, Garden purchase correction RP-232 under
+`e02fbfc1` / `d24b40f6` / separate authority `6ba1252c`. Actual Fiscal DOM now
+consumes the offered Garden ID using existing copy. Row-removal fails the new
+fast regression in all engines; restored full Linux browser/performance passes
+22482 tests / six existing skips, with root client/type/build/topology green.
+Historical kernel RP-131 remains red; native Mac Firefox launch failure retained.
+The real built-client/server/Postgres/WebSocket journey reaches two actual
+five-minute ticks, then misses unchanged fifteen-minute maturation. No full
+harvest/reload claim. RP-234 records no browser session-renewal consumer;
+precise HTTP status/causality at that timeout still needs evidence. RP-233 keeps
+an intermittent next-plot failure. No authentication code/policy was changed
+inside this Garden lane; next work is separately predeclared Account/Transport
+consumer integration. Kernel 0.3.153 unchanged, no public mint/checkbox/AC13/
+Garden/archival promotion. Exact new range starts `e02fbfc1^` (`b58277cb`),
+endpoint pinned in the log; Claude required independently of all earlier ranges.
+Proper nine-tier 1.0 and complete platform obligations remain active.
+
+**Earlier checkpoint:** 2026-10-06, Garden SG10 actual-host receipt correction under
 diagnosis `9c918361` / `9af68399`, repair authority `86249481`, RP-231. Streamed
 receipts now invalidate mounted Garden as well as refreshing main state, preserving
 the terminal-screen guard. Nine actual host/browser-runtime cases per engine cover

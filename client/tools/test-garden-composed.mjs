@@ -22,7 +22,7 @@ const copy = JSON.parse(readFileSync(path.join(root, "client/src/copy/generated/
 function text(key, params = {}) {
   const row = copy.entries.find((entry) => entry.key === key);
   assert(row && row.era_variants === null, `expected era-independent fixture key ${key}`);
-  assert.deepEqual([...row.params].sort(), Object.keys(params).sort());
+  assert.deepEqual(row.params.map((param) => param.name).sort(), Object.keys(params).sort());
   return row.text.replace(/\{([a-z_]+)\}/gu, (_, name) => String(params[name]));
 }
 function write(relative, data) {
@@ -195,10 +195,19 @@ try {
   assert(available.features.fiscal.unlocks.some((row) => row.unlock_id === bundle.garden.unlock_id && row.cost === 3 && !row.owned), "actual producer offers Garden unlock");
   const unlockRow = page.locator(".fiscal li").filter({ has: page.getByRole("heading", { name: text("garden.title"), exact: true }) });
   assert.equal(await unlockRow.count(), 1, "Garden unlock producer has no Fiscal DOM consumer");
+  // The initial displayed preview can precede the first completed period.
+  // Collect it by the real player control, never force-refresh or grant credit.
+  await page.locator('.fiscal[data-phase="guaranteed"]').waitFor({ timeout: 30_000 });
+  await domIntent(page.locator(".fiscal").getByRole("button", { name: text("fiscal.harvest"), exact: true }), "harvest_fiscal_period", {});
   await domIntent(unlockRow.getByRole("button"), "spend_fiscal_credit", { target: { kind: "unlock", unlock_id: bundle.garden.unlock_id } });
   await control("garden.title").click(); await cell(0, 0).waitFor({ timeout: 30_000 });
   async function plant(row, col, species) {
-    await cell(row, col).click(); await domIntent(control("garden.action.plant_frame", { species: text(`garden.species.${species}.name`) }), "garden_plant", { row, col, species_id: species });
+    try {
+      assert.equal(await cell(row, col).getAttribute("data-stage"), "empty", `plant target ${row},${col}`);
+      await cell(row, col).click(); await domIntent(control("garden.action.plant_frame", { species: text(`garden.species.${species}.name`) }), "garden_plant", { row, col, species_id: species });
+    } catch (error) {
+      throw new Error(`Garden plant ${row},${col} failed: ${JSON.stringify({ view: views.at(-1)?.data, garden: await page.locator(".garden").innerText(), errors: errors.map(String) })}`, { cause: error });
+    }
     await page.waitForFunction(({ index }) => document.querySelectorAll(".garden button.cell")[index]?.getAttribute("data-stage") === "growing", { index: row * 6 + col }, { timeout: 30_000 });
   }
   await plant(0, 0, "strain_a"); await plant(0, 1, "strain_a"); await plant(1, 0, "strain_b");
@@ -265,6 +274,8 @@ try {
   assert.deepEqual(head(founderID).founder, final.founder, "reload changed persisted Garden");
   await Promise.all(responses); publicData.forEach((data) => noSalt(data, salt)); assert.equal(errors.length, 0, errors.map(String).join("\n"));
   console.log(`Garden composed real wall-clock: DOM bootstrap/unlock/plant/uproot → native three-tick maturation → single/all harvest → substrate/reload; two real cash sends, bound hashes, hidden salt; ${(Date.now() - started) / 1000}s: PASS`);
+} catch (error) {
+  throw new Error(`Garden composed objective failed; boundary errors: ${JSON.stringify(errors.map(String))}`, { cause: error });
 } finally {
   if (heartbeat) clearInterval(heartbeat); await browser?.close(); for (const socket of sockets) socket.destroy();
   if (assets) await new Promise((resolve, reject) => assets.close((error) => error ? reject(error) : resolve()));

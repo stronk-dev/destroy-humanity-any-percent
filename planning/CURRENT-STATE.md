@@ -10,6 +10,18 @@ the [active RFC index](../rfc/README.md), each RFC's plan/log and the
 [executable queue](platform-alignment/execution-queue.md).
 
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
+Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,
+using existing copy. Actual composed bootstrap/Fiscal harvest/purchase/plant/uproot
+and timed reads through tick two execute against real server/Postgres/WebSocket.
+The unchanged fifteen-minute journey times out before maturity: full harvest and
+reload are NOT proven. RP-234 records absent browser session renewal; exact HTTP
+status at that timeout was not emitted, so its causal link still needs measurement.
+RP-233 retains an intermittent next-plot interaction. Fast Fiscal browser CI
+regressions discriminate actual row removal in every engine. Full Linux browser/
+performance and root client/type/build/topology pass; native Mac Firefox launch
+fails with sandbox/framebuffer diagnostics. Historical kernel RP-131 remains red.
+This Garden range needs Claude review and does not include any authentication fix.
+Next safe work is separately scoped Account D2 / Transport consumer integration.
 Current SG10 host correction (RP-231) invalidates mounted Garden on nonterminal streamed
 receipts, not only the main snapshot; terminal-screen protection remains unchanged.
 Nine actual host/browser-runtime cases per engine cover five DOM commands, Founder revision

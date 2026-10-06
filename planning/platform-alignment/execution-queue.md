@@ -1,6 +1,40 @@
 # Executable queue
 
-## Current Garden host and streamed-receipt correction — 2026-10-06
+## Current Garden purchase correction and real-time failure — 2026-10-06
+
+Under `e02fbfc1` / `d24b40f6` / separate authority `6ba1252c`, RP-232's missing
+Fiscal DOM consumer now maps the offered Garden ID to existing title/explanation.
+Fast FiscalSurface regressions run in the existing browser CI lane: actual row
+removal fails all six cases, 22476 old tests survive; exact restore passes 22482
+tests / six existing skips across 300 engine-file populations plus performance.
+Root client/type/build/boundary/copy/content-manifest/topology pass. Native Mac
+Firefox failed startup with sandbox/framebuffer diagnostics and required stopping
+its identified hung runner; preserve that distinct failure, no browser removal
+or raised deadline. Historical kernel RP-131 still fails at the same old commit.
+
+Real composed setup executes bootstrap, Fiscal Harvest/purchase, three plantings
+and uproot through DOM against actual server/Postgres/WebSocket. Timed reads reach
+ticks one and two with no gameplay write, but the unchanged fifteen-minute
+maturation objective times out. NO mature harvest/cash/quota/log/reload proof.
+RP-234: runtime stores but never consumes refreshToken; Account access tokens
+expire after fifteen minutes. The original failure omitted collected HTTP errors,
+so exact response status/causality remains unmeasured; reporting is corrected.
+RP-233 separately retains an intermittent second-menu failure. No acceptance,
+public activation, kernel/copy/schema or authentication-production change.
+
+**READY FOR DESIGNATED REVIEW — bounded correction/diagnosis only:** new range
+begins `e02fbfc1^` (`b58277cb`), endpoint pinned after commit. Claude required;
+the red real-time objective is not a completed Garden workflow. All earlier
+ranges and owner/author/CI obligations remain independent.
+
+**NEXT SAFE ACTION:** separately predeclare Account D2 / Transport T1–T5 browser
+session-consumer diagnosis and bounded implementation planning. Keep single-use
+rotation/revocation and request identity intact; missing client semantics require
+an explicit RFC before implementation, not improvised policy. Then complete the
+same real Garden journey and investigate RP-233 independently. Full nine-tier
+1.0 and its complete platform floor remain intact.
+
+## Earlier Garden host and streamed-receipt correction — 2026-10-06
 
 SG10 actual-host diagnosis `9c918361` / `9af68399` confirms RP-231: the streamed
 receipt updates main state but never rereads mounted Garden. Separately recorded
