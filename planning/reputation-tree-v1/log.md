@@ -3636,3 +3636,66 @@ No unit/non-unit milestone verdict (RP-262), H4/H5 completion, retune, literal
 ratification, budget/horizon waiver, report regeneration, epoch mint, SQL or
 cleanup, owner copy, box, archival, push or release promotion. Independent
 review of the complete new span afterd18d4e09 remains mandatory. Goal active.
+
+## 2026-10-06 — Reference consumer failure and corrective range predeclared
+
+Baseline31e2c3..16647e (session83250, terminal exit2) never reaches consumer
+comparisons: ProjectRates rejects a v14 headless state paired with a modern
+active-play bundle. This is my oracle setup error, not16product defects.
+The first-hour runner constructs legacy CurrentVersion14 state and does not
+simulate active play (7f6a05). The corrected independent rate projection uses
+the same economy/external input with no active-play bundle, explicitly requires
+that v14 contract and retains the exact5/5.015 expected rates. No state version
+or game contract was changed. That alignment does not turn the headless
+population into a modern played/persisted Company career.
+
+Corrected cold d117ba..7b2ccb (session55650, terminal exit2) executes all16
+observations:12controls pass, four tree/non-unit consumers fail. Projection
+5 instead of5.015; candidate advance cash1005 instead of1005.015; lazy purchase
+cash995 instead of995.015; actual bank cash5 instead of5.015. Healthy independent
+production calls and no-row/unit inputs discriminate. Full encoded states
+are compared, not merely those cash strings. RP-265 is now a reproduced
+instrument-consumer defect, not a claim that the live game drops the bonus.
+No test/probe handle remains before this record.
+
+Corrective authority is accepted Reputation R10 H3/H4/H5 consuming R3's frozen
+bonus through the existing canonical production stack; this is missing input
+binding, not a new formula, policy or balance choice. Separate bounded range:
+1. Give RelevanceSuite an internal simulation-only frozen contribution set;
+   the career Reference factory copies the actual runtime input into it.
+   Pass it to every existing advance/transition arm and the actual bank arm.
+   Standalone suites keep nil; no public report or wire field is introduced.
+2. Add an explicit SimulateResourceRateWithContributions producer sharing the
+   existing canonical masked assembly. Existing SimulateResourceRate retains
+   its nil-input contract by delegation. Bind planner rate projections and
+   first-hour legal-command rates to the matching actual external input.
+   Preserve ablation/validation and do not reimplement rates in the harness.
+3. Execute RP-266's forbidden old-rate reference and alias before adding both
+   old/new rate names to the existing AST boundary. Retain literal/alias/decoy
+   controls for both; do not expand the permitted caller set.
+4. Retain producer unit/non-unit/masked/no-production/invalid-input controls
+   and all16Reference observations. Omit factory, advance, transition,
+   projection, bank and rate-assembly bindings independently, require compiling
+   failing evidence and exact restoration. A blocked secondary assertion is
+   not independent evidence; exercise candidate projection separately if needed.
+
+The production simulation/boundary files are watched: the implementation
+commit must bump kernel160→161 in source, Go and TS together. This is a real
+new simulation-input capability, not a false version signal or a change to
+live production arithmetic. Cold fast/core/vet, Go/TS vectors/client and
+boundary/topology checks follow. Historical RP-131 stays visible; no rewriting,
+guard waiver, CI-policy change or all-CI-green inference.
+
+Before/after the correction, explicitly observe the existing Reference seed0
+treated/control career at threshold1e5 and the original experiment/policies;
+require completed Exits and visible gate/null outcomes, log complete source
+coordinates and report numeric drift honestly. Keep v1H4/H5 bytes unchanged.
+If their strict reproduction fails on a changed Reference row, record it as
+stale instrument evidence, not a new balance verdict or permission to update
+the expected bytes. Other personas/policies/thresholds/horizons are unchanged.
+Do not run simultaneous probes or edit while any test handle lives.
+
+No H3 milestone (RP-262), AC13/AC15, epoch/literal/copy ratification, SQL or
+cleanup, box, archival, push or release promotion. Diagnose/repair only these
+input seams and preserve all previous verdicts. New complete span after
+d18d4e09 still needs Claude; implementer review remains a first filter.
