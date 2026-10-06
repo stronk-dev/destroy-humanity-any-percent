@@ -3178,3 +3178,23 @@ Both populations, commands, timings, refusal counts and public/full-state gates
 remain exactly as predeclared. No fixture exists yet, no expectation is rewritten
 to hide drift, no acceptance bound is loosened. All handles terminal before this
 record; no retained runtime edit. Subsequent output must still be byte-retained.
+
+## 2026-10-06 — R8 Company final-head control refinement
+
+After the retained fixture, honest2/public corrupt18/population4 and five
+compiling removals execute, Codex self-inspection finds a missing instrument
+control: the detailed verifier's terminal full-state equality is asserted for
+honest profiles but has no retained forged expected-head case. This is not a
+runtime defect or designated review. First cold core7198ec..32aa14 passes;
+final focusedddb8a7..415623 passes24subtests plus fixture equality. Those runs
+do not retroactively execute the additional controls below.
+
+Before measurement: factor the terminal-state predicate into a test helper
+consumed by the honest tests; add two false-expected-head controls, one per
+profile, replacing only expected final cash with0 in a copied JSON object.
+Normal helper must refuse; omit only its canonical final-state comparison and
+both controls must fail, while honest2/public corrupt18/population4 stay green.
+No change to the retained fixture or public-input mutation population, and no
+claim the public verdict accepts a stored-head parameter. Restore exact test
+SHA and rerun cold focused/core. This additive test-only refinement remains
+inside accepted R8 and the complete span after721c0ee1 needs Claude.
