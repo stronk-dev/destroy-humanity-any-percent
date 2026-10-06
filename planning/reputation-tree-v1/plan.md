@@ -116,6 +116,38 @@ positive uses default capture. No algorithms, copy, server or wire change.
 Not SQL/mint/manual AT/Firefox/full AC12; Claude full-range review still required.
 Next ground R9 host inactive/offline/in-flight/refreshing purchase controls.
 
+## R9 host readiness supplement — predeclared 2026-10-06
+
+Start b5ca3e7d. Actual runtime/parser/GameUIApp DOM, controlled HTTP/socket
+boundary; both copy eras, native Enter/Space. Preserve all existing tests and
+deadlines. Hold each player/world subscribe acknowledgement to distinguish a
+current snapshot from recovered transport. Exercise startup, drain courtesy,
+4000/4004 full sync (fresh snapshot before live resubscription), ordinary1006
+reconnect, terminal4001/4002, failed applied-refresh, in-flight/refresh success,
+initial inactivity and an active arm becoming inactive. No fixture methods on
+the host, bypassed component callback, real-server/SQL/mint or whole AC12 claim.
+
+Assert no enabled Buy/Confirm or intent while unrecovered/pending; both channel
+acks restore controls, current Founder revision binds the next intent, no
+optimistic ownership/balance change, exact row focus/busy/feedback and existing
+offline copy. Inactive tree has no surface/tab and mounted arm loss returns to
+Desk. RP-290 source risk: Reputation passes founderControls without readiness,
+and the mounted tree has no existing offline notice. RP-291 source risk:
+unexpected1006 schedules recovery without notifying the host of lost readiness.
+Establish unchanged-source failures before production edits.
+
+If confirmed, scope correction to R9 Reputation control/copy binding plus an
+internal nonterminal recovering notification for Transport D2/D4/T4's existing
+network-drop path. No new wire, token/session policy, close-code classification,
+reconnect delay, history/offset/cursor/full-sync or receipt behavior. Terminal
+notification keeps its disposal semantics; recovering must NOT unsubscribe.
+No new prose: use existing offline key. Rerun original runtime/recovery/native
+controls; demonstrate compiling readiness, recovering-notification, offline-
+notice and held-refresh omissions with unchanged oracles, exact restoration.
+Final root client/native/boundary/copy gates; no permanent capture-policy tweak.
+Previous RP-289 stall remains separate. Whole new span needs Claude, earlier
+ranges independent. RP-283/RP-284 author/SQL/mint/full1.0 holds remain; no box.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

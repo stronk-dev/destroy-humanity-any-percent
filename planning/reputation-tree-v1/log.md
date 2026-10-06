@@ -7467,3 +7467,28 @@ check passes. Kernel161/copy658/manifest/Go/wire/epoch are unchanged. Records
 retain RP-289 tooling, RP-283/RP-284 author contracts and all full1.0/SQL/mint/
 Firefox/review holds rather than promoting component proof to acceptance.
 Next separately ground accepted R9 host state controls; full goal remains active.
+
+## 2026-10-06 — R9 host readiness predeclaration
+
+Previous turn is progress:82ac87b0/b5ca3e7d commit minimal actual keyboard
+correction, executable negatives and synchronized records. Fresh clean
+b5ca3e7d, no live inherited handles. AGENTS/process/index and accepted
+Reputation RFC reread; bound design refs unchanged since020a25c6. Transport
+RFC fully read for existing network-drop/drain/full-sync authority. Actual
+host/component/runtime and original native tests inspected. Reputation's
+founderControls omits transportReady; mounted tree has no offline notice,
+RP-290 source risk. Runtime's ordinary close path reconnects but never tells
+the host it is not recovered, RP-291 source risk. Neither is an executed defect
+yet. Existing host tests auto-ack all subscriptions, masking these populations.
+
+Plan predeclares controlled actual-runtime/native both-era state transitions
+and all disabled/busy/focus/revision/copy/nonoptimistic oracles. Hold subscription
+responses, not timers; native reconnect retains actual one-second delay and
+existing poll deadlines. Minimal possible source correction bounded to R9
+binding and internal transient notification under Transport D2/D4/T4, never
+terminal-unsubscribe or new auth/recovery/wire policy. Keep old tests intact;
+test-first baseline and compiling severings before final local gates. No manual
+edits with live test/probe handle; no acceptance checkbox, author/body/copy
+adoption, schema/balance/kernel/CI/mint, cleanup, push/deploy or archival change.
+Entire new span afterb5ca3e7d needs Claude, earlier ranges independently pending.
+Full nine-tier/platform1.0 active; old author/data/SQL/browser/release holds remain.
