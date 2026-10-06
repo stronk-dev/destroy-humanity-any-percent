@@ -169,6 +169,18 @@ separately require bounded native readiness before their two-second measurement,
 cannot silently invalidate the comparison. R-010's dossier retains the fired initial control and
 the original unresolved full-lane failure; local repeat passes are not hosted reliability proof.
 
+The browser configuration also emits passive `browser-module-http` JSON for Route fixtures
+and native prediction-worker modules: request start, HTTP finish/premature close, and a server
+close-summary including pending requests. Native witness logs now identify per-test worker
+command/output/error/termination ordering before and after cleanup. Neither observer retries,
+intercepts or suppresses failures. IDs are scoped to each server/test observer, not global.
+The optional existing `VITEST_PW_DEBUG=1` provider logging reports request failures; teardown
+cancellations also occur in passing runs. See the retained
+[cold-run dossier](../planning/platform-alignment/browser-module-research.md).
+Latest local repetition is incomplete: Firefox reports no device space and Docker's writable
+filesystem is full, despite free shared memory and host space. Passing individual repetitions
+do not establish reliable CI. Broad Docker pruning is not a repository verification command.
+
 `make test-game-ui-composed` starts its isolated repository Postgres service. Its first driver
 starts the real composed gameserver and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
 `/api/v1/founder/state` v3 round trip, and the actual Centrifuge WebSocket subscription. The

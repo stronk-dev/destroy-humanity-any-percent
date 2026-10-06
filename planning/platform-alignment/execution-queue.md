@@ -9,13 +9,17 @@ exact limits, not production rotation/process crash/renewal authority. New span
 starts after `39f95329`, includes predeclaration and records; tip pinned after
 commit, Codex first-filter only, Claude required independently of prior spans.
 
-**CURRENT CI IS RED (RP-235):** unchanged complete browser CI 54700 passes
-299/300 populations but Firefox cannot import a Route JSON fixture. 22466 tests /
-six existing skips; sixteen Route tests never imported, performance not reached.
-No retry-to-green or full CI claim. Root client/type/boundaries/topology pass;
-historical RP-131 and earlier reliability remain open.
-**NEXT:** separately predeclare actual failed module/request diagnosis under
-Scaffolding/CI authority, then real refresh-contract/ambiguity work. Production
+**CURRENT CI IS NOT RELIABLE:** RP-235 Route import and RP-218 worker failure
+both occurred locally. Passive HTTP/native observations and intentional 404
+controls now discriminate. 93957 passes 300/300 / 22482 tests / six skips plus
+performance; subsequent 3595 stalls at 299/300 with Firefox no-device-space,
+Docker overlay 100% full, then containment stop exit 137 (RP-236). No final
+denominator or performance, no production correction or retry-to-green.
+[Dossier](browser-module-research.md) retains captured limits and prior reds;
+historical RP-131 remains independent.
+**NEXT:** precisely scoped Docker capacity resolution before further browser
+populations; do not prune unrelated caches/data. Proceed with accepted Account/API
+refresh-contract census while that environmental gate is unresolved. Production
 renewal needs draft policy/API/recovery acceptance; natural Garden and full
 nine-tier 1.0 remain unproved, not shortened.
 

@@ -15,11 +15,16 @@ restored script passes. [Dossier](platform-alignment/browser-session-coordinatio
 does not claim real refresh/commit ambiguity, storage policy, native lifecycle,
 automatic renewal or mature Garden. New span begins after `39f95329`, includes
 `d023dc26`; Claude review pending independently of previous spans.
-**Latest full local browser CI is RED:** Firefox Route fixture import fails
-(RP-235), 299/300 populations / 22466 passing tests / six existing skips;
-sixteen Route tests never imported and performance not reached. Root client/type/
-boundaries/topology pass. Earlier green runs below are historical, not current
-lane status. Historical RP-131 and prior worker/native caveats remain separate.
+**Latest local browser repetition is INCOMPLETE, not green:** 3595 reports
+299/300 file populations before stalling; Firefox reports no device space and
+Docker's writable filesystem is 100% full (RP-236). Stopped at the existing
+ten-minute CI ceiling, exit 137; no final denominator/performance. Prior 93957
+passes 300/300 / 22482 tests / six existing skips plus performance, but earlier
+Route import RP-235 and worker RP-218 recurrence remain open. Intentional fixture
+and worker HTTP 404 controls discriminate; no production fix. See the
+[retained observation dossier](platform-alignment/browser-module-research.md).
+Root client/type/boundaries/topology passes and historical green runs are not
+whole-CI/reliability closure. RP-131 remains separate. No unrelated Docker cleanup.
 
 Garden is fixture-first, with no public epoch pin. G1–G7 are implemented, not designated-accepted.
 Latest SG7/SG10 correction (RP-232) supplies the missing Fiscal DOM purchase row,

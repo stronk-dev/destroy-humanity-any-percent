@@ -82,16 +82,37 @@ function observeNativePrediction() {
   const commands: { kind: string; rate?: string }[] = [];
   const outputs: WorkerOutput[] = [];
   const workers = new Set<Worker>();
+  const lifecycle: { worker: number; phase: string; at_ms: number; detail?: string; terminated?: boolean }[] = [];
+  const observers = new Map<Worker, { id: number; terminated: boolean; receive: (event: MessageEvent<WorkerOutput>) => void; error: (event: ErrorEvent) => void }>();
   const receive = (event: MessageEvent<WorkerOutput>) => {
     outputs.push(event.data);
     if (event.data.kind === "predicted_snapshot" && firstPredictionMS === undefined) firstPredictionMS = performance.now() - started;
   };
   const original = Worker.prototype.postMessage;
   const spy = vi.spyOn(Worker.prototype, "postMessage").mockImplementation(function (this: Worker, ...args) {
-    if (!workers.has(this)) { workers.add(this); this.addEventListener("message", receive); }
+    if (!workers.has(this)) {
+      workers.add(this);
+      const owner = { id: workers.size, terminated: false };
+      const observeMessage = (event: MessageEvent<WorkerOutput>) => {
+        lifecycle.push({ worker: owner.id, phase: "output", at_ms: performance.now() - started, detail: event.data.kind, terminated: owner.terminated });
+        receive(event);
+      };
+      const observeError = (event: ErrorEvent) => {
+        lifecycle.push({ worker: owner.id, phase: "error", at_ms: performance.now() - started, detail: event.message || "empty native error message", terminated: owner.terminated });
+      };
+      observers.set(this, Object.assign(owner, { receive: observeMessage, error: observeError }));
+      this.addEventListener("message", observeMessage); this.addEventListener("error", observeError);
+    }
     const command = args[0] as WorkerCommand;
+    lifecycle.push({ worker: observers.get(this)!.id, phase: "command", at_ms: performance.now() - started, detail: command.kind });
     commands.push({ kind: command.kind, rate: "snapshot" in command ? command.snapshot.resources["company.cash"]?.ratePerSecond : undefined });
     return original.apply(this, args);
+  });
+  const originalTerminate = Worker.prototype.terminate;
+  const terminationSpy = vi.spyOn(Worker.prototype, "terminate").mockImplementation(function (this: Worker) {
+    const owner = observers.get(this);
+    if (owner) { owner.terminated = true; lifecycle.push({ worker: owner.id, phase: "terminate", at_ms: performance.now() - started }); }
+    return originalTerminate.call(this);
   });
   return {
     commands, outputs,
@@ -99,9 +120,12 @@ function observeNativePrediction() {
       const predicted = outputs.filter((row) => row.kind === "predicted_snapshot");
       return { userAgent: navigator.userAgent, visibility: document.visibilityState, firstPredictionMS, snapshotCalls: runtime.snapshotCalls, commands,
         output: output?.textContent, predictions: predicted.length,
-        lastPredictions: predicted.slice(-8), gaps: outputs.filter((row) => row.kind === "offline_required") };
+        lastPredictions: predicted.slice(-8), gaps: outputs.filter((row) => row.kind === "offline_required"), lifecycle };
     },
-    dispose() { for (const worker of workers) worker.removeEventListener("message", receive); spy.mockRestore(); },
+    dispose() {
+      for (const [worker, owner] of observers) { worker.removeEventListener("message", owner.receive); worker.removeEventListener("error", owner.error); }
+      terminationSpy.mockRestore(); spy.mockRestore();
+    },
   };
 }
 
@@ -449,7 +473,10 @@ it.skipIf(typeof document === "undefined")("feeds authoritative Game UI snapshot
     expect(observation.commands.filter((row) => row.rate !== undefined).every((row) => row.rate === "1e3")).toBe(true);
   } finally {
     console.info("R-010 original", JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
-    try { await unmount(app); } finally { target.remove(); observation.dispose(); }
+    try { await unmount(app); } finally {
+      console.info("R-010 original cleanup", JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
+      target.remove(); observation.dispose();
+    }
   }
 });
 
@@ -484,6 +511,7 @@ it.skipIf(typeof document === "undefined").each(["conflicting", "consistent"] as
     clearInterval(refreshTimer);
     console.info(`R-010 ${authority}`, JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
     try { await unmount(app); } finally {
+      console.info(`R-010 ${authority} cleanup`, JSON.stringify(observation.report(runtime, target.querySelector(".cc-amount output"))));
       target.remove(); observation.dispose();
       if (previousVisibility) Object.defineProperty(document, "visibilityState", previousVisibility);
       else Reflect.deleteProperty(document, "visibilityState");

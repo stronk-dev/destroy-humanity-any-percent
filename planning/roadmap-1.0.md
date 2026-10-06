@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
+**Current checkpoint:** 2026-10-06, cold CI observation under `c8ff3139` /
+`6b119e76` / `e6ea05bf`: passive HTTP/native-worker traces and two intentional
+404 controls discriminate without product/fixture/assertion changes. Full 93957
+passes 300 populations / 22482 tests / six existing skips plus performance;
+second traced invocation 3595 is **incomplete** at 299/300: Firefox no-device-space
+and Docker overlay 100% full (RP-236), containment stop exit 137, no final summary
+or performance. RP-218 recurred in earlier 2773; RP-235's original cause remains
+unproved. [Dossier](platform-alignment/browser-module-research.md) retains every
+red, truncated retrieval exclusion and source boundary. New span starts after
+`6ed42d45`, Claude pending, no production/CI policy/archival/push change.
+Next: exact scoped Docker capacity resolution, accepted Account/API census;
+renewal remains draft. Full nine-tier game and complete platform floor unchanged.
+
+**Earlier checkpoint:** 2026-10-06, R-011 under `d023dc26`: 120 intervals / 30
 actual page closures complete in the three declared Linux engines; bypass and
 watchdog fail, final restoration passes. [Dossier](platform-alignment/browser-session-coordination.md)
 retains exact source/instrument/populations and limits. Real Account ambiguity,

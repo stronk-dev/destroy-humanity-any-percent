@@ -382,3 +382,55 @@ selected original worker case in each engine. Require actual HTTP 404, native
 Worker error lifecycle while not terminated, zero predictions, unchanged output,
 and the original assertion/async guard red. Restore exact config SHA before the
 two complete populations. No fixture/product/clock/assertion/engine/policy changes.
+
+## 2026-10-06 — passive observations retained; incomplete population refused
+
+All handles terminal before this reconciliation. Native-worker 404 control 67300
+fails all three selected cases / 66 selector skips, 8.11 s: actual 404, native
+error while not terminated, zero predictions, unchanged output 100 and original
+five-second assertion plus asynchronous guard red. Exact config/helper hashes
+restored (same as previous entry), no production byte changed.
+
+Continuously drained restored 93957 passes 300/300 / 22482 tests / six existing
+skips, 49.32 s; separate performance 603 ms / 2.50 s. Capture 13 chunks, largest
+13580 tokens, no truncation. HTTP 129/129 plus performance 1/1, zero pending.
+Second restored 3595 does NOT complete: 299 file populations report completion,
+only Firefox raw Garden-catalog population absent. Provider request to Vitest
+runner fails NS_ERROR_FILE_NO_DEVICE_SPACE. Exact owned container 2bb1518c1355
+has overlay zero available / 100% full, shared memory 7.8 GB free and host
+workspace 197 GB free. Low current CPU/no completion is not proof of scanner
+loop. Docker's 342 images / 145 volumes include substantial reclaimable storage
+whose ownership is not established; no broad pruning or unrelated deletion.
+
+Stopped only owned test after >=10m existing hosted ceiling; stop's ten-second
+grace ends in exit 137, not natural completion. Capture 99 chunks / maximum
+13761 tokens, no truncation, but no final denominator/performance/HTTP summary.
+The predeclared two complete traced populations therefore did NOT both pass.
+RP-236 records environment invalidity, independent of original RP-235 cause and
+RP-218 recurrence. Do not infer that all failures share storage cause.
+
+Dossier `platform-alignment/browser-module-research.md` and exact structured
+JSONL retain HTTP/native/provider records, failing controls and capture/source
+limits. Earlier 88496's truncated middle is explicitly excluded. Read-only
+diagnostic output was also truncated once; complete retained collector data,
+not that preview, supplies the artifact. Initial file inventory mistakenly
+included screenshot directories; corrected isFile inventory is exactly 100
+real files, with 100/99/100 reported. No invented suite denominator.
+
+Review by: Codex, first-filter only. Recorded by: Codex. New designated range
+starts `6ed42d45` exclusive and includes all predeclarations, instrument, artifact,
+records and final pin. Claude remains required independently of every earlier
+range. No test budget/skip/engine/concurrency/dependency/CI workflow or production
+change, checkbox flip, acceptance, archival or push. Continue accepted API census
+while Docker capacity needs a precisely scoped resolution.
+
+Final first-filter handles 80700 and 30825 terminal: root typecheck has zero
+TS/Svelte errors/warnings, shell/UI 14/8/22 boundaries and topology plus thirteen
+negative controls pass; client 7366 pass / 134 existing Node skips. Independent
+artifact read validates all 684 JSONL rows, each completed HTTP summary/count,
+the three native failing controls and the incomplete run's missing summaries.
+In-memory falsified complete/exit-zero labels are both rejected. git diff --check
+passes. Initial read-only guessed Account test filenames were absent; rg --files
+supplies the real names for next work. No further Docker test attempted with full
+disk, and neither these fast passes nor the unchanged historical kernel guard
+is reported as a green full CI.

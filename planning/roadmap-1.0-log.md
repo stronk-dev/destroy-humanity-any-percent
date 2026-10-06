@@ -2317,3 +2317,20 @@ Substantive R-011 range `39f95329..ff2e9f19`, two commits / thirteen paths,
 pending Claude. The following pin-record edge also belongs in designated review;
 closing relay supplies its literal tip. Research success does not consume RP-235's
 red browser lane or any prior independent review, auth/policy or release gate.
+
+## 2026-10-06 — local CI observes errors and refuses a disk-exhausted hang
+
+New CI-only observation range after `6ed42d45`, including `c8ff3139`, `6b119e76`,
+`e6ea05bf`. Passive Route/worker HTTP and native per-worker lifecycle observation
+forwards original behavior and never suppresses errors. Both actual HTTP-404
+controls fire in three engines. Complete restored 93957 passes 300/300 / 22482
+tests / six existing skips plus performance. Subsequent 3595 stalls with 299
+populations reported: Firefox no-device-space; Docker overlay 100% full, shared
+memory and host free. Stop exact owned container after existing ten-minute CI
+ceiling, exit 137. No final denominator/performance; untruncated capture is NOT a
+complete population. RP-236 new environmental gate; RP-218 recurrence and original
+RP-235 remain unresolved. No broad prune, unrelated deletion or retry-to-green.
+Dossier/artifact and current board reconciled; no production/runtime/CI policy
+or bounds change. Claude required for full range, no acceptance/archive/push.
+Continue actual Account/API census without implementing draft renewal policy;
+proper nine-tier 1.0 remains active, not a preview or shortened release floor.
