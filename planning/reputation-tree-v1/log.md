@@ -5572,3 +5572,42 @@ check6267ba and status eb8c35 clean. No live handle remains before this edit.
 This record edge also belongs in Claude's full designated span; every earlier
 span remains independent. Goal active; no box, author ruling, new dated report,
 mint, archive, cleanup, publication, deployment, message to Claude or push.
+
+## 2026-10-06 — RP-263 dated career observation predeclaration
+
+Baseline5c93ff6f, clean. Continue accepted R10's measurement lane using the
+shared H4/H5 producers, not new gameplay or acceptance criteria. Private opt-in
+`-reputation-career-measurement=off|record|verify`; unknown selectors fail,
+default explicitly skips fresh measurement. No Make/CI lane change. Outputs:
+`career-h4.2026-10-06.v1.json`, `relevance-h5.2026-10-06.v1.json` and
+`career-measurement-lineage.2026-10-06.v1.json` in this directory. Record refuses
+every existing/unresolved output before production and writes exclusively;
+partial writes fail loudly. Original/different dated reports remain untouched.
+
+Declare the pinned suite's ordered64 Chaos/32 Casual/1 Reference seeds. H4
+retains97 treated/control pairs (194 sources); H5 retains97 baseline groups,
+each followed by the nine fixture node masks (970 sources/raw observations).
+Admit exact expected RunKey/paired fixture hash, effective1e5 Prestige hash,
+first-hour policy, experiment, horizon, purchase policy and mask. Recompose
+whole H4 and H5 reports and cross-bind each H4 treated observation to its H5
+baseline gate/purchases/source. Bind both raw report hashes to committed server/
+balance trees/kernel and native Go/OS/architecture. Dirty or changed inputs
+before/after production fail; record-only advancement may not change inputs.
+
+Controls: complete synthetic97/970 admission fixture is not an earned cohort;
+missing/duplicate/reordered coordinates, semantic source mutations, report/
+census/gate/median corruption with rebound raw hashes, contradictory baseline,
+lineage identity/hash/count corruption, strict JSON and selector/overwrite
+refusal. Demonstrate compiling guard omissions and exact restorations, with
+all test handles terminal before any edit. Execute cold focused/fast/vet lanes,
+then record and independently execute full verify (97 paired careers plus970
+arms each), requiring byte-identical H4/H5 output. Static retained-artifact
+validation is not fresh execution or producer authenticity on its own.
+
+Success is trustworthy reproduction, including truthful H4 FAIL/six ties;
+never promote a negative measurement to accepted H4/H5. No epsilon/horizon/
+policy/threshold/mask/classifier change, censoring adoption, per-node attribution,
+RP-268/271 author reconciliation, balance/kernel/runtime/corpus/CI/owner-copy
+change, acceptance box, mint, archive, SQL/browser/deployment/cleanup or push.
+New full range after5c93ff6f and its record edges need designated Claude review;
+every earlier range remains independently pending. Goal stays active.
