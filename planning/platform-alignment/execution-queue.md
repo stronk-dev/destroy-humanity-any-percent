@@ -3,6 +3,20 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Clout AC6 timing and numeric failure — 2026-10-07
+
+RP-307 after07bb3d9d, predeclared6a654f5d:64 actual Go Company timing
+arms pass and a compiling retroactive-input fault fires; restored source hashes
+match exactly. The128 admitted seeded axis intervals include27 exact encoded-
+state divergences. The new acceptance regression is retained RED in the default
+Go suite; no tolerance, skip, whole-second restriction or complete-CI claim.
+**READY RESEARCH:** R-012 tests compatible accumulation/settlement representations
+under the existing numeric wire law before drafting a buildable follow-up.
+**AUTHOR/CONTRACT HOLD:** no new save fields, quantization change or normative
+AC6 reconciliation is inferred. Original f256b235 AC6 proof is CHANGES REQUIRED,
+not a review of all28 paths; new Codex tests/records need Claude separately.
+Earlier independent holds/reviews remain; full nine-tier/platform1.0 unchanged.
+
 ## Deployment R18 producer witness supplement — 2026-10-07
 
 RP-141 after`fbbf0150`, predeclared`07d0c392`: actual `RunProbe` now has cold

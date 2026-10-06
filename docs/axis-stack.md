@@ -87,6 +87,15 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
 
 ## Not yet delivered
 
+- Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
+  passes and rejects a retroactive-factor fault, but the unchanged production
+  engine fails 27 of128 seeded millisecond partitions under full encoded-state
+  comparison. The observed cash differences are one canonical rounding unit
+  (1e-7 at the sampled1e4 balance). This is a failed acceptance criterion, not
+  permission to restrict cuts or introduce a tolerance. Numeric Core's existing
+  per-commit12-digit quantization still applies; research R-012 must establish a
+  compatible repair contract before persistence/replay changes. The retained
+  regression is intentionally red, so the current Go/CI tree is not green.
 - Served-epoch activation and the default composed PR purchase/rendering journey
   (CV9 / AC11). Fixture-only snapshot producer and Desk panel code exist;
   their presence does not complete that criterion.

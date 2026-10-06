@@ -279,3 +279,41 @@ needs Claude; no other queue or full1.0 gate closes by implication.
 - **Cannot authorize:** automatic renewal code, unadopted storage/recovery policy,
   arbitrary timeout increases, unsafe cross-tab fallback, revocation weakening,
   whole-CI or natural fifteen-minute Garden/release claims.
+
+## R-012 — exact accrual partitioning versus state quantization (RP-307)
+
+- **Status:** READY for bounded test-only numeric research; production repair
+  and any normative body reconciliation are not authorized by this row.
+- **Question:** Can an explicit conserved accumulation/settlement representation
+  preserve K3's12-digit authoritative wire boundary and Clout AC6's exact equality
+  across evaluations, without repricing a triggering interval? What persistence,
+  replay/version and hardcap requirements would that representation introduce?
+- **Baseline evidence:** at07bb3d9d plus separately predeclared regression,
+  64 actual Company timing arms pass;128 admitted axis accrual partitions yield
+  27 exact divergences/101 equality controls. Current step rounding and the
+  accepted exact-partition promise do not agree. No tolerance is adopted.
+- **First-wave population:** test-only frozen rates1.15115 and2.4048 from the
+  admitted axis fixture; initial canonical balances0,1e0,1e4,1e8; online and
+  offline efficiency; positive integer-ms intervals through60000ms with fixed
+  boundary cuts and reproducible seeded cuts. Include decimal midpoint, exponent
+  carry and hardcap saturation. Declare exact case counts/seed before executing.
+- **Arms:** current per-evaluation ledger commits; bounded exact-rational
+  once-settled reference; test-only conserved-residual or frozen-anchor prototype.
+  Both prototype branches are empirical alternatives, not accepted save fields.
+  Add a two-segment rate/input change and an intervening debit boundary to ensure
+  an apparently invariant prototype does not erase actual player actions.
+- **Controls:** K3 midpoint/carry fixtures must agree with the once-settled
+  reference; whole-second cases must not manufacture a difference; explicit
+  retroactive repricing and discarded-residual controls must fire. Refuse missing
+  cases or unsupported numeric domains; record intermediate/state differences.
+- **Exit:** every population and negative control completes with exact results,
+  or the instrument explicitly refuses. A surviving prototype yields a precise
+  persistence/replay contract proposal with migration and version implications;
+  a failure narrows that proposal rather than narrowing AC6.
+- **May authorize:** a separately reviewed follow-up RFC draft, or an author
+  finding showing which contracts cannot jointly be met. New empirical questions
+  are not answered by writing a nominally accepted specification.
+- **Cannot authorize:** production/save changes, tolerances, raw balance/receipt
+  restamping, altered quantization, longer budgets, rewritten archived authority,
+  CI bypasses or full-domain proof. The bounded reference is not an enormous-
+  exponent implementation, real SQL/service/browser evidence or Clout acceptance.

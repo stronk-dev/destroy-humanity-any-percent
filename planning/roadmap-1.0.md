@@ -5,7 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest Deployment evidence checkpoint (2026-10-07):** RP-141 now exercises
+**Latest numeric checkpoint (2026-10-07):** RP-307 adds64 actual Company
+timing arms and a firing retroactive-input control, with exact source restoration.
+Timing passes;27 of128 admitted seeded axis intervals fail exact full-state
+partition equality. The retained regression is RED in the default Go suite;
+no tolerance/skip or full-CI claim. R-012 must measure a compatible accumulation
+contract before new persistence/replay behavior is built. New Codex span after
+07bb3d9d needs Claude independently. All earlier holds and full nine-tier1.0
+scope remain. [Evidence](clout-v1-and-pr-interns/log.md).
+
+**Previous Deployment evidence checkpoint (2026-10-07):** RP-141 now exercises
 both actual R18 negative producers through assembler-validated synthetic bundle
 fixtures, invalid-input/version controls and five firing source faults. Exact
 restoration; full cold Go core, rehearsal/vet/topology pass. Historical kernel

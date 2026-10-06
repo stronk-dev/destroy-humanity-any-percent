@@ -622,3 +622,81 @@ any numeric contract gap is routed without improvising persistence or balance.
 No product/kernel/CI/copy/mint/owner body change or checkbox flip authorized by
 this test-only range. New Codex span needs Claude separately; earlier pending
 review spans and author/owner holds remain. Full nine-tier/platform1.0 active.
+
+Initial instrument attempt e9bde8 /86171, terminal61fecd exit2: all64 timing
+arms reach the purchase and x=8, but my Founder fixture owns only purchase_1;
+other eligible run definitions correctly mint first-earn score6. That invalidates
+the instrument's claimed veteran-earned0 control, not the product. Correct the
+fixture to own all run definitions, with their exact derived lifetime score;
+preserve the observed failure and the timing arithmetic/assertion unchanged.
+
+Instrument follow-ups: cc60ba exit2 is a test-authoring compile error
+(Definitions is a slice, not a method), corrected before measuring. ba455c
+/1439, terminal00c35d exit2 executes all192 new cases: the timing setup still
+omits lifetime career achievements and correctly first-earns score4. Make the
+diagnostic veteran own the complete pinned achievement catalog with exact sum;
+do not alter the independent timing oracle or production hook. The separate
+128 partition arms are admitted and execute:27 exact full-state divergences,
+101 equality controls. A representative online end3114/cut1553 gives
+cash1.00035846811e4 vs1.00035846812e4. Whole-second and tiny-cut controls pass;
+the seeded population still disproves AC6. This is not a skip, floating tolerance
+or threshold waiver. Further investigate and route the numeric contract before
+any runtime repair; preserve the literal property failure.
+
+Corrected unchanged-source timing run4c5dca /37795, terminale2cca5 exit0,
+0.295s:64 applied online/offline arms. The fully awarded Founder and its exact
+derived lifetime score isolate attainment from first-earn output; this is an
+admitted diagnostic fixture, not evidence of naturally earned progression.
+
+Temporary future-input control: first54555b exit2 is an invalid probe compile
+(AxisStack returns value/bool, not a pointer), not discrimination. Corrected
+f677a8 /74802, terminal2c0768 exit2,0.411s: timing fails on the independent
+triggering-interval arithmetic (example online cash9.9935048e3 versus required
+9.9933046e3). Output truncates in that capture; it is not a fresh full mutation
+population census. c0862d restores the production file byte-exactly before any
+other check: replay.go SHAa2bf1bf6a6338b0548587d067dc96569a8355363cc50f1b2905782a7edc2b6ca;
+engine.go SHAb872d4746779a097f68f88475cef66214a2a7f8970817298f788ffad515ae875.
+No production/kernel change is retained.
+
+Restored59ee91 exit2 and stronger receipt witness46ef08 /72550,
+terminal3f9387 exit2 reproduce only the partition property failures. Timing64
+passes including new_revision2/snapshot attainment8 and exact reattainment ID;
+128 partition arms yield27 failures/101 equal controls, independent seeds and
+online/offline populations unchanged. No SQL or TypeScript partition execution
+is inferred. Sourceinspection identifies economy.Ledger.apply's per-commit
+Quantize(12); Numeric Core K3 explicitly requires that boundary. The observed
+one-rounding-unit difference is a counterexample to AC6, not a proved exploit
+or permission to remove quantization. Its repair needs an explicit compatible
+accumulation contract, scoped empirically by R-012 before a follow-up RFC.
+
+The literal new regression stays RED in the ordinary Go suite: no skips,
+tolerances, env switches, build tags, filtered fixtures or CI gate bypasses.
+This is an intermediate failing-proof checkpoint, not completed implementation.
+Original f256b235's bounded AC6 evidence remains CHANGES REQUIRED; neither the
+new timing witness nor a future local first-filter covers the full original
+28-path range. Entire Codex span after07bb3d9d needs Claude independently.
+Earlier review/owner/API/pool/harness/mint holds and full1.0 scope remain.
+
+Final unchanged-source verification:
+
+- 44c064 /63336, terminaleb98d8 exit2: full cold Go core completes. Production
+ 35.944s fails only the new27 partition arms; other selected core packages pass,
+ transport13.321s. Harness is intentionally outside this root target, and host
+ SQL skips are not counted as database evidence. This is a RED core gate.
+- 07c436 exit0: vet production/economy/decimal.
+- 8c11fe /10793:8248 client passes/340 visible skips,4.69s; types/Svelte
+ zero errors/warnings. Terminal473135 exit2 at the unchanged historical kernel
+ guard50a3a514 vs0cf9f7a6. Checkout/adversarial guard fixtures pass; actual
+ history remains red. Later topology target in that command never runs.
+- Separately b9a6a2 exit0: CI topology plus13 refusing negative controls.
+- 9bee70 /32657, terminal98c99c exit0: declared real Postgres executes
+ TestAxisStackIntegrationReattainsAndBuysPRIntern (PASS,0.10s; package0.107s),
+ not skipped. This is one existing persistence witness, not SQL coverage of the
+ new partition/timing population. The orphan warning is not cleanup authority.
+
+All verification handles terminal, temporary source fault absent, kernel162 and
+production/epoch/copy/schema/CI bytes unchanged. R-012 is predeclared READY
+research, not already executed or permission to relax AC6. Updated shared
+ledger/docs/queue/roadmap keep the failed gate and next research visible. The
+new failing regression intentionally affects ordinary core/CI execution; no
+green current/hosted CI, full Clout, archival or1.0 claim. No push or deployment.

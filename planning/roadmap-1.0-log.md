@@ -3670,3 +3670,27 @@ Public Typer/Arcade API decision unanswered, not adopted. Previous goal turn
 was progress, this one adds executed evidence; full nine-tier/platform1.0
 active, no checkbox/archival/CI/balance/mint/push/deployment or release promotion.
 [Evidence](deployment-foundation/log.md).
+
+## 2026-10-07 — Clout timing proof and exact partition counterexample
+
+RP-307 after07bb3d9d, predeclared6a654f5d:64 admitted actual Go Company
+purchase/reattainment timing arms pass, with independent old/new interval
+arithmetic and receipt/event checks. A compiling future-input fault fires;
+exact source restored. My incomplete veteran fixtures and invalid first probe
+compile are disclosed rather than used as product findings.
+
+128 seeded online/offline millisecond partitions execute:27 exact full-state
+divergences/101 equality controls. Saved cash differs by one canonical rounding
+unit at the sampled magnitude. This disproves AC6's exact promise under the
+existing K3 per-commit quantization; it is not evidence of an exploit or an
+authorized tolerance. The regression stays RED in ordinary Go/CI execution.
+Full cold core fails only that property; vet/client8248/types/topology and the
+existing real-Postgres Clout purchase pass. Historical kernel guard remains
+independently RED at50a3a514. No complete/hosted CI claim.
+
+R-012 is the next safe test-only accumulation/settlement investigation, before
+a buildable persistence/replay follow-up. Entire new Codex span after07bb3d9d
+needs Claude; original bounded AC6 evidence finding is not a full28-path
+P2/P3 verdict. All earlier holds/independent ranges remain. Full nine-tier/
+platform1.0 active; no runtime/kernel/mint/CI/owner-body rewrite, checkbox,
+archive/push/deployment or release promotion. [Evidence](clout-v1-and-pr-interns/log.md).
