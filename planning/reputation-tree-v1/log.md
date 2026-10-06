@@ -7963,3 +7963,41 @@ canonical-storage/state/event/outbox/no-write/retry/conflict/history oracles
 unchanged; incoming wire retained separately. This repairs dormant SQL test
 setup, not runtime behavior. Commit test+records before the predeclared missing-
 hash-binding fault; no acceptance box/full AC15 or CI claim.
+
+Missing-hash probe8dc949/56c822 session98279 terminal2 fails the exact fixture
+population oracle (2 bundles/1 epoch/1 current/1 hash), before any profile.
+Restored92c940 SHA4faa45f861df402e070891534b5ca5a53ebb5fd971a06405fc591520c2684905;
+baac74 empty test diff. All handles terminal. Earlier missing-current and
+missing-wire failures independently demonstrate those constructor/envelope
+requirements without changing production. Final broader gates follow the
+separate career population, not inferred here.
+
+### Composed Reputation career — predeclared 2026-10-06
+
+Test-only accepted R8/AC15. Use current-content-plus-tree diagnostic bundle,
+actual Store/Service/Postgres, declared minigame repository/frozen provider and
+one fixture epoch. Seed one valid run-1 genesis at curriculum attendance
+threshold, empty owned tree and earned Founder level6: an explicit diagnostic
+budget, NOT a measured/default-user/pacing claim or threshold retune. Subsequent
+state changes must all be Service.Handle commands; no seeding/replacing run2,
+Exit history, frozen factors or new-run genesis after the first seed.
+
+Drive actual scripted first Exit → run2; direct unlock purchase with exact
+retry and unchanged current frozen row; accrue/cross the real T0→T1 gate;
+elective wind_down with in-plan starter prerequisite → run3. Assert exact Exit
+types/count, ownership/accounting, committed plan events, run pins/genesis,
+starter inventory and non-unit next frozen row. Replay BOTH completed Company
+runs from stored genesis/log/events and the full persisted Founder history.
+Run3 remains in progress: execute one real command and independently compare
+its logged replay and full persisted head, never call an incomplete run a
+completed verifier population. No gameplay mutation outside Handle.
+
+Controls: retained source-bonus vectors, exact receipt retry and current-run
+frozen-row equality. Corrupt one existing frozen Reputation factor byte in
+copied persisted run2 replay inputs (actual production interval present), and
+require the unchanged public Company verifier to return state_divergence;
+corrupt Founder head and require Founder state_divergence. Never update
+immutable SQL evidence. Exact population assertions prevent a missing run or
+log from passing vacuously. If a runtime defect fires, record it before repair
+and retain all oracles. No full AC15 checkbox until designated review, other
+criteria/platform gates unchanged. No production/balance/mint/copy/CI change.
