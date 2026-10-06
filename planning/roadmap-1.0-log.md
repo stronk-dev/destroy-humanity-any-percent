@@ -2809,3 +2809,20 @@ Next safe accepted work: remaining pinned reader/writer audit; R8 career/run
 verification remains. The full nine-tier game through Transcendence and all
 privacy/rights/accessibility/operations/deployment/release obligations remain.
 Goal active; no checkbox, archival, mint, push or release promotion.
+
+## 2026-10-06 — Reputation snapshot reader admission
+
+Under336503b3, RP-257/RP-258 are reproduced then locally corrected: fourteen
+Go corrupt-profile observations and48client factor-string refusals, with valid
+controls. Three independent compiling omissions fire2/12/48 failures and restore
+byte-exact. Cold core/vet passes; client8106/134/types/build and independent
+boundaries/topology pass. Composite stays RP-131 RED at50a3a514. The first pnpm
+attempt ran no tests (registry DNS), disclosed rather than counted; the existing
+root Make lane executes. No fresh DB or browser/whole-CI proof.
+
+Kernel160/schema/corpus/CI policy unchanged. Full new span after4030c895 needs
+Claude's designated review; self filter cannot close it. No original B7/AC12,
+minted player career or release promotion. RP-253 persistence, R8 history/run
+verification, remaining pinned/harness readers, capacity/RP-256 and full
+nine-tier/platform scope remain. [Executed evidence](reputation-tree-v1/log.md).
+Goal active; no checkbox, archival, mint, push, deployment or cleanup.

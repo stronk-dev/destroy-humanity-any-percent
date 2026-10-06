@@ -58,6 +58,9 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   focus to Confirm; Escape cancels and returns focus to Buy. Owned, locked and unaffordable nodes
   show their state as text and have no control. Purchases send `purchase_reputation_node` at the
   Founder revision; an applied receipt refreshes the snapshot.
+  For an active tree, the server rejects a null, malformed or unordered owned-node set and
+  any unlock mirror that differs from the pinned tree's derivation. The client accepts only
+  canonical bonus-factor strings of at least one; the current-run factor may remain null.
   `ReputationPlanPanel.svelte` is an advisory plan shown on the Offer Sheet and beside Wind Down,
   empty by default. It orders selections in tree order and gates them on prerequisites and a
   projected budget. Deselecting a node also drops the selections that depended on it. A non-empty

@@ -2822,3 +2822,60 @@ copy edits. No source/record writes while any check/probe lives. No fresh DB or
 browser/full native proof, whole R9/B7/AC12/career/1.0, box/archival/mint/push
 claim. Capacity, RP-131 and RP-256 remain. Claude must independently review the
 complete new span after4030c895; self filter cannot replace that gate.
+
+## 2026-10-06 — R1/R3/R9 projection reader corrections executed
+
+Authority336503b3; accepted presentation-admission scope only. Cold unchanged
+Go baseline5e17c1 fails all14 negative observations, while all three valid
+profiles pass both isolated/public transaction-local projection. TS's first
+pnpm invocation never executes tests:3555c6 fails package-manager dependency
+resolution on registry DNS. No install/network bypass; the existing root
+`make test-client` lane executes normally. Baselinea36c2c fails all48 malformed
+or below-one string refusals, with six positives, four already-defended numeric
+inputs and census passing (8058 other tests/134 existing skips). Neither
+baseline is a persisted corruption, public HTTP or player exploitation claim.
+
+Go now requires non-null ownership and derives unlock ppm using the pinned
+tree's existing sorted/mechanical/unique validation before comparing the mirror.
+TS uses the existing canonical Decimal parser and R3's >=1 domain; null current
+factor stays legal, and the client does not derive node eligibility or formula.
+No normalization or generic Store policy change. Corrected94297e and048130
+pass all17 Go subtests (six positive observations,14 refusals) and all8106
+client tests with134 existing skips, including the59new tests.
+
+Three independent compiling controls, no assertion changes:
+
+- Nil-set guard omission40fe54..98c71a fails exactly2nil-owned observations;
+  the other12 negatives and all valid profiles stay green.
+- TS factor guard omissionf3fb45..913054 fails exactly48string refusals;
+  numeric controls, six positives and census remain green (8058/134).
+- Pinned derivation/mirror guard omissionb3301d..d3389b fails exactly12
+  observations; nil-owned remains defended and all valid profiles stay green.
+
+c85aa9 confirms exact corrected source/test SHAs restored:
+Go projector92edef8bb8e92687e3d98f9f823951bc1480969f029430b2921af035c0451e17;
+TS contractsf8c126d15d0e6e6ea71bd7ab73e68e21e2a2ce747a5ed550cf97ef08334e3fe2;
+Go test8225abd76e0b6c0a7f0e9c315cf93c5c92d1928c07061e3647ed29707fce2324;
+TS testac1eee94c9db428d18f3e6187d07c608db45cf6a50ed9359542bd74c60bd3ea2.
+Original purchase corpus staysf9b129e3...; no expectation regeneration.
+
+Final1dcd48..59f670 `make verify-server-core CORE_TEST_COUNT=1` exits0,
+vet/core cold: gameui0.188s, production35.447s, save0.278s, transport13.347s;
+separate Pitch alias cached, not another cold claim. Formulas/API regenerate
+without diff. Final94c714..d2db4c `make verify-client`: types0errors/0warnings,
+build213modules, tests8106/134 and shell boundary pass; composite exits2 at
+the unchanged historical50a3a514 kernel-history defect (RP-131). Separate
+f3348b..be2632 topology and remaining package/no-payment/copy checks exit0:
+657keys/610existing orphan warnings; deployment content manifest unchanged.
+All handles terminal before records. No browser/full native/CI or SQL rerun.
+
+The first combined tracking patch missed a full-line context and failed
+atomically;f27b58 confirms no partial tracking edits before the corrected patch.
+RP-257/RP-258 are locally corrected, not designated-closed. Kernel0.3.160,
+schema/pins, canonical corpora, applied migrations, CI policy, balance and owner
+copy are unchanged; these presentation paths are outside watched prefixes.
+Full new span after4030c895, including predeclaration, needs Claude independently.
+Original B7/R9 body reconciliation, minted purchase-through-UI/AC12, actual
+RP-253 SQL/persistence controls, R8 history/career and remaining pinned/harness
+consumers remain. Docker capacity and RP-256 persist; no cleanup, box, archive,
+mint, push or release promotion. Full nine-tier/platform goal remains active.

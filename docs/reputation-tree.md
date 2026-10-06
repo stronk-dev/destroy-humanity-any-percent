@@ -64,6 +64,19 @@ earned-to-available and overspend-guard removals fail in each runtime, including
 existing TS replay consumers. These fixtures do not close codec, transaction,
 minted-career, browser or whole-RFC acceptance; see the implementation log.
 
+## Snapshot readers
+
+Under R1/R3/R9, active server projections derive unlock ppm from
+the pinned tree and require it to match the Founder mirror. Null, duplicate,
+unsorted and nonmechanical ownership refuse rather than being normalized.
+Unknown historical owned IDs still contribute nothing; this is not permission
+to remove nodes between epochs. The client checks both factor fields as canonical
+Decimals >=1, preserving a nullable current-run factor without recalculating
+eligibility or the bonus formula. Regression tests exercise the isolated Go arm
+and public transaction-local initial snapshot, plus both public TS parsers.
+These are presentation admission checks, not fresh database, HTTP, browser or
+default-player acceptance evidence (RP-257/RP-258).
+
 ## Bundle wiring
 
 `reputation_tree` is an optional epoch artifact, loaded by `server/replaycatalog` and

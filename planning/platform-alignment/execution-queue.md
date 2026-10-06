@@ -1,5 +1,19 @@
 # Executable queue
 
+## Reputation snapshot readers corrected — 2026-10-06
+
+RP-257/RP-258 under336503b3: baseline admits14corrupt Go projections and48bad
+TS factor strings; localized admission guards now refuse them. Three compiling
+omissions fail2/12/48 respectively with valid controls intact and byte-exact
+restoration. Cold core/vet, client8106/134, types/build and independent boundaries
+pass; composite remains RP-131 RED. Kernel160/corpus/schema/CI policy unchanged.
+
+**READY FOR CLAUDE:** full new span after4030c895, including predeclaration.
+**NEXT SAFE ACCEPTED WORK:** remaining pinned/history/harness reader/writer audit.
+RP-253 actual Postgres/persistence probes and RP-256 browser launch remain held;
+no cleanup authority, whole B7/AC12, fresh HTTP/browser/player, archival, mint,
+push or release claim. [Exact scope](../reputation-tree-v1/log.md).
+
 ## Persisted purchase taxonomy retained, SQL still held — 2026-10-06
 
 Under5425e684/373a6e1a/2e9cc4c4, all20pinned direct-purchase profiles plus one

@@ -5,6 +5,13 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest reader correction (2026-10-06):** RP-257/RP-258 now refuse inconsistent
+pinned ownership/mirrors and invalid client bonus-factor strings. Red-first tests
+and three compiling omissions discriminate. Cold core/vet and client8106/134/
+types/build/boundaries pass; composite remains RP-131 RED. Kernel160 unchanged.
+Full new span after4030c895 needs Claude. No fresh SQL/browser/player or 1.0
+claim; remaining pinned/history/harness consumers are next. [Evidence](reputation-tree-v1/log.md).
+
 **Latest test preparation (2026-10-06):** RP-253 retains all20pinned purchase
 profiles plus an overdue-Fiscal rejection; all21local profiles pass and three
 population corruptions fail when their validator is omitted. The SQL lane
@@ -14,7 +21,7 @@ remain held at100%/39784KiB free. Runtime/kernel/corpus unchanged; full new
 span after86c96035 needs Claude. Next safe accepted work: pinned reader/writer
 audit. No AC3/B4/CI/player/RFC/release promotion. [Evidence](reputation-tree-v1/log.md).
 
-**Latest runtime correction (2026-10-06):** RP-255 under761462fc/4ca6dc7d
+**Previous runtime correction (2026-10-06):** RP-255 under761462fc/4ca6dc7d
 rejects all570malformed frozen purchase inputs after376baseline admissions.
 Nineteen valid results stay unchanged; TS already refuses456objects and has114
 honestly normalized duplicate controls. Both gate omissions and six fixture

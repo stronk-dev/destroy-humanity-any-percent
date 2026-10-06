@@ -4,6 +4,14 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+Latest reader correction: RP-257/RP-258 under336503b3 refuses inconsistent
+pinned ownership/mirrors in server snapshots and noncanonical/below-one client
+factors. Red-first populations and three compiling guard omissions discriminate;
+cold core/vet and client8106/134/types/build/boundaries pass. Composite still
+fails at RP-131; no fresh SQL or browser proof. Kernel0.3.160 unchanged. Complete
+new span after4030c895 needs Claude; remaining pinned/history/harness consumers
+are next. No archival or 1.0 promotion. [Evidence](reputation-tree-v1/log.md).
+
 Latest test preparation: RP-253 under5425e684/373a6e1a/2e9cc4c4 retains the
 complete twenty-case direct-purchase source plus an overdue-Fiscal rejection.
 All21local profiles pass; three population corruptions reject and fail when
@@ -15,7 +23,7 @@ Runtime/kernel/corpus/CI policy unchanged; complete new span after86c96035
 needs Claude. Next safe work is remaining pinned reader/writer audit, not
 archival or release promotion. [Evidence](reputation-tree-v1/log.md).
 
-Latest runtime correction: RP-255 under761462fc/4ca6dc7d enforces the existing
+Previous runtime correction: RP-255 under761462fc/4ca6dc7d enforces the existing
 six frozen purchase-input fields before Go struct decoding. All570raw malformed
 cases now refuse after376baseline admissions;19valid results remain unchanged.
 TS already refuses456malformed objects and preserves114parsed-duplicate controls.

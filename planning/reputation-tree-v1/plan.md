@@ -72,6 +72,13 @@ threshold retune is measured and reported, then ratified by owner SHA).
   `run_started` v2. ACs 6, 7, 8, 11.
 - [x] B6 (`ac8a9a65`, `cf57e956`) — R6 Exit-attached plan (`exit.v2`, replay-inputs bump). AC9.
 - [x] B7 (`1e9b3a9b`, `1edc1c37`; composed purchase-through-UI awaits a tree-pinning epoch) — R9 UI: snapshot reputation block, `reputation_tree` surface, plan panel. AC12.
+  RP-257/RP-258 reader corrections under336503b3 now refuse14corrupt Go
+  projections and48invalid TS factors, preserving valid controls. Three compiling
+  guard omissions fire2/12/48 failures and restore exact sources. Cold core/vet,
+  client8106/134, types/build and separate boundaries pass; composite stays
+  RP-131 RED. Presentation-only, kernel160/corpus/schema unchanged. Full new
+  span after4030c895 needs Claude. Original B7, author body reconciliation,
+  minted purchase-through-UI and whole AC12 remain; no box flipped here.
 - [x] B8 (`b522c577`, `293c3ac7`, `6d821bab`; H4 verdict FAIL recorded as owner input, not loosened) — R10 harness H1–H5 and the OD-2 threshold measurement report. AC13.
 - [ ] B9 — BLOCKED on the owner-gated mint (no epoch pins a tree; formulas-check clean) — formulas regeneration (separate commit), composed verification career. ACs 14, 15.
 - [ ] Canonical docs, designated Codex review, archival (Codex).

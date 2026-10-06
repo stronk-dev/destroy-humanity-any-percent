@@ -407,6 +407,9 @@ function parseReputationArm(source: unknown): void {
   if (integer(arm.available, 0) !== level - spent) throw new SyntaxError("reputation available must equal level - spent");
   integer(arm.per_level_ppm, 1, 1_000_000); integer(arm.unlock_ppm, 0, 1_000_000);
   if (typeof arm.bonus_factor_next_run !== "string" || arm.bonus_factor_this_run !== null && typeof arm.bonus_factor_this_run !== "string") throw new SyntaxError("reputation bonus factors must be canonical strings");
+  for (const field of ["bonus_factor_next_run", "bonus_factor_this_run"] as const) {
+    if (arm[field] !== null && parseCanonical(decimal(arm[field], true)).lt(1)) throw new SyntaxError("reputation bonus factors must be at least one");
+  }
   if (!Array.isArray(arm.nodes)) throw new SyntaxError("reputation nodes must be an array");
   const seen = new Set<string>();
   for (const [index, value] of arm.nodes.entries()) {

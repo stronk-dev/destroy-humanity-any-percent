@@ -37,6 +37,13 @@ func projectReputation(bundle production.CatalogBundle, founder *save.State, con
 	if tree == nil || save.VersionForState(founder) < 22 {
 		return nil, nil
 	}
+	if founder.ReputationNodesOwned == nil {
+		return nil, ErrInvalidProjection
+	}
+	unlock, err := tree.UnlockPPM(founder.ReputationNodesOwned)
+	if err != nil || unlock != founder.ReputationUnlockPPM {
+		return nil, ErrInvalidProjection
+	}
 	available, err := reputation.Available(founder.ReputationLevel, founder.ReputationSpent)
 	if err != nil {
 		return nil, ErrInvalidProjection
