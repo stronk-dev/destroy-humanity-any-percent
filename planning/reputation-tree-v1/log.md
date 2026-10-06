@@ -5230,3 +5230,28 @@ span afterdfc2fb8c, declaration/baseline/code/docs/records, requires Claude's
 designated review independently of every prior range. Kernel161/live math/
 balance/CI/corpus/retained reports/owner copy unchanged. No checkbox, acceptance,
 mint, archive, publication, cleanup, message to Claude or push. Goal active.
+
+## 2026-10-06 — Career source binding self-first-filter
+
+Review by: Codex (implementer; self-first-filter, not designated).
+Recorded by: Codex.
+Reviewed range: `dfc2fb8c..850ba69e` — all four commits, all 12 paths,
+including declaration, reproducer, implementation and evidence reconciliation.
+Verdict: ready for designated review, with H3/H4/H5 acceptance still red/open.
+
+Inspected the full source diff: metadata is calculated after effective policy
+loading; both consumers admit the declared source before projecting results;
+H4 retains both sources and H5 retains every arm in declared order. Gameplay
+and the existing gate/classifier branches are unchanged. Four independently
+pinned complete gameplay results, 36 malformed-input refusals and nine
+compiling omissions are recorded above; synthetic projection controls are not
+represented as earned careers. Historical artifacts and author boundaries
+remain explicitly separate. Reviewed all tracking changes against those limits.
+
+Committed-HEAD cold focused check at850ba69e: root `make test-go`, harness,
+source/consumer/gate/static-artifact selectors, `-count=1`; chunks9acc50/510099,
+session38003, terminal exit0,7.972s. No live test handle remained before this
+record edit. Full exhaustive/fast/core evidence above used the identical
+committed831fa9b3 source; subsequent changes were tracking only, not a new full
+run. This record edge must also be included in Claude's designated range; it
+does not self-approve archival or cover any earlier independent review span.
