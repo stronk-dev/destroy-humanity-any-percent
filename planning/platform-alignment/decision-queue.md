@@ -27,7 +27,7 @@ Implementation agents may gather evidence and frame options; they may not infer 
 ## Garden unnamed resource event — RP-229 (author reconciliation pending)
 
 Accepted Garden SG8 calls for `garden_harvest_credited.v1` "plus the ordinary resource event";
-Minigame Platform MP14 uses the same unnamed premise. The closed save event registry has no
+Minigame Platform C21 uses the same unnamed premise. The closed save event registry has no
 generic resource-credit event kind, and actual Garden live/replay emits its named credited
 event only. This is a specification-author clarification route, not an owner decision
 silently delegated to the implementer or a request to invent a new resource event.

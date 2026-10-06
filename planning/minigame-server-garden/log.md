@@ -2143,3 +2143,8 @@ diff and restored gates inspected, actual-source mutations executed. This is not
 approval. New range begins `f980f4d6^` (`3f3bb03c`), end pinned after commit, Claude required.
 Every earlier range remains pending independently. Continue accepted integration work while
 RP-229/RP-222 author and RP-131/RP-218 CI/worker gates and the full nine-tier 1.0 stay open.
+
+Post-commit citation check: RP-229's parent clause is Minigame Platform **C21**, not the
+MP14 label I entered in the decision queue. Correct that queue citation forward; the
+observed unnamed-event premise and predeclaration remain unchanged. Include the correction
+in the exact review range before pinning it. No RFC body or owner ruling is edited.
