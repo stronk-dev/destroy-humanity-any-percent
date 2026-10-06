@@ -239,6 +239,7 @@
 
   function consumePublication(message: GameUIRuntimeMessage): void {
     if (message.kind === "transport_closed") { offline = true; transportReady = false; subscribedFounderID = undefined; unsubscribe(); return; }
+    if (message.kind === "transport_recovering") { offline = true; transportReady = false; return; }
     if (message.kind === "transport_recovered") { offline = false; transportReady = true; draining = false; resyncing = false; return; }
     if (message.kind === "snapshot") { bindSnapshot(message.value); draining = false; resyncing = false; return; }
     if (message.kind === "historical_event") return;
@@ -680,7 +681,8 @@
   {:else if surface === "meters" && liveFeatures?.meters}
     <MetersSurface arm={liveFeatures.meters} {era} />
   {:else if surface === "reputation_tree" && liveFeatures?.reputation}
-    <ReputationTreeSurface arm={liveFeatures.reputation} {era} {pending} controlsEnabled={founderControls}
+    <ReputationTreeSurface arm={liveFeatures.reputation} {era} {pending} controlsEnabled={founderControls && transportReady}
+      offline={offline || !transportReady}
       feedback={reputationFeedback} onPurchase={purchaseReputation} />
   {:else if surface === "fiscal" && liveFeatures?.fiscal}
     <FiscalSurface arm={liveFeatures.fiscal} {era} serverNowMs={estimatedServerNowMS()} {pending} controlsEnabled={founderControls}

@@ -23,6 +23,7 @@ export type GameUIRuntimeMessage =
   | Readonly<{ kind: "snapshot"; value: ParsedGameUISnapshot }>
   | Readonly<{ kind: "system"; value: GameUISystemEvent }>
   | Readonly<{ kind: "transport_recovered" }>
+  | Readonly<{ kind: "transport_recovering" }>
   | Readonly<{ kind: "transport_closed" }>;
 
 export interface GameUIRuntime {
@@ -338,6 +339,9 @@ export function createBrowserGameUIRuntime(
           const code = (event as CloseEvent).code;
           if (code === 4000 || code === 4004) { authoritativeResync(); return; }
           if (code === 4001 || code === 4002) { terminal(); return; }
+          // R9 must not spend from a UI that still claims recovered transport.
+          // This is nonterminal: the existing subscription owns reconnect.
+          listener({ kind: "transport_recovering" });
           scheduleConnect(Math.max(reconnectDelayMS, drainUntilMS - Date.now()));
         });
       };

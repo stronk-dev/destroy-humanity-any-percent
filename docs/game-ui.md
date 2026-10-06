@@ -70,6 +70,13 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   Rows accept programmatic focus but add no Tab stop. Owned, locked and unaffordable nodes
   show their state as text and have no control. Purchases send `purchase_reputation_node` at the
   Founder revision; an applied receipt refreshes the snapshot.
+  Buy/Confirm stay disabled until both player and world subscriptions recover,
+  including startup, drain and the interval between full sync and resubscription.
+  The tree renders the existing offline status when transport is unrecovered or
+  an authoritative read fails. An HTTP receipt does not optimistically update
+  ownership or available Reputation; pending lasts through the authoritative
+  refresh. Inactive arms hide the tab/surface; a mounted arm becoming null
+  returns to Desk.
   Every node displays its cost through the shared Amount component, after its body
   and before requirements/state. The cost remains visible for owned, locked and
   unaffordable nodes, and throughout confirmation, pending and authoritative
@@ -223,6 +230,12 @@ history, queue overflow, or invalid frame. Recovery snapshots are delivered into
 `bindSnapshot` path; there is no parallel API client or snapshot schema. Drain delays reconnect by
 the server-advertised bound. Auth-expired and replaced sockets surface offline instead of inventing
 Account token-rotation or multi-tab arbitration behavior.
+An ordinary unexpected close emits the internal `transport_recovering` notice,
+which marks the host offline and transport not ready without disposing its
+subscription. The existing reconnect still owns its delay, saved positions and
+recovery/full-sync path; both subscribe acknowledgements emit `transport_recovered`.
+Terminal `transport_closed` retains its existing disposal behavior. These are
+internal host notifications, not new wire messages or authentication policy.
 Company Gate events trigger one deduplicated authoritative refresh before the next transition;
 action and refresh state are tracked independently, and a click that races that refresh waits for
 its revision instead of disappearing. When Gate is committed before the WebSocket subscription is

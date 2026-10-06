@@ -17,19 +17,21 @@ RP-284 reader/delivery grounding has now executed below; its display boundary
 and RP-283 authoritative preview still need author contracts. Full1.0 holds remain.
 [Evidence](reputation-tree-v1/log.md).
 
-Latest runtime checkpoint: RP-288 advisory-plan keyboard navigation is locally
-corrected aftere312b4d7. Test-first four WebKit failures; checkbox-only refinement
-separately exposes Clear. Two explicit Tab0 attributes fix both;36 full-tree
-cases and five compiling faults (20/28/12/8/4 failures) discriminate budgets,
-prerequisites, order, cascade and keyboard traversal. Exact restoration;
-328 selected Chromium/WebKit functional plus isolated performance, types/build,
-8167 units/273 skips/boundaries/copy/manifest pass. Invalid axe fixture and
-incomplete screenshot-copy probe are disclosed; RP-289 tooling remains open,
-not fixed by default-capture positive success. Controlled component/host proof,
-not SQL/mint/manual AT/Firefox/full AC12 or whole CI. Claude must review the
-entire new span; earlier ranges independent. RP-283/RP-284 author contracts and
-full nine-tier/platform1.0 holds remain. Next ground R9 host inactive/offline/
-in-flight/refreshing controls. [Evidence](reputation-tree-v1/log.md).
+Latest runtime checkpoint: RP-290/RP-291 host purchase readiness locally
+corrected afterb5ca3e7d. Test-first64 failures/16 controls; scoped readiness/
+existing offline notice and internal nonterminal recovering status.80 new
+native cases pass; compiling host faults fail32/8/64/16, exact restoration.
+R7 exact sequences retain all event/dedup assertions and add immediate-order
+checks (notification omission fails two). Final408 selected Chromium/WebKit
+functional plus isolated performance,8167 units/313 skips/types/build/boundaries/
+copy/manifest pass. Initial strict-message failures and three-engine attempt
+remain recorded; latter is RED, Firefox0 execution with native launch failure.
+No new auth/transport/wire/content policy or full AC12/SQL/mint/whole CI claim.
+Fresh Docker root100%/39,784KiB, DB tmpfs1%; no cleanup/SQL proof. Full new span
+needs Claude; RP-288 e312b4d7..b5ca3e7d and earlier ranges independently pending.
+RP-289 tooling/RP-283/RP-284 author contracts and full nine-tier/platform holds
+remain. Next ground authoritative plan input replacement without inventing
+reselection policy. [Evidence](reputation-tree-v1/log.md).
 
 Previous runtime checkpoint: RP-287 is locally corrected in the range after
 61d6c8eb. Recovered/live older-start defects were reproduced before correction;

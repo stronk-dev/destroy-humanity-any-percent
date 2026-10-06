@@ -148,6 +148,21 @@ Final root client/native/boundary/copy gates; no permanent capture-policy tweak.
 Previous RP-289 stall remains separate. Whole new span needs Claude, earlier
 ranges independent. RP-283/RP-284 author/SQL/mint/full1.0 holds remain; no box.
 
+Local checkpoint:120b8cb6 predeclares/9a13aebf test-first reproduces64 failures
+with16 controls. Scoped readiness/copy/internal recovering correction passes
+all80 new native cases. Four compiling host-source faults fail32/8/64/16 in
+the whole176-case old+new host population; exact restoration. The fourth's
+discriminator is the original held-conflict population, not new applied tests.
+R7 sequences explicitly widen for the recovering notice while retaining old
+payload/order/dedup/positions/stale-socket assertions; notification removal
+then fails the two added immediate-close equalities. Final8167 units/313 skips,
+types/build/boundaries/copy/manifest and408 selected Chromium/WebKit functional
+plus isolated performance pass. Original two strict-message failures and
+default three-engine Firefox launch/teardown failure are disclosed, not waived;
+all-engine arm stays RED. No wire/policy/content/Go change or whole AC12 claim.
+Whole range afterb5ca3e7d needs Claude. Next ground authoritative plan input
+replacement; unspecified reselection policy and RP-283/RP-284 remain with author.
+
 ## Batches
 
 - [x] B1 (`a522fdf1`) — R2 artifact + loaders (Go `server/reputation`, TS `client/src/reputation.ts`), R1

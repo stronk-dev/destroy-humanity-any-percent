@@ -9,11 +9,12 @@
   // Reputation Tree v1 R9. Every state is server-derived (arm.nodes[].state);
   // the client never recomputes eligibility and the receipt is the authority.
   // Buying is irreversible, so Buy only reveals an inline Confirm/Cancel pair.
-  let { arm, era, pending, controlsEnabled, feedback = null, onPurchase }: {
+  let { arm, era, pending, controlsEnabled, offline = false, feedback = null, onPurchase }: {
     arm: GameUIReputationArm;
     era: CopyEra;
     pending: boolean;
     controlsEnabled: boolean;
+    offline?: boolean;
     feedback?: { nodeID: string; key: CopyKey } | null;
     onPurchase(nodeID: string): void | Promise<void>;
   } = $props();
@@ -69,6 +70,7 @@
   <!-- svelte-ignore a11y_no_noninteractive_tabindex (R9 requires the header as the first sequential Tab stop.) -->
   <h1 id="reputation-heading" tabindex="0">{t("reputation_tree.title", {}, era)}</h1>
   <p>{t("reputation_tree.intro", {}, era)}</p>
+  {#if offline}<p role="alert">{t("settings.save_status.offline", {}, era)}</p>{/if}
   <section class="card" aria-label={t("reputation_tree.title", {}, era)}>
     <p>{t("reputation_tree.balance.available", { amount: arm.available }, era)}</p>
     <p>{t("reputation_tree.balance.level", { amount: arm.level }, era)}</p>

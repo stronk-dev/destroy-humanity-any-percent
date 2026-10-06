@@ -302,6 +302,7 @@ describe("R7 replay/reconnect boundary (controlled bytes, not real server)", () 
       b.publish(run2, 1, 3);
       const newSocket = b.nextSocket(); const recovered = b.nextRecovery();
       b.socket.emit("close", { code: 1006 });
+      expect(b.received).toEqual([{ kind: "transport_recovered" }, startMessage(run2, 3), { kind: "transport_recovering" }]);
       const connection = await newSocket;
       expect(b.sockets).toHaveLength(2);
       b.connect(connection, { recovered: true, offset: 2, publications: [
@@ -313,15 +314,16 @@ describe("R7 replay/reconnect boundary (controlled bytes, not real server)", () 
         { id: 2, subscribe: { channel: `player:${founderID}`, recover: true, epoch: "player", offset: 1 } },
         { id: 3, subscribe: { channel: "world", recover: true, epoch: "world", offset: 0 } },
       ]);
-      expect(b.received).toEqual([{ kind: "transport_recovered" }, startMessage(run2, 3), { kind: "transport_recovered" }]);
+      expect(b.received).toEqual([{ kind: "transport_recovered" }, startMessage(run2, 3),
+        { kind: "transport_recovering" }, { kind: "transport_recovered" }]);
       b.socket.reply({ push: { channel: `player:${founderID}`, pub: { offset: 3, data: endWire() } } });
       b.publish(run3, 4, 6); // Old connection cannot deliver or induce resync.
       expect(b.reads).toBe(1);
-      expect(b.received).toHaveLength(3);
+      expect(b.received).toHaveLength(4);
       connection.reply({ push: { channel: `player:${founderID}`, pub: { offset: 3, data: endWire() } } });
       b.publish(run3, 4, 6, connection);
       expect(b.received).toEqual([{ kind: "transport_recovered" }, startMessage(run2, 3),
-        { kind: "transport_recovered" }, endMessage, startMessage(run3, 6)]);
+        { kind: "transport_recovering" }, { kind: "transport_recovered" }, endMessage, startMessage(run3, 6)]);
       expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 4 });
       expect(b.reads).toBe(1); expect(connection.closes).toBe(0);
     } finally { b.stop(); }
@@ -336,12 +338,13 @@ describe("R7 replay/reconnect boundary (controlled bytes, not real server)", () 
       const before = [...b.received];
       const newSocket = b.nextSocket(); const recovered = b.nextRecovery();
       b.socket.emit("close", { code: 1006 });
+      expect(b.received).toEqual([...before, { kind: "transport_recovering" }]);
       const connection = await newSocket;
       b.connect(connection, { recovered: true, offset: 5, publications: [
         { offset: 4, data: wire(run2, 3) }, { offset: 5, data: wire(run3, 6) },
       ] });
       await recovered;
-      expect(b.received).toEqual([...before, { kind: "transport_recovered" }]);
+      expect(b.received).toEqual([...before, { kind: "transport_recovering" }, { kind: "transport_recovered" }]);
       expect(positions(b.storage)[`player:${founderID}`]).toEqual({ epoch: "player", offset: 5 });
       expect(b.reads).toBe(1); expect(connection.closes).toBe(0);
     } finally { b.stop(); }

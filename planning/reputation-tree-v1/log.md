@@ -7515,3 +7515,113 @@ RP-290/RP-291 are now executed findings, not source hypotheses. No test fixture
 or oracle refinement is required by this baseline. Commit test-first before
 adding scoped Reputation readiness/offline binding and a distinct nonterminal
 runtime notification (terminal auth/replaced disposal remains unchanged).
+
+Corrected default-capture45803c/64fa9e/e2d31d session43479 terminal0:all80
+new native cases pass,96 original cases selector-excluded; isolated perf1/22
+selector exclusions pass. Worker80/80 and1/1 finished, zero pending. No
+fixture/oracle/deadline changes between red and green. Correction adds scoped
+Reputation readiness and existing offline copy plus an internal nonterminal
+recovering message; auth/replaced terminal disposal is unchanged.
+
+Before final gates, refine the predeclared compiling source probes precisely:
+omit the Reputation binding's transportReady; omit runtime's transient
+notification; omit the existing-copy offline notice; omit host refreshPending
+from shared pending. Run the ENTIRE host population, not just new cases, so
+the fourth also retains the original held revision-conflict refresh controls.
+The new applied path awaits its action through refresh independently, and is
+not claimed to be its sole discriminator. Other pending/runtime controls must
+remain. Each arm diagnostic-only no-capture (RP-289), terminal before exact
+source restoration; final restored positive DEFAULT capture. No new policy,
+budget/skip/deadline/authority relaxation. Initial RP-290 ledger's per-browser
+readiness count was mistyped12; correct16 (=startup4+drain4+full-sync8), plus
+12 notice failures and four RP-291 failures. Baseline log/count64 is unchanged.
+
+All four unchanged-oracle compiling probes terminal2, whole176-case host:
+readiness omissioncdc04e/a08cd0/bee293/abcf35 session6563:32 fail/144 pass;
+recovering-notification omission80bbe6/e3a3bc/87c8a8 session99556:8 fail/168 pass;
+offline-notice omission53b57b/b318d6/21acf6/b48213 session89434:64 fail/112 pass;
+shared refreshPending omissionf96362/2702f1 session31152:16 fail/160 pass.
+Last discriminator is the original held HTTP200/409 revision-conflict population,
+not a fabricated claim that new applied cases alone catch it. Each worker176/176
+finished, zero pending. No screenshot artifacts/copy stall or handles cancelled.
+After EACH terminal result restore exact three-file SHA:
+GameUIApp a471dea6e8be0725ccd762c64f7829c2568fba8ce11a1cad2cacc50a06a8df27;
+runtime 0a8c420eb9968aa76a3e9ece91c918a43e3d8c4530773c8818bce5104c0cb416;
+ReputationTreeSurface e97971c1a4b00eb3416bcd7933808e94bd68135dc9df7638be76a9bbc14d3125.
+No source probe remains. Final gate/browser positives now DEFAULT capture,
+including prior61 recovery/reader assertions in the ordinary client suite.
+
+First final gate08658a/7979ef session48840 terminal2:types0 errors/warnings,
+213-module build pass; Node8165 pass/313 skips plus two failures in original
+61-case recovery population. Exact total-message equality correctly rejects
+the newly declared nonterminal notification. No payload/cursor/high-water
+failure. Predeclare strict oracle reconciliation: include exactly one recovering
+message at the close, require it immediately BEFORE awaiting reconnect, retain
+every old payload/order/positions/read-count/stale-socket assertion and compare
+the full widened sequence; do not filter the new message or weaken equality.
+
+Final browser219119/session95561 accidentally omitted project selectors and
+thus exercised default three-engine launch.067b71 reports408 Chromium/WebKit
+functional passes/two performance exclusions,212/212 worker requests finished,
+zero pending, but ONE unhandled Firefox browser-session failure at its unchanged
+60-second deadline, ZERO Firefox tests. Whole command stays RED, not browser CI
+approval. Same handle continued polled; it remained in browser teardown. Fresh
+read-only ps533447 identifies owned Make70027→shell70028→Node70029→Nightly70101,
+Firefox98%CPU. One-second sample5c7d6a/4a0480 session24065 terminal0 confirms
+native main-thread activity; no source/test/record edits while handle live.
+Owned Firefox alone gracefully terminatedadfd88 after reported launch failure;
+same runnerd0829f terminal2 releases it and prints actual sandbox-extension
+denial plus SWGL framebuffer failure, confirming unresolved RP-256. No user
+Firefox or other process touched, no security/preference/deadline/config changed.
+This is failed launch with hung cleanup, not restart on an observation timeout.
+Re-run only the PREDECLARED Chromium/WebKit population, retain this failed
+all-engine arm and Firefox's mandatory acceptance hold. Original61 expected
+sequences now explicitly include the new internal message, otherwise intact.
+
+Corrected root539c32/c397b5/4cac79 session30828 terminal0:types0 errors/warnings,
+213-module build,8167 unit passes/313 skips, all shell/boundary/topology/cosmetic/
+no-payment negative controls and copy658/history/generation/manifest checks
+pass.313 skips include40 new native-only cases; no failure was newly skipped.
+Prior611 orphan warnings remain visible. Restored default-capture selected
+browserd7a234/a73e83 session22443 terminal0:408 Chromium/WebKit functional
+passes/two performance-selector exclusions,212/212 workers finished, zero
+pending. Isolated performance1 pass/22 exclusions,1/1 workers, zero pending.
+Whole three-engine attempt remains RED as above; Firefox acceptance NOT proved.
+No inherited handle remains live. Fresh declared-Postgres df6b2803 shows root
+100%/39,784KiB free and DB tmpfs1%/8,091,276KiB free. No cleanup or SQL proof.
+
+Predeclare one additional source-only omission of the recovering notification
+against the corrected FULL Node suite: the two widened exact sequences must
+fail before reconnect, with all old payload assertions retained. Native source
+omission already fails eight; this confirms the added immediate-order oracles
+independently. Restore exact runtime SHA after terminal before records/commit;
+then final FULL client run. No relaxed types, filters, deadlines or result claims.
+
+Immediate-message omissione4a129/f2aeff session72563 terminal2:the two exact
+recovery tests fail at the newly added close-time equalities (before awaiting
+reconnect);8165 other passes/313 skips. Runtime then restored exact SHA above.
+Final FULL client7fff3e/9b3cfe session75448 terminal0:8167 pass/313 skips.
+No probe or handle remains live. Final type/build/boundary/copy/manifest and
+native positives above ran on these byte-identical production sources.
+
+RP-290/RP-291 locally corrected, NOT designated-reviewed or whole AC12. R9
+binding adds readiness/existing offline notice; the ordinary network-drop path
+adds only internal nonterminal status, preserving subscriptions and prior
+delay/history/offset/cursor/full-sync/auth classifications. Existing exact R7
+message sequences widen explicitly; all old event payload/dedup/position/read/
+stale-socket assertions remain, with immediate-order checks added, not filtered.
+Source changes no authoritative balance, purchase/Exit plan or content rules.
+Full new range afterb5ca3e7d through its final record edge needs Claude separately
+from previous ranges. No checkbox, Go/schema/kernel161/copy658/balance/epoch/CI,
+owner/author ruling, mint/report restamp/cleanup/push/deploy/archive changed.
+Next accepted grounding: R9 advisory panel under authoritative ownership/budget/
+prerequisite replacement; diagnose before inventing an unspecified reselection
+policy. RP-283/RP-284 author contracts, actual SQL/two-Exit/mint/AT/Firefox,
+RP-131/H3/H4/H5, independent reviews and full nine-tier/platform1.0 remain open.
+
+Final record check3aefea rejected the uncommitted roadmap checkpoint because
+its insertion matched an earlier repeated evidence link rather than EOF.
+Removed only the newly inserted block and appended it at the actual end;
+existing history is untouched. Exact comparison against b5ca3e7d now passes
+both logs (1a0e31), whitespace check16ad62 passes. This detector failure is
+retained; no previously committed record was rewritten.

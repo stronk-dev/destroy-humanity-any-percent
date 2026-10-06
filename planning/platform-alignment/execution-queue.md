@@ -3,25 +3,27 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Reputation full-tree plan keyboard correction — 2026-10-06
+## Reputation host purchase readiness correction — 2026-10-06
 
-RP-288 aftere312b4d7: d44d209c predeclares/6dff42fc test-first. Two explicit
-Tab0 attributes correct independently reproduced checkbox and Clear omissions.
-All36 new full-tree cases pass; five compiling source faults fail20/28/12/8/4,
-exact restoration. Final328 Chromium/WebKit functional plus isolated performance,
-types/build8167 units/273 skips/boundaries/copy/manifest pass. Initial invalid
-axe sentinels, incomplete native-copy probe and mistaken capture syntax remain
-disclosed; RP-289 native screenshot-copy stall is OPEN, no permanent config fix.
-Final restored positive uses default capture. Controlled component/host evidence,
-not real SQL/server/mint/manual AT/Firefox/full AC12 or complete green CI.
+RP-290/RP-291 afterb5ca3e7d:120b8cb6 predeclaration/9a13aebf test-first64
+failures/16 controls. Scoped readiness/existing offline copy/internal nonterminal
+recovering status correct them.80 new native cases; host faults fail32/8/64/16,
+exact restoration. Strict R7 message sequences widen explicitly; omission fails
+two immediate-close equalities. Final408 Chromium/WebKit functional plus isolated
+performance,8167 units/313 skips/types/build/boundaries/copy/manifest pass.
+Original two unit equality failures and three-engine launch/teardown failure
+remain disclosed; whole all-engine attempt RED/Firefox0 execution. Default-capture
+selected positives, not whole CI/AC12/manual AT/server/SQL/mint/release proof.
 
-**READY FOR CLAUDE:** complete span aftere312b4d7 through final record edge;
-earlier spans independently pending. **NEXT SAFE ACCEPTED WORK:** ground R9 host
-inactive/offline/in-flight/refreshing purchase controls. **AUTHOR ACTION:**
+**READY FOR CLAUDE:** complete span afterb5ca3e7d through final record edge;
+RP-288 e312b4d7..b5ca3e7d and earlier ranges independently pending. **NEXT SAFE
+ACCEPTED WORK:** ground R9 authoritative plan ownership/budget/prerequisite
+replacement; diagnose before inventing reselection policy. **AUTHOR ACTION:**
 RP-283 authoritative Wind Down preview and RP-284 post-Exit balance/display.
-RP-131/Firefox/SQL/capacity/H3/H4/H5/owner/data/operations/reviews and proper
-nine-tier/platform1.0 remain open. No checkbox/acceptance/archival/cleanup/mint/
-publication/deployment/push. [Evidence](../reputation-tree-v1/log.md).
+Fresh Docker root100%/39,784KiB free/DB tmpfs1%; no cleanup/SQL proof. RP-289
+tooling/RP-131/Firefox/H3/H4/H5/owner/data/operations/reviews and proper nine-tier/
+platform1.0 remain open. No box/acceptance/archive/mint/publication/deploy/push.
+[Evidence](../reputation-tree-v1/log.md).
 
 ## Reputation recovered next-run delivery corrected locally — 2026-10-06
 

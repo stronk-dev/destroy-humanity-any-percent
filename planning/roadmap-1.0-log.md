@@ -3332,3 +3332,26 @@ purchase controls; no owner copy/Go/schema/kernel161/balance/CI policy change,
 box flip, cleanup, mint, report restamp, acceptance/archival/publication/deploy/
 push or full1.0 promotion. Goal active, real minimal product correction made.
 [Evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Reputation host readiness and offline explanation
+
+Afterb5ca3e7d,120b8cb6 predeclares/9a13aebf reproduces64 native failures/16
+controls. Scoped Reputation readiness/existing copy and internal nonterminal
+recovering status correct startup/drain/post-full-sync/drop and missing notices,
+preserving actual reconnect/history/auth/full-sync policy.80 new native cases
+pass. Four host-source faults fail32/8/64/16; last is caught by ORIGINAL held-
+conflict tests. R7 exact sequences explicitly include the new notice; retained
+event/dedup/position/stale-socket assertions plus two added immediate-close
+equalities, which independently fail when notification is omitted. Exact source
+restoration after every terminal arm. Final408 selected Chromium/WebKit plus
+isolated performance,8167 units/313 skips/types/build/boundaries/copy/manifest
+pass. First strict-message failures and default three-engine Firefox launch/
+teardown failure stay disclosed; latter RED/Firefox0 execution. Fresh Docker
+root100%/39,784KiB, DB tmpfs1%; no cleanup/SQL/mint/whole CI/AC12/release claim.
+Full new span through final record needs Claude, earlier spans independently
+pending. RP-283/RP-284 author/RP-289 tooling and all nine-tier/platform holds
+remain. Next ground authoritative plan input replacement before unspecified
+reselection policy. No Go/schema/kernel161/copy658/balance/epoch/CI/owner ruling,
+checkbox/acceptance/archive/cleanup/mint/restamp/publish/deploy/push change.
+Full goal active; this turn commits actual player-control/offline correction.
+[Evidence](reputation-tree-v1/log.md).
