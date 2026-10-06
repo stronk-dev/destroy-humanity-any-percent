@@ -462,3 +462,21 @@ study. Full CV9 hints/codex/notices, served-epoch purchase/rendering, P6 authori
 mint and wider release proof remain open. P5 checkbox is unchanged and its text
 now explicitly describes presence, not full acceptance. New work afterb2b2d5a5
 including these record edges independently requires Claude; no archive/push.
+
+### RP-303 local diff review — first filter, not designated approval
+
+Review by: Codex (implementer, self-first-filter). Recorded by: Codex.
+Exact inspected range: `b2b2d5a5..807e719b`, two commits/eight paths,
+169 insertions/five deletions. Full diff inspected in599fe7. Scope holds:
+three markup bindings, one new browser case, canonical docs and tracking only.
+Original cases/assertions remain intact; failed baseline and both compiling
+negative controls distinguish absent/wrong association. Source restored exactly,
+all verification handles terminal; no production source fault remains. The
+new checkpoint is appended at the end of the long-term log (draft placement
+mistake caught and fixed before commit). Cold local proof/Firefox failure and
+no hosted/AT/default-player acceptance are accurately separated.
+
+Result: local first filter passes. **Claude's designated review remains required
+for the entire new span afterb2b2d5a5, including this following review-record
+commit.** No existing Claude range is retrospectively approved here, no other
+pending Codex span consumed, no checkbox/status/archival promotion. Goal active.
