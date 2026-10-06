@@ -3580,3 +3580,59 @@ Complete new span after6963692b through this record commit still needs Claude;
 all prior reviews and actual persistence/career/AC13/AC15 obligations remain.
 Next accepted work is RP-265 before RP-262, with RP-264 separately bounded.
 No live handle, source mutant, checkbox, archival, mint, push or release claim.
+
+## 2026-10-06 — Reference frozen-input consumer diagnosis predeclared
+
+Previous turn is progress: RP-263's helper/key correction and full report
+reproduction are committed. d18d4e09 is clean main ahead5 (4239fb), with no
+live handle or new designated verdict. Current accepted work remains R10.
+Grounding c30666/545bec/ab4165 confirms nil external inputs in the Reference
+ranker and actual bank advance; no fresh numeric failure is inferred yet.
+
+RP-265 diagnosis population, before measurement: strictly compose the current
+paired fixture through RP-263's helper. A hypothetical earned6 Founder buys
+unlock.p05, cash_small and generated_beige_tower through the actual tree
+purchase function, then NewRunState and ApplyReputationStarters assemble run3
+at the existing harness Epoch. Require cash1e3, five generated/zero purchased
+Beige Towers and the actual tree-derived frozen factor1.003. This is an
+isolated legal headless fixture, NOT a persisted or naturally earned career.
+Resolve its declared contribution through the public frozen-input resolver.
+
+Compare three explicit arms: no external row, a synthetic unit row and the
+actual non-unit row. For each, retain four observations through the actual
+Reference ranker/runtime: projected-milestone denominator, one-second candidate
+advance, a one-unit generator purchase whose lazy accrual spans that second,
+and the actual bank branch. Independent witnesses are ProjectRates and
+SimulateAdvance/SimulateTransition supplied the same frozen input; compare full
+encoded candidate states where applicable. Require the no-row/unit output rate
+5 and non-unit rate5.015, not merely inequality against the broken consumer.
+The bank arm explicitly replaces its cash ledger with the ordinary initial
+zero-cash ledger to make every purchase unreachable in the one-second decision
+horizon; it does not alter the retained starter/source artifact or any scenario.
+Its production, frozen factor and declared policy remain identical. This is a
+counterfactual fixture branch, not a claim about an observed player trajectory.
+Retain a generated-Beige-Tower effect mask and a zero-production control.
+
+Cold baseline must execute all arms. A consumer mismatch is a finding; an
+oracle/fixture setup error is not. This FIRST range is diagnosis/test only:
+no product or solver correction is authorized by its own start entry. If a
+failure is confirmed, record it and predeclare the exact corrective range
+under accepted R10 before production/solver changes. In particular the current
+SimulateResourceRate API accepts no external argument; it cannot be labelled
+a defective implementation of an input it never promised. A canonical masked
+rate producer and consumer binding need explicit planning, kernel protocol,
+source isolation, failing controls and a separate report-drift disposition.
+Do not rewrite historical H4/H5 reports to absorb a changed instrument.
+
+Additional source lead RP-266: the AST caller map omits SimulateResourceRate
+(145c4f/01eed4). Current discovered callers are harness/tests; this is not an
+executed forbidden-caller finding. A corrected rate producer must stay inside
+the same simulation-only boundary, with an executed negative. No broader
+boundary redesign is implied. Initial jq guesses selected nonexistent nested
+shapes (01eed4/4a34ff); b8c7cb resolves them. The old corpus is untouched and
+none of those queries is proof of a run3 population.
+
+No unit/non-unit milestone verdict (RP-262), H4/H5 completion, retune, literal
+ratification, budget/horizon waiver, report regeneration, epoch mint, SQL or
+cleanup, owner copy, box, archival, push or release promotion. Independent
+review of the complete new span afterd18d4e09 remains mandatory. Goal active.
