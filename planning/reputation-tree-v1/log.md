@@ -6776,3 +6776,43 @@ skip Cancel; Chromium's8 pass; standalone sentinel controls2 pass. Actual native
 keys isolate the two omissions with controls green. Source remains original
 SHA1b8917a122bc275ad55ffde751e44ba1835a9848d443190dc30d2a5363cd1ef7.
 No live handle. Diagnostic commit precedes minimum predeclared correction.
+
+## 2026-10-06 — RP-285/RP-286 native correction and discrimination
+
+Minimum correction: heading and Buy/Confirm/Cancel explicit tabindex0; keyed
+rows remain-1. One heading-only Svelte annotation documents accepted R9's
+intentional noninteractive focus stop, with no fabricated role/lint policy.
+Docs describe actual traversal in the same behavior change. No callback,
+purchase/error/pending/state/formula/copy/price/numeric/browser/CI change.
+
+084ac5/9ad53a session94349 terminal0:54 native cases pass,58 older selector
+skips; selected perf1 pass/22 skips. Corrected source SHA27703516b76799c60c4f166f8a55822dc855b741f663e8c9ddcc8f1d3aa1834d.
+Three compiling probes, each restored that exact SHA before next mutation:
+- Heading back to-1:52187d/fab091 session42486 terminal2,36 sequential fail,
+  18 confirmation/sentinel controls pass.
+- Rows made0:741e1a/9e45ee session33967 terminal2,52 fail/2 standalone controls
+  pass. The row census catches all36; native confirmation also hits the extra
+  locked-row stop in16. This is stronger discrimination, not a changed criterion.
+- Explicit button stops removed:f4bd32/38b733 session98403 terminal2,12 WebKit
+  row/confirmation fail,42 controls pass (all Chromium and remaining WebKit).
+Restoration16b767/c779ae/028b22 exact each. No edit while any test handle lived.
+
+Final restored full population2a7d9f/ce10ff session57972 terminal0:248 pass,
+zero selected skips (112 child/96 host/40 cost),96 module requests finish with
+no pending/truncation. Follow-on selected perf1 pass/22 skips. Actual native
+component/host over controlled inputs, not live SQL/mint/default-player or
+human AT; Firefox RP-256 remains unexecuted, no browser flags/preferences changed.
+
+Cold root83d28f/8e9833/3cd326/3997b1 session65627 terminal0:types0 errors/
+warnings;build213 modules;units8106 pass/255 Node skips,91 files pass/19 skip.
+Shell boundary passes;CI topology13/cosmetic22/no-payment6 negative controls
+reject;copy658/hash a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e
+unchanged,611 orphan warnings;deployment manifest passes. Server copykeys5691ee
+compiles cold but has NO test files, not runtime producer proof.
+Separate bfe2ba/a705f6 session27515 terminal2:historical RP-131 still fails
+50a3a514 against0cf9f7a6;CI history checkout/fixtures pass before it. Not whole
+verify/client/CI green. Kernel161/old dated career producer unchanged. All
+handles terminal before record/commit. Whole span after8a3bfb70 requires Claude,
+independently of earlier ranges. No checkbox/full AC12/RFC/archive/push/cleanup/
+owner copy/mint/1.0 promotion. Next safe lane is RP-281 paired tooling diagnosis
+or RP-284 producer/consumer grounding; RP-283 remains author contract gap.

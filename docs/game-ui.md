@@ -57,7 +57,12 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   and every node state comes from the server. Buy opens an inline Confirm/Cancel pair and moves
   focus to Confirm; Escape cancels and returns focus to Buy. Submission moves focus to the
   stable node row after the DOM updates, retaining it during pending and subsequent node-state
-  replacement. Rows accept programmatic focus but add no Tab stop. Owned, locked and unaffordable nodes
+  replacement. Tab reaches the heading, then enabled Buy controls in artifact order;
+  an open confirmation traverses Confirm then Cancel. These controls have explicit
+  zero Tab indices for consistent native WebKit traversal; disabled buttons stay
+  outside the sequence. Shift+Tab reverses the sequence. The heading's intentional
+  Tab stop is the narrowly annotated R9 contract, not an interactive heading role.
+  Rows accept programmatic focus but add no Tab stop. Owned, locked and unaffordable nodes
   show their state as text and have no control. Purchases send `purchase_reputation_node` at the
   Founder revision; an applied receipt refreshes the snapshot.
   Every node displays its cost through the shared Amount component, after its body

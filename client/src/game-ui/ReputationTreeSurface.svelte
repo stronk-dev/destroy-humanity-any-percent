@@ -66,7 +66,8 @@
 </script>
 
 <section class="surface reputation" aria-labelledby="reputation-heading">
-  <h1 id="reputation-heading" tabindex="-1">{t("reputation_tree.title", {}, era)}</h1>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex (R9 requires the header as the first sequential Tab stop.) -->
+  <h1 id="reputation-heading" tabindex="0">{t("reputation_tree.title", {}, era)}</h1>
   <p>{t("reputation_tree.intro", {}, era)}</p>
   <section class="card" aria-label={t("reputation_tree.title", {}, era)}>
     <p>{t("reputation_tree.balance.available", { amount: arm.available }, era)}</p>
@@ -89,12 +90,12 @@
         {#if node.state === "available"}
           {#if confirming === node.node_id}
             <span class="confirm" role="group" aria-label={titles.get(node.node_id)}>
-              <button type="button" {@attach register(confirmButtons, node.node_id)} disabled={purchasePending || !controlsEnabled}
+              <button type="button" tabindex="0" {@attach register(confirmButtons, node.node_id)} disabled={purchasePending || !controlsEnabled}
                 onclick={() => { void confirm(node.node_id); }} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.confirm", {}, era)}</button>
-              <button type="button" onclick={() => cancel(node.node_id)} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.cancel", {}, era)}</button>
+              <button type="button" tabindex="0" onclick={() => cancel(node.node_id)} onkeydown={(event) => keydown(event, node.node_id)}>{t("reputation_tree.action.cancel", {}, era)}</button>
             </span>
           {:else}
-            <button type="button" {@attach register(buyButtons, node.node_id)} disabled={purchasePending || !controlsEnabled}
+            <button type="button" tabindex="0" {@attach register(buyButtons, node.node_id)} disabled={purchasePending || !controlsEnabled}
               onclick={() => openConfirm(node.node_id)}>{t("reputation_tree.action.buy", { cost: node.cost }, era)}</button>
           {/if}
         {/if}
