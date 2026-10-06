@@ -7625,3 +7625,35 @@ Removed only the newly inserted block and appended it at the actual end;
 existing history is untouched. Exact comparison against b5ca3e7d now passes
 both logs (1a0e31), whitespace check16ad62 passes. This detector failure is
 retained; no previously committed record was rewritten.
+
+## 2026-10-06 — R9 host-readiness implementer first filter
+
+Review by: Codex (implementer self-first-filter).
+Recorded by: Codex.
+Reviewed range: b5ca3e7d..07e78a95 (120b8cb6, 9a13aebf, 07e78a95).
+Verdict: locally approved first filter ONLY; designated Claude pass pending.
+This record edge also needs that pass; earlier ranges remain independent.
+
+Inspected the full thirteen-path range, including predeclaration, test-first,
+production/docs and all records. The default fixture still auto-acknowledges
+subscriptions for the original tests; new cases hold real runtime replies.
+No fixture mutation of host state or direct purchase callback substitutes for
+native controls. Subscription recovery, held applied/conflict refresh and
+terminal closure oracles retain the native delays and original assertions.
+R7 message equality expands by exactly one internal recovering notification,
+with explicit pre-reconnect equality; old payload/dedup/cursor assertions stay.
+Production changes are scoped to Reputation readiness/copy and ordinary-close
+host notification; no unsubscribe on transient loss, new wire/auth policy,
+reconnect delay/history change, optimistic receipt balance or owner prose.
+
+Executed evidence and failed arms above, not this self-review, support the
+local claim: restored full client8167/313;408 selected native plus isolated
+performance; type/build/boundary/copy/manifest checks; four native compiling
+faults and two exact Node failures on the notification omission. All probes
+restore exact SHA38bb9b; no live test handle remains. Whole-range whitespace
+d87695 and exact append-only checks da9890 pass. The earlier failed three-
+engine attempt remains RED with zero Firefox execution, native copy tooling
+and Docker capacity holds unresolved. No full AC12, SQL/mint/manual AT, whole
+CI or release approval inferred. No acceptance box/status/archive, kernel,
+balance, schema, epoch or copy-content change. Next separately ground accepted
+R9 authoritative plan input replacement; full nine-tier/platform goal active.
