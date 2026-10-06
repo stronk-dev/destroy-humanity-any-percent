@@ -1434,3 +1434,12 @@ No fresh hosted/amd64/whole-history/whole-CI, full G2/G3/Garden/public, archive 
 All previous pending cross-party/owner/author/rights/accessibility/deployment gates remain.
 Ready for Claude's exact-range designated review, not implementer approval or archival.
 Next accepted work: remaining Garden G4–G7 event/coordinator/view/player-surface review.
+
+### Exact G2/G3 retained-state witness handoff
+
+READY FOR CLAUDE DESIGNATED REVIEW, not approved: complete new test/fixture/docs/tracking
+span `d6c2b6a2^..cc69925a` (`ea160ac9..cc69925a`). Includes predeclaration `d6c2b6a2`,
+invalid-instrument disclosure/contract finding `1aa23496`, RP-207 reader predeclaration
+`16b44c74` and complete implementation/evidence `cc69925a`. No production byte changed.
+RP-222 remains with author/owner; all earlier corrective/witness ranges are separate pending
+requests. This pin is navigation only, not approval, archival authority or release acceptance.

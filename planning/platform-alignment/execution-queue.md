@@ -28,6 +28,10 @@ explicitly distinguishes October HEAD from its preserved historical August snaps
 review; record RP-222 author/owner ruling separately, and preserve full-nine-tier 1.0 plus
 privacy/rights/accessibility/deployment/preservation. No archive/public/whole-CI promotion.
 
+Exact designated-review request: `d6c2b6a2^..cc69925a` (`ea160ac9..cc69925a`), all three
+predeclarations/instrument records and the full new test/evidence change. Pending Claude;
+no prior pending range or RP-222 author/owner question is closed by this handoff.
+
 ## Earlier Garden command order and due-growth refusal evidence — 2026-10-06
 
 SG5/AC7 predeclaration `0c125bec` / instrument correction `9405d75a`: fifteen shared literal

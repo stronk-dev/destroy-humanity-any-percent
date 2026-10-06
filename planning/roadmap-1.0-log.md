@@ -1994,3 +1994,7 @@ All new tests/records require Claude's designated pass, and previous verdict req
 separate. No full G2/G3/Garden, public activation, whole-CI/hosted/amd64, archival or release
 promotion. Next: remaining accepted Garden G4–G7 review; owner/author RP-222 reconciliation
 runs separately. Full nine-tier 1.0 and the complete platform floor remain active, not preview.
+
+Exact G2/G3 designated-review handoff: `d6c2b6a2^..cc69925a` (`ea160ac9..cc69925a`),
+predeclarations, red instruments/reader disclosure, contract question and complete tests/evidence
+included. Pending Claude, not approved; previous range requests and RP-222 remain separate.

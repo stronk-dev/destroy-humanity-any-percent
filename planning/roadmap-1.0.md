@@ -6,7 +6,8 @@ supported self-host package meet the same recovery, rights, accessibility, priva
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
 **Current checkpoint:** 2026-10-06, Garden G2/G3 activation/retained-Exit witnesses under
-`d6c2b6a2` / `1aa23496` / `16b44c74`, test-only, designated review pending. Actual Go/TS
+`d6c2b6a2` / `1aa23496` / `16b44c74`, implemented `cc69925a`, exact test-only range
+`d6c2b6a2^..cc69925a`, designated review pending. Actual Go/TS
 bundle admission, New-Founder initializer, populated permanent Garden across both real
 Postgres Exit intents, unchanged retries and both owned histories pass. Twenty repeats of
 both DB arms pass (40 cases); TS covers both replay axes and invalid carries. Actual dependency
