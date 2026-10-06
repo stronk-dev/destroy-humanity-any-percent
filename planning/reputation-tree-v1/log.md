@@ -6535,3 +6535,14 @@ separate inherited RP-131 guard remain; no full CI/Firefox/AC12/SQL/mint claim.
 No numeric/kernel161/balance/reports/copy/CI-policy change, owner/author ruling,
 checkbox flip, archive, cleanup, push/deployment or goal completion. Whole new
 span aftereb258a7a needs Claude, incl fixture refinement and final record edges.
+
+## 2026-10-06 — RP-282 initial corrected native green
+
+3330f9/1776e1,session4043 terminal exit0:194/194 (40 plan/56 old host/
+58 child/40 cost). Automatic performance follow-on one selected Chromium
+pass/22 skips, not full native/performance. Types7d9bce/ca9cf8,session25489
+terminal exit0, zero errors/warnings. Four-line mount plumbing plus canonical
+docs inspected0d039d; callback consumes current child selected state, user
+toggle serialization/eligibility/preview computation unchanged. All handles
+terminal before probes. No GameUIApp/runtime/parser/server/copy/prices/kernel
+bytes change, no invisible persistence semantics or promotion to full AC12.

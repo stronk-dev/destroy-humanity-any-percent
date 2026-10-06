@@ -66,6 +66,10 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   replacement; it is not dependent on the Buy control. Integer costs use the
   existing canonical-number conversion and Standard notation, without changing
   purchase prices or Buy copy.
+  Exit plan panels start with an empty selection and synchronize that selection
+  to the host on mount, including after navigation or replacement by an Offer
+  Sheet. An empty visible plan omits `reputation_plan` from the Exit intent;
+  selections from a previous unmounted panel cannot cause invisible spending.
   The submitted row exposes `aria-busy="true"` while its existing host purchase task or the
   shared pending state remains outstanding; all Buy/Confirm controls stay disabled. Attribution
   clears after both settle, so a later unrelated refresh does not mark a completed row busy.

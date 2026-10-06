@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { GameUIReputationArm } from "../api/generated/types";
   import { t, type CopyEra, type CopyKey } from "../copy";
 
@@ -13,6 +14,9 @@
     onChange(plan: readonly string[]): void;
   } = $props();
   let selected = $state<string[]>([]);
+  // A fresh panel starts empty; synchronize the host before an Exit can
+  // carry a selection from a previous, no-longer-visible panel instance.
+  onMount(() => { onChange(selected); });
 
   const owned = $derived(new Set(arm.nodes.filter((node) => node.state === "owned").map((node) => node.node_id)));
   const cost = $derived(arm.nodes.filter((node) => selected.includes(node.node_id)).reduce((sum, node) => sum + node.cost, 0));
