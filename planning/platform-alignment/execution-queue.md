@@ -3,6 +3,30 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Reputation actual cross-pin second-Exit continuation — 2026-10-06
+
+RP-301, range after16da5904:10631984 predeclares,a8ebbbaf extends only three
+actual activation-plan SQL arms after all original assertions/retries. Original
+24/9applied/15refused/3fallback retained. Owned purchase refuses/retries; real
+frozen production crosses Garage then a second no-plan WindDown produces run4.
+No later state seeding. Both completed Company runs/full four-entry cross-pin
+Founder history, immutable old rows, repeated non-cumulative starters/frozen1.003,
+exact12-table retries, source/head negatives and ongoing run4 full replay pass.
+
+Three compiling production faults each fail three new named checks, other21 arms
+pass; exact restore. Initial7000s clock fails the unchanged cash1e5 requirement;
+corrected20000s production101301 passes without balance/gate/oracle relaxation.
+Restored cold relevant Go/vet/types/client8241pass/339skip/local topology and
+complete production SQL Integration14.852s pass.
+**DESIGNATED REVIEW PENDING:** full span after16da5904 including final records,
+not a substitute for earlier independently pending ranges.
+**NEXT SAFE ACCEPTED WORK:** census AC7 frozen current-rate versus next-run
+public projection against existing SQL/consumer tests; predeclare any actual
+missing population. Diagnostic initial earned6/stored offers/seeded history,
+not natural/default browser/fullAC15/hostedCI/release/1.0 promotion. All previous
+holds/full goal remain; no product/copy/balance/epoch/CI workflow/cleanup/status/
+archive/publish/deploy/push authority.
+
 ## Reputation cross-pin / first-failure Go/TS parity — 2026-10-06
 
 RP-300, range aftera21da467: e4e0ae4e predeclares;08d2c4cd adds separate
@@ -22,9 +46,9 @@ relevant Go/vet/types/client8241pass/339skip/local topology controls and actual
 production SQL36/143/no skips pass11.197s.
 **DESIGNATED REVIEW PENDING:** entire span aftera21da467 including final records;
 earlier SQL/parity/request/rollback/career and implementation spans independent.
-**NEXT SAFE ACCEPTED WORK:** census R8 verification consumers and cross-Exit
-history coverage against current committed evidence; predeclare missing
-populations before edits. No natural/default browser/AT/SQL/fullR8/AC9/hosted
+**THEN-NEXT WORK:** R8 verification census and cross-Exit continuation now
+execute above; the earlier portable proof remains separate. No natural/default
+browser/AT/SQL/fullR8/AC9/hosted
 CI/1.0 promotion. All full-goal/author/environment/owner/release holds remain;
 no product/copy/balance/epoch/CI workflow/cleanup/status/archive/publish/deploy/push.
 

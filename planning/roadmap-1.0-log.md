@@ -3573,3 +3573,29 @@ claim; no runtime/migration/copy/balance/epoch/CI workflow/checkbox/status/clean
 archive/push/publish/deploy. Full proper nine-tier/platform1.0 goal active/progress
 and all prior author/environment/owner/release holds unchanged.
 [Executed evidence](reputation-tree-v1/log.md).
+
+## 2026-10-06 — Actual activated Founder cross-pin continuation
+
+RP-301, range after16da5904:10631984 predeclares,a8ebbbaf extends three actual
+activation heads through an owned-purchase refusal, ordinary frozen production/
+Garage, second no-plan WindDown and run4; no later state seeding. Original
+24/9applied/15refused/3fallback remains. Both completed Company runs/full
+four-entry Founder history/source links, immutable old pin/genesis/frozen rows,
+repeat non-cumulative starters/1.003, complete12-table retries and ongoing run4
+full transition replay pass. Run4 is not called completed verification evidence.
+
+Three compiling source faults each fail three new named checks, other21 arms
+pass, exact source restores. Initial7000s test clock fails the unchanged1e5
+gate; corrected20000s yields independent101301, no requirement/oracle changes.
+Restored cold relevant Go/vet/types,8241 client tests/339skip, local topology
+with13 negatives and complete production SQL Integration14.852s pass. The new
+helper changes no top-level/subtest population; original36/143 remains.
+
+Docs/ledger/live board/queue/plan/log reconcile; full new span including records
+needs Claude, previous independent ranges still pending. Diagnostic earned6/
+stored offers/seeded history, not natural/default browser/AT/fullAC15/hostedCI/
+minted release/1.0. No production/copy/balance/epoch/CI workflow/checkbox/status/
+archive/cleanup/push/publish/deploy; full nine-tier/platform goal active/progress,
+all prior holds unchanged. Next accepted evidence census AC7 frozen current-rate
+versus next-run public projections before a separate missing-proof declaration.
+[Executed evidence](reputation-tree-v1/log.md).

@@ -4,7 +4,24 @@ Reconciled 2026-10-06. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest replay checkpoint:** RP-300 test/generation-only supplement after
+**Latest SQL checkpoint:** RP-301 test-only supplement after`16da5904` continues
+three actual old-pin→tree activations through owned-purchase refusal, real frozen
+production/Garage, second no-plan WindDown and run4 without later state seeding.
+Original24/9applied/15refused/3fallback remains. Repeated non-cumulative starters,
+immutable old rows, both completed Company verifiers, complete four-entry Founder
+history/source links, exact twelve-table retries and ongoing run4 full replay pass.
+Three compiling source faults each fail three new named checks; other21 arms pass,
+sources restore exactly. Initial test-clock failure preserved/corrected, game gate
+unchanged. Cold relevant Go/vet/types/client8241pass/339skip/local topology and
+whole production SQL Integration14.852s pass. Full span including final records
+needs Claude; earlier spans independent. Diagnostic initial earned6/stored offers/
+seeded history, not natural/default browser/fullAC15/hostedCI/1.0 proof.
+Next census accepted AC7 frozen current-rate versus next-run projection against
+existing SQL/public consumer evidence before predeclaring any missing population.
+Full goal and prior holds remain; no production/copy/epoch/CI workflow/cleanup/
+status/archive/push. [Evidence](reputation-tree-v1/log.md).
+
+**Previous replay checkpoint:** RP-300 test/generation-only supplement after
 `a21da467` compares27 complete Company/Founder pairs in Go/TS,12 applied/15
 refused per stream. All three exit types cover old-pin activation, five plan
 first failures and absent-tree no-plan controls. Independent accounting/
@@ -14,8 +31,8 @@ defense. Go faulted generation refuses overwrite; TS selector/detail/no-plan
 faults fail3/12/3 new cases. All source and historical corpora restore exactly.
 Complete relevant Go/vet/type/client8241 pass/339skip, local topology controls
 and actual SQL36/143/no skips pass. Full new span including records needs Claude;
-prior spans independent. Next census R8 verification consumers and cross-Exit
-history coverage before separately predeclaring missing evidence. Diagnostic
+prior spans independent. Its then-next R8 verification census and cross-Exit
+history continuation now execute above. Diagnostic
 initial earned6/stored offers, not natural/default browser/SQL/fullAC9/hosted
 CI/1.0 proof. Full goal and all prior holds remain; no product/copy/epoch/CI
 workflow/cleanup/status/archive/push. [Evidence](reputation-tree-v1/log.md).

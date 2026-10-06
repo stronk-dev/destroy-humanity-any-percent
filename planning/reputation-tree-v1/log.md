@@ -9011,3 +9011,58 @@ history, copied spent/source negatives,12-table exact retries and ongoing run4
 full transition replay are executed against declared real Postgres. Diagnostic
 initial heads remain bounded; run4 explicitly not a completed verifier. No
 native/default browser/natural-pacing/fullAC15/CI/release/1.0 inference.
+
+### Compiling source faults, actual discrimination and restoration
+
+All handles terminal before edits. Same complete24-case SQL population each:
+- dbfe4e/session30845→2f59d9 exit2,1.626s: carry generated inventory only when
+  current tree present. First old→tree activation passes prior assertions;
+  all three new second-Exit exact-starter checks fail (10instead of5), other21
+  arms pass. Restore prestige.go byte-exact98e8ea.
+- 434f8c/session51599→123ae7 exit2,1.797s: omit only final Founder full-head
+  comparison, retaining revision/hash/version and prior defenses. All three
+  new forged-spent controls fail; other21 pass. Exact restoreda6797.
+- a8c567/session88298→0f6f6e exit2,1.950s: omit only Exit Source.RunSeq binding,
+  retaining stream/log coordinates and soul-recovery binding. All three new
+  wrong-second-Exit source controls fail; other21 pass. Original heads verify
+  before their copied-evidence negatives. No earlier unrelated guard claimed
+  as the new oracle; all three faults reach their named new checks.
+
+Each failure executes24; applied counter6/refused15/fallback3/career0 because
+three continuations stop before their success counts. No mutation committed.
+Restored prestige SHA6d07581c74822e57d63c09b0ed139d98b0b1f44aba566f8d654ad2f4213cb691,
+founder_history SHA2ffb54e186655740776ed891c69718d3d3c9b73fb8e41302482548bdde679fbc;
+both source diffs empty. Broad restored cold gates follow, no live handle.
+
+### Restored cold gates and closeout reconciliation
+
+- 131120/session78658→dc9237/df2111/b71b81/f0c780 terminal0:
+  `make test-go GO_PACKAGES='./production ./save ./reputation ./gameui'
+  GO_TEST_FLAGS='-count=1' vet`; production39.814s/save0.326s/reputation0.195s/
+  gameui0.293s and vet pass. Host dependency skips are not SQL proof.
+- ecedbe/session84929→19f27a terminal0: strict TS/Svelte0errors0warnings,
+  all8241 unit assertions pass/339 intentionally skipped; local CI topology
+  positive/13 negative controls pass. This is not hosted CI or native browsers.
+- ad18f3/session50016→cc00a2 terminal0: complete declared production SQL
+  Integration suite14.852s, including original taxonomy/rollback/offer/career
+  and24boundary profiles with allthree actual cross-pin continuations; no
+  skipped integration claim substituted. New helper adds no top-level/subtest
+  declarations; the prior36top-level/143subcase population remains unchanged.
+
+All handles terminal before record edits. b4c48a whitespace/invariance census:
+only two test files plus docs/ledger/planning; no production, client runtime,
+balance/copy/epoch/migration/CI workflow/RFC/kernel/historical corpus diff.
+RP-301's detached Markdown row corrected into its existing shared table; no
+second ledger. Plan/CURRENT-STATE/execution queue/whole-product roadmap/docs
+now distinguish actual sequential SQL from portable replay and the exact
+scripted AC15 population. No acceptance boxes/statuses flipped, no archived
+review/owner text rewritten. Initial test-clock mistake and all executed failures
+remain in this log; no source fault/live test handle remains.
+
+Full new span after16da5904 INCLUDING final records needs Claude's designated
+cross-party review; prior independent ranges remain live. No natural/default
+browser/AT/minted-release/fullR8/AC15/hostedCI/1.0 promotion. All prior author/
+owner/environment/release holds remain and full proper1.0 goal stays active/
+progress. Next safe accepted work is evidence census AC7 current-rate freeze
+versus next-run public projections before predeclaring any missing population;
+an existing unit/SQL proof must not be recast absent to justify extra work.

@@ -783,7 +783,7 @@ then WindDown WITHOUT plan into run4. Founder earned6/spent6/owned/unlock50000
 remain; run4 repeats cash1e3/generated5/purchased0/frozen1.003/start summary,
 never cumulative10. Both completed Company runs verify, old/new pins/genesis
 stay correct, full four-entry Founder history crosses the old pin and records
-both applied Exit sources. Third initial historical Exit remains diagnostic.
+both applied Exit sources. Initially seeded historical Exit remains diagnostic.
 Second Exit exact retry compares complete12tables, no post-genesis reseeding.
 Then measure actual run4 production at1000s with the repeated frozen starter
 bonus; compare its recorded ordinary transition directly to the complete head,
@@ -798,3 +798,18 @@ defended. Restore exact sources after terminal handles, broad cold Go/vet/types/
 client/declared SQL before closeout. Test/record/docs only, no product/schema/
 migration/balance/copy/epoch/CI/checkbox/status/archive/push authority. Full new
 span including records needs Claude, earlier reviews/holds/full1.0 remain.
+
+### Executed continuation / local status (not acceptance)
+
+10631984 predeclares,a8ebbbaf adds three actual career continuations, retaining
+all prior24/9/15/3fallback proof. Initial7000s clock fails the unchanged cash1e5
+gate; corrected20000s yields independent101301, no balance/oracle relaxation.
+Both completed Company runs/full four-entry cross-pin Founder history, repeat
+starter/frozen accounting, immutable old rows, source/head negatives, exact
+12-table retries and ongoing run4 full transition replay pass on real Postgres.
+Generated-carry/head-equality/source-link faults each fail allthree new named
+checks,21 other arms pass; exact source restore. Broad cold relevant Go/vet/
+types/client8241pass/339skip/local topology and production SQL Integration14.852s
+pass. No boxes flipped, no fullAC15/R8/RFC/CI/1.0 or review promotion. Entire
+new span after16da5904 including final records needs Claude; prior ranges remain
+independent. Next evidence census AC7 current-rate/next-run public consumers.

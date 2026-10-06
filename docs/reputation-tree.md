@@ -526,6 +526,34 @@ default browser/AT behavior, minted release data, full AC9/RFC/CI or1.0 readines
 make test-save-integration SAVE_TEST_PACKAGES='./production' SAVE_TEST_FLAGS='-v -run TestReputationExitBoundaryIntegration'
 ```
 
+### Actual activated Founder continuation (R8)
+
+The three `activate-plan` profiles in `TestReputationExitBoundaryIntegration`
+continue their actual committed heads after the old-pin→tree activation.
+An owned-node purchase refuses without changing either head; its retry changes
+none of twelve recorded tables. Five generated towers and the frozen1.003 factor
+earn cash101301 after20000s, cross the unchanged cash1e5 Garage gate, then take a
+second, plan-free Wind Down into run4. No later save, pin or genesis is reseeded.
+
+The Founder retains earned6/spent6 and the same three owned nodes. Run4 repeats
+cash1e3 and five generated/zero purchased towers, not ten; its frozen factor and
+start summary remain1.003. Existing run pins, geneses and frozen rows are unchanged.
+Both completed Company runs verify with their own bundles; the complete four-entry
+Founder history crosses pins and binds both actual Exit source coordinates.
+Copied final spending and second-Exit source corruption refuse. Exact second-Exit
+retry preserves all twelve tables. A further1000s manual command in run4 credits
+the independently calculated repeated-starter production and its complete recorded
+transition replays to the saved head; this ongoing run is not called completed.
+
+Compiling source faults that carry old generated inventory, omit final Founder
+head equality, or omit Exit source run binding each fail all three new named
+checks while the other21 matrix arms pass. Sources restore byte-exactly.
+The original24/9applied/15refused/3fallback population remains required.
+Initial earned6/run2/tier3/stored offers and seeded earlier history are diagnostic,
+not naturally earned progression, a default browser journey, the exact scripted
+AC15 population, a minted release, hosted CI or1.0 readiness. Designated review
+is pending. The preceding SQL command runs these continuations too.
+
 ### Cross-pin and first-failure shared replay supplement (R8)
 
 `testdata/replay/reputation-exit-boundary-v1.json` is separately authored from
