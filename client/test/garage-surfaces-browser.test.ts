@@ -5,6 +5,7 @@ import { expect, it, vi } from "vitest";
 import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
 import { parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import { decodeGameUIAnnouncement } from "../src/game-ui/events";
 import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
@@ -13,6 +14,7 @@ import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-ou
 import { createBrowserGameUIRuntime, type GameUIRuntime, type GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
 import { formatAmount } from "../src/ui/amount-format";
+import { decodeTransportEnvelope } from "../src/transport";
 
 const browser = typeof document !== "undefined";
 const NOW = 1_800_000_000_000;
@@ -1164,6 +1166,90 @@ it.skipIf(!browser)("announces an earned achievement once per cursor and badges 
     expect(target.querySelector(".announcement")!.textContent).toBe("p(doom) is now High.");
   } finally { await dispose(); }
 });
+
+// GS3 event presentation is not value authority. Decode the real public
+// envelope before runtime-double delivery; this is not a real socket test.
+function meterBandMessage(cursor: number, meterID: string, before: number, after: number): GameUIRuntimeMessage {
+  const envelope = decodeTransportEnvelope({ v: 2, ch: `player:${v4.run.founder_id}`, kind: "event", rev: cursor,
+    constants_hash: v4.constants_hash, ts: "2026-10-07T07:00:00Z",
+    payload: { event_id: `meter-${cursor}`, kind: "meter_band_changed.v1", scope: "company", rev: cursor, cursor_effect: "advance",
+      payload: { direction: after > before ? "up" : "down", from_band: before >= 70 ? "high" : "low", meter_id: meterID,
+        run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 },
+        to_band: after >= 70 ? "high" : "low", value_after: after, value_before: before } } });
+  if (!envelope) throw new Error("meter fixture envelope not admitted");
+  const value = decodeGameUIAnnouncement(envelope);
+  if (!value || value.kind !== "meter_band_changed") throw new Error("meter fixture announcement not admitted");
+  return { kind: "announcement", scope: "company", value };
+}
+
+for (const meterID of ["doom.probability", "trust.users.standing"] as const) {
+  for (const direction of ["up", "down"] as const) {
+    for (const width of [320, 1280] as const) {
+      it.skipIf(!browser)(`GS3 event authority ${meterID}/${direction}/${width}`, async () => {
+        const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+        const before = direction === "up" ? 69 : 71, after = direction === "up" ? 71 : 69;
+        const initial = semanticMeterRows.map((row) => row.meter_id === meterID ? meterRow(meterID, before) : row);
+        const updated = initial.map((row) => row.meter_id === meterID ? meterRow(meterID, after) : row);
+        const runtime = new Runtime(); runtime.current = semanticMeterSnapshot(initial);
+        const diagnostic = vi.spyOn(console, "error").mockImplementation(() => {});
+        let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+        try {
+          fixture = await mounted(runtime); const { target } = fixture;
+          const navTitle = t("surface.meters.title", {}, "era_1995"), badge = t("meters.nav_changed_badge", {}, "era_1995");
+          const nav = button(target, navTitle), desk = button(target, t("surface.desk.title", {}, "era_1995"));
+          const region = target.querySelector<HTMLElement>(".announcement")!;
+          expect(region.getAttribute("role")).toBe("status"); expect(region.textContent).toBe("");
+          const select = async (control: HTMLButtonElement) => { control.focus(); await userEvent.keyboard("{Enter}"); await settleMeterLayout(); expect(document.activeElement).toBe(control); };
+          const values = async (rows: typeof initial) => {
+            await assertSemanticMeters(target, rows, width < 480);
+            expect(target.querySelector(".meters")!.querySelectorAll("button,input,select,textarea")).toHaveLength(0);
+            expect(runtime.requests).toEqual([]); expect(document.activeElement).toBe(nav);
+          };
+          const meterPresentation = FEATURES_PRESENTATION.trustMeters.get(meterID);
+          const label = meterPresentation
+            ? t("meters.row_frame", { constituency: t(meterPresentation.constituency_key, {}, "era_1995"), axis: t(meterPresentation.axis_key, {}, "era_1995") }, "era_1995")
+            : t(FEATURES_PRESENTATION.doomMeter.title_key, {}, "era_1995");
+          const text = (value: number) => t("meters.band_changed_announcement", { meter: label,
+            band: t(FEATURES_PRESENTATION.meterBands.get(value >= 70 ? "high" : "low")!, {}, "era_1995") }, "era_1995");
+          desk.focus();
+          runtime.listener?.(meterBandMessage(10, meterID, before, after)); await settle();
+          expect(nav.textContent).toBe(`${navTitle}${badge}`); expect(region.textContent).toBe("");
+          expect(document.activeElement).toBe(desk); expect(runtime.requests).toEqual([]);
+          await select(nav); expect(nav.textContent).toBe(navTitle); expect(region.textContent).toBe("");
+          await values(initial);
+          runtime.listener?.(meterBandMessage(11, meterID, before, after)); await settle();
+          sharedStateVisibleText(target, '.announcement[role="status"]', text(after));
+          expect(nav.textContent).toBe(navTitle); await values(initial);
+          const fresh = parseGameUISnapshot({ ...semanticMeterSnapshot(updated), revision: 2 });
+          runtime.current = fresh; runtime.listener?.({ kind: "snapshot", value: fresh }); await settle();
+          await values(updated); expect(region.textContent).toBe(text(after));
+          await select(desk);
+          runtime.listener?.(meterBandMessage(12, meterID, after, before)); await settle();
+          expect(nav.textContent).toBe(`${navTitle}${badge}`); expect(region.textContent).toBe(text(after));
+          expect(document.activeElement).toBe(desk); expect(runtime.requests).toEqual([]);
+          await select(nav); expect(nav.textContent).toBe(navTitle); expect(region.textContent).toBe(text(after));
+          await values(updated);
+          runtime.listener?.(meterBandMessage(13, meterID, after, before)); await settle();
+          sharedStateVisibleText(target, '.announcement[role="status"]', text(before)); await values(updated);
+          for (const cursor of [10, 11]) {
+            runtime.listener?.(meterBandMessage(cursor, meterID, before, after)); await settle();
+            expect(region.textContent).toBe(text(before)); expect(nav.textContent).toBe(navTitle); await values(updated);
+          }
+          const newest = parseGameUISnapshot({ ...semanticMeterSnapshot(initial), revision: 3 });
+          runtime.current = newest; runtime.listener?.({ kind: "snapshot", value: newest }); await settle();
+          await values(initial); expect(region.textContent).toBe(text(before));
+          expect(diagnostic).not.toHaveBeenCalled();
+          runtime.listener?.(meterBandMessage(14, "trust.unregistered.standing", before, after)); await settle();
+          expect(diagnostic).toHaveBeenCalledExactlyOnceWith("game UI invariant: unannounceable meter change trust.unregistered.standing");
+          expect(region.textContent).toBe(text(before)); expect(nav.textContent).toBe(navTitle); await values(initial);
+        } finally {
+          try { if (fixture) await fixture.dispose(); }
+          finally { diagnostic.mockRestore(); await page.viewport(1280, 720); }
+        }
+      });
+    }
+  }
+}
 
 const opportunityArm = (pending: boolean, buffs = true, saturated = false) => ({
   attended_now_ms: 2_000,

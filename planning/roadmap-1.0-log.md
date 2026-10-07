@@ -4614,3 +4614,24 @@ and cleanup question unanswered, no new startup Retry or deletion. Full-nine-
 tier 1.0/real-service/capacity/Firefox/AT/body/privacy/platform/numeric/review
 holds remain; no boxes/lifecycle/archive/push/release/preview promotion.
 Goal active/progress.
+
+## 2026-10-07 — RP-344 event/badge/value test gap closed locally
+
+96439cfe test-only predeclaration. Existing combined test survives an actual
+forbidden global meter announcement; sixteen new native cases reject it and
+eight other actual faults. p(doom)/users Standing ×up/down ×320/1280 ×two
+engines: exact catalog text/status/badge/visit/old-cursor/unknown ID, all
+eleven values unchanged by events and bound only on a newer snapshot. No
+production byte change, every fault restored. Initial wrong whitespace
+expectation/refused stale-line patch disclosed, not product or gate credit.
+Final Garage414/performance two, client9,814/531 explicit skips/types/unchanged
+build/copy/boundaries/static topology pass. Full 9f485993-exclusive through
+containing proof/record commit needs Claude; all earlier exact spans owed.
+
+Fresh declared Postgres overlay still zero free/100%; cleanup unanswered,
+no deletion/full-disk run. Next accepted work: predeclare lifecycle forced-
+focus truth audit from mounted Garage surfaces; source candidate, not a
+defect yet. RP-342/D-023 startup draft remains unruled. Full Linux/SQL/
+Firefox/AT/body/privacy/platform/numeric/full-nine-tier1.0/review holds remain.
+No boxes/lifecycle/archive/push/release/shortened-preview promotion.
+Goal active/progress.

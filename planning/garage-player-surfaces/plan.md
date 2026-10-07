@@ -7,7 +7,23 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-343 Meters connection disclosure. Test scope f3b2f421
+Latest bounded work: RP-344 GS3 event/badge/value separation, test-only under
+96439cfe. Existing combined oracle survives actual forbidden global-announcement
+fault; sixteen new native executions catch it and eight other real source
+faults. Up/down p(doom)/users Standing at 320/1280: exact polite text/badge/
+visit/old-cursor/unknown-ID controls; all eleven values change only on explicit
+newer snapshot. Source restored exactly. Final Garage 414 / performance two,
+client 9,814 / 531 explicit skips, types/unchanged build/copy/boundaries/static
+topology pass. Whole 9f485993-exclusive range through this proof/record commit
+requires Claude; prior repair 4b2fd904..9f485993 and earlier spans remain owed.
+Next accepted work: predeclare native GS0.4/0.6 lifecycle forced-change focus
+truth audit from mounted Garage surfaces. Current source is a candidate only,
+not yet an executed defect; do not treat nav state alone as focus evidence.
+Full Linux/SQL capacity freshly still zero free/100%; cleanup unanswered,
+no deletion or container population. Startup draft, Firefox/AT/body/privacy/
+platform/numeric/full-nine-tier 1.0/review obligations remain; no boxes/lifecycle.
+
+Preceding bounded work: RP-343 Meters connection disclosure. Test scope f3b2f421
 reproduced 20 missing-note failures at red checkpoint 0a191ebd; separate
 product scope bfd7b4ff extends the existing host stale note to Meters only.
 The same 20 native cases pass; six actual faults discriminate and restore.

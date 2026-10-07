@@ -82,6 +82,14 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   Contradictory directions throw into authoritative recovery rather than announcing (RP-312).
   Fake-socket reconnect and native Chromium/WebKit host replay tests demonstrate suppression;
   this is not a real-server acquisition, Firefox or whole Garage acceptance claim.
+  The RP-344 supplement decodes public envelopes before runtime-double delivery
+  for p(doom) and users Standing, up/down, at 320/1280 px. Sixteen native
+  executions distinguish off-surface badge from global announcement, badge
+  clearing on visit, exact polite on-surface text and old-cursor suppression.
+  Events never update the eleven displayed values; only an explicitly delivered
+  newer snapshot does. Unknown presentation IDs produce one diagnostic without
+  invented text/values. Nine actual source faults discriminate. This is bounded
+  catalog/DOM evidence, not all meter IDs/eras, real delivery or manual AT.
 - **Earnings Calls (`fiscal`):** unlocked by `feature.fiscal`.
   - Shows credit against its visible cap, the auto-sweep preview, the hoard preview (next run only),
     and a display-only phase (`fiscal-phase.ts`: ripening, early with its stated success chance, or

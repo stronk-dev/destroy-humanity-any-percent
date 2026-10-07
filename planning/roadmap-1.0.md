@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-343 Meters connection disclosure.
+**Latest bounded work (2026-10-07):** RP-344 GS3 event/badge/value proof,
+test-only under 96439cfe. Existing oracle survives a real forbidden global
+announcement; sixteen new native cases catch it and eight other valid faults.
+Production restores exactly. Full Garage 414 / performance two, client 9,814
+/ 531 explicit skips, types/unchanged build/copy/boundaries/static topology
+pass. Whole 9f485993-exclusive span requires Claude, independently of preceding
+4b2fd904..9f485993 and every earlier span. Next accepted work: predeclare
+mounted-Garage lifecycle forced-focus truth audit under GS0.4/0.6; source
+candidate only. Fresh Docker capacity still zero free/100%, cleanup unanswered;
+no deletion/full-disk rerun. Startup draft, full Linux/SQL, Firefox/AT/body/
+privacy/platform/numeric/full-nine-tier 1.0/review holds remain. No lifecycle/
+push/archival/preview substitution.
+
+**Preceding bounded work (2026-10-07):** RP-343 Meters connection disclosure.
 Test scope f3b2f421 → red checkpoint 0a191ebd → separate product scope
 bfd7b4ff. Existing stale note now includes Meters. Twenty native cases pass;
 six actual faults discriminate and restore. Eleven committed values/bands

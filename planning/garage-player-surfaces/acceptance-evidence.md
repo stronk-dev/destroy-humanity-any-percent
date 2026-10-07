@@ -92,6 +92,29 @@ two and client/types/build/copy/boundaries/topology pass. Local first filter,
 not lifecycle/all-context/first-read rejection/retry/Firefox/AT/live SQL proof.
 Separate entire82614848-exclusive range requires Claude.
 
+## RP-344 GS3 event/badge/value separation (test-only)
+
+96439cfe predeclared; existing combined oracle survives an actual off-surface
+global-announcement fault in both engines. New sixteen native executions:
+p(doom)/users Standing ×up/down ×320/1280 ×Chromium/WebKit. Production
+envelope/announcement decoders admit fixtures before runtime-double delivery.
+Off-surface badge leaves existing global text unchanged; visiting clears badge
+without new announcement; on-surface exact polite text; a distinguishable
+opposite event followed by consumed-cursor replay does not overwrite it.
+All eleven values stay committed through events and only change on explicitly
+newer snapshots. Unknown presentation withheld/diagnostic; native focus/axe/
+layout/read-only checks. Nine compiling source faults each fail sixteen cases,
+including the exact forbidden global fault the old test survived. Production
+restored byte-identically. Initial invented separator-space assertion failed;
+corrected fixture expectation, not a product/copy defect or weakened semantic
+boundary. Whole 9f485993-exclusive proof/record span requires Claude.
+
+Full Garage 414 / performance two, client/types/unchanged build/copy/boundaries/
+static topology pass. Not all IDs/eras/states, real socket/server/reconnect,
+manual AT/Firefox/actual zoom/SQL/full GS3 or full CI proof. RP-343 review and
+GS3-A4 real-service value binding remain separate; Docker overlay freshly
+reports zero available/100%, no cleanup authorized or new container run.
+
 ## RP-342 first-read measurement, not acceptance of failed display
 
 Predeclared ced3b5c7; actual runtime/Response.json/decoder feeding native host,

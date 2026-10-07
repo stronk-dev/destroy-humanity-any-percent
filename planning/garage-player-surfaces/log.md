@@ -4016,3 +4016,101 @@ transactional inventory/plan/board/queue/log records. Entire new span after
 spans. Not AT/Firefox/all-state/reconnect/actual zoom/real-service/SQL/full1.0
 proof. Cleanup and startup draft remain unanswered, no inferred deletion/
 Retry/archival/push/release authority. Goal active/progress.
+
+## 2026-10-07 — RP-344 executed old oracle survivor
+
+96439cfe predeclared. Actual host off-surface branch now additionally writes
+the exact meter announcement while retaining its badge. Existing combined
+"announces an earned achievement once" population a6d71d→69fffe terminal 0:
+both selected native engines pass / 396 unselected; chained performance two
+also pass. This disproves that old test's no-global-announcement discrimination,
+NOT that production currently announces globally. Actual source restored before
+adding tests; new bounded population separately checks exact unchanged region,
+badge/visit/event/snapshot/old-cursor/unknown-presentation/focus/read-only paths.
+RP-344 filed immediately. No permanent production change under test-only scope.
+
+## 2026-10-07 — GS3 additional value/refusal discriminator predeclaration
+
+Same 96439cfe test-only range, assertions unchanged. Also seed an event-driven
+meter-value binding (instead of waiting for a snapshot), and a fallback from
+unknown meter ID to the p(doom) presentation. These directly challenge the
+event/value separation and withholding assertions; restore source afterward.
+The final snapshot-binding fault has not yet run: its attempted patch used
+an outdated short line, so apply_patch refused it without changing source.
+Six earlier probes already restored; no failed command is counted as evidence.
+
+## 2026-10-07 — RP-344 discriminating event/badge/value population
+
+Review by: Codex (implementer first filter, NOT designated review).
+Recorded by: Codex. Complete 9f485993-exclusive through this containing proof/
+record commit requires Claude, including 96439cfe. Earlier exact scopes,
+including 4b2fd904..9f485993, remain independently owed; no archival gate used.
+
+Production envelope/announcement decoders admit each public Company event,
+then runtime-double delivery drives native host. Eight declarations / sixteen
+executions: p(doom) and users Standing, up/down through 69↔71, 320/1280 in
+Chromium/WebKit. Initial eleven-value public snapshot has distinct per-ID
+values and explicit band crossing for the selected meter. Native Enter nav,
+focus retained, exact catalog text/status role/badge text, visit clearing,
+event-value separation before fresh snapshot, opposite announcement before
+replaying two old consumed cursors. Unknown decoder-legal presentation ID
+withheld with one diagnostic; no text/value/focus/command fabrication.
+Exact eleven native values, non-color bands, layout/axe/read-only checks.
+Repeated synthetic crossings are a controlled presentation population, not a
+claim this is a producer-issued real event sequence or reconnect session.
+
+Initial types 17aff9→f14f28 terminal 0, zero errors/warnings. New baseline
+bf834a→d91ce6 terminal 2, sixteen failures from my invented separator space
+in nav.textContent: Svelte emits title+badge without that source whitespace.
+No production/copy defect inferred. Correct expectation of existing exact
+adjacent text, retaining badge/clearing/global-text/value assertions. Healthy
+9d18ea→9e5479 terminal 0: sixteen passes / 398 unselected, chained performance
+two / 22 unselected. Not a passing production-change claim; product unchanged.
+
+Nine independent actual compiling faults, all terminal 2, each sixteen failed
+/ 398 explicitly unselected; restored between probes and at end:
+
+| Fault | Terminal output | Actual discrimination |
+|---|---|---|
+| Omit on-surface announcement | f63d34 | Exact visible announcement absent |
+| Introduce off-surface global announcement | 4aa6f5 | Global text changes instead of remaining unchanged; identical fault survived old test at69fffe |
+| Omit nav badge | c91c69 | Exact changed badge missing |
+| Omit clear-on-visit | 97a030 | Badge incorrectly remains after visit |
+| Bypass consumed-cursor guard | dbd6fa | Old High/Low text overwrites the distinguishable latest opposite text |
+| Remove polite status role | 13cb65 | Native region role null, not status |
+| Ignore snapshot binding | 650f1a | Native value retains69/71 instead of fresh71/69 |
+| Substitute p(doom) for unknown ID | e31c09 | Required unknown-ID diagnostic missing |
+| Bind values directly from event | e7e26f | Native value changes before authoritative snapshot |
+
+No type-error/timeout failure counted. A refused stale-line patch for the
+snapshot fault changed no source and received no evidence credit; correct
+actual line then mutated/executed. Restoration/diff check 1f821e: host no
+residual diff; SHA256 8c81a722e581659d30db984854e9b9598e6575afe71b2b6eead8d1b9c59fa298
+matches 9f485993; driver da680c12e0f9ef38e9a4b8bea900a218db382b91e82e6e12e41990663dd87473.
+No permanent product/catalog/provider/clock/balance/wire/CI/Make/RFC changes.
+
+Final native 13803f→90dfc8 terminal 0: 414/414, 103.02 s, original real60s
+idle unchanged; chained performance two / 22 unselected pass.428fd7→181fac
+terminal 0: types zero errors/warnings, client 9,814 passes / 531 explicit
+browser skips, 105 files pass / 22 skip.214-module build unchanged JS/CSS/
+worker identities index-BzPaPJEo.js, index-DaRqgLww.css,
+prediction.worker-MqspU_iu.js. Achievement boundary seven component/four copy
+negatives; shell/UI and ten Go/eleven Svelte cosmetic negatives; thirteen CI
+topology negatives pass.0f2960→0e964d copy terminal 0: 658 keys, unchanged
+SHA256 a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, content manifest pass. No source/HEAD edits
+during live final checks/history scan. Actual native assertion faults and
+bounded passing population, NOT all eleven event IDs/eras/states, real
+socket/producer/reconnect/SQL/Firefox/manual AT/zoom/full GS3/full CI proof.
+
+Read-only capacity recheck d23ee1 terminal 0: declared Postgres overlay still
+125.7G/122.7G, Available0, Use100%. No cleanup answer, deletion or full-disk
+Linux/SQL rerun. RP-342/D-023 draft unruled; no startup Retry constructed.
+Docs/ledger/inventory/plan/board/queue/checkpoint log reconciled. Next accepted
+work: predeclare GS0.4/0.6 forced lifecycle focus truth audit from mounted
+Garage surfaces. Current lifecycle handler switches surface; current Desk
+unit/browser assertions do not assert native forced focus. SOURCE CANDIDATE
+only, not an executed defect; determine authority/populations before fix.
+Body/GS4/full AC7/default-player/AT/Firefox/privacy/platform/numeric/full-nine-
+tier1.0 and every designated review remain. No checkbox/lifecycle/archive/
+push/mint/deploy/release/shortened-preview substitution. Goal active/progress.

@@ -3,6 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage event/badge/value checkpoint — 2026-10-07
+
+RP-344 test-only under 96439cfe: existing combined oracle survives actual
+off-surface global announcement. Sixteen new native cases reject it and eight
+other compiling source faults; production restored exactly. Exact catalog
+text/badge/visit/old replay/unknown ID; all eleven values update only on a
+newer snapshot. Full Garage 414 / performance two, client 9,814 / 531 explicit
+skips, types/unchanged build/copy/boundaries/static topology pass.
+**READY FOR CLAUDE:** whole 9f485993-exclusive through containing proof/record
+commit; preceding 4b2fd904..9f485993 and every earlier span independently owed.
+**NEXT accepted work:** predeclare GS0.4/0.6 native forced-lifecycle-focus
+truth audit from mounted Garage surfaces; source candidate, not a finding yet.
+Docker still zero free/100%; cleanup unanswered, no deletion/container rerun.
+Startup draft/full Linux/SQL/Firefox/AT/body/privacy/platform/numeric/full-nine-
+tier 1.0/review gates remain; no acceptance/archive/push/preview promotion.
+
 ## Garage Meters connection-disclosure checkpoint — 2026-10-07
 
 RP-343: f3b2f421 test scope, 0a191ebd red checkpoint, bfd7b4ff separate
