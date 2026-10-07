@@ -348,6 +348,10 @@ async function founderDOMIntent(page, requests, control, kind, expectedFields) {
       // timing. Wait for ready state and activate once in that
       // same browser task; a completed pointer sequence need not emit a click.
       await page.evaluate(activateCosmeticBuy, { label: await control.innerText(), state: "owned", budgetMs: remaining() });
+    } else if (kind === "adopt_pet") {
+      phase = "native-keyboard-activation";
+      await control.focus();
+      await page.keyboard.press(axisFixture ? "Space" : "Enter");
     } else {
       phase = "pointer-activation";
       await control.click({ timeout: remaining() });
@@ -362,7 +366,8 @@ async function founderDOMIntent(page, requests, control, kind, expectedFields) {
     const requiredKeys = ["intent_id", "kind", "expected_revision", ...Object.keys(expectedFields)].sort();
     if (emitted.length !== priorCount + 1 || !body || Object.keys(body).sort().join("\0") !== requiredKeys.join("\0") ||
         body.expected_revision !== before.founder_revision || Object.entries(expectedFields).some(([key, value]) => body[key] !== value) ||
-        response.status() !== 200 || receipt.outcome !== "applied" || receipt.founder_revision !== before.founder_revision + 1) {
+        response.status() !== 200 || receipt.outcome !== "applied" || receipt.intent_id !== body.intent_id ||
+        receipt.founder_revision !== before.founder_revision + 1) {
       throw new Error(`cosmetic G10 ${kind} did not emit one exact Founder-scoped applied intent: ${JSON.stringify({ body, receipt, emitted: emitted.length - priorCount })}`);
     }
     // GS0.2: an HTTP receipt is not the mounted host's completed authoritative
@@ -696,6 +701,8 @@ try {
   const adoption = await founderDOMIntent(page, requests,
     page.getByRole("button", { name: plainFixtureCopy("pet.adoption.action.adopt"), exact: true }), "adopt_pet",
     { species_id: availability.starter_species_id, name_key: nameKey });
+  assert.equal(await page.locator("#pet-adoption-heading").evaluate((heading) => document.activeElement === heading),
+    true, "authoritative native adoption must focus the welcome heading");
   const petID = adoption.pet_id;
   if (typeof petID !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(petID)) {
     throw new Error("cosmetic G10 adoption returned no real pet identity");

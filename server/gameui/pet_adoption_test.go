@@ -115,3 +115,52 @@ func TestPetAdoptionArmExposesOnlyIdentityBandAndEligibility(t *testing.T) {
 		t.Fatalf("feature.pet_adoption fact missing: %+v", facts)
 	}
 }
+
+// RP-388: the persisted care receipt and a later read have different attendance
+// samples. At the retained failure's threshold, only two more milliseconds
+// change the projected band without changing the stored care record.
+func TestPetAdoptionBandCanChangeBetweenReceiptAndRead(t *testing.T) {
+	bundle := petSpeciesBundle(t)
+	_, founder := featureStates(bundle)
+	founder.WireVersion, founder.AgeMS = 23, 0
+	care, err := pet.InitialCareState(bundle.Pets, 1742)
+	if err != nil {
+		t.Fatal(err)
+	}
+	applied, err := pet.ApplyCareTransition(care, bundle.Pets, pet.CareTransitionInput{
+		ActionID: "care.feed", AttendedBeforeMS: 1742, AttendedAfterMS: 1920,
+	})
+	if err != nil || !applied.Applied || applied.StatusBand != "high" ||
+		applied.State.StatDecayRemaindersPPM[pet.StatEnergy] != 356000 {
+		t.Fatalf("retained care boundary not reproduced: %+v, %v", applied, err)
+	}
+	const id = "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa"
+	founder.Pets = map[string]pet.CareState{id: applied.State}
+	founder.PetIdentities = map[string]pet.Identity{id: {SpeciesID: "pet_species.server_room_cat", Temperament: "sassy",
+		PaletteID: "pet_palette.fur_02", NameKey: "pet.name.server_room_cat.n00", AdoptedAtMS: 1, AdoptedAtAttendedMS: 1742}}
+	before, err := json.Marshal(founder.Pets)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, sample := range []struct {
+		attendedMS int64
+		band       pet.StatusBand
+	}{{1920, "high"}, {1921, "high"}, {1922, "normal"}} {
+		arm, err := projectPets(bundle, founder, sample.attendedMS)
+		if err != nil || arm == nil || len(arm.Pets) != 1 {
+			t.Fatalf("project at %d: %+v, %v", sample.attendedMS, arm, err)
+		}
+		if arm.Pets[0].StatusBand != sample.band {
+			t.Fatalf("project at %d: band=%s, want %s", sample.attendedMS, arm.Pets[0].StatusBand, sample.band)
+		}
+		for _, action := range arm.Pets[0].EligibleActionIDs {
+			if action == "care.feed" {
+				t.Fatalf("project at %d re-enabled the cooling-down feed action", sample.attendedMS)
+			}
+		}
+	}
+	after, err := json.Marshal(founder.Pets)
+	if err != nil || string(after) != string(before) {
+		t.Fatalf("read projection changed stored care: %s -> %s, %v", before, after, err)
+	}
+}

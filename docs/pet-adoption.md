@@ -111,7 +111,9 @@ cooldowns, behavior or mood appear.
 
 The band and the eligible actions come from `pet.ProjectCareStatus`, which decays a discarded
 clone to the Founder's effective attendance (completed `age_ms` plus the current run's attended
-partial). This is the same total a care or adoption command would freeze.
+partial). This is the same total a care or adoption command would freeze at that command's
+sample. A later read can cross a band threshold without a new Founder revision; its band is
+not required to equal the earlier receipt's frozen band.
 
 The pre-existing null-only `features.pets` property stays null, because the API compatibility gate
 rejects widening a null property. The Reputation R9 optional-arm precedent is followed instead.
@@ -122,13 +124,20 @@ rejects widening a null property. The Reputation R9 optional-arm precedent is fo
 the top of the Desk. It appears whenever `features.pet_adoption` is present.
 
 - **Layout:** the species description, the name pool as a native radio group (the first name is
-  preselected; arrow keys move between names), then Adopt and Not now.
+  preselected; arrow keys move between names), then Adopt and Not now. Explicit tab stops preserve
+  that order in Chromium and WebKit; the unselected radio choices remain arrow-key reachable.
 - **Not now** collapses the card to a persistent entry point. It sets no timer and never badges or
-  re-nags.
+  re-nags. If collapsing removes the focused control, focus moves to that entry point; reopening
+  returns it to the selected name. These post-render handoffs respect a newer outside focus choice
+  and do not run after the card unmounts.
 - **Adoption:** Adopt sends `adopt_pet` as a Founder intent. On success, a welcome state takes
   over. Focus moves to its heading, and exactly one polite live-region announcement fires per pet;
   a resync that re-delivers the same pet neither re-announces nor steals focus.
-- **Rejections** render inline and are tied to Adopt through `aria-describedby`.
+- **Pending:** Adopt stays focusable with `aria-disabled`, suppresses duplicate activation, and
+  shows the existing `common.pending` text in the polite status region. Unavailable controls remain
+  disabled. The welcome announcement uses the same region, visually hidden when not pending.
+- **Rejections** render inline and are tied to Adopt through `aria-describedby`; a refusal does
+  not remove the adopting player's focus.
 - **No price appears anywhere:** no `$`, no `0.00`, and no "free".
 
 **Visual contract.** `client/src/game-ui/pet/visual.ts` provides `petVisualSpec(identity,

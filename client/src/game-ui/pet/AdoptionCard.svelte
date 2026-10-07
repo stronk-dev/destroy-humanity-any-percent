@@ -28,7 +28,21 @@
   let collapsed = $state(false);
   let announced = $state<string | undefined>();
   let welcome = $state<HTMLElement | undefined>();
+  let root: HTMLElement | undefined;
   let announcedPetID: string | undefined;
+
+  async function setCollapsed(next: boolean, trigger: EventTarget | null): Promise<void> {
+    const focused = trigger instanceof HTMLButtonElement && document.activeElement === trigger ? trigger : undefined;
+    collapsed = next;
+    await tick();
+    // Only replace focus lost with the removed control. A newer player choice
+    // outside this card wins; an unmounted card cannot take focus back.
+    if (!focused || focused.isConnected || !root?.isConnected ||
+        (document.activeElement !== focused && document.activeElement !== document.body)) return;
+    const replacement = next ? root.querySelector<HTMLButtonElement>("button[data-adoption-entry]")
+      : root.querySelector<HTMLInputElement>('input[name="pet-name"]:checked');
+    replacement?.focus();
+  }
 
   // Exactly one announcement per adopted pet; resyncs and retries that
   // re-deliver the same pet never re-announce.
@@ -40,8 +54,8 @@
   });
 </script>
 
-<section class="adoption" aria-labelledby="pet-adoption-heading">
-  <p class="live" role="status" aria-live="polite">{announced ?? ""}</p>
+<section bind:this={root} class="adoption" aria-labelledby="pet-adoption-heading">
+  <p class="live" class:pending role="status" aria-live="polite">{pending ? t("common.pending", {}, era) : announced ?? ""}</p>
   {#if adopted}
     {@const petName = t(adopted.name_key as CopyKey, {}, era)}
     <h2 id="pet-adoption-heading" tabindex="-1" bind:this={welcome}>{t("pet.adoption.welcome.title", { pet_name: petName }, era)}</h2>
@@ -52,7 +66,7 @@
     <p>{t("pet.adoption.welcome.body", { pet_name: petName }, era)}</p>
   {:else if collapsed}
     <h2 id="pet-adoption-heading" class="visually-hidden">{t("pet.adoption.card.title", {}, era)}</h2>
-    <button type="button" onclick={() => { collapsed = false; }}>{t("pet.adoption.entry_point", {}, era)}</button>
+    <button type="button" tabindex="0" data-adoption-entry onclick={(event) => { void setCollapsed(false, event.currentTarget); }}>{t("pet.adoption.entry_point", {}, era)}</button>
   {:else}
     <h2 id="pet-adoption-heading">{t("pet.adoption.card.title", {}, era)}</h2>
     <p>{t(descriptionKey, {}, era)}</p>
@@ -61,15 +75,15 @@
       <legend>{t("pet.adoption.name_choice.label", {}, era)}</legend>
       <div class="names">
         {#each availability.name_keys as key (key)}
-          <label><input type="radio" name="pet-name" value={key} checked={selected === key} onchange={() => { chosen = key; }} /> {t(key as CopyKey, {}, era)}</label>
+          <label><input type="radio" name="pet-name" value={key} checked={selected === key} tabindex={selected === key ? 0 : -1} onchange={() => { chosen = key; }} /> {t(key as CopyKey, {}, era)}</label>
         {/each}
       </div>
     </fieldset>
     <p class="cap">{t("pet.adoption.cap.label", { count: availability.count, cap: availability.cap }, era)}</p>
     <div class="actions">
-      <button type="button" aria-describedby={rejection ? "pet-adoption-rejection" : undefined} disabled={pending || !controlsEnabled}
-        onclick={() => onAdopt(availability.starter_species_id, selected)}>{t("pet.adoption.action.adopt", {}, era)}</button>
-      <button type="button" onclick={() => { collapsed = true; }}>{t("pet.adoption.action.later", {}, era)}</button>
+      <button type="button" tabindex="0" aria-describedby={rejection ? "pet-adoption-rejection" : undefined} disabled={!controlsEnabled} aria-disabled={pending || undefined}
+        onclick={() => { if (!pending) onAdopt(availability.starter_species_id, selected); }}>{t("pet.adoption.action.adopt", {}, era)}</button>
+      <button type="button" tabindex="0" onclick={(event) => { void setCollapsed(true, event.currentTarget); }}>{t("pet.adoption.action.later", {}, era)}</button>
     </div>
     {#if rejection}<p id="pet-adoption-rejection">{t(rejection, {}, era)}</p>{/if}
   {/if}
@@ -87,5 +101,5 @@
   .pet { display: flex; flex-wrap: wrap; gap: var(--cc-space-md); align-items: center; }
   .actions { display: flex; flex-wrap: wrap; gap: var(--cc-space-sm); }
   button { min-block-size: var(--cc-space-xl); min-inline-size: var(--cc-space-xl); }
-  .live, .visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .live:not(.pending), .visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 </style>

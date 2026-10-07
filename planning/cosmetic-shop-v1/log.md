@@ -1826,3 +1826,14 @@ replacement Firefox pass. Syntax/diff checks pass; no full CI/AT/release accepta
 Review by: Codex (implementer first filter); Recorded by: Codex. New range `ce626440` exclusive
 through this test/helper/docs/record commit awaits designated review; earlier debt remains.
 No feature archival or push. Next: consolidated Cosmetic review and remaining accepted gates.
+
+## 2026-10-08 — RP-388 recurrence retained; native adoption added to G10
+
+Root6685 is RED after native Enter adoption, bound receipt/revision and actual welcome focus
+pass. Its care snapshot is `normal` versus the receipt's `high` at the same Founder5. Preserved
+test-DB receipt/state and the deterministic transition/projector threshold check are recorded
+in `planning/pet-adoption-v1/log.md`'s native adoption entry, which owns this batch and review
+range after `3b2b9a0e`. They establish a legitimate later-read decay route, not a fix or unique
+read-clock attribution. No care assertion, gameplay, retry or deadline changed; the axis/Space
+population never runs. Next: replace receipt/read equality with an exact read-sample-bound
+oracle and execute its negative cases and real journey. Original63825 and RP-365 remain open.

@@ -35,6 +35,14 @@ queue and current verification, not a claim to have rerun every acceptance crite
 
 ### Current verification and closeout
 
+- Latest native Pet Adoption correction (RP-392): Tab/arrow selection, pending focus/visible
+  feedback, duplicate suppression and Not now/reopen focus handoffs now execute in Chromium/
+  WebKit. Old component fails four regressions; final14 checks, types and build pass. Actual
+  composed6685 passes native Enter adoption and welcome focus but is **RED at care** (RP-388);
+  Space/Clout does not run. Preserved state plus a deterministic projector test proves a valid
+  band-threshold crossing at unchanged Founder revision; the care oracle still needs its
+  read-sample binding. No full journey/feature/CI green, PA7 resolution or accessibility
+  completion follows. The Pet Adoption log owns this batch and pending review.
 - Latest bounded API work: the category catalog now has its explicit owner descriptor (one of
   nineteen current artifact families). The shared error schema no longer makes public reads
   import private Account; affected tests/vet and byte-identical generation pass. Remaining
@@ -104,7 +112,8 @@ queue and current verification, not a claim to have rerun every acceptance crite
   declines in that actual run. Post-response re-consent remains controlled-boundary evidence.
   No unique original-run attribution, reliability,
   hosted-green or adopted PR content claim. One selected run passed PR but failed care equality
-  (RP-388); its cause remains untraced, with precise public failure metadata now retained.
+  (RP-388); the original run remains untraced. The latest recurrence and deterministic
+  threshold diagnostic are recorded above; no reliability or care-oracle correction is claimed.
   The Garage/Clout/Cosmetic logs own evidence and pending review.
 
 ### What the weeks of work accomplished

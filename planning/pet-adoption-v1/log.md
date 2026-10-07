@@ -368,3 +368,45 @@ move behind `CLOUD_CLICKER_REPUTATION_EXHAUSTIVE=1` into a maintenance-lane
 - **Exit:** the RFC/API ruling author reconciles PA7 against C2; a reviewed implementation and
   negative tests then enforce the exact adopted wire in server registry, generated client,
   runtime and docs. No archival or broader approval follows from this targeted finding.
+
+## 2026-10-08 — native adoption/focus conformance (RP-392), care boundary diagnostic
+
+Outcome under PA8.3 and Garage GS0.6/GS0.8: replace the old click-only “keyboard” test with
+native Tab/ArrowRight/Enter, preserve Adopt focus during pending/refusal, suppress duplicate
+Enter/Space, and restore focus after Not now/reopen without overriding a newer outside choice
+or acting after unmount. Explicit tab stops repair WebKit traversal. Pending uses the existing
+visible `common.pending` text and the same polite region as the welcome. No authored copy,
+server semantics, save/version, catalog, CI, timeout or retry change. Canonical docs updated.
+
+Regression10317 against the old component: four failures / two passes (Chromium pending and
+collapse lose focus; WebKit skips native traversal). Corrected1604 passes6. Affected Adoption,
+Cosmetic host and Garage population65074 passes798 Chromium/WebKit cases; this precedes the
+final pending visibility refinement, which final native71362 explicitly verifies (14 PASS,
+including newer-focus/unmount controls). Types10981: zero errors/warnings; production build:
+215 modules, exit0. Existing client boundary checks pass. No Firefox, performance or actual
+assistive-technology study claimed.
+
+Actual root `make test-game-ui-composed`6685 is **RED / exit2**. Its real Postgres refresh and
+persisted populations, built-client main gameplay/WebSocket recovery and default native Buy
+pass. New native Enter adoption emits one exact request, receives the matching applied
+intent/revision and focuses the actual welcome heading. It then fails at the unchanged care
+band equality (RP-388); the Space/Clout population never runs. This occurred before the final
+pending visibility-only CSS refinement; it does not prove the entire final journey green.
+
+The disposable DB was preserved before inspection. Care's recorded attendance1742→1920 leaves
+Founder5/v24, energy750000 and remainder356000; the applied receipt says `high`, the later
+snapshot says `normal` at Founder5 with feed ineligible. The pinned 360000ms/2000ppm policy
+crosses on two further attended milliseconds. `TestPetAdoptionBandCanChangeBetweenReceiptAndRead`
+executes the real transition/projector at1920/1921/1922, checks exact high/high/normal, feed
+cooldown and byte-unchanged stored care. Focused cold Go44203 passes both Pet Adoption tests;
+final whole affected `./gameui` package96032 passes cold and its `make vet` passes (no real-DB
+gate inferred from this native package run).
+this proves a legitimate read-only threshold route, not the unrecorded exact HTTP read sample
+or unique cause of63825. No care assertion was weakened or failure rerun away. Cosmetic log
+owns the next oracle repair; PA7/C2, content and full AC12 remain open.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Range `3b2b9a0e` exclusive
+through this implementation/test/docs/record commit awaits designated cross-party review;
+earlier reviews are not substituted. No feature acceptance, archival or push. Next: bind the
+care witness to its actual read-time projection, retain negative controls, then execute the
+real journey; independently consolidate the feature's outstanding review and contract gates.
