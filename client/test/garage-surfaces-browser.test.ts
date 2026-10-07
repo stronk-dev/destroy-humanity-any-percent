@@ -7,6 +7,7 @@ import { t, type CopyKey } from "../src/copy";
 import { parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { decodeGameUIAnnouncement, decodeGameUIEvent } from "../src/game-ui/events";
 import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
+import { GAME_UI_PRESENTATION } from "../src/game-ui/presentation";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
 import PetCareSurface from "../src/game-ui/pet/PetCareSurface.svelte";
@@ -1253,19 +1254,20 @@ for (const meterID of ["doom.probability", "trust.users.standing"] as const) {
 
 // GS0.4/0.6: decoded lifecycle publication and actual forced native focus.
 // Runtime-double delivery is not server issuance or a physical AT session.
-function forcedLifecycleMessage(destination: "offer_sheet" | "run_end", cursor: number): Extract<GameUIRuntimeMessage, { kind: "event" }> {
+function forcedLifecycleMessage(destination: "offer_sheet" | "run_end", cursor: number,
+  { source = v4, exitType = "scripted_first" }: Readonly<{ source?: GameUISnapshot; exitType?: string }> = {}): Extract<GameUIRuntimeMessage, { kind: "event" }> {
   const kind = destination === "offer_sheet" ? "exit_offer_spawned" : "run_ended";
   const payout = { clout_reach_note: "clout.reach.preserved", network_slot_unlocks: [], reputation_delta: 2, route_knowledge: 25 };
   const payload = destination === "offer_sheet"
     ? { exit_type: "scripted_first", expires_at_ms: NOW + 60_000, offer_id: "01985555-3333-7333-8333-333333333333", payout_preview: payout }
     : { assisted: { advisor: false, commons: false }, attended_ms: 500, ended_at_ms: NOW + 1_000,
-      executed_routes: [], exit_type: "scripted_first", faction: null, founder_id: v4.run.founder_id,
+      executed_routes: [], exit_type: exitType, faction: null, founder_id: source.run.founder_id,
       gates_crossed: ["gate.t0_to_t1"], generators_purchased_total: 1, ledger_fact_kinds: [], lifetime_value: "1e3",
       payout, pre_timer: false, rta_ms: 2_000,
-      run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: 1 },
-      started_at_ms: v4.run.run_started_at_ms, terminal_seq: 2, tier: 0 };
-  const envelope = decodeTransportEnvelope({ v: 2, ch: `player:${v4.run.founder_id}`, kind: "event", rev: cursor,
-    constants_hash: v4.constants_hash, ts: new Date(NOW + 1_000).toISOString(),
+      run_id: { company_stream_id: "01985555-2222-7222-8222-222222222222", run_seq: source.run.run_seq },
+      started_at_ms: source.run.run_started_at_ms, terminal_seq: 2, tier: source.run.tier };
+  const envelope = decodeTransportEnvelope({ v: 2, ch: `player:${source.run.founder_id}`, kind: "event", rev: cursor,
+    constants_hash: source.constants_hash, ts: new Date(NOW + 1_000).toISOString(),
     payload: { event_id: `lifecycle-${cursor}`, kind, scope: "company", rev: cursor, cursor_effect: "advance", payload } });
   if (!envelope) throw new Error("lifecycle fixture envelope not admitted");
   const value = decodeGameUIEvent(envelope);
@@ -1417,6 +1419,112 @@ for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founde
           finally { read.mockRestore(); subscribed.mockRestore(); await page.viewport(1280, 720); }
         }
       });
+    }
+  }
+}
+
+// Non-first standard terminal, native reachability after refusal, then recovery.
+// Decoder fixtures prove rendering, not issuance or natural ending reachability.
+for (const exitType of ["acquihire", "acquisition", "collapse", "ipo"] as const) {
+  for (const { tier, era } of [{ tier: 0, era: "era_1995" }, { tier: 1, era: "era_2000" }, { tier: 2, era: "era_2010" }] as const) {
+    for (const width of [320, 1280] as const) {
+      for (const activation of ["{Enter}", " "] as const) {
+        it.skipIf(!browser)(`GS0 standard-recovery ${exitType}/tier${tier}/${width}/${activation === " " ? "Space" : "Enter"}`, async () => {
+          const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+          const source = structuredClone(v4); source.run = { ...source.run, run_seq: 2, exit_count: 1, tier };
+          const runtime = new Runtime(); runtime.current = parseGameUISnapshot(source);
+          const subscribed = vi.spyOn(runtime, "subscribe"); const read = vi.spyOn(runtime, "snapshot");
+          let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+          let releaseRead = () => {};
+          try {
+            fixture = await mounted(runtime); const { target } = fixture;
+            runtime.listener?.(forcedLifecycleMessage("run_end", 20, { source, exitType })); await settle();
+            const heading = sharedStateVisibleText(target, "h1", t("screen.run_end.standard.title", {}, era));
+            expect(document.activeElement).toBe(heading); expect(heading.getAttribute("tabindex")).toBe("-1");
+            const terminal = target.querySelector<HTMLElement>('[aria-labelledby="run-end-heading"]')!;
+            const label = GAME_UI_PRESENTATION.exitTypes.get(exitType); expect(label).toBeDefined();
+            expect([...terminal.querySelectorAll("p")].map((p) => p.textContent)).toEqual([
+              t("screen.run_end.exit_frame", { exit_type: t(label!.title_key, {}, era), tier }, era),
+              t("screen.run_end.attended_frame", { attended: "0:00:00" }, era),
+              t("screen.run_end.founder_note", {}, era), t("terms.clout_reach_note.text", {}, era),
+              t("terms.reputation_delta.frame", { delta: formatAmount("2e0") }, era),
+              t("terms.route_knowledge.frame", { delta: 25 }, era),
+            ]);
+            expect(terminal.querySelector("h2")?.textContent).toBe(t("screen.run_end.delta_heading", { run_seq: 3 }, era));
+            expect(terminal.textContent).not.toContain(t("curriculum.scripted_first_failure.body", {}, era));
+            const terminalText = terminal.textContent;
+            const continuation = button(target, t("screen.run_end.continue", {}, era));
+            const stages = ["same-sequence", "skipped-sequence", "other-founder", "rejected-read", "healthy"] as const;
+            read.mockClear(); await assertAxe(target, `standard ${exitType}/${tier}`);
+            for (const [index, stage] of stages.entries()) {
+              const controls = target.querySelectorAll("button,input,summary,[tabindex='0']").length;
+              let tabs = 0;
+              while (document.activeElement !== continuation && tabs <= controls) {
+                await userEvent.keyboard("{Tab}"); await settle(); tabs += 1;
+              }
+              expect(document.activeElement, `${stage}: native traversal exhausted ${tabs}/${controls + 1}`).toBe(continuation);
+              expect(continuation.disabled).toBe(false);
+              const held = new Promise<void>((resolve) => { releaseRead = resolve; });
+              const wire = structuredClone(source); wire.revision = 3;
+              wire.run = { ...wire.run, tier: 0, exit_count: 2, run_started_at_ms: NOW + 1_000,
+                run_seq: stage === "same-sequence" ? 2 : stage === "skipped-sequence" ? 4 : 3 };
+              wire.server_now_ms = NOW + 2_000; wire.evaluated_through_ms = wire.server_now_ms;
+              if (stage === "other-founder") wire.run.founder_id = "01985555-4444-7444-8444-444444444444";
+              const successor = parseGameUISnapshot(wire);
+              read.mockImplementationOnce(async () => {
+                await held;
+                if (stage === "rejected-read") throw new TypeError("synthetic standard continuation read rejection");
+                return successor;
+              });
+              await userEvent.keyboard(activation); await settle();
+              expect(read).toHaveBeenCalledTimes(index + 1); expect(continuation.disabled).toBe(true);
+              expect(terminal.textContent).toBe(terminalText); expect(runtime.requests).toEqual([]);
+              await userEvent.keyboard(activation); await settle(); expect(read).toHaveBeenCalledTimes(index + 1);
+              releaseRead(); await settle();
+              if (stage !== "healthy") {
+                expect(target.querySelector("main")?.dataset.surface, stage).toBe("run_end");
+                expect(terminal.isConnected).toBe(true); expect(terminal.textContent).toBe(terminalText);
+                expect(continuation.disabled).toBe(false);
+                sharedStateVisibleText(target, '[role="alert"]', t("settings.save_status.offline", {}, era));
+                if (index === 0) await assertAxe(target, `standard refused ${exitType}/${tier}`);
+              } else {
+                expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+                expect(terminal.isConnected).toBe(false); expect(continuation.isConnected).toBe(false);
+                const desk = sharedStateVisibleText(target, "h1", t("surface.desk.title", {}, "era_1995"));
+                expect(document.activeElement).toBe(desk); expect(desk.id).toBe("desk-heading");
+                expect(target.querySelector('[role="alert"]')).toBeNull();
+                await assertAxe(target, `standard recovered ${exitType}/${tier}`);
+                // Desk has no failure marker: sample the real save-state reader,
+                // not an absent class selector that cannot detect stale offline.
+                const settings = button(target, t("surface.settings.title", {}, "era_1995"));
+                const remaining = target.querySelectorAll("button,input,summary,[tabindex='0']").length;
+                let steps = 0;
+                while (document.activeElement !== settings && steps <= remaining) {
+                  await userEvent.keyboard("{Tab}"); await settle(); steps += 1;
+                }
+                expect(document.activeElement, `Settings native traversal ${steps}/${remaining + 1}`).toBe(settings);
+                await userEvent.keyboard(activation); await settle();
+                expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+                const status = target.querySelector<HTMLElement>('[aria-labelledby="settings-heading"] p')!;
+                const [prefix, suffix] = t("settings.save_status.saved_frame", { ago: "__AGO__" }, "era_1995").split("__AGO__");
+                const statusText = status.textContent!;
+                expect(statusText.startsWith(prefix!)).toBe(true); expect(statusText.endsWith(suffix!)).toBe(true);
+                const ago = statusText.slice(prefix!.length, suffix!.length ? -suffix!.length : undefined);
+                expect(ago).toMatch(/^\d+:[0-5]\d:[0-5]\d$/u);
+                sharedStateVisibleText(target, '[aria-labelledby="settings-heading"] p', t("settings.save_status.saved_frame", { ago }, "era_1995"));
+                expect(statusText).not.toBe(t("settings.save_status.offline", {}, "era_1995"));
+              }
+              expect(subscribed.mock.calls.map(([id]) => id)).toEqual([source.run.founder_id]);
+              expect(runtime.requests).toEqual([]); expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
+            }
+            expect(read).toHaveBeenCalledTimes(5);
+          } finally {
+            releaseRead(); await settle();
+            try { if (fixture) await fixture.dispose(); }
+            finally { read.mockRestore(); subscribed.mockRestore(); await page.viewport(1280, 720); }
+          }
+        });
+      }
     }
   }
 }

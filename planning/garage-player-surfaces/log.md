@@ -4473,3 +4473,31 @@ static topology/no-payment. New finding ledger immediately if execution fires.
 Test+record checkpoint requires entire0e7910ed-exclusive range Claude, preceding
 0e548992..0e7910ed and every earlier span independent. No checkbox/body/status/
 lifecycle/archive/push/cleanup/Retry/release/preview substitution; goal active.
+
+## 2026-10-07 — RP-346 native continuation reachability red
+
+Initial typed population7a9ef2 terminal0 zero errors/warnings. Nativefb509c→
+c3559d terminal2:48 WebKit failures/48 Chromium controls,530 unselected.
+WebKit cannot Tab to Continue from actual forced Run-End heading; all registered
+standard labels/three eras/widths/activations fail before the first read. Six
+controls+one traversal steps exhaust, focus returns to Desk nav. Exact standard
+title/Exit/payout/Founder-note controls pass first. Chromium completes all five
+stages. Prior direct-focus activation is not evidence of Tab reachability.
+RP-346 ledger created immediately. No product byte changed yet.
+
+The initial `.stale-note` absence check was vacuous: no such class exists, and
+Desk does not expose offline text. Replaced before repair with native traversal
+to actual Settings after successful Desk focus, then complete registered saved
+frame and independent valid duration shape, explicit offline refusal. Prefix
+alone is not the oracle; exact complete copy+duration is required. No fixed
+elapsed threshold or owner copy change. Faulted offline-clear must fail this
+actual consumer, not absence of a nonexistent selector. No claim that initial
+Chromium controls proved recovery disclosure cleared. Typed/native repeat before
+product scope required; no provider waiver or scripted continuation focus.
+
+Refined repeat6d84af types terminal0; nativea83cde→bc947b terminal2, same48
+WebKit failures/48 Chromium controls,530 unselected,26.36s. Chromium now also
+completes native Settings saved-state proof. Typed red test-only checkpoint
+carries parser-decoder standard fixtures and no product change. Initial failed
+ledger patch used a misquoted existing row; apply_patch refused atomically,
+exact row read then applied, no user work lost.
