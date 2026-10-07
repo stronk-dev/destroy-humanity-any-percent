@@ -4,16 +4,27 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage proof correction:** RP-316's shared GS5-A4 observer through
+**Latest Garage pet review:** original Claude `7a61e4b6^..7a61e4b6`, all eight
+paths: designated **CHANGES REQUIRED for the existing RP-132/GS4×PA7 author
+contract hold**, mechanical subset verified. Four native pet assertions and
+cold Go fact pass; five compiling callback/revision/text/overlay/empty-map
+faults fail and restore exactly. No permanent product change. Separate
+RP-318 actual decoder diagnostic ignores12 valid pet-band transitions and
+seven malformed payloads; required announcement copy is absent. Next safe
+work: predeclare test-only native care pending/reconnect/refusal/refresh
+coverage under the existing public arm, without raw internals or new prose.
+Not full GS4/real-server care/CI/archival proof. Full nine-tier goal stays active.
+
+**Preceding Garage proof correction:** RP-316's shared GS5-A4 observer through
 `0befc01c` now checks request/revision/run/cash/buff bindings and successful
 successor reads. Test-first failures and six independent compiling omission
 probes discriminate; source restored exactly. Native86/performance1, client
 9,735/348 skips, types/build/boundaries and actual Postgres/WebSocket composed
 lanes pass. Actual claim: click buff at revision26 after15 DOM clicks, NOT
 Lucky integration. No product runtime/schema/kernel/copy/CI changes. Entire
-Codex range after `c0eb3dc5` through its tracking edge needs Claude; RP-316
-is not closed. Next: original Claude pet diagnostic review
-`7a61e4b6^..7a61e4b6`, preserving RP-132/GS4×PA7 author hold. RP-313 and
+Codex range `c0eb3dc5..876b331c` needs Claude; RP-316
+is not closed. Its then-next original pet diagnostic review is recorded
+above, preserving RP-132/GS4×PA7 author hold. RP-313 and
 all prior holds/full nine-tier objective remain; no lifecycle promotion.
 
 **Preceding Garage diagnostic correction:** RP-317's accepted GS5/GS0.2 mapper

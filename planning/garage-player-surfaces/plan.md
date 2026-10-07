@@ -41,5 +41,11 @@ that would need one is recorded as a blocker in `log.md` instead.
   APPROVED in the 2026-10-07 Garage log; not acceptance of the full lane,
   later records, RP-312 correction, Firefox or manual accessibility gates.
 - [x] GS4 pet care surface over the PA7 arm + cosmetic overlay (G10) (`7a61e4b6`); raw-care fields blocked by DESIGN-GAP GS4×PA7.
+  Designated Codex review of original `7a61e4b6^..7a61e4b6`, all eight paths:
+  CHANGES REQUIRED for existing RP-132/GS4×PA7 author contract hold. Native4/
+  cold Go/five actual fault probes verify mechanics only. Pending/reconnect/
+  full refusals/refresh/native keyboard remain supplemental tests, not
+  GS4-A5 integration. RP-318 records the unimplemented pet-status decoder/
+  announcement and missing owner-copy key. No acceptance/archival credit.
 - [x] 320 px reflow measurement across Desk/Fiscal/Meters/Trophy Case/pet (`6594b646`).
 - [ ] Canonical docs, cold gates, hand-off for Codex designated review (never self-archive).

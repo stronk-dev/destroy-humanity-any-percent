@@ -5,14 +5,24 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded correction (2026-10-07):** RP-316 GS5-A4 claim observer
+**Latest bounded review (2026-10-07):** original Claude pet slice
+`7a61e4b6^..7a61e4b6`, all eight paths, designated CHANGES REQUIRED for
+existing RP-132/GS4×PA7 author contract hold. Mechanics discriminate: four
+native assertions/cold Go pass, five compiling faults fail and restore exactly.
+Separate RP-318 diagnostic: all12 valid pet-status transitions and seven
+malformed controls silently ignored; no announcement copy adopted. No product
+change/GS4-A5 proof. Next: public-arm care keyboard/pending/reconnect/refusal/
+refresh test-only supplement, preserving author/privacy/copy/other holds.
+Full nine-tier 1.0, no archive or release promotion.
+
+**Preceding bounded correction (2026-10-07):** RP-316 GS5-A4 claim observer
 through `0befc01c` is locally corrected, not designated-approved. Shared
 actual-driver/test predicate; six compiling faults fail and restore exactly.
 Native86/performance1, client9,735/348 skips/types/build/boundaries and actual
 Postgres/WebSocket composed pass. Actual click buff, revision26/15 DOM clicks;
 not Lucky integration or a payout correction. No product/kernel/schema/copy/
-workflow byte changed. Whole Codex span after `c0eb3dc5` through tracking
-needs Claude. Next: original pet `7a61e4b6^..7a61e4b6` diagnostic review,
+workflow byte changed. Whole Codex span `c0eb3dc5..876b331c`
+needs Claude. Its then-next original pet diagnostic review is recorded above,
 preserving RP-132/GS4×PA7, RP-313 and other holds. Full nine-tier 1.0.
 
 **Preceding bounded correction (2026-10-07):** accepted GS5/GS0.2 invariant

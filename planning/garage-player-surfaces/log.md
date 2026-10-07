@@ -1231,3 +1231,19 @@ valid bands and invalid UUID/same/unknown-band/extra/missing-field controls.
 Report actual undefined/throw results; no fixture gets relabelled integration.
 No file/product/test-collector/CI or owner-copy change. Author copy adoption
 and raw-care conflict are not inferred from this diagnostic.
+
+Actual unchanged decoder diagnostic terminates exit0: all12 valid distinct
+band transitions return undefined; all seven invalid UUID/same-band/unknown
+source-or-destination/extra/missing-source/missing-destination controls also
+return undefined, never throw. There is no registered pet branch to trigger
+the existing resync path. Node/Vite exits normally with the server closed;
+no source/test/build/generated artifact is changed. RP-318 remains open.
+
+Next bounded accepted work: test-only care consumer supplement under GS0.2,
+GS0.5, GS4's exact refusal pairs/Founder scope and PA7's existing public arm:
+actual native keyboard, all ordinary care refusals plus unknown invariants,
+pending/reconnect disabling, and applied receipt followed by refreshed public
+band/eligibility and next Founder revision. Preserve runtime fixture labels;
+not SQL/real acquisition/GS4-A5 proof. No raw care field or owner copy added.
+Predeclare and test these cases before any narrowly authorized code repair;
+RP-132/GS4×PA7 and RP-318 copy hold remain, no lifecycle promotion.

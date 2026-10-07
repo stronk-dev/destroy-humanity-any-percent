@@ -3,7 +3,25 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage claim-proof correction — 2026-10-07
+## Garage pet review / missing status-event diagnostic — 2026-10-07
+
+Original Claude `7a61e4b6^..7a61e4b6`, all eight paths: designated Codex
+CHANGES REQUIRED for existing RP-132/GS4×PA7 author contract conflict, with
+mechanics verified. Original native pet4/cold Go pass; five compiling faults
+fail; restored exact. Not full care/GS4-A5 or later record approval. Separate
+RP-318: actual decoder ignores12 valid pet-band transitions and seven malformed
+payloads. Required announcement key absent; owner-authored copy cannot be
+invented or substituted. No permanent product change.
+
+**READY next accepted work:** predeclare test-only care keyboard/pending/
+reconnect/all exact refusals/refreshed public band+eligibility+Founder revision
+under GS0.2/GS0.5/GS4/PA7. Fixture evidence stays labelled, no private care field
+or owner-prose change. **READY FOR CLAUDE:** exact RP-316 correction
+`c0eb3dc5..876b331c`; earlier diagnostic/Desk/producer/RP-312/Clout spans
+remain independently owed. RP-132/GS4×PA7, RP-313, RP-318 copy and other holds
+remain; no box/status/archive/mint/push or reduced nine-tier goal.
+
+## Garage claim-proof correction — 2026-10-07 (preceding checkpoint)
 
 RP-316 shared GS5-A4 oracle through `0befc01c` is locally corrected, NOT
 designated-approved. Test-first21 then7 negatives fail; six compiling
@@ -13,9 +31,9 @@ boundaries and actual Postgres/WebSocket composed pass. Actual click buff,
 revision26 after15 DOM clicks, not Lucky integration. Pure tooling/test/docs/
 tracking only; no product runtime/kernel/schema/copy/workflow change.
 
-**READY next diagnostic review:** original Claude pet consumer
+**Then-next, now reviewed above:** original Claude pet consumer
 `7a61e4b6^..7a61e4b6`, all paths. RP-132/GS4×PA7 author hold stays binding.
-**READY FOR CLAUDE:** entire Codex range after `c0eb3dc5` through this tracking
+**READY FOR CLAUDE:** entire Codex range `c0eb3dc5..876b331c`, through its tracking
 edge, including `00fb7366`, `cdd00ee5`, `0befc01c`. Independent diagnostic
 `0f3a1a7a..c0eb3dc5`, Desk `d90aded7..0f3a1a7a`, producer
 `87fd23d4..d90aded7`, RP-312 and Clout spans remain separate. RP-313 and

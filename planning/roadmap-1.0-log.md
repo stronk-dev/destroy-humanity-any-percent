@@ -4131,3 +4131,19 @@ Clout spans stay separate. Next: diagnostic review of original Claude pet
 `7a61e4b6^..7a61e4b6`, with RP-132/GS4×PA7 author hold intact. All other
 holds/full nine-tier goal remain. Active/progress, no box/status/close/archive/
 mint/publication or whole-CI/release promotion.
+
+## 2026-10-07 — Pet care mechanics checked; missing status events surfaced
+
+Designated Codex review of original Claude `7a61e4b6^..7a61e4b6`, all eight
+paths: CHANGES REQUIRED for the existing RP-132/GS4×PA7 author contract hold;
+mechanical subset verified. Four native assertions/cold Go pass; independently
+compiling callback/revision/text/overlay/empty-map faults fail and restore
+exactly. No permanent product change or real-server care proof. Separate
+RP-318 actual decoder ignores all12 distinct legal pet-band transitions and
+seven malformed controls. Announcement key absent; no owner prose invented.
+Next: separately predeclare native care pending/reconnect/refusal/keyboard/
+refreshed public state and Founder-revision tests. Existing public PA7 arm
+only, not raw stats or GS4-A5. Exact RP-316 Codex span
+`c0eb3dc5..876b331c` now ready for Claude; earlier independent spans remain.
+All author/numeric/platform/accessibility/content/CI/release holds and full
+nine-tier goal remain. Active/progress, no box/status/archive/mint/publication.
