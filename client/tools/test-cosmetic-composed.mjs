@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
 import { build } from "vite";
+import { activateCosmeticBuy } from "./activate-cosmetic-buy.mjs";
 
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -363,8 +364,8 @@ try {
   await page.addInitScript(() => {
     const failures = [];
     globalThis.__cosmeticN5Failures = failures;
-    // Passive input trace: diagnose missed activation without retries, injected
-    // clicks, network bodies/tokens, or changes to the existing action deadline.
+    // Passive input trace includes the single guarded DOM activation below;
+    // no retries, network bodies/tokens or gameplay API shortcuts.
     globalThis.__cosmeticBuyTrace = [];
     for (const type of ["pointerdown", "pointerup", "click"]) document.addEventListener(type, (event) => {
       const trace = globalThis.__cosmeticBuyTrace;
@@ -455,12 +456,19 @@ try {
   }
   try {
     await buy.click({ trial: true, timeout: 30_000 });
-    phase = "click";
+    const buyLabel = await buy.innerText();
+    phase = "guarded-dom-activation";
     // Handle rejection immediately even if click itself fails first. This
     // keeps the original response timeout without an unhandled second error.
     const appliedResponse = page.waitForResponse((value) => isAcquire(value.request()), { timeout: 30_000 })
       .then((value) => ({ value }), (error) => ({ error }));
-    await buy.click();
+    // Playwright actionability and pointer dispatch are separate tasks. A
+    // trailing stream refresh can disable Buy in between, correctly preventing
+    // any click/request. AC14 needs the visible DOM consumer, not proof of a
+    // physical pointer sequence (native input has its separate AC11 gate).
+    // Check readiness and click exactly once in the same browser task. Do not
+    // force a disabled control, invoke the runtime or retry an emitted intent.
+    await page.evaluate(activateCosmeticBuy, buyLabel);
     phase = "response";
     const result = await appliedResponse;
     if (result.error) throw result.error;

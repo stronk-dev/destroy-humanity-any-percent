@@ -7,8 +7,9 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current checkpoint (2026-10-07):** public-board error masking (RP-367) and Gate/Decline
 concurrent reads (RP-369) are locally corrected, with regressions and real main-journey evidence.
-The whole composed target remains RED at Cosmetic Buy's missed activation (RP-364); the
-instrumented Pitch `429` (RP-368) is also unrepaired, not erased by a later main-path pass.
+The latest whole composed target passes after fixing the observed Cosmetic driver activation
+race (RP-364). Its original untraced timeout and the instrumented Pitch `429` (RP-368) remain
+open; a different random passing population does not prove reliability or repair the limiter.
 [Garage log](garage-player-surfaces/log.md) and [API log](api-foundation/log.md) own exact
 results and next diagnosis. Do not increase the limiter or retry to conceal failures. Full CI and nine-tier release
 obligations remain open; browser renewal has not been accepted.

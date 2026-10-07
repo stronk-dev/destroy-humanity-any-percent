@@ -127,6 +127,8 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   `cosmetics` and runs the built browser client through real Postgres, gameserver, and WebSocket
   transport. It observes T0 locked → visible T1 Buy → applied intent → server-owned state after
   reload under the request/payment trap; severing the server Cosmetics projector fails the run.
+  Buy uses one guarded DOM activation after checking visibility, hit-testing and the actual
+  enabled/non-pending state. This is DOM-consumer proof, not native pointer/keyboard AC11 proof.
   This fixture is not a production content mint, and its Codex range awaits cross-party review.
 - **G10 release acceptance:** the live pet-panel overlay is implemented and its controlled
   real-server path is witnessed. Production content, owner copy adoption and designated reviews

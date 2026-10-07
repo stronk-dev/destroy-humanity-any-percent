@@ -1696,3 +1696,24 @@ this Cosmetic range. No designated approval, archival or full original C6 approv
 - Review by: Codex (investigator/draft author); Recorded by: Codex. This batch after270a0d67
   needs cross-party review; owner/author resolves D-024 before implementation. Other accepted
   work can continue, including GS1 shared decode reconciliation; all prior review debts remain.
+
+## 2026-10-07 — AC14 single ready DOM activation (RP-364)
+
+Retained65514: Buy pointerdown/up sees disabled/pending; no click, no acquire request and no
+ownership. The shelf intentionally disables pending input. AC14 specifies a visible DOM Buy;
+native keyboard/pointer accessibility remains AC11, not silently replaced by this fixture.
+Test-only fix checks ready Desk/unowned/exact-label/enabled/visible/hit-test state and calls
+the real button once in that same browser task. No runtime/API shortcut, emitted-intent retry,
+response fabrication or deadline/production change. Click trace explicitly reports trusted=false.
+Exact shared helper52681:12 Chromium/WebKit cases PASS; busy/disabled/owned/wrong label/wrong
+surface/covered controls dispatch zero until ready, then one activation. Inline predecessor8380
+real-service journey PASS; final helper/root make test-game-ui-composed75723 PASS, all required
+Postgres/main/Cosmetic populations. Buy emits1/HTTP200, ownership survives reload; adoption,
+care/overlay/equip/reduced-motion/unequip/reloads pass; N5 has74 requests/no violation.
+Syntax/diff PASS; terminal handles, owned ports absent, fixture other sessions0. Initial direct
+Node run was denied Docker access before tests; narrowed escalation executed the real run.
+This repairs the observed driver race, not every untraced original timeout or RP-365/D-024.
+RP-368 retains79431's actual Pitch429; this different random main population passes, not a fix.
+Review by: Codex (first-filter); Recorded by: Codex. Range after6f02c900 through this batch;
+designated review pending, no archival/push/full-CI claim. Next: remaining receipt/budget
+interaction and accepted Cosmetic gates; publication copy/content/rights/native AT remain open.
