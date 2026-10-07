@@ -1,6 +1,12 @@
 # Cosmetic Shop v1 implementation plan
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
+
+Current checkpoint (2026-10-07): RP-365's care conflict has a reproduced backwards-attendance
+route, both real Postgres/DOM and deterministic cutoff regression. Sources restored; replayable
+probe and exact evidence in latest `log.md`. Shared-clock repair needs D-024/the draft successor's
+explicit boundary; no pet clamp/retry is authorized. RP-364 Buy cause and prior reviews remain.
+
 Implemented by: Claude. Every range awaits Codex's designated cross-party review. There is no
 self-approval, no archival and no production mint (fixture-first).
 

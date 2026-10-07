@@ -14,6 +14,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [Browser Session Renewal & Recovery](browser-session-renewal.md) | draft — RP-048/RP-234 consumer diagnosed; policy/API/browser gates unaccepted | Account / Transport / API Foundation / archived Game UI |
 | [Game UI First-read Failure & Recovery](game-ui-first-read-recovery.md) | draft — RP-342 measured; startup precedence/retry/copy unaccepted; not implementation authority | Garage Player Surfaces / archived Game UI / API Foundation / Account |
+| [Monotonic Founder Attendance](founder-attendance-monotonicity.md) | draft — RP-365 reproduced; D-024 shared-clock boundary unruled | Founder Attendance / Pet Care & Adoption / Garden / Minigame Platform |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Leaderboard Readers & Player Surface](leaderboard-readers-and-player-surface.md) | draft — not implementation authority | Leaderboards / API Foundation / Game UI / Route Registry |

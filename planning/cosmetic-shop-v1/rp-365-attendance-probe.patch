@@ -1,0 +1,55 @@
+diff --git a/server/production/founder_attendance_test.go b/server/production/founder_attendance_test.go
+--- a/server/production/founder_attendance_test.go
++++ b/server/production/founder_attendance_test.go
+@@ -46,0 +47,24 @@
++func TestFounderAttendanceRemainsMonotonicAcrossGapBoundary(t *testing.T) {
++	_, bundle := foundationTestBundles(t)
++	start := time.Date(2026, 8, 5, 8, 0, 0, 0, time.UTC)
++	founder := foundationScopeState(t, bundle.Economy, economy.ScopeFounder)
++	founder.AgeMS = 700
++	founderRevision := save.Revision{StreamID: "01986666-9100-7000-8000-000000000001", OwnerID: "01986666-9200-7000-8000-000000000001", Number: 3, ConstantsHash: bundle.ConstantsHash}
++	companyRevision := save.Revision{StreamID: "01986666-9300-7000-8000-000000000001", OwnerID: founderRevision.OwnerID, Number: 5, ConstantsHash: bundle.ConstantsHash}
++	company := replayFixtureState(t, bundle.Economy, start)
++	company.EvaluatedThrough = start.Add(time.Second)
++	company.ManualTokenRefilledAt = company.EvaluatedThrough
++	boundary := company.EvaluatedThrough.Add(time.Duration(bundle.Prestige.CatchupCeilingMS) * time.Millisecond)
++	before, err := ResolveFounderAttendanceSample(founder, founderRevision, company, companyRevision, bundle, boundary)
++	if err != nil {
++		t.Fatal(err)
++	}
++	after, err := ResolveFounderAttendanceSample(founder, founderRevision, company, companyRevision, bundle, boundary.Add(time.Millisecond))
++	if err != nil {
++		t.Fatal(err)
++	}
++	if after.EffectiveFounderAttendedMS < before.EffectiveFounderAttendedMS {
++		t.Fatalf("attendance moved backwards across %d ms cutoff: before=%d after=%d", bundle.Prestige.CatchupCeilingMS, before.EffectiveFounderAttendedMS, after.EffectiveFounderAttendedMS)
++	}
++}
++
+diff --git a/client/tools/test-cosmetic-composed.mjs b/client/tools/test-cosmetic-composed.mjs
+--- a/client/tools/test-cosmetic-composed.mjs
++++ b/client/tools/test-cosmetic-composed.mjs
+@@ -252,0 +253 @@
++  await page.waitForTimeout(6000);
+@@ -494,0 +496,9 @@
++  const manualResponse = page.waitForResponse((value) => value.request().method() === "POST" &&
++    new URL(value.url()).pathname === "/api/v1/intents" && value.request().postDataJSON()?.kind === "perform_manual_batch",
++    { timeout: 30_000 });
++  await page.getByRole("button", { name: plainFixtureCopy("manual.click.title"), exact: true }).click();
++  const manual = await manualResponse;
++  const manualReceipt = await manual.json();
++  if (manual.status() !== 200 || manualReceipt.outcome !== "applied") {
++    throw new Error(`RP-365 diagnostic manual action failed: ${JSON.stringify(manualReceipt)}`);
++  }
+diff --git a/server/account/api.go b/server/account/api.go
+--- a/server/account/api.go
++++ b/server/account/api.go
+@@ -7,0 +8 @@
++	"fmt"
+@@ -587,0 +589 @@
++		fmt.Printf("RP-365 intent service error: %v\n", err)
+diff --git a/server/production/intents.go b/server/production/intents.go
+--- a/server/production/intents.go
++++ b/server/production/intents.go
+@@ -830,0 +831 @@
++		fmt.Printf("RP-365 care sample now=%d company_revision=%d partial=%d total=%d pet_before=%d founder_revision=%d\n", now.UnixMilli(), attendance.CompanyRevision, attendance.CurrentRunPartialAttendedMS, attendance.EffectiveFounderAttendedMS, before, revision.Number)

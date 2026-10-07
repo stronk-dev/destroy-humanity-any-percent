@@ -67,6 +67,13 @@ contexts. A Founder-locked consumer must call `ValidateFounderAttendanceSample`;
 changes the Founder revision and `age_ms`, making the old sample stale rather than double-counting
 the completed run. No second Founder attendance cursor exists.
 
+Known correctness defect **RP-365**: the clone-only gap classification can retroactively
+remove attendance already accepted by a Founder command when the gap crosses the catch-up
+ceiling. A real adoption→pause→care flow reproduces a backwards clock and stale-care refusal.
+The monotonicity repair is unimplemented; [the draft successor](../rfc/founder-attendance-monotonicity.md)
+records its evidence and unresolved shared-boundary contract. Current offline tests alone do
+not prove a monotonic consumer clock.
+
 The Postgres boundary pins the lifecycle failure cases directly. A post-log failure after an
 `age_ms` mutation rolls back the Founder revision, log, intent record, and player outbox together.
 After enough Founder commands to cross the ordinary five-revision window, pruning removes only

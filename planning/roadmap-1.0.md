@@ -5,11 +5,12 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** GS1-A1 now has actual Postgres projection/harvest/reload
-proof and its required failure case; GS2-A4 acquisition proof remains. Designated review and
-shared-decode reconciliation remain. Full composed target is RED at pet-care conflict RP-365;
-diagnosis is next. Evidence: latest Garage/Cosmetic logs. RP-363 stays author-blocked and
-RP-364's cause remains unknown; full 1.0 and all other release/review obligations remain open.
+**Current checkpoint (2026-10-07):** RP-365 care conflict now has a proved backwards-clock route:
+real adoption/pause/feed and deterministic cutoff regressions. Sources restored, reproduction
+retained; D-024/draft Monotonic Founder Attendance must resolve the shared boundary before repair.
+GS1 persisted Fiscal and GS2 acquisition proof remain; shared-decode reconciliation can continue.
+Full target/care acceptance and designated reviews remain open. Evidence: latest Cosmetic log.
+RP-363, RP-364 and the complete nine-tier product/platform/release obligations remain unchanged.
 
 **Earlier findings (2026-10-07):** RP-362/363 new real bootstrap probe fails
 accepted Standing50 seed: actual fresh Standing90/high follows published

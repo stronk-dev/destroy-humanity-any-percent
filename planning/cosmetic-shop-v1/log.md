@@ -1664,3 +1664,35 @@ this Cosmetic range. No designated approval, archival or full original C6 approv
 - Next: capture that underlying error and attendance coordinates, then reproduce
   the demonstrated cause before a scoped correction. Full target remains RED.
   Review by: Codex (observation); Recorded by: Codex. No review/archival/CI promotion.
+
+## 2026-10-07 — RP-365 reproduced: retroactive attendance classification
+
+- Temporary observation-only server traces: unchanged journey2a2e5b→3b13c0 PASS,
+  care partial7704/pet-before6183. Six-second pause aloneeb110b→459b5f PASS, both2553:
+  adoption had already classified the gap offline. Neither resolves the original red.
+- Add an actual DOM manual action before adoption, retain the pause before Feed:
+  cba95c→a96959 exits1. Company4; adoption's immutable sample6219; Feed sample5581;
+  exact service error `stale pet care transition`, API409 conflict/intent; Founder stays4.
+  No care commit, retry, catalog retune or caller-side clock fixture. This proves a real
+  failure route; original untraced409 cannot establish that no other error route exists.
+- Deterministic regression fdfccf→28bbf6, root
+  `make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-count=1 -run TestFounderAttendanceRemainsMonotonicAcrossGapBoundary -v'`:
+  exits2, gap5000→5001 ms changes effective6700→1700. Clone-only A3 discards the entire
+  newly-over-ceiling gap; current tests check the two regimes separately, not continuity.
+- Retained zero-context `rp-365-attendance-probe.patch` SHA7fa1c907023b4995e17947f5812402f719f2e137e4d4f47550cf4709197cd9a8,
+  applies to270a0d67 (`git apply --check --unidiff-zero` PASS). Use that exact source base;
+  zero-context encoding avoids misreading unified-patch context tabs as source whitespace defects.
+  It contains that regression and the real
+  browser reproduction/traces. With it applied, the Go command above needs no DB; browser
+  command is `node client/tools/test-cosmetic-composed.mjs` using the dedicated test service.
+  It is an expected-failing diagnostic, not a disabled registered acceptance test.
+- All temporary product/test edits restored exactly: API36dc2876..., intents5a284dcb...,
+  driverd6f3656a...; four-path Git diff empty. Restored focused attendance tests/vet118904→ca5a56
+  PASS cold. Target listeners/other DB sessions absent. No test assertion removed from HEAD.
+- DESIGN-GAP: archived A3 explicitly prescribes the mechanism that contradicts A5's
+  monotonic consumers. D-024 / draft `rfc/founder-attendance-monotonicity.md` proposes a shared
+  durable activity boundary, not per-pet clamping or retry. No implementation authority.
+  RP-365 remains OPEN/diagnosed; whole CI/care acceptance remains unproven.
+- Review by: Codex (investigator/draft author); Recorded by: Codex. This batch after270a0d67
+  needs cross-party review; owner/author resolves D-024 before implementation. Other accepted
+  work can continue, including GS1 shared decode reconciliation; all prior review debts remain.
