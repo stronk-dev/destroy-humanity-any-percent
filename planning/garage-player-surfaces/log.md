@@ -5985,3 +5985,48 @@ This repairs a proved duplicate path, not RP-368's retained actual429 or reliabi
 and timing differ. Next: shared account request budget, not a larger ceiling or automatic retry.
 Review by: Codex (first-filter); Recorded by: Codex. Exact range after5b6157e3 through this
 batch's commit needs designated review. No archival/push/full-CI or nine-tier release claim.
+
+## 2026-10-07 — RP-368 sustained manual request-budget observation: method
+
+Question: after RP-369/370, what happens during sixty seconds of native manual input at two
+and four inputs/second? Four Hz is an experimental population derived from the GS5 pause,
+not an adopted supported-action floor. Default API uses one account bucket for all HTTP
+routes (60 burst,300/minute); an intent plus one read costs two requests.
+Method: --observe-manual-budget on the existing composed driver; two serial fresh UI-created
+accounts, real current server/Postgres/WebSocket, no gate crossing or additional gameplay.
+Count native activations, submitted requests, statuses/outcomes, first429, nonactivating inputs,
+elapsed duration and maximum scheduling lateness. No direct gameplay API, fake reply, retries,
+rate/clock/timeout/balance change. Two Hz is the lower-load control, not an assumed green result.
+Validity: all120/240 scheduled inputs and60s complete; maximum lateness <=100ms; each actual
+native activation has one submitted intent; no unfinished/malformed response or uncaught error.
+Refusals and pending-control input losses are findings, never silently excluded. May authorize
+a repair proposal/owner floor question; cannot select a larger limit, batching semantics, natural
+player pacing, full CI, original Pitch causality or release acceptance. Pure controls challenge
+truncation, lateness, activation/request mismatch, unfinished/malformed replies and page errors.
+
+### Result and limits
+
+Final2284 completes both minute-long profiles; exact shared-helper Vitest command reports16
+PASS at18:59:19 (foreground exit0, no running session). Two Hz:120 native
+activations/applied commands,122 successful reads, zero429;60,000.124ms, max lateness2.556ms.
+Four Hz:239 activations/one nonactivation,120 applied,117 exact revision_conflict/expected_revision,
+two intent429 and157 read429;515 requests/60,000.638ms, max lateness5.351ms; first read429 at19.284s.
+These are valid negative findings, not a healthy workload or a newly adopted four-Hz floor.
+Actual Postgres after stop has240 applied intent records, matching both profiles' applied counts;
+transient revision conflicts are returned outside persistence (Production.Handle/save conflict path).
+Initial14244:valid control120 applied/no429; four-Hz237 activations/123 applied/110 unclassified
+rejections/149 total429, first19.029s. Do not retroactively classify its110 rejections. The interim
+default journey reset this disposable DB before category extraction; its root73787 nevertheless
+passes all real Postgres/main/Cosmetic populations (main93 requests/12.543s; N5 73/no violation).
+Enriched19057 records75 exact stale responses but ends at59,999ms:invalid measurement, retained.
+The single timer could wake early. RP-372 fixes the instrument by waiting for actual deadlines
+and validating unrounded elapsed time; no duration/cadence ceiling changed. Early-wake regression
+requires a second wait; short/truncated/late/unfinished/malformed controls remain red.
+Final syntax/diff PASS, handles terminal/owned ports absent/test DB sessions0. No product, API,
+CI, limiter, pacing or gameplay semantics changed. Sixteen controls plus real-service execution
+are tool verification, not feature acceptance. Default journey passed before the helper-only
+category/timer refinement; those branches are absent in default mode.
+Next: RP-371 native reconnect-state regression/fix under GS0.5; separately propose an action/
+request-throughput contract, not an arbitrary larger bucket or automatic retries. RP-368 and
+the full nine-tier floor remain open. Review by: Codex (first-filter); Recorded by: Codex.
+Exact range afterb6a13c79 through this batch needs designated review; no archive/push/full CI.

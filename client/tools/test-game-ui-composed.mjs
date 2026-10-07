@@ -8,6 +8,9 @@ import { chromium } from "playwright";
 import { createServer } from "vite";
 import { assertOpportunityClaimEffect, assertOpportunityReadStatus } from "./opportunity-claim-proof.mjs";
 import { parents as refreshTests, refreshPopulationObserver } from "./observe-refresh-population.mjs";
+import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
+
+const mode = composedMode(process.argv.slice(2));
 
 const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = path.resolve(clientRoot, "..");
@@ -757,6 +760,9 @@ try {
     throw new Error(`composed public epochs failed: ${publicEpochs.status} ${JSON.stringify(publicEpochsBody)}`);
   }
   browser = await chromium.launch({ headless: true });
+  if (mode === "manual-budget") {
+    await observeManualBudget(browser, uiURL);
+  } else {
   await witnessFiscalRefusalJourney();
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   requestTraceStart = performance.now();
@@ -973,6 +979,7 @@ try {
   console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
   await page.goto("about:blank");
   await new Promise((resolve) => setTimeout(resolve, 100));
+  }
 } finally {
   await browser?.close();
   reportAccountRequests();

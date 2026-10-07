@@ -414,6 +414,12 @@ local intent covered by a successful read started after the HTTP response; that 
 receipt does not repeat the main read. Reused pre-response reads, failures, other or unidentified
 receipts remain conservative. The marker resets on Company identity changes. Garden advisory
 invalidation still runs independently, since the main snapshot does not contain its DTO.
+Manual request-budget research runs separately with
+`node client/tools/test-game-ui-composed.mjs --observe-manual-budget` from the repository root
+against the existing disposable composed database. It measures serial fresh-account, native
+two/four-input-per-second minute-long profiles, including missed activations, response outcomes
+and scheduling validity. A valid observation can contain refusals; it does not pass the default
+player journey, choose a supported input floor, or authorize changing the limiter.
 HTTP429 rate limits and `not_eligible/exclusive_activity` rejections also trigger
 that authoritative refresh. Pending controls cannot reactivate while it is held;
 the response never retries the rejected command. A subsequent player action
