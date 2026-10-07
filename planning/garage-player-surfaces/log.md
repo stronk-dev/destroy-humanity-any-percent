@@ -1808,3 +1808,17 @@ by RP-236; no new container run or cleanup, no prior-source substitution.
 No copy/kernel/server/schema/CI/bounds change, no checkbox/status/archive/
 mint/push. New review range starts6d700838 exclusive through final records;
 Claude designated gate and all earlier independent ranges remain owed.
+
+First instrument run82322 exits2:32pass/32fail/174unselected,6.20s;
+immediate cases reject their unused deferred response during cleanup,
+producing unhandled rejections. This is Codex test scaffolding error, NOT
+a product baseline defect. Typecheck52568 zeroerrors/warnings. Correct
+cleanup to reject only the late-away response actually consumed by intent;
+no assertion removed/relaxed and no production source change.
+
+Corrected baseline41186 passes64/64 executions (32 declarations, multiple
+assertions per case),174 explicitly unselected,6.47s; isolated unchanged
+performance1/22unselected,314ms/1.25s. ValidHTTP64/64+1/1. Tool retrieval
+truncates10,341tokens; terminal summaries directly retrieved, not complete
+HTTP traces. No product defect in this bounded population; keep source
+unchanged and commit the test-only supplement before predeclared faults.

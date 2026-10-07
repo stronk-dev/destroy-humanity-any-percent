@@ -1085,3 +1085,102 @@ for (const owner of ["fiscal", "care"] as const) {
     });
   }
 }
+
+// GS0.2/GS0.6: thrown runtime errors, not actual fetch/server refusal proof.
+const httpErrorArms = [
+  { label: "400", error: new GameUIRequestError(400, "invalid", "intent"), notice: "intent.rejection.unknown", effect: "none" },
+  { label: "409", error: new GameUIRequestError(409, "conflict", "intent"), notice: "intent.conflict", effect: "refresh" },
+  { label: "429", error: new GameUIRequestError(429, "rate_limited", "account"), notice: "intent.rate_limited", effect: "refresh" },
+  { label: "401", error: new GameUIRequestError(401, "unauthenticated", "account"), notice: null, effect: "offline" },
+  { label: "404", error: new GameUIRequestError(404, "unknown_id", "account"), notice: null, effect: "offline" },
+  { label: "503", error: new GameUIRequestError(503, "unavailable", "server"), notice: null, effect: "offline" },
+  { label: "transport", error: new TypeError("test network failure"), notice: null, effect: "offline" },
+  { label: "malformed", error: new SyntaxError("test malformed response"), notice: null, effect: "offline" },
+] as const;
+
+for (const owner of ["fiscal", "care"] as const) {
+  for (const timing of ["immediate", "late-away"] as const) {
+    for (const arm of httpErrorArms) {
+      it.skipIf(!browser)(`HTTP-error ownership ${owner}/${arm.label}/${timing} preserves reason, recovery and explicit consent`, async () => {
+        const runtime = new Runtime(), value = withPet();
+        runtime.current = { ...value, features: { ...value.features, fiscal: withRipeFiscal().features.fiscal } };
+        const { target, dispose } = await mounted(runtime);
+        let rejectResponse!: (reason: unknown) => void;
+        const response = new Promise<IntentOutcome>((_resolve, reject) => { rejectResponse = reject; });
+        let releaseRead!: (value: ParsedGameUISnapshot) => void;
+        const refresh = new Promise<ParsedGameUISnapshot>((resolve) => { releaseRead = resolve; });
+        const read = vi.spyOn(runtime, "snapshot").mockReturnValue(refresh);
+        const diagnostics = vi.spyOn(console, "error").mockImplementation(() => {});
+        const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
+          runtime.requests.push(body);
+          if (runtime.requests.length > 1) return { outcome: "applied", receipt: { harvest_outcome: "guaranteed" } };
+          if (timing === "late-away") return response;
+          throw arm.error;
+        });
+        const title = careText(owner === "fiscal" ? "surface.fiscal.title" : "pet.care.panel.title");
+        const actionText = careText(owner === "fiscal" ? "fiscal.harvest" : "pet.care.action.feed.title");
+        const selector = owner === "fiscal" ? ".fiscal" : ".pet-care";
+        try {
+          button(target, title).click(); await settle();
+          const action = button(target, actionText); action.focus();
+          const { userEvent } = await import("vitest/browser");
+          await userEvent.keyboard("{Enter}"); await settle();
+          expect(runtime.requests).toHaveLength(1);
+          expect(runtime.requests[0]).toMatchObject(owner === "fiscal"
+            ? { kind: "harvest_fiscal_period", expected_revision: 7 }
+            : { kind: "care_action", action_id: "care.feed", pet_id: petRow.pet_id, expected_revision: 7 });
+          if (timing === "late-away") {
+            expect(read).not.toHaveBeenCalled(); expect(diagnostics).not.toHaveBeenCalled();
+            const nav = button(target, careText("surface.meters.title")); nav.focus(); nav.click(); await settle();
+            rejectResponse(arm.error); await settle();
+            expect(target.querySelector(".meters")).not.toBeNull();
+            expect(document.activeElement).toBe(nav);
+            if (arm.notice) expect(target.textContent).not.toContain(careText(arm.notice));
+            button(target, title).click(); await settle();
+          }
+          expect(runtime.requests).toHaveLength(1);
+          expect(target.textContent).not.toContain(arm.error.message);
+          expect(diagnostics.mock.calls).toEqual(arm.label === "400" ? [["game UI invariant: invalid intent response"]] : []);
+          if (arm.notice) {
+            const message = careText(arm.notice);
+            const regions = [...target.querySelectorAll<HTMLElement>("[role=status]")].filter((node) => node.textContent?.trim() === message);
+            expect(regions).toHaveLength(1);
+            expect(target.querySelector(selector)?.contains(regions[0]!)).toBe(true);
+            expect(target.querySelector(".chrome")?.textContent).not.toContain(message);
+          } else {
+            expect(target.querySelector(`${selector} .intent-notice`)?.textContent).toBe("");
+          }
+          const currentAction = button(target, actionText);
+          if (arm.effect === "refresh") {
+            expect(read).toHaveBeenCalledTimes(1);
+            expect(currentAction.disabled).toBe(false);
+            expect(currentAction.getAttribute("aria-disabled")).toBe("true");
+            currentAction.focus(); currentAction.click(); await userEvent.keyboard("{Enter}"); await settle();
+            expect(runtime.requests).toHaveLength(1);
+            runtime.current = { ...runtime.current, founder_revision: 8 };
+            releaseRead(runtime.current); await settle();
+            expect(runtime.requests).toHaveLength(1);
+            expect(currentAction.getAttribute("aria-disabled")).not.toBe("true");
+            expect(document.activeElement).toBe(currentAction);
+            await userEvent.keyboard("{Enter}"); await settle();
+            expect(runtime.requests).toHaveLength(2);
+            expect(runtime.requests[1]).toMatchObject({ expected_revision: 8 });
+            expect(typeof runtime.requests[0].intent_id).toBe("string");
+            expect(runtime.requests[1].intent_id).not.toBe(runtime.requests[0].intent_id);
+          } else {
+            expect(read).not.toHaveBeenCalled();
+            expect(currentAction.disabled).toBe(arm.effect === "offline");
+            if (arm.effect === "offline") { currentAction.click(); await settle(); expect(runtime.requests).toHaveLength(1); }
+            button(target, careText("surface.settings.title")).click(); await settle();
+            if (arm.effect === "offline") expect(target.textContent).toContain(careText("settings.save_status.offline"));
+            else expect(target.textContent).not.toContain(careText("settings.save_status.offline"));
+          }
+        } finally {
+          if (timing === "late-away") rejectResponse(arm.error);
+          releaseRead(runtime.current); await settle();
+          read.mockRestore(); diagnostics.mockRestore(); intent.mockRestore(); await dispose();
+        }
+      });
+    }
+  }
+}
