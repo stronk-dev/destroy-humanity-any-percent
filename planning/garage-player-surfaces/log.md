@@ -2322,3 +2322,41 @@ it requires Claude before any acceptance or archival claim. RP-332 exact
 cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..fc911784
 and all preceding ranges remain separately owed. No boxes/status/archive/
 mint/push/release changes; all full-nine-tier 1.0 gates remain in force.
+
+## 2026-10-07 — GS3-A3 semantic narrow-layout proof predeclared
+
+Resume clean bddfc58e. RP-329 exact review range 5fbf4cff..bddfc58e remains
+pending Claude, not merged into this distinct layout range. Accepted GS3
+requires a real definition list below 30rem, with every constituency/axis
+header retained beside its value; RP-330 records the current CSS-only table.
+
+Three native browser declarations, each Chromium/WebKit: narrow initial
+mount at 320 px; live 1280→320→479→480→1280→320 px changes without remount;
+narrow authoritative snapshot refresh followed by widening. Public fixtures
+use all existing IDs with distinct safe values/bands to prevent a wrong
+row/value association from passing on repeated 0/50. Decode each fixture
+before mount/update. Derive expected header text from the existing canonical
+presentation/copy data, not mechanical ID splitting or authored new text.
+
+Narrow oracle: exactly eleven unique dt/dd pairs in actual dl elements,
+each with complete term text (constituency + axis; p(doom) separately),
+exact numeric/band spans, and native meter min/max/value whose aria-labelledby
+resolves to its own dt. No hidden duplicate table/list or CSS-only pseudo-label
+may satisfy the assertion. Wide control: original one table / five rows / ten
+cells, eleven total native meters and no duplicate content. Keep nav focus,
+zero emitted intents, full mounted-page horizontal bounds and serious/
+critical axe floor at each layout. Retain all existing browser assertions.
+320 CSS px is a viewport population, not a claim of actual 400% zoom or AT.
+
+Before production, run typed-clean selected native cases and record the
+current semantic failures. If established, separately record the bounded
+implementation step: MetersSurface only, responsive native semantic markup
+using existing data/copy/tokens, live media change and cleanup. No host,
+runtime, wire, catalog, producer, kernel, balance, copy or CI change.
+Predeclare later exact label, numeric/band association, breakpoint and resize
+listener faults before executing them; actual assertions must fail, source
+restored exactly. Final full native Garage, types/client/build/boundaries
+and copy/topology remain required. No Docker run until capacity repair.
+New whole range starts after bddfc58e and ends after its final records;
+Claude designated review remains mandatory. No boxes/status/archive/mint/
+release promotion or substitution for RP-331/333/all-engine/AT/full 1.0.
