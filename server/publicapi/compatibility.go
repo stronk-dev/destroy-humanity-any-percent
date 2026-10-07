@@ -1,6 +1,7 @@
 package publicapi
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -89,7 +90,13 @@ func compareNamedCompatibility(name string, mode compatibilityMode, oldDefinitio
 		return ErrInvalidSchema
 	}
 	var oldSchema, nextSchema map[string]any
-	if json.Unmarshal(oldRaw, &oldSchema) != nil || json.Unmarshal(nextRaw, &nextSchema) != nil {
+	// Descriptor bounds are int64. Decoding them through float64 can erase a
+	// one-unit narrowing above 2^53, including at either signed int64 limit.
+	oldDecoder := json.NewDecoder(bytes.NewReader(oldRaw))
+	nextDecoder := json.NewDecoder(bytes.NewReader(nextRaw))
+	oldDecoder.UseNumber()
+	nextDecoder.UseNumber()
+	if oldDecoder.Decode(&oldSchema) != nil || nextDecoder.Decode(&nextSchema) != nil {
 		return ErrInvalidSchema
 	}
 	stack[name] = true
@@ -125,8 +132,11 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 		for index, oldArm := range oldOne {
 			oldMap, oldOK := oldArm.(map[string]any)
 			nextMap, nextOK := nextOne[index].(map[string]any)
-			if !oldOK || !nextOK || compareCompatibilitySchema(oldMap, nextMap, mode, oldDefinitions, nextDefinitions, stack) != nil {
+			if !oldOK || !nextOK {
 				return ErrInvalidSchema
+			}
+			if err := compareCompatibilitySchema(oldMap, nextMap, mode, oldDefinitions, nextDefinitions, stack); err != nil {
+				return fmt.Errorf("oneOf[%d]: %w", index, err)
 			}
 		}
 		return nil
@@ -149,39 +159,58 @@ func compareCompatibilitySchema(oldSchema, nextSchema map[string]any, mode compa
 	}
 	oldRequired := stringSet(oldSchema["required"])
 	nextRequired := stringSet(nextSchema["required"])
-	if mode&compatibilityRequest != 0 {
-		for name := range nextRequired {
-			if !oldRequired[name] {
-				return ErrInvalidSchema
-			}
-		}
-	} else {
-		for name := range nextRequired {
-			if _, existed := oldProperties[name]; !existed {
-				return ErrInvalidSchema
-			}
+	// C2 forbids optional-to-required promotion on either stability surface,
+	// whether this object is a request, a response, or shared by both.
+	for name := range nextRequired {
+		if !oldRequired[name] {
+			return fmt.Errorf("%w: field %s became required", ErrInvalidSchema, name)
 		}
 	}
 	for name, oldProperty := range oldProperties {
 		nextProperty, ok := nextProperties[name]
 		oldMap, oldOK := oldProperty.(map[string]any)
 		nextMap, nextOK := nextProperty.(map[string]any)
-		if !ok || !oldOK || !nextOK || compareCompatibilitySchema(oldMap, nextMap, mode, oldDefinitions, nextDefinitions, stack) != nil {
-			return ErrInvalidSchema
+		if !ok || !oldOK || !nextOK {
+			return fmt.Errorf("%w: field %s removed or invalid", ErrInvalidSchema, name)
+		}
+		if err := compareCompatibilitySchema(oldMap, nextMap, mode, oldDefinitions, nextDefinitions, stack); err != nil {
+			return fmt.Errorf("field %s: %w", name, err)
 		}
 	}
 	return nil
 }
 
 func compatibleBounds(oldSchema, nextSchema map[string]any) bool {
-	oldMinimum, oldHasMinimum := oldSchema["minimum"].(float64)
-	nextMinimum, nextHasMinimum := nextSchema["minimum"].(float64)
-	if oldHasMinimum && nextHasMinimum && nextMinimum > oldMinimum || !oldHasMinimum && nextHasMinimum {
-		return false
+	for _, bound := range []string{"minimum", "maximum"} {
+		before, oldExists := oldSchema[bound]
+		after, nextExists := nextSchema[bound]
+		var oldValue, nextValue int64
+		for index, item := range []struct {
+			value  any
+			exists bool
+		}{{before, oldExists}, {after, nextExists}} {
+			if !item.exists {
+				continue
+			}
+			number, ok := item.value.(json.Number)
+			if !ok {
+				return false
+			}
+			value, err := number.Int64()
+			if err != nil {
+				return false
+			}
+			if index == 0 {
+				oldValue = value
+			} else {
+				nextValue = value
+			}
+		}
+		if nextExists && (!oldExists || bound == "minimum" && nextValue > oldValue || bound == "maximum" && nextValue < oldValue) {
+			return false
+		}
 	}
-	oldMaximum, oldHasMaximum := oldSchema["maximum"].(float64)
-	nextMaximum, nextHasMaximum := nextSchema["maximum"].(float64)
-	return !(oldHasMaximum && nextHasMaximum && nextMaximum < oldMaximum || !oldHasMaximum && nextHasMaximum)
+	return true
 }
 
 func compatibleEnum(oldSchema, nextSchema map[string]any, mode compatibilityMode) bool {

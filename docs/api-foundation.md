@@ -43,6 +43,10 @@ byte-compares both outputs as part of `make verify-server`. The committed
 operations, request unions, statuses, required fields, and bounds cannot narrow or disappear;
 responses may add optional fields or widen an enum/union. Updating the compatibility baseline is
 an explicit `make api-pin` operation, never an incidental effect of ordinary generation.
+Existing optional fields cannot become required in requests, responses or shared definitions,
+including through array/reference/union nesting; failures identify the affected field. Numeric
+bounds compare as exact signed int64 values, not float64 projections, so a one-unit narrowing
+above 2^53 or at an int64 boundary still fails. This checks schema metadata, not production math.
 Schema names follow the current-plus-legacy convention: an unversioned name denotes the current
 shape, while a retained historical shape uses an explicit `V<n>` suffix. A compatibility-pin
 refresh must cite its authorizing ruling and be recorded in the owning planning log in the same

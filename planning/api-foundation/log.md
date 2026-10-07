@@ -919,3 +919,29 @@ No retries, relaxed bounds or repeat-to-green. Owned listeners/fixture DB sessio
 Review by: Codex (diff/first-filter); Recorded by: Codex. Entire range after `27ffb9c7` needs
 designated review; no archival/push/whole-CI or API-completion claim. Next: diagnose RP-377 in
 the Cosmetic owner lane; missing route contracts/catalog descriptors/304 remain open.
+
+## 2026-10-07 — exact v1 compatibility guard (RP-383/RP-384)
+
+Outcome: accepted A1/A5/C2 requires rejecting optional-to-required changes and constraint
+narrowing, with the affected field identified (AC2). Keep actual endpoints, schemas, generator
+outputs and compatibility baseline unchanged; repair the comparison, not a re-baseline.
+
+Regression77773 on old code: three response contexts admit requiredness promotion; request/
+shared contexts reject but fail the field-name assertion. Four narrowing cases also admit a
+one-unit change above2^53 or at signed int64 limits; both widening controls pass. UseNumber/
+Int64 removes lossy metadata decoding; the same requiredness rule now applies to both uses.
+Preserve nested field/union error context. First correction73853 still loses the union field
+name, fixed by propagating the existing error; that red observation is not a passing gate.
+
+Coverage: cold89847 `make test-go GO_PACKAGES='./publicapi ./publicread ./cmd/gen-api'
+GO_TEST_FLAGS='-count=1'` PASS; vet71314 same packages PASS; actual `make api-check`16256 PASS,
+all generated/pin bytes unchanged. This exercises the comparison and its real generator
+consumer. No DB/browser/Decimal suite is substituted or claimed: no handler, persistence,
+shipped TS, transport or production-arithmetic byte changes. Existing C18/C9/304/third-party
+verification, owner/author and whole-1.0 gates remain. Current hosted CI is not rerun.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Entire range after `73e1c9da`
+through this guard/test/docs/record commit needs designated review; earlier ranges remain
+separate. Diff inspected, handles terminal, no acceptance checkbox, pin refresh, archive,
+push or release promotion. Next: remaining accepted API DTO/route integration and coherent
+review ranges, not reinterpretation of the open numeric or owner decisions.

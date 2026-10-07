@@ -2,6 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
+Current checkpoint (2026-10-07): compatibility guard corrections RP-383/RP-384 locally pass
+the old-behavior regressions and affected API packages/vet/generator check. Optional-to-required
+response promotion and one-unit int64 constraint narrowing are rejected; committed OpenAPI,
+TypeScript and compatibility-pin bytes are unchanged. Designated review remains. Public catalog
+descriptors, remaining route/client registration, third-party verification and 304 metadata are
+still open; this is not full API acceptance or green hosted CI. Latest log owns the exact range.
+
 - [x] Reconcile C1–C17 into the active A1–A8 contract.
 - [x] Implement the closed schema-descriptor DSL and operation registry foundation.
 - [x] Implement authenticated keyset cursors and normalized board variables.
