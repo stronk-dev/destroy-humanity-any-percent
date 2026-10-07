@@ -61,8 +61,13 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
     await; late completion does not display on another tab. The host still stores
     only the last result, not an outcome history. Native runtime-double placement,
     completed-navigation and held-response controls cover Fiscal and care applied/
-    ordinary refused outcomes; they do not prove all-surface, AT or real-service
-    outcome delivery. Other Garage GS0.6 obligations remain independently open.
+    ordinary refused outcomes. A separate native consumer census covers immediate
+    and late-away HTTP 400/409/429/401/404/503, transport and malformed-response
+    errors: panel-local messages, one held refresh for 409/429, fresh revision and
+    intent ID only on new consent, or offline without replay. These errors are
+    thrown by a runtime double, not parsed from real HTTP responses. This does
+    not prove wire parsing, all-surface/queued origin, AT or real-service outcome
+    delivery. Other Garage GS0.6 obligations remain independently open.
 - **Reputation Board (`meters`):** read-only, unlocked by `feature.meters`. It is a 5 × 2 table of
   constituency Standing/Grievance plus p(doom). Each cell has a native `<meter>`, numeric text and
   band text. Below 30rem it collapses to labelled rows. It carries the curtain and the "as of last

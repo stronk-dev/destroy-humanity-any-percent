@@ -1822,3 +1822,49 @@ performance1/22unselected,314ms/1.25s. ValidHTTP64/64+1/1. Tool retrieval
 truncates10,341tokens; terminal summaries directly retrieved, not complete
 HTTP traces. No product defect in this bounded population; keep source
 unchanged and commit the test-only supplement before predeclared faults.
+
+## 2026-10-07 — HTTP-error census completed, no production repair
+
+Review by: Codex (implementer first filter). Recorded by: Codex.
+Predeclarationca8c9b55/test8c364fbd. Green bounded baseline retained;
+no production byte changed. Three separate compiling faults each run the
+same64 selected executions/174 explicitly unselected, fail at actual
+behavior/DOM assertions, Makeexit2:
+
+| Fault | Handle | Failed | Passed | Diagnostic |
+| --- | --- | ---: | ---: | --- |
+| 429 refresh→none | 94261 | 8 | 56 | expected one snapshot, observed zero |
+| 400 invariant→false | 73308 | 8 | 56 | expected fixed diagnostic, observed none |
+| Error completion captures current surface | 80006 | 12 | 52 | exact mapped error leaks on Meters |
+
+Restored each before next; final SHA256 matches baseline:
+GameUIApp9ea86275b688712047703e2e6b794fcf5d6b5b61706d874b51ee13462459223a;
+intent-outcomea7aa1eb05e014b9f7862a02834fc91492d5ff66f40c5b7be4b5fd20a6c751710.
+Final94786 terminal0: full Garage Chromium/WebKit238/238,76.65s, original
+real-minute idle control included; unchanged isolatedperformance1/22
+explicitunselected,318ms/1.30s. HTTP234/234+1/1 valid/noearlyclose/pending.
+Retrieval truncates intermediate HTTP output (10,794/15,406/10,420 tokens),
+but final counts/performance/exit are directly retrieved; no full trace claim.
+Root76930 terminal0: stricttypes0errors/0warnings; client9,737pass/442
+explicitbrowser skips of10,179,105filespass/22skip; build213modules with
+unchanged index-DwwjDcZC.js/index-DhbUhBbR.css/workerMqspU_iu; boundaries
+14shell/8UI/22GameUI pass. No previous assertion deleted/relaxed.
+
+Capacity recheck is read-only on the existing declared game's Postgres
+container (`docker exec cloud-clicker-game-ui-postgres-1 df -h / /dev/shm`):
+overlay125.7G/122.7Gused/0available/100%; sharedmemory63Mfree. RP-236
+persists. No new Docker population, container/image/cache/volume deletion,
+or inference that disk explains every earlier Linux failure. Real composed,
+Firefox, AT, hostedCI and minted-release proof remain outstanding.
+
+This closes only the predeclared consumer research population: existing
+HTTP-error behavior satisfies the narrow contract, not all-surface/queued-
+origin/wire-parse/account-renewal/fullGS0.6/fullGarage/release acceptance.
+Next safe accepted work: separately predeclare real-runtime/fetch-double
+error parsing and request-count preservation at the GS0.2 boundary; no
+actual service/refusal/credential proof can be inferred from mocked fetch.
+New exact review boundary begins6d700838 exclusive THROUGH this tracking
+edge, including predeclaration/test/records, and requires Claude. Previous
+notice exacte950216a..6d700838, browser4dcd9969..e950216a, Fiscalb64a91af..
+4dcd9969 and all earlier ranges independent. No boxes/status/archive/copy/
+mint/push; full-nine-tier1.0 goal remains active, meaningful progress.

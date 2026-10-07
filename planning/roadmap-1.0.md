@@ -5,6 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest bounded evidence (2026-10-07):** predeclaredca8c9b55/test8c364fbd,
+64 native Fiscal/care HTTP/transport immediate/late-away error executions
+pass; no production repair needed. Three compiling faults fail/restored
+exactly; full native Garage238/performance1, client9,737/442explicit skips/
+types/build/boundaries pass. Initial instrument cleanup error disclosed.
+Only consumer proof: real-runtime wire parsing, queued origin, all-surface,
+AT, Firefox, composed and release remain open. Newspan after6d700838 through
+tracking needs Claude separately from notice exacte950216a..6d700838 and
+all earlier ranges. Capacity recheck still0free; no Docker population until
+repair/recheck, no unrelated cleanup. Next safe GS0.2 fetch-boundary census.
+Full-nine-tier goal unchanged; no lifecycle promotion.
+
 **Latest bounded repair (2026-10-07):** `45bf2edb`, predeclareda8f2a527/
 failing-first7cac400d: Fiscal/care outcome ownership and async-origin/no-bleed
 locally corrected (RP-326), not approved.24 baseline native failures; five

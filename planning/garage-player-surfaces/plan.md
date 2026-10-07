@@ -7,6 +7,18 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
+Latest test-only supplement: predeclaredca8c9b55/test8c364fbd,32 declarations
+×2native engines =64 executions over Fiscal/care immediate/late-away HTTP
+and transport errors. Baselinegreen, no product repair; three compiling
+faults fail/restored exactly. Full Garage238/performance1, client9,737/
+442explicitbrowser skips/types/build/boundaries pass. First instrument
+cleanup error disclosed, not counted as product failure. Newspan after
+6d700838 through final records needs Claude separately from notice exact
+e950216a..6d700838 and earlier ranges. Docker capacity recheck still0free;
+real composed/Firefox/AT/hosted/wire-parse/queued-origin/full-lane gates
+remain. Next separately predeclare GS0.2 real-runtime/fetch-double boundary;
+no checkbox or lifecycle promotion.
+
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
 predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,
 origin captured before act awaits.24 baseline DOM failures; five independent

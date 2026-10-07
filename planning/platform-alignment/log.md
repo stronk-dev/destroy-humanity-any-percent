@@ -3079,3 +3079,25 @@ manual AT/mint/release proof. Evidence-only range starts4dcd9969 exclusive,
 includes36c28692/3ade389d and this result plus following tracking edge, still
 needs Claude. Earlier Fiscal/care/shared-refusal ranges remain independent.
 Full1.0 goal active/progress, no archive/status/acceptance promotion.
+
+## 2026-10-07 — HTTP-error native census / capacity recheck
+
+Resume clean6d700838, predeclaredca8c9b55/test8c364fbd. Bounded consumer
+baseline64 native executions green after disclosed scaffolding cleanup error;
+no production defect claimed or code repair. Three independent compiling
+faults (429refresh/400invariant/error-timeowner) fire8/8/12, exact hashes
+restored. Full native Garage238/performance1, client9,737/442explicitbrowser
+skips/types/build/boundaries pass; no prior assertion/copy change. Full
+terminal details/limits in Garage log. Not actual HTTP parsing, service,
+queued-origin, AT, Firefox or release proof.
+
+Read-only `docker ps` confirms two existing declared Postgres services and
+an unrelated sibling BuildKit service; no service changed. Read-only `docker
+exec cloud-clicker-game-ui-postgres-1 df -h / /dev/shm` confirms overlay
+125.7Gsize/122.7Gused/0available/100%,sharedmemory63Mfree. RP-236 remains;
+no new Docker population, unrelated cleanup or blanket root-cause claim.
+Next safe work: predeclare GS0.2 real-runtime/fetch-double parsing/count
+controls. Entire newspan after6d700838 through final tracking needs Claude;
+notice exacte950216a..6d700838, browser4dcd9969..e950216a, Fiscalb64a91af..
+4dcd9969 and all earlier ranges independent. Full1.0 active/progress;
+no checkboxes/status/archive/mint/push or reduced release objective.

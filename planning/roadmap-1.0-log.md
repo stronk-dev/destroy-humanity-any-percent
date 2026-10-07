@@ -4249,3 +4249,24 @@ census, predeclare before edits; no third container population until capacity
 repaired and measured, no unrelated cleanup. Full-nine-tier1.0 objective and
 all author/owner/numeric/privacy/content/operations/CI/AT/review/release gates
 remain active. No boxes/status/archive/mint/push/deploy or shortened scope.
+
+## 2026-10-07 — HTTP-error consumer census checkpoint
+
+Predeclaredca8c9b55/test8c364fbd:32 native declarations ×Chromium/WebKit
+=64 executions across Fiscal/care, parsed400/409/429/401/404/503 and transport/
+malformed errors, immediate/late-away. Green bounded baseline; no production
+repair. Three compiling refresh/invariant/late-owner faults fail (8/8/12),
+source hashes restored exactly. First32-failure run was my unused-promise
+cleanup error, disclosed and corrected, not counted as product defect.
+Final fullGarage238/performance1, client9,737/442explicit browser skips/types/
+build/boundaries pass. No assertion relaxed, no copy or production edit.
+
+Runtime-double consumer proof only: not actual wire/real-service/queued-origin/
+AT/Firefox/all-lane/mint/release. Read-only existing-Postgres capacity recheck
+still0free/100%; no new Docker population or unrelated cleanup. Next accepted
+GS0.2 real-runtime/fetch-double boundary census, separately predeclared; do
+not assume repair before failure. New reviewspan begins6d700838 exclusive
+THROUGH this tracking edge and needs Claude; notice exacte950216a..6d700838,
+browser4dcd9969..e950216a, Fiscalb64a91af..4dcd9969/all earlier ranges stay
+independent. Full nine-tier1.0 goal remains active/progress, all global gates
+and no-shortcut scope retained; no boxes/status/archive/mint/publication.
