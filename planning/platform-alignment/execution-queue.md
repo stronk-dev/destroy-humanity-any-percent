@@ -3,6 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage first-read failure truth checkpoint — 2026-10-07
+
+RP-342 underced3b5c7: actual runtime/native28 cases,24 failed replies settle
+but retain loading/no failure UI; healthy/lifecycle recovery controls retained.
+Four compiling faults discriminate and restore exactly. Final Garage378 /
+performance two/client9,814 /513 skips/types/unchanged build/copy/boundaries/
+static topology pass. Metadata retained; instrument pass is not a product fix.
+**READY FOR CLAUDE:** entire a551d3c2-exclusive through containing records,
+including predeclaration/tests/draft contract; all earlier ranges remain owed.
+**OWNER/AUTHOR:** D-023 draft first-read recovery posture/precedence/copy,
+operation/refusal/identity review and acceptance before construction. Session
+renewal/D-005 separate. **NEXT accepted work:** predeclare GS3 Meters shared
+reconnect/not-ready values/disclosure; no new mechanics. Full Linux/SQL
+capacity/full1.0/AT/Firefox/body/privacy/platform/numeric/review holds remain;
+no cleanup approval/deletion/push/archive.
+
 ## Garage remaining shared-effect consumers checkpoint — 2026-10-07
 
 Test-onlyfb2a9488: Fiscal/Meters/Reputation ×width320/1280 ×retained/removed

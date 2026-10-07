@@ -10,12 +10,16 @@ import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
 import PetCareSurface from "../src/game-ui/pet/PetCareSurface.svelte";
 import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
-import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
+import { createBrowserGameUIRuntime, type GameUIRuntime, type GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISurfaceID } from "../src/game-ui/surface-catalog";
 import { formatAmount } from "../src/ui/amount-format";
 
 const browser = typeof document !== "undefined";
 const NOW = 1_800_000_000_000;
+
+declare module "vitest" {
+  interface TaskMeta { firstReadObservations?: Record<string, unknown>[] }
+}
 
 const meterRow = (meter_id: string, value: number) => ({ band_id: value >= 70 ? "high" : "low", bands: [{ band_id: "low", floor_value: 0 }, { band_id: "high", floor_value: 70 }], max: 100, meter_id, min: 0, value });
 const trust = ["employees", "investors", "press", "regulators", "users"].flatMap((c) => [meterRow(`trust.${c}.grievance`, 0), meterRow(`trust.${c}.standing`, 50)]);
@@ -367,6 +371,84 @@ for (const width of [320, 1280] as const) {
       expect(document.activeElement).toBe(choice); expect(runtime.requests).toEqual([]);
     } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
   });
+  }
+}
+
+// RP-342 measurement, not acceptance of the observed failed-read display.
+// Actual runtime/Response.json/decoder; injected HTTP, not real network/auth.
+for (const firstRead of ["healthy", "network", "401", "503", "json", "arm", "legacy"] as const) {
+  for (const width of [320, 1280] as const) {
+    it.skipIf(!browser)(`RP-342 first-read observation ${firstRead}/${width}`, async ({ task }) => {
+      const { page } = await import("vitest/browser"); await page.viewport(width, 720);
+      const credentialDocument = JSON.stringify({ accessToken: "synthetic-access", refreshToken: "synthetic-refresh", accountID: "synthetic-account", recoveryCode: "synthetic-recovery" });
+      const values = new Map([["cloud-clicker.credentials.v1", credentialDocument]]);
+      const storage = { getItem: (key: string) => values.get(key) ?? null,
+        setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => { values.delete(key); } };
+      let releaseFirst!: () => void; const held = new Promise<void>((resolve) => { releaseFirst = resolve; });
+      let reads = 0, sockets = 0;
+      const requests: { path: string; method: string }[] = [];
+      const fetcher: typeof fetch = async (input, options) => {
+        const path = String(input); requests.push({ path, method: options?.method ?? "GET" });
+        if (path === "/api/v1/garden/current") return Response.json({ kind: "inactive" });
+        if (path !== "/api/v1/founder/state") throw new Error("unexpected research request");
+        reads += 1; if (reads === 1) await held;
+        if (firstRead === "401") return Response.json({ category: "unauthorized", detail: "access_token" }, { status: 401 });
+        if (reads > 1 || firstRead === "healthy") return Response.json(structuredClone(v4));
+        if (firstRead === "network") throw new TypeError("synthetic network rejection");
+        if (firstRead === "503") return Response.json({ category: "not_configured", detail: "server" }, { status: 503 });
+        if (firstRead === "json") return new Response("{", { status: 200, headers: { "Content-Type": "application/json" } });
+        if (firstRead === "arm") return Response.json({ ...v4, features: { ...v4.features, achievements: { ...v4.features.achievements, score: { run: -1, lifetime: 5 } } } });
+        const { features: _features, ...legacy } = v4;
+        const legacyWire = { ...legacy, schema_version: 3, generators: legacy.generators.map(({ provision_cap: _cap, ...row }) => row) };
+        expect(parseGameUISnapshot(legacyWire).schema_version).toBe(3);
+        return Response.json(legacyWire);
+      };
+      const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => {
+        sockets += 1;
+        return { addEventListener() {}, close() {}, send() {} } as unknown as WebSocket;
+      }, { protocol: "http:", host: "research.invalid" });
+      const read = vi.spyOn(runtime, "snapshot"); const diagnostic = vi.spyOn(console, "error").mockImplementation(() => {});
+      const target = document.createElement("div"); document.body.append(target);
+      const app = mount(GameUIApp, { target, props: { runtime } });
+      const observations: Record<string, unknown>[] = []; task.meta.firstReadObservations = observations;
+      const observe = (phase: string) => {
+        const visible = (copy: CopyKey) => [...target.querySelectorAll<HTMLElement>("p")].some((node) => node.textContent === t(copy, {}, "era_1995") && node.getBoundingClientRect().height > 0 && getComputedStyle(node).visibility === "visible");
+        const row = { firstRead, width, phase, reads, sockets, busy: target.querySelector("main")?.getAttribute("aria-busy"),
+          loading: visible("common.loading"), offline: visible("settings.save_status.offline"), surfaceError: visible("common.surface_error"),
+          alerts: target.querySelectorAll('[role="alert"]').length, controls: target.querySelectorAll("button,input").length,
+          diagnostics: diagnostic.mock.calls.length, credentialsRetained: values.get("cloud-clicker.credentials.v1") === credentialDocument };
+        observations.push(row); return row;
+      };
+      try {
+        await settle(); expect(reads).toBe(1); expect(sockets).toBe(0);
+        sharedStateVisibleText(target, '[role="status"]', t("common.loading", {}, "era_1995"));
+        expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+        expect(target.querySelectorAll("button,input")).toHaveLength(0);
+        releaseFirst();
+        if (firstRead === "healthy") await expect(read.mock.results[0]!.value).resolves.toMatchObject({ schema_version: 4 });
+        else await expect(read.mock.results[0]!.value).rejects.toThrow(firstRead === "legacy" ? /schema v4/u : undefined);
+        await settle(); await new Promise((resolve) => setTimeout(resolve, 350)); await settle();
+        const settled = observe("settled"); expect(settled.busy).toBe("false"); expect(reads).toBe(1);
+        if (firstRead === "healthy") {
+          expect(settled.loading).toBe(false); expect(settled.controls).toBeGreaterThan(0); expect(sockets).toBe(1);
+        } else {
+          expect(sockets).toBe(0);
+          // Existing listener, explicit event dispatch: NOT physical hide/resume.
+          document.dispatchEvent(new Event("visibilitychange")); await settle();
+          expect(reads).toBe(2);
+          if (firstRead === "401") await expect(read.mock.results[1]!.value).rejects.toThrow(/401/u);
+          else await expect(read.mock.results[1]!.value).resolves.toMatchObject({ schema_version: 4, run: { founder_id: v4.run.founder_id } });
+          await settle(); const recovered = observe("lifecycle");
+          if (firstRead !== "401") { expect(recovered.loading).toBe(false); expect(recovered.controls).toBeGreaterThan(0); expect(sockets).toBe(1); }
+        }
+        expect(values.get("cloud-clicker.credentials.v1")).toBe(credentialDocument);
+        expect(requests.every((request) => request.method === "GET" && ["/api/v1/founder/state", "/api/v1/garden/current"].includes(request.path))).toBe(true);
+        await assertAxe(target, "first-read research population");
+      } finally {
+        releaseFirst(); await settle();
+        try { await unmount(app); } finally { target.remove(); read.mockRestore(); diagnostic.mockRestore(); await page.viewport(1280, 720); }
+      }
+    });
   }
 }
 

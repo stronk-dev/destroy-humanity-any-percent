@@ -3740,3 +3740,99 @@ propose bounded draft contract if required; no owner-copy/accepted-body edit.
 Entire new span after a551d3c2 needs Claude independently of prior spans.
 Capacity/Firefox/AT/full-nine-tier1.0/privacy/platform/review holds remain;
 no deletion/push/archival/release promotion.
+
+## 2026-10-07 — RP-342 executed first-read diagnosis / draft route
+
+Review by: Codex (implementer/researcher first filter, not designated review).
+Recorded by: Codex. Entire a551d3c2-exclusive through this containing record
+commit requires Claude independently of82614848..a551d3c2,
+0fe2f57c..82614848 and all earlier exact spans. No archival gate consumed.
+
+ced3b5c7 predeclared. Actual createBrowserGameUIRuntime + injected fetch,
+real Response.json/decoder + mounted native host. Synthetic stored credentials;
+read-only path census excludes bootstrap/refresh/gameplay writes and checks
+unchanged credential document. Actual held initial read, no snapshot/socket/
+controls; first result then350ms native elapsed. Six failures/network401503/
+JSON/arm/valid-v3 ×320/1280 ×two selected engines=24, plus four healthy controls.
+Existing visibilitychange listener exercised by dispatch, not physical hide.
+Second injected reply valid same Founder except401 remains401. Fake socket
+only starts after accepted v4; no real server auth/network/SQL inference.
+
+Initial151e2d→48dd8f types clean, e78086→75e341 terminal2: four legacy cases
+failed WRONG fixture, provision_cap was still a v4-only generator field;24
+other cases pass. Correct fixture removes features AND provision_cap; explicitly
+prove v3 decoder admission before runtime's live-v4 refusal. No assertion loosened.
+58e785→d2b0c8 healthy28/performance two passes. Console.info did not appear in
+native runner output, so first measurement output was not externally readable;
+replace with serializable TaskMeta observation rows, not pretend unseen logs
+were inspected. First types7e2de6 fails missing TaskMeta field; explicit module
+augmentation fixes it (887370→c754d0 zero errors/warnings). Initial JSON output
+budget truncates an unselected-test middle: whole parse fails; bounded metadata
+extraction locates28 but is NOT cited as a complete parsed report. No evidence
+promotion from that partial output. Final larger-budget report is parsed whole.
+
+Four valid independent faults all terminal2 on actual assertions:
+
+| Fault | Output | Fail/pass selected | Actual discrimination |
+|---|---|---|---|
+| All failure replies become valid200 |4626f4|24/4|failure promises resolve, rejection oracle fires|
+| Startup stream read severed |3037f0|28/0|actual read count0 instead of1|
+| Existing visibility request severed |d3f094|24/4|second read count1 instead of2|
+| Runtime credential presence suppressed |efdf1e|28/0|wrong startup path/read count0|
+
+All source/instrument faults restored. b947a6 no runtime/shell/lifecycle diff;
+9cfc52 hashes: host3ccce9406c83d57be75f4d89a9cea7cd32ea3665eeb5df947c313ec910f24217;
+runtime0a8c420eb9968aa76a3e9ece91c918a43e3d8c4530773c8818bce5104c0cb416;
+shell3cac14fe775d6e7d58c668630909e84018814ddad0d791f75fb8972ba8beda6e;
+lifecycle2756204599b10b8db160f09f35d8e1d84dd981835267b10bfc3db555a0543c28;
+driverd36e1996072d30604a3dfc400162ec470400d63de184a335af5230d3409e1798.
+No permanent production/copy/balance/kernel/clock/CI/Make change.
+
+Final JSON6b745b→690b15 terminal0, complete parse success=true,28 passed,
+zero failed,350 explicitly unselected,two modules; all28 metadata populations
+present,52 settled/lifecycle rows. Preserve exact bounded metadata projection
+in first-read-observation.v1.json, with subject hashes/command/limitations.
+It is not a fabricated full runner artifact or acceptance verifier; rows do
+not independently name engines, selected native invocation provides population.
+All six failures aftersettlement:busy=false/loading=true/controls0/socket0/
+visible offline=false/error=false/alerts0/diagnostics0/credentials retained.
+Healthy four:loading=false/controls13/socket1. Valid lifecycle replies recover
+the five non401 cohorts at reads2;401 remains loading/controls0/socket0 with
+credentials preserved. Observation controls DO NOT assert bad display desired.
+Absence of automatic retry is observed350ms only, not indefinite behavior.
+
+Final full nativee179d3→fb5b1a terminal0:378/378,93.18s, existing real60s idle
+retained; chained isolated performance two/22 unselected pass.0ebed6→49ec29
+terminal0:types zero errors/warnings,client9,814 passes/513 explicit browser
+skips,105 files pass22skip;214-module build byte-unchanged UI/worker/CSS.
+Boundary7component/4copy negatives,10Go/11Svelte cosmetic negatives and CI13
+topology negatives pass.41b233→79fe02 terminal0:658 copy keys unchanged hash
+a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings/content manifest pass. No source/HEAD mutation
+during live checks/history scan. Default green means instrument/regr, NOT
+startup defect correction/full CI/full release.
+
+DESIGN-GAP: GS0.5 loading includes no snapshot, reconnect assumes last values,
+arm error does not name completed-first-read failure precedence/retry UX.
+Archived bootstrap retry and draft browser-session-renewal do not supply
+authority. Draft game-ui-first-read-recovery.md proposes honest failure,
+single-flight read-only Retry, exact status/identity/copy/AT/live-service
+gates, no credential clearing/implicit account replacement/token renewal.
+D-023 owner posture/wording and author-body reconciliation pending; asynchronous
+question sent, not a ruling. No accepted RFC body/status altered, no authored
+player copy touched. RP-342 remains OPEN on construction/acceptance.
+
+039731 retained-metadata census:28 executions/52 rows/14 names each twice,
+current host/driver hashes match. Read-only in-memory missing-population and
+wrong-driver corruptions independently reject; no retained artifact altered.
+This census is not promoted to a complete artifact-schema/acceptance validator.
+
+Ledger/docs/index/inventory/decision/plan/board/queue/checkpoint log agree.
+Next accepted work: predeclare GS3 Meters connection-state/stale-value proof
+under GS0.5, separate failed-first correction if it fires. Current populated
+AC7 supplement exists already (read at554–685), not falsely queued as absent;
+full performance/excluded/manual-profile obligations remain. No Docker cleanup
+answer/deletion/full-disk run; full Linux/SQL/GS2-A4 held. Firefox/AT/body/GS4/
+AC7/privacy/platform/numeric/full-nine-tier1.0/all prior review gates remain.
+Goal active/progress, no checkbox/lifecycle/archive/push/mint/deploy/release/
+shortened-preview substitution.

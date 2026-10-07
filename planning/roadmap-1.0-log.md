@@ -4570,3 +4570,25 @@ do not invent a snapshot retry UI from bootstrap retry authority. Not yet
 executed defect. Full Linux/SQL/GS2-A4 capacity hold, unanswered cleanup and
 all full-nine-tier1.0/Firefox/AT/body/privacy/platform/numeric/review obligations
 remain. Goal active/progress; no deletion or shortened-preview substitution.
+
+## 2026-10-07 — RP-342 failed-first-read measured / draft contract
+
+ced3b5c7 predeclared. Actual runtime/Response.json/decoder/native host28 cases:
+24 failed reads settle but still say loading/no visible failure or controls.
+Healthy four and explicit existing-lifecycle recovery controls discriminate;
+repeated401 remains401, no credential mutation/bootstrap/renewal/gameplay write.
+Four valid faults fail24/28/24/28 and restore exactly. Initial invalid legacy
+fixture, TaskMeta typing and truncated report are disclosed, not gate credit.
+Final complete parsed runner report28 passes with28 metadata populations/52
+rows retained in first-read-observation.v1.json (limitations explicit).
+
+Final full Garage378/performance two,client9,814/513 explicit skips/types/
+unchanged build/copy/boundaries/topology pass. Instrument green does not repair
+or approve failure UX. Draft first-read recovery/D-023 routes precedence,
+read-only Retry/wording/refusal/identity before implementation; owner question
+pending, no ruling/new auth behavior claimed. Complete a551d3c2-exclusive
+through this containing record commit needs Claude separately from prior spans.
+Next accepted work: GS3 shared reconnect/value-disclosure proof, not new
+startup mechanics. Capacity/Firefox/AT/body/GS4/AC7/privacy/platform/numeric/
+full-nine-tier1.0 and independent review stay live. No boxes/lifecycle/archive/
+deletion/push/release/shortened-preview promotion. Goal active/progress.

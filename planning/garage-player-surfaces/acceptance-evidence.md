@@ -92,6 +92,33 @@ two and client/types/build/copy/boundaries/topology pass. Local first filter,
 not lifecycle/all-context/first-read rejection/retry/Firefox/AT/live SQL proof.
 Separate entire82614848-exclusive range requires Claude.
 
+## RP-342 first-read measurement, not acceptance of failed display
+
+Predeclared ced3b5c7; actual runtime/Response.json/decoder feeding native host,
+injected responses and socket. Both selected engines at320/1280 agree:
+
+| First reply | Settled read display | Explicit visibilitychange + next reply |
+|---|---|---|
+| Healthy v4 | loading absent,13 controls,one socket | Not needed |
+| Network rejection /503 /malformed JSON /malformed v4 arm /valid legacy v3 | loading visible,aria-busy=false,zero controls/socket/failure text/alerts/diagnostics | Valid same-Founder v4: second read,loading removed,13 controls,one socket |
+|401 | Same failed loading display,credentials unchanged | Repeated401: second read,loading remains,no socket/renewal/bootstrap |
+
+28 native executions,52 recorded settled/lifecycle rows; no hidden retry in
+350ms real observation, not indefinite absence proof. Actual legacy v3 is
+decoder-valid after removing v4-only feature/provision fields. Initial wrong
+legacy fixture and TaskMeta typing/report-output mistakes disclosed in log.
+No desired-bug assertion: rows are observations; rejection/healthy/read-count/
+identity controls validate measurement. Four faults fail24/28/24/28 cases.
+Exact source restored. Full Garage378 and performance two/client/types/build/
+copy/boundaries/topology pass; not real server/auth/network/physical hide/
+all-engine/manual AT/release proof. The retained JSON is the bounded metadata
+projection of a complete parsed passing runner report, not a new acceptance
+gate. Rows do not independently label engine; root invocation names both.
+
+DESIGN-GAP: failure precedence/retry/wording before a first snapshot requires
+D-023 and acceptance of the draft first-read recovery RFC. Instrument green
+does not close RP-342. Entire a551d3c2-exclusive span requires Claude.
+
 ## Overall criteria (8)
 
 | Criterion | Current evidence / remaining gate |

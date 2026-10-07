@@ -57,6 +57,16 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   This does not prove lifecycle preemption/all forced contexts, first-read
   failure/retry, real-service recovery, Firefox, manual AT or the full shared
   accessibility floor. Independent review remains pending.
+- **Known startup failure gap (RP-342):** a credentialled first read can finish
+  unsuccessfully while the Desk still visibly says loading, with no failure
+  message or recovery control. Native actual-runtime observations cover
+  injected network/401/503/JSON/arm/legacy failures, not real server outages.
+  The existing visibility-change listener can request another read and bind a
+  later valid reply; repeated401 remains unresolved. Stored credentials stay
+  intact and no replacement account/refresh/gameplay request occurs. The
+  First-read Failure & Recovery RFC is a draft, not a shipped fix or authority
+  to implement session renewal. A passing measurement test does not approve
+  this player experience.
 - **Achievement/meter announcements:** exact event decoders drive the single polite chrome
   announcement, not game-state arithmetic. Achievement copy is announced once per scoped cursor;
   meter changes announce on the Meters surface or badge its nav until visited. Unknown presentation

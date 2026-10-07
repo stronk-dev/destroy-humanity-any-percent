@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** test-only shared-effect consumers under
+**Latest bounded work (2026-10-07):** RP-342 startup truth audit underced3b5c7.
+Actual runtime/native28 cases:24 failed first reads settle but still say
+loading; valid next replies recover through existing lifecycle reread,401
+does not renew. Four actual faults discriminate; metadata retained. Final
+Garage378 /performance two, client9,814 /513 skips/types/unchanged build/copy/
+boundaries/static topology pass. Instrument green is NOT a repaired startup
+experience. New draft first-read recovery/D-023 needs owner posture/copy and
+review/acceptance; no product change. Entire a551d3c2-exclusive span through
+records needs Claude independently of prior spans. Next accepted work: GS3
+connection-state disclosure proof. Full Linux/SQL capacity, Firefox/AT/body/
+privacy/platform/numeric/full-nine-tier1.0/review gates remain; no deletion/
+push/archival/preview substitution.
+
+**Preceding bounded work (2026-10-07):** test-only shared-effect consumers under
 fb2a9488. Fiscal/Meters/Reputation arm-loss/Desk focus/later Settings selection
 24 native passes; five real faults fail and source restores exactly. Final
 Garage350 /performance two, client9,814 /499 skips/types/unchanged build/copy/

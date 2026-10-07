@@ -1,0 +1,946 @@
+{
+  "schema_version": 1,
+  "subject": {
+    "base": "a551d3c2",
+    "predeclaration": "ced3b5c7",
+    "host_sha256": "3ccce9406c83d57be75f4d89a9cea7cd32ea3665eeb5df947c313ec910f24217",
+    "driver_sha256": "d36e1996072d30604a3dfc400162ec470400d63de184a335af5230d3409e1798"
+  },
+  "command": "make test-browser BROWSER_TEST_FLAGS='test/garage-surfaces-browser.test.ts --project=chromium --project=webkit -t \"RP-342 first-read\" --reporter=json'",
+  "terminal_exit_code": 0,
+  "report_success": true,
+  "passed": 28,
+  "failed": 0,
+  "explicitly_unselected": 350,
+  "modules": 2,
+  "limitations": [
+    "actual runtime/Response.json/decoder and native DOM; injected fetch/socket",
+    "two selected native engines; report rows do not carry an independent engine label",
+    "explicit visibilitychange dispatch, not physical hide/resume",
+    "350ms no-auto-retry observation, not indefinite absence proof",
+    "not real server/auth/SQL/all-engine/manual-AT/full release",
+    "green instrument does not approve misleading failure display"
+  ],
+  "populations": [
+    {
+      "test": "RP-342 first-read observation healthy/320",
+      "observations": [
+        {
+          "firstRead": "healthy",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation healthy/1280",
+      "observations": [
+        {
+          "firstRead": "healthy",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation network/320",
+      "observations": [
+        {
+          "firstRead": "network",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "network",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation network/1280",
+      "observations": [
+        {
+          "firstRead": "network",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "network",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 401/320",
+      "observations": [
+        {
+          "firstRead": "401",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "401",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 401/1280",
+      "observations": [
+        {
+          "firstRead": "401",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "401",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 503/320",
+      "observations": [
+        {
+          "firstRead": "503",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "503",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 503/1280",
+      "observations": [
+        {
+          "firstRead": "503",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "503",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation json/320",
+      "observations": [
+        {
+          "firstRead": "json",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "json",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation json/1280",
+      "observations": [
+        {
+          "firstRead": "json",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "json",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation arm/320",
+      "observations": [
+        {
+          "firstRead": "arm",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "arm",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation arm/1280",
+      "observations": [
+        {
+          "firstRead": "arm",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "arm",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation legacy/320",
+      "observations": [
+        {
+          "firstRead": "legacy",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "legacy",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation legacy/1280",
+      "observations": [
+        {
+          "firstRead": "legacy",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "legacy",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation healthy/320",
+      "observations": [
+        {
+          "firstRead": "healthy",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation healthy/1280",
+      "observations": [
+        {
+          "firstRead": "healthy",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation network/320",
+      "observations": [
+        {
+          "firstRead": "network",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "network",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation network/1280",
+      "observations": [
+        {
+          "firstRead": "network",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "network",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 401/320",
+      "observations": [
+        {
+          "firstRead": "401",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "401",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 401/1280",
+      "observations": [
+        {
+          "firstRead": "401",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "401",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 503/320",
+      "observations": [
+        {
+          "firstRead": "503",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "503",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation 503/1280",
+      "observations": [
+        {
+          "firstRead": "503",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "503",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation json/320",
+      "observations": [
+        {
+          "firstRead": "json",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "json",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation json/1280",
+      "observations": [
+        {
+          "firstRead": "json",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "json",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation arm/320",
+      "observations": [
+        {
+          "firstRead": "arm",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "arm",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation arm/1280",
+      "observations": [
+        {
+          "firstRead": "arm",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "arm",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation legacy/320",
+      "observations": [
+        {
+          "firstRead": "legacy",
+          "width": 320,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "legacy",
+          "width": 320,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    },
+    {
+      "test": "RP-342 first-read observation legacy/1280",
+      "observations": [
+        {
+          "firstRead": "legacy",
+          "width": 1280,
+          "phase": "settled",
+          "reads": 1,
+          "sockets": 0,
+          "busy": "false",
+          "loading": true,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 0,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        },
+        {
+          "firstRead": "legacy",
+          "width": 1280,
+          "phase": "lifecycle",
+          "reads": 2,
+          "sockets": 1,
+          "busy": "false",
+          "loading": false,
+          "offline": false,
+          "surfaceError": false,
+          "alerts": 0,
+          "controls": 13,
+          "diagnostics": 0,
+          "credentialsRetained": true
+        }
+      ]
+    }
+  ]
+}
