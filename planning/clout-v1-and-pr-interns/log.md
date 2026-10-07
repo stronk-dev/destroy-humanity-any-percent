@@ -1998,3 +1998,31 @@ PASS, history verifier exits2 at historical50a3a514 missing bump(RP-131).
 This does NOT validate the later dirty range's guard, since history fails first;
 same-commit165→166 mirrors and scoped runtime paths are verified separately.
 Denied read-only ps82fa6e adds no test evidence, no escalation/cleanup attempted.
+
+### RP-311 full runtime range self first-filter
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `3868e3d2..33d4c534`, all27paths/four commits:
+79285a14 predeclaration,e55487fb forward placement correction,03f513ef actual
+red tests,33d4c534 runtime/tests/observations/canonical records. All runtime/
+test/dossier/record diffs inspected; four complete generated reports compared
+against3868e3d2 with ONLYsource pins/new receipt object allowed. Original states/
+events/inputs/bundles/populations/cases/baseline retained; source hashes restored.
+32a0bd/35e801 verify exact range/path inventory,ec1505 verifies real kernel
+165→166 in SAME runtime commit/all3mirrors and append-only log prefixes.
+
+Ordinary/Exit/refresh/cap/owned/order/product/errors and all five compiling
+controls execute as recorded. Compiler-only probe excluded, legitimate survivors
+retained, no seeded-direct refresh failure falsely claimed. Final focused receipt/
+vet supplement follows the last oracle-only refinement; preceding broader cold/
+client/native observations remain at their actual boundaries. Original27AC6 and
+re-executed historicalRP-131 guard are still RED, not tolerated or bypassed.
+
+Decision: RP-311 locally repaired/bounded compatibility verified, NOT designated
+approval, fullCV5/AC3/Clout/CI/1.0 acceptance. Claude must independently inspect
+ENTIRE newspan after3868e3d2 INCLUDING this record edge; prior spans independent.
+Next reconcile residual accepted Clout criteria and a distinct unblocked accepted
+lane; do not repeat evidence or infer unruled numeric/policy/content authority.
+All owner/author/representation/RP-308/platform/full-nine-tier/release gates stay.
+All handles terminal/clean checkpoint; goalactive/progress. No checkbox/status/
+archive/mint/push/deploy/release call or goal completion.
