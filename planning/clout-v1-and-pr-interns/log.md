@@ -1872,3 +1872,22 @@ feature projection as proof. AC3/DG-B author, R-012 representation/RP-308 and al
 owner/content/platform/fullnine-tier/review holds independent. Entire newspan
 after7ca728ca including all records needs Claude; no checkbox/status/archive/
 mint/push/deploy/release call. All handles terminal; goalactive/progress.
+
+### Company migration range self first-filter
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `7ca728ca..90e102a8`, all18 paths/three commits:
+36924143 predeclaration/finding,44c0f8a8 reader correction,90e102a8 tests/corpus/
+dossier/canon/records. Complete Go398line/TS124line new readers and ALL existing
+reader/data/record diffs inspected. Original11legacy/4Founder/source/baseline15
+and ALL22 source hashes verified; both logs append-only29bb13. Runtime/corpus
+negative controls execute and restore, final native populations serialized.
+No existing assertion/case removed or product/oldartifact/kernel/RFC/copy/CI diff.
+Original27AC6 remains red, no newly hidden skip or wholeCI/Clout claim.
+
+Decision: bounded five-case migration proof locally validated, NOT designated
+approval or RFC acceptance. Claude must independently review ENTIRE span after
+7ca728ca INCLUDING this record edge; older spans remain independent. Next
+separately scope RP-311 acceptedCV5 derived receipt object. Author/owner/
+representation/RP-308/content/platform/release gates unchanged. Goalactive/
+progress; no checkbox/status/archive/mint/push/deploy/release call.
