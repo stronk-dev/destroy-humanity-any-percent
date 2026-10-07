@@ -4850,3 +4850,39 @@ records changed while these matching handles were live; both terminal before
 this append. Earlier fault results remain pinned to driver309e45f9, not relabelled
 as executions on the refined driver. Product bytes remain unchanged. These are
 local gates, not cold Linux/Postgres, hosted CI or designated review evidence.
+
+### R-013 / RP-351 — bounded read-only profiling predeclaration
+
+Baseline fc901f70; final Fiscal driver SHA2040c434 as above, host9cb074e5 and
+Fiscal76cf10c5. This is diagnostic research, not permission to repair dependencies,
+budgets, CI or product. Installed local Node v26.10.0, Vitest/browser4.1.10,
+Vite8.1.5, Playwright1.62.0. Pin lock/config and OS identities with SHA/`uname -srv`.
+Five serial arms use the unchanged root native selector for all twelve
+`GS1 native pending` declarations, Chromium and WebKit: healthy, direct receipt
+notice=null, false&&pending, and their completing no-notice mapping/wrong-pending
+text controls.24 executions is the full arm; no project-only substitute.
+
+Before each arm, verify exact baseline source hashes; source faults and reversals
+use unique surrounding context. Capture launch and actual test output. Discover
+only the live arm's51204 listener with `lsof -nP -iTCP:51204 -sTCP:LISTEN`; inspect
+that PID and its proven children using `ps -p <exact-pids> -o
+pid=,ppid=,comm=,etime=,%cpu=` (no arguments/environment/private files). If still
+live, use macOS `sample <exact-runner-pid> 2 10 -mayDie -file <temporary-path>`:
+read-only native-stack observation of this process only. A temporary directory
+comes from `mktemp -d /private/tmp/cloud-clicker-r013.XXXXXX`; no user paths or
+existing files overwritten. No inspector signals/injected callbacks/profiler
+flags/dependency edits, no unrelated sampling or process cleanup.
+
+One early sample while available; for an arm still live after30s, a second sample
+and PID/socket observation. These are observation coordinates, NOT acceptance
+timeouts. An arm with no complete verdict at60s remains incomplete; record actual
+partial counts/CPU/stack attribution, then terminate only its proven owned runner
+with SIGTERM; after one observed grace interval inspect again and use SIGKILL only
+if that exact runner survives. Retain Make/child exit, cleanup and original hashes.
+Never restart an active handle or call a manually stopped population a completed
+failure. Healthy/semantic controls establish whether profiles are informative;
+absence/permission denial/unresolved native addresses is negative evidence, not
+an invented JS cause. Native sample output may locate execution/serialization/
+source-map/teardown only if its actual stack supports that inference. Research
+exit is bounded attributed evidence or explicit unsupported attribution, not a
+claim the runner is repaired. No acceptance checkbox or archival/status promotion.
