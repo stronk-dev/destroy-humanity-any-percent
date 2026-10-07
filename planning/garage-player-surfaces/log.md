@@ -4501,3 +4501,19 @@ completes native Settings saved-state proof. Typed red test-only checkpoint
 carries parser-decoder standard fixtures and no product change. Initial failed
 ledger patch used a misquoted existing row; apply_patch refused atomically,
 exact row read then applied, no user work lost.
+
+## 2026-10-07 — Separate accepted RP-346 tab-stop repair scope
+
+Accepted Garage GS0.6 native keyboard floor authorizes one existing Continue
+button tabindex=0, the same explicit native stop used by RP-338 nav controls.
+No key interception/scripted Tab focus, semantics/handler/copy/pending/read/auth/
+credentials/sequence/Founder/value/timing changes. Current standard corpus96
+executions must pass and the actual removed-tabindex seed must restore48
+WebKit failures while Chromium48 controls pass. Original source faults remain:
+standard title, Exit binding, Founder/sequence guards, focus, stuck pending,
+stuck offline disclosure and omitted handler. Restore every probe before full
+Garage/Game UI, isolated performance, types/client/build/copy/boundaries/static
+topology/no-payment. Product docs/ledger/inventory/plan/board/queue/log reconcile
+transactionally. Entire0e7910ed-exclusive range requires Claude; preceding
+0e548992..0e7910ed and all earlier spans independent. No boxes/body/status/
+archive/push/cleanup/Retry/release/shortened-preview substitution; goal active.
