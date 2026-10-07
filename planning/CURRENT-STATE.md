@@ -4,7 +4,21 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage work:** AC4 actual-source discrimination and RP-335 cosmetic
+**Latest Garage work:** test-only GS6-A3 paired current-source Desk measurement
+at 320 CSS px. Both native engines measure document/main 320/320, Desk/chrome
+284/284, extents 0–320, nodes 90→93 as the three GS6 text additions become
+visible. Six real faults fail/restored exactly; no historical-before-build/
+647 px accessibility closure/actual zoom/AT/Firefox/real service claim.
+Full native Garage 254 passes and isolated performance two passes; client
+9,814 passes /451 browser skips, types/build/boundaries/static topology pass.
+No product/CI change. Entire new span after 54c8c8da through final records
+needs Claude separately from source guard d3ce0f76..54c8c8da and all earlier
+ranges. Next accepted native work: exact rendered Fiscal phase fixtures
+GS1-A3. Docker capacity/full Linux/persisted DOM/author/body/GS4/full AC7/
+AT/default-player/privacy/platform/numeric/full-nine-tier 1.0 holds remain.
+No checkbox/lifecycle/archive/push/release promotion.
+
+**Preceding Garage work:** AC4 actual-source discrimination and RP-335 cosmetic
 command source guard. Four valid component faults fail existing policies;
 the old boundary's fake-button survivor is recorded, not present in healthy
 product code. New verification-only Go/Svelte AST check derives kinds from
@@ -13,7 +27,7 @@ eleven Svelte negatives discriminate, sources restored. Final client 9,814
 passes /450 browser skips, types/build/boundaries/isolation/payment/static
 topology/isolated performance pass. Cold cosmetic parser/transition passes;
 two SQL tests explicitly skip. No production/CI/Make byte moved; no whole-
-program/runtime/Shop acceptance. Complete range after d3ce0f76 through records
+program/runtime/Shop acceptance. Complete range d3ce0f76..54c8c8da
 requires Claude independently of performance 127eb052..d3ce0f76, layout
 bddfc58e..127eb052 and all earlier exact spans. Next accepted work: GS6-A3
 pinned 320 px whole-Desk comparison. RP-331 awaits repaired/rechecked Docker

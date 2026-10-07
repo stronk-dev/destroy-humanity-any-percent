@@ -7,7 +7,24 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: AC4 current-source discrimination and RP-335 GS6-A2
+Latest bounded work: test-only GS6-A3 paired whole-Desk 320 px measurement,
+predeclared 757f1ca2. Exact absent/present provision/cap/owned census,
+visible unchanged regions, focus/no-intents and whole-page/descendant/own-
+scroll/no-masking measurements; six real faults fail both engines and restore
+exactly. Native widths document/main 320/320, Desk/chrome 284/284, extents
+0–320, measured nodes 90→93. Not a historical executable, accessibility's
+647 px closure, actual zoom/AT/Firefox/real-service/later Desk proof.
+Final full Garage Chromium/WebKit 254 passes, isolated performance two passes,
+types/client 9,814 passes /451 browser skips/unchanged build/boundaries/
+topology pass. No production/CI byte moved; selector/reporting mistakes
+disclosed. Complete new span after 54c8c8da through final records requires
+Claude independently of d3ce0f76..54c8c8da and all preceding exact spans.
+Next accepted native work: predeclare exact rendered Fiscal phase edges
+GS1-A3 with explicit fixture time, not synthetic live-clock proof. RP-236/
+RP-331/full Linux/review/author/body/GS4/full AC7/AT/default-player/privacy/
+platform/numeric/full-nine-tier 1.0 gates remain; no lifecycle promotion.
+
+Preceding bounded work: AC4 current-source discrimination and RP-335 GS6-A2
 verification-only repair, predeclared 2a5deeee/da2bc019. Four actual component
 policy faults fail; the old boundary's fake cosmetic button survivor is
 recorded before correction. Production Go AST/decoder now owns the command
@@ -17,10 +34,10 @@ Svelte negatives fail; sources restored exactly. Final boundary/types/client
 9,814 passes /450 explicit browser skips/build/isolation/payment/topology/
 isolated performance pass. Cold cosmetic parser/transition passes; two SQL
 tests explicitly skip. Instrument wrapper-binding mistakes are disclosed.
-No production/API/copy/balance/CI/Make byte moved. Complete new range after
-d3ce0f76 through final records needs Claude separately from performance
+No production/API/copy/balance/CI/Make byte moved. Exact range
+d3ce0f76..54c8c8da needs Claude separately from performance
 127eb052..d3ce0f76, layout bddfc58e..127eb052 and all earlier exact spans.
-Next accepted work: predeclare GS6-A3 pinned 320 px whole-Desk before/after
+Next accepted work at that checkpoint: predeclare GS6-A3 whole-Desk before/after
 comparison, not Firefox/actual 400% zoom/AT substitution. RP-331 SQL/DOM
 proofs await repaired/rechecked Docker capacity; no run/cleanup here. GS4/
 RP-333 full performance, author/body/platform/privacy/numeric/default-player/

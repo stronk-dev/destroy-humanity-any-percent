@@ -2956,3 +2956,76 @@ No product/copy/balance/CI/Make/authority change, checkbox or lifecycle move.
 Whole new span after 54c8c8da through subsequent records requires Claude
 independently of source guard d3ce0f76..54c8c8da, performance
 127eb052..d3ce0f76 and every previous exact span. Full-nine-tier goal active.
+
+## 2026-10-07 — GS6-A3 paired Desk results and local first filter
+
+Review by: Codex (implementer self/first filter, NOT designated).
+Recorded by: Codex. Complete new range starts after 54c8c8da, includes
+757f1ca2 and the test/docs/tracking commit containing this entry. Claude
+must independently review the whole span; source guard d3ce0f76..54c8c8da,
+performance 127eb052..d3ce0f76 and earlier spans remain separately owed.
+
+One test-only native scenario mounts the complete current 1995 Desk with
+decoder-admitted paired fixtures. Only provisioned=0→3, owned=false→true
+and refresh revision change; cap and every other public field remain the
+same. Required census proves provision/count-cap/owned text absent then
+present/visible, shelf and curtain visible without a purchase button,
+manual/opportunity/chrome/nav retained, manual focus unchanged, zero intents.
+Measures document/main/Desk/chrome widths plus all visible descendant
+rectangles and own scroll widths; negative left extents, overflow and clipped
+ancestors fail. No selector-only claim that both states rendered.
+
+Initial native 011b3f exits 2 in both engines because my unqualified cards
+census counted an opportunity card as a generator/upgrade. This was an
+instrument selector mistake, not a product failure; exact existing section
+bindings corrected it without relaxing layout/text/cap checks. Healthy
+0379e8 then passes both native cases and both isolated performance cases.
+
+Six independently executed actual faults, two failures each, terminal exit 2:
+
+| Run | Seed | Discriminating result |
+|---|---|---|
+| 702a71 | Actual provision text min-inline-size 600 px | Baseline fits; after document scroll width 652 and descendant extents fail. |
+| 82bcb9 | Actual provision text display:none | Actual visibility oracle fails, not merely text presence. |
+| c3a36d | Actual provision-cap reason withheld | After exact reason census expects one, gets zero. |
+| 467258 | Actual Desk inline-size 647 px | Whole-page baseline fails (page 699 including padding/borders), NOT a replay of the old historical 647 px measurement. |
+| 5d2793 | Wide actual provision text hidden by its card overflow | Page masking cannot hide descendant/own-scroll failure; card scroll 632, child right extent 652. |
+| ba901e | Driver omits after fixture delivery | After exact populated census fails; cannot report the absent arm twice. |
+
+All five product source seeds passed the actual Svelte parser first. No
+compile error counted as discrimination; no source edit during matching
+live runs. Original host restored after every seed to SHA-256
+9ea86275b688712047703e2e6b794fcf5d6b5b61706d874b51ee13462459223a.
+Driver restored after delivery probe and reporting diagnostic to
+21eb8ab5c57931edcdc544885c3dd20e1c21ebef6e022cd4a86eb6efef7826f5.
+No source fault remains or is committed.
+
+Reporting-only diagnostic 094d5b deliberately throws AFTER all healthy
+measurement/axe checks, exposing both completed JSON observations through
+the runner annotation. Its exit 2 is NOT a product failure or passing gate.
+Chromium and WebKit agree: document/main client=scroll=320, Desk/chrome
+client=scroll=284; extents left=0/right=320 in both arms; 90 then 93 measured
+nodes, provisioned 0→3, owned false→true, intents zero. Annotation alone is
+not evidence an on-disk artifact was persisted by the local success reporter.
+
+Final healthy root results:
+
+- c0f0ab (full browser session 37384): both complete Garage engine populations
+  pass, 254/254 tests in 77.91 s; chained isolated performance two passes /
+  twenty-two explicitly unselected. No shortened real sixty-second idle test.
+- b3f623: types zero errors/warnings; client 9,814 passes /451 explicit browser
+  skips, 105 files pass/22 skip; unchanged 214-module build with the same
+  worker/JS/CSS outputs; boundary 14/8/22 with ten Go/eleven Svelte negatives;
+  static CI topology thirteen negatives rejected. All terminal exit 0.
+- Final source hashes/diff check confirm no product change. No Go/SQL/server
+  execution invented for this client-test-only span.
+
+Docs/inventory/board/queue/plan/checkpoint log reconciled in this range.
+Bounded current-source fixture comparison only: not a historical executable,
+actual 400% zoom, Firefox, AT, real service, later Desk/full release population
+or closure of accessibility's 647 px record. Full Linux browser remains
+RED/held; RP-236 last Docker overlay 0 free/100%, no run/cleanup here. All
+author/body/GS4/RP-331 persisted DOM/RP-333 complete performance/default-player/
+privacy/platform/numeric/review/full-nine-tier 1.0 gates remain. Next accepted
+native work: predeclare exact rendered Fiscal phase-edge fixtures GS1-A3,
+fixed fixture time explicitly not live time. No lifecycle/archive/push/mint.

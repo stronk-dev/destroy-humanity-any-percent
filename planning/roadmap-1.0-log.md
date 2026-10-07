@@ -4418,3 +4418,26 @@ RP-331 persisted DOM waits for repaired/rechecked capacity. Author/body/GS4/
 full AC7/Firefox/actual zoom/AT/default-player/privacy/platform/numeric/
 review/full-nine-tier 1.0 gates remain. Goal active/progress, not finished,
 blocked or preview-substituted. No archive/push/deploy/release.
+
+## 2026-10-07 — paired narrow Desk measurement checkpoint
+
+Under 757f1ca2, one native paired current-source public-fixture scenario
+measures the complete 320 CSS px 1995 Desk before/after GS6 text is visible,
+with exact census/focus/no-intents/descendant/own-scroll/clipping controls.
+Chromium/WebKit agree: document/main 320/320, Desk/chrome 284/284, extents
+0–320, nodes 90→93. Six real faults fail both engines; exact sources restored.
+Initial broad-selector error and deliberate reporting-only exit disclosed.
+Not a historical before-build, old accessibility defect closure, actual zoom/
+AT/Firefox/real-service/later-Desk/full release proof.
+
+Final full native Garage 254 passes plus two isolated performance passes;
+client 9,814 passes /451 browser skips, types/build/boundaries/static topology
+pass. No production/copy/balance/CI/Make byte changed. Canonical docs/
+inventory/board/queue/plan/log synchronized. Complete range after 54c8c8da
+through this containing commit needs Claude separately from source guard
+d3ce0f76..54c8c8da, performance 127eb052..d3ce0f76 and all earlier spans.
+Next accepted native work: exact rendered Fiscal phase-edge fixtures GS1-A3,
+not synthetic live-clock evidence. Docker RP-236 repair/recheck and full Linux
+CI remain held; all author/body/GS4/persisted/full AC7/AT/default-player/
+privacy/platform/numeric/review/full-nine-tier 1.0 gates remain. Goal active/
+progress, no checkbox/lifecycle/archive/push/deploy/release/preview promotion.

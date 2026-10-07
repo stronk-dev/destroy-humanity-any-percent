@@ -1172,6 +1172,96 @@ it.skipIf(!browser)("badges the Fiscal nav on an off-surface harvest and announc
 
 // GS0.4 / AC 320 px: no garage surface forces horizontal scrolling at a 320
 // CSS px viewport (WCAG 1.4.10 reflow). Measured, not assumed.
+it.skipIf(!browser)("GS6-A3 compares the whole 320 px Desk before and after its provision and owned text becomes visible", async ({ annotate }) => {
+  const { page } = await import("vitest/browser");
+  await page.viewport(320, 720);
+  // Paired current-component fixtures, not a historical executable or a
+  // producer/persisted fixture. The unchanged legacy shelf is in both arms.
+  const after = parseGameUISnapshot(withOpportunity(opportunityArm(true, true, true)));
+  const before = parseGameUISnapshot({ ...after,
+    generators: after.generators.map((row) => ({ ...row, provisioned: 0 })),
+    upgrades: after.upgrades.map((row) => ({ ...row, owned: false })),
+  });
+  const runtime = new Runtime(); runtime.current = before;
+  const { target, app, dispose } = await mounted(runtime);
+  const observations: Readonly<Record<string, unknown>>[] = [];
+  try {
+    const manual = target.querySelector<HTMLButtonElement>("section.manual button")!;
+    manual.focus();
+    const nav = [...target.querySelectorAll("nav button")].map((node) => node.textContent);
+    const exactNode = (parent: Element, selector: string, text: string) => [...parent.querySelectorAll<HTMLElement>(selector)]
+      .filter((node) => node.textContent === text);
+    const isVisible = (node: HTMLElement) => {
+      const rectangle = node.getBoundingClientRect(), style = getComputedStyle(node);
+      expect(style.display).not.toBe("none"); expect(style.visibility).toBe("visible");
+      expect(Number(style.opacity)).toBeGreaterThan(0);
+      expect(rectangle.width).toBeGreaterThan(0); expect(rectangle.height).toBeGreaterThan(0);
+    };
+    const measure = (populated: boolean) => {
+      const main = target.querySelector<HTMLElement>("main.game-ui")!, desk = main.querySelector<HTMLElement>("section.desk")!;
+      const chrome = main.querySelector<HTMLElement>("header.chrome")!;
+      expect(main.dataset.surface).toBe("desk");
+      expect(document.documentElement.clientWidth).toBe(320);
+      expect([...chrome.querySelectorAll("nav button")].map((node) => node.textContent)).toEqual(nav);
+      expect(document.activeElement).toBe(manual);
+      expect(runtime.requests).toEqual([]);
+      isVisible(manual); isVisible(chrome);
+      const generator = desk.querySelector<HTMLElement>('section[aria-labelledby="generators-heading"] .card')!;
+      const upgrade = desk.querySelector<HTMLElement>('section[aria-labelledby="upgrades-heading"] .card')!;
+      const provisions = exactNode(generator, "span", t("desk.provisioned_frame", { count: 3 }, "era_1995"));
+      const reasons = exactNode(generator, "span", t("generator.beige_tower.provisioned_cap", {}, "era_1995"));
+      const owned = exactNode(upgrade, "strong", t("desk.upgrade.owned", {}, "era_1995"));
+      for (const nodes of [provisions, reasons, owned]) {
+        expect(nodes).toHaveLength(populated ? 1 : 0);
+        for (const node of nodes) isVisible(node);
+      }
+      const shelfTitle = exactNode(desk, "h2", t("cosmetic.horse_armor_free.title", {}, "era_1995"));
+      expect(shelfTitle).toHaveLength(1); isVisible(shelfTitle[0]!);
+      const shelf = shelfTitle[0]!.parentElement!;
+      const curtain = exactNode(shelf, "small", t("cosmetic.horse_armor_free.disclosure", {}, "era_1995"));
+      expect(curtain).toHaveLength(1); isVisible(curtain[0]!);
+      expect(shelf.querySelectorAll("button")).toHaveLength(0);
+      const opportunity = desk.querySelector<HTMLElement>('[data-region="desk.region.opportunity"]')!;
+      expect(opportunity).not.toBeNull(); isVisible(opportunity);
+      expect(desk.querySelectorAll('section[aria-labelledby="generators-heading"] .cards .card')).toHaveLength(before.generators.length);
+      expect(desk.querySelectorAll('section[aria-labelledby="upgrades-heading"] .cards .card')).toHaveLength(before.upgrades.length);
+      const nodes = [document.documentElement, document.body, main, ...main.querySelectorAll<HTMLElement>("*")];
+      const visible = nodes.filter((node) => { const rect = node.getBoundingClientRect(); return rect.width > 0 && rect.height > 0; });
+      const offenders = visible.filter((node) => {
+        const rect = node.getBoundingClientRect();
+        return rect.left < -1 || rect.right > 321 || node.clientWidth > 0 && node.scrollWidth > node.clientWidth + 1;
+      }).map((node) => ({ tag: node.tagName, class: node.className, left: node.getBoundingClientRect().left,
+        right: node.getBoundingClientRect().right, client: node.clientWidth, scroll: node.scrollWidth }));
+      expect(offenders, "whole-page descendants must fit, not only the Desk box").toEqual([]);
+      for (const added of [main, desk, chrome, ...provisions, ...reasons, ...owned]) {
+        for (let node: HTMLElement | null = added; node !== null; node = node.parentElement) {
+          expect(["hidden", "clip"], "overflow masking is not containment").not.toContain(getComputedStyle(node).overflowX);
+        }
+      }
+      const widths = [document.documentElement, main, desk, chrome].map((node) => ({ client: node.clientWidth, scroll: node.scrollWidth }));
+      const extents = { left: Math.min(...visible.map((node) => node.getBoundingClientRect().left)),
+        right: Math.max(...visible.map((node) => node.getBoundingClientRect().right)) };
+      observations.push({ population: populated ? "GS6-text-present" : "GS6-text-absent", widths, extents,
+        measured_nodes: visible.length, provisioned: populated ? 3 : 0, owned: populated, intents: runtime.requests.length });
+      return { widths, extents };
+    };
+    await settleMeterLayout(); const baseline = measure(false);
+    app.fixtureSnapshot({ ...after, revision: before.revision + 1 });
+    await settleMeterLayout(); const populated = measure(true);
+    for (const [index, width] of populated.widths.entries()) {
+      expect(width.scroll).toBeLessThanOrEqual(baseline.widths[index]!.scroll + 1);
+      expect(width.client).toBe(baseline.widths[index]!.client);
+    }
+    expect(populated.extents.right).toBeLessThanOrEqual(baseline.extents.right + 1);
+    expect(populated.extents.left).toBeGreaterThanOrEqual(baseline.extents.left - 1);
+    console.info("GS6-A3 paired current-source Desk measurement", JSON.stringify(observations));
+    await assertAxe(target, "GS6 current-source paired Desk after");
+  } finally {
+    try { await dispose(); } finally { await page.viewport(1280, 720); }
+    await annotate(`GS6-A3 fixture comparison: ${JSON.stringify(observations)}`);
+  }
+});
+
 it.skipIf(!browser)("reflows the Desk, Fiscal, Meters, Trophy Case and pet surfaces at 320 CSS px without horizontal overflow", async () => {
   const { page } = await import("vitest/browser");
   await page.viewport(320, 640);

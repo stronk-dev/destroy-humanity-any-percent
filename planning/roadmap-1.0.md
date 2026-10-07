@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** AC4 actual-source policy witnesses and
+**Latest bounded work (2026-10-07):** test-only GS6-A3 paired current-source
+whole-Desk measurement at 320 CSS px. Native Chromium/WebKit agree on
+document/main 320/320, Desk/chrome 284/284, extents 0–320, 90→93 nodes;
+exact visible population/focus/no-intents/own-scroll/no-masking checks.
+Six real faults fail and restore exactly. Final full native Garage 254 and
+isolated performance two passes; client 9,814 passes /451 browser skips,
+types/build/boundaries/static topology pass. No product/CI change or old
+647 px/actual zoom/AT/Firefox/real-service/later-Desk/full release promotion.
+Complete span after 54c8c8da through records needs Claude independently of
+source guard d3ce0f76..54c8c8da and every earlier exact range. Next accepted
+native work: rendered Fiscal phase edges GS1-A3, fixture time not live proof.
+Docker/full Linux/persisted DOM/author/body/GS4/full AC7/AT/default-player/
+privacy/platform/numeric/review/full-nine-tier 1.0 gates remain unchanged.
+No box/lifecycle/archive/mint/push or shortened-preview substitution.
+
+**Preceding bounded work (2026-10-07):** AC4 actual-source policy witnesses and
 RP-335 verification-only cosmetic source guard. Four component policy faults
 fail; fake-button survivor recorded before correction. Production Go AST/
 decoder owns kinds; real Svelte explicit envelopes/current wrappers checked.
@@ -14,7 +29,7 @@ restored. Final client 9,814 passes /450 explicit browser skips, types/build/
 boundaries/isolation/payment/topology/isolated performance pass. Cold cosmetic
 parser/transition passes; two SQL tests explicitly skip. Instrument-binding
 mistakes disclosed, no production/CI/Make change or whole-program/runtime/
-Shop acceptance. Complete span after d3ce0f76 through records requires Claude
+Shop acceptance. Complete span d3ce0f76..54c8c8da requires Claude
 separately from performance 127eb052..d3ce0f76, layout bddfc58e..127eb052 and
 all earlier exact ranges. Next accepted work: GS6-A3 pinned 320 px whole-Desk
 comparison; RP-331 awaits repaired/rechecked Docker capacity (last 0 free /

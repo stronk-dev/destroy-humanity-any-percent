@@ -413,6 +413,17 @@ Legitimate acquire/equip/unequip callbacks remain permitted. Ten Go and eleven S
 fixtures run inside the gate; real-source fake-button, replaced/dynamic-kind, decoder-omission
 and checker-bypass probes also fail. Production mutations used for those probes were restored.
 
+The GS6-A3 native fixture comparison mounts the complete current 1995 Desk at 320 CSS pixels,
+then changes only provisioned count and upgrade ownership (plus refresh revision). Both arms keep
+the same public cap, chrome/navigation/manual action/opportunity/free shelf and curtain. It checks
+that the three new text elements really become visible, retains focus, refuses emitted intents,
+and measures page/Desk/chrome widths and descendant extents, including clipping/hidden-content
+failures. In both Chromium and WebKit, document/main scroll and client widths are 320; Desk/chrome
+are 284; extents remain 0–320 before and after, with 90 then 93 measured nodes.
+Six actual widening/visibility/omission/masking/missing-update faults fail. This is absence/presence
+of GS6 text in paired **current-source fixtures**, not a historical before-build, actual zoom,
+Firefox/assistive-technology/real-server/later-Desk proof, or closure of accessibility's 647 px record.
+
 `make test-browser` applies the WCAG 2.2 AA axe gate to all five lifecycle surfaces and to every minigame surface state in
 Chromium, Firefox, and WebKit and includes the sixty-simulated-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.

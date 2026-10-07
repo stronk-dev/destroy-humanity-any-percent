@@ -3,6 +3,29 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage paired narrow Desk checkpoint — 2026-10-07
+
+GS6-A3 test-only paired current-source public fixtures, predeclared 757f1ca2.
+Absence/presence of three text additions proven, all other public data/cap/
+chrome/manual/opportunity/shelf retained; whole-page and descendant widths,
+own scroll/visibility/no-clipping/focus/no-intents checked. Both native engines
+document/main 320/320, Desk/chrome 284/284, extents 0–320, nodes 90→93.
+Six real faults fail/restored exactly; initial selector error and deliberate
+reporting-only exit disclosed. Full native Garage 254 and isolated performance
+two passes; client 9,814 passes /451 browser skips, types/build/boundaries/
+static topology pass. No product/CI change, historical executable, old 647 px
+accessibility closure/actual zoom/AT/Firefox/real service/release claim.
+**READY FOR CLAUDE:** full 54c8c8da-exclusive span through final records,
+independently of source guard d3ce0f76..54c8c8da and all earlier exact spans.
+
+**READY next:** predeclare exact rendered Fiscal phase-edge fixture population
+GS1-A3 with explicit fixed fixture time and failing cases; not a synthetic
+clock masquerading as actual elapsed/service/pacing evidence. RP-331 waits
+for RP-236 repaired/rechecked Docker capacity (last 0 free/100%); no run/
+unauthorized cleanup. Full Linux RED/held, author/body/GS4/full AC7/AT/default
+player/privacy/platform/numeric/review/full-nine-tier 1.0 gates remain.
+No checkbox/lifecycle/archive/push/release promotion.
+
 ## Garage current-source boundary checkpoint — 2026-10-07
 
 AC4 actual component policy witnesses and RP-335 GS6-A2 verification-only
@@ -15,7 +38,7 @@ browser skips/build/isolation/payment/topology/isolated performance pass.
 Cold cosmetic parser/transition passes; two SQL tests explicitly skip.
 Instrument wrapper-binding errors disclosed. No product/API/copy/balance/
 CI/Make change, whole-program/runtime/Shop acceptance or lifecycle promotion.
-**READY FOR CLAUDE:** entire d3ce0f76-exclusive span through final records,
+**READY FOR CLAUDE:** exact d3ce0f76..54c8c8da,
 independently of performance 127eb052..d3ce0f76, layout bddfc58e..127eb052
 and all preceding exact ranges. Source checks do not replace designated review.
 
