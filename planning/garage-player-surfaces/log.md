@@ -1483,3 +1483,41 @@ text; its host readiness omits transportReady. The existing delayed Fiscal
 test explicitly expects disabled=true: retain its revision proof but correct
 that expectation only alongside new tests of the accepted focusable contract.
 Do not silently copy care approval to Fiscal or modify unmeasured semantics.
+
+## 2026-10-07 — Predeclare Fiscal native state/intent supplement
+
+Clean baseline `b64a91af`. Previous turn progress: care/readiness proof and
+RP-322 mapper correction changed authoritative state and executed evidence.
+Authority: accepted Garage GS1-A2–A5, GS0.2/GS0.5/GS0.6/GS0.8, existing
+GS1 copy keys and server projection. RP-323/324 source findings filed first.
+No RFC-body, authored prose, backend/formula/clock/schema/content/epoch/CI edit.
+
+Native Chromium/WebKit runtime-double population: Tab→Enter/Space harvest,
+level and unlock paths in logical order; all three pending commands held
+through intent AND authoritative read, focusable aria-disabled/control guard;
+four applied harvest outcomes and all ordinary/row-cap/unknown refusals with
+exact notices and invariant counts; recovering/resync/restart with stale
+explanation/disabled controls/no auto intent; missing Founder revision;
+unlock-owned and level-capped removal with heading fallback, plus no focus
+steal when the player selects nav; isolated component pending callback guards
+so the host queue cannot mask them. No real quarter/rate-limit/Soul/producer
+proof inferred from these doubles. Keep the existing real composed workflow.
+
+Correct only confirmed Fiscal consumer defects: existing pending/stale keys,
+explicit native Tab entries and callback guards, host transport readiness,
+captured-trigger focus fallback under GS0.2/GS0.6 (nearest surviving control
+in the same region, else heading), snapshot-owned level-cap reason mapping.
+Preserve host single-flight and disabled true for actual ineligibility.
+The existing delayed Fiscal test keeps its held-read/revision assertions;
+replace its contradictory pending native-disabled assertion only alongside
+the new focusable aria-disabled proof in the same reviewed test range.
+
+Tests land before product repair. Demonstrate independently compiling pending,
+readiness/stale/Tab/focus and cap-mapping omission faults; remove each exact
+mutation before another check. Final full Garage two-engine/performance,
+types/client/build/boundaries/copy/manifest/topology and existing actual
+Postgres/WebSocket composed. Firefox's zero-execution connection hold remains;
+no repeated install/skip/timeout workaround or all-engine/AT acceptance.
+Full new span after `b64a91af`, including predeclaration/tests/repair/docs/
+ledger/log/tracking edge, requires Claude independently of prior ranges.
+No checkbox/status/archive/mint/push/deploy/wholeCI/full1.0 promotion.
