@@ -5,13 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded review (2026-10-07):** Claude Fiscal/buff/reflow
+**Latest bounded review (2026-10-07):** original Claude GS5 producer
+`cdb8fe61^..cdb8fe61`, all twelve paths: designated **CHANGES REQUIRED**, RP-313
+accepted wire-body conflict. Primitive checks and eight independent fault
+probes discriminate; source restored exactly. Cold Go/vet, real Postgres
+selected population, generated API, client 9,691/340 skips, types/boundaries
+pass. The database witness does not assert a claimed opportunity. New Codex
+supplement after `87fd23d4` needs Claude. Next: diagnostic review of separate
+Desk consumer `f32f6175^..f32f6175`, all fourteen paths; author reconciliation
+still gates approval. No full Garage, CI, accessibility or release promotion.
+
+**Preceding bounded review (2026-10-07):** Claude Fiscal/buff/reflow
 `6594b646^..6594b646`, all five paths, designated-approved by Codex. The actual
 credit/buff/badge/card faults fail; the nav-wrap probe survives honestly.
 Source restored exactly; final client 9,691/340 skips, native Garage
 Chromium/WebKit 34/performance 1, types/boundaries pass. No full Garage,
-all-engine/400%/AT/real-server/CI/release promotion. Next: GS5 producer
-`cdb8fe61^..cdb8fe61`, all 12 paths, then its separately reviewed Desk consumer.
+all-engine/400%/AT/real-server/CI/release promotion. Its then-next GS5 producer
+review is recorded above; its separate Desk consumer remains pending.
 RP-312 still needs Claude's `7aab0e2e..900f409e` pass; all prior holds and the
 full nine-tier goal remain.
 

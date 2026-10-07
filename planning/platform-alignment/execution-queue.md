@@ -3,6 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage GS5 producer review — 2026-10-07
+
+Designated Codex verdict: original Claude `cdb8fe61^..cdb8fe61`, all twelve
+paths, **CHANGES REQUIRED — RP-313** accepted-body conflict. Author must
+reconcile active-play shape/fact/absence rules and pure-read/clone wording with
+API C2; no implementer re-pin or accepted-body edit. Eight compiling faults
+fail their oracles, all source restored exactly. New tests, cold Go/vet, actual
+Postgres selected population, API generation, client 9,691/340 skips, types and
+boundaries pass. Rates/transition DB proof is not an opportunity claim proof.
+
+**READY next (diagnostic, not approval/implementation authorization):** separate
+Desk consumer review `f32f6175^..f32f6175`, all fourteen paths. RP-313 remains an
+approval hold. New Codex test/record span after `87fd23d4` needs Claude, plus the
+independent RP-312/Clout spans. No boxes, lifecycle, mint, archive, push, deploy,
+CI/release claim or reduced 1.0 scope.
+
 ## Garage Fiscal/buff/reflow bounded approval — 2026-10-07
 
 Designated Codex verdict: `6594b646^..6594b646`, all five original Claude paths,
@@ -12,8 +28,8 @@ not counted as a failure. Product source restored exactly. Final cold client
 9,691/340 explicit skips, native Chromium/WebKit Garage 34/performance 1,
 types/boundaries pass. No full Garage/all-engine/400%/AT/real-server/CI gate.
 
-**READY next:** designated review `cdb8fe61^..cdb8fe61`, all 12 paths (GS5
-opportunity projection); then its separate Desk consumer `f32f6175`.
+**Then-next, now reviewed above:** `cdb8fe61^..cdb8fe61`, all 12 paths (GS5
+opportunity projection); its separate Desk consumer remains pending.
 RP-312 correction needs Claude at exact `7aab0e2e..900f409e`, all four commits;
 this later record-only review is distinct. All prior Clout, owner/author,
 content/platform/review and release holds remain. No status, box, archive,

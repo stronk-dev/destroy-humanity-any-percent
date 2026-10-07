@@ -179,3 +179,24 @@ an implementer convenience. Canonical home:Clout CV3/AC6 and its author-reconcil
 body, with linkage to any later accumulation/persistence RFC. This cannot waive
 RP-307's numeric failures, invent episode state, restamp evidence or retune data.
 Evidence:planning/clout-v1-and-pr-interns/policy-boundary-research.md and log.
+
+## Garage active-play projection body reconciliation — RP-313
+
+Original producer `cdb8fe61^..cdb8fe61`, all twelve paths, designated-reviewed
+by Codex: CHANGES REQUIRED. GS0.1 requires exactly six feature keys and nullable
+`active_play`; current code keeps that key null and uses optional `opportunity`,
+whose presence drives `feature.active_play`. The implementation log cites API
+C2's type-change refusal, but no author body reconciliation adopts the sibling.
+Pure existing-kernel projection is read-only in executed tests, yet directly
+reads the source instead of the body-promised discarded clone.
+
+Required author action: reconcile GS0.1/GS5 arm location, absent/null contract,
+fact binding and read-only/clone boundary with C2 and the retained v4 baseline.
+Preserve the accepted gameplay and compatibility obligations; no implementer
+re-pin, v2/v5 choice, gratuitous cloning or silent accepted-body amendment.
+If a changed runtime contract is selected it needs its own bounded accepted
+authority and discrimination tests. RP-132/RP-174 are analogous, not permission
+to infer this ruling. Eight executed faults and the cold local/real-Postgres
+evidence are in the Garage log. The separate Desk consumer can be inspected
+diagnostically meanwhile; no approval, archival or player-content adoption is
+inferred. New Codex tests/records require Claude separately.

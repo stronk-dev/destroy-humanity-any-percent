@@ -4057,3 +4057,20 @@ Desk consumer. RP-312's new Codex correction is separately bounded to
 All prior Clout/owner/author/content/platform/review holds remain. Full
 nine-tier goal remains active/progress; no status/boxes/archive/mint/push/
 deploy/release changes.
+
+## 2026-10-07 — GS5 producer checked; accepted-body mismatch recorded
+
+Original Claude `cdb8fe61^..cdb8fe61`, all twelve paths, designated-reviewed
+by Codex: CHANGES REQUIRED, RP-313. Optional `features.opportunity` conflicts
+with accepted GS0.1's `active_play`; pure source reads also differ from its
+clone wording. Author reconciliation is required, not an implementer pin/body
+bypass. No arithmetic defect established. New primitive tests cover source
+immutability, aliases, ordered live buffs, activation and invalid inputs.
+Eight compiling fault probes fail their intended assertions; exact restoration
+confirmed. Cold Go/vet, actual selected Postgres population, API regeneration,
+types, client 9,691/340 browser skips and boundaries pass. The DB witness checks
+rates/transitions, not GS5-A4's claim journey. No full CI/accessibility/Garage/
+release claim. New Codex supplement after `87fd23d4` needs Claude; RP-312 and
+Clout spans remain independent. Next safe diagnostic work: separate Desk
+consumer `f32f6175^..f32f6175`, all fourteen paths. Full nine-tier 1.0 goal stays
+active/progress; no boxes/status/archival/mint/push/deploy/release change.

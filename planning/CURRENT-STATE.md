@@ -4,14 +4,27 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage review/correction:** designated Codex review of original Claude
+**Latest Garage producer review:** original Claude `cdb8fe61^..cdb8fe61`, all
+twelve paths, is **CHANGES REQUIRED — RP-313**: accepted GS0.1 still requires
+`features.active_play`; the implementation uses optional `features.opportunity`.
+Author reconciliation must address shape/fact/absence rules and the pure-read
+versus discarded-clone wording without bypassing API C2. Eight compiling fault
+probes fail; all temporary product bytes restored exactly. New read-only/alias/
+activation/refusal tests pass, as do cold Go/vet, actual Postgres selected
+population, API generation, client 9,691/340 skips, types and boundaries. The
+existing Postgres witness checks rates/transitions, not a GS5 claim. New Codex
+supplement after `87fd23d4` needs Claude. Next safe diagnostic review: Desk
+consumer `f32f6175^..f32f6175`, all fourteen paths; no full Garage/CI/release gate.
+
+**Preceding Garage review/correction:** designated Codex review of original Claude
 Fiscal/buff/reflow `6594b646^..6594b646`, all five paths, is **APPROVED, bounded
 batch only**. Credit-sum/buff-disconnection/badge-clear/oversized-card probes
 fail their named oracles; nav-wrap omission survives honestly. Source restored
 exactly; final 9,691 client tests, Chromium/WebKit Garage 34 and performance 1,
 types/boundaries pass. This is not full Garage, all-engine/AT, real-server or
-release proof. Next: GS5 producer `cdb8fe61^..cdb8fe61`, all 12 paths, before its
-separate Desk consumer. RP-312's Codex range `7aab0e2e..900f409e` needs Claude.
+release proof. Its then-next GS5 producer review is recorded above, and its
+separate Desk consumer remains pending. RP-312's Codex range
+`7aab0e2e..900f409e` needs Claude.
 
 The preceding original achievement/meter review
 `301728c8^..301728c8` covers all 14 paths: **CHANGES REQUIRED**, RP-312 meter-direction

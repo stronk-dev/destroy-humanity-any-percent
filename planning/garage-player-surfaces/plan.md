@@ -16,6 +16,11 @@ that would need one is recorded as a blocker in `log.md` instead.
 - [x] GS1 Fiscal arm + surface.
 - [x] GS7 minigames availability arm wired into the existing Pitch surface/nav.
 - [x] GS5 active-play arm (`features.opportunity`, kernel export `ProjectActiveCombo`) + Desk opportunity region + composed claim witness (`cdb8fe61`, `f32f6175`).
+  Original producer `cdb8fe61^..cdb8fe61`, all twelve paths: designated Codex
+  CHANGES REQUIRED, RP-313 wire/clone body reconciliation. Green primitive
+  tests do not resolve this; original consumer all fourteen paths remains
+  pending. New Codex supplement after `87fd23d4` requires Claude independently.
+  This existing checkbox records implementation, not acceptance or archival.
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.
 - [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
   Review note: original `301728c8^..301728c8` is **CHANGES REQUIRED** for RP-312;
