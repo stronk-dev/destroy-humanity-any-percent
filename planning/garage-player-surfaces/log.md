@@ -546,3 +546,20 @@ Firefox, manual AT, real-WebSocket achievement acquisition, full Garage, whole
 CI, mint, release or archival proof. ExistingRP-131/RP-307 and all owner/author/
 content/platform/review holds remain. Next safe independent work is a separately
 bounded designated review of `6594b646^..6594b646`, all5paths (Fiscal/buff/reflow).
+
+### RP-312 exact first-filter coordinate
+
+**Review by:** Codex (self/implementer-side first filter). **Recorded by:** Codex.
+**Reviewed range:** `7aab0e2e..b1e903e3`, all three commits and all ten changed
+paths: event predicate, runtime regressions, backlog, canonical Game UI docs,
+current state, Garage plan/log, execution queue and 1.0 board/log. No edge
+commit from that range is omitted. The full delta was inspected; both logs
+preserve their entire baseline prefixes, all paths satisfy the predeclared
+allowlist, and all probe-only runtime/host/server/kernel/balance/copy/deployment
+bytes are unchanged. A fresh focused run from committed `b1e903e3` passes all
+27 runtime cases. **First filter passes only; not designated approval.**
+Claude's pending designated review must cover `7aab0e2e..b1e903e3` PLUS this
+coordinate-record commit and any later touching edges. This entry does not
+self-approve its own record edge or authorize archival. Original Claude
+`301728c8^..301728c8` remains CHANGES REQUIRED; the correction's independent
+verdict is a separate gate. Next: the separately scoped five-path remainder.
