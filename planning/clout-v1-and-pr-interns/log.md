@@ -2141,3 +2141,35 @@ local correction without hiding current hosted red, RP-307/RP-131, numerical-pol
 holds or missing late-game/release proof. All process handles terminal before records/commit.
 Next: remaining accepted integration/review work; numerical repair still needs its compatible
 accepted representation/episode contract. No acceptance checkbox, mint, archive, push or release.
+
+## 2026-10-08 — show the current PR multiplier instead of a rounded resource amount
+
+Outcome: repair RP-387 under CV9's current-factor/product rendering contract. The Desk panel
+used Amount's ruled below-1000 integer formatting, rendering all three supplied values as `1`.
+Axis-only output now preserves the validated canonical coefficient with text decimal placement;
+when expansion needs extra zeros it retains canonical notation. No factor calculation, general
+Amount/notation-policy change, server math, balance, copy, content mint or CI change.
+
+Regression: new independent literal assertions against the Go projector golden and an
+authoritative fixture refresh fail in both Chromium/WebKit (65716: four failures/four passes):
+`[1,1,1]` instead of `[1.2,1.2,1.16]` / `[1.3,1.3,1.24]`. The initial sandbox attempt cannot
+listen and executes nothing. Initial Decimal.toString replacement passes these small cases,
+but direct diagnostic2e997f exposes `1.005e1 -> 10.049999999999999` and
+`1.11111111111e1 -> 11.111111111100001`; discarded before commit. Exact text formatting retains
+both values, small effects, neutral/cap examples and large canonical exponents; invalid inputs
+reject. No new numeric engine or change to the shared numeric module.
+
+Coverage: Node12171 passes52 formatter/decoder/formula/unchanged Amount goldens. Native4106
+passes14 Axis/actual shell browser checks, including literal factors at inputs8/12/44,
+progressbar associations, refresh, absence, axe and unchanged Amount cadence/cap behavior.
+An earlier selector28697 included a nonexistent Amount-browser filename: only eight Axis
+executions ran, not Amount coverage; final4106 uses the actual shell-browser file. Types,
+production build215 modules and UI boundaries61248 pass. Final indentation-only test edit
+changes no assertions. All verification handles terminal before records.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range after
+`48a7e5ed` through this batch's final code/test/docs/record commit needs designated review.
+No AC/archival/served-epoch/AT/full-CI/1.0 completion claim. RP-307's original27 arithmetic
+failures and the unaccepted accumulation/episode contract remain; this is fixture-panel proof.
+Next: reuse the existing declared real-service journey and axis fixture for PR purchase,
+authoritative multiplier refresh and reload persistence, without claiming a release content mint.

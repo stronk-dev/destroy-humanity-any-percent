@@ -107,6 +107,9 @@ it.skipIf(!browser)("renders the server-derived axis readout and PR Intern progr
     const text = panel!.textContent ?? "";
     expect(text).toContain("Achievement attainment this run: 8 of 44");
     expect(text).toContain("Unlocks at attainment 10 (now 8)");
+    // Independent expected values from the Go projector golden, not the UI's
+    // formatter: rounding these multipliers to 1 hides the production effect.
+    expect([...panel!.querySelectorAll("output")].map((node) => node.textContent)).toEqual(["1.2", "1.2", "1.16"]);
     const rows = [...panel!.querySelectorAll("li")].map((row) => row.getAttribute("data-upgrade"));
     expect(rows).toEqual(["upgrade.pr_intern_1", "upgrade.pr_intern_2"]);
     expect(panel!.querySelectorAll("progress")).toHaveLength(1);
@@ -114,6 +117,26 @@ it.skipIf(!browser)("renders the server-derived axis readout and PR Intern progr
     expect(titles).toEqual(expect.arrayContaining(["PR Intern", "Senior PR Intern"]));
     for (const id of ["upgrade.pr_intern_1", "upgrade.pr_intern_2", "achievement.first_gate"]) expect(target.textContent).not.toContain(id);
     await assertAxe(target, "axis panel");
+  } finally { await dispose(); }
+});
+
+it.skipIf(!browser)("preserves fractional PR multipliers when authoritative attainment changes", async () => {
+  const runtime = new Runtime();
+  runtime.current = withAxis(axisArm as unknown as GameUIAxisStackArm);
+  const { target, app, dispose } = await mounted(runtime);
+  try {
+    for (const [input, product, secondFactor] of [[12, "1.3e0", "1.24e0"], [44, "2.1e0", "1.88e0"]] as const) {
+      const updated = structuredClone(axisArm) as GameUIAxisStackArm;
+      updated.input_value = input;
+      updated.product = product;
+      updated.contributions[0].factor = product;
+      updated.interns[0].factor = product;
+      updated.interns[1].factor = secondFactor;
+      app.fixtureSnapshot(withAxis(updated));
+      await settle();
+      expect([...target.querySelectorAll("section.axis output")].map((node) => node.textContent)).toEqual(input === 12 ? ["1.3", "1.3", "1.24"] : ["2.1", "2.1", "1.88"]);
+    }
+    expect(runtime.requests).toEqual([]);
   } finally { await dispose(); }
 });
 

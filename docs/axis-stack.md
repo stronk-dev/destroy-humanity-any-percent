@@ -96,6 +96,15 @@ and content review still apply.
 
 ## Fixture panel accessibility
 
+The product and each intern's current factor render the supplied canonical value
+without resource-amount rounding. The panel places the decimal point within the
+coefficient using text (for example, `1.2e0` → `1.2`, `1.005e1` → `10.05`), and
+retains canonical notation when expansion would require extra zeros. It neither
+recomputes factors nor converts them through a floating-point display value.
+The general Amount component's ruled integer/Standard notation remains unchanged.
+RP-387's browser regression observes literal product/factor values at attainment
+8, 12 and 44; the previous panel displayed the fractional values as `1`.
+
 The Desk panel's native PR Intern progress bars reference their existing
 translated intern titles as accessible names and their numeric progress sentences
 as descriptions. The controlled browser witness checks distinct row associations
