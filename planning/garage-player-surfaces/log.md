@@ -1543,3 +1543,33 @@ controls and missing-revision/no-focus-steal controls pass. The two browser
 engines differ on transient native-disable focus loss; no engine's result
 is substituted for the other. Native failures are assertions, not launch or
 build errors. Tests are committed before any production change.
+
+First repair passes50/50 selected native assertions and types zero errors/
+warnings. Independent readiness omission fails2/48; stale-note omission
+fails6/44,98 unselected in each. Probe orchestration then makes a restoration
+error: replacing an empty line without structural context inserts stale text
+inside the script. The pending-note probe and its attempted diagnostic rerun
+execute ZERO tests with a Svelte parse/import failure. Neither is behavioral
+evidence. Automation stops at the non-assertion failure; exact structural
+restoration removes the misplaced text and restores the notes to the markup.
+Expected component SHA256 is
+`f68eefd0bb4c7db5c4828fec57c5200d1595804aef9292ecd814222d759f4479`;
+host `f4ec76753a2ce837b2c2032067869214a6a5611838c370c3df28b469a53ea50a`.
+Verify both before resuming. Future note probes replace the key with an
+existing different key rather than an empty restoration target; no error
+is attributed to product behavior or absorbed into passing/failing counts.
+
+First full corrected population passes148 Garage assertions/performance1;
+client9,737/397 explicit browser skips/types/build/boundaries/copy/manifest/
+topology pass. Actual composed harvest/unlock/Pitch+WebSocket and care reload
+pass. Before closeout, self first-filter finds two instrument blind spots,
+RP-325: one default reason cannot distinguish a fixed key; one survivor cannot
+distinguish nearest from first. Within the existing predeclared source-owned
+reason/nearest-control properties, first execute those two shortcuts against
+the current50 selected assertions, restore exact hashes, then refine only the
+fixtures: different registered snapshot reason; two surviving buttons at
+unequal distances. These legal public runtime fixtures are not new producer
+catalog eligibility or minted-content claims. Prove the refined oracles fire
+on those same shortcuts. Re-run final types/client/full native; production
+bytes/build/composed/manifest stay unchanged if refinements are test-only.
+Record every survivor as such, not a failed product check or discarded run.
