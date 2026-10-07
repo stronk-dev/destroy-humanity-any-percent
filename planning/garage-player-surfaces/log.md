@@ -642,3 +642,14 @@ RP-312's required Claude correction range is now bounded exactly to
 `7aab0e2e..900f409e`, all four commits including its coordinate edge; this
 separate record-only remainder review does not silently extend that product
 span. Older Clout spans and all other review/release holds remain independent.
+
+### Review boundary body reconciliation
+
+The mutable board, queue, current state and Garage plan now name the closed
+RP-312 span `7aab0e2e..900f409e` in their older active paragraphs too. The later
+Fiscal/buff/reflow record-only span is `900f409e..bd028200` (two commits, six
+planning paths), with the designated verdict covering the original five-path
+`6594b646^..6594b646` only. This record correction changes no verdict, proof,
+box, product byte or archival authority. This follow-up record edge remains
+explicit; it is not silently relabelled as reviewed implementation. Next safe
+work is still the original 12-path GS5 producer review.

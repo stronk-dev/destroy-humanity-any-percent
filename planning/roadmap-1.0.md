@@ -21,7 +21,7 @@ failures; narrow acceptedGS0.3 direction repair and simulated-reconnect proof
 locally pass, with compiling omission/replay/host faults caught and restored.
 Final9,691 client tests/340skips, nativeGarageChromium/WebKit34/performance1,
 types/build/boundary/copy/manifest/topology pass. No all-engine/real-server
-acquisition/fullGarage/wholeCI/release promotion. Newspan after7aab0e2e INCLUDING
+acquisition/fullGarage/wholeCI/release promotion. Exact `7aab0e2e..900f409e` INCLUDING
 records needs Claude. Its then-next remainder review is recorded above. All prior
 numeric/author/content/platform/review holds and full nine-tier scope remain.
 

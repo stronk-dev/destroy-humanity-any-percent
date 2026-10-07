@@ -32,7 +32,7 @@ copy/manifest/topology pass. No fullCI/server/acquisition/Firefox/allGarage gate
 
 **Then-next, now approved above:** separately bounded designated review Claude
 `6594b646^..6594b646` (Fiscal/buff announcements and reflow, all5paths).
-Entire new Codex span after7aab0e2e INCLUDING records needs Claude before its
+Exact Codex `7aab0e2e..900f409e` INCLUDING records needs Claude before its
 correction can be consumed as approved. Original allGarage/later/current spans
 and all previous Clout ranges remain independent. No boxes/status/mint/archive/
 push/deploy/release change, full nine-tier objective unchanged.

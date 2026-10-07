@@ -20,7 +20,7 @@ repair and 13 new cases now pass (9,691 client tests/340 explicit skips). Real
 delivery-gate and host-dedupe omissions fail; exact source restored. Native
 Chromium/WebKit Garage 34 and isolated performance 1 pass; types/build/boundary/
 copy/manifest/topology gates pass. Firefox/real-server acquisition/full Garage/
-whole CI/release are not claimed. New span after `7aab0e2e` including records needs
+whole CI/release are not claimed. Exact `7aab0e2e..900f409e`, including records, needs
 Claude; prior Clout spans are independent. The subsequent remainder review is
 recorded above. Full nine-tier goal and all prior
 owner/numeric/platform/content/review holds remain.

@@ -20,7 +20,7 @@ that would need one is recorded as a blocker in `log.md` instead.
 - [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
   Review note: original `301728c8^..301728c8` is **CHANGES REQUIRED** for RP-312;
   the scoped direction repair and simulated-reconnect supplement are locally verified,
-  not designated-approved. Claude must review the entire new range after `7aab0e2e`,
+  not designated-approved. Claude must review exact `7aab0e2e..900f409e`,
   including planning/record edges. The existing box is not an archival or full-GS0.3 gate.
 - [x] GS0.3 remainder: `fiscal_period_harvested.v1` nav badge (OD-3) and `buff_started.v1` announcement (`6594b646`).
   Bounded designated Codex verdict: `6594b646^..6594b646`, all five paths,
