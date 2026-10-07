@@ -39,7 +39,7 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-025 | Unquoted root test-selector flags reject valid parenthesized Go regexes before launch. | ⚠ tooling defect |
 | RP-026 | Removing cap/drain/resync rendering together leaves all 20,007 Game UI browser assertions green. | ⚠ acceptance-oracle defect |
 | RP-027 | Permits P2/P4/AC4 contradict accepted PT-C1/PT-C2/PT-C4 rulings. | ⚠ owner-ruling/body contradiction |
-| RP-028 | Permits lacks the required exact two-resource Go/TS gate-crossing replay row. | ⚠ acceptance proof gap |
+| RP-028 | Permits lacks the required exact two-resource Go/TS gate-crossing replay row. | 🧪 Shared ratified-candidate corpus added 2026-10-07; Go live handler/logged replay and TypeScript agree on complete receipts/events/state for payment and typed refusal. Designated review pending; owning Permits plan/log records scope and remaining acceptance limits. |
 | RP-029 | Canonical Economy/Routes and related docs still describe the pre-mint world. | ⚠ canonical-doc defect |
 | RP-030 | Epoch-6 changelog does not cite every consumed verdict and exact reviewed range required by FCE AC4. | ⚠ closeout/provenance defect |
 | RP-031 | FCE5.5/AC5 still say mint-commit green despite the accepted range-head ruling. | ⚠ owner-ruling/body contradiction |

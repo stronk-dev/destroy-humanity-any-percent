@@ -12,6 +12,6 @@
 - [ ] At the epoch-6 landing, prove a fresh genesis initializes `company.permits` under the pinned economy artifact.
 - [ ] At the epoch-6 landing, prove cross-epoch Exit activates permits under the new-run boundary without changing the ending run.
 - [ ] At the epoch-6 landing, prove a pre-epoch-6 run replays under its pinned resource universe.
-- [ ] At the epoch-6 landing, add the Go/TypeScript replay row for the two-requirement `gate.t3_to_t4` crossing.
+- [x] Add the shared Go/TypeScript two-requirement `gate.t3_to_t4` replay proof: `TestPermitsGateReplayCorpus` and `client/test/permits-replay.test.ts`, cold pass 2026-10-07. This post-mint supplement exercises the ratified candidate composition, not the full release bundle; designated review remains pending.
 
 No active balance artifact or epoch seed changes in this package.

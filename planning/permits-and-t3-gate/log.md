@@ -107,3 +107,31 @@ full Permits implementation span. The candidate manifest is RATIFICATION-READY:*
 e87b0224…512 as byte-pins; generated 8462d6d5…8a2 as the 7d9cb37 attestation per N1. After owner
 ratification, the bytes await only the epoch-6 mint (PT-C1: activated atomically by the First
 Content Epoch).
+
+## 2026-10-07 — RP-028: shared two-resource gate replay supplement
+
+- Scope: test-only supplement after `a42e680e`; no production, balance, copy, schema or CI bytes
+  change. `permits_replay_test.go` executes the live gate handler, restores its input and executes
+  `ApplyLogged`; the small `testdata/replay/permits-gate-v1.json` corpus is also consumed by
+  `client/test/permits-replay.test.ts`. Complete receipt/event/state bytes must agree. Independent
+  checks cover cash short, permits short, both short (cash-first reason), exact payment and surplus
+  preservation; refused state remains byte-identical with no events.
+- Fixture scope: ratified economy/routes candidates + matching first-content category bytes over
+  the historical base catalog, Company v14. Not the complete epoch-6/8 bundle, PostgreSQL commit,
+  duplicate-intent delivery or mounted player journey. Activation/history acceptance remains open.
+- Checks: cold `make test-go vet GO_PACKAGES='./production ./routes ./economy'
+  GO_TEST_FLAGS='-count=1 -v -run Permi'` passed the four production tests and vet; its selector
+  selected no routes/economy tests. Those packages passed in the preceding unfiltered run, but
+  **that overall run failed** on the existing 27 `TestAxisAccrualPartitionProperty` divergences
+  (RP-307); no assertion was weakened. Three affected client files passed (95 tests); `make
+  typecheck` returned zero errors/warnings. No aggregate or hosted CI green claimed.
+- Initial invalid runs are excluded: Make swallowed the regex end anchor (zero tests), and a
+  custom Go test flag before the package caused setup failure. Valid explicit generation is
+  `make test-go GO_PACKAGES='./production -args -update-replay-fixture'
+  GO_TEST_FLAGS='-count=1 -v -run TestPermitsGateReplayCorpus'`. The first TS run rejected the
+  mismatched old category gate list; using the existing matching category artifact fixed the
+  instrument, without bypassing its loader or changing gate semantics. Normal tests only compare.
+- Review by: Codex (implementer diff check); Recorded by: Codex. Designated cross-party review
+  pending for this test/record batch; no independent approval or archival claim.
+- Next: designated review of this supplement; author reconciliation RP-027, canonical-doc repair
+  RP-029 and the remaining activation/history evidence before Permits archival.
