@@ -68,6 +68,16 @@ It does not waive explicit feature acceptance criteria or lower the full nine-ti
    implementation, test and record commits into one reviewable range. Complete the feature's
    acceptance criteria before archival; don't repeat every acceptance experiment per edit.
 
+The unit of delivery is a coherent behavior change, not each file edit or tool call. During
+development, iterate with the focused test; run the affected package checks and necessary
+integration checks on the finished batch. A further change invalidates evidence for what it
+touches, not automatically every unrelated suite. Reuse existing test helpers and journeys;
+do not build a new measurement framework for a routine regression.
+
+Pending designated review prevents acceptance/archival, not all further work on already
+accepted contracts. Continue safe work, keep its range explicit, and bring related changes
+back as one review batch. Do not cite an unreviewed new contract as accepted authority.
+
 ### Verification by change risk
 
 | Change | Meaningful verification |
@@ -78,12 +88,37 @@ It does not waive explicit feature acceptance criteria or lower the full nine-ti
 | Cross-system gameplay, persistence, security/privacy, money prohibition, numeric or deployment change | Affected unit/contract tests plus a real integration journey and meaningful failure paths. Use actual Postgres for DB behavior, mounted DOM/current server for player flows, both runtimes' vectors for shared math, and restore/clean-host checks for deployment where required. |
 
 Before a feature closeout, run its entire acceptance population. Before publication or an
-integrated milestone, run `make verify-push`, the existing local push/PR CI-equivalent aggregate.
-Reconcile the hosted run when available; local green is not proof of hosted green. Exhaustive
+integrated milestone, run `make verify-push`, the aggregate of the push/PR job targets.
+It shares targets with Actions, not necessarily its environment: a native Go run can skip DB
+tests without Postgres, and native browser/CPU behavior can differ from Linux. Use the declared
+service/environment checks below for affected boundaries; reconcile the hosted run when
+available. Local green is not proof of hosted green. Exhaustive
 balance/research and clean-host release checks stay at their declared feature/release gates,
 not on every comment edit. If a lane is unavailable or red, report that limitation and keep the
 affected acceptance/release claim open; don't weaken assertions, silently skip, or rerun until
 the last green result conceals failures. Unrelated red lanes do not forbid scoped work.
+
+### Choosing the actual checks
+
+Run commands from the repository root. These are selectors for existing tools, not a new
+checklist requiring every row for every change. Replace the example package/file with the
+changed owner, include affected consumers, and name the requirement the test checks.
+
+| Changed boundary | Existing check / required observation |
+|---|---|
+| Go logic, no DB boundary | `make test-go GO_PACKAGES='./publicapi ./publicread' GO_TEST_FLAGS='-count=1'` and `make vet GO_PACKAGES='./publicapi ./publicread'`. A narrower `-run` is useful while debugging; finish with the affected packages. |
+| TypeScript logic | `client/node_modules/.bin/vitest run --root client test/game-ui-runtime.test.ts`, plus `make typecheck`; `make build-client` when shipped client/bundling changes. A runtime double is not a server integration. |
+| DOM/input/focus/layout | `make test-browser BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts'` and `make typecheck`. Assert actual input, focus, state and rendered outcome, not only component existence. This target also runs the existing screen-performance check. |
+| Persistence, migrations, DB-backed authorization | `make test-save-integration SAVE_TEST_PACKAGES='./save' SAVE_TEST_FLAGS='-run Integration -v'`; migration changes use `make validate-migrations`. Check that the named DB tests actually execute, including a rejected/rollback case relevant to the change. |
+| Browser → server gameplay/receipts/recovery | `make test-game-ui-composed`. Verify the changed path is exercised, including its authoritative result. If not, extend that journey or add a focused real-boundary test; an unrelated green journey is insufficient. |
+| Generated API, shared math, deployment, balance | Use the owning feature's existing contract/vector/restore/harness targets for the affected requirement. API changes include `make api-check`; shared numeric changes require both Go and client vectors. A schema drift check alone does not prove a handler or UI works. |
+| Linux/CI-specific failure | `make test-go-ci CI_TEST_PACKAGES='./save' CI_TEST_FLAGS='-v'` for selected Linux-amd64/Postgres tests; `make verify-server-ci` for the server job; `make test-browser-ci` for Linux browsers. Containers approximate the hosted environment, not exact runner hardware. CI/workflow edits require checking the actual affected job, not YAML validity alone. |
+
+For each test, answer: **what wrong behavior would make this fail?** For a fix, demonstrate
+the regression on the old implementation before correcting it, or use an already recorded
+reproduction. Assert meaningful outcomes and relevant failure behavior. A real boundary is
+mandatory only when the change or claim crosses it; mocks remain useful for isolated logic.
+If the intended failure escapes the test, improve the test before claiming the fix verified.
 
 ### What counts as a useful test
 
@@ -158,3 +193,9 @@ On completion:
   contract-conformance fixes. Explicitly distinguish mocked checks from real integration claims.
   Verification: inspected the process diff against the risk table and existing CI targets;
   documentation-only, no software tests run. Normative amendment awaits cross-party review.
+- 2026-10-07: make the procedure operational: one coherent batch, existing focused selectors,
+  checks at the changed boundary, and explicit native-versus-hosted CI limits. Pending review
+  does not halt safe work under accepted contracts. No new tracker, test framework or product
+  change. Verification: command selectors checked against Makefile, Vitest configuration and
+  Actions/Compose definitions; diff checked. No software suite for this documentation change;
+  this normative clarification remains pending designated review, not self-approved.
