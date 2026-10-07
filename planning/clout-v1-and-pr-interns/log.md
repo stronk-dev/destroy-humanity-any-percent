@@ -2026,3 +2026,19 @@ lane; do not repeat evidence or infer unruled numeric/policy/content authority.
 All owner/author/representation/RP-308/platform/full-nine-tier/release gates stay.
 All handles terminal/clean checkpoint; goalactive/progress. No checkbox/status/
 archive/mint/push/deploy/release call or goal completion.
+
+## 2026-10-07 — residual acceptance map and CV10 mask predeclaration
+
+Resumed clean at64f836c2; previous goal turn made implementation progress.
+Read actual accepted CV1–CV10/AC1–AC12 and public simulation/first-hour paths.
+`acceptance-reconciliation.md` maps all twelve criteria, preserving red AC6,
+author DG-B/DG-C, role-binding D-022 and owner mint/copy gates. Next distinct
+accepted lane is CV10, not another migration/receipt population.
+
+Plan predeclares test-only public effect masking: four admitted states/four
+masks/online+offline, exact literal rates/full state, live no-mask companion and
+invalid masks. Actual content-guard omission must fail after normal execution;
+restore before cold gates. First-hour axis refusal remains until a separately
+predeclared runtime really executes pinned attainment. No AC9/pacing/relevance/
+mint/archival/release promotion. All new edges need designated Claude review;
+Codex executes implementation and first filter directly, not a substitute gate.

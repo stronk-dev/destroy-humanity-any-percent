@@ -1047,3 +1047,26 @@ expected output8. This requires the REAL refresh to replace it. Predeclare a
 compiling noop refresh control; negative error/unchanged-receipt check stays.
 No production/observed corpus output change; cold focused receipt rerun after
 restoration supplements the preceding full suite. Scope/population unchanged.
+
+## CV10 public simulation effect mask — bounded proof
+
+Predeclared 2026-10-07 at `64f836c2`; accepted CV10 Relevance is authority.
+Test-only, no runtime/kernel/old report/balance/copy/CI/RFC-body edits. Four
+derivation-admitted states: empty/unowned, x8/PR1, x12/both, x44/both. At each,
+execute four effect masks (none/PR1/PR2/both), compare independent literal cash
+rates and actual 1000ms online/offline accrual (16 projections/32 advances).
+Projection cannot mutate encoded state. Advance preserves ownership, attainment
+and all other state: expected full state is the original plus literal ledger
+delta and cursor movement. Unmasked simulation must match actual live Evaluate.
+Unknown/duplicate mask IDs must fail unchanged at projection/advance entrypoints.
+Full pinned foundation validation precedes every state; above-cap synthetic
+states are deliberately not used in this population.
+
+After unchanged-production execution, temporarily omit the actual content mask
+guard and prove non-neutral owned cases fail. Restore exact bytes before normal
+cold tests/vet; retain legitimate neutral/unowned survivors. No claim of TS
+simulation, harness scenario execution, dynamic reference pricing, whole ANY/ALL,
+minted pacing, AC9, AC6 or 1.0 completion. Claude independently reviews the full
+new test/record span including edges. Acceptance map is
+`acceptance-reconciliation.md`; the subsequent first-hour runtime integration
+must have its own predeclaration rather than hide inside this proof.
