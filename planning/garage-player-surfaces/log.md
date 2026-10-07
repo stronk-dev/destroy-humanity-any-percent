@@ -4434,3 +4434,42 @@ no boxes/RFC body/status/lifecycle moved. Cleanup/startup questions unanswered;
 no deletion/full-disk Linux/SQL/Retry. Capacity/real composed/Firefox/AT/body/
 privacy/platform/numeric/whole-nine-tier1.0 and all designated reviews still live.
 No archive/mint/push/deploy/release/shortened-preview substitution. Goal active.
+
+## 2026-10-07 — Standard-terminal native recovery predeclaration (test-only)
+
+Baseline0e7910ed clean, prior turn progress. Accepted Game UI AC1 both terminal
+states / Garage GS0.6 native controls and context focus / Prestige P4 same-
+Founder exact successor. Current new native helper emits scripted_first only;
+old standard regression uses .click, no native recovery/focus or non-first run
+coordinate. Keep every existing test and production byte unchanged.
+
+Population: explicit current registered standard labels acquihire/acquisition/
+collapse/ipo ×terminal tier0/1/2 (the three shipped eras) ×320/1280 ×Enter/Space
+×Chromium/WebKit:96 native executions. Each uses decoder-admitted non-first
+run2/one prior Exit, authoritative terminal payload, then five held read stages:
+same sequence2, skipped4, foreign-Founder sequence3, rejected read, valid same-
+Founder sequence3/next Garage. Startup and successors go through actual snapshot
+parser, terminal through public envelope/event decoders. Runtime-double reads,
+NOT real HTTP/auth/SQL/production issuance/reachability/endgame acceptance.
+
+Actual forced terminal heading receives focus. Native Tab from the current
+active element must reach enabled Continue without script-focusing it, then
+Enter/Space starts exactly one held read; pending disables duplicate activation.
+Traversal fails if it cannot reach the control within current native-control
+count+one, not an arbitrary time/large guard; retain diagnostics. Refused stages
+retain exact terminal text/payout/title, no subscription change/intent; remaining
+control can be reached again by native Tab after failure. Final success removes
+old terminal, resets supplied era/tier, exposes Desk heading and clears existing
+failure state, no invented local save/payout. Exact visible registered title/
+Exit label/Founder note, reflow/axe and no scripted-first story on standard.
+
+Predeclared actual source faults: standard-title suppression, exit-label binding,
+Founder guard omission, sequence guard omission, continuation focus omission,
+stuck pending after rejection, recovery disclosure stuck after success, omitted
+standard continuation handler. All compiling semantic failures required; no
+budget/assertion/copy/CI/balance/production change permanent. Restore before
+full Garage/Game UI, isolated performance, types/client/build/boundaries/copy/
+static topology/no-payment. New finding ledger immediately if execution fires.
+Test+record checkpoint requires entire0e7910ed-exclusive range Claude, preceding
+0e548992..0e7910ed and every earlier span independent. No checkbox/body/status/
+lifecycle/archive/push/cleanup/Retry/release/preview substitution; goal active.
