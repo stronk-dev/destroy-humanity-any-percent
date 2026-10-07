@@ -7,19 +7,24 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded repair:8ea7cb94, predeclared4c9e06b2/81b4f51d and test-first
-532855fe. RP-332 decoder-legal missing achievement-copy/meter-band no longer
-throws outside its panel: own alert/one invariant/recovery/nav locally proven.
-Eight baseline failures, five compiling faults each fail4/8/restored exact;
-full Garage Chromium/WebKit246/performance1 and client9,758/446explicit
-browser skips/types/build/boundaries/copy/topology pass. RP-333 performance
-fixture has null feature arms, not populated Garage AC7. Whole repair span
-aftercc62cea8 through this record needs Claude; audit exactfc911784..cc62cea8,
-runtimea42406f0..fc911784 and earlier ranges independent. Inventory covers
-all29/eight gates, no completion claim. Next predeclare GS3-A1 complete/
-missing-ID controls before decoder repair (RP-329). Fresh read-only Docker
-overlay still0free/100%; no Docker run/cleanup. RP-330/331/333, author/body/
-Firefox/AT/composed/full1.0 remain; no checkbox/lifecycle promotion.
+Latest bounded repair: `ce5c4ea8` (RP-329 / GS3-A1), predeclared bff97b20 /
+c5d5220c, failed-first 43ef0a21. Non-null meter data must contain exactly
+the existing eleven-ID contract; no second list/catalog/producer/kernel/
+balance/schema change. Baseline: 27 admission failures. Five independent
+client faults fail 27/11/4/3/23 assertions; both actual producer-control
+faults fail; all transient source restored. Clean client 9,814 passes /
+446 explicit browser skips, types/build/boundaries/cold Go/vet and native
+Garage Chromium/WebKit 246 pass. Two SQL tests explicitly skip; isolated
+performance 1 passes but its null-feature fixture is not populated AC7.
+Copy/content-manifest/topology and 13 negative controls pass. Complete
+range after 5fbf4cff through this record needs Claude; RP-332 separately
+cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..fc911784
+and earlier ranges remain owed. Inventory covers all 29/eight gates without
+promoting acceptance. Next accepted work: RP-330 / GS3-A3 semantic narrow
+layout, then populated AC7 / exact guards. RP-331 real persisted/DOM proof
+waits for capacity repair/recheck; last measured Docker overlay is full,
+no new run/cleanup. Author/body/Firefox/AT/full 1.0 gates remain; no box or
+lifecycle change.
 
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
 predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,

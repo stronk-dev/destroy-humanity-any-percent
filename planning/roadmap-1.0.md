@@ -5,19 +5,24 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded repair (2026-10-07):**8ea7cb94, predeclared4c9e06b2/
-81b4f51d/test-first532855fe. RP-332 missing Trophy Case/Meters presentation
-is locally contained, with own alert/one invariant/recovery/navigation.
-Eight baseline failures; five compiling faults each fail4/8 and restore
-exact source. Full native Garage Chromium/WebKit246/performance1,
-client9,758/446explicitbrowser skips/types/build/boundaries/copy/topology
-pass, not full-state/all-engine/AT/composed/release. RP-333 performance
-fixture lacks populated Garage arms; AC7 stays open. All29/eight acceptance
-gates mapped; next accepted GS3-A1 complete/missing-ID failed-first controls
-before repair (RP-329). Whole newspan aftercc62cea8 through this record needs
-Claude; audit exactfc911784..cc62cea8/runtimea42406f0..fc911784/earlier spans
-independent. Fresh Docker overlay0free/100%; no population/cleanup. All
-RP-330/331/333/author/body/default-player/full-nine-tier1.0 gates remain.
+**Latest bounded repair (2026-10-07):** `ce5c4ea8` (RP-329 / GS3-A1),
+predeclared bff97b20/c5d5220c, failed-first 43ef0a21. The decoder now uses
+the existing eleven-ID meter contract to reject incomplete/substituted data;
+no second list/catalog/kernel/producer/balance/schema/CI change. Baseline:
+27 admission failures. Five independent client faults fail 27/11/4/3/23
+assertions; both producer-control faults fail, source restored exactly.
+Clean client 9,814 passes / 446 explicit browser skips, types/build/
+boundaries/cold Go/vet and native Garage Chromium/WebKit 246 pass. SQL
+explicitly skips; isolated performance 1 passes but remains RP-333's
+null-feature guard, not populated AC7. Copy/manifest/topology pass. This is
+local repair, not designated approval or full Garage/release acceptance.
+Complete range after 5fbf4cff through this record needs Claude; RP-332
+separately cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..
+fc911784 and earlier ranges remain owed. Next accepted work: RP-330 semantic
+narrow layout, populated performance / exact guards. RP-331 persisted/DOM
+proof waits for Docker capacity repair/recheck; last measured 0 free / 100%,
+no run/cleanup here. All author/body/engine/AT/default-player/platform/
+privacy/numeric/review/full-nine-tier 1.0 gates remain.
 
 **Latest bounded repair (2026-10-07):** `45bf2edb`, predeclareda8f2a527/
 failing-first7cac400d: Fiscal/care outcome ownership and async-origin/no-bleed

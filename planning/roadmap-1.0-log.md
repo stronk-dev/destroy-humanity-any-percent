@@ -4320,3 +4320,25 @@ audit exactfc911784..cc62cea8/runtimea42406f0..fc911784/earlier spans independen
 All author/body/engine/AT/composed/default-player/platform/privacy/numeric/
 review/full-nine-tier1.0 holds retained. Goal active/progress, no lifecycle/
 checkbox/archive/mint/push or preview substitution.
+
+## 2026-10-07 — GS3-A1 complete-ID admission checkpoint
+
+RP-329 `ce5c4ea8`, under bff97b20/c5d5220c and failed-first 43ef0a21:
+27 baseline admission failures; existing eleven-ID contract reused without
+catalog/kernel/producer/balance/schema/CI mutation. Five independent client
+faults fail 27/11/4/3/23 assertions, two real producer-control faults fail,
+source restored exactly. Fresh client 9,814 passes / 446 explicit browser
+skips, types/build/boundaries/cold Go/vet and full native Garage Chromium/
+WebKit 246 pass. SQL tests explicitly skip. Copy/manifest/topology and 13
+negative controls pass; isolated performance 1 remains the null-feature
+guard, not populated AC7. Local repair only, not designated acceptance.
+
+Current board/plan/inventory/queue synchronized. Complete new range after
+5fbf4cff through this final record needs Claude separately from RP-332
+cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..fc911784
+and all prior ranges. Next accepted work: RP-330 semantic narrow Meters
+layout, populated AC7 / exact guards. RP-331 real persisted/DOM proof awaits
+capacity restoration/recheck; no Docker run or unrelated cleanup. All
+author/body/engine/AT/default-player/privacy/platform/numeric/review/full-
+nine-tier 1.0 holds remain. Goal active/progress; no checkbox/lifecycle/
+archive/mint/push or shortened-preview substitution.

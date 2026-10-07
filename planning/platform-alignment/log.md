@@ -3156,3 +3156,27 @@ newspan aftercc62cea8 THROUGH record edge needs Claude; audit exactfc911784..
 cc62cea8/runtimea42406f0..fc911784 and earlier spans independent. All full
 state/engine/AT/composed/author/body/default-player/platform/privacy/numeric/
 review/full-nine-tier1.0 holds remain; no lifecycle/publication/mint claim.
+
+## 2026-10-07 — GS3-A1 complete meter-data admission repaired locally
+
+RP-329 `ce5c4ea8`, predeclared bff97b20/c5d5220c, test-first 43ef0a21.
+Twenty-seven typed-clean baseline failures establish the real admission gap.
+The decoder now reuses the existing eleven-ID contract; no second list,
+catalog/kernel/producer/schema/balance/copy/CI change. Five independent client
+faults fail 27/11/4/3/23 assertions; two actual producer faults fail their
+exact-ID/missing-saved-value controls; all source restored exactly. Clean
+types/client 9,814 passes / 446 explicit browser skips, build/boundaries,
+cold Go/vet and full native Garage Chromium/WebKit 246 pass. Both SQL tests
+explicitly skip. Copy/manifest/topology and 13 negative controls pass.
+Isolated performance 1 passes but remains RP-333's null-feature fixture,
+not populated Garage AC7. Intermediate tool truncation disclosed in Garage
+log; no complete module-HTTP trace or all-engine/persisted claim.
+
+Latest boards/plan/inventory reconciled; no boxes or lifecycle state changed.
+Complete new span after 5fbf4cff THROUGH this record edge requires Claude;
+RP-332 exact cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime
+a42406f0..fc911784 and prior ranges remain separately owed. Next accepted
+work: RP-330 semantic narrow layout, then populated performance / exact
+guards. RP-331 persisted/default-player proof waits for capacity repair/
+recheck; no Docker run/cleanup here. All author/body/engine/AT/numeric/
+privacy/platform/review/full-nine-tier 1.0 gates remain active.

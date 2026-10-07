@@ -63,7 +63,7 @@ evidence merely because its text exists.
 | GS2-A3 not Clout | achievement score projection → score copy/component | B current DOM lacks “Clout”; source component labels score | **Partial:** RFC explicitly demands a source binding guard with a seeded forbidden binding. Current DOM assertion is not that complete guard; Clout's separate accepted consumer must not be banned by a broad scan. |
 | GS2-A4 composed | first real generator purchase → earned event + refreshed row | C buys generators; separately reads achievement rows exist | **Missing named witness:** driver does not assert that purchase earns this ID, emits its announcement and changes the displayed row. Add DOM/event/refresh binding and independently sever decoder/arm after RP-236. |
 | GS2-A5 accessibility | Trophy Case DOM + chrome/nav | B static state axe; historical combined reflow measurement | **Partial:** all-state/all-engine/400%/error/empty/focus populations and seeded failures not established as a complete gate. |
-| GS3-A1 decoder | v4 meter rows → `contracts.ts:parseFeatures` | U rejects out-of-domain value and undeclared band; generic sorted-row validation | **Known source gap RP-329:** parser accepts partial sets (current U positive fixture has only doom). No eleven-ID completeness oracle. Predeclare failed controls before decoder repair; no new wire/balance/schema. |
+| GS3-A1 decoder | v4 meter rows → `contracts.ts:parseFeatures` | Audit found incomplete-set admission; subsequent RP-329 failed-first population covers all eleven missing IDs and same-count substitutions, extra/subset rows, order, bounds and exact keys | **Locally repaired; designated review pending:** existing REQUIRED_METER_IDS reused, 27 baseline failures and five independent client faults demonstrated; two actual producer-control faults also demonstrated. Clean client/types/build/boundaries/cold Go/vet and 246 native Garage executions pass. SQL explicitly skipped; full shared-v4 fixture and all-engine/persisted proof are not inferred. See separate follow-up below. |
 | GS3-A2 non-color | committed values → `MetersSurface.svelte` numeric/band text | B all ten trust cells match numeric + Low/High; eleven native meters; doom text | Bounded fixture proof; seed omission and missing/presentation error populations still need explicit coverage/review. |
 | GS3-A3 reflow | Meters table/CSS → narrow-page labels | B historical 320 px combined measurement; source `td::before` labels | **Source mismatch RP-330:** below 30rem remains block-styled table, not RFC's semantic `<dl>`. Do not call width alone header/AT proof. Implement accepted semantics or obtain author amendment; retain full-page chrome measurements. |
 | GS3-A4 composed | real initial pinned meter values → rendered DOM | C authentic public read asserts 11 rows and doom=50 | **Missing named witness:** not DOM text for each Standing=50/Grievance=0/doom=50; add that and arm-severing case after RP-236. |
@@ -142,3 +142,30 @@ Audit range `fc911784..cc62cea8`, the subsequent whole RP-332 range through its
 record edge, and all prior ranges need their own Claude verdicts. RP-329/330/331,
 Docker capacity (fresh read-only check still 0 available / 100%), Firefox/AT/
 author/body/default-workflow/full nine-tier 1.0 holds remain independently open.
+
+## Follow-up: RP-329 / GS3-A1 (separate range after 5fbf4cff)
+
+Predeclared bff97b20/c5d5220c; failed-first 43ef0a21. The original doom-only
+positive fixture is now complete, generated from the existing public meter
+artifact, with its original domain/undeclared-band checks retained. Fifty-six
+new declarations prove complete/null/unchanged-input controls and every
+missing ID, same-count unknown replacement, extra/subset, ordering, value-bound
+and exact-field refusal. The typed-clean baseline has 27 actual admission
+failures. The repair imports the existing immutable REQUIRED_METER_IDS without
+editing the guarded catalog or inventing a second list/count.
+
+Five independent client faults fail 27/11/4/3/23 assertions respectively.
+Cold actual projector tests also catch an omitted emitted row and each of
+eleven missing saved values when the guard is severed. All transient changes
+are restored exactly; the server production diff is empty. Root clean types,
+9,814 client passes / 446 explicit browser skips, build/boundaries/cold Go/vet
+and full native Chromium/WebKit Garage 246 pass. The existing isolated
+performance test passes, with RP-333's null-feature limitation unchanged.
+
+This closes the *local decoder defect*, not designated review, whole GS3,
+overall shared-v4 fixture parity, all-engine accessibility, real persisted
+player workflows or release readiness. Both SQL tests explicitly skip outside
+the declared Postgres lane. Docker capacity and RP-330/331/333 remain open.
+Complete new range after 5fbf4cff through its final record edge needs Claude,
+independently of RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8,
+runtime a42406f0..fc911784 and every earlier range.
