@@ -2421,3 +2421,90 @@ client/build/boundaries, full native Garage and copy/topology gates remain
 mandatory; no green claim before terminal results. Whole range after
 bddfc58e through final records requires Claude, no archival or acceptance
 promotion. RP-329 5fbf4cff..bddfc58e stays separate.
+
+## 2026-10-07 — GS3-A3 bounded layout and independent probes executed
+
+Production is confined to MetersSurface.svelte under 639add6e. Its one
+shared value/band snippet serves either the original wide table or actual
+narrow definition rows. Narrow terms retain constituency/axis (and a separate
+p(doom) row) and name the native meter via aria-labelledby. No derived meter
+values, player copy, host/runtime/wire/catalog/kernel/balance/CI change.
+Live strict-below-30rem layout observation is mount-owned and cleans up on
+unmount; RP-332 error guard and diagnostic behavior remain intact.
+
+Types 96517 passes with zero errors/warnings. First healthy native attempt
+70487 exited 2: four passed, two Chromium resize cases observed the old
+layout before its native media-query event. WebKit passed. The test driver's
+viewport RPC and four timer flushes are not a rendering-time event barrier.
+Added one actual requestAnimationFrame observation plus the existing flush
+after viewport changes; no threshold, assertion, timeout or budget loosened,
+no production timing workaround. Corrected selected run 33397 passes six /
+246 unselected executions and the unchanged isolated performance test.
+The listener severing below still fails after the real-frame barrier, proving
+the barrier does not disguise a frozen layout. The first attempt is disclosed,
+not counted as green evidence or six semantic baseline failures.
+
+All six predeclared independent faults compile/execute in the root selected
+Chromium/WebKit population; each command exits 2, with 246 unselected cases.
+
+| Transient component fault | Run | Failed / passed | Actual failed oracle |
+|---|---|---|---|
+| Omit axis text from narrow term | 61336 | 6 / 0 | Exact “Employees Grievance” receives “Employees” |
+| Remove aria-labelledby | 89505 | 6 / 0 | Name reference resolves to null instead of its own term |
+| Force native value to zero | 82356 | 6 / 0 | Exact native value 7 receives 0; text remaining correct does not mask it |
+| Use 20rem instead of 30rem | 90890 | 6 / 0 | Narrow population still has a table |
+| Omit change listener, retain initial read | 53381 | 4 / 2 | Live narrow/wide transitions freeze; initial narrow mount still passes |
+| Suppress band text | 89952 | 6 / 0 | Exact value/band spans receive empty band instead of Low |
+
+Healthy component SHA-256 verified after *each* restoration:
+5ebc07105fb33e745935dfe5a8f53b3c378cdd081b603ebce0eba103b26f4a95.
+No mutation was committed or left in source, and no source edit occurred
+during a matching live check. Existing assertions remain unchanged. Final
+full root client/native/build/boundary/copy/topology outcomes follow only
+after their terminal results. No Go/SQL changes or fresh persisted claim;
+RP-329's earlier cold Go evidence is not re-labelled as a new layout run.
+
+Review by: Codex (self first filter only). Recorded by: Codex. Complete
+layout range begins after bddfc58e through production/final records and
+requires Claude separately from RP-329 5fbf4cff..bddfc58e and earlier spans.
+No acceptance boxes, RFC/lifecycle/archive/mint/push/release status changed.
+RP-331/333/Docker/Firefox/AT/full shared fixture/full nine-tier 1.0 remain open.
+
+## 2026-10-07 — GS3-A3 final current-source gates
+
+Root types/client/build/boundaries 34720 exits 0: zero type errors/warnings;
+9,814 passed / 449 explicit browser skips, 105 passing files / 22 skipped;
+client population 6.35 s. Build: 214 modules, index-eU1nW9jC.js,
+index-DaRqgLww.css, unchanged prediction.worker-MqspU_iu.js. Boundary scan:
+14 shell, 8 UI and 22 Game UI components.
+
+Full current native Garage Chromium/WebKit 83278 exits 0: 252 / 252
+executions, two passing files, 77.96 s (including the real 60-second idle
+scenario). Existing RP-332 error cases and all previous assertions still
+pass. Chained unchanged isolated performance: one pass / 22 unselected,
+323 ms test time; RP-333 null-feature limitation remains. Terminal result
+lines retained; individual worker HTTP lines omitted from displayed summary,
+not substituted for a claim of complete reviewed network behavior.
+
+Root copy/content-manifest/topology 38297 exits 0: 658 keys with unchanged
+SHA-256 a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings; content manifest valid; all 13 topology
+negative controls rejected. This static topology pass is not full Linux CI.
+Canonical docs also qualify the former undated “all three browsers” reflow
+claim: changed-source evidence is Chromium/WebKit viewport/DOM only, not
+actual Firefox/400% zoom/AT acceptance.
+
+Healthy production component SHA remains
+5ebc07105fb33e745935dfe5a8f53b3c378cdd081b603ebce0eba103b26f4a95.
+No transient fault or unrelated source change remains. Next accepted work:
+RP-333 populated Garage Desk performance population under unchanged budgets,
+then the remaining exact source guards. RP-331 persisted/default-player
+proof remains held until Docker capacity is repaired/rechecked. No new
+Docker population, resource cleanup, DB/Go change or fresh SQL claim.
+
+Review by: Codex (self first filter only). Recorded by: Codex. The complete
+layout span after bddfc58e includes d9a8ca27/09655d1e/639add6e, later native
+driver refinement, production/docs and final tracking; Claude must review
+that entire range before acceptance or archival. RP-329 exact 5fbf4cff..
+bddfc58e and all earlier review ranges remain separately owed. No box,
+RFC/lifecycle/archive/mint/push/release promotion; full 1.0 goal active.

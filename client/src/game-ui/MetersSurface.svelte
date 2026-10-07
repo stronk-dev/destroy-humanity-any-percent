@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { GameUIMetersArm } from "../api/generated/types";
   import { t, type CopyEra, type CopyKey } from "../copy";
   import { FEATURES_PRESENTATION } from "./features-presentation";
@@ -8,6 +9,14 @@
   let { arm, era }: { arm: GameUIMetersArm; era: CopyEra } = $props();
 
   type Row = GameUIMetersArm["meters"][number];
+  let narrow = $state(false);
+  onMount(() => {
+    const media = window.matchMedia("(width < 30rem)");
+    const update = () => { narrow = media.matches; };
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  });
   const presentationUnavailable = $derived(arm.meters.some((row) => !FEATURES_PRESENTATION.meterBands.has(row.band_id)));
   let presentationErrorReported = false;
   $effect(() => {
@@ -18,6 +27,10 @@
     }
   });
   const byID = $derived(new Map(arm.meters.map((row) => [row.meter_id, row])));
+  const trustRows = $derived([...FEATURES_PRESENTATION.trustMeters.values()].flatMap((presentation) => {
+    const row = byID.get(presentation.meter_id);
+    return row ? [{ row, presentation }] : [];
+  }));
   const constituencies = $derived.by(() => {
     const groups = new Map<CopyKey, { standing?: Row; grievance?: Row }>();
     for (const [meterID, presentation] of FEATURES_PRESENTATION.trustMeters) {
@@ -37,12 +50,16 @@
   }
 </script>
 
+{#snippet value(row: Row, labelledBy?: string)}
+  <meter min={row.min} max={row.max} value={row.value} aria-labelledby={labelledBy}></meter>
+  <span>{t("meters.value_frame", { value: row.value, max: row.max }, era)}</span>
+  <span>{band(row)}</span>
+{/snippet}
+
 {#snippet cell(row: Row | undefined, label: string)}
   {#if row}
     <td data-label={label}>
-      <meter min={row.min} max={row.max} value={row.value}></meter>
-      <span>{t("meters.value_frame", { value: row.value, max: row.max }, era)}</span>
-      <span>{band(row)}</span>
+      {@render value(row)}
     </td>
   {:else}
     <td data-label={label}></td>
@@ -55,6 +72,16 @@
     <p role="alert">{t("common.surface_error", {}, era)}</p>
   {:else}
   <p>{t("meters.curtain", {}, era)}</p>
+  {#if narrow}
+    <dl class="trust-list">
+      {#each trustRows as { row, presentation } (row.meter_id)}
+        <div data-meter-id={row.meter_id}>
+          <dt id={`meter-term-${row.meter_id}`}>{t(presentation.constituency_key, {}, era)} {t(presentation.axis_key, {}, era)}</dt>
+          <dd>{@render value(row, `meter-term-${row.meter_id}`)}</dd>
+        </div>
+      {/each}
+    </dl>
+  {:else}
   <table>
     <thead>
       <tr>
@@ -73,13 +100,24 @@
       {/each}
     </tbody>
   </table>
+  {/if}
   {#if doom}
-    <section class="doom" aria-labelledby="doom-heading">
+    <section class="doom" aria-labelledby={narrow ? `meter-term-${doom.meter_id}` : "doom-heading"}>
+      {#if narrow}
+        <dl>
+          <div data-meter-id={doom.meter_id}>
+            <dt id={`meter-term-${doom.meter_id}`} title={t(FEATURES_PRESENTATION.doomMeter.tooltip_key, {}, era)}>{t(FEATURES_PRESENTATION.doomMeter.title_key, {}, era)}</dt>
+            <dd>
+              <p>{t(FEATURES_PRESENTATION.doomMeter.tooltip_key, {}, era)}</p>
+              {@render value(doom, `meter-term-${doom.meter_id}`)}
+            </dd>
+          </div>
+        </dl>
+      {:else}
       <h2 id="doom-heading" title={t(FEATURES_PRESENTATION.doomMeter.tooltip_key, {}, era)}>{t(FEATURES_PRESENTATION.doomMeter.title_key, {}, era)}</h2>
       <p>{t(FEATURES_PRESENTATION.doomMeter.tooltip_key, {}, era)}</p>
-      <meter min={doom.min} max={doom.max} value={doom.value}></meter>
-      <span>{t("meters.value_frame", { value: doom.value, max: doom.max }, era)}</span>
-      <span>{band(doom)}</span>
+      {@render value(doom)}
+      {/if}
     </section>
   {/if}
   <small>{t("meters.as_of_note", {}, era)}</small>
@@ -94,9 +132,9 @@
   meter { inline-size: 100%; accent-color: var(--cc-color-accent); }
   .doom { display: grid; gap: var(--cc-space-xs); }
   h1, h2, p { margin: 0; }
-  @media (max-width: 30rem) {
-    thead { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
-    table, tbody, tr, th, td { display: block; }
-    td::before { content: attr(data-label); font-weight: var(--cc-type-weight_bold); }
-  }
+  dl { margin: 0; }
+  dl > div, dd { display: grid; gap: var(--cc-space-xs); }
+  dl > div { padding: var(--cc-space-xs) var(--cc-space-sm); border-block-end: var(--cc-border-width) var(--cc-border-style) var(--cc-color-border); }
+  dt { font-weight: var(--cc-type-weight_bold); }
+  dd { margin: 0; }
 </style>

@@ -74,8 +74,15 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
     session renewal. Other Garage GS0.6 obligations remain independently open.
 - **Reputation Board (`meters`):** read-only, unlocked by `feature.meters`. It is a 5 × 2 table of
   constituency Standing/Grievance plus p(doom). Each cell has a native `<meter>`, numeric text and
-  band text. Below 30rem it collapses to labelled rows. It carries the curtain and the "as of last
-  update" note.
+  band text. Below 30rem it renders actual `<dl>` / `<dt>` / `<dd>` rows: each
+  trust term contains both its constituency and axis, and the separate p(doom)
+  row retains its own title and pressure-meter explanation. Each narrow native
+  meter is named by its term with `aria-labelledby`. At/above 30rem the table
+  remains; only one population is rendered, not a hidden duplicate. A
+  mount-owned media-query listener changes layout on resize and is removed on
+  unmount. Numeric and band text always use the current authoritative arm,
+  including a refresh followed by resizing. The curtain and "as of last update"
+  note remain. Native viewport/DOM evidence is not actual zoom or AT proof.
 - **Pitch availability:** the Pitch tab is unlocked by `feature.minigame.pitch`. Before any create
   request it shows the Fiscal-lock or Soul-lock reason from the minigames arm.
 - **Desk additions:** provisioned counts show `desk.provisioned_frame`, plus the cap reason text
@@ -237,9 +244,14 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
     elsewhere, and visiting Fiscal clears it (OD-3: no modal).
   - A `buff_started.v1` event announces politely while the Desk is mounted.
   - Both decoders mirror the exact server validators and fail closed.
-- **320 px reflow:** the Desk, Fiscal, Meters, Trophy Case and pet surfaces are measured in all three
-  browsers at a 320 CSS px viewport, with no element past the viewport edge and no horizontal
-  scroll. The chrome nav wraps, and card grids use `minmax(min(…, 100%), 1fr)`.
+- **320 px reflow:** the native fixture measures the full Desk, Fiscal, Meters,
+  Trophy Case and pet pages, including chrome, for horizontal scrolling and
+  elements beyond the viewport. Current semantic Meters controls additionally
+  check exact labeled/value/band associations at 320 and 479 px and table
+  restoration at 480 and 1280 px. Changed-layout evidence is Chromium/WebKit,
+  not a current-source Firefox, actual 400% zoom or assistive-technology pass;
+  those remain separate acceptance obligations. The chrome nav wraps, and card
+  grids use `minmax(min(…, 100%), 1fr)`.
 - Recovery: a nav tab hosting `client/src/game-ui/soul/SoulRecoverySurface.svelte` whenever the runtime
   supplies a Soul-recovery port; a terminal recovery refreshes the snapshot once.
 

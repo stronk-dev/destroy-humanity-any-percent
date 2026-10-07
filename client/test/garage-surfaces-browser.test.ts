@@ -121,6 +121,13 @@ function semanticMeterSnapshot(rows = semanticMeterRows): ParsedGameUISnapshot {
   return parseGameUISnapshot({ ...v4, features: { ...v4.features, meters: { meters: rows } } });
 }
 
+async function settleMeterLayout(): Promise<void> {
+  // Native media-query change events run at rendering time, not merely after
+  // the driver's viewport RPC. Observe one real frame, then flush Svelte.
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  await settle();
+}
+
 async function assertSemanticMeters(target: HTMLElement, rows: typeof semanticMeterRows, narrow: boolean): Promise<void> {
   const surface = target.querySelector(".meters")!;
   const value = (element: Element, row: (typeof rows)[number]) => {
@@ -193,7 +200,7 @@ for (const scenario of ["initial narrow mount", "live breakpoint changes", "narr
       expect(document.activeElement).toBe(nav);
       if (scenario === "live breakpoint changes") {
         for (const width of [1280, 320, 479, 480, 1280, 320]) {
-          await page.viewport(width, 720); await settle();
+          await page.viewport(width, 720); await settleMeterLayout();
           await assertSemanticMeters(target, semanticMeterRows, width < 480);
           expect(document.activeElement).toBe(nav);
         }
@@ -204,7 +211,7 @@ for (const scenario of ["initial narrow mount", "live breakpoint changes", "narr
           runtime.current = semanticMeterSnapshot(changed);
           app.fixtureSnapshot(runtime.current); await settle();
           await assertSemanticMeters(target, changed, true);
-          await page.viewport(1280, 720); await settle();
+          await page.viewport(1280, 720); await settleMeterLayout();
           await assertSemanticMeters(target, changed, false);
         }
       }
