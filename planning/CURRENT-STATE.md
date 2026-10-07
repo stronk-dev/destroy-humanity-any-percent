@@ -49,7 +49,9 @@ queue and current verification, not a claim to have rerun every acceptance crite
   pass. Full real-DB production remains red only on the original 27 Clout partition cases.
 - API requiredness/int64 compatibility corrections and the historical catalog database source
   are locally verified. Catalog retrieval preserves the stored epoch identity and refuses
-  corrupt/unaccepted evidence. The catalog HTTP route, owner descriptors and complete public
+  corrupt/unaccepted evidence. Both replay runtimes now support optional stored formulas with
+  generated client schema metadata and exact int64 validation; old/new stored sets coexist in
+  real Postgres without a product mint. The catalog HTTP route, other owner descriptors and complete public
   third-party verification loop remain open; the API log owns the bounded evidence/review ranges.
 - Latest inspected [hosted CI run 37641907701](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37641907701)
   at `0f9f4214` is **RED**: schema, harness and composed pass; server, client and browser fail.

@@ -3,6 +3,7 @@
   "paths": [
     "client/src/achievements/",
     "client/src/active-play.ts",
+    "client/src/api/generated/formula-schema.ts",
     "client/src/arcade/",
     "client/src/commons.ts",
     "client/src/cosmetic/",
@@ -12,6 +13,7 @@
     "client/src/faction.ts",
     "client/src/fiscal.ts",
     "client/src/fixed-grid.ts",
+    "client/src/formulas/",
     "client/src/garden/",
     "client/src/guild.ts",
     "client/src/meters/",
@@ -39,6 +41,7 @@
     "server/faction/",
     "server/fiscal/",
     "server/fixedgrid/",
+    "server/formulas/",
     "server/garden/",
     "server/guild/",
     "server/leaderboard/categories.go",

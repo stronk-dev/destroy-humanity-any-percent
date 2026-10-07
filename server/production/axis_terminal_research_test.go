@@ -186,6 +186,6 @@ func TestAxisTerminalReplayResearch(t *testing.T) {
 	if len(report.Rows) != 6 || report.Negatives != 3 {
 		t.Fatal("truncated terminal observation")
 	}
-	sourceResearchArtifact(t, "../../testdata/axis-stack/terminal-research-v1.json", "UPDATE_TERMINAL_RESEARCH", report)
+	sourceResearchRegressionArtifact(t, "../../testdata/axis-stack/terminal-research-v1.json", "UPDATE_TERMINAL_RESEARCH", &report, &report.Sources)
 	t.Log("CV4 actual Go:6 terminal/next-manual pairs,3 unchanged-state refusals; TS/SQL/AC6 acceptance not inferred")
 }

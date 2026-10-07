@@ -11,6 +11,7 @@ import { ladderSourceId, manualRoleSourceId, parseCatalog, validateAxisInputs, s
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
 import { fiscalResolvedCost, harvestFiscal, loadFiscalCatalog, spendFiscal, sweepFiscal, type FiscalCatalog, type FiscalSpendTarget, type FiscalState, type FiscalSweep } from "./fiscal";
 import { parseGuildCatalog, type GuildCatalog } from "./guild";
+import { validateFormulaArtifact } from "./formulas/artifact";
 import { loadMeterCatalog, validateMeterResourceSeparation, type MeterCatalog } from "./meters/catalog";
 import { advanceMeters, contributionKey as meterContributionKey, newRunMeterState, validateMeterState } from "./meters/transition";
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
@@ -40,7 +41,7 @@ const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
-export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly curriculum?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string; readonly opportunities?: string; readonly relevance?: string; readonly soul?: string; readonly pitch?: string; readonly minigame_api?: string; readonly typer?: string; readonly reputation_tree?: string; readonly pet_species?: string; readonly cosmetics?: string; readonly arcade?: string; readonly server_garden?: string }
+export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly formulas?: string; readonly meters?: string; readonly achievements?: string; readonly curriculum?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string; readonly opportunities?: string; readonly relevance?: string; readonly soul?: string; readonly pitch?: string; readonly minigame_api?: string; readonly typer?: string; readonly reputation_tree?: string; readonly pet_species?: string; readonly cosmetics?: string; readonly arcade?: string; readonly server_garden?: string }
 export interface MinigameAPIPolicy { readonly schemaVersion: 1; readonly tenants: readonly { readonly engineRef: string; readonly engineVersion: string; readonly minigameId: string }[] }
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
@@ -168,7 +169,7 @@ interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlo
 export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
   const names = Object.keys(artifacts).sort(byteCompare);
   const required = ["categories", "commons", "economy", "factions", "guilds", "prestige", "routes"];
-  const allowed = new Set([...required, "achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pet_species", "pets", "pitch", "relevance", "reputation_tree", "soul", "typer", "arcade", "server_garden"]);
+  const allowed = new Set([...required, "achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "formulas", "meters", "minigame_api", "minigames", "opportunities", "pet_species", "pets", "pitch", "relevance", "reputation_tree", "soul", "typer", "arcade", "server_garden"]);
   const foundations = artifacts.meters !== undefined || artifacts.achievements !== undefined;
   if (!hashPattern.test(constantsHash) || names.some((name) => !allowed.has(name)) || required.some((name) => !names.includes(name)) ||
       (artifacts.meters === undefined) !== (artifacts.achievements === undefined) || artifacts.doctrines !== undefined && !foundations ||
@@ -182,6 +183,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
       artifacts.server_garden !== undefined && artifacts.cosmetics === undefined) throw new SyntaxError("invalid replay artifact set");
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
+  if (artifacts.formulas !== undefined) validateFormulaArtifact(artifacts.formulas);
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
   const gateIds = routes.gates.map((gate) => gate.gateId);
   validateCategoryCatalog(parseJSON(artifacts.categories), gateIds);

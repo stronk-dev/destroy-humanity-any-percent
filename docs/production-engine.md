@@ -48,6 +48,12 @@ canonical Decimal strings and the source digest; it does not infer algebra or va
 choices. This extraction preserves the published JSON bytes, field order and fingerprint.
 It is not a formula-bearing epoch mint or historical-formula serving; see
 [API Foundation](api-foundation.md#historical-catalog-database-source).
+Go/TypeScript replay bundles can now carry optional stored version-14 formula bytes. Both
+loaders validate them without rewriting; subsequent Go resolution also revalidates them.
+The original bytes participate in the constants hash, while historical formula-less sets
+remain valid. Client metadata derives from the Go descriptor and integer tokens retain their
+signed int64 precision. This changes replay-input acceptance, not production arithmetic,
+and advances the mirrored kernel to `0.3.168`; no product epoch has been minted for formulas.
 
 The production kernel also exposes a pure read projection for authoritative UI rates. Its inputs
 are the pinned catalog bundle, replay-owned Company state, already-resolved external

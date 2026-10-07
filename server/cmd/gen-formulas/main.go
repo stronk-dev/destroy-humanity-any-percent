@@ -92,6 +92,7 @@ var formulaAuthorities = []authoritySpec{
 
 func main() {
 	output := flag.String("output", "", "output JSON filename")
+	clientSchema := flag.String("schema-output", "", "optional generated TypeScript schema filename")
 	flag.Parse()
 	if *output == "" {
 		fmt.Fprintln(os.Stderr, "-output is required")
@@ -226,8 +227,20 @@ func main() {
 	if err := formulas.Validate(data); err != nil {
 		panic(err)
 	}
+	var schemaBytes []byte
+	if *clientSchema != "" {
+		schemaBytes, err = formulas.ClientSchemaModule()
+		if err != nil {
+			panic(err)
+		}
+	}
 	if err := os.WriteFile(*output, data, 0o644); err != nil {
 		panic(err)
+	}
+	if *clientSchema != "" {
+		if err := os.WriteFile(*clientSchema, schemaBytes, 0o644); err != nil {
+			panic(err)
+		}
 	}
 }
 

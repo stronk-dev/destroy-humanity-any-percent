@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/formulas"
 	"cloud-clicker/server/garden"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
@@ -189,8 +190,14 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withCosmetics := bundle.Cosmetics != nil
 	withGarden := bundle.Garden != nil
 	expectedArtifacts := 7
+	if data, present := bundle.Artifacts["formulas"]; present {
+		if formulas.Validate(data) != nil {
+			return false
+		}
+		expectedArtifacts++
+	}
 	if withFoundations {
-		expectedArtifacts = 9
+		expectedArtifacts += 2
 	}
 	if withDoctrines {
 		expectedArtifacts++

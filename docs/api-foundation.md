@@ -281,7 +281,8 @@ the committed artifact set, mints a test-only newer formula-bearing set through 
 repository, and retrieves both identities without substituting newer bytes into the older one.
 It also checks unaccepted sets, corrupt/missing accepted evidence and cancellation. The test
 mint does not modify the product manifest or authorize a release mint; it does not establish
-that the replay loader supports the formula-bearing set.
+the complete public HTTP/TypeScript verification loop. The separate replay integration below
+now covers loading that kind of stored set.
 
 `server/formulas` owns the extracted version-14 production-formula model and exports its
 closed `ProductionFormulasV14` descriptor through `Schemas()`. The actual generator consumes
@@ -295,10 +296,26 @@ arbitrary prose is mathematically true or belongs to a particular epoch.
 The descriptor covers the current formula version only, including a null axis pin and all
 three declared populated input variants. Historical version support must be explicit; no
 open-JSON arm or current regeneration fallback is introduced. This owner export is not yet
-registered in the catalog union, replay loader or product epoch manifest.
+registered in the catalog response union or product epoch manifest.
+
+Both replay loaders now accept an optional stored `formulas` artifact, validate its version-14
+grammar, and include its original bytes in the full constants identity. Go's subsequent catalog
+resolution rechecks that grammar and identity, including caller mutation. Older sets without
+formulas remain loadable and never gain current formulas. `make formulas` derives the client's
+closed descriptor metadata from the Go owner; signed int64 bounds are decimal strings, and
+the client preserves raw number tokens before validating them with BigInt. No JavaScript Number
+rounding, formula regeneration, new command or simulation arithmetic is introduced.
+The acceptance-set extension advances the mirrored replay kernel to `0.3.168`; formula validator
+sources and generated metadata now belong to its affecting-path guard.
+
+Shared controls exercise required shapes, null/populated branches, malformed values, exact
+int64 limits/overflow, JSON last-value semantics and string formats in both runtimes. A real
+Postgres fixture mint loads and resolves alongside the older epoch, and its public repository
+bytes also load without rewriting; a hash-matching unsupported formula version refuses.
+These are test-only epochs, not adopted balance or proof of the HTTP/third-party verifier loop.
 
 The catalog HTTP reader, remaining generated-client caller migration and full public
 TypeScript verification loop remain open. The C18 catalog union still requires exact descriptors
 from the nineteen currently pinned artifact owners. The formula artifact needs a
-protocol-compliant product mint and replay-loader integration. No open JSON wire arm or
+protocol-compliant product mint and public registration. No open JSON wire arm or
 current-formula fallback is introduced.

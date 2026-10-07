@@ -19,6 +19,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/fiscal"
+	"cloud-clicker/server/formulas"
 	"cloud-clicker/server/garden"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
@@ -82,6 +83,11 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 	computed, err := save.ConstantsHashArtifacts(artifacts)
 	if err != nil || computed != constantsHash {
 		return production.CatalogBundle{}, production.ErrInvalidReplayInputs
+	}
+	if data, present := artifacts["formulas"]; present {
+		if err := formulas.Validate(data); err != nil {
+			return production.CatalogBundle{}, err
+		}
 	}
 	economyCatalog, err := economy.LoadCatalog(artifacts["economy"])
 	if err != nil {
@@ -371,7 +377,7 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer", "arcade", garden.ArtifactName} {
+	for _, name := range [...]string{"achievements", "cosmetics", "curriculum", "doctrines", "fiscal", "formulas", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "pet_species", "relevance", "reputation_tree", "soul", "typer", "arcade", garden.ArtifactName} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -405,6 +411,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		return false
 	}
 	want := len(base)
+	if _, present := artifacts["formulas"]; present {
+		want++
+	}
 	if meters {
 		want += 2
 	}

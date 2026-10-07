@@ -1005,3 +1005,48 @@ accepted formula-loader/artifact-set extension, or obtain an explicit path-scope
 do not cite the draft Kernel History Guard Integrity RFC as authority. Next: complete the
 catalog owner/loader binding, closed union and real public verification loop, not a partial
 schema claim over the whole API.
+
+## 2026-10-07 — optional stored formula replay binding
+
+Outcome: implement the C5/C11 prerequisite for formula-bearing epoch bundles. Go/TypeScript
+loaders accept optional stored version-14 formulas, validate the closed owner grammar and hash
+the original bytes; Go resolution rechecks them. Historical sets without formulas remain valid.
+Generate client metadata from the Go descriptor with decimal-string int64 bounds and preserve
+number tokens during client validation. JSON last-value behavior and the Go decoder's nesting
+limit are retained, including overwritten fractions/deep values; no rounded Number oracle.
+This genuinely widens replay-input acceptance, so all three mirrors advance 0.3.167→0.3.168
+and the new validator/metadata paths join the guard. No simulation arithmetic, balance bytes,
+product epoch, public HTTP registration, compatibility pin or workflow changes.
+
+Coverage: cold61414 affected formula/replaycatalog/kernel/generator packages PASS. Node57496
+formula + full replay files:121 PASS. Native Chromium/WebKit35902:242 PASS. Final typecheck/
+build28274 and selected vet PASS. Real Postgres82252 executes the entire replaycatalog package,
+including stored formula fixture mint→DB load→resolution and public repository source→load,
+old/new coexistence and hash-correct unsupported-version refusal. Shared26 controls cover
+exact signed bounds/overflow, >2^53, required shapes, nullable/populated arms, malformed JSON,
+last-value duplicates and strict string formats; additional nesting limits execute in both
+runtimes. Historical caller aliases and wrong-identity cases refuse. `formulas-check`/`api-check`
+52339 PASS, published formula/OpenAPI/TS/pin bytes unchanged; generated client formula metadata
+has its own executed drift test. These are test-only mints, not a public downloaded replay
+verification loop or formula-truth/balance proof.
+
+The selected production replay run22306 initially fails two remaining strict-source research
+comparisons. Apply RP-382's existing comparator to logged-policy/terminal tests: every recorded
+outcome/receipt/state/population/acceptance byte still compares exactly, only historical source
+digests differ visibly. No research artifact is restamped. Corrected run49949 PASSes the affected
+replay population plus comparator negative controls. This does not repair the separate Clout
+partition failures or claim the complete production suite green.
+
+Limits: initial browser startup hit sandbox localhost denial. Permitted three-engine3170 records
+230 pre-refinement passes but Firefox never connects; teardown exposes macOS sandbox/framebuffer
+launch failure and is stopped by its exact identified PID. A mistaken repeated `--browser.name`
+selector also exits before tests; final existing `--project chromium --project webkit` selection
+is the 242-pass evidence above, not Firefox/CI. `verify-kernel-version`13767 passes its checkout
+and adversarial fixtures then remains RED at historical `50a3a514` (RP-131). No bypass, history
+rewrite, draft authority or hosted-green claim. Full 1.0 scope and prior review debt remain.
+
+Review by: Codex (implementer diff/first filter); Recorded by: Codex. Exact range after
+`556b4c99` through this implementation/tests/docs/record commit needs designated cross-party
+review. All handles terminal before final records/commit; no archival or push. Next: complete
+the catalog owner descriptors/closed response union and HTTP binding, then the public third-party
+verification loop and protocol-compliant product mint; C9/304 and whole API acceptance stay open.

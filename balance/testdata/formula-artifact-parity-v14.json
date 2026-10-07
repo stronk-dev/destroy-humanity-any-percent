@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {"id":"int64-max","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": 9223372036854775807","valid":true},
+    {"id":"int64-min","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": -9223372036854775808","valid":true},
+    {"id":"beyond-js-safe-integer","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": 9007199254740993","valid":true},
+    {"id":"positive-overflow","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": 9223372036854775808","valid":false},
+    {"id":"negative-overflow","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": -9223372036854775809","valid":false},
+    {"id":"fraction","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": 1.5","valid":false},
+    {"id":"decimal-integer","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": 1.0","valid":false},
+    {"id":"exponent-integer","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": 1e0","valid":false},
+    {"id":"string-integer","replace":"\"stock_intake_cap\": 120","with":"\"stock_intake_cap\": \"120\"","valid":false},
+    {"id":"unsupported-version","replace":"\"schema_version\": 14","with":"\"schema_version\": 15","valid":false},
+    {"id":"unknown-field","replace":"\"schema_version\": 14","with":"\"schema_version\": 14, \"private_note\": true","valid":false},
+    {"id":"fingerprint-trailing-newline","replace":"\",\n  \"commons\": {","with":"\\n\",\n  \"commons\": {","valid":false},
+    {"id":"duplicate-last-valid","replace":"\"schema_version\": 14","with":"\"schema_version\": 15, \"schema_version\": 14","valid":true},
+    {"id":"duplicate-last-invalid","replace":"\"schema_version\": 14","with":"\"schema_version\": 14, \"schema_version\": 15","valid":false},
+    {"id":"duplicate-fraction-last-valid","replace":"\"schema_version\": 14","with":"\"schema_version\": 14.5, \"schema_version\": 14","valid":true},
+    {"id":"duplicate-deep-last-valid","replace":"\"pinned\": null","with":"\"pinned\": [[[[[[[[null]]]]]]]], \"pinned\": null","valid":true},
+    {"id":"populated-pin","replace":"\"pinned\": null","with":"\"pinned\": {\"input\":\"achievement_score_run\",\"input_cap\":100,\"cap_reason_key\":\"axis.fixture.cap\",\"maximum_product_at_cap\":\"1e2\"}","valid":true},
+    {"id":"pin-id-trailing-newline","replace":"\"pinned\": null","with":"\"pinned\": {\"input\":\"achievement_score_run\",\"input_cap\":100,\"cap_reason_key\":\"axis.fixture.cap\\n\",\"maximum_product_at_cap\":\"1e2\"}","valid":false},
+    {"id":"incomplete-pin","replace":"\"pinned\": null","with":"\"pinned\": {\"input\":\"achievement_score_run\"}","valid":false},
+    {"id":"wrong-pin-arm","replace":"\"pinned\": null","with":"\"pinned\": []","valid":false},
+    {"id":"populated-weights","replace":"\"source_weights\": []","with":"\"source_weights\": [{\"source_id\":\"upgrade.fixture\",\"slot\":\"upgrades\",\"weight_ppm\":100000,\"forsworn\":false}]","valid":true},
+    {"id":"wrong-weight-boolean","replace":"\"source_weights\": []","with":"\"source_weights\": [{\"source_id\":\"upgrade.fixture\",\"slot\":\"upgrades\",\"weight_ppm\":100000,\"forsworn\":\"false\"}]","valid":false},
+    {"id":"null-weights","replace":"\"source_weights\": []","with":"\"source_weights\": null","valid":false},
+    {"id":"noncanonical-decimal","replace":"\"maximum_bonus\": \"5e0\"","with":"\"maximum_bonus\": \"5\"","valid":false},
+    {"id":"nan-decimal","replace":"\"maximum_bonus\": \"5e0\"","with":"\"maximum_bonus\": \"NaN\"","valid":false},
+    {"id":"bad-json","replace":"\"schema_version\": 14","with":"\"schema_version\": +14","valid":false}
+  ]
+}

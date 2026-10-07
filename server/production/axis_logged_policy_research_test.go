@@ -186,6 +186,6 @@ func TestAxisLoggedPolicyReplayResearch(t *testing.T) {
 	if len(report.Rows) != 24 || report.NegativeCases != 9 {
 		t.Fatal("truncated logged policy observation")
 	}
-	sourceResearchArtifact(t, "../../testdata/axis-stack/logged-policy-research-v1.json", "UPDATE_LOGGED_POLICY_RESEARCH", report)
+	sourceResearchRegressionArtifact(t, "../../testdata/axis-stack/logged-policy-research-v1.json", "UPDATE_LOGGED_POLICY_RESEARCH", &report, &report.Sources)
 	t.Log("R-012 actual Go ApplyLogged:24 admitted purchases,9 explicit unmodified catchup refusals; TS comparison and AC6 not inferred")
 }

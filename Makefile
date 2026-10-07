@@ -468,10 +468,10 @@ t2-candidates-check:
 	cd client && $(CLIENT_BIN)/vitest run test/tier2-candidates.test.ts
 
 formulas:
-	cd server && go run ./cmd/gen-formulas -output ../docs/generated/production-formulas.json
+	cd server && go run ./cmd/gen-formulas -output ../docs/generated/production-formulas.json -schema-output ../client/src/api/generated/formula-schema.ts
 
 formulas-check: formulas
-	git diff --exit-code -- docs/generated/production-formulas.json
+	git diff --exit-code -- docs/generated/production-formulas.json client/src/api/generated/formula-schema.ts
 
 api-generate:
 	cd server && go run ./cmd/gen-api -root=..
