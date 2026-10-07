@@ -4114,3 +4114,40 @@ only, not an executed defect; determine authority/populations before fix.
 Body/GS4/full AC7/default-player/AT/Firefox/privacy/platform/numeric/full-nine-
 tier1.0 and every designated review remain. No checkbox/lifecycle/archive/
 push/mint/deploy/release/shortened-preview substitution. Goal active/progress.
+
+## 2026-10-07 — RP-082 current Garage lifecycle focus predeclaration
+
+At fbea2158 clean checkout; preceding turn progressed RP-343 repair and
+RP-344 discriminating tests. TEST-ONLY under accepted GS0.4/0.6 (the active
+follow-up's own floor, explicitly independent of accepting the broader draft
+Accessibility RFC at its final sequencing note). RP-082 already owns the
+older measured Offer/Run-End focus defect; do not create a duplicate ledger ID.
+
+Three mounted surfaces (Fiscal, Trophy Case, Meters), persistent nav focus
+versus focused soon-removed surface heading, Offer versus Run-End destination,
+320/1280, Chromium/WebKit: twenty-four declarations / forty-eight executions.
+Production envelope/lifecycle decoders admit public fixtures before runtime-
+double delivery. Native Enter selects source surface; explicit heading focus
+is a controlled removed-target population, not a physical screen-reader walk.
+Require actual new destination, exact visible known heading, focus on that
+heading after render, non-tab-stop tabindex=-1, no gameplay intents, native
+axe and reflow. Do not credit screen selection alone as forced focus.
+
+Separate cancellation controls from Meters: after delivering Offer or Run-End,
+select/focus Settings synchronously before Svelte renders; newer choice must
+cancel stale pending focus. Four declarations / eight native executions.
+Two ordered controls (320/1280, four native executions): Offer followed by
+newer Run-End in one callback, then a Settings choice and replay of old Offer/
+Run-End cursors. Newest actual destination owns focus; consumed replay must
+not steal focus or change surface. These are controlled same-callback races,
+not claims about physical OS input timing, all lifecycle contexts or real auth.
+
+Run unchanged source first, record actual red or absence honestly. Any repair
+requires separate product predeclaration, existing copy/payload/navigation
+precedence only. No permanent product/clock/auth/timer/snapshot/value/CI/Make/
+balance/RFC body/copy change under this range. No budgets/assertions loosened.
+Keep all earlier tests. Whole fbea2158-exclusive through eventual records
+needs Claude separately from 9f485993..fbea2158 and earlier spans. Capacity/
+Firefox/AT/body/privacy/platform/numeric/full-nine-tier1.0/review holds remain;
+cleanup/startup questions unanswered, no deletion/Retry/archive/push/mint/
+release authority inferred. Goal active/progress.
