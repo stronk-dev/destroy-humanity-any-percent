@@ -11,8 +11,9 @@ Current checkpoint: purchases and Gate/Incorporate/Wind Down retain native pendi
 GS0.8. Removed transitions recover focus within their region without stealing newer choices;
 queued Wind Down now binds both refreshed revisions (RP-380). Affected functional browser,
 type/build/boundary and final real-service journeys pass; designated review remains.
-Next: repair the locally reproduced hosted WebKit non-JSON error-constructor test (RP-381),
-then consolidate Garage review/remaining acceptance. Manual's pending-input choice is unruled.
+RP-381's hosted WebKit error-constructor assertion is locally corrected: Node27/native54 and
+types pass without changing product handling. Next: consolidate Garage review/remaining
+acceptance. Manual's pending-input choice is unruled; Clout and historical kernel CI remain red.
 The latest `log.md` owns results; do not infer full Garage/CI/1.0 acceptance.
 
 Preceding checkpoint: ordinary whole composed68777 passes required Postgres, Fiscal refusals,

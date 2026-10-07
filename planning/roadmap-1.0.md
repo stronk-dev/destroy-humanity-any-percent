@@ -11,7 +11,9 @@ lifecycle changes. Queued Wind Down binds both refreshed revisions (RP-380). Aff
 browser checks and final composed99336 pass real Postgres, Fiscal refusals, player workflows and
 Cosmetics. Designated review remains. Latest hosted CI at `0f9f4214` is RED: server Clout research/
 partition tests, client historical kernel guard and two WebKit parse-error constructor tests.
-The latter reproduce locally (RP-381), next repair. RP-365/RP-368/RP-378 and owner/author holds
+The latter are locally corrected (RP-381): affected Node27/native54 and types pass; no hosted
+rerun or product/CI change. The [whole-product overview](CURRENT-STATE.md#whole-product-overview--2026-10-07)
+separates built foundations, fixture-first work and substantial unbuilt scope. RP-365/RP-368/RP-378 and owner/author holds
 remain; a passing journey does not resolve them. [Garage log](garage-player-surfaces/log.md),
 [Cosmetic log](cosmetic-shop-v1/log.md) and [API log](api-foundation/log.md) own evidence.
 The full nine-tier gameplay and release-artifact/deployment proof remain incomplete.

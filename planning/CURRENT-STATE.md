@@ -4,7 +4,89 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage work:** GS1-A3 exact rendered Fiscal fixture edges. Four public
+## Whole-product overview — 2026-10-07
+
+**Bottom line:** substantial server/client foundations and an executable early-game loop exist.
+The current stage is **Garage integration and hardening**, not completion of the full game or
+release readiness. Much of Tier 2 is fixture-first; Tiers 3–8 and the final Transcendence paths
+still require construction. The current client era selector supports Tiers 0–2 and refuses later
+tiers (`client/src/game-ui/contracts.ts`, `eraForSnapshot`). No percentage or release date is
+justified by the number of commits, tests or archived RFCs.
+
+This is a synthesis of the active RFC index, canonical docs, owning plans/logs, live decision
+queue and current verification, not a claim to have rerun every acceptance criterion at HEAD.
+“Fixture-first” means code exercised with controlled candidate data, not adopted release content.
+“Locally verified” does not mean designated-approved, shipped or verified on a clean release host.
+
+| Area | Actual progress | Still missing for the whole product |
+|---|---|---|
+| Engine and persistence | Shared Go/TS number handling, declarative economy, lazy production/offline accrual, versioned Postgres saves/migrations/replay, routes/gates and client worker foundations are implemented. | New feature arithmetic/replay must satisfy the same floor. Clout's partition/accrual defect remains open; core foundations do not make every new system correct. |
+| Early-game player loop | Built-client, real Postgres/WebSocket journey covers purchases, first gate, scripted and elective early endings, next Company and reconnect. Fiscal, active-play opportunity and Pitch are exercised through DOM controls. | Natural pacing/long-session recovery, remaining Garage acceptance and current-range designated reviews. Accelerated fixture journeys are not complete nine-tier playthroughs. |
+| Tier 2 / incorporation | Candidate economy/content, routes, era UI and bounded real-service transition/incorporation proof exist. | Pacing/relevance gates, adopted copy and content mint; epoch 9 is not minted. Headcount's seat-source choice is held and its allocation system is not built. |
+| Prestige / Reputation | Exit/reset foundations and earlier acceptance repairs are reviewed. Reputation nodes, plans, starters, persistence and UI have fixture-first implementations. | Run End's balance/carry display contract reconciliation, full feature review and adopted content. The two early endings are not the three designed final endings. |
+| Minigames | Pitch has a real API-to-player-to-payout journey. Soul, Typer, Arcade and Garden have substantial engines, components and bounded persistence/lifecycle tests. | Typer/Arcade public API and host integration; shared wire-contract decisions; Garden state-evolution clarification; authored content/mint, whole-player journeys and accessibility. Pinball remains a draft. |
+| Pet care / cosmetics | Controlled real-service Buy → adoption → equip/care → reload works; several actual UI, race and timing defects are locally corrected. | Pet/API schema reconciliation, shared attendance-clock repair (RP-365), adopted copy/content, announcements and consolidated review. A passing journey does not close the clock defect. |
+| Clout / achievements | Achievement foundation, axis hooks, state/API and PR feature implementation exist. | RP-307 numeric partition correctness, offline-episode meaning, truthful role/harness bindings and measured/adopted balance. Hosted server CI is red here. |
+| Account / API / transport | Account security, backend deletion, revocation, exact-response and transport recovery witnesses were independently approved in earlier ranges. Generated API dispatch and newer consumers are partly implemented. | Complete generated-client/route migration, startup failure and browser renewal contracts, visible recovery-code/recover-existing-account UX and long-session proof. |
+| Privacy / player rights | Relation-complete 60-table inventory and bounded browser/event/backup/deletion traces expose actual retained data. Research publication classification/sanitization is complete. | Owner export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows. Public board survival after deletion and restoration from pre-deletion backups remain explicit issues. An instance backup is not player export. |
+| Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
+| MMO and later game | Commons, guild, faction, doctrine and combat arithmetic primitives exist. | Complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
+| Deployment / operations | Accepted single-node Compose/Caddy floor; packaging, configuration, encrypted backup, release/rollback and operations tooling implemented with several bounded corrective approvals. | Remaining findings and exact-range reviews; rebuild current candidate/previous bundles; R-006 clean Linux-host install/restore/rollback rehearsal. Historical bundles and native helper tests do not establish current release readiness. |
+
+### Current verification and closeout
+
+- Gameplay repair `e55eb1e9`: transition controls retain native pending focus, removed controls
+  recover focus without overriding newer choices, and queued Wind Down binds both refreshed
+  revisions. Final host checks: 174 passes / four performance-only skips; types/build/source
+  boundaries pass. Whole composed run 99336 passes real Postgres/WebSocket main and Cosmetic
+  journeys. Designated review remains; no full accessibility/performance/Firefox/release claim.
+- RP-381's two hosted WebKit constructor assertions are locally corrected, preserving the
+  native parser failure and request/credential checks. Node 27 and Chromium/WebKit 54 pass;
+  types pass. Production handling and CI configuration are unchanged.
+- Latest inspected [hosted CI run 37641907701](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/37641907701)
+  at `0f9f4214` is **RED**: schema, harness and composed pass; server, client and browser fail.
+  Browser's two failures have the local correction above. Server Clout research/partition
+  failures and client's historical kernel guard at `50a3a514` remain unresolved. There is no
+  hosted result for these local repairs; nothing is pushed by this closeout.
+- Recent implementation/correction spans still need exact-range cross-party review. Older
+  approvals do not cover later code, and a self-review is not the designated gate.
+- Intermittent composed timeout RP-378 remains open despite subsequent passes. Manual input
+  retention/rate choice RP-368 and attendance-clock D-024 remain unruled, not silently fixed.
+
+### What the weeks of work accomplished
+
+The program replaced unsupported completion claims with code/runtime traces and discriminating
+witnesses; closed the three serial account/API/transport witness batches; implemented substantial
+Garage features; and found/repaired real numeric, input, focus, clock, wire and lifecycle defects.
+Deployment and research publication work also progressed. Much recent effort is integration,
+review and hardening of that implementation, **not delivery of the remaining late-game tiers**.
+Test counts show executed scope, not completion percentage.
+
+### Remaining program, in practical groups
+
+1. Stabilize the current baseline: Clout numeric correctness, truthful kernel-history guard,
+   remaining reproduced defects and current-head hosted CI. Never suppress failures to get green.
+2. Consolidate coherent review ranges and finish Garage contracts/journeys: account recovery,
+   startup/renewal, manual input, attendance, pet/API and minigame wire boundaries; adopted
+   content and measured pacing rather than fixture-only release claims.
+3. Complete player rights and task accessibility under explicit decisions, with actual workflows.
+4. Finish and review deployment corrections; rebuild exact artifacts and rehearse on an
+   authorized supported clean host, including backup/restore/rollback and alerts.
+5. Continue the full [milestone roadmap](roadmap-1.0.md#milestone-path): Tier 3–5 world/social/
+   combat/events and then Tier 6–8 Transcendence, variants and challenges. These depend on shared
+   contracts, content and real player proof; no preview narrows the goal.
+
+The [active RFC index](../rfc/README.md), [owner/author decision queue](platform-alignment/decision-queue.md),
+[Garage log](garage-player-surfaces/log.md), [Deployment plan](deployment-foundation/plan.md)
+and [full roadmap](roadmap-1.0.md) own detailed authority, evidence and work. This overview
+does not accept drafts, resolve decisions, archive implementations or authorize publication.
+
+## Historical checkpoints
+
+The following entries preserve earlier evidence and then-current next actions. They are not the
+latest executable queue; use the overview and owning plans above.
+
+**Historical Garage work:** GS1-A3 exact rendered Fiscal fixture edges. Four public
 decoded component cases cover early-1/early/guaranteed-1/guaranteed with exact
 visible text/risk/countdown/native readiness/curtain/callbacks; eight actual
 source faults fail and restore exactly. Final full native Garage262 and

@@ -6204,3 +6204,25 @@ and27 partition failures. Hosted WebKit non-JSON constructor failures reproduce 
 Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after `58f1131d`
 through this batch needs designated review; older spans remain independent. No archive/push or
 full Garage/1.0 acceptance. Next: RP-381, then consolidate review and remaining acceptance work.
+
+## 2026-10-07 — WebKit native parse failure and whole-product closeout
+
+RP-381 test-only correction follows gameplay repair `e55eb1e9`. The two tests now observe the
+real `Response.json` rejection and require the runtime to return that exact object, parse once,
+map offline, send one request and preserve credentials. No cross-engine constructor assumption;
+no production, retry, token, CI or acceptance-bound changes. Old native63855 was WebKit2 red /
+Chromium2 green. Corrected Node run passes27; native69599 passes54; types94092 reports0 errors/
+warnings. First sandboxed browser attempt could not listen (EPERM), not an executed population;
+the identical focused target passes with local-listener authority. All handles terminal.
+
+At the user's requested closeout, `CURRENT-STATE.md` now has a whole-product overview above
+explicitly historical checkpoints. It distinguishes built foundations, fixture-first Garage
+work, unbuilt later tiers, actual rights/clock/math defects, designated review debt and absent
+clean-host release evidence. Latest inspected Actions37641907701 stays red; no hosted rerun
+or push. Detailed evidence remains here and in the existing owning logs, not another tracker.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after `e55eb1e9`
+through this test/overview batch needs designated review; prior ranges remain separate. No
+checkbox, RFC lifecycle, archive or release promotion. Next work is the existing baseline,
+Garage integration/review, rights/accessibility, deployment and full-nine-tier roadmap—not a
+narrower preview substituted for1.0. This turn ends with the requested total progress report.

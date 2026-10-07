@@ -156,9 +156,20 @@ describe("GS0.2 intent outcomes", () => {
 
   for (const status of [200, 503]) {
     it(`runtime HTTP boundary rejects non-JSON ${status} as offline without replay`, async () => {
-      const { runtime, assertRequests } = intentRuntime(async () => new Response("not JSON", { status }));
+      const response = new Response("not JSON", { status });
+      const nativeJSON = response.json.bind(response);
+      let parseFailure: unknown;
+      // Preserve the native parser's failure: its constructor differs between
+      // engines, but the runtime must neither replace it nor retry the request.
+      const readJSON = vi.spyOn(response, "json").mockImplementation(async () => {
+        try { return await nativeJSON(); }
+        catch (error) { parseFailure = error; throw error; }
+      });
+      const { runtime, assertRequests } = intentRuntime(async () => response);
       const result: unknown = await runtime.intent(intentBody).catch((error: unknown) => error);
-      expect(result).toBeInstanceOf(SyntaxError);
+      expect(parseFailure).toBeDefined();
+      expect(result).toBe(parseFailure);
+      expect(readJSON).toHaveBeenCalledTimes(1);
       expect(noticeForError(result)).toEqual({ effect: "offline", notice: null, invariant: false });
       assertRequests();
     });
