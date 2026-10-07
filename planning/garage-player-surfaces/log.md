@@ -3316,3 +3316,29 @@ Chromium/WebKit population plus existing isolated performance. Full Linux/
 SQL held on capacity: no cleanup permission/deletion/full-disk run. Exact
 complete range after85fdcfdf needs Claude, independently of prior ranges;
 self is first filter only, no checkbox/lifecycle/archive/push/release change.
+
+## 2026-10-07 — GS2 baseline driver correction and native nav failure RP-338
+
+6c578197 predeclared twelve test cases/twenty-four native executions. First
+0aa30a exit2: Chromium twelve cases reach the reporting line then fail wrong
+annotation API; WebKit twelve fail native Tab before reporting. Typecheck
+688797 independently catches the wrong overload; corrected to annotation
+type string. Observation widths now captured while Trophy Case is mounted,
+not incorrectly sampled after returning Desk. These are driver defects.
+
+Initial commentary suspected axe could perturb focus; that hypothesis is
+DISCONFIRMED, not a product explanation. Moving axe after the complete
+native keyboard route gives f8e07e terminal2: Chromium12 pass, WebKit12 fail
+the same native Tab (body instead of adjacent Earnings Calls), with explicit
+pre-Tab focused Trophy Case assertion passing. No axe has run at that point.
+Typecheckf5dd68 passes zero errors/warnings. Visibility/layout/state text
+checks preceding Tab pass in both engines. RP-338 records actual native
+failure at healthy product source, distinct from the annotation instrument
+error. Existing tests focused individual nav buttons but did not prove this
+Tab route; Fiscal action controls already have explicit tabindex0.
+
+This checkpoint remains TEST-ONLY: source hashes unchanged, no product
+correction here. Commit the red discriminating population and record before
+a separately scoped implementation. No acceptance box or broad keyboard
+proof; GS2-A5/full Linux/real AT/review remains unfinished. Cross-party must
+cover the failed-test checkpoint as well as subsequent repair. No archive.

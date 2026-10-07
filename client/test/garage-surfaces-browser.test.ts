@@ -114,6 +114,117 @@ it.skipIf(!browser)("renders earned-run, earned-career and locked achievements a
   } finally { await dispose(); }
 });
 
+// GS2-A1/A5: visible, read-only fixture populations, not a persisted earn,
+// assistive-technology session, actual 400% zoom or all-engine acceptance.
+for (const population of ["populated", "empty", "presentation-error"] as const) {
+  for (const width of [320, 1280] as const) {
+    for (const activation of ["{Enter}", " "] as const) {
+      it.skipIf(!browser)(`GS2-A5 visible Trophy Case ${population}/${width}/${activation === " " ? "Space" : "Enter"}`, async ({ annotate }) => {
+        const { page, userEvent } = await import("vitest/browser");
+        await page.viewport(width, 720);
+        const original = v4.features.achievements!;
+        const arm = population === "empty" ? { rows: [], score: { run: 0, lifetime: 0 } }
+          : population === "presentation-error" ? { ...original, rows: original.rows.map((row, index) => index === 0 ? { ...row, copy_key: "achievement.unregistered" } : row) }
+          : original;
+        const runtime = new Runtime();
+        runtime.current = parseGameUISnapshot({ ...v4, features: { ...v4.features, achievements: arm } });
+        const diagnostic = vi.spyOn(console, "error").mockImplementation(() => {});
+        let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+        try {
+          fixture = await mounted(runtime);
+          const { target } = fixture;
+          const nav = button(target, t("surface.achievements.title", {}, "era_1995"));
+          const deskNav = button(target, t("surface.desk.title", {}, "era_1995"));
+          const nextNav = button(target, t("surface.fiscal.title", {}, "era_1995"));
+          nav.focus(); await userEvent.keyboard(activation); await settle();
+          expect(document.activeElement).toBe(nav);
+          expect(nav.getAttribute("aria-current")).toBe("page");
+          const main = target.querySelector<HTMLElement>("main.game-ui")!;
+          const panel = target.querySelector<HTMLElement>(".achievements")!;
+          expect(main.dataset.surface).toBe("achievements"); expect(panel).not.toBeNull();
+          const visible = (node: HTMLElement) => {
+            expect(node).not.toBeNull();
+            const rectangle = node.getBoundingClientRect();
+            expect(rectangle.width).toBeGreaterThan(0); expect(rectangle.height).toBeGreaterThan(0);
+            for (let ancestor: HTMLElement | null = node; ancestor; ancestor = ancestor.parentElement) {
+              const style = getComputedStyle(ancestor);
+              expect(style.display, `${node.tagName} ancestor display`).not.toBe("none");
+              expect(style.visibility).toBe("visible"); expect(Number(style.opacity)).toBeGreaterThan(0);
+              expect(["hidden", "clip"], "clipping cannot stand in for readable reflow").not.toContain(style.overflowX);
+              if (ancestor === main) break;
+            }
+          };
+          const exact = (parent: Element, selector: string, text: string) => {
+            const nodes = [...parent.querySelectorAll<HTMLElement>(selector)].filter((node) => node.textContent === text);
+            expect(nodes, `visible exact ${text}`).toHaveLength(1); visible(nodes[0]!);
+            return nodes[0]!;
+          };
+          const heading = exact(panel, "h1", t("surface.achievements.title", {}, "era_1995"));
+          expect(heading.id).toBe(panel.getAttribute("aria-labelledby"));
+          expect(heading.getAttribute("tabindex")).toBe("-1");
+          expect([...panel.querySelectorAll<HTMLElement>("button,input,select,textarea,a[href],[tabindex]")]
+            .filter((node) => node.tabIndex >= 0)).toEqual([]);
+          if (population === "presentation-error") {
+            exact(panel, '[role="alert"]', t("common.surface_error", {}, "era_1995"));
+            expect(panel.querySelectorAll("li,ul,strong,small")).toHaveLength(0);
+            expect(panel.textContent).not.toContain("achievement.unregistered");
+            expect(diagnostic.mock.calls).toEqual([["game UI invariant: achievements surface presentation unavailable"]]);
+          } else {
+            expect(panel.querySelector('[role="alert"]')).toBeNull();
+            exact(panel, "p", t("achievements.score_frame", { run: arm.score.run, lifetime: arm.score.lifetime }, "era_1995"));
+            const rows = [...panel.querySelectorAll<HTMLElement>("li")];
+            expect(rows).toHaveLength(population === "empty" ? 0 : 3);
+            if (population === "empty") {
+              exact(panel, "p", t("achievements.empty", {}, "era_1995"));
+              expect(panel.querySelectorAll("ul,strong,small")).toHaveLength(0);
+            } else {
+              exact(panel, "p", t("achievements.progress_frame", { earned: 2, total: 3 }, "era_1995"));
+              const states: readonly CopyKey[] = ["achievements.state.earned_run", "achievements.state.locked", "achievements.state.earned_lifetime"];
+              for (const [index, row] of rows.entries()) {
+                const source = original.rows[index]!;
+                exact(row, "h2", t(source.copy_key as CopyKey, {}, "era_1995"));
+                exact(row, "strong", t(states[index]!, {}, "era_1995"));
+                exact(row, "span", t(source.condition_scope === "run" ? "achievements.scope.run" : "achievements.scope.career", {}, "era_1995"));
+                exact(row, "span", t("achievements.grant_frame", { score: source.score_grant }, "era_1995"));
+                expect(row.querySelectorAll("small")).toHaveLength(index === 2 ? 1 : 0);
+                if (index === 2) exact(row, "small", t("achievement.possession_warning", {}, "era_1995"));
+                if (width === 320 && index > 0) expect(row.getBoundingClientRect().top).toBeGreaterThanOrEqual(rows[index - 1]!.getBoundingClientRect().bottom);
+              }
+            }
+            expect(diagnostic).not.toHaveBeenCalled();
+          }
+          const root = document.documentElement;
+          expect(root.clientWidth).toBe(width); expect(root.scrollWidth).toBeLessThanOrEqual(width + 1);
+          for (const node of [main, panel, ...panel.querySelectorAll<HTMLElement>("*")]) {
+            const rectangle = node.getBoundingClientRect();
+            expect(rectangle.left).toBeGreaterThanOrEqual(-1); expect(rectangle.right).toBeLessThanOrEqual(width + 1);
+            if (node.clientWidth > 0) expect(node.scrollWidth).toBeLessThanOrEqual(node.clientWidth + 1);
+          }
+          const observation = { population, width, activation, root_client: root.clientWidth,
+            root_scroll: root.scrollWidth, panel_client: panel.clientWidth, panel_scroll: panel.scrollWidth };
+          expect(document.activeElement).toBe(nav);
+          await userEvent.keyboard("{Tab}"); expect(document.activeElement).toBe(nextNav);
+          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); expect(document.activeElement).toBe(nav);
+          await userEvent.keyboard("{Shift>}{Tab}{/Shift}"); expect(document.activeElement).toBe(deskNav);
+          await userEvent.keyboard(activation); await settle();
+          expect(main.dataset.surface).toBe("desk"); expect(document.activeElement).toBe(deskNav);
+          expect(runtime.requests).toEqual([]);
+          // Audit after the complete native navigation path so the scan is
+          // not interleaved with gameplay keyboard actions.
+          await userEvent.keyboard("{Tab}"); expect(document.activeElement).toBe(nav);
+          await userEvent.keyboard(activation); await settle();
+          expect(main.dataset.surface).toBe("achievements"); expect(document.activeElement).toBe(nav);
+          await assertAxe(target, `GS2-A5 ${population}/${width}`);
+          await annotate(JSON.stringify({ ...observation, read_only_intents: runtime.requests.length }), "GS2-A5-fixture-observation");
+        } finally {
+          try { if (fixture) await fixture.dispose(); }
+          finally { diagnostic.mockRestore(); await page.viewport(1280, 720); }
+        }
+      });
+    }
+  }
+}
+
 // RP-330: real semantic layout over decoder-admitted public fixtures, not
 // production/persisted values or assistive-technology evidence.
 const semanticMeterRows = v4.features.meters!.meters.map((row, index) => meterRow(row.meter_id, index * 7));
