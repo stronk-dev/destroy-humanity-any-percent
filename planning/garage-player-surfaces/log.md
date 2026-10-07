@@ -5671,3 +5671,57 @@ Lucky integration, session15min-expiry, Firefox/AT/400%/whole-era/full-nine-tier
 or independent review proof. No archive/mint/push/cleanup/owner-content/RP-313
 body/startup-ruling changes. Whole bbee9805-exclusive through observation records
 needs Claude; previous69c4f972..bbee9805 and all older spans independently owed.
+
+### RP-361 — complete host-native service proof, severing and restored rerun
+
+Baseline clean f46298e7; all runs keep that HEAD and the unchanged root target,
+make test-game-ui-composed (only the declared transient source fault differs), with
+no source/HEAD/record edits during a live run. First healthy b49d43→2d7989
+Make0: actual production buff after12 manual clicks/no expired attempts,
+successor Company23; Fiscal/Pitch5 commands/1 visible decline, credited1e0,
+Company27 and refreshed27. Main driver completes both terminal states,
+continuation and WebSocket recovery. Second compiled-client driver completes
+DOM adoption/feed, positive receipt, normal/feed-ineligible Founder5 and reload,
+AC14/G10 Buy/owned reload/equip/annoyed/reduced-motion/unequip/unworn reload,
+75 N5 requests/no violation,10.051s.
+
+Independent source probe50a967→1a88ae: ONLY mounted host Claim callback
+replaced with no-op, visible enabled control/backend/driver/oracle unchanged.
+Make2/child1, not compiler failure: "GS5 opportunity claim emitted no intent
+request", rendered Desk ariaBusy=false with enabled Claim, page.waitForRequest
+timeout30000ms (driver208/235/671). Cosmetic child is not reached in this
+expected failing root; do not claim its negative population ran. Driver-owned
+finally cleanup finishes normally. Restore only after terminal; complete hash
+checkbd70a6 equals predeclared host/region/native-driver/theme.
+
+Final whole healthy27fc68→9c8c32 Make0, terminal before record edits:
+17 actual manual clicks, active.click,0 expired attempts, buff bound to
+Company28. Fiscal/Pitch6 commands/0 visible declines, credited1e0, Company31,
+refreshed31. Both terminal screens/next-run/WebSocket recovery PASS. Actual
+DOM care/adoption/receipt/public normal+feed-ineligible Founder5/reload PASS.
+Compiled cosmetic entire AC14/G10 population PASS,74 N5 requests/no violation,
+7.027s. These two healthy runs cover observed production and click buffs, NOT
+Lucky acquisition/payout, every effect or every accepted Garage population.
+
+Post-run e5da29 clean;677fe3/e4c447 complete nine source/driver/helper/theme/
+Make/Compose hashes match predeclaration. c5e6de finds no listeners at18081/
+18082/5173 (lsof1/no output),3d86d8 named test DB has0 other sessions (SQL0/
+no rows);fa5b4b same9402b6ad7eb7 running/config hash unchanged. No manual
+kill/timeout reinterpretation, image build/pull, orphan removal, operator-data
+reset, general cache cleanup, CI/bounds/code/copy/schema change.
+
+Capacity correction: current host-native route is now actually proven runnable;
+the existing test DB tmpfs and host cache have capacity. Full Docker-image/tmp
+overlay remains0/100%; Linux/SQL-container/release-image/clean-host R-006 work
+is NOT recertified. This is current-host Chromium/current-code evidence, not
+release artifact, all-content/era, real Lucky, AT/400%/Firefox, whole1.0 or
+independent acceptance. RP-132/313/318 body obligations remain.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Inspected
+bbee9805-exclusive..f46298e7 predeclaration and actual executions/restoration;
+no committed product/test changes in this range. Whole bbee9805-exclusive
+through containing observation records needs Claude independently of
+69c4f972..bbee9805 and all older spans. No plan checkbox, lifecycle, archival,
+mint/push/owner/release promotion. Next: inspect/predeclare exact missing real
+initial-meter DOM and first-purchase→earned-event→refreshed-row witnesses;
+an existing successful workflow cannot substitute for either named outcome.

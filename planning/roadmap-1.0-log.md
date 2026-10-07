@@ -4892,3 +4892,31 @@ hold is not established. Next: separately predeclare unchanged whole root
 composed target, no narrower workflow/backend/bounds/reset of operator data.
 Actual service/fixture-vs-release-artifact/Firefox/AT/400%/all-era/state/RP-313/
 privacy/platform/numeric/endings/review/owner/full-nine-tier1.0 holds remain.
+
+## 2026-10-07 — Current host-native integration executes, broad capacity hold corrected
+
+RP-361 predeclared f46298e7. Both unchanged composed drivers pass at
+b49d43→2d7989; independent mounted Claim no-op50a967→1a88ae fails with
+visible enabled control/no emitted request, not compiler failure. Source restored
+only after terminal, full hashes match. Final entire root27fc68→9c8c32 Make0:
+17 manual clicks/Click buff/Company28, Fiscal6 commands/credit1e0/Company31
+and refresh31; both endings, continuation, recovery. Second compiled-client
+population completes real adoption/feed/positive receipt/public normal and
+feed-ineligible Founder5/reload; whole cosmetic AC14/G10,74 N5 requests/no
+violation,7.027s. First run independently observed Production, not Lucky.
+
+Post-run tree/source/driver/helper/Make/Compose hashes unchanged; target ports
+absent, named ephemeral test DB other sessions0, same running service/config.
+No unowned cleanup, general reset, image build/pull, source/gate/CI/budget change.
+Current host-native route is now evidenced runnable; full Docker image/tmp
+overlay still holds disk-dependent Linux/image/SQL-container/clean-host work.
+Never cite this for release image, all-content/effects, Lucky payout, AT/zoom/
+Firefox/whole Garage/CI or full nine-tier1.0. Author-body and all owner/review/
+privacy/platform/numeric/endings obligations remain.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Complete
+bbee9805-exclusive through records needs Claude independently of all earlier
+spans. No lifecycle/checkbox/archival/mint/push/release promotion. Next accepted
+work: inspect/predeclare RP-331's exact real initial-meter rendered values and
+first-purchase→earned announcement→refreshed row, absent from the successful
+driver. Goal active: complete proper1.0, not a preview substitute.

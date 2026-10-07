@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-359 four-effect/refusal proof, test-only
+**Latest bounded work (2026-10-07):** RP-361 whole real-service composed target
+under f46298e7 passes twice: both endings/continuation/WebSocket recovery,
+actual Production/Click buff claims, Fiscal/Pitch and compiled cosmetic/
+adoption/care/reload. Mounted Claim callback no-op makes the root fail with no
+intent; exact restoration precedes final full green run. Source/driver/service
+hashes unchanged, target listeners absent/test DB other sessions0. Observation
+only; bbee9805-exclusive through records needs Claude, older spans independent.
+Host-native route is proven usable despite full Docker image/tmp overlay;
+disk-dependent Linux/image/SQL-container/release/clean-host holds remain.
+Next: inspect/predeclare RP-331's missing real initial-meter DOM and purchase→
+earned-event→row-refresh checks. No Lucky/all-effects/all-content/Firefox/AT/
+400%/whole Garage/CI/full1.0 or lifecycle/archival/mint/push promotion.
+Author-body, owner, numeric, privacy, deployment and full nine-tier gates remain.
+
+**Preceding bounded work (2026-10-07):** RP-359 four-effect/refusal proof, test-only
 eb6e7e8d/7bf9d286/a531bdeb.20 native Chromium/WebKit executions at320/1280
 cover all four registered pending presentations, three distinct live buffs,
 exact Company2/native request, Lucky curtain and unknown offer/description

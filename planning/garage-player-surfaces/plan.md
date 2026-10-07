@@ -7,7 +7,22 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-359 four-effect/refusal proof, test-only undereb6e7e8d/
+Latest bounded work: RP-361 real-service composed evidence under f46298e7.
+Unchanged full root target passes twice: current host/server/Postgres/socket/
+DOM, both endings/continuation/recovery, observed Production/Click buff claims,
+Fiscal/Pitch and compiled cosmetic/adoption/care/reload. Mounted Claim no-op
+fails specifically with no emitted intent; exact source restored and entire
+root rerun green. Post-run source/driver/service hashes unchanged, target ports
+absent, named test DB other sessions0. No committed product/test change.
+Whole bbee9805-exclusive through records needs Claude, older ranges independent.
+Host-native route is usable; Docker image/tmp overlay0/100% still holds
+disk-dependent Linux/image/SQL-container/release work, not this route.
+Next: inspect/predeclare real initial-meter DOM and first-purchase→earned
+announcement→row-refresh gaps (RP-331). No Lucky/all-effect/production-epoch/
+release-artifact/Firefox/AT/400%/whole Garage or full-nine-tier1.0 promotion.
+RP-132/313/318 author-body and all owner/review/platform holds remain.
+
+Preceding bounded work: RP-359 four-effect/refusal proof, test-only undereb6e7e8d/
 7bf9d286/a531bdeb.20 native executions at320/1280 across four registered and
 one unknown pending row; actual public parser, native Tab/Enter-Space, exact
 Company2/opportunity-only requests, three distinct live buffs/times, combo cap,

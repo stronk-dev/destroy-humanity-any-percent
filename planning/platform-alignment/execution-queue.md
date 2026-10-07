@@ -3,6 +3,29 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Current real-service composed checkpoint — 2026-10-07
+
+RP-361 predeclared f46298e7: unchanged whole make test-game-ui-composed
+passes twice against current host Go/server/Postgres/WebSocket/DOM. Main driver
+completes both endings/continuation/recovery, real Production then Click buff
+claims and Fiscal/Pitch; second compiled-client driver completes cosmetic
+Buy/owned reload/adopt/equip/care/public state/reload/reduced-motion/unequip.
+Mounted Claim callback no-op fails specifically with no intent at visible
+enabled Claim; restored exact hashes before whole final Make0. Post-run no
+target listeners/other test DB sessions; same service and source hashes.
+No committed product/test changes, reduced workflow or relaxed gate.
+
+**READY FOR CLAUDE:** bbee9805-exclusive through containing observation records;
+all older ranges, including69c4f972..bbee9805, independently owed.
+**NEXT safe accepted work:** inspect/predeclare RP-331's exact real-service
+initial-meter DOM and first-purchase→earned-event→refreshed-row witnesses.
+Existing success does not prove those missing named checks. Host-native route
+is runnable; Docker image/tmp0/100% still holds disk-dependent Linux/image/
+SQL-container/release-image/clean-host work. Not Lucky/all-effect/full epoch,
+Firefox/AT/400%/all Garage/CI/release or whole nine-tier1.0. Author RP-132/313/
+318 and platform/privacy/numeric/endings/owner/designated-review holds remain;
+no cleanup/startup ruling/mint/push/lifecycle/self-archival.
+
 ## Four-effect/refusal checkpoint — 2026-10-07
 
 RP-359 test-onlyeb6e7e8d/7bf9d286/a531bdeb.20 native executions cover four
