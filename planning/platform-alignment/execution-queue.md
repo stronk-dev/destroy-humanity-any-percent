@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Full Linux browser verification RED / capacity — 2026-10-07
+
+At36c28692, cold full three-engine run94542 terminal2:373/378 files pass,
+30,366 tests pass/four fail/six skips, two Firefox suites uncollected.
+RP-327/328 worker/import/keyboard failures remain, separate from successful
+native Chromium/WebKit Fiscal proof. Passive full diagnostic96193 at3ade389d
+stopped137 after actual owned-container overlay0free/100% and Firefox
+`NS_ERROR_FILE_NO_DEVICE_SPACE`; no final counts/performance. RP-236 and
+Codex's omitted capacity preflight recorded; no third Docker run until
+capacity resolved/rechecked, no unowned cleanup or cause assumption.
+
+**READY:** native test-first RP-326 GS0.6 own outcome/no-cross-tab-bleed/
+async-origin diagnostic, no Docker dependency. **READY FOR CLAUDE:** new
+evidence-only span after4dcd9969 through tracking edge, including36c28692,
+3ade389d/results. Fiscal exactb64a91af..4dcd9969 and all earlier ranges remain
+independent. No hosted/AMD64/all-engine/AT/full-Garage/mint/release promotion.
+
 ## Fiscal native state correction / oracle refinements — 2026-10-07
 
 RP-323/324 locally corrected through `891aee10`, predeclared `bd36f5bc`,

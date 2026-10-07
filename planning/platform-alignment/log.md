@@ -3036,3 +3036,46 @@ the exact union. Fiscal remains separately `b64a91af..4dcd9969`. Native-Mac
 RP-256, AMD64/hosted CI/manual AT/all-Garage/mint/release holds remain.
 RP-326 is queued after concrete browser diagnosis; full1.0 goal active/
 progress, no lifecycle/status/archival/publication or narrowed scope.
+
+## 2026-10-07 — Diagnostic container exhausted; own preflight error
+
+Source3ade389d; handle96193, unchanged Compose run with only passive
+`VITEST_PW_DEBUG=1`. Cold frozen install succeeds. Exact owned container
+`cloud-clicker-browser-run-b21741ac6c17` inspected read-only while live:
+`df -h / /dev/shm /workspace` reports overlay126G/124G/0available/100%;
+shared memory7.8G free; host-mounted workspace110G free. Provider then emits
+`[PW Error] script request failed for http://localhost:63315/@vite/client url: NS_ERROR_FILE_NO_DEVICE_SPACE`.
+Other request cancellations are retained observations, not individual causes.
+
+**My process error:** RP-236 already required capacity resolution before another
+browser population. I checked image availability but did not check filesystem
+capacity before either new run. Inventory reclaimable sizes are not that
+check. The first run's terminal RED remains real observed failure; this
+diagnostic is environmentally invalid and cannot close it. No inference that
+each first-run failure was caused by disk exhaustion.
+
+After concrete no-space error, stopped ONLY the named diagnostic container
+with `docker stop --timeout 10`; stop handle22765 exit0, test handle96193
+terminal137. This was deliberate containment of an invalid measurement,
+not a changed test timeout or passing denominator. No source edited while
+live; Git stays clean. No other service, cache/image/volume or user data
+deleted. Eleven output chunks fully retrieved without tool truncation:
+374 reported file completions (Chromium125,Firefox124,WebKit125); WebKit
+screens reports23 tests/one failed/one declared skip. No final denominator,
+HTTP close-summary or performance; not full passing evidence. Partial counts
+are output census only, not complete collected population. Both invocations
+remain on record, no third run until actual capacity is resolved/rechecked.
+
+Retained partial census/provider lines and capture limits:
+`browser-diagnostic-2026-10-07.json`. It is an observation artifact, not a
+validated gate or full stdout/HTTP trace. Failed log-link patch applied no
+partial log edit; artifact creation was a separate successful operation.
+
+RP-236 persists; Docker ownership/capacity needs narrowly resolved cleanup or
+an owner environment change. Read-only inventory alone cannot authorize a
+broad prune. Proceed with accepted RP-326 native consumer diagnosis, which
+does not depend on Docker; do not claim hosted/AMD64/all-engine/full-Garage/
+manual AT/mint/release proof. Evidence-only range starts4dcd9969 exclusive,
+includes36c28692/3ade389d and this result plus following tracking edge, still
+needs Claude. Earlier Fiscal/care/shared-refusal ranges remain independent.
+Full1.0 goal active/progress, no archive/status/acceptance promotion.

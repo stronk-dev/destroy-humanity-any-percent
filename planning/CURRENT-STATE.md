@@ -4,6 +4,19 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+**Latest verification:** unchanged full cold Linux ARM64 browser lane at
+`36c28692` is RED:373/378 files pass,30,366 tests pass/four fail/six explicit
+skips, two Firefox suites uncollected. Fiscal keyboard native-worker error,
+Reputation keyboard timeouts and WebKit worker observation remain open
+RP-327/328. Diagnostic3ade389d is incomplete/exit137: actual owned-container
+overlay0available/100% plus Firefox `NS_ERROR_FILE_NO_DEVICE_SPACE` confirm
+RP-236 environmental invalidity. Codex omitted required capacity preflight;
+recorded, no broad cleanup or false root-cause/green inference. No third
+Docker browser run until capacity resolved. Existing two-engine Fiscal proof
+and all independent review ranges stand; evidence-only span after4dcd9969
+through its tracking edge needs Claude. Next accepted native GS0.6 outcome
+ownership/isolation diagnostic RP-326; full-nine-tier goal remains active.
+
 **Latest Fiscal correction:** `891aee10`, predeclared `bd36f5bc`, failing-first
 `d0651029`; RP-323/324 consumer defects locally repaired, not approved. Pending
 intent/read, native keyboard, stale/restart, row reasons and focus boundaries
@@ -17,7 +30,7 @@ WebSocket composed pass before final test-only refinements. Not a hosted-CI/
 Firefox/AT/full-Garage/release gate. Entire new span after `b64a91af` THROUGH
 this tracking edge needs Claude; earlier spans independent. RP-326 separately
 records unscoped chrome outcomes, not yet a native failed case. Next: existing
-full Linux ARM64 three-engine `make test-browser-ci`, cold isolated install;
+full Linux ARM64 three-engine `make test-browser-ci`, cold isolated install (now RED above);
 then separately predeclare GS0.6 notice-origin/isolation tests. No workflow/
 policy change. All author/owner/privacy/numeric/content/platform/release holds
 and full nine-tier scope remain, goal active/progress.

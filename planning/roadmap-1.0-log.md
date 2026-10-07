@@ -4211,3 +4211,20 @@ three-engine browser lane (image locally present), then native GS0.6 notice
 isolation/async-origin checks. Full nine-tier/product/platform/author/owner/
 numeric/privacy/content/accessibility/review/release holds remain. Goal active/
 progress, no box/status/archive/mint/push/deploy or reduced release scope.
+
+## 2026-10-07 — Full Linux browser lane red; capacity hold reconciled
+
+Evidence-only range starts4dcd9969 exclusive, includes36c28692/3ade389d and
+this result/tracking edge, needs Claude; Fiscal separately exact
+b64a91af..4dcd9969. Full cold Linux ARM64 browser94542 terminal2:
+373/378 files pass,30,366 tests pass/four fail/six skips, two Firefox suites
+never collect. RP-327/328 import/worker/keyboard failures remain open.
+Passive unchanged diagnostic96193 stops137 after actual owned-container
+0free/100% overlay and Firefox no-device-space; incomplete output census
+retained in browser-diagnostic-2026-10-07.json, no final/performance count.
+RP-236 preflight omission is Codex's error; no third Docker browser run until
+capacity resolved/rechecked. No unrelated resources removed, no cause/green/
+hosted/all-engine/mint/AT/full-Garage/release inference. Next accepted native
+RP-326 outcome ownership/no-bleed/async-origin test-first work. All full
+nine-tier/product/platform/author/owner/numeric/privacy/content/review gates
+remain; goal active/progress, no status/archive/publication or shortcut.

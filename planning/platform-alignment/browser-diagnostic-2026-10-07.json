@@ -1,0 +1,2406 @@
+{
+  "schema": "cloud-clicker.browser-diagnostic-observation.v1",
+  "source_head": "3ade389d",
+  "date": "2026-10-07",
+  "test_handle": 96193,
+  "exit_code": 137,
+  "completion": "incomplete; deliberately stopped after observed disk exhaustion",
+  "population": "unchanged full compose.browser-test.yml command, VITEST_PW_DEBUG=1, Linux ARM64",
+  "capacity": {
+    "container": "cloud-clicker-browser-run-b21741ac6c17",
+    "command": "df -h / /dev/shm /workspace",
+    "overlay": {
+      "size": "126G",
+      "used": "124G",
+      "available": "0",
+      "use": "100%"
+    },
+    "shared_memory": {
+      "available": "7.8G",
+      "use": "0%"
+    },
+    "workspace": {
+      "available": "110G",
+      "use": "89%"
+    }
+  },
+  "capture": {
+    "retrieved_chunks": 11,
+    "tool_truncated_chunks": [],
+    "scope": "all retrieved provider requestfailed lines and file-completion lines only; not full stdout or HTTP/module traces",
+    "final_test_denominator": null,
+    "performance_reached": false,
+    "http_close_summary_reached": false
+  },
+  "request_failures": [
+    "[PW Error] xhr request failed for http://localhost:63315/checkout?via=xhr&probe=35b3a07a-2c07-4fc8-86cf-8d05f691400f url: net::ERR_ABORTED",
+    "[PW Error] image request failed for http://localhost:63315/checkout?via=image&probe=35b3a07a-2c07-4fc8-86cf-8d05f691400f url: net::ERR_ABORTED",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/rolldown-runtime-FDOR9p9I.js?v=fa8d760e url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/rolldown-runtime-FDOR9p9I.js?v=fa8d760e url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/checkout?via=xhr&probe=cb7bf49e-8b44-4020-aff5-8fef5e0abc9e url: NS_BINDING_ABORTED",
+    "[PW Error] image request failed for http://localhost:63315/checkout?via=image&probe=cb7bf49e-8b44-4020-aff5-8fef5e0abc9e url: NS_BINDING_ABORTED",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.worker.ts?worker_file&type=module url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.worker.ts?worker_file&type=module url: Load request cancelled",
+    "[PW Error] beacon request failed for http://localhost:63315/checkout?via=beacon&probe=3f87b21b-385a-4863-a55b-2eabac2b63b0 url: Load request cancelled",
+    "[PW Error] image request failed for http://localhost:63315/checkout?via=image&probe=3f87b21b-385a-4863-a55b-2eabac2b63b0 url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/checkout?via=xhr&probe=3f87b21b-385a-4863-a55b-2eabac2b63b0 url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.worker.ts?worker_file&type=module url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] script request failed for http://localhost:63315/@vite/client url: NS_ERROR_FILE_NO_DEVICE_SPACE",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/rolldown-runtime-FDOR9p9I.js?v=fa8d760e url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/rolldown-runtime-FDOR9p9I.js?v=fa8d760e url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/shell/prediction.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.pnpm/vite@8.1.5_esbuild@0.28.1/node_modules/vite/dist/client/env.mjs url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/rolldown-runtime-FDOR9p9I.js?v=fa8d760e url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/rolldown-runtime-FDOR9p9I.js?v=fa8d760e url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/rolldown-runtime-FDOR9p9I.js?v=fa8d760e url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/node_modules/.vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/deps/break___infinity__js.js?v=bc5a1b1a url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/production.ts url: Load request cancelled",
+    "[PW Error] xhr request failed for http://localhost:63315/src/numeric.ts url: Load request cancelled"
+  ],
+  "file_completion_observations": [
+    {
+      "engine": "chromium",
+      "file": "test/game-ui.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/arcade-content-gate.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/economy-kernel.test.ts",
+      "reported": "55 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/game-ui-runtime.test.ts",
+      "reported": "27 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/game-ui-run-started.test.ts",
+      "reported": "61 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/soul-recovery-surface-browser.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/shell.test.ts",
+      "reported": "15 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/partition-research.test.ts",
+      "reported": "551 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/replay.test.ts",
+      "reported": "88 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-host-browser.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetic-host-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/replay.test.ts",
+      "reported": "88 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/arcade-boards-browser.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/game-ui-screens-browser.test.ts",
+      "reported": "23 tests | 1 skipped",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetic-shelf-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/game-ui-runtime.test.ts",
+      "reported": "27 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/minigame-surface-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/replay.test.ts",
+      "reported": "88 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/game-ui.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/economy-kernel.test.ts",
+      "reported": "55 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/game-ui.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/axis-stack-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/game-ui-run-started.test.ts",
+      "reported": "61 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/terminal-research.test.ts",
+      "reported": "21 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-founder-state.test.ts",
+      "reported": "22 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/economy-kernel.test.ts",
+      "reported": "55 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/arcade-content-gate.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/arcade-content-gate.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/soul-recovery-surface-browser.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-host-browser.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-replay.test.ts",
+      "reported": "35 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/anchor-research.test.ts",
+      "reported": "635 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/soul-recovery-surface-browser.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/game-ui-runtime.test.ts",
+      "reported": "27 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/game-ui-run-started.test.ts",
+      "reported": "61 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-offer-replay.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/shell.test.ts",
+      "reported": "15 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/partition-research.test.ts",
+      "reported": "551 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/axis-migration-corpus.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-refresh-browser.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/game-ui-screens-browser.test.ts",
+      "reported": "23 tests | 1 skipped",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/typer-content-gate.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/typer-table-browser.test.ts",
+      "reported": "8 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-boundary-replay.test.ts",
+      "reported": "55 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/logged-policy-research.test.ts",
+      "reported": "48 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/arcade-boards-browser.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetic-shelf-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/minigame-surface.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/axis-stack-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/minigame-surface-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/shell.test.ts",
+      "reported": "15 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/arcade-boards-browser.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetic-host-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-replay.test.ts",
+      "reported": "36 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/terminal-research.test.ts",
+      "reported": "21 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-starter-boundaries.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-replay.test.ts",
+      "reported": "35 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/partition-research.test.ts",
+      "reported": "551 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/decimal-vectors.test.ts",
+      "reported": "6304 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-host-browser.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/meters.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetic-host-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-founder-state.test.ts",
+      "reported": "22 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/game-ui-screens-browser.test.ts",
+      "reported": "23 tests | 1 failed | 1 skipped",
+      "failed": true
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-header-browser.test.ts",
+      "reported": "16 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/anchor-research.test.ts",
+      "reported": "635 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-epoch-admission.test.ts",
+      "reported": "34 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-offer-replay.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/tier2-candidates.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/axis-migration-corpus.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-boundary-replay.test.ts",
+      "reported": "55 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-engine.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/logged-policy-research.test.ts",
+      "reported": "48 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/soul-recovery-scheduler.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/minigame-surface-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-refresh-browser.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/typer-content-gate.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-surface-witnesses-browser.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/arcade-snake-5x5.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetic-shelf-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-surface-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-replay.test.ts",
+      "reported": "36 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/minigame-surface.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-starter-boundaries.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/typer-table-browser.test.ts",
+      "reported": "8 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetic-replay.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/terminal-research.test.ts",
+      "reported": "21 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/meters.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/opportunity-composed-proof.test.mjs",
+      "reported": "43 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-epoch-admission.test.ts",
+      "reported": "34 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-header-browser.test.ts",
+      "reported": "16 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-replay.test.ts",
+      "reported": "35 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/game-ui-intent-outcome.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/anchor-research.test.ts",
+      "reported": "635 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-plan-refresh-browser.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/tier2-candidates.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/sequence-research.test.ts",
+      "reported": "65 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-offer-replay.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/axis-stack-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-engine.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/soul-recovery-scheduler.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/activation-research.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/decimal-vectors.test.ts",
+      "reported": "6304 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/arcade-snake-5x5.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-founder-state.test.ts",
+      "reported": "22 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-activation-witnesses.test.ts",
+      "reported": "14 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-surface-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pitch.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-adoption-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-epoch.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/typer-content-gate.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/sequence-research.test.ts",
+      "reported": "65 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-input-shape.test.ts",
+      "reported": "590 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-cost-browser.test.ts",
+      "reported": "20 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-boundary-replay.test.ts",
+      "reported": "55 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-refresh-browser.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/axis-migration-corpus.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/opportunity-composed-proof.test.mjs",
+      "reported": "43 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-clock-boundaries.test.ts",
+      "reported": "50 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/game-ui-intent-outcome.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetic-replay.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-migration-corpus.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/transport.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetic-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/typer-table-browser.test.ts",
+      "reported": "8 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/arcade-snapshot-grammar.test.ts",
+      "reported": "96 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-input-shape.test.ts",
+      "reported": "590 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/logged-policy-research.test.ts",
+      "reported": "48 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/achievements.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-surface-witnesses-browser.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-command-witnesses.test.ts",
+      "reported": "25 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/copy.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/relevance.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-catalog-raw.test.ts",
+      "reported": "38 tests | 1 skipped",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-plan-refresh-browser.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-activation-witnesses.test.ts",
+      "reported": "14 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/activation-research.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/rate-source-research.test.ts",
+      "reported": "65 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-earlier-activation.test.ts",
+      "reported": "8 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/axis-receipts.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/shell-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/routes.test.ts",
+      "reported": "16 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/arcade-mine-grid-sampling.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/arcade-snake-snapshot-grammar.test.ts",
+      "reported": "98 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-adoption-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pitch.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-tick-witnesses.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/minigame-surface.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetic-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-clock-boundaries.test.ts",
+      "reported": "50 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-migration-corpus.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-replay.test.ts",
+      "reported": "36 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/arcade-snapshot-grammar.test.ts",
+      "reported": "96 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-epoch.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/decimal-vectors.test.ts",
+      "reported": "6304 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/axis-stack.test.ts",
+      "reported": "30 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/soul-catalog.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-surface-witnesses-browser.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/first-content-candidates.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/fiscal.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-catalog.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/soul-recovery-surface.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/achievements.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/transport.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-command-witnesses.test.ts",
+      "reported": "25 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/relevance.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-harvest-boundaries.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-catalog-raw.test.ts",
+      "reported": "38 tests | 1 skipped",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-fiscal-browser.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/shell-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/meters.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/arcade-snake-atomicity.test.ts",
+      "reported": "13 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/game-ui-announcement-decoders.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-projection-admission.test.ts",
+      "reported": "59 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/permits-candidate.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetics-arm.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-species.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/combat-arithmetic.test.ts",
+      "reported": "18 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/routes.test.ts",
+      "reported": "16 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-adoption-replay.test.ts",
+      "reported": "12 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/rate-source-research.test.ts",
+      "reported": "65 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-earlier-activation.test.ts",
+      "reported": "8 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-starter-boundaries.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/axis-receipts.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/arcade-mine-grid-sampling.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/arcade-snake-snapshot-grammar.test.ts",
+      "reported": "98 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-epoch-admission.test.ts",
+      "reported": "34 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/axis-formula-vectors.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-cost-browser.test.ts",
+      "reported": "20 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garage-surfaces-browser.test.ts",
+      "reported": "75 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-header-browser.test.ts",
+      "reported": "16 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/attainment-vectors.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-engine.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/fiscal.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetic-presentation.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-tick-witnesses.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/soul-catalog.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/ui/surfaces.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/axis-stack.test.ts",
+      "reported": "30 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/doctrines.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/first-content-candidates.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/minigame-catalog.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pitch-content-gate.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/soul-recovery-scheduler.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-plan-browser.test.ts",
+      "reported": "18 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/curriculum.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/tier2-candidates.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetic-catalog.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/soul-recovery-surface.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-fiscal-browser.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-catalog.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-grammar.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/ui/themes.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-harvest-boundaries.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/minigame-offline-quality.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-visual.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/active-play.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/opportunity-arm.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/arcade-snake-atomicity.test.ts",
+      "reported": "13 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garden-state-admission.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/game-ui-announcement-decoders.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-surface-browser.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-adoption-replay.test.ts",
+      "reported": "12 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-adoption-arm.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/axis-stack-arm.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-projection-admission.test.ts",
+      "reported": "59 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/axis-role-floor.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-cost-browser.test.ts",
+      "reported": "20 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/arcade-snake-5x5.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/permits-candidate.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/commons.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/ui/render-scheduler.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/combat-arithmetic.test.ts",
+      "reported": "18 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/opportunity-composed-proof.test.mjs",
+      "reported": "43 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/prestige.test.ts",
+      "reported": "14 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/attainment-vectors.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-transition.test.ts",
+      "reported": "1 test",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/fixed-grid.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetics-arm.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-species.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/axis-formula-vectors.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-plan-browser.test.ts",
+      "reported": "18 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-plan-refresh-browser.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/game-ui-intent-outcome.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/garage-surfaces.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetic-replay.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/production-accrual.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/sequence-research.test.ts",
+      "reported": "65 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-species-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/cosmetic-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/minigame-resolution.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/ui/amount-format.test.ts",
+      "reported": "15 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetic-presentation.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/ui/surfaces.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/pet-combat-inputs.test.ts",
+      "reported": "1 test",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-adoption-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/activation-research.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pitch.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/curriculum.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-activation-witnesses.test.ts",
+      "reported": "14 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/doctrines.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/minigame-catalog.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pitch-content-gate.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-input-shape.test.ts",
+      "reported": "590 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetic-catalog.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garden-state-admission.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/ui/themes.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-grammar.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-visual.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/minigame-offline-quality.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/opportunity-arm.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garage-surfaces-browser.test.ts",
+      "reported": "75 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/achievements.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-migration-corpus.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-clock-boundaries.test.ts",
+      "reported": "50 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetic-founder-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/transport.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-epoch.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/axis-role-floor.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-catalog-raw.test.ts",
+      "reported": "38 tests | 1 skipped",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/active-play.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-adoption-arm.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/axis-stack-arm.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/arcade-snapshot-grammar.test.ts",
+      "reported": "96 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-command-witnesses.test.ts",
+      "reported": "25 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/shell-browser.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-species-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/commons.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/cosmetic-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/relevance.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/rate-source-research.test.ts",
+      "reported": "65 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/copy.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garage-surfaces-browser.test.ts",
+      "reported": "75 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/routes.test.ts",
+      "reported": "16 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/ui/render-scheduler.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/prestige.test.ts",
+      "reported": "14 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/fixed-grid.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/garage-surfaces.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-transition.test.ts",
+      "reported": "1 test",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/production-accrual.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/arcade-snake-snapshot-grammar.test.ts",
+      "reported": "98 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/minigame-resolution.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "chromium",
+      "file": "test/reputation-surface-browser.test.ts",
+      "reported": "56 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/arcade-mine-grid-sampling.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-tick-witnesses.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/ui/amount-format.test.ts",
+      "reported": "15 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/pet-combat-inputs.test.ts",
+      "reported": "1 test",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-earlier-activation.test.ts",
+      "reported": "8 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-surface-browser.test.ts",
+      "reported": "56 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/fiscal.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/axis-stack.test.ts",
+      "reported": "30 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/soul-catalog.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/first-content-candidates.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-catalog.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/soul-recovery-surface.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/axis-receipts.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-harvest-boundaries.test.ts",
+      "reported": "19 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/game-ui-announcement-decoders.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/permits-candidate.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/arcade-snake-atomicity.test.ts",
+      "reported": "13 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/reputation-projection-admission.test.ts",
+      "reported": "59 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-fiscal-browser.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-plan-browser.test.ts",
+      "reported": "18 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetics-arm.test.ts",
+      "reported": "5 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-adoption-replay.test.ts",
+      "reported": "12 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-species.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/combat-arithmetic.test.ts",
+      "reported": "18 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/ui/surfaces.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-state.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/doctrines.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetic-presentation.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/attainment-vectors.test.ts",
+      "reported": "10 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/axis-formula-vectors.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pitch-content-gate.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/curriculum.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetic-catalog.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/ui/themes.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/minigame-catalog.test.ts",
+      "reported": "4 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/opportunity-arm.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garden-state-admission.test.ts",
+      "reported": "32 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/minigame-offline-quality.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-visual.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-grammar.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/active-play.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/axis-role-floor.test.ts",
+      "reported": "7 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/axis-stack-arm.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-adoption-arm.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/commons.test.ts",
+      "reported": "9 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/ui/render-scheduler.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/prestige.test.ts",
+      "reported": "14 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/fixed-grid.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/garage-surfaces.test.ts",
+      "reported": "3 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/production-accrual.test.ts",
+      "reported": "17 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-transition.test.ts",
+      "reported": "1 test",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/cosmetic-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-combat-inputs.test.ts",
+      "reported": "1 test",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/minigame-resolution.test.ts",
+      "reported": "6 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/ui/amount-format.test.ts",
+      "reported": "15 tests",
+      "failed": false
+    },
+    {
+      "engine": "webkit",
+      "file": "test/pet-species-bundle.test.ts",
+      "reported": "2 tests",
+      "failed": false
+    },
+    {
+      "engine": "firefox",
+      "file": "test/reputation-surface-browser.test.ts",
+      "reported": "56 tests",
+      "failed": false
+    }
+  ],
+  "limitations": [
+    "No common cause established for first run94542 failures",
+    "Incomplete census is not a collected or passing full test population",
+    "No hosted-CI, AMD64 or native-Mac Firefox result",
+    "No cleanup of other resources performed"
+  ]
+}

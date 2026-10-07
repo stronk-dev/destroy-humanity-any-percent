@@ -5,6 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest verification (2026-10-07):** unchanged full cold Linux ARM64 browser
+lane36c28692 RED:373/378 files pass,30,366 tests pass/four fail/six skips,
+two uncollected Firefox suites. RP-327/328 import/worker/keyboard outcomes
+unresolved. One passive diagnostic3ade389d stopped137 after actual0free/
+100% Docker overlay and Firefox no-device-space; RP-236 persists. Missing
+capacity preflight is Codex's recorded error, no root-cause or green claim.
+No third Docker run before capacity repair/recheck. Native RP-326 notice
+ownership/isolation is next accepted work. Evidence-only range begins
+4dcd9969 exclusive through following tracking edge and needs Claude;
+Fiscal remains exactb64a91af..4dcd9969, earlier ranges independent.
+All full1.0 gates remain, no preview/archival/AT/hosted-CI/mint promotion.
+
 **Latest bounded correction (2026-10-07):** Fiscal `891aee10`, predeclared
 `bd36f5bc`, failing-first `d0651029`. RP-323/324 pending/readiness/row-reason
 consumer defects locally corrected.33 baseline failures; eleven behavioral
