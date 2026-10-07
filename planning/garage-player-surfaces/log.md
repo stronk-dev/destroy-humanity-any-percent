@@ -2786,3 +2786,52 @@ evidence loudly and demonstrate its own seeded failures. No product, schema,
 balance/copy/kernel or CI topology/Make change follows from this probe.
 All designated review, author/body, Docker, full performance/accessibility/
 default-player/full-nine-tier release holds remain; no status promotion.
+
+## 2026-10-07 — RP-335 source-guard finding and repair predeclared
+
+Valid registered-copy fake shelf command parses and root boundary passes
+(run 9f47eb). This is an executed missing GS6-A2 source-kind guard, not a fake
+command shipping at HEAD. Host restored to SHA
+9ea86275b688712047703e2e6b794fcf5d6b5b61706d874b51ee13462459223a.
+Existing verify-cosmetic-boundary enforces package dependencies/imports and
+verify-no-payment enforces dependency/SDK rules; neither inspects command
+kinds. Do not substitute either positive check for the absent source witness.
+
+Predeclare bounded verification-only repair under accepted GS6-A2. Existing
+root verify-client-boundary will invoke a standard-library-only Go AST
+extractor in client/tools (not a service, generator contract or production
+package). Derive string constants selected by actual isCosmeticIntent and
+require their presence in ParseIntent's request.Kind switch. Unsupported
+predicate/constant/decoder shapes, missing/duplicate authority or empty sets
+fail loudly. No manually maintained accepted-kind table, production edit or
+new network/dependency requirement. Existing client verification already uses
+the installed Go toolchain for cosmetic/achievement dependency boundaries;
+the extractor runs from root with the existing Make-exported cache.
+
+Use existing Svelte AST traversal to verify explicit cosmetic command objects,
+including local declaration objects, in script and template expressions.
+Unregistered or nonliteral kinds with cosmetic_id fail; ambiguous properties/
+spreads cannot masquerade as a proved command. Record the supported syntax and
+limits rather than claim arbitrary whole-program analysis. Existing legitimate
+acquire/equip/unequip callbacks must continue to pass. Helper and checker carry
+positive/negative source fixtures, including comment/string lookalikes,
+unknown/duplicate constants, decoder omission, dynamic kinds and opaque spread
+envelopes. No payment or registered cosmetic ID allowlist invented here.
+
+Actual source probes after implementation: repeat fake buy_horse_armor button;
+replace a legitimate cosmetic kind with an unregistered one; replace that
+kind with a dynamic expression; sever one required production decoder case
+in a transient source-only probe. Each must parse/execute and fail the named
+source authority check, not compilation; restore exact source hashes between
+probes. A checker bypass must be caught by its built-in negative fixtures.
+Final root boundary/types/client/build, verification-helper behavior, cold
+existing cosmetic parser tests and static CI topology; no full Linux/SQL claim.
+
+New verification/evidence range remains d3ce0f76 exclusive through final
+records, including AC4 predeclaration/results; mandatory Claude verdict
+separate from 127eb052..d3ce0f76 and all prior spans. No product behavior,
+owner text, schema/catalog/kernel/balance/copy/Make/workflow/CI topology,
+checkbox/lifecycle/archive/mint/push/release change authorized. Proper full
+nine-tier 1.0, author/body/AT/engine/default-player/platform/privacy/numeric
+and Docker capacity gates remain. A source-test improvement is not release
+acceptance or authority to reconcile somebody else's stale RFC body.
