@@ -630,3 +630,53 @@ Client9575/340skip/types/vet/build/topology/native10 pass; original27AC6 red.
 No runtime or old artifact bytes changed. Action/buff/mode seams next separate
 scope; fullspan after65c3a34c including records needs Claude. Details/limits in
 activation-research.md. No checkbox/acceptance/archive/mint/push/deploy claim.
+
+## CV3/CV4 — actual action / claim / buff / mode sequences
+
+Predeclared at clean0d866359 after the activation checkpoint; test-only under
+accepted CV3/CV4. Use unmodified axisContentBundle (UNMINTED, no cap override).
+Enumerate ALL4096 UUIDs `01986666-2000-7000-8000-%012x` for indices1..4096,
+actual Opportunities.Spawn(run2,seq0,from0); select the FIRST index per each
+declared effect in raw-byte effect-ID order. Missing any of the FOUR effects
+fails the instrument, not a dropped arm. Retain selection identities/counts.
+
+Sixteen sequences: four effects × gaps3114/90000000ms × mode triples
+online/offline/online and offline/online/offline. Admitted synthetic Company19,
+Tier1/run2, beige99/provider10/legal1, purchasedtotal110, historical x6/PR1,
+cash1e9 and ComputeCredit5000. Complete veteran Founder carry. No initial buffs
+or burst. Each sequence uses EIGHT actual commands:
+1 buyexact1 beige at the producer's first spawn coordinate (x6→12);
+2 claim that actual pending ID at the same coordinate;
+3 buyPR2 at +1ms;
+4 spend3000 compute credit at the same +1ms;
+5 buyexact1 beige at +500ms, mode triple[0];
+6 manual count1/window1000 after the declared gap, mode triple[1];
+7 manual count1/window1000 after another5001ms, mode triple[2];
+8 rebuyPR2 at the same final coordinate (must reject owned, full state unchanged).
+First four and final rebuy use online. Seven applied/one rejected per row.
+The actual scheduler/buildOfflineCatchup/claim resolver/ApplyLogged produce
+every payload, input, receipt, ordered event and complete poststate. Assert
+materialized/claimed effect, independent re-attainment, PR ownership, exact
+bank debit/burst start, positive permit/provision participation, fresh/full
+restores, and eventual expiration of the original buff instance. Lucky is an
+actual payout, not a forged buff. Three buff arms must emit real non-neutral
+contributions after claim. Sequence census/order/modes/gaps mandatory.
+
+Forty-eight copied claim refusals: for each actual claim delete claim evidence,
+forge its effect row, or increment next attended coordinate. Go must return
+ErrInvalidReplayInputs; TS must reject, with complete initial state unchanged.
+Any admission/constructor/parity failure is retained as a finding; never change
+runtime, bundle, counts, floors, policy or outputs to make this range pass.
+Declare new observer/corpus/dossier and selected sourceSHA; writer explicit.
+TS census omission/forged ordered claim events must fail; actual Go/TS active
+contribution omission and TS burst-start omission must be caught. Compile real
+mutants, inspect the actual failing property and restore exactly AFTER handles
+terminate. An instrument failure or source-pin drift alone is not math proof.
+
+Cold selected Go/full client/types/vet/build/topology/native research checks;
+existing CI auto-discovers tests, no workflow change. This is in-memory logged
+integration, not SQL/DOM/natural acquisition/full policy/whole numeric-domain
+proof. Original27AC6, RP-308 episode-authority, RP-131/history/AMD64/hosted and
+all prior owner/content/review/platform holds remain. Records synchronized,
+self first-filter + Claude designated full range/edges; no checkbox/status/
+archive/mint/push/deploy/release call. Proper full1.0 goal active.

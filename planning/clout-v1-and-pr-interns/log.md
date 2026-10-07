@@ -1600,3 +1600,15 @@ no production defect inferred from them. Original27AC6 and all author/content/
 environment/release holds remain. Claude must cover ENTIRE newspan after
 65c3a34c INCLUDING this record/clarification edge; older independent spans
 unchanged. No checkbox/status/archive/mint/push/deploy/release call.
+
+### Action/claim/buff/mode sequence predeclaration
+
+Resumed clean0d866359, previous goal turn PROGRESS: actual activation evidence
+and transactional rollback committed, not an unchanged-status turn. Authority,
+current implementation and actual claim/clock/compute builders re-derived.
+Plan now declares sixteen eight-command sequences covering all four actual
+opportunity effects, two wall gaps and two explicit evaluation-mode paths,
+forty-eight claim refusals and real contribution/burst/census/event controls.
+No experiment run or source mutation yet. Accepted CV3/CV4 only, no production
+repair/accumulation contract/owner-body delegation inferred. Prior scopes and
+review spans independent, full1.0 objective active.
