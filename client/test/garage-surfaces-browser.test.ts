@@ -615,6 +615,99 @@ it.skipIf(!browser)("care supplement refreshes public band and eligibility befor
   } finally { intent.mockRestore(); read.mockRestore(); await dispose(); }
 });
 
+for (const arm of ["conflict", "rate limit", "exclusive activity"] as const) {
+  it.skipIf(!browser)(`care shared refusal ${arm} waits for fresh state and fresh consent without an automatic retry`, async () => {
+    const runtime = new Runtime(); runtime.current = withPet();
+    const { target, dispose } = await mounted(runtime);
+    let release!: (value: ParsedGameUISnapshot) => void;
+    const held = new Promise<ParsedGameUISnapshot>((resolve) => { release = resolve; });
+    const read = vi.spyOn(runtime, "snapshot").mockReturnValue(held);
+    const diagnostics = vi.spyOn(console, "error").mockImplementation(() => {});
+    const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
+      runtime.requests.push(body);
+      if (runtime.requests.length !== 1) return { outcome: "applied", receipt: {} };
+      if (arm === "exclusive activity") return { outcome: "rejected", category: "not_eligible", detail: "exclusive_activity", currentRevision: 7, sessionExpired: false };
+      throw arm === "conflict" ? new GameUIRequestError(409, "conflict", "intent") : new GameUIRequestError(429, "rate_limited", "account");
+    });
+    try {
+      button(target, careText("pet.care.panel.title")).click(); await settle();
+      const feed = button(target, careText("pet.care.action.feed.title")); feed.focus(); feed.click(); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind: "care_action", action_id: "care.feed", expected_revision: 7 });
+      expect(target.querySelector(".intent-notice")?.textContent).toBe(careText(arm === "conflict" ? "intent.conflict" : arm === "rate limit" ? "intent.rate_limited" : "intent.rejection.exclusive_activity"));
+      expect(read).toHaveBeenCalledTimes(1);
+      expect(feed.disabled).toBe(false);
+      expect(feed.getAttribute("aria-disabled")).toBe("true");
+      expect(document.activeElement).toBe(feed);
+      feed.click();
+      const { userEvent } = await import("vitest/browser"); await userEvent.keyboard("{Enter}"); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      release({ ...withPet(), founder_revision: 8 }); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(feed.getAttribute("aria-disabled")).not.toBe("true");
+      expect(document.activeElement).toBe(feed);
+      feed.click(); await settle();
+      expect(runtime.requests).toHaveLength(2);
+      expect(runtime.requests[1]).toMatchObject({ kind: "care_action", action_id: "care.feed", expected_revision: 8 });
+      expect(typeof runtime.requests[0].intent_id).toBe("string");
+      expect(runtime.requests[1].intent_id).not.toBe(runtime.requests[0].intent_id);
+      expect(diagnostics).not.toHaveBeenCalled();
+    } finally {
+      release(runtime.current); await settle(); read.mockRestore(); intent.mockRestore(); diagnostics.mockRestore(); await dispose();
+    }
+  });
+}
+
+it.skipIf(!browser)("care shared refusal invalid request reports one invariant, stays online and never retries", async () => {
+  const runtime = new Runtime(); runtime.current = withPet();
+  const { target, dispose } = await mounted(runtime);
+  const read = vi.spyOn(runtime, "snapshot");
+  const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => {
+    runtime.requests.push(body); throw new GameUIRequestError(400, "invalid", "care_action");
+  });
+  const diagnostics = vi.spyOn(console, "error").mockImplementation(() => {});
+  try {
+    button(target, careText("pet.care.panel.title")).click(); await settle();
+    const feed = button(target, careText("pet.care.action.feed.title")); feed.focus(); feed.click(); await settle();
+    expect(runtime.requests).toHaveLength(1); expect(read).not.toHaveBeenCalled();
+    expect(target.querySelector(".intent-notice")?.textContent).toBe(careText("intent.rejection.unknown"));
+    expect(target.querySelector(".intent-notice")?.textContent).not.toContain("invalid/care_action");
+    expect(diagnostics.mock.calls).toEqual([["game UI invariant: invalid intent response"]]);
+    expect(feed.disabled).toBe(false); expect(document.activeElement).toBe(feed);
+    button(target, careText("surface.settings.title")).click(); await settle();
+    expect(target.textContent).not.toContain(careText("settings.save_status.offline"));
+  } finally { read.mockRestore(); intent.mockRestore(); diagnostics.mockRestore(); await dispose(); }
+});
+
+for (const [label, error] of [
+  ["401", new GameUIRequestError(401, "unauthenticated", "account")],
+  ["404", new GameUIRequestError(404, "unknown_id", "account")],
+  ["503", new GameUIRequestError(503, "unavailable", "server")],
+  ["transport", new TypeError("test network failure")],
+  ["unparsable", new SyntaxError("test malformed response")],
+] as const) {
+  it.skipIf(!browser)(`care shared refusal ${label} takes the offline path without replaying or leaking mechanical text`, async () => {
+    const runtime = new Runtime(); runtime.current = withPet();
+    const { target, dispose } = await mounted(runtime);
+    const read = vi.spyOn(runtime, "snapshot");
+    const intent = vi.spyOn(runtime, "intent").mockImplementation(async (body) => { runtime.requests.push(body); throw error; });
+    const diagnostics = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      button(target, careText("pet.care.panel.title")).click(); await settle();
+      button(target, careText("pet.care.action.feed.title")).click(); await settle();
+      const actions = [...target.querySelectorAll<HTMLButtonElement>(".pet-care .actions button")];
+      expect(actions).toHaveLength(5); expect(actions.every((action) => action.disabled)).toBe(true);
+      for (const action of actions) action.click(); await settle();
+      expect(runtime.requests).toHaveLength(1); expect(read).not.toHaveBeenCalled();
+      expect(target.querySelector(".intent-notice")?.textContent).toBe("");
+      expect(target.querySelector(".pet-care")?.textContent).toContain(careText("common.stale_note"));
+      expect(target.textContent).not.toContain(error.message); expect(diagnostics).not.toHaveBeenCalled();
+      button(target, careText("surface.settings.title")).click(); await settle();
+      expect(target.textContent).toContain(careText("settings.save_status.offline"));
+    } finally { read.mockRestore(); intent.mockRestore(); diagnostics.mockRestore(); await dispose(); }
+  });
+}
+
 it.skipIf(!browser)("care supplement refuses pending activation inside the component, independent of the host queue", async () => {
   const target = document.createElement("div"); document.body.append(target);
   const onCare = vi.fn();

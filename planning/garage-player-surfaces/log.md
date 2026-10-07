@@ -1426,3 +1426,14 @@ two-engine Garage native/performance and existing actual composed lanes.
 Firefox's failed connection is not retried as a different environment or
 excluded from acceptance. No box/status/archive/full-Garage/CI/1.0 promotion;
 entire new range after `3f867956` including every record edge needs Claude.
+
+Unmodified-product baseline: both new mapper cases fail (none vs refresh);
+native18 selected assertions return4 failures/14 passes/82 unselected. Only
+429/exclusive arms fail in both engines: snapshot read count is0 instead of1.
+409 held-read/fresh consent and invalid/credential/server/network/unparsable
+controls pass. The typed SyntaxError arm covers the table's existing
+unparsable-body→offline path without claiming a real parser request.
+Attempted CLIENT_TEST_FLAGS selector is not supported by the root target:
+it ran the FULL client population,2 fail/9,735 pass/373 explicit browser skips,
+not a focused6-case run. Both handles terminate normally; no product changed.
+Tests land before the authorized two-arm mapper repair.

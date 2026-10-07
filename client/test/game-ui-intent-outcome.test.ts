@@ -48,6 +48,16 @@ describe("GS0.2 intent outcomes", () => {
       .toEqual({ effect: "none", notice: "desk.opportunity.rejection.expired", invariant: false });
   });
 
+  it("holds rate-limited commands behind the existing authoritative refresh effect (GS0.2)", () => {
+    expect(noticeForError(new GameUIRequestError(429, "rate_limited", "account")))
+      .toEqual({ effect: "refresh", notice: "intent.rate_limited", invariant: false });
+  });
+
+  it("holds exclusive-activity commands behind the existing authoritative refresh effect (GS0.2)", () => {
+    expect(noticeForOutcome({ outcome: "rejected", category: "not_eligible", detail: "exclusive_activity", currentRevision: 7, sessionExpired: false }))
+      .toEqual({ effect: "refresh", notice: "intent.rejection.exclusive_activity", invariant: false });
+  });
+
   it("returns the receipt outcome from the browser runtime and types non-2xx errors", async () => {
     const storage = new MemoryStorage();
     storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "a", refreshToken: "r", accountID: "c", recoveryCode: "d" }));
