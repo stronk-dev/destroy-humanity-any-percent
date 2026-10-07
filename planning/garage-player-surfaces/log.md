@@ -1680,3 +1680,36 @@ GS0.6 after the failed baseline, with own predeclaration and compiling faults
 for placement/duplicate/origin. No copy text/kernel/server/schema/timer/queue/
 retry/CI/owner decision change, no checkbox/status/archive/push. Keep source
 immutable during live native handle; goal remains full1.0 active/progress.
+
+## 2026-10-07 — RP-326 baseline executed; repair predeclared
+
+Handle98729, rootmake native Chromium/WebKit selector `outcome-ownership`:
+24/24 fail at DOM assertions,150 other cases explicitly unselected; two
+files red,3.23s, valid HTTP24/24. Own-panel failures find exactly one result
+in chrome; completed and held-away results leak into Meters in both engines.
+Correct one-Founder7 request and nav focus controls execute before failures.
+Typecheck65261 passes0errors/0warnings. No production byte changed. A
+pnpm-help diagnostic emits no output and is stopped130; not a test result.
+
+Now predeclare narrow GS0.6 repair: preserve the single existing mapped
+notice/key and single-flight/refresh logic, bind its owner to the surface
+at act invocation before any await, pass presentation-only mapped notice
+to Fiscal/care, each renders one own polite outcome region. Render no
+duplicate chrome outcome for either; other existing host results visible
+only when their captured origin is current. Do not remap any reason/success
+key or introduce receipt/history retention. Existing cross-surface stream
+announcements remain in their separate deduped chrome region. Queued/new
+commands retain existing revision, pending and consent semantics.
+
+Demonstrate compiling faults: omit Fiscal notice, omit care notice, duplicate
+chrome result, remove origin visibility condition, capture owner at late
+completion rather than invocation (if that counterfactual survives, disclose
+and improve a bounded distinguishing population, never count it as failed).
+Restore exact hashes after each. Keep all prior tests; only adjust selectors
+if needed to identify their now-owned outcome, preserving exact text/revision/
+focus/no-retry assertions. Run full native Garage2engines+performance, strict
+types/client/build/boundaries; Docker-backed real composed cannot run under
+RP-236 and must not be claimed. No all-engine/AT/release acceptance. Tests
+commit first; product/docs/records separately. Exact new boundary begins
+e950216a exclusive through eventual record edge and needs Claude; earlier
+browser/Fiscal/care/shared and all other spans independent. Goalactive.

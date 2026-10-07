@@ -1009,3 +1009,79 @@ it.skipIf(!browser)("reflows the Desk, Fiscal, Meters, Trophy Case and pet surfa
     }
   } finally { await dispose(); await page.viewport(1280, 720); }
 });
+
+// RP-326: consumer placement and origin boundaries only. These existing
+// runtime-double public fixtures are not producer/catalog or real-AT proof.
+for (const owner of ["fiscal", "care"] as const) {
+  for (const result of ["applied", "refused"] as const) {
+    const outcome: IntentOutcome = result === "applied"
+      ? { outcome: "applied", receipt: { harvest_outcome: "guaranteed" } }
+      : { outcome: "rejected", category: "not_eligible", detail: owner === "fiscal" ? "period_not_ripe" : "cooldown", currentRevision: 7, sessionExpired: false };
+    const noticeKey: CopyKey = owner === "fiscal"
+      ? result === "applied" ? "fiscal.outcome.guaranteed" : "fiscal.rejection.period_not_ripe"
+      : result === "applied" ? "pet.care.applied" : "pet.care.rejection.cooldown";
+    const titleKey: CopyKey = owner === "fiscal" ? "surface.fiscal.title" : "pet.care.panel.title";
+    const actionKey: CopyKey = owner === "fiscal" ? "fiscal.harvest" : "pet.care.action.feed.title";
+    const selector = owner === "fiscal" ? ".fiscal" : ".pet-care";
+    const runtimeForOwner = () => {
+      const runtime = new Runtime(), value = withPet();
+      runtime.current = { ...value, features: { ...value.features, fiscal: withRipeFiscal().features.fiscal } };
+      runtime.outcome = outcome;
+      return runtime;
+    };
+    const assertRequest = (runtime: Runtime) => {
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject(owner === "fiscal"
+        ? { kind: "harvest_fiscal_period", expected_revision: 7 }
+        : { kind: "care_action", pet_id: petRow.pet_id, action_id: "care.feed", expected_revision: 7 });
+    };
+    const activate = async (target: HTMLElement) => {
+      button(target, t(titleKey, {}, "era_1995")).click(); await settle();
+      const action = button(target, t(actionKey, {}, "era_1995"));
+      action.focus();
+      const { userEvent } = await import("vitest/browser");
+      await userEvent.keyboard("{Enter}"); await settle();
+    };
+
+    it.skipIf(!browser)(`outcome-ownership ${owner}/${result} has one exact own-panel polite result, not chrome`, async () => {
+      const runtime = runtimeForOwner(), { target, dispose } = await mounted(runtime);
+      try {
+        await activate(target); assertRequest(runtime);
+        const message = t(noticeKey, {}, "era_1995");
+        const regions = [...target.querySelectorAll<HTMLElement>("[role=status]")].filter((node) => node.textContent?.trim() === message);
+        expect(regions).toHaveLength(1);
+        expect(target.querySelector(selector)?.contains(regions[0]!), "outcome belongs to its panel").toBe(true);
+        expect(target.querySelector(".chrome")?.textContent).not.toContain(message);
+      } finally { await dispose(); }
+    });
+
+    it.skipIf(!browser)(`outcome-ownership ${owner}/${result} completed result does not bleed into a different tab`, async () => {
+      const runtime = runtimeForOwner(), { target, dispose } = await mounted(runtime);
+      try {
+        await activate(target); assertRequest(runtime);
+        const message = t(noticeKey, {}, "era_1995");
+        expect(target.textContent).toContain(message);
+        const nav = button(target, t("surface.meters.title", {}, "era_1995")); nav.focus(); nav.click(); await settle();
+        expect(target.querySelector(".meters")).not.toBeNull();
+        expect(document.activeElement).toBe(nav);
+        expect(target.textContent).not.toContain(message);
+      } finally { await dispose(); }
+    });
+
+    it.skipIf(!browser)(`outcome-ownership ${owner}/${result} late completion does not announce on a different tab`, async () => {
+      const runtime = runtimeForOwner(), { target, dispose } = await mounted(runtime);
+      let finish!: (value: IntentOutcome) => void;
+      const held = new Promise<IntentOutcome>((resolve) => { finish = resolve; });
+      const intent = vi.spyOn(runtime, "intent").mockImplementation((body) => { runtime.requests.push(body); return held; });
+      try {
+        await activate(target); assertRequest(runtime);
+        const nav = button(target, t("surface.meters.title", {}, "era_1995")); nav.focus(); nav.click(); await settle();
+        expect(target.querySelector(".meters")).not.toBeNull();
+        finish(outcome); await settle();
+        expect(document.activeElement).toBe(nav);
+        expect(target.textContent).not.toContain(t(noticeKey, {}, "era_1995"));
+        assertRequest(runtime);
+      } finally { finish(outcome); await settle(); intent.mockRestore(); await dispose(); }
+    });
+  }
+}
