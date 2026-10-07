@@ -222,6 +222,77 @@ it.skipIf(typeof document === "undefined")("serializes a distinct transition cli
   await unmount(app); target.remove();
 });
 
+// Real mounted host/native activation; the runtime double controls the order
+// of HTTP completion versus a read started before or after the action commits.
+for (const [kind, beforeCommit] of [
+  ["cross_gate", false], ["cross_gate", true],
+  ["decline_exit_offer", false], ["decline_exit_offer", true],
+] as const) {
+  const name = beforeCommit ? `refreshes ${kind} again when the stream read predates the committed action`
+    : `coalesces ${kind} HTTP completion with the pending stream refresh`;
+  it.skipIf(typeof document === "undefined")(`${name} (GS0.2)`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const releaseReads: (() => void)[] = [];
+    class DelayedReadRuntime extends FixtureRuntime {
+      override async snapshot(): Promise<ParsedGameUISnapshot> {
+        if (this.requests.length === 0) return super.snapshot();
+        this.snapshotCalls += 1;
+        const value = this.current;
+        await new Promise<void>((resolve) => releaseReads.push(resolve));
+        return value;
+      }
+    }
+    const runtime = new DelayedReadRuntime(true);
+    let releaseIntent = () => {};
+    runtime.intentBlock = new Promise<void>((resolve) => { releaseIntent = resolve; });
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+    const settle = async () => {
+      for (let step = 0; step < 4; step += 1) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); }
+    };
+    try {
+      await settle();
+      if (kind === "decline_exit_offer") { app.fixtureOffer(offer); await settle(); }
+      const label = kind === "cross_gate" ? "Move Into the Garage" : "Decline";
+      const control = [...target.querySelectorAll("button")].find((button) => button.textContent === label)!;
+      expect(control.disabled).toBe(false);
+      control.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind, expected_revision: 1 });
+
+      const committed = { ...snapshot, revision: 2, run: { ...snapshot.run, tier: 1 },
+        transitions: { cross_gate: null, wind_down: { eligible: true } } };
+      runtime.intentOutcome = { outcome: "applied", receipt: { new_revision: 2 } };
+      if (!beforeCommit) runtime.current = committed;
+      runtime.snapshotCalls = 0;
+      if (kind === "cross_gate" && !beforeCommit) runtime.listener?.({ kind: "event", revision: 2, scope: "company", value: crossed });
+      else runtime.listener?.({ kind: "receipt" });
+      await settle();
+      expect(runtime.snapshotCalls).toBe(1);
+      runtime.current = committed;
+      releaseIntent(); await settle();
+      expect(runtime.snapshotCalls, "HTTP completion must reuse the pending authoritative read").toBe(1);
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+      releaseReads.splice(0).forEach((release) => release()); await settle();
+      if (beforeCommit) {
+        expect(runtime.snapshotCalls, "a pre-commit result cannot supply the applied revision").toBe(2);
+        expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+        releaseReads.splice(0).forEach((release) => release()); await settle();
+      }
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+      expect(runtime.requests).toHaveLength(1);
+      app.fixtureSurface("desk"); await settle();
+      const windDown = [...target.querySelectorAll("button")].find((button) => button.textContent === "Wind Down Company")!;
+      expect(windDown.disabled).toBe(false);
+      windDown.focus(); await userEvent.keyboard("{Enter}"); await settle();
+      expect(runtime.requests[1]).toMatchObject({ kind: "wind_down", expected_revision: 2, expected_founder_revision: 1 });
+    } finally {
+      releaseIntent(); releaseReads.splice(0).forEach((release) => release());
+      await settle(); await unmount(app as never); target.remove();
+    }
+  });
+}
+
 it.skipIf(typeof document === "undefined")("keeps terminal commands disabled until the ordered event channel is recovered", async () => {
   const runtime = new FixtureRuntime(true, false);
   const target = document.createElement("div"); document.body.append(target);

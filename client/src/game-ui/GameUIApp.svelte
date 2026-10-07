@@ -194,12 +194,16 @@
         intentNotice = outcome.outcome === "applied" && options.applied ? options.applied(outcome.receipt) : notice.notice;
         options.observed?.(outcome);
         if (notice.effect === "refresh") void refresh();
-        else if (outcome.outcome === "applied" && (kind === "cross_gate" || kind === "decline_exit_offer")) {
-          bindSnapshot(await runtime.snapshot());
-        } else if (outcome.outcome === "applied") {
+        else if (outcome.outcome === "applied") {
           // GS0.2: keep controls pending until the next intent can bind to the
           // authoritative revision, even when its stream receipt arrives late.
           await refresh();
+          // Gate/Decline used to bypass coalescing. Reuse an in-flight read,
+          // but not its result if it sampled before this command committed.
+          const appliedRevision = outcome.receipt.new_revision;
+          if (!offline && (kind === "cross_gate" || kind === "decline_exit_offer") &&
+              typeof appliedRevision === "number" && Number.isSafeInteger(appliedRevision) &&
+              snapshot && snapshot.revision < appliedRevision) await refresh();
         }
       } catch (error) {
         const notice = noticeForError(error);

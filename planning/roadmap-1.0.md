@@ -5,12 +5,12 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** fixed RP-367's public-board read error masking; focused
-regressions/package checks and real-Postgres ranking/pages pass. The full composed lane is
-subject to an unrepaired Pitch `429 rate_limited/account` (RP-368); a later instrumented pass
-does not explain or close the earlier failure before the cosmetic child.
-[API Foundation plan/log](api-foundation/plan.md) owns the repair, review and next diagnosis.
-Do not increase the limiter or retry to conceal the failure. Full CI and nine-tier release
+**Current checkpoint (2026-10-07):** public-board error masking (RP-367) and Gate/Decline
+concurrent reads (RP-369) are locally corrected, with regressions and real main-journey evidence.
+The whole composed target remains RED at Cosmetic Buy's missed activation (RP-364); the
+instrumented Pitch `429` (RP-368) is also unrepaired, not erased by a later main-path pass.
+[Garage log](garage-player-surfaces/log.md) and [API log](api-foundation/log.md) own exact
+results and next diagnosis. Do not increase the limiter or retry to conceal failures. Full CI and nine-tier release
 obligations remain open; browser renewal has not been accepted.
 
 **Preceding checkpoint (2026-10-07):** eight refresh API cases now execute against

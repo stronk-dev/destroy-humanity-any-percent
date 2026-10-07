@@ -406,6 +406,9 @@ cursor-deduplicated chrome region. A stale revision (`revision_conflict`) trigge
 authoritative refresh and is never auto-retried. Founder-scoped intents send the Founder revision.
 An applied intent keeps its controls pending through an authoritative snapshot refresh, so the
 next action uses the updated Founder or Company revision even if the stream receipt arrives late.
+Gate and Decline share an in-flight stream-triggered refresh instead of starting a parallel read.
+If that read predates the commit (its Company revision is below the applied receipt's
+`new_revision`), the host obtains a fresh snapshot before enabling the next action.
 HTTP429 rate limits and `not_eligible/exclusive_activity` rejections also trigger
 that authoritative refresh. Pending controls cannot reactivate while it is held;
 the response never retries the rejected command. A subsequent player action

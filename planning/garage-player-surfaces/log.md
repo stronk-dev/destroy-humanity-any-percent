@@ -5943,3 +5943,22 @@ GS2-A4 exact purchase→earned-event→rendered-row proof; GS3-A4 author-blocked
   PASS does not repair/erase RP-365's independently proved pause regression or RP-364's timeout.
   D-024/RP-363 and earlier review gates remain. Next: remaining accepted implementation gaps;
   the shared-clock repair still requires its explicit contract choice.
+
+## 2026-10-07 — coalesce Gate/Decline reads without accepting stale state
+
+RP-369, accepted GS0.2. Gate/Decline bypassed refreshTask; native regressions28896 fail with
+two reads instead of one. Removing the bypass alone fails pre-commit controls4713: a shared
+old result re-enables controls too early. Final correction coalesces, then checks the existing
+receipt new_revision and fetches again only when the successful shared result predates it.
+No command replay, rate/deadline/copy/wire/kernel change; failed reads retain offline behavior.
+Final87709:8 native ordering cases PASS (Chromium/WebKit runtime doubles, not real services);
+27604:52 full affected screen cases PASS/4 explicit performance skips; typecheck/build PASS.
+Earlier74224:1022 surrounding host cases PASS on the coalescing draft, not final-guard evidence.
+Actual composed79431 fails Pitch429 with117 issued requests/12.367s; retained, RP-368 open.
+Final65514:all required Postgres and main DOM/Pitch/terminal/recovery checks PASS (121 issued
+requests/16.063s,18 GS5 clicks), but whole target Make2 at Cosmetic Buy (RP-364): pointerdown/up
+while disabled/pending, no click or acquire request. No full-green or reliability claim.
+Handles terminal, owned ports absent and fixture other sessions0. Review by: Codex
+(first-filter). Recorded by: Codex. Range starts afteracf7ec76 through this batch's commit;
+designated review pending, no archival/push. Next: Cosmetic AC14 input actionability and the
+remaining late-receipt/budget interaction; other Garage/CI/full nine-tier gates remain open.
