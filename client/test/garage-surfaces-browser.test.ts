@@ -1351,6 +1351,70 @@ for (const width of [320, 1280] as const) {
   });
 }
 
+// Accepted exact-next continuation, separate from transport/authentication proof.
+// Runtime double reads hold the actual native activation's completion boundary.
+for (const arm of ["healthy", "same-sequence", "skipped-sequence", "other-founder", "rejected-read", "heading-focus"] as const) {
+  for (const width of [320, 1280] as const) {
+    for (const activation of ["{Enter}", " "] as const) {
+      it.skipIf(!browser)(`GS0 next-company ${arm}/${width}/${activation === " " ? "Space" : "Enter"}`, async () => {
+        const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+        const runtime = new Runtime(); runtime.current = parseGameUISnapshot(structuredClone(v4));
+        const subscribed = vi.spyOn(runtime, "subscribe");
+        const read = vi.spyOn(runtime, "snapshot");
+        let releaseRead!: () => void; const held = new Promise<void>((resolve) => { releaseRead = resolve; });
+        let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+        try {
+          fixture = await mounted(runtime); const { target } = fixture;
+          expect(subscribed.mock.calls.map(([id]) => id)).toEqual([v4.run.founder_id]);
+          runtime.listener?.(forcedLifecycleMessage("run_end", 10)); await settle();
+          const terminal = target.querySelector<HTMLElement>('[aria-labelledby="run-end-heading"]')!;
+          const terminalText = terminal.textContent;
+          const continuation = button(target, t("screen.run_end.continue", {}, "era_1995"));
+          const wire = structuredClone(v4); wire.revision = 2;
+          wire.run.run_seq = arm === "same-sequence" ? 1 : arm === "skipped-sequence" ? 3 : 2;
+          if (arm === "other-founder") wire.run.founder_id = "01985555-4444-7444-8444-444444444444";
+          wire.run.run_started_at_ms = NOW; wire.run.exit_count = 1;
+          const next = parseGameUISnapshot(wire);
+          read.mockClear(); read.mockImplementationOnce(async () => {
+            await held;
+            if (arm === "rejected-read") throw new TypeError("synthetic next-run read rejection");
+            return next;
+          });
+          continuation.focus(); await userEvent.keyboard(activation); await settle();
+          expect(read).toHaveBeenCalledExactlyOnceWith(); expect(runtime.requests).toEqual([]);
+          expect(continuation.disabled).toBe(true); expect(terminal.textContent).toBe(terminalText);
+          expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
+          await userEvent.keyboard(activation); await settle();
+          expect(read).toHaveBeenCalledExactlyOnceWith();
+          releaseRead(); await settle();
+          if (arm === "healthy" || arm === "heading-focus") {
+            expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+            expect(continuation.isConnected).toBe(false); expect(terminal.isConnected).toBe(false);
+            const heading = sharedStateVisibleText(target, "h1", t("surface.desk.title", {}, "era_1995"));
+            if (arm === "heading-focus") {
+              expect({ tag: document.activeElement?.tagName, id: document.activeElement?.id }, "removed continuation exposes new context").toEqual({ tag: "H1", id: "desk-heading" });
+              expect(document.activeElement).toBe(heading); expect(heading.getAttribute("tabindex")).toBe("-1");
+            }
+          } else {
+            expect(target.querySelector("main")?.dataset.surface, "foreign or non-next reads must not bind").toBe("run_end");
+            expect(terminal.isConnected).toBe(true); expect(terminal.textContent).toBe(terminalText);
+            expect(continuation.isConnected).toBe(true); expect(continuation.disabled).toBe(false);
+            sharedStateVisibleText(target, '[role="alert"]', t("settings.save_status.offline", {}, "era_1995"));
+          }
+          expect(subscribed.mock.calls.map(([id]) => id), "continuation cannot switch Founder subscriptions").toEqual([v4.run.founder_id]);
+          expect(runtime.requests).toEqual([]); expect(read).toHaveBeenCalledExactlyOnceWith();
+          expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
+          await assertAxe(target, `continuation ${arm}/${width}`);
+        } finally {
+          releaseRead(); await settle();
+          try { if (fixture) await fixture.dispose(); }
+          finally { read.mockRestore(); subscribed.mockRestore(); await page.viewport(1280, 720); }
+        }
+      });
+    }
+  }
+}
+
 const opportunityArm = (pending: boolean, buffs = true, saturated = false) => ({
   attended_now_ms: 2_000,
   buffs: buffs ? [{ buff_instance_id: "01986666-0000-7000-8000-00000000000b", effect_row_id: "active.production", expires_attended_ms: 6_000, selected_target: null }] : [],

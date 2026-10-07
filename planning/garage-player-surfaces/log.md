@@ -4313,3 +4313,18 @@ changes. Subsequent source faults must compile and falsify their named semantic
 property; restore before final native/client/type/build/copy/boundary checks.
 Entire 0e548992-exclusive span requires designated Claude; prior ranges remain
 independently owed. No boxes/archival/push/cleanup/release; goal active/progress.
+
+## 2026-10-07 — Continuation red truth checkpoint
+
+Test-only predeclaration19cc5609. Initial driver spy type annotation was invalid
+(28b3be TS2344); corrected by ordinary inferred spy type, no assertion changed.
+Initial native4bb99f and corrected typed331b7f both terminal2:16 failures/32
+controls,474 unselected. Corrected typesa6e00c terminal0, zero errors/warnings.
+Eight other-Founder cases render Desk; eight separate context-focus cases leave
+BODY after removing the native continuation button. Healthy coordinate controls,
+same/skipped sequence and rejected-read cases pass. No production edit yet.
+RP-345 records Founder coordinate failure; continuation focus extends RP-082,
+not a fabricated duplicate defect. Runtime-double reads, public parser/terminal
+decoders/native Enter/Space, no real service/auth/SQL/AT claim. Existing false
+offline copy RP-080 untouched. All preceding exact review ranges still owed;
+complete0e548992-exclusive range including predeclaration/red needs Claude.
