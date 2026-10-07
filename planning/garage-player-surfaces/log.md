@@ -5344,3 +5344,33 @@ clock/payout/acquisition/schema/CI/budget/dependency/kernel/archival/status chan
 Entire10e2d656-exclusive through final records needs designated Claude review;
 every preceding span independently owed. Real server/auth/SQL/Firefox/AT/400%/
 populated performance/all-era/full-nine-tier/owner/capacity/RP-313 holds remain.
+
+### RP-358 — first complete population and supplemental value controls
+
+Tests90b3cc7b: twelve declarations/24 native executions pass (e11786→fa0588,
+4.59s), root types9facb5→c2c29f clean. Seven declared actual source faults
+complete and restore: opportunity ID guard8fail/16 controls; spawn surface
+guard4/20; cursor guard16/8; buff surface guard8/16; suppressed/wrong buff line
+24/0 each; spawn focus theft8/16. Exact coordinates retained in final table.
+All host/region/driver/theme hashes restored before root gates at clean90b3cc7b.
+Full browser08cf49→c3b0c6:798pass/four explicit isolated-performance skips,
+132.57s including real60s idle; separate performance2pass/22unselected1.98s.
+Client/types/build/boundaries/topology/no-payment9d2584→b93f2c:9816pass/701
+browser-only skips,zero errors/warnings,214 modules, all three build hashes
+unchanged. Copye9ca5f→d47ab6:658 keys/sameSHA,611 pre-existing orphans,
+content-manifest unchanged. Raw native log output truncated; complete terminal
+totals retained, no invented omitted transcript. No product defect fired.
+
+Supplement predeclared BEFORE further experimentation, all gate handles now
+terminal: independently sever the event-versus-projection assertions too.
+Same24 native population, unchanged driver and unchanged bounds. Two serial
+valid source faults only: (1) buff announcement receipt fabricates the projected
+buff list from event fields; (2) omit snapshot subscription binding. Expected
+first fault fails empty-buff assertion while spawn cases provide independent
+controls; second fails actual delivered offer/buff projection. These are
+temporary host mutations, not intended product changes or permission to alter
+values/copy/wire. Complete populations, exact full-hash restoration and final
+root native/client/types/build/copy/boundary/topology/no-payment verification
+afterward. No invalid/partial arm counts. Full review range and all holds above
+remain; current positive assertion alone was not an independently severed
+value-authority proof.
