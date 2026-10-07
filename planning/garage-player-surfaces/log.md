@@ -2010,3 +2010,30 @@ alert/invariant/navigation assertions. No product repair in this audit range.
 Docker capacity/Firefox/AT/body/review/full1.0 holds retained. New complete
 audit span beginsfc911784 exclusive through its final records, requires
 Claude independently of a42406f0..fc911784 and every earlier range.
+
+## 2026-10-07 — GS0.5 contained presentation error predeclared
+
+Start cleancc62cea8, after the documentation-only acceptance audit range
+fc911784..cc62cea8. Authority: accepted GS0.5/GS2/GS3, existing
+common.surface_error copy only. New diagnostic range, not audit scope creep.
+
+Population: two decoder-legal unavailable mappings (one achievement row's
+unknown copy key; doom's declared critical band absent from presentation),
+each first-open and already-mounted refresh, native Chromium/WebKit. Four
+declarations/eight executions. Healthy controls first; actual decoder must
+admit the complete snapshot. Unknown mechanical keys must never enter DOM.
+Observe synchronous and window render errors explicitly; no console-error
+suppression without a spy/asserted diagnostic. Intended gate: contained
+surface heading/one exact role=alert, no controls/content values, exactly one
+invariant per error episode (unchanged refresh/tick does not duplicate),
+healthy snapshot restores content; renewed missing mapping reports a new
+episode; Desk/Settings navigation remains operable; zero intents.
+
+Run root native selector and types. First failed baseline is expected; no
+production edit before recording it. If legal input reproduces render failure,
+ledger it and predeclare a separate bounded implementation step before repair.
+Do not repair malformed wire/module import failures, full shared state/focus,
+missing-ID decoder, semantic reflow or any producer/copy/kernel/schema here.
+No Docker population; capacity still held. Full engines/AT/composed/review/
+body/release remain independent. Complete new span startscc62cea8 exclusive
+through its final record edge, requires Claude, never self-approval/archive.
