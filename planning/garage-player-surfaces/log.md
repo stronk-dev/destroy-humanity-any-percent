@@ -3980,3 +3980,39 @@ full-disk run. Real service/SQL/default-player/all-state/all-engine/Firefox/
 manual AT/actual zoom/body/GS4/full AC7/privacy/platform/numeric/full-nine-tier
 1.0 and all independent review remain. No boxes/lifecycle/archive/push/mint/
 deploy/release/shortened-preview substitution. Goal active/progress.
+
+## 2026-10-07 — GS3 event/badge/value separation predeclaration
+
+At 9f485993. TEST-ONLY accepted GS3 focus/announcement + GS0.3/0.5 scope:
+existing combined achievement/meter fixture asserts a badge and on-surface
+text, but does not explicitly assert unchanged global text off-surface or
+event-versus-snapshot value authority. First run that existing population
+with a compiling off-surface global-announcement fault and restore; record
+its executed survivor/failure, not infer vacuity from reading.
+
+Add a bounded native population: p(doom) and one Standing constituency ×up/
+down ×320/1280 ×Chromium/WebKit (eight declarations, sixteen executions).
+Production transport-envelope and announcement decoders admit each event;
+runtime-double delivery is NOT a real socket/server acquisition. Exact
+eleven-ID public snapshot, existing presentation/copy only. Native Enter nav,
+off-surface badge with unchanged global status, visit clears badge without
+invented announcement/value changes, on-surface exact polite announcement,
+only explicit newer snapshot updates native values/bands. Opposite band
+event supplies distinguishable text before old consumed cursor replay;
+old replay must not overwrite it. Unknown presentation ID withheld with one
+diagnostic, no new text/badge/value/focus/intents. Axe/reflow/read-only controls.
+
+After baseline, independently execute compiling source faults: on-surface
+announcement omitted; off-surface announcement introduced; nav badge omitted;
+visit badge clearing omitted; cursor deduplication bypassed; polite status
+role removed; snapshot binding ignored. Restore actual production source
+between faults and at end. Every claim cites native semantic failure, not
+type/import failures. All old assertions/time budgets preserved. No permanent
+product/copy/clock/transport/schema/balance/CI/Make/RFC body change under this
+scope; any actual production defect gets a ledger and separate product scope.
+Final full Garage/types/client/build/copy/boundaries/static topology, then
+transactional inventory/plan/board/queue/log records. Entire new span after
+9f485993 requires Claude, independently of earlier exact repair/research
+spans. Not AT/Firefox/all-state/reconnect/actual zoom/real-service/SQL/full1.0
+proof. Cleanup and startup draft remain unanswered, no inferred deletion/
+Retry/archival/push/release authority. Goal active/progress.
