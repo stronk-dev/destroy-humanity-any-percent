@@ -27,9 +27,10 @@ standard requirement.
 When present, the hash-pinned `doctrines` schema-v1 artifact is the choice authority. Each sorted
 row binds one adjacent transition to its source tier, exact gate, and sorted branching doctrine
 IDs. Both runtime bundle loaders require every doctrine predicate and doctrine exclusion value in
-Routes to resolve to that artifact, and every doctrine row's gate to exist in Routes. The artifact
-is deliberately pre-mint: tests use the ruled T3-to-T4 fixture row, but production does not claim a
-T3-to-T4 gate or doctrine content yet.
+Routes to resolve to that artifact, and every doctrine row's gate to exist in Routes. Doctrine
+content and `gate.t3_to_t4` have been live since epoch 6. The current doctrine artifact binds that
+gate to `transition.t3_to_t4`, with `doctrine.capture` and `doctrine.ethical` as the choices.
+Historical runs continue to use their own pinned artifacts, not the deploy-current catalog.
 
 The closed predicate union is:
 
@@ -67,6 +68,11 @@ If the exact active gate/tier boundary has a doctrine row, crossing first requir
 choice. `pick_doctrine` is legal only at that row's source tier, before the gate, and once per
 transition. This gives same-boundary ordering one server-authoritative sequence: commit the choice,
 then cross; an unpicked crossing rejects `not_eligible/doctrine_required`.
+
+The standard `gate.t3_to_t4` path requires and debits Cash `1e12` and Permits `1.2e1`, in that
+order. Its route list is empty. Missing either resource rejects without a partial debit; surplus
+balances remain after the exact payment. The current full bundle also requires the committed
+doctrine choice described above.
 
 A discount debits `Quantize12(requirement × fraction)`. A substitute debits nothing: satisfying
 its predicate is the price. Typed terminal rejections are `gate_already_crossed`,

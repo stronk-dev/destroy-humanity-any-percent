@@ -40,10 +40,10 @@ through 2026-08-21. They do not choose a release floor or authorize implementati
 | RP-026 | Removing cap/drain/resync rendering together leaves all 20,007 Game UI browser assertions green. | ⚠ acceptance-oracle defect |
 | RP-027 | Permits P2/P4/AC4 contradict accepted PT-C1/PT-C2/PT-C4 rulings. | ⚠ owner-ruling/body contradiction |
 | RP-028 | Permits lacks the required exact two-resource Go/TS gate-crossing replay row. | 🧪 Shared ratified-candidate corpus added 2026-10-07; Go live handler/logged replay and TypeScript agree on complete receipts/events/state for payment and typed refusal. Designated review pending; owning Permits plan/log records scope and remaining acceptance limits. |
-| RP-029 | Canonical Economy/Routes and related docs still describe the pre-mint world. | ⚠ canonical-doc defect |
+| RP-029 | Canonical Economy/Routes and related docs still describe the pre-mint world. | 📝 Economy/Routes reconciled 2026-10-07 to live schema4, permits and doctrine/gate content; no mechanics or owner-authored copy changed. First Content plan/log records the accompanying historical regression supplement and remaining acceptance limits. |
 | RP-030 | Epoch-6 changelog does not cite every consumed verdict and exact reviewed range required by FCE AC4. | ⚠ closeout/provenance defect |
 | RP-031 | FCE5.5/AC5 still say mint-commit green despite the accepted range-head ruling. | ⚠ owner-ruling/body contradiction |
-| RP-032 | FCE's exact epoch-6 activation witness drifted into a deploy-current epoch-8 test. | ⚠ historical acceptance regression |
+| RP-032 | FCE's exact epoch-6 activation witness drifted into a deploy-current epoch-8 test. | 🧪 Fixed-pin epoch-6 initialization/activation and restored epoch-5→6 Exit now pass cold; renamed current-content companions retain epoch-8 coverage. Test-only supplement awaits designated review; First Content plan/log owns the exact scope, excluding persisted/browser workflow claims. |
 | RP-033 | Epoch-7 harness scope was grafted onto the completed epoch-6 mint RFC and later shipped elsewhere. | ⚠ RFC scope/lifecycle defect |
 | RP-034 | Prestige payload/archive/scripted-trigger body and canonical docs contradict current contracts. | ⚠ owner-ruling/body and docs contradiction |
 | RP-035 | Advisor Mode has state/math/labels but no player toggle contract or surface. | ⚠ design/integration gap -> owner ruling |

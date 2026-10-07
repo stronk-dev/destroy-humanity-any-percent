@@ -9,10 +9,11 @@ balance data, purchases, multiplier declarations, and lazy time integration.
 
 The authoring schema is [`balance/economy.schema.json`](../balance/economy.schema.json). Runtime
 validation is performed independently by `economy.LoadCatalog` on the server and `parseCatalog`
-on the client. The loaders support version 4's purchasable-content definitions; the active Phase-0
-artifact remains version 3 until its content epoch is minted. Both runtimes retain version-1 and
-version-2 loading for historical catalog hashes. The complete active catalog is
-[`balance/catalogs/phase0.json`](../balance/catalogs/phase0.json); this excerpt shows its root shape:
+on the client. The active Phase-0 artifact uses version 4's purchasable-content definitions,
+minted in epoch 7 and retained in epoch 8. Both runtimes retain versions 1–3 for historical catalog
+hashes. The complete active catalog is
+[`balance/catalogs/phase0.json`](../balance/catalogs/phase0.json); the following minimal schema-v3
+example illustrates the shared core, not the complete active catalog:
 
 ```json
 {
@@ -53,6 +54,15 @@ version-2 loading for historical catalog hashes. The complete active catalog is
 
 The shipped Phase-0 values are provisional balance data identified by the exact artifact-byte
 `constants_hash`.
+
+Epoch 6 introduced `company.permits`, retained by the current catalog: initial balance `0`,
+minimum `0`, visible hardcap `2.4e1`, reason key `resource.company_permits.cap.phase0`.
+`generator.legal_dept` produces `1e-3` permits per second per owned unit before multiplier
+contributions; its Cash price starts at `1e8` with geometric ratio `1.15e0`. Permit production
+uses the normal multiplier and offline policy, with accrual-only saturation at the cap.
+Its introduction is new-run-bound: an epoch-5 run keeps its original resource/generator universe;
+a fresh epoch-6 run or the next run after an Exit into epoch 6 starts with zero permits and zero
+legal departments. [Routes](routes.md#gate-crossing) owns the two-resource T3→T4 debit.
 
 Catalog rules:
 

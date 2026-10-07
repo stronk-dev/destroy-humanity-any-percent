@@ -336,3 +336,30 @@ honest no-op probed; the baseline guard governs the new surfaces with the full a
 LOW-1: bundles/<hash>/ dirname is convention not loader-enforced (add dirname==hash when the
 first real entry lands); LOW-2: scenario/golden existence unchecked — acceptable only while the
 runner is future work. The four-arm runner honestly out of the slice.
+
+## 2026-10-07 — fixed historical activation regression and Permits docs
+
+- Scope after `ac3e3111`: `first_content_epoch_test.go` now reconstructs all sixteen manifest
+  source documents, checks their individual SHA pins, recomputes the original `1a4463bc…f21a`
+  bundle hash and checks epoch-6 acceptance. The historical activation/fresh-Founder tests use
+  that bundle (Company17/Founder21); renamed current-content companions retain epoch-8
+  Company18/Founder21 and Active Play assertions. No production/balance/CI/manifest bytes change.
+- Added a real `ApplyLoggedExit` epoch-5→6 transition and restore/replay comparison: receipt,
+  terminal/new Company states, Founder carry output and all three event populations agree.
+  The ending Company restores under its old catalog and rejects the new resource universe;
+  the new run is sequence2 with permits/legal departments zero. Initialization/activation also
+  checks no retroactive rewrite or grants. Diagnostic offer/carry setup, not natural play.
+- Cold checks passed: `make test-go vet GO_PACKAGES=./production
+  GO_TEST_FLAGS='-count=1 -v -run Content'`; `TestApplyLoggedCrossRuntimeFixture` byte-compares the
+  unchanged shared corpus; full `./replaycatalog ./epochseed -count=1` passes. The initial build
+  used the wrong epoch field name; an attempted full-save encoding of a reconstructed Founder
+  carry correctly failed. The comparison uses the actual carry-output contract, not an invented
+  full Founder save. No persisted/HTTP/browser integration or aggregate/hosted CI green claimed;
+  the previously executed full production population still has RP-307's 27 red partitions.
+- Canonical `docs/economy-kernel.md` and `docs/routes.md` no longer claim schema4/Permits/doctrines
+  await mint. Current values and boundary wording were checked against active artifacts and
+  the accepted new-run law; the schema3 example is labelled historical/minimal, not active bytes.
+- Review by: Codex (implementer diff check); Recorded by: Codex. This coherent test/docs/record
+  range after `ac3e3111` needs designated review; existing reviews retain their original scopes.
+  No archival/status promotion. Next: persisted historical workflow evidence, exact review-range
+  citations and author-owned body reconciliations, then full closeout review.

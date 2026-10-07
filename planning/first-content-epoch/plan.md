@@ -13,3 +13,15 @@ RFC: `rfc/first-content-epoch.md`
 
 The owner-authorized production mint has landed. Dependent archival remains gated on the
 cross-party designated review of the complete mint range.
+
+### Historical regression supplement (2026-10-07)
+
+- [x] Restore the exact sixteen-artifact epoch-6 activation and fresh-Founder tests without
+  dropping epoch-8 coverage: `TestFirstContentEpochActivatesAtNewRunBoundary`,
+  `TestFirstContentEpochInitializesFreshFounderWithFullSet`, and the two `TestCurrentContent*`
+  companions pass cold against their distinct pins.
+- [x] Exercise the epoch-5→6 terminal transition and restored replay:
+  `TestFirstContentEpochExitPreservesOldResourceUniverse` passes cold, with the ending run's old
+  resource universe retained and the new run initialized with permits/legal departments at zero.
+- [ ] Designated review of this supplement. Pure transition/init coverage does not replace the
+  persisted integration population, original mint gates or the complete archival review union.

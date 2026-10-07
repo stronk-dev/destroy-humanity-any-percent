@@ -1,6 +1,12 @@
 package production
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -8,6 +14,7 @@ import (
 	"cloud-clicker/server/activeplay"
 	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/curriculum"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
@@ -21,6 +28,64 @@ import (
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
 )
+
+const firstContentConstantsHash = "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a"
+
+// Historical acceptance must not follow the deploy-current artifact paths.
+// Read the ratified manifest's literal sources, checking each byte pin as well
+// as the full bundle's original accepted identity.
+func firstContentEpochBundle(t *testing.T) CatalogBundle {
+	t.Helper()
+	data, err := os.ReadFile("../../planning/first-content-epoch/promotion-manifest.candidate.v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest struct {
+		SchemaVersion int    `json:"schema_version"`
+		Status        string `json:"status"`
+		ConstantsHash string `json:"constants_hash"`
+		Artifacts     []struct {
+			Name       string `json:"name"`
+			SourcePath string `json:"source_path"`
+			SHA256     string `json:"sha256"`
+		} `json:"artifacts"`
+	}
+	if err := json.Unmarshal(data, &manifest); err != nil {
+		t.Fatal(err)
+	}
+	if manifest.SchemaVersion != 1 || manifest.Status != "ratified" || manifest.ConstantsHash != firstContentConstantsHash || len(manifest.Artifacts) != 16 {
+		t.Fatal("historical First Content manifest identity changed")
+	}
+	artifacts := make(map[string][]byte, len(manifest.Artifacts))
+	for _, row := range manifest.Artifacts {
+		data, err := os.ReadFile(filepath.Join("../..", row.SourcePath))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if fmt.Sprintf("%x", sha256.Sum256(data)) != row.SHA256 {
+			t.Fatalf("historical %s source no longer matches its ratified pin", row.Name)
+		}
+		artifacts[row.Name] = data
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil || hash != firstContentConstantsHash {
+		t.Fatalf("historical First Content bundle=%s err=%v", hash, err)
+	}
+	seed, err := epochseed.Load("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	accepted := false
+	for _, epoch := range seed.Seed.Epochs {
+		if epoch.ID == 6 {
+			accepted = epochseed.Accepts(epoch, hash)
+		}
+	}
+	if !accepted {
+		t.Fatal("the original First Content hash is no longer accepted by epoch 6")
+	}
+	return loadCompleteReplayTestBundle(t, hash, artifacts)
+}
 
 func activeContentBundle(t *testing.T) CatalogBundle {
 	t.Helper()
@@ -119,19 +184,28 @@ func loadCompleteReplayTestBundle(t *testing.T, hash string, artifacts map[strin
 }
 
 func TestFirstContentEpochActivatesAtNewRunBoundary(t *testing.T) {
+	testContentActivation(t, firstContentEpochBundle(t), 17)
+}
+
+func TestCurrentContentActivatesAtNewRunBoundary(t *testing.T) {
+	testContentActivation(t, activeContentBundle(t), 18)
+}
+
+func testContentActivation(t *testing.T, active CatalogBundle, companyVersion int) {
+	t.Helper()
 	legacy := epoch5TestBundle(t)
-	active := activeContentBundle(t)
 	now := time.Date(2026, 8, 9, 12, 0, 0, 0, time.UTC)
 	founder := foundationScopeState(t, legacy.Economy, economy.ScopeFounder)
-	company := foundationScopeState(t, legacy.Economy, economy.ScopeCompany)
+	company := replayFixtureState(t, legacy.Economy, now.Add(-time.Hour))
 	company.RunStartedAt = now.Add(-time.Hour)
-	newCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	before := mustEncodeState(t, company)
+	newCompany := replayFixtureState(t, active.Economy, now)
 	newCompany.RunStartedAt = now
 
 	if err := settleAndActivateFoundations(legacy, active, founder, company, newCompany); err != nil {
 		t.Fatal(err)
 	}
-	if save.VersionForState(company) != save.CurrentVersion || save.VersionForState(newCompany) != 18 || save.VersionForState(founder) != 21 {
+	if save.VersionForState(company) != save.CurrentVersion || save.VersionForState(newCompany) != companyVersion || save.VersionForState(founder) != 21 {
 		t.Fatalf("versions old_company=%d new_company=%d founder=%d", save.VersionForState(company), save.VersionForState(newCompany), save.VersionForState(founder))
 	}
 	if len(newCompany.MeterValues) != 11 || len(newCompany.AchievementsEarnedRun) != 0 || newCompany.AchievementScoreRun != 0 ||
@@ -148,13 +222,28 @@ func TestFirstContentEpochActivatesAtNewRunBoundary(t *testing.T) {
 	if err := active.ValidateFoundationState(newCompany); err != nil {
 		t.Fatalf("Company activation invalid: %v", err)
 	}
+	if !bytes.Equal(before, mustEncodeState(t, company)) {
+		t.Fatal("new content rewrote the ending Company's pinned state")
+	}
+	if _, exists := company.Ledger.Balance("company.permits"); exists {
+		t.Fatal("permits retroactively appeared in the epoch-5 run")
+	}
+	assertNewRunPermits(t, newCompany)
 }
 
 func TestFirstContentEpochInitializesFreshFounderWithFullSet(t *testing.T) {
-	active := activeContentBundle(t)
+	testFreshContentFounder(t, firstContentEpochBundle(t), 17, false)
+}
+
+func TestCurrentContentInitializesFreshFounderWithFullSet(t *testing.T) {
+	testFreshContentFounder(t, activeContentBundle(t), 18, true)
+}
+
+func testFreshContentFounder(t *testing.T, active CatalogBundle, companyVersion int, activePlay bool) {
+	t.Helper()
 	now := time.Date(2026, 8, 9, 13, 0, 0, 0, time.UTC)
 	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
-	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	company := replayFixtureState(t, active.Economy, now)
 	company.RunStartedAt = now
 	company.RunSeq = 1
 	initializer := FounderInitializer{Catalogs: fixedReplayBundleResolver{bundle: active}}
@@ -162,15 +251,104 @@ func TestFirstContentEpochInitializesFreshFounderWithFullSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if save.VersionForState(founder) != 21 || save.VersionForState(company) != 18 || len(frozen) != len(active.Fiscal.GeneratorLevelRows())+1 ||
-		len(founder.Pets) != 0 || founder.Soul != active.Soul.Policy.Initial || len(founder.MinigameRatings) != 1 ||
-		company.NextOpportunityAttendedMS <= 0 || company.PendingOpportunity != nil || company.ActiveBuffs == nil {
+	if save.VersionForState(founder) != 21 || save.VersionForState(company) != companyVersion || len(frozen) != len(active.Fiscal.GeneratorLevelRows())+1 ||
+		len(founder.Pets) != 0 || founder.Soul != active.Soul.Policy.Initial || len(founder.MinigameRatings) != 1 {
 		t.Fatalf("fresh Founder founder=%+v company=%+v frozen=%+v", founder, company, frozen)
+	}
+	if activePlay {
+		if company.NextOpportunityAttendedMS <= 0 || company.PendingOpportunity != nil || company.ActiveBuffs == nil {
+			t.Fatal("current content lost its initialized Active Play state")
+		}
+	} else if active.Opportunities != nil || company.NextOpportunityAttendedMS != 0 || company.PendingOpportunity != nil || company.ActiveBuffs != nil {
+		t.Fatal("historical epoch 6 acquired later Active Play content")
 	}
 	if err := active.ValidateFoundationState(founder); err != nil {
 		t.Fatal(err)
 	}
 	if err := active.ValidateFoundationState(company); err != nil {
 		t.Fatal(err)
+	}
+	assertNewRunPermits(t, company)
+}
+
+func assertNewRunPermits(t *testing.T, company *save.State) {
+	t.Helper()
+	permits, exists := company.Ledger.Balance("company.permits")
+	if !exists || permits.String() != "0" {
+		t.Fatalf("new-run permits=%s exists=%t", permits.String(), exists)
+	}
+	legalDepartments, exists := company.GeneratorCounts["generator.legal_dept"]
+	if !exists || legalDepartments != 0 {
+		t.Fatalf("new-run legal departments=%d exists=%t", legalDepartments, exists)
+	}
+}
+
+func TestFirstContentEpochExitPreservesOldResourceUniverse(t *testing.T) {
+	current, next := epoch5TestBundle(t), firstContentEpochBundle(t)
+	current.Next = &next
+	now := time.Date(2026, 8, 9, 14, 0, 0, 0, time.UTC)
+	company := replayFixtureState(t, current.Economy, now.Add(-20*time.Minute))
+	company.Tier = 3
+	company.LifetimeValue = decimal.New(27, 12)
+	terms := json.RawMessage(`{"market_modifier_ppm":1100000,"payout_preview":{"reputation_delta":5,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"}}`)
+	company.OfferState = &save.ExitOfferState{OfferID: "01986666-0600-7000-8000-000000000600", ExitType: "acquisition",
+		TermsJSON: terms, SpawnedAt: now.Add(-time.Minute), ExpiresAt: now.Add(time.Minute)}
+	pre := mustEncodeState(t, company)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0600-7000-8000-000000000601","kind":"accept_exit_offer","expected_revision":1,"expected_founder_revision":2,"offer_id":"01986666-0600-7000-8000-000000000600"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	carry := replayFounderCarry{FounderRevision: 2, FounderConstantsHash: current.ConstantsHash, ReputationLevel: 1, Notoriety: 17,
+		NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1600-7000-8000-000000000001",
+		FounderID: "01986666-2600-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
+		SelectedExitType: "acquisition", SelectedTerms: terms, NextConstantsHash: next.ConstantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLoggedExit(company, request.CanonicalPayload, current, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	decision := transition.Decision
+	if decision.Outcome != save.IntentApplied || decision.NewConstantsHash != firstContentConstantsHash ||
+		save.VersionForState(company) != 14 || save.VersionForState(decision.NewCompanyState) != 17 ||
+		save.VersionForState(transition.Founder) != 21 || decision.NewCompanyState.RunSeq != 2 {
+		t.Fatal("epoch-5 Exit did not activate the exact epoch-6 floors/pin at the next run")
+	}
+	if _, exists := company.Ledger.Balance("company.permits"); exists || len(company.Ledger.Snapshot()) != 1 {
+		t.Fatal("ending run acquired the new resource universe")
+	}
+	assertNewRunPermits(t, decision.NewCompanyState)
+	if err := next.ValidateFoundationState(transition.Founder); err != nil {
+		t.Fatal(err)
+	}
+	if err := next.ValidateFoundationState(decision.NewCompanyState); err != nil {
+		t.Fatal(err)
+	}
+	final := mustEncodeState(t, company)
+	if _, err := save.RestoreState(final, 14, current.Economy, economy.ScopeCompany, time.Time{}); err != nil {
+		t.Fatalf("ending run cannot restore under its own pinned catalog: %v", err)
+	}
+	if _, err := save.RestoreState(final, 14, next.Economy, economy.ScopeCompany, time.Time{}); err == nil {
+		t.Fatal("old run silently restored under the new resource universe")
+	}
+	restored, err := save.RestoreState(pre, 14, current.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	replayed, err := ApplyLoggedExit(restored, request.CanonicalPayload, current, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(decision.Receipt, replayed.Decision.Receipt) || !bytes.Equal(final, mustEncodeState(t, restored)) ||
+		canonicalFixtureValue(t, replayFounderOutput(transition.Founder, carry)) != canonicalFixtureValue(t, replayFounderOutput(replayed.Founder, carry)) ||
+		!bytes.Equal(mustEncodeState(t, decision.NewCompanyState), mustEncodeState(t, replayed.Decision.NewCompanyState)) ||
+		canonicalFixtureValue(t, fixtureEvents(decision.FounderEvents)) != canonicalFixtureValue(t, fixtureEvents(replayed.Decision.FounderEvents)) ||
+		canonicalFixtureValue(t, fixtureEvents(decision.CompanyEndedEvents)) != canonicalFixtureValue(t, fixtureEvents(replayed.Decision.CompanyEndedEvents)) ||
+		canonicalFixtureValue(t, fixtureEvents(decision.CompanyStartedEvents)) != canonicalFixtureValue(t, fixtureEvents(replayed.Decision.CompanyStartedEvents)) {
+		t.Fatal("historical cross-epoch Exit did not replay byte-identically")
 	}
 }
