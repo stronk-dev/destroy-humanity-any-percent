@@ -3284,3 +3284,35 @@ Next accepted safe work: predeclare GS2-A1 actual non-color state-text faults
 and GS2-A5 bounded fixture/error/empty narrow readability. Capacity recovery
 can take priority only with exact scoped authorization and sufficient measured
 headroom. No checkbox/lifecycle/archive/mint/push/deploy/release promotion.
+
+## 2026-10-07 — GS2-A1/A5 visible Trophy Case predeclaration
+
+At85fdcfdf clean tree; previous turn progressed RP-337, not full1.0. No new
+Claude verdict inferred. Test-only accepted GS2-A1/A5/GS0.5 supplement over
+decoder-admitted public fixtures and actual GameUIApp/Trophy Case, not a
+service/catalog acquisition proof. Keep every existing assertion unchanged.
+Cross three populations (run/career/locked, zero rows, unavailable row copy)
+with320/1280 CSS px and native Enter/Space navigation. Exact visible title,
+score/state/scope/grant/possession/empty/error text; no invented rows or
+read-only controls; expected diagnostic once only for missing presentation.
+Measure whole-page/panel/descendant bounds and own scroll, reject clipping or
+hidden text as a false reflow success, require single-column rows at320.
+Native focus/Tab/Shift-Tab must stay on nav stops and return to Desk without
+intents. Axe serious/critical census for these states only. No fake clocks,
+400% zoom/AT/Firefox/all-state/full GS2-A5 claims.
+
+Before healthy/fault runs, add these fixtures; then separately seed actual
+parser-valid sources: state text empty (original GS2-A1 must fail too), state
+text hidden, score header swapped run/career values, possession warning
+removed, min-width40rem, overflow-hidden around the widened panel, empty
+message removed, nav accessible name erased. Missing-copy branch alert
+removed is a ninth fault. Every fault must fail its relevant semantic/native
+assertion with other controls retained; parser/type failures are not evidence.
+Restore source subjects byte-exactly before the next probe/final gates.
+No product/copy/clock/protocol/balance/kernel/CI/Make/RFC-body changes here.
+
+Final types/client/build/source/copy checks and full current native Garage
+Chromium/WebKit population plus existing isolated performance. Full Linux/
+SQL held on capacity: no cleanup permission/deletion/full-disk run. Exact
+complete range after85fdcfdf needs Claude, independently of prior ranges;
+self is first filter only, no checkbox/lifecycle/archive/push/release change.
