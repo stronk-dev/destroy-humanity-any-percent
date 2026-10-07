@@ -4342,3 +4342,26 @@ capacity restoration/recheck; no Docker run or unrelated cleanup. All
 author/body/engine/AT/default-player/privacy/platform/numeric/review/full-
 nine-tier 1.0 holds remain. Goal active/progress; no checkbox/lifecycle/
 archive/mint/push or shortened-preview substitution.
+
+## 2026-10-07 — GS3-A3 semantic layout delivery checkpoint
+
+RP-330 `a4443495`, under d9a8ca27/639add6e and failed-first 09655d1e.
+Six corrected baseline failures; actual definition rows/native label/value/
+band associations, live resizing and refreshed values, retained focus/no
+intents/wide table. Six independent faults fail 6/6/6/6/4/6 executions,
+exact source restored. Initial raw-attribute and native-render observation
+errors disclosed; assertions and budgets unchanged. Final types/client
+9,814 passes / 449 explicit browser skips, build/boundaries/full native
+Garage Chromium-WebKit 252 and copy/manifest/topology pass. Isolated
+performance 1 is still the null-feature guard, not populated Garage AC7.
+No host/runtime/wire/catalog/kernel/producer/balance/copy/CI change.
+
+Current board/plan/inventory/queue synchronized; no box/lifecycle/archive/
+mint/push/release claim. Complete layout span after bddfc58e through this
+record requires Claude separately from RP-329 5fbf4cff..bddfc58e, RP-332
+cc62cea8..5fbf4cff, audit fc911784..cc62cea8 and every earlier span. Next
+accepted work: RP-333 populated performance with unchanged budgets, then
+exact guards. RP-331 persisted/default-player witnesses wait for Docker
+capacity repair/recheck; no run/cleanup here. Firefox/actual zoom/AT/author/
+body/privacy/platform/numeric/review/full-nine-tier 1.0 gates stay open.
+Goal active/progress, no preview substitution or shortcut.

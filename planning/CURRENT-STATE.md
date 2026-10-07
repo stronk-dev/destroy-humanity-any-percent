@@ -4,25 +4,25 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage repair:** `ce5c4ea8` (RP-329 / GS3-A1). The decoder now
-requires the existing complete eleven-ID meter contract. Predeclared
-bff97b20/c5d5220c; failed-first 43ef0a21: 27 actual admission failures.
-Five independent client faults fail 27/11/4/3/23 assertions; two actual
-producer-control faults fail; all transient source restored exactly.
-Clean client 9,814 passes / 446 explicit browser skips, types/build/
-boundaries/cold Go/vet and full native Garage Chromium/WebKit 246 pass.
-Two SQL tests explicitly skip. Copy/content-manifest/topology pass;
-isolated performance 1 passes with the unchanged RP-333 null-feature
-limitation, not populated AC7. No catalog/kernel/producer/balance/schema/
-copy/CI change. Complete new range after 5fbf4cff through records needs
-Claude; RP-332 separately cc62cea8..5fbf4cff, audit fc911784..cc62cea8,
-runtime a42406f0..fc911784 and all earlier ranges remain owed. All 29/eight
-Garage gates are mapped, not declared complete. Next accepted work:
-RP-330 semantic narrow Meters layout, then populated performance / exact
-guards. RP-331 persisted/DOM proofs wait for Docker capacity repair/recheck;
-last measurement remains 0 free / 100%, no run or cleanup this checkpoint.
-All author/body/engine/AT/default-player/privacy/platform/numeric/review/
-full-nine-tier 1.0 gates remain; no lifecycle or release promotion.
+**Latest Garage repair:** `a4443495` (RP-330 / GS3-A3): actual narrow
+definition rows with complete label/native-meter/value/band associations,
+live resizing and refresh, retained focus/no-intent/wide table. Predeclared
+d9a8ca27/639add6e, test-first 09655d1e: six corrected semantic failures;
+six independent faults fail 6/6/6/6/4/6 executions, restored exactly.
+Initial attribute/timing instrument errors are disclosed. Clean types,
+client 9,814 passes / 449 explicit browser skips, build/boundaries/full
+native Garage Chromium/WebKit 252 and copy/manifest/topology pass.
+Isolated performance 1 remains RP-333's null-feature guard, not populated
+AC7. No host/runtime/wire/catalog/kernel/producer/balance/copy/CI change.
+Complete layout range after bddfc58e through records needs Claude; prior
+complete-ID repair RP-329 `ce5c4ea8` exact 5fbf4cff..bddfc58e, RP-332
+cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..fc911784
+and earlier spans remain independently owed. All 29/eight Garage gates are
+mapped, not complete. Next accepted work: RP-333 populated Garage performance
+under unchanged budgets, then exact guards. RP-331 persisted/DOM proofs
+await Docker capacity repair/recheck; last measured 0 free / 100%, no run/
+cleanup here. Author/body/Firefox/actual zoom/AT/default-player/privacy/
+platform/numeric/review/full-nine-tier 1.0 gates remain; no promotion.
 
 **Latest repair:** `45bf2edb`, predeclared `a8f2a527`, failing-first
 `7cac400d`: RP-326 Fiscal/care outcomes now belong to the submitting panel;

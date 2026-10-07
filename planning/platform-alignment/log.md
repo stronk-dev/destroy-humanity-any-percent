@@ -3180,3 +3180,27 @@ work: RP-330 semantic narrow layout, then populated performance / exact
 guards. RP-331 persisted/default-player proof waits for capacity repair/
 recheck; no Docker run/cleanup here. All author/body/engine/AT/numeric/
 privacy/platform/review/full-nine-tier 1.0 gates remain active.
+
+## 2026-10-07 — GS3-A3 semantic meter-layout checkpoint
+
+RP-330 `a4443495`, predeclared d9a8ca27/639add6e, test-first 09655d1e:
+six corrected baseline failures; actual narrow dt/dd/native-meter labels,
+exact current values/bands, live breakpoint/refresh, retained focus/no
+intents and wide table. Six independent faults fail 6/6/6/6/4/6 executions,
+exact source restored after each. Attribute/native-frame instrumentation
+errors are disclosed; no assertion, timeout or budget loosened. Final
+types/client 9,814 passes / 449 explicit browser skips, build/boundaries/
+native Garage Chromium-WebKit 252 and copy/manifest/topology pass. Isolated
+performance 1 remains RP-333's null-feature guard, not populated AC7. No
+host/runtime/wire/catalog/kernel/producer/balance/copy/CI mutation; static
+topology is not full Linux CI. Canonical docs qualify the old all-engine
+reflow claim rather than imply current Firefox/actual zoom/AT proof.
+
+Boards/plan/inventory/queue reconciled; no acceptance/lifecycle promotion.
+Complete layout range after bddfc58e THROUGH this final record edge needs
+Claude, independently of RP-329 5fbf4cff..bddfc58e, RP-332 cc62cea8..
+5fbf4cff, audit fc911784..cc62cea8 and all earlier ranges. Next accepted
+work: RP-333 populated Desk performance under unchanged budgets, then exact
+guards. RP-331 real persisted/DOM proof awaits capacity repair/recheck;
+no new Docker run/cleanup. All author/body/engine/AT/privacy/platform/
+numeric/review/full-nine-tier 1.0 gates remain active.

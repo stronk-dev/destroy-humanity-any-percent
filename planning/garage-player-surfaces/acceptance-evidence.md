@@ -64,8 +64,8 @@ evidence merely because its text exists.
 | GS2-A4 composed | first real generator purchase → earned event + refreshed row | C buys generators; separately reads achievement rows exist | **Missing named witness:** driver does not assert that purchase earns this ID, emits its announcement and changes the displayed row. Add DOM/event/refresh binding and independently sever decoder/arm after RP-236. |
 | GS2-A5 accessibility | Trophy Case DOM + chrome/nav | B static state axe; historical combined reflow measurement | **Partial:** all-state/all-engine/400%/error/empty/focus populations and seeded failures not established as a complete gate. |
 | GS3-A1 decoder | v4 meter rows → `contracts.ts:parseFeatures` | Audit found incomplete-set admission; subsequent RP-329 failed-first population covers all eleven missing IDs and same-count substitutions, extra/subset rows, order, bounds and exact keys | **Locally repaired; designated review pending:** existing REQUIRED_METER_IDS reused, 27 baseline failures and five independent client faults demonstrated; two actual producer-control faults also demonstrated. Clean client/types/build/boundaries/cold Go/vet and 246 native Garage executions pass. SQL explicitly skipped; full shared-v4 fixture and all-engine/persisted proof are not inferred. See separate follow-up below. |
-| GS3-A2 non-color | committed values → `MetersSurface.svelte` numeric/band text | B all ten trust cells match numeric + Low/High; eleven native meters; doom text | Bounded fixture proof; seed omission and missing/presentation error populations still need explicit coverage/review. |
-| GS3-A3 reflow | Meters table/CSS → narrow-page labels | B historical 320 px combined measurement; source `td::before` labels | **Source mismatch RP-330:** below 30rem remains block-styled table, not RFC's semantic `<dl>`. Do not call width alone header/AT proof. Implement accepted semantics or obtain author amendment; retain full-page chrome measurements. |
+| GS3-A2 non-color | committed values → `MetersSurface.svelte` numeric/band text | Original B cell checks; later RP-330 exact per-ID value/band assertions in both layouts, with omitted-band/native-value faults caught; RP-332 presentation-error population retained | Bounded public-fixture proof in Chromium/WebKit; designated review and whole-state/all-engine/real persisted populations remain separate. |
+| GS3-A3 reflow | Meters arm → responsive semantic list / retained wide table | RP-330 failed-first six-case baseline; distinct decoder-admitted values, exact eleven dt/dd/native-label associations, live resize and refresh, full page/nav/focus/axe; six independent faults demonstrated | **Locally repaired; designated review pending:** current full Garage Chromium/WebKit 252 passes, no assertion/budget loosened. Source/body mismatch corrected without author amendment. Viewport/DOM associations are not actual 400% zoom, Firefox or AT evidence. See separate follow-up. |
 | GS3-A4 composed | real initial pinned meter values → rendered DOM | C authentic public read asserts 11 rows and doom=50 | **Missing named witness:** not DOM text for each Standing=50/Grievance=0/doom=50; add that and arm-severing case after RP-236. |
 | GS3-A5 accessibility | meter DOM/header semantics → reading/navigation | B static axe | **Partial:** three engines, semantic narrow reading/header preservation, all states and actual assistive workflow remain. Do not turn a CSS pseudo-label into screen-reader evidence. |
 | GS4-A1 care states | PA7 public identity/band/eligibility → `pet/PetCareSurface.svelte` | B availability/refusal/pending/keyboard/captured notices; actual decoder-accepted PA7 fixtures | **Author-blocked RP-132:** accepted GS4 asks raw stats/mood/behavior/cooldowns while PA7 exposes another arm. Current tests must not invent raw private fields or claim that contract covered. |
@@ -169,3 +169,31 @@ the declared Postgres lane. Docker capacity and RP-330/331/333 remain open.
 Complete new range after 5fbf4cff through its final record edge needs Claude,
 independently of RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8,
 runtime a42406f0..fc911784 and every earlier range.
+
+## Follow-up: RP-330 / GS3-A3 (separate range after bddfc58e)
+
+Predeclared d9a8ca27/639add6e; test-first 09655d1e. Corrected baseline
+50408 reproduces six real narrow semantic failures with healthy wide controls.
+Initial raw-HTML-value instrumentation and a later native-media-event timing
+observation error are disclosed in log.md; neither is a softened assertion.
+The final driver reads exact native properties after an actual rendering frame.
+
+MetersSurface now renders either the retained wide table or actual narrow
+definition rows. All eleven public values have exact text/bands; narrow
+terms retain constituency/axis (separate p(doom)) and name their own native
+meters. One rendered population, live 320/479/480/1280 resizing, refreshed
+values, retained navigation focus, zero intents, full-page geometry and axe
+are covered in Chromium/WebKit. Six independent label/name/value/breakpoint/
+listener/band faults fail 6/6/6/6/4/6 executions, with exact source restoration.
+
+Full current native Garage 252, client 9,814 passes / 449 explicit browser
+skips, types/build/boundaries/copy/manifest/topology pass. Unchanged isolated
+performance 1 remains RP-333's null-feature guard, not populated AC7. No
+host/runtime/wire/catalog/kernel/producer/balance/copy/CI change. Documentation
+now also refuses a current-source three-engine/actual zoom/AT claim.
+
+This is local semantic-layout repair, not whole GS3/accessibility/real player
+workflow or release acceptance. Complete range after bddfc58e through its
+final records needs Claude separately from RP-329 5fbf4cff..bddfc58e,
+RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8 and all earlier spans.
+RP-331/333/Docker/Firefox/AT/author/body/full-nine-tier 1.0 holds remain.

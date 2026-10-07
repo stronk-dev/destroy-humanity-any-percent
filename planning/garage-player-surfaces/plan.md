@@ -7,33 +7,26 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded repair: `ce5c4ea8` (RP-329 / GS3-A1), predeclared bff97b20 /
-c5d5220c, failed-first 43ef0a21. Non-null meter data must contain exactly
-the existing eleven-ID contract; no second list/catalog/producer/kernel/
-balance/schema change. Baseline: 27 admission failures. Five independent
-client faults fail 27/11/4/3/23 assertions; both actual producer-control
-faults fail; all transient source restored. Clean client 9,814 passes /
-446 explicit browser skips, types/build/boundaries/cold Go/vet and native
-Garage Chromium/WebKit 246 pass. Two SQL tests explicitly skip; isolated
-performance 1 passes but its null-feature fixture is not populated AC7.
-Copy/content-manifest/topology and 13 negative controls pass. Complete
-range after 5fbf4cff through this record needs Claude; RP-332 separately
-cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..fc911784
-and earlier ranges remain owed. Inventory covers all 29/eight gates without
-promoting acceptance. Next accepted work: RP-330 / GS3-A3 semantic narrow
-layout, then populated AC7 / exact guards. RP-331 real persisted/DOM proof
-waits for capacity repair/recheck; last measured Docker overlay is full,
-no new run/cleanup. Author/body/Firefox/AT/full 1.0 gates remain; no box or
-lifecycle change.
-
-RP-330 / GS3-A3 is now in progress under `d9a8ca27`: three new native
-declarations, six Chromium/WebKit executions. Corrected typed-clean baseline
-50408 has six semantic failures; the wide control passes and every scenario
-fails on the remaining narrow table. Initial native-value attribute oracle
-error disclosed and replaced by exact native properties before production.
-No MetersSurface change yet. Next: separately record bounded semantic markup /
-live-breakpoint repair and negative probes, then full gates. This new range
-starts after bddfc58e and remains independent of RP-329 5fbf4cff..bddfc58e.
+Latest bounded repair: `a4443495` (RP-330 / GS3-A3), predeclared d9a8ca27 /
+639add6e, test-first 09655d1e. Actual narrow definition rows retain all eleven
+labels/native-meter names/exact values/bands; live resizing and snapshot
+refresh preserve focus, zero intents and the original wide table. Corrected
+baseline has six semantic failures; six independent faults fail 6/6/6/6/4/6
+executions, restored exactly. Initial attribute/timing instrumentation errors
+are disclosed, not hidden or turned into relaxed assertions. Clean types,
+client 9,814 passes / 449 explicit browser skips, build/boundaries and full
+native Garage Chromium/WebKit 252 pass. Copy/manifest/topology and 13
+negative controls pass. Isolated performance 1 remains the null-feature guard,
+not populated AC7. Complete layout range after bddfc58e through this record
+needs Claude. Prior RP-329 `ce5c4ea8` exact 5fbf4cff..bddfc58e requires its
+separate verdict; RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8,
+runtime a42406f0..fc911784 and all earlier ranges remain owed. Inventory
+covers all 29/eight gates without acceptance promotion. Next accepted work:
+RP-333 populated Garage performance under unchanged budgets, then exact
+guards. RP-331 real persisted/DOM proofs wait for capacity repair/recheck;
+no Docker run/cleanup here. Author/body/Firefox/actual zoom/AT/full 1.0
+gates remain; no checkbox or lifecycle change. Earlier slice records below
+retain their proof/review boundaries; the latest queue owns next work.
 
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
 predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,
