@@ -4996,3 +4996,24 @@ d39fba two compiler errors,49c0b3 one; correct canonical isLiveSnapshot narrowin
 and known cap fixture before this final typed-clean run. Early native runs334253/
 82f1fb retain same36/four results but are not the final source coordinate.
 All handles terminal before record/commit; no product bytes moved.
+
+### RP-352/RP-353 — separately authorized component repair scope
+
+Accepted GS0.6/0.8 and GS5 keyboard floor authorize correcting the measured
+pending/removal violations, not mechanics or new product choices. Product range
+is only OpportunityRegion.svelte plus canonical docs/game-ui.md: existing Claim
+uses native disabled only for unavailable controls, pending aria-disabled/visible
+registered common.pending and a real component callback guard; existing host
+single-flight remains unchanged. On authoritative offer removal while that Claim
+actually held focus, schedule the existing Desk heading after DOM update only
+if region remains connected and focus was not moved to another surviving control.
+Claim is the only control in its region, so there is no nearer surviving regional
+control; no extra Tab stop/heading/player copy/host props/global focus handler.
+Spawns and surviving/newly selected controls never cause forced focus.
+
+No server/API/registry/current wire pin/clock/scheduler/payout/balance/kernel,
+host queue/auth/read policy, copy catalog/owner wording, dependencies/deadlines/CI
+change. RP-313 body reconciliation and all real service/release gates independent.
+All40 typed-clean native cases must pass; the predeclared actual faults must fail
+for their named properties and restore source exactly. Full root final scopes
+and range-union review remain as declared; no boxes/status/archival/mint/push.
