@@ -14,7 +14,6 @@ import (
 	"strconv"
 	"time"
 
-	"cloud-clicker/server/account"
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/publicapi"
 )
@@ -56,11 +55,11 @@ var (
 )
 
 // Schemas are the public DTO descriptors (C12 EpochPage literal). APIError is
-// the single account-owned definition shared with the private registry.
+// the shared API-owned definition also consumed by the private registry.
 func Schemas() []publicapi.NamedSchema {
 	const maxExactInteger = int64(9_007_199_254_740_991)
 	schemas := []publicapi.NamedSchema{
-		account.APIErrorSchema(),
+		publicapi.APIErrorSchema(),
 		{Name: "PublicEpoch", Schema: &publicapi.Schema{Kind: publicapi.SchemaObject, Fields: []publicapi.Field{
 			field("accepted_hashes", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: stringSchema("sha256-prefixed")}),
 			field("changelog_markdown", stringSchema("")),

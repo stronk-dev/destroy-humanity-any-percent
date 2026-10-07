@@ -1,11 +1,95 @@
 package publicread
 
 import (
+	"fmt"
+	"go/parser"
+	"go/token"
+	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
 	"cloud-clicker/server/publicapi"
 )
+
+// The public packages may consume narrow reader interfaces but must not import
+// private account/session/save repositories (C10). Inspect production imports,
+// not test fixtures or comments. Transitive reader dependencies and runtime
+// disclosure remain separate acceptance boundaries.
+func privateRepositoryImport(source []byte) error {
+	file, err := parser.ParseFile(token.NewFileSet(), "public.go", source, parser.ImportsOnly)
+	if err != nil {
+		return err
+	}
+	for _, spec := range file.Imports {
+		path, err := strconv.Unquote(spec.Path.Value)
+		if err != nil {
+			return err
+		}
+		for _, private := range []string{"cloud-clicker/server/account", "cloud-clicker/server/session", "cloud-clicker/server/save", "cloud-clicker/server/production"} {
+			if path == private || strings.HasPrefix(path, private+"/") {
+				return fmt.Errorf("public API imports private repository owner %s", path)
+			}
+		}
+	}
+	return nil
+}
+
+func TestPublicPackagesDoNotImportPrivateRepositories(t *testing.T) {
+	for _, directory := range []string{".", "../publicapi"} {
+		entries, err := os.ReadDir(directory)
+		if err != nil {
+			t.Fatal(err)
+		}
+		checked := 0
+		for _, entry := range entries {
+			if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".go") || strings.HasSuffix(entry.Name(), "_test.go") {
+				continue
+			}
+			path := filepath.Join(directory, entry.Name())
+			source, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := privateRepositoryImport(source); err != nil {
+				t.Errorf("%s: %v", path, err)
+			}
+			checked++
+		}
+		if checked == 0 {
+			t.Fatalf("no production source checked in %s", directory)
+		}
+	}
+}
+
+func TestPrivateRepositoryImportGuardDiscriminatesAliasesAndComments(t *testing.T) {
+	for _, source := range []string{
+		`package publicread; import "cloud-clicker/server/account"`,
+		`package publicread; import renamed "cloud-clicker/server/account"`,
+		`package publicread; import . "cloud-clicker/server/save"`,
+		`package publicread; import _ "cloud-clicker/server/session"`,
+		`package publicread; import "cloud-clicker/server/save/nested"`,
+		`package publicread; import "cloud-clicker/server/production"`,
+	} {
+		if err := privateRepositoryImport([]byte(source)); err == nil {
+			t.Fatalf("private import admitted: %s", source)
+		}
+	}
+	for _, source := range []string{
+		`package publicread // import "cloud-clicker/server/account"`,
+		`package publicread; import "cloud-clicker/server/publicapi"`,
+		`package publicread; import "cloud-clicker/server/leaderboard"`,
+		`package publicread; import "cloud-clicker/server/accounting"`,
+	} {
+		if err := privateRepositoryImport([]byte(source)); err != nil {
+			t.Fatalf("non-private source refused: %s: %v", source, err)
+		}
+	}
+	if err := privateRepositoryImport([]byte(`package publicread; import (`)); err == nil {
+		t.Fatal("unparseable import list admitted")
+	}
+}
 
 // publicIdentityFields are the only founder-identifying fields the public
 // surface may carry (AC5: "public board identity"): a verified board row's

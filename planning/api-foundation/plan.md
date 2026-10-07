@@ -16,6 +16,11 @@ owner descriptors and complete union remain open. RP-383/RP-384 compatibility co
 locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Remaining owner descriptors,
 remaining route/client registration, third-party verification, 304 metadata and designated
 reviews stay open; not full API acceptance or green hosted CI. Latest log owns exact evidence.
+Public reads now use the shared error descriptor from `publicapi` instead of importing Account;
+the direct private-repository import regression and affected packages pass. This does not close
+transitive/runtime privacy. Seventeen of the remaining eighteen artifact-owner packages fall
+under kernel-watched prefixes: API-only additions require an explicit scope resolution or a
+genuine accepted semantic change, never a false version bump or file move to evade the guard.
 
 Existing session creation/refresh now mount from the registry and generate explicit calls, with
 exact error alternatives and the existing shared IP limiter. Real Postgres creation/rotation/
@@ -76,6 +81,10 @@ is implemented; its draft decisions and full API acceptance remain open.
     raw-fetch lint. Typed dispatch over the current subset is not AC4 completion.
 - [ ] Compose the public router, full-registry privacy/conformance integration, canonical docs,
   independent full-range review, and archive.
+  - [x] Remove the direct public→Account dependency for the shared error descriptor and guard
+    production imports in both public packages (`TestPublicPackagesDoNotImportPrivateRepositories`
+    fails on the old dependency, passes after extraction; alias/comment negatives discriminate).
+    Transitive reader dependencies and complete runtime privacy remain open.
   - [x] Test caching and shared IP limiting through every currently mounted public operation,
     including changed-content and exhausted-budget cases (A8/C16/C20).
   - [ ] Resolve the undeclared bodiless 304 response arm before claiming full schema/status

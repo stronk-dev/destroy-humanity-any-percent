@@ -159,12 +159,21 @@ exact-key JSON with integer booleans and explicit-null faction.
 
 ## Public reads
 
-`server/publicread` owns the unauthenticated `/api/public/v1/` registry. `account.APIErrorSchema()`
+`server/publicread` owns the unauthenticated `/api/public/v1/` registry. `publicapi.APIErrorSchema()`
 is the single `APIError` definition that both registries reference. `publicapi.MergeRegistries`
 unions the private and public registries into one generation authority. A schema name may be
 shared only if the definition is byte-identical, and operation IDs must not collide. As a result,
 `docs/generated/api.json`, the TypeScript module and the compatibility pin cover both surfaces,
 while each surface still mounts from its own registry.
+
+The shared error schema belongs to `publicapi`, not the private Account repository. Public
+readers no longer import Account to construct their registry. A production-source import guard
+checks both `publicread` and `publicapi`, rejecting direct Account/Session/Save/Production owner
+imports (including aliases and subpackages). It ignores comments and test fixtures and refuses
+unparseable source. This is a direct package-boundary check, not proof of every transitive
+repository dependency or runtime disclosure; those remain separate privacy acceptance gates.
+The move preserves the error fields/enums, all operation/status-specific exact replies, and
+byte-identical generated OpenAPI, TypeScript and compatibility pins.
 
 `GET /api/public/v1/epochs` (`list_public_epochs`) returns the C12 `PublicEpochPage`:
 

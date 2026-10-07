@@ -1174,3 +1174,32 @@ Review by: Codex (implementer diff/first filter). Recorded by: Codex. New review
 remains pending. Categories is one of nineteen served artifact families, not a completed
 catalog union. Next: remaining eighteen owner descriptors, then complete HTTP composition
 and actual public-verifier journey. No content mint, archive, CI/workflow change or push.
+
+## 2026-10-08 — public error authority no longer imports Account
+
+Outcome under A4/A5/C10: move the one API-wide error descriptor from Account to `publicapi`;
+both registries consume it directly. RP-390's production-import regression15902 fails at the
+actual public→Account edge before the extraction. No handler, middleware, status, enum, exact
+response bytes, simulation or mounted operation changed. This removes one concrete private
+dependency; it does not declare full privacy acceptance.
+
+Cold affected `./publicapi ./publicread ./account ./cmd/gen-api ./gameserver` tests41716 and
+vet83539 PASS. `make api-check`79629 regenerates byte-identical OpenAPI/TS/pin outputs. Focused
+verbose66671 passes actual public-package imports and schema enumeration, six forbidden-import
+cases (aliases/dot/blank/subpackages included), four allowed/comment controls, parse refusal,
+four existing error bodies, seven malformed error bodies and fresh-export checks. Native DB
+cases skip; no DB behavior changed and no persisted/hosted/full-API result is substituted.
+
+Catalog sequencing revalidated at7226ec7b: faction/guild C18-only exports would hit the guard's
+whole-package prefixes despite changing no replay behavior. Seventeen remaining owner packages
+are watched; moving schemas out to dodge that or adding a false version bump is not lawful.
+This was already identified in the formula-model checkpoint above, not a newly implemented
+exception. The historical Kernel History Guard Integrity RFC remains draft; prospective scope
+authority is not inferred from it. Asked Marco for an exact-file independent-review exception
+choice; no answer is inferred from preselection. Relevance's existing rational integer spelling
+also needs reconciliation with the descriptor's strict int64 grammar before an exact export.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. New range is `7226ec7b`
+exclusive through this source/test/docs/record commit. Designated review pending; prior ranges
+remain separate. No false replay version, history rewrite, CI/workflow edit, archive or push.
+Next: resolve the catalog scope boundary; continue accepted remaining API integration meanwhile.
