@@ -18,6 +18,10 @@ that would need one is recorded as a blocker in `log.md` instead.
 - [x] GS5 active-play arm (`features.opportunity`, kernel export `ProjectActiveCombo`) + Desk opportunity region + composed claim witness (`cdb8fe61`, `f32f6175`).
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.
 - [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
+  Review note: original `301728c8^..301728c8` is **CHANGES REQUIRED** for RP-312;
+  the scoped direction repair and simulated-reconnect supplement are locally verified,
+  not designated-approved. Claude must review the entire new range after `7aab0e2e`,
+  including planning/record edges. The existing box is not an archival or full-GS0.3 gate.
 - [x] GS0.3 remainder: `fiscal_period_harvested.v1` nav badge (OD-3) and `buff_started.v1` announcement (`6594b646`).
 - [x] GS4 pet care surface over the PA7 arm + cosmetic overlay (G10) (`7a61e4b6`); raw-care fields blocked by DESIGN-GAP GS4×PA7.
 - [x] 320 px reflow measurement across Desk/Fiscal/Meters/Trophy Case/pet (`6594b646`).

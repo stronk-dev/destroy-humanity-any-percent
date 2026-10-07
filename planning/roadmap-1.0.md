@@ -5,14 +5,24 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest Garage checkpoint (2026-10-07):** original Claude301728c8 all14paths
+designated-reviewed by Codex: **CHANGES REQUIRED**, RP-312. Test-first8actual
+failures; narrow acceptedGS0.3 direction repair and simulated-reconnect proof
+locally pass, with compiling omission/replay/host faults caught and restored.
+Final9,691 client tests/340skips, nativeGarageChromium/WebKit34/performance1,
+types/build/boundary/copy/manifest/topology pass. No all-engine/real-server
+acquisition/fullGarage/wholeCI/release promotion. Newspan after7aab0e2e INCLUDING
+records needs Claude. Next bounded review Claude6594b646, all5paths. All prior
+numeric/author/content/platform/review holds and full nine-tier scope remain.
+
 **Latest acceptance/prerequisite checkpoint (2026-10-07):** all12Clout criteria
 mapped. Test-only16literal mask rates/32full-state online+offline advances,
 8live companions/four refusal entrypoints pass; actual guard omission fails
 8rates/16advances, restored exactly. Focused production+harness/vet pass; full
 production ONLYoriginal27AC6red. No arithmetic/balance/kernel/CI change.
 DG-D/D-021 remains unselected; initial provisional runtime-next note corrected
-before any construction. Next bounded designated review of Claude GarageGS0.3
-`301728c8^..301728c8`; newspan after64f836c2 including records needs Claude.
+before any construction. The then-next original GarageGS0.3 review is recorded
+above; newspan after64f836c2 including records still needs Claude.
 All owner/author/numeric/content/platform/prior-review holds remain, no acceptance
 or release promotion and no reduction of the full nine-tier objective.
 [Full requirement map](clout-v1-and-pr-interns/acceptance-reconciliation.md).

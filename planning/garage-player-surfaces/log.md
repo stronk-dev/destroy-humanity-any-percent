@@ -465,3 +465,84 @@ endpoint, sourced before this executed run. The first `pnpm exec` launch emitted
 no output and was stopped (exit130); it is not counted as test execution. Root
 Make uses the installed executable and terminates normally. No product bytes
 have changed in this test-first checkpoint.
+
+### Reconnect witness refinement (predeclared before execution)
+
+The retained host replay test invokes the listener again; it does not actually
+close and recover a socket. Keep that host assertion and add a separate test
+using the real runtime's existing fake-socket instrument: emit1006, advance the
+unchanged one-second reconnect timer, assert the second socket's saved-position
+subscription, recover the same achievement revision at a NEW offset, and
+require exactly one announcement, two recovered notices, no resync/fetch and
+the new stored position. Always unsubscribe. This satisfies a simulated
+reconnect population, not real-WebSocket/server acquisition or GS2-A4. The
+actual delivery-gate omission must fail this new replay oracle too.
+
+### Designated verdict — original `301728c8^..301728c8`
+
+**Review by:** Codex (the other party). **Recorded by:** Codex.
+**Reviewed range:** `301728c8^..301728c8`, all14paths.
+**Verdict: CHANGES REQUIRED — RP-312.** GS0.3 explicitly binds the event-domain
+validators to the server. The original and retained meter decoder omit the
+direction/value relation in `server/save/intent.go`: up must increase and down
+must decrease. Four direct assertions and four actual runtime publications
+reproduce acceptance/announcement of server-invalid payloads. This is not a
+product/empirical decision and does not require changing the RFC's mechanics.
+
+The original copy source, catalog entries, TS key/param additions, Go key list,
+orphan additions and manifest were checked individually. Historical catalog
+bytes hash to `sha256:3d6b80b85b5e41db00085d0cc7d4369fd68e6897523325336cebc3c0481159e2`,
+matching original hash/TS/manifest mirrors; the four entries exactly match their
+candidate source. The Go generator adds only those four keys, no removals or
+preamble changes. Candidate copy is not owner adoption. Original plan/log scope
+is explicit; the later remainder, GS2-A4 real-server acquisition and whole
+Garage ranges are NOT approved or consumed here.
+
+### RP-312 correction and supplemental evidence — implementer-side first filter
+
+**Review by:** Codex (implementer-side, NOT designated). **Recorded by:** Codex.
+**Scope:** new span after `7aab0e2e`, including68ddc0c8 predeclaration,
+49576162 tests and every later repair/record edge. AcceptedGS0.3 authorizes only
+the missing direction predicate; this source is outside the kernel watchlist.
+No server, wire, schema, kernel, copy, balance or CI bytes changed. Original
+tests/thresholds remain intact; no boxes/statuses/archives/mints promoted.
+
+Executed evidence:
+
+- Test-first full client run:8 new failures/9,682 passes/340 explicit skips.
+  First repaired run reached4 later failures: the test's nested header expectation
+  incorrectly rejected legitimate `Content-Type`. Corrected to a nested partial
+  header assertion, retaining exactly-one fetch/URL/authorization, all prior
+  recovery assertions and legal controls. This was an instrument error, not a
+  reason to loosen product validation. The corrected positive run passed9,690.
+- Compiling removal of ONLY the new predicate:8 failures recur, while four legal
+  boundary controls and the retained suite survive. The source was restored
+  exactly to SHA256 `851e4b28240a938f8a35ff7b365198a909d09a0b6f145ab930718fc729dd3f6d`.
+- Bypass the real delivery condition (retain run-start duplicate guard): original
+  generic recovery and achievement republish tests fail2. After adding the
+  actual simulated1006→second-socket→saved-position→new-offset recovery witness,
+  the same compiling bypass fails3 (24 controls pass). Restore runtime exactly
+  to SHA256 `0a8c420eb9968aa76a3e9ece91c918a43e3d8c4530773c8818bce5104c0cb416`.
+- Remove host cursor guard: the retained host test fails in Chromium and WebKit
+  because replay overwrites the meter announcement with earned achievement copy.
+  The selected negative run terminates normally:2 failures/32 selector skips;
+  no attachment hang, fake timeout or skipped-failure success. Restore host
+  exactly to SHA256 `a471dea6e8be0725ccd762c64f7829c2568fba8ce11a1cad2cacc50a06a8df27`.
+- Final source-restored full `make test-client`: **9,691 pass/340 explicit skips**;
+  focused runtime27/27. Native `make test-browser` selected Garage population:
+  **34/34 across Chromium/WebKit**, plus its isolated performance **1 pass/22
+  selector skips**. Default screenshot/failure settings unchanged. Final browser
+  output and verdict fully observed; the earlier positive output was clipped in
+  passive HTTP diagnostics only and not used as a substituted gate.
+- `make typecheck build-client verify-client-boundary copy-check verify-ci-topology`
+  exits0: zero TS/Svelte diagnostics,213-module build, unchanged generated copy
+ 658keys/hash and content manifest; topology13 negative controls discriminate.
+  The full multi-commit copy-history check was allowed to finish unshortened;
+  no ceiling or bypass was introduced.
+
+The scoped first filter passes. **Claude still owes the complete new span after
+7aab0e2e INCLUDING all record edges.** Current primitives/fixtures are not
+Firefox, manual AT, real-WebSocket achievement acquisition, full Garage, whole
+CI, mint, release or archival proof. ExistingRP-131/RP-307 and all owner/author/
+content/platform/review holds remain. Next safe independent work is a separately
+bounded designated review of `6594b646^..6594b646`, all5paths (Fiscal/buff/reflow).

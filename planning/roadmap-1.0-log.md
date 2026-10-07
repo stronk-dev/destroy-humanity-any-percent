@@ -4018,3 +4018,22 @@ GS0.3 `301728c8^..301728c8`, all14paths. Newspan after64f836c2 INCLUDING records
 needs Claude; older spans independent. Goalactive/progress, no fullClout/wholeCI/
 1.0/archival/mint/push/deploy/release promotion or shortened nine-tier scope.
 [Requirements and evidence](clout-v1-and-pr-interns/acceptance-reconciliation.md).
+
+## 2026-10-07 — Garage GS0.3 review finds real payload defect; bounded correction
+
+Designated Codex review of original Claude `301728c8^..301728c8`, all14paths:
+**CHANGES REQUIRED** (RP-312). Browser meter decoder accepted four direction/value
+contradictions forbidden by the actual server.68ddc0c8 predeclares;49576162
+test-first reproduces8failures. Narrow acceptedGS0.3 predicate correction plus
+13new decoder/runtime/reconnect cases pass. No mechanics, server, wire, kernel,
+balance, copy or CI bytes changed. Actual direction omission fails8; actual
+delivery gate omission fails3 (including simulated1006/recovery at new offset);
+host dedupe omission fails both native browsers. All probe bytes restored exactly.
+One new test's nested header expectation initially rejected legitimate Content-Type;
+instrument corrected, not product behavior loosened. Final9,691 client/340skip,
+nativeChromium/WebKitGarage34/performance1, types/build/boundary/copy/manifest/
+topology pass. This is not wholeCI/Firefox/server acquisition/fullGarage acceptance.
+Complete new Codex span after7aab0e2e INCLUDING records needs Claude; prior Clout
+spans independent. Next bounded designated review6594b646 all5paths. Goal remains
+active/progress, full nine-tier scope; no boxes/status/archive/mint/push/deploy/
+release changes. Detailed verdict/evidence in Garage log.

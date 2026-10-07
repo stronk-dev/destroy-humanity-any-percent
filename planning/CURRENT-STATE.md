@@ -4,14 +4,26 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
+**Latest Garage review/correction:** designated Codex review of original Claude
+`301728c8^..301728c8` covers all 14 paths: **CHANGES REQUIRED**, RP-312 meter-direction
+domain mismatch. Test-first `49576162` reproduces 8 failures; the accepted GS0.3
+repair and 13 new cases now pass (9,691 client tests/340 explicit skips). Real
+delivery-gate and host-dedupe omissions fail; exact source restored. Native
+Chromium/WebKit Garage 34 and isolated performance 1 pass; types/build/boundary/
+copy/manifest/topology gates pass. Firefox/real-server acquisition/full Garage/
+whole CI/release are not claimed. New span after `7aab0e2e` including records needs
+Claude; prior Clout spans are independent. Next bounded designated review:
+Claude `6594b646` Fiscal/buff/reflow, all 5 paths. Full nine-tier goal and all prior
+owner/numeric/platform/content/review holds remain.
+
 **Latest Clout harness prerequisite:** all12accepted criteria mapped; new
 Go simulation effect-mask tests pass16literal rates/32full-state advances,
 8live companions/four refusal entrypoints. Compiling guard omission fails
 8rates/16advances; source restored. Cold focused production+harness/vet pass;
 full production still ONLYoriginal27AC6red. No runtime/balance/kernel change.
 DG-D/D-021 architecture stays unselected; the provisional proposed-next note
-is forward-corrected, not runtime authority. Next bounded designated review:
-Claude's Garage GS0.3 `301728c8^..301728c8` all14paths. Newspan after64f836c2
+is forward-corrected, not runtime authority. The then-next original Garage
+GS0.3 review is recorded above. Newspan after64f836c2
 including records needs Claude; all previous owner/platform/review holds remain.
 [Criterion map and bounded evidence](clout-v1-and-pr-interns/acceptance-reconciliation.md).
 

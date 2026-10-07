@@ -242,6 +242,7 @@ export function decodeGameUIAnnouncement(envelope: TransportEnvelope): GameUIAnn
   if (payload.direction !== "up" && payload.direction !== "down") throw new SyntaxError("invalid meter direction");
   const from = id(payload.from_band), to = id(payload.to_band);
   const before = safe(payload.value_before), after = safe(payload.value_after);
-  if (from === to || before > 100 || after > 100) throw new SyntaxError("invalid meter band change");
+  if (from === to || before > 100 || after > 100 ||
+      payload.direction === "up" && after <= before || payload.direction === "down" && after >= before) throw new SyntaxError("invalid meter band change");
   return { cursor: envelope.rev, kind: "meter_band_changed", payload: { direction: payload.direction, from_band: from, meter_id: id(payload.meter_id), run_id: runID(payload.run_id), to_band: to, value_after: after, value_before: before } };
 }

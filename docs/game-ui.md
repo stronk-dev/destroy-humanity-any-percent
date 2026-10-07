@@ -26,6 +26,14 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   and career score, an earned/total count, and each row's scope, text state (earned this run,
   earned in career, not earned yet), score grant, and the existing possession warning. The score is
   never labelled Clout.
+- **Achievement/meter announcements:** exact event decoders drive the single polite chrome
+  announcement, not game-state arithmetic. Achievement copy is announced once per scoped cursor;
+  meter changes announce on the Meters surface or badge its nav until visited. Unknown presentation
+  IDs are withheld and reported. Meter values must be integers in 0–100, with strictly increasing
+  values for `up` and strictly decreasing values for `down`, matching the server validator.
+  Contradictory directions throw into authoritative recovery rather than announcing (RP-312).
+  Fake-socket reconnect and native Chromium/WebKit host replay tests demonstrate suppression;
+  this is not a real-server acquisition, Firefox or whole Garage acceptance claim.
 - **Earnings Calls (`fiscal`):** unlocked by `feature.fiscal`.
   - Shows credit against its visible cap, the auto-sweep preview, the hoard preview (next run only),
     and a display-only phase (`fiscal-phase.ts`: ripening, early with its stated success chance, or

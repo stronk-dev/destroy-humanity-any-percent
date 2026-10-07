@@ -387,7 +387,7 @@ describe("GS0.3 announcement decoders", () => {
       ]);
       expect(socket.closeCount).toBe(1);
       expect(storage.getItem(`cloud-clicker.transport.v1.${snapshot.run.founder_id}`)).toBeNull();
-      expect(fetcher).toHaveBeenCalledExactlyOnceWith("/api/v1/founder/state", expect.objectContaining({ headers: { Authorization: "Bearer access" } }));
+      expect(fetcher).toHaveBeenCalledExactlyOnceWith("/api/v1/founder/state", expect.objectContaining({ headers: expect.objectContaining({ Authorization: "Bearer access" }) }));
       await vi.waitFor(() => expect(received).toContainEqual({ kind: "snapshot", value: currentSnapshot }));
     } finally { unsubscribe(); }
   });
@@ -447,5 +447,38 @@ describe("GS0.3 announcement decoders", () => {
     expect(decodeGameUIAnnouncement(envelope(meter))).toMatchObject({ kind: "meter_band_changed", payload: { to_band: "high" } });
     expect(() => decodeGameUIAnnouncement(envelope({ ...meter, payload: { ...meter.payload, payload: { ...meter.payload.payload, to_band: "low" } } }))).toThrow(/band change/);
     expect(decodeGameUIAnnouncement(envelope(eventEnvelope(4)))).toBeUndefined();
+  });
+
+  it("does not reannounce an achievement recovered at a new offset after an actual simulated reconnect (GS2-A2)", async () => {
+    vi.useFakeTimers();
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(currentSnapshot), { status: 200 }));
+    const sockets: FakeSocket[] = [];
+    const runtime = createBrowserGameUIRuntime(storage, fetcher, crypto, () => {
+      const socket = new FakeSocket(); sockets.push(socket); return socket as unknown as WebSocket;
+    }, { protocol: "http:", host: "localhost" });
+    const received: Array<{ kind: string }> = [];
+    const unsubscribe = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+    try {
+      openAndConnect(sockets[0]); subscribeReplies(sockets[0]);
+      publication(sockets[0], `player:${snapshot.run.founder_id}`, 1, achievement(1));
+      sockets[0].emit("close", { code: 1006 });
+      expect(received.at(-1)).toEqual({ kind: "transport_recovering" });
+      await vi.advanceTimersByTimeAsync(1_000);
+      expect(sockets).toHaveLength(2);
+      openAndConnect(sockets[1]);
+      expect(JSON.parse(sockets[1].sent[1])).toEqual({ id: 2, subscribe: {
+        channel: `player:${snapshot.run.founder_id}`, recover: true, epoch: "player-epoch", offset: 1,
+      } });
+      subscribeReplies(sockets[1], { recovered: true, playerOffset: 2, publications: [{ offset: 2, data: achievement(1) }] });
+      expect(received.filter((message) => message.kind === "announcement")).toEqual([
+        { kind: "announcement", scope: "company", value: { cursor: 1, kind: "achievement_earned", payload: achievement(1).payload.payload } },
+      ]);
+      expect(received.filter((message) => message.kind === "transport_recovered")).toHaveLength(2);
+      expect(received.filter((message) => message.kind === "system")).toEqual([]);
+      expect(fetcher).not.toHaveBeenCalled();
+      expect(JSON.parse(storage.getItem(`cloud-clicker.transport.v1.${snapshot.run.founder_id}`)!)[`player:${snapshot.run.founder_id}`]).toEqual({ epoch: "player-epoch", offset: 2 });
+    } finally { unsubscribe(); }
   });
 });

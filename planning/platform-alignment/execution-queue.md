@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage GS0.3 review / RP-312 direction correction — 2026-10-07
+
+Codex designated review: original Claude `301728c8^..301728c8`, all14paths,
+**CHANGES REQUIRED** for server/browser meter-direction domain mismatch.
+Separate68ddc0c8 predeclaration and49576162 test-first8failures; narrow accepted
+GS0.3 predicate repair, four admitted controls and actual simulated socket
+reconnect now pass. Compiling direction omission fails8; delivery omission
+fails3; host dedupe omission fails2native cases. All sources restored exactly.
+Final9,691 client/340skip, nativeGarage34/performance1, types/build/boundary/
+copy/manifest/topology pass. No fullCI/server/acquisition/Firefox/allGarage gate.
+
+**READY next:** separately bounded designated review Claude
+`6594b646^..6594b646` (Fiscal/buff announcements and reflow, all5paths).
+Entire new Codex span after7aab0e2e INCLUDING records needs Claude before its
+correction can be consumed as approved. Original allGarage/later/current spans
+and all previous Clout ranges remain independent. No boxes/status/mint/archive/
+push/deploy/release change, full nine-tier objective unchanged.
+
 ## Clout residual criteria and CV10 simulation mask — 2026-10-07
 
 All twelve accepted criteria reconciled against concrete evidence. Test-only
@@ -12,7 +30,7 @@ companions/four invalid-mask entrypoints PASS. Actual guard omission fails
 Cold selected production+harness/vet PASS; full production ONLYoriginal27AC6RED.
 No runtime/kernel/oldcorpus/balance/CI/copy/checkbox/mint/archive change.
 
-**READY next:** designated bounded review of Claude's Garage GS0.3 original
+**Then-next, now reviewed above:** original Claude Garage GS0.3
 `301728c8^..301728c8`, all14paths; current/remainder/correction spans independent.
 DG-D/D-021 evaluation architecture remains unselected:41dd8c9f's proposed
 runtime-next text was forward-corrected BEFORE any runtime edit. AC3/DG-B,
