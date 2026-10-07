@@ -37,9 +37,11 @@ description of its behavior; archived RFCs explain why and how it arrived.
    pretending to be an unrelated top-level system.
 2. **Scope discipline:** an RFC should be implementable in bounded work. If scope grows during drafting or implementation, **split**: the new scope becomes a new RFC referencing the parent. Note the split in both.
 3. **Amendments:** small clarifications to a not-yet-implemented RFC are edited in place with a
-   changelog line. Anything that changes implemented behavior is a follow-up RFC linked to the
-   archived parent. The archived parent remains immutable; after the follow-up ships, `docs/`
-   incorporates the new canonical behavior.
+   changelog line. Changing an implemented system's accepted contract requires a follow-up RFC
+   linked to the archived parent. Fixing behavior to conform to that contract, or refactoring
+   without changing it, does not require a new RFC; cite the existing contract and use the
+   delivery procedure below. The archived parent remains immutable; `docs/` describes the
+   corrected current behavior.
 4. **Design linkage:** every RFC cites the `design/` sections it specifies. Deviations from design docs are called out explicitly in a "Deviations from design" section — the RFC wins once accepted, but the divergence must be visible.
 5. **Agent rule:** coding agents implement **RFCs**, not design docs. If needed spec is missing, that's a `DESIGN-GAP` → propose a draft RFC, don't improvise.
 6. **The index** (`rfc/README.md`) lists active work and the archive, including parent/follow-up
@@ -95,6 +97,9 @@ the last green result conceals failures. Unrelated red lanes do not forbid scope
   mutation of every assertion, and no repeated severing of unchanged checks in each batch.
 - Surface uncaught errors, skipped dependencies and incomplete measurements. Diagnosing an
   intermittent failure does not authorize changing retries, timeouts or gameplay semantics.
+- State the test boundary honestly. A mocked runtime can prove UI ordering or error handling,
+  not persistence, server authorization or transport recovery. Claims about those boundaries
+  need the corresponding real integration check; unrelated end-to-end journeys add no proof.
 - Predeclare empirical research (question, population, method, threshold, limitations) when its
   results will decide product scope, balance or operating limits. Routine debugging, test runs,
   formatting and record corrections do not need a separate research protocol.
@@ -149,3 +154,7 @@ On completion:
   coherent review batches, concise single-home records and separate raw research storage.
   Replace per-edit predeclaration/severing, duplicate-ledger and test-bytes-in-checkbox-commit
   routines; preserve explicit acceptance, independent archival review and full 1.0 obligations.
+- 2026-10-07: remove the lifecycle rule's conflicting blanket follow-up requirement for routine
+  contract-conformance fixes. Explicitly distinguish mocked checks from real integration claims.
+  Verification: inspected the process diff against the risk table and existing CI targets;
+  documentation-only, no software tests run. Normative amendment awaits cross-party review.
