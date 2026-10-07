@@ -4580,3 +4580,39 @@ bounded correction, not Linux/amd64 image identity, real scrape-to-receiver deli
 R-006, complete DP-E/AC7 or release proof. Original R5 and all other outstanding independent
 implementation/record ranges remain open. Next deployment work: the remaining corrective
 reviews and exact-artifact/clean-host gates; no archival or publication.
+
+## 2026-10-07 — DP7 native notification integration (supplement, not release proof)
+
+Added `server/operations/alertmanager_native_integration_test.go`, a manual root Make target and
+canonical usage docs. This exercises the existing production delivery functions with **real**
+Alertmanager and webhook payloads, not a synthetic counter server. The declared test receiver
+configuration is retained except its disposable loopback URL. No production, CI, grouping,
+interval, timeout, kernel, balance or release-contract change.
+
+Official native Alertmanager 0.32.1 archive SHA256
+`4fd3d3d6156cbe76016583b852dc80beda7ee693d28ac27477a9b3da06d87a93` matches the
+[release](https://github.com/prometheus/alertmanager/releases/tag/v0.32.1) asset metadata and
+published checksum file (SHA256 `11f284aa3b991d61435b6ea6dd0a40262c068ac44b3e1d1aa6fc63464271f018`).
+Binary revision `8768aa6f65f1a888b5aa5fbf877cf20ad45d1f61`; archive extracted in a temporary
+directory, no global install or tracked binary. Reproduce with
+`make test-operations-alertmanager-native ALERTMANAGER_BINARY=<verified absolute native path>`.
+
+- Real integration PASS, 60.52s: preflight's exact nonce received; all seven families delivered
+  firing and resolved payloads under one fresh proof nonce; separate healthy receiver returning
+  HTTP 500 rejected on notification failure in 0.21s, not timeout. Both process waits completed.
+- Missing binary target exits 2; supplying the real Prometheus binary instead also fails the
+  version check before starting a service. Neither is a skipped-green integration result.
+- Cold `make test-go vet GO_PACKAGES='./operations ./releasepackage' GO_TEST_FLAGS='-count=1'`
+  PASS (0.877s / 1.470s). Ordinary optional DB/Compose/native tests skip without their prerequisites;
+  this command is not the real-service proof above. `make verify-ci-topology` PASS, including
+  its thirteen existing negative controls. No hosted CI claim.
+- Excluded initial launcher result: nested Make consumed the regex's dollar anchor and selected
+  no tests. Fixed the recipe before the actual run. First selected run was denied a loopback bind;
+  identical source then ran with narrow listener authority. No assertion/budget weakening.
+
+Review by: Codex (implementer, first filter). Recorded by: Codex. Scope: the new test, Make target,
+docs and owning records after `8f2e29d8`; cross-party Claude review remains required. Real
+receiver-side evidence supplements, but does not repair, the runtime record's count-derived
+per-family attribution. Original R5, actual scrape/rule-to-receiver/private-network/Caddy and
+exact-artifact clean-host gates remain open. Docker overlay rechecked at 0 free / 100%; no cleanup,
+deployment, publication, archival or full-1.0 promotion.

@@ -719,6 +719,23 @@ The integration proves the exact nonce reaches the receiver and that a receiver 
 fails the proof on recorded failures. Alertmanager metrics cannot attribute a delivery to one alert
 family or nonce, so the seven-family delivery record is count-derived, not per-family proof.
 
+For local notification debugging without Docker, use
+`make test-operations-alertmanager-native ALERTMANAGER_BINARY=/absolute/path/to/alertmanager`.
+Supply the official native Alertmanager **0.32.1** executable and verify the release archive
+against its published `sha256sums.txt`; the target neither downloads nor globally installs it.
+Missing inputs and a different binary/version fail instead of silently skipping this target.
+It starts disposable loopback-only Alertmanager processes and an actual HTTP receiver, preserving
+the checked-in test receiver configuration's grouping, one-minute interval and `send_resolved`
+policy; only the receiver URL changes. The healthy case checks the received preflight nonce and
+both firing and resolution payloads for each of the seven families. The failure case keeps
+receiver health green but returns HTTP 500 to notifications, and requires preflight to report a
+recorded failed request rather than time out. Each process is stopped and waited for on exit.
+
+This is a supplemental manual test outside CI. Its receiver-side observations do not change the
+runtime delivery record's count-derived semantics, and do not prove rule firing, production
+Prometheus scraping, Caddy isolation, pinned Linux images, an operator's configured receiver or
+clean-host R-006. Run the declared operations Compose and release populations for those claims.
+
 All seven services write to persistent journald with a unique bounded tag. Journal capacity is not
 a guessed constant: `deployment-operations journal-observe` records the predeclared workload,
 interval, sample count, observed bytes, peak bytes/day, filesystem size and proposed budget.
