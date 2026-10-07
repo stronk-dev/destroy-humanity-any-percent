@@ -3083,3 +3083,35 @@ independently of narrow Desk 54c8c8da..57efdc39, source guard
 d3ce0f76..54c8c8da and every previous range. Full Linux/SQL/RP-236/331/
 RP-336/author/body/AT/GS4/full AC7/default-player/privacy/platform/numeric/
 full-nine-tier 1.0 holds remain; no checkbox/lifecycle/archive/mint/push.
+
+## 2026-10-07 — exact Fiscal baseline/fault results; final probes predeclared
+
+Actual new native fixtures pass eight executions in dd7a79 and bb5088, with
+two isolated performance cases each; no current-source timing defect found.
+Initial typechecks ea3473/ce9392 exited 2 because the fixture did not narrow
+the versioned ParsedGameUISnapshot union. Schema_version alone cannot narrow
+its generated numeric version type; explicit schema+features guard fixes it.
+a0def3 typecheck then exits 0 with zero errors/warnings. Instrument mistakes,
+not a product finding and not green verification until corrected.
+
+Six actual independent faults execute under the focused native gate:
+fc6ba4 early off-by-one two fail/six pass; c6bda4 guaranteed off-by-one
+two fail/six pass; c0f2d5 phase text removed eight fail; f797d5 phase text
+hidden eight fail; 34cb2b risk division wrong four fail/four pass; 911292
+ripening no longer disables harvest two fail/six pass. Every terminal exit 2
+is the named rendered phase/text/visibility/readiness assertion, not syntax.
+Four Svelte mutations passed the actual compiler parser first. Both product
+sources restored to the preceding pinned hashes before each new fault; all
+six are now restored. Existing host assertions remain unchanged.
+
+Predeclare two additional bounded source probes before touching source:
+remaining() ceil→floor must fail exact one-millisecond countdown/auto-note
+outputs; replace the actual enabled onHarvest() call with a no-op expression
+must fail the spy delivery counts while disabled-before-edge remains a clean
+control. No product repair, fake time, new population, copy or scope change.
+Each source must parse and execute, then restore to the original FiscalSurface
+SHA; no matching live process during edits. Final full two-engine Garage,
+chained performance and root types/client/build/boundary/topology afterwards.
+New driver SHA before additional probes:
+8af13159c9438ee23b22f024ad1ea0414d1bdc5669868e9b1ebb8020c92992f2.
+All preceding authority/review/full-nine-tier exclusions remain unchanged.
