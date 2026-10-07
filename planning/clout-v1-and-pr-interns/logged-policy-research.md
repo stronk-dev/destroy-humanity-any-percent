@@ -192,3 +192,15 @@ do not fix the source-only terminal finding without its measured population.
 RP-307/R-012 representation andRP-308episode-author questions remain open.
 Entire new span after685debe7 including records needs Claude; earlier spans
 independent. Full1.0 goal active, no acceptance/checkbox/archive/mint/push/deploy.
+
+## Following terminal-only correction — original ordinary outputs unchanged
+
+Predeclared72c9983b after0c4d6481 under CV4; kernel165 corrects two terminal
+presence/version predicates, not ordinary behavior. Full explicit Go
+re-observation changes ONLY the logged report's TS runtime source pin. All24
+ordinary outputs/bundle/context/payload/evidence andnine negative count remain
+identical with0c4d6481 (independentbbd1e7 comparison), all48TS checks still pass.
+Current runtimeba2f2ea8/logged artifactea238d75; earlier failed/corrected
+identities retained in Git, no rounding/state restamp or waiver. Complete
+terminal results and gate limits in [terminal-research.md](terminal-research.md).
+Whole new terminal range after0c4d6481 needs Claude; prior spans independent.

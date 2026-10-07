@@ -329,6 +329,13 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   continuity. Census/forged-next-state controls discriminate and restore;
   eightnewfile failures remain. Separately scope terminal runtime correction.
   [Terminal evidence/limits](../clout-v1-and-pr-interns/terminal-research.md).
+  Terminal correction separately predeclared72c9983b/kernel165 now passes all21
+  checks: six complete same-bundle terminal/next-action sequences, three
+  unchanged-state refusals, directnext6/census/five real legacy companions.
+  Original/permissive runtime guards fail8/6 and restore exactly. Both reports'
+  full re-observation changes ONLY source identities, not any observed outputs.
+  Next separately predeclare pinned pre-v19→v19 activation and relevant action/
+  buff/mode seams; representation/episode meaning/SQL transactions remain open.
   This is bounded ordinary parity, not partition,
   new representation, mode/buff, Service/Store or natural-player proof.
   Later predeclare actual paired action/buff/mode/multi-resource seams;

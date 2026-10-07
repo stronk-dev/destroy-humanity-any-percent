@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest terminal checkpoint (2026-10-07):** test-only f7a6e92a at32116b14
+**Latest terminal repair (2026-10-07):** separate72c9983b at0c4d6481,
+kernel165. Six complete same-bundle v19 exits and first next-run actions now
+match Go exactly. All21terminal checks pass, including unchanged-state refusals
+and actual legacy companions; both runtime guard mutants fail and restore.
+Both reports re-observed, only source identities changed, no expected outputs
+restamped. Client9568pass/340visible skips; build/types/vet/topology/native
+8researchtests pass; original27GoAC6/history/AMD64/hosted holds remain. Next
+separately measure actual pre-v19→v19 activation and relevant action/buff/mode
+seams; no fullCV4/Clout/1.0 promotion. Entire span after0c4d6481 including every
+record edge needs Claude; preceding scopes/questions independent. Proper full
+nine-tier/platform goal remains active, not a shortened release path.
+[Evidence](clout-v1-and-pr-interns/terminal-research.md).
+
+**Previous terminal observation (2026-10-07):** test-only f7a6e92a at32116b14
 confirms RP-310:TS rejects six valid v19 exits but applies an exit with required
 active-play evidence removed. Go six exits/next actions andthree unchanged
 refusals pass; direct restored-Go-next-run TS parity6passes is not terminal

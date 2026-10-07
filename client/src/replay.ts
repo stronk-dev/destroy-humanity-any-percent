@@ -1301,7 +1301,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const next = nextHash === catalogs.constantsHash ? catalogs : catalogs.next;
   if (!next || next.constantsHash !== nextHash) throw new RangeError("next catalog bundle mismatch");
   validateReputationTransition(catalogs.reputationTree, next.reputationTree);
-  const activeEvidence=hasActive?parseActiveSchedule(resolved.active_play):null,nextActive=hasNextActive?parseActiveSpawn(resolved.next_active_play):null;if((company.wireVersion===18)!==(activeEvidence!==null)||company.wireVersion===18&&wire.v<5||(next.opportunities!==undefined)!==(nextActive!==null)||activeEvidence?.claim!==null&&activeEvidence!==null)throw new RangeError("terminal active-play evidence mismatch");
+  const activeEvidence=hasActive?parseActiveSchedule(resolved.active_play):null,nextActive=hasNextActive?parseActiveSpawn(resolved.next_active_play):null;if((company.wireVersion>=18)!==(activeEvidence!==null)||company.wireVersion>=18&&wire.v<5||(next.opportunities!==undefined)!==(nextActive!==null)||activeEvidence?.claim!==null&&activeEvidence!==null)throw new RangeError("terminal active-play evidence mismatch");
   if ((catalogs.minigameAPI !== undefined) !== hasMinigameActivity) throw new RangeError("terminal minigame activity evidence mismatch");
   const minigameSessionActive = hasMinigameActivity ? boolean(resolved.minigame_session_active) : false;
   if (foundationsActive(next) && wire.v < 3) throw new SyntaxError("foundation activation requires replay inputs v3+");

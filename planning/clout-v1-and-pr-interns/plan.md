@@ -576,3 +576,11 @@ existing original27AC6/history/AMD64/hosted holds remain. Records synchronized,
 self first-filter exact new range, Claude cross-party gate including every edge.
 No numeric/save/balance/CI/copy/RFC body change, checkbox/acceptance promotion,
 archival/mint/push/deploy/release call. RP-308 unanswered. Proper1.0 active.
+
+Terminal correction execution:all21checks pass, complete six terminal/next
+outputs unchanged andlegacy/refusal companions correct. Old guard8fails,
+permissive guard6fails; exact restoration. Explicit both-report re-observation
+changes onlylogged1/terminal2sourcepins. Client9568/340skip andbuild/types/vet/
+topology/native8research pass; original27GoAC6/history/AMD64/hosted held. Next
+separately scope pre-v19→v19 activation andaction/buff/mode seams. Whole new
+span after0c4d6481 including records needs Claude; no fullCV4/Clout promotion.

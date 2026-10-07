@@ -1435,3 +1435,46 @@ five old-version companions, real guard probes and unchanged outputs after both
 reports' explicit source re-observation. New runtime range distinct from the
 preceding test-only research and scheduler correction. No measurement of the
 corrected terminal population has run yet.
+
+### RP-310 terminal correction result — bounded full outputs and continuity
+
+Predeclared72c9983b at0c4d6481. Runtime diff ONLY two Company===18terminal
+predicates→>=18, honest kernel164→165/mirrors. Every other evidence, draw,
+next-bundle, claim, scheduler, state/output/numeric/save/balance/copy/CI/RFC
+body byte unchanged. Five real pinnedlegacy companions added, oldfixtures
+unchanged. All21terminalchecks pass, original six fullGooutputs andfirstnext
+actions exact. Original16declarations retained. Ordinary48cases still pass.
+
+Initialcorrected957fce/29972 terminal4dbc02 exit0,9568/340skip. Actual oldguard
+b5ec5f/84402 terminal0e83df exit2:exactly8newfilefails,6valid calls refuse and
+missingcurrent wronglyAPPLIES;sequencecontrolmasked. Permissive26a166/32630
+terminal2f132e exit2:6refusalcontrols fail; some wronglyapply, others escape to
+wrong later diagnostics. Sequence+1 still hits next-schedule validator. Both
+real compiling runtime mutants restored;9e0849/312a33 sourcehashes exact.
+
+First342225writer failed SHELLselector syntax beforeGo; no corpuswritten.
+Correctedbf51a6/72005 terminal3b5814 exit0,.385s explicitly re-observes both
+whole populations. Independentbbd1e7 with0c4d6481 excludes ONLYsource_sha256:
+loggedchanges1pin,terminal2pins, ALL observed bundles/profiles/commands/evidence/
+receipts/events/states/refusalcounts identical. Older corpora untouched.
+Runtimeba2f2ea8,TSterminalobservere37a2813,terminalartifact687e43f2,
+loggedartifactea238d75; oldsource/artifactidentities preserved at0c4d6481.
+
+Final client938498/30265 terminalfb625b exit0,9568pass/340visible skips.
+Types/vet/topology1418b3/72593 terminal35fcab exit0,zero diagnostics/13controls.
+Native d3908b/55080 terminala1fe44 exit0,1.497s:allEIGHTresearchtests execute,
+oldSQL1215/16exact. Newterminalpopulation still in-memory, notSQLtransactions.
+Cold14f875/28131 terminala2ff3c exit2:production43.020s fails ONLY original
+27AC6;economy6.089s/decimal.122s/kernel.171s pass. Clientbuild9521d5 exit0.
+Kernel6ba675/39623 terminal11a924 exit2:checkout/fixturespass, historical
+RP-131/50a3a514 remains. Independentfe57e4/49134 terminaleb18ff exit0.
+All handles terminal beforeedits; no restart/cleanup/mutantleft. A multi-file
+recordpatch failed context matching and wrote NOTHING; corrected patch applied.
+
+Records synchronized. Full outputs/TS-created next-run continuity now proven
+for this six-case same-bundle synthetic population, NOT allpreactivation/buff/
+mode/partition/persistence/natural-player/release behavior. Next separately
+predeclare actual pinned pre-v19→v19 activation and relevant seams underCV4.
+RP-308 delegation unanswered; no owner-body/accumulationwaiver. Fullnewspan
+after0c4d6481 needs Claude including everyrecordedge; older spans independent.
+Goalactive/progress, no checkbox/status/archive/mint/push/deploy/release call.

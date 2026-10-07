@@ -3,6 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## RP-310 terminal corrected / exact next-run continuity — 2026-10-07
+
+Predeclared72c9983b at0c4d6481:ONLY two terminal presence/version predicates
+corrected under acceptedCV4, honest kernel165. All six same-bundle v19 exits
+now match complete Go outputs and continue through the first next-run manual
+action. All21terminal checks pass, including three unchanged-state refusals,
+directnext6/census/five real v16/v18 companions. Old guard8fails; permissive
+guard6fails; restored exactly. Both complete reports re-observed: ONLY source
+identities change (logged1/terminal2), every original output remains identical.
+
+Client9568pass/340visible skips, client build/types/vet/topology/native8research
+tests pass. Original27GoAC6/historyRP-131/AMD64/hosted holds remain. No fullCI/
+CV4/Clout/1.0 approval. Entire newspan after0c4d6481 INCLUDING records needs
+Claude; research/scheduler/ordinary/prior spans independent.
+**READY next:** separately predeclare actual pinned pre-v19→v19 activation
+and relevant action/buff/mode seams under CV4. Same-bundle exits are not all
+activation/persistence/natural-player coverage. RP-308 delegation unanswered;
+no numeric/save/CI/copy/body/acceptance waiver or archival/mint/push/deploy.
+[Evidence/limits](../clout-v1-and-pr-interns/terminal-research.md).
+
 ## RP-310 terminal rejection / evidence omission confirmed — 2026-10-07
 
 Test-only f7a6e92a after32116b14: actual Go six v19 exits and following manual

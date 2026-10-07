@@ -104,12 +104,15 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   full rollback (including25hcatchup), nine catch-up and five compatibility
   companions. This is synthetic ordinary-action evidence, not the natural
   player journey, terminal/Exit, accepted accumulation representation or SQL
-  transaction proof. A separate [actual terminal observation](../planning/clout-v1-and-pr-interns/terminal-research.md)
-  now confirms the terminal defect: six valid v19 exits are rejected, while
-  removing current active-play evidence permits an exit. Go executes six exits
-  and following manual actions correctly; six direct restored-Go-next-run TS
-  comparisons pass, but browser terminal continuity remains red. This must be
-  corrected separately; direct next-run parity is not terminal acceptance.
+  transaction proof. The separately predeclared kernel0.3.165 correction now
+  enforces v18-and-later terminal evidence and the v5 minimum. All six synthetic
+  same-bundle v19 exits match Go receipts, Founder output, three event streams,
+  final/new Company states and following first manual actions. All21terminal
+  checks pass, including unchanged-state refusals and genuine v16/v18 legacy
+  companions. Both real guard mutants fail and restore exactly. See the
+  [terminal observation and correction](../planning/clout-v1-and-pr-interns/terminal-research.md).
+  This is not yet pre-v19→v19 activation coverage, natural progression, all
+  mode/buff seams, an independent Founder-log or SQL transaction witness.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

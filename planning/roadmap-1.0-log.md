@@ -3880,3 +3880,26 @@ Whole span after32116b14 including records needs Claude independently. Goal
 active/progress, not blocked: actual terminal finding makes the next accepted
 repair concrete. No checkbox/status/archive/mint/push/deploy/release call.
 [Evidence/limits](clout-v1-and-pr-interns/terminal-research.md).
+
+## 2026-10-07 — v19 terminal correction / complete next-run continuity
+
+Predeclared72c9983b at0c4d6481 under acceptedCV4. Corrects ONLY two terminal
+presence/version predicates with honest kernel164→165/mirrors. Original six
+Go exits now match browser receipts, Founder output, three event streams, both
+full Company states and following next-run manual actions. All21terminal
+checks pass; actual legacy/refusal companions retain unchanged-state rejection.
+Old runtime guard8fails/permissive guard6fails, both restored exactly.
+
+Explicit Go re-observation of both reports changes ONLY source identities,
+all24ordinary/sixterminal bundle/context/payload/evidence/output rows unchanged.
+Client9568pass/340visible skips; build/types/vet/topology/native8research tests
+pass, oldSQL1215/16exact. Go original27AC6/historyRP-131/AMD64/hosted remain
+open; no wholeCI or fullClout acceptance. All handles terminal, no mutant left.
+
+Next separately predeclare actual pinned pre-v19→v19 activation and relevant
+action/buff/mode seams underCV4. Same-bundle synthetic continuity is not the
+whole migration/natural-player/persistence floor. RP-308 owner delegation still
+unanswered; prior author/content/environment/review/release holds unchanged.
+Whole new span after0c4d6481 INCLUDING record edges needs Claude independently.
+Goalactive/progress; no checkbox/status/archive/mint/push/deploy/release call.
+[Evidence/limits](clout-v1-and-pr-interns/terminal-research.md).

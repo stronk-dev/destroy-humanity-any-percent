@@ -4,6 +4,11 @@ Authority: accepted Clout CV4. Test-only population predeclared `f7a6e92a` at
 `32116b14`, separate from the scheduler repair. These results are bounded
 research, not full CV4, Clout, accumulation, persistence or release acceptance.
 
+The original red observation below is historical at `0c4d6481`. The separately
+predeclared terminal repair (`72c9983b`, kernel0.3.165) now passes all21terminal
+checks, including complete same-bundle terminal continuity. Its result and
+limitations follow at the end; the original defect evidence is preserved.
+
 ## Population and actual producers
 
 Six synthetic admitted Company v19 wind_down cases: online0/3114/120001ms,
@@ -78,3 +83,63 @@ No numeric tolerance, accumulation waiver, new mechanics, schema, migration,
 balance, player copy, CI change or owner-body edit is authorized by this study.
 RP-308 remains an unanswered author question. Whole new range after32116b14,
 including records, still needs Claude's designated independent review.
+
+## Separately scoped terminal correction — kernel0.3.165
+
+At0c4d6481, predeclared72c9983b before correction. Runtime changes ONLY two
+terminal Company===18 predicates to>=18. Next evidence, claim exclusion,
+scheduler validation and output/reset math unchanged. Same-commit kernel164→165
+and both mirrors are an honest behavior signal, not a historicalRP-131 repair.
+
+Five genuine compatibility companions added without rewriting older fixtures:
+actualv18 good exit full outputs; missingv18current; pre-v5 input atv18/v19;
+unexpected current evidence on actualv16. Four invalid companions refuse the
+exact terminal presence diagnostic and leave the full original state unchanged.
+Original sixteen declarations intact. All21 pass: complete six terminal/next
+sequences now compare exactly, with every original Go output retained. Final
+attainment8, next attainment0, run3v19/fresh scheduler and first action all agree.
+This now proves TS-created next-run continuity in THIS synthetic population;
+direct restored-Go-next comparisons remain a separate six-case arm.
+
+First corrected9568pass run957fce/29972 →4dbc02 exit0. Original guardb5ec5f/
+84402 →0e83df exit2:exactly8newfile failures, including six valid calls and
+missingcurrent wronglyAPPLIES. Permissive guard26a166/32630 →2f132e exit2:
+six refusal controls fail; missingcurrent and historical v18 cases wrongly
+apply, other companions escape to later wrong diagnostics. Sequence+1 still
+refuses at its intended next-schedule validator (defense in depth). Both real
+compiling runtime faults restored; byte identities9e0849/312a33 confirm it.
+
+First writer342225 was a shell regex-parenthesis syntax error BEFORE Go ran;
+no artifact written. Corrected selectorbf51a6/72005 →3b5814 exit0,.385s,
+explicitly re-observes both complete Go reports. Independentbbd1e7 compares
+whole JSON with0c4d6481 excluding ONLY source_sha256: logged report changes
+one runtime source pin; terminal report changes runtime+TS observer pins.
+ALL bundle/profile/payload/input/receipt/event/state/negative counts identical.
+No result restamp, truncation, tolerance or earlier corpus regeneration.
+
+Final source SHA256: runtime
+`ba2f2ea8a54910ff88d8fb094438e069dc7c0454c04ad6ca2e12b29cb22e12f9`;
+TS terminal observer
+`e37a2813f443d76d41b8ff1beb9e26fc54aadbc8cbb912adaa42159e639ec1ef`.
+Current terminal artifact
+`687e43f2e8db7c9cdd4323aa3597f7dc8c0d01be4f3933588ee56139b4534436`;
+logged artifact
+`ea238d75e4371c2ffff21d8e93506e344b7732ede19218687979b4a1cd5e9e3c`.
+Original failed-source identities/artifact remain at0c4d6481.
+
+Final gates:938498/30265 →fb625b exit0,9568pass/340visible skips. Types/vet/
+topology1418b3/72593 →35fcab exit0,zero diagnostics/13negative controls.
+Native d3908b/55080 →a1fe44 exit0,1.497s:all eight research tests execute,
+SQL1215/16 complete; new terminal population still in-memory. Cold14f875/
+28131 →a2ff3c exit2:production43.020s ONLY original27AC6failures;
+economy6.089s/decimal.122s/kernel.171s pass. Vite build9521d5 exit0.
+Kernel6ba675/39623 →11a924 exit2:checkout/fixtures pass, full history fails
+historicalRP-131/50a3a514. Independentfe57e4/49134 →eb18ff exit0.
+All verification handles terminal before source/record edits; no mutant left.
+
+Next separately measure real pinned pre-v19→v19 activation and relevant action/
+buff/mode seams under existing CV4; do not infer all of them from six same-bundle
+exits. Accumulation representation, RP-308 episode meaning, Service/Store/SQL
+transactions, natural journey and release evidence remain independent holds.
+New span after0c4d6481 INCLUDING record edges needs Claude designated review;
+earlier spans independent. No fullCV4/Clout/1.0 promotion or archival.
