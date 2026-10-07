@@ -3736,6 +3736,35 @@ Later scoped host correction needs separate GS0.5 product predeclaration;
 no startup draft/D-023/cleanup decision inferred. Complete new span after
 4b2fd904 requires Claude including this red checkpoint; no promotion.
 
+## 2026-10-07 — accepted RP-343 repair / fault predeclaration
+
+Separate PRODUCT scope after test-onlyf3b2f421..0a191ebd. Accepted GS3 consumes
+GS0.5's exact reconnect condition and common.stale_note; extend the EXISTING
+host marker's surface membership from Trophy-only to Trophy OR Meters.
+No new copy/component props, value math, event/recovery/auth/clock/provider/
+wire/balance/CI/Make/RFC-body behavior; marker remains a paragraph, not a new
+live region. Preserve every original assertion and the failed-first checkpoint.
+Actual Meters values/bands still come directly from bound authoritative arm.
+
+After repair require20 healthy selected executions, then six independent
+compiling faults on the same population: omit Meters marker membership;
+hide marker; omit not-ready condition (restart and not-ready-alone must fail);
+keep offline true on recovery only for Meters (marker must wrongly persist);
+replace Meters values with +1 whenever stale (native value/text exact oracle
+must fail); ignore delivered snapshot message (new authoritative values must
+not appear). Initial not-ready controls may fire the value fault before its
+later stale phase; report that honestly. Restore exact host between each
+probe/finally, no type/import error credit. First three are disclosure faults,
+last two independently prove value/update discrimination, not a demonstrated
+production prediction bug. Final full Garage/types/client/build/copy/boundary/
+topology and transactional docs/ledger/inventory/plan/queue/log closeout.
+
+Whole4b2fd904-exclusive through repair/records needs Claude independently of
+a551d3c2..4b2fd904 and all earlier spans, including red test and this scope.
+RP-342/D-023 remain draft/owner-held, no Retry/auth/cleanup answer inferred.
+Real-service/SQL/all-state/all-engine/manual AT/zoom/full GS3/1.0 gates remain;
+no box/lifecycle/archive/push/mint/deploy/release/preview promotion.
+
 ## 2026-10-07 — RP-342 first-read truth audit predeclaration
 
 At a551d3c2 clean checkout. Previous turn progressed committed host repair
