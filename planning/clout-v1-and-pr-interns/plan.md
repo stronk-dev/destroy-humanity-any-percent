@@ -680,3 +680,18 @@ proof. Original27AC6, RP-308 episode-authority, RP-131/history/AMD64/hosted and
 all prior owner/content/review/platform holds remain. Records synchronized,
 self first-filter + Claude designated full range/edges; no checkbox/status/
 archive/mint/push/deploy/release call. Proper full1.0 goal active.
+
+### Sequence instrument correction — provision tick population
+
+Initial18836/779169 and diagnostic50940/a4dc60 fail before report publication:
+first short-gap case permits2.37797654855e-2/purchased101 but provision0.
+Actual accrueContent materializes provision ONLY at the pinned provision tick,
+not per second. The declared short sequence does not cross that boundary.
+Before the corrected run, replace the impossible all-row positive-provision
+instrument assumption with two explicit populations: short3114 gap must retain
+exactly0 provisioned beige; long90000000 gap must materialize positive provision.
+ALL sixteen sequences, original actions/gaps/modes and balances remain intact;
+every row still requires positive actual permits. Short absence is now an
+asserted negative control, not an excluded case. No runtime/catalog/accepted
+mechanic/AC6 acceptance bound changes. Original declared assumption and failed
+attempts remain in the append-only log; actual tick is also retained in report.

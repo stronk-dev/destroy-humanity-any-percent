@@ -1612,3 +1612,13 @@ forty-eight claim refusals and real contribution/burst/census/event controls.
 No experiment run or source mutation yet. Accepted CV3/CV4 only, no production
 repair/accumulation contract/owner-body delegation inferred. Prior scopes and
 review spans independent, full1.0 objective active.
+
+### Sequence constructor failure — provision instrument assumption
+
+18836/779169 fails before new report exists. Diagnostic50940/a4dc60 identifies
+firstbuilding/3114/online-offline-online: permits2.37797654855e-2, purchased101,
+provisioned0. Actual engine/catalog code materializes provisions at the pinned
+tick, not per second, and this short declared sequence crosses no tick.
+Plan correction predeclares exact-zero short controls versus positive long
+controls, all16 original sequences retained. No observed output edited, no
+source/runtime/balance waiver or corpus published. Corrected run not yet made.
