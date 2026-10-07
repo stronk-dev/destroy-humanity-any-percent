@@ -9,7 +9,8 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 real adoption/pause/feed and deterministic cutoff regressions. Sources restored, reproduction
 retained; D-024/draft Monotonic Founder Attendance must resolve the shared boundary before repair.
 GS1 persisted/shared Go→TS Fiscal, AC2 parity and GS2 acquisition are locally proven (Garage log).
-Full target/care acceptance and designated reviews remain open. Evidence: latest Cosmetic log.
+Latest composed target passes with real Fiscal refusals/fresh consent; this does not repair the
+pause regression or close care acceptance/designated reviews. Evidence: Garage and Cosmetic logs.
 RP-363, RP-364 and the complete nine-tier product/platform/release obligations remain unchanged.
 
 **Earlier findings (2026-10-07):** RP-362/363 new real bootstrap probe fails

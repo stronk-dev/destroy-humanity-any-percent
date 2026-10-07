@@ -10,7 +10,8 @@ that would need one is recorded as a blocker in `log.md` instead.
 Current checkpoint: GS1-A1 persisted boundary and shared Go→TS v4 projection are locally
 proven; AC2's five invalid-fixture classes execute against that same snapshot. GS2-A4
 acquisition proof remains. Commands, fault/restoration and limits: latest `log.md`.
-Full target is RED at care.feed conflict RP-365; repair requires D-024's shared-clock choice.
+Real-server Fiscal invalid/stale refusals and fresh consent now pass; latest whole composed
+target passes too. RP-365's separate pause regression still requires D-024's shared-clock choice.
 Designated review remains; GS3-A4/RP-363 is author-blocked.
 RP-364 Buy diagnostics do not establish the original intermittent timeout's cause.
 

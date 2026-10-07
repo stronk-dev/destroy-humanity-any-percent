@@ -392,6 +392,111 @@ async function witnessFirstPurchaseAchievement(page, frames, accessToken) {
   console.log(`composed GS2 achievement: ${clicks} manual actions → one native Enter purchase → live earned event/announcement → refreshed earned row at Company revision ${receipt.new_revision}: PASS`);
 }
 
+// GS0.2/GS1-A4: corrupt only the outgoing DOM-origin request, never supply a
+// response or throw from a runtime double. Account/Production/Postgres decide
+// the refusal and the real browser runtime must render and recover from it.
+async function witnessFiscalServerRefusals(page, accessToken) {
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  const { eraForSnapshot } = await vite.ssrLoadModule("/src/game-ui/contracts.ts");
+  const rejectedIDs = [];
+  for (const arm of ["invalid", "stale"]) {
+    const before = await founderState(accessToken), era = eraForSnapshot(before);
+    if (before.founder_revision <= 1) throw new Error("stale Fiscal control requires an older positive revision");
+    const requests = [], reads = [], diagnostics = [], routed = [];
+    const observeRequest = (request) => {
+      const pathname = new URL(request.url()).pathname;
+      if (pathname === "/api/v1/intents" && request.method() === "POST") requests.push(request);
+      if (pathname === "/api/v1/founder/state") reads.push(request);
+    };
+    const observeConsole = (message) => {
+      if (message.type() === "error" && message.text().startsWith("game UI invariant:")) diagnostics.push(message.text());
+    };
+    const corruptRequest = async (route) => {
+      const request = route.request(), original = request.postDataJSON();
+      if (request.method() !== "POST" || original?.kind !== "harvest_fiscal_period") return route.continue();
+      const sent = arm === "invalid" ? { ...original, expected_revision: 0 }
+        : { ...original, expected_revision: original.expected_revision - 1 };
+      routed.push({ original, sent });
+      await route.continue({ postData: JSON.stringify(sent) });
+    };
+    page.on("request", observeRequest); page.on("console", observeConsole);
+    await page.route("**/api/v1/intents", corruptRequest);
+    try {
+      const harvest = page.getByRole("button", { name: t("fiscal.harvest", {}, era), exact: true });
+      const responseTask = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/intents" &&
+        response.request().postDataJSON()?.kind === "harvest_fiscal_period", { timeout: 30_000 })
+        .then((value) => ({ value }), (error) => ({ error }));
+      await harvest.focus(); await page.keyboard.press("Enter");
+      const result = await responseTask;
+      if (result.error) throw result.error;
+      const response = result.value, body = await response.json();
+      if (routed.length !== 1 || requests.length !== 1 || routed[0].original.expected_revision !== before.founder_revision) {
+        throw new Error(`Fiscal ${arm} refusal did not originate once at the current Founder revision`);
+      }
+      rejectedIDs.push(routed[0].original.intent_id);
+      if (arm === "invalid") {
+        if (response.status() !== 400 || JSON.stringify(Object.keys(body).sort()) !== '["category","detail"]' ||
+            body.category !== "invalid" || body.detail !== "intent") throw new Error(`wrong real invalid-intent response: ${JSON.stringify(body)}`);
+      } else if (response.status() !== 200 || body.outcome !== "rejected" || body.current_revision !== before.founder_revision ||
+          body.intent_id !== routed[0].original.intent_id || body.rejection?.category !== "revision_conflict" ||
+          body.rejection.detail !== "expected_revision") {
+        throw new Error(`wrong real stale-revision receipt: ${JSON.stringify(body)}`);
+      }
+      const notice = t(arm === "invalid" ? "intent.rejection.unknown" : "intent.conflict", {}, era);
+      await page.locator(".fiscal .intent-notice[role=status]").getByText(notice, { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+      await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const after = await founderState(accessToken);
+      if (requests.length !== 1 || routed.length !== 1 || reads.length !== (arm === "stale" ? 1 : 0) ||
+          JSON.stringify(diagnostics) !== JSON.stringify(arm === "invalid" ? ["game UI invariant: invalid intent response"] : []) ||
+          after.revision !== before.revision || after.founder_revision !== before.founder_revision ||
+          after.features.fiscal.credit !== before.features.fiscal.credit ||
+          JSON.stringify(after.features.fiscal.period) !== JSON.stringify(before.features.fiscal.period)) {
+        throw new Error(`Fiscal ${arm} refusal changed saved state, retried, or failed recovery: ${JSON.stringify({ requests: requests.length, reads: reads.length, diagnostics })}`);
+      }
+      if (await harvest.isDisabled() || await harvest.getAttribute("aria-disabled") === "true" ||
+          !await harvest.evaluate((button) => document.activeElement === button)) {
+        throw new Error(`Fiscal ${arm} refusal did not preserve an enabled, focused consent control`);
+      }
+      console.log(`composed Fiscal ${arm}: real HTTP${response.status()}, exact surface notice, ${reads.length} refresh, no automatic retry or persisted change: PASS`);
+    } finally {
+      await page.unroute("**/api/v1/intents", corruptRequest);
+      page.off("request", observeRequest); page.off("console", observeConsole);
+    }
+  }
+  return rejectedIDs;
+}
+
+async function witnessFiscalRefusalJourney() {
+  // Independent UI-created account: diagnostic reads must not consume the
+  // main gameplay population's account bucket or change its command sequence.
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error));
+  try {
+    await page.goto(uiURL, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "BEGIN ATTEMPT", exact: true }).click();
+    await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+    const accessToken = await page.evaluate(() => JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1")).accessToken);
+    await page.getByRole("button", { name: "Earnings Calls", exact: true }).click();
+    await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await clickAppliedIntent(page, "Hold the earnings call", "Fiscal refusal journey initial harvest");
+    const rejectedIDs = await witnessFiscalServerRefusals(page, accessToken);
+    const before = await founderState(accessToken);
+    const consent = await clickAppliedIntent(page, "Hold the earnings call", "Fiscal fresh consent after server refusals");
+    const after = await founderState(accessToken);
+    if (consent.intent?.kind !== "harvest_fiscal_period" || rejectedIDs.includes(consent.intent.intent_id) ||
+        consent.intent.expected_revision !== before.founder_revision || consent.body.founder_revision !== before.founder_revision + 1 ||
+        after.founder_revision !== consent.body.founder_revision || after.features.fiscal.credit !== consent.body.fiscal_credit_after ||
+        after.features.fiscal.period.seq !== consent.body.seq_after ||
+        after.features.fiscal.period.opened_wall_ms !== consent.body.period_opened_wall_ms || errors.length !== 0) {
+      throw new Error(`fresh Fiscal consent did not apply at the current Founder revision: ${JSON.stringify(consent)}; errors=${errors.map(String)}`);
+    }
+    console.log(`composed Fiscal fresh consent: new intent UUID, current Founder revision, applied receipt and persisted revision${after.founder_revision}: PASS`);
+  } finally { await page.close(); }
+}
+
 async function unlockPitchThroughFiscalUI(page) {
   await page.getByRole("button", { name: "Earnings Calls", exact: true }).click();
   await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
@@ -579,6 +684,7 @@ try {
     throw new Error(`composed public epochs failed: ${publicEpochs.status} ${JSON.stringify(publicEpochsBody)}`);
   }
   browser = await chromium.launch({ headless: true });
+  await witnessFiscalRefusalJourney();
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   await page.addInitScript(() => {
     const BrowserWebSocket = globalThis.WebSocket;

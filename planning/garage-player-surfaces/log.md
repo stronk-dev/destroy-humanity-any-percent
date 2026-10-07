@@ -5917,3 +5917,29 @@ GS2-A4 exact purchase→earned-event→rendered-row proof; GS3-A4 author-blocked
   No browser journey rerun for fixture/decoder tests, no full CI green claimed: full composed
   target remains RED at RP-365/D-024; GS3-A4/RP-363 remains author-blocked. Next: remaining
   accepted per-surface gaps, with clock repair held for its explicit shared-contract decision.
+
+## 2026-10-07 — real-server Fiscal refusals and fresh consent
+
+- Test-only composed-driver addition under GS0.2/GS1-A4: independent account bootstrapped
+  through DOM, real harvest, then native Enter requests with only outgoing revision corrupted.
+  Revision0 yields real HTTP400 invalid/intent; older positive revision yields real HTTP200
+  revision_conflict/expected_revision. No fabricated response, runtime-error double or direct
+  gameplay API setup. Exact Fiscal status text, focused/enabled control, one request, diagnostic
+  and zero/one refresh checked; Company/Founder revisions and Fiscal credit/period stay unchanged.
+  Fresh player consent uses another UUID and persists the receipt's revision, credit and clock.
+- Four setup failures retained: extra fields actually produce HTTP200 invalid/*.fields rather
+  than400; putting diagnostics on the busy gameplay account exhausted its unchanged bucket;
+  the helper returns `body`, not `receipt`; Fiscal names `founder_revision`, not `new_revision`.
+  Corrected setup/field expectations, not production. Independent account prevents measurement
+  traffic altering the original gameplay population; no rate limit, retry or time bound raised.
+- `node --check client/tools/test-game-ui-composed.mjs` PASS. Final standalone main driver
+  44f1b1→5e6a3e PASS; `make test-game-ui-composed` f2f074→067f51 PASS, including actual Postgres
+  projection tests, new refusals/consent, unchanged achievement acquisition, active play, Fiscal/
+  Pitch, both endings/continuation/socket recovery and compiled Cosmetic/adoption/care/reload.
+  Final target listeners absent and dedicated test DB other sessions0; no dangling process.
+- Review by: Codex (implementer first filter); Recorded by: Codex. Batch after36dab789 joins
+  the Garage designated review range. This is two actual refusal populations, not every GS1-A4
+  row, authentication-renewal, AT/Firefox, hosted CI or release-artifact acceptance. The new full
+  PASS does not repair/erase RP-365's independently proved pause regression or RP-364's timeout.
+  D-024/RP-363 and earlier review gates remain. Next: remaining accepted implementation gaps;
+  the shared-clock repair still requires its explicit contract choice.

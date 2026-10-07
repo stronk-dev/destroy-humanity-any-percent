@@ -10,7 +10,8 @@ must settle the shared boundary before repair (Cosmetic log/reproducer). GS1 sha
 and AC2 parity now locally pass; see the latest Garage log for evidence. Continue the remaining
 accepted per-surface gates; persisted Fiscal and GS2 acquisition require designated review.
 Use the owning plans/logs for results and next work; checkpoints below are historical, not new
-predeclaration requirements. Full target is RED; author RP-363 and all 1.0 obligations remain.
+predeclaration requirements. Latest whole target passes with real Fiscal refusal/consent coverage;
+RP-365's separate pause regression, author RP-363 and all 1.0 obligations remain.
 
 ## Earlier composed findings — 2026-10-07
 
