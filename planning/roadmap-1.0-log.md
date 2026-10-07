@@ -4074,3 +4074,23 @@ release claim. New Codex supplement after `87fd23d4` needs Claude; RP-312 and
 Clout spans remain independent. Next safe diagnostic work: separate Desk
 consumer `f32f6175^..f32f6175`, all fourteen paths. Full nine-tier 1.0 goal stays
 active/progress; no boxes/status/archival/mint/push/deploy/release change.
+
+## 2026-10-07 — Desk consumer checked and presentation defects corrected
+
+Original Claude `f32f6175^..f32f6175`, all fourteen paths: designated Codex
+CHANGES REQUIRED, RP-314/315/316. Test-first cases expose missing capped-buff
+receipt text/numeric combo cap and WebKit native Tab failure; narrow existing
+keys/Amount/zero-index correction through `d9e4e274` passes 40 native cases.
+Idle check now actually observes a minute; the old 400ms check survives a
+delayed command and the replacement catches it. Receipt/Amount/negative-index
+faults independently fail, all probes removed exactly. Types/client 9,691
+passes/343 browser skips/build/boundaries/full copy/manifest/topology pass.
+Two actual composed runs claim click/production buffs; no Lucky branch proof.
+The unchanged actual Lucky function accepts a null next snapshot in an isolated
+probe, confirming an oracle gap without inventing a payout defect. RP-317
+unknown-opportunity invariant is source-filed for separate test-first work.
+Entire new Codex span after `d90aded7` including predeclaration/test/product/
+docs/ledger/tracking/final edge needs Claude. Producer `87fd23d4..d90aded7`
+and RP-312 `7aab0e2e..900f409e` remain separate. Next: predeclare RP-316 and/or
+RP-317 accepted corrections. Full nine-tier goal remains active/progress;
+no acceptance/status/boxes/archive/mint/push/deploy/whole-CI/release change.

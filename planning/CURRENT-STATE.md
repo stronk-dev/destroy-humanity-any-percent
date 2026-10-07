@@ -4,7 +4,21 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage producer review:** original Claude `cdb8fe61^..cdb8fe61`, all
+**Latest Garage Desk review:** original Claude `f32f6175^..f32f6175`, all
+fourteen paths: designated Codex **CHANGES REQUIRED**, RP-314/315/316. Narrow
+receipt-reason/numeric-cap/native-focus correction through `d9e4e274` passes
+40 Chromium/WebKit cases, including actual-minute idle and native Enter/Space.
+Independent omission/negative-focus faults fail and are removed exactly.
+Types, client 9,691/343 explicit browser skips, build/boundaries, complete
+copy/manifest/topology pass; two actual composed runs claim click/production
+buffs. The unchanged Lucky oracle accepts a null successor in an isolated
+actual-function probe; no Lucky payout defect or integration coverage inferred.
+Whole new Codex span after `d90aded7`, including all record edges, needs Claude.
+Next accepted work: separately predeclare RP-316 oracle and RP-317 invariant
+tests. RP-313 and all prior author/numeric/content/platform/review holds remain.
+No full Garage/hosted CI/all-engine/AT/release claim or reduced 1.0 scope.
+
+**Preceding Garage producer review:** original Claude `cdb8fe61^..cdb8fe61`, all
 twelve paths, is **CHANGES REQUIRED — RP-313**: accepted GS0.1 still requires
 `features.active_play`; the implementation uses optional `features.opportunity`.
 Author reconciliation must address shape/fact/absence rules and the pure-read
@@ -13,8 +27,9 @@ probes fail; all temporary product bytes restored exactly. New read-only/alias/
 activation/refusal tests pass, as do cold Go/vet, actual Postgres selected
 population, API generation, client 9,691/340 skips, types and boundaries. The
 existing Postgres witness checks rates/transitions, not a GS5 claim. New Codex
-supplement after `87fd23d4` needs Claude. Next safe diagnostic review: Desk
-consumer `f32f6175^..f32f6175`, all fourteen paths; no full Garage/CI/release gate.
+supplement `87fd23d4..d90aded7` needs Claude. Its then-next diagnostic review: Desk
+consumer `f32f6175^..f32f6175`, all fourteen paths, is now recorded above;
+no full Garage/CI/release gate.
 
 **Preceding Garage review/correction:** designated Codex review of original Claude
 Fiscal/buff/reflow `6594b646^..6594b646`, all five paths, is **APPROVED, bounded

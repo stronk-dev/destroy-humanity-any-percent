@@ -3,7 +3,28 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage GS5 producer review — 2026-10-07
+## Garage Desk consumer correction — 2026-10-07
+
+Designated Codex review of original Claude `f32f6175^..f32f6175`, all fourteen
+paths: **CHANGES REQUIRED**, RP-314/315/316. Missing buff-receipt reason and
+numeric combo cap, WebKit's unreachable Claim, false-duration idle test and
+Lucky receipt-only acceptance are confirmed separately. New test-first
+`d4798d77` and narrow region/docs correction `d9e4e274` pass 40 native cases,
+including real-minute idle and Tab/Enter/Space. Independent compiling receipt,
+Amount and negative-Tab-index faults fail, with exact restoration. Full
+client/types/build/boundaries/copy/manifest/topology pass; two real composed
+runs exercise click/production buffs, NOT Lucky. No hosted CI/full Garage gate.
+
+**READY accepted-spec next work:** separately predeclare RP-316's fail-closed
+snapshot-credit oracle construction and RP-317's unknown-opportunity invariant
+test-first repair. No fabricated epoch/clock, gameplay bypass, tolerance, new
+copy or scope shortcut. **READY FOR CLAUDE:** entire new Codex span after
+`d90aded7`, predeclaration/tests/product/docs/ledger/tracking through its final
+coordinate. Independent producer `87fd23d4..d90aded7` and RP-312
+`7aab0e2e..900f409e` remain owed separately. RP-313 author-body hold remains.
+No box/status/archival/mint/push/deploy/release changes; full nine-tier 1.0 goal.
+
+## Garage GS5 producer review — 2026-10-07 (preceding checkpoint)
 
 Designated Codex verdict: original Claude `cdb8fe61^..cdb8fe61`, all twelve
 paths, **CHANGES REQUIRED — RP-313** accepted-body conflict. Author must
@@ -13,7 +34,7 @@ fail their oracles, all source restored exactly. New tests, cold Go/vet, actual
 Postgres selected population, API generation, client 9,691/340 skips, types and
 boundaries pass. Rates/transition DB proof is not an opportunity claim proof.
 
-**READY next (diagnostic, not approval/implementation authorization):** separate
+**Then-next, now reviewed above (diagnostic, not approval authorization):** separate
 Desk consumer review `f32f6175^..f32f6175`, all fourteen paths. RP-313 remains an
 approval hold. New Codex test/record span after `87fd23d4` needs Claude, plus the
 independent RP-312/Clout spans. No boxes, lifecycle, mint, archive, push, deploy,

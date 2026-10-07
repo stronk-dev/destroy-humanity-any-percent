@@ -5,14 +5,27 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded review (2026-10-07):** original Claude GS5 producer
+**Latest bounded review (2026-10-07):** original Claude Desk consumer
+`f32f6175^..f32f6175`, all fourteen paths: designated Codex **CHANGES REQUIRED**,
+RP-314/315/316. Test-first cap/receipt/WebKit focus failures are narrowly repaired
+through `d9e4e274`; 40 native Chromium/WebKit cases pass, including a real
+minute of idle timers and Tab/Enter/Space. Receipt/Amount/negative-focus faults
+independently fail and are removed exactly. Types/client/build/boundaries/full
+copy/manifest/topology pass. Two real composed runs exercise buffs, not Lucky;
+the unchanged Lucky function accepts a null successor in an isolated probe.
+No payout defect or full Garage/CI/release inferred. Entire new Codex span
+after `d90aded7` including all record edges needs Claude. Next: separately
+predeclare RP-316 snapshot oracle and RP-317 invariant tests. RP-313 and all
+prior author/numeric/content/platform/review holds remain; full nine-tier goal.
+
+**Preceding bounded review (2026-10-07):** original Claude GS5 producer
 `cdb8fe61^..cdb8fe61`, all twelve paths: designated **CHANGES REQUIRED**, RP-313
 accepted wire-body conflict. Primitive checks and eight independent fault
 probes discriminate; source restored exactly. Cold Go/vet, real Postgres
 selected population, generated API, client 9,691/340 skips, types/boundaries
 pass. The database witness does not assert a claimed opportunity. New Codex
-supplement after `87fd23d4` needs Claude. Next: diagnostic review of separate
-Desk consumer `f32f6175^..f32f6175`, all fourteen paths; author reconciliation
+supplement `87fd23d4..d90aded7` needs Claude. Its then-next diagnostic review of separate
+Desk consumer `f32f6175^..f32f6175`, all fourteen paths, is recorded above; author reconciliation
 still gates approval. No full Garage, CI, accessibility or release promotion.
 
 **Preceding bounded review (2026-10-07):** Claude Fiscal/buff/reflow

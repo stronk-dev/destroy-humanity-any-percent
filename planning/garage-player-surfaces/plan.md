@@ -18,8 +18,13 @@ that would need one is recorded as a blocker in `log.md` instead.
 - [x] GS5 active-play arm (`features.opportunity`, kernel export `ProjectActiveCombo`) + Desk opportunity region + composed claim witness (`cdb8fe61`, `f32f6175`).
   Original producer `cdb8fe61^..cdb8fe61`, all twelve paths: designated Codex
   CHANGES REQUIRED, RP-313 wire/clone body reconciliation. Green primitive
-  tests do not resolve this; original consumer all fourteen paths remains
-  pending. New Codex supplement after `87fd23d4` requires Claude independently.
+  tests do not resolve this. Original consumer `f32f6175^..f32f6175`, all
+  fourteen paths, is separately CHANGES REQUIRED for RP-314/315/316. Narrow
+  cap/keyboard/timer correction through `d9e4e274` passes 40 native cases;
+  entire Codex correction span after `d90aded7` needs Claude. RP-316's Lucky
+  oracle and RP-317's diagnostic mapping are separately queued, not repaired
+  by this population. Producer supplement `87fd23d4..d90aded7` requires
+  Claude independently.
   This existing checkbox records implementation, not acceptance or archival.
 - [x] GS6 provisioning caps + owned-upgrade text on the Desk.
 - [x] GS0.3 event decoders (announcements only): achievement and meter-band announcements.
