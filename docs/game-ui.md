@@ -44,8 +44,15 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   all shared states, Firefox, actual 400% zoom or manual AT.
 - **Shared host states (RP-339–341):** a credentialled first Desk read shows
   its heading and the existing loading status, without fabricated controls.
-  Trophy Case retains authoritative scores/rows during offline, resync or
-  not-ready transport and visibly marks them stale; recovery clears that note.
+  Trophy Case and Meters retain authoritative scores/rows during offline,
+  resync or not-ready transport and visibly mark them stale; recovery clears
+  that note. The Meters correction (RP-343) reuses `common.stale_note` and does
+  not calculate new values during disconnection. Twenty native executions
+  cover five connection states at 320/1280 px: all eleven values/bands stay
+  exact until an explicitly delivered newer snapshot, including after recovery.
+  Six actual faults discriminate missing/hidden/stuck disclosure, omitted
+  not-ready handling, altered stale values and ignored fresh data. These are
+  runtime-double Chromium/WebKit fixtures, not real-service recovery or AT proof.
   Loss of a mounted achievement/Fiscal/Meters/Reputation arm returns to Desk
   and schedules Desk-heading focus after rendering. A newer selection or
   snapshot cancels that pending focus; normal tab choices retain nav focus.

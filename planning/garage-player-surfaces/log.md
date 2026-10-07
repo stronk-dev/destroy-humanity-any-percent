@@ -3903,3 +3903,80 @@ answer/deletion/full-disk run; full Linux/SQL/GS2-A4 held. Firefox/AT/body/GS4/
 AC7/privacy/platform/numeric/full-nine-tier1.0/all prior review gates remain.
 Goal active/progress, no checkbox/lifecycle/archive/push/mint/deploy/release/
 shortened-preview substitution.
+
+## 2026-10-07 — RP-343 Meters disclosure repaired / bounded acceptance evidence
+
+Review by: Codex (implementer first filter, NOT designated review).
+Recorded by: Codex. Whole 4b2fd904-exclusive through this containing repair/
+record commit requires Claude, including f3b2f421 test predeclaration,
+0a191ebd red checkpoint and bfd7b4ff separate product predeclaration. Earlier
+a551d3c2..4b2fd904, 82614848..a551d3c2, 0fe2f57c..82614848 and all earlier
+exact ranges remain independently owed. No archival gate consumed.
+
+Ten new declarations / twenty native executions: recovering, closed, resync,
+server-restart and independent not-ready-only, at 320/1280 in Chromium/WebKit.
+Real decoder-admitted public fixture; runtime double, not real service.
+Native Enter selection/focus, exact eleven rows with distinct committed
+values/bands and native labelled associations in both layouts, full-page
+reflow/axe/read-only controls. Connection state retains exact values through
+350 ms real elapsed; recovery clears note WITHOUT changing values. Only an
+explicit newer snapshot changes all values (+8, including a band crossing).
+
+Baseline 9752ac→4641ad terminal 2: all twenty cases fail the exact missing
+stale-note assertion after initial value/focus/layout/axe controls pass;
+378 other cases explicitly unselected. Types ba066e→6ee0f0 clean. Existing
+as-of footer does not state connection failure. RP-343 records disclosure,
+not a demonstrated production extrapolation defect. Test-only checkpoint
+0a191ebd precedes separately predeclared repair bfd7b4ff. Permanent product
+diff is ONE surface-membership condition in the existing stale paragraph;
+no new player text/live region/math/props/events/auth/clock/wire/CI behavior.
+
+Healthy focused da6355→72d18e terminal 0: twenty pass / 378 unselected,
+chained performance two pass / 22 unselected. No assertion weakened.
+Six independent compiling actual source faults, each restored before next:
+
+| Fault | Output | Fail/pass selected | Actual assertion |
+|---|---|---|---|
+| Omit Meters note membership | 2ac613 | 20/0 | Exact stale note absent |
+| Hide stale paragraph | 14f8e4 | 20/0 | Native visible rectangle is zero |
+| Omit not-ready predicate | 4e76d7 | 8/12 | Restart and not-ready-only lack note; other controls pass |
+| Keep Meters offline after recovery | afa808 | 20/0 | Stale note incorrectly remains |
+| Add one to stale Meters values | faedc6 | 20/0 | Native committed value differs; some fire at initial not-ready control |
+| Ignore delivered snapshot binding | 47a062 | 20/0 | New committed value 8 absent; old 0 remains |
+
+All fault commands terminal 2 for semantic/native assertions, not type-error
+credit. Last two prove value/update oracle discrimination, not an existing
+production value bug. Restoration 0c7640: host intended SHA256
+8c81a722e581659d30db984854e9b9598e6575afe71b2b6eead8d1b9c59fa298;
+driver 77a2e80ea0f562aee0ffccd7fc2cd477e85cd742601c8a0a5953d2579e88d31c;
+unchanged MetersSurface 5ebc07105fb33e745935dfe5a8f53b3c378cdd081b603ebce0eba103b26f4a95.
+cf6da4 diff check clean. RP-342 retained observation pins its earlier source,
+not this changed host/driver; no historical subject identity silently rewritten.
+
+Final full native 087a3b→5bc84d terminal 0: 398/398, 98.10 s, original real
+60 s idle retained. Chained isolated performance two / 22 unselected pass.
+211548→cc9fb2 terminal 0: types zero errors/warnings; client 9,814 passes /
+523 explicit browser skips, 105 files pass / 22 skip. Build 214 modules,
+UI JS index-BzPaPJEo.js changes as expected; worker prediction.worker-MqspU_iu.js
+and CSS index-DaRqgLww.css unchanged. Achievement boundary seven component/
+four copy negatives; shell/UI boundaries and ten Go/eleven Svelte cosmetic
+negatives; static CI topology thirteen negatives pass. b61466→0367fd copy
+terminal 0: 658 keys, unchanged SHA256 a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, content manifest pass. No source/HEAD edits
+during live final checks/history scan. Not full Linux/hosted CI/Postgres.
+
+Process finding against my own record: the three RP-343 entries were inserted
+ahead of the prior RP-342 section, rather than at EOF (f3b2f421, 0a191ebd,
+bfd7b4ff). Commit chronology establishes the actual order; no prior entry
+was edited/deleted. This still violates append-only placement. Disclosed here
+at EOF; do not reorder reviewed/history-cited records to conceal the slip.
+All future entries append after the exact current EOF.
+
+Docs/ledger/inventory/plan/board/queue/checkpoint log reconciled. Next accepted
+work: inspect current GS3 on-surface announcement/off-surface badge evidence,
+then predeclare missing discrimination if any. No startup Retry authority
+inferred from draft RP-342/D-023. Cleanup question unanswered; no deletion/
+full-disk run. Real service/SQL/default-player/all-state/all-engine/Firefox/
+manual AT/actual zoom/body/GS4/full AC7/privacy/platform/numeric/full-nine-tier
+1.0 and all independent review remain. No boxes/lifecycle/archive/push/mint/
+deploy/release/shortened-preview substitution. Goal active/progress.

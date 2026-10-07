@@ -541,7 +541,7 @@
   {/if}
 
   {#if snapshot}<p class="announcement" role="status">{announcement}</p>{/if}
-  {#if snapshot && surface === "achievements" && (offline || resyncing || !transportReady)}
+  {#if snapshot && (surface === "achievements" || surface === "meters") && (offline || resyncing || !transportReady)}
     <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
   {/if}
   {#if snapshot && surface !== "fiscal" && surface !== "pet"}<p class="intent-notice" role="status">{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>{/if}

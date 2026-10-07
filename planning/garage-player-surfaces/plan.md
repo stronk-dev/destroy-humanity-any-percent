@@ -7,7 +7,22 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-342 completed-first-read diagnosis, predeclaredced3b5c7.
+Latest bounded work: RP-343 Meters connection disclosure. Test scope f3b2f421
+reproduced 20 missing-note failures at red checkpoint 0a191ebd; separate
+product scope bfd7b4ff extends the existing host stale note to Meters only.
+The same 20 native cases pass; six actual faults discriminate and restore.
+Eleven committed values/bands remain exact until a newer snapshot, including
+through recovery. Final Garage 398 / performance two, client 9,814 / 523
+explicit skips, types/build/copy/boundaries/static topology pass. No new copy,
+clock, value math, transport, balance or CI behavior. Whole 4b2fd904-exclusive
+span through this repair/record commit needs Claude; all earlier spans owed.
+Next accepted work: inspect GS3 on-surface announcements/off-surface badge
+evidence and predeclare any missing discrimination. Do not invent startup
+Retry from the draft. Full Linux/SQL capacity and Firefox/AT/body/privacy/
+platform/numeric/full-nine-tier 1.0/review obligations remain; no cleanup
+permission, deletion, acceptance checkbox or lifecycle promotion.
+
+Preceding bounded work: RP-342 completed-first-read diagnosis, predeclaredced3b5c7.
 Actual runtime/Response.json/decoder/native host28 cases; all24 failures retain
 visible loading after completion, four healthy controls render Desk. Existing
 visibilitychange rereads; valid same-Founder replies recover, repeated401 does

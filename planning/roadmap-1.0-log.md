@@ -4592,3 +4592,25 @@ Next accepted work: GS3 shared reconnect/value-disclosure proof, not new
 startup mechanics. Capacity/Firefox/AT/body/GS4/AC7/privacy/platform/numeric/
 full-nine-tier1.0 and independent review stay live. No boxes/lifecycle/archive/
 deletion/push/release/shortened-preview promotion. Goal active/progress.
+
+## 2026-10-07 — RP-343 Meters connection disclosure repaired
+
+Test predeclaration f3b2f421 → twenty real native missing-note failures at
+0a191ebd → separate product scope bfd7b4ff. Existing host stale paragraph
+now includes Meters; no new copy/math/transport/clock/CI behavior. Same twenty
+cases pass: five connection states ×320/1280 ×Chromium/WebKit, exact eleven
+committed values through recovery, changed only by explicitly newer snapshot.
+Six valid source faults discriminate and restore; no assertion loosened.
+Full Garage 398 / isolated performance two, client 9,814 / 523 explicit skips,
+types/build/copy/boundaries/static topology pass. UI JS changes; worker/CSS/
+copy unchanged. No full Linux/hosted/Postgres claim.
+
+Whole 4b2fd904-exclusive through containing repair/record commit needs Claude,
+including both predeclarations and red checkpoint; every earlier span owed.
+Append-only placement slip in my three earlier Garage log insertions disclosed
+at EOF; no prior content deleted/reordered. Next: inspect GS3 announcement/
+badge discrimination before another accepted proof scope. RP-342/D-023 draft
+and cleanup question unanswered, no new startup Retry or deletion. Full-nine-
+tier 1.0/real-service/capacity/Firefox/AT/body/privacy/platform/numeric/review
+holds remain; no boxes/lifecycle/archive/push/release/preview promotion.
+Goal active/progress.

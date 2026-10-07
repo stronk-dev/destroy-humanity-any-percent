@@ -3,6 +3,23 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage Meters connection-disclosure checkpoint — 2026-10-07
+
+RP-343: f3b2f421 test scope, 0a191ebd red checkpoint, bfd7b4ff separate
+product scope. Existing host stale note includes Meters; no new copy/math/
+clock/transport. Same 20 native cases pass, six actual faults discriminate
+and restore, eleven committed values change only on a newer snapshot.
+Final Garage 398 / performance two, client 9,814 / 523 explicit skips,
+types/build/copy/boundaries/static topology pass; not full CI or real recovery.
+**READY FOR CLAUDE:** entire 4b2fd904-exclusive span through this containing
+repair/record commit, including both predeclarations and red checkpoint.
+All earlier exact ranges remain owed; no archival eligibility.
+**NEXT accepted work:** inspect current GS3 announcement/badge evidence,
+then predeclare missing discrimination if any. RP-342/D-023 startup Retry
+remains draft/unruled. Full Linux/SQL capacity, Firefox/AT/body/privacy/
+platform/numeric/full-nine-tier 1.0 holds remain; cleanup unanswered, no
+deletion/push/archive/acceptance promotion.
+
 ## Garage first-read failure truth checkpoint — 2026-10-07
 
 RP-342 underced3b5c7: actual runtime/native28 cases,24 failed replies settle
