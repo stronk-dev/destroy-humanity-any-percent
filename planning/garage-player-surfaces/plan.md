@@ -7,17 +7,17 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest test-only supplement: predeclared88ab6bdd/test2d3629ad,21 actual
-runtime/Response.json declarations over injected fetch. Baselinegreen,
-no product repair; four compiling status/extra-key/revision/duplicate-send
-faults fail/restored exactly. Final client9,758/442explicitbrowser skips/
-types/build/boundaries pass; no fresh native run. Preceding64 native consumer
-cases/fullGarage238 belong to a42406f0. Newspan aftera42406f0 through final
-records needs Claude separately from HTTP-consumer6d700838..a42406f0,
-notice exacte950216a..6d700838 and earlier ranges. Docker hold persists;
-actual-service/generated-conformance/renewal/composed/Firefox/AT/hosted/
-queued-origin/full-lane gates remain. Next reconcile GS1–GS6 current
-acceptance/evidence and pick the next unresolved accepted requirement;
+Latest acceptance audit: predeclared124b086a; acceptance-evidence.md pins
+all29 GS1–GS6 gates/eight overall criteria to fc911784. Fresh focused Go
+-count=1 passes116 parent/subtest PASS reports, with two SQL tests explicitly
+skipped; no fresh database/native/TS claim. RP-329 incomplete meter decoder,
+RP-330 semantic narrow-layout mismatch and RP-331 exact persisted/DOM proof
+gaps recorded. Dedicated companion lint exists; author body reconciliation
+still required. Next native decoder-legal missing-copy/band GS0.5 diagnostic,
+no product repair inside this audit range. Full audit span afterfc911784
+through records needs Claude; runtime exacta42406f0..fc911784, HTTP consumer
+6d700838..a42406f0, noticee950216a..6d700838/all earlier spans independent.
+Docker capacity, engine/AT/author/default-workflow/full1.0 holds remain;
 no checkbox or lifecycle promotion.
 
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,

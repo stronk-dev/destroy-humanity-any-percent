@@ -5,17 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded evidence (2026-10-07):** predeclared88ab6bdd/test2d3629ad,
-21 actual-runtime/Response.json cases over injected fetch pass; no production
-repair. Four compiling faults fail/restored exactly. Final client9,758/
-442explicitbrowser skips/types/build/boundaries pass; previous native238
-belongs to a42406f0, not a fresh rerun. Actual service, generated conformance,
-renewal, queued origin, all-surface, AT, Firefox, composed and release remain
-open. Newspan aftera42406f0 through tracking needs Claude independently of
-HTTP-consumer6d700838..a42406f0, notice exacte950216a..6d700838/all earlier
-ranges. Docker hold persists, no unrelated cleanup. Next reconcile GS1–GS6
-current acceptance/evidence and choose the next unfinished accepted requirement.
-Full-nine-tier goal unchanged; no lifecycle promotion.
+**Latest acceptance audit (2026-10-07):** predeclared124b086a,
+sourcefc911784; all29 Garage GS1–GS6 gates/eight overall criteria mapped in
+`planning/garage-player-surfaces/acceptance-evidence.md`. Fresh focused Go
+-count=1 passes116 parent/subtest PASS reports, two explicit SQL skips.
+No fresh persisted/native/TS claim. RP-329 incomplete meter decoder,
+RP-330 semantic narrow layout and RP-331 exact persisted/DOM proof gaps
+recorded; not failed-kernel claims. Next predeclared native GS0.5 missing
+copy/presentation diagnostic, no product repair inside audit range. Newspan
+afterfc911784 through records needs Claude; runtimea42406f0..fc911784 and
+all preceding ranges independently owed. Docker/Firefox/AT/author/body/
+default-player/review/full1.0 gates remain; no status/checkbox promotion.
 
 **Latest bounded repair (2026-10-07):** `45bf2edb`, predeclareda8f2a527/
 failing-first7cac400d: Fiscal/care outcome ownership and async-origin/no-bleed

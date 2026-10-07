@@ -4289,3 +4289,17 @@ persists. Next reconcile GS1–GS6 acceptance/evidence at HEAD and select
 next unresolved accepted requirement, keeping producer/content/default-
 workflow/engine/AT/author/review holds explicit. Full nine-tier1.0 objective
 active/progress; no checkbox/status/archive/mint/push or shortened scope.
+
+## 2026-10-07 — Garage acceptance audit checkpoint
+
+Predeclared124b086a at sourcefc911784; all29 named GS1–GS6 gates/eight
+overall criteria now have producer/consumer/evidence/remaining routes in
+Garage acceptance-evidence.md. Fresh focused Go -count=1 passes116 parent/
+subtest PASS reports, with two explicit SQL skips; no fresh persisted/
+native/TS evidence. RP-329 partial decoder, RP-330 semantic reflow and
+RP-331 exact persisted/DOM proof gaps recorded, not kernel failure claims.
+Next separate GS0.5 native missing-copy/band diagnostic with legal-wire
+controls before any repair. Complete audit span afterfc911784 through
+records needs Claude; runtimea42406f0..fc911784/all earlier ranges independent.
+All Docker/engine/AT/author/body/default-player/review/full-nine-tier1.0
+holds retained. Goal active/progress; no lifecycle/checkbox/archive/mint/push.

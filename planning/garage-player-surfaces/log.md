@@ -1980,3 +1980,33 @@ Missing specified copy remains an author hold, never invented prose.
 New documentation/evidence range beginsfc911784 exclusive through final
 tracking and needs Claude. Goal remains full nine-tier1.0; no archive/mint/
 CI/copy/kernel/schema/owner decision/push, no test-count completion proxy.
+
+## 2026-10-07 — Full Garage acceptance inventory, not a completion claim
+
+Review by: Codex (source/evidence reconciliation, self first filter only).
+Recorded by: Codex. Source fc911784; predeclaration124b086a. All29 named
+GS1–GS6 gates plus eight overall criteria now have producer/consumer,
+actual evidence scope and unresolved route in acceptance-evidence.md.
+No product byte, checkbox, RFC body or lifecycle status changed.
+
+Fresh root focused gameui/fiscal/achievements/meters Go run -count=1 -v,
+handle51228 terminal0:116 PASS lines including parent/subtest reports.
+Two SQL tests explicitly skip: stored schema-v4 rate projector and
+Reputation current/next projection, TEST_DATABASE_URL unset. No fresh
+database evidence. No fresh TS/native/three-engine/composed/copy claim.
+
+RP-329 records source-admitted partial meter sets; RP-330 semantic narrow
+layout mismatch; RP-331 names missing exact DOM acquisition/meter and
+persisted Fiscal preview witnesses. These are not invented mechanics or
+claims those kernels fail. Copy-linter inspection found the dedicated
+companion safety rule and actual negative fixtures: GS4-A4 is not absent.
+Its Garage diegetic/PA8.2 companion body reconciliation remains author-owned.
+Unknown achievement-copy/declared unknown-band render containment remains
+a candidate to reproduce, not a measured defect yet.
+
+Next separately predeclare two native GS0.5 error populations with decoder-
+admission/healthy controls, explicit render-error observations and exact
+alert/invariant/navigation assertions. No product repair in this audit range.
+Docker capacity/Firefox/AT/body/review/full1.0 holds retained. New complete
+audit span beginsfc911784 exclusive through its final records, requires
+Claude independently of a42406f0..fc911784 and every earlier range.

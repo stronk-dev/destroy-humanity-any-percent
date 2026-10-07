@@ -3119,3 +3119,18 @@ RP-236 persists, no new container population or unowned cleanup. Next GS1–
 GS6 acceptance/evidence reconciliation at current HEAD before next accepted
 implementation choice, not a test-count roadmap. Full nine-tier1.0 goal
 active/progress; all global holds retained, no lifecycle/publication/mint.
+
+## 2026-10-07 — Garage whole-acceptance reconciliation
+
+Predeclared124b086a at sourcefc911784: all29 named GS1–GS6 gates/eight
+overall criteria mapped to producer/consumer/evidence/remaining route in
+Garage acceptance-evidence.md. Fresh root focused Go -count=1 -v exits0,
+116 PASS lines including parent/subtests; two SQL tests explicitly skip.
+No fresh DB/native/TS claim. Source gaps RP-329 (partial meter sets), RP-330
+(semantic narrow list), RP-331 (exact persisted/DOM proofs) ledgered.
+Dedicated companion lint exists; no invented absence/tone change.
+Next separate GS0.5 native missing-copy/band containment diagnostic; no
+product edit inside this audit range. Complete span afterfc911784 through
+records requires Claude, independent of a42406f0..fc911784/earlier spans.
+RP-236 capacity, engine/AT/author/body/default-workflow/review/full1.0 holds
+remain. No boxes/status/archive/mint/publication or shortcut authorization.

@@ -3,25 +3,26 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Real-runtime HTTP boundary proof — 2026-10-07
+## Garage acceptance audit — 2026-10-07
 
-Predeclared88ab6bdd/test2d3629ad:21 actual-runtime/Response.json declarations
-over fetch-double replies pass; no production repair. Four compiling status/
-extra-key/revision/duplicate-send faults fail/restored exactly. Final client
-9,758/442explicitbrowser skips/types/build/boundaries pass. Not real-service,
-credential renewal, generated conformance or browser/AT proof; no fresh native
-run. Preceding64 native consumer cases/fullGarage238 belongsa42406f0, not
-this rerun. **READY FOR CLAUDE:** whole span aftera42406f0 through this tracking
-edge, independently of HTTP-consumer6d700838..a42406f0, notice exact
-e950216a..6d700838 and all earlier ranges.
+Predeclared124b086a; sourcefc911784. All29 GS1–GS6 gates/eight overall
+criteria now mapped in `planning/garage-player-surfaces/acceptance-evidence.md`.
+Fresh focused Go -count=1 passes116 parent/subtest PASS reports; two SQL
+tests explicitly skip. No fresh persisted/native/TS claim. RP-329 partial
+meter decoder, RP-330 semantic narrow layout and RP-331 exact persisted/DOM
+proof gaps recorded. Dedicated companion safety lint exists; author body
+holds remain. **READY FOR CLAUDE:** complete audit span afterfc911784 through
+records; prior runtime exacta42406f0..fc911784, HTTP-consumer6d700838..
+a42406f0, noticee950216a..6d700838 and earlier ranges independently owed.
 
-**READY next:** reconcile accepted GS1–GS6 acceptance against current source
-and named executed evidence; identify remaining author/content/producer/default-
-workflow/engine/AT/review gates and choose the next unresolved accepted
-requirement, not a test-count target. Queued-origin/all-surface/AT/Firefox/
-composed/fullGarage/release remain open. Previous read-only capacity recheck
-still0free/100%; no new Docker population until actual repair/recheck, no
-unrelated resource cleanup.
+**READY next:** separately predeclare native GS0.5 decoder-legal missing
+achievement-copy and declared unknown-band diagnostic with healthy controls,
+explicit render-error observations and alert/invariant/navigation assertions.
+No product repair inside this audit range. Following accepted work: GS3-A1
+complete-ID guard and GS3-A3 semantic list. Persisted/composed RP-331 waits
+for capacity repair/recheck; no new Docker population or unrelated cleanup.
+Previous actual overlay measurement0free/100%; engine/AT/body/default-player/
+review/all-Garage/release remain open.
 Full nine-tier1.0 goal and all author/owner/numeric/platform/privacy/content/
 CI/review/release gates remain active; no lifecycle promotion.
 
