@@ -5,7 +5,13 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest findings (2026-10-07):** RP-362/363 new real bootstrap probe fails
+**Current checkpoint (2026-10-07):** GS2-A4 real first-purchase→achievement→Trophy Case
+journey and its two required failure cases are locally proven; designated review remains.
+See the latest Garage log entry for evidence. Next is GS1-A1 persisted preview/harvest.
+RP-363 stays author-blocked; RP-364 has tested diagnostics, not an established cause/fix.
+Full 1.0 scope and all other release/review obligations remain open.
+
+**Earlier findings (2026-10-07):** RP-362/363 new real bootstrap probe fails
 accepted Standing50 seed: actual fresh Standing90/high follows published
 Notoriety0 reseed; other six initial values match. Author reconciliation is
 required, no code/balance/assertion-to90 change or DOM/fault success. Candidate

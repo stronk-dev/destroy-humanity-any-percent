@@ -5848,3 +5848,24 @@ diff. Whole new span through records needs Claude, all prior ranges independent.
 No accepted RFC body/status/checkbox/archive/mint/push/release promotion.
 Next priority: Cosmetic RP-364 diagnostics in its owning lane, then independent
 GS2-A4 exact purchase→earned-event→rendered-row proof; GS3-A4 author-blocked.
+
+## 2026-10-07 — GS2-A4 real first-purchase achievement
+
+- Test-only driver: verify initially locked Trophy Case row and unowned Beige Tower; earn
+  cash through nine DOM manual actions, buy one with native Enter, bind one actual earned
+  event to the purchase's run/Company revision, then check announcement, refreshed earned
+  text and persisted ownership. No fixture cash/achievement injection or direct purchase API.
+- Syntax/diff checks PASS. Initial complete root4553c7→b1f4c2 PASS; after adding exact request
+  counting, restored complete rootb25213→17d168 PASS. Both prove Company12 earned state and
+  preserve transitions/recovery/Fiscal/Pitch and full Cosmetic AC14/G10. Final GS5 happens
+  to exercise Lucky; this is one actual observation, not deterministic all-effect coverage.
+- Required faults: decoder drops only achievement announcements (a3cb06→7b9d0e exit1 at
+  announcement); earned flags withheld only from mounted Trophy Case arm (1e7a2d→8efff2 exit1
+  at visible earned text). Both runtime failures; original events851e4b28/App432a2799 hashes
+  restored before final full PASS. No retained product/copy/balance/CI change.
+- Correct prior audit wording: the pre-supplement driver did not buy a first generator;
+  merely reading achievement rows was not this witness. RP-331's GS3/RP-363 and GS1 remain.
+- Review by: Codex (implementer first filter); Recorded by: Codex. Batch after438c9f02 through
+  this record belongs in the Garage designated cross-party review; no acceptance/archival.
+- Next: GS1-A1 real preview→harvest binding. RP-364 remains an instrumented, unexplained
+  intermittent timeout (Cosmetic log); no complete CI, release or full 1.0 claim.

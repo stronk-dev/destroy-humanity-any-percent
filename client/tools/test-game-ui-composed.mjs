@@ -280,7 +280,8 @@ function receivedPlayerCoordinates(frames, channel) {
       try { envelope = JSON.parse(envelope); } catch { return; }
     }
     if (envelope?.ch !== channel) return;
-    coordinates.push({ envelope_kind: envelope.kind, event_kind: envelope.payload?.kind, offset: publication.offset, revision: envelope.rev });
+    coordinates.push({ envelope_kind: envelope.kind, event_kind: envelope.payload?.kind, offset: publication.offset, revision: envelope.rev,
+      achievement_id: envelope.payload?.payload?.achievement_id, run_seq: envelope.payload?.payload?.run_id?.run_seq });
   };
   for (const frame of frames) {
     for (const line of String(frame).split("\n").filter(Boolean)) {
@@ -297,6 +298,80 @@ async function founderState(accessToken) {
   const response = await fetch(`${gameserverURL}/api/v1/founder/state`, { headers: { Authorization: `Bearer ${accessToken}` } });
   if (response.status !== 200) throw new Error(`founder state read failed (${response.status})`);
   return response.json();
+}
+
+// GS2-A4: earn through a real first purchase, not SQL setup or a supplied
+// earned-row fixture. Observe the live event, announcement and refreshed DOM.
+async function witnessFirstPurchaseAchievement(page, frames, accessToken) {
+  const achievementID = "achievement.generators_purchased_1", generatorID = "generator.beige_tower";
+  const before = await founderState(accessToken);
+  const row = before.features?.achievements?.rows.find((candidate) => candidate.achievement_id === achievementID);
+  const generator = before.generators.find((candidate) => candidate.generator_id === generatorID);
+  if (!row || row.earned !== null || !generator || generator.owned !== 0) {
+    throw new Error("GS2-A4 requires a locked achievement and genuinely unowned first generator");
+  }
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  const { eraForSnapshot } = await vite.ssrLoadModule("/src/game-ui/contracts.ts");
+  const { GAME_UI_PRESENTATION } = await vite.ssrLoadModule("/src/game-ui/presentation.ts");
+  const era = eraForSnapshot(before), title = t(row.copy_key, {}, era);
+  const achievementNav = page.getByRole("button", { name: t("surface.achievements.title", {}, era), exact: true });
+  const displayed = page.locator(".achievements li").filter({ has: page.getByRole("heading", { name: title, exact: true }) });
+  await achievementNav.click();
+  if (await displayed.getAttribute("data-earned") !== "none" ||
+      await displayed.locator("strong").innerText() !== t("achievements.state.locked", {}, era)) {
+    throw new Error("GS2-A4 first-purchase row was not visibly locked before buying");
+  }
+  await page.getByRole("button", { name: "The Desk", exact: true }).click();
+  const generatorTitle = t(GAME_UI_PRESENTATION.generators.get(generatorID).title_key, {}, era);
+  const buy = page.locator('section[aria-labelledby="generators-heading"] article')
+    .filter({ has: page.getByRole("heading", { name: generatorTitle, exact: true }) })
+    .getByRole("button", { name: t("desk.buy_one", {}, era), exact: true });
+  // Use the player's manual action at the same 4/s cadence as GS5, with the
+  // existing 30-second action guard. No fixture cash or direct intent call.
+  const deadline = Date.now() + 30_000;
+  let clicks = 0;
+  while (!await buy.isEnabled() && Date.now() < deadline) {
+    await clickAppliedIntent(page, "Fix Computer", "GS2 manual work toward first generator");
+    clicks += 1;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  if (!await buy.isEnabled()) throw new Error(`GS2-A4 first generator never became affordable after ${clicks} manual actions`);
+  const frameStart = frames.length;
+  const purchases = [];
+  const recordPurchase = (request) => {
+    if (request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents" &&
+        request.postDataJSON()?.kind === "buy_generator") purchases.push(request);
+  };
+  page.on("request", recordPurchase);
+  const responseTask = page.waitForResponse((response) => response.request().method() === "POST" &&
+    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === "buy_generator",
+  { timeout: 30_000 }).then((value) => ({ value }), (error) => ({ error }));
+  await buy.focus();
+  await page.keyboard.press("Enter");
+  const result = await responseTask;
+  if (result.error) throw result.error;
+  const response = result.value, intent = response.request().postDataJSON(), receipt = await response.json();
+  if (purchases.length !== 1 || response.status() !== 200 || receipt.outcome !== "applied" || intent.generator_id !== generatorID ||
+      intent.count?.mode !== "exact" || intent.count.value !== 1) throw new Error("GS2-A4 DOM first purchase was not applied exactly once");
+  const announcement = t("achievements.earned_announcement", { achievement: title }, era);
+  await page.locator("p.announcement[role=status]").getByText(announcement, { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  const events = receivedPlayerCoordinates(frames.slice(frameStart), `player:${before.run.founder_id}`)
+    .filter((event) => event.event_kind === "achievement_earned.v1" && event.achievement_id === achievementID);
+  if (events.length !== 1 || events[0].revision !== receipt.new_revision || events[0].run_seq !== before.run.run_seq) {
+    throw new Error(`GS2-A4 achievement event did not bind to the purchased run/revision: ${JSON.stringify(events)}`);
+  }
+  await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+  await achievementNav.click();
+  await displayed.locator("strong").getByText(t("achievements.state.earned_run", {}, era), { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  const after = await founderState(accessToken);
+  page.off("request", recordPurchase);
+  if (purchases.length !== 1 || await displayed.getAttribute("data-earned") !== "run" || after.revision < receipt.new_revision ||
+      after.features.achievements.rows.find((candidate) => candidate.achievement_id === achievementID)?.earned !== "run" ||
+      after.generators.find((candidate) => candidate.generator_id === generatorID)?.owned !== 1) {
+    throw new Error("GS2-A4 refreshed earned DOM did not agree with persisted ownership/achievement");
+  }
+  await page.getByRole("button", { name: "The Desk", exact: true }).click();
+  console.log(`composed GS2 achievement: ${clicks} manual actions → one native Enter purchase → live earned event/announcement → refreshed earned row at Company revision ${receipt.new_revision}: PASS`);
 }
 
 async function unlockPitchThroughFiscalUI(page) {
@@ -618,6 +693,8 @@ try {
   if (refreshed.revision !== missedReceipt.new_revision) {
     throw new Error(`recovered receipt landed revision ${refreshed.revision}, expected ${missedReceipt.new_revision}`);
   }
+
+  await witnessFirstPurchaseAchievement(page, websocketReceivedFrames, parsedCredentials.accessToken);
 
   // GU-C28 permits ordinary server-side setup so Chromium proves the UI-owned
   // controls without replaying the already-proven two-hour policy or gaining a

@@ -7,7 +7,13 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest checkpoint: RP-362/363 fired a real initial-meter authority conflict;
+Current checkpoint: GS2-A4 now has real DOM purchase→earned event/announcement→refreshed
+Trophy Case proof, with both required faults and restored whole composed target passing.
+Evidence, commands and review limits: latest entry in `log.md`; designated review still owed.
+Next: GS1-A1 persisted preview→harvest proof. GS3-A4/RP-363 remains author-blocked;
+RP-364 Buy diagnostics are retained in the Cosmetic log, not a fix of the intermittent cause.
+
+Historical checkpoint before the GS2 supplement: RP-362/363 fired a real initial-meter authority conflict;
 GS3-A4 asks fresh Standing50, actual bootstrap assembles90/high via published
 Notoriety0 reseed. Grievance0/doom50 match. Candidate fails before DOM/five
 planned faults; retained replayable initial-meter-dom-probe.patch, original
