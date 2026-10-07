@@ -54,6 +54,15 @@ func assertRefreshCensusResponse(t *testing.T, handler http.Handler, method, pat
 		// Never echo an unexpected response: a broken handler could include tokens.
 		t.Fatalf("response differs from exact %s/%s error bytes", category, detail)
 	}
+	if method == http.MethodPost && path == "/api/v1/session/refresh" {
+		registry, err := PrivateAPIRegistry()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if registry.ValidateResponse("refresh_session", response.Code, response.Body.Bytes()) != nil {
+			t.Fatal("actual refresh refusal is absent from the generated operation (body withheld)")
+		}
+	}
 }
 
 func TestRefreshWireParserCensus(t *testing.T) {

@@ -73,3 +73,15 @@ begins `29e1ff02` exclusive, includes `6b279ef6`, instrument/Make/artifact/docs/
 ledger/reconciliation and following pin. Claude required, not self-approved.
 No production/generated/pin/auth/kernel/copy/CI membership/checkbox/archive/push
 change, integrated-witness claim or reduction of proper full nine-tier 1.0.
+
+## Implementation checkpoint — 2026-10-07
+
+The missing representation above is locally repaired under accepted API C1/C2/C7/C9 and
+Account D2/D3: session creation/refresh mount from their registry rows and generate explicit
+typed calls with the observed statuses/errors. The original v1 report and its source identities
+remain untouched. The manual instrument now emits schema version 2: all six actual callers
+compile; removing refresh path metadata alone restores the path refusal, and removing refresh
+error members alone restores the two error refusals, in compiler memory only. OpenAPI and TS
+operation identities still agree. This is not automatic renewal/retry or C9 lint completion;
+`planning/api-foundation/log.md` owns the real persisted/client/journey evidence, pin refresh
+and new designated-review boundary.

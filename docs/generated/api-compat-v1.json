@@ -58,6 +58,39 @@
       ]
     },
     {
+      "id": "create_session",
+      "method": "POST",
+      "path": "/api/v1/session",
+      "surface": "private_v1",
+      "auth": "none",
+      "request": "SessionCreateRequest",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:BootstrapSession",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "429:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "get_current_garden",
+      "method": "GET",
+      "path": "/api/v1/garden/current",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:GardenCurrentResponse",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "get_current_minigame_session",
       "method": "GET",
       "path": "/api/v1/minigames/sessions/current",
@@ -245,6 +278,21 @@
       ]
     },
     {
+      "id": "refresh_session",
+      "method": "POST",
+      "path": "/api/v1/session/refresh",
+      "surface": "private_v1",
+      "auth": "none",
+      "request": "SessionRefreshRequest",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:BootstrapSession",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "429:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "resolve_minigame_session",
       "method": "POST",
       "path": "/api/v1/minigames/sessions/{session_id}/resolve",
@@ -317,6 +365,7 @@
             "not_configured",
             "not_eligible",
             "rate_limited",
+            "refresh_reused",
             "unauthorized",
             "unknown_id"
           ],
@@ -330,6 +379,8 @@
             "bootstrap",
             "bootstrap_expired",
             "category",
+            "company_stream",
+            "credential",
             "curriculum_exit_required",
             "cursor",
             "duplicate_card",
@@ -339,6 +390,7 @@
             "founder",
             "founder_state",
             "game_ui_snapshot",
+            "garden",
             "hack_slots_full",
             "hand_too_large",
             "human_content_locked",
@@ -360,8 +412,11 @@
             "recovery_progress",
             "recovery_session",
             "recovery_token",
+            "refresh_token",
             "run",
+            "session_family_revoked",
             "session_id",
+            "soul_recovery",
             "soul_recovery_cancel",
             "soul_recovery_not_ready",
             "soul_recovery_progress",
@@ -557,6 +612,255 @@
       ],
       "type": "object"
     },
+    "GameUIAxisAttained": {
+      "additionalProperties": false,
+      "properties": {
+        "achievement_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "earned_this_run": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "achievement_id",
+        "earned_this_run"
+      ],
+      "type": "object"
+    },
+    "GameUIAxisContribution": {
+      "additionalProperties": false,
+      "properties": {
+        "factor": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "source_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "upgrade_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "factor",
+        "source_id",
+        "upgrade_id"
+      ],
+      "type": "object"
+    },
+    "GameUIAxisIntern": {
+      "additionalProperties": false,
+      "properties": {
+        "factor": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "factor_ppm": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "minimum": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "owned": {
+          "type": "boolean"
+        },
+        "upgrade_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "factor",
+        "factor_ppm",
+        "minimum",
+        "owned",
+        "upgrade_id"
+      ],
+      "type": "object"
+    },
+    "GameUIAxisStackArm": {
+      "additionalProperties": false,
+      "properties": {
+        "attained": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIAxisAttained"
+          },
+          "type": "array"
+        },
+        "cap_reason_key": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "contributions": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIAxisContribution"
+          },
+          "type": "array"
+        },
+        "input_cap": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "input_kind": {
+          "enum": [
+            "achievement_attainment_run",
+            "achievement_score_run"
+          ],
+          "type": "string"
+        },
+        "input_value": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "interns": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIAxisIntern"
+          },
+          "type": "array"
+        },
+        "product": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "saturated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "attained",
+        "cap_reason_key",
+        "contributions",
+        "input_cap",
+        "input_kind",
+        "input_value",
+        "interns",
+        "product",
+        "saturated"
+      ],
+      "type": "object"
+    },
+    "GameUICosmeticItem": {
+      "additionalProperties": false,
+      "properties": {
+        "acquirable": {
+          "type": "boolean"
+        },
+        "cosmetic_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "lock": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUICosmeticLock"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "owned": {
+          "type": "boolean"
+        },
+        "worn_by": {
+          "items": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "acquirable",
+        "cosmetic_id",
+        "lock",
+        "owned",
+        "worn_by"
+      ],
+      "type": "object"
+    },
+    "GameUICosmeticLock": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "active_company_tier_at_least"
+          ],
+          "type": "string"
+        },
+        "tier": {
+          "maximum": 8,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "tier"
+      ],
+      "type": "object"
+    },
+    "GameUICosmeticWearer": {
+      "additionalProperties": false,
+      "properties": {
+        "pet_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "worn": {
+          "oneOf": [
+            {
+              "format": "mechanical-id",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "pet_id",
+        "worn"
+      ],
+      "type": "object"
+    },
+    "GameUICosmeticsArm": {
+      "additionalProperties": false,
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/GameUICosmeticItem"
+          },
+          "type": "array"
+        },
+        "wearers": {
+          "items": {
+            "$ref": "#/components/schemas/GameUICosmeticWearer"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "active",
+        "items",
+        "wearers"
+      ],
+      "type": "object"
+    },
     "GameUIFact": {
       "additionalProperties": false,
       "properties": {
@@ -602,6 +906,26 @@
         "active_play": {
           "type": "null"
         },
+        "axis_stack": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUIAxisStackArm"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cosmetics": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUICosmeticsArm"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "fiscal": {
           "oneOf": [
             {
@@ -632,8 +956,38 @@
             }
           ]
         },
+        "opportunity": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUIOpportunityArm"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pet_adoption": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUIPetsArm"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "pets": {
           "type": "null"
+        },
+        "reputation": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUIReputationArm"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -1129,6 +1483,243 @@
       ],
       "type": "object"
     },
+    "GameUIOpportunityArm": {
+      "additionalProperties": false,
+      "properties": {
+        "attended_now_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "buffs": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIOpportunityBuff"
+          },
+          "type": "array"
+        },
+        "combo": {
+          "$ref": "#/components/schemas/GameUIOpportunityCombo"
+        },
+        "pending": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUIOpportunityPending"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "attended_now_ms",
+        "buffs",
+        "combo",
+        "pending"
+      ],
+      "type": "object"
+    },
+    "GameUIOpportunityBuff": {
+      "additionalProperties": false,
+      "properties": {
+        "buff_instance_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "effect_row_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "expires_attended_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "selected_target": {
+          "oneOf": [
+            {
+              "format": "mechanical-id",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "buff_instance_id",
+        "effect_row_id",
+        "expires_attended_ms",
+        "selected_target"
+      ],
+      "type": "object"
+    },
+    "GameUIOpportunityCombo": {
+      "additionalProperties": false,
+      "properties": {
+        "cap": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "reason_key": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "saturated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "cap",
+        "reason_key",
+        "saturated"
+      ],
+      "type": "object"
+    },
+    "GameUIOpportunityPending": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_row_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "expires_attended_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "opportunity_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "selected_generator_id": {
+          "oneOf": [
+            {
+              "format": "mechanical-id",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "effect_row_id",
+        "expires_attended_ms",
+        "opportunity_id",
+        "selected_generator_id"
+      ],
+      "type": "object"
+    },
+    "GameUIPetRow": {
+      "additionalProperties": false,
+      "properties": {
+        "eligible_action_ids": {
+          "items": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "name_key": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "palette_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "pet_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "species_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "status_band": {
+          "enum": [
+            "floor",
+            "high",
+            "low",
+            "normal"
+          ],
+          "type": "string"
+        },
+        "temperament": {
+          "enum": [
+            "chaotic",
+            "curious",
+            "lazy",
+            "playful",
+            "sassy",
+            "shy"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "eligible_action_ids",
+        "name_key",
+        "palette_id",
+        "pet_id",
+        "species_id",
+        "status_band",
+        "temperament"
+      ],
+      "type": "object"
+    },
+    "GameUIPetsArm": {
+      "additionalProperties": false,
+      "properties": {
+        "pet_adoption": {
+          "additionalProperties": false,
+          "properties": {
+            "cap": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "count": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "name_keys": {
+              "items": {
+                "format": "mechanical-id",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "starter_species_id": {
+              "format": "mechanical-id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "cap",
+            "count",
+            "name_keys",
+            "starter_species_id"
+          ],
+          "type": "object"
+        },
+        "pets": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIPetRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "pet_adoption",
+        "pets"
+      ],
+      "type": "object"
+    },
     "GameUIProgress": {
       "additionalProperties": false,
       "properties": {
@@ -1149,6 +1740,123 @@
         "current",
         "stage_id",
         "target"
+      ],
+      "type": "object"
+    },
+    "GameUIReputationArm": {
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "bonus_factor_next_run": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "bonus_factor_this_run": {
+          "oneOf": [
+            {
+              "format": "canonical-decimal",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "level": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIReputationNode"
+          },
+          "type": "array"
+        },
+        "per_level_ppm": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "spent": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unlock_ppm": {
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "available",
+        "bonus_factor_next_run",
+        "bonus_factor_this_run",
+        "level",
+        "nodes",
+        "per_level_ppm",
+        "spent",
+        "unlock_ppm"
+      ],
+      "type": "object"
+    },
+    "GameUIReputationNode": {
+      "additionalProperties": false,
+      "properties": {
+        "body_key": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "cost": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "bonus_unlock",
+            "starter"
+          ],
+          "type": "string"
+        },
+        "node_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "requires": {
+          "items": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "locked",
+            "owned",
+            "unaffordable"
+          ],
+          "type": "string"
+        },
+        "title_key": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "body_key",
+        "cost",
+        "kind",
+        "node_id",
+        "requires",
+        "state",
+        "title_key"
       ],
       "type": "object"
     },
@@ -1629,6 +2337,39 @@
       ],
       "type": "object"
     },
+    "GameUITransitionIncorporate": {
+      "additionalProperties": false,
+      "properties": {
+        "factions": {
+          "items": {
+            "$ref": "#/components/schemas/GameUITransitionIncorporateFaction"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "factions"
+      ],
+      "type": "object"
+    },
+    "GameUITransitionIncorporateFaction": {
+      "additionalProperties": false,
+      "properties": {
+        "copy_key": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "faction_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "copy_key",
+        "faction_id"
+      ],
+      "type": "object"
+    },
     "GameUITransitions": {
       "additionalProperties": false,
       "properties": {
@@ -1641,6 +2382,9 @@
               "type": "null"
             }
           ]
+        },
+        "incorporate": {
+          "$ref": "#/components/schemas/GameUITransitionIncorporate"
         },
         "wind_down": {
           "$ref": "#/components/schemas/GameUITransitionEligibility"
@@ -1680,6 +2424,230 @@
         "eligible",
         "owned",
         "upgrade_id"
+      ],
+      "type": "object"
+    },
+    "GardenActive": {
+      "additionalProperties": false,
+      "properties": {
+        "founder_revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "garden": {
+          "$ref": "#/components/schemas/GardenView"
+        },
+        "kind": {
+          "enum": [
+            "active"
+          ],
+          "type": "string"
+        },
+        "server_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "founder_revision",
+        "garden",
+        "kind",
+        "server_ms"
+      ],
+      "type": "object"
+    },
+    "GardenCurrentResponse": {
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/GardenActive"
+        },
+        {
+          "$ref": "#/components/schemas/GardenInactive"
+        },
+        {
+          "$ref": "#/components/schemas/GardenLocked"
+        }
+      ]
+    },
+    "GardenInactive": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "inactive"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "GardenLocked": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "locked"
+          ],
+          "type": "string"
+        },
+        "unlock_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "unlock_id"
+      ],
+      "type": "object"
+    },
+    "GardenPlot": {
+      "additionalProperties": false,
+      "properties": {
+        "age_ticks": {
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "col": {
+          "maximum": 5,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "dormant": {
+          "type": "boolean"
+        },
+        "maturation_ticks": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "row": {
+          "maximum": 5,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "species_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "stage": {
+          "enum": [
+            "growing",
+            "mature"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "age_ticks",
+        "col",
+        "dormant",
+        "maturation_ticks",
+        "row",
+        "species_id",
+        "stage"
+      ],
+      "type": "object"
+    },
+    "GardenView": {
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "maximum": 6,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_height": {
+          "maximum": 6,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_width": {
+          "maximum": 6,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "next_tick_wall_ms": {
+          "oneOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_catchup_forfeited_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "plots": {
+          "items": {
+            "$ref": "#/components/schemas/GardenPlot"
+          },
+          "type": "array"
+        },
+        "seed_collection": {
+          "items": {
+            "format": "mechanical-id",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "species_total": {
+          "maximum": 256,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "substrate_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "substrate_lockout_until_ms": {
+          "oneOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tick_seq": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "width": {
+          "maximum": 6,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "height",
+        "max_height",
+        "max_width",
+        "next_tick_wall_ms",
+        "pending_catchup_forfeited_ms",
+        "plots",
+        "seed_collection",
+        "species_total",
+        "substrate_id",
+        "substrate_lockout_until_ms",
+        "tick_seq",
+        "width"
       ],
       "type": "object"
     },
@@ -2763,6 +3731,35 @@
         "replay_log_url",
         "run_id",
         "verdict"
+      ],
+      "type": "object"
+    },
+    "SessionCreateRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "recovery_code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "recovery_code"
+      ],
+      "type": "object"
+    },
+    "SessionRefreshRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "refresh_token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "refresh_token"
       ],
       "type": "object"
     },

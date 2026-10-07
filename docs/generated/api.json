@@ -13,6 +13,7 @@
               "not_configured",
               "not_eligible",
               "rate_limited",
+              "refresh_reused",
               "unauthorized",
               "unknown_id"
             ],
@@ -27,6 +28,7 @@
               "bootstrap_expired",
               "category",
               "company_stream",
+              "credential",
               "curriculum_exit_required",
               "cursor",
               "duplicate_card",
@@ -58,7 +60,9 @@
               "recovery_progress",
               "recovery_session",
               "recovery_token",
+              "refresh_token",
               "run",
+              "session_family_revoked",
               "session_id",
               "soul_recovery",
               "soul_recovery_cancel",
@@ -3378,6 +3382,35 @@
         ],
         "type": "object"
       },
+      "SessionCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "recovery_code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "recovery_code"
+        ],
+        "type": "object"
+      },
+      "SessionRefreshRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ],
+        "type": "object"
+      },
       "SoulRecoveryFinishRequest": {
         "additionalProperties": false,
         "properties": {
@@ -4760,6 +4793,120 @@
             "accessToken": []
           }
         ]
+      }
+    },
+    "/api/v1/session": {
+      "post": {
+        "operationId": "create_session",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BootstrapSession"
+                }
+              }
+            },
+            "description": "HTTP 200"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 401"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          }
+        }
+      }
+    },
+    "/api/v1/session/refresh": {
+      "post": {
+        "operationId": "refresh_session",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BootstrapSession"
+                }
+              }
+            },
+            "description": "HTTP 200"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 401"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          }
+        }
       }
     },
     "/api/v1/soul-recovery/cancel": {

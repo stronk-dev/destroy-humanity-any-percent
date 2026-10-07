@@ -86,6 +86,13 @@ func refreshPersistenceRequest(t *testing.T, server *testhttp.Server, token stri
 	if err != nil {
 		t.Fatal(err)
 	}
+	registry, err := PrivateAPIRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if registry.ValidateResponse("refresh_session", response.StatusCode, body) != nil {
+		t.Fatal("actual persisted refresh response does not conform to its registered descriptor (body withheld)")
+	}
 	return body
 }
 

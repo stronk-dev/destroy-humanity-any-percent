@@ -14,6 +14,13 @@ locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Catalog owner 
 remaining route/client registration, third-party verification, 304 metadata and designated
 reviews stay open; not full API acceptance or green hosted CI. Latest log owns exact evidence.
 
+Existing session creation/refresh now mount from the registry and generate explicit calls, with
+exact error alternatives and the existing shared IP limiter. Real Postgres creation/rotation/
+reuse/lost-reply populations, affected client checks and the whole composed journey pass. The
+explicit C1/C2 additive pin refresh protects both operations and their statuses, while capturing
+already-registered Garden/optional Garage shapes. No automatic browser renewal or retry policy
+is implemented; its draft decisions and full API acceptance remain open.
+
 - [x] Reconcile C1–C17 into the active A1–A8 contract.
 - [x] Implement the closed schema-descriptor DSL and operation registry foundation.
 - [x] Implement authenticated keyset cursors and normalized board variables.
@@ -39,6 +46,10 @@ reviews stay open; not full API acceptance or green hosted CI. Latest log owns e
   - [ ] Complete the third-party loop using public catalogs and the TypeScript verifier;
     same-epoch Go download proof does not close this requirement.
 - [x] Generate OpenAPI 3.1 and TypeScript from the registry; add compatibility pins/gate.
+  - [x] Register existing session creation/refresh, preserve middleware and exact replies, and
+    generate explicit typed calls (`TestSessionOperationRegistryIntegration`, persisted refresh
+    population, shared-limiter/descriptor tests, generated SDK tests and actual pin controls).
+    Local implementation is not designated approval or browser-renewal completion.
   - [x] Generate typed HTTP dispatch and raw/status response associations; bind real Game UI
     bootstrap/state reads (generated-api/runtime tests and real composed journey).
   - [x] Bind registered Minigame/Soul/Garden ports to generated dispatch, preserving their

@@ -169,8 +169,6 @@ func (api *API) Router() http.Handler {
 	})
 	router.Route("/api/v1", func(v1 chi.Router) {
 		v1.With(api.limitUnauthenticated).Post("/account", api.createAccount)
-		v1.With(api.limitUnauthenticated).Post("/session", api.createSession)
-		v1.With(api.limitUnauthenticated).Post("/session/refresh", api.refreshSession)
 		v1.Group(func(authenticated chi.Router) {
 			authenticated.Use(api.authenticate)
 			authenticated.Use(api.limitAccount)
@@ -188,11 +186,13 @@ func (api *API) Router() http.Handler {
 		{OperationID: "cancel_soul_recovery", Handler: http.HandlerFunc(api.cancelSoulRecovery)},
 		{OperationID: "create_bootstrap", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createBootstrap))},
 		{OperationID: "create_minigame_session", Handler: http.HandlerFunc(api.createMinigameSession)},
+		{OperationID: "create_session", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createSession))},
 		{OperationID: "get_current_garden", Handler: http.HandlerFunc(api.getCurrentGarden)},
 		{OperationID: "get_current_minigame_session", Handler: http.HandlerFunc(api.getCurrentMinigameSession)},
 		{OperationID: "get_game_ui_snapshot", Handler: http.HandlerFunc(api.getGameUISnapshot)},
 		{OperationID: "play_minigame_command", Handler: http.HandlerFunc(api.playMinigameCommand)},
 		{OperationID: "progress_soul_recovery", Handler: http.HandlerFunc(api.progressSoulRecovery)},
+		{OperationID: "refresh_session", Handler: api.limitUnauthenticated(http.HandlerFunc(api.refreshSession))},
 		{OperationID: "resolve_minigame_session", Handler: http.HandlerFunc(api.resolveMinigameSession)},
 		{OperationID: "resolve_soul_recovery", Handler: http.HandlerFunc(api.resolveSoulRecovery)},
 		{OperationID: "start_soul_recovery", Handler: http.HandlerFunc(api.startSoulRecovery)},

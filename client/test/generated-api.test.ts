@@ -9,6 +9,42 @@ async function hash(bytes: Uint8Array): Promise<string> {
 }
 
 describe("registry-generated HTTP client", () => {
+  it.each([
+    ["create_session", "/api/v1/session", { account_id: stream, recovery_code: "fixture-recovery" }],
+    ["refresh_session", "/api/v1/session/refresh", { refresh_token: "fixture-refresh" }],
+  ] as const)("dispatches existing %s without an access token or automatic renewal", async (id, path, request) => {
+    const pair = { access_token: "fixture-access", refresh_token: "fixture-descendant" };
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(pair), { status: 200 }));
+    // Invalid runtime callers cannot accidentally forward an unrelated access token
+    // to a credential-issuing operation declared AuthNone.
+    const input = { path: {}, request, accessToken: "must-not-leak" };
+    const result = await createAPIClient(fetcher).call(id, input as unknown as OperationInput<typeof id>);
+    expect(result.status).toBe(200);
+    expect(result.body).toEqual(pair);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    const [url, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe(path);
+    expect(init.method).toBe("POST");
+    expect(init.body).toBe(JSON.stringify(request));
+    expect(new Headers(init.headers).get("Content-Type")).toBe("application/json");
+    expect(new Headers(init.headers).get("Authorization")).toBeNull();
+  });
+
+  it.each([
+    [400, "invalid", "body"],
+    [401, "unauthorized", "refresh_token"],
+    [401, "refresh_reused", "session_family_revoked"],
+    [429, "rate_limited", "ip"],
+  ] as const)("preserves refresh %s %s/%s without retrying a consumed credential", async (status, category, detail) => {
+    const body: APIError = { category, detail };
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status }));
+    const result = await createAPIClient(fetcher).call("refresh_session", { path: {}, request: { refresh_token: "fixture-refresh" } });
+    expect(result.status).toBe(status);
+    expect(result.ok).toBe(false);
+    expect(result.body).toEqual(body);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
   it("uses registered paths, encodes path/query values, and omits undeclared credentials on public reads", async () => {
     const fetcher = vi.fn(async () => new Response(JSON.stringify({ category: "invalid", detail: "variables" }), { status: 400 }));
     const client = createAPIClient(fetcher, "https://example.test/");
@@ -128,6 +164,14 @@ function compileContract(client: ReturnType<typeof createAPIClient>): void {
   // RP-376: actual registered Soul error replies must be representable.
   const unavailable: APIError = { category: "not_configured", detail: "soul_recovery" };
   const missingCompany: APIError = { category: "unknown_id", detail: "company_stream" };
+  const reused: APIError = { category: "refresh_reused", detail: "session_family_revoked" };
+  void reused;
+  void client.call("create_session", { path: {}, request: { account_id: stream, recovery_code: "fixture-recovery" } });
+  void client.call("refresh_session", { path: {}, request: { refresh_token: "fixture-refresh" } });
+  // @ts-expect-error refresh's credential is not an access-token-authenticated call
+  void client.call("refresh_session", { path: {}, request: { refresh_token: "fixture-refresh" }, accessToken: "private" });
+  // @ts-expect-error recovery session issuance needs the recovery credential
+  void client.call("create_session", { path: {}, request: { account_id: stream } });
   void unavailable; void missingCompany;
   // @ts-expect-error unknown registry operation
   void client.call("invented_operation", { path: {}, request: null });

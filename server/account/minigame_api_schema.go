@@ -30,8 +30,8 @@ func apiObject(fields ...publicapi.Field) *publicapi.Schema {
 // detail enum is the union of every registered operation's exact pairs.
 func APIErrorSchema() publicapi.NamedSchema {
 	return publicapi.NamedSchema{Name: "APIError", Schema: apiObject(
-		apiField("category", apiString("", "conflict", "idempotency_conflict", "internal_invariant", "invalid", "not_configured", "not_eligible", "rate_limited", "unauthorized", "unknown_id")),
-		apiField("detail", apiString("", "access_token", "account", "body", "bootstrap", "bootstrap_expired", "category", "company_stream", "curriculum_exit_required", "cursor", "duplicate_card", "epoch", "exclusive_activity", "fiscal_unlock_required", "founder", "founder_state", "game_ui_snapshot", "garden", "hack_slots_full", "hand_too_large", "human_content_locked", "illegal_phase", "insufficient_currency", "invalid_assist_level", "invalid_text", "ip", "limit", "line_too_long", "mandate", "minigame_api", "minigame_command", "minigame_create", "minigame_revision", "minigame_session", "minigame_tenant", "public_api", "recovery_progress", "recovery_session", "recovery_token", "run", "session_id", "soul_recovery", "soul_recovery_cancel", "soul_recovery_not_ready", "soul_recovery_progress", "soul_recovery_resolve", "soul_recovery_start", "tier_required", "unknown_card", "unknown_offer", "variables")),
+		apiField("category", apiString("", "conflict", "idempotency_conflict", "internal_invariant", "invalid", "not_configured", "not_eligible", "rate_limited", "refresh_reused", "unauthorized", "unknown_id")),
+		apiField("detail", apiString("", "access_token", "account", "body", "bootstrap", "bootstrap_expired", "category", "company_stream", "credential", "curriculum_exit_required", "cursor", "duplicate_card", "epoch", "exclusive_activity", "fiscal_unlock_required", "founder", "founder_state", "game_ui_snapshot", "garden", "hack_slots_full", "hand_too_large", "human_content_locked", "illegal_phase", "insufficient_currency", "invalid_assist_level", "invalid_text", "ip", "limit", "line_too_long", "mandate", "minigame_api", "minigame_command", "minigame_create", "minigame_revision", "minigame_session", "minigame_tenant", "public_api", "recovery_progress", "recovery_session", "recovery_token", "refresh_token", "run", "session_family_revoked", "session_id", "soul_recovery", "soul_recovery_cancel", "soul_recovery_not_ready", "soul_recovery_progress", "soul_recovery_resolve", "soul_recovery_start", "tier_required", "unknown_card", "unknown_offer", "variables")),
 	)}
 }
 
@@ -277,10 +277,12 @@ func newPrivateAPIRegistry() (*publicapi.Registry, error) {
 	schemas = append(schemas, gameUIAPISchemas()...)
 	schemas = append(schemas, bootstrapAPISchemas()...)
 	schemas = append(schemas, gardenAPISchemas()...)
+	schemas = append(schemas, sessionAPISchemas()...)
 	operations := append(minigameAPIOperations(), soulRecoveryAPIOperations()...)
 	operations = append(operations, gameUIAPIOperations()...)
 	operations = append(operations, bootstrapAPIOperations()...)
 	operations = append(operations, gardenAPIOperations()...)
+	operations = append(operations, sessionAPIOperations()...)
 	sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
 	sort.Slice(operations, func(left, right int) bool { return operations[left].ID < operations[right].ID })
 	return publicapi.NewRegistry(schemas, operations)

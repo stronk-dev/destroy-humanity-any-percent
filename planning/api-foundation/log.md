@@ -1050,3 +1050,60 @@ Review by: Codex (implementer diff/first filter); Recorded by: Codex. Exact rang
 review. All handles terminal before final records/commit; no archival or push. Next: complete
 the catalog owner descriptors/closed response union and HTTP binding, then the public third-party
 verification loop and protocol-compliant product mint; C9/304 and whole API acceptance stay open.
+
+## 2026-10-07 — existing session operations join the generated authority
+
+Outcome under accepted API A1/A2/A5/C1/C2/C7/C9 and Account D2/D3: register existing
+`create_session` and `refresh_session`, reuse the account's `BootstrapSession` token-pair schema,
+and mount those handlers only from their rows. Existing shared unauthenticated IP limiting,
+body parsing, credential handling, token policy, response bytes and statuses are unchanged.
+Add the real refresh/credential error literals to the shared response enum and bind these
+operations' errors to exact status-specific bytes. Generated calls are explicit: no automatic
+renewal, retry, credential storage/replacement or recovery copy. Other unregistered routes,
+intent dispatch/C9 lint, catalog HTTP/owners, 304 and the full API remain unfinished.
+
+Regression91009 fails both missing operations and response validation on old metadata. New
+descriptor tests reject extra/private/missing/mistyped fields and cross-operation error pairs.
+Existing parser controls now validate actual error replies; all persisted refresh controls
+validate real replies against the registry. A new Postgres session-create→rotate→reuse case
+checks genuine issued credentials, family row effects and no gameplay/failed-request mutation.
+The shared-limiter regression proves creation and refresh still consume the same IP bucket.
+
+Executed finished-batch evidence:
+
+- Cold affected Account/publicapi/publicread/generator tests and vet pass (90224, then27946).
+  Native tests skip DB cases; the actual DB results below are separate.
+- Real Postgres54344 executes the entire Account package, including session creation, refresh
+  expiry/reuse/New-Founder/limiter/closed-DB/lost-reply populations and the new registry case.
+  All pass; no package PASS or skipped test is substituted for execution.
+- Node46788:117 affected generated-client/operation-port/Game-UI-runtime checks pass.
+  Native Chromium/WebKit2575:234 pass. Types19364 report zero errors/warnings. Actual production
+  client build and shell/topology controls32181 pass. No Firefox or whole hosted-CI claim.
+- Whole `make test-game-ui-composed`38984 passes: mandatory persisted parents, main player
+  journey, both early endings/continuation/recovery, Fiscal/Pitch and Cosmetic adoption/care/
+  reload. Source inspection corrects earlier “built-client” wording: this runner builds the Go
+  server but serves the client through Vite; the separate successful client build is not a
+  packaged-client browser rehearsal. The saved whole-product overview is corrected.
+- Manual compiler census15712 passes all six actual callers and synthetic path/error removal
+  refusals, schema version2; final71369 repeats successfully after the pin refresh. Its retained
+  v1 evidence is unchanged, not restamped as current.
+
+Pin authority and execution: API C1/C2 requires generated operation truth and additive v1
+compatibility. The ordinary generator checked the old pin successfully before any refresh.
+Initial combined90224 exits2 only because generated outputs were not yet staged; after staging,
+actual `api-check`32181 passes. Regression3965 then demonstrates that the old committed pin
+does not guard removal of either new operation or its 401 status. Explicit `make api-pin`
+(existing accepted A1/A5/C1/C2 lane, no compatibility waiver) captures the current registry.
+The semantic comparison finds three added rows: these two plus already-registered
+`get_current_garden`; zero original operation-row changes/removals or removed schemas.
+It also captures existing optional Garage shapes and prior additive error members. Those
+preexisting feature ranges retain their own pending reviews; this pin does not approve them.
+Cold27946 then passes actual committed-pin removal/status controls, affected packages/vet and
+staged byte-identical `api-check`. No original pin is rewritten to conceal a rejected change.
+
+**Review by:** Codex (implementer diff/first filter). **Recorded by:** Codex. Exact new range
+is `e1580fdb` exclusive through this batch's final implementation/test/generated/docs/record
+commit. Full designated cross-party review remains required; prior ranges remain separate.
+No kernel/balance/migration/product mint, workflow or timeout/retry change, archival, publication
+or push. Full nine-tier 1.0 remains active. Next: remaining operation/consumer migration and
+catalog owner/HTTP/public verification integration, with explicit decisions for the held lanes.

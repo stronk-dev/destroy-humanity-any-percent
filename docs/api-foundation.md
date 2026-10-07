@@ -52,14 +52,28 @@ shape, while a retained historical shape uses an explicit `V<n>` suffix. A compa
 refresh must cite its authorizing ruling and be recorded in the owning planning log in the same
 change; an otherwise valid widening is not permission for a silent re-baseline.
 
-The generated registry is not yet the complete runtime API. Current metadata covers seventeen operations and omits the existing
-session refresh route and its refresh-specific error alternatives. Actual TypeScript
-callers cannot represent that path or those errors. Bootstrap, main state reads and the
+The generated registry is not yet the complete runtime API. Current metadata covers nineteen
+operations, including the existing session creation and refresh routes and their actual error
+alternatives. Both routes mount from the registry with their existing shared unauthenticated IP
+limiter. Their successful two-string token pairs reuse the `BootstrapSession` owner descriptor;
+creation takes `{account_id,recovery_code}`, refresh takes `{refresh_token}`. Registered errors
+are exact operation/status-specific bytes: `400 invalid/body`, `429 rate_limited/ip`, creation's
+`401 unauthorized/credential`, and refresh's `401 unauthorized/refresh_token` or
+`401 refresh_reused/session_family_revoked`. The refresh parser's existing null/missing/case-
+insensitive behavior is unchanged; documenting canonical typed callers does not introduce
+request-schema middleware that tightens the live handler.
+
+Explicit generated calls can now represent those routes/errors; they do not add automatic
+renewal, credential replacement, recovery UX or retry policy. The deliberate additive pin refresh
+under API C1/C2 also captures the already-registered Garden route and optional Garage response
+shapes; it changes no original operation rows. Tests against the actual committed pin reject
+removal of either session operation or its 401 alternative. Bootstrap, main state reads and the
 Minigame/Soul/Garden ports use the generated client; intents still call `fetcher` outside the
 generated directory. `api-check` passes
 for the registered subset, not AC4 completion. Manual
-`make research-refresh-generated-contract` retains compiler/counterfactual evidence
-outside CI/verify; it does not implement or authorize browser renewal. See the
+`make research-refresh-generated-contract` now verifies represented refresh callers and
+in-memory metadata-removal refusals outside CI/verify; its earlier retained report remains
+historical evidence of the gap. It does not implement or authorize browser renewal. See the
 [bounded census](../planning/platform-alignment/refresh-generated-contract.md).
 
 ### Generated HTTP client
