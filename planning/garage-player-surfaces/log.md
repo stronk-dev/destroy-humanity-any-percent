@@ -4517,3 +4517,48 @@ topology/no-payment. Product docs/ledger/inventory/plan/board/queue/log reconcil
 transactionally. Entire0e7910ed-exclusive range requires Claude; preceding
 0e548992..0e7910ed and all earlier spans independent. No boxes/body/status/
 archive/push/cleanup/Retry/release/shortened-preview substitution; goal active.
+
+## 2026-10-07 — Partial tab repair, retry traversal diagnosis predeclaration
+
+57c0f6→24df13 terminal2 after the one-attribute repair:22 WebKit failures/74
+controls,530 unselected. Initial reachability now works; some later retry
+stages exhaust the declared six controls+one and leave BODY. No all-green
+claim or completion yet. Keep that bound/assertion unchanged while recording
+native positions including document.hasFocus and exact control identity.
+After exhaustion only, execute three additional diagnostic Tab observations,
+then THROW on the original exhaustion regardless of whether later input reaches
+Continue. This is a red diagnostic, not permission to raise an acceptance ceiling
+or accept a truncated run. Inspect actual trace before attributing a new product
+defect or changing the instrument. All authored copy/handler/bounds unchanged.
+
+## 2026-10-07 — Read-pending native focus scope refinement
+
+Diagnostic6e4900→fec61e terminal2:29 WebKit failures/19 controls,265 unselected.
+On refusal retries trace begins BODY/documentFocus=true, then BODY/false for
+all seven original and three diagnostic Tabs. Extra input DOES NOT recover;
+no permission to enlarge the bound. This is native focus loss + test-document
+exit, not proof of a physical-browser focus trap. Failed-read controls remain
+enabled in DOM. Original direct-focus proof concealed native disable blur.
+
+Accepted Game UI AC1 keyboard task and Garage GS0.6 native focus/context floor
+own the repair; GS0.8 is the existing focus-preserving aria-disabled precedent,
+not authority to classify read continuation as a writable intent or change its
+policy. Extend the earlier one-control scope: keep tabindex0, replace pending
+native disabled with aria-disabled. Existing continueRun pending guard still
+drops duplicate native activations; no read cancellation/retry/auth/copy/value/
+navigation policy invented. No pending text authored or state outside that
+control changed. Record RP-347 focus loss separately from initial RP-346 stop.
+
+Before product edit, strengthen pending oracles in BOTH existing scripted and
+new standard populations: native disabled=false, aria-disabled=true, actual
+focus stays on trigger during held read, native duplicate activation performs
+no second read; refusal removes aria-disabled while retaining trigger focus.
+This replaces the old mechanical HTML-disabled oracle with a stronger accepted
+keyboard-preserving disable property, not an assertion/budget relaxation. All
+control-count+one bounds unchanged; diagnostic extra Tabs removed from normal
+gate after preserving the red trace. Run the stronger red against current
+one-attribute-only patch before this focus-preserving edit. Additional source
+fault restoring native pending disable must fail; omitted function pending
+guard must now genuinely fail duplicated native-read checks. Original nine
+seeds + these two must discriminate; prior disclosure/type/labels/first tab/
+copy/balance/CI gates unchanged. Full containing range remains Claude-owned.
