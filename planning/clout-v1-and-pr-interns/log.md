@@ -1634,3 +1634,13 @@ Plan now predeclares exact5000ms final delay and report/observer identity
 checks plus prestige source pins. Keep expiry assertion, all16 populations,
 128 command attempts and48 refusals. No production/balance/owner-policy edit.
 This correction is not yet executed or claimed successful.
+
+### Sequence constructor failure — first-spawn attended-clock setup
+
+95078/a0a26d exits2; diagnostic29978/4df0ff identifies click/3114/online-offline-
+online: attainment12/purchased100/earned0 but pendingnil, actual firstspawn6684.
+Jumping straight there exceeds5000ms, so this is again the instrument's clock,
+not a scheduler defect. No corpus exists. Plan predeclares actual short-gap
+online manual preludes, full continuous outputs and explicit per-row/total
+command census, retaining all effects/founders/eight core commands/refusals.
+No seed filtering, fabricated pending buff, production edit or gate waiver.

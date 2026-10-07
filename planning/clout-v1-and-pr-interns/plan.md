@@ -710,3 +710,22 @@ Keep all16 effects/gaps/mode paths/eight commands/refusals and the original
 buff-expiry assertion. Add prestige runtime and its phase0 artifact source
 pins. No balance, attendance policy, evaluation mode, expiry duration, output,
 production byte or acceptance limit changes. Original failed runs retained.
+
+### Sequence instrument correction — reaching the first attended spawn
+
+95078/a0a26d and diagnostic29978/4df0ff fail before publication: first selected
+click spawn is attended6684ms. A direct first command there crosses5000ms and
+correctly records offline time; no opportunity is pending. Do not reseed,
+filter a founder, forge pending state or change the scheduler. Before rerun,
+prepend actual online manual.click(count1/window1000) commands at5000ms steps
+while the remaining distance to the selected first spawn exceeds5000ms.
+Then retain the original EIGHT core commands at their declared coordinates.
+Pin each row's first spawn coordinate and prelude count; preserve COMPLETE
+continuous replay outputs/restores for every prelude and core command, all16
+rows and48 claim refusals. Bound preludes by the catalog's generated first
+coordinate, fail if command census differs from8+prelude_count; publish exact
+total command attempts rather than falsely retaining128. TS independently
+checks exact prelude count/timestamps/online kinds, every core mode/coordinate,
+and the original full outputs and semantic checkpoints with an explicit offset.
+No initial inventory/history or production rule changes. This corrects only
+the clock instrument and expands observed commands, not the gameplay scope.
