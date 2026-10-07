@@ -821,3 +821,20 @@ conflicts to the ORIGINAL recorded expected revision, changing ONLY the chosen
 opportunity_id/amount_ms, so a revision-only difference cannot mask body-hash
 binding. Population and all original oracles remain unchanged. Initial failure
 is a request adapter error, not a product defect.
+
+### Persisted instrument correction — receipt and event outbox populations
+
+11110/cd71d6 executes first command in each row, then fails16 receipt-census
+assertions: actual outbox contains BOTH receipt and event rows (5 or2 total,
+not1). Keep the promised one RECEIPT per attempt by filtering message_kind,
+not deleting or excluding event delivery. Before rerun, also assert a full
+event→outbox bijection on source ID, owner/stream/scope/revision/hash/time and
+complete published event payload, with equal nonzero event/outbox counts.
+Demonstrate16 corrupt-event-payload negatives, one per row: alter only an
+owned test outbox payload inside a transaction, require mismatch, roll back,
+and assert the complete twelve-table snapshot unchanged. Count these16 controls
+separately; no extra gameplay command or altered expected output.
+The outbox INSERT fault trigger now specifically matches message_kind=receipt,
+so it reaches the late receipt insertion rather than the event trigger's early
+outbox insertion. Retain all48 faults and other original populations. Actual
+event-producing trigger/source schema read directly; no migration/runtime edit.

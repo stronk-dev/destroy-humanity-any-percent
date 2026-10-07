@@ -1733,3 +1733,14 @@ first payload and actual parser. No applied/refused/retry/conflict/fault count
 or new shared artifact exists. Plan correction declares exact ID reconstruction
 and raw request return, plus body-only conflicts preserving original revision.
 No runtime, parser, expected gameplay output, epoch or population changed.
+
+### Persisted outbox instrument failure — events are not receipts
+
+11110/cd71d6 exits2 after16 actual first commands, before any claim/fault/retry:
+outbox totals5 or2 differ from claimed receipt-only1. The census query forgot
+message_kind; live migrations40/42 also enqueue events. ea4700 confirms actual
+schema. Plan now retains exact receipt census, adds full event/outbox bijection
+and16 separately counted transactional corruption controls, and targets the
+late RECEIPT insertion for the sixth fault. No legitimate event dropped, no
+population/production/schema/expected-gameplay-output change. Instrument-only
+correction is predeclared before rerun; no completed persistence claim yet.
