@@ -18,6 +18,48 @@ const key = Buffer.alloc(32, 7).toString("base64");
 const processErrors = [];
 let pitchOffersDeclined = 0;
 
+// Request metadata only: no tokens, IDs, query strings or bodies. Count the
+// main account's browser traffic AND the driver's direct authenticated reads.
+let requestTraceStart;
+let requestPhase = "bootstrap/recovery";
+const accountRequests = [];
+function traceAccountRequest(source, method, url) {
+  if (requestTraceStart === undefined) return undefined;
+  const route = new URL(url).pathname.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/giu, ":id");
+  const row = { at_ms: Math.round(performance.now() - requestTraceStart), source, phase: requestPhase, method, route, status: "pending" };
+  accountRequests.push(row);
+  return row;
+}
+async function tracedAccountFetch(url, options) {
+  const row = traceAccountRequest("driver", options?.method ?? "GET", url);
+  try {
+    const response = await fetch(url, options);
+    if (row) row.status = response.status;
+    return response;
+  } catch (error) {
+    if (row) row.status = "failed";
+    throw error;
+  }
+}
+function reportAccountRequests() {
+  if (requestTraceStart === undefined) return;
+  const counts = {};
+  for (const row of accountRequests) {
+    const key = `${row.phase}: ${row.source} ${row.method} ${row.route} ${row.status}`;
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  let windowStart = 0, peakOneSecond = 0;
+  for (let end = 0; end < accountRequests.length; end += 1) {
+    while (accountRequests[end].at_ms - accountRequests[windowStart].at_ms >= 1_000) windowStart += 1;
+    peakOneSecond = Math.max(peakOneSecond, end - windowStart + 1);
+  }
+  // Issued requests are not proof of server arrival; a navigation can leave
+  // an interrupted request pending in Playwright's event stream.
+  console.info(`composed main-account HTTP trace: ${JSON.stringify({ total_issued: accountRequests.length,
+    elapsed_ms: Math.round(performance.now() - requestTraceStart), peak_issued_requests_in_one_second: peakOneSecond,
+    counts, last_requests: accountRequests.slice(-32) })}`);
+}
+
 // The composed target runs multiple fixture epochs in one named, ephemeral
 // database. A later invocation must not inherit the previous witness's epoch.
 function resetTestDatabase() {
@@ -301,7 +343,7 @@ async function witnessOpportunityClaim(page) {
     return { effect_row_id: claim.effect_row_id, proof_branch: proofBranch, revision: after.revision,
       manual_clicks: attempt - expiredClaims.length, expired_claims: expiredClaims.length };
   }
-  throw new Error("GS5: no opportunity became claimable within 60 manual clicks (4/s, under the account limiter)");
+  throw new Error("GS5: no opportunity became claimable within 60 manual clicks (250 ms pause after each completed action; authenticated follow-up reads also consume the account limiter)");
 }
 
 function receiptCoordinate(result) {
@@ -344,7 +386,7 @@ function receivedPlayerCoordinates(frames, channel) {
 }
 
 async function founderState(accessToken) {
-  const response = await fetch(`${gameserverURL}/api/v1/founder/state`, { headers: { Authorization: `Bearer ${accessToken}` } });
+  const response = await tracedAccountFetch(`${gameserverURL}/api/v1/founder/state`, { headers: { Authorization: `Bearer ${accessToken}` } });
   if (response.status !== 200) throw new Error(`founder state read failed (${response.status})`);
   return response.json();
 }
@@ -375,7 +417,7 @@ async function witnessFirstPurchaseAchievement(page, frames, accessToken) {
   const buy = page.locator('section[aria-labelledby="generators-heading"] article')
     .filter({ has: page.getByRole("heading", { name: generatorTitle, exact: true }) })
     .getByRole("button", { name: t("desk.buy_one", {}, era), exact: true });
-  // Use the player's manual action at the same 4/s cadence as GS5, with the
+  // Use the player's manual action with the same post-action pause as GS5 and the
   // existing 30-second action guard. No fixture cash or direct intent call.
   const deadline = Date.now() + 30_000;
   let clicks = 0;
@@ -679,7 +721,7 @@ async function playPitchThroughUI(page, accessToken) {
     const state = await founderState(accessToken);
     throw new Error(`no post-terminal Game UI refresh reached company revision ${receipt.company_revision}; UI snapshots=${JSON.stringify(snapshotRevisions)} server=${state.revision}`);
   }
-  const current = await fetch(`${gameserverURL}/api/v1/minigames/sessions/current`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((response) => response.json());
+  const current = await tracedAccountFetch(`${gameserverURL}/api/v1/minigames/sessions/current`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((response) => response.json());
   if (current.kind !== "none") throw new Error(`resolved Pitch session is still current: ${JSON.stringify(current)}`);
   const afterSession = await founderState(accessToken);
   if (afterSession?.transitions?.wind_down?.eligible !== true) {
@@ -717,6 +759,20 @@ try {
   browser = await chromium.launch({ headless: true });
   await witnessFiscalRefusalJourney();
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  requestTraceStart = performance.now();
+  const tracedBrowserRequests = new WeakMap();
+  page.on("request", (request) => {
+    if (!request.headers().authorization || !new URL(request.url()).pathname.startsWith("/api/v1/")) return;
+    tracedBrowserRequests.set(request, traceAccountRequest("browser", request.method(), request.url()));
+  });
+  page.on("response", (response) => {
+    const row = tracedBrowserRequests.get(response.request());
+    if (row) row.status = response.status();
+  });
+  page.on("requestfailed", (request) => {
+    const row = tracedBrowserRequests.get(request);
+    if (row) row.status = "failed";
+  });
   await page.addInitScript(() => {
     const BrowserWebSocket = globalThis.WebSocket;
     globalThis.__cloudClickerTestSockets = [];
@@ -816,7 +872,7 @@ try {
     const body = await response.json();
     return body?.revision === expectedRecoveryRevision;
   }, { timeout: 30_000 });
-  const missedIntent = await fetch(`${gameserverURL}/api/v1/intents`, {
+  const missedIntent = await tracedAccountFetch(`${gameserverURL}/api/v1/intents`, {
     method: "POST",
     headers: { Authorization: `Bearer ${parsedCredentials.accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -849,12 +905,14 @@ try {
     throw new Error(`recovered receipt landed revision ${refreshed.revision}, expected ${missedReceipt.new_revision}`);
   }
 
+  requestPhase = "GS2 first purchase";
   await witnessFirstPurchaseAchievement(page, websocketReceivedFrames, parsedCredentials.accessToken);
 
   // GU-C28 permits ordinary server-side setup so Chromium proves the UI-owned
   // controls without replaying the already-proven two-hour policy or gaining a
   // clock/control endpoint. Every transition below originates from a visible
   // enabled button and reaches the server through runtime.ts.
+  requestPhase = "first terminal/next run";
   seedGateRequirement(liveSnapshot.body.run.founder_id);
   await page.reload({ waitUntil: "networkidle" });
   const crossGate = await waitForEnabledButton(page, "Move Into the Garage");
@@ -872,6 +930,7 @@ try {
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
 
+  requestPhase = "second terminal/next run";
   seedGateRequirement(liveSnapshot.body.run.founder_id);
   await page.reload({ waitUntil: "networkidle" });
   const secondCrossGate = await waitForEnabledButton(page, "Move Into the Garage");
@@ -900,8 +959,10 @@ try {
   // MA AC5: The Pitch through the Game UI against the composed server. The
   // The Fiscal prerequisite and Pitch play both originate in rendered player
   // controls; the composed epoch pins minigame.pitch at 3 credit.
+  requestPhase = "GS5 opportunity";
   const opportunity = await witnessOpportunityClaim(page);
   console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks, claimed ${opportunity.effect_row_id} (${opportunity.expired_claims} expired attempts), ${opportunity.proof_branch} effect bound to next snapshot revision ${opportunity.revision}: PASS`);
+  requestPhase = "Pitch gate/unlock/play";
   seedGateRequirement(liveSnapshot.body.run.founder_id);
   await page.reload({ waitUntil: "networkidle" });
   const pitchTierGate = await waitForEnabledButton(page, "Move Into the Garage");
@@ -914,6 +975,7 @@ try {
   await new Promise((resolve) => setTimeout(resolve, 100));
 } finally {
   await browser?.close();
+  reportAccountRequests();
   await vite?.close();
   await stopGameserver();
 }

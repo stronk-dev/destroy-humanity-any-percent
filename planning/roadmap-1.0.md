@@ -7,7 +7,8 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 
 **Current checkpoint (2026-10-07):** fixed RP-367's public-board read error masking; focused
 regressions/package checks and real-Postgres ranking/pages pass. The full composed lane is
-**RED** at a separate Pitch `429 rate_limited/account` (RP-368), before the cosmetic child.
+subject to an unrepaired Pitch `429 rate_limited/account` (RP-368); a later instrumented pass
+does not explain or close the earlier failure before the cosmetic child.
 [API Foundation plan/log](api-foundation/plan.md) owns the repair, review and next diagnosis.
 Do not increase the limiter or retry to conceal the failure. Full CI and nine-tier release
 obligations remain open; browser renewal has not been accepted.

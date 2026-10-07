@@ -745,3 +745,17 @@ Node syntax and diff checks PASS; all handles terminal before records. Review by
 Next: measure the actual authenticated request pattern behind RP-368; keep its root gate red
 until explained and corrected under accepted authority. Catalog owner descriptors, raw-evidence
 privacy/reader work, draft browser policy and full CI/nine-tier 1.0 remain separate obligations.
+
+## 2026-10-07 — RP-368 request diagnostics, not a repair
+
+Test-only browser/driver HTTP metadata in the existing composed journey; no tokens, IDs,
+queries or bodies printed, no new artifact pipeline. Run8700 passes the entire root target
+(eight refresh cases, Fiscal/epoch/board Postgres cases, main DOM/Pitch and cosmetic journey).
+Main account issues98 requests over14.476s, peak14 in one second; GS2 has10 intent submissions
+and12 browser state reads, GS5 has10 submissions and14 reads. One interrupted navigation read
+remains pending: issued counts are not proof of server arrival. GS5 takes9 manual clicks here,
+versus16 in failed37452; do not replace the earlier red with this green or close RP-368.
+No behavior, rate, retry or deadline change. Syntax/diff checks pass; fixture connections and
+owned listener ports are clear after completion. Review by: Codex (first-filter); Recorded by:
+Codex. Range starts after21ff5578; designated review pending. Next: isolate redundant
+receipt-triggered reads and the shared request budget without weakening either contract.
