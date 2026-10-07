@@ -3214,3 +3214,20 @@ and focused native Trophy Case rendering. Full Linux/SQL stays capacity-held;
 no cleanup approval/deletion/rerun. Self review is first filter; complete new
 span after 3609e776 needs Claude separately from all preceding spans. No boxes,
 lifecycle/archive/mint/push/release promotion.
+
+## 2026-10-07 — GS2-A3 actual baseline survivors / RP-337
+
+305b8e8b predeclared. Healthy existing gate 9cdd67 exit0. Actual component
+binding c5d151 passes; initial standalone parser instrumentation 014fb7 fails
+because a filesystem-path CommonJS compiler import has no named export.
+That import mistake is not a syntax/product defect. Repeated with the actual
+compiler default export: valid Svelte source parses, existing gate still
+passes. Canonical source label fault 3c4bdb also passes unchanged Go-only gate.
+RP-337 records absent coverage, not broken healthy UI. Subjects restored to
+SHA256 component877a39910e1b859e962a0929d674973c3010052ccf20bcd1bac2226fae2901a9,
+catalogf5346bbca960416f0cd89fba421c689201e16ff6f18c36745f0d1f9486c07b3a.
+Proceed only with the predeclared existing-tool extension. Required faults:
+actual component binding, computed-member binding, source base score label,
+source era score label and disabling the component check. All must produce
+semantic assertion failures, with exact restoration and positive controls.
+No product/owner copy/generated artifact/Make/CI/RFC-body edit committed.
