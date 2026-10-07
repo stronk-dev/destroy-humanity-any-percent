@@ -96,6 +96,49 @@ function withShop(arm: GameUICosmeticsArm | undefined, tier: number): GameUISnap
 const shelf = (target: HTMLElement) => target.querySelector("[data-testid=cosmetic-shelf]");
 const staticCard = (target: HTMLElement) => [...target.querySelectorAll("section.card h2")].some((node) => node.textContent?.includes("Horse Armor"));
 
+// RP-377 / GS0.2 / Cosmetic §7.4: a receipt can arrive before the mounted
+// authoritative refresh. Navigation is still available in that pending window;
+// neither the receipt nor a separate server read is the overlay's render input.
+it.skipIf(!browser)("keeps equip pending through navigation until the authoritative wearer refresh renders the overlay", async () => {
+  const petID = "01986666-aaaa-7aaa-8aaa-aaaaaaaaaaaa";
+  const pet = { eligible_action_ids: ["care.feed"], name_key: "pet.name.server_room_cat.n04", palette_id: "pet_palette.fur_02",
+    pet_id: petID, species_id: "pet_species.server_room_cat", status_band: "normal" as const, temperament: "sassy" as const };
+  const view = (worn: boolean): GameUISnapshot => ({ ...v4,
+    founder_revision: worn ? 8 : 7,
+    facts: v4.facts.map((fact) => fact.fact_id === "feature.pets" ? { ...fact, value: true } : fact),
+    features: { ...v4.features,
+      pet_adoption: { pet_adoption: { cap: 1, count: 1, name_keys: [pet.name_key], starter_species_id: pet.species_id }, pets: [pet] },
+      cosmetics: { active: true, items: [{ acquirable: false, cosmetic_id: "horse_armor", lock: null, owned: true, worn_by: worn ? [petID] : [] }],
+        wearers: [{ pet_id: petID, worn: worn ? "horse_armor" : null }] } } });
+  let release!: (value: ParsedGameUISnapshot) => void;
+  const heldRead = new Promise<ParsedGameUISnapshot>((resolve) => { release = resolve; });
+  class HeldEquipRuntime extends Runtime {
+    holding = false;
+    override async snapshot(): Promise<ParsedGameUISnapshot> { return this.holding ? heldRead : this.current; }
+    override async intent(body: Readonly<Record<string, unknown>>): Promise<IntentOutcome> {
+      this.requests.push(body);
+      this.holding = true;
+      return { outcome: "applied", receipt: { intent_id: body.intent_id, outcome: "applied", founder_revision: 8 } };
+    }
+  }
+  const runtime = new HeldEquipRuntime(); runtime.current = view(false);
+  const { target, dispose } = await mounted(runtime);
+  try {
+    shelf(target)!.querySelector<HTMLButtonElement>("button")!.click(); await settle();
+    expect(runtime.requests).toHaveLength(1);
+    expect(runtime.requests[0]).toMatchObject({ kind: "equip_cosmetic", expected_revision: 7, cosmetic_id: "horse_armor", pet_id: petID });
+    button(target, "PENDING OWNER COPY: care panel title").click(); await settle();
+    expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+    expect(target.querySelector(".pet-care .care-pending")).not.toBeNull();
+    expect(target.querySelector(".pet-care .overlay")).toBeNull();
+    release(view(true)); await settle();
+    expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+    expect(target.querySelector(".pet-care .care-pending")).toBeNull();
+    expect(target.querySelector('.pet-care .overlay[data-render="horse_armor"]')?.getAttribute("data-reaction")).toBe("annoyed");
+    expect(runtime.requests).toHaveLength(1);
+  } finally { release(view(true)); await dispose(); }
+});
+
 // Cosmetic Shop v1 AC11 (host half): visibility per §7.3/OD-4, the §6
 // pre-activation static card, and one acquire through runtime.intent whose
 // ownership renders only from the next authoritative snapshot.

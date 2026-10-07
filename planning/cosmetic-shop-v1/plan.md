@@ -2,7 +2,13 @@
 
 RFC: `rfc/cosmetic-shop-v1.md` (accepted 2026-09-25, all ODs at recommended defaults).
 
-Current checkpoint (2026-10-07): RP-365's care conflict has a reproduced backwards-attendance
+Current checkpoint (2026-10-07): RP-377's premature overlay check is locally corrected: the
+driver awaits host settlement within the original action deadline, retaining exact receipt,
+persisted wearer and rendered-overlay assertions. Focused Chromium/WebKit and the real-service
+Cosmetic journey pass; designated review remains. The aggregate stops earlier at RP-378's Fiscal
+refusal response timeout, so full composed/CI acceptance stays open. See the owning logs.
+
+RP-365's care conflict has a reproduced backwards-attendance
 route, both real Postgres/DOM and deterministic cutoff regression. Sources restored; replayable
 probe and exact evidence in latest `log.md`. Shared-clock repair needs D-024/the draft successor's
 explicit boundary; no pet clamp/retry is authorized. RP-364 Buy cause and prior reviews remain.

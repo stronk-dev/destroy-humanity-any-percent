@@ -6101,3 +6101,16 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact range aft
 this batch's commit requires designated review; no acceptance/archival/push. Next: remaining
 Desk pending-focus controls under existing GS0.8 while the manual delivery decision is pending.
 RP-368 remains a release defect; all full nine-tier product/platform/release obligations remain.
+
+## 2026-10-07 — RP-378 aggregate Fiscal refusal timeout
+
+`make test-game-ui-composed`15953 exits2 at `witnessFiscalServerRefusals`, line506,
+waiting30 seconds for `harvest_fiscal_period` HTTP response. Neither invalid/stale arm nor
+DOM activation/request state was captured, so cause is unproved. This precedes the main and
+Cosmetic populations; do not report either as executed by this run. Eight refresh API cases
+and all seven required persisted parent tests pass cold, including the new Soul registry cases.
+Owned ports and fixture other DB sessions are absent afterward. Direct Cosmetic99136 passes
+its separate fixture; the Cosmetic log owns that correction and cannot close this aggregate red.
+Next: observe the exact Fiscal input/focus/pending/request/response boundary before correcting
+anything. No retry, deadline/limiter increase, server-hang inference or RP-172 attribution.
+Review by: Codex (observation); Recorded by: Codex. No acceptance, archival or full-CI claim.

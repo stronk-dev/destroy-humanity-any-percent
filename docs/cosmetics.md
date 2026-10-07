@@ -129,6 +129,10 @@ preflight exempts only these cosmetic kinds; ordinary gameplay intents remain ex
   reload under the request/payment trap; severing the server Cosmetics projector fails the run.
   Buy uses one guarded DOM activation after checking visibility, hit-testing and the actual
   enabled/non-pending state. This is DOM-consumer proof, not native pointer/keyboard AC11 proof.
+  Adoption/equip/care/unequip check exact applied receipts, then wait for the mounted host's
+  authoritative refresh to finish within the same 30-second action deadline before inspecting
+  the pet overlay. A receipt or separate server read is not proof that the UI has rendered it;
+  a settled host with a missing overlay still fails immediately.
   This fixture is not a production content mint, and its Codex range awaits cross-party review.
 - **G10 release acceptance:** the live pet-panel overlay is implemented and its controlled
   real-server path is witnessed. Production content, owner copy adoption and designated reviews

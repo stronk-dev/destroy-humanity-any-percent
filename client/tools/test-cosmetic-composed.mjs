@@ -212,9 +212,15 @@ async function founderDOMIntent(page, requests, control, kind, expectedFields) {
     new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === kind);
   const priorCount = matching().length;
   await control.click({ trial: true, timeout: 30_000 });
+  const deadline = Date.now() + 30_000;
+  const remaining = () => {
+    const budget = deadline - Date.now();
+    if (budget <= 0) throw new Error(`cosmetic G10 ${kind} exceeded the action deadline`);
+    return budget;
+  };
   const responseTask = page.waitForResponse((response) => response.request().method() === "POST" &&
-    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === kind, { timeout: 30_000 });
-  await control.click();
+    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === kind, { timeout: remaining() });
+  await control.click({ timeout: remaining() });
   const response = await responseTask;
   const receipt = await response.json();
   const emitted = matching();
@@ -225,6 +231,11 @@ async function founderDOMIntent(page, requests, control, kind, expectedFields) {
       response.status() !== 200 || receipt.outcome !== "applied" || receipt.founder_revision !== before.founder_revision + 1) {
     throw new Error(`cosmetic G10 ${kind} did not emit one exact Founder-scoped applied intent: ${JSON.stringify({ body, receipt, emitted: emitted.length - priorCount })}`);
   }
+  // GS0.2: an HTTP receipt is not the mounted host's completed authoritative
+  // refresh. Stay within this action's deadline; do not retry the intent or
+  // poll for an overlay that a settled but broken consumer never rendered.
+  await page.waitForFunction(() => document.querySelector("main.game-ui")?.getAttribute("aria-busy") === "false",
+    undefined, { timeout: remaining() });
   return receipt;
 }
 
@@ -285,11 +296,21 @@ async function openPetSurface(page) {
 async function assertLivePetOverlay(page, { present, reducedMotion = false }) {
   const surface = page.locator(".pet-care");
   const overlay = surface.locator('.portrait .overlay[data-render="horse_armor"]');
+  const overlayState = () => page.evaluate(() => {
+    const main = document.querySelector("main");
+    const surface = main?.querySelector(".pet-care");
+    const overlays = surface?.querySelectorAll('.portrait .overlay[data-render="horse_armor"]');
+    return { surface: main?.getAttribute("data-surface") ?? null, busy: main?.getAttribute("aria-busy") ?? null,
+      pets: surface?.querySelectorAll("article.pet").length ?? 0, overlays: overlays?.length ?? 0,
+      stale: Boolean(surface?.querySelector(".care-stale")), pending: Boolean(surface?.querySelector(".care-pending")) };
+  });
   if (!present) {
     if (await surface.locator(".overlay").count() !== 0) throw new Error("cosmetic G10 live overlay remained after unequip");
     return;
   }
-  if (await overlay.count() !== 1 || !await overlay.isVisible()) throw new Error("cosmetic G10 live pet overlay missing after equip");
+  if (await overlay.count() !== 1 || !await overlay.isVisible()) {
+    throw new Error(`cosmetic G10 live pet overlay missing after equip: ${JSON.stringify(await overlayState())}`);
+  }
   const details = await overlay.evaluate((node) => {
     const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
     const text = [];

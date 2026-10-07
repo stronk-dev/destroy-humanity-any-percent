@@ -5,7 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Current checkpoint (2026-10-07):** public-board error masking (RP-367), Gate/Decline
+**Current checkpoint (2026-10-07):** latest aggregate composed run is RED at the Fiscal
+refusal response timeout (RP-378), before the main/Cosmetic population. Required real-Postgres
+populations pass, including the corrected Soul error registry. The direct real-service Cosmetic
+journey passes after repairing RP-377's premature render check; its driver now waits for the
+existing host completion boundary, not a retry or a longer deadline. Next: diagnose the Fiscal
+input/request boundary. [Garage log](garage-player-surfaces/log.md),
+[Cosmetic log](cosmetic-shop-v1/log.md) and [API log](api-foundation/log.md) own evidence and
+pending designated review. Full CI, unresolved owner/author contracts, integrated nine-tier
+gameplay and release-artifact/deployment proof remain open; this is not a 1.0 completion claim.
+
+**Preceding checkpoint (2026-10-07):** public-board error masking (RP-367), Gate/Decline
 concurrent reads (RP-369) and late receipt duplicate reads (RP-370) are locally corrected,
 with regressions and real main-journey evidence.
 The latest whole composed target passes after fixing the observed Cosmetic driver activation

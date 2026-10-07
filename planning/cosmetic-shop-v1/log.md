@@ -1717,3 +1717,25 @@ RP-368 retains79431's actual Pitch429; this different random main population pas
 Review by: Codex (first-filter); Recorded by: Codex. Range after6f02c900 through this batch;
 designated review pending, no archival/push/full-CI claim. Next: remaining receipt/budget
 interaction and accepted Cosmetic gates; publication copy/content/rights/native AT remain open.
+
+## 2026-10-07 — RP-377 wait for the mounted refresh, not only the HTTP receipt
+
+Controlled real-read hold16306 reproduces the old overlay failure: pet surface, busy/pending
+true, overlay0. Releasing that same unmodified response produces busy false/pending false,
+overlay1; the diagnostic still exits1. Unheld65901 passes and does not establish the original
+89770's unique cause. Temporary route/header/diagnostic mode removed from the final driver.
+`founderDOMIntent` now awaits existing host aria-busy=false inside the same 30-second action
+deadline. Exact request/receipt/persistence and immediate settled-overlay assertions remain;
+no gameplay, retry, optimistic render or timeout increase. Failure metadata reports host state.
+
+Retained runtime-double browser test covers applied equip → navigation while the read is held
+→ no premature overlay → refreshed annoyed overlay and one intent. Focused native34784:
+8/8 Chromium/WebKit PASS; `make typecheck`71982 and Node syntax/diff checks PASS. Direct
+`node client/tools/test-cosmetic-composed.mjs`99136 PASS: actual DOM Buy/adopt/equip/care,
+persisted wearers, overlay/reloads/reduced motion/unequip, N5:75 requests/no violation,7.228s.
+Aggregate `make test-game-ui-composed`15953 remains RED before Cosmetics at RP-378; Garage
+log owns that failure. No rerun-to-green aggregate, full CI, Firefox, AT or G10 closure claim.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Range afterd82e76c2 through
+this batch's commit needs designated cross-party review; no archival/push. Next: RP-378's
+Fiscal input/request diagnosis, then the remaining accepted Cosmetic/release gates.
