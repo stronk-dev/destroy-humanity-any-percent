@@ -4365,3 +4365,31 @@ exact guards. RP-331 persisted/default-player witnesses wait for Docker
 capacity repair/recheck; no run/cleanup here. Firefox/actual zoom/AT/author/
 body/privacy/platform/numeric/review/full-nine-tier 1.0 gates stay open.
 Goal active/progress, no preview substitution or shortcut.
+
+## 2026-10-07 — populated Garage performance instrumentation checkpoint
+
+Predeclared 04b10f97/fb302c78; no newer Claude commit present in the fresh
+local checkout. RP-334 native audit exposes original guard survivors: no
+measured input delivery and a real final 400 ms task. Original body/budgets
+preserved; separate test-only GS5/GS6 population counts actual inputs,
+checks all named regions per input, requires visible cash/exact terminal
+state/native support and drains final records. Six independent real faults
+fail the intended oracles and source restores exactly. Instrument/type/
+fixture mistakes and reporting-only exits disclosed rather than counted as
+product findings. Healthy diagnostic: 1,200 inputs/region checks, 217 commits,
+longest task 0, 1.30 K terminal, zero intents. Runner annotation carries JSON;
+local success reporter/attachment persistence limits explicit.
+
+Final isolated Chromium two passes /22 unselected; types 0/0, unit client
+9,814 pass /450 explicit browser skips, unchanged build/boundaries, copy/
+content/topology and 13 negative controls pass. No production/CI change.
+RP-333/full AC7 remains partial (GS4/pet/later/full release Desk population,
+real player/manual profile), not a new release floor or accepted performance
+promotion. Full Linux/SQL/AT/manual/review holds remain.
+
+Board/plan/inventory/queue/docs/ledger synchronized. Complete new range after
+127eb052 through this final record needs Claude independently of exact
+layout bddfc58e..127eb052 and all preceding spans. Next accepted work:
+predeclared exact source/boundary guards; RP-331 awaits repaired/rechecked
+Docker capacity, not unauthorized cleanup or another full-disk run. Goal
+active/progress; full nine-tier 1.0 scope unchanged, no archival/push/release.

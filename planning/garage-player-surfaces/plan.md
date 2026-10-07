@@ -7,26 +7,27 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded repair: `a4443495` (RP-330 / GS3-A3), predeclared d9a8ca27 /
-639add6e, test-first 09655d1e. Actual narrow definition rows retain all eleven
-labels/native-meter names/exact values/bands; live resizing and snapshot
-refresh preserve focus, zero intents and the original wide table. Corrected
-baseline has six semantic failures; six independent faults fail 6/6/6/6/4/6
-executions, restored exactly. Initial attribute/timing instrumentation errors
-are disclosed, not hidden or turned into relaxed assertions. Clean types,
-client 9,814 passes / 449 explicit browser skips, build/boundaries and full
-native Garage Chromium/WebKit 252 pass. Copy/manifest/topology and 13
-negative controls pass. Isolated performance 1 remains the null-feature guard,
-not populated AC7. Complete layout range after bddfc58e through this record
-needs Claude. Prior RP-329 `ce5c4ea8` exact 5fbf4cff..bddfc58e requires its
-separate verdict; RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8,
-runtime a42406f0..fc911784 and all earlier ranges remain owed. Inventory
-covers all 29/eight gates without acceptance promotion. Next accepted work:
-RP-333 populated Garage performance under unchanged budgets, then exact
-guards. RP-331 real persisted/DOM proofs wait for capacity repair/recheck;
-no Docker run/cleanup here. Author/body/Firefox/actual zoom/AT/full 1.0
-gates remain; no checkbox or lifecycle change. Earlier slice records below
-retain their proof/review boundaries; the latest queue owns next work.
+Latest bounded work: RP-333/334 test-only GS5/GS6 populated Desk performance
+supplement, predeclared 04b10f97/fb302c78. Original null-feature guard can pass
+no input delivery and a real final 400 ms task; its body remains byte-identical.
+The new driver verifies actual inputs/regions/visible cash/terminal state,
+native support and final record drain under unchanged ceilings. Six real
+faults fail, exact source restored. Final isolated lane two passes /22
+unselected; types 0/0, client 9,814 passes /450 explicit browser skips,
+unchanged build and 14/8/22 boundaries. No production/CI byte moved.
+Initial fixture/type mistakes, reporting-only diagnostics and absent local
+JSON attachment persistence are disclosed, not converted into evidence.
+Complete new range after 127eb052 through final records needs Claude.
+Prior exact layout bddfc58e..127eb052, complete-ID 5fbf4cff..bddfc58e,
+RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime
+a42406f0..fc911784 and all earlier spans remain independently owed.
+RP-333/all AC7 is still partial: GS4/pet/later Desk/full release population,
+real player and manual profile remain. Next accepted work: exact source/
+boundary guards, predeclared with their actual failures. RP-331 SQL/DOM
+proofs await Docker capacity repair/recheck; no run/cleanup here. All
+author/body/Firefox/actual zoom/AT/privacy/numeric/full nine-tier 1.0 gates
+remain; no checkbox/lifecycle/archive/push/release promotion. Earlier slice
+records retain their proof/review boundaries; latest queue owns next work.
 
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
 predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,

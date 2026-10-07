@@ -3,33 +3,29 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage semantic meter-layout checkpoint — 2026-10-07
+## Garage populated-performance checkpoint — 2026-10-07
 
-RP-330 / GS3-A3 `a4443495`, predeclared d9a8ca27/639add6e, test-first
-09655d1e. Actual narrow definition rows retain complete labels/native-meter
-names/exact current values/bands, live resizing and snapshot refresh, focus/
-zero intents and the original wide table. Six corrected baseline failures;
-six independent faults fail 6/6/6/6/4/6 executions, exact source restored.
-Initial attribute/timing instrumentation errors disclosed, assertions and
-budgets retained. Clean types/client 9,814 passes / 449 explicit browser
-skips, build/boundaries/full native Garage Chromium/WebKit 252 and copy/
-manifest/topology with 13 negative controls pass. Isolated performance 1
-remains the null-feature guard, not populated AC7. No host/runtime/wire/
-catalog/kernel/producer/balance/copy/CI change or release promotion.
-**READY FOR CLAUDE:** complete layout span after bddfc58e through this record
-edge. RP-329 complete-ID repair `ce5c4ea8` exact 5fbf4cff..bddfc58e needs
-its own verdict. RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8
-(all 29 GS1–GS6/eight overall criteria), runtime a42406f0..fc911784 and
-earlier ranges remain independently owed.
+RP-333/334 test-only bounded GS5/GS6 Desk supplement, predeclared 04b10f97 /
+fb302c78. Actual Chromium probes expose the original guard's missing-input
+and final-400-ms-task survivors; original body retained byte-identically.
+New delivered-input/region/render/terminal/support/final-record observation
+rejects six faults under unchanged budgets. Final isolated lane two passes /
+22 unselected; types 0/0, client 9,814 passes /450 explicit browser skips,
+unchanged build and boundaries. No production/CI byte moved. Fixture/type
+mistakes, reporting-only exits and annotation-attachment limits disclosed.
+RP-333/all AC7 still requires GS4/pet/later Desk/full release population,
+actual player and manual profile; no performance or release promotion.
+**READY FOR CLAUDE:** complete new span after 127eb052 through final records,
+separately from exact layout bddfc58e..127eb052, RP-329 complete-ID
+5fbf4cff..bddfc58e, RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8,
+runtime a42406f0..fc911784 and all preceding review obligations.
 
-**READY next:** RP-333 populated Garage Desk performance population under
-unchanged observable budgets; preserve the existing null-feature guard and
-demonstrate negative cases. Then remaining exact source guards. RP-331
-persisted/DOM composed proofs wait for Docker capacity restoration/recheck;
-last measured overlay remains 0 free / 100%. No new Docker population or
-unrelated cleanup this checkpoint. All author/owner/numeric/platform/privacy/
-content/Firefox/actual zoom/AT/CI/review/release gates and the full nine-tier
-1.0 goal remain active; no lifecycle promotion.
+**READY next:** predeclare and execute remaining exact source/boundary guards,
+including their real negative cases; do not invent a ban on legitimate later
+Cosmetic Shop intents. RP-331 persisted/DOM witnesses await repaired/rechecked
+Docker capacity (last 0 free /100%); no third container population or unrelated
+cleanup. All owner/author/body/privacy/platform/numeric/content/Firefox/actual
+zoom/AT/CI/review/full-nine-tier 1.0 gates remain; no lifecycle promotion.
 
 ## Fiscal/care outcome ownership correction — 2026-10-07
 

@@ -4,25 +4,24 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage repair:** `a4443495` (RP-330 / GS3-A3): actual narrow
-definition rows with complete label/native-meter/value/band associations,
-live resizing and refresh, retained focus/no-intent/wide table. Predeclared
-d9a8ca27/639add6e, test-first 09655d1e: six corrected semantic failures;
-six independent faults fail 6/6/6/6/4/6 executions, restored exactly.
-Initial attribute/timing instrument errors are disclosed. Clean types,
-client 9,814 passes / 449 explicit browser skips, build/boundaries/full
-native Garage Chromium/WebKit 252 and copy/manifest/topology pass.
-Isolated performance 1 remains RP-333's null-feature guard, not populated
-AC7. No host/runtime/wire/catalog/kernel/producer/balance/copy/CI change.
-Complete layout range after bddfc58e through records needs Claude; prior
-complete-ID repair RP-329 `ce5c4ea8` exact 5fbf4cff..bddfc58e, RP-332
-cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..fc911784
-and earlier spans remain independently owed. All 29/eight Garage gates are
-mapped, not complete. Next accepted work: RP-333 populated Garage performance
-under unchanged budgets, then exact guards. RP-331 persisted/DOM proofs
-await Docker capacity repair/recheck; last measured 0 free / 100%, no run/
-cleanup here. Author/body/Firefox/actual zoom/AT/default-player/privacy/
-platform/numeric/review/full-nine-tier 1.0 gates remain; no promotion.
+**Latest Garage work:** RP-333/334 test-only populated GS5/GS6 performance
+supplement under unchanged budgets. Native probes show the old null-feature
+guard can pass no delivery and a real final 400 ms task; it remains unchanged,
+not relied on as sufficient proof. New actual input/region/visible cash/
+terminal/support/final-task observation rejects six faults. Healthy isolated
+lane two passes /22 unselected, types 0/0, client 9,814 passes /450 explicit
+browser skips, unchanged build and 14/8/22 boundaries. No production/CI byte
+moved; fixture/type and reporting-only diagnostics disclosed. RP-333/all AC7
+still excludes GS4/pet/later Desk/full release population, real player and
+manual profile; not release acceptance. New full span after 127eb052 through
+records requires Claude, independently of layout bddfc58e..127eb052,
+complete-ID 5fbf4cff..bddfc58e, RP-332 cc62cea8..5fbf4cff, audit
+fc911784..cc62cea8, runtime a42406f0..fc911784 and all preceding spans.
+Next accepted work: predeclared exact source/boundary guards. RP-331
+persisted/DOM proofs await Docker capacity repair/recheck, last measured
+0 free /100%; no run/cleanup here. All author/body/Firefox/actual zoom/AT/
+default-player/privacy/platform/numeric/review/full-nine-tier 1.0 gates
+remain; no checkbox/lifecycle/archive/push/release promotion.
 
 **Latest repair:** `45bf2edb`, predeclared `a8f2a527`, failing-first
 `7cac400d`: RP-326 Fiscal/care outcomes now belong to the submitting panel;

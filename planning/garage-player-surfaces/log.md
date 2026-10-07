@@ -2636,3 +2636,86 @@ Review by: Codex (self first filter only). Recorded by: Codex. Complete new
 range begins 127eb052 exclusive through final records; Claude verdict owed.
 No production/numeric/catalog/kernel/balance/copy/CI/schema/owner-text change,
 acceptance checkbox, lifecycle, archival, push or release promotion authorized.
+
+## 2026-10-07 — RP-334 probe results and terminal-oracle supplement predeclared
+
+Test-only implementation preserves the original scenario block byte-identically
+to 127eb052 (root Node comparison executed) and the unchanged budget SHA.
+Initial type run 29968 caught my wrong era literal; initial native 55225 caught
+my unsorted fixture facts. Both are fixture/instrument mistakes, not product
+defects or valid discrimination. Corrected fixture uses eraForSnapshot and
+byte-sorted facts; types 97386 pass zero errors/warnings; native 47270 passes
+both original and new scenario / 22 unselected.
+
+Healthy test SHA c61f3952e3e009cec9a5ec39777572f59702fc66c6271714c05702f05d7e5aff.
+Five actual root Chromium fault runs exit 2, each with original guard passing:
+33596 no delivery -> inputs 0 / visible commits 0; 32177 fixed cash with 1,200
+delivered updates -> visible commits 0; 2249 final real busy task -> longest
+task 400 vs maximum 200; 49004 unavailable-support sensor -> invalid native
+observer observation before mount; 80927 remove building buff from subsequent
+sample -> exact population census fails on first delivery (inputs 1, completed
+false). The latter is decoder-admitted; schema acceptance alone cannot satisfy
+the render population. Healthy SHA checked after each restoration, no live-source
+edits or committed transient fault. These are instrument/population probes,
+not evidence of measured gameplay performance regressions.
+
+Runner annotation retains the full JSON in its MESSAGE as well as requesting
+an attachment. The local runner did not persist a JSON attachment file, and its
+default success reporter did not display the message; do not cite a nonexistent
+disk artifact. Healthy reporting-only rerun 92955 deliberately throws after
+all validation/cleanup, exposing completed=true, 1,200 actual inputs / 1,200
+region checks, 217 commits, longest task 0, terminal "1.30 K", support true,
+zero intents and exclusions. That exit 2 is a reporting diagnostic, not a red
+performance gate. Diagnostic restored exactly. Final native 85140 exits 0,
+two passes /22 unselected; root static 34127 exits 0: types 0/0, client
+9,814 pass/450 explicit browser skips, unchanged 214-module production build
+and 14/8/22 boundaries. No production byte moved.
+
+Before final closeout, separately predeclare one additional compiling fixture
+fault: corrupt ONLY the final delivered cash to a different canonical amount
+while retaining real prior visible rendering and all 1,200 inputs/regions.
+The terminal-cash oracle must fail, not just the positive-activity floor.
+Restore the same healthy SHA and rerun the isolated lane. No new assertion,
+budget/threshold, config/Make/CI or production change authorized.
+
+## 2026-10-07 — RP-333/334 final bounded evidence and current queue
+
+Additional terminal-cash fault 40172 exits 2 at the exact terminal oracle:
+10.0 K instead of 1.30 K despite 1,200 actual inputs/region checks and 218
+visible commits. Positive activity cannot mask wrong terminal data. Restored
+healthy test SHA matches c61f3952e3e009cec9a5ec39777572f59702fc66c6271714c05702f05d7e5aff;
+budget SHA remains 8a7fc92f255152f784ef421da886ae3a6d860fd2e8afebbf94ca4d1eeb11217e.
+Final healthy isolated 51810 exits 0: two passing scenarios /22 unselected,
+1.83 s total, 837 ms tests. Original test block byte-identical comparison
+already executed. No transient/reporting fault or production diff remains.
+
+Final source-static 34127 (zero types/warnings, 9,814 unit passes /450 browser
+declarations skipped, unchanged build/boundaries) and copy/content/topology
+13646 exit 0: 658 copy keys / unchanged catalog hash /611 existing orphan
+warnings, content manifest valid, all 13 topology negative controls rejected.
+The topology result is structural CI evidence, NOT a rerun of red/held Linux
+three-engine CI. No DB, changed-host composed, Go behavior, Firefox/WebKit
+performance, actual 60-second/4× manual profile, AT or release claim.
+
+Canonical docs, backlog, acceptance inventory, plan, CURRENT-STATE, full 1.0
+board/checkpoint log and execution queue synchronized in this implementation
+range. New driver locally corrects RP-334; RP-333/full AC7 stays partial:
+GS4/pet/later Desk/full current release population, actual player/manual
+profile and designated review remain. The bounded population and explicitly
+reported exclusions cannot be cited as proof for those other populations.
+
+Review by: Codex (self first filter only). Recorded by: Codex. Entire new
+range begins 127eb052 exclusive THROUGH this final implementation/record
+commit, including 04b10f97 and fb302c78, all tests/docs/tracking. Claude must
+supply its designated verdict independently of layout bddfc58e..127eb052,
+complete-ID 5fbf4cff..bddfc58e, RP-332 cc62cea8..5fbf4cff, audit
+fc911784..cc62cea8, runtime a42406f0..fc911784 and every earlier span.
+No review relay sent, checkbox/RFC/lifecycle/archive/mint/push/release action.
+
+Next accepted native/source work: source/boundary guards with predeclared
+real negative cases; keep legitimate later Cosmetic Shop intents distinct
+from the forbidden legacy shelf. Existing boundary scanner contains seeded
+copy/style/network fixtures, but overall AC4 still needs its current-source
+fault bound to exact executed evidence. RP-331/SQL/default-player/Docker,
+author/body/engine/actual zoom/AT/privacy/platform/numeric/full-nine-tier 1.0
+holds remain. Active goal progress, not completion or a shortened release path.

@@ -92,7 +92,7 @@ evidence merely because its text exists.
 | 4. Boundary | Last boundary pass at `2d3629ad`; literal/transport/style rules remain mandatory. A fresh audit-only doc does not re-execute them. Prescribed seeded literal must be tied to exact evidence, not merely validator source. |
 | 5. Accessibility | Native Chromium/WebKit subsets pass. Linux three-engine lane is RED and diagnostic environment invalid; manual AT, every state, full-page 400% zoom/coarse-pointer target measurements remain open. |
 | 6. Composed | Historical Fiscal→Pitch and buff claim paths are real; GS2-A4 and GS3-A4 DOM assertions missing, GS4 accepted-body hold persists, changed host not rerun. RP-236 must be repaired/rechecked without unowned cleanup before Docker evidence. |
-| 7. Performance | Separate native performance observation passes unchanged; it does not by itself identify the complete Desk-region mounted population or replace the original 60 s scenario, full browser population or manual reference profile. Audit its driver/population before promoting this criterion. |
+| 7. Performance | Original guard retained byte-identically but RP-334 native probes expose omitted-input and final-task survivors. New isolated GS5/GS6 populated Desk supplement counts actual delivery, verifies all named regions per input, requires visible activity/exact terminal cash/native observers and drains final records; six real faults fail. **Partial, not promoted:** GS4/pet/later Desk/full release population, manual 4× profile, actual default player and designated review remain. See the RP-333/334 follow-up below. |
 | 8. Closeout | Canonical docs describe implementation/limits, but producer body holds and separately owed Claude ranges remain. No RFC status change, checkbox flip, archive or release promotion authorized. |
 
 ## Shared error-state investigation and next bounded work
@@ -197,3 +197,34 @@ workflow or release acceptance. Complete range after bddfc58e through its
 final records needs Claude separately from RP-329 5fbf4cff..bddfc58e,
 RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8 and all earlier spans.
 RP-331/333/Docker/Firefox/AT/author/body/full-nine-tier 1.0 holds remain.
+
+## Follow-up: RP-333 / RP-334 (separate range after 127eb052)
+
+Original null-feature scenario and budget unchanged. Native Chromium probes
+prove the old instrument can pass with no delivery and a final actual 400 ms
+task. New test-only supplement verifies pending Lucky, three windowed buffs/
+combo (Lucky is not a buff), provisioning cap, owned upgrade, free shelf and
+achievements/Fiscal/Meters nav through every measured input. The cash output
+is specifically selected, not the earlier static combo output. Public decoder,
+coherent runtime samples, mandatory native observation, nonzero visible
+rendering, exact terminal cash, real final rendering/task turns and cleanup
+provide a bounded measurement, not a new performance budget.
+
+Six faults execute and fail: no delivery, fixed cash, final 400 ms task,
+unavailable support sensor, missing building buff, wrong final cash with prior
+rendering intact. Old guard survives, as recorded. Healthy diagnostic reports
+1,200 actual inputs and region checks, 217 commits, longest task 0, terminal
+1.30 K and zero intents. Its reporting-only exit is not counted as a gate pass;
+restored native lane exits 0, two passes /22 unselected. Types/client/build/
+boundaries pass, 9,814 unit passes /450 explicit browser skips; production build
+unchanged. Fixture/type mistakes and local annotation-attachment limitations
+are disclosed in log.md. Original body byte comparison and all restoration
+hashes executed; no transient fault remains.
+
+RP-334 is locally addressed by the new driver, not by rewriting old evidence.
+RP-333/all AC7 remains partial: GS4/pet, later additions/full current release
+population, real service/default-player and manual reference profile are not
+this fixture population. Full Linux CI/Firefox/AT/SQL holds unchanged. Entire
+new range after 127eb052 through final records requires Claude, separately
+from exact layout bddfc58e..127eb052 and all preceding spans. No acceptance,
+checkbox, lifecycle, archive, push or release promotion.

@@ -8,10 +8,14 @@ import type { ExitOfferSpawnedEvent, GateCrossedEvent, RunEndedEvent } from "../
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUISnapshot } from "../src/api/generated/types";
-import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import { eraForSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
+import { t, type CopyKey } from "../src/copy";
+import { REQUIRED_METER_IDS } from "../src/meters/catalog";
 import { canonicalString } from "../src/numeric";
 import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../src/game-ui/performance";
 import { amountRenderScheduler } from "../src/ui/render-scheduler";
+import { formatAmount } from "../src/ui/amount-format";
 import type { WorkerCommand, WorkerOutput } from "../src/shell/worker-protocol";
 
 const snapshot: GameUISnapshot = {
@@ -545,6 +549,138 @@ it.skipIf(!chromiumPerformanceLane)("holds the observable 20 Hz / 10 Hz screen b
   mutations.disconnect(); tasks?.disconnect();
   validatePerformanceObservation({ formattedCommits, inputs: GAME_UI_PERFORMANCE_BUDGET.inputCount, longestTaskMS });
   await unmount(app); target.remove();
+}, 75_000);
+
+// Garage AC7 supplements, rather than rewrites, the original null-feature guard.
+// Lucky is a payout opportunity, not a fourth buff. No fixture gameplay intent.
+function populatedGaragePerformanceSnapshot(): ParsedGameUISnapshot {
+  return parseGameUISnapshot({
+    ...snapshot,
+    facts: [...snapshot.facts,
+      { fact_id: "feature.achievements", value: true },
+      { fact_id: "feature.active_play", value: true },
+      { fact_id: "feature.fiscal", value: true },
+      { fact_id: "feature.meters", value: true },
+    ].sort((a, b) => a.fact_id < b.fact_id ? -1 : a.fact_id > b.fact_id ? 1 : 0),
+    generators: [{ ...snapshot.generators[0], provisioned: 3,
+      provision_cap: { amount: 3, reason_key: "generator.beige_tower.provisioned_cap" } }],
+    upgrades: [{ ...snapshot.upgrades[0], eligible: false, owned: true }],
+    features: {
+      ...snapshot.features,
+      achievements: { rows: [{ achievement_id: "achievement.first_gate", condition_scope: "run",
+        copy_key: "achievement.first_gate", earned: "run", proof_kind: "provenance", score_grant: 2 }],
+      score: { lifetime: 0, run: 2 } },
+      fiscal: { credit: 4, credit_cap: { amount: 1000, reason_key: "cap.fiscal_credit" }, credit_per_period: 3,
+        generator_levels: [{ generator_id: "generator.beige_tower", level: 0,
+          level_cap: { amount: 100, reason_key: "cap.fiscal_level.beige_tower" }, next_level_cost: 1, ppm_per_level: 10_000 }],
+        hoard: { cap_credits: 100, preview_ppm: 40_000, reason_note: "next_run" },
+        period: { auto_ms: 300_000, early_ms: 100_000, early_success_ppm: 500_000,
+          guaranteed_ms: 200_000, opened_wall_ms: snapshot.server_now_ms, seq: 0 },
+        sweep_preview: { credit_after: 4, credited: 0, periods: 0, saturated: false },
+        unlocks: [{ cost: 3, owned: false, unlock_id: "minigame.pitch" }] },
+      meters: { meters: REQUIRED_METER_IDS.map((meter_id) => ({ meter_id, min: 0, max: 100, value: 50,
+        band_id: "low", bands: [{ band_id: "low", floor_value: 0 }, { band_id: "high", floor_value: 70 }] })) },
+      opportunity: {
+        attended_now_ms: 2_000,
+        pending: { effect_row_id: "active.lucky", expires_attended_ms: 5_500,
+          opportunity_id: "01986666-0000-7000-8000-000000000001", selected_generator_id: null },
+        buffs: [
+          { buff_instance_id: "01986666-0000-7000-8000-00000000000b", effect_row_id: "active.building",
+            expires_attended_ms: 4_000, selected_target: "generator.beige_tower" },
+          { buff_instance_id: "01986666-0000-7000-8000-00000000000c", effect_row_id: "active.click",
+            expires_attended_ms: 3_000, selected_target: null },
+          { buff_instance_id: "01986666-0000-7000-8000-00000000000d", effect_row_id: "active.production",
+            expires_attended_ms: 7_000, selected_target: null },
+        ],
+        combo: { cap: "1e4", reason_key: "cap.active_combo", saturated: false },
+      },
+    },
+  });
+}
+
+it.skipIf(!chromiumPerformanceLane)("holds the observable 20 Hz / 10 Hz screen budget with populated Garage regions and a completed native observation", async ({ annotate }) => {
+  const budget = GAME_UI_PERFORMANCE_BUDGET;
+  expect({ width: window.innerWidth, height: window.innerHeight }).toEqual(budget.viewport);
+  const longTasksSupported = typeof PerformanceObserver !== "undefined" && PerformanceObserver.supportedEntryTypes.includes("longtask");
+  if (!longTasksSupported || typeof MutationObserver === "undefined") throw new Error("invalid performance observation: native observers unavailable");
+  const populated = populatedGaragePerformanceSnapshot();
+  const runtime = new FixtureRuntime(true); runtime.current = populated;
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  let formattedCommits = 0, inputs = 0, regionSamples = 0, longestTaskMS = 0;
+  let completed = false;
+  const mutations = new MutationObserver((rows) => { formattedCommits += rows.length; });
+  const collectTasks = (rows: readonly PerformanceEntry[]) => {
+    for (const entry of rows) longestTaskMS = Math.max(longestTaskMS, entry.duration);
+  };
+  const tasks = new PerformanceObserver((list) => collectTasks(list.getEntries()));
+  const frame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  let amount: HTMLOutputElement | null = null;
+  try {
+    app.fixtureSnapshot(populated); app.fixtureSurface("desk"); flushSync();
+    // Allow the actual mount/subscription recovery to finish before observation.
+    await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync();
+    amountRenderScheduler.flush(); flushSync(); await frame();
+    amount = target.querySelector('section[aria-labelledby="resources-heading"] .cc-amount output');
+    expect(amount).not.toBeNull();
+    const opportunity = target.querySelector('[data-region="desk.region.opportunity"]');
+    expect(opportunity).not.toBeNull();
+    const text = (key: CopyKey, slots: Parameters<typeof t>[1] = {}) => t(key, slots, eraForSnapshot(populated));
+    const census = () => {
+      expect(target.querySelector('section[aria-labelledby="resources-heading"] .cc-amount output')).toBe(amount);
+      expect(amount!.isConnected).toBe(true);
+      expect(target.querySelector('[data-region="desk.region.opportunity"]')).toBe(opportunity);
+      expect(opportunity!.querySelector("button")?.textContent).toBe(text("desk.opportunity.claim"));
+      expect(opportunity!.querySelector("h3")?.textContent).toBe(text(FEATURES_PRESENTATION.opportunityEffects.get("active.lucky")!.title_key));
+      expect([...opportunity!.querySelectorAll("li span:first-child")].map((row) => row.textContent)).toEqual(
+        ["active.building", "active.click", "active.production"].map((id) => text(FEATURES_PRESENTATION.opportunityEffects.get(id)!.title_key)));
+      expect(opportunity!.textContent).toContain(text("cap.active_combo"));
+      expect(opportunity!.querySelector(".cc-amount output")?.textContent).toBe(formatAmount("1e4"));
+      const generator = target.querySelector('section[aria-labelledby="generators-heading"]');
+      expect(generator?.textContent).toContain(text("desk.provisioned_frame", { count: 3 }));
+      expect(generator?.textContent).toContain(text("generator.beige_tower.provisioned_cap"));
+      expect(target.querySelector('section[aria-labelledby="upgrades-heading"] strong')?.textContent).toBe(text("desk.upgrade.owned"));
+      const shelf = [...target.querySelectorAll("section.card")].find((row) => row.querySelector("h2")?.textContent === text("cosmetic.horse_armor_free.title"));
+      expect(shelf?.textContent).toContain(text("cosmetic.horse_armor_free.disclosure"));
+      expect([...target.querySelectorAll("nav button")].map((row) => row.textContent)).toEqual([
+        "surface.desk.title", "surface.achievements.title", "surface.fiscal.title", "surface.meters.title", "surface.settings.title",
+      ].map((key) => text(key as CopyKey)));
+      expect(runtime.requests).toHaveLength(0);
+    };
+    census();
+    mutations.observe(amount!, { characterData: true, childList: true, subtree: true });
+    tasks.observe({ entryTypes: ["longtask"] });
+    for (let input = 1; input <= budget.inputCount; input++) {
+      const current = parseGameUISnapshot({ ...populated, revision: input + 1,
+        resources: [{ ...populated.resources[0], amount: canonicalString(input + 100) }] });
+      runtime.current = current;
+      app.fixtureSnapshot(current); inputs++;
+      flushSync();
+      if (input % 2 === 0) { amountRenderScheduler.flush(); flushSync(); }
+      census(); regionSamples++;
+      if (input % 40 === 0) await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+    await tick();
+    // Microtasks alone do not deliver the last task's PerformanceObserver record.
+    await frame(); await frame(); await new Promise((resolve) => setTimeout(resolve, 0));
+    formattedCommits += mutations.takeRecords().length; collectTasks(tasks.takeRecords());
+    mutations.disconnect(); tasks.disconnect();
+    expect(regionSamples).toBe(budget.inputCount);
+    expect(formattedCommits, "invalid observation: no visible cash rendering").toBeGreaterThan(0);
+    expect(amount!.textContent, "terminal cash must reflect the actual completed inputs").toBe(formatAmount(canonicalString(budget.inputCount + 100)));
+    census();
+    validatePerformanceObservation({ formattedCommits, inputs, longestTaskMS });
+    completed = true;
+  } finally {
+    mutations.disconnect(); tasks.disconnect();
+    const report = { population: "garage-gs5-gs6-desk", viewport: budget.viewport, simulatedDurationMS: budget.durationMS,
+      inputs, regionSamples, formattedCommits, longestTaskMS, longTasksSupported, completed,
+      terminalCash: amount?.textContent ?? null, intents: runtime.requests.length,
+      exclusions: ["real-60-second-manual-4x-profile", "Firefox-WebKit", "SQL-default-player", "GS4-pet",
+        "Pitch-runtime-port", "later-adoption-cosmetics-axis-stack-reputation-T2-regions", "full-current-release-population"] };
+    try { await unmount(app); } finally { target.remove(); }
+    await annotate(`Garage populated performance observation: ${JSON.stringify(report)}`, { contentType: "application/json", body: new TextEncoder().encode(JSON.stringify(report)) });
+  }
 }, 75_000);
 
 it.skipIf(typeof document === "undefined")("renders a rejected intent's reason in the status region instead of going offline (GS0.2, F2)", async () => {

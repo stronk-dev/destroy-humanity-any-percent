@@ -423,9 +423,30 @@ Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates 
 seconds at 20 Hz through 600 shared formatter windows in a 1280×720 viewport. Isolation keeps
 concurrent browser engines from becoming part of the measurement. The shared renderer may commit
 a hot Amount at most 600 times and may not produce a long task over 200 ms.
-The current screen fixture leaves its feature arms null. Its passing result
-does not cover the populated Garage Desk regions required by Garage AC7
-(RP-333); that population remains a separate open gate, not a budget waiver.
+The original screen fixture leaves its feature arms null and is retained
+unchanged. Native probes confirmed it can pass without delivering any measured
+updates, and can miss a slow final task by disconnecting before the observer
+receives its record (RP-334). Its result is not sufficient performance proof.
+
+An additional isolated Chromium scenario covers the bounded Garage GS5/GS6
+Desk population: pending Lucky, the three windowed buffs and combo, capped
+provisioning, an owned upgrade, the free shelf and achievements/Fiscal/Meters
+navigation. Those separate tabs are not falsely mounted on the Desk. It uses
+the public snapshot decoder, counts actual delivered updates, checks this
+population after every update, measures the cash Amount rather than the static
+combo Amount, requires positive visible activity and the exact terminal cash,
+and fails if native observation is unavailable. Real rendering/task turns and
+queued-record collection precede observer disconnection; cleanup runs on failure
+too. Its JSON runner annotation reports completion, counters, observer support,
+terminal cash, intents and exclusions. The default local success reporter need
+not print annotations or persist their requested attachment; do not infer an
+on-disk measurement artifact merely from a passing test.
+
+Executed missing-input, fixed-cash, final-400-ms-task, unavailable-observer,
+missing-buff and wrong-terminal-cash probes discriminate this supplement under
+the unchanged budgets. It does not close all of Garage AC7 (RP-333): GS4/pet,
+later Desk additions, the complete current release population, real server/
+default-player proof and the manual reference profile remain separate gates.
 Four-times CPU throttling and the five-percent dropped-frame allowance remain a manual release
 profile; deterministic CI gates observable commits and long tasks as ruled. The 2026-08-22
 reference run passed for 60,001.9 ms at 4× in pinned Chromium: 598 production prediction
