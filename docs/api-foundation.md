@@ -31,6 +31,11 @@ shape change. Minigame error responses use it to bind each operation/status to t
 category/detail pairs and encoder newline, so a schema-valid cross-product or appended byte is not
 accepted as contract evidence.
 
+The shared error-detail enum includes `soul_recovery` (unavailable/internal recovery errors)
+and `company_stream` (start without an active Company), matching existing handlers. These
+are additive descriptor corrections, not handler or error-mapping changes. Real authenticated
+Postgres-backed replies are checked against this same registry; invented details still fail.
+
 `make api-schema` regenerates canonical OpenAPI 3.1 at `docs/generated/api.json` and exact client
 DTO/operation metadata at `client/src/api/generated/types.ts`. `make api-check` regenerates and
 byte-compares both outputs as part of `make verify-server`. The committed

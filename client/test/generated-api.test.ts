@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createAPIClient, operations, type OperationInput } from "../src/api/generated/types";
+import { createAPIClient, operations, type APIError, type OperationInput } from "../src/api/generated/types";
 
 const stream = "01986666-0000-4000-8000-000000000001";
 
@@ -125,6 +125,10 @@ describe("registry-generated HTTP client", () => {
 // Compiled by make typecheck; never executed. Status narrowing retains raw/JSON
 // distinctions, and consumers cannot invent an operation, request, or auth mode.
 function compileContract(client: ReturnType<typeof createAPIClient>): void {
+  // RP-376: actual registered Soul error replies must be representable.
+  const unavailable: APIError = { category: "not_configured", detail: "soul_recovery" };
+  const missingCompany: APIError = { category: "unknown_id", detail: "company_stream" };
+  void unavailable; void missingCompany;
   // @ts-expect-error unknown registry operation
   void client.call("invented_operation", { path: {}, request: null });
   // @ts-expect-error private operation requires an explicit access token

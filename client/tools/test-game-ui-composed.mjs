@@ -103,6 +103,7 @@ if (!refreshResult.valid) {
 console.info(`persisted refresh API population passed: ${refreshResult.completed_leaves}/${refreshResult.expected_leaves} cases (real Postgres, HTTP over net.Pipe; not browser renewal)`);
 resetTestDatabase();
 const persistedTests = [
+  "TestSoulRecoveryErrorRegistryIntegration",
   "TestFiscalProjectionMatchesPersistedHarvestIntegration",
   "TestFirstContentEpochPersistedBoundaryIntegration",
   "TestPublicBoardRankingAndPagesIntegration",
@@ -110,7 +111,7 @@ const persistedTests = [
   "TestComposedGameserverPostgresSocketClearingAndGCIntegration",
   "TestComposedGameserverExitVerificationAndBoardIntegration",
 ];
-const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./gameui ./production ./leaderboard ./gameserver", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
+const persistedChecks = spawnSync("make", ["test-go", "GO_PACKAGES=./account ./gameui ./production ./leaderboard ./gameserver", `GO_TEST_FLAGS=-count=1 -v -run '^(${persistedTests.join("|")})$$'`], {
   cwd: repositoryRoot,
   env: { ...process.env, TEST_DATABASE_URL: testDatabaseURL },
   encoding: "utf8",

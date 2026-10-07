@@ -22,6 +22,9 @@ RFC: `rfc/api-foundation.md`
   - [x] Bind registered Minigame/Soul/Garden ports to generated dispatch, preserving their
     wire inputs/error classes (generated-operation-ports, minigame/soul-recovery-surface,
     garden-refresh-browser tests; real composed Pitch/default-Garden journey).
+  - [x] Correct missing existing Soul error details; actual handler/mapper replies and
+    authenticated Postgres errors conform (TestSoulRecoveryErrorRegistryMatchesHandlers /
+    TestSoulRecoveryErrorRegistryIntegration). Full composed target remains RED at RP-377.
   - [ ] Migrate remaining HTTP callers; register missing routes/contracts and enforce C9's
     raw-fetch lint. Typed dispatch over the current subset is not AC4 completion.
 - [ ] Compose the public router, full-registry privacy/conformance integration, canonical docs,

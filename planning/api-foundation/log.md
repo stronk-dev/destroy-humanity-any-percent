@@ -898,3 +898,24 @@ Post-run DB sessions/listeners absent. All verification handles terminal before 
 Review by: Codex (diff/first-filter); Recorded by: Codex. Entire range after `ec74899a` requires
 designated review; no archival/push. Next: remaining route contracts/C9 lint, C18 catalog owner
 descriptors and the undeclared 304 arm. Full API acceptance and nine-tier 1.0 remain incomplete.
+
+## 2026-10-07 — RP-376 existing Soul error-descriptor correction
+
+Batch after `27ffb9c7`, accepted A4/A5/C2: add only `soul_recovery` and `company_stream` to
+APIError's detail enum; regenerate OpenAPI/TS. Handlers, statuses, copy and compatibility pin
+unchanged. New tests compare exact real reply bytes with the same operation registry and
+reject an invented detail. Existing composed preflight now requires the new Account test.
+
+Old descriptor: unit32789 fails all eight unavailable/internal-mapper cases; composed15184
+fails all five real authenticated/Postgres cases, including missing Company. Corrected cold
+Account/publicapi/publicread/gen-api (37706), selected vet, typecheck19774 and 85 focused TS
+cases65096 PASS. Real composed89770 executes/passes all five new cases, eight refresh cases,
+remaining persisted parents and main gameplay; staged `make api-check` also PASSes without a
+compatibility-pin change. Its Cosmetic phase then fails at the immediate
+post-equip live-overlay assertion (RP-377). Full target remains RED. Persisted wearing had
+passed; source inspection identifies an immediate DOM sample, not a proved cause or correction.
+No retries, relaxed bounds or repeat-to-green. Owned listeners/fixture DB sessions absent.
+
+Review by: Codex (diff/first-filter); Recorded by: Codex. Entire range after `27ffb9c7` needs
+designated review; no archival/push/whole-CI or API-completion claim. Next: diagnose RP-377 in
+the Cosmetic owner lane; missing route contracts/catalog descriptors/304 remain open.
