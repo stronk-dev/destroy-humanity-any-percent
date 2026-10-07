@@ -744,3 +744,66 @@ proof or promote accumulation representation. sequence-research.md records
 exact producers, sources, failures and limits. Entire range after0d866359
 including every record edge needs Claude; no checkbox/status/archive/mint/
 push/deploy/fullClout/1.0 acceptance. Proper long-term goal active/progress.
+
+## CV3/CV4/AC8 — actual persisted claim/burst sequences
+
+Predeclared at cleanf038a467 after the sequence checkpoint. Test-only, accepted
+CV3/CV4 and persistence AC8; no product/save/kernel/balance/API/copy/CI change.
+Replay the existing exact16 effect/gap/mode paths and clock preludes through
+actual Service.Handle→Store→declared Postgres, not a test callback replacing
+the Service resolver. Read the committed sequence artifact as the command plan;
+rebuild admitted Company19/Founder21 with identical inventory/history, actual
+selected founders, pinned UNMINTED bundle and real frozen Founder contributions.
+Use database clock minus26h for setup so long25h command remains in the past.
+
+Diagnostic setup includes SEVEN identical initial Company snapshots (revisions
+1..7) to exercise actual retention deletion; this is explicit revision padding,
+not claimed prior gameplay/history. Pin immutable run2 genesis/frozen rows at
+revision1 before padding. Every subsequent expected revision comes from actual
+loaded head. Keep all generated actions; no mode/seed filtering or policy edit.
+
+For each core claim and burst, append a distinct-intent same-time business
+refusal: opportunity_not_pending and burst_active, complete head unchanged,
+zero emitted events. Original final PR2 rebuy still rejects owned. Population:
+168 normal logged attempts (120 applied/48 refused),168 identical retries after
+later state advancement, and32 changed-payload same-ID conflicts. Retries must
+return the original exact receipt with Replay=true; conflicts must be typed
+idempotency_conflict. Both change NONE of the complete twelve-table snapshot.
+Every normal command produces exactly one run_log/intent record/receipt outbox
+row; applied commands advance exactly one revision, refused commands do not.
+Outbox identity/hash/revision/full receipt must match. Reload complete Company
+after every action and replay ALL recorded payloads/frozen inputs/receipts/
+ordered events from immutable genesis to the exact final head, including all
+refusals. The run remains OPEN: completed-run verifier must return log_gap,
+not a fabricated completion. Founder/pin/genesis/frozen rows remain unchanged.
+Actual retained Company revisions must be the latest five after each apply.
+
+Forty-eight injected DB faults: four explicitly selected short-gap online/
+offline/online paths × claim and burst × SIX live writes: save_revisions INSERT,
+events INSERT, run_log INSERT, intent_records INSERT, transport_player_outbox
+INSERT, save_revisions DELETE. Install narrowly named test-owned PostgreSQL
+function/trigger in the declared disposable database, never modify production
+or migrations. Require exact P0001/message sentinel and all twelve complete
+table rows/heads unchanged for each failed Handle. Retention DELETE must reach
+an actual old row, not merely an empty stage hook. Remove owned trigger/function
+on every exit; no CASCADE/unknown-object overwrite. DB sequence gaps on aborted
+transactions are not rollback failures or gameplay proofs. Census must fail
+if rows/commands/refusals/retries/conflicts/faults are missing.
+
+Demonstrate compiling production mutants for claim-evidence omission,
+idempotency lookup bypass and retention-selector omission. Require failure on
+the new population's actual property, not a build error/source-pin check.
+Inspect result and restore exactly only AFTER each live handle terminates.
+If baseline fails, preserve evidence, classify instrument vs product cause and
+predeclare any corrected instrument before rerun; do not silently adjust the
+population, accepted policy or expected outputs. No old corpus restamping.
+
+Cold native Postgres selected+full relevant integration populations, fullclient,
+types/vet/build/topology and production/economy/decimal/kernel. Source-verify
+existing CI discovery; no hosted/AMD64 claim without real execution. No SQL
+writer artifact required: test source, complete oracles and terminal population
+output are the executable witness. Publish source identity/evidence/limits and
+reconcile canonical docs/ledger/queues/roadmap/log in the proof commit. Self
+first-filter then designated Claude exact full span including records; no
+checkbox/acceptance/status/archive/mint/push/deploy/release call. Original27AC6,
+RP-308/representation/history and all earlier holds/review ranges remain.

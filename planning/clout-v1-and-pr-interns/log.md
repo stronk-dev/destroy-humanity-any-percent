@@ -1711,3 +1711,16 @@ burst persistence/retry/history. No owner/body/representation waiver inferred.
 One compound Git bookkeeping call was metadata-denied; standalone authorized
 add/commit succeeded with no escalation or rewrite. All handles terminal,
 goalactive/progress; no checkbox/status/archive/mint/push/deploy/release call.
+
+### Persisted claim/burst predeclaration — 2026-10-07
+
+Resumed cleanf038a467; previous goal turn PROGRESS: committed16 continuous
+sequence proofs and discriminating mutations, not a status-only continuation.
+AGENTS/RFC-0000/entire accepted Clout contract and relevant binding design/
+runtime/save producers re-read. No live handles, no concurrent dirty work.
+Plan now predeclares actual16 Service/Store/SQL sequences,168 new logged attempts,
+168 later retries/32 conflicts,48 exact six-stage DB faults, full twelve-table
+rollback/census/outbox/genesis-to-head replay and real retention deletion using
+explicit seven-snapshot diagnostic padding. No experiment or mutation yet.
+Accepted CV3/CV4/AC8 only; no inferred owner/body/accumulation waiver, product
+repair or CI publication. Proper full1.0 objective active, prior holds unchanged.
