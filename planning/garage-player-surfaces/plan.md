@@ -14,6 +14,9 @@ hits rate limits and misses activations: RP-368 is OPEN, not repaired by disabli
 Next: resolve the action/request-throughput contract without guessing a larger limit or replaying
 commands. The latest `log.md` owns commands, results and review range. Designated review and full
 Garage acceptance remain; RP-365/D-024, GS3-A4/RP-363 and the original RP-364 timeout remain open.
+RP-319's Offer pending-focus remainder is now locally corrected under GS0.8; Manual and other
+Desk pending controls remain separate work. Manual click retention is an unanswered owner choice
+in the decision queue, not permission to change GS0.8's pending-drop rule.
 
 Historical checkpoint before the GS2 supplement: RP-362/363 fired a real initial-meter authority conflict;
 GS3-A4 asks fresh Standing50, actual bootstrap assembles90/high via published

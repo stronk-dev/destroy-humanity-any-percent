@@ -14,6 +14,11 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   registration/order form, and README.TXT.
 - Offer Sheet: authoritative exit type, complete payout terms, server-clock-relative expiry,
   Company-only decline, and Founder-CAS-guarded acceptance.
+  Sign/Decline keep their action labels and native Tab stops during pending intent/read work.
+  Both use `aria-disabled` and describe the existing visible pending text in the host status
+  region; callback guards suppress activation until the work settles. Typed conflict feedback
+  remains visible alongside pending feedback. Stale/unready state still natively disables the
+  controls. This does not buffer clicks, retry a command or change terminal semantics.
 - Run End: a payload-isolated component that accepts only the decoded `run_ended` event; its parent
   owns the exact-next-Company continuation control.
   Reputation R9's available-balance and next-route display is **not implemented**:

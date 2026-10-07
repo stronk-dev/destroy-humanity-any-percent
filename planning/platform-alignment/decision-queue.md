@@ -36,6 +36,26 @@ that boundary and its transaction/replay compatibility in `rfc/founder-attendanc
 Evidence/reproducer: latest Cosmetic log. No pet clamp, timer retune or retry chosen. Blocks
 this shared-clock repair and complete care/platform acceptance, not other accepted work.
 
+## Manual input delivery — RP-368 (unruled)
+
+GS0.8 explicitly drops same-kind clicks while pending. The current host submits one manual
+action per intent and refreshes its authoritative projection; Account defaults share60 burst/
+300 requests per minute across authenticated routes. The existing server-validated manual batch
+and25-actions/s token refill are not a browser input-delivery guarantee. Actual minute profiles
+still show missed inputs/rate refusals after the stale-state repair; the Garage log owns results.
+
+Owner choice requested: collect actual clicks into the existing validated batch mechanism
+(recommended), or retain pending drops and explicitly choose a supported input rate. No answer
+has been received; question delivery is not a ruling. Collection would require an explicit manual
+exception to GS0.8, specified flush/bounds/context invalidation and failure behavior, then acceptance
+before implementation. It cannot invent server tokens, replay unknown commits, bypass failed-read
+protection or select a larger HTTP limit by convenience. Neither the experimental four-Hz
+population nor the screen's20-Hz simulation budget chooses the supported click cadence.
+
+Canonical contract home: Garage GS0.8 and a bounded accepted amendment/follow-up if adopted;
+Account rate policy remains its own contract. This blocks changing pending-input delivery,
+not ordinary corrections to existing keyboard, pending-feedback or stale-state requirements.
+
 ## Startup first-read failure — D-023 / RP-342 (unruled)
 
 Predeclared ced3b5c7 actual browser runtime/decoder/native host measurement

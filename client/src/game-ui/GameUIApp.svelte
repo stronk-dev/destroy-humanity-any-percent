@@ -247,8 +247,12 @@
     return exitPlan.length === 0 ? body : { ...body, reputation_plan: [...exitPlan] };
   }
   function acceptOffer(): void {
-    if (!offer || founderRevision === undefined) return;
+    if (pending || !offer || founderRevision === undefined) return;
     void act(withPlan({ kind: "accept_exit_offer", expected_founder_revision: founderRevision, offer_id: offer.payload.offer_id }));
+  }
+  function declineOffer(): void {
+    if (pending || !offer) return;
+    void act({ kind: "decline_exit_offer", offer_id: offer.payload.offer_id });
   }
 
   async function continueRun(): Promise<void> {
@@ -589,7 +593,9 @@
   {#if snapshot && (surface === "desk" || surface === "offer_sheet" || surface === "achievements" || surface === "meters") && !commandControls}
     <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
   {/if}
-  {#if snapshot && surface !== "fiscal" && surface !== "pet"}<p class="intent-notice" role="status">{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>{/if}
+  {#if snapshot && surface !== "fiscal" && surface !== "pet"}
+    <p class="intent-notice" role="status">{#if surface === "offer_sheet" && pending}<span id="offer-pending">{t("common.pending", {}, era)}</span> {/if}{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>
+  {/if}
   {#if draining}
     <aside class="notice" role="status"><strong>{t("system.drain_notice.title", {}, era)}</strong><span>{t("system.drain_notice.body", {}, era)}</span></aside>
   {/if}
@@ -744,8 +750,8 @@
       {#each renderPrestigeTermRows(offer.payload.payout_preview, era) as row}<p>{row}</p>{/each}
       <p title={t("screen.offer_sheet.countdown_tooltip", {}, era)}>{t("screen.offer_sheet.countdown_frame", { remaining: duration(offer.payload.expires_at_ms - estimatedServerNowMS()) }, era)}</p>
       {#if liveFeatures?.reputation}<ReputationPlanPanel arm={liveFeatures.reputation} {era} previewDelta={offer.payload.payout_preview.reputation_delta} onChange={(plan) => { exitPlan = [...plan]; }} />{/if}
-      <button type="button" disabled={pending || !founderControls} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
-      <button type="button" disabled={pending || !commandControls} onclick={() => act({ kind: "decline_exit_offer", offer_id: offer!.payload.offer_id })}>{t("screen.offer_sheet.decline", {}, era)}</button>
+      <button type="button" tabindex="0" disabled={!founderControls} aria-disabled={pending || undefined} aria-describedby={pending ? "offer-pending" : undefined} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
+      <button type="button" tabindex="0" disabled={!commandControls} aria-disabled={pending || undefined} aria-describedby={pending ? "offer-pending" : undefined} onclick={declineOffer}>{t("screen.offer_sheet.decline", {}, era)}</button>
     </section>
   {:else if surface === "run_end" && ended}
     <RunEndSurface {ended} />

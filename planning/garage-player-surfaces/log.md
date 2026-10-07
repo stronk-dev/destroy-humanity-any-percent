@@ -6066,3 +6066,38 @@ Review by: Codex (implementer first filter); Recorded by: Codex. Exact range aft
 this batch's commit needs designated review; no acceptance/archival/push/full-CI/1.0 claim.
 Next: action/request-throughput contract; rate refusal is still a player-flow defect. Other
 Garage, owner, privacy, numeric, deployment and full nine-tier release obligations remain open.
+
+## 2026-10-07 — RP-319 Offer pending focus and RP-368 owner boundary
+
+Current-source GS0.8 drops same-kind pending clicks; Account defaults share60 burst/300 per
+minute. Existing manual batches/server25-actions/s refill do not authorize retaining pending
+browser input. Asked Marco to choose collection into validated batches versus a declared
+pending-drop/input-rate contract; no response/ruling received. Decision queue records the exact
+amendment boundary. No new mechanics, cadence, limit or automatic replay implemented.
+
+Independent accepted GS0.8 repair: Offer Sign/Decline now retain native focus/Tab stops while
+the intent and authoritative refresh are pending. Callback guards reject pending activation;
+aria-disabled/described-by bind the existing pending text in the existing host status region.
+Action labels remain character-unchanged; conflicts remain visible, stale-state disabling and
+the shared queue/terminal protocol are unchanged. No new copy, wire, kernel, CI or retry policy.
+
+Root verification (all sessions terminal before source/record edits):
+- `client/node_modules/.bin/vitest run --root client --config vitest.browser.config.ts --project
+  chromium --project webkit test/game-ui-screens-browser.test.ts -t 'GS0.8 Offer'`: old16687 fails
+  all16 native cases on pending disabling. Initial correction20160 passes16. Final refinement
+  keeps labels stable and binds the visible pending description without hiding conflict notices.
+- Full same screen command without `-t`: final57105 has102 PASS/4 declared performance-only skips,
+  including Enter/Space, native Tab/Shift-Tab, held applied/conflict/read, no duplicate/cross-button
+  activation and next fresh Company2/Founder3 consent. Runtime doubles control ordering, not
+  actual HTTP outage or physical AT. Earlier80698 also passed before the feedback refinement.
+- `make typecheck`98800:0 errors/warnings; `make build-client`42126:214 modules PASS; diff passes.
+- `make test-game-ui-composed`5222:8/8 real Postgres refresh cases, persisted Fiscal/epoch/boards,
+  both real terminal states/continuation/recovery plus purchase/opportunity/Fiscal/Pitch and
+  Cosmetic/adoption/care/reloads all PASS. Main95 requests/15.268s; Cosmetic N5:74/no violation.
+  Pre-refinement26731 also passed, but final5222 is the changed-tree evidence. Owned listeners
+  absent, fixture other DB sessions0. No full-CI, Firefox, AT or full-Garage completion claim.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after77731500 through
+this batch's commit requires designated review; no acceptance/archival/push. Next: remaining
+Desk pending-focus controls under existing GS0.8 while the manual delivery decision is pending.
+RP-368 remains a release defect; all full nine-tier product/platform/release obligations remain.

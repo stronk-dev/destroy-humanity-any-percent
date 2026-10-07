@@ -447,6 +447,89 @@ for (const completion of ["failed_read", "recovering", "healthy"] as const) {
   });
 }
 
+for (const action of ["accept_exit_offer", "decline_exit_offer"] as const) {
+  for (const key of ["{Enter}", " "] as const) {
+    for (const conflict of [false, true]) {
+      it.skipIf(typeof document === "undefined")(`GS0.8 Offer ${action} retains native ${key} focus through ${conflict ? "conflict" : "applied"} and refresh`, async () => {
+        const { userEvent } = await import("vitest/browser");
+        const releaseReads: (() => void)[] = [];
+        class HeldReadRuntime extends FixtureRuntime {
+          override async snapshot(): Promise<ParsedGameUISnapshot> {
+            if (this.requests.length === 0) return super.snapshot();
+            this.snapshotCalls++;
+            await new Promise<void>((resolve) => releaseReads.push(resolve));
+            return this.current;
+          }
+        }
+        const runtime = new HeldReadRuntime(true);
+        runtime.intentOutcome = conflict
+          ? { outcome: "rejected", category: "revision_conflict", detail: "expected_revision", currentRevision: 2, sessionExpired: false }
+          : { outcome: "applied", receipt: {} };
+        let releaseIntent = () => {};
+        runtime.intentBlock = new Promise<void>((resolve) => { releaseIntent = resolve; });
+        const target = document.createElement("div"); document.body.append(target);
+        const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+        try {
+          await settleIntentState(); app.fixtureOffer(offer); await settleIntentState();
+          const buttons = [...target.querySelectorAll<HTMLButtonElement>(".surface > button")];
+          expect(buttons).toHaveLength(2);
+          const index = action === "accept_exit_offer" ? 0 : 1;
+          const origin = buttons[index];
+          const label = origin.textContent;
+          const labels = buttons.map((button) => button.textContent);
+          origin.focus(); await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          expect(runtime.requests[0]).toMatchObject({ kind: action, expected_revision: 1, offer_id: offer.payload.offer_id });
+          const pendingState = () => {
+            expect(origin.disabled, "pending must not remove the native control from keyboard focus").toBe(false);
+            expect(document.activeElement).toBe(origin);
+            for (const button of buttons) {
+              expect(button.getAttribute("aria-disabled")).toBe("true");
+              expect(button.getAttribute("aria-describedby")).toBe("offer-pending");
+            }
+            expect(buttons.map((button) => button.textContent)).toEqual(labels);
+            const message = target.querySelector<HTMLElement>(".intent-notice #offer-pending")!;
+            expect(message?.textContent).toBe(t("common.pending", {}, "era_1995"));
+            expect(message.getBoundingClientRect().height).toBeGreaterThan(0);
+          };
+          pendingState();
+          await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          // Pending controls remain in the native Tab order. Neither the
+          // original nor the other intent may activate while aria-disabled.
+          await userEvent.keyboard(index === 0 ? "{Tab}" : "{Shift>}{Tab}{/Shift}");
+          expect(document.activeElement).toBe(buttons[1 - index]);
+          await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          await userEvent.keyboard(index === 0 ? "{Shift>}{Tab}{/Shift}" : "{Tab}");
+          expect(document.activeElement).toBe(origin);
+          runtime.current = { ...snapshot, revision: 2, founder_revision: 3 };
+          releaseIntent(); await settleIntentState();
+          expect(runtime.snapshotCalls).toBe(2); // startup + one authoritative refresh
+          pendingState();
+          if (conflict) expect(target.querySelector(".intent-notice")?.textContent).toContain(t("intent.conflict", {}, "era_1995"));
+          await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(1);
+          releaseReads.splice(0).forEach((release) => release()); await settleIntentState();
+          expect(origin.textContent).toBe(label);
+          expect(origin.hasAttribute("aria-disabled")).toBe(false);
+          expect(origin.hasAttribute("aria-describedby")).toBe(false);
+          expect(target.querySelector("#offer-pending")).toBeNull();
+          expect(document.activeElement).toBe(origin);
+          origin.focus(); await userEvent.keyboard(key); await settleIntentState();
+          expect(runtime.requests).toHaveLength(2);
+          expect(runtime.requests[1]).toMatchObject({ kind: action, expected_revision: 2 });
+          expect(runtime.requests[1].intent_id).not.toBe(runtime.requests[0].intent_id);
+          if (action === "accept_exit_offer") expect(runtime.requests[1].expected_founder_revision).toBe(3);
+        } finally {
+          releaseIntent(); releaseReads.splice(0).forEach((release) => release());
+          await settleIntentState(); await unmount(app as never); target.remove();
+        }
+      });
+    }
+  }
+}
+
 it.skipIf(typeof document === "undefined")("keeps terminal commands disabled until the ordered event channel is recovered", async () => {
   const runtime = new FixtureRuntime(true, false);
   const target = document.createElement("div"); document.body.append(target);
