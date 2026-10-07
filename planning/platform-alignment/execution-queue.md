@@ -20,9 +20,11 @@ RP-332 separately cc62cea8..5fbf4cff, audit fc911784..cc62cea8 (all 29 GS1–
 GS6/eight overall criteria), runtime a42406f0..fc911784 and earlier ranges
 remain independently owed.
 
-**READY next:** predeclare RP-330 / GS3-A3 semantic narrow Meters layout:
-actual definition-list/value/header associations and live breakpoint controls
-before production correction. Following accepted work: RP-333 populated AC7
+**IN PROGRESS:** RP-330 / GS3-A3 semantic narrow Meters layout, predeclared
+d9a8ca27. Corrected typed-clean native baseline 50408 has six real semantic
+failures (three scenarios × Chromium/WebKit), with the wide control passing.
+Production is unchanged; bounded definition-list/live-breakpoint repair and
+negative probes are next. Following accepted work: RP-333 populated AC7
 observation and exact source guards. RP-331 persisted/DOM composed proofs
 wait for Docker capacity restoration/recheck; last measured overlay remains
 0 free / 100%. No new Docker population or unrelated cleanup this checkpoint.

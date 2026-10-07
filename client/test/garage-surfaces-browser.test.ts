@@ -5,6 +5,7 @@ import { expect, it, vi } from "vitest";
 import type { GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
 import { parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
+import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
 import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import FiscalSurface from "../src/game-ui/FiscalSurface.svelte";
 import PetCareSurface from "../src/game-ui/pet/PetCareSurface.svelte";
@@ -112,6 +113,106 @@ it.skipIf(!browser)("renders earned-run, earned-career and locked achievements a
     await assertAxe(target, "achievements");
   } finally { await dispose(); }
 });
+
+// RP-330: real semantic layout over decoder-admitted public fixtures, not
+// production/persisted values or assistive-technology evidence.
+const semanticMeterRows = v4.features.meters!.meters.map((row, index) => meterRow(row.meter_id, index * 7));
+function semanticMeterSnapshot(rows = semanticMeterRows): ParsedGameUISnapshot {
+  return parseGameUISnapshot({ ...v4, features: { ...v4.features, meters: { meters: rows } } });
+}
+
+async function assertSemanticMeters(target: HTMLElement, rows: typeof semanticMeterRows, narrow: boolean): Promise<void> {
+  const surface = target.querySelector(".meters")!;
+  const value = (element: Element, row: (typeof rows)[number]) => {
+    const meter = element.querySelector("meter")!;
+    expect(meter).not.toBeNull();
+    expect([meter.min, meter.max, meter.value]).toEqual([row.min, row.max, row.value]);
+    expect([...element.querySelectorAll("span")].map((node) => node.textContent)).toEqual([
+      t("meters.value_frame", { value: row.value, max: row.max }, "era_1995"),
+      t(FEATURES_PRESENTATION.meterBands.get(row.band_id)!, {}, "era_1995"),
+    ]);
+  };
+  expect(surface.querySelectorAll("meter")).toHaveLength(rows.length);
+  if (narrow) {
+    expect(surface.querySelectorAll("table")).toHaveLength(0);
+    const pairs = [...surface.querySelectorAll<HTMLElement>("dl > div")];
+    expect(pairs).toHaveLength(rows.length);
+    expect(pairs.map((pair) => pair.dataset.meterId).sort()).toEqual(rows.map((row) => row.meter_id));
+    for (const row of rows) {
+      const pair = pairs.find((candidate) => candidate.dataset.meterId === row.meter_id)!;
+      expect([...pair.children].map((child) => child.tagName)).toEqual(["DT", "DD"]);
+      const term = pair.querySelector("dt")!, description = pair.querySelector("dd")!;
+      const presentation = FEATURES_PRESENTATION.trustMeters.get(row.meter_id);
+      const label = presentation
+        ? `${t(presentation.constituency_key, {}, "era_1995")} ${t(presentation.axis_key, {}, "era_1995")}`
+        : t(FEATURES_PRESENTATION.doomMeter.title_key, {}, "era_1995");
+      expect(term.textContent?.replace(/\s+/gu, " ").trim()).toBe(label);
+      expect(term.id).not.toBe("");
+      expect([...target.querySelectorAll("[id]")].filter((node) => node.id === term.id)).toHaveLength(1);
+      const meter = description.querySelector("meter")!;
+      expect(meter).not.toBeNull();
+      expect(document.getElementById(meter.getAttribute("aria-labelledby")!)).toBe(term);
+      value(description, row);
+    }
+  } else {
+    expect(surface.querySelectorAll("dl")).toHaveLength(0);
+    expect(surface.querySelectorAll("table")).toHaveLength(1);
+    expect(surface.querySelectorAll("tbody tr")).toHaveLength(5);
+    expect(surface.querySelectorAll("td")).toHaveLength(10);
+    expect(surface.querySelectorAll('thead th[scope="col"]')).toHaveLength(3);
+    expect(surface.querySelectorAll('tbody th[scope="row"]')).toHaveLength(5);
+    expect([...surface.querySelectorAll("thead th")].map((node) => node.textContent)).toEqual([
+      t("meters.constituency_label", {}, "era_1995"), t("meters.axis.standing", {}, "era_1995"), t("meters.axis.grievance", {}, "era_1995"),
+    ]);
+    for (const row of rows) {
+      const presentation = FEATURES_PRESENTATION.trustMeters.get(row.meter_id);
+      if (presentation) {
+        const tableRow = [...surface.querySelectorAll("tbody tr")].find((node) => node.querySelector("th")!.textContent === t(presentation.constituency_key, {}, "era_1995"))!;
+        value(tableRow.querySelectorAll("td")[presentation.axis_key === "meters.axis.standing" ? 0 : 1]!, row);
+      } else {
+        expect(surface.querySelector(".doom h2")!.textContent).toBe(t(FEATURES_PRESENTATION.doomMeter.title_key, {}, "era_1995"));
+        value(surface.querySelector(".doom")!, row);
+      }
+    }
+  }
+  const root = document.documentElement;
+  expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+  expect([...target.querySelectorAll("*")].filter((node) => node.getBoundingClientRect().right > root.clientWidth + 1)).toEqual([]);
+  await assertAxe(target, narrow ? "semantic narrow meters" : "wide meter table");
+}
+
+for (const scenario of ["initial narrow mount", "live breakpoint changes", "narrow snapshot refresh"] as const) {
+  it.skipIf(!browser)(`GS3-A3 semantic meters: ${scenario}`, async () => {
+    const { page } = await import("vitest/browser");
+    await page.viewport(scenario === "live breakpoint changes" ? 1280 : 320, 720);
+    const runtime = new Runtime(); runtime.current = semanticMeterSnapshot();
+    const { target, app, dispose } = await mounted(runtime);
+    try {
+      const nav = button(target, t("surface.meters.title", {}, "era_1995"));
+      nav.focus(); nav.click(); await settle();
+      expect(document.activeElement).toBe(nav);
+      if (scenario === "live breakpoint changes") {
+        for (const width of [1280, 320, 479, 480, 1280, 320]) {
+          await page.viewport(width, 720); await settle();
+          await assertSemanticMeters(target, semanticMeterRows, width < 480);
+          expect(document.activeElement).toBe(nav);
+        }
+      } else {
+        await assertSemanticMeters(target, semanticMeterRows, true);
+        if (scenario === "narrow snapshot refresh") {
+          const changed = semanticMeterRows.map((row) => meterRow(row.meter_id, row.value + 1));
+          runtime.current = semanticMeterSnapshot(changed);
+          app.fixtureSnapshot(runtime.current); await settle();
+          await assertSemanticMeters(target, changed, true);
+          await page.viewport(1280, 720); await settle();
+          await assertSemanticMeters(target, changed, false);
+        }
+      }
+      expect(document.activeElement).toBe(nav);
+      expect(runtime.requests).toEqual([]);
+    } finally { await dispose(); await page.viewport(1280, 720); }
+  });
+}
 
 // GS0.5: these are valid wire snapshots, not malformed transport fixtures.
 // Presentation errors must stay inside their read-only surface, not crash

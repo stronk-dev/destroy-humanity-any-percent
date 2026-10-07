@@ -2360,3 +2360,40 @@ and copy/topology remain required. No Docker run until capacity repair.
 New whole range starts after bddfc58e and ends after its final records;
 Claude designated review remains mandatory. No boxes/status/archive/mint/
 release promotion or substitution for RP-331/333/all-engine/AT/full 1.0.
+
+## 2026-10-07 — GS3-A3 semantic baseline established before production
+
+Predeclared d9a8ca27. Three native declarations / six Chromium-WebKit
+executions use distinct decoder-admitted public values and the existing
+canonical presentation/copy. Narrow cases require real dt/dd associations,
+native meter values/names, exact numeric/band spans, one rendered population;
+wide checks retain the table/headers and exact per-cell values. Live resizing
+and refresh cases also retain navigation focus, zero intents, page bounds
+and the axe floor. Existing declarations/assertions are unchanged.
+
+First types 41227 and refined wide-value types 48582 pass with zero errors/
+warnings. Initial native 28005 exited 2: four narrow semantic failures and
+two *instrumentation* failures at the healthy wide control. The oracle read
+the raw HTML value attribute; Svelte legitimately updates the native meter
+property, and a zero-valued meter need not have that attribute. Corrected
+the oracle to exact meter.min/max/value properties (stronger actual native
+outcome), not a permissive null/default fallback. This initial run is not the
+claimed six-case semantic baseline, and no production change used it.
+
+Corrected root types 73951 passes, zero errors/warnings. Native selected
+root population 50408 exits 2: six actual semantic failures / 246 unselected
+executions, two failing engine files, 1.79 s. The wide healthy control now
+passes; all three scenarios in both engines fail because a table remains
+at narrow width instead of the accepted definition list. No collection,
+module, fixture, parser or native-value error substitutes for that finding.
+The later snapshot/breakpoint assertions will execute once the baseline
+defect is repaired; their discrimination must still be demonstrated.
+
+This checkpoint is test/planning only; MetersSurface is byte-unchanged.
+RP-330 ledger/plan/queue updated. Next separate bounded production step and
+predeclared label/value/breakpoint/listener probes, final full native/client/
+copy/topology gates. Complete new layout span begins after bddfc58e and
+includes this test-first record through its eventual production/final edge.
+Claude review is separately owed; RP-329 exact 5fbf4cff..bddfc58e and all
+earlier ranges remain pending. No checkbox/status/archive/mint/AT/all-engine/
+persisted/release claim; no Docker run or cleanup, full 1.0 goal active.

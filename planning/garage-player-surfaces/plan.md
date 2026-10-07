@@ -26,6 +26,15 @@ waits for capacity repair/recheck; last measured Docker overlay is full,
 no new run/cleanup. Author/body/Firefox/AT/full 1.0 gates remain; no box or
 lifecycle change.
 
+RP-330 / GS3-A3 is now in progress under `d9a8ca27`: three new native
+declarations, six Chromium/WebKit executions. Corrected typed-clean baseline
+50408 has six semantic failures; the wide control passes and every scenario
+fails on the remaining narrow table. Initial native-value attribute oracle
+error disclosed and replaced by exact native properties before production.
+No MetersSurface change yet. Next: separately record bounded semantic markup /
+live-breakpoint repair and negative probes, then full gates. This new range
+starts after bddfc58e and remains independent of RP-329 5fbf4cff..bddfc58e.
+
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
 predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,
 origin captured before act awaits.24 baseline DOM failures; five independent
