@@ -7,16 +7,17 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest test-only supplement: predeclaredca8c9b55/test8c364fbd,32 declarations
-×2native engines =64 executions over Fiscal/care immediate/late-away HTTP
-and transport errors. Baselinegreen, no product repair; three compiling
-faults fail/restored exactly. Full Garage238/performance1, client9,737/
-442explicitbrowser skips/types/build/boundaries pass. First instrument
-cleanup error disclosed, not counted as product failure. Newspan after
-6d700838 through final records needs Claude separately from notice exact
-e950216a..6d700838 and earlier ranges. Docker capacity recheck still0free;
-real composed/Firefox/AT/hosted/wire-parse/queued-origin/full-lane gates
-remain. Next separately predeclare GS0.2 real-runtime/fetch-double boundary;
+Latest test-only supplement: predeclared88ab6bdd/test2d3629ad,21 actual
+runtime/Response.json declarations over injected fetch. Baselinegreen,
+no product repair; four compiling status/extra-key/revision/duplicate-send
+faults fail/restored exactly. Final client9,758/442explicitbrowser skips/
+types/build/boundaries pass; no fresh native run. Preceding64 native consumer
+cases/fullGarage238 belong to a42406f0. Newspan aftera42406f0 through final
+records needs Claude separately from HTTP-consumer6d700838..a42406f0,
+notice exacte950216a..6d700838 and earlier ranges. Docker hold persists;
+actual-service/generated-conformance/renewal/composed/Firefox/AT/hosted/
+queued-origin/full-lane gates remain. Next reconcile GS1–GS6 current
+acceptance/evidence and pick the next unresolved accepted requirement;
 no checkbox or lifecycle promotion.
 
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,

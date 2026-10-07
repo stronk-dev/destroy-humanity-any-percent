@@ -3,23 +3,25 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## HTTP-error native consumer census — 2026-10-07
+## Real-runtime HTTP boundary proof — 2026-10-07
 
-Predeclaredca8c9b55/test8c364fbd: Fiscal/care ×eight error arms ×immediate/
-late-away ×Chromium/WebKit =64 executions. Existing behavior satisfies
-this bounded contract; no production repair. Three separate compiling
-refresh/invariant/origin faults fail/restored exactly. Full native Garage
-238/performance1, client9,737/442explicit skips/types/build/boundaries pass.
-Test-scaffolding first-run error disclosed, not a product defect. These are
-runtime-double thrown errors, not actual HTTP parsing or real-service proof.
-**READY FOR CLAUDE:** whole span after6d700838 through this tracking edge;
-notice exacte950216a..6d700838 and all earlier ranges independent.
+Predeclared88ab6bdd/test2d3629ad:21 actual-runtime/Response.json declarations
+over fetch-double replies pass; no production repair. Four compiling status/
+extra-key/revision/duplicate-send faults fail/restored exactly. Final client
+9,758/442explicitbrowser skips/types/build/boundaries pass. Not real-service,
+credential renewal, generated conformance or browser/AT proof; no fresh native
+run. Preceding64 native consumer cases/fullGarage238 belongsa42406f0, not
+this rerun. **READY FOR CLAUDE:** whole span aftera42406f0 through this tracking
+edge, independently of HTTP-consumer6d700838..a42406f0, notice exact
+e950216a..6d700838 and all earlier ranges.
 
-**READY next:** separately predeclare GS0.2 real-runtime/fetch-double error
-parsing and single-request boundary checks; no repair assumed before measured
-failure. Queued-origin/all-surface/AT/Firefox/composed/fullGarage/release remain
-open. Read-only capacity recheck on existing Postgres still0free/100%; no new
-Docker population until actual repair/recheck, no unrelated resource cleanup.
+**READY next:** reconcile accepted GS1–GS6 acceptance against current source
+and named executed evidence; identify remaining author/content/producer/default-
+workflow/engine/AT/review gates and choose the next unresolved accepted
+requirement, not a test-count target. Queued-origin/all-surface/AT/Firefox/
+composed/fullGarage/release remain open. Previous read-only capacity recheck
+still0free/100%; no new Docker population until actual repair/recheck, no
+unrelated resource cleanup.
 Full nine-tier1.0 goal and all author/owner/numeric/platform/privacy/content/
 CI/review/release gates remain active; no lifecycle promotion.
 

@@ -3101,3 +3101,21 @@ controls. Entire newspan after6d700838 through final tracking needs Claude;
 notice exacte950216a..6d700838, browser4dcd9969..e950216a, Fiscalb64a91af..
 4dcd9969 and all earlier ranges independent. Full1.0 active/progress;
 no checkboxes/status/archive/mint/push or reduced release objective.
+
+## 2026-10-07 — GS0.2 runtime/fetch-boundary completed
+
+Predeclared88ab6bdd/test2d3629ad:21 actual-runtime/Response.json declarations
+over injected fetch green on unchanged production source. Four independent
+compiling faults discriminate7/1/20/21 full-client failures; exact source
+hashes restore. Final90506 terminal0 client9,758/442explicitbrowser skips/
+types/build/boundaries pass. No previous assertion removed or product/copy/
+server/kernel/RFC/schema/CI changed. Native238 is preceding a42406f0 evidence,
+not freshly executed here. This completes only bounded parsing/request proof,
+not actual service/generated conformance/renewal/AT/Firefox/hosted/release.
+
+Newspan aftera42406f0 through following records needs Claude; prior HTTP-
+consumer6d700838..a42406f0 and all earlier spans remain independent. Docker
+RP-236 persists, no new container population or unowned cleanup. Next GS1–
+GS6 acceptance/evidence reconciliation at current HEAD before next accepted
+implementation choice, not a test-count roadmap. Full nine-tier1.0 goal
+active/progress; all global holds retained, no lifecycle/publication/mint.

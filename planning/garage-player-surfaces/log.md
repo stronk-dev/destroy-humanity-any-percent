@@ -1909,3 +1909,46 @@ of10,200,105filespass/22skip,5.83s; strict types0errors/0warnings. All21
 new runtime/fetch-boundary declarations pass on unchanged production source.
 Negative result retained: no repair authorized or needed in this population.
 Commit tests now, then execute the four predeclared compiling faults.
+
+## 2026-10-07 — Real-runtime HTTP boundary proof completed
+
+Review by: Codex (implementer first filter). Recorded by: Codex.
+Predeclared88ab6bdd/test2d3629ad. Baseline green, no production repair.
+Four independent compiling faults, same full client population each time,
+Makeexit2 and actual assertions (not import/compiler errors):
+
+| Fault | Handle | Failed | Passed | Witness |
+| --- | --- | ---: | ---: | --- |
+| Ignore non2xx branch | 18847 | 7 | 9,751 | six new typed-error cases plus original runtime case |
+| Admit extra error-body keys | 6789 | 1 | 9,757 | malformed409 must not become GameUIRequestError |
+| Strip expected_revision | 60806 | 20 | 9,738 | exact single-request body comparison |
+| Duplicate intent POST | 44237 | 21 | 9,737 | nineteen new call-count cases plus two original tests |
+
+442declaredbrowser skips retained in each denominator. Duplicate-send
+transport rejection stops on its first failed fetch, so that arm correctly
+does not distinguish a second send that never occurs. Missing credentials
+also correctly sends zero. No surviving applicable fault hidden. Source
+restored before every next probe and final SHA256 matches baseline:
+runtime0a8c420eb9968aa76a3e9ece91c918a43e3d8c4530773c8818bce5104c0cb416;
+intent-outcomea7aa1eb05e014b9f7862a02834fc91492d5ff66f40c5b7be4b5fd20a6c751710.
+Fault60806/44237 output retrieval truncates3,222/3,471tokens; exact failing
+diagnostics and terminal totals retrieved, not complete trace claims.
+
+Final90506 terminal0: stricttypes0errors/0warnings; client9,758pass/442
+explicitbrowser skips of10,200,105filespass/22skip,5.60s; build213modules
+with unchanged index-DwwjDcZC.js/index-DhbUhBbR.css/workerMqspU_iu; boundaries
+14shell/8UI/22GameUI pass. Tests21new+six original declarations; all prior
+assertions retained. Production/server/kernel/copy/CI/RFC/schema zero delta.
+No fresh native/browser/composed/Go/hosted claim; previous native238 evidence
+belongs to a42406f0, source-identical here, not a rerun. Docker RP-236 remains.
+
+This proves actual runtime and Response.json over fetch-double replies,
+not actual service/error populations, generated API conformance, credential
+renewal, browser/AT delivery or release artifact. Next reconcile GS1–GS6
+acceptance against current source and named evidence, separating author/
+content/producer/default-workflow/engine/AT/review holds, then choose the
+next unresolved accepted requirement. Do not generate more tiny tests just
+to grow a count. New exact span beginsa42406f0 exclusive THROUGH final
+records and needs Claude. Prior HTTP-consumer6d700838..a42406f0, notice
+e950216a..6d700838 and all preceding spans remain independent. No boxes/
+status/archive/mint/push; full nine-tier1.0 remains active/progress.

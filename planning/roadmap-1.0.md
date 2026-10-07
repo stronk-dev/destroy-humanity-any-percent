@@ -5,16 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded evidence (2026-10-07):** predeclaredca8c9b55/test8c364fbd,
-64 native Fiscal/care HTTP/transport immediate/late-away error executions
-pass; no production repair needed. Three compiling faults fail/restored
-exactly; full native Garage238/performance1, client9,737/442explicit skips/
-types/build/boundaries pass. Initial instrument cleanup error disclosed.
-Only consumer proof: real-runtime wire parsing, queued origin, all-surface,
-AT, Firefox, composed and release remain open. Newspan after6d700838 through
-tracking needs Claude separately from notice exacte950216a..6d700838 and
-all earlier ranges. Capacity recheck still0free; no Docker population until
-repair/recheck, no unrelated cleanup. Next safe GS0.2 fetch-boundary census.
+**Latest bounded evidence (2026-10-07):** predeclared88ab6bdd/test2d3629ad,
+21 actual-runtime/Response.json cases over injected fetch pass; no production
+repair. Four compiling faults fail/restored exactly. Final client9,758/
+442explicitbrowser skips/types/build/boundaries pass; previous native238
+belongs to a42406f0, not a fresh rerun. Actual service, generated conformance,
+renewal, queued origin, all-surface, AT, Firefox, composed and release remain
+open. Newspan aftera42406f0 through tracking needs Claude independently of
+HTTP-consumer6d700838..a42406f0, notice exacte950216a..6d700838/all earlier
+ranges. Docker hold persists, no unrelated cleanup. Next reconcile GS1–GS6
+current acceptance/evidence and choose the next unfinished accepted requirement.
 Full-nine-tier goal unchanged; no lifecycle promotion.
 
 **Latest bounded repair (2026-10-07):** `45bf2edb`, predeclareda8f2a527/
@@ -1596,6 +1596,14 @@ rechecked the CI/kernel, PA7 and RP-133–RP-135 Deployment boundaries recorded 
 | Release governance | Dated audits, defect ledger, research/decision queues, RFC graph and per-RFC logs exist. The executable queue now has a `fc4191fe` overlay, but the underlying earlier routing table remains a dated snapshot. | Reconcile the live queue and this checkpoint whenever a reviewed batch, ruling or release witness changes the critical path. |
 
 ## Current next moves
+
+Immediate execution overlay (2026-10-07): the GS0.2 runtime and Fiscal/care
+consumer error censuses are locally complete, not designated-approved or
+release proof. Reconcile remaining accepted GS1–GS6 gates against current
+source and named executed evidence before choosing another implementation
+batch. Keep author/content/default-workflow/engine/AT/review holds explicit;
+the strategic actions below remain separately required. Docker-backed
+populations stay held until actual capacity repair/recheck.
 
 1. Keep the newly landed v0.1 implementation **unapproved** until Codex reviews exact commit
    ranges. MA3's RP-145/RP-146 corrections await Claude's designated review of

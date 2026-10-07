@@ -4270,3 +4270,22 @@ THROUGH this tracking edge and needs Claude; notice exacte950216a..6d700838,
 browser4dcd9969..e950216a, Fiscalb64a91af..4dcd9969/all earlier ranges stay
 independent. Full nine-tier1.0 goal remains active/progress, all global gates
 and no-shortcut scope retained; no boxes/status/archive/mint/publication.
+
+## 2026-10-07 — Real-runtime HTTP boundary checkpoint
+
+Predeclared88ab6bdd/test2d3629ad:21 unit declarations invoke actual runtime
+and Response.json over injected fetch. Typed errors, malformed bodies,
+both200 arms, transport and missing credentials pass; exact one request
+preserves body/revision/headers/storage. Green baseline, no production repair.
+Four compiling faults fail7/1/20/21 across full client, restored exact hashes.
+Final90506 terminal0: client9,758/442explicitbrowser skips/types/build213/
+boundaries pass. Prior native238/performance1 belongs to a42406f0; not rerun.
+Not actual service/generated conformance/renewal/browser/AT/release proof.
+
+Newspan startsa42406f0 exclusive through this tracking edge, needs Claude
+independently of HTTP-consumer6d700838..a42406f0, noticee950216a..6d700838 and
+all earlier spans. No Docker population or unrelated cleanup; RP-236 hold
+persists. Next reconcile GS1–GS6 acceptance/evidence at HEAD and select
+next unresolved accepted requirement, keeping producer/content/default-
+workflow/engine/AT/author/review holds explicit. Full nine-tier1.0 objective
+active/progress; no checkbox/status/archive/mint/push or shortened scope.

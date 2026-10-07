@@ -4,17 +4,17 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest test-only evidence:** predeclaredca8c9b55/test8c364fbd:64 native
-Fiscal/care immediate/late-away error executions pass. No product defect
-in that population and no production edit. Three compiling faults fail/
-restored exactly; full native Garage238/performance1, client9,737/442
-explicitbrowser skips/types/build/boundaries pass. Initial test cleanup
-error disclosed, not product evidence. Whole span after6d700838 through
-this record needs Claude independently; notice exacte950216a..6d700838
-and all earlier ranges remain owed. Native runtime-double proof, not wire/
-real-service/queued-origin/AT/Firefox/all-lane/release acceptance. Docker
-capacity rechecked read-only:0free/100%; no new container population or
-unrelated cleanup. Next predeclare GS0.2 runtime/fetch-double boundary.
+**Latest test-only evidence:** predeclared88ab6bdd/test2d3629ad:21 actual
+runtime/Response.json cases over injected fetch pass, no production repair.
+Four compiling faults fail/restored exactly; final client9,758/442explicit
+browser skips/types/build/boundaries pass. Preceding native238/performance
+belongs to a42406f0, not a fresh rerun. Whole span aftera42406f0 through this
+record needs Claude independently of HTTP-consumer6d700838..a42406f0,
+notice exacte950216a..6d700838 and all earlier ranges. Not actual-service/
+generated-conformance/renewal/queued-origin/AT/Firefox/all-lane/release
+acceptance. Docker remains held by previously measured0free/100%; no new
+container run or unrelated cleanup. Next reconcile remaining GS1–GS6
+acceptance/evidence and choose the next unresolved accepted requirement.
 
 **Latest repair:** `45bf2edb`, predeclared `a8f2a527`, failing-first
 `7cac400d`: RP-326 Fiscal/care outcomes now belong to the submitting panel;
