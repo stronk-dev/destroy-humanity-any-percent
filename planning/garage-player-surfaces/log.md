@@ -5616,3 +5616,58 @@ cleanup. Separately predeclare whole root target/run, preserve original bounds
 and direct-API/setup exceptions. This is not permission for arbitrary SQL/data
 deletion, new full-disk image build, Linux/clean-host/release-artifact substitute,
 RP-313 author-body edit, startup Retry or relaxed owner/full-nine-tier holds.
+
+### RP-361 — unchanged real-service composed target predeclaration
+
+Baselinebbee9805 clean after all RP-359 gates terminal. Read both existing
+drivers fully. Root Make target is unchanged; use make test-game-ui-composed
+without selectors, env overrides, narrower drivers, alternate dependencies or
+weakened oracles. Authority: existing accepted GS5-A4 and Game UI composed
+workflow, registered Cosmetic AC14/G10/Garage care supplements, existing driver
+setup exceptions. This is execution/evidence, not implementation or release call.
+
+Resource preflight:3fcd2c actual healthy container9402b6ad7eb7 named game-ui-
+postgres.7b2f7a DBtmpfs7.7G free while Docker/tmp overlay0/100%;cdf9d6
+host/cache180Gi free.2fdd3b other DB sessions0;18081/18082/5173 listeners absent.
+4e4fb6/8f5e74 running and declared config hashes both
+fac3aad34554a15ff0326d6807c638ccceccc6d4810099fd1bd3779679058063.
+The declared target can reuse that exact service; no new image build/pull or
+general cache/volume deletion. It resets ONLY cloud_clicker_game_ui_test's
+ephemeral public schema, as the existing drivers do. Never operator DBs/volumes.
+
+Inputs pinned8dd3c0:main driver392dba99bb9b023ebb2e162cdfc40d588ba0b44897d29ceb10fc17ff92b35749;
+cosmetic6816b3496e4b34bde76faeda0620404ee3bfdedb489ed79f8df045c0b55b29a5;
+claim oracle6b7b73f152bffee7ca2bd82cd69475a58540244187819108b1b5de21c1d0acd0;
+composeb2cde31b93fa0359205b23d4cec10e2e930bb94c49c0565985d569a68bf6bb6c;
+Make6b15172df578d38b72d9db3f56d3e6ccfc2d0105868f911ece77a266bee02dd5.
+Host/region/theme hashes retained from RP-359; no source changes during run.
+
+Population/success: ALL named stages in both root drivers must finish, Make0,
+real current-host Go/server/HTTP/Postgres/WebSocket/DOM. Existing main driver:
+public epochs/v4 arms, deliberate missed-receipt/recovery, actual DOM transitions,
+both terminal presentations/next-run, DOM manual opportunity acquisition/claim
+bound to actual successor (record observed effect/branch; do NOT infer Lucky if
+buff observed), Fiscal harvest/Pitch unlock, keyboard Pitch terminal receipt and
+Company refresh. Existing second driver: compiled client, test-only cosmetic/
+pet epoch, real Buy/owned reload/adopt/equip/care receipt/public band/reload,
+reduced motion/unequip/unworn reload, existing no-payment/same-origin traps.
+Retain all original setup/clock/attempt/deadline/step bounds, source code and
+fail-on-page-error/network violations. Failure is a finding, never threshold
+relaxation or exclusion. Data setup/direct-API recovery exception remains exactly
+as already authored, not broader gameplay authority.
+
+If healthy run completes, independently sever ONLY the actual mounted host's
+Claim callback (no-op), keep visible Claim and backend/driver/oracle unchanged;
+same root target must fail with no emitted Claim intent at the ruled boundary,
+not a compile error. Wait terminal then restore complete host hash and rerun
+whole healthy root target. Exact native control/oracle source/probe coordinates
+retained; incomplete arm does not count. Observe all process handles to terminal;
+never restart on polling timeout. Driver-owned cleanup only; inspect ports/DB
+sessions afterward. No matching source/HEAD/record edit during live gates.
+
+This is native-host Chromium/current-code proof, NOT Linux/AMD64 release image,
+clean-host R-006, CI green, production epoch all-content, all effect sampler/
+Lucky integration, session15min-expiry, Firefox/AT/400%/whole-era/full-nine-tier
+or independent review proof. No archive/mint/push/cleanup/owner-content/RP-313
+body/startup-ruling changes. Whole bbee9805-exclusive through observation records
+needs Claude; previous69c4f972..bbee9805 and all older spans independently owed.
