@@ -127,6 +127,17 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   fail and sources restore exactly. This is synthetic in-memory integration,
   not all seeds/combo caps, live claim/burst persistence or natural/default mint.
   Original27AC6 failures and independent review obligations remain unchanged.
+  Subsequent [persisted sequence witness](../planning/clout-v1-and-pr-interns/sequence-persistence.md)
+  executes these16 actual Service/Store/Postgres paths with168 logged attempts,
+  168 later retries,32 conflicts,48 exact six-stage write faults and16 event
+  outbox corruption controls. Full receipts/events, twelve-table rollback and
+  retry equality, immutable resources, latest-five retention and all stored
+  transitions to the exact saved head pass. Seven initial identical snapshots
+  are explicit diagnostic padding, not prior gameplay; runs remain OPEN.
+  Actual claim-evidence/lookup/retention mutants fail and restore exactly.
+  This adds bounded live claim/burst persistence proof, not completed-history
+  breadth, natural/default mint, fullCV4 or AC6 acceptance. Independent Claude
+  review, remaining migration/receipt contracts and original27AC6 remain open.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

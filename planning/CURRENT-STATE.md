@@ -4,7 +4,22 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Clout integration checkpoint:** predeclared9974f1d3 at0d866359,
+**Latest Clout persistence checkpoint:** test-onlyfe0e4196 atf038a467, with
+predeclared adapter/outbox corrections. Sixteen real Service/Store/Postgres
+paths pass:168 logged attempts(120applied/48refused),168 later retries,32
+conflicts,48 exact six-stage DB faults and16 event-outbox negatives. Complete
+rows/receipts/events, immutable resources, actual five-snapshot retention and
+all stored transitions to the saved head agree. Seven identical initial rows
+are diagnostic padding; runs remain OPEN. Claim/lookup/retention mutants fail
+on actual properties and restore exactly. Broad production Integration,
+focused12research/integration/noSkip, client9640/340skip/types/vet/build/
+topology pass; cold Go still fails ONLYoriginal27AC6. No product/oldartifact
+byte changed or wholeCI/hosted/AMD64/fullClout/1.0 claim. Next reconcile remaining
+CV4 migration and CV5/AC3 receipt obligations; representation/RP-308 and all
+prior owner/content/platform/review gates remain. Entire newspan afterf038a467
+including records needs Claude. [Evidence/limits](clout-v1-and-pr-interns/sequence-persistence.md).
+
+**Previous Clout integration checkpoint:** predeclared9974f1d3 at0d866359,
 test-only CV3/CV4. All four actual opportunity effects appear in16 continuous
 Go/TS sequences/136 command attempts plus48 unchanged-state claim refusals per
 runtime. Claims, PR2, compute debit/burst, mode switches, expiry, permits and

@@ -1744,3 +1744,45 @@ and16 separately counted transactional corruption controls, and targets the
 late RECEIPT insertion for the sixth fault. No legitimate event dropped, no
 population/production/schema/expected-gameplay-output change. Instrument-only
 correction is predeclared before rerun; no completed persistence claim yet.
+
+### Actual persisted claim/burst sequences — 2026-10-07
+
+Corrected1595/ce7c1e passes8.116s:16 actual Handle/Store/Postgres paths,168
+logged attempts(120applied/48refused),168 later identical retries,32 body-only
+same-ID conflicts,48 exact DB faults and16 corrupt-event-outbox refusals.
+Full twelve-table rollback/retry equality, latest-five actual rows, receipt
+and event outbox payload/identity, immutable resources and all stored logged
+transitions to the exact head pass. Diagnostic seven-snapshot padding is
+explicit; actual retention deletes old rows. Runs remain OPEN/log_gap, not
+claimed completed histories. Earlier adapter/census instrument errors retained.
+
+Compiling claim omission64184/0f44a2 fails1.868s on evidence admission BEFORE
+DB writes; not a claimed successful rollback-stage population. Lookup bypass
+90276/b30b4c fails2.681s on16 later retries(revision_conflict/Replay=false),
+while all48faults execute. Retention omission72787/2a0349 fails.771s on16
+first applies:8actualrows[1,8]not5[4,8]. Restored exactly after terminal handles;
+no residual mutation, compiler/source-pin failure or expected-output restamp.
+
+Final broad production Integration33766/1b9130 passes23.538s; focused
+67854/18f02a executes ALL12research/integration populations/noSkip6.866s,
+newSQL4.70s/exactcensus. Unquoted selector pipe8f326d was a shell launch error,
+not product evidence; quoted rerun executes correctly. Client55740/9cf38a
+9640/340skip;5047/8facb9 types0/vet/build213/topology13controls pass.
+Cold72556/d7fd17 fails ONLYoriginal27AC6production39.331s, economy7.070/
+decimal.244/kernel.160pass. Concurrent durations not performance evidence.
+NativePG16.15arm64, not hosted/AMD64; CI source discovery is not wholeCIgreen.
+Orphan warning not cleanup authority; historicalRP-131 remains unchanged.
+
+sequence-persistence.md retains sources/commands/oracles/failures/limits;
+canonical docs/ledger/currentqueues/roadmap/log reconciled. Next distinct work
+is reconcile remaining accepted CV4 migration-corpus and CV5/AC3 receipt
+obligations before selecting implementation; author/owner contradictions cannot
+be silently inferred away. Representation/RP-308 and all previous product/
+platform/content/independent-review holds remain. Entire newspan afterf038a467
+INCLUDING predeclarations/corrections/records requires Claude. No checkbox/
+acceptance/status/archive/mint/push/deploy/release call. Goalactive/progress.
+
+Final5468cb recomputes the unchanged report SHA and all18 selected source
+hashes,16distinct row IDs/136planned actions, and verifies both log prefixes
+append-only againstf038a467. Complete new test/dossier and all eleven scoped
+path diffs inspected; no production/oldartifact/accepted-body residual diff.

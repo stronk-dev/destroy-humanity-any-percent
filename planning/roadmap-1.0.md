@@ -5,7 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest sequence checkpoint (2026-10-07):** test-only9974f1d3 at0d866359.
+**Latest persistence checkpoint (2026-10-07):** test-onlyfe0e4196 atf038a467.
+Sixteen actual Service/Store/Postgres paths execute168 logged attempts,
+168 later retries,32 conflicts,48 exact six-stage faults and16 corrupt-event
+outbox controls. Complete twelve-table rollback/retry, immutable resources,
+latest-five retention and stored receipts/events/genesis-to-head replay pass.
+Diagnostic seven-snapshot padding is explicit; OPEN runs are not completed
+histories. Initial adapter/outbox errors and failed claim/lookup/retention
+mutants disclosed; production restored exactly. Native fullproduction
+Integration/focused12/client9640/340skip/types/vet/build/topology pass;
+original27AC6/history/AMD64/hosted remain open. No product/oldartifact change.
+Next reconcile remaining accepted CV4 migration and CV5/AC3 receipt obligations,
+not duplicate already recorded evidence. Representation/RP-308 and all prior
+owner/content/platform/review gates remain independent. Whole newspan after
+f038a467 including records needs Claude; no fullClout/natural mint/wholeCI/1.0
+promotion or shortcut. [Evidence/limits](clout-v1-and-pr-interns/sequence-persistence.md).
+
+**Previous sequence checkpoint (2026-10-07):** test-only9974f1d3 at0d866359.
 Sixteen continuous actual Go/TS sequences/136 command attempts span all four
 opportunity effects, claims, PR2, compute debit/burst, mode switching, expiry
 and provision ticks. Forty-eight malformed claims per runtime refuse unchanged.

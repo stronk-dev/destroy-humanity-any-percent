@@ -3944,3 +3944,24 @@ owner/content/review obligations remain. Entire newspan after0d866359 including
 records needs Claude; older spans independent. Full1.0 goalactive/progress,
 no checkbox/status/archive/mint/push/deploy/release call or shortcut scope.
 [Evidence/limits](clout-v1-and-pr-interns/sequence-research.md).
+
+## 2026-10-07 — Actual persisted claim/burst/retry/retention proof
+
+Test-onlyfe0e4196 atf038a467 with predeclared adapter/outbox corrections.
+Actual16 Service/Store/Postgres paths execute168 logged attempts(120applied/
+48refused),168 later retries,32 conflicts,48 exact six-stage faults and16
+event-outbox corruption controls. Full twelve-table rollback/retry, complete
+receipts/events, immutable resources, actual latest-five retention and all
+stored transitions to the saved head pass. Seven initial identical snapshots
+are diagnostic padding; runs remain OPEN, no invented history completion.
+Actual claim/lookup/retention mutations fail and sources restore exactly.
+
+Native broad production Integration/focused12/noSkip/client9640/340skip/types/
+vet/build/topology pass. Cold production still fails ONLYoriginal27AC6;
+historicalRP-131/hosted/AMD64 unresolved. Selector quoting launch error disclosed;
+no product/oldartifact/kernel/RFC/balance/copy/CI change. Next reconcile remaining
+accepted CV4 migration and CV5/AC3 receipt obligations, not duplicate proofs.
+R-012 representation/RP-308 and all prior owner/content/platform/review/release
+gates remain. Whole newspan afterf038a467 including records needs Claude.
+Full1.0 goalactive/progress; no checkbox/status/archive/mint/push/deploy/release
+call or shortened scope. [Evidence/limits](clout-v1-and-pr-interns/sequence-persistence.md).

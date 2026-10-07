@@ -3,6 +3,30 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## CV3/CV4/AC8 persisted claim/burst sequence proof — 2026-10-07
+
+Test-onlyfe0e4196 atf038a467; request/outbox instrument amendments before
+corrected experiments. Actual16 Service/Store/Postgres paths execute168 logged
+attempts,168 later retries,32 conflicts,48 six-stage exact fault sentinels and
+16 event-outbox corruption controls. Complete twelve-table rollback/retry,
+immutable rows, full receipts/events and all recorded transitions to the exact
+saved head pass. Actual retention deletes old snapshots and keeps latestfive;
+seven initial snapshots are explicit diagnostic padding. Runs remain OPEN.
+Compiling live claim/lookup/retention mutants fail on the intended properties
+and restore exactly. Broad production Integration/focused12/noSkip/client9640/
+340skip/types/vet/build/topology pass. Cold production ONLYoriginal27AC6red;
+historyRP-131/hosted/AMD64 unresolved, no wholeCI or fullClout promotion.
+
+**READY next:** reconcile remaining accepted CV4 migration-corpus and CV5/AC3
+receipt obligations against actual consumers and proof. Select a distinct
+accepted implementation lane only after that reconciliation; author-owned
+contradictions remain findings, not inferred contract amendments. R-012
+representation/RP-308 episode meaning and all prior owner/content/platform/
+review holds remain independent. Entire newspan afterf038a467 INCLUDING all
+records needs designated Claude review, older spans independent. No checkbox/
+status/archive/mint/push/deploy/release call or shortened full-nine-tier goal.
+[Evidence/limits](../clout-v1-and-pr-interns/sequence-persistence.md).
+
 ## CV3/CV4 action, claim, buff and mode observation — 2026-10-07
 
 Test-only9974f1d3 at0d866359; instrument amendments recorded BEFORE corrected
@@ -13,7 +37,7 @@ as do omitted-row/forged-event controls; all sources restore exactly.
 Client9640/340skip/types/vet/build/topology/native11 pass. Cold production
 fails ONLY original27AC6; no wholeCI/AMD64/hosted/history repair claim.
 
-**READY next:** separately predeclare actual Service/Store claim/burst persistence,
+**THEN-NEXT (now supplemented above):** separately predeclare actual Service/Store claim/burst persistence,
 retry and recorded history boundaries under accepted CV3/CV4. Prior Exit14fault
 proof is not automatically claim/burst proof. R-012 accumulation representation
 and RP-308 episode-authority gates remain independent and unresolved. Whole

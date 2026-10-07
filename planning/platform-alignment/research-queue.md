@@ -346,7 +346,16 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   two mode paths and provision ticks match full outputs/restores. Instrument
   clock/tick errors disclosed; contribution/burst/census/event controls fail
   and restore exactly. [Evidence/limits](../clout-v1-and-pr-interns/sequence-research.md).
-  Next separately predeclare live Service/Store claim/burst persistence/retry;
+  Subsequentfe0e4196 test-only SQL proof executes16actual Handle/Store paths,
+  168 logged attempts/168 later retries/32 conflicts/48 six-stage faults/16
+  event-outbox corruption controls. Complete twelve-table rollback/retry,
+  immutable resources, actual latest-five retention and all stored transitions
+  to the saved OPEN-run head pass. Diagnostic seven-snapshot padding/initial
+  adapter-outbox errors/claim-lookup-retention failures are explicit. No
+  production/oldartifact change or fullCV4/AC6/natural-mint claim. Next reconcile
+  remaining CV4 migration and CV5/AC3 receipt obligations before selecting a
+  distinct lane. [Evidence/limits](../clout-v1-and-pr-interns/sequence-persistence.md).
+  Earlier live persistence seam now has this bounded witness;
   representation/episode meaning/all-mode/natural-mint breadth remain open.
   The earlier ordinary observer alone is not partition, new representation,
   mode/buff, Service/Store or natural-player proof. The separately declared

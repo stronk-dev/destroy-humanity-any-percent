@@ -838,3 +838,32 @@ The outbox INSERT fault trigger now specifically matches message_kind=receipt,
 so it reaches the late receipt insertion rather than the event trigger's early
 outbox insertion. Retain all48 faults and other original populations. Actual
 event-producing trigger/source schema read directly; no migration/runtime edit.
+
+### Persisted execution and remaining obligations — 2026-10-07
+
+Corrected1595/ce7c1e passes all16 SQL paths:168 logged attempts(120applied/
+48refused),168 later retries,32 conflicts,48 exact six-stage faults and16
+event-outbox corruption controls. Full twelve-table rollback/retry, receipt/
+event outbox identity, immutable resources, actual five-row retention and all
+stored transition receipts/events/genesis-to-head replay pass. Runs stay OPEN;
+no completion/history breadth promotion. Both instrument failures retained.
+
+Compiling live claim64184/0f44a2 fails missing evidence BEFORE writes;
+lookup bypass90276/b30b4c fails all16 late retries after normal commands and
+all48faults; retention omission72787/2a0349 fails all16 first-applied row counts.
+No build/source-pin failure counted; all exact production sources restored.
+Broad production Integration33766/1b9130 pass23.538s. Focused67854/18f02a all12
+research/integration populations/noSkip pass6.866s(newSQL4.70s/exactcensus).
+Selector-launch error8f326d disclosed, corrected quotes execute the full lane.
+Client9640/340skip/types0/vet/build/topology13controls pass; cold72556/d7fd17
+ONLYoriginal27AC6red39.331s; economy7.070/decimal.244/kernel.160pass.
+No hosted/AMD64/wholeCI/performance finding; historyRP-131 stillopen.
+
+sequence-persistence.md records method/source identities, seven-snapshot
+diagnostic padding, genuine retention DELETE, event-versus-receipt populations,
+failures/limits/reproduction. No prior artifact/runtime/kernel/RFC/copy/balance/
+CI change. Next reconcile remaining accepted CV4 migration and CV5/AC3 receipt
+obligations, not add redundant ordinary/Exit evidence. R-012 representation/
+RP-308/owner/author/content/review/release gates independent. Entire span after
+f038a467 including all records needs Claude; no checkbox/status/archive/mint/
+push/deploy/release call. Full1.0 goal active/progress.
