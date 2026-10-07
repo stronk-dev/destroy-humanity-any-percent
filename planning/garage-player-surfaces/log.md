@@ -1161,3 +1161,25 @@ RP-313's author-body conflict and all other holds remain independent.
 Next safe work: predeclare designated diagnostic review of original Claude
 pet consumer `7a61e4b6^..7a61e4b6`, all paths. Existing RP-132/GS4×PA7
 author-wire hold remains; inspecting/measuring does not resolve or bypass it.
+
+## 2026-10-07 — Predeclare original Claude pet-care diagnostic review
+
+Review by: Codex (designated other party). Recorded by: Codex.
+Exact original implementation range: `7a61e4b6^..7a61e4b6`, all eight paths,
+not subsequent CSS/diagnostic/planning edges. Review all line changes against
+accepted GS4, PA7/PA8.5 and Cosmetic §7.4. The original slice explicitly
+limits itself to the existing adoption arm, identity/status/eligible action
+IDs and cosmetic overlay; it does not implement raw stats/cooldown/mood.
+Existing RP-132 and GS4×PA7 author-body conflicts stay binding; no technical
+pass is an author ruling, full GS4 acceptance or approval of the wire shape.
+
+Execute current two original pet browser cases in Chromium/WebKit and the
+original Go adopted-pet fact case cold. These are fixture/primitive checks,
+not real-server care receipt or GS4-A5. Independently sever the care callback,
+Founder-scoped revision, unavailable-action text, overlay and empty-map fact.
+Each compiling probe runs serially with no live-handle edit and exact source
+restoration before the next. A surviving probe is recorded, never hidden or
+turned into success. No copied player content, permanent product change,
+schema/kernel/mint/workflow/status/archive/push or acceptance-box flips.
+Inspect known missing GS4 states/announcements separately from this narrow
+slice; do not claim existing population covers those absent branches.
