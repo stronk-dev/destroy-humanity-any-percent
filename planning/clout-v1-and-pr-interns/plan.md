@@ -964,3 +964,56 @@ receipt object is NEXT separately scoped accepted-CV5 work. DG-B/representation/
 RP-308/owner/content/platform/review holds independent. Full span after7ca728ca
 including all record edges needs Claude; no checkbox/status/archive/mint/push/
 deploy/release call or full1.0 promotion. Goalactive/progress.
+
+## RP-311 — accepted CV5 authoritative receipt projection
+
+Predeclared at clean3868e3d2, no live handles. AcceptedCV5 defines exactly
+{input_kind,input_value,input_cap,cap_reason_key,saturated,contributions:
+[{source_id,upgrade_id,factor}],product}. Raw input_value, clamped factors,
+saturated only ABOVE cap, owned contributions byte-sorted and product through
+the SAME live axis arithmetic/order. No unowned contribution, GameUI-only
+attained/intern rows, Founder read or newly invented formula. No axis object in
+legacy/non-axis snapshots. Both actual Go/TS wireSnapshot producers must emit
+it for admitted Company19; ordinary, refreshed-offer and new-run Exit callers
+must propagate derivation errors, never silently omit or produce null evidence.
+
+NEW RUNTIME scope distinct from completed test-only migration range: private Go
+projection in axis_stack.go, wireSnapshot and its existing callers in intents.go/
+prestige.go, mechanical replay_test signature adaptation, TS wireSnapshot.
+Kernel165→166 in all three mirrors SAME implementation commit, since receipt
+bytes are replay semantics. No save-format/applied migration/new frozen input/
+event/gameplay formula/catalog/balance/copy/API schema/UI/CI/accepted body change.
+AC3/DG-B's identical-career-receipt contradiction stays author-owned; CV5's
+explicit receipt object is not waived. No historical guard repair/history rewrite.
+
+Tests FIRST: Go actual ordinary purchase, refreshed receipt and six actual
+v18→v19 Exit receipts; TS24 actual ordinary and six actual Exit/next-run receipt
+boundaries, independent exact expected shape/known literal factors/product,
+real legacy receipt companions. Direct Go projection table checks empty/one/two
+owned sources, ordering, zero/at/above cap, contrast score and derivation errors;
+above-cap synthetic projection is NOT an admitted full-save/population claim.
+Baseline must fail on the missing object, not compilation/fixture drift.
+Then demonstrate compiling Go/TS producer omission, factor or owned-source
+faults against these exact oracles; retain surviving outcomes honestly. Restore
+mutants AFTER terminal handles, never regenerate artifacts around a mutant.
+
+Explicit full re-observation of ONLY four affected current reports via their
+existing Go generators: logged-policy, terminal, activation and sequence v1.
+Compare against3868e3d2: populations/payloads/inputs/bundles/states/Founder outputs/
+events/refusals/acceptance labels byte/logically unchanged; permitted deltas ONLY
+actual source_sha256 plus derived axis_stack in applied receipt objects and their
+canonical JSON mirrors. No manual restamp of expected transition outputs. Update
+Company migration source SHA ONLY after that real observation; original11legacy/
+4Founder/source metadata remain unchanged. Existing Go/TS COMPLETE old oracles
+stay, no stripping actual outputs for comparison. Historic versions remain in
+Git and logs, not retroactively relabelled as the new producer's evidence.
+
+Root generation switches are necessary explicit env wrappers around existing
+Make targets, NOT around normal tests. Cold relevant Go/save/kernel/economy/
+decimal, full client/types/vet/build/topology, serial native migration then
+production/gameui Integration. Original27AC6 expected red, no tolerance/skips/
+wholeCIgreen/AMD64/hosted/defaultmint/fullClout inference. All canon/ledger/
+queues/roadmap/log and exact self-first-filter range updated. Full newspan AFTER
+3868e3d2 INCLUDING test/predeclaration/record edges needs designated Claude review,
+older spans independent. No checkbox/status/archive/mint/push/deploy/release call.
+Representation/RP-308/owner/content/platform/full-nine-tier obligations remain.

@@ -1684,6 +1684,19 @@ ENTIRE span after0d866359 including all records needs Claude independently;
 earlier spans and owner/content/environment/release holds remain. Goalactive/
 progress; no checkbox/status/archive/mint/push/deploy/release call.
 
+### RP-311 CV5 receipt repair predeclaration — 2026-10-07
+
+Clean3868e3d2, no live handles. Migration proof90e102a8/edge3868e3d2 complete
+locally, independent review still needed. Direct acceptedCV5/body and actual
+Go/TS ordinary/refresh/Exit producers reread; GameUI has extra attained/intern
+rows and cannot discharge this receipt contract. Scope declares private actual
+producer/caller errors, kernel166, tests-first missing-object baseline and
+independent factor/ownership/legacy controls. Four affected report generators
+must execute; allowed delta strictly source pins plus new applied receipt object,
+not states/events/payloads/inputs/populations/mints. Company sourceSHA updates
+only after actual observation. DG-B/AC3 and all prior holds stay independent.
+No experiment/production change yet, no inferred owner amendment or promotion.
+
 Final non-writing observer58247/be57d8 passes0.618s, complete report byte-exact.
 e0de35 checks both append-only logs against0d866359,120applied/16rejected and
 parses all full observed JSON. Full staged sources/doc/record diffs inspected;
