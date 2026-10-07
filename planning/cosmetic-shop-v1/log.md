@@ -1629,3 +1629,20 @@ preference tests/provider command, the declared CSS correction, restored media/c
 canonical docs and truthfully red CI tracking. The intervening `89f220d0` only records the two
 new full-browser failures in their planning logs/shared ledger; no Typer or Arcade code is in
 this Cosmetic range. No designated approval, archival or full original C6 approval is claimed.
+
+## 2026-10-07 — RP-364 Buy boundary diagnostics
+
+- Test-only: passive real pointer/click, request count, HTTP status/failure and host pending
+  trace in the existing driver. No purchase retry, longer deadline, runtime or acceptance change.
+- `node --check` / `git diff --check`: PASS. Whole `make test-game-ui-composed`: PASS three
+  times (357a96→0ac3b4, d80b29→b0c622, restored fa934b→232fcb); each Buy emits one request/200,
+  and each completes persisted ownership, adoption/equip/care/reload and the N5 audit.
+- Temporary test-only route abort: focused driver exits1 (82f7b1→a39457), reporting trusted
+  Buy click, emitted1, no response, `net::ERR_FAILED`, unowned state. Restored driver hash
+  d6f3656a96af1b6bbc1ba2abf413586acac0b28b619fc4b2cef594d709e5956d before final whole pass.
+- RP-364 remains OPEN: original intermittent timeout did not recur; controlled network failure
+  validates diagnostics, not a diagnosis of that timeout. No product fix or reliability claim.
+- Review by: Codex (implementer first filter); Recorded by: Codex. Include this batch after
+  3d60d64a in the Cosmetic cross-party review; no separate routine-record review or archival.
+- Next: preserve this trace for the next recurrence; independent GS2-A4 purchase/event/DOM
+  proof can proceed. Prior author/copy/review/1.0 obligations remain unchanged.

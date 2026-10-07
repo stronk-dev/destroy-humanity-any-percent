@@ -342,9 +342,15 @@ try {
   const websocketEvents = [];
   const pageErrors = [];
   const failedRequests = [];
+  const acquireResponses = [];
+  const isAcquire = (request) => request.method() === "POST" &&
+    new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === "acquire_cosmetic";
   page.on("pageerror", (error) => pageErrors.push(error));
   page.on("requestfailed", (request) => failedRequests.push(`${request.url()}: ${request.failure()?.errorText}`));
   page.on("request", (request) => { requests.push(request); try { assertNetwork(request.url(), "request"); } catch (error) { violations.push(error.message); } });
+  page.on("response", (response) => {
+    if (isAcquire(response.request())) acquireResponses.push({ status: response.status() });
+  });
   page.on("websocket", (socket) => {
     websocketEvents.push({ url: socket.url(), sent: 0, received: 0, closed: false, errors: 0 });
     const state = websocketEvents.at(-1);
@@ -357,6 +363,22 @@ try {
   await page.addInitScript(() => {
     const failures = [];
     globalThis.__cosmeticN5Failures = failures;
+    // Passive input trace: diagnose missed activation without retries, injected
+    // clicks, network bodies/tokens, or changes to the existing action deadline.
+    globalThis.__cosmeticBuyTrace = [];
+    for (const type of ["pointerdown", "pointerup", "click"]) document.addEventListener(type, (event) => {
+      const trace = globalThis.__cosmeticBuyTrace;
+      if (!trace) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const button = target?.closest("button");
+      const main = document.querySelector("main");
+      const item = button?.closest("[data-cosmetic]");
+      trace.push({ type, time: performance.now(), trusted: event.isTrusted,
+        target: target?.tagName ?? null, button: button?.textContent ?? null,
+        disabled: button?.disabled ?? null, connected: button?.isConnected ?? null,
+        cosmetic: item?.getAttribute("data-cosmetic") ?? null, state: item?.getAttribute("data-state") ?? null,
+        surface: main?.getAttribute("data-surface") ?? null, busy: main?.getAttribute("aria-busy") ?? null });
+    }, { capture: true, passive: true });
     const originalFetch = window.fetch;
     window.fetch = (input, init) => {
       const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
@@ -414,13 +436,39 @@ try {
   // A completed server snapshot can precede the Svelte/transport-ready render
   // by a frame. Require the actual control to become actionable, without
   // dispatching a second purchase or treating a disabled button as success.
-  try { await buy.click({ trial: true, timeout: 30_000 }); }
-  catch (error) { throw new Error(`cosmetic AC14 Buy control did not become actionable: ${await shelf.innerText()}`, { cause: error }); }
-  const beforeIntents = requests.filter((request) => request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents" && request.postDataJSON()?.kind === "acquire_cosmetic").length;
-  const appliedResponse = page.waitForResponse((response) => response.request().method() === "POST" &&
-    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === "acquire_cosmetic", { timeout: 30_000 });
-  await buy.click();
-  const response = await appliedResponse;
+  const beforeIntents = requests.filter(isAcquire).length;
+  let phase = "actionability", response;
+  async function buyBoundary() {
+    const dom = await page.evaluate(() => {
+      const events = globalThis.__cosmeticBuyTrace;
+      if (!Array.isArray(events)) throw new Error("cosmetic Buy trace unavailable");
+      globalThis.__cosmeticBuyTrace = null;
+      const item = document.querySelector('[data-testid="cosmetic-shelf"] [data-cosmetic="horse_armor"]');
+      const button = item?.querySelector("button");
+      return { events, state: item?.getAttribute("data-state") ?? null,
+        disabled: button?.disabled ?? null, busy: document.querySelector("main")?.getAttribute("aria-busy") ?? null };
+    });
+    const emitted = requests.filter(isAcquire).slice(beforeIntents);
+    return { phase, dom, emitted: emitted.length, responses: acquireResponses,
+      requestFailures: emitted.map((request) => request.failure()?.errorText ?? null),
+      pageErrors: pageErrors.map((error) => error.message), websocketEvents };
+  }
+  try {
+    await buy.click({ trial: true, timeout: 30_000 });
+    phase = "click";
+    // Handle rejection immediately even if click itself fails first. This
+    // keeps the original response timeout without an unhandled second error.
+    const appliedResponse = page.waitForResponse((value) => isAcquire(value.request()), { timeout: 30_000 })
+      .then((value) => ({ value }), (error) => ({ error }));
+    await buy.click();
+    phase = "response";
+    const result = await appliedResponse;
+    if (result.error) throw result.error;
+    response = result.value;
+  } catch (error) {
+    throw new Error(`cosmetic AC14 Buy boundary failed: ${JSON.stringify(await buyBoundary())}`, { cause: error });
+  }
+  console.log(`cosmetic AC14 Buy boundary: ${JSON.stringify(await buyBoundary())}`);
   const receipt = await response.json();
   if (response.status() !== 200 || receipt.outcome !== "applied" || receipt.event?.kind !== "cosmetic_acquired.v1" || receipt.event?.payload?.cosmetic_id !== "horse_armor" || receipt.event.payload.order_number !== 1) {
     throw new Error(`cosmetic AC14 Buy returned no applied zero-price receipt: ${JSON.stringify(receipt)}`);
