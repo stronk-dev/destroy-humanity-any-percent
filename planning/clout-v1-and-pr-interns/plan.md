@@ -944,3 +944,23 @@ phrase; actual exactObject message is 'save v18 fields are not exact'. Bind
 that exact real admission message before rerun. All5 cases/3negative stages,
 expected outputs/pinned source and other oracles remain unchanged. Both handles
 terminal before editing; no artifact/byte restamp or case filtering.
+
+### Exact migration execution checkpoint — 2026-10-07
+
+All five Company cases execute in public Go/TS consumers, alongside the original
+11legacy/4Founder cases, corpus10/baseline20. Complete positive outputs and three
+negative stages/unchanged-state/corrected companions pass. Missing-row and false
+source-SHA controls fail both readers; compiling actual Go/TS derivation omission
+fails precisely the derived-negative while other four Company cases pass.
+Original source SHA/ALL22 source files and all original case objects unchanged.
+
+Final native DB jobs accidentally overlapped and invalidated each other's data;
+both red observations retained. SAME populations rerun serially: migration
+save.536s, actual activation/persistence companions5.803s/noSkip pass. Final
+client9646/340visibleSkip/types/vet/build/topology pass; cold Go retains ONLY
+original27AC6 production failures. No fullCI/AMD64/hosted proof inferred.
+migration-corpus.md retains failures/commands/method/limits. RP-311's derived
+receipt object is NEXT separately scoped accepted-CV5 work. DG-B/representation/
+RP-308/owner/content/platform/review holds independent. Full span after7ca728ca
+including all record edges needs Claude; no checkbox/status/archive/mint/push/
+deploy/release call or full1.0 promotion. Goalactive/progress.

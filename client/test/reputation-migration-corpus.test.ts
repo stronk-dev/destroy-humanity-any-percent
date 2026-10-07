@@ -8,12 +8,13 @@ import { applyFounderLogged, applyLoggedExit, canonicalJSONString, encodeFounder
 
 describe("R7 shared Founder migration corpus", () => {
   it("requires the complete census, ratchet and byte-pinned source", async () => {
-    expect(migrations.corpus_version).toBe(9);
+    expect(migrations.corpus_version).toBe(10);
     expect(migrations.cases).toHaveLength(11);
     expect(migrations.founder_cases).toHaveLength(4);
-    expect(baseline.minimum_case_count).toBe(15);
+    expect(migrations.company_cases).toHaveLength(5);
+    expect(baseline.minimum_case_count).toBe(20);
     expect(baseline.schema_version).toBe(1);
-    expect([...migrations.cases, ...migrations.founder_cases].map((row) => row.name).sort()).toEqual([...baseline.required_case_names].sort());
+    expect([...migrations.cases, ...migrations.founder_cases, ...migrations.company_cases].map((row) => row.name).sort()).toEqual([...baseline.required_case_names].sort());
     expect(migrations.founder_cases.map((row) => row.name).sort()).toEqual(["founder-v21-nonzero-unlock", "founder-v21-to-v22", "founder-v22-spent-over-level", "founder-v22-unlock-mismatch"]);
     expect(migrations.founder_source.path).toBe("replay/reputation-tree-v1.json");
     const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(sourceRaw)));

@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## CV4/AC7 exact Company migration corpus — 2026-10-07
+
+Test-only36924143 at7ca728ca, reader correction44c0f8a8. Five exact CV4 names
+execute public Go/TS load/replay/Exit and structural/derived/superset refusal
+boundaries. Corpus10/baseline20 preserves11legacy/4Founder/source bytes.
+Missing-row/false-SHA/actual derivation omissions fail; source restored exactly.
+Serial native migrations/activation/persistence, client9646/340skip/types/vet/
+build/topology pass. Invalid overlapping DB jobs are disclosed, not gate proof.
+Original27AC6 remains red, no fullCI/Clout/1.0 promotion.
+
+**READY next:** separately predeclare acceptedCV5 RP-311 applied receipt-derived
+axis_stack producer repair and full Go/TS receipt/corpus compatibility proof.
+Existing GameUI feature arm is NOT this consumer. AC3/DG-B body reconciliation
+belongs to its author; R-012 representation/RP-308 and all owner/content/platform/
+review holds independent. Whole span after7ca728ca INCLUDING records needs
+designated Claude review; no checkbox/status/archive/mint/push/deploy/release call.
+[Evidence/limits](../clout-v1-and-pr-interns/migration-corpus.md).
+
 ## CV3/CV4/AC8 persisted claim/burst sequence proof — 2026-10-07
 
 Test-onlyfe0e4196 atf038a467; request/outbox instrument amendments before
@@ -17,7 +35,7 @@ and restore exactly. Broad production Integration/focused12/noSkip/client9640/
 340skip/types/vet/build/topology pass. Cold production ONLYoriginal27AC6red;
 historyRP-131/hosted/AMD64 unresolved, no wholeCI or fullClout promotion.
 
-**READY next:** reconcile remaining accepted CV4 migration-corpus and CV5/AC3
+**THEN-NEXT (migration supplemented above):** reconcile remaining accepted CV4 migration-corpus and CV5/AC3
 receipt obligations against actual consumers and proof. Select a distinct
 accepted implementation lane only after that reconciliation; author-owned
 contradictions remain findings, not inferred contract amendments. R-012

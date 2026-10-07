@@ -32,9 +32,9 @@ Existing generic latest/sibling reads and transaction clocks are unchanged.
 
 **Company v19** (`LatestCompanyVersion = 19`) extends v18 with `achievements_attained_run` and
 `attainment_score_run`. Both are required at v19 and rejected before v19 and in Founder scope; see
-[Axis stack](axis-stack.md). The migration corpus's modern arm covers Founder
-v21/v22, not Company v19; that schema remains witnessed by
-`TestCompanyV19AttainmentRoundTripAndRejections`.
+[Axis stack](axis-stack.md). The shared migration corpus covers both Founder
+v21/v22 and five Company v18/v19 load/Exit/invalid-state boundaries. Company
+activation occurs only at the actual new-run transition, never merely on load.
 
 The base Company schema is strict v14 JSON, with separately activated v15-v17 overlays. It contains
 the economy, production, Routes, Commons, Prestige, Faction, Guild, and purchasable-content fields
@@ -158,10 +158,10 @@ read the wall clock implicitly. Its `corpus_version` is metadata, not a save ver
 baseline manifest makes required case names and the exact case count a server-test gate, so an
 addition or removal requires an explicit reviewed baseline ratchet.
 
-Corpus v9 retains all eleven legacy case objects byte-unchanged and adds four
+Corpus v10 retains all eleven legacy case objects byte-unchanged and the four
 `founder_cases` for Reputation: v21→v22 new-run activation, v22 overspending,
 v22 unlock-mirror mismatch, and corrupt pre-v22 unlock. The baseline now requires
-all fifteen names. These modern rows reference the existing Go-authored
+all twenty names, including the five Company cases below. These Founder rows reference the existing Go-authored
 Reputation replay corpus by path, source SHA and exact case name; they declare
 input patches and expected Reputation fields, rather than duplicate embedded
 catalogs. Go's external-package `TestFounderReputationMigrationCorpus` strictly
@@ -172,6 +172,18 @@ Structural corruption and the catalog-derived mirror have separate rejection
 boundaries. Missing rows, a false source SHA and unknown modern-row keys fail
 the corpus checks. These are fixture-level proofs, not database migration or
 all-version activation-chain coverage.
+
+Five `company_cases` reference the unchanged, SHA-pinned Axis activation corpus
+and the exact `veteran/online/3114` source. Public Go and TS readers execute
+old-v18 load/Exit/new-v19 activation, pre-activation manual replay through Exit,
+and structural early-field, pinned derived-score and attained-superset refusals.
+Complete Company saves, receipt, Founder carry-output envelope and ordered events
+are compared; each negative has an admitted source and corrected companion.
+The new run resets attainment and then re-attains a purchase; old terminal state
+is not retrofitted. Missing cases, forged source hashes and severed live derived
+checks fail both readers. This uses an unminted next-epoch fixture, not all-version
+coverage, full Founder save encoding, default progression or Clout acceptance.
+[Executed proof and limits](../planning/clout-v1-and-pr-interns/migration-corpus.md).
 
 Founder and Company save versions are independent axes. Exit validates the terminal Company state
 against the current Company revision, then checks the resulting Founder and next-run Company

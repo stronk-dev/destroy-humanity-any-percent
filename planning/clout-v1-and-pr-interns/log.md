@@ -1834,3 +1834,41 @@ exits2:9645clientpass/1new early-field diagnostic mismatch, actual message
 'save v18 fields are not exact', not invented phrase. Plan fixes exact stage
 text, retaining5cases/population/source/expected outputs/other oracles. Both
 terminal; no product finding or green migration claim from these failed runs.
+
+### Actual shared Company migration corpus — 2026-10-07
+
+Corrected46870/788c51 save.277s and56122/b865b4 client9646/340skip pass.
+All five named cases execute real load/Exit/replay and three rejection stages;
+full outputs and unchanged-state/minimally corrected companions bind.
+Missing Company row04d68c fails Go; pnpm wrapper60661 produced no result and
+was explicitly interruptedab5391/exit130, never accepted test evidence. Existing
+full Make26854/377217 then fails both Company and Founder census9643/2.
+Forged ONLY sourceSHA11623/39b215 Go and67146/e08ed4 TS fail. Compiling real
+Go derivation omission80733/c0f5f7 and TS89670/b6657c fail ONLY the exact named
+derived-negative, other four Company cases pass. All mutants/corpus corruptions
+restored AFTER terminal handles; no production or old artifact diff remains.
+
+Orchestration error: final native42533/dcc783 and27272/45b818 accidentally
+overlapped on the SAME disposable DB. Their missing stream/epoch/outbox failures
+are invalid final observations, not newly inferred product defects. Reran SAME
+commands/populations serially:85332/11f907 native migrations save.536s, then
+91919/1600d6 all3actual activation/persistence populations/noSkip5.803s pass.
+These include old14fault Exit and16paths/168attempts/168retries/32conflicts/
+48faults/16outbox controls. No DB cleanup/population/assertion relaxation.
+
+Final90047/79d652 client9646/340visibleSkip,73307/57ec45 types0/vet/build213/
+topology13negative controls pass. Cold18820/eb73c9 production37.414s fails
+ONLY original27AC6; save.275/economy6.119/decimal.229/kernel.174pass. Durations
+not performance evidence. No fullCI/hosted/AMD64/RP-131 repair. Read-only hash
+checkbbc990 used nonexistent artifact_hashes, failed without mutation; corrected
+f54834 verifies actual source_sha256 ALL22 files/source SHA and unchanged
+11legacy/4Founder/source/baseline15. Existing Make names corrected in dossier
+before publishing; no command claimed executed solely from illustrative text.
+
+migration-corpus.md retains complete method/controls/failures/reproduction/limits.
+Canon/ledger/currentqueues/roadmap/log reconciled. Next separately predeclare
+RP-311 accepted-CV5 applied receipt axis_stack producer repair, not reuse GameUI
+feature projection as proof. AC3/DG-B author, R-012 representation/RP-308 and all
+owner/content/platform/fullnine-tier/review holds independent. Entire newspan
+after7ca728ca including all records needs Claude; no checkbox/status/archive/
+mint/push/deploy/release call. All handles terminal; goalactive/progress.

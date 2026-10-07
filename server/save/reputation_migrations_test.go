@@ -77,7 +77,12 @@ func TestFounderReputationMigrationCorpus(t *testing.T) {
 			Path   string `json:"path"`
 			SHA256 string `json:"sha256"`
 		} `json:"founder_source"`
-		Cases []founderMigrationCase `json:"founder_cases"`
+		Cases         []founderMigrationCase `json:"founder_cases"`
+		CompanySource struct {
+			Path   string `json:"path"`
+			SHA256 string `json:"sha256"`
+		} `json:"company_source"`
+		CompanyCases []axisMigrationCase `json:"company_cases"`
 	}
 	strictFounderMigrationJSON(t, data, &table)
 	var baseline struct {
@@ -90,7 +95,7 @@ func TestFounderReputationMigrationCorpus(t *testing.T) {
 		t.Fatal(err)
 	}
 	strictFounderMigrationJSON(t, baselineBytes, &baseline)
-	if table.Version != 9 || len(table.Legacy) != 11 || len(table.Cases) != 4 || baseline.Version != 1 || baseline.Count != 15 || len(baseline.Required) != 15 {
+	if table.Version != 10 || len(table.Legacy) != 11 || len(table.Cases) != 4 || len(table.CompanyCases) != 5 || baseline.Version != 1 || baseline.Count != 20 || len(baseline.Required) != 20 {
 		t.Fatal("incomplete migration population/ratchet")
 	}
 	names := []string{}
@@ -107,6 +112,9 @@ func TestFounderReputationMigrationCorpus(t *testing.T) {
 	for _, row := range table.Cases {
 		names = append(names, row.Name)
 		modernNames = append(modernNames, row.Name)
+	}
+	for _, row := range table.CompanyCases {
+		names = append(names, row.Name)
 	}
 	sort.Strings(names)
 	sort.Strings(baseline.Required)

@@ -53,6 +53,9 @@ type migrationFixture struct {
 	FounderCases  []struct {
 		Name string `json:"name"`
 	} `json:"founder_cases"`
+	CompanyCases []struct {
+		Name string `json:"name"`
+	} `json:"company_cases"`
 }
 
 type migrationCorpusBaseline struct {
@@ -782,9 +785,9 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(baselineData, &baseline); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.CorpusVersion != 9 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
-		len(fixture.Cases)+len(fixture.FounderCases) != baseline.MinimumCaseCount {
-		t.Fatalf("migration corpus version=%d legacy=%d founder=%d total=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), len(fixture.FounderCases), len(fixture.Cases)+len(fixture.FounderCases), baseline)
+	if fixture.CorpusVersion != 10 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
+		len(fixture.Cases)+len(fixture.FounderCases)+len(fixture.CompanyCases) != baseline.MinimumCaseCount {
+		t.Fatalf("migration corpus version=%d legacy=%d founder=%d company=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), len(fixture.FounderCases), len(fixture.CompanyCases), baseline)
 	}
 	caseNames := make(map[string]bool, len(fixture.Cases))
 	for _, vector := range fixture.Cases {
@@ -798,6 +801,14 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	for _, vector := range fixture.FounderCases {
 		if vector.Name == "" || caseNames[vector.Name] {
 			t.Fatalf("missing or duplicate Founder migration case name %q", vector.Name)
+		}
+		caseNames[vector.Name] = true
+	}
+	// Company cases execute in TestCompanyAxisMigrationCorpus at the real
+	// pinned foundation/Exit boundary, never as an automatic legacy migration.
+	for _, vector := range fixture.CompanyCases {
+		if vector.Name == "" || caseNames[vector.Name] {
+			t.Fatalf("missing or duplicate Company migration case name %q", vector.Name)
 		}
 		caseNames[vector.Name] = true
 	}

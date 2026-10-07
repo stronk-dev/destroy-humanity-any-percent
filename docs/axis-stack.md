@@ -137,7 +137,16 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   Actual claim-evidence/lookup/retention mutants fail and restore exactly.
   This adds bounded live claim/burst persistence proof, not completed-history
   breadth, natural/default mint, fullCV4 or AC6 acceptance. Independent Claude
-  review, remaining migration/receipt contracts and original27AC6 remain open.
+  review, remaining receipt contracts and original27AC6 remain open.
+  The [shared Company migration corpus](../planning/clout-v1-and-pr-interns/migration-corpus.md)
+  now executes all five exact CV4 names in public Go/TS readers: actual v18
+  replay/Exit/new-v19 reset/re-attainment, early-field rejection, derived-score
+  rejection and attained-superset rejection. Corpus10/baseline20 preserves the
+  original11legacy/4Founder cases. Missing-row/false-SHA/real derivation-check
+  omissions fail; the native migration lane passes. This is bounded fixture
+  coverage, not fullCV4/Clout acceptance. RP-311 remains: applied receipt
+  snapshots omit the CV5-derived axis_stack object in both runtime producers;
+  the separate GameUI feature projection is not that receipt contract.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

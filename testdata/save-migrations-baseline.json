@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "minimum_case_count": 15,
+  "minimum_case_count": 20,
   "required_case_names": [
     "company v1 balances to v5 canonical route envelope",
     "company v2 production state to v5 route defaults",
@@ -16,6 +16,11 @@
     "founder-v21-to-v22",
     "founder-v22-spent-over-level",
     "founder-v22-unlock-mismatch",
-    "founder-v21-nonzero-unlock"
+    "founder-v21-nonzero-unlock",
+    "company-v18-to-v19-new-run",
+    "company-v19-derived-mismatch-rejected",
+    "company-v19-field-before-version-rejected",
+    "company-v19-attained-not-superset-of-earned-rejected",
+    "pre-activation-run-replays-through-exit"
   ]
 }

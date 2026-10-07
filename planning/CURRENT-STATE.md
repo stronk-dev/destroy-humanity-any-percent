@@ -4,7 +4,20 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Clout persistence checkpoint:** test-onlyfe0e4196 atf038a467, with
+**Latest Clout migration checkpoint:** test-only36924143 at7ca728ca, reader
+corrections44c0f8a8. All five exact CV4 names now execute real Go/TS load/Exit/
+replay and three invalid-state boundaries. Corpus10/baseline20 preserves all
+11legacy/4Founder cases and the SHA-pinned source. Missing-row/false-SHA and
+actual derivation omission controls fail; runtime source restored exactly.
+Serial native migration and activation/persistence companions pass; initial
+overlapped shared-DB observations are invalid and disclosed. Client9646/340skip/
+types/vet/build/topology pass, original27AC6 remain red. No product bytes/fullCI/
+fullClout/1.0 promotion. NEXT separately scope RP-311 accepted-CV5 missing derived
+receipt object; AC3/DG-B/representation/RP-308 and all prior gates independent.
+Entire newspan after7ca728ca INCLUDING records needs Claude.
+[Evidence/limits](clout-v1-and-pr-interns/migration-corpus.md).
+
+**Previous Clout persistence checkpoint:** test-onlyfe0e4196 atf038a467, with
 predeclared adapter/outbox corrections. Sixteen real Service/Store/Postgres
 paths pass:168 logged attempts(120applied/48refused),168 later retries,32
 conflicts,48 exact six-stage DB faults and16 event-outbox negatives. Complete

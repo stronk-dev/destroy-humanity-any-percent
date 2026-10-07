@@ -355,6 +355,14 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   production/oldartifact change or fullCV4/AC6/natural-mint claim. Next reconcile
   remaining CV4 migration and CV5/AC3 receipt obligations before selecting a
   distinct lane. [Evidence/limits](../clout-v1-and-pr-interns/sequence-persistence.md).
+  Subsequently36924143/44c0f8a8 test-only scope supplies the five exact CV4 shared
+  Company migration cases: real Go/TS load/replay/Exit, structural/derived/superset
+  refusals, full outputs and admitted/corrected companions. Corpus10/baseline20
+  preserves original11legacy/4Founder/source. Missing-row/false-SHA/real derived
+  check omissions fail; serial native migration/activation/persistence pass.
+  Overlapped DB observations disclosed and invalidated. Remaining acceptedCV5
+  applied receipt-derived object is RP-311, not a reason to promote R-012's
+  representation/episode/breadth unknowns. [Proof/limits](../clout-v1-and-pr-interns/migration-corpus.md).
   Earlier live persistence seam now has this bounded witness;
   representation/episode meaning/all-mode/natural-mint breadth remain open.
   The earlier ordinary observer alone is not partition, new representation,

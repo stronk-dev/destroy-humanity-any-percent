@@ -3965,3 +3965,20 @@ R-012 representation/RP-308 and all prior owner/content/platform/review/release
 gates remain. Whole newspan afterf038a467 including records needs Claude.
 Full1.0 goalactive/progress; no checkbox/status/archive/mint/push/deploy/release
 call or shortened scope. [Evidence/limits](clout-v1-and-pr-interns/sequence-persistence.md).
+
+## 2026-10-07 — Exact shared Company migration corpus
+
+Test-only36924143 at7ca728ca, corrections44c0f8a8 before corrected observations.
+Five exact acceptedCV4 names execute real public Go/TS load/Exit/replay and three
+rejection stages; full outputs/unchanged-state/corrected companions bind.
+Corpus10/baseline20 preserves11legacy/4Founder/source. Missing-row/false-SHA/
+actual derivation omissions fail; complete runtime/corpus restore verified.
+Initial Founder adapter/error text failures retained. Accidentally overlapped
+native DB jobs invalidated, SAME populations rerun serially and pass. Client
+9646/340visibleSkip/types/vet/build/topology/native migrations+companions pass;
+original27AC6 stays red. No product/fullCI/AMD64/hosted/Clout/1.0 claim.
+Next separately scope acceptedCV5 missing receipt-derived object RP-311;
+AC3/DG-B/representation/RP-308 and all prior gates independent. Whole newspan
+after7ca728ca including all records needs Claude. Goalactive/progress; no
+checkbox/status/archive/mint/push/deploy/release call or shortcut scope.
+[Evidence/limits](clout-v1-and-pr-interns/migration-corpus.md).

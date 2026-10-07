@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest persistence checkpoint (2026-10-07):** test-onlyfe0e4196 atf038a467.
+**Latest migration checkpoint (2026-10-07):** test-only36924143 at7ca728ca,
+reader corrections44c0f8a8. All five accepted Company migration names execute
+real Go/TS load/Exit/replay and three refusal boundaries; corpus10/baseline20
+preserves11legacy/4Founder/source. Missing-row/false-SHA/runtime derivation
+omissions fail and source restores exactly. Serial native migrations and prior
+activation/persistence companions pass; overlapping shared-DB failures disclosed.
+Client9646/340skip/types/vet/build/topology pass; original27AC6 stays red.
+Next separately scope RP-311's acceptedCV5 derived applied receipt object,
+not equivalent GameUI fields. AC3/DG-B/representation/RP-308 and all prior gates
+remain independent. Entire newspan after7ca728ca including records needs Claude;
+no product/fullCI/Clout/1.0/archival/release promotion or reduced full-game scope.
+[Evidence/limits](clout-v1-and-pr-interns/migration-corpus.md).
+
+**Previous persistence checkpoint (2026-10-07):** test-onlyfe0e4196 atf038a467.
 Sixteen actual Service/Store/Postgres paths execute168 logged attempts,
 168 later retries,32 conflicts,48 exact six-stage faults and16 corrupt-event
 outbox controls. Complete twelve-table rollback/retry, immutable resources,
