@@ -1806,3 +1806,20 @@ CV4 migration-corpus and CV5/AC3 receipt obligations against actual contracts.
 Owner/author/representation/RP-308/content/platform/release holds unchanged.
 All handles terminal; proper full1.0 goalactive/progress. No checkbox/status/
 archive/mint/push/deploy/release call or goal completion.
+
+### Exact CV4 Company migration predeclaration — 2026-10-07
+
+Resumed clean7ca728ca/no live handles. Previous goal turn PROGRESS, actual SQL
+proof09aeb13a/edge7ca728ca. AcceptedCV4 promises five absent names; corpus9
+currently11legacy/4Founder/baseline15. Plan declares real Go/TS Company consumers
+inside native migration lane, existing SHA-pinned activation source, exact
+20case ratchet, public load/Exit/replay/structural-derived-superset controls,
+full outputs and discrimination. No experiment/product change yet. One patch
+context rejection wrote nothing (status verified); corrected planning edit
+only, no experiment or evidence inferred from that tooling error.
+
+RP-311 filed immediately: actual Go/TS wireSnapshot and committed full receipt
+keys526059/4865fb confirm absent CV5-derived axis_stack. GameUI feature arm
+does not discharge applied receipt contract. Separate accepted-CV5 lane after
+TEST-ONLY corpus work. DG-B/owner-author body holds remain independent.
+Goalactive/progress; no checkbox/status/archive/mint/push/deploy/release call.

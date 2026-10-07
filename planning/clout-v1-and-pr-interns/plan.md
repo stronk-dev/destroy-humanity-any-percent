@@ -867,3 +867,62 @@ obligations, not add redundant ordinary/Exit evidence. R-012 representation/
 RP-308/owner/author/content/review/release gates independent. Entire span after
 f038a467 including all records needs Claude; no checkbox/status/archive/mint/
 push/deploy/release call. Full1.0 goal active/progress.
+
+## CV4/AC7 — exact shared Company migration corpus
+
+Predeclared at clean7ca728ca. Previous goal turn PROGRESS: persisted proof
+09aeb13a/recordedge7ca728ca. AGENTS/RFC-0000/entire accepted Clout reread.
+TEST-ONLY scope: five exact CV4-named cases in save-migrations.json, baseline
+15→20/corpus9→10. Preserve ALL11legacy/4Founder case and source bytes, update
+their test-only readers' complete census without removing any assertion/case/
+strict field check. No product/save format/migration body/kernel/numeric/balance/
+copy/API/CI/RFC/body amendment, new production export or old artifact refresh.
+
+Source: existing axis-stack/activation-research-v1.json SHA
+b185b69dc7bebdedc6f69f3267a20d1de4a846451a6527c98fcf105102363f3f,
+selected row veteran/online/3114, actual epoch8v18→UNMINTEDv19. Company arm
+declares source_case/source_state/operation/from+expected versions/input_patch/
+error_stage. Exact names: company-v18-to-v19-new-run,
+company-v19-derived-mismatch-rejected,company-v19-field-before-version-rejected,
+company-v19-attained-not-superset-of-earned-rejected,
+pre-activation-run-replays-through-exit. Full20 distinct names equal baseline,
+not merely≥minimum. SHA/source-case/state/operation/patch/stage checks are closed.
+
+Go external save_test uses actual public RestoreState→pinned foundation
+validation→ApplyLogged/ApplyLoggedExit, so make validate-migrations executes
+Company cases in its owning save package without cycles. TS executes actual
+public restore/replay with complete pinned catalogs, not a name-only arm.
+Loading old Company18 stays18/no attainment; only actual Exit creates19 empty
+set/score. Compare COMPLETE Exit receipt/terminal+new Company/Founder/three
+ordered event streams, then BOTH new actions continuously to full receipts/
+events/saves/restores. Preactivation case starts before oldmanual, compares its
+complete result then Exit on old semantics. No short-sequence completed-history
+verifier, natural acquisition or automatic load-time18→19 migration invented.
+
+Negative stages: early fields fail structural admission; score3 on real score2
+v19 postpurchase decodes then fails pinned derivation; superset patch on same
+source sets earned=[generators_purchased_1]/earned_score2, attained=[]/score0,
+so only the superset invariant fails. Go typed errors/stage messages and TS
+specific errors bind, raw input unchanged. Each negative has admitted source
+and minimally corrected companion; unknown/missing patches/operations fail.
+
+Demonstrate omitted Company row/forged source SHA refusal and compiling actual
+Go/TS derived-check omission mutants failing the named derived-negative case
+at its real boundary, not compiler/source-pin errors. Restore exact only AFTER
+each handle terminal. No record/source edits during live tests. Initial failures
+must be classified/disclosed; predeclare instrument corrections before rerun,
+retain all cases/expected semantics. No source restamp around a mutant.
+
+Cold save+production Go, full client/types/vet/build/topology, native
+validate-migrations and focused activation/persistence companions; full cold
+production still exposes27AC6red. Publish dossier/canon/ledger/queues/roadmap/log
+with proof; ENTIRE newspan after7ca728ca including all records needs Claude,
+older spans independent. No hosted/AMD64/fullCI/minted/default journey/fullCV4
+orClout claim, checkbox/status/archive/mint/push/deploy/release call. Full1.0
+goalactive. Representation/RP-308 and previous owner/content/platform holds stay.
+
+Separate RP-311 finding: acceptedCV5 requires derived axis_stack in applied
+receipt snapshots, but BOTH actual wireSnapshot producers/committed activation
+receipts omit it. GameUISnapshot.features.axis_stack is a different surface.
+Record now; separately scope accepted-CV5 repair after migration work. DG-B's
+identical-receipt author contradiction does not waive CV5 or authorize body edits.
