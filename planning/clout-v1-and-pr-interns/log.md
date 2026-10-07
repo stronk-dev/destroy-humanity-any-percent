@@ -1786,3 +1786,23 @@ Final5468cb recomputes the unchanged report SHA and all18 selected source
 hashes,16distinct row IDs/136planned actions, and verifies both log prefixes
 append-only againstf038a467. Complete new test/dossier and all eleven scoped
 path diffs inspected; no production/oldartifact/accepted-body residual diff.
+
+### Persisted sequence range self first-filter
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `f038a467..09aeb13a`, all eleven paths/four commits:
+fe0e4196 predeclaration,132d2925 request correction,6c3c4173 outbox correction,
+then09aeb13a actual SQL test/dossier/canonical records. Full test and records
+inspected; live failures/rollback/retries/retention executed above,18 unchanged
+source hashes/report SHA and both append-only log prefixes checked separately.
+No existing assertion removed, production/oldartifact/kernel/catalog/RFC/copy/
+workflow diff or remaining mutant. Original27AC6 remains red, no hidden skip.
+
+Decision: bounded persisted claim/burst/retry/retention evidence locally
+validated, NOT designated approval, fullCV4/Clout/AC6/CI/1.0 acceptance.
+Claude must independently review ENTIRE newspan afterf038a467 INCLUDING this
+record edge; older review spans remain independent. Next reconcile remaining
+CV4 migration-corpus and CV5/AC3 receipt obligations against actual contracts.
+Owner/author/representation/RP-308/content/platform/release holds unchanged.
+All handles terminal; proper full1.0 goalactive/progress. No checkbox/status/
+archive/mint/push/deploy/release call or goal completion.
