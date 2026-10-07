@@ -139,11 +139,18 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   - the pending opportunity, with its effect presentation row and the attended seconds remaining as
     of the last snapshot (never a wall-clock countdown);
   - live buffs;
-  - the combo hardcap text whenever the kernel clamp saturates.
+  - the combo hardcap label and projected number while live buffs are present,
+    plus the saturation explanation when the kernel clamp saturates.
   
   Claim sends a Company-scoped `claim_opportunity`. An applied receipt's `receipt.opportunity`
   evidence shows the lucky credit, and the `cap.cash` reason when saturated. Expired and gone
-  claims map to typed notices. The UI never sends a synthetic command to cause a spawn. A spawn is
+  claims map to typed notices. A buff receipt's non-null cap reason remains visible
+  even if the successor snapshot has no live capped buffs; this is receipt evidence,
+  not a claim that the current buff product is still saturated. Claim has an explicit
+  zero Tab index: native Tab from the manual button reaches it in Chromium and
+  WebKit, then Enter or Space activates the normal Company intent. Focus is not
+  moved on spawn. The idle witness observes an actual minute of native timers,
+  not a display-clock jump. The UI never sends a synthetic command to cause a spawn. A spawn is
   announced politely once per `opportunity_id` while the Desk is mounted.
 - **Pet (GS4):** a nav tab unlocked by `feature.pets`, which the server sets true only when an adopted
   pet exists. It renders the PA7 projection only: name, status band text, and one button per

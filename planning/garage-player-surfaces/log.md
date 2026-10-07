@@ -830,3 +830,80 @@ masked this. RP-315 now records that actual product defect as well. Narrow
 repair: explicit zero Tab index on Claim, existing keys/Amount for combo number
 and past buff receipt reason. No positive index, forced focus, browser setting,
 keyboard API, timing policy, new player prose, schema or kernel change.
+
+### Corrected Desk baseline and counterexamples, predeclared
+
+The corrected native population passes 40/40 across Chromium/WebKit, including
+both actual 60-second observations (suite 63.93s), native Tab/Enter/Space,
+cap receipt/number, existing axe/reflow, plus default performance. Full client
+9,691/343 explicit browser skips, TS/Svelte zero, build/boundaries pass. Original
+copy delta was mechanically inspected: 41 additions, zero existing-row changes,
+the Go key set agrees with no removals/non-key structure change, and all 115
+candidate rows match generated rows. Original type/file/manifest hash mirrors
+agree at `3a890004…46860`; no candidate adoption is inferred. Current complete
+copy/history/manifest gate passes at 658 keys/611 orphan warnings; topology's
+13 negatives pass. The independent real-server rerun claims `active.production`
+after 17 manual clicks, zero expiries, and both drivers exit zero. Neither run
+exercises Lucky. A read-only process-inspection attempt was denied by sandbox;
+the retained live command handle was polled normally to terminal completion.
+
+RP-316 executable isolated probe evaluates the unchanged actual
+`witnessOpportunityClaim` function body (no duplicate reimplementation), with
+a Lucky receipt and a **null** next snapshot. It returns success after both
+page observations. This confirms the oracle gap, not an actual server payout
+defect or integration proof. Driver source remains exact at `c6c52404…6c84a`.
+
+Before final correction closeout, independently sever each new presentation
+path: suppress buff-receipt reason, omit only the cap Amount while retaining
+its label, and make Claim's Tab index negative. Selected native tests must
+fail, admitted controls may survive. One compiling probe at a time, corrected
+region SHA `5ee8223a…e6516` restored after each. No screenshot/timeout/viewport/
+browser setting or assertion changes. Final complete native run remains the
+actual required minute, never the old 400ms shortcut.
+
+### Desk consumer designated verdict and narrow correction checkpoint
+
+**Review by:** Codex (other party, original Claude changes only).
+**Recorded by:** Codex. **Reviewed range:** `f32f6175^..f32f6175`, every one
+of its fourteen paths: generated catalog/hash/types, GameUIApp,
+OpportunityRegion, presentation JSON/parser, opportunity receipt adapter,
+Garage browser tests, composed driver, Garage candidate copy, orphan inventory,
+deployment manifest and generated Go keys. **Verdict: CHANGES REQUIRED**,
+RP-314/315/316. RP-313 producer-body hold remains separate. Source and all
+generated deltas were inspected; original 41-key additions agree mechanically,
+with zero existing catalog changes/Go removals and all 115 candidate rows
+matching generated rows. This is not owner adoption of copy or pet placeholders.
+
+Executed baseline and failing-first evidence appears above. The original idle
+instrument survives a delayed command; the replacement catches it. Original
+Lucky acceptance survives a null next snapshot in the isolated actual-function
+probe. Two real composed runs instead exercise admitted buff arms, not Lucky.
+The original keyboard instrument masks an actual WebKit focus defect. Cap
+receipt evidence and numeric hardcap were missing in both engines.
+
+After the narrow region correction, independent compiling faults produce:
+receipt-reason suppression: 2 failures / 6 selected passes; cap Amount omission
+with label retained: 2 failures / 6 passes; negative Claim Tab index: 4 failures
+/ 4 passes. Each has 32 explicit selector skips and exits nonzero on the
+intended assertions, not compilation/timeout. All faults removed, corrected
+region SHA `5ee8223a531430fb1256e53f73a2a05e15020ccfef81dd8d7d4a70f2b18e6516`.
+Unchanged composed driver SHA `c6c524046f4aa97649095f2f894e9da2a3ce26ca173cf545b08e6d2197a6c84a`.
+Final full native run: 40/40 Chromium/WebKit, 63.75s, both actual-minute cases;
+default isolated performance 1 pass/22 explicit skips. Earlier corrected-source
+client/types/build/boundaries and full copy/manifest/topology gates pass as
+recorded above. Nothing claims hosted CI, Firefox, AT or full Garage acceptance.
+
+**Review by:** Codex (implementer, self first-filter ONLY).
+**Recorded by:** Codex. New correction span starts after `d90aded7` and includes
+`8a5d0def`, `d4798d77`, this region/docs/record change and every later tracking
+edge through its exact final coordinate. Local first-filter approves the
+bounded receipt/cap/keyboard/timer correction, NOT RP-316's unchanged oracle.
+Claude must inspect the full range, including records; this original-code
+verdict cannot serve as independent review of Codex's correction. No box,
+acceptance/lifecycle/status, content/hash mint, archive, push or deployment.
+
+RP-317 is additionally filed from source: the accepted unknown-opportunity
+pair loses its invariant flag in the surface mapping and the host ignores
+invariant notices. This is separate next test-first work, not an unannounced
+host change in the current region repair. Safe continuation: predeclare
+RP-316's snapshot proof and/or RP-317's diagnostic tests under accepted GS5.

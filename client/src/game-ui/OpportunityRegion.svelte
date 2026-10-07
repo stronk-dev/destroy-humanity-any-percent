@@ -32,11 +32,14 @@
     <p>{t(row.description_key, {}, era)}</p>
     <p>{t("desk.opportunity.remaining_frame", { seconds: seconds(offer.expires_attended_ms) }, era)} <small>{t("desk.opportunity.attended_note", {}, era)}</small></p>
     {#if offer.effect_row_id === "active.lucky"}<small>{t("desk.opportunity.lucky_tooltip", {}, era)}</small>{/if}
-    <button type="button" disabled={pending || !controlsEnabled} onclick={() => onClaim(offer.opportunity_id)}>{t("desk.opportunity.claim", {}, era)}</button>
+    <button type="button" tabindex="0" disabled={pending || !controlsEnabled} onclick={() => onClaim(offer.opportunity_id)}>{t("desk.opportunity.claim", {}, era)}</button>
   {/if}
   {#if lastClaim && lastClaim.credited !== null}
     <p>{t("desk.opportunity.lucky_frame", { amount: lastClaim.credited }, era)} <Amount value={lastClaim.credited} {era} /></p>
     {#if lastClaim.saturated}<p>{t("desk.opportunity.lucky_capped", {}, era)} {capText(lastClaim.capReasonKey) ?? ""}</p>{/if}
+  {/if}
+  {#if lastClaim && lastClaim.credited === null && lastClaim.capReasonKey !== null}
+    <p>{capText(lastClaim.capReasonKey) ?? ""}</p>
   {/if}
   {#if arm && arm.buffs.length}
     <h3>{t("desk.buffs_label", {}, era)}</h3>
@@ -46,6 +49,7 @@
         {#if row}<li><span>{t(row.title_key, {}, era)}</span> <span>{t("desk.buff.remaining_frame", { seconds: seconds(buff.expires_attended_ms) }, era)}</span></li>{/if}
       {/each}
     </ul>
+    <p>{capText(arm.combo.reason_key) ?? ""} <Amount value={arm.combo.cap} {era} /></p>
     {#if arm.combo.saturated}<p>{t("desk.buff.combo_capped", {}, era)} {capText(arm.combo.reason_key) ?? ""}</p>{/if}
   {/if}
 </section>
