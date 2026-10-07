@@ -2092,3 +2092,19 @@ disclosed; neither accepted as complete evidence or implementation authority.
 Decision: bounded mask primitive VERIFIED LOCALLY, not designated approval.
 All handles terminal, source restored; no checkbox/status/archive/mint/push/
 deploy/release call. Long-term full-nine-tier goalactive/progress.
+
+### CV10 full-range review coordinate
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `64f836c2..4509257c`, two commits/all eleven paths:
+41dd8c9f predeclaration/map and4509257c test/canon/ledger/queue/records.
+Exact complete test diff inspected8f8314; full record/canon diff867027 and
+range map/plan/log/ledger a98338. 8a9fbd independently checks exact path
+allowlist and unchanged full log prefixes against64f836c2. No runtime/kernel/
+oldcorpus/balance/CI byte changed. All normal/probe/final handles terminal,
+source restored and cold fullproduction retains only original27AC6failures.
+Decision: bounded mask proof locally verified; NOT designated approval.
+Claude must inspect ENTIRE newspan after64f836c2 INCLUDING this coordinate
+edge; prior receipt/migration/persistence and other ranges remain separate.
+Next GarageGS0.3 pending exact-range review, not unruled harness construction.
+No checkbox/status/archive/mint/push/deploy or release/goal completion claim.
