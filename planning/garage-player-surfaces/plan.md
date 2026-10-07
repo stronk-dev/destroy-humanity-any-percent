@@ -7,7 +7,25 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-358 announcement authority/replay proof, test-only under
+Latest bounded work: RP-359 four-effect/refusal proof, test-only undereb6e7e8d/
+7bf9d286/a531bdeb.20 native executions at320/1280 across four registered and
+one unknown pending row; actual public parser, native Tab/Enter-Space, exact
+Company2/opportunity-only requests, three distinct live buffs/times, combo cap,
+Lucky curtain and unknown offer/description withholding+diagnostic. Twelve
+valid source faults discriminate/restored; RP-360 initial cap-space instrument
+mismatch corrected/excluded. Final native818/four isolated-performance skips
+plus performance2/client9816/711 browser skips/types0/unchanged build/copy/
+boundaries/topology/no-payment pass. No product defect or product bytes changed.
+Whole69c4f972-exclusive through final records needs Claude; earlier ranges
+independent. Next: separately predeclare unchanged host-native composed root
+target after verified existing tmpfs DB7.7G free/no sessions and host180Gi free;
+Docker image/build overlay still0/100%, not blanket proof this route is blocked.
+No reset of operator data, Linux/release-artifact substitution, RP-313 author
+body/copy/CI/cleanup/startup ruling or lifecycle promotion. Real-service rerun,
+SQL/Firefox/AT/400%/all-era/state/platform/privacy/numeric/endings/owner/review
+and full-nine-tier1.0 holds stay explicit until actually proven.
+
+Preceding bounded work: RP-358 announcement authority/replay proof, test-only under
 639bf480/90b3cc7b with supplemental value controls70bbe82c. Twelve declarations/
 24 native executions cover six paths/two widths/two engines: exact registered
 spawn/buff text, off-Desk withholding, ID/cursor replay, native focus and event

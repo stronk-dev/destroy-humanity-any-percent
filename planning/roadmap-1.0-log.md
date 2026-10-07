@@ -4863,3 +4863,32 @@ RP-313 author-body hold. Real acquisition/payout/expiry/auth/composed/SQL/
 Firefox/AT/400%/full-state/era/platform/privacy/numeric/endings/capacity/review/
 owner release gates remain. Goal remains full-nine-tier1.0, active, no shortcut
 preview, cleanup/startup ruling, publication or self-archival inferred.
+
+## 2026-10-07 — Four-effect presentation/refusal proof and capacity distinction
+
+RP-359 test-onlyeb6e7e8d/7bf9d286/a531bdeb:20 actual native cases across four
+registered/one unknown pending effect,320/1280,Chromium/WebKit. Three distinct
+projected buff titles/times, cap value/reason, registered offer copy, native
+Company2/ID-only Claim and Lucky curtain; unknown offer/description withheld,
+diagnostic exact. Twelve actual faults fail12/12/20/20/16/16/4/4/4/20/20/4,
+restored exact full hashes. RP-360 first cap-whitespace instrument mismatch
+corrected/excluded, not a product bug or softened prefix assertion.
+
+Final restored ata531bdeb clean:clientcc79db→e3c07d9816pass/711 browser-only
+skips/types0/build214/unchanged hashes/boundaries/static topology/no-payment.
+Nativea67674→1af965818pass/four isolated-performance skips,134.08s/real60s
+idle; performance2pass1.82s. Copy1e42a4→4ea73b658/sameSHA/611 old orphans/
+current manifest unchanged. All terminal before tracking edits. No production
+change or defect fired. Codex first filter only, designated Claude owes complete
+69c4f972-exclusive through records; all older spans independently owed. No
+plan boxes/lifecycle/body/archival/mint/push/release promotion.
+
+Read-only capacity check distinguishes actual resource paths: Docker image/tmp
+overlay0 available/100%, but existing named game UI test DB tmpfs7.7G free,
+host/cache180Gi free, no other DB sessions or target listeners. Both current
+composed drivers build on host and use that existing test service. Thus full
+Linux/image/SQL-container work remains held, but a blanket host-native composed
+hold is not established. Next: separately predeclare unchanged whole root
+composed target, no narrower workflow/backend/bounds/reset of operator data.
+Actual service/fixture-vs-release-artifact/Firefox/AT/400%/all-era/state/RP-313/
+privacy/platform/numeric/endings/review/owner/full-nine-tier1.0 holds remain.

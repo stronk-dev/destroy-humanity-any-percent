@@ -3,6 +3,28 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Four-effect/refusal checkpoint — 2026-10-07
+
+RP-359 test-onlyeb6e7e8d/7bf9d286/a531bdeb.20 native executions cover four
+registered/one unknown pending row ×320/1280 ×Chromium/WebKit. Exact registry
+bindings, distinct projected buff values/cap, Company2 native request, Lucky
+curtain and unknown offer/description withholding+diagnostic;12 actual faults
+discriminate/restored. RP-360 initial whitespace instrument corrected/excluded.
+Full native818/four isolated-performance skips plus performance2/client9816/711
+browser skips/types0/unchanged build/copy/boundaries/topology/no-payment pass.
+No production bug fired or behavior/copy/schema/CI/budget change.
+
+**READY FOR CLAUDE:** entire69c4f972-exclusive through containing final records,
+including predeclaration/test/refinement/record edges. Prior10e2d656..69c4f972
+and all older spans independently owed; no self-archival.
+**NEXT safe accepted work:** predeclare unchanged host-native composed root
+target. Read-only checks show existing test DB tmpfs7.7G free/no sessions and
+host180Gi free; Docker/tmp overlay0/100% still blocks disk-dependent image/
+Linux work, but is not evidence this host+existing-service route cannot run.
+No weakened workflow, alternate backend, operator DB reset, cleanup or CI change.
+RP-313 author body, release artifact/clean-host/SQL/Firefox/AT/400%/all-era/
+platform/privacy/numeric/endings/review/owner/full-nine-tier1.0 holds remain.
+
 ## Desk announcement checkpoint — 2026-10-07
 
 RP-358 test-only scope639bf480/tests90b3cc7b/supplement70bbe82c. Twelve

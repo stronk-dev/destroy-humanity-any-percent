@@ -5,7 +5,23 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-358 Desk announcement/replay proof,
+**Latest bounded work (2026-10-07):** RP-359 four-effect/refusal proof, test-only
+eb6e7e8d/7bf9d286/a531bdeb.20 native Chromium/WebKit executions at320/1280
+cover all four registered pending presentations, three distinct live buffs,
+exact Company2/native request, Lucky curtain and unknown offer/description
+withholding+diagnostic. Twelve valid faults discriminate/restored; RP-360 initial
+whitespace instrument excluded. Final native818/four isolated-performance skips
+plus performance2/client9816/711 browser skips/types0/unchanged build/copy/
+boundaries/topology/no-payment pass. No product defect or product change.
+Whole69c4f972-exclusive through records needs Claude; older spans independent.
+Next: predeclare unchanged host-native composed root target. Existing tmpfs test
+DB7.7G free/no sessions and host180Gi free verified; full Docker/tmp overlay
+still0/100%, not evidence every integration route is unavailable. No smaller
+workflow/backend/CI/cleanup/artifact substitute. Real acquisition/payout/expiry/
+auth/SQL/Firefox/AT/400%/all-era/state/platform/privacy/numeric/endings/RP-313
+author-body/capacity/review/owner/full1.0 holds remain. No lifecycle/push/mint.
+
+**Preceding bounded work (2026-10-07):** RP-358 Desk announcement/replay proof,
 test-only639bf480/90b3cc7b/supplement70bbe82c.24 native Chromium/WebKit
 executions across six paths/320-1280 pass; distinct admitted messages make
 replay falsifiable. Off-screen spawn/buff withholding, native focus and

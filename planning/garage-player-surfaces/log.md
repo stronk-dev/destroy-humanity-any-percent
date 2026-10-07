@@ -5545,3 +5545,74 @@ builds is verified, but it does NOT alone establish that this existing host-
 native composed target is blocked. Inspect named test DB activity/driver scope,
 then separately predeclare its unchanged root-target run; no smaller workflow,
 oracle, backend, CI, release-artifact substitute or reset of operator data.
+
+### RP-359 — final restored proof and first filter
+
+All12 actual faults complete with Make2/child1, no syntax-crash/partial-run
+substitution. First11 use the typed20-case driver7bf9d286; last strengthens
+the unknown-description-only oracle ata531bdeb, same20 population. Each waits
+for its terminal handle before exact-context restoration and full four hashes.
+
+| Source fault | Fail / positive controls | Launch → terminal | Restore |
+|---|---|---|---|
+| Wrong pending title |12 /8|bf9613→960f64|e7cafd|
+| Wrong pending description |12 /8|7ebac7→ccdc91|747a00|
+| Wrong live buff title |20 /0|4dbdb2→e72b0f|890bbd|
+| Wrong committed seconds |20 /0|fbbf1d→9ea216|014b21|
+| Wrong Claim opportunity ID |16 /4|3cbad2→17f90b|62796d|
+| Company scope bound to Founder |16 /4|457cfd→84d4e8|4f02d0|
+| Unknown offer exposed with valid fallback |4 /16|f76380→49dce9|f7aa97|
+| Unknown diagnostic omitted |4 /16|fa90e4→534634|956554|
+| Lucky curtain omitted |4 /16|70d49b→4f66f7|60401b|
+| Valid wrong rendered combo cap1e3 |20 /0|82c42f→16d0d3|07650f|
+| Valid wrong rendered cap.cash label |20 /0|fa3198→4418f2|2029c3|
+| Unknown description leak, Claim still withheld |4 /16|d61b5c→307a95|4294f7|
+
+Pending title/description mutants leave Production/unknown controls green.
+Buff/time mutants fail the exact initial three-row matrix; they do not separately
+sever every later pending-time assertion. Unknown fallback retains diagnostic
+and uses a valid row so no undefined-row crash masquerades as refusal evidence.
+Description-only leak retains both guard and diagnostic, fails the new full
+paragraph list; known16 controls pass. This verifies consumers against the
+existing presentation registry, not independent authored mapping correctness.
+Native Enter at320/Space at1280 proves Company2, not Founder7 or initial1;
+it does not claim the full activation×width Cartesian product or live expiry.
+
+Final four SHA hashes from96655e/4294f7:
+host432a27995e7d93b5e5c88ed138dbd990ec46e8106ae501671f634a6d37978b1f;
+region6b229ec67153a68ea38898728109b72e2d473fc6f9175a32952dc76c20688e73;
+driver11463a93ad14de0cea37976fb7c9f55afe8bab28936fba888bf36f0224ca2c83;
+themee58746774afc28a0ea5c7a72d95887a92d4eab5b2d3445428f037827cf6c59c2.
+No production difference from69c4f972. All final root gates run ata531bdeb
+clean (80f7eb); no matching source/HEAD/record edit until all terminal:
+
+- client/types/build/boundaries/static-CI-topology/no-paymentcc79db→e3c07d
+  exit0:105 files9816pass/22 files711 explicit browser-only skips,zero errors/
+  warnings,214 modules. WorkerMqspU_iu/CSSDaRqgLww/UID7RYyJ6Z unchanged.
+- full Garage+Game UIa67674→1af965 exit0:818pass/four isolated-performance
+  skips,134.08s with real60s idle; separate performance2pass/22unselected1.82s.
+  Native raw output truncated in places; complete terminal totals retained,
+  not an invented full transcript or exclusion of failing cases.
+- copy1e42a4→4ea73b exit0:658 keys,unchanged
+ a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+ 611 pre-existing orphan warnings,current deployment content manifest unchanged.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Inspected full
+69c4f972-exclusive..a531bdeb (eb6e7e8d,7bf9d286,a531bdeb):public-admitted
+fixtures/exact consumer/natively activated intent/unknown/refinement oracles,
+declarations, RP-360 instrument correction and actual source controls/results.
+No product behavior/copy/schema/CI/dependency/kernel/balance edits or scope
+overrun. NOT a designated verdict; whole69c4f972-exclusive through containing
+records needs Claude, every older range independently owed. No checkbox/body/
+status/archival/mint/push/owner/release promotion.
+
+Next accepted work is integrated evidence, not another assumed capacity hold:
+read-only2fdd3b finds no other connection in the explicitly named temporary
+game UI DB; ports18081/18082/5173 absent. Existing DBtmpfs7.7G/host180Gi free,
+Docker image/tmp overlay0/100% independently verified. Both unchanged composed
+drivers fully inspected: host Go builds, current UI, real Postgres/socket/DOM;
+only their named ephemeral test DB resets and task-owned temporary fixture
+cleanup. Separately predeclare whole root target/run, preserve original bounds
+and direct-API/setup exceptions. This is not permission for arbitrary SQL/data
+deletion, new full-disk image build, Linux/clean-host/release-artifact substitute,
+RP-313 author-body edit, startup Retry or relaxed owner/full-nine-tier holds.
