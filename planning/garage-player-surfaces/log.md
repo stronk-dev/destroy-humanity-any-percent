@@ -5487,3 +5487,31 @@ budget/owner text/status/archival/mint/push change. Whole69c4f972-exclusive
 through final records needs designated Claude review, all prior spans independent.
 RP-313 author body, capacity/real composed/auth/SQL/Firefox/AT/400%/all-era/
 whole-state/platform/privacy/numeric/endings/full-nine-tier/owner holds remain.
+
+### RP-359 first instrument run — RP-360 cap-string mismatch
+
+Typesd4c50e→4babd4 exit0, zero errors/warnings. Native dcc631→a7bd6c Make2:
+20fail/754unselected,4.24s. All fixtures admitted and initial/distinct buff
+assertions pass, but first whole cap paragraph expectation lacks the unchanged
+Svelte/Amount trailing space (actual "Boost combo cap 10.0 K "). This is an
+instrument expectation error, not a product defect; later row/Claim/refusal
+checks had not executed. Correct the exact expected bytes, retain exact output
+and whole paragraph comparisons. No toContain/trim bypass or source/copy change.
+Simplify mechanical sorted UUID suffix to(index+10).toString(16); same IDs.
+All handles terminal before correction; rerun unchanged20 population/types.
+
+### RP-359 — healthy typed population and cap controls before probes
+
+Corrected driver180ada→b9e3d4 Make0:20pass/754unselected,3.74s; separate
+performance2pass/22unselected,2.26s. Types9a366d→33067e clean. Known four
+rows bind registered title/description, distinct buff matrix and native exact
+Company2 intents; unknown pending row withholds Claim/spawn and reports exactly
+the existing invariant. No product defect fired; RP-360 mismatch excluded.
+
+Add BEFORE any source probe two independent controls for the combo hardcap
+assertions: replace the rendered cap with valid canonical1e3 (not1e4), and
+replace the registered cap label with valid cap.cash. Each must complete the
+unchanged20 population with assertion failures and exact hash restoration.
+These supplement the nine already predeclared controls, not product changes,
+numeric policy changes or new copy. No matching gate handle now live. Final
+full restored root gates and designated-review range remain mandatory.

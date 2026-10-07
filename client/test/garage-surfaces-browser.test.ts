@@ -2,7 +2,7 @@ import axe from "axe-core";
 import { flushSync, mount, tick, unmount } from "svelte";
 import { expect, it, vi } from "vitest";
 
-import type { GameUISnapshot } from "../src/api/generated/types";
+import type { GameUIOpportunityArm, GameUISnapshot } from "../src/api/generated/types";
 import { t, type CopyKey } from "../src/copy";
 import { isLiveSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { decodeGameUIAnnouncement, decodeGameUIEvent } from "../src/game-ui/events";
@@ -1665,6 +1665,82 @@ const withOpportunity = (arm: ReturnType<typeof opportunityArm> | null): GameUIS
 function regionIndex(target: HTMLElement): number {
   const desk = target.querySelector("section.desk")!;
   return [...desk.children].findIndex((child) => child.getAttribute("data-region") === "desk.region.opportunity");
+}
+
+// RP-359: all registered pending presentations, distinct live buff rows and
+// an unknown pending row. Public fixtures, not actual issuance or payouts.
+function effectPresentationSnapshot(effectID: string | null, revision = 1): ParsedGameUISnapshot {
+  const arm: GameUIOpportunityArm = { attended_now_ms: 2_000,
+    combo: { cap: "1e4", reason_key: "cap.active_combo", saturated: false },
+    buffs: ["active.building", "active.click", "active.production"].map((effect_row_id, index) => ({
+      buff_instance_id: `01986666-0000-7000-8000-00000000000${(index + 10).toString(16)}`,
+      effect_row_id, expires_attended_ms: 6_000 + index * 1_000,
+      selected_target: effect_row_id === "active.building" ? "generator.beige_tower" : null,
+    })),
+    pending: effectID === null ? null : { effect_row_id: effectID, expires_attended_ms: 5_500,
+      opportunity_id: "01986666-0000-7000-8000-000000000001",
+      selected_generator_id: effectID === "active.building" ? "generator.beige_tower" : null },
+  };
+  const base = withOpportunity(opportunityArm(false, false));
+  return parseGameUISnapshot({ ...base, revision, features: { ...base.features, opportunity: arm } });
+}
+
+for (const effectID of ["active.building", "active.click", "active.lucky", "active.production", "active.unregistered"] as const) {
+  for (const width of [320, 1280] as const) {
+    it.skipIf(!browser)(`GS5 effect presentation ${effectID}/${width}`, async () => {
+      const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+      const runtime = new Runtime(); runtime.current = effectPresentationSnapshot(null);
+      runtime.outcome = { outcome: "rejected", category: "not_eligible", detail: "opportunity_expired", currentRevision: 2, sessionExpired: false };
+      const diagnostic = vi.spyOn(console, "error").mockImplementation(() => {});
+      let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+      try {
+        fixture = await mounted(runtime); const { target } = fixture;
+        expect([...FEATURES_PRESENTATION.opportunityEffects.keys()]).toEqual(["active.building", "active.click", "active.lucky", "active.production"]);
+        const region = target.querySelector<HTMLElement>(".opportunity")!, position = regionIndex(target);
+        const manual = target.querySelector<HTMLButtonElement>("section.manual button")!; manual.focus();
+        const buffs = () => [...region.querySelectorAll(".buffs li")].map((node) => [...node.querySelectorAll("span")].map((span) => span.textContent));
+        const expectedBuffs = ["active.building", "active.click", "active.production"].map((id, index) => [
+          t(FEATURES_PRESENTATION.opportunityEffects.get(id)!.title_key, {}, "era_1995"),
+          t("desk.buff.remaining_frame", { seconds: 4 + index }, "era_1995"),
+        ]);
+        expect(buffs()).toEqual(expectedBuffs); expect(target.querySelector(".announcement")?.textContent).toBe("");
+        const next = effectPresentationSnapshot(effectID, 2);
+        runtime.current = next; runtime.listener?.({ kind: "snapshot", value: next }); await settle();
+        expect(regionIndex(target)).toBe(position); expect(document.activeElement).toBe(manual);
+        expect(buffs()).toEqual(expectedBuffs);
+        sharedStateVisibleText(region, "output", formatAmount("1e4"));
+        expect(region.querySelector("output")!.closest("p")?.textContent).toBe(`${t("cap.active_combo", {}, "era_1995")} ${formatAmount("1e4")} `);
+        expect(runtime.requests).toEqual([]);
+        const row = FEATURES_PRESENTATION.opportunityEffects.get(effectID);
+        if (!row) {
+          expect(region.querySelectorAll("button,input,select,textarea")).toHaveLength(0);
+          expect([...region.querySelectorAll("h3")].map((node) => node.textContent)).toEqual([t("desk.buffs_label", {}, "era_1995")]);
+          expect(target.querySelector(".announcement")?.textContent).toBe("");
+          expect(diagnostic).toHaveBeenCalledExactlyOnceWith("game UI invariant: unknown opportunity effect active.unregistered");
+        } else {
+          sharedStateVisibleText(region, "h3", t(row.title_key, {}, "era_1995"));
+          sharedStateVisibleText(region, "p", t(row.description_key, {}, "era_1995"));
+          const remaining = region.querySelectorAll("p")[1]!;
+          expect(remaining.childNodes[0]?.textContent).toBe(`${t("desk.opportunity.remaining_frame", { seconds: 4 }, "era_1995")} `);
+          expect(remaining.querySelector("small")?.textContent).toBe(t("desk.opportunity.attended_note", {}, "era_1995"));
+          expect(remaining.closest('[role="status"],[aria-live]')).toBeNull();
+          const curtain = [...region.querySelectorAll("small")].filter((node) => node.textContent === t("desk.opportunity.lucky_tooltip", {}, "era_1995"));
+          expect(curtain).toHaveLength(effectID === "active.lucky" ? 1 : 0);
+          sharedStateVisibleText(target, ".announcement", t("desk.opportunity.spawned_announcement", { effect: t(row.title_key, {}, "era_1995") }, "era_1995"));
+          const claim = button(region, t("desk.opportunity.claim", {}, "era_1995"));
+          await userEvent.keyboard("{Tab}"); await settle(); expect(document.activeElement).toBe(claim);
+          await userEvent.keyboard(width === 320 ? "{Enter}" : " "); await settle();
+          expect(runtime.requests).toEqual([{ intent_id: expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u),
+            kind: "claim_opportunity", opportunity_id: "01986666-0000-7000-8000-000000000001", expected_revision: 2 }]);
+          sharedStateVisibleText(target, ".intent-notice", t("desk.opportunity.rejection.expired", {}, "era_1995"));
+          expect(document.activeElement).toBe(claim); expect(claim.disabled).toBe(false);
+          expect(diagnostic).not.toHaveBeenCalled(); expect(buffs()).toEqual(expectedBuffs);
+        }
+        expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth);
+        await assertAxe(target, `effect ${effectID}/${width}`);
+      } finally { try { if (fixture) await fixture.dispose(); } finally { diagnostic.mockRestore(); await page.viewport(1280, 720); } }
+    });
+  }
 }
 
 // RP-358: decoded publication is announcement authority, never projection
