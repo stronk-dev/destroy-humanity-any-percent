@@ -945,3 +945,31 @@ through this guard/test/docs/record commit needs designated review; earlier rang
 separate. Diff inspected, handles terminal, no acceptance checkbox, pin refresh, archive,
 push or release promotion. Next: remaining accepted API DTO/route integration and coherent
 review ranges, not reinterpretation of the open numeric or owner decisions.
+
+## 2026-10-07 — historical catalog immutable-byte source
+
+Outcome: implement the C3/C11/C12 database source for the missing catalogs path. Only
+epoch-accepted hashes are public; return exact stored artifacts in name order with per-artifact
+digests, and validate the full length-framed bundle identity. One statement binds authorization
+and bytes. No filesystem fallback, new wire schema, runtime HTTP route, kernel/balance change
+or product mint. Formula availability and owner schema validation remain the later consumer's
+responsibility, not grounds to fabricate current bytes under an old hash.
+
+Coverage: focused native6201 passes the source controls (DB test explicitly skips). Real
+Postgres61786 executes the new catalog integration and controls. Final cold95228
+`make test-save-integration SAVE_TEST_PACKAGES='./leaderboard ./publicread'
+SAVE_TEST_FLAGS='-v'` PASSes both complete affected packages, including mint/reconciliation,
+board/projector/evidence and public HTTP regressions. Selected vet27212 PASS. Exact byte
+and digest/order checks cover the committed set, a test-only newer formula-bearing epoch,
+historical retrieval after that mint, repeat reads after caller mutation, and one hash accepted
+by multiple epochs. Unknown/unaccepted/missing/corrupt sets, hash-matching invalid JSON/UTF-8,
+extra/duplicate artifacts, cancellation and interrupted rows refuse without partial evidence.
+No severing ceremony or unrelated browser/production suite needed for this new read-only
+boundary; no public HTTP/TypeScript verifier or hosted CI result claimed. The fixture mint
+neither edits release data nor proves replay-loader support for formulas.
+
+Review by: Codex (implementer diff/first filter); Recorded by: Codex. Entire range after
+`d2cc6709` through this source/tests/docs/record commit needs designated review. Prior review
+debt remains separate. All handles terminal before records/commit; no archival/push. Next:
+artifact-owner descriptors and the catalog HTTP binding, then the real public third-party
+verification loop; C9/304 and full API/1.0 acceptance stay open.

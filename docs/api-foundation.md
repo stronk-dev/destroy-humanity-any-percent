@@ -226,7 +226,7 @@ carries cache/content-hash metadata.
 `catalog_url`, `constants_hash`, `engine_version`, `genesis_sha256`, `genesis_url`,
 `replay_log_sha256`, `replay_log_url`, `run_id`, `verdict`. The only verdict is `verified`.
 URLs are relative public API paths; hashes use `sha256:` prefixes. The catalogs URL names
-the run's pinned constants, never current constants. Its reader is still unavailable.
+the run's pinned constants, never current constants. Its HTTP reader is still unavailable.
 Genesis version is present in the archive rather than an extra manifest field.
 
 `genesis` serves the original stored JSON as `application/json`; `replay-log` serves the
@@ -261,6 +261,29 @@ existing archive encoder embeds the stored JSON value compactly; endpoint/storag
 remains byte-exact. This does not prove cross-epoch catalog retrieval, a public TypeScript
 verification journey, or the complete third-party loop without database-supplied catalogs.
 
+### Historical catalog database source
+
+`leaderboard.Repository.PublicCatalog` now supplies the exact stored artifact set for an
+epoch-accepted constants hash, including historical epochs. It reads acceptance and bytes in
+one statement snapshot; a stored but unaccepted set is indistinguishable from an unknown hash
+(`ErrUnknownPublicCatalog`). Multiple epochs accepting the same hash do not duplicate artifacts.
+
+The internal bundle carries the constants hash and artifacts sorted by name, each with its
+original bytes and `sha256:` digest. It recomputes the bundle identity using the existing
+length-framed constants-hash authority. Missing, additional or altered bytes, invalid names,
+duplicate names, invalid UTF-8 or malformed JSON fail as `ErrInvalidPublicCatalog`; database
+and interrupted-row errors propagate without returning partial evidence. Returned buffers do
+not alias the source. The reader neither consults current filesystem catalogs nor generates
+formulas. A historical set lacking formulas remains exactly that set.
+
+These are internal byte sources, not registered wire DTOs. The real-Postgres test retrieves
+the committed artifact set, mints a test-only newer formula-bearing set through the epoch
+repository, and retrieves both identities without substituting newer bytes into the older one.
+It also checks unaccepted sets, corrupt/missing accepted evidence and cancellation. The test
+mint does not modify the product manifest or authorize a release mint; it does not establish
+that the replay loader supports the formula-bearing set.
+
 The catalog HTTP reader, remaining generated-client caller migration and full public
-TypeScript verification loop remain open. The C18 catalog union waits for every artifact owner's exact descriptor, and
-historical formulas never fall back to current bytes.
+TypeScript verification loop remain open. The C18 catalog union still requires each artifact
+owner's exact descriptor; the formula artifact needs a protocol-compliant product mint and
+replay-loader integration. No open JSON wire arm or current-formula fallback is introduced.

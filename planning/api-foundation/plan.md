@@ -2,12 +2,13 @@
 
 RFC: `rfc/api-foundation.md`
 
-Current checkpoint (2026-10-07): compatibility guard corrections RP-383/RP-384 locally pass
-the old-behavior regressions and affected API packages/vet/generator check. Optional-to-required
-response promotion and one-unit int64 constraint narrowing are rejected; committed OpenAPI,
-TypeScript and compatibility-pin bytes are unchanged. Designated review remains. Public catalog
-descriptors, remaining route/client registration, third-party verification and 304 metadata are
-still open; this is not full API acceptance or green hosted CI. Latest log owns the exact range.
+Current checkpoint (2026-10-07): the historical catalog database source is implemented and
+locally verified against real Postgres; accepted identities return exact stored artifacts,
+not newer files, and corrupt/unaccepted evidence refuses. This does not mount the catalog
+HTTP reader or mint product formulas. RP-383/RP-384 compatibility guard corrections also pass
+locally; generated OpenAPI/TypeScript/pin bytes remain unchanged. Catalog owner descriptors,
+remaining route/client registration, third-party verification, 304 metadata and designated
+reviews stay open; not full API acceptance or green hosted CI. Latest log owns exact evidence.
 
 - [x] Reconcile C1–C17 into the active A1–A8 contract.
 - [x] Implement the closed schema-descriptor DSL and operation registry foundation.
@@ -15,7 +16,10 @@ still open; this is not full API acceptance or green hosted CI. Latest log owns 
 - [x] Implement strict operational API config and shared request/cache/limiter middleware.
   - [x] Resolve C20's limiter/proxy/key-ID/request-ID literals.
 - [ ] Register public DTOs/readers and raw verification evidence endpoints.
-  - [ ] Resolve C18's artifact descriptor.
+  - [ ] Export and compose C18's ruled owner artifact descriptors.
+  - [x] C3/C11/C12 database source: accepted-hash authorization, exact bytes/digests/order,
+    bundle identity validation and real-Postgres historical/refusal cases
+    (`TestPublicCatalogIntegration`; no HTTP/formula mint or replay-verification claim).
   - [x] Resolve C19's raw response arm.
   - [x] C14 repository source: board-record authorization, exact immutable bytes/pinned metadata,
     hash consistency and real-Postgres refusal tests.
