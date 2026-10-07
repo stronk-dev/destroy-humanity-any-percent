@@ -420,3 +420,34 @@ failure, enabled-click/handler-severing failure, restored production bytes and r
 positive runs are first-filter evidence only. Claude's designated cross-party review must cite
 this exact range plus this coordinate record before the Garage/Minigame archival gates can consume
 the correction. No production source or owner-authored text changed.
+
+## 2026-10-07 — Original GS0.3 designated review: scope and counterexamples
+
+**Review by:** Codex. **Recorded by:** Codex. Original Claude range:
+`301728c8^..301728c8`, all fourteen changed paths inspected, including candidate
+copy, generated consumers, orphan list, manifest and the plan/log edges. Current
+baseline is `7aab0e2e`; later Fiscal/buff, lifecycle/recovery and Codex corrections
+are separate ranges, not absorbed by this review. No full Garage verdict or
+archival is authorized by this bounded review.
+
+**Predeclared execution:** run the retained runtime announcement population and
+native Chromium/WebKit Garage browser population cold, including consumed-offset
+and same-revision/new-offset replay, host duplicate suppression and off-surface
+badge clearing. Native Firefox remains an independently open execution boundary.
+Compare the two original event decoders with the actual server payload validator.
+The browser meter decoder visibly omits the server's direction/value relation
+(RP-312); verify with four invalid tuples: up/equal, up/decreasing, down/equal,
+down/increasing. Legal increasing/decreasing values, including 0/100 boundaries,
+must survive. Exercise the malformed publications through the actual runtime
+callback: no announcement; one authoritative-resync notice, socket closure,
+cleared position and fetched snapshot, with cleanup of the subscription.
+
+**Repair boundary:** tests first, then only the meter direction predicate under
+accepted GS0.3 (same payload domains as `server/save/intent.go`). No wire/schema,
+server, balance, copy, receipt, generic cursor or auth-policy change. Verify an
+exact compiling omission restores the failures, then restore source byte-exact.
+For the original replay witnesses, bypass the actual runtime delivery gate and
+host cursor guard separately; record legitimate surviving controls and any
+invalid instrument attempt. Do not infer real-server achievement acquisition,
+all-engine accessibility, later decoder acceptance, full CI or release proof.
+New Codex tests/repair/records require Claude's designated exact-range pass.
