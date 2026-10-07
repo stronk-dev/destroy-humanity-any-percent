@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## RP-311 CV5 applied receipt producer repair — 2026-10-07
+
+Separate79285a14 scope at3868e3d2, actual red03f513ef, kernel166. Real Go/TS
+ordinary/refresh/Exit receipt producers emit exact CV5 object with owned sorted
+contributions/live product; errors propagate, legacy bytes unchanged. Compiling
+omission/ownership/factor controls fail, legitimate survivors disclosed. Four
+reports actually re-observed, ONLYsource pins and receipt object changed.
+Client9678/340skip/types/vet/build/topology/SERIALnative migrations+production/
+gameui pass; ONLYoriginal27AC6red, no wholeCI/Clout/release promotion.
+
+**READY next:** reconcile residual accepted Clout acceptance criteria, then
+select a distinct unblocked accepted implementation lane. AC3/DG-B body belongs
+to its author; R-012 representation/RP-308 episode contract and owner mint/copy
+cannot be inferred or implemented from this repair. Full newspan after3868e3d2
+INCLUDING record edges needs Claude; all prior review/platform/owner holds stay.
+No checkbox/status/archive/mint/push/deploy/release call or shorter release scope.
+[Evidence/limits](../clout-v1-and-pr-interns/receipt-projection.md).
+
 ## CV4/AC7 exact Company migration corpus — 2026-10-07
 
 Test-only36924143 at7ca728ca, reader correction44c0f8a8. Five exact CV4 names
@@ -13,7 +31,7 @@ Serial native migrations/activation/persistence, client9646/340skip/types/vet/
 build/topology pass. Invalid overlapping DB jobs are disclosed, not gate proof.
 Original27AC6 remains red, no fullCI/Clout/1.0 promotion.
 
-**READY next:** separately predeclare acceptedCV5 RP-311 applied receipt-derived
+**THEN-NEXT (producer supplemented above):** separately predeclare acceptedCV5 RP-311 applied receipt-derived
 axis_stack producer repair and full Go/TS receipt/corpus compatibility proof.
 Existing GameUI feature arm is NOT this consumer. AC3/DG-B body reconciliation
 belongs to its author; R-012 representation/RP-308 and all owner/content/platform/

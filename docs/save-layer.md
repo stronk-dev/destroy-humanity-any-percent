@@ -173,7 +173,7 @@ boundaries. Missing rows, a false source SHA and unknown modern-row keys fail
 the corpus checks. These are fixture-level proofs, not database migration or
 all-version activation-chain coverage.
 
-Five `company_cases` reference the unchanged, SHA-pinned Axis activation corpus
+Five `company_cases` reference the SHA-pinned Axis activation corpus
 and the exact `veteran/online/3114` source. Public Go and TS readers execute
 old-v18 load/Exit/new-v19 activation, pre-activation manual replay through Exit,
 and structural early-field, pinned derived-score and attained-superset refusals.
@@ -184,6 +184,9 @@ is not retrofitted. Missing cases, forged source hashes and severed live derived
 checks fail both readers. This uses an unminted next-epoch fixture, not all-version
 coverage, full Founder save encoding, default progression or Clout acceptance.
 [Executed proof and limits](../planning/clout-v1-and-pr-interns/migration-corpus.md).
+RP-311's later receipt producer repair fully re-observes that source under
+kernel166 and updates only its migration sourceSHA; case population and save/
+event/input outputs stay unchanged. [Receipt evidence](../planning/clout-v1-and-pr-interns/receipt-projection.md).
 
 Founder and Company save versions are independent axes. Exit validates the terminal Company state
 against the current Company revision, then checks the resulting Founder and next-run Company

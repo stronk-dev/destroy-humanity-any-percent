@@ -2462,8 +2462,21 @@ function wireSnapshot(state: ReplayState, catalog: EconomyCatalog): unknown {
       expires_attended_ms: state.pendingOpportunity.expiresAttendedMs, effect_row_id: state.pendingOpportunity.effectRowId, selected_generator_id: state.pendingOpportunity.selectedGeneratorId },
     active_buffs: state.activeBuffs.map((value) => ({ buff_instance_id: value.buffInstanceId, effect_row_id: value.effectRowId, selected_target: value.selectedTarget,
       activated_attended_ms: value.activatedAttendedMs, expires_attended_ms: value.expiresAttendedMs })) });
-  if (state.wireVersion >= 19) Object.assign(snapshot, { achievements_attained_run: [...state.achievementsAttainedRun!].sort(byteCompare), attainment_score_run: state.attainmentScoreRun });
+  if (state.wireVersion >= 19) Object.assign(snapshot, { achievements_attained_run: [...state.achievementsAttainedRun!].sort(byteCompare), attainment_score_run: state.attainmentScoreRun,
+    axis_stack: wireAxisStack(state, catalog) });
   return snapshot;
+}
+// CV5 receipt arm: uses the same clamped factors and ordered product as rates.
+function wireAxisStack(state: ReplayState, catalog: EconomyCatalog): unknown {
+  const axis = catalog.axisStack;
+  if (axis === null) throw new RangeError("axis receipt without pinned axis stack");
+  const { x, saturated } = axisInput(state, catalog);
+  const contributions = catalog.upgrades.filter(upgrade => state.upgradesOwned.has(upgrade.id)).flatMap(upgrade =>
+    upgrade.effects.flatMap(effect => effect.slot === "axis_stack" ? [{ source_id: effect.sourceId, upgrade_id: upgrade.id,
+      factor: countPpmFactor(x, effect.factorPpm) }] : [])).sort((a, b) => byteCompare(a.source_id, b.source_id));
+  const product = contributionFactorForTarget(catalog, "all", contentContributions(state, catalog).filter(value => value.slot === "axis_stack"));
+  return { input_kind: axis.input, input_value: axis.input === "achievement_attainment_run" ? state.attainmentScoreRun : state.achievementScoreRun,
+    input_cap: axis.inputCap, cap_reason_key: axis.capReasonKey, saturated, contributions, product: canonicalString(product) };
 }
 function provisionedHardcaps(catalog: EconomyCatalog): Record<string, { count: number; reason_key: string }> { return Object.fromEntries(catalog.generatorClasses.filter((value) => value.provisionedHardcap !== null).sort((a, b) => byteCompare(a.id, b.id)).map((value) => [value.id, { count: value.provisionedHardcap!.count, reason_key: value.provisionedHardcap!.reasonKey }])); }
 export function canonicalJSONString(value: unknown): string { if (value === null || typeof value !== "object") return JSON.stringify(value); if (Array.isArray(value)) return `[${value.map(canonicalJSONString).join(",")}]`; const object = value as Record<string, unknown>; return `{${Object.keys(object).sort(byteCompare).map((key) => `${JSON.stringify(key)}:${canonicalJSONString(object[key])}`).join(",")}}`; }

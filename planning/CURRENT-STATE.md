@@ -4,7 +4,22 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Clout migration checkpoint:** test-only36924143 at7ca728ca, reader
+**Latest Clout receipt checkpoint:** separate RP-31179285a14 at3868e3d2,
+tests-first03f513ef. Real ordinary/refreshed/Exit receipt producers now emit
+the exact CV5-derived object, propagate errors, preserve legacy bytes; kernel166.
+Red baseline and compiling omission/ownership/factor controls discriminate;
+four reports re-observed with ONLY source pins and new receipt object, not game
+states/events/inputs/populations. Client9678/340skip/types/vet/build/topology/
+serial native migrations+production/gameui pass; ONLYoriginal27AC6 stays red.
+Next reconcile residual accepted Clout criteria and select a distinct unblocked
+accepted lane. AC3/DG-B/representation/RP-308/owner/content/platform holds remain;
+whole newspan after3868e3d2 INCLUDING records needs Claude, older spans independent.
+No fullClout/wholeCI/AMD64/hosted/mint/release promotion.
+Re-executed kernel-history gate still fails at historical50a3a514/RP-131;
+the new semantic bump does not cure that independent CI blocker.
+[Evidence/limits](clout-v1-and-pr-interns/receipt-projection.md).
+
+**Previous Clout migration checkpoint:** test-only36924143 at7ca728ca, reader
 corrections44c0f8a8. All five exact CV4 names now execute real Go/TS load/Exit/
 replay and three invalid-state boundaries. Corpus10/baseline20 preserves all
 11legacy/4Founder cases and the SHA-pinned source. Missing-row/false-SHA and

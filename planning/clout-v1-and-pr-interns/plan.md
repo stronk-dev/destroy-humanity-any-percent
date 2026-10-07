@@ -1017,3 +1017,33 @@ queues/roadmap/log and exact self-first-filter range updated. Full newspan AFTER
 3868e3d2 INCLUDING test/predeclaration/record edges needs designated Claude review,
 older spans independent. No checkbox/status/archive/mint/push/deploy/release call.
 Representation/RP-308/owner/content/platform/full-nine-tier obligations remain.
+
+### RP-311 execution checkpoint
+
+Actual missing-object red baseline fires7Go/30TS paths. Both producers now emit
+closed CV5 object, propagate errors and preserve legacy receipts; kernel166.
+Direct bounds/owned-order/product/contrast/errors and public ordinary/Exit tests
+pass. Compiling omission/ownership/factor faults discriminate, legitimate empty/
+fully-owned survivors retained; initial noncompiling factor probe not evidence.
+All four reports re-observed,228receipt-object/JSON additions; ONLY source pins
+and axis objects differ. Complete states/events/inputs/bundles/populations unchanged.
+Migration sourceSHA updated AFTER observation, cases/baseline unchanged.
+
+Client9678/340skip/types/vet/build/topology/native migration then broad real
+production/gameui Integration pass. Cold host Go ONLYoriginal27AC6red, no fullCI/
+AMD64/hosted claim. receipt-projection.md retains commands/errors/controls/limits.
+Whole newspan after3868e3d2 including records needs Claude. Next reconcile
+remaining accepted Clout criteria and choose a distinct unblocked accepted lane,
+not repeat this proof or implement unruled numeric/policy/content contracts.
+Author/owner/representation/RP-308/platform/full-nine-tier holds independent;
+no checkbox/status/archive/mint/push/deploy/release call. Goalactive/progress.
+
+### Refresh-specific oracle refinement before extra control
+
+Self-inspection found the happy refresh assertion would tolerate a no-op because
+the ordinary receipt already carried the correct axis8. Tighten ONLY its input
+receipt to a stale valid-shaped axis0, retaining actual transition state8 and
+expected output8. This requires the REAL refresh to replace it. Predeclare a
+compiling noop refresh control; negative error/unchanged-receipt check stays.
+No production/observed corpus output change; cold focused receipt rerun after
+restoration supplements the preceding full suite. Scope/population unchanged.

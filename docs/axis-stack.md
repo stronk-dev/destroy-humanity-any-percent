@@ -55,6 +55,16 @@ proposals awaiting owner SHA ratification. `pr_intern_3` is absent until Tier 2 
 
 ## Formula
 
+Applied receipt snapshots for Company19 include the CV5-derived `axis_stack`
+object: `{input_kind,input_value,input_cap,cap_reason_key,saturated,contributions,
+product}`; each owned contribution is `{source_id,upgrade_id,factor}`. Raw input
+is displayed while factors use the clamped input; saturation is strictly above
+cap. Contributions sort by source ID and product uses the live Axis fold.
+Ordinary, refreshed-offer and Exit/new-run receipts share this producer; errors
+propagate rather than dropping the object. Legacy receipts stay unchanged.
+Kernel0.3.166 records this receipt/replay behavior change.
+[Executed producer proof and limits](../planning/clout-v1-and-pr-interns/receipt-projection.md).
+
 `x = min(input, input_cap)` is read from Company state only.
 `factor_i = (1,000,000 + x × factor_ppm_i) / 1,000,000`, computed in exact integers and then
 quantized once. The `axis_stack` slot sits after `milestones` and before `faction`. Contributions
@@ -144,9 +154,12 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   rejection and attained-superset rejection. Corpus10/baseline20 preserves the
   original11legacy/4Founder cases. Missing-row/false-SHA/real derivation-check
   omissions fail; the native migration lane passes. This is bounded fixture
-  coverage, not fullCV4/Clout acceptance. RP-311 remains: applied receipt
-  snapshots omit the CV5-derived axis_stack object in both runtime producers;
-  the separate GameUI feature projection is not that receipt contract.
+  coverage, not fullCV4/Clout acceptance. RP-311's missing receipt object is
+  now locally repaired in a separate kernel166 range; real ordinary/refresh/
+  Exit tests, cap/ownership oracles and compiling omission/factor controls pass.
+  Four reports were fully re-observed; only receipt axis objects and source pins
+  changed, not game states/events/inputs/populations. Independent review, AC3
+  author reconciliation and all other Clout acceptance holds remain.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

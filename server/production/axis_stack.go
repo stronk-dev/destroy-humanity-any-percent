@@ -3,6 +3,7 @@ package production
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/decimal"
@@ -10,6 +11,65 @@ import (
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/save"
 )
+
+// CV5's applied-receipt projection, not the larger GameUI feature arm.
+type axisReceiptSnapshot struct {
+	InputKind     string                    `json:"input_kind"`
+	InputValue    int64                     `json:"input_value"`
+	InputCap      int64                     `json:"input_cap"`
+	CapReasonKey  string                    `json:"cap_reason_key"`
+	Saturated     bool                      `json:"saturated"`
+	Contributions []axisReceiptContribution `json:"contributions"`
+	Product       string                    `json:"product"`
+}
+
+type axisReceiptContribution struct {
+	SourceID  string `json:"source_id"`
+	UpgradeID string `json:"upgrade_id"`
+	Factor    string `json:"factor"`
+}
+
+func wireAxisStack(state *save.State, catalog *economy.Catalog) (*axisReceiptSnapshot, error) {
+	if state == nil || catalog == nil {
+		return nil, ErrInvalidEngineState
+	}
+	axis, declared := catalog.AxisStack()
+	if !declared {
+		return nil, ErrInvalidEngineState
+	}
+	_, saturated, err := AxisInput(state, catalog)
+	if err != nil {
+		return nil, err
+	}
+	factors, err := AxisFactors(state, catalog)
+	if err != nil {
+		return nil, err
+	}
+	product, err := AxisProduct(state, catalog)
+	if err != nil {
+		return nil, err
+	}
+	input := state.AttainmentScoreRun
+	if axis.Input == economy.AxisInputScoreRun {
+		input = state.AchievementScoreRun
+	}
+	result := &axisReceiptSnapshot{InputKind: string(axis.Input), InputValue: input, InputCap: axis.InputCap,
+		CapReasonKey: axis.CapReasonKey, Saturated: saturated, Contributions: []axisReceiptContribution{}, Product: product.String()}
+	for _, upgrade := range catalog.Upgrades() {
+		if !state.UpgradesOwned[upgrade.ID] {
+			continue
+		}
+		for _, effect := range upgrade.Effects {
+			if effect.Slot == economy.SlotAxisStack {
+				result.Contributions = append(result.Contributions, axisReceiptContribution{
+					SourceID: effect.SourceID, UpgradeID: upgrade.ID, Factor: factors[effect.SourceID].String(),
+				})
+			}
+		}
+	}
+	sort.Slice(result.Contributions, func(i, j int) bool { return result.Contributions[i].SourceID < result.Contributions[j].SourceID })
+	return result, nil
+}
 
 // AxisInput is the clamped run-local axis value x = min(input, input_cap) and
 // whether the clamp engaged (CV3). It reads only Company state: under the

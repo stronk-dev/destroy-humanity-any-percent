@@ -363,6 +363,12 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   Overlapped DB observations disclosed and invalidated. Remaining acceptedCV5
   applied receipt-derived object is RP-311, not a reason to promote R-012's
   representation/episode/breadth unknowns. [Proof/limits](../clout-v1-and-pr-interns/migration-corpus.md).
+  Separate79285a14 RP-311 producer scope now repairs that exact acceptedCV5
+  receipt contract, kernel166: real Go/TS ordinary/refresh/Exit, exact owned/cap/
+  product/order oracles and compiling omission/factor controls. Four reports
+  actually re-observed; receipt object/source pins alone change. Native migration
+  and production/gameui pass; original27AC6 still red. This does not answer
+  R-012 representation or RP-308 episode authority. [Limits](../clout-v1-and-pr-interns/receipt-projection.md).
   Earlier live persistence seam now has this bounded witness;
   representation/episode meaning/all-mode/natural-mint breadth remain open.
   The earlier ordinary observer alone is not partition, new representation,

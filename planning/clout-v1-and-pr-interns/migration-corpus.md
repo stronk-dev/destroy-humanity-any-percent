@@ -4,6 +4,12 @@
 reader corrections predeclared `44c0f8a8`. [V] below means locally executed,
 not designated independent approval or whole-RFC acceptance.
 
+Historical checkpoint at90e102a8/3868e3d2. The later separate RP-311 runtime
+range adds the required receipt projection and fully re-observes this source,
+updating only its migration sourceSHA. The baseline/results below are retained
+as their original observation, not current source-identity claims.
+[Current receipt producer evidence](receipt-projection.md).
+
 ## Population and actual consumers
 
 `testdata/save-migrations.json` corpus10 adds the five accepted CV4 names.

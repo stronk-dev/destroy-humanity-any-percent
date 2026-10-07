@@ -3982,3 +3982,21 @@ AC3/DG-B/representation/RP-308 and all prior gates independent. Whole newspan
 after7ca728ca including all records needs Claude. Goalactive/progress; no
 checkbox/status/archive/mint/push/deploy/release call or shortcut scope.
 [Evidence/limits](clout-v1-and-pr-interns/migration-corpus.md).
+
+## 2026-10-07 — CV5 actual applied receipt producer repair
+
+Separate79285a14 at3868e3d2, tests-first03f513ef. Red baseline7Go/30TS;
+real ordinary/refresh/Exit producers now emit exact object, propagate errors,
+preserve legacy bytes and mark kernel166. Closed literal owned/cap/product/order
+oracles and compiling omission/ownership/factor controls discriminate; survivors,
+one compiler-only probe and source-generation selector/read-buffer errors retained.
+Four reports actually re-observed: ONLYsource pins/228receipt-object JSON/object
+additions; all game states/events/inputs/bundles/populations unchanged. Migration
+sourceSHA alone updates, complete old tests stay. Client9678/340skip/types/vet/
+build/topology/SERIALnative migrations+production/gameui pass; original27AC6red.
+No wholeCI/AMD64/hosted/history/fullClout/mint/release promotion. Next residual
+Clout criteria and distinct unblocked accepted lane; unruled numeric/policy/
+content contracts remain held. Entire newspan after3868e3d2 INCLUDING records
+needs Claude. Goalactive/progress, no checkbox/status/archive/mint/push/deploy/
+release call or shortened full-nine-tier scope.
+[Evidence/limits](clout-v1-and-pr-interns/receipt-projection.md).

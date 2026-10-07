@@ -1922,3 +1922,79 @@ Go refresh path is not yet reached because ordinary assertion fails first.
 Invented test helper caught by source search BEFORE execution and replaced by
 actual save.IntentDecision; no compiler failure counted. Both handles terminal.
 Next declared producer/signature/error propagation and kernel166 repair.
+
+### RP-311 producer repair / actual observations
+
+69500/6ea5a2 passes7 actual Go ordinary/refresh/Exit paths; expanded63021/e00d25
+passes direct zero/one/two/cap/above-cap projection/contrast and typed ordinary/
+refresh errors. Above-cap state patched only for projection, not admitted save.
+TS additionally admits diagnostic latched inventory at44 with both interns,
+literal2.1/1.88/product3.948/not-saturated; not natural progression.
+6817/303fcc pre-refresh client60oldreceipt-fail/9617pass/340skip, all31new pass.
+Existing COMPLETE receipt oracles retain their discrimination, no field stripping.
+
+49893/198aac actual generators execute3 populations:24logged/6terminalpairs/
+6activation; selector's nonexistent sequence name does not prove that population.
+81335/99f19e separately executes actual16 action/buff/mode sequences.86d922
+full-report comparison to3868e3d2 proves ONLYsource pins and228actual receipt
+object/JSON additions changed. ALLstates/events/inputs/bundles/populations/
+refusals unchanged; all recorded source hashes verified. Initial bd5619 read
+hit Node1MiB buffer on measured2,083,215byte report, not completed proof; full
+read succeeds with suitable buffer. SourceSHA patch first failed atomically on
+one mistyped old digest, no edit; corrected exact patch updates ONLYCompanySHA.
+
+Corrected8570/1500fb client9678/340skip and16189/b76780 cold save/production/
+kernel ALL20 migration and all4observer/newreceipt populations pass. Go omission
+58791/62cab1 fails7actual+direct/contrast; TSunowned62204/5f774b fails90total,
+new30 fail while census and fully-owned cap survive. TS omission56425/d3d2c5
+fails91total including31new object assertions. First Go factor303c5f compiler
+failure(unused factors) is NOT discrimination. Corrected compiling50851/54ff4b
+forces factor1 and fails ordinary/one/two/cap/above-cap/contrast; empty and6actual
+empty new-run Exit cases survive correctly. All mutants restored after terminals,
+no artifact generation around a mutant or remaining temporary source changes.
+
+Final17416/07898b client9678/340visibleSkip,88456/92b73c types0/vet/build213/
+topology13controls pass. SERIAL14630/07464c native migrations save.591s, then
+19214/e3dafe production16.438/gameui.181 Integration pass. Cold48431/b0ab92
+save.269/economy6.338/decimal.229/kernel.070 pass; production47.083s ONLYoriginal
+27AC6red. PG16.15/arm64, not hosted/AMD64/fullCI or performance claim.
+Canonical producer docs/ledger/queues/roadmap/proof reconciled; no save/schema/
+migration/event/gameplay/catalog/balance/copy/API schema/CI/accepted-body change.
+Kernel166 belongs in same runtime commit. HistoricalRP-131 stays independent.
+
+receipt-projection.md retains complete commands/method/failures/limits. Next
+reconcile remaining Clout acceptance and a distinct unblocked accepted lane,
+not re-prove already covered boundaries or silently implement unruled numeric/
+policy/content contracts. ENTIRE newspan after3868e3d2 including records needs
+Claude; older spans independent. AC3/DG-B/representation/RP-308/owner/platform/
+full-nine-tier/release holds remain. All handles terminal; goalactive/progress.
+No checkbox/status/archive/mint/push/deploy/release call or goal completion.
+
+### Refresh oracle tightened before extra control
+
+Self-inspection catches a potentially vacuous happy refresh assertion: ordinary
+receipt already correct, noop could pass that assertion. Seed ONLYthe input
+receipt's axis object to valid-shaped empty0, keep actual state8/expected8 and
+all existing errors/oracles. Predeclare actual compiling noop refresh mutation;
+run focused tests before/after. No output restamp/population/game rule changed.
+
+Normal36679/e7e1d2 passes. Actual compiling refresh noop8006/ad0869 fails
+the EARLIER ordinary assertion on input6 not8, before the seeded direct refresh;
+negative refresh-error test also fires. Thus the isolated happy assertion was
+weak, but calling the whole ordinary test vacuous would be false: real ApplyLogged
+already uses refresh AFTER attaining. No claimed independent seeded-direct
+failure from that probe. Restored exactly;70636/84e6d9 final focused receipt
+tests .211s pass, full vet1e7415 passes again. Production/corpus unchanged by
+oracle refinement. Earlier full cold/native/client results retained at their
+actual run boundaries, not falsely said to execute this later test refinement.
+
+Final8a3b1a recomputes ALL four report source maps plus migration sourceSHA;
+900469 verifies both full log prefixes append-only against3868e3d2 and EXACT
+corpus-only Company sourceSHA delta/baseline unchanged. Full runtime/test/canon/
+record diffs and whole dossier inspected; generated full outputs independently
+compared via86d922, not accepted from summaries. No remaining mutation.
+Re-executed root verify-kernel-version91511/294dd4: checkout contract/fixtures
+PASS, history verifier exits2 at historical50a3a514 missing bump(RP-131).
+This does NOT validate the later dirty range's guard, since history fails first;
+same-commit165→166 mirrors and scoped runtime paths are verified separately.
+Denied read-only ps82fa6e adds no test evidence, no escalation/cleanup attempted.

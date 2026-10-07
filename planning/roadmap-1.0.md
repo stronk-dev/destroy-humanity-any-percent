@@ -5,7 +5,20 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest migration checkpoint (2026-10-07):** test-only36924143 at7ca728ca,
+**Latest receipt checkpoint (2026-10-07):** separateRP-31179285a14 at3868e3d2,
+actual red03f513ef, kernel166. Go/TS applied ordinary/refreshed/Exit receipt
+producers emit exact CV5 object; errors propagate, legacy bytes unchanged.
+Owned/cap/product/order and compiling omission/ownership/factor controls
+discriminate. Four reports re-observed: ONLY source pins/new receipt object,
+all game states/events/inputs/populations unchanged. Client9678/340skip/types/
+vet/build/topology/serial native migration+production/gameui pass; ONLYoriginal
+27AC6red. Next residual accepted Clout criteria/unblocked distinct RFC lane,
+not unruled numeric/policy/mint shortcuts. AC3/DG-B/representation/RP-308 and
+all prior gates remain; whole span after3868e3d2 INCLUDING records needs Claude.
+No fullClout/wholeCI/AMD64/hosted/mint/1.0 promotion.
+[Evidence/limits](clout-v1-and-pr-interns/receipt-projection.md).
+
+**Previous migration checkpoint (2026-10-07):** test-only36924143 at7ca728ca,
 reader corrections44c0f8a8. All five accepted Company migration names execute
 real Go/TS load/Exit/replay and three refusal boundaries; corpus10/baseline20
 preserves11legacy/4Founder/source. Missing-row/false-SHA/runtime derivation

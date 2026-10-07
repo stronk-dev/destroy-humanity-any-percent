@@ -39,4 +39,21 @@ describe("CV5 actual applied receipt projection, independent literal oracles", (
     const result = await applyLoggedExit(restore(row.exit.pre_state, 18, current), canonicalJSONString(row.exit.canonical_payload), withNextReplayCatalogBundle(current, next), row.exit.replay_inputs);
     expect(result.outcome).toBe("applied"); expect(snapshot(result.receipt).axis_stack).toEqual(empty);
   });
+  it("derives both owned sources in byte order at the exact cap, not saturated", async () => {
+    const bundle = await loadReplayCatalogBundle(policies.bundle.constants_hash, policies.bundle.artifacts);
+    if (!bundle.achievements) throw new Error("achievements missing");
+    const row = policies.rows[0]!.case;
+    // Diagnostic admitted latched inventory, not naturally earned progression.
+    const raw = structuredClone(row.pre_state) as Record<string, unknown>;
+    const definitions = bundle.achievements.definitions.filter(value => value.conditionScope === "run");
+    expect(definitions.reduce((sum, value) => sum + value.scoreGrant, 0)).toBe(44);
+    raw.achievements_attained_run = definitions.map(value => value.id).sort(); raw.attainment_score_run = 44;
+    raw.upgrades_owned = ["upgrade.pr_intern_1", "upgrade.pr_intern_2"];
+    const state = restore(raw, 19, bundle);
+    const result = await applyLogged(state, canonicalJSONString(row.canonical_payload), bundle, row.replay_inputs);
+    expect(result.outcome).toBe("applied");
+    expect(snapshot(result.receipt).axis_stack).toEqual({ ...empty, input_value: 44, product: "3.948e0",
+      contributions: [{ source_id: "upgrade.pr_intern_1.axis", upgrade_id: "upgrade.pr_intern_1", factor: "2.1e0" },
+        { source_id: "upgrade.pr_intern_2.axis", upgrade_id: "upgrade.pr_intern_2", factor: "1.88e0" }] });
+  });
 });

@@ -1710,11 +1710,15 @@ func appliedDecision(
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	snapshot, err := wireSnapshot(state, catalog)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
 	receipt := map[string]any{
 		"intent_id": request.IntentID, "outcome": "applied", "applied_count": appliedCount,
 		"receipt":      map[string]any{"changes": changes},
 		"new_revision": newRevision, "evaluated_at": state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
-		"snapshot": wireSnapshot(state, catalog),
+		"snapshot": snapshot,
 	}
 	encoded, err := json.Marshal(receipt)
 	if err != nil {
@@ -1856,7 +1860,7 @@ func wireChanges(before, after map[string]string) ([]map[string]string, error) {
 	return changes, nil
 }
 
-func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
+func wireSnapshot(state *save.State, catalog *economy.Catalog) (map[string]any, error) {
 	snapshot := map[string]any{
 		"balances": state.Ledger.Snapshot(), "generators": state.GeneratorCounts,
 		"generators_purchased_total": state.GeneratorPurchasedTotal,
@@ -1907,8 +1911,13 @@ func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 	if state.Ledger.Scope() == economy.ScopeCompany && save.VersionForState(state) >= 19 {
 		snapshot["achievements_attained_run"] = sortedBoolKeys(state.AchievementsAttainedRun)
 		snapshot["attainment_score_run"] = state.AttainmentScoreRun
+		axis, err := wireAxisStack(state, catalog)
+		if err != nil {
+			return nil, err
+		}
+		snapshot["axis_stack"] = axis
 	}
-	return snapshot
+	return snapshot, nil
 }
 
 func wireProvisionedHardcaps(catalog *economy.Catalog) map[string]map[string]any {
