@@ -3507,3 +3507,36 @@ host loading/stale/forced-focus repair and actual severing population.
 Full Linux/SQL still capacity-held; no deletion/retry. Complete new range
 after0fe2f57c needs Claude including this checkpoint, separate from earlier
 spans. No box/lifecycle/archive/push/release/owner-authored text promotion.
+
+## 2026-10-07 — accepted shared host repair / further fault predeclaration
+
+Separate from test-only923a51ab..6d36a9d3. GS0.5/GS0.6 already specify
+loading heading/status, stale last-authoritative disclosure and forced Desk
+heading focus; no owner choice/mechanics/wording is invented. Narrow host
+repair: credentialled initial Desk loading uses existing common.loading,
+no fabricated controls; Trophy-only stale note uses existing common.stale_note
+on offline/resyncing/not-ready; original authoritative arm binding unchanged.
+Desk h1 gets negative tabindex. The existing null-arm effect schedules heading
+focus after DOM update, cancelled if a newer player selection/snapshot wins;
+normal navigation never gains autofocus. Existing lifecycle precedence,
+other surfaces' stale regions, protocols, theme/balance/copy/clock/provider/
+CI/Make/RFC body and all old assertions untouched.
+
+Before repair add independent not-ready-only population (subscriber has not
+reported recovery; HTTP snapshot exists, offline/resyncing false), and a
+newer explicit Desk nav selection cancellation control alongside Settings.
+Both widths; forty total native shared-state executions, not thirty-two.
+Record new baseline: missing stale marker must fire not-ready controls too;
+cancellation controls may pass trivially now and require failing guard probe.
+
+After repair independently seed actual valid source faults: remove loading
+status role; remove loading heading; omit stale copy; hide stale text; omit
+not-ready branch; keep stale marker after recovery; no-op forced focus;
+remove Desk heading tabindex; bypass pending-focus cancellation guards (the
+newer Desk nav choice must then lose focus). Each must fire real semantic/
+native assertions; controls retained, no parse/type-error credit. Restore
+exact source between probes and finally. Final full native Garage two-engine,
+types/client/build/source/topology/copy. No SQL/full-Linux/hosted/Firefox/AT/
+all-context/first-read-rejection/retry proof invented; capacity remains held,
+no cleanup authority/deletion. Whole new span after0fe2f57c needs Claude
+including failed-first tests and this separate product scope. No archival.
