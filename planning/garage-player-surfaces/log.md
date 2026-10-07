@@ -5017,3 +5017,25 @@ change. RP-313 body reconciliation and all real service/release gates independen
 All40 typed-clean native cases must pass; the predeclared actual faults must fail
 for their named properties and restore source exactly. Full root final scopes
 and range-union review remain as declared; no boxes/status/archival/mint/push.
+
+### Claim repair checkpoint — functional assertions reach a separate contrast RED
+
+Component Opportunity388d35a9/unchanged host9cb074e5; refined driver95e0adff.
+64f12e types exit0, zero errors/warnings after declaring the bound claim reference
+with $state (earlier f0396d warning retained, not claimed clean). Existing inline
+Amount contributes trailing whitespace; actual whole receipt text49de86 proves
+`Lucky break credited: 1e2 100 `, so the exact assertion now includes that space,
+not a prefix/substring oracle. Earlier5d8942/205718/49de86 failures expose that
+instrument assumption and the capped-bank contrast independently.
+
+Current native7afda4 →e661f2 Make2/child1:32fail/eightpass/650unselected,4.98s.
+All host pending/refusal/applied/read/body/Company revision/removal/newer-focus
+assertions now reach final axe; eight isolated pending/unavailable cases pass.
+Failures are capped-Amount `color-contrast`, not a green batch. Raw failure output
+truncated, complete terminal totals retained; do not invent omitted diagnostics.
+RP-354:1995 gray background#c0c0c0 with capped danger#aa0000 (13px bold) reports
+4.26:1, cap reason#555555 (11px)4.09:1; both require4.5:1 in actual pinned axe.
+No axe exclusion or fixture shrink. Final source/fixture hashes pinned above;
+no acceptance/status/archive promotion. Subsequent style-data repair must be
+separately scoped; it cannot silently enter the declared Claim component range.
+All original comparison/fault/final verification and designated review still owed.

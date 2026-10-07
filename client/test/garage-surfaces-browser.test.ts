@@ -1740,7 +1740,11 @@ for (const path of ["retained", "removed", "newer-selection"] as const) {
           expect(target.querySelector(".intent-notice")?.textContent).toBe("");
           apply(claimOutcome); await settle(); pending(); expect(read).toHaveBeenCalledExactlyOnceWith();
           sharedStateVisibleText(target, '.intent-notice[role="status"]', t("desk.opportunity.lucky_capped", {}, "era_1995"));
-          sharedStateVisibleText(target, ".opportunity p", `${t("desk.opportunity.lucky_frame", { amount: "1e2" }, "era_1995")} ${formatAmount("1e2")}`);
+          // Amount's existing inline fragment contributes a trailing text space.
+          const creditText = `${t("desk.opportunity.lucky_frame", { amount: "1e2" }, "era_1995")} ${formatAmount("1e2")} `;
+          const actualReceiptText = [...target.querySelectorAll(".opportunity p")].map((row) => row.textContent);
+          expect(actualReceiptText, `actual complete receipt text: ${JSON.stringify(actualReceiptText)}`).toContain(creditText);
+          sharedStateVisibleText(target, ".opportunity p", creditText);
           sharedStateVisibleText(target, ".opportunity p", `${t("desk.opportunity.lucky_capped", {}, "era_1995")} ${t("cap.cash", {}, "era_1995")}`);
           await userEvent.keyboard("{Enter}"); await userEvent.keyboard(" "); await settle();
           expect(runtime.requests).toEqual([request(1, oldID), request(1, oldID)]);

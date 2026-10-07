@@ -1,12 +1,13 @@
 <script lang="ts">
+  import { tick } from "svelte";
   import type { GameUIOpportunityArm } from "../api/generated/types";
   import { applicationCopyCatalog, t, type CopyEra, type CopyKey } from "../copy";
   import Amount from "../ui/Amount.svelte";
   import { FEATURES_PRESENTATION } from "./features-presentation";
   import type { LastClaim } from "./opportunity-claim";
 
-  // GS5: an always-present Desk region (stable DOM order; focus is never moved
-  // here). Remaining time is attended seconds as of the last snapshot, not a
+  // GS5: an always-present Desk region (stable DOM order; spawn never moves
+  // focus). Remaining time is attended seconds as of the last snapshot, not a
   // wall-clock countdown (OD-12). The region never causes a spawn: it only
   // renders the projected arm and raises the claim callback.
   let { arm, era, pending, controlsEnabled, lastClaim, onClaim }: {
@@ -23,16 +24,34 @@
   function capText(key: string | null): string | null { return key !== null && applicationCopyCatalog.byKey.has(key) ? t(key as CopyKey, {}, era) : null; }
   const offer = $derived(arm?.pending && effectRow(arm.pending.effect_row_id) ? arm.pending : null);
   $effect(() => { if (arm?.pending && !effectRow(arm.pending.effect_row_id)) console.error(`game UI invariant: unknown opportunity effect ${arm.pending.effect_row_id}`); });
+
+  let root: HTMLElement | undefined;
+  let claim = $state<HTMLButtonElement | undefined>();
+  $effect.pre(() => {
+    if (offer) return;
+    const action = claim;
+    if (!action || document.activeElement !== action) return;
+    const heading = root?.closest(".desk")?.querySelector<HTMLHeadingElement>("#desk-heading");
+    void tick().then(() => {
+      if (!root?.isConnected || action.isConnected ||
+          document.activeElement !== action && document.activeElement !== document.body) return;
+      // Claim is the region's only control. Removal falls back to the Desk
+      // heading, never taking focus from a newer surviving player selection.
+      heading?.focus();
+    });
+  });
 </script>
 
-<section class="opportunity cc-window" data-region="desk.region.opportunity" aria-label={t("desk.opportunity.region_label", {}, era)}>
+<section bind:this={root} class="opportunity cc-window" data-region="desk.region.opportunity" aria-label={t("desk.opportunity.region_label", {}, era)}>
   {#if offer}
     {@const row = effectRow(offer.effect_row_id)!}
     <h3>{t(row.title_key, {}, era)}</h3>
     <p>{t(row.description_key, {}, era)}</p>
     <p>{t("desk.opportunity.remaining_frame", { seconds: seconds(offer.expires_attended_ms) }, era)} <small>{t("desk.opportunity.attended_note", {}, era)}</small></p>
     {#if offer.effect_row_id === "active.lucky"}<small>{t("desk.opportunity.lucky_tooltip", {}, era)}</small>{/if}
-    <button type="button" tabindex="0" disabled={pending || !controlsEnabled} onclick={() => onClaim(offer.opportunity_id)}>{t("desk.opportunity.claim", {}, era)}</button>
+    <button bind:this={claim} type="button" tabindex="0" disabled={!controlsEnabled} aria-disabled={pending || undefined}
+      onclick={() => { if (!pending && controlsEnabled) onClaim(offer.opportunity_id); }}>{t("desk.opportunity.claim", {}, era)}</button>
+    {#if pending}<p role="status">{t("common.pending", {}, era)}</p>{/if}
   {/if}
   {#if lastClaim && lastClaim.credited !== null}
     <p>{t("desk.opportunity.lucky_frame", { amount: lastClaim.credited }, era)} <Amount value={lastClaim.credited} {era} /></p>

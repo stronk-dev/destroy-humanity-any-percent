@@ -245,7 +245,7 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   pruning rule is implemented; R9 author reconciliation is pending. The server's
   atomic plan revalidation remains the authority, not this advisory display.
 - **Desk opportunity region (GS5):** always present, directly after the manual action. It sits in a
-  fixed DOM position and never moves focus, so an opportunity spawning never shifts the page. It
+  fixed DOM position and does not move focus on spawn, so an opportunity spawning never shifts the page. It
   renders the optional `features.opportunity` arm:
   - the pending opportunity, with its effect presentation row and the attended seconds remaining as
     of the last snapshot (never a wall-clock countdown);
@@ -267,6 +267,16 @@ Mechanical ID → copy mappings for these surfaces live in `client/src/game-ui/f
   moved on spawn. The idle witness observes an actual minute of native timers,
   not a display-clock jump. The UI never sends a synthetic command to cause a spawn. A spawn is
   announced politely once per `opportunity_id` while the Desk is mounted.
+  While Claim's intent and authoritative refresh are pending, its native control
+  stays focusable with `aria-disabled="true"` and visible registered pending text;
+  the component callback and unchanged host single-flight guard suppress repeated
+  activation. Unavailable controls remain natively disabled. An authoritative
+  snapshot removing the focused Claim returns focus after rendering to the
+  existing Desk heading (there is no other control in that region). Surviving
+  Claim controls and newer player-selected focus are not moved. The bounded native
+  fixtures cover delayed ordinary refusal/applied/read, Company-not-Founder
+  revision binding, removed control and a newer Settings selection; they are not
+  real-server opportunity acquisition or full accessibility acceptance evidence.
   The composed claim checker binds the response to its DOM request and exact
   next Company revision/run. Lucky checks the canonical credited delta and
   exact receipt-snapshot cash against the successor's unique cash row; the
