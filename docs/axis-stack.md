@@ -38,6 +38,10 @@ proposals awaiting owner SHA ratification. `pr_intern_3` is absent until Tier 2 
   evidence for Company versions18and19 and replay input version5or later. Earlier
   Company versions reject unexpected evidence. RP-309 corrects the client's
   former v18-only check; kernel0.3.163 records that replay behavior change.
+- **Scheduler replay:** v19 uses the existing active-play scheduler, with the
+  same catalog, sequence/cursor, clock, expiry and draw checks as v18. RP-310's
+  separate scheduler admission correction is recorded by kernel0.3.164; it
+  does not change those checks or the terminal evidence contract.
 - **Second hook pass:** the achievement hook runs a second pass (Go `attainRun`, TS `attainRun`)
   against the same pre-achievement observation and proof batch as `NewlyEarned`.
   - It attains run-scoped definitions not yet attained whose condition and proof hold, whether or
@@ -95,9 +99,12 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   correction. The original [24-case observation](../planning/clout-v1-and-pr-interns/logged-policy-research.md)
   records the former rejection honestly; correcting that gate alone does not
   prove all numeric/receipt/event/state, migration, Exit or persistence behavior.
-  All24positive calls now fail at the scheduler's separate v18-only guard
-  (RP-310). Nine catch-up refusals and five compatibility/refusal companions
-  pass; those passes do not complete v19 gameplay or final-output comparison.
+  RP-310's separate scheduler correction now passes all24logged Go/TS receipt,
+  event and complete poststate comparisons, plus nine scheduler refusals with
+  full rollback (including25hcatchup), nine catch-up and five compatibility
+  companions. This is synthetic ordinary-action evidence, not the natural
+  player journey, terminal/Exit, accepted accumulation representation or SQL
+  transaction proof. The terminal evidence guard still recognizes onlyv18.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

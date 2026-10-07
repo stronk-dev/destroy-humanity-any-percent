@@ -4,8 +4,8 @@
   "source_sha256": {
     "balance/testdata/axis-stack/economy-v5-fixture.json": "f8c67aed784ceaae1335bb40c0e0487cc0d9b78a50b9e63a73569270df7511d7",
     "client/src/economy.ts": "433377eb916a70f55c4b72a67a33c588e96b0bfd86ac62baf1423b031a9fa318",
-    "client/src/replay.ts": "92da4b6e3292752ccb1671603dc0374ca8b508a3546f2e744cbb9d2e755fc445",
-    "client/test/logged-policy-research.test.ts": "040c48de29d069cebf1eb73e814f231ba000696afde1e461fbd7096bffd6572e",
+    "client/src/replay.ts": "c37164b67c0fc180732bdbf49e35cd7cefff8c0bf3cd31d741dee859cc5064a4",
+    "client/test/logged-policy-research.test.ts": "c562de1dc19d424e13f03365e68d7d08f2cf278851d525b1fa53c150ceb0289e",
     "server/production/accrual.go": "a64e59595febe489722de584dd9692b73dd0825b6cc3cca7244246047b2337c7",
     "server/production/axis_logged_policy_research_test.go": "4a82177d3c018707c586a9f8d585e4888c233252248b358ccf61bb970ffb6958",
     "server/production/axis_partition_research_test.go": "675e73ad6b1fb0df4742b98f28616f125633e0f54c27b10f104a99e89aca66a3",

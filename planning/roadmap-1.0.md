@@ -5,7 +5,19 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest runtime checkpoint (2026-10-07):** RP-309 ordinary replay predicates
+**Latest scheduler checkpoint (2026-10-07):** RP-310 scheduler admission
+corrected under acceptedCV4/predeclaration483fa5ed, kernel164. All24ordinary
+Go/TS complete receipts/events/poststates now match; all48TS cases pass,
+including9scheduler refusals and25hrollback. Two compiling mutants discriminate,
+source/output restoration exact; re-observation changes onlytwo source pins.
+Client9547/340skip and types/vet/topology/formulas/API/native pass; original27
+GoAC6/history/AMD64/hosted holds remain. Next actual terminal v19 producer/
+replay/next-run population: terminal guard remains source-only finding. No
+partition/persistence/natural-player/fullClout/1.0 acceptance inferred. Entire
+new span after685debe7 needs Claude; earlier ranges/questions independent.
+[Evidence](clout-v1-and-pr-interns/logged-policy-research.md).
+
+**Previous runtime checkpoint (2026-10-07):** RP-309 ordinary replay predicates
 corrected under acceptedCV4/predeclarationff50031e, with honest kernel163.
 All9catchup and5old-version/refusal companions pass; two compiling guard faults
 discriminate and restore. Go source re-observation preserves ALL24outputs;

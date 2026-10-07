@@ -3,6 +3,21 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## RP-310 scheduler corrected / actual ordinary output parity — 2026-10-07
+
+Predeclared483fa5ed at685debe7:ONLY scheduler admission corrected underCV4,
+kernel164 honestly. All24actual Go/TS receipts/events/complete poststates now
+match; all48TS cases pass (including9scheduler refusal/25hrollback). Original
+and result-severing mutants fail27/3; exact restoration. Go re-observation
+changes onlytwo source identities, every old observed output/bundle exact.
+Client9547pass/340skip; types/vet/topology/formulas/API/native7researchtests pass.
+Go original27AC6red; historyRP-131/AMD64/hosted remain. No full1.0/CI promotion.
+**READY next:** predeclare actual v19 terminal producer/replay/next-run population;
+terminal exact-v18 predicate remains source-only finding, not fixed/measured here.
+Representation/mode/buff/persistence/RP-308meaning questions remain separate.
+Full new span after685debe7 needs Claude including records, older spans independent.
+[Evidence](../clout-v1-and-pr-interns/logged-policy-research.md).
+
 ## RP-309 ordinary dispatch corrected / RP-310 next — 2026-10-07
 
 Predeclaredff50031e at974c1a45:accepted-CV4 two ordinary predicates corrected,

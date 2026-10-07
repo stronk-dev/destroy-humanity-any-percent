@@ -317,6 +317,13 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   re-observation. Next separately scope scheduler repair/actual terminal
   population before claiming full output parity; neither replaces R-012's
   unresolved accumulation/episode/persistence representation questions.
+  Scheduler correction predeclared483fa5ed at685debe7 with kernel164 now makes
+  all24ordinary actual Go/TS receipts/events/full states match; all48TS cases
+  pass including9scheduler refusal/25hrollback. Original/result-severing mutants
+  discriminate and restore; re-observation changes onlytwo source identities.
+  Next actual terminal v19 producer/replay/next-run population; terminal guard
+  remains a source finding. This is bounded ordinary parity, not partition,
+  new representation, mode/buff, Service/Store or natural-player proof.
   Later predeclare actual paired action/buff/mode/multi-resource seams;
   canonical rate lists/byte-framed JSON/scalar anchors are not whole-engine proof.
   Full mode/offline/provision/migration/state/receipt integration remains unproved.

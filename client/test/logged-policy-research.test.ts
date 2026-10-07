@@ -130,3 +130,25 @@ describe("Clout CV4 v19 dispatch / old-version refusal companions", () => {
     expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
   });
 });
+
+const schedulerIDs = ["quiet/online/3114", "boosted/offline/59999", "combined/online/90000000"];
+const schedulerRows = schedulerIDs.map(id => {
+  const matches = corpus.rows.filter(row => row.profile.id === id);
+  if (matches.length !== 1) throw new Error("missing/duplicate declared scheduler population");
+  return matches[0]!;
+});
+
+describe("Clout CV4 v19 scheduler evidence / catchup rollback", () => {
+  it.each(schedulerRows.flatMap(row => ["before_sequence", "before_next_opportunity_attended_ms", "after_sequence"].map(field => ({ row, field }))))(
+    "refuses copied $field for $row.profile.id unchanged", async ({ row, field }) => {
+      const bundle = await catalogs;
+      const state = restore(row.case.pre_state, bundle);
+      const before = canonicalJSONString(encodeReplayState(state));
+      const inputs = structuredClone(row.case.replay_inputs) as { resolved: { active_play: Record<string, number> } };
+      expect(Number.isSafeInteger(inputs.resolved.active_play[field])).toBe(true);
+      inputs.resolved.active_play[field]!++;
+      const error = field === "after_sequence" ? /^active scheduler result mismatch$/ : /^active schedule state mismatch$/;
+      await expect(applyLogged(state, canonicalJSONString(row.case.canonical_payload), bundle, inputs)).rejects.toThrow(error);
+      expect(canonicalJSONString(encodeReplayState(state))).toBe(before);
+    });
+});

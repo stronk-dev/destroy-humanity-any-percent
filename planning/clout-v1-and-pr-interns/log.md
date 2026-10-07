@@ -1294,3 +1294,51 @@ before/after-evidence refusals, two actual mutations and unchanged24outputs
 in plan.md. Terminal exact-v18 remains separately unexecuted source finding;
 this scope does not guess a full-terminal fix or waive accumulated-state red.
 No measurement for the corrected scheduler population has yet run.
+
+### RP-310 scheduler result — ordinary full Go/TS parity, not terminal acceptance
+
+Predeclared483fa5ed after685debe7. Runtime diff ONLY scheduler state admission
+!==18→<18, with honest kernel163→164 and mirrors in same change. Existing
+catalog/before/after/attended/draw/expiry/compound checks unchanged. Terminal
+predicate/numeric/save/balance/copy/CI/RFC bodies untouched.
+
+Actual first restored48case populationa20434/37331 terminal9dcb86 exit0:
+all24Go/TS full receipt/events/encoded poststates match and restore; all9new
+scheduler before/after faults refuse with complete initial rollback, including
+combined25hcatchup; prior9catchup/5companions/census pass. No expectations changed.
+
+Old scheduler mutant8a1e35/95046 terminal025b9b exit2:newfile27fails (24valid
+calls refuse and3after-sequence controls hit WRONG earlier guard). Severed
+after-sequence checka8d0e7/41625 terminalcff578 exit2:exactly3controls fail,
+corrupt after_sequence+1 inputs APPLY purchases; all valid outputs still match.
+Both compile, real runtime mutants, not whole-red-exit inference. Restored at
+1a2f34:runtimec37164b6/observerc562de1d/artifactf8154b7e exactly pre-probe.
+
+Full Go re-observation53b65f/59396 terminal241710 exit0,.363s. Comparison
+7cb802 with685debe7:ONLY two selected source identities change; ALL24original
+bundle/profile/payload/input/receipt/event/poststate/negative counts unchanged.
+Current artifactc5c56c9c; prior failing code identities preserved in Git. Old
+research corpora untouched; no output restamp/rounding tolerance/new save format.
+
+Final clientef4381/2079 terminal5d829b exit0:9547pass/340visible skips;
+newfile48pass. Independentaa95a7/22046 terminal1f5c01 exit0:types/Svelte
+zero errors/warnings,fullvet,topology13controls pass. Native294194/32331 terminal
+ad880b exit0,1.536s:all SEVEN research tests execute/no skips, oldSQL1215/16.
+New ordinary observer itself remains in-memory, not a SQLtransaction claim.
+Cold14319f/33627 terminal5e4186 exit2:production46.037s fails ONLY original
+27AC6cases; economy7.005s/decimal.280s/kernel.161s pass.
+
+Declared formula/API verificationb0af15/33693 terminal7b77b6 exit0:generator
+outputs byte-unchanged. Kernelc02227/44135 terminal82ffc1 exit2:CI checkout
+contract/fixtures pass, full history still fails historicalRP-131/50a3a514.
+Independent version fixturesb5f0c8/65820 terminal22d225 exit0. No source/record
+edits while verification handles live, no restart, cleanup or mutant left.
+AMD64/hosted/all prior author/owner/content/release holds remain explicit.
+
+Records synchronized. Ordinary24case parity is now real and bounded, NOT
+partition/mode-switch/buff/full-domain/terminal/Exit/persistence/natural-player/
+release proof. Next predeclare actual terminal v19 producer/replay/next-run
+population under acceptedCV4; terminal predicate is still only a source finding.
+RP-308 delegation unanswered, no owner/body edits or accumulation waiver.
+Entire new span after685debe7 needs Claude including record edges, prior ranges
+independent. Goal active; no checkbox/status/archival/mint/push/deploy/release call.

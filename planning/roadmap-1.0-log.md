@@ -3838,3 +3838,27 @@ and unanswered author/owner/content/environment/release holds independent.
 Previous goal turn progress; this turn changes runtime toward the actual v19
 contract and preserves invalid-evidence refusal. Full nine-tier/platform1.0
 active; no status/checkbox/archive/mint/push/deploy or owner release call.
+
+## 2026-10-07 — Actual ordinary Go/TS replay parity / scheduler corrected
+
+Predeclared483fa5ed after685debe7 under acceptedCV4. ONLY scheduler admission
+corrected, honest kernel164. All24actual logged receipts/events/full poststates
+now match and restore exactly. All48TS cases pass, including9scheduler refusals
+with full rollback (25hcatchup included),9catchup and5old-version companions.
+Old guard27failures; severed after-sequence validation3failures by wrongly
+applying corrupted inputs. Compiling actual runtime faults restore byte-exactly.
+
+Go complete re-observation changes onlytwo source identities: all24original
+outputs/bundle/context/payload/evidence remain exact. Client9547pass/340skip;
+types/vet/topology/formulas/API/native7researchtests pass, oldSQL1215/16exact.
+Original27GoAC6 failures remain; full history still fails RP-131/50a3a514,
+AMD64/hosted held. No tolerance, narrowed property or fullCI claim.
+
+Next predeclare actual terminal v19 producer/replay/next-run evidence; terminal
+predicate remains source finding only. Ordinary synthetic parity is not
+partition/mode/buff/accepted representation/SQLtransaction/natural-player/release
+proof. Entire new span after685debe7 including record edges needs Claude,
+all preceding independent spans and author/owner/content/environment/release
+holds remain. Previous goal turn progress; this turn repairs actual ordinary
+v19 replay with exact cross-runtime outputs. Proper full nine-tier/platform1.0
+active; no checkbox/status/archive/mint/push/deploy or owner release call.

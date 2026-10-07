@@ -487,3 +487,13 @@ then Claude designated review INCLUDING all record edges. No numeric policy,
 save/migration/balance/copy/RFC body/CI change, checkbox/status promotion,
 whole-Clout acceptance, archival/mint/push/deploy or release call. Full1.0
 goal active; RP-308 meaning/owner delegation still unanswered.
+
+RP-310 scheduler execution: all48TS cases pass, including all24exact receipts/
+events/full poststates with final restoration;9scheduler refusal/rollback cases,
+9catchup and5compatibility companions. Old admission27fails; severed result
+sequence3fails by wrongly applying purchases; both restore exact. Explicit Go
+re-observation changes onlytwo source identities, no observed output changes.
+Full client9547/340skip and types/vet/topology/formulas/API/native pass; original
+27GoAC6/history/AMD64/hosted holds persist. Scheduler locally repaired, terminal
+guard remains SOURCE finding only. Next predeclare actual terminal v19 corpus;
+no checkbox/whole-CV4 orClout promotion. Full span after685debe7 needs Claude.
