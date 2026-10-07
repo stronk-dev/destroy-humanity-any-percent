@@ -4,16 +4,30 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage pet review:** original Claude `7a61e4b6^..7a61e4b6`, all eight
+**Latest care correction:** `ea06183b`, test-first `0784f126` and predeclaration
+`970d47a5`: care pending focus/text, native Tab and eligibility-change focus
+handoff, stale explanation and restart readiness are locally repaired. Full
+Garage Chromium/WebKit82/performance1, client9,735/364 browser skips, types/
+build/boundaries/copy/manifest/topology pass. Eight independent native faults
+and real DOM callback severing fail, all restored exactly. Actual built UI/
+Postgres/WebSocket care after DOM adoption binds a positive receipt and public
+state at Founder revision5; reload retains feed ineligibility. Test-only bundle,
+not release-manifest/status-crossing/raw-care/AT/full-Garage acceptance.
+Firefox zero executed before connection timeout; failed teardown stopped,
+RP-256 remains. Entire new Codex span after `c7d8f815` THROUGH this tracking
+edge needs Claude. RP-319/320/321 locally corrected, not closed. Next bounded
+accepted work: predeclare shared HTTP/exclusive refusal consumer checks under
+GS0.2; no remedy inferred from source alone. All prior holds/full1.0 remain.
+
+**Preceding Garage pet review:** original Claude `7a61e4b6^..7a61e4b6`, all eight
 paths: designated **CHANGES REQUIRED for the existing RP-132/GS4×PA7 author
 contract hold**, mechanical subset verified. Four native pet assertions and
 cold Go fact pass; five compiling callback/revision/text/overlay/empty-map
 faults fail and restore exactly. No permanent product change. Separate
 RP-318 actual decoder diagnostic ignores12 valid pet-band transitions and
-seven malformed payloads; required announcement copy is absent. Next safe
-work: predeclare test-only native care pending/reconnect/refusal/refresh
-coverage under the existing public arm, without raw internals or new prose.
-Not full GS4/real-server care/CI/archival proof. Full nine-tier goal stays active.
+seven malformed payloads; required announcement copy is absent. Its then-next
+care supplement and real-server check now execute above; raw internals/new
+prose/GS4/CI/archival remain unproved. Full nine-tier goal stays active.
 
 **Preceding Garage proof correction:** RP-316's shared GS5-A4 observer through
 `0befc01c` now checks request/revision/run/cash/buff bindings and successful

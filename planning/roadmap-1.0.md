@@ -5,14 +5,28 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded review (2026-10-07):** original Claude pet slice
+**Latest bounded correction (2026-10-07):** care `ea06183b`, predeclared
+`970d47a5`/test-first `0784f126`, fixes RP-319/320/321 locally, not
+designated-approved. Eight native fault probes and actual DOM callback
+severing fail and restore exactly. Full Garage Chromium/WebKit82/performance1,
+client9,735/364 skips/types/build/boundaries/copy/manifest/topology pass.
+Actual Postgres/WebSocket DOM adoption→feed→positive bound receipt→public
+state/reload passes at Founder revision5. No status crossing/announcement,
+raw-care/minted release/AT/full-Garage/hosted CI claim. Firefox zero executed
+before connection timeout, then failed teardown stopped; RP-256 remains.
+Whole span after `c7d8f815` INCLUDING this record edge needs Claude; earlier
+spans independent. Next: shared HTTP/exclusive care refusal consumer tests
+under accepted GS0.2. All full nine-tier/product/platform/author/review gates
+remain; no archive, owner-copy or release promotion.
+
+**Preceding bounded review (2026-10-07):** original Claude pet slice
 `7a61e4b6^..7a61e4b6`, all eight paths, designated CHANGES REQUIRED for
 existing RP-132/GS4×PA7 author contract hold. Mechanics discriminate: four
 native assertions/cold Go pass, five compiling faults fail and restore exactly.
 Separate RP-318 diagnostic: all12 valid pet-status transitions and seven
 malformed controls silently ignored; no announcement copy adopted. No product
-change/GS4-A5 proof. Next: public-arm care keyboard/pending/reconnect/refusal/
-refresh test-only supplement, preserving author/privacy/copy/other holds.
+change/GS4-A5 proof. Its then-next public-arm care supplement and real service
+check are now executed above, preserving author/privacy/copy/other holds.
 Full nine-tier 1.0, no archive or release promotion.
 
 **Preceding bounded correction (2026-10-07):** RP-316 GS5-A4 claim observer

@@ -4147,3 +4147,24 @@ only, not raw stats or GS4-A5. Exact RP-316 Codex span
 `c0eb3dc5..876b331c` now ready for Claude; earlier independent spans remain.
 All author/numeric/platform/accessibility/content/CI/release holds and full
 nine-tier goal remain. Active/progress, no box/status/archive/mint/publication.
+
+## 2026-10-07 — Care focus/readiness repaired; actual care workflow proved
+
+Accepted care-only repair `ea06183b`, predeclared `970d47a5`, failing-first
+`0784f126`, locally corrects RP-319/320/321 without changing server/math/
+schema/copy/epoch/workflow bytes. Native pending/read/isolation/keyboard/
+eligibility/focus/refusal/reconnect controls pass. Eight separate native
+faults and actual DOM callback severing fail and restore exactly. Final full
+Garage Chromium/WebKit82/performance1, client9,735/364 explicit browser skips,
+types/build/boundaries/copy/manifest/topology pass. Existing composed lane
+now proves actual DOM adoption→DOM feed→positive bound receipt→persisted
+public state/reload at Founder revision5, built client/Postgres/WebSocket.
+Test-only bundle; not status crossing/announcement/raw-care/minted release.
+Firefox retry executes zero before connection timeout; failed teardown stopped
+with exit130, RP-256 remains. No all-engine/AT/full-Garage/hosted-CI claim.
+Entire new span after `c7d8f815` INCLUDING this tracking edge needs Claude;
+RP-316 `c0eb3dc5..876b331c` and earlier ranges remain independently owed.
+Next separately predeclare accepted GS0.2 shared HTTP/exclusive care refusal
+consumer checks; measure disabled-until-next-snapshot before inferring a fix.
+Full nine-tier/author/numeric/content/platform/review/release holds remain.
+Active/progress, no boxes/status/archive/mint/publication or reduced scope.

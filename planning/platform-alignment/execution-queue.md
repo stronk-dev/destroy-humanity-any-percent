@@ -3,7 +3,29 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Garage pet review / missing status-event diagnostic — 2026-10-07
+## Garage care correction / real workflow proof — 2026-10-07
+
+RP-319/320/321 locally corrected through `ea06183b`, predeclared `970d47a5`,
+failing-first `0784f126`. Care pending/read/focus, native activation,
+stale/restart/refusal/public-refresh controls discriminate: eight compiling
+native faults and actual DOM callback severing fail, all restored exactly.
+Full Garage Chromium/WebKit82/performance1, client9,735/364 explicit browser
+skips/types/build/boundaries/copy/manifest/topology pass. Existing real
+Postgres/WebSocket composed lane adds DOM-adopted care feed with positive
+bound receipt/public state and reload retention, Founder revision5. Test-only
+bundle, no status crossing/announcement/raw-care/minted release claim.
+Firefox connects no session before timeout: zero tests, one error; failed
+teardown stopped. RP-256 remains, no hosted-CI/full-Garage/AT promotion.
+
+**READY FOR CLAUDE:** entire new span after `c7d8f815` THROUGH this tracking
+edge, including predeclaration/tests/repair/tool/docs/ledger/log. All earlier
+ranges stay independently owed. **READY next accepted work:** separately
+predeclare GS0.2 care/shared HTTP and exclusive refusals, actual native
+disabled-until-snapshot and no-retry controls; establish failures before any
+remedy. RP-132/GS4×PA7, RP-318 copy/event, RP-313 and all prior/full-nine-tier
+holds remain. No boxes/status/archive/mint/push or narrowed goal.
+
+## Garage pet review / missing status-event diagnostic — 2026-10-07 (preceding checkpoint)
 
 Original Claude `7a61e4b6^..7a61e4b6`, all eight paths: designated Codex
 CHANGES REQUIRED for existing RP-132/GS4×PA7 author contract conflict, with
@@ -13,7 +35,7 @@ RP-318: actual decoder ignores12 valid pet-band transitions and seven malformed
 payloads. Required announcement key absent; owner-authored copy cannot be
 invented or substituted. No permanent product change.
 
-**READY next accepted work:** predeclare test-only care keyboard/pending/
+**Then-next, now executed above:** predeclare test-only care keyboard/pending/
 reconnect/all exact refusals/refreshed public band+eligibility+Founder revision
 under GS0.2/GS0.5/GS4/PA7. Fixture evidence stays labelled, no private care field
 or owner-prose change. **READY FOR CLAUDE:** exact RP-316 correction
