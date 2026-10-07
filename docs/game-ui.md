@@ -265,7 +265,13 @@ save predates the version that activates it:
 - **`achievements`:** Company v16. Every pinned row, its earned state (`run`, `lifetime` or `null`;
   an overlap fails the projection), and both scores.
 - **`meters`:** Company v16. Committed values with `meters.BandFor` bands; decay is never
-  extrapolated.
+  extrapolated. A non-null arm must contain exactly the meter catalog's eleven
+  required IDs in byte order, with no missing, additional, duplicate or substituted
+  ID. The client decoder reuses `REQUIRED_METER_IDS` from the existing meter
+  catalog and rejects incomplete arms; it does not invent rows, sort incoming
+  data, or substitute values. Each row still has exact keys, bounded safe integers
+  and declared ascending bands. A null arm and stored v1–v3 receipts remain
+  decodable; unavailable band presentation is handled separately by the panel.
 - **`fiscal`:** Founder v19. Persisted credit, period and levels. The `sweep_preview` runs
   `fiscal.Catalog.Sweep` on a discarded clone at canonical server time and equals what the next
   harvest's auto-sweep reports. `next_level_cost` comes from `GeneratorLevelCost`, and

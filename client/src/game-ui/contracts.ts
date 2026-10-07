@@ -1,5 +1,6 @@
 import type { GameUIFeatures, GameUISnapshot, GameUISnapshotV1, GameUISnapshotV2, GameUISnapshotV3 } from "../api/generated/types";
 import { parseCanonical } from "../numeric";
+import { REQUIRED_METER_IDS } from "../meters/catalog";
 import type { AuthoritativeSnapshot, DiscreteFact } from "../shell/contracts";
 
 const mechanicalID = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
@@ -189,7 +190,9 @@ export function parseFeatures(source: unknown): GameUIFeatures {
   if (features.meters !== null) {
     const arm = object(features.meters, "meters arm");
     exact(arm, ["meters"], "meters arm");
-    for (const row of sortedRows(arm.meters, "meter_id", "meter rows")) {
+    const rows = sortedRows(arm.meters, "meter_id", "meter rows");
+    if (rows.length !== REQUIRED_METER_IDS.length || rows.some((row, index) => row.meter_id !== REQUIRED_METER_IDS[index])) throw new SyntaxError("meter rows must contain every required meter ID");
+    for (const row of rows) {
       exact(row, ["band_id", "bands", "max", "meter_id", "min", "value"], "meter row");
       const minimum = integer(row.min, 0), maximum = integer(row.max, minimum);
       integer(row.value, minimum, maximum);

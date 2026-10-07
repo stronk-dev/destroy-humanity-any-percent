@@ -2234,3 +2234,91 @@ exactly before final cold Go/vet and native/client gates. Record surviving
 probes/errors without changing the fixture. Baseline restored hashes:
 contracts43bfd6140dc7479eb800871fbc9225b914fe2a36a4a6364a813cfa4a3eabcb2b;
 server features e344ecee553f1260e1a33802985d98c45970ff6035cd677ebf4548425f61f0fa.
+
+## 2026-10-07 — GS3-A1 negative probes and restored native baseline
+
+Authority/predeclarations: bff97b20 and c5d5220c; failed-first tests
+43ef0a21. Five independent, executable client faults ran through the root
+`make test-client`. These are actual failed admission assertions, not compiler,
+fixture or import errors. Every population retained 446 explicit browser
+skips and 105 collected non-browser files (one failed, 104 passed).
+
+| Transient fault | Run | Failed / passed | Discriminating failure |
+|---|---|---|---|
+| Completeness check disabled | 66328 | 27 / 9,787 | Missing IDs, count-preserving replacements, extra/subset rows and incomplete-input refusal |
+| Count only, ID equality removed | 37878 | 11 / 9,803 | Every count-preserving unknown-ID replacement was admitted |
+| Positional IDs only, length removed | 99706 | 4 / 9,810 | Missing final ID, empty/doom-only prefixes and immutable-input partial refusal |
+| Incoming row copy silently sorted before validation | 82545 | 3 / 9,811 | All three unsorted full-set populations were admitted |
+| Meter value bounds removed | 31646 | 23 / 9,791 | All 22 new lower/upper bounds plus the retained original malformed-arm value check |
+
+Each root command exited 2. The ordering fault is deliberate normalization
+of a copy, not merely bypassing the sorted assertion and relying on another
+ID assertion to reject the same data. None of these faults was committed.
+
+Two separately predeclared producer-control probes ran cold through the root
+Go target with `-count=1 -v -run TestMetersProjectionUsesCompleteCatalogIDs`.
+Omitting the final emitted row (17280) exited 2 at the exact projected-ID
+comparison. Severing the missing-saved-value guard (89370) exited 2 with all
+eleven missing-value subtests failing: each returned an arm with fabricated
+zero instead of nil/ErrInvalidProjection. The map lookup was adjusted to avoid
+an unused-variable compile error; this was an actual behavioral failure.
+No test assertion was relaxed and no producer change was retained.
+
+Restoration: contracts.ts SHA-256
+43bfd6140dc7479eb800871fbc9225b914fe2a36a4a6364a813cfa4a3eabcb2b;
+server/gameui/features.go SHA-256
+e344ecee553f1260e1a33802985d98c45970ff6035cd677ebf4548425f61f0fa.
+Server diff is empty. No source edit occurred during a matching live check.
+
+Clean root types/client/build/boundaries (96059) exited 0: zero type errors
+or warnings; 9,814 passed / 446 explicit browser skips, 105 passing files /
+22 skipped files; client population 14.14 s. Build: 214 modules,
+index-DOWKMmbZ.js; unchanged index-DhbUhBbR.css and prediction.worker-MqspU_iu.js.
+Boundary scan covers 14 shell, 8 UI and 22 Game UI components. Cold root Go
+`./gameui ./meters -count=1 -v` (13144) exited 0; both explicitly reported
+SQL integration skips because TEST_DATABASE_URL is unset. No persisted-proof
+claim. Root vet for those two packages exited 0. Native full Garage and
+copy/topology results follow after their terminal outcomes; no premature pass.
+
+Review by: Codex (self first filter only). Recorded by: Codex. The complete
+new span begins after 5fbf4cff and includes predeclarations, failed-first
+tests, production/docs and final records. Claude's separate designated pass
+is still required. No acceptance checkbox, RFC status, archive, mint, push
+or release claim changed; the full nine-tier 1.0 objective remains active.
+
+## 2026-10-07 — GS3-A1 final native and tracking gates
+
+Root full Garage Chromium/WebKit invocation (44628) exited 0: 246 / 246
+executions, two passing files, 80.28 s including the actual 60-second idle
+population. Its chained, unchanged isolated performance lane passed one
+test / 22 unselected declarations (386 ms test time). This is RP-333's
+null-feature screen guard, not the populated Garage overall AC7. No browser
+assertion or timeout was changed to accommodate the stricter decoder.
+
+One intermediate browser log chunk was tool-truncated (12,053 original
+tokens, 9,000 returned); the later terminal chunk retained all result lines.
+No claim of complete retained module-HTTP trace or all-engine evidence.
+Root copy/content-manifest/topology (88254) exited 0: 658 copy keys,
+unchanged SHA-256 a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings; content manifest valid; 13 topology negative
+controls rejected. No workflow, generated contract, content or balance edit.
+
+The production repair is exactly the existing ID-contract import plus
+count/positional-ID admission after sortedRows; source hashes remain the
+restored values above. Documentation and RP-329 state now distinguish this
+local repair from designated approval and integrated release proof.
+Next safe accepted work: RP-330 / GS3-A3 semantic narrow Meters layout,
+with failed-first header/value association and breakpoint controls; RP-333
+populated performance and the remaining exact guards follow separately.
+RP-331 persisted/default-player witnesses still require Docker capacity
+restoration/recheck. No Docker run or resource cleanup was attempted here.
+
+Review by: Codex (self first filter, not the designated pass). Recorded by:
+Codex. No catalog/kernel/producer/schema/copy/CI mutation survives the probes;
+the landed proof uses existing contracts, retains previous assertions and
+all null/legacy admission paths. The complete new range begins after
+5fbf4cff, including bff97b20/43ef0a21/c5d5220c and production/final records;
+it requires Claude before any acceptance or archival claim. RP-332 exact
+cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime a42406f0..fc911784
+and all preceding ranges remain separately owed. No boxes/status/archive/
+mint/push/release changes; all full-nine-tier 1.0 gates remain in force.
