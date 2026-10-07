@@ -2150,3 +2150,42 @@ Claude must supply its designated verdict. Audit exactfc911784..cc62cea8,
 runtimea42406f0..fc911784 and all earlier ranges remain separately owed.
 All RP-329/330/331/333/Docker/engine/AT/author/body/default-player/platform/
 privacy/numeric/full-nine-tier1.0 holds preserved; goal active/progress.
+
+## 2026-10-07 — GS3-A1 complete meter-ID decoder repair predeclared
+
+Resume clean5fbf4cff. Previous goal turn is progress (whole acceptance audit,
+actual render baseline and RP-332 two-panel correction), not a waiting turn.
+Accepted authority: GS3-A1 rejects missing IDs/out-of-range values/unsorted
+rows, GS0.1 sorted exact arms; RP-329 identifies current admission gap.
+
+One existing production authority already exports REQUIRED_METER_IDS from
+client/src/meters/catalog.ts; the Go catalog enforces the same eleven IDs.
+Import that immutable ID contract into game-ui/contracts.ts, never edit its
+guarded file or add a second list/count/balance version. Tighten only non-null
+meters arms; null/legacy snapshots/valid band declarations remain compatible.
+No API registry/wire producer/schema/kernel/balance/copy/UI/CI change.
+
+Failed-first TS population: derive complete public rows mechanically from
+the existing first-content meter artifact (test input, not deploy-current
+production fallback). 56 declarations: complete/null/immutable controls;
+each11 missing IDs; each11 count-preserving unknown-ID replacements;
+one extra row; empty/doom-only/trust-only subsets; three ordering cuts;
+22 lower/upper value violations; extra/missing row fields. Reconcile the
+existing positive v4 fixture to a complete set and retain its original
+domain/undeclared-band negative checks with full rows, not incidental count
+failures. Add a cold Go producer control over actual projectMeters/pinned
+catalog: exact sorted IDs and refusal of each missing saved value. No DB
+claim. The full shared-v4 producer/decoder fixture criterion remains open.
+
+Record a typed-clean failed baseline before production. Bounded repair uses
+sortedRows plus exact count/ID equality against the exported contract. Seed
+independent compiling faults: omit completeness; retain count only; retain
+positional IDs only without length; omit ordering; omit value bounds. Record
+actual failing assertions/populations and any survivor or instrumentation
+error; restore exact hashes, no edit during a live matching check. Final
+root types/client/build/boundaries and focused cold Go; native Garage remains
+mandatory on the changed decoder, no Docker population until RP-236 repair.
+Complete new span starts5fbf4cff exclusive through final records and requires
+Claude separately from RP-332cc62cea8..5fbf4cff, auditfc911784..cc62cea8 and
+all earlier ranges. No checkbox/status/archive/mint/owner-copy/push. Whole
+nine-tier1.0/engine/AT/author/body/default-player/platform gates stay intact.
