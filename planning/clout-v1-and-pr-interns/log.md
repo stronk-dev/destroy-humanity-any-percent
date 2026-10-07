@@ -1689,3 +1689,25 @@ e0de35 checks both append-only logs against0d866359,120applied/16rejected and
 parses all full observed JSON. Full staged sources/doc/record diffs inspected;
 zero residual runtime mutation, only13 declared paths. Reproduction commands
 and explicit writer boundary now retained in sequence-research.md.
+
+### Sequence range self first-filter
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `0d866359..785c088a`, all13 paths and five commits:
+9974f1d3/eabebf80/83d553ff/eca45c0c predeclaration/corrections, then actual
+observer, full corpus, TS consumer and canonical records785c088a. Complete
+source/doc/record diffs read; report checked byte-exact by actual cold producer,
+all136 full transitions executed in TS,18 selected source hashes recomputed,
+both log prefixes and120/16 outcomes checked separately. Executed failures,
+surviving short-click/Lucky probes and all limits recorded above and in dossier.
+No existing assertion removed; original27AC6 stays red. Zero production/kernel/
+balance/RFC/workflow/oldartifact diff against baseline; no residual mutant.
+
+Decision: bounded continuous action/claim/buff/mode evidence locally validated,
+NOT designated approval, fullCV3/CV4/Clout/AC6/CI/1.0 acceptance. Claude must
+review ENTIRE newspan after0d866359 INCLUDING this edge; prior spans remain
+independent. Next distinct accepted scope is separately predeclared live claim/
+burst persistence/retry/history. No owner/body/representation waiver inferred.
+One compound Git bookkeeping call was metadata-denied; standalone authorized
+add/commit succeeded with no escalation or rewrite. All handles terminal,
+goalactive/progress; no checkbox/status/archive/mint/push/deploy/release call.
