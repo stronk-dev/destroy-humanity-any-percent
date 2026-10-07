@@ -6,7 +6,7 @@ import GameUIApp from "../src/game-ui/GameUIApp.svelte";
 import RunEndSurface from "../src/game-ui/RunEndSurface.svelte";
 import type { ExitOfferSpawnedEvent, GateCrossedEvent, RunEndedEvent } from "../src/game-ui/events";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
-import type { IntentOutcome } from "../src/game-ui/intent-outcome";
+import { GameUIRequestError, type IntentOutcome } from "../src/game-ui/intent-outcome";
 import type { GameUISnapshot } from "../src/api/generated/types";
 import { eraForSnapshot, parseGameUISnapshot, type ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { FEATURES_PRESENTATION } from "../src/game-ui/features-presentation";
@@ -336,6 +336,114 @@ for (const failedRead of [false, true]) {
       expect(runtime.requests).toHaveLength(2);
       expect(runtime.requests[1]).toMatchObject({ kind: "perform_manual_batch", expected_revision: 2 });
     } finally { await unmount(app); target.remove(); }
+  });
+}
+
+// RP-371: native DOM controls and the real host; the runtime double supplies
+// failed reads and ordered recovery messages, not real-service outage evidence.
+async function settleIntentState(): Promise<void> {
+  for (let step = 0; step < 4; step++) {
+    await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync();
+  }
+}
+
+for (const panel of ["desk", "incorporate", "offer"] as const) {
+  for (const unavailable of ["failed_read", "recovering", "resync", "unready"] as const) {
+    it.skipIf(typeof document === "undefined")(`RP-371 ${panel} refuses intents during ${unavailable} and restores fresh consent`, async () => {
+      const { userEvent } = await import("vitest/browser");
+      class RateLimitedReadRuntime extends FixtureRuntime {
+        override async snapshot(): Promise<ParsedGameUISnapshot> {
+          if (this.failSnapshot) { this.snapshotCalls++; throw new GameUIRequestError(429, "rate_limited", "account"); }
+          return super.snapshot();
+        }
+      }
+      const runtime = new RateLimitedReadRuntime(true, unavailable !== "unready");
+      if (panel === "incorporate") runtime.current = { ...snapshot, run: { ...snapshot.run, tier: 2 }, transitions: {
+        cross_gate: null, wind_down: { eligible: true },
+        incorporate: { factions: [{ copy_key: "incorporate.bootstrapper", faction_id: "bootstrapper" }] },
+      } };
+      const fixtureEra = eraForSnapshot(runtime.current);
+      const target = document.createElement("div"); document.body.append(target);
+      const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+      const controls = (): HTMLButtonElement[] => panel === "offer"
+        ? [...target.querySelectorAll<HTMLButtonElement>(".surface > button")]
+        : [target.querySelector<HTMLButtonElement>(".manual button")!,
+          ...target.querySelectorAll<HTMLButtonElement>("section[aria-labelledby='generators-heading'] button, section[aria-labelledby='upgrades-heading'] button"),
+          ...[...target.querySelectorAll<HTMLButtonElement>(".desk button")].filter((button) =>
+            button.textContent === t("desk.cross_gate", {}, fixtureEra) ||
+            panel === "incorporate" && (button.closest(".incorporate") !== null || button.textContent === t("desk.wind_down", {}, fixtureEra)))];
+      try {
+        await settleIntentState();
+        if (panel === "offer") { app.fixtureOffer(offer); await settleIntentState(); }
+        expect(controls()).toHaveLength(panel === "offer" ? 2 : panel === "incorporate" ? 6 : 5);
+        if (unavailable !== "unready") expect(controls().every((button) => !button.disabled)).toBe(true);
+        if (unavailable === "failed_read") {
+          runtime.failSnapshot = true; runtime.listener?.({ kind: "receipt" });
+        } else if (unavailable === "recovering") runtime.listener?.({ kind: "transport_recovering" });
+        else if (unavailable === "resync") app.fixtureSystem("resync");
+        await settleIntentState();
+        expect(controls().every((button) => button.disabled), "all eligible intent controls must refuse stale state").toBe(true);
+        const stale = target.querySelector<HTMLElement>(".snapshot-stale")!;
+        expect(stale?.textContent).toBe(t("common.stale_note", {}, fixtureEra));
+        expect(stale.getBoundingClientRect().height).toBeGreaterThan(0);
+        if (panel !== "offer") expect(target.textContent).toContain(t("desk.owned_frame", { count: 1 }, fixtureEra));
+        if (unavailable === "failed_read") {
+          runtime.listener?.({ kind: "transport_recovered" }); await settleIntentState();
+          expect(controls().every((button) => button.disabled), "socket readiness cannot erase a failed authoritative read").toBe(true);
+          expect(target.querySelector(".snapshot-stale")).not.toBeNull();
+        }
+        const blocked = controls()[0];
+        blocked.focus(); await userEvent.keyboard("{Enter}");
+        // Also exercise the host guard rather than relying only on disabled DOM.
+        blocked.dispatchEvent(new MouseEvent("click", { bubbles: true })); await settleIntentState();
+        expect(runtime.requests).toHaveLength(0);
+        const settings = [...target.querySelectorAll<HTMLButtonElement>("nav button")].find((button) => button.textContent === t("surface.settings.title", {}, fixtureEra))!;
+        expect(settings.disabled).toBe(false);
+        if (panel !== "offer" && fixtureEra === "era_1995") {
+          const pretendOrder = [...target.querySelectorAll<HTMLButtonElement>(".desk button")].find((button) => button.textContent === t("satire.order_form.place_order", {}, fixtureEra))!;
+          expect(pretendOrder.disabled).toBe(false); pretendOrder.click(); await settleIntentState();
+          expect(runtime.requests).toHaveLength(0);
+        }
+        runtime.failSnapshot = false;
+        runtime.current = { ...runtime.current, revision: 2, founder_revision: 3,
+          generators: runtime.current.generators.map((row) => ({ ...row, owned: 9 })) };
+        runtime.listener?.({ kind: "snapshot", value: runtime.current });
+        runtime.listener?.({ kind: "transport_recovered" }); await settleIntentState();
+        expect(target.querySelector(".snapshot-stale")).toBeNull();
+        expect(controls().every((button) => !button.disabled)).toBe(true);
+        if (panel !== "offer") expect(target.textContent).toContain(t("desk.owned_frame", { count: 9 }, fixtureEra));
+        const fresh = controls()[0]; fresh.focus(); await userEvent.keyboard("{Enter}"); await settleIntentState();
+        expect(runtime.requests).toHaveLength(1);
+        expect(runtime.requests[0]).toMatchObject({ kind: panel === "offer" ? "accept_exit_offer" : "perform_manual_batch", expected_revision: 2 });
+        if (panel === "offer") expect(runtime.requests[0]).toMatchObject({ expected_founder_revision: 3, offer_id: offer.payload.offer_id });
+      } finally { await unmount(app as never); target.remove(); }
+    });
+  }
+}
+
+for (const completion of ["failed_read", "recovering", "healthy"] as const) {
+  it.skipIf(typeof document === "undefined")(`RP-371 queued distinct action rechecks ${completion} after the preceding action`, async () => {
+    const { userEvent } = await import("vitest/browser");
+    const runtime = new FixtureRuntime(true);
+    let releaseIntent = () => {};
+    runtime.intentBlock = new Promise<void>((resolve) => { releaseIntent = resolve; });
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } });
+    try {
+      await settleIntentState();
+      const manual = target.querySelector<HTMLButtonElement>(".manual button")!;
+      manual.focus(); await userEvent.keyboard("{Enter}"); await settleIntentState();
+      expect(runtime.requests).toHaveLength(1);
+      const buy = target.querySelector<HTMLButtonElement>("section[aria-labelledby='generators-heading'] button")!;
+      buy.dispatchEvent(new MouseEvent("click", { bubbles: true })); await settleIntentState();
+      expect(runtime.requests).toHaveLength(1);
+      runtime.current = { ...snapshot, revision: 2 };
+      runtime.failSnapshot = completion === "failed_read";
+      if (completion === "recovering") runtime.listener?.({ kind: "transport_recovering" });
+      releaseIntent(); await settleIntentState();
+      expect(runtime.requests).toHaveLength(completion === "healthy" ? 2 : 1);
+      if (completion === "healthy") expect(runtime.requests[1]).toMatchObject({ kind: "buy_generator", expected_revision: 2 });
+    } finally { releaseIntent(); await settleIntentState(); await unmount(app); target.remove(); }
   });
 }
 

@@ -425,7 +425,14 @@ that authoritative refresh. Pending controls cannot reactivate while it is held;
 the response never retries the rejected command. A subsequent player action
 uses the refreshed revision and a fresh intent ID. Native care controls retain
 focus and `aria-disabled` pending semantics during that read.
-Only transport failures and 401/404/5xx mark the UI offline.
+Transport failures and 401/404/5xx intent errors mark the UI offline. Any failed authoritative
+refresh also leaves the last snapshot stale: Desk and Offer mutation controls stay disabled with
+the existing `common.stale_note` visible. The shared intent dispatcher checks readiness both
+before queueing and after waiting for an action/read, so a queued action cannot submit from
+known-unavailable state. Founder controls also require a ready transport. Socket recovery alone cannot clear
+a failed-read/command state; a successfully bound authoritative snapshot must do that. Navigation,
+presentation-only satire buttons and the explicit next-run read remain usable. No automatic
+command retry or rate-limit change is introduced; this is failure handling, not a throughput fix.
 
 The
 `transitions.wind_down.eligible` preview applies the same read-only MA-C12 active-minigame

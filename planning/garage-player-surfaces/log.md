@@ -6030,3 +6030,39 @@ Next: RP-371 native reconnect-state regression/fix under GS0.5; separately propo
 request-throughput contract, not an arbitrary larger bucket or automatic retries. RP-368 and
 the full nine-tier floor remain open. Review by: Codex (first-filter); Recorded by: Codex.
 Exact range afterb6a13c79 through this batch needs designated review; no archive/push/full CI.
+
+## 2026-10-07 — RP-371 stale-state intent protection (GS0.5)
+
+The host now disables Desk/Offer mutation controls with the existing stale note, includes
+transport readiness in shared Founder controls, and guards `act` before/after action/read waits.
+Failed refresh/ambiguous command/continuation reads require a successfully bound snapshot;
+socket recovery cannot erase that failure. Normal queued actions still bind the current revision.
+Navigation, satire-only buttons and explicit next-run reads remain usable. No limiter, retry,
+deadline, wire, copy, kernel or CI change. Docs and the current plan describe this behavior.
+
+Verification (root commands; sessions terminal before source/record edits):
+- `client/node_modules/.bin/vitest run --root client --config vitest.browser.config.ts --project
+  chromium --project webkit test/game-ui-screens-browser.test.ts -t RP-371`: old host25121 has28
+  failures/2 healthy-control passes; corrected38324 has30 PASS. Initial71921 cannot bind loopback,
+  no tests executed. Intermediate97057's8 failures are a test's wrong era-specific Settings label;
+  lookup corrected to the fixture's era, no production/assertion bound weakened.
+- Same browser command without `-t`, adding `test/garage-surfaces-browser.test.ts`,
+  `test/cosmetic-host-browser.test.ts`, `test/reputation-host-browser.test.ts` and
+  `test/garden-host-browser.test.ts`:30806 has1062 PASS/4 declared performance-only skips.
+  `make typecheck`40621:0 errors/warnings; `make build-client`38413:214 modules, PASS.
+- `make test-game-ui-composed`91995:8/8 real Postgres refresh cases, persisted Fiscal/epoch/boards,
+  main purchase/achievement/opportunity/Fiscal/Pitch, both endings/continuation/socket recovery,
+  and Cosmetic/adoption/care/reloads all PASS. Main85 requests/12.091s; Cosmetic N5:70/no violation.
+- Unchanged `node client/tools/test-game-ui-composed.mjs --observe-manual-budget`37825: valid
+  serial minute profiles. Two Hz:114 applied,116 successful reads,6 nonactivations,zero429;
+  elapsed60,004.718ms/max lateness5.968ms. Four Hz:132 applied,133 successful reads,four read429,
+  one intent429,107 nonactivations; elapsed60,002.201ms/max lateness21.073ms; first429 at24.566s.
+  No stale rejections; post-stop Postgres has246 applied records, matching114+132. These are
+  negative workload findings, not sustained-input acceptance or resolution of RP-368. Earlier
+  measurements/populations remain in the preceding entry; timing/count differences are not
+  attributed to a cause. Owned listeners absent, fixture other DB sessions0, diff check passes.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after826b7e9e through
+this batch's commit needs designated review; no acceptance/archival/push/full-CI/1.0 claim.
+Next: action/request-throughput contract; rate refusal is still a player-flow defect. Other
+Garage, owner, privacy, numeric, deployment and full nine-tier release obligations remain open.

@@ -7,13 +7,13 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint: GS1-A1 persisted boundary and shared Go→TS v4 projection are locally
-proven; AC2's five invalid-fixture classes execute against that same snapshot. GS2-A4
-acquisition proof remains. Commands, fault/restoration and limits: latest `log.md`.
-Real-server Fiscal invalid/stale refusals and fresh consent now pass; latest whole composed
-target passes too. RP-365's separate pause regression still requires D-024's shared-clock choice.
-Designated review remains; GS3-A4/RP-363 is author-blocked.
-RP-364 Buy diagnostics do not establish the original intermittent timeout's cause.
+Current checkpoint: RP-371 stale-state controls are locally corrected under GS0.5. Focused
+old-behavior regressions fail; corrected native host checks, affected surfaces, type/build and
+the real composed journey pass. Sustained native input produces no stale submissions but still
+hits rate limits and misses activations: RP-368 is OPEN, not repaired by disabling controls.
+Next: resolve the action/request-throughput contract without guessing a larger limit or replaying
+commands. The latest `log.md` owns commands, results and review range. Designated review and full
+Garage acceptance remain; RP-365/D-024, GS3-A4/RP-363 and the original RP-364 timeout remain open.
 
 Historical checkpoint before the GS2 supplement: RP-362/363 fired a real initial-meter authority conflict;
 GS3-A4 asks fresh Standing50, actual bootstrap assembles90/high via published

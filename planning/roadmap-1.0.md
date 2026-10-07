@@ -9,12 +9,12 @@ preservation obligations as the gameplay. This is the long-term goal, not a clai
 concurrent reads (RP-369) and late receipt duplicate reads (RP-370) are locally corrected,
 with regressions and real main-journey evidence.
 The latest whole composed target passes after fixing the observed Cosmetic driver activation
-race (RP-364). Its original untraced timeout and the instrumented Pitch `429` (RP-368) remain
-open; a different random passing population does not prove reliability or repair the limiter.
-Sustained native research now exposes the shared budget: two Hz works for a minute, while
-four Hz exhausts reads near19s and then sends stale commands (RP-371). This does not adopt a
-four-Hz floor. Next: honor the accepted reconnect state, then resolve the throughput contract;
-do not raise the limit or hide failures with retries. The Garage log retains invalid measurements.
+race (RP-364) and stale-state controls (RP-371). Its original untraced timeout and the instrumented
+Pitch `429` (RP-368) remain open; a different passing population does not prove reliability or
+repair the limiter. New sustained native research records no stale submissions after RP-371,
+but still finds rate refusals and nonactivating inputs. This does not adopt a four-Hz floor or
+prove sustained play solved. Next: resolve the throughput contract, not raise the limit or hide
+failures with retries. The Garage log owns measurements and their limits.
 [Garage log](garage-player-surfaces/log.md) and [API log](api-foundation/log.md) own exact
 results and next diagnosis. Do not increase the limiter or retry to conceal failures. Full CI and nine-tier release
 obligations remain open; browser renewal has not been accepted.

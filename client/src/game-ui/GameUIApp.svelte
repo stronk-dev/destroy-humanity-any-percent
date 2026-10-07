@@ -52,6 +52,9 @@
   let refreshPending = $state(false);
   const pending = $derived(actionPending || refreshPending);
   let offline = $state(false);
+  // Socket readiness cannot prove that a failed HTTP read/command left our
+  // revisions current. Only a successfully bound authoritative snapshot can.
+  let needsAuthoritativeSnapshot = false;
   let draining = $state(false);
   let resyncing = $state(false);
   let transportReady = $state(false);
@@ -140,6 +143,7 @@
       transportReady = false;
       unsubscribe = runtime.subscribe(value.run.founder_id, consumePublication);
     }
+    needsAuthoritativeSnapshot = false;
     offline = false;
   }
 
@@ -148,7 +152,7 @@
     refreshPending = true;
     refreshTask = (async () => {
       try { bindSnapshot(await runtime.snapshot()); return true; }
-      catch { offline = true; return false; }
+      catch { needsAuthoritativeSnapshot = true; offline = true; return false; }
       finally { refreshPending = false; refreshTask = undefined; }
     })();
     return refreshTask;
@@ -173,7 +177,7 @@
     // Capture before any queue/read await: completion belongs to the submitter,
     // not whichever panel the player selects while the response is in flight.
     const noticeOwner = surface;
-    if (!snapshot) return;
+    if (!snapshot || !commandControls) return;
     if (options.scope === "founder" && founderRevision === undefined) return;
     const kind = typeof body.kind === "string" ? body.kind : "";
     if (actionTask) {
@@ -183,7 +187,8 @@
     // A click that raced an ordered event/receipt refresh must not disappear.
     // Finish that authoritative refresh, then bind the intent to its revision.
     if (refreshTask) await refreshTask;
-    if (!snapshot || actionTask) return;
+    if (!snapshot || actionTask || !commandControls) return;
+    if (options.scope === "founder" && founderRevision === undefined) return;
     actionPending = true;
     activeActionKind = kind;
     const task = (async () => {
@@ -222,7 +227,7 @@
         if (notice.invariant) console.error("game UI invariant: invalid intent response");
         intentNotice = notice.notice;
         options.failed?.(error);
-        if (notice.effect === "offline") offline = true;
+        if (notice.effect === "offline") { needsAuthoritativeSnapshot = true; offline = true; }
         else if (notice.effect === "refresh") void refresh();
       }
       finally {
@@ -268,7 +273,7 @@
         && (document.activeElement === focusedOrigin || document.activeElement === document.body)) {
         root?.querySelector<HTMLElement>("#desk-heading")?.focus();
       }
-    } catch { offline = true; }
+    } catch { needsAuthoritativeSnapshot = true; offline = true; }
     finally { actionPending = false; }
   }
 
@@ -288,7 +293,7 @@
   function consumePublication(message: GameUIRuntimeMessage): void {
     if (message.kind === "transport_closed") { offline = true; transportReady = false; subscribedFounderID = undefined; unsubscribe(); return; }
     if (message.kind === "transport_recovering") { offline = true; transportReady = false; return; }
-    if (message.kind === "transport_recovered") { offline = false; transportReady = true; draining = false; resyncing = false; return; }
+    if (message.kind === "transport_recovered") { offline = needsAuthoritativeSnapshot; transportReady = true; draining = false; resyncing = false; return; }
     if (message.kind === "snapshot") { bindSnapshot(message.value); draining = false; resyncing = false; return; }
     if (message.kind === "historical_event") return;
     // A terminal command persists run_ended and run_started in one ordered
@@ -524,7 +529,8 @@
       });
     }
   });
-  const founderControls = $derived(founderRevision !== undefined && !offline && !resyncing);
+  const commandControls = $derived(transportReady && !offline && !resyncing);
+  const founderControls = $derived(founderRevision !== undefined && commandControls);
 
   function exitTitle(exitType: string): string { return t(requirePresentation(GAME_UI_PRESENTATION.exitTypes, exitType).title_key, {}, era); }
 
@@ -580,7 +586,7 @@
   {/if}
 
   {#if snapshot}<p class="announcement" role="status">{announcement}</p>{/if}
-  {#if snapshot && (surface === "achievements" || surface === "meters") && (offline || resyncing || !transportReady)}
+  {#if snapshot && (surface === "desk" || surface === "offer_sheet" || surface === "achievements" || surface === "meters") && !commandControls}
     <p class="snapshot-stale">{t("common.stale_note", {}, era)}</p>
   {/if}
   {#if snapshot && surface !== "fiscal" && surface !== "pet"}<p class="intent-notice" role="status">{intentNoticeOwner === surface && intentNotice && !(surface === "reputation_tree" && reputationFeedback) ? t(intentNotice, {}, era) : ""}</p>{/if}
@@ -626,9 +632,9 @@
         <p>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).description_key, {}, era)}</p>
         <label>{t("desk.manual.meter_label", {}, era)} <meter min="0" max={snapshot.manual_action.bucket_cap_milli} value={visibleManualTokensMilli()}></meter></label>
         <output>{t("desk.manual.meter_frame", { current: Math.floor(visibleManualTokensMilli() / 1000), cap: Math.floor(snapshot.manual_action.bucket_cap_milli / 1000) }, era)}</output>
-        <button type="button" disabled={pending} title={t("desk.manual.meter_tooltip", {}, era)} onclick={() => act({ kind: "perform_manual_batch", action_id: snapshot!.manual_action.action_id, count: 1, window_ms: 1 })}>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).title_key, {}, era)}</button>
+        <button type="button" disabled={pending || !commandControls} title={t("desk.manual.meter_tooltip", {}, era)} onclick={() => act({ kind: "perform_manual_batch", action_id: snapshot!.manual_action.action_id, count: 1, window_ms: 1 })}>{t(requirePresentation(GAME_UI_PRESENTATION.manualActions, snapshot.manual_action.action_id).title_key, {}, era)}</button>
       </section>
-      <OpportunityRegion arm={liveFeatures?.opportunity ?? null} {era} {pending} controlsEnabled={transportReady && !offline && !resyncing} {lastClaim}
+      <OpportunityRegion arm={liveFeatures?.opportunity ?? null} {era} {pending} controlsEnabled={commandControls} {lastClaim}
         onClaim={(opportunityID) => act({ kind: "claim_opportunity", opportunity_id: opportunityID }, { rejections: OPPORTUNITY_REJECTIONS, applied: claimApplied })} />
 
       <section aria-labelledby="resources-heading">
@@ -651,7 +657,7 @@
               <Amount value={generator.next_cost} era={era} />
               {#if generator.provisioned > 0}<span>{t("desk.provisioned_frame", { count: generator.provisioned }, era)}</span>{/if}
               {#if "provision_cap" in generator && generator.provision_cap !== null && generator.provisioned >= generator.provision_cap.amount}<span>{t(generator.provision_cap.reason_key as CopyKey, {}, era)}</span>{/if}
-              <div><button type="button" disabled={pending || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "exact", value: 1 } })}>{t("desk.buy_one", {}, era)}</button><button type="button" disabled={pending || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "max" } })}>{t("desk.buy_max", {}, era)}</button></div>
+              <div><button type="button" disabled={pending || !commandControls || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "exact", value: 1 } })}>{t("desk.buy_one", {}, era)}</button><button type="button" disabled={pending || !commandControls || generator.max_affordable < 1} onclick={() => act({ kind: "buy_generator", generator_id: generator.generator_id, count: { mode: "max" } })}>{t("desk.buy_max", {}, era)}</button></div>
             </article>
           {/each}
         </div>
@@ -663,7 +669,7 @@
         <div class="cards">
           {#each snapshot.upgrades as upgrade (upgrade.upgrade_id)}
             {@const presentation = upgradePresentation(upgrade.upgrade_id)}
-            <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} />{#if upgrade.owned}<strong>{t("desk.upgrade.owned", {}, era)}</strong>{/if}<button type="button" disabled={pending || !upgrade.eligible || upgrade.owned} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
+            <article class="card"><h3>{t(presentation.title_key, {}, era)}</h3><p>{t(presentation.description_key, {}, era)}</p><Amount value={upgrade.cost_amount} era={era} />{#if upgrade.owned}<strong>{t("desk.upgrade.owned", {}, era)}</strong>{/if}<button type="button" disabled={pending || !commandControls || !upgrade.eligible || upgrade.owned} onclick={() => act({ kind: "buy_upgrade", upgrade_id: upgrade.upgrade_id })}>{t("desk.buy_one", {}, era)}</button></article>
           {/each}
         </div>
       </section>
@@ -690,18 +696,18 @@
         {@const transitions = snapshot.transitions}
         <section class="card">
           {#if transitions.cross_gate}
-            <button type="button" disabled={pending || !transitions.cross_gate.eligible} onclick={() => act({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null })}>{t("desk.cross_gate", {}, era)}</button>
+            <button type="button" disabled={pending || !commandControls || !transitions.cross_gate.eligible} onclick={() => act({ kind: "cross_gate", gate_id: transitions.cross_gate!.gate_id, route_id: null })}>{t("desk.cross_gate", {}, era)}</button>
           {/if}
           {#if transitions.incorporate}
             <fieldset class="incorporate">
               <legend>{t("incorporate.panel.title", {}, era)}</legend>
               <p>{t("incorporate.panel.hint", {}, era)}</p>
               {#each transitions.incorporate.factions as row (row.faction_id)}
-                <button type="button" disabled={pending} onclick={() => act({ kind: "incorporate", faction_id: row.faction_id })}>{t(declaredCopyKey(row.copy_key), {}, era)}</button>
+                <button type="button" disabled={pending || !commandControls} onclick={() => act({ kind: "incorporate", faction_id: row.faction_id })}>{t(declaredCopyKey(row.copy_key), {}, era)}</button>
               {/each}
             </fieldset>
           {/if}
-          <button type="button" disabled={pending || !transportReady || !transitions.wind_down.eligible || founderRevision === undefined} onclick={() => act(withPlan({ kind: "wind_down", expected_founder_revision: founderRevision }))}>{t("desk.wind_down", {}, era)}</button>
+          <button type="button" disabled={pending || !founderControls || !transitions.wind_down.eligible} onclick={() => act(withPlan({ kind: "wind_down", expected_founder_revision: founderRevision }))}>{t("desk.wind_down", {}, era)}</button>
           {#if liveFeatures?.reputation && transitions.wind_down.eligible}<ReputationPlanPanel arm={liveFeatures.reputation} {era} previewDelta={0} onChange={(plan) => { exitPlan = [...plan]; }} />{/if}
         </section>
       {/if}
@@ -738,8 +744,8 @@
       {#each renderPrestigeTermRows(offer.payload.payout_preview, era) as row}<p>{row}</p>{/each}
       <p title={t("screen.offer_sheet.countdown_tooltip", {}, era)}>{t("screen.offer_sheet.countdown_frame", { remaining: duration(offer.payload.expires_at_ms - estimatedServerNowMS()) }, era)}</p>
       {#if liveFeatures?.reputation}<ReputationPlanPanel arm={liveFeatures.reputation} {era} previewDelta={offer.payload.payout_preview.reputation_delta} onChange={(plan) => { exitPlan = [...plan]; }} />{/if}
-      <button type="button" disabled={pending || !transportReady || founderRevision === undefined} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
-      <button type="button" disabled={pending} onclick={() => act({ kind: "decline_exit_offer", offer_id: offer!.payload.offer_id })}>{t("screen.offer_sheet.decline", {}, era)}</button>
+      <button type="button" disabled={pending || !founderControls} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
+      <button type="button" disabled={pending || !commandControls} onclick={() => act({ kind: "decline_exit_offer", offer_id: offer!.payload.offer_id })}>{t("screen.offer_sheet.decline", {}, era)}</button>
     </section>
   {:else if surface === "run_end" && ended}
     <RunEndSurface {ended} />
