@@ -1622,3 +1622,15 @@ tick, not per second, and this short declared sequence crosses no tick.
 Plan correction predeclares exact-zero short controls versus positive long
 controls, all16 original sequences retained. No observed output edited, no
 source/runtime/balance waiver or corpus published. Corrected run not yet made.
+
+### Sequence constructor failure — attended-clock instrument assumption
+
+4068/be498e and diagnostic66723/122058 both terminate exit2 before corpus
+publication. Diagnostic original building buff activated3262/expires5262
+survives the long-gap sequence: final5001ms is greater than the declared
+5000ms catchup ceiling, so RecordOfflineSpan correctly pauses attended time
+across that gap. Actual policy read directly; no runtime defect inferred.
+Plan now predeclares exact5000ms final delay and report/observer identity
+checks plus prestige source pins. Keep expiry assertion, all16 populations,
+128 command attempts and48 refusals. No production/balance/owner-policy edit.
+This correction is not yet executed or claimed successful.

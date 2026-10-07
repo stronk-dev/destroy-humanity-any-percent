@@ -695,3 +695,18 @@ every row still requires positive actual permits. Short absence is now an
 asserted negative control, not an excluded case. No runtime/catalog/accepted
 mechanic/AC6 acceptance bound changes. Original declared assumption and failed
 attempts remain in the append-only log; actual tick is also retained in report.
+
+### Sequence instrument correction — final attended-clock boundary
+
+Corrected provision runs4068/be498e and diagnostic66723/122058 fail before
+publication at original buff expiry. The planned final5001ms gap exceeds the
+pinned5000ms catchup ceiling: RecordOfflineSpan correctly records the whole
+gap, leaving attended time paused. For building/90000000/online-offline-online
+the buff remains activated3262/expires5262, with one merged offline span to
+the final command. This is a mistaken instrument clock, not a product defect.
+Before another experiment, change ONLY the final command delay to the exact
+catalog catchup ceiling5000ms and assert its identity in both observers/report.
+Keep all16 effects/gaps/mode paths/eight commands/refusals and the original
+buff-expiry assertion. Add prestige runtime and its phase0 artifact source
+pins. No balance, attendance policy, evaluation mode, expiry duration, output,
+production byte or acceptance limit changes. Original failed runs retained.
