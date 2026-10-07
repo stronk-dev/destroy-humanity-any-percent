@@ -2061,3 +2061,26 @@ Test-first checkpoint carries only diagnostic/tests/ledger/records. Separate
 implementation predeclaration follows before any production bytes. Existing
 tests unchanged; audit exactfc911784..cc62cea8 remains independent. New
 error range startscc62cea8 exclusive through final records, requires Claude.
+
+## 2026-10-07 — RP-332 implementation step predeclared
+
+Failed-first532855fe; accepted GS0.5/GS2/GS3. Only AchievementsSurface and
+MetersSurface production bytes plus canonical docs/ledger/records: derive
+required-mapping availability before rendering their values; show existing
+common.surface_error alert beneath the unchanged heading on failure; one
+fixed invariant on entering error, not on unchanged snapshot/tick; healthy
+authoritative refresh restores content. Existing closed mapping guards stay
+as defense-in-depth; no fallback values/strings, timer/retry/network or new
+copy. Component-local containment, not a catch-all that hides other defects.
+
+Verify typed-clean targeted native then full existing Garage Chromium/WebKit
+population/performance, full client/types/build/boundaries. Independent
+compiling fault probes: suppress error branch in each panel; omit alert
+semantics; suppress invariant; fail to reset episode diagnostic on recovery.
+Each must fail an intended behavioral assertion; restore exact production
+hashes before final gates, no source mutation during a live check. Original
+failed render baseline is also a demonstrated severing case. Record survivors
+or instrumentation mistakes, never loosen assertions/budgets. No Docker run,
+schema/kernel/balance/owner-copy/host/semantic reflow/missing-ID repair.
+All-engine/AT/composed/default-player/body/review/full1.0 remain open. Whole
+new span aftercc62cea8 through final records requires Claude, not self-approval.
