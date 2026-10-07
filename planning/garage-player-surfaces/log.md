@@ -3698,6 +3698,30 @@ default-player/privacy/platform/numeric/full-nine-tier1.0/review holds remain.
 Goal active/progress, not complete/blocked; no push/deploy/mint/release/
 shortened-preview substitution.
 
+## 2026-10-07 — GS3 reconnect values/disclosure failed-first predeclaration
+
+At4b2fd904 clean checkout. Previous turn progressed RP-342 measured diagnosis/
+draft; no startup Retry ruling or cleanup answer received. New TEST-ONLY range
+under accepted GS3/GS0.5, not the startup draft. Native Chromium/WebKit320/1280,
+public decoder-admitted distinct eleven-value Meters arm. Native Enter nav
+selection, then recovering/closed/resync/restart and independent not-ready-
+alone (HTTP snapshot exists, subscriber has not reported recovery). Ten
+declarations/twenty native executions. Require visible common.stale_note,
+exact per-ID native meter/value/band associations in wide and narrow layouts,
+last values unchanged through350ms real native elapsed, no intents/focus theft.
+Recovery clears marker without changing values; only delivered valid newer
+snapshot changes all values/bands. Native axe/reflow/read-only checks retained.
+
+No missing-note defect claimed from source alone. Run actual red baseline
+before correction; file its ledger observation. Later accepted host note repair
+requires separate product predeclaration, not expansion of test-only scope.
+No source/copy/clock/transport/balance/kernel/CI/Make/RFC body/threshold change,
+all old tests intact. Not real service/SQL/default-player/all-state/all-engine/
+manual AT/actual zoom/full GS3/1.0 proof. Complete new span after4b2fd904 needs
+Claude independently ofa551d3c2..4b2fd904 and every earlier span. Linux/SQL
+capacity/Firefox/privacy/platform/body/full1.0/review holds stay live; no
+cleanup/delete/push/archive or startup authority inferred.
+
 ## 2026-10-07 — RP-342 first-read truth audit predeclaration
 
 At a551d3c2 clean checkout. Previous turn progressed committed host repair
