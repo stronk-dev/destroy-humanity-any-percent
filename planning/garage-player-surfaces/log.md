@@ -5153,3 +5153,36 @@ f5be35f6-exclusive through this entry's containing commit needs Claude, includin
 all predeclaration/record edges; Fiscal c24b8f6d..fc901f70, research
 fc901f70..f5be35f6 and every earlier span independently owed. No archival gate
 or approval has been consumed; plan boxes/status remain unchanged.
+
+### RP-356 — separately predeclared connection-state test-first audit
+
+Baseline85b8e826, healthy host9cb074e5/Opportunity388d35a9/driver95e0adff/theme
+e5874677. Accepted GS5 states explicitly consume GS0.5 within the region: last
+authoritative values stay visible, reconnect is offline/resyncing/!transportReady,
+all intent controls disabled and common.stale_note visible. No new readiness
+policy, credential/startup Retry choice or authority over RP-313 inferred.
+
+Test-only scope: existing native driver plus records. Five paths (recovering,
+closed, resync, restart, not-ready-alone) ×width320/1280 ×two independent
+properties (Claim availability, exact visible regional stale disclosure) =20
+declarations/40 Chromium-WebKit executions. Controlled subscribe emits no
+automatic recovered signal, so HTTP snapshot reception cannot accidentally mask
+the unready state. Actual public decoder; initial offer/body/attended seconds and
+buff values retained before/after an actual350ms wait, no display-clock jump.
+Independent property cases prevent a missing stale line masking the availability
+defect. Native HTML button.click is used ONLY to probe disabled dispatch; this
+is not sold as keyboard/assistive evidence. No request/read caused by waiting.
+Receive next decoded Company2/Founder8 snapshot while transport still unready:
+latest authoritative values appear but Claim/reason remain in reconnect state.
+Explicit recovered signal clears reason/enables Claim without focus theft; one
+native Tab + Enter at320/Space at1280 then sends exact fresh Company2 Claim body.
+These are two key/width pairings, NOT a full key×width factorial.
+
+Root types and full targeted population must finish before any separate product
+repair scope. Expected baseline failure is a hypothesis, not a verdict. Subsequent
+repair, if justified, must keep props/keys/current public wire/backend/math/clock/
+scheduler/copy/lifecycle unchanged and demonstrate source faults removing the
+ready gate, stale text/visibility, or committed-value/update binding. No budgets,
+retries/CI/exclusions/dependencies/owner wording/status/boxes/archive/push/mint.
+Whole current span after85b8e826 and every older span needs designated Claude
+review; prior green40/full734 remain at their own exact source coordinates.
