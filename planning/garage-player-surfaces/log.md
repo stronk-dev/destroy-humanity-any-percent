@@ -6114,3 +6114,28 @@ its separate fixture; the Cosmetic log owns that correction and cannot close thi
 Next: observe the exact Fiscal input/focus/pending/request/response boundary before correcting
 anything. No retry, deadline/limiter increase, server-hang inference or RP-172 attribution.
 Review by: Codex (observation); Recorded by: Codex. No acceptance, archival or full-CI claim.
+
+## 2026-10-07 — RP-378 passive input/request failure trace
+
+Test-only driver now records bounded trusted focus/Enter/click events with control state,
+host pending, Fiscal phase and response/request-failure counts. Failure reports the exact
+invalid/stale arm without printing tokens, request bodies or changing native input, clocks,
+deadlines, assertions or gameplay. Syntax/diff PASS; no unrelated suites required.
+
+Ordinary `make test-game-ui-composed`68777 PASS:8 refresh cases/all7 persisted parents,
+actual invalid400/stale200 notices/refusal invariants and fresh consent, GS2 purchase/event,
+GS5 production buff,5 Pitch commands, both terminal states/continuation/recovery and Cosmetics.
+Main114 requests/15.534s; Cosmetic75/N5 no violation/9.021s. This different passing population
+does not resolve15953's untraced timeout or the existing rate/care/CI defects.
+
+Temporary test-only preventDefault on the refusal's Enter82669 exits1 after the unchanged
+30-second deadline. Trace shows initial setup click then trusted focus/key down/up, enabled
+guaranteed harvest, busy false, but emitted0/routed0/reads0/responses0: missing activation,
+not a server hang. This validates diagnostics, not the historical cause. Probe removed;
+restored SHA256 cc0d7b7bf0e95b4d8e9311ffccec3b8ac27114245747b1ab42d7b5e302d83dcd matches
+the ordinary passing driver exactly. Final syntax/diff PASS; owned ports/other DB sessions0.
+
+Review by: Codex (implementer first filter); Recorded by: Codex. Exact range after9818e589
+through this batch needs designated review, independently of older implementation spans.
+RP-378 remains OPEN; next recurrence gets this trace, not a speculative fix or retry. Other
+accepted work continues. No archive/push/full-CI or nine-tier1.0 completion claim.

@@ -482,7 +482,7 @@ async function witnessFiscalServerRefusals(page, accessToken) {
   for (const arm of ["invalid", "stale"]) {
     const before = await founderState(accessToken), era = eraForSnapshot(before);
     if (before.founder_revision <= 1) throw new Error("stale Fiscal control requires an older positive revision");
-    const requests = [], reads = [], diagnostics = [], routed = [];
+    const requests = [], reads = [], diagnostics = [], routed = [], responses = [], failedRequests = [];
     const observeRequest = (request) => {
       const pathname = new URL(request.url()).pathname;
       if (pathname === "/api/v1/intents" && request.method() === "POST") requests.push(request);
@@ -490,6 +490,13 @@ async function witnessFiscalServerRefusals(page, accessToken) {
     };
     const observeConsole = (message) => {
       if (message.type() === "error" && message.text().startsWith("game UI invariant:")) diagnostics.push(message.text());
+    };
+    const observeResponse = (response) => {
+      if (new URL(response.url()).pathname === "/api/v1/intents" &&
+          response.request().postDataJSON()?.kind === "harvest_fiscal_period") responses.push(response.status());
+    };
+    const observeFailure = (request) => {
+      if (new URL(request.url()).pathname === "/api/v1/intents") failedRequests.push(request.failure()?.errorText ?? "unknown");
     };
     const corruptRequest = async (route) => {
       const request = route.request(), original = request.postDataJSON();
@@ -500,6 +507,7 @@ async function witnessFiscalServerRefusals(page, accessToken) {
       await route.continue({ postData: JSON.stringify(sent) });
     };
     page.on("request", observeRequest); page.on("console", observeConsole);
+    page.on("response", observeResponse); page.on("requestfailed", observeFailure);
     await page.route("**/api/v1/intents", corruptRequest);
     try {
       const harvest = page.getByRole("button", { name: t("fiscal.harvest", {}, era), exact: true });
@@ -539,9 +547,21 @@ async function witnessFiscalServerRefusals(page, accessToken) {
         throw new Error(`Fiscal ${arm} refusal did not preserve an enabled, focused consent control`);
       }
       console.log(`composed Fiscal ${arm}: real HTTP${response.status()}, exact surface notice, ${reads.length} refresh, no automatic retry or persisted change: PASS`);
+    } catch (error) {
+      const dom = await page.evaluate(() => {
+        const main = document.querySelector("main");
+        const control = main?.querySelector('button[data-fiscal-action="harvest"]');
+        return { surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
+          phase: main?.querySelector(".fiscal")?.getAttribute("data-phase"), disabled: control?.disabled,
+          aria_disabled: control?.getAttribute("aria-disabled"), focused: document.activeElement === control,
+          events: globalThis.__composedFiscalInputTrace };
+      });
+      throw new Error(`Fiscal ${arm} refusal boundary failed: ${JSON.stringify({ dom,
+        emitted: requests.length, routed: routed.length, reads: reads.length, responses, failedRequests, diagnostics })}`, { cause: error });
     } finally {
       await page.unroute("**/api/v1/intents", corruptRequest);
       page.off("request", observeRequest); page.off("console", observeConsole);
+      page.off("response", observeResponse); page.off("requestfailed", observeFailure);
     }
   }
   return rejectedIDs;
@@ -553,6 +573,20 @@ async function witnessFiscalRefusalJourney() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   const errors = [];
   page.on("pageerror", (error) => errors.push(error));
+  await page.addInitScript(() => {
+    globalThis.__composedFiscalInputTrace = [];
+    for (const type of ["focusin", "keydown", "keyup", "click"]) document.addEventListener(type, (event) => {
+      const control = event.target instanceof Element ? event.target.closest("button[data-fiscal-action]") : null;
+      if (!control && (type === "focusin" || type === "click" || event.key !== "Enter")) return;
+      const main = document.querySelector("main");
+      globalThis.__composedFiscalInputTrace.push({ type, trusted: event.isTrusted, key: event.key ?? null,
+        action: control?.getAttribute("data-fiscal-action") ?? null, target: event.target?.nodeName,
+        disabled: control?.disabled ?? null, aria_disabled: control?.getAttribute("aria-disabled") ?? null,
+        surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
+        phase: main?.querySelector(".fiscal")?.getAttribute("data-phase"), time: performance.now() });
+      if (globalThis.__composedFiscalInputTrace.length > 16) globalThis.__composedFiscalInputTrace.shift();
+    }, true);
+  });
   try {
     await page.goto(uiURL, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "BEGIN ATTEMPT", exact: true }).click();

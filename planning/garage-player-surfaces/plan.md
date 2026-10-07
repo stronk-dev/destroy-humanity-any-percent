@@ -7,7 +7,14 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Current checkpoint: RP-371 stale-state controls are locally corrected under GS0.5. Focused
+Current checkpoint: ordinary whole composed68777 passes required Postgres, Fiscal refusals,
+both terminal states/continuation/recovery and Cosmetics. RP-378's earlier Fiscal response
+timeout remains open; retained input/request diagnostics discriminate a controlled blocked
+Enter from a server response failure. Do not rerun until green or guess a gameplay/clock fix.
+Next: use the trace on recurrence or construct a bounded reproduction; other accepted work
+continues while this diagnosis and designated review remain open. `log.md` owns details.
+
+Preceding checkpoint: RP-371 stale-state controls are locally corrected under GS0.5. Focused
 old-behavior regressions fail; corrected native host checks, affected surfaces, type/build and
 the real composed journey pass. Sustained native input produces no stale submissions but still
 hits rate limits and misses activations: RP-368 is OPEN, not repaired by disabling controls.
