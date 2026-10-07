@@ -1903,3 +1903,9 @@ No copy/kernel/server/schema/CI/timeout/retry/credential policy changes,
 no checkbox/status/archive/mint/push. Docker-backed runs remain RP-236 held.
 New review range starts a42406f0 exclusive through final records, requires
 Claude independently of HTTP-consumer6d700838..a42406f0 and earlier spans.
+
+Baseline86969 terminal0: full client9,758pass/442explicitbrowser skips
+of10,200,105filespass/22skip,5.83s; strict types0errors/0warnings. All21
+new runtime/fetch-boundary declarations pass on unchanged production source.
+Negative result retained: no repair authorized or needed in this population.
+Commit tests now, then execute the four predeclared compiling faults.

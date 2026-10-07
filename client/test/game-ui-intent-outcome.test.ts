@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { COPY_KEYS } from "../src/copy";
 import { GameUIRequestError, noticeForError, noticeForOutcome, parseIntentErrorBody, parseIntentOutcome } from "../src/game-ui/intent-outcome";
@@ -10,6 +10,27 @@ class MemoryStorage implements RuntimeStorage {
   getItem(key: string): string | null { return this.values.get(key) ?? null; }
   setItem(key: string, value: string): void { this.values.set(key, value); }
   removeItem(key: string): void { this.values.delete(key); }
+}
+
+const intentBody = Object.freeze({ intent_id: "test-intent", kind: "harvest_fiscal_period", expected_revision: 7 });
+
+function intentRuntime(reply: () => Promise<Response>, credentialed = true) {
+  const storage = new MemoryStorage();
+  if (credentialed) storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({
+    accessToken: "test-access", refreshToken: "test-refresh", accountID: "test-account", recoveryCode: "test-recovery",
+  }));
+  const originalStorage = new Map(storage.values);
+  const fetcher = vi.fn<typeof fetch>(async () => reply());
+  const runtime = createBrowserGameUIRuntime(storage, fetcher);
+  return {
+    runtime, fetcher,
+    assertRequests() {
+      expect(fetcher.mock.calls).toEqual(credentialed ? [["/api/v1/intents", {
+        method: "POST", headers: { Authorization: "Bearer test-access", "Content-Type": "application/json" }, body: JSON.stringify(intentBody),
+      }]] : []);
+      expect(storage.values).toEqual(originalStorage);
+    },
+  };
 }
 
 describe("GS0.2 intent outcomes", () => {
@@ -68,5 +89,91 @@ describe("GS0.2 intent outcomes", () => {
     const runtime = createBrowserGameUIRuntime(storage, (async () => replies.shift()!) as typeof fetch);
     await expect(runtime.intent({ kind: "buy_generator" })).resolves.toMatchObject({ outcome: "rejected", category: "unaffordable", currentRevision: 4 });
     await expect(runtime.intent({ kind: "buy_generator" })).rejects.toMatchObject({ status: 409, category: "conflict", detail: "intent" });
+  });
+
+  // Real runtime and Response parsing; fetch-double inputs are not service proof.
+  for (const arm of [
+    { status: 400, category: "invalid", detail: "intent", effect: "none", notice: "intent.rejection.unknown", invariant: true },
+    { status: 409, category: "conflict", detail: "intent", effect: "refresh", notice: "intent.conflict", invariant: false },
+    { status: 429, category: "rate_limited", detail: "account", effect: "refresh", notice: "intent.rate_limited", invariant: false },
+    { status: 401, category: "unauthorized", detail: "access_token", effect: "offline", notice: null, invariant: false },
+    { status: 404, category: "unknown_id", detail: "founder", effect: "offline", notice: null, invariant: false },
+    { status: 503, category: "unavailable", detail: "server", effect: "offline", notice: null, invariant: false },
+  ] as const) {
+    it(`runtime HTTP boundary preserves typed ${arm.status}, mapped effects and exactly one unchanged request`, async () => {
+      const { runtime, assertRequests } = intentRuntime(async () => new Response(JSON.stringify({ category: arm.category, detail: arm.detail }), { status: arm.status }));
+      const result: unknown = await runtime.intent(intentBody).catch((error: unknown) => error);
+      expect(result).toBeInstanceOf(GameUIRequestError);
+      expect(result).toMatchObject({ status: arm.status, category: arm.category, detail: arm.detail });
+      expect(noticeForError(result)).toEqual({ effect: arm.effect, notice: arm.notice, invariant: arm.invariant });
+      assertRequests();
+    });
+  }
+
+  for (const [label, body] of [
+    ["extra key", { category: "conflict", detail: "intent", extra: true }],
+    ["missing detail", { category: "conflict" }],
+    ["null", null],
+    ["array", [{ category: "conflict", detail: "intent" }]],
+    ["nonstring detail", { category: "conflict", detail: 3 }],
+    ["nonmechanical category", { category: "CONFLICT", detail: "intent" }],
+    ["empty detail", { category: "conflict", detail: "" }],
+  ] as const) {
+    it(`runtime HTTP boundary refuses malformed 409 ${label} without turning it into actionable conflict`, async () => {
+      const { runtime, assertRequests } = intentRuntime(async () => new Response(JSON.stringify(body), { status: 409 }));
+      const result: unknown = await runtime.intent(intentBody).catch((error: unknown) => error);
+      expect(result).toBeInstanceOf(Error);
+      expect(result).not.toBeInstanceOf(GameUIRequestError);
+      expect(noticeForError(result)).toEqual({ effect: "offline", notice: null, invariant: false });
+      assertRequests();
+    });
+  }
+
+  it("runtime HTTP boundary returns an applied receipt intact without implicit reads or renewal", async () => {
+    const body = { intent_id: "test-intent", outcome: "applied", new_revision: 8, harvest_outcome: "guaranteed" };
+    const { runtime, assertRequests } = intentRuntime(async () => new Response(JSON.stringify(body), { status: 200 }));
+    await expect(runtime.intent(intentBody)).resolves.toEqual({ outcome: "applied", receipt: body });
+    assertRequests();
+  });
+
+  it("runtime HTTP boundary returns a rejected receipt with its revision and session marker intact", async () => {
+    const body = { current_revision: 8, intent_id: "test-intent", outcome: "rejected", rejection: { category: "not_eligible", detail: "exclusive_activity", session_expired: true } };
+    const { runtime, assertRequests } = intentRuntime(async () => new Response(JSON.stringify(body), { status: 200 }));
+    await expect(runtime.intent(intentBody)).resolves.toEqual({ outcome: "rejected", category: "not_eligible", detail: "exclusive_activity", currentRevision: 8, sessionExpired: true });
+    assertRequests();
+  });
+
+  for (const [label, body] of [
+    ["unknown outcome", { outcome: "maybe" }],
+    ["extra rejection key", { current_revision: 8, intent_id: "test-intent", outcome: "rejected", rejection: { category: "not_eligible", detail: "exclusive_activity", extra: true } }],
+  ] as const) {
+    it(`runtime HTTP boundary fails closed on 200 ${label}`, async () => {
+      const { runtime, assertRequests } = intentRuntime(async () => new Response(JSON.stringify(body), { status: 200 }));
+      await expect(runtime.intent(intentBody)).rejects.toBeInstanceOf(SyntaxError);
+      assertRequests();
+    });
+  }
+
+  for (const status of [200, 503]) {
+    it(`runtime HTTP boundary rejects non-JSON ${status} as offline without replay`, async () => {
+      const { runtime, assertRequests } = intentRuntime(async () => new Response("not JSON", { status }));
+      const result: unknown = await runtime.intent(intentBody).catch((error: unknown) => error);
+      expect(result).toBeInstanceOf(SyntaxError);
+      expect(noticeForError(result)).toEqual({ effect: "offline", notice: null, invariant: false });
+      assertRequests();
+    });
+  }
+
+  it("runtime HTTP boundary preserves a transport rejection without retrying or rewriting credentials", async () => {
+    const failure = new TypeError("test transport failure");
+    const { runtime, assertRequests } = intentRuntime(async () => { throw failure; });
+    await expect(runtime.intent(intentBody)).rejects.toBe(failure);
+    assertRequests();
+  });
+
+  it("runtime HTTP boundary refuses missing credentials before any request", async () => {
+    const { runtime, assertRequests } = intentRuntime(async () => new Response("unexpected request", { status: 503 }), false);
+    await expect(runtime.intent(intentBody)).rejects.toThrow("missing game UI credentials");
+    assertRequests();
   });
 });
