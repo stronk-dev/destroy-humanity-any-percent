@@ -1409,3 +1409,20 @@ version signal/legacy companions/real guard probes/source-onlyreobs. RP-308
 unanswered; no body/accumulation waiver or CI/AMD64/hosted/release claim. Entire
 newspan after32116b14 including records needs Claude; older spans independent.
 Goalactive/progress, no checkbox/status/archive/mint/push/deploy/release call.
+
+### RP-310 terminal research local range review
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `32116b14..3bb4e154`, all twelve changed paths including
+f7a6e92a predeclaration, new observer/TS checks/corpus/dossier and all records.
+No production byte moved. Independent3ad749 verifies all15source identities,
+six applied pairs, exact new-state/next-input joins andthree refusal count.
+Population comes from real v19 restore/builders/transition, not v18 demotion.
+
+Executed dropped-row and forged-next-state probes fail their own reached checks;
+restoration hashes exact. Go exits6/next6/refusals3 complete. TS terminals6red,
+missingcurrent wronglyAPPLIES, sequencecontrolmasked; directnext6passes cannot
+prove terminal continuity. Counts/limits/old27AC6/history failures consistent
+across records. Decision: valid bounded research and concrete repair finding,
+NOT CV4/Clout acceptance or designated approval. Claude must inspect ENTIRE
+new span after32116b14 INCLUDING this edge; all older ranges remain separate.
