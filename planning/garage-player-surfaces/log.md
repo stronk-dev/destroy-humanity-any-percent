@@ -4169,3 +4169,38 @@ auth/payload/precedence/CI/Make/RFC body changed. This test-only checkpoint
 records a genuine red population, not a green gate or new accepted draft.
 Separate accepted-product scope follows before any repair. Complete range
 after fbea2158 needs Claude, all earlier spans independently owed.
+
+## 2026-10-07 — accepted RP-082 product repair / discrimination scope
+
+Separate PRODUCT predeclaration after red checkpoint 73a5ccce, not expansion
+of test-only 3451fdb0 scope. Accepted Garage GS0.4/0.6 is the active follow-up
+to archived Game UI: forced context focuses destination heading, player tab
+choice preserves nav focus, lifecycle retains cursor ordering and Settings
+destructive-confirmation deferral. This does not accept the broader draft
+Accessibility RFC or alter that author's normative text.
+
+Permanent paths only GameUIApp.svelte and RunEndSurface.svelte: one host
+lifecycle-navigation helper retains the existing navigation.lifecycle call,
+checks actual transition, schedules focus after Svelte DOM update and cancels
+if newer selection/current destination invalidates it. Existing Offer and
+Run-End h1 receive tabindex=-1. Preserve literal headings/payload-only Run-End,
+copy, timestamps/timers/receipts/snapshot binding/intents/precedence. No fixture
+focus instrumentation substituted for the production publication path.
+
+Require unchanged sixty selected native executions green, then actual compiling
+faults: remove helper focus; remove Offer heading tabindex; remove Run-End
+heading tabindex; omit each lifecycle branch's helper invocation; redirect
+cancelled Settings callback to a surviving Desk nav button; prevent a pending
+Offer from yielding to newer Run-End; bypass the existing navigation cursor
+guard and observe replay after Settings. Some guards overlap defensively; do
+not claim isolated predicate discrimination from a broader fault. Restore all
+source before final full Garage, existing Game UI screen population, types/
+client/build/copy/boundaries/static topology. Exact source hashes, fault counts,
+transactional docs/ledger/inventory/plan/board/queue/log required. No budgets,
+assertions, old tests, CI/Make/balance/auth/value/copy or RFC bodies changed.
+
+Complete fbea2158-exclusive through repair/records requires Claude INCLUDING
+both predeclarations and red checkpoint; preceding review spans independently
+owed. Native/fixture context focus, not real-service/AT/Firefox/all contexts/
+full1.0 proof. No cleanup/Retry answer inferred, deletion/mint/push/archive/
+release/shortened-preview substitution. Goal active/progress.
