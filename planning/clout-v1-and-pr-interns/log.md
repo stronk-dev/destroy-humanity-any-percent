@@ -1365,3 +1365,12 @@ acceptance. Counts and limitations agree across the dossier/docs/ledger/queues/
 roadmap. Terminal/next-run behavior is not yet measured. Claude must inspect the
 ENTIRE span after685debe7 INCLUDING this record edge before any archival claim;
 all prior independent review obligations remain separate. No status promotion.
+
+### RP-310 terminal research start — separate test-only scope
+
+At clean32116b14, scheduler first-filter record complete. Predeclare six actual
+v19 wind_down/next-run pairs and three refusal companions in plan.md before
+execution. Current terminal exact-v18 guard remains SOURCE finding. No product
+fix in this research range; actual Go/TS results will determine the next bounded
+repair. Existing helper restoration hardcodes v18, so this observer must use
+actual v19 restoration/admission rather than demote or alter old fixtures.

@@ -497,3 +497,44 @@ Full client9547/340skip and types/vet/topology/formulas/API/native pass; origina
 27GoAC6/history/AMD64/hosted holds persist. Scheduler locally repaired, terminal
 guard remains SOURCE finding only. Next predeclare actual terminal v19 corpus;
 no checkbox/whole-CV4 orClout promotion. Full span after685debe7 needs Claude.
+
+## RP-310 — terminal/next-run research population (test-only)
+
+Predeclared at clean32116b14, separate from the scheduler correction. Accepted
+CV4 requires terminal attainment history, empty attainment/score in the next run
+and continued execution at Company v19. Measure actual ApplyLoggedExit using
+the existing axis fixture bundle (test-only cap1e100), actual schedule/input
+builders and complete saved state. No production correction in this range.
+
+Exactly six same-bundle wind_down cases: online at0/3114/120001ms, each quiet
+(burst/provider/legal0) or combined(burst1500/provider10/legal1). Start from the
+admitted axisTimingState(v19,run2,Tier1,input6), actual fully initialized veteran
+Founder carry with a prior Exit. Restore/admit complete initial, final and new
+Company states. Compare receipt, Founder output, all three event streams and
+both full Company states in TS. Require applied collapse, run3 v19, empty new
+attainment/score and fresh active-play cursor. Record any red comparison honestly.
+
+For each Go-produced next state, execute one actual logged manual.click batch
+(count1/window1000) at +1000ms using current builders and transition Founder
+carry. Compare full receipt/events/poststate and restore in both runtimes. These
+direct restored-next-run checks are separate: passing them does NOT prove TS
+terminal continuity if the preceding TS terminal fails.
+
+Exactly three terminal refusals on quiet/online/0: missing current active_play,
+missing next_active_play, next spawn sequence+1. Go must return invalid replay
+inputs with complete unchanged initial state; TS must refuse unchanged at the
+named presence or next-schedule check. Earlier guard masking is a finding, not
+a pass. Any builder/admission failure stops corpus publication; never demote v19,
+change pinned catalogs or rewrite old expected outputs to admit a population.
+
+New observer/corpus/dossier only, exact selected source identities and explicit
+non-acceptance. Demonstrate dropped-row census rejection before publication and
+a forged next-run poststate comparator failure; restore exact originals after
+terminal handles. The then-unreachable TS terminal comparator cannot be claimed
+discriminating until executed. Cold Go relevant packages, full client/types/vet,
+native research/topology; historical kernel/AMD64/hosted failures remain open.
+
+Synchronize ledger/docs/queues/roadmap/log and self-review whole new range; Claude
+designated review still required including records. No runtime/version/numeric/
+save/balance/CI/RFC body/copy changes, checkbox/status/archival/mint/push/deploy
+or release call. RP-308 owner delegation unanswered. Full1.0 goal active.
