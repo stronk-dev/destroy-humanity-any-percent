@@ -1,0 +1,129 @@
+diff --git a/client/tools/test-game-ui-composed.mjs b/client/tools/test-game-ui-composed.mjs
+index d924cd73..48e7b7ff 100644
+--- a/client/tools/test-game-ui-composed.mjs
++++ b/client/tools/test-game-ui-composed.mjs
+@@ -1,3 +1,4 @@
++import assert from "node:assert/strict";
+ import { spawn, spawnSync } from "node:child_process";
+ import { mkdirSync } from "node:fs";
+ import { createServer as createTCPServer } from "node:net";
+@@ -217,6 +218,111 @@ async function clickAppliedIntentChoice(page, buttonLabels, label) {
+   return { body, clickedLabel, intent: request.postDataJSON() };
+ }
+ 
++// GS3-A4: observe the actual fresh Company before any command or gate setup.
++// Values are the accepted initial seeds, never copied from the wire or renderer.
++async function witnessInitialMeters(page, snapshot) {
++  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
++  const era = "era_1995";
++  const constituencies = ["employees", "investors", "press", "regulators", "users"];
++  const expected = [{ id: "doom.probability", value: 50, label: t("meters.doom.title", {}, era) },
++    ...constituencies.flatMap((constituency) => ["grievance", "standing"].map((axis) => ({
++      id: `trust.${constituency}.${axis}`, value: axis === "standing" ? 50 : 0,
++      constituency: t(`meters.constituency.${constituency}`, {}, era),
++      axis: t(`meters.axis.${axis}`, {}, era), axisIndex: axis === "standing" ? 0 : 1,
++      label: `${t(`meters.constituency.${constituency}`, {}, era)} ${t(`meters.axis.${axis}`, {}, era)}`,
++    })))].sort((left, right) => left.id.localeCompare(right.id));
++  assert.deepEqual(snapshot.features.meters.meters.map((row) => ({
++    id: row.meter_id, value: row.value, min: row.min, max: row.max, band: row.band_id,
++  })), expected.map((row) => ({ id: row.id, value: row.value, min: 0, max: 100, band: "low" })),
++  "GS3 initial real wire meters must match all eleven accepted seeds");
++  const intents = [];
++  const recordIntent = (request) => {
++    if (new URL(request.url()).pathname === "/api/v1/intents") intents.push(request.postData());
++  };
++  page.on("request", recordIntent);
++  try {
++    await page.getByRole("button", { name: t("surface.meters.title", {}, era), exact: true }).click();
++    const surface = page.locator('main[data-surface="meters"] section[aria-labelledby="meters-heading"]');
++    await surface.waitFor({ state: "visible", timeout: 30_000 });
++    for (const width of [1280, 320]) {
++      await page.setViewportSize({ width, height: 720 });
++      await surface.locator(width === 320 ? "dl.trust-list" : "table").waitFor({ state: "visible", timeout: 30_000 });
++      const observed = await surface.evaluate((root, rows) => {
++        const visible = (node) => {
++          if (!node?.isConnected) return false;
++          const bounds = node.getBoundingClientRect();
++          if (bounds.width === 0 || bounds.height === 0) return false;
++          for (let ancestor = node; ancestor; ancestor = ancestor.parentElement) {
++            const style = getComputedStyle(ancestor);
++            if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") return false;
++          }
++          return true;
++        };
++        const narrow = root.querySelector("dl.trust-list") !== null;
++        return {
++          meters: root.querySelectorAll("meter").length,
++          tables: root.querySelectorAll("table").length,
++          terms: root.querySelectorAll("dl > div > dt").length,
++          headers: [...root.querySelectorAll('thead th[scope="col"]')].map((node) => node.textContent),
++          constituencies: [...root.querySelectorAll('tbody th[scope="row"]')].map((node) => node.textContent),
++          cells: rows.map((row) => {
++            let cell;
++            let label;
++            let axis;
++            if (narrow) {
++              const pair = [...root.querySelectorAll("dl > div")].find((node) => node.dataset.meterId === row.id);
++              label = pair?.querySelector("dt");
++              cell = pair?.querySelector("dd");
++            } else if (row.constituency) {
++              const tableRow = [...root.querySelectorAll("tbody tr")].find((node) => node.querySelector("th")?.textContent === row.constituency);
++              label = tableRow?.querySelector("th");
++              cell = tableRow?.querySelectorAll("td")[row.axisIndex];
++              axis = cell?.getAttribute("data-label");
++            } else {
++              cell = root.querySelector("section.doom");
++              label = cell?.querySelector("h2");
++            }
++            const meter = cell?.querySelector("meter");
++            return { id: row.id, label: label?.textContent, labelVisible: visible(label), axis,
++              labelledBy: meter?.getAttribute("aria-labelledby"), labelID: label?.id,
++              native: meter ? { min: meter.min, max: meter.max, value: meter.value, visible: visible(meter) } : null,
++              text: [...(cell?.querySelectorAll("span") ?? [])].map((node) => ({ text: node.textContent, visible: visible(node) })) };
++          }),
++        };
++      }, expected);
++      const context = `GS3 initial real DOM meters at ${width}px`;
++      assert.equal(observed.meters, 11, `${context}: all native meters present`);
++      assert.equal(observed.tables, width === 320 ? 0 : 1, `${context}: expected layout`);
++      assert.equal(observed.terms, width === 320 ? 11 : 0, `${context}: exact definition count`);
++      if (width === 1280) {
++        assert.deepEqual(observed.headers, [t("meters.constituency_label", {}, era),
++          t("meters.axis.standing", {}, era), t("meters.axis.grievance", {}, era)], `${context}: exact column headers`);
++        assert.deepEqual([...observed.constituencies].sort(), expected.filter((row) => row.axisIndex === 0).map((row) => row.constituency).sort(), `${context}: exact row headers`);
++      }
++      for (let index = 0; index < expected.length; index += 1) {
++        const row = expected[index], actual = observed.cells[index];
++        const coordinate = `${context}: ${row.id}`;
++        assert.equal(actual.label, width === 320 ? row.label : row.constituency ?? row.label, `${coordinate}: exact semantic label`);
++        assert.equal(actual.labelVisible, true, `${coordinate}: visible label`);
++        if (width === 320) assert.equal(actual.labelledBy, actual.labelID, `${coordinate}: native labelled-by binding`);
++        else if (row.constituency) assert.equal(actual.axis, row.axis, `${coordinate}: native axis association`);
++        assert.deepEqual(actual.native, { min: 0, max: 100, value: row.value, visible: true }, `${coordinate}: native value`);
++        assert.deepEqual(actual.text, [
++          { text: t("meters.value_frame", { value: row.value, max: 100 }, era), visible: true },
++          { text: t("meters.band.low", {}, era), visible: true },
++        ], `${coordinate}: exact visible numeric and band text`);
++      }
++    }
++    await page.setViewportSize({ width: 1280, height: 720 });
++    await page.getByRole("button", { name: t("surface.desk.title", {}, era), exact: true }).click();
++    await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
++    assert.deepEqual(intents, [], "GS3 initial meter navigation must remain read-only");
++    console.log("composed GS3 initial meters: eleven accepted wire seeds → exact visible associated text/native values at 1280/320px; visible nav only, no gameplay intent: PASS");
++  } finally {
++    page.off("request", recordIntent);
++  }
++}
++
+ // GS5-A4: DOM-only manual clicks on the real server until the Desk region
+ // projects an opportunity, then a DOM claim; the next authoritative snapshot
+ // must show the claim's effect (a live buff, or a credited lucky payout).
+@@ -563,6 +669,7 @@ try {
+       liveSnapshot.body?.transitions?.cross_gate?.gate_id !== "gate.t0_to_t1" || liveSnapshot.body.transitions.cross_gate.eligible !== false || liveSnapshot.body?.transitions?.wind_down?.eligible !== false) {
+     throw new Error("composed live Game UI v4 transition snapshot round trip failed");
+   }
++  await witnessInitialMeters(page, liveSnapshot.body);
+   const recoveryBefore = await page.evaluate(() => {
+     const key = Object.keys(localStorage).find((candidate) => candidate.startsWith("cloud-clicker.transport.v1."));
+     if (!key) throw new Error("production runtime did not persist transport positions");

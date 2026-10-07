@@ -7,7 +7,21 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-361 real-service composed evidence under f46298e7.
+Latest checkpoint: RP-362/363 fired a real initial-meter authority conflict;
+GS3-A4 asks fresh Standing50, actual bootstrap assembles90/high via published
+Notoriety0 reseed. Grievance0/doom50 match. Candidate fails before DOM/five
+planned faults; retained replayable initial-meter-dom-probe.patch, original
+registered driver restored exactly. No assertion changed to90 or formula/body
+edit. Author reconciles fresh-Founder/run/Notoriety/seed contract before repair.
+Subsequent existing root9ed7c3→3a5178 is RED: main fully passes, Cosmetic Buy
+response times out at420 (RP-364), unlike earlier two whole passes on identical
+sources. No cause/reliability claim; owning Cosmetic lane must first predeclare
+boundary diagnostics. Whole1d623dde-exclusive through records needs Claude,
+all earlier ranges independent. Next: RP-364 diagnosis, then separate GS2-A4
+purchase/announcement/row proof. No checkbox/CI/budget/product/owner/body/
+balance/lifecycle/release promotion; full nine-tier1.0 and all remaining holds.
+
+Preceding bounded work: RP-361 real-service composed evidence under f46298e7.
 Unchanged full root target passes twice: current host/server/Postgres/socket/
 DOM, both endings/continuation/recovery, observed Production/Click buff claims,
 Fiscal/Pitch and compiled cosmetic/adoption/care/reload. Mounted Claim no-op

@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-361 whole real-service composed target
+**Latest findings (2026-10-07):** RP-362/363 new real bootstrap probe fails
+accepted Standing50 seed: actual fresh Standing90/high follows published
+Notoriety0 reseed; other six initial values match. Author reconciliation is
+required, no code/balance/assertion-to90 change or DOM/fault success. Candidate
+retained as replayable patch and registered driver restored exactly.
+Latest original whole composed root is RED at Cosmetic Buy response timeout
+(RP-364); main passes. Earlier two whole passes are not erased, but do not
+prove reliability. Next: predeclare precise Buy request/click/response capture
+under Cosmetic authority, then independent achievement acquisition proof.
+Whole1d623dde-exclusive through records needs Claude; all older spans remain.
+No CI/budget/retry/product/owner/body/lifecycle/mint/push/1.0 promotion. Host
+route usable, full Docker image/Linux/Firefox/AT/clean-host and whole platform/
+privacy/numeric/endings/review/full-nine-tier1.0 obligations remain.
+
+**Preceding bounded work (2026-10-07):** RP-361 whole real-service composed target
 under f46298e7 passes twice: both endings/continuation/WebSocket recovery,
 actual Production/Click buff claims, Fiscal/Pitch and compiled cosmetic/
 adoption/care/reload. Mounted Claim callback no-op makes the root fail with no

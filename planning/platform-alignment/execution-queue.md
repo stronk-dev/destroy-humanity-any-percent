@@ -3,6 +3,34 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Latest composed findings — 2026-10-07
+
+RP-362 scope807e0b6e executes fresh bootstrap before gameplay/setup, but fails
+initial wire seeds: all five Standing90/high rather than GS3-A4's50/low.
+Actual shared foundation assembly uses published Notoriety0 reseed90; literal
+artifact initial50 is distinct. RP-363 author reconciliation pending; do not
+invent exception/change balance/rewrite assertion to pass. No DOM/five-fault
+success. Replayable initial-meter-dom-probe.patch retained; original registered
+driver restored to392dba99... byte-identically.
+
+**LATEST ROOT RED RP-364:** restored whole9ed7c3→3a5178 main driver passes
+Building buff/Fiscal/Pitch/recovery/endings, cosmetic child times out awaiting
+Buy/acquire_cosmetic response at420. Earlier two complete passes remain actual
+observations, not a latest-green or reliability claim. No exact boundary trace
+yet distinguishes missing request from response/network/product failure.
+**NEXT:** read owning accepted Cosmetic contract, predeclare test-only Buy
+boundary capture, run unchanged population; only then scope a demonstrated
+correction. Independent GS2-A4 acquisition/event/row proof follows. GS3-A4
+requires its author's body reconciliation (decision queue). No relaxed timeout,
+retry/exclusion/CI change, automatic purchase re-dispatch or product choice.
+
+**READY FOR CLAUDE:** whole1d623dde-exclusive through containing records,
+including scope/failed candidate/retained patch/source restoration and findings.
+All earlier spans independently owed. Host-native route is runnable; full
+Docker-image/tmp capacity/Linux/Firefox/AT/400%/release-image/clean-host,
+author/owner/privacy/numeric/endings/platform/full-nine-tier1.0 holds remain.
+No self-archival/status/mint/push/cleanup/startup-ruling or release claim.
+
 ## Current real-service composed checkpoint — 2026-10-07
 
 RP-361 predeclared f46298e7: unchanged whole make test-game-ui-composed

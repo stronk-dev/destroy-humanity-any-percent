@@ -4920,3 +4920,35 @@ spans. No lifecycle/checkbox/archival/mint/push/release promotion. Next accepted
 work: inspect/predeclare RP-331's exact real initial-meter rendered values and
 first-purchase→earned announcement→refreshed row, absent from the successful
 driver. Goal active: complete proper1.0, not a preview substitute.
+
+## 2026-10-07 — Initial-meter criterion fires; unchanged Cosmetic Buy intermittent red
+
+RP-362 predeclared807e0b6e; real fresh bootstrap before commands/server setup
+fails f3b5ed→b42d86 Make2. Every Standing90/high versus required50/low;
+Grievance0/low and doom50/low match. RP-363 traces Account initializer→shared
+foundation assembly→published Notoriety0 reseed90. Archived Meters assembly
+authority and Garage's literal50 criterion cannot silently substitute for each
+other. Required author reconciliation in decision queue. No new DOM/five planned
+fault result, product/balance/body change or test rewritten to90.
+
+Exact candidate retained in initial-meter-dom-probe.patch (SHA66535e0a...),
+git apply --check exits0 against exact restored registered driver392dba99....
+Not a passing registered witness/skip/allowlist or concealed failing outcome.
+Existing cold meters4366ac→ebe3c6 passes eight top-level tests; its reseed
+unit inputs are100/upper-domain, not an independent fresh-Founder0 population.
+
+Subsequent whole original root9ed7c3→3a5178 is RED (RP-364): main fully passes
+Building buff15 clicks/Company26, Fiscal5 commands/Company29+refresh29 and
+both endings/continuation/recovery; cosmetic Buy response times out at420.
+Earlier two whole passes on identical source/driver are retained, not substituted
+for latest result. No cause inferred from generic timeout. All processes reach
+terminal/cleanup; no target listeners/other named DB sessions, exact source
+hashes unchanged. Next priority: Cosmetic-lane predeclared boundary capture
+before correcting test/product, then separate GS2-A4 acquisition/event/row proof.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Entire
+1d623dde-exclusive through records needs Claude, every old span independently
+owed. No checkbox/acceptance/archival/mint/push/owner/ruling/budget/CI promotion.
+Full Docker-image/tmp/Linux/Firefox/AT/400%/release-image/clean-host and all
+author/privacy/numeric/endings/platform/full-nine-tier1.0 obligations remain.
+Goal active: measured findings are progress, not grounds to weaken release floor.

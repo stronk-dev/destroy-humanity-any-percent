@@ -5774,3 +5774,77 @@ only; no general cleanup/operator-data reset/new full-disk image build. Verify
 ports/DB sessions/source hashes at final completion. Whole1d623dde-exclusive
 through final records needs Claude; older ranges independent. No plan boxes/
 body/status/archive/mint/push/release promotion; GS2-A4 remains separate.
+
+### RP-362 fired / RP-363 — literal initial versus fresh Standing reseed
+
+Experimental test-only addition executes under807e0b6e at f3b5ed→b42d86,
+Make2. No fake clock/gameplay/gate setup before new check. All five actual
+Standing rows90/high versus required50/low; Grievance0/low and doom50/low
+match. Exact wire assertion fires before Meters navigation, so NO DOM or
+five planned source-fault result exists. This is not an instrument-space error,
+capacity failure, passing criterion or evidence the visible meter is wrong.
+Node syntax9874bc and diff5352e9 exit0 before execution; initial lookup mistakes
+in copy module/nav key corrected before run, not counted as product findings.
+
+Trace: gameserver/composition.go322 attaches production.FounderInitializer;
+account/bootstrap.go218→store.go629–674 creates RunSeq1/zero Notoriety and
+initializes it. production/founder_initializer.go20→foundations.go412 calls
+meters.NewRunState, which first takes literal artifact initials then applies
+published Standing reseed (base90, Notoriety0; transition.go63–87). The artifact
+literal Standing50 remains real, but is not the live assembled Standing seed.
+Archived Meters M5/C9/C13 prescribe reseed; Garage GS3-A4 explicitly requires
+fresh50. Neither authority can be silently rewritten/substituted by Codex.
+Canonical docs/meters.md states literal artifact50 AND Notoriety reseed; it is
+not authority to edit those formula rows or invent a bootstrap exception.
+
+Candidate preserved verbatim as initial-meter-dom-probe.patch, SHA
+66535e0aacbabaec19bb9d150d6d408e8c977ebc39a03c41dc6faba5dd76f02d;
+git apply --check14639c exit0 proves applicable to original driver.671e40/0b89ac
+confirms exact original driver392dba99... and all product/Go sources restored.
+Not a registered passing witness, skip/allowlist, assertion rewrite to90 or
+weakened old oracle. A reviewable failed experiment is retained without silently
+shipping its unruled criterion into the existing CI workflow. No source fault
+was run because declared healthy prerequisite failed. No body/copy/mechanics
+change, checkbox/acceptance/archival claimed. Required author route in decision
+queue: reconcile GS3-A4 fresh-Founder identity/Notoriety/seed under actual
+accepted assembly authority; alternatively explicitly specify a bootstrap-only
+exception before any implementation. Do not make balance choice to clear a test.
+
+Cold existing meters root4366ac→ebe3c6 Make0/count1: eight top-level tests and
+their subtests pass, including NewRunStateStandingOnly (Notoriety100→55 and
+upper-domain clamp). This is unit/reseed plumbing, NOT independently executed
+fresh-Founder0 property or full integrated proof. Live fresh90 comes from the
+actual new observation, not that unit's unrelated input.
+
+### RP-364 — restored existing root red at Cosmetic Buy, do not erase it
+
+Restored registered target9ed7c3→3a5178 Make2: original main driver completes
+actual Building buff15 clicks/no expired attempts/Company26, Fiscal5 commands/
+0 declines/credit1e0/Company29+refresh29, both endings/continuation/recovery.
+Cosmetic child fails at existing driver420: page.waitForResponse timeout30000ms
+awaiting acquire_cosmetic after visible Buy. No successful care or complete
+AC14/G10 result from this invocation. Earlier two RP-361 whole passes on
+identical source/driver remain bounded evidence, NOT permission to call the
+latest full population green or erase intermittent failure by rerunning it.
+
+df7411 reads trial-click→waitForResponse→actual-click sequence. Current failure
+does not disclose request count, click event, host busy/transport state, page
+errors or failed-request details, so do NOT infer stale-DOM race, network or
+product cause yet. Capture those exact boundary observations under a separate
+Cosmetic test-only predeclaration before deciding correction. No budget/retry/
+exclusion weakening, no automatic purchase re-dispatch or fabricated response.
+
+Post-run e87547 no target listeners (lsof1/no output); f9fdee other named test
+DB sessions0;0b89ac full product/driver/proposal hashes exact. No leftover
+process, manual kill, unrelated cleanup/operator reset/new image build. Latest
+composed root is RED; capacity distinction remains usable-route evidence, not
+a reliability claim. Existing Linux/Firefox/release-image/clean-host and all
+owner/body/privacy/numeric/endings/full-nine-tier1.0 holds remain.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Inspected
+entire1d623dde-exclusive..807e0b6e predeclaration, candidate107 added lines,
+fired actual result, source trace, exact restoration/retained patch and record
+diff. Whole new span through records needs Claude, all prior ranges independent.
+No accepted RFC body/status/checkbox/archive/mint/push/release promotion.
+Next priority: Cosmetic RP-364 diagnostics in its owning lane, then independent
+GS2-A4 exact purchase→earned-event→rendered-row proof; GS3-A4 author-blocked.

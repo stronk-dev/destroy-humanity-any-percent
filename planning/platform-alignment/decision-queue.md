@@ -219,3 +219,30 @@ to infer this ruling. Eight executed faults and the cold local/real-Postgres
 evidence are in the Garage log. The separate Desk consumer can be inspected
 diagnostically meanwhile; no approval, archival or player-content adoption is
 inferred. New Codex tests/records require Claude separately.
+
+## Garage initial Standing criterion — RP-363 (author reconciliation pending)
+
+Accepted GS3-A4 names fresh Standing50/Grievance0/doom50. Predeclared807e0b6e
+actual fresh DOM bootstrap/public read, before any gameplay or server setup,
+fails f3b5ed→b42d86: all five Standing axes are90/high; Grievance0/low and
+doom50/low match. Replayable candidate and exact source pins:
+planning/garage-player-surfaces/initial-meter-dom-probe.patch and log.md.
+No DOM or source-severing population passed; the original driver is restored.
+
+Actual chain: gameserver attaches production.FounderInitializer; Account
+initialStates initializes zero Notoriety and invokes it; shared foundation
+assembly calls meters.NewRunState, which applies the pinned trust_reseed
+base90 at Notoriety0. Meter artifact literal standing initial50 is distinct.
+Archived Meters M5/C9/C13 prescribe Standing reseed at new-run assembly.
+Those clauses do not silently amend Garage GS3-A4 or independently prove a
+first-Founder exception was accepted. This is a conflict requiring exact
+author reconciliation, not permission to decide a balance fix from a red test.
+
+Required author action: reconcile Garage GS3-A4 with the published assembly
+rule and explicitly name its fresh-Founder/run identity, Notoriety and expected
+initial values. If fresh bootstrap is meant to use literal50 instead, specify
+that exception under accepted shared live/replay/account authority before
+implementation; do not alter the artifact, existing histories or replay/migrations
+to satisfy one browser check. No choice/body edit/owner ruling claimed here.
+Blocks RP-362/all GS3-A4 acceptance, not independent GS2-A4 or investigation
+of the separately reproduced Cosmetic Buy timeout RP-364.
