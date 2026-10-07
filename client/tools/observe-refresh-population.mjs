@@ -12,11 +12,12 @@ export const parents = Object.freeze([
   "TestRefreshWireNewFounderBindingIntegration",
   "TestRefreshWireUnknownExpiredAndFaultIntegration",
   "TestRefreshWireLimiterNonMutationIntegration",
+  "TestRefreshWireCommittedReplyLossIntegration",
 ]);
 export const leaves = Object.freeze([
   `${parents[0]}/access-expired=false`, `${parents[0]}/access-expired=true`,
   parents[1], `${parents[2]}/unknown-canonical`, `${parents[2]}/expired-refresh`,
-  `${parents[2]}/closed-database`, parents[3],
+  `${parents[2]}/closed-database`, parents[3], parents[4],
 ]);
 const names = new Set([...parents, ...leaves]);
 const testPattern = `^(${parents.join("|")})$`;

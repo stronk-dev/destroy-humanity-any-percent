@@ -72,10 +72,12 @@ Actual repository/API/Postgres fixture with HTTP over net.Pipe, not browser/OS
 socket/production-engine proof. Ten named gameplay/account tables and three
 credential tables snapshotted privately, tokens/data never logged.
 
-The normal `make test-game-ui-composed` lane now requires all seven to run/pass using the
+The normal `make test-game-ui-composed` lane now requires all eight to run/pass using the
 existing completeness observer, then resets the test database before other epochs/player flows.
 The whole lane passed; the actual missing-DB control exits 1 despite Go/package exit 0.
-Account/publicapi cold non-DB tests and vet pass. This establishes these seven real-DB cases,
+The eighth case (2026-10-07) drops every response byte after actual committed rotation and proves
+client EOF is not rollback: replay revokes all three generations without changing gameplay rows.
+Account/publicapi cold non-DB tests and vet pass. This establishes these eight real-DB cases,
 not the entire Account/publicapi real-DB population, browser renewal or Linux execution.
 
 Pending: designated review of the prepared tests/observer and their new composed-lane binding;

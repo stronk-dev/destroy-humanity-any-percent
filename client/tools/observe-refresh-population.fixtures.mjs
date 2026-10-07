@@ -20,9 +20,9 @@ function validate(rows, exit = 0, stable = true) {
   return observer.finish(exit, stable);
 }
 
-test("synthetic complete seven-leaf/four-parent control is valid (not DB evidence)", () => {
+test("synthetic complete eight-case/five-parent control is valid (not DB evidence)", () => {
   const result = validate(completeFixture());
-  assert.equal(result.valid, true); assert.equal(result.completed_leaves, 7); assert.equal(result.completed_parents, 4);
+  assert.equal(result.valid, true); assert.equal(result.completed_leaves, 8); assert.equal(result.completed_parents, 5);
 });
 
 const defects = {

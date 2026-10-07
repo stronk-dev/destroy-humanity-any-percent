@@ -54,7 +54,7 @@ func newRefreshPersistenceFixture(t *testing.T, burst int) *refreshPersistenceFi
 	return fixture
 }
 
-func newRefreshPersistenceServer(t *testing.T, repository *Repository, burst int) *testhttp.Server {
+func newRefreshPersistenceHandler(t *testing.T, repository *Repository, burst int) http.Handler {
 	t.Helper()
 	config := Phase0APIConfig(testBootstrapReceiptKeys())
 	config.UnauthenticatedBurst, config.UnauthenticatedPerMin = burst, 1
@@ -62,7 +62,12 @@ func newRefreshPersistenceServer(t *testing.T, repository *Repository, burst int
 	if err != nil {
 		t.Fatal(err)
 	}
-	server := testhttp.New(api.Router())
+	return api.Router()
+}
+
+func newRefreshPersistenceServer(t *testing.T, repository *Repository, burst int) *testhttp.Server {
+	t.Helper()
+	server := testhttp.New(newRefreshPersistenceHandler(t, repository, burst))
 	t.Cleanup(server.Close)
 	return server
 }
@@ -302,5 +307,83 @@ func TestRefreshWireLimiterNonMutationIntegration(t *testing.T) {
 	third := readRefreshPersistencePair(t, fixture.server, second.RefreshToken)
 	assertRefreshIssuedPair(t, fixture, third, fixture.account.FounderID)
 	assertRefreshFamilyCounts(t, fixture, [6]int{3, 2, 0, 3, 0, 0})
+	assertRefreshPersistenceUnchanged(t, fixture.db, false, gameplay)
+}
+
+// Suppress the HTTP response at the transport boundary, not the transaction.
+// Never retain its credential bytes: only count the writes and record headers.
+type refreshLostReplyWriter struct {
+	header http.Header
+	status int
+	bytes  int
+}
+
+func (writer *refreshLostReplyWriter) Header() http.Header    { return writer.header }
+func (writer *refreshLostReplyWriter) WriteHeader(status int) { writer.status = status }
+func (writer *refreshLostReplyWriter) Write(data []byte) (int, error) {
+	if writer.status == 0 {
+		writer.status = http.StatusOK
+	}
+	writer.bytes += len(data)
+	return len(data), nil
+}
+
+func TestRefreshWireCommittedReplyLossIntegration(t *testing.T) {
+	fixture := newRefreshPersistenceFixture(t, 10)
+	gameplay := refreshPersistenceSnapshot(t, fixture.db, false)
+	// Healthy control: the same API/DB issues a usable pair before response loss.
+	second := readRefreshPersistencePair(t, fixture.server, fixture.initial.RefreshToken)
+	assertRefreshIssuedPair(t, fixture, second, fixture.account.FounderID)
+	assertRefreshFamilyCounts(t, fixture, [6]int{2, 1, 0, 2, 0, 0})
+
+	type observation struct {
+		status, bytes int
+		contentType   string
+		closeError    error
+	}
+	completed := make(chan observation, 1)
+	handler := newRefreshPersistenceHandler(t, fixture.repository, 10)
+	lostReplyServer := testhttp.New(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		writer := &refreshLostReplyWriter{header: make(http.Header)}
+		handler.ServeHTTP(writer, request)
+		// The real handler has returned from its committed rotation, but none of
+		// its status/headers/body have reached the HTTP client. Close that pipe.
+		connection, _, err := response.(http.Hijacker).Hijack()
+		if err == nil {
+			err = connection.Close()
+		}
+		completed <- observation{writer.status, writer.bytes, writer.header.Get("Content-Type"), err}
+	}))
+	t.Cleanup(lostReplyServer.Close)
+	request, err := http.NewRequest(http.MethodPost, lostReplyServer.URL+"/api/v1/session/refresh",
+		bytes.NewBufferString(fmt.Sprintf(`{"refresh_token":%q}`, second.RefreshToken)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("Content-Type", "application/json")
+	response, err := lostReplyServer.Client.Do(request)
+	if response != nil {
+		_ = response.Body.Close()
+		t.Fatal("lost-reply client unexpectedly received an HTTP response")
+	}
+	if !errors.Is(err, io.EOF) {
+		t.Fatal("lost-reply client did not observe the deliberately closed HTTP connection")
+	}
+	observed := <-completed
+	if observed.closeError != nil || observed.status != http.StatusOK || observed.bytes == 0 || observed.contentType != "application/json" {
+		t.Fatal("lost reply did not follow a successful actual refresh-handler response")
+	}
+	// A client-side failure is not rollback: the old credential was consumed
+	// and an unseen descendant pair was committed in the same session family.
+	assertRefreshFamilyCounts(t, fixture, [6]int{3, 2, 0, 3, 0, 0})
+	assertRefreshPersistenceUnchanged(t, fixture.db, false, gameplay)
+	assertRefreshPersistenceError(t, fixture.server, second.RefreshToken, http.StatusUnauthorized, "refresh_reused", "session_family_revoked")
+	assertRefreshFamilyCounts(t, fixture, [6]int{3, 2, 3, 3, 3, 1})
+	if _, err := fixture.repository.Authenticate(context.Background(), second.AccessToken); !errors.Is(err, ErrAuthentication) {
+		t.Fatal("received access token survived lost-reply retry family revocation")
+	}
+	credentials := refreshPersistenceSnapshot(t, fixture.db, true)
+	assertRefreshPersistenceError(t, fixture.server, second.RefreshToken, http.StatusUnauthorized, "unauthorized", "refresh_token")
+	assertRefreshPersistenceUnchanged(t, fixture.db, true, credentials)
 	assertRefreshPersistenceUnchanged(t, fixture.db, false, gameplay)
 }

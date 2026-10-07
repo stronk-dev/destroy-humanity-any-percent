@@ -808,3 +808,28 @@ after `0f9f4214`; designated Claude review remains, alongside earlier prepared-t
 ranges. The native route removes the execution gap for these seven cases, not RP-236's full
 Linux image/storage blocker. Next: generated refresh contract and browser policy need accepted
 authority before implementation; wider Account rights/retention/acceptance remain open.
+
+## 2026-10-07 — committed refresh with a lost reply
+
+Account D2 and renewal's unresolved ambiguity input. Added one real API/Postgres failure-path
+test: healthy rotation first, then run the unchanged handler while discarding response writes
+and closing the real net.Pipe HTTP connection after the handler returns. No response credentials
+are captured. The client receives EOF, yet storage contains the consumed token and unseen new
+pair. Retrying the consumed credential returns exact refresh_reused/session_family_revoked,
+revokes all three refresh/access generations, and rejects the previously received access token.
+Further retry and all gameplay/account rows remain unchanged. This proves committed reply loss,
+not an actual browser/tab crash, automatic renewal or permission to change replay detection.
+
+The existing composed selector/observer now requires eight cases/five parents. Whole
+`make test-game-ui-composed` (46895) PASS, including main and cosmetic player journeys.
+Observer fixtures 20 PASS; actual missing-DB control (43644) rejects child/package 0 with five
+skips/0-of-8 cases, exit 1, stable listed sources/no capture error. Cold Account/publicapi
+tests (97139) and selected vet PASS; ordinary dependency skips are not Postgres proof.
+All handles terminal before records; fixture DB other sessions zero, target listeners absent.
+
+Review by: Codex (first-filter only). Recorded by: Codex. New tests/observer/docs/records range
+starts after `96e5ba82`; designated review remains. Earlier ranges are not approved by this
+entry. No production auth/TTL/parser, generated contract, kernel, copy, CI topology, archive or
+push changes. Asked Marco whether to accept/delegate the draft browser-renewal proposal; no
+answer or acceptance inferred. API S-A1 and recovery S-A2 still need resolution before their
+consumer implementation. No full CI/Account/1.0 claim.
