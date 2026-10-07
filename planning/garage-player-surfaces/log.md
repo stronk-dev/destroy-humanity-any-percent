@@ -2911,3 +2911,48 @@ persisted DOM, RP-333 complete performance, Firefox/actual zoom/AT/default
 player/privacy/platform/numeric/full-nine-tier 1.0 and independent review
 remain. Next accepted safe work: predeclare GS6-A3 whole-Desk 320 px pinned
 before/after comparison, not a shortcut release claim. No push/archive/mint.
+
+## 2026-10-07 — GS6-A3 paired whole-Desk measurement predeclared
+
+Accepted GS6-A3 requires fixture measurement before/after the Desk additions
+without claiming ownership of accessibility's historical 647 px regression.
+Existing combined native reflow test measures the after fixture only. Source
+history acf43132 introduced provisioned/cap and owned-upgrade text; its parent
+lacked those lines and also differs in many unrelated current components.
+Do not substitute an old source build or inferred historical dimensions here.
+
+Add a test-only paired current-component fixture measurement: same decoder-
+admitted v4 state, same 1995 theme, chrome/nav/resources/manual/opportunity/
+free shelf/curtain/generator/upgrade content; before has provisioned=0 and
+upgrade owned=false, after has provisioned=cap=3 and upgrade owned=true.
+The cap itself remains identical in both public fixtures; no bogus private
+field or producer-generated/shared artifact is claimed. Revision alone also
+advances to exercise the actual fixture refresh. Before/after mean absence/
+presence of the GS6 text in current source, NOT the historical executable.
+Named census must prove those states actually rendered; omitting all added
+text cannot silently turn both arms into the same passing measurement.
+
+At native 320 CSS px, record document/main/Desk/chrome widths, all descendant
+bounding rectangles and own scroll/client widths; exclude only genuinely
+zero-layout nodes. Both populations must fit the viewport (existing <=1 px
+rounding allowance), after must not widen measured extents beyond before,
+and no overflow:hidden/clip masking of content may fake containment. Check
+exact provisioning/reason/owned text, retained visible shelf/curtain/manual/
+opportunity/chrome/nav, retained manual focus and zero runtime intents.
+Restore wide viewport and unmount in finally. Run Chromium and WebKit through
+the root native lane, no Docker; Firefox/full Linux CI/actual 400% zoom/AT/
+real service/later Desk/release/whole accessibility acceptance remain distinct.
+
+Demonstrate actual failures one at a time: force added provision text to a
+600 px minimum width; hide it with display:none; omit its cap reason; set
+Desk fixed inline size 647 px; mask a wide added child with overflow:hidden;
+and bypass the paired input update. Each should fail the appropriate actual
+source/render/census/layout oracle, not compile errors. Restore exact hashes
+between probes, never edit source during a matching live process. Record
+instrument mistakes/invalid probes separately. Product changes only if a
+fresh real healthy-source failure is established and separately predeclared.
+
+No product/copy/balance/CI/Make/authority change, checkbox or lifecycle move.
+Whole new span after 54c8c8da through subsequent records requires Claude
+independently of source guard d3ce0f76..54c8c8da, performance
+127eb052..d3ce0f76 and every previous exact span. Full-nine-tier goal active.
