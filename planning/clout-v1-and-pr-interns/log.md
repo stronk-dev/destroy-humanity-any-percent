@@ -1910,3 +1910,15 @@ inserted this NEW entry inside an older session.9e5f56 prefix check caught it
 before any experiment. This forward correction removes only that new insertion
 and appends it here, restoring the ENTIRE3868e3d2 log prefix byte-exact. No old
 entry changed or history rewritten; both commits remain in the review range.
+
+### RP-311 actual red baseline
+
+62911/54c115 compiles, all7 Go ordinary/activation cases fail EXACT missing
+axis_stack (.375s).97291/1f49b2 client9647pass/30newfail/340visibleSkip:
+24 actual ordinary and6 actual old→new Exit producers all omit the object.
+Independent literal expected factors/product/closed object fail on absence,
+not compilation or stale source pins. Legacy assertions preceding Exit pass;
+Go refresh path is not yet reached because ordinary assertion fails first.
+Invented test helper caught by source search BEFORE execution and replaced by
+actual save.IntentDecision; no compiler failure counted. Both handles terminal.
+Next declared producer/signature/error propagation and kernel166 repair.
