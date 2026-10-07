@@ -1478,3 +1478,29 @@ predeclare actual pinned pre-v19→v19 activation and relevant seams underCV4.
 RP-308 delegation unanswered; no owner-body/accumulationwaiver. Fullnewspan
 after0c4d6481 needs Claude including everyrecordedge; older spans independent.
 Goalactive/progress, no checkbox/status/archive/mint/push/deploy/release call.
+
+### RP-310 terminal correction local range review
+
+Review by: Codex (implementer, self first-filter). Recorded by: Codex.
+Exact inspected range: `0c4d6481..7bc300c3`, all seventeen changed paths,
+including72c9983b predeclaration, two runtime predicates, kernel165/mirrors,
+five legacy companions, two source-only report re-observations and all records.
+Single runtime line changes only Company===18→>=18 twice. No other transition,
+numeric/save/balance/copy/CI/RFC body or historical fixture change. Source and
+artifact diffs8a2ac1 inspected; bbd1e7 whole reports identical except pins.
+
+Six complete terminal/next-run sequences andfive actual legacy companions now
+execute; three original refusals plusfour legacy/version refusals retain exact
+diagnostics/full unchanged initial states. All21checks pass. Original guard
+eight failures/permissive guard six failures demonstrate actual rejected-valid
+and admitted-invalid cases, with later independent refusals explicitly retained.
+Restoration and counts agree across code/dossier/docs/ledger/queues/roadmap.
+
+Decision: bounded local repair validated, NOT designated approval or fullCV4/
+Clout/1.0 acceptance. Original27AC6 andhistoricalRP-131 remain red; AMD64/
+hosted/preactivation/action-buff-mode/persistence/natural-player holds not waived.
+Claude must inspect ENTIRE newspan after0c4d6481 INCLUDING this record edge;
+preceding independent spans remain separate. No checkbox/status/archival claim.
+Initial uncommitted review-record placement matched an earlier repeated line;
+diff inspection caught it and the record moved to EOF before commit. Existing
+log bytes must remain an exact prefix; no prior entry is edited/reordered.
