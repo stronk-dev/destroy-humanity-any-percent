@@ -2835,3 +2835,79 @@ checkbox/lifecycle/archive/mint/push/release change authorized. Proper full
 nine-tier 1.0, author/body/AT/engine/default-player/platform/privacy/numeric
 and Docker capacity gates remain. A source-test improvement is not release
 acceptance or authority to reconcile somebody else's stale RFC body.
+
+## 2026-10-07 — RP-335 executed source guard and local first filter
+
+Review by: Codex (implementer self/first filter, NOT designated).
+Recorded by: Codex. Complete evidence/tool/docs/tracking span begins after
+d3ce0f76, including 2a5deeee/d2b4b5a4/da2bc019; final commit is this record's
+containing commit. Mandatory Claude review must cover that whole range,
+separately from performance 127eb052..d3ce0f76 and all previous exact spans.
+No designated verdict, acceptance checkbox or archival eligibility claimed.
+
+Verification-only implementation adds client/tools/cosmetic-intent-kinds.go
+and extends the existing Svelte boundary scanner. Go AST reads actual string
+constants selected by isCosmeticIntent and checks one occurrence of each in
+ParseIntent's request.Kind cases. Unsupported/missing/duplicate authority
+fails; stdlib only, no service import, network call, dependency download or
+new accepted-kind table. Two positives (including non-code lookalikes) and
+ten negatives run inside the helper. Svelte checks explicit cosmetic objects
+and actual host dispatch envelopes, with verified current Exit-plan/Garden
+source shapes and eleven negative fixtures. Ordinary local callback helpers
+are not incorrectly treated as the host dispatcher. Source syntax only:
+not arbitrary alias/control-flow/whole-program analysis, proof of forwarding
+semantics, cosmetic eligibility, persisted receipts or full Shop acceptance.
+
+Instrument mistakes disclosed: 66b8f5 rejected the actual host Exit/Garden
+wrappers; 9a6a79 then confused an unrelated GardenSurface act(callback) with
+the host. Both exited 2 and were checker-binding errors, not product defects.
+Explicit host/wrapper bindings corrected them; no gameplay source edit or
+weakened unknown/dynamic-cosmetic-kind rule. Corrected healthy dbb022 exits 0.
+
+Actual source probes, one at a time and no gameplay/runtime execution:
+
+| Run | Fault | Executed result |
+|---|---|---|
+| b9ca66 | Repeat valid registered-copy fake legacy-shelf button | Svelte parse passes; root boundary exits 2: buy_horse_armor outside production authority. |
+| 0e5ca7 | Real onAcquire kind replaced by buy_horse_armor | Svelte parse passes; boundary exits 2 on the same authority check. |
+| c1f627 | Real onAcquire kind replaced by dynamic id | Svelte parse passes; boundary exits 2: dynamic kind cannot prove authority. |
+| 33e23d | Remove Acquire from actual ParseIntent compound case | Go AST parsing executes; boundary exits 2: required decoder occurrence is zero, NOT a compile/type failure. |
+| 33b5e1 | Bypass scanner's unregistered-kind rejection | Boundary exits 2: built-in fake-command negative survives and invalidates the checker. |
+
+Each source restored before the next probe. Final SHA-256 identities:
+GameUIApp 9ea86275b688712047703e2e6b794fcf5d6b5b61706d874b51ee13462459223a;
+production intents.go 5a284dcb009b804feed72c2af472dd58e4a0314d7f792255ef02f6f9af462975;
+scanner 1cded97a8ac6c23abc3b960ed5480a86c5d0d0e1ee3a031d7b46ba09ffaf8313;
+helper 7d5702a93d54862c96fcfe60047c905d7533d4e1da2b335607d9d98372d971d4.
+No fake button or production decoder fault is committed. AC4's separate four
+actual-source policy seeds/results remain in the preceding entry.
+
+Final healthy verification, terminal results, not cached/inferred summaries:
+
+- 40143: root boundary/types/client/build/cosmetic-boundary/no-payment exits 0.
+  14 shell/8 UI/22 Game UI files; actual three command kinds, ten Go/eleven
+  Svelte negatives rejected. Types zero errors/warnings; client 9,814 passes /
+  450 explicit browser skips, 105 files pass/22 skip. Unchanged 214-module
+  build. Cosmetic isolation 76 stdlib dependencies/two client files/22
+  negatives; payment allowlist/SDK gate six negatives/two near misses.
+- 5365: root make test-go GO_PACKAGES=./production with cold -count=1 -v
+  -run TestCosmetic exits 0. Eight top-level passes plus two child reports;
+  TestCosmeticCorpus drives actual ParseIntent/canonical payload/Founder
+  transition and pinned-byte comparisons. Two SQL cases explicitly SKIP
+  because TEST_DATABASE_URL is unset; NOT integration green. No fixture update.
+- 4c146e: verify-ci-topology exits 0 with thirteen negatives rejected;
+  this static check is NOT a full Linux browser/hosted CI pass.
+- 45940: isolated native Chromium performance exits 0, two tests pass /
+  twenty-two unselected, including the existing populated supplement.
+- 880d8f: root make vet with GO_PACKAGES='../client/tools/cosmetic-intent-kinds.go'
+  exits 0; the new stdlib helper itself, not only the service, is vetted.
+
+Docs/ledger/acceptance inventory/current board/plan/queue/checkpoint log are
+reconciled in this implementation range; diff check passes. No product/API/
+copy/catalog/kernel/balance/Make/workflow/CI topology byte changed. Full Linux
+browser remains RED/held by last measured Docker overlay 0 free/100%; no
+SQL/container rerun or unowned cleanup. RP-132/313/318 author/body, RP-331
+persisted DOM, RP-333 complete performance, Firefox/actual zoom/AT/default
+player/privacy/platform/numeric/full-nine-tier 1.0 and independent review
+remain. Next accepted safe work: predeclare GS6-A3 whole-Desk 320 px pinned
+before/after comparison, not a shortcut release claim. No push/archive/mint.

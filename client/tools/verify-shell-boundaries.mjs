@@ -2,11 +2,20 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "svelte/compiler";
+import { execFileSync } from "node:child_process";
 
 const client = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const shell = path.join(client, "src", "shell");
 const ui = path.join(client, "src", "ui");
 const gameUI = path.join(client, "src", "game-ui");
+const root = path.resolve(client, "..");
+const cosmeticAuthority = JSON.parse(execFileSync("go", ["run", path.join(client, "tools/cosmetic-intent-kinds.go"), path.join(root, "server/production")], {
+  cwd: root, encoding: "utf8", env: { ...process.env, GOCACHE: process.env.GOCACHE ?? path.join(root, ".cache/go-build") },
+}));
+if (!Array.isArray(cosmeticAuthority.kinds) || cosmeticAuthority.kinds.length === 0 ||
+  cosmeticAuthority.kinds.some((kind, index, rows) => typeof kind !== "string" || kind.length === 0 || index > 0 && rows[index - 1] >= kind) ||
+  cosmeticAuthority.negative_fixtures !== 10 || cosmeticAuthority.positive_fixtures !== 2) throw new Error("invalid cosmetic production-source observation");
+const cosmeticKinds = new Set(cosmeticAuthority.kinds);
 // Player surface components mounted by the Game UI obey the same boundary.
 const surfaceDirectories = ["game-ui", "minigame", "soul"];
 async function sourceFiles(directory, prefix = "") {
@@ -51,8 +60,103 @@ function assertGovernedValue(property, value, label) {
   }
 }
 
+function propertyName(property) {
+  if (property.type !== "Property" || property.computed) return undefined;
+  return property.key.type === "Identifier" ? property.key.name : property.key.type === "Literal" ? property.key.value : undefined;
+}
+
+// GS6-A2: production owns kinds; syntax that cannot prove its envelope fails.
+// This is a source gate, not proof of server eligibility or real receipt flow.
+function verifyCosmeticCommands(ast, label) {
+  const host = label === "game-ui/GameUIApp.svelte";
+  const functions = new Map();
+  visit(ast, (node) => {
+    if (node.type === "FunctionDeclaration" && ["act", "withPlan", "gardenAct"].includes(node.id?.name)) {
+      if (functions.has(node.id.name)) throw new Error(`${label}: duplicate command wrapper`);
+      functions.set(node.id.name, node);
+    }
+  });
+  if (host && !functions.has("act")) throw new Error(`${label}: host intent dispatcher missing`);
+  const isBody = (node) => node?.type === "Identifier" && node.name === "body";
+  const withPlan = functions.get("withPlan");
+  if (withPlan) {
+    const returned = withPlan.body.body.length === 1 && withPlan.body.body[0].type === "ReturnStatement" ? withPlan.body.body[0].argument : undefined;
+    const properties = returned?.alternate?.type === "ObjectExpression" ? returned.alternate.properties : [];
+    const test = returned?.test;
+    if (label !== "game-ui/GameUIApp.svelte" || !isBody(withPlan.params[0]) || returned?.type !== "ConditionalExpression" ||
+      test?.type !== "BinaryExpression" || test.operator !== "===" || test.right.type !== "Literal" || test.right.value !== 0 ||
+      test.left.type !== "MemberExpression" || test.left.computed || test.left.object.type !== "Identifier" ||
+      test.left.object.name !== "exitPlan" || test.left.property.name !== "length" || !isBody(returned.consequent) || properties.length !== 2 ||
+      properties[0].type !== "SpreadElement" || !isBody(properties[0].argument) || propertyName(properties[1]) !== "reputation_plan" ||
+      properties[1].value.type !== "ArrayExpression" || properties[1].value.elements.length !== 1 ||
+      properties[1].value.elements[0].type !== "SpreadElement" || properties[1].value.elements[0].argument.type !== "Identifier" ||
+      properties[1].value.elements[0].argument.name !== "exitPlan") throw new Error(`${label}: unsupported Exit-plan command transformation`);
+  }
+  const gardenAct = functions.get("gardenAct");
+  if (gardenAct) {
+    let bodyReferences = 0, forwardingCalls = 0;
+    visit(gardenAct.body, (node) => {
+      if (isBody(node)) bodyReferences++;
+      if (node.type === "CallExpression" && node.callee.type === "Identifier" && node.callee.name === "act" && isBody(node.arguments[0])) forwardingCalls++;
+    });
+    if (label !== "game-ui/GameUIApp.svelte" || !isBody(gardenAct.params[0]) || bodyReferences !== 1 || forwardingCalls !== 1) {
+      throw new Error(`${label}: unsupported Garden command forwarding`);
+    }
+  }
+  const seen = new Set();
+  let hostRuntimeForwards = 0;
+  const walk = (node, ancestors = []) => {
+    if (node === null || typeof node !== "object" || seen.has(node)) return;
+    seen.add(node);
+    if (node.type === "CallExpression") {
+      if (host && node.callee.type === "Identifier" && ["act", "withPlan", "gardenAct"].includes(node.callee.name)) {
+        const argument = node.arguments[0];
+        const gardenForward = node.callee.name === "act" && gardenAct && ancestors.includes(gardenAct) && isBody(argument);
+        const planWrapper = argument?.type === "CallExpression" && argument.callee.type === "Identifier" && argument.callee.name === "withPlan" && withPlan;
+        const envelope = planWrapper ? argument.arguments[0] : argument;
+        if (!gardenForward && (envelope?.type !== "ObjectExpression" || envelope.properties.some((property) => property.type !== "Property" || property.computed))) {
+          throw new Error(`${label}: opaque intent envelope cannot prove cosmetic source authority`);
+        }
+        const kinds = gardenForward ? [] : envelope.properties.filter((property) => propertyName(property) === "kind");
+        if (!gardenForward && (kinds.length !== 1 || kinds[0].value.type !== "Literal" || typeof kinds[0].value.value !== "string")) {
+          throw new Error(`${label}: dynamic intent kind cannot prove cosmetic source authority`);
+        }
+      }
+      if (node.callee.type === "MemberExpression" && !node.callee.computed && node.callee.property.name === "intent") {
+        const envelope = node.arguments[0];
+        const owner = ancestors.findLast((ancestor) => ancestor.type === "FunctionDeclaration" && ancestor.id?.name === "act");
+        const properties = envelope?.type === "ObjectExpression" ? envelope.properties : [];
+        const forwarding = label === "game-ui/GameUIApp.svelte" && owner?.params[0]?.type === "Identifier" && owner.params[0].name === "body" &&
+          properties.length === 3 && propertyName(properties[0]) === "intent_id" && propertyName(properties[1]) === "expected_revision" &&
+          properties[2].type === "SpreadElement" && properties[2].argument.type === "Identifier" && properties[2].argument.name === "body";
+        if (forwarding) hostRuntimeForwards++;
+        if (!forwarding && (envelope?.type !== "ObjectExpression" || envelope.properties.some((property) => property.type !== "Property" || property.computed))) {
+          throw new Error(`${label}: opaque runtime intent bypasses verified source envelopes`);
+        }
+      }
+    }
+    if (node.type === "ObjectExpression") {
+      const names = node.properties.map(propertyName);
+      const kindProperties = node.properties.filter((property) => propertyName(property) === "kind");
+      const kind = kindProperties.length === 1 && kindProperties[0].value.type === "Literal" ? kindProperties[0].value.value : undefined;
+      if (names.includes("cosmetic_id") || cosmeticKinds.has(kind)) {
+        if (node.properties.some((property) => property.type !== "Property" || property.computed) || kindProperties.length !== 1 ||
+          new Set(names).size !== names.length || typeof kind !== "string") throw new Error(`${label}: ambiguous cosmetic command envelope`);
+        if (!cosmeticKinds.has(kind)) throw new Error(`${label}: cosmetic command ${kind} is not in production source authority`);
+      }
+    }
+    for (const value of Object.values(node)) {
+      if (Array.isArray(value)) for (const child of value) walk(child, [...ancestors, node]);
+      else walk(value, [...ancestors, node]);
+    }
+  };
+  walk(ast);
+  if (host && hostRuntimeForwards !== 1) throw new Error(`${label}: host must have one verified runtime forwarding path`);
+}
+
 function verifySvelteSource(source, label) {
   const ast = parse(source, { modern: true });
+  verifyCosmeticCommands(ast, label);
   const attributeText = new Set();
   visit(ast.fragment, (node) => {
     if (node.type === "Attribute" && Array.isArray(node.value)) for (const part of node.value) attributeText.add(part);
@@ -116,4 +220,34 @@ for (const seeded of ["fetch('/api')", "new WebSocket('wss://example.invalid')"]
   if (!forbiddenNetwork.test(seeded)) throw new Error("UI raw-network lint did not reject its seeded violation");
 }
 
-console.log(`shell/UI boundaries ok: ${files.length} shell, ${uiFiles.length} UI, and ${gameUIFiles.length} Game UI component files`);
+const cosmeticSeed = (body) => parse(`<script lang="ts">${body}</script>`, { modern: true });
+for (const kind of cosmeticKinds) verifyCosmeticCommands(cosmeticSeed(`const body = {kind:${JSON.stringify(kind)},cosmetic_id:"horse_armor"};`), "registered cosmetic fixture");
+verifyCosmeticCommands(cosmeticSeed(`const text = '({kind:"buy_horse_armor",cosmetic_id:"horse_armor"})'; // act({kind:"bad",cosmetic_id:"x"})`), "non-code cosmetic lookalikes");
+const forwardingFixture = 'function act(body) { runtime.intent({intent_id:identity(),expected_revision:1,...body}); }';
+const planFixture = 'function withPlan(body) { return exitPlan.length === 0 ? body : {...body,reputation_plan:[...exitPlan]}; }';
+const gardenFixture = 'function gardenAct(body) { void act(body,{scope:"founder"}).then(() => { refresh++; }); }';
+verifyCosmeticCommands(cosmeticSeed(forwardingFixture + 'act({kind:"buy_generator",generator_id:"generator.beige_tower"});'), "game-ui/GameUIApp.svelte");
+verifyCosmeticCommands(cosmeticSeed(forwardingFixture), "game-ui/GameUIApp.svelte");
+verifyCosmeticCommands(cosmeticSeed(forwardingFixture + planFixture + 'act(withPlan({kind:"wind_down"}));'), "game-ui/GameUIApp.svelte");
+verifyCosmeticCommands(cosmeticSeed(forwardingFixture + gardenFixture + 'gardenAct({kind:"garden_plant"});'), "game-ui/GameUIApp.svelte");
+verifyCosmeticCommands(cosmeticSeed('function act(run) { run(); } act(() => onPlant());'), "garden local callback, not host dispatcher");
+const rejectedCosmetic = [
+  'act({kind:"buy_horse_armor",cosmetic_id:"horse_armor"});',
+  'const body = {kind:"buy_horse_armor",cosmetic_id:"horse_armor"};',
+  'act({kind:dynamic,cosmetic_id:"horse_armor"});',
+  'act({kind:"acquire_cosmetic",...body,cosmetic_id:"horse_armor"});',
+  'act(body);',
+  'runtime.intent(body);',
+  'runtime.intent({...body});',
+  'act({["kind"]:"acquire_cosmetic",cosmetic_id:"horse_armor"});',
+  'act({kind:"acquire_cosmetic",kind:"buy_horse_armor",cosmetic_id:"horse_armor"});',
+  planFixture.replace('reputation_plan:[...exitPlan]', 'kind:"buy_horse_armor"') + 'act(withPlan({kind:"wind_down"}));',
+  gardenFixture.replace('void act(body', 'body.kind = "buy_horse_armor"; void act(body') + 'gardenAct({kind:"garden_plant"});',
+];
+for (const fixture of rejectedCosmetic) {
+  let rejected = false;
+  try { verifyCosmeticCommands(cosmeticSeed(forwardingFixture + fixture), "game-ui/GameUIApp.svelte"); } catch { rejected = true; }
+  if (!rejected) throw new Error(`cosmetic source guard did not reject ${fixture}`);
+}
+console.log(`shell/UI boundaries ok: ${files.length} shell, ${uiFiles.length} UI, and ${gameUIFiles.length} Game UI component files; ` +
+  `cosmetic authority ${JSON.stringify([...cosmeticKinds])}; ${cosmeticAuthority.negative_fixtures} Go and ${rejectedCosmetic.length} Svelte cosmetic source negatives rejected`);

@@ -4393,3 +4393,28 @@ layout bddfc58e..127eb052 and all preceding spans. Next accepted work:
 predeclared exact source/boundary guards; RP-331 awaits repaired/rechecked
 Docker capacity, not unauthorized cleanup or another full-disk run. Goal
 active/progress; full nine-tier 1.0 scope unchanged, no archival/push/release.
+
+## 2026-10-07 — current-source policy and cosmetic command guard checkpoint
+
+AC4 four valid real-component policy faults fail. RP-335 baseline fake shelf
+command passed the old gate, then verification-only Go/Svelte source checks
+under da2bc019 reject five real faults and ten Go/eleven Svelte negatives.
+Kinds derive from the actual production predicate/decoder, no second list.
+Supported envelopes/current wrappers are explicit; whole-program analysis,
+forwarding semantics, service eligibility/persistence and full Shop acceptance
+are not claimed. Instrument-binding mistakes and exact restorations recorded.
+
+Final local types/boundaries/client 9,814 passes /450 browser skips/unchanged
+build/isolation/no-payment/static topology/isolated performance pass. Cold
+cosmetic parser/transition passes; two SQL cases explicitly skip. No product/
+API/copy/balance/CI/Make change or lifecycle promotion. Full Linux browser
+remains RED/held; last Docker overlay 0 free/100%, no run/cleanup authority.
+
+Canonical docs/ledger/inventory/board/queue/plan synchronized. Complete range
+after d3ce0f76 through this containing commit requires Claude independently
+of performance 127eb052..d3ce0f76, layout bddfc58e..127eb052 and all previous
+exact spans. Next accepted work: GS6-A3 whole-Desk 320 px pinned comparison;
+RP-331 persisted DOM waits for repaired/rechecked capacity. Author/body/GS4/
+full AC7/Firefox/actual zoom/AT/default-player/privacy/platform/numeric/
+review/full-nine-tier 1.0 gates remain. Goal active/progress, not finished,
+blocked or preview-substituted. No archive/push/deploy/release.

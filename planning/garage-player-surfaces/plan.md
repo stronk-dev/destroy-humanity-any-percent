@@ -7,27 +7,25 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-333/334 test-only GS5/GS6 populated Desk performance
-supplement, predeclared 04b10f97/fb302c78. Original null-feature guard can pass
-no input delivery and a real final 400 ms task; its body remains byte-identical.
-The new driver verifies actual inputs/regions/visible cash/terminal state,
-native support and final record drain under unchanged ceilings. Six real
-faults fail, exact source restored. Final isolated lane two passes /22
-unselected; types 0/0, client 9,814 passes /450 explicit browser skips,
-unchanged build and 14/8/22 boundaries. No production/CI byte moved.
-Initial fixture/type mistakes, reporting-only diagnostics and absent local
-JSON attachment persistence are disclosed, not converted into evidence.
-Complete new range after 127eb052 through final records needs Claude.
-Prior exact layout bddfc58e..127eb052, complete-ID 5fbf4cff..bddfc58e,
-RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8, runtime
-a42406f0..fc911784 and all earlier spans remain independently owed.
-RP-333/all AC7 is still partial: GS4/pet/later Desk/full release population,
-real player and manual profile remain. Next accepted work: exact source/
-boundary guards, predeclared with their actual failures. RP-331 SQL/DOM
-proofs await Docker capacity repair/recheck; no run/cleanup here. All
-author/body/Firefox/actual zoom/AT/privacy/numeric/full nine-tier 1.0 gates
-remain; no checkbox/lifecycle/archive/push/release promotion. Earlier slice
-records retain their proof/review boundaries; latest queue owns next work.
+Latest bounded work: AC4 current-source discrimination and RP-335 GS6-A2
+verification-only repair, predeclared 2a5deeee/da2bc019. Four actual component
+policy faults fail; the old boundary's fake cosmetic button survivor is
+recorded before correction. Production Go AST/decoder now owns the command
+set; Svelte AST checks explicit envelopes/current wrappers, not arbitrary
+whole-program/runtime/eligibility proof. Five real faults and ten Go/eleven
+Svelte negatives fail; sources restored exactly. Final boundary/types/client
+9,814 passes /450 explicit browser skips/build/isolation/payment/topology/
+isolated performance pass. Cold cosmetic parser/transition passes; two SQL
+tests explicitly skip. Instrument wrapper-binding mistakes are disclosed.
+No production/API/copy/balance/CI/Make byte moved. Complete new range after
+d3ce0f76 through final records needs Claude separately from performance
+127eb052..d3ce0f76, layout bddfc58e..127eb052 and all earlier exact spans.
+Next accepted work: predeclare GS6-A3 pinned 320 px whole-Desk before/after
+comparison, not Firefox/actual 400% zoom/AT substitution. RP-331 SQL/DOM
+proofs await repaired/rechecked Docker capacity; no run/cleanup here. GS4/
+RP-333 full performance, author/body/platform/privacy/numeric/default-player/
+review/full-nine-tier 1.0 gates remain. No box/lifecycle/archive/push/release
+promotion; earlier slices retain their independent proof/review boundaries.
 
 Latest bounded GS0.6 supplement (not a new acceptance checkbox):45bf2edb,
 predeclareda8f2a527/test-first7cac400d. Fiscal/care own mapped notice regions,

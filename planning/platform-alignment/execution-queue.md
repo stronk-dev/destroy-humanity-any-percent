@@ -3,6 +3,29 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage current-source boundary checkpoint — 2026-10-07
+
+AC4 actual component policy witnesses and RP-335 GS6-A2 verification-only
+source guard, predeclared 2a5deeee/da2bc019. Four valid-Svelte policy seeds
+fail; original guard's fake-button survivor recorded. Production Go predicate/
+decoder owns the accepted kinds, real Svelte AST checks explicit envelopes
+and current host wrappers. Five real faults plus ten Go/eleven Svelte negatives
+fail; exact sources restored. Final boundary/types/client 9,814 passes /450
+browser skips/build/isolation/payment/topology/isolated performance pass.
+Cold cosmetic parser/transition passes; two SQL tests explicitly skip.
+Instrument wrapper-binding errors disclosed. No product/API/copy/balance/
+CI/Make change, whole-program/runtime/Shop acceptance or lifecycle promotion.
+**READY FOR CLAUDE:** entire d3ce0f76-exclusive span through final records,
+independently of performance 127eb052..d3ce0f76, layout bddfc58e..127eb052
+and all preceding exact ranges. Source checks do not replace designated review.
+
+**READY next:** predeclare GS6-A3 pinned 320 px whole-Desk before/after
+comparison, preserve earlier 647 px defect and actual zoom/AT/Firefox holds.
+RP-331 SQL/DOM proof waits for Docker capacity repair/recheck (last 0 free /
+100%); no third container population or unauthorized cleanup. Full Linux
+browser RED/held, GS4/full AC7/author/body/default-player/privacy/platform/
+numeric/review/full-nine-tier 1.0 gates remain. No archive/push/release.
+
 ## Garage populated-performance checkpoint — 2026-10-07
 
 RP-333/334 test-only bounded GS5/GS6 Desk supplement, predeclared 04b10f97 /

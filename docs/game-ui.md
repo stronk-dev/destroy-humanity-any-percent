@@ -394,7 +394,26 @@ balance from the event's factor/starter IDs.
 
 `make verify-client-boundary` scans the Game UI components alongside the archived UI primitives.
 It rejects transport/replay imports, raw network calls, player-facing text literals, and governed
-style literals. `make test-browser` applies the WCAG 2.2 AA axe gate to all five lifecycle surfaces and to every minigame surface state in
+style literals. Four valid-Svelte faults in the actual Opportunity region independently fire these
+policies; internal example fixtures alone are not the evidence for the current-source check.
+
+The same command enforces the GS6-A2 cosmetic source boundary. Its standard-library-only Go
+helper reads the production `isCosmeticIntent` AST and requires each selected string constant
+in `ParseIntent`'s `request.Kind` switch. There is no second accepted-kind registry. Missing,
+duplicate, empty or unsupported authority shapes fail rather than yield a partial list. It runs
+from the repository root using the existing Make-exported Go cache; Go must be installed.
+
+The Svelte AST check rejects unregistered or ambiguous cosmetic envelopes, including declaration
+objects with `cosmetic_id`. The actual host dispatch calls require explicit literal kinds; opaque
+envelopes fail. The existing runtime forward and Exit-plan/Garden wrappers have explicit supported
+source shapes. Unsupported changes need a reviewed checker change, not an inferred exemption.
+This is a bounded source-syntax check, not arbitrary whole-program analysis, proof of forwarding
+semantics, cosmetic ID eligibility, persisted receipts, absence of payments or full Shop acceptance.
+Legitimate acquire/equip/unequip callbacks remain permitted. Ten Go and eleven Svelte negative
+fixtures run inside the gate; real-source fake-button, replaced/dynamic-kind, decoder-omission
+and checker-bypass probes also fail. Production mutations used for those probes were restored.
+
+`make test-browser` applies the WCAG 2.2 AA axe gate to all five lifecycle surfaces and to every minigame surface state in
 Chromium, Firefox, and WebKit and includes the sixty-simulated-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.
 `make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed

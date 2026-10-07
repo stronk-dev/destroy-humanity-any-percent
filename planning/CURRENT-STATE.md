@@ -4,24 +4,22 @@ Reconciled 2026-10-07. Cloud Clicker remains a **development snapshot**, not a r
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
-**Latest Garage work:** RP-333/334 test-only populated GS5/GS6 performance
-supplement under unchanged budgets. Native probes show the old null-feature
-guard can pass no delivery and a real final 400 ms task; it remains unchanged,
-not relied on as sufficient proof. New actual input/region/visible cash/
-terminal/support/final-task observation rejects six faults. Healthy isolated
-lane two passes /22 unselected, types 0/0, client 9,814 passes /450 explicit
-browser skips, unchanged build and 14/8/22 boundaries. No production/CI byte
-moved; fixture/type and reporting-only diagnostics disclosed. RP-333/all AC7
-still excludes GS4/pet/later Desk/full release population, real player and
-manual profile; not release acceptance. New full span after 127eb052 through
-records requires Claude, independently of layout bddfc58e..127eb052,
-complete-ID 5fbf4cff..bddfc58e, RP-332 cc62cea8..5fbf4cff, audit
-fc911784..cc62cea8, runtime a42406f0..fc911784 and all preceding spans.
-Next accepted work: predeclared exact source/boundary guards. RP-331
-persisted/DOM proofs await Docker capacity repair/recheck, last measured
-0 free /100%; no run/cleanup here. All author/body/Firefox/actual zoom/AT/
-default-player/privacy/platform/numeric/review/full-nine-tier 1.0 gates
-remain; no checkbox/lifecycle/archive/push/release promotion.
+**Latest Garage work:** AC4 actual-source discrimination and RP-335 cosmetic
+command source guard. Four valid component faults fail existing policies;
+the old boundary's fake-button survivor is recorded, not present in healthy
+product code. New verification-only Go/Svelte AST check derives kinds from
+production and requires decoder membership; five real faults plus ten Go/
+eleven Svelte negatives discriminate, sources restored. Final client 9,814
+passes /450 browser skips, types/build/boundaries/isolation/payment/static
+topology/isolated performance pass. Cold cosmetic parser/transition passes;
+two SQL tests explicitly skip. No production/CI/Make byte moved; no whole-
+program/runtime/Shop acceptance. Complete range after d3ce0f76 through records
+requires Claude independently of performance 127eb052..d3ce0f76, layout
+bddfc58e..127eb052 and all earlier exact spans. Next accepted work: GS6-A3
+pinned 320 px whole-Desk comparison. RP-331 awaits repaired/rechecked Docker
+capacity (last 0 free/100%); no run/cleanup here. Full Linux browser remains
+RED/held. Author/body/GS4/full AC7/actual zoom/AT/default-player/privacy/
+platform/numeric/review/full-nine-tier 1.0 gates remain; no promotion.
 
 **Latest repair:** `45bf2edb`, predeclared `a8f2a527`, failing-first
 `7cac400d`: RP-326 Fiscal/care outcomes now belong to the submitting panel;

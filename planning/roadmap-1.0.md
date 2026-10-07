@@ -5,23 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-333/334 test-only populated Garage
-GS5/GS6 performance supplement. The original guard survives no delivery and
-a real final 400 ms task; preserved byte-identically, not adequate evidence.
-New actual input/region/render/terminal/support/final-record observation
-rejects six faults; isolated lane two passes /22 unselected, types 0/0,
-client 9,814 passes /450 explicit browser skips, unchanged build/boundaries.
-No production/CI byte moved. Instrument mistakes/reporting diagnostics and
-exclusions disclosed. RP-333/full AC7 remains partial, not a release claim:
-GS4/pet/later Desk/full release population, real player/manual profile remain.
-Whole new range after 127eb052 through records needs Claude independently
-of exact layout bddfc58e..127eb052, complete-ID 5fbf4cff..bddfc58e,
-RP-332 cc62cea8..5fbf4cff, audit fc911784..cc62cea8 and earlier spans.
-Next accepted work: exact source/boundary guards with predeclared failures.
-RP-331 SQL/DOM proof waits for Docker capacity repair/recheck (last 0 free /
-100%); no run/cleanup here. All author/body/engine/actual zoom/AT/default-
-player/privacy/platform/numeric/review/full-nine-tier 1.0 gates stay open.
-No checkbox/lifecycle/archive/mint/push/shortened-preview substitution.
+**Latest bounded work (2026-10-07):** AC4 actual-source policy witnesses and
+RP-335 verification-only cosmetic source guard. Four component policy faults
+fail; fake-button survivor recorded before correction. Production Go AST/
+decoder owns kinds; real Svelte explicit envelopes/current wrappers checked.
+Five real faults and ten Go/eleven Svelte negatives discriminate, exact source
+restored. Final client 9,814 passes /450 explicit browser skips, types/build/
+boundaries/isolation/payment/topology/isolated performance pass. Cold cosmetic
+parser/transition passes; two SQL tests explicitly skip. Instrument-binding
+mistakes disclosed, no production/CI/Make change or whole-program/runtime/
+Shop acceptance. Complete span after d3ce0f76 through records requires Claude
+separately from performance 127eb052..d3ce0f76, layout bddfc58e..127eb052 and
+all earlier exact ranges. Next accepted work: GS6-A3 pinned 320 px whole-Desk
+comparison; RP-331 awaits repaired/rechecked Docker capacity (last 0 free /
+100%), no run/cleanup here. Full Linux CI remains RED/held; GS4/full AC7/
+author/body/AT/default-player/privacy/platform/numeric/review/full-nine-tier
+1.0 gates remain. No box/lifecycle/archive/mint/push/preview substitution.
 
 **Latest bounded repair (2026-10-07):** `45bf2edb`, predeclareda8f2a527/
 failing-first7cac400d: Fiscal/care outcome ownership and async-origin/no-bleed
