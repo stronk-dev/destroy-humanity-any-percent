@@ -5,6 +5,15 @@ release-ready 1.0. The objective is the full nine-tier game through Transcendenc
 privacy, accessibility, rights, operations and preservation. A Phase-0 preview does not replace it.
 
 **Latest Garage review/correction:** designated Codex review of original Claude
+Fiscal/buff/reflow `6594b646^..6594b646`, all five paths, is **APPROVED, bounded
+batch only**. Credit-sum/buff-disconnection/badge-clear/oversized-card probes
+fail their named oracles; nav-wrap omission survives honestly. Source restored
+exactly; final 9,691 client tests, Chromium/WebKit Garage 34 and performance 1,
+types/boundaries pass. This is not full Garage, all-engine/AT, real-server or
+release proof. Next: GS5 producer `cdb8fe61^..cdb8fe61`, all 12 paths, before its
+separate Desk consumer. RP-312's Codex range `7aab0e2e..900f409e` needs Claude.
+
+The preceding original achievement/meter review
 `301728c8^..301728c8` covers all 14 paths: **CHANGES REQUIRED**, RP-312 meter-direction
 domain mismatch. Test-first `49576162` reproduces 8 failures; the accepted GS0.3
 repair and 13 new cases now pass (9,691 client tests/340 explicit skips). Real
@@ -12,8 +21,8 @@ delivery-gate and host-dedupe omissions fail; exact source restored. Native
 Chromium/WebKit Garage 34 and isolated performance 1 pass; types/build/boundary/
 copy/manifest/topology gates pass. Firefox/real-server acquisition/full Garage/
 whole CI/release are not claimed. New span after `7aab0e2e` including records needs
-Claude; prior Clout spans are independent. Next bounded designated review:
-Claude `6594b646` Fiscal/buff/reflow, all 5 paths. Full nine-tier goal and all prior
+Claude; prior Clout spans are independent. The subsequent remainder review is
+recorded above. Full nine-tier goal and all prior
 owner/numeric/platform/content/review holds remain.
 
 **Latest Clout harness prerequisite:** all12accepted criteria mapped; new

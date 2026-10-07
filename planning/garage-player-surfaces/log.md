@@ -585,3 +585,60 @@ named existing oracle, while unrelated controls may survive legitimately.
 These are temporary review probes, not retained product changes. Do not raise
 timeouts, change browser failure/attachment settings, alter copy or redesign
 payloads. A record-only verdict is not acceptance of the entire Garage lane.
+
+### Reflow probe correction, predeclared before the replacement run
+
+Removing nav wrapping **survived**: both selected reflow tests and isolated
+performance passed. That is not a demonstrated failing case. The retained
+shrinkable/wrappable controls can still fit, so the probe did not establish
+a violation of the named no-horizontal-overflow property. Nav source restored
+exactly. Replace this target with an actual too-wide Desk card track: change
+the existing bounded `minmax(min(15rem, 100%), 1fr)` to a fixed `40rem` minimum.
+At the unchanged 320px viewport this must produce actual horizontal overflow
+and fail the existing oracle. No measurement threshold, viewport, control,
+timeout, screenshot setting or assertion changes; restore the track afterward.
+
+### Designated verdict — `6594b646^..6594b646`
+
+**Review by:** Codex (the other party). **Recorded by:** Codex.
+**Reviewed range:** `6594b646^..6594b646`, all five changed paths.
+**Verdict: APPROVED, bounded batch only.** Both Fiscal arms and the retained
+buff v1/v2 shapes preserve the producer fields and server integer/ID/timing
+domains. Announcements remain read-only: Fiscal badges while elsewhere,
+visiting clears the badge, and a known buff announces on the Desk. Candidate
+copy is not adopted by this verdict. The pet edit is a responsive grid-track
+change only; it does not authorize the unresolved GS4×PA7 raw-care contract.
+
+Executed independently at the unchanged current product baseline:
+
+- Retained decoder/runtime population: 29/29 passes. Removing automatic
+  credit-sum validation fails the contradiction case (one pass/one failure).
+  Disconnecting the buff decoder fails both composite decoder cases. These
+  are actual assertion failures, not compiler/timeout substitutions.
+- Omitting Fiscal badge clearing fails the retained host case in Chromium
+  and WebKit (two failures/32 selector skips). Source restored exactly.
+- Nav wrapping omission survived, as disclosed above; it is NOT failing
+  evidence. The replacement oversized-card probe actually causes Desk
+  horizontal overflow and out-of-viewport amount/card nodes; the original
+  reflow oracle fails in both browsers (two failures/32 selector skips).
+  Neither viewport nor the one-pixel measurement comparison was loosened.
+- All temporary source changes restored exactly. The event/host/pet hashes
+  match the pre-probe observations, and `git diff --exit-code -- client server
+  kernel balance copy deployment` is empty. No product byte remains changed.
+- Final cold `make typecheck test-client verify-client-boundary` passes:
+  zero TS/Svelte diagnostics; 9,691 tests pass/340 browser cases explicitly
+  skipped in Node; boundaries pass. Final native Garage population passes
+  34/34 across Chromium/WebKit, with the separate default performance lane
+  passing one case/22 selector skips. No failure settings or timeouts changed.
+
+This verdict covers ONLY the five-path original batch. It does not approve
+other Garage implementation or record spans, RP-312's new Codex correction,
+GS4×PA7, all-engine/400%/manual AT, real-server Fiscal/buff workflows, full
+Garage acceptance, kernel history, hosted CI, content adoption or archival.
+No boxes or lifecycle statuses flip. The next independently reviewable
+producer batch is `cdb8fe61^..cdb8fe61` (GS5 opportunity projection, 12 paths);
+its Desk consumer `f32f6175` remains a separate dependent review afterward.
+RP-312's required Claude correction range is now bounded exactly to
+`7aab0e2e..900f409e`, all four commits including its coordinate edge; this
+separate record-only remainder review does not silently extend that product
+span. Older Clout spans and all other review/release holds remain independent.

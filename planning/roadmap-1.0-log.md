@@ -4037,3 +4037,23 @@ Complete new Codex span after7aab0e2e INCLUDING records needs Claude; prior Clou
 spans independent. Next bounded designated review6594b646 all5paths. Goal remains
 active/progress, full nine-tier scope; no boxes/status/archive/mint/push/deploy/
 release changes. Detailed verdict/evidence in Garage log.
+
+## 2026-10-07 — Fiscal/buff/reflow original batch designated-approved
+
+Codex independently reviewed `6594b646^..6594b646`, all five Claude paths:
+**APPROVED, bounded batch only**. Two existing composite decoder tests and
+27 runtime cases pass. Credit-sum omission fails one decoder case; buff
+disconnection fails both. Fiscal badge-clear omission fails both native
+engines. Nav-wrap omission survives and is explicitly NOT failing evidence;
+predeclared oversized-card replacement genuinely fails horizontal-overflow
+and out-of-viewport node checks in both engines. All source restored exactly,
+no product byte retained. Final cold client 9,691 passes/340 explicit skips,
+Chromium/WebKit Garage 34/performance 1, types/boundaries pass. No assertion,
+timeout, failure setting, copy or viewport was loosened. No full Garage,
+all-engine/400%/AT/real-server/hosted CI/content adoption/archival claim.
+Next original GS5 producer `cdb8fe61^..cdb8fe61` (12 paths), then separate
+Desk consumer. RP-312's new Codex correction is separately bounded to
+`7aab0e2e..900f409e`, including all four record edges, still owed to Claude.
+All prior Clout/owner/author/content/platform/review holds remain. Full
+nine-tier goal remains active/progress; no status/boxes/archive/mint/push/
+deploy/release changes.

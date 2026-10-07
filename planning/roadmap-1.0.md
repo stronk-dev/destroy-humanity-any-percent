@@ -5,6 +5,16 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Latest bounded review (2026-10-07):** Claude Fiscal/buff/reflow
+`6594b646^..6594b646`, all five paths, designated-approved by Codex. The actual
+credit/buff/badge/card faults fail; the nav-wrap probe survives honestly.
+Source restored exactly; final client 9,691/340 skips, native Garage
+Chromium/WebKit 34/performance 1, types/boundaries pass. No full Garage,
+all-engine/400%/AT/real-server/CI/release promotion. Next: GS5 producer
+`cdb8fe61^..cdb8fe61`, all 12 paths, then its separately reviewed Desk consumer.
+RP-312 still needs Claude's `7aab0e2e..900f409e` pass; all prior holds and the
+full nine-tier goal remain.
+
 **Latest Garage checkpoint (2026-10-07):** original Claude301728c8 all14paths
 designated-reviewed by Codex: **CHANGES REQUIRED**, RP-312. Test-first8actual
 failures; narrow acceptedGS0.3 direction repair and simulated-reconnect proof
@@ -12,7 +22,7 @@ locally pass, with compiling omission/replay/host faults caught and restored.
 Final9,691 client tests/340skips, nativeGarageChromium/WebKit34/performance1,
 types/build/boundary/copy/manifest/topology pass. No all-engine/real-server
 acquisition/fullGarage/wholeCI/release promotion. Newspan after7aab0e2e INCLUDING
-records needs Claude. Next bounded review Claude6594b646, all5paths. All prior
+records needs Claude. Its then-next remainder review is recorded above. All prior
 numeric/author/content/platform/review holds and full nine-tier scope remain.
 
 **Latest acceptance/prerequisite checkpoint (2026-10-07):** all12Clout criteria

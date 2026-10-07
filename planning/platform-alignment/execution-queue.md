@@ -3,6 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage Fiscal/buff/reflow bounded approval — 2026-10-07
+
+Designated Codex verdict: `6594b646^..6594b646`, all five original Claude paths,
+**APPROVED, bounded batch only**. Four executed credit/buff/badge/card faults
+fail the existing assertions; nav-wrap omission survives and is disclosed,
+not counted as a failure. Product source restored exactly. Final cold client
+9,691/340 explicit skips, native Chromium/WebKit Garage 34/performance 1,
+types/boundaries pass. No full Garage/all-engine/400%/AT/real-server/CI gate.
+
+**READY next:** designated review `cdb8fe61^..cdb8fe61`, all 12 paths (GS5
+opportunity projection); then its separate Desk consumer `f32f6175`.
+RP-312 correction needs Claude at exact `7aab0e2e..900f409e`, all four commits;
+this later record-only review is distinct. All prior Clout, owner/author,
+content/platform/review and release holds remain. No status, box, archive,
+mint, push, deploy or reduced 1.0 scope.
+
 ## Garage GS0.3 review / RP-312 direction correction — 2026-10-07
 
 Codex designated review: original Claude `301728c8^..301728c8`, all14paths,
@@ -14,7 +30,7 @@ fails3; host dedupe omission fails2native cases. All sources restored exactly.
 Final9,691 client/340skip, nativeGarage34/performance1, types/build/boundary/
 copy/manifest/topology pass. No fullCI/server/acquisition/Firefox/allGarage gate.
 
-**READY next:** separately bounded designated review Claude
+**Then-next, now approved above:** separately bounded designated review Claude
 `6594b646^..6594b646` (Fiscal/buff announcements and reflow, all5paths).
 Entire new Codex span after7aab0e2e INCLUDING records needs Claude before its
 correction can be consumed as approved. Original allGarage/later/current spans
