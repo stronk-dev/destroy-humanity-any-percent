@@ -3029,3 +3029,57 @@ author/body/GS4/RP-331 persisted DOM/RP-333 complete performance/default-player/
 privacy/platform/numeric/review/full-nine-tier 1.0 gates remain. Next accepted
 native work: predeclare exact rendered Fiscal phase-edge fixtures GS1-A3,
 fixed fixture time explicitly not live time. No lifecycle/archive/push/mint.
+
+## 2026-10-07 — GS1-A3 exact rendered phase fixtures predeclared
+
+Fresh clean HEAD 57efdc39, no newer local Claude commit. Previous turn is
+progress (source guard and paired narrow Desk committed), not a verified
+wait or no-progress restatement. Accepted Garage GS1-A3 requires exact
+rendered early_ms-1 / early_ms / guaranteed_ms fixtures and firing text/
+off-by-one cases. Existing unit helper covers 99/100/199/200 exactly; the
+host browser test intentionally samples 90k/150k/250k to avoid crossing a
+real timer boundary. Keep it intact; do not pretend it already supplies the
+exact rendered fixture population.
+
+RP-336 source/body finding: normative GS1 props still say serverNowMs callback
+and lastOutcome; current component takes numeric reactive time and mapped
+CopyKey notice, as the host actually supplies. The RP-326 local notice repair
+is already recorded, not authority to rewrite someone else's RFC body. File
+for author correspondence/reconciliation. No timing bug inferred, no new
+interface/contract or body edit inside this range.
+
+Add four native component-fixture cases using the actual FiscalSurface and
+the actual public v4 decoder with existing period thresholds 100k/200k/300k:
+elapsed 99,999 /100,000 /199,999 /200,000 ms. Fixed numeric serverNowMs=NOW
+and period.opened_wall_ms=NOW-elapsed. No fake timers, shortened server clock,
+host fixture clock or live time claim. The direct component must not start a
+host worker/network and the fixed prop must stay fixed during DOM settlement.
+Expected phase/text/disabled outputs declared independently of fiscalPhase:
+99,999 ripening with remaining 0:00:01 and disabled; 100,000 and199,999 early
+with explicit 50% risk/consumed-on-miss copy and enabled; 200,000 guaranteed
+with its exact copy and enabled. Auto-note remaining strings respectively
+0:03:21 /0:03:20 /0:01:41 /0:01:40. Use exact registered Copy output, visible
+phase text and curtain linkage; no prefix-only, data-phase-only or color-only
+oracle. No live-region timer, no callback before click; native disabled click
+does nothing, each enabled click delivers one spy callback (not a real intent
+or receipt). Unmount/remove in finally, retain every existing host assertion.
+
+Run native Chromium/WebKit via root focused and full Garage lanes. Demonstrate
+independent actual compiling faults: early helper <→<=; guaranteed helper
+<→<=; suppress the actual phase paragraph text; hide phase paragraphs; change
+risk percent division; omit ripening from native disabled condition. Each
+must fail named rendered/visibility/readiness oracles, not syntax/type errors;
+restore exact hashes between faults, no matching live process during edits.
+Final types/client/build/boundary/static topology/full two-engine Garage and
+chained existing performance. No fixture corpus, copy, product, balance,
+schema/API/CI/Make change authorized absent separately recorded failed-first
+real bug. Initial setup mistakes/diagnostic-only runs remain explicit.
+
+Source identities before faults: FiscalSurface SHA-256
+76cf10c5dece9652ea338c9768d38b8533fa89dfb708f464b7c32a20965df8f1;
+fiscal-phase.ts e426fe70ebad1c7587fb7586b5768400ea1c27edc4003d767686f22d84e201f4.
+Entire new span after 57efdc39 through final records requires Claude
+independently of narrow Desk 54c8c8da..57efdc39, source guard
+d3ce0f76..54c8c8da and every previous range. Full Linux/SQL/RP-236/331/
+RP-336/author/body/AT/GS4/full AC7/default-player/privacy/platform/numeric/
+full-nine-tier 1.0 holds remain; no checkbox/lifecycle/archive/mint/push.
