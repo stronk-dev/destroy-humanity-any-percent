@@ -19,17 +19,35 @@ let pitchOffersDeclined = 0;
 
 // The composed target runs multiple fixture epochs in one named, ephemeral
 // database. A later invocation must not inherit the previous witness's epoch.
-const resetDatabase = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
-  "psql", "-v", "ON_ERROR_STOP=1", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test",
-  "-c", "SET client_min_messages TO WARNING; DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;"],
-{ cwd: repositoryRoot, encoding: "utf8" });
-if (resetDatabase.status !== 0) throw new Error(`composed test DB reset failed: ${resetDatabase.stderr || resetDatabase.stdout}`);
+function resetTestDatabase() {
+  const resetDatabase = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+    "psql", "-v", "ON_ERROR_STOP=1", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test",
+    "-c", "SET client_min_messages TO WARNING; DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;"],
+  { cwd: repositoryRoot, encoding: "utf8" });
+  if (resetDatabase.status !== 0) throw new Error(`composed test DB reset failed: ${resetDatabase.stderr || resetDatabase.stdout}`);
+}
 
 await new Promise((resolve, reject) => {
   const probe = createTCPServer();
   probe.once("error", (error) => reject(new Error(`composed gameserver port 18081 is not exclusively available: ${error.message}`)));
   probe.listen(18081, "127.0.0.1", () => probe.close(resolve));
 });
+
+const testDatabaseURL = "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable";
+resetTestDatabase();
+const fiscalProjectionTest = "TestFiscalProjectionMatchesPersistedHarvestIntegration";
+const fiscalProjection = spawnSync("make", ["test-go", "GO_PACKAGES=./gameui", `GO_TEST_FLAGS=-count=1 -v -run ^${fiscalProjectionTest}$$`], {
+  cwd: repositoryRoot,
+  env: { ...process.env, TEST_DATABASE_URL: testDatabaseURL },
+  encoding: "utf8",
+});
+process.stdout.write(fiscalProjection.stdout ?? "");
+process.stderr.write(fiscalProjection.stderr ?? "");
+if (fiscalProjection.status !== 0 || !fiscalProjection.stdout?.includes(`--- PASS: ${fiscalProjectionTest} (`)) {
+  throw new Error(`persisted Fiscal projection/harvest did not execute and pass (${fiscalProjection.status})`);
+}
+// Diagnostic streams/catalogs must not become the browser journey's epoch.
+resetTestDatabase();
 
 const gameserverBinary = path.join(repositoryRoot, ".cache", "game-ui-gameserver");
 mkdirSync(path.dirname(gameserverBinary), { recursive: true });
@@ -42,7 +60,7 @@ const gameserverEnvironment = {
   CLOUD_CLICKER_JWT_KEY: key,
   CLOUD_CLICKER_REPOSITORY_ROOT: repositoryRoot,
   CLOUD_CLICKER_SERVER_ID: "01986666-b001-4000-8000-000000000001",
-  DATABASE_URL: "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable",
+  DATABASE_URL: testDatabaseURL,
   GOCACHE: path.join(repositoryRoot, ".cache", "go-build"),
   LISTEN_ADDR: "127.0.0.1:18081",
 };

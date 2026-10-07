@@ -3,7 +3,14 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
-## Latest composed findings — 2026-10-07
+## Current action — 2026-10-07
+
+Diagnose care.feed's actual service error (RP-365; Cosmetic log). GS1-A1 persisted Fiscal and
+GS2-A4 acquisition witnesses are locally proven with required faults; designated review remains.
+Use the owning plans/logs for results and next work; checkpoints below are historical, not new
+predeclaration requirements. Full target is RED; author RP-363 and all 1.0 obligations remain.
+
+## Earlier composed findings — 2026-10-07
 
 RP-362 scope807e0b6e executes fresh bootstrap before gameplay/setup, but fails
 initial wire seeds: all five Standing90/high rather than GS3-A4's50/low.

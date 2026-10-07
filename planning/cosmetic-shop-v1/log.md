@@ -1646,3 +1646,21 @@ this Cosmetic range. No designated approval, archival or full original C6 approv
   3d60d64a in the Cosmetic cross-party review; no separate routine-record review or archival.
 - Next: preserve this trace for the next recurrence; independent GS2-A4 purchase/event/DOM
   proof can proceed. Prior author/copy/review/1.0 obligations remain unchanged.
+
+## 2026-10-07 — RP-365 actual care conflict
+
+- Whole composed targetcff983→23e32a exits2 after new Fiscal Postgres test and main
+  browser journey pass. Buy trace shows one request/200 and no page/network error.
+  Later care.feed emits one exact request with expected Founder4, pet
+  01a1165f-b67b-79ea-9cdb-10ba9c9f9cdf, intent01a1165f-bd38-7cba-9bec-74cb6f405408;
+  response is `{category:"conflict",detail:"intent"}`, not an applied receipt.
+- Post-failure DB: Founder4, Company3; only acquire/adopt/equip are in founder_log.
+  Adopted care cursor5965 matches adoption's effective attended5965 at Company3;
+  Company evaluated_through2026-10-07T12:38:50.840Z, adoption command1791376733819.
+  No care commit or other test DB session/listener remains. Captured before next reset.
+- `account.API.submitIntent` maps unclassified service errors to this generic409;
+  do not label it a revision race, clock regression or RP-364 recurrence without
+  the underlying service error. No Cosmetic source changed in this invocation.
+- Next: capture that underlying error and attendance coordinates, then reproduce
+  the demonstrated cause before a scoped correction. Full target remains RED.
+  Review by: Codex (observation); Recorded by: Codex. No review/archival/CI promotion.

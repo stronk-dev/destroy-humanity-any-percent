@@ -5869,3 +5869,30 @@ GS2-A4 exact purchase→earned-event→rendered-row proof; GS3-A4 author-blocked
   this record belongs in the Garage designated cross-party review; no acceptance/archival.
 - Next: GS1-A1 real preview→harvest binding. RP-364 remains an instrumented, unexplained
   intermittent timeout (Cosmetic log); no complete CI, release or full 1.0 claim.
+
+## 2026-10-07 — GS1-A1 persisted Fiscal preview/harvest
+
+- Test-only `fiscal_projection_integration_test.go`: shared validated pinned bundle, actual
+  Postgres streams, full public projection, production harvest, recorded DB clock and reloaded
+  Founder/unchanged Company. Four populations: normal accrual, overdue low credit, one below
+  cap, already at cap. Reads must leave recorded state/history unchanged; no clock/catalog retune.
+- Existing composed driver runs the focused root Make check with its fixed dedicated DB URL,
+  requires the named non-skipped PASS, then resets diagnostic epochs before the browser journey.
+  First selector incorrectly let Make consume `$`:367e3b→4a1c86 rejects zero-tests despite Go0.
+  Corrected with Make's `$$` escape; the check genuinely executes in subsequent invocations.
+- Real run25202: all four pass. Normal live clock crosses3→5 periods (credit13→19), correctly
+  checked against the stored command timestamp; cap controls agree exactly at1000 despite another
+  clock boundary. Do not claim arbitrary future receipts equal an earlier nonsaturated preview.
+- Required unswept-credit fault30b9b8→58d62a exits1: normal/low/near-cap fail, already-at-cap
+  control passes. `features.go` restored exactly SHAe344ecee553f1260e1a33802985d98c45970ff6035cd677ebf4548425f61f0fa.
+  Restored main driver6530f8→cf774c PASS: normal preview/receipt13; all cap rows1000;
+  GS2 acquisition, GS5 Production, Fiscal/Pitch, both endings, continuation and socket recovery.
+  Cold `make test-go vet GO_PACKAGES=./gameui GO_TEST_FLAGS=-count=1`, syntax/diff PASS;
+  ordinary Go invocation lacks DB and is not the source of the persisted result.
+- Full `make test-game-ui-composed` remains RED at the separate care.feed conflict RP-365
+  after all main checks pass. Actual failure/DB coordinates live in the Cosmetic log; Buy
+  succeeded and RP-364's original cause is still open. No retry, time budget, product/CI change.
+- Review by: Codex (implementer first filter); Recorded by: Codex. Add this batch after
+  2ce9e31c to the Garage cross-party range. No acceptance/archival or full 1.0 claim.
+- Next: diagnose RP-365's underlying service error; GS1-A1's shared v4 decode/failure evidence
+  still needs exact reconciliation, GS3-A4/RP-363 still requires author body reconciliation.

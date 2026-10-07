@@ -12,6 +12,11 @@ acceptance gates below.
 
 ## Evidence coordinates and limits
 
+Latest supplement (2026-10-07): the real Postgres Fiscal projection/harvest population and
+restored main journey pass; required unswept-credit fault fails. Full composed target is RED
+at a later care.feed conflict (RP-365), distinct from RP-364. Exact commands, clocks, source
+restoration and review limits are in the latest owning logs. Older coordinates below are history.
+
 - `G`: `server/gameui/features_test.go`, `projector_test.go`,
   `opportunity_test.go`, `opportunity_review_test.go`, `pet_care_fact_test.go`.
   Fresh root `make test-go GO_PACKAGES='./gameui ./fiscal ./achievements ./meters'
@@ -64,7 +69,7 @@ evidence merely because its text exists.
 
 | Gate | Producer → player consumer | Evidence present | Remaining acceptance / route |
 |---|---|---|---|
-| GS1-A1 projection | `features.go:projectFiscal` → `contracts.ts:parseFeatures` → `FiscalSurface.svelte` | G `TestFiscalArmSweepPreviewMatchesTheNextHarvest`; U v4 Fiscal decode | **Partial:** preview/next harvest comparison is pure kernel/clone, not the specified real Postgres projection/receipt witness. Shared v4 fixture and relevant decoder fault population also need exact proof. Add persisted witness after RP-236 capacity repair. |
+| GS1-A1 projection | `features.go:projectFiscal` → `contracts.ts:parseFeatures` → `FiscalSurface.svelte` | Existing pure test plus actual `TestFiscalProjectionMatchesPersistedHarvestIntegration`, run and required to PASS by composed driver | **Persisted boundary locally proven; whole gate partial:** normal live-clock arithmetic, three exact cap preview/receipt controls, read-only state/history and reload all pass; required unswept fault fails. Earlier nonsaturated preview can legitimately differ after another period, checked against recorded DB time. Shared v4 decode/failure evidence and designated review still need exact reconciliation. Full composed target remains RED at separate RP-365. |
 | GS1-A2 revision | `GameUIApp.svelte:act` → Fiscal callbacks → runtime | B phase/revision and held-refresh supplement, plus RP-349 native host paths using Founder7→8 versus Company1→2; fresh C atf46298e7 Fiscal/Pitch credit1e0 Company31/refreshed31 | **Partial:** native exact-payload/refusal/held-reply/read/context-survival proof has eight complete restored faults; RP-361 current-host real-service run is now fresh. Neither completes all named Fiscal population or designated corrective approval. |
 | GS1-A3 phases | public v4 fixture → actual `fiscal-phase.ts`/FiscalSurface → native exact text/readiness | Unit exact 99/100/199/200 and retained host margin samples; new decoder-admitted component fixtures at 99,999/100,000/199,999/200,000 under unchanged 100k/200k/300k period. Eight source faults fail phase/text/visibility/risk/countdown/native readiness/callback checks in both engines, restored exactly. | **Locally witnessed fixed-time rendering; designated review pending** for full range after 57efdc39. Exact registered copy and actual visible DOM, not color/data-phase/prefix only. No fake timers or live-clock/server/pacing claim. RP-336 props/body correspondence and Fiscal mint/owner/real-service/Firefox/AT gates stay open. |
 | GS1-A4 refusals | receipt + mapper → Fiscal own polite notice | B ordinary/cap/unknown/exclusive/HTTP populations and RP-324/326 corrections; RP-349 delayed ordinary refusals/native retries/exact Fiscal-only notices | **Partial:** native two-engine fixture proof and deliberate notice/role/context-leak faults. Exact review ranges and all-engine/all-state proof open. Real HTTP service failures are not supplied by thrown runtime-double errors. |
