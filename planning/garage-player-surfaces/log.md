@@ -3722,6 +3722,20 @@ Claude independently ofa551d3c2..4b2fd904 and every earlier span. Linux/SQL
 capacity/Firefox/privacy/platform/body/full1.0/review holds stay live; no
 cleanup/delete/push/archive or startup authority inferred.
 
+## 2026-10-07 — RP-343 actual failed-first Meters disclosure
+
+f3b2f421 predeclared, TEST-ONLY. ba066e→6ee0f0 types zero errors/warnings.
+9752ac→4641ad terminal2:20/20 selected native cases fail exact missing visible
+common.stale_note,378 explicitly unselected. Both engines five connection
+states ×320/1280. Actual initial eleven-ID native values/layout/focus/read-only/
+axe controls pass BEFORE note failure. No framework/compile/timeout cause or
+inference that values themselves predict incorrectly. Existing generic
+meters.as_of_note remains; it does not supply required connection disclosure.
+RP-343 recorded immediately. No product/copy/clock/CI/Make/RFC byte changed.
+Later scoped host correction needs separate GS0.5 product predeclaration;
+no startup draft/D-023/cleanup decision inferred. Complete new span after
+4b2fd904 requires Claude including this red checkpoint; no promotion.
+
 ## 2026-10-07 — RP-342 first-read truth audit predeclaration
 
 At a551d3c2 clean checkout. Previous turn progressed committed host repair

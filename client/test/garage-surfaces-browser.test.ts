@@ -574,6 +574,51 @@ async function assertSemanticMeters(target: HTMLElement, rows: typeof semanticMe
   await assertAxe(target, narrow ? "semantic narrow meters" : "wide meter table");
 }
 
+// GS3/GS0.5: exact last-authoritative values and stale disclosure, not a
+// real-server reconnect or elapsed-time meter prediction implementation.
+for (const width of [320, 1280] as const) {
+  for (const [label, message] of [
+    ["recovering", { kind: "transport_recovering" }],
+    ["closed", { kind: "transport_closed" }],
+    ["resync", { kind: "system", value: { kind: "resync_required" } }],
+    ["restart", { kind: "system", value: { kind: "server_restarting", resume_after_ms: 1_000 } }],
+    ["not-ready-alone", null],
+  ] as const) {
+    it.skipIf(!browser)(`GS3 reconnect ${label} retains committed meters ${width}`, async () => {
+      const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+      const runtime = new Runtime(); runtime.current = semanticMeterSnapshot();
+      const subscribe = message === null ? vi.spyOn(runtime, "subscribe").mockImplementation((_founder, listener) => { runtime.listener = listener; return () => {}; }) : undefined;
+      let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+      try {
+        fixture = await mounted(runtime); const { target } = fixture;
+        const nav = button(target, t("surface.meters.title", {}, "era_1995")); nav.focus();
+        await userEvent.keyboard("{Enter}"); await settleMeterLayout();
+        const assertValues = async (rows: typeof semanticMeterRows) => {
+          await assertSemanticMeters(target, rows, width < 480);
+          expect(target.querySelector(".meters")!.querySelectorAll("button,input,select,textarea")).toHaveLength(0);
+          expect(document.activeElement).toBe(nav); expect(runtime.requests).toEqual([]);
+        };
+        await assertValues(semanticMeterRows);
+        if (message !== null) runtime.listener?.(message);
+        await settle();
+        sharedStateVisibleText(target, "p", t("common.stale_note", {}, "era_1995"));
+        await assertValues(semanticMeterRows);
+        await new Promise((resolve) => setTimeout(resolve, 350)); await settle();
+        sharedStateVisibleText(target, "p", t("common.stale_note", {}, "era_1995"));
+        await assertValues(semanticMeterRows);
+        runtime.listener?.({ kind: "transport_recovered" }); await settle();
+        expect(target.textContent).not.toContain(t("common.stale_note", {}, "era_1995"));
+        await assertValues(semanticMeterRows);
+        const changed = semanticMeterRows.map((row) => meterRow(row.meter_id, row.value + 8));
+        const newer = parseGameUISnapshot({ ...semanticMeterSnapshot(changed), revision: 2 });
+        runtime.current = newer; runtime.listener?.({ kind: "snapshot", value: newer }); await settle();
+        expect(target.textContent).not.toContain(t("common.stale_note", {}, "era_1995"));
+        await assertValues(changed);
+      } finally { try { if (fixture) await fixture.dispose(); } finally { subscribe?.mockRestore(); await page.viewport(1280, 720); } }
+    });
+  }
+}
+
 for (const scenario of ["initial narrow mount", "live breakpoint changes", "narrow snapshot refresh"] as const) {
   it.skipIf(!browser)(`GS3-A3 semantic meters: ${scenario}`, async () => {
     const { page } = await import("vitest/browser");
