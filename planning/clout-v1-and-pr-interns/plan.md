@@ -546,3 +546,33 @@ Dropped census/forgednext checks discriminate and restore exactly. Client9555/
 8fail/340skip; cold Go original27AC6/historyRP-131red; types/vet/topology/native
 8researchtests pass. No runtime byte changed. Next separately predeclare
 terminal presence/version repair; details/limitations in terminal-research.md.
+
+## RP-310 — terminal presence/version correction (new runtime range)
+
+Predeclared at clean0c4d6481 after the test-only measured finding. Accepted CV4
+requires v19 terminal history and new-run reset. Correct ONLY applyLoggedExit's
+two Company===18 predicates to >=18, matching Go. Keep next-bundle evidence,
+claim exclusion, every scheduler check and all output/state logic unchanged.
+Honest behavior signal kernel0.3.164→0.3.165 and mirrors in the runtime commit.
+
+Keep sixteen terminal research declarations intact. Add five genuine pinned
+compatibility companions: actual oldv18 good terminal full outputs; missing
+active_play on oldv18; pre-v5 input on oldv18 and actualv19; unexpected current
+active_play on actualv16 foundation Exit. Four negatives must refuse EXACT
+terminal presence diagnostic and leave complete initial state unchanged. No
+fabricated version demotion/legacy bundle rewrite. Newfile21 declarations;
+all six v19 terminal outputs/continued manual actions must match original Go
+observations exactly. Any deeper mismatch is a new finding, not an output edit.
+
+Run original exact-v18 and permissive-false guard runtime probes. Inspect their
+actual failures rather than suite exit alone. Restore exact source bytes after
+all handles terminal. Explicitly re-observe BOTH logged and terminal reports;
+independently compare whole old artifacts excluding ONLY source_sha256. Bundle,
+population, commands, evidence and all Go outputs must remain byte-identical.
+No earlier accumulation/anchor/policy/SQL corpora regenerated.
+
+Cold relevant Go/full client/types/vet/native research/topology/kernel gates;
+existing original27AC6/history/AMD64/hosted holds remain. Records synchronized,
+self first-filter exact new range, Claude cross-party gate including every edge.
+No numeric/save/balance/CI/copy/RFC body change, checkbox/acceptance promotion,
+archival/mint/push/deploy/release call. RP-308 unanswered. Proper1.0 active.

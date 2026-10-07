@@ -1426,3 +1426,12 @@ prove terminal continuity. Counts/limits/old27AC6/history failures consistent
 across records. Decision: valid bounded research and concrete repair finding,
 NOT CV4/Clout acceptance or designated approval. Claude must inspect ENTIRE
 new span after32116b14 INCLUDING this edge; all older ranges remain separate.
+
+### RP-310 terminal correction start — accepted CV4
+
+At clean0c4d6481, six actual valid exits reject and missingcurrent wrongly
+applies. Predeclare ONLY terminal presence/version predicates, honest kernel165,
+five old-version companions, real guard probes and unchanged outputs after both
+reports' explicit source re-observation. New runtime range distinct from the
+preceding test-only research and scheduler correction. No measurement of the
+corrected terminal population has run yet.
