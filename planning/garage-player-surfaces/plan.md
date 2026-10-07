@@ -22,6 +22,12 @@ work: predeclare RP-352 native held Opportunity Claim proof under GS0.6/0.8/GS5,
 without resolving author-owned RP-313 compatibility intent or guessing mechanics.
 Linux/SQL capacity and all full-nine-tier 1.0/owner/review holds remain.
 
+Current next batch RP-352 is predeclared in log:20 new declarations/40 native
+executions, test-first only. Held Claim refusal/applied/read, independent removal
+and newer-selection paths plus isolated callback controls. Preserve current
+public wire inputs; no repair before executed red and separate scope, no lifecycle
+or whole-GS5 acceptance. Every earlier review obligation remains independent.
+
 Preceding cross-lane checkpoint: RP-348 observation work moved to accepted Garden
 SG1/AC1 undera9fadedd. Complete child diagnostics and real startup/hang controls
 locally pass; historical failure cause remains open. No admission/deadline/CI or

@@ -4944,3 +4944,40 @@ contrary to GS0.8. RP-352 records this source fact, not an executed focus defect
 Existing GS5 keyboard proof settles replies immediately; predeclare held native
 intent/read/focus/duplicate proof before any repair. RP-313 wire/body ruling
 remains author-owned and independent; preserve current compatibility inputs.
+
+### RP-352 — native Opportunity Claim test-first predeclaration
+
+Baseline f5be35f6, OpportunityRegion SHA5ee8223a, host9cb074e5, driver2040c434.
+Authority: accepted Garage GS0.2/0.6/0.8 and GS5-A1/A3/A5, design/02 §2.3 and
+design/10 §2. Test-only first range; no product repair until executed red evidence
+and a separate implementation scope. Current decoder/public opportunity fixture
+is retained; author-owned RP-313 wire-body issue is not resolved or re-pinned.
+
+Population: three host completion paths (retained/new offer, removed Claim, newer
+Settings selection) ×320/1280 ×native Enter/Space ×Chromium/WebKit =24 executions;
+independent immediate-success/removal4 declarations/eight executions; isolated
+pending and unavailable component callbacks2 keys/two engines =eight executions.
+Total20 declarations/40 native executions, not real-service acquisitions. Only
+initial manual-button focus is seeded in host cases; real Tab reaches Claim and
+later Settings/Desk/actions, with actual mounted-control-count traversal bounds.
+Public decoder fixtures distinguish Company1→2 from Founder7→8. Held ordinary
+expired refusal and applied Lucky reply/read prove exact bodies/IDs/read counts,
+pending text/aria/native focus, duplicate suppression, Desk-owned notices, honest
+receipt credit/cap, authoritative next revision, removal-to-Desk-heading and
+non-stealing newer nav focus. Component population independently exercises the
+callback guard so the host's same-kind queue cannot mask its absence. Separate
+immediate-success cases expose removal even if pending assertions fail first.
+
+Required controls after separately scoped repair: native pending-disable,
+missing aria, missing/wrong/hidden pending text, missing component callback guard,
+Company→Founder revision misbinding, dropped receipt notice/evidence, omitted
+refresh, omitted removal handoff, focus theft from newer Settings. Each source
+fault has unique contextual reversal and full source hashes before/after; invalid,
+incomplete or non-discriminating arms remain visible and cannot count as proof.
+No retries/budget/CI/exclusions/dependencies/clock/scheduler/payout/server/schema/
+copy catalog/owner prose/kernel/balance changes. Current all-engine/AT/400%/real
+HTTP/SQL/hosted/composed/pacing/full1.0 evidence remains independent. Existing
+full browser objective includes the real60s idle and separate performance lane.
+Root types/client/build/boundaries/topology/copy final checks; no source/HEAD/record
+edits while matching final handles live. Plan boxes/status/archive stay unchanged;
+entire f5be35f6-exclusive test/repair/records range needs Claude, all prior spans owed.
