@@ -2528,3 +2528,53 @@ and its failures. Real SQL/composed RP-331 requires repaired/rechecked Docker
 capacity, not another run into a full filesystem. All other author/body/
 engine/actual zoom/AT/default-player/platform/privacy/numeric/review/full-
 nine-tier 1.0 gates remain live. Goal active/progress; no release shortcut.
+
+## 2026-10-07 — RP-333 population and RP-334 instrument audit predeclared
+
+Resume clean 127eb052. Previous turn is progress: RP-329 exact complete-ID
+range 5fbf4cff..bddfc58e and RP-330 semantic-layout range bddfc58e..127eb052
+are committed with negative probes and current tracking; neither is
+designated-approved. All earlier independent verdict obligations remain.
+
+Accepted Garage overall AC7 consumes the existing Game UI GU-C8 observable
+scenario/budget unchanged: 1280×720, 1,200 inputs representing 60 simulated
+seconds at 20 Hz, at most 600 hot Amount commits and no long task >200 ms.
+The separate manual 4× CPU / dropped-frame / real-duration profile is not
+replaced. GS5/GS6 Desk population here means the always-mounted opportunity
+region with pending opportunity, all four effect buffs/combo, provisioned
+count and reason text, owned-upgrade text, existing free shelf and grown
+Garage feature nav. Fiscal/Achievements/Meters are separate tabs, not fake
+Desk mounts. Later Adoption/Cosmetics/AxisStack/Reputation/T2 populations
+remain separately scoped; this is not the complete current release profile.
+
+Before adding a green populated measurement, audit two instrument risks
+recorded as candidate RP-334. Run the unchanged root isolated performance
+lane. Then, one transient test-file fault at a time: omit its fixtureSnapshot
+loop updates (leave declared input label and budget intact); add an actual
+synchronous final main-thread task lasting twice the ruled long-task ceiling
+before its final tick/disconnect. Independently record actual busy duration
+and the driver's collected counters. Record a survivor honestly: it rejects
+the original instrument as proof for that property, not the product.
+No cache/timeout/budget/observer/mock-clock workaround. Restore original
+test source exactly between probes; no edit while a matching check is live.
+Original test SHA-256 a585474a5e441ed4030776b08ba686b2ee26100b1d30cc0739376b77cf5f6466;
+budget source 8a7fc92f255152f784ef421da886ae3a6d860fd2e8afebbf94ca4d1eeb11217e.
+
+If a risk fires, predeclare a test-only instrument correction before acting:
+actual completed-input census, nonzero native visible activity and exact
+terminal Amount, mandatory observer support, rendering-time record drain
+and cleanup, then actual behavioral seeds. Preserve the old scenario byte-
+identically as a regression; do not infer it covered the new population.
+Add the populated scenario under the existing isolated selector, no workflow,
+Make target/topology, budget, numeric/formatter/scheduler/host/region/product
+change. Decoder-admit the public fixture; assert the named Garage additions
+remain present through every input, with zero gameplay intents. Report measured
+counts/long tasks, exclusions/support/completion visibly. Run root types/full
+client/build/boundaries and the isolated performance lane; retain broader
+browser/SQL/release evidence boundaries and pending full Linux CI.
+
+New evidence/test/planning span starts after 127eb052 through its final
+records and requires Claude. No optimization, owner copy, catalog/kernel/
+balance/schema/CI change, checkbox/status/archive/mint/push/release claim.
+Docker capacity, RP-331/Firefox/AT/actual zoom/manual profile/author/body/
+numeric/privacy/platform/default-player/full-nine-tier 1.0 gates remain.
