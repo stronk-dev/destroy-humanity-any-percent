@@ -807,3 +807,17 @@ reconcile canonical docs/ledger/queues/roadmap/log in the proof commit. Self
 first-filter then designated Claude exact full span including records; no
 checkbox/acceptance/status/archive/mint/push/deploy/release call. Original27AC6,
 RP-308/representation/history and all earlier holds/review ranges remain.
+
+### Persisted instrument correction — request versus replay payload
+
+62521/be1591 exits2 before ANY Handle attempt: all16 adapters reject a missing
+intent ID. Canonical replay payload deliberately omits intent_id; the actual
+recorded replay-command envelope owns it. Before rerun, reconstruct the raw
+Service request using that exact recorded ID, observed head revision and
+unchanged semantic body, validate it with ParseIntent, and return the RAW
+request rather than its ID-free replay payload. No new IDs for core actions,
+runtime/parser edit, output restamp or case removal. Also pin changed-body
+conflicts to the ORIGINAL recorded expected revision, changing ONLY the chosen
+opportunity_id/amount_ms, so a revision-only difference cannot mask body-hash
+binding. Population and all original oracles remain unchanged. Initial failure
+is a request adapter error, not a product defect.

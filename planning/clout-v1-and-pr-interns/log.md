@@ -1724,3 +1724,12 @@ rollback/census/outbox/genesis-to-head replay and real retention deletion using
 explicit seven-snapshot diagnostic padding. No experiment or mutation yet.
 Accepted CV3/CV4/AC8 only; no inferred owner/body/accumulation waiver, product
 repair or CI publication. Proper full1.0 objective active, prior holds unchanged.
+
+### Persisted adapter failure — no product command executed
+
+62521/be1591 fails all16 rows before Handle: canonical replay payload excludes
+intent_id by design; the envelope carries it. Diagnostic a38ce5 reads the real
+first payload and actual parser. No applied/refused/retry/conflict/fault count
+or new shared artifact exists. Plan correction declares exact ID reconstruction
+and raw request return, plus body-only conflicts preserving original revision.
+No runtime, parser, expected gameplay output, epoch or population changed.
