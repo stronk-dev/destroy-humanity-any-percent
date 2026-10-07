@@ -5,7 +5,21 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** GS1-A3 exact rendered Fiscal fixture
+**Latest bounded work (2026-10-07):** RP-337/GS2-A3 source guard, verification
+only. Existing gate survives actual faults; bounded extension parses Trophy
+Case and builds canonical source achievement copy/era variants. Seven
+component/four copy negatives and five real faults discriminate/restored
+exactly. Client9,814 /455 skips/types/unchanged build/copy/boundaries/static
+topology and focused native GS2-A1 two /260 unselected/performance two /22
+unselected pass. Not whole-program dataflow, full-browser/live-player/CI.
+Complete span after3609e776 needs Claude independently of all earlier spans.
+Next safe accepted work: GS2-A1 non-color fault discrimination /GS2-A5
+bounded readability states. Docker cleanup authority unanswered, no deletion
+or full-disk rerun; full Linux/SQL remain held. All author/body/GS4/full AC7/
+AT/default-player/privacy/platform/numeric/full-nine-tier 1.0 gates remain.
+No archival/mint/push/release/shortened-preview substitution.
+
+**Preceding bounded work (2026-10-07):** GS1-A3 exact rendered Fiscal fixture
 edges, test-only under 2ff59fbe/f1914ace. Four decoded component cases check
 visible exact phase/risk/countdown/native readiness/curtain/callbacks; eight
 real faults fail/restored exactly. Final full native Garage262 /isolated

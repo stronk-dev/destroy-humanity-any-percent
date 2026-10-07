@@ -3231,3 +3231,56 @@ actual component binding, computed-member binding, source base score label,
 source era score label and disabling the component check. All must produce
 semantic assertion failures, with exact restoration and positive controls.
 No product/owner copy/generated artifact/Make/CI/RFC-body edit committed.
+
+## 2026-10-07 — RP-337 source guard final evidence / first filter
+
+Review by: Codex (implementer self/first filter, NOT designated).
+Recorded by: Codex. Entire new range starts after3609e776, includes305b8e8b,
+a32b8358 and this containing tool/docs/tracking commit. Claude must review
+the entire range independently of Fiscal57efdc39..3609e776, narrow Desk,
+cosmetic/source/performance and all earlier ranges. No self archival.
+
+Existing achievements boundary now parses the actual Trophy Case Svelte AST
+and uses the existing Copy Pipeline to build canonical source copy, including
+era variants. No generated output/independent copy table is used as source
+authority. Seven parser-valid component fixtures reject identifier/member/
+computed-member/template/text/copy-key faults; four copy fixtures reject base/
+era/key faults and missing required presentation. Comments/current score and
+separate unrelated Clout copy are positive controls. Original Go package/
+transitive dependency guards remain intact. Conservative lexical source
+firewall, not arbitrary computed-string/dataflow, producer eligibility,
+persisted-player or overall Trophy Case acceptance proof.
+
+Executed real faults, all terminal make exit2 on GS2-A3 semantic errors:
+6e94ed actual score binding renamed CloutLifetime; bd30bc computed-key totals
+binding; 4e7b7e source score frame relabelled Clout; 357189 source grant frame
+era_2000 relabelled Clout. Copy faults pass the canonical schema/parameter
+loader before the new semantic check rejects them. c4bb52 disabling the
+component checker makes its negative fixture fail with unexpectedly-passed,
+not a parser/type failure. All component/copy subjects restored exactly to
+the baseline hashes above (35cfc0/e41a6c). No transient seed is committed.
+
+Healthy285f5b/8063b4 root source/UI/cosmetic/static topology gates exit0:
+GS2 seven/four negatives; original UI14shell/8UI/22GameUI with ten Go/eleven
+Svelte cosmetic negatives; package isolation22 negatives; topology13. Root
+type/client/build1c137d→0aab3b terminal0: zero type errors/warnings,
+9,814 passes /455 explicit browser skips,105 filespass22skip; unchanged214
+module assets prediction.worker-MqspU_iu.js/index-eU1nW9jC.js/index-DaRqgLww.css.
+Focused native GS2-A1 53fe51→e3a4dd exits0: two actual Chromium/WebKit
+executions,260 explicitly unselected, chained isolated performance two
+passes/22 unselected. Not262 native passes or Firefox/full-state proof.
+No-payment5b6673 passes with six negatives/two controls. Copy8f64bb→3358d1
+terminal0:658 keys, unchanged hash a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+611 existing orphan warnings, generated-content manifest passes. No HEAD or
+source mutation during history scan. Instrument import error disclosed above.
+
+No Go behavior/test claim invented for this source-tool-only change. No
+production/copy/generated/API/balance/clock/Make/CI/RFC byte change. No fresh
+Docker capacity/recovery/hosted claim; scoped cleanup permission remains
+unanswered, nothing deleted and no full-disk container population begun.
+All prior exact review ranges and RP-331/full Linux/author/body/GS4/full AC7/
+AT/default-player/privacy/platform/numeric/full-nine-tier 1.0 holds remain.
+Next accepted safe work: predeclare GS2-A1 actual non-color state-text faults
+and GS2-A5 bounded fixture/error/empty narrow readability. Capacity recovery
+can take priority only with exact scoped authorization and sufficient measured
+headroom. No checkbox/lifecycle/archive/mint/push/deploy/release promotion.

@@ -7,7 +7,25 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: test-only GS1-A3 exact rendered Fiscal edge fixtures,
+Latest bounded work: RP-337 GS2-A3 verification-only source guard under
+305b8e8b/a32b8358. Old gate survives real binding/label faults; existing-tool
+extension checks actual Svelte AST and canonical source achievement copy/era
+variants, not generated output. Seven component/four copy negatives and five
+actual semantic faults fail; production/copy restored exactly. Healthy types,
+client9,814 /455 explicit browser skips/unchanged build/copy/boundaries/static
+topology pass; focused native GS2-A1 two passes /260 explicitly unselected,
+chained performance two /22 unselected. Not full native/all-engine/live SQL/
+arbitrary computed-dataflow/player acceptance. Complete new span after
+3609e776 through records needs Claude independently of all earlier spans.
+No box/lifecycle/archive/mint/push/deploy/release/preview promotion.
+Next: capacity restoration only if human authorizes exact scoped cleanup;
+otherwise predeclare GS2-A1 actual non-color state-text fault discrimination
+and GS2-A5 fixture/error/empty narrow-readability populations, preserving
+manual AT/real-service/full Linux gates. Docker authority still unanswered;
+no deletion/full-disk run. All author/body/GS4/full AC7/default-player/privacy/
+platform/numeric/full-nine-tier 1.0 holds stay open.
+
+Preceding bounded work: test-only GS1-A3 exact rendered Fiscal edge fixtures,
 predeclared 2ff59fbe/f1914ace. Four decoded public component fixtures at
 early-1/early/guaranteed-1/guaranteed; actual visible exact copy/risk/countdown,
 native readiness/curtain/callbacks checked. Eight source faults discriminate,

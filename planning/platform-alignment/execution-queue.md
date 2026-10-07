@@ -3,6 +3,24 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Garage score-vs-Clout source guard checkpoint — 2026-10-07
+
+RP-337/GS2-A3 verification-only, predeclared305b8e8b/a32b8358. Old gate's
+actual binding/label survivors recorded before correction. Existing lane now
+checks parsed Trophy Case/canonical source achievement copy/era variants;
+seven component/four copy negatives +five real semantic faults fail and
+restore exactly. Healthy client9,814 /455 skips/types/unchanged build/copy/
+boundaries/static topology pass; focused native GS2-A1 two /260 unselected,
+chained performance two /22 unselected. Not arbitrary dataflow, full-native/
+all-engine/persisted-player/CI acceptance. **READY FOR CLAUDE:** complete
+3609e776-exclusive span through records, separate from every earlier span.
+
+**NEXT:** scoped measured Docker restoration only after human permission
+(still unanswered); no deletion/full-disk rerun. Otherwise predeclare GS2-A1
+actual non-color text faults and GS2-A5 bounded fixture/error/empty narrow
+readability. RP-331/full Linux/author/body/GS4/full AC7/AT/default-player/
+privacy/platform/numeric/full-nine-tier 1.0/reviews remain, no promotion.
+
 ## Garage exact rendered Fiscal edges checkpoint — 2026-10-07
 
 GS1-A3 test-only component fixtures, predeclared 2ff59fbe/f1914ace. Decoder-

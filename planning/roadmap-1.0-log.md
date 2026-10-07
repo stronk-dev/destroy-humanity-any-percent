@@ -4472,3 +4472,27 @@ then declared cold Linux/SQL verification; safe accepted GS2-A3 source guard
 otherwise remains available. All full-nine-tier 1.0/author/body/GS4/full AC7/
 AT/default-player/privacy/platform/numeric/review/release holds remain.
 Goal active/progress, not complete or blocked; no archive/push/preview claim.
+
+## 2026-10-07 — GS2-A3 score-vs-Clout source guard checkpoint
+
+Predeclared305b8e8b/a32b8358; RP-337 records old gate surviving actual source
+binding and copy-label faults. Existing achievements boundary now checks
+parsed Trophy Case and canonical source achievement copy/era variants, keeping
+separate Clout consumers legal. Seven component/four copy negatives and five
+actual semantic faults discriminate; production/copy restored exactly.
+No product/copy/generated/Make/CI/balance/kernel/RFC-body change.
+
+Healthy types/client9,814 /455 explicit browser skips/unchanged build/copy/
+source/UI/cosmetic/no-payment/static topology pass. Focused native GS2-A1
+two passes /260 explicitly unselected; chained performance two /22 unselected.
+Not whole-program computed-dataflow/full native/all-engine/live SQL/CI or
+full achievements acceptance. Full range after3609e776 through this containing
+commit needs Claude independently of every prior span. No boxes/lifecycle.
+
+Next: safe accepted GS2-A1 non-color text discrimination and GS2-A5 bounded
+readability state populations; scoped Docker recovery only if human authorizes
+the exact proven artifacts, followed by capacity preflight and declared cold
+Linux/SQL. Permission still unanswered; no deletion/full-disk run. All
+RP-331/author/body/GS4/full AC7/AT/default-player/privacy/platform/numeric/
+review/full-nine-tier 1.0 gates remain. Goal active/progress, not complete or
+blocked; no archival/mint/push/deploy/shortened-preview substitution.

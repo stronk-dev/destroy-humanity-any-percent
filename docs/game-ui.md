@@ -25,7 +25,12 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
 - **Trophy Case (`achievements`):** read-only, unlocked by `feature.achievements`. It shows the run
   and career score, an earned/total count, and each row's scope, text state (earned this run,
   earned in career, not earned yet), score grant, and the existing possession warning. The score is
-  never labelled Clout.
+  never labelled Clout. `make verify-achievements-boundary` now checks this
+  component's parsed identifiers/literal bindings/text and canonical source
+  achievement copy (including era variants), with seven component/four copy
+  negatives. It ignores comments and does not ban the separate Clout consumer.
+  This is a bounded source firewall, not arbitrary computed dataflow or a
+  persisted-player achievement acceptance proof.
 - **Achievement/meter announcements:** exact event decoders drive the single polite chrome
   announcement, not game-state arithmetic. Achievement copy is announced once per scoped cursor;
   meter changes announce on the Meters surface or badge its nav until visited. Unknown presentation
