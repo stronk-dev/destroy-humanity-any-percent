@@ -4282,3 +4282,34 @@ Cleanup/startup questions unanswered; no deletion/full-disk run/Retry. Body/
 GS4/full AC7/default-player/privacy/platform/numeric/full-nine-tier1.0 and every
 designated review remain live. No boxes/lifecycle/archive/push/mint/deploy/release/
 shortened-preview substitution. Goal active/progress.
+
+## 2026-10-07 — Continuation truth audit predeclaration (test-only)
+
+Baseline 0e548992. Inspect the actual native Start Next Company control after
+decoder-admitted Run-End publication. Accepted Game UI AC1 and Prestige P4
+require the already-created next run of the same Founder/Company; Garage
+GS0.6 supplies native activation and context-heading focus. The public snapshot
+has Founder/sequence, not Company stream identity; do not invent a new field or
+category constraint. The old click-only test is not keyboard/focus/identity proof.
+
+Population: healthy, same-sequence, skipped-sequence, different-Founder with
+exact-next sequence, and rejected read, each at320/1280 with native Enter/Space
+in Chromium/WebKit. Initial and next snapshots pass the production parser;
+terminal publication passes production envelope/event decoders. A held runtime
+double read proves single read, pending-disabled control and no intents. Separate
+healthy focus cases assert Desk heading after the activated control disappears;
+coordinate/refusal cases assert exact destination, unchanged terminal payload,
+no foreign subscription or bound snapshot, and recovery controls. No claim of
+real HTTP/authentication/server/SQL issuance, physical AT or Firefox execution.
+
+Run baseline before any product edit; preserve independent failures and positive
+controls. Source-only candidate: continuation compares sequence but not Founder.
+Record a new defect only after execution, and distinguish it from existing RP-082
+focus. Test-only checkpoint does not authorize production; any accepted-contract
+repair needs a separate recorded scope before edits. Pending focus and newer-tab
+read cancellation policy are not inferred from draft Accessibility or startup
+recovery; no Retry/auth/credentials/new copy. No old assertions/budgets/CI/balance
+changes. Subsequent source faults must compile and falsify their named semantic
+property; restore before final native/client/type/build/copy/boundary checks.
+Entire 0e548992-exclusive span requires designated Claude; prior ranges remain
+independently owed. No boxes/archival/push/cleanup/release; goal active/progress.
