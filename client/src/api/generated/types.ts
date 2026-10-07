@@ -2,6 +2,8 @@
 
 export type APIError = { category: "conflict" | "idempotency_conflict" | "internal_invariant" | "invalid" | "not_configured" | "not_eligible" | "rate_limited" | "unauthorized" | "unknown_id"; detail: "access_token" | "account" | "body" | "bootstrap" | "bootstrap_expired" | "category" | "curriculum_exit_required" | "cursor" | "duplicate_card" | "epoch" | "exclusive_activity" | "fiscal_unlock_required" | "founder" | "founder_state" | "game_ui_snapshot" | "garden" | "hack_slots_full" | "hand_too_large" | "human_content_locked" | "illegal_phase" | "insufficient_currency" | "invalid_assist_level" | "invalid_text" | "ip" | "limit" | "line_too_long" | "mandate" | "minigame_api" | "minigame_command" | "minigame_create" | "minigame_revision" | "minigame_session" | "minigame_tenant" | "public_api" | "recovery_progress" | "recovery_session" | "recovery_token" | "run" | "session_id" | "soul_recovery_cancel" | "soul_recovery_not_ready" | "soul_recovery_progress" | "soul_recovery_resolve" | "soul_recovery_start" | "tier_required" | "unknown_card" | "unknown_offer" | "variables" };
 
+export const apiErrorCategories = ["conflict", "idempotency_conflict", "internal_invariant", "invalid", "not_configured", "not_eligible", "rate_limited", "unauthorized", "unknown_id"] as const;
+
 export type BootstrapAccount = { account_id: string; created_at: string; recovery_code: string };
 
 export type BootstrapRequest = { idempotency_key: string };
@@ -259,6 +261,8 @@ export type OperationInput<K extends OperationID> = Pick<OperationTypes[K], "pat
 
 export type OperationResult<K extends OperationID> = OperationResponses[K] & { ok: boolean; headers: Headers };
 
+export type APIFetcher = (input: string, init?: RequestInit) => Promise<Response>;
+
 interface ClientOperation {
   readonly auth: "none" | "access_token";
   readonly method: string;
@@ -272,7 +276,7 @@ interface ClientOperation {
 // No token storage/refresh, retries, or automatic request-ID generation. Wrappers
 // own application outcomes and retain their exact DTO decoders. Schema bodies
 // are JSON-decoded, not claimed runtime-schema-validated by their TS types.
-export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
+export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
   return {
     async call<K extends OperationID>(id: K, input: OperationInput<K>): Promise<OperationResult<K>> {
       const operation: ClientOperation = operations[id];
@@ -292,7 +296,8 @@ export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
       const params = new URLSearchParams();
       for (const name of queryParameters) if (query[name] !== undefined) params.set(name, scalar(query[name]));
       if (params.size !== 0) path += `?${params}`;
-      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      const headers: Record<string, string> = {};
+      if (operation.hasRequest) headers["Content-Type"] = "application/json";
       if (operation.auth === "access_token") {
         if (typeof input.accessToken !== "string" || input.accessToken.length === 0) throw new TypeError("missing API access token");
         headers.Authorization = `Bearer ${input.accessToken}`;
@@ -314,7 +319,11 @@ export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
         if (response.headers.get(descriptor.contentHashHeader) !== hash) throw new TypeError("invalid raw API content hash");
         body = bytes;
       } else {
-        body = await response.json();
+        // Keep body-read/network errors intact, but do not echo potentially
+        // private reply bytes in JSON.parse's native error message.
+        const text = await response.text();
+        try { body = JSON.parse(text); }
+        catch { throw new SyntaxError(`response was not JSON (${response.status})`); }
       }
       const result: unknown = { status: response.status, ok: response.ok, headers: response.headers, body };
       return result as OperationResult<K>;

@@ -1,7 +1,7 @@
 import pinnedPrestigeBytes from "../../../../balance/prestige/phase0.json?raw";
 import pinnedSoulBytes from "../../../../balance/soul/first-content.json?raw";
 
-import { operations, type SoulRecoveryProgressResponse, type SoulRecoveryStartResponse, type SoulRecoveryTerminalResponse } from "../../api/generated/types";
+import type { SoulRecoveryProgressResponse, SoulRecoveryStartResponse, SoulRecoveryTerminalResponse } from "../../api/generated/types";
 import { COPY_KEYS, type CopyKey } from "../../copy";
 import { createOperationCall, MinigameAPIError, MinigameTransportError, type Fetcher } from "../minigame/session-port";
 import { parsePrestigePolicy } from "../../prestige";
@@ -19,10 +19,10 @@ export interface SoulRecoveryPort {
 export function createBrowserSoulRecoveryPort(accessToken: () => string, fetcher: Fetcher = fetch): SoulRecoveryPort {
   const call = createOperationCall(accessToken, fetcher);
   return {
-    start: (activityID) => call(operations.start_soul_recovery.method, operations.start_soul_recovery.path, { activity_id: activityID }),
-    progress: (sessionID, progressToken) => call(operations.progress_soul_recovery.method, operations.progress_soul_recovery.path, { progress_token: progressToken, session_id: sessionID }),
-    resolve: (sessionID) => call(operations.resolve_soul_recovery.method, operations.resolve_soul_recovery.path, { session_id: sessionID }),
-    cancel: (sessionID) => call(operations.cancel_soul_recovery.method, operations.cancel_soul_recovery.path, { session_id: sessionID }),
+    start: (activityID) => call("start_soul_recovery", { path: {}, request: { activity_id: activityID } }),
+    progress: (sessionID, progressToken) => call("progress_soul_recovery", { path: {}, request: { progress_token: progressToken, session_id: sessionID } }),
+    resolve: (sessionID) => call("resolve_soul_recovery", { path: {}, request: { session_id: sessionID } }),
+    cancel: (sessionID) => call("cancel_soul_recovery", { path: {}, request: { session_id: sessionID } }),
   };
 }
 

@@ -5,6 +5,8 @@ export type OperationInput<K extends OperationID> = Pick<OperationTypes[K], "pat
 
 export type OperationResult<K extends OperationID> = OperationResponses[K] & { ok: boolean; headers: Headers };
 
+export type APIFetcher = (input: string, init?: RequestInit) => Promise<Response>;
+
 interface ClientOperation {
   readonly auth: "none" | "access_token";
   readonly method: string;
@@ -18,7 +20,7 @@ interface ClientOperation {
 // No token storage/refresh, retries, or automatic request-ID generation. Wrappers
 // own application outcomes and retain their exact DTO decoders. Schema bodies
 // are JSON-decoded, not claimed runtime-schema-validated by their TS types.
-export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
+export function createAPIClient(fetcher: APIFetcher = fetch, baseURL = "") {
   return {
     async call<K extends OperationID>(id: K, input: OperationInput<K>): Promise<OperationResult<K>> {
       const operation: ClientOperation = operations[id];
@@ -38,7 +40,8 @@ export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
       const params = new URLSearchParams();
       for (const name of queryParameters) if (query[name] !== undefined) params.set(name, scalar(query[name]));
       if (params.size !== 0) path += `?${params}`;
-      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      const headers: Record<string, string> = {};
+      if (operation.hasRequest) headers["Content-Type"] = "application/json";
       if (operation.auth === "access_token") {
         if (typeof input.accessToken !== "string" || input.accessToken.length === 0) throw new TypeError("missing API access token");
         headers.Authorization = `Bearer ${input.accessToken}`;
@@ -60,7 +63,11 @@ export function createAPIClient(fetcher: typeof fetch = fetch, baseURL = "") {
         if (response.headers.get(descriptor.contentHashHeader) !== hash) throw new TypeError("invalid raw API content hash");
         body = bytes;
       } else {
-        body = await response.json();
+        // Keep body-read/network errors intact, but do not echo potentially
+        // private reply bytes in JSON.parse's native error message.
+        const text = await response.text();
+        try { body = JSON.parse(text); }
+        catch { throw new SyntaxError(`response was not JSON (${response.status})`); }
       }
       const result: unknown = { status: response.status, ok: response.ok, headers: response.headers, body };
       return result as OperationResult<K>;

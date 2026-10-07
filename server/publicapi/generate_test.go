@@ -37,6 +37,7 @@ func TestGenerateOpenAPIAndTypeScriptFromImmutableRegistry(t *testing.T) {
 	for _, required := range []string{
 		"export type EpochPage =", "next_cursor: null | string", "export const operations =",
 		`get_board: { auth: "none", method: "GET"`, "export interface OperationTypes",
+		`export const apiErrorCategories = ["invalid", "unknown_id"] as const;`,
 	} {
 		if !bytes.Contains(types, []byte(required)) {
 			t.Fatalf("TypeScript omitted %q\n%s", required, types)

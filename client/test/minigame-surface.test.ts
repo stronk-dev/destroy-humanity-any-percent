@@ -36,6 +36,7 @@ describe("minigame session port", () => {
     await expect(reply(409, { category: "conflict", detail: "minigame_revision" }).current()).rejects.toMatchObject({ status: 409, category: "conflict", detail: "minigame_revision" });
     await expect(reply(409, { category: "conflict", detail: "minigame_revision", extra: 1 }).current()).rejects.toBeInstanceOf(MinigameTransportError);
     await expect(reply(409, { category: "bogus", detail: "x" }).current()).rejects.toBeInstanceOf(MinigameTransportError);
+    await expect(reply(418, { category: "invalid", detail: "body" }).current()).rejects.toBeInstanceOf(MinigameTransportError);
     await expect(createBrowserMinigameSessionPort(() => "tok", async () => { throw new TypeError("offline"); }).current()).rejects.toBeInstanceOf(MinigameTransportError);
   });
 });

@@ -45,8 +45,8 @@ change; an otherwise valid widening is not permission for a silent re-baseline.
 
 The generated registry is not yet the complete runtime API. Current metadata covers seventeen operations and omits the existing
 session refresh route and its refresh-specific error alternatives. Actual TypeScript
-callers cannot represent that path or those errors. Bootstrap and main state reads use the
-generated client; intents, minigame/Soul/Garden ports still call `fetcher` outside the
+callers cannot represent that path or those errors. Bootstrap, main state reads and the
+Minigame/Soul/Garden ports use the generated client; intents still call `fetcher` outside the
 generated directory. `api-check` passes
 for the registered subset, not AC4 completion. Manual
 `make research-refresh-generated-contract` retains compiler/counterfactual evidence
@@ -61,6 +61,7 @@ from the registry. `call(operationID, input)` accepts generated path/request/que
 explicit access tokens only for private operations, and optional request ID/abort signal.
 Path components are URL-encoded; declared query values are serialized in registry order.
 Unknown path/query fields, missing auth and inexact integer parameters fail before HTTP.
+Content-Type is sent only for operations with a JSON request body, not bodiless reads.
 The client never forwards an access token on a public operation. There is no token storage,
 refresh, retry, timeout, or request-ID policy hidden in it.
 
@@ -70,6 +71,8 @@ application decoders. Raw successes are `Uint8Array`, not an omitted success typ
 JSON. They require the registered media type and content-hash header, checked against SHA256
 over downloaded bytes. Error statuses on raw operations remain JSON. Undeclared status,
 malformed JSON, raw type/hash failure and network/abort errors are surfaced, never retried.
+Malformed JSON reports its HTTP status without echoing reply bytes. Body-read failures
+propagate unchanged rather than being relabelled as JSON errors.
 The undeclared 304 arm remains open; this client does not invent an alternative for it.
 
 The actual Game UI bootstrap and main state reads now use this transport without changing
@@ -80,6 +83,16 @@ still unfinished, so this is not AC4 completion. Unit/browser tests use controll
 the existing composed journey separately exercises these migrated calls against real HTTP,
 Postgres and WebSocket services. Raw-client controlled-byte tests are not yet a public
 TypeScript archive-reverification journey.
+
+The Minigame, Soul Recovery and Garden ports dispatch by generated operation ID with typed
+path/request inputs. Their shared adapter reads the current access token once per explicit
+call and preserves the existing MinigameAPIError/MinigameTransportError classes and surface
+rejection mappings. Error categories come from the generated registry, not a second list.
+Undeclared HTTP statuses are transport failures; declared errors retain the previous exact
+two-field, known-category/nonempty-detail guard. This is not per-operation error-literal or
+success-body schema validation. Existing wire-binding/error tests cover all nine port calls;
+the real composed journey covers Pitch and default locked-Garden reads, not a complete
+persisted Soul Recovery or active-Garden workflow.
 
 GU-C26 authorized the Game UI schema v3 compatibility-pin baseline. Accepted Garage Player
 Surfaces GS0.1 (2026-09-25) authorizes the v4 re-baseline. The unversioned `GameUISnapshot` is the

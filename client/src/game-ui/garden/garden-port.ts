@@ -1,4 +1,4 @@
-import { operations, type GardenCurrentResponse } from "../../api/generated/types";
+import type { GardenCurrentResponse } from "../../api/generated/types";
 import { createOperationCall, type Fetcher } from "../minigame/session-port";
 
 // Server Garden SG9/SG10: the garden surface's only read seam, typed by the
@@ -9,7 +9,7 @@ export interface GardenPort {
 
 export function createBrowserGardenPort(accessToken: () => string, fetcher: Fetcher = fetch): GardenPort {
   const call = createOperationCall(accessToken, fetcher);
-  return { current: () => call(operations.get_current_garden.method, operations.get_current_garden.path, undefined) };
+  return { current: () => call("get_current_garden", { path: {}, request: null }) };
 }
 
 export type GardenViewState =

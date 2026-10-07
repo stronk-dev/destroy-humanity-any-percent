@@ -874,3 +874,27 @@ review, independently of preceding work; no archive/push/hosted-CI/full-AC4 or 1
 Next: migrate registered Garden/Minigame/Soul callers through this generated boundary.
 Missing route contracts, C9's raw-fetch lint, C18 owner descriptors/historical catalogs,
 304 metadata and full public TypeScript re-verification remain open.
+
+## 2026-10-07 — registered component ports use generated dispatch
+
+Batch after `ec74899a`, accepted A2/A5/C9/C19: migrate nine Minigame/Soul/Garden calls;
+preserve wire inputs, token ownership, UI error classes/copy/cadence and no-retry behavior.
+Generate error categories from the existing descriptor. Bodiless reads omit Content-Type;
+JSON parse errors omit reply bytes, while body-read failures propagate. No server/pin/OpenAPI,
+gameplay, balance or CI-workflow change. RP-374/375 regressions failed before correction.
+
+Checks PASS: 125 focused Node cases; 202 native Chromium/WebKit cases including actual Garden
+refresh component; cold `make test-go GO_PACKAGES='./publicapi ./publicread ./account ./cmd/gen-api'
+GO_TEST_FLAGS='-count=1'`, selected vet, typecheck, build and staged `make api-check`.
+`make test-game-ui-composed` PASS
+against real Postgres/HTTP/WebSocket: Pitch play, default locked Garden, gameplay/recovery and
+Cosmetic. This does not prove full persisted Soul Recovery, active Garden or hosted CI.
+First browser run failed because Chromium normalizes an errored Response stream; replace that
+fixture with an explicitly injected body-read failure and assert exact propagation/no retry.
+Correct a too-wide generic-body assignment and a misspelled Soul test selector; final named
+populations execute all intended files. No production behavior or assertion was loosened.
+Post-run DB sessions/listeners absent. All verification handles terminal before edits.
+
+Review by: Codex (diff/first-filter); Recorded by: Codex. Entire range after `ec74899a` requires
+designated review; no archival/push. Next: remaining route contracts/C9 lint, C18 catalog owner
+descriptors and the undeclared 304 arm. Full API acceptance and nine-tier 1.0 remain incomplete.

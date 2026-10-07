@@ -20,6 +20,7 @@ describe("registry-generated HTTP client", () => {
     expect(url).toBe("https://example.test/api/public/v1/boards/name%2Fwith%3Freserved?epoch=8&limit=50&mandate=0&variables=a%2Bb%2F%3D");
     expect(init.method).toBe("GET");
     expect(init.body).toBeUndefined();
+    expect(new Headers(init.headers).get("Content-Type")).toBeNull();
     expect(new Headers(init.headers).get("Authorization")).toBeNull();
     expect(new Headers(init.headers).get("X-Request-ID")).toBe("sdk-test");
     expect(response.status).toBe(400);
@@ -37,6 +38,7 @@ describe("registry-generated HTTP client", () => {
       expect(url).toBe(operations.create_minigame_session.path.replace("{minigame_id}", "pitch"));
       expect(init.method).toBe("POST");
       expect(init.body).toBe(JSON.stringify(request));
+      expect(new Headers(init.headers).get("Content-Type")).toBe("application/json");
       expect(new Headers(init.headers).get("Authorization")).toBe(`Bearer ${index === 0 ? "old" : "rotated"}`);
     }
   });
@@ -86,6 +88,25 @@ describe("registry-generated HTTP client", () => {
     const fetcher = vi.fn(async () => new Response(body, { status }));
     await expect(createAPIClient(fetcher).call("list_public_epochs", { path: {}, request: null, query: {} })).rejects.toThrow();
     expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not echo a malformed response body in its JSON diagnostic", async () => {
+    const marker = "fictional-private-body-marker";
+    const fetcher = vi.fn(async () => new Response(marker, { status: 200 }));
+    await expect(createAPIClient(fetcher).call("list_public_epochs", { path: {}, request: null, query: {} })).rejects.toThrow("response was not JSON (200)");
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves an injected body-read failure without retrying or relabelling it as invalid JSON", async () => {
+    const failure = new DOMException("aborted", "AbortError");
+    const response = new Response("", { status: 200 });
+    // Isolate the SDK's propagation boundary: Chromium may normalize errors
+    // from a genuinely errored Response stream before the SDK sees them.
+    const read = vi.spyOn(response, "text").mockRejectedValueOnce(failure);
+    const fetcher = vi.fn(async () => response);
+    await expect(createAPIClient(fetcher).call("list_public_epochs", { path: {}, request: null, query: {} })).rejects.toBe(failure);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(read).toHaveBeenCalledTimes(1);
   });
 
   it("rejects missing auth, missing/unknown path values, inexact integers and unknown query names before HTTP", async () => {
