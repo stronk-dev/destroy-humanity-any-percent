@@ -7,7 +7,22 @@ cosmetic, Clout, T2-era and ticker slices are out of scope until their producers
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-Latest bounded work: RP-356 connection-state correction40934e15 after separately
+Latest bounded work: RP-358 announcement authority/replay proof, test-only under
+639bf480/90b3cc7b with supplemental value controls70bbe82c. Twelve declarations/
+24 native executions cover six paths/two widths/two engines: exact registered
+spawn/buff text, off-Desk withholding, ID/cursor replay, native focus and event
+versus snapshot value binding. Nine actual source faults fail/restored; full
+native798/four isolated-performance skips plus performance2/client9816/701
+browser skips/types0/unchanged build/copy/boundaries/topology pass. No product
+defect fired; all production bytes unchanged. Entire10e2d656-exclusive through
+final records needs Claude, all older spans independent. Next safe accepted
+work: inspect and separately predeclare GS5 four-effect presentation/unknown-
+row fail-closed proof; current native projection populations cover Lucky and
+Production, not every registered effect. No author RP-313/public-wire repair,
+real acquisition/payout/expiry/SQL/Firefox/AT/400%/all-state/era/full1.0 or
+lifecycle promotion; capacity/platform/numeric/review/owner holds remain.
+
+Preceding bounded work: RP-356 connection-state correction40934e15 after separately
 predeclared52becf28/8e834bd5 typed red40. Five paths ×320/1280 ×independent
 availability/disclosure ×two engines =40 native cases. Present projected values
 remain committed, stale explanation visible and Claim disabled through unready

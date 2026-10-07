@@ -4835,3 +4835,31 @@ RP-313 body/capacity/actual services/composed/SQL/auth/Firefox/AT/400%/whole-sta
 era/performance/platform/privacy/numeric/full endings/full-nine-tier1.0/owner
 review/release holds remain. No cleanup/startup-ruling/Retry/preview substitution.
 Goal remains active; meaningful accepted work available.
+
+## 2026-10-07 — Desk announcement replay/value-authority proof
+
+RP-358 scope639bf480/tests90b3cc7b/supplement70bbe82c, test-only. Six paths
+×320/1280 ×native Chromium/WebKit =24 actual executions. Exact whole registered
+spawn/buff lines, off-Desk withholding and first return, opportunity-ID/cursor
+replay after recovery, native Enter selection/focus and event-versus-snapshot
+buff values are asserted. Distinct admitted sentinel messages ensure replay
+cannot hide behind an identical Svelte string assignment. No product bug fired.
+
+Nine serial real-source faults complete with8/4/16/8/24/24/8/16/24 failures;
+positive controls remain where appropriate. All hashes restore exactly. After
+all probes, full native315052→b140c6:798pass/four isolated-performance skips,
+132.07s/real60s idle; separate performance2. Client2385cf→741de4:9816pass/701
+explicit browser-only skips/types0/214 modules/unchanged build/boundaries/static
+CI topology/no-payment pass. Copyce53ef→4c3922:658/sameSHA/611 old warnings,
+current content manifest unchanged. All handles terminal before record edits.
+
+Only tests/planning/shared ledger changed, no behavior/copy/schema/math/CI/
+budget/lifecycle changes. Codex first filter only; designated Claude owes full
+10e2d656-exclusive through final records, all earlier spans independent. Board,
+acceptance inventory, per-RFC plan/log, queue and shared ledger reconciled; no
+plan boxes or status promotions. Next safe accepted work: inspect/predeclare
+GS5 four-effect presentation and unknown-row refusal, retaining wire pins and
+RP-313 author-body hold. Real acquisition/payout/expiry/auth/composed/SQL/
+Firefox/AT/400%/full-state/era/platform/privacy/numeric/endings/capacity/review/
+owner release gates remain. Goal remains full-nine-tier1.0, active, no shortcut
+preview, cleanup/startup ruling, publication or self-archival inferred.

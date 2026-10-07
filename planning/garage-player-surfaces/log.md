@@ -5374,3 +5374,68 @@ root native/client/types/build/copy/boundary/topology/no-payment verification
 afterward. No invalid/partial arm counts. Full review range and all holds above
 remain; current positive assertion alone was not an independently severed
 value-authority proof.
+
+### RP-358 — final restored faults, root verification and first filter
+
+No product defect fired in the declared population. All nine actual mutations
+complete with Make2/child1, no syntax/unhandled-error or partial-run substitution.
+Each uses unchanged24 native cases/730unselected, waits for terminal status,
+then reverses the exact context and checks full host/region/driver/theme hashes.
+
+| Source fault | Fail / positive controls | Launch → terminal | Restore |
+|---|---|---|---|
+| Omit opportunity ID guard |8 /16|b2e5b0→985b9a|b5e45f|
+| Omit spawn surface guard |4 /20|88b94d→edd4fc|7287f6|
+| Omit cursor guard |16 /8|09ff10→f83a30|6d4928|
+| Omit buff surface guard |8 /16|e0d309→9f97f8|1783db|
+| Suppress buff line |24 /0|69e3cd→8f0c43|092f62|
+| Wrong registered buff title |24 /0|b6d34c→5a8835|20c34f|
+| Spawn steals native focus |8 /16|19e9f2→302418|d887bd|
+| Event fabricates projected buff |16 /8|6d6e71→6745b7|2771bb|
+| Omit snapshot subscription binding |24 /0|cd3c57→1fa450|c9fc74|
+
+Distinct decoded buff/achievement sentinels cause missing dedupe to overwrite
+different text, not merely assign an identical Svelte state value. Off-Desk
+guard probes fail exact empty chrome line. Native focus theft fails actual
+document.activeElement. Event-fabrication fails the absent projected buff list;
+the eight spawn controls stay green because the later admitted snapshot removes
+that forged list. Missing snapshot binding fails actual offer/buff display,
+not the announcement decoder. Public buff schema1 omits cap key, schema2 carries
+cap.active_combo; these are validator-admitted runtime-double fixtures, not
+actual server issuance, persisted histories or physical AT announcements.
+
+Finale505f1 proves full restored SHA256:
+host432a27995e7d93b5e5c88ed138dbd990ec46e8106ae501671f634a6d37978b1f;
+region6b229ec67153a68ea38898728109b72e2d473fc6f9175a32952dc76c20688e73;
+driver42aa84dc2772036eedb605e9da181cf8070e9ea436b7f34e5e2914351877814c;
+themee58746774afc28a0ea5c7a72d95887a92d4eab5b2d3445428f037827cf6c59c2.
+Only the driver differs from baseline10e2d656; production fully unchanged.
+All final gates at clean70bbe82c, no matching edits/HEAD changes until terminal:
+
+- root types/client/build/boundaries/static-CI-topology/no-payment2385cf→741de4
+  exit0:zero errors/warnings;105 files9816pass/22 files701 browser-only skips;
+ 214 build modules. WorkerMqspU_iu/CSSDaRqgLww/UID7RYyJ6Z unchanged.
+- full Garage+Game UI315052→b140c6 exit0:798pass/four explicit isolated-
+  performance skips,132.07s with real60s idle; separate performance2pass/
+ 22unselected,1.89s. Native raw HTTP logs sometimes truncated; actual complete
+  totals/exit retained, no claim that omitted output was preserved.
+- copyce53ef→4c3922 exit0:658 keys, unchanged
+ a5df8920bc1573c8b0543b0c6a3c4c2de955b580626c8e1d130fc9e1adeb0e5e,
+ 611 pre-existing orphan warnings, current deployment manifest unchanged.
+
+Review by: Codex (implementer first filter). Recorded by: Codex. Inspected full
+10e2d656-exclusive..70bbe82c (639bf480,90b3cc7b,70bbe82c):96 new driver lines,
+test fixtures actually admitted by existing decoders, exact text and native
+focus/value/no-command assertions; predeclarations, complete faults/restoration
+and root results agree. No product/path/scope overrun. NOT a designated verdict.
+The entire10e2d656-exclusive through containing final records needs Claude,
+including this record edge; no earlier review debt is satisfied by these tests.
+No acceptance checkbox/status/body/archival/mint/push/CI/ruling promotion.
+
+Next safe accepted work: inspect and separately predeclare GS5 four-effect
+presentation/unknown-row fail-closed population. Current native projection
+cases cover Lucky/Production, not every registered effect. Preserve current
+wire pins/author-owned RP-313 body, all real service/payout/expiry/composed/auth/
+SQL/Firefox/AT/400%/whole-state/era/performance/platform/privacy/numeric/full-
+ending/capacity/review/owner release holds. Full-nine-tier1.0 goal stays active;
+no preview substitution or permission for Docker cleanup/startup Retry.

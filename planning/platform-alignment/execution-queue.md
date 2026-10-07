@@ -3,6 +3,27 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## Desk announcement checkpoint — 2026-10-07
+
+RP-358 test-only scope639bf480/tests90b3cc7b/supplement70bbe82c. Twelve
+declarations/24 native executions: six paths ×320/1280 ×Chromium/WebKit.
+Exact spawn/buff lines, off-screen withholding, distinguishable replay
+sentinels, native Enter/focus and event-versus-snapshot value authority pass.
+Nine real source faults discriminate/restored; no product defect or product
+change. Full native798/four isolated-performance skips plus performance2;
+client9816/701 browser-only skips/types0/unchanged build/copy/boundaries/topology/
+no-payment pass. No lowered budgets, exclusions or CI/copy changes.
+
+**READY FOR CLAUDE:** entire10e2d656-exclusive through containing final records,
+including639bf480/90b3cc7b/70bbe82c and record edges. Prior85b8e826..10e2d656,
+f5be35f6..85b8e826 and all older spans independently owed; no self-archival.
+**NEXT safe accepted work:** inspect and separately predeclare GS5 four-effect
+presentation/unknown-row fail-closed proof. Current native projection paths use
+Lucky/Production, not all four effects. Preserve current public wire pins and
+author-owned RP-313 body hold. Capacity/real composed/auth/SQL/Firefox/AT/400%/
+whole state/era/platform/numeric/endings/all-nine-tier1.0/owner release holds
+remain; no cleanup/startup Retry/mint/push/preview substitution.
+
 ## Claim connection-state checkpoint — 2026-10-07
 
 RP-356 test-first52becf28/8e834bd5 typed red40 → separate40934e15 existing

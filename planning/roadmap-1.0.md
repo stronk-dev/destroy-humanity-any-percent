@@ -5,7 +5,22 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded work (2026-10-07):** RP-356 Claim connection-state correction
+**Latest bounded work (2026-10-07):** RP-358 Desk announcement/replay proof,
+test-only639bf480/90b3cc7b/supplement70bbe82c.24 native Chromium/WebKit
+executions across six paths/320-1280 pass; distinct admitted messages make
+replay falsifiable. Off-screen spawn/buff withholding, native focus and
+event-versus-snapshot displayed buff values discriminate against nine actual
+faults; sources restored exactly. Full native798/four isolated-performance
+skips plus performance2,client9816/701 browser skips/types0/unchanged build/
+copy/boundaries/topology/no-payment pass. No product defect fired or behavior
+changed. Entire10e2d656-exclusive through records needs Claude; older spans
+independent. Next safe accepted work: inspect/predeclare GS5 four-effect
+presentation and unknown-row refusal; not all effect/era/state, real service/
+payout/expiry/SQL/Firefox/AT/400% or full1.0 proof. RP-313 body/Docker capacity/
+platform/privacy/numeric/endings/review/owner holds remain. No archive/status/
+CI/copy/kernel/mint/push/cleanup/startup ruling/preview substitution.
+
+**Preceding bounded work (2026-10-07):** RP-356 Claim connection-state correction
 40934e15 after separate test-first52becf28/8e834bd5 typed red40. Projected
 opportunity/buff values remain committed, stale reason visible and Claim disabled
 through unready snapshot reception; explicit recovered signal reenables.40
