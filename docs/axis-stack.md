@@ -104,7 +104,12 @@ the served-epoch journey or manual assistive-user acceptance. See RP-303 in the
   full rollback (including25hcatchup), nine catch-up and five compatibility
   companions. This is synthetic ordinary-action evidence, not the natural
   player journey, terminal/Exit, accepted accumulation representation or SQL
-  transaction proof. The terminal evidence guard still recognizes onlyv18.
+  transaction proof. A separate [actual terminal observation](../planning/clout-v1-and-pr-interns/terminal-research.md)
+  now confirms the terminal defect: six valid v19 exits are rejected, while
+  removing current active-play evidence permits an exit. Go executes six exits
+  and following manual actions correctly; six direct restored-Go-next-run TS
+  comparisons pass, but browser terminal continuity remains red. This must be
+  corrected separately; direct next-run parity is not terminal acceptance.
 - Exact interval-partition invariance (AC6). RP-307's actual Go timing witness
   passes and rejects a retroactive-factor fault, but the unchanged production
   engine fails 27 of128 seeded millisecond partitions under full encoded-state

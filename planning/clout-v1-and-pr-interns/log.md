@@ -1374,3 +1374,38 @@ execution. Current terminal exact-v18 guard remains SOURCE finding. No product
 fix in this research range; actual Go/TS results will determine the next bounded
 repair. Existing helper restoration hardcodes v18, so this observer must use
 actual v19 restoration/admission rather than demote or alter old fixtures.
+
+### RP-310 terminal result — valid exits rejected, missing evidence applies
+
+Test-only predeclarationf7a6e92a after32116b14. New Go observer/TS companion/
+six-pair JSON/dossier; no production/numeric/save/balance/copy/CI/RFC body bytes.
+Go actual six wind_down transitions preserve final attainment8, reset newrun3
+v19 to empty/0, initialize scheduler, then apply first manual action/cash1e0.
+Three invalid terminal evidence controls refuse full initial state unchanged.
+Go writer8d7979/32346 terminald4cca4 exit0,.293s. No legacy fixture demotion.
+
+TS initial9c86b9/92755 terminal26ba63 exit2:16newfile declarations8pass/8fail,
+client9555pass/8fail/340skip. Six valid calls reject terminal presence; missing
+current evidence APPLIES; nextsequencecontrol masked at wrong earlier guard.
+Six direct restored-Go-next-run cases match full outputs/restore, NOT TS
+terminal continuity. Missingnext andcensus pass. Terminal comparators unreached.
+
+Go truncatedpopulationbcabfe/19511 terminal40b414 exit2 beforewriter. Forged
+nextpoststate6ebdd6/22869 terminal1db72f exit2 adds six direct-next failures,
+14newfile failures total. Original8remain separate. Exact restorationc8eeb9:
+Go43bdaa7f/TS3b1c218b/runtimec37164b6/artifact1c62bc71. No handle live at edits.
+
+Final gates:cliente97d54/84146 terminal77b5bc exit2,9555/8fail/340skip.
+Go05fb3c/63242 terminal105133 exit2:production41.496s ONLY original27AC6,
+economy6.170s/decimal.222s/kernel.167s pass. Types/vet/topologyf8e4f8/36301
+terminal9edd6c exit0:zero diagnostics/13controls. Nativea5a383/66237 terminal
+54bb21 exit0,2.759s:all EIGHTresearchtests execute,oldSQL1215/16complete.
+Newterminalobserver in-memory, not newSQLtransaction witness. Kernelcbd1f2/
+44231 terminal6f2bdf exit2, historicalRP-131/50a3a514, checkout/fixturespass;
+independent8e16d1/78507 terminal1b0b07 exit0. All handles terminal, no mutants.
+
+Records synchronized. Next separate acceptedCV4terminal guard repair, honest
+version signal/legacy companions/real guard probes/source-onlyreobs. RP-308
+unanswered; no body/accumulation waiver or CI/AMD64/hosted/release claim. Entire
+newspan after32116b14 including records needs Claude; older spans independent.
+Goalactive/progress, no checkbox/status/archive/mint/push/deploy/release call.

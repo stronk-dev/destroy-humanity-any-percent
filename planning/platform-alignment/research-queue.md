@@ -322,7 +322,14 @@ needs Claude; no other queue or full1.0 gate closes by implication.
   pass including9scheduler refusal/25hrollback. Original/result-severing mutants
   discriminate and restore; re-observation changes onlytwo source identities.
   Next actual terminal v19 producer/replay/next-run population; terminal guard
-  remains a source finding. This is bounded ordinary parity, not partition,
+  was a source finding at that checkpoint. Test-only terminal population
+  predeclaredf7a6e92a now executes six Go exits/next actions andthree unchanged
+  refusals; TS rejects allsix valid exits and wrongly accepts missing current
+  active_play. Direct restored-Go-next-run six comparisons pass, not terminal
+  continuity. Census/forged-next-state controls discriminate and restore;
+  eightnewfile failures remain. Separately scope terminal runtime correction.
+  [Terminal evidence/limits](../clout-v1-and-pr-interns/terminal-research.md).
+  This is bounded ordinary parity, not partition,
   new representation, mode/buff, Service/Store or natural-player proof.
   Later predeclare actual paired action/buff/mode/multi-resource seams;
   canonical rate lists/byte-framed JSON/scalar anchors are not whole-engine proof.

@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest scheduler checkpoint (2026-10-07):** RP-310 scheduler admission
+**Latest terminal checkpoint (2026-10-07):** test-only f7a6e92a at32116b14
+confirms RP-310:TS rejects six valid v19 exits but applies an exit with required
+active-play evidence removed. Go six exits/next actions andthree unchanged
+refusals pass; direct restored-Go-next-run TS parity6passes is not terminal
+continuity. Client9555pass/8fail/340skip; types/vet/topology/native8research
+tests pass; original27GoAC6/history/AMD64/hosted holds remain. Discriminator
+controls restore exact. Next separately predeclare terminal guard correction;
+no owner-body/numeric/save/CI waiver or fullCV4/Clout/1.0 promotion. Whole new
+span after32116b14 including record edges needs Claude; older ranges independent.
+[Evidence](clout-v1-and-pr-interns/terminal-research.md).
+
+**Previous scheduler checkpoint (2026-10-07):** RP-310 scheduler admission
 corrected under acceptedCV4/predeclaration483fa5ed, kernel164. All24ordinary
 Go/TS complete receipts/events/poststates now match; all48TS cases pass,
 including9scheduler refusals and25hrollback. Two compiling mutants discriminate,

@@ -3862,3 +3862,21 @@ all preceding independent spans and author/owner/content/environment/release
 holds remain. Previous goal turn progress; this turn repairs actual ordinary
 v19 replay with exact cross-runtime outputs. Proper full nine-tier/platform1.0
 active; no checkbox/status/archive/mint/push/deploy or owner release call.
+
+## 2026-10-07 — Actual v19 terminal omission defect / restored-next-run parity
+
+Test-only population predeclaredf7a6e92a at32116b14 under acceptedCV4. Go six
+actual exits/next-manual actions andthree full unchanged-state refusals pass.
+TS rejects allsix valid exits but APPLIES missing current active-play evidence;
+next-sequence refusal masked. Direct restored-Go-next-run six full output
+comparisons pass, not browser terminal continuity. Newfile8pass/8fail, complete
+client9555pass/8fail/340skip. Census and forged-next-state checks discriminate
+and restore exact. Cold Go original27AC6/historyRP-131 remain red; types/vet/
+topology/native8research tests pass. AMD64/hosted/prior owner/review holds remain.
+
+No production byte changed; no old corpora restamped. Next separately scope
+terminal presence/version repair with legacy companions and real guard faults.
+Whole span after32116b14 including records needs Claude independently. Goal
+active/progress, not blocked: actual terminal finding makes the next accepted
+repair concrete. No checkbox/status/archive/mint/push/deploy/release call.
+[Evidence/limits](clout-v1-and-pr-interns/terminal-research.md).

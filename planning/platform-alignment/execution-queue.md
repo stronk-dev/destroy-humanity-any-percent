@@ -3,6 +3,22 @@
 The first checkpoint is current. Older next-step notes below are historical;
 their independent review obligations remain live.
 
+## RP-310 terminal rejection / evidence omission confirmed — 2026-10-07
+
+Test-only f7a6e92a after32116b14: actual Go six v19 exits and following manual
+actions pass; three invalid-evidence refusals leave the whole initial state
+unchanged. TS six valid exits refuse at exact-v18 presence; removing current
+active_play wrongly APPLIES; sequence+1 is masked. Six direct restored-Go-next
+comparisons pass, NOT browser terminal continuity. Newfile8pass/8fail.
+Census/forged-next-output controls discriminate and restore exactly. Client
+9555pass/8fail/340skip; Go original27AC6/historyRP-131 remain red. Types/vet/
+topology/native8research tests pass; AMD64/hosted/owner holds unchanged.
+**READY next:** separately predeclare accepted-CV4 terminal guard correction,
+honest kernel signal, legacy/refusal companions and actual guard mutants. No
+accumulation waiver/output restamp; representation/buff/mode/persistence still
+separate. Entire new span after32116b14 including records needs Claude.
+[Evidence/limits](../clout-v1-and-pr-interns/terminal-research.md).
+
 ## RP-310 scheduler corrected / actual ordinary output parity — 2026-10-07
 
 Predeclared483fa5ed at685debe7:ONLY scheduler admission corrected underCV4,

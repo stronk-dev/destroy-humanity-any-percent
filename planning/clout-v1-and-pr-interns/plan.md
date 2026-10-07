@@ -538,3 +538,11 @@ Synchronize ledger/docs/queues/roadmap/log and self-review whole new range; Clau
 designated review still required including records. No runtime/version/numeric/
 save/balance/CI/RFC body/copy changes, checkbox/status/archival/mint/push/deploy
 or release call. RP-308 owner delegation unanswered. Full1.0 goal active.
+
+Terminal research execution: allsix Go exits/next actions andthree unchanged
+refusals pass. TS eightpass/eightfail:validterminal6refuse, missingcurrent
+APPLIES, nextsequencewrong earlier guard. Direct next6/census/missingnext pass.
+Dropped census/forgednext checks discriminate and restore exactly. Client9555/
+8fail/340skip; cold Go original27AC6/historyRP-131red; types/vet/topology/native
+8researchtests pass. No runtime byte changed. Next separately predeclare
+terminal presence/version repair; details/limitations in terminal-research.md.
