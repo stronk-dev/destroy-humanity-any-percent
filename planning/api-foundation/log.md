@@ -1107,3 +1107,49 @@ commit. Full designated cross-party review remains required; prior ranges remain
 No kernel/balance/migration/product mint, workflow or timeout/retry change, archival, publication
 or push. Full nine-tier 1.0 remains active. Next: remaining operation/consumer migration and
 catalog owner/HTTP/public verification integration, with explicit decisions for the held lanes.
+
+## 2026-10-08 — existing account lifecycle joins the generated authority
+
+Outcome under API A1/A2/A5/C1/C2/C7/C9/C17 and Account D1/D2/D3: register and exclusively mount
+the existing account-create, current-Founder and New-Founder handlers. Shared unauthenticated/
+failed-auth IP buckets and authenticated account buckets, no-store recovery response, body
+parser, response bytes and archive/session behavior are unchanged. Explicit generated calls do
+not add recovery UX, retry/renewal or deletion policy. Empty display stays an exact empty object.
+
+Regression51119 fails all three absent operations on the old registry. Initial registration9396
+also rejects actual timestamp fixtures: unlike bootstrap's fixed milliseconds, these handlers
+use time.Time's zero-trimmed UTC millisecond encoding. Separate AccountCreated/Founder
+descriptors and the date-time-utc-ms scalar format preserve that wire shape; zero/.1/.12/.123
+codec cases pass and unsupported precision, offsets and noncanonical fractional forms refuse.
+Existing fixed-width date-time-ms remains unchanged.
+
+RP-386: compiler88005 exposes generated TypeScript `{}` admitting undeclared creation fields
+(two unused @ts-expect-error negatives). Empty objects now generate Record<string, never>;
+compiler44767 passes the negatives and actual valid callers, with zero Svelte errors/warnings.
+This also corrects existing MinigameEmptyRequest typing, not its wire/parser semantics.
+
+Finished-batch verification, all processes terminal before records:
+
+- Cold39185 Account/publicapi/publicread/gen-api/Gameserver packages and vet78658 PASS. Native
+  DB skips are not proof; full declared Postgres26572 executes both Account/Gameserver packages
+  (4.898/34.289s), including creation → credential login → current Founder → replacement →
+  refresh binding, actual archived Founder/stream rows, entropy-failure and refusal nonmutation,
+  account/IP limits, and existing composed socket/verification/Garden/minigame populations.
+- Node70987:122 affected SDK/port/runtime cases PASS. Chromium/WebKit41612:244 PASS, including
+  no credential forwarding on account creation, exact method/body/auth and no creation retry.
+  Initial sandbox browser command cannot listen and executes no tests; permitted run above
+  completes. No Firefox, full browser/CI or assistive-technology result substituted.
+- Normal generation79488/26854 accepts the old compatibility pin. New operation/status-removal
+  controls261570 then fail all six new cases against that old pin. Explicit make api-pin6445da,
+  authorized by A1/A5/C1/C2, adds exactly create_account/create_founder/get_founder (19→22 rows);
+  semantic comparison882927 finds no old operation row change/removal. Actual pin controls
+  pass in cold39185. Staged api-checkce45f7 is byte-identical; build-client9c99ec PASS214 modules.
+
+Review by: Codex (implementer diff/first filter). Recorded by: Codex. Exact new range is
+`17c552db` exclusive through this batch's implementation/test/generated/docs/record commit;
+designated cross-party review remains pending and prior ranges remain separate. No kernel,
+balance, migration, content mint, Actions, retry/timeout, owner-copy, archive or push change.
+Known Clout/kernel-history CI failures remain; no whole-API/Account/1.0 acceptance claim.
+Next: remaining HTTP caller/route migration and catalog owner/public verification integration.
+The closed C19 schema|raw response model still cannot honestly register existing bodiless
+DELETE successes or conditional304; amend that contract before describing those as JSON.

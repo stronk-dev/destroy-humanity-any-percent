@@ -9,6 +9,53 @@ async function hash(bytes: Uint8Array): Promise<string> {
 }
 
 describe("registry-generated HTTP client", () => {
+  it("creates an account once without forwarding an access token", async () => {
+    const account = { account_id: stream, created_at: "2026-10-08T00:00:00Z", recovery_code: "fixture-recovery" };
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(account), { status: 201, headers: { "Cache-Control": "no-store" } }));
+    const input = { path: {}, request: {}, accessToken: "must-not-leak" };
+    const result = await createAPIClient(fetcher).call("create_account", input as unknown as OperationInput<"create_account">);
+    expect(result.status).toBe(201);
+    expect(result.body).toEqual(account);
+    expect(result.headers.get("Cache-Control")).toBe("no-store");
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    const [url, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("/api/v1/account");
+    expect(init.method).toBe("POST");
+    expect(init.body).toBe("{}");
+    expect(new Headers(init.headers).get("Authorization")).toBeNull();
+  });
+
+  it.each([
+    ["create_founder", "POST", 201, { id: stream, created_at: "2026-10-08T00:00:00.12Z", imported: false }],
+    ["get_founder", "GET", 200, { id: stream, created_at: "2026-10-08T00:00:00.12Z", display: {} }],
+  ] as const)("dispatches %s with the current explicit credential and unchanged timestamp", async (id, method, status, founder) => {
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(founder), { status }));
+    const request = id === "create_founder" ? {} : null;
+    const result = await createAPIClient(fetcher).call(id, { path: {}, request, accessToken: "fixture-access" } as OperationInput<typeof id>);
+    expect(result.status).toBe(status);
+    expect(result.body).toEqual(founder);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    const [url, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("/api/v1/founder");
+    expect(init.method).toBe(method);
+    expect(init.body).toBe(method === "GET" ? undefined : "{}");
+    expect(new Headers(init.headers).get("Authorization")).toBe("Bearer fixture-access");
+  });
+
+  it.each([
+    ["create_account", "account_create"],
+    ["create_founder", "founder_create"],
+  ] as const)("preserves %s failure without repeating a non-idempotent creation", async (id, detail) => {
+    const body: APIError = { category: "internal_invariant", detail };
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(body), { status: 500 }));
+    const input = id === "create_account" ? { path: {}, request: {} } : { path: {}, request: {}, accessToken: "fixture-access" };
+    const result = await createAPIClient(fetcher).call(id, input as OperationInput<typeof id>);
+    expect(result.status).toBe(500);
+    expect(result.ok).toBe(false);
+    expect(result.body).toEqual(body);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
   it.each([
     ["create_session", "/api/v1/session", { account_id: stream, recovery_code: "fixture-recovery" }],
     ["refresh_session", "/api/v1/session/refresh", { refresh_token: "fixture-refresh" }],
@@ -166,6 +213,15 @@ function compileContract(client: ReturnType<typeof createAPIClient>): void {
   const missingCompany: APIError = { category: "unknown_id", detail: "company_stream" };
   const reused: APIError = { category: "refresh_reused", detail: "session_family_revoked" };
   void reused;
+  void client.call("create_account", { path: {}, request: {} });
+  void client.call("create_founder", { path: {}, request: {}, accessToken: "fixture-access" });
+  void client.call("get_founder", { path: {}, request: null, accessToken: "fixture-access" });
+  // @ts-expect-error account creation cannot introduce a private field
+  void client.call("create_account", { path: {}, request: { email: "private" } });
+  // @ts-expect-error New Founder has no caller-authored identity
+  void client.call("create_founder", { path: {}, request: { id: stream }, accessToken: "fixture-access" });
+  // @ts-expect-error New Founder remains authenticated
+  void client.call("create_founder", { path: {}, request: {} });
   void client.call("create_session", { path: {}, request: { account_id: stream, recovery_code: "fixture-recovery" } });
   void client.call("refresh_session", { path: {}, request: { refresh_token: "fixture-refresh" } });
   // @ts-expect-error refresh's credential is not an access-token-authenticated call

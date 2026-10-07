@@ -68,6 +68,12 @@ queue and current verification, not a claim to have rerun every acceptance crite
   builds and serves production assets, verifies exact browser-loaded HTML/JS/CSS/worker bytes,
   and passes its real Postgres/socket/gameplay population. Cosmetics already used a separate
   production build. Neither establishes release-artifact/clean-host proof.
+- Existing account creation/current-Founder/New-Founder routes now also mount from that authority,
+  preserving handler bytes, shared limiters and archival/session binding. Real-Postgres Account/
+  Gameserver packages and affected SDK/compiler checks pass locally. Exact empty-object generated
+  typing is corrected (RP-386); original operation pins remain intact. Recovery UX, deletion/
+  retention policy, bodiless response contracts and full API/designated-review gates remain open;
+  the API log owns this new range. No new hosted CI result is claimed.
 - Latest whole composed command28799 **PASSES** both main and Cosmetic journeys. Its preceding
   red40231 equip timeout remains recorded (RP-385): a controlled mounted-host test reproduces
   refresh suppressing a native click after pointer-down, and the G10 driver now uses one-shot

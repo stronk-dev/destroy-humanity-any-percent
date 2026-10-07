@@ -259,6 +259,9 @@ func typeScriptSchema(schema *Schema) string {
 	case SchemaRef:
 		return schema.Ref
 	case SchemaObject:
+		if len(schema.Fields) == 0 {
+			return "Record<string, never>"
+		}
 		fields := make([]string, len(schema.Fields))
 		for index, field := range schema.Fields {
 			optional := ""

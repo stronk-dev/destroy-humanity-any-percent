@@ -11,7 +11,7 @@ import (
 	"cloud-clicker/server/publicread"
 )
 
-func TestCommittedAPIPinProtectsSessionOperations(t *testing.T) {
+func TestCommittedAPIPinProtectsAccountAndSessionOperations(t *testing.T) {
 	private, err := account.PrivateAPIRegistry()
 	if err != nil {
 		t.Fatal(err)
@@ -31,8 +31,15 @@ func TestCommittedAPIPinProtectsSessionOperations(t *testing.T) {
 	if err := publicapi.CheckCompatibilityPin(pin, registry); err != nil {
 		t.Fatal(err)
 	}
-	for _, id := range []string{"create_session", "refresh_session"} {
-		for _, fault := range []string{"operation removal", "401 removal"} {
+	for _, row := range []struct {
+		id     string
+		status int
+	}{
+		{"create_session", 401}, {"refresh_session", 401},
+		{"create_account", 500}, {"create_founder", 401}, {"get_founder", 401},
+	} {
+		id := row.id
+		for _, fault := range []string{"operation removal", "error status removal"} {
 			t.Run(id+"/"+fault, func(t *testing.T) {
 				operations := registry.Operations()
 				for index, operation := range operations {
@@ -43,7 +50,7 @@ func TestCommittedAPIPinProtectsSessionOperations(t *testing.T) {
 						operations = append(operations[:index], operations[index+1:]...)
 					} else {
 						for responseIndex, response := range operation.Responses {
-							if response.Status == 401 {
+							if response.Status == row.status {
 								operations[index].Responses = append(operation.Responses[:responseIndex], operation.Responses[responseIndex+1:]...)
 								break
 							}

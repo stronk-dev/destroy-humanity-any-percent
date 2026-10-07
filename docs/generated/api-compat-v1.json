@@ -21,6 +21,21 @@
       ]
     },
     {
+      "id": "create_account",
+      "method": "POST",
+      "path": "/api/v1/account",
+      "surface": "private_v1",
+      "auth": "none",
+      "request": "AccountEmptyRequest",
+      "parameters": [],
+      "responses": [
+        "201:schema:application/json:AccountCreated",
+        "400:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "create_bootstrap",
       "method": "POST",
       "path": "/api/v1/bootstrap",
@@ -32,6 +47,23 @@
         "201:schema:application/json:BootstrapResponse",
         "400:schema:application/json:APIError",
         "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "create_founder",
+      "method": "POST",
+      "path": "/api/v1/founder",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "AccountEmptyRequest",
+      "parameters": [],
+      "responses": [
+        "201:schema:application/json:FounderCreated",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
         "429:schema:application/json:APIError",
         "500:schema:application/json:APIError"
       ]
@@ -106,6 +138,20 @@
         "429:schema:application/json:APIError",
         "500:schema:application/json:APIError",
         "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "get_founder",
+      "method": "GET",
+      "path": "/api/v1/founder",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:FounderProfile",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "429:schema:application/json:APIError"
       ]
     },
     {
@@ -375,6 +421,7 @@
           "enum": [
             "access_token",
             "account",
+            "account_create",
             "body",
             "bootstrap",
             "bootstrap_expired",
@@ -388,6 +435,7 @@
             "exclusive_activity",
             "fiscal_unlock_required",
             "founder",
+            "founder_create",
             "founder_state",
             "game_ui_snapshot",
             "garden",
@@ -434,6 +482,33 @@
         "category",
         "detail"
       ],
+      "type": "object"
+    },
+    "AccountCreated": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time-utc-ms",
+          "type": "string"
+        },
+        "recovery_code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "created_at",
+        "recovery_code"
+      ],
+      "type": "object"
+    },
+    "AccountEmptyRequest": {
+      "additionalProperties": false,
+      "properties": {},
       "type": "object"
     },
     "BootstrapAccount": {
@@ -517,6 +592,52 @@
       "required": [
         "access_token",
         "refresh_token"
+      ],
+      "type": "object"
+    },
+    "FounderCreated": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time-utc-ms",
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "imported": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "created_at",
+        "id",
+        "imported"
+      ],
+      "type": "object"
+    },
+    "FounderProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time-utc-ms",
+          "type": "string"
+        },
+        "display": {
+          "additionalProperties": false,
+          "properties": {},
+          "type": "object"
+        },
+        "id": {
+          "format": "uuid-v7",
+          "type": "string"
+        }
+      },
+      "required": [
+        "created_at",
+        "display",
+        "id"
       ],
       "type": "object"
     },

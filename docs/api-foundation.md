@@ -52,7 +52,7 @@ shape, while a retained historical shape uses an explicit `V<n>` suffix. A compa
 refresh must cite its authorizing ruling and be recorded in the owning planning log in the same
 change; an otherwise valid widening is not permission for a silent re-baseline.
 
-The generated registry is not yet the complete runtime API. Current metadata covers nineteen
+The generated registry is not yet the complete runtime API. Current metadata covers twenty-two
 operations, including the existing session creation and refresh routes and their actual error
 alternatives. Both routes mount from the registry with their existing shared unauthenticated IP
 limiter. Their successful two-string token pairs reuse the `BootstrapSession` owner descriptor;
@@ -75,6 +75,35 @@ for the registered subset, not AC4 completion. Manual
 in-memory metadata-removal refusals outside CI/verify; its earlier retained report remains
 historical evidence of the gap. It does not implement or authorize browser renewal. See the
 [bounded census](../planning/platform-alignment/refresh-generated-contract.md).
+
+The existing account lifecycle routes also mount exclusively from registered rows:
+`create_account` (`POST /api/v1/account`, unauthenticated), `create_founder`
+(`POST /api/v1/founder`, access token) and `get_founder` (`GET /api/v1/founder`, access token).
+Account creation retains the shared IP limiter and `no-store` credential reply; both Founder
+routes retain shared account limiting and failed-auth IP limiting. Their handlers and accepted
+body forms are unchanged. Generated POST calls use the canonical empty object; the live parser
+still admits an empty body as well and rejects internally spaced `{ }`.
+
+`AccountCreated` is `{account_id,created_at,recovery_code}`. `FounderCreated` is
+`{id,created_at,imported}`; `FounderProfile` is `{id,created_at,display:{}}`. Display is an exact
+empty object, not permission to introduce arbitrary profile data. Unlike bootstrap's fixed
+`.000Z` format, these existing handlers use `time.Time`'s UTC millisecond encoding with trailing
+fractional zeros omitted. The separate `date-time-utc-ms` string descriptor validates those
+bytes without relaxing any existing `date-time-ms` descriptor or re-encoding a reply.
+
+Actual `400 invalid/body`, `401 unauthorized/access_token`, `404 unknown_id/account|founder`,
+`429 rate_limited/ip|account` and `500 internal_invariant/account_create|founder_create` errors
+are registered only on their applicable operations/statuses. The deliberate C1/C2 pin refresh
+adds these three operations; no existing operation row changes. Real Postgres tests cover
+creation → session → current Founder → New Founder → refreshed Founder binding, retained
+archives, refusal nonmutation and shared limiting. This does not add recovery UX or deletion
+policy. Bodiless deletion responses, intent/import routes, C9 enforcement and full API
+acceptance remain unfinished.
+
+Exact empty-object descriptors now generate `Record<string, never>`, not TypeScript `{}`
+(which accepts extra fields and primitives). This corrects SDK typing for account creation,
+New Founder, the empty display object and existing Minigame resolution requests; it changes
+no OpenAPI shape, HTTP parser or wire acceptance set.
 
 ### Generated HTTP client
 

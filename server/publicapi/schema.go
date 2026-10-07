@@ -358,7 +358,7 @@ func validateValue(schema *Schema, value any, definitions map[string]*Schema, de
 
 func validStringFormat(format string) bool {
 	switch format {
-	case "", "sha256", "sha256-prefixed", "uuid", "uuid-v7", "date-time-ms", "canonical-decimal", "mechanical-id", "opaque-id", "semver":
+	case "", "sha256", "sha256-prefixed", "uuid", "uuid-v7", "date-time-ms", "date-time-utc-ms", "canonical-decimal", "mechanical-id", "opaque-id", "semver":
 		return true
 	default:
 		return false
@@ -380,6 +380,12 @@ func matchesFormat(format, value string) bool {
 	case "date-time-ms":
 		parsed, err := time.Parse("2006-01-02T15:04:05.000Z", value)
 		return err == nil && parsed.UTC().Format("2006-01-02T15:04:05.000Z") == value
+	case "date-time-utc-ms":
+		// Existing account/Founder handlers serialize canonical server time through
+		// time.Time's JSON codec: UTC, millisecond precision, trailing zeros omitted.
+		// Keep this separate from the fixed-width date-time-ms bootstrap/public DTOs.
+		parsed, err := time.Parse(time.RFC3339Nano, value)
+		return err == nil && parsed.Nanosecond()%int(time.Millisecond) == 0 && parsed.UTC().Format(time.RFC3339Nano) == value
 	case "canonical-decimal":
 		_, err := decimal.ParseCanonical(value)
 		return err == nil

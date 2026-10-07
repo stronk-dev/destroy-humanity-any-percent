@@ -50,6 +50,12 @@ is implemented; its draft decisions and full API acceptance remain open.
     generate explicit typed calls (`TestSessionOperationRegistryIntegration`, persisted refresh
     population, shared-limiter/descriptor tests, generated SDK tests and actual pin controls).
     Local implementation is not designated approval or browser-renewal completion.
+  - [x] Register existing account creation/current-Founder/New-Founder routes with unchanged
+    handlers and shared limiting; export their exact historical timestamp/empty-display
+    descriptors. `TestAccountLifecycleOperationRegistryIntegration` and the Founder limiter
+    integration execute against real Postgres; compiler negatives, generated calls and actual
+    committed-pin operation/status-removal controls pass. Empty-object SDK typing is corrected
+    (RP-386). Pending designated review, not recovery UX or complete Account/API acceptance.
   - [x] Generate typed HTTP dispatch and raw/status response associations; bind real Game UI
     bootstrap/state reads (generated-api/runtime tests and real composed journey).
   - [x] Bind registered Minigame/Soul/Garden ports to generated dispatch, preserving their

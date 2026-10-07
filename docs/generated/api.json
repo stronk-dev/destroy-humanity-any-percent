@@ -23,6 +23,7 @@
             "enum": [
               "access_token",
               "account",
+              "account_create",
               "body",
               "bootstrap",
               "bootstrap_expired",
@@ -36,6 +37,7 @@
               "exclusive_activity",
               "fiscal_unlock_required",
               "founder",
+              "founder_create",
               "founder_state",
               "game_ui_snapshot",
               "garden",
@@ -82,6 +84,33 @@
           "category",
           "detail"
         ],
+        "type": "object"
+      },
+      "AccountCreated": {
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time-utc-ms",
+            "type": "string"
+          },
+          "recovery_code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "created_at",
+          "recovery_code"
+        ],
+        "type": "object"
+      },
+      "AccountEmptyRequest": {
+        "additionalProperties": false,
+        "properties": {},
         "type": "object"
       },
       "BootstrapAccount": {
@@ -165,6 +194,52 @@
         "required": [
           "access_token",
           "refresh_token"
+        ],
+        "type": "object"
+      },
+      "FounderCreated": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time-utc-ms",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "imported": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "imported"
+        ],
+        "type": "object"
+      },
+      "FounderProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time-utc-ms",
+            "type": "string"
+          },
+          "display": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          },
+          "id": {
+            "format": "uuid-v7",
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "display",
+          "id"
         ],
         "type": "object"
       },
@@ -4113,6 +4188,63 @@
         }
       }
     },
+    "/api/v1/account": {
+      "post": {
+        "operationId": "create_account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountEmptyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountCreated"
+                }
+              }
+            },
+            "description": "HTTP 201"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        }
+      }
+    },
     "/api/v1/bootstrap": {
       "post": {
         "operationId": "create_bootstrap",
@@ -4178,6 +4310,138 @@
             "description": "HTTP 500"
           }
         }
+      }
+    },
+    "/api/v1/founder": {
+      "get": {
+        "operationId": "get_founder",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FounderProfile"
+                }
+              }
+            },
+            "description": "HTTP 200"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 401"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 404"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "create_founder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountEmptyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FounderCreated"
+                }
+              }
+            },
+            "description": "HTTP 201"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 401"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 404"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        },
+        "security": [
+          {
+            "accessToken": []
+          }
+        ]
       }
     },
     "/api/v1/founder/state": {

@@ -168,15 +168,12 @@ func (api *API) Router() http.Handler {
 		writeError(response, http.StatusMethodNotAllowed, "invalid", "method")
 	})
 	router.Route("/api/v1", func(v1 chi.Router) {
-		v1.With(api.limitUnauthenticated).Post("/account", api.createAccount)
 		v1.Group(func(authenticated chi.Router) {
 			authenticated.Use(api.authenticate)
 			authenticated.Use(api.limitAccount)
 			authenticated.Post("/account/email", api.attachEmail)
 			authenticated.Delete("/account", api.deleteAccount)
 			authenticated.Delete("/session", api.deleteSession)
-			authenticated.Post("/founder", api.newFounder)
-			authenticated.Get("/founder", api.getFounder)
 			authenticated.Post("/founder/import", api.importFounder)
 			authenticated.Post("/intents", api.submitIntent)
 			authenticated.Post("/guild/intents", api.submitGuildIntent)
@@ -184,11 +181,14 @@ func (api *API) Router() http.Handler {
 	})
 	bindings := []publicapi.Binding{
 		{OperationID: "cancel_soul_recovery", Handler: http.HandlerFunc(api.cancelSoulRecovery)},
+		{OperationID: "create_account", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createAccount))},
 		{OperationID: "create_bootstrap", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createBootstrap))},
+		{OperationID: "create_founder", Handler: http.HandlerFunc(api.newFounder)},
 		{OperationID: "create_minigame_session", Handler: http.HandlerFunc(api.createMinigameSession)},
 		{OperationID: "create_session", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createSession))},
 		{OperationID: "get_current_garden", Handler: http.HandlerFunc(api.getCurrentGarden)},
 		{OperationID: "get_current_minigame_session", Handler: http.HandlerFunc(api.getCurrentMinigameSession)},
+		{OperationID: "get_founder", Handler: http.HandlerFunc(api.getFounder)},
 		{OperationID: "get_game_ui_snapshot", Handler: http.HandlerFunc(api.getGameUISnapshot)},
 		{OperationID: "play_minigame_command", Handler: http.HandlerFunc(api.playMinigameCommand)},
 		{OperationID: "progress_soul_recovery", Handler: http.HandlerFunc(api.progressSoulRecovery)},
