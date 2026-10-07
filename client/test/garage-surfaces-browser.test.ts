@@ -113,6 +113,83 @@ it.skipIf(!browser)("renders earned-run, earned-career and locked achievements a
   } finally { await dispose(); }
 });
 
+// GS0.5: these are valid wire snapshots, not malformed transport fixtures.
+// Presentation errors must stay inside their read-only surface, not crash
+// rendering or leak mechanical identifiers into player-visible content.
+for (const surface of ["achievements", "meters"] as const) {
+  for (const delivery of ["first-open", "mounted-refresh"] as const) {
+    it.skipIf(!browser)(`GS0.5 contained presentation error ${surface} ${delivery}`, async () => {
+      const titleKey: CopyKey = surface === "achievements" ? "surface.achievements.title" : "surface.meters.title";
+      const unavailableID = surface === "achievements" ? "achievement.unregistered" : "critical";
+      const brokenFeatures = surface === "achievements"
+        ? { ...v4.features, achievements: { ...v4.features.achievements!, rows: v4.features.achievements!.rows.map((row, index) => index === 0 ? { ...row, copy_key: unavailableID } : row) } }
+        : { ...v4.features, meters: { meters: v4.features.meters!.meters.map((row) => row.meter_id === "doom.probability"
+          ? { ...row, value: 95, band_id: unavailableID, bands: [...row.bands, { band_id: unavailableID, floor_value: 90 }] } : row) } };
+      const healthy = parseGameUISnapshot(structuredClone(v4));
+      const broken = parseGameUISnapshot({ ...v4, revision: 2, features: brokenFeatures });
+      if (!("features" in broken)) throw new Error("GS0.5 diagnostic must decode a v4 feature snapshot");
+      expect(broken.features[surface]).not.toBeNull();
+      const renderErrors: string[] = [];
+      const observeError = (event: ErrorEvent) => { renderErrors.push(event.message); event.preventDefault(); };
+      window.addEventListener("error", observeError);
+      const diagnostic = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runtime = new Runtime(); runtime.current = healthy;
+      const { target, app, dispose } = await mounted(runtime);
+      const bindAndSettle = async (snapshot: ParsedGameUISnapshot) => {
+        try { app.fixtureSnapshot(snapshot); await settle(); }
+        catch (error) { renderErrors.push(String(error)); }
+      };
+      const open = async () => {
+        try { button(target, t(titleKey, {}, "era_1995")).click(); await settle(); }
+        catch (error) { renderErrors.push(String(error)); }
+      };
+      const assertHealthy = () => {
+        const panel = target.querySelector(`.${surface}`)!;
+        expect(panel).not.toBeNull();
+        expect(panel.querySelectorAll(surface === "achievements" ? "li" : "meter")).toHaveLength(surface === "achievements" ? 3 : 11);
+        expect(panel.querySelector("[role='alert']")).toBeNull();
+      };
+      const assertContained = (episodes: number) => {
+        expect(renderErrors, "legal wire must not cause an uncontained render error").toEqual([]);
+        const panel = target.querySelector(`.${surface}`)!;
+        expect(panel).not.toBeNull();
+        expect(panel.querySelectorAll("h1")).toHaveLength(1);
+        expect(panel.querySelector("h1")?.textContent).toBe(t(titleKey, {}, "era_1995"));
+        expect(panel.querySelector("h1")?.getAttribute("tabindex")).toBe("-1");
+        expect(panel.querySelectorAll("[role='alert']")).toHaveLength(1);
+        expect(panel.querySelector("[role='alert']")?.textContent).toBe(t("common.surface_error", {}, "era_1995"));
+        expect(panel.querySelectorAll("button, input, li, table, meter")).toHaveLength(0);
+        expect(target.textContent).not.toContain(unavailableID);
+        expect(diagnostic).toHaveBeenCalledTimes(episodes);
+        for (const call of diagnostic.mock.calls) expect(call).toEqual([`game UI invariant: ${surface} surface presentation unavailable`]);
+        expect(runtime.requests).toHaveLength(0);
+      };
+      try {
+        await open(); assertHealthy();
+        expect(renderErrors).toEqual([]); expect(diagnostic).not.toHaveBeenCalled();
+        if (delivery === "first-open") { button(target, t("surface.desk.title", {}, "era_1995")).click(); await settle(); }
+        await bindAndSettle(broken);
+        if (delivery === "first-open") await open();
+        assertContained(1);
+        await bindAndSettle(structuredClone(broken));
+        app.fixtureMonotonicElapsed(3_000); await settle(); assertContained(1);
+        await bindAndSettle({ ...healthy, revision: 3 }); assertHealthy();
+        await bindAndSettle({ ...broken, revision: 4 }); assertContained(2);
+        await assertAxe(target, `${surface} contained presentation error`);
+        button(target, t("surface.desk.title", {}, "era_1995")).click(); await settle();
+        expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+        expect(button(target, t("manual.click.title", {}, "era_1995"))).toBeDefined();
+        button(target, t("surface.settings.title", {}, "era_1995")).click(); await settle();
+        expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+        expect(target.querySelector("#settings-heading")?.textContent).toBe(t("surface.settings.title", {}, "era_1995"));
+        expect(renderErrors).toEqual([]); expect(runtime.requests).toHaveLength(0);
+      } finally {
+        await dispose(); diagnostic.mockRestore(); window.removeEventListener("error", observeError);
+      }
+    });
+  }
+}
+
 it.skipIf(!browser)("derives Fiscal phases at the window edges and sends Founder-scoped intents (GS1-A2/A3/A4)", async () => {
   const { target, app, runtime, dispose } = await mounted();
   try {

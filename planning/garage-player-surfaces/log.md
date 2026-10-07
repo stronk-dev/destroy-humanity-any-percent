@@ -2037,3 +2037,27 @@ missing-ID decoder, semantic reflow or any producer/copy/kernel/schema here.
 No Docker population; capacity still held. Full engines/AT/composed/review/
 body/release remain independent. Complete new span startscc62cea8 exclusive
 through its final record edge, requires Claude, never self-approval/archive.
+
+## 2026-10-07 — GS0.5 legal-wire render failure reproduced
+
+Predeclared4c9e06b2. Four new diagnostic declarations, two native engines.
+Healthy controls and actual parseGameUISnapshot admission reach the error
+in each case; first-open/live-refresh unknown achievement copy and declared
+unknown doom band throw uncontained RangeErrors. Fresh native29456 terminal2:
+eight failing executions,238 unselected declarations; also reported render
+exceptions, not sixteen independent failing tests. Performance lane not
+reached. RP-332 ledgered; no production change yet.
+
+Instrumentation disclosure: initial typecheck34418 failed my missing union
+narrowing in the diagnostic. Native93058 independently showed the same eight
+runtime failures, but is not counted as a typed-clean baseline. Corrected
+the test narrowing only; typecheck40369 then exited0 (zero errors/warnings).
+Typed-clean cold native29456 reproduced all eight; full output retrieved
+without tool truncation, selected tail displayed. Window errors are observed
+and asserted absent, not converted to successful acceptance by preventDefault.
+Vitest still reports the thrown errors alongside the failing assertions.
+
+Test-first checkpoint carries only diagnostic/tests/ledger/records. Separate
+implementation predeclaration follows before any production bytes. Existing
+tests unchanged; audit exactfc911784..cc62cea8 remains independent. New
+error range startscc62cea8 exclusive through final records, requires Claude.
