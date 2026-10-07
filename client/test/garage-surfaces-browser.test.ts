@@ -225,6 +225,131 @@ for (const population of ["populated", "empty", "presentation-error"] as const) 
   }
 }
 
+// GS0.5/GS2: shared-state public fixtures, not a real network outage or earn.
+function sharedStateVisibleText(parent: Element, selector: string, text: string): HTMLElement {
+  const nodes = [...parent.querySelectorAll<HTMLElement>(selector)].filter((node) => node.textContent === text);
+  expect(nodes, `shared-state visible exact ${text}`).toHaveLength(1);
+  const node = nodes[0]!, rectangle = node.getBoundingClientRect(), style = getComputedStyle(node);
+  expect(rectangle.width).toBeGreaterThan(0); expect(rectangle.height).toBeGreaterThan(0);
+  expect(style.display).not.toBe("none"); expect(style.visibility).toBe("visible"); expect(Number(style.opacity)).toBeGreaterThan(0);
+  return node;
+}
+
+for (const width of [320, 1280] as const) {
+  it.skipIf(!browser)(`GS2 shared-state initial held read ${width}`, async () => {
+    const { page } = await import("vitest/browser"); await page.viewport(width, 720);
+    const runtime = new Runtime();
+    let resolveRead!: (snapshot: ParsedGameUISnapshot) => void;
+    const held = new Promise<ParsedGameUISnapshot>((resolve) => { resolveRead = resolve; });
+    const read = vi.spyOn(runtime, "snapshot").mockReturnValue(held);
+    let fixture: Awaited<ReturnType<typeof mounted>> | undefined;
+    try {
+      fixture = await mounted(runtime); const { target } = fixture;
+      expect(read).toHaveBeenCalledTimes(1);
+      sharedStateVisibleText(target, "h1", t("surface.desk.title", {}, "era_1995"));
+      sharedStateVisibleText(target, '[role="status"]', t("common.loading", {}, "era_1995"));
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+      expect(target.querySelectorAll("button,input,li,meter")).toHaveLength(0);
+      expect(runtime.requests).toEqual([]);
+      await assertAxe(target, "held first authoritative read");
+      resolveRead(parseGameUISnapshot(structuredClone(v4))); await settle();
+      expect(target.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+      expect(target.textContent).not.toContain(t("common.loading", {}, "era_1995"));
+      expect(button(target, t("manual.click.title", {}, "era_1995"))).toBeDefined();
+      expect(runtime.requests).toEqual([]);
+    } finally {
+      resolveRead(parseGameUISnapshot(structuredClone(v4))); await settle();
+      try { if (fixture) await fixture.dispose(); }
+      finally { read.mockRestore(); await page.viewport(1280, 720); }
+    }
+  });
+
+  for (const [label, message] of [
+    ["recovering", { kind: "transport_recovering" }],
+    ["closed", { kind: "transport_closed" }],
+    ["resync", { kind: "system", value: { kind: "resync_required" } }],
+    ["restart", { kind: "system", value: { kind: "server_restarting", resume_after_ms: 1_000 } }],
+  ] as const) {
+    it.skipIf(!browser)(`GS2 shared-state ${label} keeps authoritative score ${width}`, async () => {
+      const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+      const runtime = new Runtime(), { target, dispose } = await mounted(runtime);
+      try {
+        const nav = button(target, t("surface.achievements.title", {}, "era_1995"));
+        nav.focus(); await userEvent.keyboard("{Enter}"); await settle();
+        const assertScore = (run: number, states: readonly string[]) => {
+          const panel = target.querySelector<HTMLElement>(".achievements")!; expect(panel).not.toBeNull();
+          sharedStateVisibleText(panel, "p", t("achievements.score_frame", { run, lifetime: 5 }, "era_1995"));
+          const rows = [...panel.querySelectorAll<HTMLElement>("strong")];
+          expect(rows.map((row) => row.textContent)).toEqual(states);
+          for (const text of states) sharedStateVisibleText(panel, "strong", text);
+          expect(panel.querySelectorAll("button,input,select,textarea")).toHaveLength(0);
+          expect(runtime.requests).toEqual([]);
+        };
+        const before = ["Earned this run", "Not earned yet", "Earned in your career"];
+        assertScore(2, before);
+        runtime.listener?.(message); await settle();
+        sharedStateVisibleText(target, "p", t("common.stale_note", {}, "era_1995"));
+        assertScore(2, before); expect(document.activeElement).toBe(nav);
+        await new Promise((resolve) => setTimeout(resolve, 350)); await settle();
+        assertScore(2, before); expect(document.activeElement).toBe(nav);
+        runtime.listener?.({ kind: "transport_recovered" }); await settle();
+        expect(target.textContent).not.toContain(t("common.stale_note", {}, "era_1995"));
+        assertScore(2, before);
+        const updated = parseGameUISnapshot({ ...v4, revision: 2, features: { ...v4.features,
+          achievements: { ...v4.features.achievements!, score: { run: 3, lifetime: 5 },
+            rows: v4.features.achievements!.rows.map((row, index) => index === 1 ? { ...row, earned: "run" } : row) } } });
+        runtime.current = updated; runtime.listener?.({ kind: "snapshot", value: updated }); await settle();
+        const panel = target.querySelector<HTMLElement>(".achievements")!;
+        sharedStateVisibleText(panel, "p", t("achievements.score_frame", { run: 3, lifetime: 5 }, "era_1995"));
+        expect([...panel.querySelectorAll("strong")].map((row) => row.textContent)).toEqual(["Earned this run", "Earned this run", "Earned in your career"]);
+        expect(document.activeElement).toBe(nav); expect(runtime.requests).toEqual([]);
+        expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width + 1);
+        await assertAxe(target, `GS2 shared-state ${label} recovery`);
+      } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
+    });
+  }
+
+  for (const retainFact of [true, false]) {
+    it.skipIf(!browser)(`GS2 shared-state null arm focuses Desk ${width}/${retainFact ? "retained-fact" : "removed-fact"}`, async () => {
+      const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+      const { target, runtime, dispose } = await mounted();
+      try {
+        const nav = button(target, t("surface.achievements.title", {}, "era_1995")); nav.focus();
+        await userEvent.keyboard(" "); await settle(); expect(document.activeElement).toBe(nav);
+        const lost = parseGameUISnapshot({ ...v4, revision: 2, features: { ...v4.features, achievements: null },
+          facts: v4.facts.map((fact) => fact.fact_id === "feature.achievements" ? { ...fact, value: retainFact } : fact) });
+        runtime.current = lost; runtime.listener?.({ kind: "snapshot", value: lost }); await settle();
+        expect(target.querySelector(".achievements")).toBeNull();
+        expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+        const heading = sharedStateVisibleText(target, "h1", t("surface.desk.title", {}, "era_1995"));
+        expect(document.activeElement).toBe(heading); expect(heading.getAttribute("tabindex")).toBe("-1");
+        expect(button(target, t("manual.click.title", {}, "era_1995"))).toBeDefined();
+        const settings = button(target, t("surface.settings.title", {}, "era_1995")); settings.focus();
+        await userEvent.keyboard("{Enter}"); await settle(); expect(document.activeElement).toBe(settings);
+        runtime.listener?.({ kind: "snapshot", value: { ...lost, revision: 3 } }); await settle();
+        expect(document.activeElement).toBe(settings); expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+        expect(runtime.requests).toEqual([]); await assertAxe(target, "post-arm-loss user navigation");
+      } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
+    });
+  }
+
+  it.skipIf(!browser)(`GS2 shared-state newer user selection cancels forced focus ${width}`, async () => {
+    const { page, userEvent } = await import("vitest/browser"); await page.viewport(width, 720);
+    const { target, runtime, dispose } = await mounted();
+    try {
+      const nav = button(target, t("surface.achievements.title", {}, "era_1995")); nav.focus();
+      await userEvent.keyboard("{Enter}"); await settle();
+      runtime.listener?.({ kind: "snapshot", value: parseGameUISnapshot({ ...v4, revision: 2, features: { ...v4.features, achievements: null } }) });
+      flushSync();
+      // Controlled synchronous DOM delivery before the queued focus task:
+      // exercises the real nav handler, not physical human race timing.
+      const settings = button(target, t("surface.settings.title", {}, "era_1995")); settings.focus(); settings.click();
+      await settle(); expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+      expect(document.activeElement).toBe(settings); expect(runtime.requests).toEqual([]);
+    } finally { try { await dispose(); } finally { await page.viewport(1280, 720); } }
+  });
+}
+
 // RP-330: real semantic layout over decoder-admitted public fixtures, not
 // production/persisted values or assistive-technology evidence.
 const semanticMeterRows = v4.features.meters!.meters.map((row, index) => meterRow(row.meter_id, index * 7));

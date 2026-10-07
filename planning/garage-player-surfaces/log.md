@@ -3481,3 +3481,29 @@ the baseline identifies actual defects. Not real service/persistence/AT/
 400%zoom/Firefox/all-state/full GS2 acceptance. No RFC/copy/balance/kernel/
 CI/Make changes or lifecycle/push/owner-body promotion. Entire new span after
 0fe2f57c needs Claude separately from85fdcfdf..0fe2f57c and earlier spans.
+
+## 2026-10-07 — shared-state actual red baseline RP-339/340/341
+
+923a51ab predeclared. e772cb→8536f7 types pass zero errors/warnings.
+ac352d→fb52bf native32-case population terminal2:28 fail/four controls pass.
+Four held-first-read cases fail actual absent Desk heading; sixteen connection
+populations fail actual absent visible common.stale_note; eight null-arm
+cases return Desk but fail missing heading negative tabindex. Cancellation
+four controls pass trivially with no current focus callback, not proof a
+future helper discriminates. No framework/type/collector errors caused red.
+
+For independent native focus evidence, reorder the new null-arm assertions
+(no requirement removed) to inspect activeElement before tabindex and rerun
+the eight selected cases. All eight fail actual native heading focus, in both
+retained/removed-fact populations. RP-339/340/341 enter the shared ledger
+before product repair. Current scores/rows are authoritative fixtures, not
+live persistence or a proved score-prediction defect. Controlled cancellation
+uses real DOM nav handler synchronously, not physical human race timing.
+
+This boundary is TEST-ONLY; GameUIApp unchanged from0fe2f57c, no product/copy/
+API/clock/balance/kernel/CI/Make/RFC body changed. Preserve failed-first
+checkpoint and original assertions. Next independently predeclare GS0.5/0.6
+host loading/stale/forced-focus repair and actual severing population.
+Full Linux/SQL still capacity-held; no deletion/retry. Complete new range
+after0fe2f57c needs Claude including this checkpoint, separate from earlier
+spans. No box/lifecycle/archive/push/release/owner-authored text promotion.
