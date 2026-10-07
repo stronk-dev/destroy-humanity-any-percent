@@ -3697,3 +3697,46 @@ deletion/full-disk retry. All Firefox/actual zoom/manual AT/body/GS4/AC7/
 default-player/privacy/platform/numeric/full-nine-tier1.0/review holds remain.
 Goal active/progress, not complete/blocked; no push/deploy/mint/release/
 shortened-preview substitution.
+
+## 2026-10-07 — RP-342 first-read truth audit predeclaration
+
+At a551d3c2 clean checkout. Previous turn progressed committed host repair
+and cross-consumer proof; no current review/lifecycle authority inferred.
+OBSERVATION/TEST-ONLY scope: real createBrowserGameUIRuntime, injected fetch
+with actual Response.json/production decoder, mounted host and native
+Chromium/WebKit at320/1280. Synthetic stored credentials, no real secrets.
+Hold first founder-state response and prove actual loading/aria-busy/no
+controls before release; then network rejection, HTTP401, HTTP503, malformed
+JSON, malformed v4 arm and legacy-v3 response. Observe settled read/pending,
+visible loading/offline/error copy, control count, diagnostic count, same
+credential retention and exact request census. Wait350ms real native time
+to distinguish immediate hidden auto-retry from an idle terminal display.
+This cannot prove indefinite failure or real server auth/network behavior.
+
+Capture structured observations; do NOT encode the bad loading behavior as
+a desired assertion. Actual read rejection and healthy controls validate
+measurement provenance. Exercise existing visibilitychange listener by
+explicit event dispatch (not physical hide/resume): non401 cohort receives
+a valid same-Founder v4 on second read;401 remains401. Assert no bootstrap,
+refresh or gameplay write/credential mutation, and no socket before valid
+snapshot. Separate healthy-first-response control at both widths.
+Fourteen declarations/twenty-eight native executions. No timers/clock policy
+change or runtime-double-only error attribution.
+
+Predeclared discrimination: replace failure replies with valid200 -> each
+failure oracle must fail; prevent actual founder-state read -> held/read
+counts must fail; no-op lifecycle request -> successful recovery population
+must fail; suppress credential presence -> startup population must fail.
+Use only valid source/instrument faults, not parser/type errors; restore
+exact source/driver between probes. Final local types/client/build/native/
+copy/boundaries/topology as proportionate. Production unchanged permanently.
+
+GS0.5 says loading when no snapshot, reconnect with last values, error for
+decode/presentation failures; it does not name a completed-first-read failure
+precedence, credential-expiry flow or a snapshot retry interface. Archived
+bootstrap idempotency and draft browser-session-renewal are not authority for
+those. Confirm observed behavior first, then file precise DESIGN-GAP and
+propose bounded draft contract if required; no owner-copy/accepted-body edit.
+Entire new span after a551d3c2 needs Claude independently of prior spans.
+Capacity/Firefox/AT/full-nine-tier1.0/privacy/platform/review holds remain;
+no deletion/push/archival/release promotion.
